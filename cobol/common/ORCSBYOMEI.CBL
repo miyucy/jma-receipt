@@ -636,14 +636,18 @@
                                                    NOT =   SPACE ) AND
                                  ( WRK-BYOMEI-BYOMEICD (IDX 2)
                                                    NOT =   SPACE )
-                               COMPUTE IDX1    =   IDX     +   1
-                               IF    ( WRK-BYOMEI-BYOMEICD (IDX 1)
-                                                       =   SPACE AND
-                                       WRK-BYOMEI-BYOMEICD (IDX 2)
-                                                       =   SPACE     )
+                               IF      IDX             =   40
+                                 MOVE    2               TO  IDX2
+                                 PERFORM 2003-LNK-HENSYU-SEC
+                               ELSE
+                                 COMPUTE IDX1    =   IDX     +   1
+                                 IF    ( WRK-BYOMEI-BYOMEICD (IDX 1)
+                                                         =   SPACE AND
+                                         WRK-BYOMEI-BYOMEICD (IDX 2)
+                                                         =   SPACE     )
                                    MOVE    2               TO  IDX2
                                    PERFORM 2003-LNK-HENSYU-SEC
-                               ELSE
+                                 ELSE
                                    IF      WRK-BYOMEI-BYOMEICD (IDX1 2)
                                                    NOT =   SPACE
                                        MOVE    1               TO  IDX2
@@ -659,6 +663,7 @@
                                            PERFORM 2003-LNK-HENSYU-SEC
                                        END-IF
                                    END-IF
+                                 END-IF 
                                END-IF
                        END-EVALUATE
                    END-IF     
