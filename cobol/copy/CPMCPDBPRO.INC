@@ -163,6 +163,7 @@
       *                                     SYUMEI-KEY3追加
       *                                     PTNYUINRRK-KEY10追加
       *  01.01.18    NACL-藤原    02/12/10  SEIKYU-DEL5,DEL6追加
+      *  01.01.18    NACL-太田    02/12/13  PTNYUINRRK-KEY11追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2039,6 +2040,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY10"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY10
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY11"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY11
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTAINFUKA-KEY"
                    MOVE    PATH-TBL-PTTAINFUKA-KEY
