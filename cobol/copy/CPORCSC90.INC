@@ -43,9 +43,9 @@
       *        点数計（通則加算対象外計）
                05  LNK-SC90-TENGAKEI       PIC 9(08)V99.
       *        内服剤計
-               05  LNK-SC90-ZAIKEI         PIC 9(08)V99.
+               05  LNK-SC90-ZAIKEI         PIC 9(08)V999.
       *        外用薬計
-               05  LNK-SC90-GAIKEI         PIC 9(08)V99.
+               05  LNK-SC90-GAIKEI         PIC 9(08)V999.
       *        内服剤点数
                05  LNK-SC90-ZAITEN         PIC 9(08).
       *        外用剤点数
