@@ -3,429 +3,429 @@
   <dictionarydata>
     <element name="TEISYUTUSAKI" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="6"/>
+        <embed object="string" length="6"/>
       </appinfo>
     </element>
     <element name="PTNUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="SRYY" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="SRYM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="PREFNUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="HOSPCDN" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="SRYKBN" occurs="35">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="TEKIYO" occurs="35">
       <appinfo>
-        <embed object="string" type="X" length="52"/>
+        <embed object="string" length="52"/>
       </appinfo>
     </element>
     <element name="KOHTEN" occurs="22">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="TOTALTEN" occurs="3">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="FTNMONEY" occurs="3">
       <appinfo>
-        <embed object="string" type="X" length="8"/>
+        <embed object="string" length="8"/>
       </appinfo>
     </element>
     <element name="RJNFTNJANUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="8"/>
+        <embed object="string" length="8"/>
       </appinfo>
     </element>
     <element name="KOHFTNJANUM1" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="8"/>
+        <embed object="string" length="8"/>
       </appinfo>
     </element>
     <element name="KOHFTNJANUM2" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="8"/>
+        <embed object="string" length="8"/>
       </appinfo>
     </element>
     <element name="KOHFTNJANUM1N" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="KOHFTNJANUM2N" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="HKNJANUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="8"/>
+        <embed object="string" length="8"/>
       </appinfo>
     </element>
     <element name="KYURATE" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="8"/>
+        <embed object="string" length="8"/>
       </appinfo>
     </element>
     <element name="RJNJKYSNUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="KOHJKYSNUM1" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="KOHJKYSNUM2" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="KOHJKYSNUM1N" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="KOHJKYSNUM2N" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="HKNSBT1" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="6"/>
+        <embed object="string" length="6"/>
       </appinfo>
     </element>
     <element name="HKNSBT2" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="6"/>
+        <embed object="string" length="6"/>
       </appinfo>
     </element>
     <element name="HONKZK" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="10"/>
+        <embed object="string" length="10"/>
       </appinfo>
     </element>
     <element name="KIGO" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="34"/>
+        <embed object="string" length="34"/>
       </appinfo>
     </element>
     <element name="NUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="34"/>
+        <embed object="string" length="34"/>
       </appinfo>
     </element>
     <element name="KANANAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="30"/>
+        <embed object="string" length="30"/>
       </appinfo>
     </element>
     <element name="SEXNUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="BIRTHDAY" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="22"/>
+        <embed object="string" length="22"/>
       </appinfo>
     </element>
     <element name="JIYU" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="SEXN" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="TOKKI" occurs="4">
       <appinfo>
-        <embed object="string" type="X" length="12"/>
+        <embed object="string" length="12"/>
       </appinfo>
     </element>
     <element name="HOSPTEL" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="15"/>
+        <embed object="string" length="15"/>
       </appinfo>
     </element>
     <element name="SRYKA" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="30"/>
+        <embed object="string" length="30"/>
       </appinfo>
     </element>
     <element name="BEDSU" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="3"/>
+        <embed object="string" length="3"/>
       </appinfo>
     </element>
     <element name="BYOMEI" occurs="5">
       <appinfo>
-        <embed object="string" type="X" length="54"/>
+        <embed object="string" length="54"/>
       </appinfo>
     </element>
     <element name="SRYYMD" occurs="5">
       <appinfo>
-        <embed object="string" type="X" length="24"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="TENKI" occurs="5">
       <appinfo>
-        <embed object="string" type="X" length="10"/>
+        <embed object="string" length="10"/>
       </appinfo>
     </element>
     <element name="JINISSU" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="JINISSU1" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="JINISSU2" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="TENSU" occurs="22">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="KAISU" occurs="22">
       <appinfo>
-        <embed object="string" type="X" length="3"/>
+        <embed object="string" length="3"/>
       </appinfo>
     </element>
     <element name="NYUKHNTEN" occurs="10">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="HOSPNAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="80"/>
+        <embed object="string" length="80"/>
       </appinfo>
     </element>
     <element name="HOSPADRS" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="50"/>
+        <embed object="string" length="50"/>
       </appinfo>
     </element>
     <element name="NAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="50"/>
+        <embed object="string" length="50"/>
       </appinfo>
     </element>
     <element name="HEAD1-G" occurs="1">
       <element name="HEAD1" occurs="2">
         <appinfo>
-          <embed object="string" type="X" length="46"/>
+          <embed object="string" length="46"/>
         </appinfo>
       </element>
     </element>
     <element name="HEAD2-G" occurs="1">
       <element name="HEAD2" occurs="7">
         <appinfo>
-          <embed object="string" type="X" length="2"/>
+          <embed object="string" length="2"/>
         </appinfo>
       </element>
     </element>
     <element name="HEAD3-G" occurs="1">
       <element name="HEAD3" occurs="2">
         <appinfo>
-          <embed object="string" type="X" length="50"/>
+          <embed object="string" length="50"/>
         </appinfo>
       </element>
     </element>
     <element name="BODY" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="52"/>
+        <embed object="string" length="52"/>
       </appinfo>
     </element>
     <element name="SHOSHINTIME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="10"/>
+        <embed object="string" length="10"/>
       </appinfo>
     </element>
     <element name="SIDOTIME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="10"/>
+        <embed object="string" length="10"/>
       </appinfo>
     </element>
     <element name="ZAITAKUTIME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="10"/>
+        <embed object="string" length="10"/>
       </appinfo>
     </element>
     <element name="TENKIYMD" occurs="5">
       <appinfo>
-        <embed object="string" type="X" length="6"/>
+        <embed object="string" length="6"/>
       </appinfo>
     </element>
     <element name="FTNMONEYSAI" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="11"/>
+        <embed object="string" length="11"/>
       </appinfo>
     </element>
     <element name="RENNUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="SRYKA2" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="60"/>
+        <embed object="string" length="60"/>
       </appinfo>
     </element>
     <element name="NYUINKBN" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="42"/>
+        <embed object="string" length="42"/>
       </appinfo>
     </element>
     <element name="NYUINYMD" occurs="1">
       <element name="NYUINYY" occurs="1">
         <appinfo>
-          <embed object="string" type="X" length="2"/>
+          <embed object="string" length="2"/>
         </appinfo>
       </element>
       <element name="NYUINMM" occurs="1">
         <appinfo>
-          <embed object="string" type="X" length="2"/>
+          <embed object="string" length="2"/>
         </appinfo>
       </element>
       <element name="NYUINDD" occurs="1">
         <appinfo>
-          <embed object="string" type="X" length="2"/>
+          <embed object="string" length="2"/>
         </appinfo>
       </element>
     </element>
     <element name="HOSPSBT" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="NYUSYUBETU" occurs="11">
       <appinfo>
-        <embed object="string" type="X" length="12"/>
+        <embed object="string" length="12"/>
       </appinfo>
     </element>
     <element name="KAKERU" occurs="5">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="NICHI" occurs="5">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="SYOKJN" occurs="3">
       <appinfo>
-        <embed object="string" type="X" length="4"/>
+        <embed object="string" length="4"/>
       </appinfo>
     </element>
     <element name="SYOKBN" occurs="4">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="SYOGAK" occurs="4">
       <appinfo>
-        <embed object="string" type="X" length="4"/>
+        <embed object="string" length="4"/>
       </appinfo>
     </element>
     <element name="SYOKAISU" occurs="4">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="GAIITBFTN" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="SYONISSU" occurs="3">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="SYOTOTALTEN" occurs="3">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="SYOFTNMONEY" occurs="3">
       <appinfo>
-        <embed object="string" type="X" length="8"/>
+        <embed object="string" length="8"/>
       </appinfo>
     </element>
     <element name="SYOFTNMONEYSAI" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="11"/>
+        <embed object="string" length="11"/>
       </appinfo>
     </element>
     <element name="NYUTENSUN-G" occurs="10">
       <element name="NYUTENSUN" occurs="6">
         <appinfo>
-          <embed object="string" type="X" length="2"/>
+          <embed object="string" length="2"/>
         </appinfo>
       </element>
     </element>
     <element name="NYUKOHTENN-G" occurs="10">
       <element name="NYUKOHTENN" occurs="6">
         <appinfo>
-          <embed object="string" type="X" length="2"/>
+          <embed object="string" length="2"/>
         </appinfo>
       </element>
     </element>
     <element name="NYUKHNTENN" occurs="10">
       <appinfo>
-        <embed object="string" type="X" length="14"/>
+        <embed object="string" length="10"/>
       </appinfo>
     </element>
     <element name="NYUKAISU" occurs="10">
       <appinfo>
-        <embed object="string" type="X" length="3"/>
+        <embed object="string" length="3"/>
       </appinfo>
     </element>
     <element name="NYUTENSU" occurs="10">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="NYUKOHTEN" occurs="10">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
   </dictionarydata>
@@ -26276,7 +26276,7 @@
         <point val="5.3,20.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.7446,20.0365;5.3,20.2565"/>
+        <rectangle val="3.785,19.977;5.3,20.277"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NYUKHNTENN[0]#</string>
@@ -26287,13 +26287,13 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.22"/>
+            <real val="0.3"/>
           </attribute>
           <attribute name="pos">
             <point val="5.3,20.2"/>
@@ -26305,10 +26305,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.13332"/>
+            <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1111"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -26318,7 +26318,7 @@
         <point val="5.3,20.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.7446,20.4365;5.3,20.6565"/>
+        <rectangle val="3.785,20.377;5.3,20.677"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NYUKHNTENN[1]#</string>
@@ -26329,13 +26329,13 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.22"/>
+            <real val="0.3"/>
           </attribute>
           <attribute name="pos">
             <point val="5.3,20.6"/>
@@ -26347,10 +26347,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.13332"/>
+            <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1111"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -26360,7 +26360,7 @@
         <point val="5.3,21.05"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.7446,20.8865;5.3,21.1065"/>
+        <rectangle val="3.785,20.827;5.3,21.127"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NYUKHNTENN[2]#</string>
@@ -26371,13 +26371,13 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.22"/>
+            <real val="0.3"/>
           </attribute>
           <attribute name="pos">
             <point val="5.3,21.05"/>
@@ -26389,10 +26389,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.13332"/>
+            <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1111"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -26402,7 +26402,7 @@
         <point val="5.3,21.45"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.7446,21.2865;5.3,21.5065"/>
+        <rectangle val="3.785,21.227;5.3,21.527"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NYUKHNTENN[3]#</string>
@@ -26413,13 +26413,13 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.22"/>
+            <real val="0.3"/>
           </attribute>
           <attribute name="pos">
             <point val="5.3,21.45"/>
@@ -26431,10 +26431,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.13332"/>
+            <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1111"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -26444,7 +26444,7 @@
         <point val="5.3,21.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.7446,21.7365;5.3,21.9565"/>
+        <rectangle val="3.785,21.677;5.3,21.977"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NYUKHNTENN[4]#</string>
@@ -26455,13 +26455,13 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.22"/>
+            <real val="0.3"/>
           </attribute>
           <attribute name="pos">
             <point val="5.3,21.9"/>
@@ -26473,10 +26473,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.13332"/>
+            <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1111"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -26486,7 +26486,7 @@
         <point val="5.3,22.75"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.7446,22.5865;5.3,22.8065"/>
+        <rectangle val="3.785,22.527;5.3,22.827"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NYUKHNTENN[5]#</string>
@@ -26497,13 +26497,13 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.22"/>
+            <real val="0.3"/>
           </attribute>
           <attribute name="pos">
             <point val="5.3,22.75"/>
@@ -26515,10 +26515,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.13332"/>
+            <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1111"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -26528,7 +26528,7 @@
         <point val="5.3,23.15"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.7446,22.9865;5.3,23.2065"/>
+        <rectangle val="3.785,22.927;5.3,23.227"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NYUKHNTENN[6]#</string>
@@ -26539,13 +26539,13 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.22"/>
+            <real val="0.3"/>
           </attribute>
           <attribute name="pos">
             <point val="5.3,23.15"/>
@@ -26557,10 +26557,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.13332"/>
+            <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1111"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -26570,7 +26570,7 @@
         <point val="5.3,23.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.7446,23.4365;5.3,23.6565"/>
+        <rectangle val="3.785,23.377;5.3,23.677"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NYUKHNTENN[7]#</string>
@@ -26581,13 +26581,13 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.22"/>
+            <real val="0.3"/>
           </attribute>
           <attribute name="pos">
             <point val="5.3,23.6"/>
@@ -26599,10 +26599,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.13332"/>
+            <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1111"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -26612,7 +26612,7 @@
         <point val="5.3,24"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.7446,23.8365;5.3,24.0565"/>
+        <rectangle val="3.785,23.777;5.3,24.077"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NYUKHNTENN[8]#</string>
@@ -26623,13 +26623,13 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.22"/>
+            <real val="0.3"/>
           </attribute>
           <attribute name="pos">
             <point val="5.3,24"/>
@@ -26641,10 +26641,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.13332"/>
+            <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1111"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -26654,7 +26654,7 @@
         <point val="5.3,24.45"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.7446,24.2865;5.3,24.5065"/>
+        <rectangle val="3.785,24.227;5.3,24.527"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NYUKHNTENN[9]#</string>
@@ -26665,13 +26665,13 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.22"/>
+            <real val="0.3"/>
           </attribute>
           <attribute name="pos">
             <point val="5.3,24.45"/>
@@ -26683,10 +26683,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.13332"/>
+            <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1111"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
