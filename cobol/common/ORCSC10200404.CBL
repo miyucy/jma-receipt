@@ -564,6 +564,7 @@
            MOVE    ZERO                TO  IDX-SYU
            INITIALIZE                  WRK-AREA
            MOVE    SPACE               TO  WRK-NYU-SRYCD
+           MOVE    ZERO                TO  WRK-SINSATU-KAISU
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
@@ -684,6 +685,10 @@
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      10011-SYUGISYORI-EXT
            END-IF
+           IF      WRK-KAISU       NOT =   ZERO
+               MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
+           END-IF
+      *
       *    Ï«ºÒ¤Î¿Ç»¡ÎÁ¤ÎÈ½Äê
            IF      SPA-HKNKBN          =   1
                PERFORM 10013-RSI-SINSATU-CHK-SEC
@@ -793,6 +798,7 @@
                   (WRK-COM-AUTOKBN (IDX-Z)     =   SPACE )
       *        Ç¯Îð²Ã»»¼«Æ°¿¶¤êÂØ¤¨½èÍý
                IF      WRK-NYU-SRYCD   NOT =   SPACE
+                   MOVE    WRK-SINSATU-KAISU   TO  WRK-KAISU
                    PERFORM 1008-NENREI-CHENGE-SEC
                END-IF
            END-IF
