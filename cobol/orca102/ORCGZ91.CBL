@@ -138,6 +138,7 @@
            03  FLG-TENSU              PIC 9(01).
            03  FLG-SRYCDCHG           PIC 9(01).
            03  FLG-SYSKANRI           PIC 9(01).
+           03  FLG-OK                 PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -607,20 +608,19 @@
                            MOVE    "F"         TO  SPA-GMN-SRYCHK
                            MOVE    "F"         TO  SPA-GMN-SRY(1)
                            MOVE    "F"         TO  SPA-GMN-SRY(2)
-                           MOVE    1           TO  SPA-GMN-CUR
                        WHEN    "F"
                            MOVE    "T"         TO  SPA-GMN-SRYCHK
                            MOVE    "T"         TO  SPA-GMN-SRY(1)
                            MOVE    "F"         TO  SPA-GMN-SRY(2)
-                           MOVE    2           TO  SPA-GMN-CUR
                    END-EVALUATE
+                   MOVE    2           TO  SPA-GMN-CUR
                WHEN    "CLICKED"       ALSO    "SRY2"
                    EVALUATE    SPA-GMN-SRY(2)
                        WHEN    "T"
                            MOVE    "F"         TO  SPA-GMN-SRYCHK
                            MOVE    "F"         TO  SPA-GMN-SRY(1)
                            MOVE    "F"         TO  SPA-GMN-SRY(2)
-                           MOVE    1           TO  SPA-GMN-CUR
+                           MOVE    3           TO  SPA-GMN-CUR
                        WHEN    "F"
                            MOVE    "T"         TO  SPA-GMN-SRYCHK
                            MOVE    "F"         TO  SPA-GMN-SRY(1)
@@ -922,27 +922,24 @@
        400-MSTYMD-CHK-EXT.
            EXIT.
       *
+      *----(02.00.04)--UPD-START---
       *****************************************************************
       *    ¿ÇÎÅ¶èÊ¬³«»Ï
       *****************************************************************
-       400-SRYSTR-SEC               SECTION.
+       400-SRYSTR-SEC              SECTION.
       *
-      *    ¿ÇÎÅ¶èÊ¬ÊÑ²½¤Ê¤·
-           IF  (Z91-SRYSTR  NOT  =  SPACE) AND
-               (Z91-SRYSTR       =  SPA-Z91-SRYSTR)
+           MOVE  Z91-SRYSTR        TO  SPA-Z91-SRYSTR
       *
-               IF  SPA-SRYSTR-MAX  >  ZERO
-                   MOVE  1  TO  SPA-GMN-CUR
-               END-IF
+           PERFORM 410-SRYSTR-CHK-SEC
+      *
+           IF      FLG-OK          =   ZERO
+               MOVE    4               TO  SPA-GMN-CUR
+               MOVE    "0001"          TO  SPA-ERRCD
                GO  TO  400-SRYSTR-EXT
            END-IF
+           MOVE    SPA-Z91-SRYSTR  TO  SPA-Z91-SRYEND
       *
-           MOVE  Z91-SRYSTR      TO  SPA-Z91-SRYSTR
-      *----(01.01.01)--ADD-START---
-           MOVE  Z91-SRYSTR      TO  SPA-Z91-SRYEND
-      *----(01.01.01)--ADD-END-----
-      *
-           MOVE  5               TO  SPA-GMN-CUR   
+           MOVE    5               TO  SPA-GMN-CUR
            .
        400-SRYSTR-EXT.
            EXIT.
@@ -950,25 +947,62 @@
       *****************************************************************
       *    ¿ÇÎÅ¶èÊ¬½ªÎ»
       *****************************************************************
-       400-SRYEND-SEC               SECTION.
+       400-SRYEND-SEC              SECTION.
       *
-      *    ¿ÇÎÅ¶èÊ¬ÊÑ²½¤Ê¤·
-           IF  (Z91-SRYEND  NOT  =  SPACE) AND
-               (Z91-SRYEND       =  SPA-Z91-SRYEND)
+           MOVE  Z91-SRYEND        TO  SPA-Z91-SRYEND
       *
-               IF  SPA-SRYEND-MAX  >  ZERO
-                   MOVE  1  TO  SPA-GMN-CUR
-               END-IF
+           PERFORM 410-SRYEND-CHK-SEC
+      *
+           IF      FLG-OK   =   ZERO
+               MOVE    5                TO  SPA-GMN-CUR
+               MOVE    "0001"           TO  SPA-ERRCD
                GO  TO  400-SRYEND-EXT
            END-IF
       *
-           MOVE  Z91-SRYEND      TO  SPA-Z91-SRYEND 
-      *
-           MOVE  6               TO  SPA-GMN-CUR   
+           MOVE  6               TO  SPA-GMN-CUR
            .
        400-SRYEND-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ¿ÇÎÅ³«»Ï¶èÊ¬¥Á¥§¥Ã¥¯
+      *****************************************************************
+       410-SRYSTR-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-OK
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >   SPA-SRYSTR-MAX
+               IF       SPA-GMN-SRYSTRL(IDX)   =  SPA-Z91-SRYSTRL
+                    MOVE    SPA-GMN-SRYSTR-LIST(IDX)
+                                           TO  SPA-Z91-SRYSTR
+                    MOVE    1              TO  FLG-OK
+                    MOVE    SPA-SRYSTR-MAX TO  IDX
+               END-IF
+           END-PERFORM
+           .
+       410-SRYSTR-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ½ªÎ»¶èÊ¬¥Á¥§¥Ã¥¯
+      *****************************************************************
+       410-SRYEND-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-OK
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >   SPA-SRYEND-MAX
+               IF       SPA-GMN-SRYENDL(IDX)   =  SPA-Z91-SRYENDL
+                    MOVE    SPA-GMN-SRYEND-LIST(IDX)
+                                           TO  SPA-Z91-SRYEND
+                    MOVE    1              TO  FLG-OK
+                    MOVE    SPA-SRYEND-MAX TO  IDX
+               END-IF
+           END-PERFORM
+           .
+       410-SRYEND-CHK-EXT.
+           EXIT. 
+      *
+      *----(02.00.04)--UPD-END-----
       *****************************************************************
       *    ºÆ°õºþ²èÌÌ¤Ø
       *****************************************************************
@@ -1080,24 +1114,38 @@
       *****************************************************************
        490-PRINT-MAE-SEC                   SECTION.
       *
-      *----(01.01.01)--UPD-START---
-           IF            (SPA-GMN-IYKCHKALL  =   "F")
-                  AND    (SPA-GMN-SRYCHK     =   "F")
-                  AND    (SPA-GMN-TOKCHK     =   "F")
-                  AND    (SPA-GMN-JIHCHK     =   "F")
-                  AND    (SPA-GMN-COMCHKALL  =   "F")
-      *----(02.00.01)--ADD-START---
-                  AND    (SPA-GMN-HOKACHK    =   "F")
-      *----(02.00.01)--ADD-END-----
-                  MOVE    "0004"    TO  SPA-ERRCD
+      *----(02.00.04)--UPD-START---
+           IF     (SPA-GMN-IYKCHKALL   =   "F")    AND
+                  (SPA-GMN-SRYCHK      =   "F")    AND
+                  (SPA-GMN-TOKCHK      =   "F")    AND
+                  (SPA-GMN-JIHCHK      =   "F")    AND
+                  (SPA-GMN-COMCHKALL   =   "F")    AND
+                  (SPA-GMN-HOKACHK     =   "F")
+               MOVE    "0004"          TO  SPA-ERRCD
+               GO  TO  490-PRINT-MAE-EXT
            END-IF
-      *----(01.01.01)--UPD-END-----
       *
-           IF      SPA-ERRCD          =   SPACE
-               IF     SPA-NAI-MSTYMD  =   ZERO
-                      MOVE    "0003"      TO  SPA-ERRCD
+           IF      SPA-GMN-SRY(2)      =   "T"
+               PERFORM 410-SRYSTR-CHK-SEC
+               IF      FLG-OK          =   ZERO
+                   MOVE    "0001"          TO  SPA-ERRCD
+                   MOVE    4               TO  SPA-GMN-CUR
+                   GO  TO  490-PRINT-MAE-EXT
+               END-IF
+               PERFORM 410-SRYEND-CHK-SEC
+               IF      FLG-OK          =   ZERO
+                   MOVE    "0001"          TO  SPA-ERRCD
+                   MOVE    5               TO  SPA-GMN-CUR
+                   GO  TO  490-PRINT-MAE-EXT
                END-IF
            END-IF
+      *
+           IF      SPA-NAI-MSTYMD      =   ZERO
+               MOVE    "0003"          TO  SPA-ERRCD
+               MOVE    21              TO  SPA-GMN-CUR
+               GO  TO  490-PRINT-MAE-EXT
+           END-IF
+      *----(02.00.04)--UPD-END-----
       *
       *----(02.00.02)--UPD-START---
            PERFORM 4501-JOBKANRI-CHK-SEC
@@ -1960,6 +2008,10 @@
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
+      *----(02.00.04)--ADD-START---
+               WHEN    "0001"
+                   MOVE    "¿ÇÎÅ¶èÊ¬¥¨¥é¡¼"           TO  SPA-ERRMSG
+      *----(02.00.04)--ADD-END-----
                WHEN    "0002"
                    MOVE    "ÆüÉÕÆþÎÏ¥¨¥é¡¼"           TO  SPA-ERRMSG
                WHEN    "0003"
