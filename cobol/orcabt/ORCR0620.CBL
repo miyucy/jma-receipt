@@ -958,6 +958,8 @@
                MOVE    RECE61-PTID         TO  PTNYUINRRK-PTID
                MOVE    WRK-PTNYUINRRK-SHONUM
                                            TO  PTNYUINRRK-SHONUM
+               MOVE    RECE62-SRYYM        TO  PTNYUINRRK-NYUINYMD (1:6)
+               MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
                MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
                MOVE    "PTNYUINRRK-KEY13"  TO  WRK-PATH
                PERFORM 900-PTNYUINRRK-INV-SEC
