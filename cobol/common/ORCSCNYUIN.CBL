@@ -465,7 +465,9 @@
            PERFORM 400-WKSRYACT-DEL-SEC
       *
       *    受付が有った時、受診済とする
-           PERFORM 410-UKETUKE-SYORI-SEC
+           IF      SPA-SYORIFLG         =   ZERO
+               PERFORM 410-UKETUKE-SYORI-SEC
+           END-IF
       *
            .
        100-SAKUSEI-SYORI-EXT.
@@ -1006,7 +1008,7 @@
            PERFORM 940-PTINF-READ-SEC
            IF      FLG-PTINF           =   1
                MOVE    "0002"          TO  SPA-ERRCD
-               DISPLAY "K03 ZAINUM-SET ERR:" SPA-ERRCD
+               DISPLAY "K03 ZAINUM-SET ERR:" SPA-PTID
                GO      TO      45013-ZAINUM-SET-EXT
            END-IF
       *
