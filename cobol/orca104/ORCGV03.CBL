@@ -1567,7 +1567,7 @@
            MOVE    SPA-GMN-RJNHKNKBNLST (1)
                                        TO  SPA-GMN-RJNHKNKBN-G
       *
-           MOVE    SPA-GMN-FTNKBNLST (2)
+           MOVE    SPA-GMN-FTNKBNLST (1)
                                        TO  SPA-GMN-FTNKBN-G
       *
            MOVE    SPA-GMN-RECESKYKBNLST (1)
