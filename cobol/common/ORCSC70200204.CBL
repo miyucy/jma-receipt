@@ -126,6 +126,9 @@
            03  IDX-MAX             PIC 9(04).
       *    £ØÀþ¤Î³«»Ï¹Ô
            03  IDX-HOZ             PIC 9(04).
+      *    ¹Ôºï½ü
+           03  IDX-D1              PIC 9(04).
+           03  IDX-D2              PIC 9(04).
       *
       *
       *    °ì»þÎÎ°è
@@ -1812,7 +1815,7 @@
            MOVE    ZERO                TO  WRK-KEIMAI
       *
       *    Â¤±ÆºÞ»ÈÍÑ²Ã»»ÎÁ
-           IF      FLG-ZOEIZAI         =   1
+      *****IF      FLG-ZOEIZAI         =   1
                IF      FLG-CTMRI           =   1
       *            £Ã£Ô²Ã»»
                    MOVE    "170012070"         TO  WRK-SRYCD
@@ -1825,10 +1828,19 @@
                MOVE    IDX-SAT             TO  IDX-S
                MOVE    ZERO                TO  FLG-SATU
                PERFORM 1003-JIDOU-CHK-SEC
-               IF      FLG-ARI             =   ZERO
-                   PERFORM 1002-JIDOUSET-SEC
+               IF      FLG-ZOEIZAI         =   1
+      *            Â¤±ÆºÞ»ÈÍÑ²Ã»»ÎÁ¤¢¤ê
+                   IF      FLG-ARI             =   ZERO
+                       PERFORM 1002-JIDOUSET-SEC
+                   END-IF
+               ELSE
+                   IF      FLG-ARI             =   1
+                       IF      WRK-COM-AUTOKBN (IDX-T) =   "2"
+                           PERFORM 10023-JIDOU-DEL-SEC
+                       END-IF
+                   END-IF
                END-IF
-           END-IF
+      *****END-IF
       *
       *
            INITIALIZE                  ORCSC90AREA
@@ -1836,7 +1848,8 @@
            MOVE    ZERO                TO  IDX-KAS
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200  )  OR
-                              (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE )
+                             ((WRK-GMN-INPUTCD(IDX-Z)  =   SPACE ) AND
+                              (WRK-COM-INPUTCD(IDX-Z)  =   SPACE ))
       *
                ADD     1                   TO  IDX-MAX
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "*"
@@ -2262,6 +2275,29 @@
            .
       *
        2001-CTMRI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼«Æ°ºï½ü½èÍý
+      *****************************************************************
+       10023-JIDOU-DEL-SEC                SECTION.
+      *
+           MOVE    WRK-SCR-REC         TO  HOZ-SCR-REC
+           INITIALIZE                      WRK-SCR-REC
+           MOVE    ZERO                TO  IDX-D2
+           PERFORM VARYING     IDX-D1  FROM    1   BY  1
+                   UNTIL       IDX-D1      >   200
+               IF      IDX-T           =   IDX-D1
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  IDX-D2
+                   MOVE    HOZ-GMN-TBL (IDX-D1)
+                                           TO  WRK-GMN-TBL(IDX-D2)
+               END-IF
+           END-PERFORM
+           .
+      *
+       10023-JIDOU-DEL-EXT.
            EXIT.
       *
       *****************************************************************
