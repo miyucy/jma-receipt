@@ -1,21 +1,24 @@
 tbl_ptteikirrk {
-       SRYYM           char(6);
        HOSPID          char(24);
        PTID            number(10);
+       SRYYM           char(6);
        SAKKBN          char(1);
        HKNCOMBINUM     number(4);
        SKYSTYMD        char(8);
        SKYEDYMD        char(8);
        SKYTEN          number(9);
        SKYMONEY        number(9);
+       RRKNUM          number(03);
+       DENPNUM         number(07);
        TERMID          varchar(16);
        OPID            varchar(16);
        CREYMD          varchar(8);
        UPYMD           varchar(8);
        UPHMS           varchar(6);
 };
+
 primary	{
-	SRYYM,HOSPID,PTID,SAKKBN,HKNCOMBINUM;
+	HOSPID,PTID,SRYYM,SAKKBN,HKNCOMBINUM;
 };
 
 path	key		{ 	
@@ -23,9 +26,10 @@ path	key		{
 		DECLARE tbl_ptteikirrk_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptteikirrk
-        WHERE  SRYYM   =   :SRYYM
-        AND    HOSPID  =   :HOSPID
+        WHERE  
+               HOSPID  =   :HOSPID
         AND    PTID    =   :PTID
+        AND    SRYYM   =   :SRYYM
         AND    SAKKBN  =   :SAKKBN
         AND    HKNCOMBINUM = :HKNCOMBINUM
 		;
@@ -37,10 +41,10 @@ path	key2		{
 		DECLARE tbl_ptteikirrk_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptteikirrk
-        WHERE  SRYYM   =   :SRYYM
-        AND    HOSPID  =   :HOSPID
+        WHERE  HOSPID  =   :HOSPID
         AND    PTID    =   :PTID
-		;
+        AND    SRYYM   =   :SRYYM
+        		;
 	};
 };
 

@@ -23,12 +23,12 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  PTTEIKIRRK-REC.
-      *診療年月
-           03  PTTEIKIRRK-SRYYM            PIC  X(06).
       *医療機関ＩＤ
            03  PTTEIKIRRK-HOSPID           PIC  X(24).
       *患者ＩＤ
            03  PTTEIKIRRK-PTID             PIC  9(10).
+      *診療年月
+           03  PTTEIKIRRK-SRYYM            PIC  X(06).
       *作成区分（処理期）
       *    １〜３：各処理期／９：月末時のみ（入退院登録で指定）
            03  PTTEIKIRRK-SAKKBN           PIC  X(01).
@@ -42,6 +42,10 @@
            03  PTTEIKIRRK-SKYTEN           PIC  S9(09).
       *請求金額
            03  PTTEIKIRRK-SKYMONEY         PIC  S9(09).
+      *入院履歴−履歴連番
+           03  PTTEIKIRRK-RRKNUM           PIC  9(03).
+      *入院履歴−伝票番号
+           03  PTTEIKIRRK-DENPNUM          PIC  9(07).
       *端末ＩＤ
            03  PTTEIKIRRK-TERMID           PIC  X(16).
       *オペーレータＩＤ

@@ -145,6 +145,7 @@
            03  FLG-PTTEIKIRRK                          PIC 9(01).
            03  FLG-TEIKIKANRI                          PIC 9(01).
            03  FLG-TEIKIRRK                            PIC 9(01).
+           03  FLG-HIT                                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -951,6 +952,15 @@
                END-IF
       *
                MOVE    TEIKI02-REC         TO  PTTEIKIRRK-REC
+      *
+      *        収納伝票番号取得処理
+               PERFORM 20031-SYU-DENPNUM-GET-SEC
+               IF    ( FLG-ERR    =        1 )
+                   GO  TO  2003-SEIKYU-KOUSIN-EXT
+               END-IF
+      *
+               MOVE    WRK-DENPNUM         TO  PTTEIKIRRK-DENPNUM
+      *
                MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
                MOVE    "PTTEIKIRRK-KEY"    TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1457,6 +1467,74 @@
        20031-TEIKIRRK-KOUSIN-EXT.
            EXIT. 
       *****************************************************************
+      *    収納伝票番号取得処理
+      *****************************************************************
+       20031-SYU-DENPNUM-GET-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-DENPNUM
+      *
+      *    収納マスタ検索
+           MOVE    ZERO                TO  FLG-SYUNOU
+           INITIALIZE  SYUNOU-REC
+           MOVE    SYS-1001-HOSPID     TO  SYU-HOSPID
+           MOVE    "1"                 TO  SYU-NYUGAIKBN
+           MOVE    PTTEIKIRRK-PTID     TO  SYU-PTID
+           MOVE    PTTEIKIRRK-SRYYM    TO  SYU-SRYYMD
+           MOVE    "__"                TO  SYU-SRYYMD (7 : )
+           MOVE    PTTEIKIRRK-SKYSTYMD TO  SYU-SKYSTYMD
+           MOVE    PTTEIKIRRK-SKYEDYMD TO  SYU-SKYEDYMD
+           MOVE    PTTEIKIRRK-HKNCOMBINUM
+                                       TO  SYU-HKNCOMBINUM
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "SYUNOU-KEY18"      TO  ORC-DBPATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-SYUNOU-KEY18-READ-SEC
+           ELSE
+               MOVE    1           TO  FLG-SYUNOU
+           END-IF
+      *
+           MOVE    ZERO            TO  FLG-HIT
+           PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
+                   OR    ( FLG-HIT =   1 )
+      *
+               IF    ( SYU-DENPJTIKBN  NOT =   "3" )
+                   MOVE    1       TO  FLG-HIT
+               END-IF
+      *
+               IF    ( FLG-HIT     =   ZERO )
+                   PERFORM 910-SYUNOU-KEY18-READ-SEC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "SYUNOU-KEY18"      TO  ORC-DBPATH
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+           IF    ( FLG-HIT         =   ZERO )
+               MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
+               MOVE    "収納データの取得に失敗しました"
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG  TO  WRK-TEIKIERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  20031-SYU-DENPNUM-GET-EXT
+           END-IF
+      *
+           MOVE    SYU-DENPNUM         TO  WRK-DENPNUM
+           .
+      *
+       20031-SYU-DENPNUM-GET-EXT.
+           EXIT. 
+      *****************************************************************
       *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC              SECTION.
@@ -1655,6 +1733,29 @@
       *
            .
        900-SYUNOU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納マスター読込
+      *****************************************************************
+       910-SYUNOU-KEY18-READ-SEC       SECTION.
+      *
+           MOVE    SYUNOU-REC      TO  MCPDATA-REC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY18"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SYUNOU-REC
+               MOVE    ZERO                TO  FLG-SYUNOU
+           ELSE
+               MOVE    1                   TO  FLG-SYUNOU
+               INITIALIZE                  SYUNOU-REC
+           END-IF
+      *
+           .
+       910-SYUNOU-KEY18-READ-EXT.
            EXIT.
       *****************************************************************
       *    定期請求収納ファイル読込
