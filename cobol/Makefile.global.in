@@ -42,7 +42,7 @@ distclean:
 -include $(wildcard $(DEPDIR)/*.Po) /dev/null
 
 filecheck:
-	@(for i in $(SRCS) $(CSRCS) ;do echo "make	$${i}"; done ;\
+	@(for i in $(SRCS) $(CSRCS) $(EXEC_SRCS) ;do echo "make	$${i}"; done ;\
 	find . \
 	-name "." -o \
 	-name "CVS" -prune -o \

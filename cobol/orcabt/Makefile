@@ -1,6 +1,4 @@
-SRCS = $(LIB_SRCS) $(EXEC_SRCS)
-
-LIB_SRCS = \
+SRCS = \
        ORCBD001.CBL \
        ORCBD002.CBL \
        ORCBM001.CBL \
