@@ -406,9 +406,9 @@
            MOVE    2                   TO  SPA-GMN-TENKBN-MAX 
       *     
            MOVE    "1"                 TO  SPA-GMN-TAXKBNL      (1)
-           MOVE    "なし"              TO  SPA-GMN-TAXKBNMEIL   (1)
+           MOVE    "無し"              TO  SPA-GMN-TAXKBNMEIL   (1)
            MOVE    "2"                 TO  SPA-GMN-TAXKBNL      (2)
-           MOVE    "あり"              TO  SPA-GMN-TAXKBNMEIL   (2)
+           MOVE    "有り"              TO  SPA-GMN-TAXKBNMEIL   (2)
            MOVE    2                   TO  SPA-GMN-TAXKBN-MAX 
       * 
            MOVE    SPACE               TO  SYS-4001-REC
