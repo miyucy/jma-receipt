@@ -3981,17 +3981,23 @@
                                END-IF            
                            WHEN    "ZZZ"       ALSO    "8"  
                                IF      WRK-RECECD (2)    =   SPACE 
-                                   MOVE    "0006"    TO  SPA-ERRCD
+                                   MOVE    "0006"     TO  SPA-ERRCD
                                    MOVE    21         TO  IDX
                                ELSE
-                                   MOVE    "1"       TO  WRK-RECECD (3)
+                                   MOVE    "1"        TO  WRK-RECECD (3)
                                END-IF
                            WHEN    OTHER                 
-                               IF      WRK-RECECD (3)    NOT =   SPACE 
-                                   MOVE    "0006"    TO  SPA-ERRCD
-                                   MOVE    21         TO  IDX
+                               IF      WRK-RECECD (3)  NOT =   SPACE 
+                                   MOVE    "0006"      TO  SPA-ERRCD
+                                   MOVE    21          TO  IDX
                                ELSE
-                                   MOVE    "1"       TO  WRK-RECECD (2)
+                                   IF      WRK-RECECD (2)
+                                                   NOT =   SPACE 
+                                       MOVE    "1"       TO
+                                               SPA-NAI-C02-BYOMEIHENFLG
+                                   ELSE
+                                       MOVE    "1"   TO  WRK-RECECD (2)
+                                   END-IF
                                END-IF    
                          END-EVALUATE
                        ELSE
@@ -4030,7 +4036,13 @@
                                    MOVE    "0006"    TO  SPA-ERRCD
                                    MOVE    21         TO  IDX
                                ELSE
-                                   MOVE    "1"       TO  WRK-RECECD (2)
+                                   IF      WRK-RECECD (2)
+                                                   NOT =   SPACE 
+                                       MOVE    "1"       TO
+                                               SPA-NAI-C02-BYOMEIHENFLG
+                                   ELSE
+                                       MOVE    "1"   TO  WRK-RECECD (2)
+                                   END-IF
                                END-IF    
                          END-EVALUATE
                        END-IF
