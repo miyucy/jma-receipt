@@ -14,7 +14,7 @@ Y01	{
 		};
 		YYKNAME	{
 	            state	int;
-			value	varchar(30);
+			value	varchar(50);
 		};
 		viewport1	{
 			fixed2	{
@@ -673,10 +673,10 @@ Y01	{
 		};
 		DRNAME_COMBO	{
 			DRNAME	{
-				value	varchar(27);
+				value	varchar(29);
 			};
 			count	int;
-			item	varchar(27)[10];
+			item	varchar(29)[50];
 		};
 		SRYNAIYO_COMBO	{
 			SRYNAIYO	{
@@ -700,10 +700,10 @@ Y01	{
 		};
 		SRYKA_COMB	{
 			SRYKA	{
-				value	varchar(17);
+				value	varchar(21);
 			};
 			count	int;
-			item	varchar(17)[10];
+			item	varchar(21)[40];
 		};
 		KAKREN_COMB	{
 			KAKREN	{
