@@ -157,8 +157,11 @@
            03  WRK-BTU             PIC X(02).
            03  WRK-BTU-NAME        PIC X(20).
            03  WRK-KUMI-NAME       PIC X(32).
-           03  WRK-TEKSTYMD        PIC X(08).
-           03  WRK-TEKEDYMD        PIC X(08).
+           03  WRK-CHK-SKB         PIC X(01).
+           03  WRK-CHK-DSP         PIC X(01).
+           03  WRK-TEK-YMD         PIC X(08).
+           03  WRK-TEKSTYMD        PIC X(02).
+           03  WRK-TEKEDYMD        PIC X(02).
       *    パス名領域
            03  WRK-DBPATH          PIC X(20).
       *    数量表示用
@@ -286,7 +289,6 @@
            03  WRK-CHK-TBL.
                05  WRK-CHK-DAY     PIC 9(03)  OCCURS  31.
            03  WRK-CHK-ZAISKBKBN   PIC X(01).
-           03  WRK-CHK-SKB         PIC X(01).
            03  WRK-SKB-TBL.
                05  WRK-KUMINO      PIC X(02)  OCCURS  30.
                05  WRK-KUMISTYMD   PIC X(08)  OCCURS  30.
@@ -1989,21 +1991,21 @@
            MOVE    ZERO                TO  IDW.
            PERFORM   VARYING   IDX    FROM    1   BY  1
                      UNTIL     IDX        >   SPA-GMN-MAX-41
-               IF     SPA-GMN-TZAISKBKBN-41 (IDX)  = "5"
+               IF  SPA-GMN-TZAISKBKBN-41 (IDX)  = "5"
                    MOVE    IDX        TO  IDW
                END-IF
            END-PERFORM.
            MOVE    ZERO                TO  I41-KUMILIST-COUNT.
            MOVE    ALL SPACE           TO  WRK-SKB-TBL.
-           MOVE    SPA-NAI-SRYYM-41    TO  WRK-TEKSTYMD(1:6).
-           MOVE    "99"                TO  WRK-TEKSTYMD(7:2).
-           MOVE    SPA-NAI-SRYYM-41    TO  WRK-TEKEDYMD(1:6).
-           MOVE    "00"                TO  WRK-TEKEDYMD(7:2).
+           MOVE    SPA-NAI-SRYYM-41    TO  WRK-TEK-YMD.
+           MOVE    "99"                TO  WRK-TEKSTYMD.
+           MOVE    "00"                TO  WRK-TEKEDYMD.
+           MOVE    SPACE               TO  WRK-CHK-DSP.
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-I41-MAX-41
-               IF     (SPA-I41-TTEKSTYMD-41 (IDX)(1:6)
+               IF  (SPA-I41-TTEKSTYMD-41 (IDX)(1:6)
                                                 <= SPA-NAI-SRYYM-41) AND
-                      (SPA-I41-TTEKEDYMD-41 (IDX)(1:6)
+                   (SPA-I41-TTEKEDYMD-41 (IDX)(1:6)
                                                 >= SPA-NAI-SRYYM-41)
                    ADD     1                  TO  I41-KUMILIST-COUNT
                    MOVE    SPA-I41-THKNCOMBI-41 (IDX)
@@ -2020,79 +2022,53 @@
                                   TO  WRK-KUMIEDYMD (I41-KUMILIST-COUNT)
                END-IF
            END-PERFORM.
-           IF     IDW  NOT = ZERO
+           IF  IDW   NOT =   ZERO
                PERFORM   VARYING   IDY     FROM    1   BY  1
                          UNTIL     IDY         >  31
-                   MOVE    SPACE                    TO  WRK-CHK-SKB
-                   IF     I41-KUMILIST-COUNT  NOT = ZERO
+                   MOVE    IDY(3:2)  TO  WRK-TEK-YMD(7:2)
+                   IF  I41-KUMILIST-COUNT  NOT = ZERO
+                       MOVE    SPACE     TO  WRK-CHK-SKB
                        PERFORM   VARYING   IDX     FROM    1   BY  1
                                  UNTIL     IDX     >  I41-KUMILIST-COUNT
-                           IF    (SPA-GMN-TDAY-41 (IDW IDY)(1:2)  =
-                                                   WRK-KUMINO (IDX))  OR
-                                 (SPA-GMN-TDAY-41 (IDW IDY)(1:2)  =
-                                                              ALL SPACE)
-                               MOVE    "*"               TO  WRK-CHK-SKB
+                           IF  (SPA-GMN-TDAY-41 (IDW IDY)(1:2)  =
+                                                   WRK-KUMINO (IDX)) AND
+                               (WRK-TEK-YMD  >= WRK-KUMISTYMD (IDX)) AND
+                               (WRK-TEK-YMD  <= WRK-KUMIEDYMD (IDX))
+                               MOVE    "*"        TO  WRK-CHK-SKB
+                               MOVE    99         TO  IDX
+                           END-IF
+                           IF  SPA-GMN-TDAY-41 (IDW IDY)  =  SPACE
+                               MOVE    "*"        TO  WRK-CHK-SKB
+                               MOVE    99         TO  IDX
                            END-IF
                        END-PERFORM
+                       IF  (WRK-CHK-SKB  =  "*")  AND
+                           (WRK-CHK-DSP  =  "1")
+                           MOVE    "2"                 TO  WRK-CHK-DSP
+                       END-IF
+                       IF  (WRK-CHK-SKB  =  SPACE)          AND
+                           (WRK-CHK-DSP  =  SPACE  OR  "1")
+                           IF  WRK-TEKSTYMD   >   IDY(3:2)
+                               MOVE    IDY(3:2)   TO  WRK-TEKSTYMD
+                           END-IF
+                           IF  WRK-TEKEDYMD   <   IDY(3:2)
+                               MOVE    IDY(3:2)   TO  WRK-TEKEDYMD
+                           END-IF
+                           MOVE    "1"                 TO  WRK-CHK-DSP
+                       END-IF
                    ELSE
-                       IF     SPA-GMN-TDAY-41 (IDW IDY)  =  ALL SPACE
-                           MOVE    "*"               TO  WRK-CHK-SKB
-                       END-IF
-                   END-IF
-                   IF     WRK-CHK-SKB   =   SPACE
-                       IF     WRK-TEKSTYMD(7:2)   >   IDY(3:2)
-                           MOVE    IDY(3:2)    TO  WRK-TEKSTYMD(7:2)
-                       END-IF
-                       IF     WRK-TEKEDYMD(7:2)   <   IDY(3:2)
-                           MOVE    IDY(3:2)    TO  WRK-TEKEDYMD(7:2)
-                       END-IF
+                       MOVE    "01"                TO  WRK-TEKSTYMD
+                       MOVE    "31"                TO  WRK-TEKEDYMD
                    END-IF
                END-PERFORM
-               IF     (WRK-TEKSTYMD(7:2)  NOT = "99")  AND
-                      (WRK-TEKEDYMD(7:2)  NOT = "00")
+               IF  (WRK-TEKSTYMD  NOT = "99")  AND
+                   (WRK-TEKEDYMD  NOT = "00")
                    MOVE    ZERO                TO  IDW
                END-IF
            END-IF.
-           IF     IDW  NOT = ZERO
-               MOVE    1                   TO  IDX
-               PERFORM   UNTIL     IDX         >  I41-KUMILIST-COUNT
-                   IF     WRK-TEKSTYMD(1:6) =  WRK-KUMIEDYMD (IDX)(1:6)
-                       MOVE    "99"               TO  WRK-TEKSTYMD(7:2)
-                       MOVE    "00"               TO  WRK-TEKEDYMD(7:2)
-                       PERFORM   VARYING   IDY     FROM    1   BY  1
-                                 UNTIL     IDY         >  31
-                           IF    (SPA-GMN-TDAY-41 (IDW IDY) =
-                                                   WRK-KUMINO (IDX)) AND
-                                 (WRK-KUMIEDYMD (IDX)(7:2)  <  IDY(3:2))
-                               IF     WRK-TEKSTYMD(7:2)   >   IDY(3:2)
-                                   MOVE    IDY(3:2)    TO
-                                                       WRK-TEKSTYMD(7:2)
-                               END-IF
-                               IF     WRK-TEKEDYMD(7:2)   <   IDY(3:2)
-                                   MOVE    IDY(3:2)    TO
-                                                       WRK-TEKEDYMD(7:2)
-                               END-IF
-                           END-IF
-                       END-PERFORM
-                       COMPUTE IDX   =   I41-KUMILIST-COUNT   +   1
-                   ELSE
-                       COMPUTE IDX   =   IDX   +   1
-                   END-IF
-               END-PERFORM
-           END-IF.
-           IF     WRK-TEKSTYMD  >   WRK-TEKEDYMD
-               MOVE    "99"                TO  WRK-TEKSTYMD(7:2)
-               MOVE    "00"                TO  WRK-TEKEDYMD(7:2)
-           END-IF.
-           IF     (WRK-TEKSTYMD(7:2)  NOT = "99")  AND
-                  (WRK-TEKEDYMD(7:2)  NOT = "00")
-               MOVE    "red"               TO  I41-KEIKOKU-STYLE
-               MOVE    "保険の適用が切れている期間があります。"
-                                           TO  I41-KEIKOKU(1:38)
-               MOVE    WRK-TEKSTYMD(7:2)   TO  I41-KEIKOKU(42:2)
-               MOVE    " - "               TO  I41-KEIKOKU(44:3)
-               MOVE    WRK-TEKEDYMD(7:2)   TO  I41-KEIKOKU(47:2)
-               MOVE    "日"                TO  I41-KEIKOKU(50:2)
+           IF  WRK-TEKSTYMD   >   WRK-TEKEDYMD
+               MOVE    "99"                TO  WRK-TEKSTYMD
+               MOVE    "00"                TO  WRK-TEKEDYMD
            END-IF.
       *    室料差額
            PERFORM   VARYING   IDX     FROM    1   BY  1
@@ -2103,15 +2079,15 @@
            MOVE    SPA-SAGAKU-MAX-41   TO  I41-SAGAKULIST-COUNT.
       *    明細
            INITIALIZE                  WRK-CHK-TBL.
-           IF     SPA-GMN-PTID    NOT =    ZERO
+           IF  SPA-GMN-PTID   NOT =   ZERO
                PERFORM   41013-DAY-CHK2-SEC
            END-IF.
            PERFORM   VARYING   IDX    FROM    1   BY  1
                      UNTIL     IDX        >   SPA-GMN-MAX-41
-               IF      SPA-GMN-TMEISYO-41 (IDX)   =   ALL "-"
+               IF  SPA-GMN-TMEISYO-41 (IDX)   =   ALL "-"
                    MOVE    ALL "-"           TO  I41-DATELIST-ITEM (IDX)
                ELSE
-                   IF      SPA-GMN-TBANGO-41 (IDX)    >   ZERO
+                   IF  SPA-GMN-TBANGO-41 (IDX)    >   ZERO
                        MOVE    SPA-GMN-TBANGO-41  (IDX)
                                                  TO  WRK-ZZZZ
                        MOVE    WRK-ZZZZ-X        TO  I41-TNO    (IDX)
@@ -2130,11 +2106,11 @@
                            (SPA-WRK-CHK-KBN (IDY)   NOT =  ALL SPACE)
                            MOVE    SPA-GMN-TDAY-41 (IDX IDY)(1:2)
                                                  TO  I41-TDAY (IDX IDY)
-                           IF (SPA-GMN-TZAISKBKBN-41 (IDX)  = "1")  AND
-                              (SPA-GMN-TSRYCD-41 (IDX)
-                                                   NOT = W-YOYAKU)  AND
-                              (SPA-GMN-TDAY-41 (IDX IDY)
-                                                   NOT = SPACE)
+                           IF  (SPA-GMN-TZAISKBKBN-41 (IDX)  = "1")  AND
+                               (SPA-GMN-TSRYCD-41 (IDX)
+                                                    NOT = W-YOYAKU)  AND
+                               (SPA-GMN-TDAY-41 (IDX IDY)
+                                                    NOT = SPACE)
                                MOVE    SPA-GMN-TDAY-41 (IDX IDY)
                                                  TO  WRK-CHK-DAY (IDY)
                            END-IF
@@ -2152,9 +2128,9 @@
                    END-PERFORM
                END-IF
       *
-               IF     (SPA-GMN-TMEISYO-41 (IDX) NOT =   ALL "-")  AND
-                      (SPA-GMN-TBANGO-41 (IDX)  NOT =   ZERO)     AND
-                      (SPA-GMN-TBANGO-41 (IDX)      =   SPA-GMN-NUM-41)
+               IF  (SPA-GMN-TMEISYO-41 (IDX) NOT =   ALL "-")  AND
+                   (SPA-GMN-TBANGO-41 (IDX)  NOT =   ZERO)     AND
+                   (SPA-GMN-TBANGO-41 (IDX)      =   SPA-GMN-NUM-41)
                    MOVE    "T"             TO  I41-DATELIST-SELECT (IDX)
                ELSE
                    MOVE    "F"             TO  I41-DATELIST-SELECT (IDX)
@@ -2162,18 +2138,18 @@
            END-PERFORM.
            MOVE    SPA-GMN-MAX-41      TO  I41-DATELIST-COUNT.
       *
-           IF      SPA-GENSAN-RE1-41       =   1
+           IF  SPA-GENSAN-RE1-41       =   1
       *        診療行為マスターチェックする
                MOVE    ZERO                TO  IDZ3
                PERFORM VARYING     IDZ2    FROM    1   BY  1
                        UNTIL       IDZ2            >   10
-                   IF      SPA-5000-DSPCD-41 (IDZ2) NOT = SPACE
+                   IF  SPA-5000-DSPCD-41 (IDZ2) NOT = SPACE
                        PERFORM 410181-SRYACT-CHK-SEC
                    END-IF
                END-PERFORM
       *        診療会計マスターより編集をする
-               IF      SPA-GENSAN-RE2-41       =   1
-                   IF      SPA-GMN-MAX-41       =   ZERO
+               IF  SPA-GENSAN-RE2-41       =   1
+                   IF  SPA-GMN-MAX-41       =   ZERO
                        MOVE    1                   TO  IDX4
                        COMPUTE IDXS1   =   IDG   +   1
                    ELSE
@@ -2182,7 +2158,7 @@
                    END-IF
                    PERFORM VARYING     IDZ2    FROM    1   BY  1
                            UNTIL       IDZ2            >   50
-                       IF      SPA-5000-NYUGAIKBN-41 (IDZ2) NOT = SPACE
+                       IF  SPA-5000-NYUGAIKBN-41 (IDZ2) NOT = SPACE
                            PERFORM 410181-SRYACCT-HEN-SEC
                        END-IF
                    END-PERFORM
@@ -2190,15 +2166,15 @@
                MOVE    ZERO                TO  SPA-GENSAN-RE1-41
            END-IF.
       *
-           IF      (IDXS1            NOT =   ZERO)   AND
-                   (SPA-GENSAN-ST2-41    >   IDXS1)
-               MOVE    IDX4                 TO  IDX5
+           IF  (IDXS1            NOT =   ZERO)   AND
+               (SPA-GENSAN-ST2-41    >   IDXS1)
+               MOVE    IDX4                TO  IDX5
                PERFORM   VARYING   IDX    FROM    IDXS1  BY  1
                          UNTIL     IDX        >   SPA-GENSAN-ST2-41
-                   IF      SPA-GMN-TMEISYO-41 (IDX)   =   ALL "-"
-                       MOVE    ALL "-"      TO  I41-DATELIST-ITEM (IDX4)
+                   IF  SPA-GMN-TMEISYO-41 (IDX)   =   ALL "-"
+                       MOVE    ALL "-"     TO  I41-DATELIST-ITEM (IDX4)
                    ELSE
-                       IF      SPA-GMN-TBANGO-41 (IDX)    >   ZERO
+                       IF  SPA-GMN-TBANGO-41 (IDX)    >   ZERO
                            MOVE    SPA-GMN-TBANGO-41  (IDX)
                                                  TO  WRK-ZZZZ
                            MOVE    WRK-ZZZZ-X    TO  I41-TNO    (IDX4)
@@ -2219,12 +2195,12 @@
                END-PERFORM
                MOVE    IDX5                 TO  IDX4
                MOVE    SPA-GENSAN-ST2-41    TO  I41-DATELIST-COUNT
-               IF      SPA-ERRCD   =   "0031"
-                   MOVE    SPACE                TO  SPA-ERRCD
+               IF  SPA-ERRCD   =   "0031"
+                   MOVE    SPACE          TO  SPA-ERRCD
                END-IF
            END-IF.
       *
-           IF      SPA-GMN-NUM-41   NOT =   ZERO
+           IF  SPA-GMN-NUM-41   NOT =   ZERO
                MOVE    SPA-GMN-NUM-41      TO  WRK-ZZZZ
                MOVE    WRK-ZZZZ-X          TO  I41-NUM
            END-IF.
@@ -2236,9 +2212,73 @@
                IF  (SPA-GMN-SRYKA-I-41          =   "00")      OR
                    (SPA-WRK-CHK-KBN (IDX)   NOT =   ALL SPACE)
                    MOVE    SPA-GMN-DAY-41 (IDX)    TO  WRK-ZZ
-                   MOVE    WRK-ZZ-X             TO  I41-DAY (IDX)
+                   MOVE    WRK-ZZ-X                TO  I41-DAY (IDX)
                END-IF
            END-PERFORM.
+      *
+           MOVE    ZERO                TO  IDW.
+           IF  SPA-GMN-NUM-41   NOT =   ZERO
+               IF  SPA-NAI-TZAISKBKBN-41 (SPA-GMN-NUM-41)   =   "5"
+                   MOVE    1                   TO  IDW
+               END-IF
+           END-IF.
+           IF  IDW   NOT =   ZERO
+               MOVE    "99"                TO  WRK-TEKSTYMD
+               MOVE    "00"                TO  WRK-TEKEDYMD
+               MOVE    SPACE               TO  WRK-CHK-DSP
+               PERFORM   VARYING   IDY     FROM    1   BY  1
+                         UNTIL     IDY         >  31
+                   MOVE    IDY(3:2)  TO  WRK-TEK-YMD(7:2)
+                   IF  I41-KUMILIST-COUNT  NOT = ZERO
+                       MOVE    SPACE     TO  WRK-CHK-SKB
+                       PERFORM   VARYING   IDX     FROM    1   BY  1
+                                 UNTIL     IDX     >  I41-KUMILIST-COUNT
+                           IF  (I41-DAY (IDY) = WRK-KUMINO (IDX))    AND
+                               (WRK-TEK-YMD  >= WRK-KUMISTYMD (IDX)) AND
+                               (WRK-TEK-YMD  <= WRK-KUMIEDYMD (IDX))
+                               MOVE    "*"       TO  WRK-CHK-SKB
+                               MOVE    99        TO  IDX
+                           END-IF
+                           IF  I41-DAY (IDY)  =  SPACE
+                               MOVE    "*"       TO  WRK-CHK-SKB
+                               MOVE    99        TO  IDX
+                           END-IF
+                       END-PERFORM
+                       IF  (WRK-CHK-SKB  =  "*")  AND
+                           (WRK-CHK-DSP  =  "1")
+                           MOVE    "2"                 TO  WRK-CHK-DSP
+                       END-IF
+                       IF  (WRK-CHK-SKB  =  SPACE)          AND
+                           (WRK-CHK-DSP  =  SPACE  OR  "1")
+                           IF  WRK-TEKSTYMD   >   IDY(3:2)
+                               MOVE    IDY(3:2)   TO  WRK-TEKSTYMD
+                           END-IF
+                           IF  WRK-TEKEDYMD   <   IDY(3:2)
+                               MOVE    IDY(3:2)   TO  WRK-TEKEDYMD
+                           END-IF
+                           MOVE    "1"                 TO  WRK-CHK-DSP
+                       END-IF
+                   ELSE
+                       MOVE    "01"                TO  WRK-TEKSTYMD
+                       MOVE    "31"                TO  WRK-TEKEDYMD
+                   END-IF
+               END-PERFORM
+           END-IF.
+           IF  WRK-TEKSTYMD   >   WRK-TEKEDYMD
+               MOVE    "99"                TO  WRK-TEKSTYMD
+               MOVE    "00"                TO  WRK-TEKEDYMD
+           END-IF.
+      *
+           IF  (WRK-TEKSTYMD  NOT = "99")  AND
+               (WRK-TEKEDYMD  NOT = "00")
+               MOVE    "red"               TO  I41-KEIKOKU-STYLE
+               MOVE    "保険の適用が切れている期間があります。"
+                                           TO  I41-KEIKOKU(1:38)
+               MOVE    WRK-TEKSTYMD        TO  I41-KEIKOKU(42:2)
+               MOVE    " - "               TO  I41-KEIKOKU(44:3)
+               MOVE    WRK-TEKEDYMD        TO  I41-KEIKOKU(47:2)
+               MOVE    "日"                TO  I41-KEIKOKU(50:2)
+           END-IF.
       *
            MOVE    SPA-GMN-KOMENTO-41     TO  I41-KOMENTO.
       *    カーソル
@@ -4190,7 +4230,7 @@
       *    入院会計マスターより編集　処理
       *****************************************************************
        410181-NYUINACCT-HEN-SEC           SECTION.
-           DISPLAY "410181-NYUINACCT-HEN-SEC".
+      *     DISPLAY "410181-NYUINACCT-HEN-SEC".
       *
            MOVE    ZERO                TO  FLG-NYUINKHNRYO.
            MOVE    SPA-NAI-SRYYM-41    TO  WRK-SYMD(1:6).
@@ -4514,10 +4554,10 @@
            END-IF.
       *
            MOVE  SPA-NAI-SRYYM-41  TO  WRK-TAIHI-SRYYM-41.
-           DISPLAY "JIGETSU-SAKUSEI SPA-NAI-SRYYM-41 = "
-                       SPA-NAI-SRYYM-41
-           DISPLAY "JIGETSU-SAKUSEI WRK-TAIHI-SRYYM-41 = "
-                       WRK-TAIHI-SRYYM-41
+      *     DISPLAY "JIGETSU-SAKUSEI SPA-NAI-SRYYM-41 = "
+      *                 SPA-NAI-SRYYM-41
+      *     DISPLAY "JIGETSU-SAKUSEI WRK-TAIHI-SRYYM-41 = "
+      *                 WRK-TAIHI-SRYYM-41
            MOVE    ZERO               TO  FLG-SET.
            PERFORM 41019-JIGETU-COMPUTE-SEC.
       *
@@ -4535,8 +4575,8 @@
                    MOVE    1                   TO  FLG-SET
                END-IF
            END-PERFORM.
-           DISPLAY "JIGETSU-SAKUSEI WRK-TAIHI-SRYYM-41 = "
-                       WRK-TAIHI-SRYYM-41
+      *     DISPLAY "JIGETSU-SAKUSEI WRK-TAIHI-SRYYM-41 = "
+      *                 WRK-TAIHI-SRYYM-41
       *
            IF    ((SPA-ERRCD          NOT =   SPACE)   OR
                  ((SPA-ERRCD          =       SPACE)  AND
@@ -4592,7 +4632,7 @@
       *
            MOVE    ZERO               TO  FLG-SET.
       *
-           DISPLAY  "SPA-NAI-SRYYM-41 = " SPA-NAI-SRYYM-41
+      *     DISPLAY  "SPA-NAI-SRYYM-41 = " SPA-NAI-SRYYM-41
            MOVE    SPA-NAI-SRYYM-41   TO  WRK-SYMD(1:6)
                                           WRK-NAI-SRYYM-41.
            MOVE    "01"               TO  WRK-SYMD(7:2).
@@ -4666,7 +4706,7 @@
       ***************************************************************** 021118
        410191-NYUACCT-SAKUSEI-SEC   SECTION.                             021118
       *                                                                 021118
-           DISPLAY   "410191-NYUACCT-SAKUSEI-SEC"
+      *     DISPLAY   "410191-NYUACCT-SAKUSEI-SEC"
            INITIALIZE      ORCSSYOKIKSNAREA
            MOVE    SPA-NAI-SRYYM-41   TO   WRK-NAI-SRYYM-41.
       *
@@ -4693,7 +4733,7 @@
                MOVE    PTNYUINRRK-TOKUTEI-NYUIN
                                        TO  WRK-TOKUTEI-NYUIN
                MOVE    PTNYUINRRK-REC  TO  WK-PTNYUINRRK-REC
-               DISPLAY  "PTNYUINRRK-RRKNUM = " PTNYUINRRK-RRKNUM
+      *         DISPLAY  "PTNYUINRRK-RRKNUM = " PTNYUINRRK-RRKNUM
            ELSE
                INITIALIZE                  PTNYUINRRK-REC
                MOVE    1               TO  FLG-PTNYUINRRK
@@ -4769,14 +4809,14 @@
                    GO  TO  410191-NYUACCT-SAKUSEI-EXT
                END-IF
            END-IF
-           DISPLAY   "410191-NYUACCT-SAKUSEI-SEC4"
+      *     DISPLAY   "410191-NYUACCT-SAKUSEI-SEC4"
       *
       *    入院会計作成サブの呼出し（処理区分９により次月分のみ作成）
            INITIALIZE            ORCSNYUACCT-AREA
            MOVE    "9"                TO  LNK-SCNYUACCT-SYORI-KBN
            MOVE    "1"                TO  SPA-NYUGAIKBN
            MOVE    PTNYUINRRK-PTID    TO  SPA-PTID
-           DISPLAY  "PTNYUINRRK-PTID = " PTNYUINRRK-PTID
+      *     DISPLAY  "PTNYUINRRK-PTID = " PTNYUINRRK-PTID
            MOVE    PTNYUINRRK-NYUINKA TO  SPA-SRYKA
            MOVE    SYOKIKSN-IN-KHNSRYCD
                            TO  LNK-SCNYUACCT-NYUKHN-SRYCD(1)
@@ -4787,7 +4827,7 @@
            MOVE      SYOKIKSN-IN-SANTEISTYMD
                              TO   LNK-SCNYUACCT-STSRYYMD
                                   LNK-SCNYUACCT-EDSRYYMD
-           DISPLAY "LNK-SCNYUACCT-STSRYYMD = " LNK-SCNYUACCT-STSRYYMD
+      *     DISPLAY "LNK-SCNYUACCT-STSRYYMD = " LNK-SCNYUACCT-STSRYYMD
            PERFORM   VARYING   IDX6   FROM   1   BY   1
                UNTIL (SYOKIKSN-OT-KGNSRYCD(IDX6)  =  SPACE) OR
                      (IDX6   >     7)
@@ -4797,17 +4837,17 @@
                          TO  LNK-SCNYUACCT-KAGEN-STYUKYMD(IDX6)
                MOVE   SYOKIKSN-OT-YUKOEDYMD(IDX6)
                          TO  LNK-SCNYUACCT-KAGEN-EDYUKYMD(IDX6)
-               DISPLAY "SYOKIKSN-OT-KGNSRYCD(IDX6) = "
-                                      SYOKIKSN-OT-KGNSRYCD(IDX6)
-               DISPLAY "SYOKIKSN-OT-YUKOSTYMD(IDX6) = "
-                                      SYOKIKSN-OT-YUKOSTYMD(IDX6)
-               DISPLAY "SYOKIKSN-OT-YUKOEDYMD(IDX6) = "
-                                      SYOKIKSN-OT-YUKOEDYMD(IDX6)
-               DISPLAY  "IDX6 = " IDX6
+      *         DISPLAY "SYOKIKSN-OT-KGNSRYCD(IDX6) = "
+      *                                SYOKIKSN-OT-KGNSRYCD(IDX6)
+      *         DISPLAY "SYOKIKSN-OT-YUKOSTYMD(IDX6) = "
+      *                                SYOKIKSN-OT-YUKOSTYMD(IDX6)
+      *         DISPLAY "SYOKIKSN-OT-YUKOEDYMD(IDX6) = "
+      *                                SYOKIKSN-OT-YUKOEDYMD(IDX6)
+      *         DISPLAY  "IDX6 = " IDX6
            END-PERFORM
       *    通算算定済日数
                MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
-               DISPLAY  "WRK-TSUSAN = " WRK-TSUSAN
+      *         DISPLAY  "WRK-TSUSAN = " WRK-TSUSAN
       *    入院料加算診療コード取り込み
            PERFORM    410191-NYUKSN-GET-SEC
       *    特定入院料区分のセット
@@ -4831,7 +4871,7 @@
       *    食事区分
            MOVE   "099999913"   TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
       *     MOVE   1             TO  LNK-SCNYUACCT-SHOKUJIKBN
-            MOVE   WRK-TAIHI-SHOKUJI  TO  LNK-SCNYUACCT-SHOKUJIKBN
+           MOVE   WRK-TAIHI-SHOKUJI  TO  LNK-SCNYUACCT-SHOKUJIKBN
       *    保険組合せ
            MOVE   "099999914"   TO  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
       *     MOVE   PTNYUINRRK-HKNCOMBINUM
@@ -4839,8 +4879,8 @@
       *     MOVE   WRK-HKNCOMBINUM9 
       *                          TO  LNK-SCNYUACCT-HKNCOMBINUM
            MOVE   WRK-TAIHI-HKN  TO  LNK-SCNYUACCT-HKNCOMBINUM
-           DISPLAY   "LNK-SCNYUACCT-HKNCOMBINUM = "
-                                    LNK-SCNYUACCT-HKNCOMBINUM
+      *     DISPLAY   "LNK-SCNYUACCT-HKNCOMBINUM = "
+      *                              LNK-SCNYUACCT-HKNCOMBINUM
       *    転科元入院科
            MOVE   "00"          TO  LNK-SCNYUACCT-MOTO-NYUINKA
       **     MOVE   SPA-GMN-I01-NYUINKA-MOT (1 : 2)
@@ -4848,42 +4888,42 @@
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
            MOVE   "00"          TO  SPA-SRYKA
       **   
-           DISPLAY "NYUINKAIKEI SAKUSEIMAE HYOUJI"
-           DISPLAY  "SPA-HOSPID = " SPA-HOSPID
-           DISPLAY  "SPA-NYUGAIKBN = " SPA-NYUGAIKBN
-           DISPLAY  "SPA-PTID = " SPA-PTID
-           DISPLAY  "SPA-SRYKA = " SPA-SRYKA
-           DISPLAY  "LNK-SCNYUACCT-STSRYYMD = " LNK-SCNYUACCT-STSRYYMD
-           DISPLAY  "LNK-SCNYUACCT-EDSRYYMD = " LNK-SCNYUACCT-EDSRYYMD
-           DISPLAY  "LNK-SCNYUACCT-NYUKHN-SRYCD(1) = " 
-                                         LNK-SCNYUACCT-NYUKHN-SRYCD(1)
-           DISPLAY  "LNK-SCNYUACCT-KAGEN-SRYCD(1) = "
-                                         LNK-SCNYUACCT-KAGEN-SRYCD(1)
-           DISPLAY  "LNK-SCNYUACCT-KAGEN-STYUKYMD(1) = "
-                                      LNK-SCNYUACCT-KAGEN-STYUKYMD(1)
-           DISPLAY  "LNK-SCNYUACCT-KAGEN-EDYUKYMD(1) = "
-                                      LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
-           DISPLAY  "LNK-SCNYUACCT-NYUKHN-NISUU = "
-                                         LNK-SCNYUACCT-NYUKHN-NISUU
-           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(1) = "
-                                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(1)
-           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(2) = "
-                                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(2)
-           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(3) = "
-                                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(3)
-           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(4) = "
-                                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(4)
-           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(5) = "
-                                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(5)
-           DISPLAY  "ORCSNYUACCT CALL "
+      *     DISPLAY "NYUINKAIKEI SAKUSEIMAE HYOUJI"
+      *     DISPLAY  "SPA-HOSPID = " SPA-HOSPID
+      *     DISPLAY  "SPA-NYUGAIKBN = " SPA-NYUGAIKBN
+      *     DISPLAY  "SPA-PTID = " SPA-PTID
+      *     DISPLAY  "SPA-SRYKA = " SPA-SRYKA
+      *     DISPLAY  "LNK-SCNYUACCT-STSRYYMD = " LNK-SCNYUACCT-STSRYYMD
+      *     DISPLAY  "LNK-SCNYUACCT-EDSRYYMD = " LNK-SCNYUACCT-EDSRYYMD
+      *     DISPLAY  "LNK-SCNYUACCT-NYUKHN-SRYCD(1) = " 
+      *                                   LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+      *     DISPLAY  "LNK-SCNYUACCT-KAGEN-SRYCD(1) = "
+      *                                   LNK-SCNYUACCT-KAGEN-SRYCD(1)
+      *     DISPLAY  "LNK-SCNYUACCT-KAGEN-STYUKYMD(1) = "
+      *                                LNK-SCNYUACCT-KAGEN-STYUKYMD(1)
+      *     DISPLAY  "LNK-SCNYUACCT-KAGEN-EDYUKYMD(1) = "
+      *                                LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+      *     DISPLAY  "LNK-SCNYUACCT-NYUKHN-NISUU = "
+      *                                   LNK-SCNYUACCT-NYUKHN-NISUU
+      *     DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(1) = "
+      *                               LNK-SCNYUACCT-NYUKHNKSN-SRYCD(1)
+      *     DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(2) = "
+      *                               LNK-SCNYUACCT-NYUKHNKSN-SRYCD(2)
+      *     DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(3) = "
+      *                               LNK-SCNYUACCT-NYUKHNKSN-SRYCD(3)
+      *     DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(4) = "
+      *                               LNK-SCNYUACCT-NYUKHNKSN-SRYCD(4)
+      *     DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(5) = "
+      *                               LNK-SCNYUACCT-NYUKHNKSN-SRYCD(5)
+      *     DISPLAY  "ORCSNYUACCT CALL "
            PERFORM 4801-SENTEI-SET-SEC
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
-           IF     LNK-SCNYUACCT-RC   NOT =  ZERO
-               DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
-                         LNK-SCNYUACCT-RC
-           END-IF
+      *     IF     LNK-SCNYUACCT-RC   NOT =  ZERO
+      *         DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
+      *                   LNK-SCNYUACCT-RC
+      *     END-IF
       *
            .
       *                                                                 021118
@@ -4917,20 +4957,20 @@
            MOVE    STUSAN-KJNYMD
                                    TO  WRK-YMD
            MOVE    "1"             TO  WRK-ZOGENPTN
-           DISPLAY "STUSAN-NISSU01 =   "  STUSAN-NISSU01
-           DISPLAY "STUSAN-NISSU02 =   "  STUSAN-NISSU02
-           DISPLAY "STUSAN-NISSU03 =   "  STUSAN-NISSU03
-           DISPLAY "STUSAN-NISSU04 =   "  STUSAN-NISSU04
+      *     DISPLAY "STUSAN-NISSU01 =   "  STUSAN-NISSU01
+      *     DISPLAY "STUSAN-NISSU02 =   "  STUSAN-NISSU02
+      *     DISPLAY "STUSAN-NISSU03 =   "  STUSAN-NISSU03
+      *     DISPLAY "STUSAN-NISSU04 =   "  STUSAN-NISSU04
            COMPUTE WRK-ZOGEN       =   180 - ( STUSAN-NISSU04 )
            PERFORM 5002-CALENDAR-SEC
            MOVE    WRK-KEISANYMD   TO  WRK-SENTEI-STYMD
       *
-           DISPLAY "************************"
-           DISPLAY "** TSUSAN-SANTEI      **"
-           DISPLAY "WRK-TSUSAN       = " WRK-TSUSAN
-           DISPLAY "WRK-SANTEISTYMD  = " WRK-SANTEISTYMD
-           DISPLAY "WRK-SENTEI-STYMD = " WRK-SENTEI-STYMD
-           DISPLAY "************************"
+      *     DISPLAY "************************"
+      *     DISPLAY "** TSUSAN-SANTEI      **"
+      *     DISPLAY "WRK-TSUSAN       = " WRK-TSUSAN
+      *     DISPLAY "WRK-SANTEISTYMD  = " WRK-SANTEISTYMD
+      *     DISPLAY "WRK-SENTEI-STYMD = " WRK-SENTEI-STYMD
+      *     DISPLAY "************************"
       *
            .
        4801-TSUSAN-SANTEI-GET-EXT.
@@ -4963,7 +5003,7 @@
            INITIALIZE  SENTEICDCHG-REC
            MOVE    LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                                    TO  SENCHG-IPNSRYCD
-           DISPLAY "SENCHG-IPNSRYCD = " SENCHG-IPNSRYCD
+      *     DISPLAY "SENCHG-IPNSRYCD = " SENCHG-IPNSRYCD
            MOVE    SENTEICDCHG-REC TO  MCPDATA-REC
            MOVE    "SENTEICDCHG-KEY2"
                                    TO  WRK-DBPATH
@@ -4989,10 +5029,10 @@
                                    TO  LNK-SCNYUACCT-SENTEI-STYMD
       *
       *
-           DISPLAY "LNK-SCNYUACCT-SENTEI-SRYCD = "
-                    LNK-SCNYUACCT-SENTEI-SRYCD
-           DISPLAY "LNK-SCNYUACCT-SENTEI-STYMD = "
-                    LNK-SCNYUACCT-SENTEI-STYMD
+      *     DISPLAY "LNK-SCNYUACCT-SENTEI-SRYCD = "
+      *              LNK-SCNYUACCT-SENTEI-SRYCD
+      *     DISPLAY "LNK-SCNYUACCT-SENTEI-STYMD = "
+      *              LNK-SCNYUACCT-SENTEI-STYMD
            .
        4801-SENTEI-SET-EXT.
            EXIT.
@@ -5015,9 +5055,9 @@
       *
            MOVE    LNK-DAY5-NISSU1     TO  WRK-NISSU1
            MOVE    LNK-DAY5-NISSU2     TO  WRK-NISSU2
-           DISPLAY "410191-KIKAN-CALC-SEC WRK-STYMD = " WRK-STYMD
-           DISPLAY "410191-KIKAN-CALC-SEC WRK-EDYMD = " WRK-EDYMD
-           DISPLAY "410191-KIKAN-CALC-SEC WRK-NISSU2 = " WRK-NISSU2
+      *     DISPLAY "410191-KIKAN-CALC-SEC WRK-STYMD = " WRK-STYMD
+      *     DISPLAY "410191-KIKAN-CALC-SEC WRK-EDYMD = " WRK-EDYMD
+      *     DISPLAY "410191-KIKAN-CALC-SEC WRK-NISSU2 = " WRK-NISSU2
       *
            .
        410191-KIKAN-CALC-EXT.
@@ -5470,7 +5510,7 @@
       *    病棟情報検索処理
       *****************************************************************
        4801-BTUSEL-SEC             SECTION.
-           DISPLAY  "4801-BTUSEL-SEC"
+      *     DISPLAY  "4801-BTUSEL-SEC"
       *
            INITIALIZE              SYSKANRI-REC
            MOVE    ZERO            TO  FLG-SYSKANRI
@@ -5479,14 +5519,14 @@
            MOVE    PTNYUINRRK-BTUNUM
                                    TO  SYS-KBNCD
            MOVE    SPA-SYSYMD      TO  ORC-DBYMD
-           DISPLAY "4801-BTUSEL-SEC PTNYUINRRK-BTUNUM = " 
-                                        PTNYUINRRK-BTUNUM
-           DISPLAY "4801-BTUSEL-SEC SPA-SYSYMD = " SPA-SYSYMD
+      *     DISPLAY "4801-BTUSEL-SEC PTNYUINRRK-BTUNUM = " 
+      *                                  PTNYUINRRK-BTUNUM
+      *     DISPLAY "4801-BTUSEL-SEC SPA-SYSYMD = " SPA-SYSYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
-           DISPLAY "4801-BTUSEL-SEC FLG-DBRC = " FLG-DBRC
+      *     DISPLAY "4801-BTUSEL-SEC FLG-DBRC = " FLG-DBRC
            IF    ( FLG-DBRC    =   ZERO )
                MOVE    MCPDATA-REC
                                   TO  SYS-5001-REC
@@ -5937,12 +5977,12 @@
                                                ORCMCPAREA
                                                MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
-                        DISPLAY "I41 NYUINACCT UPD ERR01:" MCP-RC
+      *                  DISPLAY "I41 NYUINACCT UPD ERR01:" MCP-RC
                         MOVE    "2000"          TO  SPA-ERRCD
                         GO  TO  4901-NYUINACCT-UPD-EXT
                    END-IF
                ELSE
-                   DISPLAY "I41 NYUINACCT READ ERR01:" NACCT-KEY
+      *             DISPLAY "I41 NYUINACCT READ ERR01:" NACCT-KEY
                    GO  TO  4901-NYUINACCT-UPD-EXT
                END-IF
            END-PERFORM.
@@ -6148,12 +6188,12 @@
                                                MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
                         MOVE    1               TO  FLG-NYUINACT
-                        DISPLAY "I41 NYUINACCT UPD ERR02:" MCP-RC
+      *                  DISPLAY "I41 NYUINACCT UPD ERR02:" MCP-RC
                         MOVE    "2000"          TO  SPA-ERRCD
                         GO  TO  4901-NYUINACCT-UPD3-EXT
                    END-IF
                ELSE
-                   DISPLAY "I41 NYUINACCT READ ERR02:" NACCT-KEY
+      *             DISPLAY "I41 NYUINACCT READ ERR02:" NACCT-KEY
                    GO  TO  4901-NYUINACCT-UPD3-EXT
                END-IF
       *
