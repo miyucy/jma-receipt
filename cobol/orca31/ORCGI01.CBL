@@ -11024,7 +11024,7 @@
            IF      FLG-DBRC            =   ZERO
                MOVE     MCPDATA-REC    TO  NYUINACCT-REC
       *        食事を復元
-               MOVE    WRK-TENROOM-SKJ-DD
+               MOVE    WRK-TENROOM-SKJ-DD(1)
                                        TO  IDX-SHOKUJIX
                PERFORM   VARYING   IDX-SKJ FROM  IDX-SHOKUJI9  BY  1
                          UNTIL     IDX-SKJ   >   31
