@@ -7,7 +7,7 @@ dnl Checks for programs.
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
-AC_ARG_WITH(site,
+AC_ARG_WITH(sitedir,
 	    [  --with-sitedir=DIR      site libraries in DIR [PREFIX/site-lib]],
             [sitedir=$withval],
             [sitedir='${prefix}/site-lib'])
