@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.00    NACL-多々納  02/09/12  ディレクトリをサブプロへ
       *  01.00.01    NACL-多々納  03/02/21  入院対応他
+      *  01.00.02    NACL-多々納  03/08/12  合計点数、労災・自費金額編集
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -109,6 +110,12 @@
                                13  SPA-GMN-TKAISU2     PIC 9(04).
                            11  SPA-GMN-TMAX            PIC 9(04).
       *
+                   07  SPA-GMN-TENSU           PIC 9(07).
+                   07  SPA-GMN-RSITENSU        PIC 9(07).
+                   07  SPA-GMN-JIHIKIN         PIC 9(08).
+      *
+                   07  SPA-GMN-SRYYM           PIC X(06).
+      *
                05  SPA-NAI-SRYYM.
                    07  SPA-NAI-SRYYY       PIC 9(04).
                    07  SPA-NAI-SRYMM       PIC 9(02).
@@ -147,8 +154,11 @@
 011700     03  FLG-TENSUKBN        PIC 9(01).
            03  FLG-NYUINACT        PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
+      *
+           03  FLG-HKNKBN          PIC 9(01).
 012400*
 012500*    カウント領域
 012600 01  CNT-AREA.
@@ -191,12 +201,27 @@
            03  WRK-SRYYM.
                05  WRK-SRYYY       PIC 9(04).
                05  WRK-SRYMM       PIC 9(02).
+      *    点数集計用
+           03  WRK-TENSU           PIC 9(07).
+           03  WRK-SUM-TEN         PIC 9(07).
+           03  WRK-RSI-TEN         PIC 9(07).
+           03  WRK-GOK-JIHIKIN     PIC 9(08).
+           03  WRK-GOK-RSITENSU    PIC 9(08).
+           03  WRK-GOK-TENSU       PIC 9(07).
 016100*
-016200     03  WRK-ZZZ              PIC ZZZ.
+           03  WRK-ZZZ              PIC ZZZ.
+           03  WRK-Z8               PIC ZZ,ZZZ,ZZZ.
 016300*    マップ画面行
 016400     03  WRK-MAP-INDEX        PIC 9(04).
 016500*
 016600     03  WRK-ERRMSG          PIC X(40).
+      *
+      *    保険テーブル
+       01  TBL-HKNCOMBI-AREA.
+           03  TBL-HKNCOMBI-OCC        OCCURS   20.
+               05  TBL-HKNCOMBI            PIC X(04).
+               05  TBL-HKNKBN              PIC 9(01).
+      *
 016700*
 016800*    編集用テーブル
 016900 01  WRK-TBL-AREA.
@@ -566,9 +591,16 @@
            INITIALIZE                      SPA-GMN-AREA2
            INITIALIZE                      SPA-J03NAI-AREA
       *
+           MOVE    SPA-NAI-SRYYM       TO  WRK-SYMD(1:6)
+           MOVE    "01"                TO  WRK-SYMD(7:2)
+           PERFORM 41012-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM
       *    当月分
            MOVE    SPA-NAI-SRYYM       TO  WRK-SRYYM
            PERFORM 3101-ACCT-SYORI-SEC
+      *    点数合計計算
+           PERFORM 3109-TENSU-KEISAN-SEC
+      *
       *    前月分
            COMPUTE WRK-SRYMM           =   WRK-SRYMM     -   1
            IF      WRK-SRYMM           =   ZERO
@@ -1336,6 +1368,239 @@
 088300 310122-SORT-02-EXT.
 088400     EXIT.
 088500*
+      *
+      *****************************************************************
+      *    当月点数合計計算処理
+      *****************************************************************
+       3109-TENSU-KEISAN-SEC                SECTION.
+      *
+           INITIALIZE                      TBL-HKNCOMBI-AREA
+           MOVE    ZERO                TO  WRK-GOK-TENSU
+           MOVE    ZERO                TO  WRK-GOK-RSITENSU
+           MOVE    ZERO                TO  WRK-GOK-JIHIKIN
+      *    診療会計マスターから編集
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-GMN-NYUGAIKBN   TO  ACCT-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  ACCT-PTID
+           MOVE    WRK-SRYYM           TO  ACCT-SRYYM
+      *
+           MOVE    "SRYACCT-KEY7"      TO  WRK-ORC-DBPATH
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+               PERFORM 900-SRYACCT-NEXT-SEC
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+           PERFORM
+               UNTIL      (FLG-SRYACCT     =   1   )
+               IF      ACCT-ZAIKAISU       >   ZERO
+      *            保険チェック
+                   PERFORM 31091-HKNCOMBI-CHK-SEC
+      *            自費と労災の時、診療行為検索へ
+                   IF     (ACCT-SRYKBN         =   "96"  OR  "95" ) OR
+                         ((FLG-HKNKBN          =   1         )  AND
+                          (ACCT-SRYKBN         =   "11"  OR   "12"
+                                               OR  "13"  OR   "80" ))
+                       PERFORM 31092-SRYACCT-HEN-SEC
+                   ELSE
+                       COMPUTE WRK-TENSU       =   ACCT-ZAITEN
+                                               *   ACCT-ZAIKAISU
+                       COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
+                                               +   WRK-TENSU
+                   END-IF
+               END-IF
+      *
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+               PERFORM 900-SRYACCT-NEXT-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           MOVE    WRK-GOK-TENSU       TO  SPA-GMN-TENSU
+           MOVE    WRK-GOK-RSITENSU    TO  SPA-GMN-RSITENSU
+           MOVE    WRK-GOK-JIHIKIN     TO  SPA-GMN-JIHIKIN
+      *
+           .
+       3109-TENSU-KEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せチェック処理
+      *****************************************************************
+       31091-HKNCOMBI-CHK-SEC                SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   20
+               IF      TBL-HKNCOMBI (IDX)  =   SPACE
+                   MOVE    ACCT-HKNCOMBI       TO  TBL-HKNCOMBI (IDX)
+                   PERFORM 310911-HKNCOMBI-HEN-SEC
+                   MOVE    TBL-HKNKBN (IDX)    TO  FLG-HKNKBN
+                   MOVE    20                  TO  IDX
+               ELSE
+                   IF      TBL-HKNCOMBI (IDX)  =   ACCT-HKNCOMBI
+                       MOVE    TBL-HKNKBN (IDX)    TO  FLG-HKNKBN
+                       MOVE    20              TO  IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       31091-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ編集処理
+      *****************************************************************
+       310911-HKNCOMBI-HEN-SEC                SECTION.
+      *
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    ACCT-HOSPID         TO  COMB-HOSPID
+           MOVE    ACCT-PTID           TO  COMB-PTID
+           MOVE    ACCT-HKNCOMBI       TO  COMB-HKNCOMBINUM
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               PERFORM 910-HKNCOMBI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+               INITIALIZE                  HKNCOMBI-REC
+           END-IF
+      *
+      *    労災・自賠責チェック
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
+               MOVE    1               TO  TBL-HKNKBN (IDX)
+           ELSE
+               MOVE    ZERO            TO  TBL-HKNKBN (IDX)
+           END-IF
+           .
+       310911-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   診療会計マスターより画面内容編集処理
+      *****************************************************************
+       31092-SRYACCT-HEN-SEC             SECTION.
+      *
+      *    診療行為マスター読み込み
+           INITIALIZE                      SRYACT-REC
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+      *    点数検索用日付編集
+           MOVE    ACCT-SRYYM          TO  WRK-SYSYMD(1:6)
+           MOVE    01                  TO  WRK-SYSDD
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+               IF      ACCT-DAY (1 IDX-D)  NOT =   ZERO
+                   MOVE    IDX-D           TO  WRK-SYSDD
+                   MOVE    31              TO  IDX-D
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 930-SINKOUI-RAED-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF
+           MOVE    ZERO                TO  WRK-SUM-TEN
+           MOVE    ZERO                TO  WRK-RSI-TEN
+      *
+           PERFORM UNTIL       FLG-SRYACT      =   1
+      *        自費の時、自費合計を集計
+               IF      ACCT-SRYKBN         =   "96"  OR  "95"
+                   COMPUTE WRK-GOK-JIHIKIN     =   WRK-GOK-JIHIKIN
+                                               +  (SRY-JIHIMONEYTOTAL
+                                               *   ACCT-ZAIKAISU )
+                   MOVE    1                   TO  FLG-SRYACT
+               ELSE
+      *            剤明細編集
+                   PERFORM VARYING     IDZ     FROM    1   BY  1
+                           UNTIL      (IDZ         >   5   )  OR
+                                      (SRY-SRYCD (IDZ) =   SPACE )
+      *                労災コードの時、点数取得
+                       IF      (SRY-SRYCD (IDZ)(1:3)   =   "101"  )  OR
+                               (SRY-SRYCD (IDZ)(1:5)   =   "09591" OR
+                                                           "09592" OR
+                                                           "09593" )
+                           MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
+                           PERFORM 910-TENSU-READ-SEC
+      *                    労災の金額算定分の時、点数をゼロとする
+                           IF     (TNS-TENSIKIBETU     =   1  )  OR
+                                  (TNS-SRYCD (1:5)     =   "09591" OR
+                                                           "09592" OR
+                                                           "09593" )
+                               COMPUTE WRK-SUM-TEN     =   WRK-SUM-TEN
+                                                       +  (TNS-TEN
+                                                       /   10  )
+                               ADD     TNS-TEN         TO  WRK-RSI-TEN
+                           END-IF
+                       END-IF
+                   END-PERFORM
+      *
+                   MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+                   PERFORM 930-SINKOUI-RAED-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *    自費の時、自費合計を集計
+           IF      ACCT-SRYKBN         =   "96"  OR  "95"
+               GO      TO      31092-SRYACCT-HEN-EXT
+           END-IF
+      *
+      *    労災の点数集計
+           IF      WRK-SUM-TEN         <=  ACCT-ZAITEN
+               COMPUTE WRK-TENSU       =  (ACCT-ZAITEN
+                                       -   WRK-SUM-TEN )
+                                       *   ACCT-ZAIKAISU
+               COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
+                                       +   WRK-TENSU
+           END-IF
+           COMPUTE WRK-GOK-RSITENSU    =   WRK-GOK-RSITENSU
+                                       +  (WRK-RSI-TEN
+                                       *   ACCT-ZAIKAISU )
+      *
+           .
+       31092-SRYACCT-HEN-EXT.
+           EXIT.
 088600*****************************************************************
 088700*    西暦和暦編集処理
 088800*****************************************************************
@@ -1392,6 +1657,14 @@
            IF      SPA-GMN-SYORI       =   ZERO
                MOVE   1                TO  SPA-GMN-SYORI
            END-IF
+      *
+           MOVE    SPA-GMN-SRYYM       TO  J03-SRYYM
+           MOVE    SPA-GMN-TENSU       TO  WRK-Z8
+           MOVE    WRK-Z8              TO  J03-TENSU
+           MOVE    SPA-GMN-RSITENSU    TO  WRK-Z8
+           MOVE    WRK-Z8              TO  J03-RSITENSU
+           MOVE    SPA-GMN-JIHIKIN     TO  WRK-Z8
+           MOVE    WRK-Z8              TO  J03-JIHIKIN
       *
            EVALUATE    SPA-GMN-SYORI
                WHEN    1
@@ -1954,6 +2227,46 @@
       *
        940-NYUINACT-RAED-EXT.
            EXIT.
+      *****************************************************************
+      *    保険組合せマスター読み込み
+      *****************************************************************
+       910-HKNCOMBI-READ-SEC         SECTION.
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+                   MOVE    ZERO            TO  FLG-HKNCOMBI
+               ELSE
+                   MOVE    1               TO  FLG-HKNCOMBI
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+     *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       910-HKNCOMBI-READ-EXT.
+           EXIT.
+      *
       *
 126400*****************************************************************
 126500*    ＰＵＴ　処理
