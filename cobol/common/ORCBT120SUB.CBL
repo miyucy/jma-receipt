@@ -482,6 +482,28 @@
            MOVE    "SYUNOU-KEY2"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
+      *    保険組合せ番号の取得（収納が無い場合の入院会計から取得）
+           IF    LNK-ORCBT120SUB-HKNCOMBINUM(1)    =   ZERO
+               INITIALIZE                          NYUINACCT-REC
+               MOVE    LNK-ORCBT120SUB-HOSPID  TO  NACCT-HOSPID
+               MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
+               MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
+                                               TO  NACCT-SRYYM
+               MOVE    "5"                     TO  NACCT-ZAISKBKBN
+               MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+               PERFORM 910-NYUINACCT-SELECT-SEC
+               IF      FLG-NYUINACCT           =   ZERO
+                   MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
+                   PERFORM   910-NYUINACCT-READ-SEC
+                   MOVE    NACCT-DAY(WRK-SANTEIDD)
+                               TO  LNK-ORCBT120SUB-HKNCOMBINUM(1)
+               END-IF
+      *        入院会計クローズ
+               MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+               PERFORM   910-DB-CLOSE-SEC
+           END-IF
+      *
+      *
       *    保険情報の取得
            PERFORM    VARYING   SYU-IDX   FROM  1  BY  1
              UNTIL   (LNK-ORCBT120SUB-HKNCOMBINUM(SYU-IDX) = ZERO) OR
@@ -525,6 +547,27 @@
                    END-IF
                END-IF
            END-PERFORM
+      *
+      *    保険情報の取得（収納の無い場合の入院会計から取得）
+           IF    LNK-ORCBT120SUB-HKNCOMBINUM(1)    =   ZERO
+               INITIALIZE                          NYUINACCT-REC
+               MOVE    LNK-ORCBT120SUB-HOSPID  TO  NACCT-HOSPID
+               MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
+               MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
+                                               TO  NACCT-SRYYM
+               MOVE    "5"                     TO  NACCT-ZAISKBKBN
+               MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+               PERFORM 910-NYUINACCT-SELECT-SEC
+               IF      FLG-NYUINACCT           =   ZERO
+                   MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
+                   PERFORM   910-NYUINACCT-READ-SEC
+                   MOVE    NACCT-DAY(WRK-SANTEIDD)
+                               TO  LNK-ORCBT120SUB-NYU-HKNCOMBINUM
+               END-IF
+      *        入院会計クローズ
+               MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+               PERFORM   910-DB-CLOSE-SEC
+           END-IF
       *
            .
        200-MAIN-EXT.
