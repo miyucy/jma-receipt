@@ -51,4 +51,7 @@
            05  SPA-I01-I03-BTN                 PIC X(03).
       *      £É£°£±¢«¢ª£É£°£´Á«°Ü¾ðÊó
          03  SPA-I01-I04-AREA.
+           05  SPA-I01-I04-SKYSTYMD            PIC X(08).
+           05  SPA-I01-I04-SKYEDYMD            PIC X(08).
+           05  SPA-I01-I04-TORIKESI-FLG        PIC 9(01).
            05  SPA-I01-I04-BTN                 PIC X(03).

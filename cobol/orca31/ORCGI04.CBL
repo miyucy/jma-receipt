@@ -66,6 +66,7 @@
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-SYUMEI          PIC 9(01).
+           03  FLG-PTTEIKIRRK      PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-PTCOM           PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
@@ -98,6 +99,7 @@
            03  IDX3                PIC 9(05).
            03  IDX4                PIC 9(05).
            03  IDX5                PIC 9(05).
+           03  IDX6                PIC 9(05).
            03  IDX-G               PIC 9(05).
            03  IDX-SYU             PIC 9(05).
            03  IDXY                PIC 9(05).
@@ -111,6 +113,7 @@
       *
       *    一時領域
        01  WRK-AREA.
+           03  WRK-SKYMONEY               PIC  S9(07).
            03  WRK-YMD                    PIC X(10). 
            03  WRK-HENYMDG                PIC X(09).
            03  WRK-SYMD.
@@ -188,6 +191,13 @@
        01  WKSYUMEI-REC.
            COPY  "CPSYUMEI.INC"    REPLACING  //SMEI-//
                                            BY //WKSMEI-//.
+      *
+      *    定期請求履歴集計用ワーク
+       01  SUMTEIKIRRK-REC.
+         02    SUMTEIKIRRK-MAX         PIC 9(05).
+         02    SUMTEIKIRRK-OCC     OCCURS 50.
+           COPY  "CPTEIKIRRK.INC"  REPLACING  //TEIKIRRK-//
+                                           BY //SUMTEIKIRRK-//.
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -285,6 +295,15 @@
            02  TBL-JYURRK-REC        OCCURS   10.
            COPY    "CPJYURRK.INC"  REPLACING
                                      //JYURRK-// BY //TBL-JYURRK-//.
+      *
+      *    患者定期請求履歴
+        01 PTTEIKIRRK-REC.
+           COPY     "CPPTTEIKIRRK.INC".
+      *
+      *    定期請求履歴
+        01 TEIKIRRK-REC.
+           COPY     "CPTEIKIRRK.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -2114,6 +2133,12 @@
       *
            MOVE    WKPTNYUINRRK-REC    TO  PTNYUINRRK-REC
       *
+           IF    ( SPA-I01-I04-TORIKESI-FLG    =   1 )
+               DISPLAY "4701-TORIKESI-KOUSHIN-SEC "
+      *        請求取消更新処理
+               PERFORM 4701-TORIKESI-KOUSHIN-SEC
+           END-IF
+      *
       *    入院会計テーブルを編集する（退院時）
            PERFORM 4801-TAIINKAIKEI-EDIT-SEC
       *
@@ -2140,6 +2165,347 @@
        451-TOUROKU-SYORI-EXT.
            EXIT.
       *
+      **************************************************************
+      *    請求取消更新処理
+      **************************************************************
+       4701-TORIKESI-KOUSHIN-SEC       SECTION.
+      *
+      *    収納データを更新する
+           PERFORM 4701-SYUNOU-UPD-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4701-TORIKESI-KOUSHIN-EXT
+           END-IF
+      *
+      *    患者定期請求履歴を削除する
+           PERFORM 4701-PTTEIKIRRK-DEL-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4701-TORIKESI-KOUSHIN-EXT
+           END-IF
+      *
+      *    定期請求履歴を更新する
+           PERFORM 4701-TEIKIRRK-UPD-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4701-TORIKESI-KOUSHIN-EXT
+           END-IF
+      *
+           .
+       4701-TORIKESI-KOUSHIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納データ更新処理
+      *****************************************************************
+       4701-SYUNOU-UPD-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUNOU
+           INITIALIZE  SYUNOU-REC
+      *
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-NAI-I04-PTID    TO  SYU-PTID
+           MOVE    "1"                 TO  SYU-NYUGAIKBN
+           MOVE    SPA-I01-I04-SKYSTYMD
+                                       TO  SYU-SKYSTYMD
+           MOVE    SPA-I01-I04-SKYEDYMD
+                                       TO  SYU-SKYEDYMD
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "SYUNOU-KEY5"       TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
+      *
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+      *
+               IF    ( SYU-DENPJTIKBN  NOT =   "3" )
+      *            収納明作成処理
+                   PERFORM 4701-SYUMEI-SAKUSEI-SEC
+                   IF    ( SPA-ERRCD   NOT =   SPACE )
+                       GO  TO  4701-SYUNOU-UPD-EXT
+                   END-IF
+      *
+      *            請求取消として収納データを更新
+                   MOVE    ZERO            TO  SYU-SKYMONEY
+                   MOVE    "3"             TO  SYU-DENPJTIKBN
+                   MOVE    SYUNOU-REC      TO  MCPDATA-REC
+                   MOVE    "SYUNOU-KEY"    TO  WRK-DBPATH
+                   PERFORM 900-TBL-UPDATE-SEC
+                   IF    ( FLG-DBRC    NOT =   ZERO )
+                       MOVE    "2004"      TO  SPA-ERRCD
+                       GO  TO  4701-SYUNOU-UPD-EXT
+                   END-IF
+               END-IF
+      *
+               MOVE    "SYUNOU-KEY5"   TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+               IF    ( FLG-DBRC    NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYUNOU
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "SYUNOU-KEY5"   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+      *
+       4701-SYUNOU-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納明細作成処理
+      *****************************************************************
+       4701-SYUMEI-SAKUSEI-SEC         SECTION.
+      *
+           COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY        *   -1
+      *
+      *    伝票番号枝番を求める
+           MOVE    ZERO                TO  FLG-SYUMEI
+           INITIALIZE                      SYUMEI-REC
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SMEI-PTID
+           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+           MOVE    "SYUMEI-KEY2"       TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    NOT =   ZERO )
+               MOVE    1               TO  FLG-SYUMEI
+           END-IF
+      *
+      *
+           PERFORM VARYING  IDX6   FROM    1   BY   1
+               UNTIL ( FLG-SYUMEI  =   1)
+      *
+               MOVE    "SYUMEI-KEY2"   TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+               IF    ( FLG-DBRC    NOT =   ZERO )
+                   MOVE    1               TO  FLG-SYUMEI
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "SYUMEI-KEY2"       TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           MOVE    SPACE               TO  SYUMEI-REC
+           INITIALIZE                      SYUMEI-REC
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SMEI-PTID
+      *伝票番号
+           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
+      *伝票番号枝番
+           MOVE    IDX6                TO  SMEI-DENPEDANUM
+      *入金連番
+           MOVE    ZERO                TO  SMEI-NYUKINRENNUM
+      *伝票状態区分
+           MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
+      *請求発行日（発行日の西暦）
+           MOVE    SPACE               TO  SMEI-SKYPRINTYMD
+      *請求再発行日
+           MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
+      *領収書発行日
+           MOVE    SPACE               TO  SMEI-RYOSYUPRINTYMD
+      *領収書再発行日
+           MOVE    SPACE               TO  SMEI-RYOSYUREPRINTYMD
+      *請求金額
+           MOVE    WRK-SKYMONEY        TO  SMEI-SKYMONEY
+      *
+      *入返金区分
+           MOVE    SPACE               TO  SMEI-NYUHEN-KBN
+      *入返金額
+           MOVE    ZERO                TO  SMEI-NYUHEN-MONEY
+      *入返金日
+           MOVE    SPA-NAI-I04-TAIINYMD
+                                       TO  SMEI-NYUHEN-YMD
+      *入金方法
+           MOVE    "00"                TO  SMEI-NYUKIN-HOHO
+      *状態区分
+           MOVE    "5"                 TO  SMEI-JOUTAIKBN
+      *
+      *    追加対象のデータが既に存在しないかチェック
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+           MOVE    "SYUMEI-KEY"        TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC            =   ZERO )
+               MOVE    "2004"          TO  SPA-ERRCD
+               GO  TO  4701-SYUMEI-SAKUSEI-EXT
+           END-IF
+      *
+           MOVE    "SYUMEI-KEY"        TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+      *    収納明細追加
+           MOVE    "SYUMEI-KEY"        TO  WRK-DBPATH
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+           PERFORM 900-TBL-INSERT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    "2004"          TO  SPA-ERRCD
+               GO  TO  4701-SYUMEI-SAKUSEI-EXT
+           END-IF
+      *
+           .
+       4701-SYUMEI-SAKUSEI-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者定期請求履歴削除処理
+      *****************************************************************
+       4701-PTTEIKIRRK-DEL-SEC         SECTION.
+      *
+           INITIALIZE  SUMTEIKIRRK-REC
+           MOVE    ZERO                TO  FLG-PTTEIKIRRK
+      *
+           INITIALIZE  PTTEIKIRRK-REC
+           MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
+           MOVE    SPA-NAI-I04-PTID    TO  PTTEIKIRRK-PTID
+           MOVE    SPA-I01-I04-SKYSTYMD
+                                       TO  PTTEIKIRRK-SKYSTYMD
+           MOVE    SPA-I01-I04-SKYEDYMD
+                                       TO  PTTEIKIRRK-SKYEDYMD
+           MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
+           MOVE    "PTTEIKIRRK-KEY4"   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-PTTEIKIRRK
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-PTTEIKIRRK  NOT =   ZERO )
+      *
+               MOVE    MCPDATA-REC     TO  PTTEIKIRRK-REC
+      *
+      *        定期履歴管理情報集計
+               PERFORM 4701-TEIKIRRK-SUM-SEC
+      *
+               MOVE    "PTTEIKIRRK-KEY4"   TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+               IF    ( FLG-DBRC        NOT =   ZERO )
+                   MOVE    1           TO  FLG-PTTEIKIRRK
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "PTTEIKIRRK-KEY4"   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+      *    患者請求履歴削除
+           INITIALIZE  PTTEIKIRRK-REC
+           MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
+           MOVE    SPA-NAI-I04-PTID    TO  PTTEIKIRRK-PTID
+           MOVE    SPA-I01-I04-SKYSTYMD
+                                       TO  PTTEIKIRRK-SKYSTYMD
+           MOVE    SPA-I01-I04-SKYEDYMD
+                                       TO  PTTEIKIRRK-SKYEDYMD
+           MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
+           MOVE    "PTTEIKIRRK-DEL2"   TO  WRK-DBPATH
+           PERFORM 900-TBL-DELETE-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    "2005"          TO  SPA-ERRCD
+               GO  TO  4701-PTTEIKIRRK-DEL-EXT
+           END-IF
+      *
+           .
+       4701-PTTEIKIRRK-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    定期請求管理情報集計（マイナス分）
+      *****************************************************************
+       4701-TEIKIRRK-SUM-SEC           SECTION.
+      *
+      *    定期請求管理情報集計（マイナス分）
+           PERFORM VARYING IDX6   FROM    1   BY  1
+                   UNTIL ( IDX6   >   100 )
+               EVALUATE SUMTEIKIRRK-SRYYM (IDX6)
+                                   ALSO    SUMTEIKIRRK-SAKKBN (IDX6)
+               WHEN    SPACE       ALSO    ANY
+                   MOVE    PTTEIKIRRK-SRYYM
+                                   TO  SUMTEIKIRRK-SRYYM   (IDX6)
+                   MOVE    PTTEIKIRRK-SAKKBN
+                                   TO  SUMTEIKIRRK-SAKKBN  (IDX6)
+                   MOVE    PTTEIKIRRK-SKYSTYMD
+                                   TO  SUMTEIKIRRK-SKYSTYMD(IDX6)
+                   MOVE    PTTEIKIRRK-SKYEDYMD
+                                   TO  SUMTEIKIRRK-SKYEDYMD(IDX6)
+                   COMPUTE SUMTEIKIRRK-SKYTEN (IDX6)
+                       =   PTTEIKIRRK-SKYTEN     *   -1
+                   COMPUTE SUMTEIKIRRK-SKYMONEY (IDX6)
+                       =   PTTEIKIRRK-SKYMONEY   *   -1
+                   COMPUTE SUMTEIKIRRK-MAX
+                       =   SUMTEIKIRRK-MAX     +   1
+                   MOVE    100         TO  IDX6
+               WHEN    PTTEIKIRRK-SRYYM
+                                   ALSO    PTTEIKIRRK-SAKKBN
+                   COMPUTE SUMTEIKIRRK-SKYTEN (IDX6)
+                       =   SUMTEIKIRRK-SKYTEN (IDX6)
+                       + ( PTTEIKIRRK-SKYTEN     *   -1 )
+                   COMPUTE SUMTEIKIRRK-SKYMONEY (IDX6)
+                       =   SUMTEIKIRRK-SKYMONEY (IDX6)
+                       + ( PTTEIKIRRK-SKYMONEY   *   -1 )
+                   MOVE    100         TO  IDX6
+               END-EVALUATE
+           END-PERFORM
+      *
+           .
+       4701-TEIKIRRK-SUM-EXT.
+           EXIT. 
+      *****************************************************************
+      *    定期請求履歴更新処理
+      *****************************************************************
+       4701-TEIKIRRK-UPD-SEC           SECTION.
+      *
+           PERFORM VARYING IDX6    FROM    1   BY  1
+                   UNTIL ( IDX6    >   SUMTEIKIRRK-MAX )
+      *
+               INITIALIZE  TEIKIRRK-REC
+      *
+               MOVE    SUMTEIKIRRK-OCC (IDX6)
+                                       TO  TEIKIRRK-REC
+               MOVE    SPA-TERMID      TO  TEIKIRRK-TERMID
+               MOVE    SPA-SYSYMD      TO  TEIKIRRK-CREYMD
+                                           TEIKIRRK-UPYMD
+               ACCEPT  SYS-TIME        FROM    TIME
+               MOVE    SYS-TIME        TO  TEIKIRRK-UPHMS
+      *
+               MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
+               MOVE    "TEIKIRRK-KEY"  TO  WRK-DBPATH
+               PERFORM 900-TBL-SELECT-SEC
+      *        更新対象のデータがすでに存在する場合は更新
+      *        存在しない場合は追加
+               IF    ( FLG-DBRC        =   ZERO )
+                   MOVE    MCPDATA-REC TO  TEIKIRRK-REC
+      *
+                   COMPUTE TEIKIRRK-SKYTEN
+                       =   TEIKIRRK-SKYTEN
+                       +   SUMTEIKIRRK-SKYTEN   (IDX6)
+      *
+                   COMPUTE TEIKIRRK-SKYMONEY
+                       =   TEIKIRRK-SKYMONEY
+                       +   SUMTEIKIRRK-SKYMONEY (IDX6)
+      *
+      *            定期請求管理データ更新
+                   MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
+                   MOVE    "TEIKIRRK-KEY"  TO  WRK-DBPATH
+                   PERFORM 900-TBL-UPDATE-SEC
+                   IF  (   FLG-DBRC    NOT =   ZERO )
+                       MOVE    "2005"      TO  SPA-ERRCD
+                       GO  TO  4701-TEIKIRRK-UPD-EXT
+                   END-IF
+               ELSE
+      *
+                   MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
+                   MOVE    "TEIKIRRK-KEY"  TO  WRK-DBPATH
+                   PERFORM 900-TBL-INSERT-SEC
+                   IF  (   FLG-DBRC    NOT =   ZERO )
+                       MOVE    "2005"      TO  SPA-ERRCD
+                       GO  TO  4701-TEIKIRRK-UPD-EXT
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4701-TEIKIRRK-UPD-EXT.
+           EXIT. 
       *****************************************************************
       *    関連チェック処理
       *****************************************************************
@@ -2359,7 +2725,8 @@
       *    伝票状態区分
            MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
       *    請求発行日（発行日の西暦）
-           MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
+           MOVE    SPA-NAI-I04-TAIINYMD
+                                       TO  SMEI-SKYPRINTYMD
       *    請求再発行日
            MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
       *    領収書発行日
@@ -2775,6 +3142,12 @@
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            WHEN    "2003"
+               MOVE    "更新処理に失敗しました"
+                                       TO  SPA-ERRMSG
+           WHEN    "2004"
+               MOVE    "更新処理に失敗しました"
+                                       TO  SPA-ERRMSG
+           WHEN    "2005"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            END-EVALUATE

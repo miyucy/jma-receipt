@@ -85,6 +85,7 @@
            03  FLG-PTTEIKIRRK              PIC 9(01).
            03  FLG-TENSU                   PIC 9(01).
            03  FLG-SRYACCT                 PIC 9(01).
+           03  FLG-SYUARI                  PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -114,7 +115,9 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-I0IDMSG                 PIC X(70). 
+           03  WRK-I0IDCD                  PIC X(04).
+           03  WRK-I0ID1-FLG               PIC X(02).
+           03  WRK-I0IDMSG                 PIC X(80). 
            03  WRK-MOTOPG                  PIC X(08).
            03  WRK-YMD                     PIC X(10). 
            03  WRK-SYMD.
@@ -519,6 +522,12 @@
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
+      *
+               IF    ( SPA-I0IDCD  NOT =   SPACE )
+                   PERFORM 520-I0IDSET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
+      *
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -562,8 +571,6 @@
       *    確認画面
            WHEN    "I0ID1"
                PERFORM 330-I0ID1-SET-SEC
-               MOVE    SPACE       TO  SPA-I0ID1-FLG
-               MOVE    SPACE       TO  SPA-I0IDCD
       *
                GO  TO      300-SCREEN-EXT
       *
@@ -1009,9 +1016,15 @@
       *****************************************************************
        330-I0ID1-SET-SEC               SECTION.
       *
-           IF    ( SPA-I0ID1-FLG   =   "OK" )
+           MOVE    SPA-I0ID1-FLG   TO  WRK-I0ID1-FLG
+           MOVE    SPA-I0IDCD      TO  WRK-I0IDCD
+      *
+           MOVE    SPACE           TO  SPA-I0ID1-FLG
+           MOVE    SPACE           TO  SPA-I0IDCD
+      *
+           IF    ( WRK-I0ID1-FLG   =   "OK" )
                MOVE    SPACE       TO  WRK-UPDKBN
-               EVALUATE    SPA-I0IDCD
+               EVALUATE    WRK-I0IDCD
       *        入院取消
                WHEN "3001"
       *        入院取消（会計含む）
@@ -1030,6 +1043,19 @@
                    END-IF
       *        退院登録
                WHEN "3004"
+               WHEN "3005"
+                   IF    ( WRK-I0IDCD      =   "3005" )
+      *
+                       MOVE    1   TO  SPA-NAI-I01-TORIKESI-FLG
+      *
+      *                診療会計テーブルチェック処理
+                       PERFORM 490-SRYACCT-CHK-SEC
+                       IF    ( SPA-I0IDCD  NOT =   SPACE )
+                         OR  ( SPA-ERRCD   NOT =   SPACE )
+                           GO  TO  330-I0ID1-SET-EXT
+                       END-IF
+                   END-IF
+      *
       *            請求開始日取得処理
                    PERFORM 4801-SKYSTYMD-GET-SEC
       *            請求確認画面遷移処理
@@ -1038,10 +1064,11 @@
                    IF    ( SPA-ERRCD   NOT =   SPACE )
                        GO  TO  330-I0ID1-SET-EXT
                    END-IF
+      *
                END-EVALUATE
       *
            ELSE
-               EVALUATE    SPA-I0IDCD
+               EVALUATE    WRK-I0IDCD
       *        入院取消
                WHEN "3001"
       *        入院取消（会計含む）
@@ -5162,6 +5189,11 @@
       *    退院登録
            WHEN    "02"
       *
+               IF    ( FLG-SYUARI  NOT =   ZERO )
+                   MOVE    "3005"  TO  SPA-I0IDCD
+                   GO  TO  480-TOUROKU-EXT
+               END-IF
+      *
       *        診療会計テーブルチェック処理
                PERFORM 490-SRYACCT-CHK-SEC
                IF    ( SPA-I0IDCD  NOT =   SPACE )
@@ -5514,6 +5546,64 @@
                GO  TO  4801-TAIIN-TOUROKU-CHK-EXT
            END-IF
       *
+      *    月途中の定期請求終了後...�　�
+      *    定期請求区分を「2 月末時のみ請求」に変更された場合、
+      *    �，悩鄒�された収納が未入金であること
+           PERFORM 4801-MAE-TEIKI-SKYEDYMD-GET-SEC
+           IF    ( SPA-GMN-I01-SEIKYU-CD   =   "2" )
+             AND ( WRK-MAE-SKYEDYMD    NOT =   SPACE )
+               MOVE    WRK-MAE-SKYEDYMD
+                                       TO  WRK-YMD
+               MOVE    "1"             TO  WRK-ZOGENPTN
+               MOVE    1               TO  WRK-ZOGEN
+               PERFORM 5002-CALENDAR-SEC
+               IF    ( WRK-KEISANYMD (7 : 2)   NOT =   "01" )
+                   MOVE    ZERO                TO  FLG-SYUNOU
+                   INITIALIZE  SYUNOU-REC
+                   MOVE    SPA-HOSPID          TO  SYU-HOSPID
+                   MOVE    SPA-NAI-I01-PTID    TO  SYU-PTID
+                   MOVE    "1"                 TO  SYU-NYUGAIKBN
+                   MOVE    WRK-NOW-SKYSTYMD    TO  SYU-SKYSTYMD
+                   MOVE    SPA-NAI-I01-TAIINYMD
+                                           TO  SYU-SKYEDYMD
+                   MOVE    SYUNOU-REC          TO  MCPDATA-REC
+                   MOVE    "SYUNOU-KEY5"       TO  WRK-DBPATH
+                   PERFORM 900-TBL-SELECT-SEC
+                   IF    ( FLG-DBRC        NOT =   ZERO )
+                       MOVE    1               TO  FLG-SYUNOU
+                   END-IF
+      *
+                   PERFORM UNTIL   ( FLG-SYUNOU    NOT =   ZERO )
+                            OR     ( SPA-ERRCD     NOT =   SPACE )
+                       MOVE    MCPDATA-REC     TO  SYUNOU-REC
+                       IF    ( SYU-DENPJTIKBN  NOT =   "3" )
+      *                 AND  ( SYU-CREATEKBN   =   "2" )
+                           MOVE    1           TO  FLG-SYUARI
+                           IF    ( SYU-NYUKIN-TOTAL    >   ZERO )
+                               MOVE    "1028"  TO  SPA-ERRCD
+                           END-IF
+                       END-IF
+      *
+                       MOVE    "SYUNOU-KEY5"   TO  WRK-DBPATH
+                       PERFORM 900-TBL-READ-SEC
+                       IF    ( FLG-DBRC    NOT =   ZERO )
+                           MOVE    1           TO  FLG-SYUNOU
+                       END-IF
+      *
+                   END-PERFORM
+      *
+                   MOVE    "SYUNOU-KEY5"   TO  WRK-DBPATH
+                   PERFORM 900-TBL-CLOSE-SEC
+      *
+                   IF    ( SPA-ERRCD     NOT =   SPACE )
+                       MOVE    11          TO  SPA-GMN-I01-CUR
+                       GO  TO  4801-TAIIN-TOUROKU-CHK-EXT
+                   END-IF
+               END-IF
+      *
+           END-IF
+      *
+      *
            .
        4801-TAIIN-TOUROKU-CHK-EXT.
            EXIT.
@@ -5538,6 +5628,15 @@
                    PERFORM 5002-CALENDAR-SEC
                    MOVE    WRK-KEISANYMD
                                        TO  WRK-NOW-SKYSTYMD
+                   IF    ( SPA-GMN-I01-SEIKYU-CD   =   "2" )
+                       IF   ( SPA-NAI-I01-NYUINYMD (1 : 6)
+                           <  WRK-NOW-SKYSTYMD     (1 : 6) )
+                           MOVE    "01"    TO  WRK-NOW-SKYSTYMD (7 : 2)
+                       ELSE
+                           MOVE    SPA-NAI-I01-NYUINYMD
+                                           TO  WRK-NOW-SKYSTYMD
+                       END-IF
+                   END-IF
                END-IF
            ELSE
                MOVE    SPA-NAI-I01-NYUINYMD
@@ -5827,7 +5926,7 @@
                COMPUTE WRK-SHONUM      =   SPA-GMN-I01-SHONUM
            END-IF
       *
-      *    退院処理時、履歴を遡って退院日を更新する
+      *    退院取消処理時、履歴を遡って退院日を更新する
            IF    ( SPA-GMN-I01-SYORIKBN-CD =   "07" )
       *
                PERFORM 4801-TAIINYMD-UPD-SEC
@@ -6846,6 +6945,7 @@
            END-IF
       *
       *    入院料と入院料加算の併算定チェック
+           MOVE    ZERO            TO     IDX9
            PERFORM    VARYING    IDX8   FROM   1   BY   1
                       UNTIL      (WRK-NYUKHNKSN-SRYCD(IDX8)  =  SPACE)
                          OR      (IDX8   >     20)
@@ -8381,6 +8481,13 @@
       *****************************************************************
        490-I04-SENI-SEC                SECTION.
       *
+           INITIALIZE  SPA-I01-I04-AREA
+           MOVE    WRK-NOW-SKYSTYMD    TO  SPA-I01-I04-SKYSTYMD
+           MOVE    SPA-NAI-I01-TAIINYMD
+                                       TO  SPA-I01-I04-SKYEDYMD
+           MOVE    SPA-NAI-I01-TORIKESI-FLG
+                                       TO  SPA-I01-I04-TORIKESI-FLG
+      *
            MOVE    "I01"               TO  SPA-MOTOPG
            MOVE    "I04"               TO  SPA-SAKIPG
       *
@@ -9111,6 +9218,11 @@
            WHEN    "1027"
                MOVE    "入院料が指定されていません"
                                        TO  SPA-ERRMSG
+           WHEN    "1028"
+               MOVE    "定期請求が月末のみに変更されています。"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "月途中の入金（請求）を取消してください"
+                                       TO  SPA-ERRMSG (41 : )
            WHEN    "2001"
                MOVE    "登録処理に失敗しました"
                                        TO  SPA-ERRMSG
@@ -9199,6 +9311,13 @@
                MOVE    SPACE           TO  WRK-I0IDMSG
                STRING  "退院後の診療日で入力された診療行為は"
                        "削除されます。確認してください"
+               DELIMITED BY SIZE
+               INTO  WRK-I0IDMSG
+               END-STRING
+           WHEN    "3005"
+               MOVE    SPACE           TO  WRK-I0IDMSG
+               STRING  "定期請求が月末のみに変更されています。"
+                       "月途中で作成した請求データは取消します"
                DELIMITED BY SIZE
                INTO  WRK-I0IDMSG
                END-STRING

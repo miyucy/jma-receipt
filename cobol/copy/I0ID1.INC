@@ -20,4 +20,4 @@
               04  I0ID1-ID1CODE.
                 05  I0ID1-VALUE  PIC X(10).
               04  I0ID1-ID1MSG.
-                05  I0ID1-VALUE  PIC X(70).
+                05  I0ID1-VALUE  PIC X(80).

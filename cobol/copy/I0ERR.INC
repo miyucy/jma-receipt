@@ -20,4 +20,4 @@
               04  I0ERR-ERRCODE.
                 05  I0ERR-VALUE  PIC X(10).
               04  I0ERR-ERRMSG.
-                05  I0ERR-VALUE  PIC X(60).
+                05  I0ERR-VALUE  PIC X(80).

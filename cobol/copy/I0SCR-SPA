@@ -211,6 +211,8 @@
                                                    PIC X(01).
                    13  SPA-NAI-I01-TOKNYUIN-ORG-CD
                                                    PIC X(02).
+      *          退院処理時、請求データ取消フラグ
+                 11  SPA-NAI-I01-TORIKESI-FLG      PIC 9(01).
       *        入院歴リスト内部領域
                09  SPA-NAI-I01-NYUREKILST-AREA.
                  11  SPA-NAI-I01-NYUREKILST-ITM    OCCURS  50.

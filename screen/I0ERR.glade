@@ -5,17 +5,15 @@
   <name>I0ERR</name>
   <program_name>I0ERR</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
-  <gettext_support>True</gettext_support>
+  <gtkpanda_support>False</gtkpanda_support>
 </project>
 
 <widget>
   <class>GtkWindow</class>
   <name>I0ERR</name>
-  <width>523</width>
+  <width>600</width>
   <height>120</height>
   <signal>
     <name>map_event</name>
@@ -27,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 26 Jan 2001 04:22:42 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -57,26 +55,23 @@
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
       <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>B01</name>
-      <x>224</x>
+      <x>250</x>
       <y>80</y>
       <width>64</width>
       <height>32</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F1</key>
-	<signal>clicked</signal>
-      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Wed, 31 Jan 2001 07:01:33 GMT</last_modification_time>
+	<last_modification_time>Fri, 26 Jan 2001 04:56:59 GMT</last_modification_time>
       </signal>
       <label>ÊÄ¤¸¤ë</label>
       <relief>GTK_RELIEF_NORMAL</relief>
@@ -87,13 +82,15 @@
       <name>ERRMSG</name>
       <x>8</x>
       <y>40</y>
-      <width>504</width>
+      <width>580</width>
       <height>32</height>
       <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>60</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
     </widget>
   </widget>
 </widget>
