@@ -695,12 +695,12 @@
                                                MCPDATA-REC
                ELSE
       *            修正分
-                   IF      PTKOH-JKYSNUM   NOT =   MONTHLYNUM-JKYSNUM
+                   IF     (PTKOH-JKYSNUM   NOT =   SPACE )  AND
+                          (PTKOH-JKYSNUM   NOT =   MONTHLYNUM-JKYSNUM)
                        MOVE    PTKOH-JKYSNUM   TO  MONTHLYNUM-JKYSNUM
       *                更新情報
                        MOVE    SMCNDATE-YMD        TO  MONTHLYNUM-UPYMD
                        MOVE    SMCNDATE-HMS        TO  MONTHLYNUM-UPHMS
-      *
       *
                        MOVE    MONTHLYNUM-REC      TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
