@@ -95,16 +95,16 @@
                                                   PIC X(20).
            	       09  SPA-GMN-PARA-TBL.  
                            11  SPA-GMN-PARA-G     OCCURS  3.
-                               13  SPA-GMN-PARA   PIC X(10).
+                               13  SPA-GMN-PARA   PIC X(20).
       *                         
                05  SPA-NAI-AREA.
                    07  SPA-NAI-TBL    OCCURS  100.
                        09  SPA-NAI-PARA-G         OCCURS  3.
-                           11  SPA-NAI-PARA       PIC X(10).
+                           11  SPA-NAI-PARA       PIC X(20).
            	       09  SPA-NAI-HENPARA-TBL.
            	           11  SPA-NAI-HENPARA-G  OCCURS  3.   
                                13  SPA-NAI-HENPARA
-                                                  PIC X(10).
+                                                  PIC X(20).
       *
        01  FLG-AREA.
            03  FLG-END                PIC 9(01).
