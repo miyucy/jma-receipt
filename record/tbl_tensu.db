@@ -1097,3 +1097,14 @@ path	key92	{
 			;
 	};
 };
+
+path	key24 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key24_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE   SRYCD      =   :SRYCD
+			ORDER   BY  YUKOSTYMD DESC
+		;
+	};
+};
