@@ -17,7 +17,7 @@
       ********************************************************************
             02  T01.
               03  T01-SKYYM.
-                04  T01-VALUE   PIC X(8).
+                04  T01-VALUE   PIC X(7).
               03  T01-DATAKBN1.
                 04  T01-DATAKBN1-STATE   PIC S9(9)   BINARY.
                 04  T01-DATAKBN1-VALUE   PIC X.
@@ -35,6 +35,12 @@
                 04  T01-DATAKBN3-VALUE   PIC X.
               03  T01-SRYYM.
                 04  T01-SRYYM-STATE   PIC S9(9)   BINARY.
-                04  T01-SRYYM-VALUE   PIC X(21).
+                04  T01-SRYYM-VALUE   PIC X(20).
               03  T01-SKYYMD.
-                04  T01-VALUE   PIC X(11).
+                04  T01-VALUE   PIC X(10).
+              03  T01-PRTKBN1.
+                04  T01-PRTKBN1-STYLE   PIC X(20).
+                04  T01-PRTKBN1-VALUE   PIC X(4).
+              03  T01-PRTKBN2.
+                04  T01-PRTKBN2-STYLE   PIC X(20).
+                04  T01-PRTKBN2-VALUE   PIC X(4).
