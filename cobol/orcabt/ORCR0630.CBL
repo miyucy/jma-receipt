@@ -1011,11 +1011,11 @@
       *
                MOVE    SPACE         TO   TNS-TENSU-REC
                INITIALIZE                 TNS-TENSU-REC
-               IF    RECE62-RJNHKNNUM    =    SPACE
+      ***      IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    "190080570"   TO   TNS-SRYCD
-               ELSE
-                    MOVE    "190799770"   TO   TNS-SRYCD
-               END-IF
+      ***      ELSE
+      ***           MOVE    "190799770"   TO   TNS-SRYCD
+      ***      END-IF
                MOVE    RECE62-SRYYM       TO  ORC-DBYMD(1:6)
                MOVE    "01"               TO  ORC-DBYMD(7:2)
                PERFORM  TENSU-READ-SEC
@@ -1036,11 +1036,11 @@
       *
                MOVE    SPACE         TO   TNS-TENSU-REC
                INITIALIZE                 TNS-TENSU-REC
-               IF    RECE62-RJNHKNNUM    =    SPACE
+      ***      IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    "190111690"   TO   TNS-SRYCD
-               ELSE
-                    MOVE    "190809090"   TO   TNS-SRYCD
-               END-IF
+      ***      ELSE
+      ***           MOVE    "190809090"   TO   TNS-SRYCD
+      ***      END-IF
                MOVE    RECE62-SRYYM       TO  ORC-DBYMD(1:6)
                MOVE    "01"               TO  ORC-DBYMD(7:2)
                PERFORM  TENSU-READ-SEC
@@ -1061,11 +1061,11 @@
       *
                MOVE    SPACE         TO   TNS-TENSU-REC
                INITIALIZE                 TNS-TENSU-REC
-               IF    RECE62-RJNHKNNUM    =    SPACE
+      ***      IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    "190111790"   TO   TNS-SRYCD
-               ELSE
-                    MOVE    "190809190"   TO   TNS-SRYCD
-               END-IF
+      ***      ELSE
+      ***           MOVE    "190809190"   TO   TNS-SRYCD
+      ***      END-IF
                MOVE    RECE62-SRYYM       TO  ORC-DBYMD(1:6)
                MOVE    "01"               TO  ORC-DBYMD(7:2)
                PERFORM  TENSU-READ-SEC
@@ -2037,33 +2037,33 @@
            IF   FLG-MIJISI-GENSAN   =   1
       *
                IF   FLG-MIJISI-INNAI   =   1
-                 IF    RECE62-RJNHKNNUM    =    SPACE
+      ***        IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190080570      TO   WRK-SRYCD
-                 ELSE
-                    MOVE    190799770      TO   WRK-SRYCD
-                 END-IF
+      ***        ELSE
+      ***           MOVE    190799770      TO   WRK-SRYCD
+      ***        END-IF
                  MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
       *
                  PERFORM   RYAKUSYO-HENSYU-SEC
                END-IF
       *
                IF   FLG-MIJISI-IRYO    =   1
-                 IF    RECE62-RJNHKNNUM    =    SPACE
+      ***        IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190111690      TO   WRK-SRYCD
-                 ELSE
-                    MOVE    190809090      TO   WRK-SRYCD
-                 END-IF
+      ***        ELSE
+      ***           MOVE    190809090      TO   WRK-SRYCD
+      ***        END-IF
                  MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
       *
                  PERFORM   RYAKUSYO-HENSYU-SEC
                END-IF
       *
                IF   FLG-MIJISI-JYOKU   =   1
-                 IF    RECE62-RJNHKNNUM    =    SPACE
+      ***        IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190111790      TO   WRK-SRYCD
-                 ELSE
-                    MOVE    190809190      TO   WRK-SRYCD
-                 END-IF
+      ***        ELSE
+      ***           MOVE    190809190      TO   WRK-SRYCD
+      ***        END-IF
                  MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
       *
                  PERFORM   RYAKUSYO-HENSYU-SEC

@@ -2273,11 +2273,11 @@
                  EVALUATE    GENSAN-IDX
                    WHEN   2
       *
-                     IF    RECE62-RJNHKNNUM    =    SPACE
+      ***            IF    RECE62-RJNHKNNUM    =    SPACE
                        MOVE    "190080570"   TO   WRK-SRYCD
-                     ELSE
-                       MOVE    "190799770"   TO   WRK-SRYCD
-                     END-IF
+      ***            ELSE
+      ***              MOVE    "190799770"   TO   WRK-SRYCD
+      ***            END-IF
                      MOVE    RECE62-SRYYM    TO   WK-TAIHI-SRYYM
                      MOVE    "01"            TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -2288,11 +2288,11 @@
       *
                    WHEN   3
       *
-                     IF    RECE62-RJNHKNNUM    =    SPACE
+      ***            IF    RECE62-RJNHKNNUM    =    SPACE
                        MOVE    "190111690"   TO   WRK-SRYCD
-                     ELSE
-                       MOVE    "190809090"   TO   WRK-SRYCD
-                     END-IF
+      ***            ELSE
+      ***              MOVE    "190809090"   TO   WRK-SRYCD
+      ***            END-IF
                      MOVE    RECE62-SRYYM    TO   WK-TAIHI-SRYYM
                      MOVE    "01"            TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -2303,11 +2303,11 @@
       *
                    WHEN   4
       *
-                     IF    RECE62-RJNHKNNUM    =    SPACE
+      ***            IF    RECE62-RJNHKNNUM    =    SPACE
                        MOVE    "190111790"   TO   WRK-SRYCD
-                     ELSE
-                       MOVE    "190809190"   TO   WRK-SRYCD
-                     END-IF
+      ***            ELSE
+      ***              MOVE    "190809190"   TO   WRK-SRYCD
+      ***            END-IF
                      MOVE    RECE62-SRYYM    TO   WK-TAIHI-SRYYM
                      MOVE    "01"            TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -2723,11 +2723,11 @@
                  END-IF
                  MOVE    WRK-SYS-MIJISI-ZAITEN(SYUKEI-IDX3)
                                         TO      RECE64-SYUTEN1
-                 IF    RECE62-RJNHKNNUM    =    SPACE
+      ***        IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190080570   TO      RECE64-SRYCDTOTAL
-                 ELSE
-                    MOVE    190799770   TO      RECE64-SRYCDTOTAL
-                 END-IF
+      ***        ELSE
+      ***           MOVE    190799770   TO      RECE64-SRYCDTOTAL
+      ***        END-IF
                WHEN  3
                  MOVE    WRK-SYS-MIJISI-ZAITEN(SYUKEI-IDX3)
                                         TO      RECE64-ZAITEN
@@ -2741,11 +2741,11 @@
                  END-IF
                  MOVE    WRK-SYS-MIJISI-ZAITEN(SYUKEI-IDX3)
                                         TO      RECE64-SYUTEN1
-                 IF    RECE62-RJNHKNNUM    =    SPACE
+      ***        IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190111690   TO      RECE64-SRYCDTOTAL
-                 ELSE
-                    MOVE    190809090   TO      RECE64-SRYCDTOTAL
-                 END-IF
+      ***        ELSE
+      ***           MOVE    190809090   TO      RECE64-SRYCDTOTAL
+      ***        END-IF
                WHEN  4
                  MOVE    WRK-SYS-MIJISI-ZAITEN(SYUKEI-IDX3)
                                         TO      RECE64-ZAITEN
@@ -2759,11 +2759,11 @@
                  END-IF
                  MOVE    WRK-SYS-MIJISI-ZAITEN(SYUKEI-IDX3)
                                         TO      RECE64-SYUTEN1
-                 IF    RECE62-RJNHKNNUM    =    SPACE
+      ***        IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190111790   TO      RECE64-SRYCDTOTAL
-                 ELSE
-                    MOVE    190809190   TO      RECE64-SRYCDTOTAL
-                 END-IF
+      ***        ELSE
+      ***           MOVE    190809190   TO      RECE64-SRYCDTOTAL
+      ***        END-IF
            END-EVALUATE
            MOVE    1                    TO      RECE64-SURYOUTOTAL
            MOVE    ZERO                 TO      RECE64-SYUTEN2
@@ -3789,23 +3789,23 @@
       *
            EVALUATE   SYUKEI-IDX3
                WHEN  2
-                 IF    RECE62-RJNHKNNUM    =    SPACE
+      ***        IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190080570   TO      RECE65-SRYCD(1)
-                 ELSE
-                    MOVE    190799770   TO      RECE65-SRYCD(1)
-                 END-IF
+      ***        ELSE
+      ***           MOVE    190799770   TO      RECE65-SRYCD(1)
+      ***        END-IF
                WHEN  3
-                 IF    RECE62-RJNHKNNUM    =    SPACE
+      ***        IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190111690   TO      RECE65-SRYCD(1)
-                 ELSE
-                    MOVE    190809090   TO      RECE65-SRYCD(1)
-                 END-IF
+      ***        ELSE
+      ***           MOVE    190809090   TO      RECE65-SRYCD(1)
+      ***        END-IF
                WHEN  4
-                 IF    RECE62-RJNHKNNUM    =    SPACE
+      ***        IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190111790   TO      RECE65-SRYCD(1)
-                 ELSE
-                    MOVE    190809190   TO      RECE65-SRYCD(1)
-                 END-IF
+      ***        ELSE
+      ***           MOVE    190809190   TO      RECE65-SRYCD(1)
+      ***        END-IF
            END-EVALUATE
       *
            MOVE    1                    TO  RECE65-SRYSURYO(1)
