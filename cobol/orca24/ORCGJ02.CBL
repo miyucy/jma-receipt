@@ -210,6 +210,7 @@
            03  IDJ                 PIC 9(04).
            03  IDJ1                PIC 9(01).
            03  IDJ2                PIC 9(04).
+           03  IDJ3                PIC 9(04).
       *
            03  IDX-S               PIC 9(04).
       *
@@ -217,6 +218,11 @@
            03  IDR                 PIC 9(04).
            03  IDR2                PIC 9(02).
            03  IDR3                PIC 9(04).
+      *
+           03  IDR4                PIC 9(04).
+           03  IDR5                PIC 9(04).
+           03  IDR6                PIC 9(04).
+           03  IDX-RRK2            PIC 9(04).
       *    受診履歴更新用
            03  IDX-JYU             PIC 9(04).
            03  IDX-JYU2            PIC 9(04).
@@ -242,6 +248,8 @@
            03  IDX-T               PIC 9(04).
            03  IDT                 PIC 9(04).
            03  IDX-SYU             PIC 9(04).
+      *
+           03  IDX-J025            PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -373,6 +381,7 @@
            03  WRK-MAE-RENNUM          PIC 9(01).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-DAY-S               PIC 9(03).
+           03  WRK-DAY-MAE             PIC 9(03).
            03  IDX-D1                  PIC 9(02).
            03  IDX-D2                  PIC 9(02).
       *****03  IDX-D3                  PIC 9(04).
@@ -442,7 +451,9 @@
       *    一括回数エラー
            03  WRK-SPA-GMN-DAY-G.
                05  WRK-SPA-GMN-DAY     PIC 9(03)    OCCURS   31.
-      *
+      *    回数保存
+           03  WRK-REN             PIC 9(01).
+     *
        01  TBL-GRP-AREA.
            03  TBL-GRP-OCC             OCCURS   10.
                05  TBL-SRYKA           PIC X(02).
@@ -1037,8 +1048,11 @@
                    MOVE    SPA-GNAI-DAY (1 IDX )   TO  SPA-GMN-DAY(IDX)
                END-IF
            END-PERFORM
-      *    受診履歴の剤変更
-      *****PERFORM 410122-RRK-ZAINUM-SEC
+      *    同日複数回数の判定
+           PERFORM 410129-DAY-NAICHK-SEC
+           IF      FLG-END             =   1
+               GO      TO      3002-J022-HEN-EXT
+           END-IF
       *
            IF      SPA-GMN-CUR         =   2
                IF      SPA-DAY-IDX             >=  SPA-SRYMATU
@@ -1046,6 +1060,11 @@
                ELSE
                    MOVE    2                   TO  SPA-GMN-CUR
                    ADD     1                   TO  SPA-DAY-IDX
+               END-IF
+           ELSE
+               IF     (SPA-ERRCD           =   SPACE )  AND
+                      (SPA-GMN-IKKATU  NOT =   SPACE )
+                   MOVE    SPACE               TO  SPA-GMN-IKKATU
                END-IF
            END-IF
       *
@@ -2423,29 +2442,6 @@
            MOVE    SPACE               TO  WRK-ZAIKEI
            MOVE    WRK-KEI-X           TO  WRK-ZAIKEI(10:)
       *
-      *
-      *    日本語変換
-      *    MOVE    SPACE               TO  WRK-ZAIKEIJ
-      *    MOVE    1                   TO  IDJ2
-      *    PERFORM VARYING     IDJ     FROM    1  BY  1
-      *            UNTIL       IDJ     >   40
-      *       EVALUATE     WRK-ZAIKEI (IDJ:1)
-      *            WHEN    SPACE
-      *                MOVE    "　"            TO  WRK-ZAIKEIJ (IDJ2:2)
-      *                ADD     2               TO  IDJ2
-      *            WHEN    "X"
-      *                MOVE    "×"            TO  WRK-ZAIKEIJ (IDJ2:2)
-      *                ADD     2               TO  IDJ2
-      *            WHEN    "1"  THRU  "9"
-      *                MOVE    WRK-ZAIKEI (IDJ:1)  TO  IDJ1
-      *                MOVE    TBL-SUJI (IDJ1)     TO  WRK-ZAIKEIJ (IDJ2:2)
-      *                ADD     2                   TO  IDJ2
-      *            WHEN    "0"
-      *                MOVE    TBL-SUJI (10)       TO  WRK-ZAIKEIJ (IDJ2:2)
-      *                ADD     2                   TO  IDJ2
-      *        END-EVALUATE
-      *****END-PERFORM
-      *
            IF      SRY-JIHIMONEY (IDZ)     =   ZERO
                MOVE    SPACE               TO  SPA-GMN-TTENSU (IDG)
            ELSE
@@ -3792,41 +3788,32 @@
                                                     (1 SPA-DAY-IDX))
                    OR (SPA-DAY-IDX         =   IDX-IN )
       *            今回変更があり、履歴がある時
-                   IF     (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )  OR
-                          (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )
+      *!           IF     (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )  OR
+      *!                  (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )
+                   IF    ((SPA-GNAI-DAY (2 SPA-DAY-IDX)  >   ZERO  ) AND
+                          (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )) OR
+                         ((SPA-GNAI-DAY (2 SPA-DAY-IDX)  >   ZERO  ) AND
+                          (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )) OR
+                         ((SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  ) AND
+                          (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  ))
                         PERFORM 410121-J022-SET-SEC
                    END-IF
                 END-IF
                 IF     FLG-END             =   ZERO
-                    MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
+                   MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
                                                TO  SPA-GNAI-DAY
                                                         (1 SPA-DAY-IDX)
-                   IF     (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )  OR
-                          (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )
-                       INITIALIZE                  SPA-J022-AREA
-                       MOVE    1               TO  SPA-NAI-DAYCHK
-                                                         (SPA-DAY-IDX)
-                       MOVE    SPA-GNAI-DAY (2 SPA-DAY-IDX)
-                                               TO  SPA-NAI-DAY1
-                                                        (SPA-DAY-IDX)
-                       MOVE    SPA-GNAI-DAY (3 SPA-DAY-IDX)
-                                               TO  SPA-NAI-DAY2
-                                                        (SPA-DAY-IDX)
-                       MOVE    SPA-GNAI-DAY (4 SPA-DAY-IDX)
-                                               TO  SPA-NAI-DAY3
-                                                        (SPA-DAY-IDX)
-      *************PERFORM 410121-J022-SET-SEC
-      *************GO      TO      41012-DAY-CHK-EXT
+                   MOVE    2                   TO  IDR2
+                   IF     (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )
+                       MOVE    3               TO  IDR2
                    ELSE
-                       MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
-                                           TO  SPA-GNAI-DAY
-                                                        (1 SPA-DAY-IDX)
-                       MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
-                                           TO  SPA-GNAI-DAY
-                                                        (2 SPA-DAY-IDX)
-      ***************  受診履歴の剤変更
-      **************   PERFORM 410122-RRK-ZAINUM-SEC
+                       IF     (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )
+                           MOVE    4               TO  IDR2
+                       END-IF
                    END-IF
+                   MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
+                                               TO  SPA-GNAI-DAY
+                                                    (IDR2 SPA-DAY-IDX)
                END-IF
            END-PERFORM
       *
@@ -3971,10 +3958,6 @@
       *    剤回数一括入力処理
       *****************************************************************
        41019-IKKATU-CHK-SEC             SECTION.
-      *TEST
-           DISPLAY "41019-IKKATU-CHK-SEC:" 
-               ",J02-IKKATU:" J02-IKKATU
-      *TEST
       *
            MOVE    11                  TO  SPA-GMN-CUR
       *
@@ -6174,7 +6157,8 @@
       *    現在表示されている内容を更新する
       *    診療会計マスター更新
            PERFORM 4901-SRYACCT-UPD-SEC
-           IF      SPA-ERRCD      NOT  =   SPACE
+           IF     (SPA-ERRCD      NOT  =   SPACE ) OR
+                  (FLG-END             =   1     )
                GO      TO       4401-MAEGMN-SYORI-EXT
            END-IF
       *
@@ -6234,7 +6218,8 @@
       *    現在表示されている内容を更新する
       *    診療会計マスター更新
            PERFORM 4901-SRYACCT-UPD-SEC
-           IF      SPA-ERRCD      NOT  =   SPACE
+           IF     (SPA-ERRCD      NOT  =   SPACE ) OR
+                  (FLG-END             =   1     )
                GO      TO       4501-ATOGMN-SYORI-EXT
            END-IF
       *
@@ -6367,6 +6352,8 @@
       *****************************************************************
        4701-RRK-ZAINUM-SEC             SECTION.
       *
+           MOVE    SPA-NAI-BANGO       TO  IDX
+      *
            PERFORM   VARYING   IDX-IN2         FROM    1   BY  1
                      UNTIL    (IDX-IN2         >   31  )  OR
                               (SPA-ERRCD   NOT =   SPACE)
@@ -6390,7 +6377,8 @@
            MOVE    ZERO                TO  WRK-RRK-HKNKBN
            MOVE    SPACE               TO  WRK-RRK-DRCD
            PERFORM VARYING     IDR     FROM    1   BY   1
-                   UNTIL       IDR     >   SPA-RRK-MAX
+                   UNTIL      (IDR     >   SPA-RRK-MAX  )  OR
+                              (IDX-RRK     >   ZERO     )
                MOVE    SPA-RRK-RRKYMD(IDR)(7:2)    TO  IDR2
                IF     (IDR2                =   SPA-DAY-IDX    ) AND
                       (SPA-RRK-SRYKA (IDR) =   SPA-NAIGMN-SRYKA)
@@ -6415,53 +6403,7 @@
                       (SPA-RRK-SRYKA (IDR) =   SPA-NAIGMN-SRYKA) AND
                       (SPA-RRK-HKNCOMBI(IDR)   =  SPA-GMN-HKNCOMBI)
                    MOVE    IDR                 TO  IDX-RRK
-                   MOVE    SPA-RRK-RENNUM (IDR)    TO  IDX2
-                   ADD     1                   TO  IDX2
-                   MOVE    SPA-GNAI-DAY (IDX2 SPA-DAY-IDX)
-                                               TO  WRK-DAY-S
-      *            対象剤判定
-                   MOVE    ZERO                TO  WRK-IDR
-                   MOVE    ZERO                TO  WRK-IDR-MAX
-                   PERFORM VARYING     IDR3    FROM    1   BY   1
-      *********************UNTIL       IDR3    >   60
-                           UNTIL       IDR3    >   135
-                       IF      SPA-RRK-ZAINUM (IDX-RRK IDR3)
-                                                  =   SPA-GMN-ZAINUM
-                           MOVE    IDR3           TO  WRK-IDR
-                       END-IF
-                       IF      SPA-RRK-ZAINUM (IDX-RRK IDR3)
-                                              NOT =  ZERO
-                           MOVE    IDR3           TO  WRK-IDR-MAX
-                       END-IF
-                   END-PERFORM
-      *
-                   IF      WRK-IDR             =   ZERO
-                       IF      WRK-DAY-S           >   ZERO
-      *                    剤追加
-                           ADD     1               TO  WRK-IDR-MAX
-                           IF      WRK-IDR-MAX     <=  135
-                               MOVE    SPA-GMN-ZAINUM
-                                                   TO  SPA-RRK-ZAINUM
-                                                 (IDX-RRK WRK-IDR-MAX)
-                               MOVE    SPA-NAIGMN-SRYKBN
-                                                   TO  SPA-RRK-SRYKBN
-                                                 (IDX-RRK WRK-IDR-MAX)
-      *TEST
-          DISPLAY "J02 SPA-GMN-ZAINUM:" SPA-GMN-ZAINUM
-               ",SPA-NAIGMN-SRYKBN:" SPA-NAIGMN-SRYKBN
-      *TEST
-                           END-IF
-                       END-IF
-                   ELSE
-                       IF      WRK-DAY-S           =   ZERO
-      *                    剤削除
-                           MOVE    ZERO            TO  SPA-RRK-ZAINUM
-      ***************************************    (IDX-RRK WRK-IDR-MAX)
-                                                 (IDX-RRK WRK-IDR)
-                           MOVE    SPACE           TO  SPA-RRK-SRYKBN
-                                                 (IDX-RRK WRK-IDR)
-                       END-IF
-                   END-IF
+                   PERFORM 4101220-ZAINUM-HEN-SEC
                END-IF
            END-PERFORM
       *    対象がなかった時追加
@@ -6479,6 +6421,120 @@
       *
            .
        410122-RRK-ZAINUM-EXT.
+           EXIT.
+      *            
+      *****************************************************************
+      *    回数より受診履歴編集処理
+      *****************************************************************
+       4101220-ZAINUM-HEN-SEC             SECTION.
+      *
+           PERFORM VARYING     IDR4    FROM    2   BY   1
+                   UNTIL       IDR4    >   4
+               IF     (SPA-GNAI-DAY (IDR4 SPA-DAY-IDX)
+                                       NOT =
+                       SPA-NAI-DAY (IDX IDR4 SPA-DAY-IDX) )  AND
+                     ((SPA-GNAI-DAY (IDR4 SPA-DAY-IDX)
+                                           >   ZERO  )  OR
+                      (SPA-NAI-DAY (IDX IDR4 SPA-DAY-IDX)
+                                           >   ZERO  ) )
+                   MOVE    ZERO            TO  IDX-RRK2
+                   MOVE    ZERO            TO  IDR6
+                   PERFORM VARYING IDR5    FROM    IDX-RRK   BY   1
+                           UNTIL  (IDR5        >   SPA-RRK-MAX )  OR
+                                  (IDX-RRK2    >   ZERO        )
+                       IF     (SPA-RRK-RRKYMD(IDX-RRK)
+                                           =   SPA-RRK-RRKYMD(IDR5)) AND
+                              (SPA-RRK-SRYKA   (IDR5)
+                                           =   SPA-NAIGMN-SRYKA) AND
+                              (SPA-RRK-HKNCOMBI(IDR5)
+                                           =   SPA-GMN-HKNCOMBI )
+                           IF      SPA-RRK-RENNUM (IDR5)   >   3
+                               MOVE    4               TO  WRK-REN
+                           ELSE
+                               MOVE    SPA-RRK-RENNUM (IDR5)
+                                                       TO  WRK-REN
+                               ADD     1               TO  WRK-REN
+                           END-IF
+                           IF      WRK-REN             =   IDR4
+                               MOVE    IDR5            TO  IDX-RRK2
+                           ELSE
+                               IF      IDR6            =   ZERO
+                                   MOVE    IDR5            TO  IDR6
+                               END-IF
+                           END-IF
+                       END-IF
+                   END-PERFORM
+                   IF      IDX-RRK2            =   ZERO
+                       MOVE    IDR6            TO  IDX-RRK2
+                   END-IF
+                   IF      SPA-RRK-RENNUM (IDX-RRK2)   >   3
+                       MOVE    4               TO  WRK-REN
+                   ELSE
+                       MOVE    SPA-RRK-RENNUM (IDX-RRK2)
+                                               TO  WRK-REN
+                       ADD     1               TO  WRK-REN
+                   END-IF
+                   MOVE    SPA-GNAI-DAY (IDR4 SPA-DAY-IDX)
+                                               TO  WRK-DAY-S
+                   IF      IDR4            NOT =   WRK-REN
+                       ADD     WRK-DAY-S       TO  SPA-GNAI-DAY
+                                                 (WRK-REN SPA-DAY-IDX)
+                       MOVE    ZERO            TO  SPA-GNAI-DAY
+                                                 (IDR4 SPA-DAY-IDX)
+                       MOVE    WRK-REN         TO  IDR4
+                   END-IF
+                   MOVE    SPA-NAI-DAY (IDX IDR4 SPA-DAY-IDX)
+                                               TO  WRK-DAY-MAE
+      *            対象剤判定
+                   MOVE    ZERO                TO  WRK-IDR
+                   MOVE    ZERO                TO  WRK-IDR-MAX
+                   PERFORM VARYING     IDR3    FROM    1   BY   1
+      *********************UNTIL       IDR3    >   60
+                           UNTIL       IDR3    >   135
+                       IF      SPA-RRK-ZAINUM (IDX-RRK2 IDR3)
+                                                  =   SPA-GMN-ZAINUM
+                           MOVE    IDR3           TO  WRK-IDR
+                       END-IF
+                       IF      SPA-RRK-ZAINUM (IDX-RRK2 IDR3)
+                                              NOT =  ZERO
+                           MOVE    IDR3           TO  WRK-IDR-MAX
+                       END-IF
+                   END-PERFORM
+      *
+                   IF      WRK-IDR             =   ZERO
+                       IF      WRK-DAY-S           >   ZERO
+      *                    剤追加
+                           ADD     1               TO  WRK-IDR-MAX
+                           IF      WRK-IDR-MAX     <=  135
+                               MOVE    SPA-GMN-ZAINUM
+                                                   TO  SPA-RRK-ZAINUM
+                                                 (IDX-RRK2 WRK-IDR-MAX)
+                               MOVE    SPA-NAIGMN-SRYKBN
+                                                   TO  SPA-RRK-SRYKBN
+                                                 (IDX-RRK2 WRK-IDR-MAX)
+                           END-IF
+                       END-IF
+                   ELSE
+                       IF      WRK-DAY-S           =   ZERO
+      *                    剤削除
+                           MOVE    ZERO            TO  SPA-RRK-ZAINUM
+      ***************************************    (IDX-RRK WRK-IDR-MAX)
+                                                 (IDX-RRK2 WRK-IDR)
+                           MOVE    SPACE           TO  SPA-RRK-SRYKBN
+                                                 (IDX-RRK2 WRK-IDR)
+                       ELSE
+      *                    剤変更
+                           IF      WRK-DAY-S   NOT =   WRK-DAY-MAE
+                               MOVE    "1"         TO  SPA-RRK-UPD
+                                                             (IDX-RRK2)
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       4101220-ZAINUM-HEN-EXT.
            EXIT.
       *            
       *****************************************************************
@@ -7033,7 +7089,8 @@
            END-PERFORM
       *
            IF      FLG-ERR             =   ZERO
-               IF      TBL-MAE-ZAINUM-AREA =   ZERO
+               IF     (TBL-MAE-ZAINUM-AREA =   ZERO ) AND
+                      (SPA-RRK-UPD (IDX)   =   SPACE)
       *            剤がすべて同じ時、変更なし
                    GO      TO      49011-JYURRK-PARAUPD-EXT
                END-IF
@@ -7551,13 +7608,6 @@
            MOVE    ZERO                TO  WRK-GRP-DENPNUM
            PERFORM
                    UNTIL   FLG-SYUNOU      =   1
-      *TEST
-              DISPLAY "SYU-GRP-DENPNUM:" SYU-GRP-DENPNUM
-                  ",SYU-SRYYMD:" SYU-SRYYMD
-                  ",SYU-ACCT-UPDKBN:" SYU-ACCT-UPDKBN
-                  ",SYU-GRP-DENPNUM:" SYU-GRP-DENPNUM
-                  ",WRK-GRP-DENPNUM:" WRK-GRP-DENPNUM
-      *TEST
                IF     (SYU-GRP-DENPNUM     =   ZERO )  OR
                       (SYU-GRP-RENNUM      =   1    )
                    MOVE    ZERO                TO  WRK-GRP-DENPNUM
@@ -7655,16 +7705,16 @@
                END-IF
       *
                IF      FLG-ERR         =   1
-                   IF      SPA-J025-MAX        <=  100
+                   IF      IDX-J025        <=  100
                        MOVE    "エラ−"    TO  SPA-J025-KBNMEI
-                                                 (SPA-J025-MAX)
+                                                 (IDX-J025)
                    END-IF
                END-IF
                IF     (FLG-SYUNOU          =   ZERO )  AND
                       (FLG-ERR             =   ZERO )
-                   IF      SPA-J025-MAX        <=  100
+                   IF      IDX-J025        <=  100
                        MOVE    SYU-SKYMONEY    TO  SPA-J025-ATO-SKYMONEY
-                                                    (SPA-J025-MAX)
+                                                    (IDX-J025)
                    END-IF
                 END-IF
            END-PERFORM
@@ -7723,21 +7773,21 @@
            END-IF
       *
            IF      FLG-ERR         =   1
-               IF      SPA-J025-MAX        <=  100
+               IF      IDX-J025        <=  100
                    MOVE    "エラ−"    TO  SPA-J025-KBNMEI
-                                                 (SPA-J025-MAX)
-                   MOVE    "収納にまとめ作成分があります。"
+                                                 (IDX-J025)
+                   MOVE    "収納がまとめ入力分の為、"
                                        TO  SPA-J025-ERRMSG
                    MOVE
                    "再計算できませんので、診療行為で訂正して下さい"
-                                       TO  SPA-J025-ERRMSG(31:)
+                                       TO  SPA-J025-ERRMSG(25:)
                END-IF
            END-IF
            IF     (FLG-SYUNOU          =   ZERO )  AND
                   (FLG-ERR             =   ZERO )
-               IF      SPA-J025-MAX        <=  100
+               IF      IDX-J025        <=  100
                    MOVE    SYU-SKYMONEY    TO  SPA-J025-ATO-SKYMONEY
-                                                    (SPA-J025-MAX)
+                                                    (IDX-J025)
                END-IF
                IF      WRK-ACCT-UPDKBN     =   "2"
       *            入返金額
@@ -7851,15 +7901,30 @@
       *****************************************************************
        490122-J025-HENSYU-SEC           SECTION.
       *
+           MOVE    ZERO                TO  IDJ2
+           PERFORM VARYING     IDJ3     FROM    1   BY  1
+                   UNTIL       IDJ3     >   SPA-J025-MAX
+               IF      SYU-DENPNUM     =   SPA-J025-DENPNUM(IDJ3)
+                   MOVE    IDJ3            TO  IDJ2
+                   MOVE    SPA-J025-MAX    TO  IDJ3
+               END-IF
+           END-PERFORM
+           IF      IDJ2                >   ZERO
+               COMPUTE SPA-J025-MAX    =   SPA-J025-MAX   -   1
+               MOVE    IDJ2            TO  IDX-J025
+           ELSE
+               MOVE    SPA-J025-MAX    TO  IDX-J025
+           END-IF
+      *
            MOVE    SYU-DENPNUM         TO  SPA-J025-DENPNUM
-                                                    (SPA-J025-MAX)
+                                                    (IDX-J025)
            PERFORM VARYING     IDH     FROM    1   BY  1
                    UNTIL       IDH     >   SPA-HKN-MAX
                IF      SPA-GMN-THKNCOMBINUM (IDH)
                                            =   SYU-HKNCOMBINUM
                    MOVE    SPA-GMN-THKNCOMBIMEI (IDH)
                                            TO  SPA-J025-HKNCOMBI
-                                                    (SPA-J025-MAX)
+                                                    (IDX-J025)
                    MOVE    SPA-HKN-MAX     TO  IDH
                END-IF
            END-PERFORM
@@ -7868,25 +7933,25 @@
                IF      SYU-SRYKA       =   SPA-GMN-SRYKAL (IDH)
                    MOVE    SPA-GMN-SRYKAMEIL (IDH)
                                            TO  SPA-J025-SRYKA
-                                                    (SPA-J025-MAX)
+                                                    (IDX-J025)
                    MOVE    SPA-SRYKA-MAX   TO  IDH
                END-IF
            END-PERFORM
            MOVE    SYU-PTFTNRATE       TO  SPA-J025-FTNRATE
-                                                    (SPA-J025-MAX)
+                                                    (IDX-J025)
            MOVE    SYU-SRYYMD          TO  WRK-SYMD
            PERFORM 41012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-J025-SRYYMD
-                                                    (SPA-J025-MAX)
+                                                    (IDX-J025)
            MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
            PERFORM 41012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-J025-DENPPRTYMD
-                                                    (SPA-J025-MAX)
+                                                    (IDX-J025)
            MOVE    SYU-SKYMONEY        TO  SPA-J025-MAE-SKYMONEY
-                                                    (SPA-J025-MAX)
+                                                    (IDX-J025)
            IF      SYU-ACCT-UPDKBN     =   "2"
                MOVE    "新規"          TO  SPA-J025-KBNMEI
-                                                    (SPA-J025-MAX)
+                                                    (IDX-J025)
            END-IF
       *
            .
@@ -8967,7 +9032,6 @@
                PERFORM 49012-SYUNOU-SAIKEISAN-SEC
                IF      FLG-END         =   1
                    MOVE    10              TO  SPA-J025-SYORI
-               
                END-IF
            END-IF
       *
