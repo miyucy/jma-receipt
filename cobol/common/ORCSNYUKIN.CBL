@@ -140,22 +140,25 @@
            IF    LNK-SCNYUKIN-SYORIKBN    =   "1"   OR   "2"
                CONTINUE
            ELSE
-               MOVE    11              TO  LNK-SCNYUKIN-RC
+               MOVE    10              TO  LNK-SCNYUKIN-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
            IF    LNK-SCNYUKIN-KOUSHINKBN  =   "1"   OR   "2"
                CONTINUE
            ELSE
-               MOVE    11              TO  LNK-SCNYUKIN-RC
+               MOVE    10              TO  LNK-SCNYUKIN-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
            IF    LNK-SCNYUKIN-NYKNKNRKBN   = "1" OR "2" OR "3" OR
                                              "4" OR "5"
-               CONTINUE
-           ELSE
-               MOVE    11              TO  LNK-SCNYUKIN-RC
+               MOVE    10              TO  LNK-SCNYUKIN-RC
+               GO  TO  100-PRM-CHK-EXT
+           END-IF
+      *
+           IF    LNK-SCNYUKIN-NYUKIN-MONEY   = ZERO
+               MOVE    10              TO  LNK-SCNYUKIN-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
