@@ -19,7 +19,6 @@
        PROGRAM-ID.             ORCGI49.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 入院会計照会
       *  コンポーネント名  : Ｐカ入力（Ｉ４９）
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -27,7 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *
+      * 01.00.01     MCC-多々納   04/05/07  会計照会と同じ機能とする
       *****************************************************************
       *
       *
@@ -39,11 +38,11 @@
       *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    会計照会共通パラメタ
+      *    診療行為用共通パラメタ
            COPY    "I4COMMON-SPA".
       *
       *    画面スパ領域
-           COPY    "I4SCR-SPA4".
+           COPY    "I44SCR-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -88,6 +87,7 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -111,6 +111,7 @@
            COPY    "I4ERR.INC".
            COPY    "I4ID1.INC".
       *
+      *
        PROCEDURE                   DIVISION    USING
            MCPAREA
            SPAAREA
@@ -122,18 +123,23 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           MOVE    SPA-COMMON      TO  SPA-AREA.
-           MOVE    SPA-FREE        TO  SPA-I44-I48.
-           MOVE    SPA-WORK        TO  SPA-I4KYOUTU.
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
+           INITIALIZE                  WRK-AREA
       *
-           MOVE    SPACE           TO  SPA-ERRCD.
-           MOVE    ZERO            TO  FLG-END.
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-I44
+           MOVE    SPA-WORK            TO  SPA-I4KYOUTU
+      *
+      *
+           MOVE    SPACE           TO  SPA-ERRCD
+           MOVE    ZERO            TO  FLG-END
       *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN    "PUTG"          ALSO   "CLICKED"
+               WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
       *    入力
                WHEN      OTHER
@@ -143,43 +149,39 @@
       *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
-           END-IF.
+           END-IF
       *
-           MOVE    SPA-I4KYOUTU    TO  SPA-WORK.
-           MOVE    SPA-AREA        TO  SPA-COMMON.
-           MOVE    SPA-I44-I48     TO  SPA-FREE.
+           MOVE    SPA-I4KYOUTU        TO  SPA-WORK.
+           MOVE    SPA-AREA            TO  SPA-COMMON.
+           MOVE    SPA-I44             TO  SPA-FREE
       *
-           EXIT    PROGRAM.
+           .
+           EXIT    PROGRAM
+           .
       *
       *****************************************************************
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  CNT-AREA.
-           INITIALIZE                  WRK-AREA.
-           INITIALIZE                  IDX-AREA.
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
+      *    INITIALIZE                  SPA-I49-DATA
       *
-      *    エラー画面より
-           IF      SPA-MOTOPG          =   "I4ERR"
-               MOVE    SPACE               TO  SPA-MOTOPG
-           ELSE
-      *        初期画面編集
-               PERFORM 300-SCREEN-SEC
-           END-IF.
+      *    初期画面編集
+      *    PERFORM 300-SCREEN-SEC
       *
       *    画面編集
-           PERFORM 500-GMNHEN-SEC.
-      *
-           MOVE    SPACE               TO  LNK-KYOUTU.
+           PERFORM 500-GMNHEN-SEC
       *
            MOVE   "NEW"                TO  MCP-PUTTYPE.
            MOVE   "I49"                TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *
-           MOVE    1                   TO  FLG-END.
-      *
+           MOVE    1                   TO  FLG-END
+           .
        100-INIT-EXT.
            EXIT.
       *****************************************************************
@@ -187,8 +189,11 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-           PERFORM 310-SPASET-SEC.
       *
+           PERFORM 310-SPASET-SEC
+      *
+           MOVE    1               TO  SPA-GMN-CUR
+           .
        3OO-SCREEN-EXT.
            EXIT.
       *
@@ -197,10 +202,8 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-           INITIALIZE              SPA-I49GMN-AREA.
-           MOVE    SPACE           TO  I49-PIN.
-           MOVE    SPACE           TO  I49-PED.
-      *
+           INITIALIZE              SPA-I49GMN-AREA
+           .
        31O-SPASET-EXT.
            EXIT.
       *
@@ -209,11 +212,12 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           MOVE    SPACE               TO  I49-PIN.
-           MOVE    SPA-I49-PED         TO  I49-PED.
+           MOVE    SPACE               TO  I49-PIN
+           MOVE    SPA-I49-PED         TO  I49-PED
       *
-           PERFORM 5001-MAPCUR-SEC.
+           PERFORM 5001-MAPCUR-SEC
       *
+           .
        500-GMNHEN-EXT.
            EXIT.
       *
@@ -222,8 +226,9 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-           MOVE    "PIN"               TO  MCP-WIDGET.
+           MOVE    "PIN"               TO  MCP-WIDGET
       *
+           .
        5001-MAPCUR-EXT.
            EXIT.
       *
@@ -241,6 +246,7 @@
                        EVALUATE    MCP-WIDGET
                            WHEN    "BSH"
                                PERFORM 410112-SHIFT-SEC
+      *----(01.00.01) LINE ADD START ----------------------------------
       *                    後退
                            WHEN     "BAK"
                                PERFORM 410113-BACK-SEC
@@ -248,9 +254,10 @@
                            WHEN     "BEND"
                                PERFORM 210-BACK
                        END-EVALUATE
+      *----(01.00.01) LINE ADD END   ----------------------------------
                    END-IF
-           END-EVALUATE.
-      *
+           END-EVALUATE
+           .
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
@@ -262,8 +269,8 @@
       *        番号入力
                WHEN    "ACTIVATE"      ALSO    "PIN"
                    PERFORM 41011-PIN-CHK-SEC
-           END-EVALUATE.
-      *
+           END-EVALUATE
+           .
        200-ENTRY-EXT.
            EXIT.
       *
@@ -281,16 +288,14 @@
                    WHEN   (I49-PIN(1:2)       =   "--") AND
                           (SPA-I49-IDX        >   0   )
                        MOVE    SPACE          TO  SPA-I49-PEDX
-                                                          (SPA-I49-IDX)
+                                                         (SPA-I49-IDX)
                        COMPUTE SPA-I49-IDX    =   SPA-I49-IDX   -   1
-                       MOVE    SPA-I49-PED    TO  SPA-I49-DATA
       *        空白 
                    WHEN   (I49-PIN(1:2)        =   "..") AND
                           (SPA-I49-IDX         >   0)
                        ADD    1               TO  SPA-I49-IDX
                        MOVE   SPACE           TO  SPA-I49-PEDX
                                                         (SPA-I49-IDX)
-                       MOVE    SPA-I49-PED    TO  SPA-I49-DATA
       *        小文字変換
                    WHEN   (I49-PIN(1:1)        =   "+")  AND
                           (SPA-I49-IDX         >   0  )
@@ -299,26 +304,15 @@
                    WHEN    OTHER
                        MOVE    I49-PIN         TO  WRK-PIN
                        IF     (WRK-PIN(1:1)    =   SPACE) OR
-                              (WRK-PIN(2:1)    =   SPACE)
-                           CONTINUE
+                              (WRK-PIN(2:1)    =   SPACE) OR
+                              (PIN10       NOT NUMERIC   ) OR
+                              (PIN1        NOT NUMERIC   ) OR
+                              (WRK-PIN         =   "82" OR "84") OR
+                             ((PIN10           >=  1) AND
+                              (PIN10           <=  8) AND
+                              (PIN1            >   5))
+                            CONTINUE
                        ELSE
-                           IF      (PIN10       NOT NUMERIC   ) OR
-                                   (PIN1        NOT NUMERIC   )
-                               MOVE    "0001"          TO  SPA-ERRCD
-                               GO      TO      41011-PIN-CHK-EXT
-                           END-IF
-                           IF      (PIN10        =   1  OR  2  OR  3
-                                                 OR  4  OR  5  OR  6
-                                                 OR  7) AND
-                                   ((PIN1         =   0) OR
-                                    (PIN1         >   5))
-                               MOVE    "0001"          TO  SPA-ERRCD
-                               GO      TO      41011-PIN-CHK-EXT
-                           END-IF
-                           IF      (PIN9        =   80  OR  82  OR  84)
-                               MOVE    "0001"          TO  SPA-ERRCD
-                               GO      TO      41011-PIN-CHK-EXT
-                           END-IF
                            IF      SPA-I49-IDX    >=  10
                                MOVE    "0002"          TO  SPA-ERRCD
                                GO      TO      41011-PIN-CHK-EXT
@@ -328,8 +322,8 @@
                        END-IF
       *
                END-EVALUATE
-           END-IF.
-      *
+           END-IF
+           .
        41011-PIN-CHK-EXT.
            EXIT.
       *
@@ -350,12 +344,8 @@
                    ELSE
                        COMPUTE IDX1        =   PIN9    -   10
                    END-IF
-           END-EVALUATE.
-           IF      SPA-I49-IDX    >=  10
-               MOVE    "0002"          TO  SPA-ERRCD
-               GO      TO      410111-PIN-SET-EXT
-           END-IF.
-           MOVE    PKANA(IDX1)         TO  WRK-PKANA.
+           END-EVALUATE
+           MOVE    PKANA(IDX1)         TO  WRK-PKANA
            IF     (WRK-PKANA           =   "゜"  ) AND
                   (SPA-I49-IDX         >   0     )
                EVALUATE    SPA-I49-PEDX (SPA-I49-IDX)
@@ -424,12 +414,11 @@
                ELSE
                    ADD     1               TO  SPA-I49-IDX
                END-IF
-           END-IF.
+           END-IF
       *
            MOVE    WRK-PKANA           TO  SPA-I49-PEDX
-                                                (SPA-I49-IDX).
-           MOVE    SPA-I49-PED         TO  SPA-I49-DATA.
-      *
+                                                (SPA-I49-IDX)
+           .
        410111-PIN-SET-EXT.
            EXIT.
       *
@@ -440,9 +429,9 @@
       *
            IF      SPA-I49-IDX         =   0
                GO      TO      410112-SHIFT-EXT
-           END-IF.
+           END-IF
       *
-           MOVE    SPACE               TO  WRK-PKANA.
+           MOVE    SPACE               TO  WRK-PKANA
            EVALUATE    SPA-I49-PEDX (SPA-I49-IDX)
                WHEN    "ア"
                    MOVE    "ァ"            TO  WRK-PKANA
@@ -464,17 +453,17 @@
                    MOVE    "ュ"            TO  WRK-PKANA
                WHEN    "ヨ"
                    MOVE    "ョ"            TO  WRK-PKANA
-           END-EVALUATE.
+           END-EVALUATE
       *
            IF      WRK-PKANA       NOT =   SPACE
                MOVE    WRK-PKANA           TO  SPA-I49-PEDX
                                                 (SPA-I49-IDX)
-           END-IF.
-           MOVE    SPA-I49-PED         TO  SPA-I49-DATA.
-      *
+           END-IF
+           .
        410112-SHIFT-EXT.
            EXIT.
       *
+      *----(01.00.01) LINE ADD START ----------------------------------
       *****************************************************************
       *    後退　処理
       *****************************************************************
@@ -484,32 +473,32 @@
            IF      SPA-I49-IDX        >   0
                MOVE    SPACE          TO  SPA-I49-PEDX(SPA-I49-IDX)
                COMPUTE SPA-I49-IDX    =   SPA-I49-IDX   -   1
-           END-IF.
-           MOVE    SPA-I49-PED         TO  SPA-I49-DATA.
-      *
+           END-IF
+           .
        410113-BACK-EXT.
            EXIT.
+      *----(01.00.01) LINE ADD END   ----------------------------------
       *
       *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "I44"               TO  SPA-SAKIPG.
-           MOVE    "I49"               TO  SPA-MOTOPG.
+           MOVE    SPA-I49-PED         TO  SPA-I49-DATA
+      *
+           MOVE    "I44"               TO  SPA-SAKIPG
+           MOVE    "I49"               TO  SPA-MOTOPG
+      *
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE.
-           MOVE    "I44"               TO  MCP-WINDOW.
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
-           MOVE    SPA-I4KYOUTU        TO  SPA-WORK.
+           PERFORM 900-PUT-WINDOW
       *
-           MOVE    SPA-KYOUTU          TO  LNK-COMMON.
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU.
+           MOVE    1                   TO  FLG-END
       *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END.
-      *
+           .
        210-BACK-EXT.
            EXIT.
       *
@@ -518,18 +507,18 @@
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
-           PERFORM 500-GMNHEN-SEC.
+           PERFORM 500-GMNHEN-SEC
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
                GO      TO      500-SET-SCREEN-EXT
-           END-IF.
+           END-IF
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
            MOVE    "I49"               TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
-      *
+           .
        500-SET-SCREEN-EXT.
            EXIT.
       *
@@ -537,30 +526,30 @@
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
-           MOVE    SPACE               TO  SPA-ERRMSG.
+           MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
                    MOVE    "入力エラー"        TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "１０文字までです"  TO  SPA-ERRMSG
-           END-EVALUATE.
+           END-EVALUATE
       *
-           MOVE    SPACE               TO  I4ERR.
-           MOVE    SPA-ERRCD           TO  I4ERR-ERRCODE.
-           MOVE    SPA-ERRMSG          TO  I4ERR-ERRMSG.
-           MOVE    "B01"               TO  MCP-WIDGET.
+           MOVE    SPACE               TO  I4ERR
+           MOVE    SPA-ERRMSG          TO  I4ERR-ERRMSG
+           MOVE    "B01"               TO  MCP-WIDGET
       *
-           MOVE    "I49"               TO  SPA-MOTOPG.
-           MOVE    "I4ERR"             TO  SPA-SAKIPG.
+           MOVE    "I49"               TO  SPA-MOTOPG
+           MOVE    "I4ERR"             TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE.
            MOVE    "I4ERR"             TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *
-           MOVE    1                   TO  FLG-END.
+           MOVE    1                   TO  FLG-END
       *
+           .
        510-ERRMSG-EXT.
            EXIT.
       *
@@ -575,6 +564,7 @@
                                 ORCMCPAREA
                                 MCPDATA-REC.
       *
+           .
        900-PUT-WINDOW-EXT.
            EXIT.
       *

@@ -20,7 +20,7 @@
       ********************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 入院会計照会
-      *  コンポーネント名  : チェック（Ｉ４３）
+      *  コンポーネント名  : レセコメント（Ｉ４３）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  02.09.19    ひさなが      新規作成
@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.11.17  更新日付編集対応
+      *  02.00.00    NACL-多々納  04/05/06  会計照会と同じ機能とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -49,8 +50,6 @@
       *    画面スパ領域
            COPY    "I4SCR-SPA".
       *
-           COPY    "I4SCR-SPA3".
-      *
       *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
@@ -61,8 +60,10 @@
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-RECECOM         PIC 9(01).
            03  FLG-EXAMPLE         PIC 9(01).
-           03  FLG-NYUINACCT       PIC 9(01).
+           03  FLG-JYURRK          PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-NYUINACCT       PIC 9(01).
       *
            03  FLG-HKNCOMBICHK     PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -70,12 +71,9 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
-           03  IDX1                PIC 9(04).
-           03  IDX2                PIC 9(04).
-           03  IDX3                PIC 9(04).
-           03  IDX4                PIC 9(04).
            03  IDY                 PIC 9(04).
-           03  IDZ                 PIC 9(04).
+           03  IDH                 PIC 9(04).
+           03  IDX1                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -84,8 +82,8 @@
            03  WRK-HKNCOMBIMEI     PIC X(100).
            03  WRK-HKNKBN-MEI      PIC X(02).
       *
-           03  WRK-NSRYKA          PIC X(02).
-           03  WRK-NSRYKAMEI       PIC X(20).
+           03  WRK-SRYKA           PIC X(02).
+           03  WRK-SRYKAMEI        PIC X(20).
       *
            03  WRK-SELNUM          PIC 9(03).
            03  WRK-SELNUM2         PIC 9(03).
@@ -97,20 +95,19 @@
       *
            03  WRK-JIDMSG          PIC X(80).
       *
+      *    コラムリスト位置
+           03  WRK-I43-RECE-ROW        PIC S9(09).
+           03  FLG-GMN-INIT            PIC  9(01).
+      *
       *    保険組合せワーク
            03  WRK-I43-HKNCOMB-COMB.
-               05  WRK-I43-HKN-LIST    OCCURS  10.
+               05  WRK-I43-HKN-LIST    OCCURS  30.
                    07  WRK-I43-THKNCOMBINUM    PIC X(04).
                    07  WRK-I43-THKNCOMBY1      PIC X(01).
                    07  WRK-I43-THKNCOMBIMEI    PIC X(100).
                    07  WRK-I43-FLG             PIC X(01).
                    07  WRK-I43-RSI-HKNKBN      PIC X(01).
-               05  WRK-I43-HKNMAX              PIC 9(04).
-      *
-      *    入院科ワーク
-           03  WRK-I43-NSRYKA-AREA.
-               05  WRK-I43-NSRYKA-LIST    OCCURS  100.
-                   07  WRK-I43-NSRYKA          PIC X(02).
+                05  WRK-I43-HKNMAX              PIC 9(04).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -127,6 +124,10 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+           COPY    "CPSK1005.INC".
+      *
       *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
@@ -138,6 +139,10 @@
       *    雛形
        01  EXAMPLE-REC.
            COPY    "CPEXAMPLE.INC".
+      *
+      *    受診履歴
+       01  JYURRK-REC.
+           COPY    "CPJYURRK.INC".
       *
       *    患者労災保険情報
        01  PTRSIINF-REC.
@@ -161,10 +166,14 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    保険組合せセット領域
+           COPY    "CPORCSHKNSET.INC".
+      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
       *    ＤＢ検索
+      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
@@ -202,18 +211,22 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           MOVE    SPA-COMMON      TO  SPA-AREA.
-           MOVE    SPA-FREE        TO  SPA-I43.
-           MOVE    SPA-WORK        TO  SPA-I4KYOUTU.
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  WRK-AREA
       *
-           MOVE    SPACE           TO  SPA-ERRCD.
-           MOVE    ZERO            TO  FLG-END.
+           MOVE    SPA-COMMON      TO  SPA-AREA.
+           MOVE    SPA-FREE        TO  SPA-I41
+           MOVE    SPA-WORK        TO  SPA-I4KYOUTU
+      *
+           MOVE    SPACE           TO  SPA-ERRCD
+           MOVE    ZERO            TO  FLG-END
       *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN    "PUTG"          ALSO   "CLICKED"
+               WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
       *    入力
                WHEN      OTHER
@@ -223,43 +236,46 @@
       *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
-           END-IF.
+           END-IF
       *
-           MOVE    SPA-I4KYOUTU    TO  SPA-WORK.
-           MOVE    SPA-AREA        TO  SPA-COMMON.
-           MOVE    SPA-I43         TO  SPA-FREE.
+           MOVE    SPA-I4KYOUTU    TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-I41         TO  SPA-FREE
       *
-           EXIT    PROGRAM.
+           .
+           EXIT    PROGRAM
+           .
       *
       *****************************************************************
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  FLG-AREA.
-           INITIALIZE                  STS-AREA.
       *    エラー画面より
            IF      SPA-MOTOPG          =   "I4ERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
+      *
       *        初期画面編集
                PERFORM 300-SCREEN-SEC
                IF      FLG-END         =   1
                    GO      TO      100-INIT-EXT
                END-IF
+      *
       *        画面編集
                PERFORM 500-GMNHEN-SEC
-           END-IF.
+           END-IF
       *
-           MOVE    SPACE               TO  LNK-KYOUTU.
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE   "NEW"                TO  MCP-PUTTYPE.
            MOVE   "I43"                TO  MCP-WINDOW.
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END.
+           MOVE    1                   TO  FLG-END
+           .
       *
        100-INIT-EXT.
            EXIT.
@@ -269,32 +285,36 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
+      *
            EVALUATE    SPA-MOTOPG(1:5)
       *            文例画面より
-               WHEN    "I45  "
-                   MOVE    SPACE           TO  SPA-IIDCD
+               WHEN    "I45"
+                   IF      SPA-I45-SELNUM     NOT =   ZERO
+                       MOVE    1                   TO  SPA-I43-CUR
+                       MOVE    SPACE               TO  SPA-IIDCD
+                       GO      TO      300-SCREEN-EXT
+                   END-IF
+                   MOVE    1                   TO  SPA-I43-CUR
+                   GO      TO      300-SCREEN-EXT
       *            確認画面より
                WHEN    "I4ID1"
-                   PERFORM 3003-JID1-SET-SEC
+                   PERFORM 3003-I4ID1-SET-SEC
                    MOVE    SPACE           TO  SPA-IIDCD
                    GO      TO      300-SCREEN-EXT
-           END-EVALUATE.
+           END-EVALUATE
       *
-           MOVE    LNK-COMMON      TO  SPA-KYOUTU.
-           MOVE    LNK-SCRSPA      TO  SPA-I4.
-           MOVE    SPA-WORK        TO  SPA-I4KYOUTU.
+           PERFORM                     310-SPA-SET-SEC
       *
-           PERFORM 310-SPA-SET-SEC.
+           MOVE    1                   TO  SPA-I43-CUR
       *
-           MOVE    1               TO  SPA-I43-CUR.
-      *
+           .
        300-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
       *     確認画面よりの処理
       *****************************************************************
-       3003-JID1-SET-SEC                  SECTION.
+       3003-I4ID1-SET-SEC                  SECTION.
       *
            EVALUATE    SPA-IIDCD
                WHEN    "0101"
@@ -321,9 +341,10 @@
                    ELSE
                        MOVE    1                   TO  SPA-I43-CUR
                    END-IF
-           END-EVALUATE.
       *
-       3003-JID1-SET-EXT.
+           END-EVALUATE
+           .
+       3003-I4ID1-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -331,27 +352,34 @@
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
       *
-           INITIALIZE                  SPA-I43-AREA.
-           IF      SPA-MOTOPG(1:3)    =   "I41"
-               INITIALIZE                  SPA-I43-I45-AREA
-           END-IF.
+           MOVE    1                   TO  FLG-GMN-INIT
       *
-           MOVE    SPA-NAI-SRYYM-41    TO  SPA-I43-SRYYMS.
-           MOVE    SPA-GMN-SRYYM-41    TO  SPA-I43-SRYYM.
+           INITIALIZE                  SPA-I43-AREA
+      *
+           MOVE    SPA-I40-SRYYMD (1:6) TO  SPA-I43-SRYYMS
+           MOVE    SPA-I40-SRYYMDW(1:6) TO  SPA-I43-SRYYM
            IF      SPA-GMN-PTID        =   ZERO
                MOVE    2               TO  SPA-I43-SYORI
                GO      TO      310-SPA-SET-EXT
-           END-IF.
+           END-IF
       *
-      *    保険組合せ
-           PERFORM 3101-HKNCOMBI-HEN-SEC.
+      *     保険組合せ
+            PERFORM 3101-HKNCOMBI-HEN-SEC
       *
-      *    初期編集
-           PERFORM 314-SYOKI-SEC.
+      *     診療科
+            PERFORM 3102-SRYKA-HEN-SEC
       *
-      *    コメント編集編集
-           PERFORM 3103-RECECOM-HEN-SEC.
+      *     コメント編集編集
+            PERFORM 3103-RECECOM-HEN-SEC
       *
+      *     コメント初期編集
+      ******PERFORM 314-RECECOM-SYOKI-SEC
+      *
+      *     初期編集
+            PERFORM 314-SYOKI-SEC
+      *
+      *
+           .
        310-SPA-SET-EXT.
            EXIT.
       *
@@ -360,50 +388,442 @@
       *****************************************************************
        3101-HKNCOMBI-HEN-SEC        SECTION.
       *
-           INITIALIZE                  SPA-I43-HKNCOMB-COMB.
-           MOVE    ZERO                TO  SPA-I43-HKNMAX.
-           MOVE    ZERO                TO  FLG-HKNCOMBICHK.
+           INITIALIZE                  SPA-I43-HKNCOMB-COMB
+           MOVE    ZERO                TO  SPA-I43-HKNMAX
+           MOVE    ZERO                TO  FLG-HKNCOMBICHK
       *
-      *    保険組合マスター編集
-           MOVE    SPACE               TO  HKNCOMBI-REC.
-           INITIALIZE                  HKNCOMBI-REC.
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID.
-           MOVE    SPA-GMN-PTID        TO  COMB-PTID.
+           MOVE    SPA-I43-SRYYMS      TO  SPA-SRYYMD(1:6)
+           MOVE    "00"                TO  SPA-SRYYMD(7:2)
+           MOVE    SPA-GMN-PTID        TO  SPA-PTID
       *
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC.
+           INITIALIZE                  ORCSHKNSETAREA
+           MOVE    "1"                 TO  ORCSHKN-KBN
+           MOVE    SPACE               TO  ORCSHKN-KBN2
+           CALL    "ORCSHKNSET"        USING
+                                       SPA-AREA
+                                       ORCSHKNSETAREA
+      *
+           MOVE    ORCSHKN-HKN-MAX     TO  SPA-I43-HKNMAX
+      *
+           MOVE    ZERO                TO  IDH
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL      (IDX     >   ORCSHKN-HKN-MAX )  OR
+                              (IDH     >=  30              )
+               ADD     1                   TO  IDH
+               MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
+                                       TO  SPA-I43-THKNCOMBINUM (IDH)
+               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
+                                       TO  SPA-I43-THKNCOMBIMEI(IDH)
+      *
+               MOVE    IDH             TO  SPA-I43-HKNMAX
+           END-PERFORM
+      *
+           .
+       3101-HKNCOMBI-HEN-EXT.
+      *
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科編集処理
+      *****************************************************************
+       3102-SRYKA-HEN-SEC        SECTION.
+      *
+           INITIALIZE                   SPA-I43-SRYKA-AREA
+      *
+           MOVE    "00"                TO  SPA-I43-SRYKAL  (1)
+           MOVE    "全科指定"          TO  SPA-I43-SRYKAMEIL(1)
+           MOVE     1                  TO  SPA-I43-SRYKAMAX
+      *    入院科
+           MOVE    SPACE               TO  SYS-1005-REC.
+           INITIALIZE                      SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD.
+           MOVE    ZERO                TO  SYS-1005-STYUKYMD.
+           MOVE    ALL "9"             TO  SYS-1005-EDYUKYMD.
+      *    システム管理検索
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC.
+           MOVE    SPA-I43-SRYYMS      TO  ORC-DBYMD(1:6).
+           MOVE    "01"                TO  ORC-DBYMD(7:2).
            MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH.
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1005-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    1                   TO  IDX
+           PERFORM
+                   UNTIL       (IDX            >=  41)  OR
+                               (FLG-SYSKANRI   =   1)
+               MOVE    MCPDATA-REC         TO  SYS-1005-REC
+               ADD     1                   TO  IDX
+               MOVE    SYS-1005-KBNCD (1:2)
+                                           TO  SPA-I43-SRYKAL   (IDX)
+               MOVE    SYS-1005-SRYKANAME1 TO  SPA-I43-SRYKAMEIL(IDX)
+               MOVE    IDX                 TO  SPA-I43-SRYKAMAX
+      *
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           END-PERFORM
+      *
+      *
+           .
+       3102-SRYKA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    コメント編集処理
+      *****************************************************************
+        3103-RECECOM-HEN-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-I43-RECECOMLIST-G
+      *
+           MOVE    SPACE               TO  RECECOM-REC
+           INITIALIZE                  RECECOM-REC
+           MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
+           MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+           MOVE    SPA-NYUGAIKBN       TO  RECECOM-NYUGAIKBN
+      *
+           MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "RECECOM-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "RECECOM-KEY2"     TO  ORC-DBPATH
+               PERFORM 920-RECECOM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-RECECOM
+               INITIALIZE                  RECECOM-REC
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM
+                   UNTIL      (FLG-RECECOM        =   1  )
+                           OR (IDX                >=  100)
+               ADD     1                   TO  IDX
+               MOVE    IDX                 TO  SPA-I43-RECE-MAX
+               MOVE    IDX                 TO  SPA-I43-TRENNUM (IDX)
+               MOVE    RECECOM-SRYKA       TO  SPA-I43-NSRYKA  (IDX)
+               MOVE    RECECOM-SRYYM       TO  SPA-I43-NSRYYM  (IDX)
+               MOVE    RECECOM-HKNCOMBI    TO  SPA-I43-NHKNCOMBI(IDX)
+               MOVE    RECECOM-COMMENT     TO  SPA-I43-TCOMMENT(IDX)
+      *        診療年月
+               MOVE    RECECOM-SRYYM       TO  WRK-SYMD(1:6)
+               MOVE    "01"                TO  WRK-SYMD(7:2)
+               PERFORM 800-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG (1:6)   TO  SPA-I43-TSRYYM (IDX)
+      *        診療科
+               MOVE    RECECOM-SRYKA       TO  WRK-SRYKA
+               PERFORM 810-SRYKA-SET-SEC
+               MOVE    WRK-SRYKAMEI        TO  SPA-I43-TSRYKA (IDX)
+      *        保険組合せ番号
+               MOVE    RECECOM-HKNCOMBI    TO  WRK-HKNCOMBI
+               PERFORM 820-HKNCOMBI-SET-SEC
+               MOVE    WRK-HKNCOMBIMEI     TO  SPA-I43-THKNCOMBI(IDX)
+      *        診療日
+               IF      RECECOM-SRYDD       =   ZERO
+                   MOVE    SPACE               TO  SPA-I43-TSRYDD (IDX)
+               ELSE
+                   MOVE    RECECOM-SRYDD       TO  SPA-I43-TSRYDD (IDX)
+               END-IF
+      *
+               MOVE    "RECECOM-KEY2"      TO  ORC-DBPATH
+               PERFORM 920-RECECOM-READ-SEC
+           END-PERFORM
+      *
+           MOVE    SPACE               TO  SPA-I43-COMMENT
+           MOVE    ZERO                TO  SPA-I43-SELNUM
+           MOVE    ZERO                TO  SPA-I43-BUNNUM
+           MOVE    SPACE               TO  SPA-I43-HKNCOMBI-G
+      *
+           .
+       3103-RECECOM-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初期編集処理
+      *****************************************************************
+       314-SYOKI-SEC             SECTION.
+      *
+      *    入院保険
+           INITIALIZE                  SPA-I43-HKNCOMB-COMB-NYU
+      *    保険組合せの再編集
+           INITIALIZE                  WRK-I43-HKNCOMB-COMB
+           MOVE    ZERO                TO  WRK-I43-HKNMAX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >    SPA-I43-HKNMAX
+               MOVE    SPA-I43-THKNCOMBINUM(IDX)
+                                      TO  WRK-I43-THKNCOMBINUM(IDX)
+               MOVE    SPA-I43-THKNCOMBIMEI(IDX)
+                                      TO  WRK-I43-THKNCOMBIMEI(IDX)
+           END-PERFORM
+           MOVE    SPA-I43-HKNMAX     TO  WRK-I43-HKNMAX
+      *
+      *    入院の保険組合せ編集
+      *    入院会計を検索する  医療機関、患者ＩＤ、年月
+           INITIALIZE                  NYUINACCT-REC.
+           MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    SPA-GMN-PTID        TO  NACCT-PTID
+           MOVE    SPA-I43-SRYYMS      TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "NYUINACCT-KEY12"   TO  ORC-DBPATH.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC.
            IF      MCP-RC              =   ZERO
-               MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY12"   TO  ORC-DBPATH
+               PERFORM 970-NYUINACCT-READ-SEC
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF.
+      *
+           PERFORM UNTIL    FLG-NYUINACCT     =   1
+      *        保険レコード
+               IF      NACCT-ZAISKBKBN     =   "5"
+                   PERFORM VARYING     IDX1    FROM    1   BY  1
+                           UNTIL       IDX1    >   31
+                       MOVE    ZERO                TO  WRK-HKNCOMBI
+                       MOVE    NACCT-DAY (IDX1)    TO  WRK-HKNCOMBI
+      *
+                       PERFORM VARYING     IDX     FROM    1   BY  1
+                               UNTIL       IDX     >   WRK-I43-HKNMAX
+                           IF      WRK-I43-THKNCOMBINUM(IDX)
+                                                   =   WRK-HKNCOMBI
+                               MOVE    "1"         TO  WRK-I43-FLG (IDX)
+                               MOVE    WRK-I43-HKNMAX  TO  IDX
+                           END-IF
+                       END-PERFORM
+      *                当月の入院保険保存
+                       PERFORM VARYING     IDX     FROM    1   BY  1
+                               UNTIL       IDX     >   30
+                           IF      SPA-I43-HKNCOMBI-NYU(IDX)   =   SPACE
+                               MOVE    WRK-HKNCOMBI    TO
+                                               SPA-I43-HKNCOMBI-NYU(IDX)
+                           END-IF
+                           IF      SPA-I43-HKNCOMBI-NYU(IDX)
+                                                   =   WRK-HKNCOMBI
+                               MOVE    30              TO  IDX
+                           END-IF
+                       END-PERFORM
+                   END-PERFORM
+               END-IF
+      *
+               MOVE    "NYUINACCT-KEY12"   TO  ORC-DBPATH
+               PERFORM 970-NYUINACCT-READ-SEC
+           END-PERFORM.
+      *
+      *    受診歴を検索する  医療機関、患者ＩＤ
+           INITIALIZE                  JYURRK-REC
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-I43-SRYYMS      TO  JYURRK-SRYYMD(1:6)
+           MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
+           MOVE    SPA-I43-SRYYMS      TO  JYURRK-UPSRYYMD(1:6)
+           MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "JYURRK-KEY13"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "JYURRK-KEY13"      TO  ORC-DBPATH
+               PERFORM 970-JYURRK-READ-SEC
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           MOVE    ZERO                TO  WRK-HKNCOMBI
+           MOVE    SPACE               TO  WRK-SRYKA
+           PERFORM
+               UNTIL    FLG-JYURRK     =   1
+      *
+               IF      JYURRK-HKNCOMBINUM  NOT =   "9999"
+                   PERFORM VARYING     IDX     FROM    1   BY  1
+                           UNTIL       IDX     >   WRK-I43-HKNMAX
+                       IF      WRK-I43-THKNCOMBINUM(IDX)
+                                               =   JYURRK-HKNCOMBINUM
+                           MOVE    "1"         TO  WRK-I43-FLG (IDX)
+                           MOVE    WRK-I43-HKNMAX  TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
+               MOVE    "JYURRK-KEY13"    TO  ORC-DBPATH
+               PERFORM 970-JYURRK-READ-SEC
+           END-PERFORM
+      *
+      *    受診のあった保険組合せのみ表示する
+           INITIALIZE                  SPA-I43-HKNCOMB-COMB
+           MOVE    ZERO                TO  SPA-I43-HKNMAX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >    WRK-I43-HKNMAX
+               IF      WRK-I43-FLG  (IDX)  =   "1"
+                   ADD     1                TO  SPA-I43-HKNMAX
+                   MOVE    WRK-I43-THKNCOMBINUM(IDX)
+                                      TO  SPA-I43-THKNCOMBINUM
+                                                (SPA-I43-HKNMAX)
+                   MOVE    WRK-I43-THKNCOMBIMEI(IDX)
+                                      TO  SPA-I43-THKNCOMBIMEI
+                                                (SPA-I43-HKNMAX)
+               END-IF
+           END-PERFORM
+      *
+      *    初期編集
+           MOVE    SPA-I43-SRYKA-LIST(01)
+                                       TO  SPA-I43-SRYKA-G
+      *    入院保険を初期表示とする
+           PERFORM 3141-HKNCOMBI-SYOKI-CHK-SEC
+      *
+           .
+       314-SYOKI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院保険を初期表示処理
+      *****************************************************************
+       3141-HKNCOMBI-SYOKI-CHK-SEC             SECTION.
+      *
+           MOVE    SPA-I43-HKN-LIST(01)    TO  SPA-I43-HKNCOMBI-G
+           PERFORM VARYING     IDH     FROM    1   BY  1
+                   UNTIL       IDH     >    SPA-I43-HKNMAX
+               IF      SPA-I43-THKNCOMBINUM(IDH)
+                                       =   SPA-I43-HKNCOMBI-NYU (01)
+                   MOVE    SPA-I43-HKN-LIST (IDH)
+                                               TO  SPA-I43-HKNCOMBI-G
+                   MOVE    SPA-I43-HKNMAX      TO  IDH
+               END-IF
+           END-PERFORM
+      *
+           .
+       3141-HKNCOMBI-SYOKI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    コメント初期編集処理
+      *****************************************************************
+       314-RECECOM-SYOKI-SEC             SECTION.
+      *
+      *    初期表示
+           IF     SPA-I43-RECE-MAX        >   ZERO
+               IF     (SPA-I43-NSRYYM (01)    =   SPA-NAI-SRYYM ) AND
+                      (SPA-I43-NSRYKA (01)    =   "00"  OR
+                                                   SPA-I40-SRYKA )
+      *            当月分が既に登録済みの時
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   SPA-I43-SRYKAMAX
+                       IF      SPA-I43-NSRYKA (01)
+                                               =   SPA-I43-SRYKAL
+                                                                 (IDY)
+                           MOVE    SPA-I43-SRYKA-LIST (IDY)
+                                                   TO  SPA-I43-SRYKA-G
+                           MOVE    SPA-I43-SRYKAMAX
+                                                   TO  IDY
+                       END-IF
+                   END-PERFORM
+      *
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   SPA-I43-HKNMAX
+                       IF      SPA-I43-NHKNCOMBI (01)
+                                               =   SPA-I43-THKNCOMBINUM
+                                                                 (IDY)
+                           MOVE    SPA-I43-HKN-LIST(IDY)
+                                               TO  SPA-I43-HKNCOMBI-G
+                           MOVE    SPA-I43-HKNMAX
+                                               TO  IDY
+                       END-IF
+                   END-PERFORM
+      *
+                   MOVE    SPA-I43-TCOMMENT (01)  TO  SPA-I43-COMMENT
+               ELSE
+                   MOVE    SPACE               TO  SPA-I43-COMMENT
+               END-IF
+           ELSE
+               MOVE    SPACE               TO  SPA-I43-COMMENT
+           END-IF
+      *
+           IF      SPA-I43-COMMENT         =   SPACE
+               MOVE    SPA-I43-SRYKA-LIST(01)
+                                           TO  SPA-I43-SRYKA-G
+      *        当月分が未登録の時、入院保険を初期表示とする
+               PERFORM 3141-HKNCOMBI-SYOKI-CHK-SEC
+           END-IF
+      *
+           .
+       314-RECECOM-SYOKI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科名編集処理
+      *****************************************************************
+       810-SRYKA-SET-SEC             SECTION.
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-I43-SRYKAMAX
+               IF      WRK-SRYKA           =   SPA-I43-SRYKAL  (IDY)
+                   MOVE    SPA-I43-SRYKAMEIL (IDY)
+                                               TO  WRK-SRYKAMEI
+                   MOVE    SPA-I43-SRYKAMAX   TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-SRYKA           =   ZERO
+               MOVE    SPACE               TO  WRK-SRYKAMEI
+           END-IF
+      *
+           .
+       810-SRYKA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ名編集処理
+      *****************************************************************
+       820-HKNCOMBI-SET-SEC             SECTION.
+      *
+      *    保険組合マスター編集
+           MOVE    SPACE               TO  HKNCOMBI-REC
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-GMN-PTID        TO  COMB-PTID
+           MOVE    WRK-HKNCOMBI        TO  COMB-HKNCOMBINUM
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
                PERFORM 910-HKNCOMBI-READ-SEC
            ELSE
                MOVE    1               TO  FLG-HKNCOMBI
                INITIALIZE                  HKNCOMBI-REC
-           END-IF.
-           PERFORM UNTIL      FLG-HKNCOMBI        =   1
+           END-IF
+           IF      FLG-HKNCOMBI        =   ZERO
+               PERFORM 31011-HKNCOMBI-HEN-SEC
+           ELSE
+               MOVE    SPACE               TO  WRK-HKNCOMBIMEI
+           END-IF
       *
-      *        対象の保険組合せのみ編集
-               MOVE    ZERO                TO  FLG-HKNCOMBICHK
-               IF      COMB-DELKBN         =   "1"
-                   CONTINUE
-               ELSE
-                   ADD     1                   TO  SPA-I43-HKNMAX
-                   MOVE    COMB-HKNCOMBINUM    TO  SPA-I43-THKNCOMBINUM
-                                                  (SPA-I43-HKNMAX)
-                   PERFORM 31011-HKNCOMBI-HEN-SEC
-                   MOVE    WRK-HKNCOMBIMEI     TO  SPA-I43-THKNCOMBIMEI
-                                                  (SPA-I43-HKNMAX)
-               END-IF
-      *
-               MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-               PERFORM 910-HKNCOMBI-READ-SEC
-           END-PERFORM.
-      *
-       3101-HKNCOMBI-HEN-EXT.
+           .
+       820-HKNCOMBI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -411,7 +831,7 @@
       *****************************************************************
        31011-HKNCOMBI-HEN-SEC             SECTION.
       *
-           MOVE    SPACE               TO  WRK-HKNCOMBIMEI.
+           MOVE    SPACE               TO  WRK-HKNCOMBIMEI
       *
            STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
                    " "                     DELIMITED  BY  SIZE
@@ -423,7 +843,7 @@
                    " "                     DELIMITED  BY  SIZE
                    COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBIMEI
-           END-STRING.
+           END-STRING
       *    主保険がない時
            IF      COMB-SYU-TANSEIDONAME   =   SPACE
                MOVE    SPACE               TO  WRK-HKNCOMBIMEI
@@ -436,7 +856,7 @@
                        COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBIMEI
                END-STRING
-           END-IF.
+           END-IF
       *
       *    労災の時、コメントの追加
            IF      COMB-HKNNUM         =   "971"  OR  "973"
@@ -486,241 +906,10 @@
                            INTO              WRK-HKNCOMBIMEI
                    END-STRING
                END-IF
-           END-IF.
+           END-IF
       *
+           .
        31011-HKNCOMBI-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    コメント編集処理
-      *****************************************************************
-       3103-RECECOM-HEN-SEC         SECTION.
-      *
-           INITIALIZE                  SPA-I43-RECECOMLIST-G.
-      *
-           MOVE    SPACE               TO  RECECOM-REC.
-           INITIALIZE                  RECECOM-REC.
-           MOVE    SPA-HOSPID          TO  RECECOM-HOSPID.
-           MOVE    SPA-GMN-PTID        TO  RECECOM-PTID.
-           MOVE    "1"                 TO  RECECOM-NYUGAIKBN.
-      *
-           MOVE    RECECOM-REC         TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "RECECOM-KEY2"      TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-           IF      MCP-RC              =   ZERO
-               MOVE    "RECECOM-KEY2"     TO  ORC-DBPATH
-               PERFORM 920-RECECOM-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-RECECOM
-               INITIALIZE                  RECECOM-REC
-           END-IF.
-           MOVE    ZERO                TO  IDX.
-           PERFORM UNTIL       FLG-RECECOM        =   1
-               IF     (SPA-I43-SRYKA      =   "00")          OR
-                      (SPA-I43-SRYKA      =   RECECOM-SRYKA)
-                   ADD     1                 TO  IDX
-                   MOVE    IDX               TO  SPA-I43-RECE-MAX
-                   MOVE    IDX               TO  SPA-I43-TRENNUM (IDX)
-                   MOVE    RECECOM-SRYKA     TO  SPA-I43-NSRYKA  (IDX)
-                   MOVE    RECECOM-SRYYM     TO  SPA-I43-NSRYYM  (IDX)
-                   MOVE    RECECOM-HKNCOMBI  TO  SPA-I43-NHKNCOMBI(IDX)
-                   MOVE    RECECOM-COMMENT   TO  SPA-I43-TCOMMENT(IDX)
-      *            入院年月
-                   MOVE    RECECOM-SRYYM     TO  WRK-SYMD(1:6)
-                   MOVE    "01"              TO  WRK-SYMD(7:2)
-                   PERFORM 800-SEIWA-HEN-SEC
-                   MOVE    WRK-HENYMDG (1:6) TO  SPA-I43-TSRYYM (IDX)
-      *            入院科
-                   MOVE    RECECOM-SRYKA     TO  WRK-NSRYKA
-                   PERFORM 810-NSRYKA-SET-SEC
-                   MOVE    WRK-NSRYKAMEI     TO  SPA-I43-TSRYKA (IDX)
-      *            保険組合せ番号
-                   MOVE    RECECOM-HKNCOMBI  TO  WRK-HKNCOMBI
-                   PERFORM 820-HKNCOMBI-SET-SEC
-                   MOVE    WRK-HKNCOMBIMEI   TO  SPA-I43-THKNCOMBI(IDX)
-      *            入院日
-                   IF      RECECOM-SRYDD       =   ZERO
-                       MOVE    SPACE           TO  SPA-I43-TSRYDD (IDX)
-                   ELSE
-                       MOVE    RECECOM-SRYDD   TO  SPA-I43-TSRYDD (IDX)
-                   END-IF
-               END-IF
-      *
-               MOVE    "RECECOM-KEY2"      TO  ORC-DBPATH
-               PERFORM 920-RECECOM-READ-SEC
-           END-PERFORM.
-      *
-           MOVE    ZERO                TO  SPA-I43-SELNUM.
-      *
-           IF      SPA-MOTOPG(1:3)    NOT =   "I45"
-               MOVE    SPACE               TO  SPA-I43-COMMENT
-               MOVE    ZERO                TO  SPA-I43-BUNNUM
-           END-IF.
-      *
-       3103-RECECOM-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    初期編集処理
-      *****************************************************************
-       314-SYOKI-SEC             SECTION.
-      *
-      *    保険組合せの再編集
-           INITIALIZE                  WRK-I43-HKNCOMB-COMB.
-           INITIALIZE                  WRK-I43-NSRYKA-AREA.
-           MOVE    ZERO                TO  IDY.
-      *
-      *    入院科セット
-           PERFORM VARYING    IDX      FROM    1   BY  1
-                   UNTIL      IDX      >   SPA-GMN-SRYKA-MAX-41
-               ADD     1               TO  IDY
-               MOVE    SPA-GMN-SRYKA-L-41 (IDX)
-                                       TO  WRK-I43-NSRYKA (IDY)
-               MOVE    IDY             TO  IDZ
-           END-PERFORM.
-      *
-           MOVE    ZERO                TO  WRK-I43-HKNMAX.
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >    SPA-I43-HKNMAX
-               MOVE    SPA-I43-THKNCOMBINUM (IDX)
-                                      TO  WRK-I43-THKNCOMBINUM (IDX)
-               MOVE    SPA-I43-THKNCOMBIMEI (IDX)
-                                      TO  WRK-I43-THKNCOMBIMEI (IDX)
-           END-PERFORM.
-           MOVE    SPA-I43-HKNMAX     TO  WRK-I43-HKNMAX.
-      *
-      *    入院会計を検索する  医療機関、患者ＩＤ、年月
-           INITIALIZE                  NYUINACCT-REC.
-           MOVE    SPA-HOSPID          TO  NACCT-HOSPID.
-           MOVE    SPA-GMN-PTID        TO  NACCT-PTID.
-           MOVE    SPA-I43-SRYYMS      TO  NACCT-SRYYM.
-      *
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "NYUINACCT-KEY12"   TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-           IF      MCP-RC              =   ZERO
-               MOVE    "NYUINACCT-KEY12"   TO  ORC-DBPATH
-               PERFORM 970-NYUINACCT-READ-SEC
-           ELSE
-               INITIALIZE                  NYUINACCT-REC
-               MOVE    1               TO  FLG-NYUINACCT
-           END-IF.
-      *
-           MOVE    ZERO                TO  WRK-HKNCOMBI.
-           MOVE    ZERO                TO  IDX3.
-           MOVE    SPACE               TO  WRK-NSRYKA.
-           PERFORM UNTIL    FLG-NYUINACCT     =   1
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL       IDX     >   WRK-I43-HKNMAX
-                   IF      NACCT-ZAISKBKBN   =   "5"
-                       PERFORM VARYING     IDX1    FROM    1   BY  1
-                               UNTIL       IDX1    >   31
-                           IF     (NACCT-DAY (IDX1) >= 1)   AND
-                                  (NACCT-DAY (IDX1) <= 10)
-                               MOVE    NACCT-DAY (IDX1)   TO  IDX2
-                               MOVE    "1"                TO
-                                                     WRK-I43-FLG (IDX2)
-                               IF     IDX3   =   ZERO
-                                   MOVE    NACCT-DAY (IDX1)   TO  IDX3
-                               END-IF
-                           END-IF
-                       END-PERFORM
-                   END-IF
-               END-PERFORM
-      *
-               MOVE    "NYUINACCT-KEY12"   TO  ORC-DBPATH
-               PERFORM 970-NYUINACCT-READ-SEC
-           END-PERFORM.
-      *
-      *    入院のあった保険組合せのみ表示する
-           INITIALIZE                  SPA-I43-HKNCOMB-COMB.
-           MOVE    ZERO                TO  SPA-I43-HKNMAX.
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >    10
-               IF      WRK-I43-FLG  (IDX)  =   "1"
-                   ADD     1                TO  SPA-I43-HKNMAX
-                   MOVE    WRK-I43-THKNCOMBINUM (IDX)
-                                      TO  SPA-I43-THKNCOMBINUM
-                                                (SPA-I43-HKNMAX)
-                   MOVE    WRK-I43-THKNCOMBIMEI (IDX)
-                                      TO  SPA-I43-THKNCOMBIMEI
-                                                (SPA-I43-HKNMAX)
-                  IF     IDX   =   IDX3
-                      MOVE    SPA-I43-HKNMAX   TO  IDX4
-                  END-IF
-               END-IF
-           END-PERFORM.
-      *
-      *    初期編集
-           IF      SPA-MOTOPG(1:3)     =   "I41"
-               MOVE    SPA-GMN-SRYKA-IG-41     TO  SPA-I43-SRYKA-G
-               IF     IDX4   =   ZERO
-                   MOVE    01                TO  IDX4
-               END-IF
-               MOVE    SPA-I43-HKN-LIST(IDX4)  TO  SPA-I43-HKNCOMBI-G
-           END-IF.
-      *
-       314-SYOKI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入院科名編集処理
-      *****************************************************************
-       810-NSRYKA-SET-SEC            SECTION.
-      *
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >   SPA-GMN-SRYKA-MAX-41
-               IF      WRK-NSRYKA          =   SPA-GMN-SRYKA-L-41 (IDY)
-                   MOVE    SPA-GMN-SRYKAMEI-L-41 (IDY)
-                                                   TO  WRK-NSRYKAMEI
-                   MOVE    SPA-GMN-SRYKA-MAX-41    TO  IDY
-               END-IF
-           END-PERFORM.
-      *
-       810-NSRYKA-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険組合せ名編集処理
-      *****************************************************************
-       820-HKNCOMBI-SET-SEC             SECTION.
-      *
-      *    保険組合マスター編集
-           MOVE    SPACE               TO  HKNCOMBI-REC.
-           INITIALIZE                  HKNCOMBI-REC.
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID.
-           MOVE    SPA-GMN-PTID        TO  COMB-PTID.
-           MOVE    WRK-HKNCOMBI        TO  COMB-HKNCOMBINUM.
-      *
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-           IF      MCP-RC              =   ZERO
-               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-               PERFORM 910-HKNCOMBI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-HKNCOMBI
-               INITIALIZE                      HKNCOMBI-REC
-           END-IF.
-           IF      FLG-HKNCOMBI        =   ZERO
-               PERFORM 31011-HKNCOMBI-HEN-SEC
-           ELSE
-               MOVE    SPACE               TO  WRK-HKNCOMBIMEI
-           END-IF.
-      *
-       820-HKNCOMBI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -742,8 +931,8 @@
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY2-AREA
                MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG
-           END-IF.
-      *
+           END-IF
+           .
        800-SEIWA-HEN-EXT.
            EXIT.
       *
@@ -752,28 +941,42 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
-           MOVE    SPACE              TO  I43.
+      *    コラムリスト位置保存
+           IF      FLG-GMN-INIT        =   1
+               MOVE    ZERO                TO  WRK-I43-RECE-ROW
+           ELSE
+               MOVE    I43-RECE-ROW        TO  WRK-I43-RECE-ROW
+           END-IF
+      *
+           MOVE    SPACE               TO  I43
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  I43-RECE-ROW
+           MOVE    ZERO                TO  I43-RECE-ROWATTR
+           IF      WRK-I43-RECE-ROW   NOT =   ZERO
+               MOVE    WRK-I43-RECE-ROW   TO  I43-RECE-ROW
+           END-IF
       *
       *    画面編集
-           MOVE    SPA-I43-SRYYM      TO  I43-SRYYM.
-           MOVE    SPA-I43-COMMENT    TO  I43-COMMENT.
+           MOVE    SPA-I43-SRYYM      TO  I43-SRYYM
+           MOVE    SPA-I43-COMMENT    TO  I43-COMMENT
       *
-      *    入院科
+      *    診療科
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-SRYKA-MAX-41
-               MOVE    SPA-GMN-SRYKA-LIST-L-41 (IDX)
+                   UNTIL       IDX     >   SPA-I43-SRYKAMAX
+               MOVE    SPA-I43-SRYKA-LIST (IDX)
                                            TO  I43-SRYKA-ITEM (IDX)
-           END-PERFORM.
-           MOVE    SPA-GMN-SRYKA-MAX-41 TO  I43-SRYKA-COUNT.
-           MOVE    SPA-I43-SRYKA-G      TO  I43-SRYKA.
+           END-PERFORM
+           MOVE    SPA-I43-SRYKAMAX   TO  I43-SRYKA-COUNT
+           MOVE    SPA-I43-SRYKA-G    TO  I43-SRYKA
       *    保険組合せ
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-I43-HKNMAX
                MOVE    SPA-I43-HKN-LIST(IDX)
                                            TO  I43-HKNCOMBI-ITEM (IDX)
-           END-PERFORM.
-           MOVE    SPA-I43-HKNMAX     TO  I43-HKNCOMBI-COUNT.
-           MOVE    SPA-I43-HKNCOMBI-G TO  I43-HKNCOMBI.
+           END-PERFORM
+           MOVE    SPA-I43-HKNMAX     TO  I43-HKNCOMBI-COUNT
+           MOVE    SPA-I43-HKNCOMBI-G TO  I43-HKNCOMBI
       *
            EVALUATE    SPA-I43-SYORI
                WHEN    0
@@ -785,16 +988,17 @@
                WHEN    2
                    MOVE    "＜文　例＞"        TO  I43-MIDASI
                    MOVE    "red"               TO  I43-MIDASI-STYLE
-           END-EVALUATE.
+           END-EVALUATE
+      *
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-I43-RECE-MAX
-               MOVE    SPA-I43-TRENNUM (IDX)  TO  WRK-ZZZ
-               MOVE    WRK-ZZZ                TO  I43-TRENNUM (IDX)
-               MOVE    SPA-I43-TSRYYM  (IDX)  TO  I43-TSRYYM  (IDX)
-               MOVE    SPA-I43-TSRYKA  (IDX)  TO  I43-TSRYKA  (IDX)
-               MOVE    SPA-I43-THKNCOMBI(IDX) TO  I43-THKNCOMBI(IDX)
-               IF      SPA-I43-TSRYDD  (IDX)  =   ZERO
+               MOVE    SPA-I43-TRENNUM (IDX)   TO  WRK-ZZZ
+               MOVE    WRK-ZZZ                 TO  I43-TRENNUM (IDX)
+               MOVE    SPA-I43-TSRYYM  (IDX)   TO  I43-TSRYYM  (IDX)
+               MOVE    SPA-I43-TSRYKA  (IDX)   TO  I43-TSRYKA  (IDX)
+               MOVE    SPA-I43-THKNCOMBI(IDX)  TO  I43-THKNCOMBI(IDX)
+               IF      SPA-I43-TSRYDD  (IDX)   =   ZERO
                    MOVE    SPACE               TO  I43-TSRYDD  (IDX)
                ELSE
                    MOVE    SPA-I43-TSRYDD  (IDX)
@@ -807,14 +1011,15 @@
                ELSE
                    MOVE    "F"             TO  I43-RECE-SELECT (IDX)
                END-IF
-           END-PERFORM.
-           MOVE    SPA-I43-RECE-MAX   TO  I43-RECE-COUNT.
+           END-PERFORM
+           MOVE    SPA-I43-RECE-MAX   TO  I43-RECE-COUNT
       *
-           MOVE    SPA-I43-SELNUM     TO  I43-SELNUM.
-           MOVE    SPA-I43-BUNNUM     TO  I43-BUNNUM.
+           MOVE    SPA-I43-SELNUM     TO  I43-SELNUM
+           MOVE    SPA-I43-BUNNUM     TO  I43-BUNNUM
       *
-           PERFORM 5001-MAPCUR-SEC.
       *
+           PERFORM 5001-MAPCUR-SEC
+           .
        500-GMNHEN-EXT.
            EXIT.
       *
@@ -823,11 +1028,12 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+      *
            EVALUATE    SPA-I43-CUR
                WHEN    1
                    MOVE    "COMMENT"           TO  MCP-WIDGET
                WHEN    2
-                   MOVE    "SRYKA"             TO  MCP-WIDGET
+                   MOVE    "SRYKA"            TO  MCP-WIDGET
                WHEN    3
                    MOVE    "HKNCOMBI"          TO  MCP-WIDGET
                WHEN    4
@@ -840,14 +1046,16 @@
                    MOVE    "B08"               TO  MCP-WIDGET
                WHEN    8
                    MOVE    "B05"               TO  MCP-WIDGET
-           END-EVALUATE.
+           END-EVALUATE
       *
+           .
        5001-MAPCUR-EXT.
            EXIT.
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
+      *
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        戻る
@@ -877,8 +1085,9 @@
       *        登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 212-TOUROKU-SEC
-           END-EVALUATE.
+           END-EVALUATE
       *
+           .
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
@@ -887,9 +1096,9 @@
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        入院科
+      *        診療科
                WHEN    "ACTIVATE"      ALSO    "SRYKA"
-                   PERFORM 400-NSRYKA-SEC
+                   PERFORM 400-SRYKA-SEC
       *        保険組合せ
                WHEN    "ACTIVATE"      ALSO    "HKNCOMBI"
                    PERFORM 410-HKNCOMBI-SEC
@@ -902,8 +1111,9 @@
       *        明細選択
                WHEN    ANY             ALSO    "RECELIST"
                    PERFORM 440-RECELIST-SEC
-           END-EVALUATE.
+           END-EVALUATE
       *
+           .
        200-ENTRY-EXT.
            EXIT.
       *
@@ -912,65 +1122,61 @@
       *****************************************************************
        209-COMMENT-SEC                    SECTION.
       *
-           MOVE    1                   TO  SPA-I43-CUR.
+           MOVE    1                   TO  SPA-I43-CUR
       *
-           MOVE    I43-COMMENT         TO  SPA-I43-COMMENT.
-           PERFORM 800-COMMENT-CHK-SEC.
+           MOVE    I43-COMMENT        TO  SPA-I43-COMMENT
+           PERFORM 800-COMMENT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      209-COMMENT-EXT
-           END-IF.
+           END-IF
       *
            IF      SPA-GMN-PTID        =   ZERO
                MOVE    7                   TO  SPA-I43-CUR
            ELSE
                MOVE    6                   TO  SPA-I43-CUR
-           END-IF.
+           END-IF
       *
+           .
        209-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    入院科処理
+      *    診療科処理
       *****************************************************************
-       400-NSRYKA-SEC                   SECTION.
+       400-SRYKA-SEC                    SECTION.
       *
-           MOVE    2                   TO  SPA-I43-CUR.
+           MOVE    2                   TO  SPA-I43-CUR
       *
-           MOVE    I43-SRYKA           TO  SPA-I43-SRYKA-G.
+           MOVE    I43-SRYKA          TO  SPA-I43-SRYKA-G
       *
-           MOVE    ZERO                TO  FLG-OK.
+           MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING    IDX      FROM    1   BY  1
-                   UNTIL      IDX      >   SPA-GMN-SRYKA-MAX-41
-               IF      SPA-I43-SRYKA      =   SPA-GMN-SRYKA-L-41 (IDX)
-                   MOVE    SPA-GMN-SRYKA-LIST-L-41 (IDX)
+                   UNTIL      IDX      >   SPA-I43-SRYKAMAX
+               IF      SPA-I43-SRYKA      =   SPA-I43-SRYKAL (IDX)
+                   MOVE    SPA-I43-SRYKA-LIST (IDX)
                                            TO  SPA-I43-SRYKA-G
-               END-IF
-           END-PERFORM.
-           PERFORM VARYING    IDX      FROM    1   BY  1
-                   UNTIL      WRK-I43-NSRYKA (IDX)   =   SPACE
-               IF    WRK-I43-NSRYKA (IDX)     =  SPA-I43-SRYKA
                    MOVE    1               TO  FLG-OK
                END-IF
-           END-PERFORM.
+           END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    "0001"              TO  SPA-ERRCD
            ELSE
-               MOVE    1                   TO  SPA-I43-CUR
-               PERFORM 3103-RECECOM-HEN-SEC
-           END-IF.
+               MOVE    3                   TO  SPA-I43-CUR
+           END-IF
       *
-       400-NSRYKA-EXT.
+           .
+       400-SRYKA-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せ処理
       *****************************************************************
        410-HKNCOMBI-SEC                 SECTION.
       *
-           MOVE    3                   TO  SPA-I43-CUR.
+           MOVE    3                   TO  SPA-I43-CUR
       *
-           MOVE    I43-HKNCOMBI        TO  SPA-I43-HKNCOMBI-G.
+           MOVE    I43-HKNCOMBI       TO  SPA-I43-HKNCOMBI-G
       *
-           MOVE    ZERO                TO  FLG-OK.
+           MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL      IDX      >   SPA-I43-HKNMAX
                IF      SPA-I43-HKNCOMBINUM    =
@@ -979,14 +1185,15 @@
                                            TO  SPA-I43-HKNCOMBI-G
                    MOVE    1               TO  FLG-OK
                END-IF
-           END-PERFORM.
+           END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    "0002"              TO  SPA-ERRCD
                GO      TO      410-HKNCOMBI-EXT
-           END-IF.
+           END-IF
       *
-           MOVE    1                   TO  SPA-I43-CUR.
+           MOVE    6                   TO  SPA-I43-CUR
       *
+           .
        410-HKNCOMBI-EXT.
            EXIT.
       *
@@ -995,17 +1202,17 @@
       *****************************************************************
        420-SELNUM-SEC                 SECTION.
       *
-           MOVE    4                   TO  SPA-I43-CUR.
+           MOVE    4                   TO  SPA-I43-CUR
       *
-           MOVE    I43-SELNUM          TO  SPA-I43-SELNUM.
+           MOVE    I43-SELNUM         TO  SPA-I43-SELNUM
       *
            IF      SPA-I43-SELNUM     =   ZERO
                GO      TO      420-SELNUM-EXT
-           END-IF.
+           END-IF
            IF      SPA-I43-SELNUM     >   SPA-I43-RECE-MAX
                MOVE    "0002"              TO  SPA-ERRCD
                GO      TO      420-SELNUM-EXT
-           END-IF.
+           END-IF
       *
            EVALUATE    SPA-I43-SYORI
       *        変更処理
@@ -1017,8 +1224,9 @@
       *
                WHEN    OTHER
                    MOVE    8                   TO  SPA-I43-CUR
-           END-EVALUATE.
+           END-EVALUATE
       *
+           .
        420-SELNUM-EXT.
            EXIT.
       *
@@ -1027,8 +1235,8 @@
       *****************************************************************
        440-RECELIST-SEC                 SECTION.
       *
-           MOVE    ZERO                TO  WRK-SELNUM.
-           MOVE    ZERO                TO  WRK-SELNUM2.
+           MOVE    ZERO                TO  WRK-SELNUM
+           MOVE    ZERO                TO  WRK-SELNUM2
       *
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   SPA-I43-RECE-MAX
@@ -1039,17 +1247,18 @@
                       MOVE    SPA-I43-TRENNUM  (IDX)  TO  WRK-SELNUM2
                   END-IF
               END-IF
-           END-PERFORM.
+           END-PERFORM
       *
            IF      WRK-SELNUM2     NOT =   ZERO
                MOVE    WRK-SELNUM2         TO  SPA-I43-SELNUM
            ELSE
                MOVE    WRK-SELNUM          TO  SPA-I43-SELNUM
-           END-IF.
+           END-IF
       *
-           MOVE    SPA-I43-SELNUM     TO  I43-SELNUM.
-           PERFORM 420-SELNUM-SEC.
+           MOVE    SPA-I43-SELNUM     TO  I43-SELNUM
+           PERFORM 420-SELNUM-SEC
       *
+           .
        440-RECELIST-EXT.
            EXIT.
       *
@@ -1058,12 +1267,13 @@
       *****************************************************************
        430-BUNNUM-SEC                 SECTION.
       *
-           MOVE    5                   TO  SPA-I43-CUR.
+           MOVE    5                   TO  SPA-I43-CUR
       *
-           MOVE    I43-BUNNUM          TO  SPA-I43-BUNNUM.
+           MOVE    I43-BUNNUM         TO  SPA-I43-BUNNUM
       *
-           MOVE    7                   TO  SPA-I43-CUR.
+           MOVE    7                   TO  SPA-I43-CUR
       *
+           .
        430-BUNNUM-EXT.
            EXIT.
       *
@@ -1072,10 +1282,10 @@
       *****************************************************************
        220-CLEA-SEC                   SECTION.
       *
-           PERFORM                     310-SPA-SET-SEC.
+           PERFORM                     310-SPA-SET-SEC
       *
-           MOVE    1                  TO  SPA-I43-CUR.
-      *
+           MOVE    1                  TO  SPA-I43-CUR
+           .
        220-CLEA-EXT.
            EXIT.
       *
@@ -1087,43 +1297,115 @@
            IF      SPA-GMN-PTID        =   ZERO
                MOVE    "0011"              TO  SPA-ERRCD
                GO      TO      212-TOUROKU-EXT
-           END-IF.
+           END-IF
       *
-           MOVE    I43-COMMENT        TO  SPA-I43-COMMENT.
+           MOVE    I43-COMMENT        TO  SPA-I43-COMMENT
       *
-           IF      SPA-I43-HKNCOMBINUM    =   SPACE  AND
-                   SPA-I43-HKNMAX         =   ZERO
+           IF      SPA-I43-HKNCOMBINUM     =   SPACE  AND
+                   SPA-I43-HKNMAX          =   ZERO
                MOVE    "0006"              TO  SPA-ERRCD
                GO      TO      212-TOUROKU-EXT
-           END-IF.
+           END-IF
            IF      SPA-I43-HKNCOMBINUM    =   SPACE
                MOVE    "0002"              TO  SPA-ERRCD
                GO      TO      212-TOUROKU-EXT
-           END-IF.
+           END-IF
       *
            IF      SPA-I43-COMMENT    =   SPACE
                MOVE    "0007"              TO  SPA-ERRCD
                GO      TO      212-TOUROKU-EXT
-           END-IF.
-           PERFORM 800-COMMENT-CHK-SEC.
+           END-IF
+           PERFORM 800-COMMENT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      212-TOUROKU-EXT
-           END-IF.
+           END-IF
       *
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >   IDZ
-              IF    WRK-I43-NSRYKA (IDY)       =   SPA-I43-SRYKA
-                  PERFORM 2120-RECECOM-SEL-SEC
-              END-IF
-           END-PERFORM.
+           PERFORM 2130-HKNCOMBI-CHK-SEC
       *
+           PERFORM 2120-RECECOM-SEL-SEC
            IF      FLG-RECECOM         =   ZERO
                MOVE    "0105"              TO  SPA-IIDCD
            ELSE
                MOVE    "0101"              TO  SPA-IIDCD
-           END-IF.
+           END-IF
       *
+           .
        212-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    受診のチェック処理
+      *****************************************************************
+       2130-HKNCOMBI-CHK-SEC          SECTION.
+      *
+      *    入院保険との判定
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDH     FROM    1   BY  1
+                   UNTIL       IDH     >    SPA-I43-HKNMAX
+               IF      SPA-I43-HKNCOMBINUM
+                                       =   SPA-I43-HKNCOMBI-NYU (IDH)
+                   MOVE    SPA-I43-HKN-LIST (IDH)
+                                               TO  SPA-I43-HKNCOMBI-G
+                   MOVE    SPA-I43-HKNMAX      TO  IDH
+                   MOVE    1                   TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   1
+               GO      TO      2130-HKNCOMBI-CHK-EXT
+           END-IF
+      *
+      *    受診歴を検索する  医療機関、患者ＩＤ
+           INITIALIZE                  JYURRK-REC
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-I43-SRYYMS      TO  JYURRK-SRYYMD(1:6)
+           MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
+           MOVE    SPA-I43-SRYYMS      TO  JYURRK-UPSRYYMD(1:6)
+           MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "JYURRK-KEY13"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "JYURRK-KEY13"      TO  ORC-DBPATH
+               PERFORM 970-JYURRK-READ-SEC
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM
+               UNTIL   (FLG-JYURRK     =   1  )  OR
+                       (FLG-OK         =   1  )
+               IF      SPA-I43-SRYKA      =   "00"
+                   IF      SPA-I43-HKNCOMBINUM
+                                           =   JYURRK-HKNCOMBINUM
+                       MOVE    1                   TO  FLG-OK
+                   END-IF
+               ELSE
+                   IF     (SPA-I43-HKNCOMBINUM
+                                           =   JYURRK-HKNCOMBINUM) AND
+                          (SPA-I43-SRYKA  =   JYURRK-SRYKA      )
+                       MOVE    1                   TO  FLG-OK
+                   END-IF
+               END-IF
+      *
+               MOVE    "JYURRK-KEY13"    TO  ORC-DBPATH
+               PERFORM 970-JYURRK-READ-SEC
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0012"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       2130-HKNCOMBI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1131,31 +1413,34 @@
       *****************************************************************
        2120-RECECOM-SEL-SEC          SECTION.
       *
-           MOVE    SPACE                 TO  RECECOM-REC.
-           INITIALIZE                    RECECOM-REC.
-           MOVE    SPA-HOSPID            TO  RECECOM-HOSPID.
-           MOVE    SPA-GMN-PTID          TO  RECECOM-PTID.
-           MOVE    "1"                   TO  RECECOM-NYUGAIKBN.
-           MOVE    WRK-I43-NSRYKA (IDY)  TO  RECECOM-SRYKA.
-           MOVE    SPA-I43-SRYYMS        TO  RECECOM-SRYYM.
-           MOVE    SPA-I43-HKNCOMBINUM   TO  RECECOM-HKNCOMBI.
-           MOVE    "00"                  TO  RECECOM-SRYDD.
       *
-           MOVE    RECECOM-REC           TO  MCPDATA-REC.
-           MOVE    "DBSELECT"            TO  MCP-FUNC.
-           MOVE    "RECECOM-KEY"         TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"           USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC.
+           MOVE    SPACE               TO  RECECOM-REC
+           INITIALIZE                  RECECOM-REC
+           MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
+           MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+           MOVE    SPA-NYUGAIKBN       TO  RECECOM-NYUGAIKBN
+           MOVE    SPA-I43-SRYKA       TO  RECECOM-SRYKA
+           MOVE    SPA-I43-SRYYMS      TO  RECECOM-SRYYM
+           MOVE    SPA-I43-HKNCOMBINUM
+                                       TO  RECECOM-HKNCOMBI
+           MOVE    ZERO                TO  RECECOM-SRYDD
+      *
+           MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "RECECOM-KEY"      TO  ORC-DBPATH
                PERFORM 920-RECECOM-READ-SEC
            ELSE
                MOVE    1               TO  FLG-RECECOM
                INITIALIZE                  RECECOM-REC
-           END-IF.
+           END-IF
       *
+           .
        2120-RECECOM-SEL-EXT.
            EXIT.
       *
@@ -1164,63 +1449,81 @@
       *****************************************************************
        2121-TOUROKU-SYORI-SEC          SECTION.
       *
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >   IDZ
-              IF    WRK-I43-NSRYKA (IDY)       =   SPA-I43-SRYKA
-                  PERFORM 2120-RECECOM-SEL-SEC
-                  IF      FLG-RECECOM         =   ZERO
-      *               更新
-                      MOVE    SPA-I43-COMMENT      TO  RECECOM-COMMENT
-                      PERFORM 800-MCNDATE-SEC
-                      MOVE    SMCNDATE-YMD         TO  RECECOM-UPYMD
-                      MOVE    SMCNDATE-HMS         TO  RECECOM-UPHMS
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
       *
-                      MOVE    RECECOM-REC          TO  MCPDATA-REC
-                      MOVE    "DBUPDATE"           TO  MCP-FUNC
-                      MOVE    "RECECOM-KEY"        TO  ORC-DBPATH
-                      CALL    "ORCMCPSUB"          USING
-                                                   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
-                      IF      MCP-RC          NOT =   ZERO
-                          DISPLAY "I43 RECECOM UPD ERR:" MCP-RC "."
-                      END-IF
-                  ELSE
-      *               追加
-                      MOVE    SPACE                TO  RECECOM-REC
-                      INITIALIZE                   RECECOM-REC
-                      MOVE    SPA-HOSPID           TO  RECECOM-HOSPID
-                      MOVE    SPA-GMN-PTID         TO  RECECOM-PTID
-                      MOVE    "1"                  TO  RECECOM-NYUGAIKBN
-                      MOVE    WRK-I43-NSRYKA (IDY) TO  RECECOM-SRYKA
-                      MOVE    SPA-I43-SRYYMS       TO  RECECOM-SRYYM
-                      MOVE    SPA-I43-HKNCOMBINUM  TO  RECECOM-HKNCOMBI
-                      MOVE    "00"                 TO  RECECOM-SRYDD
-                      MOVE    SPA-I43-COMMENT      TO  RECECOM-COMMENT
+           PERFORM 2120-RECECOM-SEL-SEC
+           IF      FLG-RECECOM         =   ZERO
+      *        更新
+               MOVE    SPA-I43-COMMENT    TO  RECECOM-COMMENT
       *
-                      PERFORM 800-MCNDATE-SEC
-                      MOVE    SMCNDATE-YMD         TO  RECECOM-CREYMD
-                                                       RECECOM-UPYMD
-                      MOVE    SMCNDATE-HMS         TO  RECECOM-UPHMS
+               MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
       *
-                      MOVE    RECECOM-REC          TO  MCPDATA-REC
-                      MOVE    "DBINSERT"           TO  MCP-FUNC
-                      MOVE    "RECECOM-KEY"        TO  ORC-DBPATH
-                      CALL    "ORCMCPSUB"          USING
-                                                   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
-                      IF      MCP-RC          NOT =   ZERO
-                          DISPLAY "I43 RECECOM INS ERR:" MCP-RC "."
-                      END-IF
-                  END-IF
-              END-IF
-           END-PERFORM.
+               MOVE    RECECOM-REC         TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "I43 RECECOM UPD ERR:" MCP-RC
+                           ",KEY:"   RECECOM-KEY    "."
+                   MOVE    "0020"              TO  SPA-ERRCD
+                   GO      TO      2121-TOUROKU-SYORI-EXT
+               END-IF
+           ELSE
+      *        追加
+               MOVE    SPACE               TO  RECECOM-REC
+               INITIALIZE                  RECECOM-REC
+               MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
+               MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+               MOVE    SPA-NYUGAIKBN       TO  RECECOM-NYUGAIKBN
+               MOVE    SPA-I43-SRYKA       TO  RECECOM-SRYKA
+               MOVE    SPA-I43-SRYYMS      TO  RECECOM-SRYYM
+               MOVE    SPA-I43-HKNCOMBINUM
+                                           TO  RECECOM-HKNCOMBI
+               MOVE    ZERO                TO  RECECOM-SRYDD
+               MOVE    SPA-I43-COMMENT     TO  RECECOM-COMMENT
+      *
+               MOVE    SMCNDATE-YMD        TO  RECECOM-CREYMD
+               MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+      *
+      *
+               MOVE    RECECOM-REC         TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "I43 RECECOM INS ERR:" MCP-RC
+                           ",KEY:"   RECECOM-KEY    "."
+                   MOVE    "0020"              TO  SPA-ERRCD
+                   GO      TO      2121-TOUROKU-SYORI-EXT
+               END-IF
+           END-IF
+      *
       *    再表示
-           PERFORM                     310-SPA-SET-SEC.
+           PERFORM                     310-SPA-SET-SEC
       *
-           MOVE    1                   TO  SPA-I43-CUR.
+           MOVE    1                   TO  SPA-I43-CUR
+      *    コメント編集編集
+      *    PERFORM 3103-RECECOM-HEN-SEC
       *
+      *    MOVE    SPA-NAI-SRYYM       TO  SPA-I43-SRYYMS
+      *    MOVE    SPA-GMN-SRYYM       TO  SPA-I43-SRYYM
+      *
+      *    MOVE    SPACE              TO  SPA-I43-COMMENT
+      *    MOVE    ZERO               TO  SPA-I43-SYORI
+      *    MOVE    1                  TO  SPA-I43-CUR
+      *
+           .
        2121-TOUROKU-SYORI-EXT.
            EXIT.
       *
@@ -1229,26 +1532,38 @@
       *****************************************************************
        250-BUNREI-I45-SEC                   SECTION.
       *
-           MOVE    "SELNUM"            TO  MCP-WIDGET.
+           MOVE    SPACE               TO  SPA-MOTOPG
       *
-           MOVE    "I43"               TO  SPA-MOTOPG.
-           MOVE    "I45"               TO  SPA-SAKIPG.
+           MOVE    SPA-I4KYOUTU        TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-I41             TO  SPA-FREE
       *
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE.
-           MOVE    "I45"               TO  MCP-WINDOW.
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
       *
-           MOVE    SPA-I4KYOUTU        TO  SPA-WORK.
-           MOVE    SPA-AREA            TO  SPA-COMMON.
-           MOVE    SPA-I43             TO  SPA-FREE.
+           CALL    "ORCGI45"          USING
+                                      MCPAREA
+                                      SPAAREA
+                                      LINKAREA
+                                      SCRAREA.
       *
-           MOVE    SPACE               TO  LINKAREA.
-           MOVE    SPA-KYOUTU          TO  LNK-COMMON.
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU.
-           MOVE    SPA-I4              TO  LNK-SCRSPA.
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-I41
+           MOVE    SPA-WORK        TO  SPA-I4KYOUTU
       *
-           PERFORM 900-PUT-WINDOW,
+      *    カーソル移動
+           MOVE    "SELNUM"            TO  MCP-WIDGET
       *
-           MOVE    1                   TO  FLG-END.
+           MOVE    "I43"              TO  SPA-MOTOPG
+           MOVE    "I45"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"              TO  MCP-PUTTYPE
+           MOVE    "I45"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
       *
        250-BUNREI-I45-EXT.
            EXIT.
@@ -1258,18 +1573,21 @@
       *****************************************************************
        800-COMMENT-CHK-SEC                   SECTION.
       *
-           INITIALIZE                  ORCSKANACHKAREA.
-           MOVE    "1"                 TO  KANACHK-SYORI.
-           MOVE    SPA-I43-COMMENT     TO  KANACHK-MAE-INPUT.
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+      *    出力桁数（全角の最大桁数の指定（省略可））
+           MOVE    400                 TO  KANACHK-MAX-CNT
+           MOVE    SPA-I43-COMMENT     TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA.
+                                       ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
       *        全角以外エラー
                MOVE    "0013"          TO  SPA-ERRCD
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  SPA-I43-COMMENT
-           END-IF.
+           END-IF
+           .
       *
        800-COMMENT-CHK-EXT.
            EXIT.
@@ -1279,18 +1597,18 @@
       *****************************************************************
        280-BUNREI-ADD-SEC                   SECTION.
       *
-           MOVE    I43-COMMENT         TO  SPA-I43-COMMENT.
+           MOVE    I43-COMMENT         TO  SPA-I43-COMMENT
       *
-           IF      SPA-I43-COMMENT    =   SPACE
+           IF      SPA-I43-COMMENT     =   SPACE
                MOVE    "0007"              TO  SPA-ERRCD
                GO      TO      280-BUNREI-ADD-EXT
-           END-IF.
-           PERFORM 800-COMMENT-CHK-SEC.
+           END-IF
+           PERFORM 800-COMMENT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      280-BUNREI-ADD-EXT
-           END-IF.
+           END-IF
       *
-           IF      SPA-I43-BUNNUM     =   ZERO
+           IF      SPA-I43-BUNNUM      =   ZERO
                MOVE    "0102"              TO  SPA-IIDCD
            ELSE
                PERFORM 28001-EXAMPLE-CHK-SEC
@@ -1299,8 +1617,9 @@
                ELSE
                    MOVE    "0106"              TO  SPA-IIDCD
                END-IF
-           END-IF.
+           END-IF
       *
+           .
        280-BUNREI-ADD-EXT.
            EXIT.
       *
@@ -1309,28 +1628,30 @@
       *****************************************************************
        28001-EXAMPLE-CHK-SEC                   SECTION.
       *
-      *    雛形有無
-           MOVE    SPACE               TO  EXAMPLE-REC.
-           INITIALIZE                  EXAMPLE-REC.
-           MOVE    SPA-HOSPID          TO  EXAMPLE-HOSPID.
-           MOVE    "1"                 TO  EXAMPLE-KUBUN.
-           MOVE    SPA-I43-BUNNUM      TO  EXAMPLE-RENNUM.
       *
-           MOVE    EXAMPLE-REC         TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH.
+      *    雛形有無
+           MOVE    SPACE               TO  EXAMPLE-REC
+           INITIALIZE                  EXAMPLE-REC
+           MOVE    SPA-HOSPID          TO  EXAMPLE-HOSPID
+           MOVE    "1"                 TO  EXAMPLE-KUBUN
+           MOVE    SPA-I43-BUNNUM      TO  EXAMPLE-RENNUM
+      *
+           MOVE    EXAMPLE-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
-                                        MCPDATA-REC.
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
                PERFORM 930-EXAMPLE-READ-SEC
            ELSE
                MOVE    1               TO  FLG-EXAMPLE
                INITIALIZE                  EXAMPLE-REC
-           END-IF.
+           END-IF
       *
+           .
        28001-EXAMPLE-CHK-EXT.
            EXIT.
       *
@@ -1339,7 +1660,12 @@
       *****************************************************************
        2801-BUNREI-SYORI-SEC                   SECTION.
       *
-           IF      SPA-I43-BUNNUM     =   ZERO
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           IF      SPA-I43-BUNNUM      =   ZERO
       *        最大連番決定
                MOVE    SPACE               TO  EXAMPLE-REC
                INITIALIZE                  EXAMPLE-REC
@@ -1361,20 +1687,22 @@
                    INITIALIZE                  EXAMPLE-REC
                END-IF
                MOVE    EXAMPLE-RENNUM      TO  SPA-I43-BUNNUM
-               IF      SPA-I43-BUNNUM     =   999
+               IF      SPA-I43-BUNNUM      =   999
                    MOVE    "0010"              TO  SPA-ERRCD
                    GO      TO      2801-BUNREI-SYORI-EXT
                END-IF
                ADD     1                   TO  SPA-I43-BUNNUM
-           END-IF.
+           END-IF
+      *
       *    雛形有無
-           PERFORM 28001-EXAMPLE-CHK-SEC.
+           PERFORM 28001-EXAMPLE-CHK-SEC
            IF      FLG-EXAMPLE         =   ZERO
       *        更新
-               MOVE    SPA-I43-COMMENT    TO  EXAMPLE-COMMENT
-               PERFORM 800-MCNDATE-SEC
-               MOVE    SMCNDATE-YMD       TO  EXAMPLE-UPYMD
-               MOVE    SMCNDATE-HMS       TO  EXAMPLE-UPHMS
+               MOVE    SPA-I43-COMMENT     TO  EXAMPLE-COMMENT
+      *
+               MOVE    SMCNDATE-YMD        TO  EXAMPLE-UPYMD
+               MOVE    SMCNDATE-HMS        TO  EXAMPLE-UPHMS
+      *
       *
                MOVE    EXAMPLE-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1384,7 +1712,8 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "I43 EXAMPLE UPD ERR:" MCP-RC "."
+                   DISPLAY "I43 EXAMPLE UPD ERR:" MCP-RC
+                           ",KEY:"   EXAMPLE-KEY    "."
                END-IF
            ELSE
       *        追加
@@ -1395,10 +1724,10 @@
                MOVE    SPA-I43-BUNNUM      TO  EXAMPLE-RENNUM
                MOVE    SPA-I43-COMMENT     TO  EXAMPLE-COMMENT
       *
-               PERFORM 800-MCNDATE-SEC
-               MOVE    SMCNDATE-YMD       TO  EXAMPLE-CREYMD
-                                              EXAMPLE-UPYMD
-               MOVE    SMCNDATE-HMS       TO  EXAMPLE-UPHMS
+               MOVE    SMCNDATE-YMD        TO  EXAMPLE-CREYMD
+               MOVE    SMCNDATE-YMD        TO  EXAMPLE-UPYMD
+               MOVE    SMCNDATE-HMS        TO  EXAMPLE-UPHMS
+      *
       *
                MOVE    EXAMPLE-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1408,15 +1737,17 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "I43 EXAMPLE INS ERR:" MCP-RC "."
+                   DISPLAY "I43 EXAMPLE INS ERR:" MCP-RC
+                           ",KEY:"   EXAMPLE-KEY    "."
                END-IF
-           END-IF.
+           END-IF
       *
-           MOVE    SPACE               TO  SPA-I43-COMMENT.
-           MOVE    ZERO                TO  SPA-I43-SELNUM.
-           MOVE    ZERO                TO  SPA-I43-BUNNUM.
-           MOVE    1                   TO  SPA-I43-CUR.
+           MOVE    SPACE               TO  SPA-I43-COMMENT
+           MOVE    ZERO                TO  SPA-I43-SELNUM
+           MOVE    ZERO                TO  SPA-I43-BUNNUM
+           MOVE    1                   TO  SPA-I43-CUR
       *
+           .
        2801-BUNREI-SYORI-EXT.
            EXIT.
       *
@@ -1428,16 +1759,16 @@
            IF      SPA-GMN-PTID        =   ZERO
                MOVE    "0011"              TO  SPA-ERRCD
                GO      TO      240-COMMENT-DEL-EXT
-           END-IF.
+           END-IF
       *
-           IF      SPA-I43-SELNUM     =   ZERO    OR
+           IF      SPA-I43-SELNUM      =   ZERO    OR
                                        >   SPA-I43-RECE-MAX
                MOVE    "0003"              TO  SPA-ERRCD
                GO      TO      240-COMMENT-DEL-EXT
-           END-IF.
+           END-IF
       *
-           MOVE    "0104"              TO  SPA-IIDCD.
-      *
+           MOVE    "0104"              TO  SPA-IIDCD
+           .
        240-COMMENT-DEL-EXT.
            EXIT.
       *
@@ -1446,34 +1777,41 @@
       *****************************************************************
        2401-COMMENT-DELSYORI-SEC                   SECTION.
       *
-           MOVE    SPA-I43-SELNUM     TO  IDX.
+           MOVE    SPA-I43-SELNUM      TO  IDX
       *
-           MOVE    SPACE               TO  RECECOM-REC.
-           INITIALIZE                  RECECOM-REC.
-           MOVE    SPA-HOSPID          TO  RECECOM-HOSPID.
-           MOVE    SPA-GMN-PTID        TO  RECECOM-PTID.
-           MOVE    "1"                 TO  RECECOM-NYUGAIKBN.
+           MOVE    SPACE               TO  RECECOM-REC
+           INITIALIZE                  RECECOM-REC
+           MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
+           MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+           MOVE    SPA-NYUGAIKBN       TO  RECECOM-NYUGAIKBN
            MOVE    SPA-I43-NSRYKA (IDX)
-                                       TO  RECECOM-SRYKA.
+                                       TO  RECECOM-SRYKA
            MOVE    SPA-I43-NSRYYM (IDX)
-                                       TO  RECECOM-SRYYM.
+                                       TO  RECECOM-SRYYM
            MOVE    SPA-I43-NHKNCOMBI (IDX)
-                                       TO  RECECOM-HKNCOMBI.
-           MOVE    "00"                TO  RECECOM-SRYDD.
+                                       TO  RECECOM-HKNCOMBI
+           MOVE    SPA-I43-TSRYDD (IDX)
+                                       TO  RECECOM-SRYDD
+           IF      SPA-I43-TSRYDD (IDX)    =   SPACE
+               MOVE    ZERO                TO  RECECOM-SRYDD
+           END-IF
       *
-           MOVE    RECECOM-REC         TO  MCPDATA-REC.
-           MOVE    "DBDELETE"          TO  MCP-FUNC.
-           MOVE    "RECECOM-KEY"       TO  ORC-DBPATH.
+           MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
-                                        MCPDATA-REC.
+                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "I43 RECECOM DEL ERR:" MCP-RC "."
-           END-IF.
-      *    再表示
-           PERFORM                     310-SPA-SET-SEC.
+               DISPLAY "I43 RECECOM DEL ERR:" MCP-RC 
+                           ",KEY:"   RECECOM-KEY    "."
+           END-IF
       *
+      *    再表示
+           PERFORM                     310-SPA-SET-SEC
+      *
+           .
        2401-COMMENT-DELSYORI-EXT.
            EXIT.
       *
@@ -1485,20 +1823,21 @@
            IF      SPA-GMN-PTID        =   ZERO
                MOVE    "0011"              TO  SPA-ERRCD
                GO      TO      210-HENKOU-EXT
-           END-IF.
+           END-IF
       *
-           IF      SPA-I43-SELNUM     >   SPA-I43-RECE-MAX
+           IF      SPA-I43-SELNUM      >   SPA-I43-RECE-MAX
                MOVE    "0003"              TO  SPA-ERRCD
                GO      TO      210-HENKOU-EXT
-           END-IF.
+           END-IF
       *
-           MOVE    1                   TO  SPA-I43-SYORI.
-           IF      SPA-I43-SELNUM     =   ZERO
+           MOVE    1                   TO  SPA-I43-SYORI
+           IF      SPA-I43-SELNUM      =   ZERO
                MOVE    4               TO  SPA-I43-CUR
            ELSE
                PERFORM 2101-HENKOU-SYORI-SEC
-           END-IF.
+           END-IF
       *
+           .
        210-HENKOU-EXT.
            EXIT.
       *
@@ -1508,18 +1847,30 @@
        2101-HENKOU-SYORI-SEC                   SECTION.
       *
            MOVE    SPA-I43-TSRYYM  (SPA-I43-SELNUM)
-                                       TO  SPA-I43-SRYYM.
+                                       TO  SPA-I43-SRYYM
            MOVE    SPA-I43-NSRYYM  (SPA-I43-SELNUM)
-                                       TO  SPA-I43-SRYYMS.
+                                       TO  SPA-I43-SRYYMS
+      *
+      *    保険組合せ
+           PERFORM 3101-HKNCOMBI-HEN-SEC
+      *
+      *    診療科
+           PERFORM 3102-SRYKA-HEN-SEC
+      *
+      *    初期編集
+           PERFORM 314-SYOKI-SEC
+      *
            MOVE    SPA-I43-NSRYKA  (SPA-I43-SELNUM)
-                                       TO  I43-SRYKA.
+                                       TO  I43-SRYKA
+           PERFORM 400-SRYKA-SEC
            MOVE    SPA-I43-NHKNCOMBI  (SPA-I43-SELNUM)
-                                       TO  I43-HKNCOMBI.
+                                       TO  I43-HKNCOMBI
+           PERFORM 410-HKNCOMBI-SEC
            MOVE    SPA-I43-TCOMMENT(SPA-I43-SELNUM)
-                                       TO  SPA-I43-COMMENT.
+                                       TO  SPA-I43-COMMENT
       *
-           MOVE    1                   TO  SPA-I43-CUR.
-      *
+           MOVE    1                   TO  SPA-I43-CUR
+           .
        2101-HENKOU-SYORI-EXT.
            EXIT.
       *
@@ -1531,20 +1882,21 @@
            IF      SPA-GMN-PTID        =   ZERO
                MOVE    "0011"              TO  SPA-ERRCD
                GO      TO      250-COPY-EXT
-           END-IF.
+           END-IF
       *
-           IF      SPA-I43-SELNUM     >   SPA-I43-RECE-MAX
+           IF      SPA-I43-SELNUM      >   SPA-I43-RECE-MAX
                MOVE    "0003"              TO  SPA-ERRCD
                GO      TO      250-COPY-EXT
-           END-IF.
+           END-IF
       *
-           MOVE    3                   TO  SPA-I43-SYORI.
-           IF      SPA-I43-SELNUM     =   ZERO
+           MOVE    3                   TO  SPA-I43-SYORI
+           IF      SPA-I43-SELNUM      =   ZERO
                MOVE    4               TO  SPA-I43-CUR
            ELSE
                PERFORM 2501-COPY-SYORI-SEC
-           END-IF.
+           END-IF
       *
+           .
        250-COPY-EXT.
            EXIT.
       *
@@ -1554,10 +1906,10 @@
        2501-COPY-SYORI-SEC                   SECTION.
       *
            MOVE    SPA-I43-TCOMMENT(SPA-I43-SELNUM)
-                                       TO  SPA-I43-COMMENT.
+                                       TO  SPA-I43-COMMENT
       *
-           MOVE    1                   TO  SPA-I43-CUR.
-      *
+           MOVE    1                   TO  SPA-I43-CUR
+           .
        2501-COPY-SYORI-EXT.
            EXIT.
       *
@@ -1566,21 +1918,18 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "I41"               TO  SPA-SAKIPG.
-           MOVE    "I43"               TO  SPA-MOTOPG.
+           MOVE    "I41"               TO  SPA-SAKIPG
+           MOVE    "I43"               TO  SPA-MOTOPG
       *
-           MOVE    SPACE               TO  LINKAREA.
-           MOVE    SPA-KYOUTU          TO  LNK-COMMON.
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU.
-           MOVE    SPA-I4              TO  LNK-SCRSPA.
-      *
+      *****MOVE   "BACK"               TO  MCP-PUTTYPE
            MOVE    "JOIN"              TO  MCP-PUTTYPE.
-           MOVE    SPA-SAKIPG          TO  MCP-WINDOW.
+           MOVE   "I41"                TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END.
+           MOVE    1                   TO  FLG-END
       *
+           .
        210-BACK-EXT.
            EXIT.
       *
@@ -1589,25 +1938,25 @@
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
-            PERFORM 500-GMNHEN-SEC.
+            PERFORM 500-GMNHEN-SEC
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
                GO      TO      500-SET-SCREEN-EXT
-           END-IF.
+           END-IF
       *
            IF      SPA-IIDCD       NOT =   SPACE
                PERFORM 520-JIDSET-SEC
                GO      TO      500-SET-SCREEN-EXT
-           END-IF.
+           END-IF
       *
-           MOVE    SPACE               TO  LNK-KYOUTU.
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "I43"               TO  MCP-WINDOW.
+           MOVE    "I43"              TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
-      *
+           .
        500-SET-SCREEN-EXT.
            EXIT.
       *
@@ -1615,12 +1964,11 @@
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
-      *
-           MOVE    SPACE               TO  SPA-ERRMSG.
+           MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "入院科選択エラー"
+                   MOVE    "診療科選択エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "保険組合せ選択エラー"
@@ -1632,7 +1980,7 @@
                    MOVE    "文例登録番号エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE    "入院年月に診療行為がありません。"
+                   MOVE    "診療年月に診療行為がありません。"
                                        TO  SPA-ERRMSG
                    MOVE    "コメントは登録できません。"
                                        TO  SPA-ERRMSG(33:)
@@ -1649,34 +1997,37 @@
                                        TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE
-                   "対象の入院科と保険組合せは受診が有りません。"
+                   "対象の診療科と保険組合せは受診が有りません。"
                                        TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "コメントは全角で入力して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0014"
-                   MOVE    "アフターケアの時、入院日を選択して下さい"
+                   MOVE    "アフターケアの時、診療日を選択して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0015"
-                   MOVE    "アフターケア入院日選択番号がありません"
+                   MOVE    "アフターケア診療日選択番号がありません"
                                        TO  SPA-ERRMSG
-           END-EVALUATE.
+               WHEN    "0020"
+                   MOVE    "更新エラーです。"
+                                       TO  SPA-ERRMSG
+           END-EVALUATE
       *
-           MOVE    SPACE               TO  I4ERR.
-           MOVE    SPA-ERRCD           TO  I4ERR-ERRCODE.
-           MOVE    SPA-ERRMSG          TO  I4ERR-ERRMSG.
-           MOVE    "B01"               TO  MCP-WIDGET.
+           MOVE    SPACE               TO  I4ERR
+           MOVE    SPA-ERRCD           TO  I4ERR-ERRCODE
+           MOVE    SPA-ERRMSG          TO  I4ERR-ERRMSG
+           MOVE    "B01"               TO  MCP-WIDGET
       *
-           MOVE    "I43"               TO  SPA-MOTOPG.
-           MOVE    "I4ERR"             TO  SPA-SAKIPG.
+           MOVE    "I43"              TO  SPA-MOTOPG
+           MOVE    "I4ERR"              TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE.
-           MOVE    "I4ERR"             TO  MCP-WINDOW.
+           MOVE    "I4ERR"              TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *
-           MOVE    1                   TO  FLG-END.
-      *
+           MOVE    1                   TO  FLG-END
+           .
        510-ERRSET-EXT.
            EXIT.
       *
@@ -1687,7 +2038,7 @@
       *
            EVALUATE    SPA-IIDCD
                WHEN    "0101"
-                   MOVE    "入院年月のレセプトコメントを入力します。"
+                   MOVE    "診療年月のレセプトコメントを入力します。"
                                        TO  WRK-JIDMSG
                    MOVE    "よろしいですか？"
                                        TO  WRK-JIDMSG(41:)
@@ -1719,57 +2070,48 @@
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  WRK-JIDMSG
-           END-EVALUATE.
+           END-EVALUATE
       *
-           MOVE    SPACE               TO  SPA-I4ID-FLG.
+           MOVE    SPACE               TO  SPA-I4ID-FLG
       *
-           MOVE    SPACE               TO  I4ID1.
-           MOVE    SPA-IIDCD           TO  I4ID1-ID1CODE.
-           MOVE    WRK-JIDMSG          TO  I4ID1-ID1MSG.
-           MOVE    "B12"               TO  MCP-WIDGET.
+           MOVE    SPACE               TO  I4ID1
+           MOVE    SPA-IIDCD           TO  I4ID1-ID1CODE
+           MOVE    WRK-JIDMSG          TO  I4ID1-ID1MSG
+           MOVE    "B12"               TO  MCP-WIDGET
       *
-           MOVE    "I43"               TO  SPA-MOTOPG.
-           MOVE    "I4ID1"             TO  SPA-SAKIPG.
+           MOVE    "I43"               TO  SPA-MOTOPG
+           MOVE    "I4ID1"             TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE.
            MOVE    "I4ID1"             TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *
-           MOVE    1                   TO  FLG-END.
+           MOVE    1                   TO  FLG-END
       *
+           .
        520-JIDSET-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    マシン日付取得サブ
-      *****************************************************************
-       800-MCNDATE-SEC         SECTION.
-      *
-           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
-      *
-           .
-      *
-       800-MCNDATE-EXT.
-           EXIT.
       *****************************************************************
       *    保険組合せマスター読込
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
-                                        MCPDATA-REC.
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
                MOVE    ZERO                TO  FLG-HKNCOMBI
            ELSE
                INITIALIZE                      HKNCOMBI-REC
                MOVE    1                   TO  FLG-HKNCOMBI
-           END-IF.
+           END-IF
       *
+           .
        910-HKNCOMBI-READ-EXT.
            EXIT.
       *
@@ -1778,19 +2120,20 @@
       *****************************************************************
        920-RECECOM-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
-                                        MCPDATA-REC.
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  RECECOM-REC
                MOVE    ZERO                TO  FLG-RECECOM
            ELSE
                INITIALIZE                      RECECOM-REC
                MOVE    1                   TO  FLG-RECECOM
-           END-IF.
+           END-IF
       *
+           .
        920-RECECOM-READ-EXT.
            EXIT.
       *
@@ -1799,20 +2142,64 @@
       *****************************************************************
        930-EXAMPLE-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
-                                        MCPDATA-REC.
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  EXAMPLE-REC
                MOVE    ZERO                TO  FLG-EXAMPLE
            ELSE
                INITIALIZE                      EXAMPLE-REC
                MOVE    1                   TO  FLG-EXAMPLE
-           END-IF.
+           END-IF
       *
+           .
        930-EXAMPLE-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    受診履歴マスター読込
+      *****************************************************************
+       970-JYURRK-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  JYURRK-REC
+               MOVE    ZERO            TO  FLG-JYURRK
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           .
+       970-JYURRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者労災保険情報読み込み
+      *****************************************************************
+       993-PTRSIINF-NEXT-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTRSIINF-REC
+               MOVE    ZERO            TO  FLG-PTRSIINF
+           ELSE
+               INITIALIZE                  PTRSIINF-REC
+               MOVE    1               TO  FLG-PTRSIINF
+           END-IF
+      *
+           .
+       993-PTRSIINF-NEXT-EXT.
            EXIT.
       *****************************************************************
       *    入院会計マスター読込
@@ -1836,24 +2223,22 @@
            EXIT.
       *
       *****************************************************************
-      *    患者労災保険情報読み込み
+      *    システム管理マスタ読み込み処理
       *****************************************************************
-       993-PTRSIINF-NEXT-SEC        SECTION.
+       900-KANRIMST-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTRSIINF-REC
-               MOVE    ZERO            TO  FLG-PTRSIINF
+               MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
-               INITIALIZE                  PTRSIINF-REC
-               MOVE    1               TO  FLG-PTRSIINF
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF.
       *
-       993-PTRSIINF-NEXT-EXT.
+       900-KANRIMST-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1867,6 +2252,8 @@
                                 ORCMCPAREA
                                 MCPDATA-REC.
       *
+           .
        900-PUT-WINDOW-EXT.
            EXIT.
+      *
       *
