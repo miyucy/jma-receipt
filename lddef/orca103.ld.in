@@ -6,9 +6,12 @@ textsize	400;
 bind	""		"OpenCOBOL"	"ORCGX01";
 bind	"X01"		"OpenCOBOL"	"ORCGX01";
 bind	"X02"		"OpenCOBOL"	"ORCGX02";
+bind	"X91"		"OpenCOBOL"	"ORCGX91";
+bind	"X97"		"OpenCOBOL"	"ORCGX97";
 bind	"X98"		"OpenCOBOL"	"ORCGX98";
 bind	"XERR"		"OpenCOBOL"	"ORCGXERR";
 bind	"XID1"		"OpenCOBOL"	"ORCGXID1";
+bind	"XID2"		"OpenCOBOL"	"ORCGXID2";
 
 multiplex_group	orca103;
 
@@ -18,9 +21,12 @@ data	{
 	window	{
 		X01;
 		X02;
+                X91;
+                X97;
                 X98;
 		XERR;
 		XID1;
+		XID2;
 	};
 };
 

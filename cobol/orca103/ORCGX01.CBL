@@ -199,9 +199,12 @@
        01  SCRAREA.
            COPY    "X01.INC".
            COPY    "X02.INC".
+           COPY    "X91.INC".
+           COPY    "X97.INC".
            COPY    "X98.INC". 
            COPY    "XERR.INC".
            COPY    "XID1.INC".
+           COPY    "XID2.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -361,6 +364,9 @@
       *        クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 493-CLEAR-SEC
+      *        リスト
+               WHEN    "CLICKED"       ALSO    "B04"
+                   PERFORM  411-PRINT-SEC
       *        検索
                WHEN    "CLICKED"       ALSO    "B09"
                    MOVE    SPACE               TO  WRK-INPUTCD
@@ -368,9 +374,6 @@
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM  410-KAKUTEI-SEC
-      *        検索
-               WHEN    "CLICKED"       ALSO    "B11"
-                   PERFORM  411-PRINT-SEC
            END-EVALUATE
            .
       *
@@ -989,14 +992,19 @@
       *****************************************************************
        411-PRINT-SEC               SECTION.
       *
-           INITIALIZE                  ORCHXLSTAREA
-           MOVE    SPA-GMN-CHKKBN      TO  HXLST-CHKKBN
-           MOVE    SPA-GMN-SRYCD       TO  HXLST-SRYCD
-           CALL    "ORCHXLST"      USING   SPA-AREA
-                                           ORCHXLSTAREA
-           IF      HXLST-RCD       NOT =   ZERO
-               MOVE    "0009"          TO  SPA-ERRCD
-           END-IF
+      *    画面移行用のパラメタ
+           INITIALIZE                      SPA-X01KYOUTU
+           MOVE    SPA-X01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    "X91"               TO  SPA-SAKIPG
+           MOVE    "X01"               TO  SPA-MOTOPG
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
       *
            .
        411-PRINT-EXT.
@@ -1078,7 +1086,6 @@
       *    検索画面編集処理
       *****************************************************************
        41011-X98-SET-SEC                           SECTION.
-      *
       *
            MOVE    SPA-X01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON

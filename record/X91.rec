@@ -1,0 +1,40 @@
+X91	{
+	fixed2	{
+		CHKYKZBYO	{
+			value	bool;
+		};
+		CHKSRYBYO	{
+			value	bool;
+		};
+		CHKYKZHEI	{
+			value	bool;
+		};
+		CHKSRYHEI	{
+			value	bool;
+		};
+		CHKSRYRANGE	{
+			value	bool;
+		};
+		STSRYCD	{
+			value	varchar(9);
+			state	int;
+		};
+		STSRYNAME	{
+			value	varchar(100);
+			state	int;
+		};
+		EDSRYCD	{
+			value	varchar(9);
+			state	int;
+		};
+		SYU1	{
+			value	bool;
+		};
+		SYU2	{
+			value	bool;
+		};
+		SYU3	{
+			value	bool;
+		};
+	};
+};

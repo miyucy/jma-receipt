@@ -196,9 +196,12 @@
        01  SCRAREA.
            COPY    "X01.INC".
            COPY    "X02.INC".
+           COPY    "X91.INC".
+           COPY    "X97.INC".
            COPY    "X98.INC". 
            COPY    "XERR.INC".
            COPY    "XID1.INC".
+           COPY    "XID2.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -956,6 +959,7 @@
            INITIALIZE                  ORCHXLSTAREA
            MOVE    SPA-GMN-CHKKBN      TO  HXLST-CHKKBN
            MOVE    SPA-GMN-SRYCD       TO  HXLST-SRYCD
+           MOVE    "1"                 TO  HXLST-PROCKBN
            CALL    "ORCHXLST"      USING   SPA-AREA
                                            ORCHXLSTAREA
       *

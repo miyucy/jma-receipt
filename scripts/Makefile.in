@@ -53,6 +53,7 @@ shell_sources = \
 	claim/HL03.sh.in \
 	claim/ORC_CLAIM_SERVER.sh.in \
 	allways/orcbi201.sh.in \
+	allways/chkmst.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \
@@ -169,6 +170,7 @@ filecheck:
 	-name "program_upgrade_copy.sh" -o \
 	-name "program_upgrade_restart.sh" -o \
 	-name "receden_sokatu.sh" -o \
+	-name "chkmst.sh" -o \
 	-printf "file\t%f\n") \
 	|sort +1 |uniq -u -f1
 

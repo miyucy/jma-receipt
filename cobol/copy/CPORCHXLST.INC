@@ -27,8 +27,18 @@
       *
       *    チェック区分
            03  HXLST-CHKKBN             PIC  X(01).
-      *    対象コード
+      *    対象コード（開始）
            03  HXLST-SRYCD              PIC X(09).
+      *    対象コード（終了）
+           03  HXLST-SRYCD-END          PIC X(09).
+      *    処理区分
+           03  HXLST-PROCKBN            PIC X(01).
+      *    ソート区分
+           03  HXLST-SRTKBN             PIC X(01).
+      *    一括パラメタ
+           03  HXLST-PRTAREA            PIC X(15000).
+      *    出力件数
+           03  HXLST-OUT-CNT            PIC 9(8).
       *    復帰コード
            03  HXLST-RCD                PIC S9(9)   BINARY.
       *

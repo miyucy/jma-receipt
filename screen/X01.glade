@@ -301,13 +301,18 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F4</key>
+	<signal>clicked</signal>
+      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 02:51:05 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>¥ê¥¹¥È</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -371,7 +376,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 02:51:05 GMT</last_modification_time>
       </signal>
-      <label>°õºþ</label>
+      <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -482,7 +487,7 @@
       <y>130</y>
       <width>100</width>
       <height>18</height>
-      <label>¿ÇÎÅ¥³¡¼¥É</label>
+      <label>¿ÇÎÅ¹Ô°Ù¥³¡¼¥É</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.0</xalign>

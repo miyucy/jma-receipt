@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-ÂÀÅÄ    04/03/01  °ì³ç°õºþÂÐ±þ
       *****************************************************************
       *
       *
@@ -56,6 +57,10 @@
       *    ¥·¥§¥ëÍÑÎÎ°è
            COPY    "CPSHELLTBL.INC".
            COPY    "ORCA-DBPATH".
+      *
+      *    ¥«¥¦¥ó¥ÈÎÎ°è
+       01  CNT-AREA.
+           03  CNT-OUT             PIC 9(02).
       *
       *
       *    ¥Õ¥é¥°ÎÎ°è
@@ -184,6 +189,9 @@
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
       *
+      *    °õºþ£Ä£Â¹¹¿·¥µ¥Ö
+           COPY    "CPORCSPRT.INC".
+      *
       *   ÆüÉÕÊÑ´¹¥µ¥Ö
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -219,6 +227,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  CNT-AREA
            INITIALIZE                  HXLST-RCD
       *
            ACCEPT  SYS-TIME            FROM    TIME
@@ -235,8 +244,14 @@
       *
       *    °õºþ½èÍý
            IF      IDX-P               >   ZERO
-               PERFORM 400-PRINT-SYORI-SEC
+               IF    ( HXLST-PROCKBN   =   "1" )
+                   PERFORM 400-PRINT-SYORI-SEC
+               ELSE
+                   PERFORM 410-PRINT-SYORI-SEC
+               END-IF
            END-IF
+      *
+           MOVE    CNT-OUT         TO  HXLST-OUT-CNT
       *
            .
        000-PROC-EXT.
@@ -244,7 +259,7 @@
            .
       *
       *****************************************************************
-      *    °õºþ½èÍý
+      *    °õºþ½èÍý¡Ê¥ª¥ó¥é¥¤¥ó°õºþ¡Ë
       *****************************************************************
        400-PRINT-SYORI-SEC             SECTION.
       *
@@ -308,10 +323,38 @@
                    MCPAREA
                    MCPDATA-REC
       *
+           COMPUTE CNT-OUT         =   CNT-OUT     +   1
+      *
            .
        400-PRINT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    °õºþ½èÍý¡Ê°ì³ç°õºþ¡Ë
+      *****************************************************************
+       410-PRINT-SYORI-SEC             SECTION.
+      *
+           MOVE    HXLST-PRTAREA       TO  ORCSPRTAREA
+      *
+           MOVE    "HCP7LA"            TO  SPRT-PRTID
+           MOVE    HCP7LA              TO  SPRT-PRTDATA
+           MOVE    "1"                 TO  SPRT-SITEKBN
+           CALL    "ORCSPRT"           USING
+                                       ORCSPRTAREA
+           IF      SPRT-RETURN         =   ZERO
+      *        CONTINUE
+               COMPUTE CNT-OUT         =   CNT-OUT     +   1
+           ELSE
+               MOVE    9               TO  HXLST-RCD
+           END-IF
+      *
+      *
+           MOVE    ZERO                TO  IDX-P
+           MOVE    SPACE               TO  HCP7LA
+      *
+           .
+       410-PRINT-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    ½é´üÊÔ½¸½èÍý
       *****************************************************************
@@ -359,10 +402,26 @@
            END-EVALUATE
            MOVE    HXLST-CHKKBN        TO  CHK-CHKKBN
            MOVE    HXLST-SRYCD         TO  CHK-SRYCD
-           IF      HXLST-SRYCD         =   SPACE
-               MOVE    "CHK-KEY5"          TO  WRK-DBPATH
+           IF    ( HXLST-SRYCD-END     =   SPACE  )
+            OR   ( HXLST-SRYCD         >   HXLST-SRYCD-END )
+               MOVE    HXLST-SRYCD     TO  CHKUP-SRYCD
            ELSE
-               MOVE    "CHK-KEY3"          TO  WRK-DBPATH
+               MOVE    HXLST-SRYCD-END TO  CHKUP-SRYCD
+           END-IF
+      *
+           IF      HXLST-SRYCD         =   SPACE
+               EVALUATE HXLST-SRTKBN
+               WHEN   "1"
+                   MOVE    "CHK-KEY10"     TO  WRK-DBPATH
+               WHEN   "2"
+                   MOVE    "CHK-KEY8"      TO  WRK-DBPATH
+               WHEN   "3"
+                   MOVE    "CHK-KEY9"      TO  WRK-DBPATH
+               WHEN   OTHER
+                   MOVE    "CHK-KEY10"     TO  WRK-DBPATH
+               END-EVALUATE
+           ELSE
+               MOVE    "CHK-KEY7"          TO  WRK-DBPATH
            END-IF
       *
            MOVE    ZERO                TO  FLG-CHKMST
@@ -458,8 +517,14 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   WRK-HEN-MAX
                IF      IDX-P               >=  IDX-MAX
+      *
       *            ²þ¥Ú¡¼¥¸
-                   PERFORM 400-PRINT-SYORI-SEC
+                   IF    ( HXLST-PROCKBN   =   "1" )
+                       PERFORM 400-PRINT-SYORI-SEC
+                   ELSE
+                       PERFORM 410-PRINT-SYORI-SEC
+                   END-IF
+      *
                    MOVE    ZERO                TO  IDX-P
       *            ¸«½Ð¤·ÊÔ½¸
                    ADD     1                   TO  PCNT
