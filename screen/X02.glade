@@ -1277,7 +1277,7 @@
 	<data>CHANGED</data>
 	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>100</text_max_length>
       <text></text>
