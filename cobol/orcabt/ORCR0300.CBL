@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03/07/18  主病名編集フラグによって
       *                                     主傷病名コードを変更する
+      *  01.00.02    NACL-藤原    03/08/01  コメントの編集の訂正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -370,6 +371,9 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    半角チェックサブ
+           COPY    "CPORCSKANACHK.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -1585,14 +1589,29 @@
                        MOVE    RECE05-SRYCD   (IDX)    TO  PTCOM-SRYCD
                        MOVE    RECE05-INPUTNUM(IDX)    TO  PTCOM-RENNUM
                        PERFORM 950-PTCOM-READ-SEC
-                       MOVE    SPACE               TO
+                       IF      PTCOM-INPUTCHI1     =   SPACE
+                           MOVE    PTCOM-INPUTCOMENT
+                                                   TO
+                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
+                       ELSE    
+                           MOVE    SPACE               TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)  
-                       STRING  PTCOM-INPUTCHI1     DELIMITED  BY  SPACE
-                               PTCOM-INPUTCHI2     DELIMITED  BY  SPACE
-                               PTCOM-INPUTCHI3     DELIMITED  BY  SPACE
-                               PTCOM-INPUTCHI4     DELIMITED  BY  SPACE
-                               INTO    TBL-COMMENT-NAME (WRK-TBLMAX8)
-                       END-STRING
+                           INITIALIZE              ORCSKANACHKAREA
+                           MOVE    "2"             TO  KANACHK-SYORI 
+                           STRING  PTCOM-INPUTCHI1 DELIMITED  BY  SPACE
+                                   PTCOM-INPUTCHI2 DELIMITED  BY  SPACE
+                                   PTCOM-INPUTCHI3 DELIMITED  BY  SPACE
+                                   PTCOM-INPUTCHI4 DELIMITED  BY  SPACE
+                                   INTO    KANACHK-MAE-INPUT
+                           END-STRING
+                           CALL    "ORCSKANACHK"   USING
+                                                       ORCSKANACHKAREA
+                           IF      KANACHK-RC      =   ZERO
+                               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                                   TO
+                                          TBL-COMMENT-NAME (WRK-TBLMAX8)
+                           END-IF
+                       END-IF
                    END-IF    
                END-IF
            END-IF
