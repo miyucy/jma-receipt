@@ -113,7 +113,7 @@
            03  CNT-CSV                 PIC 9(06).
            03  CNT-SRYKARRK            PIC 9(06).
            03  CNT-SANTEI              PIC 9(06).
-           03  CNT-ERR                 PIC 9(03).
+           03  CNT-ERR                 PIC 9(04).
       *
       *    添字領域
        01  IDX-AREA.
@@ -128,7 +128,6 @@
       *    パラメータ保存
        01  PARA-SAVE.
            03  PARA-05-1               PIC X(02).
-           03  PARA-06-1               PIC X(08).
       *
       *    一時領域
        01  WRK-AREA.
@@ -393,14 +392,12 @@
        101-PARA-GET1-SEC           SECTION.
       *
            EVALUATE                PARA-DATKBN
-             WHEN  "01-2"
+             WHEN  "01-6"
                    MOVE  PARA-DATA TO  ASS-CSV
-             WHEN  "02-2"
+             WHEN  "02-6"
                    MOVE  PARA-DATA TO  ASS-ERR
              WHEN  "05-1"
                    MOVE  PARA-DATA TO  PARA-05-1
-             WHEN  "06-1"
-                   MOVE  PARA-DATA TO  PARA-06-1
            END-EVALUATE
       *
            .
@@ -542,6 +539,7 @@
       *
            IF  FLG-ERRARI              =   ZERO
       *        マスタ更新処理
+               PERFORM 220-KOUMOKU-KYOTU-SEC
                PERFORM 250-KOUSIN-SYORI-SEC
                IF  FLG-ERR         NOT =   ZERO
       *            エラーリスト編集/出力処理
@@ -805,6 +803,8 @@
        2410-SRYKA-SET-SEC         SECTION.
       *
            EVALUATE    WRK-MO-CNT
+               WHEN    ZERO
+                   CONTINUE
                WHEN    1
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-NUM1
@@ -1093,8 +1093,8 @@
                IF  IDE                     =   1
                    ADD     1               TO  CNT-ERR
                    MOVE    SPACE           TO  ERR-REC1
-                   MOVE    CNT-ERR (1:3)   TO  ERR1-NO (1:3)
-                   MOVE    ":"             TO  ERR1-NO (4:1)
+                   MOVE    CNT-ERR (1:4)   TO  ERR1-NO (1:4)
+                   MOVE    ":"             TO  ERR1-NO (5:1)
                    MOVE    SPA-PTNUM       TO  ERR1-PTNUM
                END-IF
            END-IF
@@ -1171,8 +1171,8 @@
       *
            ADD     1                   TO  CNT-ERR
            MOVE    SPACE               TO  ERR-REC2
-           MOVE    CNT-ERR (1:3)       TO  ERR2-NO (1:3)
-           MOVE    ":"                 TO  ERR2-NO (4:1)
+           MOVE    CNT-ERR (1:4)       TO  ERR2-NO (1:4)
+           MOVE    ":"                 TO  ERR2-NO (5:1)
            EVALUATE    FLG-ERR
            WHEN    4
                MOVE    CONS-MES4       TO  ERR2-MES
@@ -1400,6 +1400,8 @@
                                         MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBSTART ERROR"
+           ELSE
+               DISPLAY "DBSTART OK"
            END-IF
            .
        100-DBOPEN-EXT.
