@@ -1539,9 +1539,9 @@
            END-IF
       *
            STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
-                   "[患者番号:"        DELIMITED   BY  SIZE
+                   "［患者番号："      DELIMITED   BY  SIZE
                    ERR-PTNUM           DELIMITED   BY  SPACE
-                   "]"                 DELIMITED   BY  SIZE
+                   "］"                DELIMITED   BY  SIZE
            INTO    ERR-HEN-ERRMSG
            END-STRING
       *
