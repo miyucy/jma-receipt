@@ -1741,12 +1741,10 @@
                            PERFORM 200111-TGENZAN-SRY-HEN-SEC
                        END-IF
       *
-                       IF    ( ORCBSD01-NYUGAIKBN  =   "2" )
-      *                    実日数退避ワーク編集処理（外来）
+      *                    実日数退避ワーク編集処理
                            IF    ( FLG-SHOSAISIN   =   ZERO )
-                               PERFORM 200111-TJNISSU-GAI-HEN-SEC
+                               PERFORM 200111-TJNISSU-HEN-SEC
                            END-IF
-                       END-IF
       *
       *                算定回数退避ワーク編集処理
                        IF    ( TNS-JITUDAY     =   1 )
@@ -2011,16 +2009,16 @@
        200111-TGENZAN-SRY-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    実日数退避ワーク編集処理（外来）
+      *    実日数退避ワーク編集処理
       *****************************************************************
-       200111-TJNISSU-GAI-HEN-SEC      SECTION.
+       200111-TJNISSU-HEN-SEC          SECTION.
       *
            MOVE    ZERO            TO  IDXA
       *
       *    実日数算定チェック
            PERFORM 200111-JNISSU-HEN-SEC
            IF    ( FLG-SHOSAISIN       =   ZERO )
-               GO  TO  200111-TJNISSU-GAI-HEN-EXT
+               GO  TO  200111-TJNISSU-HEN-EXT
            END-IF
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
@@ -2060,7 +2058,7 @@
            END-IF
       *
            .
-       200111-TJNISSU-GAI-HEN-EXT.
+       200111-TJNISSU-HEN-EXT.
            EXIT.
       *****************************************************************
       *    実日数算定チェック
