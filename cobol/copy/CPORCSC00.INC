@@ -43,6 +43,8 @@
            03  LNK-ORCSC-SYOSIN        PIC 9(01).
       *    初診フラグ２
            03  LNK-ORCSC-SYOSIN2       PIC 9(01).
+      *    訂正前診療科
+           03  LNK-ORCSC-OLD-SRYKA     PIC X(02).
       *
       *    画面行位置
            03  LNK-ORCSC-CHK-IDX       PIC 9(04).
