@@ -2883,8 +2883,10 @@
                      MOVE    1                   TO  IDX
                  END-IF  
              END-PERFORM
-             COMPUTE IDX                 =   WRK-MOJISU  +  1
-             MOVE    "%"                 TO  ICD-INPUTCD(IDX:1)
+             IF      WRK-MOJISU          <   20
+                 COMPUTE IDX                 =   WRK-MOJISU  +  1
+                 MOVE    "%"                 TO  ICD-INPUTCD(IDX:1)
+             END-IF
            END-IF
       *  2.
            IF      ORC-DBPATH            =   "INPUTCD-KEY3"
@@ -2898,9 +2900,11 @@
                  END-IF  
              END-PERFORM
       *
-             COMPUTE IDX                 =   WRK-MOJISU  +  1
-             MOVE    "%"                 TO  ICD-SRYCD(IDX:1)
+             IF      WRK-MOJISU          <   20
+                 COMPUTE IDX                 =   WRK-MOJISU  +  1
+                 MOVE    "%"                 TO  ICD-SRYCD(IDX:1)
              END-IF
+            END-IF
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            .
