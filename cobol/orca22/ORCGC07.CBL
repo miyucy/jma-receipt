@@ -731,6 +731,7 @@
            MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
            MOVE    SPA-C07-HKNCOMBINUM
                                        TO  JYURRK-HKNCOMBINUM
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN                            
            IF      SPA-C07-SRYKA      =   "00"
                MOVE    "JYURRK-KEY17"      TO  WRK-DBPATH
            ELSE
