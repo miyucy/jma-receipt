@@ -136,14 +136,14 @@
                      09  LNK-ORCBT120SUB-KOH4PAYKBN    PIC  X(02).
       *给锐≥砷么攫鼠浩年盗
                    07  LNK-ORCBT120SUB-KOHFTN-TABLE  REDEFINES
-                                        LNK-ORCBT120SUB-KOHAREA.
-                     09  LNK-ORCBT120SUB-KOHFTN-TBL    OCCURS  4.
+                                        LNK-ORCBT120SUB-KOHAREA
+                                                       OCCURS  4.
       *给锐≥给锐戎规
-                       11  LNK-ORCBT120SUB-KOH-HKNNUM  PIC  X(03).
+                     09  LNK-ORCBT120SUB-KOH-HKNNUM  PIC  X(03).
       *给锐≥给锐ＩＤ
-                       11  LNK-ORCBT120SUB-KOH-ID      PIC  9(10).
+                     09  LNK-ORCBT120SUB-KOH-ID      PIC  9(10).
       *给锐≥毁失惰尸
-                       11  LNK-ORCBT120SUB-KOH-PAYKBN  PIC  X(02).
+                     09  LNK-ORCBT120SUB-KOH-PAYKBN  PIC  X(02).
       *汐阂瘦副惰尸
                05  LNK-ORCBT120SUB-RSIHKNKBN           PIC  X(01).
       *极清勒懒滇
