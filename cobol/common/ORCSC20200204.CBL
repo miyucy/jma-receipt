@@ -161,6 +161,7 @@
                05  WRK-SANTEN-9        PIC 9(08)V99.
                05  WRK-TENKEI          PIC 9(08).
                05  WRK-ZAITEN          PIC 9(08).
+               05  WRK-ZAITEN-G        PIC 9(08)V99.
       *
                05  WRK-CHK-SRYSYUKBN   PIC X(03).
       *    年齢判定用
@@ -893,12 +894,13 @@
       *            点数
                    COMPUTE WRK-SYOKEIS2        =   WRK-COM-KISOTEN(IDX)
                                                *   WRK-COM-SURYO  (IDX)
-                   ADD     WRK-SYOKEIS2        TO  WRK-ZAITEN
+                   ADD     WRK-SYOKEIS2        TO  WRK-ZAITEN-G
       *
       *----(01.00.01) LINE ADD START ----------------------------------
                END-IF
                IF      (FLG-NAIFUKU            =   1  )  AND
                        (WRK-COM-ZAIEND (IDX)   =   "1")
+                   MOVE    WRK-ZAITEN-G        TO  WRK-ZAITEN
                    IF      WRK-ZAITEN          <   205
                        IF      WRK-ZAITEN          =   ZERO
                            CONTINUE
@@ -935,6 +937,7 @@
                    MOVE    ZERO            TO  WRK-KONGO
                    MOVE    ZERO            TO  WRK-SONOTA
                    MOVE    ZERO            TO  WRK-ZAITEN
+                   MOVE    ZERO            TO  WRK-ZAITEN-G
                END-IF
       *
       *        後発医薬品チェック
