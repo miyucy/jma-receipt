@@ -64,6 +64,7 @@
                    07  SPA-GMN-HKNJAMEI            PIC X(40). 
       *
                05  SPA-NAIB-T01-AREA.
+                   07  SPA-NAI-WIDGET              PIC X(08). 
                    07  SPA-NAI-SKYYM               PIC 9(06).
                    07  SPA-NAI-SRYYM               PIC 9(06).
                    07  SPA-NAI-SKYYMD              PIC 9(08).
@@ -72,6 +73,8 @@
                    07  SPA-NAI-HKNJANUM            PIC X(08). 
       *
                05  SPA-STATE.             
+                   07  SPA-B06-STATE               PIC S9(09)  BINARY.
+                   07  SPA-B07-STATE               PIC S9(09)  BINARY.
                    07  SPA-SRYYM-STATE             PIC S9(09)  BINARY.
                    07  SPA-DATAKBN1-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN2-STATE          PIC S9(09)  BINARY.

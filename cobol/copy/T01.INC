@@ -18,6 +18,8 @@
             02  T01.
               03  T01-SKYYM.
                 04  T01-VALUE   PIC X(7).
+              03  T01-B06-STATE PIC S9(9)   BINARY.
+              03  T01-B07-STATE PIC S9(9)   BINARY.
               03  T01-DATAKBN1.
                 04  T01-DATAKBN1-STATE   PIC S9(9)   BINARY.
                 04  T01-DATAKBN1-VALUE   PIC X.

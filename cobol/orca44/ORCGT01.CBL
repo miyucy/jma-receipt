@@ -54,6 +54,8 @@
       *  01.04.03    NACL-藤原    03.05.14  印刷する・しないのボタン追加
       *  01.04.04    NACL-藤原    03.05.19  国保総括に個別指定の
       *                                     保険者番号を追加
+      *
+      *  01.05.01    NACL-藤原    03.08.06  レセ電処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -110,6 +112,7 @@
                    07  SPA-GMN-HKNJAMEI            PIC X(40). 
       *
                05  SPA-NAIB-T01-AREA.
+                   07  SPA-NAI-WIDGET              PIC X(08). 
                    07  SPA-NAI-SKYYM               PIC 9(06).
                    07  SPA-NAI-SRYYM               PIC 9(06).
                    07  SPA-NAI-SKYYMD              PIC 9(08).
@@ -118,6 +121,8 @@
                    07  SPA-NAI-HKNJANUM            PIC X(08). 
       *
                05  SPA-STATE.             
+                   07  SPA-B06-STATE               PIC S9(09)  BINARY.
+                   07  SPA-B07-STATE               PIC S9(09)  BINARY.
                    07  SPA-SRYYM-STATE             PIC S9(09)  BINARY.
                    07  SPA-DATAKBN1-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN2-STATE          PIC S9(09)  BINARY.
@@ -480,6 +485,31 @@
                MOVE    "請求書対象データなし"  TO  SPA-GMN-SRYYM
            END-IF    
       *
+      *    レセ電処理区分
+           MOVE    SPACE               TO  SYS-2005-REC 
+           INITIALIZE                      SYS-2005-REC
+           MOVE    "2005"              TO  SYS-2005-KANRICD
+           MOVE    "*"                 TO  SYS-2005-KBNCD
+           MOVE    SPA-NAI-SKYYM       TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-2005-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-2005-REC
+           ELSE
+               INITIALIZE                   SYS-2005-REC
+           END-IF
+           IF      SYS-2005-SYARECEKBN =   "1"
+               MOVE    WIDGET-NORMAL      TO  SPA-B06-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE TO  SPA-B06-STATE
+           END-IF
+           IF      SYS-2005-KKHRECEKBN =   "1"
+               MOVE    WIDGET-NORMAL      TO  SPA-B07-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE TO  SPA-B07-STATE
+           END-IF
+      *
            MOVE    WIDGET-INSENSITIVE TO  SPA-SRYYM-STATE
            MOVE    WIDGET-NORMAL      TO  SPA-DATAKBN1-STATE
                                           SPA-DATAKBN2-STATE
@@ -589,7 +619,13 @@
        340-TID2-SET-SEC            SECTION.
       *
            IF      SPA-TID1-FLG    =   "OK"    OR  "NO"
-               PERFORM 450-PRINT-SEC
+               EVALUATE    SPA-TIDCD
+                   WHEN    "1010"
+                   WHEN    "1011"
+                       PERFORM 460-RECEDEN-SEC
+                   WHEN    OTHER
+                       PERFORM 450-PRINT-SEC
+               END-EVALUATE 
            END-IF
       *
            MOVE    1               TO  SPA-GMN-CUR
@@ -613,6 +649,12 @@
       *     再印刷
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 450-REPRINT-SEC
+      *     社保レセ電処理
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 460-RECEDEN-GID-SEC
+      *     国保レセ電処理
+               WHEN    "CLICKED"       ALSO    "B07"
+                   PERFORM 460-RECEDEN-GID-SEC
       *     未請求一覧
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 480-PRINT-GID-SEC
@@ -1656,6 +1698,327 @@
            EXIT.
       *
       *****************************************************************
+      *    レセ電前処理
+      *****************************************************************
+       460-RECEDEN-GID-SEC                SECTION.
+      *
+      *    ジョブ管理チェック        
+           MOVE    SPACE               TO  SYS-3003-REC 
+           INITIALIZE                      SYS-3003-REC
+           MOVE    "3003"              TO  SYS-3003-KANRICD
+           MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
+           MOVE    SPA-NAI-SKYYM       TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-3003-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-3003-REC 
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SYS-3003-JOBID
+      *            ジョブ管理チェック処理
+                   MOVE    "CHK"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    IDX             TO  JOB-JOBID
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  JOB-SHELLID
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+                   IF      SJOBKANRI-RETURN
+                                           =   ZERO
+                       IF      JOB-ENDYMD      =   SPACE
+                           MOVE    "7777"          TO  SPA-ERRCD
+                           MOVE    SPACE           TO  WRK-RECEERR
+                           STRING  "処理中です【"  DELIMITED  BY  SIZE
+                                   JOB-SHELLMSG    DELIMITED  BY  SPACE
+                                   "】"            DELIMITED  BY  SIZE      
+                                                   INTO  WRK-RECEERR
+                           MOVE    SYS-3003-JOBID  TO  IDX
+                       END-IF
+                   END-IF    
+               END-PERFORM
+           END-IF
+      *
+      *
+      *    ジョブ管理チェック（レセプト）
+           IF      SPA-ERRCD           =   SPACE         
+               MOVE    "CHK"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-CONS-JOB-JOBID-RECEPT1
+                                       TO  JOB-JOBID
+               MOVE    WRK-CONS-JOB-SHELLID-RECEPT1
+                                       TO  JOB-SHELLID
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC 
+              IF      SJOBKANRI-RETURN
+                                       =   ZERO
+                   IF      JOB-ENDYMD      =   SPACE
+                       MOVE    "7777"          TO  SPA-ERRCD
+                       MOVE    SPACE             TO  WRK-RECEERR
+                       STRING  "レセプト作成処理中です【"
+                                                 DELIMITED  BY  SIZE
+                               JOB-SHELLMSG      DELIMITED  BY  SPACE
+                               "】"              DELIMITED  BY  SIZE      
+                                                 INTO  WRK-RECEERR
+                   END-IF
+               END-IF    
+           END-IF    
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      T01-DATAKBN3-VALUE    =   "T"
+                   CONTINUE
+               ELSE
+                   IF      SPA-NAI-SKYYM       =   ZERO
+                       MOVE    "0001"              TO  SPA-ERRCD
+                   END-IF    
+               END-IF    
+           END-IF    
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-SKYYMD      =   ZERO
+                   MOVE    "0002"              TO  SPA-ERRCD
+               END-IF    
+           END-IF    
+      *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    MCP-WIDGET          TO  SPA-NAI-WIDGET
+      *        ガイドメッセージセット
+               EVALUATE    MCP-WIDGET
+                   WHEN    "B06"
+                       MOVE    "1010"              TO  SPA-TIDCD
+                   WHEN    "B07"
+                       MOVE    "1011"              TO  SPA-TIDCD
+               END-EVALUATE
+           END-IF
+      *
+           .
+       460-RECEDEN-GID-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセ電出力処理
+      *****************************************************************
+       460-RECEDEN-SEC                SECTION.
+      * 
+      *    ジョブ管理削除処理
+           MOVE    "ALL"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+           IF      SJOBKANRI-RETURN    =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "1004"              TO  SPA-ERRCD
+               GO  TO  460-RECEDEN-EXT
+           END-IF             
+      *
+           ACCEPT  SYS-YMD         FROM    DATE
+           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
+           MOVE    SYS-MM              TO  WRK-SYSMM
+           MOVE    SYS-DD              TO  WRK-SYSDD
+           ACCEPT  SYS-TIME            FROM    TIME
+      *
+           MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
+                                           WRK-PRTKANRI-RENNUM
+           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
+      *     
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-CONS-TERMID     TO  RECEERR-TERMID
+      *     
+      *    出力先プリンタ名割り当て情報編集
+           MOVE    SPACE               TO  SYS-1031-REC
+           INITIALIZE                  SYS-1031-REC
+           MOVE    "1031"              TO  SYS-1031-KANRICD
+           MOVE    "*"                 TO  SYS-1031-KBNCD
+           MOVE    SYS-1031-REC        TO  MCPDATA-REC
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1031-REC
+           ELSE    
+               INITIALIZE                  SYS-1031-REC
+           END-IF
+      *
+      *    国保診療報酬請求書印刷区分
+           MOVE    SPACE               TO  SYS-2005-REC 
+           INITIALIZE                      SYS-2005-REC
+           MOVE    "2005"              TO  SYS-2005-KANRICD
+           MOVE    "*"                 TO  SYS-2005-KBNCD
+           MOVE    SPA-NAI-SKYYM       TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-2005-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-2005-REC
+           ELSE
+               INITIALIZE                   SYS-2005-REC
+           END-IF
+      *
+      *    印刷ＤＢのＫＥＹ用     
+           MOVE    WRK-SYSYMD          TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
+           MOVE    SYS-TIME            TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (9:)
+      *
+           PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *                                 
+      *    MOVE    RECEERR             TO  SHELL-ERRFILE
+      *             
+           MOVE    SPACE           TO  SHELLTBL
+           MOVE    "scripts/monthly/recept4.sh"
+                                       TO  WRK-SHELL-NAME
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *                                 
+           MOVE    SPACE           TO  LNK-PRTKANRI-AREA
+           INITIALIZE                  LNK-PRTKANRI-AREA
+           ADD     1               TO  WRK-PRTKANRI-RENNUM
+           MOVE    WRK-PRTKANRI-RENNUM
+                                   TO  LNK-PRTKANRI-RENNUM 
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                   TO  LNK-PRTKANRI-TBL-KEY 
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                   TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    SPA-NAI-SKYYM   TO  LNK-PRTKANRI-SRYYM 
+           MOVE    SPA-NAI-SKYYMD  TO  LNK-PRTKANRI-SKYYMD
+           MOVE    "recept4.sh"    TO  LNK-PRTKANRI-SHELLID
+           MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY
+           MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
+           MOVE    SYS-1031-PRTNM (5)
+                                   TO  LNK-PRTKANRI-PRTNM
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  SHELLTBL-ARG1       
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                   TO  SHELLTBL-ARG2     
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                   TO  SHELLTBL-ARG3       
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  SHELLTBL-ARG4       
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SHELLTBL-ARG5       
+           MOVE    LNK-PRTKANRI-SKYYMD
+                                   TO  SHELLTBL-ARG6       
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  SHELLTBL-ARG7       
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                   TO  SHELLTBL-ARG8      
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  SHELLTBL-ARG9       
+           MOVE    LNK-PRTKANRI-OPID
+                                   TO  SHELLTBL-ARG10      
+           MOVE    LNK-PRTKANRI-PRTNM
+                                   TO  SHELLTBL-ARG11      
+           INITIALIZE                     STS-AREA-DAY
+           INITIALIZE                     LNK-DAY6-AREA
+           MOVE    "61"                   TO  LNK-DAY6-IRAI
+           MOVE    SPA-NAI-SRYYM          TO  LNK-DAY6-KIJUN (1:6)
+           MOVE    "01"                   TO  LNK-DAY6-KIJUN (7:2)
+           MOVE    "2"                    TO  LNK-DAY6-ZOGENPTN
+           MOVE    1                      TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"              USING   STS-AREA-DAY
+                                                  LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN(1:6)   TO  SHELLTBL-ARG12
+           EVALUATE    SPA-NAI-WIDGET     
+               WHEN    "B06"
+                   MOVE    "1"         TO  SHELLTBL-ARG13
+               WHEN    "B07"
+                   MOVE    "2"         TO  SHELLTBL-ARG13
+           END-EVALUATE
+           MOVE    SYS-2005-RECEDENOUT
+                                       TO  SHELLTBL-ARG14
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG15
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG16         
+           MOVE    RECEERR         TO  SHELLTBL-ARG17
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    PATH-SHELL-SHELL
+                                   TO  MCP-PATH
+           CALL    "MCPSUB"        USING
+                                   MCPAREA
+                                   MCPDATA-REC
+      *
+      *    印刷処理
+      *
+           IF      SPA-TID1-FLG        =   "OK"
+               PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *
+               MOVE    0                   TO  WRK-STPAGE
+               MOVE    99999               TO  WRK-EDPAGE
+      *             
+               MOVE    SPACE               TO  SHELLTBL
+               MOVE    "/scripts/allways/print.sh"
+                                           TO  WRK-SHELL-NAME
+      *        ファイルデイレクトリ位置指定
+               INITIALIZE                  ORCSMKPASSAREA
+               MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *                               
+               MOVE    SPACE               TO  LNK-PRTKANRI-AREA
+               INITIALIZE                      LNK-PRTKANRI-AREA
+               MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                           TO  LNK-PRTKANRI-TBL-KEY 
+               MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                           TO  LNK-PRTKANRI-TBL-GROUP
+               MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
+               MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
+               MOVE    SPA-NAI-SKYYM       TO  LNK-PRTKANRI-SRYYM 
+               MOVE    SPA-NAI-SKYYMD      TO  LNK-PRTKANRI-SKYYMD
+               MOVE    "print.sh"          TO  LNK-PRTKANRI-SHELLID
+               MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
+               MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
+               MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
+               MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1       
+               MOVE    LNK-PRTKANRI-TBL-KEY
+                                           TO  SHELLTBL-ARG2     
+               MOVE    LNK-PRTKANRI-TBL-GROUP
+                                           TO  SHELLTBL-ARG3       
+               MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                           TO  SHELLTBL-ARG4       
+               MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5       
+               MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6       
+               MOVE    LNK-PRTKANRI-SHELLID
+                                           TO  SHELLTBL-ARG7       
+               MOVE    LNK-PRTKANRI-PRIORITY
+                                           TO  SHELLTBL-ARG8      
+               MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9       
+               MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
+               MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
+      *                 
+               MOVE    RECEERR             TO  SHELLTBL-ARG12
+               MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
+               MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  SHELLTBL-ARG14
+               MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
+               MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
+               MOVE    SHELLTBL            TO  MCPDATA-REC
+               MOVE    "SHELL"             TO  MCP-FUNC
+               MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+               CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           END-IF       
+      *
+      *    ＪＯＢＩＤ更新処理
+      *
+           PERFORM 45012-JOBID-UPD-SEC
+      *     
+      *    情報確認画面を表示                                                   
+           PERFORM 490-KAKUNIN-SEC
+           .
+       460-RECEDEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    印刷前処理（チェック・集計表）
       *****************************************************************
        480-PRINT-GID-SEC                SECTION.
@@ -1949,7 +2312,9 @@
                    WHEN    "1002"
                    WHEN    "1003"  
                    WHEN    "1004"
-                   WHEN    "1005"  
+                   WHEN    "1005"
+                   WHEN    "1010"
+                   WHEN    "1011"  
                        PERFORM 530-TID2SET-SEC
                        GO  TO  500-SET-SCREEN-EXT
                    WHEN    OTHER
@@ -1981,6 +2346,8 @@
            MOVE    SPA-GMN-HKNJANUM    TO  T01-HKNJANUM
            MOVE    SPA-GMN-HKNJAMEI    TO  T01-HKNJAMEI
       *
+           MOVE    SPA-B06-STATE       TO  T01-B06-STATE
+           MOVE    SPA-B07-STATE       TO  T01-B07-STATE
            MOVE    SPA-SRYYM-STATE     TO  T01-SRYYM-STATE
            MOVE    SPA-DATAKBN1-STATE  TO  T01-DATAKBN1-STATE
            MOVE    SPA-DATAKBN2-STATE  TO  T01-DATAKBN2-STATE
@@ -2154,6 +2521,12 @@
                                        TO  WRK-TIDMSG
                WHEN    "1005"
                    MOVE    "総括表（国保）の印刷処理を行います" 
+                                       TO  WRK-TIDMSG
+               WHEN    "1010"
+                   MOVE    "社保分のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+               WHEN    "1011"
+                   MOVE    "国保分のレセプト電算データを作成します" 
                                        TO  WRK-TIDMSG
            END-EVALUATE
       *
