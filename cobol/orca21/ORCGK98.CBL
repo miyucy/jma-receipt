@@ -1871,6 +1871,9 @@
            MOVE    SPA-K98-GMN-INPUT   TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           IF      KANACHK-RC2         =   7
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-K98-GMN-INPUT
+           END-IF
            IF      KANACHK-RC      NOT =   ZERO
       *        Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
                MOVE    "0001"          TO  SPA-ERRCD

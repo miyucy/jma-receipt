@@ -2308,13 +2308,20 @@
       *****************************************************************
        41012-NAME-HEN-SEC               SECTION.
       *
-           IF      FLG-KOUSIN         =   ZERO
-               GO      TO      41012-NAME-HEN-EXT
-           END-IF
-      *
            IF      SPA-GMN-DSPNAME     =   SPACE
-               MOVE    "5004"              TO  SPA-ERRCD
-               MOVE    2                   TO  SPA-GMN5-CUR
+               IF      FLG-KOUSIN      NOT =   ZERO
+                   MOVE    "5004"              TO  SPA-ERRCD
+                   MOVE    2                   TO  SPA-GMN5-CUR
+               END-IF
+           ELSE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-DSPNAME     TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-DSPNAME
+               END-IF
            END-IF
       *
            .
@@ -4574,12 +4581,18 @@
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0080"          TO  SPA-ERRCD
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G
+                                                       (SPA-GMN-IDX)
+                                                            (IDX-STR:)
+               END-IF
                MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
                MOVE    4               TO  SPA-GMN5-CUR
-               GO      TO      401131-MEISYO-HENKAN-EXT
-           END-IF
-           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G(SPA-GMN-IDX)
+           ELSE
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G
+                                                      (SPA-GMN-IDX)
                                                             (IDX-STR:)
+           END-IF
       *
            .
        401131-MEISYO-HENKAN-EXT.
