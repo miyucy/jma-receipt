@@ -755,6 +755,8 @@
                ADD     SYU-TGMONEY-TAX (IDX)
                                            TO  WRK-SYU-TGMONEY-TAX(IDX)
            END-PERFORM
+      *    ÊÝ¸±Å¬ÍÑ³°¾ÃÈñÀÇ
+           ADD     SYU-TGMONEY-TAX-SAI     TO  WRK-SYU-TGMONEY-TAX-SAI
       *    ¼«Èñ
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   5
