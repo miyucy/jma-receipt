@@ -105,7 +105,7 @@
            03  WRK-KENSAKU-AREA.
                05  WRK-KEN-BYOMEI  PIC X(80).
                05  WRK-KEN-LENGTH  PIC 9(04).
-               05  WRK-KEN-ADDKBN  PIC X(01).
+               05  WRK-KEN-ADDKBN  PIC 9(01).
                05  FLG-BUBUN       PIC 9(03).
            03  WRK-MOJISU          PIC 9(03).
            03  WRK-BYOMEIHENFLG    PIC X(01).
@@ -214,7 +214,7 @@
                MOVE    "1"                 TO  LNK-BYO-BYOMEIHENFLG
                MOVE    1                   TO  LNK-BYO-BYOMEICDSU
                                                LNK-BYO-BYOMEI-MAX
-               MOVE    SPACE               TO  LNK-BYO-BYOMEICD-ERR
+               MOVE    ZERO                TO  LNK-BYO-BYOMEICD-ERR
            END-IF
       *
       *    コードが検索できなかったとき（コード存在エラー以外）
@@ -377,7 +377,7 @@
                            MOVE    "1"         TO  LNK-BYO-RECEDENFLG
                        END-IF
                    WHEN    OTHER
-                       MOVE    4           TO  LNK-BYO-RC
+                       MOVE    "4"         TO  LNK-BYO-RC
                END-EVALUATE
            END-IF    
            .
@@ -963,7 +963,7 @@
                                WRK-RECECD (3)  NOT =   SPACE 
                            MOVE    2      TO  LNK-BYO-BYOMEICD-ERR
                        END-IF            
-                       MOVE    "1"         TO  LNK-BYO-BYOMEISBT
+                       MOVE    1          TO  LNK-BYO-BYOMEISBT
                    WHEN    "ZZZ"       ALSO    "2" THRU    "7"
                        MOVE    LNK-BYO-TBYOMEICD(IDX)(4:1)
                                            TO  WRK-RECECD (1)
@@ -971,14 +971,14 @@
                                WRK-RECECD (3)  NOT =   SPACE 
                             MOVE    2      TO  LNK-BYO-BYOMEICD-ERR
                        END-IF            
-                       MOVE    "7"         TO  LNK-BYO-BYOMEISBT
+                       MOVE    7           TO  LNK-BYO-BYOMEISBT
                     WHEN    "ZZZ"       ALSO    "8"  
                         MOVE    LNK-BYO-TBYOMEICD(IDX)(4:1)
                                            TO  WRK-RECECD (3)
                         IF      WRK-RECECD (2)    =   SPACE 
                             MOVE    2      TO  LNK-BYO-BYOMEICD-ERR
                        END-IF
-                       MOVE    "8"         TO  LNK-BYO-BYOMEISBT
+                       MOVE    8           TO  LNK-BYO-BYOMEISBT
                    WHEN    "ZZZ"       ALSO    ANY
                        CONTINUE
                    WHEN    OTHER                 
@@ -1038,7 +1038,7 @@
       *
       *    単独禁止のみのとき
            IF      WRK-TANDOKUKBN          =   SPACE
-               MOVE    "1"                 TO  LNK-BYO-TANDOKUKBN-ERR
+               MOVE    1                   TO  LNK-BYO-TANDOKUKBN-ERR
            END-IF
       *
       *    移行先病名

@@ -1211,7 +1211,7 @@
                                        TO  SPA-GMN-C11-TEKSTYM
            MOVE    SPA-NAI-C11-OPE-TSRYYMD (SPA-NAI-C11-SELNUM1) (1:6)
                                        TO  SPA-NAI-C11-TEKSTYM
-           MOVE    999999              TO  SPA-NAI-C11-TEKEDYM
+           MOVE    "999999"            TO  SPA-NAI-C11-TEKEDYM
                                            SPA-GMN-C11-TEKEDYM
       *
       *    ÊÝ¸±¡¦¸øÈñ

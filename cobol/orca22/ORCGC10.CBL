@@ -65,6 +65,13 @@
            COPY    "CPPTBYOMEI.INC"
                                    REPLACING  //PTBYO-//
                                    BY         //SPA-PTBYO-//.
+      *01  WRK-PTBYOMEI-AREA.
+           02  WRK-HAISIYMD-OCC.
+               03  WRK-HAISIYMD-O  PIC 9(08)   OCCURS  6.
+           02  WRK-PTBYOMEI-REC    OCCURS  6.
+           COPY    "CPPTBYOMEI.INC"
+                                   REPLACING   //PTBYO-//
+                                   BY          //WRK-PTBYO-//.
            COPY    "CPC02SPASCR.INC".
       *   
            COPY    "ENUM-VALUE".
@@ -779,6 +786,10 @@
            OR    ( WRK-HENSYU-DATA-O (7)   NOT =   SPACE AND "-" )
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       5
+      *??
+           DISPLAY "ST=" IDXX "#" WRK-STNUM-O (IDXX) "#"
+                                  WRK-EDNUM-O (IDXX) "#"
+      *??
                    IF      WRK-STNUM-O (IDXX)  >   ZERO
                        PERFORM VARYING IDX     FROM
                                            WRK-STNUM-O (IDXX)  BY  1
@@ -813,6 +824,10 @@
       *    保険適用と開始日のチェック
            IF     WRK-HENSYU-DATA-O (7)  
                                NOT =   "-" AND SPACE  
+      *??
+           DISPLAY "SPA=" IDX "#" SPA-NAI-C02-TSRYYMD (IDX)
+           DISPLAY "WRK="  WRK-TEKSTYMD "#" WRK-TEKEDYMD
+      *??
                IF    ( SPA-NAI-C02-TSRYYMD (IDX)
                                    <=   WRK-TEKEDYMD )
                AND   ( SPA-NAI-C02-TSRYYMD (IDX) 

@@ -2815,7 +2815,7 @@
                WHEN    SPACE               
                    CONTINUE
                WHEN    "-"               
-                   MOVE    SPACE   TO  PTBYO-HKNCOMBI
+                   MOVE    ZERO    TO  PTBYO-HKNCOMBI
                WHEN    OTHER
                    MOVE    WRK-HENSYU-DATA-O (7)
                                    TO  PTBYO-HKNCOMBI
@@ -5688,7 +5688,7 @@
                END-IF                     
                MOVE    SPA-GMN-C02-NYUGAIKBN
                                        TO  WRK-PTBYO-NYUGAIKBN (IDXX)
-               IF      SPA-GMN-C02-HKNCOMBI    =   ZERO
+               IF      SPA-GMN-C02-HKNCOMBI    =   SPACE
                    MOVE    ZERO        TO  WRK-PTBYO-HKNCOMBI  (IDXX)
                ELSE                          
                    MOVE    SPA-GMN-C02-HKNCOMBI
@@ -6621,6 +6621,7 @@
                            GO  TO  490-USERBYOMEI-KENSAKU-EXT 
                        END-IF
                    END-PERFORM
+               END-IF
            END-PERFORM
       *
            INITIALIZE                  SPA-C01KYOUTU

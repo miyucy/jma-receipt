@@ -1154,7 +1154,7 @@
            MOVE    SPA-LNK-XC01-KEY    TO  LNK-XC01-KEY
            MOVE    1                   TO  LNK-XC01-SHORI-RENNUM
            MOVE    1                   TO  LNK-XC01-ST-PAGE
-           MOVE    ALL "9"             TO  LNK-XC01-ED-PAGE             
+           MOVE    99999               TO  LNK-XC01-ED-PAGE             
            MOVE    "1"                 TO  LNK-XC01-MODE            
            MOVE    LNK-XC01-AREA       TO  SPA-WORK
       *          
@@ -2899,7 +2899,7 @@
            ELSE
                MOVE    WRK-YM(1:5)      TO  WRK-WYMD (1:5)
            END-IF
-           MOVE    "01"             TO  WRK-WDD
+           MOVE    1                    TO  WRK-WDD
       *
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY1-AREA

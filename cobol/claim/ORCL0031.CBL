@@ -197,7 +197,7 @@
                05  WRK-BYOMEI1     PIC X(80).
                05  WRK-BYOMEI2     PIC X(20). 
            03  WRK-LENGTH          PIC 9(02).
-           03  WRK-TANDOKUKBN      PIC 9(02).
+           03  WRK-TANDOKUKBN      PIC 9(01).
            03  WRK-TOKSKNCD        PIC 9(02).
            03  WRK-RECECD-TBL.
                05  WRK-RECECD      PIC X(01)   OCCURS  3.
@@ -746,6 +746,7 @@
                ELSE
                    MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                    PERFORM 900-KANRIMST-READ-SEC
+               END-IF
            END-PERFORM
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -824,7 +825,7 @@
                    MOVE    "973"               TO  WRK-HKNNUM
                WHEN    "99"
       *            包括入力
-                   MOVE    "9999"              TO  WRK-HKNCOMBI
+                   MOVE    9999                TO  WRK-HKNCOMBI
                    GO      TO      20011-HKNSYORI-EXT
                WHEN    "XX"
       *            公費単独
@@ -2079,7 +2080,7 @@
                    END-EVALUATE
                END-PERFORM
                IF    ( FLG-BYOMEI-CHK      =   ZERO  )
-               IF    ( WRK-RECECD (2)      =   SPACE ) 
+               AND   ( WRK-RECECD (2)      =   SPACE ) 
                    MOVE    4                   TO  FLG-BYOMEI-CHK
                    STRING  "＊"                DELIMITED   BY  SIZE
                            WRK-TBYOMEI (1)     DELIMITED   BY  SPACE   
@@ -2095,12 +2096,12 @@
       *
       *    単独使用禁止の病名チェック
            IF      FLG-BYOMEI-CHK      =   ZERO
-               MOVE    SPACE               TO  WRK-TANDOKUKBN
+               MOVE    ZERO                TO  WRK-TANDOKUKBN
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       6
                        OR      WRK-TBYOMEICD (IDY) =   SPACE
                    IF      WRK-TTANDOKUKBN (IDY)   =   ZERO
-                       MOVE    "1"                 TO  WRK-TANDOKUKBN
+                       MOVE    1                   TO  WRK-TANDOKUKBN
                    END-IF
                END-PERFORM
       *        マスタから病名を組み立てる
@@ -2126,7 +2127,7 @@
                    END-STRING
                END-IF
       *
-               IF      WRK-TANDOKUKBN      =   SPACE
+               IF      WRK-TANDOKUKBN      =   ZERO
                    MOVE    2                   TO  FLG-BYOMEI-CHK
                END-IF
            END-IF           
