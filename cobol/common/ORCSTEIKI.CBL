@@ -92,6 +92,7 @@
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-GAIHAKU-SET             PIC 9(01).
            03  FLG-NYUKHN                  PIC 9(01).
+           03  FLG-KAIKEI-SAKUSEI          PIC 9(01).
       *
       * ¼¼ÎÁº¹³ÛÂàÈòÍÑ¥Æ¡¼¥Ö¥ë     
        01  TABLE-RMSAGAKU.
@@ -239,6 +240,11 @@
       *
            PERFORM       NYUIN-HANBETU-SEC.
       *
+           IF    FLG-KAIKEI-SAKUSEI    =    ZERO
+                 MOVE   13       TO    LNK-S02-RC
+                 GO   TO   MAIN-EXT
+           END-IF.
+      *
            PERFORM       SYUNOU-SET-SEC.
       *
       *    Æþ±¡²ñ·×¤«¤é¼ýÇ¼¥¨¥ê¥¢¤Ø¤Î¥»¥Ã¥È
@@ -349,6 +355,8 @@
       ******************************************************************
        NYUINKAIKEI-SYORI-SEC         SECTION.
       *
+           MOVE       ZERO                  TO      FLG-KAIKEI-SAKUSEI
+      *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL    (IDX            >     2)
                                 OR     (WRK-SKYYM(IDX) =  SPACE)
@@ -370,6 +378,8 @@
                   MOVE    "NYUINACCT-KEY2"  TO      ORC-DBPATH
                   PERFORM  NYUINACCT-READ-SEC
                   PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
+      *
+                    MOVE   1                TO   FLG-KAIKEI-SAKUSEI
       *
                     IF     NACCT-ZAISKBKBN    =    "1"  OR  "5"   
                           PERFORM    NYUIN-DAY-TAIHI-SEC
