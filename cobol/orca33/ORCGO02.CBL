@@ -320,11 +320,6 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    患者定期履歴
-       01  PTTEIKIRRK-REC.
-           COPY    "CPPTTEIKIRRK.INC".
-      *
-      *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
