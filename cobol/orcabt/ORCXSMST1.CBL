@@ -31,6 +31,7 @@
       *  01.00.01    MCC-伊藤     02.05.20  クリーンインストールでオリ
       *                                     ジナルダンプが複数ある場合
       *                                     ０件となってしまう
+      *  01.00.01    NACL-多々納  02/09/18  バージョン判定変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -140,6 +141,8 @@
            03  WRK-MAX                 PIC 9(04). 
       *
            03  WRK-INACT               PIC X(01). 
+      *
+           03  WRK-DBKANRI-VERSION     PIC X(64).
       *
       *    引数
        01  ACCT-AREA.
@@ -354,11 +357,15 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
+           MOVE    SPACE               TO  WRK-DBKANRI-VERSION
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   64      )  OR
-                              (DBKANRI-VERSION(IDX:1)   =   SPACE)
-               MOVE    IDX             TO  IDY
+                   UNTIL       IDX     >   64
+               IF      (DBKANRI-VERSION(IDX:1)   NOT =   SPACE)
+                   ADD     1               TO  IDY
+                   MOVE    DBKANRI-VERSION(IDX:1)
+                                       TO  WRK-DBKANRI-VERSION(IDY:1)
+               END-IF
           END-PERFORM
       *
            MOVE    ZERO                TO  FLG-SYORI
@@ -386,7 +393,7 @@
                           (IN-DBSVERSION       >   DBKANRI-DBSVERSION1)
                        MOVE    1               TO  FLG-SYORI
                        IF      IN-DBSVERSION(3:IDY)
-                                               >   DBKANRI-VERSION
+                                               >   WRK-DBKANRI-VERSION
                                                        (1:IDY)
                            MOVE    1               TO  FLG-IN
                        ELSE
@@ -400,7 +407,7 @@
                ELSE
       *        クリーンインストール
                    IF      IN-DBSVERSION(3:IDY)
-                                               >   DBKANRI-VERSION
+                                               >   WRK-DBKANRI-VERSION
                                                        (1:IDY)
                        MOVE    1               TO  FLG-IN
                    ELSE
@@ -440,7 +447,7 @@
            PERFORM
                UNTIL    FLG-IN         =   1
       *
-               IF      IN-DBSVERSION(3:IDY)    >   DBKANRI-VERSION
+               IF      IN-DBSVERSION(3:IDY)    >   WRK-DBKANRI-VERSION
                                                        (1:IDY)
                    MOVE    1               TO  FLG-IN
                ELSE

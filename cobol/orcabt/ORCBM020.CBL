@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     02/04/10  医療機関コードの編集修正 
       *  01.00.02    MCC-藤原     02/05/22  テスト患者は処理しない     
+      *
+      *  01.01.01    NACL-藤原    02.09.17  印刷サブの追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -180,6 +182,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    印刷パラメタ
+           COPY    "CPORCSMKPRT.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -664,30 +669,39 @@
            OPEN    OUTPUT  PRT-FILE
            WRITE   HC26
            CLOSE                       PRT-FILE
+      *
+            INITIALIZE                 ORCSMKPRTAREA
+            MOVE   "HC01.sh"           TO  MKPRT-ID
+            MOVE   "HC26.dia"          TO  MKPRT-DIA
+            MOVE   "HC26.def"          TO  MKPRT-DEF
+            MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   SYS-1031-PRTNM(5)   TO  MKPRT-PRTNM
+            CALL   "ORCSMKPRT"         USING
+                                       ORCSMKPRTAREA
       * 
-           MOVE   "HC26.dia"           TO  SHELL-DIA
-           MOVE   "HC26.def"           TO  SHELL-DEF
-           MOVE   "HC01.sh"            TO  SHELL-ID
-           MOVE   HC01PARA             TO  SHELL-DAT
-           MOVE   SYS-1031-PRTNM(5)    TO  SHELL-PRTNM 
+      *****MOVE   "HC26.dia"           TO  SHELL-DIA
+      *    MOVE   "HC26.def"           TO  SHELL-DEF
+      *    MOVE   "HC01.sh"            TO  SHELL-ID
+      *    MOVE   HC01PARA             TO  SHELL-DAT
+      *    MOVE   SYS-1031-PRTNM(5)    TO  SHELL-PRTNM 
       *
-      *   印刷用スクリプト処理
+      *    印刷用スクリプト処理
       *
-           MOVE    SPACE           TO  SHELLTBL
-           MOVE    SHELL-NAME      TO  SHELLTBL-NAME
-           MOVE    SHELL-ARG1      TO  SHELLTBL-ARG1
-           MOVE    SHELL-ARG2      TO  SHELLTBL-ARG2
-           MOVE    SHELL-ARG3      TO  SHELLTBL-ARG3
-           MOVE    SHELL-ARG4      TO  SHELLTBL-ARG4
-           MOVE    SHELL-ARG5      TO  SHELLTBL-ARG5
+      *    MOVE    SPACE           TO  SHELLTBL
+      *    MOVE    SHELL-NAME      TO  SHELLTBL-NAME
+      *    MOVE    SHELL-ARG1      TO  SHELLTBL-ARG1
+      *    MOVE    SHELL-ARG2      TO  SHELLTBL-ARG2
+      *    MOVE    SHELL-ARG3      TO  SHELLTBL-ARG3
+      *    MOVE    SHELL-ARG4      TO  SHELLTBL-ARG4
+      *    MOVE    SHELL-ARG5      TO  SHELLTBL-ARG5
       *
-           MOVE    SHELLTBL        TO  MCPDATA-REC
-           MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"        USING
-                                       MCPAREA
-                                       MCPDATA-REC                         
+      *    MOVE    SHELLTBL        TO  MCPDATA-REC
+      *    MOVE    "SHELL"         TO  MCP-FUNC
+      *    MOVE    PATH-SHELL-SHELL
+      *                            TO  MCP-PATH
+      *    CALL    "MCPSUB"        USING
+      *                                MCPAREA
+      *****                            MCPDATA-REC                         
            .
        390-PRINT-OUT-EXT.
            EXIT.

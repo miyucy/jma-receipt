@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  02/09/18  バージョン判定変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -109,6 +110,9 @@
                05  WRK-SDD2            PIC 9(02).
       *
            03  WRK-DBRVERVION          PIC X(64).
+      *
+           03  WRK-DBKANRI-VERSION     PIC X(64).
+      *
            03  WRK-MAX                 PIC 9(04). 
       *
            03  WRK-IN                  PIC X(01). 
@@ -201,7 +205,8 @@
            MOVE    SPACE               TO  ASS-IN
            STRING  "/home/orca/"       DELIMITED  BY  SIZE
                    PARA-DBFILE         DELIMITED  BY  SPACE
-                   "/ORCADBR.DAT"      DELIMITED  BY  SIZE
+      ************ "/ORCADBR.DAT"      DELIMITED  BY  SIZE
+                   "/ORCADBR-1.DAT"    DELIMITED  BY  SIZE
                                        INTO    ASS-IN
            END-STRING
       *
@@ -240,11 +245,15 @@
                MOVE    1                   TO  FLG-DBKANRI
            END-IF
       *
+           MOVE    SPACE               TO  WRK-DBKANRI-VERSION
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   64      )  OR
-                              (DBKANRI-VERSION(IDX:1)   =   SPACE)
-               MOVE    IDX             TO  IDY
+                   UNTIL       IDX     >   64
+               IF      (DBKANRI-VERSION(IDX:1)   NOT =   SPACE)
+                   ADD     1               TO  IDY
+                   MOVE    DBKANRI-VERSION(IDX:1)
+                                       TO  WRK-DBKANRI-VERSION(IDY:1)
+               END-IF
           END-PERFORM
       *
            MOVE    ZERO                TO  FLG-SYORI
@@ -259,7 +268,7 @@
                       (IN-DBRVERVION       >   DBKANRI-DBRVERSION1)
                    MOVE    1               TO  FLG-SYORI
                    IF      IN-DBRVERVION(3:IDY)
-                                           >   DBKANRI-VERSION
+                                           >   WRK-DBKANRI-VERSION
                                                        (1:IDY)
                        MOVE    1               TO  FLG-IN
                    ELSE

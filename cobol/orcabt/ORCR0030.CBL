@@ -89,7 +89,8 @@
       *  01.02.05   MCC-¾®Æ¦Âô    02.04.28  ºßÂð¤Î¿ÇÎÅ»þ´Ö²Ã»»¤òÆþÎÏ»þ¤ÎÅÀ¿ô
       *                                     Íó¤Î½¸·×¤ò½¤Àµ
       *  01.02.06   MCC-¾®Æ¦Âô    02.05.30  ºÎ·ìÎÁ¤ÈÈ½ÃÇÎÁ¤Î²ó¿ô¸º»»¤ò½¤Àµ      
-      *****************************************************************
+      *  01.02.07   NACL-Æ£¸¶     02.09.06  ¸¡ºº¤ÎÊÔ½¸¤Î¤¿¤á¤Ë²ó¿ô¤òÁ´¤ÆÊÔ½¸¤¹¤ë
+      ********************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION           SECTION.
@@ -808,14 +809,18 @@
            MOVE    ACCT-TEIGENRATE      TO      RECE04-TEIGENRATE
            MOVE        ZERO             TO      WK-TAIHI-DAY
            MOVE        ZERO             TO      WK-TAIHI-FLG
-           PERFORM     VARYING   IDX2   FROM    1    BY   1
-                       UNTIL     IDX2      >    31
-               MOVE    ACCT-DAY(1 IDX2)    TO   RECE04-KAISU(IDX2)
-               IF     (WK-TAIHI-FLG        =    ZERO)   AND
-                      (ACCT-DAY(1 IDX2)    NOT =  ZERO)
+           PERFORM     VARYING   IDX3   FROM    1    BY   1
+                       UNTIL     IDX3   >       4
+               PERFORM     VARYING   IDX2   FROM    1    BY   1
+                           UNTIL     IDX2   >       31
+                   MOVE    ACCT-DAY(IDX3 IDX2)  TO
+                                            RECE04-KAISU (IDX3 IDX2)
+                   IF     (WK-TAIHI-FLG            =   ZERO)   AND
+                          (ACCT-DAY(1 IDX2)    NOT =   ZERO)
                        MOVE     IDX2    TO      WK-TAIHI-DAY
                        MOVE     1       TO      WK-TAIHI-FLG
-               END-IF
+                   END-IF    
+               END-PERFORM
            END-PERFORM
            .
        RECE04-TENSOU-EXT.

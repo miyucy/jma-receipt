@@ -37,6 +37,7 @@
       *                                     情報の追加
       *                                     プリンタ名設定のため帳票ファイルの
       *                                     レイアウト変更
+      *  01.00.05    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -79,10 +80,8 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *    シェル用領域
-           COPY    "CPCOMMONSHELL.INC".
+      *****COPY    "CPCOMMONSHELL.INC".
       *
-           COPY    "HC06.INC".
-      *     
       *    システム領域
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).    
@@ -105,8 +104,6 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-HC01PARA-CNT        PIC  9(03).
-      *
            03  WRK-RECEERR             PIC X(200). 
       *
            03  WRK-PATH                PIC X(64). 
@@ -132,6 +129,8 @@
       *
            03  WRK-IN                PIC X(01).
       *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
            COPY    "CPSHELLTBL.INC".
       *     
@@ -307,10 +306,15 @@
            MOVE    "RECEPRT-KEY4"      TO  WRK-PATH
            PERFORM 900-RECEPRT-CLS-SEC
            IF      CNT-OUT             >   ZERO 
-               MOVE   "HCALL2.sh"          TO  SHELL-ID
       *
                MOVE    SPACE           TO  SHELLTBL
-               MOVE    SHELL-NAME      TO  SHELLTBL-NAME
+      *        ファイルデイレクトリ位置指定
+               INITIALIZE              ORCSMKPASSAREA
+               MOVE    "scripts/daily/HCALL2.sh"
+                                       TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *         
                MOVE    HC01PARA        TO  SHELLTBL-ARG1
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC

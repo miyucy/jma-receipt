@@ -78,6 +78,8 @@
       *                                     にカウントしないようにする
       *  01.02.07    NACL-藤原    02.08.26  皮下筋肉注射以外は手技名を印刷
       *                                     するようにする
+      *  01.02.08    NACL-藤原    02.09.01  検査のときの表示方法を変更
+      *  01.02.09    NACL-藤原    02.09.06  初診加算のとき編集する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -200,6 +202,8 @@
            03  FLG-COMMENT         PIC 9(01).
            03  FLG-HIKAKIN         PIC 9(01).
            03  FLG-DSAISHIN        PIC 9(01).
+           03  FLG-SRYCD1          PIC 9(01).
+           03  FLG-OK              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -208,8 +212,11 @@
            03  CNT-RECE05          PIC 9(06).
            03  CNT-RECE06          PIC 9(06).
       *
+           03  CNT-SRYKBN60        PIC 9(03).     
+      *
       *    添字領域
        01  IDX-AREA.
+           03  IDW                 PIC 9(04). 
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -353,6 +360,33 @@
        01  TBL-ZAI-AREA.
            03  TBL-ZAI      OCCURS 100  PIC X(52).
       *
+      *    検査をまとめるテーブル
+       01  WRK-KAISU-G.
+           03  WRK-KAKSU-OCC               OCCURS  4.
+               05  WRK-KAISU               PIC 9(03).  
+           03  WRK-KAISU1                  PIC 9(02).
+       01  WRK-HOUKNSKBN                   PIC 9(01).
+       01  WRK-KOHBUNRI                    PIC 9(01).
+      *
+       01  WRK-RECE04-ZAITEN               PIC 9(08). 
+      *         
+       01  WRK-RECE04-MAX                  PIC 9(03).
+       01  WRK-SUM-KAISU-TABLE.
+           03  WRK-SUM-KAISU               PIC 9(04)
+                                                  OCCURS  31.
+       01  WRK-RECE04-FLG-TABLE.
+           03  WRK-RECE04-FLG              PIC 9(01)
+                                                  OCCURS  100.
+       01  WRK-RECE04-TABLE.
+           03  WRK-RECE04-TBL              OCCURS  100.
+               05  WRK-RECE04-HOUKNSKBN           PIC 9(01).
+               05  WRK-RECE04-KOHBUNRI            PIC 9(01).
+               05  WRK-RECE04-REC                 PIC X(500).
+               05  WRK-RECE04-DAY-AREA.
+                   07  WRK-RECE04-DAY-TBL         OCCURS  4.
+                       09  WRK-RECE04-KAISUINF    OCCURS  31.
+                           11  WRK-RECE04-KAISU   PIC  9(03).
+      *             
       *    検査のとき適用の編集に使用
        01  WRK-KENSA-MAX                   PIC 9(04).
        01  TBL-NAME-AREA.
@@ -561,6 +595,22 @@
       *---- (01.01.07) LINE ADD END   --------------------------------
       *皮下筋肉注射
            03  CONS-HIKAKIN    PIC X(09)   VALUE   "130000510".
+      *初診加算     
+      *    初診（乳幼児）加算
+           03  WRK-CONS-SYOSIN-KASAN1  PIC X(09)   VALUE 
+                                                   "111000370".                     
+      *    初診（育児栄養指導）加算
+           03  WRK-CONS-SYOSIN-KASAN2  PIC X(09)   VALUE 
+                                                   "111000470".                     
+      *    初診（診療所）紹介患者加算
+           03  WRK-CONS-SYOSIN-KASAN3  PIC X(09)   VALUE 
+                                                   "111003770".                     
+      *    初診（乳幼児）（時間外等）加算
+           03  WRK-CONS-SYOSIN-KASAN4  PIC X(09)   VALUE 
+                                                   "111011470".                     
+      *    老人初診（診療所）紹介患者加算
+           03  WRK-CONS-SYOSIN-KASAN5  PIC X(09)   VALUE 
+                                                   "111700470".                     
       *
       *    パス名領域
        01  WRK-PATH                        PIC X(64).
@@ -696,6 +746,11 @@
       *        行カウンタ初期化
            MOVE    ZERO                TO  WRK-LINENUM
       *
+           MOVE    ZERO                TO  CNT-SRYKBN60   
+           INITIALIZE                      WRK-RECE04-TABLE
+                                           WRK-RECE04-MAX 
+                                           WRK-SUM-KAISU-TABLE
+      *
       *    パラメータ０４ファイルより編集
            INITIALIZE                      RECE04-REC
            MOVE    RECE02-HOSPID       TO  RECE04-HOSPID
@@ -731,6 +786,20 @@
                OR     ( RECE02-HKNJANUM  NOT =   RECE04-HKNJANUM     )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE04-TEKSTYMD     )
       *
+               MOVE    ZERO                  TO  FLG-SRYCD1
+      *
+               INITIALIZE                      TBL-ZAIW-AREA
+               MOVE    ZERO                TO  WRK-ZAIWMAX-G
+               MOVE    ZERO                TO  WRK-TBLMAX
+               MOVE    ZERO                TO  WRK-TENSUGOKEI
+               MOVE    ZERO                TO  FLG-SYOSIN
+      *****    MOVE    RECE04-SRYKBN       TO  WRK-SRYKBN
+               MOVE    ZERO                TO  FLG-TEIGEN
+                                               FLG-COMMENT
+                                               FLG-HIKAKIN 
+               MOVE    ZERO                TO  WRK-RECE05
+                                               IDY                           
+      *         
                PERFORM 2002-TBLZAIW-TAIHI-SEC
       *
       *        レセプト０４剤編集前処理
@@ -746,6 +815,9 @@
       *                再診
                        WHEN    "12"
                            PERFORM 2004-SRYKBN12-HENSYU-SEC
+      *                検査
+                       WHEN    "60"
+                           PERFORM 2006-SRYKBN60-CHECK-SEC 
       *                それ以外
                        WHEN    OTHER
                            PERFORM 2005-SRYKBNELSE-HENSYU-SEC
@@ -756,6 +828,12 @@
                    PERFORM 990-RECE04-NEXT-SEC
                END-IF     
            END-PERFORM
+      *
+      *    検査があるときまとめる
+           IF      WRK-RECE04-MAX          >   ZERO
+               PERFORM 2007-SRYKBN60-HENSYU-SEC
+                  CONTINUE
+           END-IF         
       *
       *
            PERFORM 990-RECE02-READ-SEC
@@ -786,18 +864,6 @@
       *    剤　明細テーブル退避処理
       *****************************************************************
        2002-TBLZAIW-TAIHI-SEC    SECTION.
-      *
-           INITIALIZE                      TBL-ZAIW-AREA
-           MOVE    ZERO                TO  WRK-ZAIWMAX-G
-           MOVE    ZERO                TO  WRK-TBLMAX
-           MOVE    ZERO                TO  WRK-TENSUGOKEI
-           MOVE    ZERO                TO  FLG-SYOSIN
-      *****MOVE    RECE04-SRYKBN       TO  WRK-SRYKBN
-           MOVE    ZERO                TO  FLG-TEIGEN
-                                           FLG-COMMENT
-                                           FLG-HIKAKIN 
-           MOVE    ZERO                TO  WRK-RECE05
-                                           IDY                           
       *
       *    パラメータ０５ファイルより編集
            INITIALIZE                      RECE05-REC
@@ -839,6 +905,12 @@
                          OR      ( RECE05-SRYCD(IDX) =   SPACE )
                          OR      ( SPA-STS           =   2     ) 
       *
+                   IF      RECE05-SRYCD (IDX) (1:1)  =   "1"
+                       CONTINUE
+                   ELSE
+                       MOVE    1                     TO  FLG-SRYCD1
+                   END-IF
+      *                     
                    IF      RECE04-SRYKBN     <   "31"
                        MOVE    1             TO  IDY
                    ELSE                          
@@ -879,7 +951,7 @@
       *                先頭の診療行為コード編集              
                        IF      WRK-RECE05        =   ZERO
                            MOVE    RECE05-SRYCD (IDX)
-                                                 TO  TBL-ZAIW-SRYCD1
+                                                 TO  TBL-ZAIW-SRYCD1 
                            MOVE    1             TO  WRK-RECE05
                        END-IF
       *                                                         
@@ -999,6 +1071,20 @@
                    END-IF
                END-IF
            END-PERFORM
+      *
+      *    初診加算の時だけ印刷
+           IF      FLG-NOPRT                 =   ZERO
+               IF      TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
+                                             =   WRK-CONS-SYOSIN-KASAN1
+                                             OR  WRK-CONS-SYOSIN-KASAN2
+                                             OR  WRK-CONS-SYOSIN-KASAN3
+                                             OR  WRK-CONS-SYOSIN-KASAN4
+                                             OR  WRK-CONS-SYOSIN-KASAN5
+                   CONTINUE
+               ELSE
+                   MOVE    1                 TO  FLG-NOPRT
+               END-IF
+           END-IF                                          
       *
       *    識別が点数の場合
            IF  FLG-NOPRT                     =   ZERO
@@ -1571,6 +1657,234 @@
            EXIT.
       *
       *****************************************************************
+      *    検査チェック処理
+      *****************************************************************
+       2006-SRYKBN60-CHECK-SEC         SECTION.
+      *
+      *    薬剤やコメントがあればまとめない
+           IF      FLG-SRYCD1          =   1
+               PERFORM 2005-SRYKBNELSE-HENSYU-SEC
+           ELSE
+      *
+      *        包括対象でないときまとめない         
+               MOVE    TBL-ZAIW-SRYCD (3 1) TO      TNS-SRYCD
+               MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
+               MOVE    RECE04-SRYYM         TO      ORC-DBYMD(1:6)
+               MOVE    "01"                 TO      ORC-DBYMD(7:2)
+               PERFORM 900-TENSU-INV-SEC
+               IF      TNS-HOUKNSKBN        =   ZERO
+                   PERFORM 2005-SRYKBNELSE-HENSYU-SEC
+               ELSE    
+                   PERFORM 2006-SRYKBN60-TAIHI-SEC
+               END-IF
+           END-IF        
+           .
+       2006-SRYKBN60-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    検査まとめ対象待避処理
+      *****************************************************************
+       2006-SRYKBN60-TAIHI-SEC         SECTION.
+      *
+           ADD     1               TO  WRK-RECE04-MAX
+           MOVE    RECE04-REC      TO  WRK-RECE04-REC (WRK-RECE04-MAX)
+           MOVE    RECE04-DAY-AREA TO  WRK-RECE04-DAY-AREA
+                                                      (WRK-RECE04-MAX)
+           MOVE    TNS-HOUKNSKBN   TO  WRK-RECE04-HOUKNSKBN
+                                                      (WRK-RECE04-MAX)
+           MOVE    RECE04-KOHBUNRI TO  WRK-RECE04-KOHBUNRI
+                                                      (WRK-RECE04-MAX)
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       31
+               ADD      RECE04-KAISU (1 IDX)    TO  WRK-SUM-KAISU (IDX)
+           END-PERFORM                                                       
+           .
+       2006-SRYKBN60-TAIHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    検査まとめ処理
+      *****************************************************************
+       2007-SRYKBN60-HENSYU-SEC         SECTION.
+      *
+      *    検査の剤がひとつのときまとめ処理はしない
+      **      IF      WRK-RECE04-MAX      =   1
+      **          MOVE    WRK-RECE04-REC (1)    TO  RECE04-REC
+      **          IF      RECE04-ZAIKAISU       =   1
+      **              MOVE    ZERO                  TO  FLG-SRYCD1
+      *
+      **             INITIALIZE                      TBL-ZAIW-AREA
+      **             MOVE    ZERO                TO  WRK-ZAIWMAX-G
+      **             MOVE    ZERO                TO  WRK-TBLMAX
+      **             MOVE    ZERO                TO  WRK-TENSUGOKEI
+      **             MOVE    ZERO                TO  FLG-SYOSIN
+      *****    MOVE    RECE04-SRYKBN       TO  WRK-SRYKBN
+      **             MOVE    ZERO                TO  FLG-TEIGEN
+      **                                             FLG-COMMENT
+      **                                             FLG-HIKAKIN 
+      **             MOVE    ZERO                TO  WRK-RECE05
+      **                                             IDY                           
+      **             PERFORM 2002-TBLZAIW-TAIHI-SEC
+      *            レセプト０４剤編集前処理
+      **             PERFORM 2001-RECE04-ZAIHEN-MAE-SEC
+      *
+      **             IF      SPA-STS          =   ZERO
+      **                 PERFORM 20051-SRYKBNELSE-KENSA-SEC
+      *                剤・診療行為テーブル出力処理
+      **                 PERFORM 450-RECE06-OUT-SEC
+      **             END-IF    
+      **             GO  TO  2007-SRYKBN60-HENSYU-EXT
+      **         END-IF    
+      **     END-IF
+      *     
+      *    検査のまとめ処理
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       31
+               INITIALIZE                  WRK-RECE04-FLG-TABLE
+                                           WRK-KAISU-G
+                                           WRK-HOUKNSKBN
+                                           WRK-KOHBUNRI
+      *
+               IF      WRK-SUM-KAISU (IDX)   >   ZERO
+                   PERFORM VARYING IDY FROM    1   BY  1
+                           UNTIL   IDY >       WRK-RECE04-MAX
+                       IF      WRK-RECE04-KAISU (IDY 1 IDX)    
+                                               >   ZERO
+                           IF      WRK-KAISU (1)   =   ZERO
+                               MOVE    WRK-RECE04-KAISU (IDY 1 IDX)
+                                                   TO  WRK-KAISU (1)
+                               MOVE    WRK-RECE04-KAISU (IDY 2 IDX)
+                                                   TO  WRK-KAISU (2)
+                               MOVE    WRK-RECE04-KAISU (IDY 3 IDX)
+                                                   TO  WRK-KAISU (3)
+                               MOVE    WRK-RECE04-KAISU (IDY 4 IDX)
+                                                   TO  WRK-KAISU (4)
+                               MOVE    WRK-RECE04-HOUKNSKBN (IDY)
+                                                   TO  WRK-HOUKNSKBN                    
+                               MOVE    WRK-RECE04-KOHBUNRI (IDY)
+                                                   TO  WRK-KOHBUNRI                  
+                           END-IF
+                           IF      WRK-RECE04-KAISU (IDY 2 IDX)
+                                                   =   WRK-KAISU (2)
+                           AND     WRK-RECE04-KAISU (IDY 3 IDX)
+                                                   =   WRK-KAISU (3)
+                           AND     WRK-RECE04-KAISU (IDY 4 IDX)
+                                                   =   WRK-KAISU (4)
+                           AND     WRK-RECE04-HOUKNSKBN (IDY)
+                                                   =   WRK-HOUKNSKBN
+                           AND     WRK-RECE04-KOHBUNRI  (IDY)
+                                                   =   WRK-KOHBUNRI
+                               MOVE    ZERO        TO
+                                           WRK-RECE04-KAISU (IDY 1 IDX)
+                               COMPUTE WRK-SUM-KAISU (IDX) 
+                                                   =
+                                                   WRK-SUM-KAISU (IDX) - 
+                                                   WRK-KAISU   (1)                                       
+                               MOVE    "1"         TO  WRK-RECE04-FLG 
+                                                       (IDY)
+                           END-IF
+                       END-IF
+                   END-PERFORM
+                   IF      WRK-KAISU (1)      >   ZERO
+                       ADD     1                  TO  WRK-KAISU1
+                   END-IF
+      *
+      *            同じ検査が月に何日あるか
+                   COMPUTE IDX1    =   IDX     +   1
+                   PERFORM VARYING IDZ FROM    IDX1    BY  1
+                           UNTIL   IDZ >       31
+                       MOVE    ZERO                TO  FLG-OK                            
+                       PERFORM VARYING IDW FROM    1   BY  1
+                               UNTIL   IDW >       WRK-RECE04-MAX
+                               OR      FLG-OK      =   1
+                           IF      WRK-RECE04-FLG   (IDW)  =   "1"
+                               IF      WRK-RECE04-KAISU (IDW 2 IDZ)
+                                                   =   WRK-KAISU (2)
+                               AND     WRK-RECE04-KAISU (IDW 3 IDZ)
+                                                   =   WRK-KAISU (3)
+                               AND     WRK-RECE04-KAISU (IDW 4 IDZ)
+                                                   =   WRK-KAISU (4)                  
+                                   MOVE    2               TO  FLG-OK                                    
+                               ELSE                    
+                                   MOVE    1               TO  FLG-OK                                    
+                               END-IF
+                           END-IF
+                       END-PERFORM
+      *                同じ検査が同じ回数で全てあるとき                 
+                       IF      FLG-OK          =   2
+                           PERFORM VARYING IDW FROM    1   BY  1
+                                   UNTIL   IDW >       WRK-RECE04-MAX
+                               IF      WRK-RECE04-FLG   (IDW)  =   "1"
+                                   MOVE    ZERO    TO  WRK-RECE04-KAISU
+                                                      (IDW 1 IDZ)
+                                   COMPUTE WRK-SUM-KAISU (IDZ) 
+                                                   =
+                                                   WRK-SUM-KAISU (IDZ) - 
+                                                   WRK-KAISU   (1)                                       
+                               END-IF
+                           END-PERFORM
+                           ADD     1              TO  WRK-KAISU1                                                               
+                       END-IF  
+                   END-PERFORM
+      *
+      *            同じ検査をまとめて出力する
+                   MOVE    ZERO                  TO  FLG-SRYCD1
+      *
+                   INITIALIZE                      TBL-ZAIW-AREA
+                   MOVE    ZERO                TO  WRK-ZAIWMAX-G
+                   MOVE    ZERO                TO  WRK-TBLMAX
+                   MOVE    ZERO                TO  WRK-TENSUGOKEI
+                   MOVE    ZERO                TO  FLG-SYOSIN
+      *****        MOVE    RECE04-SRYKBN       TO  WRK-SRYKBN
+                   MOVE    ZERO                TO  FLG-TEIGEN
+                                                   FLG-COMMENT
+                                                   FLG-HIKAKIN 
+                   MOVE    ZERO                TO  WRK-RECE05
+                                                   IDY
+      *                                             
+                   MOVE    SPACE               TO  RECE04-REC
+                   INITIALIZE                      RECE04-REC
+                   MOVE    ZERO                TO  WRK-RECE04-ZAITEN
+                   PERFORM VARYING IDW FROM    1   BY  1
+                           UNTIL   IDW >       WRK-RECE04-MAX
+                       IF      WRK-RECE04-FLG   (IDW)  =   "1"
+                           MOVE    WRK-RECE04-REC    (IDW) 
+                                               TO  RECE04-REC
+                           ADD     RECE04-ZAITEN 
+                                               TO  WRK-RECE04-ZAITEN
+                           PERFORM 2002-TBLZAIW-TAIHI-SEC
+                       END-IF
+                   END-PERFORM    
+                   COMPUTE RECE04-ZAIKAISU     =
+                               WRK-KAISU (1)   *   WRK-KAISU1                
+                   MOVE    WRK-RECE04-ZAITEN       TO  RECE04-SYUTEN1
+                                                       RECE04-ZAITEN                                                        
+      *
+      *            レセプト０４剤編集前処理
+                   PERFORM 2001-RECE04-ZAIHEN-MAE-SEC
+      *
+                   IF      SPA-STS          =   ZERO
+                       PERFORM 20051-SRYKBNELSE-KENSA-SEC
+      *                剤・診療行為テーブル出力処理
+                       PERFORM 450-RECE06-OUT-SEC
+                   END-IF    
+               END-IF
+           END-PERFORM                        
+           .
+       2007-SRYKBN60-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数再計算処理
+      *****************************************************************
+       20071-SRYKBN60-HENSYU-SEC    SECTION.
+      *
+           .
+       20071-SRYKBN60-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    点数再計算処理
       *****************************************************************
        400-TENSU-SAIKEISAN-SEC    SECTION.
@@ -2011,28 +2325,30 @@
                                             TNS-CDKBN-KOUBAN 
                                             TNS-KOUHYOJYUNNUM
                  ELSE  
-                   MOVE    TBL-ZAIW-SRYCD1      TO      TNS-SRYCD
-                   MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-                   MOVE    RECE05-SRYYM         TO      ORC-DBYMD(1:6)
-                   MOVE    "01"                 TO      ORC-DBYMD(7:2)
-                   PERFORM 900-TENSU-INV-SEC
-                   IF      FLG-TENSU            =       1
-                       INITIALIZE               TNS-TENSU-REC
-                       DISPLAY   "TENSU FETCH ERR" 
-                   END-IF
+                     MOVE    TBL-ZAIW-SRYCD1   TO  TNS-SRYCD
+                     MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
+                     MOVE    RECE05-SRYYM      TO  ORC-DBYMD(1:6)
+                     MOVE    "01"              TO  ORC-DBYMD(7:2)
+                     PERFORM 900-TENSU-INV-SEC
+                     IF      FLG-TENSU            =       1
+                         INITIALIZE               TNS-TENSU-REC
+                         DISPLAY   "TENSU FETCH ERR" 
+                     END-IF
                  END-IF
                END-IF
                MOVE    TNS-CDKBN-SYO       TO  RECE06-CDKBN-SYO
                MOVE    TNS-CDKBN-BU        TO  RECE06-CDKBN-BU
                MOVE    TNS-CDKBN-KBN       TO  RECE06-CDKBN-KBN
                MOVE    TNS-CDKBN-KBNNUM    TO  RECE06-CDKBN-KBNNUM
-               MOVE    TNS-CDKBN-KBNNUM-EDA TO RECE06-CDKBN-KBNNUM-EDA
+               MOVE    TNS-CDKBN-KBNNUM-EDA
+                                           TO  RECE06-CDKBN-KBNNUM-EDA
                MOVE    TNS-CDKBN-KOUBAN    TO  RECE06-CDKBN-KOUBAN
                IF      RECE04-SRYKBN           =   "21"
                AND     TBL-ZAIW-SRYCD1     NOT =   CONS-TEIGEN
                    CONTINUE
                ELSE
-                   MOVE    TNS-KOUHYOJYUNNUM   TO  RECE06-KOUHYOJUNNUM
+                   MOVE    TNS-KOUHYOJYUNNUM
+                                           TO  RECE06-KOUHYOJUNNUM
                END-IF
       *
       *--------------------------------------------------------------
@@ -2045,10 +2361,11 @@
                END-IF
       *
                WRITE   RECE06-REC
+      *         
                IF  STS-RECE          NOT =   ZERO
                    DISPLAY "*** ORCR0090 RECE06 WRITE ERR  ***"
                    MOVE   WRK-TBLMAX     TO  IDY
-                   MOVE    2             TO  SPA-STS                       
+      *???             MOVE    2             TO  SPA-STS                       
                ELSE
                    ADD     1             TO  CNT-RECE06
                END-IF    

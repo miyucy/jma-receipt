@@ -451,7 +451,8 @@
                    MOVE    ZERO                TO  IDY
       *
                    MOVE    WRK-MF01-KEY (IDX)  TO  MF01-KEY
-                   START   MF01-FILE   KEY IS  >=  MF01-KEY
+                   START   MF01-FILE   KEY IS  >   MF01-KEY
+      *************START   MF01-FILE   KEY IS  >=  MF01-KEY
                        INVALID
                            MOVE    1               TO  FLG-MF01
                        NOT INVALID

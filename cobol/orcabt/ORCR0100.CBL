@@ -96,6 +96,9 @@
       *  01.00.44    MCC-藤原     02.07.03  レセプトＤＢへの更新時のエラー処理
       *  01.00.45    NACL-藤原    02.08.26  自費(8888)のとき請求管理の更新
       *                                     処理をしない
+      *
+      *  01.01.01    NACL-藤原    02/09/17  県内県外区分・県番号・
+      *                                     年齢・給付割合の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3101,9 +3104,11 @@
                COMPUTE WRK-KYURATE-9   =
                               (100     -   RECE02-KYURATE)
                                            / 10 
-               MOVE    WRK-KYURATE-9   TO  RECE10-SHOKUJINISSU (1)
+      *********MOVE    WRK-KYURATE-9   TO  RECE10-SHOKUJINISSU (1)
+               MOVE    WRK-KYURATE-9   TO  RECE10-KYURATE
            ELSE
-               MOVE    ZERO            TO  RECE10-SHOKUJINISSU (1)
+      *********MOVE    ZERO            TO  RECE10-SHOKUJINISSU (1)
+               MOVE    ZERO            TO  RECE10-KYURATE
            END-IF             
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC

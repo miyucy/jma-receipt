@@ -41,6 +41,9 @@
       *                                     に修正（同日再診対応）
       *  01.00.06    MCC-小豆沢   02.04.20  診療区分＝８０の摘要欄印字順を
       *                                     変更
+      *  01.00.07    NACL-藤原    02.09.04  検査のときは表用番号を編集しない
+      *                                     検査のときZAITENを編集する
+      *  01.00.08    NACL-藤原    02.09.06  初診のとき編集する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -306,19 +309,26 @@
             END-IF 
            END-IF 
            IF      RECE06-SRYKBN        NOT =   "21"
-               IF   RECE06-SRYKBN       NOT =   "40" AND "60" AND "80"  
+      *********IF   RECE06-SRYKBN       NOT =   "40" AND "60" AND "80"  
+               IF   RECE06-SRYKBN       NOT =   "40" AND "80"  
                    MOVE    RECE06-ZAITEN    TO      RECE061-ZAITEN
                END-IF
-               MOVE    RECE06-CDKBN-SYO     TO  RECE061-CDKBN-SYO
-               MOVE    RECE06-CDKBN-BU      TO  RECE061-CDKBN-BU
-               MOVE    RECE06-CDKBN-KBN     TO  RECE061-CDKBN-KBN
-               MOVE    RECE06-CDKBN-KBNNUM  TO  RECE061-CDKBN-KBNNUM
-               MOVE    RECE06-CDKBN-KBNNUM-EDA
-                                        TO  RECE061-CDKBN-KBNNUM-EDA
-               MOVE    RECE06-CDKBN-KOUBAN  TO  RECE061-CDKBN-KOUBAN
-               MOVE    RECE06-KOUHYOJUNNUM  TO  RECE061-KOUHYOJUNNUM
+               IF      RECE06-SRYKBN        =   "60"
+                   CONTINUE
+               ELSE    
+                   MOVE    RECE06-CDKBN-SYO     TO  RECE061-CDKBN-SYO
+                   MOVE    RECE06-CDKBN-BU      TO  RECE061-CDKBN-BU
+                   MOVE    RECE06-CDKBN-KBN     TO  RECE061-CDKBN-KBN
+                   MOVE    RECE06-CDKBN-KBNNUM  TO  RECE061-CDKBN-KBNNUM
+                   MOVE    RECE06-CDKBN-KBNNUM-EDA
+                                            TO  RECE061-CDKBN-KBNNUM-EDA
+                   MOVE    RECE06-CDKBN-KOUBAN  TO  RECE061-CDKBN-KOUBAN
+                   MOVE    RECE06-KOUHYOJUNNUM  TO  RECE061-KOUHYOJUNNUM
+               END-IF    
            END-IF
-           IF     RECE06-SRYKBN  NOT =  "11" AND "95" AND "96"
+      *    
+      *****IF     RECE06-SRYKBN  NOT =  "11" AND "95" AND "96"
+           IF     RECE06-SRYKBN  NOT =  "95" AND "96"
                PERFORM     RECE061-WRITE-SEC
            END-IF
            .

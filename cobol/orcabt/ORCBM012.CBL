@@ -32,6 +32,10 @@
       *  01.00.02    MCC-∆£∏∂     02/04/15  ∞ı∫˛¥…Õ˝°¶∞ı∫˛£ƒ£¬§Œƒ…≤√
       *  01.00.03    MCC-∆£∏∂     02/05/22  •∆•π•»¥µº‘§œΩËÕ˝§∑§ §§     
       *  01.00.04    NACL-∆£∏∂    02/08/25  ΩªΩÍ§Ú£±£µ§´§È£≤£µ§À —ππ
+      *
+      *  01.01.01    NACL-∆£∏∂    02/09/17  ∏©∆‚∏©≥∞∂Ë ¨°¶∏©»÷πÊ°¶
+      *                                     «ØŒ°¶µÎ…’≥‰πÁ§Œƒ…≤√
+      *  01.01.02    NACL-∆£∏∂    02/09/18   ›∏±º‘»÷πÊ§Œƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -486,13 +490,15 @@
              EVALUATE  IDX ALSO   IDX3
                  WHEN  1   ALSO   ANY
                  WHEN  3   ALSO   2          
-                   IF      RECE10-SHOKUJINISSU (1) = WRK-CONS-KYURATE
+      *************IF      RECE10-SHOKUJINISSU (1) = WRK-CONS-KYURATE
+                   IF      RECE10-KYURATE          = WRK-CONS-KYURATE
                        MOVE    2                 TO  IDX5
                    ELSE
                        MOVE    1                 TO  IDX5
                    END-IF
                  WHEN  OTHER
-                   IF      RECE10-SHOKUJINISSU (1) = WRK-CONS-KYURATE2
+      *************IF      RECE10-SHOKUJINISSU (1) = WRK-CONS-KYURATE2
+                   IF      RECE10-KYURATE          = WRK-CONS-KYURATE2
                        MOVE    2                 TO  IDX5
                    ELSE
                        MOVE    1                 TO  IDX5
@@ -733,9 +739,10 @@
            PERFORM 900-HKNJAINF-INV-SEC
            IF      FLG-HKNJAINF        =   ZERO
                MOVE    HKNJA-HKNJANAME     TO  HC041-HOKENJYANAME
-           ELSE
-               MOVE    KEY-O-HKNJANUM      TO  HC041-HOKENJYANAME
+      *****ELSE
+      *****    MOVE    KEY-O-HKNJANUM      TO  HC041-HOKENJYANAME
            END-IF                                
+           MOVE    KEY-O-HKNJANUM      TO  HC041-HKNJANUM
       *
            .
        310-HEAD-HEN-EXT.
@@ -854,8 +861,9 @@
       *
            MOVE    ZERO                TO  IDY
       *
-           MOVE    WRK-MF01-KEY        TO  MF01-KEY
+           MOVE    WRK-MF01-KEY        TO  MF011-KEY
            START   MF011-FILE   KEY IS  >  MF011-KEY
+      *****START   MF011-FILE   KEY IS  >= MF011-KEY
                INVALID
                    MOVE    1               TO  FLG-MF01
                NOT INVALID
@@ -1008,7 +1016,8 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
       *****MOVE   "HC041"              TO  SPRT-PRTID
-           MOVE   "HC041V01"           TO  SPRT-PRTID
+      *****MOVE   "HC041V01"           TO  SPRT-PRTID
+           MOVE   "HC041V02"           TO  SPRT-PRTID
            MOVE    "πÒ ›¡Ì≥Á…Ω"        TO  SPRT-TITLE
            MOVE    HC041               TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付       内容
       *  01.00.02    MCC-太田     02.06.26+ ジョブ管理機能追加
       *                                   +-出力項目に年齢追加
+      *  01.00.03    NACL-太田    02/09/13  ディレクトリをサブプロへ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -97,7 +98,7 @@
            COPY    "CPCOMMONPRT.INC".
       *
       *    シェル用領域
-           COPY    "CPCOMMONSHELL.INC".
+      *    COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
       *
       *    ワークパラメータファイル
@@ -215,6 +216,9 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *----(01.00.02) LINE ADD END   ----------------------------------
+      *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -395,10 +399,14 @@
       *
                CLOSE   PRT-FILE
       *
-               MOVE   "HCALL2.sh"      TO  SHELL-ID
-      *
                MOVE    SPACE           TO  SHELLTBL
-               MOVE    SHELL-NAME      TO  SHELLTBL-NAME
+      *        ファイルデイレクトリ位置指定
+               INITIALIZE              ORCSMKPASSAREA
+               MOVE    "scripts/daily/HCALL2.sh"
+                                       TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *
                MOVE    HC01PARA        TO  SHELLTBL-ARG1
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC

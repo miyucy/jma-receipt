@@ -113,6 +113,7 @@
 020800*    Åº»úÎÎ°è
 020900 01  IDX-AREA.
 021000     03  IDX                     PIC 9(06).
+021000     03  IDY                     PIC 9(06).
 024000*
 024100*    °ì»þÎÎ°è
 024200 01  WRK-AREA.
@@ -251,9 +252,12 @@
            MOVE    RECE04-ZAIREQFLG    TO  RECE041-ZAIREQFLG
            MOVE    RECE04-TEIGENRATE   TO  RECE041-TEIGENRATE
            PERFORM   VARYING   IDX   FROM   1  BY  1
-              UNTIL  IDX   >   31
-                  MOVE    RECE04-KAISU(IDX)
-                                       TO  RECE041-KAISU(IDX)
+                     UNTIL  IDX   >   4
+               PERFORM   VARYING   IDX   FROM   1  BY  1
+                         UNTIL  IDX   >   31
+                      MOVE    RECE04-KAISU(IDX IDY)
+                                       TO  RECE041-KAISU(IDX IDY)
+               END-PERFORM                        
            END-PERFORM
       *
            WRITE   RECE041-REC

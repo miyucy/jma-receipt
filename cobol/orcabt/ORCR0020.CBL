@@ -46,7 +46,9 @@
       *                                     不明分とする
       *  01.00.10   MCC-藤原      02.07.18  生保の受給者番号を月代わり受給者
       *                                     番号マスタから編集する
-      *  01.00.46    NACL-藤原    02.08.23  自費を不明分と分ける
+      *  01.00.11    NACL-藤原    02.08.23  自費を不明分と分ける
+      *  01.00.12    NACL-藤原    02.09.05  請求書用ファイルのみ端末ＩＤを固定
+      *                                     にする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -222,6 +224,10 @@
       *    生活保護保険番号 
            03  WRK-CONS-SEIHO-HKNNUM
                                    PIC X(03)   VALUE   "012". 
+      *    
+      *    固定端末ＩＤ
+           03  WRK-CONS-TERMID     PIC X(32)   VALUE
+                                   "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -382,13 +388,14 @@
                    MOVE    "RECE020"           TO  RECE02PARA-FILE-ID
                    MOVE    "RECE090"           TO  RECE09PARA-FILE-ID
                    MOVE    "RECE110"           TO  RECE11PARA-FILE-ID
+                   MOVE    WRK-PARA-TERMID     TO  RECE02PARA-TERMID
                ELSE
       *    請求書処理
                    MOVE    "RECE01X"           TO  RECE01PARA-FILE-ID
                    MOVE    "RECE02X"           TO  RECE02PARA-FILE-ID
+                   MOVE    WRK-CONS-TERMID     TO  RECE02PARA-TERMID
                END-IF
                MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
-               MOVE    WRK-PARA-TERMID     TO  RECE02PARA-TERMID
                MOVE    WRK-PARA-TERMID     TO  RECE09PARA-TERMID
                MOVE    WRK-PARA-TERMID     TO  RECE11PARA-TERMID
       *

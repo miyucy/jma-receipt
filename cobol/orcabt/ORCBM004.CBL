@@ -46,6 +46,8 @@
       *  01.00.09    MCC-藤原     02/05/09  頁数のジョブ管理ＤＢへの更新
       *  01.00.10    MCC-藤原     02/05/22  テスト患者は処理しない     
       *  01.00.11    NACL-藤原    02/08/25  住所を１５から２５に変更
+      *
+      *  01.01.01    NACL-藤原    02/09/18  保険者番号の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -334,7 +336,7 @@
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
       *
-      *    ステップ管理開始処理
+      *    ステップ管理開始処理open-cobol_0.8.9-3_i386.deb
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -680,9 +682,10 @@
            PERFORM 900-HKNJAINF-INV-SEC
            IF      FLG-HKNJAINF        =   ZERO
                MOVE    HKNJA-HKNJANAME     TO  HC04-HOKENJYANAME
-           ELSE
-               MOVE    KEY-O-HKNJANUM      TO  HC04-HOKENJYANAME
+      *****ELSE
+      *****    MOVE    KEY-O-HKNJANUM      TO  HC04-HOKENJYANAME
            END-IF                                
+           MOVE    KEY-O-HKNJANUM      TO  HC04-HKNJANUM
       *
            .
        310-HEAD-HEN-EXT.
@@ -748,8 +751,9 @@
       *
            MOVE    ZERO                TO  IDY
       *
-           MOVE    WRK-MF01-KEY        TO  MF01-KEY
+           MOVE    WRK-MF01-KEY        TO  MF011-KEY
            START   MF011-FILE   KEY IS  >  MF011-KEY
+      *****START   MF011-FILE   KEY IS  >= MF011-KEY
                INVALID
                    MOVE    1               TO  FLG-MF01
                NOT INVALID
@@ -902,7 +906,8 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
       *****MOVE   "HC04"               TO  SPRT-PRTID
-           MOVE   "HC04V01"            TO  SPRT-PRTID
+      *****MOVE   "HC04V01"            TO  SPRT-PRTID
+           MOVE   "HC04V02"            TO  SPRT-PRTID
            MOVE    "国保総括表"        TO  SPRT-TITLE
            MOVE    HC04                TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID

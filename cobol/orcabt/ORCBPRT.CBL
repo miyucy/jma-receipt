@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     02/05/20  再印刷画面からの印刷による修正  
+      *  01.00.02    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -71,7 +72,7 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *    シェル用領域
-           COPY    "CPCOMMONSHELL.INC".
+      *****COPY    "CPCOMMONSHELL.INC".
       *
       *    システム領域
        01  SYS-AREA.
@@ -112,6 +113,8 @@
       *
            03  WRK-IN              PIC X(01).
       *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
            COPY    "CPSHELLTBL.INC".
       *     
@@ -283,10 +286,15 @@
       *
            IF      CNT-OUT             >   ZERO
            AND     FLG-ERR             =   ZERO 
-               MOVE   "HCALL2.sh"          TO  SHELL-ID
       *
                MOVE    SPACE           TO  SHELLTBL
-               MOVE    SHELL-NAME      TO  SHELLTBL-NAME
+      *        ファイルデイレクトリ位置指定
+               INITIALIZE              ORCSMKPASSAREA
+               MOVE    "scripts/daily/HCALL2.sh"
+                                       TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *         
                MOVE    HC01PARA        TO  SHELLTBL-ARG1
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
