@@ -2512,6 +2512,7 @@
                        CONTINUE
                    ELSE
                        IF  KOHI1-TBL(IDX2)   =  ZERO
+                       AND SYU-HKNTEN(12)   NOT =  ZERO
                            ADD     1      TO    KOHI1-TBL(IDX2)
                            ADD     1      TO    KOHI1-TBL(32)
                        END-IF
@@ -2633,6 +2634,7 @@
                        CONTINUE
                    ELSE
                        IF  KOHI2-TBL(IDX2)   =  ZERO
+                       AND SYU-HKNTEN(12)   NOT =  ZERO
                            ADD     1      TO    KOHI2-TBL(IDX2)
                            ADD     1      TO    KOHI2-TBL(32)
                        END-IF
@@ -2754,6 +2756,7 @@
                        CONTINUE
                    ELSE
                        IF  KOHI3-TBL(IDX2)   =  ZERO
+                       AND SYU-HKNTEN(12)   NOT =  ZERO
                            ADD     1      TO    KOHI3-TBL(IDX2)
                            ADD     1      TO    KOHI3-TBL(32)
                        END-IF
@@ -2875,6 +2878,7 @@
                        CONTINUE
                    ELSE
                        IF  KOHI4-TBL(IDX2)   =  ZERO
+                       AND SYU-HKNTEN(12)   NOT =  ZERO
                            ADD     1      TO    KOHI4-TBL(IDX2)
                            ADD     1      TO    KOHI4-TBL(32)
                        END-IF
