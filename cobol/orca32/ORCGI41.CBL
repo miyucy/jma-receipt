@@ -2465,7 +2465,8 @@
                MOVE    ZERO                TO  SPA-GENSAN-RE2-41
                INITIALIZE                  SPA-5000-GENSAN-CHK-TBL-41
            ELSE
-               MOVE    "0018"          TO  SPA-ERRCD
+               MOVE    "0018"              TO  SPA-ERRCD
+               MOVE    07                  TO  SPA-GMN-CUR-41
                GO      TO      41018-SRYYMD-SYORI-EXT
            END-IF.
            

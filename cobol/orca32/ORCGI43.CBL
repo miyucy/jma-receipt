@@ -200,7 +200,7 @@
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN     "PUTG"           ALSO   "CLICKED"
+               WHEN    "PUTG"          ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
       *    入力
                WHEN      OTHER
@@ -222,7 +222,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
       *
            INITIALIZE                  FLG-AREA.
            INITIALIZE                  STS-AREA.
@@ -309,8 +308,8 @@
                    ELSE
                        MOVE    1                   TO  SPA-I43-CUR
                    END-IF
-      *
            END-EVALUATE.
+      *
        3003-JID1-SET-EXT.
            EXIT.
       *
@@ -320,7 +319,7 @@
        310-SPA-SET-SEC                  SECTION.
       *
            INITIALIZE                  SPA-I43-AREA.
-           IF      SPA-MOTOPG(1:3)    NOT =   "I45"
+           IF      SPA-MOTOPG(1:3)    =   "I41"
                INITIALIZE                  SPA-I43-I45-AREA
            END-IF.
       *
@@ -481,9 +480,6 @@
                            INTO              WRK-HKNCOMBIMEI
                    END-STRING
                END-IF
-      *
-               MOVE    PTRSI-HKNKBN        TO  SPA-I43-RSI-THKNKBN
-                                                      (SPA-I43-HKNMAX)
            END-IF.
       *
        31011-HKNCOMBI-HEN-EXT.
@@ -549,8 +545,7 @@
            END-PERFORM.
       *
            MOVE    ZERO                TO  SPA-I43-SELNUM.
-           MOVE    SPACE               TO  SPA-I43-HKNCOMBI-G.
-           MOVE    ZERO                TO  SPA-I43-JYURRKNUM.
+      *
            IF      SPA-MOTOPG(1:3)    NOT =   "I45"
                MOVE    SPACE               TO  SPA-I43-COMMENT
                MOVE    ZERO                TO  SPA-I43-BUNNUM
@@ -564,9 +559,6 @@
       *****************************************************************
        314-SYOKI-SEC             SECTION.
       *
-           INITIALIZE                  SPA-I43-JYURRK-LIST.
-           MOVE    ZERO                TO  SPA-I43-JYURRKNUM.
-      *
       *    保険組合せの再編集
            INITIALIZE                  WRK-I43-HKNCOMB-COMB.
            MOVE    ZERO                TO  WRK-I43-HKNMAX.
@@ -576,8 +568,6 @@
                                       TO  WRK-I43-THKNCOMBINUM (IDX)
                MOVE    SPA-I43-THKNCOMBIMEI (IDX)
                                       TO  WRK-I43-THKNCOMBIMEI (IDX)
-               MOVE    SPA-I43-RSI-THKNKBN  (IDX)
-                                      TO  WRK-I43-RSI-HKNKBN  (IDX)
            END-PERFORM.
            MOVE    SPA-I43-HKNMAX     TO  WRK-I43-HKNMAX.
       *
@@ -617,7 +607,7 @@
                PERFORM 970-PTNYUINRRK-READ-SEC
            END-PERFORM.
       *
-      *    受診のあった保険組合せのみ表示する
+      *    入院のあった保険組合せのみ表示する
            INITIALIZE                  SPA-I43-HKNCOMB-COMB.
            MOVE    ZERO                TO  SPA-I43-HKNMAX.
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -630,92 +620,22 @@
                    MOVE    WRK-I43-THKNCOMBIMEI (IDX)
                                       TO  SPA-I43-THKNCOMBIMEI
                                                 (SPA-I43-HKNMAX)
-                   MOVE    WRK-I43-RSI-HKNKBN  (IDX)
-                                      TO  SPA-I43-RSI-THKNKBN
-                                                (SPA-I43-HKNMAX)
                END-IF
            END-PERFORM.
       *
       *    初期編集
-           MOVE    SPA-GMN-SRYKA-LIST-L-41(01)
-                                       TO  SPA-I43-SRYKA-G.
-           MOVE    SPA-I43-HKN-LIST(01)
-                                       TO  SPA-I43-HKNCOMBI-G.
-      *    労災保険区分がアフターケアの時、履歴日を表示する
-           MOVE    SPA-I43-RSI-THKNKBN (01)
-                                       TO  SPA-I43-RSI-HKNKBN.
-           IF      SPA-I43-RSI-HKNKBN =   "3"
-               PERFORM 31401-AFTER-JYURRK-SEC
+           IF      SPA-MOTOPG(1:3)     =   "I41"
+               MOVE    SPA-GMN-SRYKA-LIST-L-41(01)
+                                           TO  SPA-I43-SRYKA-G
+               MOVE    SPA-I43-HKN-LIST(01)
+                                           TO  SPA-I43-HKNCOMBI-G
            END-IF.
       *
        314-SYOKI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    労災保険区分がアフターケアの時、履歴日編集処理
-      *****************************************************************
-       31401-AFTER-JYURRK-SEC          SECTION.
-      *
-      *    患者入院歴を検索する  医療機関、患者ＩＤ
-           INITIALIZE                  PTNYUINRRK-REC.
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID.
-           MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID.
-           MOVE    "PTNYUINRRK-KEY3"   TO  WRK-DBPATH.
-      *
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-           IF      MCP-RC              =   ZERO
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
-               PERFORM 970-PTNYUINRRK-READ-SEC
-           ELSE
-               INITIALIZE                  PTNYUINRRK-REC
-               MOVE    1               TO  FLG-PTNYUINRRK
-           END-IF.
-      *
-           INITIALIZE                  SPA-I43-JYURRK-LIST.
-           PERFORM
-               UNTIL    FLG-PTNYUINRRK     =   1
-               PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY     >   10
-                   IF      SPA-I43-JYURRKYMD (IDY)
-                                          =    PTNYUINRRK-NYUINYMD
-                       MOVE    10              TO  IDY
-                   ELSE
-                       IF      SPA-I43-JYURRKYMD (IDY)  =   SPACE
-                           MOVE    PTNYUINRRK-NYUINYMD   TO
-                                               SPA-I43-JYURRKYMD(IDY)
-                           MOVE    PTNYUINRRK-NYUINYMD   TO  WRK-SYMD
-                           PERFORM 800-SEIWA-HEN-SEC
-                           MOVE    WRK-HENYMDG     TO
-                                               SPA-I43-JYURRKYMDW(IDY)
-                           MOVE    10              TO  IDY
-                       END-IF
-                   END-IF
-               END-PERFORM
-      *
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
-               PERFORM 970-PTNYUINRRK-READ-SEC
-           END-PERFORM.
-      *
-           MOVE    ZERO                TO  SPA-I43-RRKMAX.
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >   10
-               IF      SPA-I43-JYURRKYMD (IDY)    NOT =   SPACE
-                   MOVE    IDY        TO  SPA-I43-TRRKNUM (IDY)
-                   MOVE    IDY        TO  SPA-I43-RRKMAX
-               END-IF
-           END-PERFORM.
-      *
-       31401-AFTER-JYURRK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *   受診履歴より診療科決定処理
+      *   入院履歴より診療科決定処理
       *****************************************************************
        3141-JYURRK-CHK-SEC             SECTION.
       *
@@ -754,7 +674,7 @@
            EXIT.
       *
       *****************************************************************
-      *    診療科名編集処理
+      *    入院科名編集処理
       *****************************************************************
        810-SRYKA-SET-SEC             SECTION.
       *
@@ -838,7 +758,7 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
-           MOVE    SPACE               TO  I43.
+           MOVE    SPACE              TO  I43.
       *
       *    画面編集
            MOVE    SPA-I43-SRYYM      TO  I43-SRYYM.
@@ -850,7 +770,7 @@
                MOVE    SPA-GMN-SRYKA-LIST-L-41 (IDX)
                                            TO  I43-SRYKA-ITEM (IDX)
            END-PERFORM.
-           MOVE    SPA-GMN-SRYKA-MAX-41 TO  I43-SRYKA-COUNT.
+           MOVE    IDY                  TO  I43-SRYKA-COUNT.
            MOVE    SPA-I43-SRYKA-G      TO  I43-SRYKA.
       *    保険組合せ
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -873,11 +793,10 @@
                    MOVE    "red"               TO  I43-MIDASI-STYLE
            END-EVALUATE.
       *
-      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-I43-RECE-MAX
                MOVE    SPA-I43-TRENNUM (IDX)  TO  WRK-ZZZ
-               MOVE    WRK-ZZZ                 TO  I43-TRENNUM (IDX)
+               MOVE    WRK-ZZZ                TO  I43-TRENNUM (IDX)
                MOVE    SPA-I43-TSRYYM  (IDX)  TO  I43-TSRYYM  (IDX)
                MOVE    SPA-I43-TSRYKA  (IDX)  TO  I43-TSRYKA  (IDX)
                MOVE    SPA-I43-THKNCOMBI(IDX) TO  I43-THKNCOMBI(IDX)
@@ -899,24 +818,6 @@
       *
            MOVE    SPA-I43-SELNUM     TO  I43-SELNUM.
            MOVE    SPA-I43-BUNNUM     TO  I43-BUNNUM.
-      *
-      *    受診履歴
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-I43-RRKMAX
-               MOVE    SPA-I43-TRRKNUM   (IDX)  TO  WRK-ZZ
-               MOVE    WRK-ZZ                  TO  I43-TJYURRKNUM(IDX)
-               MOVE    SPA-I43-JYURRKYMDW(IDX)
-                                               TO  I43-TJYURRKYMD(IDX)
-      *
-               IF      SPA-I43-JYURRKNUM  =   SPA-I43-TRRKNUM (IDX)
-                   MOVE    "T"             TO  I43-JYURRK-SELECT (IDX)
-               ELSE
-                   MOVE    "F"             TO  I43-JYURRK-SELECT (IDX)
-               END-IF
-           END-PERFORM.
-           MOVE    SPA-I43-RRKMAX     TO  I43-JYURRK-COUNT.
-      *
-           MOVE    SPA-I43-JYURRKNUM  TO  I43-JYURRKNUM.
       *
            PERFORM 5001-MAPCUR-SEC.
       *
@@ -945,8 +846,6 @@
                    MOVE    "B08"               TO  MCP-WIDGET
                WHEN    8
                    MOVE    "B05"               TO  MCP-WIDGET
-               WHEN    9
-                   MOVE    "JYURRKNUM"         TO  MCP-WIDGET
            END-EVALUATE.
       *
        5001-MAPCUR-EXT.
@@ -1009,12 +908,6 @@
       *        明細選択
                WHEN    ANY             ALSO    "RECELIST"
                    PERFORM 440-RECELIST-SEC
-      *        受診履歴選択番号
-               WHEN    "ACTIVATE"      ALSO    "JYURRKNUM"
-                   PERFORM 450-JYURRKNUM-SEC
-      *        受診履歴選択
-               WHEN    ANY             ALSO    "JYURRKLIST"
-                   PERFORM 460-RECELIST-SEC
            END-EVALUATE.
       *
        200-ENTRY-EXT.
@@ -1043,7 +936,7 @@
            EXIT.
       *
       *****************************************************************
-      *    診療科処理
+      *    入院科処理
       *****************************************************************
        400-SRYKA-SEC                    SECTION.
       *
@@ -1063,7 +956,7 @@
            IF      FLG-OK              =   ZERO
                MOVE    "0001"              TO  SPA-ERRCD
            ELSE
-               MOVE    3                   TO  SPA-I43-CUR
+               MOVE    1                   TO  SPA-I43-CUR
            END-IF.
       *
        400-SRYKA-EXT.
@@ -1078,36 +971,18 @@
            MOVE    I43-HKNCOMBI        TO  SPA-I43-HKNCOMBI-G.
       *
            MOVE    ZERO                TO  FLG-OK.
-           MOVE    SPACE               TO  SPA-I43-RSI-HKNKBN.
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL      IDX      >   SPA-I43-HKNMAX
                IF      SPA-I43-HKNCOMBINUM    =
                                            SPA-I43-THKNCOMBINUM (IDX)
                    MOVE    SPA-I43-HKN-LIST  (IDX)
                                            TO  SPA-I43-HKNCOMBI-G
-                   MOVE    SPA-I43-RSI-THKNKBN (IDX)
-                                           TO  SPA-I43-RSI-HKNKBN
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM.
            IF      FLG-OK              =   ZERO
                MOVE    "0002"              TO  SPA-ERRCD
                GO      TO      410-HKNCOMBI-EXT
-           END-IF.
-      *
-      *    労災保険区分がアフターケアの時、履歴日を表示する
-           IF      SPA-I43-RSI-HKNKBN =   "3"
-               PERFORM 31401-AFTER-JYURRK-SEC
-               IF      SPA-I43-RRKMAX     =   ZERO
-                   MOVE    "0012"              TO  SPA-ERRCD
-                   GO      TO      410-HKNCOMBI-EXT
-               END-IF
-               MOVE    9                   TO  SPA-I43-CUR
-           ELSE
-               INITIALIZE                  SPA-I43-JYURRK-LIST
-               MOVE    ZERO                TO  SPA-I43-RRKMAX
-               MOVE    ZERO                TO  SPA-I43-JYURRKNUM
-               MOVE    6                   TO  SPA-I43-CUR
            END-IF.
       *
        410-HKNCOMBI-EXT.
@@ -1191,60 +1066,6 @@
            EXIT.
       *
       *****************************************************************
-      *    受診履歴選択番号処理
-      *****************************************************************
-       450-JYURRKNUM-SEC                 SECTION.
-      *
-           MOVE    9                   TO  SPA-I43-CUR.
-      *
-           MOVE    I43-JYURRKNUM       TO  SPA-I43-JYURRKNUM.
-      *
-           IF      SPA-I43-JYURRKNUM  =   ZERO
-               GO      TO      450-JYURRKNUM-EXT
-           END-IF.
-           IF      SPA-I43-JYURRKNUM  >   SPA-I43-RRKMAX
-               MOVE    "0015"              TO  SPA-ERRCD
-               GO      TO      450-JYURRKNUM-EXT
-           END-IF.
-      *
-           MOVE    6                   TO  SPA-I43-CUR.
-      *
-       450-JYURRKNUM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    明細選択処理
-      *****************************************************************
-       460-RECELIST-SEC                 SECTION.
-      *
-           MOVE    ZERO                TO  WRK-SELNUM.
-           MOVE    ZERO                TO  WRK-SELNUM2.
-      *
-           PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL       IDX     >   SPA-I43-RRKMAX
-              IF      I43-JYURRK-SELECT (IDX)   =  "T"
-                  IF      SPA-I43-TRRKNUM(IDX)
-                                                 =   SPA-I43-JYURRKNUM
-                      MOVE    SPA-I43-TRRKNUM(IDX)  TO  WRK-SELNUM
-                  ELSE
-                      MOVE    SPA-I43-TRRKNUM(IDX)  TO  WRK-SELNUM2
-                  END-IF
-              END-IF
-           END-PERFORM.
-      *
-           IF      WRK-SELNUM2     NOT =   ZERO
-               MOVE    WRK-SELNUM2         TO  SPA-I43-JYURRKNUM
-           ELSE
-               MOVE    WRK-SELNUM          TO  SPA-I43-JYURRKNUM
-           END-IF.
-      *
-           MOVE    SPA-I43-JYURRKNUM  TO  I43-JYURRKNUM.
-           PERFORM 450-JYURRKNUM-SEC.
-      *
-       460-RECELIST-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    クリア　処理
       *****************************************************************
        220-CLEA-SEC                   SECTION.
@@ -1276,14 +1097,6 @@
            IF      SPA-I43-HKNCOMBINUM    =   SPACE
                MOVE    "0002"              TO  SPA-ERRCD
                GO      TO      212-TOUROKU-EXT
-           END-IF.
-      *    アフターケアの時、受診日を選択すること
-           IF      SPA-I43-RSI-HKNKBN     =   "3"
-               IF      SPA-I43-JYURRKNUM  =   ZERO
-                   MOVE    "0014"              TO  SPA-ERRCD
-                   MOVE    9                   TO  SPA-I43-CUR
-                   GO      TO      212-TOUROKU-EXT
-               END-IF
            END-IF.
       *
            IF      SPA-I43-COMMENT    =   SPACE
@@ -1332,49 +1145,7 @@
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF.
       *
-           MOVE    ZERO                TO  FLG-OK.
-           PERFORM
-               UNTIL   (FLG-PTNYUINRRK =   1  )  OR
-                       (FLG-OK         =   1  )
-               IF      SPA-I43-SRYKA      =   "00"
-                   IF      SPA-I43-HKNCOMBINUM
-                                           =   PTNYUINRRK-HKNCOMBINUM
-                       PERFORM 21301-HKNCOBMI-RSCHK-SEC
-                   END-IF
-               ELSE
-                   IF     (SPA-I43-HKNCOMBINUM
-                                         =   PTNYUINRRK-HKNCOMBINUM) AND
-                          (SPA-I43-SRYKA  =   PTNYUINRRK-NYUINKA)
-                       PERFORM 21301-HKNCOBMI-RSCHK-SEC
-                   END-IF
-               END-IF
-      *
-               MOVE    "PTNYUINRRK-KEY3"     TO  ORC-DBPATH
-               PERFORM 970-PTNYUINRRK-READ-SEC
-           END-PERFORM.
-      *
-           IF      FLG-OK              =   ZERO
-               MOVE    "0012"          TO  SPA-ERRCD
-           END-IF.
-      *
        2130-HKNCOMBI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険チェック処理
-      *****************************************************************
-       21301-HKNCOBMI-RSCHK-SEC        SECTION.
-      *
-           IF      SPA-I43-RSI-HKNKBN =   "3"
-               IF      SPA-I43-JYURRKYMD (SPA-I43-JYURRKNUM)
-                                           =   PTNYUINRRK-NYUINYMD
-                   MOVE    1                   TO  FLG-OK
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-OK
-           END-IF.
-      *
-       21301-HKNCOBMI-RSCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1389,20 +1160,14 @@
            MOVE    SPA-I43-SRYKA         TO  RECECOM-SRYKA.
            MOVE    SPA-I43-SRYYMS        TO  RECECOM-SRYYM.
            MOVE    SPA-I43-HKNCOMBINUM   TO  RECECOM-HKNCOMBI.
-           IF      SPA-I43-RSI-HKNKBN     =   "3"
-               MOVE    SPA-I43-JYURRKYMD (SPA-I43-JYURRKNUM)(7:2)
-                                           TO  RECECOM-SRYDD
-           ELSE
-               MOVE    ZERO                TO  RECECOM-SRYDD
-           END-IF.
       *
-           MOVE    RECECOM-REC         TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "RECECOM-KEY"       TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    RECECOM-REC           TO  MCPDATA-REC.
+           MOVE    "DBSELECT"            TO  MCP-FUNC.
+           MOVE    "RECECOM-KEY"         TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC.
            IF      MCP-RC              =   ZERO
                MOVE    "RECECOM-KEY"      TO  ORC-DBPATH
                PERFORM 920-RECECOM-READ-SEC
@@ -1443,13 +1208,7 @@
                MOVE    SPA-I43-SRYKA       TO  RECECOM-SRYKA
                MOVE    SPA-I43-SRYYMS      TO  RECECOM-SRYYM
                MOVE    SPA-I43-HKNCOMBINUM TO  RECECOM-HKNCOMBI
-               IF      SPA-I43-RSI-HKNKBN     =   "3"
-                   MOVE    SPA-I43-JYURRKYMD (SPA-I43-JYURRKNUM)(7:2)
-                                               TO  RECECOM-SRYDD
-               ELSE
-                   MOVE    ZERO                TO  RECECOM-SRYDD
-               END-IF
-               MOVE    SPA-I43-COMMENT    TO  RECECOM-COMMENT
+               MOVE    SPA-I43-COMMENT     TO  RECECOM-COMMENT
       *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1462,7 +1221,6 @@
                    DISPLAY "I43 RECECOM INS ERR:" MCP-RC "."
                END-IF
            END-IF.
-      *
       *    再表示
            PERFORM                     310-SPA-SET-SEC.
       *
@@ -1486,6 +1244,7 @@
       *
            MOVE    SPA-I4KYOUTU        TO  SPA-WORK.
            MOVE    SPA-AREA            TO  SPA-COMMON.
+           MOVE    SPA-I43             TO  SPA-FREE.
       *
            MOVE    SPACE               TO  LINKAREA.
            MOVE    SPA-KYOUTU          TO  LNK-COMMON.
@@ -1613,7 +1372,6 @@
                END-IF
                ADD     1                   TO  SPA-I43-BUNNUM
            END-IF.
-      *
       *    雛形有無
            PERFORM 28001-EXAMPLE-CHK-SEC.
            IF      FLG-EXAMPLE         =   ZERO
@@ -1699,9 +1457,6 @@
                                        TO  RECECOM-HKNCOMBI.
            MOVE    SPA-I43-TSRYDD (IDX)
                                        TO  RECECOM-SRYDD.
-           IF      SPA-I43-TSRYDD (IDX)   =   SPACE
-               MOVE    ZERO                TO  RECECOM-SRYDD
-           END-IF.
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC.
            MOVE    "DBDELETE"          TO  MCP-FUNC.
@@ -1713,7 +1468,6 @@
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "I43 RECECOM DEL ERR:" MCP-RC "."
            END-IF.
-      *
       *    再表示
            PERFORM                     310-SPA-SET-SEC.
       *
@@ -1769,22 +1523,6 @@
            PERFORM 410-HKNCOMBI-SEC.
            MOVE    SPA-I43-TCOMMENT(SPA-I43-SELNUM)
                                        TO  SPA-I43-COMMENT.
-      *
-      *    アフターケアの時診療日を選択させる
-           IF       SPA-I43-TSRYDD (SPA-I43-SELNUM)  =   "00" OR
-                                                          SPACE
-               CONTINUE
-           ELSE
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL       IDX     >   SPA-I43-RRKMAX
-                   IF      SPA-I43-JYURRKYMD (IDX)(7:2)
-                                           =   SPA-I43-TSRYDD
-                                                  (SPA-I43-SELNUM)
-                       MOVE    IDX             TO  SPA-I43-JYURRKNUM
-                       MOVE    SPA-I43-RRKMAX  TO  IDX
-                   END-IF
-               END-PERFORM
-           END-IF.
       *
            MOVE    1                   TO  SPA-I43-CUR.
       *
