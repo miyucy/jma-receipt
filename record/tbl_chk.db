@@ -196,3 +196,53 @@ path	key7	{
 		;
 	};
 };
+
+
+path	key8	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key8_csr CURSOR FOR
+		SELECT A.* from tbl_chk A left join tbl_tensu B
+		ON    A.SRYCD     =   B.SRYCD
+		AND   B.YUKOSTYMD  <=   :YUKOSTYMD
+		AND   B.YUKOEDYMD  >=   :YUKOEDYMD
+		WHERE A.CHKKBN    =   :CHKKBN
+		AND   A.CDKBN     =   :CDKBN
+		AND   A.YUKOSTYMD  <=   :YUKOSTYMD
+		AND   A.YUKOEDYMD  >=   :YUKOEDYMD
+		ORDER   BY COALESCE(B.KANANAME,'任任任任任任任任任任'),A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD,A.RENNUM
+		;
+	};
+};
+
+path	key9	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key9_csr CURSOR FOR
+		SELECT A.* from tbl_chk A left join tbl_tensu B
+		ON    A.SRYCD     =   B.SRYCD
+		AND   B.YUKOSTYMD  <=   :YUKOSTYMD
+		AND   B.YUKOEDYMD  >=   :YUKOEDYMD
+		WHERE a.CHKKBN    =   :CHKKBN
+		AND   a.CDKBN     =   :CDKBN
+		AND   a.YUKOSTYMD  <=   :YUKOSTYMD
+		AND   a.YUKOEDYMD  >=   :YUKOEDYMD
+		ORDER  BY   COALESCE(B.CDKBN_KBN,'z'),B.CDKBN_KBNNUM,B.CDKBN_KBNNUM_EDA,
+					B.CDKBN_KOUBAN,A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD,A.RENNUM
+		;
+	};
+};
+
+path	key10	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key10_csr CURSOR FOR
+		SELECT A.* from tbl_chk A left join tbl_tensu B
+		ON    A.SRYCD     =   B.SRYCD
+		AND   B.YUKOSTYMD  <=   :YUKOSTYMD
+		AND   B.YUKOEDYMD  >=   :YUKOEDYMD
+		WHERE a.CHKKBN    =   :CHKKBN
+		AND   a.CDKBN     =   :CDKBN
+		AND   a.YUKOSTYMD  <=   :YUKOSTYMD
+		AND   a.YUKOEDYMD  >=   :YUKOEDYMD
+		ORDER  BY   COALESCE(B.SRYCD,'999999999'),A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD,A.RENNUM
+		;
+	};
+};
