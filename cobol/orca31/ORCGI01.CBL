@@ -7518,31 +7518,11 @@
       *****************************************************************
        4801-RJNCD-CHG-SEC   SECTION.
       *
-      *    Æþ±¡´µ¼Ô¤ÎÏ·¿ÍÈ½Äê
-           INITIALIZE              HKNCOMBI-REC
-           MOVE    ZERO            TO   FLG-HKNCOMBI
+      *    Æþ±¡´µ¼Ô¤ÎÇ¯Îð·×»»
+           PERFORM    4801-PT-AGE-SEC
       *
-           MOVE    SPA-HOSPID      TO   COMB-HOSPID
-           MOVE    SPA-NAI-I01-PTID
-                                   TO   COMB-PTID
-           MOVE    SPA-GMN-I01-HKNCOMBI-CD
-                                   TO   COMB-HKNCOMBINUM
-           MOVE    HKNCOMBI-REC         TO   MCPDATA-REC
-           MOVE    "HKNCOMBI-KEY"       TO   WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC 
-           IF    ( FLG-DBRC    =   ZERO )
-               MOVE    MCPDATA-REC
-                                   TO   HKNCOMBI-REC
-           ELSE
-               MOVE    1           TO   FLG-HKNCOMBI
-           END-IF
-      *
-           MOVE    "HKNCOMBI-KEY"  TO   WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
-      *    Ï·¿ÍÊÝ¸±ÂÐ¾Ý´µ¼Ô¤Ç¤¢¤ì¤ÐÆþ±¡¿ÇÎÅ¥³¡¼¥É¤ÎÃÖ¤­´¹¤¨
-           IF     (FLG-HKNCOMBI     =   ZERO)    AND
-                  (COMB-KOH1HKNNUM  =   "027")
+      *    Ï·¿ÍÂÐ¾Ý´µ¼Ô¤Ç¤¢¤ì¤ÐÆþ±¡¿ÇÎÅ¥³¡¼¥É¤ÎÃÖ¤­´¹¤¨
+           IF     WRK-NENREI   >=    75
                INITIALIZE              SRYCDCHG-REC
       *
                MOVE    SYOKIKSN-IN-KHNSRYCD
