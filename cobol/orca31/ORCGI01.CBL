@@ -6094,6 +6094,12 @@
                     END-IF
                END-PERFORM
            END-IF
+      *食堂加算
+           IF   SYS-5001-BTU-SYOKUDOKBN         =    "2"
+                ADD      1      TO     IDX8
+                MOVE     "197000570"    TO
+                                LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+           END-IF
       *
       *病室情報
            PERFORM     4801-BRMSEL-SEC
@@ -6130,10 +6136,6 @@
                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
                END-IF
            END-IF
-      *
-      *    システム管理マスタクローズ
-           MOVE    "SYSKANRI-KEY2" TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
       *
            .
       *
