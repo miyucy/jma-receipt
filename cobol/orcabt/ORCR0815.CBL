@@ -482,6 +482,40 @@
                                                 MCPDATA-REC
            END-IF  
       *
+      *    ¿ÇÎÅ²ñ·×ÆÉ¤ß¹þ¤ß¡Ê´µ¼Ô£É£Ä¡¢ÊÝ¸±ÁÈ¹ç¤»¡¢¿ÇÎÅ²Ê½ç¡Ë
+      *
+           MOVE    "1"                 TO  WRK-DBKBN 
+      *      
+           INITIALIZE                  SRYACCT-REC
+           MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
+           MOVE    SYS-2001-SRYYM      TO  ACCT-SRYYM
+           MOVE    "1"                 TO  ACCT-NYUGAIKBN
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY8"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACCT-KEY8"      TO  ORC-DBPATH
+               PERFORM 900-SRYACCT-READ-SEC
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+      *
+           PERFORM UNTIL       FLG-SRYACCT     =   1
+               PERFORM 20011-IKKATU-SRYACCT-HENSYU-SEC
+           END-PERFORM
+      *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY8"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
       *    Æþ±¡²ñ·×ÆÉ¤ß¹þ¤ß¡Ê´µ¼Ô£É£Ä¡¢¿ÇÎÅ²Ê¡¢ºÞ¼±ÊÌ¶èÊ¬½ç¡Ë
       *
            MOVE    "2"                 TO  WRK-DBKBN 
