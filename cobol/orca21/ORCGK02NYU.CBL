@@ -1124,9 +1124,9 @@
            MOVE    SPACE               TO  SPA-KIDCD2
       *
       *    患者の確定していない時、クリア画面の表示、M01より
-           IF     (SPA-MOTOPG          =   "M01"    )  OR
-                  (SPA-MOTOPG          =   "K08"  OR  "K02" AND
-                   SPA-PTNUM           =   SPACE    )
+           IF    ( SPA-MOTOPG          =   "M01"    )  OR
+                 ((SPA-MOTOPG          =   "K08"  OR  "K02") AND
+                  (SPA-PTNUM           =   SPACE    ))
                PERFORM 30010-INIT-GMN-SEC
                GO      TO      300-SCREEN-EXT
            END-IF
@@ -1768,15 +1768,6 @@
                        ADD     1                   TO  LNK-WKSRYACT-MAX
                        MOVE    PARA-DATA-REC       TO  LNK-WKSRYACT-REC
                                                      (LNK-WKSRYACT-MAX)
-      *TEST
-                DISPLAY "K02N LNK-WKSRY-ZAINUM:" LNK-WKSRY-ZAINUM
-                                                     (LNK-WKSRYACT-MAX)
-                     ",SRYKBN:" LNK-WKSRY-SRYKBN (LNK-WKSRYACT-MAX)
-                   ",SRYSYUKBN:" LNK-WKSRY-SRYSYUKBN (LNK-WKSRYACT-MAX)
-                   ",ZAIKAIKEI:" LNK-WKSRY-ZAIKAIKEI (LNK-WKSRYACT-MAX)
-                   ",SRYCD:" LNK-WKSRY-SRYCD (LNK-WKSRYACT-MAX 1)
-                   "," LNK-WKSRY-SRYCD (LNK-WKSRYACT-MAX 2)
-                   "," LNK-WKSRY-SRYCD (LNK-WKSRYACT-MAX 3)
       ***************  MOVE    PARA-DATA-REC       TO  LNK-WKSRYACT-REC
       *                                                (PARA-EDANUM)
       ***************  MOVE    PARA-EDANUM        TO  LNK-WKSRYACT-MAX
@@ -2249,11 +2240,11 @@
                 IF      FLG-SET            =   ZERO
       *            自動作成分は編集しない
                    IF    ( LNK-WKSRY-SRYCD  (IDX IDY)    =   SPACE) OR
-                         ( FLG-SYOSIN                    =   1    AND
-                           LNK-WKSRY-AUTOKBN(IDX IDY) NOT =   SPACE) OR
+                         ((FLG-SYOSIN                    =   1   ) AND
+                          (LNK-WKSRY-AUTOKBN(IDX IDY) NOT =   SPACE)) OR
                          ( LNK-WKSRY-AUTOKBN(IDX IDY)    =   "3"  )  OR
-                         ( WRK-SYORIFLG                  =   1    AND
-                           LNK-WKSRY-AUTOKBN(IDX IDY)    =   "2" OR "3")
+                         ((WRK-SYORIFLG                  =   1  ) AND
+                          (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "2" OR "3"))
       *                訂正自動作成で算定回数を超えている時対象とする
                        IF      (WRK-SYORIFLG             =   1  )  AND
                                (LNK-WKSRY-AUTOKBN(IDX IDY)   =   "3")
@@ -7102,8 +7093,8 @@
                GO      TO    520-ALL-CHEK-EXT
            END-IF
       *            投薬（更新前チェックはすべて行う）
-           IF      SPA-SRYKBN-CNT (02) >   ZERO
-               OR  LNK-ORCSC-KBN       =   "3"
+           IF     (SPA-SRYKBN-CNT (02) >   ZERO )
+               OR (LNK-ORCSC-KBN       =   "3"  )
                CALL    "ORCSC20"       USING
                                        MCPAREA
                                        ORCSC00AREA
@@ -8498,6 +8489,11 @@
       *****************************************************************
        41001-KIHON-CHK-SEC             SECTION.
       *
+           IF      SPA-PTNUM           =   SPACE
+               MOVE    "1003"              TO  SPA-ERRCD
+               MOVE    00                  TO  SPA-GMN-CUR
+               GO      TO      41001-KIHON-CHK-EXT
+           END-IF
       *    患者マスター存在チェック
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-PTID            TO  PTINF-PTID
@@ -10441,8 +10437,8 @@
            ELSE
                COMPUTE SPA-MAP-IDX         =   WRK-MAP-MAX
                                            +   1
-               IF      SPA-MAP-IDX         >   24
-                   OR  SPA-GMN-PAGE        <   WRK-MAP-MAXPAGE
+               IF     (SPA-MAP-IDX         >   24 )
+                   OR (SPA-GMN-PAGE        <   WRK-MAP-MAXPAGE)
                    MOVE    99                  TO  SPA-MAP-IDX
                ELSE
                    IF      SPA-GMN-PAGE    >   WRK-MAP-MAXPAGE

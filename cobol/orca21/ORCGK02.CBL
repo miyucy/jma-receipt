@@ -1156,8 +1156,8 @@
       *
       *    入院機能の判定
            IF     (SPA-MOTOPG(1:3)     =   "M01" )  OR
-                  (SPA-MOTOPG(1:1) NOT =   "K"  AND
-                   SPA-PTNUM           =   SPACE )
+                 ((SPA-MOTOPG(1:1) NOT =   "K"  ) AND
+                  (SPA-PTNUM           =   SPACE ))
                PERFORM 3009-NYUINCHK-SEC
                IF      FLG-END             =   1
                    GO      TO      300-SCREEN-EXT
@@ -1165,9 +1165,9 @@
            END-IF
       *
       *    患者の確定していない時、クリア画面の表示、M01より
-           IF     (SPA-MOTOPG(1:3)     =   "M01"    )  OR
-                  (SPA-MOTOPG          =   "K03"   AND
-                   SPA-PTNUM           =   SPACE    )
+           IF    ( SPA-MOTOPG(1:3)     =   "M01"    )  OR
+                 ((SPA-MOTOPG          =   "K03" )  AND
+                   (SPA-PTNUM          =   SPACE    ))
                PERFORM 30010-INIT-GMN-SEC
                GO      TO      300-SCREEN-EXT
            END-IF
@@ -2727,12 +2727,12 @@
                    MOVE    ZERO                 TO  FLG-AUTO-OK
       *
       *            自動作成分は編集しない
-                   IF    ( LNK-WKSRY-SRYCD  (IDX IDY)    =   SPACE) OR
-                         ( FLG-SYOSIN                    =   1    AND
-                           LNK-WKSRY-AUTOKBN(IDX IDY) NOT =   SPACE) OR
-                         ( LNK-WKSRY-AUTOKBN(IDX IDY)    =   "3"  )  OR
-                         ( WRK-SYORIFLG                  =   1    AND
-                           LNK-WKSRY-AUTOKBN(IDX IDY)    =   "2" OR "3")
+                   IF    ( LNK-WKSRY-SRYCD  (IDX IDY)    =   SPACE)  OR
+                         ((FLG-SYOSIN                    =   1 )  AND
+                          (LNK-WKSRY-AUTOKBN(IDX IDY) NOT =   SPACE)) OR
+                         ( LNK-WKSRY-AUTOKBN(IDX IDY)    =   "3"  )   OR
+                         ((WRK-SYORIFLG                  =   1  ) AND
+                          (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "2" OR "3"))
       *                訂正自動作成で算定回数を超えている時対象とする
                        IF      (WRK-SYORIFLG             =   1  )  AND
                                (LNK-WKSRY-AUTOKBN(IDX IDY)   =   "3")
@@ -2923,11 +2923,11 @@
                    OR (LNK-WKSRY-SRYKBN    (IDX)       =   "11" AND
                        LNK-WKSRY-SRYCD (IDX IDY)       =   "830000020")
       *                訂正の時、時間外のみの時
-                   OR (LNK-WKSRY-SRYKBN    (IDX)       =   "13" AND
-                       LNK-WKSRY-SRYCD (IDX IDY)       =   "112005770"
+                  OR ((LNK-WKSRY-SRYKBN    (IDX)       =   "13"  ) AND
+                      (LNK-WKSRY-SRYCD (IDX IDY)       =   "112005770"
                                                        OR  "112005870"
                                                        OR  "112005970"
-                                                       OR  "112006070" )
+                                                       OR  "112006070"))
       *                訂正の時、ダミー診察の時
                   OR ((LNK-WKSRY-SRYKBN    (IDX)       =   "11" OR
                                                            "12"   ) AND
@@ -7702,8 +7702,8 @@
            MOVE    SPA-GAIKANRIKBN-CHK TO  LNK-ORCSC-GAIKANRIKBN-CHK
       *
       *            診療
-           IF      SPA-SRYKBN-CNT (01) >   ZERO
-             OR    SPA-HKNKBN          =   1
+           IF     (SPA-SRYKBN-CNT (01) >   ZERO )
+             OR   (SPA-HKNKBN          =   1    )
                CALL    "ORCSC10"       USING
                                        MCPAREA
                                        ORCSC00AREA
@@ -7753,8 +7753,8 @@
                GO      TO    520-ALL-CHEK-EXT
            END-IF
       *            投薬（更新前チェックはすべて行う）
-           IF      SPA-SRYKBN-CNT (02) >   ZERO
-               OR  LNK-ORCSC-KBN       =   "3"
+           IF     (SPA-SRYKBN-CNT (02) >   ZERO )
+               OR (LNK-ORCSC-KBN       =   "3"  )
                CALL    "ORCSC20"       USING
                                        MCPAREA
                                        ORCSC00AREA
