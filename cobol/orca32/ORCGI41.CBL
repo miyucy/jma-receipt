@@ -3993,6 +3993,7 @@
                PERFORM   410191-KAIKEI-SAKUSEI-SEC
                IF      FLG-KAIKEI-SAKUSEI    =    1
                     MOVE    SPACE     TO      SPA-ERRCD
+                    PERFORM 41019-NEXT-DISP-SEC
                ELSE
       *
                  MOVE    SPA-SAG-SRYYM-41    TO  WRK-SYMD(1:6)
@@ -4028,6 +4029,40 @@
            END-IF.
       *
        41019-JIGETU-COMPUTE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   会計自動作成分表示処理
+      *****************************************************************
+       41019-NEXT-DISP-SEC            SECTION.
+      *
+           MOVE    ZERO               TO  FLG-SET.
+      *
+           MOVE    SPA-NAI-SRYYM-41   TO  WRK-SYMD(1:6)
+                                          WRK-NAI-SRYYM-41.
+           MOVE    "01"               TO  WRK-SYMD(7:2).
+           PERFORM 41012-SEIWA-HEN-SEC.
+           MOVE    WRK-HENYMDG(1:6)   TO  SPA-GMN-SRYYM-41.
+      *
+           PERFORM UNTIL       FLG-SET   =   1
+      *        入院会計マスターより編集をする
+               PERFORM 410181-NYUINACCT-HEN-SEC
+               IF      SPA-ERRCD          NOT =   SPACE
+                   IF     (WRK-SRYYM-BIG   >   SPA-NAI-SRYYM-41)  AND
+                          (PTNYUINRRK-TAIINYMD(1:6) > SPA-NAI-SRYYM-41)
+                       MOVE    SPACE               TO  SPA-ERRCD
+                       PERFORM 41019-JIGETU-COMPUTE-SEC
+                   ELSE
+                       MOVE    1                   TO  FLG-SET
+                   END-IF
+               ELSE
+                   MOVE    1                   TO  FLG-SET
+               END-IF
+           END-PERFORM.
+      *
+           .
+      *
+       41019-NEXT-DISP-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4073,7 +4108,6 @@
       *
        410191-KAIKEI-SAKUSEI-EXT.
            EXIT.
-      *
       *
       ***************************************************************** 021118
       *    入院会計テーブル作成処理                                     021118
