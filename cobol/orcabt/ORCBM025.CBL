@@ -319,7 +319,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "ORCBM001"      TO  JOB-PGID
+           MOVE    "ORCBM025"      TO  JOB-PGID
            MOVE    "国保総括表（改正版）"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
