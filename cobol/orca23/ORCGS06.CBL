@@ -881,10 +881,10 @@
            INITIALIZE                  SPA-GMN-NYKNKNRKBNLST-G
       *
            MOVE    "1"                 TO  SPA-GMN-NYKNKNRKBNL (1)
-           MOVE    "日付の古い未収順に入金"
+           MOVE    "伝票の古い未収順に入金"
                                        TO  SPA-GMN-NYKNKNRKBNMEIL (1)
            MOVE    "2"                 TO  SPA-GMN-NYKNKNRKBNL (2)
-           MOVE    "日付の新しい未収順に入金"
+           MOVE    "伝票の新しい未収順に入金"
                                        TO  SPA-GMN-NYKNKNRKBNMEIL (2)
       *
            MOVE    2                   TO  SPA-GMN-NYKNKNRKBN-MAX
