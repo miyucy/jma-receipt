@@ -128,7 +128,7 @@ fi
 	echo "$DBLIST" "DBLIST" 
 #ダウンロードファイル生成
 	echo "$MSTDIR$DBLIST"
-	${LIBDIR}/ORCXSMST1 $MSTDIR$DBLIST
+	${ORCALIBDIR}/ORCXSMST1 $MSTDIR$DBLIST
 	if [ $? -ne 0 ]	;	then 
 		echo "ダウンロードファイル生成に失敗しました" >>master_log
 		exit 99
