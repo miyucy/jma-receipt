@@ -547,7 +547,7 @@
       *    保険適用外分
            MOVE    ZERO                TO  WRK-GOKTEN
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL       IDX1    >   10
+                   UNTIL       IDX1    >   11
                COMPUTE WRK-GOKTEN      =   WRK-GOKTEN
                                        +  (SYU-TGMONEY (IDX1)
                                        +   SYU-TGMONEY-TAX  (IDX1) )
