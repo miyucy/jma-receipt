@@ -103,7 +103,6 @@
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-TOKEI               PIC 9(01).
-           03  FLG-TOKEIX              PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
            03  FLG-SRYACT              PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
@@ -390,6 +389,7 @@
       *    診療科セット処理
            PERFORM 210-MAIN-SRYKA-SEC
       *
+      *    データをクリアする
            OPEN    OUTPUT              TOKEIX-FILE
            CLOSE                       TOKEIX-FILE
       *
@@ -399,13 +399,13 @@
       *
            CLOSE                       TOKEI-FILE
       *
-           OPEN    INPUT               TOKEIX-FILE
-      *    集計統計データ読込み
-           PERFORM 900-TOKEIX-READ-SEC
+           OPEN    INPUT               TOKEI-FILE
+      *    集計統計データ順読込み
+           PERFORM 900-TOKEI-NEXT-SEC
       *    統計印刷処理
            PERFORM 260-TOKEI-SET-SEC
-                   UNTIL      FLG-TOKEIX       =   1
-           CLOSE                       TOKEIX-FILE
+                   UNTIL      FLG-TOKEI       =   1
+           CLOSE                       TOKEI-FILE
       *
       *    データをクリアする
            OPEN    OUTPUT              TOKEIX-FILE
@@ -688,10 +688,10 @@
            MOVE    ZERO                TO  CNT-PAGE
            MOVE    ZERO                TO  IDY
       *
-           MOVE    TOKEIX-YKZKBN       TO  WRK-YKZKBN
+           MOVE    TOKEI-YKZKBN        TO  WRK-YKZKBN
            PERFORM
-               UNTIL    (FLG-TOKEIX        =   1  )  OR
-                        (TOKEIX-YKZKBN NOT = WRK-YKZKBN)
+               UNTIL    (FLG-TOKEI         =   1  )  OR
+                        (TOKEI-YKZKBN  NOT = WRK-YKZKBN)
       *        統計編集処理
                PERFORM 2601-TOUKEI-HEN-SEC
            END-PERFORM
@@ -718,21 +718,21 @@
            END-IF
       *
       *    薬剤毎の編集
-           MOVE    TOKEIX-SRYCD        TO  WRK-NAI-SRYCD (IDY)
-           MOVE    TOKEIX-NAME         TO  WRK-NAI-NAME  (IDY)
-           MOVE    TOKEIX-TANI         TO  WRK-NAI-TANI  (IDY)
+           MOVE    TOKEI-SRYCD         TO  WRK-NAI-SRYCD (IDY)
+           MOVE    TOKEI-NAME          TO  WRK-NAI-NAME  (IDY)
+           MOVE    TOKEI-TANI          TO  WRK-NAI-TANI  (IDY)
       *
-           MOVE    TOKEIX-SRYCD        TO  WRK-SRYCD
+           MOVE    TOKEI-SRYCD         TO  WRK-SRYCD
            MOVE    ZERO                TO  WRK-GSURYO
            PERFORM
-               UNTIL    (FLG-TOKEIX        =   1  )  OR
-                        (TOKEIX-YKZKBN NOT = WRK-YKZKBN)  OR
-                        (TOKEIX-SRYCD  NOT = WRK-SRYCD )
+               UNTIL    (FLG-TOKEI         =   1  )  OR
+                        (TOKEI-YKZKBN  NOT = WRK-YKZKBN)  OR
+                        (TOKEI-SRYCD   NOT = WRK-SRYCD )
       *        数量編集処理
                PERFORM 26011-SURYOU-HEN-SEC
       *
-      *        データ読込み処理
-               PERFORM 900-TOKEIX-READ-SEC
+      *        データ順読込み処理
+               PERFORM 900-TOKEI-NEXT-SEC
            END-PERFORM
       *
       *    科合計編集
@@ -752,9 +752,9 @@
       *    科毎に数量を編集する
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL     ( IDX     >   CNT-SRYKA )
-               IF      TOKEIX-SRYKA        =   WRK-TAI-SRYKA (IDX)
+               IF      TOKEI-SRYKA         =   WRK-TAI-SRYKA (IDX)
       *            数量編集
-                   MOVE    TOKEIX-SRYSURYO     TO  WRK-SURYO
+                   MOVE    TOKEI-SRYSURYO      TO  WRK-SURYO
                    PERFORM 400-ZHEN-SURYO-SET-SEC
                    MOVE    WRK-HENSURYO        TO  WRK-NAI-NAIYO
                                                            (IDY IDX)
@@ -764,7 +764,7 @@
       *
       *    数量集計
            COMPUTE WRK-GSURYO      =   WRK-GSURYO
-                                   +   TOKEIX-SRYSURYO
+                                   +   TOKEI-SRYSURYO
       *
              .
        26011-SURYOU-HEN-EXT.
@@ -1124,28 +1124,28 @@
        900-TOKEI-READ-SEC          SECTION.
       *
            READ    TOKEI-FILE
-               AT  END
-                   MOVE    1       TO  FLG-TOKEI
-               NOT AT  END
-                   MOVE    ZERO    TO  FLG-TOKEI
+               INVALID
+                   MOVE    1           TO  FLG-TOKEI
+               NOT INVALID
+                   MOVE    ZERO        TO  FLG-TOKEI
            END-READ
            .
        900-TOKEI-READ-EXT.
            EXIT.
       *
       *****************************************************************
-      *    統計ファイルＸ読込
+      *    統計ファイル順読込
       *****************************************************************
-       900-TOKEIX-READ-SEC         SECTION.
+       900-TOKEI-NEXT-SEC         SECTION.
       *
-           READ    TOKEIX-FILE     NEXT
+           READ    TOKEI-FILE      NEXT
                AT  END
-                   MOVE    1       TO  FLG-TOKEIX
+                   MOVE    1           TO  FLG-TOKEI
                NOT AT  END
-                   MOVE    ZERO    TO  FLG-TOKEIX
+                   MOVE    ZERO        TO  FLG-TOKEI
            END-READ
            .
-       900-TOKEIX-READ-EXT.
+       900-TOKEI-NEXT-EXT.
            EXIT.
       *
       *****************************************************************
