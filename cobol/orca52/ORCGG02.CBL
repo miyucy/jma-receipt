@@ -34,6 +34,7 @@
       *  01.00.03    NACL-藤原    04.03.01  確認画面出力の条件修正
       *  01.00.04    NACL-藤原    04.08.10  処理開始前にジョブ管理の
       *                                     チェックを再度行なう
+      *  01.00.05    NACL-藤原    05/01/30  入院対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -425,21 +426,17 @@
       *
            INITIALIZE              SPA-G02-AREA
       *
-      *****IF      SPA-BEDSU       >   ZERO
-      *         MOVE    "1"             TO  SPA-GMN-NYUGAIKBNL       (1)
-      *         MOVE    "入院"          TO  SPA-GMN-NYUGAIKBNMEIL    (1)
-      *         MOVE    "2"             TO  SPA-GMN-NYUGAIKBNL       (2)
-      *         MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEIL    (2)
-      *         MOVE    2               TO  SPA-GMN-NYUGAIKBN-MAX
-      *     ELSE
-      *         MOVE    "2"             TO  SPA-GMN-NYUGAIKBNL       (1)
-      *         MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEIL    (1)
-      *         MOVE    1               TO  SPA-GMN-NYUGAIKBN-MAX
-      *****END-IF
-      *
-           MOVE    "2"             TO  SPA-GMN-NYUGAIKBNL       (1)
-           MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEIL    (1)
-           MOVE    1               TO  SPA-GMN-NYUGAIKBN-MAX
+           IF      SPA-BEDSU       >   ZERO
+               MOVE    "1"             TO  SPA-GMN-NYUGAIKBNL       (1)
+               MOVE    "入院"          TO  SPA-GMN-NYUGAIKBNMEIL    (1)
+               MOVE    "2"             TO  SPA-GMN-NYUGAIKBNL       (2)
+               MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEIL    (2)
+               MOVE    2               TO  SPA-GMN-NYUGAIKBN-MAX
+           ELSE
+               MOVE    "2"             TO  SPA-GMN-NYUGAIKBNL       (1)
+               MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEIL    (1)
+               MOVE    1               TO  SPA-GMN-NYUGAIKBN-MAX
+           END-IF
       *
            MOVE    SPA-GMN-NYUGAIKBNLST (1)
                                    TO  SPA-GMN-NYUGAIKBN-G
