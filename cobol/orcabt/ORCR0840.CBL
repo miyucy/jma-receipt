@@ -214,6 +214,7 @@
            03  IDX5                                    PIC 9(03).
            03  IDX6                                    PIC 9(03).
            03  IDY                                     PIC 9(03).
+           03  IDY2                                    PIC 9(03).
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
            03  ID1                                     PIC 9(03).
@@ -1273,7 +1274,7 @@
                   WHEN  1
       *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
-                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY 1)
+                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY IDY2)
                      MOVE  "197000110"    TO   WRK-SRYCD
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1286,10 +1287,10 @@
                         ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 2)
+                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
       *              ÆÃÊÌ´ÉÍý²Ã»»
                      IF    WRK-TOKUKANRIKASAN  =  1
-                        MOVE  "197000270"    TO   WRK-SKJ-SRYCD(IDY 3)
+                        MOVE  "197000270"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                         MOVE  "197000270"    TO   WRK-SRYCD
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1302,11 +1303,11 @@
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 4)
+                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                      END-IF
       *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
-                        MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 5)
+                        MOVE  "197000570"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                         MOVE  "197000570"    TO   WRK-SRYCD
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1319,12 +1320,12 @@
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 6)
+                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                      END-IF
                   WHEN  2
       *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
-                     MOVE  "197000710"    TO   WRK-SKJ-SRYCD(IDY 1)
+                     MOVE  "197000710"    TO   WRK-SKJ-SRYCD(IDY IDY2)
                      MOVE  "197000710"    TO   WRK-SRYCD
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1337,12 +1338,12 @@
                         ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 2)
+                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
                 END-EVALUATE
               WHEN  2
       *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
-                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY 1)
+                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY IDY2)
                      MOVE  "197000110"    TO   WRK-SRYCD
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1355,10 +1356,10 @@
                         ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 2)
+                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
       *              ÆÃÊÌ´ÉÍý²Ã»»
                      IF    WRK-TOKUKANRIKASAN  =  1
-                        MOVE  "197000270"    TO   WRK-SKJ-SRYCD(IDY 3)
+                        MOVE  "197000270"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                         MOVE  "197000270"    TO   WRK-SRYCD
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1371,10 +1372,10 @@
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 4)
+                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                      END-IF
       *              ÆÃÊÌ¿©²Ã»»
-                     MOVE  "197000470"    TO   WRK-SKJ-SRYCD(IDY 5)
+                     MOVE  "197000470"    TO   WRK-SKJ-SRYCD(IDY IDY2)
                      MOVE  "197000470"    TO   WRK-SRYCD
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1387,10 +1388,10 @@
                         ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 6)
+                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
       *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
-                        MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 7)
+                        MOVE  "197000570"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                         MOVE  "197000570"    TO   WRK-SRYCD
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1403,12 +1404,12 @@
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 8)
+                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                      END-IF
               WHEN  3
       *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
-                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY 1)
+                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY IDY2)
                      MOVE  "197000110"    TO   WRK-SRYCD
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1421,10 +1422,10 @@
                         ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 2)
+                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
       *              ÆÃÊÌ´ÉÍý²Ã»»
                      IF    WRK-TOKUKANRIKASAN  =  1
-                        MOVE  "197000270"    TO   WRK-SKJ-SRYCD(IDY 3)
+                        MOVE  "197000270"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                         MOVE  "197000270"    TO   WRK-SRYCD
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1437,11 +1438,11 @@
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 4)
+                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                      END-IF
       *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
-                        MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 5)
+                        MOVE  "197000570"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                         MOVE  "197000570"    TO   WRK-SRYCD
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1454,10 +1455,10 @@
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 6)
+                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                      END-IF
       *              Ê£¿ô¸¥Î©²Ã»»
-                     MOVE  "197000670"    TO   WRK-SKJ-SRYCD(IDY 7)
+                     MOVE  "197000670"    TO   WRK-SKJ-SRYCD(IDY IDY2)
                      MOVE  "197000670"    TO   WRK-SRYCD
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1470,11 +1471,11 @@
                         ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 8)
+                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
               WHEN  4
       *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
-                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY 1)
+                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY IDY2)
                      MOVE  "197000110"    TO   WRK-SRYCD
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1487,10 +1488,10 @@
                         ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 2)
+                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
       *              ÆÃÊÌ´ÉÍý²Ã»»
                      IF    WRK-TOKUKANRIKASAN  =  1
-                        MOVE  "197000270"    TO   WRK-SKJ-SRYCD(IDY 3)
+                        MOVE  "197000270"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                         MOVE  "197000270"    TO   WRK-SRYCD
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1503,10 +1504,10 @@
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 4)
+                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                      END-IF
       *              ÆÃÊÌ¿©²Ã»»
-                     MOVE  "197000470"    TO   WRK-SKJ-SRYCD(IDY 5)
+                     MOVE  "197000470"    TO   WRK-SKJ-SRYCD(IDY IDY2)
                      MOVE  "197000470"    TO   WRK-SRYCD
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1519,10 +1520,10 @@
                         ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 6)
+                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
       *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
-                        MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 7)
+                        MOVE  "197000570"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                         MOVE  "197000570"    TO   WRK-SRYCD
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1535,10 +1536,10 @@
                           ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 8)
+                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
                      END-IF
       *              Ê£¿ô¸¥Î©²Ã»»
-                     MOVE  "197000670"    TO   WRK-SKJ-SRYCD(IDY 9)
+                     MOVE  "197000670"    TO   WRK-SKJ-SRYCD(IDY IDY2)
                      MOVE  "197000670"    TO   WRK-SRYCD
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
@@ -1551,7 +1552,7 @@
                         ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 10)
+                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
            END-EVALUATE
       *
            .
