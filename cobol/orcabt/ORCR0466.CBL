@@ -608,6 +608,7 @@
                                    TO  KANACHK-MAE-INPUT (7:3)
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
            IF      KANACHK-RC      =   ZERO
+           AND     KANACHK-MAX     >   ZERO
                MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                        TO  WRK-TNSKAI
                MOVE    "¡ß"                TO  WRK-X

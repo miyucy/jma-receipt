@@ -1083,18 +1083,20 @@
                                                WRK-KETA-TAIHI
                                                WRK-KETA2
       *
-           INITIALIZE                      ORCSKANACHKAREA
-           MOVE    "2"                     TO  KANACHK-SYORI 
-           MOVE  TBL-JUSHIN-SRYKANAME(IDX) TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-           IF      KANACHK-RC      =   ZERO
-               COMPUTE WRK-KETA          =   KANACHK-MAX
-               COMPUTE WRK-KETA-TAIHI    =   KANACHK-MAX
-               COMPUTE WRK-KETA2         =   KANACHK-MAX  /  2
-               MOVE    WRK-KETA2   TO  WK-FREE-YUKOKETA(IDZ)
-               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+           IF  TBL-JUSHIN-SRYKANAME(IDX)  NOT =  SPACE
+             INITIALIZE                      ORCSKANACHKAREA
+             MOVE    "2"                     TO  KANACHK-SYORI 
+             MOVE  TBL-JUSHIN-SRYKANAME(IDX) TO  KANACHK-MAE-INPUT
+             CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+             IF      KANACHK-RC      =   ZERO
+                 COMPUTE WRK-KETA          =   KANACHK-MAX
+                 COMPUTE WRK-KETA-TAIHI    =   KANACHK-MAX
+                 COMPUTE WRK-KETA2         =   KANACHK-MAX  /  2
+                 MOVE    WRK-KETA2   TO  WK-FREE-YUKOKETA(IDZ)
+                 MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                    TO  WK-FREE-NAME(IDZ)(1:KANACHK-MAX)
-           END-IF    
+             END-IF    
+           END-IF
       *
            MOVE      ZERO          TO  FLG-FIRST
       *
