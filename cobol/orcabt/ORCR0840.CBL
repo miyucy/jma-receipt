@@ -29,6 +29,11 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01   NACL-ÌçÏÆ     04/01/06  ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¤Î£±·åÌÜ¤ÎÈ½Äê
       *                                     ½¤Àµ
+      *  01.00.02    NACL-ÌçÏÆ    04.01.21  Ï«ºÒ¤ÎÆÃÄê´ïºà(09593)ÂÐ±þ
+      *  01.00.03    NACL-ÌçÏÆ    04.01.21  Ï«ºÒ¡¦¼«ÇåÀÕ¤ÎÆþ±¡¼¼ÎÁ²Ã»»
+      *                                     (09594)ÂÐ±þ
+      *  01.00.04    NACL-ÌçÏÆ    04/01/28  ¿ÇÎÅ¶èÊ¬£¹£°¡¢£¹£²¤Î¥³¥á¥ó¥È
+      *                                     ¤Î¤ß¤ÎºÞ¤â¥ì¥»µ­ºÜ¤ÎÂÐ¾Ý¤Ë¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -861,7 +866,8 @@
                    ELSE
                        IF   ACCT-ZAIKAISU  NOT =    ZERO
                             IF   ACCT-SRYKBN  =  "11"  OR
-                                                 "33"  OR  "99" 
+                                                 "33"  OR  "99" OR
+                                                 "90"  OR  "92" 
       *
                                  MOVE   ZERO   TO   WRK-TEN
                                                     WRK-MEISAI-CNT
@@ -2296,7 +2302,7 @@
                                                     RECE85-SRYKBN       
                   ELSE
                    IF ( ACCT-SRYKBN          =  "80"              ) AND 
-                      ( SRY-SRYCD(IDX2)(1:5) =  "09593"           )     
+                      ( SRY-SRYCD(IDX2)(1:5) =  "09593" OR "09594")     
                                 MOVE   "40"   TO    RECE84-SRYKBN       
                                                     RECE85-SRYKBN       
                    ELSE                                                 
@@ -2349,7 +2355,7 @@
                                                 WRK-TANINAME            
                END-IF                                                   
                IF ( ACCT-SRYKBN          =  "80"              ) AND     
-                  ( SRY-SRYCD(IDX2)(1:5) =  "09593"           )         
+                  ( SRY-SRYCD(IDX2)(1:5) =  "09593" OR "09594")         
                     MOVE  1               TO  RECE85-TENSIKIBETU(IDX4)  
                     MOVE  TNS-TEN         TO  RECE85-TEN(IDX4)          
                ELSE                                                     
@@ -2431,7 +2437,8 @@
                                        CONS-ROUSAI19 OR
                                        CONS-ROUSAI20   )                
                OR (( ACCT-SRYKBN          =  "80"     )   AND           
-                   ( SRY-SRYCD(IDX2)(1:5) =  "09593"  ))                
+                   ( SRY-SRYCD(IDX2)(1:5) =  "09593"
+                                         OR  "09594"  ))                
       *
                      ADD      1          TO  WRK-MEISAI-CNT
                      COMPUTE  WRK-TEN    =   WRK-TEN   +
@@ -3183,13 +3190,22 @@
                        MOVE  ACCT-ZAIKAISU     TO   WK-ZAIKAISU
                        MOVE  ACCT-ZAITEN       TO   WK-ZAITEN
                        IF   RECE82-HKNKBN    NOT  =  "4"
-                         IF    SRY-SRYKBN     =  "40"  OR  "50"  OR
-                                                 "60"  OR  "70"  OR
-                                                 "80"  OR  "54"
+                         IF ( ACCT-SRYKBN          =  "80"    ) AND   
+                            ( SRY-SRYCD(IDX3)(1:5) =  "09593"
+                                                   OR "09594" )       
+                                  MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN  
+                                  COMPUTE   WK-YKZTEN =                 
+                                                      ACCT-KIZAITEN  +  
+                                                      ACCT-YKZTEN       
+                         ELSE
+                           IF    SRY-SRYKBN     =  "40"  OR  "50"  OR
+                                                   "60"  OR  "70"  OR
+                                                   "80"  OR  "54"
                                 MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
                                 COMPUTE   WK-YKZTEN   =
                                                       ACCT-KIZAITEN  +
                                                       ACCT-YKZTEN
+                           END-IF
                          END-IF
                        ELSE
                          IF ( ACCT-SRYKBN          =  "80"    )   AND
@@ -3198,7 +3214,8 @@
                                CONTINUE
                          ELSE
                            IF ( ACCT-SRYKBN          =  "80"    ) AND   
-                              ( SRY-SRYCD(IDX3)(1:5) =  "09593" )       
+                              ( SRY-SRYCD(IDX3)(1:5) =  "09593"
+                                                     OR "09594" )       
                                   MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN  
                                   COMPUTE   WK-YKZTEN =                 
                                                       ACCT-KIZAITEN  +  
@@ -3496,14 +3513,16 @@
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    ¤½¤ÎÂ¾¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "80"
-                   IF   SRY-SRYCD(IDX3) =   CONS-ROUSAI13  OR
+                   IF ( SRY-SRYCD(IDX3) =   CONS-ROUSAI13  OR
                                             CONS-ROUSAI14  OR
                                             CONS-ROUSAI15  OR
                                             CONS-ROUSAI16  OR
                                             CONS-ROUSAI17  OR
                                             CONS-ROUSAI18  OR
                                             CONS-ROUSAI19  OR
-                                            CONS-ROUSAI20 
+                                            CONS-ROUSAI20 )
+                   OR ((ACCT-SRYKBN          =  "80"     )  AND
+                       (SRY-SRYCD(IDX3)(1:5) =  "09594"  ))
                          COMPUTE    RECE82-KINGAKU2(2)  =
                                     RECE82-KINGAKU2(2)  +
                                   (TNS-TEN     *   ACCT-ZAIKAISU)
@@ -3521,6 +3540,20 @@
                               WHEN   CONS-ROUSAI20
                                   MOVE    4     TO   WRK-HEYA-NINZU
                          END-EVALUATE
+                         EVALUATE   SRY-SRYCD(IDX3)(1:7)
+                              WHEN   "0959401"
+                              WHEN   "0959402"
+                                  MOVE    1     TO   WRK-HEYA-NINZU
+                              WHEN   "0959403"
+                              WHEN   "0959404"
+                                  MOVE    2     TO   WRK-HEYA-NINZU
+                              WHEN   "0959407"
+                              WHEN   "0959408"
+                                  MOVE    3     TO   WRK-HEYA-NINZU
+                              WHEN   "0959409"
+                              WHEN   "0959410"
+                                  MOVE    4     TO   WRK-HEYA-NINZU
+                         END-EVALUATE
                          IF    RECE82-HEYA-NINZU   =   ZERO
                          AND   FLG-HEYA            =   ZERO
                            MOVE  WRK-HEYA-NINZU  TO   RECE82-HEYA-NINZU
@@ -3536,18 +3569,25 @@
                            END-IF
                          END-IF
                    ELSE
-                     IF    TNS-NYUTENTTLKBN   =    130
+                     IF ( ACCT-SRYKBN          =  "80"    )  AND         
+                        ( SRY-SRYCD(IDX3)(1:5) =  "09593" )              
+                         COMPUTE   RECE82-KINGAKU2(2)  =
+                                   RECE82-KINGAKU2(2)  +
+                                  (TNS-TEN     *   ACCT-ZAIKAISU)
+                     ELSE                
+                       IF    TNS-NYUTENTTLKBN   =    130
                          COMPUTE   RECE82-TENSU(2)  =
                                    RECE82-TENSU(2)  +
                                   (TNS-TEN     *   ACCT-ZAIKAISU)
-                     ELSE  
+                       ELSE  
                          COMPUTE   RECE82-TENSU(21)  =
                                    RECE82-TENSU(21)  +
                                   (WK-SYUTEN   *   WK-ZAIKAISU)
+                       END-IF
+                       COMPUTE       RECE82-TENSU(22)  =
+                                     RECE82-TENSU(22)  +
+                                    (WK-YKZTEN   *   WK-ZAIKAISU)
                      END-IF
-                     COMPUTE       RECE82-TENSU(22)  =
-                                   RECE82-TENSU(22)  +
-                                  (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
            END-EVALUATE
            .
@@ -3786,14 +3826,16 @@
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    ¤½¤ÎÂ¾¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "80"
-                  IF   SRY-SRYCD(IDX3) =   CONS-ROUSAI13  OR
+                  IF ( SRY-SRYCD(IDX3) =   CONS-ROUSAI13  OR
                                            CONS-ROUSAI14  OR
                                            CONS-ROUSAI15  OR
                                            CONS-ROUSAI16  OR
                                            CONS-ROUSAI17  OR
                                            CONS-ROUSAI18  OR
                                            CONS-ROUSAI19  OR
-                                           CONS-ROUSAI20 
+                                           CONS-ROUSAI20 )
+                  OR ((ACCT-SRYKBN          =  "80"     )  AND
+                      (SRY-SRYCD(IDX3)(1:5) =  "09594"  ))
                        COMPUTE    RECE82-KINGAKU3(1)  =
                                   RECE82-KINGAKU3(1)  +
                                  (TNS-TEN   *   ACCT-ZAIKAISU)
@@ -3809,6 +3851,20 @@
                                   MOVE    3     TO   WRK-HEYA-NINZU
                               WHEN   CONS-ROUSAI19
                               WHEN   CONS-ROUSAI20
+                                  MOVE    4     TO   WRK-HEYA-NINZU
+                       END-EVALUATE
+                       EVALUATE   SRY-SRYCD(IDX3)(1:7)
+                              WHEN   "0959401"
+                              WHEN   "0959402"
+                                  MOVE    1     TO   WRK-HEYA-NINZU
+                              WHEN   "0959403"
+                              WHEN   "0959404"
+                                  MOVE    2     TO   WRK-HEYA-NINZU
+                              WHEN   "0959407"
+                              WHEN   "0959408"
+                                  MOVE    3     TO   WRK-HEYA-NINZU
+                              WHEN   "0959409"
+                              WHEN   "0959410"
                                   MOVE    4     TO   WRK-HEYA-NINZU
                        END-EVALUATE
                        IF    RECE82-HEYA-NINZU   =   ZERO

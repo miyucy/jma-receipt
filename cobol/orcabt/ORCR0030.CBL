@@ -1473,6 +1473,7 @@
                                                   OR  "09591" OR "09691"
                                                   OR  "09592" OR "09692"
                                                   OR  "09593" OR "09693"
+                                                  OR  "09594" OR "09694"
                           CONTINUE
                      ELSE
                        IF     TNS-TEN     NOT =  ZERO

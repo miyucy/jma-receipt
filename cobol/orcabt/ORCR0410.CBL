@@ -40,6 +40,7 @@
       *  01.00.09    NACL-門脇    03.05.20  自賠責：療養担当手当て対応
       *  01.00.10    NACL-門脇    03.06.09  消費税端数対応
       *  01.00.11    NACL-門脇    03.06.19  実日数テーブル編集の追加
+      *  01.00.12    NACL-門脇    04.01.21  労災の特定器材(09593)対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1340,7 +1341,7 @@
       *
                        PERFORM   TENSU-TBL-SEC
       *
-                       IF   SRY-SRYCD(IDY) =  CONS-ROUSAI1  OR
+                       IF ( SRY-SRYCD(IDY) =  CONS-ROUSAI1  OR
                                               CONS-ROUSAI2  OR
                                               CONS-ROUSAI3  OR
                                               CONS-ROUSAI4  OR
@@ -1356,7 +1357,9 @@
                                               CONS-ROUSAI14 OR
                                               CONS-ROUSAI15 OR
                                               CONS-ROUSAI16 OR
-                                              CONS-ROUSAI17   
+                                              CONS-ROUSAI17   )
+                       OR ((ACCT-SRYKBN         =  "80"      )   AND
+                           (SRY-SRYCD(IDY)(1:5) =  "09593"   ))
       *
       *                     IF     TNS-TENSIKIBETU   =   1
                                ADD    TNS-TEN      TO    WRK-KIN

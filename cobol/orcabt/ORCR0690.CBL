@@ -44,6 +44,8 @@
       *                                     ½¤Àµ
       *  01.00.11    NACL-ÌçÏÆ    03.11.26  ¼«Èñ¥ì¥»¥×¥È¤Î¼«ÈñÊ¬
       *                                     Å¦Í×Íóµ­ºÜÂÐ±þ
+      *  01.00.12    NACL-ÌçÏÆ    04.01.28  ¿ÇÎÅ¶èÊ¬£¹£²¤Î¥³¥á¥ó¥È
+      *                                     ¤Î¤ß¤ÎºÞ¤â¥ì¥»µ­ºÜ¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1516,10 +1518,12 @@
            OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09591" )
            OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09592" )
            OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09593" )
+           OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09594" )
            OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09600" )
            OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09691" )
            OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09692" )
            OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09693" )
+           OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09694" )
                MOVE    1             TO  FLG-NOPRT
            END-IF
            IF  ( RECE62-RECESYUBETU    =  8888   )  AND
@@ -2137,9 +2141,9 @@
                   (WRK-TENSUGOKEI     =   ZERO)
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF                                                      
-           IF     (FLG-COMMENT3       =    1          )   AND
-                  (RECE64-SRYKBN      =   "33" OR "90")   AND
-                  (RECE64-ZAITEN      =   ZERO        )      
+           IF     (FLG-COMMENT3       =    1                  )   AND
+                  (RECE64-SRYKBN      =   "33" OR "90" OR "92")   AND
+                  (RECE64-ZAITEN      =   ZERO                )      
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF     
       *---- (01.00.05) LINE ADD END   --------------------------------

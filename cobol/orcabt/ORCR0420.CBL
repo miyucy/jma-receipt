@@ -57,6 +57,7 @@
       *                                     ½¤Àµ
       *  01.00.21    NACL-ÌçÏÆ    04.01.06  ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¤Î£±·åÌÜ¤ÎÈ½Äê
       *                                     ½¤Àµ
+      *  01.00.22    NACL-ÌçÏÆ    04.01.21  Ï«ºÒ¤ÎÆÃÄê´ïºà(09593)ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1768,13 +1769,21 @@
       *                                               ACCT-YKZTEN
       *                      END-IF
       *                  END-IF
-                         IF    SRY-SRYKBN     =  "40"  OR  "50"  OR
-                                                 "70"  OR  "80"  OR
-                                                 "54"  OR  "60"
+                         IF ( ACCT-SRYKBN          =  "80"    ) AND   
+                            ( SRY-SRYCD(IDX3)(1:5) =  "09593" )       
+                                  MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN  
+                                  COMPUTE   WK-YKZTEN =                 
+                                                      ACCT-KIZAITEN  +  
+                                                      ACCT-YKZTEN       
+                         ELSE                                         
+                           IF    SRY-SRYKBN     =  "40"  OR  "50"  OR
+                                                   "70"  OR  "80"  OR
+                                                   "54"  OR  "60"
                                   MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
                                   COMPUTE   WK-YKZTEN =
                                                       ACCT-KIZAITEN  +
                                                       ACCT-YKZTEN
+                           END-IF
                          END-IF
                        ELSE                                             
                          IF ( ACCT-SRYKBN          =  "80"    )   AND
@@ -2331,27 +2340,33 @@
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    ¤½¤ÎÂ¾¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "80"
-                   IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN2
+                   IF ( ACCT-SRYKBN          =  "80"    )  AND         
+                      ( SRY-SRYCD(IDX3)(1:5) =  "09593" )              
+                       COMPUTE    RECE41-KINGAKU2(4)  =                 
+                                  RECE41-KINGAKU2(4)  +                 
+                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)  
+                   ELSE               
+                    IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN2
                      COMPUTE  WRK-TOKUTEI-SKAN2 =  WRK-TOKUTEI-SKAN2 +
                                                    WK-ZAIKAISU 
-                   END-IF
-                   IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN1
-                    COMPUTE WRK-NYUYOUJI-SHOKAN = WRK-NYUYOUJI-SHOKAN +
+                    END-IF
+                    IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN1
+                     COMPUTE WRK-NYUYOUJI-SHOKAN = WRK-NYUYOUJI-SHOKAN +
                                                   WK-ZAIKAISU 
-                   END-IF
-                   IF   SRY-SRYCD(IDX3)   =  CONS-SHOHOSEN1 OR
-                                                 CONS-SHOHOSEN2 OR
-                                                 CONS-SHOHOSEN3 OR
-                                                 CONS-SHOHOSEN4 OR
-                                                 CONS-SHOHOKSN1 OR
-                                                 CONS-SHOHOKSN2
+                    END-IF
+                    IF   SRY-SRYCD(IDX3)   =  CONS-SHOHOSEN1 OR
+                                              CONS-SHOHOSEN2 OR
+                                              CONS-SHOHOSEN3 OR
+                                              CONS-SHOHOSEN4 OR
+                                              CONS-SHOHOKSN1 OR
+                                              CONS-SHOHOKSN2
                          ADD    WK-ZAIKAISU  TO  RECE41-KAISU(33)
                          COMPUTE   RECE41-TENSU(33)  =
                                    RECE41-TENSU(33)  +
                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                          COMPUTE   WK-SYUTEN  =  WK-SYUTEN  
                                               -  WRK-TNS-TEN(IDX3)
-                   ELSE
+                    ELSE
                          IF    WRK-TNS-GAITENTTLKBN(IDX3)   =    130
                            COMPUTE   RECE41-TENSU(7)  =
                                      RECE41-TENSU(7)  +
@@ -2361,10 +2376,11 @@
                                      RECE41-TENSU(34)  +
                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
                          END-IF
+                    END-IF
+                    COMPUTE   RECE41-TENSU(35)  =
+                              RECE41-TENSU(35)  +
+                             (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
-                   COMPUTE   RECE41-TENSU(35)  =
-                             RECE41-TENSU(35)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
            END-EVALUATE
       *
            .
@@ -2640,18 +2656,22 @@
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    ¤½¤ÎÂ¾¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "80"
-                   IF   SRY-SRYCD(IDX3)   =      CONS-SHOHOSEN1 OR
-                                                 CONS-SHOHOSEN2 OR
-                                                 CONS-SHOHOSEN3 OR
-                                                 CONS-SHOHOSEN4 OR
-                                                 CONS-SHOHOKSN1 OR
-                                                 CONS-SHOHOKSN2
+                   IF ( ACCT-SRYKBN          =  "80"    )  AND         
+                      ( SRY-SRYCD(IDX3)(1:5) =  "09593" )              
+                       CONTINUE
+                   ELSE               
+                    IF   SRY-SRYCD(IDX3)   =      CONS-SHOHOSEN1 OR
+                                                  CONS-SHOHOSEN2 OR
+                                                  CONS-SHOHOSEN3 OR
+                                                  CONS-SHOHOSEN4 OR
+                                                  CONS-SHOHOKSN1 OR
+                                                  CONS-SHOHOKSN2
                          COMPUTE   RECE41-TENSU(30)  =
                                    RECE41-TENSU(30)  +
                                   (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
                          COMPUTE   WK-SYUTEN  =  WK-SYUTEN  
                                               -  WRK-TNS-TEN(IDX3)
-                   ELSE
+                    ELSE
                          IF    WRK-TNS-GAITENTTLKBN(IDX3)   =    130
                            COMPUTE   RECE41-TENSU(5)  =
                                      RECE41-TENSU(5)  +
@@ -2661,10 +2681,11 @@
                                      RECE41-TENSU(31)  +
                                     (WK-SYUTEN   *   WRK-ZAIKAISU-XXX)
                          END-IF
+                    END-IF
+                    COMPUTE   RECE41-TENSU(32)  =
+                              RECE41-TENSU(32)  +
+                             (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
-                   COMPUTE   RECE41-TENSU(32)  =
-                             RECE41-TENSU(32)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
            END-EVALUATE
       *
            .

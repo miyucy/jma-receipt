@@ -63,6 +63,8 @@
       *  01.00.24    NACL-門脇    04/01/19  病床数編集フラグの編集
       *  01.00.25    NACL-門脇    04/01/20  自費レセ摘要欄編集レコード
       *                                     フラグの編集
+      *  01.00.26    NACL-門脇    04/01/28  診療区分９０、９２のコメント
+      *                                     のみの剤もレセ記載の対象にする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1072,7 +1074,8 @@
                            ELSE
                              IF   ACCT-ZAIKAISU  NOT =    ZERO
                                IF   ACCT-SRYKBN  =  "11"  OR
-                                                    "33"  OR  "99" 
+                                                    "33"  OR  "99" OR
+                                                    "90"  OR  "92" 
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1 OR
                                                        CONS-TOKKI2 OR
                                                        CONS-TOKKI3 OR
@@ -3493,6 +3496,7 @@
                                                   OR  "09591" OR "09691"
                                                   OR  "09592" OR "09692"
                                                   OR  "09593" OR "09693"
+                                                  OR  "09594" OR "09694"
                           CONTINUE
                      ELSE
                        IF     TNS-TEN     NOT =  ZERO

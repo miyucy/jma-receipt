@@ -27,6 +27,9 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-ÌçÏÆ    04.01.21  Ï«ºÒ¤ÎÆÃÄê´ïºà(09593)ÂÐ±þ
+      *  01.00.02    NACL-ÌçÏÆ    04.01.21  Ï«ºÒ¡¦¼«ÇåÀÕ¤ÎÆþ±¡¼¼ÎÁ²Ã»»
+      *                                     (09594)ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1472,7 +1475,8 @@
                             ADD    TNS-TEN      TO    WRK-KIN2
                          END-IF
                          IF  ( ACCT-SRYKBN                =  "80"    ) 
-                         AND ( SRY-SRYCD(SRYACT-IDX)(1:5) =  "09593" ) 
+                         AND ( SRY-SRYCD(SRYACT-IDX)(1:5) =  "09593" 
+                                                          OR "09594" ) 
                             ADD    TNS-TEN      TO    WRK-KIN2
                          END-IF
       *                 ¼«ÇåÀÕ¡¦ÎÅÍÜÃ´Åö¼êÅöÍÑÆÃÎã½èÍý
@@ -1502,6 +1506,13 @@
                                                       CONS-ROUSAI18 OR
                                                       CONS-ROUSAI19 OR
                                                       CONS-ROUSAI20
+                            ADD    TNS-TEN      TO    WRK-KIN
+                            COMPUTE  WRK-TEN  =   WRK-TEN   +
+                                     ( TNS-TEN / 10)
+                         END-IF
+                         IF  ( ACCT-SRYKBN                =  "80"    ) 
+                         AND ( SRY-SRYCD(SRYACT-IDX)(1:5) =  "09593" 
+                                                          OR "09594" ) 
                             ADD    TNS-TEN      TO    WRK-KIN
                             COMPUTE  WRK-TEN  =   WRK-TEN   +
                                      ( TNS-TEN / 10)
@@ -1740,7 +1751,8 @@
                        IF  ( ACCT-SRYKBN         =  "80"    ) AND
                            ( SRY-SRYCD(SRYACT-IDX)(1:5) =  "09591" 
                                                         OR "09592" 
-                                                        OR "09593" )
+                                                        OR "09593" 
+                                                        OR "09594")
                                COMPUTE  WRK-TEN-JI   =  TNS-TEN / 10
                                COMPUTE  TBL-SYUTEN-JI(IDY)  =
                                         TBL-SYUTEN-JI(IDY)  -
