@@ -108,6 +108,7 @@
       *
            03  WRK-MOJI            PIC X(01). 
            03  WRK-SRYCD           PIC X(09). 
+           03  WRK-SRYCD2          PIC X(09). 
            03  WRK-TIMEFLG         PIC 9(01). 
       *
            03  WRK-TENSUKEI        PIC 9(10)V99.
@@ -439,10 +440,12 @@
                    IF      FLG-ERR             =   ZERO
                        MOVE    1                   TO  FLG-KIJUNN
                        MOVE    "150304190"         TO  WRK-SRYCD
+                       MOVE    "150302090"         TO  WRK-SRYCD2
                    ELSE
       *            施設基準不適合（手術）
                        MOVE    2                   TO  FLG-KIJUNN
                        MOVE    "150302090"         TO  WRK-SRYCD
+                       MOVE    "150304190"         TO  WRK-SRYCD2
                    END-IF
                    MOVE    IDX-Z               TO  IDX-S
       *            自動発生位置決定
@@ -536,7 +539,8 @@
                               (WRK-COM-INPUTCD (IDX1)  =   SPACE)) OR
                               (FLG-ARI                 =   1     )
       *
-               IF      WRK-COM-INPUTCD (IDX1)  =   WRK-SRYCD
+               IF      WRK-COM-INPUTCD (IDX1)  =   WRK-SRYCD  OR
+                                                   WRK-SRYCD2
                    MOVE    1                   TO  FLG-ARI
                    MOVE    IDX1                TO  IDX-TUS
                END-IF
