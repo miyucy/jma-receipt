@@ -15,12 +15,12 @@ U01	{
 				item	{
 					value1	varchar(4);
 					value2	varchar(20);
-					value3	varchar(30);
-					value4	varchar(30);
+					value3	varchar(50);
+					value4	varchar(50);
 					value5	varchar(6);
 					value6	varchar(6);
 					value7	varchar(8);
-					value8	varchar(20);
+					value8	varchar(24);
 					value9	varchar(8);
 					value10	varchar(8);
 				}	[100];
@@ -33,12 +33,12 @@ U01	{
 				item	{
 					value1	varchar(4);
 					value2	varchar(20);
-					value3	varchar(30);
-					value4	varchar(30);
+					value3	varchar(50);
+					value4	varchar(50);
 					value5	varchar(6);
 					value6	varchar(6);
 					value7	varchar(8);
-					value8	varchar(20);
+					value8	varchar(24);
 					value9	varchar(8);
 					value10	varchar(8);
 				}	[100];

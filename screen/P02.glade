@@ -5,13 +5,9 @@
   <name>P02</name>
   <program_name>P02</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -484,7 +480,7 @@
 	    </signal>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
-	    <text_max_length>27</text_max_length>
+	    <text_max_length>29</text_max_length>
 	    <text></text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
@@ -2333,7 +2329,7 @@
 	    </signal>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
-	    <text_max_length>20</text_max_length>
+	    <text_max_length>21</text_max_length>
 	    <text>01 Æâ²Ê</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
@@ -7478,6 +7474,7 @@
 	      <xpad>0</xpad>
 	      <ypad>0</ypad>
 	    </widget>
+
 	    <widget>
 	      <class>GtkLabel</class>
 	      <child_name>CList:title</child_name>

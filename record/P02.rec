@@ -35,7 +35,7 @@ P02	{
 							value2	varchar(9);
 							value3	varchar(9);
 							value4	varchar(10);
-							value5	varchar(20);
+							value5	varchar(24);
 							value6	varchar(20);
 							value7	varchar(2);
 							value8	varchar(2);
@@ -52,14 +52,14 @@ P02	{
 						value	varchar(21);
 					};
 					count	int;
-					item	varchar(21)[99];
+					item	varchar(21)[40];
 				};
 				P020_DRNAME_COMBO	{
 					P020_DRNAME	{
-						value	varchar(27);
+						value	varchar(29);
 					};
 					count	int;
-					item	varchar(27)[50];
+					item	varchar(29)[20];
 				};
 				P020_SRYNAIYO_COMBO	{
 					P020_SRYNAIYO	{
@@ -278,10 +278,10 @@ P02	{
 				};
 				P02_SRYKA_COB	{
 					P02_SRYKA	{
-						value	varchar(20);
+						value	varchar(21);
 					};
 					count	int;
-					item	varchar(20)[99];
+					item	varchar(21)[40];
 				};
 				P02_POST	{
 					value	varchar(7);

@@ -328,6 +328,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    ドクター編集変換サブ
+           COPY    "CPORCSDRSET.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -730,43 +733,54 @@
       *    職員情報  スパ初期編集処理
       *****************************************************************
        312-DOCTOR-SPASET-SEC              SECTION.
+      *    ドクター編集
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+           MOVE    "1"                 TO  ORCSDR-KBN
+           MOVE    SPACE               TO  ORCSDR-SRYKA
+           MOVE    SPACE               TO  ORCSDR-IN-DRCD
+           CALL   "ORCSDRSET"          USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN20-DRCDLST-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
       *
-           MOVE    SPACE               TO  SYS-1010-REC
-           MOVE    "1010"              TO  SYS-1010-KANRICD
-           MOVE    SYS-1010-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-               PERFORM 900-SYSTEM-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
+      **** MOVE    SPACE               TO  SYS-1010-REC
+      *    MOVE    "1010"              TO  SYS-1010-KANRICD
+      *    MOVE    SYS-1010-REC        TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+      *    MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+      *        PERFORM 900-SYSTEM-READ-SEC
+      *    ELSE
+      *        MOVE    1               TO  FLG-SYSKANRI
+      *    END-IF
       ***  PERFORM VARYING IDX
       *            FROM    1       BY  1
       *            UNTIL      (IDX             >   10    )   OR
       ******                  (FLG-SYSKANRI    =   1     ) 
-           MOVE    ZERO                TO  IDX
-           PERFORM     UNTIL  (FLG-SYSKANRI    =   1     )    OR
-                              (IDX             >=  50    )
-               MOVE    MCPDATA-REC             TO  SYS-1010-REC
-               IF      SYS-1010-KBNCD (1:1)  =   "1"
-                   ADD     1                   TO  IDX
-                   MOVE    SYS-1010-KBNCD (2:4)    TO  SPA-GMN20-DRCDCD
-                   MOVE    SPACE               TO  SPA-GMN20-TANT1
-                   MOVE    SYS-1010-NAME       TO  SPA-GMN20-DRCDMEI
-                   MOVE    SPA-GMN20-DRCD      TO  SPA-GMN20-DRCDLST
-                                                                 (IDX)
-                   MOVE    IDX                 TO  SPA-DRCD-MAX
-               END-IF
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-               PERFORM 900-SYSTEM-READ-SEC
-           END-PERFORM
+      *    MOVE    ZERO                TO  IDX
+      *    PERFORM     UNTIL  (FLG-SYSKANRI    =   1     )    OR
+      *                       (IDX             >=  50    )
+      *        MOVE    MCPDATA-REC             TO  SYS-1010-REC
+      *        IF      SYS-1010-KBNCD (1:1)  =   "1"
+      *            ADD     1                   TO  IDX
+      *            MOVE    SYS-1010-KBNCD (2:4)    TO  SPA-GMN20-DRCDCD
+      *            MOVE    SPACE               TO  SPA-GMN20-TANT1
+      *            MOVE    SYS-1010-NAME       TO  SPA-GMN20-DRCDMEI
+      *            MOVE    SPA-GMN20-DRCD      TO  SPA-GMN20-DRCDLST
+      *                                                          (IDX)
+      *            MOVE    IDX                 TO  SPA-DRCD-MAX
+      *        END-IF
+      *        MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+      *        PERFORM 900-SYSTEM-READ-SEC
+      *****END-PERFORM
       *
            IF     SPA-GMN20-DRCDLST (1)    NOT =   SPACE
                MOVE    SPA-GMN20-DRCDLST(1)   TO  SPA-GMN20-DRCD
@@ -806,7 +820,7 @@
            END-IF
            PERFORM VARYING IDX
                    FROM    1       BY  1
-                   UNTIL      (IDX             >   99    )   OR
+                   UNTIL      (IDX             >   40    )   OR
                               (FLG-SYSKANRI    =   1     )
                MOVE    MCPDATA-REC             TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD (1:2)    TO  SPA-GMN-SRYKA-LST

@@ -31,12 +31,12 @@
                 04  U02-SRYKA.
                   05  U02-VALUE   PIC X(21).
                 04  U02-SRYKA-COUNT   PIC S9(9)   BINARY.
-                04  U02-SRYKA-ITEM    PIC X(21)   OCCURS  99 TIMES.
+                04  U02-SRYKA-ITEM    PIC X(21)   OCCURS  40 TIMES.
               03  U02-DRNAME-COMBO.
                 04  U02-DRNAME.
-                  05  U02-VALUE   PIC X(27).
+                  05  U02-VALUE   PIC X(29).
                 04  U02-DRNAME-COUNT   PIC S9(9)   BINARY.
-                04  U02-DRNAME-ITEM    PIC X(27)   OCCURS  50 TIMES.
+                04  U02-DRNAME-ITEM    PIC X(29)   OCCURS  20 TIMES.
               03  U02-SRYNAIYO-COMBO.
                 04  U02-SRYNAIYO.
                   05  U02-VALUE   PIC X(21).
@@ -92,7 +92,7 @@
                     07  U02-ULPTNUM       PIC X(20).
                     07  U02-ULNAME        PIC X(50).
                     07  U02-ULSRYKA       PIC X(10).
-                    07  U02-ULDRNAME      PIC X(27).
+                    07  U02-ULDRNAME      PIC X(29).
                     07  U02-ULSRYNAIYO    PIC X(20).
                     07  U02-ULRRKYMD      PIC X(10).
                   05  U02-UKETUKE-SELECT  PIC X       OCCURS  100 TIMES.

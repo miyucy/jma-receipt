@@ -19,14 +19,14 @@ U02	{
 				value	varchar(21);
 			};
 			count	int;
-			item	varchar(21)[99];
+			item	varchar(21)[40];
 		};
 		DRNAME_COMBO	{
 			DRNAME	{
-				value	varchar(27);
+				value	varchar(29);
 			};
 			count	int;
-			item	varchar(27)[50];
+			item	varchar(29)[20];
 		};
 		SRYNAIYO_COMBO	{
 			SRYNAIYO	{
@@ -99,7 +99,7 @@ U02	{
 					value3	varchar(20);
 					value4	varchar(50);
 					value5	varchar(10);
-					value6	varchar(27);
+					value6	varchar(29);
 					value7	varchar(20);
 					value8	varchar(10);
 				}	[100];

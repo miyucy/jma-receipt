@@ -213,6 +213,9 @@
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
+      *    ドクター編集変換サブ
+           COPY    "CPORCSDRSET.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -423,26 +426,11 @@
            END-IF
       *    診療科　内容編集
            IF      SPA-NAI20-SRYKA (IDX)     NOT =   SPACE
-               PERFORM     VARYING   IDY   FROM    1   BY  1
-                           UNTIL    (IDY               >   10)
-                           OR       (SPA-GMN-SRYKA-LST(IDY) =   SPACE)
-                   IF  SPA-NAI20-SRYKA (IDX) =   SPA-GMN-SRYKA-LST(IDY)
-                                                                  (1:2)
-                       MOVE    SPA-GMN-SRYKA-LST(IDY)(4:)
-                                             TO  SPA-GMN20-TSRYKA(IDX)
-                   END-IF
-               END-PERFORM
+               PERFORM 31012-SRYKA-HEN-SEC
            END-IF
       *    担当ドクター編集
            IF  SPA-NAI20-DRCD (IDX)    NOT =   SPACE
-               PERFORM     VARYING   IDY   FROM    1   BY  1
-                           UNTIL    (IDY               >   10)
-                           OR       (SPA-DRCD-CD(IDY) =   SPACE)
-                   IF  SPA-NAI20-DRCD (IDX)   =   SPA-DRCD-CD(IDY)
-                       MOVE    SPA-DRCD-MEI (IDY)
-                                              TO  SPA-GMN20-TDRCD(IDX)
-                   END-IF
-               END-PERFORM
+               PERFORM 31013-DRCD-HEN-SEC
            END-IF
       *    診療行為内容編集
            IF  SPA-NAI20-SRYNAI (IDX)    NOT =   SPACE
@@ -458,6 +446,50 @@
       *
            .
        3101-UKETU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科　内容編集処理
+      *****************************************************************
+       31012-SRYKA-HEN-SEC             SECTION.
+      *
+           PERFORM     VARYING   IDY   FROM    1   BY  1
+                       UNTIL    (IDY           >   SPA-SRYKA-MAX)
+                       OR       (SPA-GMN-SRYKA-LST(IDY) =   SPACE)
+               IF      SPA-NAI20-SRYKA (IDX) =   SPA-GMN-SRYKA-LST(IDY)
+                                                                  (1:2)
+                   MOVE    SPA-GMN-SRYKA-LST(IDY)(4:)
+                                             TO  SPA-GMN20-TSRYKA(IDX)
+               END-IF
+           END-PERFORM
+      *
+           .
+       31012-SRYKA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ドクター内容編集処理
+      *****************************************************************
+       31013-DRCD-HEN-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+           MOVE    "1"                 TO  ORCSDR-KBN
+           MOVE    SPA-NAI20-SRYKA (IDX)
+                                       TO  ORCSDR-SRYKA
+           MOVE    SPA-GMN20-DRCDLST-G TO  ORCSDR-DRCD-TBL-G
+           MOVE    SPA-DRCD-MAX        TO  ORCSDR-DRCD-MAX
+           MOVE    SPA-NAI20-DRCD (IDX)
+                                       TO  ORCSDR-IN-DRCD
+           CALL    "ORCSDRSET"         USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN20-DRCDLST-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+           MOVE    ORCSDR-OUT-DRCDMEI  TO  SPA-GMN20-TDRCD(IDX)
+      *
+           .
+       31013-DRCD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -507,26 +539,13 @@
                    MOVE    YYK-YYKTIME(3:2)
                                            TO  SPA-GMN20-TYYKTIME(IDX)
                                                                 (4:2)
-                   IF  YYK-SRYKA       NOT =   SPACE
-                       PERFORM     VARYING   IDY   FROM    1   BY  1
-                                   UNTIL     IDY   >   SPA-SRYKA-MAX
-                           IF      YYK-SRYKA       =   SPA-GMN-SRYKA-LST
-                                                             (IDY)(1:2)
-                               MOVE    SPA-GMN-SRYKA-LST (IDY)(4:)
-                                             TO  SPA-GMN20-TSRYKA(IDX)
-                         END-IF
-                       END-PERFORM
+      *            診療科
+                   IF      YYK-SRYKA       NOT =   SPACE
+                       PERFORM 31012-SRYKA-HEN-SEC
                    END-IF
-      *            担当ドクター編集
-                   IF  YYK-DRCD          NOT =   SPACE
-                       PERFORM     VARYING   IDY   FROM    1   BY  1
-                                   UNTIL    (IDY               >   10)
-                                   OR       (SPA-DRCD-CD(IDY) =  SPACE)
-                         IF  YYK-DRCD (2:4)  =   SPA-DRCD-CD(IDY)
-                             MOVE    SPA-DRCD-MEI (IDY)
-                                              TO  SPA-GMN20-TDRCD(IDX)
-                         END-IF
-                       END-PERFORM
+      *            担当ドクター名編集
+                   IF      YYK-DRCD           NOT =   SPACE
+                       PERFORM 31013-DRCD-HEN-SEC
                    END-IF
       *            診療行為内容編集
                    IF  YYK-SRYNAIYO       NOT =   SPACE
@@ -1010,7 +1029,37 @@
            IF      FLG-CHK             =   ZERO
                MOVE    "0038"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-GMN20-CUR
+               GO      TO      4101-SRYKA-CHK-EXT
            END-IF
+      *
+           IF      SPA-GMN20-SRYKA     NOT =   SPA-GMN20-MAE-SRYKA
+      *        診療科が変わった時、ドクターを再編集する
+               INITIALIZE                  ORCSDRSETAREA
+               MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+               MOVE    "1"                 TO  ORCSDR-KBN
+               MOVE    SPA-GMN20-SRYKA     TO  ORCSDR-SRYKA
+               CALL    "ORCSDRSET"         USING
+                                           SPA-AREA
+                                           ORCSDRSETAREA
+               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN20-DRCDLST-G
+               MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+               MOVE    ZERO                TO  FLG-CHK
+               PERFORM VARYING   IDX       FROM    1   BY  1
+                       UNTIL     IDX           >   SPA-DRCD-MAX 
+                   IF      SPA-GMN20-DRCDCD    =   SPA-DRCD-CD(IDX)
+                       MOVE    SPA-GMN20-DRCDLST(IDX)
+                                               TO  SPA-GMN20-DRCD
+                       MOVE    1               TO  FLG-CHK
+                       MOVE    SPA-DRCD-MAX    TO  IDX
+                   END-IF
+               END-PERFORM
+               IF      FLG-CHK             =   ZERO
+                   MOVE    SPA-GMN20-DRCDLST(1)
+                                           TO  SPA-GMN20-DRCD
+               END-IF
+           END-IF
+      *
+           MOVE    SPA-GMN20-SRYKA     TO  SPA-GMN20-MAE-SRYKA
            .
       *
        4101-SRYKA-CHK-EXT.
@@ -1024,20 +1073,38 @@
                GO      TO      4101-DRNAME-CHK-EXT
            END-IF
       *
-           MOVE    ZERO                TO  FLG-CHK
-           PERFORM VARYING   IDX       FROM    1   BY  1
-                   UNTIL    (IDX           >   SPA-DRCD-MAX )  OR
-                            (SPA-GMN20-DRCDLST(IDX) 
-                                           =   SPACE  )
-               IF      SPA-GMN20-DRCDCD    =   SPA-GMN20-DRCDLST (IDX)
-                                                                (1:4)
-                   MOVE    1               TO  FLG-CHK
-               END-IF
-           END-PERFORM
-           IF      FLG-CHK             =   ZERO
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+           MOVE    "2"                 TO  ORCSDR-KBN
+           MOVE    SPA-GMN20-SRYKA     TO  ORCSDR-SRYKA
+           MOVE    SPA-GMN20-DRCDLST-G TO  ORCSDR-DRCD-TBL-G
+           MOVE    SPA-DRCD-MAX        TO  ORCSDR-DRCD-MAX
+           MOVE    SPA-GMN20-DRCD      TO  ORCSDR-IN-DRCD-G
+           CALL    "ORCSDRSET"         USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN20-DRCDLST-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+           MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN20-DRCD
+           IF      ORCSDR-ERRCD    NOT =   ZERO
                MOVE    "2012"              TO  SPA-ERRCD
                MOVE    3                   TO  SPA-GMN20-CUR
            END-IF
+      *
+      **** MOVE    ZERO                TO  FLG-CHK
+      *    PERFORM VARYING   IDX       FROM    1   BY  1
+      *            UNTIL    (IDX           >   SPA-DRCD-MAX )  OR
+      *                     (SPA-GMN20-DRCDLST(IDX) 
+      *                                    =   SPACE  )
+      *        IF      SPA-GMN20-DRCDCD    =   SPA-GMN20-DRCDLST (IDX)
+      *                                                         (1:4)
+      *            MOVE    1               TO  FLG-CHK
+      *        END-IF
+      *    END-PERFORM
+      *    IF      FLG-CHK             =   ZERO
+      *        MOVE    "2012"              TO  SPA-ERRCD
+      *        MOVE    3                   TO  SPA-GMN20-CUR
+      *****END-IF
            .
       *
        4101-DRNAME-CHK-EXT.
@@ -1428,7 +1495,7 @@
                    MOVE  UKE-UKEID          TO  SPA-NAI201-UKEID  (IDX)
       *
                    PERFORM   VARYING   IDY   FROM    1   BY  1
-                             UNTIL   ( IDY      >   10 )
+                             UNTIL   ( IDY      >   SPA-SRYKA-MAX )
                              OR      ( P0201-SRYKA(IDX)  NOT =  SPACE )
                      IF  UKE-SRYKA          =    SPA-GMN-SRYKA-LST (IDY)
                                                             (1:2)

@@ -81,7 +81,7 @@
                        09  SPA-GMN-SRYKAMEI        PIC X(16).
       *            ¿ÇÎÅ²Ê°ìÍ÷¡Ê¶¦ÄÌ¡Ë
                    07  SPA-GMN-SRYKA-COB.
-                       09  SPA-GMN-SRYKA-LST       PIC X(20)  OCCURS 99.
+                       09  SPA-GMN-SRYKA-LST       PIC X(20)  OCCURS 40.
                    07  SPA-SRYKA-MAX               PIC 9(04).
       *
                    07  SPA-GMN-POST            PIC X(07).
@@ -448,7 +448,7 @@
                            11  SPA-GMN20-TYYKTIME    PIC X(05).
                            11  SPA-GMN20-TUKETIME    PIC X(05).
                            11  SPA-GMN20-TSRYKA      PIC X(10).
-                           11  SPA-GMN20-TDRCD       PIC X(20).
+                           11  SPA-GMN20-TDRCD       PIC X(24).
                            11  SPA-GMN20-TSRYNAI     PIC X(10).
                            11  SPA-GMN20-TKARUTE     PIC X(02).
                            11  SPA-GMN20-TSYOHOU     PIC X(02).
@@ -460,17 +460,19 @@
                    07  SPA-GMN20-SRYKA-G.
                        09  SPA-GMN20-SRYKA       PIC X(02).
                        09  SPA-GMN20-SRYKA1      PIC X(01).
-                       09  SPA-GMN20-SRYKAMEI    PIC X(17).
+                       09  SPA-GMN20-SRYKAMEI    PIC X(16).
       **********:  07  SPA-GMN20-SRYKALST        PIC X(20)
       *********                                OCCURS  10.
+                   07  SPA-GMN20-MAE-SRYKA     PIC X(02).
                    07  SPA-GMN20-DRCD.
                        09  SPA-GMN20-DRCDCD    PIC X(04).
                        09  SPA-GMN20-TANT1     PIC X(01).
-                       09  SPA-GMN20-DRCDMEI   PIC X(20).
-                   07  SPA-GMN20-DRCDLST       OCCURS  50.
-                       09  SPA-DRCD-CD         PIC X(04).
-                       09  SPA-DRCD-H          PIC X(01).
-                       09  SPA-DRCD-MEI        PIC X(20).
+                       09  SPA-GMN20-DRCDMEI   PIC X(24).
+                   07  SPA-GMN20-DRCDLST-G.
+                       09  SPA-GMN20-DRCDLST       OCCURS  20.
+                           11  SPA-DRCD-CD         PIC X(04).
+                           11  SPA-DRCD-H          PIC X(01).
+                           11  SPA-DRCD-MEI        PIC X(24).
                    07  SPA-DRCD-MAX            PIC 9(04).
                    07  SPA-GMN20-SRYNAI.
                        09  SPA-GMN20-SRYNAICD    PIC X(02).

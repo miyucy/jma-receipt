@@ -40,25 +40,27 @@
                    07  SPA-GMN-SRYKA-G.
                        09  SPA-GMN-SRYKA              PIC X(02).
                        09  SPA-GMN-SRYKA1             PIC X(01).
-                       09  SPA-GMN-SRYKANAME          PIC X(17).
+                       09  SPA-GMN-SRYKANAME          PIC X(16).
                    07  SPA-GMN-SRYKALST               PIC X(20)
-                                                      OCCURS  99.
+                                                      OCCURS  40.
                    07  SPA-SRYKA-MAX                  PIC 9(04).
       *
                    07  SPA-GMN-DRCD-G.
                        09  SPA-GMN-DRCD               PIC X(04).
                        09  SPA-GMN-DRCD1              PIC X(01).
-                       09  SPA-GMN-DRNAME             PIC X(22).
-                   07  SPA-GMN-DRCDLST                PIC X(27)
-                                                      OCCURS  50.
+                       09  SPA-GMN-DRNAME             PIC X(24).
+                   07  SPA-GMN-DRCDLST-G.
+                       09  SPA-GMN-DRCDLST            PIC X(29)
+                                                      OCCURS  20.
                    07  SPA-DRCD-MAX                   PIC 9(04).
       *
                    07  SPA-GMN-SRYNAIYOCD-G.
                        09  SPA-GMN-SRYNAIYOCD         PIC X(02).
                        09  SPA-GMN-SRYNAIYO1          PIC X(01).
-                       09  SPA-GMN-SRYNAIYODSP        PIC X(17).
+                       09  SPA-GMN-SRYNAIYODSP        PIC X(16).
                    07  SPA-GMN-SRYNAILST              PIC X(20)
                                                       OCCURS  10.
+                   07  SPA-SRYNAIYO-MAX               PIC 9(04).
       *
                    07  SPA-GMN-KARUTE-G.
                        09  SPA-GMN-KARUTE             PIC X(01).
@@ -109,13 +111,13 @@
                            11  SPA-GMN-TDRCD-G.
                                13  SPA-GMN-TDRCD       PIC X(04).
                                13  SPA-GMN-TDRCD1      PIC X(01).
-                               13  SPA-GMN-TDRNAME     PIC X(22).
+                               13  SPA-GMN-TDRNAME     PIC X(24).
                            11  SPA-GMN-TSRYNAIYOCD-G. 
                                13  SPA-GMN-TSRYNAIYOCD PIC X(02).
                                13  SPA-GMN-TSRYNAIYOCD1
                                                        PIC X(01).
                                13  SPA-GMN-TSRYNAIYODSP
-                                                       PIC X(17).
+                                                       PIC X(16).
                            11  SPA-GMN-NARABE          PIC X(04).
                            11  SPA-GMN-TKYYKTIME       PIC X(04).
                            11  SPA-GMN-TYYKID          PIC X(02).
@@ -137,6 +139,7 @@
                    07  SPA-MAE-PTNUM                  PIC X(20).
                    07  SPA-MAE-NAME                   PIC X(50).
                    07  SPA-MAE-SELNUM                 PIC 9(04).
+                   07  SPA-MAE-SRYKA                  PIC X(02).
       *
                    07  SPA-NAI-MIKAKUNIN.
                        09  SPA-NAI-MIKAKU-TBL          OCCURS  10.

@@ -52,6 +52,7 @@
       *  02.00.02    NACL-Â¿¡¹Ç¼  02/11/20  £Ã£Ì£Á£É£Í½èÍýÄÉ²Ã
       *  02.00.03    NACL-Â¿¡¹Ç¼  02/11/26  ¿ÇÎÅ²Ê¡¢¥É¥¯¥¿¡¼·ï¿ôÊÑ¹¹
       *  02.00.04    NACL-Â¿¡¹Ç¼  02/12/16  ¿·µ¬´µ¼Ô¼è¾Ã½¤Àµ
+      *  02.00.05    NACL-Â¿¡¹Ç¼  03/02/26  ¿ÇÎÅ²Ê¡¦¥É¥¯¥¿¡¼·ï¿ô½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -101,6 +102,7 @@
            03  FLG-IN-PTNUM            PIC 9(01).
            03  FLG-IN-NAME             PIC 9(01).
            03  FLG-CLAIM               PIC 9(01).
+           03  FLG-CHK                 PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -295,6 +297,9 @@
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+      *    ¥É¥¯¥¿¡¼ÊÔ½¸ÊÑ´¹¥µ¥Ö
+           COPY    "CPORCSDRSET.INC".
       *
       *===> For Claim Start
            COPY    "CPSHELLTBL.INC".
@@ -538,7 +543,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   99   )  OR
+                   UNTIL       (IDX            >   40   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD (1:2)  TO  SPA-GMN-SRYKA
@@ -563,50 +568,15 @@
       *
       *    ¿¦°÷¾ðÊó¤ò£Ó£Ð£Á¤Ë¥»¥Ã¥È
       *
-           MOVE    SPACE               TO  SYS-KEY
-           MOVE    "1010"              TO  SYS-1010-KANRICD
-      *    MOVE    ZERO                TO  SYS-1010-STYUKYMD
-      *    MOVE    ALL "9"             TO  SYS-1010-EDYUKYMD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
-           MOVE    SYS-1010-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               INITIALIZE                  SYS-1010-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL       (IDX            =   50   )  OR
-                               (FLG-SYSKANRI   =   1    )
-               MOVE    MCPDATA-REC         TO  SYS-1010-REC
-               IF      SYS-1010-KBNCD (1:1)      =   "1"
-                   ADD     1               TO  IDX
-                   MOVE    SYS-1010-KBNCD (2:4)
-                                           TO  SPA-GMN-DRCD
-                   MOVE    SPACE           TO  SPA-GMN-DRCD1
-                   MOVE    SYS-1010-NAME   TO  SPA-GMN-DRNAME
-                   MOVE    SPA-GMN-DRCD-G  TO  SPA-GMN-DRCDLST (IDX)
-                   MOVE    IDX             TO  SPA-DRCD-MAX
-               END-IF
-      *
-               MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
-               PERFORM 900-SYSKANRI-READ-SEC
-           END-PERFORM
-      *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+           MOVE    "1"                 TO  ORCSDR-KBN
+           MOVE    SPA-GMN-SRYKA       TO  ORCSDR-SRYKA
+           CALL    "ORCSDRSET"         USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
       *
            MOVE    SPA-GMN-DRCDLST(01) TO  SPA-GMN-DRCD-G
       *
@@ -643,6 +613,7 @@
                                          TO  SPA-GMN-SRYNAIYODSP
                MOVE    SPA-GMN-SRYNAIYOCD-G
                                          TO  SPA-GMN-SRYNAILST (IDX)
+               MOVE    IDX               TO  SPA-SRYNAIYO-MAX
       *
                MOVE    "SYSKANRI-KEY2"         TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
@@ -872,26 +843,30 @@
                        MOVE    SPA-SRYKA-MAX       TO  IDY
                    END-IF
 078700         END-PERFORM
-      *       ¿¦°÷¾ðÊó¤ò£Ó£Ð£Á¤Ë¥»¥Ã¥È
-078400         PERFORM VARYING     IDY     FROM    1   BY  1
-078500                 UNTIL       IDY     >       SPA-DRCD-MAX
-                   IF      SPA-GMN-TDRCD (IDX)
-                                       =  SPA-GMN-DRCDLST(IDY)(1:4)
-                       MOVE    SPA-GMN-DRCDLST (IDY) (6:)
-                                               TO  SPA-GMN-TDRNAME(IDX)
-                       MOVE    SPA-DRCD-MAX        TO  IDY
-                   END-IF
-078700         END-PERFORM
+      *        ¿¦°÷¾ðÊó¤ò£Ó£Ð£Á¤Ë¥»¥Ã¥È
+               INITIALIZE                  ORCSDRSETAREA
+               MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+               MOVE    "2"                 TO  ORCSDR-KBN
+               MOVE    SPA-GMN-TSRYKA (IDX)
+                                           TO  ORCSDR-SRYKA
+               MOVE    SPA-GMN-DRCDLST-G   TO  ORCSDR-DRCD-TBL-G
+               MOVE    SPA-DRCD-MAX        TO  ORCSDR-DRCD-MAX
+               MOVE    SPA-GMN-TDRCD (IDX)
+                                           TO  ORCSDR-IN-DRCD
+               CALL    "ORCSDRSET"         USING
+                                           SPA-AREA
+                                           ORCSDRSETAREA
+               MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-TDRCD-G(IDX)
       *        ¿ÇÎÅÆâÍÆ¤ò£Ó£Ð£Á¤Ë¥»¥Ã¥È
 078400         PERFORM VARYING     IDY     FROM    1   BY  1
-078500                 UNTIL       IDY     >       10
+078500                 UNTIL       IDY     >   SPA-SRYNAIYO-MAX
                        OR          SPA-GMN-SRYNAILST(IDY)  =   SPACE
                    IF      SPA-GMN-TSRYNAIYOCD(IDX)
 079800                                     =   SPA-GMN-SRYNAILST(IDY)
                                                                 (1:2)
                        MOVE    SPA-GMN-SRYNAILST(IDY) (4:)
                                        TO  SPA-GMN-TSRYNAIYODSP(IDX)
-                       MOVE    10      TO  IDY
+                       MOVE    SPA-SRYNAIYO-MAX    TO  IDY
                    END-IF
 079900         END-PERFORM
            END-PERFORM
@@ -1483,6 +1458,35 @@
                END-IF
            END-IF
       *
+           IF      SPA-GMN-SRYKA       NOT =   SPA-MAE-SRYKA
+      *        ¿ÇÎÅ²Ê¤¬ÊÑ¤ï¤Ã¤¿»þ¡¢¥É¥¯¥¿¡¼¤òºÆÊÔ½¸¤¹¤ë
+               INITIALIZE                  ORCSDRSETAREA
+               MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+               MOVE    "1"                 TO  ORCSDR-KBN
+               MOVE    SPA-GMN-SRYKA       TO  ORCSDR-SRYKA
+               CALL    "ORCSDRSET"         USING
+                                           SPA-AREA
+                                           ORCSDRSETAREA
+               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+               MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+               MOVE    ZERO                TO  FLG-CHK
+               PERFORM VARYING   IDX       FROM    1   BY  1
+                       UNTIL     IDX           >   SPA-DRCD-MAX 
+                   IF      SPA-GMN-DRCD        =   SPA-GMN-DRCDLST(IDX)
+                                                                 (1:4)
+                       MOVE    SPA-GMN-DRCDLST(IDX)
+                                               TO  SPA-GMN-DRCD-G
+                       MOVE    1               TO  FLG-CHK
+                       MOVE    SPA-DRCD-MAX    TO  IDX
+                   END-IF
+               END-PERFORM
+               IF      FLG-CHK             =   ZERO
+                   MOVE    SPA-GMN-DRCDLST(1)
+                                           TO  SPA-GMN-DRCD-G
+               END-IF
+           END-IF
+      *
+           MOVE    SPA-GMN-SRYKA       TO  SPA-MAE-SRYKA
            .
        4103-SRYKA-EXT.
            EXIT.
@@ -1493,23 +1497,25 @@
        4105-DRCD-CHK-SEC               SECTION.
       *
            IF      SPA-GMN-DRCD        =   SPACE
-               CONTINUE
-           ELSE
-               MOVE    ZERO               TO  FLG-HENFLG
-               PERFORM VARYING IDY         FROM   1   BY  1
-                       UNTIL  (IDY         >   10 )
-                       OR     (FLG-HENFLG  =   1  )
-                   IF      SPA-GMN-DRCD        =   SPA-GMN-DRCDLST
-                                                              (IDY)(1:4)
-                       MOVE    SPA-GMN-DRCDLST (IDY)
-                                           TO  SPA-GMN-DRCD-G
-                       MOVE    1           TO  FLG-HENFLG
-                   END-IF
-               END-PERFORM
-               IF      FLG-HENFLG          =   ZERO
-                   MOVE    "0020"              TO  SPA-ERRCD
-                   MOVE    5                   TO  SPA-GMN-CUR
-               END-IF
+               GO      TO      4105-DRCD-EXT
+           END-IF
+      *
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+           MOVE    "2"                 TO  ORCSDR-KBN
+           MOVE    SPA-GMN-SRYKA       TO  ORCSDR-SRYKA
+           MOVE    SPA-GMN-DRCDLST-G   TO  ORCSDR-DRCD-TBL-G
+           MOVE    SPA-DRCD-MAX        TO  ORCSDR-DRCD-MAX
+           MOVE    SPA-GMN-DRCD-G      TO  ORCSDR-IN-DRCD-G
+           CALL    "ORCSDRSET"         USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+           MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-DRCD-G
+           IF      ORCSDR-ERRCD    NOT =   ZERO
+               MOVE    "0020"              TO  SPA-ERRCD
+               MOVE    5                   TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -1527,7 +1533,7 @@
            ELSE
                MOVE    ZERO               TO  FLG-HENFLG
                PERFORM VARYING IDY         FROM   1   BY  1
-                       UNTIL  (IDY         >   10 )
+                       UNTIL  (IDY         >   SPA-SRYNAIYO-MAX )
                        OR     (FLG-HENFLG  =   1  )
                    IF      SPA-GMN-SRYNAIYOCD
                                       =   SPA-GMN-SRYNAILST(IDY)(1:2)
@@ -3517,12 +3523,11 @@
            MOVE    SPA-GMN-DRCD-G      TO  U02-DRNAME
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       10
-                   OR          SPA-GMN-SRYNAILST(IDX)  =   SPACE
-               MOVE    IDX                 TO  U02-SRYNAIYO-COUNT
+                   UNTIL       IDX     >       SPA-SRYNAIYO-MAX
                MOVE    SPA-GMN-SRYNAILST(IDX)
                                            TO  U02-SRYNAIYO-ITEM(IDX)
            END-PERFORM
+           MOVE    SPA-SRYNAIYO-MAX        TO  U02-SRYNAIYO-COUNT
            MOVE    SPA-GMN-SRYNAIYOCD-G           TO  U02-SRYNAIYO
       *
       *    ¥«¥ë¥Æ
