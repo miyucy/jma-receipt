@@ -125,6 +125,7 @@
       *  01.00.47    NACL-門脇    04/02/10  生保の公費負担限度額設定
       *  01.00.48    NACL-小豆沢  04/02/19  福岡患者の給付外エリア初期化
       *  01.00.49    NACL-門脇    04/03/12  公費負担円単位編集
+      *  01.00.50    NACL-門脇    04/04/06  在総診フラグ編集修正
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -183,6 +184,7 @@
            03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
+           03  FLG-PTKOHINF            PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
            03  FLG-SRYACT              PIC 9(01).
            03  FLG-SANSHOU             PIC X(01).
@@ -556,6 +558,7 @@
            03  FLG-SANTEI1-ENTANI      PIC X(01).                       
            03  FLG-SANTEI-SYU-ENTANI   PIC X(01).                       
       *
+           03  FLG-ROUJINHOKEN         PIC X(01).
       *
       *地方公費用フラグ（公費限度額決定用）
        01  WK-CHIHOU-FLG-TAIHI-AREA.
@@ -629,6 +632,10 @@
       *    患者公費負担
        01  PTKOHFTN-REC.
            COPY    "CPPTKOHFTN.INC".
+      *
+      *    患者公費情報
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1548,6 +1555,42 @@
       *高齢者の在宅総合・在宅末期算定患者の負担上限算定エリア初期化
       *
            INITIALIZE    WK-SYUHKN-TAIHI-AREA.
+      *
+      *    公費単独で老人保険入力があるかチェック
+           IF      COMB-HKNNUM          =   SPACE
+           AND     COMB-KOH1HKNNUM  NOT =   SPACE
+           AND     COMB-KOH2HKNNUM      =   SPACE
+           AND     COMB-KOH3HKNNUM      =   SPACE
+           AND     COMB-KOH4HKNNUM      =   SPACE
+                INITIALIZE                       PTKOHINF-REC
+                MOVE    LNK-SYU-HOSPID       TO  PTKOH-HOSPID
+                MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
+                MOVE    "027"                TO  PTKOH-KOHNUM
+                MOVE    PTKOHINF-REC         TO  MCPDATA-REC
+                MOVE    "DBSELECT"           TO  MCP-FUNC
+                MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
+                CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                      ORCMCPAREA
+                                                      MCPDATA-REC
+                IF      MCP-RC               =       ZERO
+                    MOVE    "PTKOHINF-KEY4"  TO      ORC-DBPATH
+                    PERFORM  PTKOHINF-READ-SEC
+                    PERFORM  UNTIL   FLG-PTKOHINF    =   1
+                        IF      PTKOH-TEKSTYMD(1:6)  <=
+                                                 LNK-SYU-SRYYMD(1:6)
+                        AND     LNK-SYU-SRYYMD(1:6)  <=
+                                                 PTKOH-TEKEDYMD(1:6)
+                        AND     PTKOH-SAKJOKBN   =  SPACE
+                           MOVE   "1"           TO  FLG-ROUJINHOKEN
+                           MOVE    1            TO  FLG-PTKOHINF     
+                        ELSE
+                           MOVE    "PTKOHINF-KEY4"  TO  ORC-DBPATH
+                           PERFORM  PTKOHINF-READ-SEC
+                        END-IF   
+                    END-PERFORM
+                END-IF
+           END-IF.
+      *
            IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   SPACE)   AND
                (LNK-SYU-SRYYMD(1:6)          >=  "200210")
       *        寝たきり老人在宅総合診療料（院内処方せんを交付する）
@@ -1874,6 +1917,7 @@
                                                     ORCMCPAREA
                                                     MCPDATA-REC
                END-IF
+      *
       *        患者年齢計算
                INITIALIZE                           PTINF-REC
                MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
@@ -1907,9 +1951,11 @@
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
                IF      AGECHK-RC       =   ZERO
-                   IF  ( AGECHK-NENREI   >=  70 ) OR
-                      (( AGECHK-NENREI   >=  65 AND                  
-                         COMB-KOH1HKNNUM  = "027"))                  
+                   IF  ( AGECHK-NENREI   >=  70      ) OR
+                       ( AGECHK-NENREI   >=  65  AND
+                         COMB-KOH1HKNNUM  = "027"    ) OR
+                       ( AGECHK-NENREI   >=  65  AND
+                         FLG-ROUJINHOKEN  = "1"      )
                        CONTINUE
                    ELSE
                        MOVE  SPACE   TO  LNK-S01-KOUREI-ZAITAKU-KBN
@@ -1965,9 +2011,11 @@
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
                IF      AGECHK-RC       =   ZERO
-                   IF  ( AGECHK-NENREI   >=  70 ) OR
-                      (( AGECHK-NENREI   >=  65 AND                  
-                         COMB-KOH1HKNNUM  = "027"))                  
+                   IF  ( AGECHK-NENREI   >=  70      ) OR
+                       ( AGECHK-NENREI   >=  65  AND
+                         COMB-KOH1HKNNUM  = "027"    ) OR
+                       ( AGECHK-NENREI   >=  65  AND
+                         FLG-ROUJINHOKEN  = "1"      )
                        MOVE    "1"     TO  FLG-KOUREI-KBN
                    END-IF
                ELSE
@@ -8843,6 +8891,27 @@
        PTINF-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    患者公費情報読込
+      *****************************************************************
+       PTKOHINF-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+               MOVE    ZERO            TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       PTKOHINF-READ-EXT.
+           EXIT.
       *
       *****************************************************************
       *    点数マスター読込（主キー）
