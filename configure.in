@@ -76,7 +76,7 @@ AC_ARG_WITH(open-cobol-exec-prefix,
 	EXEC_COBOLFLAGS="-dynamic -F "
       else
 	COBOLFLAGS="-m -dynamic -fixed "
-	EXEC_COBOLFLAGS="-m -dynamic -fixed -main "
+	EXEC_COBOLFLAGS="-main -dynamic -fixed "
       fi	
   else
       AC_MSG_RESULT(no)
