@@ -641,7 +641,7 @@
                              (FLG-END             =   1    )
       *        Æþ±¡°ÜÆ°È½Äê
                IF     (WRK-NYUGAIKBN       =   "1"   ) AND
-                      (LF04-SRYCD (IDX1)   =   "901" )
+                      (LF04-SRYCDTBL (IDX1)    =   "Claim010" )
                    MOVE    1               TO  FLG-NYUINIDOU
                ELSE
                    PERFORM 2002-ZAICHK-SEC
