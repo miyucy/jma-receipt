@@ -220,6 +220,7 @@
            MOVE    SYS-DD          TO  WRK-SYSDD.
       *
            MOVE    ZERO            TO  LNK-S02-RC.
+           MOVE    ZERO            TO  NYUIN-COUNT.
       *
            INITIALIZE    LNK-SYUNOU-REC-T.
       *
@@ -792,7 +793,11 @@
                PERFORM  SYSKANRI-READ-SEC
                PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
                         UNTIL     GENSAN-IDX   >   4
-                    IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"    
+                    DISPLAY   "GENSAN-IDX = "  GENSAN-IDX
+                    DISPLAY   "SYS-5000-GENKBN(GENSAN-IDX) = " 
+                                  SYS-5000-GENKBN(GENSAN-IDX)
+                    IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"
+                        DISPLAY  "NYUIN-COUNT = " NYUIN-COUNT
                         EVALUATE  GENSAN-IDX
                             WHEN  2
                                 COMPUTE SYU-HKNTEN(11) = SYU-HKNTEN(11)
@@ -856,7 +861,6 @@
       *
       *        入院料の集計
                IF   NACCT-ZAISKBKBN      =   "1"
-                   MOVE      ZERO        TO    NYUIN-COUNT
       *            入院基本料と加減算点数の取得
                    PERFORM   NYUINKHN-GET-SEC
       *            入院料と外泊を比較して点数算定
