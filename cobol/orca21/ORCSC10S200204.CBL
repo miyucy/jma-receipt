@@ -150,6 +150,7 @@
                05  WRK-BIRTH-DD    PIC 9(02).
            03  WRK-NYUYOJI         PIC 9(04).
            03  WRK-DAYCNT          PIC 9(04).
+           03  WRK-DAYCNT-SUM      PIC 9(04).
       *
            03  WRK-KEIYMD          PIC X(08).
       *
@@ -1106,23 +1107,27 @@
       *
       *    当月算定チェック
            MOVE    ZERO                TO  WRK-NYUYOJI
-           MOVE    ZERO                TO  WRK-DAYCNT
+           MOVE    ZERO                TO  WRK-DAYCNT-SUM
       *    院外処方   初診
            MOVE    "113003510"         TO  WRK-SRYCD
            PERFORM 33031-JYURRK-CHK-SEC
            ADD     SANTEI-MSANTEICNT   TO  WRK-NYUYOJI
+           ADD     WRK-DAYCNT          TO  WRK-DAYCNT-SUM
       *    院外処方   再診
            MOVE    "113003610"         TO  WRK-SRYCD
            PERFORM 33031-JYURRK-CHK-SEC
            ADD     SANTEI-MSANTEICNT   TO  WRK-NYUYOJI
+           ADD     WRK-DAYCNT          TO  WRK-DAYCNT-SUM
       *    院内処方   初診
            MOVE    "113003710"         TO  WRK-SRYCD
            PERFORM 33031-JYURRK-CHK-SEC
            ADD     SANTEI-MSANTEICNT   TO  WRK-NYUYOJI
+           ADD     WRK-DAYCNT          TO  WRK-DAYCNT-SUM
       *    院内処方   再診
            MOVE    "113003810"         TO  WRK-SRYCD
            PERFORM 33031-JYURRK-CHK-SEC
            ADD     SANTEI-MSANTEICNT   TO  WRK-NYUYOJI
+           ADD     WRK-DAYCNT          TO  WRK-DAYCNT-SUM
       *
       *    ３歳の当月時、当月算定がなければ対象外
            IF     (SPA-NENREI-YY   =   3               )  AND
@@ -1133,7 +1138,7 @@
            END-IF
       *
       *    当日算定があればフラグを立てる
-           IF      WRK-DAYCNT          >   ZERO
+           IF      WRK-DAYCNT-SUM      >   ZERO
                MOVE    1                   TO  SPA-SYONIKA-ARI2
            ELSE
                MOVE    ZERO                TO  SPA-SYONIKA-ARI2
@@ -2271,6 +2276,7 @@
                MOVE    1                   TO  FLG-JYURR-ARI
            END-IF
       *    上限１日
+           MOVE    ZERO                TO  WRK-DAYCNT
            IF     (TNS-JGNCNT1D        >   ZERO  )  AND
                   (SPA-SRYYMD(7:2)     NUMERIC   )  AND
                   (SPA-SRYYMD(7:2)     >   ZERO  )
@@ -3968,9 +3974,10 @@
       *****************************************************************
        1010-SINSATU-HEN-SEC              SECTION.
       *
-           MOVE    ZERO               TO  FLG-GAI
-           MOVE    ZERO               TO  FLG-DUMMY
-           MOVE    ZERO               TO  FLG-SINSATU-ARI
+           MOVE    ZERO                TO  FLG-GAI
+           MOVE    ZERO                TO  FLG-DUMMY
+           MOVE    ZERO                TO  FLG-SINSATU-ARI
+           MOVE    SPACE               TO  WRK-KBN2
       *    訂正の時、初診料を算定中かの判定
            IF     (SPA-SYORIFLG        =   1    )  OR
                   (LNK-SC10S-SYORI     =   "W"  )
@@ -3984,13 +3991,12 @@
                        AT   END
                            MOVE    ZERO                TO  FLG-ARI
                            MOVE    SPACE               TO  WRK-KBN
-                           MOVE    SPACE               TO  WRK-KBN2
                        WHEN   SPA-COM-INPUTCD (IDX) =
                                              TBL-SRYCD (TBL-IDX)
                            MOVE    1                   TO  FLG-ARI
                            MOVE    TBL-KBN  (TBL-IDX)  TO  WRK-KBN
-                           MOVE    TBL-KBN2 (TBL-IDX)  TO  WRK-KBN2
                            MOVE    1               TO  FLG-SINSATU-ARI
+                           MOVE    TBL-KBN  (TBL-IDX)  TO  WRK-KBN2
                    END-SEARCH
       *
                    IF      FLG-ARI         =   ZERO
@@ -4007,6 +4013,8 @@
                                IF      WRK-KBN     NOT =   "G"
                                    MOVE    1           TO
                                                        FLG-SINSATU-ARI
+                                   MOVE    TBLR-KBN (TBL-RSI)
+                                                       TO  WRK-KBN2
                                END-IF
                        END-SEARCH
                    END-IF
