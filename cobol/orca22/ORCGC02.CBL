@@ -4671,6 +4671,29 @@
                                        TO  WRK-PTBYO-HKNBYOMEIFLG(IDXX)
       *********MOVE    SPA-GMN-C02-HKNNUM
       *********                        TO  WRK-PTBYO-HKNNUM (IDXX)
+           ELSE
+      *        病名文字数
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI 
+               MOVE    WRK-PTBYO-BYOMEI (IDXX)
+                                           TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF    ( KANACHK-RC          =   ZERO )
+               AND   ( KANACHK-SYUBETU     =   "2"  )
+                   COMPUTE WRK-PTBYO-BYOMEIMOJI (IDXX)
+                                       =   KANACHK-MAX  /   2        
+               END-IF
+      *        カルテ病名文字数
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI 
+               MOVE    WRK-PTBYO-CHARTBYOMEI (IDXX)
+                                           TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF    ( KANACHK-RC          =   ZERO )
+               AND   ( KANACHK-SYUBETU     =   "2"  )
+                   COMPUTE WRK-PTBYO-CHARTBYOMEIMOJI (IDXX)
+                                       =   KANACHK-MAX  /   2        
+               END-IF
            END-IF
       * 
       *    病名コードが２２以上のとき未コード化傷病名コードとする
