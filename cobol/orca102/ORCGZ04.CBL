@@ -35,6 +35,7 @@
       *  01.01.05    MCC-多々納   02/03/17  後発医薬品追加
       *  01.01.06    MCC-多々納   02/07/18  服用方法画面追加
       *  01.01.07    NACL-多々納  02/10/09  半角空白→全角空白追加
+      *  01.01.08    NACL-太田    03/08/05  分類区分追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -104,6 +105,11 @@
                    07  SPA-GMN-ZAIGATAKBNL     PIC X(01).
                    07  SPA-GMN-F1L             PIC X(01).
                    07  SPA-GMN-ZAIGATAKBNMEIL  PIC X(34).
+               05  SPA-GMN-BUNRUIKBNLST   OCCURS  20.
+                   07  SPA-GMN-BUNRUIKBNL      PIC X(02).
+                   07  SPA-GMN-F1L             PIC X(01).
+                   07  SPA-GMN-BUNRUIKBNMEIL   PIC X(40).
+               05  SPA-GMN-BUNRUIKBN-MAX       PIC 9(05).
       *        後発医薬品
                05  SPA-GMN-KOUHATUKBNLST       OCCURS  2.
                    07  SPA-GMN-KOUHATUKBNL     PIC X(01).
@@ -169,6 +175,10 @@
                05  SPA-GMN-SYOMEIKANREN        PIC X(09).
                05  SPA-GMN-KEIKASOCHIYMD       PIC X(09).
                05  SPA-GMN-INPCHKKBN           PIC 9(01).
+               05  SPA-GMN-BUNRUIKBN-G.
+                   07  SPA-GMN-BUNRUIKBN       PIC X(02).
+                   07  SPA-GMN-F1L             PIC X(01).
+                   07  SPA-GMN-BUNRUIKBNMEI    PIC X(40).
       *
                05  SPA-GMN-CUR                 PIC X(30).
       *
@@ -181,8 +191,10 @@
       *    フラグエリア
        01  FLG-AREA.
            03  FLG-END                           PIC 9(01).
+           03  FLG-SYSKANRI                      PIC 9(01).
            03  FLG-TENSU                         PIC 9(01).
            03  FLG-TENSUPLUS                     PIC 9(01).
+           03  FLG-OK                            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -197,6 +209,7 @@
            03  IDXY                              PIC 9(02).
            03  IDXZ                              PIC 9(02).
            03  IDX                               PIC 9(04).
+           03  IDX1                              PIC 9(04).
       *
       *    ワーク領域
        01  WRK-AREA.
@@ -248,6 +261,8 @@
       *    入力コード
         01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
+      *    高額請求資料用薬剤分類情報
+           COPY  "CPSK1036.INC".
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -501,7 +516,54 @@
                MOVE    MTANI-TANINAME(IDXX)
                                        TO  SPA-GMN-TANICDMEIL(IDXX)
            END-PERFORM
-      *         
+      *
+      *    高額請求資料用薬剤分類情報
+           MOVE    ZERO                TO  SPA-GMN-BUNRUIKBN-MAX
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           MOVE    SPACE               TO  SYS-1036-REC
+           INITIALIZE                      SYS-1036-REC
+           MOVE    "1036"              TO  SYS-1036-KANRICD
+           MOVE    SPA-NAI-YUKOSTYMD   TO  ORC-DBYMD
+           MOVE    SYS-1036-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           PERFORM         UNTIL   FLG-SYSKANRI   =   1
+      *
+               COMPUTE SPA-GMN-BUNRUIKBN-MAX
+                   =   SPA-GMN-BUNRUIKBN-MAX   +   1
+      *
+               MOVE    SPA-GMN-BUNRUIKBN-MAX
+                                           TO  IDX1
+      *
+               MOVE    MCPDATA-REC         TO  SYS-1036-REC
+               MOVE    SYS-1036-KBNCD(1:2) TO  SPA-GMN-BUNRUIKBNL
+                                                               (IDX1)
+               MOVE    SYS-1036-BUNRUIMEI  TO  SPA-GMN-BUNRUIKBNMEIL
+                                                               (IDX1)
+      *
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
            MOVE    SPA-GMN-TENSIKIBETULST (1)
                                       TO  SPA-GMN-TENSIKIBETU-G
            MOVE    SPA-GMN-OLDTENSKBLST (1)
@@ -720,6 +782,21 @@
            MOVE    TNSP-INPCHKKBN      TO  SPA-GMN-INPCHKKBN
       *    処方名
            MOVE    TNSP-SHONAME        TO  SPA-GMN-SHONAME
+      *
+      *    分類区分
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-BUNRUIKBN-MAX )
+      *
+               IF    ( TNSP-TENPUYAKKBN
+                                  =    SPA-GMN-BUNRUIKBNL (IDX1))
+                   MOVE    SPA-GMN-BUNRUIKBNLST (IDX1)
+                                       TO   SPA-GMN-BUNRUIKBN-G
+                   MOVE    SPA-GMN-BUNRUIKBN-MAX
+                                       TO   IDX1
+               END-IF
+      *
+           END-PERFORM
+      *
            .
       *
        3002-SPASET-TENSUPLUS-EXT.
@@ -916,7 +993,7 @@
        412-TOUROKU-SEC                           SECTION.
       *    エラーチェック
            PERFORM  VARYING  CNT-ERRCHK
-                    FROM  1  BY  1  UNTIL  CNT-ERRCHK  >  27
+                    FROM  1  BY  1  UNTIL  CNT-ERRCHK  >  28
                PERFORM  500-ERRCHK-SEC
                IF  SPA-ERRCD                 NOT =  SPACE
                    GO                            TO  412-TOUROKU-EXT
@@ -1311,6 +1388,8 @@
            MOVE  CNT-STRING                    TO  TNSP-SHOYUKOKETA
       *
            MOVE  SPA-GMN-INPCHKKBN             TO  TNSP-INPCHKKBN
+      *
+           MOVE  SPA-GMN-BUNRUIKBN             TO  TNSP-TENPUYAKKBN
            .
        41291-TENSUPLUS-HEN-EXT.
            EXIT.
@@ -1498,8 +1577,16 @@
                    END-IF
       *        入力チェック区分
                WHEN  MCP-WIDGET = "INPCHKKBN"   OR CNT-ERRCHK = 26
-                   MOVE  "B12"                  TO  SPA-GMN-CUR
+                   MOVE  "BUNRUIKBN"            TO  SPA-GMN-CUR
                    MOVE  Z04-INPCHKKBN          TO  SPA-GMN-INPCHKKBN
+      *        分類区分
+               WHEN  MCP-WIDGET = "BUNRUIKBN"   OR CNT-ERRCHK = 28
+                   MOVE  "B12"                  TO  SPA-GMN-CUR
+                   MOVE  Z04-BUNRUIKBN          TO  SPA-GMN-BUNRUIKBN-G
+                   PERFORM 524-BUNRUIKBNCHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       MOVE    "BUNRUIKBN"      TO  SPA-GMN-CUR
+                   END-IF
        END-EVALUATE.
       *
        500-ERRCHK-EXT.
@@ -1640,9 +1727,38 @@
            EXIT.
       *        
       *****************************************************************
+      *    分類区分チェック
+      *****************************************************************
+       524-BUNRUIKBNCHK-SEC                    SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+      *
+      *    分類区分
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-BUNRUIKBN-MAX )
+      *
+               IF    ( SPA-GMN-BUNRUIKBN
+                                  =    SPA-GMN-BUNRUIKBNL (IDX1))
+                   MOVE    SPA-GMN-BUNRUIKBNLST (IDX1)
+                                       TO   SPA-GMN-BUNRUIKBN-G
+                   MOVE    1           TO   FLG-OK
+                   MOVE    SPA-GMN-BUNRUIKBN-MAX
+                                       TO   IDX1
+               END-IF
+      *
+           END-PERFORM
+      *
+      *    IF    ( FLG-OK          =   ZERO )
+      *    END-IF
+      *
+           .
+      *
+       524-BUNRUIKBNCHK-EXT.
+           EXIT.
+      *****************************************************************
       *  　単位コードチェック
       *****************************************************************
-       5012-TANICD-CHK-SEC                      SECTION.
+       5012-TANICD-CHK-SEC                     SECTION.
       *
            MOVE    "TANICD"            TO  SPA-GMN-CUR
            MOVE    Z04-TANICD          TO  SPA-GMN-TANICD-G
@@ -1803,6 +1919,16 @@
            MOVE    2                   TO  Z04-KOUHATUKBN-COUNT
       *
            MOVE  SPA-GMN-INPCHKKBN     TO  Z04-INPCHKKBN
+      *
+      *    分類区分
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       SPA-GMN-BUNRUIKBN-MAX
+               MOVE    SPA-GMN-BUNRUIKBNLST(IDXX)
+                                       TO  Z04-BUNRUIKBNLST  (IDXX)
+           END-PERFORM
+           MOVE    SPA-GMN-BUNRUIKBN-MAX
+                                       TO  Z04-BUNRUIKBN-COUNT
+           MOVE    SPA-GMN-BUNRUIKBN-G TO  Z04-BUNRUIKBN
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -2229,6 +2355,26 @@
        891-STRCOUNT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    システム管理マスタ読み込み処理
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-READ-EXT.
+           EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************

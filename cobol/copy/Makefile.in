@@ -761,6 +761,8 @@ COPYS = \
         HCN21.INC \
         HCN22.INC \
         HCN23.INC \
+        W16.INC \
+        CPSK1036.INC \
 
 DBPATH = \
 	ORCA-DBPATH
