@@ -549,11 +549,14 @@
                IF      FLG-ROJIN        =   ZERO
                    GO  TO  900-DBFETCH-SEC
                END-IF                                
-      *        
-      *        六歳未満・投薬点＝０・生保のとき読みとばす
+      *         
+      *        六歳未満・投薬点＝０・生保・薬剤一部負担金＞０のとき
+      *        読みとばす
                IF      WRK-AGE          <   6
                OR      BD002-KOH1HKNNUM =   "012"
                OR      BD002-TYK-HKNTEN =   ZERO
+               OR      BD002-SYUCOMPYKZFTN
+                                        >   ZERO 
                    MOVE    ZERO             TO  FLG-ROJIN
                    GO  TO  900-DBFETCH-SEC
                END-IF                                
