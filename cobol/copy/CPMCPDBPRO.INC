@@ -316,6 +316,11 @@
       *                                     tbl_opecom.db 追加
       *  01.01.134   NACL-藤原    04/03/26  OPECOM-KEY4,KEY5追加
       *  01.01.135   NACL-太田    04/03/26  CHK-KEY11追加
+      *  01.01.136   NACL-多々納  04/04/02  SRYACCT-DEL2
+      *                                     SRYACT-DEL3
+      *                                     RECEDEN-DEL3
+      *                                     OPECOM-DEL2
+      *                                     SYUDAY-DEL2 追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -661,6 +666,9 @@
                WHEN    "DBDELETE"      ALSO   "SRYACCT-DEL1"
                    MOVE    PATH-TBL-SRYACCT-DEL1
                                        TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SRYACCT-DEL2"
+                   MOVE    PATH-TBL-SRYACCT-DEL2
+                                       TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO   "SRYACT-KEY"
                WHEN    "DBUPDATE"      ALSO   "SRYACT-KEY2"
                WHEN    "DBUPDATE"      ALSO   "SRYACT-KEY3"
@@ -677,6 +685,9 @@
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SRYACT-DEL1"
                    MOVE    PATH-TBL-SRYACT-DEL12
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SRYACT-DEL3"
+                   MOVE    PATH-TBL-SRYACT-DEL3
                                        TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY"
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY2"
@@ -1093,6 +1104,9 @@
                WHEN    "DBDELETE"      ALSO   "RECEDEN-DEL2"
                    MOVE    PATH-TBL-RECEDEN-DEL2
                                        TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "RECEDEN-DEL3"
+                   MOVE    PATH-TBL-RECEDEN-DEL3
+                                       TO  WRK-PATH
       *
                WHEN    "DBUPDATE"      ALSO   "KOHPLUS-KEY"
                WHEN    "DBDELETE"      ALSO   "KOHPLUS-KEY"
@@ -1108,6 +1122,9 @@
                WHEN    "DBDELETE"      ALSO   "SYUDAY-DEL1"
                    MOVE    PATH-TBL-SYUDAY-DEL1
                                        TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUDAY-DEL2"
+                   MOVE    PATH-TBL-SYUDAY-DEL2
+                                       TO  WRK-PATH
       *
                WHEN    "DBUPDATE"      ALSO   "OPECOM-KEY"
                WHEN    "DBDELETE"      ALSO   "OPECOM-KEY"
@@ -1116,6 +1133,9 @@
       *
                WHEN    "DBDELETE"      ALSO   "OPECOM-DEL1"
                    MOVE    PATH-TBL-OPECOM-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "OPECOM-DEL2"
+                   MOVE    PATH-TBL-OPECOM-DEL2
                                        TO  WRK-PATH
       *
       *---- (NYUIN.08) LINE ADD END      ------------------------------
