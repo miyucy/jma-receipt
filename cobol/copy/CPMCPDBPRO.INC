@@ -299,6 +299,7 @@
       *                                     SYUNOU-KEY23追加
       *  01.01.118   NACL-門脇  　04/01/14  SRYACCT-KEY29,30,31,32,33追加
       *  01.01.119   NACL-太田    04/01/19  SYUNOU-KEY24追加
+      *  01.01.120   NACL-太田    04/01/23  PTNYUINRRK-KEY29追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2726,6 +2727,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY28"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY28
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY29"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY29
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-ALL"
                    MOVE    PATH-TBL-PTNYUINRRK-ALL
