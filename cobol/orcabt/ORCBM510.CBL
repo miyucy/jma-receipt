@@ -33,6 +33,7 @@
       *  01.01.04     NACL-森脇    04/09/09  対象日付修正
       *  01.01.03     NACL-藤原    04/09/17  入外区分によって処理対象を
       *                                      限定する
+      *  01.01.05     NACL-森脇    05/01/24  記号・番号を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -464,6 +465,13 @@
       *
       *    保険者番号
            MOVE    RECE10-HKNJANUM     TO  HCM37-HKNJANUM
+      *
+      *----(01.01.05)--ADD-START---
+      *    記号
+           MOVE    RECE10-KIGO         TO  HCM37-KIGO
+      *    番号
+           MOVE    RECE10-NUM          TO  HCM37-NUM
+      *----(01.01.05)--ADD-END-----
       *
       *    老人保険
            IF      RECE10-RJNHKNNUM    NOT =   SPACE
