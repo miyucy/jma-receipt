@@ -29,6 +29,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    03/05/19  対象保険者番号の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -114,6 +115,7 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
+           03  WRK-PARA-HKNJANUM   PIC X(08).
       *
       *    一時領域
        01  WRK-AREA.
@@ -312,6 +314,7 @@
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-NYUGAIKBN
+                                               WRK-PARA-HKNJANUM
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -1188,6 +1191,10 @@
            MOVE    WRK-CONS-SRYYM-200304
                                        TO  RECE10-SRYYM
            MOVE    ALL "9"             TO  RECE10-XXSRYYM
+           IF      WRK-PARA-HKNJANUM   NOT =   ZERO
+               MOVE    WRK-PARA-HKNJANUM   TO  RECE10-XXSTHKNJANUM
+                                               RECE10-XXEDHKNJANUM
+           END-IF 
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH

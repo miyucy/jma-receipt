@@ -50,6 +50,7 @@
       *  01.01.01    NACL-藤原    02/09/18  保険者番号の追加
       *  01.01.02    NACL-藤原    02/10/10  サイト区分追加
       *  01.01.03    NACL-藤原    02/10/11  ２００２年１０月改正対応
+      *  01.01.04    NACL-藤原    03/05/19  対象保険者番号の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -165,6 +166,7 @@
            03  WRK-PARA-HOSPID     PIC X(24).
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
+           03  WRK-PARA-HKNJANUM   PIC X(08).
       *
       *    一時領域
        01  WRK-AREA.
@@ -339,6 +341,7 @@
                                                WRK-PARA-HOSPID
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
+                                               WRK-PARA-HKNJANUM
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -1088,7 +1091,11 @@
            INITIALIZE                  RECE10-REC
            MOVE    WRK-PARA-HOSPID     TO  RECE10-HOSPID
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
-           MOVE    WRK-CONS-SRYYM      TO  RECE10-SRYYM 
+           MOVE    WRK-CONS-SRYYM      TO  RECE10-SRYYM
+           IF      WRK-PARA-HKNJANUM   NOT =   ZERO
+               MOVE    WRK-PARA-HKNJANUM   TO  RECE10-XXSTHKNJANUM
+                                               RECE10-XXEDHKNJANUM
+           END-IF 
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
       *****MOVE    "SEIKYU-KEY4"       TO  ORC-DBPATH

@@ -35,6 +35,7 @@
       *
       *  £²£°£°£³¡¥£´²þÀµÂÐ±þ
       *  01.01.01    NACL-Æ£¸¶    03/04/10  £²£°£°£³¡¥£³°ÊÁ°¤Î¤ßÂÐ¾Ý¤È¤¹¤ë
+      *  01.01.02    NACL-Æ£¸¶    03/05/19  ÂÐ¾ÝÊÝ¸±¼ÔÈÖ¹æ¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -128,6 +129,7 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
+           03  WRK-PARA-HKNJANUM   PIC X(08).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -331,6 +333,7 @@
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-NYUGAIKBN
+                                               WRK-PARA-HKNJANUM
       *
       *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -1258,6 +1261,10 @@
            MOVE    WRK-CONS-SRYYM      TO  RECE10-SRYYM 
            MOVE    WRK-CONS-SRYYM-200304
                                        TO  RECE10-XXSRYYM
+           IF      WRK-PARA-HKNJANUM   NOT =   ZERO
+               MOVE    WRK-PARA-HKNJANUM   TO  RECE10-XXSTHKNJANUM
+                                               RECE10-XXEDHKNJANUM
+           END-IF 
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
