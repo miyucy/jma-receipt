@@ -577,19 +577,19 @@
                MOVE   "red"                 TO  SPA-GMN-PRTKBN2-STYLE
            END-IF
       *      
-      *    ÃÏÊý¸øÈñ£Ä£ÂÂÐ±þºÑ¥Õ¥é¥°
-           IF      SYS-3003-KOHSKY-FLG =   "1"
-               MOVE    WIDGET-NORMAL      TO  SPA-DATAKBN1-STATE
-                                              SPA-DATAKBN2-STATE
-                                              SPA-DATAKBN4-STATE
-                                              SPA-DATAKBN5-STATE
-                                              SPA-DATAKBN3-STATE       
-               MOVE    "T"                TO  SPA-DATAKBN1-VALUE
-               MOVE    "F"                TO  SPA-DATAKBN2-VALUE  
-               MOVE    "F"                TO  SPA-DATAKBN4-VALUE  
-               MOVE    "F"                TO  SPA-DATAKBN5-VALUE  
-               MOVE    "F"                TO  SPA-DATAKBN3-VALUE  
-           END-IF
+      *****ÃÏÊý¸øÈñ£Ä£ÂÂÐ±þºÑ¥Õ¥é¥°
+      *****IF      SYS-3003-KOHSKY-FLG =   "1"
+      *****    MOVE    WIDGET-NORMAL      TO  SPA-DATAKBN1-STATE
+      *****                                   SPA-DATAKBN2-STATE
+      *****                                   SPA-DATAKBN4-STATE
+      *****                                   SPA-DATAKBN5-STATE
+      *****                                   SPA-DATAKBN3-STATE       
+      *****    MOVE    "T"                TO  SPA-DATAKBN1-VALUE
+      *****    MOVE    "F"                TO  SPA-DATAKBN2-VALUE  
+      *****    MOVE    "F"                TO  SPA-DATAKBN4-VALUE  
+      *****    MOVE    "F"                TO  SPA-DATAKBN5-VALUE  
+      *****    MOVE    "F"                TO  SPA-DATAKBN3-VALUE  
+      *****END-IF
       *
       *    ¸©Ã±ÆÈ»ö¶È
            MOVE    ZERO                TO  FLG-3004-PARAKBN
@@ -632,32 +632,38 @@
                                            TO  SPA-3004-PARAKBN (IDX)
                    MOVE    SYS-3004-PRTNM  TO  SPA-3004-PRTNM   (IDX)  
                    IF      SPA-3004-CHKFLG (IDX 3) =   "T"
-                       ADD     1           TO  IDY
-                       MOVE    IDY         TO  SPA-GMN-T02-TRENNUM1(IDY)
-                       MOVE    SYS-3004-KBNCD  (1:4)
+                       IF      SYS-3004-PARAKBN   =   SPACE
+                           MOVE    1       TO  FLG-3004-PARAKBN 
+                       END-IF
+      *
+                       IF    ( SPA-NAI-SRYYM      =   ZERO  )
+                       AND   ( SYS-3004-PARAKBN   =   SPACE )
+                           CONTINUE
+                       ELSE
+                           ADD     1       TO  IDY
+                           MOVE    IDY     TO  SPA-GMN-T02-TRENNUM1(IDY)
+                           MOVE    SYS-3004-KBNCD  (1:4)
                                            TO  WRK-KBNCD
-                       MOVE    WRK-KBNCD   TO  SPA-NAI-T02-TKBNCD  (IDY)
-                       MOVE    SYS-3004-SHELLID
+                           MOVE    WRK-KBNCD
+                                           TO  SPA-NAI-T02-TKBNCD  (IDY)
+                           MOVE    SYS-3004-SHELLID
                                            TO  SPA-NAI-T02-TSHELLID(IDY)
-                       MOVE    SYS-3004-SHORIMSG
+                           MOVE    SYS-3004-SHORIMSG
                                            TO  SPA-GMN-T02-TSHORIMSG
                                                                    (IDY)
-                       MOVE    SYS-3004-PARAKBN
+                           MOVE    SYS-3004-PARAKBN
                                            TO  SPA-NAI-T02-TPARAKBN(IDY)
-                       MOVE    SYS-3004-PRTNM
+                           MOVE    SYS-3004-PRTNM
                                            TO  SPA-NAI-T02-TPRTNM  (IDY)  
-                       EVALUATE    SPA-NAI-T02-TPARAKBN(IDY)
-                           WHEN    "1"
-                               MOVE    "ÊÝ¸±¼ÔÈÖ¹æ"    TO
+                           EVALUATE    SPA-NAI-T02-TPARAKBN(IDY)
+                               WHEN    "1"
+                                   MOVE    "ÊÝ¸±¼ÔÈÖ¹æ"    TO
                                                SPA-GMN-T02-TPARAKBN(IDY)
-                           WHEN    "2"
-                               MOVE    "´µ¼ÔÈÖ¹æ"      TO
+                               WHEN    "2"
+                                   MOVE    "´µ¼ÔÈÖ¹æ"      TO
                                                SPA-GMN-T02-TPARAKBN(IDY)
-                           WHEN    ZERO
-                               CONTINUE
-                           WHEN    OTHER
-                               MOVE    1           TO  FLG-3004-PARAKBN 
-                       END-EVALUATE
+                           END-EVALUATE
+                       END-IF
                    END-IF
                END-IF
       *
@@ -675,10 +681,15 @@
            MOVE    IDX                 TO  SPA-3004-MAX
            MOVE    IDY                 TO  SPA-GMN-T02-SHELLID-MAX
       *
-           IF      FLG-3004-PARAKBN    =   ZERO
-               MOVE    WIDGET-NORMAL       TO  SPA-B21-STATE
-                                               SPA-DATAKBN1-STATE
-                                               SPA-DATAKBN3-STATE
+           IF      SPA-NAI-SRYYM      =   ZERO
+               IF      SPA-GMN-T02-SHELLID-MAX
+                                           >   ZERO
+                   MOVE    WIDGET-NORMAL       TO  SPA-B21-STATE
+                   IF      FLG-3004-PARAKBN    =   ZERO
+                       MOVE    WIDGET-NORMAL   TO  SPA-DATAKBN1-STATE
+                                                   SPA-DATAKBN3-STATE
+                   END-IF
+               END-IF
            END-IF
       *
            MOVE    "0"             TO  SPA-GMN-T02-SYORIFLGL   (1)
