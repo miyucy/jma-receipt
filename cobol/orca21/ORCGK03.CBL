@@ -1693,6 +1693,12 @@
       *****************************************************************
        450-TOROKU-SEC             SECTION.
       *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD      NOT =   SPACE
+               GO      TO      450-TOROKU-EXT
+           END-IF
+      *
            MOVE    ZERO                TO  IDX-KOUI
            MOVE    SPA-TERMID          TO  FILE-TERMID2
            OPEN    INPUT               PARA-FILE
