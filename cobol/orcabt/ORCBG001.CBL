@@ -165,9 +165,9 @@
            03  WRK-YKZKBN              PIC X(01).
            03  WRK-HENSURYO            PIC X(12).
       *
-           03  WRK-SURYO               PIC 9(05)V9(03).
            03  WRK-GSURYO              PIC 9(05)V9(03).
       *
+           03  WRK-SURYO               PIC 9(05)V9(03).
            03  WRK-SURYO-R             REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1        PIC 9(05).
                05  WRK-SURYO-S2        PIC 9(03).
@@ -495,11 +495,11 @@
                END-PERFORM
       *        算定がある時対象
                IF      WRK-DD          >   ZERO
-                   IF      ACCT-ZAITEN     >   ZERO
-      *                点数のある剤を対象とする
+                   IF      ACCT-YKZTEN     >   ZERO
+      *                薬剤点数のある剤を対象とする
                        PERFORM 230-MAIN-SRY-SEC
                    ELSE
-      *                点数がない時、投薬か自費の時対象とする
+      *                薬剤点数がない時、投薬か自費の時対象とする
                        IF        ( ACCT-SRYKBN =   "21" )
                            OR    ( ACCT-SRYKBN =   "22" )
                            OR    ( ACCT-SRYKBN =   "23" )
