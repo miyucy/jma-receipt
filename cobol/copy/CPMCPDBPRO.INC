@@ -266,6 +266,7 @@
       *  01.01.89    NACL-門脇  　03/08/01  SRYACCT-KEY22追加 
       *                                     SYUNOU-KEY19追加
       *                                     PTBYOMEI-KEY12追加
+      *  01.01.90    NACL-藤原    03/09/06  RECEDENの追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1019,6 +1020,17 @@
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "PTKOHFTN-DEL1"
                    MOVE    PATH-TBL-PTKOHFTN-DEL1
+                                       TO  WRK-PATH
+      *
+               WHEN    "DBUPDATE"      ALSO   "RECEDEN-KEY"
+               WHEN    "DBDELETE"      ALSO   "RECEDEN-KEY"
+                   MOVE    PATH-TBL-RECEDEN-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "RECEDEN-DEL1"
+                   MOVE    PATH-TBL-RECEDEN-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "RECEDEN-DEL2"
+                   MOVE    PATH-TBL-RECEDEN-DEL2
                                        TO  WRK-PATH
       *---- (NYUIN.08) LINE ADD END      ------------------------------
                WHEN    ANY             ALSO   "SYSKANRI-KEY"
@@ -2767,6 +2779,18 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTKOHFTN-ALL"
                    MOVE    PATH-TBL-PTKOHFTN-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECEDEN-KEY"
+                   MOVE    PATH-TBL-RECEDEN-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECEDEN-KEY2"
+                   MOVE    PATH-TBL-RECEDEN-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECEDEN-ALL"
+                   MOVE    PATH-TBL-RECEDEN-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECEDEN-ALL2"
+                   MOVE    PATH-TBL-RECEDEN-ALL2
                                        TO  WRK-PATH
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC
