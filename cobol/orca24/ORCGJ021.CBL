@@ -59,7 +59,8 @@
       *
            03  FLG-HKNCOMBICHK     PIC 9(01).
            03  FLG-OK              PIC 9(01).
-           03  FLG-ROUJIN          PIC 9(01).
+           03  FLG-ATO-ROUJIN      PIC 9(01).
+           03  FLG-MAE-ROUJIN      PIC 9(01).
            03  FLG-KOUSIN          PIC 9(01).
       *
       *    Åº»úÎÎ°è
@@ -726,6 +727,7 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-OK
+           MOVE    ZERO                TO  FLG-MAE-ROUJIN
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL      IDX      >   SPA-J021-MAX
                IF      SPA-J021-MAE-HKNCOMBI   =
@@ -734,6 +736,8 @@
                                            TO  SPA-J021-MAE-HKNCOMBIMEI
                    MOVE    SPA-J021-TFTNRATE (IDX)
                                            TO  SPA-J021-MAE-FTNRATE
+                   MOVE    SPA-NAI-TROUJIN (IDX)
+                                           TO  FLG-MAE-ROUJIN
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
@@ -806,7 +810,7 @@
                MOVE    SNUM-OUTEDT(12:4)   TO  SPA-J021-ATO-HKNCOMBI
            END-IF
       *
-           MOVE    ZERO                TO  FLG-ROUJIN
+           MOVE    ZERO                TO  FLG-ATO-ROUJIN
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL     (IDX          >   SPA-J021-MAX)  OR
@@ -818,7 +822,7 @@
                    MOVE    SPA-J021-TFTNRATE (IDX)
                                            TO  SPA-J021-ATO-FTNRATE
                    MOVE    SPA-NAI-TROUJIN (IDX)
-                                           TO  FLG-ROUJIN
+                                           TO  FLG-ATO-ROUJIN
       *
                    IF     (SPA-NAI-TEKSTYMD (IDX)(1:6)
                                            <=  SPA-NAI-SRYYM  )  AND
@@ -841,8 +845,11 @@
                GO      TO      4002-ATO-HKNCOMBI-EXT
            END-IF
       *
-           IF      FLG-ROUJIN      NOT =   ZERO
-               IF      SPA-J02-ROUJIN      =   ZERO
+           IF      FLG-ATO-ROUJIN      NOT =   ZERO
+               IF     (FLG-MAE-ROUJIN      =   FLG-ATO-ROUJIN )  OR
+                      (SPA-J02-ROUJIN      =   1              )
+                   CONTINUE
+               ELSE
                    MOVE    "0004"              TO  SPA-ERRCD
                    MOVE    2                   TO  SPA-J021-CUR
                    GO      TO      4002-ATO-HKNCOMBI-EXT
