@@ -35,6 +35,7 @@
       *  01.00.03    NACL-藤原    03/05/22  県番号をパラメタに追加
       *                                     県番号０６で国保のときは処理しない
       *  01.00.04    NACL-藤原    03/05/23  給付割合のカスタマイズ方法の修正
+      *  01.00.05    NACL-藤原    03/06/10  保険履歴の改頁処理の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -222,6 +223,7 @@
            03  IDY1                PIC 9(03).
            03  IDY2                PIC 9(03).
            03  IDY3                PIC 9(03).
+           03  IDXX                PIC 9(03).
       *     
            03  SEIHIDX             PIC 9(02).
            03  KAKKIDX             PIC 9(02).
@@ -3111,10 +3113,10 @@
       *****************************************************************
        370-HC101-HKN-RIREKI-HEN-SEC      SECTION.
       *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-RIREKI-MAX  
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       WRK-RIREKI-MAX  
       *        摘要欄に１行あける
-               IF      IDX                 =   1
+               IF      IDXX                =   1
                    IF  WRK-LINETEK             >   ZERO
                        IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
                            PERFORM 34120-PAGE-SEC
@@ -3131,9 +3133,9 @@
                    PERFORM 34120-PAGE-SEC
                END-IF
                ADD     1               TO  WRK-LINETEK
-               INSPECT WRK-HKN-RIREKI-TBL (IDX)    REPLACING   ALL "  "
+               INSPECT WRK-HKN-RIREKI-TBL  (IDXX)  REPLACING   ALL "  "
                                                                BY  "　"  
-               MOVE    WRK-HKN-RIREKI-TBL (IDX)
+               MOVE    WRK-HKN-RIREKI-TBL  (IDXX)
                                        TO  HC06-TEKIYO(WRK-LINETEK)
            END-PERFORM
       *
