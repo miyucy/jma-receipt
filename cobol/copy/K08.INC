@@ -74,9 +74,9 @@
               03  K08-SCROLLEDWINDOW1.
                 04  K08-MEILIST.
                   05  K08-COUNT   PIC S9(9)   BINARY.
-                  05  K08-ITEM        OCCURS  400 TIMES.
+                  05  K08-ITEM        OCCURS  500 TIMES.
                     06  K08-BANGO  PIC X(4).
                     06  K08-DELFLG  PIC X(2).
                     06  K08-MEISAI  PIC X(150).
-                  05  K08-SELECT  PIC X       OCCURS  400 TIMES.
+                  05  K08-SELECT  PIC X       OCCURS  500 TIMES.
                   05  K08-MEI-STYLE   PIC X(20).
