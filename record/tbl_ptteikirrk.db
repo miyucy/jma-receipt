@@ -46,7 +46,7 @@ path	key3		{
 		SELECT *
 		FROM tbl_ptteikirrk
         WHERE  PTID    =   :PTID
-		ORDER  BY  SKYEDYMD
+		ORDER  BY  SKYEDYMD DESC
 		;
 	};
 };
