@@ -2095,12 +2095,12 @@
       *    ＣＬＡＩＭ接続チェック処理
       *    受付があった時
            MOVE    ZERO                TO  FLG-CLAIM
-           IF      SPA-NAI20-UKEMAX    >   ZERO
-               PERFORM 4905-CLAIM-CHK-SEC
-               IF      FLG-CLAIM       =   2
-                   GO      TO      490-TOUROKU-EXT
-               END-IF
-           END-IF
+      *****IF      SPA-NAI20-UKEMAX    >   ZERO
+      *        PERFORM 4905-CLAIM-CHK-SEC
+      *        IF      FLG-CLAIM       =   2
+      *            GO      TO      490-TOUROKU-EXT
+      *        END-IF
+      *****END-IF
       *
       *    更新処理
            MOVE    ZERO                TO  FLG-CLAIM-OK
