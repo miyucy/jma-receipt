@@ -1687,15 +1687,15 @@
                    MOVE    "0066"          TO  SPA-ERRCD
                    MOVE    10              TO  SPA-GMN-CUR
                END-IF
-           ELSE
+      *****ELSE
       *
-      *        £±£µºÐÌ¤Ëþ¤Î»þ¡¢²ÈÂ²¤È¤¹¤ë
-               IF      SPA-NAI-NENREI-YY   <=  15
-                   IF      SPA-GMN-HONKZKKBN   =   "1"
-                       MOVE    "0067"          TO  SPA-ERRCD
-                       MOVE    10              TO  SPA-GMN-CUR
-                   END-IF
-               END-IF
+      ******** £±£µºÐÌ¤Ëþ¤Î»þ¡¢²ÈÂ²¤È¤¹¤ë
+      *        IF      SPA-NAI-NENREI-YY   <=  15
+      *            IF      SPA-GMN-HONKZKKBN   =   "1"
+      *                MOVE    "0067"          TO  SPA-ERRCD
+      *                MOVE    10              TO  SPA-GMN-CUR
+      *            END-IF
+      *********END-IF
            END-IF
       *
       *    Á¥°÷ÆþÎÏ²ÄÇ½¥Á¥§¥Ã¥¯

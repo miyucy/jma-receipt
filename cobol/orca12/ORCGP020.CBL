@@ -1120,7 +1120,7 @@
       *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING   IDX       FROM    1   BY  1
-                   UNTIL    (IDX           >   10 )  OR
+                   UNTIL    (IDX           >   SPA-GMN20-SRYNAI-MAX ) OR
                             (SPA-GMN20-SRYNAILST(IDX) 
                                            =   SPACE  )
                IF      SPA-GMN20-SRYNAICD  =   SPA-GMN20-SRYNAILST(IDX)
