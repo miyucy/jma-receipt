@@ -2695,10 +2695,6 @@
                    MOVE    SYS-2006-RECEDEN-JKYSNUM
                                        TO
                                    RECE02-2006-RECEDEN-JKYSNUM     (IDY)
-      *???
-               DISPLAY "KOH=" IDY "#" RECE02-KOHNUM (IDY) "#"
-                                      RECE02-2006-KOH-OCC (IDY) "#"
-      *???
                END-IF
            END-PERFORM        
       *

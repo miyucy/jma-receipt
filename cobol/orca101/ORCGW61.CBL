@@ -1415,7 +1415,7 @@
                ELSE
                    MOVE    WRK-KBNMEI          TO  SPA-GMN-JKYSNUMKBNMEI
                    IF      SPA-GMN-JKYSNUMKBN  =   "01"
-                       MOVE    SPACE           TO  SPA-GMN-JKYSNUMKBN
+                       MOVE    SPACE           TO  SPA-GMN-JKYSNUM
                    END-IF
                    IF      SPA-GMN-HKNNUM      =   SPACE
                        MOVE    "0014"          TO  SPA-ERRCD
