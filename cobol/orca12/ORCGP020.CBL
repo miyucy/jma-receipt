@@ -1599,14 +1599,23 @@
            ELSE
                MOVE    1               TO  FLG-UKETUKE
            END-IF
+      *    新規で受付指定が無い場合、対象としない）
+           IF     (SPA-GMN-PTID        =   ZERO )  AND
+                  (SPA-P02-UKEID       =   ZERO )
+               MOVE    1               TO  FLG-UKETUKE
+           END-IF
+      *
            PERFORM
                UNTIL   FLG-UKETUKE     =   1
+             IF        UKE-UKEID           =   ZERO
+                   CONTINUE
+             ELSE
                MOVE    ZERO            TO  FLG-OK
-               PERFORM  VARYING     IDX     FROM    1   BY  1
-                        UNTIL     (IDX     >   10  )
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX     >   10  )
                         OR        (SPA-GMN20-YBANGOU(IDX)  =   ZERO)
                         OR        (FLG-OK                  =   1   )
-                   IF      SPA-NAI20-UKETIME(IDX)  =   SPACE   OR  ZERO
+                   IF     (SPA-NAI20-UKETIME(IDX)  =   SPACE   OR  ZERO)
                        CONTINUE
                    ELSE
                        IF      SPA-NAI20-UKEID (IDX) =   UKE-UKEID
@@ -1618,9 +1627,17 @@
                END-PERFORM
       *        削除データ
                IF      FLG-OK          =   ZERO
-                   MOVE    ALL "9"         TO  UKE-UPYMD
-                   PERFORM 5002-UKE-PARA-SEC
+                   IF     (SPA-GMN-PTID        =   ZERO )  AND
+                          (SPA-P02-UKEID   NOT =   UKE-UKEID)
+                       CONTINUE
+                   ELSE
+                       MOVE    ALL "9"         TO  UKE-UPYMD
+                       PERFORM 5002-UKE-PARA-SEC
+                   END-IF
                END-IF
+      *
+              END-IF
+      *
                MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
                PERFORM 900-UKETUKE-NEXT-SEC
            END-PERFORM
