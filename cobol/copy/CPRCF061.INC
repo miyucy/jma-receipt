@@ -23,6 +23,7 @@
       *  01.00.02    NACL-藤原    03.03.11  レセプト種別不明情報の追加
       *  01.00.03    NACL-藤原    03.07.28  診療回数テーブルの追加
       *  01.00.04    NACL-藤原    04.06.15  印刷順の追加（個別作成時のみ）
+      *  01.00.05    NACL-藤原    04.10.31  患者情報・県番号の追加
       ********************************************************************
       *01  RECE61-REC.
            03  RECE61-KEY.
@@ -81,6 +82,26 @@
            03  RECE61-DAY-AREA.
                05  RECE61-DAY             PIC  9(03)
                                                OCCURS   31.
+      *患者情報
+           03  RECE61-PTINF.
+      *患者番号  
+               05  RECE61-PTNUM           PIC  X(20).
+      *カナ氏名
+               05  RECE61-KANANAME        PIC  X(50).
+      *漢字氏名
+               05  RECE61-NAME            PIC  X(100).
+      *性別
+               05  RECE61-SEX             PIC  X(01).
+      *生年月日
+               05  RECE61-BIRTHDAY        PIC  9(08).
+      *死亡区分
+               05  RECE61-DEATHKBN        PIC  X(01).
+      *年齢
+               05  RECE61-AGE             PIC  9(03).
+      *テスト患者番号区分
+               05  RECE61-TSTPTNUMKBN     PIC  X(01).
+      *県番号
+           03  RECE61-PREFNUM             PIC  9(02).
       *印刷順
            03  RECE61-PRTSEQ              PIC  9(03).
       *未訂正区分
