@@ -316,8 +316,10 @@
                05  W-SRYCD-S4-TABLE    OCCURS  1000.
                    07  W-SRYCD-91      PIC X(09).
                    07  W-SRYCD-91-T    PIC X(01).
+                   07  W-SRYCD-91-E    PIC X(01).
                    07  W-SRYCD-92      PIC X(09).
                    07  W-SRYCD-92-T    PIC X(01).
+                   07  W-SRYCD-92-E    PIC X(01).
            03  W-CHK-KUBUN.
                05  W-CHK-ST1-KBN       PIC X(01).
                05  W-CHK-ST2-KBN       PIC X(01).
@@ -3378,12 +3380,16 @@
                                    PERFORM T-530-RECECHEK-CHK5-SEC
                                    MOVE    FLG-TBL
                                                  TO  W-SRYCD-91-T (IDY1)
+                                   MOVE    FLG-TENKIYMD-ER
+                                                 TO  W-SRYCD-91-E (IDY1)
                                END-IF
                                MOVE    2000               TO  IDY1
                            ELSE
                                IF  W-SRYCD-91 (IDY1)  =  CHK-CD (IDY2)
                                    MOVE    W-SRYCD-91-T (IDY1)
                                                      TO  FLG-TBL
+                                   MOVE    W-SRYCD-91-E (IDY1)
+                                                     TO  FLG-TENKIYMD-ER
                                    MOVE    2000      TO  IDY1
                                END-IF
                            END-IF
@@ -3392,8 +3398,7 @@
                            (CHK-CD (IDY2)       =   ZERO)
                            MOVE    20                   TO  IDY2
                        END-IF
-                       IF  (FLG-TBL             =   2) OR
-                           (FLG-TENKIYMD-ER     =   1)
+                       IF  FLG-TENKIYMD-ER     =   2
                            MOVE    1                    TO  FLG-END
                            MOVE    20                   TO  IDY2
                        END-IF
@@ -3482,12 +3487,16 @@
                                    PERFORM T-530-RECECHEK-CHK5-SEC
                                    MOVE    FLG-TBL
                                                  TO  W-SRYCD-92-T (IDY1)
+                                   MOVE    FLG-TENKIYMD-ER
+                                                 TO  W-SRYCD-92-E (IDY1)
                                END-IF
                                MOVE    2000               TO  IDY1
                            ELSE
                                IF  W-SRYCD-92 (IDY1)  =  CHK-CD (IDY2)
                                    MOVE    W-SRYCD-92-T (IDY1)
                                                      TO  FLG-TBL
+                                   MOVE    W-SRYCD-92-E (IDY1)
+                                                     TO  FLG-TENKIYMD-ER
                                    MOVE    2000      TO  IDY1
                                END-IF
                            END-IF
@@ -3496,8 +3505,7 @@
                            (CHK-CD (IDY2)       =   ZERO)
                            MOVE    20                   TO  IDY2
                        END-IF
-                       IF  (FLG-TBL             =   2) OR
-                           (FLG-TENKIYMD-ER     =   1)
+                       IF  FLG-TENKIYMD-ER     =   2
                            MOVE    1                    TO  FLG-END
                            MOVE    20                   TO  IDY2
                        END-IF
