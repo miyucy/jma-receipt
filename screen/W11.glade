@@ -296,15 +296,6 @@
 	<name>fi23</name>
 
 	<widget>
-	  <class>GtkHSeparator</class>
-	  <name>hseparator1</name>
-	  <x>212</x>
-	  <y>264</y>
-	  <width>744</width>
-	  <height>16</height>
-	</widget>
-
-	<widget>
 	  <class>GtkLabel</class>
 	  <name>label226</name>
 	  <x>16</x>
