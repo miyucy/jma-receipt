@@ -116,6 +116,8 @@
                WHEN    "JBS"
                        PERFORM 110-JBS-SEC
                WHEN    "JBE"
+                       PERFORM 900-DBCOMMIT-SEC
+                       PERFORM 900-DBSTART-SEC
                        PERFORM 120-JBE-SEC
                WHEN    "STS"
                        PERFORM 130-STS-SEC
@@ -175,9 +177,6 @@
       *    ジョブ終了セット　処理
       *****************************************************************
        120-JBE-SEC                 SECTION.
-      *
-      *    ＤＢ再接続処理
-           PERFORM 900-DBRECONNECT-SEC
       *
       *    レコード存在チェック
            IF      JOB-SHELLID(1:6)    =   "MSTMNT"
@@ -535,37 +534,4 @@
                                         MCPDATA-REC.
            .
        900-DBSTART-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ再接続処理
-      *****************************************************************
-       900-DBRECONNECT-SEC             SECTION.
-      *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           MOVE    LOW-VALUE           TO  MCP-PATH.
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
-      *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-      *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-      *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           MOVE    LOW-VALUE           TO  MCP-PATH.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-      *
-           .
-       900-DBRECONNECT-EXT.
            EXIT.
