@@ -38,6 +38,8 @@
       *  01.00.05    NACL-門脇    03.03.03  剤番号桁修正対応
       *  01.00.06    NACL-藤原    03.03.05  レセプトコメントＤＢに入外区分を追加
       *  01.00.07    NACL-藤原    03/04/17  出力件数をジョブ管理ＤＢへ更新
+      *  01.00.08    NACL-門脇    03.06.03  外来診療料対応
+      *                                     （平成１５年６月以降）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -742,14 +744,25 @@
                    MOVE    "深夜"     TO  HC18-JIKANGAI11
            END-EVALUATE    
       *    再診（時間外）
-           EVALUATE    RECE41-SAISHINTIME
+           IF      RECE41-KEIZOKU-PRTKBN     =   "2"
+             EVALUATE    RECE41-SAISHINTIME
+               WHEN    "1"
+                   MOVE    "○"       TO  HC18-JIKANGAI3
+               WHEN    "2"
+                   MOVE    "休日"     TO  HC18-JIKANGAI31
+               WHEN    "3"
+                   MOVE    "深夜"     TO  HC18-JIKANGAI31
+             END-EVALUATE 
+           ELSE
+             EVALUATE    RECE41-SAISHINTIME
                WHEN    "1"
                    MOVE    "○"       TO  HC18-JIKANGAI2
                WHEN    "2"
                    MOVE    "休日"     TO  HC18-JIKANGAI21
                WHEN    "3"
                    MOVE    "深夜"     TO  HC18-JIKANGAI21
-           END-EVALUATE    
+             END-EVALUATE 
+           END-IF   
       *
       *
            PERFORM   VARYING   IDX   FROM    1   BY  1

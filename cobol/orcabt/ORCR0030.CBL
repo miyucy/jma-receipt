@@ -118,6 +118,8 @@
       *  01.02.24   NACL-ÌçÏÆ     03/05/23  °ìÉôÉéÃ´¶âµ­ºÜ½¤Àµ
       *  01.02.25   NACL-ÌçÏÆ     03/05/30  Ê¿À®£±£µÇ¯£¶·î²þÀµ¤Ë´Ø¤ï¤ë
       *                                     ºÆ¿ÇÎÁ´Ø·¸¤ÎÅ¦Í×ÍóÊÔ½¸½¤Àµ
+      *  01.02.26   NACL-ÌçÏÆ     03/06/03  ³°Íè¿ÇÎÅÎÁÂÐ±þ
+      *                                     ¡ÊÊ¿À®£±£µÇ¯£¶·î°Ê¹ß¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -491,6 +493,15 @@
            03  CONS-YOJI           PIC X(09) VALUE "112001070".
       *    ºÆ¿Ç¡ÊÍÄ»ù¡Ë¡Ê»þ´Ö³°Åù¡Ë²Ã»»
            03  CONS-YOJI-JIKAN     PIC X(09) VALUE "112007070".
+      *
+      *    ³°Íè¿ÇÎÅÎÁ¡ÊÆýÍÄ»ù¡Ë²Ã»»
+           03  CONS-GNYUYOJI       PIC X(09) VALUE "112006270".
+      *    ³°Íè¿ÇÎÅÎÁ¡ÊÆýÍÄ»ù¡Ë¡Ê»þ´Ö³°Åù¡Ë²Ã»»
+           03  CONS-GNYUYOJI-JIKAN PIC X(09) VALUE "112007270".
+      *    ³°Íè¿ÇÎÅÎÁ¡ÊÍÄ»ù¡Ë²Ã»»
+           03  CONS-GYOJI          PIC X(09) VALUE "112006370".
+      *    ³°Íè¿ÇÎÅÎÁ¡ÊÍÄ»ù¡Ë¡Ê»þ´Ö³°Åù¡Ë²Ã»»
+           03  CONS-GYOJI-JIKAN    PIC X(09) VALUE "112007370".
       *
       *    ¥Õ¥£¥ë¥àÎÁ¡ÊÆýÍÄ»ù¡Ë²Ã»»
            03  CONS-FILM-YOUJI-KASAN  
@@ -1796,6 +1807,40 @@
                             MOVE     9       TO    FLG-YOJI
                        END-IF
       **
+                       IF   FLG-NYUYOJI          =   ZERO
+                       AND  SRY-SRYCD(IDX3)      =   CONS-GNYUYOJI
+                            MOVE     1       TO    FLG-NYUYOJI
+                       END-IF
+                       IF   FLG-NYUYOJI          =   2
+                       AND  SRY-SRYCD(IDX3)      =   CONS-GNYUYOJI
+                            MOVE     9       TO    FLG-NYUYOJI
+                       END-IF
+                       IF   FLG-NYUYOJI          =   ZERO
+                       AND  SRY-SRYCD(IDX3)      =   CONS-GNYUYOJI-JIKAN
+                            MOVE     2       TO    FLG-NYUYOJI
+                       END-IF
+                       IF   FLG-NYUYOJI          =   1
+                       AND  SRY-SRYCD(IDX3)      =   CONS-GNYUYOJI-JIKAN
+                            MOVE     9       TO    FLG-NYUYOJI
+                       END-IF
+      *
+                       IF   FLG-YOJI          =   ZERO
+                       AND  SRY-SRYCD(IDX3)      =   CONS-GYOJI
+                            MOVE     1       TO    FLG-YOJI
+                       END-IF
+                       IF   FLG-YOJI          =   2
+                       AND  SRY-SRYCD(IDX3)      =   CONS-GYOJI
+                            MOVE     9       TO    FLG-YOJI
+                       END-IF
+                       IF   FLG-YOJI          =   ZERO
+                       AND  SRY-SRYCD(IDX3)      =   CONS-GYOJI-JIKAN
+                            MOVE     2       TO    FLG-YOJI
+                       END-IF
+                       IF   FLG-YOJI          =   1
+                       AND  SRY-SRYCD(IDX3)      =   CONS-GYOJI-JIKAN
+                            MOVE     9       TO    FLG-YOJI
+                       END-IF
+      **
                        IF ( SRY-SRYCD(IDX3)      =   CONS-KEIZOKU1  OR
                                                      CONS-KEIZOKU2 )
                        OR ( FLG-NYUYOJI          =   9             )
@@ -1803,10 +1848,14 @@
                             MOVE   ZERO       TO    RECE02-KHNTEN(2)
                             MOVE   1          TO    FLG-KHNTEN2
                        ELSE
-                         IF  SRY-SRYCD(IDX3)  =  CONS-NYUYOJI       OR
-                                                 CONS-NYUYOJI-JIKAN OR
-                                                 CONS-YOJI          OR
-                                                 CONS-YOJI-JIKAN
+                         IF  SRY-SRYCD(IDX3)  =  CONS-NYUYOJI        OR
+                                                 CONS-NYUYOJI-JIKAN  OR
+                                                 CONS-YOJI           OR
+                                                 CONS-YOJI-JIKAN     OR
+                                                 CONS-GNYUYOJI       OR
+                                                 CONS-GNYUYOJI-JIKAN OR
+                                                 CONS-GYOJI          OR
+                                                 CONS-GYOJI-JIKAN    
                             IF   FLG-YOJI-ARI  =  ZERO
                               ADD   TNS-TEN    TO    RECE02-KHNTEN(2)
                               MOVE     1       TO    FLG-YOJI-ARI

@@ -47,6 +47,8 @@
       *  01.00.14    NACL-ÌçÏÆ    03.05.13  ¼«ÇåÀÕ¡§¹øÉô¸ÇÄêÂÓ²Ã»»ÂÐ±þ
       *  01.00.15    NACL-ÌçÏÆ    03.05.20  ¼«ÇåÀÕ¡§ÎÅÍÜÃ´Åö¼êÅö¤ÆÂÐ±þ
       *  01.00.16    NACL-ÌçÏÆ    03.05.22  »ÄÎÌÇÑ´þ¤Î¿ôÎÌ¥»¥Ã¥È
+      *  01.00.17    NACL-ÌçÏÆ    03.06.03  ³°Íè¿ÇÎÅÎÁÂÐ±þ
+      *                                     ¡ÊÊ¿À®£±£µÇ¯£¶·î°Ê¹ß¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -332,6 +334,9 @@
       *    ·ÑÂ³´ÉÍý²Ã»»
            03  CONS-KEIZOKU1   PIC X(09)     VALUE "112007170".
            03  CONS-KEIZOKU2   PIC X(09)     VALUE "112702270".
+      *    ³°Íè¿ÇÎÅÎÁ¡Ê£±²óÌÜ¡Ë
+           03  CONS-GAIRAIRYO1 PIC X(09)     VALUE "112011310".
+           03  CONS-GAIRAIRYO2 PIC X(09)     VALUE "112705510".
       *    ½èÊý¤»¤óÎÁ
            03  CONS-SHOHOSEN1 PIC X(09)      VALUE "120002710".
            03  CONS-SHOHOSEN2 PIC X(09)      VALUE "120002810".
@@ -1018,6 +1023,10 @@
                    IF   SRY-SRYCD(IDX2)   =     CONS-KEIZOKU1    OR
                                                 CONS-KEIZOKU2
                         MOVE   "1"      TO    RECE41-KEIZOKU-PRTKBN
+                   END-IF
+                   IF   SRY-SRYCD(IDX2)   =     CONS-GAIRAIRYO1  OR
+                                                CONS-GAIRAIRYO2
+                        MOVE   "2"      TO    RECE41-KEIZOKU-PRTKBN
                    END-IF
                    IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN-A1   
       **                                  OR    CONS-SAISHIN-A2   
@@ -2183,36 +2192,71 @@
                          MOVE    RECE41-TEKSTYMD    
                                            TO   RECE41-SYOSAIYMD2(2)
                      ELSE
-                         ADD   WK-ZAIKAISU  TO
-                                            RECE41-KAISU(2)
-                         COMPUTE    RECE41-TENSU(2)  =
-                                    RECE41-TENSU(2)  +
-                                   (TNS-TEN   *   WRK-ZAIKAISU-XXX)
+                         IF      RECE41-KEIZOKU-PRTKBN     =   "2"
+                            ADD   WK-ZAIKAISU  TO
+                                               RECE41-KAISU(3)
+                            COMPUTE    RECE41-TENSU(3)  =
+                                       RECE41-TENSU(3)  +
+                                      (TNS-TEN   *   WRK-ZAIKAISU-XXX)
+                         ELSE
+                            ADD   WK-ZAIKAISU  TO
+                                               RECE41-KAISU(2)
+                            COMPUTE    RECE41-TENSU(2)  =
+                                       RECE41-TENSU(2)  +
+                                      (TNS-TEN   *   WRK-ZAIKAISU-XXX)
+                         END-IF
                      END-IF
       *      ¡Ê»þ´Ö³°¡Ë
                    WHEN  123
+                     IF      RECE41-KEIZOKU-PRTKBN     =   "2"
+                        MOVE  "1"     TO   RECE41-SAISHINTIME 
+                        ADD   WK-ZAIKAISU  TO
+                                            RECE41-KAISU(4)
+                        COMPUTE RECE41-TENSU(4) =
+                                RECE41-TENSU(4) +
+                                (TNS-TEN   *   WRK-ZAIKAISU-XXX)
+                     ELSE
                         MOVE  "1"     TO   RECE41-SAISHINTIME 
                         ADD   WK-ZAIKAISU  TO
                                             RECE41-KAISU(2)
                         COMPUTE RECE41-TENSU(2) =
                                 RECE41-TENSU(2) +
                                 (TNS-TEN   *   WRK-ZAIKAISU-XXX)
+                     END-IF
       *      ¡ÊµÙÆü¡Ë
                    WHEN  124
+                     IF      RECE41-KEIZOKU-PRTKBN     =   "2"
+                        MOVE  "2"     TO   RECE41-SAISHINTIME 
+                        ADD   WK-ZAIKAISU  TO
+                                            RECE41-KAISU(4)
+                        COMPUTE RECE41-TENSU(4) =
+                                RECE41-TENSU(4) +
+                                (TNS-TEN   *   WRK-ZAIKAISU-XXX)
+                     ELSE
                         MOVE  "2"     TO   RECE41-SAISHINTIME 
                         ADD   WK-ZAIKAISU  TO
                                             RECE41-KAISU(2)
                         COMPUTE RECE41-TENSU(2) =
                                 RECE41-TENSU(2) +
                                 (TNS-TEN   *   WRK-ZAIKAISU-XXX)
+                     END-IF
       *      ¡Ê¿¼Ìë¡Ë
                    WHEN  125
+                     IF      RECE41-KEIZOKU-PRTKBN     =   "2"
+                        MOVE  "3"     TO   RECE41-SAISHINTIME 
+                        ADD   WK-ZAIKAISU  TO
+                                            RECE41-KAISU(4)
+                        COMPUTE RECE41-TENSU(4) =
+                                RECE41-TENSU(4) +
+                                (TNS-TEN   *   WRK-ZAIKAISU-XXX)
+                     ELSE
                         MOVE  "3"     TO   RECE41-SAISHINTIME 
                         ADD   WK-ZAIKAISU  TO
                                             RECE41-KAISU(2)
                         COMPUTE RECE41-TENSU(2) =
                                 RECE41-TENSU(2) +
                                 (TNS-TEN   *   WRK-ZAIKAISU-XXX)
+                     END-IF
                  END-EVALUATE
       *    »ØÆ³¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "13"
