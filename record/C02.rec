@@ -20,7 +20,7 @@ C02	{
 			value	varchar(12);
 		};
 		HKNNAME	{
-			value	varchar(30);
+			value	varchar(60);
 		};
 		PTFTNRATE	{
 			value	varchar(4);
