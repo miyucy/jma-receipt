@@ -37,6 +37,7 @@
       *                                     の変更 
       *  01.00.05    MCC-森脇     02/05/01  空白編集の変更  
       *  01.01.01    NACL-森脇    02/11/28  入院履歴番号、枝番号の追加
+      *  01.01.02    NACL-多々納  03/10/10  自由構成患者番号編集修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -343,7 +344,6 @@
            IF  WRK-RENKETA (1:2)   NOT =   PARA-05-1
                MOVE    1           TO  FLG-CSV
                DISPLAY "*(ORCVTPTINF)* PTNUM BYTE UNMATCH!"
-                                   UPON    CONSOLE
                GO  TO              100-INIT-EXT
            END-IF
            MOVE    PARA-05-1       TO  WRK-RENKETA(1:2)
@@ -495,7 +495,6 @@
       *
            IF  CNT-CSV (4:3)           =   ZERO
                DISPLAY "***(ORCVTPTINF)*** CNT-CSV[" CNT-CSV "]"
-                                       UPON    CONSOLE
            END-IF
            MOVE    SPACE               TO  PTINF-REC
            INITIALIZE                      PTINF-REC
@@ -1150,21 +1149,28 @@
       *    空白までを編集する     
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-PTNUM
-           MOVE    ZERO                TO  WRK-CNT                            
+           MOVE    ZERO                TO  WRK-CNT
            PERFORM VARYING IDW FROM    1   BY  1
                    UNTIL   IDW >       WRK-MO-CNT
                    OR      WRK-PTNUM (IDW:1)   =   SPACE 
                MOVE    IDW             TO    WRK-CNT
            END-PERFORM
-           MOVE    WRK-CNT             TO  WRK-MO-CNT                                                
+           MOVE    WRK-CNT             TO  WRK-MO-CNT 
       *
-           IF      WRK-MO-CNT          >   0   AND
-                   WRK-MO-CNT          <=  20
-             IF (( SYS-1009-PTNUMKSIKBN    =   "1" ) AND
+           IF     (WRK-MO-CNT          >   0  )   AND
+                  (WRK-MO-CNT          <=  20 )
+               CONTINUE
+           ELSE
+      *        未入力、２０文字以上はエラー
+               MOVE    2               TO  FLG-ERR
+               GO      TO      2410-PTNUM-SET-EXT
+           END-IF
+      *
+           IF   (( SYS-1009-PTNUMKSIKBN    =   "1" ) AND
                  ( SYS-1009-JIYKSIKBN      =   "2" ))    OR
                 (( SYS-1009-PTNUMKSIKBN    =   "2" ) AND
                  ( SYS-1009-HJNKSIKBN      =   "3" OR "4" ))
-               MOVE  ZERO              TO  SPA-PTNUM(1:WRK-RENKETA)
+               MOVE    ZERO                TO  SPA-PTNUM(1:WRK-RENKETA)
                IF      WRK-MO-CNT      >   WRK-RENKETA
                    COMPUTE WRK-MO-ST    =   WRK-MO-ST   
                                         +  (WRK-MO-CNT  -   WRK-RENKETA)
@@ -1177,12 +1183,10 @@
                    MOVE  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  SPA-PTNUM(WRK-MO-ST1:)
                END-IF                        
-             ELSE
-               MOVE  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  SPA-PTNUM(WRK-MO-ST1:)
-             END-IF
            ELSE
-               MOVE    2               TO  FLG-ERR
+               MOVE    1               TO  WRK-MO-ST1
+               MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                       TO  SPA-PTNUM(WRK-MO-ST1:)
            END-IF
       *
            .

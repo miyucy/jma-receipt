@@ -400,7 +400,6 @@
       *
            IF  CNT-CSV (4:3)           =   ZERO
                DISPLAY "***(ORCVTINPUTCD)*** CNT-CSV[" CNT-CSV "]"
-                                       UPON    CONSOLE
            END-IF
            MOVE    SPACE               TO  INPUTCD-REC
            INITIALIZE                      INPUTCD-REC
@@ -1044,11 +1043,8 @@
            CLOSE                       ERR-FILE
       *
            DISPLAY "*(ORCVTINPUTCD)* CSV     /I CNT[" CNT-CSV      "]"
-                                       UPON    CONSOLE
            DISPLAY "*(ORCVTINPUTCD)* INPUTCD /O CNT[" CNT-ICD      "]"
-                                       UPON    CONSOLE
            DISPLAY "*(ORCVTINPUTCD)* ERR     /O CNT[" CNT-ERR      "]"
-                                       UPON    CONSOLE
       *
            .
        300-END-EXT.

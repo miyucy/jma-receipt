@@ -32,6 +32,8 @@
       *  01.00.02    NACL-多々納  02/09/19  パラメタＦをＤＢパラメタへ変更
       *                                     Ｈ１４．１０改正対応
       *  01.00.03    NACL-多々納  02/11/29  前期高齢者対応
+      *  01.00.04    NACL-多々納  03/05/12  保険期間外の対応（暫定）
+      *  01.00.05    NACL-多々納  03/05/16  保険期間外の対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -178,6 +180,7 @@
                05  WRK-KEN-SEIDO       PIC X(10).
                05  WRK-KEN-HKNKOH      PIC 9(01).
                05  WRK-KEN-PAYKBN      PIC X(02).
+               05  WRK-KEN-ERFLG2      PIC X(01).
       *    基準日
            03  WRK-BASEYMD.
                05  WRK-BYY             PIC 9(04).
@@ -187,6 +190,8 @@
                05  WRK-B70-YY          PIC 9(04).
                05  WRK-B70-MM          PIC 9(02).
                05  WRK-B70-DD          PIC 9(02).
+      *
+           03  WRK-PTHKN-TEKEDYMD      PIC X(08).
       *
            03  WRK-HKN-HKNKOHSBTKBN    PIC X(02).
            03  FLG-HENKOU              PIC 9(01).
@@ -246,6 +251,10 @@
                "保険番号マスタ該当なし    (P02W2)組合せ出力止め".
            03  CONS-MES6               PIC X(50) VALUE
                "患者番号変換マスタ読込エラー".
+           03  CONS-MES8               PIC X(50) VALUE
+               "患者保険更新エラー".
+           03  CONS-MES9               PIC X(50) VALUE
+               "患者公費更新エラー".
       *
        01  CONS1-AREA.
            03  CONS-CNTST              PIC 9(06) VALUE   0.
@@ -275,6 +284,20 @@
       *    保険番号
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
+      *
+      *    保険番号
+       01  HZN-HKNNUM-AREA.
+           02  HZN-HKNNUM-REC          OCCURS   2.
+           COPY    "CPHKNNUM.INC"      REPLACING
+                                       //HKN-// BY //HZN-HKN-//.
+      *    患者保険情報
+       01  HZN-PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC"    REPLACING
+                                       //PTHKN-// BY //HZN-PTHKN-//.
+      *    患者公費情報せ
+       01  HZN-PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC"    REPLACING
+                                       //PTKOH-// BY //HZN-PTKOH-//.
       *
       *    パラメタ
        01  PARA-REC.
@@ -680,7 +703,8 @@
                    MOVE    ZERO            TO  WRK-KEN-PAYKBN
       *            保険確認処理
                    PERFORM 2210-HKNKOH-KAKUNIN-SEC
-                   IF  WRK-KEN-ERFLG           =   SPACE
+                   IF     (WRK-KEN-ERFLG       =   SPACE )  AND
+                          (WRK-KEN-ERFLG2      =   SPACE )
       *                前期高齢者の時、補助区分を再編集する
                        IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
                               (WRK-BYMD-70         <=  WRK-SYMD   ) AND
@@ -730,9 +754,38 @@
       *****************************************************************
        2201-HOJOKBN-SET-SEC        SECTION.
       *
+      *
+           MOVE    ZERO                TO  FLG-HENKOU
+           PERFORM 22011-HOJOKBN-CHK-SEC
+      *
+           IF      FLG-HENKOU          =   1
+      *        保険情報更新
+               MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "*(ORCVTHKNCOMBI)*  PTHKNINF UPD ERR:" MCP-RC
+                           ",KEY:" PTHKN-KEY
+               END-IF
+           END-IF
+      *
+           .
+       2201-HOJOKBN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前期高齢者の時、補助区分を再編集する処理
+      *****************************************************************
+       22011-HOJOKBN-CHK-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HENKOU
       *    労災・自費・治験
            IF      WRK-HKN-HKNKOHSBTKBN    =   "4"  OR  "8"  OR  "9"
-               GO      TO      2201-HOJOKBN-SET-EXT
+               GO      TO      22011-HOJOKBN-CHK-EXT
            END-IF
       *
            MOVE    ZERO                TO  FLG-HENKOU
@@ -768,23 +821,9 @@
                    MOVE    "9"             TO  PTHKN-HOJOKBN
                    MOVE    1               TO  FLG-HENKOU
            END-EVALUATE
-           IF      FLG-HENKOU          =   1
-      *        保険情報更新
-               MOVE    PTHKNINF-REC        TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-               IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "*(ORCVTHKNCOMBI)*  PTHKNINF UPD ERR:" MCP-RC
-                           ",KEY:" PTHKN-KEY
-               END-IF
-           END-IF
       *
            .
-       2201-HOJOKBN-SET-EXT.
+       22011-HOJOKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -822,7 +861,8 @@
                    MOVE    2               TO  WRK-KEN-HKNKOH
       *            保険確認処理
                    PERFORM 2210-HKNKOH-KAKUNIN-SEC
-                   IF  WRK-KEN-ERFLG           =   SPACE
+                   IF     (WRK-KEN-ERFLG       =   SPACE )  AND
+                          (WRK-KEN-ERFLG2      =   SPACE )
                        ADD     1               TO  IDY
                        MOVE    SPACE               TO  PARA-REC
                        INITIALIZE                      PARA-REC
@@ -865,8 +905,12 @@
       *****************************************************************
        2210-HKNKOH-KAKUNIN-SEC        SECTION.
       *
+           MOVE    SPACE              TO  HZN-HKNNUM-AREA
+           INITIALIZE                     HZN-HKNNUM-AREA
+      *
            MOVE    ZERO               TO  FLG-HKNNUM
            MOVE    SPACE              TO  HKNNUM-REC
+           INITIALIZE                     HKNNUM-REC
            MOVE    SPA-HOSPID         TO  HKN-HOSPID
            MOVE    WRK-KEN-HKNNUM     TO  HKN-HKNNUM
            IF      WRK-KEN-PAYKBN     =   SPACE
@@ -919,6 +963,13 @@
                    MOVE    HKN-HKNKOHSBTKBN    TO  WRK-HKN-HKNKOHSBTKBN
                END-IF
              ELSE
+      *        終了日が対象の時、対象とする
+               IF      ( WRK-KEN-TEKEDYMD      <=  HKN-TEKEDYMD )
+                   MOVE    HKNNUM-REC          TO  HZN-HKNNUM-REC (1)
+               ELSE
+                   MOVE    HKNNUM-REC          TO  HZN-HKNNUM-REC (2)
+               END-IF
+      *
                MOVE    "HKNNUM-KEY7"   TO  ORC-DBPATH
                PERFORM 950-HKNNUM-NEXT-SEC
              END-IF
@@ -976,8 +1027,26 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
            END-IF
+      *
+      *    対象の保険がなかった時、終了日の対象分とする
+           IF     (WRK-KEN-ERFLG       NOT =   SPACE )  AND
+                  (HZN-HKN-TEKSTYMD(1) NOT =   SPACE )
+      *!       MOVE    HZN-HKNNUM-REC          TO  HKNNUM-REC
+      *!       MOVE    HKN-TEKSTYMD            TO  WRK-KEN-TEKSTYMD
+               MOVE    SPACE                   TO  WRK-KEN-ERFLG
+               EVALUATE    WRK-KEN-HKNKOH
+                   WHEN    1
+      *                保険更新
+                       PERFORM 22101-HKNINF-UPD-SEC
+                   WHEN    2
+      *                公費更新
+                       PERFORM 22102-KOHINF-UPD-SEC
+               END-EVALUATE
+           END-IF
+      *
       *    対象の保険番号マスタが見つかった場合
-           IF  WRK-KEN-ERFLG              =   SPACE
+           IF     (WRK-KEN-ERFLG       =   SPACE )  AND
+                  (WRK-KEN-ERFLG2      =   SPACE )
       *        対象の保険番号が保険のもの
                IF  HKN-HKNKOHSBTKBN       =   "1"  OR  "4"
                                           OR  "8"  OR  "9"
@@ -996,6 +1065,351 @@
       *
            .
        2210-HKNKOH-KAKUNIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者保険情報更新処理
+      *****************************************************************
+       22101-HKNINF-UPD-SEC           SECTION.
+      *
+      *    対象の保険番号が保険であること
+           IF      HZN-HKN-HKNKOHSBTKBN (1)
+                                       =   "1"  OR  "4"
+                                       OR  "8"  OR  "9"
+                CONTINUE
+           ELSE
+               MOVE    "3"        TO  WRK-KEN-ERFLG
+               GO      TO      22101-HKNINF-UPD-EXT
+           END-IF
+      *    保険変更があった時、終了日を変更する
+           IF      HZN-HKN-TEKSTYMD (2)    NOT =   SPACE
+               MOVE    PTHKN-TEKEDYMD          TO  WRK-PTHKN-TEKEDYMD
+               MOVE    HZN-HKN-TEKEDYMD (2)    TO  PTHKN-TEKEDYMD
+      *        開始日が保険より前の時、開始日を保険の開始日にする
+               IF      HZN-HKN-TEKSTYMD (2)    >   PTHKN-TEKSTYMD
+                   MOVE    HZN-HKN-TEKSTYMD(2) TO  PTHKN-TEKSTYMD
+               END-IF
+               MOVE    HZN-HKN-HKNKOHSBTKBN (2)
+                                           TO  WRK-HKN-HKNKOHSBTKBN
+               MOVE    "A"                 TO  WRK-KEN-ERFLG2
+      *        保険を更新する
+               PERFORM 221011-PTHKNINF-UPD-SEC
+      *        新しい保険を追加する
+               MOVE    HZN-HKN-TEKSTYMD (1)    TO  PTHKN-TEKSTYMD
+               MOVE    WRK-PTHKN-TEKEDYMD      TO  PTHKN-TEKEDYMD
+               MOVE    HZN-HKN-HKNKOHSBTKBN (1)
+                                           TO  WRK-HKN-HKNKOHSBTKBN
+               PERFORM 221012-PTHKNINF-INS-SEC
+           ELSE
+      *        保険の開始日を変更する
+               MOVE    HZN-HKN-TEKSTYMD (1)    TO  PTHKN-TEKSTYMD
+               MOVE    "B"                 TO  WRK-KEN-ERFLG2
+               MOVE    HZN-HKN-HKNKOHSBTKBN (1)
+                                           TO  WRK-HKN-HKNKOHSBTKBN
+               PERFORM 221011-PTHKNINF-UPD-SEC
+           END-IF
+      *
+           .
+       22101-HKNINF-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者保険情報更新処理
+      *****************************************************************
+       221011-PTHKNINF-UPD-SEC           SECTION.
+      *
+      *    前期高齢者の時、補助区分を再編集する
+           IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
+                  (WRK-BYMD-70         <=  WRK-SYMD   ) AND
+                  (PTHKN-TEKEDYMD      >=  WRK-SYMD   ) AND
+                  (PTHKN-TEKSTYMD      >   "20021001" )
+               PERFORM 22011-HOJOKBN-CHK-SEC
+           END-IF
+      *
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "8"             TO  WRK-KEN-ERFLG
+               DISPLAY "*(ORCVTHKNCOMBI)*  PTHKNINF UPD ERR:" MCP-RC
+                       ",KEY:" PTHKN-KEY
+               GO      TO      221011-PTHKNINF-UPD-EXT
+           END-IF
+      *
+      *    パラメタＤＢへ追加
+           ADD     1               TO  IDX
+           MOVE    SPACE               TO  PARA-REC
+           INITIALIZE                      PARA-REC
+           MOVE    "PTHKNINF"          TO  PARA-FILEMEI
+           MOVE    IDX                 TO  PARA-EDANUM
+           MOVE    PTHKNINF-REC        TO  PARA-DATA-REC
+           PERFORM 400-PARA-INSERT-SEC
+      *
+           .
+       221011-PTHKNINF-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者保険情報追加処理
+      *****************************************************************
+       221012-PTHKNINF-INS-SEC           SECTION.
+      *
+      *    前期高齢者の時、補助区分を再編集する
+           IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
+                  (WRK-BYMD-70         <=  WRK-SYMD   ) AND
+                  (PTHKN-TEKEDYMD      >=  WRK-SYMD   ) AND
+                  (PTHKN-TEKSTYMD      >   "20021001" )
+               PERFORM 22011-HOJOKBN-CHK-SEC
+           END-IF
+      *    保険ＩＤ設定
+           PERFORM 2210013-PTNUM-UPD-SEC
+           ADD     1                   TO  SPA-HKNID
+      *
+           MOVE    PTNUM-HKNID         TO  PTHKN-HKNID
+           MOVE    PTHKNINF-REC        TO  HZN-PTHKNINF-REC
+      *
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTHKNINF-KEY"  TO  ORC-DBPATH
+               PERFORM 920-PTHKNINF-NEXT-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTHKNINF
+           END-IF
+      *
+           IF      FLG-PTHKNINF        =   1
+               MOVE    HZN-PTHKNINF-REC    TO  PTHKNINF-REC
+      *
+               MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    "8"             TO  WRK-KEN-ERFLG
+                   DISPLAY "*(ORCVTHKNCOMBI)*  PTHKNINF INS ERR:" MCP-RC
+                           ",KEY:" PTHKN-KEY
+                   GO      TO      221012-PTHKNINF-INS-EXT
+               END-IF
+           ELSE
+               MOVE    "8"             TO  WRK-KEN-ERFLG
+               DISPLAY "*(ORCVTHKNCOMBI)*  PTHKNINF INS ERR:" MCP-RC
+                       ",KEY:" PTHKN-KEY
+               GO      TO      221012-PTHKNINF-INS-EXT
+           END-IF
+      *
+      *    パラメタＤＢへ追加
+           ADD     1               TO  IDX
+           MOVE    SPACE               TO  PARA-REC
+           INITIALIZE                      PARA-REC
+           MOVE    "PTHKNINF"          TO  PARA-FILEMEI
+           MOVE    IDX                 TO  PARA-EDANUM
+           MOVE    PTHKNINF-REC        TO  PARA-DATA-REC
+           PERFORM 400-PARA-INSERT-SEC
+      *
+           .
+       221012-PTHKNINF-INS-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    患者保険情報更新処理
+      *****************************************************************
+       2210013-PTNUM-UPD-SEC           SECTION.
+      *
+      *
+           INITIALIZE                      PTNUM-REC
+           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+           MOVE    SPA-PTID            TO  PTNUM-PTID
+      *
+           MOVE    PTNUM-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+               PERFORM 940-PTNUM-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTNUM
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           IF      FLG-PTNUM           =   ZERO
+               EVALUATE    WRK-KEN-HKNKOH
+                   WHEN    1
+      *                保険更新
+                       COMPUTE PTNUM-HKNID     =   PTNUM-HKNID
+                                               +   1
+                   WHEN    2
+      *                公費更新
+                       COMPUTE PTNUM-KOHID     =   PTNUM-KOHID
+                                               +   1
+               END-EVALUATE
+      *
+               MOVE    SPA-SYSYMD          TO  PTNUM-UPYMD
+               MOVE    PTNUM-REC           TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "*(ORCVTHKNCOMBI)*  PTNUM UPD ERR:" MCP-RC
+                           ",KEY:"  PTNUM-KEY
+               END-IF
+           END-IF
+      *
+           .
+       2210013-PTNUM-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者公費情報更新処理
+      *****************************************************************
+       22102-KOHINF-UPD-SEC           SECTION.
+      *
+      *    対象の保険番号が保険であること
+           IF      HZN-HKN-HKNKOHSBTKBN (1)
+                                       =   "1"  OR  "4"
+                                       OR  "8"  OR  "9"
+               MOVE    "4"             TO  WRK-KEN-ERFLG
+               GO      TO      22102-KOHINF-UPD-EXT
+           END-IF
+      *    保険変更があった時、終了日を変更する
+           IF      HZN-HKN-TEKSTYMD (2)    NOT =   SPACE
+               MOVE    PTKOH-TEKEDYMD          TO  WRK-PTHKN-TEKEDYMD
+               MOVE    HZN-HKN-TEKEDYMD (2)    TO  PTKOH-TEKEDYMD
+      *        開始日が保険より前の時、開始日を保険の開始日にする
+               IF      HZN-HKN-TEKSTYMD (2)    >   PTKOH-TEKSTYMD
+                   MOVE    HZN-HKN-TEKSTYMD(2) TO  PTKOH-TEKSTYMD
+               END-IF
+               MOVE    HZN-HKN-HKNKOHSBTKBN (2)
+                                           TO  WRK-HKN-HKNKOHSBTKBN
+               MOVE    "C"                 TO  WRK-KEN-ERFLG2
+      *        保険を更新する
+               PERFORM 221021-PTKOHINF-UPD-SEC
+      *        新しい保険を追加する
+               MOVE    HZN-HKN-TEKSTYMD (1)    TO  PTKOH-TEKSTYMD
+               MOVE    WRK-PTHKN-TEKEDYMD      TO  PTKOH-TEKEDYMD
+               MOVE    HZN-HKN-HKNKOHSBTKBN (1)
+                                           TO  WRK-HKN-HKNKOHSBTKBN
+               PERFORM 221022-PTKOHINF-INS-SEC
+           ELSE
+      *        保険の開始日を変更する
+               MOVE    HZN-HKN-TEKSTYMD (1)    TO  PTKOH-TEKSTYMD
+               MOVE    "D"                 TO  WRK-KEN-ERFLG2
+               MOVE    HZN-HKN-HKNKOHSBTKBN (1)
+                                           TO  WRK-HKN-HKNKOHSBTKBN
+               PERFORM 221022-PTKOHINF-INS-SEC
+           END-IF
+      *
+           .
+       22102-KOHINF-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者公費情報更新処理
+      *****************************************************************
+       221021-PTKOHINF-UPD-SEC           SECTION.
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "9"             TO  WRK-KEN-ERFLG
+               DISPLAY "*(ORCVTHKNCOMBI)*  PTKOHINF UPD ERR:" MCP-RC
+                       ",KEY:" PTKOH-KEY
+               GO      TO      221021-PTKOHINF-UPD-EXT
+           END-IF
+      *
+      *    パラメタＤＢへ追加
+           ADD     1                   TO  IDY
+           MOVE    SPACE               TO  PARA-REC
+           INITIALIZE                      PARA-REC
+           MOVE    "PTKOHINF"          TO  PARA-FILEMEI
+           MOVE    IDY                 TO  PARA-EDANUM
+           MOVE    PTKOHINF-REC        TO  PARA-DATA-REC
+           PERFORM 400-PARA-INSERT-SEC
+      *
+           .
+       221021-PTKOHINF-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者公費情報追加処理
+      *****************************************************************
+       221022-PTKOHINF-INS-SEC           SECTION.
+      *
+      *    保険ＩＤ設定
+           PERFORM 2210013-PTNUM-UPD-SEC
+           ADD     1                   TO  SPA-KOHID
+      *
+           MOVE    PTNUM-KOHID         TO  PTKOH-KOHID
+           MOVE    PTKOHINF-REC        TO  HZN-PTKOHINF-REC
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTKOHINF-KEY"  TO  ORC-DBPATH
+               PERFORM 930-PTKOHINF-NEXT-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           IF      FLG-PTKOHINF        =   1
+               MOVE    HZN-PTKOHINF-REC    TO  PTKOHINF-REC
+      *
+               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    "9"             TO  WRK-KEN-ERFLG
+                   DISPLAY "*(ORCVTHKNCOMBI)*  PTKOHINF INS ERR:" MCP-RC
+                           ",KEY:" PTHKN-KEY
+                   GO      TO      221022-PTKOHINF-INS-EXT
+               END-IF
+           ELSE
+               MOVE    "9"             TO  WRK-KEN-ERFLG
+               DISPLAY "*(ORCVTHKNCOMBI)*  PTKOHINF INS ERR:" MCP-RC
+                       ",KEY:" PTHKN-KEY
+               GO      TO      221022-PTKOHINF-INS-EXT
+           END-IF
+      *
+           .
+       221022-PTKOHINF-INS-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1081,10 +1495,16 @@
       *        患者公費マスタに保険が入っている場合
                WHEN    "4"
                    MOVE    3           TO  FLG-ERR
+      *        患者保険マスタ更新エラー
+               WHEN    "8"
+                   MOVE    8           TO  FLG-ERR
+      *        患者公費マスタ更新エラー
+               WHEN    "9"
+                   MOVE    9           TO  FLG-ERR
                END-EVALUATE
-               IF  FLG-ERR             =   ZERO
-                   MOVE    6           TO  FLG-ERR
-               END-IF
+      ******** IF  FLG-ERR             =   ZERO
+      *            MOVE    6           TO  FLG-ERR
+      ******** END-IF
            ELSE
       *        サブプロ（ORCGP02W2）内でエラー発生
                EVALUATE    SPA-ERRCD
@@ -1117,7 +1537,33 @@
                MOVE    CONS-MES5       TO  ERR-MES
            WHEN    6
                MOVE    CONS-MES6       TO  ERR-MES
+           WHEN    8
+               MOVE    CONS-MES8       TO  ERR-MES
+           WHEN    9
+               MOVE    CONS-MES9       TO  ERR-MES
            END-EVALUATE
+           IF     (FLG-ERR             =   ZERO )  AND
+                  (WRK-KEN-ERFLG2  NOT =   SPACE)
+      *            期間変更
+               EVALUATE    WRK-KEN-ERFLG2
+                   WHEN    "A"
+                       MOVE    "保険期間変更・追加"
+                                               TO  ERR-MES
+                       MOVE    WRK-KEN-HKNNUM  TO  ERR-HKNNUM
+                   WHEN    "B"
+                       MOVE    "保険開始期間変更"
+                                               TO  ERR-MES
+                       MOVE    WRK-KEN-HKNNUM  TO  ERR-HKNNUM
+                   WHEN    "C"
+                       MOVE    "公費期間変更・追加"
+                                               TO  ERR-MES
+                       MOVE    WRK-KEN-HKNNUM  TO  ERR-HKNNUM
+                   WHEN    "D"
+                       MOVE    "公費開始期間変更"
+                                               TO  ERR-MES
+                       MOVE    WRK-KEN-HKNNUM  TO  ERR-HKNNUM
+               END-EVALUATE
+           END-IF
            MOVE    SPA-PTID            TO  ERR-PTID
            MOVE    SPA-ERRCD           TO  ERR-ERRCD
            WRITE   ERR-REC
@@ -1253,10 +1699,12 @@
                 PERFORM 2220-ERRLST-OUT-SEC
            ELSE
                MOVE    IDZ             TO  PTNUM-AUTOCOMBINUM
-               IF  SPA-HKNID       NOT =   PTNUM-HKNID
+      *!       IF  SPA-HKNID       NOT =   PTNUM-HKNID
+               IF  SPA-HKNID           >   PTNUM-HKNID
                    MOVE    SPA-HKNID   TO  PTNUM-HKNID
                END-IF
-               IF  SPA-KOHID       NOT =   PTNUM-KOHID
+      *!       IF  SPA-KOHID       NOT =   PTNUM-KOHID
+               IF  SPA-KOHID           >   PTNUM-KOHID
                    MOVE    SPA-KOHID   TO  PTNUM-KOHID
                END-IF
                MOVE    SPA-SYSYMD      TO  PTNUM-UPYMD

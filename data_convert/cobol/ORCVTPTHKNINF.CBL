@@ -482,7 +482,6 @@
       *
            IF  CNT-CSV (4:3)           =   ZERO
                DISPLAY "***(ORCVTPTHKNINF)*** CNT-CSV[" CNT-CSV "]"
-                                       UPON    CONSOLE
            END-IF
            MOVE    SPACE               TO  PTHKN-REC
            INITIALIZE                      PTHKN-REC
