@@ -648,7 +648,7 @@ path	key10s1 	{
 			AND   a.SRYKBN     <=  :EDSRYKBN
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
-			ORDER  BY  SRYCD
+			ORDER  BY  a.SRYCD
 		;
 	};
 };
@@ -742,7 +742,7 @@ path	key11s1 	{
 			AND   YKZKBN      =   :YKZKBN
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
-			ORDER  BY  SRYCD
+			ORDER  BY  a.SRYCD
 		;
 	};
 };
@@ -831,7 +831,7 @@ path	key12s1 	{
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
-			ORDER  BY  SRYCD
+			ORDER  BY  a.SRYCD
 		;
 	};
 };
@@ -963,7 +963,7 @@ path	key20   	{
 		FROM tbl_tensu a,tbl_inputcd b
 			WHERE a.SRYCD    =   b.SRYCD
 			AND   YUKOEDYMD  =  :YUKOEDYMD
-			ORDER  BY  SRYCD
+			ORDER  BY  a.SRYCD
 		;
 	};
 };
