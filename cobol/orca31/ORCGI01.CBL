@@ -35,6 +35,8 @@
       *  01.00.05    NACL-太田    03.02.05  自院歴作成データを考慮する
       *  01.00.06    NACL-太田    03.03.05  異動取消機能を追加
       *                                     入院歴の表示を修正
+      *  01.00.07    NACL-太田    03.03.06  通算日数を関数より取得する
+      *                                     よう修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -430,6 +432,10 @@
        01  LNK-SYUNOU-REC-T.
          02 LNK-SYUNOU-REC     OCCURS 10.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
+      *
+      *    通算日数取得サブ
+           COPY "CPORCSTUSAN.INC".
+      *
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -6836,15 +6842,20 @@
            INITIALIZE      ORCSSYOKIKSNAREA
       *
       *    通算日数、算定開始日を求める
-           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
-               PERFORM 4801-NYUTSUSAN-SANTEI-GET-SEC
-           ELSE
-               PERFORM 4801-IDOTSUSAN-SANTEI-GET-SEC
+           PERFORM 4801-TSUSAN-SANTEI-GET-SEC
+           IF    ( SPA-ERRCD    NOT =  SPACE )
+               GO  TO  4801-NYUKAIKEI-EDIT-EXT
            END-IF
       *
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
            MOVE    WRK-SANTEISTYMD
                                    TO  SYOKIKSN-IN-SANTEISTYMD
+      *-     IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
+      *-         PERFORM 4801-NYUTSUSAN-SANTEI-GET-SEC
+      *-     ELSE
+      *-         PERFORM 4801-IDOTSUSAN-SANTEI-GET-SEC
+      *-     END-IF
+      *
       *
            IF      SPA-GMN-I01-TOKNYUIN-CD    NOT =   SPACE
                PERFORM   4801-TOKTEI-NYUIN-SET-SEC
@@ -7330,15 +7341,20 @@
            INITIALIZE      ORCSSYOKIKSNAREA
       *
       *    通算日数、算定開始日を求める
-           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "07" )
-               PERFORM 4801-NYUTSUSAN-SANTEI-GET-SEC
-           ELSE
-               PERFORM 4801-IDOTSUSAN-SANTEI-GET-SEC
+           PERFORM 4801-TSUSAN-SANTEI-GET-SEC
+           IF    ( SPA-ERRCD    NOT =  SPACE )
+               GO  TO  4801-TAIINKAIKEI-CANCEL-EXT
            END-IF
       *
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
            MOVE    WRK-SANTEISTYMD
                                    TO  SYOKIKSN-IN-SANTEISTYMD
+      *-     IF    ( SPA-GMN-I01-SYORIKBN-CD =   "07" )
+      *-         PERFORM 4801-NYUTSUSAN-SANTEI-GET-SEC
+      *-     ELSE
+      *-         PERFORM 4801-IDOTSUSAN-SANTEI-GET-SEC
+      *-     END-IF
+      *
       *
            DISPLAY "SYOKIKSN-IN-TUSANNISSU  = "
                     SYOKIKSN-IN-TUSANNISSU
@@ -7452,15 +7468,19 @@
            INITIALIZE      ORCSSYOKIKSNAREA
       *
       *    通算日数、算定開始日を求める
-           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
-               PERFORM 4801-NYUTSUSAN-SANTEI-GET-SEC
-           ELSE
-               PERFORM 4801-IDOTSUSAN-SANTEI-GET-SEC
+           PERFORM 4801-TSUSAN-SANTEI-GET-SEC
+           IF    ( SPA-ERRCD    NOT =  SPACE )
+               GO  TO  4801-TENROOM-EDIT-EXT
            END-IF
       *
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
            MOVE    WRK-SANTEISTYMD
                                    TO  SYOKIKSN-IN-SANTEISTYMD
+      *-     IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
+      *-         PERFORM 4801-NYUTSUSAN-SANTEI-GET-SEC
+      *-     ELSE
+      *-         PERFORM 4801-IDOTSUSAN-SANTEI-GET-SEC
+      *-     END-IF
       *
            IF      SPA-GMN-I01-TOKNYUIN-CD    NOT =   SPACE
                PERFORM   4801-TOKTEI-NYUIN-SET-SEC
@@ -7571,227 +7591,278 @@
        4801-IDOKAIKEI-CANCEL-EXT.
            EXIT.
       *****************************************************************
-      *    通算日数、算定開始日取得処理（入院登録時）
+      *    通算日数取得処理
       *****************************************************************
-       4801-NYUTSUSAN-SANTEI-GET-SEC   SECTION.
+       4801-TSUSAN-SANTEI-GET-SEC      SECTION.
       *
            INITIALIZE                  WRK-TSUSAN
                                        WRK-SANTEISTYMD
       *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >   50 )
-               IF    ( SPA-NAI-I01-TZITA-FLG (IDX1)
-                                                   =   2 )
-                AND  ( SPA-GMN-I01-TSHONUM (IDX1)
-                                   =   PTNYUINRRK-SHONUM )
-                   COMPUTE WRK-TSUSAN
-                       =   WRK-TSUSAN
-                       +   SPA-NAI-I01-TNYURRKTAISYO (IDX1)
-               END-IF
-      *
-           END-PERFORM
-      *
-      *    歴をさかのぼり通算の対象となるデータを抽出する
-           INITIALIZE    WRK-REKI-ZIIN-TBL
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >   50 )
-               IF    ( SPA-NAI-I01-TZITA-FLG (IDX1)
-                                                   =   ZERO )
-                AND  ( SPA-GMN-I01-TSHONUM (IDX1)
-                                   =   PTNYUINRRK-SHONUM )
-      *
-                   COMPUTE WRK-REKI-ZIIN-CNT
-                       =   WRK-REKI-ZIIN-CNT   +   1
-      *
-                   MOVE    WRK-REKI-ZIIN-CNT   TO  IDX2
-                   MOVE    SPA-NAI-I01-TNYUINYMD (IDX1)
-                                   TO  WRK-REKI-ZIIN-NYUINYMD (IDX2)
-                   MOVE    SPA-NAI-I01-TTAIINYMD (IDX1)
-                                   TO  WRK-REKI-ZIIN-TAIINYMD (IDX2)
-      *
-                  IF    ( SPA-GMN-I01-TSHOKAI (IDX1)  =   "◎" )
-                      MOVE    50              TO  IDX1
-                  END-IF
-      *
-               END-IF
-           END-PERFORM
-      *
-      *    入院日が前回退院日と同日の場合は、翌日を算定開始日に設定する
-           IF    ( SPA-GMN-I01-NYUREKILST-CNT  >   ZERO )
-            AND  ( SPA-NAI-I01-TZITA-FLG (1)   =   ZERO )
-            AND  ( PTNYUINRRK-NYUINYMD
-                                   =   SPA-NAI-I01-TTAIINYMD (1) )
-               MOVE    PTNYUINRRK-NYUINYMD
-                                   TO WRK-YMD
-               MOVE    "1"         TO WRK-ZOGENPTN
-               MOVE    1           TO WRK-ZOGEN
-               PERFORM 5002-CALENDAR-SEC
-               MOVE    WRK-KEISANYMD
-                                   TO  WRK-SANTEISTYMD
-           ELSE
-               MOVE    PTNYUINRRK-NYUINYMD
-                                   TO  WRK-SANTEISTYMD
+           INITIALIZE                  ORCSTUSANAREA
+           MOVE    SPA-HOSPID      TO  STUSAN-HOSPID
+           MOVE    PTNYUINRRK-PTID TO  STUSAN-PTID
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                   TO  STUSAN-KJNYMD
+           CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+           IF    ( STUSAN-RC       NOT =   ZERO )
+               MOVE    "2003"      TO  SPA-ERRCD
+               GO  TO  4801-TSUSAN-SANTEI-GET-EXT
            END-IF
       *
-      *    今回が初回の場合、または過去に歴作成データしかない場合は、
-      *    以下の処理は行わない
-           IF    ( PTNYUINRRK-SHOKAIKBN    =   "1" )
-             OR  ( WRK-REKI-ZIIN-CNT      <=  ZERO )
-               GO  TO  4801-NYUTSUSAN-SANTEI-GET-EXT
-           END-IF
+           COMPUTE WRK-TSUSAN  =   STUSAN-NISSU03  -   1
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                   TO  WRK-SANTEISTYMD
       *
-           PERFORM VARYING IDX1
-                   FROM    WRK-REKI-ZIIN-CNT
-                   BY      -1
-                   UNTIL ( IDX1    <   1 )
-      *
-               MOVE    WRK-REKI-ZIIN-NYUINYMD (IDX1)
-                               TO  WRK-STYMD
-               MOVE    WRK-REKI-ZIIN-TAIINYMD (IDX1)
-                               TO  WRK-EDYMD
-               PERFORM 5002-KIKAN-CALC-SEC
-               IF    ( FLG-ORCSDAY =   ZERO )
-                   IF    ( WRK-REKI-ZIIN-CNT
-                                           >   IDX1 )
-                    AND  ( WRK-REKI-ZIIN-NYUINYMD (IDX1)
-                       =   WRK-REKI-ZIIN-TAIINYMD (IDX1 + 1) )
-                       COMPUTE WRK-TSUSAN
-                           =   WRK-TSUSAN  +   WRK-NISSU2  -   1
-                   ELSE
-                       COMPUTE WRK-TSUSAN
-                           =   WRK-TSUSAN  +   WRK-NISSU2
-                   END-IF
-               END-IF
-      *
-           END-PERFORM
-      *
+           DISPLAY "************************"
+           DISPLAY "** TSUSAN-SANTEI      **"
+           DISPLAY "WRK-TSUSAN      = " WRK-TSUSAN
+           DISPLAY "WRK-SANTEISTYMD = " WRK-SANTEISTYMD
+           DISPLAY "************************"
       *
            .
-       4801-NYUTSUSAN-SANTEI-GET-EXT.
+       4801-TSUSAN-SANTEI-GET-EXT.
            EXIT.
+      ******************************************************************
+      *    通算日数、算定開始日取得処理（入院登録時）
+      *****************************************************************
+      *- 4801-NYUTSUSAN-SANTEI-GET-SEC   SECTION.
+      *-*
+      *-     INITIALIZE                  WRK-TSUSAN
+      *-                                 WRK-SANTEISTYMD
+      *-*
+      *-     PERFORM VARYING IDX1    FROM    1   BY  1
+      *-         UNTIL     ( IDX1    >   50 )
+      *-         IF    ( SPA-NAI-I01-TZITA-FLG (IDX1)
+      *-                                             =   2 )
+      *-          AND  ( SPA-GMN-I01-TSHONUM (IDX1)
+      *-                             =   PTNYUINRRK-SHONUM )
+      *-             COMPUTE WRK-TSUSAN
+      *-                 =   WRK-TSUSAN
+      *-                 +   SPA-NAI-I01-TNYURRKTAISYO (IDX1)
+      *-         END-IF
+      *-*
+      *-     END-PERFORM
+      *-*
+      *-*    歴をさかのぼり通算の対象となるデータを抽出する
+      *-     INITIALIZE    WRK-REKI-ZIIN-TBL
+      *-     PERFORM VARYING IDX1    FROM    1   BY  1
+      *-         UNTIL     ( IDX1    >   50 )
+      *-         IF    ( SPA-NAI-I01-TZITA-FLG (IDX1)
+      *-                                             =   ZERO )
+      *-          AND  ( SPA-GMN-I01-TSHONUM (IDX1)
+      *-                             =   PTNYUINRRK-SHONUM )
+      *-*
+      *-             COMPUTE WRK-REKI-ZIIN-CNT
+      *-                 =   WRK-REKI-ZIIN-CNT   +   1
+      *-*
+      *-             MOVE    WRK-REKI-ZIIN-CNT   TO  IDX2
+      *-             MOVE    SPA-NAI-I01-TNYUINYMD (IDX1)
+      *-                             TO  WRK-REKI-ZIIN-NYUINYMD (IDX2)
+      *-             MOVE    SPA-NAI-I01-TTAIINYMD (IDX1)
+      *-                             TO  WRK-REKI-ZIIN-TAIINYMD (IDX2)
+      *-*
+      *-            IF    ( SPA-GMN-I01-TSHOKAI (IDX1)  =   "◎" )
+      *-                MOVE    50              TO  IDX1
+      *-            END-IF
+      *-*
+      *-         END-IF
+      *-     END-PERFORM
+      *-*
+      *-*    入院日が前回退院日と同日の場合は、翌日を算定開始日に設定する
+      *-     IF    ( SPA-GMN-I01-NYUREKILST-CNT  >   ZERO )
+      *-      AND  ( SPA-NAI-I01-TZITA-FLG (1)   =   ZERO )
+      *-      AND  ( PTNYUINRRK-NYUINYMD
+      *-                             =   SPA-NAI-I01-TTAIINYMD (1) )
+      *-         MOVE    PTNYUINRRK-NYUINYMD
+      *-                             TO WRK-YMD
+      *-         MOVE    "1"         TO WRK-ZOGENPTN
+      *-         MOVE    1           TO WRK-ZOGEN
+      *-         PERFORM 5002-CALENDAR-SEC
+      *-         MOVE    WRK-KEISANYMD
+      *-                             TO  WRK-SANTEISTYMD
+      *-     ELSE
+      *-         MOVE    PTNYUINRRK-NYUINYMD
+      *-                             TO  WRK-SANTEISTYMD
+      *-     END-IF
+      *-*
+      *-*    今回が初回の場合、または過去に歴作成データしかない場合は、
+      *-*    以下の処理は行わない
+      *-     IF    ( PTNYUINRRK-SHOKAIKBN    =   "1" )
+      *-       OR  ( WRK-REKI-ZIIN-CNT      <=  ZERO )
+      *-     DISPLAY "************************"
+      *-     DISPLAY "*** NYUTSUSAN-SANTEI ***"
+      *-     DISPLAY "WRK-TSUSAN      = " WRK-TSUSAN
+      *-     DISPLAY "WRK-SANTEISTYMD = " WRK-SANTEISTYMD
+      *-     DISPLAY "************************"
+      *-         GO  TO  4801-NYUTSUSAN-SANTEI-GET-EXT
+      *-     END-IF
+      *-*
+      *-     PERFORM VARYING IDX1
+      *-             FROM    WRK-REKI-ZIIN-CNT
+      *-             BY      -1
+      *-             UNTIL ( IDX1    <   1 )
+      *-*
+      *-         MOVE    WRK-REKI-ZIIN-NYUINYMD (IDX1)
+      *-                         TO  WRK-STYMD
+      *-         MOVE    WRK-REKI-ZIIN-TAIINYMD (IDX1)
+      *-                         TO  WRK-EDYMD
+      *-         PERFORM 5002-KIKAN-CALC-SEC
+      *-         IF    ( FLG-ORCSDAY =   ZERO )
+      *-             IF    ( WRK-REKI-ZIIN-CNT
+      *-                                     >   IDX1 )
+      *-              AND  ( WRK-REKI-ZIIN-NYUINYMD (IDX1)
+      *-                 =   WRK-REKI-ZIIN-TAIINYMD (IDX1 + 1) )
+      *-                 COMPUTE WRK-TSUSAN
+      *-                     =   WRK-TSUSAN  +   WRK-NISSU2  -   1
+      *-             ELSE
+      *-                 COMPUTE WRK-TSUSAN
+      *-                     =   WRK-TSUSAN  +   WRK-NISSU2
+      *-             END-IF
+      *-         END-IF
+      *-*
+      *-     END-PERFORM
+      *-*
+      *-     DISPLAY "*** NYUTSUSAN-SANTEI ***"
+      *-     DISPLAY "WRK-TSUSAN = "  WRK-TSUSAN
+      *-     DISPLAY "WRK-SANTEISTYMD = " WRK-SANTEISTYMD
+      *-     DISPLAY "************************"
+      *-*
+      *-     .
+      *- 4801-NYUTSUSAN-SANTEI-GET-EXT.
+      *-     EXIT.
       *****************************************************************
       *    通算日数、算定開始日取得処理（転科・転棟・転室時）
       *****************************************************************
-       4801-IDOTSUSAN-SANTEI-GET-SEC   SECTION.
-      *
-           INITIALIZE                  WRK-NYUINNISSU
-                                       WRK-TSUSAN
-                                       WRK-SANTEISTYMD
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >   50 )
-               IF    ( SPA-NAI-I01-TZITA-FLG (IDX1)
-                                                   =   2 )
-                AND  ( SPA-GMN-I01-TSHONUM (IDX1)
-                                   =   PTNYUINRRK-SHONUM )
-                   COMPUTE WRK-TSUSAN
-                       =   WRK-TSUSAN
-                       +   SPA-NAI-I01-TNYURRKTAISYO (IDX1)
-               END-IF
-      *
-           END-PERFORM
-      *
-      *    入院日から（異動日当日を含まない）異動日までの日数を求める
-      *    （入院日数とする）
-           MOVE    PTNYUINRRK-NYUINYMD
-                                       TO  WRK-STYMD
-           MOVE    PTNYUINRRK-TENNYUYMD
-                                       TO  WRK-EDYMD
-           PERFORM 5002-KIKAN-CALC-SEC
-           MOVE    WRK-NISSU1          TO  WRK-NYUINNISSU
-      *
-      *    歴をさかのぼり通算の対象となるデータを抽出する
-           INITIALIZE    WRK-REKI-ZIIN-TBL
-           PERFORM VARYING IDX1    FROM    2   BY  1
-               UNTIL     ( IDX1    >   50 )
-               IF    ( SPA-NAI-I01-TZITA-FLG (IDX1)
-                                                   =   ZERO )
-                AND  ( SPA-GMN-I01-TSHONUM (IDX1)
-                                   =   PTNYUINRRK-SHONUM )
-      *
-                   COMPUTE WRK-REKI-ZIIN-CNT
-                       =   WRK-REKI-ZIIN-CNT   +   1
-      *
-                   MOVE    WRK-REKI-ZIIN-CNT   TO  IDX2
-                   MOVE    SPA-NAI-I01-TNYUINYMD (IDX1)
-                                   TO  WRK-REKI-ZIIN-NYUINYMD (IDX2)
-                   MOVE    SPA-NAI-I01-TTAIINYMD (IDX1)
-                                   TO  WRK-REKI-ZIIN-TAIINYMD (IDX2)
-      *
-                  IF    ( SPA-GMN-I01-TSHOKAI (IDX1)  =   "◎" )
-                      MOVE    50              TO  IDX1
-                  END-IF
-      *
-               END-IF
-           END-PERFORM
-      *
-      *    異動日が前回退院日と同日の場合は、翌日を算定開始日に設定する
-           IF    ( SPA-GMN-I01-NYUREKILST-CNT  >   1 )
-            AND  ( SPA-NAI-I01-TZITA-FLG (2)   =   ZERO )
-            AND  ( PTNYUINRRK-TENNYUYMD
-                                   =   SPA-NAI-I01-TTAIINYMD (2) )
-               MOVE    PTNYUINRRK-TENNYUYMD
-                                   TO WRK-YMD
-               MOVE    "1"         TO WRK-ZOGENPTN
-               MOVE    1           TO WRK-ZOGEN
-               PERFORM 5002-CALENDAR-SEC
-               MOVE    WRK-KEISANYMD
-                                   TO  WRK-SANTEISTYMD
-           ELSE
-      *        異動日が前回退院日と同日で無い場合は、異動日を算定開始日
-      *        に設定する。
-      *        通算日数は入院日と前回退院日が同日の場合は、
-      *        歴を遡って求めた通算日数＋入院日数−１
-      *        そうでない場合、通算日数＋入院日数を通算日数に設定する
-               MOVE    PTNYUINRRK-TENNYUYMD
-                                   TO  WRK-SANTEISTYMD
-               IF    ( SPA-GMN-I01-NYUREKILST-CNT  >   1 )
-                AND  ( SPA-NAI-I01-TZITA-FLG (2)   =   ZERO )
-                AND  ( PTNYUINRRK-NYUINYMD
-                                   =   SPA-NAI-I01-TTAIINYMD (2) )
-                   COMPUTE WRK-TSUSAN
-                       =   WRK-TSUSAN  +   WRK-NYUINNISSU  -   1
-               ELSE
-                   COMPUTE WRK-TSUSAN
-                       =   WRK-TSUSAN  +   WRK-NYUINNISSU
-               END-IF
-           END-IF
-      *
-      *    今回が初回の場合、または過去に歴作成データしかない場合は、
-      *    以下の処理は行わない
-           IF    ( PTNYUINRRK-SHOKAIKBN    =   "1" )
-             OR  ( WRK-REKI-ZIIN-CNT      <=  ZERO )
-               GO  TO  4801-IDOTSUSAN-SANTEI-GET-EXT
-           END-IF
-      *
-           PERFORM VARYING IDX1
-                   FROM    WRK-REKI-ZIIN-CNT
-                   BY      -1
-                   UNTIL ( IDX1    <   1 )
-      *
-               MOVE    WRK-REKI-ZIIN-NYUINYMD (IDX1)
-                               TO  WRK-STYMD
-               MOVE    WRK-REKI-ZIIN-TAIINYMD (IDX1)
-                               TO  WRK-EDYMD
-               PERFORM 5002-KIKAN-CALC-SEC
-               IF    ( FLG-ORCSDAY =   ZERO )
-                   IF    ( WRK-REKI-ZIIN-CNT
-                                           >   IDX1 )
-                    AND  ( WRK-REKI-ZIIN-NYUINYMD (IDX1)
-                       =   WRK-REKI-ZIIN-TAIINYMD (IDX1 + 1) )
-                       COMPUTE WRK-TSUSAN
-                           =   WRK-TSUSAN  +   WRK-NISSU2  -   1
-                   ELSE
-                       COMPUTE WRK-TSUSAN
-                           =   WRK-TSUSAN  +   WRK-NISSU2
-                   END-IF
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4801-IDOTSUSAN-SANTEI-GET-EXT.
-           EXIT.
+      *- 4801-IDOTSUSAN-SANTEI-GET-SEC   SECTION.
+      *-*
+      *-     INITIALIZE                  WRK-NYUINNISSU
+      *-                                 WRK-TSUSAN
+      *-                                 WRK-SANTEISTYMD
+      *-*
+      *-     PERFORM VARYING IDX1    FROM    1   BY  1
+      *-         UNTIL     ( IDX1    >   50 )
+      *-         IF    ( SPA-NAI-I01-TZITA-FLG (IDX1)
+      *-                                             =   2 )
+      *-          AND  ( SPA-GMN-I01-TSHONUM (IDX1)
+      *-                             =   PTNYUINRRK-SHONUM )
+      *-             COMPUTE WRK-TSUSAN
+      *-                 =   WRK-TSUSAN
+      *-                 +   SPA-NAI-I01-TNYURRKTAISYO (IDX1)
+      *-         END-IF
+      *-*
+      *-     END-PERFORM
+      *-*
+      *-*    入院日から（異動日当日を含まない）異動日までの日数を求める
+      *-*    （入院日数とする）
+      *-     MOVE    PTNYUINRRK-NYUINYMD
+      *-                                 TO  WRK-STYMD
+      *-     MOVE    PTNYUINRRK-TENNYUYMD
+      *-                                 TO  WRK-EDYMD
+      *-     PERFORM 5002-KIKAN-CALC-SEC
+      *-     MOVE    WRK-NISSU1          TO  WRK-NYUINNISSU
+      *-*
+      *-*    歴をさかのぼり通算の対象となるデータを抽出する
+      *-     INITIALIZE    WRK-REKI-ZIIN-TBL
+      *-     PERFORM VARYING IDX1    FROM    2   BY  1
+      *-         UNTIL     ( IDX1    >   50 )
+      *-         IF    ( SPA-NAI-I01-TZITA-FLG (IDX1)
+      *-                                             =   ZERO )
+      *-          AND  ( SPA-GMN-I01-TSHONUM (IDX1)
+      *-                             =   PTNYUINRRK-SHONUM )
+      *-*
+      *-             COMPUTE WRK-REKI-ZIIN-CNT
+      *-                 =   WRK-REKI-ZIIN-CNT   +   1
+      *-*
+      *-             MOVE    WRK-REKI-ZIIN-CNT   TO  IDX2
+      *-             MOVE    SPA-NAI-I01-TNYUINYMD (IDX1)
+      *-                             TO  WRK-REKI-ZIIN-NYUINYMD (IDX2)
+      *-             MOVE    SPA-NAI-I01-TTAIINYMD (IDX1)
+      *-                             TO  WRK-REKI-ZIIN-TAIINYMD (IDX2)
+      *-*
+      *-            IF    ( SPA-GMN-I01-TSHOKAI (IDX1)  =   "◎" )
+      *-                MOVE    50              TO  IDX1
+      *-            END-IF
+      *-*
+      *-         END-IF
+      *-     END-PERFORM
+      *-*
+      *-*    異動日が前回退院日と同日の場合は、翌日を算定開始日に設定する
+      *-     IF    ( SPA-GMN-I01-NYUREKILST-CNT  >   1 )
+      *-      AND  ( SPA-NAI-I01-TZITA-FLG (2)   =   ZERO )
+      *-      AND  ( PTNYUINRRK-TENNYUYMD
+      *-                             =   SPA-NAI-I01-TTAIINYMD (2) )
+      *-         MOVE    PTNYUINRRK-TENNYUYMD
+      *-                             TO WRK-YMD
+      *-         MOVE    "1"         TO WRK-ZOGENPTN
+      *-         MOVE    1           TO WRK-ZOGEN
+      *-         PERFORM 5002-CALENDAR-SEC
+      *-         MOVE    WRK-KEISANYMD
+      *-                             TO  WRK-SANTEISTYMD
+      *-     ELSE
+      *-*        異動日が前回退院日と同日で無い場合は、異動日を算定開始日
+      *-*        に設定する。
+      *-*        通算日数は入院日と前回退院日が同日の場合は、
+      *-*        歴を遡って求めた通算日数＋入院日数−１
+      *-*        そうでない場合、通算日数＋入院日数を通算日数に設定する
+      *-         MOVE    PTNYUINRRK-TENNYUYMD
+      *-                             TO  WRK-SANTEISTYMD
+      *-         IF    ( SPA-GMN-I01-NYUREKILST-CNT  >   1 )
+      *-          AND  ( SPA-NAI-I01-TZITA-FLG (2)   =   ZERO )
+      *-          AND  ( PTNYUINRRK-NYUINYMD
+      *-                             =   SPA-NAI-I01-TTAIINYMD (2) )
+      *-             COMPUTE WRK-TSUSAN
+      *-                 =   WRK-TSUSAN  +   WRK-NYUINNISSU  -   1
+      *-         ELSE
+      *-             COMPUTE WRK-TSUSAN
+      *-                 =   WRK-TSUSAN  +   WRK-NYUINNISSU
+      *-         END-IF
+      *-     END-IF
+      *-*
+      *-*    今回が初回の場合、または過去に歴作成データしかない場合は、
+      *-*    以下の処理は行わない
+      *-     IF    ( PTNYUINRRK-SHOKAIKBN    =   "1" )
+      *-       OR  ( WRK-REKI-ZIIN-CNT      <=  ZERO )
+      *-     DISPLAY "************************"
+      *-     DISPLAY "*** IDOTSUSAN-SANTEI ***"
+      *-     DISPLAY "WRK-TSUSAN      = " WRK-TSUSAN
+      *-     DISPLAY "WRK-SANTEISTYMD = " WRK-SANTEISTYMD
+      *-     DISPLAY "************************"
+      *-         GO  TO  4801-IDOTSUSAN-SANTEI-GET-EXT
+      *-     END-IF
+      *-*
+      *-     PERFORM VARYING IDX1
+      *-             FROM    WRK-REKI-ZIIN-CNT
+      *-             BY      -1
+      *-             UNTIL ( IDX1    <   1 )
+      *-*
+      *-         MOVE    WRK-REKI-ZIIN-NYUINYMD (IDX1)
+      *-                         TO  WRK-STYMD
+      *-         MOVE    WRK-REKI-ZIIN-TAIINYMD (IDX1)
+      *-                         TO  WRK-EDYMD
+      *-         PERFORM 5002-KIKAN-CALC-SEC
+      *-         IF    ( FLG-ORCSDAY =   ZERO )
+      *-             IF    ( WRK-REKI-ZIIN-CNT
+      *-                                     >   IDX1 )
+      *-              AND  ( WRK-REKI-ZIIN-NYUINYMD (IDX1)
+      *-                 =   WRK-REKI-ZIIN-TAIINYMD (IDX1 + 1) )
+      *-                 COMPUTE WRK-TSUSAN
+      *-                     =   WRK-TSUSAN  +   WRK-NISSU2  -   1
+      *-             ELSE
+      *-                 COMPUTE WRK-TSUSAN
+      *-                     =   WRK-TSUSAN  +   WRK-NISSU2
+      *-             END-IF
+      *-         END-IF
+      *-*
+      *-     END-PERFORM
+      *-*
+      *-     DISPLAY "*** IDOTSUSAN-SANTEI ***"
+      *-     DISPLAY "WRK-TSUSAN = "  WRK-TSUSAN
+      *-     DISPLAY "WRK-SANTEISTYMD = " WRK-SANTEISTYMD
+      *-     DISPLAY "************************"
+      *-*
+      *-     .
+      *- 4801-IDOTSUSAN-SANTEI-GET-EXT.
+      *-     EXIT.
       *****************************************************************
       *    病棟情報検索処理
       *****************************************************************
@@ -9393,41 +9464,26 @@
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE    "月途中の入金（請求）を取消してください"
                                        TO  SPA-ERRMSG (41 : )
+           WHEN    "2012"
+               MOVE    "退院計算に必要な会計情報が作成されていません"
+                                       TO  SPA-ERRMSG
            WHEN    "2001"
                MOVE    "登録処理に失敗しました"
-                                       TO  SPA-ERRMSG
-           WHEN    "2002"
-               MOVE    "更新処理に失敗しました"
-                                       TO  SPA-ERRMSG
-           WHEN    "2003"
-               MOVE    "更新処理に失敗しました"
-                                       TO  SPA-ERRMSG
-           WHEN    "2004"
-               MOVE    "更新処理に失敗しました"
-                                       TO  SPA-ERRMSG
-           WHEN    "2005"
-               MOVE    "更新処理に失敗しました"
-                                       TO  SPA-ERRMSG
-           WHEN    "2006"
-               MOVE    "更新処理に失敗しました"
-                                       TO  SPA-ERRMSG
-           WHEN    "2007"
-               MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            WHEN    "2008"
                MOVE    "負担金計算処理に失敗しました"
                                        TO  SPA-ERRMSG
+           WHEN    "2002"
+           WHEN    "2003"
+           WHEN    "2004"
+           WHEN    "2005"
+           WHEN    "2006"
+           WHEN    "2007"
            WHEN    "2009"
-               MOVE    "更新処理に失敗しました"
-                                       TO  SPA-ERRMSG
            WHEN    "2010"
-               MOVE    "更新処理に失敗しました"
-                                       TO  SPA-ERRMSG
            WHEN    "2011"
+           WHEN    "2013"
                MOVE    "更新処理に失敗しました"
-                                       TO  SPA-ERRMSG
-           WHEN    "2012"
-               MOVE    "退院計算に必要な会計情報が作成されていません"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
