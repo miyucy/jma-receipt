@@ -156,7 +156,7 @@
            03  FLG-GAIYAK          PIC X(01).
            03  FLG-ARI             PIC 9(01).
       *
-           03  FLG-SYOSIN          PIC 9(01).
+      *****03  FLG-SYOSIN          PIC 9(01).
       *    診察料算定済み
            03  FLG-SINSATU          PIC 9(01).
       *    小児科外来診療科算定
@@ -204,6 +204,8 @@
            03  FLG-K09TUIKA           PIC 9(01).
       *    入力なし
            03  FLG-INPUT-NASI      PIC 9(01).
+      *
+           03  FLG-HEN-CHK         PIC 9(01).
       *
       *
       *    添字領域
@@ -1768,7 +1770,7 @@
       *    再表示編集処理
            IF     (SPA-K09-SELOK       =   1    )  AND
                   (LNK-WKSRYACT-MAX    >   ZERO )
-               MOVE    ZERO            TO  FLG-SYOSIN
+      *********MOVE    ZERO            TO  FLG-SYOSIN
                MOVE    SPACE               TO  WRK-ERRCD1
                MOVE    1               TO  FLG-K09TUIKA
                PERFORM 3103-SAIHEN-HEN-SEC
@@ -2269,22 +2271,24 @@
                MOVE    ZERO                TO  IDXS
                PERFORM     VARYING   IDY   FROM    IDX1   BY  1
                            UNTIL     IDY   >   5
-                   MOVE    ZERO                 TO  FLG-AUTO-OK
+                   MOVE    ZERO                TO  FLG-AUTO-OK
+                   MOVE    ZERO                TO  FLG-HEN-CHK
       *
-                IF      FLG-SET            =   ZERO
-      *            自動作成分は編集しない
-                   IF    ( LNK-WKSRY-SRYCD  (IDX IDY)    =   SPACE) OR
-                         ((FLG-SYOSIN                    =   1   ) AND
-                          (LNK-WKSRY-AUTOKBN(IDX IDY) NOT =   SPACE)) OR
-                         ( LNK-WKSRY-AUTOKBN(IDX IDY)    =   "3"  )  OR
-                         ((WRK-SYORIFLG                  =   1  ) AND
-                          (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "2" OR "3"))
+                   IF      FLG-SET             =   ZERO
+      *                自動作成分は編集しない
+                       IF      LNK-WKSRY-SRYCD  (IDX IDY)    =   SPACE
+                           MOVE    1               TO  FLG-HEN-CHK
+                       END-IF
+      *
+                       IF      LNK-WKSRY-AUTOKBN(IDX IDY)    =   "3"
+                           MOVE    1               TO  FLG-HEN-CHK
+                       END-IF
+                       IF     (WRK-SYORIFLG                =   1  ) AND
+                              (LNK-WKSRY-AUTOKBN(IDX IDY)  =  "3" )
       *                訂正自動作成で算定回数を超えている時対象とする
-                       IF      (WRK-SYORIFLG             =   1  )  AND
-                               (LNK-WKSRY-AUTOKBN(IDX IDY)   =   "3")
                            PERFORM 31012-AUTOCHK-SEC
                            IF      FLG-AUTO-OK         =   1
-                               PERFORM 31011-SPA-HEN-SEC
+                               MOVE    ZERO            TO  FLG-HEN-CHK
                            END-IF
                        END-IF
       *                訂正自動作成で時間外の時、時間外区分とする
@@ -2293,30 +2297,10 @@
                                (LNK-WKSRY-AUTOKBN(IDX IDY)   =   "2")
                            PERFORM 31013-JIKANCHK-SEC
                        END-IF
-      *                注射の手技料は対象とする
-                       IF     (LNK-WKSRY-SRYSYUKBN (IDX) =   "310" OR
-                                                             "320" OR
-                                                             "330" )
-                         AND (LNK-WKSRY-AUTOKBN (IDX IDY) =   "1"  )
+                       IF      FLG-HEN-CHK         =   ZERO
                            PERFORM 31011-SPA-HEN-SEC
                        END-IF
-      *                自動作成のコメントは対象とする
-                       IF     (LNK-WKSRY-SRYCD(IDX IDY)(1:1)
-                                                           =   "8")  AND
-                              (LNK-WKSRY-AUTOKBN (IDX IDY) =   "2" OR
-                                                               "3" )
-                           PERFORM 31011-SPA-HEN-SEC
-                       END-IF
-      *                自動追加で画像診断の時対象
-                       IF     (LNK-WKSRY-AUTOKBN (IDX IDY)  =  "2" )
-                          AND (LNK-WKSRY-SRYCD(IDX IDY) =  "170012070"
-                                                       OR  "170020470")
-                           PERFORM 31011-SPA-HEN-SEC
-                      END-IF
-                   ELSE
-                       PERFORM 31011-SPA-HEN-SEC
                    END-IF
-                 END-IF
       *
       *            入力回数
                    IF      LNK-WKSRY-INPUTCD(IDX IDY)(1:1) =   "*"
@@ -2714,7 +2698,21 @@
            PERFORM 910-TENSU-READ-SEC
            IF     (TNS-DATAKBN         =   "2"  ) AND
                   (TNS-TIMEKSNKBN  NOT =   ZERO )
-               MOVE    TNS-TIMEKSNKBN      TO  SPA-NAI-TIMEFLG
+               EVALUATE    TNS-TIMEKSNKBN
+      *            時間外
+                   WHEN    "1"
+                       MOVE    TNS-TIMEKSNKBN      TO  SPA-NAI-TIMEFLG
+      *            休日
+                   WHEN    "2"
+                   WHEN    "3"
+                       MOVE    "2"                 TO  SPA-NAI-TIMEFLG
+      *            深夜
+                   WHEN    "4"
+                       MOVE    "3"                 TO  SPA-NAI-TIMEFLG
+      *            時間外特例
+                   WHEN    "5"
+                       MOVE    "4"                 TO  SPA-NAI-TIMEFLG
+               END-EVALUATE
            END-IF
       *
            .

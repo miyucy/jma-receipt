@@ -234,6 +234,8 @@
       *    入力なし
            03  FLG-INPUT-NASI      PIC 9(01).
       *
+           03  FLG-HEN-CHK         PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -2809,45 +2811,32 @@
                MOVE    ZERO                TO  IDXS
                PERFORM     VARYING   IDY   FROM    IDX1   BY  1
                            UNTIL     IDY   >   5
-                   MOVE    ZERO                 TO  FLG-AUTO-OK
+                   MOVE    ZERO                TO  FLG-AUTO-OK
+                   MOVE    ZERO                TO  FLG-HEN-CHK
       *
       *            自動作成分は編集しない
-                   IF    ( LNK-WKSRY-SRYCD  (IDX IDY)    =   SPACE)  OR
-                         ((FLG-SYOSIN                    =   1 )  AND
-                          (LNK-WKSRY-AUTOKBN(IDX IDY) NOT =   SPACE)) OR
-                         ( LNK-WKSRY-AUTOKBN(IDX IDY)    =   "3"  )   OR
-                         ((WRK-SYORIFLG                  =   1  ) AND
-                          (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "2" OR "3"))
+                   IF      LNK-WKSRY-SRYCD  (IDX IDY)    =   SPACE
+                       MOVE    1               TO  FLG-HEN-CHK
+                   END-IF
+      *            前回編集時、自動作成分は編集しない
+                   IF     (FLG-SYOSIN                    =   1 )  AND
+                          (LNK-WKSRY-AUTOKBN(IDX IDY)    =   "2" OR
+                                                             "3" )
+                       MOVE    1               TO  FLG-HEN-CHK
+                   END-IF
+      *            登録時自動発生分は編集しない
+                   IF      LNK-WKSRY-AUTOKBN(IDX IDY)    =   "3"
+                       MOVE    1               TO  FLG-HEN-CHK
+                   END-IF
+                   IF     (WRK-SYORIFLG                  =   1  ) AND
+                          (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "3" )
       *                訂正自動作成で算定回数を超えている時対象とする
-                       IF      (WRK-SYORIFLG             =   1  )  AND
-                               (LNK-WKSRY-AUTOKBN(IDX IDY)   =   "3")
-                           PERFORM 31012-AUTOCHK-SEC
-                           IF      FLG-AUTO-OK         =   1
-                               PERFORM 31011-SPA-HEN-SEC
-                           END-IF
+                       PERFORM 31012-AUTOCHK-SEC
+                       IF      FLG-AUTO-OK         =   1
+                           MOVE    ZERO            TO  FLG-HEN-CHK
                        END-IF
-      *                注射の手技料は対象とする
-                       IF     (LNK-WKSRY-SRYSYUKBN (IDX) =   "310" OR
-                                                             "320" OR
-                                                             "330" )
-                         AND
-                              (LNK-WKSRY-AUTOKBN (IDX IDY) =   "1"   )
-                           PERFORM 31011-SPA-HEN-SEC
-                       END-IF
-      *                自動作成のコメントは対象とする
-                       IF     (LNK-WKSRY-SRYCD(IDX IDY)(1:1)
-                                                           =   "8")  AND
-                              (LNK-WKSRY-AUTOKBN (IDX IDY) =   "2" OR
-                                                               "3" )
-                           PERFORM 31011-SPA-HEN-SEC
-                       END-IF
-      *                自動追加で画像診断の時対象
-                       IF     (LNK-WKSRY-AUTOKBN (IDX IDY)  =  "2" )
-                          AND (LNK-WKSRY-SRYCD(IDX IDY) =  "170012070"
-                                                       OR  "170020470")
-                           PERFORM 31011-SPA-HEN-SEC
-                      END-IF
-                   ELSE
+                   END-IF
+                   IF      FLG-HEN-CHK         =   ZERO
                        PERFORM 31011-SPA-HEN-SEC
                    END-IF
       *
