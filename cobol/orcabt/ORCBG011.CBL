@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
       * 01.00.01     NACL-森脇     04/01/05  番号を患者ごとにカウント
+      * 01.00.02     NACL-森脇     04/01/06  期間表示変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -670,14 +671,18 @@
       *
            INITIALIZE                      WKHCM39
       *
+      *----(01.00.02)--UPD-START---
       *    タイトル
            IF    ( WRK-PARA-NYUGAIKBN  =   "1" )
                MOVE    "　未収金一覧表−入院（伝票別）　"
                                        TO  WKHCM39-TITLE
+               MOVE    "請求期間"      TO  WKHCM39-DAI
            ELSE
                MOVE    "　未収金一覧表−外来（伝票別）　"
                                        TO  WKHCM39-TITLE
+               MOVE    "診療日"        TO  WKHCM39-DAI
            END-IF
+      *----(01.00.02)--UPD-END-----
       *
       *    作成日
            MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
@@ -716,7 +721,13 @@
                        MOVE    WRK-EDTYMD3 (1:16)  TO  WRK-KKNEDYMD
                    END-EVALUATE
       *
-                   MOVE    WRK-KKN-HEN             TO  WKHCM39-KIKAN
+      *----(01.00.02)--UPD-START---
+                   IF      WRK-KKNSTYMD        =   WRK-KKNEDYMD
+                       MOVE    WRK-KKNSTYMD        TO  WKHCM39-KIKAN
+                   ELSE
+                       MOVE    WRK-KKN-HEN         TO  WKHCM39-KIKAN
+                   END-IF
+      *----(01.00.02)--UPD-END-----
       *
                    IF    ( WRK-PARA-KKNEDYM    NOT =   "999999" )
       *                処理区分
@@ -1187,6 +1198,10 @@
            MOVE    WRK-PAGE            TO  HCM39-PAGE
       *    期間処理内容
            MOVE    WKHCM39-MES         TO  HCM39-MES
+      *----(01.00.02)--ADD-START---
+      *    ラベル設定
+           MOVE    WKHCM39-DAI         TO  HCM39-DAI
+      *----(01.00.02)--ADD-END-----
       *
            IF    ( FLG-BG01101     NOT =   ZERO )
                MOVE    "合計"          TO  HCM39-GTTL
