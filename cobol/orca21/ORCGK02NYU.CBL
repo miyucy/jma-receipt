@@ -2134,36 +2134,48 @@
            END-PERFORM
       *
       *    年齢計算
-           MOVE    SPA-BIRTHDAY        TO  WRK-YMDS1
-           MOVE    SPA-SRYYMD          TO  WRK-YMDS2
-           COMPUTE SPA-NENREI-YY       =   WRK-YYS2
-                                       -   WRK-YYS1
-           IF      WRK-YMDS1(5:4)      >   WRK-YMDS2(5:4)
-               COMPUTE SPA-NENREI-YY   =   SPA-NENREI-YY
-                                           -   1
-               COMPUTE SPA-NENREI-MM   =  (WRK-MMS2  +  12 )
-                                           -   WRK-MMS1
-           ELSE
-               COMPUTE SPA-NENREI-MM   =   WRK-MMS2
-                                           -   WRK-MMS1
-           END-IF
-           IF      WRK-DDS1            >   WRK-DDS2
-               COMPUTE SPA-NENREI-MM   =   SPA-NENREI-MM
-                                           -   1
-           END-IF
+      **** MOVE    SPA-BIRTHDAY        TO  WRK-YMDS1
+      *    MOVE    SPA-SRYYMD          TO  WRK-YMDS2
+      *    COMPUTE SPA-NENREI-YY       =   WRK-YYS2
+      *                                -   WRK-YYS1
+      *    IF      WRK-YMDS1(5:4)      >   WRK-YMDS2(5:4)
+      *        COMPUTE SPA-NENREI-YY   =   SPA-NENREI-YY
+      *                                    -   1
+      *        COMPUTE SPA-NENREI-MM   =  (WRK-MMS2  +  12 )
+      *                                    -   WRK-MMS1
+      *    ELSE
+      *        COMPUTE SPA-NENREI-MM   =   WRK-MMS2
+      *                                    -   WRK-MMS1
+      *    END-IF
+      *    IF      WRK-DDS1            >   WRK-DDS2
+      *        COMPUTE SPA-NENREI-MM   =   SPA-NENREI-MM
+      *                                    -   1
+      *    END-IF
       *
       *    年齢期間算定
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY5-AREA
-           MOVE    "51"                TO  LNK-DAY5-IRAI
-           MOVE    SPA-BIRTHDAY        TO  LNK-DAY5-START
-           MOVE    SPA-SRYYMD          TO  LNK-DAY5-END
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY5-AREA
-           IF      LNK-DAY5-NISSU2     <=  31
-               MOVE    LNK-DAY5-NISSU2     TO  SPA-NENREI-DD
-               MOVE    ZERO                TO  SPA-NENREI-MM
-           END-IF
+      *    INITIALIZE                      STS-AREA-DAY
+      *    INITIALIZE                      LNK-DAY5-AREA
+      *    MOVE    "51"                TO  LNK-DAY5-IRAI
+      *    MOVE    SPA-BIRTHDAY        TO  LNK-DAY5-START
+      *    MOVE    SPA-SRYYMD          TO  LNK-DAY5-END
+      *    CALL    "ORCSDAY"           USING   STS-AREA-DAY
+      *                                        LNK-DAY5-AREA
+      *    IF      LNK-DAY5-NISSU2     <=  31
+      *        MOVE    LNK-DAY5-NISSU2     TO  SPA-NENREI-DD
+      *        MOVE    ZERO                TO  SPA-NENREI-MM
+      *****END-IF
+      *
+      *    年齢計算
+           INITIALIZE                  ORCSAGECHKAREA
+           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-PTID            TO  AGECHK-PTID
+           MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
+           MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+           MOVE    AGECHK-NENREI2-YY   TO  SPA-NENREI-YY
+           MOVE    AGECHK-NENREI2-MM   TO  SPA-NENREI-MM
+           MOVE    AGECHK-NENREI2-DD   TO  SPA-NENREI-DD
       *
       *    画面表示用
            IF      SPA-NENREI-YY       =   ZERO
@@ -2463,6 +2475,11 @@
                    UNTIL   (IDX        >   200 )  OR
                           ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
                            (SPA-COM-INPUTCD(IDX)   =   SPACE ))
+               IF     (SPA-COM-KZMFLG (IDX)    NOT =   SPACE )  OR
+                      (SPA-COM-KZMFLG2(IDX)    NOT =   SPACE )  OR
+                      (SPA-COM-NYU-KZMFLG-G(IDX)    NOT =   SPACE )
+                   MOVE    SPACE               TO  SPA-MAE-INPUTCD (IDX)
+               END-IF
                MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
                MOVE    SPACE           TO  SPA-COM-NYU-KZMFLG-G(IDX)
