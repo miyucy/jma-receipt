@@ -37,6 +37,7 @@
       *  01.00.08    NACL-多々納  02/12/13  継続区分再編集、継続訂正修正
       *  01.00.09    NACL-多々納  03/01/16  自費回数表示修正
       *  01.00.10    NACL-多々納  03/03/05  排他制御処理追加
+      *  01.00.11    NACL-多々納  03/04/30  自費編集修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -184,6 +185,7 @@
            03  FLG-KAISUU          PIC 9(01).
            03  FLG-KAISUU-ARI      PIC 9(01).
            03  FLG-KAISUU-ARI2     PIC 9(01).
+           03  FLG-KAISUU-ARI3     PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -800,11 +802,33 @@
            MOVE    ZERO                TO  WRK-JIHIMONEY-KEI
            MOVE    ZERO                TO  FLG-KAISUU-ARI
            MOVE    ZERO                TO  FLG-KAISUU-ARI2
+           MOVE    ZERO                TO  FLG-KAISUU-ARI3
       *
+      *    入院で日付指定の有無
+           PERFORM VARYING     IDZ     FROM    1   BY  1
+                   UNTIL      (IDZ         >   5   )  OR
+                             ((LNK-WKSRY-SRYCD (IDX-KOUI IDZ)
+                                                  =   SPACE ) AND
+                              (LNK-WKSRY-INPUTCD(IDX-KOUI IDZ)
+                                                  =   SPACE ))
+      *        回数入力の有無
+               IF      LNK-WKSRY-INPUTCD(IDX-KOUI IDZ)(1:1) =   "*"
+                   MOVE    1                   TO  FLG-KAISUU-ARI2
+                   PERFORM VARYING     IDX3    FROM   2   BY  1
+                           UNTIL       IDX3    >   22
+                       IF       LNK-WKSRY-INPUTCD(IDX-KOUI IDZ)
+                                                   (IDX3:1) =   "/"
+                           MOVE    1               TO  FLG-KAISUU-ARI3
+                           MOVE    22              TO  IDX3
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+      *    剤別編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   IDX-KOUI )
                            OR (IDG     >   500 )
-      *
       *        剤点数計
                MOVE    LNK-WKSRY-ZAITENKEI(IDX)    TO  WRK-ZAITEN
       *        回数計
@@ -1013,11 +1037,15 @@
            END-IF
       *
       *    計を表示
-           ADD    1                    TO  IDG
            IF      WRK-JIHIMONEY       >   ZERO
       *        自費
-               PERFORM 3101913-NYUINPUTCD-JIHI-SEC
+               IF      FLG-KAISUU-ARI3     =   1
+                   ADD    1                    TO  IDG
+                   PERFORM 3101913-NYUINPUTCD-JIHI-SEC
+                   MOVE    WRK-BANGO       TO  SPA-GMN-NAIBANGO (IDG)
+               END-IF
            ELSE
+               ADD    1                    TO  IDG
                PERFORM 3101912-NYUINPUTCD-HEN-SEC
                MOVE    WRK-ZAIKEIJ         TO  SPA-GMN-HEN2 (IDG)
       *
@@ -1032,8 +1060,8 @@
                INSPECT SPA-GMN-TYOBI2  (IDG)   REPLACING
                                                ALL "  "  BY  "　"
       *
+               MOVE    WRK-BANGO           TO  SPA-GMN-NAIBANGO (IDG)
            END-IF
-           MOVE    WRK-BANGO           TO  SPA-GMN-NAIBANGO (IDG)
       *
             .
        310191-DAYSET-EXT.
@@ -1128,7 +1156,7 @@
       *****************************************************************
       *   入院回数編集処理
       *****************************************************************
-       3101913-NYUINPUTCD-JIHI-SEC                  SECTION.
+       3101913-NYUINPUTCD-JIHI-SEC     SECTION.
       *
            COMPUTE WRK-KAISU-9         =   WRK-NISUU
                                        *   LNK-SC97-KAISU
@@ -1431,8 +1459,42 @@
                MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI13  (IDG)
            END-IF
       *
+      *    計
+           MOVE    LNK-WKSRY-JIHIMONEY(IDX IDZ)
+                                       TO  WRK-KEI
+           MOVE    SPACE               TO  WRK-ZAIKEIJIH
+           MOVE    WRK-KEI             TO  WRK-ZAIKEIJIH
+      *
+      *    日本語変換
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-ZAIKEIJIH       TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-ZAIKEIJIJ
+      *
+           IF      LNK-WKSRY-JIHIMONEY(IDX IDZ)    =   ZERO
+               MOVE    SPACE               TO  SPA-GMN-TZAIKEI3(IDG)
+           ELSE
+               MOVE    "円"                TO  WRK-ZAIKEIJIJ(17:2)
+               MOVE    WRK-ZAIKEIJIJ       TO  SPA-GMN-TZAIKEI3(IDG)
+           END-IF
+      *
+           INSPECT SPA-GMN-TBANGO2 (IDG)  REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TMEISYO2(IDG)  REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TSURYOU3(IDG)  REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TTANI13 (IDG)  REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TZAIKEI3(IDG)  REPLACING  ALL "  "  BY  "　"
+      *
+      *    回数
            MOVE    SPACE               TO  WRK-KAISU-H
-           IF      WRK-SRYKAISUKEI     >   1
+           IF     (WRK-SRYKAISUKEI     >   1    )
+             AND ((FLG-KAISUU-ARI2     =   ZERO )  OR
+                  (FLG-KAISUU-ARI3     =   ZERO ))
+               ADD     1                   TO  IDG
+               IF      IDG                 >   500
+                   GO      TO      31013-JIHIMEI-HEN-EXT
+               END-IF
       *        回数
                MOVE    WRK-SRYKAISUKEI     TO  WRK-KAISU
                MOVE    ZERO                TO  IDK2
@@ -1465,61 +1527,42 @@
                            ADD     2                   TO  IDJ2
                    END-EVALUATE
                END-PERFORM
-               MOVE   "×"                 TO  SPA-GMN-TYOBI32 (IDG)
-                                                               (1:2)
-               MOVE   WRK-KAISU-J(1:4)     TO  SPA-GMN-TYOBI32 (IDG)
-                                                               (3:4)
-               MOVE    1                   TO  FLG-KAISUU
-           END-IF
-      *
-      *    数量と回数があった時行を変える
-           IF      FLG-KAISUU          =   1
-               INSPECT SPA-GMN-TBANGO2 (IDG)  REPLACING
-                                              ALL "  "  BY  "　"
-               INSPECT SPA-GMN-TMEISYO2(IDG)  REPLACING
-                                              ALL "  "  BY  "　"
-               INSPECT SPA-GMN-TSURYOU3(IDG)  REPLACING
-                                              ALL "  "  BY  "　"
-               INSPECT SPA-GMN-TTANI13 (IDG)  REPLACING
-                                              ALL "  "  BY  "　"
-               INSPECT SPA-GMN-TYOBI32 (IDG)  REPLACING
-                                              ALL "  "  BY  "　"
-               INSPECT SPA-GMN-TYOBI33 (IDG)  REPLACING
-                                              ALL "  "  BY  "　"
-               ADD     1                   TO  IDG
-               IF      IDG                 >   500
-                   GO      TO      31013-JIHIMEI-HEN-EXT
+               MOVE   "×"                 TO  SPA-GMN-TZAIKEI4 (IDG)
+                                                               (3:2)
+               MOVE   WRK-KAISU-J(1:4)     TO  SPA-GMN-TZAIKEI4 (IDG)
+                                                               (5:4)
+      *        計
+               COMPUTE WRK-KEI             =   LNK-WKSRY-JIHIMONEY
+                                                            (IDX IDZ)
+                                           *   WRK-SRYKAISUKEI
+               MOVE    SPACE               TO  WRK-ZAIKEIJIH
+               MOVE    WRK-KEI             TO  WRK-ZAIKEIJIH
+      *        日本語変換
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI
+               MOVE    WRK-ZAIKEIJIH       TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-ZAIKEIJIJ
+               IF      LNK-WKSRY-JIHIMONEY(IDX IDZ)    =   ZERO
+                   MOVE    SPACE               TO  SPA-GMN-TKINGAK4(IDG)
+               ELSE
+                   MOVE    "円"                TO  WRK-ZAIKEIJIJ(17:2)
+                   MOVE    WRK-ZAIKEIJIJ       TO  SPA-GMN-TKINGAK4(IDG)
                END-IF
+               MOVE    1                   TO  FLG-KAISUU
+      *
+               INSPECT SPA-GMN-TBANGO2 (IDG)
+                                           REPLACING  ALL "  "  BY  "　"
+               INSPECT SPA-GMN-TMEISYO2(IDG)
+                                           REPLACING  ALL "  "  BY  "　"
+               INSPECT SPA-GMN-TYOBI41 (IDG)
+                                           REPLACING  ALL "  "  BY  "　"
+               INSPECT SPA-GMN-TZAIKEI4(IDG)
+                                           REPLACING  ALL "  "  BY  "　"
+               INSPECT SPA-GMN-TKINGAK4(IDG)
+                                           REPLACING  ALL "  "  BY  "　"
            END-IF
-      *
-      *    計
-           MOVE    LNK-WKSRY-JIHIMONEY(IDX IDZ)
-                                       TO  WRK-KEI
-           MOVE    SPACE               TO  WRK-ZAIKEIJIH
-           MOVE    WRK-KEI             TO  WRK-ZAIKEIJIH
-      *
-      *    日本語変換
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"                 TO  KANACHK-SYORI
-           MOVE    WRK-ZAIKEIJIH       TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           MOVE    KANACHK-OUT-INPUT   TO  WRK-ZAIKEIJIJ
-           INSPECT WRK-ZAIKEIJIJ       REPLACING
-                                       ALL "Ｘ"  BY  "×"
-      *
-           IF      LNK-WKSRY-JIHIMONEY(IDX IDZ)    =   ZERO
-               MOVE    SPACE               TO  SPA-GMN-TZAIKEI3(IDG)
-           ELSE
-               MOVE    "円"                TO  WRK-ZAIKEIJIJ(17:2)
-               MOVE    WRK-ZAIKEIJIJ       TO  SPA-GMN-TZAIKEI3(IDG)
-           END-IF
-      *
-           INSPECT SPA-GMN-TBANGO2 (IDG)  REPLACING  ALL "  "  BY  "　"
-           INSPECT SPA-GMN-TMEISYO2(IDG)  REPLACING  ALL "  "  BY  "　"
-           INSPECT SPA-GMN-TSURYOU3(IDG)  REPLACING  ALL "  "  BY  "　"
-           INSPECT SPA-GMN-TTANI13 (IDG)  REPLACING  ALL "  "  BY  "　"
-           INSPECT SPA-GMN-TZAIKEI3(IDG)  REPLACING  ALL "  "  BY  "　"
       *
       *    コメント以外の最終行セット
            IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "0"  OR  "8"

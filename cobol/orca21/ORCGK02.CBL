@@ -3206,12 +3206,18 @@
                                                TO  SPA-COM-KEI   (IDX2)
                    MOVE    LNK-WKSRY-JIHIMONEY(IDX IDY)
                                                TO  SPA-GMN-KEI   (IDX2)
+                   MOVE    LNK-WKSRY-JIHIMONEY(IDX IDY)
+                                               TO  SPA-COM-JIHIMONEY
+                                                                 (IDX2)
                ELSE
                    MOVE    "2"                 TO  SPA-COM-KEIFLG(IDX2)
                    MOVE    SPA-COM-KISOTEN (IDX2)
                                                TO  SPA-COM-KEI   (IDX2)
                    MOVE    SPA-COM-KISOTEN (IDX2)
                                                TO  SPA-GMN-KEI   (IDX2)
+                   MOVE    SPA-COM-KISOTEN (IDX2)
+                                               TO  SPA-COM-JIHIMONEY
+                                                                 (IDX2)
                END-IF
       *        回数を１とする
       *        MOVE    1                   TO  SPA-COM-KAISU(IDX2)
@@ -3225,6 +3231,9 @@
                                                TO  SPA-COM-KEI   (IDX2)
                    MOVE    LNK-WKSRY-JIHIMONEY(IDX IDY)
                                                TO  SPA-GMN-KEI   (IDX2)
+                   MOVE    LNK-WKSRY-JIHIMONEY(IDX IDY)
+                                               TO  SPA-COM-JIHIMONEY
+                                                                 (IDX2)
       ***          回数を１とする
       *            MOVE    1                   TO  SPA-COM-KAISU(IDX2)
       ****         MOVE    1                   TO  SPA-COM-KAISU2(IDX2)
@@ -5608,12 +5617,14 @@
                MOVE    SPA-COM-TIMEFLG(SPA-GMN-IDX)
                                            TO  SPA-NAI-TIMEFLG
            END-IF
-      *
+      *    保険適用区分が保険適用外のもの（ユーザー登録の自費分）
            IF      SPA-COM-HKNTEKKBN(SPA-GMN-IDX)  =   2
       *        数量を金額とする
                MOVE    1               TO  SPA-COM-SURYO(SPA-GMN-IDX)
                IF      SPA-COM-KISOTEN (SPA-GMN-IDX)  =   ZERO
                    MOVE    WRK-SURYO       TO  SPA-COM-KEI(SPA-GMN-IDX)
+                   MOVE    WRK-SURYO       TO  SPA-COM-JIHIMONEY
+                                                          (SPA-GMN-IDX)
                    MOVE    WRK-SURYO       TO  SPA-GMN-KEI(SPA-GMN-IDX)
                    MOVE    "1"             TO  SPA-COM-KEIFLG
                                                           (SPA-GMN-IDX)
@@ -6517,6 +6528,8 @@
                    MOVE    "1"                 TO  SPA-COM-KEIFLG
                                                          (SPA-GMN-IDX)
                    MOVE    ISET-SURYO1         TO  SPA-COM-KEI
+                                                         (SPA-GMN-IDX)
+                   MOVE    ISET-SURYO1         TO  SPA-COM-JIHIMONEY
                                                          (SPA-GMN-IDX)
                    MOVE    ISET-SURYO1         TO  SPA-GMN-KEI
                                                          (SPA-GMN-IDX)
@@ -10242,7 +10255,9 @@
                    END-IF
       *            自費金額
                    IF      SPA-COM-SRYKBN (IDX)     =   "96"  OR  "95"
-                       MOVE    SPA-COM-KEI (IDX)    TO  WKSRY-JIHIMONEY
+      *****************MOVE    SPA-COM-KEI (IDX)    TO  WKSRY-JIHIMONEY
+                       MOVE    SPA-COM-JIHIMONEY (IDX)
+                                                    TO  WKSRY-JIHIMONEY
                                                                  (IDY)
                    END-IF
       *            入力コメント番号
@@ -10296,7 +10311,8 @@
                    END-IF
                    IF      SPA-COM-KEIFLG (IDX)   =   "1"  OR  "2"
       *****************MOVE     SPA-GMN-KEI    (IDX)   TO  WRK-KINGAK
-                       ADD      SPA-GMN-KEI    (IDX)   TO  WRK-KINGAK
+      ***************  ADD      SPA-GMN-KEI    (IDX)   TO  WRK-KINGAK
+                       ADD     SPA-COM-JIHIMONEY (IDX) TO  WRK-KINGAK
                    END-IF
       *
       *            剤終了か、ＭＡＸ件数の時出力
@@ -10738,7 +10754,9 @@
       *
       *            自費金額
                    IF      SPA-COM-SRYKBN (IDX)     =   "96"  OR  "95"
-                       MOVE    SPA-COM-KEI (IDX)    TO  WKSRY-JIHIMONEY
+      *****************MOVE    SPA-COM-KEI (IDX)    TO  WKSRY-JIHIMONEY
+                       MOVE    SPA-COM-JIHIMONEY (IDX)
+                                                    TO  WKSRY-JIHIMONEY
                                                                  (IDY)
                    END-IF
       *            入力コメント番号
@@ -10794,7 +10812,9 @@
       *
                    IF      SPA-COM-KEIFLG (IDX)   =   "1"  OR  "2"
       *****************MOVE     SPA-GMN-KEI (IDX) TO  WRK-KINGAK
-                       ADD      SPA-GMN-KEI (IDX) TO  WRK-KINGAK
+      **************** ADD      SPA-GMN-KEI (IDX) TO  WRK-KINGAK
+                       ADD      SPA-COM-JIHIMONEY (IDX)
+                                                  TO  WRK-KINGAK
                    END-IF
       *
                    IF     (SPA-COM-ZAIEND (IDX)   =   "1"   )  OR
