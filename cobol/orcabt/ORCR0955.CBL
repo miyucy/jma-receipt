@@ -34,6 +34,8 @@
       *  £²£°£°£´Ç¯£´·î²þÀµ
       *  01.01.01    NACL-Æ£¸¶    04/03/29  ÀÁµáÅÀ¤Î·å¿ô¤ÎÊÑ¹¹
       *  01.01.02    NACL-Æ£¸¶    04/03/30  ¼ê½ÑÎò¤Îµ­ºÜ
+      *  01.01.03    NACL-Æ£¸¶    04/05/13  ½ýÉÂ¤Î·Ð²á¤ÎÊÔ½¸°ÌÃÖ¤Î½¤Àµ
+      *  01.01.04    NACL-ÌçÏÆ    04/05/21  DBOPEN,DBDISCONNECTºï½ü
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -773,9 +775,6 @@
       *    Ä¢É¼ÊÔ½¸<½ýÉÂÌ¾>½èÍý
            PERFORM 20023-BYOMEI-HEN-SEC
       *
-      *    Ä¢É¼ÊÔ½¸<½ýÉÂ¤Î·Ð²á>½èÍý
-           PERFORM 20024-COMMENT-HEN-SEC 
-      *
       *    Ä¢É¼ÊÔ½¸<ÆþÂà±¡ÍúÎò¡¦Æþ±¡´ðËÜÎÁ¼ïÊÌ¤ÎÂ³¤­>½èÍý
            PERFORM 380-HC101-NYUTAI-RIREKI-HEN-SEC
       *
@@ -784,6 +783,9 @@
       *
       *    Ä¢É¼ÊÔ½¸<Å¬ÍÑ¡ÊÅÀ¿ô¡Ë>½èÍý
            PERFORM 20025-ZAI-HEN-SEC
+      *
+      *    Ä¢É¼ÊÔ½¸<½ýÉÂ¤Î·Ð²á>½èÍý
+           PERFORM 20024-COMMENT-HEN-SEC 
       *
       *    Ä¢É¼ÊÔ½¸<Å¬ÍÑ¡Ê¶â³Û¡Ë>½èÍý
            PERFORM 20026-ZAI-HEN1-SEC
@@ -1782,18 +1784,11 @@
                        MOVE    1               TO  WRK-RECEHEN
                    END-IF
       *                                       
-                   IF      WRK-COMMENT-G   >   SPACE
-      *              ½ýÉÂ¤Î·Ð²áÍó¤ØÊÔ½¸   
-      **             PERFORM VARYING IDX FROM    1   BY  1
-      **                     UNTIL   IDX >       WRK-KEIKA-HC23-LINE
-      **                   OR      WRK-COMMENT (IDX)   =   SPACE
-      **               MOVE    WRK-COMMENT (IDX)
-      **                               TO  HC23-KEIKA (IDX)
-      **             END-PERFORM
-      *              Å¦Í×Íó¤Ë£±¹Ô¤¢¤±¤ë
-                     COMPUTE IDY     =   WRK-KEIKA-HC23-LINE   +   1
-                     IF     WRK-COMMENT (IDY)   NOT =   SPACE
-                         IF      WRK-RECECOM         =   ZERO
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       8
+                           OR      WRK-COMMENT (IDX)   =   SPACE
+      *                Å¦Í×Íó¤Ë£±¹Ô¤¢¤±¤ë
+                       IF      WRK-RECECOM         =   ZERO
                            MOVE    1               TO  WRK-RECECOM
                            IF  WRK-LINETEK         >   ZERO
                                IF      WRK-LINETEK >=  WRK-LINE-MAX
@@ -1811,24 +1806,19 @@
                            END-IF    
                        END-IF
       *                 
-                       PERFORM VARYING IDX FROM    IDY   BY  1
-                               UNTIL   IDX >       8
-                               OR      WRK-COMMENT (IDX)   =   SPACE
-                           IF      WRK-LINETEK      >=
+                       IF      WRK-LINETEK      >=
                                                 WRK-LINE-MAX
-                               PERFORM 34120-PAGE-SEC
-                           END-IF
-                           ADD     1               TO  WRK-LINETEK
-                           IF      CNT-PAGE    =   1 
-                               MOVE    WRK-COMMENT (IDX)
+                           PERFORM 34120-PAGE-SEC
+                       END-IF
+                       ADD     1               TO  WRK-LINETEK
+                       IF      CNT-PAGE    =   1 
+                           MOVE    WRK-COMMENT (IDX)
                                            TO  HC23-TEKIYO2(WRK-LINETEK)
-                           ELSE
+                       ELSE
                                MOVE    WRK-COMMENT (IDX)
                                            TO  HC29-TEKIYO (WRK-LINETEK)
-                           END-IF                
-                     END-PERFORM
-                   END-IF  
-                 END-IF
+                       END-IF                
+                   END-PERFORM
                END-IF  
                MOVE    WRK-COMM1       TO  WRK-COMM
            END-PERFORM   
@@ -2778,12 +2768,6 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -2804,11 +2788,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
            EXIT.

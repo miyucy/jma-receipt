@@ -42,6 +42,9 @@
       *  01.01.02    NACL-ÃÁœ∆    04/04/01  •Í•œ∏¿∏Ïƒ∞≥–Œ≈À°° £≥°Àƒ…≤√¬–±˛
       *  01.01.03    NACL-ÃÁœ∆    04/04/05  ∫ﬂ¬∑Ï±’∆©¿œ…—≤Ûªÿ∆≥¥…Õ˝Œ¡§Œ
       *                                     •≥•·•Û•»¬–±˛
+      *  01.01.04    NACL-ÃÁœ∆    04/04/26  •Ê°º•∂°º•≥•·•Û•»ƒ…≤√¬–±˛
+      *  01.01.05    NACL-ÃÁœ∆    04/05/20  ≈¿≈©§Œ¥Ô∫‡√±≤¡ ‘Ω∏
+      *  01.01.06    NACL-ÃÁœ∆    04/05/21  DBOPEN,DBDISCONNECT∫ÔΩ¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -236,6 +239,7 @@
            03  IDX9                                    PIC 9(03).
            03  IDY                                     PIC 9(03).
            03  IDY2                                    PIC 9(03).
+           03  IDY3                                    PIC 9(03).
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
            03  ID1                                     PIC 9(03).
@@ -269,7 +273,7 @@
            03  WK-TAIHI-FLG                            PIC 9(01).
            03  WK-TAIHI-SRYYMD.
                05  WK-TAIHI-SRYYM                      PIC 9(06).
-               05  WK-TAIHI-SRYD                       PIC 9(02).
+               05  WK-TAIHI-SRYD                       PIC X(02).
       *
        01  WRK-DAY-TABLE.
            03  WRK-DAY-T                               OCCURS   31.
@@ -342,7 +346,8 @@
       *
            03  WRK-HEYA-NINZU                          PIC 9(02).
       *
-           03  WRK-SRYCD                               PIC 9(09).
+           03  WRK-SRYCD-X.
+               05  WRK-SRYCD                           PIC 9(09).
            03  WRK-ZAINUM                              PIC 9(08).
            03  WRK-RENNUM                              PIC 9(02).
            03  WRK-TANICD                              PIC 9(03).
@@ -1403,8 +1408,9 @@
       *              ∆˛±°ª˛ø©ªˆŒ≈Õ‹° £±°À
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
                      ADD    1             TO   IDY2
-                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY IDY2)
-                     MOVE  "197000110"    TO   WRK-SRYCD
+                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                     MOVE  "197000110"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1416,8 +1422,9 @@
       *              ∆√ Ã¥…Õ˝≤√ªª
                      IF    WRK-TOKUKANRIKASAN  =  1
                         ADD    1             TO   IDY2
-                        MOVE  "197000270"    TO  WRK-SKJ-SRYCD(IDY IDY2)
-                        MOVE  "197000270"    TO   WRK-SRYCD
+                        MOVE  "197000270"    TO  WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                        MOVE  "197000270"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1430,8 +1437,9 @@
       *              ø©∆≤≤√ªª
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
                         ADD    1             TO   IDY2
-                        MOVE  "197000570"    TO  WRK-SKJ-SRYCD(IDY IDY2)
-                        MOVE  "197000570"    TO   WRK-SRYCD
+                        MOVE  "197000570"    TO  WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                        MOVE  "197000570"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1445,8 +1453,9 @@
       *              ∆˛±°ª˛ø©ªˆŒ≈Õ‹° £≤°À
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
                      ADD    1             TO   IDY2
-                     MOVE  "197000710"    TO   WRK-SKJ-SRYCD(IDY IDY2)
-                     MOVE  "197000710"    TO   WRK-SRYCD
+                     MOVE  "197000710"    TO   WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                     MOVE  "197000710"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1460,8 +1469,9 @@
       *              ∆˛±°ª˛ø©ªˆŒ≈Õ‹° £±°À
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
                      ADD    1             TO   IDY2
-                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY IDY2)
-                     MOVE  "197000110"    TO   WRK-SRYCD
+                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                     MOVE  "197000110"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1473,8 +1483,9 @@
       *              ∆√ Ã¥…Õ˝≤√ªª
                      IF    WRK-TOKUKANRIKASAN  =  1
                         ADD    1             TO   IDY2
-                        MOVE  "197000270"    TO  WRK-SKJ-SRYCD(IDY IDY2)
-                        MOVE  "197000270"    TO   WRK-SRYCD
+                        MOVE  "197000270"    TO  WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                        MOVE  "197000270"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1486,8 +1497,9 @@
                      END-IF
       *              ∆√ Ãø©≤√ªª
                      ADD    1             TO   IDY2
-                     MOVE  "197000470"    TO   WRK-SKJ-SRYCD(IDY IDY2)
-                     MOVE  "197000470"    TO   WRK-SRYCD
+                     MOVE  "197000470"    TO   WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                     MOVE  "197000470"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1499,8 +1511,9 @@
       *              ø©∆≤≤√ªª
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
                         ADD    1             TO   IDY2
-                        MOVE  "197000570"    TO  WRK-SKJ-SRYCD(IDY IDY2)
-                        MOVE  "197000570"    TO   WRK-SRYCD
+                        MOVE  "197000570"    TO  WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                        MOVE  "197000570"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1514,8 +1527,9 @@
       *              ∆˛±°ª˛ø©ªˆŒ≈Õ‹° £±°À
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
                      ADD    1             TO   IDY2
-                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY IDY2)
-                     MOVE  "197000110"    TO   WRK-SRYCD
+                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                     MOVE  "197000110"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1527,8 +1541,9 @@
       *              ∆√ Ã¥…Õ˝≤√ªª
                      IF    WRK-TOKUKANRIKASAN  =  1
                         ADD    1             TO   IDY2
-                        MOVE  "197000270"    TO  WRK-SKJ-SRYCD(IDY IDY2)
-                        MOVE  "197000270"    TO   WRK-SRYCD
+                        MOVE  "197000270"    TO  WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                        MOVE  "197000270"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1541,8 +1556,9 @@
       *              ø©∆≤≤√ªª
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
                         ADD    1             TO   IDY2
-                        MOVE  "197000570"    TO  WRK-SKJ-SRYCD(IDY IDY2)
-                        MOVE  "197000570"    TO   WRK-SRYCD
+                        MOVE  "197000570"    TO  WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                        MOVE  "197000570"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1554,8 +1570,9 @@
                      END-IF
       *               £øÙ∏•Œ©≤√ªª
                      ADD    1             TO   IDY2
-                     MOVE  "197000670"    TO   WRK-SKJ-SRYCD(IDY IDY2)
-                     MOVE  "197000670"    TO   WRK-SRYCD
+                     MOVE  "197000670"    TO   WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                     MOVE  "197000670"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1568,8 +1585,9 @@
       *              ∆˛±°ª˛ø©ªˆŒ≈Õ‹° £±°À
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
                      ADD    1             TO   IDY2
-                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY IDY2)
-                     MOVE  "197000110"    TO   WRK-SRYCD
+                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                     MOVE  "197000110"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1581,8 +1599,9 @@
       *              ∆√ Ã¥…Õ˝≤√ªª
                      IF    WRK-TOKUKANRIKASAN  =  1
                         ADD    1             TO   IDY2
-                        MOVE  "197000270"    TO  WRK-SKJ-SRYCD(IDY IDY2)
-                        MOVE  "197000270"    TO   WRK-SRYCD
+                        MOVE  "197000270"    TO  WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                        MOVE  "197000270"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1594,8 +1613,9 @@
                      END-IF
       *              ∆√ Ãø©≤√ªª
                      ADD    1             TO   IDY2
-                     MOVE  "197000470"    TO   WRK-SKJ-SRYCD(IDY IDY2)
-                     MOVE  "197000470"    TO   WRK-SRYCD
+                     MOVE  "197000470"    TO   WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                     MOVE  "197000470"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1607,8 +1627,9 @@
       *              ø©∆≤≤√ªª
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
                         ADD    1             TO   IDY2
-                        MOVE  "197000570"    TO  WRK-SKJ-SRYCD(IDY IDY2)
-                        MOVE  "197000570"    TO   WRK-SRYCD
+                        MOVE  "197000570"    TO  WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                        MOVE  "197000570"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1620,8 +1641,9 @@
                      END-IF
       *               £øÙ∏•Œ©≤√ªª
                      ADD    1             TO   IDY2
-                     MOVE  "197000670"    TO   WRK-SKJ-SRYCD(IDY IDY2)
-                     MOVE  "197000670"    TO   WRK-SRYCD
+                     MOVE  "197000670"    TO   WRK-SKJ-SRYCD-OCC
+                                                             (IDY IDY2)
+                     MOVE  "197000670"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1661,13 +1683,13 @@
        23011-NYUINACCT-SYU-JYOSU-SEC           SECTION.
       *
            ADD    1             TO   IDY2
-           MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+           MOVE  "101970010"    TO   WRK-SKJ-SRYCD-OCC (IDY IDY2)
            IF      RECE82-HKNKBN    =   "4"
            AND     WRK-4001-SKJKBN  =   "2"
       *       º´«Â¿’° £±°•£≤«‹°À
               ADD    1             TO   IDY2
-      *       MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
-              MOVE  "099609901"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+      *       MOVE  "101970010"    TO   WRK-SKJ-SRYCD-OCC(IDY IDY2)
+              MOVE  "099609901"    TO   WRK-SKJ-SRYCD-OCC(IDY IDY2)
            END-IF
       *
            .
@@ -2015,9 +2037,9 @@
            MOVE    LNK-SROUNYUIN-SRYKBN(IDY)
                                         TO      RECE84-SRYKBN
            IF      FLG-KHN  =  1
-              MOVE    1                 TO      RECE84-ZAISKBKBN
+              MOVE    "1"               TO      RECE84-ZAISKBKBN
            ELSE
-              MOVE    2                 TO      RECE84-ZAISKBKBN
+              MOVE    "2"               TO      RECE84-ZAISKBKBN
            END-IF
            MOVE    RECE82-PTNUM         TO      RECE84-PTNUM
       *
@@ -2429,7 +2451,8 @@
                  END-IF
                END-IF                                                   
                MOVE    TNS-NYUTENTTLKBN   TO    RECE85-TENTTLKBN(IDX4)
-               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
+               IF     (SRY-SRYCD    (IDX2)(1:1)     =   "8"  )
+               OR     (SRY-SRYCD    (IDX2)(1:3)     =   "008")
                   MOVE ZERO               TO    RECE85-YUKOKETA(IDX4)
                ELSE
                   MOVE TNS-YUKOKETA       TO    RECE85-YUKOKETA(IDX4)
@@ -2448,8 +2471,9 @@
                                       TO RECE85-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE85-KOUHYOJYUNNUM(IDX4)
-               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
-               AND     SRY-INPUTNUM (IDX2)      NOT =   ZERO
+               IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
+                      (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
+               AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )
                    MOVE    SRY-HOSPID           TO  PTCOM-HOSPID
                    MOVE    SRY-PTID             TO  PTCOM-PTID
                    MOVE    SRY-ZAINUM           TO  PTCOM-ZAINUM
@@ -2538,9 +2562,8 @@
                       OR (( ACCT-SRYKBN     = "11"              ) AND
                           ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ) AND
                           ( SRY-SRYCD(IDX2) NOT = "830000020"   ))
-      *
-      **>             OR (( SRY-SRYCD(1)    = CONS-ROUSAI1      ) AND
-      **>                 ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
+                      OR (( ACCT-SRYKBN     = "11"              ) AND
+                          ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
       *
                          ADD    1      TO    WRK-MEISAI-CNT             
                          MOVE  "2"     TO    RECE85-SIKFLG(IDX4)
@@ -2550,8 +2573,9 @@
                                        TO    WRK-SRYCD
                          ADD   WRK-SRYCD 
                                        TO    WRK-SRYCDTOTAL
-                         IF    RECE84-COMCDFLG       =   "1" 
-                         AND   SRY-SRYCD(IDX2)(1:1)  =   "8" 
+                         IF  ( RECE84-COMCDFLG       =   "1"   )
+                         AND ((SRY-SRYCD(IDX2)(1:1)  =   "8"  ) OR
+                              (SRY-SRYCD(IDX2)(1:3)  =   "008"))
                             MOVE  "2"  TO    RECE84-COMCDFLG
                          END-IF
                       ELSE
@@ -2612,14 +2636,14 @@
            MOVE    TNS-TEN         TO  WRK-TANKA
            MOVE    WRK-TANKA-S1    TO  WRK-TANKA-Z1
            MOVE    ZERO            TO  FLG-SP
-           PERFORM   VARYING   IDY   FROM    2   BY  -1
-                     UNTIL     IDY           =   ZERO
-             IF  WRK-TANKA-S2(IDY:1) NOT =   ZERO
+           PERFORM   VARYING   IDY3   FROM    2   BY  -1
+                     UNTIL     IDY3           =   ZERO
+             IF  WRK-TANKA-S2(IDY3:1) NOT =   ZERO
                  MOVE    1               TO  FLG-SP
              END-IF
              IF  FLG-SP                  =   1
-                 MOVE    WRK-TANKA-S2(IDY:1)
-                                         TO  WRK-TANKA-Z3(IDY:1)
+                 MOVE    WRK-TANKA-S2(IDY3:1)
+                                         TO  WRK-TANKA-Z3(IDY3:1)
              END-IF
            END-PERFORM
            IF  WRK-TANKA-Z3          NOT =   SPACE
@@ -2877,8 +2901,9 @@
                                       TO RECE85-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE85-KOUHYOJYUNNUM(IDX4)
-               IF      NSRY-SRYCD    (IDX2)(1:1)     =   "8"
-               AND     NSRY-INPUTNUM (IDX2)      NOT =   ZERO
+               IF    ((NSRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
+                      (NSRY-SRYCD    (IDX2)(1:3)     =   "008"))
+               AND   ( NSRY-INPUTNUM (IDX2)      NOT =   ZERO  )
                    MOVE    NSRY-HOSPID           TO  PTCOM-HOSPID
                    MOVE    NSRY-PTID             TO  PTCOM-PTID
                    MOVE    NSRY-ZAINUM           TO  PTCOM-ZAINUM
@@ -3077,6 +3102,30 @@
                                               +  WRK-ORCSTEN-SURYO(IDX2)
                   COMPUTE  RECE84-MEISAISU    =  RECE84-MEISAISU
                                               +  1
+      *
+      *           ∆√ƒÍ¥Ô∫‡§Œ√±≤¡ ‘Ω∏
+                  IF      WRK-ORCSTEN-SRYCD(IDX2)(1:1)  =   "7"
+                    IF  WRK-ORCSTEN-SRYCD(IDX2)       =
+                                       CONS-FILM-YOUJI-KASAN  OR
+                                       CONS-SANSO             OR
+                                       CONS-SANSO2              
+                      CONTINUE
+                    ELSE
+                      IF      TNS-TEN         =   ZERO
+                        CONTINUE
+                      ELSE
+                        PERFORM 220111-RECE85-TENSOU-TANKA-HEN-SEC
+                        COMPUTE IDW =   RECE85-YUKOKETA(IDX4)  *  2
+                                    +   3
+                        MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
+                                   TO   RECE85-NAME(IDX4)(IDW:)
+                        COMPUTE RECE85-YUKOKETA(IDX4)  =
+                                RECE85-YUKOKETA(IDX4)  +
+                                  1                    +
+                               (WRK-CHAR-N-CNT  /  2)
+                      END-IF
+                    END-IF
+                  END-IF
       *
                 END-IF  
       *
@@ -3385,7 +3434,7 @@
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001" OR "008"   )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                            COMPUTE   RECE82-TENSU(4)  =
                                      RECE82-TENSU(4)  -
@@ -3664,7 +3713,7 @@
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001" OR "008"   )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                            COMPUTE   RECE82-TENSU-YAK(4)  =
                                      RECE82-TENSU-YAK(4)  -
@@ -4578,12 +4627,6 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
@@ -4604,11 +4647,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
            .
        900-DBDISCONNECT-EXT.
            EXIT.

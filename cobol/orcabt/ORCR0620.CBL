@@ -48,6 +48,7 @@
       *  01.00.14    NACL-藤原    04/03/08  シス管による生保受給者番号の編集
       *  01.00.15    NACL-門脇    04/04/06  公費単独７０歳未満で老人保険入力
       *                                     のある方の高齢者フラグ編集修正
+      *  01.00.16    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1295,7 +1296,7 @@
       *    自費のときのレセプト種別を編集
            IF     (RECE62-HKNNUM        NOT =   SPACE)   AND
                   (WRK-JIHI-FLG         =   "1"      ) 
-               MOVE    "8888"               TO  RECE62-RECESYUBETU    
+               MOVE    8888                 TO  RECE62-RECESYUBETU    
                GO  TO  RECESYUBETU-SET-EXT
            END-IF
       *         
@@ -3044,12 +3045,6 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -3070,11 +3065,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
            .
        900-DBDISCONNECT-EXT.
            EXIT.

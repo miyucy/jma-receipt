@@ -50,6 +50,8 @@
       *  ２００４年４月改正対応
       *  01.01.01    NACL-門脇    04.04.01  初診（乳幼児）（夜間・休日・
       *                                     深夜）加算の摘要欄記載
+      *  01.01.02    NACL-門脇    04.04.26  ユーザーコメント追加対応
+      *  01.01.03    NACL-門脇    04.05.21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -372,13 +374,14 @@
       *    剤の先頭の診療コード
            03  TBL-ZAIW-SRYCD1             PIC X(09).
       *    剤の先頭の診療コードの各種番号等情報
-           03  TBL-ZAIW-CDKBN-KBN          PIC X(01).
-           03  TBL-ZAIW-CDKBN-SYO          PIC 9(01).
-           03  TBL-ZAIW-CDKBN-BU           PIC 9(02).
-           03  TBL-ZAIW-CDKBN-KBNNUM       PIC 9(03).
-           03  TBL-ZAIW-CDKBN-KBNNUM-EDA   PIC 9(02).
-           03  TBL-ZAIW-CDKBN-KOUBAN       PIC 9(02).
-           03  TBL-ZAIW-KOUHYOJYUNNUM      PIC 9(09).
+           03  TBL-ZAIW-CDKBN-AREA.
+               05  TBL-ZAIW-CDKBN-KBN          PIC X(01).
+               05  TBL-ZAIW-CDKBN-SYO          PIC 9(01).
+               05  TBL-ZAIW-CDKBN-BU           PIC 9(02).
+               05  TBL-ZAIW-CDKBN-KBNNUM       PIC 9(03).
+               05  TBL-ZAIW-CDKBN-KBNNUM-EDA   PIC 9(02).
+               05  TBL-ZAIW-CDKBN-KOUBAN       PIC 9(02).
+               05  TBL-ZAIW-KOUHYOJYUNNUM      PIC 9(09).
       *    剤の先頭の診療コードの検査等実施判断情報
            03  TBL-ZAIW-KNSJISKBN          PIC 9(01).
       *     
@@ -927,8 +930,14 @@
                                      MOVE    4             TO  IDY
                                  END-IF
                                ELSE
-                                 IF      IDY           =   ZERO
-                                     MOVE    1             TO  IDY
+                                 IF    RECE65-SRYCD (IDX) (1:3) = "008"
+                                    IF      IDY           =   ZERO
+                                        MOVE    2          TO  IDY
+                                    END-IF
+                                 ELSE
+                                    IF      IDY           =   ZERO
+                                        MOVE    1          TO  IDY
+                                    END-IF
                                  END-IF
                                END-IF
                              END-IF
@@ -1058,7 +1067,8 @@
                                                      CONS-COMMENT8     
                            MOVE    1             TO  FLG-COMMENT2      
                        END-IF                                          
-                       IF      RECE65-SRYCD(IDX)(1:1)   =   "8"        
+                       IF     (RECE65-SRYCD(IDX)(1:1)   =   "8"  )
+                       OR     (RECE65-SRYCD(IDX)(1:3)   =   "008")
                            MOVE    1             TO  FLG-COMMENT3      
                        END-IF                                     
       *---- (01.00.05) LINE ADD END --------------------------------
@@ -1177,6 +1187,7 @@
            OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  = "8" AND    
                   TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)   
                                                      NOT = "830000020")
+           OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)  = "008"  )
                    CONTINUE
            ELSE
                    MOVE    1                 TO  FLG-NOPRT
@@ -1564,7 +1575,8 @@
            END-IF
            IF  ( RECE62-RECESYUBETU    =  8888   )  AND
                ( RECE64-SRYKBN  = "95" OR "96"   )  
-             IF    TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  =  "8"
+             IF   (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  =  "8"  )
+             OR   (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)  =  "008")
                  CONTINUE
              ELSE
                IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)
@@ -1697,7 +1709,7 @@
                                                    =
                                                WRK-SUM-KAISU (IDXX) - 
                                                    WRK-KAISU   (1)                                       
-                               MOVE    "1"         TO  WRK-RECE64-FLG 
+                               MOVE    1           TO  WRK-RECE64-FLG 
                                                        (IDY)
                            END-IF
                        END-IF
@@ -2302,23 +2314,26 @@
                          MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
-                IF   WRK-SRYSYUKBN           =  "330"
-      *         AND  TBL-ZAI-IDX(IDY)        =   1
-                AND  TBL-ZAI-SRYCD(IDY)(1:1) =  "8"
+                IF  ( WRK-SRYSYUKBN           =  "330"  )
+      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
+                AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
+                     (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   7              TO  RECE66-TENTEKIKBN
                          MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
-                IF   WRK-SRYSYUKBN           =  "331"
-      *         AND  TBL-ZAI-IDX(IDY)        =   1
-                AND  TBL-ZAI-SRYCD(IDY)(1:1) =  "8"
+                IF  ( WRK-SRYSYUKBN           =  "331"  )
+      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
+                AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
+                     (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   8             TO  RECE66-TENTEKIKBN
                          MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
-                IF   WRK-SRYSYUKBN           =  "350"
-      *         AND  TBL-ZAI-IDX(IDY)        =   1
-                AND  TBL-ZAI-SRYCD(IDY)(1:1) =  "8"
+                IF  ( WRK-SRYSYUKBN           =  "350"  )
+      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
+                AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
+                     (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   9              TO  RECE66-TENTEKIKBN
                          MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
@@ -2343,13 +2358,14 @@
       ****                                  TNS-CDKBN-KBNNUM-EDA
       ****                                  TNS-CDKBN-KOUBAN 
       ****                                  TNS-KOUHYOJYUNNUM
-                                            TBL-ZAIW-CDKBN-KBN
-                                            TBL-ZAIW-CDKBN-SYO
-                                            TBL-ZAIW-CDKBN-BU
-                                            TBL-ZAIW-CDKBN-KBNNUM
-                                            TBL-ZAIW-CDKBN-KBNNUM-EDA
-                                            TBL-ZAIW-CDKBN-KOUBAN
-                                            TBL-ZAIW-KOUHYOJYUNNUM
+      ******                                TBL-ZAIW-CDKBN-KBN
+      ******                                TBL-ZAIW-CDKBN-SYO
+      ******                                TBL-ZAIW-CDKBN-BU
+      ******                                TBL-ZAIW-CDKBN-KBNNUM
+      ******                                TBL-ZAIW-CDKBN-KBNNUM-EDA
+      ******                                TBL-ZAIW-CDKBN-KOUBAN
+      ******                                TBL-ZAIW-KOUHYOJYUNNUM
+                                            TBL-ZAIW-CDKBN-AREA
       ****       ELSE  
       ****           MOVE    TBL-ZAIW-SRYCD1   TO  TNS-SRYCD
       ****           MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
@@ -2684,12 +2700,6 @@
       *****************************************************************
        120-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -2710,11 +2720,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
            EXIT.

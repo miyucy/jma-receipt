@@ -41,6 +41,7 @@
       *                                     SRYACCT8¢ª29
       *                                     SRYACCT9¢ª30
       *  01.01.09    NACL-Æ£¸¶    04/04/15  £Ä£Â¹¹¿·¥¨¥é¡¼»þ¤Î½èÍý
+      *  01.01.10    NACL-ÌçÏÆ    04/05/21  DBOPEN,DBDISCONNECTºï½ü
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -219,7 +220,7 @@
                05  WRK-ROUSAIKBN       PIC X(01).
                05  WRK-ERR-DAY         PIC 9(02).
                05  WRK-ERR-HKNCOMBINUM PIC 9(04).
-               05  WRK-ERR-ERRKBN      PIC X(01).
+               05  WRK-ERR-ERRKBN      PIC 9(01).
                05  WRK-ERR-TEKSTYMD    PIC 9(08).
                05  WRK-ERR-TEKEDYMD    PIC 9(08).
       * 
@@ -593,7 +594,7 @@
                MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
                MOVE    "1"                 TO  RECE10-NYUGAIKBN
-               MOVE    "1"                 TO  RECE10-TEISYUTUSAKI
+               MOVE    1                   TO  RECE10-TEISYUTUSAKI
                MOVE    RECE10-REC          TO  MCPDATA-REC
                MOVE    "SEIKYU-DEL6"       TO  ORC-DBPATH
                MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -617,7 +618,7 @@
                MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
                MOVE    "1"                 TO  RECE10-NYUGAIKBN
-               MOVE    "2"                 TO  RECE10-TEISYUTUSAKI
+               MOVE    2                   TO  RECE10-TEISYUTUSAKI
                MOVE    RECE10-REC          TO  MCPDATA-REC
                MOVE    "SEIKYU-DEL6"       TO  ORC-DBPATH
                MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -640,7 +641,7 @@
                INITIALIZE                  KOHSKY-REC
                MOVE    SYS-1001-HOSPID     TO  KOHSKY-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  KOHSKY-SRYYM
-               MOVE    "1"                 TO  KOHSKY-TEISYUTUSAKI
+               MOVE    1                   TO  KOHSKY-TEISYUTUSAKI
                MOVE    "1"                 TO  KOHSKY-NYUGAIKBN
                MOVE    KOHSKY-REC          TO  MCPDATA-REC
                MOVE    "KOHSKY-DEL1"       TO  ORC-DBPATH
@@ -664,7 +665,7 @@
                INITIALIZE                  KOHSKY-REC
                MOVE    SYS-1001-HOSPID     TO  KOHSKY-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  KOHSKY-SRYYM
-               MOVE    "2"                 TO  KOHSKY-TEISYUTUSAKI
+               MOVE    2                   TO  KOHSKY-TEISYUTUSAKI
                MOVE    "1"                 TO  KOHSKY-NYUGAIKBN
                MOVE    KOHSKY-REC          TO  MCPDATA-REC
                MOVE    "KOHSKY-DEL1"        TO  ORC-DBPATH
@@ -2647,12 +2648,6 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -2673,11 +2668,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
            EXIT.

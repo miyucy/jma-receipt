@@ -58,6 +58,8 @@
       *                                     深夜）加算の摘要欄記載
       *  01.01.02    NACL-門脇    04.04.10  在宅患者訪問点滴注射管理指導料
       *                                     算定時の点滴注射のコメント対応
+      *  01.01.03    NACL-門脇    04.04.26  ユーザーコメント追加対応
+      *  01.01.04    NACL-門脇    04.05.21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -389,13 +391,14 @@
       *    剤の先頭の診療コード
            03  TBL-ZAIW-SRYCD1             PIC X(09).
       *    剤の先頭の診療コードの各種番号等情報
-           03  TBL-ZAIW-CDKBN-KBN          PIC X(01).
-           03  TBL-ZAIW-CDKBN-SYO          PIC 9(01).
-           03  TBL-ZAIW-CDKBN-BU           PIC 9(02).
-           03  TBL-ZAIW-CDKBN-KBNNUM       PIC 9(03).
-           03  TBL-ZAIW-CDKBN-KBNNUM-EDA   PIC 9(02).
-           03  TBL-ZAIW-CDKBN-KOUBAN       PIC 9(02).
-           03  TBL-ZAIW-KOUHYOJYUNNUM      PIC 9(09).
+           03  TBL-ZAIW-CDKBN-AREA.
+               05  TBL-ZAIW-CDKBN-KBN          PIC X(01).
+               05  TBL-ZAIW-CDKBN-SYO          PIC 9(01).
+               05  TBL-ZAIW-CDKBN-BU           PIC 9(02).
+               05  TBL-ZAIW-CDKBN-KBNNUM       PIC 9(03).
+               05  TBL-ZAIW-CDKBN-KBNNUM-EDA   PIC 9(02).
+               05  TBL-ZAIW-CDKBN-KOUBAN       PIC 9(02).
+               05  TBL-ZAIW-KOUHYOJYUNNUM      PIC 9(09).
       *    剤の先頭の診療コードの検査等実施判断情報
            03  TBL-ZAIW-KNSJISKBN          PIC 9(01).
       *     
@@ -508,7 +511,7 @@
            03  WRK-CONS-BUNKAKU-MOJISU
                                PIC 9(02)   VALUE   4.                    
            03  WRK-CONS-BUNKAKU
-                               PIC X(04)   VALUE   "分画".                            *
+                               PIC X(04)   VALUE   "分画".
       *    薬剤料逓減
            03  CONS-TEIGEN     PIC X(09)   VALUE   "630010002".
       *---- (01.00.05) LINE ADD START --------------------------------
@@ -920,18 +923,38 @@
                                        MOVE    4             TO  IDY
                                    END-IF
                                ELSE
-                                   IF      IDY           =   ZERO
-                                       MOVE    1             TO  IDY
+                                   IF  RECE45-SRYCD (IDX) (1:3) = "008"
+                                     IF   RECE45-SRYSYUKBN  =  "334"
+                                         MOVE    5         TO  IDY
+                                     ELSE
+                                       IF      IDY          =   ZERO
+                                         MOVE    2         TO  IDY
+                                       END-IF
+                                     END-IF
+                                   ELSE
+                                     IF      IDY           =   ZERO
+                                         MOVE    1         TO  IDY
+                                     END-IF
                                    END-IF
-                               END-IF    
+                               END-IF
                              ELSE
                                IF      RECE45-SRYCD (IDX) (1:3) = "059"
                                        MOVE    4             TO  IDY
                                ELSE
-                                   IF      IDY           =   ZERO
-                                       MOVE    1             TO  IDY
+                                   IF  RECE45-SRYCD (IDX) (1:3) = "008"
+                                      IF   RECE45-SRYSYUKBN  =  "334"
+                                          MOVE    5         TO  IDY
+                                      ELSE
+                                        IF      IDY          =   ZERO
+                                          MOVE    2         TO  IDY
+                                        END-IF
+                                      END-IF
+                                   ELSE
+                                      IF      IDY           =   ZERO
+                                          MOVE    1         TO  IDY
+                                      END-IF
                                    END-IF
-                               END-IF    
+                               END-IF
                              END-IF
                            WHEN    "8"
                                IF   RECE45-SRYSYUKBN  =  "334"
@@ -1837,7 +1860,7 @@
                                                =
                                                WRK-SUM-KAISU (IDXX) - 
                                                WRK-KAISU   (1)                                       
-                               MOVE    "1"         TO  WRK-RECE44-FLG 
+                               MOVE    1            TO  WRK-RECE44-FLG 
                                                        (IDY)
                            END-IF
                        END-IF
@@ -2396,13 +2419,14 @@
       ****                                  TNS-CDKBN-KBNNUM-EDA
       ****                                  TNS-CDKBN-KOUBAN
       ****                                  TNS-KOUHYOJYUNNUM
-                                            TBL-ZAIW-CDKBN-KBN
-                                            TBL-ZAIW-CDKBN-SYO
-                                            TBL-ZAIW-CDKBN-BU
-                                            TBL-ZAIW-CDKBN-KBNNUM
-                                            TBL-ZAIW-CDKBN-KBNNUM-EDA
-                                            TBL-ZAIW-CDKBN-KOUBAN
-                                            TBL-ZAIW-KOUHYOJYUNNUM
+      ******                                TBL-ZAIW-CDKBN-KBN
+      ******                                TBL-ZAIW-CDKBN-SYO
+      ******                                TBL-ZAIW-CDKBN-BU
+      ******                                TBL-ZAIW-CDKBN-KBNNUM
+      ******                                TBL-ZAIW-CDKBN-KBNNUM-EDA
+      ******                                TBL-ZAIW-CDKBN-KOUBAN
+      ******                                TBL-ZAIW-KOUHYOJYUNNUM
+                                            TBL-ZAIW-CDKBN-AREA 
       ****       ELSE  
       ****           MOVE    TBL-ZAIW-SRYCD1      TO      TNS-SRYCD
       ****           MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
@@ -2756,12 +2780,6 @@
       *****************************************************************
        120-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -2782,11 +2800,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
            EXIT.

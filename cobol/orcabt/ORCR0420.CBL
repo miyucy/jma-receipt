@@ -67,6 +67,8 @@
       *                                     コメント対応
       *  01.01.04    NACL-門脇    04.04.10  在宅患者訪問点滴注射管理指導料
       *                                     算定時の点滴注射のコメント対応
+      *  01.01.05    NACL-門脇    04.04.26  ユーザーコメント追加対応
+      *  01.01.06    NACL-門脇    04.05.21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1190,7 +1192,7 @@
                                                   "6" OR  "7" OR
                                                   "8"
       *
-               ADD     1                  TO    IDX4                                  *
+               ADD     1                  TO    IDX4
                MOVE    SRY-SRYCD(IDX2)    TO    RECE45-SRYCD(IDX4)
       *
                IF      SRY-SRYKBN         =     "12"
@@ -1347,7 +1349,8 @@
                ELSE
                    MOVE  TNS-GAITENTTLKBN TO    RECE45-TENTTLKBN(IDX4)
                END-IF
-               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
+               IF     (SRY-SRYCD    (IDX2)(1:1)     =   "8"  )
+               OR     (SRY-SRYCD    (IDX2)(1:3)     =   "008")
                   MOVE ZERO               TO    RECE45-YUKOKETA(IDX4)
                ELSE
                   MOVE TNS-YUKOKETA       TO    RECE45-YUKOKETA(IDX4)
@@ -1366,8 +1369,9 @@
                                       TO RECE45-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE45-KOUHYOJYUNNUM(IDX4)
-               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
-               AND     SRY-INPUTNUM (IDX2)      NOT =   ZERO
+               IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
+                      (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
+               AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )
                    MOVE    SRY-HOSPID           TO  PTCOM-HOSPID
                    MOVE    SRY-PTID             TO  PTCOM-PTID
                    MOVE    SRY-ZAINUM           TO  PTCOM-ZAINUM
@@ -1377,19 +1381,6 @@
                    MOVE    PTCOM-INPUTCOMENT   TO    RECE45-NAME(IDX4)
       *
                    MOVE   "1"                  TO    RECE44-COMCDFLG
-      *
-                   IF   SRY-SRYSYUKBN      =     "334"
-                   AND  SRY-SRYCD(IDX2)    =     "810000001"
-                   AND  FLG-HOUTEN-COM     =     ZERO
-                      PERFORM  VARYING  IDV  FROM  1  BY  2
-                              UNTIL  (IDV            >   200 )
-                               OR    (FLG-HOUTEN-COM =     1 )
-                        IF   RECE45-NAME(IDX4)(IDV:2)   =   "訪"
-                          MOVE   SPACE  TO    RECE44-FLG-HOUTEN-COMMENT
-                          MOVE    1     TO    FLG-HOUTEN-COM
-                        END-IF
-                      END-PERFORM
-                   END-IF
       *
                ELSE
                    MOVE    TNS-NAME            TO    RECE45-NAME(IDX4)
@@ -1408,6 +1399,20 @@
       *                 END-IF
       *            END-IF
       *
+               END-IF
+      *
+               IF  ( SRY-SRYSYUKBN         =  "334"       )
+               AND ((SRY-SRYCD(IDX2)       =  "810000001") OR
+                    (SRY-SRYCD(IDX2)(1:3)  =  "008"      ))
+               AND ( FLG-HOUTEN-COM        =   ZERO       )
+                    PERFORM  VARYING  IDV  FROM  1  BY  2
+                            UNTIL  (IDV            >   200 )
+                             OR    (FLG-HOUTEN-COM =     1 )
+                      IF   RECE45-NAME(IDX4)(IDV:2)   =   "訪"
+                         MOVE   SPACE  TO    RECE44-FLG-HOUTEN-COMMENT
+                         MOVE    1     TO    FLG-HOUTEN-COM
+                      END-IF
+                    END-PERFORM
                END-IF
       *
                IF  RECE45-YUKOKETA(IDX4)  =  ZERO
@@ -1479,16 +1484,13 @@
                       OR (( ACCT-SRYKBN     = "11"              ) AND
                           ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ) AND
                           ( SRY-SRYCD(IDX2) NOT = "830000020"   ))
+                      OR (( ACCT-SRYKBN     = "11"              ) AND
+                          ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
                       OR (( ACCT-SRYKBN     = "12"              ) AND
                           ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ) AND
                           ( SRY-SRYCD(IDX2) NOT = "830000021"   ))
-      *
-      **>             OR (( SRY-SRYCD(1)    = CONS-ROUSAI1      ) AND
-      **>                 ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
-      **>             OR (( SRY-SRYCD(1)    = CONS-ROUSAI5  OR
-      **>                                     CONS-ROUSAI6  OR
-      **>                                     CONS-ROUSAI7      ) AND
-      **>                 ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
+                      OR (( ACCT-SRYKBN     = "12"              ) AND
+                          ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
       *
                          ADD    1      TO    WRK-MEISAI-CNT             
                          MOVE  "2"     TO    RECE45-SIKFLG(IDX4)
@@ -1498,8 +1500,9 @@
                                        TO    WRK-SRYCD
                          ADD   WRK-SRYCD 
                                        TO    WRK-SRYCDTOTAL
-                         IF    RECE44-COMCDFLG       =   "1" 
-                         AND   SRY-SRYCD(IDX2)(1:1)  =   "8" 
+                         IF  ( RECE44-COMCDFLG       =   "1"   )
+                         AND ((SRY-SRYCD(IDX2)(1:1)  =   "8"  ) OR
+                              (SRY-SRYCD(IDX2)(1:3)  =   "008"))
                             MOVE  "2"  TO    RECE44-COMCDFLG
                          END-IF
                       ELSE
@@ -2255,7 +2258,7 @@
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)  =  "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001"            )
+                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001" OR "008"   )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(14)  =
                                  RECE41-TENSU(14)  -
@@ -2294,7 +2297,7 @@
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
                    IF    (SRY-SRYCD(IDX3) (1:1)  =  "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001"            )
+                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001" OR "008"   )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(17)
                        COMPUTE   RECE41-TENSU(17)  =
                                  RECE41-TENSU(17)  +
@@ -2605,7 +2608,7 @@
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)  =  "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001"            )
+                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001" OR "008"   )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(7)  =
                                  RECE41-TENSU(7)  -
@@ -2636,7 +2639,7 @@
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
                    IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001" OR "008"   )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(10)
                        COMPUTE   RECE41-TENSU(10)  =
                                  RECE41-TENSU(10)  +
@@ -2959,7 +2962,7 @@
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001" OR "008"   )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU-YAK(9)  =
                                  RECE41-TENSU-YAK(9)  -
@@ -2998,7 +3001,7 @@
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
                    IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001" OR "008"   )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(12)
                        COMPUTE   RECE41-TENSU-YAK(12)  =
                                  RECE41-TENSU-YAK(12)  +
@@ -3738,12 +3741,6 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
@@ -3764,11 +3761,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
            EXIT.

@@ -41,6 +41,8 @@
       *  01.00.10    NACL-門脇    03.06.09  消費税端数対応
       *  01.00.11    NACL-門脇    03.06.19  実日数テーブル編集の追加
       *  01.00.12    NACL-門脇    04.01.21  労災の特定器材(09593)対応
+      *  01.00.13    NACL-門脇    04.05.18  （特）の記載対象に麻酔追加
+      *  01.00.14    NACL-門脇    04.05.21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -911,7 +913,8 @@
                                    PERFORM   KYUKYU-HANTEI-SEC
                                END-IF
                                IF   ACCT-SRYKBN  =  "40"  OR  "50"  OR
-                                                    "60"  OR  "80"   
+                                                    "60"  OR  "80"  OR
+                                                    "54"
                                    PERFORM   GAIRAIXX-HANTEI-SEC
                                END-IF
                                IF   ACCT-SRYKBN  =  "12"   
@@ -2405,12 +2408,6 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -2431,11 +2428,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
            EXIT.

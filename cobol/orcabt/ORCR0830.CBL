@@ -30,6 +30,7 @@
       *  01.00.01    NACL-ÌçÏÆ    04.01.21  Ï«ºÒ¤ÎÆÃÄê´ïºà(09593)ÂÐ±þ
       *  01.00.02    NACL-ÌçÏÆ    04.01.21  Ï«ºÒ¡¦¼«ÇåÀÕ¤ÎÆþ±¡¼¼ÎÁ²Ã»»
       *                                     (09594)ÂÐ±þ
+      *  01.00.03    NACL-ÌçÏÆ    04.05.21  DBOPEN,DBDISCONNECTºï½ü
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -169,7 +170,7 @@
       *
            03  WRK-SHOKUJIRYOYO                        PIC  9(01).
            03  WRK-TOKUKANRIKASAN                      PIC  9(01).
-           03  WRK-SRYCD                               PIC  9(09).
+           03  WRK-SRYCD                               PIC  X(09).
            03  WRK-NYUTOKRYO                           PIC  9(09).
       *
        01  WRK-TENTEK.
@@ -2299,12 +2300,6 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -2325,11 +2320,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
            .
        900-DBDISCONNECT-EXT.
            EXIT.

@@ -47,6 +47,7 @@
       *                                     の基本料取得対応等
       *  01.00.14    NACL-門脇    04/04/23  選定入院時の他医療機関受診の
       *                                     算定修正
+      *  01.00.15    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
       *
@@ -238,7 +239,7 @@
            03  WRK-NYUTOKRYO                           PIC 9(09).
            03  WRK-SHOKUJIRYOYO                        PIC 9(01).
            03  WRK-TOKUKANRIKASAN                      PIC 9(01).
-           03  WRK-SRYCD                               PIC 9(09).
+           03  WRK-SRYCD                               PIC X(09).
            03  WRK-RYAKUSHO                            PIC X(14).
            03  WRK-SRYYMD                              PIC X(08).       
            03  WRK-SRYYMD-TAIHI                        PIC X(08).   
@@ -2560,9 +2561,9 @@
       *
                IF   FLG-MIJISI-INNAI   =   1
       ***        IF    RECE62-RJNHKNNUM    =    SPACE
-                    MOVE    190080570      TO   WRK-SRYCD
+                    MOVE    "190080570"    TO   WRK-SRYCD
       ***        ELSE
-      ***           MOVE    190799770      TO   WRK-SRYCD
+      ***           MOVE    "190799770"    TO   WRK-SRYCD
       ***        END-IF
                  MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
       *
@@ -2571,9 +2572,9 @@
       *
                IF   FLG-MIJISI-IRYO    =   1
       ***        IF    RECE62-RJNHKNNUM    =    SPACE
-                    MOVE    190111690      TO   WRK-SRYCD
+                    MOVE    "190111690"    TO   WRK-SRYCD
       ***        ELSE
-      ***           MOVE    190809090      TO   WRK-SRYCD
+      ***           MOVE    "190809090"    TO   WRK-SRYCD
       ***        END-IF
                  MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
       *
@@ -2582,9 +2583,9 @@
       *
                IF   FLG-MIJISI-JYOKU   =   1
       ***        IF    RECE62-RJNHKNNUM    =    SPACE
-                    MOVE    190111790      TO   WRK-SRYCD
+                    MOVE    "190111790"    TO   WRK-SRYCD
       ***        ELSE
-      ***           MOVE    190809190      TO   WRK-SRYCD
+      ***           MOVE    "190809190"    TO   WRK-SRYCD
       ***        END-IF
                  MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
       *
@@ -3645,12 +3646,6 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -3671,11 +3666,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
            EXIT.
