@@ -1044,7 +1044,8 @@
                MOVE    WRK-Z72-G          TO  HC03-KONNYUKIN
            END-IF
       *    前回未収額計算
-           PERFORM 3101-MISYU-HEN-SEC
+      *!!! PERFORM 3101-MISYU-HEN-SEC
+           MOVE    ORCHC03-ZENMISYU    TO  WRK-MISYUMONEY
            MOVE    WRK-MISYUMONEY      TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-ZENMISYU
@@ -1054,6 +1055,15 @@
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-GOUKEIGAK
+      *
+      *    発行区分
+           EVALUATE    ORCHC03-HAKKOFLG
+               WHEN    1
+                   MOVE    "（再）"        TO  HC03-MIDASHI
+               WHEN    2
+                   MOVE    "（訂正）"      TO  HC03-MIDASHI
+           END-EVALUATE
+      *
            .
        300-HC03-HEN-EXT.
            EXIT.
