@@ -54,6 +54,8 @@
       *                                     編集修正
       *  01.00.17    NACL-門脇    04/08/23  入院料未算定時の室料差額計算を
       *                                     判定修正（システム管理より)
+      *  01.00.18    NACL-門脇    04/09/07  初診料算定フラグ（地方公費用）
+      *                                     のセット
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -96,6 +98,10 @@
               03 WRK-JIBAI-MEISAI          PIC 9(09).
               03 WRK-JIBAI-RYOYO           PIC 9(09).
       *
+       01  WRK-SYOSIN-TABLE.
+           02  WRK-SYOSIN-TBL    OCCURS   10.
+              03 WRK-SYOSIN                PIC X(01).
+      *
        01  WRK-SKYYM-TABLE.
            02  WRK-SKYYM-TBL     OCCURS    2.
               03   WRK-SKYYM               PIC X(06).
@@ -133,7 +139,7 @@
               03 WRK-HANBETU2-HKNCOMBINUM  PIC 9(04).
               03 WRK-HANBETU2-DAY          PIC X(01)   OCCURS   31.
       *
-       01  WRK-HANBETU-DATA                PIC X(68).                   
+       01  WRK-HANBETU-DATA                PIC X(70).                   
       *
        01  WRK-KOSEI-TABLE.
            03  WRK-KOSEI-TBL    OCCURS    2.
@@ -251,6 +257,7 @@
            03  IDX3                        PIC 9(02).
            03  IDX4                        PIC 9(02).
            03  IDX5                        PIC 9(02).
+           03  IDX6                        PIC 9(02).
            03  SYU-IDX                     PIC 9(02).
            03  NYUINACT-IDX                PIC 9(02).
            03  RMSAGAKU-IDX                PIC 9(02).
@@ -272,6 +279,20 @@
                05  WRK-SYSYY               PIC 9(04).
                05  WRK-SYSMM               PIC 9(02).
                05  WRK-SYSDD               PIC 9(02).
+      *
+      *    初診料算定フラグ用テーブル
+       01  TBL-SYOSIN-AREA.
+           03  FILLER          PIC X(09)   VALUE    "111003610".
+           03  FILLER          PIC X(09)   VALUE    "111700210".
+           03  FILLER          PIC X(09)   VALUE    "111000110".
+           03  FILLER          PIC X(09)   VALUE    "111700110".
+           03  FILLER          PIC X(09)   VALUE    "113003510".
+           03  FILLER          PIC X(09)   VALUE    "113003710".
+      *
+       01  TBL-SYOSIN-R        REDEFINES   TBL-SYOSIN-AREA.
+           03  TBL-SYOSIN      PIC X(09)   OCCURS    6.
+      *
+       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE     6.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -411,6 +432,7 @@
                          WRK-KOSEI-TABLE
                          WRK-IKUSEI-TABLE
                          WRK-JIBAI-TABLE
+                         WRK-SYOSIN-TABLE
                          FLG-AREA.
       *
       *    調剤料一括変更処理
@@ -459,6 +481,8 @@
                 MOVE     WRK-JIBAI-MEISAI(IDX)
                                               TO  LNK-S02-MEISAI
                 MOVE     WRK-JIBAI-RYOYO(IDX) TO  LNK-S02-RYOYO
+      *
+                MOVE     WRK-SYOSIN(IDX)      TO  LNK-S02-SYOSINFLG
       *
                 MOVE     LNK-ORCS02-REC       TO  WRK-ORCS02-REC
                 MOVE     LNK-SYUNOU-REC(IDX)  TO  SYUNOU-REC
@@ -2886,6 +2910,11 @@
       *        労災・自賠責用の編集処理
                IF   SYU-SYUHKNNUM  =  "971"  OR  "973"
                    PERFORM   ROSAI-JIBAI-HENSYU-SEC
+               ELSE
+      *            初診料算定フラグ（地方公費用）のセット
+                   IF    WRK-SYOSIN(IDX)   =   SPACE
+                         PERFORM  SYOSINFLG-SET-SEC
+                   END-IF
                END-IF
       *
                EVALUATE    ACCT-SRYKBN
@@ -3248,6 +3277,56 @@
       *
            .
        ROSAI-JIBAI-HENSYU-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    初診料算定フラグ（地方公費用）のセット
+      **************************************************************
+       SYOSINFLG-SET-SEC          SECTION.
+      *
+           IF  ACCT-SRYKBN  =   "11"  OR  "13"
+      *
+               PERFORM   VARYING   IDX6   FROM    1   BY  1
+                          UNTIL  ( IDX6    >   TBL-SYOSIN-MAX  )
+                           OR    ( WRK-SYOSIN(IDX)     =   "1" )
+      *
+                   INITIALIZE                        SRYACT-REC
+                   MOVE    ACCT-HOSPID          TO   SRY-HOSPID
+                   MOVE    ACCT-NYUGAIKBN       TO   SRY-NYUGAIKBN
+                   MOVE    ACCT-PTID            TO   SRY-PTID
+                   MOVE    ACCT-SRYYM           TO   SRY-SRYYM
+                   MOVE    ACCT-ZAINUM          TO   SRY-ZAINUM
+      *
+                   MOVE    TBL-SYOSIN(IDX6)     TO   SRY-SRYCD (1)
+                   MOVE    TBL-SYOSIN(IDX6)     TO   SRY-SRYCD (2)
+                   MOVE    TBL-SYOSIN(IDX6)     TO   SRY-SRYCD (3)
+                   MOVE    TBL-SYOSIN(IDX6)     TO   SRY-SRYCD (4)
+                   MOVE    TBL-SYOSIN(IDX6)     TO   SRY-SRYCD (5)
+                   MOVE    SRYACT-REC           TO   MCPDATA-REC
+                   MOVE    "DBSELECT"           TO   MCP-FUNC
+                   MOVE    "SRYACT-KEY8"        TO   ORC-DBPATH
+                   CALL    "ORCMCPSUB"           USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+                   IF      MCP-RC             =       ZERO
+                     MOVE     "SRYACT-KEY8"     TO   ORC-DBPATH
+                     PERFORM   SRYACT-READ-SEC
+                     IF     FLG-SRYACT   =    ZERO
+                           MOVE    "1"          TO   WRK-SYOSIN(IDX)
+                     END-IF
+                   END-IF
+      *
+                   MOVE     "SRYACT-KEY8"       TO  WK-PATH
+                   PERFORM   CSR-CLOSE-SEC
+      *
+               END-PERFORM
+      *
+           END-IF
+      *
+           .
+      *
+       SYOSINFLG-SET-EXT.
            EXIT.
       *
       **************************************************************
