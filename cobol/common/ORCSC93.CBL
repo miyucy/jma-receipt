@@ -566,13 +566,14 @@
       *                    ´ïºà¡ÊÁ°¤ÎºÞ¤ËÉÕÂ°¤¹¤ë¡Ë
                            IF     (IDX             >   1   )  AND
                                   (SPA-COM-KAIFLG(IDX - 1) =   SPACE )
-                            AND
-                                  (SPA-COM-SRYKBN(IDX - 1) 
+                             AND  (SPA-COM-SRYKBN(IDX - 1) 
                                                    =   "31" OR  "32" OR
                                                        "33" OR  "40" OR
                                                        "50" OR  "54" OR
                                                        "60" OR  "70" OR
-                                                       "13" OR  "14" )
+                                                       "13" OR  "14" OR
+                                                       "21" OR  "22" OR
+                                                       "23"          )
                                MOVE    SPA-COM-SRYKBN(IDX - 1)
                                                    TO  SPA-COM-SRYKBN
                                                            (IDX)
@@ -805,7 +806,9 @@
                                                "50"  OR  "54"  OR
                                                "60"  OR  "70"  OR
       *****************************************"13"  OR  "14"   )
-                                               "80"  OR  "14"   )
+                                               "80"  OR  "14"
+                                           OR  "21" OR  "22" OR
+                                               "23"          )
                        MOVE    SPA-COM-SRYKBN(IDX - 1)
                                                TO  SPA-COM-SRYKBN(IDX)
                        MOVE    SPACE           TO  SPA-COM-ZAIEND

@@ -298,11 +298,19 @@
                    UNTIL       IDX    >   22
                IF      WRK-INPUTCD2(IDX:1)     =   "+"  OR  "-"
                    COMPUTE IDX3                =   IDX  +  1
-                   IF     (WRK-CHK-FLG         =   SPACE)  AND
-                          (IDX2                =   ZERO   OR
-                           IDX                 =   22     OR
-                           WRK-INPUTCD2(IDX3:) =   SPACE )
-                       MOVE    WRK-INPUTCD2(IDX:1) TO  WRK-CHK-FLG
+      *            入院の回数指定はそのまま
+                   IF     (WRK-INPUTCD2(1:1)   =   "*"  )  AND
+                          (WRK-INPUTCD2(IDX3:) NOT =   SPACE)
+                       ADD     1                   TO  IDX2
+                       MOVE    WRK-INPUTCD2(IDX:1) TO  WRK-INPUTCD3
+                                                             (IDX2:1)
+                   ELSE
+                       IF     (WRK-CHK-FLG         =   SPACE)  AND
+                              (IDX2                =   ZERO   OR
+                               IDX                 =   22     OR
+                               WRK-INPUTCD2(IDX3:) =   SPACE )
+                           MOVE    WRK-INPUTCD2(IDX:1) TO  WRK-CHK-FLG
+                       END-IF
                    END-IF
                ELSE
                    ADD     1                   TO  IDX2
