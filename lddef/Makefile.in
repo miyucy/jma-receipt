@@ -71,7 +71,7 @@ INSTALL_LDFILE = $(LDFILE) $(BDFILE) $(DIRECTORYFILE) \
 .ld.in.ld .bd.in.bd:
 	$(CPP) $(LDFILEFLAGS) $< > $@
 
-all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE) dbgroup.inc kentan.inc
+all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE) dbgroup.inc kentan.inc orcadbs.inc
 
 $(LDFILE) $(BDFILE):  orcadb.inc 
 
