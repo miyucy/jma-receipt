@@ -2266,14 +2266,11 @@
            END-IF
       *
       *    ＣＬＡＩＭ接続チェック処理
-      *    受付があった時
            MOVE    ZERO                TO  FLG-CLAIM
-      *****IF      SPA-NAI20-UKEMAX    >   ZERO
-      *        PERFORM 4905-CLAIM-CHK-SEC
-      *        IF      FLG-CLAIM       =   2
-      *            GO      TO      490-TOUROKU-EXT
-      *        END-IF
-      *****END-IF
+           PERFORM 4905-CLAIM-CHK-SEC
+           IF      FLG-CLAIM       =   2
+               GO      TO      490-TOUROKU-EXT
+           END-IF
       *
       *    更新処理
            MOVE    ZERO                TO  FLG-CLAIM-OK
@@ -2677,9 +2674,13 @@
                CONTINUE
            ELSE
                MOVE    MCPDATA-REC         TO  SYS-9000-REC
+      *TEST!!!
+               MOVE    SPACE               TO  SYS-9000-PT-FLG
+      *TEST!!!
                MOVE    SYS-9000-CODE       TO  SPA-GMN-SCODE
                MOVE    1                   TO  SPA-P02X-GMN-SEL
-               IF      SYS-9000-SETUZOKU   =   ZERO
+               IF     (SYS-9000-SETUZOKU   =   ZERO )  OR
+                      (SYS-9000-PT-FLG NOT =   "1"  )
                    CONTINUE
                ELSE
                    MOVE    SYS-9000-CODE       TO  SPA-P02X-CODE
@@ -2690,10 +2691,6 @@
                    END-IF
                END-IF
            END-IF
-      *TEST!!!
-      *    MOVE    2             TO  FLG-CLAIM
-      *    MOVE    "1"           TO  SPA-P02X-CODE
-      *TEST!!!
       *
            IF      FLG-CLAIM           =   2
                CONTINUE
@@ -2782,18 +2779,12 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
-      *    最後の受付時間を対象とする
            MOVE    SPACE               TO  WRK-UKETIME
-           IF      SPA-NAI20-UKEMAX    >   ZERO
-               IF      SPA-NAI20-UKETIME (SPA-NAI20-UKEMAX)
-                                           =   SPACE
-                   GO      TO      4906-CLAIM-SOUSIN-EXT
-               END-IF
-               MOVE    SPA-NAI20-UKETIME (SPA-NAI20-UKEMAX)
-                                       TO  WRK-UKETIME
-           ELSE
-               GO      TO      4906-CLAIM-SOUSIN-EXT
-           END-IF
+      *    受付時間取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+           MOVE    SMCNDATE-HMS        TO  WRK-UKETIME
       *
       *    フィアルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
@@ -2806,7 +2797,7 @@
            MOVE    SPA-GMN-SCODE       TO  SHELLTBL-ARG1
            MOVE    SPA-GMN-PTID        TO  WRK-PTID
            MOVE    WRK-PTID            TO  SHELLTBL-ARG2
-           MOVE    SPA-GMN-SRYKA       TO  SHELLTBL-ARG3
+           MOVE    "XX"                TO  SHELLTBL-ARG3
            MOVE    WRK-UKETIME         TO  SHELLTBL-ARG4
            MOVE    SPA-HOSPID          TO  SHELLTBL-ARG5
            MOVE    SHELLTBL            TO  MCPDATA-REC
