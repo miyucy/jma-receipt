@@ -443,3 +443,13 @@ path	upd1 	{
 		;
 	};
 };
+
+path	all2	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_all2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   SRYYM    =   :SRYYM
+		;
+	};
+};

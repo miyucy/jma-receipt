@@ -163,3 +163,12 @@ path	key6 	{
 	};
 };
 
+path	all2	{
+	DBSELECT	{
+		DECLARE tbl_santei_all2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_santei
+			WHERE   SRYYM    =   :SRYYM
+		;
+	};
+};

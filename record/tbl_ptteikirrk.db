@@ -116,3 +116,12 @@ path	del2		{
 	};
 };
 
+path	all2		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptteikirrk_all2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptteikirrk
+        WHERE  SRYYM  =   :SRYYM
+		;
+	};
+};

@@ -242,3 +242,13 @@ path	del12 	{
 		;
 	};
 };
+
+path	all2	{
+	DBSELECT	{
+		DECLARE tbl_nyuinact_all2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinact
+			WHERE   SRYYM    =   :SRYYM
+		;
+	};
+};

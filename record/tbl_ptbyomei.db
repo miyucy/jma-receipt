@@ -174,3 +174,12 @@ path	all	{
  		;
 	};
 };
+path	all2	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_all2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   SRYYMD    LIKE   :SRYYMD
+		;
+	};
+};

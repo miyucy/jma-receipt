@@ -277,3 +277,13 @@ path	all 	{
  		;
 	};
 };
+
+path	all2	{
+	DBSELECT	{
+		DECLARE view_bd002_all2_csr CURSOR FOR
+		SELECT *
+		FROM view_bd002
+			WHERE   SRYYMD   LIKE   :SRYYMD
+		;
+	};
+};

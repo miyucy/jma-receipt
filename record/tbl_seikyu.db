@@ -944,10 +944,19 @@ path	del6 	{
 		;
 	};
 };
- 
+
+path	all2	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_all2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE   SRYYM       =   :SRYYM
+		;
+	};
+};
 
 
 
 
 
- 
+

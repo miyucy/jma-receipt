@@ -205,3 +205,12 @@ path	key5 	{
 		;
 	};
 };
+path	all2	{
+	DBSELECT	{
+		DECLARE tbl_wksryact_all2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_wksryact
+			WHERE   SRYYMD    LIKE   :SRYYMD
+		;
+	};
+};

@@ -576,3 +576,15 @@ path	key23	{
 		;
 	};
 };
+
+
+path	all2 	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_all2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   SRYYMD    LIKE   :SRYYMD
+		;
+	};
+};
+
