@@ -1,5 +1,8 @@
 W24	{
 	fixed6	{
+	        B03	{
+	           	state	int;
+	        };
 		STYUKYMD	{
 			value	varchar(10);
 		};

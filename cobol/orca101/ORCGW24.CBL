@@ -839,6 +839,7 @@
                MOVE    "円"            TO  SPA-GMN-W24-LBL-SENTEI-EN
            WHEN    OTHER
                MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKA
+               MOVE    SPACE           TO  SPA-GMN-W24-SENTEI-TAX
                MOVE    SPACE           TO  SPA-GMN-W24-LBL-SENTEI-TANKA
                MOVE    SPACE           TO  SPA-GMN-W24-LBL-SENTEI-EN
            END-EVALUATE
@@ -942,6 +943,8 @@
                EVALUATE    SPA-WIDCD
                WHEN "3001"
                    PERFORM 481-TOUROKU-SEC
+               WHEN "3002"
+                   PERFORM 431-DEL-SEC
                END-EVALUATE
            END-IF
       *
@@ -963,6 +966,10 @@
            WHEN    "CLICKED"       ALSO    "B02"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 420-CLEAR-SEC
+      *    削除
+           WHEN    "CLICKED"       ALSO    "B03"
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+               PERFORM 430-DEL-SEC
       *    登録
            WHEN    "CLICKED"       ALSO    "B12"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -1373,6 +1380,40 @@
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
            .
        420-CLEAR-EXT.
+           EXIT.
+      *****************************************************************
+      *    削除処理
+      *****************************************************************
+       430-DEL-SEC                 SECTION.
+      *
+           MOVE    "3002"          TO  SPA-WIDCD
+      *
+           .
+       430-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    削除処理
+      *****************************************************************
+       431-DEL-SEC                 SECTION.
+      *
+           INITIALIZE                      SYS-5000-REC
+           MOVE    "5000"              TO  SYS-5000-KANRICD
+           MOVE    "*"                 TO  SYS-5000-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-5000-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD    TO  SYS-5000-EDYUKYMD
+           MOVE    SYS-5000-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-DELETE-SEC
+           IF    ( FLG-DBRC    NOT =   ZERO )
+               MOVE    "1202"          TO  SPA-ERRCD
+               GO  TO  431-DEL-EXT
+           END-IF
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           PERFORM 210-BACK
+      *
+           .
+       431-DEL-EXT.
            EXIT.
       *****************************************************************
       *    登録処理
@@ -3318,6 +3359,12 @@
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
+           MOVE    WIDGET-NORMAL       TO  W24-B03-STATE
+      *
+           IF    ( SPA-W01-STYUKYMD    =   ZERO )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  W24-B03-STATE
+           END-IF
       *
            .
        500-GMNHEN-STATE-EDIT-EXT.
@@ -3669,6 +3716,9 @@
            WHEN    "1201"
                MOVE    "更新できませんでした"
                                        TO  SPA-ERRMSG
+           WHEN    "1202"
+               MOVE    "更新できませんでした"
+                                       TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  WERR
@@ -3698,6 +3748,9 @@
            EVALUATE    SPA-WIDCD
            WHEN    "3001"
                MOVE    "登録処理をします"
+                                        TO  WRK-WIDMSG
+           WHEN    "3002"
+               MOVE    "削除処理をします"
                                         TO  WRK-WIDMSG
            END-EVALUATE
       *
