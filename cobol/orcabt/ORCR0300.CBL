@@ -88,6 +88,8 @@
       *                                     出力の修正
       *  01.01.03    NACL-藤原    04/04/26  乳幼児の時間加算の追加
       *  01.01.04    NACL-藤原    04/04/27  ユーザーコメントの追加
+      *  01.01.05    NACL-藤原    04/05/11  診療識別が画像診断（７０）の
+      *                                     ときコメントは先頭に記載する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1966,6 +1968,7 @@
                        WHEN    "0"
                        WHEN    "8"
                            IF      RECE041-SRYKBN  =   "13"    OR  "14"
+                                                               OR  "70"
                                PERFORM 200711-SRYKBN13-COMMENT-TAIHI-SEC
                            ELSE
                                PERFORM 200711-COMMENT-TAIHI-SEC
@@ -2534,6 +2537,14 @@
       *    摘要データ編集処理
       *****************************************************************
        20072-ZAI-HENSYU-SEC          SECTION.
+      *
+      *    コメントデータの編集（診療区分７０）
+           IF      RECE041-SRYKBN      =   "70"                 
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       WRK-TBLMAX8
+                   PERFORM 200724-COMMENT-HENSYU-SEC
+               END-PERFORM  
+           END-IF          
       *     
       *    診療行為データ・コメントデータの編集
            PERFORM VARYING IDX FROM    1   BY  1
@@ -2713,11 +2724,13 @@
                PERFORM 5001-FILE-WRITE-SEC
            END-PERFORM
       *
-      *    コメントデータの編集（診療区分１３・１４）                 
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-TBLMAX8
-               PERFORM 200724-COMMENT-HENSYU-SEC
-           END-PERFORM            
+      *    コメントデータの編集（診療区分１３・１４）
+           IF      RECE041-SRYKBN      =   "13"    OR  "14"                 
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       WRK-TBLMAX8
+                   PERFORM 200724-COMMENT-HENSYU-SEC
+               END-PERFORM  
+           END-IF          
       *
       *    医薬品データの編集                 
            PERFORM VARYING IDX FROM    1   BY  1
