@@ -23,7 +23,7 @@
       *  コンポーネント名  : 薬剤一部負担もれ一覧表
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  00/12/01    MCC-藤原      新規作成
+      *  02/12/21    NACL-藤原     新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -347,6 +347,12 @@
                MOVE    LNK-DAY2-EDTYMD1 (5:)
                                        TO
                                      HC17V02-MONEY (1 CNT-LINE) (2:)
+      *    診療年月日
+               MOVE    BD002-SRYYMD    TO WRK-SYMD 
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    LNK-DAY2-EDTYMD1 (5:)
+                                       TO
+                                     HC17V02-MONEY (2 CNT-LINE) (2:)
       *
                MOVE    ZERO                TO  FLG-ROJIN                                            
       *
