@@ -10,7 +10,6 @@ bind	"NID1"		"OpenCOBOL"	"ORCGNID1";
 
 multiplex_group	orca105;
 
-#include "orcahome.inc"
 
 data	{
 	spa	orcaspa;

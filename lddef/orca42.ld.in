@@ -16,7 +16,6 @@ bind	"RID2"		"OpenCOBOL"	"ORCGRID2";
 
 multiplex_group	orca42;
 
-#include "orcahome.inc"
 
 data	{
 	spa	orcaspa;

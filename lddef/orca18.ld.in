@@ -9,7 +9,6 @@ bind	"U1ERR"		"OpenCOBOL"	"ORCGU1ERR";
 
 multiplex_group	orca18;
 
-#include "orcahome.inc"
 
 data	{
 	spa	orcaspa;

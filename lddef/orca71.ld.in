@@ -12,7 +12,6 @@ bind	"EID2"		"OpenCOBOL"	"ORCGEID2";
 
 multiplex_group	orca71;
 
-#include "orcahome.inc"
 
 
 data	{

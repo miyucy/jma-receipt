@@ -30,7 +30,6 @@ bind	"KID2"		"OpenCOBOL"	"ORCGKID2";
 
 multiplex_group	orca21;
 
-#include "orcahome.inc"
 
 data	{
 	spa	orcaspa;

@@ -11,7 +11,6 @@ bind	"VID1"		"OpenCOBOL"	"ORCGVID1";
 
 multiplex_group	orca104;
 
-#include "orcahome.inc"
 
 data	{
 	spa	orcaspa;

@@ -15,7 +15,6 @@ bind	"QID1"		"OpenCOBOL"	"ORCGQID1";
 
 multiplex_group	orca13;
 
-#include "orcahome.inc"
 
 data	{
 	spa	orcaspa;

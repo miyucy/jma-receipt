@@ -16,7 +16,6 @@ bind	"MVER"		"OpenCOBOL"	"ORCGMVER";
 
 multiplex_group	orca00;
 
-#include "orcahome.inc"
 
 data	{
 	spa	orcaspa;

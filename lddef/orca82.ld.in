@@ -11,7 +11,6 @@ bind	"FID2"		"OpenCOBOL"	"ORCGFID2";
 
 multiplex_group	orca82;
 
-#include "orcahome.inc"
 
 
 data	{

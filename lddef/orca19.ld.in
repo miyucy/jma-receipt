@@ -9,7 +9,6 @@ bind	"P97ERR" 	"OpenCOBOL"	"ORCGP97ERR";
 
 multiplex_group	orca19;
 
-#include "orcahome.inc"
 
 data	{
 	spa	orcaspa;

@@ -56,13 +56,10 @@ BDFILE = $(BDFILE_sources:.bd.in=.bd)
 DIRECTORYFILE_in = directory.in
 DIRECTORYFILE = directory
 
-ORCAHOMEFILE_in = orcahome.inc.in
-ORCAHOMEFILE = orcahome.inc
-
 ORCADBFILE= orcadb.inc
 
 INSTALL_LDFILE = $(LDFILE) $(BDFILE) $(DIRECTORYFILE) \
-                 $(ORCAHOMEFILE) $(ORCADBFILE)
+                 $(ORCADBFILE)
 
 .SUFFIXES: .ld.in .bd.in .ld .bd 
 
@@ -71,7 +68,7 @@ INSTALL_LDFILE = $(LDFILE) $(BDFILE) $(DIRECTORYFILE) \
 
 all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE)
 
-$(LDFILE) $(BDFILE):  orcadb.inc orcahome.inc
+$(LDFILE) $(BDFILE):  orcadb.inc 
 
 filecheck:
 
@@ -79,13 +76,9 @@ directory:
 	sed -e 's,\@ORCA_DIR\@,$(ORCA_DIR),g' \
 	$(DIRECTORYFILE_in) > $(DIRECTORYFILE) 
 
-orcahome.inc:
-	sed -e 's,\@libdir\@,$(libdir),g' \
-	$(ORCAHOMEFILE_in) > $(ORCAHOMEFILE)
-
 clean: 
 	-rm $(LDFILE) $(BDFILE)
-	-rm directory orcahome.inc
+	-rm directory 
 
 distclean: clean
 	-rm -f Makefile

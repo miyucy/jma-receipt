@@ -10,7 +10,6 @@ bind	"I4ID1"		"OpenCOBOL"	"ORCGI4ID1";
 
 multiplex_group	orca32;
 
-#include "orcahome.inc"
 
 data	{
 	spa	orcaspa;

@@ -20,7 +20,6 @@ bind	"JID1"		"OpenCOBOL"	"ORCGJID1";
 
 multiplex_group	orca24;
 
-#include "orcahome.inc"
 
 
 data	{

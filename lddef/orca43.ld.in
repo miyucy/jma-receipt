@@ -11,7 +11,6 @@ bind	"HID1"		"OpenCOBOL"	"ORCGHID1";
 
 multiplex_group	orca43;
 
-#include "orcahome.inc"
 
 data	{
 	spa	orcaspa;

@@ -10,7 +10,6 @@ bind	"SERR"		"OpenCOBOL"	"ORCGSERR";
 
 multiplex_group	orca23;
 
-#include "orcahome.inc"
 
 
 data	{
