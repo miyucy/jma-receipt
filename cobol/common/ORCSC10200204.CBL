@@ -661,7 +661,7 @@
       *
                ADD     1                   TO  IDX-MAX
       *
-               IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "."
+               IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "." OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -674,6 +674,7 @@
                    WHEN    "0"
       ************ WHEN    "8"
                    WHEN    "."
+                   WHEN    "*"
                        CONTINUE
       *
                    WHEN    "1"
@@ -1123,6 +1124,7 @@
                INITIALIZE                  JYURRK-REC
                MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
                MOVE    SPA-PTID            TO  JYURRK-PTID
+      ****     MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
                MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
       *
                MOVE    JYURRK-REC          TO  MCPDATA-REC
@@ -2173,7 +2175,7 @@
                MOVE    ZERO                TO  WRK-GMN-KEI   (IDX-Z)
       *
       *
-               IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "."
+               IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "."  OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -2186,6 +2188,7 @@
                    WHEN    "0"
                    WHEN    "8"
                    WHEN    "."
+                   WHEN    "*"
                        CONTINUE
       *
                    WHEN    OTHER
@@ -2229,6 +2232,15 @@
            COMPUTE WRK-COM-KEI (IDX-MAX)   =   WRK-COM-TENSU  (IDX-MAX)
                                            *   LNK-ORCSC-KAISU
       *
+      *    院外分の時、ゼロとする
+           IF      WRK-COM-SRYSYUKBN(IDX-MAX)  =   "148"  OR
+                                                   "149"
+               MOVE    ZERO            TO  WRK-COM-TENSU  (IDX-MAX)
+               MOVE    ZERO            TO  WRK-COM-SYUTEN1 (IDX-MAX)
+               MOVE    ZERO            TO  WRK-COM-KIZAITEN(IDX-MAX)
+               MOVE    ZERO            TO  WRK-COM-YKZTEN (IDX-MAX)
+               MOVE    ZERO            TO  WRK-COM-KEI    (IDX-MAX)
+           END-IF
            .
        1002-TENSU-KEI-EXT.
            EXIT.
