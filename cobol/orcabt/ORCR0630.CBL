@@ -1053,8 +1053,12 @@
                                  (WRK-KHNTEN    *  0.15)
                                                 +  0.5
                   END-EVALUATE
-                  COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
-                           RECE62-NYUTOKKEI2(KH-IDX)  -  WRK-MIJISI
+                  EVALUATE   WRK-DAY2(IDY)
+                     WHEN   ZERO
+                         COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
+                                  RECE62-NYUTOKKEI2(KH-IDX)  -
+                                  WRK-MIJISI
+                  END-EVALUATE
                   MOVE     ZERO     TO    FLG-ARI
                   PERFORM  VARYING  ID1    FROM    1   BY  1
                                 UNTIL   ID1                   > 10
@@ -1076,51 +1080,6 @@
                                        TO  RECE62-NYUKHNKEI(ID1 KH-IDX)
                   END-IF
                WHEN   920
-      *           MOVE      ZERO   TO  WRK-NYUTOKRYO
-      *           EVALUATE   WRK-DAY2(IDY)
-      *              WHEN   ZERO
-      *                  MOVE     NACCT-ZAITEN   TO  
-      *                                WRK-NYUTOKRYO
-      *              WHEN   1
-      *                  COMPUTE  WRK-NYUTOKRYO =
-      *                          (WRK-KHNTEN    *  0.15)
-      *                                         +  0.5
-      *              WHEN   2
-      *                  COMPUTE  WRK-NYUTOKRYO =
-      *                          (WRK-KHNTEN    *  0.3)
-      *                                         +  0.5
-      *              WHEN   4
-      *                  COMPUTE  WRK-NYUTOKRYO =
-      *                          (WRK-KHNTEN    *  0.15)
-      *                                         +  0.5
-      *           END-EVALUATE
-      *           IF  WRK-DAY6(IDY)          NOT =  ZERO
-      *           AND WRK-DAY6-ZAITEN(IDY)   NOT =  ZERO
-      *               COMPUTE  WRK-NYUTOKRYO = WRK-NYUTOKRYO
-      *                                      + WRK-DAY6-ZAITEN(IDY)
-      *           END-IF
-      *           COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
-      *                    RECE62-NYUTOKKEI2(KH-IDX)  -  WRK-MIJISI
-      *           MOVE     ZERO     TO    FLG-ARI
-      *           PERFORM  VARYING  ID1    FROM    1   BY  1
-      *                         UNTIL   ID1                   > 10
-      *                           OR    RECE62-NYUTOKRYO(ID1) = ZERO
-      *                           OR    FLG-ARI               = 1
-      *               IF  RECE62-NYUTOKRYO(ID1)  =  WRK-NYUTOKRYO
-      *                     IF   KH-IDX =  1
-      *                       ADD   1   TO   RECE62-NYUTOKNISSU(ID1)
-      *                     END-IF
-      *                     ADD   WRK-NYUTOKRYO
-      *                               TO   RECE62-NYUTOKKEI(ID1 KH-IDX)
-      *                     MOVE  1   TO   FLG-ARI
-      *               END-IF
-      *           END-PERFORM  
-      *           IF  FLG-ARI  =  ZERO  
-      *               ADD        1           TO  RECE62-NYUTOKNISSU(ID1)
-      *               MOVE   WRK-NYUTOKRYO   TO  RECE62-NYUTOKRYO(ID1)
-      *               ADD    WRK-NYUTOKRYO   
-      *                                TO  RECE62-NYUTOKKEI(ID1 KH-IDX)
-      *           END-IF
                   MOVE      ZERO   TO  WRK-NYUTOKRYO
                   MOVE      ZERO   TO  FLG-GAIHAKU
                   EVALUATE   WRK-DAY2(IDY)
@@ -1143,6 +1102,12 @@
                                                 +  0.5
                          MOVE   1   TO   FLG-GAIHAKU
                   END-EVALUATE
+                  EVALUATE   WRK-DAY2(IDY)
+                     WHEN   ZERO
+                         COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
+                                  RECE62-NYUTOKKEI2(KH-IDX)  -
+                                  WRK-MIJISI
+                  END-EVALUATE
                   IF  WRK-DAY6(IDY)          NOT =  ZERO
                   AND WRK-DAY6-ZAITEN(IDY)   NOT =  ZERO
                       COMPUTE  WRK-NYUTOKRYO = WRK-NYUTOKRYO
@@ -1152,8 +1117,6 @@
                       COMPUTE  WRK-NYUTOKRYO = WRK-NYUTOKRYO
                                              + WRK-ACCT90(IDY)
                   END-IF
-                  COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
-                           RECE62-NYUTOKKEI2(KH-IDX)  -  WRK-MIJISI
                   IF     FLG-GAIHAKU  =  ZERO
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
