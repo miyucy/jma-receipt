@@ -1093,7 +1093,7 @@
            MOVE    WRK-NENREI-X        TO  HC24-PTAGE
       *
            .
-      310-HC24-HEAD-HEN-EXT.
+       310-HC24-HEAD-HEN-EXT.
            EXIT.
       *
       *****************************************************************

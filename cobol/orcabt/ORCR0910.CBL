@@ -286,7 +286,7 @@
            03  WRK-SUM-KAISU               PIC 9(04)
                                                   OCCURS  31.
        01  WRK-RECE84-FLG-TABLE.
-           03  WRK-RECE84-FLG              PIC 9(01)
+           03  WRK-RECE84-FLG              PIC X(01)
                                                   OCCURS  100.
        01  WRK-RECE84-TABLE.
            03  WRK-RECE84-TBL              OCCURS  100.

@@ -171,7 +171,7 @@
                05  WRK-ROUSAIKBN       PIC X(01).
                05  WRK-ERR-DAY         PIC 9(02).
                05  WRK-ERR-HKNCOMBINUM PIC 9(04).
-               05  WRK-ERR-ERRKBN      PIC X(01).
+               05  WRK-ERR-ERRKBN      PIC 9(01).
                05  WRK-ERR-TEKSTYMD    PIC 9(08).
                05  WRK-ERR-TEKEDYMD    PIC 9(08).
       * 

@@ -169,7 +169,7 @@
       *
            03  WRK-SHOKUJIRYOYO                        PIC  9(01).
            03  WRK-TOKUKANRIKASAN                      PIC  9(01).
-           03  WRK-SRYCD                               PIC  9(09).
+           03  WRK-SRYCD                               PIC  X(09).
            03  WRK-NYUTOKRYO                           PIC  9(09).
       *
        01  WRK-TENTEK.
