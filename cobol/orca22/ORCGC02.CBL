@@ -1428,7 +1428,7 @@
                                   =   SPA-GMN-C02-SRYKAL (IDY)
                        MOVE    SPA-GMN-C02-SRYKALST (IDY)
                                       TO  SPA-GMN-C02-SRYKA-G
-                       MOVE    10     TO  IDY
+                       MOVE    SPA-GMN-C02-SRYKA-MAX     TO  IDY
                    END-IF
                END-PERFORM
            END-IF
