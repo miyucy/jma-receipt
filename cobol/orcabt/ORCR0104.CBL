@@ -83,6 +83,8 @@
       *  01.02.04    NACL-ÌçÏÆ    04/12/15  ¸øÈñ¤Î°ìÉôÉéÃ´¶â³Û£°µ­ºÜÂÐ±þ¡¢
       *                                     ¾ÊÎ¬ÉÔ²ÄÊ¬¤ÎÂÐ±þ
       *  01.02.05    NACL-ÌçÏÆ    04/12/21  ¼ÂÆü¿ô£°µ­ºÜÂÐ±þ
+      *  01.02.06    NACL-ÌçÏÆ    05/01/13  ¸øÈñÀÁµá¥Æ¡¼¥Ö¥ëÊÝ¸±ÁÈ¹ç¤»
+      *                                     ÈÖ¹æ¾ðÊóÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1751,10 +1753,19 @@
                MOVE    RECE02X-KOHJKYSNUM  (IDX)
                                        TO  KOHSKY-KOHJKYSNUM (IDX)
            END-PERFORM
+      ***  PERFORM VARYING IDX FROM    1   BY  1
+      ***          UNTIL   IDX >       10
+      ***      MOVE   RECE02X-HKNCOMBIINF (IDX)
+      ***                                  TO KOHSKY-HKNCOMBIINF (IDX)
+      ***  END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
-               MOVE    RECE02X-HKNCOMBIINF (IDX)
-                                           TO KOHSKY-HKNCOMBIINF (IDX)
+               MOVE   RECE02X-HKNCOMBI(IDX)   TO  KOHSKY-HKNCOMBI(IDX)
+               MOVE   RECE02X-HKNNUMHC(IDX)   TO  KOHSKY-HKNNUMHC(IDX)
+               MOVE   RECE02X-KOHNUMHC(IDX 1) TO  KOHSKY-KOHNUMHC(IDX 1)
+               MOVE   RECE02X-KOHNUMHC(IDX 2) TO  KOHSKY-KOHNUMHC(IDX 2)
+               MOVE   RECE02X-KOHNUMHC(IDX 3) TO  KOHSKY-KOHNUMHC(IDX 3)
+               MOVE   RECE02X-KOHNUMHC(IDX 4) TO  KOHSKY-KOHNUMHC(IDX 4)
            END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       50
