@@ -2526,10 +2526,19 @@
                GO      TO      450511-JIBAI-SYORI-EXT
            END-IF
       *
+      *    画像診断の時、フィルム点数を対象外とする
+           IF      LNK-WKSRY-SRYKBN (IDX)  =   "70"
+               MOVE    LNK-WKSRY-SYUTEN2 (IDX)     TO  WRK-SYUTEN1
+           END-IF
+      *
       *    自賠責手技点合計
-           COMPUTE LNK-S01-SYUTEN      =   LNK-S01-SYUTEN
-                                       +  (LNK-WKSRY-SYUTEN1 (IDX)
-                                       -   WRK-SYUTEN1    )
+           IF      LNK-WKSRY-SYUTEN1 (IDX) <   WRK-SYUTEN1
+               CONTINUE
+           ELSE
+               COMPUTE LNK-S01-SYUTEN      =   LNK-S01-SYUTEN
+                                           +  (LNK-WKSRY-SYUTEN1 (IDX)
+                                           -   WRK-SYUTEN1    )
+           END-IF
       *
            .
        450511-JIBAI-SYORI-EXT.
