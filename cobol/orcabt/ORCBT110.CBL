@@ -372,7 +372,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCBT110"      TO  JOB-PGID
-           MOVE    "日次統計データ作成"
+           MOVE    "日次統計データ作成（外来）"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -1289,44 +1289,6 @@
                    ADD     1               TO  WK-KOHI-CNT
                END-IF
            END-PERFORM
-      *
-      *    山形地方公費対応
-           IF      WRK-PARA-PREFNUM    =   "06"
-               IF  WK-KOKUHO               =     "1"  OR  "2"
-                   IF   (TOUKEI04-KOH-HKNNUM(1) (1:1)  =   "1")   OR
-                        (TOUKEI04-KOH-HKNNUM(2) (1:1)  =   "1")   OR
-                        (TOUKEI04-KOH-HKNNUM(3) (1:1)  =   "1")   OR
-                        (TOUKEI04-KOH-HKNNUM(4) (1:1)  =   "1")   OR
-                        (TOUKEI04-KOH-HKNNUM(1) (1:1)  =   "2")   OR
-                        (TOUKEI04-KOH-HKNNUM(2) (1:1)  =   "2")   OR
-                        (TOUKEI04-KOH-HKNNUM(3) (1:1)  =   "2")   OR
-                        (TOUKEI04-KOH-HKNNUM(4) (1:1)  =   "2")
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-               END-IF
-           END-IF
-      *
-      *    福岡地方公費対応
-           IF      WRK-PARA-PREFNUM    =   "40"
-               IF  WK-KOKUHO               =   "1" OR  "2"
-                   IF   (TOUKEI04-KOH-HKNNUM(1)(1:1)  =   "1" OR  "2")
-                   AND  (WRK-HKN-HBTNUM     (1)   NOT =   "41"       )
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-                   IF   (TOUKEI04-KOH-HKNNUM(2)(1:1)  =   "1" OR  "2")
-                   AND  (WRK-HKN-HBTNUM     (2)   NOT =   "41"       )
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-                   IF   (TOUKEI04-KOH-HKNNUM(3)(1:1)  =   "1" OR  "2")
-                   AND  (WRK-HKN-HBTNUM (3)       NOT =   "41"       )
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-                   IF   (TOUKEI04-KOH-HKNNUM(4)(1:1)  =   "1" OR  "2")
-                   AND  (WRK-HKN-HBTNUM (4)        NOT =   "41"       )
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-               END-IF
-           END-IF
       *
            IF  TOUKEI04-HKNNUM     NOT =   SPACE
                IF      WRK-PARA-SRYYMD(1:6)    >=  "200210"
