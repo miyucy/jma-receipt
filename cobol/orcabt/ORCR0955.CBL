@@ -35,6 +35,7 @@
       *  01.01.01    NACL-藤原    04/03/29  請求点の桁数の変更
       *  01.01.02    NACL-藤原    04/03/30  手術歴の記載
       *  01.01.03    NACL-藤原    04/05/13  傷病の経過の編集位置の修正
+      *  01.01.04    NACL-藤原    04/09/13  帳票別指定編集情報からの編集
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -144,7 +145,8 @@
       *****COPY    "HCN23.INC"     REPLACING  //HCN23//
       *****COPY    "HCN23V01.INC"  REPLACING  //HCN23V01//
       *****                        BY         //HC23//.
-           COPY    "HCN23V02.INC"  REPLACING  //HCN23V02//
+      *****COPY    "HCN23V02.INC"  REPLACING  //HCN23V02//
+           COPY    "HCN23V03.INC"  REPLACING  //HCN23V03//
                                    BY         //HC23//.
       *
       *    自賠責（続紙）     
@@ -182,6 +184,9 @@
       *
            03  FLG-KUGIRI          PIC 9(01).
            03  FLG-SET             PIC 9(01).
+           03  FLG-SYS-1900        PIC 9(01).
+           03  FLG-SYS-1901        PIC 9(01).
+           03  FLG-SYS-1902        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -251,7 +256,10 @@
        01  TBL-SYS1002-T.
            03  TBL-SYS1002-OCC     OCCURS  10.
                05  TBL-SYS1002     PIC  X(610).
-      *
+      *    帳票別医療機関編集情報指定退避用領域
+       01  TBL-SYS1900-T.
+           03  TBL-SYS1900-OCC         OCCURS  10.
+               05  TBL-SYS1900         PIC  X(610).
       *    
        01  SUM-AREA                          VALUE   ZERO.          
            03  SUM-NYUKHNNISSU         PIC 9(03).
@@ -432,6 +440,11 @@
       *    医療機関情報
            COPY    "CPSK1001.INC".
            COPY    "CPSK1002.INC".
+      *
+      *    医療機関編集情報
+           COPY    "CPSK1900.INC".
+           COPY    "CPSK1901.INC".
+           COPY    "CPSK1902.INC".
       *
            COPY    "CPRCF008.INC".
       *
@@ -693,6 +706,91 @@
               END-IF
            END-IF
       *
+           MOVE    ZERO                TO  FLG-SYS-1900
+                                           FLG-SYS-1901
+                                           FLG-SYS-1902
+      *
+      *    帳票別指定情報
+           IF   WRK-PARA-SRYYM     NOT =  ZERO
+              INITIALIZE                   SYSKANRI-REC
+              MOVE    "1900"           TO  SYS-KANRICD
+              MOVE    "*"              TO  SYS-KBNCD
+              MOVE    WRK-PARA-SRYYM   TO  ORC-DBYMD (1:6)
+              MOVE    "01"             TO  ORC-DBYMD (7:2) 
+              PERFORM 960-KANRIMST-READ-SEC
+              IF      FLG-SYSKANRI     =   ZERO
+                  MOVE    MCPDATA-REC      TO  SYS-1900-REC
+              ELSE    
+                  INITIALIZE                   SYS-1900-REC
+              END-IF
+              IF      SYS-1900-PRTKBN (6)  =   SPACE
+                  CONTINUE
+              ELSE
+                  INITIALIZE                       SYSKANRI-REC
+                  MOVE    "1901"               TO  SYS-KANRICD
+                  MOVE    SYS-1900-PRTKBN (6)  TO  SYS-KBNCD
+                  MOVE    WRK-PARA-SRYYM       TO  ORC-DBYMD (1:6)
+                  MOVE    "01"                 TO  ORC-DBYMD (7:2) 
+                  PERFORM 960-KANRIMST-READ-SEC
+                  IF      FLG-SYSKANRI     =   ZERO
+                      MOVE    MCPDATA-REC      TO  SYS-1901-REC
+                      MOVE    1                TO  FLG-SYS-1901
+                  END-IF
+                  INITIALIZE                       SYSKANRI-REC
+                  MOVE    "1902"               TO  SYS-KANRICD
+                  MOVE    SYS-1900-PRTKBN (6)  TO  SYS-KBNCD
+                  MOVE    WRK-PARA-SRYYM       TO  ORC-DBYMD (1:6)
+                  MOVE    "01"                 TO  ORC-DBYMD (7:2) 
+                  PERFORM 960-KANRIMST-READ-SEC
+                  IF      FLG-SYSKANRI     =   ZERO
+                      MOVE    MCPDATA-REC      TO  SYS-1902-REC
+                      MOVE    1                TO  FLG-SYS-1902
+                  END-IF
+              END-IF    
+           ELSE
+              MOVE     ZERO               TO  SYSKAN-IDX
+              MOVE     SPACE              TO  TBL-SYS1900-T
+              INITIALIZE                      TBL-SYS1900-T
+      *
+              INITIALIZE                      SYSKANRI-REC
+              MOVE    "1900"              TO  SYS-KANRICD
+              MOVE    "*"                 TO  SYS-KBNCD
+              MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                  PERFORM  900-KANRIMST-NEXT-SEC
+                  PERFORM  UNTIL   FLG-SYSKANRI  =    1
+      *
+                    MOVE    MCPDATA-REC   TO  SYS-1900-REC
+                    IF      SYS-1900-PRTKBN (6)  =   SPACE
+                        CONTINUE
+                    ELSE
+                        ADD     1             TO  SYSKAN-IDX
+                        MOVE    SYS-1900-REC  TO
+                                              TBL-SYS1900 (SYSKAN-IDX)
+                        MOVE    1            TO  FLG-SYS-1900
+                    END-IF 
+      *
+                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                    PERFORM 900-KANRIMST-NEXT-SEC
+      *
+                  END-PERFORM
+              END-IF
+      *
+              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           END-IF 
+      *
            .
        120-HOSPINF-GET-EXT.
            EXIT.
@@ -950,13 +1048,27 @@
            MOVE    WRK-GOKEI             TO  WRK-SEIKYUZ
            MOVE    WRK-SEIKYUZ           TO  HC23-SEIKYUGAKUTOTAL
       *    所在地
-           MOVE    SYS-1002-ADRS       TO  HC23-HOSPJYUSYO
+           IF      FLG-SYS-1902        =   1
+               MOVE    SYS-1902-ADRS1      TO  HC23-HOSPJYUSYO (1:)
+               MOVE    SYS-1902-ADRS2      TO  HC23-HOSPJYUSYO (51:)
+           ELSE
+               MOVE    SYS-1002-ADRS       TO  HC23-HOSPJYUSYO
+           END-IF
       *    名称
-           MOVE    SYS-1001-HOSPNAME   TO  HC23-HOSPNAME
+           IF      FLG-SYS-1901        =   1
+               MOVE    SYS-1901-HOSPNAME1  TO  HC23-HOSPNAME (1:)
+               MOVE    SYS-1901-HOSPNAME2  TO  HC23-HOSPNAME (41:)
+           ELSE 
+               MOVE    SYS-1001-HOSPNAME   TO  HC23-HOSPNAME
+           END-IF 
       *    管理者
            MOVE    SYS-1001-KANRINAME  TO  HC23-ISYA
       *    電話番号
-           MOVE    SYS-1002-TEL        TO  HC23-TEL
+           IF      FLG-SYS-1902        =   1
+               MOVE    SYS-1902-TEL        TO  HC23-TEL
+           ELSE
+               MOVE    SYS-1002-TEL        TO  HC23-TEL
+           END-IF
       *    病床数
            MOVE    SYS-1001-BEDSU      TO  WRK-ZZZ9
            MOVE    WRK-ZZZ9            TO  HC23-BYOSYOSU
@@ -2179,7 +2291,8 @@
                    MOVE    HC23                TO  RECE08-PRTDATA
       *************MOVE    "HCN23.red"         TO  RECE08-FORMID
       *************MOVE    "HCN23V01.red"      TO  RECE08-FORMID
-                   MOVE    "HCN23V02.red"      TO  RECE08-FORMID
+      *************MOVE    "HCN23V02.red"      TO  RECE08-FORMID
+                   MOVE    "HCN23V03.red"      TO  RECE08-FORMID
                ELSE
                    MOVE    HC29                TO  RECE08-PRTDATA
       *************MOVE    "HCM29.red"         TO  RECE08-FORMID
@@ -2413,68 +2526,11 @@
                        MOVE    RECE82-SRYYM        TO  KEY-N-SRYYM
                        MOVE    RECE82-NYUGAIKBN    TO  KEY-N-NYUGAIKBN
                        MOVE    RECE82-PTID         TO  KEY-N-PTID
-                       IF   WRK-PARA-SRYYM    NOT =  ZERO
-                          CONTINUE
-                       ELSE
-      *                   医療機関ＩＤ編集
-                          MOVE  ZERO         TO  FLG-SET
-                          MOVE  RECE82-SRYYM TO  WRK-SYS-SRYYMD(1:6)
-                          MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
-                          PERFORM VARYING SYSKAN-IDX FROM 1 BY 1
-                            UNTIL ( SYSKAN-IDX              >  10   )
-                             OR   ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
-                             OR   ( FLG-SET                 =   1   )
-      *
-                             MOVE   TBL-SYS1001(SYSKAN-IDX) 
-                                               TO  SYS-1001-REC
-                             IF  (SYS-1001-STYUKYMD 
-                                              <= WRK-SYS-SRYYMD   )
-                             AND (WRK-SYS-SRYYMD    
-                                              <= SYS-1001-EDYUKYMD)
-                                MOVE     1     TO  FLG-SET
-                             END-IF
-      *
-                          END-PERFORM
-                          IF     FLG-SET  =  ZERO
-               STRING  "医療機関情報が取得できませんでした。診療年月＝"
-                                               DELIMITED  BY  SIZE 
-                       RECE82-SRYYM            DELIMITED  BY  SIZE
-                                       INTO    WRK-RECEERR
-               END-STRING
-                            PERFORM 500-ERR-HENSYU-SEC
-                            MOVE    2           TO  SPA-STS
-                            MOVE    1           TO  FLG-RECE82
-                          END-IF
-      *                   医療機関情報（所在地ほか）
-                          MOVE  ZERO         TO  FLG-SET
-                          MOVE  RECE82-SRYYM TO  WRK-SYS-SRYYMD(1:6)
-                          MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
-                          PERFORM VARYING SYSKAN-IDX FROM 1 BY 1
-                            UNTIL ( SYSKAN-IDX              >  10   )
-                             OR   ( TBL-SYS1002(SYSKAN-IDX) = SPACE )
-                             OR   ( FLG-SET                 =   1   )
-      *
-                              MOVE   TBL-SYS1002(SYSKAN-IDX) 
-                                               TO  SYS-1002-REC
-                              IF  (SYS-1002-STYUKYMD 
-                                                <= WRK-SYS-SRYYMD   )
-                              AND (WRK-SYS-SRYYMD    
-                                                <= SYS-1002-EDYUKYMD)
-                                 MOVE     1       TO    FLG-SET
-                              END-IF
-      *
-                          END-PERFORM
-                          IF     FLG-SET  =  ZERO
-             STRING
-              "医療機関情報（所在地）が取得できませんでした。診療年月＝"
-                                               DELIMITED  BY  SIZE 
-                       RECE82-SRYYM            DELIMITED  BY  SIZE
-                                       INTO    WRK-RECEERR
-             END-STRING
-                             PERFORM 500-ERR-HENSYU-SEC
-                             MOVE    2             TO  SPA-STS
-                             MOVE    1             TO  FLG-RECE82
-                          END-IF
+                       IF      WRK-PARA-SRYYM      =  ZERO
+      *                    医療機関ＩＤ編集
+                           MOVE  RECE82-SRYYM  TO  WRK-SYS-SRYYMD(1:6)
+                           MOVE  "01"          TO  WRK-SYS-SRYYMD(7:2)
+                           PERFORM 900-SYSKANRI-HENSYU-SEC
                        END-IF
                    ELSE
                        GO  TO  990-RECE82-READ-SEC 
@@ -2483,6 +2539,104 @@
       *
            .
        990-RECE82-READ-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    診療年月の対象となるシス管理を取得（個別処理のみ
+      ****************************************************************
+       900-SYSKANRI-HENSYU-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYS-1901
+                                           FLG-SYS-1902
+      *
+      *    医療機関情報（基本情報）
+           MOVE    ZERO                TO  FLG-SET
+      *
+           PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
+                   UNTIL ( SYSKAN-IDX              >  10   )
+                   OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                   OR    ( FLG-SET                 =   1   )
+               MOVE    TBL-SYS1001(SYSKAN-IDX) TO  SYS-1001-REC
+               IF    ( SYS-1001-STYUKYMD       <= WRK-SYS-SRYYMD    )
+               AND   ( WRK-SYS-SRYYMD          <= SYS-1001-EDYUKYMD )
+                   MOVE     1                  TO  FLG-SET
+               END-IF
+           END-PERFORM
+           IF      FLG-SET             =   ZERO
+               STRING  "医療機関情報が取得できませんでした。診療年月＝"
+                                               DELIMITED  BY  SIZE 
+                       WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    2           TO  SPA-STS
+               GO  TO  900-SYSKANRI-HENSYU-EXT
+           END-IF
+      *
+      *    医療機関情報（所在地ほか）
+           MOVE    ZERO                TO  FLG-SET
+      *
+           PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
+                   UNTIL ( SYSKAN-IDX              >  10   )
+                   OR    ( TBL-SYS1002(SYSKAN-IDX) = SPACE )
+                   OR    ( FLG-SET                 =   1   )
+               MOVE    TBL-SYS1002(SYSKAN-IDX) TO  SYS-1002-REC
+               IF    ( SYS-1002-STYUKYMD       <= WRK-SYS-SRYYMD    )
+               AND   ( WRK-SYS-SRYYMD          <= SYS-1002-EDYUKYMD )
+                   MOVE     1                  TO  FLG-SET
+               END-IF
+           END-PERFORM
+           IF      FLG-SET             =   ZERO
+               STRING
+              "医療機関情報（所在地）が取得できませんでした。診療年月＝"
+                                               DELIMITED  BY  SIZE 
+                       WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    2                   TO  SPA-STS
+               GO  TO  900-SYSKANRI-HENSYU-EXT
+           END-IF
+      *
+      *    帳票別指定医療機関編集情報
+           IF      FLG-SYS-1900        =   1
+               MOVE    ZERO                TO  FLG-SET
+      *
+               PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
+                       UNTIL ( SYSKAN-IDX              >  10   )
+                       OR    ( TBL-SYS1900(SYSKAN-IDX) = SPACE )
+                       OR    ( FLG-SET                 =   1   )
+                   MOVE    TBL-SYS1900(SYSKAN-IDX) TO  SYS-1900-REC
+                   IF    ( SYS-1900-STYUKYMD   <= WRK-SYS-SRYYMD    )
+                   AND   ( WRK-SYS-SRYYMD      <= SYS-1900-EDYUKYMD )
+                           MOVE     1              TO  FLG-SET
+                   END-IF
+               END-PERFORM
+               IF      FLG-SET             =   1
+                  INITIALIZE                       SYSKANRI-REC
+                  MOVE    "1901"               TO  SYS-KANRICD
+                  MOVE    SYS-1900-PRTKBN (6)  TO  SYS-KBNCD
+                  MOVE    WRK-SYS-SRYYMD (1:6) TO  ORC-DBYMD (1:6)
+                  MOVE    "01"                 TO  ORC-DBYMD (7:2) 
+                  PERFORM 960-KANRIMST-READ-SEC
+                  IF      FLG-SYSKANRI     =   ZERO
+                      MOVE    MCPDATA-REC      TO  SYS-1901-REC
+                      MOVE    1                TO  FLG-SYS-1901
+                  END-IF
+                  INITIALIZE                       SYSKANRI-REC
+                  MOVE    "1902"               TO  SYS-KANRICD
+                  MOVE    SYS-1900-PRTKBN (6)  TO  SYS-KBNCD
+                  MOVE    WRK-SYS-SRYYMD (1:6) TO  ORC-DBYMD (1:6)
+                  MOVE    "01"                 TO  ORC-DBYMD (7:2) 
+                  PERFORM 960-KANRIMST-READ-SEC
+                  IF      FLG-SYSKANRI     =   ZERO
+                      MOVE    MCPDATA-REC      TO  SYS-1902-REC
+                      MOVE    1                TO  FLG-SYS-1902
+                  END-IF
+              END-IF    
+           END-IF
+           .
+       900-SYSKANRI-HENSYU-EXT.
            EXIT.
       *
       ****************************************************************

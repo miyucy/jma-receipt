@@ -60,6 +60,8 @@
       *                                     HCN21V02.red
       *                                     HCN22V02.red
       *                                     HCN23V02.red
+      *  01.02.02    NACL-藤原    04/09/13  医療機関名称・所在地の長さを
+      *                                     変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -171,36 +173,45 @@
            COPY    "HCM21.INC".
            COPY    "HCM21V01.INC".
            COPY    "HCM21V02.INC".
+           COPY    "HCM21V03.INC".
            COPY    "HCM22.INC".
            COPY    "HCM22V01.INC".
            COPY    "HCM22V02.INC".
+           COPY    "HCM22V03.INC".
            COPY    "HCM24.INC".
            COPY    "HCM24V01.INC".
            COPY    "HCM24V02.INC".
+           COPY    "HCM24V03.INC".
            COPY    "HCM18.INC".
            COPY    "HCM18V01.INC".
            COPY    "HCM18V02.INC".
+           COPY    "HCM18V03.INC".
            COPY    "HCM20.INC".
            COPY    "HCM20V01.INC".
            COPY    "HCM20V02.INC".
+           COPY    "HCM20V03.INC".
       *
            COPY    "HCN21.INC".
            COPY    "HCN21V01.INC".
            COPY    "HCN21V02.INC".
+           COPY    "HCN21V03.INC".
            COPY    "HCN22.INC".
            COPY    "HCN22V01.INC".
            COPY    "HCN22V02.INC".
+           COPY    "HCN22V03.INC".
       *
       *    自賠責レセプト
            COPY    "HCM23.INC".
            COPY    "HCM23V01.INC".
            COPY    "HCM23V02.INC".
+           COPY    "HCM23V03.INC".
            COPY    "HCM29.INC".
            COPY    "HCM29V01.INC".
       *
            COPY    "HCN23.INC".
            COPY    "HCN23V01.INC".
            COPY    "HCN23V02.INC".
+           COPY    "HCN23V03.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -522,6 +533,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM21V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM21V02-RENNUM
                        MOVE    HCM21V02            TO  RECE08-PRTDATA
+                   WHEN    "HCM21V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM21V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM21V03-RENNUM
+                       MOVE    HCM21V03            TO  RECE08-PRTDATA
                    WHEN    "HCM22.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM22
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM22-RENNUM
@@ -534,6 +549,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM22V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM22V02-RENNUM
                        MOVE    HCM22V02            TO  RECE08-PRTDATA
+                   WHEN    "HCM22V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM22V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM22V03-RENNUM
+                       MOVE    HCM22V03            TO  RECE08-PRTDATA
                    WHEN    "HCM24.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM24
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM24-RENNUM
@@ -546,6 +565,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM24V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM24V02-RENNUM
                        MOVE    HCM24V02            TO  RECE08-PRTDATA
+                   WHEN    "HCM24V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM24V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM24V03-RENNUM
+                       MOVE    HCM24V03            TO  RECE08-PRTDATA
                    WHEN    "HCM18.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM18
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM18-RENNUM
@@ -558,6 +581,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM18V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM18V02-RENNUM
                        MOVE    HCM18V02            TO  RECE08-PRTDATA
+                   WHEN    "HCM18V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM18V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM18V03-RENNUM
+                       MOVE    HCM18V03            TO  RECE08-PRTDATA
                    WHEN    "HCM20.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM20
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM20-RENNUM
@@ -570,6 +597,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM20V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM20V02-RENNUM
                        MOVE    HCM20V02            TO  RECE08-PRTDATA
+                   WHEN    "HCM20V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM20V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM20V03-RENNUM
+                       MOVE    HCM20V03            TO  RECE08-PRTDATA
                    WHEN    "HCM23.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM23
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM23-RENNUM
@@ -582,6 +613,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM23V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM23V02-RENNUM
                        MOVE    HCM23V02            TO  RECE08-PRTDATA
+                   WHEN    "HCM23V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM23V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM23V03-RENNUM
+                       MOVE    HCM23V03            TO  RECE08-PRTDATA
                    WHEN    "HCM29.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM29
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM29-RENNUM
@@ -602,6 +637,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN21V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN21V02-RENNUM
                        MOVE    HCN21V02            TO  RECE08-PRTDATA
+                   WHEN    "HCN21V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN21V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN21V03-RENNUM
+                       MOVE    HCN21V03            TO  RECE08-PRTDATA
                    WHEN    "HCN22.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN22
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN22-RENNUM
@@ -614,6 +653,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN22V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN22V02-RENNUM
                        MOVE    HCN22V02            TO  RECE08-PRTDATA
+                   WHEN    "HCN22V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN22V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN22V03-RENNUM
+                       MOVE    HCN22V03            TO  RECE08-PRTDATA
                    WHEN    "HCN23.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN23
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN23-RENNUM
@@ -626,6 +669,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN23V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN23V02-RENNUM
                        MOVE    HCN23V02            TO  RECE08-PRTDATA
+                   WHEN    "HCN23V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN23V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN23V03-RENNUM
+                       MOVE    HCN23V03            TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
@@ -674,41 +721,51 @@
                WHEN    "HCM21.red"     ALSO    ANY             
                WHEN    "HCM21V01.red"  ALSO    ANY
                WHEN    "HCM21V02.red"  ALSO    ANY
+               WHEN    "HCM21V03.red"  ALSO    ANY
                WHEN    "HC22"          ALSO    ANY 
                WHEN    "HCM22.red"     ALSO    ANY
                WHEN    "HCM22V01.red"  ALSO    ANY
                WHEN    "HCM22V02.red"  ALSO    ANY
+               WHEN    "HCM22V03.red"  ALSO    ANY
                WHEN    "HC18"          ALSO    ANY 
                WHEN    "HCM18.red"     ALSO    ANY
                WHEN    "HCM18V01.red"  ALSO    ANY
                WHEN    "HCM18V02.red"  ALSO    ANY
+               WHEN    "HCM18V03.red"  ALSO    ANY
                WHEN    "HC20"          ALSO    ANY 
                WHEN    "HCM20.red"     ALSO    ANY
                WHEN    "HCM20V01.red"  ALSO    ANY
                WHEN    "HCM20V02.red"  ALSO    ANY
+               WHEN    "HCM20V03.red"  ALSO    ANY
                WHEN    "HC24"          ALSO    ANY 
                WHEN    "HCM24.red"     ALSO    "2"
                WHEN    "HCM24V01.red"  ALSO    "2"
                WHEN    "HCM24V02.red"  ALSO    "2"
+               WHEN    "HCM24V03.red"  ALSO    "2"
                    MOVE    "労災レセプト（入院外）"    TO  SPRT-TITLE
                WHEN    "HCM23.red"     ALSO    ANY
                WHEN    "HCM23V01.red"  ALSO    ANY
                WHEN    "HCM23V02.red"  ALSO    ANY
+               WHEN    "HCM23V03.red"  ALSO    ANY
                WHEN    "HCM29.red"     ALSO    "2"
                WHEN    "HCM29V01.red"  ALSO    "2"
                    MOVE    "自賠責レセプト（入院外）"  TO  SPRT-TITLE
                WHEN    "HCN21.red"     ALSO    ANY
                WHEN    "HCN21V01.red"  ALSO    ANY
                WHEN    "HCN21V02.red"  ALSO    ANY
+               WHEN    "HCN21V03.red"  ALSO    ANY
                WHEN    "HCN22.red"     ALSO    ANY
                WHEN    "HCN22V01.red"  ALSO    ANY
                WHEN    "HCN22V02.red"  ALSO    ANY
+               WHEN    "HCN22V03.red"  ALSO    ANY
                WHEN    "HCM24V01.red"  ALSO    "1"
                WHEN    "HCM24V02.red"  ALSO    "1"
+               WHEN    "HCM24V03.red"  ALSO    "1"
                    MOVE    "労災レセプト（入院）"      TO  SPRT-TITLE
                WHEN    "HCN23.red"     ALSO    ANY
                WHEN    "HCN23V01.red"  ALSO    ANY
                WHEN    "HCN23V02.red"  ALSO    ANY
+               WHEN    "HCN23V03.red"  ALSO    ANY
                WHEN    "HCM29.red"     ALSO    "1"
                WHEN    "HCM29V01.red"  ALSO    "1"
                    MOVE    "自賠責レセプト（入院）"    TO  SPRT-TITLE
