@@ -736,18 +736,21 @@
                       OR ( FLG-SYSKANRI  NOT =   ZERO )
       *
                MOVE    MCPDATA-REC     TO  SYS-1032-REC
-
-               MOVE    SYS-1032-ORCAORGNM
+               MOVE    IDZ2            TO  WRK-KBNCD2
+      *
+               IF      SYS-1032-KBNCD      =   WRK-KBNCD-G
+                   MOVE    SYS-1032-ORCAORGNM
                                        TO  SPA-GMN-TORGPGNM  (IDZ2)
-               MOVE    SYS-1032-ORCAORGCHK
+                   MOVE    SYS-1032-ORCAORGCHK
                                        TO  SPA-GMN-TORGPGCHK (IDZ2)
-               MOVE    SYS-1032-ORCACSTNM
+                   MOVE    SYS-1032-ORCACSTNM
                                        TO  SPA-GMN-TCSTPGNM  (IDZ2)
-               MOVE    SYS-1032-ORCACSTCHK
+                   MOVE    SYS-1032-ORCACSTCHK
                                        TO  SPA-GMN-TCSTPGCHK (IDZ2)
       *
-      *        システム管理マスタ読込
-               PERFORM 900-SYSKANRI-READ-SEC
+      *            システム管理マスタ読込
+                   PERFORM 900-SYSKANRI-READ-SEC
+               END-IF
       *
            END-PERFORM
       *----(02.00.03)--UPD-END-----
@@ -788,26 +791,31 @@
       *    システム管理マスタ読込
            PERFORM 900-SYSKANRI-READ-SEC
       *
-      *
+      *----(02.00.03)--UPD-START---
            PERFORM VARYING IDZ2    FROM    1   BY  1
                    UNTIL ( IDZ2    >   3   )
                       OR ( FLG-SYSKANRI  NOT =   ZERO )
       *
                MOVE    MCPDATA-REC     TO  SYS-1035-REC
+               MOVE    IDZ2            TO  WRK-KBNCD2
       *
-               MOVE    SYS-1035-ORCAORGNM
+               IF      SYS-1035-KBNCD       =   WRK-KBNCD-G
+      *
+                   MOVE    SYS-1035-ORCAORGNM
                                        TO  SPA-GMN-TORGPGNM-N  (IDZ2)
-               MOVE    SYS-1035-ORCAORGCHK
+                   MOVE    SYS-1035-ORCAORGCHK
                                        TO  SPA-GMN-TORGPGCHK-N (IDZ2)
-               MOVE    SYS-1035-ORCACSTNM
+                   MOVE    SYS-1035-ORCACSTNM
                                        TO  SPA-GMN-TCSTPGNM-N  (IDZ2)
-               MOVE    SYS-1035-ORCACSTCHK
+                   MOVE    SYS-1035-ORCACSTCHK
                                        TO  SPA-GMN-TCSTPGCHK-N (IDZ2)
       *
-      *        システム管理マスタ読込
-               PERFORM 900-SYSKANRI-READ-SEC
+      *            システム管理マスタ読込
+                   PERFORM 900-SYSKANRI-READ-SEC
+               END-IF
       *
            END-PERFORM
+      *----(02.00.03)--UPD-END-----
       *
            PERFORM 900-SYSKANRI-CLOSE-SEC
            .
