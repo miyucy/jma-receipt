@@ -2236,6 +2236,9 @@
       *    データチェック初期処理
            PERFORM 20011-DATA-CHK-INIT-SEC
       *
+      *    基本チェック処理
+           PERFORM 200111-KIHON-CHK-SEC
+      *
       *    患者保険情報チェック処理
            IF    ( ORCBSD01-CHKKBN (1) NOT =   ZERO  )
             OR   ( ORCBSD01-CHKKBN (2) NOT =   ZERO  )
@@ -2336,6 +2339,20 @@
       *
            .
        20011-DATA-CHK-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       200111-KIHON-CHK-SEC            SECTION.
+      *
+           IF    ( FLG-PTINF       NOT =   ZERO )
+               MOVE    "000001"    TO  WRK-ERRCD
+               PERFORM 210-ERRMES-HEN-SEC
+               MOVE    1           TO  FLG-CHKEND (13)
+           END-IF
+      *
+           .
+       200111-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
       *    患者保険情報チェック処理
