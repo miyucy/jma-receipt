@@ -214,6 +214,7 @@ FORM_files = \
               HCM331.red \
               HCM33N.red \
               HCM331N.red \
+              HCM2JV02.red \
 
 all:   
 
