@@ -15,18 +15,9 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-            02  XA99.
-              03  XA99-B12-STATE   PIC S9(9)   BINARY.
-              03  XA99-MSG.
-                04  XA99-VALUE   PIC X(80).
-              03  XA99-SCROLLEDWINDOW28.
-                04  XA99-JOBKANRILST.
-                  05  XA99-COUNT   PIC S9(9)   BINARY.
-                  05  XA99-ITEM        OCCURS  30 TIMES.
-                    06  XA99-RENNUM    PIC X(7).
-                    06  XA99-SHORINM   PIC X(20).
-                    06  XA99-STARTTIME PIC X(8).
-                    06  XA99-ENDTIME   PIC X(8).
-                    06  XA99-PAGE      PIC X(10).
-                    06  XA99-ERRMSG    PIC X(100).
-                  05  XA99-SELECT  PIC X       OCCURS  30 TIMES.
+        02  XAID2.
+            03  XAID2-FIXED1.
+              04  XAID2-ID1CODE.
+                05  XAID2-VALUE  PIC X(10).
+              04  XAID2-ID1MSG.
+                05  XAID2-VALUE  PIC X(70).
