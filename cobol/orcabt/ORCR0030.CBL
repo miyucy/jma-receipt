@@ -170,8 +170,8 @@
       *                                     ÂÐ±þ
       *  01.04.03   NACL-¾®Æ¦Âô   04/06/08  £Ã£Ô¡¦£Í£Ò£É¡Ê£²²óÌÜ°Ê¹ß¡Ë¤Î
       *                                     Å¦Í×Íóµ­ºÜ½ç½¤Àµ
-      *  01.04.04   NACL-¾®Æ¦Âô   04/06/11  Èé²¼¶ÚÆùÃí¼Í°Ê³°¤ÇÃ±ºÞ¤Î¾ì¹ç
-      *                                     Å¦Í×Íó¤±µ­ºÜ¤¹¤ë¤è¤¦¤ËÂÐ±þ
+      *  01.04.04   NACL-¾®Æ¦Âô   04/06/11  Èé²¼¶ÚÆùÃí¼Í¤Ç¡¢ÌôºÞÅÀ¡¦´ïºàÅÀ
+      *                                     ¤¬Ìµ¤¤¤Î¾ì¹ç¤ÎÅ¦Í×Íóµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -702,8 +702,13 @@
            03  CONS-CTMRI-COMMENT17  PIC X(09)  VALUE  "170023510".
       *    ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ
            03  CONS-HINKAI-COMMENT   PIC X(09)  VALUE  "114009410".
+      *
       *    Èé²¼¶ÚÆùÃí¼Í
-           03  CONS-HIKAKIN          PIC X(09)   VALUE "130000510".
+           03  CONS-HIKAKIN          PIC X(09)  VALUE  "130000510".
+      *    À¸Êª³ØÅªÀ½ºÞÃí¼Í
+           03  CONS-SEIBUTU          PIC X(09)  VALUE  "130000110".
+      *    ËãÌôÃí¼Í
+           03  CONS-MAYAKU           PIC X(09)  VALUE  "130000310".
       *
       *    »ÀÁÇ 
       *****COPY    "CMSANSOTBL.INC".
@@ -1837,8 +1842,10 @@
                    MOVE    TNS-YUKOKETA    TO    RECE05-YUKOKETA(IDX4)
                END-IF
       *
-               IF          RECE05-SRYCD(IDX4)   =   CONS-HIKAKIN
-                   MOVE  SPACE             TO       RECE05-NAME(IDX4)
+               IF          SRY-SRYCD(IDX2)  =    CONS-HIKAKIN
+                                           OR    CONS-SEIBUTU
+                                           OR    CONS-MAYAKU
+                   MOVE    SPACE           TO    RECE05-NAME(IDX4)
                END-IF
                IF  ( SRY-SRYSYUKBN         =  "334"       )
                AND ((SRY-SRYCD(IDX2)       =  "810000001") OR

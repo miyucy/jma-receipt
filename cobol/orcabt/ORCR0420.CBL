@@ -70,6 +70,8 @@
       *  01.01.05    NACL-門脇    04.04.26  ユーザーコメント追加対応
       *  01.01.06    NACL-小豆沢  04.06.08  ＣＴ・ＭＲＩ（２回目以降）の
       *                                     摘要欄記載順修正
+      *  01.01.07    NACL-門脇    04.06.11  皮下筋肉注射で、薬剤点・器材点
+      *                                     が無いの場合の摘要欄記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -526,6 +528,12 @@
       *    在宅血液透析頻回指導管理料
            03  CONS-HINKAI-COMMENT   PIC X(09)  VALUE  "114009410".
       *
+      *    皮下筋肉注射
+           03  CONS-HIKAKIN          PIC X(09)  VALUE  "130000510".
+      *    生物学的製剤注射
+           03  CONS-SEIBUTU          PIC X(09)  VALUE  "130000110".
+      *    麻薬注射
+           03  CONS-MAYAKU           PIC X(09)  VALUE  "130000310".
       *
       *****酸素 
       *****COPY    "CMSANSOTBL.INC".
@@ -1410,6 +1418,11 @@
       *
                END-IF
       *
+               IF          SRY-SRYCD(IDX2)  =    CONS-HIKAKIN
+                                           OR    CONS-SEIBUTU
+                                           OR    CONS-MAYAKU
+                   MOVE    SPACE           TO    RECE45-NAME(IDX4)
+               END-IF
                IF  ( SRY-SRYSYUKBN         =  "334"       )
                AND ((SRY-SRYCD(IDX2)       =  "810000001") OR
                     (SRY-SRYCD(IDX2)(1:3)  =  "008"      ))

@@ -118,8 +118,8 @@
       *                                     告示等識別区分１
       *                                     きざみ値計算識別
       *                                     注加算コードの追加
-      *  01.05.01    NACL-小豆沢  04.06.11  皮下筋肉注射以外で単剤の場合
-      *                                     摘要欄け記載するように対応
+      *  01.05.02    NACL-小豆沢  04.06.11  皮下筋肉注射で、薬剤点・器材点
+      *                                     が無いの場合の摘要欄記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1290,7 +1290,8 @@
                        END-IF
                        IF      RECE04-SRYKBN     =   "31"
                        AND     RECE05-SRYCD(IDX) =   CONS-HIKAKIN
-                           IF  RECE05-SRYCD(2)   =   SPACE
+                           IF  (RECE04-YKZTEN     =   ZERO)
+                           AND (RECE04-KIZAITEN   =   ZERO)
                                CONTINUE
                            ELSE
                                MOVE    1         TO  FLG-HIKAKIN
@@ -2040,6 +2041,13 @@
                    MOVE    1                 TO  FLG-NOPRT
                END-IF
            END-PERFORM
+      *
+           IF   ( RECE04-SRYKBN               = "31"  )
+           AND  ( TBL-ZAIW-NAME (3 1)         = SPACE )
+           AND  ( TBL-ZAIW-NAME (3 WRK-WIDX2) = SPACE )
+           AND  ( WRK-WIDX2               NOT = 1     )
+                   MOVE    1                 TO  FLG-NOPRT
+           END-IF
       *
            .
        200521-SEYKBNELSE-MEISAI-EXT.
