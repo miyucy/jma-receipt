@@ -44,6 +44,7 @@
       *  02.00.07    NACL-多々納  02/11/28  慢性疼痛管理料の改正修正
       *  02.00.08    NACL-多々納  02/12/06  慢性疼痛の算定チェック修正
       *  02.00.09    NACL-多々納  03/02/10  病床数（一般）チェック追加
+      *  02.00.10    NACL-多々納  03/05/21  慢性疼痛の同時チェック追加
       *****************************************************************
       *
       *
@@ -70,6 +71,8 @@
            03  FLG-CHKMST          PIC 9(01).
       *
            03  FLG-SST             PIC 9(01).
+      *
+           03  FLG-MANSEI-ARI      PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1162,23 +1165,36 @@
       *    直帰の慢性疼痛疾患管理料算定日
            MOVE    "113006510"         TO  WRK-SRYCD
            PERFORM 2005332-SANTEI-CHK-SEC
+      *    今回入力でないこと
+           MOVE    ZERO                TO  FLG-MANSEI-ARI
+           IF      LNK-SC92-SRYCD  NOT =   WRK-SRYCD
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   WRK-MAX
+                   IF      SPA-COM-INPUTCD (IDX)   =   WRK-SRYCD
+                       MOVE    1                   TO  FLG-MANSEI-ARI
+                   END-IF
+               END-PERFORM
+           END-IF
       *
       *    初回慢性疼痛がない時ＯＫ
-           IF      WRK-YMD             =   SPACE
+           IF     (WRK-YMD             =   SPACE  )  AND
+                  (FLG-MANSEI-ARI      =   ZERO   )
                MOVE    SPACE           TO  LNK-SC92-ERRCD6
                MOVE    SPACE           TO  LNK-SC92-ERRMSG
            END-IF
       *    訂正の時、当日ならＯＫとする
            IF      LNK-SC92-SYORIFLG   =   1
-               IF      WRK-YMD         =   SPA-SRYYMD
+               IF     (WRK-YMD             =   SPA-SRYYMD  )  AND
+                      (FLG-MANSEI-ARI      =   ZERO   )
                    MOVE    SPACE           TO  LNK-SC92-ERRCD6
                    MOVE    SPACE           TO  LNK-SC92-ERRMSG
                END-IF
            END-IF
       *
       *    初診算定日が前回の算定日より後の時、算定ができること
-           IF     (WRK-YMD             =   SPACE  )  OR
-                  (WRK-SYOSINYMD1      >   WRK-YMD)
+           IF    ((WRK-YMD             =   SPACE  )  OR
+                  (WRK-SYOSINYMD1      >   WRK-YMD))
+              AND (FLG-MANSEI-ARI      =   ZERO   )
                MOVE    SPACE           TO  LNK-SC92-ERRCD6
                MOVE    SPACE           TO  LNK-SC92-ERRMSG
            END-IF
