@@ -82,6 +82,7 @@
            03  FLG-SYUNOU                  PIC 9(01).
            03  FLG-SYUMEI                  PIC 9(01).
            03  FLG-PTTEIKIRRK              PIC 9(01).
+           03  FLG-TENSU                   PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -248,6 +249,13 @@
            03  WRK-SKYSTYMD                PIC X(08).
            03  WRK-SKYEDYMD                PIC X(08).
            03  WRK-SKYMONEY                PIC  S9(07).
+      *    医療機関設定の入院料加算チェック用
+           03  WRK-NYUKSNKBN               PIC X(03).
+           03  WRK-BTU-NYUKSNKBN           PIC X(03).
+           03  WRK-KSN-NYUKSNKBN           PIC X(03).
+           03  WRK-SRYCD                   PIC X(09).
+           03  WRK-STYUKYMD                PIC X(08).
+
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -360,6 +368,15 @@
       *    定期請求履歴
         01 TEIKIRRK-REC.
            COPY     "CPTEIKIRRK.INC".
+      *
+      *    点数マスタ−
+      *01  TENSU-REC.
+           COPY    "CPTENSU.INC".
+      *
+      *    入院料加算チェック
+       01  NYUKSNCHK-REC.
+           COPY    "CPNYUKSNCHK.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用領域
@@ -6732,9 +6749,112 @@
       *            自院での継続入院チェック
            END-EVALUATE
       *
+      *    入院料加算チェックテーブルによる判定
+           INITIALIZE  NYUKSNCHK-REC
+      *
+           PERFORM   48011-TENSU-SEL-SEC
+           MOVE    WRK-BTU-NYUKSNKBN
+                                   TO  NYUKSNCHK-NYUINKBN
+           PERFORM   48012-TENSU-SEL-SEC
+           MOVE    WRK-KSN-NYUKSNKBN
+                                   TO  NYUKSNCHK-KSNKBN
+           MOVE    WRK-STYUKYMD    TO  ORC-DBYMD
+      *
+           MOVE    "NYUKSNCHK-KEY" TO  WRK-DBPATH
+           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        =   ZERO )
+               MOVE    MCPDATA-REC TO  NYUKSNCHK-REC
+           ELSE
+               GO  TO          4801-NYUKSN-CHK-EXT
+           END-IF
+      *
+           IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
+               CONTINUE
+           ELSE
+               MOVE   1        TO     FLG-NYUKSN
+               GO  TO  4801-NYUKSN-CHK-EXT
+           END-IF
+      *
            .
       *
        4801-NYUKSN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数マスタ検索処理
+      *****************************************************************
+       48011-TENSU-SEL-SEC              SECTION.
+      *
+           MOVE    SPACE           TO  WRK-NYUKSNKBN
+      *
+           MOVE    ZERO            TO  FLG-TENSU
+           INITIALIZE              TNS-TENSU-REC
+      *
+           MOVE    LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                                   TO  TNS-SRYCD
+           MOVE    WRK-STYUKYMD    TO  ORC-DBYMD
+           MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
+      *
+           MOVE    "TENSU-KEY"     TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        =   ZERO )
+               MOVE    MCPDATA-REC TO  TNS-TENSU-REC
+           ELSE
+               MOVE    1           TO  FLG-TENSU
+           END-IF
+      *
+      *    点数マスタクローズ
+           MOVE    "TENSU-KEY"     TO  ORC-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-TENSU       NOT =   ZERO )
+               GO  TO  48011-TENSU-SEL-EXT
+           END-IF
+      *
+           MOVE    TNS-NYUKHNKSNKBN
+                                   TO  WRK-BTU-NYUKSNKBN
+           .
+      *
+       48011-TENSU-SEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数マスタ検索処理
+      *****************************************************************
+       48012-TENSU-SEL-SEC              SECTION.
+      *
+           MOVE    SPACE           TO  WRK-NYUKSNKBN
+      *
+           MOVE    ZERO            TO  FLG-TENSU
+           INITIALIZE              TNS-TENSU-REC
+      *
+           MOVE    SYS-5000-KSNCD(IDX7)
+                                   TO  TNS-SRYCD
+           MOVE    WRK-STYUKYMD    TO  ORC-DBYMD
+           MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
+      *
+           MOVE    "TENSU-KEY"     TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        =   ZERO )
+               MOVE    MCPDATA-REC TO  TNS-TENSU-REC
+           ELSE
+               MOVE    1           TO  FLG-TENSU
+           END-IF
+      *
+      *    点数マスタクローズ
+           MOVE    "TENSU-KEY"     TO  ORC-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-TENSU       NOT =   ZERO )
+               GO  TO  48012-TENSU-SEL-EXT
+           END-IF
+      *
+           MOVE    TNS-NYUKHNKSNKBN
+                                   TO  WRK-NYUKSNKBN
+           .
+      *
+       48012-TENSU-SEL-EXT.
            EXIT.
       *
       *****************************************************************
