@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/10/07  船員老人補助区分チェック追加
+      * 01.00.02     NACL-多々納  02/10/18  任継の自動発生を２年チェックを５年に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1090,7 +1091,8 @@
                IF      SPA-GMN-CONTKBN     =   "1"
                    MOVE    5               TO  WRK-DAY-ZOGEN
                ELSE
-                   MOVE    2               TO  WRK-DAY-ZOGEN
+      *************MOVE    2               TO  WRK-DAY-ZOGEN
+                   MOVE    5               TO  WRK-DAY-ZOGEN
                END-IF
                MOVE    "3"                 TO  WRK-DAY-PTN
                PERFORM 41010-DAY-ZOGEN-GET-SEC
@@ -1510,8 +1512,8 @@
            IF      SPA-GMN-CONTKBN     =   "1"
                MOVE    5               TO  WRK-DAY-ZOGEN
            ELSE
-      *********MOVE    2               TO  WRK-DAY-ZOGEN
-               MOVE    5               TO  WRK-DAY-ZOGEN
+               MOVE    2               TO  WRK-DAY-ZOGEN
+      ******** MOVE    5               TO  WRK-DAY-ZOGEN
            END-IF
            MOVE    "3"                 TO  WRK-DAY-PTN
            PERFORM 41010-DAY-ZOGEN-GET-SEC
