@@ -276,17 +276,28 @@
       *
       *
       *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ(±¡³°½èÊý ½é¿Ç)
-           03  FILLER              PIC X(14)   VALUE   "100FG113003510".
+           03  FILLER              PIC X(14)   VALUE   "200FG113003510".
       *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ(±¡Æâ½èÊý ½é¿Ç)
-           03  FILLER              PIC X(14)   VALUE   "100FN113003710".
+           03  FILLER              PIC X(14)   VALUE   "200FN113003710".
       *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ(±¡³°½èÊý ºÆ¿Ç)
            03  FILLER              PIC X(14)   VALUE   "200 G113003610".
       *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ(±¡Æâ½èÊý ºÆ¿Ç)
            03  FILLER              PIC X(14)   VALUE   "200 N113003810".
       *
+      *
+      *    ³°Íè¿ÇÎÅÎÁ
+           03  FILLER              PIC X(14)   VALUE   "301  112011310".
+      *    Æ±Æü³°Íè¿ÇÎÅÎÁ
+           03  FILLER              PIC X(14)   VALUE   "301D 112011710".
+      *    ³°Íè¿ÇÎÅÎÁ¡ÊÏ·¿Í¡Ë
+           03  FILLER              PIC X(14)   VALUE   "311  112705510".
+      *    Æ±Æü³°Íè¿ÇÎÅÎÁ¡ÊÏ·¿Í¡Ë
+           03  FILLER              PIC X(14)   VALUE   "311D 112705850".
+      *
+      *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
-           03  TBL-SINSATU-OCC         OCCURS  24    INDEXED  TBL-IDX.
-      *        ²ó¿ô
+           03  TBL-SINSATU-OCC         OCCURS  28    INDEXED  TBL-IDX.
+      *        £±¡§°ìÈÌ¡¢£²¡§¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¡¢£³¡§³°Íè¿ÇÎÅÎÁ
                05  TBL-KAISU           PIC 9(01).
       *        Ï·¿Í°ìÈÌ¶èÊ¬¡Ê£°¡§°ìÈÌ¡¢£±¡§Ï·¿Í¡Ë
                05  TBL-ROUJIN          PIC 9(01).
@@ -299,7 +310,7 @@
       *        ¿ÇÎÅ¥³¡¼¥É
                05  TBL-SRYCD           PIC X(09).
       *
-       01  TBL-SIN-MAX                 PIC 9(04)   VALUE   24.
+       01  TBL-SIN-MAX                 PIC 9(04)   VALUE   28.
       *
       *
       *    ³°Íè´ÉÍý²Ã»»¥Æ¡¼¥Ö¥ë
@@ -1521,6 +1532,7 @@
            MOVE    ZERO                TO  SPA-GMN-IDX
            MOVE    ZERO                TO  SPA-FRST-LINE
            MOVE    SPACE               TO  SPA-FRST-SRYCD
+           MOVE    ZERO                TO  SPA-GAIRAISIN
       *
            MOVE    SPACE               TO  WRK-SRYCD
       *
@@ -1535,6 +1547,13 @@
       *
       *    Ï«ºÒ¤Î½é¿ÇÎÁ»»Äê
            IF      SPA-HKNKBN          =   1
+      *      £²£°£°¾²°Ê¾å¤ÇºÆ¿Ç¤Î¾ì¹ç¡¢³°Íè¿Ç»¡ÎÁ¤È¤¹¤ë
+      *      ½é¿ÇÎÁ»»Äê
+             IF     (SPA-SYOSIN      NOT =   1  )  AND
+                    (SPA-BEDSUIPN        >=  200 )  AND
+                    (SPA-HOSPSBT         =   1   )
+                 CONTINUE
+             ELSE
                MOVE    SPACE               TO  WRK-KBN
                PERFORM 2009-RSIHKN-SET-SEC
                IF      SPA-GMN-IDX         >   ZERO
@@ -1546,6 +1565,7 @@
                                                TO  SPA-FRST-SRYCD
                END-IF
                GO      TO      200-SYOSIN-SET-EXT
+             END-IF
            END-IF
       *
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê
@@ -1575,8 +1595,9 @@
       *        Æ±ÆüºÆ¿ÇÎÁ»»Äê
                MOVE    ZERO                TO  FLG-DOUJITU
                IF     ( SPA-SYORIFLG        =   ZERO     ) AND
-                      ((SPA-LSTYMD          =   SPA-SRYYMD ) OR
-                       (SPA-RRK-LSTYMD      =   SPA-SRYYMD ))
+                      ( SPA-RRK-LSTYMD      =   SPA-SRYYMD )
+      *??             ((SPA-LSTYMD          =   SPA-SRYYMD ) OR
+      *??              (SPA-RRK-LSTYMD      =   SPA-SRYYMD ))
                    MOVE    1                   TO  FLG-DOUJITU
                END-IF
                IF      (SPA-SYORIFLG        =   1       )   AND
@@ -1629,6 +1650,16 @@
       *****************************************************************
        2001-SRYCD-TBL-SEC              SECTION.
       *
+           MOVE    1                   TO  WRK-KAISU
+           IF      WRK-SRYKBN          =   "12"
+      *        °ìÈÌÉÂ¾²¿ô
+               IF     (SPA-BEDSUIPN        >=  200 )  AND
+                      (SPA-HOSPSBT         =   1   )
+      *            200¾É°Ê¾å
+                   MOVE    3               TO  WRK-KAISU
+               END-IF
+           END-IF
+      *
       *    ¿Ç»¡ÎÁ¥»¥Ã¥È
            SET     TBL-IDX             TO  1
            SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
@@ -1636,6 +1667,7 @@
                        MOVE    SPACE           TO  WRK-SRYCD
                    WHEN   (SPA-NAI-ROUJIN      =   TBL-ROUJIN(TBL-IDX))
                      AND  (SPA-HOSPSBT         =   TBL-HOSPSBT(TBL-IDX))
+                     AND  (WRK-KAISU           =   TBL-KAISU  (TBL-IDX))
                      AND  (WRK-KBN             =   TBL-KBN    (TBL-IDX))
                      AND  (WRK-SRYKBN          =   TBL-SRYCD(TBL-IDX)
                                                                 (2:2))
@@ -1698,6 +1730,21 @@
       *
       *    °Ê¹ß¡¢ºÆ¿Ç»þ¤Î¤ß
            IF      SPA-SYOSIN          =   1
+               GO      TO      3301-SYOSIN-SYORI-EXT
+           END-IF
+      *
+      *
+      *    ³°Íè¿Ç»¡ÎÁ¤Î»þ¡¢°Ê¹ß¤Ê¤·
+           MOVE    ZERO                TO  SPA-GAIRAISIN
+           IF      WRK-KAISU           =   3
+               MOVE    1               TO  SPA-GAIRAISIN
+      *
+      *        ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê»»Äê½èÍý
+               IF     (SPA-NAI-ROUJIN      =   1   )  AND
+                      (SPA-NYUGAIKBN       =   "2" )
+                   MOVE    ZERO            TO  WRK-IDX-IN
+                   PERFORM 3305-NETAKIRI-SET-SEC
+               END-IF
                GO      TO      3301-SYOSIN-SYORI-EXT
            END-IF
       *

@@ -34,6 +34,7 @@
       * 01.00.05     NACL-多々納  03/03/05  排他制御処理追加
       * 01.00.06     NACL-多々納  03/03/18  中途終了時修正
       * 01.00.07     NACL-多々納  03/04/11  科変更追加、履歴に科表示他
+      * 01.00.08     NACL-多々納  03/05/29  入院アフターケアエラー
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1580,8 +1581,6 @@
                    UNTIL      (IDX-K98             >   5   )  OR
                               (SPA-K98-SRYCD(IDX-K98)  =   SPACE )
       *
-               MOVE    "1"                 TO  SPA-COM-IN (SPA-GMN-IDX)
-      *
                IF      IDX-K98             =   1
                    MOVE    SPA-K98-SRYCD(IDX-K98)
                                            TO  SPA-GMN-INPUTCD
@@ -1593,6 +1592,10 @@
                                            TO  SPA-GMN-INPUTCD
                                                        (SPA-GMN-IDX)
                END-IF
+      *
+               MOVE    "1"                 TO  SPA-COM-IN (SPA-GMN-IDX)
+               MOVE    "1"                 TO  SPA-COM-IN2(SPA-GMN-IDX)
+      *
            END-PERFORM
       *
       *    入力コード・名称チェック処理
@@ -2080,6 +2083,13 @@
                MOVE   1                TO  IDX
            ELSE
                MOVE   IDY              TO  IDX
+           END-IF
+      *
+      *    アフターケアの場合エラーとする
+           IF     (SPA-NAI-HKNNUM     (IDX)    =   "971" ) AND
+                  (SPA-NAI-RSI-HKNKBN (IDX)    =   "3" )
+               MOVE    "9029"              TO  SPA-ERRCD
+               GO      TO      3101-HKNCOMBI-HEN-EXT
            END-IF
       *
            MOVE    SPA-GMN-HKN-LIST (IDX)
@@ -3795,7 +3805,8 @@
                MOVE    K02N-HKNCOMBI       TO  SPA-GMN-HKNCOMBI-G
                MOVE    1                   TO  FLG-CHK2
                PERFORM 41012-HKNCOMBI-CHANGE-SEC
-               IF      SPA-KIDCD           =   SPACE
+               IF     (SPA-ERRCD           =   SPACE )  AND
+                      (SPA-KIDCD           =   SPACE )
       *            訂正の時、確認メッセージ表示
                    MOVE    "0105"              TO  SPA-KIDCD
                END-IF
@@ -3817,6 +3828,9 @@
       *
       *    保険組合
            PERFORM 3101-HKNCOMBI-HEN-SEC
+           IF      SPA-ERRCD           NOT =   SPACE
+               GO      TO      41012-HKNCOMBI-CHANGE-EXT
+           END-IF
       *
       *    保険区分が変更された時、ワーク診療行為を判定する
            PERFORM 410121-HKNCOMBI-SAI-SEC
@@ -6271,6 +6285,17 @@
       *    入院日数がある時回数のチェック処理
       *****************************************************************
        51019-NYUIN-SANCHK-SEC             SECTION.
+      *
+      *    画像診断のＣＴ．ＭＲＩは２回目のコードが違うのでチェックなし
+           IF     (SPA-COM-TNSSRYSYUKBN (IDX)  =   "723"
+                                               OR  "724"  )  AND
+                  (SPA-COM-HOUKATUTEIGENKBN(IDX)
+                                               =   "201"
+                                               OR  "202"
+                                               OR  "203"  )  AND
+                   (SPA-COM-KAISU (IDX)        =   1      )
+               GO      TO      51019-NYUIN-SANCHK-EXT
+           END-IF
       *
            MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
            MOVE    SPA-COM-KAISU (IDX) TO  WRK-NYU-KAISU

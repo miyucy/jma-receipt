@@ -1721,8 +1721,9 @@
       *        Æ±ÆüºÆ¿ÇÎÁ»»Äê
                MOVE    ZERO                TO  FLG-DOUJITU
                IF     ( SPA-SYORIFLG        =   ZERO     ) AND
-                      ((SPA-LSTYMD          =   SPA-SRYYMD ) OR
-                       (SPA-RRK-LSTYMD      =   SPA-SRYYMD ))
+                       (SPA-RRK-LSTYMD      =   SPA-SRYYMD )
+      *??             ((SPA-LSTYMD          =   SPA-SRYYMD ) OR
+      *??              (SPA-RRK-LSTYMD      =   SPA-SRYYMD ))
                    MOVE    1                   TO  FLG-DOUJITU
                END-IF
                IF      (SPA-SYORIFLG        =   1       )   AND

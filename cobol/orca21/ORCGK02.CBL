@@ -60,6 +60,7 @@
       *  03.00.12    NACL-多々納  03/02/19  約束セット名称編集修正
       *  03.00.13    NACL-多々納  03/03/05  排他制御処理追加
       *  03.00.14    NACL-多々納  03/04/07  入院日のチェック追加
+      *  03.00.15    NACL-多々納  03/05/26  最終退院日編集追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -378,6 +379,9 @@
       *     一部負担金計算用
            03  WRK-S01-TENSU       PIC 9(08).
            03  WRK-ACCT-KAISU      PIC 9(03).
+      *
+      *    退院日
+           03  WRK-TAIINYMD        PIC X(08).
       *
       *
            03  WRK-MOJI            PIC X(01).
@@ -1703,8 +1707,6 @@
                    UNTIL      (IDX-K98             >   5   )  OR
                               (SPA-K98-SRYCD(IDX-K98)  =   SPACE )
       *
-               MOVE    "1"                 TO  SPA-COM-IN (SPA-GMN-IDX)
-      *
                IF      IDX-K98             =   1
                    MOVE    SPA-K98-SRYCD(IDX-K98)
                                            TO  SPA-GMN-INPUTCD
@@ -1716,6 +1718,10 @@
                                            TO  SPA-GMN-INPUTCD
                                                        (SPA-GMN-IDX)
                END-IF
+      *
+               MOVE    "1"                 TO  SPA-COM-IN (SPA-GMN-IDX)
+               MOVE    "1"                 TO  SPA-COM-IN2(SPA-GMN-IDX)
+      *
            END-PERFORM
       *
       *    入力コード・名称チェック処理
@@ -3301,6 +3307,7 @@
       *    入院日
            MOVE    SPACE               TO  SPA-K02N-NYUINYMD
            MOVE    SPACE               TO  SPA-K02N-TAIINYMD
+           MOVE    SPACE               TO  WRK-TAIINYMD
       *
       *    入院履歴判定
            MOVE    SPACE               TO  PTNYUINRRK-REC
@@ -3353,6 +3360,11 @@
                                                TO  SPA-K02N-TAIINYMD
                END-IF
       *
+      *        最終退院日
+               IF      PTNYUINRRK-TAIINYMD     <=  SPA-NAI-SRYYMD
+                   MOVE    PTNYUINRRK-TAIINYMD     TO  WRK-TAIINYMD
+               END-IF
+      *
                MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            END-PERFORM
@@ -3360,6 +3372,9 @@
            IF      FLG-NYUIN           =   "1"
                MOVE    "0121"          TO  SPA-KIDCD
                MOVE    ZERO            TO  SPA-GMN-CUR
+           ELSE
+      *        最終退院日の設定
+               MOVE    WRK-TAIINYMD    TO  SPA-K02N-TAIINYMD
            END-IF
            .
        3109-NYUIN-CHK-EXT.
@@ -4768,8 +4783,8 @@
                                        SPA-GMN-MEISYO-G (SPA-GMN-IDX))
                    MOVE    "1"                 TO  SPA-COM-IN2
                                                            (SPA-GMN-IDX)
-                   MOVE    SPACE               TO  SPA-COM-CUR
-                                                           (SPA-GMN-IDX)
+                   MOVE    "1"                 TO  SPA-COM-IN
+                                                          (SPA-GMN-IDX)
                    MOVE    ZERO                TO  FLG-INPUT-NASI
                END-IF
       *
@@ -4780,10 +4795,10 @@
       *        入力行の保存
                IF     (WRK-IN-MAP-IDX  NOT =   ZERO )  AND
                       (WRK-IDX2            =   WRK-IN-MAP-IDX)
-                   MOVE    "1"                 TO  SPA-COM-IN
-                                                          (SPA-GMN-IDX)
-                   MOVE    "1"                 TO  SPA-COM-IN2
-                                                           (SPA-GMN-IDX)
+      *!           MOVE    "1"                 TO  SPA-COM-IN
+      *!                                                  (SPA-GMN-IDX)
+      *!           MOVE    "1"                 TO  SPA-COM-IN2
+      *!                                                   (SPA-GMN-IDX)
                    IF     (K02-INPUTCD (WRK-IDX2)  =   SPACE )  AND
                           (SPA-MAE-INPUTCD (SPA-GMN-IDX)
                                                    =   SPACE )  AND
@@ -7006,6 +7021,8 @@
            MOVE    SPA-NAIACCT-AREA    TO  LNK-NAIACCT-AREA
            MOVE    SPA-NAIACCT2-AREA   TO  LNK-NAIACCT2-AREA
            MOVE    FLG-TOROKU          TO  LNK-ORCSC-TOROKU
+      *    最終受診日（履歴）
+           MOVE    SPA-RRK-LSTYMD      TO  LNK-ORCSC-RRK-LSTYMD
       *    処理フラグ
            MOVE    SPA-SYORIFLG        TO  LNK-ORCSC-SYORIFLG
       *    初診フラグ
@@ -7024,6 +7041,8 @@
            MOVE    SPA-YAKJYO-2        TO  LNK-ORCSC-YAKJYO-2
            MOVE    SPA-YAKJYO-3        TO  LNK-ORCSC-YAKJYO-3
            MOVE    SPA-TOKUTEI-FLG     TO  LNK-ORCSC-TOKUTEI-FLG
+      *    外来診療料算定有無
+           MOVE    SPA-GAIRAISIN       TO  LNK-ORCSC-GAIRAISIN
       *
            MOVE    SPA-ROUMANSEI-ARI   TO  LNK-ORCSC-ROUMANSEI-ARI
            MOVE    SPA-ROUMANSEI-ARI2  TO  LNK-ORCSC-ROUMANSEI-ARI2
@@ -7091,6 +7110,8 @@
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-ORCSC-TEISEI-AREA
       *    外来管理加算削除のチェック
            MOVE    SPA-GAIKANRIKBN-CHK TO  LNK-ORCSC-GAIKANRIKBN-CHK
+      *    最終退院日
+           MOVE    SPA-K02N-TAIINYMD   TO  LNK-ORCSC-TAIINYMD
       *
       *
            EVALUATE    WRK-COM-SRYKBN (01)
@@ -7109,6 +7130,8 @@
                    MOVE    LNK-ORCSC-SYOSIN2   TO  SPA-SYOSIN
       *            診察の時間加算の時、全体へ
                    MOVE    LNK-ORCSC-TIMEFLG   TO  WRK-TIMEFLG
+      *            外来診療料算定有無
+                   MOVE    LNK-ORCSC-GAIRAISIN TO  SPA-GAIRAISIN
       *
       *            小児科外来診療科の時、年齢エラーはそのまま
                    IF      SPA-SYONIKA-ARI     NOT =   ZERO
@@ -7994,6 +8017,8 @@
            MOVE    SPA-LSTSRYKAMEI     TO  LNK-ORCSC-LSTSRYKAMEI 
            MOVE    SPA-INGAIKBN        TO  LNK-ORCSC-INGAIKBN
            MOVE    FLG-TOROKU          TO  LNK-ORCSC-TOROKU
+      *    最終受診日（履歴）
+           MOVE    SPA-RRK-LSTYMD      TO  LNK-ORCSC-RRK-LSTYMD
       *    処理フラグ
            MOVE    SPA-SYORIFLG        TO  LNK-ORCSC-SYORIFLG
       *    初診フラグ
@@ -8012,6 +8037,8 @@
            MOVE    SPA-YAKJYO-2        TO  LNK-ORCSC-YAKJYO-2
            MOVE    SPA-YAKJYO-3        TO  LNK-ORCSC-YAKJYO-3
            MOVE    SPA-TOKUTEI-FLG     TO  LNK-ORCSC-TOKUTEI-FLG
+      *外来診療料算定有無
+           MOVE    SPA-GAIRAISIN       TO  LNK-ORCSC-GAIRAISIN
       *
            MOVE    SPA-ROUMANSEI-ARI   TO  LNK-ORCSC-ROUMANSEI-ARI
            MOVE    SPA-ROUMANSEI-ARI2  TO  LNK-ORCSC-ROUMANSEI-ARI2
@@ -8078,6 +8105,8 @@
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-ORCSC-TEISEI-AREA
       *    外来管理加算削除のチェック
            MOVE    SPA-GAIKANRIKBN-CHK TO  LNK-ORCSC-GAIKANRIKBN-CHK
+      *    最終退院日
+           MOVE    SPA-K02N-TAIINYMD   TO  LNK-ORCSC-TAIINYMD
       *
       *            診療
            IF     (SPA-SRYKBN-CNT (01) >   ZERO )
@@ -12108,6 +12137,7 @@
                    UNTIL       WRK-IDX     >   200
                MOVE    ZERO                TO  SPA-COM-PAGE (WRK-IDX)
                MOVE    ZERO                TO  SPA-COM-GYOU (WRK-IDX)
+               MOVE    SPACE               TO  SPA-COM-IN3  (WRK-IDX)
       *        画面表示外のものに頁、行位置を設定する
                IF      SPA-COM-SET    (WRK-IDX)  =   SPACE
                    ADD     1                 TO  IDX
