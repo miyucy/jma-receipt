@@ -126,7 +126,6 @@
            03  IDX-D               PIC 9(02).
            03  IDXS1               PIC 9(04).
            03  IDW                 PIC 9(04).
-           03  IDW1                PIC 9(04).
            03  IDW3                PIC 9(04).
            03  IDW4                PIC 9(04).
            03  IDW5                PIC 9(04).
@@ -1992,25 +1991,21 @@
                        END-IF
                    END-IF
                END-PERFORM
-               PERFORM   VARYING   IDY     FROM    1   BY  1
-                         UNTIL     IDY         >  31
-                   PERFORM   VARYING   IDX     FROM    1   BY  1
-                             UNTIL     IDX         >  I41-KUMILIST-COUNT
-                       IF  WRK-TEKSTYMD(1:6) = WRK-KUMIEDYMD (IDX)(1:6)
-                         MOVE    WRK-KUMIEDYMD    TO  WRK-TEKSTYMD
-                         IF  WRK-TEKSTYMD(7:2)  =  "31"
-                           MOVE    "99"         TO  WRK-TEKSTYMD
-                         ELSE
-                           MOVE    WRK-TEKSTYMD(7:2) TO  WRK-COP-G
-                           COMPUTE WRK-COP   =   WRK-COP   +   1
-                           MOVE    WRK-COP-G       TO  WRK-TEKSTYMD(7:2)
-                           PERFORM   VARYING   IDW1   FROM   1  BY 1
-                                     UNTIL     IDW1      >  31
-                             IF  SPA-GMN-TDAY-41 (IDW IDW1)
-                                                         NOT = ALL SPACE
-                               MOVE    IDW1(3:2)   TO  WRK-TEKEDYMD(7:2)
-                             END-IF
-                           END-PERFORM
+               PERFORM   VARYING   IDX     FROM    1   BY  1
+                         UNTIL     IDX         >  I41-KUMILIST-COUNT
+                   PERFORM   VARYING   IDY     FROM    1   BY  1
+                             UNTIL     IDY         >  31
+                       IF  SPA-GMN-TDAY-41 (IDW IDY) = WRK-KUMINO (IDX)
+                         IF  WRK-TEKSTYMD(1:6) = WRK-KUMIEDYMD(IDX)(1:6)
+                           MOVE    WRK-KUMIEDYMD    TO  WRK-TEKSTYMD
+                           IF  WRK-TEKSTYMD(7:2)  =  "31"
+                             MOVE    "99"         TO  WRK-TEKSTYMD
+                           ELSE
+                             MOVE    WRK-TEKSTYMD(7:2) TO  WRK-COP-G
+                             COMPUTE WRK-COP   =   WRK-COP   +   1
+                             MOVE    WRK-COP-G     TO  WRK-TEKSTYMD(7:2)
+                             MOVE    IDY(3:2)      TO  WRK-TEKEDYMD(7:2)
+                           END-IF
                          END-IF
                        END-IF
                    END-PERFORM
