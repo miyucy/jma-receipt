@@ -82,6 +82,13 @@
       *
            03  WRK-ERRMSG          PIC X(40).
       *
+           03  WRK-K021-INPUTAREA.
+                   07  WRK-K021-KNKMEIFLG          PIC X(001).
+                   07  WRK-K021-TOUMEI             PIC X(100).
+                   07  WRK-K021-KNKMEI             PIC X(100).
+                   07  WRK-K021-SYOJYOU            PIC X(2048).
+                   07  WRK-K021-SAYOKIJYO          PIC X(2048).
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -337,14 +344,15 @@
                        UNTIL       IDY     <   1
                    IF      SPA-K021-TTOUMEI (IDY)  NOT =   SPACE
                        MOVE    SPA-K021-TTOUMEI (IDY)
-                                               TO  SPA-K021-TOUMEI
+                                               TO  WRK-K021-TOUMEI
                        MOVE    1               TO  IDY
                     END-IF
                END-PERFORM
            ELSE
-               MOVE    SPA-K021-TTOUMEI (IDX)  TO  SPA-K021-TOUMEI
+               MOVE    SPA-K021-TTOUMEI (IDX)  TO  WRK-K021-TOUMEI
            END-IF
-           MOVE    SPA-K021-TKNKMEI (IDX)  TO  SPA-K021-KNKMEI
+           MOVE    SPA-K021-TKNKMEI (IDX)  TO  WRK-K021-KNKMEI
+           MOVE    "1"                     TO  WRK-K021-KNKMEIFLG
       *    症状編集
            INITIALIZE                  SSKIJYO-REC
            MOVE    SPA-K021-TSYOJYOUCD (IDX)
@@ -370,11 +378,11 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      FLG-SSKIJYO         =   ZERO
-               MOVE    SSKIJYO-SYOJYOU     TO  SPA-K021-SYOJYOU
-               MOVE    SSKIJYO-SAYOKIJYO   TO  SPA-K021-SAYOKIJYO
+               MOVE    SSKIJYO-SYOJYOU     TO  WRK-K021-SYOJYOU
+               MOVE    SSKIJYO-SAYOKIJYO   TO  WRK-K021-SAYOKIJYO
            ELSE
-               MOVE    SPACE               TO  SPA-K021-SYOJYOU
-               MOVE    SPACE               TO  SPA-K021-SAYOKIJYO
+               MOVE    SPACE               TO  WRK-K021-SYOJYOU
+               MOVE    SPACE               TO  WRK-K021-SAYOKIJYO
            END-IF
       *
            .
@@ -527,6 +535,12 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+           IF      WRK-K021-KNKMEIFLG  =   SPACE
+               MOVE    K021-TOUMEI     TO  WRK-K021-TOUMEI
+               MOVE    K021-KNKMEI     TO  WRK-K021-KNKMEI
+               MOVE    K021-SYOJYOU    TO  WRK-K021-SYOJYOU
+               MOVE    K021-SAYOKIJYO  TO  WRK-K021-SAYOKIJYO
+           END-IF
            MOVE    SPACE               TO  K021
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
@@ -547,10 +561,10 @@
            MOVE    SPA-K021-MAX        TO  K021-COUNT
       *
            MOVE    SPA-K021-GMN-SELNUM TO  K021-SELNUM
-           MOVE    SPA-K021-TOUMEI     TO  K021-TOUMEI
-           MOVE    SPA-K021-KNKMEI     TO  K021-KNKMEI
-           MOVE    SPA-K021-SYOJYOU    TO  K021-SYOJYOU
-           MOVE    SPA-K021-SAYOKIJYO  TO  K021-SAYOKIJYO
+           MOVE    WRK-K021-TOUMEI     TO  K021-TOUMEI
+           MOVE    WRK-K021-KNKMEI     TO  K021-KNKMEI
+           MOVE    WRK-K021-SYOJYOU    TO  K021-SYOJYOU
+           MOVE    WRK-K021-SAYOKIJYO  TO  K021-SAYOKIJYO
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
