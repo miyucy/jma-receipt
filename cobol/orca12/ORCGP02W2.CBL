@@ -802,7 +802,10 @@
                                   TO  WRK-KCOMB-SYU-HKNKOHSBTKBN(IDX2)
       *
                IF  (WRK-HKN-HKNNUM (IDX)       =   "002")   AND
-                   (WRK-HKN-HOJOKBN(IDX)   NOT =   SPACE)
+      *************(WRK-HKN-HOJOKBN(IDX)   NOT =   SPACE)
+                   (WRK-HKN-HOJOKBN(IDX)       =   "1"  OR
+                                                   "2"  OR
+                                                   "3" )
                  ADD     1             TO  WRK-LCOMB-MAX
                  MOVE    WRK-KCOMB-REC (IDX2)
                                        TO  WRK-LCOMB-REC
@@ -1412,7 +1415,10 @@
       *   [Á¥°÷ÊÝ¸±]¤Ç¤«¤Ä[Êä½õ¶èÊ¬]¤¬ÆþÎÏ¤µ¤ì¤Æ¤¤¤¿¾ì¹ç
       *     <ÉéÃ´¶èÊ¬¡á£²>¤Ç³ÆÆâÍÆ¤ò½é´ü²½
            IF  ((WRK-LCOMB-HKNNUM  (IDX2)      =   "002")  AND
-                (WRK-LCOMB-HOJOKBN (IDX2)  NOT =   SPACE))
+      **********(WRK-LCOMB-HOJOKBN (IDX2)  NOT =   SPACE))
+                (WRK-LCOMB-HOJOKBN (IDX2)      =   "1" OR
+                                                   "2" OR
+                                                   "3"  ))
             INITIALIZE                         WRK-KENSAKU-AREA
             MOVE    WRK-LCOMB-HKNNUM  (IDX2)   TO  WRK-KEN-HKNNUM
       *----(01.00.01) LINE MOD START ---------------------------------
@@ -1615,6 +1621,14 @@
                             MOVE    WRK-DISCOUNTRATEC
                                 TO   WRK-LCOMB-TNK-NYUKFTNRATE(IDX2)
                           END-IF
+      *                   ¹ñÊÝ¤ÎÊÝ¸±³ä¹ç
+                          IF      WRK-LCOMB-TEKSTYMD (IDX2)
+                                               >=   "20021001"
+                              MOVE    WRK-LCOMB-GAI-KFTNRATE(IDX2)
+                                               TO  WRK-GAIKFTNRATE
+                          ELSE
+                              MOVE    ZERO     TO  WRK-GAIKFTNRATE
+                          END-IF
                       ELSE
       *                   Ï·¿Í¤ÎÉéÃ´³ä¹çÊÔ½¸
                           PERFORM 570129-RJN-FUTAN-SET-SEC
@@ -1728,7 +1742,17 @@
                                                               (IDX2)
                    MOVE    WRK-GAIKFTNRATE TO  WRK-LCOMB-NYU-KFTNRATE
                                                               (IDX2)
+                   MOVE    WRK-GAIKFTNRATE TO  WRK-LCOMB-TSY-GAIKFTNRATE
+                                                              (IDX2)
+                   MOVE    WRK-GAIKFTNRATE TO  WRK-LCOMB-TSY-NYUKFTNRATE
+                                                              (IDX2)
+                   MOVE    WRK-GAIKFTNRATE TO  WRK-LCOMB-TNK-GAIKFTNRATE
+                                                              (IDX2)
+                   MOVE    WRK-GAIKFTNRATE TO  WRK-LCOMB-TNK-NYUKFTNRATE
+                                                              (IDX2)
                END-IF
+           ELSE
+               MOVE    ZERO                TO  WRK-GAIKFTNRATE
            END-IF
       *
            .
@@ -1784,45 +1808,55 @@
            ELSE
       *   <²ó¡ÝÉéÃ´³ä¹ç>
       *      £È£±£´¡¥£±£°²þÀµ Ï·¿Í¤Î»þµëÉÕ³ä¹ç¤¬Êä½õ¶èÊ¬¤Ë¤¢¤ë
-             IF      WRK-LCOMB-TEKSTYMD (IDX2)     >=   "20021001"
-                 EVALUATE    WRK-LCOMB-HOJOKBN (IDX2)
-                     WHEN    "8"
+      *      IF      WRK-LCOMB-TEKSTYMD (IDX2)     >=   "20021001"
+      *          EVALUATE    WRK-LCOMB-HOJOKBN (IDX2)
+      *              WHEN    "8"
       *                  £²³äÉéÃ´
-                         MOVE    20                TO  WRK-GAIKFTNRATE
-                     WHEN    "9"
+      *                  MOVE    20                TO  WRK-GAIKFTNRATE
+      *              WHEN    "9"
       *                  £±³äÉéÃ´
-                         MOVE    10                TO  WRK-GAIKFTNRATE
-                     WHEN    OTHER
+      *                  MOVE    10                TO  WRK-GAIKFTNRATE
+      *              WHEN    OTHER
       *                  ¤½¤ÎÂ¾
-                         MOVE    HKN-HON-GAIKFTNRATE
-                                                   TO  WRK-GAIKFTNRATE
-                 END-EVALUATE
-             ELSE
-                MOVE    HKN-HON-GAIKFTNRATE    TO  WRK-GAIKFTNRATE
-             END-IF
-      *
-      ****** IF  WRK-LCOMB-GAI-KFTNRATE(IDX2)      =   ZERO
-      *         MOVE    HKN-HON-GAIKFTNRATE
-      *                 TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
-      *      ELSE
-      *         IF  (HKN-HON-GAIKFTNRATE     >   ZERO )    AND
-      *             (HKN-HON-GAIKFTNRATE
-      *                  <   WRK-LCOMB-GAI-KFTNRATE(IDX2))
-      *           MOVE  HKN-HON-GAIKFTNRATE
-      *                  TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
-      *         END-IF
+      *                  MOVE    HKN-HON-GAIKFTNRATE
+      *                                            TO  WRK-GAIKFTNRATE
+      *          END-EVALUATE
+      *******ELSE
+      *         MOVE    HKN-HON-GAIKFTNRATE    TO  WRK-GAIKFTNRATE
       *******END-IF
-             IF  WRK-LCOMB-GAI-KFTNRATE(IDX2)      =   ZERO
-                MOVE    WRK-GAIKFTNRATE
-                        TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
-             ELSE
-                 IF  (WRK-GAIKFTNRATE     >   ZERO )    AND
-                     (WRK-GAIKFTNRATE     <   WRK-LCOMB-GAI-KFTNRATE
-                                                            (IDX2))
-                     MOVE  WRK-GAIKFTNRATE
-                                   TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
+      *
+      *   <²ó¡ÝÉéÃ´³ä¹ç>
+      *      Ï·¿Í¸øÈñ¤Î»þ¡¢Ï·¿Í¸øÈñ¤Î³ä¹ç¤òÂÐ¾Ý¤È¤¹¤ë
+             IF      WRK-KEN-HKNNUM            =   "027"
+                 IF      WRK-GAIKFTNRATE   NOT =   ZERO
+                     MOVE    HKN-HON-GAIKFTNRATE
+                                           TO  WRK-LCOMB-GAI-KFTNRATE
+                                                                  (IDX2)
                  END-IF
              END-IF
+      *
+             IF  WRK-LCOMB-GAI-KFTNRATE(IDX2)      =   ZERO
+                MOVE    HKN-HON-GAIKFTNRATE
+                        TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
+             ELSE
+                IF  (HKN-HON-GAIKFTNRATE     >   ZERO )    AND
+                    (HKN-HON-GAIKFTNRATE
+                         <   WRK-LCOMB-GAI-KFTNRATE(IDX2))
+                  MOVE  HKN-HON-GAIKFTNRATE
+                         TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
+                END-IF
+             END-IF
+      *****  IF  WRK-LCOMB-GAI-KFTNRATE(IDX2)      =   ZERO
+      *         MOVE    WRK-GAIKFTNRATE
+      *                 TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
+      *      ELSE
+      *          IF  (WRK-GAIKFTNRATE     >   ZERO )    AND
+      *              (WRK-GAIKFTNRATE     <   WRK-LCOMB-GAI-KFTNRATE
+      *                                                     (IDX2))
+      *              MOVE  WRK-GAIKFTNRATE
+      *                            TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
+      *          END-IF
+      *******END-IF
       *   <²ó¡Ý¸ÇÄê³Û>
              IF  WRK-LCOMB-GAI-KKOTGAK(IDX2)    =   ZERO
                 MOVE   HKN-HON-GAIKKOTGAK
@@ -1909,42 +1943,52 @@
            ELSE
       *   <²ó¡ÝÉéÃ´³ä¹ç>
       *      £È£±£´¡¥£±£°²þÀµ Ï·¿Í¤Î»þµëÉÕ³ä¹ç¤¬Êä½õ¶èÊ¬¤Ë¤¢¤ë
-             IF      WRK-LCOMB-TEKSTYMD (IDX2)     >=   "20021001"
-                 EVALUATE    WRK-LCOMB-HOJOKBN (IDX2)
-                     WHEN    "8"
+      *      IF      WRK-LCOMB-TEKSTYMD (IDX2)     >=   "20021001"
+      *          EVALUATE    WRK-LCOMB-HOJOKBN (IDX2)
+      *              WHEN    "8"
       *                  £²³äÉéÃ´
-                         MOVE    20                TO  WRK-GAIKFTNRATE
-                     WHEN    "9"
+      *                  MOVE    20                TO  WRK-GAIKFTNRATE
+      *              WHEN    "9"
       *                  £±³äÉéÃ´
-                         MOVE    10                TO  WRK-GAIKFTNRATE
-                     WHEN    OTHER
+      *                  MOVE    10                TO  WRK-GAIKFTNRATE
+      *              WHEN    OTHER
       *                  ¤½¤ÎÂ¾
-                         MOVE    HKN-HON-NYUKFTNRATE
-                                                   TO  WRK-GAIKFTNRATE
-                 END-EVALUATE
-             ELSE
-                MOVE    HKN-HON-NYUKFTNRATE    TO  WRK-GAIKFTNRATE
-             END-IF
-      *******IF  WRK-LCOMB-NYU-KFTNRATE(IDX2)      =   ZERO
-      *         MOVE    HKN-HON-NYUKFTNRATE
-      *              TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
+      *                  MOVE    HKN-HON-NYUKFTNRATE
+      *                                            TO  WRK-GAIKFTNRATE
+      *          END-EVALUATE
       *      ELSE
-      *        IF  (HKN-HON-NYUKFTNRATE     >   ZERO )    AND
-      *           (HKN-HON-NYUKFTNRATE < WRK-LCOMB-NYU-KFTNRATE(IDX2))
-      *          MOVE  HKN-HON-NYUKFTNRATE
-      *             TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
-      *        END-IF
+      *         MOVE    HKN-HON-NYUKFTNRATE    TO  WRK-GAIKFTNRATE
       ****** END-IF
+      *
+      *   <²ó¡ÝÉéÃ´³ä¹ç>
+      *      Ï·¿Í¸øÈñ¤Î»þ¡¢Ï·¿Í¸øÈñ¤Î³ä¹ç¤òÂÐ¾Ý¤È¤¹¤ë
+             IF      WRK-KEN-HKNNUM            =   "027"
+                 IF      WRK-GAIKFTNRATE   NOT =   ZERO
+                     MOVE    HKN-HON-NYUKFTNRATE
+                                           TO  WRK-LCOMB-NYU-KFTNRATE
+                                                                  (IDX2)
+                 END-IF
+             END-IF
              IF  WRK-LCOMB-NYU-KFTNRATE(IDX2)      =   ZERO
-                MOVE    WRK-GAIKFTNRATE
+                MOVE    HKN-HON-NYUKFTNRATE
                      TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
              ELSE
-               IF  (WRK-GAIKFTNRATE    >   ZERO )    AND
-                   (WRK-GAIKFTNRATE    <   WRK-LCOMB-NYU-KFTNRATE
-                                                            (IDX2))
-                 MOVE  WRK-GAIKFTNRATE TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
+               IF  (HKN-HON-NYUKFTNRATE     >   ZERO )    AND
+                  (HKN-HON-NYUKFTNRATE < WRK-LCOMB-NYU-KFTNRATE(IDX2))
+                 MOVE  HKN-HON-NYUKFTNRATE
+                    TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
                END-IF
              END-IF
+     ****    IF  WRK-LCOMB-NYU-KFTNRATE(IDX2)      =   ZERO
+      *         MOVE    WRK-GAIKFTNRATE
+      *              TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
+      *      ELSE
+      *        IF  (WRK-GAIKFTNRATE    >   ZERO )    AND
+      *            (WRK-GAIKFTNRATE    <   WRK-LCOMB-NYU-KFTNRATE
+      *                                                     (IDX2))
+      *          MOVE  WRK-GAIKFTNRATE TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
+      *        END-IF
+      ****** END-IF
       *   <²ó¡Ý¸ÇÄê³Û>
              IF  WRK-LCOMB-NYU-KKOTGAK(IDX2)    =   ZERO
                MOVE   HKN-HON-NYUKKOTGAK
@@ -2816,7 +2860,9 @@
       *                [¼çÊÝ¸±]
                        IF  WRK-HKN-SBT(IDY)  =   "1"
                            IF  ((WRK-HKN-HKNNUM (IDY)  =   "002") AND
-                                (WRK-HKN-HOJOKBN(IDY)  =   SPACE))  OR
+                                (WRK-HKN-HOJOKBN(IDY)  =   SPACE OR
+                                                           "8"  OR
+                                                           "9"  ))  OR
                                ( WRK-HKN-HKNNUM (IDY)  NOT =  "002")
                                MOVE    IDX       TO  WRK-COMB-SYUKOHIDX
                                MOVE    IDY       TO  WRK-COMB-SYUHOIDX
