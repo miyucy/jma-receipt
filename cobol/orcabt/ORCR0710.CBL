@@ -2220,6 +2220,12 @@
                    MOVE    RECE62-SHOKUJIKHNNISSU (IDX)
                                              TO  WRK-KGK2
                    MOVE    WRK-KGK2          TO  HC06-SYOKAISU (IDX)
+                   EVALUATE    IDX
+                       WHEN    2
+                           MOVE    "ÆÃ"          TO  HC06-SYOKJN (1)
+                       WHEN    3
+                           MOVE    "Áª"          TO  HC06-SYOKJN (2)
+                   END-EVALUATE        
                END-IF                                        
            END-PERFORM          
       *
