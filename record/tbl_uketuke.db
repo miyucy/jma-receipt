@@ -55,6 +55,7 @@ path	key3 	{
 		FROM tbl_uketuke
 			WHERE   HOSPID    =   :HOSPID
 			AND   UKEYMD      =   :UKEYMD
+			ORDER   BY  UKEID
 		;
 	};
 };
