@@ -472,7 +472,7 @@ COPYS = \
 	HCM2C.INC \
 	HCM2D.INC \
 	HCM2E.INC \
-	JCM2F.INC \
+	HCM2F.INC \
 	CPPRTCONST.INC 
 
 top_builddir = ../..
