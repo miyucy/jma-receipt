@@ -27,7 +27,7 @@
               04  U01-SCROLLEDWINDOW1.
                 05  U01-LIST1.
                   06  U01-SI-COUNT   PIC S9(9)   BINARY.
-                  06  U01-SI-ITEM        OCCURS  100 TIMES.
+                  06  U01-SI-ITEM        OCCURS  200 TIMES.
                     07  U01-SI-NO     PIC X(4).
                     07  U01-SI-PTNUM  PIC X(20).
                     07  U01-SI-NAME   PIC X(50).
@@ -38,11 +38,11 @@
                     07  U01-SI-DRCD  PIC X(24).
                     07  U01-SI-UKETIME  PIC X(8).
                     07  U01-SI-YYKTIME  PIC X(8).
-                  06  U01-SI-SELECT  PIC X       OCCURS  100 TIMES.
+                  06  U01-SI-SELECT  PIC X       OCCURS  200 TIMES.
               04  U01-SCROLLEDWINDOW2.
                 05  U01-LIST2.
                   06  U01-SZ-COUNT   PIC S9(9)   BINARY.
-                  06  U01-SZ-ITEM        OCCURS  100 TIMES.
+                  06  U01-SZ-ITEM        OCCURS  200 TIMES.
                     07  U01-SZ-NO     PIC X(4).
                     07  U01-SZ-PTNUM  PIC X(20).
                     07  U01-SZ-NAME   PIC X(50).
@@ -53,4 +53,4 @@
                     07  U01-SZ-DRCD  PIC X(24).
                     07  U01-SZ-UKETIME  PIC X(8).
                     07  U01-SZ-YYKTIME  PIC X(8).
-                  06  U01-SZ-SELECT  PIC X       OCCURS  100 TIMES.
+                  06  U01-SZ-SELECT  PIC X       OCCURS  200 TIMES.

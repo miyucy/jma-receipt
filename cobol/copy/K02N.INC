@@ -88,3 +88,14 @@
                   05  K02N-VALUE  PIC X(22).
                 04  K02N-JIKANKBN-COUNT  PIC S9(9)   BINARY.
                 04  K02N-JIKANKBN-ITEM   PIC X(22)   OCCURS  5 TIMES.
+              03  K02N-B04S.
+                04  K02N-B04S-STATE   PIC S9(9)   BINARY.
+              03  K02N-B05S.
+                04  K02N-B05S-STATE   PIC S9(9)   BINARY.
+              03  K02N-B07S.
+                04  K02N-B07S-STATE   PIC S9(9)   BINARY.
+              03  K02N-B08S.
+                04  K02N-B08S-STATE   PIC S9(9)   BINARY.
+              03  K02N-B09S.
+                04  K02N-B09S-STATE   PIC S9(9)   BINARY.
+

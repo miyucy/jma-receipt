@@ -354,5 +354,20 @@ K02	{
 				select	bool[150];
 			};
 		};
+		B04S    {
+	           	state	int;
+		};
+		B05S    {
+	           	state	int;
+		};
+		B07S    {
+	           	state	int;
+		};
+		B08S    {
+	           	state	int;
+		};
+		B09S	{
+	           	state	int;
+		};
 	};
 };
