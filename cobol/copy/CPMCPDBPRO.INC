@@ -221,6 +221,8 @@
       *  01.01.52    NACL-太田    03/03/20  PTKOHFTN-KEY4追加
       *  01.01.53    NACL-太田    03/03/20  PTKOHFTN-KEY5追加
       *                                     PTKOHFTN-UPD1削除
+      *  01.01.54    NACL-小豆沢  03/04/04  SRYACCT-KEY18追加
+      *                                     SRYACCT-KEY19追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1444,6 +1446,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-KEY17"
                    MOVE    PATH-TBL-SRYACCT-KEY17
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY18"
+                   MOVE    PATH-TBL-SRYACCT-KEY18
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY19"
+                   MOVE    PATH-TBL-SRYACCT-KEY19
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SRYACCT-ALL"
