@@ -2180,6 +2180,13 @@
       **         END-IF
       **     END-PERFORM
       *
+      *        <Æþ±¡Ç¯·îÆü>
+           MOVE    RECE62-NYUINYMD     TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           MOVE    LNK-DAY2-EDTYMD1-Y  TO  HC06-NYUINYY
+           MOVE    LNK-DAY2-EDTYMD1-M  TO  HC06-NYUINMM
+           MOVE    LNK-DAY2-EDTYMD1-D  TO  HC06-NYUINDD
+      *
       *        <ÀÁµáÅÀ¡¦ÌôºÞ°ìÉôÉéÃ´¶â¡¦°ìÉôÉéÃ´¶â>
       *
            IF  WRK-3SYU-KBN           =   ALL "1" AND 
