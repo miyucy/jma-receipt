@@ -688,7 +688,7 @@
            END-IF
       *
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
-                    OR   ( SPA-GMN-Q01-CONDITION1LST-MAX   >   10 )
+                    OR   ( SPA-GMN-Q01-CONDITION1LST-MAX   >   99 )
       *
                COMPUTE SPA-GMN-Q01-CONDITION1LST-MAX
                    =   SPA-GMN-Q01-CONDITION1LST-MAX   +   1
@@ -744,7 +744,7 @@
            END-IF
       *
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
-                    OR   ( SPA-GMN-Q01-CONDITION2LST-MAX   >   10 )
+                    OR   ( SPA-GMN-Q01-CONDITION2LST-MAX   >   99 )
       *
                COMPUTE SPA-GMN-Q01-CONDITION2LST-MAX
                    =   SPA-GMN-Q01-CONDITION2LST-MAX   +   1
@@ -800,7 +800,7 @@
            END-IF
       *
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
-                    OR   ( SPA-GMN-Q01-CONDITION3LST-MAX   >   10 )
+                    OR   ( SPA-GMN-Q01-CONDITION3LST-MAX   >   99 )
       *
                COMPUTE SPA-GMN-Q01-CONDITION3LST-MAX
                    =   SPA-GMN-Q01-CONDITION3LST-MAX   +   1
