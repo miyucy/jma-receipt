@@ -78,6 +78,8 @@
       *                                     チェックを再度行なう
       *  01.04.07    NACL-藤原    04/07/26  会計を残して入院取消を行った
       *                                     ままの入院会計のエラー対応
+      *  中止処理追加
+      *  01.05.01    NACL-藤原    04/09/28 中止ボタンを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1877,12 +1879,12 @@
                                    NOT =  "S"
                    MOVE  "NOPG"    TO  SYS-2005-PREFPRGID (2)
            END-IF
-           IF      SYS-2005-KKHRECEKBN =   SPACE
-               MOVE    ZERO            TO  SYS-2005-KKHRECEKBN      
-           END-IF
-           IF      SYS-2005-SYARECEKBN =   SPACE
-               MOVE    ZERO            TO  SYS-2005-SYARECEKBN      
-           END-IF
+                   IF      SYS-2005-KKHRECEKBN =   SPACE
+                       MOVE    ZERO            TO  SYS-2005-KKHRECEKBN      
+                   END-IF
+                   IF      SYS-2005-SYARECEKBN =   SPACE
+                       MOVE    ZERO            TO  SYS-2005-SYARECEKBN      
+                   END-IF
       *
       *    作成日・時間の設定
            ACCEPT  SYS-YMD         FROM    DATE
@@ -1953,7 +1955,7 @@
                                    =   ZERO
                MOVE    "0"             TO  SHELLTBL-ARG13
            ELSE
-               MOVE     SYS-2005-KKHRECEKBN
+               MOVE    SYS-2005-KKHRECEKBN
                                        TO  SHELLTBL-ARG13
            END-IF
            MOVE    WRK-PREFNUM     TO  SHELLTBL-ARG14
@@ -2072,11 +2074,13 @@
                               JOB-SHELLMSG DELIMITED  BY  SPACE
                               "】"         DELIMITED  BY  SIZE      
                                            INTO  R99-MSG
+                       END-STRING
                    END-IF                          
                END-IF    
                MOVE    IDX                     TO  R99-COUNT    
            END-IF
       *     
+           MOVE    WIDGET-INSENSITIVE   TO  R99-B21-STATE
            MOVE    WIDGET-INSENSITIVE   TO  R99-B12-STATE
            IF      R99-MSG              =   SPACE
                IF      R99-COUNT            >   ZERO    
@@ -2092,6 +2096,9 @@
                                                 TO  R99-MSG
                END-IF                                 
            ELSE                                        
+               IF      JOB-STOPFLG          =   ZERO                                        
+                   MOVE    WIDGET-NORMAL        TO  R99-B21-STATE
+               END-IF
                MOVE    "B11"                TO  MCP-WIDGET
            END-IF                                 
       *

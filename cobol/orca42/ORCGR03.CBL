@@ -69,6 +69,8 @@
       *  01.04.04    NACL-藤原    04/05/07  処理開始前にジョブ管理の
       *                                     チェックを再度行なう
       *  01.04.05    NACL-藤原    04/07/09  印刷画面への自動遷移
+      *  中止処理追加
+      *  01.05.01    NACL-藤原    04/09/28 中止ボタンを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1823,11 +1825,13 @@
                               JOB-SHELLMSG DELIMITED  BY  SPACE
                               "】"         DELIMITED  BY  SIZE      
                                            INTO  R99-MSG
+                       END-STRING 
                    END-IF                          
                END-IF    
                MOVE    IDX                     TO  R99-COUNT    
            END-IF
       *
+           MOVE    WIDGET-INSENSITIVE   TO  R99-B21-STATE
            MOVE    WIDGET-INSENSITIVE   TO  R99-B12-STATE
            IF      R99-MSG              =   SPACE
                IF      R99-COUNT            >   ZERO    
@@ -1836,13 +1840,16 @@
                    MOVE    "処理は正常に終了しました"
                                                 TO  R99-MSG
                    MOVE   100                   TO
-                                                R99-PROGRESSBAR-VALUE                             
+                                                R99-PROGRESSBAR-VALUE
                ELSE
                    MOVE    "B01"                TO  MCP-WIDGET
                    MOVE    "該当する処理はありません"
                                                 TO  R99-MSG
                END-IF                                 
            ELSE
+               IF      JOB-STOPFLG          =   ZERO
+                   MOVE    WIDGET-NORMAL        TO  R99-B21-STATE
+               END-IF
                MOVE    "B11"                TO  MCP-WIDGET
            END-IF
       *

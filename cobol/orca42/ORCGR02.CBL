@@ -71,6 +71,8 @@
       *  01.05.01    NACL-藤原    04/04/07  プレビュー機能追加
       *  01.05.02    NACL-藤原    04/06/30  印刷順の追加（個別作成時のみ）
       *  01.05.03    NACL-藤原    04/07/12  指定印刷時の選択項目の色指定
+      *  中止処理追加
+      *  01.06.01    NACL-藤原    04/09/28 中止ボタンを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -186,7 +188,7 @@
                    07  SPA-NAI-2005-KKHPRTNM-N     PIC X(16).
                    07  SPA-NAI-2005-SYAPRTNM-NEXT-N  PIC X(16).
                    07  SPA-NAI-2005-KKHPRTNM-NEXT-N  PIC X(16).
-d                   07  SPA-NAI-TBL.
+                   07  SPA-NAI-TBL.
                        09  SPA-NAI-TBL-OCC         OCCURS  2.
                            11  SPA-NAI-TBL-G       OCCURS  36.
                                13  SPA-NAI-PRTJYUNI
@@ -2473,6 +2475,7 @@ d                   07  SPA-NAI-TBL.
            END-IF
       *
            MOVE    WIDGET-INSENSITIVE   TO  R99-B12-STATE
+           MOVE    WIDGET-INSENSITIVE   TO  R99-B21-STATE
            IF      R99-MSG              =   SPACE
                MOVE    "B01"                TO  MCP-WIDGET
                IF      R99-COUNT            >   ZERO    
@@ -2499,6 +2502,9 @@ d                   07  SPA-NAI-TBL.
                                                 TO  R99-MSG
                END-IF                                 
            ELSE                                        
+      *********IF      JOB-STOPFLG          =   ZERO
+      *********    MOVE    WIDGET-NORMAL        TO  R99-B21-STATE
+      *********END-IF
                MOVE    "B11"                TO  MCP-WIDGET
            END-IF
       *

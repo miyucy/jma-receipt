@@ -38,6 +38,8 @@
       *  01.03.02    NACL-藤原    04/07/09  印刷画面への自動遷移
       *  01.03.03    NACL-藤原    04/08/03  プレビューの該当が無いときの
       *                                     カーソルとボタンの設定
+      *  中止処理追加
+      *  01.04.01    NACL-藤原    04/09/28 中止ボタンを追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -47,7 +49,6 @@
       *
        DATA                        DIVISION.
       *FILE                        SECTION.
-      *
       *
        WORKING-STORAGE             SECTION.
       *
@@ -75,8 +76,8 @@
       *
        01  WRK-AREA.
            03  WRK-PAGE            PIC ZZZZ9.
-      *
            03  WRK-PATH            PIC X(64).      
+           03  WRK-RECEERR         PIC X(200).
       *     
        01  WRK-HEN-AREA.
            03  WRK-HENTIME.
@@ -188,6 +189,9 @@
       *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
+      *    中止
+               WHEN    "CLICKED"       ALSO    "B21"
+                   PERFORM 490-CANCEL-SEC
       *    処理状態
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
@@ -219,6 +223,81 @@
       *
            .
        210-BACK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    中止処理
+      *****************************************************************
+       490-CANCEL-SEC            SECTION.
+      *
+      *    中止フラグのセット
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           IF      SPA-R01-GMNKBN  =   "R02"  OR  "R04"
+               MOVE    WRK-CONS-JOB-JOBID1
+                                       TO  JOB-JOBID
+               MOVE    WRK-CONS-JOB-SHELLID1
+                                       TO  JOB-SHELLID
+           ELSE
+               MOVE    WRK-CONS-JOB-JOBID
+                                       TO  JOB-JOBID
+               MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  JOB-SHELLID
+           END-IF
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC 
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO  )
+           AND   ( JOB-ENDYMD      =   SPACE )
+      *        ジョブ管理終了処理
+               MOVE    "STP"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               IF      SPA-R01-GMNKBN  =   "R02"  OR  "R04"
+                   MOVE    WRK-CONS-JOB-JOBID1
+                                           TO  JOB-JOBID
+                   MOVE    WRK-CONS-JOB-SHELLID1
+                                           TO  JOB-SHELLID
+               ELSE
+                   MOVE    WRK-CONS-JOB-JOBID
+                                           TO  JOB-JOBID
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  JOB-SHELLID
+               END-IF
+               MOVE    1               TO  JOB-STOPFLG
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
+      *        ジョブ管理終了処理
+               MOVE    "STP"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               IF      SPA-R01-GMNKBN  =   "R02"  OR  "R04"
+                   MOVE    WRK-CONS-JOB-JOBID1
+                                           TO  JOB-JOBID
+                   MOVE    WRK-CONS-JOB-SHELLID1
+                                           TO  JOB-SHELLID
+               ELSE
+                   MOVE    WRK-CONS-JOB-JOBID
+                                           TO  JOB-JOBID
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  JOB-SHELLID
+               END-IF
+               MOVE    1               TO  JOB-STOPFLG
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
+           END-IF
+      *
+           MOVE    WIDGET-INSENSITIVE  TO  R99-B12-STATE
+                                           R99-B21-STATE
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE
+           MOVE    "R99    "           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+           .
+       490-CANCEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -321,6 +400,8 @@
            END-IF
       *     
            MOVE    WIDGET-INSENSITIVE   TO  R99-B12-STATE
+           MOVE    WIDGET-INSENSITIVE   TO  R99-B21-STATE
+      *
            IF      R99-MSG              =   SPACE
                IF      R99-COUNT            >   ZERO    
                    IF      SPA-R01-GMNKBN  =   "R02"   OR  "R04"
@@ -370,7 +451,14 @@
                    MOVE    "該当する処理はありません"
                                                 TO  R99-MSG
                END-IF                                 
-           ELSE                                        
+           ELSE
+               IF      SPA-R01-GMNKBN  =   "R02"   OR  "R04"
+                   CONTINUE
+               ELSE
+                   IF      JOB-STOPFLG          =   ZERO
+                       MOVE    WIDGET-NORMAL        TO  R99-B21-STATE
+                   END-IF
+               END-IF
                MOVE    "B11"                TO  MCP-WIDGET
            END-IF
       *
@@ -407,15 +495,12 @@
            IF      SPA-R01-FILEKBN         =   "1"
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
                MOVE    "1"                 TO  RECE07-SYOKBN
-      *********MOVE    "2"                 TO  RECE07-NYUGAIKBN
                MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
                MOVE    SPA-R01-RECEKBN     TO  RECE07-RECEKBN
                MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
            ELSE
-      *********MOVE    ZERO                TO  RECE07-SRYYM
                MOVE    "2"                 TO  RECE07-SYOKBN
                MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
-      *********MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
                MOVE    "RECEKANRI-KEY5"    TO  WRK-PATH
            END-IF
            MOVE    RECE07-REC          TO  MCPDATA-REC
