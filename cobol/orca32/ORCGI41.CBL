@@ -3986,6 +3986,7 @@
       *
                MOVE    ZERO           TO      FLG-KAIKEI-SAKUSEI
                DISPLAY   "410191-KAIKEI-SAKUSEI-SEC"
+               MOVE      SPACE        TO      SPA-ERRCD
                PERFORM   410191-KAIKEI-SAKUSEI-SEC
                IF      FLG-KAIKEI-SAKUSEI    =    1
                     MOVE    SPACE     TO      SPA-ERRCD
