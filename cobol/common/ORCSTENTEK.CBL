@@ -29,6 +29,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-Â¿¡¹Ç¼  03/03/20  ÌôºÞÅÀ¿ô·×»»½¤Àµ
       *  01.00.02    NACL¡ÝÂ¿¡¹Ç¼ 03/04/02  Ãæ¿´ÀÅÌ®¼«Æ°È¯À¸ÄÉ²Ã
+      *  01.00.03    NACL¡ÝÂ¿¡¹Ç¼ 03/05/21  ÇÑ´þ¿ôÎÌ½¤Àµ
       *****************************************************************
       *
       *
@@ -575,7 +576,8 @@
                        MOVE    1               TO  TBL-HAIKI
                                                           (IDX-T IDX-D)
                        COMPUTE WRK-HAIKI-SURYO =   WRK-SURYO-9
-                                               -   SRY-SRYSURYO(IDX2)
+                                               -  (SRY-SRYSURYO(IDX2)
+                                               *   ACCT-DAY (1 IDX-D))
                        ADD     WRK-HAIKI-SURYO TO  TBL-HAIKI-SURYO
                                                           (IDX-T IDX-D)
                    END-IF
@@ -634,7 +636,8 @@
                        MOVE    1               TO  TBL-HAIKI2
                                                           (IDX-T IDX-D)
                        COMPUTE WRK-HAIKI-SURYO =   WRK-SURYO-9
-                                               -   SRY-SRYSURYO(IDX2)
+                                               -  (SRY-SRYSURYO(IDX2)
+                                               *   ACCT-DAY (1 IDX-D))
                        ADD     WRK-HAIKI-SURYO TO  TBL-HAIKI-SURYO2
                                                           (IDX-T IDX-D)
                    END-IF
@@ -682,7 +685,8 @@
                        MOVE    1               TO  TBL-HAIKI2
                                                           (IDX-T IDX-D)
                        COMPUTE WRK-HAIKI-SURYO =   WRK-SURYO-9
-                                               -   SRY-SRYSURYO(IDX2)
+                                               -  (SRY-SRYSURYO(IDX2)
+                                               *   ACCT-DAY (1 IDX-D))
                        ADD     WRK-HAIKI-SURYO TO  TBL-HAIKI-SURYO3
                                                           (IDX-T IDX-D)
                    END-IF
