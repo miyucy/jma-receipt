@@ -138,6 +138,7 @@
       *  01.01.05    NACL-ÌçÏÆ    04/09/07  ËÌ³¤Æ»ÃÏÊý¸øÈñÂÐ±þ
       *  01.01.06    NACL-ÌçÏÆ    04/09/08  À¸ÊÝÃ±ÆÈ¤Î¸ÂÅÙ³Û½¤Àµ
       *  01.01.07    NACL-ÌçÏÆ    04/09/09  »³·Á¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  01.01.08    NACL-ÌçÏÆ    04/09/10  ·§ËÜ¸©ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -213,6 +214,7 @@
            03  FLG-FTNKIN3             PIC X(01).
            03  FLG-SHOHOZUMI           PIC X(01).
            03  FLG-YAKFTN              PIC X(01).
+           03  FLG-KUMAMOTO            PIC X(01).
       *----(01.00.03) LINE ADD START --------------------------
            03  FLG-ZAIGATAKBN          PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
@@ -881,11 +883,16 @@
            IF     (LNK-SYU-SKYMONEY      NOT =   ZERO)   OR
                   (LNK-SYU-YKZ-FTN       NOT =   ZERO)
                IF   WK-HKNKBN            NOT =   "1"
+                 IF   FLG-KUMAMOTO       NOT =   "1"
                    COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +
                                                LNK-SYU-YKZ-FTN
                    COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +  5
                    COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
                    COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+                 ELSE
+                   COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +
+                                               LNK-SYU-YKZ-FTN
+                 END-IF
                ELSE
                    COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +
                                                LNK-SYU-YKZ-FTN
@@ -1072,7 +1079,7 @@
                        MOVE    "PTINF-KEY"      TO      ORC-DBPATH
                        PERFORM  PTINF-READ-SEC
                        IF       MCP-RC          =       ZERO
-                           PERFORM   GENMEN-KEISAN-SEC
+                           PERFORM   300-GENMEN-KEISAN-SEC
                        ELSE
                            DISPLAY  "PTINF FETCH ERR"
                        END-IF
@@ -1264,7 +1271,7 @@
       *
       *    ´µ¼ÔÉéÃ´¶â¡¡ÆÈ¼«·×»»ÂÐ±þ
       *
-           PERFORM   2101-SYS1001-READ-SEC
+           PERFORM   SYS1001-READ-SEC
            MOVE    SYS-1001-HOSPID      TO    WK-HOSPID
            INITIALIZE                         SYS-1037-REC
            MOVE    "1037"               TO    SYS-1037-KANRICD
@@ -1316,7 +1323,7 @@
       ******************************************************************
       *        ÉÂ±¡¸ºÌÈ·×»»½èÍý                                    *
       ******************************************************************
-       GENMEN-KEISAN-SEC          SECTION.
+       300-GENMEN-KEISAN-SEC          SECTION.
       *
            IF   PTINF-DISCOUNT  NOT =   SPACE  AND  "00"
       *
@@ -1423,7 +1430,7 @@
                                              MCPDATA-REC
            END-IF.
       *
-       GENMEN-KEISAN-EXT.
+       300-GENMEN-KEISAN-EXT.
            EXIT.
       ******************************************************************
       *        ÊÝ¸±»²¾ÈÉôÊ¬³ÎÄê½èÍý                                    *
@@ -2161,10 +2168,10 @@
       **>        (COMB-KOH2-HKNKOHSBTKBN   =   "3")   OR
       **>        (COMB-KOH3-HKNKOHSBTKBN   =   "3")   OR
       **>        (COMB-KOH4-HKNKOHSBTKBN   =   "3")
-      **>      PERFORM    2101-SYS1001-READ-SEC
+      **>      PERFORM    SYS1001-READ-SEC
       **>  END-IF.
       *
-           PERFORM    2101-SYS1001-READ-SEC.
+           PERFORM    SYS1001-READ-SEC.
       *    ¸ºÌÈÃ¼¿ô¶èÊ¬¡¦¾ÃÈñÀÇÃ¼¿ô¶èÊ¬¤Î¼è¤ê¹þ¤ß
            MOVE   SYS-1001-DISCOUNT-HASU-KBN  TO   WK-HASU1001-KBN.
            MOVE   SYS-1001-TAX-HASU-KBN       TO   WK-TAX1001-KBN.
@@ -2535,36 +2542,6 @@
            END-IF.
       *
        210-HOKEN-KAISU-EXT.
-           EXIT.
-      *
-      ******************************************************************
-      *        ¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤è¤êÏ·¿ÍÊÝ¸±¤Î»ÙÊ§ÊýË¡¤ò¼èÆÀ        *
-      ******************************************************************
-       2101-SYS1001-READ-SEC           SECTION.
-      *
-           INITIALIZE                         SYS-1001-REC.
-           MOVE    "1001"               TO    SYS-1001-KANRICD.
-           MOVE    "*"                  TO    SYS-1001-KBNCD.
-           MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD.
-           MOVE    SYS-1001-REC         TO    MCPDATA-REC.
-           MOVE    "DBSELECT"           TO    MCP-FUNC.
-           MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH.
-           CALL    "ORCMCPSUB"    USING        MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC.
-           IF      MCP-RC               =     ZERO
-               MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
-               PERFORM   SYSKANRI-READ-SEC
-           END-IF.
-      *
-           MOVE    "DBCLOSE"            TO  MCP-FUNC.
-           MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"           USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC.
-      *
-       2101-SYS1001-READ-EXT.
            EXIT.
       *
       ***************************************************************
@@ -3077,7 +3054,7 @@
                         ELSE
                           PERFORM        2201-SYUTOTAL-FIND-SEC
                           IF   FLG-SYUTOTAL-SET  =  ZERO
-                             PERFORM     2201-SYUNOU-COUNT-SEC
+                             PERFORM     2202-SYUNOU-COUNT-SEC
                           END-IF
                         END-IF
                      END-IF
@@ -3113,7 +3090,7 @@
       *
                       MOVE    LNK-WRK-SYUNOU-REC(IDZ)
                                              TO  SYU-SYUNOU-REC
-                      PERFORM        2201-SYUNOU-COUNT-SEC
+                      PERFORM        2202-SYUNOU-COUNT-SEC
       *
                END-PERFORM
       *
@@ -3157,8 +3134,8 @@
                        MOVE      "SYUTOTAL-KEY"   TO   ORC-DBPATH
                        PERFORM    SYUTOTAL-READ-SEC
                        IF   FLG-SYUTOTAL   =    ZERO
-                            PERFORM        2201-SYUNOU-HENKAN-SEC
-                            PERFORM        2201-SYUNOU-COUNT-SEC
+                            PERFORM        22011-SYUNOU-HENKAN-SEC
+                            PERFORM        2202-SYUNOU-COUNT-SEC
                             MOVE  SYUTTL-DENPNUM    TO  WK-TAIHI-DENPNUM
                             MOVE     1              TO  FLG-SYUTOTAL-SET
                        ELSE
@@ -3185,7 +3162,7 @@
       ******************************************************************
       *    ¼ýÇ¼¹ç·×¥Þ¥¹¥¿¤ÎÆâÍÆ¤ò¼ýÇ¼¥Þ¥¹¥¿¤Ø
       ******************************************************************
-       2201-SYUNOU-HENKAN-SEC           SECTION.
+       22011-SYUNOU-HENKAN-SEC           SECTION.
       *
            INITIALIZE                             SYU-SYUNOU-REC.
       *£Ë£Å£Ù
@@ -3213,13 +3190,13 @@
       *¤Þ¤È¤áÆþÎÏÅÁÉ¼ÈÖ¹æ
            MOVE     WK-GRP-DENPNUM            TO  SYU-GRP-DENPNUM.
       *
-       2201-SYUNOU-HENKAN-EXT.
+       22011-SYUNOU-HENKAN-EXT.
            EXIT.
       *
       ******************************************************************
       *        ¿ÇÎÅ·î¤Î¼ýÇ¼¥Þ¥¹¥¿¤«¤é¸øÈñ¤Î²ó¿ô¡Ê¶â³Û¡Ë¥«¥¦¥ó¥È
       ******************************************************************
-       2201-SYUNOU-COUNT-SEC          SECTION.
+       2202-SYUNOU-COUNT-SEC          SECTION.
       *
       *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¤Î¸¡º÷
            INITIALIZE                         WRK-HKNCOMBI-REC.
@@ -3243,7 +3220,7 @@
                                                      MCPDATA-REC
                    DISPLAY "HKNCOMBI DBFETCH ERR"
                    MOVE     10          TO      LNK-S01-RC
-                   GO   TO              MAIN-EXT
+                   GO   TO              2202-SYUNOU-COUNT-EXT
                END-IF
            ELSE
                MOVE    "DBCLOSE"        TO      MCP-FUNC
@@ -3254,7 +3231,7 @@
                MOVE    1                TO      FLG-HKNCOMBI
                DISPLAY "HKNCOMBI DBSELECT ERR"
                MOVE     10              TO      LNK-S01-RC
-               GO   TO                  MAIN-EXT
+               GO   TO                  2202-SYUNOU-COUNT-EXT
            END-IF.
            MOVE    "DBCLOSE"            TO      MCP-FUNC.
            MOVE    "HKNCOMBI-KEY"       TO      ORC-DBPATH.
@@ -3308,11 +3285,11 @@
                         END-IF                                          
                         ADD   WK-SYU-SYUCOMPFTN   TO   FTN-KOHI1-M      
       *
-                        COMPUTE WK-ENTANI = SYU-KOH1COMPFTN-ENTANI + 0.5
+                        COMPUTE WK-ENTANI = SYU-KOH1COMPFTN-ENTANI + 0.9
                         IF  (SYU-KOH2HKNNUM     NOT = SPACE)
                         OR  (SYU-KOH3HKNNUM     NOT = SPACE)
                         OR  (SYU-KOH4HKNNUM     NOT = SPACE)
-                          COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.5
+                          COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
                         END-IF
                         IF     LNK-SYU-SRYYMD(7:2)   =  SYU-SRYYMD(7:2)
                           ADD   WK-ENTANI     TO   FTN-KOHI1-D-ENTANI
@@ -3347,12 +3324,12 @@
                         END-IF                                            
                         ADD   WK-SYU-SYUCOMPFTN TO  FTN-SYU-M           
       *
-                        COMPUTE WK-ENTANI = SYU-SYUCOMPFTN-ENTANI + 0.5
+                        COMPUTE WK-ENTANI = SYU-SYUCOMPFTN-ENTANI + 0.9
                         IF  (SYU-KOH1HKNNUM     NOT = SPACE)
                         OR  (SYU-KOH2HKNNUM     NOT = SPACE)
                         OR  (SYU-KOH3HKNNUM     NOT = SPACE)
                         OR  (SYU-KOH4HKNNUM     NOT = SPACE)
-                          COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.5
+                          COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
                         END-IF
                         ADD   WK-ENTANI        TO  FTN-SYU-M-ENTANI
                       END-IF
@@ -3382,7 +3359,7 @@
                             END-IF                                      
                         END-IF
                         IF  FTN-KOH-XXX-ENTANI  <  12000
-                            COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.5
+                            COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
                             ADD  WK-ENTANI    TO  FTN-KOH-XXX-ENTANI
                             IF   FTN-KOH-XXX-ENTANI   >   12000
                                MOVE   12000   TO  FTN-KOH-XXX-ENTANI
@@ -3401,7 +3378,7 @@
                             END-IF                                      
                         END-IF
                         IF  FTN-KOH-XXX-ENTANI  <  12000
-                            COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.5
+                            COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
                             ADD  WK-ENTANI    TO  FTN-KOH-XXX-ENTANI
                             IF   FTN-KOH-XXX-ENTANI   >   12000
                                MOVE   12000   TO  FTN-KOH-XXX-ENTANI
@@ -3430,9 +3407,9 @@
                    MOVE   1                   TO   IDX3
                    IF   (MAX-KIN-KOHI1-D    NOT =  ZERO)
                    OR   (MAX-KIN-KOHI1-M    NOT =  ZERO)
-                       PERFORM   2201-KAISU-COUNT-SEC
+                       PERFORM   22021-KAISU-COUNT-SEC
                    ELSE
-                       PERFORM   2201-KAISU-COUNT2-SEC
+                       PERFORM   22022-KAISU-COUNT2-SEC
                    END-IF
                    IF        LNK-SYU-SRYYMD(7:2)    =  SYU-SRYYMD(7:2)
                        EVALUATE  TRUE
@@ -3448,12 +3425,12 @@
                                             FTN-KOHI1-D3            +   
                                             SYU-KOH1COMPFTN-ENTANI  +   
                                             SYU-KOH1COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH1COMPFTN                
                                                     TO  FTN-KOHI1-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH1COMPFTN-ENTANI + 0.5
+                                           SYU-KOH1COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI1-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -3480,12 +3457,12 @@
                                               FTN-KOHI1-D3-K          + 
                                               SYU-KOH1COMPFTN-ENTANI  + 
                                               SYU-KOH1COMPYKZFTN      + 
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH1COMPFTN                
                                                       TO  FTN-KOHI1-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH1COMPFTN-ENTANI + 0.5
+                                           SYU-KOH1COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI1-D3-K 
                                    END-IF                                
                                  END-IF
@@ -3501,12 +3478,12 @@
                                             FTN-KOHI1-D3            +   
                                             SYU-KOH2COMPFTN-ENTANI  +   
                                             SYU-KOH2COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH2COMPFTN                
                                                     TO  FTN-KOHI1-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH2COMPFTN-ENTANI + 0.5
+                                           SYU-KOH2COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI1-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -3533,12 +3510,12 @@
                                               FTN-KOHI1-D3-K          +   
                                               SYU-KOH2COMPFTN-ENTANI  +   
                                               SYU-KOH2COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH2COMPFTN                
                                                       TO  FTN-KOHI1-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH2COMPFTN-ENTANI + 0.5
+                                           SYU-KOH2COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI1-D3-K    
                                    END-IF                                
                                  END-IF
@@ -3554,12 +3531,12 @@
                                             FTN-KOHI1-D3            +   
                                             SYU-KOH3COMPFTN-ENTANI  +   
                                             SYU-KOH3COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH3COMPFTN                
                                                     TO  FTN-KOHI1-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH3COMPFTN-ENTANI + 0.5
+                                           SYU-KOH3COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI1-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -3586,12 +3563,12 @@
                                               FTN-KOHI1-D3-K          +   
                                               SYU-KOH3COMPFTN-ENTANI  +   
                                               SYU-KOH3COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH3COMPFTN                
                                                       TO  FTN-KOHI1-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH3COMPFTN-ENTANI + 0.5
+                                           SYU-KOH3COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI1-D3-K    
                                    END-IF                                
                                  END-IF
@@ -3607,12 +3584,12 @@
                                             FTN-KOHI1-D3            +   
                                             SYU-KOH4COMPFTN-ENTANI  +   
                                             SYU-KOH4COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH4COMPFTN                
                                                     TO  FTN-KOHI1-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH4COMPFTN-ENTANI + 0.5
+                                           SYU-KOH4COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI1-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -3639,12 +3616,12 @@
                                               FTN-KOHI1-D3-K          +   
                                               SYU-KOH4COMPFTN-ENTANI  +   
                                               SYU-KOH4COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH4COMPFTN                
                                                       TO  FTN-KOHI1-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH4COMPFTN-ENTANI + 0.5
+                                           SYU-KOH4COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI1-D3-K    
                                    END-IF                                
                                  END-IF
@@ -3663,12 +3640,12 @@
                                         FTN-KOHI1-M3            +       
                                         SYU-KOH1COMPFTN-ENTANI  +       
                                         SYU-KOH1COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH1COMPFTN                    
                                                 TO  FTN-KOHI1-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH1COMPFTN-ENTANI + 0.5
+                                           SYU-KOH1COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI1-M3        
                              END-IF                                     
                        WHEN  (LNK-SYU-KOH1HKNNUM = SYU-KOH2HKNNUM)
@@ -3683,12 +3660,12 @@
                                         FTN-KOHI1-M3            +       
                                         SYU-KOH2COMPFTN-ENTANI  +       
                                         SYU-KOH2COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH2COMPFTN                    
                                                 TO  FTN-KOHI1-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH2COMPFTN-ENTANI + 0.5
+                                           SYU-KOH2COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI1-M3        
                              END-IF                                     
                        WHEN  (LNK-SYU-KOH1HKNNUM = SYU-KOH3HKNNUM)
@@ -3703,12 +3680,12 @@
                                         FTN-KOHI1-M3            +       
                                         SYU-KOH3COMPFTN-ENTANI  +       
                                         SYU-KOH3COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH3COMPFTN                    
                                                 TO  FTN-KOHI1-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH3COMPFTN-ENTANI + 0.5
+                                           SYU-KOH3COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI1-M3        
                              END-IF                                     
                        WHEN  (LNK-SYU-KOH1HKNNUM = SYU-KOH4HKNNUM)
@@ -3723,12 +3700,12 @@
                                         FTN-KOHI1-M3            +       
                                         SYU-KOH4COMPFTN-ENTANI  +       
                                         SYU-KOH4COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH4COMPFTN                    
                                                 TO  FTN-KOHI1-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH4COMPFTN-ENTANI + 0.5
+                                           SYU-KOH4COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI1-M3        
                              END-IF                                     
                    END-EVALUATE
@@ -3750,9 +3727,9 @@
                    MOVE   2                   TO    IDX3
                    IF   (MAX-KIN-KOHI2-D    NOT =  ZERO)
                    OR   (MAX-KIN-KOHI2-M    NOT =  ZERO)
-                       PERFORM   2201-KAISU-COUNT-SEC
+                       PERFORM   22021-KAISU-COUNT-SEC
                    ELSE
-                       PERFORM   2201-KAISU-COUNT2-SEC
+                       PERFORM   22022-KAISU-COUNT2-SEC
                    END-IF
                    IF        LNK-SYU-SRYYMD(7:2) =  SYU-SRYYMD(7:2)
                        EVALUATE  TRUE
@@ -3768,12 +3745,12 @@
                                             FTN-KOHI2-D3            +   
                                             SYU-KOH1COMPFTN-ENTANI  +   
                                             SYU-KOH1COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH1COMPFTN                
                                                     TO  FTN-KOHI2-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH1COMPFTN-ENTANI + 0.5
+                                           SYU-KOH1COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI2-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -3800,12 +3777,12 @@
                                               FTN-KOHI2-D3-K          +   
                                               SYU-KOH1COMPFTN-ENTANI  +   
                                               SYU-KOH1COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH1COMPFTN                
                                                       TO  FTN-KOHI2-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH1COMPFTN-ENTANI + 0.5
+                                           SYU-KOH1COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI2-D3-K    
                                    END-IF                                
                                  END-IF
@@ -3821,12 +3798,12 @@
                                             FTN-KOHI2-D3            +   
                                             SYU-KOH2COMPFTN-ENTANI  +   
                                             SYU-KOH2COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH2COMPFTN                
                                                     TO  FTN-KOHI2-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH2COMPFTN-ENTANI + 0.5
+                                           SYU-KOH2COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI2-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -3853,12 +3830,12 @@
                                               FTN-KOHI2-D3-K          +   
                                               SYU-KOH2COMPFTN-ENTANI  +   
                                               SYU-KOH2COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH2COMPFTN                
                                                       TO  FTN-KOHI2-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH2COMPFTN-ENTANI + 0.5
+                                           SYU-KOH2COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI2-D3-K    
                                    END-IF                                
                                  END-IF
@@ -3874,12 +3851,12 @@
                                             FTN-KOHI2-D3            +   
                                             SYU-KOH3COMPFTN-ENTANI  +   
                                             SYU-KOH3COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH3COMPFTN                
                                                     TO  FTN-KOHI2-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH3COMPFTN-ENTANI + 0.5
+                                           SYU-KOH3COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI2-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -3906,12 +3883,12 @@
                                               FTN-KOHI2-D3-K          +   
                                               SYU-KOH3COMPFTN-ENTANI  +   
                                               SYU-KOH3COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH3COMPFTN                
                                                       TO  FTN-KOHI2-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH3COMPFTN-ENTANI + 0.5
+                                           SYU-KOH3COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI2-D3-K    
                                    END-IF                                
                                  END-IF
@@ -3927,12 +3904,12 @@
                                             FTN-KOHI2-D3            +   
                                             SYU-KOH4COMPFTN-ENTANI  +   
                                             SYU-KOH4COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH4COMPFTN                
                                                     TO  FTN-KOHI2-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH4COMPFTN-ENTANI + 0.5
+                                           SYU-KOH4COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI2-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -3959,12 +3936,12 @@
                                               FTN-KOHI2-D3-K          +   
                                               SYU-KOH4COMPFTN-ENTANI  +   
                                               SYU-KOH4COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH4COMPFTN                
                                                       TO  FTN-KOHI2-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH4COMPFTN-ENTANI + 0.5
+                                           SYU-KOH4COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI2-D3-K    
                                    END-IF                                
                                  END-IF
@@ -3983,12 +3960,12 @@
                                         FTN-KOHI2-M3            +       
                                         SYU-KOH1COMPFTN-ENTANI  +       
                                         SYU-KOH1COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH1COMPFTN                    
                                                 TO  FTN-KOHI2-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH1COMPFTN-ENTANI + 0.5
+                                           SYU-KOH1COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI2-M3        
                              END-IF                                     
                        WHEN  (LNK-SYU-KOH2HKNNUM = SYU-KOH2HKNNUM)
@@ -4003,12 +3980,12 @@
                                         FTN-KOHI2-M3            +       
                                         SYU-KOH2COMPFTN-ENTANI  +       
                                         SYU-KOH2COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH2COMPFTN                    
                                                 TO  FTN-KOHI2-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH2COMPFTN-ENTANI + 0.5
+                                           SYU-KOH2COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI2-M3        
                              END-IF                                     
                        WHEN  (LNK-SYU-KOH2HKNNUM = SYU-KOH3HKNNUM)
@@ -4023,12 +4000,12 @@
                                         FTN-KOHI2-M3            +       
                                         SYU-KOH3COMPFTN-ENTANI  +       
                                         SYU-KOH3COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH3COMPFTN                    
                                                 TO  FTN-KOHI2-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH3COMPFTN-ENTANI + 0.5
+                                           SYU-KOH3COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI2-M3        
                              END-IF                                     
                        WHEN  (LNK-SYU-KOH2HKNNUM = SYU-KOH4HKNNUM)
@@ -4043,12 +4020,12 @@
                                         FTN-KOHI2-M3            +       
                                         SYU-KOH4COMPFTN-ENTANI  +       
                                         SYU-KOH4COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH4COMPFTN                    
                                                 TO  FTN-KOHI2-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH4COMPFTN-ENTANI + 0.5
+                                           SYU-KOH4COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI2-M3        
                              END-IF                                     
                    END-EVALUATE
@@ -4069,9 +4046,9 @@
                    MOVE   3                   TO    IDX3
                    IF   (MAX-KIN-KOHI3-D    NOT =  ZERO)
                    OR   (MAX-KIN-KOHI3-M    NOT =  ZERO)
-                       PERFORM   2201-KAISU-COUNT-SEC
+                       PERFORM   22021-KAISU-COUNT-SEC
                    ELSE
-                       PERFORM   2201-KAISU-COUNT2-SEC
+                       PERFORM   22022-KAISU-COUNT2-SEC
                    END-IF
                    IF        LNK-SYU-SRYYMD(7:2)   =   SYU-SRYYMD(7:2)
                        EVALUATE  TRUE
@@ -4087,12 +4064,12 @@
                                             FTN-KOHI3-D3            +   
                                             SYU-KOH1COMPFTN-ENTANI  +   
                                             SYU-KOH1COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH1COMPFTN                
                                                     TO  FTN-KOHI3-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH1COMPFTN-ENTANI + 0.5
+                                           SYU-KOH1COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI3-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -4119,12 +4096,12 @@
                                               FTN-KOHI3-D3-K          +   
                                               SYU-KOH1COMPFTN-ENTANI  +   
                                               SYU-KOH1COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH1COMPFTN                
                                                       TO  FTN-KOHI3-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH1COMPFTN-ENTANI + 0.5
+                                           SYU-KOH1COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI3-D3-K    
                                    END-IF                                
                                  END-IF
@@ -4140,12 +4117,12 @@
                                             FTN-KOHI3-D3            +   
                                             SYU-KOH2COMPFTN-ENTANI  +   
                                             SYU-KOH2COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH2COMPFTN                
                                                     TO  FTN-KOHI3-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH2COMPFTN-ENTANI + 0.5
+                                           SYU-KOH2COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI3-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -4172,12 +4149,12 @@
                                               FTN-KOHI3-D3-K          +   
                                               SYU-KOH2COMPFTN-ENTANI  +   
                                               SYU-KOH2COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH2COMPFTN                
                                                       TO  FTN-KOHI3-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH2COMPFTN-ENTANI + 0.5
+                                           SYU-KOH2COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI3-D3-K    
                                    END-IF                                
                                  END-IF
@@ -4193,12 +4170,12 @@
                                             FTN-KOHI3-D3            +   
                                             SYU-KOH3COMPFTN-ENTANI  +   
                                             SYU-KOH3COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH3COMPFTN                
                                                     TO  FTN-KOHI3-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH3COMPFTN-ENTANI + 0.5
+                                           SYU-KOH3COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI3-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -4225,12 +4202,12 @@
                                               FTN-KOHI3-D3-K          +   
                                               SYU-KOH3COMPFTN-ENTANI  +   
                                               SYU-KOH3COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH3COMPFTN                
                                                       TO  FTN-KOHI3-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH3COMPFTN-ENTANI + 0.5
+                                           SYU-KOH3COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI3-D3-K    
                                    END-IF                                
                                  END-IF
@@ -4246,12 +4223,12 @@
                                             FTN-KOHI3-D3            +   
                                             SYU-KOH4COMPFTN-ENTANI  +   
                                             SYU-KOH4COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH4COMPFTN                
                                                     TO  FTN-KOHI3-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH4COMPFTN-ENTANI + 0.5
+                                           SYU-KOH4COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI3-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -4278,12 +4255,12 @@
                                               FTN-KOHI3-D3-K          +   
                                               SYU-KOH4COMPFTN-ENTANI  +   
                                               SYU-KOH4COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH4COMPFTN                
                                                       TO  FTN-KOHI3-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH4COMPFTN-ENTANI + 0.5
+                                           SYU-KOH4COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI3-D3-K    
                                    END-IF                                
                                  END-IF
@@ -4302,12 +4279,12 @@
                                         FTN-KOHI3-M3            +       
                                         SYU-KOH1COMPFTN-ENTANI  +       
                                         SYU-KOH1COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH1COMPFTN                    
                                                 TO  FTN-KOHI3-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH1COMPFTN-ENTANI + 0.5
+                                           SYU-KOH1COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI3-M3        
                              END-IF                                     
                        WHEN  (LNK-SYU-KOH3HKNNUM = SYU-KOH2HKNNUM)
@@ -4322,12 +4299,12 @@
                                         FTN-KOHI3-M3            +       
                                         SYU-KOH2COMPFTN-ENTANI  +       
                                         SYU-KOH2COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH2COMPFTN                    
                                                 TO  FTN-KOHI3-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH2COMPFTN-ENTANI + 0.5
+                                           SYU-KOH2COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI3-M3        
                              END-IF                                     
                        WHEN  (LNK-SYU-KOH3HKNNUM = SYU-KOH3HKNNUM)
@@ -4342,12 +4319,12 @@
                                         FTN-KOHI3-M3            +       
                                         SYU-KOH3COMPFTN-ENTANI  +       
                                         SYU-KOH3COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH3COMPFTN                    
                                                 TO  FTN-KOHI3-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH3COMPFTN-ENTANI + 0.5
+                                           SYU-KOH3COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI3-M3        
                              END-IF                                     
                        WHEN  (LNK-SYU-KOH3HKNNUM = SYU-KOH4HKNNUM)
@@ -4362,12 +4339,12 @@
                                         FTN-KOHI3-M3            +       
                                         SYU-KOH4COMPFTN-ENTANI  +       
                                         SYU-KOH4COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH4COMPFTN                    
                                                 TO  FTN-KOHI3-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH4COMPFTN-ENTANI + 0.5
+                                           SYU-KOH4COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI3-M3        
                              END-IF                                     
                    END-EVALUATE
@@ -4388,9 +4365,9 @@
                    MOVE   4                   TO    IDX3
                    IF   (MAX-KIN-KOHI4-D    NOT =  ZERO)
                    OR   (MAX-KIN-KOHI4-M    NOT =  ZERO)
-                       PERFORM   2201-KAISU-COUNT-SEC
+                       PERFORM   22021-KAISU-COUNT-SEC
                    ELSE
-                       PERFORM   2201-KAISU-COUNT2-SEC
+                       PERFORM   22022-KAISU-COUNT2-SEC
                    END-IF
                    IF        LNK-SYU-SRYYMD(7:2)   =  SYU-SRYYMD(7:2)
                        EVALUATE  TRUE
@@ -4406,12 +4383,12 @@
                                             FTN-KOHI4-D3            +   
                                             SYU-KOH1COMPFTN-ENTANI  +   
                                             SYU-KOH1COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH1COMPFTN                
                                                     TO  FTN-KOHI4-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH1COMPFTN-ENTANI + 0.5
+                                           SYU-KOH1COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI4-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -4438,12 +4415,12 @@
                                               FTN-KOHI4-D3-K          +   
                                               SYU-KOH1COMPFTN-ENTANI  +   
                                               SYU-KOH1COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH1COMPFTN                
                                                       TO  FTN-KOHI4-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH1COMPFTN-ENTANI + 0.5
+                                           SYU-KOH1COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI4-D3-K    
                                    END-IF                                
                                  END-IF
@@ -4459,12 +4436,12 @@
                                             FTN-KOHI4-D3            +   
                                             SYU-KOH2COMPFTN-ENTANI  +   
                                             SYU-KOH2COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH2COMPFTN                
                                                     TO  FTN-KOHI4-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH2COMPFTN-ENTANI + 0.5
+                                           SYU-KOH2COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI4-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -4491,12 +4468,12 @@
                                               FTN-KOHI4-D3-K          +   
                                               SYU-KOH2COMPFTN-ENTANI  +   
                                               SYU-KOH2COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH2COMPFTN                
                                                       TO  FTN-KOHI4-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH2COMPFTN-ENTANI + 0.5
+                                           SYU-KOH2COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI4-D3-K    
                                    END-IF                                
                                  END-IF
@@ -4512,12 +4489,12 @@
                                             FTN-KOHI4-D3            +   
                                             SYU-KOH3COMPFTN-ENTANI  +   
                                             SYU-KOH3COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH3COMPFTN                
                                                     TO  FTN-KOHI4-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH3COMPFTN-ENTANI + 0.5
+                                           SYU-KOH3COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI4-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -4544,12 +4521,12 @@
                                               FTN-KOHI4-D3-K          +   
                                               SYU-KOH3COMPFTN-ENTANI  +   
                                               SYU-KOH3COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH3COMPFTN                
                                                       TO  FTN-KOHI4-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH3COMPFTN-ENTANI + 0.5
+                                           SYU-KOH3COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI4-D3-K    
                                    END-IF                                
                                  END-IF
@@ -4565,12 +4542,12 @@
                                             FTN-KOHI4-D3            +   
                                             SYU-KOH4COMPFTN-ENTANI  +   
                                             SYU-KOH4COMPYKZFTN      +   
-                                            0.5
+                                            0.9
                                  ELSE                                   
                                    ADD   SYU-KOH4COMPFTN                
                                                     TO  FTN-KOHI4-D2    
                                    COMPUTE WK-ENTANI =
-                                           SYU-KOH4COMPFTN-ENTANI + 0.5
+                                           SYU-KOH4COMPFTN-ENTANI + 0.9
                                    ADD   WK-ENTANI  TO  FTN-KOHI4-D3    
                                  END-IF                                 
                                  IF  ((LNK-SYU-GRP-DENPNUM
@@ -4597,12 +4574,12 @@
                                               FTN-KOHI4-D3-K          +   
                                               SYU-KOH4COMPFTN-ENTANI  +   
                                               SYU-KOH4COMPYKZFTN      +   
-                                              0.5
+                                              0.9
                                    ELSE                                   
                                      ADD   SYU-KOH4COMPFTN                
                                                       TO  FTN-KOHI4-D2-K    
                                      COMPUTE WK-ENTANI =
-                                           SYU-KOH4COMPFTN-ENTANI + 0.5
+                                           SYU-KOH4COMPFTN-ENTANI + 0.9
                                      ADD   WK-ENTANI  TO  FTN-KOHI4-D3-K    
                                    END-IF                                
                                  END-IF
@@ -4621,12 +4598,12 @@
                                         FTN-KOHI4-M3            +       
                                         SYU-KOH1COMPFTN-ENTANI  +       
                                         SYU-KOH1COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH1COMPFTN                    
                                                 TO  FTN-KOHI4-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH1COMPFTN-ENTANI + 0.5
+                                           SYU-KOH1COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI4-M3        
                              END-IF                                     
                        WHEN  (LNK-SYU-KOH4HKNNUM = SYU-KOH2HKNNUM)
@@ -4641,12 +4618,12 @@
                                         FTN-KOHI4-M3            +       
                                         SYU-KOH2COMPFTN-ENTANI  +       
                                         SYU-KOH2COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH2COMPFTN                    
                                                 TO  FTN-KOHI4-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH2COMPFTN-ENTANI + 0.5
+                                           SYU-KOH2COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI4-M3        
                              END-IF                                     
                        WHEN  (LNK-SYU-KOH4HKNNUM = SYU-KOH3HKNNUM)
@@ -4661,12 +4638,12 @@
                                         FTN-KOHI4-M3            +       
                                         SYU-KOH3COMPFTN-ENTANI  +       
                                         SYU-KOH3COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH3COMPFTN                    
                                                 TO  FTN-KOHI4-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH3COMPFTN-ENTANI + 0.5
+                                           SYU-KOH3COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI4-M3        
                              END-IF                                     
                        WHEN  (LNK-SYU-KOH4HKNNUM = SYU-KOH4HKNNUM)
@@ -4681,29 +4658,29 @@
                                         FTN-KOHI4-M3            +       
                                         SYU-KOH4COMPFTN-ENTANI  +       
                                         SYU-KOH4COMPYKZFTN      +       
-                                        0.5
+                                        0.9
                              ELSE                                       
                                ADD   SYU-KOH4COMPFTN                    
                                                 TO  FTN-KOHI4-M2        
                                COMPUTE WK-ENTANI =
-                                           SYU-KOH4COMPFTN-ENTANI + 0.5
+                                           SYU-KOH4COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI4-M3        
                              END-IF                                     
                    END-EVALUATE
                END-IF
            END-IF.
       *
-       2201-SYUNOU-COUNT-EXT.
+       2202-SYUNOU-COUNT-EXT.
            EXIT.
       *
       ******************************************************************
       *    ²ó¿ô¥«¥¦¥ó¥È
       ******************************************************************
-       2201-KAISU-COUNT-SEC           SECTION.
+       22021-KAISU-COUNT-SEC           SECTION.
       *
            MOVE     ZERO     TO     FLG-NOCOUNT.
            IF   FLG-GRPNYURYOKU   =   ZERO
-               PERFORM    2201-KAISU-SELECT-SEC
+               PERFORM    22023-KAISU-SELECT-SEC
            END-IF.
       *
            IF     FLG-NOCOUNT          =  ZERO
@@ -4836,17 +4813,17 @@
       *
            END-IF.
       *
-       2201-KAISU-COUNT-EXT.
+       22021-KAISU-COUNT-EXT.
            EXIT.
       *
       ******************************************************************
       *    ²ó¿ô¥«¥¦¥ó¥ÈÈ½Äê£²
       ******************************************************************
-       2201-KAISU-COUNT2-SEC           SECTION.
+       22022-KAISU-COUNT2-SEC           SECTION.
       *
            MOVE     ZERO     TO     FLG-NOCOUNT.
            IF   FLG-GRPNYURYOKU   =   ZERO
-               PERFORM    2201-KAISU-SELECT-SEC
+               PERFORM    22023-KAISU-SELECT-SEC
            END-IF.
       *
            IF     FLG-NOCOUNT          =  ZERO
@@ -4917,13 +4894,13 @@
       *
            END-IF.
       *
-       2201-KAISU-COUNT2-EXT.
+       22022-KAISU-COUNT2-EXT.
            EXIT.
       *
       ******************************************************************
       *    ²ó¿ô¥«¥¦¥ó¥ÈÈ½Äê
       ******************************************************************
-       2201-KAISU-SELECT-SEC           SECTION.
+       22023-KAISU-SELECT-SEC           SECTION.
       *
            EVALUATE  IDX3
                WHEN    1 
@@ -5004,7 +4981,7 @@
                   END-EVALUATE
            END-EVALUATE.
       *
-       2201-KAISU-SELECT-EXT.
+       22023-KAISU-SELECT-EXT.
            EXIT.
       *
       ******************************************************************
@@ -5949,7 +5926,7 @@
       *    ¼çÊÝ¸±ÉéÃ´¶â³Û¤Î±ßÃ±°Ì¡¡»Ä¶â³Û·×»»
            IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1")
            OR  (FLG-SYUHEN                   =   "1")
-                PERFORM    2301-SYUENTANI-ZANKIN-KEISAN-SEC
+                PERFORM    2302-SYUENTANI-ZANKIN-KEISAN-SEC
            END-IF.
       *
       *    ÊÝ¸±¡¦¸øÈñËè¤Î´µ¼ÔÉéÃ´¶â³Û¤Î·×»»
@@ -5965,27 +5942,28 @@
                   CONTINUE
            ELSE
                IF    COMB-HKNNUM             NOT =       SPACE
-                  PERFORM    2301-SYUHOKEN-KEISAN-SEC
+                  PERFORM    2303-SYUHOKEN-KEISAN-SEC
                END-IF
            END-IF.
       *
            MOVE     ZERO     TO     WK-TOKUTEI-COMPFTN3.
+           MOVE     SPACE    TO     FLG-KUMAMOTO.
       *
            PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
                       UNTIL    (KOH-IDX    >      4)
                IF   COMB-KOHHKNNUM(KOH-IDX)  NOT =  SPACE
-                    PERFORM    2302-KOH-HKNREAD-SEC
+                    PERFORM    2304-KOH-HKNREAD-SEC
                     IF   COMB-KOH-GAIJGNKBN(KOH-IDX)  =  "1"
-                         PERFORM   2303-KOH-KEISAN-SEC
+                         PERFORM   2305-KOH-KEISAN-SEC
                     ELSE
-                         PERFORM   2304-KOH-KEISAN-SEC
+                         PERFORM   2306-KOH-KEISAN2-SEC
                     END-IF
                END-IF
            END-PERFORM.
       *-------------------------------------------------------------
       *
       *     ¸øÈñÃ±°Ì¤Ç·×»»¤·¤¿´µ¼ÔÉéÃ´¶â³Û¤«¤éºÇ¾®¤ÎÃÍ¤òÁªÂò¥»¥Ã¥È
-            PERFORM   2314-FTNKIN-HIKAKU-SEC.
+            PERFORM   2307-FTNKIN-HIKAKU-SEC.
       *
        230-FTNKIN-EXT.
            EXIT.
@@ -6077,7 +6055,7 @@
       ******************************************************************
       *        ¼çÊÝ¸±ÉéÃ´¶â³Û¤Î±ßÃ±°Ì¡¡»Ä¶â³Û·×»»
       ******************************************************************
-       2301-SYUENTANI-ZANKIN-KEISAN-SEC           SECTION.
+       2302-SYUENTANI-ZANKIN-KEISAN-SEC           SECTION.
       *
       *    »»Äê²ÄÇ½¥Õ¥é¥°¤Î½é´ü²½
            MOVE     SPACE                  TO     FLG-SANTEI1-ENTANI
@@ -6155,13 +6133,13 @@
       *
            END-IF.
       *
-       2301-SYUENTANI-ZANKIN-KEISAN-EXT.
+       2302-SYUENTANI-ZANKIN-KEISAN-EXT.
            EXIT.
       *
       ******************************************************************
       *        ¼çÊÝ¸±¤Î´µ¼ÔÉéÃ´¶â³Û·×»»                                *
       ******************************************************************
-       2301-SYUHOKEN-KEISAN-SEC           SECTION.
+       2303-SYUHOKEN-KEISAN-SEC           SECTION.
       *
       *    ³ºÅöÊÝ¸±ÈÖ¹æ¥Æ¡¼¥Ö¥ë¤Î¸¡º÷
            INITIALIZE                      HKNNUM-REC.
@@ -6701,13 +6679,13 @@
                          LNK-SYU-SYUCOMPYKZFTN
            END-EVALUATE.
       *
-       2301-SYUHOKEN-KEISAN-EXT.
+       2303-SYUHOKEN-KEISAN-EXT.
            EXIT.
       *
       ******************************************************************
       *        ¸øÈñ¤ÎÊÝ¸±ÈÖ¹æ¥Æ¡¼¥Ö¥ë¸¡º÷                              *
       ******************************************************************
-       2302-KOH-HKNREAD-SEC           SECTION.
+       2304-KOH-HKNREAD-SEC           SECTION.
       *
       *    ³ºÅöÊÝ¸±ÈÖ¹æ¥Æ¡¼¥Ö¥ë¤Î¸¡º÷
            INITIALIZE                      HKNNUM-REC.
@@ -6783,7 +6761,7 @@
            IF     (WK-1001-PREFNUM           =       40)    AND
                   (COMB-KOHHKNNUM(KOH-IDX)(1:1)  >= "1")    AND
                   (COMB-KOHHKNNUM(KOH-IDX)(1:1)  <= "8")
-               PERFORM     2302-KOHPLUS-FUKUOKA-SEC
+               PERFORM     23041-KOHPLUS-FUKUOKA-SEC
            END-IF.
       *
            IF   FLG-CHIHOU(KOH-IDX)  =  "1"
@@ -6825,13 +6803,13 @@
                END-IF
            END-IF.
       *
-       2302-KOH-HKNREAD-EXT.
+       2304-KOH-HKNREAD-EXT.
            EXIT.
       *
       ******************************************************************
       *        ¸øÈñÉÕ²Ã¾ðÊó¤Î¼èÆÀ¡ÊÊ¡²¬¸©ÂÐ±þ¡Ë                  *
       ******************************************************************
-       2302-KOHPLUS-FUKUOKA-SEC           SECTION.
+       23041-KOHPLUS-FUKUOKA-SEC           SECTION.
       *
            INITIALIZE                  ORCSKOHPLUS-AREA
            MOVE    LNK-SYU-HOSPID  TO  LNK-SKOHPLUS-HOSPID
@@ -6852,13 +6830,13 @@
       *
            .
       *
-       2302-KOHPLUS-FUKUOKA-EXT.
+       23041-KOHPLUS-FUKUOKA-EXT.
            EXIT.
       *
       ******************************************************************
       *        ¸øÈñ¤Î´µ¼ÔÉéÃ´¶â³Û·×»»¡Ê¾å¸Â³Û¤¢¤ê¡Ë                    *
       ******************************************************************
-       2303-KOH-KEISAN-SEC           SECTION.
+       2305-KOH-KEISAN-SEC           SECTION.
       *
       *    ÉéÃ´¶â³Û¤Î·×»»
            IF  WK-GAIKFTNRATE     NOT =    ZERO
@@ -6966,7 +6944,7 @@
                                     LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX) 
                  END-IF                                                 
                END-IF                                                   
-               PERFORM    KOHHI-HIKAKU3-SEC                             
+               PERFORM    23053-KOHHI-HIKAKU3-SEC                             
                IF ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "051"         ) OR
                   ( HKN-RECEFTNDSPKBN            =  "2"           ) OR
                   ( (LNK-SYU-SRYYMD(1:6)        >=  "200404"      ) AND
@@ -6975,7 +6953,7 @@
                                             ZAN-KOHI-T2(KOH-IDX)        
                      MOVE   ZAN-KOHI-T2(KOH-IDX)   TO                   
                                           WK-KOH-COMPFTN(KOH-IDX)       
-                     PERFORM    KOHHI-HIKAKU2-SEC                       
+                     PERFORM    23052-KOHHI-HIKAKU2-SEC                       
                  END-IF                                                 
                END-IF                                                   
       *****    IF ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "051"         ) OR
@@ -6987,7 +6965,7 @@
       *****      IF    WK-ENTANI    >=      ZAN-KOHI-T2(KOH-IDX)        
       *****          MOVE   ZAN-KOHI-T2(KOH-IDX)   TO                   
       *****                               WK-KOH-COMPFTN(KOH-IDX)       
-      *****          PERFORM    KOHHI-HIKAKU2-SEC                       
+      *****          PERFORM    23052-KOHHI-HIKAKU2-SEC                       
       *****      END-IF                                                 
       *****    END-IF                                                   
                IF    LNK-SYU-KOH-COMPFTN(KOH-IDX)   >
@@ -7004,7 +6982,7 @@
                               ZAN-KOHI-T(KOH-IDX)    -
                               LNK-SYU-KOH-COMPFTN(KOH-IDX)
                END-IF
-               PERFORM    KOHHI-HIKAKU-SEC                              
+               PERFORM    23051-KOHHI-HIKAKU-SEC                              
                MOVE  WK-GAIYKZFTNKBN
                                 TO   LNK-SYU-KOH-YKZFTNKBN(KOH-IDX)
                IF    ZAN-KOHI-T(KOH-IDX)   NOT =   ZERO                 
@@ -7167,7 +7145,7 @@
                    END-IF
                  END-IF
                END-IF
-               PERFORM    KOHHI-HIKAKU3-SEC
+               PERFORM    23053-KOHHI-HIKAKU3-SEC
       **
                IF ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "051"         ) OR
                   ( HKN-RECEFTNDSPKBN            =  "2"           ) OR
@@ -7190,21 +7168,21 @@
                        IF    FTN-KOH-ZZZ      >    ZAN-KOHI-T2(KOH-IDX)  
                            MOVE  ZAN-KOHI-T2(KOH-IDX)                    
                                             TO  WK-KOH-COMPFTN(KOH-IDX)
-                           PERFORM    KOHHI-HIKAKU2-SEC
+                           PERFORM    23052-KOHHI-HIKAKU2-SEC
                        ELSE                                             
                            MOVE  FTN-KOH-ZZZ                            
                                             TO  WK-KOH-COMPFTN(KOH-IDX)
-                           PERFORM    KOHHI-HIKAKU2-SEC
+                           PERFORM    23052-KOHHI-HIKAKU2-SEC
                        END-IF                                           
                    ELSE                                                 
                        IF    LNK-SYU-SYUCOMPFTN  >  ZAN-KOHI-T2(KOH-IDX)
                            MOVE   ZAN-KOHI-T2(KOH-IDX)
                                             TO  WK-KOH-COMPFTN(KOH-IDX)
-                           PERFORM    KOHHI-HIKAKU2-SEC
+                           PERFORM    23052-KOHHI-HIKAKU2-SEC
                        ELSE
                            MOVE  LNK-SYU-SYUCOMPFTN                         
                                             TO  WK-KOH-COMPFTN(KOH-IDX)
-                           PERFORM    KOHHI-HIKAKU2-SEC
+                           PERFORM    23052-KOHHI-HIKAKU2-SEC
                        END-IF 
                    END-IF
                 ELSE
@@ -7225,21 +7203,21 @@
                        IF FTN-KOH-ZZZ   >    ZAN-KOHI-T2(KOH-IDX)
                           MOVE   ZAN-KOHI-T2(KOH-IDX)
                                        TO  WK-KOH-COMPFTN(KOH-IDX)
-                          PERFORM    KOHHI-HIKAKU2-SEC
+                          PERFORM    23052-KOHHI-HIKAKU2-SEC
                        ELSE
                           MOVE   FTN-KOH-ZZZ
                                        TO  WK-KOH-COMPFTN(KOH-IDX)
-                          PERFORM    KOHHI-HIKAKU2-SEC
+                          PERFORM    23052-KOHHI-HIKAKU2-SEC
                        END-IF                                           
                    ELSE                                                 
                        IF LNK-SYU-KOH-COMPFTN(1) >  ZAN-KOHI-T2(KOH-IDX)
                           MOVE   ZAN-KOHI-T2(KOH-IDX)
                                        TO  WK-KOH-COMPFTN(KOH-IDX)
-                          PERFORM    KOHHI-HIKAKU2-SEC
+                          PERFORM    23052-KOHHI-HIKAKU2-SEC
                        ELSE
                           MOVE   LNK-SYU-KOH-COMPFTN(1)  
                                        TO  WK-KOH-COMPFTN(KOH-IDX)
-                          PERFORM    KOHHI-HIKAKU2-SEC
+                          PERFORM    23052-KOHHI-HIKAKU2-SEC
                        END-IF
                    END-IF
                  ELSE
@@ -7259,21 +7237,21 @@
                        IF FTN-KOH-ZZZ   >    ZAN-KOHI-T2(KOH-IDX)        
                           MOVE   ZAN-KOHI-T2(KOH-IDX)                    
                                        TO  WK-KOH-COMPFTN(KOH-IDX) 
-                          PERFORM    KOHHI-HIKAKU2-SEC
+                          PERFORM    23052-KOHHI-HIKAKU2-SEC
                        ELSE
                           MOVE   FTN-KOH-ZZZ
                                        TO  WK-KOH-COMPFTN(KOH-IDX)   
-                          PERFORM    KOHHI-HIKAKU2-SEC
+                          PERFORM    23052-KOHHI-HIKAKU2-SEC
                        END-IF
                    ELSE                                                 
                        IF WK-ZENGAKU    >    ZAN-KOHI-T2(KOH-IDX)
                           MOVE   ZAN-KOHI-T2(KOH-IDX)
                                        TO  WK-KOH-COMPFTN(KOH-IDX)
-                          PERFORM    KOHHI-HIKAKU2-SEC
+                          PERFORM    23052-KOHHI-HIKAKU2-SEC
                        ELSE
                           MOVE   WK-ZENGAKU   
                                        TO  WK-KOH-COMPFTN(KOH-IDX)
-                          PERFORM    KOHHI-HIKAKU2-SEC
+                          PERFORM    23052-KOHHI-HIKAKU2-SEC
                        END-IF
                    END-IF
                  END-IF
@@ -7299,7 +7277,7 @@
                                             TO  LNK-SYU-KOH-COMPFTN     
                                                          (KOH-IDX)      
                            MOVE   ZERO      TO  ZAN-KOHI-T(KOH-IDX)     
-                           PERFORM    KOHHI-HIKAKU-SEC                  
+                           PERFORM    23051-KOHHI-HIKAKU-SEC                  
                        ELSE                                             
                            MOVE  FTN-KOH-ZZZ                            
                                             TO  LNK-SYU-KOH-COMPFTN     
@@ -7307,7 +7285,7 @@
                            COMPUTE    ZAN-KOHI-T(KOH-IDX)  =            
                                       ZAN-KOHI-T(KOH-IDX)  -            
                                       LNK-SYU-KOH-COMPFTN(KOH-IDX)      
-                           PERFORM    KOHHI-HIKAKU-SEC                  
+                           PERFORM    23051-KOHHI-HIKAKU-SEC                  
                        END-IF                                           
                    ELSE                                                 
                        IF    LNK-SYU-SYUCOMPFTN  >  ZAN-KOHI-T(KOH-IDX)  
@@ -7315,7 +7293,7 @@
                                             TO  LNK-SYU-KOH-COMPFTN
                                                          (KOH-IDX)
                            MOVE   ZERO      TO  ZAN-KOHI-T(KOH-IDX)
-                           PERFORM    KOHHI-HIKAKU-SEC
+                           PERFORM    23051-KOHHI-HIKAKU-SEC
                        ELSE
                            MOVE  LNK-SYU-SYUCOMPFTN                         
                                             TO  LNK-SYU-KOH-COMPFTN
@@ -7323,7 +7301,7 @@
                            COMPUTE    ZAN-KOHI-T(KOH-IDX)  =
                                       ZAN-KOHI-T(KOH-IDX)  -
                                       LNK-SYU-KOH-COMPFTN(KOH-IDX)
-                           PERFORM    KOHHI-HIKAKU-SEC
+                           PERFORM    23051-KOHHI-HIKAKU-SEC
                        END-IF
                    END-IF
                ELSE
@@ -7345,11 +7323,11 @@
                           MOVE   ZAN-KOHI-T(KOH-IDX)                    
                                        TO  LNK-SYU-KOH-COMPFTN(KOH-IDX) 
                           MOVE   ZERO  TO  ZAN-KOHI-T(KOH-IDX)          
-                          PERFORM    KOHHI-HIKAKU-SEC                   
+                          PERFORM    23051-KOHHI-HIKAKU-SEC                   
                        ELSE                                             
                           MOVE   FTN-KOH-ZZZ  TO  LNK-SYU-KOH-COMPFTN   
                                                             (KOH-IDX)   
-                          PERFORM    KOHHI-HIKAKU-SEC                   
+                          PERFORM    23051-KOHHI-HIKAKU-SEC                   
                           COMPUTE   ZAN-KOHI-T(KOH-IDX)  =              
                                     ZAN-KOHI-T(KOH-IDX)  -              
                                     LNK-SYU-KOH-COMPFTN(KOH-IDX)        
@@ -7359,12 +7337,12 @@
                           MOVE   ZAN-KOHI-T(KOH-IDX)
                                        TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
                           MOVE   ZERO  TO  ZAN-KOHI-T(KOH-IDX)
-                          PERFORM    KOHHI-HIKAKU-SEC
+                          PERFORM    23051-KOHHI-HIKAKU-SEC
                        ELSE
                           MOVE   LNK-SYU-KOH-COMPFTN(1)  
                                               TO  LNK-SYU-KOH-COMPFTN
                                                             (KOH-IDX)
-                          PERFORM    KOHHI-HIKAKU-SEC
+                          PERFORM    23051-KOHHI-HIKAKU-SEC
                           COMPUTE   ZAN-KOHI-T(KOH-IDX)  =
                                     ZAN-KOHI-T(KOH-IDX)  -
                                     LNK-SYU-KOH-COMPFTN(KOH-IDX)
@@ -7388,11 +7366,11 @@
                           MOVE   ZAN-KOHI-T(KOH-IDX)                    
                                        TO  LNK-SYU-KOH-COMPFTN(KOH-IDX) 
                           MOVE   ZERO  TO  ZAN-KOHI-T(KOH-IDX)          
-                          PERFORM    KOHHI-HIKAKU-SEC                   
+                          PERFORM    23051-KOHHI-HIKAKU-SEC                   
                        ELSE                                             
                           MOVE   FTN-KOH-ZZZ  TO  LNK-SYU-KOH-COMPFTN   
                                                             (KOH-IDX)   
-                          PERFORM    KOHHI-HIKAKU-SEC                   
+                          PERFORM    23051-KOHHI-HIKAKU-SEC                   
                           COMPUTE   ZAN-KOHI-T(KOH-IDX)  =              
                                     ZAN-KOHI-T(KOH-IDX)  -              
                                     LNK-SYU-KOH-COMPFTN(KOH-IDX)        
@@ -7402,11 +7380,11 @@
                           MOVE   ZAN-KOHI-T(KOH-IDX)
                                        TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
                           MOVE   ZERO  TO  ZAN-KOHI-T(KOH-IDX)
-                          PERFORM    KOHHI-HIKAKU-SEC
+                          PERFORM    23051-KOHHI-HIKAKU-SEC
                        ELSE
                           MOVE   WK-ZENGAKU   TO  LNK-SYU-KOH-COMPFTN
                                                             (KOH-IDX)
-                          PERFORM    KOHHI-HIKAKU-SEC
+                          PERFORM    23051-KOHHI-HIKAKU-SEC
                           COMPUTE   ZAN-KOHI-T(KOH-IDX)  =
                                     ZAN-KOHI-T(KOH-IDX)  -
                                     LNK-SYU-KOH-COMPFTN(KOH-IDX)
@@ -7470,13 +7448,13 @@
                END-IF
            END-IF.
       *
-       2303-KOH-KEISAN-EXT.
+       2305-KOH-KEISAN-EXT.
            EXIT.
       *
       ******************************************************************
       *        ¸øÈñ¤Î´µ¼ÔÉéÃ´¶â³Û·×»»¡Ê¾å¸Â³Û¤Ê¤·¡Ë                  *
       ******************************************************************
-       2304-KOH-KEISAN-SEC           SECTION.
+       2306-KOH-KEISAN2-SEC           SECTION.
       *
       *    ÉéÃ´¶â³Û¤Î·×»»
            IF  WK-GAIKFTNRATE     NOT =    ZERO
@@ -7560,6 +7538,14 @@
                MOVE  WK-GAIYKZFTNKBN TO  LNK-SYU-KOH-YKZFTNKBN(KOH-IDX)
            ELSE
       *
+             IF   (WK-1001-PREFNUM         =  43           ) AND
+                  (COMB-KOHHKNNUM(KOH-IDX) = "143" OR "342")
+      *
+               MOVE      "1"      TO     FLG-KUMAMOTO
+               PERFORM   23061-KUMAMOTO-KOHI-SEC
+      *
+             ELSE
+      *
                IF    WK-GAIKKOTGAK  NOT =  ZERO
       *
                  MOVE  WK-GAIKKOTGAK TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
@@ -7624,11 +7610,15 @@
                    END-IF                                               
                  END-IF                                                 
       *
+                 MOVE  WK-GAIYKZFTNKBN TO LNK-SYU-KOH-YKZFTNKBN(KOH-IDX)
+      *
                END-IF
       *
+             END-IF
+      *
            END-IF.
-           PERFORM    KOHHI-HIKAKU3-SEC.
-           PERFORM    KOHHI-HIKAKU-SEC.
+           PERFORM    23053-KOHHI-HIKAKU3-SEC.
+           PERFORM    23051-KOHHI-HIKAKU-SEC.
            EVALUATE   WK-GAIYKZFTNKBN
                WHEN   "0"
                    MOVE  ZERO  TO  LNK-SYU-KOH-COMPYKZFTN(KOH-IDX)
@@ -7648,13 +7638,13 @@
                      LNK-SYU-KOH-COMPFTN(KOH-IDX)     +
                      LNK-SYU-KOH-COMPYKZFTN(KOH-IDX).
       *
-       2304-KOH-KEISAN-EXT.
+       2306-KOH-KEISAN2-EXT.
            EXIT.
       *
       ******************************************************************
       *        ¸øÈñÃ±°Ì¤Ç·×»»¤·¤¿´µ¼ÔÉéÃ´¶â¤òÈæ³Ó
       ******************************************************************
-       KOHHI-HIKAKU-SEC           SECTION.
+       23051-KOHHI-HIKAKU-SEC           SECTION.
       *
            EVALUATE    KOH-IDX
                WHEN    2
@@ -7675,14 +7665,14 @@
                    END-IF
            END-EVALUATE.
       *
-       KOHHI-HIKAKU-EXT.
+       23051-KOHHI-HIKAKU-EXT.
            EXIT.
       *
       ******************************************************************
       *        ¸øÈñÃ±°Ì¤Ç·×»»¤·¤¿´µ¼ÔÉéÃ´¶â¤òÈæ³Ó
       *        ¡Ê¥ì¥»µ­ºÜ¶â³ÛÂàÈòÍÑ¥¨¥ê¥¢ÍÑ¡Ë
       ******************************************************************
-       KOHHI-HIKAKU2-SEC           SECTION.                             
+       23052-KOHHI-HIKAKU2-SEC           SECTION.                             
       *
            EVALUATE    KOH-IDX
                WHEN    2
@@ -7725,14 +7715,14 @@
                  END-IF
            END-EVALUATE.
       *
-       KOHHI-HIKAKU2-EXT.
+       23052-KOHHI-HIKAKU2-EXT.
            EXIT.                                                        
       *
       ******************************************************************
       *        ¸øÈñÃ±°Ì¤Ç·×»»¤·¤¿´µ¼ÔÉéÃ´¶â¤òÈæ³Ó
       *        ¡Ê±ßÃ±°Ì¡Ë
       ******************************************************************
-       KOHHI-HIKAKU3-SEC           SECTION.
+       23053-KOHHI-HIKAKU3-SEC           SECTION.
       *
            EVALUATE    KOH-IDX
                WHEN    2
@@ -7756,15 +7746,81 @@
                    END-IF
            END-EVALUATE.
       *
-       KOHHI-HIKAKU3-EXT.
+       23053-KOHHI-HIKAKU3-EXT.
+           EXIT.                                                        
+      *
+      ******************************************************************
+      *        ·§ËÜ¸©ÃÏÊý¸øÈñ¡Ê£±¡¿£³¡Ë·×»»
+      ******************************************************************
+       23061-KUMAMOTO-KOHI-SEC           SECTION.
+      *
+      *    ÉéÃ´¶â³Û¤Î·×»»
+      *
+           IF     LNK-SYU-SYUCOMPFTN  NOT  =  ZERO
+                  COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
+                            LNK-SYU-SYUCOMPFTN            +  5
+                  COMPUTE   WK-FTN  =  LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                                    /  10
+                  COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =  WK-FTN
+                                                          *  10
+           ELSE
+             IF   (LNK-SYU-KOH-HKNNUM(1)       =   "027")
+             AND  (LNK-SYU-KOH-COMPFTN(1)  NOT =   ZERO )
+                  COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
+                            LNK-SYU-KOH-COMPFTN(1)        +  5
+                  COMPUTE   WK-FTN  =  LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                                    /  10
+                  COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =  WK-FTN
+                                                          *  10
+             ELSE
+                  MOVE    ZERO    TO    LNK-SYU-KOH-COMPFTN(KOH-IDX)
+             END-IF
+           END-IF
+      *
+           IF     LNK-SYU-KOH-COMPFTN(KOH-IDX)   NOT  =  ZERO
+                  MOVE      LNK-SYU-KOH-COMPFTN(KOH-IDX)  TO  WK-FTN
+      *
+                  COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
+                            ( WK-FTN  /  3 ) + 0.9
+      *
+                  COMPUTE   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =
+                            ( WK-FTN  /  3 )
+           END-IF
+      *
+           IF  ( LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" )
+           OR  ( FLG-KOUREI-KBN               =   "1" )
+             IF  (  LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027"       )
+             AND ( (WK-1001-PREFNUM  NOT =  20 AND 15) OR
+                  ((WK-1001-PREFNUM      =  20 OR  15) AND
+                   (LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1) = "0" OR "9" )))
+                COMPUTE  FTN-KOH-YYY  =  12000  -  FTN-KOH-XXX
+                IF  LNK-SYU-KOH-COMPFTN(KOH-IDX)  >  FTN-KOH-YYY
+                  MOVE  FTN-KOH-YYY TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                END-IF
+      *
+                COMPUTE  FTN-KOH-YYY-ENTANI
+                                  =  12000  -  FTN-KOH-XXX-ENTANI
+                IF    LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                                   >    FTN-KOH-YYY-ENTANI
+                  MOVE  FTN-KOH-YYY-ENTANI TO
+                                 LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                END-IF
+             END-IF
+           END-IF
+      *
+           MOVE  WK-GAIYKZFTNKBN TO  LNK-SYU-KOH-YKZFTNKBN(KOH-IDX)
+      *
+           .
+      *
+       23061-KUMAMOTO-KOHI-EXT.
            EXIT.                                                        
       *
       ******************************************************************
       *        ¸øÈñÃ±°Ì¤Ç·×»»¤·¤¿´µ¼ÔÉéÃ´¶â¤«¤éºÇ¾®¤ÎÃÍ¤òÁªÂò¥»¥Ã¥È
       ******************************************************************
-       2314-FTNKIN-HIKAKU-SEC         SECTION.
+       2307-FTNKIN-HIKAKU-SEC         SECTION.
       *
-           PERFORM   2314-FTNKIN-HIKAKU-ENTANI-SEC.
+           PERFORM   23071-FTNKIN-HIKAKU-ENTANI-SEC.
       *
            IF   COMB-KOH1HKNNUM        NOT   =   "027" 
            AND  COMB-HKNNUM            NOT   =   SPACE
@@ -8060,14 +8116,14 @@
       *
       ***     END-IF.
       *
-       2314-FTNKIN-HIKAKU-EXT.
+       2307-FTNKIN-HIKAKU-EXT.
            EXIT.
       *
       ******************************************************************
       *        ¸øÈñÃ±°Ì¤Ç·×»»¤·¤¿´µ¼ÔÉéÃ´¶â¤«¤éºÇ¾®¤ÎÃÍ¤òÁªÂò¥»¥Ã¥È
       *        ¡Ê±ßÃ±°Ì¡Ë
       ******************************************************************
-       2314-FTNKIN-HIKAKU-ENTANI-SEC         SECTION.
+       23071-FTNKIN-HIKAKU-ENTANI-SEC         SECTION.
       *
            IF   COMB-KOH1HKNNUM        NOT   =   "027" 
            AND  COMB-HKNNUM            NOT   =   SPACE
@@ -8180,7 +8236,7 @@
                END-IF
            END-IF.
       *
-       2314-FTNKIN-HIKAKU-ENTANI-EXT.
+       23071-FTNKIN-HIKAKU-ENTANI-EXT.
            EXIT.
       *
       ******************************************************************
@@ -9211,6 +9267,36 @@
       *
            .
        SRYACT-READ-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *        ¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤è¤êÏ·¿ÍÊÝ¸±¤Î»ÙÊ§ÊýË¡¤ò¼èÆÀ        *
+      ******************************************************************
+       SYS1001-READ-SEC           SECTION.
+      *
+           INITIALIZE                         SYS-1001-REC.
+           MOVE    "1001"               TO    SYS-1001-KANRICD.
+           MOVE    "*"                  TO    SYS-1001-KBNCD.
+           MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD.
+           MOVE    SYS-1001-REC         TO    MCPDATA-REC.
+           MOVE    "DBSELECT"           TO    MCP-FUNC.
+           MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH.
+           CALL    "ORCMCPSUB"    USING        MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC.
+           IF      MCP-RC               =     ZERO
+               MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
+               PERFORM   SYSKANRI-READ-SEC
+           END-IF.
+      *
+           MOVE    "DBCLOSE"            TO  MCP-FUNC.
+           MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC.
+      *
+       SYS1001-READ-EXT.
            EXIT.
       *
       *****************************************************************
