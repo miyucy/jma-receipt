@@ -1058,7 +1058,8 @@
       *
            IF      WRK-COM-INPUTCD(IDX-Z)(1:5) =   "09591"  OR
                                                    "09592"  OR
-                                                   "09593"
+                                                   "09593"  OR
+                                                   "09594"
                CONTINUE
            ELSE
                GO      TO      10021-JIHI-KEI-EXT

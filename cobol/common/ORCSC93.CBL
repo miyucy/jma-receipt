@@ -42,6 +42,7 @@
       * 01.00.13     NACL-Â¿¡¹Ç¼  03/05/09  ºÞÌÀºÙ¤ò£³£°¤Þ¤Ç¤È¤¹¤ë
       * 01.00.14     NACL-Â¿¡¹Ç¼  03/09/12  ¸¡ººÊñ³ç¤Ê¤·ÄÉ²Ã¡Ê610¡Ë
       * 01.00.15     NACL-Â¿¡¹Ç¼  03/10/28  ¸¡ººÊñ³ç½¤Àµ
+      *??? 01.00.16     NACL-Â¿¡¹Ç¼  04/01/23  ¥»¥Ã¥ÈÆâ¤Î¸¡ººÊñ³çÂÐ¾Ý³°
       *****************************************************************
       *
       *
@@ -577,6 +578,31 @@
                                                                (IDX)
                                MOVE    1         TO  FLG-ZAI
                            END-IF
+      *                    Ï«ºÒ¤Î»þ¡¢£¸£°¤È¤¹¤ë
+                           IF     (SPA-RSI-HKNKBN            =  "1"
+                                                             OR "2"
+                                                             OR "3") AND
+                                  (SPA-COM-INPUTCD(IDX)(1:5) =  "09593")
+                               MOVE    "80"      TO  SPA-COM-SRYKBN
+                                                               (IDX)
+                               MOVE    "800"     TO  SPA-COM-SRYSYUKBN
+                                                               (IDX)
+                               MOVE    "1"       TO  SPA-COM-ZAIEND
+                                                               (IDX)
+                               MOVE    1         TO  FLG-ZAI
+                           END-IF
+      *                    Ï«ºÒ¡¦¼«ÇåÀÕ¤ÇÆþ±¡¤Î»þ¡¢£¸£°¤È¤¹¤ë
+                           IF     (SPA-HKNKBN                =  1  ) AND
+                                  (SPA-NYUGAIKBN             =  "1") AND
+                                  (SPA-COM-INPUTCD(IDX)(1:5) =  "09594")
+                               MOVE    "80"      TO  SPA-COM-SRYKBN
+                                                               (IDX)
+                               MOVE    "800"     TO  SPA-COM-SRYSYUKBN
+                                                               (IDX)
+                               MOVE    "1"       TO  SPA-COM-ZAIEND
+                                                               (IDX)
+                               MOVE    1         TO  FLG-ZAI
+                           END-IF
       *                ÊÝ¸±³°¡Ê¼«Èñ¡Ë¡Ê1¹Ô£±ºÞ¤È¤¹¤ë¡Ë
                        WHEN    "096"
                            MOVE    "96"          TO  SPA-COM-SRYKBN
@@ -906,6 +932,7 @@
            IF     (SPA-COM-SRYKBN (IDX)    =   "60" )  AND
                   (SPA-GMN-INPUTCD(IDX)(1:1)   NOT =   "." )  AND
                   (SPA-COM-DATAKBN(IDX)    =   "1"  )
+              AND (SPA-COM-SET (IDX)   NOT =   "1"  )
       *           (SPA-COM-DATAKBN(IDX)    =   "1"  )  AND
       *           (IDX                     >   1    )
                 IF      IDX                =   1
@@ -1174,6 +1201,7 @@
                        (SPA-COM-INPUTCD (IDX-KEN)(1:1)
                                                    =   "1"  )  AND
                        (SPA-COM-DATAKBN (IDX-KEN)  =   "1"  )
+                   AND (SPA-COM-SET (IDX-KEN)  NOT =   "1"  )
                    MOVE    ZERO                TO  FLG-KEN-ERR
                    IF      (SPA-COM-KAIFLG (IDX-KEN)   =   "1" )  AND
                            (SPA-COM-KAISU  (IDX-KEN)   >   1   )
@@ -1366,6 +1394,7 @@
                    IF     (WRK-COM-SRYKBN (IDX)    =   "60" ) AND
                           (WRK-COM-HOUKNSKBN(IDX)  NOT =  ZERO)
                    AND    (WRK-COM-SRYSYUKBN(IDX)  NOT =  "610")
+                   AND    (WRK-COM-SET      (IDX)  NOT =   "1"  )
                        IF     (IDX                 >   1          )  AND
                               (WRK-GMN-INPUTCD (IDX - 1)(1:4)
                                                        =   ".600" OR
@@ -1415,6 +1444,7 @@
                        (WRK-COM-KAISU   (IDX-2)    >  1 ) AND
                        (WRK-COM-KAIFLG  (IDX-2)    =  "1"))
                   OR   (WRK-COM-SRYSYUKBN (IDX-2) =   "610" )
+                  OR   (WRK-COM-SET      (IDX-2)  =   "1"  )
                    CONTINUE
                ELSE
                    IF     (WRK-COM-SRYKBN (IDX-2)    =   "60" )  AND

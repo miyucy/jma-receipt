@@ -345,7 +345,8 @@
       *
            IF     (WRK-COM-INPUTCD(IDX-Z)(1:5) =   "09591" OR
                                                    "09592" OR
-                                                   "09593" ) AND
+                                                   "09593" OR
+                                                   "09594" ) AND
                   (WRK-COM-KISOTEN(IDX-Z)  NOT =   WRK-COM-TEN(IDX-Z))
                MOVE    WRK-COM-TEN(IDX-Z)  TO  WRK-COM-KISOTEN(IDX-Z)
            END-IF
