@@ -62,6 +62,7 @@
       *  01.00.05    NACL-伊藤    04.02.17  レセ電ファイルの転送エラー
       *                                     メッセージの追加
       *  01.05.06    NACL-藤原    04.03.18  レセ電時の印刷指示による処理の修正
+      *  01.05.07    NACL-藤原    04.07.20  請求年月未入力のチェックの条件を修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -838,7 +839,6 @@
       *
            IF      SPA-GMN-SKYYM    =   SPACE
                MOVE    "0001"          TO  SPA-ERRCD
-               GO  TO  4101-SKYYM-CHK-EXT
            ELSE 
       *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
@@ -849,12 +849,10 @@
                IF      SGDAY-RC            =   ZERO
                    MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SKYYM
                    MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI-SKYYM
+                   MOVE    2                   TO  SPA-GMN-CUR
                ELSE
                    MOVE    "0003"          TO  SPA-ERRCD
-                   GO  TO  4101-SKYYM-CHK-EXT
                END-IF
-      *
-               MOVE    2                   TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -872,7 +870,6 @@
       *
            IF      SPA-GMN-SKYYMD   =   SPACE
                MOVE    "0002"          TO  SPA-ERRCD
-               GO  TO  4102-SKYYMD-CHK-EXT
            ELSE 
       *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
@@ -882,12 +879,10 @@
                IF      SGDAY-RC            =   ZERO
                    MOVE    SGDAY-OTDAY         TO  SPA-GMN-SKYYMD
                    MOVE    SGDAY-SDAY          TO  SPA-NAI-SKYYMD
+                   MOVE    7                   TO  SPA-GMN-CUR
                ELSE
                    MOVE    "0004"          TO  SPA-ERRCD
-                   GO  TO  4102-SKYYMD-CHK-EXT
                END-IF
-      *
-               MOVE    7                   TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -907,7 +902,7 @@
            MOVE    ZERO             TO  SPA-NAI-HKNJANUM 
       *
            IF      SPA-GMN-HKNJANUM =   SPACE
-               GO  TO  4103-HKNJANUM-CHK-EXT
+               CONTINUE
            ELSE 
                MOVE    SPACE           TO  HKNJAINF-REC
                INITIALIZE                  HKNJAINF-REC
@@ -919,12 +914,10 @@
                IF      FLG-HKNJAINF        =   ZERO
                    MOVE    HKNJA-HKNJANAME     TO SPA-GMN-HKNJAMEI
                    MOVE    SPA-GMN-HKNJANUM    TO  SPA-NAI-HKNJANUM
+                   MOVE    7                   TO  SPA-GMN-CUR
                ELSE
                    MOVE    "0005"          TO  SPA-ERRCD
-                   GO  TO  4103-HKNJANUM-CHK-EXT
                END-IF
-      *
-               MOVE    7                   TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -1103,12 +1096,8 @@
            END-IF    
       *
            IF      SPA-ERRCD           =   SPACE
-               IF      T01-DATAKBN3-VALUE    =   "T"
-                   CONTINUE
-               ELSE
-                   IF      SPA-NAI-SKYYM       =   ZERO
-                       MOVE    "0001"              TO  SPA-ERRCD
-                   END-IF    
+               IF      SPA-NAI-SKYYM       =   ZERO
+                   MOVE    "0001"              TO  SPA-ERRCD
                END-IF    
            END-IF    
       *
@@ -1904,12 +1893,8 @@
            END-IF    
       *
            IF      SPA-ERRCD           =   SPACE
-               IF      T01-DATAKBN3-VALUE    =   "T"
-                   CONTINUE
-               ELSE
-                   IF      SPA-NAI-SKYYM       =   ZERO
-                       MOVE    "0001"              TO  SPA-ERRCD
-                   END-IF    
+               IF      SPA-NAI-SKYYM       =   ZERO
+                   MOVE    "0001"              TO  SPA-ERRCD
                END-IF    
            END-IF    
       *
