@@ -148,6 +148,7 @@
            COPY    "K08.INC".
            COPY    "K09.INC".
            COPY    "K10.INC".
+           COPY    "K97.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
            COPY    "K03X.INC".

@@ -896,6 +896,7 @@
            COPY    "K08.INC".
            COPY    "K09.INC".
            COPY    "K10.INC".
+           COPY    "K97.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
            COPY    "K03X.INC".
@@ -2597,8 +2598,6 @@
                                                TO  SPA-COM-KAISU2(IDX2)
       *****************MOVE    "*"             TO  SPA-GMN-INPUTCD(IDX2)
                        MOVE    "1"             TO  SPA-COM-KAIFLG
-                                                               (IDX2)
-                       MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                (IDX2)
                        MOVE    ZERO            TO  FLG-SET
                      END-IF
@@ -8124,6 +8123,9 @@
       *
       *    訂正処理
            MOVE    1                   TO  SPA-SYORIFLG
+      *
+      *    入院が存在するかのチェック
+           PERFORM 410101-NYUINRRK-CHK-SEC
       *
       *    ＳＰＡ編集処理
            INITIALIZE                  SPA-SCR-REC

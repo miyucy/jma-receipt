@@ -182,6 +182,8 @@
       *
            03  FLG-KUHAKU          PIC 9(01).
       *
+           03  FLG-FIRUMU           PIC 9(01).
+      *
       *    システム領域
       *01  SYS-AREA.
       *    03  SYS-YMD.
@@ -714,6 +716,7 @@
            COPY    "K08.INC".
            COPY    "K09.INC".
            COPY    "K10.INC".
+           COPY    "K97.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
            COPY    "K03X.INC".
@@ -1410,7 +1413,6 @@
                       MOVE    SPACE           TO  SPA-ERRCD
                    END-IF
       *
-      *
       *            回数の入力
                    IF      SPA-COM-KAIFLG (IDX)  =   "1"
                        IF     (SPA-COM-KAISU(IDX)    >   1  )  OR
@@ -1444,6 +1446,39 @@
                    INITIALIZE                  WRK-MOJI-AREA
                    PERFORM 3101-INPUTCD-HEN-SEC
       *
+               END-IF
+           END-PERFORM
+      *
+           MOVE    ZERO              TO  FLG-FIRUMU
+           PERFORM VARYING     IDX-1 FROM    IDX2   BY  -1
+                   UNTIL       IDX-1     <   1
+               IF      SPA-COM-ZAIEND (IDX-1)  =   "1"
+                   MOVE    ZERO            TO  FLG-FIRUMU
+               END-IF
+      *        画像診断のフィルム判定
+               IF      SPA-COM-SRYKBN (IDX-1)  =   "70"
+                   IF     (SPA-COM-INPUTCD(IDX-1)(1:1)   =   "7" )  AND
+                          (SPA-COM-DATAKBN (IDX-1)       =   "3" )
+                       MOVE    1               TO  FLG-FIRUMU
+                   END-IF
+                   IF     (SPA-COM-INPUTCD(IDX-1)(1:1)   =   "1" )  AND
+                          (SPA-COM-DATAKBN (IDX-1)       =   "1" )  AND
+                          (SPA-COM-KZMCOMPSIKIBETU(IDX-1)  NOT =  ZERO)
+                     AND  (SPA-COM-SURYO (IDX-1)         >   1   )
+                       IF      FLG-FIRUMU                =   ZERO
+                           MOVE    "1"             TO  SPA-COM-SURFLG
+                                                               (IDX-1)
+                       ELSE
+                           IF      SPA-COM-SURFLG (IDX-1)
+                                                       NOT =   "1"
+                               MOVE    1           TO  SPA-COM-SURYO
+                                                               (IDX-1)
+      *                        入力コードの画面用再編集
+                               MOVE    IDX-1               TO  IDX
+                               PERFORM 3101-INPUTCD-HEN-SEC
+                           END-IF
+                       END-IF
+                   END-IF
                END-IF
            END-PERFORM
       *

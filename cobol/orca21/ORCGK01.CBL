@@ -37,6 +37,7 @@
       *  02.00.03    NACL-多々納  02/11/15  一括入力、保険選択修正
       *  02.00.04    NACL-多々納  03/03/05  排他制御処理追加
       *  02.00.05    NACL-多々納  03/09/09  受診履歴、入院履歴より診療科等決定
+      *  02.00.06    NACL-多々納  04/07/23  継続入力区分の削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -102,11 +103,11 @@
                    07  SPA-GMN-HKNCOMBINUM     PIC X(04).
                    07  SPA-GMN-RRKYMD          PIC X(09).
       *
-                   07  SPA-GMN-CONTKBN-G.
-                       09  SPA-GMN-CONTKBN         PIC X(01).
-                       09  SPA-GMN-CONTKBNH        PIC X(01).
-                       09  SPA-GMN-CONTKBNMEI      PIC X(10).
-                   07  SPA-GMN-CONTKBNNAME     PIC X(60).
+      **********   07  SPA-GMN-CONTKBN-G.
+      *                09  SPA-GMN-CONTKBN         PIC X(01).
+      *                09  SPA-GMN-CONTKBNH        PIC X(01).
+      *                09  SPA-GMN-CONTKBNMEI      PIC X(10).
+      ***********  07  SPA-GMN-CONTKBNNAME     PIC X(60).
       *
                05  SPA-GMN-KYOUTU-G.
                    07  SPA-GMN-DRCDLST-G.
@@ -148,11 +149,11 @@
                        09  SPA-GMN-INGAIKBNMEIL    PIC X(10).
                    07  SPA-GMN-INGAI-MAX          PIC 9(04).
       *
-                   07  SPA-GMN-CONTKBN-COMB        OCCURS   5.
-                       09  SPA-GMN-CONTKBNL        PIC X(01).
-                       09  SPA-GMN-CONTKBNHL       PIC X(01).
-                       09  SPA-GMN-CONTKBNMEIL     PIC X(10).
-                   07  SPA-GMN-CONTKBN-MAX     PIC 9(04).
+      **************7  SPA-GMN-CONTKBN-COMB        OCCURS   5.
+      *                09  SPA-GMN-CONTKBNL        PIC X(01).
+      *                09  SPA-GMN-CONTKBNHL       PIC X(01).
+      *                09  SPA-GMN-CONTKBNMEIL     PIC X(10).
+      ************ 07  SPA-GMN-CONTKBN-MAX     PIC 9(04).
       *
       *            07  SPA-GMN-KA-TBL.
       *                09  SPA-GMN-KA-TBLO     OCCURS  20.
@@ -210,10 +211,10 @@
                        09  SPA-MAE-F1          PIC X(01).
                        09  SPA-MAE-SRYKAMEI    PIC X(18).
                    07  SPA-MAE-SRYYMD          PIC X(10).
-                   07  SPA-MAE-CONTKBN-G.
-                       09  SPA-MAE-CONTKBN         PIC X(01).
-                       09  SPA-MAE-CONTKBNH        PIC X(01).
-                       09  SPA-MAE-CONTKBNMEI      PIC X(10).
+      *************07  SPA-MAE-CONTKBN-G.
+      *                09  SPA-MAE-CONTKBN         PIC X(01).
+      *                09  SPA-MAE-CONTKBNH        PIC X(01).
+      **************   09  SPA-MAE-CONTKBNMEI      PIC X(10).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -482,6 +483,7 @@
            COPY    "K08.INC".
            COPY    "K09.INC".
            COPY    "K10.INC".
+           COPY    "K97.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
            COPY    "K03X.INC".
@@ -832,13 +834,13 @@
                END-IF
            END-PERFORM
       *
-      *    継続区分
-           MOVE    "0:通常"            TO  SPA-GMN-CONTKBN-COMB (01)
-           MOVE    "1:継続"            TO  SPA-GMN-CONTKBN-COMB (02)
-           MOVE    "2:確定"            TO  SPA-GMN-CONTKBN-COMB (03)
-           MOVE    3                   TO  SPA-GMN-CONTKBN-MAX
-           MOVE    SPA-GMN-CONTKBN-COMB (01)
-                                       TO  SPA-GMN-CONTKBN-G
+      *****継続区分
+      *    MOVE    "0:通常"            TO  SPA-GMN-CONTKBN-COMB (01)
+      *    MOVE    "1:継続"            TO  SPA-GMN-CONTKBN-COMB (02)
+      *    MOVE    "2:確定"            TO  SPA-GMN-CONTKBN-COMB (03)
+      *    MOVE    3                   TO  SPA-GMN-CONTKBN-MAX
+      **** MOVE    SPA-GMN-CONTKBN-COMB (01)
+      *                                TO  SPA-GMN-CONTKBN-G
       *
       *    システム管理より編集
            PERFORM 3101-SYSKANRI-HEN-SEC
@@ -884,7 +886,7 @@
       *    入力チェック用
            MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
            MOVE    SPA-GMN-SRYYMD      TO  SPA-MAE-SRYYMD
-           MOVE    SPA-GMN-CONTKBN-G   TO  SPA-MAE-CONTKBN-G
+      *****MOVE    SPA-GMN-CONTKBN-G   TO  SPA-MAE-CONTKBN-G
       *
            .
        31O-SPASET-EXT.
@@ -934,21 +936,21 @@
                END-IF
            END-PERFORM
       *
-      *    継続区分
-           MOVE    "0:通常"            TO  SPA-GMN-CONTKBN-COMB (01)
-           MOVE    "1:継続"            TO  SPA-GMN-CONTKBN-COMB (02)
-           MOVE    "2:確定"            TO  SPA-GMN-CONTKBN-COMB (03)
-           MOVE    3                   TO  SPA-GMN-CONTKBN-MAX
-           MOVE    SPA-GMN-CONTKBN-COMB (01)
-                                       TO  SPA-GMN-CONTKBN-G
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-CONTKBN-MAX
-               IF      SPA-CONTKBN         =   SPA-GMN-CONTKBN-COMB
-                                                            (IDX)(1:1)
-                   MOVE    SPA-GMN-CONTKBN-COMB (IDX)
-                                           TO  SPA-GMN-CONTKBN-G
-               END-IF
-           END-PERFORM
+      **** 継続区分
+      *    MOVE    "0:通常"            TO  SPA-GMN-CONTKBN-COMB (01)
+      *    MOVE    "1:継続"            TO  SPA-GMN-CONTKBN-COMB (02)
+      *    MOVE    "2:確定"            TO  SPA-GMN-CONTKBN-COMB (03)
+      *    MOVE    3                   TO  SPA-GMN-CONTKBN-MAX
+      *    MOVE    SPA-GMN-CONTKBN-COMB (01)
+      *                                TO  SPA-GMN-CONTKBN-G
+      *    PERFORM VARYING     IDX     FROM    1   BY  1
+      *            UNTIL       IDX     >   SPA-GMN-CONTKBN-MAX
+      *        IF      SPA-CONTKBN         =   SPA-GMN-CONTKBN-COMB
+      *                                                     (IDX)(1:1)
+      *            MOVE    SPA-GMN-CONTKBN-COMB (IDX)
+      *                                    TO  SPA-GMN-CONTKBN-G
+      *        END-IF
+      **** END-PERFORM
       *
       *    システム管理より編集
            PERFORM 3101-SYSKANRI-HEN-SEC
@@ -995,7 +997,7 @@
       *    入力チェック用
            MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
            MOVE    SPA-GMN-SRYYMD      TO  SPA-MAE-SRYYMD
-           MOVE    SPA-GMN-CONTKBN-G   TO  SPA-MAE-CONTKBN-G
+      *****MOVE    SPA-GMN-CONTKBN-G   TO  SPA-MAE-CONTKBN-G
            .
        310-K02SPASET-EXT.
            EXIT.
@@ -1224,7 +1226,7 @@
            MOVE    K01-HKNKUMI         TO  SPA-GMN-HKNCOMBINUM
            MOVE    K01-BUNSAN          TO  SPA-GMN-BUNSAN-G
            MOVE    K01-INGAISHOHOKBN   TO  SPA-GMN-INGAIKBN-G
-           MOVE    K01-CONTKBN         TO  SPA-GMN-CONTKBN-G
+      *****MOVE    K01-CONTKBN         TO  SPA-GMN-CONTKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -1270,10 +1272,10 @@
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    継続区分
-           PERFORM 4109-CONTKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
+      *****PERFORM 4109-CONTKBN-CHK-SEC
+      *    IF      SPA-ERRCD       NOT =   SPACE
+      *        GO      TO      4102-KIHON-CHK-EXT
+      **** END-IF
       *
            .
        4102-KIHON-CHK-EXT.
@@ -1336,8 +1338,8 @@
                INITIALIZE                      SPA-NAI-AREA
                MOVE    SPTID-PTID          TO  SPA-GMN-PTID
                MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
-               MOVE    SPA-GMN-CONTKBN-COMB (01)
-                                           TO  SPA-GMN-CONTKBN-G
+      *********MOVE    SPA-GMN-CONTKBN-COMB (01)
+      *********                            TO  SPA-GMN-CONTKBN-G
            END-IF
       *
            MOVE    PTINF-BIRTHDAY      TO  SPA-BIRTHDAY
@@ -1851,7 +1853,7 @@
       *
       *    受診歴を検索する  医療機関、患者ＩＤ，診療科の最終レコードを対象
            INITIALIZE                      SPA-NAI-DOUJI
-           MOVE    SPACE               TO  SPA-GMN-CONTKBNNAME
+      *****MOVE    SPACE               TO  SPA-GMN-CONTKBNNAME
       *
            MOVE    ZERO                TO  IDX-JYU
       *
@@ -1908,10 +1910,10 @@
                    MOVE    JYURRK-DRCD         TO  WRK-DRCD
                END-IF
       *
-      *        継続のチェック
-               IF      SPA-NAI-SRYYMDS     =   JYURRK-SRYYMD
-                   PERFORM 41015-CONTKBN-HANTEI-SEC
-               END-IF
+      ******** 継続のチェック
+      *        IF      SPA-NAI-SRYYMDS     =   JYURRK-SRYYMD
+      *            PERFORM 41015-CONTKBN-HANTEI-SEC
+      *********END-IF
       *
            END-IF
       *
@@ -1941,10 +1943,10 @@
                PERFORM 3101-DRCD-SET-SEC
            END-IF
       *
-      *    継続区分名称セット
-           IF      SPA-NAI-DOUJI-DENPNUM NOT =   ZERO
-               PERFORM 41016-CONTKBN-HEN-SEC
-           END-IF
+      *****継続区分名称セット
+      *    IF      SPA-NAI-DOUJI-DENPNUM NOT =   ZERO
+      *        PERFORM 41016-CONTKBN-HEN-SEC
+      *****END-IF
            .
        41014-JYURRK-HKNCOMBI-EXT.
            EXIT.
@@ -1952,83 +1954,83 @@
       *****************************************************************
       *    継続区分判定処理
       *****************************************************************
-       41015-CONTKBN-HANTEI-SEC             SECTION.
+      *41015-CONTKBN-HANTEI-SEC             SECTION.
       *
       *    収納テーブル読み込み
-           MOVE    SPACE               TO  SYUNOU-REC
-           INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
-           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
-           MOVE    SPA-GMN-PTID        TO  SYU-PTID
-           MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
+      *    MOVE    SPACE               TO  SYUNOU-REC
+      *    INITIALIZE                  SYUNOU-REC
+      *    MOVE    SPA-HOSPID          TO  SYU-HOSPID
+      *    MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+      *    MOVE    SPA-GMN-PTID        TO  SYU-PTID
+      *    MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
       *
-           MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYUNOU-KEY"       TO  ORC-DBPATH
-               PERFORM 980-SYUNOU-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYUNOU-REC
-               INITIALIZE                  SYUNOU-REC
-               MOVE    1               TO  FLG-SYUNOU
-           END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      FLG-SYUNOU          =   ZERO
+      *    MOVE    SYUNOU-REC          TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SYUNOU-KEY"       TO  ORC-DBPATH
+      *        PERFORM 980-SYUNOU-READ-SEC
+      *    ELSE
+      *        MOVE    SPACE               TO  SYUNOU-REC
+      *        INITIALIZE                  SYUNOU-REC
+      *        MOVE    1               TO  FLG-SYUNOU
+      *    END-IF
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      FLG-SYUNOU          =   ZERO
       *        伝票状態区分
-               IF      SYU-DENPJTIKBN      =   "7"
+      *        IF      SYU-DENPJTIKBN      =   "7"
       *            同時診療伝票番号
-                   MOVE    SYU-DOUJI-DENPNUM  TO  SPA-NAI-DOUJI-DENPNUM
+      *            MOVE    SYU-DOUJI-DENPNUM  TO  SPA-NAI-DOUJI-DENPNUM
       *            受診連番
-                   MOVE    JYURRK-RENNUM      TO  SPA-NAI-DOUJI-RENNUM
+      *            MOVE    JYURRK-RENNUM      TO  SPA-NAI-DOUJI-RENNUM
       *
-                   ADD     1                  TO  IDX-JYU
-                   MOVE    JYURRK-HKNCOMBINUM TO  SPA-NAI-DOUJI-HKNNUM
-                                                             (IDX-JYU)
-               END-IF
-           END-IF
+      *            ADD     1                  TO  IDX-JYU
+      *            MOVE    JYURRK-HKNCOMBINUM TO  SPA-NAI-DOUJI-HKNNUM
+      *                                                      (IDX-JYU)
+      *        END-IF
+      *    END-IF
       *
-           .
-       41015-CONTKBN-HANTEI-EXT.
-           EXIT.
+      *    .
+      *41015-CONTKBN-HANTEI-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    継続区分名称編集処理
       *****************************************************************
-       41016-CONTKBN-HEN-SEC            SECTION.
+      *41016-CONTKBN-HEN-SEC            SECTION.
       *
-           MOVE    SPACE               TO  WRK-CONTKBN-AREA
-           PERFORM VARYING     IDX-JYU FROM    1   BY  1
-                   UNTIL      (IDX-JYU     >   3   )   OR
-                              (SPA-NAI-DOUJI-HKNNUM(IDX-JYU)
-                                           =   SPACE )
-               MOVE    SPA-NAI-DOUJI-HKNNUM(IDX-JYU)
-                                           TO  WRK-CONTKBN-NUM(IDX-JYU)
-               IF      IDX-JYU         >   1
-                   MOVE    ","             TO  WRK-CONTKBN-TEN(IDX-JYU)
-               END-IF
-           END-PERFORM
+      *    MOVE    SPACE               TO  WRK-CONTKBN-AREA
+      *    PERFORM VARYING     IDX-JYU FROM    1   BY  1
+      *            UNTIL      (IDX-JYU     >   3   )   OR
+      *                       (SPA-NAI-DOUJI-HKNNUM(IDX-JYU)
+      *                                    =   SPACE )
+      *        MOVE    SPA-NAI-DOUJI-HKNNUM(IDX-JYU)
+      *                                    TO  WRK-CONTKBN-NUM(IDX-JYU)
+      *        IF      IDX-JYU         >   1
+      *            MOVE    ","             TO  WRK-CONTKBN-TEN(IDX-JYU)
+      *        END-IF
+      *    END-PERFORM
       *
-           MOVE    SPACE               TO  SPA-GMN-CONTKBNNAME
-           STRING
-               "継続中のデータがあります　作成済の保険組合せ："
-                                          DELIMITED  BY  SIZE
-               WRK-CONTKBN-AREA           DELIMITED  BY  SPACE
-                   INTO                   SPA-GMN-CONTKBNNAME
-           END-STRING
+      *    MOVE    SPACE               TO  SPA-GMN-CONTKBNNAME
+      *    STRING
+      *        "継続中のデータがあります　作成済の保険組合せ："
+      *                                   DELIMITED  BY  SIZE
+      *        WRK-CONTKBN-AREA           DELIMITED  BY  SPACE
+      *            INTO                   SPA-GMN-CONTKBNNAME
+      *    END-STRING
       *
-           .
-       41016-CONTKBN-HEN-EXT.
-           EXIT.
+      *    .
+      *41016-CONTKBN-HEN-EXT.
+      *****EXIT.
       *
       *****************************************************************
       *    診療科入力処理
@@ -2542,93 +2544,93 @@
       *****************************************************************
       *    継続区分入力処理
       *****************************************************************
-       4109-CONTKBN-CHK-SEC             SECTION.
+      *4109-CONTKBN-CHK-SEC             SECTION.
       *
       *
       *    訂正で継続があり既に確定済みの時、継続の変更不可
-           IF    ( SPA-SYORIFLG        =   1       )  AND
-                 ( SPA-MAE-CONTKBN NOT =   SPA-GMN-CONTKBN )
-               IF     (SPA-CONTKBN         =   "1"  OR  "2" )  AND
-                      (SPA-DENPJTIKBN  NOT =   "7"          )
-                   MOVE    "0018"              TO  SPA-ERRCD
-                   MOVE    10                  TO  SPA-GMN-CUR
-                   MOVE    SPA-MAE-CONTKBN-G   TO  SPA-GMN-CONTKBN-G
-                   GO      TO      4109-CONTKBN-CHK-EXT
-               END-IF
-           END-IF
+      *    IF    ( SPA-SYORIFLG        =   1       )  AND
+      *          ( SPA-MAE-CONTKBN NOT =   SPA-GMN-CONTKBN )
+      *        IF     (SPA-CONTKBN         =   "1"  OR  "2" )  AND
+      *               (SPA-DENPJTIKBN  NOT =   "7"          )
+      *            MOVE    "0018"              TO  SPA-ERRCD
+      *            MOVE    10                  TO  SPA-GMN-CUR
+      *            MOVE    SPA-MAE-CONTKBN-G   TO  SPA-GMN-CONTKBN-G
+      *            GO      TO      4109-CONTKBN-CHK-EXT
+      *        END-IF
+      *    END-IF
       *
-           MOVE    SPA-GMN-CONTKBN-G   TO  SPA-MAE-CONTKBN-G
+      *    MOVE    SPA-GMN-CONTKBN-G   TO  SPA-MAE-CONTKBN-G
       *
       *    訂正で継続中のものを確定にはできない。
-           IF      SPA-SYORIFLG        =   1
-               IF     (SPA-CONTKBN          =   "1"  )  AND
-                      (SPA-GMN-CONTKBN      =   "2"  )
-                   MOVE    "0019"          TO  SPA-ERRCD
-                   MOVE    10                  TO  SPA-GMN-CUR
-                   GO      TO      4109-CONTKBN-CHK-EXT
-               END-IF
-           END-IF
-           IF      SPA-GMN-CONTKBN      =   ZERO    OR  "1"  OR  "2"
-               CONTINUE
-           ELSE
-               MOVE    "0015"              TO  SPA-ERRCD
-               MOVE    10                  TO  SPA-GMN-CUR
-               GO      TO      4109-CONTKBN-CHK-EXT
-           END-IF
+      *    IF      SPA-SYORIFLG        =   1
+      *        IF     (SPA-CONTKBN          =   "1"  )  AND
+      *               (SPA-GMN-CONTKBN      =   "2"  )
+      *            MOVE    "0019"          TO  SPA-ERRCD
+      *            MOVE    10                  TO  SPA-GMN-CUR
+      *            GO      TO      4109-CONTKBN-CHK-EXT
+      *        END-IF
+      *    END-IF
+      *    IF      SPA-GMN-CONTKBN      =   ZERO    OR  "1"  OR  "2"
+      *        CONTINUE
+      *    ELSE
+      *        MOVE    "0015"              TO  SPA-ERRCD
+      *        MOVE    10                  TO  SPA-GMN-CUR
+      *        GO      TO      4109-CONTKBN-CHK-EXT
+      *    END-IF
       *
-           IF      SPA-GMN-CONTKBN      =   "2" 
+      *    IF      SPA-GMN-CONTKBN      =   "2" 
       *        確定の時、継続分がない時、エラー
-               IF      SPA-NAI-DOUJI-DENPNUM   =   ZERO
-                   MOVE    "0004"              TO  SPA-ERRCD
-                   MOVE    10                  TO  SPA-GMN-CUR
-                   GO      TO      4109-CONTKBN-CHK-EXT
-               END-IF
-           END-IF
+      *        IF      SPA-NAI-DOUJI-DENPNUM   =   ZERO
+      *            MOVE    "0004"              TO  SPA-ERRCD
+      **           MOVE    10                  TO  SPA-GMN-CUR
+      *            GO      TO      4109-CONTKBN-CHK-EXT
+      *        END-IF
+      *    END-IF
       *
-           IF      SPA-GMN-CONTKBN      =   "1" 
+      *    IF      SPA-GMN-CONTKBN      =   "1" 
       *        継続の時、２回以下であること
-               IF      SPA-NAI-DOUJI-HKNNUM(02)    NOT =   SPACE
-                   MOVE    "0005"          TO  SPA-ERRCD
-                   MOVE    10                  TO  SPA-GMN-CUR
-                   GO      TO      4109-CONTKBN-CHK-EXT
-               END-IF
-           END-IF
+      *        IF      SPA-NAI-DOUJI-HKNNUM(02)    NOT =   SPACE
+      *            MOVE    "0005"          TO  SPA-ERRCD
+      *            MOVE    10                  TO  SPA-GMN-CUR
+      *            GO      TO      4109-CONTKBN-CHK-EXT
+      *        END-IF
+      *    END-IF
       *
       *    継続の時、同じ保険組合せでないこと
-           IF      SPA-GMN-CONTKBN      =   "1"  OR  "2"
-               PERFORM VARYING     IDX-JYU     FROM    1   BY  1
-                       UNTIL      (IDX-JYU     >   3   )   OR
-                                  (SPA-NAI-DOUJI-HKNNUM(IDX-JYU)
-                                               =   SPACE )
-                   IF      SPA-NAI-DOUJI-HKNNUM(IDX-JYU)
-                                           =   SPA-GMN-HKNCOMBINUM
-                       MOVE    "0010"          TO  SPA-ERRCD
-                       MOVE    3               TO  IDX-JYU
-                   END-IF
-               END-PERFORM
-               IF      SPA-ERRCD       NOT =   SPACE
-                   MOVE    10                  TO  SPA-GMN-CUR
-                   GO      TO      4109-CONTKBN-CHK-EXT
-               END-IF
+      *    IF      SPA-GMN-CONTKBN      =   "1"  OR  "2"
+      *        PERFORM VARYING     IDX-JYU     FROM    1   BY  1
+      *                UNTIL      (IDX-JYU     >   3   )   OR
+      *                           (SPA-NAI-DOUJI-HKNNUM(IDX-JYU)
+      *                                        =   SPACE )
+      *            IF      SPA-NAI-DOUJI-HKNNUM(IDX-JYU)
+      *                                    =   SPA-GMN-HKNCOMBINUM
+      *                MOVE    "0010"          TO  SPA-ERRCD
+      *                MOVE    3               TO  IDX-JYU
+      *            END-IF
+      *        END-PERFORM
+      *        IF      SPA-ERRCD       NOT =   SPACE
+      *            MOVE    10                  TO  SPA-GMN-CUR
+      *            GO      TO      4109-CONTKBN-CHK-EXT
+      *        END-IF
       *        包括分入力はエラー
-               IF      SPA-GMN-HKNCOMBINUM =   "9999"
-                   MOVE    "0023"              TO  SPA-ERRCD
-                   MOVE    10                  TO  SPA-GMN-CUR
-                   GO      TO      4109-CONTKBN-CHK-EXT
-               END-IF
-           END-IF
+      *        IF      SPA-GMN-HKNCOMBINUM =   "9999"
+      *            MOVE    "0023"              TO  SPA-ERRCD
+      *            MOVE    10                  TO  SPA-GMN-CUR
+      *            GO      TO      4109-CONTKBN-CHK-EXT
+      *        END-IF
+      *    END-IF
       *
       *    中途のデータがある時、継続区分が同じ時、メッセージをクリア
-           IF      SPA-NAI-WSRYUMU     =   "1"
-               IF      SPA-NAI-WSRYCONTKBN     =   SPA-GMN-CONTKBN
-                   MOVE    SPACE           TO  SPA-GMN-CONTKBNNAME
-               END-IF
-           END-IF
+      *    IF      SPA-NAI-WSRYUMU     =   "1"
+      *        IF      SPA-NAI-WSRYCONTKBN     =   SPA-GMN-CONTKBN
+      *            MOVE    SPACE           TO  SPA-GMN-CONTKBNNAME
+      *        END-IF
+      *    END-IF
       *
       *
-           .
-       4109-CONTKBN-CHK-EXT.
-           EXIT.
+      *    .
+      *4109-CONTKBN-CHK-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    確定処理
@@ -2761,14 +2763,14 @@
       *    院外処方
            MOVE    SPA-GMN-INGAIKBN    TO  SPA-INGAIKBN
       *    継続区分
-           MOVE    SPA-GMN-CONTKBN     TO  SPA-CONTKBN
+      *****MOVE    SPA-GMN-CONTKBN     TO  SPA-CONTKBN
       *
-           IF      SPA-GMN-CONTKBN     =   "1"  OR  "2"
+      *****IF      SPA-GMN-CONTKBN     =   "1"  OR  "2"
       *    同時診療伝票番号
-               MOVE    SPA-NAI-DOUJI-DENPNUM   TO  SPA-DOUJI-DENPNUM
+      *        MOVE    SPA-NAI-DOUJI-DENPNUM   TO  SPA-DOUJI-DENPNUM
       *    同時診療連番
-               MOVE    SPA-NAI-DOUJI-RENNUM    TO  SPA-DOUJI-RENNUM
-           END-IF
+      *        MOVE    SPA-NAI-DOUJI-RENNUM    TO  SPA-DOUJI-RENNUM
+      *****END-IF
       *
       *    保険番号
            MOVE    SPA-NAI-HKNNUM (SPA-NAI-HKNIDX)
@@ -2821,12 +2823,12 @@
                INITIALIZE                  WKSRYACT-REC
                MOVE    1               TO  FLG-WKSRYACT
            END-IF
-           IF      FLG-WKSRYACT        =   ZERO
-               IF      WKSRY-CONTKBN   NOT =   SPA-GMN-CONTKBN
-                   MOVE    "1"             TO  SPA-NAI-WSRYUMU
-               END-IF
-               MOVE    WKSRY-CONTKBN       TO  SPA-NAI-WSRYCONTKBN
-           END-IF
+      **** IF      FLG-WKSRYACT        =   ZERO
+      *        IF      WKSRY-CONTKBN   NOT =   SPA-GMN-CONTKBN
+      *            MOVE    "1"             TO  SPA-NAI-WSRYUMU
+      *        END-IF
+      *        MOVE    WKSRY-CONTKBN       TO  SPA-NAI-WSRYCONTKBN
+      *****END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
@@ -3119,8 +3121,8 @@
            MOVE    SPA-GMN-HKNCOMBINUM TO  K01-HKNKUMI
       *****MOVE    SPA-GMN-RRKYMD      TO  K01-RRKYMD
            MOVE    SPA-GMN-INGAIKBN-G  TO  K01-INGAISHOHOKBN
-           MOVE    SPA-GMN-CONTKBN-G   TO  K01-CONTKBN
-           MOVE    SPA-GMN-CONTKBNNAME TO  K01-KZKKBNNAME
+      *****MOVE    SPA-GMN-CONTKBN-G   TO  K01-CONTKBN
+      *****MOVE    SPA-GMN-CONTKBNNAME TO  K01-KZKKBNNAME
       *    診療科
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SRYKA-MAX
@@ -3135,12 +3137,12 @@
            END-PERFORM
            MOVE    SPA-GMN-INGAI-MAX    TO  K01-INGAI-COUNT
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-CONTKBN-MAX
-               MOVE    SPA-GMN-CONTKBN-COMB (IDX)
-                                           TO  K01-CONTKBN-ITEM(IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-CONTKBN-MAX    TO  K01-CONTKBN-COUNT
+      **** PERFORM VARYING     IDX     FROM    1   BY  1
+      *            UNTIL       IDX     >   SPA-GMN-CONTKBN-MAX
+      *        MOVE    SPA-GMN-CONTKBN-COMB (IDX)
+      *                                    TO  K01-CONTKBN-ITEM(IDX)
+      *    END-PERFORM
+      *****MOVE    SPA-GMN-CONTKBN-MAX    TO  K01-CONTKBN-COUNT
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-BUNSAN-MAX
@@ -3239,8 +3241,8 @@
                    MOVE    "INGAISHOHOKBN" TO  MCP-WIDGET
                WHEN    09
                    MOVE    "HKNKUMI"       TO  MCP-WIDGET
-               WHEN    10
-                   MOVE    "CONTKBN"       TO  MCP-WIDGET
+      ******** WHEN    10
+      **********   MOVE    "CONTKBN"       TO  MCP-WIDGET
                WHEN    11
                    MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -3270,9 +3272,9 @@
                WHEN    "INGAISHOHOKBN"
                    MOVE    9               TO  SPA-GMN-CUR
                WHEN    "HKNKUMI"
-                   MOVE    10              TO  SPA-GMN-CUR
-               WHEN    "CONTKBN"
                    MOVE    11              TO  SPA-GMN-CUR
+      *****    WHEN    "CONTKBN"
+      ****         MOVE    11              TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .

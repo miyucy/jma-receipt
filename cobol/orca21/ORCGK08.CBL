@@ -92,7 +92,7 @@
                05  SPA-GMN-CUR                   PIC 9(02).
       *
                05  SPA-GMN-TBL.
-                   07  SPA-GMN-TBLREC  OCCURS  500.
+                   07  SPA-GMN-TBLREC  OCCURS  600.
                        09  SPA-GMN-TBANGO      PIC 9(03).
                        09  SPA-GMN-TDELFLG     PIC 9(01).
                        09  SPA-GMN-TMEISYO     PIC X(200).
@@ -137,7 +137,8 @@
                05  SPA-GMN-SYOSINYMD         PIC X(09).
                05  SPA-GMN-MISYUMONEY        PIC S9(08).
       *
-               05  SPA-GMN-HKNTEN            PIC 9(07)   OCCURS  10.
+               05  SPA-GMN-HKNTEN-TBL        OCCURS  10.
+                   07  SPA-GMN-HKNTEN        PIC 9(07).
       *
                05  SPA-GMN-SELNUM-G.
                    07  SPA-GMN-SELNUM        PIC 9(03)   OCCURS  10.
@@ -146,7 +147,7 @@
       *
            03  SPA-NAI-AREA.
                05  SPA-NAI-TBL.
-                   07  SPA-NAI-TBLREC  OCCURS  500.
+                   07  SPA-NAI-TBLREC  OCCURS  600.
                        09  SPA-NAI-BANGO           PIC 9(03).
                        09  SPA-NAI-EDANUM          PIC 9(03).
                        09  SPA-NAI-ZAINUM          PIC 9(08).
@@ -155,6 +156,8 @@
                        09  SPA-NAI-TENSFLG         PIC 9(01).
                        09  SPA-NAI-DELFLG          PIC 9(01).
                        09  SPA-NAI-HKNSFLG         PIC 9(01).
+                       09  SPA-NAI-HKNCOMBI        PIC X(04).
+                       09  SPA-NAI-SRYKA           PIC X(02).
       *
                        09  SPA-NAI-JIDFLG          PIC 9(01).
       *
@@ -175,6 +178,7 @@
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-SP              PIC 9(01).
@@ -193,6 +197,7 @@
            03  FLG-KAISUU-ARI3     PIC 9(01).
       *
            03  FLG-KAKU-FLG        PIC 9(01).
+           03  FLG-SYORI-END       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -217,6 +222,16 @@
            03  IDX-Y2              PIC 9(02).
            03  IDX-Y3              PIC 9(02).
       *
+           03  IDH                 PIC 9(04).
+           03  IDH1                PIC 9(04).
+           03  IDH2                PIC 9(04).
+           03  IDH3                PIC 9(04).
+           03  IDK                 PIC 9(04).
+           03  IDX-MAX             PIC 9(04).
+      *
+           03  IDS1                PIC 9(04).
+           03  IDS2                PIC 9(04).
+           03  IDS3                PIC 9(04).
       *    ＳＰＡ内番号
            03  IDX-NAI             PIC 9(04).
       *
@@ -242,6 +257,13 @@
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
+      *    保険組合せ
+           03  WRK-HKNCOMBI          PIC X(04).
+           03  WRK-HKNCOMBIMEI       PIC X(60).
+           03  WRK-SRYKA             PIC X(02).
+           03  WRK-SRYKAMEI          PIC X(60).
+           03  WRK-DRCD              PIC X(05).
+           03  WRK-DRCD-MEI          PIC X(50).
       *    選択番号
            03  WRK-SELNUM          PIC 9(03).
       *    画面番号
@@ -347,12 +369,15 @@
                05  FLG-FUNSAI          PIC 9(01).
                05  WRK-FUNSAI-CNT      PIC 9(04).
       *
-           03  WRK-SYU-CONTKBN         PIC X(01).
+           03  WRK-CONTKBN         PIC X(01).
+      **** 03  WRK-SYU-CONTKBN         PIC X(01).
       *
            03  WRK-KIDMSG          PIC X(80).
       *
            03  WRK-K08-ROW         PIC S9(09).
            03  FLG-GMN-INIT        PIC  9(01).
+      *請求金額
+           03  WRK-SKYMONEY            PIC S9(07).
       *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
@@ -392,6 +417,8 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
+      *    職員情報
+           COPY    "CPSK1010.INC".
       *
       *    ワーク診療行為マスタ−
        01  WKSRYACT-REC.
@@ -425,16 +452,41 @@
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
+      *    収納マスタワーク
+       01  WRK-SYUNOU-REC.
+           COPY    "CPSYUNOU.INC"      REPLACING
+                                       //SYU-// BY //WRK-SYU-//.
+      *    収納マスタワーク
+       01  LNK-SYUNOU-AREA.
+           02  LNK-SYUNOU-REC      OCCURS   15.
+           COPY    "CPSYUNOU.INC"      REPLACING
+                                       //SYU-// BY //LNK-SYU-//.
+       01  LNK-SYUNOU-MAX              PIC 9(04).
+      *
+      *    収納マスタワーク２
+       01  LNK-SYUNOU2-AREA.
+           02  LNK-SYUNOU2-REC      OCCURS   15.
+           COPY    "CPSYUNOU.INC"      REPLACING
+                                       //SYU-// BY //LNK-SYU2-//.
+       01  LNK-SYUNOU2-MAX              PIC 9(04).
+      *
       *    診療行為マスタワーク
        01  LNK-WKSRYACT-AREA.
-           02  LNK-WKSRYACT-REC      OCCURS   500.
+           02  LNK-WKSRYACT-REC      OCCURS   600.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
       *
       *    診療行為マスタワーク
+       01  HZN-WKSRYACT-AREA.
+           02  HZN-WKSRYACT-REC      OCCURS   600.
+           COPY    "CPWKSRYACT.INC"  REPLACING
+                                     //WKSRY-// BY //HZN-WKSRY-//.
+       01  HZN-WKSRYACT-MAX           PIC 9(04).
+      *
+      *    診療行為マスタワーク
        01  SRT-WKSRYACT-AREA.
-           02  SRT-WKSRYACT-REC      OCCURS   500.
+           02  SRT-WKSRYACT-REC      OCCURS   600.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //SRT-WKSRY-//.
       *
@@ -473,6 +525,9 @@
       *
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
+      *
+      *    保険組合せセット領域
+           COPY    "CPORCSHKNSET.INC".
       *
       *福岡県対応用
       *    給付対象外点数編集サブパラメタ
@@ -515,6 +570,7 @@
            COPY    "K08.INC".
            COPY    "K09.INC".
            COPY    "K10.INC".
+           COPY    "K97.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
            COPY    "K03X.INC".
@@ -701,6 +757,10 @@
                PERFORM 520-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-LASTYMD
            END-IF
+      *    入院の時、表示なしとする
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    SPACE           TO  SPA-GMN-LASTYMD
+           END-IF
       *
       *    初診算定日
            IF     (SPA-SYOYMD      NOT =   SPACE )  AND
@@ -711,51 +771,69 @@
            END-IF
       *
            MOVE    ZERO                TO  SPA-GMN-GOKEI
-      *
-      *    パラメタファイルより、診療会計マスターを編集
-      *    パラメタファイルよりワーク編集とＳＯＲＴ
-           PERFORM 3101-WKSRYACT-SORT-SEC
-      *
+      *!
+      *    保険組合せ検索
+           INITIALIZE                  ORCSHKNSETAREA
+           MOVE    "1"                 TO  ORCSHKN-KBN
+           MOVE    "1"                 TO  ORCSHKN-KBN2
+           CALL    "ORCSHKNSET"        USING
+                                       SPA-AREA
+                                       ORCSHKNSETAREA
+      *!
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDG
            MOVE    ZERO                TO  IDX-NAI
            MOVE    ZERO                TO  WRK-BANGO
            MOVE    ZERO                TO  IDX-KOUI
-           MOVE    SPACE               TO  LNK-WKSRYACT-AREA
-           INITIALIZE                      LNK-WKSRYACT-AREA
       *
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL       IDX2    >   WRK-MAX
+      *    パラメタファイルより、診療会計マスターを編集
+      *    パラメタファイルよりワーク編集とＳＯＲＴ
+           PERFORM 3101-WKSRYACT-SORT-SEC
       *
-                   IF     (IDX-KOUI        >   ZERO  )  AND
-                          (SRT-WKSRY-ZAINUM (IDX2) NOT =
-                                           LNK-WKSRY-ZAINUM (IDX-KOUI))
+      **** MOVE    ZERO                TO  IDX
+      *    MOVE    ZERO                TO  IDG
+      *    MOVE    ZERO                TO  IDX-NAI
+      *    MOVE    ZERO                TO  WRK-BANGO
+      *    MOVE    ZERO                TO  IDX-KOUI
+      *    MOVE    SPACE               TO  LNK-WKSRYACT-AREA
+      *    INITIALIZE                      LNK-WKSRYACT-AREA
+      *
+      *    PERFORM VARYING     IDX2    FROM    1   BY  1
+      *            UNTIL       IDX2    >   WRK-MAX
+      *
+      *            IF     (IDX-KOUI        >   ZERO  )  AND
+      *                   (SRT-WKSRY-ZAINUM (IDX2) NOT =
+      *                                    LNK-WKSRY-ZAINUM (IDX-KOUI))
       *                剤毎に処理を行う
-                       PERFORM 3101-WKSRYACT-HEN-SEC
-                       MOVE    SPACE           TO  LNK-WKSRYACT-AREA
-                       INITIALIZE                  LNK-WKSRYACT-AREA
-                       MOVE    ZERO            TO  IDX-KOUI
-                   END-IF
-                   ADD     1               TO  IDX-KOUI
-                   MOVE    SRT-WKSRYACT-REC (IDX2)
-                                           TO  LNK-WKSRYACT-REC
-                                                            (IDX-KOUI)
-           END-PERFORM
+      *                PERFORM 3101-WKSRYACT-HEN-SEC
+      *                MOVE    SPACE           TO  LNK-WKSRYACT-AREA
+      *                INITIALIZE                  LNK-WKSRYACT-AREA
+      *                MOVE    ZERO            TO  IDX-KOUI
+      *            END-IF
+      *            ADD     1               TO  IDX-KOUI
+      *            MOVE    SRT-WKSRYACT-REC (IDX2)
+      *                                    TO  LNK-WKSRYACT-REC
+      *                                                     (IDX-KOUI)
+      *    END-PERFORM
       *    剤毎に処理を行う
-           IF      IDX-KOUI        >   ZERO
-               PERFORM 3101-WKSRYACT-HEN-SEC
-           END-IF
+      *    IF      IDX-KOUI        >   ZERO
+      *        PERFORM 3101-WKSRYACT-HEN-SEC
+      *****END-IF
       *
       *    最大件数
-           IF      IDG                 >   500
-               MOVE    500                 TO  SPA-K08-MAX
+           IF      IDG                 >   600
+               MOVE    600                 TO  SPA-K08-MAX
            ELSE
                MOVE    IDG                 TO  SPA-K08-MAX
            END-IF
       *    各点数
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
-               MOVE    SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNTEN (IDX)
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL       IDX2    >   LNK-SYUNOU-MAX
+               MOVE    LNK-SYUNOU-REC (IDX2)   TO  SYUNOU-REC
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   10
+                   ADD     SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNTEN (IDX)
+               END-PERFORM
            END-PERFORM
       *    点数再計算
            IF     (SPA-SYORIFLG    NOT =   1   )  AND
@@ -783,7 +861,6 @@
                END-STRING
            END-IF
       *
-      *
             .
        310-SPA-SET-EXT.
            EXIT.
@@ -803,6 +880,9 @@
            INITIALIZE                  SRT-WKSRYACT-AREA
            MOVE    SPACE               TO  SYUNOU-REC
            MOVE    ZERO                TO  IDX-KOUI
+           MOVE    SPACE               TO  LNK-SYUNOU-AREA
+           INITIALIZE                  LNK-SYUNOU-AREA
+           MOVE    ZERO                TO  LNK-SYUNOU-MAX
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
            OPEN    INPUT               PARA-FILE
@@ -814,16 +894,28 @@
            END-IF
            PERFORM
                    UNTIL      (FLG-PARA    =    1   )  OR
-                              (IDX         >=   500 )
+                              (IDX         >=   600 )
       *        ワーク診療行
                IF      PARA-FILEMEI    =   "WKSRYACT"
                    ADD     1                    TO  IDX
                    MOVE    PARA-DATA-REC        TO  LNK-WKSRYACT-REC
                                                                 (IDX)
+                   IF      LNK-WKSRY-HKNCOMBI(IDX) =   ZERO
+                       MOVE    SPA-HKNCOMBINUM TO
+                                                LNK-WKSRY-HKNCOMBI(IDX)
+                   END-IF
+                   IF      LNK-WKSRY-SRYKA   (IDX) =   SPACE
+                       MOVE    SPA-SRYKA       TO
+                                                LNK-WKSRY-SRYKA   (IDX)
+                   END-IF
                END-IF
       *        収納
                IF      PARA-FILEMEI        =   "SYUNOU"
-                   MOVE    PARA-DATA-REC       TO  SYUNOU-REC
+                   ADD     1                   TO  LNK-SYUNOU-MAX
+                   IF      LNK-SYUNOU-MAX      <=  15
+                       MOVE    PARA-DATA-REC       TO  LNK-SYUNOU-REC
+                                                       (LNK-SYUNOU-MAX)
+                   END-IF
                END-IF
       *
                PERFORM 980-PARA-READ-SEC
@@ -832,65 +924,188 @@
       *
            CLOSE                       PARA-FILE
       *
-      *    ＳＯＲＴ（診療区分別にＳＯＲＴする）
-           MOVE    ZERO                TO  IDX1
-           MOVE    ZERO                TO  IDX2
-           MOVE    SPACE               TO  SRT-WKSRYACT-AREA
-           INITIALIZE                  SRT-WKSRYACT-AREA
-      *
-           PERFORM VARYING   IDX       FROM   1   BY  1
-                   UNTIL     IDX       >   WRK-MAX
-               MOVE    ALL "9"             TO  WRK-ZAINUM-X
-               MOVE    ALL "9"             TO  WRK-RENNUM-X
-               MOVE    ALL "9"             TO  WRK-SRYKBN
-               MOVE    ZERO                TO  IDX2
-               PERFORM VARYING   IDX1      FROM   1   BY  1
-                       UNTIL     IDX1      >   WRK-MAX
-                   IF      LNK-WKSRY-SRYKBN (IDX1)  NOT =   SPACE
-                       MOVE   ZERO                 TO  FLG-CHK
-                       IF     LNK-WKSRY-SRYKBN (IDX1)  <   WRK-SRYKBN
-                           MOVE    1                   TO  FLG-CHK
-                       END-IF
-                       IF      LNK-WKSRY-SRYKBN (IDX1)
-                                                   =   WRK-SRYKBN
-                           IF      LNK-WKSRY-ZAINUM (IDX1)
-                                                   <    WRK-ZAINUM
-                               MOVE    1                TO  FLG-CHK
-                           END-IF
-                           IF     (LNK-WKSRY-ZAINUM (IDX1)
-                                                   =   WRK-ZAINUM) AND
-                                  (LNK-WKSRY-RENNUM (IDX1)
-                                                   <=   WRK-RENNUM)
-                               MOVE    1                TO  FLG-CHK
-                           END-IF
-                       END-IF
-                       IF      FLG-CHK         =   1
-                           MOVE    LNK-WKSRY-SRYKBN (IDX1)
-                                                   TO  WRK-SRYKBN
-                           MOVE    LNK-WKSRY-ZAINUM (IDX1)
-                                                   TO  WRK-ZAINUM
-                           MOVE    LNK-WKSRY-RENNUM (IDX1)
-                                                   TO  WRK-RENNUM
-                           MOVE    IDX1            TO  IDX2
-                       END-IF
-                   END-IF
-               END-PERFORM
-               IF     IDX2                 >   ZERO
-                   MOVE    LNK-WKSRYACT-REC(IDX2)
-                                          TO  SRT-WKSRYACT-REC (IDX)
-                   MOVE    SPACE          TO  LNK-WKSRYACT-REC(IDX2)
-                   INITIALIZE                 LNK-WKSRYACT-REC(IDX2)
+           MOVE    ZERO                TO  IDX4
+      *    保険毎にＳＯＲＴする
+           MOVE    SPACE               TO  HZN-WKSRYACT-AREA
+           INITIALIZE                  HZN-WKSRYACT-AREA
+           MOVE    LNK-WKSRYACT-AREA   TO  HZN-WKSRYACT-AREA
+           IF      SPA-TBL-HKNCOMBI(1) =   SPACE
+               MOVE    SPA-HKNCOMBINUM     TO  SPA-TBL-HKNCOMBI(1)
+               MOVE    SPA-HKNCOMBIMEI     TO  SPA-TBL-HKNCOMBIMEI(1)
+               MOVE    SPA-SRYKA           TO  SPA-TBL-SRYKA (1 1)
+               MOVE    SPA-DRCD            TO  SPA-TBL-DRCD  (1 1)
+           END-IF
+           PERFORM VARYING   IDH1      FROM    1   BY  1
+                   UNTIL    (IDH1      >   15  )   OR
+                            (SPA-TBL-HKNCOMBI(IDH1)    =   SPACE)
+               MOVE    SPA-TBL-HKNCOMBI(IDH1)     TO  WRK-HKNCOMBI
+               MOVE    SPA-TBL-HKNCOMBIMEI(IDH1)  TO  WRK-HKNCOMBIMEI
+               IF      SPA-TBL-SRYKA (IDH1 1)     =   SPACE
+                   MOVE    SPA-SRYKA           TO  SPA-TBL-SRYKA(IDH1 1)
+                   MOVE    SPA-DRCD            TO  SPA-TBL-DRCD (IDH1 1)
                END-IF
+               PERFORM VARYING   IDH2      FROM   1   BY  1
+                       UNTIL    (IDH2      >   10  )  OR
+                                (SPA-TBL-SRYKA (IDH1 IDH2) =   SPACE )
+                   MOVE    SPA-TBL-SRYKA (IDH1 IDH2)   TO  WRK-SRYKA
+                   MOVE    SPA-TBL-DRCD  (IDH1 IDH2)   TO  WRK-DRCD
+                   PERFORM 31012-WKSRYACT-SORT2-SEC
+                   PERFORM 31013-WKSRYACT-HENSYORI-SEC
+               END-PERFORM
            END-PERFORM
       *
             .
        3101-WKSRYACT-SORT-EXT.
            EXIT.
       *****************************************************************
+      *     診療行為編集処理
+      *****************************************************************
+       31012-WKSRYACT-SORT2-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  LNK-WKSRYACT-AREA
+           INITIALIZE                  LNK-WKSRYACT-AREA
+           MOVE    ZERO                TO  IDX-MAX
+           PERFORM VARYING   IDX1      FROM   1   BY  1
+                   UNTIL    (IDX1      >   WRK-MAX    )
+               IF     (HZN-WKSRY-HKNCOMBI(IDX1)   =   WRK-HKNCOMBI) AND
+                      (HZN-WKSRY-SRYKA   (IDX1)   =   WRK-SRYKA   )
+                   ADD     1                  TO  IDX-MAX
+                   MOVE    HZN-WKSRYACT-REC(IDX1)
+                                              TO  LNK-WKSRYACT-REC
+                                                               (IDX-MAX)
+                   MOVE    SPACE              TO  HZN-WKSRYACT-REC
+                                                               (IDX1)
+                   INITIALIZE                 HZN-WKSRYACT-REC(IDX1)
+               END-IF
+           END-PERFORM
+      *
+      *    ＳＯＲＴ（診療区分別にＳＯＲＴする）
+           MOVE    ZERO                TO  IDX1
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  IDX4
+           MOVE    SPACE               TO  SRT-WKSRYACT-AREA
+           INITIALIZE                  SRT-WKSRYACT-AREA
+      *
+           PERFORM VARYING   IDX       FROM   1   BY  1
+                   UNTIL     IDX       >   IDX-MAX
+               MOVE    ALL "9"             TO  WRK-ZAINUM-X
+               MOVE    ALL "9"             TO  WRK-RENNUM-X
+               MOVE    ALL "9"             TO  WRK-SRYKBN
+               MOVE    ZERO                TO  IDX2
+               PERFORM VARYING   IDX1      FROM   1   BY  1
+                       UNTIL     IDX1      >   IDX-MAX
+                   IF   LNK-WKSRY-INPUTCD(IDX1 1)(1:1)  =   "#"
+                                                        OR  "$"
+                       MOVE    IDX1                TO  IDX2
+                       MOVE    IDX-MAX             TO  IDX1
+                   ELSE
+                       IF      LNK-WKSRY-SRYKBN (IDX1) NOT =   SPACE
+                           MOVE   ZERO                 TO  FLG-CHK
+                           IF     LNK-WKSRY-SRYKBN (IDX1)
+                                                       <   WRK-SRYKBN
+                               MOVE    1                   TO  FLG-CHK
+                           END-IF
+                           IF      LNK-WKSRY-SRYKBN (IDX1)
+                                                   =   WRK-SRYKBN
+                               IF      LNK-WKSRY-ZAINUM (IDX1)
+                                                   <    WRK-ZAINUM
+                                   MOVE    1                TO  FLG-CHK
+                               END-IF
+                               IF     (LNK-WKSRY-ZAINUM (IDX1)
+                                                   =   WRK-ZAINUM) AND
+                                      (LNK-WKSRY-RENNUM (IDX1)
+                                                   <=   WRK-RENNUM)
+                                   MOVE    1                TO  FLG-CHK
+                               END-IF
+                           END-IF
+                           IF      FLG-CHK         =   1
+                               MOVE    LNK-WKSRY-SRYKBN (IDX1)
+                                                   TO  WRK-SRYKBN
+                               MOVE    LNK-WKSRY-ZAINUM (IDX1)
+                                                   TO  WRK-ZAINUM
+                               MOVE    LNK-WKSRY-RENNUM (IDX1)
+                                                   TO  WRK-RENNUM
+                               MOVE    IDX1            TO  IDX2
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF     IDX2                 >   ZERO
+                   ADD     1              TO  IDX4
+                   MOVE    LNK-WKSRYACT-REC(IDX2)
+                                          TO  SRT-WKSRYACT-REC (IDX4)
+                   MOVE    SPACE          TO  LNK-WKSRYACT-REC(IDX2)
+                   INITIALIZE                 LNK-WKSRYACT-REC(IDX2)
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE               TO  LNK-WKSRYACT-AREA
+           INITIALIZE                  LNK-WKSRYACT-AREA
+      *
+            .
+       31012-WKSRYACT-SORT2-EXT.
+           EXIT.
+      *****************************************************************
+      *     診療行為内容編集処理
+      *****************************************************************
+       31013-WKSRYACT-HENSYORI-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  IDX-KOUI
+           MOVE    SPACE               TO  LNK-WKSRYACT-AREA
+           INITIALIZE                      LNK-WKSRYACT-AREA
+      *!
+      *!   IF     (IDH1                >   1  )  AND
+           IF     (IDH2                =   1  )
+             AND  (SPA-TBL-HKNCOMBI(2) NOT =   SPACE )
+               PERFORM 31012-HKNCOMBI-HEN-SEC
+           END-IF
+      *!   IF     (IDH1                =   1  )  AND
+      *           (IDH2                =   1  )
+      *!       CONTINUE
+      *!   ELSE
+           IF     (SPA-TBL-HKNCOMBI(2) NOT =   SPACE )  OR
+                  (SPA-TBL-SRYKA   (IDH1 2)    NOT =   SPACE )
+               PERFORM 31013-SRYKA-HEN-SEC
+           END-IF
+      *
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL       IDX2    >   IDX-MAX
+      *
+               IF     (IDX-KOUI        >   ZERO  )  AND
+                      (SRT-WKSRY-ZAINUM (IDX2) NOT =
+                                           LNK-WKSRY-ZAINUM (IDX-KOUI))
+      *            剤毎に処理を行う
+                   PERFORM 3101-WKSRYACT-HEN-SEC
+                   MOVE    SPACE           TO  LNK-WKSRYACT-AREA
+                   INITIALIZE                  LNK-WKSRYACT-AREA
+                   MOVE    ZERO            TO  IDX-KOUI
+               END-IF
+               ADD     1               TO  IDX-KOUI
+               MOVE    SRT-WKSRYACT-REC (IDX2)
+                                           TO  LNK-WKSRYACT-REC
+                                                            (IDX-KOUI)
+           END-PERFORM
+      *    剤毎に処理を行う
+           IF      IDX-KOUI        >   ZERO
+               PERFORM 3101-WKSRYACT-HEN-SEC
+           END-IF
+      *
+            .
+       31013-WKSRYACT-HENSYORI-EXT.
+           EXIT.
+      *****************************************************************
       *     診療行為内容編集処理
       *****************************************************************
        3101-WKSRYACT-HEN-SEC              SECTION.
       *
+      *!
+           IF      LNK-WKSRY-INPUTCD(1 1)(1:1)     =   "#"
+               GO      TO      3101-WKSRYACT-HEN-EXT
+           END-IF
+           IF      LNK-WKSRY-INPUTCD(1 1)(1:1)     =   "$"
+               GO      TO      3101-WKSRYACT-HEN-EXT
+           END-IF
+      *!
       *    診療コード計計算
            MOVE    ZERO                TO  IDZ
            MOVE    ZERO                TO  FLG-YAKUSOKU
@@ -927,7 +1142,7 @@
       *    剤別編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   IDX-KOUI )
-                           OR (IDG     >   500 )
+                           OR (IDG     >   600 )
       *        剤点数計
                MOVE    LNK-WKSRY-ZAITENKEI(IDX)    TO  WRK-ZAITEN
       *        回数計
@@ -945,7 +1160,7 @@
                IF      IDX                 =   1
                    MOVE    ZERO                TO  FLG-RSIFLG
                    ADD     1                   TO  IDG
-                   IF      IDG                 >   500
+                   IF      IDG                 >   600
                        MOVE    "1000"              TO  SPA-ERRCD
                    ELSE
                        PERFORM 31011-GYO1-HEN-SEC
@@ -955,7 +1170,7 @@
       *        剤明細編集
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5   )  OR
-                                  (IDG         >   500 )  OR
+                                  (IDG         >   600 )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDZ)
                                                   =   SPACE  AND
                                    LNK-WKSRY-INPUTCD(IDX IDZ)
@@ -1027,7 +1242,7 @@
                ELSE
                    ADD    1                    TO  IDG
                END-IF
-               IF      IDG                 <=  500
+               IF      IDG                 <=  600
                PERFORM 31013-INPUTCD-HEN-SEC
                MOVE    WRK-ZAIKEIJ         TO  SPA-GMN-TZAIKEI (IDG)
       *
@@ -1054,7 +1269,7 @@
       *
       *    剤終了編集
            ADD     1                   TO  IDG
-           IF      IDG                 >   500
+           IF      IDG                 >   600
                GO      TO      3101-WKSRYACT-HEN-EXT
            END-IF
            MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
@@ -1062,7 +1277,98 @@
             .
        3101-WKSRYACT-HEN-EXT.
            EXIT.
+      *!
+      *****************************************************************
+      *   保険組合せ編集処理
+      *****************************************************************
+       31012-HKNCOMBI-HEN-SEC          SECTION.
       *
+      *    剤編集
+           ADD     1                   TO  IDG
+           IF      IDG                 >   600
+               GO      TO      31012-HKNCOMBI-HEN-EXT
+           END-IF
+           MOVE    ALL "#"             TO  SPA-GMN-TMEISYO (IDG)
+           STRING  "《"                DELIMITED  BY  SIZE
+                   WRK-HKNCOMBIMEI     DELIMITED  BY  "  "
+                   "》"                DELIMITED  BY  SIZE
+                  INTO  SPA-GMN-TMEISYO (IDG)(3:)
+           END-STRING
+      *    剤終了編集
+           ADD     1                   TO  IDG
+           IF      IDG                 >   600
+               GO      TO      31012-HKNCOMBI-HEN-EXT
+           END-IF
+           MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
+      *
+            .
+       31012-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療科編集処理
+      *****************************************************************
+       31013-SRYKA-HEN-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SRYKAMEI
+           PERFORM VARYING     IDK     FROM   1   BY  1
+                   UNTIL       IDK     >   SPA-SRYKA-MAX
+               IF     SPA-GMN-SRYKAL (IDK)
+                                       =   WRK-SRYKA
+                   MOVE    SPA-GMN-SRYKAMEIL (IDK)
+                                               TO  WRK-SRYKAMEI
+                   MOVE    SPA-SRYKA-MAX       TO  IDH
+               END-IF
+           END-PERFORM
+           INITIALIZE                  SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    WRK-DRCD            TO  SYS-1010-KBNCD
+      *    システム管理検索
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 960-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1010-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1010-REC
+               MOVE    SYS-1010-NAME       TO  WRK-DRCD-MEI
+           ELSE
+               MOVE    SPACE               TO  WRK-DRCD-MEI
+           END-IF
+      *
+      *    剤編集
+           ADD     1                   TO  IDG
+           IF      IDG                 >   600
+               GO      TO      31013-SRYKA-HEN-EXT
+           END-IF
+           MOVE    ALL "="             TO  SPA-GMN-TMEISYO (IDG)
+           STRING  "＜＜"              DELIMITED  BY  SIZE
+                   WRK-SRYKAMEI        DELIMITED  BY  SPACE
+                   "　ドクター："      DELIMITED  BY  SIZE
+                   WRK-DRCD-MEI        DELIMITED  BY  SPACE
+                    "＞＞"             DELIMITED  BY  SIZE
+               INTO                    SPA-GMN-TMEISYO (IDG)(3:)
+           END-STRING
+      *    剤終了編集
+           ADD     1                   TO  IDG
+           IF      IDG                 >   600
+               GO      TO      31013-SRYKA-HEN-EXT
+           END-IF
+           MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
+      *
+            .
+       31013-SRYKA-HEN-EXT.
+           EXIT.
+      *!
       *****************************************************************
       *   入院時回数編集処理
       *****************************************************************
@@ -1357,6 +1663,10 @@
                                        TO  SPA-NAI-ZAINUM  (IDX-NAI)
            MOVE    LNK-WKSRY-SRYKBN (IDX)
                                        TO  SPA-NAI-SRYKBN  (IDX-NAI)
+           MOVE    LNK-WKSRY-HKNCOMBI(IDX)
+                                       TO  SPA-NAI-HKNCOMBI(IDX-NAI)
+           MOVE    LNK-WKSRY-SRYKA   (IDX)
+                                       TO  SPA-NAI-SRYKA   (IDX-NAI)
       *****合計点数集計
       *    IF      WRK-SRYKAISUKEI     =   ZERO
       *        MOVE   1                    TO  WRK-SRYKAISUKEI
@@ -1420,7 +1730,7 @@
        31012-ZAIMEI-HEN-SEC                  SECTION.
       *
            ADD     1                   TO  IDG
-           IF      IDG                 >   500
+           IF      IDG                 >   600
                GO      TO      31012-ZAIMEI-HEN-EXT
            END-IF
            MOVE    WRK-BANGO           TO  SPA-GMN-NAIBANGO (IDG)
@@ -1524,7 +1834,7 @@
        31013-JIHIMEI-HEN-SEC           SECTION.
       *
            ADD     1                   TO  IDG
-           IF      IDG                 >   500
+           IF      IDG                 >   600
                GO      TO      31013-JIHIMEI-HEN-EXT
            END-IF
            MOVE    WRK-BANGO           TO  SPA-GMN-NAIBANGO (IDG)
@@ -1599,7 +1909,7 @@
              AND ((FLG-KAISUU-ARI2     =   ZERO )  OR
                   (FLG-KAISUU-ARI3     =   ZERO ))
                ADD     1                   TO  IDG
-               IF      IDG                 >   500
+               IF      IDG                 >   600
                    GO      TO      31013-JIHIMEI-HEN-EXT
                END-IF
       *        回数
@@ -1952,7 +2262,7 @@
       *    行選択
            MOVE    ZERO                TO  WRK-SELNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   500
+                   UNTIL       IDX     >   600
                IF      K08-SELECT (IDX)        =   "T"
                    MOVE    SPA-GMN-NAIBANGO (IDX)  TO  WRK-SELNUM
                END-IF
@@ -2082,7 +2392,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY             >   500 )  OR
+                   UNTIL      (IDY             >   600 )  OR
                               (FLG-OK          =   1     )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-SELNUM (IDX)    =   SPA-NAI-BANGO (IDY)
@@ -2310,6 +2620,9 @@
            MOVE    ZERO                TO  IDX-KOUI
            MOVE    ZERO                TO  LNK-WKSRYACT-MAX
            INITIALIZE                  HZN-PARA-AREA
+           MOVE    SPACE               TO  LNK-SYUNOU-AREA
+           INITIALIZE                  LNK-SYUNOU-AREA
+           MOVE    ZERO                TO  LNK-SYUNOU-MAX
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
            OPEN    INPUT               PARA-FILE
@@ -2327,10 +2640,22 @@
                        ADD     1                   TO  IDX
                        MOVE    PARA-DATA-REC       TO  LNK-WKSRYACT-REC
                                                                 (IDX)
+                       IF      LNK-WKSRY-HKNCOMBI(IDX) =   ZERO
+                           MOVE    SPA-HKNCOMBINUM TO
+                                                LNK-WKSRY-HKNCOMBI(IDX)
+                       END-IF
+                       IF      LNK-WKSRY-SRYKA   (IDX) =   SPACE
+                           MOVE    SPA-SRYKA       TO
+                                                LNK-WKSRY-SRYKA   (IDX)
+                       END-IF
                        MOVE    IDX                 TO  LNK-WKSRYACT-MAX
       *            収納
                    WHEN    "SYUNOU"
-                       MOVE    PARA-DATA-REC       TO  SYUNOU-REC
+                       ADD     1                   TO  LNK-SYUNOU-MAX
+                       IF      LNK-SYUNOU-MAX      <=  15
+                           MOVE    PARA-DATA-REC   TO  LNK-SYUNOU-REC
+                                                       (LNK-SYUNOU-MAX)
+                       END-IF
       *            その他
                    WHEN    OTHER
                        ADD     1                   TO  IDY
@@ -2375,13 +2700,13 @@
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX
                MOVE    ZERO                TO  FLG-DEL
                PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY     >   500
+                       UNTIL       IDY     >   600
                    IF      LNK-WKSRY-ZAINUM (IDX)  =   SPA-NAI-ZAINUM
                                                                  (IDY)
                        IF      SPA-NAI-DELFLG (IDY)    =   1
                            MOVE    1               TO  FLG-DEL
                        END-IF
-                       MOVE    500             TO  IDY
+                       MOVE    600             TO  IDY
                    END-IF
                END-PERFORM
                IF      FLG-DEL             =   ZERO
@@ -2406,34 +2731,74 @@
       *****************************************************************
        45012-SYUNOU-SYORI-SEC             SECTION.
       *
-      *    各点数
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
-               MOVE    SPA-GMN-HKNTEN (IDX)    TO  SYU-HKNTEN (IDX)
-           END-PERFORM
-           MOVE    ZERO                TO  SYU-HKNTEN(12)
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   11
-      *        保険合計点数
-               ADD     SYU-HKNTEN(IDX)         TO  SYU-HKNTEN(12)
-           END-PERFORM
+      *    初期設定処理
+           PERFORM 450121-GAIFTN-SYOKI-SEC
       *
-      *    薬剤一部負担金計算処理
-           PERFORM 4505-YAKFTN-KEI-SEC
+           MOVE    SPACE               TO  LNK-SYUNOU2-AREA
+           INITIALIZE                  LNK-SYUNOU2-AREA
+           INITIALIZE                  LNK-SYUNOU2-MAX
       *
-           MOVE    "SYUNOU"            TO  PARA-FILEMEI
-           MOVE    01                  TO  PARA-EDANUM
-           MOVE    SYUNOU-REC          TO  PARA-DATA-REC
-           WRITE                       PARA-REC
+           PERFORM VARYING   IDH1      FROM    1   BY  1
+                   UNTIL    (IDH1      >   15  )   OR
+                            (SPA-TBL-HKNCOMBI(IDH1)    =   SPACE)
+               MOVE    SPA-TBL-HKNCOMBI(IDH1)     TO  WRK-HKNCOMBI
+               PERFORM VARYING   IDH2      FROM   1   BY  1
+                       UNTIL    (IDH2      >   10  )  OR
+                                (SPA-TBL-SRYKA (IDH1 IDH2) =   SPACE )
+                   MOVE    SPA-TBL-SRYKA (IDH1 IDH2)   TO  WRK-SRYKA
+                   PERFORM VARYING     IDH     FROM    1   BY  1
+                           UNTIL      (IDH     >   15  )  OR
+                                      (IDH     >   LNK-SYUNOU-MAX)
+                       IF      (LNK-SYU-HKNCOMBINUM (IDH)
+                                               =   WRK-HKNCOMBI ) AND
+                               (LNK-SYU-SRYKA (IDH)
+                                               =   WRK-SRYKA    )
+                           PERFORM 45013-SYUNOU-HENSYU-SEC
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
+               IF     (SPA-TBL-SRYKA (IDH1 2)  NOT =   SPACE)
+                 AND  (SPA-KAGRPFLG            =   "0"  )
+      *            複数科合計追加
+                   MOVE    ZERO            TO  WRK-SRYKA
+                   PERFORM 45014-SYUNOU-ADD-SEC
+               END-IF
+           END-PERFORM
+      *    複数科まとめ集計フラグ
+           MOVE    SPA-KAGRPFLG        TO  LNK-S01-KAGRPFLG
+      *
+      *    負担金計算処理
+           CALL    "ORCSGAIFTN"        USING
+                                       MCPAREA
+                                       LNK-ORCS01-REC
+                                       LNK-SYUNOU2-AREA
+      *
+           IF      SPA-KAGRPFLG        =   "0"
+      *        複数科まとめ集計の差額計算
+               PERFORM 45016-SYUNOU-SAGAKU-SEC
+           ELSE
+      *        複数科まとめ集計をしない場合、科合計を計算
+               PERFORM 45015-SYUNOU-GOUKEI-SEC
+           END-IF
+      *
+           MOVE    ZERO                TO  PARA-EDANUM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   LNK-SYUNOU2-MAX
+               ADD     1                   TO  PARA-EDANUM
+               MOVE    "SYUNOU"            TO  PARA-FILEMEI
+               MOVE    LNK-SYUNOU2-REC(IDX)
+                                           TO  PARA-DATA-REC
+               WRITE                       PARA-REC
+           END-PERFORM
       *
            .
        45012-SYUNOU-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    薬剤一部負担金計算処理
+      *    初期設定処理
       *****************************************************************
-       4505-YAKFTN-KEI-SEC             SECTION.
+       450121-GAIFTN-SYOKI-SEC             SECTION.
       *
            INITIALIZE                  LNK-ORCS01-REC
            MOVE    ZERO                TO  IDX-Y
@@ -2467,7 +2832,10 @@
                    MOVE    ZERO            TO  WRK-FUNSAI-CNT
                END-IF
       *
-               IF      LNK-WKSRY-SRYYMD (IDX)      =   SPACE
+               IF     (LNK-WKSRY-SRYYMD (IDX)      =   SPACE ) OR
+                      (LNK-WKSRY-HKNCOMBI(IDX) NOT =   SYU-HKNCOMBINUM)
+                  OR  ((SYU-SRYKA              NOT =   ZERO  )  AND
+                      (LNK-WKSRY-SRYKA   (IDX) NOT =   SYU-SRYKA  ))
                    CONTINUE
                ELSE
       *            診療内容編集（薬剤と服用方法)
@@ -2477,14 +2845,6 @@
                                                    =   SPACE )
                        PERFORM 45051-ORCS01-SET-SEC
                    END-PERFORM
-      *
-      *            自賠責の時、技術点を集計する
-                   IF      (SPA-HKNKBN         =   1   )  AND
-                           (SPA-RSI-HKNKBN     =   "4" )  AND
-                           (LNK-WKSRY-SYUTEN1 (IDX)    >   ZERO )
-                       PERFORM 45052-JIBAI-SYORI-SEC
-                   END-IF
-               END-IF
            END-PERFORM
       *
       *    剤ごとに点数を入れ直す
@@ -2503,11 +2863,9 @@
       *
                END-IF
            END-PERFORM
-      *
-      *    薬剤一部負担金計算処理
+      *    訂正処理
            IF      SPA-SYORIFLG        =   1
                MOVE    "1"             TO  LNK-S01-SAIKEISAN-KBN
-               MOVE    SPA-DENPNUM     TO  LNK-S01-SAIKEISAN-DENPYO
            END-IF
       *Ｈ１４．１０以降
       *    高齢者（在宅総合・在宅末期）算定患者区分
@@ -2534,12 +2892,304 @@
                END-IF
            END-IF
       *
-      *    継続区分
-           MOVE    SYU-CONTKBN         TO  WRK-SYU-CONTKBN
-           MOVE    SPA-CONTKBN         TO  SYU-CONTKBN
+           .
+       450121-GAIFTN-SYOKI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納更新処理
+      *****************************************************************
+       45013-SYUNOU-HENSYU-SEC             SECTION.
+      *
+           MOVE    LNK-SYUNOU-REC (IDH)    TO  SYUNOU-REC
+           MOVE    ZERO                TO  SYU-HKNTEN(02)
+           MOVE    ZERO                TO  SYU-HKNTEN(04)
+           MOVE    ZERO                TO  SYU-HKNTEN(05)
+           MOVE    ZERO                TO  SYU-HKNTEN(06)
+           MOVE    ZERO                TO  SYU-HKNTEN(07)
+           MOVE    ZERO                TO  SYU-HKNTEN(08)
+           MOVE    ZERO                TO  SYU-HKNTEN(09)
+           MOVE    ZERO                TO  SYU-HKNTEN(10)
+      *    各点数
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >  600
+               IF     (SPA-NAI-HKNCOMBI(IDY)   =   LNK-SYU-HKNCOMBINUM
+                                                             (IDH)) AND
+                     ((LNK-SYU-SRYKA   (IDH)   =   ZERO      )  OR
+                      (SPA-NAI-SRYKA   (IDY)   =   LNK-SYU-SRYKA
+                                                             (IDH))) AND
+                      (SPA-NAI-DELFLG (IDY)    NOT =   1  )
+                   PERFORM 450120-HKNTEN-KEI-SEC
+               END-IF
+           END-PERFORM
+           MOVE    ZERO                TO  SYU-HKNTEN(12)
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   11
+      *        保険合計点数
+               ADD     SYU-HKNTEN(IDX)         TO  SYU-HKNTEN(12)
+           END-PERFORM
+      *
+           ADD     1                   TO  LNK-SYUNOU2-MAX
+      *
+      *    薬剤一部負担金計算処理
+           PERFORM 4505-YAKFTN-KEI-SEC
+      *
+           MOVE    SYUNOU-REC          TO  LNK-SYUNOU2-REC
+                                                   (LNK-SYUNOU2-MAX)
+           .
+       45013-SYUNOU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納更新・科合計追加処理
+      *****************************************************************
+       45014-SYUNOU-ADD-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  SYUNOU-REC
+           INITIALIZE                  SYUNOU-REC
+           PERFORM VARYING     IDS1    FROM    1   BY  1
+                   UNTIL       IDS1    >   LNK-SYUNOU2-MAX
+               IF      LNK-SYU2-HKNCOMBINUM(IDS1)
+                                           =   WRK-HKNCOMBI
+                   IF      SYU-PTID        =   ZERO
+                       MOVE    LNK-SYUNOU2-REC (IDS1)
+                                           TO  SYUNOU-REC
+                   ELSE
+                       PERFORM 450141-SYUNOU-ADD-HEN-SEC
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           MOVE    ZERO                TO  SYU-SRYKA
+           ADD     1                   TO  LNK-SYUNOU2-MAX
+           MOVE    SYUNOU-REC          TO  LNK-SYUNOU2-REC
+                                                   (LNK-SYUNOU2-MAX)
+      *
+           .
+       45014-SYUNOU-ADD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納更新・科合計追加処理
+      *****************************************************************
+       450141-SYUNOU-ADD-HEN-SEC             SECTION.
+      *
+           MOVE    LNK-SYUNOU2-REC (IDS1)  TO  WRK-SYUNOU-REC
+      *
+           ADD     WRK-SYU-TAX-TAISHOU TO  SYU-TAX-TAISHOU
+           ADD     WRK-SYU-TAX-MONEY   TO  SYU-TAX-MONEY
+           ADD     WRK-SYU-SKYGK       TO  SYU-SKYGK
+           ADD     WRK-SYU-HKNTEKMONEY TO  SYU-HKNTEKMONEY
+           PERFORM VARYING     IDS2    FROM    1   BY  1
+                   UNTIL       IDS2    >   12
+               ADD    WRK-SYU-HKNTEN (IDS2)    TO  SYU-HKNTEN(IDS2)
+               ADD    WRK-SYU-MONEY (IDS2)     TO  SYU-MONEY (IDS2)
+               ADD    WRK-SYU-TGMONEY (IDS2)   TO  SYU-TGMONEY(IDS2)
+               ADD    WRK-SYU-TGMONEY-TAX (IDS2)
+                                               TO  SYU-TGMONEY-TAX(IDS2)
+           END-PERFORM
+           PERFORM VARYING     IDS2    FROM    1   BY  1
+                   UNTIL       IDS2    >   5
+               ADD    WRK-SYU-JIHI-TAXNASI (IDS2)
+                                           TO  SYU-JIHI-TAXNASI(IDS2)
+               ADD    WRK-SYU-JIHI-TAXARI (IDS2)
+                                           TO  SYU-JIHI-TAXARI(IDS2)
+           END-PERFORM
+           ADD     WRK-SYU-JIHI-TOTAL      TO  SYU-JIHI-TOTAL
+           ADD     WRK-SYU-JIHI-TOTAL-TAX  TO  SYU-JIHI-TOTAL-TAX
+           ADD     WRK-SYU-JIHI-TAX        TO  SYU-JIHI-TAX
+           ADD     WRK-SYU-RJN-FTN         TO  SYU-RJN-FTN
+           ADD     WRK-SYU-KOH-FTN         TO  SYU-KOH-FTN
+           ADD     WRK-SYU-KOH-FTN-ENTANI  TO  SYU-KOH-FTN-ENTANI
+           ADD     WRK-SYU-YKZ-FTN         TO  SYU-YKZ-FTN
+      *調整金
+           ADD     WRK-SYU-CHOSEI          TO  SYU-CHOSEI
+      *労災保険
+           ADD     WRK-SYU-RSISHOSHIN-MONEY
+                                           TO  SYU-RSISHOSHIN-MONEY
+           ADD     WRK-SYU-RSISAISHIN-MONEY
+                                           TO  SYU-RSISAISHIN-MONEY
+           ADD     WRK-SYU-RSISDO-MONEY    TO  SYU-RSISDO-MONEY
+           ADD     WRK-SYU-RSIETC-MONEY    TO  SYU-RSIETC-MONEY
+           ADD     WRK-SYU-RSI-TAX-SAI     TO  SYU-RSI-TAX-SAI
+           ADD     WRK-SYU-RSI-TOTAL       TO  SYU-RSI-TOTAL
+           ADD     WRK-SYU-RSIJIBAI-SKYMONEY
+                                           TO  SYU-RSIJIBAI-SKYMONEY
+      *請求金額−消費税（再掲）
+           ADD     WRK-SYU-SKYMONEY-TAX-SAI TO  SYU-SKYMONEY-TAX-SAI
+      *請求金額
+           ADD     WRK-SYU-SKYMONEY        TO  SYU-SKYMONEY
+      *入金合計額
+           ADD     WRK-SYU-NYUKIN-TOTAL    TO  SYU-NYUKIN-TOTAL 
+      *診療区分別給付外点数
+           PERFORM VARYING     IDS2    FROM    1   BY  1
+                   UNTIL       IDS2    >   6
+               ADD    WRK-SYU-KYUFUGAI-TEN (IDS2)
+                                       TO  SYU-KYUFUGAI-TEN(IDS2)
+           END-PERFORM
+      *
+           .
+       45012-SYUNOU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    複数科まとめ集計の差額計算処理
+      *****************************************************************
+       45016-SYUNOU-SAGAKU-SEC             SECTION.
+      *
+           PERFORM VARYING     IDS1    FROM    1   BY  1
+                   UNTIL       IDS1    >   LNK-SYUNOU2-MAX
+               IF      LNK-SYU2-SRYKA (IDS1)   =   ZERO
+                   MOVE    LNK-SYU2-HKNCOMBINUM(IDS1)
+                                               TO  WRK-HKNCOMBI
+                   MOVE    ZERO                TO  IDS3
+                   MOVE    ZERO                TO  WRK-SKYMONEY
+                   MOVE    LNK-SYUNOU2-REC (IDS1)  TO  SYUNOU-REC
+                   PERFORM VARYING     IDS2    FROM    1   BY  1
+                           UNTIL       IDS2    >   LNK-SYUNOU2-MAX
+                       IF     (LNK-SYU2-HKNCOMBINUM(IDS2)
+                                               =   WRK-HKNCOMBI ) AND
+                              (LNK-SYU2-SRYKA (IDS2)
+                                           NOT =   ZERO  )
+                           ADD     LNK-SYU2-SKYMONEY(IDS2)
+                                               TO  WRK-SKYMONEY
+                           MOVE    IDS2        TO  IDS3
+                       END-IF
+                   END-PERFORM
+                   COMPUTE SYU-GRP-SGKMONEY    =   SYU-SKYMONEY
+                                               -   WRK-SKYMONEY
+                   MOVE    SYUNOU-REC          TO  LNK-SYUNOU2-REC(IDS1)
+      *            最後の収納に差額編集、請求額変更
+                   MOVE    SYU-GRP-SGKMONEY    TO  LNK-SYU2-GRP-SGKMONEY
+                                                                (IDS3)
+                   COMPUTE LNK-SYU2-SKYMONEY(IDS3)
+                                               =   LNK-SYU2-SKYMONEY
+                                                                (IDS3)
+                                               +   SYU-GRP-SGKMONEY
+               END-IF
+           END-PERFORM
+      *
+           .
+       45016-SYUNOU-SAGAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    複数科まとめ集計なしの収納合計作成処理
+      *****************************************************************
+       45015-SYUNOU-GOUKEI-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  SYUNOU-REC
+           INITIALIZE                  SYUNOU-REC
+           PERFORM VARYING     IDS1    FROM    1   BY  1
+                   UNTIL       IDS1    >   LNK-SYUNOU2-MAX
+               IF      LNK-SYU2-SRYKA (IDS1)   =   ZERO
+                   MOVE    LNK-SYU2-HKNCOMBINUM(IDS1)
+                                               TO  WRK-HKNCOMBI
+                   MOVE    LNK-SYUNOU2-REC (IDS1)  TO  SYUNOU-REC
+                   INITIALIZE                  SYU-RSI-TOTAL
+                   INITIALIZE                  SYU-SKYMONEY-TAX-SAI
+                   INITIALIZE                  SYU-SKYMONEY
+                   INITIALIZE                  SYU-NYUKIN-TOTAL
+                   PERFORM VARYING     IDS2    FROM    1   BY  1
+                           UNTIL       IDS2    >   LNK-SYUNOU2-MAX
+                       IF     (LNK-SYU2-HKNCOMBINUM(IDS2)
+                                               =   WRK-HKNCOMBI ) AND
+                              (LNK-SYU2-SRYKA (IDS2)
+                                           NOT =   ZERO  )
+                           ADD     LNK-SYU2-RSI-TOTAL(IDS2)
+                                               TO  SYU-RSI-TOTAL
+                           ADD     LNK-SYU2-SKYMONEY-TAX-SAI(IDS2)
+                                               TO  SYU-SKYMONEY-TAX-SAI
+                           ADD     LNK-SYU2-SKYMONEY (IDS2)
+                                               TO  SYU-SKYMONEY
+                           ADD     LNK-SYU2-NYUKIN-TOTAL(IDS2)
+                                               TO  SYU-NYUKIN-TOTAL
+                       END-IF
+                   END-PERFORM
+                   MOVE    SYUNOU-REC      TO  LNK-SYUNOU2-REC (IDS1)
+               END-IF
+           END-PERFORM
+      *
+           .
+       45015-SYUNOU-GOUKEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    薬剤一部負担金計算処理
+      *****************************************************************
+       450120-HKNTEN-KEI-SEC             SECTION.
+      *
+           EVALUATE    SPA-NAI-SRYKBN (IDY)(1:1)
+      *        指導
+               WHEN    "1"
+                   IF      SPA-NAI-SRYKBN (IDY)    =   "13"
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                                   TO  SYU-HKNTEN (02)
+                   END-IF
+      *        投薬
+                   WHEN    "2"
+                       IF      SPA-NAI-HKNSFLG (IDY)   =   ZERO
+                           ADD     SPA-NAI-HKNTEN (IDY)
+                                                   TO  SYU-HKNTEN (04)
+                       ELSE
+                           COMPUTE SYU-HKNTEN (04)
+                                                   =   SYU-HKNTEN (04)
+                                                   -   SPA-NAI-HKNTEN
+                                                                 (IDY)
+                       END-IF
+                   WHEN    "3"
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (05)
+                   WHEN    "4"
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (06)
+                   WHEN    "5"
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (07)
+                   WHEN    "6"
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (08)
+                   WHEN    "7"
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (09)
+                   WHEN    "8"
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (10)
+      *                食事
+                   WHEN    "9"
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (10)
+           END-EVALUATE
+      *
+           .
+       450120-HKNTEN-KEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    薬剤一部負担金計算処理
+      *****************************************************************
+       4505-YAKFTN-KEI-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   LNK-WKSRYACT-MAX
+      *
+               IF     (LNK-WKSRY-SRYYMD (IDX)      =   SPACE ) OR
+                      (LNK-WKSRY-HKNCOMBI(IDX) NOT =   SYU-HKNCOMBINUM)
+                  OR  ((SYU-SRYKA              NOT =   ZERO  )  AND
+                      (LNK-WKSRY-SRYKA   (IDX) NOT =   SYU-SRYKA  ))
+                   CONTINUE
+               ELSE
+      *            自賠責の時、技術点を集計する
+                   IF      (SPA-HKNKBN         =   1   )  AND
+                           (SPA-RSI-HKNKBN     =   "4" )  AND
+                           (LNK-WKSRY-SYUTEN1 (IDX)    >   ZERO )
+                       PERFORM 45052-JIBAI-SYORI-SEC
+                   END-IF
+               END-IF
+           END-PERFORM
       *
       *    船員保険で初診料算定時
-           IF     (SPA-HKNNUM          =   "002" )  AND
+           IF     (SYU-SYUHKNNUM       =   "002" )  AND
                   (SYU-HKNTEN (01)     >   ZERO  )  AND
                   (SPA-SYOSIN          =   1     )
                PERFORM 45053-SENINFLG-SET-SEC
@@ -2551,14 +3201,6 @@
                   (SPA-HKNKBN          =   ZERO )
                PERFORM 45054-PREFNUM-40-SEC
            END-IF
-      *
-      *
-      *****CALL    "ORCS01NEW"         USING   MCPAREA
-           CALL    "ORCS01"            USING   MCPAREA
-                                               LNK-ORCS01-REC
-                                               SYUNOU-REC
-      *    継続区分
-           MOVE    WRK-SYU-CONTKBN     TO  SYU-CONTKBN
       *
            .
        4505-YAKFTN-KEI-EXT.
@@ -2677,11 +3319,13 @@
                        IF      LNK-WKSRY-SRYCD (IDX IDS)(1:5)
                                                        =   "09591"
                            ADD     TNS-TEN         TO  LNK-S01-SINDAN
+                                                      (LNK-SYUNOU2-MAX)
                        END-IF
       *                自賠責明細書料集計
                        IF      LNK-WKSRY-SRYCD (IDX IDS)(1:5)
                                                        =   "09592"
                            ADD     TNS-TEN         TO  LNK-S01-MEISAI
+                                                      (LNK-SYUNOU2-MAX)
                        END-IF
                    END-IF
       *            療養担当手当の点数をゼロとする
@@ -2690,6 +3334,7 @@
                        ADD     TNS-TEN         TO  WRK-SYUTEN1
       *                自賠責療養担当手当点数
                        ADD     TNS-TEN         TO  LNK-S01-RYOYO
+                                                      (LNK-SYUNOU2-MAX)
                    END-IF
       *
                END-PERFORM
@@ -2723,7 +3368,9 @@
            IF      LNK-WKSRY-SYUTEN1 (IDX) <   WRK-SYUTEN1
                CONTINUE
            ELSE
-               COMPUTE LNK-S01-SYUTEN      =   LNK-S01-SYUTEN
+               COMPUTE LNK-S01-SYUTEN (LNK-SYUNOU2-MAX)
+                                           =   LNK-S01-SYUTEN
+                                                      (LNK-SYUNOU2-MAX)
                                            +  (LNK-WKSRY-SYUTEN1 (IDX)
                                            -   WRK-SYUTEN1    )
            END-IF
@@ -2765,6 +3412,7 @@
                                                "C"  OR
                                                "F"  )
                    MOVE    "1"             TO  LNK-S01-SENINFLG
+                                                      (LNK-SYUNOU2-MAX)
                END-IF
            END-IF
            .
@@ -2783,6 +3431,13 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   LNK-WKSRYACT-MAX )  OR
                               (IDX-SYU >=  5                )
+      *
+           IF     (LNK-WKSRY-SRYYMD (IDX)      =   SPACE ) OR
+                  (LNK-WKSRY-HKNCOMBI(IDX) NOT =   SYU-HKNCOMBINUM)
+              OR  ((SYU-SRYKA              NOT =   ZERO  )  AND
+                  (LNK-WKSRY-SRYKA   (IDX) NOT =   SYU-SRYKA  ))
+               CONTINUE
+           ELSE
       *        剤毎にクリアする
                IF     (IDX                 >   1    )  AND
                       (LNK-WKSRY-ZAINUM (IDX) NOT =
@@ -2819,6 +3474,8 @@
                                                      (IDX-SYU IDX-SYU2)
                        END-IF
                    END-PERFORM
+      *
+               END-IF
       *
                END-IF
            END-PERFORM
@@ -3405,6 +4062,14 @@
                    MOVE    ALL "-"                 TO  K08-BANGO (IDX)
                    MOVE    ALL "-"                 TO  K08-DELFLG(IDX)
                END-IF
+               IF      SPA-GMN-TMEISYO (IDX)(1:1)  =  "#"
+                   MOVE    ALL "#"                 TO  K08-BANGO (IDX)
+                   MOVE    ALL "#"                 TO  K08-DELFLG(IDX)
+               END-IF
+               IF      SPA-GMN-TMEISYO (IDX)(1:1)  =  "="
+                   MOVE    ALL "="                 TO  K08-BANGO (IDX)
+                   MOVE    ALL "="                 TO  K08-DELFLG(IDX)
+               END-IF
            END-PERFORM
            MOVE    SPA-K08-MAX         TO  K08-COUNT
            MOVE    "user-font"         TO  K08-MEI-STYLE
@@ -3842,6 +4507,25 @@
       *
            .
        910-HKNCOMBI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理マスタ読込
+      *****************************************************************
+       960-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       960-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************

@@ -2171,6 +2171,9 @@
                                        -   1
                GO      TO      3301-SYOSIN-HEN-EXT
            END-IF
+      *TEST
+           DISPLAY "C10S INPUTCD:" SPA-COM-INPUTCD(SPA-GMN-IDX)
+                ",SURYO:" SPA-COM-SURYO(SPA-GMN-IDX)
       *
            IF      WRK-SRYCD(1:2)      =   "83"
       *        再編集処理
@@ -2907,10 +2910,10 @@
            END-IF
       *
       *    入院日の時、初診料のみ算定する
-           IF     (SPA-NYUGAIKBN       =   "1" )
+           IF      SPA-NYUGAIKBN       =   "1" 
                GO      TO      2009-RSIHKN-SET-EXT
            END-IF
-          IF      WRK-SRYCD(1:2)      =   "83"
+           IF      WRK-SRYCD(1:2)      =   "83"
                MOVE    "0109"              TO  SPA-KIDCD
                GO      TO      2009-RSIHKN-SET-EXT
            END-IF
@@ -3479,9 +3482,12 @@
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *      自費は対象外
-             IF      SPA-COM-SRYKBN(IDX)     =   "95" OR
+             IF     (SPA-COM-SRYKBN(IDX)     =   "95" OR
                                                  "96" OR
-                                                 "99"
+                                                 "99"  )  OR
+      *!             複数科・保険行
+                    (SPA-GMN-INPUTCD(IDX)(1:1)   =   "#"  OR
+                                                     "$" )
                  CONTINUE
              ELSE
       *        小児科外来診療科の時、小児科外来診療科のみであること
