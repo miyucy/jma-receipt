@@ -5423,6 +5423,7 @@
                   MOVE     ZERO      TO     RECE62-KOUREI-SAIKEI
            ELSE
               IF   FTN-KOH-XXX   =   ZERO        
+              OR   WRK-KOH-FTN   =   ZERO
                   MOVE     ZERO      TO     RECE62-KOUREI-SAIKEI
               ELSE 
                   IF  FLG-KOH     =   ZERO

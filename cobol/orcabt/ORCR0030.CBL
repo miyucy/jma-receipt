@@ -3098,6 +3098,7 @@
                   MOVE     ZERO      TO     RECE02-ZAITAKU-SAIKEI
            ELSE
               IF   FTN-KOH-XXX   =   ZERO        
+              OR   WRK-KOH-FTN   =   ZERO
                   MOVE     ZERO      TO     RECE02-ZAITAKU-SAIKEI
               ELSE 
                   IF  FLG-KOH     =   ZERO
