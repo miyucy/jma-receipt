@@ -35,6 +35,8 @@
       *  01.01.04    NACL-藤原    03/01/10  印刷順通し番号を追加
       *  01.01.05    NACL-門脇    03/01/31  事業所名の長さ変更のため
       *                                     帳票ＩＤ追加
+      *  01.00.06    NACL-門脇    03/02/12  医療機関名の長さ変更のため
+      *                                     帳票ＩＤ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -141,14 +143,19 @@
       *
       *    労災レセプト
            COPY    "HCM21.INC".
+           COPY    "HCM21V01.INC".
            COPY    "HCM22.INC".
            COPY    "HCM22V01.INC".
            COPY    "HCM24.INC".
+           COPY    "HCM24V01.INC".
            COPY    "HCM18.INC".
+           COPY    "HCM18V01.INC".
            COPY    "HCM20.INC".
+           COPY    "HCM20V01.INC".
       *
       *    自賠責レセプト
            COPY    "HCM23.INC".
+           COPY    "HCM23V01.INC".
            COPY    "HCM29.INC".           
       *
       *    ファイルデイレクトリ位置指定サブ
@@ -411,6 +418,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM21
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM21-RENNUM
                        MOVE    HCM21               TO  RECE08-PRTDATA
+                   WHEN    "HCM21V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM21V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM21V01-RENNUM
+                       MOVE    HCM21V01            TO  RECE08-PRTDATA
                    WHEN    "HCM22.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM22
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM22-RENNUM
@@ -423,18 +434,34 @@
                        MOVE    RECE08-PRTDATA      TO  HCM24
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM24-RENNUM
                        MOVE    HCM24               TO  RECE08-PRTDATA
+                   WHEN    "HCM24V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM24V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM24V01-RENNUM
+                       MOVE    HCM24V01            TO  RECE08-PRTDATA
                    WHEN    "HCM18.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM18
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM18-RENNUM
                        MOVE    HCM18               TO  RECE08-PRTDATA
+                   WHEN    "HCM18V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM18V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM18V01-RENNUM
+                       MOVE    HCM18V01            TO  RECE08-PRTDATA
                    WHEN    "HCM20.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM20
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM20-RENNUM
                        MOVE    HCM20               TO  RECE08-PRTDATA
+                   WHEN    "HCM20V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM20V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM20V01-RENNUM
+                       MOVE    HCM20V01            TO  RECE08-PRTDATA
                    WHEN    "HCM23.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM23
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM23-RENNUM
                        MOVE    HCM23               TO  RECE08-PRTDATA
+                   WHEN    "HCM23V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM23V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM23V01-RENNUM
+                       MOVE    HCM23V01            TO  RECE08-PRTDATA
                    WHEN    "HCM29.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM29
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM29-RENNUM

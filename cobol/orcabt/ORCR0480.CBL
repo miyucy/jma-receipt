@@ -34,6 +34,8 @@
       *                                     ＭＯＮＰＥに変更
       *  01.00.03    NACL-門脇    03/01/31  事業所名の長さ変更のため
       *                                     帳票ＩＤ変更
+      *  01.00.04    NACL-門脇    03/02/12  医療機関名の長さ変更のため
+      *                                     帳票ＩＤ変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -149,7 +151,9 @@
       *
       *    長期・短期（続紙）     
       *****COPY    "HC24.INC".
-           COPY    "HCM24.INC"     REPLACING  //HCM24//
+      *****COPY    "HCM24.INC"     REPLACING  //HCM24//
+      *****                        BY         //HC24//.
+           COPY    "HCM24V01.INC"  REPLACING  //HCM24V01//
                                    BY         //HC24//.
       *
       *    スパ領域
@@ -1642,7 +1646,8 @@
                ELSE
                    MOVE    HC24                TO  RECE08-PRTDATA
       *************MOVE    "HC24"              TO  RECE08-FORMID
-                   MOVE    "HCM24.red"         TO  RECE08-FORMID
+      *************MOVE    "HCM24.red"         TO  RECE08-FORMID
+                   MOVE    "HCM24V01.red"      TO  RECE08-FORMID
                END-IF        
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC

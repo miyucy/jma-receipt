@@ -33,6 +33,8 @@
       *  01.00.02    NACL-藤原    02/11/26  日付ファイルのクローズ追加
       *  01.00.03    NACL-藤原    03/01/09  通し番号の追加のため
       *                                     ＭＯＮＰＥに変更
+      *  01.00.04    NACL-門脇    03/02/12  医療機関名の長さ変更のため
+      *                                     帳票ＩＤ変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -141,12 +143,16 @@
       *
       *    アフターケア（３７７０２）     
       *****COPY    "HC18.INC".
-           COPY    "HCM18.INC"     REPLACING  //HCM18//
+      *****COPY    "HCM18.INC"     REPLACING  //HCM18//
+      *****                        BY         //HC18//.
+           COPY    "HCM18V01.INC"  REPLACING  //HCM18V01//
                                    BY         //HC18//.
       *
       *    アフターケア（続紙）     	
       *****COPY    "HC20.INC".
-           COPY    "HCM20.INC"     REPLACING  //HCM20//
+      *****COPY    "HCM20.INC"     REPLACING  //HCM20//
+      *****                        BY         //HC20//.
+           COPY    "HCM20V01.INC"  REPLACING  //HCM20V01//
                                    BY         //HC20//.
       *
       *    スパ領域
@@ -1245,11 +1251,13 @@
                IF      CNT-PAGE            =   1                                 
                    MOVE    HC18                TO  RECE08-PRTDATA
       *************MOVE    "HC18"              TO  RECE08-FORMID
-                   MOVE    "HCM18.red"         TO  RECE08-FORMID
+      *************MOVE    "HCM18.red"         TO  RECE08-FORMID
+                   MOVE    "HCM18V01.red"      TO  RECE08-FORMID
                ELSE
                    MOVE    HC20                TO  RECE08-PRTDATA
       *************MOVE    "HC20"              TO  RECE08-FORMID
-                   MOVE    "HCM20.red"         TO  RECE08-FORMID
+      *************MOVE    "HCM20.red"         TO  RECE08-FORMID
+                   MOVE    "HCM20V01.red"      TO  RECE08-FORMID
                END-IF        
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC

@@ -32,6 +32,8 @@
       *  01.00.01    NACL-藤原    02/10/03  入外区分・処理区分の追加
       *  01.00.02    NACL-藤原    03/01/09  通し番号の追加のため
       *                                     ＭＯＮＰＥに変更
+      *  01.00.03    NACL-門脇    03/02/12  医療機関名の長さ変更のため
+      *                                     帳票ＩＤ変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -140,7 +142,9 @@
       *
       *    自賠責     
       *****COPY    "HC23.INC".
-           COPY    "HCM23.INC"     REPLACING  //HCM23//
+      *****COPY    "HCM23.INC"     REPLACING  //HCM23//
+      *****                        BY         //HC23//.
+           COPY    "HCM23V01.INC"  REPLACING  //HCM23V01//
                                    BY         //HC23//.
       *
       *    自賠責（続紙）     
@@ -1663,7 +1667,8 @@
                IF      CNT-PAGE            =   1                                 
                    MOVE    HC23                TO  RECE08-PRTDATA
       *************MOVE    "HC23"              TO  RECE08-FORMID
-                   MOVE    "HCM23.red"         TO  RECE08-FORMID
+      *************MOVE    "HCM23.red"         TO  RECE08-FORMID
+                   MOVE    "HCM23V01.red"      TO  RECE08-FORMID
                ELSE
                    MOVE    HC29                TO  RECE08-PRTDATA
       *************MOVE    "HC29"              TO  RECE08-FORMID
