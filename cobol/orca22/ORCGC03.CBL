@@ -52,6 +52,8 @@
       *                                     病名からのコード検索方法の修正
       *  01.01.05    NACL-藤原    03/06/25  確認画面からの戻りのとき画面が
       *                                     残らないように修正
+      *  01.01.06    NACL-藤原    03/07/17  入力ＣＤの長さを更新前にチェ
+      *                                     ックするよう追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1432,7 +1434,8 @@
       *
       *    半角チェック
            IF      C03-BYOMEIINPUTCD   =   SPACE
-               CONTINUE
+               MOVE    "0049"               TO  SPA-ERRCD
+               GO  TO  41002-BYOMEIINPUT-CHK-EXT
            ELSE    
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI 
@@ -2324,6 +2327,21 @@
                GO      TO      420-TUIKA-EXT
            END-IF
       *
+           MOVE    ZERO               TO  WRK-LENGTH
+      *      
+           PERFORM VARYING IDX FROM    10  BY  -1
+                   UNTIL   IDX <       1
+               IF      SPA-GMN-BYOMEIINPUTCD(IDX:1)
+                                   NOT =   SPACE
+                   MOVE    IDX             TO  WRK-LENGTH
+                   MOVE    1               TO  IDX
+               END-IF
+           END-PERFORM                                    
+           IF      WRK-LENGTH          =   7   OR  ZERO
+               MOVE    "0009"              TO  SPA-ERRCD
+               GO      TO      420-TUIKA-EXT
+           END-IF    
+      *
            IF      SPA-NAI-BYOMEIMOJI   =   ZERO
                IF      SPA-GMN-BYOMEI       =   SPACE
                    MOVE    "0010"               TO  SPA-ERRCD
@@ -2593,6 +2611,21 @@
                MOVE    "0049"               TO  SPA-ERRCD
                GO      TO      430-HENKOU-EXT
            END-IF
+      *
+           MOVE    ZERO               TO  WRK-LENGTH
+      *      
+           PERFORM VARYING IDX FROM    10  BY  -1
+                   UNTIL   IDX <       1
+               IF      SPA-GMN-BYOMEIINPUTCD(IDX:1)
+                                   NOT =   SPACE
+                   MOVE    IDX             TO  WRK-LENGTH
+                   MOVE    1               TO  IDX
+               END-IF
+           END-PERFORM                                    
+           IF      WRK-LENGTH          =   7   OR  ZERO
+               MOVE    "0009"              TO  SPA-ERRCD
+               GO      TO      430-HENKOU-EXT
+           END-IF    
       *
            IF      SPA-NAI-BYOMEIMOJI   =   ZERO
                IF      SPA-GMN-BYOMEI       =   SPACE
@@ -3278,7 +3311,7 @@
                WHEN    "0008"
                    MOVE    "項目に入力がありません"    TO  SPA-ERRMSG
                WHEN    "0009"
-                   MOVE    "病名入力コード入力エラー" 
+                   MOVE    "病名入力コードは半角７桁は入力できません" 
                                                        TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "病名が入力されていません"  TO  SPA-ERRMSG
