@@ -93,12 +93,15 @@ directory: directory.in
 dbgroup.inc: 
 	ln -sf ../etc/dbgroup.inc .
 
+orcadbs.inc:
+	ln -sf ../etc/orcadbs.inc .
+
 kentan.inc:
 	ln -sf ../etc/kentan.inc .
 
 clean: 
 	-rm -f $(LDFILE) $(BDFILE)
-	-rm -f directory dbgroup.inc kentan.inc
+	-rm -f directory dbgroup.inc kentan.inc orcadbs.inc
 
 distclean: clean
 	-rm -f Makefile

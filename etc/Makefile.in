@@ -6,6 +6,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 ETC_files = \
 	kentan.inc \
+	orcadbs.inc \
 	jma-receipt.env
 
 DBGROUP_files = dbgroup.inc 
