@@ -426,6 +426,9 @@
       *    職員情報
            COPY    "CPSK1010.INC".
       *
+      *    労災医療機関情報
+           COPY    "CPSK4001.INC".
+      *
       *    ワーク診療行為マスタ−
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
@@ -2622,6 +2625,12 @@
       *****************************************************************
        4501-KOUSIN-SYORI-SEC             SECTION.
       *
+      *    自賠責の時、システム管理検索
+           IF      (SPA-HKNKBN         =   1   )  AND
+                   (SPA-RSI-HKNKBN     =   "4" )
+               PERFORM 4500-RSI-SYSKANRI-SEC
+           END-IF
+      *
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDY
            MOVE    ZERO                TO  IDG
@@ -3445,7 +3454,9 @@
            END-IF
       *
       *    腰部固定帯加算を器材点数として対象外とする
-           IF      LNK-WKSRY-SRYKBN(IDX)(1:1)  NOT =   "9"
+      *    自賠責固定帯加算等取扱を判定する
+           IF     (SYS-4001-KOTEIKBN    =   "2"  OR   SPACE )  AND
+                  (LNK-WKSRY-SRYKBN(IDX)(1:1)  NOT =   "9"  )
                PERFORM VARYING     IDS     FROM    1   BY  1
                        UNTIL      (IDS         >   5   )  OR
                                   (LNK-WKSRY-SRYCD(IDX IDS)
@@ -4466,6 +4477,49 @@
       *
            .
        520-KIDSET-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理（労災情報）検索処理
+      *****************************************************************
+       4500-RSI-SYSKANRI-SEC         SECTION.
+      *
+      *    システム管理検索（労災情報）
+           MOVE    SPACE               TO  SYS-4001-REC
+           INITIALIZE                  SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 960-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-4001-REC
+               INITIALIZE                  SYS-4001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-4001-REC
+           ELSE
+               INITIALIZE                  SYS-4001-REC
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       4500-RSI-SYSKANRI-EXT.
            EXIT.
       *****************************************************************
       *    点数マスター読込
