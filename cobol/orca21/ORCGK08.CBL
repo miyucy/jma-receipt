@@ -2760,7 +2760,6 @@
                    END-PERFORM
                END-PERFORM
                IF     (SPA-TBL-SRYKA (IDH1 2)  NOT =   SPACE)
-                 AND  (SPA-KAGRPFLG            =   "0"  )
       *            複数科合計追加
                    MOVE    ZERO            TO  WRK-SRYKA
                    PERFORM 45014-SYUNOU-ADD-SEC
