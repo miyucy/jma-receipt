@@ -37,6 +37,7 @@
       *  01.00.07    NACL-藤原    03/04/21  地方公費データのとき主保険が
       *                                     無い場合は不明分とする
       *  01.00.08    NACL-藤原    03/05/09  入退院履歴情報に入院中区分の追加
+      *  01.00.09    NACL-門脇    03/05/28  病棟番号・種別編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -232,6 +233,10 @@
                05  WRK-PARA-SYSYMD                     PIC  X(08).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
+      *
+           03  WRK-SRYYMD.
+               05  WRK-SRYYYMM                         PIC  9(06).
+               05  WRK-SRYDD                           PIC  9(02).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -2038,6 +2043,22 @@
                                            TO   WRK-BYOTOKBN(IDX3)     
                         END-IF                                         
                       END-IF                                           
+      *               病棟番号・種別
+                      MOVE   RECE62-SRYYM  TO  WRK-SRYYYMM
+                      PERFORM  VARYING  IDX3   FROM    1   BY  1
+                                 UNTIL    IDX3    >  31
+                        MOVE    IDX3       TO  WRK-SRYDD
+                        IF   PTNYUINRRK-TENNYUYMD  <=  WRK-SRYYMD
+                        AND  PTNYUINRRK-TENSTUYMD  >=  WRK-SRYYMD
+                          IF   RECE62-BYOTONUM(IDX3)     =  SPACE
+                             MOVE  SYS-5001-BTU-NUM
+                                      TO    RECE62-BYOTONUM(IDX3)
+                             MOVE  SYS-5001-BTU-SBT
+                                      TO    RECE62-BYOTOSYUBETU(IDX3)
+                          END-IF
+                        END-IF
+                      END-PERFORM
+      *
                     END-IF                                             
                END-IF                                                  
                MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH              

@@ -28,6 +28,7 @@
       *  01.00.05    NACL-藤原    03.03.11  レセプト種別不明情報の追加
       *  01.00.06    NACL-門脇    03.04.16  船員保険（被保険者）＋通勤災害
       *                                     フラグの追加
+      *  01.00.07    NACL-門脇    03.05.28  病棟番号・種別の追加
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -237,6 +238,12 @@
            03  RECE62-BYOTOKBNINF         OCCURS  4.
       *病棟区分
                05  RECE62-BYOTOKBN        PIC  X(02).
+      *病棟種別情報
+           03  RECE62-BYOTOSYUBETUINF     OCCURS 31.
+      *病棟番号
+               05  RECE62-BYOTONUM        PIC  X(02).
+      *病棟種別
+               05  RECE62-BYOTOSYUBETU    PIC  X(02).
       *レセプト記載外公費情報（保険番号以外は現在未設定）
            03  RECE62-ETC-KOH-G.
                05  RECE62-ETC-KOHINF      OCCURS  4.

@@ -42,6 +42,8 @@
       *  01.00.10    NACL-ÃÁœ∆    03/05/08  ÃææŒÕ≠∏˙∑Â§Œ•ª•√•»
       *  01.00.11    NACL-ÃÁœ∆    03/05/22  ªƒŒÃ«—¥˛§ŒøÙŒÃ•ª•√•»
       *  01.00.12    NACL-ÃÁœ∆    03/05/23  ∞Ï…Ù…È√¥∂‚µ≠∫‹Ω§¿µ
+      *  01.00.13    NACL-ÃÁœ∆    03/05/28  œ∑øÕ¿∫ø¿…¬≈Ô≈˘§Œø«Œ≈π‘∞Ÿ•≥°º•…
+      *                                     √÷§≠¥π§®
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -168,6 +170,7 @@
            03  FLG-RECE65-ZAN                          PIC 9(01).
            03  FLG-REWRITE                             PIC 9(01).
            03  FLG-CHIHOU                              PIC 9(01).
+           03  FLG-OKIKAE                              PIC 9(01).
       *
       *
       *    •´•¶•Û•»ŒŒ∞Ë
@@ -2342,6 +2345,20 @@
                    END-IF    
                END-PERFORM
            END-PERFORM
+      *
+           MOVE      ZERO     TO    FLG-OKIKAE
+           IF   ( RECE62-AGE       >=  75        )
+           OR   ( RECE62-BIRTHDAY  <  "19321001" )
+               PERFORM     VARYING   IDX2   FROM    1    BY   1
+                           UNTIL    ( IDX2        >    31 )
+                             OR     ( FLG-OKIKAE  =     1 )
+                  IF  ( RECE62-BYOTOSYUBETU(IDX2) =  "02" OR "03" )
+                  AND ( RECE64-KAISU(1 IDX2)  NOT =  ZERO         )
+                        MOVE   1   TO   FLG-OKIKAE
+                  END-IF    
+               END-PERFORM
+           END-IF
+      *
            .
        RECE64-TENSOU-EXT.
            EXIT.
@@ -3053,10 +3070,57 @@
            MOVE    SRY-SRYKBN           TO      RECE65-SRYKBN
            MOVE    SRY-SRYSYUKBN        TO      RECE65-SRYSYUKBN
            MOVE    SRY-JIHIMONEYTOTAL   TO      RECE65-JIHIMONEY
+      *
            MOVE    ZERO                 TO      IDX4
            PERFORM     VARYING   IDX2   FROM    1    BY   1
                        UNTIL    (IDX2      >    5)    OR
                                 (SRY-SRYCD(IDX2)  =   SPACE)
+      *
+      *      œ∑øÕ¿∫ø¿…¬≈Ô≈˘§Œø«Œ≈π‘∞Ÿ•≥°º•…√÷§≠¥π§®
+             IF   FLG-OKIKAE   =   1
+                EVALUATE  SRY-SRYCD(IDX2)
+      *           ∑Ï±’≥ÿ≈™∏°∫∫»Ω√«Œ¡
+                  WHEN  "160061810"
+                      MOVE  "160703610"  TO  SRY-SRYCD(IDX2)
+                      COMPUTE  RECE64-SRYCDTOTAL  =  RECE64-SRYCDTOTAL
+                                                  +  641800
+      *           ∏°¬Œ∏°∫∫¥…Õ˝≤√ªª° £±°À
+                  WHEN  "160170170"
+                      MOVE  "160710070"  TO  SRY-SRYCD(IDX2)
+                      COMPUTE  RECE64-SRYCDTOTAL  =  RECE64-SRYCDTOTAL
+                                                  +  539900
+      *           ∏°¬Œ∏°∫∫¥…Õ˝≤√ªª° £≤°À
+                  WHEN  "160161610"
+                      MOVE  "160709310"  TO  SRY-SRYCD(IDX2)
+                      COMPUTE  RECE64-SRYCDTOTAL  =  RECE64-SRYCDTOTAL
+                                                  +  547700
+      *           ¿∏≤Ω≥ÿ≈™∏°∫∫° £±°À»Ω√«Œ¡
+                  WHEN  "160061910"
+                      MOVE  "160703710"  TO  SRY-SRYCD(IDX2)
+                      COMPUTE  RECE64-SRYCDTOTAL  =  RECE64-SRYCDTOTAL
+                                                  +  641800
+      *           ¿∏≤Ω≥ÿ≈™∏°∫∫° £≤°À»Ω√«Œ¡
+                  WHEN  "160062010"
+                      MOVE  "160703810"  TO  SRY-SRYCD(IDX2)
+                      COMPUTE  RECE64-SRYCDTOTAL  =  RECE64-SRYCDTOTAL
+                                                  +  641800
+      *           «¢°¶ µ ÿ≈˘∏°∫∫»Ω√«Œ¡
+                  WHEN  "160061710"
+                      MOVE  "160703510"  TO  SRY-SRYCD(IDX2)
+                      COMPUTE  RECE64-SRYCDTOTAL  =  RECE64-SRYCDTOTAL
+                                                  +  641800
+      *           »˘¿∏ ™≥ÿ≈™∏°∫∫»Ω√«Œ¡
+                  WHEN  "160062210"
+                      MOVE  "160704010"  TO  SRY-SRYCD(IDX2)
+                      COMPUTE  RECE64-SRYCDTOTAL  =  RECE64-SRYCDTOTAL
+                                                  +  641800
+      *           Ã»±÷≥ÿ≈™∏°∫∫»Ω√«Œ¡
+                  WHEN  "160062110"
+                      MOVE  "160703910"  TO  SRY-SRYCD(IDX2)
+                      COMPUTE  RECE64-SRYCDTOTAL  =  RECE64-SRYCDTOTAL
+                                                  +  641800
+                END-EVALUATE
+             END-IF
       *
              IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR  
                                                   "6" OR  "7" OR
