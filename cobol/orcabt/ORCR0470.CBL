@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02.09.20  検査のときは表用番号を編集しない
       *                                     検査のときZAITENを編集する
+      *  01.00.02    NACL-門脇    02.11.26  検診コードの診療区分編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -265,7 +266,9 @@
            MOVE    RECE46-ZAIMEISAISU   TO      RECE47-ZAIMEISAISU
            MOVE    RECE46-PTNUM         TO      RECE47-PTNUM
            MOVE    RECE46-SRYKA         TO      RECE47-SRYKA
-           IF      RECE46-SRYKBN        =       "99"
+           IF   (  RECE46-SRYKBN        =       "99"          )
+           OR   (( RECE46-SRYKBN        =       "11" OR "12" )  AND
+                 ( RECE46-ZAITEN        =       ZERO         )) 
                MOVE  SPACE              TO      RECE47-SRYKBN
            ELSE
                MOVE  RECE46-SRYKBN      TO      RECE47-SRYKBN
