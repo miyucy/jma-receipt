@@ -355,12 +355,11 @@
       ******************************************************************
        NYUINKAIKEI-SYORI-SEC         SECTION.
       *
-           MOVE       ZERO                  TO      FLG-KAIKEI-SAKUSEI
-      *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL    (IDX            >     2)
                                 OR     (WRK-SKYYM(IDX) =  SPACE)
       *
+              MOVE       ZERO               TO      FLG-KAIKEI-SAKUSEI
               INITIALIZE                            NYUINACCT-REC
               MOVE    LNK-S02-HOSPID        TO      NACCT-HOSPID
               MOVE    LNK-S02-NYUGAIKBN     TO      NACCT-NYUGAIKBN
