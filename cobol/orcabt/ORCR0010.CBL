@@ -191,6 +191,7 @@
            03  FLG-CONTKBN                             PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-KOHRECEDSP                          PIC 9(01).
+           03  FLG-LASTHKNID                           PIC 9(01). 
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -1647,6 +1648,7 @@
                    END-IF
                END-IF    
            END-PERFORM
+           MOVE    1                       TO  FLG-LASTHKNID
       *****IF      COMB-HKNID          NOT =   ZERO
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       10
@@ -1655,15 +1657,17 @@
                                           WRK-RECE01-TEKSTYMDX (IDX)
                        MOVE    PTHKN-TEKEDYMD TO
                                           WRK-RECE01-TEKEDYMDX (IDX)
-                       MOVE    PTHKN-HKNID    TO  WRK-RECE01-HKNID
                        MOVE    10              TO  IDX
                    ELSE
                        IF      WRK-RECE01-TEKSTYMDX(IDX)
-                                                >=  PTHKN-TEKSTYMD
-                           MOVE    10                  TO  IDX
+                                                   >=  PTHKN-TEKSTYMD
+                           MOVE    ZERO                TO  FLG-LASTHKNID
                        END-IF    
                    END-IF    
                END-PERFORM
+               IF      FLG-LASTHKNID       =   1
+                   MOVE    PTHKN-HKNID     TO  WRK-RECE01-HKNID
+               END-IF
       *****END-IF
       *
            IF      WRK-TEISEIKBN           =   "1"

@@ -99,6 +99,7 @@
       *                                     のある方の在総診フラグ編集修正
       *  01.00.39    NACL-藤原    04/05/27  同一開始日の複数自費レセプトが
       *                                     別々に作成されるように修正
+      *  01.00.40    NACL-藤原    04/06/08  適用終了日の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -671,9 +672,28 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
                    OR      RECE01-TEKSTYMDX (IDX)  =   SPACE
-               MOVE    RECE01-TEKSTYMDX (IDX)  TO  RECE02-TEKSTYMD
+               IF      RECE02-TEKSTYMD     =   SPACE 
+                   MOVE    RECE01-TEKSTYMDX (IDX)  TO  RECE02-TEKSTYMD
+               ELSE
+                   IF      RECE02-TEKSTYMD <   RECE01-TEKSTYMDX (IDX)
+                       MOVE    RECE01-TEKSTYMDX (IDX)  
+                                               TO  RECE02-TEKSTYMD
+                   END-IF
+               END-IF
+               IF      RECE02-TEKSTYMD-X   =   SPACE 
+                   MOVE    RECE01-TEKSTYMDX (IDX)  TO  RECE02-TEKSTYMD-X
+                   MOVE    RECE01-TEKEDYMDX (IDX)  TO  RECE02-TEKEDYMD-X
+               ELSE
+                   IF      RECE02-TEKSTYMD-X >   RECE01-TEKSTYMDX (IDX)
+                       MOVE    RECE01-TEKSTYMDX (IDX)  
+                                               TO  RECE02-TEKSTYMD-X
+                   END-IF
+                   IF      RECE02-TEKEDYMD-X <   RECE01-TEKEDYMDX (IDX)
+                       MOVE    RECE01-TEKEDYMDX (IDX)  
+                                               TO  RECE02-TEKEDYMD-X
+                   END-IF
+               END-IF
            END-PERFORM
-      
       *    患者番号
            MOVE    RECE01-PTNUM        TO  RECE02-PTNUM
       *    診療科情報のセット
@@ -707,14 +727,16 @@
                MOVE    RECE01-HKNID        TO      PTHKN-HKNID
                MOVE    PTHKNINF-REC        TO      MCPDATA-REC
      **********MOVE    RECE01-TEKSTYMDX    TO      ORC-DBYMD
-               MOVE    RECE02-TEKSTYMD     TO      ORC-DBYMD
+     **********MOVE    RECE02-TEKSTYMD     TO      ORC-DBYMD
                MOVE    "DBSELECT"          TO      MCP-FUNC
-               MOVE    "PTHKNINF-KEY3"     TO      ORC-DBPATH
+      *********MOVE    "PTHKNINF-KEY3"      TO      ORC-DBPATH
+               MOVE    "PTHKNINF-KEY"       TO      ORC-DBPATH
                CALL    "ORCMCPSUB"         USING   MCPAREA
                                                    ORCMCPAREA
                                                    MCPDATA-REC
                IF      MCP-RC              =       ZERO
-                   MOVE    "PTHKNINF-KEY3" TO      ORC-DBPATH
+      *********    MOVE    "PTHKNINF-KEY3"      TO      ORC-DBPATH
+                   MOVE    "PTHKNINF-KEY"       TO      ORC-DBPATH
                    PERFORM  PTHKNINF-READ-SEC
                    IF       FLG-PTHKNINF        =   ZERO
                         MOVE   PTHKN-HKNID      TO  RECE02-HKNID
@@ -766,7 +788,8 @@
                ELSE
                    DISPLAY   "PTHKNINF SELECT ERR" 
                END-IF
-               MOVE   "PTHKNINF-KEY3"     TO  WK-PATH
+      *********MOVE    "PTHKNINF-KEY3"      TO      WK-PATH
+               MOVE    "PTHKNINF-KEY"       TO      WK-PATH
                PERFORM   CSR-CLOSE-SEC
            END-IF
       *    患者公費情報テーブルから老人保険情報の取得
@@ -2369,7 +2392,11 @@
                    IF      MCP-RC               =   ZERO
                        MOVE    "PTHKNINF-KEY4"  TO  ORC-DBPATH
                        PERFORM PTHKNINF-READ-SEC
-                       IF      FLG-PTHKNINF     =   ZERO
+                   ELSE
+                       MOVE    1                TO  FLG-PTHKNINF  
+                   END-IF
+                   PERFORM              UNTIL   FLG-PTHKNINF     =   1
+                       IF      PTHKN-SAKJOKBN   =   SPACE
                            MOVE   PTHKN-HKNID      TO  RECE09-HKNID
                            MOVE   PTHKN-HKNNUM     TO  RECE09-HKNNUM
                            MOVE   PTHKN-HKNJANUM   TO  RECE09-HKNJANUM
@@ -2406,8 +2433,12 @@
                            END-IF
                            MOVE   "HKNNUM-KEY5"       TO  WK-PATH
                            PERFORM   CSR-CLOSE-SEC
+                           MOVE    1                TO  FLG-PTHKNINF
+                       ELSE
+                           MOVE    "PTHKNINF-KEY4"  TO  ORC-DBPATH
+                           PERFORM PTHKNINF-READ-SEC
                        END-IF
-                   END-IF    
+                   END-PERFORM
                    MOVE   "PTHKNINF-KEY4"     TO  WK-PATH
                    PERFORM   CSR-CLOSE-SEC
       *
