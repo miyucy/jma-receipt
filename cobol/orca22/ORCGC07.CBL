@@ -31,6 +31,7 @@
       * 01.00.02     NACL-藤原    02/11/27  受診履歴の読込に入外区分を追加
       * 01.00.03     NACL-藤原    03/02/28  診療科４０に変更
       * 01.00.04     NACL-藤原    03/10/27  入退院歴より入外区分を編集
+      * 01.00.05     NACL-藤原    04/04/26  更新日編集
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -159,6 +160,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -1801,10 +1805,18 @@
       *****************************************************************
        2121-TOUROKU-SYORI-SEC          SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            PERFORM 2120-RECECOM-SEL-SEC
            IF      FLG-RECECOM         =   ZERO
       *        更新
-               MOVE    SPA-C07-COMMENT    TO  RECECOM-COMMENT
+               MOVE    SPA-C07-COMMENT     TO  RECECOM-COMMENT
+      *
+               MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
       *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1821,12 +1833,11 @@
                MOVE    SPACE               TO  RECECOM-REC
                INITIALIZE                  RECECOM-REC
                MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
-               MOVE    SPA-NAI-C02-PTID        TO  RECECOM-PTID
-               MOVE    SPA-C07-SRYKA      TO  RECECOM-SRYKA
-               MOVE    SPA-C07-SRYYMS     TO  RECECOM-SRYYM
-               MOVE    SPA-C07-HKNCOMBINUM
-                                       TO  RECECOM-HKNCOMBI
-               IF      SPA-C07-RSI-HKNKBN     =   "3"
+               MOVE    SPA-NAI-C02-PTID    TO  RECECOM-PTID
+               MOVE    SPA-C07-SRYKA       TO  RECECOM-SRYKA
+               MOVE    SPA-C07-SRYYMS      TO  RECECOM-SRYYM
+               MOVE    SPA-C07-HKNCOMBINUM TO  RECECOM-HKNCOMBI
+               IF      SPA-C07-RSI-HKNKBN  =   "3"
                    MOVE    SPA-C07-JYURRKYMD (SPA-C07-JYURRKNUM)(7:2)
                                                TO  RECECOM-SRYDD
                ELSE
@@ -1834,6 +1845,10 @@
                END-IF
                MOVE    SPA-C07-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
                MOVE    SPA-C07-COMMENT     TO  RECECOM-COMMENT
+      *
+               MOVE    SMCNDATE-YMD        TO  RECECOM-CREYMD
+               MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
       *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -2046,7 +2061,10 @@
            PERFORM 28001-EXAMPLE-CHK-SEC
            IF      FLG-EXAMPLE         =   ZERO
       *        更新
-               MOVE    SPA-C07-COMMENT    TO  EXAMPLE-COMMENT
+               MOVE    SPA-C07-COMMENT     TO  EXAMPLE-COMMENT
+      *
+               MOVE    SMCNDATE-YMD        TO  EXAMPLE-UPYMD
+               MOVE    SMCNDATE-HMS        TO  EXAMPLE-UPHMS
       *
                MOVE    EXAMPLE-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -2066,6 +2084,10 @@
                MOVE    "1"                 TO  EXAMPLE-KUBUN
                MOVE    SPA-C07-BUNNUM     TO  EXAMPLE-RENNUM
                MOVE    SPA-C07-COMMENT    TO  EXAMPLE-COMMENT
+      *
+               MOVE    SMCNDATE-YMD        TO  EXAMPLE-CREYMD
+               MOVE    SMCNDATE-YMD        TO  EXAMPLE-UPYMD
+               MOVE    SMCNDATE-HMS        TO  EXAMPLE-UPHMS
       *
                MOVE    EXAMPLE-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
