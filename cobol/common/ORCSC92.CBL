@@ -749,13 +749,22 @@
            MOVE    TNS-JGNAGE          TO  WRK-JGNAGE(2:2)
       *
       *    下限年齢チェック
-           IF      TNS-KGNAGE          =   SPACE  OR  ZERO  OR  "AA"
+           IF      TNS-KGNAGE          =   SPACE  OR  ZERO
                CONTINUE
            ELSE
-               IF      LNK-SC92-NENREI-YY   >=  WRK-KGNAGE
-                   CONTINUE
+               IF      TNS-KGNAGE          =   "AA"
+      *            新生児判定
+                   IF     (LNK-SC92-NENREI-YY   =   ZERO )  AND
+                          (LNK-SC92-NENREI-MM   =   ZERO )  AND
+                          (LNK-SC92-NENREI-DD   <   28   )
+                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
+                   END-IF
                ELSE
-                   MOVE    "0032"              TO  LNK-SC92-ERRCD5
+                   IF      LNK-SC92-NENREI-YY   >=  WRK-KGNAGE
+                      CONTINUE
+                   ELSE
+                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
+                   END-IF
                END-IF
            END-IF
       *
@@ -767,7 +776,7 @@
       *            新生児判定
                    IF     (LNK-SC92-NENREI-YY    =   ZERO )  AND
                           (LNK-SC92-NENREI-MM    =   ZERO )  AND
-                          (LNK-SC92-NENREI-DD    <=  28   )
+                          (LNK-SC92-NENREI-DD    <   28   )
                        CONTINUE
                    ELSE
                        MOVE    "0032"              TO  LNK-SC92-ERRCD5

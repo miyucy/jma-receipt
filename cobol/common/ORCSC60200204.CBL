@@ -35,6 +35,7 @@
       *  01.00.05    MCC-多々納   02/04/16  労災用追加
       *  01.00.06    NACL-多々納  02/10/25  入院対応
       *  01.00.07    NACL-多々納  02/12/03  包括数修正
+      *  01.00.08    NACL-多々納  03/01/09  通則年齢から年齢加算を追加
       *****************************************************************
       *
       *
@@ -685,6 +686,31 @@
       *****************************************************************
        1007-NENREI-SYORI-SEC           SECTION.
       *
+           MOVE    ZERO                 TO  IDX-S
+      *    通則年齢区分
+           IF     (WRK-COM-TSUSOKUAGE (IDX-Z)  =   "1" ) AND
+                  (WRK-COM-AUTOKBN (IDX-Z) NOT =   "2" )
+      *        新生児加算（生体検査）
+               MOVE    "160155290"         TO  WRK-SRYCD
+               MOVE    IDX-Z               TO  IDX-S
+               PERFORM 2001-JIDOTUIKA-SEC
+               IF      FLG-ARI             =   1
+                   MOVE    "2"                 TO  WRK-COM-AUTOKBN
+                                                               (IDX-T)
+                   MOVE    IDX-T               TO  IDX-S
+               ELSE
+      *            乳幼児加算（生体検査）
+                   MOVE    "160155390"         TO  WRK-SRYCD
+                   MOVE    IDX-Z               TO  IDX-S
+                   PERFORM 2001-JIDOTUIKA-SEC
+                   IF      FLG-ARI             =   1
+                       MOVE    "2"                 TO  WRK-COM-AUTOKBN
+                                                               (IDX-T)
+                       MOVE    IDX-T               TO  IDX-S
+                   END-IF
+               END-IF
+           END-IF
+      *
            MOVE    ZERO                TO  IDX-NYU
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2        >   4       )   OR
@@ -692,7 +718,9 @@
                                           =   SPACE  OR  ZERO )
       *        加算追加
                MOVE    WRK-COM-AGEKSNSRYCD (IDX-Z IDX2)  TO  WRK-SRYCD
-               MOVE    IDX-Z               TO  IDX-S
+               IF      IDX-S               =   ZERO
+                   MOVE    IDX-Z               TO  IDX-S
+               END-IF
                PERFORM 2001-JIDOTUIKA-SEC
                IF      FLG-ARI             =   1
                    MOVE    "2"                 TO  WRK-COM-AUTOKBN
@@ -701,6 +729,7 @@
                    MOVE    WRK-SRYCD           TO  WRK-NYU-SRYCD
                END-IF
            END-PERFORM
+      *
       *
            .
        1007-NYUYOJI-SET-EXT.
@@ -725,6 +754,7 @@
                MOVE    "2"                 TO  WRK-COM-AUTOKBN
                                                            (IDX-T)
                MOVE    IDX-T               TO  IDX-Z
+      *
            END-IF
       *
            .
@@ -875,6 +905,10 @@
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+      *TEST
+             DISPLAY "TENSUKEI IDX:" IDX-Z
+                   "," WRK-COM-INPUTCD (IDX-Z)
+      *TEST
       *
                ADD     1                   TO  IDX-MAX
       *
@@ -1673,14 +1707,38 @@
            EXIT.
       *
       *****************************************************************
+      *    自動加算　存在チェック加処理
+      *****************************************************************
+       1110-KASAN-CHK-SEC        SECTION.
+      *
+      *    時間自動加算　存在チェック
+           MOVE    ZERO                TO  FLG-ARI
+           MOVE    ZERO                TO  IDX-T
+           PERFORM VARYING     IDX1    FROM    IDX-Z  BY  1
+                   UNTIL      (IDX1        >   200     )   OR
+                              (FLG-ARI                 =   1    ) OR
+                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
+               IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
+                    MOVE    IDX1           TO  IDX-T
+                    MOVE    1              TO  FLG-ARI
+               END-IF
+           END-PERFORM
+           .
+       1110-KASAN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    自動加算１行追加処理
       *****************************************************************
        2001-JIDOTUIKA-SEC     SECTION.
-      *    手技料の次に追加する
-           COMPUTE IDX-T               =   IDX-S   +  1
-           IF      WRK-COM-INPUTCD (IDX-T) =   WRK-SRYCD
+      *
+           PERFORM 1110-KASAN-CHK-SEC
+           IF      FLG-ARI             =   1
                MOVE    IDX-T               TO  WRK-IDX
            ELSE
+      *
+      *        手技料の次に追加する
+               COMPUTE IDX-T               =   IDX-S   +  1
                MOVE    ZERO                TO  WRK-IDX
            END-IF
       *
@@ -2261,7 +2319,7 @@
       *            新生児判定
                    IF     (LNK-ORCSC-NENREI-YY    =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM    =   ZERO )  AND
-                          (LNK-ORCSC-NENREI-DD    <=  28   )
+                          (LNK-ORCSC-NENREI-DD    <   28   )
                        CONTINUE
                    ELSE
                        MOVE    1                   TO  FLG-ERR

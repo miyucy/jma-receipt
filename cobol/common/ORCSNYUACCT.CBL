@@ -717,10 +717,17 @@
            IF      TNS-KGNAGE          =   SPACE  OR  ZERO
                CONTINUE
            ELSE
-               MOVE    TNS-KGNAGE          TO  WRK-YY
-               MOVE    PTINF-BIRTHDAY      TO  WRK-KGN-YMD
-               COMPUTE WRK-KGN-YY          =   WRK-KGN-YY
-                                           +   WRK-YY
+               IF      TNS-KGNAGE          =   "AA"
+                   MOVE    PTINF-BIRTHDAY      TO  WRK-INYMD
+                   MOVE    27                  TO  WRK-ZOGEN
+                   PERFORM 800-HIZUKE-KEI-SEC
+                   MOVE    WRK-OTYMD           TO  WRK-KGN-YMD
+               ELSE
+                   MOVE    TNS-KGNAGE          TO  WRK-YY
+                   MOVE    PTINF-BIRTHDAY      TO  WRK-KGN-YMD
+                   COMPUTE WRK-KGN-YY          =   WRK-KGN-YY
+                                               +   WRK-YY
+               END-IF
            END-IF
       *
       *    上限年齢チェック
@@ -729,7 +736,7 @@
            ELSE
                IF      TNS-JGNAGE          =   "AA"
                    MOVE    PTINF-BIRTHDAY      TO  WRK-INYMD
-                   MOVE    28                  TO  WRK-ZOGEN
+                   MOVE    27                  TO  WRK-ZOGEN
                    PERFORM 800-HIZUKE-KEI-SEC
                    MOVE    WRK-OTYMD           TO  WRK-JGN-YMD
                ELSE
@@ -742,11 +749,6 @@
                MOVE    WRK-JGN-YMD         TO  WRK-INYMD
                MOVE    -1                  TO  WRK-ZOGEN
                PERFORM 800-HIZUKE-KEI-SEC
-      *TEST
-               DISPLAY "WRK-JGN-YMD:" WRK-JGN-YMD
-                       ",WRK-OTYMD:" WRK-OTYMD
-                       ",TNS-JGNAGE:" TNS-JGNAGE
-      *TEST
                MOVE    WRK-OTYMD           TO  WRK-JGN-YMD
            END-IF
       *    対象年月日計算
@@ -774,24 +776,8 @@
                PERFORM 40009-TBL-NYUIN-SYORI-SEC
                MOVE    WRK-STYMD-OK        TO  WRK-ACT-STYMD
                MOVE    WRK-EDYMD-OK        TO  WRK-ACT-EDYMD
-      *TEST
-             DISPLAY "CNYUIN WRK-ACT-STYMD:" WRK-ACT-STYMD
-                     ",WRK-ACT-EDYMD:" WRK-ACT-EDYMD
-                     ",WRK-ACT-STYMD-HZN:" WRK-ACT-STYMD-HZN
-                     ",WRK-ACT-EDYMD-HZN:" WRK-ACT-EDYMD-HZN
-             DISPLAY "1 TBL-SRYCD:" TBL-SRYCD (01)
-             DISPLAY "2 TBL-SRYCD:" TBL-SRYCD (02)
-             DISPLAY "3 TBL-SRYCD:" TBL-SRYCD (03)
-             DISPLAY "4 TBL-SRYCD:" TBL-SRYCD (04)
-             DISPLAY "5 TBL-SRYCD:" TBL-SRYCD (05)
-             DISPLAY "6 TBL-SRYCD:" TBL-SRYCD (06)
-             DISPLAY "7 TBL-SRYCD:" TBL-SRYCD (07)
-      *TEST
       *        入院作成処理
                PERFORM 4009-NYUIN-HENSYORI-SEC
-      *TEST
-             DISPLAY "CNYUIN WRK-EDYMD-OK:" WRK-EDYMD-OK
-                     ",WRK-ACT-EDYMD-HZN:" WRK-ACT-EDYMD-HZN
       *
                IF      WRK-EDYMD-OK        =   WRK-ACT-EDYMD-HZN
                    MOVE    1               TO  FLG-SYORI-END
@@ -981,22 +967,9 @@
            ELSE
                MOVE    1                   TO  FLG-NYUINACCT
            END-IF
-      *TEST
-           DISPLAY "TBL-SRYCD:" TBL-SRYCD (01)
-                   ",WRK-SRYCDTOTAL:" WRK-SRYCDTOTAL
-                   ",WRK-ZAITEN:" WRK-ZAITEN
-                   ",WRK-MEISAISU:" WRK-MEISAISU
-                   ",WRK-SURYOUTOTAL:" WRK-SURYOUTOTAL
-      *TEST
            PERFORM
                UNTIL   (FLG-NYUINACCT      =   1    ) OR
                        (FLG-OK             =   1    )
-      *TEST
-           DISPLAY  "NACCT-SRYCDTOTAL:" NACCT-SRYCDTOTAL 
-                   ",NACCT-ZAITEN:" NACCT-ZAITEN
-                   ",NACCT-MEISAISU:" NACCT-MEISAISU
-                   ",NACCT-SURYOUTOTAL:" NACCT-SURYOUTOTAL
-      *TEST
       *
       *        診療コード計を比較する
                IF     (NACCT-SRYCDTOTAL    =   WRK-SRYCDTOTAL ) AND
