@@ -20,4 +20,4 @@ distclean:
 
 install: all
 	$(INSTALL) -d $(orcadatadir)
-	$(INSTALL_DATA) $(ORCADATA_files) $(datadir)
+	$(INSTALL_DATA) $(ORCADATA_files) $(orcadatadir)
