@@ -38,11 +38,11 @@ SUBDIRS = \
 COPYDIRS = copy
 
 all:   
-	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i all; done
+	@set -e; for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i all; done
 clean: 
-	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i clean; done
+	@set -e; for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i clean; done
 distclean: 
-	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i distclean; done
+	@set -e; for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i distclean; done
 	-rm -f Makefile Makefile.global
 
 install installdirs:
