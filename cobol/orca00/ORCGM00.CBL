@@ -45,6 +45,7 @@
       *  01.02.06    NACL-多々納  02/12/19  入院時日付変更修正
       *  01.02.07    NACL-多々納  03/02/10  病床数（一般）追加
       *  01.02.08    NACL-藤原    03/03/01  排他制御 追加
+      *  01.02.09    NACL-伊藤    03/03/10  端末ＩＤ６４バイトへ拡張
       *****************************************************************
       *
       *
@@ -453,7 +454,8 @@
       *****MOVE    MCP-TERM (5:)       TO  SPA-TERMID
            MOVE    MCP-TERM            TO  SPA-TERMID-G
       **** PERFORM VARYING IDX FROM    16  BY  -1
-           PERFORM VARYING IDX FROM    32  BY  -1
+      **** PERFORM VARYING IDX FROM    32  BY  -1
+           PERFORM VARYING IDX FROM    64  BY  -1
                    UNTIL   IDX <       1
                IF      SPA-TERMID (IDX:1)  NOT =   SPACE
                    MOVE    1                   TO  IDX 
