@@ -773,12 +773,12 @@
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(4)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(4)
       *----(02.00.08)--UPD-START---
-      *    支払証明書（日別）
-           MOVE    "ORCHCM31"      TO  SPA-GMN-TORGPGNM (5)
+      *    カルテ３号紙
+           MOVE    "ORCHC33"       TO  SPA-GMN-TORGPGNM (5)
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(5)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(5)
-      *    カルテ３号紙
-           MOVE    "ORCHC33"       TO  SPA-GMN-TORGPGNM (6)
+      *    支払証明書（日別）
+           MOVE    "ORCHCM31"      TO  SPA-GMN-TORGPGNM (6)
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(6)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(6)
       *    支払証明書（月別）
