@@ -2701,7 +2701,13 @@
                       CONTINUE
                     ELSE
                       IF     ACCT-SRYCDTOTAL    =   190080470  OR
-                                                    190799670
+                                                    190799670  OR
+                                                    190080570  OR
+                                                    190799770  OR
+                                                    190111690  OR
+                                                    190809090  OR
+                                                    190111790  OR
+                                                    190809190
                         COMPUTE SYU-HKNTEN (11)   =  SYU-HKNTEN (11) -
                                (ACCT-ZAITEN  *   SINRYO-COUNT)
                         PERFORM  VARYING  SYU-IDX  FROM  1  BY  1       XXX

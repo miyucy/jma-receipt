@@ -72,6 +72,15 @@
       *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
            03  CONS-KEIKAKU-GENSAN1        PIC X(09) VALUE "190080470".
            03  CONS-KEIKAKU-GENSAN2        PIC X(09) VALUE "190799670".
+      *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
+           03  CONS-INNAI-GENSAN1          PIC X(09) VALUE "190080570".
+           03  CONS-INNAI-GENSAN2          PIC X(09) VALUE "190799770".
+      *    °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤À°È÷¸º»»
+           03  CONS-ANZEN-GENSAN1          PIC X(09) VALUE "190111690".
+           03  CONS-ANZEN-GENSAN2          PIC X(09) VALUE "190809090".
+      *    êóáìÂÐºöÌ¤¼Â»Ü¸º»»
+           03  CONS-JYOKU-GENSAN1          PIC X(09) VALUE "190111790".
+           03  CONS-JYOKU-GENSAN2          PIC X(09) VALUE "190809190".
       *    Æü¾ïÀ¸³è¾ã³²²Ã»»
            03  CONS-NICHIJOU-KSN1          PIC X(09) VALUE "190109170".
            03  CONS-NICHIJOU-KSN2          PIC X(09) VALUE "190807570".
@@ -126,6 +135,15 @@
       *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
            03  WRK-KEIKAKU-GENSAN1         PIC 9(03) OCCURS 31.
            03  WRK-KEIKAKU-GENSAN2         PIC 9(03) OCCURS 31.
+      *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
+           03  WRK-INNAI-GENSAN1           PIC 9(03) OCCURS 31.
+           03  WRK-INNAI-GENSAN2           PIC 9(03) OCCURS 31.
+      *    °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤À°È÷¸º»»¥ï¡¼¥¯
+           03  WRK-ANZEN-GENSAN1           PIC 9(03) OCCURS 31.
+           03  WRK-ANZEN-GENSAN2           PIC 9(03) OCCURS 31.
+      *    êóáìÂÐºöÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
+           03  WRK-JYOKU-GENSAN1           PIC 9(03) OCCURS 31.
+           03  WRK-JYOKU-GENSAN2           PIC 9(03) OCCURS 31.
       *
       *    Æü¾ïÀ¸³è¾ã³²²Ã»»ÂàÈò
            03  WRK-NICHIJOU-KSN1           PIC 9(03) OCCURS 31.
@@ -541,6 +559,12 @@
                      IF   ACCT-SRYCDTOTAL(6:9)  =   
                                             CONS-KEIKAKU-GENSAN1
                                         OR  CONS-KEIKAKU-GENSAN2
+                                        OR  CONS-INNAI-GENSAN1
+                                        OR  CONS-INNAI-GENSAN2
+                                        OR  CONS-ANZEN-GENSAN1
+                                        OR  CONS-ANZEN-GENSAN2
+                                        OR  CONS-JYOKU-GENSAN1
+                                        OR  CONS-JYOKU-GENSAN2
                                         OR  CONS-NICHIJOU-KSN1
                                         OR  CONS-NICHIJOU-KSN2
                                         OR  CONS-CHIHOU-KSN1
@@ -560,6 +584,27 @@
                                 WHEN  CONS-KEIKAKU-GENSAN2
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-KEIKAKU-GENSAN2(IDX1)
+      *                         ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
+                                WHEN  CONS-INNAI-GENSAN1
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-INNAI-GENSAN1(IDX1)
+                                WHEN  CONS-INNAI-GENSAN2
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-INNAI-GENSAN2(IDX1)
+      *                         °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤À°È÷¸º»»
+                                WHEN  CONS-ANZEN-GENSAN1
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-ANZEN-GENSAN1(IDX1)
+                                WHEN  CONS-ANZEN-GENSAN2
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-ANZEN-GENSAN2(IDX1)
+      *                         êóáìÂÐºöÌ¤¼Â»Ü¸º»»
+                                WHEN  CONS-JYOKU-GENSAN1
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-JYOKU-GENSAN1(IDX1)
+                                WHEN  CONS-JYOKU-GENSAN2
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-JYOKU-GENSAN2(IDX1)
       *                         Æü¾ïÀ¸³è¾ã³²²Ã»»
                                 WHEN  CONS-NICHIJOU-KSN1
                                   MOVE   ACCT-DAY(1 IDX1)
@@ -691,6 +736,39 @@
                IF         WRK-KEIKAKU-GENSAN2(IDX1) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-KEIKAKU-GENSAN2 TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+      *        ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
+               IF         WRK-INNAI-GENSAN1(IDX1) NOT =   ZERO
+                   ADD      1                  TO  WRK-MEISAISU
+                   MOVE   CONS-INNAI-GENSAN1   TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+               IF         WRK-INNAI-GENSAN2(IDX1) NOT =   ZERO
+                   ADD      1                  TO  WRK-MEISAISU
+                   MOVE   CONS-INNAI-GENSAN2   TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+      *        °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤À°È÷¸º»»
+               IF         WRK-ANZEN-GENSAN1(IDX1) NOT =   ZERO
+                   ADD      1                  TO  WRK-MEISAISU
+                   MOVE   CONS-ANZEN-GENSAN1   TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+               IF         WRK-ANZEN-GENSAN2(IDX1) NOT =   ZERO
+                   ADD      1                  TO  WRK-MEISAISU
+                   MOVE   CONS-ANZEN-GENSAN2   TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+      *        êóáìÂÐºöÌ¤¼Â»Ü¸º»»
+               IF         WRK-JYOKU-GENSAN1(IDX1) NOT =   ZERO
+                   ADD      1                  TO  WRK-MEISAISU
+                   MOVE   CONS-JYOKU-GENSAN1   TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+               IF         WRK-JYOKU-GENSAN2(IDX1) NOT =   ZERO
+                   ADD      1                  TO  WRK-MEISAISU
+                   MOVE   CONS-JYOKU-GENSAN2   TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        ¸º»»¾ðÊó¡Ê¥·¥¹¥Æ¥à´ÉÍý¡Ë
