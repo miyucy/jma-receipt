@@ -50,6 +50,8 @@
        01  WRK-AREA.
            03  WRK-BRM-NUM-EDT             PIC X(06).
            03  WRK-STR                     PIC X(20).
+           03  WRK-IDX1                    PIC 9(05).
+           03  WRK-IDX2                    PIC 9(05).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -81,7 +83,12 @@
            INITIALIZE                      IDX-AREA
            INITIALIZE                      SBRMNUM-RC
       *
-           PERFORM 100-EDIT-SEC
+           IF    ( SBRMNUM-IN-PROCKBN  =   "2" )
+               PERFORM 200-EDIT-SEC
+           ELSE
+               PERFORM 100-EDIT-SEC
+           END-IF
+      *
       *
            .
        000-PROC-EXT.
@@ -146,3 +153,38 @@
        100-EDIT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    編集処理
+      *****************************************************************
+       200-EDIT-SEC                SECTION.
+      *
+           MOVE    SPACE       TO  WRK-STR
+           MOVE    1           TO  WRK-IDX1
+           STRING  SBRMNUM-IN-BRMNUM
+               DELIMITED   BY  SPACE
+               INTO    WRK-STR
+               WITH    POINTER WRK-IDX1
+           END-STRING
+      *
+           COMPUTE WRK-IDX1    =   WRK-IDX1    -   1
+      *
+           IF    ( WRK-IDX1    <   1 )
+               MOVE    SBRMNUM-IN-BRMNUM  TO  SBRMNUM-OT-BRMNUM
+               GO  TO  200-EDIT-EXT
+           END-IF
+      *
+      *    病室番号が数字の場合ゼロ詰めを行う
+           IF    ( SBRMNUM-IN-BRMNUM ( 1 : WRK-IDX1 )
+                                   IS  NUMERIC )
+               COMPUTE WRK-IDX2    =   6   -   WRK-IDX1 + 1
+               MOVE    ZERO    TO  SBRMNUM-OT-BRMNUM
+               MOVE    SBRMNUM-IN-BRMNUM ( 1 : WRK-IDX1 )
+                           TO  SBRMNUM-OT-BRMNUM (WRK-IDX2 : WRK-IDX1)
+           ELSE
+               MOVE    SBRMNUM-IN-BRMNUM
+                           TO  SBRMNUM-OT-BRMNUM
+           END-IF
+      *
+           .
+       200-EDIT-EXT.
+           EXIT.

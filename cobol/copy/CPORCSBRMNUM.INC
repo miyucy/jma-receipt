@@ -24,6 +24,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        01  ORCSBRMNUMAREA.
+           03  SBRMNUM-IN-PROCKBN      PIC X(01).
            03  SBRMNUM-IN-BRMNUM       PIC X(06).
            03  SBRMNUM-OT-BRMNUM       PIC X(06).
            03  SBRMNUM-RC              PIC 9(02).
