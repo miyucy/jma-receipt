@@ -68,6 +68,9 @@
       *入外区分
            05  SPA-R01-RECE07-NYUGAIKBN    PIC  X(01).
       *
+      *起動ジョブ数
+           05  SPA-R01-JOBCNT              PIC  9(02).
+      *
       *警告メッセージ
            05  SPA-RIDCD                   PIC  X(04).
            05  SPA-RIDCD2                  PIC  X(04).
