@@ -145,6 +145,7 @@
            03  NYUINACT-IDX                PIC 9(02).
            03  RMSAGAKU-IDX                PIC 9(02).
            03  GENSAN-IDX                  PIC 9(02).
+           03  SENTEI-IDX                  PIC 9(02).
       *
       *    •∑•π•∆•‡ŒŒ∞Ë
        01  SYS-AREA.
@@ -1249,6 +1250,7 @@
       *
            MOVE    ZERO               TO   WRK-KHNTEN
            MOVE    ZERO               TO   WRK-KSNTEN
+           MOVE    ZERO               TO   SENTEI-IDX
       *
            MOVE    SYU-HOSPID         TO   NSRY-HOSPID
            MOVE    "1"                TO   NSRY-NYUGAIKBN
@@ -1286,6 +1288,7 @@
                          IF   TNS-DATAKBN    =    1
                               MOVE   TNS-TEN   TO   WRK-KHNTEN
                               MOVE   1         TO   FLG-NYUKHN
+                              MOVE   NYUINACT-IDX  TO  SENTEI-IDX
                          END-IF
                      END-IF                  
                      MOVE   "TENSU-KEY"      TO  WK-PATH
@@ -1307,7 +1310,7 @@
            IF        FLG-SENTEI-SET    =    1
                MOVE    ZERO            TO  FLG-SENTEICDCHG
                INITIALIZE  SENTEICDCHG-REC
-               MOVE    NSRY-SRYCD(NYUINACT-IDX)
+               MOVE    NSRY-SRYCD(SENTEI-IDX)
                                        TO  SENCHG-IPNSRYCD
                MOVE    SENTEICDCHG-REC TO  MCPDATA-REC
                MOVE    "DBSELECT"      TO  MCP-FUNC
@@ -1330,7 +1333,7 @@
       *
                MOVE    SPACE         TO   TNS-TENSU-REC
                INITIALIZE                 TNS-TENSU-REC
-               MOVE    SENCHG-SENTEISRYCD  TO   TNS-SRYCD
+               MOVE    SENCHG-SENTEISRYCD TO  TNS-SRYCD
                MOVE    SYU-SKYSTYMD(1:6)  TO  ORC-DBYMD(1:6)
                MOVE    "01"               TO  ORC-DBYMD(7:2)
                PERFORM  TENSU-READ-SEC
