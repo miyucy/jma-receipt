@@ -1,0 +1,1038 @@
+Index: etc/dbgroup.inc
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/etc/dbgroup.inc,v
+retrieving revision 1.2
+diff -u -r1.2 dbgroup.inc
+--- etc/dbgroup.inc	22 Nov 2002 10:32:22 -0000	1.2
++++ etc/dbgroup.inc	26 Nov 2002 07:33:23 -0000
+@@ -10,8 +10,8 @@
+  priority 100;
+  type "PostgreSQL";
+  port "localhost";
+- name "orca";
+- file "/var/lib/jma-receipt/dbredirector/orca.log";
++ name "panda";
++ file "orca.log";
+ };
+ db_group "shell" {
+  type "shell";
+Index: screen/H99.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/H99.glade,v
+retrieving revision 1.4
+diff -u -r1.4 H99.glade
+--- screen/H99.glade	26 Nov 2002 06:41:08 -0000	1.4
++++ screen/H99.glade	26 Nov 2002 07:33:23 -0000
+@@ -447,7 +447,7 @@
+       <y>100</y>
+       <width>60</width>
+       <height>18</height>
+-      <label>診療科  </label>
++      <label>診療科　</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/J04.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/J04.glade,v
+retrieving revision 1.4
+diff -u -r1.4 J04.glade
+--- screen/J04.glade	26 Nov 2002 06:41:08 -0000	1.4
++++ screen/J04.glade	26 Nov 2002 07:33:23 -0000
+@@ -2050,7 +2050,7 @@
+       <y>80</y>
+       <width>405</width>
+       <height>20</height>
+-      <label>名                                称</label>
++      <label>名　　　　　　　　称</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/K02.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/K02.glade,v
+retrieving revision 1.4
+diff -u -r1.4 K02.glade
+--- screen/K02.glade	26 Nov 2002 06:41:08 -0000	1.4
++++ screen/K02.glade	26 Nov 2002 07:33:23 -0000
+@@ -2551,7 +2551,7 @@
+       <y>88</y>
+       <width>340</width>
+       <height>20</height>
+-      <label>名        称</label>
++      <label>名　　称</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/K021.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/K021.glade,v
+retrieving revision 1.4
+diff -u -r1.4 K021.glade
+--- screen/K021.glade	26 Nov 2002 06:41:08 -0000	1.4
++++ screen/K021.glade	26 Nov 2002 07:33:23 -0000
+@@ -219,7 +219,7 @@
+       <y>344</y>
+       <width>56</width>
+       <height>20</height>
+-      <label>症    状</label>
++      <label>症　状</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/K023.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/K023.glade,v
+retrieving revision 1.4
+diff -u -r1.4 K023.glade
+--- screen/K023.glade	26 Nov 2002 06:41:08 -0000	1.4
++++ screen/K023.glade	26 Nov 2002 07:33:23 -0000
+@@ -1944,7 +1944,7 @@
+       <y>36</y>
+       <width>268</width>
+       <height>20</height>
+-      <label>名        称</label>
++      <label>名　　称</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/K05.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/K05.glade,v
+retrieving revision 1.4
+diff -u -r1.4 K05.glade
+--- screen/K05.glade	26 Nov 2002 06:41:08 -0000	1.4
++++ screen/K05.glade	26 Nov 2002 07:33:23 -0000
+@@ -2449,7 +2449,7 @@
+       <y>80</y>
+       <width>405</width>
+       <height>20</height>
+-      <label>名                                称</label>
++      <label>名　　　　　　　　称</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/N01.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/N01.glade,v
+retrieving revision 1.4
+diff -u -r1.4 N01.glade
+--- screen/N01.glade	26 Nov 2002 06:41:08 -0000	1.4
++++ screen/N01.glade	26 Nov 2002 07:33:23 -0000
+@@ -609,7 +609,7 @@
+       <y>40</y>
+       <width>80</width>
+       <height>18</height>
+-      <label>保険者番号  </label>
++      <label>保険者番号　</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -641,7 +641,7 @@
+       <y>120</y>
+       <width>140</width>
+       <height>16</height>
+-      <label>保険者名称        </label>
++      <label>保険者名称　　　　</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -657,7 +657,7 @@
+       <y>570</y>
+       <width>140</width>
+       <height>18</height>
+-      <label>記号                </label>
++      <label>記号　　　　　　　　</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -673,7 +673,7 @@
+       <y>520</y>
+       <width>140</width>
+       <height>18</height>
+-      <label>電話番号            </label>
++      <label>電話番号　　　　　　</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -689,7 +689,7 @@
+       <y>470</y>
+       <width>140</width>
+       <height>18</height>
+-      <label>番地方書            </label>
++      <label>番地方書　　　　　　</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -705,7 +705,7 @@
+       <y>420</y>
+       <width>140</width>
+       <height>18</height>
+-      <label>住所                </label>
++      <label>住所　　　　　　　　</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -721,7 +721,7 @@
+       <y>370</y>
+       <width>140</width>
+       <height>18</height>
+-      <label>郵便番号            </label>
++      <label>郵便番号　　　　　　</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -737,7 +737,7 @@
+       <y>320</y>
+       <width>140</width>
+       <height>18</height>
+-      <label>保険番号            </label>
++      <label>保険番号　　　　　　</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/P02.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/P02.glade,v
+retrieving revision 1.10
+diff -u -r1.10 P02.glade
+--- screen/P02.glade	26 Nov 2002 06:41:08 -0000	1.10
++++ screen/P02.glade	26 Nov 2002 07:33:23 -0000
+@@ -5569,7 +5569,7 @@
+ 	  <y>516</y>
+ 	  <width>44</width>
+ 	  <height>24</height>
+-	  <label>通    常</label>
++	  <label>通　常</label>
+ 	  <justify>GTK_JUSTIFY_LEFT</justify>
+ 	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+@@ -6602,7 +6602,7 @@
+ 	  <name>label1768</name>
+ 	  <x>24</x>
+ 	  <y>24</y>
+-	  <width>26</width>
++	  <width>22</width>
+ 	  <height>24</height>
+ 	  <label>FAX</label>
+ 	  <justify>GTK_JUSTIFY_LEFT</justify>
+Index: screen/P02D.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/P02D.glade,v
+retrieving revision 1.5
+diff -u -r1.5 P02D.glade
+--- screen/P02D.glade	26 Nov 2002 06:41:08 -0000	1.5
++++ screen/P02D.glade	26 Nov 2002 07:33:23 -0000
+@@ -452,7 +452,7 @@
+       <y>116</y>
+       <width>120</width>
+       <height>24</height>
+-      <label>        労働保険番号</label>
++      <label>　　労働保険番号</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>True</wrap>
+       <xalign>0.5</xalign>
+@@ -568,7 +568,7 @@
+       <y>424</y>
+       <width>120</width>
+       <height>24</height>
+-      <label>            損傷区分</label>
++      <label>　　　　損傷区分</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -584,7 +584,7 @@
+       <y>324</y>
+       <width>120</width>
+       <height>24</height>
+-      <label>   事業場の所在地</label>
++      <label>　事業場の所在地</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -752,7 +752,7 @@
+       <y>292</y>
+       <width>120</width>
+       <height>24</height>
+-      <label>      事業の名称</label>
++      <label>　　　事業の名称</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -768,7 +768,7 @@
+       <y>260</y>
+       <width>120</width>
+       <height>24</height>
+-      <label>       傷病年月日</label>
++      <label>　　　傷病年月日</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -784,7 +784,7 @@
+       <y>224</y>
+       <width>120</width>
+       <height>24</height>
+-      <label>              新継再別</label>
++      <label>　　　　新継再別</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>True</wrap>
+       <xalign>0.5</xalign>
+@@ -800,7 +800,7 @@
+       <y>224</y>
+       <width>100</width>
+       <height>24</height>
+-      <label>       転帰事由</label>
++      <label>　　　転帰事由</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>True</wrap>
+       <xalign>0.5</xalign>
+@@ -816,7 +816,7 @@
+       <y>260</y>
+       <width>100</width>
+       <height>24</height>
+-      <label>    療養開始日</label>
++      <label>　　療養開始日</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>True</wrap>
+       <xalign>0.5</xalign>
+@@ -832,7 +832,7 @@
+       <y>260</y>
+       <width>120</width>
+       <height>24</height>
+-      <label>          療養終了日</label>
++      <label>　　　療養終了日</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>True</wrap>
+       <xalign>0.5</xalign>
+@@ -848,7 +848,7 @@
+       <y>228</y>
+       <width>120</width>
+       <height>24</height>
+-      <label>     四肢特例区分</label>
++      <label>　　四肢特例区分</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>True</wrap>
+       <xalign>0.5</xalign>
+@@ -944,7 +944,7 @@
+       <y>152</y>
+       <width>120</width>
+       <height>24</height>
+-      <label>         年金証書番号</label>
++      <label>　　年金証書番号</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>True</wrap>
+       <xalign>0.5</xalign>
+@@ -1072,7 +1072,7 @@
+       <y>452</y>
+       <width>120</width>
+       <height>24</height>
+-      <label>        療養開始日</label>
++      <label>　　　療養開始日</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -1191,7 +1191,7 @@
+       <y>88</y>
+       <width>212</width>
+       <height>20</height>
+-      <label>＜短期給付    傷病年金  自賠責＞</label>
++      <label>＜短期給付　傷病年金  自賠責＞</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/P02E.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/P02E.glade,v
+retrieving revision 1.4
+diff -u -r1.4 P02E.glade
+--- screen/P02E.glade	26 Nov 2002 06:41:08 -0000	1.4
++++ screen/P02E.glade	26 Nov 2002 07:33:23 -0000
+@@ -364,7 +364,7 @@
+       <y>120</y>
+       <width>52</width>
+       <height>24</height>
+-      <label>住    所</label>
++      <label>住　所</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>True</wrap>
+       <xalign>0.5</xalign>
+@@ -396,7 +396,7 @@
+       <y>64</y>
+       <width>52</width>
+       <height>24</height>
+-      <label>氏    名</label>
++      <label>氏　名</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>True</wrap>
+       <xalign>0.5</xalign>
+Index: screen/R98.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/R98.glade,v
+retrieving revision 1.4
+diff -u -r1.4 R98.glade
+--- screen/R98.glade	26 Nov 2002 06:41:10 -0000	1.4
++++ screen/R98.glade	26 Nov 2002 07:33:23 -0000
+@@ -2454,7 +2454,7 @@
+       <y>50</y>
+       <width>100</width>
+       <height>20</height>
+-      <label>氏        名</label>
++      <label>氏　　名</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/V02.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/V02.glade,v
+retrieving revision 1.4
+diff -u -r1.4 V02.glade
+--- screen/V02.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/V02.glade	26 Nov 2002 07:33:23 -0000
+@@ -3723,7 +3723,7 @@
+       <height>16</height>
+       <label>〜</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -3795,7 +3795,7 @@
+       <height>18</height>
+       <label>有効期間</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -3811,7 +3811,7 @@
+       <height>18</height>
+       <label>支払区分</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -3911,7 +3911,7 @@
+       <height>18</height>
+       <label>保険番号</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4172,7 +4172,7 @@
+       <height>18</height>
+       <label>受給者検証番号チェック区分</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4188,7 +4188,7 @@
+       <height>18</height>
+       <label>検証番号チェック区分</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4204,7 +4204,7 @@
+       <height>18</height>
+       <label>制度名</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4220,7 +4220,7 @@
+       <height>18</height>
+       <label>短縮制度名</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4236,7 +4236,7 @@
+       <height>18</height>
+       <label>　　　年齢終了</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4252,7 +4252,7 @@
+       <height>18</height>
+       <label>レセプト請求</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4308,7 +4308,7 @@
+       <height>18</height>
+       <label>点数単価</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4324,7 +4324,7 @@
+       <height>18</height>
+       <label>条件−年齢開始</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4340,7 +4340,7 @@
+       <height>18</height>
+       <label>法別番号</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4356,7 +4356,7 @@
+       <height>18</height>
+       <label>保険公費種別区分</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4372,7 +4372,7 @@
+       <height>18</height>
+       <label>公費主保区分</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4388,7 +4388,7 @@
+       <height>18</height>
+       <label>限定保険番号１</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4404,7 +4404,7 @@
+       <height>18</height>
+       <label>　　　　　　２</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -4420,7 +4420,7 @@
+       <height>18</height>
+       <label>　　　　　　３</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+Index: screen/W03.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/W03.glade,v
+retrieving revision 1.4
+diff -u -r1.4 W03.glade
+--- screen/W03.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/W03.glade	26 Nov 2002 07:33:23 -0000
+@@ -1734,7 +1734,7 @@
+       <y>10</y>
+       <width>100</width>
+       <height>18</height>
+-      <label>有効期間      </label>
++      <label>有効期間　　　</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/W04.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/W04.glade,v
+retrieving revision 1.4
+diff -u -r1.4 W04.glade
+--- screen/W04.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/W04.glade	26 Nov 2002 07:33:23 -0000
+@@ -402,7 +402,7 @@
+       <y>10</y>
+       <width>100</width>
+       <height>18</height>
+-      <label>有効期間      </label>
++      <label>有効期間　　　</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -498,7 +498,7 @@
+ 	  <y>55</y>
+ 	  <width>300</width>
+ 	  <height>18</height>
+-	  <label>（０，１：英数字型    ２：数字型）</label>
++	  <label>（０，１：英数字型　２：数字型）</label>
+ 	  <justify>GTK_JUSTIFY_CENTER</justify>
+ 	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+@@ -687,7 +687,7 @@
+ 	  <y>120</y>
+ 	  <width>200</width>
+ 	  <height>18</height>
+-	  <label>（１：和暦    ２：西暦）        </label>
++	  <label>（１：和暦　２：西暦）　　　　</label>
+ 	  <justify>GTK_JUSTIFY_LEFT</justify>
+ 	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+@@ -703,7 +703,7 @@
+ 	  <y>176</y>
+ 	  <width>200</width>
+ 	  <height>18</height>
+-	  <label>（１：する    ２：しない）      </label>
++	  <label>（１：する　２：しない）　　　</label>
+ 	  <justify>GTK_JUSTIFY_LEFT</justify>
+ 	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+@@ -751,7 +751,7 @@
+ 	  <y>120</y>
+ 	  <width>100</width>
+ 	  <height>18</height>
+-	  <label>年区分        </label>
++	  <label>年区分　　　　</label>
+ 	  <justify>GTK_JUSTIFY_CENTER</justify>
+ 	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+@@ -767,7 +767,7 @@
+ 	  <y>24</y>
+ 	  <width>100</width>
+ 	  <height>18</height>
+-	  <label>区分          </label>
++	  <label>区分　　　　　</label>
+ 	  <justify>GTK_JUSTIFY_CENTER</justify>
+ 	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+@@ -892,7 +892,7 @@
+ 	  <y>24</y>
+ 	  <width>100</width>
+ 	  <height>18</height>
+-	  <label>区分          </label>
++	  <label>区分　　　　　</label>
+ 	  <justify>GTK_JUSTIFY_LEFT</justify>
+ 	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+@@ -908,7 +908,7 @@
+ 	  <y>104</y>
+ 	  <width>100</width>
+ 	  <height>18</height>
+-	  <label>前桁数        </label>
++	  <label>前桁数　　　　</label>
+ 	  <justify>GTK_JUSTIFY_LEFT</justify>
+ 	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+@@ -924,7 +924,7 @@
+ 	  <y>152</y>
+ 	  <width>100</width>
+ 	  <height>18</height>
+-	  <label>連番号桁数    </label>
++	  <label>連番号桁数　　</label>
+ 	  <justify>GTK_JUSTIFY_LEFT</justify>
+ 	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+@@ -940,7 +940,7 @@
+ 	  <y>200</y>
+ 	  <width>100</width>
+ 	  <height>18</height>
+-	  <label>後桁数        </label>
++	  <label>後桁数　　　　</label>
+ 	  <justify>GTK_JUSTIFY_LEFT</justify>
+ 	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+Index: screen/W06.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/W06.glade,v
+retrieving revision 1.4
+diff -u -r1.4 W06.glade
+--- screen/W06.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/W06.glade	26 Nov 2002 07:33:23 -0000
+@@ -782,7 +782,7 @@
+       <height>24</height>
+       <label>（社保）</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -798,7 +798,7 @@
+       <height>24</height>
+       <label>（国保）</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -830,7 +830,7 @@
+       <height>24</height>
+       <label>（M00）</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -894,7 +894,7 @@
+       <height>24</height>
+       <label>（M02）</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+Index: screen/W07.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/W07.glade,v
+retrieving revision 1.5
+diff -u -r1.5 W07.glade
+--- screen/W07.glade	26 Nov 2002 06:41:11 -0000	1.5
++++ screen/W07.glade	26 Nov 2002 07:33:23 -0000
+@@ -356,9 +356,9 @@
+ 	  <y>128</y>
+ 	  <width>300</width>
+ 	  <height>16</height>
+-	  <label>２：薬剤情報提供料（一般）              </label>
++	  <label>２：薬剤情報提供料（一般）　　　　　　　</label>
+ 	  <justify>GTK_JUSTIFY_CENTER</justify>
+-	  <wrap>True</wrap>
++	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+ 	  <yalign>0.5</yalign>
+ 	  <xpad>0</xpad>
+@@ -372,9 +372,9 @@
+ 	  <y>160</y>
+ 	  <width>300</width>
+ 	  <height>16</height>
+-	  <label>３：薬剤情報提供料（老人    手帳記載あり）</label>
++	  <label>３：薬剤情報提供料（老人　手帳記載あり）</label>
+ 	  <justify>GTK_JUSTIFY_LEFT</justify>
+-	  <wrap>True</wrap>
++	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+ 	  <yalign>0.5</yalign>
+ 	  <xpad>0</xpad>
+@@ -388,9 +388,9 @@
+ 	  <y>192</y>
+ 	  <width>300</width>
+ 	  <height>16</height>
+-	  <label>４：薬剤情報提供料（老人    手帳記載なし）</label>
++	  <label>４：薬剤情報提供料（老人　手帳記載なし）</label>
+ 	  <justify>GTK_JUSTIFY_LEFT</justify>
+-	  <wrap>True</wrap>
++	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+ 	  <yalign>0.5</yalign>
+ 	  <xpad>0</xpad>
+@@ -564,9 +564,9 @@
+ 	  <y>96</y>
+ 	  <width>300</width>
+ 	  <height>16</height>
+-	  <label>１：調剤技術基本料                      </label>
++	  <label>１：調剤技術基本料　　　　　　　　　　　</label>
+ 	  <justify>GTK_JUSTIFY_LEFT</justify>
+-	  <wrap>True</wrap>
++	  <wrap>False</wrap>
+ 	  <xalign>0.5</xalign>
+ 	  <yalign>0.5</yalign>
+ 	  <xpad>0</xpad>
+Index: screen/W10.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/W10.glade,v
+retrieving revision 1.4
+diff -u -r1.4 W10.glade
+--- screen/W10.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/W10.glade	26 Nov 2002 07:33:23 -0000
+@@ -302,7 +302,7 @@
+       <height>16</height>
+       <label>〜</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -346,7 +346,7 @@
+       <height>18</height>
+       <label>有効期間</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+Index: screen/W11.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/W11.glade,v
+retrieving revision 1.4
+diff -u -r1.4 W11.glade
+--- screen/W11.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/W11.glade	26 Nov 2002 07:33:23 -0000
+@@ -1487,7 +1487,7 @@
+       <y>10</y>
+       <width>100</width>
+       <height>18</height>
+-      <label>有効期間      </label>
++      <label>有効期間　　　</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/W12.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/W12.glade,v
+retrieving revision 1.4
+diff -u -r1.4 W12.glade
+--- screen/W12.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/W12.glade	26 Nov 2002 07:33:23 -0000
+@@ -416,7 +416,7 @@
+       <y>100</y>
+       <width>150</width>
+       <height>16</height>
+-      <label>傷病名編集区分    </label>
++      <label>傷病名編集区分　　</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -472,7 +472,7 @@
+       <y>200</y>
+       <width>150</width>
+       <height>16</height>
+-      <label>転帰日編集区分    </label>
++      <label>転帰日編集区分　　</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/X01.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/X01.glade,v
+retrieving revision 1.4
+diff -u -r1.4 X01.glade
+--- screen/X01.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/X01.glade	26 Nov 2002 07:33:23 -0000
+@@ -481,7 +481,7 @@
+       <y>90</y>
+       <width>100</width>
+       <height>18</height>
+-      <label>チェック区分  </label>
++      <label>チェック区分　</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -497,7 +497,7 @@
+       <y>130</y>
+       <width>100</width>
+       <height>18</height>
+-      <label>診療コード    </label>
++      <label>診療コード　　</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/X02.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/X02.glade,v
+retrieving revision 1.4
+diff -u -r1.4 X02.glade
+--- screen/X02.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/X02.glade	26 Nov 2002 07:33:23 -0000
+@@ -1472,7 +1472,7 @@
+       <y>56</y>
+       <width>100</width>
+       <height>18</height>
+-      <label>有効期間      </label>
++      <label>有効期間　　　</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -1552,7 +1552,7 @@
+       <y>16</y>
+       <width>100</width>
+       <height>18</height>
+-      <label>チェック区分  </label>
++      <label>チェック区分　</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+@@ -1568,7 +1568,7 @@
+       <y>130</y>
+       <width>445</width>
+       <height>20</height>
+-      <label>名                                称</label>
++      <label>名　　　　　　　　称</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/Z02.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/Z02.glade,v
+retrieving revision 1.4
+diff -u -r1.4 Z02.glade
+--- screen/Z02.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/Z02.glade	26 Nov 2002 07:33:23 -0000
+@@ -994,7 +994,7 @@
+       <height>18</height>
+       <label>レセプト編集情報</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -1010,7 +1010,7 @@
+       <height>18</height>
+       <label>カラム位置</label>
+       <justify>GTK_JUSTIFY_RIGHT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -1067,7 +1067,7 @@
+       <height>18</height>
+       <label>有効年月日</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -1092,7 +1092,7 @@
+       <height>18</height>
+       <label>漢字名称</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -1108,7 +1108,7 @@
+       <height>18</height>
+       <label>カナ名称</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+@@ -1124,7 +1124,7 @@
+       <height>18</height>
+       <label>正式名称</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+-      <wrap>False</wrap>
++      <wrap>True</wrap>
+       <xalign>0.5</xalign>
+       <yalign>0.5</yalign>
+       <xpad>0</xpad>
+Index: screen/Z03.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/Z03.glade,v
+retrieving revision 1.4
+diff -u -r1.4 Z03.glade
+--- screen/Z03.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/Z03.glade	26 Nov 2002 07:33:23 -0000
+@@ -572,7 +572,7 @@
+ 	  <y>536</y>
+ 	  <width>64</width>
+ 	  <height>24</height>
+-	  <label>〜    上限</label>
++	  <label>〜　上限</label>
+ 	  <justify>GTK_JUSTIFY_RIGHT</justify>
+ 	  <wrap>True</wrap>
+ 	  <xalign>0.5</xalign>
+@@ -5028,7 +5028,7 @@
+ 	  <y>112</y>
+ 	  <width>188</width>
+ 	  <height>22</height>
+-	  <label>点数欄集計先識別    入院外  </label>
++	  <label>点数欄集計先識別　入院外　</label>
+ 	  <justify>GTK_JUSTIFY_LEFT</justify>
+ 	  <wrap>True</wrap>
+ 	  <xalign>0.5</xalign>
+Index: screen/Z05.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/Z05.glade,v
+retrieving revision 1.4
+diff -u -r1.4 Z05.glade
+--- screen/Z05.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/Z05.glade	26 Nov 2002 07:33:23 -0000
+@@ -1240,7 +1240,7 @@
+       <y>364</y>
+       <width>96</width>
+       <height>16</height>
+-      <label>〜    上限年齢</label>
++      <label>〜　上限年齢</label>
+       <justify>GTK_JUSTIFY_RIGHT</justify>
+       <wrap>True</wrap>
+       <xalign>0.5</xalign>
+Index: screen/Z06.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/Z06.glade,v
+retrieving revision 1.4
+diff -u -r1.4 Z06.glade
+--- screen/Z06.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/Z06.glade	26 Nov 2002 07:33:23 -0000
+@@ -606,7 +606,7 @@
+       <y>200</y>
+       <width>80</width>
+       <height>24</height>
+-      <label>服用時点  </label>
++      <label>服用時点　</label>
+       <justify>GTK_JUSTIFY_LEFT</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/Z90.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/Z90.glade,v
+retrieving revision 1.4
+diff -u -r1.4 Z90.glade
+--- screen/Z90.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/Z90.glade	26 Nov 2002 07:33:23 -0000
+@@ -464,7 +464,7 @@
+       <y>72</y>
+       <width>344</width>
+       <height>24</height>
+-      <label>名                                称</label>
++      <label>名　　　　　　　　称</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
+Index: screen/Z91.glade
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/screen/Z91.glade,v
+retrieving revision 1.4
+diff -u -r1.4 Z91.glade
+--- screen/Z91.glade	26 Nov 2002 06:41:11 -0000	1.4
++++ screen/Z91.glade	26 Nov 2002 07:33:23 -0000
+@@ -308,7 +308,7 @@
+       <y>96</y>
+       <width>64</width>
+       <height>24</height>
+-      <label>〜    終了</label>
++      <label>〜　終了</label>
+       <justify>GTK_JUSTIFY_CENTER</justify>
+       <wrap>False</wrap>
+       <xalign>0.5</xalign>
