@@ -4,8 +4,12 @@ INSTALL_DATA = @INSTALL_DATA@
 prefix = @prefix@
 exec_prefix= @exec_prefix@
 ORCA_DIR = ${exec_prefix}
-lddefdir = ${ORCA_DIR}/lddef
 libdir = @libdir@
+lddefdir = ${ORCA_DIR}/lddef
+recorddir = ${ORCA_DIR}/record
+SITEDIR = @sitedir@
+SITELDDEFDIR = ${SITEDIR}/lddef
+SITERECORDDIR = ${SITEDIR}/record
 
 CPP = @CPP@
 # dummy flags
@@ -74,6 +78,11 @@ filecheck:
 
 directory:
 	sed -e 's,\@ORCA_DIR\@,$(ORCA_DIR),g' \
+	    -e 's,\@lddefdir\@,$(lddefdir),g' \
+	    -e 's,\@recorddir\@,$(recorddir),g' \
+	    -e 's,\@sitedir\@,$(SITEDIR),g' \
+	    -e 's,\@sitelddefdir\@,$(SITELDDEFDIR),g' \
+	    -e 's,\@siterecorddir\@,$(SITERECORDDIR),g' \
 	$(DIRECTORYFILE_in) > $(DIRECTORYFILE) 
 
 dbgroup.inc: 
