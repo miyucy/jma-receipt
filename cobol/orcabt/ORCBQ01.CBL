@@ -909,7 +909,9 @@
                MOVE    WRK-PROC-KNS
                                    TO  JOB-UPDCNT
            ELSE
-               MOVE    CNT-PAGE    TO  JOB-UPDCNT
+               COMPUTE JOB-UPDCNT  =   CNT-PAGE
+                                   -   WKBQ01-STPAGE
+                                   +   1
            END-IF
       *
            CALL    "ORCSJOB"       USING
