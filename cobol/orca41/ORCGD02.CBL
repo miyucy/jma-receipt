@@ -281,15 +281,24 @@
                05  W-SRYCD-S3-KBN      PIC X(01).
                05  W-SRYCD-S3-TABLE    OCCURS  3000.
                    07  W-SRYCD-31      PIC X(09).
+                   07  W-SRYCD-32      PIC X(01).
                    07  W-SRYCD-41      PIC X(09).
+                   07  W-SRYCD-42      PIC X(01).
                    07  W-SRYCD-51      PIC X(09).
+                   07  W-SRYCD-52      PIC X(01).
                    07  W-SRYCD-61      PIC X(09).
+                   07  W-SRYCD-62      PIC X(01).
                    07  W-SRYCD-71      PIC X(09).
+                   07  W-SRYCD-72      PIC X(01).
                    07  W-SRYCD-81      PIC X(09).
                    07  W-SRYCD-82      PIC X(01).
            03  W-TABLE-S4.
+               05  W-SRYCD-S4-KBN      PIC X(01).
                05  W-SRYCD-S4-TABLE    OCCURS  1000.
                    07  W-SRYCD-91      PIC X(09).
+                   07  W-SRYCD-92      PIC X(01).
+                   07  W-SRYCD-93      PIC 9(01).
+                   07  W-SRYCD-94      PIC 9(01).
       *修正/*開始*03.04.17*********************************************
       *    入院会計の区分作業
            03  WK-ZAISKBKBN        PIC X(01).
@@ -2297,9 +2306,9 @@
                                    ELSE
                                        IF  W-SRYCD-31 (IDY1)   =
                                                         SRY-SRYCD (IDX3)
-                                           MOVE    4000   TO  IDY1
-                                           MOVE    "*"
+                                           MOVE    W-SRYCD-32 (IDY1)
                                                       TO  W-SRYCD-S3-KBN
+                                           MOVE    4000   TO  IDY1
                                        END-IF
                                    END-IF
                                END-PERFORM
@@ -2317,9 +2326,9 @@
                                    ELSE
                                        IF  W-SRYCD-41 (IDY1)   =
                                                         SRY-SRYCD (IDX3)
-                                           MOVE    4000   TO  IDY1
-                                           MOVE    "*"
+                                           MOVE    W-SRYCD-42 (IDY1)
                                                       TO  W-SRYCD-S3-KBN
+                                           MOVE    4000   TO  IDY1
                                        END-IF
                                    END-IF
                                END-PERFORM
@@ -2338,8 +2347,9 @@
                                ELSE
                                    IF  W-SRYCD-51 (IDY1)   =
                                                         SRY-SRYCD (IDX3)
+                                       MOVE    W-SRYCD-52 (IDY1)
+                                                      TO  W-SRYCD-S3-KBN
                                        MOVE    4000   TO  IDY1
-                                       MOVE    "*"    TO  W-SRYCD-S3-KBN
                                    END-IF
                                END-IF
                            END-PERFORM
@@ -2357,8 +2367,9 @@
                                ELSE
                                    IF  W-SRYCD-61 (IDY1)   =
                                                         SRY-SRYCD (IDX3)
+                                       MOVE    W-SRYCD-62 (IDY1)
+                                                      TO  W-SRYCD-S3-KBN
                                        MOVE    4000   TO  IDY1
-                                       MOVE    "*"    TO  W-SRYCD-S3-KBN
                                    END-IF
                                END-IF
                            END-PERFORM
@@ -2376,8 +2387,9 @@
                                ELSE
                                    IF  W-SRYCD-71 (IDY1)   =
                                                         SRY-SRYCD (IDX3)
+                                       MOVE    W-SRYCD-72 (IDY1)
+                                                      TO  W-SRYCD-S3-KBN
                                        MOVE    4000   TO  IDY1
-                                       MOVE    "*"    TO  W-SRYCD-S3-KBN
                                    END-IF
                                END-IF
                            END-PERFORM
@@ -2513,8 +2525,9 @@
                WRITE   DID3-REC
            ELSE
                PERFORM T-530-RECECHEK-READ2-SEC
+               MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-31 (IDY5)
                IF  MCP-RC   NOT =   ZERO
-                   MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-31 (IDY5)
+                   MOVE    "*"                 TO  W-SRYCD-32 (IDY5)
                END-IF
                PERFORM UNTIL   MCP-RC    NOT =   ZERO
                    MOVE    MCPDATA-REC         TO  CHK-REC
@@ -2574,8 +2587,9 @@
                WRITE   DID3-REC
            ELSE
                PERFORM T-530-RECECHEK-READ2-SEC
+               MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-41 (IDY5)
                IF  MCP-RC   NOT =   ZERO
-                   MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-41 (IDY5)
+                   MOVE    "*"                 TO  W-SRYCD-42 (IDY5)
                END-IF
                PERFORM UNTIL   MCP-RC    NOT =   ZERO
                    MOVE    MCPDATA-REC         TO  CHK-REC
@@ -2744,8 +2758,9 @@
                WRITE   DID3-REC
            ELSE
                PERFORM T-530-RECECHEK-READ4-SEC
+               MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-51 (IDY5)
                IF  MCP-RC   NOT =   ZERO
-                   MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-51 (IDY5)
+                   MOVE    "*"                 TO  W-SRYCD-52 (IDY5)
                END-IF
                PERFORM UNTIL   MCP-RC    NOT =   ZERO
                    MOVE    MCPDATA-REC         TO  INTERACT-REC
@@ -2855,24 +2870,25 @@
                                        ORCMCPAREA
                                        MCPDATA-REC.
       *
+           MOVE    CHK-CD (IDY2)       TO  W-SRYCD-91 (IDY5).
+           MOVE    "*"                 TO  W-SRYCD-92 (IDY5).
            IF  MCP-RC   NOT =   ZERO
-               MOVE    1                    TO  FLG-TBL
+               MOVE    1                    TO  W-SRYCD-93 (IDY5)
+               MOVE   20                    TO  IDY2
            ELSE
                PERFORM T-530-RECECHEK-READ5-SEC
                IF  MCP-RC   NOT =   ZERO
-                   MOVE    1                    TO  FLG-TBL
-               ELSE
-                   MOVE    2                    TO  FLG-TBL
-                   MOVE    2                    TO  FLG-TENKIYMD-ER
-                   MOVE    1                    TO  FLG-END
+                   MOVE    1                    TO  W-SRYCD-93 (IDY5)
                    MOVE   20                    TO  IDY2
+               ELSE
+                   MOVE    2                    TO  W-SRYCD-93 (IDY5)
+                   MOVE    2                    TO  W-SRYCD-94 (IDY5)
                    MOVE    MCPDATA-REC          TO  PTBYOMEI-REC
                    IF  (PTBYO-TENKIYMD   NOT  =   SPACE)      AND
                        (PTBYO-TENKIYMD   NOT  =   ZERO)       AND
                        (PTBYO-TENKIYMD(1:6)   <   T-SINRYOU-AREA)
-                       MOVE    1                  TO  FLG-TENKIYMD-ER
-                   ELSE
-                       MOVE    CHK-CD (IDY2)      TO  W-SRYCD-91 (IDY5)
+                       MOVE    1                  TO  W-SRYCD-94 (IDY5)
+                       MOVE   20                  TO  IDY2
                    END-IF
                END-IF
            END-IF.
@@ -2934,15 +2950,18 @@
                MOVE    ZERO                    TO  FLG-END
                MOVE    ZERO                    TO  FLG-TBL
                MOVE    ZERO                    TO  FLG-TENKIYMD-ER
+               MOVE    SRY-SRYCD (IDX3)        TO  W-SRYCD-61 (IDY5)
                PERFORM T-530-RECECHEK-READ2-SEC
                IF  MCP-RC   NOT =   ZERO
-                   MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-61 (IDY5)
+                   MOVE    "*"                 TO  W-SRYCD-62 (IDY5)
+               ELSE
+                   MOVE    SPACE               TO  W-SRYCD-62 (IDY5)
                END-IF
                PERFORM UNTIL   (MCP-RC    NOT =   ZERO)  OR
                                (FLG-END   NOT =   ZERO)
                    PERFORM VARYING IDY2  FROM  1  BY 1
                            UNTIL   IDY2  >    10
-                       MOVE    SPACE             TO  W-SRYCD-S3-KBN
+                       MOVE    SPACE             TO  W-SRYCD-S4-KBN
                        PERFORM VARYING IDY1  FROM  1  BY 1
                                UNTIL   IDY1  >  1000
                            IF  W-SRYCD-91 (IDY1)   =   SPACE
@@ -2950,15 +2969,27 @@
                                MOVE    2000               TO  IDY1
                            ELSE
                                IF  W-SRYCD-91 (IDY1)  =  CHK-CD (IDY2)
+                                   MOVE    W-SRYCD-92 (IDY1)
+                                                  TO  W-SRYCD-S4-KBN
+                                   MOVE    W-SRYCD-93 (IDY1)
+                                                  TO  FLG-TBL
+                                   MOVE    W-SRYCD-94 (IDY1)
+                                                  TO  FLG-TENKIYMD-ER
                                    MOVE    2000   TO  IDY1
-                                   MOVE    "*"    TO  W-SRYCD-S3-KBN
                                END-IF
                            END-IF
                        END-PERFORM
                        IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
                            (CHK-CD (IDY2)   NOT =   ZERO)  AND
-                           (W-SRYCD-S3-KBN      =   SPACE)
+                           (W-SRYCD-S4-KBN      =   SPACE)
                            PERFORM T-530-RECECHEK-CHK5-SEC
+                       END-IF
+                       IF  (CHK-CD (IDY2)       =   SPACE) OR
+                           (CHK-CD (IDY2)       =   ZERO)  OR
+                           (IDY2                =   20)    OR
+                           (FLG-TBL             =   1)     OR
+                           (FLG-TENKIYMD-ER     =   1)
+                           MOVE    1                    TO  FLG-END
                        END-IF
                    END-PERFORM
                    IF  FLG-END   =   ZERO
@@ -3010,16 +3041,19 @@
                MOVE    ZERO                    TO  FLG-END
                MOVE    ZERO                    TO  FLG-TBL
                MOVE    ZERO                    TO  FLG-TENKIYMD-ER
+               MOVE    SRY-SRYCD (IDX3)        TO  W-SRYCD-71 (IDY5)
                PERFORM T-530-RECECHEK-READ2-SEC
                IF  MCP-RC   NOT =   ZERO
-                   MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-71 (IDY5)
+                   MOVE    "*"                 TO  W-SRYCD-72 (IDY5)
+               ELSE
+                   MOVE    SPACE               TO  W-SRYCD-72 (IDY5)
                END-IF
                PERFORM UNTIL   (MCP-RC    NOT =   ZERO)  OR
                                (FLG-END   NOT =   ZERO)
                    MOVE    MCPDATA-REC         TO  CHK-REC
                    PERFORM VARYING IDY2  FROM  1  BY 1
                            UNTIL   IDY2  >    10
-                       MOVE    SPACE             TO  W-SRYCD-S3-KBN
+                       MOVE    SPACE             TO  W-SRYCD-S4-KBN
                        PERFORM VARYING IDY1  FROM  1  BY 1
                                UNTIL   IDY1  >  1000
                            IF  W-SRYCD-91 (IDY1)   =   SPACE
@@ -3027,15 +3061,27 @@
                                MOVE    2000               TO  IDY1
                            ELSE
                                IF  W-SRYCD-91 (IDY1)  =  CHK-CD (IDY2)
+                                   MOVE    W-SRYCD-92 (IDY1)
+                                                  TO  W-SRYCD-S4-KBN
+                                   MOVE    W-SRYCD-93 (IDY1)
+                                                  TO  FLG-TBL
+                                   MOVE    W-SRYCD-94 (IDY1)
+                                                  TO  FLG-TENKIYMD-ER
                                    MOVE    2000   TO  IDY1
-                                   MOVE    "*"    TO  W-SRYCD-S3-KBN
                                END-IF
                            END-IF
                        END-PERFORM
                        IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
                            (CHK-CD (IDY2)   NOT =   ZERO)  AND
-                           (W-SRYCD-S3-KBN      =   SPACE)
+                           (W-SRYCD-S4-KBN      =   SPACE)
                            PERFORM T-530-RECECHEK-CHK5-SEC
+                       END-IF
+                       IF  (CHK-CD (IDY2)       =   SPACE) OR
+                           (CHK-CD (IDY2)       =   ZERO)  OR
+                           (IDY2                =   20)    OR
+                           (FLG-TBL             =   1)     OR
+                           (FLG-TENKIYMD-ER     =   1)
+                           MOVE    1                    TO  FLG-END
                        END-IF
                    END-PERFORM
                    IF  FLG-END   =   ZERO
