@@ -46,6 +46,7 @@
       *                                     入力をコンボボックスに変更
       *  01.00.16    NACL-太田    03/07/31  減免事由情報に割引対象を追加
       *  01.00.17    NACL-多々納  03/11/11  基本情報期間変更追加
+      *  01.00.18    NACL-多々納  04/05/11  減免事由の割引対象を９９件へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -223,7 +224,7 @@
                        09  SPA-GMN-EMAIL          PIC X(100).
                        09  SPA-GMN-HPURL          PIC X(100).
                    07  SPA-GMN-1026-AREA.
-                       09  SPA-GMN-DISCOUNT-KBNLST    OCCURS  10.
+                       09  SPA-GMN-DISCOUNT-KBNLST    OCCURS  99.
                            11  SPA-GMN-DISCOUNT-KBNL
                                                   PIC X(02).
                            11                     PIC X(01).
@@ -797,7 +798,7 @@
                                        >   3 )
       *                    空白の場合は"1"に置き換える
                            IF    ( SYS-1026-DISCOUNT-OBJ   =   SPACE )
-                               MOVE    1
+                               MOVE    "1"
                                        TO  SYS-1026-DISCOUNT-OBJ
                            END-IF
                            IF    ( SYS-1026-DISCOUNT-OBJ
@@ -1054,7 +1055,7 @@
            END-PERFORM
       *    減免端数区分 空白の時、"1"とする
            IF      SYS-1001-DISCOUNT-HASU-KBN    =   SPACE
-               MOVE    1               TO  SYS-1001-DISCOUNT-HASU-KBN
+               MOVE    "1"             TO  SYS-1001-DISCOUNT-HASU-KBN
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       4
@@ -1067,7 +1068,7 @@
            END-PERFORM
       *    消費税端数区分 空白の時、"2"とする
            IF      SYS-1001-TAX-HASU-KBN   =   SPACE
-               MOVE    2               TO  SYS-1001-TAX-HASU-KBN
+               MOVE    "2"             TO  SYS-1001-TAX-HASU-KBN
            END-IF
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       2
@@ -1107,8 +1108,8 @@
            END-IF
       *
            MOVE    ZERO                TO  SPA-GMN-DISCOUNT-KBN-MAX
-           PERFORM             UNTIL ( FLG-SYSKANRI   =   1 )
-                               OR    ( SPA-GMN-DISCOUNT-KBN-MAX >= 10 )
+           PERFORM     UNTIL ( FLG-SYSKANRI    =   1 )
+                       OR    ( SPA-GMN-DISCOUNT-KBN-MAX  >=  99 )
                MOVE    MCPDATA-REC     TO  SYS-1027-REC
       *
                COMPUTE SPA-GMN-DISCOUNT-KBN-MAX
