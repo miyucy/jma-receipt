@@ -2629,9 +2629,9 @@
                 WHEN    28
                     MOVE  "AUTODSPKBN"       TO   MCP-WIDGET
                 WHEN    29
-                    MOVE  "PRTJYUN1"         TO   MCP-WIDGET
+                    MOVE  "PRTJYUNKBN1"      TO   MCP-WIDGET
                 WHEN    30
-                    MOVE  "PRTJYUN2"         TO   MCP-WIDGET
+                    MOVE  "PRTJYUNKBN2"      TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -2702,11 +2702,12 @@
                WHEN    "SRYKAHENKBN"
                    MOVE    28          TO  SPA-GMN-CUR
                WHEN    "AUTODSPKBN"
-                   MOVE    29          TO  SPA-GMN-CUR
-               WHEN    "PRTJYUN1"
+      *************MOVE    29          TO  SPA-GMN-CUR
+                   MOVE    99          TO  SPA-GMN-CUR
+               WHEN    "PRTJYUNKBN1"
                    MOVE    30          TO  SPA-GMN-CUR
-               WHEN    "PRTJYUN2"
-                   MOVE    11          TO  SPA-GMN-CUR
+               WHEN    "PRTJYUNKBN2"
+                   MOVE    99          TO  SPA-GMN-CUR
                WHEN    "KKHPRTKBN"
                    MOVE    99          TO  SPA-GMN-CUR
                WHEN    "SYAPRTNM_N"
