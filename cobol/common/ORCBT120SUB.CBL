@@ -51,6 +51,7 @@
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-SYUNOU                  PIC 9(01).
            03  FLG-PTHKNINF                PIC 9(01).
+           03  FLG-PTRSIINF                PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
@@ -118,6 +119,10 @@
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
+      *    患者労災保険情報
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
+      *
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -147,7 +152,6 @@
            COPY    "CPORCBT120SUB.INC".
       *
        PROCEDURE                   DIVISION    USING
-      *     SPA-AREA
             ORCBT120SUB-AREA
            .
       *
@@ -487,7 +491,7 @@
            MOVE    "SYUNOU-KEY2"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
-      *    保険組合せ番号の取得（収納が無い場合の入院会計から取得）
+      *    保険組合せ番号の取得（収納が無い場合に入院会計から取得）
            IF    LNK-ORCBT120SUB-HKNCOMBINUM(1)    =   ZERO
                INITIALIZE                          NYUINACCT-REC
                MOVE    LNK-ORCBT120SUB-HOSPID  TO  NACCT-HOSPID
@@ -537,6 +541,9 @@
                        MOVE   COMB-CONTKBN
                                   TO  LNK-ORCBT120SUB-CONTKBN(SYU-IDX)
                        PERFORM   220-HKNJANUM-SET-SEC
+                       IF        COMB-HKNNUM  =  "971"  OR  "973"
+                           PERFORM   230-PTRSIINF-SET-SEC
+                       END-IF
                        PERFORM   VARYING  COMB-IDX  FROM  1  BY  1
                                  UNTIL   (COMB-KOHID(COMB-IDX) = ZERO)
                                     OR   (COMB-IDX    >   4)
@@ -641,6 +648,37 @@
       *
            .
        220-HKNJANUN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者労災情報セット処理
+      *****************************************************************
+       230-PTRSIINF-SET-SEC         SECTION.
+      *
+           INITIALIZE                      PTRSIINF-REC
+           MOVE    LNK-ORCBT120SUB-HOSPID
+                                    TO     PTRSI-HOSPID
+           MOVE    LNK-ORCBT120SUB-PTID
+                                    TO     PTRSI-PTID
+           MOVE    COMB-HKNID       TO     PTRSI-HKNID
+           MOVE    "PTRSIINF-KEY"   TO     ORC-DBPATH
+           PERFORM 910-PTRSIINF-SELECT-SEC
+           IF    FLG-PTRSIINF       =       ZERO
+               MOVE    "PTRSIINF-KEY"   TO      ORC-DBPATH
+               PERFORM 910-PTRSIINF-READ-SEC
+               IF    FLG-PTRSIINF   =       ZERO
+                   MOVE   PTRSI-HKNKBN
+                              TO  LNK-ORCBT120SUB-RSIHKNKBN
+                   MOVE   PTRSI-JIBAISEIKBN
+                              TO  LNK-ORCBT120SUB-JIBAIKBN
+               END-IF
+           END-IF
+      *    患者労災保険情報クローズ
+           MOVE    "PTRSIINF-KEY"           TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
+           .
+       230-PTRSIINF-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -918,7 +956,6 @@
        910-SYUNOU-READ-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    患者保険情報マスター検索
       *****************************************************************
@@ -960,6 +997,49 @@
       *
            .
        910-PTHKNINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者労災保険情報マスター検索
+      *****************************************************************
+       910-PTRSIINF-SELECT-SEC        SECTION.
+      *
+           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-PTRSIINF
+           ELSE
+               MOVE    1                  TO  FLG-PTRSIINF
+           END-IF
+      *
+           .
+       910-PTRSIINF-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者労災保険情報マスター読込
+      *****************************************************************
+       910-PTRSIINF-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC        TO  PTRSIINF-REC
+               MOVE    ZERO               TO  FLG-PTRSIINF
+           ELSE
+               INITIALIZE                     PTRSIINF-REC
+               MOVE    1                  TO  FLG-PTRSIINF
+           END-IF
+      *
+           .
+       910-PTRSIINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
