@@ -1986,8 +1986,6 @@
                                                      CONS-KEIZOKU2 )
                        OR ( FLG-NYUYOJI          =   9             )
                        OR ( FLG-YOJI             =   9             )
-                       OR ( FLG-NYUYOJI      NOT =   ZERO           AND
-                            FLG-YOJI         NOT =   ZERO          )
                             MOVE   ZERO       TO    RECE02-KHNTEN(2)
                             MOVE   1          TO    FLG-KHNTEN2
                        ELSE
@@ -3579,6 +3577,7 @@
              IF     CNT-NYUYOJI      NOT =  ZERO
                IF   RECE02-KAISU(2)  NOT =  CNT-NYUYOJI
                    MOVE     "1"        TO   RECE02-NYUYOJIFLG
+                   MOVE   ZERO         TO   RECE02-KHNTEN(2)
                END-IF
              END-IF
            END-IF
@@ -3587,6 +3586,7 @@
              IF     CNT-YOJI         NOT =  ZERO
                IF   RECE02-KAISU(2)  NOT =  CNT-YOJI
                    MOVE     "2"        TO   RECE02-NYUYOJIFLG
+                   MOVE   ZERO         TO   RECE02-KHNTEN(2)
                END-IF
              END-IF
            END-IF
