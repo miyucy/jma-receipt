@@ -403,7 +403,7 @@
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *     
-           IF      RECEDEN-RECEKA      =   ZERO
+           IF      KEY-N-SRYKA         =   ZERO
               MOVE    SPACE                TO  WRK-DATA
            ELSE    
                MOVE    RECEDEN-RECEKA      TO  WRK-DATA
@@ -745,6 +745,7 @@
                    GO  TO  900-SEIKYU-READ-SEC
                END-IF
                ADD     1                   TO  CNT-RECE10
+               MOVE    RECE10-RECEKA       TO  KEY-N-SRYKA
            ELSE
                MOVE    1                   TO  FLG-END
            END-IF
@@ -771,17 +772,11 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
-      *???
-               DISPLAY "KEY=" RECEDEN-KEY "#" MCP-RC "#"
-      *???
            IF      MCP-RC              =   ZERO
                PERFORM 900-RECEDEN-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-RECEDEN
            END-IF
-      *???
-               DISPLAY "KEY=" RECEDEN-KEY "#" FLG-RECEDEN "#"
-      *???
            .
        900-RECEDEN-SELECT-EXT.
            EXIT.
