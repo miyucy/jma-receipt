@@ -281,7 +281,7 @@
       *
            MOVE    SPACE           TO  LINKAREA
       *
-           MOVE   "NEW"            TO  MCP-PUTTYPE
+           MOVE  SPACE             TO  MCP-PUTTYPE.
            MOVE   "C11"            TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW

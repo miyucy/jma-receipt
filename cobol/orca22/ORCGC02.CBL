@@ -6432,7 +6432,7 @@
            MOVE    "C02"               TO  SPA-MOTOPG
            MOVE    "C11"               TO  SPA-SAKIPG
       *
-           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE.
            MOVE    "C11"               TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
