@@ -46,6 +46,8 @@
       *  01.00.13    NACL-門脇    03.08.20  公費受診日のコメント編集
       *  01.00.14    NACL-門脇    03.09.24  コメント編集修正
       *  01.00.15    NACL-門脇    03.09.29  コメント編集修正
+      *  01.00.16    NACL-門脇    03.12.15  自動編集コメントの公費分離区分
+      *                                     セット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -231,6 +233,7 @@
            03  WRK-KETA-TAIHI      PIC 9(04).
            03  WRK-KETA2           PIC 9(04).
            03  WRK-KOHBUNRI        PIC 9(01).
+           03  WRK-KOHBUNRI-JIDO   PIC 9(01).
            03  WRK-ZAINUM          PIC 9(08).
            03  WRK-RECEERR         PIC X(200).
       *
@@ -626,6 +629,13 @@
            INITIALIZE                      WRK-JINZOU-AREA
            INITIALIZE                      WRK-RIGAKU-AREA
            INITIALIZE                      WRK-TAIHI-ZAINUM
+      *
+           IF   RECE02-TOTALTEN(1)       =      ZERO
+           AND  RECE02-TOTALTEN(2)   NOT =      ZERO
+                MOVE       1           TO  WRK-KOHBUNRI-JIDO
+           ELSE
+                MOVE     ZERO          TO  WRK-KOHBUNRI-JIDO
+           END-IF
       *
            IF   RECE02-COMCNTFLG   =   "1"
       *
@@ -1244,6 +1254,7 @@
                 MOVE    RECE02-TEKSTYMD      TO  RECE051-TEKSTYMD
       *         MOVE    ZERO                 TO  RECE051-ZAINUM
                 MOVE    99999999             TO  RECE051-ZAINUM
+                MOVE    WRK-KOHBUNRI-JIDO    TO  RECE051-KOHBUNRI
                 MOVE    "99"                 TO  RECE051-SRYKBN
                 ADD     1                    TO  WRK-RENNUM
                 MOVE    WRK-RENNUM           TO  RECE051-RENNUM
@@ -1279,7 +1290,7 @@
            MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
       *    MOVE    ZERO                TO  RECE041-ZAINUM
            MOVE    99999999            TO  RECE041-ZAINUM
-      *    MOVE    WRK-RECE04-KOHBUNRI TO  RECE041-KOHBUNRI
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE041-KOHBUNRI
            MOVE    "99"                TO  RECE041-SRYKBN
       *
            MOVE    WRK-CNT-MEISAI      TO  RECE041-MEISAISU
@@ -1336,6 +1347,8 @@
            COMPUTE WRK-ZAINUM    =  99999990  +  IDX
            MOVE    WRK-ZAINUM          TO  RECE051-ZAINUM
       *    MOVE    99999999            TO  RECE051-ZAINUM
+           COMPUTE WRK-KOHBUNRI  =  IDX  -  1
+           MOVE    WRK-KOHBUNRI        TO  RECE051-KOHBUNRI
            MOVE    "99"                TO  RECE051-SRYKBN
       *    電話再診のコメントの挿入
            MOVE    SPACE                TO  COM-RECE05-REC
@@ -1410,6 +1423,8 @@
            COMPUTE WRK-ZAINUM    =  99999990  +  IDX
            MOVE    WRK-ZAINUM          TO  RECE051-ZAINUM
       *    MOVE    99999999            TO  RECE051-ZAINUM
+           COMPUTE WRK-KOHBUNRI  =  IDX  -  1
+           MOVE    WRK-KOHBUNRI        TO  RECE051-KOHBUNRI
            MOVE    "99"                TO  RECE051-SRYKBN
       *    電話再診のコメントの挿入
            MOVE    SPACE                TO  COM-RECE05-REC
@@ -1474,6 +1489,8 @@
            COMPUTE WRK-ZAINUM    =  99999990  +  IDX
            MOVE    WRK-ZAINUM          TO  RECE051-ZAINUM
       *    MOVE    99999999            TO  RECE051-ZAINUM
+           COMPUTE WRK-KOHBUNRI  =  IDX  -  1
+           MOVE    WRK-KOHBUNRI        TO  RECE051-KOHBUNRI
            MOVE    "99"                TO  RECE051-SRYKBN
       *    同日複数再診のコメントの挿入
            MOVE    SPACE                TO  COM-RECE05-REC
@@ -1678,6 +1695,8 @@
            MOVE    RECE02-TEKSTYMD     TO  RECE051-TEKSTYMD
            COMPUTE WRK-ZAINUM    =  99999980  +  IDX
            MOVE    WRK-ZAINUM          TO  RECE051-ZAINUM
+           COMPUTE WRK-KOHBUNRI  =  IDX  -  1
+           MOVE    WRK-KOHBUNRI        TO  RECE051-KOHBUNRI
            MOVE    WRK-RECE04-SRYKBN   TO  RECE051-SRYKBN
       *    人工腎臓コメントの挿入
            ADD     1                    TO  IDX-RECE05
@@ -1715,6 +1734,7 @@
            MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
            MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
            MOVE    99999990            TO  RECE041-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE041-KOHBUNRI
            MOVE    "99"                TO  RECE041-SRYKBN
       *
            MOVE    1                   TO  RECE041-MEISAISU
@@ -1734,6 +1754,7 @@
            MOVE    RECE02-HOJOKBN-KEY  TO  RECE051-HOJOKBN
            MOVE    RECE02-TEKSTYMD     TO  RECE051-TEKSTYMD
            MOVE    99999990            TO  RECE051-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE051-KOHBUNRI
            MOVE    "99"                TO  RECE051-SRYKBN
       *    コメントの挿入
            MOVE    SPACE                TO  COM-RECE05-REC
@@ -1831,6 +1852,7 @@
                 MOVE    RECE02-HOJOKBN-KEY   TO  RECE051-HOJOKBN
                 MOVE    RECE02-TEKSTYMD      TO  RECE051-TEKSTYMD
                 MOVE    99999980             TO  RECE051-ZAINUM
+                MOVE    WRK-KOHBUNRI-JIDO    TO  RECE051-KOHBUNRI
                 MOVE    "99"                 TO  RECE051-SRYKBN
                 ADD     1                    TO  WRK-RENNUM
                 MOVE    WRK-RENNUM           TO  RECE051-RENNUM
@@ -1865,6 +1887,7 @@
            MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
            MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
            MOVE    99999980            TO  RECE041-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE041-KOHBUNRI
            MOVE    "99"                TO  RECE041-SRYKBN
       *
            MOVE    WRK-CNT-MEISAI      TO  RECE041-MEISAISU
