@@ -59,6 +59,9 @@
       *  01.01.12    NACL-藤原    03/03/11  種別不明の情報を編集
       *  01.01.13    NACL-藤原    03/04/21  レセのとき地方公費のみの場合は
       *                                     出力しない
+      *
+      *  レセ電機能追加
+      *  01.02.01    NACL-藤原    03/08/05  外来レセ電処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -349,6 +352,9 @@
       *    レセプト
            COPY    "CPRCF008.INC".
       *
+      *    レセプト電算
+           COPY    "CPRECEDEN.INC".
+      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -562,6 +568,38 @@
                MOVE    "2"                 TO  KOHSKY-NYUGAIKBN
                MOVE    KOHSKY-REC          TO  MCPDATA-REC
                MOVE    "KOHSKY-DEL1"        TO  ORC-DBPATH
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC      
+           END-IF      
+      *
+      *    診療年月のレセ電削除処理（社保分）
+           IF      WRK-PARA-RECEKBN    =   "0" OR  "1"          
+               INITIALIZE                  RECEDEN-REC
+               MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
+               MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
+               MOVE    "1"                 TO  RECEDEN-TEISYUTUSAKI
+               MOVE    "2"                 TO  RECEDEN-NYUGAIKBN
+               MOVE    RECEDEN-REC         TO  MCPDATA-REC
+               MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC      
+           END-IF      
+      *
+      *    診療年月のレセ電削除処理（国保分）
+           IF      WRK-PARA-RECEKBN    =   "0" OR  "2"          
+               INITIALIZE                  RECEDEN-REC
+               MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
+               MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
+               MOVE    "2"                 TO  RECEDEN-TEISYUTUSAKI
+               MOVE    "2"                 TO  RECEDEN-NYUGAIKBN
+               MOVE    RECEDEN-REC         TO  MCPDATA-REC
+               MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH
                MOVE    "DBDELETE"          TO  MCP-FUNC
                CALL    "ORCMCPSUB"              USING
                                                 MCPAREA
@@ -1405,6 +1443,20 @@
            MOVE    SYS-2002-NYUGAIKBN  TO  KOHSKY-NYUGAIKBN
            MOVE    KOHSKY-REC          TO  MCPDATA-REC
            MOVE    "KOHSKY-DEL2"       TO  ORC-DBPATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+      *    診療年月のレセ電削除処理
+           INITIALIZE                  RECEDEN-REC
+           MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
+           MOVE    SYS-2002-PTID       TO  RECEDEN-PTID
+           MOVE    SYS-2002-SRYYM      TO  RECEDEN-SRYYM
+           MOVE    SYS-2002-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
+           MOVE    RECEDEN-REC         TO  MCPDATA-REC
+           MOVE    "RECEDEN-DEL2"      TO  ORC-DBPATH
            MOVE    "DBDELETE"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
