@@ -59,6 +59,8 @@
       *  01.05.02    NACL-藤原    03.09.02  メッセージコードの修正
       *  01.05.03    NACL-藤原    03.09.24  レセ電ファイルの出力先指定の修正
       *  01.05.04    NACL-藤原    04.02.17  レセ電ファイルの出力先指定
+      *  01.00.05    NACL-伊藤    04.02.17  レセ電ファイルの転送エラー
+      *                                     メッセージの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2323,11 +2325,16 @@
                            IF      JOB-ERRCD       =   SPACE
                                CONTINUE
                            ELSE
-                               STRING  JOB-YOBI    DELIMITED  BY  SPACE
-                                       "【"        DELIMITED  BY  SIZE
-                                      JOB-SHELLMSG DELIMITED  BY  SPACE
-                                      "】"         DELIMITED  BY  SIZE      
-                                                   INTO  T99-MSG
+                               MOVE    SPACE       TO  T99-MSG
+                               PERFORM 4901-JOB-ERRSET-SEC
+                               IF      T99-MSG     =   SPACE
+                                 STRING  JOB-YOBI    DELIMITED BY SPACE
+                                         "【"        DELIMITED BY SIZE
+                                        JOB-SHELLMSG DELIMITED BY SPACE
+                                        "】"         DELIMITED BY SIZE
+                                                     INTO  T99-MSG
+                                 END-STRING   
+                               END-IF
                            END-IF                          
                        END-IF    
                        MOVE    IDX                     TO  T99-COUNT    
@@ -2358,6 +2365,40 @@
            MOVE    1                    TO  FLG-END              
            .
        490-KAKUNIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージセット処理
+      *****************************************************************
+       4901-JOB-ERRSET-SEC             SECTION.
+      *
+           EVALUATE    JOB-ERRCD
+               WHEN    "0001"
+                   MOVE    "【ファイルがありません】" 
+                                               TO  T99-MSG
+               WHEN    "0002"
+                   MOVE    "【ｆｄｄが起動されていません】" 
+                                               TO  T99-MSG
+               WHEN    "0003"
+               WHEN    "0004"
+                   MOVE    "【ｆｄｄで処理が失敗しました】" 
+                                               TO  T99-MSG
+               WHEN    "0011"
+                   MOVE    "【媒体がマウントできませんでした】" 
+                                               TO  T99-MSG
+               WHEN    "0012"
+                   MOVE    "【媒体がアンマウントできませんでした】" 
+                                               TO  T99-MSG
+               WHEN    "0021"
+                   MOVE    "【ファイルコピーでエラーが発生しました】" 
+                                               TO  T99-MSG
+               WHEN    "0127"
+                   MOVE    "【スクリプトが実行できませんでした】" 
+                                               TO  T99-MSG
+           END-EVALUATE
+      *
+           .
+       4901-JOB-ERRSET-EXT.
            EXIT.
       *
       *****************************************************************

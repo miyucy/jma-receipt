@@ -312,6 +312,7 @@
                                         JOB-SHELLMSG DELIMITED BY SPACE
                                         "¡Û"         DELIMITED BY SIZE
                                                      INTO  T99-MSG
+                                 END-STRING   
                                END-IF
                            END-IF
                        END-IF

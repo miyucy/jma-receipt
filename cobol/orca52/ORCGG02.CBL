@@ -29,6 +29,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    04.02.17  ファイルの出力先指定
+      *  01.00.05    NACL-伊藤    04.02.17  レセ電ファイルの転送エラー
+      *                                     メッセージの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1151,11 +1153,16 @@
                    IF      JOB-ERRCD       =   SPACE
                        CONTINUE
                    ELSE
-                       STRING  JOB-YOBI    DELIMITED  BY  SPACE
-                               "【"        DELIMITED  BY  SIZE
-                              JOB-SHELLMSG DELIMITED  BY  SPACE
-                              "】"         DELIMITED  BY  SIZE      
-                                           INTO  G99-MSG
+                       MOVE    SPACE       TO  G99-MSG
+                       PERFORM 4901-JOB-ERRSET-SEC
+                       IF      G99-MSG     =   SPACE
+                           STRING  JOB-YOBI        DELIMITED BY SPACE
+                                   "【"            DELIMITED BY SIZE
+                                   JOB-SHELLMSG    DELIMITED BY SPACE
+                                   "】"            DELIMITED BY SIZE
+                                                   INTO  G99-MSG
+                           END-STRING   
+                       END-IF
                    END-IF                          
                END-IF    
                MOVE    IDX                     TO  G99-COUNT    
@@ -1185,6 +1192,40 @@
            MOVE    1                    TO  FLG-END
            .
        490-KAKUNIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージセット処理
+      *****************************************************************
+       4901-JOB-ERRSET-SEC             SECTION.
+      *
+           EVALUATE    JOB-ERRCD
+               WHEN    "0001"
+                   MOVE    "【ファイルがありません】" 
+                                               TO  G99-MSG
+               WHEN    "0002"
+                   MOVE    "【ｆｄｄが起動されていません】" 
+                                               TO  G99-MSG
+               WHEN    "0003"
+               WHEN    "0004"
+                   MOVE    "【ｆｄｄで処理が失敗しました】" 
+                                               TO  G99-MSG
+               WHEN    "0011"
+                   MOVE    "【媒体がマウントできませんでした】" 
+                                               TO  G99-MSG
+               WHEN    "0012"
+                   MOVE    "【媒体がアンマウントできませんでした】" 
+                                               TO  G99-MSG
+               WHEN    "0021"
+                   MOVE    "【ファイルコピーでエラーが発生しました】" 
+                                               TO  G99-MSG
+               WHEN    "0127"
+                   MOVE    "【スクリプトが実行できませんでした】" 
+                                               TO  G99-MSG
+           END-EVALUATE
+      *
+           .
+       4901-JOB-ERRSET-EXT.
            EXIT.
       *
       *****************************************************************
