@@ -127,6 +127,7 @@
       *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
       *
+      *P02SCR-SPAのP020(受付）と同じレイアウトとする
        01  WRK-SORT-AREA.
            03  WRK-GMN-TBL.
                05  WRK-GMN-TBLO            OCCURS   10.
@@ -139,6 +140,7 @@
                    07  WRK-GMN-TKARUTE     PIC X(02).
                    07  WRK-GMN-TSYOHOU     PIC X(02).
                    07  WRK-GMN-TKOHBAN     PIC X(04).
+                   07  WRK-GMN-THKNCOMBIMEI    PIC X(60).
            03  WRK-NAI-TBL.
                05  WRK-NAI-TBLO            OCCURS   10.
                    07  WRK-NAI-KEYYYKTIME  PIC 9(04).
