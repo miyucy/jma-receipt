@@ -57,14 +57,16 @@
        FD  TOKEI-FILE.
        01  TOKEI-REC. 
            03  TOKEI-KEY.
-               05  TOKEI-PTID          PIC 9(10).
+               05  TOKEI-PTNUM         PIC X(20).
+           03  TOKEI-PTID              PIC 9(10).
            03  TOKEI-MISYU             PIC S9(10).
       *
       *    クリア用ファイル
        FD  TOKEIX-FILE.
        01  TOKEIX-REC. 
            03  TOKEIX-KEY.
-               05  TOKEIX-PTID         PIC 9(10).
+               05  TOKEIX-PTNUM        PIC X(20).
+           03  TOKEIX-PTID             PIC 9(10).
            03  TOKEIX-MISYU            PIC S9(10).
       *
       *    エラーファイル
@@ -141,6 +143,12 @@
            03  WRK-YUKOSTRYMD          PIC X(08).
            03  WRK-YUKOENDYMD          PIC X(08).
       *
+           03  WRK-PTNUM               PIC X(20).
+           03  WRK-STR                 PIC X(200).
+           03  WRK-LEN                 PIC 9(05).
+           03  WRK-SHO                 PIC 9(05).
+           03  WRK-AMARI               PIC 9(05).
+      *
            03  WRK-SURYO               PIC S9(10).
            03  WRK-GSURYO              PIC S9(10).
       *
@@ -152,6 +160,12 @@
            03  WRK-KIKAN               PIC X(40).
            03  WRK-MES                 PIC X(50).
            03  WRK-BIKOU               PIC X(30).
+      *
+       01  ERR-EDIT-AREA.
+           03  ERR-PTID                PIC 9(10).
+           03  ERR-PTNUM               PIC X(20).
+           03  ERR-ERRMSG              PIC X(80).
+           03  ERR-HEN-ERRMSG          PIC X(80).
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -208,6 +222,9 @@
       *
       *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
+      *
+      *    患者番号変換サブ
+           COPY    "CPORCSPTID.INC".
       *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -273,6 +290,7 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  PARA-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  ERR-EDIT-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME
       *
@@ -580,7 +598,7 @@
            OPEN    OUTPUT              TOKEIX-FILE
            CLOSE                       TOKEIX-FILE
       *
-           OPEN    I-O                 TOKEI-FILE
+           OPEN    OUTPUT              TOKEI-FILE
       *
       *    統計ファイルセット
            PERFORM 210-TOKEI-SET-SEIKYU-SEC
@@ -638,24 +656,23 @@
       *    未収金一覧用収納明細情報セット
            PERFORM UNTIL   FLG-BD003   =   1
       *
-      *        統計データ検索
+      *        患者番号取得
+               PERFORM 20011-PTNUM-GET-SEC
+               IF    ( FLG-END     NOT =   ZERO )
+                   GO  TO  210-TOKEI-SET-SEIKYU-EXT
+               END-IF
+      *
+      *        統計データ作成
                INITIALIZE                  TOKEI-REC
                MOVE    BD003-PTID      TO  TOKEI-PTID
-               PERFORM 900-TOKEI-READ-SEC
+               MOVE    SPTID-PTNUM     TO  TOKEI-PTNUM
+               COMPUTE WRK-SURYO       =   BD003-SKYMONEY
+                                       -   BD003-NYUHEN-MONEY
+               MOVE    WRK-SURYO       TO  TOKEI-MISYU
+               WRITE   TOKEI-REC
       *
-      *        同じ患者のデータがないとき
-               IF          FLG-TOKEI       =   1
-      *            統計データカウント
-                   ADD     1               TO  CNT-TOKEI
-      *
-      *            統計データ作成
-                   INITIALIZE                  TOKEI-REC
-                   MOVE    BD003-PTID      TO  TOKEI-PTID
-                   COMPUTE WRK-SURYO       =   BD003-SKYMONEY
-                                           -   BD003-NYUHEN-MONEY
-                   MOVE    WRK-SURYO       TO  TOKEI-MISYU
-                   WRITE   TOKEI-REC
-               END-IF
+      *        統計データカウント
+               ADD     1               TO  CNT-TOKEI
       *
       *        未収金一覧用収納明細情報読み込み
                PERFORM 900-BD003-FETCH-SEC
@@ -1072,6 +1089,92 @@
            END-READ
            .
        900-TOKEI-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者番号マスタより患者番号取得処理
+      *****************************************************************
+       20011-PTNUM-GET-SEC                 SECTION.
+      *
+           MOVE    SPACE               TO  WRK-PTNUM
+      *
+           INITIALIZE                      ORCSPTIDAREA
+           MOVE    PARA-HOSPID         TO  SPTID-HOSPID
+           MOVE    BD003-PTID          TO  SPTID-PTID
+           CALL    "ORCSPTID"      USING   ORCSPTIDAREA
+                                           SPA-1009-TBL
+           IF    ( SPTID-RC        NOT =   ZERO )
+               INITIALIZE              ERR-EDIT-AREA
+               MOVE    BD003-PTID      TO  ERR-PTID
+               MOVE    "患者番号の取得に失敗しました"
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG  TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  20011-PTNUM-HEN-EXT
+           END-IF
+      *
+           MOVE    SPTID-PTNUM         TO  WRK-PTNUM
+      *
+           .
+       20011-PTNUM-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    エラーメッセージ編集処理
+      *****************************************************************
+       800-ERRMSG-EDIT-SEC         SECTION.
+      *
+           MOVE    SPACE           TO  ERR-HEN-ERRMSG
+      *
+           IF    ( ERR-PTNUM       =   SPACE )
+               INITIALIZE              ORCSPTIDAREA
+               MOVE    PARA-HOSPID     TO  SPTID-HOSPID
+               MOVE    ERR-PTID        TO  SPTID-PTID
+               CALL    "ORCSPTID"      USING   ORCSPTIDAREA
+                                           SPA-1009-TBL
+               IF    ( SPTID-RC            =   ZERO )
+                   MOVE    SPTID-PTNUM TO  ERR-PTNUM
+               ELSE
+                   STRING "?(ID:"      DELIMITED   BY  SIZE
+                      ERR-PTID         DELIMITED   BY  SIZE
+                      ")"              DELIMITED   BY  SIZE
+                   INTO   ERR-PTNUM
+                   END-STRING
+               END-IF
+           END-IF
+      *
+           MOVE    1               TO  WRK-LEN
+           MOVE    SPACE           TO  WRK-STR
+           STRING  ERR-PTNUM           DELIMITED   BY  SPACE
+           INTO    WRK-STR     WITH    POINTER WRK-LEN
+           END-STRING
+      *
+           COMPUTE WRK-LEN         =   WRK-LEN -   1
+      *
+           MOVE    ZERO            TO  WRK-SHO
+                                       WRK-AMARI
+           DIVIDE  2   INTO    WRK-LEN GIVING  WRK-SHO
+           REMAINDER WRK-AMARI
+           END-DIVIDE
+      *
+           IF    ( WRK-AMARI   =   ZERO )
+               STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
+                       "［患者番号："      DELIMITED   BY  SIZE
+                       ERR-PTNUM           DELIMITED   BY  SPACE
+                       "］"                DELIMITED   BY  SIZE
+               INTO    ERR-HEN-ERRMSG
+               END-STRING
+           ELSE
+               STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
+                       "［患者番号:"       DELIMITED   BY  SIZE
+                       ERR-PTNUM           DELIMITED   BY  SPACE
+                       "］"                DELIMITED   BY  SIZE
+               INTO    ERR-HEN-ERRMSG
+               END-STRING
+           END-IF
+      *
+           .
+       800-ERRMSG-EDIT-EXT.
            EXIT.
       *
       *****************************************************************
