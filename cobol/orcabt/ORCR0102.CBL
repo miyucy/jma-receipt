@@ -766,9 +766,6 @@
                END-IF
            END-PERFORM    
       *
-      *???
-           DISPLAY "ORCSPRTAREA=" ORCSPRTAREA "#"
-      *???
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
            IF      SPRT-RETURN         =   ZERO
