@@ -1,0 +1,1 @@
+/usr/local/panda/bin/dbstub -dir /usr/local/orca/lddef/directory -path /usr/local/orca/lib:/usr/local/panda/lib -bd orcabt $1
