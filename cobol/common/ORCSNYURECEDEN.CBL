@@ -199,12 +199,16 @@
       *    食事ワーク
            03  WRK-SKJ-TABLE.
                05  WRK-SKJ-TBL           OCCURS  31.
-                   07  WRK-SKJ-RYOYO       PIC X(09).
-                   07  WRK-SKJ-TOKU-KANRI  PIC X(09).
-                   07  WRK-SKJ-SHOKUDOU    PIC X(09).
+                   07  WRK-SKJ-GRP.
+                       09  WRK-SKJ-RYOYO       PIC X(09).
+                       09  WRK-SKJ-TOKU-KANRI  PIC X(09).
+                       09  WRK-SKJ-SHOKUDOU    PIC X(09).
+                       09  WRK-SKJ-TOKU-SHOKU  PIC X(09).
+                       09  WRK-SKJ-FUKUSU      PIC X(09).
+                   07  WRK-SKJ-GRPR    REDEFINES  WRK-SKJ-GRP.
+                       09  WRK-SKJ-SRYCD       PIC X(09)
+                                               OCCURS  5.
                    07  WRK-SKJ-SRYCDTOTAL  PIC 9(14).
-                   07  WRK-SKJ-TOKU-SHOKU  PIC X(09).
-                   07  WRK-SKJ-FUKUSU      PIC X(09).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1051,6 +1055,18 @@
                END-PERFORM
            END-IF
       *
+      *    食事の診療コード計
+           PERFORM    VARYING   IDX1    FROM  1  BY  1
+                      UNTIL     IDX1    >   31
+               PERFORM   VARYING  IDX2  FROM  1  BY  1
+                         UNTIL    IDX2    >   5
+                   IF   WRK-SKJ-SRYCD(IDX1 IDX2)  NOT =  SPACE
+                       MOVE    WRK-SKJ-SRYCD(IDX1 IDX2) TO WRK-SRYCD-X
+                       COMPUTE WRK-SKJ-SRYCDTOTAL(IDX1)  =
+                               WRK-SKJ-SRYCDTOTAL(IDX1)  + WRK-SRYCD-9
+                   END-IF
+               END-PERFORM
+           END-PERFORM
       *    入院会計クローズ
            MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
@@ -1066,6 +1082,8 @@
                DISPLAY  "WRK-SKJ-TOKU-SHOKU = "
                                       WRK-SKJ-TOKU-SHOKU(IDX1)
                DISPLAY  "WRK-SKJ-FUKUSU = " WRK-SKJ-FUKUSU(IDX1)
+               DISPLAY  "WRK-SKJ-SRYCDTOTAL = "
+                                         WRK-SKJ-SRYCDTOTAL(IDX1)
            END-PERFORM
            .
        200-MAIN-EXT.
