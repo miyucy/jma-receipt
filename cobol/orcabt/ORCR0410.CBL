@@ -736,7 +736,8 @@
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO    TO      FLG-SHOSAISIN 
                                                        FLG-SHOSAISIN2   
-                               IF   ACCT-SRYKBN  =  "99"  
+                               IF   ACCT-SRYKBN  =  "11"  OR  "12" 
+                                                          OR  "99" 
                                    PERFORM   SHOSAISIN-HANTEI-SEC
                                END-IF
                                PERFORM   TENSOU-SEC
