@@ -548,6 +548,7 @@
            CALL    "ORCSFILECHK"       USING
                                        ORCSFILECHKAREA
       *
+           DISPLAY "FILECHK-RC=" FILECHK-RC
            IF          FILECHK-RC      NOT     =   0
                MOVE    "0014"      TO  SPA-ERRCD
                MOVE    10          TO  SPA-GMN-CUR
