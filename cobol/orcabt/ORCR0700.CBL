@@ -270,6 +270,7 @@
                MOVE  RECE66-SRYKBN      TO      RECE661-SRYKBN
            END-IF
            MOVE  RECE66-ZAISKBKBN       TO      RECE661-ZAISKBKBN
+           MOVE  RECE66-ZAISKBBAN       TO      RECE661-ZAISKBBAN
            MOVE    RECE66-ASTER         TO      RECE661-ASTER
            MOVE    RECE66-TEKIYO        TO      RECE661-TEKIYO
            IF      RECE66-SRYKBN        NOT =   "21"
