@@ -117,6 +117,8 @@
       *
            03  FLG-HKN-CHK         PIC 9(01). 
       *
+           03  FLG-NYUINIDOU       PIC 9(01). 
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX1                PIC 9(04).
@@ -582,6 +584,12 @@
                INITIALIZE                  SYS-1009-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1009-REC
                MOVE    SYS-1009-PTNUMKSIKBN
@@ -619,41 +627,67 @@
                PERFORM 2009-WKSRYACT-CHK-SEC
            END-IF
       *
+           MOVE    ZERO                TO  FLG-NYUINIDOU
            INITIALIZE                  TBL-WKSRYACT-AREA
            MOVE    ZERO                TO  TBL-MAX
            DISPLAY "LF04-SRYCD (1) = " LF04-SRYCD (1) 
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL      (IDX1    >   20  )  OR
-                             (LF04-SRYCD (IDX1)   =   SPACE)
+                             (LF04-SRYCD (IDX1)   =   SPACE)  OR
+                             (FLG-END             =   1    )
+      *        入院移動判定
+               IF     (WRK-NYUGAIKBN       =   "1"   ) AND
+                      (LF04-SRYCD (IDX1)   =   "901" )
+                   MOVE    1               TO  FLG-NYUINIDOU
+               ELSE
                    PERFORM 2002-ZAICHK-SEC
                    IF      FLG-ZAIEND          =   1
                        IF      TBL-MAX         >   ZERO
                            PERFORM 2004-WKSRYACT-OUT-SEC
-                           IF      FLG-END         =   1
-                               GO  TO  200-MAIN-EXT
-                           END-IF
                        END-IF
-                       PERFORM 2003-TBLSET-SEC
-                       IF      FLG-END         =   1
-                           GO  TO  200-MAIN-EXT
+                       IF      FLG-END         =   ZERO
+                           PERFORM 2003-TBLSET-SEC
                        END-IF
                    ELSE
                        PERFORM 2005-TBLSET-NEXT-SEC
                    END-IF
+               END-IF
            END-PERFORM
       *
            DISPLAY "TBL-MAX = " TBL-MAX
-           IF      TBL-MAX         >   ZERO
-               PERFORM 2004-WKSRYACT-OUT-SEC
-               IF      FLG-END             =   1
-                   GO  TO  200-MAIN-EXT
+           IF      FLG-END             =   ZERO
+               IF      TBL-MAX         >   ZERO
+                   PERFORM 2004-WKSRYACT-OUT-SEC
+               END-IF
+      *
+      *        病名セット処理
+               PERFORM 2006-BYOMEI-SET-SEC
+      *
+      *        入院移動処理
+               IF      FLG-NYUINIDOU       =   1
+                   PERFORM 2007-ORCL0031N-SEC
                END-IF
            END-IF
-      *
-      *    病名セット処理
-           PERFORM 2006-BYOMEI-SET-SEC
            .
        200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院移動処理
+      *****************************************************************
+       2007-ORCL0031N-SEC                SECTION.
+      *
+           CALL    "ORCL0031N"         USING
+                                       WRK-HOSPID
+                                       WRK-SRYKA
+                                       WRK-DRCD
+                                       SPTID-PTNUM
+                                       WRK-PTID
+                                       WRK-HKNCOMBI
+                                       LF04-REC
+      *
+           .
+       2007-ORCL0031N-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1967,6 +2001,12 @@
                MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
                PERFORM 940-WKSRYACT-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        2009-WKSRYACT-CHK-EXT.
@@ -2781,6 +2821,12 @@
                MOVE    "PTBYOMEI-KEY20"    TO  ORC-DBPATH
                PERFORM 900-PTBYO-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTBYOMEI-KEY20"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            .
        2006125-KOUSIN-03-EXT.
            EXIT.
