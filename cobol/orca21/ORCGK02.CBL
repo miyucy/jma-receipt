@@ -8368,11 +8368,19 @@
       *            投薬（更新前チェックはすべて行う）
            IF     (SPA-SRYKBN-CNT (02) >   ZERO )
                OR (LNK-ORCSC-KBN       =   "3"  )
+               IF      LNK-ORCSC-KBN       =   "3"
+                   INITIALIZE                  SPA-SYOHOU-ZUMI
+                   MOVE    SPA-K01KYOUTU   TO  SPA-WORK
+               END-IF
                CALL    "ORCSC20"       USING
                                        MCPAREA
                                        ORCSC00AREA
                                        SPA-SCR-REC
                                        SPA-AREA
+               IF      LNK-ORCSC-KBN       =   "3"
+                   MOVE    SPA-WORK        TO  SPA-K01KYOUTU
+                   PERFORM 5201-SYOHOU-HKN-SEC
+               END-IF
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
            END-IF
@@ -8489,6 +8497,29 @@
       *
            .
        520-ALL-CHEK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    他保険で算定済の保険編集処理
+      *****************************************************************
+       5201-SYOHOU-HKN-SEC              SECTION.
+      *
+           IF      SPA-SYOHO-HKN       =   SPACE
+               MOVE    SPACE               TO  SPA-SYOHO-HKNMEI
+           ELSE
+               MOVE    SPACE               TO  SPA-SYOHO-HKNMEI
+               PERFORM VARYING     IDX-HKN FROM    1   BY  1
+                       UNTIL       IDX-HKN >   15
+                   IF      SPA-SYOHO-HKN   =   SPA-GMN-THKNCOMBINUM
+                                                              (IDX-HKN)
+                       MOVE    SPA-GMN-THKNCOMBIMEI (IDX-HKN)
+                                           TO  SPA-SYOHO-HKNMEI
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       5201-SYOHOU-HKN-EXT.
            EXIT.
       *
       *****************************************************************

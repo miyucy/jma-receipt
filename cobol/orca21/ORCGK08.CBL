@@ -40,6 +40,7 @@
       *  01.00.11    NACL-Â¿¡¹Ç¼  03/04/30  ¼«ÈñÊÔ½¸½¤Àµ
       *  01.00.12    NACL-Â¿¡¹Ç¼  03/05/13  ¼«ÇåÀÕ¤Î¹øÉô¸ÇÄêÂÓ²Ã»»½¤Àµ
       *  01.00.13    NACL-Â¿¡¹Ç¼  03/08/25  Ê¡²¬¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  01.00.14    NACL-Â¿¡¹Ç¼  03/09/04  »»ÄêºÑ¥á¥Ã¥»¡¼¥¸ÊÔ½¸ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -140,6 +141,8 @@
       *
                05  SPA-GMN-SELNUM-G.
                    07  SPA-GMN-SELNUM        PIC 9(03)   OCCURS  10.
+      *        ¥á¥Ã¥»¡¼¥¸
+               05  SPA-GMN-MSGDATA           PIC X(100).
       *
            03  SPA-NAI-AREA.
                05  SPA-NAI-TBL.
@@ -699,6 +702,19 @@
                   (SPA-NYUGAIKBN       =   "1" )
                PERFORM 41032-TENSU-KEI-SEC
            END-IF
+      *
+      *    Ä´ºÞÎÁ¤Î¥á¥Ã¥»¡¼¥¸
+           MOVE    SPACE               TO  SPA-GMN-MSGDATA
+           IF      SPA-SYOHO-KBN   NOT =   ZERO
+               STRING    SPA-SYOHO-MEI     DELIMITED   BY  SPACE
+                         "¤ÏÂ¾ÊÝ¸±¤Ç»»ÄêºÑ¡£"
+                                           DELIMITED   BY  SIZE
+                         "¢¨"              DELIMITED   BY  SIZE
+                         SPA-SYOHO-HKNMEI  DELIMITED   BY  SIZE
+                                       INTO      SPA-GMN-MSGDATA
+               END-STRING
+           END-IF
+      *
       *
             .
        310-SPA-SET-EXT.
@@ -3187,6 +3203,15 @@
                      UNTIL     IDX         >   10
                MOVE    SPA-GMN-SELNUM  (IDX)   TO  K08-SELNUM (IDX)
            END-PERFORM
+      *
+      *    ¥á¥Ã¥»¡¼¥¸
+           MOVE    SPA-GMN-MSGDATA     TO  K08-MSGDATA-VALUE
+           IF      SPA-GMN-MSGDATA     =   SPACE
+               MOVE    "black"             TO  K08-MSGDATA-STYLE
+           ELSE
+               MOVE    "red"               TO  K08-MSGDATA-STYLE
+           END-IF
+      *
       *
            PERFORM 5001-MAPCUR-SEC
            .
