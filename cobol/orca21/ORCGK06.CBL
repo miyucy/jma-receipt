@@ -514,7 +514,13 @@
                MOVE    SANTEI-FSANTEIYMD   TO  SPA-NAI-TFSANTEIYMD(IDX)
                IF      SANTEI-FSANTEIYMD   NOT =   SPACE
                    MOVE    SANTEI-FSANTEIYMD   TO  WRK-SYMD
+                   IF      SANTEI-FSANTEIYMD(7:2)  =   ZERO
+                       MOVE    "01"                TO  WRK-SYMD(7:2)
+                   END-IF
                    PERFORM 5002-HIZUKE-HEN-SEC
+                   IF      SANTEI-FSANTEIYMD(7:2)  =   ZERO
+                       MOVE    ZERO                TO  WRK-HENYMDG(8:2)
+                   END-IF
                    MOVE    WRK-HENYMDG         TO  SPA-GMN-TFSANTEIYMD
                                                                   (IDX)
                END-IF
