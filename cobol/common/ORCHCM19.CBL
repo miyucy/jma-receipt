@@ -39,6 +39,7 @@
       *                                     全角変換時空白判定追加
       * 01.00.07     NACL-多々納  03/04/17  免除判定削除
       * 01.00.08     NACL-多々納  03/06/18  用法２０文字以上編集修正
+      * 01.00.09     NACL-多々納  03/06/27  出力先プリンタサブ追加
       *****************************************************************
       *
       *
@@ -593,13 +594,11 @@
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
            MOVE    SPA-SRYYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
            CALL    "ORCSPRTNM"         USING
                                            ORCSPRTNMAREA
                                            SPA-AREA
                                            SYS-1031-REC
-      *TEST
-            DISPLAY "SYS-1031-PRTNM(2):" SYS-1031-PRTNM(2)
-      *TEST
       *
       **** MOVE    SPACE               TO  SYS-1031-REC
       *    INITIALIZE                  SYS-1031-REC

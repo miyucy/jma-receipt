@@ -43,6 +43,7 @@
       *  01.00.14    NACL-太田    03/03/20  フリガナ、年齢を表示する
       *  02.00.01    NACL-多々納  03/03/26  続紙の頭書の追加
       *                                     プログラムの整理
+      *  02.00.02    NACL-多々納  03/06/30  出力先プリンタサブ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -286,6 +287,8 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
       *
       *    保険者号マスタ
        01  HKNJAINF-REC.
@@ -364,17 +367,31 @@
        110-PARA-HENSYU-SEC                   SECTION.
       *
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
-           ELSE
+           INITIALIZE                      SYS-1031-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+           IF      ORCSPRTNM-RC    NOT =   ZERO
                MOVE    1                   TO  FLG-END
            END-IF 
+      *
+      *    出力先プリンタ名割り当て情報編集
+      **** MOVE    SPACE               TO  SYS-1031-REC
+      *    INITIALIZE                  SYS-1031-REC
+      *    MOVE    "1031"              TO  SYS-1031-KANRICD
+      *    MOVE    "*"                 TO  SYS-1031-KBNCD
+      *    MOVE    SYS-1031-REC        TO  MCPDATA-REC
+      *    PERFORM 800-SYSKANRI-READ-SEC
+      *    IF      FLG-SYSKANRI        =   ZERO
+      *        MOVE    MCPDATA-REC         TO  SYS-1031-REC
+      *    ELSE
+      *        MOVE    1                   TO  FLG-END
+      *****END-IF 
            .
        110-PARA-HENSYU-EXT.
            EXIT.
