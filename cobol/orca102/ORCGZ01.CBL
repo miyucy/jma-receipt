@@ -344,7 +344,7 @@
       *
            INITIALIZE                        SPA-Z01-AREA
       *
-           MOVE    "　通　常　"        TO  SPA-Z01GMN-BS1LABEL
+           MOVE    "通　常"            TO  SPA-Z01GMN-BS1LABEL
            MOVE    "F"                 TO  SPA-Z01GMN-BS1VALUE
            MOVE    1                   TO  SPA-Z01-SYORIKBN
       *
@@ -1352,11 +1352,11 @@
       *
            EVALUATE  SPA-Z01-SYORIKBN
              WHEN    3
-                 MOVE  "　通　常　"          TO  SPA-Z01GMN-BS1LABEL
+                 MOVE  "通　常"              TO  SPA-Z01GMN-BS1LABEL
                  MOVE  "F"                   TO  SPA-Z01GMN-BS1VALUE
                  MOVE  1                     TO  SPA-Z01-SYORIKBN
              WHEN   1
-                 MOVE  "　改　正　"          TO  SPA-Z01GMN-BS1LABEL
+                 MOVE  "改　正"             TO  SPA-Z01GMN-BS1LABEL
                  MOVE  "T"                   TO  SPA-Z01GMN-BS1VALUE
                  MOVE  3                     TO  SPA-Z01-SYORIKBN
            END-EVALUATE
