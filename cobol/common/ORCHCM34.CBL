@@ -93,6 +93,7 @@
            03  FLG-LINECHK                         PIC 9(01).
            03  FLG-RSIJBI-AREA-HEN                 PIC 9(01).
            03  FLG-JIBAI                           PIC 9(01).
+           03  FLG-ROSAI                           PIC 9(01).
            03  FLG-SRYACT-HEN5                     PIC 9(01).
            03  FLG-COMMENT-CHK                     PIC 9(01).
            03  FLG-PTCOM                           PIC 9(01).
@@ -100,6 +101,7 @@
            03  FLG-HOUKATU                         PIC 9(01).
            03  FLG-ZAIMATOME                       PIC 9(01).
            03  FLG-EDIT                            PIC 9(01).
+           03  FLG-JBI-KZI-OUT                     PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -297,7 +299,13 @@
            03  WRK-SRYCD-9                         PIC 9(09).
            03  WRK-SRYSYUKBN                       PIC X(03).
            03  WRK-TANINAME                        PIC X(24).
-           03  WRK-JBI-SONOTA-KBN                  PIC X(01).
+           03  WRK-JBI-SONOTA-G.
+               05  WRK-JBI-SONOTA-KBN              PIC X(01).
+               05  WRK-JBI-SONOTA-TEN              PIC 9(08).
+               05  WRK-JBI-SONOTA-SRYCD            PIC X(09).
+           03  WRK-RSI-SONOTA-G.
+               05  WRK-RSI-SONOTA-KBN              PIC X(01).
+               05  WRK-RSI-SONOTA-TEN              PIC 9(08).
            03  WRK-JBI-RYOYO-TEATE-KBN             PIC X(01).
            03  WRK-RUIKEITOTAL                     PIC 9(15)V9(03).
       *
@@ -605,6 +613,8 @@
       *    Ï«ºÒ¼«ÇåÀÕ°åÎÅµ¡´Ø¾ðÊóÀßÄê
            COPY    "CPSK4001.INC".
       *
+           COPY    "CPSK4003.INC".
+      *
       *    °åÎÅµ¡´Ø¾ðÊó¡ÝÆþ±¡´ðËÜ
            COPY    "CPSK5000.INC".
       *
@@ -723,6 +733,9 @@
       *    Ï«ºÒ¼«ÇåÀÕ°åÎÅµ¡´Ø¾ðÊó¼èÆÀ½èÍý
            PERFORM 1001-SYS4001-GET-SEC
       *
+      *    ¼«ÇåÀÕÊÝ¸±¡¡ÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ¾Ý³°¥³¡¼¥É¾ðÊó¼èÆÀ½èÍý
+           PERFORM 1001-SYS4003-GET-SEC
+      *
       *    ÊÝ¸±¤Î¼ïÎà¡¦¸øÈñ¤Î¼ïÎàÊÔ½¸½èÍý
            PERFORM 1001-HKNKOH-HEN-SEC
       *    ¿ÇÎÅ²ÊÊÔ½¸½èÍý
@@ -818,7 +831,7 @@
        1001-SYS5000-GET-EXT.
            EXIT.
       *****************************************************************
-      *    °åÎÅµ¡´Ø¾ðÊó¼èÆÀ½èÍý
+      *    Ï«ºÒ°åÎÅµ¡´Ø¾ðÊó
       *****************************************************************
        1001-SYS4001-GET-SEC                SECTION.
       *
@@ -847,6 +860,37 @@
       *
            .
        1001-SYS4001-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼«ÇåÀÕÊÝ¸±¡¡ÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ¾Ý³°¥³¡¼¥É
+      *****************************************************************
+       1001-SYS4003-GET-SEC                SECTION.
+      *
+      *    °åÎÅµ¡´Ø£É£ÄÊÔ½¸
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYS-4003-REC
+           MOVE    "4003"              TO  SYS-4003-KANRICD
+           MOVE    "*"                 TO  SYS-4003-KBNCD
+           MOVE    ORCHCM34-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-4003-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC        NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-4003-REC
+           ELSE
+               INITIALIZE                  SYS-4003-REC
+           END-IF
+      *
+           .
+       1001-SYS4003-GET-EXT.
            EXIT.
       *****************************************************************
       *    ´ðËÜ¾ðÊóÊÔ½¸
@@ -2496,7 +2540,7 @@
                                                           (SRT-IDX1)
                ELSE
                    IF    ( ACCT-SRYKBN     =  "21" OR "22" OR "23" )
-                    OR   ( WRK-SRYSYUKBN   =  "148"   OR   "147" )
+                    OR   ( WRK-SRYSYUKBN   =  "148" )
                        IF    ( ACCT-ZAITEN =  ZERO )
                            MOVE    1       TO  SRT-SRYACCT-YKZINGAIKBN
                                                           (SRT-IDX1)
@@ -2717,8 +2761,10 @@
            MOVE    ZERO                TO  FLG-MINUS
            MOVE    ZERO                TO  FLG-RSIJBI-AREA-HEN
            MOVE    ZERO                TO  FLG-JIBAI
-           MOVE    SPACE               TO  WRK-JBI-SONOTA-KBN
+           MOVE    ZERO                TO  FLG-ROSAI
            MOVE    SPACE               TO  WRK-JBI-RYOYO-TEATE-KBN
+           INITIALIZE                      WRK-JBI-SONOTA-G
+                                           WRK-RSI-SONOTA-G
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
            MOVE    ZERO                TO  FLG-SRYACT
@@ -2774,6 +2820,10 @@
       *
                IF   ( WRK-HKNNUM       =   "973" )
                    MOVE    1           TO  FLG-JIBAI
+               END-IF
+      *
+               IF   ( WRK-HKNNUM       =   "971" )
+                   MOVE    1           TO  FLG-ROSAI
                END-IF
       *
                IF   ( ACCT-SRYKBN      =   "11" OR "12" OR "13" )
@@ -2856,6 +2906,8 @@
       *
            WHEN  ( WRK-JBI-SONOTA-KBN      NOT =   SPACE )
                PERFORM 200111-JBI-SONOTA-HEN-SEC
+           WHEN  ( WRK-RSI-SONOTA-KBN      NOT =   SPACE )
+               PERFORM 200111-RSI-SONOTA-HEN-SEC
            WHEN  ( WRK-JBI-RYOYO-TEATE-KBN NOT =   SPACE )
                PERFORM 200111-JBI-RYOYO-TEATE-HEN-SEC
       *
@@ -3005,7 +3057,7 @@
                             =   CNT-YKZHKT  +   1
                ELSE
                    IF    ( ACCT-SRYKBN     =   "21" OR "22" OR "23" )
-                    OR   ( SRY-SRYSYUKBN   =  "148"   OR   "147" )
+                    OR   ( SRY-SRYSYUKBN   =  "148" )
                         MOVE    "¡ù"   TO  WRK-SRYACT-MARK
                         COMPUTE CNT-YKZINGAI
                             =   CNT-YKZINGAI    +   1
@@ -3136,15 +3188,31 @@
        200111-RSIJBI-SRYACT-HEN-EXT.
            EXIT.
       *****************************************************************
+      *   Ï«ºÒ¤½¤ÎÂ¾ÊÔ½¸½èÍý
+      *****************************************************************
+       200111-RSI-SONOTA-HEN-SEC       SECTION.
+      *
+           MOVE    WRK-RSI-SONOTA-TEN  TO  WRK-ZAITEN
+      *
+           MOVE    ACCT-ZAIKAISU       TO  WRK-ZAIKAISU
+      *
+           PERFORM 205-KINGAKUKAISU-HEN-SEC
+      *
+           .
+       200111-RSI-SONOTA-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *   ¼«ÇåÀÕ¤½¤ÎÂ¾ÊÔ½¸½èÍý
       *****************************************************************
        200111-JBI-SONOTA-HEN-SEC       SECTION.
       *
-           COMPUTE WRK-ZAITEN  =   ACCT-ZAITEN *   10
+           MOVE    WRK-JBI-SONOTA-TEN  TO  WRK-ZAITEN
       *
            MOVE    ACCT-ZAIKAISU       TO  WRK-ZAIKAISU
       *
-           IF    ( WRK-JBI-SONOTA-KBN          =   "1"  OR "2" )
+           EVALUATE    WRK-JBI-SONOTA-KBN
+           WHEN    "1"
+           WHEN    "2"
                 IF   ( SYS-4001-TAXKBN         =   "2" )
                   IF ( SYS-1001-TAX-HASU-KBN   =   "1" )
                      COMPUTE  WRK-ZAITEN
@@ -3154,7 +3222,28 @@
                          =    WRK-ZAITEN   *   1.05
                   END-IF
                 END-IF
-           END-IF
+           WHEN    "3"
+               IF    ( SYS-4001-TAXKBN-KZI     =   "2" )
+                   MOVE    ZERO        TO  FLG-JBI-KZI-OUT
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   10 )
+                       IF    ( WRK-JBI-SONOTA-SRYCD
+                                           =   SYS-4003-SRYCD (IDX0))
+                           MOVE    1   TO  FLG-JBI-KZI-OUT
+                       END-IF
+                   END-PERFORM
+      *
+                   IF    ( FLG-JBI-KZI-OUT =   ZERO )
+                       IF    ( SYS-1001-TAX-HASU-KBN   =   "1" )
+                           COMPUTE  WRK-ZAITEN
+                               =  ( WRK-ZAITEN   *   1.05)  +  0.5
+                       ELSE
+                           COMPUTE  WRK-ZAITEN
+                               =    WRK-ZAITEN   *   1.05
+                       END-IF
+                   END-IF
+               END-IF
+           END-EVALUATE
       *
            PERFORM 205-KINGAKUKAISU-HEN-SEC
       *
@@ -3278,15 +3367,13 @@
            IF    ( FLG-JIBAI           =   1 )
             AND  ( SRY-SRYKBN          =   "80" )
       *
-               IF    ( SRY-SRYCD (IDX9)(1:3)   =   "095" )
-                   EVALUATE    SRY-SRYCD (IDX9)(1:5)
-                   WHEN    "09591"
-                       MOVE    "1"     TO  WRK-JBI-SONOTA-KBN
-                   WHEN    "09592"
-                       MOVE    "2"     TO  WRK-JBI-SONOTA-KBN
-                   WHEN    "09593"
-                       MOVE    "3"     TO  WRK-JBI-SONOTA-KBN
-                   END-EVALUATE
+               IF    ( SRY-SRYCD (IDX9)(1:5)   >=  "09591" )
+                AND  ( SRY-SRYCD (IDX9)(1:5)   <=  "09594" )
+                   MOVE    SRY-SRYCD (IDX9)(5:1)
+                                           TO  WRK-JBI-SONOTA-KBN
+                   MOVE    TNS-TEN         TO  WRK-JBI-SONOTA-TEN
+                   MOVE    SRY-SRYCD (IDX9)
+                                           TO  WRK-JBI-SONOTA-SRYCD
                ELSE
                    IF    ( SRY-SRYCD (IDX9)
                                        =   CONST-RYOYO-TEATE-GAI )
@@ -3299,6 +3386,16 @@
                    END-IF
                END-IF
       *
+           END-IF
+      *
+           IF    ( FLG-ROSAI           =   1 )
+            AND  ( SRY-SRYKBN          =   "80" )
+      *
+               IF    ( SRY-SRYCD (IDX9)(1:5)   >=  "09591" )
+                AND  ( SRY-SRYCD (IDX9)(1:5)   <=  "09594" )
+                   MOVE    SRY-SRYCD (IDX9)(5:1)
+                                           TO  WRK-RSI-SONOTA-KBN
+                   MOVE    TNS-TEN         TO  WRK-RSI-SONOTA-TEN
            END-IF
       *
            .
