@@ -297,3 +297,19 @@ path	st_key3 	{
 		;
 	};
 };
+
+#sitekey
+path	st_key4 	{
+	DBSELECT	{
+		DECLARE tbl_sryact_st_key4_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_sryact a,tbl_ptinf b
+		WHERE   a.HOSPID        =  :HOSPID
+		AND     a.SRYYM         =  :SRYYM
+		AND     a.HOSPID        =  b.HOSPID
+		AND     a.PTID          =  b.PTID
+		AND     b.TSTPTNUMKBN  <> '1'
+		ORDER   BY a.PTID,a.SRYKA,a.ZAINUM
+		;
+	};
+};
