@@ -139,11 +139,17 @@
                05  SPA-GAIRAISIN           PIC  9(01).
       *特定疾患有無（病名）
                05  SPA-TOKUTEI             PIC  9(01).
-               05  SPA-TOKUTEIFLG          PIC  9(01).
       *皮膚科特定疾患有無（病名）
                05  SPA-TOKUTEI-F           PIC  9(02).
       *未収金
                05  SPA-MISYUMONEY          PIC  S9(08).
+      *
+      *特定疾患処方管理加算有無
+               05  SPA-TOKUTEIFLG          PIC  9(01).
+      *長期投薬加算有無
+               05  SPA-CHOKITOFLG          PIC  9(01).
+      *長期投薬加算警告
+               05  SPA-CHOKITOFLG-CHK      PIC  9(01).
       *
       *当月累計点数
                05  SPA-ZAITENTOTAL         PIC  9(10).
