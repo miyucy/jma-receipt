@@ -39,6 +39,8 @@
       * 02.00.05     NACL-多々納  02/10/02  注加算チェックの追加
       *                                     （すべての診区のチェック）
       * 02.00.06     NACL−多々納 02/10/10  外来管理加算チェックの有無
+      * 02.00.07     NACL−多々納 02/10/30  特定薬剤治療管理料の重複なし
+      * 02.00.08     NACL−多々納 02/10/31  外来管理加算自動算定なしの追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1124,7 +1126,7 @@
                INITIALIZE                  JYURRK-REC
                MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
                MOVE    SPA-PTID            TO  JYURRK-PTID
-      ****     MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+      *****    MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
                MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
       *
                MOVE    JYURRK-REC          TO  MCPDATA-REC
@@ -3123,7 +3125,9 @@
            ELSE
                IF     (IDX-SYU             >   ZERO )  AND
                       (IDX-GAIKAN          =   ZERO )  AND
-                      (LNK-ORCSC-GAIFLG    =   ZERO )
+                      (LNK-ORCSC-GAIFLG    =   ZERO )  AND
+      *                自動算定なしの時、追加しない
+                      (LNK-ORCSC-GAIKANRIKBN-CHK   NOT =   "2" )
                    IF     (LNK-ORCSC-ROUMANSEI-ARI     NOT =   ZERO ) OR
                           (LNK-ORCSC-ROUMANSEI-ARI2    NOT =   ZERO  AND
                            LNK-ORCSC-SINSATU-CNT       NOT =   3    ) OR
