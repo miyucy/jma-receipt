@@ -60,6 +60,8 @@
                    07  RECE01-KOHID-O     PIC  9(10).
       *    给锐瘦副戎规
                    07  RECE01-KOHHKNNUM-O PIC  X(03).
+      *   给锐毁失惰尸
+                   07 RECE01-KOHPAYKBN-O  PIC  X(02).
       *肩瘦副ＩＤ
            03  RECE01-HKNID               PIC  9(10).
       *瘦副寥圭せ戎规挝拌
