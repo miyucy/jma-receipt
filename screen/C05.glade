@@ -388,22 +388,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label241</name>
-      <x>20</x>
-      <y>16</y>
-      <width>64</width>
-      <height>24</height>
-      <label>編集病名</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkScrolledWindow</class>
       <name>SCR_BYOMEILST</name>
       <x>10</x>
@@ -648,6 +632,38 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label241</name>
+      <x>20</x>
+      <y>16</y>
+      <width>64</width>
+      <height>24</height>
+      <label>編集病名</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label357</name>
+      <x>20</x>
+      <y>48</y>
+      <width>64</width>
+      <height>24</height>
+      <label>検索病名</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
