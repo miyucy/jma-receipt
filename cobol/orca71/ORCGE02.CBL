@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     ひさなが     02/05/10  ジョブ管理検索追加
       * 01.00.03     ひさなが     02/09/13  ディレクトリをサブプロへ
+      * 01.00.04     ひさなが     03/04/08  診療年月チェックの修正
       *
       *****************************************************************
       *
@@ -136,6 +137,8 @@
                "抽出項目未設定テーブルあり。".
            03  T-MESSAGE-05        PIC X(42)   VALUE
                "指定された条件でＣＳＶ出力処理を行います。".
+           03  T-MESSAGE-06        PIC X(42)   VALUE
+               "診療年月入力誤り。".
       *
       *    作業テーブル名称領域
        01  WK-TBL0.
@@ -182,6 +185,9 @@
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+      *   日付変換サブ
+           COPY    "CPORCSGDAY.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -567,6 +573,8 @@
            EVALUATE    SPA-ERRCD
                WHEN    "0002"
                    MOVE    T-MESSAGE-04        TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE    T-MESSAGE-06        TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPACE               TO  SPA-ERRMSG
            END-EVALUATE.
@@ -713,6 +721,17 @@
                MOVE    SPACE               TO  SPA-GMN-SRYYM
            END-IF.
       *
+           IF  SPA-GMN-SRYYM NOT =  SPACE
+               INITIALIZE                  ORCSGDAYAREA
+               MOVE    "1"                 TO  SGDAY-INTYPE
+               MOVE    SPA-GMN-SRYYM       TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING   ORCSGDAYAREA
+               IF  SGDAY-RC   =   ZERO
+                   MOVE    SPACE               TO  SPA-ERRCD
+               ELSE
+                   MOVE    "0003"              TO  SPA-ERRCD
+               END-IF
+           END-IF.
        T-000-SNENCHEK-EXT.
            EXIT.
       *
