@@ -332,9 +332,6 @@
                                                             (IDX-SIN)
                            END-IF
                        END-IF
-      *TEST
-               DISPLAY "TBL-MAE-REC:" TBL-MAE-REC (IDX-SIN)
-      *TEST
                    END-PERFORM
       *
                END-IF
@@ -368,9 +365,6 @@
                MOVE    ORCSCZAICHK-INPUTCHI-G (IDX1)
                                            TO  TBL-ATO-ATAI-G
                                                               (IDX-ATO)
-      *TEST
-               DISPLAY "TBL-ATO-REC:" TBL-ATO-REC (IDX-ATO)
-      *TEST
            END-PERFORM
       *
       *    ¿ÇÎÅ¹Ô°Ù¿ô¤¬°ã¤¦

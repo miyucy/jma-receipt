@@ -3596,10 +3596,6 @@
                MOVE    1                   TO  FLG-TAIIN
            END-IF
       *
-      *TEST
-           DISPLAY "C10 WRK-SYOYMD:" WRK-SYOYMD
-                  ",LNK-ORCSC-SYOYMD:" LNK-ORCSC-SYOYMD
-      *TEST 
            MOVE    ZERO                TO  FLG-KYUJITU
            IF      WRK-SYOYMD          =   SPACE
                MOVE    SPA-SRYYMD          TO  WRK-KEIYMD

@@ -920,12 +920,6 @@
                                        ORCSC92AREA
                                        WRK-SCR-REC
                                        SPA-AREA
-      *TEST
-           DISPLAY "WRK-SRYCD:" WRK-SRYCD
-                   ",IDX-S:" IDX-S
-                  ",GMN:" WRK-GMN-INPUTCD (IDX-S)
-                  ",COM:" WRK-COM-INPUTCD (IDX-S)
-      *TEST
       *
       *    エラーの時、追加なし
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
@@ -2425,9 +2419,6 @@
            MOVE    SPA-PTID            TO  STUSAN-PTID
            MOVE    SPA-SRYYMD          TO  STUSAN-KJNYMD
            CALL    "ORCSTUSAN"         USING   ORCSTUSANAREA
-      *TEST
-           DISPLAY "STUSAN-NISSU03:" STUSAN-NISSU03
-      *TEST
       *
       *    通算入院日を求める
            INITIALIZE                      STS-AREA-DAY
@@ -2439,12 +2430,6 @@
                                        *   -1
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
-      *TEST
-           DISPLAY "LNK-DAY6-ZOGEN:" LNK-DAY6-ZOGEN
-                 ",SPA-SRYYMD:" SPA-SRYYMD
-           DISPLAY "LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
-                   ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
-      *TEST
       *
            MOVE    LNK-DAY6-KEISAN     TO  WRK-NYMD
       *
@@ -2486,10 +2471,6 @@
                                                          (03 IDXS)
            END-IF
       *
-      *TEST
-           DISPLAY "C30 SRYCD:" LNK-ORCSC-SRYCD (03 IDXS)
-                   "," LNK-ORCSC-INPUTCD-G (03 IDXS)
-      *TEST
            .
        3002-AUTO-HENSYU-EXT.
            EXIT.

@@ -1011,16 +1011,6 @@
                END-IF
            END-PERFORM
       *
-      *TEST
-           PERFORM VARYING     IDX-D   FROM    1   BY  1
-                   UNTIL       IDX-D   >   31
-               IF     ORCSTEN-ZAITEN (IDX-D)  >   ZERO
-                  DISPLAY "IDX-D:" IDX-D
-                         ",ZAITEN:" ORCSTEN-ZAITEN (IDX-D)
-                         ",CHUSYARYO:" ORCSTEN-CHUSYARYO (IDX-D)
-               END-IF
-           END-PERFORM
-      *TEST
            .
        200-KEISAN-SYORI-EXT.
            EXIT.

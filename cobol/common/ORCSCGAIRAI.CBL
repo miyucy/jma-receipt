@@ -1589,13 +1589,6 @@
            END-IF
       *
            MOVE    ZERO                TO  IDX-YAKUZAI
-      *TEST
-           DISPLAY "GAI JYURRK-SRYKA:" JYURRK-SRYKA
-                  ",JYURRK-RENNUM:" JYURRK-RENNUM
-                  ",DOUJI-RENNUM:" JYURRK-DOUJI-RENNUM
-                  ",HKNCOMBINUM:" JYURRK-HKNCOMBINUM
-                  ",DENPNUM:" JYURRK-DENPNUM
-      *TEST
            .
        45001-JYURRK-SYOKI-EXT.
            EXIT.
@@ -1967,9 +1960,6 @@
                                                        (IDX-1 IDX-2)
                    MOVE    ZERO                TO  ACCT-DAY
                                                        (IDX-1 IDX-2)
-      *TEST
-                  DISPLAY "ACCT-ZAIKAISU :" ACCT-ZAIKAISU 
-      *TEST
       *            回数がゼロの時、削除
                    IF      ACCT-ZAIKAISU       =   ZERO
       *
@@ -3248,10 +3238,6 @@
                MOVE    1               TO  FLG-SYUTTL
                INITIALIZE              SYUTTL-REC
            END-IF
-      *TEST
-            DISPLAY "SYUTTL:" WRK-KA-DENPNUM
-                 ",FLG-SYUTTL:" FLG-SYUTTL
-      *TEST
       *
            MOVE    SPACE               TO  SYUTTL-REC
            INITIALIZE                  SYUTTL-REC

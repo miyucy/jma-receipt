@@ -285,9 +285,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                    SECTION.
-      *TEST
-              DISPLAY "ORCHC30 START" 
-      *TEST
       *
            INITIALIZE                  SYS-AREA
            INITIALIZE                  STS-AREA

@@ -179,9 +179,6 @@
            ELSE
                MOVE    WRK-PRTPG           TO  ORCSPRTNM-PRTPG
            END-IF
-      *TEST
-           DISPLAY "ORCSPRTNM-PRTPG:" ORCSPRTNM-PRTPG
-      *TEST
       *
            .
        110-PTNUM-SYORI-EXT.

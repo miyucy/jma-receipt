@@ -1289,10 +1289,6 @@
       *****************************************************************
        3002-SANTEI-UPD-SEC                SECTION.
       *
-      *TEST
-           DISPLAY "WRK-MAE-FSANTEIYMD:"  WRK-MAE-FSANTEIYMD
-                  ",WRK-KON-FSANTEIYMD:" WRK-KON-FSANTEIYMD
-      *TEST
            MOVE    WRK-MAE-FSANTEIYMD  TO  WRK-FSANTEIYMD
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
