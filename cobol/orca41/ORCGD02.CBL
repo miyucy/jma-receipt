@@ -4066,7 +4066,11 @@
                            ELSE
                                MOVE    1            TO  FLG-RED1
                                IF  (W-PTBYO-MAX1      >   ZERO)  AND
-                                   (W-PTBYO-HANTEI1   =   "1")
+                                   (W-PTBYO-HANTEI1   =   "1")   AND
+                                   ((W-PTBYO-MEI1 (W-PTBYO-MAX1)
+                                                      =   SPACE)  OR
+                                    (W-PTBYO-MEI1 (W-PTBYO-MAX1)
+                                                =   PTBYO-BYOMEI(1:60)))
                                    INITIALIZE
                                            W-BYOMEI-LIST1 (W-PTBYO-MAX1)
                                    COMPUTE W-PTBYO-MAX1 = W-PTBYO-MAX1
@@ -4254,7 +4258,11 @@
                            ELSE
                                MOVE    1            TO  FLG-RED2
                                IF  (W-PTBYO-MAX2      >   ZERO)  AND
-                                   (W-PTBYO-HANTEI2   =   "1")
+                                   (W-PTBYO-HANTEI2   =   "1")   AND
+                                   ((W-PTBYO-MEI2 (W-PTBYO-MAX2)
+                                                      =   SPACE)  OR
+                                    (W-PTBYO-MEI2 (W-PTBYO-MAX2)
+                                                =   PTBYO-BYOMEI(1:60)))
                                    INITIALIZE
                                            W-BYOMEI-LIST2 (W-PTBYO-MAX2)
                                    COMPUTE W-PTBYO-MAX2 = W-PTBYO-MAX2
