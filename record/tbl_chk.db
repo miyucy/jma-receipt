@@ -298,3 +298,16 @@ path	key13	{
 		;
 	};
 };
+
+path	upd2	{
+	DBUPDATE		{
+		UPDATE	tbl_chk
+		SET	TEKCDNUM	=	:TEKCDNUM
+			WHERE	CHKKBN		=	:UPCHKKBN
+			AND		SRYCD		=	:UPSRYCD
+			AND		YUKOSTYMD	=	:UPYUKOSTYMD
+			AND		YUKOEDYMD	=	:UPYUKOEDYMD
+			AND		CDKBN		=	:UPCDKBN
+		;
+	};
+};
