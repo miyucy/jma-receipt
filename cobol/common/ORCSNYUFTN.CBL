@@ -73,13 +73,6 @@
            03  WRK-ZAIKAISU                PIC 9(04).
            03  WRK-TAX1001-KBN             PIC X(01).
       *
-           03  WRK-KOYOMI-YMD              PIC 9(08).
-           03  WRK-KOYOMI2-YMD.
-               05  WRK-KOYOMI2-YYMM        PIC 9(06).
-               05  WRK-KOYOMI2-DD          PIC 9(02).
-           03  WRK-NYUINYMD                PIC X(08).
-           03  WRK-SHONUM                  PIC 9(03).
-      *
        01  WRK-ROSAI-AREA.
            03  WRK-SYUTEN                  PIC 9(09).
            03  WRK-TEN                     PIC 9(09).
@@ -177,7 +170,6 @@
            03  FLG-NYUKHN                  PIC 9(01).
            03  FLG-KAIKEI-SAKUSEI          PIC 9(01).
            03  FLG-SENTEICDCHG             PIC 9(01).
-           03  FLG-PTNYUINRRK              PIC 9(01).
       *
       * 室料差額退避用テーブル     
        01  TABLE-RMSAGAKU.
@@ -254,9 +246,6 @@
            03  IDZ                         PIC 9(02).
            03  IDX1                        PIC 9(02).
            03  IDX2                        PIC 9(02).
-           03  IDX3                        PIC 9(02).
-           03  IDX4                        PIC 9(02).
-           03  IDX5                        PIC 9(02).
            03  IDX6                        PIC 9(02).
            03  SYU-IDX                     PIC 9(02).
            03  NYUINACT-IDX                PIC 9(02).
@@ -352,10 +341,6 @@
       *    選定療養費
        01  SENTEICDCHG-REC.
            COPY    "CPSENTEICDCHG.INC".
-      *
-      *    入院履歴
-       01  PTNYUINRRK-REC.
-           COPY    "CPPTNYUINRRK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1985,43 +1970,12 @@
       **************************************************************
        ROSAI-JIBAI-NYUINRYO-SEC           SECTION.
       *
-      *    入院履歴より初回入院年月日を取得
-           PERFORM   ROSAI-JIBAI-NYUINRIREKI-SEC
-      *
-           MOVE    ZERO                TO  WRK-KOYOMI-YMD
-                                           WRK-KOYOMI2-YMD
-      *
-      *    初回入院年月日から２週間目を算定
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY6-AREA
-           MOVE    "61"                TO  LNK-DAY6-IRAI
-           MOVE    WRK-NYUINYMD        TO  LNK-DAY6-KIJUN
-           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-           MOVE    14                  TO  LNK-DAY6-ZOGEN
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY6-AREA
-      *
-           MOVE    LNK-DAY6-KOYOMI     TO  WRK-KOYOMI-YMD
-      *
-      *
            INITIALIZE                      ORCSROUNYUIN-AREA
            MOVE    SYU-HOSPID          TO  LNK-SROUNYUIN-HOSPID
            MOVE    SYU-PTID            TO  LNK-SROUNYUIN-PTID
            MOVE    SYU-SRYYMD(1:6)     TO  LNK-SROUNYUIN-SANTEIYM
            MOVE    SYU-HKNCOMBINUM     TO  LNK-SROUNYUIN-HKNCOMBI
            MOVE    SPACE               TO  LNK-SROUNYUIN-RYAKUKBN
-      *    労災乗数区分セット
-      **>     PERFORM    VARYING   SYU-IDX   FROM   1   BY   1
-      **>                 UNTIL    SYU-IDX    >    31
-      *
-      **>        MOVE    SYU-SRYYMD(1:6)  TO  WRK-KOYOMI2-YYMM
-      **>        MOVE    SYU-IDX          TO  WRK-KOYOMI2-DD
-      **>        IF      WRK-KOYOMI2-YMD  <=  WRK-KOYOMI-YMD
-      **>             MOVE    "1"    TO   LNK-SROUNYUIN-JOUSU-KBN(SYU-IDX)
-      **>        ELSE
-      **>             MOVE    "2"    TO   LNK-SROUNYUIN-JOUSU-KBN(SYU-IDX)
-      **>        END-IF
-      **>     END-PERFORM
       *
            CALL    "ORCSROUNYUIN"      USING   MCPAREA
                                                ORCSROUNYUIN-AREA
@@ -2051,113 +2005,6 @@
       *
            .
        ROSAI-JIBAI-NYUINRYO-EXT.
-           EXIT.
-      *
-      **************************************************************
-      *    入院履歴より初回入院年月日を取得（労災・自賠責用）
-      **************************************************************
-       ROSAI-JIBAI-NYUINRIREKI-SEC           SECTION.
-      *
-           MOVE      SPACE      TO      WRK-NYUINYMD
-           MOVE      ZERO       TO      WRK-SHONUM
-      *
-           MOVE      ZERO       TO      WRK-KOYOMI2-YMD
-      *
-      *    診療月内の入退院情報
-           INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SYU-HOSPID          TO  PTNYUINRRK-HOSPID
-           MOVE    SYU-PTID            TO  PTNYUINRRK-PTID
-           MOVE    SYU-SRYYMD(1:6)     TO  PTNYUINRRK-NYUINYMD (1:6)
-           MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
-           MOVE    SYU-SRYYMD(1:6)     TO  PTNYUINRRK-TAIINYMD (1:6)
-           MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING   MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
-               PERFORM  PTNYUINRRK-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTNYUINRRK
-           END-IF
-           PERFORM    UNTIL   FLG-PTNYUINRRK   =   1
-               IF      PTNYUINRRK-NYUINYMD (1:6)
-                                               <   SYU-SRYYMD(1:6)
-                   MOVE    1                   TO  IDX4
-               ELSE
-                   MOVE    PTNYUINRRK-NYUINYMD TO  WRK-KOYOMI2-YMD
-                   MOVE    WRK-KOYOMI2-DD      TO  IDX4
-               END-IF 
-               IF      PTNYUINRRK-TAIINYMD (1:6)
-                                               >   SYU-SRYYMD(1:6)
-                   MOVE    31                  TO  IDX5
-               ELSE
-                   MOVE    PTNYUINRRK-TAIINYMD TO  WRK-KOYOMI2-YMD
-                   MOVE    WRK-KOYOMI2-DD      TO  IDX5
-               END-IF
-      *        保険組合せのチェック
-               PERFORM   VARYING   IDX3   FROM   IDX4    BY  1
-                       UNTIL   IDX3    >   IDX5
-                   IF    SYU-DAY(IDX3)  =   "1"
-                       PERFORM   ROSAI-JIBAI-NYUINRIREKI2-SEC
-                       MOVE    IDX5   TO   IDX3
-                   END-IF
-               END-PERFORM
-      *
-               MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
-               PERFORM  PTNYUINRRK-READ-SEC
-           END-PERFORM
-      *
-           MOVE     "PTNYUINRRK-KEY23" TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
-      *
-           .
-       ROSAI-JIBAI-NYUINRIREKI-EXT.
-           EXIT.
-      *
-      **************************************************************
-      *    入院履歴より初回入院年月日を取得２（労災・自賠責用）
-      **************************************************************
-       ROSAI-JIBAI-NYUINRIREKI2-SEC           SECTION.
-      *
-      *    入院年月日
-           MOVE    PTNYUINRRK-NYUINYMD   TO   WRK-NYUINYMD
-      *    初回番号
-           MOVE    PTNYUINRRK-SHONUM     TO   WRK-SHONUM
-      *
-           INITIALIZE                     PTNYUINRRK-REC
-           MOVE    SYU-HOSPID         TO  PTNYUINRRK-HOSPID
-           MOVE    SYU-PTID           TO  PTNYUINRRK-PTID
-           MOVE    WRK-SHONUM         TO  PTNYUINRRK-SHONUM
-           MOVE    SYU-SRYYMD(1:6)    TO  PTNYUINRRK-NYUINYMD (1:6)
-           MOVE    "31"               TO  PTNYUINRRK-NYUINYMD (7:2)
-           MOVE    PTNYUINRRK-REC     TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY22" TO  ORC-DBPATH
-           MOVE    "DBSELECT"         TO  MCP-FUNC
-           CALL    "ORCMCPSUB"        USING   MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY22"  TO  ORC-DBPATH
-               PERFORM  PTNYUINRRK-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTNYUINRRK
-           END-IF
-      *
-           IF  FLG-PTNYUINRRK  =   ZERO
-              IF    PTNYUINRRK-NYUINYMD   <    WRK-NYUINYMD
-                  MOVE   PTNYUINRRK-NYUINYMD   TO   WRK-NYUINYMD
-              END-IF
-           END-IF
-      *
-           MOVE     "PTNYUINRRK-KEY22" TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
-      *
-           .
-       ROSAI-JIBAI-NYUINRIREKI2-EXT.
            EXIT.
       *
       **************************************************************
@@ -4276,27 +4123,6 @@
       *
            .
        HKNCOMBI-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入院履歴読込
-      *****************************************************************
-       PTNYUINRRK-READ-SEC       SECTION.
-      *
-           MOVE    "DBFETCH"            TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC               =   ZERO
-               MOVE    MCPDATA-REC      TO  PTNYUINRRK-REC
-               MOVE    ZERO             TO  FLG-PTNYUINRRK
-           ELSE
-               INITIALIZE                   PTNYUINRRK-REC
-               MOVE    1                TO  FLG-PTNYUINRRK
-           END-IF
-           .
-       PTNYUINRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************

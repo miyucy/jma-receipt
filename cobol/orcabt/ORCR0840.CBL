@@ -367,10 +367,6 @@
            03  WRK-4001-SKJKBN                         PIC X(01).
       *
            03  WRK-KEISAN                              PIC 9(09).
-           03  WRK-KOYOMI-YMD                          PIC 9(08).
-           03  WRK-KOYOMI2-YMD.
-               05  WRK-KOYOMI2-YYMM                    PIC 9(06).
-               05  WRK-KOYOMI2-DD                      PIC 9(02).
       *
            03  WRK-SROUNYUIN-SRYCDTOTAL                PIC 9(14).
            03  WRK-SROUNYUIN-MEISAISU                  PIC 9(07).
@@ -1268,25 +1264,10 @@
       *****************************************************************
        250-RECE84-HENSYU4-SEC                SECTION.
       *
-           MOVE    ZERO                TO  WRK-KOYOMI-YMD
-                                           WRK-KOYOMI2-YMD
-                                           FLG-KHN
+           MOVE    ZERO                TO  FLG-KHN
                                            WRK-SROUNYUIN-SRYCDTOTAL
                                            WRK-SROUNYUIN-MEISAISU
                                            WRK-SROUNYUIN-SRYCD
-      *
-      *    ½é²óÆþ±¡Ç¯·îÆü¤«¤é£²½µ´ÖÌÜ¤ò»»Äê
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY6-AREA
-           MOVE    "61"                TO  LNK-DAY6-IRAI
-           MOVE    RECE82-NYUINYMD     TO  LNK-DAY6-KIJUN
-           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-           MOVE    14                  TO  LNK-DAY6-ZOGEN
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY6-AREA
-      *
-           MOVE    LNK-DAY6-KOYOMI     TO  WRK-KOYOMI-YMD
-      *
       *
            INITIALIZE                      ORCSROUNYUIN-AREA
            MOVE    RECE82-HOSPID       TO  LNK-SROUNYUIN-HOSPID
@@ -1294,18 +1275,6 @@
            MOVE    RECE82-SRYYM        TO  LNK-SROUNYUIN-SANTEIYM
            MOVE    RECE82-HKNCOMBI     TO  LNK-SROUNYUIN-HKNCOMBI
            MOVE    SPACE               TO  LNK-SROUNYUIN-RYAKUKBN
-      *    Ï«ºÒ¾è¿ô¶èÊ¬¥»¥Ã¥È
-      **>     PERFORM    VARYING   IDY   FROM   1   BY   1
-      **>                 UNTIL    IDY    >    31
-      *
-      **>        MOVE    RECE82-SRYYM     TO  WRK-KOYOMI2-YYMM
-      **>        MOVE    IDY              TO  WRK-KOYOMI2-DD
-      **>        IF      WRK-KOYOMI2-YMD  <=  WRK-KOYOMI-YMD
-      **>             MOVE    "1"    TO   LNK-SROUNYUIN-JOUSU-KBN(IDY)
-      **>        ELSE
-      **>             MOVE    "2"    TO   LNK-SROUNYUIN-JOUSU-KBN(IDY)
-      **>        END-IF
-      **>     END-PERFORM
       *
            CALL    "ORCSROUNYUIN"      USING   MCPAREA
                                                ORCSROUNYUIN-AREA
