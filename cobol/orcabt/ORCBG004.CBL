@@ -175,6 +175,9 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    入退院日取得サブパラメタ
+           COPY "CPORCSNTYMD.INC".
+      *
       *    病室番号編集サブ
            COPY "CPORCSBRMNUM.INC".
       *
@@ -448,10 +451,27 @@
                                                            (CNT-LINE)
       *
       *    入院日
-           MOVE    I001-NYUINYMD           TO  WRK-SYMD
-           PERFORM 800-SEIWA-HEN-SEC
-           MOVE    WRK-EDTYMD1             TO  HCMG004-NYUINYMD
+           INITIALIZE                          ORCSNTYMDAREA
+           MOVE    PTINF-HOSPID            TO  SNTYMD-HOSPID
+           MOVE    PTINF-PTID              TO  SNTYMD-PTID
+           MOVE    "2"                     TO  SNTYMD-KBN
+           CALL    "ORCSNTYMD" USING           ORCSNTYMDAREA
+      *
+           PERFORM VARYING IDX2   FROM    1   BY  1
+                   UNTIL ( IDX2       >   SNTYMD-MAX )
+               IF    ( I001-RRKNUM         = SNTYMD-RRKNUM (IDX2))
+      *
+                   MOVE    SNTYMD-NYUINYMD (IDX2)
+                                           TO  WRK-SYMD
+                   PERFORM 800-SEIWA-HEN-SEC
+                   MOVE    WRK-EDTYMD1     TO  HCMG004-NYUINYMD
                                                            (CNT-LINE)
+      *
+                   MOVE    SNTYMD-MAX      TO  IDX2
+      *
+               END-IF
+      *
+           END-PERFORM
       *
       *    通算日数チェックサブ呼出
            INITIALIZE                  ORCSTUSANCHKAREA
@@ -643,7 +663,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE   "HCMG004.red"        TO  SPRT-PRTID
-           MOVE    "入院会計未作成者一覧表"
+           MOVE    "入院患者通算日数一覧表"
                                        TO  SPRT-TITLE
            MOVE    HCMG004             TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
