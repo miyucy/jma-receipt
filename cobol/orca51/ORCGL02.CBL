@@ -452,7 +452,13 @@
       *                ジョブ管理チェック処理
                        PERFORM 4501-JOBKANRI-CHK-SEC
                        IF      SPA-ERRCD      =   SPACE
-                           PERFORM 500-KAKUTEI-SEC
+                           IF      SPA-GMN-FILE1   =   "1" OR  "2"
+                               MOVE    SPACE           TO  SPA-LID1-FLG
+                               MOVE    "2001"          TO  SPA-LIDCD
+                               GO  TO  330-LID1-SET-EXT
+                           ELSE
+                               PERFORM 500-KAKUTEI-SEC
+                           END-IF    
                        END-IF
                    WHEN    "2001"
       *                ジョブ管理チェック処理
