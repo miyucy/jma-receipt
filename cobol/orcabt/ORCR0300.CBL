@@ -45,6 +45,8 @@
       *                                     未コード化傷病名コードのとき
       *                                     修飾語コードの編集をしない
       *  01.00.08    NACL-多々納  03/08/25  コメントの値を全角編集へ修正
+      *  01.00.09    NACL-藤原    03/09/03  公費の負担者番号・受給者番号
+      *                                     の全角チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1058,13 +1060,33 @@
            MOVE    "KO,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
       *    負担者番号
-           MOVE    RECE02-KOHFTNJANUM (IDY)
-                                       TO  WRK-DATA
+           IF      RECE02-KOHFTNJANUM (IDY)
+                                       NOT =   SPACE
+               INITIALIZE              ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI 
+               MOVE    RECE02-KOHFTNJANUM (IDY)
+                                       TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF      KANACHK-SYUBETU =   "1"
+                   MOVE    RECE02-KOHFTNJANUM (IDY)
+                                           TO  WRK-DATA
+               END-IF
+           END-IF
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC     
       *    受給者番号                             
-           MOVE    RECE02-KOHJKYSNUM  (IDY)
-                                       TO  WRK-DATA
+           IF      RECE02-KOHJKYSNUM  (IDY)
+                                       NOT =   SPACE
+               INITIALIZE              ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI 
+               MOVE    RECE02-KOHJKYSNUM  (IDY)
+                                       TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF      KANACHK-SYUBETU =   "1"
+                   MOVE    RECE02-KOHJKYSNUM  (IDY)
+                                           TO  WRK-DATA
+               END-IF
+           END-IF
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    任意給付区分                             
