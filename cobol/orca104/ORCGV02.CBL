@@ -1189,7 +1189,7 @@
                                       =   SPA-GMN-JKYSKENSNUMCHKKBNL
                                                               (IDX)
                    MOVE    SPA-GMN-JKYSKENSNUMCHKKBNMEIL (IDX)
-                                           TO  SPA-GMN-KENSNUMCHKKBNMEI
+                                      TO  SPA-GMN-JKYSKENSNUMCHKKBNMEI
                    MOVE    SPA-GMN-JKYSKENSNUMCHKKBN-MAX
                                            TO  IDX
                    MOVE    1               TO  FLG-CHK
