@@ -79,10 +79,18 @@
            03  FLG-OK                  PIC 9(01).
            03  FLG-R3                  PIC 9(01).
            03  FLG-PAGE-FEED           PIC 9(01).
+           03  FLG-TOTUGO-G.
+               05  FLG-KANZEN          PIC 9(01).
+               05  FLG-ZENPO           PIC 9(01).
+               05  FLG-KOHO            PIC 9(01).
+           03  FLG-TOTUGO-R    REDEFINES   FLG-TOTUGO-G.
+               05  FLG-TOTUGO          PIC 9(01)
+                                       OCCURS  3.
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX1                    PIC 9(05).
+           03  IDX2                    PIC 9(05).
            03  IDX-LINE                PIC 9(05).
            03  IDX-LEN                 PIC 9(05).
            03  IDX-CMB                 PIC 9(05).
@@ -104,6 +112,7 @@
                    07  WRK-KEY-CDSEP   PIC X(01).
            03  WRK-SRYNAME             PIC X(50).
            03  WRK-PNT                 PIC 9(05).
+           03  WRK-TGPNT               PIC 9(05).
            03  WRK-STR                 PIC X(500).
            03  WRK-STRLEN              PIC 9(05).
            03  WRK-TEKIYOLEN           PIC 9(05).
@@ -138,7 +147,10 @@
            03  FILLER                  PIC X(10)   VALUE   SPACE.
            03  H02-MIDASI1             PIC X(50).
            03  FILLER                  PIC X(01)   VALUE   SPACE.
-           03  H02-MIDASI2             PIC X(50).
+           03  H02-MIDASI2             PIC X(100).
+           03  H02-MIDASI2-R   REDEFINES   H02-MIDASI2.
+               05  H02-MIDASI2R1       PIC X(30).
+               05  H02-MIDASI2R2       PIC X(70).
        01  BODY-01.
            03  B01-NYUGAIKBN           PIC X(02).
            03  B01-SRYCD1              PIC X(09).
@@ -146,27 +158,34 @@
            03  B01-NAME1               PIC X(50).
            03  FILLER                  PIC X(02).
            03  B01-COMPKBN             PIC X(02).
-           03  B01-TEKIYO              PIC X(92).
+           03  FILLER                  PIC X(02).
+           03  B01-TEKIYO              PIC X(90).
            03  B01-TEKIYO-R1           REDEFINES   B01-TEKIYO.
                05  B01-SRYCD2          PIC X(09).
                05  FILLER              PIC X(01).
                05  B01-NAME2           PIC X(80).
-               05  B01-FIL-R1          PIC X(02).
            03  B01-TEKIYO-R2           REDEFINES   B01-TEKIYO.
                05  B01-BYOMEICD        PIC X(07).
                05  FILLER              PIC X(01).
-               05  B01-BYOMEI          PIC X(84).
+               05  B01-BYOMEI          PIC X(82).
            03  B01-TEKIYO-R3           REDEFINES   B01-TEKIYO.
                05  FILLER              PIC X(07).
-               05  B01-MEISAI          PIC X(85).
+               05  B01-MEISAI          PIC X(83).
       *
        01  CONST-AREA.
            03  CONST-HCM44-MAX         PIC 9(05)   VALUE   55.
            03  CONST-MEISAI-ST         PIC 9(05)   VALUE   4.
-           03  CONST-TEKIYO-MAX        PIC 9(05)   VALUE   92.
-           03  CONST-TEKIYO-R3-MAX     PIC 9(05)   VALUE   85.
+           03  CONST-TEKIYO-MAX        PIC 9(05)   VALUE   90.
+           03  CONST-TEKIYO-R3-MAX     PIC 9(05)   VALUE   83.
            03  CONST-MKCD-MAX          PIC 9(05)   VALUE   21.
            03  CONST-CHK-MAX           PIC 9(05)   VALUE   10.
+           03  CONST-TOTUGO-MES-MAX    PIC 9(05)   VALUE   3.
+           03  CONST-TOTUGO-MES-VAL.
+               05  CONST-TOTUGO-KANZEN PIC X(12)   VALUE "完：完全一致".
+               05  CONST-TOTUGO-ZENPO  PIC X(12)   VALUE "前：前方一致".
+               05  CONST-TOTUGO-KOHO   PIC X(12)   VALUE "後：後方一致".
+           03  CONST-TOTUGO-MES-R      REDEFINES   CONST-TOTUGO-MES-VAL.
+               05  CONST-TOTUGO-MES    PIC X(12)   OCCURS  3.
       *
       *    病名システム予約コードテーブル
            COPY    "CMBYOMEICD.INC".
@@ -473,7 +492,7 @@
                    MOVE    "薬剤コード"
                                        TO  H02-MIDASI1
                    MOVE    "病名コード"
-                                       TO  H02-MIDASI2
+                                       TO  H02-MIDASI2R1
            WHEN    "2"
                MOVE
                "＜　診療行為と病名一覧表　＞"
@@ -481,7 +500,7 @@
                    MOVE    "診療行為コード"
                                        TO  H02-MIDASI1
                    MOVE    "病名コード"
-                                       TO  H02-MIDASI2
+                                       TO  H02-MIDASI2R1
            END-EVALUATE
       *
            .
@@ -586,10 +605,13 @@
            EVALUATE    CHKSND-COMPKBN
            WHEN    "2"
                MOVE    "完"           TO  B01-COMPKBN
+               MOVE    1              TO  FLG-KANZEN
            WHEN    "3"
                MOVE    "前"           TO  B01-COMPKBN
+               MOVE    1              TO  FLG-ZENPO
            WHEN    "4"
                MOVE    "後"           TO  B01-COMPKBN
+               MOVE    1              TO  FLG-KOHO
            WHEN    OTHER
                MOVE    "　"           TO  B01-COMPKBN
            END-EVALUATE
@@ -788,9 +810,29 @@
            MOVE    WRK-PAGE            TO  H01-PCNT
            MOVE    HEAD-01             TO  HCM44-MOJI(1)
       *
+           IF        ( HXLST-CHKKBN    =   "1" OR "2" )
+               MOVE    SPACE           TO  H02-MIDASI2R2
+               MOVE    1               TO  WRK-TGPNT
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL ( IDX2    >   CONST-TOTUGO-MES-MAX )
+      *
+                   IF    ( FLG-TOTUGO (IDX2)   =   1 )
+                       STRING CONST-TOTUGO-MES (IDX2)
+                                           DELIMITED   BY  SPACE
+                              "　"         DELIMITED   BY  SIZE
+                       INTO   H02-MIDASI2R2
+                       WITH   POINTER  WRK-TGPNT
+                       END-STRING
+                   END-IF
+      *
+               END-PERFORM
+      *
+           END-IF
+      *
            MOVE    HEAD-02             TO  HCM44-MOJI(2)
       *
            MOVE     ALL "-"            TO  HCM44-MOJI(3)
+      *
       *
            .
        2100-HEAD-EXT.
@@ -810,6 +852,7 @@
                END-IF
       *
                INITIALIZE              HCM44
+               MOVE    ZERO        TO  FLG-TOTUGO-G
       *
                MOVE    CONST-MEISAI-ST TO  IDX-LINE
       *
