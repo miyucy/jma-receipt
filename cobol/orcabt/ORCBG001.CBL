@@ -31,6 +31,7 @@
       * 02.01.01     Nacl-森脇    03/11/25  院外区分をパラメタに追加
       * 02.01.02     NACL-森脇    04/08/31  条件修正
       * 02.01.03     NACL-森脇    04/10/22  CLOSE処理
+      * 02.01.04     NACL-森脇    05/01/26  高速化による変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -257,9 +258,20 @@
       *
            COPY    "ORCA-DBPATH".
       *
+      *----(02.01.04)--ADD-START---
       *    点数マスタ退避ワーク
            COPY    "CPTTNS.INC".
       *
+      *    キー領域
+       01  KEY-AREA.
+           03  KEY-HOSPID          PIC X(24).
+           03  KEY-NYUGAIKBN       PIC X(01).
+           03  KEY-PTID            PIC 9(10).
+           03  KEY-SRYKA           PIC X(02).
+           03  KEY-SRYYM           PIC X(06).
+           03  KEY-SRYKBN          PIC X(02).
+           03  KEY-ZAINUM          PIC 9(08).
+      *----(02.01.04)--ADD-END-----
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -354,7 +366,10 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
-                                       TTNS-AREA
+      *----(02.01.04)--ADD-START---
+           INITIALIZE                  TTNS-AREA
+           INITIALIZE                  KEY-AREA
+      *----(02.01.04)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -448,8 +463,12 @@
            CLOSE                       TOKEIX-FILE
       *
            OPEN    I-O                 TOKEI-FILE
+      *----(02.01.04)--UPD-STRAT---
       *    診療会計集計処理
-           PERFORM 220-MAIN-ACCT-SEC
+      *     PERFORM 220-MAIN-ACCT-SEC
+      *    診療行為集計処理
+           PERFORM 220-MAIN-SRY-SEC
+      *----(02.01.04)--UPD-END-----
       *
            CLOSE                       TOKEI-FILE
       *
@@ -524,95 +543,25 @@
        210-MAIN-SRYKA-EXT.
            EXIT.
       *
+      *----(02.01.04)--ADD-START---
       *****************************************************************
-      *    診療会計集計処理
+      *   診療行為集計処理
       *****************************************************************
-       220-MAIN-ACCT-SEC           SECTION.
+       220-MAIN-SRY-SEC            SECTION.
       *
-      *----(02.01.01)--UPD-START---
       *    対象診療年月で検索
            INITIALIZE                  SRYACCT-REC
-           MOVE    WRK-PARA-HOSPID TO  ACCT-HOSPID
-           MOVE    WRK-PARA-DENPPRTYM
-                                   TO  ACCT-SRYYM
-      *
-           MOVE    SRYACCT-REC     TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-      *     MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
-           MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-      *         MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
-               MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
-               PERFORM 900-ACCT-DBFETCH-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SRYACCT
-           END-IF
-      *
-           PERFORM UNTIL     ( FLG-SRYACCT     =   1 )
-      *        最初の算定日を取得する
-               MOVE    ZERO                TO  WRK-DD
-               PERFORM VARYING     IDX-D   FROM    1   BY   1
-                       UNTIL       IDX-D   >   31
-                   IF      ACCT-DAY (1 IDX-D)  >   ZERO
-                       MOVE    IDX-D           TO  WRK-DD
-                       MOVE    31              TO  IDX-D
-                   END-IF
-               END-PERFORM
-      *        算定がある時対象
-               IF      WRK-DD          >   ZERO
-      *----(02.01.02)--UPD-START---
-      *            薬剤点数がなく、初診、再診、指導のときは対象外とする
-                   IF    ( ACCT-YKZTEN     =   ZERO )  AND
-                        (( ACCT-SRYKBN     =   "11" )  OR
-                         ( ACCT-SRYKBN     =   "12" )  OR
-                         ( ACCT-SRYKBN     =   "13" ))
-                       CONTINUE
-                   ELSE
-                       PERFORM 230-MAIN-SRY-SEC
-                   END-IF
-      *----(02.01.02)--UPD-END-----
-               END-IF
-      *
-      *         MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
-               MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
-               PERFORM 900-ACCT-DBFETCH-SEC
-           END-PERFORM
-      *
-      *     MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
-           MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
-           PERFORM 900-ACCT-DBCLOSE-SEC
-      *----(02.01.01)--UPD-END-----
-      *
-           .
-       220-MAIN-ACCT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    診療行為処理
-      *****************************************************************
-       230-MAIN-SRY-SEC            SECTION.
-      *
-           INITIALIZE                  SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
-           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
-           MOVE    ACCT-PTID           TO  SRY-PTID
-           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
-           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
-           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
-      *
+           MOVE    WRK-PARA-HOSPID     TO  SRY-HOSPID
+           MOVE    WRK-PARA-DENPPRTYM  TO  SRY-SRYYM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           MOVE    "SRYACT-KEY10"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               MOVE    "SRYACT-KEY10"      TO  ORC-DBPATH
                PERFORM 900-SRY-DBFETCH-SEC
            ELSE
                INITIALIZE                  SRYACT-REC
@@ -620,49 +569,244 @@
            END-IF
       *
            PERFORM UNTIL ( FLG-SRYACT      =   1 )
-      *----(02.01.01)--UPD-START---
-      *----(02.01.02)--UPD-START---
-               IF    ( ACCT-ZAITEN         =   ZERO ) AND
-                    (( ACCT-SRYKBN         =   "21" )  OR
-                     ( ACCT-SRYKBN         =   "22" )  OR
-                     ( ACCT-SRYKBN         =   "23" )  OR
-                     ( ACCT-SRYKBN         =   "14" ))
-                   IF    ( SRY-SRYSYUKBN       =   "213")  OR
-                         ( SRY-SRYSYUKBN       =   "223")  OR
-                         ( SRY-SRYSYUKBN       =   "233")
-                       MOVE    "1"         TO  WRK-INGAIKBN
-                   ELSE
-                       MOVE    "2"         TO  WRK-INGAIKBN
-                   END-IF
-               ELSE
-                   MOVE    "1"         TO  WRK-INGAIKBN
-               END-IF
-      *
-      *        院内
-               IF    ( WRK-INGAIKBN    =   "1" ) AND
-                     ( WRK-PARA-INGAIKBN   NOT =   1 )
-                   PERFORM 240-MAIN-HEN-SEC
-               END-IF
-      *        院外
-               IF    ( WRK-INGAIKBN    =   "2" ) AND
-                     ( WRK-PARA-INGAIKBN NOT =   0 ) AND
-                     ( WRK-PARA-INGAIKBN NOT =   SPACE )
-                   PERFORM 240-MAIN-HEN-SEC
-               END-IF
-      *----(02.01.02)--UPD-END-----
-      *----(02.01.01)--UPD-END-----
-      *
-               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+      *        診療会計集計処理
+               PERFORM 230-MAIN-ACCT-SEC
+
+               MOVE    "SRYACT-KEY10"      TO  ORC-DBPATH
                PERFORM 900-SRY-DBFETCH-SEC
       *
            END-PERFORM
       *
-           MOVE    "SRYACT-KEY2"   TO  ORC-DBPATH
+           MOVE    "SRYACT-KEY10"   TO  ORC-DBPATH
            PERFORM 900-SRY-DBCLOSE-SEC
             .
-       230-MAIN-SRY-EXT.
+       220-MAIN-SRY-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    診療会計集計処理
+      *****************************************************************
+       230-MAIN-ACCT-SEC           SECTION.
+      *
+           IF        ( SRY-HOSPID      NOT =   KEY-HOSPID )
+               OR    ( SRY-NYUGAIKBN   NOT =   KEY-NYUGAIKBN )
+               OR    ( SRY-PTID        NOT =   KEY-PTID )
+               OR    ( SRY-SRYKA       NOT =   KEY-SRYKA )
+               OR    ( SRY-SRYYM       NOT =   KEY-SRYYM )
+               OR    ( SRY-SRYKBN      NOT =   KEY-SRYKBN )
+               OR    ( SRY-ZAINUM      NOT =   KEY-ZAINUM )
+      *
+      *        該当の診療会計データを検索
+               INITIALIZE                  SRYACCT-REC
+               MOVE    SRY-HOSPID          TO  ACCT-HOSPID
+               MOVE    SRY-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+               MOVE    SRY-PTID            TO  ACCT-PTID
+               MOVE    SRY-SRYKA           TO  ACCT-SRYKA
+               MOVE    SRY-SRYYM           TO  ACCT-SRYYM
+               MOVE    SRY-SRYKBN          TO  ACCT-SRYKBN
+               MOVE    SRY-ZAINUM          TO  ACCT-ZAINUM
+               MOVE    SRYACCT-REC         TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+               IF      MCP-RC              =   ZERO
+                   MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+                   PERFORM 900-ACCT-DBFETCH-SEC
+               ELSE
+                   INITIALIZE                  SRYACCT-REC
+                   MOVE    1               TO  FLG-SRYACCT
+               END-IF
+      *
+               MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+               PERFORM 900-ACCT-DBCLOSE-SEC
+      *
+               MOVE    SRY-HOSPID       TO  KEY-HOSPID
+               MOVE    SRY-NYUGAIKBN    TO  KEY-NYUGAIKBN
+               MOVE    SRY-PTID         TO  KEY-PTID
+               MOVE    SRY-SRYKA        TO  KEY-SRYKA
+               MOVE    SRY-SRYYM        TO  KEY-SRYYM
+               MOVE    SRY-SRYKBN       TO  KEY-SRYKBN
+               MOVE    SRY-ZAINUM       TO  KEY-ZAINUM
+           END-IF
+
+           IF    ( ACCT-ZAITEN         =   ZERO ) AND
+                (( ACCT-SRYKBN         =   "21" )  OR
+                 ( ACCT-SRYKBN         =   "22" )  OR
+                 ( ACCT-SRYKBN         =   "23" )  OR
+                 ( ACCT-SRYKBN         =   "14" ))
+               IF    ( SRY-SRYSYUKBN       =   "213")  OR
+                     ( SRY-SRYSYUKBN       =   "223")  OR
+                     ( SRY-SRYSYUKBN       =   "233")
+                   MOVE    "1"         TO  WRK-INGAIKBN
+               ELSE
+                   MOVE    "2"         TO  WRK-INGAIKBN
+               END-IF
+           ELSE
+               MOVE    "1"         TO  WRK-INGAIKBN
+           END-IF
+      *
+      *    院内
+           IF    ( WRK-INGAIKBN    =   "1" ) AND
+                 ( WRK-PARA-INGAIKBN   NOT =   1 )
+               PERFORM 240-MAIN-HEN-SEC
+           END-IF
+      *    院外
+           IF    ( WRK-INGAIKBN    =   "2" ) AND
+                 ( WRK-PARA-INGAIKBN NOT =   0 ) AND
+                 ( WRK-PARA-INGAIKBN NOT =   SPACE )
+               PERFORM 240-MAIN-HEN-SEC
+           END-IF
+      *
+           .
+       230-MAIN-ACCT-EXT.
+           EXIT.
+      *
+      *----(02.01.04)--ADD-END-----
+      *----(02.01.04)--UPD-START---
+      *****************************************************************
+      *    診療会計集計処理
+      *****************************************************************
+      * 220-MAIN-ACCT-SEC           SECTION.
+      *
+      *----(02.01.01)--UPD-START---
+      *    対象診療年月で検索
+      *     INITIALIZE                  SRYACCT-REC
+      *     MOVE    WRK-PARA-HOSPID TO  ACCT-HOSPID
+      *     MOVE    WRK-PARA-DENPPRTYM
+      *                             TO  ACCT-SRYYM
+      *
+      *     MOVE    SRYACCT-REC     TO  MCPDATA-REC
+      *     MOVE    "DBSELECT"      TO  MCP-FUNC
+      *     MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
+      *     MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
+      *     CALL    "ORCMCPSUB"         USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *     IF      MCP-RC              =   ZERO
+      *         MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
+      *         MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
+      *         PERFORM 900-ACCT-DBFETCH-SEC
+      *     ELSE
+      *         MOVE    1                   TO  FLG-SRYACCT
+      *     END-IF
+      *
+      *     PERFORM UNTIL     ( FLG-SRYACCT     =   1 )
+      *        最初の算定日を取得する
+      *         MOVE    ZERO                TO  WRK-DD
+      *         PERFORM VARYING     IDX-D   FROM    1   BY   1
+      *                 UNTIL       IDX-D   >   31
+      *             IF      ACCT-DAY (1 IDX-D)  >   ZERO
+      *                 MOVE    IDX-D           TO  WRK-DD
+      *                 MOVE    31              TO  IDX-D
+      *             END-IF
+      *         END-PERFORM
+      *        算定がある時対象
+      *         IF      WRK-DD          >   ZERO
+      *----(02.01.02)--UPD-START---
+      *            薬剤点数がなく、初診、再診、指導のときは対象外とする
+      *             IF    ( ACCT-YKZTEN     =   ZERO )  AND
+      *                  (( ACCT-SRYKBN     =   "11" )  OR
+      *                   ( ACCT-SRYKBN     =   "12" )  OR
+      *                   ( ACCT-SRYKBN     =   "13" ))
+      *                 CONTINUE
+      *             ELSE
+      *                 PERFORM 230-MAIN-SRY-SEC
+      *             END-IF
+      *----(02.01.02)--UPD-END-----
+      *         END-IF
+      *
+      *         MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
+      *         MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
+      *         PERFORM 900-ACCT-DBFETCH-SEC
+      *     END-PERFORM
+      *
+      *     MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
+      *     MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
+      *     PERFORM 900-ACCT-DBCLOSE-SEC
+      *----(02.01.01)--UPD-END-----
+      *
+      *     .
+      * 220-MAIN-ACCT-EXT.
+      *     EXIT.
+      *
+      *****************************************************************
+      *    診療行為処理
+      *****************************************************************
+      * 230-MAIN-SRY-SEC            SECTION.
+      *
+      *     INITIALIZE                  SRYACT-REC
+      *     MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+      *     MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+      *     MOVE    ACCT-PTID           TO  SRY-PTID
+      *     MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+      *     MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+      *     MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+      *
+      *     MOVE    SRYACT-REC          TO  MCPDATA-REC
+      *     MOVE    "DBSELECT"          TO  MCP-FUNC
+      *     MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+      *     CALL    "ORCMCPSUB"         USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *     IF      MCP-RC              =   ZERO
+      *         MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+      *         PERFORM 900-SRY-DBFETCH-SEC
+      *     ELSE
+      *         INITIALIZE                  SRYACT-REC
+      *         MOVE    1               TO  FLG-SRYACT
+      *     END-IF
+      *
+      *     PERFORM UNTIL ( FLG-SRYACT      =   1 )
+      *----(02.01.01)--UPD-START---
+      *----(02.01.02)--UPD-START---
+      *         IF    ( ACCT-ZAITEN         =   ZERO ) AND
+      *              (( ACCT-SRYKBN         =   "21" )  OR
+      *               ( ACCT-SRYKBN         =   "22" )  OR
+      *               ( ACCT-SRYKBN         =   "23" )  OR
+      *               ( ACCT-SRYKBN         =   "14" ))
+      *             IF    ( SRY-SRYSYUKBN       =   "213")  OR
+      *                   ( SRY-SRYSYUKBN       =   "223")  OR
+      *                   ( SRY-SRYSYUKBN       =   "233")
+      *                 MOVE    "1"         TO  WRK-INGAIKBN
+      *             ELSE
+      *                 MOVE    "2"         TO  WRK-INGAIKBN
+      *             END-IF
+      *         ELSE
+      *             MOVE    "1"         TO  WRK-INGAIKBN
+      *         END-IF
+      *
+      *        院内
+      *         IF    ( WRK-INGAIKBN    =   "1" ) AND
+      *               ( WRK-PARA-INGAIKBN   NOT =   1 )
+      *             PERFORM 240-MAIN-HEN-SEC
+      *         END-IF
+      *        院外
+      *         IF    ( WRK-INGAIKBN    =   "2" ) AND
+      *               ( WRK-PARA-INGAIKBN NOT =   0 ) AND
+      *               ( WRK-PARA-INGAIKBN NOT =   SPACE )
+      *             PERFORM 240-MAIN-HEN-SEC
+      *         END-IF
+      *----(02.01.02)--UPD-END-----
+      *----(02.01.01)--UPD-END-----
+      *
+      *        MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+      *         PERFORM 900-SRY-DBFETCH-SEC
+      *
+      *     END-PERFORM
+      *
+      *     MOVE    "SRYACT-KEY2"   TO  ORC-DBPATH
+      *     PERFORM 900-SRY-DBCLOSE-SEC
+      *      .
+      * 230-MAIN-SRY-EXT.
+      *     EXIT.
+      *
+      *----(02.01.04)--UPD-END-----
       *****************************************************************
       *    主編集処理
       *****************************************************************
@@ -1321,6 +1465,7 @@
        900-TOKEI-NEXT-EXT.
            EXIT.
       *
+      *----(02.01.04)--UPD-START---
       *****************************************************************
       *    点数マスタ検索
       *****************************************************************
@@ -1383,6 +1528,8 @@
            .
        900-TNS-READ-EXT.
            EXIT.
+      *----(02.01.04)--UPD-END-----
+      *----(02.01.04)--ADD-START---
       *****************************************************************
       *    点数マスタ退避ワークチェック処理
       *****************************************************************
@@ -1429,7 +1576,7 @@
            .
        9001-TTNS-HEN-EXT.
            EXIT.
-      *
+      *----(02.01.04)--ADD-END-----
       *****************************************************************
       *    管理マスタ診療科検索
       *****************************************************************
