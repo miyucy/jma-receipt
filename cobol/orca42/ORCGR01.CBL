@@ -55,6 +55,7 @@
       *  01.01.15    NACL-藤原    02.09.06  タイマー機能の追加
       *
       *  01.02.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
+      *  01.02.02    NACL-藤原    02/09/24  ２００２．１０改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -134,6 +135,8 @@
                            11  SPA-NAI-TPTID       PIC 9(10).
                            11  SPA-NAI-TSRYYM      PIC 9(06).
       *
+                   07  SPA-NAI-SYOKBN              PIC X(01).                     
+      *
        01  SPA-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
                                    BY         //SPA-RECE07//.
@@ -200,6 +203,7 @@
            03  WRK-RECEERR         PIC X(200).
            03  WRK-RIDMSG          PIC X(70).
            03  WRK-YM              PIC X(07). 
+           03  WRK-PATH            PIC X(64).
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
@@ -1003,6 +1007,11 @@
                GO  TO  420-TUIKA-EXT
            END-IF    
       *
+           PERFORM 4204-SRYYM-CHK-SEC
+           IF      SPA-ERRCD    NOT =   SPACE
+               GO  TO  420-TUIKA-EXT
+           END-IF    
+      *
            COMPUTE IDY     =   SPA-GMN-MAX  +   1
            PERFORM 4202-INTBL-CHK-SEC
            IF      SPA-ERRCD        NOT =   SPACE
@@ -1042,6 +1051,39 @@
            END-IF             
            .
        4203-KOMOKUCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       診療年月の改正前・後の重複チェック処理
+      *****************************************************************
+       4204-SRYYM-CHK-SEC           SECTION.
+      *
+      *    追加のときまたは１行
+           IF    ( SPA-GMN-MAX      =   ZERO         )
+           OR    ( SPA-GMN-MAX      =   1       AND 
+                   SPA-GMN-RENNUM   =   1            )
+               IF      SPA-NAI-SRYYM    <   200210
+                   MOVE    "1"              TO  SPA-NAI-SYOKBN
+               ELSE
+                   MOVE    "2"              TO  SPA-NAI-SYOKBN
+               END-IF
+           ELSE
+               IF      SPA-NAI-SYOKBN   =   "1"
+                   IF      SPA-NAI-SRYYM    <   200210
+                       CONTINUE
+                   ELSE
+                       MOVE    "0007"           TO  SPA-ERRCD
+                   END-IF                                  
+               ELSE
+                   IF      SPA-NAI-SRYYM    >=  200210
+                       CONTINUE
+                   ELSE
+                       MOVE    "0007"           TO  SPA-ERRCD
+                   END-IF                                  
+               END-IF
+           END-IF              
+           .
+       4204-SRYYM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1101,6 +1143,11 @@
            END-IF
       *
            PERFORM 4203-KOMOKUCHK-SEC
+           IF      SPA-ERRCD    NOT =   SPACE
+               GO  TO  430-HENKOU-EXT
+           END-IF    
+      *
+           PERFORM 4204-SRYYM-CHK-SEC
            IF      SPA-ERRCD    NOT =   SPACE
                GO  TO  430-HENKOU-EXT
            END-IF    
@@ -1355,7 +1402,8 @@
       *
            INITIALIZE              SPA-RECE07-KEY
                                    SPA-RECE07-RECEKBN
-      *
+                                   SPA-RECE07-NYUGAIKBN
+                                   SPA-RECE07-SRYYM
       *
            INITIALIZE                  RECE07-REC
            IF      SPA-R01-RECEKBN     =   "0" OR  "1" OR  "2"
@@ -1370,14 +1418,21 @@
            END-IF            
            IF      SPA-R01-FILEKBN         =   "1"
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
+               MOVE    "1"                 TO  RECE07-SYOKBN
+               MOVE    "2"                 TO  RECE07-NYUGAIKBN
+               MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
            ELSE
-               MOVE    ZERO                TO  RECE07-SRYYM
+      *****    MOVE    ZERO                TO  RECE07-SRYYM
+               MOVE    "2"                 TO  RECE07-SYOKBN
+               MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
            END-IF
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
            IF      FLG-RECE07          =   ZERO
                MOVE    RECE07-KEY          TO  SPA-RECE07-KEY
                MOVE    RECE07-RECEKBN      TO  SPA-RECE07-RECEKBN
+               MOVE    RECE07-SRYYM        TO  SPA-RECE07-SRYYM
+               MOVE    RECE07-NYUGAIKBN    TO  SPA-RECE07-NYUGAIKBN
            END-IF
       *
            .
@@ -1577,6 +1632,8 @@
                                    TO  SHELLTBL-ARG6
            MOVE    SYS-2005-PREFPRGID (1)
                                    TO  SHELLTBL-ARG7
+           MOVE    SPA-NAI-TSRYYM (1)
+                                   TO  SHELLTBL-ARG8
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -1598,8 +1655,7 @@
       *
       *    画面移行用のパラメタ変更
       *
-      ***  MOVE    SPA-RECE07-KEY      TO  SPA-R01-RECE07-KEY
-      ***  MOVE    SPA-RECE07-RECEKBN  TO  SPA-R01-RECE07-RECEKBN
+           MOVE    SPA-NAI-TSRYYM (1)  TO  SPA-R01-SRYYM
       *
            MOVE    SPA-R01KYOUTU       TO  SPA-WORK       
       * 
@@ -1672,9 +1728,13 @@
                                                TO  R99-MSG
                        ELSE                    
                            MOVE    SPA-RECE07-KEY
-                                              TO   SPA-R01-RECE07-KEY
+                                          TO  SPA-R01-RECE07-KEY
                            MOVE    SPA-RECE07-RECEKBN
-                                              TO  SPA-R01-RECE07-RECEKBN
+                                          TO  SPA-R01-RECE07-RECEKBN
+                           MOVE    SPA-RECE07-SRYYM
+                                          TO  SPA-R01-RECE07-SRYYM
+                           MOVE    SPA-RECE07-NYUGAIKBN
+                                          TO  SPA-R01-RECE07-NYUGAIKBN
                        END-IF
                    ELSE
                        STRING  JOB-YOBI    DELIMITED  BY  SPACE
@@ -1958,6 +2018,10 @@
                WHEN    "0006"
                    MOVE    "対象の診療会計がありません"
                                                        TO  SPA-ERRMSG
+               WHEN    "0007"
+                   MOVE
+                       "改正前と改正後のレセブトは同時に処理できません"
+                                                       TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "対象のデータが入力してありません"
                                                        TO  SPA-ERRMSG
@@ -2082,14 +2146,16 @@
        900-RECE07-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+      *****MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+      *****    MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
@@ -2105,7 +2171,8 @@
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+      *****MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
