@@ -30,6 +30,7 @@
       *  01.00.01    MCC-藤原     02/05/15  DELALLの追加  
       *  01.00.02    NACL-藤原    02/08/30  ステップ件数の追加
       *  01.00.03    NACL-藤原    03/02/24  頁数のチェック
+      *  01.00.04    NACL-太田    03/08/11  途中経過更新処理を追加
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -118,6 +119,10 @@
                        PERFORM 120-JBE-SEC
                WHEN    "STS"
                        PERFORM 130-STS-SEC
+                       PERFORM 900-DBCOMMIT-SEC
+                       PERFORM 900-DBSTART-SEC
+               WHEN    "STM"
+                       PERFORM 180-STM-SEC
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
                WHEN    "STE"
@@ -233,7 +238,7 @@
            MOVE    ZERO                TO  WRK-JOB-STEPENDTIME
            ACCEPT  WRK-JOB-STEPSTARTTIME
                                        FROM TIME
-           MOVE    JOB-PGID            TO  WRK-JOB-PGID                            
+           MOVE    JOB-PGID            TO  WRK-JOB-PGID
            MOVE    JOB-SHELLMSG        TO  WRK-JOB-SHELLMSG
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -386,6 +391,47 @@
        150-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ステップ開始セット　処理
+      *****************************************************************
+       180-STM-SEC                 SECTION.
+      *
+      *    レコード存在チェック
+           MOVE    JOBKANRI-REC        TO  MCPDATA-REC
+           PERFORM 910-JOBKANRI-INV2-SEC
+           IF       FLG-JOBKANRI       NOT  =  ZERO
+               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+               GO    TO                180-STM-EXT
+           END-IF
+      *
+      *    レコード更新
+           IF      JOB-UPDCNT          NOT NUMERIC
+               MOVE    ZERO                TO   JOB-UPDCNT
+           END-IF
+           COMPUTE WRK-JOB-UPDCNT      =   WRK-JOB-UPDCNT  +
+                                           JOB-UPDCNT                            
+           MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
+           MOVE    JOB-PGID            TO  WRK-JOB-PGID
+           MOVE    JOB-SHELLMSG        TO  WRK-JOB-SHELLMSG
+           MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    PATH-TBL-JOBKANRI-UPD1
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC      
+      *
+           IF      MCP-RC     =   ZERO
+               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+           ELSE
+               DISPLAY "UPDATE ERR KEY = [" MCP-RC JOB-SHELLID "]"   
+               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+           END-IF
+      *
+           .
+       180-STM-EXT.
+           EXIT.
+      * 
       *****************************************************************
       *    ジョブ管理マスタ読込
       *****************************************************************
