@@ -136,7 +136,7 @@
                05  FLG-CHKEND                          PIC 9(01)
                                                        OCCURS  50.
            03  FLG-JIHI                                PIC 9(01).
-           03  FLG-JIHI-RSI-JBI                        PIC 9(01).
+           03  FLG-RSI-JBI                             PIC 9(01).
            03  FLG-TAISYO-HKN                          PIC 9(01).
            03  FLG-TAISYO-SRY                          PIC 9(01).
            03  FLG-LOOP-END                            PIC 9(01).
@@ -205,6 +205,7 @@
            03  IDX15                                   PIC 9(05). 
            03  IDX16                                   PIC 9(05). 
            03  IDX17                                   PIC 9(05). 
+           03  IDX18                                   PIC 9(05). 
            03  IDXA                                    PIC 9(05). 
            03  IDXE                                    PIC 9(05). 
            03  IDX-TSRYKA                              PIC 9(05).
@@ -277,6 +278,7 @@
                05  WRK-KNS-N                           PIC X(10).
                05  WRK-TIME-N                          PIC X(16).
            03  WRK-PTBYO-SRYYMD                        PIC X(08).
+           03  WRK-HKNCOMBI                            PIC X(04).
       *    
       *    TEST
            03  WRK-DATE                                PIC X(08).
@@ -1045,10 +1047,31 @@
            END-IF
       *
       *    入院会計保険組み合わせ退避処理
-           IF    ( ORCBSD01-CHKKBN (13)    NOT =   ZERO )
-            OR   ( ORCBSD01-CHKKBN (14)    NOT =   ZERO )
-               IF    ( ORCBSD01-NYUGAIKBN      =   "1" )
+           IF    ( ORCBSD01-NYUGAIKBN      =   "1" )
+               IF    ( ORCBSD01-CHKKBN (01)    NOT =   ZERO )
+                OR   ( ORCBSD01-CHKKBN (02)    NOT =   ZERO )
+                OR   ( ORCBSD01-CHKKBN (03)    NOT =   ZERO )
+                OR   ( ORCBSD01-CHKKBN (13)    NOT =   ZERO )
+                OR   ( ORCBSD01-CHKKBN (14)    NOT =   ZERO )
                    PERFORM 200111-NACCT-COMBI-TAIHI-SEC
+               END-IF
+      *
+               IF    ( ORCBSD01-CHKKBN (01)    NOT =   ZERO )
+                OR   ( ORCBSD01-CHKKBN (02)    NOT =   ZERO )
+                OR   ( ORCBSD01-CHKKBN (03)    NOT =   ZERO )
+                   PERFORM VARYING IDX18   FROM    1   BY  1
+                           UNTIL ( IDX18   >   TNACCT-HKNCOMBI-MAX )
+                       MOVE    TNACCT-HKNCOMBI-HKNCOMBI-X (IDX18)
+                                       TO  WRK-HKNCOMBI
+      *                主保険チェック
+                       PERFORM 200111-SYUHOKEN-CHK-SEC
+      *
+      *                保険ＩＤ退避ワーク編集チェック処理
+                       PERFORM 200111-THKNID-HEN-CHK-SEC
+      *
+      *                公費ＩＤ退避ワーク編集チェック処理
+                       PERFORM 200111-TKOHID-HEN-CHK-SEC
+                   END-PERFORM
                END-IF
            END-IF
       *
@@ -1105,28 +1128,14 @@
                    MOVE    ACCT-HKNCOMBI   TO  KEY-HKNCOMBI
       *
       *            主保険チェック
+                   MOVE    KEY-HKNCOMBI    TO  WRK-HKNCOMBI
                    PERFORM 200111-SYUHOKEN-CHK-SEC
       *
-      *            保険ＩＤ退避ワーク編集処理
-                   IF    ( FLG-JIHI-RSI-JBI    =   ZERO )
-                       IF    ( COMB-HKNID  NOT =   ZERO )
-                           IF    ( THKNID-MAX  <   CONST-THKNID-MAX )
-                               PERFORM 200111-THKNID-HEN-SEC
-                           END-IF
-                       END-IF
-                   END-IF
+      *            保険ＩＤ退避ワーク編集チェック処理
+                   PERFORM 200111-THKNID-HEN-CHK-SEC
       *
-      *            公費ＩＤ退避ワーク編集処理
-                   IF    ( FLG-JIHI-RSI-JBI    =   ZERO )
-                       PERFORM VARYING IDX3    FROM    1   BY  1
-                               UNTIL ( IDX3    >  4 )
-                               OR    ( COMB-KOHID (IDX3)
-                                               =   ZERO   )
-                           IF    ( TKOHID-MAX  <   CONST-TKOHID-MAX )
-                               PERFORM 200111-TKOHID-HEN-SEC
-                           END-IF
-                        END-PERFORM
-                   END-IF
+      *            公費ＩＤ退避ワーク編集チェック処理
+                   PERFORM 200111-TKOHID-HEN-CHK-SEC
       *
                END-IF
       *
@@ -1138,9 +1147,11 @@
                END-IF
       *
       *        診療科退避ワーク診療科編集処理
-               MOVE    ZERO                TO  IDX-TSRYKA
-               MOVE    ZERO                TO  FLG-TSRYKA-OVER
-               PERFORM 200111-TSRYKA-SRYKA-HEN-SEC
+               IF    ( FLG-TAISYO-HKN      =   1 )
+                   MOVE    ZERO            TO  IDX-TSRYKA
+                   MOVE    ZERO            TO  FLG-TSRYKA-OVER
+                   PERFORM 200111-TSRYKA-SRYKA-HEN-SEC
+               END-IF
       *
       *        診療行為情報退避処理
       *        以下のチェックの際に退避する
@@ -1190,21 +1201,20 @@
        200111-SYUHOKEN-CHK-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-JIHI
-                                           FLG-JIHI-RSI-JBI
+                                           FLG-RSI-JBI
                                            FLG-TAISYO-HKN
       *
       *    保険組合せ取得処理
-           PERFORM 200111-HKNCOMBI-GET-SEC
+           PERFORM 900-HKNCOMBI-KEY-SEL-SEC
       *
       *    自費・労災・自賠責の判断
            IF    ( COMB-HKNNUM (1:2)   =   "98" )
                MOVE        1           TO  FLG-JIHI
-                                           FLG-JIHI-RSI-JBI
            END-IF
       *
            IF    ( COMB-HKNNUM         =   "971"
                                        OR  "973" )
-               MOVE        1           TO  FLG-JIHI-RSI-JBI
+               MOVE        1           TO  FLG-RSI-JBI
            END-IF
       *
       *    処理対象とする保険か否かを判断（自費かどうか）
@@ -1228,32 +1238,21 @@
        200111-SYUHOKEN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    保険組合せ取得処理
+      *    保険ＩＤ退避ワーク編集チェック処理
       *****************************************************************
-       200111-HKNCOMBI-GET-SEC         SECTION.
+       200111-THKNID-HEN-CHK-SEC       SECTION.
       *
-           MOVE    ZERO                TO  FLG-HKNCOMBI
-      *
-      *    保険組み合わせ
-           INITIALIZE                      HKNCOMBI-REC
-           MOVE    DTCHK003-HOSPID     TO  COMB-HOSPID
-           MOVE    DTCHK003-PTID       TO  COMB-PTID
-           MOVE    KEY-HKNCOMBI        TO  COMB-HKNCOMBINUM
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
-           ELSE
-               MOVE    1               TO  FLG-HKNCOMBI
-               INITIALIZE                  HKNCOMBI-REC
+           IF    ( FLG-RSI-JBI         =   ZERO )
+             AND ( FLG-JIHI            =   ZERO )
+               IF    ( COMB-HKNID  NOT =   ZERO )
+                   IF    ( THKNID-MAX  <   CONST-THKNID-MAX )
+                       PERFORM 200111-THKNID-HEN-SEC
+                   END-IF
+               END-IF
            END-IF
       *
-           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           PERFORM 910-DBCLOSE-SEC
-      *
            .
-       200111-HKNCOMBI-GET-EXT.
+       200111-THKNID-HEN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    保険ＩＤ退避ワーク編集処理
@@ -1283,6 +1282,25 @@
       *
            .
        200111-THKNID-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    公費ＩＤ退避ワーク編集処理
+      *****************************************************************
+       200111-TKOHID-HEN-CHK-SEC       SECTION.
+      *
+           IF    ( FLG-RSI-JBI         =   ZERO )
+             AND ( FLG-JIHI            =   ZERO )
+               PERFORM VARYING IDX3    FROM    1   BY  1
+                       UNTIL ( IDX3    >  4 )
+                       OR    ( COMB-KOHID (IDX3)   =   ZERO   )
+                   IF    ( TKOHID-MAX  <   CONST-TKOHID-MAX )
+                       PERFORM 200111-TKOHID-HEN-SEC
+                   END-IF
+                END-PERFORM
+           END-IF
+      *
+           .
+       200111-TKOHID-HEN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    公費ＩＤ退避ワーク編集処理
@@ -1953,7 +1971,7 @@
                IF    ( ACCT-HKNCOMBI   NOT =   KEY-HKNCOMBI )
       *
                    MOVE    ACCT-HKNCOMBI   TO  KEY-HKNCOMBI
-      *
+                   MOVE    KEY-HKNCOMBI    TO  WRK-HKNCOMBI
                    PERFORM 200111-SYUHOKEN-CHK-SEC
                END-IF
       *
@@ -2417,7 +2435,11 @@
       *
       *        負担者番号・受給者番号抜け
                IF    ( FLG-CHKEND (3)          =   ZERO )
-                   PERFORM 200111-FTNJKYNUM-CHK-SEC
+      *
+      *            長期以外を対象とする
+                   IF    ( PTKOH-KOHNUM    NOT =   "972" )
+                        PERFORM 200111-FTNJKYNUM-CHK-SEC
+                   END-IF
                END-IF
       *
                IF    ( FLG-CHKEND (3)  =   1 )
@@ -5497,6 +5519,34 @@
            .
       *
        900-PTINF-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ検索処理(KEY)
+      *****************************************************************
+       900-HKNCOMBI-KEY-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKNCOMBI
+      *
+      *    保険組み合わせ
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    DTCHK003-HOSPID     TO  COMB-HOSPID
+           MOVE    DTCHK003-PTID       TO  COMB-PTID
+           MOVE    WRK-HKNCOMBI        TO  COMB-HKNCOMBINUM
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+               INITIALIZE                  HKNCOMBI-REC
+           END-IF
+      *
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       900-HKNCOMBI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    患者保険情報検索処理
