@@ -334,6 +334,8 @@
       *
            03  WRK-SEIKYU              PIC S9(07).
       *
+           03  WRK-SINDAN              PIC S9(07).
+      *
            03  WRK-DENPNUM         PIC 9(07).
            03  WRK-MEIBAN          PIC 9(03).
       *
@@ -3375,13 +3377,19 @@
       *                极清勒壳们今瘟礁纷
                        IF      LNK-WKSRY-SRYCD (IDX IDS)(1:5)
                                                        =   "09591"
-                           ADD     TNS-TEN         TO  LNK-S01-SINDAN
+                           COMPUTE WRK-SINDAN  =   TNS-TEN
+                                               *   LNK-WKSRY-ZAIKAIKEI
+                                                               (IDX)
+                           ADD     WRK-SINDAN      TO  LNK-S01-SINDAN
                                                       (LNK-SYUNOU2-MAX)
                        END-IF
       *                极清勒汤嘿今瘟礁纷
                        IF      LNK-WKSRY-SRYCD (IDX IDS)(1:5)
                                                        =   "09592"
-                           ADD     TNS-TEN         TO  LNK-S01-MEISAI
+                           COMPUTE WRK-SINDAN  =   TNS-TEN
+                                               *   LNK-WKSRY-ZAIKAIKEI
+                                                               (IDX)
+                           ADD     WRK-SINDAN      TO  LNK-S01-MEISAI
                                                       (LNK-SYUNOU2-MAX)
                        END-IF
                    END-IF
@@ -3390,7 +3398,10 @@
                           (LNK-WKSRY-SRYCD (IDX IDS)   =   "199000610")
                        ADD     TNS-TEN         TO  WRK-SYUTEN1
       *                极清勒闻蛙么碰缄碰爬眶
-                       ADD     TNS-TEN         TO  LNK-S01-RYOYO
+                       COMPUTE WRK-SINDAN      =   TNS-TEN
+                                               *   LNK-WKSRY-ZAIKAIKEI
+                                                               (IDX)
+                       ADD     WRK-SINDAN      TO  LNK-S01-RYOYO
                                                       (LNK-SYUNOU2-MAX)
                    END-IF
       *
