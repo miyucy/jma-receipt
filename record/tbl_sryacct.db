@@ -422,3 +422,16 @@ path	key16 	{
 	};
 };
 
+path	key17 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key17_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND     SRYKBN    =   :SRYKBN
+			ORDER  BY   SRYYM,
+                                    SRYKA
+		;
+	};
+};
+
