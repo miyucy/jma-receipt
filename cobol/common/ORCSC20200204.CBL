@@ -1581,12 +1581,14 @@
            END-PERFORM
            PERFORM VARYING     IDN1    FROM    1   BY  1
                    UNTIL       IDN1    >   31
-               IF    WRK-SEL (IDN1)    =   SPACE
+               IF     (WRK-SEL (IDN1)      =   SPACE )  AND
+                      (IDN1                <   31    )
                    IF      WRK-DAY (IDN1 + 1 )     NOT =   ZERO
                        MOVE    ","          TO  WRK-SEL (IDN1)
                    END-IF
                ELSE
-                   IF      WRK-DAY (IDN1 + 1 )     =   ZERO
+                   IF     (IDN1                    =   31    )  OR
+                          (WRK-DAY (IDN1 + 1 )     =   ZERO  )
                        MOVE    SPACE        TO  WRK-SEL (IDN1)
                    END-IF
                END-IF
