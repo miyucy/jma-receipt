@@ -2055,7 +2055,7 @@
                              UNTIL     IDY         >  31
                        IF  SPA-GMN-TDAY-41 (IDW IDY) = WRK-KUMINO (IDX)
                          IF  WRK-TEKSTYMD(1:6) = WRK-KUMIEDYMD(IDX)(1:6)
-                           MOVE    WRK-KUMIEDYMD    TO  WRK-TEKSTYMD
+                           MOVE    WRK-KUMIEDYMD (IDX)  TO  WRK-TEKSTYMD
                            IF  WRK-TEKSTYMD(7:2)  =  "31"
                              MOVE    "99"         TO  WRK-TEKSTYMD
                            ELSE
