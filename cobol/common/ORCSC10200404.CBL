@@ -3633,7 +3633,7 @@
                            MOVE    "0034"          TO  SPA-ERRCD
                        END-IF
                    ELSE
-                       IF      WRK-KEIYMDZEN   =   SPA-SRYYMD
+                       IF      WRK-KEIYMDZEN   <=   SPA-SRYYMD
                            IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
                              AND  (LNK-ORCSC-KEI-IDX       =   ZERO )
                                MOVE    IDX-Z       TO  LNK-ORCSC-KEI-IDX

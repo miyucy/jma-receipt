@@ -31,6 +31,7 @@
       *  01.00.02    MCC-藤原     01.05.07  日のニューメリックチェック追加
       *  01.00.03    NACL-藤原    02.10.21  漢字項目の空白を全角に修正
       *  01.00.04    NACL-多々納  03.04.16  END-IF,END-SERACH追加
+      *  01.00.05    NACL-多々納  04.09.22  海の日、敬老の日変更
       *****************************************************************
 001400 ENVIRONMENT         DIVISION.
 001500 CONFIGURATION       SECTION.
@@ -134,11 +135,11 @@
 011500       05  FILLER    PIC X(04)   VALUE   "大正".
 011600     03  FILLER.
       *---- (01.00.01) LINE MOD START ----------------------------*
-011700****   05  FILLER    PIC X(10)   VALUE   "1M18730101".
-011700       05  FILLER    PIC X(10)   VALUE   "1M18680101".
+      ****   05  FILLER    PIC X(10)   VALUE   "1M18730101".
+             05  FILLER    PIC X(10)   VALUE   "1M18680101".
       *---- (01.00.01) LINE MOD END   ----------------------------*
-011800       05  FILLER    PIC X(04)   VALUE   "明治".
-011900 01  GENGO-TBL-R     REDEFINES   GENGO-TBL.
+             05  FILLER    PIC X(04)   VALUE   "明治".
+       01  GENGO-TBL-R     REDEFINES   GENGO-TBL.
 012000     03  GENGO-TBL-R2   OCCURS   4   INDEXED  BY  IX1.
 012100       05  GENGO-T1              PIC 9(01).
 012200       05  GENGO-T2              PIC X(01).
@@ -164,27 +165,43 @@
 014200     03  SKJT-TBL    OCCURS      15  INDEXED  BY  IX2.
 014300       05  SKJT-T1               PIC 9(04).
 014400*
-014500*    ２０００年以降の祝日テーブル（固定日）
-014600 01  SKJT-TABLE-NEW.
-014700     03  FILLER      PIC X(12)   VALUE "010102110429".
-014800     03  FILLER      PIC X(12)   VALUE "050305040505".
-014900     03  FILLER      PIC X(12)   VALUE "072009151103".
-015000     03  FILLER      PIC X(12)   VALUE "112312230000".
-015100 01  SKJT-TABLE-RNEW  REDEFINES  SKJT-TABLE-NEW.
-015200     03  SKJT-TBLNEW  OCCURS     12  INDEXED  BY IX6.
-015300       05  SKJT-NEW              PIC 9(04).
-015400*
+      *    ２０００年以降の祝日テーブル（固定日）
+       01  SKJT-TABLE-NEW.
+           03  FILLER      PIC X(12)   VALUE "010102110429".
+           03  FILLER      PIC X(12)   VALUE "050305040505".
+           03  FILLER      PIC X(12)   VALUE "072009151103".
+           03  FILLER      PIC X(12)   VALUE "112312230000".
+       01  SKJT-TABLE-RNEW  REDEFINES  SKJT-TABLE-NEW.
+           03  SKJT-TBLNEW  OCCURS     12  INDEXED  BY IX6.
+             05  SKJT-NEW              PIC 9(04).
+      *
+      *    ２００３年以降の祝日テーブル（固定日）
+      *    (7/20,9/15 を第３月曜へ）
+       01  SKJT-TABLE-NEW2.
+           03  FILLER      PIC X(12)   VALUE "010102110429".
+           03  FILLER      PIC X(12)   VALUE "050305040505".
+           03  FILLER      PIC X(12)   VALUE "110311231223".
+       01  SKJT-TABLE-RNEW2  REDEFINES  SKJT-TABLE-NEW2.
+           03  SKJT-TBLNEW2  OCCURS     9   INDEXED  BY IX7.
+             05  SKJT-NEW2              PIC 9(04).
+      *
 015500*    祝日テーブル２（春分の日・秋分の日）
 015600 01  SKJT-TABLE2.
 015700     03  SKJT-TBL2   OCCURS      2   INDEXED  BY  IX3.
 015800       05  SKJT-M                PIC 9(02).
 015900       05  SKJT-D                PIC 9(02).
-016000*
-016100*    祝日テーブル３（成人の日・体育の日）
-016200 01  SKJT-TABLE3.
-016300     03  SKJT-TBL3   OCCURS      2   INDEXED  BY  IX5.
-016400       05  SKJT-M3               PIC 9(02).
-016500       05  SKJT-D3               PIC 9(02).
+      *
+      *    祝日テーブル３（成人の日・体育の日）
+       01  SKJT-TABLE3.
+           03  SKJT-TBL3   OCCURS      2   INDEXED  BY  IX5.
+             05  SKJT-M3               PIC 9(02).
+             05  SKJT-D3               PIC 9(02).
+      *
+      *    祝日テーブル４（海日・敬老の日）
+       01  SKJT-TABLE4.
+           03  SKJT-TBL4   OCCURS      2   INDEXED  BY  IX8.
+             05  SKJT-M4               PIC 9(02).
+             05  SKJT-D4               PIC 9(02).
 016600*
 016700*    年間祝日管理テーブル  ( 99 => サンシュツ ニヨリ セッテイ )
 016800 01  SKJT-KNR-TBL.
@@ -343,6 +360,7 @@
 032000 01  IDX-AREA.
 032100     03  I                       PIC  9(02)  VALUE  ZERO.
 032200     03  J                       PIC  9(02)  VALUE  ZERO.
+           03  IDX                     PIC  9(04).
 032300/
 032400***
 032500     COPY  "CPORCSDAY.INC".
@@ -373,50 +391,54 @@
 034700                                 WK-YYMMDD
 034800                                 WK-FLG.
 034900*
-035000     IF  LNK-DAYX-IRAI  =  "11"  OR  "12"
-035100         MOVE     LNK-DAYX-AREA      TO  LNK-DAY1-AREA
-035200         PERFORM  DTCONV-RTN
-035300         MOVE     LNK-DAY1-AREA      TO  LNK-DAYX-AREA
-035400         GO  TO     MAIN-EXT
-           END-IF.
-035500     IF  LNK-DAYX-IRAI  =  "21"  OR  "22"
-035600         MOVE     LNK-DAYX-AREA      TO  LNK-DAY2-AREA
-035700         PERFORM  DTEDIT-RTN
-035800         MOVE     LNK-DAY2-AREA      TO  LNK-DAYX-AREA
-035900         GO  TO     MAIN-EXT
-           END-IF.
-036000     IF  LNK-DAYX-IRAI  =  "31"  OR  "32"
-036100         MOVE     LNK-DAYX-AREA      TO  LNK-DAY3-AREA
-036200         PERFORM  DTYOUB-RTN
-036300         MOVE     LNK-DAY3-AREA      TO  LNK-DAYX-AREA
-036400         GO  TO     MAIN-EXT
-           END-IF.
-036500     IF  LNK-DAYX-IRAI  =  "41"  OR  "42"
-036600         MOVE     LNK-DAYX-AREA      TO  LNK-DAY4-AREA
-036700         PERFORM  DTSKJT-RTN
-036800         MOVE     LNK-DAY4-AREA      TO  LNK-DAYX-AREA
-036900         GO  TO     MAIN-EXT
-           END-IF.
-037000     IF  LNK-DAYX-IRAI  =  "51"  OR  "52"
-037100         MOVE     LNK-DAYX-AREA      TO  LNK-DAY5-AREA
-037200         PERFORM  DTKIKN-RTN
-037300         MOVE     LNK-DAY5-AREA      TO  LNK-DAYX-AREA
-037400         GO  TO     MAIN-EXT
-           END-IF.
-037500     IF  LNK-DAYX-IRAI  =  "61"  OR  "62"
-037600         MOVE     LNK-DAYX-AREA      TO  LNK-DAY6-AREA
-037700         PERFORM  DTPLMN-RTN
-037800         MOVE     LNK-DAY6-AREA      TO  LNK-DAYX-AREA
-037900         GO  TO     MAIN-EXT
-           END-IF.
-038000     IF  LNK-DAYX-IRAI  =  "71"  OR  "72"
-038100         MOVE     LNK-DAYX-AREA      TO  LNK-DAY7-AREA
-038200         PERFORM  DTMEND-RTN
-038300         MOVE     LNK-DAY7-AREA      TO  LNK-DAYX-AREA
-038400         GO  TO     MAIN-EXT
-           END-IF.
-038500     MOVE     30             TO  STS-DAY-RC1.
-038600     MOVE     01             TO  STS-DAY-RC2.
+           EVALUATE    LNK-DAYX-IRAI
+               WHEN    "11"
+               WHEN    "12"
+      *            暦変換
+                   MOVE     LNK-DAYX-AREA      TO  LNK-DAY1-AREA
+                   PERFORM  DTCONV-RTN
+                   MOVE     LNK-DAY1-AREA      TO  LNK-DAYX-AREA
+               WHEN    "21"
+               WHEN    "22"
+      *            日付編集
+                   MOVE     LNK-DAYX-AREA      TO  LNK-DAY2-AREA
+                   PERFORM  DTEDIT-RTN
+                   MOVE     LNK-DAY2-AREA      TO  LNK-DAYX-AREA
+               WHEN    "31"
+               WHEN    "32"
+      *            曜日算出
+                   MOVE     LNK-DAYX-AREA      TO  LNK-DAY3-AREA
+                   PERFORM  DTYOUB-RTN
+                   MOVE     LNK-DAY3-AREA      TO  LNK-DAYX-AREA
+               WHEN    "41"
+               WHEN    "42"
+      *            祝日算出
+                   MOVE     LNK-DAYX-AREA      TO  LNK-DAY4-AREA
+                   PERFORM  DTSKJT-RTN
+                   MOVE     LNK-DAY4-AREA      TO  LNK-DAYX-AREA
+               WHEN    "51"
+               WHEN    "52"
+      *            期間日数計算
+                   MOVE     LNK-DAYX-AREA      TO  LNK-DAY5-AREA
+                   PERFORM  DTKIKN-RTN
+                   MOVE     LNK-DAY5-AREA      TO  LNK-DAYX-AREA
+               WHEN    "61"
+               WHEN    "62"
+      *            該当日算出
+                   MOVE     LNK-DAYX-AREA      TO  LNK-DAY6-AREA
+                   PERFORM  DTPLMN-RTN
+                   MOVE     LNK-DAY6-AREA      TO  LNK-DAYX-AREA
+               WHEN    "71"
+               WHEN    "72"
+      *            月末日算出
+                   MOVE     LNK-DAYX-AREA      TO  LNK-DAY7-AREA
+                   PERFORM  DTMEND-RTN
+                   MOVE     LNK-DAY7-AREA      TO  LNK-DAYX-AREA
+               WHEN    OTHER
+                   MOVE     30             TO  STS-DAY-RC1
+                   MOVE     01             TO  STS-DAY-RC2
+           END-EVALUATE
+           .
 038700 MAIN-EXT.
 038800     EXIT PROGRAM
 038900     STOP RUN.
@@ -658,6 +680,10 @@
 061000     IF  WK-MM   =   1   OR   10
 061100         PERFORM SKJT-KEISAN2-RTN
 061200     END-IF.
+      *    祝日（海の日，敬老の日）算出
+           IF  WK-MM   =   7   OR   9
+               PERFORM SKJT-KEISAN3-SEC
+           END-IF
 061300*
 061400     PERFORM     VARYING     I       FROM  1  BY  1
 061500                   UNTIL     I       >     5
@@ -1227,6 +1253,8 @@
 114100     PERFORM SKJT-KEISAN1-RTN.
 114200*    祝日（成人の日，体育の日）算出
 114300     PERFORM SKJT-KEISAN2-RTN.
+      *    祝日（海の日，敬老の日）算出
+           PERFORM SKJT-KEISAN3-SEC
 114400*
 114500     MOVE    ZERO          TO    YSK-SYUKJTS   YSK-KYUJTS.
 114600     MOVE    WK-YYMMDD     TO    WK-YOUB.
@@ -1274,58 +1302,76 @@
 118300******************************************************************
 118400 TABLE-SRH-RTN       SECTION.
 118500 TABLE-SRH-000.
-118600     IF    WK-SYY  <  2000
-118700         CONTINUE
-118800     ELSE
-118900         GO  TO  TABLE-SRH-100
-119000     END-IF.
-119100*
-119200     SET     IX2    TO     1
-119300     SEARCH  SKJT-TBL     VARYING  IX2
-119400       AT  END
-119500         MOVE    ZERO      TO    YSK-SYUKJTS
-119600       WHEN
-119700         SKJT-T1 (IX2)  =  WYOUB-MMDD
-119800         MOVE    1         TO    YSK-SYUKJTS
-           END-SEARCH.
-119900       GO  TO  TABLE-SRH-200.
-120000*
-120100 TABLE-SRH-100.
-120200     SET IX6   TO  1.
-120300     SEARCH  SKJT-TBLNEW   VARYING   IX6
-120400       AT  END
-120500         MOVE    ZERO      TO  YSK-SYUKJTS
-120600       WHEN
-120700         SKJT-NEW(IX6)     =   WYOUB-MMDD
-120800         MOVE    1         TO  YSK-SYUKJTS
-           END-SEARCH.
-120900*
-121000 TABLE-SRH-200.
-121100     IF  YSK-SYUKJTS  =  ZERO
-121200         SET     IX3    TO     1
-121300         SEARCH  SKJT-TBL2     VARYING  IX3
-121400           AT  END
-121500             MOVE   ZERO       TO    YSK-SYUKJTS
-121600           WHEN
-121700             SKJT-TBL2 (IX3)  =  WYOUB-MMDD
-121800             MOVE    1         TO    YSK-SYUKJTS
+      *
+           EVALUATE    TRUE
+               WHEN    WK-SYY  <  2000
+                   SET    IX2    TO     1
+                   SEARCH  SKJT-TBL     VARYING  IX2
+                     AT  END
+                         MOVE    ZERO      TO    YSK-SYUKJTS
+                     WHEN
+                         SKJT-T1 (IX2)  =  WYOUB-MMDD
+                         MOVE    1         TO    YSK-SYUKJTS
+               END-SEARCH
+      *
+               WHEN   (WK-SYY  >= 2000   )  AND
+                      (WK-SYY  <  2003   )
+                   SET    IX6    TO     1
+                   SEARCH  SKJT-TBLNEW   VARYING   IX6
+                     AT  END
+                         MOVE    ZERO      TO    YSK-SYUKJTS
+                     WHEN
+                         SKJT-NEW(IX6)     =   WYOUB-MMDD
+                         MOVE    1         TO    YSK-SYUKJTS
+               END-SEARCH
+      *
+               WHEN   (WK-SYY  >= 2003   )
+                   SET    IX7    TO     1
+                   SEARCH  SKJT-TBLNEW2  VARYING   IX7
+                     AT  END
+                         MOVE    ZERO      TO    YSK-SYUKJTS
+                     WHEN
+                         SKJT-NEW2(IX7)    =   WYOUB-MMDD
+                         MOVE    1         TO    YSK-SYUKJTS
+               END-SEARCH
+           END-EVALUATE
+      *
+      *    春分の日・秋分の日
+           IF  YSK-SYUKJTS  =  ZERO
+               SET     IX3    TO     1
+               SEARCH  SKJT-TBL2     VARYING  IX3
+                 AT  END
+                   MOVE   ZERO       TO    YSK-SYUKJTS
+                 WHEN
+                   SKJT-TBL2 (IX3)  =  WYOUB-MMDD
+                   MOVE    1         TO    YSK-SYUKJTS
                END-SEARCH
            END-IF.
-121900*
-122000     IF    WK-SYY  <  2000
-122100         GO  TO  TABLE-SRH-EXT
-122200     END-IF.
-122300**
-122400     IF  YSK-SYUKJTS  =  ZERO
-122500         SET     IX5    TO     1
-122600         SEARCH  SKJT-TBL3     VARYING  IX5
-122700           AT  END
-122800             MOVE   ZERO       TO    YSK-SYUKJTS
-122900           WHEN
-123000             SKJT-TBL3 (IX5)  =  WYOUB-MMDD
-123100             MOVE    1         TO    YSK-SYUKJTS
-123200          END-SEARCH
-123300     END-IF.
+      *    成人の日・体育の日
+           IF  (YSK-SYUKJTS  =   ZERO ) AND
+               (WK-SYY       >=  2000 )
+               SET     IX5    TO     1
+               SEARCH  SKJT-TBL3     VARYING  IX5
+                 AT  END
+                   MOVE   ZERO       TO    YSK-SYUKJTS
+                 WHEN
+                   SKJT-TBL3 (IX5)  =  WYOUB-MMDD
+                   MOVE    1         TO    YSK-SYUKJTS
+                END-SEARCH
+           END-IF.
+      *    海の日・敬老の日
+           IF  (YSK-SYUKJTS  =   ZERO ) AND
+               (WK-SYY       >=  2003 )
+               SET     IX8    TO     1
+               SEARCH  SKJT-TBL4     VARYING  IX8
+                 AT  END
+                   MOVE   ZERO       TO    YSK-SYUKJTS
+                 WHEN
+                   SKJT-TBL4 (IX8)  =  WYOUB-MMDD
+                   MOVE    1         TO    YSK-SYUKJTS
+                END-SEARCH
+           END-IF.
+           .
 123400**
 123500 TABLE-SRH-EXT.
 123600     EXIT.
@@ -1615,6 +1661,57 @@
 148800     END-IF.
 148900 SKJT-KEISAN2-EXT.
 149000     EXIT.
+143700******************************************************************
+143800*    海の日  敬老の日を算出する                                *
+143900******************************************************************
+       SKJT-KEISAN3-SEC  SECTION.
+           SET     IX8              TO  1.
+           MOVE    WK-SYY           TO  WK-SKJTYY
+           MOVE    1                TO  WK-SKJTDD
+           PERFORM VARYING  IDX     FROM    1   BY  1
+                   UNTIL    IDX     >   2
+               IF      IDX          =   1
+                   MOVE    7            TO  WK-SKJTMM
+               ELSE
+                   MOVE    9            TO  WK-SKJTMM
+               END-IF
+      *
+               SET     IX8              TO  IDX
+               IF    WK-SKJTMM      <   3
+                   COMPUTE  WK-YSK-YYYY     =   WK-SKJTYY   -   1
+                   COMPUTE  WK-YSK-MM       =   WK-SKJTMM   +   10
+               ELSE
+                   MOVE    WK-SKJTYY            TO  WK-YSK-YYYY
+                   COMPUTE WK-YSK-MM        =   WK-SKJTMM   -   2
+               END-IF
+               COMPUTE WK-SZ   =  2.6 * WK-YSK-MM  -  0.2
+               COMPUTE WK-SY   =  (WK-YSK-YYYY -  1900)  *  0.25
+               COMPUTE WK-SY   =  WK-SKJTDD  +  WK-SZ  +  WK-SY  +
+                                  (WK-YSK-YYYY    -   1934)
+               DIVIDE  7  INTO  WK-SY  GIVING  WK-DUMMYN
+                          REMAINDER  YSK-YOUBI2
+      *
+               MOVE    WK-SKJTMM          TO  SKJT-M4(IX8)
+               EVALUATE    YSK-YOUBI2
+                   WHEN    0       MOVE  16   TO  SKJT-D4(IX8)
+                   WHEN    1       MOVE  15   TO  SKJT-D4(IX8)
+                   WHEN    2       MOVE  21   TO  SKJT-D4(IX8)
+                   WHEN    3       MOVE  20   TO  SKJT-D4(IX8)
+                   WHEN    4       MOVE  19   TO  SKJT-D4(IX8)
+                   WHEN    5       MOVE  18   TO  SKJT-D4(IX8)
+                   WHEN    6       MOVE  17   TO  SKJT-D4(IX8)
+               END-EVALUATE
+      *
+               IF      WK-SKJTMM  =   7
+                   MOVE    SKJT-D4(IX8)    TO  SKJT-KNRDD (7, 1)
+               END-IF
+               IF      WK-SKJTMM  =   9
+                   MOVE    SKJT-D4(IX8)    TO  SKJT-KNRDD (9, 1)
+               END-IF
+           END-PERFORM
+           .
+       SKJT-KEISAN3-EXT.
+           EXIT.
 149100******************************************************************
 149200*        数字変換処理
 149300******************************************************************
