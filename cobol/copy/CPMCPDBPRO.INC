@@ -223,6 +223,7 @@
       *                                     PTKOHFTN-UPD1削除
       *  01.01.54    NACL-小豆沢  03/04/04  SRYACCT-KEY18追加
       *                                     SRYACCT-KEY19追加
+      *  01.01.55    NACL-藤原    03/04/09  SEIKYU-KEY19追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -234,11 +235,12 @@
       *
            EVALUATE    MCP-FUNC
              WHEN     'DBOPEN'
-             WHEN     'PUTWINDOW'
              WHEN     'DBDISCONNECT'
              WHEN     'DBCLOSE'
              WHEN     'DBSTART'
              WHEN     'DBCOMMIT'
+               MOVE    LOW-VALUE       TO  MCP-PATH
+             WHEN     'PUTWINDOW'
                CONTINUE
              WHEN      OTHER
                PERFORM 200-SQL
@@ -2015,6 +2017,9 @@
                                        TO  WRK-PATH
                 WHEN    ANY             ALSO   "SEIKYU-KEY18"
                    MOVE    PATH-TBL-SEIKYU-KEY18
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY19"
+                   MOVE    PATH-TBL-SEIKYU-KEY19
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SEIKYU-ALL"

@@ -777,6 +777,18 @@ path	key18	{
 	};
 };
 
+path	key19	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key19_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE   HOSPID      =   :HOSPID
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+		;
+	};
+};
+
 path	all	{
 	DBSELECT	{
 		DECLARE tbl_seikyu_all_csr CURSOR FOR
