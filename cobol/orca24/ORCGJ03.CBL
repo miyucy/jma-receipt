@@ -1363,6 +1363,7 @@
                    PERFORM VARYING     TBL-IDX3    FROM    1   BY  1
                            UNTIL       TBL-IDX3    >   31
                        IF      TBL-GAIHAKU (TBL-IDX3)  =   1
+                                                       OR  2
                                                        OR  3
                            MOVE    ZERO            TO  WRK-TBL-KAISU
                                                    (9 TBL-IDX1 TBL-IDX3)
