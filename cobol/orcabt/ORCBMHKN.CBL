@@ -585,25 +585,6 @@
                IF      CNT-IN (4:3)         =   ZERO
                    DISPLAY "***(ORCBMHKN)*** CNT-IN [" CNT-IN "]"
                END-IF
-      *        ５０件毎にコミットする
-               ADD     1               TO  CNT-IN-SEL
-               IF     CNT-IN-SEL       =   50
-      *         ステップ管理終了処理
-                    MOVE    "STE"           TO  SJOBKANRI-MODE
-                    INITIALIZE                  JOBKANRI-REC
-                    MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-                    MOVE    WRK-PARA-SHELLID
-                                            TO  JOB-SHELLID
-                    MOVE    50              TO  JOB-UPDCNT
-                    CALL    "ORCSJOB"       USING
-                                            ORCSJOBKANRIAREA
-                                            JOBKANRI-REC
-      *
-                   PERFORM 9001-DBDBCOMMIT-SEC
-                   PERFORM 1001-DBSTART-SEC
-                   ADD     1                   TO  CNT-COMMIT
-                   MOVE    1                   TO  CNT-IN-SEL
-               END-IF
       *
                IF     (WRK-PTID    NOT =   ZERO )  AND
                       (PTHKN-PTID  NOT =   WRK-PTID)
@@ -991,6 +972,25 @@
                    PERFORM 2220-ERRLST-OUT-SEC
                END-IF
            END-IF
+      *    ５０件毎にコミットする
+           ADD     1               TO  CNT-IN-SEL
+           IF     CNT-IN-SEL       =   50
+      *     ステップ管理終了処理
+                MOVE    "STE"           TO  SJOBKANRI-MODE
+                INITIALIZE                  JOBKANRI-REC
+                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                MOVE    WRK-PARA-SHELLID
+                                            TO  JOB-SHELLID
+                MOVE    50              TO  JOB-UPDCNT
+                CALL    "ORCSJOB"       USING
+                                        ORCSJOBKANRIAREA
+                                        JOBKANRI-REC
+      *
+               PERFORM 9001-DBDBCOMMIT-SEC
+               PERFORM 1001-DBSTART-SEC
+               ADD     1                   TO  CNT-COMMIT
+               MOVE    1                   TO  CNT-IN-SEL
+           END-IF
       *
            .
        2201-HKNCOMBI-UPD-EXT.
@@ -1188,8 +1188,12 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           COMPUTE CNT-HEN         =   CNT-IN
-                                   -  (CNT-COMMIT   *   50 )
+           IF      CNT-COMMIT      =   ZERO
+               MOVE    CNT-UPD         TO  CNT-HEN
+           ELSE
+               COMPUTE CNT-HEN         =   CNT-UPD
+                                       -  (CNT-COMMIT   *   50 )
+           END-IF
       *****MOVE    CNT-UPD         TO  JOB-UPDCNT
            MOVE    CNT-HEN         TO  JOB-UPDCNT
            CALL    "ORCSJOB"           USING
