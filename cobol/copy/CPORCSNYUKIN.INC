@@ -30,6 +30,8 @@
       *    患者ＩＤ（必須）
            03  LNK-SCNYUKIN-PTID             PIC 9(10).
       *    入外区分
+      *      １：入院
+      *      ２：外来
            03  LNK-SCNYUKIN-NYUGAIKBN        PIC X(01).
       *    処理区分（必須）
       *      １：請求確認画面より処理
