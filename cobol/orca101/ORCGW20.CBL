@@ -30,6 +30,7 @@
       * 00.00.01     NACL−太田   02/11/29  有効開始日を基準にシス管の
       *                                     情報を取得するよう修正
       *                                     病棟科を最大９９件に変更
+      * 00.00.02     NACL−太田   03/01/29  有効開始日のチェック追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -3054,6 +3055,14 @@
                GO  TO  4100-YUKOSTYMD-CHK-EXT
            END-IF
       *
+           IF    ( SPA-NAI-W20-YUKOSTYMD   <   "20020401" )
+               MOVE    "0003"      TO  SPA-ERRCD
+               MOVE    "H14. 4. 1" TO  SPA-GMN-W20-YUKOSTYMD
+               MOVE    "20020401"  TO  SPA-NAI-W20-YUKOSTYMD
+               MOVE    16          TO  SPA-GMN-W20-CUR
+               GO  TO  4100-YUKOSTYMD-CHK-EXT
+           END-IF
+      *
            IF    ( SPA-NAI-W20-YUKOSTYMD
                                NOT =   SPA-NAI-W20-YUKOSTYMD-MOT )
       *        システム管理情報再設定
@@ -5080,6 +5089,13 @@
            WHEN    "0002"
                MOVE    "全角文字でのみ入力してください"
                                        TO  SPA-ERRMSG
+           WHEN    "0003"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "有効開始日は平成１４年４月１日以降にして"
+                       "ください"
+                       DELIMITED   BY  SIZE
+               INTO    SPA-ERRMSG
+               END-STRING
            WHEN    "1001"
                MOVE    "追加可能最大件数に達しました"
                                        TO  SPA-ERRMSG

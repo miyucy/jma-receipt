@@ -229,6 +229,20 @@ path	key14		{
 	};
 };
 
+
+path	key15		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key15_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND		NYUINYMD	<=	:NYUINYMD
+			AND		TAIINYMD	>=	:TAIINYMD
+			AND		JTIKBN		<>	'5'
+		;
+	};
+};
+
 path	all	{
 	DBSELECT	{
 		DECLARE tbl_ptnyuinrrk_all_csr CURSOR FOR

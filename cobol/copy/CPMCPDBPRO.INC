@@ -189,6 +189,7 @@
       *                                     PTTEIKIRRK-DEL1,DEL2追加
       *  01.01.32    NACL-太田    03/01/23  SYUNOU-DEL4,5,6削除
       *  01.01.32    NACL-太田    03/01/23  SYUNOU-KEY10追加
+      *  01.01.32    NACL-太田    03/01/29  PTNYUINRRK-KEY15追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2165,6 +2166,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY14"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY14
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY15"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY15
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTAINFUKA-KEY"
                    MOVE    PATH-TBL-PTTAINFUKA-KEY

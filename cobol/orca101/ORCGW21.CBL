@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 00.00.01     NACL−太田   02/11/29  有効開始日を基準にシス管の
       *                                     情報を取得するよう修正
+      * 00.00.02     NACL−太田   03/01/29  有効開始日のチェック追加
+      *                                     入院中患者チェック追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -63,6 +65,7 @@
            03  FLG-UPD-KBN                         PIC 9(01).
            03  FLG-TENSU                           PIC 9(01).
            03  FLG-DBRC                            PIC 9(01).
+           03  FLG-PTNYUINRRK                      PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -163,6 +166,9 @@
            COPY  "CPSK5109.INC".
       *    点数マスタ
            COPY  "CPTENSU.INC".
+      *    患者入院履歴
+       01  PTNYUINRRK-REC.
+           COPY  "CPPTNYUINRRK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1607,6 +1613,32 @@
                GO  TO  420-SAKUJO-EXT
            END-IF
       *
+      *    入院中の患者が存在しないかチェック
+           MOVE    ZERO            TO  FLG-PTNYUINRRK
+           INITIALIZE              PTNYUINRRK-REC
+           MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-NAI-W21-YUKOEDYMD-OLD
+                                   TO  PTNYUINRRK-NYUINYMD
+           MOVE    SPA-NAI-W21-YUKOSTYMD-OLD
+                                   TO  PTNYUINRRK-TAIINYMD
+           MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+           MOVE    "PTNYUINRRK-KEY15"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    NOT =   ZERO )
+               MOVE    1           TO  FLG-PTNYUINRRK
+           END-IF
+      *
+      *    病棟情報クローズ
+           MOVE    "PTNYUINRRK-KEY15"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-PTNYUINRRK  =   ZERO )
+               MOVE    "1108"      TO  SPA-ERRCD
+               GO  TO  420-SAKUJO-EXT
+           END-IF
+      *
            MOVE    "2001"          TO  SPA-WIDCD
       *
            .
@@ -2436,6 +2468,14 @@
                GO  TO  4100-YUKOSTYMD-CHK-EXT
            END-IF
       *
+           IF    ( SPA-NAI-W21-YUKOSTYMD   <   "20020401" )
+               MOVE    "0003"      TO  SPA-ERRCD
+               MOVE    "H14. 4. 1" TO  SPA-GMN-W21-YUKOSTYMD
+               MOVE    "20020401"  TO  SPA-NAI-W21-YUKOSTYMD
+               MOVE    11          TO  SPA-GMN-W21-CUR
+               GO  TO  4100-YUKOSTYMD-CHK-EXT
+           END-IF
+      *
            IF    ( SPA-NAI-W21-YUKOSTYMD
                                NOT =   SPA-NAI-W21-YUKOSTYMD-MOT )
       *        システム管理情報再設定
@@ -3250,6 +3290,13 @@
            WHEN    "0002"
                MOVE    "半角文字でのみ入力してください"
                                        TO  SPA-ERRMSG
+           WHEN    "0003"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "有効開始日は平成１４年４月１日以降にして"
+                       "ください"
+                       DELIMITED   BY  SIZE
+               INTO    SPA-ERRMSG
+               END-STRING
            WHEN    "1001"
                MOVE    "追加可能最大件数に達しました"
                                        TO  SPA-ERRMSG
@@ -3301,6 +3348,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "1107"
                MOVE    "有効期間の開始日と終了日は同時に変更できません"
+                                       TO  SPA-ERRMSG
+           WHEN    "1108"
+               MOVE    "入院中の患者が存在するため削除できません"
                                        TO  SPA-ERRMSG
            WHEN    "1201"
                MOVE    "更新できませんでした"

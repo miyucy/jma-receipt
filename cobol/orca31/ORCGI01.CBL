@@ -3223,6 +3223,20 @@
                MOVE    SPA-NAI-I01-IDOYMD
                                    TO  WRK-KJNYMD
                PERFORM 4101-JYURRK-SEL-SEC
+      *
+      *        病室番号チェック
+               MOVE    SPA-NAI-I01-IDOYMD
+                                   TO  WRK-KIHON-KJNYMD
+               PERFORM 4101-BRMNUM-CHK-SEC
+               MOVE    SPA-GMN-I01-BRMNUM
+                                       TO  SPA-NAI-I01-BRMNUM-MAE
+               MOVE    SPA-ERRCD       TO  SPA-NAI-I01-BRMNUM-ERR
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4101-IDOYMD-CHK-EXT
+               END-IF
+      *
+               MOVE    4               TO   SPA-GMN-I01-CUR
+      *
            END-IF
       
       *
@@ -3282,6 +3296,20 @@
                MOVE    SPA-NAI-I01-NYUINYMD
                                    TO  WRK-KJNYMD
                PERFORM 4101-JYURRK-SEL-SEC
+      *
+               MOVE    SPA-NAI-I01-NYUINYMD
+                                   TO  WRK-KIHON-KJNYMD
+      *        病室番号チェック
+               PERFORM 4101-BRMNUM-CHK-SEC
+               MOVE    SPA-GMN-I01-BRMNUM
+                                       TO  SPA-NAI-I01-BRMNUM-MAE
+               MOVE    SPA-ERRCD       TO  SPA-NAI-I01-BRMNUM-ERR
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4101-NYUINYMD-CHK-EXT
+               END-IF
+      *
+               MOVE    8              TO   SPA-GMN-I01-CUR
+      *
            END-IF
       *
            .
