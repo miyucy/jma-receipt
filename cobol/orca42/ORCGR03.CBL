@@ -1600,13 +1600,15 @@
                                            =   ZERO
                        MOVE    "0"             TO  SHELLTBL-ARG12
                    ELSE
-                       MOVE    "1"             TO  SHELLTBL-ARG12
+                       MOVE    SYS-2005-SYARECEKBN
+                                               TO  SHELLTBL-ARG12
                    END-IF
                    IF      SYS-2005-KKHRECEKBN
                                            =   ZERO
                        MOVE    "0"             TO  SHELLTBL-ARG13
                    ELSE
-                       MOVE    "1"             TO  SHELLTBL-ARG13
+                       MOVE    SYS-2005-KKHRECEKBN
+                                               TO  SHELLTBL-ARG13
                    END-IF
                    MOVE    "00"            TO  SHELLTBL-ARG14
                    MOVE    SHELLTBL        TO  MCPDATA-REC

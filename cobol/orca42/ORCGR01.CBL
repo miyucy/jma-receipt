@@ -1877,12 +1877,12 @@
                                    NOT =  "S"
                    MOVE  "NOPG"    TO  SYS-2005-PREFPRGID (2)
            END-IF
-                   IF      SYS-2005-KKHRECEKBN =   SPACE
-                       MOVE    ZERO            TO  SYS-2005-KKHRECEKBN      
-                   END-IF
-                   IF      SYS-2005-SYARECEKBN =   SPACE
-                       MOVE    ZERO            TO  SYS-2005-SYARECEKBN      
-                   END-IF
+           IF      SYS-2005-KKHRECEKBN =   SPACE
+               MOVE    ZERO            TO  SYS-2005-KKHRECEKBN      
+           END-IF
+           IF      SYS-2005-SYARECEKBN =   SPACE
+               MOVE    ZERO            TO  SYS-2005-SYARECEKBN      
+           END-IF
       *
       *    作成日・時間の設定
            ACCEPT  SYS-YMD         FROM    DATE
@@ -1946,13 +1946,15 @@
                                    =   ZERO
                MOVE    "0"             TO  SHELLTBL-ARG12
            ELSE
-               MOVE    "1"             TO  SHELLTBL-ARG12
+               MOVE    SYS-2005-SYARECEKBN
+                                       TO  SHELLTBL-ARG12
            END-IF
            IF      SYS-2005-KKHRECEKBN
                                    =   ZERO
                MOVE    "0"             TO  SHELLTBL-ARG13
            ELSE
-               MOVE    "1"             TO  SHELLTBL-ARG13
+               MOVE     SYS-2005-KKHRECEKBN
+                                       TO  SHELLTBL-ARG13
            END-IF
            MOVE    WRK-PREFNUM     TO  SHELLTBL-ARG14
            MOVE    SHELLTBL        TO  MCPDATA-REC
