@@ -80,6 +80,7 @@ SRCS = ORCHC01.CBL \
        ORCSTENTEK.CBL \
        ORCSCHOZAI.CBL \
        ORCSTUSAN.CBL \
+       ORCSDRSET.CBL \
 
 
 top_builddir = ../..
