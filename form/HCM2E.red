@@ -5701,7 +5701,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#191;&#169;&#161;&#161;&#187;&#246;&#161;&#161;&#206;&#197;&#161;&#161;&#203;&#161;#</string>
+            <string>#&#191;&#169;&#161;&#161;&#187;&#246;&#161;&#161;&#206;&#197;&#161;&#161;&#205;&#220;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
