@@ -391,7 +391,7 @@
            END-IF
       *
            IF     (SPA-GMN-FTNJANUM (IDX-K)  NOT =   SPACE ) AND
-                 ((KANACHK-MAX         <=  1   )  OR
+                 ((KANACHK-MAX         <   1   )  OR
                   (KANACHK-MAX         >   8   ))
                IF      SPA-ERRCD           =   SPACE
                    MOVE    "0071"              TO  SPA-ERRCD
@@ -895,10 +895,10 @@
                MOVE    22                  TO  SPA-GMN-CUR
                GO  TO                 1001-JKYSNUM-CHK-EXT
            END-IF
-           IF      KANACHK-MAX         <=  1
-               MOVE    "0076"              TO  SPA-ERRCD
-               MOVE    22                  TO  SPA-GMN-CUR
-           END-IF
+      *****IF      KANACHK-MAX         <=  1
+      *        MOVE    "0076"              TO  SPA-ERRCD
+      *        MOVE    22                  TO  SPA-GMN-CUR
+      *****END-IF
       *    全角の時、すべてのチェックをはずす
            IF     (KANACHK-RC          =   ZERO  )  AND
                   (KANACHK-SYUBETU     =   2     )
