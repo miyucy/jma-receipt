@@ -9273,6 +9273,7 @@
       *****************************************************************
        4801-TAIINKAIKEI-CANCEL-SEC         SECTION.
       *
+           MOVE      SPACE        TO    WRK-DOU-TENNYUYMD
            MOVE      SPACE        TO    IPN-NYUKAIKEI-SAKUSEI-FLG
       *
       *    特定集中治療室管理料算定時に退院日をＳＰＡ−異動日と転入日にセット
@@ -10592,6 +10593,7 @@
       *****************************************************************
        4801-IDOKAIKEI-CANCEL-SEC       SECTION.
       *
+           MOVE   SPACE                TO  WRK-DOU-TENNYUYMD
       *    入院会計作成サブの呼出し（異動分の会計削除）
            INITIALIZE            ORCSNYUACCT-AREA
            MOVE     "4"     TO   LNK-SCNYUACCT-SYORI-KBN
