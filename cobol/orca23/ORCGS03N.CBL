@@ -35,6 +35,7 @@
       *  01.01.05    NACL-太田    03.10.27  入金上限額のチェックを修正
       *  01.01.06    NACL-太田    03.10.29  履歴修正処理修正
       *  01.01.07    NACL-太田    03.11.12  更新日付編集対応
+      *  01.01.08    NACL-太田    04.02.09  コラムリスト編集修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -177,6 +178,7 @@
            03  FLG-ARI             PIC 9(01).
            03  FLG-SINKI           PIC 9(01).
            03  FLG-CHK             PIC 9(01).
+           03  FLG-CLIST1-ROW      PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -250,6 +252,9 @@
       *
       *    マップ画面行
            03  WRK-MAP-INDEX       PIC 9(04).
+      *
+       01  WRK-ROW.
+           05  WRK-CLIST1-ROW     PIC S9(9)   BINARY.
       *
       *    診療行為内容比較用テーブル
        01  TBL-AREA.
@@ -379,6 +384,11 @@
       *************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  WRK-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-S01KYOUTU
            MOVE    SPA-FREE        TO  SPA-S03N
@@ -486,6 +496,8 @@
                WHEN   "07" 
                  MOVE    1               TO  SPA-GMN-CUR
            END-EVALUATE
+      *
+           MOVE    1               TO  FLG-CLIST1-ROW
            .
 
        300-SCREEN-EXT.
@@ -994,6 +1006,8 @@
       *************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+           MOVE    S03N-CLIST1-ROW     TO  WRK-CLIST1-ROW
+      *
            MOVE    SPACE               TO  S03N
            INITIALIZE                      S03N
       *
@@ -1107,6 +1121,18 @@
            MOVE    SPA-GMN-RSISAISHIN    TO  S03N-RSISAISHIN
            MOVE    SPA-GMN-RSISDO        TO  S03N-RSISDO
            MOVE    SPA-GMN-RSIETC        TO  S03N-RSIETC
+      *  
+           EVALUATE    FLG-CLIST1-ROW
+           WHEN    1
+               MOVE    ZERO               TO  S03N-CLIST1-ROW
+               MOVE    ZERO               TO  S03N-CLIST1-ROWATTR
+           WHEN    2
+               MOVE    S03N-CLIST1-COUNT  TO  S03N-CLIST1-ROW
+               MOVE    1                  TO  S03N-CLIST1-ROWATTR
+           WHEN    OTHER
+               MOVE    WRK-CLIST1-ROW     TO  S03N-CLIST1-ROW
+               MOVE    ZERO               TO  S03N-CLIST1-ROWATTR
+           END-EVALUATE
       * 
            PERFORM 5001-MAPCUR-SEC
            .
@@ -1332,6 +1358,7 @@
                        GO  TO  410-KOUMOKU-SYORI-EXT
                    END-IF
                    PERFORM   420-NYUKIN-SEC
+                   MOVE    2       TO  FLG-CLIST1-ROW
                    MOVE    2       TO  SPA-GMN-CUR
                WHEN     "07"
                    PERFORM   430-CHOSEIKIN-SEC

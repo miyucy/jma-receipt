@@ -96,6 +96,7 @@
       *  01.00.35    NACL-ÌçÏÆ    04.01.14  ¿ÇÎÅ¹Ô°Ù¤ÎÊñ³çÊ¬¤Ï½ü¤¯
       *                                     SRYACCT2¢ª32
       *  01.00.36    NACL-ÌçÏÆ    04.01.21  Ï«ºÒ¤ÎÆÃÄê´ïºà(09593)ÂÐ±þ
+      *  01.00.37    NACL-ÂÀÅÄ    04.02.09  ¥³¥é¥à¥ê¥¹¥ÈÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -233,6 +234,7 @@
            03  FLG-HIT             PIC 9(01).
            03  FLG-DBRC            PIC 9(01).
            03  FLG-ERR             PIC 9(01).
+           03  FLG-SYULIST-ROW     PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -313,6 +315,9 @@
            03  WRK-PTNUM           PIC X(20).
            03  WRK-MISYU           PIC S9(08).
            03  WRK-TBL-SEL-MOT     PIC 9(05).
+      *
+       01  WRK-ROW.
+           05  WRK-SYULIST-ROW     PIC S9(9)   BINARY.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -799,6 +804,8 @@
            END-IF
       *
            MOVE    2               TO  SPA-GMN-CUR
+      *
+           MOVE    1               TO  FLG-SYULIST-ROW
       *
            .
        310-SPA-SET-EXT.
@@ -1543,7 +1550,18 @@
       **************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+           MOVE    S02-SYULIST-ROW     TO  WRK-SYULIST-ROW
+      *
            MOVE    SPACE               TO  S02
+      *
+           EVALUATE    FLG-SYULIST-ROW
+           WHEN    1
+               MOVE    ZERO            TO  S02-SYULIST-ROW
+               MOVE    ZERO            TO  S02-SYULIST-ROWATTR
+           WHEN    OTHER
+               MOVE    WRK-SYULIST-ROW TO  S02-SYULIST-ROW
+               MOVE    ZERO            TO  S02-SYULIST-ROWATTR
+           END-EVALUATE
       *
            MOVE    SPA-GMN-PTNUM       TO  S02-PTNUM
            MOVE    SPA-GMN-KANANAME    TO  S02-KANANAME
@@ -4679,6 +4697,7 @@
       *
            INITIALIZE              SPA-GMN-INPUT
                                    SPA-GMN-TBL-SEL
+           MOVE    1                   TO  FLG-SYULIST-ROW
       *
            .
        490-ZENGETU-EXT.
@@ -4738,6 +4757,7 @@
            PERFORM 300-SYUNOU-HENSYU-SEC
            INITIALIZE              SPA-GMN-INPUT
                                    SPA-GMN-TBL-SEL
+           MOVE    1                   TO  FLG-SYULIST-ROW
       *
            .
        490-JIGETU-EXT.

@@ -50,6 +50,7 @@
       *  01.01.16    NACL-太田    03.10.29  履歴修正処理修正
       *  01.01.17    NACL-太田    03.11.12  更新日付編集対応
       *  01.01.18    NACL-森脇    03.12.11  処理区分表示修正
+      *  01.01.19    NACL-太田    04.02.09  コラムリスト編集修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -188,6 +189,7 @@
            03  FLG-ARI             PIC 9(01).
            03  FLG-SINKI           PIC 9(01).
            03  FLG-CHK             PIC 9(01).
+           03  FLG-CLIST1-ROW      PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -290,6 +292,9 @@
            03  WK-GMN-FTNRITU      PIC ZZZ.
            03  WK-GMN-PA           PIC X(01).
       *
+       01  WRK-ROW.
+           05  WRK-CLIST1-ROW     PIC S9(9)   BINARY.
+      *
       *************************************************************
       *    ファイルレイアウト
       *************************************************************
@@ -389,6 +394,11 @@
       *    主　　処理
       *************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-S01KYOUTU
@@ -497,6 +507,9 @@
                WHEN   "07" 
                  MOVE    1               TO  SPA-GMN-CUR
            END-EVALUATE
+      *
+           MOVE    1               TO  FLG-CLIST1-ROW
+      *
            .
 
        300-SCREEN-EXT.
@@ -1001,10 +1014,12 @@
       *    画面編集処理
       *************************************************************
        500-GMNHEN-SEC                  SECTION.
-     *  
+      *  
+           MOVE    S03-CLIST1-ROW     TO  WRK-CLIST1-ROW
+      *  
            MOVE    SPACE               TO  S03
            INITIALIZE                      S03
-     *
+      *
            MOVE    SPA-GMN-PTNUM       TO  S03-PTNUM
            MOVE    SPA-GMN-KANANAME    TO  S03-KANANAME
            MOVE    SPA-GMN-NAME        TO  S03-NAME
@@ -1108,6 +1123,18 @@
            MOVE    SPA-GMN-RSISAISHIN    TO  S03-RSISAISHIN      
            MOVE    SPA-GMN-RSISDO        TO  S03-RSISDO      
            MOVE    SPA-GMN-RSIETC        TO  S03-RSIETC      
+      *  
+           EVALUATE    FLG-CLIST1-ROW
+           WHEN    1
+               MOVE    ZERO               TO  S03-CLIST1-ROW
+               MOVE    ZERO               TO  S03-CLIST1-ROWATTR
+           WHEN    2
+               MOVE    S03-CLIST1-COUNT   TO  S03-CLIST1-ROW
+               MOVE    1                  TO  S03-CLIST1-ROWATTR
+           WHEN    OTHER
+               MOVE    WRK-CLIST1-ROW     TO  S03-CLIST1-ROW
+               MOVE    ZERO               TO  S03-CLIST1-ROWATTR
+           END-EVALUATE
       * 
            PERFORM 5001-MAPCUR-SEC
            .
@@ -1333,6 +1360,7 @@
                        GO  TO  410-KOUMOKU-SYORI-EXT
                    END-IF
                    PERFORM   420-NYUKIN-SEC
+                   MOVE      2     TO  FLG-CLIST1-ROW
                    MOVE    2       TO  SPA-GMN-CUR
                WHEN     "07"
                    PERFORM   430-CHOSEIKIN-SEC
