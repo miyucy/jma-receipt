@@ -56,6 +56,9 @@
            03  FLG-NYUINDAY-G.
                05  FLG-NYUINDAY                PIC 9(01)
                                                OCCURS  31.
+           03  FLG-NYUINRYODAY-G.
+               05  FLG-NYUINRYODAY             PIC 9(01)
+                                               OCCURS  31.
            03  FLG-SENTEIDAY-G.
                05  FLG-SENTEIDAY               PIC 9(01)
                                                OCCURS  31.
@@ -663,7 +666,8 @@
        2001-NYUINRYO-CHK-SEC           SECTION.
       *
            INITIALIZE                          FLG-SENTEIDAY-G
-           INITIALIZE                          FLG-TOKTEIDAY-G
+                                               FLG-NYUINRYODAY-G
+                                               FLG-TOKTEIDAY-G
       *
            MOVE    "1"                     TO  WRK-NACCT-ZAISKBKBN
            PERFORM 1001-NYUINACCT-KEY17-SEL-SEC
@@ -678,16 +682,27 @@
                            MOVE    1       TO  FLG-SENTEIDAY (IDX1)
                        END-IF
                    END-PERFORM
-               END-IF
+               ELSE
       *
-      *        特定入院料を算定していた日にちを退避
-               IF    ( NACCT-SRYKBN        =    "92" )
+      *            入院料を算定している日にちを退避
                    PERFORM VARYING     IDX1    FROM    1   BY  1
                            UNTIL     ( IDX1    >   31 )
+      *
                        IF   ( NACCT-DAY(IDX1)  >   ZERO )
-                           MOVE    1       TO  FLG-TOKTEIDAY (IDX1)
+                           MOVE    1       TO  FLG-NYUINRYODAY (IDX1)
                        END-IF
+      *
                    END-PERFORM
+      *
+      *            特定入院料を算定していた日にちを退避
+                   IF    ( NACCT-SRYKBN        =    "92" )
+                       PERFORM VARYING     IDX1    FROM    1   BY  1
+                               UNTIL     ( IDX1    >   31 )
+                           IF   ( NACCT-DAY(IDX1)  >   ZERO )
+                               MOVE    1   TO  FLG-TOKTEIDAY (IDX1)
+                           END-IF
+                       END-PERFORM
+                   END-IF
                END-IF
       *
                PERFORM 1001-NYUINACCT-KEY17-READ-SEC
@@ -768,6 +783,7 @@
       *
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
+                AND  ( FLG-NYUINRYODAY (IDXD)  =   1 )
                 AND  ( FLG-SENTEIDAY(IDXD)     =   ZERO )
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO )
                    IF    ( FLG-TAISYO      =   ZERO )
@@ -811,6 +827,7 @@
       *
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
+                AND  ( FLG-NYUINRYODAY (IDXD)  =   1 )
                 AND  ( FLG-SENTEIDAY(IDXD)     =   1 )
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO )
                    IF    ( FLG-TAISYO      =   ZERO )
@@ -853,6 +870,7 @@
       *
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
+                AND  ( FLG-NYUINRYODAY (IDXD)  =   1 )
                 AND  ( FLG-GAIHAKUDAY(IDXD)    >   ZERO )
       *
       *            外泊診療行為コード取得処理
@@ -1442,6 +1460,7 @@
       *
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                  AND ( FLG-NYUINDAY (IDXD)     =   1 )
+                 AND ( FLG-NYUINRYODAY (IDXD)  =   1 )
                  AND ( FLG-SENTEIDAY(IDXD)     =   1 )
                    IF    ( FLG-TAISYO          =   ZERO )
                        MOVE    1       TO  FLG-TAISYO
@@ -2280,6 +2299,7 @@
                PERFORM VARYING IDXD    FROM    1   BY  1
                        UNTIL ( IDXD        >   31 )
                    IF    ( FLG-NYUINDAY  (IDXD)        =   1  )
+                    AND  ( FLG-NYUINRYODAY (IDXD)      =   1 )
                     AND  ( FLG-GAIHAKUDAY(IDXD)        =   ZERO )
                     AND  ( FLG-TOKTEIDAY (IDXD)        =   ZERO )
                        IF    ( FLG-TAISYO              =   ZERO )
@@ -2301,6 +2321,7 @@
                PERFORM VARYING IDXD    FROM    1   BY  1
                        UNTIL ( IDXD        >   31 )
                    IF    ( FLG-NYUINDAY  (IDXD)        =   1  )
+                    AND  ( FLG-NYUINRYODAY (IDXD)      =   1 )
                     AND  ( FLG-GAIHAKUDAY(IDXD)        =   ZERO )
                     AND  ( FLG-TOKTEIDAY (IDXD)    NOT =   ZERO )
                        IF    ( FLG-TAISYO              =   ZERO )
@@ -2402,6 +2423,7 @@
                        UNTIL ( IDXD        >   31 )
                    IF    ( NACCT-DAY (IDXD)            >   ZERO )
                     AND  ( FLG-NYUINDAY  (IDXD)        =   1  )
+                    AND  ( FLG-NYUINRYODAY (IDXD)      =   1 )
                     AND  ( FLG-GAIHAKUDAY(IDXD)        =   ZERO OR 4 )
                     AND  ( FLG-TOKTEIDAY (IDXD)        =   ZERO )
                        IF    ( FLG-TAISYO              =   ZERO )
@@ -2424,6 +2446,7 @@
                        UNTIL ( IDXD        >   31 )
                    IF    ( NACCT-DAY (IDXD)            >   ZERO )
                     AND  ( FLG-NYUINDAY  (IDXD)        =   1  )
+                    AND  ( FLG-NYUINRYODAY (IDXD)      =   1 )
                     AND  ( FLG-GAIHAKUDAY(IDXD)        =   ZERO OR 4 )
                     AND  ( FLG-TOKTEIDAY (IDXD)    NOT =   ZERO )
                        IF    ( FLG-TAISYO              =   ZERO )
