@@ -78,6 +78,7 @@ SRCS = ORCHC01.CBL \
        ORCHCM31.CBL \
        ORCHCM32.CBL \
        ORCSTENTEK.CBL \
+       ORCSCHOZAI.CBL \
        ORCSTUSAN.CBL \
 
 
