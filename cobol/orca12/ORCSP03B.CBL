@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/09/09  平成１４年１０月改正対応
+      * 01.00.02     NACL-多々納  02/10/03  負担者番号からの公費種類設定修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -192,6 +193,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    保険年齢・負担割合算定サブ
+           COPY    "CPORCSAGECHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -487,14 +491,22 @@
            END-IF
            MOVE    ZERO                TO  FLG-OK
            PERFORM UNTIL     FLG-HKNNUM    =   1
-               IF      HKN-HKNNUM      =   SPA-MAE-KOHNUM (IDX-K)
-                   MOVE    1               TO  FLG-OK
+               IF      SPA-MAE-KOHNUM (IDX-K)  NOT =   SPACE
+                   IF      HKN-HKNNUM      =   SPA-MAE-KOHNUM (IDX-K)
+                       MOVE    1               TO  FLG-OK
+                       MOVE    1               TO  FLG-HKNNUM
+                   ELSE
+                        MOVE    HKN-HKNNUM      TO  WRK-MAE-KOHNUM
+                   END-IF
                ELSE
                    MOVE    HKN-HKNNUM      TO  WRK-MAE-KOHNUM
+                   MOVE    1               TO  FLG-HKNNUM
                END-IF
       *
-               MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
-               PERFORM 921-HKNMST-NEXT-SEC
+               IF      FLG-HKNNUM          =   ZERO
+                   MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
+                   PERFORM 921-HKNMST-NEXT-SEC
+               END-IF
            END-PERFORM
       *
            IF     FLG-OK               =   1
@@ -1235,10 +1247,14 @@
                                           -   1
                END-IF
       *
-               IF  ( WRK-NENREI-YY        <   WRK-STYEAR )  OR
-                   ( WRK-NENREI-YY        >   WRK-EDYEAR )
-                   MOVE    "0086"         TO  SPA-ERRCD
-                   MOVE    23              TO  SPA-GMN-CUR
+               IF  ( WRK-NENREI-YY         <   WRK-STYEAR )  OR
+                   ( WRK-NENREI-YY         >   WRK-EDYEAR )
+                   MOVE    "0086"          TO  SPA-ERRCD
+                   IF      IDX             =   1
+                       MOVE    23              TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    24              TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-PERFORM
       *
