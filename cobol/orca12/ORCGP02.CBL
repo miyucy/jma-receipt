@@ -2281,21 +2281,21 @@
                GO  TO                  4901-KOUSINMAE-EXT
            END-IF
       *
-      *    所得(タグ変更時・切替押下時、未更新のため、ここで必ず更新)
-           MOVE    "CLICKED" TO  MCP-EVENT
-           MOVE    "B12"     TO  MCP-WIDGET
-           MOVE    "PUTG"    TO  MCP-STATUS
-           CALL    "ORCGP024"       USING   MCPAREA
-                                                   SPAAREA
-                                                   LINKAREA
-                                                   SCRAREA
-           MOVE    SPA-COMMON          TO  SPA-AREA
-           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
-           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-           IF  SPA-ERRCD           NOT =   SPACE
-               MOVE    "P024"              TO  SPA-P02-GAMEN
-               GO  TO                  4901-KOUSINMAE-EXT
-           END-IF
+      ***  所得(タグ変更時・切替押下時、未更新のため、ここで必ず更新)
+      *    MOVE    "CLICKED" TO  MCP-EVENT
+      *    MOVE    "B12"     TO  MCP-WIDGET
+      *    MOVE    "PUTG"    TO  MCP-STATUS
+      *    CALL    "ORCGP024"       USING   MCPAREA
+      *                                            SPAAREA
+      *                                            LINKAREA
+      *                                            SCRAREA
+      *    MOVE    SPA-COMMON          TO  SPA-AREA
+      *    MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+      *    MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+      *    IF  SPA-ERRCD           NOT =   SPACE
+      *        MOVE    "P024"              TO  SPA-P02-GAMEN
+      *        GO  TO                  4901-KOUSINMAE-EXT
+      **** END-IF
       *
       **** EVALUATE    SPA-P02-GAMEN
       *    基本
@@ -2317,6 +2317,23 @@
                    MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
                    GO      TO                  4901-KOUSINMAE-EXT
                END-IF
+      *
+      *    所得(タグ変更時・切替押下時、未更新のため、ここで必ず更新)
+           MOVE    "CLICKED" TO  MCP-EVENT
+           MOVE    "B12"     TO  MCP-WIDGET
+           MOVE    "PUTG"    TO  MCP-STATUS
+           CALL    "ORCGP024"       USING   MCPAREA
+                                                   SPAAREA
+                                                   LINKAREA
+                                                   SCRAREA
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+           IF  SPA-ERRCD           NOT =   SPACE
+               MOVE    "P024"              TO  SPA-P02-GAMEN
+               GO  TO                  4901-KOUSINMAE-EXT
+           END-IF
+      *
       *    -------------------------
            EVALUATE    SPA-P02-GAMEN
       *
