@@ -136,6 +136,8 @@
       *                                     に追加
       *  01.02.35   NACL-門脇     03/11/26  自費レセプトの自費分
       *                                     摘要欄記載対応
+      *  01.02.36   NACL-門脇     04/01/06  診療行為コードの１桁目の判定
+      *                                     修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1360,25 +1362,40 @@
            PERFORM     VARYING   IDX2   FROM    1    BY   1
                        UNTIL    (IDX2      >    5)    OR
                                 (SRY-SRYCD(IDX2)  =   SPACE)
-      ***>   IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR  
-      ***>                                        "6" OR  "7" OR
-      ***>                                        "8"
-               ADD     1                  TO    IDX4
       *
-               MOVE    SRY-SRYCD(IDX2)    TO    RECE05-SRYCD(IDX4)
       *
-               IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
-               OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
+             PERFORM    TENSU-TBL-SEC
+      **     点数マスタ情報退避
+             MOVE    TNS-CHUKSNTUBAN    TO  WRK-TNS-CHUKSNTUBAN(IDX2)
+             MOVE    TNS-DATAKBN        TO  WRK-TNS-DATAKBN(IDX2)
+             MOVE    TNS-TIMEKSNKBN     TO  WRK-TNS-TIMEKSNKBN(IDX2)
+             MOVE    TNS-TEN            TO  WRK-TNS-TEN(IDX2)
+             MOVE    TNS-GAITENTTLKBN   TO  WRK-TNS-GAITENTTLKBN(IDX2)
+             MOVE    TNS-OSINKBN        TO  WRK-TNS-OSINKBN(IDX2)
+             MOVE    TNS-KNSJISKBN      TO  WRK-TNS-KNSJISKBN(IDX2)
+             MOVE    TNS-SRYCD          TO  WRK-TNS-SRYCD(IDX2)
+      *
+             IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
+             OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
                   COMPUTE   RECE04-MEISAISU  =  RECE04-MEISAISU
                                              -  1
-               END-IF
-               IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
+             END-IF
+             IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
                   MOVE    SRY-SRYCD(IDX2)   TO    WRK-SRYCD
                   COMPUTE   RECE04-SRYCDTOTAL  =  RECE04-SRYCDTOTAL
                                                -  WRK-SRYCD
                   COMPUTE   RECE04-SURYOUTOTAL =  RECE04-SURYOUTOTAL
                                                -  1
-               END-IF
+             END-IF
+      *
+      *
+             IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR
+                                                  "6" OR  "7" OR
+                                                  "8"
+      *
+               ADD     1                  TO    IDX4
+      *
+               MOVE    SRY-SRYCD(IDX2)    TO    RECE05-SRYCD(IDX4)
       *
                IF      SRY-SRYKBN         =     "12"
                    IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN1    OR
@@ -1415,7 +1432,6 @@
                MOVE    SRY-MEISKYFLG(IDX2) TO   RECE05-MEISKYFLG(IDX4)
                MOVE    SRY-AUTOKBN(IDX2)  TO    RECE05-AUTOKBN(IDX4)
                MOVE    SRY-INPUTNUM(IDX2) TO    RECE05-INPUTNUM(IDX4)
-               PERFORM    TENSU-TBL-SEC
       *
                IF      RECE02-RECESYUBETU  =  8888
                  IF      SRY-SRYKBN    =     "95" OR "96"
@@ -1502,16 +1518,7 @@
                        END-IF                                           XXX
       *
                END-IF                                                   XXX
-      **点数マスタ情報退避
-               MOVE    TNS-CHUKSNTUBAN   TO  WRK-TNS-CHUKSNTUBAN(IDX4)
-               MOVE    TNS-DATAKBN       TO  WRK-TNS-DATAKBN(IDX4)
-               MOVE    TNS-TIMEKSNKBN    TO  WRK-TNS-TIMEKSNKBN(IDX4)
-               MOVE    TNS-TEN           TO  WRK-TNS-TEN(IDX4)
-               MOVE    TNS-GAITENTTLKBN  TO  WRK-TNS-GAITENTTLKBN(IDX4)
-               MOVE    TNS-OSINKBN       TO  WRK-TNS-OSINKBN(IDX4)
-               MOVE    TNS-KNSJISKBN     TO  WRK-TNS-KNSJISKBN(IDX4)
-               MOVE    TNS-SRYCD         TO  WRK-TNS-SRYCD(IDX4)
-      **
+      *
                IF      TNS-SRYKBN         =     "80"
                    IF  TNS-GAITENTTLKBN   =     130
                        MOVE   "13"        TO    RECE04-SRYKBN
@@ -1665,7 +1672,7 @@
                        MOVE     3         TO    FLG-OSINKBN
                  END-EVALUATE
                END-IF
-      ***>   END-IF  
+             END-IF  
            END-PERFORM
       *
            .

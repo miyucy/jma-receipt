@@ -55,6 +55,8 @@
       *                                     各種番号等情報のセット
       *  01.00.20    NACL-門脇    03.10.06  点数マスタを読み込まないよう
       *                                     修正
+      *  01.00.21    NACL-門脇    04.01.06  診療行為コードの１桁目の判定
+      *                                     修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1127,25 +1129,38 @@
            PERFORM     VARYING   IDX2   FROM    1    BY   1
                        UNTIL    (IDX2      >    5)    OR
                                 (SRY-SRYCD(IDX2)  =   SPACE)
-      ***>   IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR  
-      ***>                                        "6" OR  "7" OR
-      ***>                                        "8"
       *
-               ADD     1                  TO    IDX4                                  *
-               MOVE    SRY-SRYCD(IDX2)    TO    RECE45-SRYCD(IDX4)
       *
-               IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
-               OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
+             PERFORM    TENSU-TBL-SEC
+      **     点数マスタ情報退避
+             MOVE    TNS-DATAKBN        TO  WRK-TNS-DATAKBN(IDX2)
+             MOVE    TNS-TIMEKSNKBN     TO  WRK-TNS-TIMEKSNKBN(IDX2)
+             MOVE    TNS-TEN            TO  WRK-TNS-TEN(IDX2)
+             MOVE    TNS-GAITENTTLKBN   TO  WRK-TNS-GAITENTTLKBN(IDX2)
+             MOVE    TNS-OSINKBN        TO  WRK-TNS-OSINKBN(IDX2)
+             MOVE    TNS-KNSJISKBN      TO  WRK-TNS-KNSJISKBN(IDX2)
+             MOVE    TNS-SRYCD          TO  WRK-TNS-SRYCD(IDX2)
+      *
+             IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
+             OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
                   COMPUTE   RECE44-MEISAISU  =  RECE44-MEISAISU
                                              -  1
-               END-IF
-               IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
+             END-IF
+             IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
                   MOVE    SRY-SRYCD(IDX2)   TO    WRK-SRYCD
                   COMPUTE   RECE44-SRYCDTOTAL  =  RECE44-SRYCDTOTAL
                                                -  WRK-SRYCD
                   COMPUTE   RECE44-SURYOUTOTAL =  RECE44-SURYOUTOTAL
                                                -  1
-               END-IF
+             END-IF
+      *
+      *
+             IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR
+                                                  "6" OR  "7" OR
+                                                  "8"
+      *
+               ADD     1                  TO    IDX4                                  *
+               MOVE    SRY-SRYCD(IDX2)    TO    RECE45-SRYCD(IDX4)
       *
                IF      SRY-SRYKBN         =     "12"
                    IF   SRY-SRYCD(IDX2)   =     CONS-KEIZOKU1    OR
@@ -1180,15 +1195,6 @@
                MOVE    SRY-MEISKYFLG(IDX2) TO   RECE45-MEISKYFLG(IDX4)
                MOVE    SRY-AUTOKBN(IDX2)  TO    RECE45-AUTOKBN(IDX4)
                MOVE    SRY-INPUTNUM(IDX2) TO    RECE45-INPUTNUM(IDX4)
-               PERFORM    TENSU-TBL-SEC
-      **点数マスタ情報退避
-               MOVE    TNS-DATAKBN       TO  WRK-TNS-DATAKBN(IDX4)
-               MOVE    TNS-TIMEKSNKBN    TO  WRK-TNS-TIMEKSNKBN(IDX4)
-               MOVE    TNS-TEN           TO  WRK-TNS-TEN(IDX4)
-               MOVE    TNS-GAITENTTLKBN  TO  WRK-TNS-GAITENTTLKBN(IDX4)
-               MOVE    TNS-OSINKBN       TO  WRK-TNS-OSINKBN(IDX4)
-               MOVE    TNS-KNSJISKBN     TO  WRK-TNS-KNSJISKBN(IDX4)
-               MOVE    TNS-SRYCD         TO  WRK-TNS-SRYCD(IDX4)
       **
                IF   RECE41-HKNKBN    NOT  =  "4"                        
                   IF      TNS-SRYKBN         =     "80"
@@ -1510,7 +1516,7 @@
                        MOVE     3         TO    FLG-OSINKBN
                  END-EVALUATE
                END-IF
-      ***>   END-IF  
+             END-IF  
            END-PERFORM
       *
            .

@@ -56,6 +56,8 @@
       *  01.00.20    NACL-ÌçÏÆ    03/10/02  ÅìµþÅÔÃÏÊý¸øÈñÂÐ±þ
       *  01.00.21    NACL-ÌçÏÆ    03/11/26  ¼«Èñ¥ì¥»¥×¥È¤Î¼«ÈñÊ¬
       *                                     Å¦Í×Íóµ­ºÜÂÐ±þ
+      *  01.00.22    NACL-ÌçÏÆ    04/01/06  ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¤Î£±·åÌÜ¤ÎÈ½Äê
+      *                                     ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3376,9 +3378,24 @@
                 END-EVALUATE
              END-IF
       *
-      ***>   IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR  
-      ***>                                        "6" OR  "7" OR
-      ***>                                        "8"
+      *
+             IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
+             OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
+                  COMPUTE   RECE64-MEISAISU  =  RECE64-MEISAISU
+                                             -  1
+             END-IF
+             IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
+                  MOVE    SRY-SRYCD(IDX2)   TO    WRK-SRYCD
+                  COMPUTE   RECE64-SRYCDTOTAL  =  RECE64-SRYCDTOTAL
+                                               -  WRK-SRYCD
+                  COMPUTE   RECE64-SURYOUTOTAL =  RECE64-SURYOUTOTAL
+                                               -  1
+             END-IF
+      *
+      *
+             IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR
+                                                  "6" OR  "7" OR
+                                                  "8"
       *
               IF  (  SRY-SRYSYUKBN            = "330" OR "331"      
                                                       OR "350"     )
@@ -3394,19 +3411,6 @@
                ADD     1                  TO    IDX4    
       *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE65-SRYCD(IDX4)
-      *
-               IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
-               OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
-                  COMPUTE   RECE64-MEISAISU  =  RECE64-MEISAISU
-                                             -  1
-               END-IF
-               IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
-                  MOVE    SRY-SRYCD(IDX2)   TO    WRK-SRYCD
-                  COMPUTE   RECE64-SRYCDTOTAL  =  RECE64-SRYCDTOTAL
-                                               -  WRK-SRYCD
-                  COMPUTE   RECE64-SURYOUTOTAL =  RECE64-SURYOUTOTAL
-                                               -  1
-               END-IF
       *
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE65-SRYSURYO(IDX4)
                MOVE    SRY-SRYKAISU(IDX2) TO    RECE65-SRYKAISU(IDX4)
@@ -3558,7 +3562,7 @@
                    END-IF
                END-IF
               END-IF
-      ***>   END-IF  
+             END-IF  
            END-PERFORM
       *
            IF    IDX4   =   ZERO
