@@ -220,19 +220,19 @@
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
-                                       INTO    LNK-PRTKANRI-RENNUM
-                                               LNK-PRTKANRI-TBL-KEY
-                                               LNK-PRTKANRI-TBL-GROUP
-                                               LNK-PRTKANRI-SHORI-RENNUM
-                                               LNK-PRTKANRI-SRYYM
-                                               LNK-PRTKANRI-SKYYMD
-                                               LNK-PRTKANRI-SHELLID
-                                               LNK-PRTKANRI-PRIORITY
-                                               LNK-PRTKANRI-TERMID
-                                               LNK-PRTKANRI-OPID    
-                                               LNK-PRTKANRI-PRTNM    
-                                               WRK-PARA-JOBID
-                                               WRK-PARA-SHELLID
+                                       INTO  LNK-PRTKANRI-RENNUM
+                                             LNK-PRTKANRI-TBL-KEY
+                                             LNK-PRTKANRI-TBL-GROUP
+                                             LNK-PRTKANRI-SHORI-RENNUM
+                                             LNK-PRTKANRI-SRYYM
+                                             LNK-PRTKANRI-SKYYMD
+                                             LNK-PRTKANRI-SHELLID
+                                             LNK-PRTKANRI-PRIORITY
+                                             LNK-PRTKANRI-TERMID
+                                             LNK-PRTKANRI-OPID    
+                                             LNK-PRTKANRI-PRTNM    
+                                             WRK-PARA-JOBID
+                                             WRK-PARA-SHELLID
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -377,7 +377,7 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE   "HC17V02V01"         TO  SPRT-PRTID
+           MOVE   "HC17V02"            TO  SPRT-PRTID
            MOVE    "薬剤一部負担もれ一覧表"
                                        TO  SPRT-TITLE
            MOVE    HC17V02             TO  SPRT-PRTDATA
@@ -538,9 +538,9 @@
                END-IF
       *
       *        老人のときフラグのみ編集して読みとばす
-               IF  (   WRK-AGE          >=  70                      ) OR
-                   ( ( WRK-AGE          >=  65  AND <=  69 )    AND 
-                     ( BD002-KOH1HKNNUM =   "027"          )        )
+               IF  (   WRK-AGE          >=  70                    ) OR
+                   ( ( WRK-AGE          >=  65  AND <=  69 )  AND 
+                     ( BD002-KOH1HKNNUM =   "027"          )      )
                    MOVE    1                TO  FLG-ROJIN
                    GO  TO  900-DBFETCH-SEC
                END-IF
