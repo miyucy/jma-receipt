@@ -41,6 +41,7 @@
       *  02.01.01    NACL-森脇    03/10/17  画面変更につき一括変更
       *  02.01.02    NACL-多々納  03/11/07  入院初診料追加
       *  02.01.03    NACL-多々納  04/01/09  包括登録追加
+      *  02.01.04    NACL-多々納  04/01/15  数量ゼロ入力追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -114,6 +115,14 @@
                            11  SPA-GMN-HOUKATUMEI          PIC X(28).
                        09  SPA-GMN-HOUKATU-COMB.
                            11  SPA-GMN-HOUKATU-LIST        PIC X(30)
+                                                           OCCURS  2.
+      *                数量ゼロ入力
+                       09  SPA-GMN-SURYOZERO-G.
+                           11  SPA-GMN-SURYOZERO           PIC X(01).
+                           11  SPA-GMN-SURYOZERO-F1        PIC X(01).
+                           11  SPA-GMN-SURYOZEROMEI        PIC X(20).
+                       09  SPA-GMN-SURYOZERO-COMB.
+                           11  SPA-GMN-SURYOZERO-LIST      PIC X(20)
                                                            OCCURS  2.
                    07  SPA-GMN-PAGE2-AREA.
       *                カルテの病名対象
@@ -446,6 +455,12 @@
                                        TO  SPA-GMN-HOUKATU-LIST(2)
       *
       *
+           MOVE    "0 標準（行削除する）"
+                                       TO  SPA-GMN-SURYOZERO-LIST(1)
+           MOVE    "1 入力エラーとする"
+                                       TO  SPA-GMN-SURYOZERO-LIST(2)
+      *
+      *
            MOVE    "0 すべての病名"    TO  SPA-GMN-BYOMEIKBN-LIST(1)
            MOVE    "1 継続病名のみ"    TO  SPA-GMN-BYOMEIKBN-LIST(2)
       *
@@ -543,6 +558,9 @@
       *        外来カーソル移動
                MOVE    SYS-1008-GAI-CURSOR-SET-1
                                            TO  SPA-GMN-GAIMOVE
+      *        数量ゼロ入力
+               MOVE    SYS-1008-SURYOZERO-FLG
+                                           TO  SPA-GMN-SURYOZERO
       *
       *        入院初診料自動発生
                MOVE    SYS-1008-NYU-SYOSIN
@@ -621,6 +639,22 @@
                 WHEN    OTHER
                     MOVE    SPA-GMN-HOUKATU-LIST(1)
                                                TO  SPA-GMN-HOUKATU-G
+            END-EVALUATE
+      *
+      *    数量ゼロ入力
+           IF      SPA-GMN-SURYOZERO  =   SPACE
+               MOVE    "0"            TO  SPA-GMN-SURYOZERO
+           END-IF
+           EVALUATE    SPA-GMN-SURYOZERO
+                WHEN    "0"
+                    MOVE    SPA-GMN-SURYOZERO-LIST(1)
+                                               TO  SPA-GMN-SURYOZERO-G
+                WHEN    "1"
+                    MOVE    SPA-GMN-SURYOZERO-LIST(2)
+                                               TO  SPA-GMN-SURYOZERO-G
+                WHEN    OTHER
+                    MOVE    SPA-GMN-SURYOZERO-LIST(1)
+                                               TO  SPA-GMN-SURYOZERO-G
             END-EVALUATE
       *
       *     診療科コードセット
@@ -779,6 +813,7 @@
            MOVE    W07-KIKAN           TO  SPA-GMN-INTERACT-KIKAN
            MOVE    W07-GAIKANKBN       TO  SPA-GMN-GAIKANRIKBN-G
            MOVE    W07-GAIMOVE         TO  SPA-GMN-GAIMOVE-G
+           MOVE    W07-SURYOZERO       TO  SPA-GMN-SURYOZERO-G
       *
            MOVE    W07-HOUKATU         TO  SPA-GMN-HOUKATU-G
       *
@@ -826,6 +861,11 @@
                    END-IF
       *            外来カーソル移動チェック
                    PERFORM 4103-GAIMOVE-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+      *            数量ゼロチェック
+                   PERFORM 4103-SURYOZERO-CHK-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
@@ -1031,7 +1071,33 @@
            EXIT.
       *
       *****************************************************************
-      *    外来カーソル移動チェック処理
+      *    数量ゼロ入力チェック処理
+      *****************************************************************
+       4103-SURYOZERO-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               IF      SPA-GMN-SURYOZERO
+                                      =   SPA-GMN-SURYOZERO-LIST(IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-SURYOZERO-LIST(IDX)
+                                          TO  SPA-GMN-SURYOZERO-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    14              TO  SPA-GMN-CUR
+               MOVE    "0015"          TO  SPA-ERRCD
+               GO      TO      4103-SURYOZERO-CHK-EXT
+           END-IF
+      *
+          .
+       4103-SURYOZERO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括まとめ入力チェック処理
       *****************************************************************
        4103-HOUKATU-CHK-SEC       SECTION.
       *
@@ -1047,7 +1113,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    14              TO  SPA-GMN-CUR
+               MOVE    15              TO  SPA-GMN-CUR
                MOVE    "0014"          TO  SPA-ERRCD
                GO      TO      4103-HOUKATU-CHK-EXT
            END-IF
@@ -1410,6 +1476,8 @@
            MOVE    SPA-GMN-NYUSYOSIN       TO  SYS-1008-NYU-SYOSIN
       *    包括入力
            MOVE    SPA-GMN-HOUKATU         TO  SYS-1008-HOUKATU-FLG
+      *    数量ゼロ入力
+           MOVE    SPA-GMN-SURYOZERO       TO  SYS-1008-SURYOZERO-FLG
       *
            MOVE    SYS-1008-REC            TO  SYSKANRI-REC
       *     
@@ -1605,6 +1673,15 @@
            END-PERFORM
            MOVE    3                   TO  W07-GAIMOVE-COUNT
       *
+      *    数量ゼロ入力
+           MOVE    SPA-GMN-SURYOZERO-G TO  W07-SURYOZERO
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-SURYOZERO-LIST (IDX)
+                                       TO  W07-SURYOZERO-ITEM(IDX)
+           END-PERFORM
+           MOVE    2                   TO  W07-SURYOZERO-COUNT
+      *
       *    包括入力
            MOVE    SPA-GMN-HOUKATU-G       TO  W07-HOUKATU
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1734,6 +1811,9 @@
                WHEN    "0014"
                    MOVE    "包括登録入力エラー"
                                                        TO  SPA-ERRMSG
+               WHEN    "0015"
+                   MOVE    "数量ゼロ入力エラー"
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "0020"
                    MOVE    "カルテの病名対象区分がありません。"
@@ -1854,6 +1934,8 @@
                WHEN    12
                    MOVE  "GAIMOVE"         TO   MCP-WIDGET
                WHEN    14
+                   MOVE  "SURYOZERO"       TO   MCP-WIDGET
+               WHEN    15
                    MOVE  "HOUKATU"         TO   MCP-WIDGET
       *
                WHEN    20
@@ -1914,6 +1996,8 @@
                    MOVE    12              TO  SPA-GMN-CUR
                WHEN    "GAIMOVE"
                    MOVE    14              TO  SPA-GMN-CUR
+               WHEN    "SURYOZERO"
+                   MOVE    15              TO  SPA-GMN-CUR
                WHEN    "HOUKATU"
                    MOVE    99              TO  SPA-GMN-CUR
       *        患者登録情報
