@@ -85,7 +85,7 @@
                    SYS-5000-SENTEI-TANKA-X.
                    07  SYS-5000-SENTEI-TANKA
                                            PIC  9(02).
-      *選定入院特別料金
+      *選定入院特別料金（共通）
                05  SYS-5000-SENTEI-KINGAKU-X
                                            PIC  X(04).
                05  SYS-5000-SENTEI-KINGAKU-R
@@ -99,8 +99,24 @@
       *入院会計室料差額区分
                05  SYS-5000-NACCT-BRMSGKKBN
                                            PIC  X(01).
+      *選定入院特別料金（一般）
+               05  SYS-5000-SENTEI-IPN-KINGAKU-X
+                                           PIC  X(04).
+               05  SYS-5000-SENTEI-IPN-KINGAKU-R
+                                           REDEFINES
+                   SYS-5000-SENTEI-IPN-KINGAKU-X.
+                   07  SYS-5000-SENTEI-IPN-KINGAKU
+                                           PIC  9(04).
+      *選定入院特別料金（老人）
+               05  SYS-5000-SENTEI-RJN-KINGAKU-X
+                                           PIC  X(04).
+               05  SYS-5000-SENTEI-RJN-KINGAKU-R
+                                           REDEFINES
+                   SYS-5000-SENTEI-RJN-KINGAKU-X.
+                   07  SYS-5000-SENTEI-RJN-KINGAKU
+                                           PIC  9(04).
       *予備（２）
-               05                          PIC  X(15).
+               05                          PIC  X(07).
       *端末ＩＤ
            03  SYS-5000-TERMID             PIC  X(16).
       *オペーレータＩＤ

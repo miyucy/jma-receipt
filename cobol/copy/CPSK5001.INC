@@ -124,7 +124,23 @@
                    09  SYS-5001-KSNCD          PIC X(09).
                    09  SYS-5001-KSNKBN         PIC X(01).
       *予備 ** 予備の後にも項目があるので注意すること **
-               05  SYS-5001-YOBI               PIC  X(285).
+               05  SYS-5001-YOBI               PIC  X(277).
+      *選定入院特別料金（一般）
+               05  SYS-5001-SENTEI-IPN-KINGAKU-X
+                                               PIC  X(04).
+               05  SYS-5001-SENTEI-IPN-KINGAKU-R
+                                           REDEFINES
+                   SYS-5001-SENTEI-IPN-KINGAKU-X.
+                   07  SYS-5001-SENTEI-IPN-KINGAKU
+                                               PIC  9(04).
+      *選定入院特別料金（老人）
+               05  SYS-5001-SENTEI-RJN-KINGAKU-X
+                                               PIC  X(04).
+               05  SYS-5001-SENTEI-RJN-KINGAKU-R
+                                           REDEFINES
+                   SYS-5001-SENTEI-RJN-KINGAKU-X.
+                   07  SYS-5001-SENTEI-RJN-KINGAKU
+                                               PIC  9(04).
       *選定入院設定区分
                05  SYS-5001-BTU-ISISUKBN       PIC  X(01).
       *選定入院設定区分
@@ -136,7 +152,7 @@
                05  SYS-5001-SENTEI-TANKA-R     REDEFINES
                    SYS-5001-SENTEI-TANKA-X.
                    07  SYS-5001-SENTEI-TANKA   PIC  9(02).
-      *選定入院特別料金
+      *選定入院特別料金（共通）
                05  SYS-5001-SENTEI-KINGAKU-X   PIC  X(04).
                05  SYS-5001-SENTEI-KINGAKU-R   REDEFINES
                    SYS-5001-SENTEI-KINGAKU-X.
