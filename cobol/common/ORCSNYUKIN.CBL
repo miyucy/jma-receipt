@@ -238,10 +238,10 @@
       *    ¼ýÇ¼ÆÉ¤ß¹þ¤ßÍÑ£Ë£Å£Ù¤Î»ØÄê
            MOVE    SPACE                   TO  WRK-SYUNOU-DBPATH
            EVALUATE    LNK-SCNYUKIN-NYKNKNRKBN
-               WHEN    "1"
+               WHEN    "2"
                WHEN    "4"
                    MOVE   "SYUNOU-KEY22"   TO  WRK-SYUNOU-DBPATH
-               WHEN    "2"
+               WHEN    "3"
                WHEN    "5"
                    MOVE   "SYUNOU-KEY23"   TO  WRK-SYUNOU-DBPATH
            END-EVALUATE
