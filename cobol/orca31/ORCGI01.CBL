@@ -3999,6 +3999,7 @@
       *
            IF    ( SPA-GMN-I01-TOKNYUIN
                                        =   SPACE )
+               MOVE    SPACE       TO  SPA-NAI-I01-TOKNYUIN-ORG
                GO  TO  4101-TOKNYUIN-CHK-EXT
            END-IF
       *
