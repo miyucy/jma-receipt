@@ -2811,7 +2811,11 @@
                MOVE    WRK-DENPNUM         TO  ORCHC03-DENPNUM
                MOVE    SPA-GMN-SEIKYU      TO  ORCHC03-SEIKYU
                MOVE    SPA-GMN-NYUKIN      TO  ORCHC03-NYUKIN
-      *       æ√»Ò¿«° ∫∆∑«°À
+      *        ¡∞≤ÛÃ§º˝≥€
+               MOVE    SPA-GMN-ZENMISYU    TO  ORCHC03-ZENMISYU
+      *        ¡∞≤Û ÷∂‚≥€
+               MOVE    SPA-GMN-CHOKAKIN    TO  ORCHC03-HENKIN
+      *        æ√»Ò¿«° ∫∆∑«°À
                MOVE    SPA-NAI-SKYMONEY-TAX-SAI
                                            TO  ORCHC03-SEIKYU-TAX-SAI
                MOVE    SPA-FUKU-DENPNUM    TO  ORCHC03-FUKU-DENPNUM
