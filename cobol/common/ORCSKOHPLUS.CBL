@@ -228,11 +228,7 @@
            MOVE    LNK-SKOHPLUS-PREFNUM   TO  KOHPLUS-PREFNUM
            MOVE    PTKOH-FTNJANUM(5:3)    TO  KOHPLUS-CITYNUM
            MOVE    COMB-KOHHKNNUM(KOH-IDX) TO KOHPLUS-KOHNUM
-      *     IF      FLG-RJNHKN    =    ZERO
-      *         MOVE    "0"       TO   KOHPLUS-RJNHKNKBN
-      *     ELSE
-      *         MOVE    "1"       TO   KOHPLUS-RJNHKNKBN
-      *     END-IF
+           MOVE    "0"                    TO  KOHPLUS-PTKBN
            MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOSTYMD
            MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOEDYMD
            MOVE    "KOHPLUS-KEY2"         TO  ORC-DBPATH
@@ -247,9 +243,37 @@
                    MOVE   KOHPLUS-NYUSKJRYYKBN
                                           TO  LNK-SKOHPLUS-NYUSKJRYYKBN
                ELSE
-                   DISPLAY "KOHPLUS FETCH ERR "
-                   MOVE    3              TO  LNK-SKOHPLUS-RC
-               END-IF
+                   INITIALIZE                         KOHPLUS-REC
+                   MOVE    LNK-SKOHPLUS-HOSPID    TO  KOHPLUS-HOSPID
+                   MOVE    LNK-SKOHPLUS-PREFNUM   TO  KOHPLUS-PREFNUM
+                   MOVE    PTKOH-FTNJANUM(5:3)    TO  KOHPLUS-CITYNUM
+                   MOVE    COMB-KOHHKNNUM(KOH-IDX) TO KOHPLUS-KOHNUM
+                   IF      FLG-RJNHKN             =   ZERO
+                       MOVE    "1"                TO  KOHPLUS-PTKBN
+                   ELSE
+                       MOVE    "2"                TO  KOHPLUS-PTKBN
+                   END-IF
+                   MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOSTYMD
+                   MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOEDYMD
+                   MOVE    "KOHPLUS-KEY2"         TO  ORC-DBPATH
+                   PERFORM 910-KOHPLUS-SELECT-SEC
+                   IF      FLG-KOHPLUS            =   ZERO
+                       MOVE     "KOHPLUS-KEY2"    TO  ORC-DBPATH
+                       PERFORM   910-KOHPLUS-READ-SEC
+                       IF    FLG-KOHPLUS          =   ZERO
+                           DISPLAY "KOHPLUS FETCH COMPLETE"
+      *                     ÷µ—ŒŒ∞Ë§Œ•ª•√•»
+                           MOVE   KOHPLUS-FTNKBN TO LNK-SKOHPLUS-FTNKBN
+                           MOVE   KOHPLUS-NYUSKJRYYKBN
+                                          TO  LNK-SKOHPLUS-NYUSKJRYYKBN
+                       ELSE
+                           DISPLAY "KOHPLUS FETCH ERR "
+                           MOVE    3              TO  LNK-SKOHPLUS-RC
+                       END-IF
+                   ELSE
+                       DISPLAY "KOHPLUS SELECT ERR "
+                       MOVE    3              TO  LNK-SKOHPLUS-RC
+                   END-IF
            ELSE
                DISPLAY "KOHPLUS SELECT ERR "
                MOVE    3              TO  LNK-SKOHPLUS-RC
