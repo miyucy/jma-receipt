@@ -3219,6 +3219,12 @@
                                        TO  SPA-COM-KAISU2 (SPA-GMN-IDX)
       *
       *    分画数（未入力時、１回）
+           IF     (SPA-COM-INPUTCD(SPA-GMN-IDX) (1:1)  =   "7" ) AND
+                  (WRK-BUNGSU          =   ZERO   )  AND
+                  (LNK-SC97-MOJI2  NOT =   SPACE  )
+      *        分画数変換
+               PERFORM 41011221-BUNGSU-HENSYU-SEC
+           END-IF
            MOVE    WRK-BUNGSU          TO  SPA-COM-BUNGSU(SPA-GMN-IDX)
            IF      WRK-BUNGSU          =   ZERO
                MOVE    1               TO  SPA-COM-BUNGSU(SPA-GMN-IDX)
@@ -3240,6 +3246,31 @@
       *
            .
        4101122-KOMOKU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    分画数変換処理
+      *****************************************************************
+       41011221-BUNGSU-HENSYU-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-BUNGSU
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    LNK-SC97-MOJI2(1:LNK-SC97-MCNT2)
+                                       TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN         =   "1"   )
+               MOVE    "0012"              TO  SPA-ERRCD
+           ELSE
+               MOVE    SNUM-OUTNUM         TO  WRK-BUNGSU
+           END-IF
+           MOVE    SPACE              TO  LNK-SC97-MOJI2
+           MOVE    SPACE              TO  WRK-MOJI2
+           MOVE    ZERO               TO  LNK-SC97-MCNT2
+      *
+           .
+       41011221-BUNGSU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3384,6 +3415,13 @@
               ADD     1               TO  IDX-IP
       *
                MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+      *
+      *        約束セットの時
+               IF      ISET-INPUTCD(1:1)       =   "S"
+                   MOVE    ISET-INPUTCD(1:6)   TO  SPA-GMN-INPUTCD
+                                                         (SPA-GMN-IDX)
+               END-IF
+      *
                IF      ISET-SURYO1     =   ZERO
       *            数量ゼロフラグ
                    IF     (SPA-SURYOZERO-FLG   =   1      )  AND
@@ -3472,7 +3510,7 @@
       *                入力コードの画面用再編集
                        PERFORM 3101-INPUTCD-HEN-SEC
       *                約束名称編集
-                       MOVE    6                   TO  WRK-CD-MCNT
+                       MOVE    6                   TO  LNK-SC97-CDSYU
                        MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:6)
                                                    TO  WRK-INPUTCD
                        PERFORM 41011921-INPSET-MEI-SEC
@@ -4014,7 +4052,8 @@
                    IF      SPA-COM-KAIFLG (IDX)    =   "1"
                         MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
       *                 外用薬の時、入力回数を
-                        IF     (SPA-COM-KAISU2(IDX) >   ZERO ) AND
+                        IF     (SPA-COM-SRYKBN(IDX) =  "23"  )  AND
+                               (SPA-COM-KAISU2(IDX) >   ZERO ) AND
                                (SPA-COM-KAISU (IDX) =   1    )
                             MOVE    SPA-COM-KAISU2 (IDX) TO  WRK-KAISU
                         END-IF
@@ -5740,7 +5779,7 @@
        4100221-INPUTSET-HEN-SEC              SECTION.
       *
            IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "."  OR  "S"
-               MOVE    SPA-GMN-INPUTCD(IDX)    TO  ISET-INPUTCD
+               MOVE    SPA-GMN-INPUTCD(IDX)(1:6)   TO  ISET-INPUTCD
            ELSE
                MOVE    SPA-COM-INPUTCD(IDX)    TO  ISET-INPUTCD
            END-IF
@@ -5764,6 +5803,7 @@
       *?   IF     (SPA-COM-ZAIEND (IDX)    =   "1"    )   OR
       *?          (SPA-GMN-INPUTCD(IDX)(1:1)   =   "S")
            IF     (SPA-COM-KAIFLG (IDX)    =   "1"    )
+           OR     (SPA-GMN-INPUTCD(IDX)(1:1)   =   "S")
                MOVE    SPA-COM-KAISU  (IDX)    TO  ISET-KAISU
            END-IF
       *    入力コメント番号

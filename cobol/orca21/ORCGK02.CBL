@@ -3411,6 +3411,7 @@
       *
       *    約束コードの画面用再編集
            MOVE    SPACE               TO  WRK-ERRCD
+           MOVE    SPACE               TO  FLG-TOROKU
            PERFORM VARYING     IDX-1   FROM    1   BY  1
                    UNTIL      (IDX-1   >   200 )  OR
                               (SPA-COM-INPUTCD(IDX-1)    =   SPACE  AND
@@ -3429,7 +3430,7 @@
                    MOVE    SPACE               TO  SPA-COM-INPUTCD
                                                              (IDX-1)
                    MOVE    SPACE               TO  SPA-COM-KAIFLG
-                                                               (IDX-1)
+                                                             (IDX-1)
       *
                    MOVE    ZERO                TO  WRK-IDX-YAKUSOKU
                    MOVE    ZERO                TO  IDX-YAKUSOKU
@@ -3448,6 +3449,7 @@
                    MOVE    LNK-SC97-INCDCNT    TO  WRK-CD-MCNT
       *            変換文字列編集
                    PERFORM 4101121-MOJI-SET-SEC
+      *
                    PERFORM 4101191-INPUTSET-SYORI-SEC
                END-IF
            END-PERFORM
@@ -7195,7 +7197,8 @@
                           (SPA-COM-ZAIEND (IDX)    =   "1"    )
                        MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
       *                外用薬の時、入力回数を
-                       IF     (SPA-COM-KAISU2(IDX) >   ZERO ) AND
+                       IF     (SPA-COM-SRYKBN(IDX) =  "23"  )  AND
+                              (SPA-COM-KAISU2(IDX) >   ZERO ) AND
                               (SPA-COM-KAISU (IDX) =   1    )
                            MOVE    SPA-COM-KAISU2 (IDX) TO  WRK-KAISU
                        END-IF
@@ -7317,7 +7320,8 @@
                    IF      SPA-COM-KAIFLG (IDX)    =   "1"
                         MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
       *                 外用薬の時、入力回数を
-                        IF     (SPA-COM-KAISU2(IDX) >   ZERO ) AND
+                        IF     (SPA-COM-SRYKBN(IDX) =  "23"  )  AND
+                               (SPA-COM-KAISU2(IDX) >   ZERO ) AND
                                (SPA-COM-KAISU (IDX) =   1    )
                             MOVE    SPA-COM-KAISU2 (IDX) TO  WRK-KAISU
                         END-IF

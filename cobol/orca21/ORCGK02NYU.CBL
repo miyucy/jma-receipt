@@ -2767,7 +2767,6 @@
                    PERFORM 4101121-MOJI-SET-SEC
       *
                    PERFORM 4101191-INPUTSET-SYORI-SEC
-                   MOVE    SPACE               TO  SPA-MAE-INPUTCD (IDX)
                END-IF
            END-PERFORM
       *
@@ -6122,7 +6121,8 @@
                        INITIALIZE                      WRK-NYUIN-AREA
       *
       *                外用薬の時、入力回数を
-                       IF     (SPA-COM-KAISU2(IDX) >   ZERO ) AND
+                       IF     (SPA-COM-SRYKBN(IDX) =  "23"  )  AND
+                              (SPA-COM-KAISU2(IDX) >   ZERO ) AND
                               (SPA-COM-KAISU (IDX) =   1    )
                            MOVE    SPA-COM-KAISU2 (IDX) TO  WRK-KAISU
                        END-IF
@@ -6283,10 +6283,11 @@
                       AND (WRK-KAISU               =   ZERO)
                         MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
       *                 外用薬の時、入力回数を
-                        IF     (SPA-COM-KAISU2(IDX) >   ZERO ) AND
-                               (SPA-COM-KAISU (IDX) =   1    )
-                            MOVE    SPA-COM-KAISU2 (IDX) TO  WRK-KAISU
-                        END-IF
+                       IF     (SPA-COM-SRYKBN(IDX) =  "23"  )  AND
+                              (SPA-COM-KAISU2(IDX) >   ZERO ) AND
+                              (SPA-COM-KAISU (IDX) =   1    )
+                           MOVE    SPA-COM-KAISU2 (IDX) TO  WRK-KAISU
+                       END-IF
                    END-IF
                END-IF
       *        入院の回数合計
