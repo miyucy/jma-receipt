@@ -944,3 +944,4 @@
            .
        900-DBSTART-EXT.
            EXIT.
+      *
