@@ -37,6 +37,8 @@
       *  01.00.07    NACL-森脇    03/02/12  パラメタ入力チェック追加
       *  01.00.08    NACL-多々納  03/03/31  未入力時、画面編集追加
       *  01.00.09    NACL-太田    03/04/30  確定のとき自動的に情報確認画面を表示
+      *  01.00.08    NACL-太田    03/04/30  １桁パラメータのデフォルト
+      *                                     に"0"を表示する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -589,6 +591,8 @@
                                            TO  SPA-GMN-PARA  (IDZ IDY)
                    WHEN    "PSN1"
                        MOVE    0           TO  SPA-NAI-HENPARA (IDZ IDY)
+                       MOVE    "0"
+                                           TO  SPA-GMN-PARA  (IDZ IDY)
                    WHEN     OTHER
                        MOVE    "0002"      TO  SPA-ERRCD
                        GO  TO  4101-PARA-CHK-EXT
