@@ -735,6 +735,11 @@
            MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU24       TO  HCN03-RMSAGAKU
+      *    ººŒ¡∫π≥€æ√»Ò¿«° ∫∆∑«°À
+           MOVE    SYU-RMSAGAKU-TAX-SAI TO WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-ZHENSYU24       TO  HCN03-RMZEI
       *    ƒ¥¿∞∂‚
            MOVE    SYU-CHOSEI          TO  WRK-KINGAKU-Z
            MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
