@@ -59,8 +59,9 @@
       *                                     以内再入院）の考慮を追加
       *  01.00.22    NACL-小豆沢  03.06.24  診療所老人医療管理料（３０日
       *                                     以内再入院）の考慮を追加
-      *  01.00.23    NACL-小豆沢  03.06.24  特定集中治療室管理料の正式対応
+      *  01.00.23    NACL-小豆沢  03.06.24  特定集中治療室管理料の転室対応
       *  01.00.24    NACL-太田    03.07.01  出力先プリンタサブ追加
+      *  01.00.25    NACL-小豆沢  03.07.08  特定集中治療室管理料の退院取消対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -8003,6 +8004,18 @@
       *****************************************************************
        4801-TAIINKAIKEI-CANCEL-SEC         SECTION.
       *
+           MOVE      SPACE        TO    IPN-NYUKAIKEI-SAKUSEI-FLG
+      *
+      *    特定集中治療室管理料算定時に退院日をＳＰＡ−異動日と転入日にセット
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN   =  "09"  OR  "16"
+                    MOVE   SPA-NAI-I01-TAIINYMD
+                                       TO   PTNYUINRRK-TENNYUYMD
+                                            SPA-NAI-I01-IDOYMD
+
+               END-IF
+           END-IF
+      *
       *    退院取消前の会計元データ作成
            INITIALIZE      ORCSSYOKIKSNAREA
       *
@@ -8020,6 +8033,17 @@
                     SYOKIKSN-IN-TUSANNISSU
            DISPLAY "SYOKIKSN-IN-SANTEISTYMD = "
                     SYOKIKSN-IN-SANTEISTYMD
+      *
+           DISPLAY   "ﾄｸﾃｲﾆﾕｳｲﾝ ﾂｳｻﾝﾋﾞ = " STUSAN-NISSU06
+      *    特定集中治療室管理料算定時に特定入院での算定日が１４日を
+      *    経過していた場合は一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN   =  "09"  OR  "16"
+                   IF   STUSAN-NISSU06   >=   14
+                       MOVE    SPACE   TO   SPA-GMN-I01-TOKNYUIN-CD
+                   END-IF
+               END-IF
+           END-IF
       *
            IF      SPA-GMN-I01-TOKNYUIN-CD    NOT =   SPACE
                PERFORM   4801-TOKTEI-NYUIN-SET-SEC
@@ -8164,6 +8188,74 @@
                  MOVE    "99999999"
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
            END-IF
+      *    特定集中治療室管理料
+           MOVE      ZERO               TO  TN-IDX
+           IF    SYOKIKSN-IN-KHNSRYCD   =   "190024610"
+                 MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
+                                        LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+      *          特定集中治療室管理料の算定可能日数を計算
+                 MOVE     ZERO      TO   WK-TOKUTEI-DAY
+                                         WK-TOKUTEI-DAY2
+                 COMPUTE  WK-TOKUTEI-DAY  =  14  - STUSAN-NISSU06
+                 IF       STUSAN-NISSU07  <  7
+                     ADD     1        TO     TN-IDX
+                     COMPUTE  WK-TOKUTEI-DAY2 =  6   -  STUSAN-NISSU07
+                     MOVE   "190024610"  TO
+                                    LNK-SCNYUACCT-KAGEN-SRYCD(TN-IDX)
+                     MOVE   SPA-NAI-I01-IDOYMD   TO
+                                  LNK-SCNYUACCT-KAGEN-STYUKYMD(TN-IDX)
+                     INITIALIZE                STS-AREA-DAY
+                     INITIALIZE                LNK-DAY6-AREA
+                     MOVE    "61"              TO  LNK-DAY6-IRAI
+                     MOVE   SPA-NAI-I01-IDOYMD
+                                               TO  LNK-DAY6-KIJUN
+                     MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                     MOVE   WK-TOKUTEI-DAY2    TO  LNK-DAY6-ZOGEN
+                     CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                     MOVE    LNK-DAY6-KEISAN   TO
+                                  LNK-SCNYUACCT-KAGEN-EDYUKYMD(TN-IDX)
+                 END-IF
+      *
+                 IF     WK-TOKUTEI-DAY   >=   1
+                     ADD     1     TO   TN-IDX
+                     MOVE   "190074610"  TO 
+                                    LNK-SCNYUACCT-KAGEN-SRYCD(TN-IDX)
+                     INITIALIZE                STS-AREA-DAY
+                     INITIALIZE                LNK-DAY6-AREA
+                     MOVE    "61"              TO  LNK-DAY6-IRAI
+                     IF    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1) NOT = SPACE
+                         MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+                                               TO  LNK-DAY6-KIJUN
+                         MOVE    "1"           TO  LNK-DAY6-ZOGENPTN
+                         MOVE     1            TO  LNK-DAY6-ZOGEN
+                         CALL  "ORCSDAY"       USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                         MOVE    LNK-DAY6-KEISAN   TO
+                                  LNK-SCNYUACCT-KAGEN-STYUKYMD(TN-IDX)
+                     ELSE
+                         MOVE  SPA-NAI-I01-IDOYMD   TO  LNK-DAY6-KIJUN
+                         MOVE  SPA-NAI-I01-IDOYMD   TO
+                                  LNK-SCNYUACCT-KAGEN-STYUKYMD(TN-IDX)
+                     END-IF
+                     MOVE    "99999999"        TO
+                                  LNK-SCNYUACCT-KAGEN-EDYUKYMD(TN-IDX)
+                 END-IF
+      *          一般入院料の算定開始日を算定
+                 INITIALIZE                STS-AREA-DAY
+                 INITIALIZE                LNK-DAY6-AREA
+                 MOVE    "61"              TO  LNK-DAY6-IRAI
+                 MOVE   SPA-NAI-I01-IDOYMD
+                                           TO  LNK-DAY6-KIJUN
+                 MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                 MOVE   WK-TOKUTEI-DAY     TO  LNK-DAY6-ZOGEN
+                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                 MOVE    LNK-DAY6-KEISAN
+                                  TO       IPN-SANTEISTYMD
+      *          一般入院会計作成用のフラグ設定
+                 MOVE    "1"      TO      IPN-NYUKAIKEI-SAKUSEI-FLG
+           END-IF
       *-------特定入院対応ここまで-----------------------------------
       *
       *    特定入院料区分のセット
@@ -8221,6 +8313,13 @@
            IF     LNK-SCNYUACCT-RC   NOT =  ZERO
                   DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
                             LNK-SCNYUACCT-RC
+           END-IF
+      *
+           IF     IPN-NYUKAIKEI-SAKUSEI-FLG    =   "1"
+               MOVE    SPACE   TO   SPA-GMN-I01-TOKNYUIN-CD
+               MOVE    IPN-SANTEISTYMD   TO   WRK-SANTEISTYMD
+               MOVE    IPN-SANTEISTYMD   TO   SPA-NAI-I01-IDOYMD
+               PERFORM   4801-TENROOM-EDIT-SEC
            END-IF
       *
            .
