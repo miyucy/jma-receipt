@@ -5727,23 +5727,33 @@
            IF    ( SPA-GMN-C02-BYOMEI  =   SPACE )
            OR    ( SPA-NAI-C02-BYOMEIMOJI
                                        =   SPACE )
-           OR    ( SPA-NAI-C02-BYOMEICD-MAX
-                                       >   1     )
+      *****OR    ( SPA-NAI-C02-BYOMEICD-MAX
+      *****                            >   1     )
                GO  TO  490-C09-SYORI-EXT
            END-IF
       *  
            MOVE    SPACE               TO  C09
       *
            MOVE    ZERO                TO  IDZ
+                                           IDXX
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       21
                IF      SPA-NAI-C02-BYOMEICD (IDX)  NOT =   SPACE
+                   IF    ( SPA-NAI-C02-BYOMEITOP (IDX) =   "1"  )
+                   AND   ( IDXX                        >   ZERO )
+                       MOVE    ZERO                    TO  IDXX
+                       ADD     1                       TO  IDZ
+                   END-IF  
                    PERFORM VARYING IDY FROM    1   BY  1
                            UNTIL   IDY >       21
                            OR      SPA-NAI-C02-BYOMEICD-O (IDX IDY)
                                                =   SPACE
-                       ADD     1                   TO  IDZ
-                       IF      IDZ                 <=   21
+                        ADD     1                   TO  IDZ
+                                                       IDXX
+                       IF      IDZ                 <=   100
+                           MOVE    IDXX        TO  WRK-GMN-BANGO
+                           MOVE    WRK-GMN-BANGO (4:2)
+                                               TO  C09-TBANGO    (IDZ)
                            MOVE    SPA-NAI-C02-BYOMEICD-O (IDX IDY)
                                                TO  C09-TBYOMEICD (IDZ)
                            MOVE    SPA-NAI-C02-BYOMEI-O   (IDX IDY)

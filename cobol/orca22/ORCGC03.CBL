@@ -2544,9 +2544,11 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
                    OR      SPA-GMN-BYOMEICD (IDX)  =   SPACE
-               MOVE    SPA-GMN-BYOMEICD (IDX) TO  C09-TBYOMEICD (IDX)
-               MOVE    SPA-NAI-BYOMEI   (IDX) TO  C09-TBYOMEI   (IDX)
-               MOVE    IDX                    TO  C09-COUNT
+               MOVE    IDX                     TO  WRK-NUM
+               MOVE    WRK-NUM (4:2)           TO  C09-TBANGO    (IDX)
+               MOVE    SPA-GMN-BYOMEICD (IDX)  TO  C09-TBYOMEICD (IDX)
+               MOVE    SPA-NAI-BYOMEI   (IDX)  TO  C09-TBYOMEI   (IDX)
+               MOVE    IDX                     TO  C09-COUNT
            END-PERFORM
       *
            MOVE    "B01"                TO  MCP-WIDGET
