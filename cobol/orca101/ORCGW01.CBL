@@ -50,6 +50,7 @@
       *  01.05.03    NACL-多々納  02/11/12  コード桁数チェック追加
       *                                     一括入力へ
       *  01.05.04    NACL-多々納  02/11/25  ベット数より入院表示判定
+      *  01.05.05    NACL-藤原    02/11/27  W15の追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -256,6 +257,7 @@
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
+           COPY    "W15.INC".
            COPY    "W20.INC".
            COPY    "W21.INC".
            COPY    "W22.INC".
@@ -406,52 +408,56 @@
            MOVE    "1031"                  TO  SPA-GMN-KANRICDL (17)
            MOVE    "出力先プリンタ割り当て情報"
                                            TO  SPA-GMN-KANRICDMEIL(17)
-           MOVE    "2003"                  TO  SPA-GMN-KANRICDL (18)
+           MOVE    "1033"                  TO  SPA-GMN-KANRICDL (18)
+           MOVE    "県内扱い保険者情報"    TO  SPA-GMN-KANRICDMEIL(18)
+           MOVE    "2003"                  TO  SPA-GMN-KANRICDL (19)
            MOVE    "レセプト作成指示（印刷順）情報"
-                                           TO  SPA-GMN-KANRICDMEIL(18)
-           MOVE    "2004"                  TO  SPA-GMN-KANRICDL (19)
-           MOVE    "レセプト種別情報"      TO  SPA-GMN-KANRICDMEIL(19)
-           MOVE    "2005"                  TO  SPA-GMN-KANRICDL (20)
+                                           TO  SPA-GMN-KANRICDMEIL(19)
+           MOVE    "2004"                  TO  SPA-GMN-KANRICDL (20)
+           MOVE    "レセプト種別情報"      TO  SPA-GMN-KANRICDMEIL(20)
+           MOVE    "2005"                  TO  SPA-GMN-KANRICDL (21)
            MOVE    "レセプト・総括印刷情報"
-                                           TO  SPA-GMN-KANRICDMEIL(20)
-           MOVE    "3001"                  TO  SPA-GMN-KANRICDL (21)
-           MOVE    "統計帳票出力情報（日次）"
                                            TO  SPA-GMN-KANRICDMEIL(21)
-           MOVE    "3002"                  TO  SPA-GMN-KANRICDL (22)
-           MOVE    "統計帳票出力情報（月次）"
+           MOVE    "3001"                  TO  SPA-GMN-KANRICDL (22)
+           MOVE    "統計帳票出力情報（日次）"
                                            TO  SPA-GMN-KANRICDMEIL(22)
-           MOVE    "3004"                  TO  SPA-GMN-KANRICDL (23)
-           MOVE    "県単独事業情報"        TO  SPA-GMN-KANRICDMEIL(23)
-           MOVE    "4001"                  TO  SPA-GMN-KANRICDL (24)
+           MOVE    "3002"                  TO  SPA-GMN-KANRICDL (23)
+           MOVE    "統計帳票出力情報（月次）"
+                                           TO  SPA-GMN-KANRICDMEIL(23)
+           MOVE    "3004"                  TO  SPA-GMN-KANRICDL (24)
+           MOVE    "県単独事業情報"        TO  SPA-GMN-KANRICDMEIL(24)
+           MOVE    "4001"                  TO  SPA-GMN-KANRICDL (25)
       *****MOVE    "労災医療機関情報"
-           MOVE    "労災自賠医療機関情報"  TO  SPA-GMN-KANRICDMEIL(24)
+           MOVE    "労災自賠医療機関情報"  TO  SPA-GMN-KANRICDMEIL(25)
       *
       *    入院はベット数がある時のみ
            IF      SPA-BEDSU           =   ZERO
-               MOVE    24                  TO  SPA-GMN-KANRICD-MAX
+      *********MOVE    24                  TO  SPA-GMN-KANRICD-MAX
+               MOVE    25                  TO  SPA-GMN-KANRICD-MAX
                MOVE    1                   TO  SPA-GMN-CUR
                GO      TO        310-SPASET-EXT
            END-IF
       *
-           MOVE    "5000"                  TO  SPA-GMN-KANRICDL (25)
+           MOVE    "5000"                  TO  SPA-GMN-KANRICDL (26)
            MOVE    "医療機関情報−入院基本"
-                                           TO  SPA-GMN-KANRICDMEIL(25)
-           MOVE    "5001"                  TO  SPA-GMN-KANRICDL (26)
-           MOVE    "病棟管理情報"          TO  SPA-GMN-KANRICDMEIL(26)
-           MOVE    "5002"                  TO  SPA-GMN-KANRICDL (27)
-           MOVE    "病室管理情報"          TO  SPA-GMN-KANRICDMEIL(27)
-           MOVE    "5003"                  TO  SPA-GMN-KANRICDL (28)
+                                           TO  SPA-GMN-KANRICDMEIL(26)
+           MOVE    "5001"                  TO  SPA-GMN-KANRICDL (27)
+           MOVE    "病棟管理情報"          TO  SPA-GMN-KANRICDMEIL(27)
+           MOVE    "5002"                  TO  SPA-GMN-KANRICDL (28)
+           MOVE    "病室管理情報"          TO  SPA-GMN-KANRICDMEIL(28)
+           MOVE    "5003"                  TO  SPA-GMN-KANRICDL (29)
            MOVE    "病棟入院基本料加算情報"
-                                           TO  SPA-GMN-KANRICDMEIL(28)
-           MOVE    "5004"                  TO  SPA-GMN-KANRICDL (29)
-           MOVE    "病室入院基本料加算情報"
                                            TO  SPA-GMN-KANRICDMEIL(29)
-           MOVE    "5005"                  TO  SPA-GMN-KANRICDL (30)
-           MOVE    "入院用管理マスタ設定"  TO  SPA-GMN-KANRICDMEIL(30)
-           MOVE    "5010"                  TO  SPA-GMN-KANRICDL (31)
-           MOVE    "定期請求情報"          TO  SPA-GMN-KANRICDMEIL(31)
+           MOVE    "5004"                  TO  SPA-GMN-KANRICDL (30)
+           MOVE    "病室入院基本料加算情報"
+                                           TO  SPA-GMN-KANRICDMEIL(30)
+           MOVE    "5005"                  TO  SPA-GMN-KANRICDL (31)
+           MOVE    "入院用管理マスタ設定"  TO  SPA-GMN-KANRICDMEIL(31)
+           MOVE    "5010"                  TO  SPA-GMN-KANRICDL (32)
+           MOVE    "定期請求情報"          TO  SPA-GMN-KANRICDMEIL(32)
       *
-           MOVE    31                      TO  SPA-GMN-KANRICD-MAX
+      *****MOVE    31                      TO  SPA-GMN-KANRICD-MAX
+           MOVE    32                      TO  SPA-GMN-KANRICD-MAX
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
@@ -1278,6 +1284,8 @@
                    MOVE    "W13"               TO  SPA-SAKIPG
                WHEN    "3004"
                    MOVE    "W14"               TO  SPA-SAKIPG
+               WHEN    "1033"
+                   MOVE    "W15"               TO  SPA-SAKIPG
                WHEN    "5000"
                    MOVE    "W24"               TO  SPA-SAKIPG
                WHEN    "5001"

@@ -170,6 +170,7 @@
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
+           COPY    "W15.INC".
            COPY    "W20.INC".
            COPY    "W21.INC".
            COPY    "W22.INC".
@@ -838,7 +839,7 @@
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      410-KAKUTEI-EXT
+               GO      TO      4901-KANRENCHK-EXT
            END-IF
            .
        4901-KANRENCHK-EXT.

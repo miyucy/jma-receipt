@@ -235,6 +235,7 @@
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
+           COPY    "W15.INC".
            COPY    "W20.INC".
            COPY    "W21.INC".
            COPY    "W22.INC".

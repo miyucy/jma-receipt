@@ -16,19 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION                            DIVISION.
-       PROGRAM-ID.                               ORCGW03.
+       PROGRAM-ID.                               ORCGW15.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : システム管理情報設定
-      *  コンポーネント名  : 施設基準情報（Ｗ０３）
+      *  コンポーネント名  : 県内扱い保険者設定
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  00/12/01    MCC−藤原　   新規作成
+      *  02/11/25    NACL−藤原　   新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.01.01    MCC-藤原     01/09/21  JOINの修正   
-      *  02.00.01    NACL-多々納  02/11/12  一括入力 
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -48,50 +46,42 @@
            COPY    "W01COMMON-SPA".
       *
       *    画面用ＳＰＡ
-       01  SPA-W03.
-           03  SPA-W03-AREA.
+       01  SPA-W15.
+           03  SPA-W15-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
                05  SPA-GMN-LINE        PIC 9(02).
                05  SPA-GMN-MAX         PIC 9(04).
                05  SPA-GMN-PAGE-MAX    PIC 9(02).
-               05  SPA-GMN-CUR         PIC 9(02).
+               05  SPA-GMN-CUR         PIC 9(03).
       *
                05  SPA-GMN-AREA.
                    07  SPA-GMN-STYUKYMD    PIC X(09).
                    07  SPA-GMN-EDYUKYMD    PIC X(09).
                    07  SPA-GMN-TBL.
-                       09  SPA-GMN-TBLO            OCCURS  25.
-                           11  SPA-GMN-TCD         PIC X(04).
-                           11  SPA-GMN-TNAME       PIC X(100).
-                           11  SPA-GMN-TSSTKIJUN   PIC 9(01).
-               05  SPA-NAI-AREA.
-                   07  SPA-NAI-TBL.
-                       09  SPA-NAI-TBLO            OCCURS  1000.
-                           11  SPA-NAI-TSSTKIJUN   PIC 9(01).
-      *
-      *    フラグエリア
+                       09  SPA-GMN-TBLO            OCCURS  20.
+                           11  SPA-GMN-HKNJANUM    PIC X(08).
+                           11  SPA-GMN-HKNJAMEI    PIC X(40).
+      *                                                             
+      *    フラグ領域
        01  FLG-AREA.
-           03  FLG-END                            PIC 9(01).
-           03  FLG-SYSKANRI                       PIC 9(01).
+           03  FLG-END             PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-HKNJAINF        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDX                               PIC 9(04).
-           03  IDY                               PIC 9(04).
-           03  IDZ                               PIC 9(04).
-           03  IDZ1                              PIC 9(04).
+           03  IDX                 PIC 9(04).
+           03  IDY                 PIC 9(04).
+           03  IDZ                 PIC 9(04).
+           03  IDZ1                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
            03  WRK-WIDMSG          PIC X(70).
-           03  WRK-KBNCD           PIC 9(01).
-           03  WRK-MAX-X.
-               05  WRK-MAX         PIC 9(04). 
-           03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-KBNCD           PIC 9(04).
            03  WRK-WIDGET.
                05  WRK-WIDGET1     PIC X(08).
                05  WRK-WIDGET2     PIC 9(02).
-               05                  PIC X(03). 
            03  WRK-YMD             PIC X(09). 
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -103,6 +93,9 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
       *
+           03  WRK-GMN-CUR         PIC 9(02).
+           03  WRK-MCP-WIDGET      PIC X(64).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -113,7 +106,7 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
-                    
+       01  WRK-CONS-LINE-MAX       PIC 9(02)   VALUE   20.              
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -121,10 +114,11 @@
       *
       *    システム管理マスタ
            COPY  "CPSYSKANRI.INC".
-      *    施設基準名
-           COPY  "CPSK0031.INC".
-      *    施設基準コードフラグ情報
-           COPY  "CPSK1006.INC".
+      *    県内扱い保険者情報
+           COPY    "CPSK1033.INC".
+      *    保険者
+       01  HKNJAINF-REC.
+           COPY  "CPHKNJAINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -133,6 +127,9 @@
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -174,24 +171,20 @@
            COPY    "WERR.INC".
            COPY    "WID1.INC".
       *
-       PROCEDURE                                 DIVISION    USING
-                                                 MCPAREA
-                                                 SPAAREA
-                                                 LINKAREA
-                                                 SCRAREA.
+       PROCEDURE                   DIVISION    USING
+                                               MCPAREA
+                                               SPAAREA
+                                               LINKAREA
+                                               SCRAREA.
       *
       *****************************************************************
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  WRK-AREA
-           INITIALIZE                  IDX-AREA
-      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-W03
+           MOVE    SPA-FREE        TO  SPA-W15
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -212,7 +205,7 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-W03         TO  SPA-FREE
+           MOVE    SPA-W15         TO  SPA-FREE
            MOVE    SPA-W01KYOUTU   TO  SPA-WORK 
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
@@ -247,9 +240,8 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-      ***  MOVE    "NEW"                TO  MCP-PUTTYPE
-           MOVE    SPACE                TO  MCP-PUTTYPE
-           MOVE    "W03    "           TO  MCP-WINDOW.
+           MOVE    SPACE               TO  MCP-PUTTYPE
+           MOVE    "W15    "           TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *
@@ -286,133 +278,43 @@
        310-SPASET-SEC              SECTION.
       *
       *
-           INITIALIZE              SPA-W03-AREA
+           INITIALIZE              SPA-W15-AREA
       *
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD
       * 
-      *    施設基準情報
-           MOVE    SPACE               TO  SYS-0031-REC 
-           INITIALIZE                      SYS-0031-REC
-           MOVE    "0031"                  TO  SYS-0031-KANRICD
-           MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
-           MOVE    SYS-0031-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
+      *    県内扱い保険者情報
+           MOVE    SPACE               TO  SYS-1033-REC
+           INITIALIZE                      SYS-1033-REC
+           MOVE    SPA-W01-KANRICD     TO  SYS-1033-KANRICD
+           MOVE    "*"                 TO  SYS-1033-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SYS-1033-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI            =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1033-REC
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       20
+                       OR      SYS-1033-HKNJANUM (IDX)
+                                                   =   SPACE  
+                   MOVE    SYS-1033-HKNJANUM  (IDX)
+                                               TO  SPA-GMN-HKNJANUM(IDX)
       *
-           MOVE    ZERO                TO  WRK-MAX
-           PERFORM             UNTIL   FLG-SYSKANRI   =   1
-               MOVE    MCPDATA-REC        TO  SYS-0031-REC
-      *
-               MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
-               PERFORM 900-SYSKANRI-READ-SEC
-           END-PERFORM
-      *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      * 
-      *    施設基準情報
-           MOVE    SPACE               TO  SYS-1006-REC
-           INITIALIZE                      SYS-1006-REC
-           MOVE    "1006"                  TO  SYS-1006-KANRICD
-           MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
-           MOVE    SYS-1006-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           MOVE    ZERO                TO  IDX
-           PERFORM             UNTIL   FLG-SYSKANRI   =   1
-                               OR      IDX            >=  1000
-               MOVE    MCPDATA-REC        TO  SYS-1006-REC
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       500      
-                   ADD     1               TO  IDX
-                   MOVE    SYS-1006-SSTKIJUN  (IDY)
-                                           TO  SPA-NAI-TSSTKIJUN (IDX)
-               END-PERFORM   
-      *
-               MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
-               PERFORM 900-SYSKANRI-READ-SEC
-           END-PERFORM
-      *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           MOVE    IDX                 TO  SPA-GMN-MAX
-      *
-           COMPUTE SPA-GMN-PAGE-MAX    =   (SPA-GMN-MAX - 1)     /
-                                            25  + 1      
-           MOVE    1                   TO  SPA-GMN-PAGE
-      *
-           PERFORM 3101-SSTKIJUN-HENSYU-SEC  
-      *
-           .
-       310-SPASET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    施設基準編集処理
-      *****************************************************************
-       3101-SSTKIJUN-HENSYU-SEC            SECTION.
-      *
-           INITIALIZE                      SPA-GMN-TBL
-      *
-           COMPUTE IDX =   (SPA-GMN-PAGE    -   1)   *   25
-      * 
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       25
-               ADD     1                           TO  IDX
-               IF      IDX     >   SPA-GMN-MAX
-                   MOVE    25                      TO  IDY
-               ELSE
-                   MOVE    IDX             TO  SPA-GMN-TCD       (IDY)
-                   MOVE    SPA-NAI-TSSTKIJUN   (IDX)
-                                           TO  SPA-GMN-TSSTKIJUN (IDY)
-                   MOVE    SPACE           TO  SYS-0031-REC
-                   INITIALIZE                  SYS-0031-REC
-                   MOVE    "0031"          TO  SYS-0031-KANRICD
-                   MOVE    SPA-GMN-TCD (IDY)
-                                           TO  SYS-0031-KBNCD (1:4)
-                   MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
-                   MOVE    SYS-0031-REC    TO  MCPDATA-REC
-                   PERFORM 900-SYSKANRI-INV-SEC
-                   IF      FLG-SYSKANRI    =   ZERO
-                       MOVE    MCPDATA-REC     TO  SYS-0031-REC
-                       MOVE    SYS-0031-SSTKIJUN
-                                               TO  SPA-GMN-TNAME(IDY)
+                   MOVE    SPACE               TO  HKNJAINF-REC
+                   INITIALIZE                      HKNJAINF-REC
+                   MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+                   MOVE    SPA-GMN-HKNJANUM (IDX)
+                                               TO  HKNJA-HKNJANUM
+                   MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+                   PERFORM 900-HKNJAINF-INV-SEC
+                   IF      FLG-HKNJAINF        =   ZERO
+                       MOVE    HKNJA-HKNJANAME
+                                           TO  SPA-GMN-HKNJAMEI (IDX)
                    END-IF
-               END-IF                                
-           END-PERFORM      
-      *
+               END-PERFORM
+           END-IF                           
            MOVE    1                   TO  SPA-GMN-CUR
+      *
            .
        310-SPASET-EXT.
            EXIT.
@@ -442,15 +344,9 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM  210-BACK
-      *    前画面
-               WHEN    "CLICKED"       ALSO    "B06"
-                   PERFORM 430-MAEGMN-SEC
-      *    次画面
-               WHEN    "CLICKED"       ALSO    "B07"
-                   PERFORM 440-ATOGMN-SEC
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
-                   PERFORM  410-KAKUTEI-SEC
+                   PERFORM 410-KAKUTEI-SEC
            END-EVALUATE
            .
       *
@@ -492,9 +388,10 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
+      *    保険者番号
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   25
-               MOVE    W03-SSTKIJUN (IDX)  TO  SPA-GMN-TSSTKIJUN (IDX)
+                   UNTIL       IDX     >   20
+               MOVE    W15-HKNJANUM (IDX)   TO  SPA-GMN-HKNJANUM (IDX)
            END-PERFORM
       *
            .
@@ -506,7 +403,10 @@
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
-           PERFORM  4101-SSTKIJUN-CHK-SEC
+           PERFORM  4101-HKNJANUM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
       *
            .
        4102-KIHON-CHK-EXT.
@@ -518,9 +418,8 @@
        210-BACK                    SECTION.
       *
            MOVE    "W01"               TO  SPA-SAKIPG
-           MOVE    "W03"               TO  SPA-MOTOPG
+           MOVE    "W15"               TO  SPA-MOTOPG
       *
-      ***  MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
@@ -532,80 +431,33 @@
            EXIT.
       *
       *****************************************************************
-      *  　施設基準チェック
+      *    シェル名入力処理
       *****************************************************************
-       4101-SSTKIJUN-CHK-SEC                         SECTION.
-      *
+       4101-HKNJANUM-CHK-SEC       SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   25  )  OR
+                   UNTIL      (IDX         >   20  )   OR
                               (SPA-ERRCD   NOT =   SPACE )
-      *
-               COMPUTE IDZ             =   IDX
-                                       +   (SPA-GMN-PAGE - 1 ) * 25
-      *        施設基準名があること
-               IF      SPA-GMN-TNAME (IDX)     =   SPACE
-               AND     SPA-GMN-TSSTKIJUN (IDX) =   1
-                   MOVE    "0002"             TO  SPA-ERRCD
-                   MOVE    IDX                TO  SPA-GMN-CUR
-               END-IF
-      *
-               IF      SPA-ERRCD           =   SPACE
-                   EVALUATE    SPA-GMN-TSSTKIJUN (IDX)
-                       WHEN    ZERO
-                       WHEN    1
-                           MOVE  SPA-GMN-TSSTKIJUN (IDX)
-                                         TO  SPA-NAI-TSSTKIJUN (IDZ)
-                       WHEN    OTHER
-                           MOVE    "0002"             TO  SPA-ERRCD
-                           MOVE    IDX                TO  SPA-GMN-CUR
-                   END-EVALUATE
+               MOVE    SPACE               TO  SPA-GMN-HKNJAMEI(IDX)
+               IF     SPA-GMN-HKNJANUM (IDX)    NOT =   SPACE
+                   MOVE    SPACE               TO  HKNJAINF-REC
+                   INITIALIZE                      HKNJAINF-REC
+                   MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+                   MOVE    SPA-GMN-HKNJANUM (IDX)
+                                               TO  HKNJA-HKNJANUM
+                   MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+                   PERFORM 900-HKNJAINF-INV-SEC
+                   IF      FLG-HKNJAINF        =   ZERO
+                       MOVE    HKNJA-HKNJANAME
+                                           TO  SPA-GMN-HKNJAMEI (IDX)
+                   ELSE
+                       MOVE    "0001"      TO  SPA-ERRCD                             
+                   END-IF
                END-IF
            END-PERFORM
+      *
            .
-       4101-SSTKIJUN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    前頁　処理
-      *****************************************************************
-       430-MAEGMN-SEC             SECTION.
-      *
-           PERFORM 4901-KANRENCHK-SEC
-           IF      SPA-ERRCD      NOT =   SPACE
-               GO  TO  430-MAEGMN-EXT
-           END-IF
-      *
-           IF      SPA-GMN-PAGE       =   1
-               MOVE    "0006"             TO  SPA-ERRCD
-               GO  TO  430-MAEGMN-EXT
-           END-IF
-      *
-           COMPUTE SPA-GMN-PAGE   =   SPA-GMN-PAGE    -   1
-      *
-           PERFORM 3101-SSTKIJUN-HENSYU-SEC  
-           .
-       430-MAEGMN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    次頁　処理
-      *****************************************************************
-       440-ATOGMN-SEC             SECTION.
-      *
-           PERFORM 4901-KANRENCHK-SEC
-           IF      SPA-ERRCD      NOT =   SPACE
-               GO  TO  440-ATOGMN-EXT
-           END-IF
-      *
-           IF      SPA-GMN-PAGE       =   SPA-GMN-PAGE-MAX
-               MOVE    "0007"             TO  SPA-ERRCD
-               GO  TO  440-ATOGMN-EXT
-           END-IF
-           COMPUTE SPA-GMN-PAGE   =   SPA-GMN-PAGE    +   1       
-      *
-           PERFORM 3101-SSTKIJUN-HENSYU-SEC  
-           .
-       440-ATOGMN-EXT.
+       4101-HKNJANUM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -615,7 +467,7 @@
       *
            PERFORM 4901-KANRENCHK-SEC
            IF      SPA-ERRCD        =   SPACE
-               MOVE    "1001"           TO  SPA-WIDCD
+               MOVE    "1033"           TO  SPA-WIDCD
            END-IF
            .
        410-KAKUTEI-EXT.
@@ -625,50 +477,61 @@
       *       登録処理
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
-      * 
-      *    施設基準情報
-           MOVE    SPACE               TO  SYS-1006-REC
-           INITIALIZE                      SYS-1006-REC
-           MOVE    "1006"                  TO  SYS-1006-KANRICD
-           MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
-           MOVE    SYS-1006-REC            TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      * 
-           MOVE    ZERO                TO  IDX
-                                           WRK-KBNCD
-           PERFORM             UNTIL   IDX            >=  SPA-GMN-MAX
-               MOVE    SPACE               TO  SYS-1006-REC
-               INITIALIZE                      SYS-1006-REC
-               MOVE    "1006"                  TO  SYS-1006-KANRICD
-               MOVE    SPA-W01-STYUKYMD        TO  SYS-1006-STYUKYMD
-               MOVE    SPA-W01-EDYUKYMD        TO  SYS-1006-EDYUKYMD
-               ADD     1                       TO  WRK-KBNCD
-               MOVE    WRK-KBNCD               TO  SYS-1006-KBNCD
-      *    
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       500      
-                   ADD     1               TO  IDX
-                   MOVE    SPA-NAI-TSSTKIJUN (IDX)
-                                           TO  SYS-1006-SSTKIJUN  (IDY)
-               END-PERFORM
       *
-               MOVE    SYS-1006-REC            TO  MCPDATA-REC
+      *    県内扱い保険者情報
+           MOVE    SPACE               TO  SYS-1033-REC
+           INITIALIZE                      SYS-1033-REC
+           MOVE    SPA-W01-KANRICD     TO  SYS-1033-KANRICD
+                   MOVE    "*"         TO  SYS-1033-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SYS-1033-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+      *
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1033-REC
+           ELSE
+               MOVE    SPACE           TO  SYS-1033-REC
+               INITIALIZE                  SYS-1033-REC
+               MOVE   "1033"           TO  SYS-1033-KANRICD
+               MOVE    "*"             TO  SYS-1033-KBNCD
+           END-IF
+           INITIALIZE                  SYS-1033-TBL    
+           MOVE    ZERO            TO  IDY
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       20
+               IF      SPA-GMN-HKNJANUM (IDX)  =   SPACE
+                   CONTINUE
+               ELSE
+                   ADD     1           TO  IDY
+                   MOVE    SPA-GMN-HKNJANUM (IDX)
+                                       TO  SYS-1033-HKNJANUM (IDY)
+               END-IF
+           END-PERFORM                                    
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1033-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD    TO  SYS-1033-EDYUKYMD
+           MOVE    SYS-1033-REC        TO  SYSKANRI-REC
+ 
+      *     
+           IF      FLG-SYSKANRI            =   ZERO
+               MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
+               MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
+               MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
+               MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
+               MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
+               MOVE    "DBUPDATE"              TO  MCP-FUNC
+           ELSE
                MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                MOVE    "DBINSERT"              TO  MCP-FUNC
-               CALL    "ORCMCPSUB"              USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
-               IF      MCP-RC              NOT =   ZERO 
-                   MOVE    "1003"                  TO  SPA-ERRCD
-                   GO  TO  490-KOUSHIN-EXT
-               END-IF
-           END-PERFORM          
+           END-IF
+           MOVE    SYSKANRI-REC            TO  MCPDATA-REC
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           IF      MCP-RC              NOT =   ZERO 
+               MOVE    "1033"                  TO  SPA-ERRCD
+               GO  TO  490-KOUSHIN-EXT
+           END-IF      
       *
            MOVE   "JOIN"               TO  MCP-PUTTYPE
            PERFORM 210-BACK 
@@ -681,29 +544,12 @@
       *****************************************************************
        4901-KANRENCHK-SEC           SECTION.
       *
+           MOVE    SPACE                TO  SPA-ERRCD
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO  4901-KANRENCHK-EXT
+               GO      TO      4901-KANRENCHK-EXT
            END-IF
-      *
-      *****MOVE    SPACE                TO  SPA-ERRCD
-      *
-      *    PERFORM VARYING IDX FROM    1   BY  1
-      *            UNTIL   IDX >       25
-      *        EVALUATE    SPA-GMN-TSSTKIJUN (IDX)
-      *            WHEN    ZERO
-      *            WHEN    1  
-      *                IF      SPA-GMN-TNAME     (IDX) =   SPACE
-      *                AND     SPA-GMN-TSSTKIJUN (IDX) =   "1"
-      *                   MOVE    "0002"             TO  SPA-ERRCD
-      *                   GO  TO  4901-KANRENCHK-EXT
-      *                END-IF
-      *            WHEN    OTHER
-      *                MOVE    "0002"             TO  SPA-ERRCD
-      *                GO  TO  4901-KANRENCHK-EXT
-      *        END-EVALUATE
-      *****END-PERFORM      
            .
        4901-KANRENCHK-EXT.
            EXIT.
@@ -791,7 +637,7 @@
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "W03    "           TO  MCP-WINDOW.
+           MOVE    "W15    "           TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
            .
@@ -803,24 +649,16 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           MOVE    SPACE               TO  W03
+           MOVE    SPACE               TO  W15
       *
-           COMPUTE IDY     =   SPA-GMN-PAGE    *   25
-           COMPUTE IDZ     =   IDY             -   24
-      *
-           MOVE    ZERO                TO  IDX
-           PERFORM VARYING     IDZ1     FROM    IDZ   BY  1
-                   UNTIL       IDZ1     >       IDY
-               ADD     1                        TO  IDX
-               MOVE    SPA-GMN-TCD        (IDX) TO  W03-CD       (IDX)
-               MOVE    SPA-GMN-TSSTKIJUN  (IDX) TO  W03-SSTKIJUN (IDX)
-               MOVE    SPA-GMN-TNAME      (IDX) TO  W03-DSPNAME  (IDX)
-      ***         MOVE    SPA-NAI-TSSTKIJUN  (IDZ1)
-      ***                                       TO  W03-SSTKIJUN (IDX)
+           PERFORM VARYING     IDX      FROM    1   BY  1
+                   UNTIL       IDX      >       WRK-CONS-LINE-MAX 
+               MOVE    SPA-GMN-HKNJAMEI   (IDX) TO  W15-HKNJAMEI (IDX)
+               MOVE    SPA-GMN-HKNJANUM   (IDX) TO  W15-HKNJANUM (IDX)
            END-PERFORM   
       *
-           MOVE    SPA-GMN-STYUKYMD     TO  W03-STYUKYMD
-           MOVE    SPA-GMN-EDYUKYMD     TO  W03-EDYUKYMD
+           MOVE    SPA-GMN-STYUKYMD     TO  W15-STYUKYMD
+           MOVE    SPA-GMN-EDYUKYMD     TO  W15-EDYUKYMD
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -833,73 +671,71 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-           IF      SPA-GMN-CUR         =   ZERO
-               MOVE    WRK-MCP-WIDGET      TO  WRK-WIDGET
-               IF      WRK-WIDGET2(1:2)    NOT NUMERIC
-                   MOVE    ZERO            TO  WRK-WIDGET2
-               END-IF
-               MOVE    WRK-WIDGET2         TO  SPA-GMN-CUR
-               ADD     1                   TO  SPA-GMN-CUR
-           END-IF
+          IF      SPA-GMN-CUR          =   ZERO
+               PERFORM 50011-CUR-SET-SEC
+          END-IF
       *
            EVALUATE    SPA-GMN-CUR
                 WHEN   1
-                    MOVE  "SSTKIJUN01"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM01"    TO  MCP-WIDGET
                 WHEN   2
-                    MOVE  "SSTKIJUN02"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM02"    TO  MCP-WIDGET
                 WHEN   3
-                    MOVE  "SSTKIJUN03"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM03"    TO  MCP-WIDGET
                 WHEN   4
-                    MOVE  "SSTKIJUN04"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM04"    TO  MCP-WIDGET
                 WHEN   5
-                    MOVE  "SSTKIJUN05"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM05"    TO  MCP-WIDGET
                 WHEN   6
-                    MOVE  "SSTKIJUN06"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM06"    TO  MCP-WIDGET
                 WHEN   7
-                    MOVE  "SSTKIJUN07"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM07"    TO  MCP-WIDGET
                 WHEN   8
-                    MOVE  "SSTKIJUN08"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM08"    TO  MCP-WIDGET
                 WHEN   9
-                    MOVE  "SSTKIJUN09"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM09"    TO  MCP-WIDGET
                 WHEN   10
-                    MOVE  "SSTKIJUN10"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM10"    TO  MCP-WIDGET
                 WHEN   11
-                    MOVE  "SSTKIJUN11"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM11"    TO  MCP-WIDGET
                 WHEN   12
-                    MOVE  "SSTKIJUN12"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM12"    TO  MCP-WIDGET
                 WHEN   13
-                    MOVE  "SSTKIJUN13"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM13"    TO  MCP-WIDGET
                 WHEN   14
-                    MOVE  "SSTKIJUN14"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM14"    TO  MCP-WIDGET
                 WHEN   15
-                    MOVE  "SSTKIJUN15"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM15"    TO  MCP-WIDGET
                 WHEN   16
-                    MOVE  "SSTKIJUN16"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM16"    TO  MCP-WIDGET
                 WHEN   17
-                    MOVE  "SSTKIJUN17"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM17"    TO  MCP-WIDGET
                 WHEN   18
-                    MOVE  "SSTKIJUN18"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM18"    TO  MCP-WIDGET
                 WHEN   19
-                    MOVE  "SSTKIJUN19"    TO  MCP-WIDGET
+                    MOVE  "HKNJANUM19"    TO  MCP-WIDGET
                 WHEN   20
-                    MOVE  "SSTKIJUN20"    TO  MCP-WIDGET
-                WHEN   21
-                    MOVE  "SSTKIJUN21"    TO  MCP-WIDGET
-                WHEN   22
-                    MOVE  "SSTKIJUN22"    TO  MCP-WIDGET
-                WHEN   23
-                    MOVE  "SSTKIJUN23"    TO  MCP-WIDGET
-                WHEN   24
-                    MOVE  "SSTKIJUN24"    TO  MCP-WIDGET
-                WHEN   25
-                    MOVE  "SSTKIJUN25"    TO  MCP-WIDGET
-                 WHEN   99
+                    MOVE  "HKNJANUM20"    TO  MCP-WIDGET
+                 WHEN   200
                     MOVE  "B12"        TO  MCP-WIDGET
            END-EVALUATE
       *
            .
        5001-MAPCUR-EXT.
            EXIT.
+      *****************************************************************
+      *    カーソル編集処理
+      *****************************************************************
+       50011-CUR-SET-SEC         SECTION.
+      *
+           MOVE    MCP-WIDGET          TO  WRK-WIDGET
+           MOVE    WRK-WIDGET2         TO  SPA-GMN-CUR
+           ADD     1                   TO  SPA-GMN-CUR
+      *
+           .
+       50011-CUR-SET-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    エラーメッセージ表示理
@@ -909,18 +745,10 @@
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
-               WHEN    "0002"
-                   MOVE    "入力エラー"               TO  SPA-ERRMSG
-               WHEN    "0003"
-                   MOVE    "項目に入力がありません"   TO  SPA-ERRMSG
-               WHEN    "0004"
-                   MOVE    "適用コードに入力がありません"
+               WHEN    "0001"
+                   MOVE    "対象の保険者番号はありません"
                                                       TO  SPA-ERRMSG
-               WHEN    "0006"
-                   MOVE    "前頁はありません"         TO  SPA-ERRMSG
-               WHEN    "0007"
-                   MOVE    "次頁はありません"         TO  SPA-ERRMSG
-               WHEN    "1001"
+               WHEN    "1033"
                    MOVE    "更新ができませんでした"
                                                       TO  SPA-ERRMSG
            END-EVALUATE
@@ -930,7 +758,7 @@
            MOVE    SPA-ERRMSG           TO  WERR-ERRMSG
            MOVE    "B01"                TO  MCP-WIDGET
       *
-           MOVE    "W03"                TO  SPA-MOTOPG
+           MOVE    "W15"                TO  SPA-MOTOPG
            MOVE    "WERR"               TO  SPA-SAKIPG
       *
            MOVE    "NEW"                TO  MCP-PUTTYPE
@@ -952,7 +780,7 @@
            MOVE    SPACE               TO  WRK-WIDMSG
       *
            EVALUATE    SPA-WIDCD
-               WHEN    "1001"
+               WHEN    "1033"
                    MOVE    "登録処理をします"    TO  WRK-WIDMSG
            END-EVALUATE
       *
@@ -961,7 +789,7 @@
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
       *
-           MOVE    "W03"                TO  SPA-MOTOPG
+           MOVE    "W15"                TO  SPA-MOTOPG
            MOVE    "WID1"               TO  SPA-SAKIPG
       *
            MOVE    "NEW"                TO  MCP-PUTTYPE
@@ -1014,24 +842,42 @@
            EXIT.
       *
       *****************************************************************
-      *    システム管理マスタ読み込み処理
+      *    保険者マスター読込（キー）
       *****************************************************************
-       900-SYSKANRI-READ-SEC         SECTION.
+       900-HKNJAINF-INV-SEC         SECTION.
       *
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-SYSKANRI
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-HKNJAINF
+                   MOVE    MCPDATA-REC         TO  HKNJAINF-REC
+               ELSE
+                   MOVE    1                   TO  FLG-HKNJAINF
+               END-IF
            ELSE
-               MOVE    1               TO  FLG-SYSKANRI
+               MOVE    1                   TO  FLG-HKNJAINF
            END-IF
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
            .
-       900-SYSKANRI-READ-EXT.
+       900-HKNJAINF-INV-EXT.
            EXIT.
       * 
       *****************************************************************
