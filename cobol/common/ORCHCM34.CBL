@@ -2120,10 +2120,17 @@
                END-IF
       *
                MOVE    ZERO                TO  CNT-STR
-               INSPECT WRK-STR             TALLYING
-                       CNT-STR FOR ALL "µ¿"
-               IF    ( CNT-STR        <=   ZERO )
-                   MOVE    1               TO  FLG-UTAGAI
+               PERFORM VARYING IDX0    FROM    1   BY  2
+                       UNTIL ( IDX0    >   199 )
+                        OR   ( WRK-STR (IDX0:) =   SPACE )
+      *
+                   IF    ( WRK-STR (IDX0:2)    =   "µ¿" )
+                       COMPUTE CNT-STR =   CNT-STR     +   1
+                   END-IF
+      *
+               END-PERFORM
+               IF    ( CNT-STR         =   ZERO )
+                   MOVE    1           TO  FLG-UTAGAI
                END-IF
            END-IF
       *
