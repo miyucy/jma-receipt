@@ -21,7 +21,7 @@
       *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
       *  •µ•÷•∑•π•∆•‡Ãæ    : •Ï•ª•◊•»° œ´∫“°¶º´«Â¿’°À
       *  •≥•Û•›°º•Õ•Û•»Ãæ  : ∑Óº°∂»Ã≥°°œ´∫“º´«Â¿’Ã¿∫ŸΩÒ•’•°•§•Î∫Ó¿Æ
-      *                      ø«Œ≈∂Ë ¨ Ã≈¿øÙΩ∏∑◊° œ´∫“°¶º´«Â¿’°À
+      *                      ° ø«Œ≈∂Ë ¨ Ã≈¿øÙΩ∏∑◊°À
       *  ¥…Õ˝º‘            : 
       *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
       *  02/06/18    MCC°›ÃÁœ∆°°   ø∑µ¨∫Ó¿Æ
@@ -59,262 +59,6 @@
       *                                     Ω§¿µ
       *  01.00.22    NACL-ÃÁœ∆    04.01.21  œ´∫“§Œ∆√ƒÍ¥Ô∫‡(09593)¬–±˛
       *  01.00.23    NACL-ÃÁœ∆    04.02.05  ø«Œ≈•≥°º•…°ˆøÙŒÃ§ŒŒﬂ∑◊ ‘Ω∏
-      *  £≤£∞£∞£¥«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  01.01.01    NACL-ÃÁœ∆    04.04.01  ƒπ¥¸≈ÍÃÙ≤√ªª° ΩË ˝Œ¡°¢ΩË ˝§ª§Û
-      *                                     Œ¡°Àƒ…≤√¬–±˛
-      *  01.01.02    NACL-ÃÁœ∆    04.04.01  •Í•œ∏¿∏Ïƒ∞≥–Œ≈À°° £≥°Àƒ…≤√¬–±˛
-      *  01.01.03    NACL-ÃÁœ∆    04.04.05  ∫ﬂ¬∑Ï±’∆©¿œ…—≤Ûªÿ∆≥¥…Õ˝Œ¡§Œ
-      *                                     •≥•·•Û•»¬–±˛
-      *  01.01.04    NACL-ÃÁœ∆    04.04.10  ∫ﬂ¬¥µº‘À¨Ã‰≈¿≈©√ÌºÕ¥…Õ˝ªÿ∆≥Œ¡
-      *                                     ªªƒÍª˛§Œ≈¿≈©√ÌºÕ§Œ•≥•·•Û•»¬–±˛
-      *  01.01.05    NACL-ÃÁœ∆    04.04.26  •Ê°º•∂°º•≥•·•Û•»ƒ…≤√¬–±˛
-      *  01.01.06    NACL-æÆ∆¶¬Ù  04.06.08  £√£‘°¶£Õ£“£…° £≤≤ÛÃ‹∞ πﬂ°À§Œ
-      *                                     ≈¶Õ◊ÕÛµ≠∫‹ΩÁΩ§¿µ
-      *  01.01.07    NACL-ÃÁœ∆    04.06.11  »È≤º∂⁄∆˘√ÌºÕ§«°¢ÃÙ∫ﬁ≈¿°¶¥Ô∫‡≈¿
-      *                                     §¨Ãµ§§§ŒæÏπÁ§Œ≈¶Õ◊ÕÛµ≠∫‹¬–±˛
-      *  01.01.08    NACL-ÃÁœ∆    04.07.28  ≈ÍÃÙŒ¡§Œ¥Ô∫‡≈¿§ŒΩ∏∑◊Ω§¿µ
-      *  01.01.09    NACL-ÃÁœ∆    04.07.28  µŸ∂»æ⁄Ã¿•’•È•∞°¢µŸ∂»¥¸¥÷Ω™Œª∑Ó
-      *                                     ∆¸§Œ ‘Ω∏
-      *  01.01.10    NACL-ÃÁœ∆    04.10.15  º´«Â¿’∆√ƒÍ¥Ô∫‡≈˘æ√»Ò¿«¬–±˛
-      *  √ÊªﬂΩËÕ˝ƒ…≤√
-      *  01.02.01    NACL-∆£∏∂    04/10/13  √ÊªﬂΩËÕ˝§Œƒ…≤√
-      *  01.02.02    NACL-ÃÁœ∆    04/12/17  ∂ª…Ù∏«ƒÍ¬”≤√ªª°¢¡œ≥∞∏«ƒÍ¥Ô
-      *                                     ª»Õ—≤√ªª§ÚÃÙ∫ﬁ≈˘§ÿ
-      *  01.02.03    NACL-ÃÁœ∆    05/01/18  ª¿¡«∑◊ªªº∞•≥•·•Û•»¬–±˛
-      *  01.02.04    NACL-ÃÁœ∆    05/01/26  •∑•π•∆•‡¥…Õ˝£¥£∞£∞£±§À¥ÿ§π§ÎΩ§¿µ
-      *  01.02.05    NACL-ÃÁœ∆    05/01/27  π¯°¶∂ª…Ù∏«ƒÍ¬”≤√ªª°¢¡œ≥∞∏«ƒÍ¥Ô
-      *                                     ª»Õ—≤√ªª§ŒµªΩ—°¶ÃÙ∫ﬁ≈˘§Œ¡™¬Ú¬–±˛
-      *  01.02.06    NACL-ÃÁœ∆    05/01/28   ∏ΩÒŒ¡§Œ•≥•·•Û•»¬–±˛
-      *  01.02.07    NACL-ÃÁœ∆    05/02/28  ° •µ°Àµ≠∫‹¬–±˛
-      *  01.02.08    NACL-ÃÁœ∆    05/03/03  ∆√µ≠ªˆπ‡§Œ ‘Ω∏Ω§¿µ
-      *  01.02.09    NACL-ÃÁœ∆    05/04/20  ∆‚…˛ÃÙ∫ﬁƒ˛∏∫ ‘Ω∏¬–±˛
-      *  01.02.10    NACL-ÃÁœ∆    05/05/19  ≈¿øÙ•ﬁ•π•ø§Œ√±∞Ã ∏ª˙øÙ§¨•º•Ì
-      *                                     §ŒæÏπÁ§Œ ‘Ω∏
-      *  01.02.11    NACL-ÃÁœ∆    05/07/15  º´«Â¿’ΩæÕËÕÕº∞¬–±˛
-      *  01.02.12    NACL-ÃÁœ∆    05/08/22  •Í•œ•”•Íº¬ª‹≤ÛøÙ∫π§∑π˛§ﬂΩ§¿µ¬–±˛
-      *  01.02.13    NACL-∆£∏∂    05/08/22  ∏°¬Œ∏°∫∫•≥•·•Û•»§Œƒ…≤√
-      *  01.02.14    NACL-ÃÁœ∆    05/08/29  £∞£π£µ£π£≥§Œ•≥•·•Û•»¬–±˛
-      *  01.02.15    NACL-ÃÁœ∆    05/10/06  ø«∂Ë£π£µ£π£∂¬–±˛
-      *  01.02.16    NACL-æÆ∆¶¬Ù  05/10/28  ∆√µ≠ªˆπ‡°°¿Ëø °¢¿©ƒ∂°°¬–±˛
-      *  01.02.17    NACL-ÃÁœ∆    05/11/01  ° ∏°¡™°À≈˘•≥•·•Û•»¬–±˛
-      *  01.02.18    NACL-ÃÁœ∆    05/11/11  •≥•·•Û•»§¨§¢§ÎæÏπÁ§Œ ‘Ω∏Ω§¿µ
-      *  01.02.19    NACL-ÃÁœ∆    05/11/15  Ω˝…¬ºÍ≈ˆ∂‚°¢Œ≈Õ‹»Ò∆±∞’ΩÒ§Œº´∆∞
-      *                                     µ≠∫‹•’•È•∞ ‘Ω∏Ω§¿µ
-      *  01.02.20    NACL-ÃÁœ∆    06/01/05  •¢•’•ø°º•±•¢∫ﬂ¬Œ¡¬–±˛
-      *  01.02.21    NACL-ÃÁœ∆    06/02/01  £∞£π£π£≤£∞£∞£∞§«ªœ§ﬁ§Î≈ÍÃÙÕ—
-      *                                     •≥•·•Û•»§Œ ‘Ω∏¬–±˛
-      *
-      *  £≤£∞£∞£∂«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  02.09.01    NACL-ÃÁœ∆    06/04/05  Œﬂ∑◊•»°º•ø•Î ‘Ω∏Ω§¿µ
-      *  02.09.02    NACL-ÃÁœ∆    06/04/13  £≤£∞£∞£∂«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  02.09.03    NACL-∆£∏∂    06/04/14  §≠§∂§ﬂ√Õ∑◊ªªº± Ã§Œƒ…≤√
-      *  02.09.04    NACL-ÃÁœ∆    06/04/20  ≥∞ÕËø◊¬Æ∏°¬Œ∏°∫∫≤√ªª ‘Ω∏
-      *  02.09.05    NACL-ÃÁœ∆    06/04/28  ∫ﬂ¬ ‘Ω∏Ω§¿µ
-      *  02.09.06    NACL-ÃÁœ∆    06/06/09  œ´∫“° ≤√ªª§ §∑°À§Ú∫ﬁ§À¥ﬁ§‡
-      *                                     æÏπÁ§Œ ‘Ω∏Ω§¿µ° º´«Â¿’°À
-      *  03.00.01    NACL-ÃÁœ∆    06/06/22  ±˝ø«°¢∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈Œ¡§Œ
-      *                                     •≥•·•Û•»º´∆∞µ≠∫‹¬–±˛
-      *  03.01.01    NACL-ÃÁœ∆    06/07/10  ∫ﬂªŸ±Á•≥•·•Û•»º´∆∞µ≠∫‹¬–±˛
-      *  03.01.02    NACL-ÃÁœ∆    06/07/14  ø«Œ≈∂Ë ¨√÷§≠¥π§®•’•È•∞§Œ ‘Ω∏
-      *  03.02.01    NACL-ÃÁœ∆    06/08/10  π‚Œº‘æÂ∏¬≥€∑–≤·¡º√÷¬–±˛
-      *  03.02.02    NACL-ÃÁœ∆    06/09/08  •’•§•Î•‡§Œ√±≤¡ ‘Ω∏Ω§¿µ
-      *  03.03.01    NACL-ÃÁœ∆    06/09/27  ∆√µ≠ªˆπ‡£±£∂ƒπ£≤¬–±˛
-      *  03.03.02    NACL-ÃÁœ∆    06/11/10  ±˝ø«§Œ•≥•·•Û•»º´∆∞µ≠∫‹æÚ∑ÔΩ§¿µ
-      *  03.04.01    NACL-ÃÁœ∆    06/12/01  º´«Â¿’∑Ú ›Ω‡µÚ¬–±˛
-      *  03.04.02    NACL-ÃÁœ∆    07/01/23  √ÌºÕ≤√ªª§ŒÃææŒ ‘Ω∏Ω§¿µ
-      *  03.04.03    NACL-ÃÁœ∆    07/03/12   Ò≥Áø«Œ≈¬–±˛
-      *  03.04.04    NACL-ÃÁœ∆    07/04/01  ∏Ω ™µÎ…’¬–±˛
-      *  03.04.05    NACL-ÃÁœ∆    07/04/13  •Í•œ•”•Í¬–±˛
-      *  03.04.06    NACL-ÃÁœ∆    07/05/11  œ´∫“°¶º´«Â¿’√±≤¡£±£∞±ﬂÃ§À˛¬–±˛
-      *
-      *  03.05.01    NACL-ÃÁœ∆    07/05/25  •∞•Î°º•◊ø«Œ≈¬–±˛
-      *  03.05.02    NACL-∆£∏∂    07/06/01  realtime preview ΩËÕ˝ƒ…≤√
-      *  03.05.03    NACL-ÃÁœ∆    07/06/26  º´«Â¿’ ø¿Æ£±£π«Ø£¥∑Ó≤˛¿µÕÕº∞¬–±˛
-      *  03.05.04    NACL-ÃÁœ∆    07/07/17  ∏ƒ Ãª˛§Œ•∑•π•∆•‡¥…Õ˝ ‘Ω∏Ω§¿µ
-      *  03.05.05    NACL-ÃÁœ∆    07/07/26  •Ï•ª§Àµ≠∫‹§∑§ §§•≥•·•Û•»¬–±˛
-      *  03.05.06    NACL-ÃÁœ∆    07/09/13  »È≤º∂⁄∆˘°¢¿≈ÃÆ√ÌºÕ§Œµ≠∫‹ —ππ¬–±˛
-      *  03.05.07    NACL-ÃÁœ∆    07/09/18  ≤Ë¡¸ø«√«§Œ≤√ªª° •«°º•ø∂Ë ¨°ßºÍµª°À
-      *                                     §Œµ≠∫‹ΩÁ —ππ¬–±˛
-      *  03.01.01    NACL-ÃÁœ∆    07/10/24  º´«Â¿’∆√ƒÍ¥Ô∫‡≈˘æ√»Ò¿«¬–æ›≥∞¿ﬂƒÍ
-      *                                     π‡Ã‹øÙ≥»ƒ•¬–±˛
-      *  04.01.02    NACL-ÃÁœ∆    07/10/31  ∏¯Ã≥∫“≥≤¬–±˛
-      *  04.01.03    NACL-ÃÁœ∆    07/11/26  ∆√ƒÍ¥Ô∫‡æ¶… Ãæµ≠∫‹¬–±˛
-      *  04.01.04    NACL-ÃÁœ∆    07/11/30  ¬æ ›∏±§À§∆ø«ª°Œ¡ªªƒÍ∫—§ŒÃææŒ√÷¥π
-      *  04.01.05    NACL-ÃÁœ∆    08/02/12  ΩË ˝Œ¡≈˘•´•¶•Û•»Ω§¿µ
-      *  04.02.01    NACL-ÃÁœ∆    08/03/24   ø¿Æ£≤£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *                                     ° ∆√µ≠ªˆπ‡ƒ…≤√¬–±˛°ß£≤£∞°À
-      *                                     ° «æ∑Ï¥…•Í•œ° £≥°À•≥°º•…ƒ…≤√°À
-      *                                     ° ≤√£∏£∞˙»Øæ…∆¸µ≠∫‹«—ªﬂ°À
-      *                                     ° ΩÈø«° ÃÎ¥÷°¶¡·ƒ´≈˘°À≤√ªªƒ…≤√°À
-      *                                     ° ø«Œ≈∂Ë ¨£∂£¥°ß…¬Õ˝ø«√«¬–±˛°À
-      *                                     ° ∫∆Ω¢œ´°ß±ﬂ —ππ¬–±˛°À
-      *                                     ° •Í•œ°ß¿ÏÕ—•≥°º•…ƒ…≤√°À
-      *                                     ° ∫ﬂ¬•≥°º•…ƒ…≤√°À
-      *                                     ° ∫ﬁªŸ±Áµ≠∫‹¬–æ›•≥°º•…Ω§¿µ°À
-      *                                     ° æÆª˘∆√ƒÍº¿¥µ•´•¶•Û•ª•Í•Û•∞Œ¡
-      *                                       §Œº´∆∞µ≠∫‹¬–±˛°À
-      *                                     ° ∫ﬂªŸ…¬º´∆∞µ≠∫‹¬–±˛°À
-      *  04.02.02    NACL-ÃÁœ∆    08/06/20  ∫ﬂ¬ ‘Ω∏Ω§¿µ
-      *  04.02.03    NACL-ÃÁœ∆    08/11/06  »È≤º∂⁄∆˘°¢¿≈ÃÆ√ÌºÕ§Œµ≠∫‹ —ππ¬–±˛
-      *
-      *  04.03.01    NACL-ÃÁœ∆    08/07/08  ø«∂Ë£±£¥§Œ•≥•·•Û•»§Œ§ﬂ§Œ∫ﬁ
-      *                                      ‘Ω∏¬–±˛
-      *  04.03.02    NACL-ÃÁœ∆    08/07/11  ø«√«ΩÒÃ¿∫ŸΩÒŒ¡§Œ≈¶Õ◊ÕÛµ≠∫‹¬–±˛
-      *  04.03.03    NACL-ÃÁœ∆    08/07/14  ≤æ•Ï•ª∫Ó¿Æ° ±°≥∞ΩË ˝¥ﬁ§‡°À¬–±˛
-      *                                     ≈ÍÃÙ∫ﬁ≈¿£∞° ±°≥∞≈˘°Àµ≠∫‹
-      *  04.03.04    NACL-ÃÁœ∆    08/09/25  º´«Â¿’£∞£π£µ£π£≥§ŒΩ∏∑◊¿Ë¬–±˛
-      *  04.03.05    NACL-ÃÁœ∆    08/12/01  ∫ﬂ¬° ±°≥∞ ¨°À ‘Ω∏Ω§¿µ
-      *  04.03.06    NACL-ÃÁœ∆    08/12/16   ø¿Æ£≤£±«Ø£±∑Ó≤˛¿µ¬–±˛
-      *  04.03.07    NACL-ÃÁœ∆    09/01/16  ΩË ˝ÕÛ∂‚≥€ ‘Ω∏Ω§¿µ
-      *
-      *  04.04.01    NACL-ÃÁœ∆    08/12/25   Ò≥Á¬–±˛
-      *  04.04.02    NACL-ÃÁœ∆    09/02/04  ∏°∫∫§Œ•≥•·•Û•»º´∆∞µ≠∫‹¬–±˛
-      *  04.04.03    NACL-ÃÁœ∆    09/04/13   ø¿Æ£≤£±«Ø£µ∑Ó≤˛¿µ¬–±˛
-      *  04.04.04    NACL-ÃÁœ∆    09/11/19  º´«Â¿’∑Ú ›Ω‡µÚŒ≈Õ‹√¥≈ˆºÍ≈ˆ¬–±˛
-      *  04.04.05    NACL-ÃÁœ∆    09/12/04  ∫ﬁ§ﬁ§»§·π‡Ã‹√Õ§Œ∑◊ªªΩ§¿µ
-      *  04.04.06    NACL-ÃÁœ∆    09/12/09  Ω–ÕËπ‚ªªƒÍ° ∫ﬁ°À§Œ¬–±˛
-      *  04.04.07    NACL-ÃÁœ∆    10/01/13  ∫ﬁ§ﬁ§»§·π‡Ã‹√Õ§Œ∑◊ªªΩ§¿µ
-      *  04.04.08    NACL-ÃÁœ∆    10/01/29  ∆‚…˛ÃÙ∫ﬁƒ˛∏∫ ‘Ω∏¬–±˛
-      *  04.04.09    NACL-ÃÁœ∆    10/03/12  ∆‚…˛ÃÙ∫ﬁƒ˛∏∫ ‘Ω∏¬–±˛
-      *  04.04.10    NACL-ÃÁœ∆    10/03/23  ∆±∆¸≈≈œ√∫∆ø«§Œ≤ÛøÙµ≠∫‹¬–±˛
-      *  04.04.11    NACL-ÃÁœ∆    10/03/25  ≤˛¿µ¬–±˛
-      *                                     ° √œ∞Ë∞ÂŒ≈π◊∏•≤√ªªµ≠∫‹ ‘Ω∏°À
-      *                                     ° Ã¿∫ŸΩÒ»Øπ‘¬Œ¿©≈˘≤√ªªµ≠∫‹ ‘Ω∏°À
-      *  04.04.12    NACL-ÃÁœ∆    10/03/25  ≤˛¿µ¬–±˛
-      *                                     ° ÕΩÃÛ•≥°º•…∆…§ﬂ»Ù§–§∑ ‘Ω∏°À
-      *  04.04.13    NACL-ÃÁœ∆    10/03/29  ≤˛¿µ¬–±˛
-      *                                     ° ≤Ë¡¸ø«√«£≤≤ÛÃ‹∞ πﬂ∏∫ªª ‘Ω∏°À
-      *                                     ° π≥∞≠¿≠º·Á∫ﬁΩË ˝¥…Õ˝≤√ªª ‘Ω∏°À
-      *                                     ° •≥°º•…ƒ…≤√°À
-      *  04.04.14    NACL-ÃÁœ∆    10/03/31  ≤˛¿µ¬–±˛
-      *                                     ° Ù…Ù∏«ƒÍ¬”≤√ªª§Œ¬–±˛°À
-      *  04.04.15    NACL-ÃÁœ∆    10/04/06  ≤˛¿µ¬–±˛
-      *                                     ° •≥•·•Û•»º´∆∞µ≠∫‹°À
-      *  04.04.16    NACL-ÃÁœ∆    10/08/06  •¢•’•ø°º•±•¢∫∆ø«ÕÛ≤ÛøÙµ≠∫‹Ω§¿µ
-      *  04.04.17    NACL-ÃÁœ∆    10/12/10  ∫ﬁ§ﬁ§»§·π‡Ã‹√Õ§Œ∑◊ªªΩ§¿µ
-      *
-      *  04.05.01    NACL-ÃÁœ∆    09/06/29  Œ≈Õ‹¥¸¥÷µ≠∫‹ ˝À°¡™¬Úµ°«Ω
-      *                                     ° µŸ∂»æ⁄Ã¿¿¡µ·ª˛°À
-      *  04.05.02    NACL-∆£∏∂    09/07/14  æÆøÙ≈¿∞ ≤º£µ∑Â¬–±˛
-      *  04.05.03    NACL-ÃÁœ∆    09/08/17  æÆøÙ≈¿∞ ≤º£µ∑Â¬–±˛
-      *  04.05.04    NACL-ÃÁœ∆    09/09/24  •Ï•ª•◊•»µ≠∫‹§∑§ §§•≥•·•Û•»¬–±˛
-      *  04.05.05    NACL-ÃÁœ∆    09/11/19  ÃÙ∫ﬁªªƒÍ§ §∑ª˛§Œ≈¶Õ◊ÕÛ∆±∞Ï∫ﬁ
-      *                                     §ﬁ§»§·µ≠∫‹¬–±˛
-      *  04.05.06    NACL-ÃÁœ∆    10/01/21  º£∏≥¬–±˛
-      *  04.05.07    NACL-ÃÁœ∆    11/06/21  ≤Ë¡¸ø«√«°¶≈≈ª“≤Ë¡¸¥…Õ˝≤√ªª§Œ
-      *                                     …ΩÕ—»÷πÊ ‘Ω∏
-      *  04.05.08    NACL-ÃÁœ∆    11/12/16  ¥Ô∫‡§Œ∂‚≥€§»√±∞Ã§Œ¬–±˛
-      *  04.05.09    NACL-ÃÁœ∆    12/02/13  ≤ÛøÙÕÛ ‘Ω∏Ω§¿µ° ΩË ˝°¢À„∆«°¢ƒ¥¥°À
-      *  04.05.10    NACL-ÃÁœ∆    12/04/02   ø¿Æ£≤£¥«Ø£¥∑Ó≤˛¿µ
-      *                                     °÷∫∆ø«°◊§Œ¬–±˛
-      *                                     °÷∫ﬂ¬°◊§Œ¬–±˛
-      *                                     °÷ΩË√÷°◊§Œ¬–±˛
-      *                                     °÷≤Ë¡¸ø«√«°◊§Œ¬–±˛
-      *                                     °÷§Ω§Œ¬æ°◊§Œ¬–±˛
-      *                                     œ´∫“∫∆ø«° ∆±∞Ï∆¸£≤≤ Ã‹°À¬–±˛
-      *                                     •≥•·•Û•»∫ππ˛
-      *  04.05.11    NACL-ÃÁœ∆    12/05/01   ø¿Æ£≤£¥«Ø£¥∑Ó≤˛¿µ
-      *                                     º´«Â¿’
-      *                                     ∫∆ø«§Œ≈¿øÙΩ∏∑◊§»≤ÛøÙ ‘Ω∏¬–±˛
-      *  04.05.12    NACL-ÃÁœ∆    12/05/23  ∫∆Ω¢œ´Œ≈Õ‹ªÿ∆≥¥…Õ˝Œ¡§ŒΩ∏∑◊¿Ë —ππ
-      *  04.05.13    NACL-ÃÁœ∆    12/05/23   ›∏±ÕÛ°›∞Ï…Ù…È√¥∂‚Ã§µ≠∫‹¬–±˛
-      *  04.05.14    NACL-ÃÁœ∆    12/08/10  £∏£∞§Ω§Œ¬æÕÛ§Œ≈¿øÙΩ∏∑◊Ω§¿µ
-      *  04.05.15    NACL-ÃÁœ∆    12/09/19   ›∏±ÕÛ°›∞Ï…Ù…È√¥∂‚ÕÛ∂‚≥€√÷¥π¬–±˛
-      *  04.05.16    NACL-ÃÁœ∆    12/11/08  ∏¯»ÒÕÛ°›∞Ï…Ù…È√¥∂‚ÕÛ∂‚≥€√÷¥π¬–±˛
-      *
-      *  04.06.01    NACL-ÃÁœ∆    10/07/01  º´«Â¿’ ∏ΩÒŒ¡•Ï•ª•◊•»≈¶Õ◊ÕÛµ≠∫‹
-      *                                     ° £±ƒÃª˛°À¬–±˛
-      *  04.06.02    NACL-ÃÁœ∆    10/07/02  æÆª˘∆√ƒÍº¿¥µ•´•¶•Û•ª•Í•Û•∞Œ¡§Œ
-      *                                     •Ï•ª•◊•»•≥•·•Û•»º´∆∞µ≠∫‹° Ω≈ £ª˛°À
-      *                                     ¬–±˛
-      *  04.06.03    NACL-ÃÁœ∆    10/12/06  œ´∫“°¶º´«Â¿’§Œ∂‚≥€•’•Í°º∆˛Œœ
-      *                                     •≥°º•…¬–±˛
-      *  04.06.04    NACL-ÃÁœ∆    12/10/15  ø«Œ≈π‘∞Ÿ∆˛Œœ§∑§ø•≥•·•Û•»§Œ§ﬂ§Œ∫ﬁ§Œ
-      *                                     •Ï•ª•◊•»µ≠∫‹¬–±˛
-      *  04.06.05    NACL-ÃÁœ∆    13/02/18  œ´∫“•Ï•ª≈≈¬–±˛
-      *                                     ° ø∑ø«Œ≈π‘∞Ÿ•≥°º•…¬–±˛°À
-      *  04.06.06    NACL-ÃÁœ∆    13/02/27   ø¿Æ£≤£µ«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  04.06.07    NACL-ÃÁœ∆    13/05/31   ø¿Æ£≤£µ«Ø£∑∑Óø«Œ≈ ¨∞ πﬂ§Œ
-      *                                     µŸ∂»æ⁄Ã¿§Œ§ﬂ§Œ¬–±˛
-      *  04.06.08    NACL-ÃÁœ∆    13/06/27   ø¿Æ£≤£µ«Ø£∑∑Óø«Œ≈ ¨∞ πﬂ§Œ∫∆ø«ª˛
-      *                                     Œ≈Õ‹ªÿ∆≥¥…Õ˝Œ¡§Œ•≥•·•Û•»µ≠∫‹Ω§¿µ
-      *  04.06.09    NACL-ÃÁœ∆    13/07/26  ∂‚≥€ÕÛΩ∏∑◊ ¨§Œ•≥•·•Û•» ‘Ω∏Ω§¿µ
-      *  04.06.10    NACL-ÃÁœ∆    13/09/25  œ´∫“•ﬁ•π•øƒ…≤√¬–±˛
-      *                                     ° ≈≈œ√∫∆ø«Œ¡°°≈˘°À
-      *  04.06.11    NACL-ÃÁœ∆    13/11/07  ∏¯Ã≥∫“≥≤° œ´∫“Ω‡µÚ°À§Œ√œ∏¯∫“∆√ Ã
-      *                                     ≤√ªª¬–±˛° µ˛≈‘…‹°À
-      *
-      *  04.07.01    NACL-ÃÁœ∆    12/09/25  •≥•·•Û•»∫ππ˛¬–±˛° ∫ﬂ¬ª˝¬≥Õ€∞µ°À
-      *  04.07.02    NACL-ÃÁœ∆    12/09/25  •≥•·•Û•»∫ππ˛ºË§Íªﬂ§·° ∫ﬂ¬ª˝¬≥Õ€∞µ°À
-      *  04.07.03    NACL-ÃÁœ∆    13/01/21  œ´∫“•Ï•ª≈≈¬–±˛
-      *  04.07.04    NACL-ÃÁœ∆    13/08/20  £∞£π£µ£π£≥§«ªœ§ﬁ§Î•≥°º•…§ŒÕ≠Ãµ∂Ë ¨
-      *                                      ‘Ω∏
-      *  04.07.05    NACL-ÃÁœ∆    13/10/02  º´«Â¿’° ¬Ëª∞º‘π‘∞Ÿ°À¬–±˛
-      *  04.07.06    NACL-ÃÁœ∆    13/12/03  º´«Â¿’° œ´∫“Ω‡µÚ°À§Œ•Ï•ª•◊•»ÕÕº∞
-      *                                     ƒ…≤√¬–±˛
-      *  04.07.07    NACL-ÃÁœ∆    14/02/13  œ´∫“°¶º´«Â¿’§Œª‹Ω—≤√ªª¬–±˛
-      *  04.07.08    NACL-ÃÁœ∆    14/02/19  º´«Â¿’° ¬Ëª∞º‘π‘∞Ÿ°À¬–±˛
-      *                                     ° …È√¥∂‚≥€£±£∞±ﬂÃ§À˛ªÕºŒ∏ﬁ∆˛°À
-      *  04.07.09    NACL-ÃÁœ∆    14/03/01  œ´∫“•ﬁ•π•øƒ…≤√¬–±˛
-      *  04.07.10    NACL-ÃÁœ∆    14/03/04   ø¿Æ£≤£∂«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  04.07.11    NACL-ÃÁœ∆    14/03/28   ø¿Æ£≤£∂«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  04.07.12    NACL-ÃÁœ∆    14/04/28  ±ø∆∞¥Ô°¶«æ∑Ï¥…•Í•œ§Œø«Œ≈•≥°º•…
-      *                                     ƒ…≤√¬–±˛
-      *  04.07.13    NACL-ÃÁœ∆    14/05/07  ∫ﬂ¬§Œ≤ÛøÙµ≠∫‹¬–±˛
-      *  04.07.14    NACL-ÃÁœ∆    14/05/22  ∏¯Ã≥∫“≥≤° œ´∫“Ω‡µÚ°À§Œ√œ∏¯∫“∆√ Ã
-      *                                     ≤√ªª¬–±˛° µ˛≈‘…‹°À° •≥°º•…ƒ…≤√ ¨°À
-      *  04.07.15    NACL-ÃÁœ∆    14/05/23  °÷¿∫ø¿≤ §ÚΩÈ§·§∆ºıø«§∑§ø∆¸°◊•≥•·•Û•»
-      *                                     §Œº´∆∞µ≠∫‹§À¥ÿ§π§ÎΩ§¿µ
-      *  04.07.16    NACL-ÃÁœ∆    14/07/31  ¬Ëª∞º‘π‘∞Ÿ§Œ∏Ω ™µÎ…’¬–±˛
-      *  04.07.17    NACL-∆£∏∂    14/08/19  ¥µº‘•≥•·•Û•»§Œ∆˛Œœ•≥•·•Û•»§Œ
-      *                                     ≤˛π‘•≥°º•…•¡•ß•√•Ø
-      *                                     •®•È°ºª˛ΩËÕ˝Ω™Œª
-      *  04.07.18    NACL-ÃÁœ∆    14/09/01  À¨Ã‰ø«Œ≈§À§´§´§Îµ≠œøΩÒ•≥•·•Û•»¬–±˛
-      *  04.07.19    NACL-ÃÁœ∆    14/09/01   ø¿Æ£≤£∂«Ø£±£∞∑Ó≤˛¿µ¬–±˛
-      *  04.07.20    NACL-ÃÁœ∆    14/09/11  ≈¶Õ◊ÕÛ§À∞ıª˙§∑§ §§ø«Œ≈π‘∞Ÿ•≥°º•…§Œ
-      *                                     •«°º•ø∂Ë ¨£≤°¢§´§ƒ°¢ø«Œ≈∂Ë ¨§¨≈¿øÙ
-      *                                     •ﬁ•π•ø§Œø«Œ≈∂Ë ¨§»∞€§ §ÎæÏπÁ§Œ¬–±˛
-      *  04.07.21    NACL-ÃÁœ∆    14/12/15   ø¿Æ£≤£∑«Ø£±∑Ó≤˛¿µ¬–±˛
-      *                                     ° ΩÈ∫∆ø«Œ¡°¶ƒ„¬≈∑ÎŒ®¬–±˛°À
-      *  04.07.22    NACL-ÃÁœ∆    15/01/15  ≥∞ÕË¥…Õ˝≤√ªª° ∆…§ﬂ¬ÿ§®≤√ªª°À•¡•ß•√
-      *                                     •Ø
-      *  04.07.23    NACL-ÃÁœ∆    15/03/09  À¨Ã‰ø«Œ≈§À§´§´§Îµ≠œøΩÒ•≥•·•Û•»¬–±˛
-      *  04.07.24    NACL-ÃÁœ∆    15/03/16   ø¿Æ£≤£∑«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  04.07.25    NACL-ÃÁœ∆    15/09/08  º´«Â¿’° ø∑ÕÕº∞°À° £œ£√£“ÕÕº∞°À
-      *                                     ºıŒŒ∂‚≥€ÕÛµ≠∫‹¬–±˛
-      *
-      *  04.08.01    NACL-ÃÁœ∆    13/01/22  ∆¸øÙ≤ÛøÙ•∆°º•÷•Î£±£∞≤Û¬–±˛
-      *  04.08.02    NACL-ÃÁœ∆    13/01/25   Ò≥Áø«Œ≈ ¨§Œ≈¿∏°Õ—•Ï•ª•◊•»µ≠∫‹¬–±˛
-      *  04.08.03    NACL-∆£∏∂    14/07/07  ∞Ïª˛•«•£•Ï•Ø•»•Í¬–±˛
-      *  04.08.04    NACL-ÃÁœ∆    14/07/23  £≥£≤ ∏ª˙∞ æÂ§Œ ∏ª˙ŒÛΩ§¿µ
-      *                                     ° •≥•Û•—•§•Îª˛§Œ•Ô°º•À•Û•∞Ω§¿µ°À
-      *  04.08.05    NACL-ÃÁœ∆    15/08/27  º´«Â¿’•Ï•ª•◊•»§Œ¿¡µ·∂‚≥€ÕÛ√ºøÙΩËÕ˝
-      *                                     ¬–±˛
-      *  04.08.06    NACL-ÃÁœ∆    15/10/19  œ´∫“•Ï•ª•◊•»≤ÛøÙ£±≤ÛÃ‹§Œ
-      *                                     °÷∑—¬≥¿¡µ· ¨°◊¬–±˛
-      *  04.08.07    NACL-ÃÁœ∆    15/12/24  ¥Ô∫‡§Œ√±≤¡ ‘Ω∏Ω§¿µ
-      *  04.08.08    NACL-ÃÁœ∆    16/01/12  ≈¿∏°Õ—•Ï•ª•◊•»±°≥∞ΩË ˝∞Ï»ÃÃæµ≠∫‹¬–±˛
-      *  04.08.09    NACL-ÃÁœ∆    16/03/28   ø¿Æ£≤£∏«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  04.08.10    NACL-ÃÁœ∆    16/05/20  …∏Ω‡…È√¥≥€∑–≤·¡º√÷° ¿∫ø¿°À∆˛±°«Ø∑Ó∆¸
-      *                                     §Œ•≥•·•Û•»¬–±˛
-      *  04.08.11    NACL-ÃÁœ∆    16/09/15  •Í•œ•”•Í•ﬁ•π•øƒ…≤√¬–±˛
-      *  04.08.12    NACL-ÃÁœ∆    16/09/20  £±£µ±ﬂ∞ ≤ºÃÙ∫ﬁ§ŒƒÛΩ–Õ—•Ï•ª•◊•»µ≠∫‹
-      *                                     ° µ≠œø°À¬–±˛
-      *  04.08.13    NACL-ÃÁœ∆    16/09/27  ∫ﬂ¬¥µº‘À¨Ã‰•Í•œ•”•Í•∆°º•∑•Á•Ûªÿ∆≥
-      *                                     ¥…Õ˝Œ¡§ŒªªƒÍ∆¸•≥•·•Û•»¬–±˛
-      *  04.08.14    NACL-ÃÁœ∆    16/11/07  £±£µ±ﬂ∞ ≤ºÃÙ∫ﬁ§ŒƒÛΩ–Õ—•Ï•ª•◊•»µ≠∫‹
-      *                                     ° µ≠œø°À¬–±˛Ω§¿µ
-      *  04.08.15    NACL-ÃÁœ∆    16/12/07  ±Û≥÷•‚•À•ø•Í•Û•∞≤√ªª§Œ¡∞≤ÛªªƒÍ«Ø∑Ó
-      *                                     •≥•·•Û•»µ≠∫‹Ω§¿µ
-      *  04.08.16    NACL-ÃÁœ∆    17/02/24  Ã§•≥°º•…≤Ω∆√ƒÍ¥Ô∫‡•≥°º•…§Úª»Õ—§∑§ø
-      *                                     •Ï•ª≈≈¿¡µ·§¨…‘≤ƒ§»§ §Îªˆ§À»º§¶¬–±˛
-      *  04.08.17    NACL-ÃÁœ∆    17/03/27  ¿¡µ·∂‚≥€£∞±ﬂ•Ï•ª•◊•»∫Ó¿Æ¬–±˛
-      *  04.08.18    NACL-ÃÁœ∆    17/06/01  ºæ…€ÃÙÕ—À°•Ï•ª•◊•»µ≠∫‹Ω§¿µ
-      *  04.08.19    NACL-ÃÁœ∆    17/10/18  ∆˛±°Œ¡§»∞€§ §Î ›∏±¡»§ﬂπÁ§Ô§ª
-      *                                     §«§Œø©ªˆªªƒÍ¬–±˛
-      *  04.08.20    NACL-ÃÁœ∆    17/12/15  ¬Ëª∞º‘π‘∞Ÿ∏Ω ™µÎ…’§À¥ÿ§Ô§Î
-      *                                     …È√¥∂‚∑◊ªª¬–±˛
-      *  04.08.21    NACL-ÃÁœ∆    18/03/27   ø¿Æ£≥£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -331,32 +75,41 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE44-KEY
                                    FILE    STATUS  IS  STS-RECE44.
+           SELECT  RECE444-FILE    ASSIGN  RECE44PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE444-KEY
+                                   FILE    STATUS  IS  STS-RECE44.
            SELECT  RECE4A-FILE     ASSIGN  RECE4APARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE4A-KEY
+                                   FILE    STATUS  IS  STS-RECE4A.
+           SELECT  RECE4A4-FILE    ASSIGN  RECE4APARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE4A4-KEY
                                    FILE    STATUS  IS  STS-RECE4A.
            SELECT  RECE45-FILE     ASSIGN  RECE45PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE45-KEY
                                    FILE    STATUS  IS  STS-RECE45.
+           SELECT  RECE455-FILE    ASSIGN  RECE45PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE455-KEY
+                                   FILE    STATUS  IS  STS-RECE45.
            SELECT  RECE4B-FILE     ASSIGN  RECE4BPARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE4B-KEY
                                    FILE    STATUS  IS  STS-RECE4B.
-      *    •Ï•ª≈≈Õ—
-           SELECT  RECE44C-FILE    ASSIGN  RECE44CPARA
+           SELECT  RECE4B5-FILE    ASSIGN  RECE4BPARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
-                                   RECORD  KEY     IS  RECE44C-KEY
-                                   FILE    STATUS  IS  STS-RECE44C.
-           SELECT  RECE45C-FILE    ASSIGN  RECE45CPARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
-                                   RECORD  KEY     IS  RECE45C-KEY
-                                   FILE    STATUS  IS  STS-RECE45C.
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE4B5-KEY
+                                   FILE    STATUS  IS  STS-RECE4B.
       *    •®•È°º•’•°•§•Î
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -372,62 +125,70 @@
        01  RECE44-REC. 
            COPY    "CPRCF044.INC".
       *
+       FD  RECE444-FILE.
+       01  RECE444-REC. 
+           COPY    "CPRCF044.INC"  REPLACING  //RECE44//
+                                   BY         //RECE444//.
+      *
        FD  RECE4A-FILE.
        01  RECE4A-REC. 
            COPY    "CPRCF044.INC"  REPLACING  //RECE44//
                                    BY         //RECE4A//.
       *
+       FD  RECE4A4-FILE.
+       01  RECE4A4-REC. 
+           COPY    "CPRCF044.INC"  REPLACING  //RECE44//
+                                   BY         //RECE4A4//.
+      *
        FD  RECE45-FILE.
        01  RECE45-REC. 
            COPY    "CPRCF045.INC".
+      *
+       FD  RECE455-FILE.
+       01  RECE455-REC. 
+           COPY    "CPRCF045.INC"  REPLACING  //RECE45//
+                                   BY         //RECE455//.
       *
        FD  RECE4B-FILE.
        01  RECE4B-REC. 
            COPY    "CPRCF045.INC"  REPLACING  //RECE45//
                                    BY         //RECE4B//.
       *
-      *    •Ï•ª≈≈Õ—
-       FD  RECE44C-FILE.
-       01  RECE44C-REC. 
-           COPY    "CPRCF044.INC"  REPLACING  //RECE44//
-                                   BY         //RECE44C//.
-      *
-       FD  RECE45C-FILE.
-       01  RECE45C-REC. 
+       FD  RECE4B5-FILE.
+       01  RECE4B5-REC. 
            COPY    "CPRCF045.INC"  REPLACING  //RECE45//
-                                   BY         //RECE45C//.
-      *
+                                   BY         //RECE4B5//.
       *    •®•È°º•’•°•§•Î
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
+      *     •Ï•ª•◊•»Ã¿∫Ÿ•’•°•§•Î ÃææŒŒŒ∞Ë 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
                                    BY         //RECE41//.
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
                                    BY         //RECE44//.
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
                                    BY         //RECE4A//.
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
                                    BY         //RECE45//.
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
                                    BY         //RECE4B//.
-      *    •Ï•ª≈≈Õ—
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE44C//.
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE45C//.
       *    •®•È°º•’•°•§•Î ÃææŒŒŒ∞Ë 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01PARA//
                                    BY         //RECEERR//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    •’•È•∞ŒŒ∞Ë
        01  STS-AREA.
@@ -436,8 +197,6 @@
            03  STS-RECE45                              PIC X(02).
            03  STS-RECE4A                              PIC X(02).
            03  STS-RECE4B                              PIC X(02).
-           03  STS-RECE44C                             PIC X(02).
-           03  STS-RECE45C                             PIC X(02).
            03  STS-RECEERR                             PIC X(02).
       *
        01  FLG-AREA.
@@ -452,48 +211,10 @@
            03  FLG-DAY                                 PIC 9(01).
            03  FLG-SP                                  PIC 9(01). 
            03  FLG-ZANHAIKI                            PIC 9(01).
-           03  FLG-FORMAL-KISAI                        PIC 9(01).
            03  FLG-RECE45                              PIC 9(01).
            03  FLG-REWRITE                             PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-HOUSIJI-COM                         PIC 9(01).
-           03  FLG-OSIN-COM                            PIC 9(01).
-           03  FLG-ZAIHOU-COM                          PIC 9(01).
-           03  FLG-SYOUNI-COM                          PIC 9(01).
-           03  FLG-HOUTEN-COM                          PIC 9(01).
-           03  FLG-SYOBYO-COM                          PIC 9(01).
-           03  FLG-RYOYO-COM                           PIC 9(01).
-           03  FLG-SYODOU-COM                          PIC 9(01).
-           03  FLG-SAIDOU-COM                          PIC 9(01).
-           03  FLG-NIKOCHIN-COM                        PIC 9(01).
-           03  FLG-ZAIKYO-COM                          PIC 9(01).
-           03  FLG-BOKOHO-COM                          PIC 9(01).
-           03  FLG-IZONSYO-COM                         PIC 9(01).
-           03  FLG-SEIJYU-COM                          PIC 9(01).
-           03  FLG-NINRYO-COM                          PIC 9(01).
-           03  FLG-ZENSOKU-COM                         PIC 9(01).
-           03  FLG-KENSA-COM                           PIC 9(01).
-           03  FLG-ZAIRIHA-COM                         PIC 9(01).
-           03  FLG-TAIGAI                              PIC 9(01).
-           03  FLG-RINYAK                              PIC 9(01).
-           03  FLG-TAISYO                              PIC 9(01).
-           03  FLG-SRYACCTPLUS                         PIC 9(01).
-           03  FLG-WRITE45                             PIC 9(01).
-           03  FLG-WRITE45X                            PIC 9(01).
-           03  FLG-TAHOKEN                             PIC 9(01).
-           03  FLG-SRYKBN-HEN                          PIC 9(01).
-           03  FLG-COUNT-ARI                           PIC 9(01).
-           03  FLG-HENSYU-NG                           PIC 9(01).
-           03  FLG-SETCOM                              PIC 9(01).
-           03  FLG-SYUNOU                              PIC 9(01).
-           03  FLG-ZAITAKU-CHECK                       PIC 9(01).
-           03  FLG-DAISAN-GENBUTU                      PIC 9(01).
-           03  FLG-KIN-OKIKAE                          PIC 9(01).
-           03  FLG-KIN-OKIKAE2                         PIC 9(01).
-           03  FLG-IRYORENKEI                          PIC 9(01).
-           03  FLG-SIPPU-COM                           PIC 9(01).
-           03  FLG-SIPPU-ARI                           PIC 9(01).
-           03  FLG-YKZ-PRTKBN                          PIC 9(01).
       *
       *    ¥À‹≈¿øÙ§Œ»Û…Ωº®»ΩƒÍÕ—•’•È•∞
        01  FLG-KHNTEN-AREA.
@@ -512,69 +233,15 @@
            03  FLG-KHNTEN13-JI                         PIC 9(01).       
            03  FLG-KHNTEN14-JI                         PIC 9(01).       
       *
-      *    ¥À‹≈¿øÙ§Œ»Û…Ωº®»ΩƒÍÕ—•’•È•∞° º´«Â¿’Õ—°ßΩæÕËÕÕº∞Õ—°À
-       01  FLG-KHNTEN-JI2-AREA.                                          
-           03  FLG-KHNTEN2-JI2                         PIC 9(01).
-           03  FLG-KHNTEN3-JI2                         PIC 9(01).
-           03  FLG-KHNTEN4-JI2                         PIC 9(01).
-           03  FLG-KHNTEN5-JI2                         PIC 9(01).
-           03  FLG-KHNTEN6-JI2                         PIC 9(01).
-           03  FLG-KHNTEN11-JI2                        PIC 9(01).       
-           03  FLG-KHNTEN14-JI2                        PIC 9(01).       
-           03  FLG-KHNTEN15-JI2                        PIC 9(01).       
-      *
-      *    ¥À‹≈¿øÙ§Œ»Û…Ωº®»ΩƒÍÕ—•’•È•∞° ∏¯Ã≥∫“≥≤°À
-       01  FLG-KHNTEN-KO-AREA.
-           03  FLG-KHNTEN2-KO                          PIC 9(01).
-           03  FLG-KHNTEN3-KO                          PIC 9(01).
-           03  FLG-KHNTEN4-KO                          PIC 9(01).
-           03  FLG-KHNTEN5-KO                          PIC 9(01).
-           03  FLG-KHNTEN6-KO                          PIC 9(01).
-           03  FLG-KHNTEN7-KO                          PIC 9(01).
-           03  FLG-KHNTEN8-KO                          PIC 9(01).
-           03  FLG-KHNTEN17-KO                         PIC 9(01).
-           03  FLG-KHNTEN19-KO                         PIC 9(01).
-           03  FLG-KHNTEN21-KO                         PIC 9(01).
-           03  FLG-KHNTEN22-KO                         PIC 9(01).
-      *
-      *    ∫∆ø«Œ¡¥À‹≈¿§À¥ÿ§π§Î•’•È•∞
-       01  FLG-SAISIN-AREA.
-           03  FLG-SAISIN-ARI                          PIC 9(01).
-           03  FLG-JIKANTAI1-ARI                       PIC 9(01).
-           03  FLG-JIKANTAI2-ARI                       PIC 9(01).
-           03  FLG-JIKANTAI3-ARI                       PIC 9(01).
-           03  FLG-MESAIKSN-ARI                        PIC 9(01).
-           03  FLG-CHIHOKATU-ARI                       PIC 9(01).
-           03  FLG-CHIHOKAT2-ARI                       PIC 9(01).
-           03  FLG-SAITOKKSN-ARI                       PIC 9(01).
-           03  FLG-SAITOKKSN-ARI2                      PIC 9(01).
-      *
-      *    ∫∆ø«Œ¡¥À‹≈¿§À¥ÿ§π§Î•´•¶•Û•»
-       01  CNT-SAISIN-AREA.
-           03  CNT-JIKANTAI1                           PIC 9(02).
-           03  CNT-JIKANTAI2                           PIC 9(02).
-           03  CNT-JIKANTAI3                           PIC 9(02).
-           03  CNT-MESAIKSN                            PIC 9(02).
-           03  CNT-CHIHOKATU                           PIC 9(02).
-           03  CNT-CHIHOKAT2                           PIC 9(02).
-           03  CNT-SAITOKKSN                           PIC 9(02).
-           03  CNT-SAITOKKSN2                          PIC 9(02).
-           03  CNT-NYUYOJI2                            PIC 9(02).
-           03  CNT-SAISIN-DOUJITU                      PIC 9(02).
-           03  CNT-SAISIN-ETC                          PIC 9(02).
-      *
       *    •´•¶•Û•»ŒŒ∞Ë
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
            03  CNT-IN-COMMIT                           PIC 9(06).
-           03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-OUT1                                PIC 9(06).
            03  CNT-OUT2                                PIC 9(06).
            03  CNT-OUT3                                PIC 9(06).
            03  CNT-OUT4                                PIC 9(06).
            03  CNT-OUT5                                PIC 9(06).
-           03  CNT-OUT6                                PIC 9(06).
-           03  CNT-OUT7                                PIC 9(06).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
@@ -582,36 +249,14 @@
            03  IDX2                                    PIC 9(03).
            03  IDX3                                    PIC 9(03).
            03  IDX4                                    PIC 9(03).
-           03  IDX5                                    PIC 9(03).
-           03  IDX15                                   PIC 9(03).
-           03  IDX17                                   PIC 9(03).
-           03  IDX19                                   PIC 9(03).
-           03  IDX20                                   PIC 9(03).
-           03  IDX21                                   PIC 9(03).
-           03  IDX22                                   PIC 9(02).
-           03  IDX33                                   PIC 9(03).
-           03  IDX34                                   PIC 9(03).
-           03  IDXA                                    PIC 9(01).
-           03  IDXB                                    PIC 9(03).
-           03  IDXX                                    PIC 9(02).
-           03  IDY                                     PIC 9(03).
-           03  IDYY                                    PIC 9(02).
-           03  IDW                                     PIC 9(03).
-           03  IDW3                                    PIC 9(03).
-           03  IDW4                                    PIC 9(03).
-           03  IDW5                                    PIC 9(03).
-           03  IDW6                                    PIC 9(03).
-           03  IDW7                                    PIC 9(03).
-           03  IDW8                                    PIC 9(03).
            03  ID1                                     PIC 9(03). 
-           03  IDV                                     PIC 9(03).
-           03  IDU                                     PIC 9(03).
-           03  IDZ1                                    PIC 9(02).
-           03  IDZ2                                    PIC 9(02).
+           03  IDY                                     PIC 9(03).
+           03  IDW                                     PIC 9(03).
            03  NUM-IDX                                 PIC 9(01).
            03  SYSKAN-IDX                              PIC 9(03).
-           03  SYSKAN-IDX2                             PIC 9(03).
-           03  FUKA-IDX                                PIC 9(03).
+      *
+      *    •—•πÃæŒŒ∞Ë
+       01  WK-PATH                                     PIC X(20).
       *
       *    ∫ﬁæ Û¬‡»ÚŒŒ∞Ë
        01  WK-ZAIKAISU                                 PIC S9(07).
@@ -620,19 +265,10 @@
        01  WK-KIZAITEN                                 PIC S9(08).
        01  WK-YKZTEN                                   PIC S9(08).
       *
-      *    ∞ÂŒ≈µ°¥ÿ° ¥À‹æ Û°À¬‡»ÚÕ—ŒŒ∞Ë
-       01  TBL-SYS1001-T.
-           03  TBL-SYS1001-OCC                         OCCURS  100.
-               05  TBL-SYS1001                         PIC X(610).
-      *    ª‹¿ﬂ¥Ω‡æ Û¬‡»ÚÕ—ŒŒ∞Ë
-       01  TBL-SYS1006-T.
-           03  TBL-SYS1006-OCC                         OCCURS  100.
-               05  TBL-SYS10062                        PIC X(610).
-               05  TBL-SYS10067                        PIC X(610).
-      *    ƒ¢…º ‘Ω∏∂Ë ¨æ Û¬‡»ÚÕ—ŒŒ∞Ë
-       01  TBL-SYS1030-T.
-           03  TBL-SYS1030-OCC                         OCCURS  100.
-               05  TBL-SYS1030                         PIC X(610).
+      *    œ´∫“º´«Â∞ÂŒ≈µ°¥ÿ¬‡»ÚÕ—ŒŒ∞Ë
+       01  TBL-SYS4001-T.
+           03  TBL-SYS4001-OCC                         OCCURS  10.
+               05  TBL-SYS4001                         PIC X(610).
       *
       *    ≈¿øÙ•∆°º•÷•Î∏°∫˜Õ—¬–æ›∆¸ŒŒ∞Ë
        01  WK-TAIHI-AREA.
@@ -645,7 +281,6 @@
       *    ≈¿øÙ•ﬁ•π•øæ Û¬‡»ÚŒŒ∞Ë
        01  WRK-TNS-TAIHI-AREA.
            03  WRK-TNS-TAIHI-TABLE                     OCCURS  5.
-               05  WRK-TNS-CHUKSNTUBAN                 PIC X(01).
                05  WRK-TNS-DATAKBN                     PIC 9(01).
                05  WRK-TNS-TIMEKSNKBN                  PIC 9(01).
                05  WRK-TNS-TEN                         PIC 9(09)V99.    
@@ -653,62 +288,32 @@
                05  WRK-TNS-OSINKBN                     PIC 9(01).
                05  WRK-TNS-KNSJISKBN                   PIC 9(01).
                05  WRK-TNS-SRYCD                       PIC X(09).
-               05  WRK-TNS-JIBAISYUKEIKBN              PIC 9(01).
-      *
-      *    ±°≥∞ΩË ˝∞Ï»ÃÃæ ‘Ω∏æ Û¬‡»ÚŒŒ∞Ë
-       01  WRK-ORCSGETGE-OUT-AREA.
-           03  WRK-ORCSGETGE-OUT-TABLE                 OCCURS  50.
-               05  WRK-ORCSGETGE-YAKKAKJNCD            PIC X(12).
-               05  WRK-ORCSGETGE-GENERIC-KBN           PIC X(01).
-               05  WRK-ORCSGETGE-GENERICNAME           PIC X(200).
-      *
-      *    ºÍµª≈¿°¶ÃÙ∫ﬁ≈˘≈¿øÙÕ—ŒŒ∞Ë
-       01  TBL-TENSUG-JI.
-           03  TBL-TENSU-JI                            OCCURS   50.
-               05  TBL-SYUTEN-JI                       PIC 9(09).
-               05  TBL-YKZTEN-JI                       PIC 9(09).
-      *
-       01  TBL-ZAITAKU-KAISU-XXX.
-           03  TBL-ZAITAKU-KAISU-XXX2                  OCCURS   6.
-             05  TBL-ZAITAKU-KAISU-XXX3                OCCURS   9.
-               07  TBL-ZAITAKU-KAISU-XXX4              OCCURS  31.
-                 09  TBL-ZAITAKU-KAISU                 PIC 9(03).
       *
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
+           03  WRK-PATH                                PIC X(64).
            03  WRK-PARA.
                05  WRK-PARA-SRYYM                      PIC X(06).
                05  WRK-PARA-TERMID                     PIC X(16).
                05  WRK-PARA-SYSYMD                     PIC X(08).
-               05  WRK-PARA-RECEKBN                    PIC X(01).
                05  WRK-PARA-JOBID                      PIC 9(07).
                05  WRK-PARA-SHELLID                    PIC X(08).
-           03  WRK-PARA-JIBAIPRTKBN                    PIC X(01).
-           03  WRK-PARA-PRTKBN                         PIC X(01).
-           03  WRK-PARA-HOSPNUM                        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD                          PIC X(08).
       *
+           03  WRK-RECEERR                             PIC X(200).
+      *
            03  WRK-KEISAN                              PIC 9(09).
-           03  WRK-KEISAN-KG                           PIC 9(09).
-           03  WRK-KEISAN-KG2                          PIC 9(09).
            03  WRK-TEN                                 PIC 9(09).
-           03  WRK-TEN-KG                              PIC 9(09).
-           03  WRK-TEN-KG2                             PIC 9(09).
+           03  WRK-TANKA                               PIC 9(02)V99.
            03  WRK-MEISAI-CNT                          PIC 9(04).
            03  WRK-SRYCDTOTAL                          PIC 9(14).
-           03  WRK-SURYOUTOTAL                         PIC 9(07)V9(05).
+           03  WRK-SURYOUTOTAL                         PIC 9(07)V9(03).
            03  WRK-KSNRATE                             PIC 9V99.    
            03  WRK-SRYCD                               PIC 9(09).   
            03  WRK-YOUBUKASAN                          PIC 9(07).
-           03  WRK-KYOBUKASAN                          PIC 9(07).
-           03  WRK-KEIBUKASAN                          PIC 9(07).
-           03  WRK-SOGAIKASAN                          PIC 9(07).
            03  WRK-RYOYOTEATE                          PIC 9(07).
            03  WRK-RYOYOTEATE2                         PIC 9(07).
-           03  WRK-ZAI-KINGAKU                         PIC 9(09).
-      *
-           03  WRK-KYUGYOFLG                           PIC X(01).
       *
            03  WRK-DAY                                 PIC 9(02).
       *
@@ -717,36 +322,10 @@
            03  WRK-TANICD                              PIC 9(03).
            03  WRK-TANIMOJISU                          PIC 9(01).
            03  WRK-TANINAME                            PIC X(24).
-           03  WRK-SRYSURYO                            PIC 9(05)V9(05).
+           03  WRK-SRYSURYO                            PIC 9(05)V9(03).
            03  WRK-SRYSURYO2                           PIC 9(05).
            03  WRK-SRYSURYO3                           PIC 9(05).
-           03  WRK-KZI058-TEN                          PIC 9(09)V99.
-           03  WRK-KZI058-TANICD                       PIC 9(03).
-           03  WRK-KZI058-TANIMOJISU                   PIC 9(01).
-           03  WRK-KZI058-TANINAME                     PIC X(24).
            03  WRK-RENNUM                              PIC 9(02).
-           03  WRK-RENNUM2                             PIC 9(02).
-      *
-           03  WRK-TEN-KZI                             PIC 9(09).
-           03  WRK-TEN-BUN                             PIC 9(09).
-      *
-           03  WRK-SYUTEN-JI                           PIC 9(09).
-           03  WRK-YKZTEN-JI                           PIC 9(09).
-           03  WRK-KINGAKU-JI                          PIC 9(09).
-      *
-      *    æ√»Ò¿«√ºøÙ∂Ë ¨
-           03  WRK-TAX1001-KBN                         PIC X(01).
-           03  WRK-HASU1001-JIBAI                      PIC X(01).
-           03  WRK-HASU1001-DAISAN                     PIC X(01).
-      *
-           03  WRK-SISETU613                           PIC 9(01).
-           03  WRK-SISETU695                           PIC 9(01).
-           03  WRK-SISETU3055                          PIC 9(01).
-           03  WRK-SISETU3056                          PIC 9(01).
-           03  WRK-SISETU3057                          PIC 9(01).
-           03  WRK-SISETU3058                          PIC 9(01).
-           03  WRK-SISETU3168                          PIC 9(01).
-           03  WRK-SISETU3169                          PIC 9(01).
       *
       *    øÙª˙»æ≥—¡¥≥— —¥πÕ—     
            03  WRK-CHAR-IDX                    PIC 9(02).
@@ -766,81 +345,19 @@
                05  WRK-TANKA-Z2                PIC X(01).
                05  WRK-TANKA-Z3                PIC ZZ.
       *
-      ***  03  WRK-FUKA-KINGAKU                PIC 9(09).
-           03  WRK-FUKA-KINGAKU                PIC 9(13)V9(05).
-           03  WRK-FUKA-VALUE                  PIC 9(01).
-      *
-           03  WRK-ZAITENNASHI                 PIC 9(09).
-      *
-           03  WRK-SURYOU-COUNT                PIC 9(09).
-      *
-      *    øÙŒÃ ‘Ω∏Õ—
-           03  WRK-SURYOKETA                   PIC 9(02).
-           03  WRK-SURYOKETA1                  PIC 9(02).
-           03  WRK-SURYOKETA2                  PIC 9(02).
-           03  WRK-SURYOST                     PIC 9(02).
-           03  WRK-SURYO                       PIC 9(05)V9(05).
-           03  WRK-SURYO-R  REDEFINES  WRK-SURYO.
-               05  WRK-SURYO-S1                PIC 9(05).
-               05  WRK-SURYO-S2                PIC 9(05).
-           03  WRK-SURYO-X.
-               05  WRK-SURYO-Z1                PIC ZZZZZ.
-               05  WRK-SURYO-Z2                PIC X(01).
-               05  WRK-SURYO-Z3                PIC ZZZZZ.
-           03  WRK-SURYO-N.
-               05  WRK-SURYO-N1                PIC X(10).
-               05  WRK-SURYO-N2                PIC X(02).
-               05  WRK-SURYO-N3                PIC X(10).
-           03  WRK-SRYSURYOW                   PIC X(24).
-      *
-           03  WRK-FORMALNAME                  PIC X(300).
-      *
-           03  WRK-SETCOM-JIDO                 PIC 9(03).
-           03  WRK-SETCOM-JIDO2                PIC 9(03).
-      *
-           03  WRK-CHECK-SRYCD                 PIC X(09).
-      *
-           03  WRK-FUTANWARI                   PIC 9V99.
-      *
-           03  WRK-DAISAN-FTNMONEY             PIC 9(08).
-           03  WRK-DAISAN-FTNMONEY2            PIC 9(08).
-           03  WRK-DAISAN-DAISANKBN            PIC X(01).
-           03  WRK-DAISAN-TOTALTEN-SYUNOU      PIC 9(08).
-           03  WRK-DAISAN-ACCT-UPDKBN          PIC X(01).
-           03  WRK-DAISAN-TOTALTEN             PIC 9(08).
-      *
-           03  WRK-S1                          PIC 9(03).
-           03  WRK-S2                          PIC 9(03).
-           03  WRK-S3                          PIC 9V99999.
-           03  WRK-S4                          PIC 9V99.
-           03  WRK-S5                          PIC 9V99.
-      *
-           03  WRK-COL                         PIC 9(03).
-      *
-           03  WRK-TAIHI-ZAINUM                PIC 9(08).
-           03  WRK-TAIHI-ZAINUM2               PIC 9(08).
-      *
-           03  WRK-INPUTCOMENT                 PIC X(80).
-           03  WRK-INPUTCOMENT2                PIC X(14).
-           03  WRK-INPUTCOMENT3                PIC X(30).
-           03  WRK-INPUTCOMENT-KIN-T.
-               05  WRK-INPUTCOMENT-KIN         PIC 9(07).
-           03  WRK-INPUTCOMENT-KIN2-T.
-               05  WRK-INPUTCOMENT-KIN2        PIC X(07).
-      *
-           03  WRK-JIBAI-SKYKIN-A              PIC 9(09).
-           03  WRK-JIBAI-SKYKIN-B              PIC 9(09).
-      *
-           03  WRK-1030-KOUHATUKA              PIC X(01).
-      *
       *---------------------------------------------------------------
       *  ≤ÛøÙ∏∫ªªÕ—¬‡»ÚŒŒ∞Ë
-      *    ΩË ˝∏∫≤ÛøÙ
-           03  WRK-SYOHOU-KAISU                PIC 9(03).
-      *    ΩË ˝§ª§Û∏∫≤ÛøÙ
-           03  WRK-SYOSEN-KAISU                PIC 9(03).
+      *
+      *    ∆√ƒÍº¿¥µΩË ˝¥…Õ˝≤√ªª° ΩË ˝Œ¡°À
+           03  WRK-TOKUTEI-SKAN                        PIC 9(03).
+      *    ΩË ˝Œ¡° ∆˝Õƒª˘°À≤√ªª
+           03  WRK-NYUYOUJI-SKAN                       PIC 9(03).
+      *    ∆√ƒÍº¿¥µΩË ˝¥…Õ˝≤√ªª° ΩË ˝§ª§ÛŒ¡°À
+           03  WRK-TOKUTEI-SKAN2                       PIC 9(03).
+      *    ΩË ˝§ª§Û° ∆˝Õƒª˘°À≤√ªª
+           03  WRK-NYUYOUJI-SHOKAN                     PIC 9(03).
       *    ΩË ˝Œ¡° À„°¶∏˛°¶∆«°¶≥–°À
-           03  WRK-MADOKU-SHOHO                PIC 9(03).
+           03  WRK-MADOKU-SHOHO                        PIC 9(03).
       *---------------------------------------------------------------
       *
       *    ∏«ƒÍ√Õ
@@ -851,38 +368,16 @@
       *    ≥∞ÕËø«Œ≈Œ¡° £±≤ÛÃ‹°À
            03  CONS-GAIRAIRYO1 PIC X(09)     VALUE "112011310".
            03  CONS-GAIRAIRYO2 PIC X(09)     VALUE "112705510".
-           03  CONS-GAIRAIRYO3 PIC X(09)     VALUE "112011710".
-           03  CONS-GAIRAIRYO4 PIC X(09)     VALUE "112016310".
-           03  CONS-GAIRAIRYO5 PIC X(09)     VALUE "112016550".
-           03  CONS-GAIRAIRYO6 PIC X(09)     VALUE "112017310".
-           03  CONS-GAIRAIRYO7 PIC X(09)     VALUE "112017450".
       *    ΩË ˝§ª§ÛŒ¡
            03  CONS-SHOHOSEN1 PIC X(09)      VALUE "120002710".
            03  CONS-SHOHOSEN2 PIC X(09)      VALUE "120002810".
            03  CONS-SHOHOSEN3 PIC X(09)      VALUE "120002910".
            03  CONS-SHOHOSEN4 PIC X(09)      VALUE "120003010".
-           03  CONS-SHOHOSEN5 PIC X(09)      VALUE "120003710".
-      *    ΩË ˝§ª§ÛŒ¡≤√ªª
+      *    ΩË ˝§ª§Û° ∆˝Õƒª˘°À≤√ªª
            03  CONS-SHOHOKSN1  PIC X(09)     VALUE "120002470".
            03  CONS-SHOHOKSN2  PIC X(09)     VALUE "120002570".
-           03  CONS-SHOHOKSN3  PIC X(09)     VALUE "120003270".
-           03  CONS-SHOHOKSN4  PIC X(09)     VALUE "120003470".
-           03  CONS-SHOHOKSN5  PIC X(09)     VALUE "120003570".
-           03  CONS-SHOHOKSN6  PIC X(09)     VALUE "120003970".
-           03  CONS-SHOHOKSN7  PIC X(09)     VALUE "120004270".
-           03  CONS-SHOHOKSN8  PIC X(09)     VALUE "120004570".
       *    ÃÙ∫ﬁŒ¡ƒ˛∏∫° £π£∞°ø£±£∞£∞°À° ∆‚…˛ÃÙ°À
            03  CONS-YAKTEIGEN  PIC X(09)     VALUE "630010002".
-      *    ÃÙ∫ﬁŒ¡ƒ˛∏∫° £∏£∞°ø£±£∞£∞°À° ∏˛¿∫ø¿ÃÙ¬ø∫ﬁ≈ÍÕø°À
-           03  CONS-YAKTEIGEN2 PIC X(09)     VALUE "630010005".
-      *    ÃÙ∫ﬁŒ¡ƒ˛∏∫° £∂£∞°ø£±£∞£∞°À° æ“≤Œ®§¨ƒ„§§¬Á…¬±°£≥£∞∆¸∞ æÂ≈ÍÃÙ°À
-           03  CONS-YAKTEIGEN3 PIC X(09)     VALUE "630010006".
-      *    ÃÙ∫ﬁŒ¡∏∫≈¿° ºæ…€ÃÙÃÙ∫ﬁŒ¡æÂ∏¬ƒ∂°À
-           03  CONS-YAKTEIGEN4 PIC X(09)     VALUE "630010007".
-      *    ° ∏∫°À
-           03  CONS-GEN        PIC X(09)     VALUE "820000047".
-      *    ° ¿∫∏∫°À
-           03  CONS-GEN2       PIC X(09)     VALUE "820000166".
       *     ¥∫’° •≥•·•Û•»°À
            03  CONS-FUNSAI-COMMENT PIC X(09) VALUE "099209901".
       *    ∫Œ∑Ï° £¬°›£¡°À
@@ -891,24 +386,42 @@
            03  CONS-SAIKETSU2      PIC X(09) VALUE "160095710".
       *    ∫Œ∑Ï° £¬°›£√°À
            03  CONS-SAIKETSU3      PIC X(09) VALUE "160095810".
+      *    ∆√µ≠ªˆπ‡
+           03  CONS-TOKKI1         PIC X(14) VALUE "00000099990101".
+           03  CONS-TOKKI2         PIC X(14) VALUE "00000099990102".
+           03  CONS-TOKKI3         PIC X(14) VALUE "00000099990103".
+           03  CONS-TOKKI4         PIC X(14) VALUE "00000099990104".
+           03  CONS-TOKKI5         PIC X(14) VALUE "00000099990105".
+           03  CONS-TOKKI7         PIC X(14) VALUE "00000099990107".
+           03  CONS-TOKKI8         PIC X(14) VALUE "00000099990108".
+           03  CONS-TOKKI9         PIC X(14) VALUE "00000099990109".
+           03  CONS-TOKKI10        PIC X(14) VALUE "00000099990110".
+           03  CONS-TOKKI11        PIC X(14) VALUE "00000099990111".
+           03  CONS-TOKKI12        PIC X(14) VALUE "00000099990112".
       *    ∆˝Õƒª˘≤√ªª
            03  CONS-NYUKSN1        PIC X(09) VALUE "111000370".         
            03  CONS-NYUKSN2        PIC X(09) VALUE "111011470".
-           03  CONS-NYUKSN3        PIC X(09) VALUE "111011970".
-           03  CONS-NYUKSN4        PIC X(09) VALUE "111012070".
-           03  CONS-NYUKSN5        PIC X(09) VALUE "111012170".
-           03  CONS-NYUKSN6        PIC X(09) VALUE "111012270".
-           03  CONS-NYUKSN7        PIC X(09) VALUE "111011570".
-           03  CONS-NYUKSN8        PIC X(09) VALUE "111011670".
-           03  CONS-NYUKSN9        PIC X(09) VALUE "111011770".
       *    ∫∆ø«° £≥∑Óƒ∂°À° £µ≤Ûƒ∂°À§ §…
       *    ° £¥£∂£µ§À¥ÿ∑∏§¢§Í°À
            03  CONS-SAISHIN-A1     PIC X(09) VALUE "101120060".
+      **   03  CONS-SAISHIN-A2     PIC X(09) VALUE "112001210".
+      **   03  CONS-SAISHIN-A3     PIC X(09) VALUE "112701110".
+      **   03  CONS-SAISHIN-A4     PIC X(09) VALUE "112000970".
+      **   03  CONS-SAISHIN-A5     PIC X(09) VALUE "112001070".
+      **   03  CONS-SAISHIN-A6     PIC X(09) VALUE "112006970".
+      **   03  CONS-SAISHIN-A7     PIC X(09) VALUE "112007070".
+      **   03  CONS-SAISHIN-A8     PIC X(09) VALUE "112001310".
+      **   03  CONS-SAISHIN-A9     PIC X(09) VALUE "112701210".
+      **   03  CONS-SAISHIN-A10    PIC X(09) VALUE "112001110".
+      **   03  CONS-SAISHIN-A11    PIC X(09) VALUE "112701010".
+      **   03  CONS-SAISHIN-A12    PIC X(09) VALUE "112001410".
+      **   03  CONS-SAISHIN-A13    PIC X(09) VALUE "112701310".
       *    ≥∞ÕË¥…Õ˝≤√ªª° £≥∑Óƒ∂°À° £µ≤Ûƒ∂°À
       *    ° £¥£∂£∞§À¥ÿ∑∏§¢§Í°À
            03  CONS-GAIRAI         PIC X(09) VALUE "101120090".
       *    œ´∫“º´«Â¿’¥ÿ∑∏
            03  CONS-ROUSAI1    PIC X(09)   VALUE   "101110010".
+           03  CONS-ROUSAI2    PIC X(09)   VALUE   "101110020".
            03  CONS-ROUSAI3    PIC X(09)   VALUE   "101110030".
            03  CONS-ROUSAI4    PIC X(09)   VALUE   "101120030".
            03  CONS-ROUSAI5    PIC X(09)   VALUE   "101120040".
@@ -924,46 +437,15 @@
            03  CONS-ROUSAI15   PIC X(09)   VALUE   "101130080".
            03  CONS-ROUSAI16   PIC X(09)   VALUE   "101130090".
            03  CONS-ROUSAI17   PIC X(09)   VALUE   "101130100".
-           03  CONS-ROUSAI18   PIC X(09)   VALUE   "101110040".
-           03  CONS-ROUSAI19   PIC X(09)   VALUE   "101120100".
-      *
-           03  CONS-ROUSAI20   PIC X(09)   VALUE   "101800870".
-           03  CONS-ROUSAI21   PIC X(09)   VALUE   "101800470".
-           03  CONS-ROUSAI22   PIC X(09)   VALUE   "101800480".
-           03  CONS-ROUSAI23   PIC X(09)   VALUE   "101800490".
-           03  CONS-ROUSAI24   PIC X(09)   VALUE   "101800500".
-           03  CONS-ROUSAI25   PIC X(09)   VALUE   "101800510".
-           03  CONS-ROUSAI26   PIC X(09)   VALUE   "101800520".
-           03  CONS-ROUSAI27   PIC X(09)   VALUE   "101800530".
-           03  CONS-ROUSAI28   PIC X(09)   VALUE   "101800540".
-           03  CONS-ROUSAI29   PIC X(09)   VALUE   "101800960".
-           03  CONS-ROUSAI30   PIC X(09)   VALUE   "101800970".
-           03  CONS-ROUSAI31   PIC X(09)   VALUE   "101800980".
-      *
-           03  CONS-ROUSAI32   PIC X(09)   VALUE   "101800890".
-           03  CONS-ROUSAI33   PIC X(09)   VALUE   "101130190".
-           03  CONS-ROUSAI34   PIC X(09)   VALUE   "101120010".
-      *
-           03  CONS-ROUSAI35   PIC X(09)   VALUE   "101120050".
-           03  CONS-ROUSAI36   PIC X(09)   VALUE   "101120060".
-           03  CONS-ROUSAI37   PIC X(09)   VALUE   "101120070".
-           03  CONS-ROUSAI38   PIC X(09)   VALUE   "101120080".
-      *
-           03  CONS-ROUSAI39   PIC X(09)   VALUE   "101801040".
       *
            03  CONS-ROUCOM1    PIC X(09)   VALUE   "840800001".
            03  CONS-ROUCOM2    PIC X(09)   VALUE   "840800002". 
       *
       *    π¯…Ù∏«ƒÍ¬”≤√ªª
            03  CONS-YOUBUKASAN PIC X(09)   VALUE   "140037490".
-      *    ∂ª…Ù∏«ƒÍ¬”≤√ªª
-           03  CONS-KYOBUKASAN PIC X(09)   VALUE   "140040110".
-      *    Ù…Ù∏«ƒÍ¬”≤√ªª
-           03  CONS-KEIBUKASAN PIC X(09)   VALUE   "140052610".
-      *    ¡œ≥∞∏«ƒÍ¥Ôª»Õ—≤√ªª
-           03  CONS-SOGAIKASAN PIC X(09)   VALUE   "150266970".
       *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
            03  CONS-RYOYOTEATE PIC X(09)   VALUE   "199000610".
+      *
       *
       *    •’•£•Î•‡Œ¡° ∆˝Õƒª˘°À≤√ªª
            03  CONS-FILM-YOUJI-KASAN  
@@ -980,14 +462,8 @@
            03  CONS-MANSEI           PIC X(09)  VALUE  "113006510".
       *    Ω˝…¬ºÍ≈ˆ∂‚∞’∏´ΩÒ∏Ú…’Œ¡
            03  CONS-SYOBYO-COMMENT   PIC X(09)  VALUE  "180000710".
-      *    Ω˝…¬ºÍ≈ˆ∂‚∞’∏´ΩÒ∏Ú…’«Ø∑Ó∆¸
-           03  CONS-SYOBYO2-COMMENT  PIC X(09)  VALUE  "840000011".
-      *    ° ¡Í¬≥°ÀΩ˝…¬ºÍ≈ˆ∂‚∞’∏´ΩÒ∏Ú…’«Ø∑Ó∆¸
-           03  CONS-SYOBYO3-COMMENT  PIC X(09)  VALUE  "840000012".
       *    Œ≈Õ‹»Ò∆±∞’ΩÒ∏Ú…’Œ¡
            03  CONS-RYOYO-COMMENT    PIC X(09)  VALUE  "113004310".
-      *    Œ≈Õ‹»Ò∆±∞’ΩÒ∏Ú…’«Ø∑Ó∆¸
-           03  CONS-RYOYO2-COMMENT   PIC X(09)  VALUE  "840000078".
       *    À¨Ã‰¥«∏Óªÿº®Œ¡
            03  CONS-HOUSIJI-COMMENT  PIC X(09)  VALUE  "114008010".
       *    À¨Ã‰¥«∏Óªÿº®Œ¡ªªƒÍ∆¸
@@ -1028,758 +504,10 @@
            03  CONS-CTMRI-COMMENT16  PIC X(09)  VALUE  "170023410".
       *    ªÕªË∆√ºÏ£Õ£“£…ª£±∆
            03  CONS-CTMRI-COMMENT17  PIC X(09)  VALUE  "170023510".
-      *    £√£‘ª£±∆° £±£∂ŒÛÃ§À˛•ﬁ•Î•¡•π•È•§•π∑øµ°¥Ô°À
-           03  CONS-CTMRI-COMMENT18  PIC X(09)  VALUE  "170028610".
-      *    £√£‘ª£±∆° £∂£¥ŒÛ∞ æÂ•ﬁ•Î•¡•π•È•§•π∑øµ°¥Ô°À
-           03  CONS-CTMRI-COMMENT19  PIC X(09)  VALUE  "170033410".
-      *    £Õ£“£…ª£±∆° £≥•∆•π•È∞ æÂ§Œµ°¥Ô°À
-           03  CONS-CTMRI-COMMENT20  PIC X(09)  VALUE  "170033510".
-      *    £√£‘ª£±∆° £∂£¥ŒÛ∞ æÂ•ﬁ•Î•¡•π•È•§•π∑øµ°¥Ô°À° ∂¶∆±Õ¯Õ—ª‹¿ﬂ°À
-           03  CONS-CTMRI-COMMENT21  PIC X(09)  VALUE  "170034910".
-      *    £Õ£“£…ª£±∆° £≥•∆•π•È∞ æÂ§Œµ°¥Ô°À° ∂¶∆±Õ¯Õ—ª‹¿ﬂ°À
-           03  CONS-CTMRI-COMMENT22  PIC X(09)  VALUE  "170035010".
-      *    ∫ﬂ¬∑Ï±’∆©¿œ…—≤Ûªÿ∆≥¥…Õ˝Œ¡
-           03  CONS-HINKAI-COMMENT   PIC X(09)  VALUE  "114009410".
-      *    ΩÈø«° ∆±∆¸ £øÙø«Œ≈≤ °À
-           03  CONS-SYODOU-COMMENT   PIC X(09)  VALUE  "111011810".
-      *     £ΩÈªªƒÍø«Œ≈≤ °ß
-           03  CONS-SYODOU2-COMMENT  PIC X(09)  VALUE  "830000024".
-      *    ΩÈø«Œ¡° ∆±∞Ï∆¸£≤≤ Ã‹°ßæ“≤æı§ §∑°À
-           03  CONS-SYODOU3-COMMENT  PIC X(09)  VALUE  "111012610".
-      *    ΩÈø«° ∆±∞Ï∆¸ £øÙ≤ ºıø«ª˛§Œ£≤≤ Ã‹°¶¬≈∑ÎŒ®£µ≥‰∞ ≤º°À
-           03  CONS-SYODOU4-COMMENT  PIC X(09)  VALUE  "111012810".
-      *    •À•≥•¡•Û∞Õ¬∏æ…¥…Õ˝Œ¡° ΩÈ≤Û°À
-           03  CONS-NIKOCHIN-COMMENT PIC X(09)  VALUE  "113008310".
-      *    •À•≥•¡•Û∞Õ¬∏æ…¥…Õ˝Œ¡° £≤≤ÛÃ‹§´§È£¥≤ÛÃ‹§ﬁ§«°À
-           03  CONS-NIKOCHIN2-COMMENT PIC X(09) VALUE  "113008410".
-      *    •À•≥•¡•Û∞Õ¬∏æ…¥…Õ˝Œ¡° £µ≤ÛÃ‹°À
-           03  CONS-NIKOCHIN3-COMMENT PIC X(09) VALUE  "113008510".
-      *    ΩÈ≤ÛªªƒÍ°°°°∑Ó°°∆¸
-           03  CONS-NIKOCHIN4-COMMENT PIC X(09) VALUE  "840000097".
-      *    Ω≈≈Ÿ”√¬©¥µº‘º£Œ≈¥…Õ˝≤√ªª° £±∑ÓÃ‹°À
-           03  CONS-ZENSOKU-COMMENT  PIC X(09)  VALUE  "113008070".
-      *    Ω≈≈Ÿ”√¬©¥µº‘º£Œ≈¥…Õ˝≤√ªª° £≤∑ÓÃ‹∞ πﬂ£∂∑ÓÃ‹§ﬁ§«°À
-           03  CONS-ZENSOKU2-COMMENT PIC X(09)  VALUE  "113008170".
-      *    ¬Ë£±≤ÛÃ‹º£Œ≈¥…Õ˝°°°°∑Ó°°∆¸
-           03  CONS-ZENSOKU3-COMMENT PIC X(09)  VALUE  "840000098".
-      *    ø¥¬Á∑Ï¥…º¿¥µ•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-SINDAI1-COMMENT  PIC X(09)  VALUE  "180027410".
-      *    ø¥¬Á∑Ï¥…º¿¥µ•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
-           03  CONS-SINDAI2-COMMENT  PIC X(09)  VALUE  "180027510".
-      **   ø¥¬Á∑Ï¥…º¿¥µ•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° £±£≤£∞∆¸ƒ∂°À
-           03  CONS-SINDAI3-COMMENT  PIC X(09)  VALUE  "180029110".
-      **   ø¥¬Á∑Ï¥…º¿¥µ•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° £±£≤£∞∆¸ƒ∂°À
-           03  CONS-SINDAI4-COMMENT  PIC X(09)  VALUE  "180029210".
-      **   ø¥¬Á∑Ï¥…º¿¥µ•Í•œ•”•Í•∆°º•∑•Á•Û∞Â≥ÿ¥…Õ˝Œ¡° £±°À
-           03  CONS-SINDAI5-COMMENT  PIC X(09)  VALUE  "180029910".
-      **   ø¥¬Á∑Ï¥…º¿¥µ•Í•œ•”•Í•∆°º•∑•Á•Û∞Â≥ÿ¥…Õ˝Œ¡° £≤°À
-           03  CONS-SINDAI6-COMMENT  PIC X(09)  VALUE  "180030010".
-      *!   ø¥¬Á∑Ï¥…º¿¥µ•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-SINDAI7-COMMENT  PIC X(09)  VALUE  "101800080".
-      *!   ø¥¬Á∑Ï¥…º¿¥µ•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
-           03  CONS-SINDAI8-COMMENT  PIC X(09)  VALUE  "101800090".
-      *#   ø¥¬Á∑Ï¥…º¿¥µ•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-SINDAI9-COMMENT  PIC X(09)  VALUE  "101800230".
-      *#   ø¥¬Á∑Ï¥…º¿¥µ•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
-           03  CONS-SINDAI10-COMMENT PIC X(09)  VALUE  "101800240".
-      *    ∏∆µ€¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-KOKYUKI1-COMMENT PIC X(09)  VALUE  "180028010".
-      *    ∏∆µ€¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
-           03  CONS-KOKYUKI2-COMMENT PIC X(09)  VALUE  "180028110".
-      **   ∏∆µ€¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° £∏£∞∆¸ƒ∂°À
-           03  CONS-KOKYUKI3-COMMENT PIC X(09)  VALUE  "180029710".
-      **   ∏∆µ€¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° £∏£∞∆¸ƒ∂°À
-           03  CONS-KOKYUKI4-COMMENT PIC X(09)  VALUE  "180029810".
-      **   ∏∆µ€¥Ô•Í•œ•”•Í•∆°º•∑•Á•Û∞Â≥ÿ¥…Õ˝Œ¡° £±°À
-           03  CONS-KOKYUKI5-COMMENT PIC X(09)  VALUE  "180030510".
-      **   ∏∆µ€¥Ô•Í•œ•”•Í•∆°º•∑•Á•Û∞Â≥ÿ¥…Õ˝Œ¡° £≤°À
-           03  CONS-KOKYUKI6-COMMENT PIC X(09)  VALUE  "180030610".
-      *!   ∏∆µ€¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-KOKYUKI7-COMMENT PIC X(09)  VALUE  "101800150".
-      *!   ∏∆µ€¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
-           03  CONS-KOKYUKI8-COMMENT PIC X(09)  VALUE  "101800160".
-      *#   ∏∆µ€¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-KOKYUKI9-COMMENT PIC X(09)  VALUE  "101800340".
-      *#   ∏∆µ€¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
-           03  CONS-KOKYUKI10-COMMENT PIC X(09) VALUE  "101800350".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-NOUKE1-COMMENT   PIC X(09)  VALUE  "180027610".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
-           03  CONS-NOUKE2-COMMENT   PIC X(09)  VALUE  "180027710".
-      **   «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° £±£¥£∞∆¸ƒ∂°À
-           03  CONS-NOUKE3-COMMENT   PIC X(09)  VALUE  "180029310".
-      **   «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° £±£¥£∞∆¸ƒ∂°À
-           03  CONS-NOUKE4-COMMENT   PIC X(09)  VALUE  "180029410".
-      **   «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•Û∞Â≥ÿ¥…Õ˝Œ¡° £±°À
-           03  CONS-NOUKE5-COMMENT   PIC X(09)  VALUE  "180030110".
-      **   «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•Û∞Â≥ÿ¥…Õ˝Œ¡° £≤°À
-           03  CONS-NOUKE6-COMMENT   PIC X(09)  VALUE  "180030210".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À
-           03  CONS-NOUKE7-COMMENT   PIC X(09)  VALUE  "180030810".
-      *!   «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-NOUKE8-COMMENT   PIC X(09)  VALUE  "101800100".
-      *!   «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
-           03  CONS-NOUKE9-COMMENT   PIC X(09)  VALUE  "101800110".
-      *!   «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À
-           03  CONS-NOUKE10-COMMENT  PIC X(09)  VALUE  "101800120".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° «—Õ—æ…∏ı∑≤°À
-           03  CONS-NOUKE11-COMMENT  PIC X(09)  VALUE  "180032410".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° «—Õ—æ…∏ı∑≤°À
-           03  CONS-NOUKE12-COMMENT  PIC X(09)  VALUE  "180032510".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° «—Õ—æ…∏ı∑≤°À
-           03  CONS-NOUKE13-COMMENT  PIC X(09)  VALUE  "180032610".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶«—Õ—æ…∏ı∑≤∞ ≥∞°À
-           03  CONS-NOUKE14-COMMENT  PIC X(09)  VALUE  "180033910".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶«—Õ—æ…∏ı∑≤°À
-           03  CONS-NOUKE15-COMMENT  PIC X(09)  VALUE  "180034010".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶«—Õ—æ…∏ı∑≤∞ ≥∞°À
-           03  CONS-NOUKE16-COMMENT  PIC X(09)  VALUE  "180034110".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶«—Õ—æ…∏ı∑≤°À
-           03  CONS-NOUKE17-COMMENT  PIC X(09)  VALUE  "180034210".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶«—Õ—æ…∏ı∑≤∞ ≥∞°À
-           03  CONS-NOUKE18-COMMENT  PIC X(09)  VALUE  "180034310".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶«—Õ—æ…∏ı∑≤°À
-           03  CONS-NOUKE19-COMMENT  PIC X(09)  VALUE  "180034410".
-      *#   «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-NOUKE20-COMMENT  PIC X(09)  VALUE  "101800250".
-      *#   «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
-           03  CONS-NOUKE21-COMMENT  PIC X(09)  VALUE  "101800260".
-      *#   «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À
-           03  CONS-NOUKE22-COMMENT  PIC X(09)  VALUE  "101800270".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡£±° Õ◊≤°¶«—Õ—æ…∞ ≥∞°À¥Ω‡…‘≈¨πÁ
-           03  CONS-NOUKE23-COMMENT  PIC X(09)  VALUE  "180043430".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡£±° Õ◊≤°¶«—Õ—æ…°À¥Ω‡…‘≈¨πÁ
-           03  CONS-NOUKE24-COMMENT  PIC X(09)  VALUE  "180043530".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡£≤° Õ◊≤°¶«—Õ—æ…∞ ≥∞°À¥Ω‡…‘≈¨πÁ
-           03  CONS-NOUKE25-COMMENT  PIC X(09)  VALUE  "180043630".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡£≤° Õ◊≤°¶«—Õ—æ…°À¥Ω‡…‘≈¨πÁ
-           03  CONS-NOUKE26-COMMENT  PIC X(09)  VALUE  "180043730".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡£≥° Õ◊≤°¶«—Õ—æ…∞ ≥∞°À¥Ω‡…‘≈¨πÁ
-           03  CONS-NOUKE27-COMMENT  PIC X(09)  VALUE  "180043830".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡£≥° Õ◊≤°¶«—Õ—æ…°À¥Ω‡…‘≈¨πÁ
-           03  CONS-NOUKE28-COMMENT  PIC X(09)  VALUE  "180043930".
       *
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° •Í∏∫°À
-           03  CONS-NOUKE29-COMMENT  PIC X(09)  VALUE  "180050330".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° •Í∏∫°À
-           03  CONS-NOUKE30-COMMENT  PIC X(09)  VALUE  "180050430".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° •Í∏∫°À
-           03  CONS-NOUKE31-COMMENT  PIC X(09)  VALUE  "180050530".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶∆˛±°≥∞°À° •Í∏∫°À
-           03  CONS-NOUKE32-COMMENT  PIC X(09)  VALUE  "180050730".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶∆˛±°≥∞°À° •Í∏∫°À
-           03  CONS-NOUKE33-COMMENT  PIC X(09)  VALUE  "180050930".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶∆˛±°≥∞°À° •Í∏∫°À
-           03  CONS-NOUKE34-COMMENT  PIC X(09)  VALUE  "180051130".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°À¥Ω‡…‘≈¨πÁ°¶•Í∏∫
-           03  CONS-NOUKE35-COMMENT  PIC X(09)  VALUE  "180051230".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°À¥Ω‡…‘≈¨πÁ°¶•Í∏∫
-           03  CONS-NOUKE36-COMMENT  PIC X(09)  VALUE  "180051330".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°À¥Ω‡…‘≈¨πÁ°¶•Í∏∫
-           03  CONS-NOUKE37-COMMENT  PIC X(09)  VALUE  "180051430".
       *
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-UNDOKI1-COMMENT  PIC X(09)  VALUE  "180027810".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
-           03  CONS-UNDOKI2-COMMENT  PIC X(09)  VALUE  "180027910".
-      **   ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° £±£≤£∞∆¸ƒ∂°À
-           03  CONS-UNDOKI3-COMMENT  PIC X(09)  VALUE  "180029510".
-      **   ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° £±£≤£∞∆¸ƒ∂°À
-           03  CONS-UNDOKI4-COMMENT  PIC X(09)  VALUE  "180029610".
-      **   ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•Û∞Â≥ÿ¥…Õ˝Œ¡° £±°À
-           03  CONS-UNDOKI5-COMMENT  PIC X(09)  VALUE  "180030310".
-      **   ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•Û∞Â≥ÿ¥…Õ˝Œ¡° £≤°À
-           03  CONS-UNDOKI6-COMMENT  PIC X(09)  VALUE  "180030410".
-      *!   ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-UNDOKI7-COMMENT  PIC X(09)  VALUE  "101800130".
-      *!   ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
-           03  CONS-UNDOKI8-COMMENT  PIC X(09)  VALUE  "101800140".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-UNDOKI9-COMMENT  PIC X(09)  VALUE  "180032710".
-      *!   ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-UNDOKI10-COMMENT PIC X(09)  VALUE  "101800125".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°À
-           03  CONS-UNDOKI11-COMMENT PIC X(09)  VALUE  "180034510".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°À
-           03  CONS-UNDOKI12-COMMENT PIC X(09)  VALUE  "180034610".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°À
-           03  CONS-UNDOKI13-COMMENT PIC X(09)  VALUE  "180034710".
-      *#   ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-UNDOKI14-COMMENT PIC X(09)  VALUE  "101800280".
-      *#   ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
-           03  CONS-UNDOKI15-COMMENT PIC X(09)  VALUE  "101800290".
-      *#   ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À
-           03  CONS-UNDOKI16-COMMENT PIC X(09)  VALUE  "101800330".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°À° ª‹¿ﬂ¥Ω‡…‘≈¨πÁ°À
-           03  CONS-UNDOKI17-COMMENT PIC X(09)  VALUE  "180044030".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°À° ª‹¿ﬂ¥Ω‡…‘≈¨πÁ°À
-           03  CONS-UNDOKI18-COMMENT PIC X(09)  VALUE  "180044130".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°À° ª‹¿ﬂ¥Ω‡…‘≈¨πÁ°À
-           03  CONS-UNDOKI19-COMMENT PIC X(09)  VALUE  "180044230".
-      *#   ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° £±°•£µ«‹°À
-           03  CONS-UNDOKI20-COMMENT PIC X(09)  VALUE  "101801070".
-      *#   ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° £±°•£µ«‹°À
-           03  CONS-UNDOKI21-COMMENT PIC X(09)  VALUE  "101801080".
-      *
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° •Í∏∫°À
-           03  CONS-UNDOKI22-COMMENT PIC X(09)  VALUE  "180052730".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° •Í∏∫°À
-           03  CONS-UNDOKI23-COMMENT PIC X(09)  VALUE  "180052830".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° •Í∏∫°À
-           03  CONS-UNDOKI24-COMMENT PIC X(09)  VALUE  "180052930".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶∆˛±°≥∞°À° •Í∏∫°À
-           03  CONS-UNDOKI25-COMMENT PIC X(09)  VALUE  "180053130".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶∆˛±°≥∞°À° •Í∏∫°À
-           03  CONS-UNDOKI26-COMMENT PIC X(09)  VALUE  "180053330".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶∆˛±°≥∞°À° •Í∏∫°À
-           03  CONS-UNDOKI27-COMMENT PIC X(09)  VALUE  "180053530".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°À¥Ω‡…‘≈¨πÁ°¶•Í∏∫
-           03  CONS-UNDOKI28-COMMENT PIC X(09)  VALUE  "180053630".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°À¥Ω‡…‘≈¨πÁ°¶•Í∏∫
-           03  CONS-UNDOKI29-COMMENT PIC X(09)  VALUE  "180053730".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°À¥Ω‡…‘≈¨πÁ°¶•Í∏∫
-           03  CONS-UNDOKI30-COMMENT PIC X(09)  VALUE  "180053830".
-      *
-      *    ∆Ò…¬¥µº‘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡
-           03  CONS-NANBYO-COMMENT   PIC X(09)  VALUE  "180017910".
-      *    æ„≥≤ª˘° º‘°À•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £∂∫–Ã§À˛°À
-           03  CONS-SYOGAI1-COMMENT  PIC X(09)  VALUE  "180028210".
-      *    æ„≥≤ª˘° º‘°À•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £∂∫–∞ æÂ£±£∏∫–Ã§À˛°À
-           03  CONS-SYOGAI2-COMMENT  PIC X(09)  VALUE  "180028310".
-      *    æ„≥≤ª˘° º‘°À•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±£∏∫–∞ æÂ°À
-           03  CONS-SYOGAI3-COMMENT  PIC X(09)  VALUE  "180028410".
-      *    ¿›ø©µ°«ΩŒ≈À°
-           03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° £±√±∞Ã°À
-           03  CONS-HAIYO1-COMMENT   PIC X(09)  VALUE  "180044610".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° £±√±∞Ã°À
-           03  CONS-HAIYO2-COMMENT   PIC X(09)  VALUE  "180044710".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° £±√±∞Ã°À
-           03  CONS-HAIYO3-COMMENT   PIC X(09)  VALUE  "180044810".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶∆˛±°≥∞°À
-           03  CONS-HAIYO4-COMMENT   PIC X(09)  VALUE  "180045010".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶∆˛±°≥∞°À
-           03  CONS-HAIYO5-COMMENT   PIC X(09)  VALUE  "180045210".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶∆˛±°≥∞°À
-           03  CONS-HAIYO6-COMMENT   PIC X(09)  VALUE  "180045410".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡£±° Õ◊≤∏Ó°À¥Ω‡…‘≈¨πÁ
-           03  CONS-HAIYO7-COMMENT   PIC X(09)  VALUE  "180045530".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡£≤° Õ◊≤∏Ó°À¥Ω‡…‘≈¨πÁ
-           03  CONS-HAIYO8-COMMENT   PIC X(09)  VALUE  "180045630".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡£≥° Õ◊≤∏Ó°À¥Ω‡…‘≈¨πÁ
-           03  CONS-HAIYO9-COMMENT   PIC X(09)  VALUE  "180045730".
-      *#   «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° £±√±∞Ã°À
-           03  CONS-HAIYO10-COMMENT  PIC X(09)  VALUE  "101801110".
-      *#   «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° £±√±∞Ã°À
-           03  CONS-HAIYO11-COMMENT  PIC X(09)  VALUE  "101801120".
-      *#   «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° £±√±∞Ã°À
-           03  CONS-HAIYO12-COMMENT  PIC X(09)  VALUE  "101801130".
-      *
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° •Í∏∫°À
-           03  CONS-HAIYO13-COMMENT  PIC X(09)  VALUE  "180051530".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° •Í∏∫°À
-           03  CONS-HAIYO14-COMMENT  PIC X(09)  VALUE  "180051630".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° •Í∏∫°À
-           03  CONS-HAIYO15-COMMENT  PIC X(09)  VALUE  "180051730".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶∆˛±°≥∞°À° •Í∏∫°À
-           03  CONS-HAIYO16-COMMENT  PIC X(09)  VALUE  "180051930".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶∆˛±°≥∞°À° •Í∏∫°À
-           03  CONS-HAIYO17-COMMENT  PIC X(09)  VALUE  "180052130".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶∆˛±°≥∞°À° •Í∏∫°À
-           03  CONS-HAIYO18-COMMENT  PIC X(09)  VALUE  "180052330".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°À¥Ω‡…‘≈¨πÁ°¶•Í∏∫
-           03  CONS-HAIYO19-COMMENT  PIC X(09)  VALUE  "180052430".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°À¥Ω‡…‘≈¨πÁ°¶•Í∏∫
-           03  CONS-HAIYO20-COMMENT  PIC X(09)  VALUE  "180052530".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°À¥Ω‡…‘≈¨πÁ°¶•Í∏∫
-           03  CONS-HAIYO21-COMMENT  PIC X(09)  VALUE  "180052630".
-      *
-      *    ΩÈ¥¸≤√ªª° •Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡°À
-           03  CONS-RIHAKSN1-COMMENT PIC X(09)  VALUE  "180033870".
-      *    ¡·¥¸•Í•œ•”•Í•∆°º•∑•Á•Û≤√ªª
-           03  CONS-RIHAKSN2-COMMENT PIC X(09)  VALUE  "180030770".
-      *
-      *    §¨§Û¥µº‘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡
-           03  CONS-GANKNJ-COMMENT   PIC X(09)  VALUE  "180033110".
-      *    ≤√£∏£∞˙
-           03  CONS-KAITATU-COMMENT  PIC X(09)  VALUE  "140048010".
-      *    ±˝ø«
-           03  CONS-OSIN-COMMENT     PIC X(09)  VALUE  "114000110".
-      *    ∆√ Ã±˝ø«
-           03  CONS-OSIN2-COMMENT    PIC X(09)  VALUE  "114001610".
-      *    ±˝ø«∆¸•≥•·•Û•»
-           03  CONS-OSIN3-COMMENT    PIC X(09)  VALUE  "840000039".
-      *    ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈Œ¡
-           03  CONS-ZAIHOU-COMMENT   PIC X(09)  VALUE  "114001110".
-      *    À¨Ã‰ø«Œ≈∆¸•≥•·•Û•»
-           03  CONS-ZAIHOU2-COMMENT  PIC X(09)  VALUE  "840000066".
-      *    ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈Œ¡° µÔΩª∑œ°À
-           03  CONS-ZAIHOU3-COMMENT  PIC X(09)  VALUE  "114012910".
-      *    ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈Œ¡° ∆±∞Ï∑˙ ™µÔΩªº‘°À° ∆√ƒÍª‹¿ﬂ≈˘∆˛µÔº‘°À
-           03  CONS-ZAIHOU4-COMMENT  PIC X(09)  VALUE  "114018010".
-      *    ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈Œ¡° ∆±∞Ï∑˙ ™µÔΩªº‘°À
-           03  CONS-ZAIHOU5-COMMENT  PIC X(09)  VALUE  "114030310".
-      *
-      *    ∫ﬂ¬ª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡£±° ±°≥∞ΩË ˝§ª§Û°À
-           03  CONS-ZAIIKAN1-COMMENT PIC X(09)  VALUE  "114012210".
-      *    ∫ﬂ¬ª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡£±° ±°∆‚ΩË ˝§ª§Û°À
-           03  CONS-ZAIIKAN2-COMMENT PIC X(09)  VALUE  "114012310".
-      *    ∫ﬂ¬ª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡£≤° ±°∆‚ΩË ˝§ª§Û°À
-           03  CONS-ZAIIKAN3-COMMENT PIC X(09)  VALUE  "114012410".
-      *    ∫ﬂ¬ª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡£≤° ±°≥∞ΩË ˝§ª§Û°À
-           03  CONS-ZAIIKAN4-COMMENT PIC X(09)  VALUE  "114007510".
-      *    ∆√ƒÍª‹¿ﬂ∆˛µÔª˛≈˘∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡£±° ΩË ˝§ª§Û§Ú∏Ú…’°À
-           03  CONS-ZAIIKAN5-COMMENT PIC X(09)  VALUE  "114013010".
-      *    ∆√ƒÍª‹¿ﬂ∆˛µÔª˛≈˘∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡£±° ΩË ˝§ª§Û§Ú∏Ú…’§∑§ §§°À
-           03  CONS-ZAIIKAN6-COMMENT PIC X(09)  VALUE  "114013110".
-      *    ∆√ƒÍª‹¿ﬂ∆˛µÔª˛≈˘∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡£≤° ΩË ˝§ª§Û§Ú∏Ú…’°À
-           03  CONS-ZAIIKAN7-COMMENT PIC X(09)  VALUE  "114013210".
-      *    ∆√ƒÍª‹¿ﬂ∆˛µÔª˛≈˘∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡£≤° ΩË ˝§ª§Û§Ú∏Ú…’§∑§ §§°À
-           03  CONS-ZAIIKAN8-COMMENT PIC X(09)  VALUE  "114013310".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω§∑§ø∫ﬂªŸø«≈˘°À° …¬æ≤§¢§Í°À° ΩË ˝§ª§Û°À
-           03  CONS-ZAIIKAN9-COMMENT  PIC X(09) VALUE  "114018710".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω§∑§ø∫ﬂªŸø«≈˘°À° …¬æ≤§¢§Í°À° ΩË ˝§ª§Û§ §∑°À
-           03  CONS-ZAIIKAN10-COMMENT PIC X(09) VALUE  "114018810".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω§∑§ø∫ﬂªŸø«≈˘°À° …¬æ≤§ §∑°À° ΩË ˝§ª§Û°À
-           03  CONS-ZAIIKAN11-COMMENT PIC X(09) VALUE  "114018910".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω§∑§ø∫ﬂªŸø«≈˘°À° …¬æ≤§ §∑°À° ΩË ˝§ª§Û§ §∑°À
-           03  CONS-ZAIIKAN12-COMMENT PIC X(09) VALUE  "114019010".
-      *    ∆√∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω§∑§ø∫ﬂªŸø«≈˘°À° …¬æ≤§¢§Í°À° ΩË ˝§ª§Û°À
-           03  CONS-ZAIIKAN13-COMMENT PIC X(09) VALUE  "114019110".
-      *    ∆√∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω§∑§ø∫ﬂªŸø«≈˘°À° …¬æ≤§¢§Í°À° ΩË ˝§ª§Û§ §∑°À
-           03  CONS-ZAIIKAN14-COMMENT PIC X(09) VALUE  "114019210".
-      *    ∆√∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω§∑§ø∫ﬂªŸø«≈˘°À° …¬æ≤§ §∑°À° ΩË ˝§ª§Û°À
-           03  CONS-ZAIIKAN15-COMMENT PIC X(09) VALUE  "114019310".
-      *    ∆√∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω§∑§ø∫ﬂªŸø«≈˘°À° …¬æ≤§ §∑°À° ΩË ˝§ª§Û§ §∑°À
-           03  CONS-ZAIIKAN16-COMMENT PIC X(09) VALUE  "114019410".
-      *
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Õ≠°¶ΩË ˝§ª§ÛÕ≠°¶∆±∞Ï∑˙ ™∞ ≥∞°À
-           03  CONS-ZAIIKAN17-COMMENT PIC X(09) VALUE  "114023110".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Õ≠°¶ΩË ˝§ª§ÛÕ≠°¶∆±∞Ï∑˙ ™µÔΩª°À
-           03  CONS-ZAIIKAN18-COMMENT PIC X(09) VALUE  "114023210".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Õ≠°¶ΩË ˝§ª§ÛÃµ°¶∆±∞Ï∑˙ ™∞ ≥∞°À
-           03  CONS-ZAIIKAN19-COMMENT PIC X(09) VALUE  "114023310".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Õ≠°¶ΩË ˝§ª§ÛÃµ°¶∆±∞Ï∑˙ ™µÔΩª°À
-           03  CONS-ZAIIKAN20-COMMENT PIC X(09) VALUE  "114023410".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Ãµ°¶ΩË ˝§ª§ÛÕ≠°¶∆±∞Ï∑˙ ™∞ ≥∞°À
-           03  CONS-ZAIIKAN21-COMMENT PIC X(09) VALUE  "114023510".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Ãµ°¶ΩË ˝§ª§ÛÕ≠°¶∆±∞Ï∑˙ ™µÔΩª°À
-           03  CONS-ZAIIKAN22-COMMENT PIC X(09) VALUE  "114023610".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Ãµ°¶ΩË ˝§ª§ÛÃµ°¶∆±∞Ï∑˙ ™∞ ≥∞°À
-           03  CONS-ZAIIKAN23-COMMENT PIC X(09) VALUE  "114023710".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Ãµ°¶ΩË ˝§ª§ÛÃµ°¶∆±∞Ï∑˙ ™µÔΩª°À
-           03  CONS-ZAIIKAN24-COMMENT PIC X(09) VALUE  "114023810".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°À° ΩË ˝§ª§Û§¢§Í°¶∆±∞Ï∑˙ ™µÔΩªº‘∞ ≥∞°À
-           03  CONS-ZAIIKAN25-COMMENT PIC X(09) VALUE  "114023910".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°À° ΩË ˝§ª§Û§¢§Í°¶∆±∞Ï∑˙ ™µÔΩªº‘°À
-           03  CONS-ZAIIKAN26-COMMENT PIC X(09) VALUE  "114024010".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°À° ΩË ˝§ª§Û§ §∑°¶∆±∞Ï∑˙ ™µÔΩªº‘∞ ≥∞°À
-           03  CONS-ZAIIKAN27-COMMENT PIC X(09) VALUE  "114024110".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°À° ΩË ˝§ª§Û§ §∑°¶∆±∞Ï∑˙ ™µÔΩªº‘°À
-           03  CONS-ZAIIKAN28-COMMENT PIC X(09) VALUE  "114024210".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°À° ΩË ˝§ª§Û§¢§Í°¶∆±∞Ï∑˙ ™µÔΩªº‘∞ ≥∞°À
-           03  CONS-ZAIIKAN29-COMMENT PIC X(09) VALUE  "114024310".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°À° ΩË ˝§ª§Û§¢§Í°¶∆±∞Ï∑˙ ™µÔΩªº‘°À
-           03  CONS-ZAIIKAN30-COMMENT PIC X(09) VALUE  "114024410".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°À° ΩË ˝§ª§Û§ §∑°¶∆±∞Ï∑˙ ™µÔΩªº‘∞ ≥∞°À
-           03  CONS-ZAIIKAN31-COMMENT PIC X(09) VALUE  "114024510".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°À° ΩË ˝§ª§Û§ §∑°¶∆±∞Ï∑˙ ™µÔΩªº‘°À
-           03  CONS-ZAIIKAN32-COMMENT PIC X(09) VALUE  "114024610".
-      *
-      *    ∆√∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Õ≠°¶ΩË ˝§ª§ÛÕ≠°¶∆±∞Ï∑˙ ™∞ ≥∞°À
-           03  CONS-ZAIIKAN33-COMMENT PIC X(09) VALUE  "114024910".
-      *    ∆√∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Õ≠°¶ΩË ˝§ª§ÛÕ≠°¶∆±∞Ï∑˙ ™µÔΩª°À
-           03  CONS-ZAIIKAN34-COMMENT PIC X(09) VALUE  "114025010".
-      *    ∆√∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Õ≠°¶ΩË ˝§ª§ÛÃµ°¶∆±∞Ï∑˙ ™∞ ≥∞°À
-           03  CONS-ZAIIKAN35-COMMENT PIC X(09) VALUE  "114025110".
-      *    ∆√∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Õ≠°¶ΩË ˝§ª§ÛÃµ°¶∆±∞Ï∑˙ ™µÔΩª°À
-           03  CONS-ZAIIKAN36-COMMENT PIC X(09) VALUE  "114025210".
-      *    ∆√∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Ãµ°¶ΩË ˝§ª§ÛÕ≠°¶∆±∞Ï∑˙ ™∞ ≥∞°À
-           03  CONS-ZAIIKAN37-COMMENT PIC X(09) VALUE  "114025310".
-      *    ∆√∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Ãµ°¶ΩË ˝§ª§ÛÕ≠°¶∆±∞Ï∑˙ ™µÔΩª°À
-           03  CONS-ZAIIKAN38-COMMENT PIC X(09) VALUE  "114025410".
-      *    ∆√∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Ãµ°¶ΩË ˝§ª§ÛÃµ°¶∆±∞Ï∑˙ ™∞ ≥∞°À
-           03  CONS-ZAIIKAN39-COMMENT PIC X(09) VALUE  "114025510".
-      *    ∆√∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°À° …¬æ≤Ãµ°¶ΩË ˝§ª§ÛÃµ°¶∆±∞Ï∑˙ ™µÔΩª°À
-           03  CONS-ZAIIKAN40-COMMENT PIC X(09) VALUE  "114025610".
-      *    ∆√∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°À° ΩË ˝§ª§Û§¢§Í°¶∆±∞Ï∑˙ ™µÔΩªº‘∞ ≥∞°À
-           03  CONS-ZAIIKAN41-COMMENT PIC X(09) VALUE  "114025710".
-      *    ∆√∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°À° ΩË ˝§ª§Û§¢§Í°¶∆±∞Ï∑˙ ™µÔΩªº‘°À
-           03  CONS-ZAIIKAN42-COMMENT PIC X(09) VALUE  "114025810".
-      *    ∆√∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°À° ΩË ˝§ª§Û§ §∑°¶∆±∞Ï∑˙ ™µÔΩªº‘∞ ≥∞°À
-           03  CONS-ZAIIKAN43-COMMENT PIC X(09) VALUE  "114025910".
-      *    ∆√∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°À° ΩË ˝§ª§Û§ §∑°¶∆±∞Ï∑˙ ™µÔΩªº‘°À
-           03  CONS-ZAIIKAN44-COMMENT PIC X(09) VALUE  "114026010".
-      *    ∆√∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°À° ΩË ˝§ª§Û§¢§Í°¶∆±∞Ï∑˙ ™µÔΩªº‘∞ ≥∞°À
-           03  CONS-ZAIIKAN45-COMMENT PIC X(09) VALUE  "114026110".
-      *    ∆√∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°À° ΩË ˝§ª§Û§¢§Í°¶∆±∞Ï∑˙ ™µÔΩªº‘°À
-           03  CONS-ZAIIKAN46-COMMENT PIC X(09) VALUE  "114026210".
-      *    ∆√∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°À° ΩË ˝§ª§Û§ §∑°¶∆±∞Ï∑˙ ™µÔΩªº‘∞ ≥∞°À
-           03  CONS-ZAIIKAN47-COMMENT PIC X(09) VALUE  "114026310".
-      *    ∆√∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°À° ΩË ˝§ª§Û§ §∑°¶∆±∞Ï∑˙ ™µÔΩªº‘°À
-           03  CONS-ZAIIKAN48-COMMENT PIC X(09) VALUE  "114026410".
-      *
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-ZAIIKAN49-COMMENT PIC X(09) VALUE  "114030710".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-ZAIIKAN50-COMMENT PIC X(09) VALUE  "114030810".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-ZAIIKAN51-COMMENT PIC X(09) VALUE  "114030910".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-ZAIIKAN52-COMMENT PIC X(09) VALUE  "114031010".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-ZAIIKAN53-COMMENT PIC X(09) VALUE  "114031110".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-ZAIIKAN54-COMMENT PIC X(09) VALUE  "114031210".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∑Ó£±≤Û°¶£±øÕ°À
-           03  CONS-ZAIIKAN55-COMMENT PIC X(09) VALUE  "114031310".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∑Ó£±≤Û°¶£≤°¡£πøÕ°À
-           03  CONS-ZAIIKAN56-COMMENT PIC X(09) VALUE  "114031410".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∑Ó£±≤Û°¶£±£∞øÕ°¡°À
-           03  CONS-ZAIIKAN57-COMMENT PIC X(09) VALUE  "114031510".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-ZAIIKAN58-COMMENT PIC X(09) VALUE  "114031610".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-ZAIIKAN59-COMMENT PIC X(09) VALUE  "114031710".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-ZAIIKAN60-COMMENT PIC X(09) VALUE  "114031810".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-ZAIIKAN61-COMMENT PIC X(09) VALUE  "114031910".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-ZAIIKAN62-COMMENT PIC X(09) VALUE  "114032010".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-ZAIIKAN63-COMMENT PIC X(09) VALUE  "114032110".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∑Ó£±≤Û°¶£±øÕ°À
-           03  CONS-ZAIIKAN64-COMMENT PIC X(09) VALUE  "114032210".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∑Ó£±≤Û°¶£≤°¡£πøÕ°À
-           03  CONS-ZAIIKAN65-COMMENT PIC X(09) VALUE  "114032310".
-      *    ∫ﬂ∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∑Ó£±≤Û°¶£±£∞øÕ°¡°À
-           03  CONS-ZAIIKAN66-COMMENT PIC X(09) VALUE  "114032410".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-ZAIIKAN67-COMMENT PIC X(09) VALUE  "114032510".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-ZAIIKAN68-COMMENT PIC X(09) VALUE  "114032610".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-ZAIIKAN69-COMMENT PIC X(09) VALUE  "114032710".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-ZAIIKAN70-COMMENT PIC X(09) VALUE  "114032810".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-ZAIIKAN71-COMMENT PIC X(09) VALUE  "114032910".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-ZAIIKAN72-COMMENT PIC X(09) VALUE  "114033010".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∑Ó£±≤Û°¶£±øÕ°À
-           03  CONS-ZAIIKAN73-COMMENT PIC X(09) VALUE  "114033110".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∑Ó£±≤Û°¶£≤°¡£πøÕ°À
-           03  CONS-ZAIIKAN74-COMMENT PIC X(09) VALUE  "114033210".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∑Ó£±≤Û°¶£±£∞øÕ°¡°À
-           03  CONS-ZAIIKAN75-COMMENT PIC X(09) VALUE  "114033310".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-ZAIIKAN76-COMMENT PIC X(09) VALUE  "114033410".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-ZAIIKAN77-COMMENT PIC X(09) VALUE  "114033510".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-ZAIIKAN78-COMMENT PIC X(09) VALUE  "114033610".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-ZAIIKAN79-COMMENT PIC X(09) VALUE  "114033710".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-ZAIIKAN80-COMMENT PIC X(09) VALUE  "114033810".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-ZAIIKAN81-COMMENT PIC X(09) VALUE  "114033910".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∑Ó£±≤Û°¶£±øÕ°À
-           03  CONS-ZAIIKAN82-COMMENT PIC X(09) VALUE  "114034010".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∑Ó£±≤Û°¶£≤°¡£πøÕ°À
-           03  CONS-ZAIIKAN83-COMMENT PIC X(09) VALUE  "114034110".
-      *    ∫ﬂ∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∑Ó£±≤Û°¶£±£∞øÕ°¡°À
-           03  CONS-ZAIIKAN84-COMMENT PIC X(09) VALUE  "114034210".
-      *
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-SHIIKAN1-COMMENT  PIC X(09) VALUE  "114035510".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-SHIIKAN2-COMMENT  PIC X(09) VALUE  "114035610".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-SHIIKAN3-COMMENT  PIC X(09) VALUE  "114035710".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-SHIIKAN4-COMMENT  PIC X(09) VALUE  "114035810".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-SHIIKAN5-COMMENT  PIC X(09) VALUE  "114035910".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-SHIIKAN6-COMMENT  PIC X(09) VALUE  "114036010".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∑Ó£±≤Û°¶£±øÕ°À
-           03  CONS-SHIIKAN7-COMMENT  PIC X(09) VALUE  "114036110".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∑Ó£±≤Û°¶£≤°¡£πøÕ°À
-           03  CONS-SHIIKAN8-COMMENT  PIC X(09) VALUE  "114036210".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Õ≠°¶∑Ó£±≤Û°¶£±£∞øÕ°¡°À
-           03  CONS-SHIIKAN9-COMMENT  PIC X(09) VALUE  "114036310".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-SHIIKAN10-COMMENT PIC X(09) VALUE  "114036410".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-SHIIKAN11-COMMENT PIC X(09) VALUE  "114036510".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-SHIIKAN12-COMMENT PIC X(09) VALUE  "114036610".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-SHIIKAN13-COMMENT PIC X(09) VALUE  "114036710".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-SHIIKAN14-COMMENT PIC X(09) VALUE  "114036810".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-SHIIKAN15-COMMENT PIC X(09) VALUE  "114036910".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∑Ó£±≤Û°¶£±øÕ°À
-           03  CONS-SHIIKAN16-COMMENT PIC X(09) VALUE  "114037010".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∑Ó£±≤Û°¶£≤°¡£πøÕ°À
-           03  CONS-SHIIKAN17-COMMENT PIC X(09) VALUE  "114037110".
-      *    ª‹∞Â¡Ì¥…° µ°«Ω∂Ø≤Ω∫ﬂªŸø«≈˘°¶…¬æ≤Ãµ°¶∑Ó£±≤Û°¶£±£∞øÕ°¡°À
-           03  CONS-SHIIKAN18-COMMENT PIC X(09) VALUE  "114037210".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-SHIIKAN19-COMMENT PIC X(09) VALUE  "114037310".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-SHIIKAN20-COMMENT PIC X(09) VALUE  "114037410".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-SHIIKAN21-COMMENT PIC X(09) VALUE  "114037510".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-SHIIKAN22-COMMENT PIC X(09) VALUE  "114037610".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-SHIIKAN23-COMMENT PIC X(09) VALUE  "114037710".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-SHIIKAN24-COMMENT PIC X(09) VALUE  "114037810".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∑Ó£±≤Û°¶£±øÕ°À
-           03  CONS-SHIIKAN25-COMMENT PIC X(09) VALUE  "114037910".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∑Ó£±≤Û°¶£≤°¡£πøÕ°À
-           03  CONS-SHIIKAN26-COMMENT PIC X(09) VALUE  "114038010".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘°¶∑Ó£±≤Û°¶£±£∞øÕ°¡°À
-           03  CONS-SHIIKAN27-COMMENT PIC X(09) VALUE  "114038110".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-SHIIKAN28-COMMENT PIC X(09) VALUE  "114038210".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-SHIIKAN29-COMMENT PIC X(09) VALUE  "114038310".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∆Ò…¬≈˘∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-SHIIKAN30-COMMENT PIC X(09) VALUE  "114038410".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∑Ó£≤≤Û∞ æÂ°¶£±øÕ°À
-           03  CONS-SHIIKAN31-COMMENT PIC X(09) VALUE  "114038510".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∑Ó£≤≤Û∞ æÂ°¶£≤°¡£πøÕ°À
-           03  CONS-SHIIKAN32-COMMENT PIC X(09) VALUE  "114038610".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∑Ó£≤≤Û∞ æÂ°¶£±£∞øÕ°¡°À
-           03  CONS-SHIIKAN33-COMMENT PIC X(09) VALUE  "114038710".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∑Ó£±≤Û°¶£±øÕ°À
-           03  CONS-SHIIKAN34-COMMENT PIC X(09) VALUE  "114038810".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∑Ó£±≤Û°¶£≤°¡£πøÕ°À
-           03  CONS-SHIIKAN35-COMMENT PIC X(09) VALUE  "114038910".
-      *    ª‹∞Â¡Ì¥…° ∫ﬂªŸø«≈˘∞ ≥∞°¶∑Ó£±≤Û°¶£±£∞øÕ°¡°À
-           03  CONS-SHIIKAN36-COMMENT PIC X(09) VALUE  "114039010".
-      *
-      *    æÆª˘∆√ƒÍº¿¥µ•´•¶•Û•ª•Í•Û•∞Œ¡° £±≤ÛÃ‹°À
-           03  CONS-SYOUNI1-COMMENT  PIC X(09)  VALUE  "113000810".
-      *    æÆª˘∆√ƒÍº¿¥µ•´•¶•Û•ª•Í•Û•∞Œ¡° £≤≤ÛÃ‹°À
-           03  CONS-SYOUNI2-COMMENT  PIC X(09)  VALUE  "113009910".
-      *    æÆª˘∆√ƒÍ¬Ë£±≤ÛÃ‹•´•¶•Û•ª•Í•Û•∞•≥•·•Û•»
-           03  CONS-SYOUNI3-COMMENT  PIC X(09)  VALUE  "840000104".
-      *
-      *    £¬£Œ£–¿∫Ã©
-           03  CONS-KENSA1-COMMENT   PIC X(09)  VALUE  "160162350".
-      *    £Œ£‘°›££Ú£Ô£¬£Œ£–¿∫Ã©
-           03  CONS-KENSA2-COMMENT   PIC X(09)  VALUE  "160181250".
-      *    £»£¡£Œ£–¿∫Ã©
-           03  CONS-KENSA3-COMMENT   PIC X(09)  VALUE  "160116310".
-      *
-      *    ø¥¬°•⁄°º•π•·°º•´°ºªÿ∆≥¥…Õ˝Œ¡° ±Û≥÷•‚•À•ø•Í•Û•∞°À
-           03  CONS-SINPESU-COMMENT  PIC X(09)  VALUE  "113001510".
-      *    ±Û≥÷•‚•À•ø•Í•Û•∞≤√ªª
-           03  CONS-SINPESU2-COMMENT PIC X(09)  VALUE  "113018070".
-      *    Ω∏√ƒ±…Õ‹ø©ªˆªÿ∆≥Œ¡
-           03  CONS-SYUEIYO-COMMENT  PIC X(09)  VALUE  "113003410".
-      *    øÕπ©ø’¬°° §Ω§Œ¬æ°À
-           03  CONS-JINZOU1-COMMENT  PIC X(09)  VALUE  "140007710".
-      *    øÕπ©ø’¬°° À˝¿≠∞›ª˝∆©¿œ°À° £¥ª˛¥÷Ã§À˛°À
-           03  CONS-JINZOU2-COMMENT  PIC X(09)  VALUE  "140036710".
-      *    øÕπ©ø’¬°° À˝¿≠∞›ª˝∆©¿œ°À° £¥ª˛¥÷∞ æÂ£µª˛¥÷Ã§À˛°À
-           03  CONS-JINZOU3-COMMENT  PIC X(09)  VALUE  "140051010".
-      *    øÕπ©ø’¬°° À˝¿≠∞›ª˝∆©¿œ°À° £µª˛¥÷∞ æÂ°À
-           03  CONS-JINZOU4-COMMENT  PIC X(09)  VALUE  "140051110".
-      *    œ¢¬≥∑»π‘º∞ ¢ÀÏ§´§ÛŒÆ
-           03  CONS-JINZOU5-COMMENT  PIC X(09)  VALUE  "140008510".
-      *    ª˝¬≥¥ÀΩ˘º∞∑Ï±’ﬂ…≤·
-           03  CONS-JINZOU6-COMMENT  PIC X(09)  VALUE  "140029850".
-      *    ∑Ïﬁ˘∏Ú¥πŒ≈À°
-           03  CONS-JINZOU7-COMMENT  PIC X(09)  VALUE  "140008210".
-      *    ∑ÏµÂ¿Æ ¨Ω¸µÓŒ≈À°
-           03  CONS-JINZOU8-COMMENT  PIC X(09)  VALUE  "140039210".
-      *    øÕπ©ø’¬°° À˝¿≠∞›ª˝∆©¿œﬂ…≤·°À°  £ª®°À
-           03  CONS-JINZOU9-COMMENT  PIC X(09)  VALUE  "140052810".
-      *    ∂…ΩÍ±¢∞µ ƒ∫øΩË√÷° §Ω§Œ¬æ°À
-           03  CONS-KYOKUIN1-COMMENT PIC X(09)  VALUE  "140052410".
-      *    ∂…ΩÍ±¢∞µ ƒ∫øΩË√÷° »Ô §∫‡≈Ω…’°À° £±£∞£∞£„£Ì£≤Ã§À˛°À
-           03  CONS-KYOKUIN2-COMMENT PIC X(09)  VALUE  "140051810".
-      *    ∂…ΩÍ±¢∞µ ƒ∫øΩË√÷° »Ô §∫‡≈Ω…’°À° £±£∞£∞£„£Ì£≤°¡£≤£∞£∞£„£Ì£≤Ã§À˛°À
-           03  CONS-KYOKUIN3-COMMENT PIC X(09)  VALUE  "140051910".
-      *    ∂…ΩÍ±¢∞µ ƒ∫øΩË√÷° »Ô §∫‡≈Ω…’°À° £≤£∞£∞£„£Ì£≤∞ æÂ°À
-           03  CONS-KYOKUIN4-COMMENT PIC X(09)  VALUE  "140052010".
-      *    ∂…ΩÍ±¢∞µ ƒ∫øΩË√÷ΩÈ≤Û≤√ªª° £±£∞£∞£„£Ì£≤Ã§À˛°À
-           03  CONS-KYOKUIN5-COMMENT PIC X(09)  VALUE  "140052170".
-      *    ∂…ΩÍ±¢∞µ ƒ∫øΩË√÷ΩÈ≤Û≤√ªª° £±£∞£∞£„£Ì£≤∞ æÂ£≤£∞£∞£„£Ì£≤Ã§À˛°À
-           03  CONS-KYOKUIN6-COMMENT PIC X(09)  VALUE  "140052270".
-      *    ∂…ΩÍ±¢∞µ ƒ∫øΩË√÷ΩÈ≤Û≤√ªª° £≤£∞£∞£„£Ì£≤∞ æÂ°À
-           03  CONS-KYOKUIN7-COMMENT PIC X(09)  VALUE  "140052370".
-      *    ∂…ΩÍ±¢∞µ ƒ∫øΩË√÷ΩÈ≤Û≤√ªª° ∆˛±°≥∞°À° £±£∞£∞£„£Ì£≤Ã§À˛°À
-           03  CONS-KYOKUIN8-COMMENT  PIC X(09) VALUE  "140054270".
-      *    ∂…ΩÍ±¢∞µ ƒ∫øΩË√÷ΩÈ≤Û≤√ªª° ∆˛±°≥∞°À° £±£∞£∞£„£Ì£≤∞ æÂ°À
-           03  CONS-KYOKUIN9-COMMENT  PIC X(09) VALUE  "140054370".
-      *    ∂…ΩÍ±¢∞µ ƒ∫øΩË√÷ΩÈ≤Û≤√ªª° ∆˛±°≥∞°À° £≤£∞£∞£„£Ì£≤∞ æÂ°À
-           03  CONS-KYOKUIN10-COMMENT PIC X(09) VALUE  "140054470".
-      *    «ß√ŒŒ≈À°°¶«ß√Œπ‘∆∞Œ≈À°
-           03  CONS-NINRYO-COMMENT   PIC X(09)  VALUE  "180033210".
-      *    «ß√ŒŒ≈À°°¶«ß√Œπ‘∆∞Œ≈À°° ¿∫ø¿≤ µﬂµﬁ¬Œ¿©§Œ¿∫ø¿ ›∑ÚªÿƒÍ∞Â°À
-           03  CONS-NINRYO2-COMMENT  PIC X(09)  VALUE  "180035910".
-      *    «ß√ŒŒ≈À°°¶«ß√Œπ‘∆∞Œ≈À°° ¿∫ø¿ ›∑ÚªÿƒÍ∞Â§»¥«∏Óª’§¨∂¶∆±§«π‘§¶æÏπÁ°À
-           03  CONS-NINRYO5-COMMENT  PIC X(09)  VALUE  "180047810".
-      *    ΩÈ≤ÛªªƒÍ°°°°°°∑Ó°°°°∆¸
-           03  CONS-NINRYO6-COMMENT  PIC X(09)  VALUE  "840000097".
-      *
-      *    «ß√Œæ…¿ÏÃÁø«√«¥…Õ˝Œ¡£≤
-           03  CONS-NINSEN-COMMENT   PIC X(09)  VALUE  "113014610".
-      *    ¬‡±°ª˛∂¶∆±ªÿ∆≥Œ¡£±° £±∞ ≥∞°À
-           03  CONS-TAKYO-COMMENT    PIC X(09)  VALUE  "113008710".
-      *    ¬‡±°ª˛∂¶∆±ªÿ∆≥Œ¡∆√ Ã¥…Õ˝ªÿ∆≥≤√ªª
-           03  CONS-TAKYOKSN-COMMENT PIC X(09)  VALUE  "113014370".
-      *    ≥∞ÕË•Í•œ•”•Í•∆°º•∑•Á•Ûø«Œ≈Œ¡£±
-           03  CONS-GAIRIHA1-COMMENT PIC X(09)  VALUE  "113013910".
-      *    ≥∞ÕË•Í•œ•”•Í•∆°º•∑•Á•Ûø«Œ≈Œ¡£≤
-           03  CONS-GAIRIHA2-COMMENT PIC X(09)  VALUE  "113014010".
-      *    ≥∞ÕË ¸ºÕ¿˛æ»ºÕø«Œ≈Œ¡
-           03  CONS-GAIHOU-COMMENT   PIC X(09)  VALUE  "113014110".
-      *    ≤∏Óø¶∞˜≈˘”Ω·‚µ€∞˙≈˘ªÿº®Œ¡
-           03  CONS-KAISYOKU-COMMENT PIC X(09)  VALUE  "114020910".
-      *
-      *    ∫ﬂ¬ª˝¬≥Õ€∞µ∏∆µ€Œ≈À°ªÿ∆≥¥…Õ˝Œ¡
-           03  CONS-YOUATU-COMMENT   PIC X(09)  VALUE  "114009710".
-      *
-      *    ∫ﬂ¬¥µº‘∂¶∆±ø«Œ≈Œ¡° ±˝ø«°À
-           03  CONS-ZAIKYO1-COMMENT  PIC X(09)  VALUE  "114027610".
-      *    ∫ﬂ¬¥µº‘∂¶∆±ø«Œ≈Œ¡° À¨Ã‰ø«Œ≈°À° ∆±∞Ï∑˙ ™µÔΩªº‘∞ ≥∞°À
-           03  CONS-ZAIKYO2-COMMENT  PIC X(09)  VALUE  "114027710".
-      *    ∫ﬂ¬¥µº‘∂¶∆±ø«Œ≈Œ¡° À¨Ã‰ø«Œ≈°À° ∆±∞Ï∑˙ ™µÔΩªº‘°¶∆√ƒÍª‹¿ﬂ≈˘°À
-           03  CONS-ZAIKYO3-COMMENT  PIC X(09)  VALUE  "114027810".
-      *    ∫ﬂ¬¥µº‘∂¶∆±ø«Œ≈Œ¡° À¨Ã‰ø«Œ≈°À° ∆±∞Ï∑˙ ™µÔΩªº‘°¶∆√ƒÍª‹¿ﬂ≈˘∞ ≥∞°À
-           03  CONS-ZAIKYO4-COMMENT  PIC X(09)  VALUE  "114027910".
-      *    ΩÈ≤ÛªªƒÍ°°°°°°∑Ó°°°°∆¸
-           03  CONS-ZAIKYO5-COMMENT  PIC X(09)  VALUE  "840000097".
-      *    ƒÃªªº¬ª‹≤ÛøÙ° °°°°≤Û°À
-           03  CONS-ZAIKYO6-COMMENT  PIC X(09)  VALUE  "840000086".
-      *
-      *    ∫ﬂ¬¥µº‘À¨Ã‰•Í•œ•”•Í•∆°º•∑•Á•Ûªÿ∆≥¥…Õ˝Œ¡° ∆±∞Ï∑˙ ™ΩªµÔº‘∞ ≥∞°À
-           03  CONS-ZAIRIHA1-COMMENT PIC X(09)  VALUE  "114006410".
-      *    ∫ﬂ¬¥µº‘À¨Ã‰•Í•œ•”•Í•∆°º•∑•Á•Ûªÿ∆≥¥…Õ˝Œ¡° ∆±∞Ï∑˙ ™ΩªµÔº‘°À
-           03  CONS-ZAIRIHA2-COMMENT PIC X(09)  VALUE  "114015010".
-      *
-      *    ø¥¬°•⁄°º•π•·°º•´°ºªÿ∆≥¥…Õ˝Œ¡° √ÂÕ—∑øº´∆∞Ω¸∫Ÿ∆∞¥Ô°À
-           03  CONS-SINPESUR1-COMMENT PIC X(09) VALUE  "113015010".
-      *    ø¥¬°•⁄°º•π•·°º•´°ºªÿ∆≥¥…Õ˝Œ¡° •Ì°¶ø¢π˛∑øΩ¸∫Ÿ∆∞¥Ô∞‹π‘¥¸≤√ªª¥ﬁ§‡°À
-           03  CONS-SINPESUR2-COMMENT PIC X(09) VALUE  "113015130".
-      *    ø¥¬°•⁄°º•π•·°º•´°ºªÿ∆≥¥…Õ˝Œ¡° •§∞ ≥∞°À
-           03  CONS-SINPESUR3-COMMENT PIC X(09) VALUE  "113001610".
-      *
-      *    §¨§Û¥µº‘ªÿ∆≥¥…Õ˝Œ¡° ∞Âª’°¶¥«∏Óª’§¨ø¥Õ˝≈™…‘∞¬∑⁄∏∫§Œ§ø§·ÃÃ¿‹°À
-           03  CONS-GANSIDO1-COMMENT PIC X(09)  VALUE  "113015310".
-      *    §¨§Û¥µº‘ªÿ∆≥¥…Õ˝Œ¡° ∞Âª’≈˘§¨π£∞≠¿≠º·Á∫ﬁ§Œ…¨Õ◊¿≠≈˘§Ú ∏ΩÒ¿‚Ã¿°À
-           03  CONS-GANSIDO2-COMMENT PIC X(09)  VALUE  "113015410".
-      *
-      *    ºßµ§§À§Ë§ÎÁØÊ˘≈˘ª…∑„À°
-           03  CONS-BOKOHO1-COMMENT  PIC X(09)  VALUE  "140055110".
-      *    ΩÈ≤Ûº¬ª‹°°°°°°∑Ó°°°°∆¸
-           03  CONS-BOKOHO2-COMMENT  PIC X(09)  VALUE  "840000085".
-      *
-      *    ƒÃ±°°¶∫ﬂ¬¿∫ø¿Œ≈À°° £≤£∞∫–Ã§À˛°À≤√ªª
-      ***  03  CONS-TUINZAI-COMMENT  PIC X(09)  VALUE  "180020570".
-      *
-      *    ∞Õ¬∏æ…Ω∏√ƒŒ≈À°
-           03  CONS-IZONSYO-COMMENT  PIC X(09)  VALUE  "180047910".
-      *    º£Œ≈≥´ªœ∆¸°°°°°°∑Ó°°°°∆¸
-           03  CONS-IZONSYO2-COMMENT PIC X(09)  VALUE  "840000076".
-      *
-      *    ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡£±° √±∞Ï∑˙ ™£±øÕ°À
-           03  CONS-SEIJYU-COMMENT   PIC X(09)  VALUE  "180042110".
-      *    ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡£≤° √±∞Ï∑˙ ™£±øÕ°À
-           03  CONS-SEIJYU2-COMMENT  PIC X(09)  VALUE  "180042410".
-      *    ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡£±° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
-           03  CONS-SEIJYU3-COMMENT  PIC X(09)  VALUE  "180048710".
-      *    ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡£≤° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
-           03  CONS-SEIJYU4-COMMENT  PIC X(09)  VALUE  "180048810".
-      *    ΩÈ≤ÛªªƒÍ°°°°°°∑Ó°°°°∆¸
-           03  CONS-SEIJYU5-COMMENT  PIC X(09)  VALUE  "840000097".
-      *
-      *    ≥∞ÕËø◊¬Æ∏°¬Œ∏°∫∫≤√ªª
-           03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
-      *
-      *    »È≤º∂⁄∆˘√ÌºÕ
-           03  CONS-HIKAKIN          PIC X(09)  VALUE  "130000510".
-      *    ¿∏ ™≥ÿ≈™¿Ω∫ﬁ√ÌºÕ
-           03  CONS-SEIBUTU          PIC X(09)  VALUE  "130000110".
-      *    À„ÃÙ√ÌºÕ
-           03  CONS-MAYAKU           PIC X(09)  VALUE  "130000310".
-      *    ¿≈ÃÆ∆‚√ÌºÕ
-           03  CONS-JYOMYAKU         PIC X(09)  VALUE  "130003510".
-      *    ¿≈ÃÆ∆‚√ÌºÕ° ∆˝Õƒª˘°À≤√ªª
-           03  CONS-JYOMYAKUKASAN    PIC X(09)  VALUE  "130003670".
-      *
-      *    …¬æ≤øÙ ‘Ω∏•’•È•∞ ‘Ω∏§Œ∞Ÿ§Œ•≥°º•…° ∆√ƒÍº¿¥µŒ≈Õ‹ªÿ∆≥Œ¡≈˘°À
-           03  CONS-SIDORYO1         PIC X(09)  VALUE  "113001810".
-           03  CONS-SIDORYO2         PIC X(09)  VALUE  "113001910".
-           03  CONS-SIDORYO3         PIC X(09)  VALUE  "113002010".
-           03  CONS-SIDORYO4         PIC X(09)  VALUE  "113700610".
-           03  CONS-SIDORYO5         PIC X(09)  VALUE  "113700710".
-           03  CONS-SIDORYO6         PIC X(09)  VALUE  "113700810".
-      *
-      *    ∫ﬂªŸ±Á•’•È•∞ ‘Ω∏§Œ∞Ÿ§Œ•≥°º•…
-           03  CONS-ZAISIEN1         PIC X(09)  VALUE  "114011570".
-           03  CONS-ZAISIEN2         PIC X(09)  VALUE  "114011670".
-           03  CONS-ZAISIEN3         PIC X(09)  VALUE  "114011770".
-      *
-      *    ∫∆ø«Œ¡° ∆±∞Ï∆¸£≤≤ Ã‹°À
-           03  CONS-DOUJITU-SAI      PIC X(09)  VALUE  "112015810".
-      *    ∫∆ø«Œ¡° ∆±∞Ï∆¸£≤≤ Ã‹°¶∏∫≈¿µ¨ƒÍ≥∫≈ˆ§ŒæÏπÁ°À
-           03  CONS-DOUJITU-SAI2     PIC X(09)  VALUE  "112017010".
-      *    ≈≈œ√≈˘∫∆ø«° ∆±∞Ï∆¸£≤≤ Ã‹°À
-           03  CONS-DOUJITU-DEN      PIC X(09)  VALUE  "112015950".
-      *    ≈≈œ√≈˘∫∆ø«° ∆±∞Ï∆¸£≤≤ Ã‹°¶∏∫≈¿µ¨ƒÍ≥∫≈ˆ§ŒæÏπÁ°À
-           03  CONS-DOUJITU-DEN2     PIC X(09)  VALUE  "112017150".
-      *    ≥∞ÕËø«Œ≈Œ¡° ∆±∞Ï∆¸£≤≤ Ã‹°À
-           03  CONS-DOUJITU-GAI      PIC X(09)  VALUE  "112016210".
-      *    ≥∞ÕËø«Œ≈Œ¡° ∆±∞Ï∆¸£≤≤ Ã‹°ßæ“≤§π§Îª›øΩ§∑Ω–°À
-           03  CONS-DOUJITU2-GAI     PIC X(09)  VALUE  "112016410".
-      *    ≥∞ÕËø«Œ≈Œ¡° ∆±∞Ï∆¸ £øÙ≤ ºıø«ª˛§Œ£≤≤ Ã‹°¶¬≈∑ÎŒ®£µ≥‰∞ ≤º°À
-           03  CONS-DOUJITU3-GAI     PIC X(09)  VALUE  "112017610".
-      *
-      *     £∫∆ªªƒÍø«Œ≈≤ °ß
-           03  CONS-DOUJITU-COMMENT  PIC X(09)  VALUE  "830000051".
-      *
-      *    ª˛¥÷≥∞¬–±˛≤√ªª£±
-           03  CONS-JIKANTAI1        PIC X(09)  VALUE  "112016070".
-      *    ª˛¥÷≥∞¬–±˛≤√ªª£≤
-           03  CONS-JIKANTAI2        PIC X(09)  VALUE  "112015670".
-      *    ª˛¥÷≥∞¬–±˛≤√ªª£≥
-           03  CONS-JIKANTAI3        PIC X(09)  VALUE  "112016170".
-      *    Ã¿∫ŸΩÒ»Øπ‘¬Œ¿©≈˘≤√ªª
-           03  CONS-MESAIKSN         PIC X(09)  VALUE  "112015770".
-      *    √œ∞Ë Ò≥Áø«Œ≈≤√ªª
-           03  CONS-CHIHOKATU        PIC X(09)  VALUE  "112017270".
-      *    «ß√Œæ…√œ∞Ë Ò≥Áø«Œ≈≤√ªª
-           03  CONS-CHIHOKAT2        PIC X(09)  VALUE  "112017570".
-      *
-      *    ∫ﬁ§Œø«Œ≈∆‚Õ∆•¡•ß•√•Ø•∆°º•÷•Î
-       01  TBL-ZAICHECK-AREA.
-      *    ° •µ°À
-           03  FILLER          PIC X(09)   VALUE    "820000046".
-      *    ° ∏°¡™°À
-           03  FILLER          PIC X(09)   VALUE    "820000053".
-      *    ° •Í•œ¡™°À
-           03  FILLER          PIC X(09)   VALUE    "820000054".
-      *    ° ¿∫¡™°À
-           03  FILLER          PIC X(09)   VALUE    "820000055".
-      *
-       01  TBL-ZAICHECK-R      REDEFINES   TBL-ZAICHECK-AREA.
-           03  TBL-ZAICHECK    PIC X(09)   OCCURS    4.
-      *
-       01  TBL-ZAICHECK-MAX    PIC 9(02)   VALUE     4.
-      *
-      *    ª¿¡« 
-           COPY    "CMSANSOTBL.INC".
+      *****ª¿¡« 
+      *****COPY    "CMSANSOTBL.INC".
       *
       *   ∆¸À‹∏ÏøÙª˙
        01  TBL-SUJI-AREA.
@@ -1788,29 +516,10 @@
        01  TBL-SUJI-R          REDEFINES   TBL-SUJI-AREA.
            03  TBL-SUJI        PIC X(02)   OCCURS   10.
       *
-      *    ≤˛π‘•≥°º•…
-       01  WRK-CONS-RETURN     PIC X(01)   VALUE   X"0A".
       *
            COPY    "MCPAREA".
       *
            COPY    "COMMON-SPA".
-      *
-      *    £“£≈£√£≈£¥£±§Œ•Ô°º•Ø•Ï•≥°º•…
-       01  WRK-RECE4G-REC. 
-           COPY    "CPRCF041.INC"  REPLACING  //RECE41//
-                                   BY         //WRK-RECE4G//.
-      *
-       01  WRK-ERR-AREA.
-           03  WRK-RECEERR                         PIC X(200).
-           03  WRK-ERRMSG                          PIC X(300).
-           03  WRK-MCP-RC                          PIC 9(9).
-           03  WRK-ERR-FILE-STS                    PIC X(02).
-           03  WRK-ERR-FILE-MSG                    PIC X(100).
-           03  WRK-ERR-FILE-MSG1                   PIC X(17).
-           03  WRK-ERR-FLG                         PIC 9(01).
-      *    •®•È°º•’•°•§•ÎÃææŒŒŒ∞Ë 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //WRK-ERR-FILE-NM//.
       *
       *****************************************************************
       *    •’•°•§•Î•Ï•§•¢•¶•»
@@ -1824,10 +533,6 @@
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ø«Œ≈≤Ò∑◊…’≤√æ Û•ﬁ•π•ø°›
-       01  SRYACCTPLUS-REC.
-           COPY    "CPSRYACCTPLUS.INC".
-      *
       *    ø«Œ≈π‘∞Ÿ
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
@@ -1839,28 +544,15 @@
        01  PTCOM-REC.
        COPY    "CPPTCOM.INC".
       *
-      *    º˝«º
-       01  SYUNOU-REC.
-           COPY    "CPSYUNOU.INC".
-      *
       *    •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø
            COPY    "CPSYSKANRI.INC".
-      *    ∞ÂŒ≈µ°¥ÿæ Û°›¥À‹
-           COPY    "CPSK1001.INC".
-           COPY    "CPSK1006.INC".
+      *    œ´∫“º´«Â∞ÂŒ≈µ°¥ÿæ Û
+           COPY    "CPSK4001.INC".
       *
-           COPY    "CPSK4003.INC".
-      *
-           COPY    "CPSK200501.INC".
-      *
-           COPY    "CPSK1030.INC".
       *
       *****************************************************************
       *    •µ•÷•◊•ÌÕ—ŒŒ∞Ë
       *****************************************************************
-      *
-      *    »æ≥—•¡•ß•√•Ø•µ•÷
-           COPY    "CPORCSKANACHK.INC".
       *
       *   ∆¸…’ —¥π•µ•÷
            COPY    "CPORCSDAY.INC".
@@ -1874,12 +566,10 @@
       *   •∏•Á•÷¥…Õ˝£ƒ£¬¿©∏Ê•µ•÷
            COPY    "CPORCSJOBKANRI.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *    ±°≥∞ΩË ˝∞Ï»ÃÃæ ‘Ω∏•µ•÷
-           COPY    "CPORCSGETGENERIC.INC".
-      *
       *    £ƒ£¬∏°∫˜
            COPY    "MCPDATA.INC".
+      *     
+           COPY    "CPORCMCP.INC".  
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -1901,11 +591,7 @@
       *
            PERFORM 300-TERM-SEC
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               STOP    RUN
-           ELSE
-               EXIT    PROGRAM
-           END-IF 
+           STOP    RUN
            .
       *****************************************************************
       *    ΩÈ¥¸°°ΩËÕ˝
@@ -1913,371 +599,123 @@
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  CNT-AREA
+           INITIALIZE                  SPA-AREA
                                        WRK-AREA
-                                       FLG-AREA
-                                       SPA-AREA
-                                       RECEERR
       *
-           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
-                                       INTO    WRK-PARA
-                                               WRK-PARA-JIBAIPRTKBN
-                                               WRK-PARA-PRTKBN
-                                               WRK-PARA-HOSPNUM
-                                               RECEERR
-           END-UNSTRING
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+           MOVE    ZERO                TO  FLG-END
       *
-           MOVE    SPACE               TO  RECE41PARA
-           INITIALIZE                      RECE41PARA
+           MOVE    COMMAND-PARAM       TO  WRK-PARA
+      *
+           PERFORM 100-DBOPEN-SEC
+      *
+      *    •π•∆•√•◊¥…Õ˝≥´ªœΩËÕ˝
+           MOVE    "STS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    "ORCR0420"      TO  JOB-PGID
+           MOVE    "ø«Œ≈∂Ë ¨ Ã≈¿øÙΩ∏∑◊° œ´∫“°¶º´«Â¿’°À"                 
+                                   TO  JOB-SHELLMSG
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
            MOVE    "RECE410"           TO  RECE41PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE41PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE41PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE44PARA
-           INITIALIZE                      RECE44PARA
            MOVE    "RECE440"           TO  RECE44PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE44PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE44PARA-HOSPNUM
-           MOVE    SPACE               TO  RECE45PARA
-           INITIALIZE                      RECE45PARA
            MOVE    "RECE450"           TO  RECE45PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE45PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE45PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE4APARA
-           INITIALIZE                      RECE4APARA
            MOVE    "RECE441"           TO  RECE4APARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE4APARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE4APARA-HOSPNUM
-           MOVE    SPACE               TO  RECE4BPARA
-           INITIALIZE                      RECE4BPARA
            MOVE    "RECE451"           TO  RECE4BPARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE4BPARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE4BPARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE44CPARA
-           INITIALIZE                      RECE44CPARA
-           MOVE    "RECE44C"           TO  RECE44CPARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE44CPARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE44CPARA-HOSPNUM
-           MOVE    SPACE               TO  RECE45CPARA
-           INITIALIZE                      RECE45CPARA
-           MOVE    "RECE45C"           TO  RECE45CPARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE45CPARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE45CPARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE41PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE44PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           MOVE    RECE45PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
-           MOVE    RECE4APARA-BASENAME TO  SGETTEMP-BASENAMES  (5)
-           MOVE    RECE4BPARA-BASENAME TO  SGETTEMP-BASENAMES  (6)
-           MOVE    RECE44CPARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (7)
-           MOVE    RECE45CPARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (8)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE41PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE44PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE45PARA
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  RECE4APARA
-           MOVE    SGETTEMP-FULLNAMES (6)
-                                       TO  RECE4BPARA
-           MOVE    SGETTEMP-FULLNAMES (7)
-                                       TO  RECE44CPARA
-           MOVE    SGETTEMP-FULLNAMES (8)
-                                       TO  RECE45CPARA
-      *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               PERFORM 100-DBOPEN-SEC
-      *
-      *        •π•∆•√•◊¥…Õ˝≥´ªœΩËÕ˝
-               MOVE    "STS"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    "ORCR0420"      TO  JOB-PGID
-               MOVE    "ø«Œ≈∂Ë ¨ Ã≈¿øÙΩ∏∑◊° œ´∫“°¶º´«Â¿’°À"
-                                       TO  JOB-SHELLMSG
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
-      *        ΩËÕ˝√Êªﬂ¿ﬂƒÍΩËÕ˝
-               PERFORM 500-CANCEL-HENSYU-SEC
-           END-IF
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
-      *       ∞ÂŒ≈µ°¥ÿæ Û°›¥À‹
-              INITIALIZE                      SYS-1001-REC
-              MOVE    "1001"              TO  SYS-1001-KANRICD
-              MOVE    "*"                 TO  SYS-1001-KBNCD
-              MOVE    WRK-PARA-SRYYM      TO  SYS-1001-STYUKYMD (1:6)
-              MOVE    "01"                TO  SYS-1001-STYUKYMD (7:2)
-              MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD 
-grpsys        MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
-              MOVE    SYS-1001-REC        TO  MCPDATA-REC
+      *       •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø° £¥£∞£∞£±°À§´§È≈¿øÙ√±≤¡§ŒºË∆¿
+              INITIALIZE                         SYS-4001-REC
+              MOVE    "4001"               TO    SYS-4001-KANRICD
+              MOVE    "*"                  TO    SYS-4001-KBNCD
+              MOVE    WRK-PARA-SRYYM       TO    ORC-DBYMD (1:6)
+              MOVE    "01"                 TO    ORC-DBYMD (7:2)
+              MOVE    SYS-4001-REC         TO    MCPDATA-REC
+              MOVE    "SYSKANRI-KEY"       TO    WRK-PATH
               PERFORM 800-SYSKANRI-READ-SEC
               IF      FLG-SYSKANRI        =   ZERO
-                  MOVE    MCPDATA-REC     TO  SYS-1001-REC
-                  MOVE    SYS-1001-TAX-HASU-KBN
-                                          TO  WRK-TAX1001-KBN
-                  IF   WRK-TAX1001-KBN = SPACE
-                     MOVE   "2"           TO  WRK-TAX1001-KBN
-                  END-IF
-                  MOVE    SYS-1001-DAISANKBN
-                                          TO  WRK-DAISAN-DAISANKBN
-                  IF  WRK-DAISAN-DAISANKBN = SPACE
-                    MOVE  "2"             TO  WRK-DAISAN-DAISANKBN
-                  END-IF
-                  MOVE    SYS-1001-DISCOUNT-HASU-KBN4
-                                          TO  WRK-HASU1001-JIBAI
-                  IF  WRK-HASU1001-JIBAI = SPACE
-                    MOVE  "4"             TO  WRK-HASU1001-JIBAI
-                  END-IF
-                  MOVE    SYS-1001-DISCOUNT-HASU-KBN6
-                                          TO  WRK-HASU1001-DAISAN
-                  IF  WRK-HASU1001-DAISAN = SPACE
-                    MOVE  WRK-HASU1001-JIBAI
-                                          TO  WRK-HASU1001-DAISAN
-                  END-IF
+                  MOVE    SYSKANRI-REC     TO  SYS-4001-REC
+                  EVALUATE  SYS-4001-TENKBN
+                      WHEN  "1"
+                          MOVE     11.5    TO    WRK-TANKA
+                      WHEN  "2"
+                          MOVE     12.0    TO    WRK-TANKA
+                  END-EVALUATE
               ELSE
-                  MOVE    "∞ÂŒ≈µ°¥ÿæ Û§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø°£"
+                  MOVE    "œ´∫“º´«Â∞ÂŒ≈µ°¥ÿæ Û§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø"     
                                               TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
                   MOVE    1                   TO  FLG-END
               END-IF
-      *       ª‹¿ﬂ¥Ω‡æ Û
-              MOVE     ZERO     TO     WRK-SISETU613
-              MOVE     ZERO     TO     WRK-SISETU695
-              MOVE     ZERO     TO     WRK-SISETU3055
-              MOVE     ZERO     TO     WRK-SISETU3056
-              MOVE     ZERO     TO     WRK-SISETU3057
-              MOVE     ZERO     TO     WRK-SISETU3058
-              MOVE     ZERO     TO     WRK-SISETU3168
-              MOVE     ZERO     TO     WRK-SISETU3169
-              PERFORM  VARYING  IDXA   FROM   1   BY  1
-                        UNTIL   IDXA     >    7
-               IF   IDXA  =  1 OR 3 OR 4 OR 5 OR 6
-                 CONTINUE
-               ELSE
-                 INITIALIZE                    SYS-1006-REC
-                 MOVE    "1006"            TO  SYS-1006-KANRICD
-                 MOVE    IDXA              TO  SYS-1006-KBNCD
-                 MOVE    WRK-PARA-SRYYM    TO  SYS-1006-STYUKYMD(1:6)
-                 MOVE    "01"              TO  SYS-1006-STYUKYMD(7:2)
-                 MOVE    SYS-1006-STYUKYMD TO  SYS-1006-EDYUKYMD
-grpsys           MOVE    SPA-HOSPNUM       TO  SYS-1006-HOSPNUM
-                 MOVE    SYS-1006-REC      TO  MCPDATA-REC
-                 PERFORM 800-SYSKANRI-READ-SEC
-                 IF      FLG-SYSKANRI     =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-1006-REC
-                   EVALUATE  IDXA
-                     WHEN     2
-                       MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
-                       MOVE  SYS-1006-SSTKIJUN(195)  TO  WRK-SISETU695
-                     WHEN     7
-                       MOVE  SYS-1006-SSTKIJUN(55)   TO  WRK-SISETU3055
-                       MOVE  SYS-1006-SSTKIJUN(56)   TO  WRK-SISETU3056
-                       MOVE  SYS-1006-SSTKIJUN(57)   TO  WRK-SISETU3057
-                       MOVE  SYS-1006-SSTKIJUN(58)   TO  WRK-SISETU3058
-                       MOVE  SYS-1006-SSTKIJUN(168)  TO  WRK-SISETU3168
-                       MOVE  SYS-1006-SSTKIJUN(169)  TO  WRK-SISETU3169
-                   END-EVALUATE
-                 END-IF
-               END-IF
-              END-PERFORM
-      *       ƒ¢…º ‘Ω∏∂Ë ¨æ Û
-              MOVE    SPACE               TO  WRK-1030-KOUHATUKA
-      **>     IF      WRK-PARA-PRTKBN = "2" OR "3" OR "4" OR "5"
-                INITIALIZE                      SYS-1030-REC
-                MOVE    "1030"              TO  SYS-1030-KANRICD
-                MOVE    "*"                 TO  SYS-1030-KBNCD
-                MOVE    WRK-PARA-SRYYM      TO  SYS-1030-STYUKYMD(1:6)
-                MOVE    "01"                TO  SYS-1030-STYUKYMD(7:2)
-                MOVE    SYS-1030-STYUKYMD   TO  SYS-1030-EDYUKYMD
-                MOVE    SPA-HOSPNUM         TO  SYS-1030-HOSPNUM
-                MOVE    SYS-1030-REC        TO  MCPDATA-REC
-                PERFORM 800-SYSKANRI-READ-SEC
-                IF      FLG-SYSKANRI     =   ZERO
-                  MOVE  MCPDATA-REC         TO  SYS-1030-REC
-                  MOVE  SYS-1030-KOUHATUKA  TO  WRK-1030-KOUHATUKA
-                END-IF
-      **>     END-IF
            ELSE
               MOVE     ZERO               TO  SYSKAN-IDX
-              MOVE     SPACE              TO  TBL-SYS1001-T
-              INITIALIZE                      TBL-SYS1001-T
+              MOVE     SPACE              TO  TBL-SYS4001-T
+              INITIALIZE                      TBL-SYS4001-T
       *
-              INITIALIZE                      SYS-1001-REC
-              MOVE    "1001"              TO  SYS-1001-KANRICD
-              MOVE    "*"                 TO  SYS-1001-KBNCD
-grpsys        MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
-              MOVE    SYS-1001-REC        TO  MCPDATA-REC
-              MOVE    "tbl_syskanri"      TO  MCP-TABLE
-              MOVE    "key8"              TO  MCP-PATHNAME
-grpsys        PERFORM 900-DBSELECT-SEC
+              INITIALIZE                      SYS-4001-REC
+              MOVE    "4001"              TO  SYS-4001-KANRICD
+              MOVE    "*"                 TO  SYS-4001-KBNCD
+              MOVE    SYS-4001-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
               IF      MCP-RC              =   ZERO
-                  MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                  MOVE    "key8"          TO  MCP-PATHNAME
+                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
                   PERFORM 810-SYSKANRI-READ-SEC
-                  PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
-                            OR    (SYSKAN-IDX   >=  100)
+                  PERFORM  UNTIL   FLG-SYSKANRI  =    1
       *
-                    MOVE    MCPDATA-REC   TO  SYS-1001-REC
+                    MOVE    SYSKANRI-REC  TO  SYS-4001-REC
                     ADD     1             TO  SYSKAN-IDX
-                    MOVE    SYS-1001-REC  TO  TBL-SYS1001(SYSKAN-IDX)
+                    MOVE    SYS-4001-REC  TO  TBL-SYS4001(SYSKAN-IDX)
       *
-                    MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                    MOVE    "key8"          TO  MCP-PATHNAME
+                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
                     PERFORM 810-SYSKANRI-READ-SEC
+      *
                   END-PERFORM
               ELSE
-                  MOVE    "∞ÂŒ≈µ°¥ÿæ Û§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø°£"
-                                          TO  WRK-RECEERR
+                  MOVE    "œ´∫“º´«Â∞ÂŒ≈µ°¥ÿæ Û§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø"     
+                                              TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
-                  MOVE    1               TO  FLG-END
+                  MOVE    1                   TO  FLG-END
               END-IF
       *
-              MOVE    "tbl_syskanri"      TO  MCP-TABLE
-              MOVE    "key8"              TO  MCP-PATHNAME
-              PERFORM 900-CLOSE-SEC
-      *
-              MOVE     SPACE              TO  TBL-SYS1006-T
-              INITIALIZE                      TBL-SYS1006-T
-      *
-              PERFORM  VARYING  IDXA   FROM   1   BY  1
-                        UNTIL   IDXA     >    7
-               IF   IDXA  =  1 OR 3 OR 4 OR 5 OR 6
-                 CONTINUE
-               ELSE
-                 MOVE     ZERO            TO  SYSKAN-IDX2
-                 INITIALIZE                   SYS-1006-REC
-                 MOVE    "1006"           TO  SYS-1006-KANRICD
-                 MOVE    IDXA             TO  SYS-1006-KBNCD
-grpsys           MOVE    SPA-HOSPNUM      TO  SYS-1006-HOSPNUM
-                 MOVE    SYS-1006-REC     TO  MCPDATA-REC
-                 MOVE    "tbl_syskanri"   TO  MCP-TABLE
-                 MOVE    "key8"           TO  MCP-PATHNAME
-grpsys           PERFORM 900-DBSELECT-SEC
-                 IF      MCP-RC           =   ZERO
-                     MOVE    "tbl_syskanri"   TO  MCP-TABLE
-                     MOVE    "key8"           TO  MCP-PATHNAME
-                     PERFORM 810-SYSKANRI-READ-SEC
-                     PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
-                               OR    (SYSKAN-IDX2  >=  100)
-      *
-                       MOVE    MCPDATA-REC    TO  SYS-1006-REC
-                       EVALUATE  IDXA
-                         WHEN     2
-                           ADD     1     TO  SYSKAN-IDX2
-                           MOVE    SYS-1006-REC
-                                         TO  TBL-SYS10062(SYSKAN-IDX2)
-                         WHEN     7
-                           ADD     1     TO  SYSKAN-IDX2
-                           MOVE    SYS-1006-REC
-                                         TO  TBL-SYS10067(SYSKAN-IDX2)
-                       END-EVALUATE
-      *
-                       MOVE    "tbl_syskanri"   TO  MCP-TABLE
-                       MOVE    "key8"           TO  MCP-PATHNAME
-                       PERFORM 810-SYSKANRI-READ-SEC
-                     END-PERFORM
-                 END-IF
-                 MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                 MOVE    "key8"              TO  MCP-PATHNAME
-                 PERFORM 900-CLOSE-SEC
-               END-IF
-              END-PERFORM
-      *
-              MOVE     ZERO               TO  SYSKAN-IDX
-              MOVE     SPACE              TO  TBL-SYS1030-T
-              INITIALIZE                      TBL-SYS1030-T
-      **>     IF      WRK-PARA-PRTKBN = "2" OR "3" OR "4" OR "5"
-                INITIALIZE                      SYS-1030-REC
-                MOVE    "1030"              TO  SYS-1030-KANRICD
-                MOVE    "*"                 TO  SYS-1030-KBNCD
-                MOVE    SPA-HOSPNUM         TO  SYS-1030-HOSPNUM
-                MOVE    SYS-1030-REC        TO  MCPDATA-REC
-                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                MOVE    "key8"              TO  MCP-PATHNAME
-                PERFORM 900-DBSELECT-SEC
-                IF      MCP-RC              =   ZERO
-                  MOVE    "tbl_syskanri"    TO  MCP-TABLE
-                  MOVE    "key8"            TO  MCP-PATHNAME
-                  PERFORM 810-SYSKANRI-READ-SEC
-                  PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
-                            OR    (SYSKAN-IDX   >=  100)
-      *
-                    MOVE    MCPDATA-REC     TO  SYS-1030-REC
-                    ADD     1               TO  SYSKAN-IDX
-                    MOVE    SYS-1030-REC    TO  TBL-SYS1030(SYSKAN-IDX)
-      *
-                    MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                    MOVE    "key8"          TO  MCP-PATHNAME
-                    PERFORM 810-SYSKANRI-READ-SEC
-                  END-PERFORM
-                END-IF
-                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                MOVE    "key8"              TO  MCP-PATHNAME
-                PERFORM 900-CLOSE-SEC
-      **>     END-IF
-           END-IF
-      *
-           INITIALIZE                      SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    WRK-PARA-SRYYM      TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-200501-REC
-           ELSE
-               INITIALIZE                  SYS-200501-REC
-           END-IF
-           IF      SYS-200501-ROURECEKBN  =   SPACE
-               MOVE    "0"             TO  SYS-200501-ROURECEKBN
-           END-IF
-           IF      SYS-200501-JIBAI-FRACTION-KBN(1)  =   SPACE
-               MOVE    "0"   TO  SYS-200501-JIBAI-FRACTION-KBN(1)
-           END-IF
-           IF      SYS-200501-JIBAI-FRACTION-KBN(2)  =   SPACE
-               MOVE    "0"   TO  SYS-200501-JIBAI-FRACTION-KBN(2)
-           END-IF
-           IF      SYS-200501-INSPECT-GENERAL-KBN   =   SPACE
-               MOVE    "0"   TO  SYS-200501-INSPECT-GENERAL-KBN
-           END-IF
-           IF      SYS-200501-COMPRESS-KBN          =   SPACE
-               MOVE    "0"   TO  SYS-200501-COMPRESS-KBN
-           END-IF
-           IF      SYS-200501-15-YKZ-PRTKBN         =   SPACE
-               MOVE    "0"   TO  SYS-200501-15-YKZ-PRTKBN
+              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
            END-IF
       *                             
       *    •Ï•ª•◊•»ΩËÕ˝
+           OPEN    OUTPUT              RECE444-FILE
+           CLOSE                       RECE444-FILE
       *
-           OPEN    OUTPUT              RECE44-FILE
-           CLOSE                       RECE44-FILE
+           OPEN    OUTPUT              RECE455-FILE
+           CLOSE                       RECE455-FILE
       *
-           OPEN    OUTPUT              RECE45-FILE
-           CLOSE                       RECE45-FILE
+           OPEN    OUTPUT              RECE4A4-FILE
+           CLOSE                       RECE4A4-FILE
       *
-           OPEN    OUTPUT              RECE4A-FILE
-           CLOSE                       RECE4A-FILE
-      *
-           OPEN    OUTPUT              RECE4B-FILE
-           CLOSE                       RECE4B-FILE
-      *
-           OPEN    OUTPUT              RECE44C-FILE
-           CLOSE                       RECE44C-FILE
-      *
-           OPEN    OUTPUT              RECE45C-FILE
-           CLOSE                       RECE45C-FILE
+           OPEN    OUTPUT              RECE4B5-FILE
+           CLOSE                       RECE4B5-FILE
       *
            OPEN    OUTPUT              RECE44-FILE
       ***                              RECE45-FILE
@@ -2285,13 +723,11 @@ grpsys           PERFORM 900-DBSELECT-SEC
       *
            OPEN    OUTPUT              RECE4A-FILE
                                        RECE4B-FILE
-      *
-           OPEN    OUTPUT              RECE44C-FILE
-           OPEN    I-O                 RECE45C-FILE
+      
       *
            OPEN    I-O                 RECE41-FILE
       *
-           PERFORM     900-RECE41-READ-SEC
+           PERFORM     RECE41-READ-SEC     
       *
            .
        100-INIT-EXT.
@@ -2304,17 +740,11 @@ grpsys           PERFORM 900-DBSELECT-SEC
       *
            PERFORM     210-HENSYU-SEC
       *      
-           PERFORM     900-RECE41-READ-SEC
-           IF      CNT-IN-COMMIT   =   300
-               MOVE  ZERO          TO      CNT-IN-COMMIT
+           PERFORM     RECE41-READ-SEC 
+      	   IF      CNT-IN-COMMIT   =   300
+      	       MOVE  ZERO          TO      CNT-IN-COMMIT
                PERFORM 900-DBCOMMIT-SEC
                PERFORM 900-DBSTART-SEC
-           END-IF
-      *
-      *    ΩËÕ˝√Êªﬂ¿ﬂƒÍΩËÕ˝
-           IF      CNT-IN-CANCEL       =   50
-               MOVE    ZERO                TO  CNT-IN-CANCEL
-               PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
            .
@@ -2326,87 +756,34 @@ grpsys           PERFORM 900-DBSELECT-SEC
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
-      *    æ√»Ò¿«∑◊ªª§Œ∑∏øÙ¿ﬂƒÍ
-           IF  RECE41-SRYYM >= "201404"
-               MOVE       8      TO  WRK-S1
-               MOVE     108      TO  WRK-S2
-               MOVE     0.08     TO  WRK-S4
-               MOVE     1.08     TO  WRK-S5
-           ELSE
-               MOVE       5      TO  WRK-S1
-               MOVE     105      TO  WRK-S2
-               MOVE     0.05     TO  WRK-S4
-               MOVE     1.05     TO  WRK-S5
-           END-IF
-           EVALUATE  WRK-TAX1001-KBN
-               WHEN      "1"
-                 MOVE   0.50000  TO  WRK-S3
-               WHEN      "2"
-                 MOVE   0.00000  TO  WRK-S3
-               WHEN      "3"
-                 MOVE   0.99999  TO  WRK-S3
-           END-EVALUATE
-      *
-           INITIALIZE                   WRK-RECE4G-REC
-      *
-           MOVE       ZERO       TO     WRK-ZAITENNASHI
-      *
-           MOVE       ZERO       TO     WRK-SURYOU-COUNT
-      *
-           INITIALIZE                   FLG-SAISIN-AREA
-           INITIALIZE                   CNT-SAISIN-AREA
-      *
-           INITIALIZE                   TBL-ZAITAKU-KAISU-XXX
-      *
-           MOVE       ZERO       TO     WRK-TAIHI-ZAINUM
-           MOVE       ZERO       TO     WRK-TAIHI-ZAINUM2
-      *
            IF      RECE41-HKNKBN   NOT  =   "3"
       *
               INITIALIZE                   FLG-KHNTEN-AREA
               INITIALIZE                   FLG-KHNTEN-JI-AREA           
-              INITIALIZE                   FLG-KHNTEN-JI2-AREA
-              INITIALIZE                   FLG-KHNTEN-KO-AREA
-              INITIALIZE                   TBL-TENSUG-JI
-      *
-              MOVE       ZERO       TO     WRK-KINGAKU-JI
       *
               PERFORM    VARYING    IDX    FROM   1   BY   1
                          UNTIL     (IDX      >   20)  OR
                                    (RECE41-SRYKA(IDX)   =   SPACE)
-                  PERFORM     2101-RECE44-HENSYU-SEC
+                  PERFORM    RECE44-HENSYU-SEC
               END-PERFORM
       *
-              EVALUATE   RECE41-HKNKBN
-                WHEN       "1"
-                WHEN       "2"
-                  PERFORM     2102-KHNTEN-CLEAR-SEC
-                WHEN       "4"
-                WHEN       "6"
-                  PERFORM     2103-KHNTEN-JI-CLEAR-SEC                       
-                WHEN       "5"
-                  PERFORM     2106-KHNTEN-KO-CLEAR-SEC
-              END-EVALUATE
+              IF      RECE41-HKNKBN   NOT  =   "4"                      
+                  PERFORM     KHNTEN-CLEAR-SEC
+              ELSE                                                      
+                  PERFORM     KHNTEN-JI-CLEAR-SEC                       
+              END-IF                                                    
       *
            ELSE
       *
               PERFORM    VARYING    IDX    FROM   1   BY   1
                          UNTIL     (IDX      >   20)  OR
                                    (RECE41-SRYKA(IDX)   =   SPACE)
-                  PERFORM     2104-RECE44-HENSYU2-SEC
+                  PERFORM    RECE44-HENSYU2-SEC
               END-PERFORM
       *
            END-IF
       *
-           PERFORM     2107-GENTEN-HENSYU-SEC
-      *
-      *    ∫ﬂ¬≤ÛøÙ§Œ∫∆ ‘Ω∏
-           PERFORM     2108-ZAITAKU-KAISU-HENSYU-SEC
-      *
-      *    º´«Â¿’°¶¿¡µ·∂‚≥€ÕÛ√ºøÙΩËÕ˝∂Ë ¨ ‘Ω∏
-           PERFORM     2109-JIBAI-HASUKBN-HENSYU-SEC
-      *
-           PERFORM     2105-RECE41-REWRITE-SEC
+           PERFORM     RECE41-REWRITE-SEC
            .
        210-HENSYU-EXT.
            EXIT.
@@ -2414,59 +791,35 @@ grpsys           PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œ∫Ó¿Æ
       *****************************************************************
-       2101-RECE44-HENSYU-SEC                SECTION.
+       RECE44-HENSYU-SEC                SECTION.
       *
            INITIALIZE                           SRYACCT-REC
-           MOVE    RECE41-HOSPNUM       TO      ACCT-HOSPNUM
+           MOVE    RECE41-HOSPID        TO      ACCT-HOSPID
            MOVE    RECE41-NYUGAIKBN     TO      ACCT-NYUGAIKBN
            MOVE    RECE41-PTID          TO      ACCT-PTID
            MOVE    RECE41-SRYKA(IDX)    TO      ACCT-SRYKA
            MOVE    RECE41-SRYYM         TO      ACCT-SRYYM
            MOVE    RECE41-HKNCOMBI      TO      ACCT-HKNCOMBI
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
-           MOVE    "tbl_sryacct"        TO      MCP-TABLE
-           MOVE    "key24"              TO      MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "SRYACCT-KEY24"      TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "tbl_sryacct"    TO      MCP-TABLE
-               MOVE    "key24"          TO      MCP-PATHNAME
-               PERFORM  800-SRYACCT-READ-SEC
+               MOVE    "SRYACCT-KEY24"  TO      ORC-DBPATH
+               PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL     FLG-SRYACCT   =   1 
       *
-                 MOVE   ZERO          TO  FLG-RINYAK
-      *
-                 IF    ACCT-SRYKBN       =  "95"  OR  "96"
-                   CONTINUE
-                 ELSE
-      *
-                   MOVE     ZERO    TO    FLG-TAISYO
-                   IF   (ACCT-SRYKBN         =   "80" )
-                   AND  (ACCT-ZAITEN         =   ZERO )
-                   AND  (ACCT-ZAIKAISU   NOT =   ZERO )
-                   AND  (ACCT-JIHOKBN        =   SPACE)
-                     PERFORM  21015-SRYACCTPLUS-KENSAKU-SEC
-                   END-IF
-      *
-                   IF  ((ACCT-ZAITEN    NOT =    ZERO ) AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO ) AND
-                        (WRK-PARA-PRTKBN    =
-                                    "1" OR "2" OR "3" ) AND
-                        (ACCT-JIHOKBN       =    SPACE))
-                   OR  ((ACCT-ZAITEN    NOT =    ZERO ) AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO ) AND
-                        (WRK-PARA-PRTKBN    =
-                                           "4" OR "5" ))
-                   OR  ( FLG-TAISYO         =      1   )
+                   IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO    TO      WRK-TEN
                                                        WRK-MEISAI-CNT
                                                        WRK-SRYCDTOTAL
                                                        WRK-SURYOUTOTAL
                                                        WRK-YOUBUKASAN
-                                                       WRK-KYOBUKASAN
-                                                       WRK-KEIBUKASAN
-                                                       WRK-SOGAIKASAN
                                                        WRK-RYOYOTEATE
-                                                       WRK-ZAI-KINGAKU
       *
                                MOVE    ZERO    TO      WRK-SRYSURYO
                                                        WRK-SRYSURYO2
@@ -2475,70 +828,25 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        WRK-TANIMOJISU
                                MOVE    SPACE   TO      WRK-TANINAME
                                MOVE    ZERO    TO      FLG-HOUSIJI-COM
-                                                       FLG-HOUTEN-COM
-                                                       FLG-SYOBYO-COM
-                                                       FLG-RYOYO-COM
-                                                       FLG-SYODOU-COM
-                                                       FLG-SAIDOU-COM
-                                                       FLG-NIKOCHIN-COM
-                                                       FLG-ZENSOKU-COM
-                                                       FLG-OSIN-COM
-                                                       FLG-ZAIHOU-COM
-                                                       FLG-TAHOKEN
-                                                       FLG-SYOUNI-COM
-                                                       FLG-SRYKBN-HEN
-                                                       FLG-KENSA-COM
-                                                       FLG-ZAIRIHA-COM
-                                                       FLG-ZAIKYO-COM
-                                                       FLG-BOKOHO-COM
-                                                       FLG-IZONSYO-COM
-                                                       FLG-SEIJYU-COM
-                                                       FLG-NINRYO-COM
       *
-                               MOVE    SPACE   TO      WRK-KYUGYOFLG
-                               MOVE    ZERO    TO      FLG-COUNT-ARI
-      *
-                               MOVE    SPACE   TO      WRK-FORMALNAME
-                               MOVE    ZERO    TO
-                                               WRK-KZI058-TEN
-                                               WRK-KZI058-TANICD
-                                               WRK-KZI058-TANIMOJISU
-                               MOVE    SPACE   TO
-                                               WRK-KZI058-TANINAME
-      *
-                               MOVE    ZERO    TO      FLG-WRITE45
-                               MOVE    ZERO    TO      FLG-HENSYU-NG
-                               MOVE    ZERO    TO      FLG-SETCOM
-                               MOVE    ZERO    TO      WRK-SETCOM-JIDO
-                               MOVE    ZERO    TO      WRK-SETCOM-JIDO2
-                               MOVE    ZERO    TO      FLG-ZAITAKU-CHECK
-                               MOVE    ZERO    TO      FLG-KIN-OKIKAE
-                               MOVE    ZERO    TO      FLG-KIN-OKIKAE2
-                               MOVE    ZERO    TO      FLG-SIPPU-COM
-                               MOVE    ZERO    TO      FLG-SIPPU-ARI
-                               MOVE    ZERO    TO      FLG-YKZ-PRTKBN
-                               PERFORM   21011-RECE44-TENSOU-SEC
-                               PERFORM   21012-RECE45-HENSYU-SEC
-                               IF    FLG-WRITE45  =   1
-                                 PERFORM 21013-RECE44-WRITE-SEC
-                               END-IF
+                               PERFORM   RECE44-TENSOU-SEC
+                               PERFORM   RECE45-HENSYU-SEC
+                               PERFORM   RECE44-WRITE-SEC
                    ELSE
-                             IF    ACCT-ZAIKAISU  NOT =    ZERO
-                             AND   ACCT-JIHOKBN       =    SPACE
-      **>                    IF  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
-      **>                         (WRK-PARA-PRTKBN    =
-      **>                                     "1" OR "2" OR "3" ) AND
-      **>                         (ACCT-JIHOKBN       =    SPACE))
-      **>                    OR  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
-      **>                         (WRK-PARA-PRTKBN    =
-      **>                                            "4" OR "5" ))
-                               IF ( ACCT-SRYKBN  NOT =
-                                    "24" AND "90" AND "92" AND
-                                    "93" AND "97"                 )
-                               OR ( ACCT-ZAIKBN  =   1            )
-                                 IF  (ACCT-SRYCDTOTAL(1:12)  =
-                                                    "000000999901")
-                                 AND (ACCT-MEISAISU      =   1    )
+                             IF   ACCT-ZAIKAISU  NOT =    ZERO
+                               IF   ACCT-SRYKBN  =  "11"  OR  "12" 
+                                                          OR  "99" 
+                                 IF  ACCT-SRYCDTOTAL = CONS-TOKKI1  OR
+                                                       CONS-TOKKI2  OR
+                                                       CONS-TOKKI3  OR
+                                                       CONS-TOKKI4  OR
+                                                       CONS-TOKKI5  OR
+                                                       CONS-TOKKI7  OR
+                                                       CONS-TOKKI8  OR
+                                                       CONS-TOKKI9  OR
+                                                       CONS-TOKKI10 OR
+                                                       CONS-TOKKI11 OR
+                                                       CONS-TOKKI12
                                       CONTINUE
                                  ELSE
                                       MOVE  ZERO  TO  WRK-TEN
@@ -2546,11 +854,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       WRK-SRYCDTOTAL
                                                       WRK-SURYOUTOTAL
                                                       WRK-YOUBUKASAN
-                                                      WRK-KYOBUKASAN
-                                                      WRK-KEIBUKASAN
-                                                      WRK-SOGAIKASAN
                                                       WRK-RYOYOTEATE
-                                                      WRK-ZAI-KINGAKU
       *
                                       MOVE  ZERO  TO  WRK-SRYSURYO
                                                       WRK-SRYSURYO2
@@ -2559,85 +863,143 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       WRK-TANIMOJISU
                                       MOVE  SPACE TO  WRK-TANINAME
                                       MOVE  ZERO  TO  FLG-HOUSIJI-COM
-                                                      FLG-HOUTEN-COM
-                                                      FLG-SYOBYO-COM
-                                                      FLG-RYOYO-COM
-                                                      FLG-SYODOU-COM
-                                                      FLG-SAIDOU-COM
-                                                      FLG-NIKOCHIN-COM
-                                                      FLG-ZENSOKU-COM
-                                                      FLG-OSIN-COM
-                                                      FLG-ZAIHOU-COM
-                                                      FLG-TAHOKEN
-                                                      FLG-SYOUNI-COM
-                                                      FLG-SRYKBN-HEN
-                                                      FLG-KENSA-COM
-                                                      FLG-ZAIRIHA-COM
-                                                      FLG-ZAIKYO-COM
-                                                      FLG-BOKOHO-COM
-                                                      FLG-IZONSYO-COM
-                                                      FLG-SEIJYU-COM
-                                                      FLG-NINRYO-COM
       *
-                                      MOVE  SPACE TO  WRK-KYUGYOFLG
-                                      MOVE  ZERO  TO  FLG-COUNT-ARI
-      *
-                                      MOVE  SPACE TO  WRK-FORMALNAME
-                                      MOVE  ZERO  TO
-                                                  WRK-KZI058-TEN
-                                                  WRK-KZI058-TANICD
-                                                  WRK-KZI058-TANIMOJISU
-                                      MOVE  SPACE TO
-                                                  WRK-KZI058-TANINAME
-      *
-                                      MOVE  ZERO  TO  FLG-WRITE45
-                                      MOVE  ZERO  TO  FLG-HENSYU-NG
-                                      MOVE  ZERO  TO  FLG-SETCOM
-                                      MOVE  ZERO  TO  WRK-SETCOM-JIDO
-                                      MOVE  ZERO  TO  WRK-SETCOM-JIDO2
-                                      MOVE  ZERO  TO  FLG-ZAITAKU-CHECK
-                                      MOVE  ZERO  TO  FLG-KIN-OKIKAE
-                                      MOVE  ZERO  TO  FLG-KIN-OKIKAE2
-                                      MOVE  ZERO  TO  FLG-SIPPU-COM
-                                      MOVE  ZERO  TO  FLG-SIPPU-ARI
-                                      MOVE  ZERO  TO  FLG-YKZ-PRTKBN
-                                      IF    ACCT-SRYKBN  =
-                                            "60" OR "64" OR "80"
-                                        PERFORM 21014-SINRYO-CHECK-SEC
-                                      END-IF
-                                      PERFORM   21011-RECE44-TENSOU-SEC
-                                      PERFORM   21012-RECE45-HENSYU-SEC
-                                      IF    FLG-WRITE45  =   1
-                                        PERFORM 21013-RECE44-WRITE-SEC
-                                      END-IF
+                                      PERFORM   RECE44-TENSOU-SEC
+                                      PERFORM   RECE45-HENSYU-SEC
+                                      PERFORM   RECE44-WRITE-SEC
                                  END-IF
                                END-IF
                              END-IF
                    END-IF
-                 END-IF
       *
-                 MOVE    "tbl_sryacct"    TO      MCP-TABLE
-                 MOVE    "key24"          TO      MCP-PATHNAME
-                 PERFORM   800-SRYACCT-READ-SEC
+                   MOVE     "SRYACCT-KEY24"  TO   ORC-DBPATH
+                   PERFORM   SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key24"             TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
+           MOVE   "SRYACCT-KEY24"     TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
       *
            .
-       2101-RECE44-HENSYU-EXT.
+       RECE44-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œ∫Ó¿Æ
+      *****************************************************************
+       RECE44-HENSYU2-SEC                SECTION.
+      *
+           INITIALIZE                           SRYACCT-REC
+           MOVE    RECE41-HOSPID        TO      ACCT-HOSPID
+           MOVE    RECE41-NYUGAIKBN     TO      ACCT-NYUGAIKBN
+           MOVE    RECE41-PTID          TO      ACCT-PTID
+           MOVE    RECE41-SRYKA(IDX)    TO      ACCT-SRYKA
+           MOVE    RECE41-SRYYM         TO      ACCT-SRYYM
+           MOVE    RECE41-HKNCOMBI      TO      ACCT-HKNCOMBI
+           MOVE    SRYACCT-REC          TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "SRYACCT-KEY24"      TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+               MOVE    "SRYACCT-KEY24"  TO      ORC-DBPATH
+               PERFORM  SRYACCT-READ-SEC
+               PERFORM  UNTIL     FLG-SRYACCT   =   1 
+      *
+                   MOVE   RECE41-TEKSTYMD(7:2)   TO   WRK-DAY
+                   IF  ACCT-DAY(1 WRK-DAY)   NOT =    ZERO
+                        MOVE    1       TO   FLG-DAY
+                   ELSE
+                        MOVE    ZERO    TO   FLG-DAY  
+                   END-IF
+      *
+                   IF      FLG-DAY         =   1
+                           IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                                (ACCT-ZAIKAISU  NOT =    ZERO)
+                               MOVE  ACCT-DAY(1 WRK-DAY)  
+                                               TO    WRK-ZAIKAISU-XXX
+                               MOVE    ZERO    TO    WRK-TEN
+                                                     WRK-MEISAI-CNT
+                                                     WRK-SRYCDTOTAL
+                                                     WRK-SURYOUTOTAL
+                                                     WRK-YOUBUKASAN
+                                                     WRK-RYOYOTEATE
+      *
+                               MOVE    ZERO    TO    WRK-SRYSURYO
+                                                     WRK-SRYSURYO2
+                                                     WRK-SRYSURYO3
+                                                     WRK-TANICD
+                                                     WRK-TANIMOJISU
+                               MOVE    SPACE   TO    WRK-TANINAME
+                               MOVE    ZERO    TO    FLG-HOUSIJI-COM
+      *
+                               PERFORM   RECE44-TENSOU-SEC
+                               PERFORM   RECE45-HENSYU-SEC
+                               PERFORM   RECE44-WRITE-SEC
+                           ELSE
+                             IF   ACCT-ZAIKAISU  NOT =    ZERO
+                               IF   ACCT-SRYKBN  =  "11"  OR  "12" 
+                                                          OR  "99" 
+                                 IF  ACCT-SRYCDTOTAL = CONS-TOKKI1  OR
+                                                       CONS-TOKKI2  OR
+                                                       CONS-TOKKI3  OR
+                                                       CONS-TOKKI4  OR
+                                                       CONS-TOKKI5  OR
+                                                       CONS-TOKKI7  OR
+                                                       CONS-TOKKI8  OR
+                                                       CONS-TOKKI9  OR
+                                                       CONS-TOKKI10 OR
+                                                       CONS-TOKKI11 OR
+                                                       CONS-TOKKI12
+                                      CONTINUE
+                                 ELSE
+                                      MOVE  ACCT-DAY(1 WRK-DAY)  
+                                                  TO  WRK-ZAIKAISU-XXX
+                                      MOVE  ZERO  TO  WRK-TEN
+                                                      WRK-MEISAI-CNT
+                                                      WRK-SRYCDTOTAL
+                                                      WRK-SURYOUTOTAL
+                                                      WRK-YOUBUKASAN
+                                                      WRK-RYOYOTEATE
+      *
+                                      MOVE  ZERO  TO  WRK-SRYSURYO
+                                                      WRK-SRYSURYO2
+                                                      WRK-SRYSURYO3
+                                                      WRK-TANICD
+                                                      WRK-TANIMOJISU
+                                      MOVE  SPACE TO  WRK-TANINAME
+                                      MOVE  ZERO  TO  FLG-HOUSIJI-COM
+      *
+                                      PERFORM   RECE44-TENSOU-SEC
+                                      PERFORM   RECE45-HENSYU-SEC
+                                      PERFORM   RECE44-WRITE-SEC
+                                 END-IF
+                               END-IF
+                             END-IF
+                           END-IF
+                   END-IF
+                   MOVE     "SRYACCT-KEY24"  TO   ORC-DBPATH
+                   PERFORM   SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE   "SRYACCT-KEY24"     TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+       RECE44-HENSYU2-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜
       *****************************************************************
-       21011-RECE44-TENSOU-SEC                SECTION.
+       RECE44-TENSOU-SEC                SECTION.
       *
            MOVE    SPACE                TO      RECE44-REC
            INITIALIZE                           RECE44-REC
-           MOVE    RECE41-HOSPNUM       TO      RECE44-HOSPNUM
+           MOVE    RECE41-HOSPID        TO      RECE44-HOSPID
            MOVE    RECE41-SRYYM         TO      RECE44-SRYYM
            MOVE    RECE41-NYUGAIKBN     TO      RECE44-NYUGAIKBN
            MOVE    RECE41-PTID          TO      RECE44-PTID
@@ -2663,7 +1025,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    ACCT-SYUTEN2         TO      RECE44-SYUTEN2
            MOVE    ACCT-YKZTEN          TO      RECE44-YKZTEN
            MOVE    ACCT-KIZAITEN        TO      RECE44-KIZAITEN
-           IF   RECE41-HKNKBN     =  "4" OR "6"
+           IF   RECE41-HKNKBN     =  "4"
               IF  ACCT-SRYKBN     =  "70"
                   COMPUTE  RECE44-SYUTEN1   =  RECE44-SYUTEN1
                                             -  RECE44-SYUTEN2
@@ -2679,13 +1041,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE        ZERO             TO      WK-TAIHI-DAY
                MOVE        ZERO             TO      WK-TAIHI-FLG
                PERFORM     VARYING   IDX3   FROM    1    BY   1
-                           UNTIL     IDX3   >      10
+                           UNTIL     IDX3   >       4
                    PERFORM     VARYING   IDX2   FROM    1    BY   1
                                UNTIL     IDX2   >       31
                        MOVE    ACCT-DAY(IDX3 IDX2)  TO
                                             RECE44-KAISU (IDX3 IDX2)
-                       IF    (WK-TAIHI-FLG               =  ZERO)
-                       AND   (RECE44-KAISU(1 IDX2)   NOT =  ZERO)
+                       IF     (WK-TAIHI-FLG            =   ZERO)   AND
+                              (ACCT-DAY(1 IDX2)    NOT =   ZERO)
                            MOVE     IDX2    TO      WK-TAIHI-DAY
                            MOVE     1       TO      WK-TAIHI-FLG
                        END-IF    
@@ -2693,110 +1055,69 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-PERFORM
            ELSE
                PERFORM     VARYING   IDX3   FROM    1    BY   1
-                           UNTIL     IDX3   >      10
+                           UNTIL     IDX3   >       4
                   MOVE    ACCT-DAY(IDX3 WRK-DAY)  
                                        TO    RECE44-KAISU(IDX3 WRK-DAY)
               END-PERFORM                         
               MOVE    WRK-DAY          TO    WK-TAIHI-DAY
            END-IF
-      *
-           IF    FLG-RINYAK    NOT =    ZERO
-                MOVE    FLG-RINYAK     TO    RECE44-SAFLG
-           END-IF
-      *
-           MOVE    RECE41-RECESYUBETU  TO  RECE44-RECESYUBETU
-      *
            .
-       21011-RECE44-TENSOU-EXT.
+       RECE44-TENSOU-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œ∫Ó¿Æ
       *****************************************************************
-       21012-RECE45-HENSYU-SEC               SECTION.
-      *
-           IF    (RECE41-SRYYM            >=  "201604")
-           AND   (ACCT-SRYKBN              =  "23"    )
-           AND   (ACCT-JIHOKBN             =   SPACE  )
-             PERFORM 210126-SIPPU-CHECK-SEC
-           END-IF
-      *
-           INITIALIZE     WRK-ORCSGETGE-OUT-AREA
-           MOVE    ZERO                 TO      FLG-IRYORENKEI
-           IF    ((WRK-PARA-PRTKBN  =  "2" OR "3" OR "4" OR "5") AND
-                  (SYS-200501-INSPECT-GENERAL-KBN  =   "1"     ) AND
-                  (RECE41-SRYYM         >=   "201204"          ))
-           OR    ( FLG-SIPPU-ARI         =     1                )
-             PERFORM 210125-IRYORENKEI-HENSYU-SEC
-           END-IF
-           MOVE    ZERO                 TO      IDX17
-      *
-           MOVE    SPACE                TO      WRK-CHECK-SRYCD
+       RECE45-HENSYU-SEC               SECTION.
       *
            INITIALIZE                           SRYACT-REC
-           MOVE    ACCT-HOSPNUM         TO      SRY-HOSPNUM
+           MOVE    ACCT-HOSPID          TO      SRY-HOSPID
            MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
            MOVE    ACCT-PTID            TO      SRY-PTID
            MOVE    ACCT-SRYKA           TO      SRY-SRYKA
            MOVE    ACCT-SRYYM           TO      SRY-SRYYM
            MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
-           MOVE    "tbl_sryact"         TO      MCP-TABLE
-           MOVE    "key2"               TO      MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "SRYACT-KEY2"        TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "tbl_sryact"     TO      MCP-TABLE
-               MOVE    "key2"           TO      MCP-PATHNAME
-               PERFORM  800-SRYACT-READ-SEC
-      *
-               IF    WRK-CHECK-SRYCD  =  SPACE
-                 MOVE   SRY-SRYCD(1)    TO      WRK-CHECK-SRYCD
-               END-IF
-      *
+               MOVE    "SRYACT-KEY2"    TO      ORC-DBPATH
+               PERFORM  SRYACT-READ-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
                    MOVE   ZERO   TO  FLG-ZANHAIKI
-                                     FLG-FORMAL-KISAI
                    MOVE   ZERO   TO  WRK-RENNUM
-                                     WRK-RENNUM2
-                   MOVE   ZERO   TO  FLG-WRITE45X
-                   PERFORM   210121-RECE45-TENSOU-SEC
-                   IF  ACCT-JIHOKBN  =  SPACE
-                     PERFORM 210122-RECE41-HENSYU-SEC
-                   END-IF
-                   IF  FLG-WRITE45X  =  1
-                      PERFORM  210123-RECE45-WRITE-SEC
-                      MOVE  1    TO  FLG-WRITE45
-                   END-IF
+                   PERFORM   RECE45-TENSOU-SEC
+                   PERFORM   RECE41-HENSYU-SEC
+                   PERFORM   RECE45-WRITE-SEC
                    IF  FLG-ZANHAIKI  =  1
-                      PERFORM  210124-RECE45-REWRITE-SEC
+                      PERFORM  RECE45-REWRITE-SEC
                    END-IF
-                   IF  FLG-FORMAL-KISAI  =  1
-                      PERFORM  210124-RECE45-REWRITE2-SEC
-                   END-IF
-                   MOVE     "tbl_sryact"   TO   MCP-TABLE
-                   MOVE     "key2"         TO   MCP-PATHNAME
-                   PERFORM   800-SRYACT-READ-SEC
+                   MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
+                   PERFORM   SRYACT-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE    "tbl_sryact"     TO      MCP-TABLE
-           MOVE    "key2"           TO      MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
+           MOVE   "SRYACT-KEY2"      TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
       *
            .
-       21012-RECE45-HENSYU-EXT.
+       RECE45-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜
       *****************************************************************
-       210121-RECE45-TENSOU-SEC                SECTION.
+       RECE45-TENSOU-SEC                SECTION.
       *
            INITIALIZE                   WRK-TNS-TAIHI-AREA
       *
            MOVE    SPACE                TO      RECE45-REC
            INITIALIZE                           RECE45-REC
-           MOVE    RECE41-HOSPNUM       TO      RECE45-HOSPNUM
+           MOVE    RECE41-HOSPID        TO      RECE45-HOSPID
            MOVE    RECE41-SRYYM         TO      RECE45-SRYYM
            MOVE    RECE41-NYUGAIKBN     TO      RECE45-NYUGAIKBN
            MOVE    RECE41-PTID          TO      RECE45-PTID
@@ -2809,7 +1130,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SRY-SRYKA            TO      RECE45-SRYKA
            MOVE    SRY-SRYKBN           TO      RECE45-SRYKBN
            MOVE    SRY-SRYSYUKBN        TO      RECE45-SRYSYUKBN
-                                                RECE44-SRYSYUKBN
            MOVE    SRY-JIHIMONEYTOTAL   TO      RECE45-JIHIMONEY
       * 
            MOVE    ZERO                 TO      FLG-OSINKBN
@@ -2819,527 +1139,74 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        UNTIL    (IDX2      >    5)    OR
                                 (SRY-SRYCD(IDX2)  =   SPACE)
       *
-             ADD     1                  TO  IDX17
       *
-      *      ≥∞ÕË¥…Õ˝≤√ªª° ∆…§ﬂ¬ÿ§®≤√ªª°À§ŒÃ§ƒ˚¿µ ¨§¨§¢§ÎæÏπÁ§Œ∆√Œ„¡º√÷
-      *      ° ≥∞ÕË¥…Õ˝≤√ªª§¨§¢§Ï§–°¢≥∞ÕË¥…Õ˝≤√ªª° ∆…§ﬂ¬ÿ§®≤√ªª°À§ÿ°À
-             IF      RECE41-YOBIETC(1)  =  1
-               IF    SRY-SRYCD(IDX2)  =  "112011010"
-                  MOVE   "101120020"    TO  SRY-SRYCD(IDX2)
-                  COMPUTE   RECE44-SRYCDTOTAL  =  RECE44-SRYCDTOTAL
-                                               -  112011010
-                                               +  101120020
-               END-IF
-             END-IF
-      *
-             PERFORM    800-TENSU-TBL-SEC
+             PERFORM    TENSU-TBL-SEC
       **     ≈¿øÙ•ﬁ•π•øæ Û¬‡»Ú
-             MOVE    TNS-CHUKSNTUBAN    TO  WRK-TNS-CHUKSNTUBAN(IDX2)
              MOVE    TNS-DATAKBN        TO  WRK-TNS-DATAKBN(IDX2)
              MOVE    TNS-TIMEKSNKBN     TO  WRK-TNS-TIMEKSNKBN(IDX2)
-      *
-             IF     (RECE41-HKNKBN        =  "4" OR "6"        )
-             AND    (ACCT-SRYKBN          =  "80"              )
-             AND    (SRY-SRYCD(IDX2)(1:5) =  "09591" OR "09592"
-                                                     OR "09593")
-               IF    SRY-SRYCD(IDX2)(1:5) =  "09593"
-                 PERFORM   2101213-JIBAI-KIZAI-TENHEN-SEC
-                 MOVE   WRK-TEN-KZI     TO  WRK-TNS-TEN(IDX2)
-               ELSE
-                 PERFORM   2101214-JIBAI-BUNSYO-TENHEN-SEC
-                 MOVE   WRK-TEN-BUN     TO  WRK-TNS-TEN(IDX2)
-               END-IF
-             ELSE
-               IF   (ACCT-SRYKBN          =  "80"              )
-               AND  (SRY-SRYCD(IDX2)(1:5) =  "09591" OR "09592"
-                                                     OR "09593")
-                 IF  SRY-SRYSYUKBN = "809"
-                   MOVE SRY-JIHIMONEY(IDX2)
-                                        TO  WRK-TNS-TEN(IDX2)
-                 ELSE
-                   MOVE TNS-TEN         TO  WRK-TNS-TEN(IDX2)
-                 END-IF
-               ELSE
-                 MOVE   TNS-TEN         TO  WRK-TNS-TEN(IDX2)
-               END-IF
-             END-IF
-      *
+             MOVE    TNS-TEN            TO  WRK-TNS-TEN(IDX2)
              MOVE    TNS-GAITENTTLKBN   TO  WRK-TNS-GAITENTTLKBN(IDX2)
              MOVE    TNS-OSINKBN        TO  WRK-TNS-OSINKBN(IDX2)
              MOVE    TNS-KNSJISKBN      TO  WRK-TNS-KNSJISKBN(IDX2)
              MOVE    TNS-SRYCD          TO  WRK-TNS-SRYCD(IDX2)
       *
-             IF     ( SRY-SRYCD(IDX2)(1:1)  =  "S"   )
+             IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
+             OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
                   COMPUTE   RECE44-MEISAISU  =  RECE44-MEISAISU
                                              -  1
              END-IF
-      *
-             IF       SRY-SRYCD(IDX2)  =  "099999909" OR "099999910" OR
-                                          "099999921" OR "099999925" OR
-                                          "099999929" OR "099999931"
-                  MOVE    1     TO    FLG-HENSYU-NG
+             IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
+                  MOVE    SRY-SRYCD(IDX2)   TO    WRK-SRYCD
+                  COMPUTE   RECE44-SRYCDTOTAL  =  RECE44-SRYCDTOTAL
+                                               -  WRK-SRYCD
+                  COMPUTE   RECE44-SURYOUTOTAL =  RECE44-SURYOUTOTAL
+                                               -  1
              END-IF
       *
-             IF       SRY-SRYCD(IDX2)  =  "099999922"
-               IF    (ACCT-JIHOKBN     =   SPACE)
-               AND   (RECE41-HKNKBN    =   "6"  )
-                  MOVE    1     TO    FLG-KIN-OKIKAE
-               ELSE
-                  MOVE    1     TO    FLG-HENSYU-NG
-               END-IF
-             END-IF
-      *
-             IF       SRY-SRYCD(IDX2)  =  "099999923"
-               IF    (ACCT-JIHOKBN          =  SPACE)
-               AND   (RECE41-HKNKBN         =  "4"  )
-               AND   (WRK-PARA-RECEKBN      =  "4"  )
-               AND   (WRK-PARA-JIBAIPRTKBN  =  "2"  )
-                  MOVE    1     TO    FLG-KIN-OKIKAE2
-               ELSE
-                  MOVE    1     TO    FLG-HENSYU-NG
-               END-IF
-             END-IF
-      *
-             IF       SRY-SRYCD(IDX2)  =  "099999924"
-               IF    (ACCT-JIHOKBN          =  SPACE       )
-               AND   (RECE41-HKNKBN         =  "1"  OR  "2")
-               AND   (RECE41-SYOKAIFLG      =  "1"         )
-                  MOVE   SPACE  TO    RECE41-SYOKAIFLG
-               END-IF
-               MOVE       1     TO    FLG-HENSYU-NG
-             END-IF
-      *
-             IF       SRY-SRYCD(IDX2)(1:5)  =
-                      "09960" OR "09970" OR "09980" OR "09983"
-                  MOVE    1     TO    FLG-HENSYU-NG
-             END-IF
-             IF       SRY-SRYCD(IDX2)  =  "099140004" OR "099400001"
-                  MOVE    1     TO    FLG-HENSYU-NG
-             END-IF
-      *
-             IF     ACCT-SRYKBN      =  "98"
-               IF  (SRY-RENNUM       =   1         )
-               AND (IDX2             =   1         )
-               AND (SRY-SRYCD(IDX2)  =  "830000052")
-                  MOVE    1     TO    FLG-SIPPU-COM
-               ELSE
-                 IF  FLG-SIPPU-COM   =   1
-                  CONTINUE
-                 ELSE
-                  MOVE    1     TO    FLG-HENSYU-NG
-                 END-IF
-               END-IF
-               IF  (SRY-RENNUM       =   1         )
-               AND (IDX2             =   1         )
-               AND (SRY-SRYCD(IDX2)  =  "830000052"
-                                    OR  "099200201")
-                 PERFORM  VARYING  IDX33  FROM  1  BY  1
-                           UNTIL   IDX33   >   10
-                   PERFORM  VARYING  IDX34  FROM  1  BY  1
-                             UNTIL   IDX34   >   31
-                     IF   ACCT-DAY(IDX33 IDX34)  NOT =  ZERO
-                       MOVE    1    TO   RECE41-SIPPUCHKFLG
-                       MOVE    1    TO   RECE41-SIPPUCHK(IDX33 IDX34)
-                     END-IF
-                   END-PERFORM
-                 END-PERFORM
-               END-IF
-             END-IF
-      *
-             IF     ( SRY-SRYCD(IDX2)(1:7)  =  "0999901"    )
-             OR     ((SRY-SRYCD(IDX2)(1:3)  =  "001") AND
-                     (FLG-SIPPU-ARI         =  ZERO )       )
-             OR     ((SRY-SRYCD(IDX2)(1:3)  =  "001") AND
-                     (FLG-SIPPU-ARI         =   1   ) AND
-                     (SYS-200501-COMPRESS-KBN
-                                        NOT =  "1"  )       )
-             OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
-                     (TNS-TEN               =  ZERO )       )
-             OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
-             OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"
-                                            OR "0086"       )
-             OR     ( FLG-KIN-OKIKAE    NOT =  ZERO         )
-             OR     ( FLG-KIN-OKIKAE2   NOT =  ZERO         )
-             OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
-             OR     ( SRY-SRYCD(IDX2)       =
-                      "099209902" OR "099209903" OR
-                      "099209904" OR "099209905" OR
-                      "099209906" OR "099209907" OR
-                      "099209908" OR
-                      "099999903" OR "099999904" OR
-                      "099999905" OR "099999906" OR
-                      "099999907" OR "099999908" OR
-                      "099200101" OR "099999926" OR
-                      "099999927" OR "099999928" OR
-                      "840000136" OR "840000140"            )
-             OR     ( SRY-SRYCD(IDX2)       =  "099509901"  )
-      *
-                  PERFORM   2101219-MEISAISU-HENSYU-SEC
-      *
-             END-IF
       *
              IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR
                                                   "6" OR  "7" OR
                                                   "8"
       *
-              IF     ( SRY-SRYCD(IDX2)(1:7)  =  "0999901"    )
-              OR     ((SRY-SRYCD(IDX2)(1:3)  =  "001") AND
-                      (FLG-SIPPU-ARI         =  ZERO )       )
-              OR     ((SRY-SRYCD(IDX2)(1:3)  =  "001") AND
-                      (FLG-SIPPU-ARI         =   1   ) AND
-                      (SYS-200501-COMPRESS-KBN
-                                         NOT =  "1"  )       )
-              OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
-                      (TNS-TEN               =  ZERO )       )
-              OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
-              OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"
-                                             OR "0086"       )
-              OR     ( FLG-KIN-OKIKAE    NOT =  ZERO         )
-              OR     ( FLG-KIN-OKIKAE2   NOT =  ZERO         )
-              OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
-              OR     ( SRY-SRYCD(IDX2)       =
-                       "099209902" OR "099209903" OR
-                       "099209904" OR "099209905" OR
-                       "099209906" OR "099209907" OR
-                       "099209908" OR
-                       "099999903" OR "099999904" OR
-                       "099999905" OR "099999906" OR
-                       "099999907" OR "099999908" OR
-                       "099200101" OR "099999926" OR
-                       "099999927" OR "099999928" OR
-                       "840000136" OR "840000140"            )
-              OR     ( SRY-SRYCD(IDX2)       =  "099509901"  )
-      *
-               IF   FLG-KIN-OKIKAE   NOT =  ZERO
-                 IF  WRK-TAIHI-ZAINUM  =  ZERO
-                   MOVE   ACCT-ZAINUM     TO   WRK-TAIHI-ZAINUM
-                 END-IF
-                 IF  ACCT-ZAINUM  =  WRK-TAIHI-ZAINUM
-                   IF  SRY-SRYCD(IDX2) = "099999922"
-                     CONTINUE
-                   ELSE
-                     PERFORM   2101217-ICHIBUCOM-HENSYU-SEC
-                   END-IF
-                 END-IF
-               END-IF
-      *
-               IF   FLG-KIN-OKIKAE2  NOT =  ZERO
-                 IF  WRK-TAIHI-ZAINUM2 =  ZERO
-                   MOVE   ACCT-ZAINUM     TO   WRK-TAIHI-ZAINUM2
-                 END-IF
-                 IF  ACCT-ZAINUM  =  WRK-TAIHI-ZAINUM2
-                   IF  SRY-SRYCD(IDX2) = "099999923"
-                     CONTINUE
-                   ELSE
-                     PERFORM   2101218-ICHIBUCOM-HENSYU2-SEC
-                   END-IF
-                 END-IF
-               END-IF
-      *
-              ELSE
-      *
-               ADD     1                  TO    IDX4
+               ADD     1                  TO    IDX4                                  *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE45-SRYCD(IDX4)
       *
-               IF    ((SRY-SRYCD(IDX2)    =     CONS-ROUSAI10) AND
-                      (RECE41-SRYYM      <=     "201306"     ))
-               OR    ((SRY-SRYCD(IDX2)    =     CONS-ROUSAI21) AND
-                      (RECE41-SRYYM      >=     "201307"     ))
-                        MOVE   "1"        TO    RECE41-KYUGYOFLG
-                                                WRK-KYUGYOFLG
-               END-IF
-      *
                IF      SRY-SRYKBN         =     "12"
-               AND     ACCT-JIHOKBN       =     SPACE
                    IF   SRY-SRYCD(IDX2)   =     CONS-KEIZOKU1    OR
                                                 CONS-KEIZOKU2
                         MOVE   "1"      TO    RECE41-KEIZOKU-PRTKBN
                    END-IF
                    IF   SRY-SRYCD(IDX2)   =     CONS-GAIRAIRYO1  OR
-                                                CONS-GAIRAIRYO2  OR
-                                                CONS-GAIRAIRYO3  OR
-                                                CONS-GAIRAIRYO4  OR
-                                                CONS-GAIRAIRYO5  OR
-                                                CONS-GAIRAIRYO6  OR
-                                                CONS-GAIRAIRYO7  OR
-                                                CONS-DOUJITU-GAI OR
-                                                CONS-DOUJITU2-GAI OR
-                                                CONS-DOUJITU3-GAI
+                                                CONS-GAIRAIRYO2
                         MOVE   "2"      TO    RECE41-KEIZOKU-PRTKBN
                    END-IF
-                   IF  (SRY-SRYCD(IDX2)   =     CONS-SAISHIN-A1)
-                   AND (RECE41-SRYYM     <=     "201306"       )
+                   IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN-A1   
+      **                                  OR    CONS-SAISHIN-A2   
+      **                                  OR    CONS-SAISHIN-A3   
+      **                                  OR    CONS-SAISHIN-A4   
+      **                                  OR    CONS-SAISHIN-A5   
+      **                                  OR    CONS-SAISHIN-A6   
+      **                                  OR    CONS-SAISHIN-A7   
+      **                                  OR    CONS-SAISHIN-A8   
+      **                                  OR    CONS-SAISHIN-A9   
+      **                                  OR    CONS-SAISHIN-A10  
+      **                                  OR    CONS-SAISHIN-A11  
+      **                                  OR    CONS-SAISHIN-A12  
+      **                                  OR    CONS-SAISHIN-A13  
                         MOVE   "1"      TO    RECE41-SAISHIN-PRTKBN2
                    END-IF
-                   IF  (SRY-SRYCD(IDX2)   =     CONS-GAIRAI    )
-                   AND (RECE41-SRYYM     <=     "201306"       )
+                   IF   SRY-SRYCD(IDX2)   =     CONS-GAIRAI 
                         MOVE   "1"      TO    RECE41-GAIRAIKSN-PRTKBN
                    END-IF
                END-IF
       *
-               IF      SRY-SRYKBN         =     "13"
-               AND     ACCT-JIHOKBN       =     SPACE
-                   IF   SRY-SRYCD(IDX2)   =     CONS-SIDORYO1    OR
-                                                CONS-SIDORYO2    OR
-                                                CONS-SIDORYO3    OR
-                                                CONS-SIDORYO4    OR
-                                                CONS-SIDORYO5    OR
-                                                CONS-SIDORYO6
-                        MOVE   "1"        TO    RECE41-BEDSUFLG
-                   END-IF
-               END-IF
-      *
-               IF     SRY-SRYCD(IDX2)      =    CONS-GAIJINKEN
-                  MOVE   "1"              TO    RECE41-KENTAIKASANFLG
-                  MOVE   99               TO    RECE44-KNSJISGRPKBN
-               END-IF
-               IF     RECE44-KNSJISGRPKBN  =    ZERO
-                 IF    TNS-KNSJISGRPKBN = 1 OR 2 OR 3 OR 4 OR 5 OR 6
-                  MOVE  TNS-KNSJISGRPKBN  TO    RECE44-KNSJISGRPKBN
-                 END-IF
-               END-IF
-      *
-               IF    ( SRY-SRYKBN         =     "60" OR "64" )
-               AND   ( TNS-KNSJISKBN      =      2           )
-                  MOVE  TNS-KNSJISKBN     TO    RECE44-KNSJISKBN
-               END-IF
-      *
-               IF    ( SRY-SRYKBN   =  "14" OR "21" OR "22" OR "23" )
-               AND   ( RECE44-ZAITEN     =     ZERO                 )
-               AND   ( RECE44-SAFLG      =     SPACE                )
-               AND   ( ACCT-ZAIKBN   NOT =     1                    )
-                  IF   SRY-SRYCD(IDX2)   =     "820000046"
-                     MOVE     "1"         TO    RECE44-SAFLG
-                  END-IF
-               END-IF
-      *
-               IF      ACCT-JIHOKBN  NOT =     SPACE
-                  IF     RECE44-SAFLG   NOT =  SPACE
-                        MOVE    "3"       TO    RECE44-TOYAKUFLG
-                  ELSE
-                    IF  (SRY-SRYCD(IDX2)(1:1)  =  "8"  )
-                    OR  (SRY-SRYCD(IDX2)(1:3)  =  "008")
-                        IF   RECE44-TOYAKUFLG = SPACE
-                          MOVE  "4"       TO    RECE44-TOYAKUFLG
-                        END-IF
-                    ELSE
-                        MOVE    "3"       TO    RECE44-TOYAKUFLG
-                    END-IF
-                  END-IF
-               END-IF
-      *
-               IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
-               AND   ( RECE44-ZAITEN     =     ZERO         )
-               AND   ( ACCT-ZAIKBN   NOT =     1            )
-               AND   ( ACCT-JIHOKBN      =     SPACE        )
-                IF   ACCT-SRYCDTOTAL(6:9) = CONS-YAKTEIGEN
-                                         OR CONS-YAKTEIGEN2
-                                         OR CONS-YAKTEIGEN3
-                                         OR CONS-YAKTEIGEN4
-                  CONTINUE
-                ELSE
-                  IF     RECE44-SAFLG   NOT =  SPACE
-                        MOVE   SPACE      TO    RECE44-TOYAKUFLG
-                  ELSE
-                    IF  (SRY-SRYCD(IDX2)(1:1)  =  "8"  )
-                    OR  (SRY-SRYCD(IDX2)(1:3)  =  "008")
-                        IF   SRY-SRYSYUKBN  =  "212" OR "292" OR
-                                               "222" OR "232" OR
-                                               "295"
-                          IF   RECE44-TOYAKUFLG = SPACE
-                            MOVE   "2"    TO    RECE44-TOYAKUFLG
-                          END-IF
-                        END-IF
-                    ELSE
-                        MOVE    "1"       TO    RECE44-TOYAKUFLG
-                        IF   (RECE45-SRYCD(IDX4)(1:1) = "6"   )
-                        AND  (WRK-ORCSGETGE-GENERICNAME(IDX17)
-                                                  NOT =  SPACE)
-                          IF  (WRK-PARA-PRTKBN  =
-                                           "2" OR "3" OR "4" OR "5")
-                          AND (SYS-200501-INSPECT-GENERAL-KBN = "1")
-                             MOVE  "1"  TO  RECE45-INGAIFLG-RECE(IDX4)
-                          END-IF
-                          IF   FLG-SIPPU-ARI    =  1
-                             MOVE  "1"  TO  RECE45-INGAIFLG-SIPPU(IDX4)
-                          END-IF
-                          MOVE  WRK-ORCSGETGE-YAKKAKJNCD(IDX17)
-                                          TO    RECE45-YAKKAKJNCD(IDX4)
-                          MOVE  WRK-ORCSGETGE-GENERIC-KBN(IDX17)
-                                          TO    RECE45-GENERIC-KBN(IDX4)
-                          MOVE  WRK-ORCSGETGE-GENERICNAME(IDX17)
-                                          TO    RECE45-GENERICNAME(IDX4)
-                          PERFORM  VARYING  IDX15  FROM  200  BY  -1
-                                    UNTIL   IDX15   <     1
-                            IF  RECE45-GENERICNAME(IDX4)(IDX15:1)
-                                                        NOT =   SPACE
-                               COMPUTE RECE45-GENERICYUKOKETA(IDX4) =
-                                       IDX15  /  2
-                               MOVE    1   TO  IDX15
-                            END-IF
-                          END-PERFORM
-                        END-IF
-                    END-IF
-                  END-IF
-                END-IF
-               END-IF
-      *
-               IF     FLG-SIPPU-ARI  =  1
-      **********  £±°ß±°≥∞ ¨°°£≤°ß±°∆‚ ¨
-                  IF   RECE44-ZAITEN  =   ZERO
-                      MOVE  "1"         TO    RECE44-SIPPUFLG
-                  ELSE
-                      MOVE  "2"         TO    RECE44-SIPPUFLG
-                  END-IF
-                  IF  (SRY-SRYCD(IDX2)(1:1)  =  "6")
-                  AND (TNS-MEIUSESKB         =   1 )
-                      MOVE  "1"         TO    RECE45-SIPPUFLG(IDX4)
-                  END-IF
-                  IF   SRY-SRYCD(IDX2)(1:3)  =  "001"
-                      MOVE  "810000001" TO    RECE45-SRYCD(IDX4)
-                  END-IF
-               END-IF
-      *
-               IF    ( SRY-SRYKBN        =     "14"  )
-               AND   ( RECE44-ZAITEN     =     ZERO  )
-               AND   ( ACCT-ZAIKBN   NOT =     1     )
-               AND   ( ACCT-JIHOKBN      =     SPACE )
-                  IF     RECE44-SAFLG   NOT =  SPACE
-                        MOVE   SPACE      TO    RECE44-TOYAKUFLG
-                  ELSE
-                    IF  (SRY-SRYCD(IDX2)(1:1)  =  "8"  )
-                    OR  (SRY-SRYCD(IDX2)(1:3)  =  "008")
-                        IF   SRY-SRYSYUKBN  =  "148" OR "149"
-                          IF   RECE44-TOYAKUFLG = SPACE
-                            MOVE   "2"    TO    RECE44-TOYAKUFLG
-                          END-IF
-                        END-IF
-                    ELSE
-                        MOVE    "1"       TO    RECE44-TOYAKUFLG
-                        IF   (RECE45-SRYCD(IDX4)(1:1) = "6"   )
-                        AND  (WRK-ORCSGETGE-GENERICNAME(IDX17)
-                                                  NOT =  SPACE)
-                          MOVE    "1"  TO  RECE45-INGAIFLG-RECE(IDX4)
-                          MOVE  WRK-ORCSGETGE-YAKKAKJNCD(IDX17)
-                                          TO    RECE45-YAKKAKJNCD(IDX4)
-                          MOVE  WRK-ORCSGETGE-GENERIC-KBN(IDX17)
-                                          TO    RECE45-GENERIC-KBN(IDX4)
-                          MOVE  WRK-ORCSGETGE-GENERICNAME(IDX17)
-                                          TO    RECE45-GENERICNAME(IDX4)
-                          PERFORM  VARYING  IDX15  FROM  200  BY  -1
-                                    UNTIL   IDX15   <     1
-                            IF  RECE45-GENERICNAME(IDX4)(IDX15:1)
-                                                        NOT =   SPACE
-                               COMPUTE RECE45-GENERICYUKOKETA(IDX4) =
-                                       IDX15  /  2
-                               MOVE    1   TO  IDX15
-                            END-IF
-                          END-PERFORM
-                        END-IF
-                    END-IF
-                  END-IF
-               END-IF
-      *
-               IF      SRY-SRYKBN   =   "99"
-                  IF      SRY-SRYCD(IDX2)     =   "099140011"
-                      MOVE     "1"        TO    RECE44-HOMONCOMFLG
-                      MOVE  "810000001"   TO    RECE45-SRYCD(IDX4)
-                  END-IF
-                  IF      SRY-SRYCD(IDX2)     =   "099140012"
-                      MOVE     "2"        TO    RECE44-HOMONCOMFLG
-                      MOVE  "810000001"   TO    RECE45-SRYCD(IDX4)
-                  END-IF
-                  IF      RECE44-HOMONCOMFLG  =   "2"
-                      MOVE     "1"        TO    RECE41-COMCNTFLG
-                      MOVE     "1"        TO    RECE45-RECEDENFLG(IDX4)
-                      MOVE     "1"        TO    RECE45-RECEPTFLG(IDX4)
-                  END-IF
-               END-IF
-      *
-               IF   (ACCT-SRYKBN = "40" OR "50" OR "54" OR "60" OR
-                                   "64" OR "70" OR "80"           )
-               AND  (ACCT-YKZTEN =  ZERO                          )
-                 IF  ( SYS-200501-15-YKZ-PRTKBN  =  "0" )
-                 OR  ((SYS-200501-15-YKZ-PRTKBN  =  "1") AND
-                      (RECE41-SRYYM  <  "201204"       ))
-                   IF    SRY-SRYCD(IDX2)(1:1)  =  "6"
-                         MOVE   "1"    TO  RECE45-RECEDENFLG(IDX4)
-                         MOVE   "1"    TO  RECE45-RECEPTFLG(IDX4)
-                         MOVE    1     TO  FLG-YKZ-PRTKBN
-                         PERFORM   2101219-MEISAISU-HENSYU-SEC
-                   ELSE
-                     IF  FLG-YKZ-PRTKBN  =  1
-                       IF  ( ACCT-ZAITEN           =  ZERO  )
-                       AND ((SRY-SRYCD(IDX2)(1:1)  =  "8"  ) OR
-                            (SRY-SRYCD(IDX2)(1:3)  =  "008"))
-                         MOVE   "1"    TO  RECE45-RECEDENFLG(IDX4)
-                         MOVE   "1"    TO  RECE45-RECEPTFLG(IDX4)
-                         PERFORM   2101219-MEISAISU-HENSYU-SEC
-                       ELSE
-                         MOVE   ZERO   TO  FLG-YKZ-PRTKBN
-                       END-IF
-                     END-IF
-                   END-IF
-                 ELSE
-                   IF    SRY-SRYCD(IDX2)(1:1)  =  "6"
-                         MOVE   "1"    TO  RECE44-YKZKISAIFLG
-                   END-IF
-                 END-IF
-               END-IF
-      *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
-               AND    FLG-YKZ-PRTKBN   =   ZERO
-      *          IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
-                   MOVE    SRY-SRYCD(IDX2)   TO  WRK-SRYCD
-      *
-                   MOVE     ZERO    TO    WRK-FUKA-KINGAKU
-                   PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
-                             UNTIL   FUKA-IDX   >    9
-                     MOVE   SRY-SRYCD(IDX2)(FUKA-IDX:1)
-                                             TO  WRK-FUKA-VALUE
-                     IF  WRK-FUKA-VALUE  =  ZERO
-                       CONTINUE
-                     ELSE
-                       COMPUTE  RECE44-RUIKEITOTAL  =
-                                RECE44-RUIKEITOTAL  +
-                              ( WRK-FUKA-VALUE    * WRK-SRYCD)
-                       IF  (ACCT-SRYKBN          =  "80" )
-                       AND (SRY-SRYCD(IDX2)(1:5) =
-                            "09591" OR "09592" OR "09593")
-                       AND (SRY-SRYSYUKBN        =  "809")
-                        COMPUTE WRK-FUKA-KINGAKU  =
-                                WRK-FUKA-KINGAKU  +
-                              ((WRK-FUKA-VALUE^4) * FUKA-IDX
-                                                  * SRY-JIHIMONEY(IDX2))
-                       ELSE
-                        COMPUTE WRK-FUKA-KINGAKU  =
-                                WRK-FUKA-KINGAKU  +
-                              ((WRK-FUKA-VALUE^4) * FUKA-IDX
-                                                  * SRY-SRYSURYO(IDX2))
-                       END-IF
-                     END-IF
-                   END-PERFORM
+                 IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
+                   MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
                    COMPUTE  RECE44-RUIKEITOTAL  =
                             RECE44-RUIKEITOTAL  +
-                            WRK-FUKA-KINGAKU
-      *
-                   MOVE     ZERO    TO    WRK-FUKA-KINGAKU
-                   PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
-                             UNTIL   FUKA-IDX   >   10
-                     MOVE   SRY-SRYSURYO(IDX2)(FUKA-IDX:1)
-                                             TO  WRK-FUKA-VALUE
-                     IF  WRK-FUKA-VALUE  =  ZERO
-                       CONTINUE
-                     ELSE
-                       COMPUTE  WRK-FUKA-KINGAKU  =
-                                WRK-FUKA-KINGAKU  +
-                              ((WRK-FUKA-VALUE^4) * FUKA-IDX)
-                     END-IF
-                   END-PERFORM
-                   COMPUTE  RECE44-RUIKEITOTAL  =
-                            RECE44-RUIKEITOTAL  +
-                            WRK-FUKA-KINGAKU
-      *          END-IF
+                           (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
+                 END-IF
                END-IF
       *
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE45-SRYSURYO(IDX4)
@@ -3348,252 +1215,68 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SRY-AUTOKBN(IDX2)  TO    RECE45-AUTOKBN(IDX4)
                MOVE    SRY-INPUTNUM(IDX2) TO    RECE45-INPUTNUM(IDX4)
       **
-               IF   RECE41-HKNKBN    NOT  =  "4" AND "6"
-                  IF ((SRY-SRYCD(IDX2)  =  CONS-ROUSAI8    ) AND
-                      (RECE41-SRYYM     <  "200804"        ))
-                  OR ((SRY-SRYCD(IDX2)  =
-                       CONS-ROUSAI3  OR CONS-ROUSAI4  OR
-                       CONS-ROUSAI9  OR CONS-ROUSAI10 OR
-                       CONS-ROUSAI11 OR CONS-ROUSAI12 OR
-                       CONS-ROUSAI13 OR CONS-ROUSAI14 OR
-                       CONS-ROUSAI15 OR CONS-ROUSAI16 OR
-                       CONS-ROUSAI17                       ) AND
-                      (RECE41-SRYYM    <=  "201306"        ))
-                  OR ((SRY-SRYCD(IDX2)  =
-                       CONS-ROUSAI32 OR CONS-ROUSAI33 OR
-                       CONS-ROUSAI20 OR CONS-ROUSAI21 OR
-                       CONS-ROUSAI22 OR CONS-ROUSAI23 OR
-                       CONS-ROUSAI24 OR CONS-ROUSAI25 OR
-                       CONS-ROUSAI26 OR CONS-ROUSAI27 OR
-                       CONS-ROUSAI28 OR CONS-ROUSAI29 OR
-                       CONS-ROUSAI30 OR CONS-ROUSAI31 OR
-                       CONS-ROUSAI39                       ) AND
-                      (RECE41-SRYYM    >=  "201307"        ))
-                    IF   ((SRY-SRYCD(IDX2)  =   CONS-ROUSAI4 ) AND
-                          (RECE41-SRYYM    <=   "201306"     ))
-                    OR   ((SRY-SRYCD(IDX2)  =   CONS-ROUSAI33) AND
-                          (RECE41-SRYYM    >=   "201307"     ))
-                          MOVE   "13"        TO    RECE44-SRYKBN
-                                                   RECE45-SRYKBN
-                    ELSE
-                          MOVE   "80"        TO    RECE44-SRYKBN
-                                                   RECE45-SRYKBN
-                    END-IF
-                  ELSE
-                    IF      TNS-SRYKBN         =     "80"
-                    OR      RECE44-SRYKBN      =     "80"
+               IF   RECE41-HKNKBN    NOT  =  "4"                        
+                  IF      TNS-SRYKBN         =     "80"
                       IF  TNS-GAITENTTLKBN   =     130
                           MOVE   "13"        TO    RECE44-SRYKBN
                                                    RECE45-SRYKBN
                       END-IF
-                    END-IF
                   END-IF
                ELSE                                                     
                   IF      SRY-SRYCD(IDX2)    =     CONS-YOUBUKASAN
-                   IF   RECE41-KOTEIKBN  =  SPACE  OR  "2"
                     COMPUTE  WRK-YOUBUKASAN   =  WRK-YOUBUKASAN
                                               +  TNS-TEN
                     COMPUTE  RECE44-SYUTEN1   =  RECE44-SYUTEN1
                                               -  TNS-TEN
                     COMPUTE  RECE44-KIZAITEN  =  RECE44-KIZAITEN
                                               +  TNS-TEN
-                   END-IF
-                  END-IF
-                  IF      SRY-SRYCD(IDX2)    =     CONS-KYOBUKASAN
-                   IF   RECE41-KOTEIKBN  =  SPACE  OR  "2"
-                    COMPUTE  WRK-KYOBUKASAN   =  WRK-KYOBUKASAN
-                                              +  TNS-TEN
-                    COMPUTE  RECE44-SYUTEN1   =  RECE44-SYUTEN1
-                                              -  TNS-TEN
-                    COMPUTE  RECE44-KIZAITEN  =  RECE44-KIZAITEN
-                                              +  TNS-TEN
-                   END-IF
-                  END-IF
-                  IF      SRY-SRYCD(IDX2)    =     CONS-KEIBUKASAN
-                   IF   RECE41-KOTEIKBN  =  SPACE  OR  "2"
-                    COMPUTE  WRK-KEIBUKASAN   =  WRK-KEIBUKASAN
-                                              +  TNS-TEN
-                    COMPUTE  RECE44-SYUTEN1   =  RECE44-SYUTEN1
-                                              -  TNS-TEN
-                    COMPUTE  RECE44-KIZAITEN  =  RECE44-KIZAITEN
-                                              +  TNS-TEN
-                   END-IF
-                  END-IF
-                  IF      SRY-SRYCD(IDX2)    =     CONS-SOGAIKASAN
-                   IF   RECE41-KOTEIKBN  =  SPACE  OR  "2"
-                    COMPUTE  WRK-SOGAIKASAN   =  WRK-SOGAIKASAN
-                                              +  TNS-TEN
-                    COMPUTE  RECE44-SYUTEN1   =  RECE44-SYUTEN1
-                                              -  TNS-TEN
-                    COMPUTE  RECE44-KIZAITEN  =  RECE44-KIZAITEN
-                                              +  TNS-TEN
-                   END-IF
                   END-IF
       *           º´«Â¿’°¶Œ≈Õ‹√¥≈ˆºÍ≈ˆÕ—∆√Œ„ΩËÕ˝
       *           ° º´«Â¿’§ŒæÏπÁ°¢£∑≈¿§Ú£∏£¥±ﬂ§À∆…§ﬂ¬ÿ§®§Î°À
       *           ° Œ≈Õ‹√¥≈ˆºÍ≈ˆ°ß£±∑Ó£±≤Û§ŒªªƒÍ°À
                   IF      SRY-SRYCD(IDX2)    =     CONS-RYOYOTEATE
-                    IF   (RECE41-HKNKBN    =  "4")
-                    AND  (RECE41-JIBAIKBN  =  "1")
-                        MOVE     84     TO     WRK-RYOYOTEATE2
-                        COMPUTE  WRK-RYOYOTEATE   =
-                                 WRK-RYOYOTEATE   +
-                                 WRK-RYOYOTEATE2
-                    ELSE
-                        COMPUTE  WRK-RYOYOTEATE   =  WRK-RYOYOTEATE
-                                                  +  TNS-TEN
-                        COMPUTE  RECE44-SYUTEN1   =  RECE44-SYUTEN1
-                                                  -  TNS-TEN
-                        COMPUTE  RECE44-KIZAITEN  =  RECE44-KIZAITEN
-                                                  +  TNS-TEN
-                    END-IF
+                    MOVE     84     TO     WRK-RYOYOTEATE2
+                    COMPUTE  WRK-RYOYOTEATE   =  WRK-RYOYOTEATE
+                                              +  WRK-RYOYOTEATE2
                   END-IF
       *
                   IF ( ACCT-SRYKBN          =  "80"               ) AND
                      ( SRY-SRYCD(IDX2)(1:5) =  "09591" OR "09592" )
-      ***            EVALUATE  SRY-SRYCD(IDX2)(1:5)
-      ***             WHEN      "09591"
-      ***               IF  RECE41-SINDAN-TUU < 2
-      ***                 MOVE   "95"   TO    RECE44-SRYKBN
-      ***                                     RECE45-SRYKBN
-      ***               END-IF
-      ***             WHEN      "09592"
-      ***               IF  RECE41-MEISAI-TUU < 2
-      ***                 MOVE   "95"   TO    RECE44-SRYKBN
-      ***                                     RECE45-SRYKBN
-      ***               END-IF
-      ***            END-EVALUATE
-                     MOVE    1          TO    FLG-SRYKBN-HEN
+                                MOVE   "95"   TO    RECE44-SRYKBN       
+                                                    RECE45-SRYKBN       
                   ELSE
-                   IF ( SRY-SRYCD(IDX2)(1:5) = "09593"       )
-                   OR ((SRY-SRYCD(IDX2)  =  CONS-ROUSAI8    ) AND
-                       (RECE41-SRYYM     <  "200804"        ))
-                   OR ((RECE41-HKNKBN    =  "4"             ) AND
-                       (RECE41-JIBAIKBN  =  "1"             ) AND
-                       (SRY-SRYCD(IDX2)  =  CONS-RYOYOTEATE ))
-                   OR ((SRY-SRYCD(IDX2)  =
-                        CONS-ROUSAI3  OR CONS-ROUSAI4  OR
-                        CONS-ROUSAI9  OR CONS-ROUSAI10 OR
-                        CONS-ROUSAI11 OR CONS-ROUSAI12 OR
-                        CONS-ROUSAI13 OR CONS-ROUSAI14 OR
-                        CONS-ROUSAI15 OR CONS-ROUSAI16 OR
-                        CONS-ROUSAI17                       ) AND
-                       (RECE41-SRYYM    <=  "201306"        ))
-                   OR ((SRY-SRYCD(IDX2)  =
-                        CONS-ROUSAI32 OR CONS-ROUSAI33 OR
-                        CONS-ROUSAI20 OR CONS-ROUSAI21 OR
-                        CONS-ROUSAI22 OR CONS-ROUSAI23 OR
-                        CONS-ROUSAI24 OR CONS-ROUSAI25 OR
-                        CONS-ROUSAI26 OR CONS-ROUSAI27 OR
-                        CONS-ROUSAI28 OR CONS-ROUSAI29 OR
-                        CONS-ROUSAI30 OR CONS-ROUSAI31 OR
-                        CONS-ROUSAI39                       ) AND
-                       (RECE41-SRYYM    >=  "201307"        ))
-                   OR ((SRY-SRYCD(IDX2)  >= "101801010" AND
-                                         <= "101801020"     ) AND
-                       (RECE41-SRYYM    >=  "201307"        ))
-                   OR ((SRY-SRYCD(IDX2)   = "101801030"     ) AND
-                       (RECE41-SRYYM    >=  "201307"        ))
-                     IF  SRY-SRYCD(IDX2)(1:5) = "09593"
-                       MOVE  TNS-NAMECHGKBN
-                                      TO  WRK-TNS-JIBAISYUKEIKBN(IDX2)
-                                          RECE44-JIBAISYUKEIKBN
-                       EVALUATE  TNS-NAMECHGKBN
-                         WHEN      0
-                         WHEN      4
-                         WHEN      5
-                            MOVE   "80"   TO    RECE44-SRYKBN
-                                                RECE45-SRYKBN
-                         WHEN      1
-                            MOVE   "11"   TO    RECE44-SRYKBN
-                                                RECE45-SRYKBN
-                         WHEN      2
-                            MOVE   "12"   TO    RECE44-SRYKBN
-                                                RECE45-SRYKBN
-                         WHEN      3
-                            MOVE   "13"   TO    RECE44-SRYKBN
-                                                RECE45-SRYKBN
-                       END-EVALUATE
-                     ELSE
-                       IF   ((SRY-SRYCD(IDX2)  =   CONS-ROUSAI4 ) AND
-                             (RECE41-SRYYM    <=   "201306"     ))
-                       OR   ((SRY-SRYCD(IDX2)  =   CONS-ROUSAI33) AND
-                             (RECE41-SRYYM    >=   "201307"     ))
-                            MOVE   "13"   TO    RECE44-SRYKBN
-                                                RECE45-SRYKBN
-                       ELSE
-                            MOVE   "80"   TO    RECE44-SRYKBN
-                                                RECE45-SRYKBN
-                       END-IF
-                     END-IF
-                     MOVE    1          TO    FLG-SRYKBN-HEN
+                   IF ( ACCT-SRYKBN          =  "80"              ) AND 
+                      ( SRY-SRYCD(IDX2)(1:5) =  "09593"           )     
+                                MOVE   "40"   TO    RECE44-SRYKBN       
+                                                    RECE45-SRYKBN       
                    ELSE                                                 
-                     IF      TNS-SRYKBN         =   "80"
-                     OR      RECE44-SRYKBN      =   "80"
-                         IF  TNS-GAITENTTLKBN   =   130
-                             MOVE   "13"    TO  RECE44-SRYKBN
-                                                RECE45-SRYKBN
-                         END-IF
-                     END-IF
-                     IF  (WRK-PARA-JIBAIPRTKBN =  "0" )
-                     AND (FLG-SRYKBN-HEN       =  ZERO)
-                      IF (( RECE44-SRYKBN     =  "80" ) AND
-                          ( RECE44-OKIKAEFLG  =  SPACE))
-                      OR (  RECE44-OKIKAEFLG  =  "1"   )
+                     IF      TNS-SRYKBN         =   "80"                
                        IF   SRY-SRYCD(IDX2)   =     CONS-SHOHOSEN1 OR   
                                                     CONS-SHOHOSEN2 OR   
                                                     CONS-SHOHOSEN3 OR   
                                                     CONS-SHOHOSEN4 OR   
-                                                    CONS-SHOHOSEN5 OR
                                                     CONS-SHOHOKSN1 OR   
-                                                    CONS-SHOHOKSN2 OR   
-                                                    CONS-SHOHOKSN3 OR
-                                                    CONS-SHOHOKSN4 OR
-                                                    CONS-SHOHOKSN5 OR
-                                                    CONS-SHOHOKSN6 OR
-                                                    CONS-SHOHOKSN7 OR
-                                                    CONS-SHOHOKSN8 OR
-                                                    CONS-RYOYOTEATE
+                                                    CONS-SHOHOKSN2      
                               CONTINUE                                  
                        ELSE                                             
-                              MOVE   "1"    TO  RECE44-OKIKAEFLG
-                              MOVE   "40"   TO  RECE44-SRYKBN
-                                                RECE45-SRYKBN
+                              IF    TNS-GAITENTTLKBN   =  130           
+                                  MOVE   "13"   TO  RECE44-SRYKBN       
+                                                    RECE45-SRYKBN       
+                              ELSE                                      
+                                  MOVE   "40"   TO  RECE44-SRYKBN       
+                                                    RECE45-SRYKBN       
+                              END-IF                                    
                        END-IF                                           
-                      END-IF
                      END-IF
                    END-IF                                               
                   END-IF                                                
-      *
                END-IF                                                   
       *
-               IF      FLG-SIPPU-COM      =     1
-                       MOVE   "1"         TO    RECE44-SIPPUCOMFLG
-                       MOVE   "80"        TO    RECE44-SRYKBN
-                                                RECE45-SRYKBN
-                       MOVE   "800"       TO    RECE44-SRYSYUKBN
-                                                RECE45-SRYSYUKBN
-               END-IF
-      *
-               IF      ACCT-JIHOKBN       =     SPACE
-                  PERFORM  2101211-RECE45-COMCNT-HEN-SEC
-               ELSE
-                  IF   RECE44-SRYKBN      =     "50"
-                     MOVE   "1"   TO    RECE44-FLG-SHUJUTU-COMMENT
-                  END-IF
-                  IF   RECE44-SRYKBN      =     "54"
-                     MOVE   "1"   TO    RECE44-FLG-MASUI-COMMENT
-                  END-IF
-               END-IF
+               PERFORM  RECE45-TENSOU-COMCNT-HEN-SEC
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
-                IF   ACCT-ZAIKBN  =  1
-                  MOVE    "1"             TO  RECE45-RECEDENFLG(IDX4)
-                  MOVE    "1"             TO  RECE45-RECEPTFLG(IDX4)
-                  MOVE    ZERO            TO  RECE45-SRYSURYO(IDX4)
-                ELSE
                   COMPUTE WRK-SRYSURYO2   =     WRK-SRYSURYO            
-                                          +     0.99999                   
+                                          +     0.999                   
                   COMPUTE RECE45-SRYSURYO(IDX4)                         
                                           =     WRK-SRYSURYO2           
                                           -     WRK-SRYSURYO            
@@ -3609,48 +1292,31 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     ELSE                                                
                       MOVE WRK-SRYSURYO2  TO  RECE45-SRYSURYO(IDX4 - 1) 
                     END-IF
-                  ELSE
-                    MOVE  "1"             TO  RECE45-RECEDENFLG(IDX4)
-                    MOVE  "1"             TO  RECE45-RECEPTFLG(IDX4)
                   END-IF                                                
-                END-IF
                ELSE                                                     
-                  IF      TNS-TANIMOJISU    =   ZERO
-                  AND     TNS-TANINAME  NOT =   SPACE
-                     PERFORM   VARYING   IDW   FROM   24   BY  -1
-                                UNTIL    IDW    <      1
-                        IF   TNS-TANINAME(IDW:1)  NOT =   SPACE
-                            COMPUTE  TNS-TANIMOJISU   =   IDW   /   2
-                            MOVE    1     TO    IDW
-                        END-IF
-                     END-PERFORM
-                  END-IF
                   MOVE    SRY-SRYSURYO(IDX2)                            
                                           TO    WRK-SRYSURYO            
-                  IF   TNS-TANICD  NOT = SPACE AND "000"
-                    MOVE  TNS-TANICD      TO    RECE45-TANICD(IDX4)
-                                                WRK-TANICD
-                  END-IF
+                  MOVE    TNS-TANICD      TO    RECE45-TANICD(IDX4)
+                                                WRK-TANICD              
                   MOVE    TNS-TANIMOJISU  TO    RECE45-TANIMOJISU(IDX4)
                                                 WRK-TANIMOJISU          
                   MOVE    TNS-TANINAME    TO    RECE45-TANINAME(IDX4)
                                                 WRK-TANINAME            
                END-IF                                                   
                IF ( ACCT-SRYKBN          =  "80"              ) AND     
-                  ( SRY-SRYCD(IDX2)(1:5) =  "09591" OR "09592"
-                                                    OR "09593")         
+                  ( SRY-SRYCD(IDX2)(1:5) =  "09593"           )         
                     MOVE  1               TO  RECE45-TENSIKIBETU(IDX4)  
-      ***>          MOVE  TNS-TEN         TO  RECE45-TEN(IDX4)          
-                    MOVE  WRK-TNS-TEN(IDX2)  TO  RECE45-TEN(IDX4)
+                    MOVE  TNS-TEN         TO  RECE45-TEN(IDX4)          
                ELSE                                                     
                  IF   RECE41-HKNKBN     =  "4"
-                 AND  RECE41-JIBAIKBN   =  "1"
                  AND  SRY-SRYCD(IDX2)   =  CONS-RYOYOTEATE
                     MOVE  1               TO  RECE45-TENSIKIBETU(IDX4)  
                     MOVE  WRK-RYOYOTEATE2 TO  RECE45-TEN(IDX4)
                  ELSE
+                  IF      TNS-TENSIKIBETU    =     1   OR   3
                     MOVE  TNS-TENSIKIBETU TO  RECE45-TENSIKIBETU(IDX4)
                     MOVE  TNS-TEN         TO  RECE45-TEN(IDX4)
+                  END-IF
                  END-IF
                END-IF                                                   
                IF      RECE41-NYUGAIKBN   =     "1"
@@ -3658,8 +1324,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                ELSE
                    MOVE  TNS-GAITENTTLKBN TO    RECE45-TENTTLKBN(IDX4)
                END-IF
-               IF     (SRY-SRYCD    (IDX2)(1:1)     =   "8"  )
-               OR     (SRY-SRYCD    (IDX2)(1:3)     =   "008")
+               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
                   MOVE ZERO               TO    RECE45-YUKOKETA(IDX4)
                ELSE
                   MOVE TNS-YUKOKETA       TO    RECE45-YUKOKETA(IDX4)
@@ -3678,347 +1343,34 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       TO RECE45-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE45-KOUHYOJYUNNUM(IDX4)
-               MOVE    TNS-SRYSYUKBN  TO RECE45-SRYSYUKBN-X  (IDX4)
-               MOVE    TNS-KZMCOMPSIKIBETU
-                                      TO RECE45-KZMCOMPSIKIBETU(IDX4)
-               MOVE    TNS-KNSJISGRPKBN
-                                      TO RECE45-KNSJISGRPKBN   (IDX4)
-               MOVE    TNS-KENTAICOMMENT
-                                      TO RECE45-KENTAICOMMENT  (IDX4)
-               MOVE    TNS-KOKUJISKBKBN1
-                                      TO RECE45-KOKUJISKBKBN1  (IDX4)
-               MOVE    TNS-KOKUJISKBKBN2
-                                      TO RECE45-KOKUJISKBKBN2  (IDX4)
-               MOVE    TNS-TUSOKUGAIKBN
-                                      TO RECE45-TUSOKUGAIKBN   (IDX4)
-               MOVE    TNS-TIMEKSNKBN TO RECE45-TIMEKSNKBN     (IDX4)
-               MOVE    TNS-CHUKSNCD   TO RECE45-CHUKSNCD       (IDX4)
-               MOVE    TNS-CHUKSNTUBAN
-                                      TO RECE45-CHUKSNTUBAN    (IDX4)
-               MOVE    TNS-TOKUKIZAISBT1
-                                      TO RECE45-TOKUKIZAISBT1  (IDX4)
-               MOVE    TNS-SANSOKBN   TO RECE45-SANSOKBN       (IDX4)
-               IF      TNS-SRYCD (1:2)   =   "84"
-                   PERFORM VARYING IDYY    FROM    1   BY  1
-                           UNTIL   IDYY    >       10
-                       MOVE    TNS-SSTKIJUNCD (IDYY)
-                                      TO RECE45-SSTKIJUNCD(IDX4 IDYY)
-                   END-PERFORM
-               END-IF
-      *
-               IF    (TNS-SRYCD       =  "170022290"  OR
-                                         "170022390"  OR
-                                         "170022490")
-               AND   (RECE41-SRYYM   <=  "201003"   )
-                      MOVE   202      TO  RECE45-CDKBN-KBNNUM(IDX4)
-                      MOVE   99       TO  RECE45-CDKBN-KOUBAN(IDX4)
-               END-IF
-               IF     TNS-SRYCD       =  "170016010"  OR
-                                         "170020270"  OR  "170024470" OR
-                                         "170024910"  OR  "170025010" OR
-                                         "170025210"  OR  "170025310" OR
-                                         "170025410"  OR  "170025510" OR
-                                         "170025610"  OR  "170025710" OR
-                                         "170025810"  OR  "170025910" OR
-                                         "170026010"  OR  "170026110" OR
-                                         "170026210"  OR  "170026310" OR
-                                         "170026810"  OR
-                                         "170000210"  OR  "170016910" OR
-                                         "170017010"  OR  "170026710" OR
-                                         "170028810"
-                      MOVE   203      TO  RECE45-CDKBN-KBNNUM(IDX4)
-                      MOVE   99       TO  RECE45-CDKBN-KOUBAN(IDX4)
-               END-IF
-      *
-               MOVE   TNS-SRYKBN      TO  RECE45-TNSSRYKBN(IDX4)
-      *
-               IF    (TNS-SRYCD       =  "170022290")
-               AND   (RECE41-SRYYM   >=  "201004"   )
-                      MOVE   "1"      TO  RECE44-GAZOGEN
-               END-IF
-      *
-               IF   (((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
-                      (SRY-SRYCD    (IDX2)(1:3)     =   "008")) AND
-                     ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  ))
-               OR   (( FLG-SIPPU-ARI                =    1    ) AND
-                     ( SRY-SRYCD    (IDX2)(1:3)     =   "001" ) AND
-                     ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  ))
-                   MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
+               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
+               AND     SRY-INPUTNUM (IDX2)      NOT =   ZERO
+                   MOVE    SRY-HOSPID           TO  PTCOM-HOSPID
                    MOVE    SRY-PTID             TO  PTCOM-PTID
                    MOVE    SRY-ZAINUM           TO  PTCOM-ZAINUM
                    MOVE    SRY-SRYCD (IDX2)     TO  PTCOM-SRYCD
                    MOVE    SRY-INPUTNUM(IDX2)   TO  PTCOM-RENNUM
-                   PERFORM 800-PTCOM-READ-SEC
-                   MOVE    PTCOM-INPUTCOMENT
-                                           TO  RECE45-NAME(IDX4)
-                                               RECE45-INPUTCOMENT(IDX4)
+                   PERFORM 950-PTCOM-READ-SEC
+                   MOVE    PTCOM-INPUTCOMENT   TO    RECE45-NAME(IDX4)
       *
-                   IF      SRY-SRYCD (IDX2)(1:1)   =   "8"
-                       IF    ( PTCOM-INPUTCHI1     =   SPACE  )
-                       OR    ( SRY-SRYCD (IDX2)(1:2)
-                                               NOT =   "84"   )
-                           INITIALIZE                  ORCSKANACHKAREA
-                           MOVE    "2"             TO  KANACHK-SYORI 
-                           MOVE    TNS-NAME        TO  KANACHK-MAE-INPUT
-                           CALL    "ORCSKANACHK"   USING
-                                                       ORCSKANACHKAREA
-                           IF    ( KANACHK-RC      =   ZERO )
-                           AND   ( KANACHK-MAX     >   ZERO )
-                               COMPUTE IDXX    =   KANACHK-MAX +   1
-                               MOVE    PTCOM-INPUTCOMENT (IDXX:)
-                                                       TO
-                                           RECE45-INPUTCOMENT   (IDX4)
-                           ELSE
-                               MOVE    PTCOM-INPUTCOMENT
-                                                       TO
-                                           RECE45-INPUTCOMENT   (IDX4)
-                           END-IF
-                       ELSE
-                           INITIALIZE              ORCSKANACHKAREA
-                           MOVE    "2"             TO  KANACHK-SYORI 
-                           STRING  PTCOM-INPUTCHI1 DELIMITED  BY  SPACE
-                                   PTCOM-INPUTCHI2 DELIMITED  BY  SPACE
-                                   PTCOM-INPUTCHI3 DELIMITED  BY  SPACE
-                                   PTCOM-INPUTCHI4 DELIMITED  BY  SPACE
-                                   INTO   KANACHK-MAE-INPUT
-                           END-STRING
-                           CALL    "ORCSKANACHK"   USING
-                                                       ORCSKANACHKAREA
-                           IF      KANACHK-RC      =   ZERO
-                               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                                   TO
-                                           RECE45-INPUTCOMENT   (IDX4)
-                           END-IF
-                       END-IF
-                   END-IF
-      *
-      ***          IF    RECE44-COMCDFLG   NOT =   "3"
-      ***             MOVE   "1"           TO    RECE44-COMCDFLG
-      ***          END-IF
-      *
-                   IF      WRK-KYUGYOFLG   =   "1"
-                   AND     SRY-SRYCD(IDX2) = CONS-ROUCOM1
-                        MOVE   PTCOM-INPUTCHI1(1:2)
-                                            TO  RECE41-KYUGYO-STR(1:2)
-                        MOVE   PTCOM-INPUTCHI2(1:2)
-                                            TO  RECE41-KYUGYO-STR(3:2)
-                        MOVE   PTCOM-INPUTCHI3(1:2)
-                                            TO  RECE41-KYUGYO-END(1:2)
-                        MOVE   PTCOM-INPUTCHI4(1:2)
-                                            TO  RECE41-KYUGYO-END(3:2)
-                        MOVE   SPACE        TO  WRK-KYUGYOFLG
-                   END-IF
-      *
+                   MOVE   "1"                  TO    RECE44-COMCDFLG
                ELSE
-                   MOVE    TNS-NAME        TO  RECE45-NAME(IDX4)
-                                               RECE45-INPUTCOMENT(IDX4)
-               END-IF
+                   MOVE    TNS-NAME            TO    RECE45-NAME(IDX4)
       *
-               IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI
-                  IF  RECE45-SRYSURYO(IDX4)  NOT = ZERO
-                    PERFORM  2101215-RECE45-SURYO-HEN-SEC
+      *            IF   RECE41-HKNKBN   =  "4"  
+      *            AND  RECE41-SRYYM   >=  "200302"
+      *                 IF   SRY-SRYCD(IDX2)  =  "101120040"  OR
+      *                                          "101120050"  OR
+      *                                          "101120060"
+      *                    MOVE   "£∂"   TO    RECE45-NAME(IDX4)(9:2)
+      *                 END-IF
+      *                 IF   SRY-SRYCD(IDX2)  =  "101120070"  OR
+      *                                          "101120080"  OR
+      *                                          "101120090"
+      *                    MOVE   "£∂"   TO    RECE45-NAME(IDX4)(31:2)
+      *                 END-IF
+      *            END-IF
       *
-                    MOVE    SPACE      TO  RECE45-NAME(IDX4)
-                    MOVE    SPACE      TO  RECE45-INPUTCOMENT(IDX4)
-                    STRING  TNS-NAME          DELIMITED  BY  " "
-      ***                   "  "              DELIMITED  BY  SIZE
-                            "°°"              DELIMITED  BY  SIZE
-                            WRK-SRYSURYOW     DELIMITED  BY  " "
-                            RECE45-TANINAME(IDX4)
-                                              DELIMITED  BY  " "
-                            INTO              RECE45-NAME(IDX4)
-                    END-STRING
-                    MOVE  RECE45-NAME(IDX4)
-                                       TO  RECE45-INPUTCOMENT(IDX4)
-      *
-      ***           MOVE  "810000001"  TO  RECE45-SRYCD(IDX4)
-                    MOVE  ZERO         TO  RECE45-SRYSURYO(IDX4)
-                    MOVE  ZERO         TO  RECE45-TANICD(IDX4)
-                    MOVE  ZERO         TO  RECE45-TANIMOJISU(IDX4)
-                    MOVE  SPACE        TO  RECE45-TANINAME(IDX4)
-                    MOVE  ZERO         TO  RECE45-YUKOKETA(IDX4)
-                    MOVE  "2"          TO  RECE45-MEISKYFLG(IDX4)
-                  END-IF
-               END-IF
-      *
-               IF          SRY-SRYKBN       =  "21" OR "22" OR "23"
-                    IF    SRY-SRYCD(IDX2)  =  CONS-YAKTEIGEN
-                                           OR CONS-YAKTEIGEN2
-                                           OR CONS-YAKTEIGEN3
-                                           OR CONS-YAKTEIGEN4
-                                           OR CONS-GEN
-                                           OR CONS-GEN2
-                        MOVE     "3"       TO    RECE44-COMCDFLG
-                    END-IF
-               END-IF
-               IF   ( SRY-SRYCD(IDX2)(1:1)  =   "8"   )
-               OR   ( SRY-SRYCD(IDX2)(1:3)  =   "008" )
-               OR   ((FLG-SIPPU-ARI         =    1   ) AND
-                     (SRY-SRYCD(IDX2)(1:3)  =   "001"))
-                    IF    RECE44-COMCDFLG   NOT =   "3"
-                        MOVE     "1"       TO    RECE44-COMCDFLG
-                    END-IF
-               END-IF
-      *
-      ***      IF    RECE44-COMCDFLG       =   "3"
-      ***        IF    SRY-SRYCD(IDX2)  =  CONS-YAKTEIGEN
-      ***                               OR CONS-YAKTEIGEN2
-      ***                               OR CONS-YAKTEIGEN3
-      ***                               OR CONS-YAKTEIGEN4
-      ***                               OR CONS-GEN
-      ***                               OR CONS-GEN2
-      ***          CONTINUE
-      ***        ELSE
-      ***          ADD   999               TO  WRK-SURYOU-COUNT
-      ***          ADD   WRK-SURYOU-COUNT  TO  RECE44-SURYOUTOTAL
-      ***        END-IF
-      ***      END-IF
-      *
-               IF   (SRY-SRYKBN       =  "31" OR "32")
-               AND  (ACCT-JIHOKBN     =  SPACE       )
-                IF  (RECE41-HKNKBN         =  "4")
-                AND (WRK-PARA-RECEKBN      =  "4")
-                AND (WRK-PARA-JIBAIPRTKBN  =  "2")
-                 CONTINUE
-                ELSE
-                 IF        SRY-SRYCD(IDX2)  =    CONS-HIKAKIN
-      ***                                  OR    CONS-SEIBUTU
-      ***                                  OR    CONS-MAYAKU
-                                           OR    CONS-JYOMYAKU
-      ***                                  OR    CONS-JYOMYAKUKASAN
-                   MOVE    SPACE           TO    RECE45-NAME(IDX4)
-                 END-IF
-                END-IF
-               END-IF
-               IF  ( SRY-SRYSYUKBN         =  "334"       )
-               AND ((SRY-SRYCD(IDX2)       =  "810000001") OR
-                    (SRY-SRYCD(IDX2)(1:3)  =  "008"      ))
-               AND ( FLG-HOUTEN-COM        =   ZERO       )
-                    PERFORM  VARYING  IDV  FROM  1  BY  2
-                            UNTIL  (IDV            >   200 )
-                             OR    (FLG-HOUTEN-COM =     1 )
-                      IF   RECE45-NAME(IDX4)(IDV:2)   =   "À¨"
-                         MOVE   SPACE  TO    RECE44-FLG-HOUTEN-COMMENT
-                         MOVE    1     TO    FLG-HOUTEN-COM
-                      END-IF
-                    END-PERFORM
-               END-IF
-      *
-               IF  ( SRY-SRYKBN     =  "60" OR "64" )
-               AND ((SRY-SRYCD(IDX2)(1:1)  =  "8"  ) OR
-                    (SRY-SRYCD(IDX2)(1:3)  =  "008"))
-               AND ( FLG-KENSA-COM  =   ZERO        )
-                 IF  SRY-SRYCD(IDX2) = "840000085" OR "840000087"
-                    CONTINUE
-                 ELSE
-                    PERFORM  VARYING  IDV  FROM  1  BY  2
-                              UNTIL  (IDV            >   200)
-                               OR    (FLG-KENSA-COM  =    1 )
-                      IF  RECE45-NAME(IDX4)(IDV:2)   =  "∆¸"
-                        MOVE   SPACE  TO  RECE44-FLG-KENSA-COMMENT
-                        MOVE     1    TO  FLG-KENSA-COM
-                      END-IF
-                    END-PERFORM
-                 END-IF
-               END-IF
-      *
-               IF  ( SRY-SRYKBN       =  "14"       )
-               AND ((SRY-SRYCD(IDX2)(1:1)  =  "8"  ) OR
-                    (SRY-SRYCD(IDX2)(1:3)  =  "008"))
-               AND ( FLG-ZAIRIHA-COM  =   ZERO      )
-                    PERFORM  VARYING  IDV  FROM  1  BY  2
-                              UNTIL  (IDV              >   200)
-                               OR    (FLG-ZAIRIHA-COM  =    1 )
-                      IF  RECE45-NAME(IDX4)(IDV:2)   =  "∆¸"
-                        MOVE   SPACE  TO  RECE44-FLG-ZAIRIHA-COMMENT
-                        MOVE     1    TO  FLG-ZAIRIHA-COM
-                      END-IF
-                    END-PERFORM
-               END-IF
-      *
-               IF  SRY-SRYCD(IDX2)(1:3)     =   "058"
-                 MOVE  TNS-FORMALYUKOKETA TO  RECE45-YUKOKETA(IDX4)
-                 MOVE  TNS-FORMALNAME     TO  RECE45-NAME(IDX4)
-                                              WRK-FORMALNAME
-                 MOVE  "1"                TO  RECE45-RECEDENFLG(IDX4)
-      *
-                 MOVE     TNS-TEN         TO  WRK-KZI058-TEN
-                 IF   TNS-TANICD  NOT = SPACE AND "000"
-                    MOVE  TNS-TANICD      TO  WRK-KZI058-TANICD
-                    MOVE  TNS-TANIMOJISU  TO  WRK-KZI058-TANIMOJISU
-                    MOVE  TNS-TANINAME    TO  WRK-KZI058-TANINAME
-                 END-IF
-                 MOVE     ZERO            TO  RECE45-TEN(IDX4)
-                 MOVE     ZERO            TO  RECE45-TANICD(IDX4)
-                 MOVE     ZERO            TO  RECE45-TANIMOJISU(IDX4)
-                 MOVE     SPACE           TO  RECE45-TANINAME(IDX4)
-               END-IF
-               IF  (SRY-SRYCD(IDX2)(1:1)    =   "7")
-               AND (SRY-MEISKYFLG(IDX2)     =   "1")
-                 IF   (SRY-SRYKBN  =   "70")
-                 AND  (TNS-DATAKBN =   "3" )
-                    IF    RECE45-RENNUM  >  1
-                    AND   IDX4           =  1
-                      MOVE    1           TO  FLG-FORMAL-KISAI
-                      COMPUTE  WRK-RENNUM2 =  RECE45-RENNUM  -  1
-                    ELSE
-                      MOVE  "1"           TO  RECE45-RECEPTFLG(IDX4 - 1)
-                    END-IF
-                 ELSE
-                    MOVE  WRK-FORMALNAME  TO  RECE45-RECEDENNAME(IDX4)
-                    MOVE  "1"             TO  RECE45-RECEHENFLG(IDX4)
-                    IF    WRK-KZI058-TEN  NOT = ZERO
-                       MOVE   WRK-KZI058-TEN
-                                          TO  RECE45-TEN(IDX4)
-                    END-IF
-                    IF   (RECE45-TANICD(IDX4)    = ZERO)
-                    AND  (WRK-KZI058-TANICD  NOT = ZERO)
-                       MOVE   WRK-KZI058-TANICD
-                                          TO  RECE45-TANICD(IDX4)
-                       MOVE   WRK-KZI058-TANIMOJISU
-                                          TO  RECE45-TANIMOJISU(IDX4)
-                       MOVE   WRK-KZI058-TANINAME
-                                          TO  RECE45-TANINAME(IDX4)
-                    END-IF
-                 END-IF
-               END-IF
-      *
-               IF  (SRY-SRYKBN         =  "99"       )
-               AND (SRY-RENNUM         =   1         )
-               AND (IDX2               =   1         )
-               AND (SRY-SRYCD(IDX2)    =  "099999902")
-                    MOVE      1         TO  FLG-TAHOKEN
-               END-IF
-               IF  (FLG-TAHOKEN           =   1              )
-               AND (SRY-RENNUM            =   1              )
-               AND (IDX2                  =   2              )
-               AND (SRY-SRYCD(IDX2)(1:4)  =  "0082"          )
-               AND (TNS-NAME(1:14)        =  " ›∏±ÃææŒ —ππ°ß")
-                  MOVE     "1"          TO  RECE45-RECEPTFLG(IDX4)
-                  MOVE     "1"          TO  RECE45-RECEDENFLG(IDX4)
-      *
-                  MOVE      ZERO        TO  IDW3
-                  PERFORM   VARYING   IDW   FROM   200   BY  -1
-                             UNTIL    IDW     <    15
-                       IF   TNS-NAME(IDW:1)  NOT =   SPACE
-                           COMPUTE IDW6       =  (IDW / 2) - 7
-                           MOVE    IDW        TO  IDW3
-                           MOVE    1          TO  IDW
-                       END-IF
-                  END-PERFORM
-                  IF     IDW3    NOT =  ZERO
-                    MOVE  SPACE TO RECE45-NAME(IDX4 - 1)
-                    COMPUTE   IDW4  =  IDW3  -  14
-                    MOVE  TNS-NAME(15:IDW4)
-                                TO RECE45-NAME(IDX4 - 1)(1:IDW4)
-                    COMPUTE   IDW5  =  IDW4  +   1
-                    MOVE  "§À§∆ø«ª°Œ¡ªªƒÍ∫—"
-                                TO RECE45-NAME(IDX4 - 1)(IDW5:16)
-                    COMPUTE   RECE45-YUKOKETA(IDX4 - 1) =
-                              RECE45-YUKOKETA(IDX4 - 1) -
-                              3                         +
-                              IDW6
-                  END-IF
                END-IF
       *
                IF  RECE45-YUKOKETA(IDX4)  =  ZERO
@@ -4033,62 +1385,29 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *
                IF (  SRY-SRYCD(IDX2) = CONS-ROUSAI1  OR
-                                       CONS-ROUSAI18   )
+                                       CONS-ROUSAI2  OR
+                                       CONS-ROUSAI3  OR
+                                       CONS-ROUSAI4  OR
+                                       CONS-ROUSAI5  OR
+                                       CONS-ROUSAI6  OR
+                                       CONS-ROUSAI7  OR
+                                       CONS-ROUSAI8  OR
+                                       CONS-ROUSAI9  OR
+                                       CONS-ROUSAI10 OR
+                                       CONS-ROUSAI11 OR
+                                       CONS-ROUSAI12 OR
+                                       CONS-ROUSAI13 OR
+                                       CONS-ROUSAI14 OR
+                                       CONS-ROUSAI15 OR
+                                       CONS-ROUSAI16 OR
+                                       CONS-ROUSAI17   )                
                OR (( ACCT-SRYKBN          =  "80"     )   AND           
-                   ( SRY-SRYCD(IDX2)(1:5) =  "09591"
-                                          OR "09592"
-                                          OR "09593"  ))                
-               OR (( SRY-SRYCD(IDX2) = CONS-ROUSAI8   )   AND
-                   ( RECE41-SRYYM    < "200804"       ))
-               OR (( SRY-SRYCD(IDX2) =
-                     CONS-ROUSAI3  OR CONS-ROUSAI4  OR
-                     CONS-ROUSAI5  OR CONS-ROUSAI6  OR
-                     CONS-ROUSAI7  OR CONS-ROUSAI19 OR
-                     CONS-ROUSAI9  OR CONS-ROUSAI10 OR
-                     CONS-ROUSAI11 OR CONS-ROUSAI12 OR
-                     CONS-ROUSAI13 OR CONS-ROUSAI14 OR
-                     CONS-ROUSAI15 OR CONS-ROUSAI16 OR
-                     CONS-ROUSAI17                    )   AND
-                   ( RECE41-SRYYM   <= "201306"       ))
-               OR (( SRY-SRYCD(IDX2)  =
-                     CONS-ROUSAI32 OR CONS-ROUSAI33 OR
-                     CONS-ROUSAI34 OR CONS-ROUSAI5  OR
-                     CONS-ROUSAI20 OR CONS-ROUSAI21 OR
-                     CONS-ROUSAI22 OR CONS-ROUSAI23 OR
-                     CONS-ROUSAI24 OR CONS-ROUSAI25 OR
-                     CONS-ROUSAI26 OR CONS-ROUSAI27 OR
-                     CONS-ROUSAI28 OR CONS-ROUSAI29 OR
-                     CONS-ROUSAI30 OR CONS-ROUSAI31 OR
-                     CONS-ROUSAI35 OR CONS-ROUSAI36 OR
-                     CONS-ROUSAI37 OR CONS-ROUSAI38 OR
-                     CONS-ROUSAI39                    )   AND
-                   ( RECE41-SRYYM   >= "201307"       ))
-               OR (( SRY-SRYCD(IDX2) >= "101801010" AND
-                                     <= "101801020"   )   AND
-                   ( RECE41-SRYYM   >=  "201307"      ))
-               OR (( SRY-SRYCD(IDX2)  = "101801030"   )   AND
-                   ( RECE41-SRYYM   >=  "201307"      ))
+                   ( SRY-SRYCD(IDX2)(1:5) =  "09593"  ))                
       *
       *           IF     TNS-TENSIKIBETU   =   1
                      ADD      1          TO  WRK-MEISAI-CNT
-                     IF  SRY-SRYSYUKBN = "809"
-                        COMPUTE  WRK-TEN = WRK-TEN +
-                                          (SRY-JIHIMONEY(IDX2) / 10)
-                     ELSE
-                      IF   SRY-SRYCD(IDX2)  =  "101801030"
-                        COMPUTE  WRK-FUTANWARI  = TNS-TEN / 100
-                        COMPUTE  WRK-KEISAN-KG  =
-                                (WRK-TEN-KG  * WRK-FUTANWARI) + 0.5
-                        COMPUTE  WRK-TEN = WRK-TEN + WRK-KEISAN-KG
-                        COMPUTE  WRK-KEISAN-KG2 =
-                                (WRK-TEN-KG2 * WRK-FUTANWARI)
-                      ELSE
-                        COMPUTE  WRK-TEN = WRK-TEN +
-                                          (TNS-TEN / 10)
-                        COMPUTE  WRK-TEN-KG  = TNS-TEN / 10
-                        COMPUTE  WRK-TEN-KG2 = TNS-TEN
-                      END-IF
-                     END-IF
+                     COMPUTE  WRK-TEN    =   WRK-TEN   +
+                                           ( TNS-TEN   /  10 ) 
       *
                      ADD      1          TO  WRK-SURYOUTOTAL
                      MOVE  SRY-SRYCD(IDX2) 
@@ -4098,34 +1417,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                   MOVE     "2"     TO    RECE45-SIKFLG(IDX4)
       *
-                  IF  (ACCT-SRYKBN          = "80"   )
-                  AND (SRY-SRYCD(IDX2)(1:5) =
-                        "09591" OR "09592" OR "09593")
-                        COMPUTE  WRK-ZAI-KINGAKU = WRK-ZAI-KINGAKU
-                                                 + WRK-TNS-TEN(IDX2)
-                  ELSE
-                      IF  SRY-SRYCD(IDX2)  =  "101801030"
-                        COMPUTE  WRK-ZAI-KINGAKU = WRK-ZAI-KINGAKU
-                                                 + WRK-KEISAN-KG2
-                        MOVE     WRK-KEISAN-KG2  TO  RECE45-TEN(IDX4)
-                      ELSE
-                        COMPUTE  WRK-ZAI-KINGAKU = WRK-ZAI-KINGAKU
-                                                 + TNS-TEN
-                      END-IF
-                  END-IF
-      *
                ELSE
       *
                   IF   RECE41-HKNKBN     =  "4"
-                  AND  RECE41-JIBAIKBN   =  "1"
                   AND  SRY-SRYCD(IDX2)   =  CONS-RYOYOTEATE
       *
                      ADD      1          TO  WRK-MEISAI-CNT
                      COMPUTE  WRK-TEN    =   WRK-TEN   +
                                              TNS-TEN
-      *
-                     COMPUTE  WRK-ZAI-KINGAKU = WRK-ZAI-KINGAKU
-                                              + WRK-RYOYOTEATE2
       *
                      ADD      1          TO  WRK-SURYOUTOTAL
                      MOVE  SRY-SRYCD(IDX2) 
@@ -4136,99 +1435,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                   ELSE
       *
-                    IF  ((RECE41-HKNKBN      =   "4") AND
-                         (RECE41-JIBAIKBN    =   "2"))
-                    OR  ((RECE41-HKNKBN      =   "5") AND
-                         (RECE41-KOMUKBN     =   "2"))
-                    OR  ( RECE41-HKNKBN      =   "6" )
-                      IF (( ACCT-SRYKBN            =  "80"      ) AND
-                          ( WRK-CHECK-SRYCD(1:5)   =  "09591"
-                                                   OR "09592"
-                                                   OR "09593"   ) AND
-                          ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ))
-                      OR (( ACCT-SRYKBN            =  "80"      ) AND
-                          ( WRK-CHECK-SRYCD(1:5)   =  "09591"
-                                                   OR "09592"
-                                                   OR "09593"   ) AND
-                          ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
-      *
-                         ADD    1      TO    WRK-MEISAI-CNT             
-                         MOVE  "2"     TO    RECE45-SIKFLG(IDX4)
-      *
-                         ADD    1      TO    WRK-SURYOUTOTAL
-                         MOVE  SRY-SRYCD(IDX2) 
-                                       TO    WRK-SRYCD
-                         ADD   WRK-SRYCD 
-                                       TO    WRK-SRYCDTOTAL
-                         IF  ( RECE44-COMCDFLG       =   "1"   )
-                         AND ((SRY-SRYCD(IDX2)(1:1)  =   "8"  ) OR
-                              (SRY-SRYCD(IDX2)(1:3)  =   "008"))
-                            MOVE  "2"  TO    RECE44-COMCDFLG
-                         END-IF
-                      ELSE
-                         MOVE  "1"     TO    RECE45-SIKFLG(IDX4)
-                      END-IF
-                    ELSE
-                      IF (  SRY-SRYCD(IDX2) = CONS-ROUCOM1  OR
-                                              CONS-ROUCOM2       )
+                      IF  ( SRY-SRYCD(IDX2) = CONS-ROUCOM1  OR
+                                              CONS-ROUCOM2      )
+                      OR  ( SRY-SRYCD(1)    = CONS-ROUSAI2  OR
+                                              CONS-ROUSAI3      )
                       OR (( ACCT-SRYKBN     = "11"              ) AND
-                          ((SRY-SRYCD(IDX2)(1:3)   =   "008") OR
-                           (SRY-SRYCD(IDX2)(1:1)   =   "8"  )   ) AND
-                          ( SRY-SRYCD(IDX2) NOT = "830000020"   ) AND
-                          ( ACCT-ZAIKBN     NOT =  1 AND 2      ))
+                          ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ) AND
+                          ( SRY-SRYCD(IDX2) NOT = "830000020"   ))
                       OR (( ACCT-SRYKBN     = "12"              ) AND
-                          ((SRY-SRYCD(IDX2)(1:3)   =   "008") OR
-                           (SRY-SRYCD(IDX2)(1:1)   =   "8"  )   ) AND
-                          ( SRY-SRYCD(IDX2) NOT = "830000021"   ) AND
-                          ( ACCT-ZAIKBN     NOT =  1 AND 2      ))
-                      OR (( ACCT-SRYKBN     = "13"              ) AND
-                          ( WRK-CHECK-SRYCD =  CONS-ROUSAI8     ) AND
-                          ((SRY-SRYCD(IDX2)(1:3)   =   "008") OR
-                           (SRY-SRYCD(IDX2)(1:1)   =   "8"  )   ) AND
-                          ( RECE41-SRYYM    <  "200804"         ))
-                      OR (( ACCT-SRYKBN            =  "80"      ) AND
-                          ( WRK-CHECK-SRYCD(1:5)   =  "09591"
-                                                   OR "09592"
-                                                   OR "09593"   ) AND
-                          ((SRY-SRYCD(IDX2)(1:3)   =   "008") OR
-                           (SRY-SRYCD(IDX2)(1:1)   =   "8"  )   ))
-                      OR (( WRK-CHECK-SRYCD =  CONS-ROUSAI3     ) AND
-                          ( RECE41-SRYYM   <=  "201306"         ))
-                      OR (( ACCT-SRYKBN     = "13"              ) AND
-                          ( WRK-CHECK-SRYCD =
-                            CONS-ROUSAI9  OR  CONS-ROUSAI10 OR
-                            CONS-ROUSAI11 OR  CONS-ROUSAI12 OR
-                            CONS-ROUSAI13 OR  CONS-ROUSAI14 OR
-                            CONS-ROUSAI15 OR  CONS-ROUSAI16 OR
-                            CONS-ROUSAI17                       ) AND
-                          ((SRY-SRYCD(IDX2)(1:3)   =   "008") OR
-                           (SRY-SRYCD(IDX2)(1:1)   =   "8"  )   ) AND
-                          ( RECE41-SRYYM   <=  "201306"         ))
-                      OR (( WRK-CHECK-SRYCD =  CONS-ROUSAI32    ) AND
-                          ( RECE41-SRYYM   >=  "201307"         ))
-                      OR (( ACCT-SRYKBN     = "80"              ) AND
-                          ( WRK-CHECK-SRYCD =
-                            CONS-ROUSAI20 OR  CONS-ROUSAI21 OR
-                            CONS-ROUSAI22 OR  CONS-ROUSAI23 OR
-                            CONS-ROUSAI24 OR  CONS-ROUSAI25 OR
-                            CONS-ROUSAI26 OR  CONS-ROUSAI27 OR
-                            CONS-ROUSAI28 OR  CONS-ROUSAI29 OR
-                            CONS-ROUSAI30 OR  CONS-ROUSAI31 OR
-                            CONS-ROUSAI39                       ) AND
-                          ((SRY-SRYCD(IDX2)(1:3)   =   "008") OR
-                           (SRY-SRYCD(IDX2)(1:1)   =   "8"  )   ) AND
-                          ( RECE41-SRYYM   >=  "201307"         ))
-                      OR (( WRK-CHECK-SRYCD =  CONS-ROUSAI33    ) AND
-                          ( RECE41-SRYYM   >=  "201307"         ))
-                      OR (( ACCT-SRYKBN     = "80"              ) AND
-                          ( WRK-CHECK-SRYCD >= "101801010" AND
-                                            <= "101801020"      ) AND
-                          ((SRY-SRYCD(IDX2)(1:3)   =   "008") OR
-                           (SRY-SRYCD(IDX2)(1:1)   =   "8"  )   ) AND
-                          ( RECE41-SRYYM   >=  "201307"         ))
-                       IF   WRK-CHECK-SRYCD(1:6) = "101989"
-                         MOVE  "1"     TO    RECE45-SIKFLG(IDX4)
-                       ELSE
+                          ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ) AND
+                          ( SRY-SRYCD(IDX2) NOT = "830000021"   ))
+      *
+      **>             OR (( SRY-SRYCD(1)    = CONS-ROUSAI1      ) AND
+      **>                 ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
+      **>             OR (( SRY-SRYCD(1)    = CONS-ROUSAI5  OR
+      **>                                     CONS-ROUSAI6  OR
+      **>                                     CONS-ROUSAI7      ) AND
+      **>                 ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
+      *
                          ADD    1      TO    WRK-MEISAI-CNT             
                          MOVE  "2"     TO    RECE45-SIKFLG(IDX4)
       *
@@ -4237,16 +1461,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        TO    WRK-SRYCD
                          ADD   WRK-SRYCD 
                                        TO    WRK-SRYCDTOTAL
-                         IF  ( RECE44-COMCDFLG       =   "1"   )
-                         AND ((SRY-SRYCD(IDX2)(1:1)  =   "8"  ) OR
-                              (SRY-SRYCD(IDX2)(1:3)  =   "008"))
+                         IF    RECE44-COMCDFLG       =   "1" 
+                         AND   SRY-SRYCD(IDX2)(1:1)  =   "8" 
                             MOVE  "2"  TO    RECE44-COMCDFLG
                          END-IF
-                       END-IF
                       ELSE
                          MOVE  "1"     TO    RECE45-SIKFLG(IDX4)
                       END-IF
-                    END-IF
       *
                   END-IF
       *
@@ -4254,11 +1475,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *        ∆√ƒÍ¥Ô∫‡° ≤Ë¡¸ø«√«§Œ•’•£•Î•‡∞ ≥∞°À§Œ§»§≠√±≤¡§Ú ‘Ω∏
                IF      SRY-SRYCD (IDX2) (1:1)  =   "7"
-                   IF   (  SRY-SRYCD (IDX2)         =
+                   IF   (( SRY-SRYKBN               =   "70" )  AND
+                         ( TNS-DATAKBN              =   "3"  ))
+                   OR   (  SRY-SRYCD (IDX2)         =
                                     CONS-FILM-YOUJI-KASAN  OR  
                                     CONS-SANSO             OR
                                     CONS-SANSO2               )
-      ***          OR   (  TNS-DATAKBN              =   "3"   )
                        CONTINUE
                    ELSE
       **               SET     TBL-SANSO           TO  1
@@ -4270,10 +1492,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       **                       MOVE    1               TO  FLG-SANSO-OK
       **               END-SEARCH
       **               IF      FLG-SANSO-OK        =   "1"
-                     IF      RECE45-TEN(IDX4)  =   ZERO
+                     IF      TNS-TEN         =   ZERO
                        CONTINUE
                      ELSE
-                       PERFORM 2101212-RECE45-TANKA-HEN-SEC
+                       PERFORM RECE45-TENSOU-TANKA-HEN-SEC
                        COMPUTE IDW =   RECE45-YUKOKETA(IDX4)  *  2 
                                                    +   3                    
                        MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
@@ -4293,1401 +1515,46 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *        øºÃÎ°¶∂€µﬁ§Œ∫ﬁ»ΩƒÍ§Úƒ…≤√
       *----------------------------------------------------------------
                IF    SRY-SRYKBN     =  "14"
-      *
-                 IF  SRY-SRYCD(IDX2) =  CONS-ZAIHOU-COMMENT
-                                    OR  CONS-ZAIHOU3-COMMENT
-                                    OR  CONS-ZAIHOU4-COMMENT
-                                    OR  CONS-ZAIHOU5-COMMENT
-                                    OR  "114001470"
-                    MOVE        9         TO    FLG-OSINKBN
-                 END-IF
-      *
                  EVALUATE    SRY-SRYCD(IDX2)
       *±˝ø«° ∆√ Ã±˝ø«°À
                    WHEN    "114000110"
                    WHEN    "114001610"
                    WHEN    "114000970"
-                   WHEN    "114002470"
-      ***          WHEN    "114002970"
-                   IF  FLG-OSINKBN        NOT = 2  AND  3  AND  9
+                   IF  FLG-OSINKBN        NOT = 2  AND 3
                        MOVE     1         TO    FLG-OSINKBN
                    END-IF
       *ÃÎ¥÷
                    WHEN    "114000470"
                    WHEN    "114001970"
-                   WHEN    "114011670"
-                   WHEN    "114011970"
-                   WHEN    "114017570"
-                   WHEN    "114017870"
-      *
-                   WHEN    "114029270"
-                   WHEN    "114029370"
-                   WHEN    "114029470"
-                   WHEN    "114029570"
-                   WHEN    "114029970"
-                   WHEN    "114030070"
-                   WHEN    "114030170"
-                   WHEN    "114030270"
-                   IF  FLG-OSINKBN        NOT = 9
                        MOVE     2         TO    FLG-OSINKBN
-                   END-IF
       *øºÃÎ°¶∂€µﬁ
                    WHEN    "114000370"
                    WHEN    "114000570"
                    WHEN    "114001870"
                    WHEN    "114002070"
-                   WHEN    "114011570"
-                   WHEN    "114011770"
-                   WHEN    "114011870"
-                   WHEN    "114012070"
-                   WHEN    "114017470"
-                   WHEN    "114017770"
-                   WHEN    "114017670"
-                   WHEN    "114017970"
-                   IF  FLG-OSINKBN        NOT = 9
                        MOVE     3         TO    FLG-OSINKBN
-                   END-IF
                  END-EVALUATE
-      *
-                 IF    RECE41-SRYYM   >=  "201404"
-                  EVALUATE    SRY-SRYCD(IDX2)
-      *            ±˝ø«
-                   WHEN    "114000110"
-                     PERFORM  VARYING  IDX19  FROM  2  BY  1
-                               UNTIL   IDX19   >   10
-                       COMPUTE  IDX21 = IDX19 - 1
-                       PERFORM  VARYING  IDX20  FROM  1  BY  1
-                                 UNTIL   IDX20   >   31
-                        IF  ACCT-DAY(IDX19 IDX20) NOT = ZERO
-                          ADD    ACCT-DAY(IDX19 IDX20)
-                                   TO  TBL-ZAITAKU-KAISU(1 IDX21 IDX20)
-                        END-IF
-                       END-PERFORM
-                     END-PERFORM
-                     MOVE  1  TO  FLG-ZAITAKU-CHECK
-      *            ¥µ≤»ø«Œ≈ª˛¥÷≤√ªª° ±˝ø«°À
-                   WHEN    "114000970"
-                    IF  FLG-ZAITAKU-CHECK = ZERO
-                     PERFORM  VARYING  IDX19  FROM  2  BY  1
-                               UNTIL   IDX19   >   10
-                       COMPUTE  IDX21 = IDX19 - 1
-                       PERFORM  VARYING  IDX20  FROM  1  BY  1
-                                 UNTIL   IDX20   >   31
-                        IF  ACCT-DAY(IDX19 IDX20) NOT = ZERO
-                          ADD    ACCT-DAY(IDX19 IDX20)
-                                   TO  TBL-ZAITAKU-KAISU(2 IDX21 IDX20)
-                        END-IF
-                       END-PERFORM
-                     END-PERFORM
-                    END-IF
-      *            ∆√ Ã±˝ø«
-                   WHEN    "114001610"
-                     PERFORM  VARYING  IDX19  FROM  2  BY  1
-                               UNTIL   IDX19   >   10
-                       COMPUTE  IDX21 = IDX19 - 1
-                       PERFORM  VARYING  IDX20  FROM  1  BY  1
-                                 UNTIL   IDX20   >   31
-                        IF  ACCT-DAY(IDX19 IDX20) NOT = ZERO
-                          ADD    ACCT-DAY(IDX19 IDX20)
-                                   TO  TBL-ZAITAKU-KAISU(3 IDX21 IDX20)
-                        END-IF
-                       END-PERFORM
-                     END-PERFORM
-                     MOVE  1  TO  FLG-ZAITAKU-CHECK
-      *            ¥µ≤»ø«Œ≈ª˛¥÷≤√ªª° ∆√ Ã±˝ø«°À
-                   WHEN    "114002470"
-                    IF  FLG-ZAITAKU-CHECK = ZERO
-                     PERFORM  VARYING  IDX19  FROM  2  BY  1
-                               UNTIL   IDX19   >   10
-                       COMPUTE  IDX21 = IDX19 - 1
-                       PERFORM  VARYING  IDX20  FROM  1  BY  1
-                                 UNTIL   IDX20   >   31
-                        IF  ACCT-DAY(IDX19 IDX20) NOT = ZERO
-                          ADD    ACCT-DAY(IDX19 IDX20)
-                                   TO  TBL-ZAITAKU-KAISU(4 IDX21 IDX20)
-                        END-IF
-                       END-PERFORM
-                     END-PERFORM
-                    END-IF
-      *            ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈Œ¡
-                   WHEN    "114001110"
-                   WHEN    "114012910"
-                   WHEN    "114018010"
-                   WHEN    "114030310"
-                     PERFORM  VARYING  IDX19  FROM  2  BY  1
-                               UNTIL   IDX19   >   10
-                       COMPUTE  IDX21 = IDX19 - 1
-                       PERFORM  VARYING  IDX20  FROM  1  BY  1
-                                 UNTIL   IDX20   >   31
-                        IF  ACCT-DAY(IDX19 IDX20) NOT = ZERO
-                          ADD    ACCT-DAY(IDX19 IDX20)
-                                   TO  TBL-ZAITAKU-KAISU(5 IDX21 IDX20)
-                        END-IF
-                       END-PERFORM
-                     END-PERFORM
-                     MOVE  1  TO  FLG-ZAITAKU-CHECK
-      *            ¥µ≤»ø«Œ≈ª˛¥÷≤√ªª° ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈Œ¡°À
-                   WHEN    "114001470"
-                    IF  FLG-ZAITAKU-CHECK = ZERO
-                     PERFORM  VARYING  IDX19  FROM  2  BY  1
-                               UNTIL   IDX19   >   10
-                       COMPUTE  IDX21 = IDX19 - 1
-                       PERFORM  VARYING  IDX20  FROM  1  BY  1
-                                 UNTIL   IDX20   >   31
-                        IF  ACCT-DAY(IDX19 IDX20) NOT = ZERO
-                          ADD    ACCT-DAY(IDX19 IDX20)
-                                   TO  TBL-ZAITAKU-KAISU(6 IDX21 IDX20)
-                        END-IF
-                       END-PERFORM
-                     END-PERFORM
-                    END-IF
-                  END-EVALUATE
-                 END-IF
-      *
                END-IF
-      *
-               MOVE    ACCT-ZAIKBN  TO  RECE44-ZAIKBN
-      *
-               IF      ACCT-ZAIKBN       =     1
-                 MOVE   ZERO        TO  RECE45-SRYSURYO(IDX4)
-                 MOVE   ZERO        TO  RECE45-TANICD(IDX4)
-                 MOVE   ZERO        TO  RECE45-TANIMOJISU(IDX4)
-                 MOVE   SPACE       TO  RECE45-TANINAME(IDX4)
-                 IF  (SRY-SRYCD(IDX2)(1:1) = "6" OR "7")
-                 OR  (SRY-SRYCD(IDX2)(1:3) = "059"     )
-                 OR  (SRY-SRYCD(IDX2)(1:2) = "63"      )
-                     MOVE  "1"          TO  RECE44-COMCDFLG
-                     MOVE  "810000001"  TO  RECE45-SRYCD(IDX4)
-                 END-IF
-               END-IF
-               IF      ACCT-ZAIKBN       =     2
-                 MOVE   ZERO        TO  RECE45-SRYSURYO(IDX4)
-                 MOVE   ZERO        TO  RECE45-TANICD(IDX4)
-                 MOVE   ZERO        TO  RECE45-TANIMOJISU(IDX4)
-                 MOVE   SPACE       TO  RECE45-TANINAME(IDX4)
-               END-IF
-      *
-               PERFORM  2101216-SETCOM-HENSYU-SEC
-      *
-      *        £∞£π£µ£π£≥§«ªœ§ﬁ§Î•≥°º•…§¨§¢§ÎæÏπÁ°¢œ´∫“•Ï•ª≈≈§Œ∫Ó¿Æ¬–æ›≥∞
-               IF    (RECE41-HKNKBN           =   "1" OR "2")
-               AND   (RECE41-SRYYM           >=   "201307"  )
-               AND   (RECE41-RSIIRYOKBN   NOT =   "0"       )
-               AND   (SYS-200501-ROURECEKBN   =   "1" OR "3")
-                 IF  (ACCT-SRYKBN          =  "80"   )
-                 AND (SRY-SRYCD(IDX2)(1:5) =  "09593")
-                    MOVE     1      TO  RECE41-ORIGINALCDKBN
-                 END-IF
-               END-IF
-      *
-               IF    (RECE41-SRYYM         >=  "201704")
-               AND   (SRY-SRYCD(IDX2)(1:3)  =  "059"   )
-                 IF   (RECE41-HKNKBN   NOT =  "1" AND "2" )
-                 OR   (RECE41-RECESYUBETU  =  "0000"      )
-                 OR   (RECE41-ERR-ERRKBN   >   ZERO       )
-                 OR   (SRY-SRYKBN          =  "95" OR "96")
-      ***        OR   ((WRK-PARA-PRTKBN    =  "1"   ) AND
-      ***              (ACCT-ZAITEN        =   ZERO )     )
-                   CONTINUE
-                 ELSE
-                   MOVE     15      TO  RECE41-ERR-ERRKBN
-                   DISPLAY "059 ERR:SRYCD=" SRY-SRYCD(IDX2)
-                 END-IF
-               END-IF
-      *
-              END-IF
              END-IF  
            END-PERFORM
       *
-           IF    IDX4    NOT =   ZERO
-               MOVE    1     TO    FLG-WRITE45X
-           END-IF
-      *
            .
-       210121-RECE45-TENSOU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    •Ï•ª•◊•»•≥•·•Û•»•’•È•∞ ‘Ω∏ΩËÕ˝
-      *****************************************************************
-       2101211-RECE45-COMCNT-HEN-SEC               SECTION.
-      *
-           IF      RECE44-SRYKBN      =     "11"
-      *       ΩÈø«Œ¡ªªƒÍ≤ °ß
-              IF ( SRY-SRYCD(IDX2)    =     "830000020"          )
-              OR ((SRY-SRYCD(IDX2)    =     CONS-SYODOU-COMMENT ) AND
-                  (RECE41-SRYYM      >=     "201204"            ))
-              OR ((SRY-SRYCD(IDX2)    =     CONS-ROUSAI18       ) AND
-                  (RECE41-SRYYM      >=     "201204"            ))
-              OR ( SRY-SRYCD(IDX2)    =     CONS-SYODOU3-COMMENT
-                                     OR     CONS-SYODOU4-COMMENT )
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-SYOSANTEIKA-COMMENT
-              END-IF
-      *       ΩÈø«° ∆±∆¸ £øÙø«Œ≈≤ °À
-              IF  (SRY-SRYCD(IDX2)    =     CONS-SYODOU-COMMENT
-                                      OR    CONS-ROUSAI18
-                                      OR    CONS-SYODOU3-COMMENT
-                                      OR    CONS-SYODOU4-COMMENT)
-              AND (FLG-SYODOU-COM     =     ZERO                )
-                   MOVE   "1"   TO    RECE44-FLG-SYODOU-COMMENT
-                   MOVE   SRY-SRYKA   TO    RECE44-SYODOU-SRYKA(1)
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-SYODOU2-COMMENT
-                   MOVE  SPACE  TO    RECE44-FLG-SYODOU-COMMENT
-                   MOVE  SPACE  TO    RECE44-SYODOU-SRYKA(1)
-                   MOVE    1    TO    FLG-SYODOU-COM
-              END-IF
-           END-IF
-      *
-           IF      RECE44-SRYKBN      =     "12"
-      *       ∫∆ø«Œ¡ªªƒÍ≤ °ß
-              IF ( SRY-SRYCD(IDX2)    =     "830000021"
-                                      OR    CONS-DOUJITU-SAI
-                                      OR    CONS-DOUJITU-SAI2
-                                      OR    CONS-DOUJITU-DEN
-                                      OR    CONS-DOUJITU-DEN2
-                                      OR    CONS-DOUJITU-GAI
-                                      OR    CONS-DOUJITU2-GAI
-                                      OR    CONS-DOUJITU3-GAI)
-              OR ((SRY-SRYCD(IDX2)    =     CONS-ROUSAI19   ) AND
-                  (RECE41-SRYYM      <=     "201306"        ))
-              OR ((SRY-SRYCD(IDX2)    =     CONS-ROUSAI5
-                                      OR    CONS-ROUSAI38   ) AND
-                  (RECE41-SRYYM      >=     "201307"        ))
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-SAISANTEIKA-COMMENT
-              END-IF
-      *       ≈≈œ√∫∆ø«
-              IF  (SRY-SRYCD(IDX2)    =     "112009750"   OR
-                                            "112009850"   OR
-                                            "112009950"   OR
-                                            "112010050"   OR
-                                            "112012750"   OR
-                                            "112704150"   OR
-                                            "112704250"   OR
-                                            "112704350"   OR
-                                            "112706750"   OR
-                                            "112010650"   OR
-                                            "112010750"   OR
-                                            "112010850"   OR
-                                            "112010950"   OR
-                                            "112012850"   OR
-                                            "112704850"   OR
-                                            "112704950"   OR
-                                            "112705050"   OR
-                                            "112706850"   OR
-                                            "112007950"   OR
-                                            "112008050"   OR
-                                            "112008150"   OR
-                                            "112008250"   OR
-                                            "112012450"   OR
-                                            "112702750"   OR
-                                            "112702850"   OR
-                                            "112702950"   OR
-                                            "112706450"   OR
-                                            "112008850"   OR
-                                            "112008950"   OR
-                                            "112009050"   OR
-                                            "112009150"   OR
-                                            "112012550"   OR
-                                            "112703450"   OR
-                                            "112703550"   OR
-                                            "112703650"   OR
-                                            "112706550"     )
-              AND (RECE41-SRYYM       <     "201004"        )
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-DENWASAI-COMMENT
-              END-IF
-              IF  ((SRY-SRYCD(IDX2)   =     "112007950"    ) AND
-                   (RECE41-SRYYM      >=    "201004"       ))
-              OR  ((SRY-SRYCD(IDX2)   =     "101120050"    ) AND
-                   (RECE41-SRYYM      >=    "201307"       ))
-              OR  ((SRY-SRYCD(IDX2)   =     "112016750"    ) AND
-                   (RECE41-SRYYM      >=    "201501"       ))
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-DENWASAI-COMMENT
-              END-IF
-      *       ∆±∆¸∫∆ø«
-              IF  (SRY-SRYCD(IDX2)    =     "112010150"   OR
-                                            "112010250"   OR
-                                            "112010350"   OR
-                                            "112010450"   OR
-                                            "112010550"   OR
-                                            "112704450"   OR
-                                            "112704550"   OR
-                                            "112704650"   OR
-                                            "112704750"   OR
-                                            "112010650"   OR
-                                            "112010750"   OR
-                                            "112010850"   OR
-                                            "112010950"   OR
-                                            "112012850"   OR
-                                            "112704850"   OR
-                                            "112704950"   OR
-                                            "112705050"   OR
-                                            "112706850"   OR
-                                            "112008850"   OR
-                                            "112008950"   OR
-                                            "112009050"   OR
-                                            "112009150"   OR
-                                            "112012550"   OR
-                                            "112703450"   OR
-                                            "112703550"   OR
-                                            "112703650"   OR
-                                            "112706550"   OR
-                                            "112008350"   OR
-                                            "112008450"   OR
-                                            "112008550"   OR
-                                            "112008650"   OR
-                                            "112008750"   OR
-                                            "112703050"   OR
-                                            "112703150"   OR
-                                            "112703250"   OR
-                                            "112703350"   OR
-      *
-                                            "112011710"   OR
-                                            "112705850"     )
-              AND (RECE41-SRYYM       <     "201004"        )
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-DOUJITUSAI-COMMENT
-              END-IF
-              IF  ((SRY-SRYCD(IDX2)   =     "112008350"   OR
-                                            "112011710"   OR
-                                            "112016550"    ) AND
-                   (RECE41-SRYYM      >=    "201004"       ))
-              OR  ((SRY-SRYCD(IDX2)   =     "101120060"    ) AND
-                   (RECE41-SRYYM      >=    "201307"       ))
-              OR  ((SRY-SRYCD(IDX2)   =     "112016850"    ) AND
-                   (RECE41-SRYYM      >=    "201501"       ))
-              OR  ((SRY-SRYCD(IDX2)   =     "112017450"    ) AND
-                   (RECE41-SRYYM      >=    "201501"       ))
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-DOUJITUSAI-COMMENT
-              END-IF
-      *       ∆±∆¸≈≈œ√∫∆ø«
-              IF  ((SRY-SRYCD(IDX2)   =     "112008850"    ) AND
-                   (RECE41-SRYYM      >=    "201004"       ))
-              OR  ((SRY-SRYCD(IDX2)   =     "101120070"    ) AND
-                   (RECE41-SRYYM      >=    "201307"       ))
-              OR  ((SRY-SRYCD(IDX2)   =     "112016950"    ) AND
-                   (RECE41-SRYYM      >=    "201501"       ))
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-DOUDENSAI-COMMENT
-              END-IF
-      *
-      *       ∫∆ø«° ∆±∞Ï∆¸£≤≤ Ã‹°À
-              IF ( SRY-SRYCD(IDX2)    =     CONS-DOUJITU-SAI
-                                      OR    CONS-DOUJITU-SAI2
-                                      OR    CONS-DOUJITU-DEN
-                                      OR    CONS-DOUJITU-DEN2
-                                      OR    CONS-DOUJITU-GAI
-                                      OR    CONS-DOUJITU2-GAI
-                                      OR    CONS-DOUJITU3-GAI)
-              OR ((SRY-SRYCD(IDX2)    =     CONS-ROUSAI19   ) AND
-                  (RECE41-SRYYM      <=     "201306"        ))
-              OR ((SRY-SRYCD(IDX2)    =     CONS-ROUSAI5
-                                      OR    CONS-ROUSAI38   ) AND
-                  (RECE41-SRYYM      >=     "201307"        ))
-               IF   FLG-SAIDOU-COM   =     ZERO
-                 MOVE   "1"        TO   RECE44-FLG-SAIDOU-COMMENT
-                 MOVE   SRY-SRYKA  TO   RECE44-SAIDOU-SRYKA(1)
-               END-IF
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-DOUJITU-COMMENT
-                 MOVE   SPACE      TO   RECE44-FLG-SAIDOU-COMMENT
-                 MOVE   SPACE      TO   RECE44-SAIDOU-SRYKA(1)
-                 MOVE    1         TO   FLG-SAIDOU-COM
-              END-IF
-           END-IF
-      *
-           IF      RECE44-SRYKBN      =     "40"
-      *       ≤√£∏£∞˙° »Øæ…∆¸µ≠∫‹°À
-              IF   RECE41-SRYYM      >=    "200604"
-              AND  RECE41-SRYYM      <=    "200803"
-                IF   SRY-SRYCD(IDX2)  =     CONS-KAITATU-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-KAITATU-COMMENT
-                END-IF
-              END-IF
-      *
-              IF   RECE41-SRYYM      >=    "201004"
-      *         øÕπ©ø’¬°≈˘
-                IF   SRY-SRYCD(IDX2)  =     CONS-JINZOU1-COMMENT
-                                        OR  CONS-JINZOU2-COMMENT
-                                        OR  CONS-JINZOU3-COMMENT
-                                        OR  CONS-JINZOU4-COMMENT
-                                        OR  CONS-JINZOU5-COMMENT
-                                        OR  CONS-JINZOU6-COMMENT
-                                        OR  CONS-JINZOU7-COMMENT
-                                        OR  CONS-JINZOU8-COMMENT
-                                        OR  CONS-JINZOU9-COMMENT
-                        MOVE   "1"    TO    RECE44-FLG-JINZOU-COMMENT
-                END-IF
-      *         ∂…ΩÍ±¢∞µ ƒ∫øΩË√÷
-                IF    RECE41-SRYYM      >=    "201404"
-                  IF   SRY-SRYCD(IDX2)  =     CONS-KYOKUIN8-COMMENT
-                                          OR  CONS-KYOKUIN9-COMMENT
-                                          OR  CONS-KYOKUIN10-COMMENT
-                        MOVE   "1"    TO    RECE44-FLG-KYOKUIN-COMMENT
-                  END-IF
-                ELSE
-                 IF   RECE41-SRYYM      >=    "201204"
-                  IF   SRY-SRYCD(IDX2)  =     CONS-KYOKUIN5-COMMENT
-                                          OR  CONS-KYOKUIN6-COMMENT
-                                          OR  CONS-KYOKUIN7-COMMENT
-                        MOVE   "1"    TO    RECE44-FLG-KYOKUIN-COMMENT
-                  END-IF
-                 ELSE
-                  IF   SRY-SRYCD(IDX2)  =     CONS-KYOKUIN1-COMMENT
-                                          OR  CONS-KYOKUIN2-COMMENT
-                                          OR  CONS-KYOKUIN3-COMMENT
-                                          OR  CONS-KYOKUIN4-COMMENT
-                        MOVE   "1"    TO    RECE44-FLG-KYOKUIN-COMMENT
-                  END-IF
-                 END-IF
-                END-IF
-              END-IF
-      *       ºßµ§§À§Ë§ÎÁØÊ˘≈˘ª…∑„À°
-              IF   RECE41-SRYYM    >=     "201404"
-                IF  (SRY-SRYCD(IDX2)    =     CONS-BOKOHO1-COMMENT)
-                AND (FLG-BOKOHO-COM     =     ZERO                )
-                   MOVE   "1"   TO    RECE44-FLG-BOKOHO-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)    =     CONS-BOKOHO2-COMMENT
-                   MOVE  SPACE  TO    RECE44-FLG-BOKOHO-COMMENT
-                   MOVE    1    TO    FLG-BOKOHO-COM
-                END-IF
-              END-IF
-           END-IF
-      *
-           IF    ((RECE41-HKNKBN    NOT  =  "4" AND "6" ) AND
-                  (RECE44-SRYKBN         =  "80"        ))
-           OR    ((RECE41-HKNKBN         =  "4"  OR "6" ) AND
-                  (RECE44-SRYKBN         =  "40" OR "80"))
-      *       •Í•œ•”•Í
-              IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
-                                            "180022210"   OR
-                                            "180706810"   OR
-                                            "180022110"   OR
-                                            "180707110"   OR
-                                            "180022410"   OR
-                                            "180707010"   OR
-                                            "180022310"   OR
-                                            "180707310"   OR
-                                            "180022610"   OR
-                                            "180707210"   OR
-                                            "180022510"   OR
-                                            "180707510"   OR
-                                            "180022810"   OR
-                                            "180707410"   OR
-                                            "180022710"   OR
-                                            "180708210"   OR
-                                            "180023710"   OR
-                                            "180708410"   OR
-                                            "180023910"   OR
-                                            "180708110"   OR
-                                            "180023610"   OR
-                                            "180708310"   OR
-                                            "180023810"   OR
-                                            "180024910"   OR
-                                            "180024810"   OR
-                                            "180025110"   OR
-                                            "180025010"   OR
-                                            "180025510"   OR
-                                            "180025410"
-      *****             MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-RIHABIRI-COMMENT
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-SINDAI1-COMMENT  OR
-                                            CONS-SINDAI2-COMMENT  OR
-                                            CONS-SINDAI3-COMMENT  OR
-                                            CONS-SINDAI4-COMMENT  OR
-                                            CONS-KOKYUKI1-COMMENT OR
-                                            CONS-KOKYUKI2-COMMENT OR
-                                            CONS-KOKYUKI3-COMMENT OR
-                                            CONS-KOKYUKI4-COMMENT OR
-                                            CONS-NOUKE1-COMMENT   OR
-                                            CONS-NOUKE2-COMMENT   OR
-                                            CONS-NOUKE3-COMMENT   OR
-                                            CONS-NOUKE4-COMMENT   OR
-                                            CONS-NOUKE7-COMMENT   OR
-                                            CONS-NOUKE11-COMMENT  OR
-                                            CONS-NOUKE12-COMMENT  OR
-                                            CONS-NOUKE13-COMMENT  OR
-                                            CONS-NOUKE14-COMMENT  OR
-                                            CONS-NOUKE15-COMMENT  OR
-                                            CONS-NOUKE16-COMMENT  OR
-                                            CONS-NOUKE17-COMMENT  OR
-                                            CONS-NOUKE18-COMMENT  OR
-                                            CONS-NOUKE19-COMMENT  OR
-                                            CONS-NOUKE23-COMMENT  OR
-                                            CONS-NOUKE24-COMMENT  OR
-                                            CONS-NOUKE25-COMMENT  OR
-                                            CONS-NOUKE26-COMMENT  OR
-                                            CONS-NOUKE27-COMMENT  OR
-                                            CONS-NOUKE28-COMMENT  OR
-                                            CONS-NOUKE29-COMMENT  OR
-                                            CONS-NOUKE30-COMMENT  OR
-                                            CONS-NOUKE31-COMMENT  OR
-                                            CONS-NOUKE32-COMMENT  OR
-                                            CONS-NOUKE33-COMMENT  OR
-                                            CONS-NOUKE34-COMMENT  OR
-                                            CONS-NOUKE35-COMMENT  OR
-                                            CONS-NOUKE36-COMMENT  OR
-                                            CONS-NOUKE37-COMMENT  OR
-                                            CONS-UNDOKI1-COMMENT  OR
-                                            CONS-UNDOKI2-COMMENT  OR
-                                            CONS-UNDOKI3-COMMENT  OR
-                                            CONS-UNDOKI4-COMMENT  OR
-                                            CONS-UNDOKI9-COMMENT  OR
-                                            CONS-UNDOKI11-COMMENT OR
-                                            CONS-UNDOKI12-COMMENT OR
-                                            CONS-UNDOKI13-COMMENT OR
-                                            CONS-UNDOKI17-COMMENT OR
-                                            CONS-UNDOKI18-COMMENT OR
-                                            CONS-UNDOKI19-COMMENT OR
-                                            CONS-UNDOKI22-COMMENT OR
-                                            CONS-UNDOKI23-COMMENT OR
-                                            CONS-UNDOKI24-COMMENT OR
-                                            CONS-UNDOKI25-COMMENT OR
-                                            CONS-UNDOKI26-COMMENT OR
-                                            CONS-UNDOKI27-COMMENT OR
-                                            CONS-UNDOKI28-COMMENT OR
-                                            CONS-UNDOKI29-COMMENT OR
-                                            CONS-UNDOKI30-COMMENT OR
-                                            CONS-SYOGAI1-COMMENT  OR
-                                            CONS-SYOGAI2-COMMENT  OR
-                                            CONS-SYOGAI3-COMMENT  OR
-                                            CONS-HAIYO1-COMMENT   OR
-                                            CONS-HAIYO2-COMMENT   OR
-                                            CONS-HAIYO3-COMMENT   OR
-                                            CONS-HAIYO4-COMMENT   OR
-                                            CONS-HAIYO5-COMMENT   OR
-                                            CONS-HAIYO6-COMMENT   OR
-                                            CONS-HAIYO7-COMMENT   OR
-                                            CONS-HAIYO8-COMMENT   OR
-                                            CONS-HAIYO9-COMMENT   OR
-                                            CONS-HAIYO10-COMMENT  OR
-                                            CONS-HAIYO11-COMMENT  OR
-                                            CONS-HAIYO12-COMMENT  OR
-                                            CONS-HAIYO13-COMMENT  OR
-                                            CONS-HAIYO14-COMMENT  OR
-                                            CONS-HAIYO15-COMMENT  OR
-                                            CONS-HAIYO16-COMMENT  OR
-                                            CONS-HAIYO17-COMMENT  OR
-                                            CONS-HAIYO18-COMMENT  OR
-                                            CONS-HAIYO19-COMMENT  OR
-                                            CONS-HAIYO20-COMMENT  OR
-                                            CONS-HAIYO21-COMMENT  OR
-                                            CONS-GANKNJ-COMMENT
-      *****             MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-RIHABIRI-COMMENT
-              END-IF
-              IF   RECE41-SRYYM      >=    "201307"
-                IF   SRY-SRYCD(IDX2)  =     CONS-SINDAI9-COMMENT   OR
-                                            CONS-SINDAI10-COMMENT  OR
-                                            CONS-KOKYUKI9-COMMENT  OR
-                                            CONS-KOKYUKI10-COMMENT OR
-                                            CONS-NOUKE20-COMMENT   OR
-                                            CONS-NOUKE21-COMMENT   OR
-                                            CONS-NOUKE22-COMMENT   OR
-                                            CONS-UNDOKI14-COMMENT  OR
-                                            CONS-UNDOKI15-COMMENT  OR
-                                            CONS-UNDOKI16-COMMENT  OR
-                                            CONS-UNDOKI20-COMMENT  OR
-                                            CONS-UNDOKI21-COMMENT
-      *****             MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-RIHABIRI-COMMENT
-                END-IF
-              ELSE
-                IF   SRY-SRYCD(IDX2)  =     CONS-SINDAI7-COMMENT   OR
-                                            CONS-SINDAI8-COMMENT   OR
-                                            CONS-KOKYUKI7-COMMENT  OR
-                                            CONS-KOKYUKI8-COMMENT  OR
-                                            CONS-NOUKE8-COMMENT    OR
-                                            CONS-NOUKE9-COMMENT    OR
-                                            CONS-NOUKE10-COMMENT   OR
-                                            CONS-UNDOKI7-COMMENT   OR
-                                            CONS-UNDOKI8-COMMENT   OR
-                                            CONS-UNDOKI10-COMMENT
-      *****             MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-RIHABIRI-COMMENT
-                END-IF
-              END-IF
-              EVALUATE      SRY-SRYCD(IDX2)
-                WHEN     CONS-SINDAI5-COMMENT
-                        MOVE   "2"    TO    RECE44-RIHABIRI-COMMENT
-                WHEN     CONS-SINDAI6-COMMENT
-                        MOVE   "3"    TO    RECE44-RIHABIRI-COMMENT
-                WHEN     CONS-KOKYUKI5-COMMENT
-                        MOVE   "4"    TO    RECE44-RIHABIRI-COMMENT
-                WHEN     CONS-KOKYUKI6-COMMENT
-                        MOVE   "5"    TO    RECE44-RIHABIRI-COMMENT
-                WHEN     CONS-NOUKE5-COMMENT
-                        MOVE   "6"    TO    RECE44-RIHABIRI-COMMENT
-                WHEN     CONS-NOUKE6-COMMENT
-                        MOVE   "7"    TO    RECE44-RIHABIRI-COMMENT
-                WHEN     CONS-UNDOKI5-COMMENT
-                        MOVE   "8"    TO    RECE44-RIHABIRI-COMMENT
-                WHEN     CONS-UNDOKI6-COMMENT
-                        MOVE   "9"    TO    RECE44-RIHABIRI-COMMENT
-              END-EVALUATE
-      *       •Í•œ•”•Í° »Øæ…∆¸µ≠∫‹°À
-              IF   RECE41-SRYYM      >=    "200604"
-                IF   SRY-SRYCD(IDX2)  =     CONS-SINDAI1-COMMENT
-                                      OR    CONS-SINDAI2-COMMENT
-                                      OR    CONS-SINDAI3-COMMENT
-                                      OR    CONS-SINDAI4-COMMENT
-                                      OR    CONS-SINDAI5-COMMENT
-                                      OR    CONS-SINDAI6-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-SINDAI-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-KOKYUKI1-COMMENT
-                                      OR    CONS-KOKYUKI2-COMMENT
-                                      OR    CONS-KOKYUKI3-COMMENT
-                                      OR    CONS-KOKYUKI4-COMMENT
-                                      OR    CONS-KOKYUKI5-COMMENT
-                                      OR    CONS-KOKYUKI6-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-KOKYUKI-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-NOUKE1-COMMENT
-                                      OR    CONS-NOUKE2-COMMENT
-                                      OR    CONS-NOUKE3-COMMENT
-                                      OR    CONS-NOUKE4-COMMENT
-                                      OR    CONS-NOUKE5-COMMENT
-                                      OR    CONS-NOUKE6-COMMENT
-                                      OR    CONS-NOUKE7-COMMENT
-                                      OR    CONS-NOUKE11-COMMENT
-                                      OR    CONS-NOUKE12-COMMENT
-                                      OR    CONS-NOUKE13-COMMENT
-                                      OR    CONS-NOUKE14-COMMENT
-                                      OR    CONS-NOUKE15-COMMENT
-                                      OR    CONS-NOUKE16-COMMENT
-                                      OR    CONS-NOUKE17-COMMENT
-                                      OR    CONS-NOUKE18-COMMENT
-                                      OR    CONS-NOUKE19-COMMENT
-                                      OR    CONS-NOUKE23-COMMENT
-                                      OR    CONS-NOUKE24-COMMENT
-                                      OR    CONS-NOUKE25-COMMENT
-                                      OR    CONS-NOUKE26-COMMENT
-                                      OR    CONS-NOUKE27-COMMENT
-                                      OR    CONS-NOUKE28-COMMENT
-                                      OR    CONS-NOUKE29-COMMENT
-                                      OR    CONS-NOUKE30-COMMENT
-                                      OR    CONS-NOUKE31-COMMENT
-                                      OR    CONS-NOUKE32-COMMENT
-                                      OR    CONS-NOUKE33-COMMENT
-                                      OR    CONS-NOUKE34-COMMENT
-                                      OR    CONS-NOUKE35-COMMENT
-                                      OR    CONS-NOUKE36-COMMENT
-                                      OR    CONS-NOUKE37-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-NOUKE-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-UNDOKI1-COMMENT
-                                      OR    CONS-UNDOKI2-COMMENT
-                                      OR    CONS-UNDOKI3-COMMENT
-                                      OR    CONS-UNDOKI4-COMMENT
-                                      OR    CONS-UNDOKI5-COMMENT
-                                      OR    CONS-UNDOKI6-COMMENT
-                                      OR    CONS-UNDOKI9-COMMENT
-                                      OR    CONS-UNDOKI11-COMMENT
-                                      OR    CONS-UNDOKI12-COMMENT
-                                      OR    CONS-UNDOKI13-COMMENT
-                                      OR    CONS-UNDOKI17-COMMENT
-                                      OR    CONS-UNDOKI18-COMMENT
-                                      OR    CONS-UNDOKI19-COMMENT
-                                      OR    CONS-UNDOKI22-COMMENT
-                                      OR    CONS-UNDOKI23-COMMENT
-                                      OR    CONS-UNDOKI24-COMMENT
-                                      OR    CONS-UNDOKI25-COMMENT
-                                      OR    CONS-UNDOKI26-COMMENT
-                                      OR    CONS-UNDOKI27-COMMENT
-                                      OR    CONS-UNDOKI28-COMMENT
-                                      OR    CONS-UNDOKI29-COMMENT
-                                      OR    CONS-UNDOKI30-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-UNDOKI-COMMENT
-                END-IF
-                IF   RECE41-SRYYM      >=    "201307"
-                  IF   SRY-SRYCD(IDX2)  =   CONS-SINDAI9-COMMENT
-                                      OR    CONS-SINDAI10-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-SINDAI-COMMENT
-                  END-IF
-                  IF   SRY-SRYCD(IDX2)  =   CONS-KOKYUKI9-COMMENT
-                                      OR    CONS-KOKYUKI10-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-KOKYUKI-COMMENT
-                  END-IF
-                  IF   SRY-SRYCD(IDX2)  =   CONS-NOUKE20-COMMENT
-                                      OR    CONS-NOUKE21-COMMENT
-                                      OR    CONS-NOUKE22-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-NOUKE-COMMENT
-                  END-IF
-                  IF   SRY-SRYCD(IDX2)  =   CONS-UNDOKI14-COMMENT
-                                      OR    CONS-UNDOKI15-COMMENT
-                                      OR    CONS-UNDOKI16-COMMENT
-                                      OR    CONS-UNDOKI20-COMMENT
-                                      OR    CONS-UNDOKI21-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-UNDOKI-COMMENT
-                  END-IF
-                ELSE
-                  IF   SRY-SRYCD(IDX2)  =   CONS-SINDAI7-COMMENT
-                                      OR    CONS-SINDAI8-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-SINDAI-COMMENT
-                  END-IF
-                  IF   SRY-SRYCD(IDX2)  =   CONS-KOKYUKI7-COMMENT
-                                      OR    CONS-KOKYUKI8-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-KOKYUKI-COMMENT
-                  END-IF
-                  IF   SRY-SRYCD(IDX2)  =   CONS-NOUKE8-COMMENT
-                                      OR    CONS-NOUKE9-COMMENT
-                                      OR    CONS-NOUKE10-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-NOUKE-COMMENT
-                  END-IF
-                  IF   SRY-SRYCD(IDX2)  =   CONS-UNDOKI7-COMMENT
-                                      OR    CONS-UNDOKI8-COMMENT
-                                      OR    CONS-UNDOKI10-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-UNDOKI-COMMENT
-                  END-IF
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-NANBYO-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-NANBYO-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-SYOGAI1-COMMENT
-                                      OR    CONS-SYOGAI2-COMMENT
-                                      OR    CONS-SYOGAI3-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-SYOGAI-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-SESSYOKU-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-SESSYOKU-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-HAIYO1-COMMENT
-                                      OR    CONS-HAIYO2-COMMENT
-                                      OR    CONS-HAIYO3-COMMENT
-                                      OR    CONS-HAIYO4-COMMENT
-                                      OR    CONS-HAIYO5-COMMENT
-                                      OR    CONS-HAIYO6-COMMENT
-                                      OR    CONS-HAIYO7-COMMENT
-                                      OR    CONS-HAIYO8-COMMENT
-                                      OR    CONS-HAIYO9-COMMENT
-                                      OR    CONS-HAIYO10-COMMENT
-                                      OR    CONS-HAIYO11-COMMENT
-                                      OR    CONS-HAIYO12-COMMENT
-                                      OR    CONS-HAIYO13-COMMENT
-                                      OR    CONS-HAIYO14-COMMENT
-                                      OR    CONS-HAIYO15-COMMENT
-                                      OR    CONS-HAIYO16-COMMENT
-                                      OR    CONS-HAIYO17-COMMENT
-                                      OR    CONS-HAIYO18-COMMENT
-                                      OR    CONS-HAIYO19-COMMENT
-                                      OR    CONS-HAIYO20-COMMENT
-                                      OR    CONS-HAIYO21-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-HAIYO-COMMENT
-                END-IF
-              END-IF
-      *
-              IF   (RECE41-SRYYM    >=   "201604"             )
-              AND  (SRY-SRYCD(IDX2)  =   CONS-RIHAKSN1-COMMENT
-                                     OR  CONS-RIHAKSN2-COMMENT)
-                IF   RECE44-SINDAI-COMMENT = "1"
-                    MOVE   "1"    TO    RECE44-SINDAI9-COMMENT
-                END-IF
-                IF   RECE44-KOKYUKI-COMMENT = "1"
-                    MOVE   "1"    TO    RECE44-KOKYUKI9-COMMENT
-                END-IF
-                IF   RECE44-HAIYO-COMMENT = "1"
-                    MOVE   "1"    TO    RECE44-HAIYO9-COMMENT
-                END-IF
-              END-IF
-      *
-              IF   RECE41-SRYYM      >=    "201004"
-      *         «ß√ŒŒ≈À°°¶«ß√Œπ‘∆∞Œ≈À°
-                IF  (SRY-SRYCD(IDX2)  =     CONS-NINRYO-COMMENT )
-                AND (FLG-NINRYO-COM   =     ZERO                )
-                        MOVE   "1"    TO    RECE44-FLG-NINRYO-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-NINRYO2-COMMENT)
-                AND (FLG-NINRYO-COM   =     ZERO                )
-                        MOVE   "2"    TO    RECE44-FLG-NINRYO-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-NINRYO5-COMMENT)
-                AND (FLG-NINRYO-COM   =     ZERO                )
-                        MOVE   "5"    TO    RECE44-FLG-NINRYO-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-NINRYO6-COMMENT
-                        MOVE  SPACE   TO    RECE44-FLG-NINRYO-COMMENT
-                        MOVE    1     TO    FLG-NINRYO-COM
-                END-IF
-              END-IF
-      *       ƒÃ±°°¶∫ﬂ¬¿∫ø¿Œ≈À°° £≤£∞∫–Ã§À˛°À≤√ªª
-              IF   RECE41-SRYYM      >=    "201404"
-      ***       IF   SRY-SRYCD(IDX2)  =     CONS-TUINZAI-COMMENT
-                IF    (TNS-DATAKBN             =    1 )
-                AND   (TNS-CDKBN-KBN           =   "I")
-                AND   (TNS-CDKBN-KBNNUM        =    2 )
-                AND   (TNS-CDKBN-KBNNUM-EDA    =    0 )
-                AND   (RECE41-AGE              <    20)
-                  IF    (RECE41-AGE           =      19           )
-                  AND   (RECE41-BIRTHDAY(5:2) =  RECE41-SRYYM(5:2))
-                  AND   (RECE41-BIRTHDAY(7:2) NOT = "01"          )
-                    PERFORM VARYING IDX22 FROM 1 BY 1
-                             UNTIL (IDX22                      >  31)
-                              OR   (RECE44-FLG-TUINZAI-COMMENT = "1")
-                      IF   ACCT-DAY(1 IDX22)  NOT = ZERO
-                        IF   IDX22 < RECE41-BIRTHDAY(7:2)
-                          MOVE "1"    TO    RECE44-FLG-TUINZAI-COMMENT
-                        END-IF
-                      END-IF
-                    END-PERFORM
-                  ELSE
-                        MOVE   "1"    TO    RECE44-FLG-TUINZAI-COMMENT
-                  END-IF
-                END-IF
-              END-IF
-      *       ∞Õ¬∏æ…Ω∏√ƒŒ≈À°
-              IF   RECE41-SRYYM      >=    "201604"
-                IF  (SRY-SRYCD(IDX2)  =     CONS-IZONSYO-COMMENT)
-                AND (FLG-IZONSYO-COM  =     ZERO                )
-                        MOVE   "1"    TO    RECE44-FLG-IZONSYO-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-IZONSYO2-COMMENT
-                        MOVE  SPACE   TO    RECE44-FLG-IZONSYO-COMMENT
-                        MOVE    1     TO    FLG-IZONSYO-COM
-                END-IF
-              END-IF
-      *       ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡
-              IF   RECE41-SRYYM      >=    "201604"
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIJYU-COMMENT )
-                AND (FLG-SEIJYU-COM   =     ZERO                )
-                        MOVE   "1"    TO    RECE44-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIJYU2-COMMENT)
-                AND (FLG-SEIJYU-COM   =     ZERO                )
-                        MOVE   "2"    TO    RECE44-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIJYU3-COMMENT)
-                AND (FLG-SEIJYU-COM   =     ZERO                )
-                        MOVE   "3"    TO    RECE44-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIJYU4-COMMENT)
-                AND (FLG-SEIJYU-COM   =     ZERO                )
-                        MOVE   "4"    TO    RECE44-FLG-SEIJYU-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-SEIJYU5-COMMENT
-                        MOVE  SPACE   TO    RECE44-FLG-SEIJYU-COMMENT
-                        MOVE    1     TO    FLG-SEIJYU-COM
-                END-IF
-              END-IF
-           END-IF
-      *
-           IF      RECE44-SRYKBN      =     "13"
-              IF   SRY-SRYCD(IDX2)    =     CONS-MANSEI
-                   MOVE   "1"   TO    RECE44-FLG-SHIDOU-COMMENT
-              END-IF
-      *
-              IF   SRY-SRYCD(IDX2)    =     CONS-SYOBYO-COMMENT
-              AND  FLG-SYOBYO-COM     =     ZERO
-                   MOVE   "1"   TO    RECE44-FLG-SYOBYO-COMMENT
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-SYOBYO2-COMMENT
-                                      OR    CONS-SYOBYO3-COMMENT
-                   MOVE  SPACE  TO    RECE44-FLG-SYOBYO-COMMENT
-                   MOVE    1    TO    FLG-SYOBYO-COM
-              END-IF
-      *
-              IF   SRY-SRYCD(IDX2)    =     CONS-RYOYO-COMMENT
-              AND  FLG-RYOYO-COM      =     ZERO
-                   MOVE   "1"   TO    RECE44-FLG-RYOYO-COMMENT
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-RYOYO2-COMMENT
-                   MOVE  SPACE  TO    RECE44-FLG-RYOYO-COMMENT
-                   MOVE    1    TO    FLG-RYOYO-COM
-              END-IF
-      *
-              IF  (SRY-SRYCD(IDX2)    =     CONS-NIKOCHIN-COMMENT
-                                      OR    CONS-NIKOCHIN2-COMMENT
-                                      OR    CONS-NIKOCHIN3-COMMENT)
-              AND (FLG-NIKOCHIN-COM   =     ZERO                  )
-                   MOVE   "1"   TO    RECE44-FLG-NIKOCHIN-COMMENT
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-NIKOCHIN4-COMMENT
-                   MOVE  SPACE  TO    RECE44-FLG-NIKOCHIN-COMMENT
-                   MOVE    1    TO    FLG-NIKOCHIN-COM
-              END-IF
-      *
-              IF  (SRY-SRYCD(IDX2)    =     CONS-ZENSOKU-COMMENT
-                                      OR    CONS-ZENSOKU2-COMMENT)
-              AND (FLG-ZENSOKU-COM    =     ZERO                 )
-                   MOVE   "1"   TO    RECE44-FLG-ZENSOKU-COMMENT
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-ZENSOKU3-COMMENT
-                   MOVE  SPACE  TO    RECE44-FLG-ZENSOKU-COMMENT
-                   MOVE    1    TO    FLG-ZENSOKU-COM
-              END-IF
-      *
-              IF   RECE41-SRYYM    >=     "200804"
-                IF   (SRY-SRYCD(IDX2)   =     CONS-SYOUNI1-COMMENT)
-                AND  (FLG-SYOUNI-COM    =     ZERO                )
-                   MOVE   "1"   TO    RECE44-FLG-SYOUNI-COMMENT
-                   MOVE   "1"   TO    RECE41-SYOUNIFLG
-                END-IF
-                IF   (SRY-SRYCD(IDX2)   =     CONS-SYOUNI2-COMMENT)
-                AND  (FLG-SYOUNI-COM    =     ZERO                )
-                   MOVE   "2"   TO    RECE44-FLG-SYOUNI-COMMENT
-                END-IF
-                IF    SRY-SRYCD(IDX2)   =     CONS-SYOUNI3-COMMENT
-                   MOVE  SPACE  TO    RECE44-FLG-SYOUNI-COMMENT
-                   MOVE    1    TO    FLG-SYOUNI-COM
-                END-IF
-              END-IF
-      *
-              IF   RECE41-SRYYM      >=    "201004"
-                IF   RECE41-SRYYM    >=    "201604"
-      *           ±Û≥÷•‚•À•ø•Í•Û•∞≤√ªª
-                  IF   SRY-SRYCD(IDX2) =  CONS-SINPESU2-COMMENT
-                        MOVE   "1"    TO    RECE44-FLG-SINPESU-COMMENT
-                  END-IF
-                ELSE
-      *           ø¥¬°•⁄°º•π•·°º•´°ºªÿ∆≥¥…Õ˝Œ¡° ±Û≥÷•‚•À•ø•Í•Û•∞°À
-                  IF   SRY-SRYCD(IDX2) =  CONS-SINPESU-COMMENT
-                        MOVE   "1"    TO    RECE44-FLG-SINPESU-COMMENT
-                  END-IF
-                END-IF
-      *         Ω∏√ƒ±…Õ‹ø©ªˆªÿ∆≥Œ¡
-                IF   SRY-SRYCD(IDX2)  =     CONS-SYUEIYO-COMMENT
-                        MOVE   "1"    TO    RECE44-FLG-SYUEIYO-COMMENT
-                END-IF
-              END-IF
-      *
-              IF   RECE41-SRYYM      >=    "201204"
-                IF   SRY-SRYCD(IDX2)  =     CONS-NINSEN-COMMENT
-                        MOVE   "1"    TO    RECE44-FLG-NINSEN-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-TAKYO-COMMENT
-                        MOVE   "1"    TO    RECE41-COMCNTFLG
-                        MOVE   "1"    TO    RECE44-FLG-TAKYO-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-TAKYOKSN-COMMENT
-                        MOVE   "1"    TO    RECE44-FLG-TAKYOKSN-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-GAIRIHA1-COMMENT
-                                      OR    CONS-GAIRIHA2-COMMENT
-                                      OR    CONS-GAIHOU-COMMENT
-                        MOVE   "1"    TO    RECE44-FLG-GAIRIHA-COMMENT
-                END-IF
-              END-IF
-      *       ø¥¬°•⁄°º•π•·°º•´°ºªÿ∆≥¥…Õ˝Œ¡° √ÂÕ—∑øº´∆∞Ω¸∫Ÿ∆∞¥Ô°À
-      *       ø¥¬°•⁄°º•π•·°º•´°ºªÿ∆≥¥…Õ˝Œ¡° •Ì°¶ø¢π˛∑øΩ¸∫Ÿ∆∞¥Ô∞‹π‘¥¸≤√ªª¥ﬁ§‡°À
-      *       §¨§Û¥µº‘ªÿ∆≥¥…Õ˝Œ¡£≤°¶£≥
-              IF   RECE41-SRYYM    >=     "201404"
-                IF   SRY-SRYCD(IDX2) =  CONS-SINPESUR1-COMMENT
-                   MOVE   "1"   TO    RECE44-FLG-SINPESUR-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2) =  CONS-SINPESUR2-COMMENT
-                   MOVE   "2"   TO    RECE44-FLG-SINPESUR-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2) =  CONS-GANSIDO1-COMMENT
-                   MOVE   "1"   TO    RECE44-FLG-GANSIDO-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2) =  CONS-GANSIDO2-COMMENT
-                   MOVE   "2"   TO    RECE44-FLG-GANSIDO-COMMENT
-                END-IF
-              END-IF
-              IF   RECE41-SRYYM    >=     "201604"
-                IF   SRY-SRYCD(IDX2) =  CONS-SINPESUR3-COMMENT
-                   MOVE   "3"   TO    RECE44-FLG-SINPESUR-COMMENT
-                END-IF
-              END-IF
-           END-IF
-      *
-           IF      RECE44-SRYKBN      =     "14"
-              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI-COMMENT
-              AND  FLG-HOUSIJI-COM    =     ZERO
-                   MOVE   "1"   TO    RECE44-FLG-HOUSIJI-COMMENT
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI2-COMMENT
-                   MOVE  SPACE  TO    RECE44-FLG-HOUSIJI-COMMENT
-                   MOVE    1    TO    FLG-HOUSIJI-COM
-              END-IF
-      *
-              IF   SRY-SRYCD(IDX2)    =     CONS-HINKAI-COMMENT
-                   MOVE   "1"   TO    RECE44-FLG-HINKAI-COMMENT
-              END-IF
-      *
-              IF  (SRY-SRYCD(IDX2)    =     CONS-OSIN-COMMENT
-                                      OR    CONS-OSIN2-COMMENT)
-              AND (FLG-OSIN-COM       =     ZERO              )
-                   MOVE   "1"   TO    RECE44-FLG-OSIN-COMMENT
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-OSIN3-COMMENT
-                   MOVE  SPACE  TO    RECE44-FLG-OSIN-COMMENT
-                   MOVE    1    TO    FLG-OSIN-COM
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-ZAIIKAN1-COMMENT
-                                      OR    CONS-ZAIIKAN2-COMMENT
-                                      OR    CONS-ZAIIKAN3-COMMENT
-                                      OR    CONS-ZAIIKAN4-COMMENT
-                                      OR    CONS-ZAIIKAN5-COMMENT
-                                      OR    CONS-ZAIIKAN6-COMMENT
-                                      OR    CONS-ZAIIKAN7-COMMENT
-                                      OR    CONS-ZAIIKAN8-COMMENT
-                                      OR    CONS-ZAIIKAN9-COMMENT
-                                      OR    CONS-ZAIIKAN10-COMMENT
-                                      OR    CONS-ZAIIKAN11-COMMENT
-                                      OR    CONS-ZAIIKAN12-COMMENT
-                                      OR    CONS-ZAIIKAN13-COMMENT
-                                      OR    CONS-ZAIIKAN14-COMMENT
-                                      OR    CONS-ZAIIKAN15-COMMENT
-                                      OR    CONS-ZAIIKAN16-COMMENT
-                                      OR    CONS-ZAIIKAN17-COMMENT
-                                      OR    CONS-ZAIIKAN18-COMMENT
-                                      OR    CONS-ZAIIKAN19-COMMENT
-                                      OR    CONS-ZAIIKAN20-COMMENT
-                                      OR    CONS-ZAIIKAN21-COMMENT
-                                      OR    CONS-ZAIIKAN22-COMMENT
-                                      OR    CONS-ZAIIKAN23-COMMENT
-                                      OR    CONS-ZAIIKAN24-COMMENT
-                                      OR    CONS-ZAIIKAN25-COMMENT
-                                      OR    CONS-ZAIIKAN26-COMMENT
-                                      OR    CONS-ZAIIKAN27-COMMENT
-                                      OR    CONS-ZAIIKAN28-COMMENT
-                                      OR    CONS-ZAIIKAN29-COMMENT
-                                      OR    CONS-ZAIIKAN30-COMMENT
-                                      OR    CONS-ZAIIKAN31-COMMENT
-                                      OR    CONS-ZAIIKAN32-COMMENT
-                                      OR    CONS-ZAIIKAN33-COMMENT
-                                      OR    CONS-ZAIIKAN34-COMMENT
-                                      OR    CONS-ZAIIKAN35-COMMENT
-                                      OR    CONS-ZAIIKAN36-COMMENT
-                                      OR    CONS-ZAIIKAN37-COMMENT
-                                      OR    CONS-ZAIIKAN38-COMMENT
-                                      OR    CONS-ZAIIKAN39-COMMENT
-                                      OR    CONS-ZAIIKAN40-COMMENT
-                                      OR    CONS-ZAIIKAN41-COMMENT
-                                      OR    CONS-ZAIIKAN42-COMMENT
-                                      OR    CONS-ZAIIKAN43-COMMENT
-                                      OR    CONS-ZAIIKAN44-COMMENT
-                                      OR    CONS-ZAIIKAN45-COMMENT
-                                      OR    CONS-ZAIIKAN46-COMMENT
-                                      OR    CONS-ZAIIKAN47-COMMENT
-                                      OR    CONS-ZAIIKAN48-COMMENT
-                                      OR    CONS-ZAIIKAN49-COMMENT
-                                      OR    CONS-ZAIIKAN50-COMMENT
-                                      OR    CONS-ZAIIKAN51-COMMENT
-                                      OR    CONS-ZAIIKAN52-COMMENT
-                                      OR    CONS-ZAIIKAN53-COMMENT
-                                      OR    CONS-ZAIIKAN54-COMMENT
-                                      OR    CONS-ZAIIKAN55-COMMENT
-                                      OR    CONS-ZAIIKAN56-COMMENT
-                                      OR    CONS-ZAIIKAN57-COMMENT
-                                      OR    CONS-ZAIIKAN58-COMMENT
-                                      OR    CONS-ZAIIKAN59-COMMENT
-                                      OR    CONS-ZAIIKAN60-COMMENT
-                                      OR    CONS-ZAIIKAN61-COMMENT
-                                      OR    CONS-ZAIIKAN62-COMMENT
-                                      OR    CONS-ZAIIKAN63-COMMENT
-                                      OR    CONS-ZAIIKAN64-COMMENT
-                                      OR    CONS-ZAIIKAN65-COMMENT
-                                      OR    CONS-ZAIIKAN66-COMMENT
-                                      OR    CONS-ZAIIKAN67-COMMENT
-                                      OR    CONS-ZAIIKAN68-COMMENT
-                                      OR    CONS-ZAIIKAN69-COMMENT
-                                      OR    CONS-ZAIIKAN70-COMMENT
-                                      OR    CONS-ZAIIKAN71-COMMENT
-                                      OR    CONS-ZAIIKAN72-COMMENT
-                                      OR    CONS-ZAIIKAN73-COMMENT
-                                      OR    CONS-ZAIIKAN74-COMMENT
-                                      OR    CONS-ZAIIKAN75-COMMENT
-                                      OR    CONS-ZAIIKAN76-COMMENT
-                                      OR    CONS-ZAIIKAN77-COMMENT
-                                      OR    CONS-ZAIIKAN78-COMMENT
-                                      OR    CONS-ZAIIKAN79-COMMENT
-                                      OR    CONS-ZAIIKAN80-COMMENT
-                                      OR    CONS-ZAIIKAN81-COMMENT
-                                      OR    CONS-ZAIIKAN82-COMMENT
-                                      OR    CONS-ZAIIKAN83-COMMENT
-                                      OR    CONS-ZAIIKAN84-COMMENT
-                                      OR    CONS-SHIIKAN1-COMMENT
-                                      OR    CONS-SHIIKAN2-COMMENT
-                                      OR    CONS-SHIIKAN3-COMMENT
-                                      OR    CONS-SHIIKAN4-COMMENT
-                                      OR    CONS-SHIIKAN5-COMMENT
-                                      OR    CONS-SHIIKAN6-COMMENT
-                                      OR    CONS-SHIIKAN7-COMMENT
-                                      OR    CONS-SHIIKAN8-COMMENT
-                                      OR    CONS-SHIIKAN9-COMMENT
-                                      OR    CONS-SHIIKAN10-COMMENT
-                                      OR    CONS-SHIIKAN11-COMMENT
-                                      OR    CONS-SHIIKAN12-COMMENT
-                                      OR    CONS-SHIIKAN13-COMMENT
-                                      OR    CONS-SHIIKAN14-COMMENT
-                                      OR    CONS-SHIIKAN15-COMMENT
-                                      OR    CONS-SHIIKAN16-COMMENT
-                                      OR    CONS-SHIIKAN17-COMMENT
-                                      OR    CONS-SHIIKAN18-COMMENT
-                                      OR    CONS-SHIIKAN19-COMMENT
-                                      OR    CONS-SHIIKAN20-COMMENT
-                                      OR    CONS-SHIIKAN21-COMMENT
-                                      OR    CONS-SHIIKAN22-COMMENT
-                                      OR    CONS-SHIIKAN23-COMMENT
-                                      OR    CONS-SHIIKAN24-COMMENT
-                                      OR    CONS-SHIIKAN25-COMMENT
-                                      OR    CONS-SHIIKAN26-COMMENT
-                                      OR    CONS-SHIIKAN27-COMMENT
-                                      OR    CONS-SHIIKAN28-COMMENT
-                                      OR    CONS-SHIIKAN29-COMMENT
-                                      OR    CONS-SHIIKAN30-COMMENT
-                                      OR    CONS-SHIIKAN31-COMMENT
-                                      OR    CONS-SHIIKAN32-COMMENT
-                                      OR    CONS-SHIIKAN33-COMMENT
-                                      OR    CONS-SHIIKAN34-COMMENT
-                                      OR    CONS-SHIIKAN35-COMMENT
-                                      OR    CONS-SHIIKAN36-COMMENT
-                                      OR    CONS-ZAIHOU-COMMENT
-                                      OR    CONS-ZAIHOU3-COMMENT
-                                      OR    CONS-ZAIHOU4-COMMENT
-                                      OR    CONS-ZAIHOU5-COMMENT
-                   MOVE   "1"   TO    RECE41-COMCNTFLG
-                   MOVE   "2"   TO    RECE44-FLG-OSIN-COMMENT
-              END-IF
-      *
-              IF   (SRY-SRYCD(IDX2)   =     CONS-ZAIHOU-COMMENT
-                                      OR    CONS-ZAIHOU3-COMMENT
-                                      OR    CONS-ZAIHOU4-COMMENT
-                                      OR    CONS-ZAIHOU5-COMMENT)
-              AND  (FLG-ZAIHOU-COM    =     ZERO                )
-                   MOVE   "1"   TO    RECE44-FLG-ZAIHOU-COMMENT
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHOU2-COMMENT
-                   MOVE  SPACE  TO    RECE44-FLG-ZAIHOU-COMMENT
-                   MOVE    1    TO    FLG-ZAIHOU-COM
-              END-IF
-      *
-              IF   RECE41-SRYYM    >=     "201204"
-                IF   SRY-SRYCD(IDX2) =  CONS-OSIN-COMMENT
-                                    OR  CONS-OSIN2-COMMENT
-                   IF    (WRK-SISETU3168  =  1)
-                   OR    (WRK-SISETU3055  =  1)
-                   OR    (WRK-SISETU3056  =  1)
-                       MOVE   "1"   TO    RECE41-COMCNTFLG
-                       MOVE   "1"   TO    RECE44-FLG-ZAISIEN-COMMENT
-                   END-IF
-                   IF  RECE44-FLG-ZAISIEN-COMMENT = SPACE
-                     IF  (WRK-SISETU3169  =  1)
-                     OR  (WRK-SISETU3057  =  1)
-                     OR  (WRK-SISETU3058  =  1)
-                       MOVE   "1"   TO    RECE41-COMCNTFLG
-                       MOVE   "2"   TO    RECE44-FLG-ZAISIEN-COMMENT
-                     END-IF
-                   END-IF
-                END-IF
-              ELSE
-                IF   WRK-SISETU613   =  1
-                  IF   RECE41-SRYYM   >=  "200604"
-                  AND  RECE41-SRYYM   <=  "200803"
-                      IF SRY-SRYCD(IDX2) =  CONS-ZAIHOU-COMMENT OR
-                                            CONS-ZAISIEN1       OR
-                                            CONS-ZAISIEN2       OR
-                                            CONS-ZAISIEN3
-                        MOVE   "1"   TO    RECE41-COMCNTFLG
-                        MOVE   "1"   TO    RECE44-FLG-ZAISIEN-COMMENT
-                      END-IF
-                  END-IF
-                  IF   RECE41-SRYYM   >=  "200804"
-                      IF SRY-SRYCD(IDX2) =  CONS-ZAISIEN1       OR
-                                            CONS-ZAISIEN2       OR
-                                            CONS-ZAISIEN3
-                        MOVE   "1"   TO    RECE41-COMCNTFLG
-                        MOVE   "1"   TO    RECE44-FLG-ZAISIEN-COMMENT
-                      END-IF
-                  END-IF
-                ELSE
-                  IF   WRK-SISETU695   =  1
-                    IF   RECE41-SRYYM   >=  "200804"
-                      IF SRY-SRYCD(IDX2) =  CONS-ZAISIEN1       OR
-                                            CONS-ZAISIEN2       OR
-                                            CONS-ZAISIEN3
-                        MOVE   "1"   TO    RECE41-COMCNTFLG
-                        MOVE   "2"   TO    RECE44-FLG-ZAISIEN-COMMENT
-                      END-IF
-                    END-IF
-                  END-IF
-                END-IF
-              END-IF
-      *
-              IF   RECE41-SRYYM    >=     "201204"
-                IF   SRY-SRYCD(IDX2) =  CONS-KAISYOKU-COMMENT
-                   MOVE   "1"   TO    RECE44-FLG-KAISYOKU-COMMENT
-                END-IF
-      ***       IF   SRY-SRYCD(IDX2) =  CONS-YOUATU-COMMENT
-      ***          MOVE   "1"   TO    RECE44-FLG-YOUATU-COMMENT
-      ***       END-IF
-              END-IF
-      *       ∫ﬂ¬¥µº‘∂¶∆±ø«Œ≈Œ¡
-              IF   RECE41-SRYYM    >=     "201404"
-                IF  (SRY-SRYCD(IDX2)    =     CONS-ZAIKYO1-COMMENT
-                                        OR    CONS-ZAIKYO2-COMMENT
-                                        OR    CONS-ZAIKYO3-COMMENT
-                                        OR    CONS-ZAIKYO4-COMMENT)
-                AND (FLG-ZAIKYO-COM     =     ZERO                )
-                   MOVE   "1"   TO    RECE44-FLG-ZAIKYO-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)    =     CONS-ZAIKYO5-COMMENT
-                                        OR    CONS-ZAIKYO6-COMMENT
-                   MOVE  SPACE  TO    RECE44-FLG-ZAIKYO-COMMENT
-                   MOVE    1    TO    FLG-ZAIKYO-COM
-                END-IF
-              END-IF
-      *       ∫ﬂ¬¥µº‘À¨Ã‰•Í•œ•”•Í•∆°º•∑•Á•Ûªÿ∆≥¥…Õ˝Œ¡
-              IF   RECE41-SRYYM    >=     "201611"
-                IF  (SRY-SRYCD(IDX2)    =     CONS-ZAIRIHA1-COMMENT
-                                        OR    CONS-ZAIRIHA2-COMMENT)
-                AND (FLG-ZAIRIHA-COM    =     ZERO                 )
-                   MOVE   "1"   TO    RECE44-FLG-ZAIRIHA-COMMENT
-                END-IF
-              END-IF
-           END-IF
-      *
-           IF      RECE44-SRYKBN      =     "33"
-              IF   SRY-SRYSYUKBN      =     "334"
-              AND  FLG-HOUTEN-COM     =     ZERO
-                   MOVE   "1"   TO    RECE44-FLG-HOUTEN-COMMENT
-              END-IF
-           END-IF
-      *
-           IF      RECE44-SRYKBN      =     "50"
-              IF   RECE44-SYUTEN1     =     ZERO
-                   MOVE   "1"   TO    RECE44-FLG-SHUJUTU-COMMENT
-              END-IF
-              IF   SRY-SRYSYUKBN      =     "510"
-                   MOVE   "1"   TO    RECE44-FLG-SHUJUTU-COMMENT
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-SHUJUTU-COMMENT
-                   MOVE   "1"   TO    RECE44-FLG-SHUJUTU-COMMENT
-              END-IF
-           END-IF
-      *
-           IF   RECE41-SRYYM      >=    "201004"
-            IF     RECE44-SRYKBN      =     "54"
-              IF   RECE44-SYUTEN1     =     ZERO
-                   MOVE   "1"   TO    RECE44-FLG-MASUI-COMMENT
-              END-IF
-            END-IF
-           END-IF
-      *
-           IF      RECE44-SRYKBN      =     "70"
-              IF  (SRY-SRYCD(IDX2)    =     CONS-CTMRI-COMMENT1  OR
-                                            CONS-CTMRI-COMMENT2  OR
-                                            CONS-CTMRI-COMMENT3  OR
-                                            CONS-CTMRI-COMMENT4  OR
-                                            CONS-CTMRI-COMMENT5  OR
-                                            CONS-CTMRI-COMMENT6  OR
-                                            CONS-CTMRI-COMMENT7  OR
-                                            CONS-CTMRI-COMMENT8  OR
-                                            CONS-CTMRI-COMMENT9  OR
-                                            CONS-CTMRI-COMMENT10 OR
-                                            CONS-CTMRI-COMMENT11 OR
-                                            CONS-CTMRI-COMMENT12 OR
-                                            CONS-CTMRI-COMMENT13 OR
-                                            CONS-CTMRI-COMMENT14 OR
-                                            CONS-CTMRI-COMMENT15 OR
-                                            CONS-CTMRI-COMMENT16 OR
-                                            CONS-CTMRI-COMMENT17)
-              AND (RECE41-SRYYM       <     "201004"            )
-                   MOVE   "1"   TO    RECE44-FLG-CTMRI-COMMENT
-              END-IF
-              IF  (SRY-SRYCD(IDX2)    =     CONS-CTMRI-COMMENT1  OR
-                                            CONS-CTMRI-COMMENT2  OR
-                                            CONS-CTMRI-COMMENT4  OR
-                                            CONS-CTMRI-COMMENT6  OR
-                                            CONS-CTMRI-COMMENT7  OR
-                                            CONS-CTMRI-COMMENT18 OR
-                                            CONS-CTMRI-COMMENT19 OR
-                                            CONS-CTMRI-COMMENT20 OR
-                                            CONS-CTMRI-COMMENT21 OR
-                                            CONS-CTMRI-COMMENT22)
-              AND (RECE41-SRYYM       >=    "201004"            )
-                   MOVE   "1"   TO    RECE44-FLG-CTMRI-COMMENT
-              END-IF
-      *
-              IF    SRY-SRYCD(IDX2)  =
-                    "700010000" OR "700030000" OR "700050000" OR
-                    "700080000" OR "700110000" OR "700140000" OR
-                    "700290000" OR "700310000" OR "700330000" OR
-                    "700710000" OR "700730000" OR "700750000" OR
-                    "700780000" OR "700810000" OR "700840000" OR
-                    "700870000" OR "700160000" OR "700180000" OR
-                    "700190000" OR "700200000" OR "700210000" OR
-                    "700220000" OR "700230000" OR "700240000" OR
-                    "700250000" OR "700260000" OR "700270000" OR
-                    "700280000" OR "700590000" OR "700600000" OR
-                    "700630000" OR "700640000" OR "700650000" OR
-                    "700680000" OR "729780000"
-                IF    SRY-SRYKAISU(IDX2)  >   1
-                   MOVE   "1"   TO    RECE44-FLG-FILM-COMMENT
-                END-IF
-              END-IF
-           END-IF
-      *
-           IF      RECE44-SRYKBN      =     "60" OR "64"
-              IF   (SRY-SRYCD(IDX2)   =     CONS-KENSA1-COMMENT
-                                      OR    CONS-KENSA2-COMMENT
-                                      OR    CONS-KENSA3-COMMENT)
-              AND  (FLG-KENSA-COM     =     ZERO               )
-                   MOVE   "1"   TO    RECE44-FLG-KENSA-COMMENT
-              END-IF
-           END-IF
-      *
-           IF      RECE44-SRYKBN   =  "14" OR "40" OR "50" OR "54"
-                                   OR "60" OR "70" OR "80" OR "64"
-              SET     TBL-SANSO    TO      1
-              SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
-                   AT  END
-                       MOVE    ZERO            TO  FLG-SANSO-OK
-                   WHEN    SRY-SRYCD (IDX2)    =   TBL-SANSO-SRYCD
-                                                        (TBL-SANSO)
-                       MOVE    1               TO  FLG-SANSO-OK
-              END-SEARCH
-              IF      FLG-SANSO-OK        =    1
-                   MOVE   "1"   TO    RECE44-FLG-SANSO-COMMENT
-              END-IF
-           END-IF
-      *
-           IF      RECE44-SRYKBN   =  "40" OR "54" OR "60" OR "80"
-              IF      SRY-MEISKYFLG(IDX2)   =   "R"
-                   MOVE   "1"   TO    RECE44-FLG-GAIKAN-COMMENT
-              END-IF
-           END-IF
-      *
-           .
-       2101211-RECE45-COMCNT-HEN-EXT.
+       RECE45-TENSOU-EXT.
            EXIT.
       *
       *****************************************************************
       *    ª¿¡«§Œ√±≤¡ ‘Ω∏ΩËÕ˝
       *****************************************************************
-       2101212-RECE45-TANKA-HEN-SEC     SECTION.
+       RECE45-TENSOU-TANKA-HEN-SEC     SECTION.
+      *
+      ***  IF      TNS-TEN         =   ZERO
+      ***      GO  TO  RECE45-TENSOU-TANKA-HEN-EXT  
+      ***  END-IF
       *
            MOVE    SPACE           TO  WRK-TANKA-X
       * 
       *    øÙª˙…Ωº®Õ— ‘Ω∏° »æ≥—°À
-           MOVE    RECE45-TEN(IDX4)
-                                   TO  WRK-TANKA-9
+           MOVE    TNS-TEN         TO  WRK-TANKA-9
            MOVE    WRK-TANKA-S1    TO  WRK-TANKA-Z1
            MOVE    ZERO            TO  FLG-SP
            PERFORM   VARYING   IDY   FROM    2   BY  -1
@@ -5742,633 +1609,150 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF                             
       *
            .
-       2101212-RECE45-TANKA-HEN-EXT.
+       RECE45-TENSOU-TANKA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    º´«Â¿’∆√ƒÍ¥Ô∫‡≈¿øÙ ‘Ω∏ΩËÕ˝
+      *    •Ï•ª•◊•»•≥•·•Û•»•’•È•∞ ‘Ω∏ΩËÕ˝
       *****************************************************************
-       2101213-JIBAI-KIZAI-TENHEN-SEC     SECTION.
+       RECE45-TENSOU-COMCNT-HEN-SEC               SECTION.
       *
-           MOVE     ZERO                   TO    WRK-TEN-KZI
-           MOVE     ZERO                   TO    FLG-TAIGAI
-      *
-           IF   RECE41-TAXKBN-KZI   =   "2"
-      *
-      *       •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø° £¥£∞£∞£≥°À§À§∆æ√»Ò¿«¬–æ›≥∞•≥°º•…§´»Ω Ã
-              INITIALIZE                      SYS-4003-REC
-              MOVE    "4003"              TO  SYS-4003-KANRICD
-              MOVE    "*"                 TO  SYS-4003-KBNCD
-              MOVE    RECE41-SRYYM        TO  SYS-4003-STYUKYMD(1:6)
-              MOVE    "01"                TO  SYS-4003-STYUKYMD(7:2)
-              MOVE    SYS-4003-STYUKYMD   TO  SYS-4003-EDYUKYMD
-grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
-              MOVE    SYS-4003-REC        TO  MCPDATA-REC
-              PERFORM 800-SYSKANRI-READ-SEC
-              IF      FLG-SYSKANRI        =   ZERO
-                  MOVE    MCPDATA-REC     TO  SYS-4003-REC
-                  PERFORM   VARYING   IDX5    FROM   1   BY   1
-                             UNTIL   (IDX5                 >    50 )
-                               OR    (SYS-4003-SRYCD(IDX5) =  SPACE)
-                               OR    (FLG-TAIGAI           =     1 )
-                      IF   SYS-4003-SRYCD(IDX5)  =  SRY-SRYCD(IDX2)
-                          MOVE     1       TO    FLG-TAIGAI
-                      END-IF
-                  END-PERFORM
-              END-IF
-              IF      TNS-NAMECHGKBN  =  ZERO OR 5
-                  CONTINUE
-              ELSE
-                  MOVE     1       TO    FLG-TAIGAI
-              END-IF
-      *
-      *       ∆√ƒÍ¥Ô∫‡≈˘æ√»Ò¿«∑◊ªª
-              IF   FLG-TAIGAI  =  ZERO
-                   IF  SRY-SRYSYUKBN = "809"
-                     COMPUTE  WRK-TEN-KZI  =
-                             (SRY-JIHIMONEY(IDX2)
-                                       * WRK-S5) + WRK-S3
-                   ELSE
-                     COMPUTE  WRK-TEN-KZI  =
-                             (TNS-TEN  * WRK-S5) + WRK-S3
-                   END-IF
-              ELSE
-                   IF  SRY-SRYSYUKBN = "809"
-                      MOVE  SRY-JIHIMONEY(IDX2)  TO   WRK-TEN-KZI
-                   ELSE
-                      MOVE  TNS-TEN              TO   WRK-TEN-KZI
-                   END-IF
-              END-IF
-           ELSE
-              IF  SRY-SRYSYUKBN = "809"
-                      MOVE  SRY-JIHIMONEY(IDX2)  TO   WRK-TEN-KZI
-              ELSE
-                      MOVE  TNS-TEN              TO   WRK-TEN-KZI
+           IF      RECE44-SRYKBN      =     "11"
+      *       ΩÈø«Œ¡ªªƒÍ≤ °ß
+              IF   SRY-SRYCD(IDX2)    =     "830000020"
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-SYOSANTEIKA-COMMENT
               END-IF
            END-IF
       *
-           .
-       2101213-JIBAI-KIZAI-TENHEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    º´«Â¿’ ∏ΩÒŒ¡≈¿øÙ ‘Ω∏ΩËÕ˝
-      *****************************************************************
-       2101214-JIBAI-BUNSYO-TENHEN-SEC     SECTION.
-      *
-           MOVE        ZERO          TO    WRK-TEN-BUN
-      *
-           IF   RECE41-TAXKBN   =   "2"
-               IF  SRY-SRYSYUKBN = "809"
-                  COMPUTE  WRK-TEN-BUN  =
-                          (SRY-JIHIMONEY(IDX2)
-                                    * WRK-S5) + WRK-S3
-               ELSE
-                  COMPUTE  WRK-TEN-BUN  =
-                          (TNS-TEN  * WRK-S5) + WRK-S3
-               END-IF
-           ELSE
-               IF  SRY-SRYSYUKBN = "809"
-                  MOVE  SRY-JIHIMONEY(IDX2)  TO   WRK-TEN-BUN
-               ELSE
-                  MOVE  TNS-TEN              TO   WRK-TEN-BUN
-               END-IF
-           END-IF
-      *
-           .
-       2101214-JIBAI-BUNSYO-TENHEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ªƒŒÃ«—¥˛§ŒøÙŒÃ ‘Ω∏ΩËÕ˝
-      *****************************************************************
-       2101215-RECE45-SURYO-HEN-SEC     SECTION.
-      *
-           MOVE    SPACE           TO  WRK-SURYO-X
-           MOVE    ZERO            TO  WRK-SURYOST
-           MOVE    ZERO            TO  WRK-SURYOKETA
-           MOVE    ZERO            TO  WRK-SURYOKETA1
-           MOVE    ZERO            TO  WRK-SURYOKETA2
-           MOVE    SPACE           TO  WRK-SURYO-N
-           MOVE    SPACE           TO  WRK-SRYSURYOW
-      *
-      *    øÙª˙…Ωº®Õ— ‘Ω∏° »æ≥—°À
-           MOVE    RECE45-SRYSURYO(IDX4)  TO  WRK-SURYO
-           MOVE    WRK-SURYO-S1           TO  WRK-SURYO-Z1
-      *
-           MOVE    ZERO            TO  FLG-SP
-           PERFORM   VARYING   IDW   FROM    5   BY  -1
-                      UNTIL    IDW   =   ZERO
-             IF  WRK-SURYO-S2(IDW:1) NOT =   ZERO
-                 MOVE    1         TO  FLG-SP
-             END-IF
-             IF  FLG-SP  =   1
-                 MOVE    WRK-SURYO-S2(IDW:1)
-                                   TO  WRK-SURYO-Z3(IDW:1)
-             END-IF
-           END-PERFORM
-           IF  WRK-SURYO-Z3   NOT =  SPACE
-               MOVE    "."         TO  WRK-SURYO-Z2
-           END-IF
-      *    …Ωº® ∏ª˙øÙ•´•¶•Û•»
-           PERFORM   VARYING   IDW   FROM    1   BY  1
-                      UNTIL    IDW     >    11
-             IF  WRK-SURYO-X(IDW:1)  NOT =  SPACE
-                 IF  WRK-SURYOST           =   ZERO
-                     MOVE    IDW   TO  WRK-SURYOST
-                 END-IF
-      *          øÙŒÃ∑ÂøÙ•´•¶•Û•»(£∂∑ÂÃ‹°ß•‘•Í•™•…)
-                 ADD     1         TO  WRK-SURYOKETA
-                 IF  IDW    <   6
-                     ADD     1     TO  WRK-SURYOKETA1
-                 END-IF
-                 IF  IDW    >   6
-                     ADD     1     TO  WRK-SURYOKETA2
-                 END-IF
-             END-IF
-           END-PERFORM
-           IF  WRK-SURYOST  =   6
-               MOVE   "0"          TO  WRK-SURYO-Z1(5:1)
-               MOVE    5           TO  WRK-SURYOST
-               MOVE    1           TO  WRK-SURYOKETA1
-               ADD     1           TO  WRK-SURYOKETA
-           END-IF
-      *    ¡¥≥— —¥π
-           IF  WRK-SURYOKETA1   >   ZERO
-               INITIALIZE              WRK-CHAR-HENKAN-AREA
-               MOVE    WRK-SURYO-Z1(WRK-SURYOST:WRK-SURYOKETA1)
-                                       TO  WRK-CHAR-X
-               MOVE    WRK-SURYOKETA1  TO  WRK-CHAR-CNT
-      *
-               MOVE    1               TO  WRK-CHAR-IDX
-               PERFORM  VARYING  IDW   FROM    1   BY  1
-                         UNTIL   IDW     >   WRK-CHAR-CNT
-                   IF    WRK-CHAR-X(IDW:1)  IS  NUMERIC
-                     IF    WRK-CHAR-X(IDW:1)  =   "0"
-                        MOVE  TBL-SUJI(10)
-                                       TO  WRK-CHAR-N(WRK-CHAR-IDX:)
-                     ELSE
-                        MOVE  WRK-CHAR-X(IDW:1)  TO  NUM-IDX
-                        MOVE  TBL-SUJI(NUM-IDX)
-                                       TO  WRK-CHAR-N(WRK-CHAR-IDX:)
-                     END-IF
-                   ELSE
-                       MOVE    "  "    TO  WRK-CHAR-N(WRK-CHAR-IDX:)
-                   END-IF
-                   ADD     2           TO  WRK-CHAR-IDX
-               END-PERFORM
-      *
-               MOVE    WRK-CHAR-N      TO  WRK-SURYO-N1
-           END-IF
-           IF  WRK-SURYOKETA2   >   ZERO
-               MOVE    "°•"            TO  WRK-SURYO-N2
-      *
-               INITIALIZE              WRK-CHAR-HENKAN-AREA
-               MOVE    WRK-SURYO-Z3(1:WRK-SURYOKETA2)
-                                       TO  WRK-CHAR-X
-               MOVE    WRK-SURYOKETA2  TO  WRK-CHAR-CNT
-      *
-               MOVE    1               TO  WRK-CHAR-IDX
-               PERFORM  VARYING  IDW   FROM    1   BY  1
-                         UNTIL   IDW     >   WRK-CHAR-CNT
-                   IF    WRK-CHAR-X(IDW:1)  IS  NUMERIC
-                     IF    WRK-CHAR-X(IDW:1)  =   "0"
-                        MOVE  TBL-SUJI(10)
-                                       TO  WRK-CHAR-N(WRK-CHAR-IDX:)
-                     ELSE
-                        MOVE  WRK-CHAR-X(IDW:1)  TO  NUM-IDX
-                        MOVE  TBL-SUJI(NUM-IDX)
-                                       TO  WRK-CHAR-N(WRK-CHAR-IDX:)
-                     END-IF
-                   ELSE
-                       MOVE    "  "    TO  WRK-CHAR-N(WRK-CHAR-IDX:)
-                   END-IF
-                   ADD     2           TO  WRK-CHAR-IDX
-               END-PERFORM
-      *
-               MOVE    WRK-CHAR-N      TO  WRK-SURYO-N3
-           END-IF
-      *
-           STRING      WRK-SURYO-N1    DELIMITED   BY  " "
-                       WRK-SURYO-N2    DELIMITED   BY  " "
-                       WRK-SURYO-N3    DELIMITED   BY  " "
-                       INTO            WRK-SRYSURYOW
-           END-STRING
-      *
-           .
-       2101215-RECE45-SURYO-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¥ÿ∑∏•≥•·•Û•» ‘Ω∏
-      *****************************************************************
-       2101216-SETCOM-HENSYU-SEC     SECTION.
-      *
-           IF   RECE45-MEISKYFLG(IDX4)  =  "2"
-              IF   (FLG-SETCOM              =  1   )
-              AND  (RECE45-RECEDENFLG(IDX4) = SPACE)
-                 MOVE  "1"            TO  RECE44-SETCOMFLG
-              ELSE
-                 MOVE  SPACE          TO  RECE45-MEISKYFLG(IDX4)
+           IF      RECE44-SRYKBN      =     "12"
+      *       ∫∆ø«Œ¡ªªƒÍ≤ °ß
+              IF   SRY-SRYCD(IDX2)    =     "830000021"
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-SAISANTEIKA-COMMENT
               END-IF
-           ELSE
-              IF   (RECE45-SRYCD(IDX4)(1:1) = "1" OR "6" OR "7")
-              OR   (RECE45-SRYCD(IDX4)(1:3) = "059"            )
-                IF  RECE45-SRYCD(IDX4)(1:2) = "63"
-                 CONTINUE
-                ELSE
-                 MOVE   1             TO  FLG-SETCOM
-                END-IF
+      *       ∆±∆¸∫∆ø«
+              IF   SRY-SRYCD(IDX2)    =     "112011710"   OR
+                                            "112705850"   
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-DOUJITUSAI-COMMENT
               END-IF
            END-IF
       *
-      *****
-      *
-      *    ∆√ƒÍÃÙ∫ﬁº£Œ≈¥…Õ˝Œ¡
-           IF    RECE45-SRYCD(IDX4)   = "113000410" OR "113000510" OR
-                                        "180000110" OR "180000210" OR
-                                        "113023910"
-                 MOVE   1             TO  WRK-SETCOM-JIDO
-           END-IF
-      *    ∆√ƒÍÃÙ∫ﬁº£Œ≈¥…Õ˝≤√ªª° ¬°¥Ô∞‹ø¢∑Ó§´§È£≥∑Ó°À
-           IF    RECE45-SRYCD(IDX4)   = "113000670"
-                 MOVE   1             TO  WRK-SETCOM-JIDO2
-           END-IF
-      *    ∞≠¿≠º·Á∆√∞€ ™º¡º£Œ≈¥…Õ˝Œ¡
-           IF    RECE45-SRYCD(IDX4)   = "113001210" OR "113001310" OR
-                                        "113002110"
-                 MOVE   3             TO  WRK-SETCOM-JIDO
-           END-IF
-      *
-      *    ΩÈø«° ∆±∆¸ £øÙø«Œ≈≤ °À
-           IF    RECE45-SRYCD(IDX4)   = CONS-SYODOU-COMMENT
-                                     OR CONS-SYODOU3-COMMENT
-                                     OR CONS-SYODOU4-COMMENT
-                 MOVE   4             TO  WRK-SETCOM-JIDO
-           END-IF
-           IF    RECE45-SRYCD(IDX4)   = CONS-ROUSAI18
-                 MOVE   204           TO  WRK-SETCOM-JIDO
-           END-IF
-      *    Ω˝…¬ºÍ≈ˆ∂‚∞’∏´ΩÒ∏Ú…’Œ¡
-           IF    RECE45-SRYCD(IDX4)   = CONS-SYOBYO-COMMENT
-                 MOVE   6             TO  WRK-SETCOM-JIDO
-           END-IF
-      *    Œ≈Õ‹»Ò∆±∞’ΩÒ∏Ú…’Œ¡
-           IF    RECE45-SRYCD(IDX4)   = CONS-RYOYO-COMMENT
-                 MOVE   7             TO  WRK-SETCOM-JIDO
-           END-IF
-      *    •À•≥•¡•Û∞Õ¬∏æ…¥…Õ˝Œ¡° ΩÈ≤Û°À
-      *    •À•≥•¡•Û∞Õ¬∏æ…¥…Õ˝Œ¡° £≤≤ÛÃ‹§´§È£¥≤ÛÃ‹§ﬁ§«°À
-      *    •À•≥•¡•Û∞Õ¬∏æ…¥…Õ˝Œ¡° £µ≤ÛÃ‹°À
-           IF    RECE45-SRYCD(IDX4)   = CONS-NIKOCHIN-COMMENT
-                                     OR CONS-NIKOCHIN2-COMMENT
-                                     OR CONS-NIKOCHIN3-COMMENT
-                 MOVE   8             TO  WRK-SETCOM-JIDO
-           END-IF
-      *    Ω≈≈Ÿ”√¬©¥µº‘º£Œ≈¥…Õ˝≤√ªª° £±∑ÓÃ‹°À
-      *    Ω≈≈Ÿ”√¬©¥µº‘º£Œ≈¥…Õ˝≤√ªª° £≤∑ÓÃ‹∞ πﬂ£∂∑ÓÃ‹§ﬁ§«°À
-           IF    RECE45-SRYCD(IDX4)   = CONS-ZENSOKU-COMMENT
-                                     OR CONS-ZENSOKU2-COMMENT
-                 MOVE   9             TO  WRK-SETCOM-JIDO
-           END-IF
-      *    æÆª˘∆√ƒÍº¿¥µ•´•¶•Û•ª•Í•Û•∞Œ¡° £±≤ÛÃ‹°À
-      *    æÆª˘∆√ƒÍº¿¥µ•´•¶•Û•ª•Í•Û•∞Œ¡° £≤≤ÛÃ‹°À
-           IF    RECE45-SRYCD(IDX4)   = CONS-SYOUNI1-COMMENT
-                                     OR CONS-SYOUNI2-COMMENT
-                 MOVE   10            TO  WRK-SETCOM-JIDO
-           END-IF
-      *    À¨Ã‰¥«∏Óªÿº®Œ¡
-           IF    RECE45-SRYCD(IDX4)   = CONS-HOUSIJI-COMMENT
-                 MOVE   11            TO  WRK-SETCOM-JIDO
-           END-IF
-      *    ±˝ø«
-      *    ∆√ Ã±˝ø«
-           IF    RECE45-SRYCD(IDX4)   = CONS-OSIN-COMMENT
-                                     OR CONS-OSIN2-COMMENT
-                 MOVE   13            TO  WRK-SETCOM-JIDO
-           END-IF
-      *    ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈Œ¡
-      *    ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈Œ¡° µÔΩª∑œ°À
-      *    ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈Œ¡° ∆±∞Ï∑˙ ™µÔΩªº‘°À° ∆√ƒÍª‹¿ﬂ≈˘∆˛µÔº‘°À
-           IF    RECE45-SRYCD(IDX4)   = CONS-ZAIHOU-COMMENT
-                                     OR CONS-ZAIHOU3-COMMENT
-                                     OR CONS-ZAIHOU4-COMMENT
-                                     OR CONS-ZAIHOU5-COMMENT
-                 MOVE   14            TO  WRK-SETCOM-JIDO
-           END-IF
-      *    «ß√ŒŒ≈À°°¶«ß√Œπ‘∆∞Œ≈À°
-           IF    RECE45-SRYCD(IDX4)   = CONS-NINRYO-COMMENT
-                                     OR CONS-NINRYO2-COMMENT
-                                     OR CONS-NINRYO5-COMMENT
-                 MOVE   19            TO  WRK-SETCOM-JIDO
-           END-IF
-      *    ∫∆ø«° ∆±∞Ï∆¸£≤≤ Ã‹°À
-           IF    RECE45-SRYCD(IDX4)   = CONS-DOUJITU-SAI
-                                     OR CONS-DOUJITU-SAI2
-                                     OR CONS-DOUJITU-DEN
-                                     OR CONS-DOUJITU-DEN2
-                                     OR CONS-DOUJITU-GAI
-                                     OR CONS-DOUJITU2-GAI
-                                     OR CONS-DOUJITU3-GAI
-                 MOVE   25            TO  WRK-SETCOM-JIDO
-           END-IF
-      *    ∫ﬂ¬¥µº‘∂¶∆±ø«Œ≈Œ¡
-           IF    RECE45-SRYCD(IDX4)   = CONS-ZAIKYO1-COMMENT
-                                     OR CONS-ZAIKYO2-COMMENT
-                                     OR CONS-ZAIKYO3-COMMENT
-                                     OR CONS-ZAIKYO4-COMMENT
-                 MOVE   29            TO  WRK-SETCOM-JIDO
-           END-IF
-      *    ∞Õ¬∏æ…Ω∏√ƒŒ≈À°
-           IF    RECE45-SRYCD(IDX4)   = CONS-IZONSYO-COMMENT
-                 MOVE   33            TO  WRK-SETCOM-JIDO
-           END-IF
-      *    ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡
-           IF    RECE45-SRYCD(IDX4)   = CONS-SEIJYU-COMMENT
-                                     OR CONS-SEIJYU2-COMMENT
-                                     OR CONS-SEIJYU3-COMMENT
-                                     OR CONS-SEIJYU4-COMMENT
-                 MOVE   35            TO  WRK-SETCOM-JIDO
-           END-IF
-           IF  ((RECE45-SRYCD(IDX4)   = CONS-ROUSAI19) AND
-                (RECE41-SRYYM        <= "201306"     ))
-           OR  ((RECE45-SRYCD(IDX4)   = CONS-ROUSAI5
-                                     OR CONS-ROUSAI38) AND
-                (RECE41-SRYYM        >= "201307"     ))
-                 MOVE   225           TO  WRK-SETCOM-JIDO
+           IF     (RECE41-HKNKBN    NOT  =  "4"    AND
+                   RECE44-SRYKBN         =  "80"       )
+           OR     (RECE41-HKNKBN         =  "4"    AND
+                   RECE44-SRYKBN         =  "40"       )
+      *       •Í•œ•”•Í
+              IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
+                                            "180022210"   OR
+                                            "180706810"   OR
+                                            "180022110"   OR
+                                            "180707110"   OR
+                                            "180022410"   OR
+                                            "180707010"   OR
+                                            "180022310"   OR
+                                            "180707310"   OR
+                                            "180022610"   OR
+                                            "180707210"   OR
+                                            "180022510"   OR
+                                            "180707510"   OR
+                                            "180022810"   OR
+                                            "180707410"   OR
+                                            "180022710"   OR
+                                            "180708210"   OR
+                                            "180023710"   OR
+                                            "180708410"   OR
+                                            "180023910"   OR
+                                            "180708110"   OR
+                                            "180023610"   OR
+                                            "180708310"   OR
+                                            "180023810"   OR
+                                            "180024910"   OR
+                                            "180024810"   OR
+                                            "180025110"   OR
+                                            "180025010"   
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-RIHABIRI-COMMENT
+              END-IF
            END-IF
       *
-           IF  ((WRK-SETCOM-JIDO    =  1                        ) AND
-                (RECE45-SRYCD(IDX4) = "830000014" OR "840000038"))
-           OR  ((WRK-SETCOM-JIDO2   =  1                        ) AND
-                (RECE45-SRYCD(IDX4) = "840000077"               ))
-           OR  ((WRK-SETCOM-JIDO    =  3                        ) AND
-                (RECE45-SRYCD(IDX4) = "830000015"               ))
-           OR  ((WRK-SETCOM-JIDO    =  4                        ) AND
-                (RECE45-SRYCD(IDX4) = CONS-SYODOU2-COMMENT      ))
-           OR  ((WRK-SETCOM-JIDO    =  6                        ) AND
-                (RECE45-SRYCD(IDX4) = CONS-SYOBYO2-COMMENT
-                                   OR CONS-SYOBYO3-COMMENT      ))
-           OR  ((WRK-SETCOM-JIDO    =  7                        ) AND
-                (RECE45-SRYCD(IDX4) = CONS-RYOYO2-COMMENT       ))
-           OR  ((WRK-SETCOM-JIDO    =  8                        ) AND
-                (RECE45-SRYCD(IDX4) = CONS-NIKOCHIN4-COMMENT    ))
-           OR  ((WRK-SETCOM-JIDO    =  9                        ) AND
-                (RECE45-SRYCD(IDX4) = CONS-ZENSOKU3-COMMENT     ))
-           OR  ((WRK-SETCOM-JIDO    =  10                       ) AND
-                (RECE45-SRYCD(IDX4) = CONS-SYOUNI3-COMMENT      ))
-           OR  ((WRK-SETCOM-JIDO    =  11                       ) AND
-                (RECE45-SRYCD(IDX4) = CONS-HOUSIJI2-COMMENT     ))
-           OR  ((WRK-SETCOM-JIDO    =  13                       ) AND
-                (RECE45-SRYCD(IDX4) = CONS-OSIN3-COMMENT        ))
-           OR  ((WRK-SETCOM-JIDO    =  14                       ) AND
-                (RECE45-SRYCD(IDX4) = CONS-ZAIHOU2-COMMENT      ))
-           OR  ((WRK-SETCOM-JIDO    =  19                       ) AND
-                (RECE45-SRYCD(IDX4) = CONS-NINRYO6-COMMENT      ))
-           OR  ((WRK-SETCOM-JIDO    =  25                       ) AND
-                (RECE45-SRYCD(IDX4) = CONS-DOUJITU-COMMENT      ))
-           OR  ((WRK-SETCOM-JIDO    =  29                       ) AND
-                (RECE45-SRYCD(IDX4) = CONS-ZAIKYO5-COMMENT
-                                   OR CONS-ZAIKYO6-COMMENT      ))
-           OR  ((WRK-SETCOM-JIDO    =  33                       ) AND
-                (RECE45-SRYCD(IDX4) = CONS-IZONSYO2-COMMENT     ))
-           OR  ((WRK-SETCOM-JIDO    =  35                       ) AND
-                (RECE45-SRYCD(IDX4) = CONS-SEIJYU5-COMMENT      ))
-           OR  ((WRK-SETCOM-JIDO    =  225                      ) AND
-                (RECE45-SRYCD(IDX4) = CONS-DOUJITU-COMMENT      ))
       *
-                 MOVE  "1"              TO  RECE44-SETCOMFLG
-                 MOVE  "2"              TO  RECE45-MEISKYFLG(IDX4)
-                 MOVE  WRK-SETCOM-JIDO  TO  RECE45-SETCOMATFLG(IDX4)
-                 IF  (WRK-SETCOM-JIDO2   =  1         )
-                 AND (RECE45-SRYCD(IDX4) = "840000077")
-                   MOVE    2            TO  RECE45-SETCOMATFLG(IDX4)
-                 END-IF
+           IF      RECE44-SRYKBN      =     "13"
+              IF   SRY-SRYCD(IDX2)    =     CONS-MANSEI
+                   MOVE   "1"   TO    RECE44-FLG-SHIDOU-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-SYOBYO-COMMENT
+                   MOVE   "1"   TO    RECE44-FLG-SYOBYO-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-RYOYO-COMMENT
+                   MOVE   "1"   TO    RECE44-FLG-RYOYO-COMMENT
+              END-IF
+           END-IF
       *
+           IF      RECE44-SRYKBN      =     "14"
+              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI-COMMENT
+              AND  FLG-HOUSIJI-COM    =     ZERO
+                   MOVE   "1"   TO    RECE44-FLG-HOUSIJI-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI2-COMMENT
+                   MOVE  SPACE  TO    RECE44-FLG-HOUSIJI-COMMENT
+                   MOVE    1    TO    FLG-HOUSIJI-COM
+              END-IF
+           END-IF
+      *
+           IF      RECE44-SRYKBN      =     "50"
+              IF   RECE44-SYUTEN1     =     ZERO
+                   MOVE   "1"   TO    RECE44-FLG-SHUJUTU-COMMENT
+              END-IF
+              IF   SRY-SRYSYUKBN      =     "510"
+                   MOVE   "1"   TO    RECE44-FLG-SHUJUTU-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-SHUJUTU-COMMENT
+                   MOVE   "1"   TO    RECE44-FLG-SHUJUTU-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE44-SRYKBN      =     "70"
+              IF   SRY-SRYCD(IDX2)    =     CONS-CTMRI-COMMENT1  OR
+                                            CONS-CTMRI-COMMENT2  OR
+                                            CONS-CTMRI-COMMENT3  OR
+                                            CONS-CTMRI-COMMENT4  OR
+                                            CONS-CTMRI-COMMENT5  OR
+                                            CONS-CTMRI-COMMENT6  OR
+                                            CONS-CTMRI-COMMENT7  OR
+                                            CONS-CTMRI-COMMENT8  OR
+                                            CONS-CTMRI-COMMENT9  OR
+                                            CONS-CTMRI-COMMENT10 OR
+                                            CONS-CTMRI-COMMENT11 OR
+                                            CONS-CTMRI-COMMENT12 OR
+                                            CONS-CTMRI-COMMENT13 OR
+                                            CONS-CTMRI-COMMENT14 OR
+                                            CONS-CTMRI-COMMENT15 OR
+                                            CONS-CTMRI-COMMENT16 OR
+                                            CONS-CTMRI-COMMENT17
+                   MOVE   "1"   TO    RECE44-FLG-CTMRI-COMMENT
+              END-IF
            END-IF
       *
            .
-       2101216-SETCOM-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    °⁄•Ï•ª•◊•»°€° ¬Ëª∞º‘π‘∞Ÿ°À∞Ï…Ù…È√¥∂‚∂‚≥€√÷¥π•≥•·•Û•» ‘Ω∏
-      *****************************************************************
-       2101217-ICHIBUCOM-HENSYU-SEC     SECTION.
-      *
-           MOVE    SPACE                  TO  WRK-INPUTCOMENT
-           MOVE    SPACE                  TO  WRK-INPUTCOMENT2
-           MOVE    ZERO                   TO  WRK-INPUTCOMENT-KIN
-           MOVE    SPACE                  TO  WRK-INPUTCOMENT-KIN2
-      *
-           IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
-                  (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
-           AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )
-      *
-             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
-             MOVE    SRY-PTID             TO  PTCOM-PTID
-             MOVE    SRY-ZAINUM           TO  PTCOM-ZAINUM
-             MOVE    SRY-SRYCD    (IDX2)  TO  PTCOM-SRYCD
-             MOVE    SRY-INPUTNUM (IDX2)  TO  PTCOM-RENNUM
-             PERFORM 800-PTCOM-READ-SEC
-             MOVE    PTCOM-INPUTCOMENT    TO  WRK-INPUTCOMENT
-      *
-             IF  WRK-INPUTCOMENT(1:12)  =  "∞Ï…Ù…È√¥≥€°ß"
-               MOVE  WRK-INPUTCOMENT(13:14)
-                                          TO  WRK-INPUTCOMENT2
-               IF  WRK-INPUTCOMENT2 = "°°°°°°°°°°°°°°" OR SPACE
-                 CONTINUE
-               ELSE
-                 PERFORM VARYING IDW7 FROM  1  BY  2
-                          UNTIL  IDW7   >  14
-                   COMPUTE  IDW8 = (IDW7 + 1) / 2
-                   EVALUATE  WRK-INPUTCOMENT2(IDW7:2)
-                     WHEN     "£∞"
-                        MOVE   "0"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£±"
-                        MOVE   "1"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£≤"
-                        MOVE   "2"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£≥"
-                        MOVE   "3"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£¥"
-                        MOVE   "4"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£µ"
-                        MOVE   "5"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£∂"
-                        MOVE   "6"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£∑"
-                        MOVE   "7"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£∏"
-                        MOVE   "8"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£π"
-                        MOVE   "9"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     OTHER
-                        MOVE    14  TO  IDW7
-                   END-EVALUATE
-                 END-PERFORM
-                 IF  WRK-INPUTCOMENT-KIN2-T NOT = SPACE
-                   MOVE    8    TO   IDW8
-                   PERFORM VARYING IDW7 FROM  7  BY -1
-                            UNTIL  IDW7   <   1
-                     IF  WRK-INPUTCOMENT-KIN2-T(IDW7:1) = SPACE
-                        CONTINUE
-                     ELSE
-                        COMPUTE  IDW8 = IDW8 - 1
-                        MOVE  WRK-INPUTCOMENT-KIN2-T(IDW7:1)
-                                TO   WRK-INPUTCOMENT-KIN-T(IDW8:1)
-                     END-IF
-                   END-PERFORM
-                   MOVE    1    TO   RECE41-DAISAN-CHIKAN
-                   MOVE  WRK-INPUTCOMENT-KIN
-                                TO   RECE41-FTNMONEY
-                 END-IF
-               END-IF
-             END-IF
-      *
-           END-IF
-      *
-           .
-       2101217-ICHIBUCOM-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    °⁄•Ï•ª•◊•»°€° º´«Â¿’°ÀºıŒŒ∂‚≥€ÕÛ√÷¥π•≥•·•Û•» ‘Ω∏
-      *****************************************************************
-       2101218-ICHIBUCOM-HENSYU2-SEC     SECTION.
-      *
-           MOVE    SPACE                  TO  WRK-INPUTCOMENT
-           MOVE    SPACE                  TO  WRK-INPUTCOMENT2
-           MOVE    SPACE                  TO  WRK-INPUTCOMENT3
-           MOVE    ZERO                   TO  WRK-INPUTCOMENT-KIN
-           MOVE    SPACE                  TO  WRK-INPUTCOMENT-KIN2
-      *
-           IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
-                  (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
-           AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )
-      *
-             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
-             MOVE    SRY-PTID             TO  PTCOM-PTID
-             MOVE    SRY-ZAINUM           TO  PTCOM-ZAINUM
-             MOVE    SRY-SRYCD    (IDX2)  TO  PTCOM-SRYCD
-             MOVE    SRY-INPUTNUM (IDX2)  TO  PTCOM-RENNUM
-             PERFORM 800-PTCOM-READ-SEC
-             MOVE    PTCOM-INPUTCOMENT    TO  WRK-INPUTCOMENT
-      *
-             IF  WRK-INPUTCOMENT(1:10)  =  "ºıŒŒ∂‚≥€°ß"
-               MOVE  WRK-INPUTCOMENT(11:14)
-                                          TO  WRK-INPUTCOMENT2
-               IF  WRK-INPUTCOMENT2 = "°°°°°°°°°°°°°°" OR SPACE
-                 CONTINUE
-               ELSE
-                 PERFORM VARYING IDW7 FROM  1  BY  2
-                          UNTIL  IDW7   >  14
-                   COMPUTE  IDW8 = (IDW7 + 1) / 2
-                   EVALUATE  WRK-INPUTCOMENT2(IDW7:2)
-                     WHEN     "£∞"
-                        MOVE   "0"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£±"
-                        MOVE   "1"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£≤"
-                        MOVE   "2"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£≥"
-                        MOVE   "3"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£¥"
-                        MOVE   "4"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£µ"
-                        MOVE   "5"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£∂"
-                        MOVE   "6"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£∑"
-                        MOVE   "7"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£∏"
-                        MOVE   "8"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     "£π"
-                        MOVE   "9"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
-                     WHEN     OTHER
-                        MOVE    14  TO  IDW7
-                   END-EVALUATE
-                 END-PERFORM
-                 IF  WRK-INPUTCOMENT-KIN2-T NOT = SPACE
-                   MOVE    8    TO   IDW8
-                   PERFORM VARYING IDW7 FROM  7  BY -1
-                            UNTIL  IDW7   <   1
-                     IF  WRK-INPUTCOMENT-KIN2-T(IDW7:1) = SPACE
-                        CONTINUE
-                     ELSE
-                        COMPUTE  IDW8 = IDW8 - 1
-                        MOVE  WRK-INPUTCOMENT-KIN2-T(IDW7:1)
-                                TO   WRK-INPUTCOMENT-KIN-T(IDW8:1)
-                     END-IF
-                   END-PERFORM
-                   MOVE    1    TO   RECE41-JIBAI-CHIKANKINFLG
-                   MOVE  WRK-INPUTCOMENT-KIN
-                                TO   RECE41-JIBAI-CHIKANKIN
-                 END-IF
-               END-IF
-             END-IF
-      *
-             IF  WRK-INPUTCOMENT(1:8)  =  "ªŸ ß∏µ°ß"
-               MOVE  WRK-INPUTCOMENT(9:30)
-                                          TO  WRK-INPUTCOMENT3
-               IF  WRK-INPUTCOMENT3 =
-                   "°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°" OR SPACE
-                 CONTINUE
-               ELSE
-                 MOVE    1      TO   RECE41-JIBAI-CHIKANNAMEFLG
-                 MOVE  WRK-INPUTCOMENT3
-                                TO   RECE41-JIBAI-CHIKANNAME
-               END-IF
-             END-IF
-      *
-           END-IF
-      *
-           .
-       2101218-ICHIBUCOM-HENSYU2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ã¿∫ŸøÙ≈˘§Œ ‘Ω∏
-      *****************************************************************
-       2101219-MEISAISU-HENSYU-SEC                 SECTION.
-      *
-           COMPUTE   RECE44-MEISAISU    =  RECE44-MEISAISU
-                                        -  1
-           MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
-           COMPUTE   RECE44-SRYCDTOTAL  =  RECE44-SRYCDTOTAL
-                                        -  WRK-SRYCD
-           IF   (ACCT-SRYKBN = "40" OR "50" OR "54" OR "60" OR
-                               "64" OR "70" OR "80"           )
-           AND  (ACCT-YKZTEN =  ZERO                          )
-           AND  (SRY-SRYCD(IDX2)(1:1)  =  "6"                 )
-              COMPUTE   RECE44-SURYOUTOTAL =  RECE44-SURYOUTOTAL
-                                           -  SRY-SRYSURYO(IDX2)
-           ELSE
-              COMPUTE   RECE44-SURYOUTOTAL =  RECE44-SURYOUTOTAL
-                                           -  1
-           END-IF
-      *
-           .
-       2101219-MEISAISU-HENSYU-EXT.
+       RECE45-TENSOU-COMCNT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜
       *****************************************************************
-       210122-RECE41-HENSYU-SEC               SECTION.
+       RECE41-HENSYU-SEC               SECTION.
       *
-      *    ΩË ˝∏∫≤ÛøÙ§ŒΩÈ¥¸≤Ω
-           MOVE   ZERO              TO   WRK-SYOHOU-KAISU
-      *    ΩË ˝§ª§Û∏∫≤ÛøÙ§ŒΩÈ¥¸≤Ω
-           MOVE   ZERO              TO   WRK-SYOSEN-KAISU
+      *    ∆√ƒÍº¿¥µΩË ˝¥…Õ˝≤√ªª§ŒªªƒÍ≤ÛøÙ∏∫ªªÕ—ŒŒ∞Ë§ŒΩÈ¥¸≤Ω
+           MOVE   ZERO              TO   WRK-TOKUTEI-SKAN
+           MOVE   ZERO              TO   WRK-TOKUTEI-SKAN2
+      *    ΩË ˝§Œ∆˝Õƒª˘≤√ªª§ŒªªƒÍ≤ÛøÙ∏∫ªªÕ—ŒŒ∞Ë§ŒΩÈ¥¸≤Ω
+           MOVE   ZERO              TO   WRK-NYUYOUJI-SKAN
+      *    ΩË ˝§ª§Û(∆˝Õƒª˘≤√ªª)§ŒªªƒÍ≤ÛøÙ∏∫ªªÕ—ŒŒ∞Ë§ŒΩÈ¥¸≤Ω
+           MOVE   ZERO              TO   WRK-NYUYOUJI-SHOKAN
       *    ΩË ˝Œ¡° À„°¶∏˛°¶∆«°¶≥–°À§ŒªªƒÍ≤ÛøÙ∏∫ªªÕ—ŒŒ∞Ë§ŒΩÈ¥¸≤Ω
            MOVE   ZERO              TO   WRK-MADOKU-SHOHO
-      *
-           MOVE   ZERO              TO   WK-ZAIKAISU
-           MOVE   ZERO              TO   WK-ZAITEN
-           MOVE   ZERO              TO   WK-SYUTEN
-           MOVE   ZERO              TO   WK-KIZAITEN
-           MOVE   ZERO              TO   WK-YKZTEN
       *
            PERFORM   VARYING  IDX3   FROM   1   BY   1
                      UNTIL    (IDX3         >     5)        OR
@@ -6381,21 +1765,55 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                           MOVE  WRK-ZAIKAISU-XXX  TO   WK-ZAIKAISU
                        END-IF 
                        MOVE  ACCT-ZAITEN       TO   WK-ZAITEN
-                       IF   RECE41-HKNKBN    NOT  =  "4" AND "6"
-                         IF    SRY-SRYKBN  =  "31" OR "32" OR "33" OR
-                                              "40" OR "50" OR "54" OR
-                                              "60" OR "70" OR "80" OR
-                                              "64"
+                       IF   RECE41-HKNKBN    NOT  =  "4"                
+      *                  IF    SRY-SRYKBN     =  "40"  OR  "50"  OR
+      *                                          "70"  OR  "80"  OR
+      *                                          "54"
+      *                      COMPUTE  WK-SYUTEN   =   ACCT-SYUTEN1  +
+      *                                               ACCT-KIZAITEN
+      *                      MOVE  ACCT-YKZTEN   TO   WK-YKZTEN
+      *                  ELSE
+      *                      IF   SRY-SRYKBN      =   "60"
+      *                           MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
+      *                           COMPUTE   WK-YKZTEN =
+      *                                               ACCT-KIZAITEN  +
+      *                                               ACCT-YKZTEN
+      *                      END-IF
+      *                  END-IF
+                         IF ( ACCT-SRYKBN          =  "80"    ) AND   
+                            ( SRY-SRYCD(IDX3)(1:5) =  "09593" )       
+                                  MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN  
+                                  COMPUTE   WK-YKZTEN =                 
+                                                      ACCT-KIZAITEN  +  
+                                                      ACCT-YKZTEN       
+                         ELSE                                         
+                           IF    SRY-SRYKBN     =  "40"  OR  "50"  OR
+                                                   "70"  OR  "80"  OR
+                                                   "54"  OR  "60"
                                   MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
                                   COMPUTE   WK-YKZTEN =
                                                       ACCT-KIZAITEN  +
                                                       ACCT-YKZTEN
+                           END-IF
                          END-IF
                        ELSE                                             
-                         IF    SRY-SRYKBN  =  "31" OR "32" OR "33" OR
-                                              "40" OR "50" OR "54" OR
-                                              "60" OR "70" OR "80" OR
-                                              "64"
+                         IF ( ACCT-SRYKBN          =  "80"    )   AND
+                            ( SRY-SRYCD(IDX3)(1:5) =  "09591" OR 
+                                                      "09592" )
+                               CONTINUE
+                         ELSE
+                           IF ( ACCT-SRYKBN          =  "80"    ) AND   
+                              ( SRY-SRYCD(IDX3)(1:5) =  "09593" )       
+                                  MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN  
+                                  COMPUTE   WK-YKZTEN =                 
+                                                      ACCT-KIZAITEN  +  
+                                                      ACCT-YKZTEN       
+                           ELSE                                         
+                             IF    SRY-SRYKBN   =  "30"  OR  "31"  OR     
+                                                   "32"  OR  "33"  OR     
+                                                   "40"  OR  "50"  OR     
+                                                   "54"  OR  "60"  OR     
+                                                   "70"  OR  "80"         
                                   MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN  
                                   COMPUTE   WK-YKZTEN =                 
                                                       ACCT-KIZAITEN  +  
@@ -6412,76 +1830,29 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                    COMPUTE  WK-YKZTEN  = WK-YKZTEN
                                                        + WRK-YOUBUKASAN
                                   END-IF
-                                  IF  WRK-KYOBUKASAN  NOT =  ZERO
-                                   COMPUTE  WK-SYUTEN  = WK-SYUTEN
-                                                       - WRK-KYOBUKASAN
-                                   COMPUTE  WK-YKZTEN  = WK-YKZTEN
-                                                       + WRK-KYOBUKASAN
-                                  END-IF
-                                  IF  WRK-KEIBUKASAN  NOT =  ZERO
-                                   COMPUTE  WK-SYUTEN  = WK-SYUTEN
-                                                       - WRK-KEIBUKASAN
-                                   COMPUTE  WK-YKZTEN  = WK-YKZTEN
-                                                       + WRK-KEIBUKASAN
-                                  END-IF
-                                  IF  WRK-SOGAIKASAN  NOT =  ZERO
-                                   COMPUTE  WK-SYUTEN  = WK-SYUTEN
-                                                       - WRK-SOGAIKASAN
-                                   COMPUTE  WK-YKZTEN  = WK-YKZTEN
-                                                       + WRK-SOGAIKASAN
-                                  END-IF
-                                  IF  WRK-RYOYOTEATE  NOT =  ZERO
-                                   IF ((RECE41-HKNKBN     =  "4") AND
-                                       (RECE41-JIBAIKBN   =  "2"))
-                                   OR ( RECE41-HKNKBN     =  "6" )
-                                    COMPUTE WK-SYUTEN  = WK-SYUTEN
-                                                       - WRK-RYOYOTEATE
-                                    COMPUTE WK-YKZTEN  = WK-YKZTEN
-                                                       + WRK-RYOYOTEATE
-                                   END-IF
-                                  END-IF
+                             END-IF
+                           END-IF                                       
                          END-IF
                        END-IF                                           
                        IF    SRY-SRYKBN     =  "14"
                            MOVE    ACCT-SYUTEN1   TO   WK-SYUTEN
                            MOVE    ACCT-KIZAITEN  TO   WK-KIZAITEN
                            MOVE    ACCT-YKZTEN    TO   WK-YKZTEN
-                           IF   RECE41-HKNKBN   =  "4" OR "6"
+                           IF   RECE41-HKNKBN   =  "4"
                              IF  WRK-YOUBUKASAN  NOT =  ZERO
                                 COMPUTE  WK-SYUTEN   =  WK-SYUTEN
                                                      -  WRK-YOUBUKASAN
                                 COMPUTE  WK-KIZAITEN =  WK-KIZAITEN
                                                      +  WRK-YOUBUKASAN
                              END-IF
-                             IF  WRK-KYOBUKASAN  NOT =  ZERO
-                                COMPUTE  WK-SYUTEN   =  WK-SYUTEN
-                                                     -  WRK-KYOBUKASAN
-                                COMPUTE  WK-KIZAITEN =  WK-KIZAITEN
-                                                     +  WRK-KYOBUKASAN
-                             END-IF
-                             IF  WRK-KEIBUKASAN  NOT =  ZERO
-                                COMPUTE  WK-SYUTEN   =  WK-SYUTEN
-                                                     -  WRK-KEIBUKASAN
-                                COMPUTE  WK-KIZAITEN =  WK-KIZAITEN
-                                                     +  WRK-KEIBUKASAN
-                             END-IF
-                             IF  WRK-SOGAIKASAN  NOT =  ZERO
-                                COMPUTE  WK-SYUTEN   =  WK-SYUTEN
-                                                     -  WRK-SOGAIKASAN
-                                COMPUTE  WK-KIZAITEN =  WK-KIZAITEN
-                                                     +  WRK-SOGAIKASAN
-                             END-IF
                            END-IF
                        END-IF
                    ELSE
-                       IF ( SRY-SRYKBN   =  "21"  OR  "22"  OR  "23" OR
-                                            "31"  OR  "32"  OR  "33" OR
-                                            "40"  OR  "50"  OR  "54" OR
-                                            "60"  OR  "70"  OR  "80" OR
-                                            "13"  OR  "14"  OR  "64" OR
-                                            "25"                     )
-                       OR ((ACCT-ZAIKBN  =   2  ) AND
-                           (SRY-SRYKBN   =  "12"))
+                       IF   SRY-SRYKBN  =  "21"  OR  "22"  OR  "23" OR
+                                           "30"  OR  "31"  OR  "32" OR
+                                           "33"  OR  "40"  OR  "50" OR
+                                           "60"  OR  "70"  OR  "80" OR
+                                           "14"  OR  "54"  OR  "13"
                            MOVE  ZERO          TO   WK-ZAIKAISU
                            MOVE  ZERO          TO   WK-ZAITEN
                            MOVE  ZERO          TO   WK-SYUTEN
@@ -6498,131 +1869,107 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                      MOVE    ZERO     TO    WK-YKZTEN
                      MOVE    ZERO     TO    FLG-OSINKBN
                END-IF
-               IF  ((ACCT-ZAITEN    NOT =    ZERO) AND
-                    (ACCT-ZAIKAISU  NOT =    ZERO))
-               OR  ( FLG-TAISYO         =     1   )
-                  EVALUATE   RECE41-HKNKBN
-                    WHEN       "1"
-                    WHEN       "2"
-                        PERFORM   2101221-RECE-LEFT-SET-SEC
-                    WHEN       "3"
-                        PERFORM   2101222-RECE-LEFT-SET2-SEC
-                    WHEN       "4"
-                        EVALUATE  WRK-PARA-RECEKBN
-                          WHEN      "4"
-      ********************* ° ø∑ÕÕº∞°À
-                            PERFORM   2101223-RECE-LEFT-SET3-SEC
-                          WHEN      "5"
-      ********************* ° ΩæÕËÕÕº∞°À
-                            PERFORM   2101224-RECE-LEFT-SET4-SEC
-                        END-EVALUATE
-                    WHEN       "5"
-                        PERFORM   2101225-RECE-LEFT-SET5-SEC
-                    WHEN       "6"
-                        PERFORM   2101224-RECE-LEFT-SET4-SEC
-                  END-EVALUATE
+               IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                    (ACCT-ZAIKAISU  NOT =    ZERO)
+                  IF      RECE41-HKNKBN   NOT  =   "3"
+                     IF   RECE41-HKNKBN   NOT  =   "4"                     
+                        PERFORM   RECE-LEFT-SET-SEC
+                     ELSE                                                  
+                        PERFORM   RECE-LEFT-SET3-SEC                       
+                     END-IF                                                
+                  ELSE
+                        PERFORM   RECE-LEFT-SET2-SEC
+                  END-IF
                END-IF
-               IF  ( SRY-SRYKBN   =  "21"   OR   "22"   OR   "23"   OR
+               IF    SRY-SRYKBN   =  "21"   OR   "22"   OR   "23"   OR
                                      "31"   OR   "32"   OR   "33"   OR
-                                     "40"   OR   "50"   OR   "54"   OR
-                                     "60"   OR   "70"   OR   "14"   OR
-                                     "64"          )
-               OR  ((ACCT-ZAIKBN  =    2          ) AND
-                    (SRY-SRYKBN   =   "12" OR "13"))
+                                     "40"   OR   "50"   OR   "60"   OR
+                                     "70"   OR   "54"
                      MOVE    6      TO    IDX3
                END-IF
            END-PERFORM
       *
-           EVALUATE   RECE41-HKNKBN
-             WHEN       "1"
-             WHEN       "2"
-      *         ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                COMPUTE    RECE41-KAISU(19)   =    RECE41-KAISU(19)
-                                              -    WRK-SYOHOU-KAISU
-      *         ΩË ˝§ª§Û§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                COMPUTE    RECE41-KAISU(33)   =    RECE41-KAISU(33)
-                                              -    WRK-SYOSEN-KAISU
-      *         À„∆«§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝Œ¡° À„°¶∏˛°¶∆«°¶≥–°À§Œ∏∫ªª
-                COMPUTE    RECE41-KAISU(20)   =    RECE41-KAISU(20)
-                                              -    WRK-MADOKU-SHOHO
-             WHEN       "3"
-      *         ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                COMPUTE    RECE41-KAISU(12)   =    RECE41-KAISU(12)
-                                              -    WRK-SYOHOU-KAISU
-      *         ΩË ˝§ª§Û§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                COMPUTE    RECE41-KAISU(30)   =    RECE41-KAISU(30)
-                                              -    WRK-SYOSEN-KAISU
-      *         À„∆«§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝Œ¡° À„°¶∏˛°¶∆«°¶≥–°À§Œ∏∫ªª
-                COMPUTE    RECE41-KAISU(13)   =    RECE41-KAISU(13)
-                                              -    WRK-MADOKU-SHOHO
-             WHEN       "4"
-                EVALUATE  WRK-PARA-RECEKBN
-                  WHEN      "4"
-      **************° ø∑ÕÕº∞°À
-                   IF   WRK-PARA-JIBAIPRTKBN  =  "2"
-      *             ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                    COMPUTE    RECE41-KAISU(14)  =  RECE41-KAISU(14)
-                                                 -  WRK-SYOHOU-KAISU
-      *             ΩË ˝§ª§Û§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                    COMPUTE    RECE41-KAISU(31)  =  RECE41-KAISU(31)
-                                                 -  WRK-SYOSEN-KAISU
-      *             À„∆«§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝Œ¡° À„°¶∏˛°¶∆«°¶≥–°À§Œ∏∫ªª
-                    COMPUTE    RECE41-KAISU(15)  =  RECE41-KAISU(15)
-                                                 -  WRK-MADOKU-SHOHO
-                   ELSE
-      *             ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                    COMPUTE    RECE41-KAISU(14)  =  RECE41-KAISU(14)
-                                                 -  WRK-SYOHOU-KAISU
-      *             ΩË ˝§ª§Û§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                    COMPUTE    RECE41-KAISU(33)  =  RECE41-KAISU(33)
-                                                 -  WRK-SYOSEN-KAISU
-      *             À„∆«§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝Œ¡° À„°¶∏˛°¶∆«°¶≥–°À§Œ∏∫ªª
-                    COMPUTE    RECE41-KAISU(15)  =  RECE41-KAISU(15)
-                                                 -  WRK-MADOKU-SHOHO
-                   END-IF
-                  WHEN      "5"
-      **************° ΩæÕËÕÕº∞°À
-      *             ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                    COMPUTE    RECE41-KAISU(15)  =  RECE41-KAISU(15)
-                                                 -  WRK-SYOHOU-KAISU
-      *             ΩË ˝§ª§Û§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                    COMPUTE    RECE41-KAISU(35)  =  RECE41-KAISU(35)
-                                                 -  WRK-SYOSEN-KAISU
-      *             À„∆«§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝Œ¡° À„°¶∏˛°¶∆«°¶≥–°À§Œ∏∫ªª
-                    COMPUTE    RECE41-KAISU(16)  =  RECE41-KAISU(16)
-                                                 -  WRK-MADOKU-SHOHO
-                END-EVALUATE
-             WHEN       "5"
-      *         ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                COMPUTE    RECE41-KAISU(22)   =    RECE41-KAISU(22)
-                                              -    WRK-SYOHOU-KAISU
-      *         ΩË ˝§ª§Û§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                COMPUTE    RECE41-KAISU(36)   =    RECE41-KAISU(36)
-                                              -    WRK-SYOSEN-KAISU
-      *         À„∆«§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝Œ¡° À„°¶∏˛°¶∆«°¶≥–°À§Œ∏∫ªª
-                COMPUTE    RECE41-KAISU(23)   =    RECE41-KAISU(23)
-                                              -    WRK-MADOKU-SHOHO
-             WHEN       "6"
-      *         ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                COMPUTE    RECE41-KAISU(15)   =    RECE41-KAISU(15)
-                                              -    WRK-SYOHOU-KAISU
-      *         ΩË ˝§ª§Û§ŒªªƒÍ≤ÛøÙ§´§È∏∫ªª
-                COMPUTE    RECE41-KAISU(35)   =    RECE41-KAISU(35)
-                                              -    WRK-SYOSEN-KAISU
-      *         À„∆«§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝Œ¡° À„°¶∏˛°¶∆«°¶≥–°À§Œ∏∫ªª
-                COMPUTE    RECE41-KAISU(16)   =    RECE41-KAISU(16)
-                                              -    WRK-MADOKU-SHOHO
-           END-EVALUATE
+           IF      RECE41-HKNKBN   NOT  =   "3"
       *
-           .
+              IF   RECE41-HKNKBN   NOT  =   "4"                         
       *
-       210122-RECE41-HENSYU-EXT.
+      *         ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§È∆√ƒÍº¿¥µΩË ˝¥…Õ˝≤√ªª§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(19)   =    RECE41-KAISU(19)  -
+                                                   WRK-TOKUTEI-SKAN
+      *
+      *         ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝(∆˝Õƒª˘)≤√ªª§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(19)   =    RECE41-KAISU(19)  -
+                                                   WRK-NYUYOUJI-SKAN           
+      *
+      *         ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§È∆√ƒÍº¿¥µΩË ˝¥…Õ˝≤√ªª(ΩË ˝Œ¡)§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(33)   =    RECE41-KAISU(33)  -
+                                                   WRK-TOKUTEI-SKAN2           
+      *
+      *         ΩË ˝§ª§Û§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝§ª§Û(∆˝Õƒª˘)≤√ªª§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(33)   =    RECE41-KAISU(33)  -
+                                                   WRK-NYUYOUJI-SHOKAN      
+      *
+      *         À„∆«§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝Œ¡° À„°¶∏˛°¶∆«°¶≥–°À§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(20)   =    RECE41-KAISU(20)  -
+                                                   WRK-MADOKU-SHOHO  
+      *
+              ELSE                                                      
+      *
+      *         ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§È∆√ƒÍº¿¥µΩË ˝¥…Õ˝≤√ªª§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(14)   =    RECE41-KAISU(14)  -  
+                                                   WRK-TOKUTEI-SKAN     
+      *
+      *         ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝(∆˝Õƒª˘)≤√ªª§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(14)   =    RECE41-KAISU(14)  -  
+                                                   WRK-NYUYOUJI-SKAN     
+      *
+      *         ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§È∆√ƒÍº¿¥µΩË ˝¥…Õ˝≤√ªª(ΩË ˝Œ¡)§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(33)   =    RECE41-KAISU(33)  -  
+                                                   WRK-TOKUTEI-SKAN2    
+      *
+      *         ΩË ˝§ª§Û§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝§ª§Û(∆˝Õƒª˘)≤√ªª§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(33)   =    RECE41-KAISU(33)  -  
+                                                   WRK-NYUYOUJI-SHOKAN  
+      *
+      *         À„∆«§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝Œ¡° À„°¶∏˛°¶∆«°¶≥–°À§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(15)   =    RECE41-KAISU(15)  -  
+                                                   WRK-MADOKU-SHOHO     
+      *
+              END-IF                                                    
+      *
+           ELSE
+      *
+      *         ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§È∆√ƒÍº¿¥µΩË ˝¥…Õ˝≤√ªª§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(12)   =    RECE41-KAISU(12)  -
+                                                   WRK-TOKUTEI-SKAN
+      *
+      *         ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝(∆˝Õƒª˘)≤√ªª§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(12)   =    RECE41-KAISU(12)  -
+                                                   WRK-NYUYOUJI-SKAN           
+      *
+      *         ΩË ˝§ŒªªƒÍ≤ÛøÙ§´§È∆√ƒÍº¿¥µΩË ˝¥…Õ˝≤√ªª(ΩË ˝Œ¡)§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(30)   =    RECE41-KAISU(30)  -
+                                                   WRK-TOKUTEI-SKAN2           
+      *
+      *         ΩË ˝§ª§Û§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝§ª§Û(∆˝Õƒª˘)≤√ªª§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(30)   =    RECE41-KAISU(30)  -
+                                                   WRK-NYUYOUJI-SHOKAN      
+      *
+      *         À„∆«§ŒªªƒÍ≤ÛøÙ§´§ÈΩË ˝Œ¡° À„°¶∏˛°¶∆«°¶≥–°À§Œ∏∫ªª
+                COMPUTE    RECE41-KAISU(13)   =    RECE41-KAISU(13)  -
+                                                   WRK-MADOKU-SHOHO  
+      *
+           END-IF         
+      *
+           .                                           
+      *
+       RECE41-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜
       *****************************************************************
-       2101221-RECE-LEFT-SET-SEC               SECTION.
+       RECE-LEFT-SET-SEC               SECTION.
       *
            EVALUATE    SRY-SRYKBN
       *    ΩÈø«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
@@ -6631,7 +1978,6 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                      EVALUATE    WRK-TNS-TIMEKSNKBN(IDX3)
                          WHEN    1
                          WHEN    5
-                         WHEN    6
                              MOVE  "1"     TO   RECE41-SHOSHINTIME
                          WHEN    3
                              MOVE  "2"     TO   RECE41-SHOSHINTIME
@@ -6642,14 +1988,13 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                 RECE41-TENSU(1)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    END-IF
-                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1 OR
-                                          CONS-ROUSAI18
+                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1    
                         COMPUTE    RECE41-KINGAKU2(1)  =
                                    RECE41-KINGAKU2(1)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    END-IF  
-                   IF  (SRY-SRYCD(IDX3) = CONS-ROUSAI3)
-                   AND (RECE41-SRYYM   <=   "201306"  )
+                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI2 OR
+                                          CONS-ROUSAI3    
                         COMPUTE    RECE41-KINGAKU2(4)  =
                                    RECE41-KINGAKU2(4)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
@@ -6659,95 +2004,23 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                  EVALUATE  WRK-TNS-GAITENTTLKBN(IDX3)
       *      ° ¥À‹ºÍµª°À
                    WHEN  120
-                     IF ((SRY-SRYCD(IDX3) =  CONS-ROUSAI5  OR
+                     IF   SRY-SRYCD(IDX3) =  CONS-ROUSAI5  OR
                                              CONS-ROUSAI6  OR
-                                             CONS-ROUSAI7  OR
-                                             CONS-ROUSAI19) AND
-                         (RECE41-SRYYM   <=    "201306"   ))
-                     OR ((SRY-SRYCD(IDX3) =  CONS-ROUSAI34 OR
-                                             CONS-ROUSAI35 OR
-                                             CONS-ROUSAI36 OR
-                                             CONS-ROUSAI37 OR
-                                             CONS-ROUSAI38 OR
-                                             CONS-ROUSAI5 ) AND
-                         (RECE41-SRYYM   >=    "201307"   ))
+                                             CONS-ROUSAI7  
                          ADD   WK-ZAIKAISU      TO   RECE41-KAISU2(2)
                          COMPUTE    RECE41-KINGAKU2(2)  =
                                     RECE41-KINGAKU2(2)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                      ELSE
-                         IF  (SRY-SRYCD(IDX3) =  CONS-JIKANTAI1  OR
-                                                 CONS-JIKANTAI2  OR
-                                                 CONS-JIKANTAI3  OR
-                                                 CONS-MESAIKSN   OR
-                                                 CONS-CHIHOKATU  OR
-                                                 CONS-CHIHOKAT2    )
-                         AND (RECE41-SRYYM   >=  "201004"          )
-                           IF  SRY-SRYCD(IDX3)  =  CONS-JIKANTAI1
-                             COMPUTE  CNT-JIKANTAI1 = CNT-JIKANTAI1
-                                                    + WK-ZAIKAISU
-                             IF   FLG-JIKANTAI1-ARI  =  ZERO
-                                ADD  WRK-TNS-TEN(IDX3)
-                                               TO  RECE41-KHNTEN(2)
-                                MOVE     1     TO  FLG-JIKANTAI1-ARI
-                             END-IF
-                           END-IF
-                           IF  SRY-SRYCD(IDX3)  =  CONS-JIKANTAI2
-                             COMPUTE  CNT-JIKANTAI2 = CNT-JIKANTAI2
-                                                    + WK-ZAIKAISU
-                             IF   FLG-JIKANTAI2-ARI   =  ZERO
-                                ADD  WRK-TNS-TEN(IDX3)
-                                               TO  RECE41-KHNTEN(2)
-                                MOVE     1     TO  FLG-JIKANTAI2-ARI
-                             END-IF
-                           END-IF
-                           IF  SRY-SRYCD(IDX3)  =  CONS-JIKANTAI3
-                             COMPUTE  CNT-JIKANTAI3 = CNT-JIKANTAI3
-                                                    + WK-ZAIKAISU
-                             IF   FLG-JIKANTAI3-ARI  =  ZERO
-                                ADD  WRK-TNS-TEN(IDX3)
-                                               TO  RECE41-KHNTEN(2)
-                                MOVE     1     TO  FLG-JIKANTAI3-ARI
-                             END-IF
-                           END-IF
-                           IF  SRY-SRYCD(IDX3)  =  CONS-MESAIKSN
-                             COMPUTE  CNT-MESAIKSN =  CNT-MESAIKSN
-                                                   +  WK-ZAIKAISU
-                             IF   FLG-MESAIKSN-ARI   =  ZERO
-                                ADD  WRK-TNS-TEN(IDX3)
-                                               TO  RECE41-KHNTEN(2)
-                                MOVE     1     TO  FLG-MESAIKSN-ARI
-                             END-IF
-                           END-IF
-                           IF  SRY-SRYCD(IDX3)  =  CONS-CHIHOKATU
-                             COMPUTE  CNT-CHIHOKATU = CNT-CHIHOKATU
-                                                    + WK-ZAIKAISU
-                             IF   FLG-CHIHOKATU-ARI  =  ZERO
-                                ADD  WRK-TNS-TEN(IDX3)
-                                               TO  RECE41-KHNTEN(2)
-                                MOVE     1     TO  FLG-CHIHOKATU-ARI
-                             END-IF
-                           END-IF
-                           IF  SRY-SRYCD(IDX3)  =  CONS-CHIHOKAT2
-                             COMPUTE  CNT-CHIHOKAT2 = CNT-CHIHOKAT2
-                                                    + WK-ZAIKAISU
-                             IF   FLG-CHIHOKAT2-ARI  =  ZERO
-                                ADD  WRK-TNS-TEN(IDX3)
-                                               TO  RECE41-KHNTEN(2)
-                                MOVE     1     TO  FLG-CHIHOKAT2-ARI
-                             END-IF
-                           END-IF
+                         IF    RECE41-KHNTEN(2)   =   ZERO
+                            MOVE  WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(2)
                          ELSE
-                           IF   FLG-SAISIN-ARI   =  ZERO
-                                ADD  WRK-TNS-TEN(IDX3)
-                                               TO  RECE41-KHNTEN(2)
-                                MOVE     1     TO  FLG-SAISIN-ARI
-                           END-IF
+                            IF RECE41-KHNTEN(2) NOT = WRK-TNS-TEN(IDX3)
+                               MOVE   ZERO    TO  RECE41-KHNTEN(2)
+                               MOVE   1    TO  FLG-KHNTEN2
+                            END-IF
                          END-IF
-                         IF   FLG-COUNT-ARI  =  ZERO
-                           ADD    WK-ZAIKAISU   TO   RECE41-KAISU(2)
-                           MOVE   1             TO   FLG-COUNT-ARI
-                         END-IF
+                         ADD    WK-ZAIKAISU   TO   RECE41-KAISU(2)
                          COMPUTE    RECE41-TENSU(2)  =
                                     RECE41-TENSU(2)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
@@ -6817,62 +2090,36 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *       ° §Ω§Œ¬æ°À
                    WHEN  OTHER 
-                        IF  (SRY-SRYCD(IDX3) =  CONS-ROUSAI4)
-                        AND (RECE41-SRYYM   <=  "201306"    )
+                        IF   SRY-SRYCD(IDX3) =  CONS-ROUSAI4  
                            ADD   WK-ZAIKAISU   TO   RECE41-KAISU2(3)
                            COMPUTE    RECE41-KINGAKU2(3)  =
                                       RECE41-KINGAKU2(3)  +
                                      (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                         END-IF
-                        IF   ACCT-ZAIKBN     =  2
-                           MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                           MOVE   1            TO   FLG-KHNTEN2
-                           COMPUTE    WRK-RECE4G-TENSU(2)  =
-                                      WRK-RECE4G-TENSU(2)  +
-                                     (WK-ZAITEN   *   WK-ZAIKAISU)
-                        END-IF
                  END-EVALUATE
       *    ªÿ∆≥§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "13"
-                 IF   (SRY-SRYCD(IDX3) =  CONS-ROUSAI33)
-                 AND  (RECE41-SRYYM   >=  "201307"     )
-                         ADD   WK-ZAIKAISU   TO   RECE41-KAISU2(3)
-                         COMPUTE    RECE41-KINGAKU2(3)  =
-                                    RECE41-KINGAKU2(3)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                 ELSE
-                   IF ((SRY-SRYCD(IDX3) =
-                        CONS-ROUSAI9  OR  CONS-ROUSAI10 OR
-                        CONS-ROUSAI11 OR  CONS-ROUSAI12 OR
-                        CONS-ROUSAI13 OR  CONS-ROUSAI14 OR
-                        CONS-ROUSAI15 OR  CONS-ROUSAI16 OR
-                        CONS-ROUSAI17                       ) AND
-                       (RECE41-SRYYM    <=  "201306"        ))
-                   OR ((SRY-SRYCD(IDX3)  =  CONS-ROUSAI8    ) AND
-                       (RECE41-SRYYM     <  "200804"        ))
+                   IF   SRY-SRYCD(IDX3) =   CONS-ROUSAI8  OR
+                                            CONS-ROUSAI9  OR
+                                            CONS-ROUSAI10 OR
+                                            CONS-ROUSAI11 OR
+                                            CONS-ROUSAI12 OR
+                                            CONS-ROUSAI13 OR
+                                            CONS-ROUSAI14 OR
+                                            CONS-ROUSAI15 OR
+                                            CONS-ROUSAI16 OR
+                                            CONS-ROUSAI17 
                          COMPUTE    RECE41-KINGAKU2(4)  =
                                     RECE41-KINGAKU2(4)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    ELSE
-                     IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE4G-TENSU(7)  =
-                                    WRK-RECE4G-TENSU(7)  +
-                                   (WK-ZAITEN   *   WK-ZAIKAISU)
-                     ELSE
                          COMPUTE    RECE41-TENSU(7)  =
                                     RECE41-TENSU(7)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                     END-IF
                    END-IF                   
-                 END-IF
       *
       *    ∫ﬂ¬§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "14"
-                 IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE4G-TENSU(12)  =
-                              WRK-RECE4G-TENSU(12)  +
-                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                 ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
       *            ±˝ø«°¶∆√ Ã±˝ø«° ª˛¥÷≤√ªª°À
                    IF    FLG-OSINKBN         =   1
@@ -6899,49 +2146,27 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                 (WK-SYUTEN   *   WK-ZAIKAISU)
                    END-IF
       *            ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈
-                   IF (( WRK-TNS-OSINKBN(IDX3) =     1          )  AND
+                   IF  ( WRK-TNS-OSINKBN(IDX3) =     1          )  AND
                        ((SRY-SRYCD(IDX3)   NOT =    "114000110")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001610")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002970")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000470")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011670")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011970")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000370")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001570")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114012070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017670")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017770")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029270")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029370")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030170")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030270")))
-                   OR (  FLG-OSINKBN           =     9           )
+                        (SRY-SRYCD(IDX3)   NOT =    "114002070"))
                        MOVE   1              TO   FLG-ZAITAKU
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(11)
                        COMPUTE   RECE41-TENSU(11)  =
                                  RECE41-TENSU(11)  +
-                                (WK-SYUTEN         * WK-ZAIKAISU)
+                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    END-IF
       *            §Ω§Œ¬æ
                    IF    FLG-ZAITAKU    =   ZERO
                        COMPUTE   RECE41-TENSU(12)  =
                                  RECE41-TENSU(12)  +
+      ***                       (WK-KIZAITEN   *   WK-ZAIKAISU)  +
                                 (WK-SYUTEN     *   WK-ZAIKAISU)
                    END-IF
       *            ÃÙ∫ﬁ
@@ -6949,19 +2174,11 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                              RECE41-TENSU(13)  +
                              (WK-KIZAITEN *   WK-ZAIKAISU)  +
                              (WK-YKZTEN   *   WK-ZAIKAISU)
-                 END-IF
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
-                                                       OR "7"       )
-                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
-                                                         OR "059"   )
-                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
-                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
-                     IF    SRY-SRYCD(IDX3)  =  CONS-YAKTEIGEN
-                                            OR CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
+                   IF    (SRY-SRYCD(IDX3) (1:1)  =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001"            )
+                     IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(14)  =
                                  RECE41-TENSU(14)  -
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
@@ -6993,37 +2210,17 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                      END-IF   
                    END-IF
                WHEN    "22"
-                 IF    SRY-SRYCD(IDX3)      =  CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
-                   COMPUTE   RECE41-TENSU(16)  =
-                             RECE41-TENSU(16)  -
-                            (WK-ZAITEN   *   WK-ZAIKAISU)
-                 ELSE
                    ADD    WK-ZAIKAISU    TO   RECE41-KAISU(16)
                    COMPUTE   RECE41-TENSU(16)  =
                              RECE41-TENSU(16)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                 END-IF
                WHEN    "23"
-                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
-                                                       OR "7"       )
-                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
-                                                         OR "059"   )
-                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
-                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
-                     IF    SRY-SRYCD(IDX3)  =  CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
-                       COMPUTE   RECE41-TENSU(17)  =
-                                 RECE41-TENSU(17)  -
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     ELSE
+                   IF    (SRY-SRYCD(IDX3) (1:1)  =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001"            )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(17)
                        COMPUTE   RECE41-TENSU(17)  =
                                  RECE41-TENSU(17)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                     END-IF
                    ELSE
                        IF    RECE41-KHNTEN(18)   =   ZERO
                           MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(18)
@@ -7040,43 +2237,29 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    END-IF
       *    ΩË ˝§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "25"
-                   IF  SRY-SRYCD(IDX3) = "120002170" OR "120002270" OR
-                                         "120003170" OR "120003370" OR
-                                         "120003870" OR
-                                         "120004070" OR "120004170" OR
-                                         "120004370" OR "120004470"
-                      COMPUTE  WRK-SYOHOU-KAISU  =  WRK-SYOHOU-KAISU
-                                                 +  ACCT-ZAIKAISU
+                   IF SRY-SRYCD(IDX3)   =    "120002270"
+                      COMPUTE  WRK-TOKUTEI-SKAN  = WRK-TOKUTEI-SKAN +
+                                                   WK-ZAIKAISU 
                    END-IF
-                   IF    WK-ZAITEN   NOT =  ZERO
-                     IF    RECE41-KHNTEN(19)     = ZERO
-                      MOVE  WK-ZAITEN     TO   RECE41-KHNTEN(19)
-                     ELSE
-                      IF   RECE41-KHNTEN(19) NOT = WK-ZAITEN
-                            MOVE   ZERO   TO   RECE41-KHNTEN(19)
-                            MOVE   1      TO   FLG-KHNTEN19
-                      END-IF
-                     END-IF
+                   IF SRY-SRYCD(IDX3)   =    "120002170"
+                      COMPUTE  WRK-NYUYOUJI-SKAN = WRK-NYUYOUJI-SKAN +
+                                                   WK-ZAIKAISU 
                    END-IF
-                   IF  (SRY-SRYCD(IDX3)(1:1)   = "S" OR "8" )
-                   OR  (SRY-SRYCD(IDX3)(1:3)   = "008"      )
-                   OR  (SRY-SRYCD(IDX3)        = "099999903")
-                      CONTINUE
+                   IF    RECE41-KHNTEN(19)   =   ZERO
+                      MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(19)
                    ELSE
-                      ADD    ACCT-ZAIKAISU   TO    RECE41-KAISU(19)
+                      IF   RECE41-KHNTEN(19) NOT = WRK-TNS-TEN(IDX3)
+                           MOVE   ZERO    TO    RECE41-KHNTEN(19)
+                           MOVE   1       TO    FLG-KHNTEN19
+                      END-IF
                    END-IF
+                   ADD    WK-ZAIKAISU     TO    RECE41-KAISU(19)
                    COMPUTE   RECE41-TENSU(19)  =
                              RECE41-TENSU(19)  +
-                            (WK-ZAITEN   *   ACCT-ZAIKAISU)
+                            (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *    À„∆«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "26"
-                   IF  (SRY-SRYCD(IDX3)(1:1)   = "S" OR "8" )
-                   OR  (SRY-SRYCD(IDX3)(1:3)   = "008"      )
-                   OR  (SRY-SRYCD(IDX3)        = "099999903")
-                      CONTINUE
-                   ELSE
-                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(20)
-                   END-IF
+                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(20)
                    IF SRY-SRYCD(IDX3)      =    "120001310"
                     COMPUTE WRK-MADOKU-SHOHO = WRK-MADOKU-SHOHO +
                                                WK-ZAIKAISU 
@@ -7132,7 +2315,6 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    ∏°∫∫§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "60"
-               WHEN    "64"
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(29)
                    END-IF
@@ -7169,110 +2351,59 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    §Ω§Œ¬æ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "80"
-                 IF   ((SRY-SRYCD(IDX3) =
-                        CONS-ROUSAI32 OR
-                        CONS-ROUSAI20 OR  CONS-ROUSAI21 OR
-                        CONS-ROUSAI22 OR  CONS-ROUSAI23 OR
-                        CONS-ROUSAI24 OR  CONS-ROUSAI25 OR
-                        CONS-ROUSAI26 OR  CONS-ROUSAI27 OR
-                        CONS-ROUSAI28 OR  CONS-ROUSAI29 OR
-                        CONS-ROUSAI30 OR  CONS-ROUSAI31 OR
-                        CONS-ROUSAI39                       ) AND
-                       (RECE41-SRYYM    >=  "201307"        ))
-                       COMPUTE    RECE41-KINGAKU2(4)  =
-                                  RECE41-KINGAKU2(4)  +
-                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                 ELSE
-                   IF ((ACCT-SRYKBN          =  "80"    )  AND
-                       (SRY-SRYCD(IDX3)(1:5) =  "09593" ))
-                   OR ((SRY-SRYCD(IDX3) >= "101801010" AND
-                                        <= "101801020"  )  AND
-                       (RECE41-SRYYM    >= "201307"     ))
-                   OR ((SRY-SRYCD(IDX3)  = "101801030"  )  AND
-                       (RECE41-SRYYM    >= "201307"     ))
-                     IF   SRY-SRYCD(IDX3)(1:5) = "09593"
+                   IF ( ACCT-SRYKBN          =  "80"    )  AND         
+                      ( SRY-SRYCD(IDX3)(1:5) =  "09593" )              
                        COMPUTE    RECE41-KINGAKU2(4)  =                 
                                   RECE41-KINGAKU2(4)  +                 
                                  (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)  
-                       IF   FLG-TAISYO   =   1
-                          COMPUTE WRK-ZAITENNASHI  =
-                                  WRK-ZAITENNASHI  +
-                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       END-IF
-                     ELSE
-                       IF  SRY-SRYCD(IDX3)  =  "101801030"
-                         COMPUTE  WRK-FUTANWARI  =
-                                  WRK-TNS-TEN(IDX3) / 100
-                         COMPUTE  WRK-KEISAN-KG2 =
-                                 (WRK-TEN-KG2       * WRK-FUTANWARI)
-                         COMPUTE  RECE41-KINGAKU2(4)  =
-                                  RECE41-KINGAKU2(4)  +
-                                 (WRK-KEISAN-KG2    * ACCT-ZAIKAISU)
-                       ELSE
-                         COMPUTE  RECE41-KINGAKU2(4)  =
-                                  RECE41-KINGAKU2(4)  +
-                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                         COMPUTE  WRK-TEN-KG2 = WRK-TNS-TEN(IDX3)
-                       END-IF
-                     END-IF
                    ELSE               
-                    IF  SRY-SRYCD(IDX3) =  CONS-SHOHOKSN1
-                                        OR CONS-SHOHOKSN2
-                                        OR CONS-SHOHOKSN3
-                                        OR CONS-SHOHOKSN4
-                                        OR CONS-SHOHOKSN5
-                                        OR CONS-SHOHOKSN6
-                                        OR CONS-SHOHOKSN7
-                                        OR CONS-SHOHOKSN8
-                       COMPUTE  WRK-SYOSEN-KAISU  =  WRK-SYOSEN-KAISU
-                                                  +  ACCT-ZAIKAISU
+                    IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN2
+                     COMPUTE  WRK-TOKUTEI-SKAN2 =  WRK-TOKUTEI-SKAN2 +
+                                                   WK-ZAIKAISU 
+                    END-IF
+                    IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN1
+                     COMPUTE WRK-NYUYOUJI-SHOKAN = WRK-NYUYOUJI-SHOKAN +
+                                                  WK-ZAIKAISU 
                     END-IF
                     IF   SRY-SRYCD(IDX3)   =  CONS-SHOHOSEN1 OR
                                               CONS-SHOHOSEN2 OR
                                               CONS-SHOHOSEN3 OR
                                               CONS-SHOHOSEN4 OR
-                                              CONS-SHOHOSEN5 OR
                                               CONS-SHOHOKSN1 OR
-                                              CONS-SHOHOKSN2 OR
-                                              CONS-SHOHOKSN3 OR
-                                              CONS-SHOHOKSN4 OR
-                                              CONS-SHOHOKSN5 OR
-                                              CONS-SHOHOKSN6 OR
-                                              CONS-SHOHOKSN7 OR
-                                              CONS-SHOHOKSN8
-                         ADD  ACCT-ZAIKAISU  TO  RECE41-KAISU(33)
+                                              CONS-SHOHOKSN2
+                         ADD    WK-ZAIKAISU  TO  RECE41-KAISU(33)
                          COMPUTE   RECE41-TENSU(33)  =
                                    RECE41-TENSU(33)  +
-                                  (WK-ZAITEN  *   ACCT-ZAIKAISU)
+                                  (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                         COMPUTE   WK-SYUTEN  =  WK-SYUTEN  
+                                              -  WRK-TNS-TEN(IDX3)
                     ELSE
-                         COMPUTE   RECE41-TENSU(34)  =
-                                   RECE41-TENSU(34)  +
-                                  (WK-SYUTEN  *   ACCT-ZAIKAISU)
                          IF    WRK-TNS-GAITENTTLKBN(IDX3)   =    130
                            COMPUTE   RECE41-TENSU(7)  =
                                      RECE41-TENSU(7)  +
                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                           COMPUTE   RECE41-TENSU(34) =
-                                     RECE41-TENSU(34) -
-                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                         ELSE  
+                           COMPUTE   RECE41-TENSU(34)  =
+                                     RECE41-TENSU(34)  +
+                                    (WK-SYUTEN   *   ACCT-ZAIKAISU)
                          END-IF
                     END-IF
                     COMPUTE   RECE41-TENSU(35)  =
                               RECE41-TENSU(35)  +
-                             (WK-YKZTEN   *   ACCT-ZAIKAISU)
+                             (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
-                 END-IF
            END-EVALUATE
       *
            .
       *
-       2101221-RECE-LEFT-SET-EXT.
+       RECE-LEFT-SET-EXT.
            EXIT.
+      *
       *
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜
       *****************************************************************
-       2101222-RECE-LEFT-SET2-SEC               SECTION.
+       RECE-LEFT-SET2-SEC               SECTION.
       *
            EVALUATE    SRY-SRYKBN
       *    ΩÈø«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
@@ -7281,24 +2412,18 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                      EVALUATE    WRK-TNS-TIMEKSNKBN(IDX3)
                          WHEN    1
                          WHEN    5
-                         WHEN    6
                              MOVE  "1"     TO   RECE41-SHOSHINTIME
                          WHEN    3
                              MOVE  "2"     TO   RECE41-SHOSHINTIME
                          WHEN    4
                              MOVE  "3"     TO   RECE41-SHOSHINTIME
                      END-EVALUATE
-                     IF   SRY-SRYCD(IDX3) = "111012370"
-                       CONTINUE
-                     ELSE
-                       ADD   WK-ZAIKAISU   TO   RECE41-KAISU(1)
-                     END-IF
+                     ADD   WK-ZAIKAISU     TO   RECE41-KAISU(1)
                      COMPUTE    RECE41-TENSU(1)  =
                                 RECE41-TENSU(1)  +
                                 (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
                    END-IF
-                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1 OR
-                                          CONS-ROUSAI18
+                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1    
                         COMPUTE    RECE41-KINGAKU2(1)  =
                                    RECE41-KINGAKU2(1)  +
                                 (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
@@ -7310,18 +2435,9 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                  EVALUATE  WRK-TNS-GAITENTTLKBN(IDX3)
       *      ° ¥À‹ºÍµª°À
                    WHEN  120
-                     IF ((SRY-SRYCD(IDX3) =  CONS-ROUSAI5  OR
+                     IF   SRY-SRYCD(IDX3) =  CONS-ROUSAI5  OR
                                              CONS-ROUSAI6  OR
-                                             CONS-ROUSAI7  OR
-                                             CONS-ROUSAI19) AND
-                         (RECE41-SRYYM   <=    "201306"   ))
-                     OR ((SRY-SRYCD(IDX3) =  CONS-ROUSAI34 OR
-                                             CONS-ROUSAI35 OR
-                                             CONS-ROUSAI36 OR
-                                             CONS-ROUSAI37 OR
-                                             CONS-ROUSAI38 OR
-                                             CONS-ROUSAI5 ) AND
-                         (RECE41-SRYYM   >=    "201307"   ))
+                                             CONS-ROUSAI7  
                          COMPUTE    RECE41-KINGAKU2(2)  =
                                     RECE41-KINGAKU2(2)  +
                                  (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
@@ -7329,18 +2445,14 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                            TO   RECE41-SYOSAIYMD2(2)
                      ELSE
                          IF      RECE41-KEIZOKU-PRTKBN     =   "2"
-                            IF   FLG-COUNT-ARI  =  ZERO
-                              ADD   WK-ZAIKAISU  TO  RECE41-KAISU(3)
-                              MOVE  1            TO  FLG-COUNT-ARI
-                            END-IF
+                            ADD   WK-ZAIKAISU  TO
+                                               RECE41-KAISU(3)
                             COMPUTE    RECE41-TENSU(3)  =
                                        RECE41-TENSU(3)  +
                                  (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
                          ELSE
-                            IF   FLG-COUNT-ARI  =  ZERO
-                              ADD   WK-ZAIKAISU  TO  RECE41-KAISU(2)
-                              MOVE  1            TO  FLG-COUNT-ARI
-                            END-IF
+                            ADD   WK-ZAIKAISU  TO
+                                               RECE41-KAISU(2)
                             COMPUTE    RECE41-TENSU(2)  =
                                        RECE41-TENSU(2)  +
                                  (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
@@ -7357,10 +2469,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                 (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
                      ELSE
                         MOVE  "1"     TO   RECE41-SAISHINTIME 
-                        IF   FLG-COUNT-ARI  =  ZERO
-                              ADD   WK-ZAIKAISU  TO  RECE41-KAISU(2)
-                              MOVE  1            TO  FLG-COUNT-ARI
-                        END-IF
+                        ADD   WK-ZAIKAISU  TO
+                                            RECE41-KAISU(2)
                         COMPUTE RECE41-TENSU(2) =
                                 RECE41-TENSU(2) +
                                 (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
@@ -7376,10 +2486,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                 (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
                      ELSE
                         MOVE  "2"     TO   RECE41-SAISHINTIME 
-                        IF   FLG-COUNT-ARI  =  ZERO
-                              ADD   WK-ZAIKAISU  TO  RECE41-KAISU(2)
-                              MOVE  1            TO  FLG-COUNT-ARI
-                        END-IF
+                        ADD   WK-ZAIKAISU  TO
+                                            RECE41-KAISU(2)
                         COMPUTE RECE41-TENSU(2) =
                                 RECE41-TENSU(2) +
                                 (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
@@ -7395,126 +2503,23 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                 (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
                      ELSE
                         MOVE  "3"     TO   RECE41-SAISHINTIME 
-                        IF   FLG-COUNT-ARI  =  ZERO
-                              ADD   WK-ZAIKAISU  TO  RECE41-KAISU(2)
-                              MOVE  1            TO  FLG-COUNT-ARI
-                        END-IF
+                        ADD   WK-ZAIKAISU  TO
+                                            RECE41-KAISU(2)
                         COMPUTE RECE41-TENSU(2) =
                                 RECE41-TENSU(2) +
                                 (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
                      END-IF
-      *      ° §Ω§Œ¬æ°À
-                   WHEN  OTHER 
-                     IF   ACCT-ZAIKBN     =  2
-                        COMPUTE WRK-RECE4G-TENSU(3)  =
-                                WRK-RECE4G-TENSU(3)  +
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     END-IF
                  END-EVALUATE
       *    ªÿ∆≥§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "13"
-                   IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE4G-TENSU(5)  =
-                                    WRK-RECE4G-TENSU(5)  +
-                                   (WK-ZAITEN   *   WK-ZAIKAISU)
-                   ELSE
                          COMPUTE    RECE41-TENSU(5)  =
                                     RECE41-TENSU(5)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                   END-IF
-      *
-      *    ∫ﬂ¬§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "14"
-                 IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE4G-TENSU(6)  =
-                              WRK-RECE4G-TENSU(6)  +
-                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                 ELSE
-                   MOVE      ZERO            TO   FLG-ZAITAKU
-      *            ±˝ø«°¶∆√ Ã±˝ø«° ª˛¥÷≤√ªª°À
-                   IF    FLG-OSINKBN         =   1
-                       MOVE         1        TO   FLG-ZAITAKU
-                       COMPUTE   RECE41-TENSU(6)  =
-                                 RECE41-TENSU(6)  +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                   END-IF
-      *            ÃÎ¥÷
-                   IF    FLG-OSINKBN         =    2
-                       MOVE   1              TO   FLG-ZAITAKU
-                       COMPUTE   RECE41-TENSU(6)  =
-                                 RECE41-TENSU(6)  +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                   END-IF
-      *            øºÃÎ°¶∂€µﬁ
-                   IF    FLG-OSINKBN         =    3
-                       MOVE   1              TO   FLG-ZAITAKU
-                       COMPUTE   RECE41-TENSU(6)  =
-                                 RECE41-TENSU(6)  +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                   END-IF
-      *            ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈
-                   IF (( WRK-TNS-OSINKBN(IDX3) =     1          )  AND
-                       ((SRY-SRYCD(IDX3)   NOT =    "114000110")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114001610")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114000970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114000470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114001970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011670")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114000370")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114001570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114001870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114012070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017670")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017770")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029270")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029370")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030170")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030270")))
-                   OR (  FLG-OSINKBN           =     9           )
-                       MOVE   1              TO   FLG-ZAITAKU
-                       COMPUTE   RECE41-TENSU(6)  =
-                                 RECE41-TENSU(6)  +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                   END-IF
-      *            §Ω§Œ¬æ
-                   IF    FLG-ZAITAKU    =   ZERO
-                       COMPUTE   RECE41-TENSU(6)  =
-                                 RECE41-TENSU(6)  +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                   END-IF
-      *            ÃÙ∫ﬁ
-                   COMPUTE   RECE41-TENSU(6)  =
-                             RECE41-TENSU(6)  +
-                             (WK-KIZAITEN *   WK-ZAIKAISU)  +
-                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                 END-IF
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
-                                                       OR "7"       )
-                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
-                                                         OR "059"   )
-                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
-                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
-                     IF    SRY-SRYCD(IDX3)  =  CONS-YAKTEIGEN
-                                            OR CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
+                   IF    (SRY-SRYCD(IDX3) (1:1)  =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001"            )
+                     IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(7)  =
                                  RECE41-TENSU(7)  -
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
@@ -7538,37 +2543,17 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                      END-IF   
                    END-IF
                WHEN    "22"
-                 IF    SRY-SRYCD(IDX3)      =  CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
-                   COMPUTE   RECE41-TENSU(9)  =
-                             RECE41-TENSU(9)  -
-                            (WK-ZAITEN   *   WK-ZAIKAISU)
-                 ELSE
                    ADD    WK-ZAIKAISU    TO   RECE41-KAISU(9)
                    COMPUTE   RECE41-TENSU(9)  =
                              RECE41-TENSU(9)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                 END-IF
                WHEN    "23"
-                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
-                                                       OR "7"       )
-                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
-                                                         OR "059"   )
-                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
-                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
-                     IF    SRY-SRYCD(IDX3)  =  CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
-                       COMPUTE   RECE41-TENSU(10)  =
-                                 RECE41-TENSU(10)  -
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     ELSE
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(10)
                        COMPUTE   RECE41-TENSU(10)  =
                                  RECE41-TENSU(10)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                     END-IF
                    ELSE
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(11)
                        COMPUTE   RECE41-TENSU(11)  =
@@ -7577,33 +2562,21 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    END-IF
       *    ΩË ˝§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "25"
-                   IF  SRY-SRYCD(IDX3) = "120002170" OR "120002270" OR
-                                         "120003170" OR "120003370" OR
-                                         "120003870" OR
-                                         "120004070" OR "120004170" OR
-                                         "120004370" OR "120004470"
-                      COMPUTE  WRK-SYOHOU-KAISU  =  WRK-SYOHOU-KAISU
-                                                 +  ACCT-ZAIKAISU
+                   IF SRY-SRYCD(IDX3)   =    "120002270"
+                      COMPUTE  WRK-TOKUTEI-SKAN  = WRK-TOKUTEI-SKAN +
+                                                   WK-ZAIKAISU 
                    END-IF
-                   IF  (SRY-SRYCD(IDX3)(1:1)   = "S" OR "8" )
-                   OR  (SRY-SRYCD(IDX3)(1:3)   = "008"      )
-                   OR  (SRY-SRYCD(IDX3)        = "099999903")
-                      CONTINUE
-                   ELSE
-                      ADD    WRK-ZAIKAISU-XXX   TO   RECE41-KAISU(12)
+                   IF SRY-SRYCD(IDX3)   =    "120002170"
+                      COMPUTE  WRK-NYUYOUJI-SKAN = WRK-NYUYOUJI-SKAN +
+                                                   WK-ZAIKAISU 
                    END-IF
+                   ADD    WK-ZAIKAISU     TO    RECE41-KAISU(12)
                    COMPUTE   RECE41-TENSU(12)  =
                              RECE41-TENSU(12)  +
-                            (WK-ZAITEN   *   WRK-ZAIKAISU-XXX)
+                            (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
       *    À„∆«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "26"
-                   IF  (SRY-SRYCD(IDX3)(1:1)   = "S" OR "8" )
-                   OR  (SRY-SRYCD(IDX3)(1:3)   = "008"      )
-                   OR  (SRY-SRYCD(IDX3)        = "099999903")
-                      CONTINUE
-                   ELSE
-                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(13)
-                   END-IF
+                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(13)
                    IF SRY-SRYCD(IDX3)      =    "120001310"
                     COMPUTE WRK-MADOKU-SHOHO = WRK-MADOKU-SHOHO +
                                                WK-ZAIKAISU 
@@ -7658,7 +2631,6 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    ∏°∫∫§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "60"
-               WHEN    "64"
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(24)
                    END-IF
@@ -7695,65 +2667,47 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    §Ω§Œ¬æ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "80"
-                   IF ((ACCT-SRYKBN          =  "80"    )  AND
-                       (SRY-SRYCD(IDX3)(1:5) =  "09593" ))
-                   OR ((SRY-SRYCD(IDX3) >= "101801010" AND
-                                        <= "101801020"  )  AND
-                       (RECE41-SRYYM    >= "201307"     ))
-                   OR ((SRY-SRYCD(IDX3)  = "101801030"  )  AND
-                       (RECE41-SRYYM    >= "201307"     ))
-      ***              CONTINUE
-                       IF   (FLG-TAISYO           =   1     )
-                       AND  (SRY-SRYCD(IDX3)(1:5) =  "09593")
-                          COMPUTE  WRK-ZAITENNASHI  =
-                                   WRK-ZAITENNASHI  +
-                                  (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
-                       END-IF
+                   IF ( ACCT-SRYKBN          =  "80"    )  AND         
+                      ( SRY-SRYCD(IDX3)(1:5) =  "09593" )              
+                       CONTINUE
                    ELSE               
                     IF   SRY-SRYCD(IDX3)   =      CONS-SHOHOSEN1 OR
                                                   CONS-SHOHOSEN2 OR
                                                   CONS-SHOHOSEN3 OR
                                                   CONS-SHOHOSEN4 OR
-                                                  CONS-SHOHOSEN5 OR
                                                   CONS-SHOHOKSN1 OR
-                                                  CONS-SHOHOKSN2 OR
-                                                  CONS-SHOHOKSN3 OR
-                                                  CONS-SHOHOKSN4 OR
-                                                  CONS-SHOHOKSN5 OR
-                                                  CONS-SHOHOKSN6 OR
-                                                  CONS-SHOHOKSN7 OR
-                                                  CONS-SHOHOKSN8
+                                                  CONS-SHOHOKSN2
                          COMPUTE   RECE41-TENSU(30)  =
                                    RECE41-TENSU(30)  +
-                                  (WK-ZAITEN  *   WRK-ZAIKAISU-XXX)
+                                  (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
+                         COMPUTE   WK-SYUTEN  =  WK-SYUTEN  
+                                              -  WRK-TNS-TEN(IDX3)
                     ELSE
-                         COMPUTE   RECE41-TENSU(31)  =
-                                   RECE41-TENSU(31)  +
-                                  (WK-SYUTEN  *   WRK-ZAIKAISU-XXX)
                          IF    WRK-TNS-GAITENTTLKBN(IDX3)   =    130
                            COMPUTE   RECE41-TENSU(5)  =
                                      RECE41-TENSU(5)  +
                                 (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
-                           COMPUTE   RECE41-TENSU(31) =
-                                     RECE41-TENSU(31) -
-                                (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
+                         ELSE  
+                           COMPUTE   RECE41-TENSU(31)  =
+                                     RECE41-TENSU(31)  +
+                                    (WK-SYUTEN   *   WRK-ZAIKAISU-XXX)
                          END-IF
                     END-IF
                     COMPUTE   RECE41-TENSU(32)  =
                               RECE41-TENSU(32)  +
-                             (WK-YKZTEN   *   WRK-ZAIKAISU-XXX)
+                             (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
            END-EVALUATE
       *
            .
       *
-       2101222-RECE-LEFT-SET2-EXT.
+       RECE-LEFT-SET2-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜
       *****************************************************************
-       2101223-RECE-LEFT-SET3-SEC               SECTION.
+       RECE-LEFT-SET3-SEC               SECTION.
       *
            EVALUATE    SRY-SRYKBN
       *    ΩÈø«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
@@ -7762,7 +2716,6 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                      EVALUATE    WRK-TNS-TIMEKSNKBN(IDX3)
                          WHEN    1
                          WHEN    5
-                         WHEN    6
                              MOVE  "1"     TO   RECE41-SHOSHINTIME
                          WHEN    3
                              MOVE  "2"     TO   RECE41-SHOSHINTIME
@@ -7773,25 +2726,17 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                 RECE41-TENSU(1)  +
                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                      IF  SRY-SRYCD(IDX3)  =  CONS-NYUKSN1  OR
-                                             CONS-NYUKSN2  OR
-                                             CONS-NYUKSN3  OR
-                                             CONS-NYUKSN4  OR
-                                             CONS-NYUKSN5  OR
-                                             CONS-NYUKSN6  OR
-                                             CONS-NYUKSN7  OR
-                                             CONS-NYUKSN8  OR
-                                             CONS-NYUKSN9
+                                             CONS-NYUKSN2
                              MOVE  "1"     TO   RECE41-SHOSHIN-NYU
                      END-IF
                    END-IF
-                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1 OR
-                                          CONS-ROUSAI18
+                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1    
                         COMPUTE    RECE41-KINGAKU2(1)  =
                                    RECE41-KINGAKU2(1)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    END-IF  
-                   IF  (SRY-SRYCD(IDX3) = CONS-ROUSAI3)
-                   AND (RECE41-SRYYM   <=   "201306"  )
+                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI2 OR
+                                          CONS-ROUSAI3    
                         COMPUTE    RECE41-KINGAKU2(4)  =
                                    RECE41-KINGAKU2(4)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
@@ -7801,27 +2746,10 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                  EVALUATE  WRK-TNS-GAITENTTLKBN(IDX3)
       *      ° ¥À‹ºÍµª°À
                    WHEN  120
-                     IF ((SRY-SRYCD(IDX3) =  CONS-ROUSAI5  OR
+                     IF   SRY-SRYCD(IDX3) =  CONS-ROUSAI5  OR
                                              CONS-ROUSAI6  OR
-                                             CONS-ROUSAI7  OR
-                                             CONS-ROUSAI19) AND
-                         (RECE41-SRYYM   <=    "201306"   ))
-                     OR ((SRY-SRYCD(IDX3) =  CONS-ROUSAI34 OR
-                                             CONS-ROUSAI35 OR
-                                             CONS-ROUSAI36 OR
-                                             CONS-ROUSAI37 OR
-                                             CONS-ROUSAI38 OR
-                                             CONS-ROUSAI5 ) AND
-                         (RECE41-SRYYM   >=    "201307"   ))
-                         IF ((SRY-SRYCD(IDX3) =  CONS-ROUSAI19) AND
-                             (RECE41-SRYYM   <=  "201306"     ))
-                         OR ((SRY-SRYCD(IDX3) =  CONS-ROUSAI5
-                                              OR CONS-ROUSAI38) AND
-                             (RECE41-SRYYM   >=  "201307"     ))
-                           CONTINUE
-                         ELSE
-                           ADD    WK-ZAIKAISU   TO   RECE41-KAISU2(2)
-                         END-IF
+                                             CONS-ROUSAI7  
+                         ADD   WK-ZAIKAISU      TO   RECE41-KAISU2(2)
                          COMPUTE    RECE41-KINGAKU2(2)  =
                                     RECE41-KINGAKU2(2)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
@@ -7857,60 +2785,36 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *       ° §Ω§Œ¬æ°À
                    WHEN  OTHER 
-                        IF  (SRY-SRYCD(IDX3) =  CONS-ROUSAI4)
-                        AND (RECE41-SRYYM   <=  "201306"    )
+                        IF   SRY-SRYCD(IDX3) =  CONS-ROUSAI4  
                            ADD   WK-ZAIKAISU TO   RECE41-KAISU2(3)
                            COMPUTE    RECE41-KINGAKU2(3)  =
                                       RECE41-KINGAKU2(3)  +
                                      (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                         END-IF
-                        IF   ACCT-ZAIKBN     =  2
-                           COMPUTE    WRK-RECE4G-TENSU(7)  =
-                                      WRK-RECE4G-TENSU(7)  +
-                                     (WK-ZAITEN   *   WK-ZAIKAISU)
-                        END-IF
                  END-EVALUATE
       *    ªÿ∆≥§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "13"
-                 IF   (SRY-SRYCD(IDX3) =  CONS-ROUSAI33)
-                 AND  (RECE41-SRYYM   >=  "201307"     )
-                         ADD   WK-ZAIKAISU   TO   RECE41-KAISU2(3)
-                         COMPUTE    RECE41-KINGAKU2(3)  =
-                                    RECE41-KINGAKU2(3)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                 ELSE
-                   IF ((SRY-SRYCD(IDX3) =
-                        CONS-ROUSAI9  OR  CONS-ROUSAI10 OR
-                        CONS-ROUSAI11 OR  CONS-ROUSAI12 OR
-                        CONS-ROUSAI13 OR  CONS-ROUSAI14 OR
-                        CONS-ROUSAI15 OR  CONS-ROUSAI16 OR
-                        CONS-ROUSAI17                       ) AND
-                       (RECE41-SRYYM    <=  "201306"        ))
-                   OR ((SRY-SRYCD(IDX3)  =  CONS-ROUSAI8    ) AND
-                       (RECE41-SRYYM     <  "200804"        ))
+                   IF   SRY-SRYCD(IDX3) =   CONS-ROUSAI8  OR
+                                            CONS-ROUSAI9  OR
+                                            CONS-ROUSAI10 OR
+                                            CONS-ROUSAI11 OR
+                                            CONS-ROUSAI12 OR
+                                            CONS-ROUSAI13 OR
+                                            CONS-ROUSAI14 OR
+                                            CONS-ROUSAI15 OR
+                                            CONS-ROUSAI16 OR
+                                            CONS-ROUSAI17 
                          COMPUTE    RECE41-KINGAKU2(6)  =
                                     RECE41-KINGAKU2(6)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    ELSE
-                     IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE4G-TENSU(6)  =
-                                    WRK-RECE4G-TENSU(6)  +
-                                   (WK-ZAITEN   *   WK-ZAIKAISU)
-                     ELSE
                          COMPUTE    RECE41-TENSU(6)  =
                                     RECE41-TENSU(6)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                     END-IF
                    END-IF                   
-                 END-IF
       *
       *    ∫ﬂ¬§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "14"
-                 IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE4G-TENSU(7)  =
-                              WRK-RECE4G-TENSU(7)  +
-                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                 ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
       *            ±˝ø«°¶∆√ Ã±˝ø«° ª˛¥÷≤√ªª°À
                    IF    FLG-OSINKBN         =   1
@@ -7934,43 +2838,20 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                 (WK-SYUTEN   *   WK-ZAIKAISU)
                    END-IF
       *            ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈
-                   IF (( WRK-TNS-OSINKBN(IDX3) =     1          )  AND
+                   IF  ( WRK-TNS-OSINKBN(IDX3) =     1          )  AND
                        ((SRY-SRYCD(IDX3)   NOT =    "114000110")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001610")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002970")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000470")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011670")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011970")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000370")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001570")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114012070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017670")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017770")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029270")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029370")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030170")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030270")))
-                   OR (  FLG-OSINKBN           =     9           )
+                        (SRY-SRYCD(IDX3)   NOT =    "114002070"))
                        MOVE   1              TO   FLG-ZAITAKU
                        COMPUTE   RECE41-TENSU(7)  =
                                  RECE41-TENSU(7)  +
-                                (WK-SYUTEN         * WK-ZAIKAISU)
+                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    END-IF
       *            §Ω§Œ¬æ
                    IF    FLG-ZAITAKU    =   ZERO
@@ -7983,19 +2864,11 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                              RECE41-TENSU-YAK(7)  +
                              (WK-KIZAITEN *   WK-ZAIKAISU)  +
                              (WK-YKZTEN   *   WK-ZAIKAISU)
-                 END-IF
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
-                                                       OR "7"       )
-                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
-                                                         OR "059"   )
-                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
-                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
-                     IF    SRY-SRYCD(IDX3)  =  CONS-YAKTEIGEN
-                                            OR CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
+                     IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU-YAK(9)  =
                                  RECE41-TENSU-YAK(9)  -
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
@@ -8027,37 +2900,17 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                      END-IF   
                    END-IF
                WHEN    "22"
-                 IF    SRY-SRYCD(IDX3)      =  CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
-                   COMPUTE   RECE41-TENSU-YAK(11)  =
-                             RECE41-TENSU-YAK(11)  -
-                            (WK-ZAITEN   *   WK-ZAIKAISU)
-                 ELSE
                    ADD    WK-ZAIKAISU    TO   RECE41-KAISU(11)
                    COMPUTE   RECE41-TENSU-YAK(11)  =
                              RECE41-TENSU-YAK(11)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                 END-IF
                WHEN    "23"
-                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
-                                                       OR "7"       )
-                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
-                                                         OR "059"   )
-                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
-                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
-                     IF    SRY-SRYCD(IDX3)  =  CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
-                       COMPUTE   RECE41-TENSU-YAK(12)  =
-                                 RECE41-TENSU-YAK(12)  -
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     ELSE
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(12)
                        COMPUTE   RECE41-TENSU-YAK(12)  =
                                  RECE41-TENSU-YAK(12)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                     END-IF
                    ELSE
                        IF    RECE41-KHNTEN(13)   =   ZERO
                           MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(13)
@@ -8074,43 +2927,29 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    END-IF
       *    ΩË ˝§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "25"
-                   IF  SRY-SRYCD(IDX3) = "120002170" OR "120002270" OR
-                                         "120003170" OR "120003370" OR
-                                         "120003870" OR
-                                         "120004070" OR "120004170" OR
-                                         "120004370" OR "120004470"
-                      COMPUTE  WRK-SYOHOU-KAISU  =  WRK-SYOHOU-KAISU
-                                                 +  ACCT-ZAIKAISU
+                   IF SRY-SRYCD(IDX3)   =    "120002270"
+                      COMPUTE  WRK-TOKUTEI-SKAN  = WRK-TOKUTEI-SKAN +
+                                                   WK-ZAIKAISU 
                    END-IF
-                   IF    WK-ZAITEN   NOT =  ZERO
-                     IF    RECE41-KHNTEN(14)     = ZERO
-                      MOVE  WK-ZAITEN     TO   RECE41-KHNTEN(14)
-                     ELSE
-                      IF   RECE41-KHNTEN(14) NOT = WK-ZAITEN
-                            MOVE   ZERO   TO   RECE41-KHNTEN(14)
-                            MOVE   1      TO   FLG-KHNTEN14-JI
-                      END-IF
-                     END-IF
+                   IF SRY-SRYCD(IDX3)   =    "120002170"
+                      COMPUTE  WRK-NYUYOUJI-SKAN = WRK-NYUYOUJI-SKAN +
+                                                   WK-ZAIKAISU 
                    END-IF
-                   IF  (SRY-SRYCD(IDX3)(1:1)   = "S" OR "8" )
-                   OR  (SRY-SRYCD(IDX3)(1:3)   = "008"      )
-                   OR  (SRY-SRYCD(IDX3)        = "099999903")
-                      CONTINUE
+                   IF    RECE41-KHNTEN(14)   =   ZERO
+                      MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(14)
                    ELSE
-                      ADD    ACCT-ZAIKAISU   TO    RECE41-KAISU(14)
+                      IF   RECE41-KHNTEN(14) NOT = WRK-TNS-TEN(IDX3)
+                           MOVE   ZERO    TO    RECE41-KHNTEN(14)
+                           MOVE   1       TO    FLG-KHNTEN14-JI
+                      END-IF
                    END-IF
+                   ADD    WK-ZAIKAISU     TO    RECE41-KAISU(14)
                    COMPUTE   RECE41-TENSU(14)  =
                              RECE41-TENSU(14)  +
-                            (WK-ZAITEN   *   ACCT-ZAIKAISU)
+                            (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *    À„∆«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "26"
-                   IF  (SRY-SRYCD(IDX3)(1:1)   = "S" OR "8" )
-                   OR  (SRY-SRYCD(IDX3)(1:3)   = "008"      )
-                   OR  (SRY-SRYCD(IDX3)        = "099999903")
-                      CONTINUE
-                   ELSE
-                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(15)
-                   END-IF
+                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(15)
                    IF SRY-SRYCD(IDX3)      =    "120001310"
                     COMPUTE WRK-MADOKU-SHOHO = WRK-MADOKU-SHOHO +
                                                WK-ZAIKAISU 
@@ -8120,27 +2959,12 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                             (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *    ƒ¥¥§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "27"
-                   IF  (SRY-SRYCD(IDX3)(1:1)   = "S" OR "8" )
-                   OR  (SRY-SRYCD(IDX3)(1:3)   = "008"      )
-                   OR  (SRY-SRYCD(IDX3)        = "099999903")
-                      CONTINUE
-                   ELSE
-                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(16)
-                   END-IF
+                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(16)
                    COMPUTE   RECE41-TENSU(16)  =
                              RECE41-TENSU(16)  +
                             (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *    »È≤º∂⁄∆˘∆‚√ÌºÕ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "31"
-                 IF   WRK-PARA-JIBAIPRTKBN  =  "2"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(18)
-                   COMPUTE   RECE41-TENSU(18)  =
-                             RECE41-TENSU(18)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU-YAK(21)  =
-                             RECE41-TENSU-YAK(21)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                 ELSE
                    ADD    WK-ZAIKAISU     TO   RECE41-KAISU(19)
                    COMPUTE   RECE41-TENSU(19)  =
                              RECE41-TENSU(19)  +
@@ -8148,18 +2972,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    COMPUTE   RECE41-TENSU-YAK(22)  =
                              RECE41-TENSU-YAK(22)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                 END-IF
       *    ¿≈ÃÆ∆‚√ÌºÕ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "32"
-                 IF   WRK-PARA-JIBAIPRTKBN  =  "2"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(19)
-                   COMPUTE   RECE41-TENSU(19)  =
-                             RECE41-TENSU(19)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU-YAK(21)  =
-                             RECE41-TENSU-YAK(21)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                 ELSE
                    ADD    WK-ZAIKAISU     TO   RECE41-KAISU(20)
                    COMPUTE   RECE41-TENSU(20)  =
                              RECE41-TENSU(20)  +
@@ -8167,18 +2981,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    COMPUTE   RECE41-TENSU-YAK(22)  =
                              RECE41-TENSU-YAK(22)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                 END-IF
       *    §Ω§Œ¬æ√ÌºÕ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "33"
-                 IF   WRK-PARA-JIBAIPRTKBN  =  "2"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(20)
-                   COMPUTE   RECE41-TENSU(20)  =
-                             RECE41-TENSU(20)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU-YAK(21)  =
-                             RECE41-TENSU-YAK(21)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                 ELSE
                    ADD    WK-ZAIKAISU     TO   RECE41-KAISU(21)
                    COMPUTE   RECE41-TENSU(21)  =
                              RECE41-TENSU(21)  +
@@ -8186,20 +2990,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    COMPUTE   RECE41-TENSU-YAK(22)  =
                              RECE41-TENSU-YAK(22)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                 END-IF
       *    ΩË√÷§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "40"
-                 IF   WRK-PARA-JIBAIPRTKBN  =  "2"
-                   IF    WK-SYUTEN       NOT =   ZERO
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(23)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(23)  =
-                             RECE41-TENSU(23)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU-YAK(24)  =
-                             RECE41-TENSU-YAK(24)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                 ELSE
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(25)
                    END-IF
@@ -8209,21 +3001,9 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    COMPUTE   RECE41-TENSU-YAK(26)  =
                              RECE41-TENSU-YAK(26)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                 END-IF
       *    ºÍΩ—§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "50"
                WHEN    "54"
-                 IF   WRK-PARA-JIBAIPRTKBN  =  "2"
-                   IF    WK-SYUTEN       NOT =   ZERO
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(25)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(25)  =
-                             RECE41-TENSU(25)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU-YAK(26)  =
-                             RECE41-TENSU-YAK(26)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                 ELSE
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(27)
                    END-IF
@@ -8233,35 +3013,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    COMPUTE   RECE41-TENSU-YAK(28)  =
                              RECE41-TENSU-YAK(28)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                 END-IF
       *    ∏°∫∫§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "60"
-               WHEN    "64"
-                 IF   WRK-PARA-JIBAIPRTKBN  =  "2"
-                   IF    WK-SYUTEN       NOT =   ZERO
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(27)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(27)  =
-                             RECE41-TENSU(27)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   IF    WRK-TNS-KNSJISKBN(IDX3)    =   2
-                         COMPUTE   RECE41-KAISU(27)  =
-                                   RECE41-KAISU(27)  -  
-                                   WK-ZAIKAISU
-                   END-IF
-                   IF    WRK-TNS-SRYCD(IDX3)  =   CONS-SAIKETSU1  OR
-                                                  CONS-SAIKETSU2  OR
-                                                  CONS-SAIKETSU3
-                         IF   RECE41-KAISU(27)  NOT =  ZERO
-                              COMPUTE   RECE41-KAISU(27)  =
-                                        RECE41-KAISU(27)  -   
-                                        WK-ZAIKAISU
-                         END-IF
-                   END-IF
-                   COMPUTE   RECE41-TENSU-YAK(28)  =
-                             RECE41-TENSU-YAK(28)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                 ELSE
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(29)
                    END-IF
@@ -8285,20 +3038,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    COMPUTE   RECE41-TENSU-YAK(30)  =
                              RECE41-TENSU-YAK(30)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                 END-IF
       *    ≤Ë¡¸ø«√«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "70"
-                 IF   WRK-PARA-JIBAIPRTKBN  =  "2"
-                   IF    WK-SYUTEN       NOT =   ZERO
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(29)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(29)  =
-                             RECE41-TENSU(29)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU-YAK(30)  =
-                             RECE41-TENSU-YAK(30)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                 ELSE
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(31)
                    END-IF
@@ -8308,2667 +3049,108 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    COMPUTE   RECE41-TENSU-YAK(32)  =
                              RECE41-TENSU-YAK(32)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                 END-IF
       *    §Ω§Œ¬æ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "80"
-                IF   WRK-PARA-JIBAIPRTKBN  =  "2"
-                 IF   ((SRY-SRYCD(IDX3) =
-                        CONS-ROUSAI32 OR
-                        CONS-ROUSAI20 OR  CONS-ROUSAI21 OR
-                        CONS-ROUSAI22 OR  CONS-ROUSAI23 OR
-                        CONS-ROUSAI24 OR  CONS-ROUSAI25 OR
-                        CONS-ROUSAI26 OR  CONS-ROUSAI27 OR
-                        CONS-ROUSAI28 OR  CONS-ROUSAI29 OR
-                        CONS-ROUSAI30 OR  CONS-ROUSAI31 OR
-                        CONS-ROUSAI39                       ) AND
-                       (RECE41-SRYYM    >=  "201307"        ))
-                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI32
-                        COMPUTE     RECE41-KINGAKU2(4)  =
-                                    RECE41-KINGAKU2(4)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                   ELSE
-                         COMPUTE    RECE41-KINGAKU2(6)  =
-                                    RECE41-KINGAKU2(6)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                   END-IF
-                 ELSE
-                   IF ( ACCT-SRYKBN          =  "80"    )   AND
-                      ( SRY-SRYCD(IDX3)(1:5) =  "09591" OR
-                                                "09592" )
-                        CONTINUE
-                   ELSE
-                    IF ((ACCT-SRYKBN          =  "80"    )  AND
-                        (SRY-SRYCD(IDX3)(1:5) =  "09593" ))
-                    OR ((SRY-SRYCD(IDX3) >= "101801010" AND
-                                         <= "101801020"  )  AND
-                        (RECE41-SRYYM    >= "201307"     ))
-                    OR ((SRY-SRYCD(IDX3)  = "101801030"  )  AND
-                        (RECE41-SRYYM    >= "201307"     ))
-                     IF   SRY-SRYCD(IDX3)(1:5) = "09593"
-                      EVALUATE  WRK-TNS-JIBAISYUKEIKBN(IDX3)
-                       WHEN       0
-                       WHEN       5
-                         COMPUTE    RECE41-KINGAKU2(6)  =
-                                    RECE41-KINGAKU2(6)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       WHEN       1
-                         COMPUTE    RECE41-KINGAKU2(1)  =
-                                    RECE41-KINGAKU2(1)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       WHEN       2
-                         COMPUTE    RECE41-KINGAKU2(2)  =
-                                    RECE41-KINGAKU2(2)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       WHEN       3
-                         ADD    WK-ZAIKAISU   TO   RECE41-KAISU2(3)
-                         COMPUTE    RECE41-KINGAKU2(3)  =
-                                    RECE41-KINGAKU2(3)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       WHEN       4
-                         COMPUTE    RECE41-KINGAKU2(4)  =
-                                    RECE41-KINGAKU2(4)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                      END-EVALUATE
-                     ELSE
-                      IF  SRY-SRYCD(IDX3)  =  "101801030"
-                         COMPUTE    WRK-FUTANWARI  =
-                                    WRK-TNS-TEN(IDX3) / 100
-                         COMPUTE    WRK-KEISAN-KG2 =
-                                   (WRK-TEN-KG2       * WRK-FUTANWARI)
-                         COMPUTE    RECE41-KINGAKU2(6)  =
-                                    RECE41-KINGAKU2(6)  +
-                                   (WRK-KEISAN-KG2    * ACCT-ZAIKAISU)
-                      ELSE
-                         COMPUTE    RECE41-KINGAKU2(6)  =
-                                    RECE41-KINGAKU2(6)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                         COMPUTE    WRK-TEN-KG2 = WRK-TNS-TEN(IDX3)
-                      END-IF
-                     END-IF
-                    ELSE
-                     IF  SRY-SRYCD(IDX3)      =    CONS-RYOYOTEATE
-                       COMPUTE    RECE41-KINGAKU2(6)  =
-                                  RECE41-KINGAKU2(6)  +
-                                 (WRK-RYOYOTEATE  *   ACCT-ZAIKAISU)
-                     ELSE
-                      IF  SRY-SRYCD(IDX3) =  CONS-SHOHOKSN1
-                                          OR CONS-SHOHOKSN2
-                                          OR CONS-SHOHOKSN3
-                                          OR CONS-SHOHOKSN4
-                                          OR CONS-SHOHOKSN5
-                                          OR CONS-SHOHOKSN6
-                                          OR CONS-SHOHOKSN7
-                                          OR CONS-SHOHOKSN8
-                         COMPUTE  WRK-SYOSEN-KAISU  =  WRK-SYOSEN-KAISU
-                                                    +  ACCT-ZAIKAISU
-                      END-IF
-                      IF   SRY-SRYCD(IDX3)    =    CONS-SHOHOSEN1 OR
-                                                   CONS-SHOHOSEN2 OR
-                                                   CONS-SHOHOSEN3 OR
-                                                   CONS-SHOHOSEN4 OR
-                                                   CONS-SHOHOSEN5 OR
-                                                   CONS-SHOHOKSN1 OR
-                                                   CONS-SHOHOKSN2 OR
-                                                   CONS-SHOHOKSN3 OR
-                                                   CONS-SHOHOKSN4 OR
-                                                   CONS-SHOHOKSN5 OR
-                                                   CONS-SHOHOKSN6 OR
-                                                   CONS-SHOHOKSN7 OR
-                                                   CONS-SHOHOKSN8
-                          ADD  ACCT-ZAIKAISU  TO  RECE41-KAISU(31)
-                          COMPUTE   RECE41-TENSU(31)  =
-                                    RECE41-TENSU(31)  +
-                                   (WK-ZAITEN  *   ACCT-ZAIKAISU)
-                      ELSE
-                          COMPUTE   RECE41-TENSU(32)  =
-                                    RECE41-TENSU(32)  +
-                                   (WK-SYUTEN  *   ACCT-ZAIKAISU)
-                          IF    WRK-TNS-GAITENTTLKBN(IDX3)   =    130
-                            COMPUTE   RECE41-TENSU(6)  =
-                                      RECE41-TENSU(6)  +
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                            COMPUTE   RECE41-TENSU(32)  =
-                                      RECE41-TENSU(32)  -
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                          END-IF
-                      END-IF
-                      COMPUTE   RECE41-TENSU-YAK(33)  =
-                                RECE41-TENSU-YAK(33)  +
-                               (WK-YKZTEN   *   ACCT-ZAIKAISU)
-                     END-IF
-                    END-IF
-                   END-IF
-                 END-IF
-                ELSE
-                 IF   ((SRY-SRYCD(IDX3) =
-                        CONS-ROUSAI32 OR
-                        CONS-ROUSAI20 OR  CONS-ROUSAI21 OR
-                        CONS-ROUSAI22 OR  CONS-ROUSAI23 OR
-                        CONS-ROUSAI24 OR  CONS-ROUSAI25 OR
-                        CONS-ROUSAI26 OR  CONS-ROUSAI27 OR
-                        CONS-ROUSAI28 OR  CONS-ROUSAI29 OR
-                        CONS-ROUSAI30 OR  CONS-ROUSAI31 OR
-                        CONS-ROUSAI39                       ) AND
-                       (RECE41-SRYYM    >=  "201307"        ))
-                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI32
-                        COMPUTE     RECE41-KINGAKU2(4)  =
-                                    RECE41-KINGAKU2(4)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                   ELSE
-                         COMPUTE    RECE41-KINGAKU2(6)  =
-                                    RECE41-KINGAKU2(6)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                   END-IF
-                 ELSE
                    IF ( ACCT-SRYKBN          =  "80"    )   AND
                       ( SRY-SRYCD(IDX3)(1:5) =  "09591" OR 
                                                 "09592" )
                         CONTINUE
                    ELSE
-                    IF ((ACCT-SRYKBN          =  "80"    )  AND
-                        (SRY-SRYCD(IDX3)(1:5) =  "09593" ))
-                    OR ((SRY-SRYCD(IDX3) >= "101801010" AND
-                                         <= "101801020"  )  AND
-                        (RECE41-SRYYM    >= "201307"     ))
-                    OR ((SRY-SRYCD(IDX3)  = "101801030"  )  AND
-                        (RECE41-SRYYM    >= "201307"     ))
-                     IF   SRY-SRYCD(IDX3)(1:5) = "09593"
-                      EVALUATE  WRK-TNS-JIBAISYUKEIKBN(IDX3)
-                       WHEN       0
-                       WHEN       5
-                         COMPUTE    RECE41-KINGAKU2(6)  =
-                                    RECE41-KINGAKU2(6)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       WHEN       1
-                         COMPUTE    RECE41-KINGAKU2(1)  =
-                                    RECE41-KINGAKU2(1)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       WHEN       2
-                         COMPUTE    RECE41-KINGAKU2(2)  =
-                                    RECE41-KINGAKU2(2)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       WHEN       3
-                         ADD    WK-ZAIKAISU   TO   RECE41-KAISU2(3)
-                         COMPUTE    RECE41-KINGAKU2(3)  =
-                                    RECE41-KINGAKU2(3)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       WHEN       4
-                         COMPUTE    RECE41-KINGAKU2(4)  =
-                                    RECE41-KINGAKU2(4)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                      END-EVALUATE
-                     ELSE
-                      IF  SRY-SRYCD(IDX3)  =  "101801030"
-                         COMPUTE    WRK-FUTANWARI  =
-                                    WRK-TNS-TEN(IDX3) / 100
-                         COMPUTE    WRK-KEISAN-KG2 =
-                                   (WRK-TEN-KG2       * WRK-FUTANWARI)
-                         COMPUTE    RECE41-KINGAKU2(6)  =
-                                    RECE41-KINGAKU2(6)  +
-                                   (WRK-KEISAN-KG2    * ACCT-ZAIKAISU)
-                      ELSE
-                         COMPUTE    RECE41-KINGAKU2(6)  =
-                                    RECE41-KINGAKU2(6)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                         COMPUTE    WRK-TEN-KG2 = WRK-TNS-TEN(IDX3)
-                      END-IF
-                     END-IF
+                    IF ( ACCT-SRYKBN          =  "80"    )  AND         
+                       ( SRY-SRYCD(IDX3)(1:5) =  "09593" )              
+                       COMPUTE    RECE41-KINGAKU2(6)  =                 
+                                  RECE41-KINGAKU2(6)  +                 
+                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)  
                     ELSE                                                
                      IF  SRY-SRYCD(IDX3)      =    CONS-RYOYOTEATE
                        COMPUTE    RECE41-KINGAKU2(6)  =                 
                                   RECE41-KINGAKU2(6)  +                 
                                  (WRK-RYOYOTEATE  *   ACCT-ZAIKAISU)    
                      ELSE
-                      IF  SRY-SRYCD(IDX3) =  CONS-SHOHOKSN1
-                                          OR CONS-SHOHOKSN2
-                                          OR CONS-SHOHOKSN3
-                                          OR CONS-SHOHOKSN4
-                                          OR CONS-SHOHOKSN5
-                                          OR CONS-SHOHOKSN6
-                                          OR CONS-SHOHOKSN7
-                                          OR CONS-SHOHOKSN8
-                         COMPUTE  WRK-SYOSEN-KAISU  =  WRK-SYOSEN-KAISU
-                                                    +  ACCT-ZAIKAISU
+                      IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN2
+                       COMPUTE  WRK-TOKUTEI-SKAN2 =  WRK-TOKUTEI-SKAN2
+                                                  +  WK-ZAIKAISU 
+                      END-IF
+                      IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN1
+                       COMPUTE  WRK-NYUYOUJI-SHOKAN = 
+                                                    WRK-NYUYOUJI-SHOKAN
+                                                  + WK-ZAIKAISU 
                       END-IF
                       IF   SRY-SRYCD(IDX3)    =    CONS-SHOHOSEN1 OR
                                                    CONS-SHOHOSEN2 OR
                                                    CONS-SHOHOSEN3 OR
                                                    CONS-SHOHOSEN4 OR
-                                                   CONS-SHOHOSEN5 OR
                                                    CONS-SHOHOKSN1 OR
-                                                   CONS-SHOHOKSN2 OR
-                                                   CONS-SHOHOKSN3 OR
-                                                   CONS-SHOHOKSN4 OR
-                                                   CONS-SHOHOKSN5 OR
-                                                   CONS-SHOHOKSN6 OR
-                                                   CONS-SHOHOKSN7 OR
-                                                   CONS-SHOHOKSN8
-                          ADD  ACCT-ZAIKAISU  TO  RECE41-KAISU(33)
+                                                   CONS-SHOHOKSN2
+                          ADD    WK-ZAIKAISU  TO  RECE41-KAISU(33)
                           COMPUTE   RECE41-TENSU(33)  =
                                     RECE41-TENSU(33)  +
-                                   (WK-ZAITEN  *   ACCT-ZAIKAISU)
+                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                          COMPUTE   WK-SYUTEN  =  WK-SYUTEN  
+                                               -  WRK-TNS-TEN(IDX3)
                       ELSE
-                          EVALUATE   WRK-PARA-JIBAIPRTKBN
-                            WHEN      "0"
-                             COMPUTE   RECE41-TENSU(25)  =
-                                       RECE41-TENSU(25)  +
-                                      (WK-SYUTEN   *   ACCT-ZAIKAISU)
-                            WHEN      "1"
-                             COMPUTE   RECE41-TENSU(34)  =
-                                       RECE41-TENSU(34)  +
-                                      (WK-SYUTEN   *   ACCT-ZAIKAISU)
-                          END-EVALUATE
                           IF    WRK-TNS-GAITENTTLKBN(IDX3)   =    130
                             COMPUTE   RECE41-TENSU(6)  =
                                       RECE41-TENSU(6)  +
                                      (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                            EVALUATE  WRK-PARA-JIBAIPRTKBN
-                             WHEN      "0"
-                              COMPUTE   RECE41-TENSU(25)  =
-                                        RECE41-TENSU(25)  -
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                             WHEN      "1"
-                              COMPUTE   RECE41-TENSU(34)  =
-                                        RECE41-TENSU(34)  -
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                            END-EVALUATE
+                          ELSE  
+                            IF    WK-SYUTEN       NOT =   ZERO
+                                ADD  WK-ZAIKAISU  TO  RECE41-KAISU(25)
+                            END-IF
+                            COMPUTE   RECE41-TENSU(25)  =
+                                      RECE41-TENSU(25)  +
+                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
                           END-IF
                       END-IF
-                      EVALUATE  WRK-PARA-JIBAIPRTKBN
-                       WHEN      "0"
-                          COMPUTE   RECE41-TENSU-YAK(26)  =
-                                    RECE41-TENSU-YAK(26)  +
-                                   (WK-YKZTEN   *   ACCT-ZAIKAISU)
-                       WHEN      "1"
-                          COMPUTE   RECE41-TENSU-YAK(35)  =
-                                    RECE41-TENSU-YAK(35)  +
-                                   (WK-YKZTEN   *   ACCT-ZAIKAISU)
-                      END-EVALUATE
+                      COMPUTE   RECE41-TENSU-YAK(26)  =
+                                RECE41-TENSU-YAK(26)  +
+                               (WK-YKZTEN   *   WK-ZAIKAISU)
                      END-IF
                     END-IF                                              
                    END-IF
-                 END-IF
-                END-IF
            END-EVALUATE
       *
            .
       *
-       2101223-RECE-LEFT-SET3-EXT.
+       RECE-LEFT-SET3-EXT.
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜
+      *    ≈¿øÙ•∆°º•÷•Î§Œ∏°∫˜
       *****************************************************************
-       2101224-RECE-LEFT-SET4-SEC               SECTION.
+       TENSU-TBL-SEC               SECTION.
       *
-           EVALUATE    SRY-SRYKBN
-      *    ΩÈø«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "11"
-                 IF   (RECE41-HKNKBN    =  "4")
-                 AND  (RECE41-JIBAIKBN  =  "1")
-                   IF   WRK-TNS-DATAKBN(IDX3)  =   2
-                     EVALUATE    WRK-TNS-TIMEKSNKBN(IDX3)
-                         WHEN    1
-                         WHEN    5
-                         WHEN    6
-                             MOVE  "1"     TO   RECE41-SHOSHINTIME
-                         WHEN    3
-                             MOVE  "2"     TO   RECE41-SHOSHINTIME
-                         WHEN    4
-                             MOVE  "3"     TO   RECE41-SHOSHINTIME
-                     END-EVALUATE
-                     COMPUTE    RECE41-TENSU(1)    =
-                                RECE41-TENSU(1)    +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                     COMPUTE    TBL-SYUTEN-JI(1)   =
-                                TBL-SYUTEN-JI(1)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                     IF  SRY-SRYCD(IDX3)  =  CONS-NYUKSN1  OR
-                                             CONS-NYUKSN2  OR
-                                             CONS-NYUKSN3  OR
-                                             CONS-NYUKSN4  OR
-                                             CONS-NYUKSN5  OR
-                                             CONS-NYUKSN6  OR
-                                             CONS-NYUKSN7  OR
-                                             CONS-NYUKSN8  OR
-                                             CONS-NYUKSN9
-                             MOVE  "1"     TO   RECE41-SHOSHIN-NYU
-                     END-IF
-                   END-IF
-                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1 OR
-                                          CONS-ROUSAI18
-      ****              COMPUTE    RECE41-SONOTAKIN-JYU  =
-      ****                         RECE41-SONOTAKIN-JYU  +
-      ****                     (WRK-TNS-TEN(IDX3)   * ACCT-ZAIKAISU)
-                        COMPUTE    WRK-KINGAKU-JI   =
-                                   WRK-KINGAKU-JI   +
-                               (WRK-TNS-TEN(IDX3)   * ACCT-ZAIKAISU)
-                   END-IF
-                   IF  (SRY-SRYCD(IDX3) = CONS-ROUSAI3)
-                   AND (RECE41-SRYYM   <=   "201306"  )
-      ****              COMPUTE    RECE41-SONOTAKIN-JYU  =
-      ****                         RECE41-SONOTAKIN-JYU  +
-      ****                     (WRK-TNS-TEN(IDX3)   * ACCT-ZAIKAISU)
-                        COMPUTE    WRK-KINGAKU-JI   =
-                                   WRK-KINGAKU-JI   +
-                               (WRK-TNS-TEN(IDX3)   * ACCT-ZAIKAISU)
-                   END-IF
-                 ELSE
-                   IF   WRK-TNS-DATAKBN(IDX3)  =   2
-                     EVALUATE    WRK-TNS-TIMEKSNKBN(IDX3)
-                         WHEN    1
-                         WHEN    5
-                         WHEN    6
-                             MOVE  "1"     TO   RECE41-SHOSHINTIME
-                         WHEN    3
-                             MOVE  "2"     TO   RECE41-SHOSHINTIME
-                         WHEN    4
-                             MOVE  "3"     TO   RECE41-SHOSHINTIME
-                     END-EVALUATE
-                     IF  SRY-SRYCD(IDX3)  =  CONS-NYUKSN1  OR
-                                             CONS-NYUKSN2  OR
-                                             CONS-NYUKSN3  OR
-                                             CONS-NYUKSN4  OR
-                                             CONS-NYUKSN5  OR
-                                             CONS-NYUKSN6  OR
-                                             CONS-NYUKSN7  OR
-                                             CONS-NYUKSN8  OR
-                                             CONS-NYUKSN9
-                             MOVE  "1"     TO   RECE41-SHOSHIN-NYU
-                     END-IF
-                   END-IF
-                   COMPUTE    RECE41-TENSU(1)    =
-                              RECE41-TENSU(1)    +
-                              (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                   COMPUTE    TBL-SYUTEN-JI(1)   =
-                              TBL-SYUTEN-JI(1)   +
-                              (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                 END-IF
-      *    ∫∆ø«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏° Ω∏∑◊ ˝À° —ππ∏Â°À
-               WHEN    "12"
-                 IF   (RECE41-HKNKBN    =  "4")
-                 AND  (RECE41-JIBAIKBN  =  "1")
-                   EVALUATE  WRK-TNS-GAITENTTLKBN(IDX3)
-      *      ° ¥À‹ºÍµª°À
-                    WHEN  120
-                     IF ((SRY-SRYCD(IDX3) =  CONS-ROUSAI5  OR
-                                             CONS-ROUSAI6  OR
-                                             CONS-ROUSAI7  OR
-                                             CONS-ROUSAI19) AND
-                         (RECE41-SRYYM   <=    "201306"   ))
-                     OR ((SRY-SRYCD(IDX3) =  CONS-ROUSAI34 OR
-                                             CONS-ROUSAI35 OR
-                                             CONS-ROUSAI36 OR
-                                             CONS-ROUSAI37 OR
-                                             CONS-ROUSAI38 OR
-                                             CONS-ROUSAI5 ) AND
-                         (RECE41-SRYYM   >=    "201307"   ))
-      ****               ADD   WK-ZAIKAISU      TO   RECE41-KAISU(2)
-      ****               COMPUTE    RECE41-SONOTAKIN-JYU  =
-      ****                          RECE41-SONOTAKIN-JYU  +
-      ****                     (WRK-TNS-TEN(IDX3)    * ACCT-ZAIKAISU)
-                         COMPUTE    WRK-KINGAKU-JI   =
-                                    WRK-KINGAKU-JI   +
-                               (WRK-TNS-TEN(IDX3)    * ACCT-ZAIKAISU)
-                     ELSE
-                      IF  (SRY-SRYCD(IDX3) =  CONS-JIKANTAI1  OR
-                                              CONS-JIKANTAI2  OR
-                                              CONS-JIKANTAI3  OR
-                                              CONS-MESAIKSN   OR
-                                              CONS-CHIHOKATU  OR
-                                              CONS-CHIHOKAT2    )
-                      AND (RECE41-SRYYM   >=  "201204"          )
-                         COMPUTE    RECE41-TENSU(8)   =
-                                    RECE41-TENSU(8)   +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                         COMPUTE    TBL-SYUTEN-JI(8)  =
-                                    TBL-SYUTEN-JI(8)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                      ELSE
-      **                 IF ( SRY-SRYCD(IDX3)     =   CONS-KEIZOKU1  OR
-      **                                              CONS-KEIZOKU2 )
-      **                 OR ( WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"  )
-      **                 OR ( SRY-SRYCD(IDX3)(1:1)       NOT = "1"  )
-      **                     CONTINUE
-      **                 ELSE
-                             IF   FLG-COUNT-ARI  =  ZERO
-                               ADD   WK-ZAIKAISU  TO  RECE41-KAISU(2)
-                               MOVE  1            TO  FLG-COUNT-ARI
-                             END-IF
-      **                 END-IF
-                         IF  WRK-PARA-JIBAIPRTKBN = "1"
-                          IF    RECE41-KHNTEN(2)   =   ZERO
-                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(2)
-                          ELSE
-                            IF RECE41-KHNTEN(2) NOT = WRK-TNS-TEN(IDX3)
-                              MOVE   ZERO    TO    RECE41-KHNTEN(2)
-                              MOVE   1       TO    FLG-KHNTEN2-JI2
-                            END-IF
-                          END-IF
-                         END-IF
-                         COMPUTE    RECE41-TENSU(2)   =
-                                    RECE41-TENSU(2)   +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                         COMPUTE    TBL-SYUTEN-JI(2)  =
-                                    TBL-SYUTEN-JI(2)  +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                      END-IF
-                     END-IF
-      *      ° ≥∞ÕË¥…Õ˝≤√ªª°À
-                    WHEN  122
-                        IF  WRK-PARA-JIBAIPRTKBN = "1"
-                          IF    RECE41-KHNTEN(3)   =   ZERO
-                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(3)
-                          ELSE
-                            IF RECE41-KHNTEN(3) NOT = WRK-TNS-TEN(IDX3)
-                              MOVE   ZERO    TO    RECE41-KHNTEN(3)
-                              MOVE   1       TO    FLG-KHNTEN3-JI2
-                            END-IF
-                          END-IF
-                        END-IF
-                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(3)
-                        COMPUTE  RECE41-TENSU(3)   =
-                                 RECE41-TENSU(3)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                        COMPUTE  TBL-SYUTEN-JI(3)  =
-                                 TBL-SYUTEN-JI(3)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *      ° ª˛¥÷≥∞°À
-                    WHEN  123
-                        IF  WRK-PARA-JIBAIPRTKBN = "1"
-                          IF    RECE41-KHNTEN(4)   =   ZERO
-                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(4)
-                          ELSE
-                            IF RECE41-KHNTEN(4) NOT = WRK-TNS-TEN(IDX3)
-                              MOVE   ZERO    TO    RECE41-KHNTEN(4)
-                              MOVE   1       TO    FLG-KHNTEN4-JI2
-                            END-IF
-                          END-IF
-                        END-IF
-                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(4)
-                        COMPUTE  RECE41-TENSU(4)   =
-                                 RECE41-TENSU(4)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                        COMPUTE  TBL-SYUTEN-JI(4)  =
-                                 TBL-SYUTEN-JI(4)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *      ° µŸ∆¸°À
-                    WHEN  124
-                        IF  WRK-PARA-JIBAIPRTKBN = "1"
-                          IF    RECE41-KHNTEN(5)   =   ZERO
-                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(5)
-                          ELSE
-                            IF RECE41-KHNTEN(5) NOT = WRK-TNS-TEN(IDX3)
-                              MOVE   ZERO    TO    RECE41-KHNTEN(5)
-                              MOVE   1       TO    FLG-KHNTEN5-JI2
-                            END-IF
-                          END-IF
-                        END-IF
-                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(5)
-                        COMPUTE  RECE41-TENSU(5)   =
-                                 RECE41-TENSU(5)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                        COMPUTE  TBL-SYUTEN-JI(5)  =
-                                 TBL-SYUTEN-JI(5)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *      ° øºÃÎ°À
-                    WHEN  125
-                        IF  WRK-PARA-JIBAIPRTKBN = "1"
-                          IF    RECE41-KHNTEN(6)   =   ZERO
-                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(6)
-                          ELSE
-                            IF RECE41-KHNTEN(6) NOT = WRK-TNS-TEN(IDX3)
-                              MOVE   ZERO    TO    RECE41-KHNTEN(6)
-                              MOVE   1       TO    FLG-KHNTEN6-JI2
-                            END-IF
-                          END-IF
-                        END-IF
-                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(6)
-                        COMPUTE  RECE41-TENSU(6)   =
-                                 RECE41-TENSU(6)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                        COMPUTE  TBL-SYUTEN-JI(6)  =
-                                 TBL-SYUTEN-JI(6)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *      ° §Ω§Œ¬æ°À
-                    WHEN  OTHER
-                        IF  (SRY-SRYCD(IDX3) =  CONS-ROUSAI4)
-                        AND (RECE41-SRYYM   <=  "201306"    )
-      ****                 COMPUTE    RECE41-SONOTAKIN-JYU  =
-      ****                            RECE41-SONOTAKIN-JYU  +
-      ****                       (WRK-TNS-TEN(IDX3)   *  ACCT-ZAIKAISU)
-                           COMPUTE    WRK-KINGAKU-JI  =
-                                      WRK-KINGAKU-JI  +
-                                 (WRK-TNS-TEN(IDX3)   *  ACCT-ZAIKAISU)
-                        END-IF
-                        IF   ACCT-ZAIKBN     =  2
-                           IF  WRK-PARA-JIBAIPRTKBN = "1"
-                              MOVE   ZERO    TO    RECE41-KHNTEN(2)
-                              MOVE   1       TO    FLG-KHNTEN2-JI2
-                           END-IF
-                           COMPUTE    WRK-RECE4G-TENSU(2)  =
-                                      WRK-RECE4G-TENSU(2)  +
-                                     (WK-ZAITEN   *   WK-ZAIKAISU)
-                        END-IF
-                   END-EVALUATE
-                 ELSE
-                   EVALUATE  WRK-TNS-GAITENTTLKBN(IDX3)
-      *      ° ¥À‹ºÍµª°À
-                    WHEN  120
-                      IF    SRY-SRYCD(IDX3) =  CONS-DOUJITU-SAI   OR
-                                               CONS-DOUJITU-SAI2  OR
-                                               CONS-DOUJITU-DEN   OR
-                                               CONS-DOUJITU-DEN2  OR
-                                               CONS-DOUJITU-GAI   OR
-                                               CONS-DOUJITU2-GAI  OR
-                                               CONS-DOUJITU3-GAI
-                        IF   WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"
-                        OR   SRY-SRYCD(IDX3)(1:1)       NOT = "1"
-                            CONTINUE
-                        ELSE
-                            ADD   WK-ZAIKAISU  TO   RECE41-KAISU(2)
-                        END-IF
-                        IF  WRK-PARA-JIBAIPRTKBN = "1"
-                          IF    RECE41-KHNTEN(2)   =   ZERO
-                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(2)
-                          ELSE
-                            IF RECE41-KHNTEN(2) NOT = WRK-TNS-TEN(IDX3)
-                              MOVE   ZERO    TO    RECE41-KHNTEN(2)
-                              MOVE   1       TO    FLG-KHNTEN2-JI2
-                            END-IF
-                          END-IF
-                        END-IF
-                        COMPUTE    RECE41-TENSU(2)   =
-                                   RECE41-TENSU(2)   +
-                                  (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                        COMPUTE    TBL-SYUTEN-JI(2)  =
-                                   TBL-SYUTEN-JI(2)  +
-                                  (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                      ELSE
-                       IF  (SRY-SRYCD(IDX3) =  CONS-JIKANTAI1   OR
-                                               CONS-JIKANTAI2   OR
-                                               CONS-JIKANTAI3   OR
-                                               CONS-MESAIKSN    OR
-                                               CONS-CHIHOKATU   OR
-                                               CONS-CHIHOKAT2     )
-                       AND (RECE41-SRYYM   >=  "201204"           )
-                        COMPUTE    RECE41-TENSU(8)   =
-                                   RECE41-TENSU(8)   +
-                                  (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                        COMPUTE    TBL-SYUTEN-JI(8)  =
-                                   TBL-SYUTEN-JI(8)  +
-                                  (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       ELSE
-                        IF   RECE41-SRYYM  >= "200604"
-                          IF  SRY-SRYCD(IDX3)  =  "112000970" OR
-                                                  "112006270"
-                            COMPUTE  CNT-NYUYOJI2 =  CNT-NYUYOJI2
-                                                  +  WK-ZAIKAISU
-                          END-IF
-                        END-IF
-                        IF ( SRY-SRYCD(IDX3)     =   CONS-KEIZOKU1  OR
-                                                     CONS-KEIZOKU2 )
-                        OR ( WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"  )
-                        OR ( SRY-SRYCD(IDX3)(1:1)       NOT = "1"  )
-                            CONTINUE
-                        ELSE
-                            ADD   WK-ZAIKAISU  TO   RECE41-KAISU(2)
-                            ADD   WK-ZAIKAISU  TO   CNT-SAISIN-ETC
-                        END-IF
-                        IF  WRK-PARA-JIBAIPRTKBN = "1"
-                          IF    RECE41-KHNTEN(2)   =   ZERO
-                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(2)
-                          ELSE
-                            IF RECE41-KHNTEN(2) NOT = WRK-TNS-TEN(IDX3)
-                              MOVE   ZERO    TO    RECE41-KHNTEN(2)
-                              MOVE   1       TO    FLG-KHNTEN2-JI2
-                            END-IF
-                          END-IF
-                        END-IF
-                        COMPUTE    RECE41-TENSU(2)   =
-                                   RECE41-TENSU(2)   +
-                                  (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                        COMPUTE    TBL-SYUTEN-JI(2)  =
-                                   TBL-SYUTEN-JI(2)  +
-                                  (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       END-IF
-                      END-IF
-      *      ° ≥∞ÕË¥…Õ˝≤√ªª°À
-                    WHEN  122
-                        IF  WRK-PARA-JIBAIPRTKBN = "1"
-                          IF    RECE41-KHNTEN(3)   =   ZERO
-                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(3)
-                          ELSE
-                            IF RECE41-KHNTEN(3) NOT = WRK-TNS-TEN(IDX3)
-                              MOVE   ZERO    TO    RECE41-KHNTEN(3)
-                              MOVE   1       TO    FLG-KHNTEN3-JI2
-                            END-IF
-                          END-IF
-                        END-IF
-                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(3)
-                        COMPUTE  RECE41-TENSU(3)   =
-                                 RECE41-TENSU(3)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                        COMPUTE  TBL-SYUTEN-JI(3)  =
-                                 TBL-SYUTEN-JI(3)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *      ° ª˛¥÷≥∞°À
-                    WHEN  123
-                        PERFORM   21012241-NYUYOJI-COUNT-SEC
-                        IF  WRK-PARA-JIBAIPRTKBN = "1"
-                          IF    RECE41-KHNTEN(4)   =   ZERO
-                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(4)
-                          ELSE
-                            IF RECE41-KHNTEN(4) NOT = WRK-TNS-TEN(IDX3)
-                              MOVE   ZERO    TO    RECE41-KHNTEN(4)
-                              MOVE   1       TO    FLG-KHNTEN4-JI2
-                            END-IF
-                          END-IF
-                        END-IF
-                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(4)
-                        COMPUTE  RECE41-TENSU(4)   =
-                                 RECE41-TENSU(4)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                        COMPUTE  TBL-SYUTEN-JI(4)  =
-                                 TBL-SYUTEN-JI(4)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *      ° µŸ∆¸°À
-                    WHEN  124
-                        PERFORM   21012241-NYUYOJI-COUNT-SEC
-                        IF  WRK-PARA-JIBAIPRTKBN = "1"
-                          IF    RECE41-KHNTEN(5)   =   ZERO
-                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(5)
-                          ELSE
-                            IF RECE41-KHNTEN(5) NOT = WRK-TNS-TEN(IDX3)
-                              MOVE   ZERO    TO    RECE41-KHNTEN(5)
-                              MOVE   1       TO    FLG-KHNTEN5-JI2
-                            END-IF
-                          END-IF
-                        END-IF
-                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(5)
-                        COMPUTE  RECE41-TENSU(5)   =
-                                 RECE41-TENSU(5)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                        COMPUTE  TBL-SYUTEN-JI(5)  =
-                                 TBL-SYUTEN-JI(5)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *      ° øºÃÎ°À
-                    WHEN  125
-                        PERFORM   21012241-NYUYOJI-COUNT-SEC
-                        IF  WRK-PARA-JIBAIPRTKBN = "1"
-                          IF    RECE41-KHNTEN(6)   =   ZERO
-                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(6)
-                          ELSE
-                            IF RECE41-KHNTEN(6) NOT = WRK-TNS-TEN(IDX3)
-                              MOVE   ZERO    TO    RECE41-KHNTEN(6)
-                              MOVE   1       TO    FLG-KHNTEN6-JI2
-                            END-IF
-                          END-IF
-                        END-IF
-                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(6)
-                        COMPUTE  RECE41-TENSU(6)   =
-                                 RECE41-TENSU(6)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                        COMPUTE  TBL-SYUTEN-JI(6)  =
-                                 TBL-SYUTEN-JI(6)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *      ° §Ω§Œ¬æ°À
-                    WHEN  OTHER
-                        IF   ACCT-ZAIKBN     =  2
-                           IF  WRK-PARA-JIBAIPRTKBN = "1"
-                              MOVE   ZERO    TO    RECE41-KHNTEN(2)
-                              MOVE   1       TO    FLG-KHNTEN2-JI2
-                           END-IF
-                           COMPUTE    WRK-RECE4G-TENSU(2)  =
-                                      WRK-RECE4G-TENSU(2)  +
-                                     (WK-ZAITEN   *   WK-ZAIKAISU)
-                        END-IF
-                   END-EVALUATE
-                 END-IF
-      *    ªÿ∆≥§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "13"
-                 IF   (RECE41-HKNKBN    =  "4")
-                 AND  (RECE41-JIBAIKBN  =  "1")
-                     IF   (SRY-SRYCD(IDX3) =  CONS-ROUSAI33)
-                     AND  (RECE41-SRYYM   >=  "201307"     )
-                             COMPUTE    WRK-KINGAKU-JI  =
-                                        WRK-KINGAKU-JI  +
-                                  (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                     ELSE
-                       IF ((SRY-SRYCD(IDX3) =
-                            CONS-ROUSAI9  OR  CONS-ROUSAI10 OR
-                            CONS-ROUSAI11 OR  CONS-ROUSAI12 OR
-                            CONS-ROUSAI13 OR  CONS-ROUSAI14 OR
-                            CONS-ROUSAI15 OR  CONS-ROUSAI16 OR
-                            CONS-ROUSAI17                       ) AND
-                           (RECE41-SRYYM    <=  "201306"        ))
-                       OR ((SRY-SRYCD(IDX3)  =  CONS-ROUSAI8    ) AND
-                           (RECE41-SRYYM     <  "200804"        ))
-                             COMPUTE    RECE41-SONOTAKIN-JYU  =
-                                        RECE41-SONOTAKIN-JYU  +
-                                  (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       ELSE
-                         IF   ACCT-ZAIKBN     =  2
-                             COMPUTE    WRK-RECE4G-TENSU(7)  =
-                                        WRK-RECE4G-TENSU(7)  +
-                                       (WK-ZAITEN   *   WK-ZAIKAISU)
-                         ELSE
-                             COMPUTE    RECE41-TENSU(7)   =
-                                        RECE41-TENSU(7)   +
-                                       (WK-ZAITEN   *   WK-ZAIKAISU)
-                             COMPUTE    TBL-SYUTEN-JI(7)  =
-                                        TBL-SYUTEN-JI(7)  +
-                                       (WK-ZAITEN   *   WK-ZAIKAISU)
-                         END-IF
-                       END-IF
-                     END-IF
-                 ELSE
-                     IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE4G-TENSU(7)  =
-                                    WRK-RECE4G-TENSU(7)  +
-                                   (WK-ZAITEN   *   WK-ZAIKAISU)
-                     ELSE
-                         COMPUTE    RECE41-TENSU(7)   =
-                                    RECE41-TENSU(7)   +
-                                   (WK-ZAITEN   *   WK-ZAIKAISU)
-                         COMPUTE    TBL-SYUTEN-JI(7)  =
-                                    TBL-SYUTEN-JI(7)  +
-                                   (WK-ZAITEN   *   WK-ZAIKAISU)
-                     END-IF
-                 END-IF
-      *    ∫ﬂ¬§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "14"
-                 IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE4G-TENSU(8)  =
-                              WRK-RECE4G-TENSU(8)  +
-                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                 ELSE
-                   MOVE      ZERO            TO   FLG-ZAITAKU
-      *            ±˝ø«°¶∆√ Ã±˝ø«° ª˛¥÷≤√ªª°À
-                   IF    FLG-OSINKBN         =   1
-                       MOVE         1        TO   FLG-ZAITAKU
-                       COMPUTE   RECE41-TENSU(8)   =
-                                 RECE41-TENSU(8)   +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                       COMPUTE   TBL-SYUTEN-JI(8)  =
-                                 TBL-SYUTEN-JI(8)  +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                   END-IF
-      *            ÃÎ¥÷
-                   IF    FLG-OSINKBN         =    2
-                       MOVE   1              TO   FLG-ZAITAKU
-                       COMPUTE   RECE41-TENSU(8)   =
-                                 RECE41-TENSU(8)   +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                       COMPUTE   TBL-SYUTEN-JI(8)  =
-                                 TBL-SYUTEN-JI(8)  +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                   END-IF
-      *            øºÃÎ°¶∂€µﬁ
-                   IF    FLG-OSINKBN         =    3
-                       MOVE   1              TO   FLG-ZAITAKU
-                       COMPUTE   RECE41-TENSU(8)   =
-                                 RECE41-TENSU(8)   +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                       COMPUTE   TBL-SYUTEN-JI(8)  =
-                                 TBL-SYUTEN-JI(8)  +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                   END-IF
-      *            ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈
-                   IF (( WRK-TNS-OSINKBN(IDX3) =     1          )  AND
-                       ((SRY-SRYCD(IDX3)   NOT =    "114000110")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114001610")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114000970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114000470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114001970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011670")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114000370")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114001570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114001870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114012070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017670")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017770")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029270")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029370")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030170")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030270")))
-                   OR (  FLG-OSINKBN           =     9           )
-                       MOVE   1              TO   FLG-ZAITAKU
-                       COMPUTE   RECE41-TENSU(8)   =
-                                 RECE41-TENSU(8)   +
-                                (WK-SYUTEN         * WK-ZAIKAISU)
-                       COMPUTE   TBL-SYUTEN-JI(8)  =
-                                 TBL-SYUTEN-JI(8)  +
-                                (WK-SYUTEN         * WK-ZAIKAISU)
-                   END-IF
-      *            §Ω§Œ¬æ
-                   IF    FLG-ZAITAKU    =   ZERO
-                       COMPUTE   RECE41-TENSU(8)   =
-                                 RECE41-TENSU(8)   +
-                                (WK-SYUTEN     *   WK-ZAIKAISU)
-                       COMPUTE   TBL-SYUTEN-JI(8)  =
-                                 TBL-SYUTEN-JI(8)  +
-                                (WK-SYUTEN     *   WK-ZAIKAISU)
-                   END-IF
-      *            ÃÙ∫ﬁ
-                   COMPUTE   RECE41-TENSU(8)   =
-                             RECE41-TENSU(8)   +
-                             (WK-KIZAITEN *   WK-ZAIKAISU)  +
-                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-YKZTEN-JI(8)  =
-                             TBL-YKZTEN-JI(8)  +
-                             (WK-KIZAITEN *   WK-ZAIKAISU)  +
-                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                 END-IF
-      *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "21"
-                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
-                                                       OR "7"       )
-                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
-                                                         OR "059"   )
-                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
-                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
-                     IF    SRY-SRYCD(IDX3)  =  CONS-YAKTEIGEN
-                                            OR CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
-                       COMPUTE   RECE41-TENSU(10)   =
-                                 RECE41-TENSU(10)   -
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   TBL-YKZTEN-JI(10)  =
-                                 TBL-YKZTEN-JI(10)  -
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     ELSE
-                       ADD   WK-ZAIKAISU       TO   RECE41-KAISU(10)
-                       COMPUTE   RECE41-TENSU(10)   =
-                                 RECE41-TENSU(10)   +
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   TBL-YKZTEN-JI(10)  =
-                                 TBL-YKZTEN-JI(10)  +
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     END-IF
-                   ELSE
-                     IF   SRY-SRYCD(IDX3)   =    CONS-FUNSAI-COMMENT
-                       ADD   WK-ZAIKAISU       TO   RECE41-KAISU(10)
-                       COMPUTE   RECE41-TENSU(10)   =
-                                 RECE41-TENSU(10)   +
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   TBL-YKZTEN-JI(10)  =
-                                 TBL-YKZTEN-JI(10)  +
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     ELSE   
-                       IF    RECE41-KHNTEN(11)   =   ZERO
-                          MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(11)
-                       ELSE
-                          IF   RECE41-KHNTEN(11) NOT = WRK-TNS-TEN(IDX3)
-                               MOVE   ZERO    TO    RECE41-KHNTEN(11)
-                               MOVE   1       TO    FLG-KHNTEN11-JI2
-                          END-IF
-                       END-IF
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(11)
-                       COMPUTE   RECE41-TENSU(11)   =
-                                 RECE41-TENSU(11)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       COMPUTE   TBL-SYUTEN-JI(11)  =
-                                 TBL-SYUTEN-JI(11)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                     END-IF   
-                   END-IF
-               WHEN    "22"
-                 IF    SRY-SRYCD(IDX3)      =  CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
-                   COMPUTE   RECE41-TENSU(12)   =
-                             RECE41-TENSU(12)   -
-                            (WK-ZAITEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-YKZTEN-JI(12)  =
-                             TBL-YKZTEN-JI(12)  -
-                            (WK-ZAITEN   *   WK-ZAIKAISU)
-                 ELSE
-                   ADD    WK-ZAIKAISU    TO   RECE41-KAISU(12)
-                   COMPUTE   RECE41-TENSU(12)   =
-                             RECE41-TENSU(12)   +
-                            (WK-ZAITEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-YKZTEN-JI(12)  =
-                             TBL-YKZTEN-JI(12)  +
-                            (WK-ZAITEN   *   WK-ZAIKAISU)
-                 END-IF
-               WHEN    "23"
-                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
-                                                       OR "7"       )
-                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
-                                                         OR "059"   )
-                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
-                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
-                     IF    SRY-SRYCD(IDX3)  =  CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
-                       COMPUTE   RECE41-TENSU(13)   =
-                                 RECE41-TENSU(13)   -
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   TBL-YKZTEN-JI(13)  =
-                                 TBL-YKZTEN-JI(13)  -
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     ELSE
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(13)
-                       COMPUTE   RECE41-TENSU(13)   =
-                                 RECE41-TENSU(13)   +
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   TBL-YKZTEN-JI(13)  =
-                                 TBL-YKZTEN-JI(13)  +
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     END-IF
-                   ELSE
-                       IF    RECE41-KHNTEN(14)   =   ZERO
-                          MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(14)
-                       ELSE
-                          IF   RECE41-KHNTEN(14) NOT = WRK-TNS-TEN(IDX3)
-                               MOVE   ZERO    TO    RECE41-KHNTEN(14)
-                               MOVE   1       TO    FLG-KHNTEN14-JI2
-                          END-IF
-                       END-IF
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(14)
-                       COMPUTE   RECE41-TENSU(14)   =
-                                 RECE41-TENSU(14)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       COMPUTE   TBL-SYUTEN-JI(14)  =
-                                 TBL-SYUTEN-JI(14)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                   END-IF
-      *    ΩË ˝§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "25"
-                   IF  SRY-SRYCD(IDX3) = "120002170" OR "120002270" OR
-                                         "120003170" OR "120003370" OR
-                                         "120003870" OR
-                                         "120004070" OR "120004170" OR
-                                         "120004370" OR "120004470"
-                      COMPUTE  WRK-SYOHOU-KAISU  =  WRK-SYOHOU-KAISU
-                                                 +  ACCT-ZAIKAISU
-                   END-IF
-                   IF    WK-ZAITEN   NOT =  ZERO
-                     IF    RECE41-KHNTEN(15)     = ZERO
-                      MOVE  WK-ZAITEN     TO   RECE41-KHNTEN(15)
-                     ELSE
-                      IF   RECE41-KHNTEN(15) NOT = WK-ZAITEN
-                            MOVE   ZERO   TO   RECE41-KHNTEN(15)
-                            MOVE   1      TO   FLG-KHNTEN15-JI2
-                      END-IF
-                     END-IF
-                   END-IF
-                   IF  (SRY-SRYCD(IDX3)(1:1)   = "S" OR "8" )
-                   OR  (SRY-SRYCD(IDX3)(1:3)   = "008"      )
-                   OR  (SRY-SRYCD(IDX3)        = "099999903")
-                      CONTINUE
-                   ELSE
-                      ADD    ACCT-ZAIKAISU   TO    RECE41-KAISU(15)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(15)   =
-                             RECE41-TENSU(15)   +
-                            (WK-ZAITEN   *   ACCT-ZAIKAISU)
-                   COMPUTE   TBL-SYUTEN-JI(15)  =
-                             TBL-SYUTEN-JI(15)  +
-                            (WK-ZAITEN   *   ACCT-ZAIKAISU)
-      *    À„∆«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "26"
-                   IF  (SRY-SRYCD(IDX3)(1:1)   = "S" OR "8" )
-                   OR  (SRY-SRYCD(IDX3)(1:3)   = "008"      )
-                   OR  (SRY-SRYCD(IDX3)        = "099999903")
-                      CONTINUE
-                   ELSE
-                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(16)
-                   END-IF
-                   IF SRY-SRYCD(IDX3)      =    "120001310"
-                    COMPUTE WRK-MADOKU-SHOHO = WRK-MADOKU-SHOHO +
-                                               WK-ZAIKAISU 
-                   END-IF
-                   COMPUTE   RECE41-TENSU(16)   =
-                             RECE41-TENSU(16)   +
-                            (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                   COMPUTE   TBL-SYUTEN-JI(16)  =
-                             TBL-SYUTEN-JI(16)  +
-                            (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *    ƒ¥¥§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "27"
-                   IF  (SRY-SRYCD(IDX3)(1:1)   = "S" OR "8" )
-                   OR  (SRY-SRYCD(IDX3)(1:3)   = "008"      )
-                   OR  (SRY-SRYCD(IDX3)        = "099999903")
-                      CONTINUE
-                   ELSE
-                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(17)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(17)   =
-                             RECE41-TENSU(17)   +
-                            (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                   COMPUTE   TBL-SYUTEN-JI(17)  =
-                             TBL-SYUTEN-JI(17)  +
-                            (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *    »È≤º∂⁄∆˘∆‚√ÌºÕ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "31"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(19)
-                   COMPUTE   RECE41-TENSU(19)   =
-                             RECE41-TENSU(19)   +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-SYUTEN-JI(19)  =
-                             TBL-SYUTEN-JI(19)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU(19)   =
-                             RECE41-TENSU(19)   +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-YKZTEN-JI(19)  =
-                             TBL-YKZTEN-JI(19)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-      *    ¿≈ÃÆ∆‚√ÌºÕ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "32"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(20)
-                   COMPUTE   RECE41-TENSU(20)   =
-                             RECE41-TENSU(20)   +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-SYUTEN-JI(20)  =
-                             TBL-SYUTEN-JI(20)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU(20)   =
-                             RECE41-TENSU(20)   +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-YKZTEN-JI(20)  =
-                             TBL-YKZTEN-JI(20)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-      *    §Ω§Œ¬æ√ÌºÕ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "33"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(21)
-                   COMPUTE   RECE41-TENSU(21)   =
-                             RECE41-TENSU(21)   +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-SYUTEN-JI(21)  =
-                             TBL-SYUTEN-JI(21)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU(21)   =
-                             RECE41-TENSU(21)   +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-YKZTEN-JI(21)  =
-                             TBL-YKZTEN-JI(21)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-      *    ΩË√÷§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "40"
-                   IF    WK-SYUTEN       NOT =   ZERO
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(23)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(23)   =
-                             RECE41-TENSU(23)   +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-SYUTEN-JI(23)  =
-                             TBL-SYUTEN-JI(23)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU(24)   =
-                             RECE41-TENSU(24)   +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-YKZTEN-JI(24)  =
-                             TBL-YKZTEN-JI(24)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-      *    ºÍΩ—§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "50"
-               WHEN    "54"
-                   IF    WK-SYUTEN       NOT =   ZERO
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(26)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(26)   =
-                             RECE41-TENSU(26)   +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-SYUTEN-JI(26)  =
-                             TBL-SYUTEN-JI(26)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU(27)   =
-                             RECE41-TENSU(27)   +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-YKZTEN-JI(27)  =
-                             TBL-YKZTEN-JI(27)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-      *    ∏°∫∫§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "60"
-               WHEN    "64"
-                   IF    WK-SYUTEN       NOT =   ZERO
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(29)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(29)   =
-                             RECE41-TENSU(29)   +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-SYUTEN-JI(29)  =
-                             TBL-SYUTEN-JI(29)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   IF    WRK-TNS-KNSJISKBN(IDX3)    =   2
-                         COMPUTE   RECE41-KAISU(29)  =
-                                   RECE41-KAISU(29)  -  
-                                   WK-ZAIKAISU
-                   END-IF
-                   IF    WRK-TNS-SRYCD(IDX3)  =   CONS-SAIKETSU1  OR
-                                                  CONS-SAIKETSU2  OR
-                                                  CONS-SAIKETSU3
-                         IF   RECE41-KAISU(29)  NOT =  ZERO
-                              COMPUTE   RECE41-KAISU(29)  =
-                                        RECE41-KAISU(29)  -   
-                                        WK-ZAIKAISU
-                         END-IF
-                   END-IF
-                   COMPUTE   RECE41-TENSU(30)   =
-                             RECE41-TENSU(30)   +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-YKZTEN-JI(30)  =
-                             TBL-YKZTEN-JI(30)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-      *    ≤Ë¡¸ø«√«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "70"
-                   IF    WK-SYUTEN       NOT =   ZERO
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(32)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(32)   =
-                             RECE41-TENSU(32)   +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-SYUTEN-JI(32)  =
-                             TBL-SYUTEN-JI(32)  +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU(33)   =
-                             RECE41-TENSU(33)   +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   TBL-YKZTEN-JI(33)  =
-                             TBL-YKZTEN-JI(33)  +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-      *    §Ω§Œ¬æ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "80"
-                 IF   ((SRY-SRYCD(IDX3) =
-                        CONS-ROUSAI32 OR
-                        CONS-ROUSAI20 OR  CONS-ROUSAI21 OR
-                        CONS-ROUSAI22 OR  CONS-ROUSAI23 OR
-                        CONS-ROUSAI24 OR  CONS-ROUSAI25 OR
-                        CONS-ROUSAI26 OR  CONS-ROUSAI27 OR
-                        CONS-ROUSAI28 OR  CONS-ROUSAI29 OR
-                        CONS-ROUSAI30 OR  CONS-ROUSAI31 OR
-                        CONS-ROUSAI39                       ) AND
-                       (RECE41-SRYYM    >=  "201307"        ))
-                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI32
-                             COMPUTE  WRK-KINGAKU-JI   =
-                                      WRK-KINGAKU-JI   +
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                   ELSE
-                             COMPUTE  RECE41-SONOTAKIN-JYU  =
-                                      RECE41-SONOTAKIN-JYU  +
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                   END-IF
-                 ELSE
-                   IF ( ACCT-SRYKBN          =  "80"    )   AND
-                      ( SRY-SRYCD(IDX3)(1:5) =  "09591" OR 
-                                                "09592" )
-                        CONTINUE
-                   ELSE
-                    IF ((ACCT-SRYKBN          =  "80"    )  AND
-                        (SRY-SRYCD(IDX3)(1:5) =  "09593" ))
-                    OR ((SRY-SRYCD(IDX3) >= "101801010" AND
-                                         <= "101801020"  )  AND
-                        (RECE41-SRYYM    >= "201307"     ))
-                    OR ((SRY-SRYCD(IDX3)  = "101801030"  )  AND
-                        (RECE41-SRYYM    >= "201307"     ))
-                     IF   SRY-SRYCD(IDX3)(1:5) = "09593"
-                       IF   (RECE41-HKNKBN    =  "4")
-                       AND  (RECE41-JIBAIKBN  =  "1")
-                         EVALUATE  WRK-TNS-JIBAISYUKEIKBN(IDX3)
-                           WHEN       0
-                           WHEN       5
-                             COMPUTE  RECE41-SONOTAKIN-JYU  =
-                                      RECE41-SONOTAKIN-JYU  +
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                           WHEN       1
-                           WHEN       2
-                           WHEN       3
-                           WHEN       4
-                             COMPUTE  WRK-KINGAKU-JI   =
-                                      WRK-KINGAKU-JI   +
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                         END-EVALUATE
-                       ELSE
-                             COMPUTE  RECE41-SONOTAKIN-JYU  =
-                                      RECE41-SONOTAKIN-JYU  +
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       END-IF
-                     ELSE
-                       IF  SRY-SRYCD(IDX3)  =  "101801030"
-                             COMPUTE  WRK-FUTANWARI  =
-                                      WRK-TNS-TEN(IDX3) / 100
-                             COMPUTE  WRK-KEISAN-KG2 =
-                                     (WRK-TEN-KG2       * WRK-FUTANWARI)
-                             COMPUTE  RECE41-SONOTAKIN-JYU  =
-                                      RECE41-SONOTAKIN-JYU  +
-                                     (WRK-KEISAN-KG2    * ACCT-ZAIKAISU)
-                       ELSE
-                             COMPUTE  RECE41-SONOTAKIN-JYU  =
-                                      RECE41-SONOTAKIN-JYU  +
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                             COMPUTE  WRK-TEN-KG2 = WRK-TNS-TEN(IDX3)
-                       END-IF
-                     END-IF
-                    ELSE                                                
-                     IF  RECE41-HKNKBN        =    "4"
-                     AND RECE41-JIBAIKBN      =    "1"
-                     AND SRY-SRYCD(IDX3)      =    CONS-RYOYOTEATE
-                       COMPUTE    RECE41-SONOTAKIN-JYU  =               
-                                  RECE41-SONOTAKIN-JYU  +               
-                                 (WRK-RYOYOTEATE  *   ACCT-ZAIKAISU)    
-                     ELSE
-                      IF  SRY-SRYCD(IDX3) =  CONS-SHOHOKSN1
-                                          OR CONS-SHOHOKSN2
-                                          OR CONS-SHOHOKSN3
-                                          OR CONS-SHOHOKSN4
-                                          OR CONS-SHOHOKSN5
-                                          OR CONS-SHOHOKSN6
-                                          OR CONS-SHOHOKSN7
-                                          OR CONS-SHOHOKSN8
-                         COMPUTE  WRK-SYOSEN-KAISU  =  WRK-SYOSEN-KAISU
-                                                    +  ACCT-ZAIKAISU
-                      END-IF
-                      IF   SRY-SRYCD(IDX3)    =    CONS-SHOHOSEN1 OR
-                                                   CONS-SHOHOSEN2 OR
-                                                   CONS-SHOHOSEN3 OR
-                                                   CONS-SHOHOSEN4 OR
-                                                   CONS-SHOHOSEN5 OR
-                                                   CONS-SHOHOKSN1 OR
-                                                   CONS-SHOHOKSN2 OR
-                                                   CONS-SHOHOKSN3 OR
-                                                   CONS-SHOHOKSN4 OR
-                                                   CONS-SHOHOKSN5 OR
-                                                   CONS-SHOHOKSN6 OR
-                                                   CONS-SHOHOKSN7 OR
-                                                   CONS-SHOHOKSN8
-                          ADD  ACCT-ZAIKAISU  TO  RECE41-KAISU(35)
-                          COMPUTE   RECE41-TENSU(35)   =
-                                    RECE41-TENSU(35)   +
-                                   (WK-ZAITEN  *   ACCT-ZAIKAISU)
-                          COMPUTE   TBL-SYUTEN-JI(35)  =
-                                    TBL-SYUTEN-JI(35)  +
-                                   (WK-ZAITEN  *   ACCT-ZAIKAISU)
-                      ELSE
-                          EVALUATE   WRK-PARA-JIBAIPRTKBN
-                           WHEN      "0"
-                             COMPUTE   RECE41-TENSU(23)   =
-                                       RECE41-TENSU(23)   +
-                                      (WK-SYUTEN  *   ACCT-ZAIKAISU)
-                             COMPUTE   TBL-SYUTEN-JI(23)  =
-                                       TBL-SYUTEN-JI(23)  +
-                                      (WK-SYUTEN  *   ACCT-ZAIKAISU)
-                           WHEN      "1"
-                             COMPUTE   RECE41-TENSU(36)   =
-                                       RECE41-TENSU(36)   +
-                                      (WK-SYUTEN  *   ACCT-ZAIKAISU)
-                             COMPUTE   TBL-SYUTEN-JI(36)  =
-                                       TBL-SYUTEN-JI(36)  +
-                                      (WK-SYUTEN  *   ACCT-ZAIKAISU)
-                          END-EVALUATE
-                          IF    WRK-TNS-GAITENTTLKBN(IDX3)   =    130
-                            COMPUTE   RECE41-TENSU(7)   =
-                                      RECE41-TENSU(7)   +
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                            COMPUTE   TBL-SYUTEN-JI(7)  =
-                                      TBL-SYUTEN-JI(7)  +
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                            EVALUATE  WRK-PARA-JIBAIPRTKBN
-                             WHEN      "0"
-                              COMPUTE   RECE41-TENSU(23)   =
-                                        RECE41-TENSU(23)   -
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                              COMPUTE   TBL-SYUTEN-JI(23)  =
-                                        TBL-SYUTEN-JI(23)  -
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                             WHEN      "1"
-                              COMPUTE   RECE41-TENSU(36)   =
-                                        RECE41-TENSU(36)   -
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                              COMPUTE   TBL-SYUTEN-JI(36)  =
-                                        TBL-SYUTEN-JI(36)  -
-                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                            END-EVALUATE
-                          END-IF
-                      END-IF
-                      EVALUATE  WRK-PARA-JIBAIPRTKBN
-                       WHEN      "0"
-                        IF  SRY-SRYCD(IDX3) = CONS-RYOYOTEATE
-                         COMPUTE   RECE41-TENSU(37)   =
-                                   RECE41-TENSU(37)   +
-                                  (WK-YKZTEN   *   ACCT-ZAIKAISU)
-                         COMPUTE   TBL-YKZTEN-JI(37)  =
-                                   TBL-YKZTEN-JI(37)  +
-                                  (WK-YKZTEN   *   ACCT-ZAIKAISU)
-                        ELSE
-                         COMPUTE   RECE41-TENSU(24)   =
-                                   RECE41-TENSU(24)   +
-                                  (WK-YKZTEN   *   ACCT-ZAIKAISU)
-                         COMPUTE   TBL-YKZTEN-JI(24)  =
-                                   TBL-YKZTEN-JI(24)  +
-                                  (WK-YKZTEN   *   ACCT-ZAIKAISU)
-                        END-IF
-                       WHEN      "1"
-                         COMPUTE   RECE41-TENSU(37)   =
-                                   RECE41-TENSU(37)   +
-                                  (WK-YKZTEN   *   ACCT-ZAIKAISU)
-                         COMPUTE   TBL-YKZTEN-JI(37)  =
-                                   TBL-YKZTEN-JI(37)  +
-                                  (WK-YKZTEN   *   ACCT-ZAIKAISU)
-                      END-EVALUATE
-                     END-IF
-                    END-IF                                              
-                   END-IF
-                 END-IF
-           END-EVALUATE
-      *
-           .
-      *
-       2101224-RECE-LEFT-SET4-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ∆˝Õƒª˘≤√ªª§Œ•´•¶•Û•»
-      *****************************************************************
-       21012241-NYUYOJI-COUNT-SEC               SECTION.
-      *
-           IF   RECE41-SRYYM  >= "200604"
-              IF  SRY-SRYCD(IDX3) = "112015170" OR
-                                    "112015270" OR
-                                    "112015370" OR
-                                    "112015470" OR
-                                    "112014470" OR
-                                    "112014570" OR
-                                    "112014670" OR
-                                    "112014770" OR
-                                    "112014870" OR
-                                    "112014970" OR
-                                    "112015070" OR
-                                    "112014170" OR
-                                    "112014270" OR
-                                    "112014370"
-                     COMPUTE  CNT-NYUYOJI2  =  CNT-NYUYOJI2
-                                            +  WK-ZAIKAISU
-              END-IF
-           END-IF
-           .
-      *
-       21012241-NYUYOJI-COUNT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜
-      *****************************************************************
-       2101225-RECE-LEFT-SET5-SEC               SECTION.
-      *
-           EVALUATE    SRY-SRYKBN
-      *    ΩÈø«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "11"
-                   IF ( SRY-SRYCD(IDX3) = CONS-ROUSAI1  OR
-                                          CONS-ROUSAI18 )
-                   OR ((SRY-SRYCD(IDX3) = CONS-ROUSAI3 ) AND
-                       (RECE41-SRYYM   <=   "201306"   ))
-                      CONTINUE
-                   ELSE
-                      IF   WRK-TNS-DATAKBN(IDX3)  =   2
-                        EVALUATE  WRK-TNS-TIMEKSNKBN(IDX3)
-                          WHEN    1
-                          WHEN    5
-                          WHEN    6
-                              MOVE  "1"     TO   RECE41-SHOSHINTIME
-                          WHEN    3
-                              MOVE  "2"     TO   RECE41-SHOSHINTIME
-                          WHEN    4
-                              MOVE  "3"     TO   RECE41-SHOSHINTIME
-                        END-EVALUATE
-                      END-IF
-                      IF    RECE41-KOMUKBN  =   "2"
-                        IF  WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"
-                        OR  SRY-SRYCD(IDX3)(1:1)       NOT = "1"
-                            CONTINUE
-                        ELSE
-                            ADD   WK-ZAIKAISU  TO   RECE41-KAISU(1)
-                        END-IF
-                      ELSE
-                        IF  WRK-TNS-DATAKBN(IDX3)  =   2
-                          IF   SRY-SRYCD(IDX3) = "111012370"
-                            CONTINUE
-                          ELSE
-                            ADD   WK-ZAIKAISU  TO   RECE41-KAISU(1)
-                          END-IF
-                        END-IF
-                      END-IF
-                      COMPUTE    RECE41-TENSU(1)    =
-                                 RECE41-TENSU(1)    +
-                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                   END-IF
-      *    ∫∆ø«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏° Ω∏∑◊ ˝À° —ππ∏Â°À
-               WHEN    "12"
-                   EVALUATE  WRK-TNS-GAITENTTLKBN(IDX3)
-      *      ° ¥À‹ºÍµª°À
-                    WHEN  120
-                     IF ((SRY-SRYCD(IDX3) =  CONS-ROUSAI5  OR
-                                             CONS-ROUSAI6  OR
-                                             CONS-ROUSAI7  OR
-                                             CONS-ROUSAI19) AND
-                         (RECE41-SRYYM   <=    "201306"   ))
-                     OR ((SRY-SRYCD(IDX3) =  CONS-ROUSAI34 OR
-                                             CONS-ROUSAI35 OR
-                                             CONS-ROUSAI36 OR
-                                             CONS-ROUSAI37 OR
-                                             CONS-ROUSAI38 OR
-                                             CONS-ROUSAI5 ) AND
-                         (RECE41-SRYYM   >=    "201307"   ))
-                         CONTINUE
-                     ELSE
-                       IF SRY-SRYCD(IDX3) =  CONS-GAIRAIRYO1  OR
-                                             CONS-GAIRAIRYO3  OR
-                                             CONS-GAIRAIRYO4  OR
-                                             CONS-GAIRAIRYO5  OR
-                                             CONS-GAIRAIRYO6  OR
-                                             CONS-GAIRAIRYO7  OR
-                                             CONS-DOUJITU-GAI OR
-                                             CONS-DOUJITU2-GAI OR
-                                             CONS-DOUJITU3-GAI
-                         IF    RECE41-KHNTEN(3)   =   ZERO
-                           MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(3)
-                         ELSE
-                           IF RECE41-KHNTEN(3) NOT = WRK-TNS-TEN(IDX3)
-                             MOVE   ZERO    TO    RECE41-KHNTEN(3)
-                             MOVE   1       TO    FLG-KHNTEN3-KO
-                           END-IF
-                         END-IF
-                         IF  WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"
-                         OR  SRY-SRYCD(IDX3)(1:1)       NOT = "1"
-                             CONTINUE
-                         ELSE
-                             ADD   WK-ZAIKAISU  TO   RECE41-KAISU(3)
-                         END-IF
-                         COMPUTE    RECE41-TENSU(3)   =
-                                    RECE41-TENSU(3)   +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       ELSE
-                         IF     RECE41-KOMUKBN  =   "2"
-                           IF ( SRY-SRYCD(IDX3)   =   CONS-KEIZOKU1  OR
-                                                      CONS-KEIZOKU2  )
-                           OR ( WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0" )
-                           OR ( SRY-SRYCD(IDX3)(1:1)       NOT = "1" )
-                             CONTINUE
-                           ELSE
-                             ADD    WK-ZAIKAISU  TO  RECE41-KAISU(2)
-                             IF  SRY-SRYCD(IDX3)  =  CONS-DOUJITU-SAI
-                                                 OR  CONS-DOUJITU-SAI2
-                                                 OR  CONS-DOUJITU-DEN
-                                                 OR  CONS-DOUJITU-DEN2
-                                                 OR  CONS-DOUJITU-GAI
-                                                 OR  CONS-DOUJITU2-GAI
-                                                 OR  CONS-DOUJITU3-GAI
-                               ADD  WK-ZAIKAISU  TO  CNT-SAISIN-DOUJITU
-                             ELSE
-                               ADD  WK-ZAIKAISU  TO  CNT-SAISIN-ETC
-                             END-IF
-                           END-IF
-                         ELSE
-                           IF   FLG-COUNT-ARI  =  ZERO
-                             IF   SRY-SRYCD(IDX3) = "101989030"
-      *********                                  OR "101989070"
-                               CONTINUE
-                             ELSE
-                               ADD   WK-ZAIKAISU  TO   RECE41-KAISU(2)
-                             END-IF
-                             MOVE    1            TO   FLG-COUNT-ARI
-                           END-IF
-                         END-IF
-                         IF ( SRY-SRYCD(IDX3)     =   CONS-KEIZOKU1  OR
-                                                      CONS-KEIZOKU2 )
-                           MOVE   ZERO    TO    RECE41-KHNTEN(2)
-                           MOVE   1       TO    FLG-KHNTEN2-KO
-                         ELSE
-                           IF  (SRY-SRYCD(IDX3) =  CONS-JIKANTAI1  OR
-                                                   CONS-JIKANTAI2  OR
-                                                   CONS-JIKANTAI3  OR
-                                                   CONS-MESAIKSN   OR
-                                                   CONS-CHIHOKATU  OR
-                                                   CONS-CHIHOKAT2  OR
-                                                   "101989030"     OR
-                                                   "101989070"       )
-                           AND (RECE41-SRYYM   >=  "201004"          )
-                             IF  SRY-SRYCD(IDX3)  =  CONS-JIKANTAI1
-                               COMPUTE  CNT-JIKANTAI1 = CNT-JIKANTAI1
-                                                      + WK-ZAIKAISU
-                               IF   FLG-JIKANTAI1-ARI  =  ZERO
-                                  ADD  WRK-TNS-TEN(IDX3)
-                                                 TO  RECE41-KHNTEN(2)
-                                  MOVE     1     TO  FLG-JIKANTAI1-ARI
-                               END-IF
-                             END-IF
-                             IF  SRY-SRYCD(IDX3)  =  CONS-JIKANTAI2
-                               COMPUTE  CNT-JIKANTAI2 = CNT-JIKANTAI2
-                                                      + WK-ZAIKAISU
-                               IF   FLG-JIKANTAI2-ARI   =  ZERO
-                                  ADD  WRK-TNS-TEN(IDX3)
-                                                 TO  RECE41-KHNTEN(2)
-                                  MOVE     1     TO  FLG-JIKANTAI2-ARI
-                               END-IF
-                             END-IF
-                             IF  SRY-SRYCD(IDX3)  =  CONS-JIKANTAI3
-                               COMPUTE  CNT-JIKANTAI3 = CNT-JIKANTAI3
-                                                      + WK-ZAIKAISU
-                               IF   FLG-JIKANTAI3-ARI  =  ZERO
-                                  ADD  WRK-TNS-TEN(IDX3)
-                                                 TO  RECE41-KHNTEN(2)
-                                  MOVE     1     TO  FLG-JIKANTAI3-ARI
-                               END-IF
-                             END-IF
-                             IF  SRY-SRYCD(IDX3)  =  CONS-MESAIKSN
-                               COMPUTE  CNT-MESAIKSN =  CNT-MESAIKSN
-                                                     +  WK-ZAIKAISU
-                               IF   FLG-MESAIKSN-ARI   =  ZERO
-                                  ADD  WRK-TNS-TEN(IDX3)
-                                                 TO  RECE41-KHNTEN(2)
-                                  MOVE     1     TO  FLG-MESAIKSN-ARI
-                               END-IF
-                             END-IF
-                             IF  SRY-SRYCD(IDX3)  =  CONS-CHIHOKATU
-                               COMPUTE  CNT-CHIHOKATU = CNT-CHIHOKATU
-                                                      + WK-ZAIKAISU
-                               IF   FLG-CHIHOKATU-ARI  =  ZERO
-                                  ADD  WRK-TNS-TEN(IDX3)
-                                                 TO  RECE41-KHNTEN(2)
-                                  MOVE     1     TO  FLG-CHIHOKATU-ARI
-                               END-IF
-                             END-IF
-                             IF  SRY-SRYCD(IDX3)  =  CONS-CHIHOKAT2
-                               COMPUTE  CNT-CHIHOKAT2 = CNT-CHIHOKAT2
-                                                      + WK-ZAIKAISU
-                               IF   FLG-CHIHOKAT2-ARI  =  ZERO
-                                  ADD  WRK-TNS-TEN(IDX3)
-                                                 TO  RECE41-KHNTEN(2)
-                                  MOVE     1     TO  FLG-CHIHOKAT2-ARI
-                               END-IF
-                             END-IF
-                             IF  SRY-SRYCD(IDX3)  =  "101989030"
-                               COMPUTE  CNT-SAITOKKSN = CNT-SAITOKKSN
-                                                      + WK-ZAIKAISU
-                               IF   FLG-SAITOKKSN-ARI  =  ZERO
-                                  ADD  WRK-TNS-TEN(IDX3)
-                                                 TO  RECE41-KHNTEN(2)
-                                  MOVE     1     TO  FLG-SAITOKKSN-ARI
-                               END-IF
-                             END-IF
-                             IF  SRY-SRYCD(IDX3)  =  "101989070"
-                               COMPUTE  CNT-SAITOKKSN2
-                                                      = CNT-SAITOKKSN2
-                                                      + WK-ZAIKAISU
-                               IF   FLG-SAITOKKSN-ARI2 =  ZERO
-                                  ADD  WRK-TNS-TEN(IDX3)
-                                                 TO  RECE41-KHNTEN(2)
-                                  MOVE     1     TO  FLG-SAITOKKSN-ARI2
-                               END-IF
-                             END-IF
-                           ELSE
-                             IF   FLG-SAISIN-ARI   =  ZERO
-                                  ADD  WRK-TNS-TEN(IDX3)
-                                                 TO  RECE41-KHNTEN(2)
-                                  MOVE     1     TO  FLG-SAISIN-ARI
-                             END-IF
-                           END-IF
-                         END-IF
-                         COMPUTE    RECE41-TENSU(2)   =
-                                    RECE41-TENSU(2)   +
-                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       END-IF
-                     END-IF
-      *      ° ≥∞ÕË¥…Õ˝≤√ªª°À
-                    WHEN  122
-                        IF    RECE41-KHNTEN(5)   =   ZERO
-                          MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(5)
-                        ELSE
-                          IF RECE41-KHNTEN(5) NOT = WRK-TNS-TEN(IDX3)
-                            MOVE   ZERO    TO    RECE41-KHNTEN(5)
-                            MOVE   1       TO    FLG-KHNTEN5-KO
-                          END-IF
-                        END-IF
-                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(5)
-                        COMPUTE  RECE41-TENSU(5)   =
-                                 RECE41-TENSU(5)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *      ° ª˛¥÷≥∞°À
-                    WHEN  123
-                        IF    RECE41-KHNTEN(6)   =   ZERO
-                          MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(6)
-                        ELSE
-                          IF RECE41-KHNTEN(6) NOT = WRK-TNS-TEN(IDX3)
-                            MOVE   ZERO    TO    RECE41-KHNTEN(6)
-                            MOVE   1       TO    FLG-KHNTEN6-KO
-                          END-IF
-                        END-IF
-                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(6)
-                        COMPUTE  RECE41-TENSU(6)   =
-                                 RECE41-TENSU(6)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *      ° µŸ∆¸°À
-                    WHEN  124
-                        IF    RECE41-KHNTEN(7)   =   ZERO
-                          MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(7)
-                        ELSE
-                          IF RECE41-KHNTEN(7) NOT = WRK-TNS-TEN(IDX3)
-                            MOVE   ZERO    TO    RECE41-KHNTEN(7)
-                            MOVE   1       TO    FLG-KHNTEN7-KO
-                          END-IF
-                        END-IF
-                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(7)
-                        COMPUTE  RECE41-TENSU(7)   =
-                                 RECE41-TENSU(7)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *      ° øºÃÎ°À
-                    WHEN  125
-                        IF    RECE41-KHNTEN(8)   =   ZERO
-                          MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(8)
-                        ELSE
-                          IF RECE41-KHNTEN(8) NOT = WRK-TNS-TEN(IDX3)
-                            MOVE   ZERO    TO    RECE41-KHNTEN(8)
-                            MOVE   1       TO    FLG-KHNTEN8-KO
-                          END-IF
-                        END-IF
-                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(8)
-                        COMPUTE  RECE41-TENSU(8)   =
-                                 RECE41-TENSU(8)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *      ° §Ω§Œ¬æ°À
-                    WHEN  OTHER 
-                        IF   ACCT-ZAIKBN     =  2
-                           MOVE   ZERO    TO    RECE41-KHNTEN(3)
-                           MOVE   1       TO    FLG-KHNTEN3-KO
-                           COMPUTE    WRK-RECE4G-TENSU(3)  =
-                                      WRK-RECE4G-TENSU(3)  +
-                                     (WK-ZAITEN   *   WK-ZAIKAISU)
-                        END-IF
-                   END-EVALUATE
-      *    ªÿ∆≥§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "13"
-                   IF ((SRY-SRYCD(IDX3) =
-                        CONS-ROUSAI9  OR  CONS-ROUSAI10 OR
-                        CONS-ROUSAI11 OR  CONS-ROUSAI12 OR
-                        CONS-ROUSAI13 OR  CONS-ROUSAI14 OR
-                        CONS-ROUSAI15 OR  CONS-ROUSAI16 OR
-                        CONS-ROUSAI17                       ) AND
-                       (RECE41-SRYYM    <=  "201306"        ))
-                   OR ((SRY-SRYCD(IDX3)  =  CONS-ROUSAI8    ) AND
-                       (RECE41-SRYYM     <  "200804"        ))
-                   OR ((SRY-SRYCD(IDX3)  =  CONS-ROUSAI33   ) AND
-                       (RECE41-SRYYM    >=  "201307"        ))
-                         CONTINUE
-                   ELSE
-                     IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE4G-TENSU(9)  =
-                                    WRK-RECE4G-TENSU(9)  +
-                                   (WK-ZAITEN   *   WK-ZAIKAISU)
-                     ELSE
-                         COMPUTE    RECE41-TENSU(9)   =
-                                    RECE41-TENSU(9)   +
-                                   (WK-ZAITEN   *   WK-ZAIKAISU)
-                     END-IF
-                   END-IF                   
-      *    ∫ﬂ¬§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "14"
-                 IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE4G-TENSU(14)  =
-                              WRK-RECE4G-TENSU(14)  +
-                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                 ELSE
-                   MOVE      ZERO            TO   FLG-ZAITAKU
-      *            ±˝ø«°¶∆√ Ã±˝ø«° ª˛¥÷≤√ªª°À
-                   IF    FLG-OSINKBN         =   1
-                       MOVE         1        TO   FLG-ZAITAKU
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(10)
-                       COMPUTE   RECE41-TENSU(10)   =
-                                 RECE41-TENSU(10)   +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                   END-IF
-      *            ÃÎ¥÷
-                   IF    FLG-OSINKBN         =    2
-                       MOVE   1              TO   FLG-ZAITAKU
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(11)
-                       COMPUTE   RECE41-TENSU(11)   =
-                                 RECE41-TENSU(11)   +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                   END-IF
-      *            øºÃÎ°¶∂€µﬁ
-                   IF    FLG-OSINKBN         =    3
-                       MOVE   1              TO   FLG-ZAITAKU
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(12)
-                       COMPUTE   RECE41-TENSU(12)   =
-                                 RECE41-TENSU(12)   +
-                                (WK-SYUTEN   *   WK-ZAIKAISU)
-                   END-IF
-      *            ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈
-                   IF (( WRK-TNS-OSINKBN(IDX3) =     1          )  AND
-                       ((SRY-SRYCD(IDX3)   NOT =    "114000110")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114001610")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114000970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114000470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114001970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011670")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114000370")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114001570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114001870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114012070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017670")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017770")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114017970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029270")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029370")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029470")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029570")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114029970")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030070")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030170")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030270")))
-                   OR (  FLG-OSINKBN           =     9           )
-                       MOVE   1              TO   FLG-ZAITAKU
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(13)
-                       COMPUTE   RECE41-TENSU(13)   =
-                                 RECE41-TENSU(13)   +
-                                (WK-SYUTEN         * WK-ZAIKAISU)
-                   END-IF
-      *            §Ω§Œ¬æ
-                   IF    FLG-ZAITAKU    =   ZERO
-                       COMPUTE   RECE41-TENSU(14)   =
-                                 RECE41-TENSU(14)   +
-                                (WK-SYUTEN     *   WK-ZAIKAISU)
-                   END-IF
-      *            ÃÙ∫ﬁ
-                   COMPUTE   RECE41-TENSU(15)   =
-                             RECE41-TENSU(15)   +
-                             (WK-KIZAITEN *   WK-ZAIKAISU)  +
-                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                 END-IF
-      *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "21"
-                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
-                                                       OR "7"       )
-                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
-                                                         OR "059"   )
-                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
-                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
-                     IF    SRY-SRYCD(IDX3)  =  CONS-YAKTEIGEN
-                                            OR CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
-                       COMPUTE   RECE41-TENSU(16)   =
-                                 RECE41-TENSU(16)   -
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     ELSE
-                       ADD   WK-ZAIKAISU       TO   RECE41-KAISU(16)
-                       COMPUTE   RECE41-TENSU(16)   =
-                                 RECE41-TENSU(16)   +
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     END-IF
-                   ELSE
-                     IF   SRY-SRYCD(IDX3)   =    CONS-FUNSAI-COMMENT
-                       ADD   WK-ZAIKAISU       TO   RECE41-KAISU(16)
-                       COMPUTE   RECE41-TENSU(16)   =
-                                 RECE41-TENSU(16)   +
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     ELSE   
-                       IF    RECE41-KHNTEN(17)   =   ZERO
-                          MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(17)
-                       ELSE
-                          IF   RECE41-KHNTEN(17) NOT = WRK-TNS-TEN(IDX3)
-                               MOVE   ZERO    TO    RECE41-KHNTEN(17)
-                               MOVE   1       TO    FLG-KHNTEN17-KO
-                          END-IF
-                       END-IF
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(17)
-                       COMPUTE   RECE41-TENSU(17)   =
-                                 RECE41-TENSU(17)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                     END-IF   
-                   END-IF
-               WHEN    "22"
-                 IF    SRY-SRYCD(IDX3)      =  CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
-                   COMPUTE   RECE41-TENSU(18)   =
-                             RECE41-TENSU(18)   -
-                            (WK-ZAITEN   *   WK-ZAIKAISU)
-                 ELSE
-                   ADD    WK-ZAIKAISU    TO   RECE41-KAISU(18)
-                   COMPUTE   RECE41-TENSU(18)   =
-                             RECE41-TENSU(18)   +
-                            (WK-ZAITEN   *   WK-ZAIKAISU)
-                 END-IF
-               WHEN    "23"
-                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
-                                                       OR "7"       )
-                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
-                                                         OR "059"   )
-                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
-                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
-                     IF    SRY-SRYCD(IDX3)  =  CONS-YAKTEIGEN2
-                                            OR CONS-YAKTEIGEN3
-                                            OR CONS-YAKTEIGEN4
-                       COMPUTE   RECE41-TENSU(20)   =
-                                 RECE41-TENSU(20)   -
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     ELSE
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(20)
-                       COMPUTE   RECE41-TENSU(20)   =
-                                 RECE41-TENSU(20)   +
-                                (WK-ZAITEN   *   WK-ZAIKAISU)
-                     END-IF
-                   ELSE
-                       IF    RECE41-KHNTEN(21)   =   ZERO
-                          MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(21)
-                       ELSE
-                          IF   RECE41-KHNTEN(21) NOT = WRK-TNS-TEN(IDX3)
-                               MOVE   ZERO    TO    RECE41-KHNTEN(21)
-                               MOVE   1       TO    FLG-KHNTEN21-KO
-                          END-IF
-                       END-IF
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(21)
-                       COMPUTE   RECE41-TENSU(21)   =
-                                 RECE41-TENSU(21)   +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                   END-IF
-      *    ΩË ˝§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "25"
-                   IF  SRY-SRYCD(IDX3) = "120002170" OR "120002270" OR
-                                         "120003170" OR "120003370" OR
-                                         "120003870" OR
-                                         "120004070" OR "120004170" OR
-                                         "120004370" OR "120004470"
-                      COMPUTE  WRK-SYOHOU-KAISU  =  WRK-SYOHOU-KAISU
-                                                 +  ACCT-ZAIKAISU
-                   END-IF
-                   IF    WK-ZAITEN   NOT =  ZERO
-                     IF    RECE41-KHNTEN(22)     = ZERO
-                      MOVE  WK-ZAITEN     TO   RECE41-KHNTEN(22)
-                     ELSE
-                      IF   RECE41-KHNTEN(22) NOT = WK-ZAITEN
-                            MOVE   ZERO   TO   RECE41-KHNTEN(22)
-                            MOVE   1      TO   FLG-KHNTEN22-KO
-                      END-IF
-                     END-IF
-                   END-IF
-                   IF  (SRY-SRYCD(IDX3)(1:1)   = "S" OR "8" )
-                   OR  (SRY-SRYCD(IDX3)(1:3)   = "008"      )
-                   OR  (SRY-SRYCD(IDX3)        = "099999903")
-                      CONTINUE
-                   ELSE
-                      ADD    ACCT-ZAIKAISU   TO    RECE41-KAISU(22)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(22)   =
-                             RECE41-TENSU(22)   +
-                            (WK-ZAITEN   *   ACCT-ZAIKAISU)
-      *    À„∆«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "26"
-                   IF  (SRY-SRYCD(IDX3)(1:1)   = "S" OR "8" )
-                   OR  (SRY-SRYCD(IDX3)(1:3)   = "008"      )
-                   OR  (SRY-SRYCD(IDX3)        = "099999903")
-                      CONTINUE
-                   ELSE
-                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(23)
-                   END-IF
-                   IF SRY-SRYCD(IDX3)      =    "120001310"
-                    COMPUTE WRK-MADOKU-SHOHO = WRK-MADOKU-SHOHO +
-                                               WK-ZAIKAISU 
-                   END-IF
-                   COMPUTE   RECE41-TENSU(23)   =
-                             RECE41-TENSU(23)   +
-                            (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *    ƒ¥¥§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "27"
-                   COMPUTE   RECE41-TENSU(24)   =
-                             RECE41-TENSU(24)   +
-                            (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-      *    »È≤º∂⁄∆˘∆‚√ÌºÕ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "31"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(25)
-                   COMPUTE   RECE41-TENSU(25)  =
-                             RECE41-TENSU(25)  +
-                            (WK-ZAITEN   *   WK-ZAIKAISU)
-      *    ¿≈ÃÆ∆‚√ÌºÕ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "32"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(26)
-                   COMPUTE   RECE41-TENSU(26)  =
-                             RECE41-TENSU(26)  +
-                            (WK-ZAITEN   *   WK-ZAIKAISU)
-      *    §Ω§Œ¬æ√ÌºÕ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "33"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(27)
-                   COMPUTE   RECE41-TENSU(27)  =
-                             RECE41-TENSU(27)  +
-                            (WK-ZAITEN   *   WK-ZAIKAISU)
-      *    ΩË√÷§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "40"
-                   IF    WK-SYUTEN       NOT =   ZERO
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(28)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(28)   =
-                             RECE41-TENSU(28)   +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU(29)   =
-                             RECE41-TENSU(29)   +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-      *    ºÍΩ—§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "50"
-               WHEN    "54"
-                   IF    WK-SYUTEN       NOT =   ZERO
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(30)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(30)   =
-                             RECE41-TENSU(30)   +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU(31)   =
-                             RECE41-TENSU(31)   +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-      *    ∏°∫∫§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "60"
-               WHEN    "64"
-                   IF    WK-SYUTEN       NOT =   ZERO
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(32)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(32)   =
-                             RECE41-TENSU(32)   +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   IF    WRK-TNS-KNSJISKBN(IDX3)    =   2
-                         COMPUTE   RECE41-KAISU(32)  =
-                                   RECE41-KAISU(32)  -  
-                                   WK-ZAIKAISU
-                   END-IF
-                   IF    WRK-TNS-SRYCD(IDX3)  =   CONS-SAIKETSU1  OR
-                                                  CONS-SAIKETSU2  OR
-                                                  CONS-SAIKETSU3
-                         IF   RECE41-KAISU(32)  NOT =  ZERO
-                              COMPUTE   RECE41-KAISU(32)  =
-                                        RECE41-KAISU(32)  -   
-                                        WK-ZAIKAISU
-                         END-IF
-                   END-IF
-                   COMPUTE   RECE41-TENSU(33)   =
-                             RECE41-TENSU(33)   +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-      *    ≤Ë¡¸ø«√«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "70"
-                   IF    WK-SYUTEN       NOT =   ZERO
-                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(34)
-                   END-IF
-                   COMPUTE   RECE41-TENSU(34)   =
-                             RECE41-TENSU(34)   +
-                            (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE41-TENSU(35)   =
-                             RECE41-TENSU(35)   +
-                            (WK-YKZTEN   *   WK-ZAIKAISU)
-      *    §Ω§Œ¬æ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "80"
-                 IF   ((SRY-SRYCD(IDX3) =
-                        CONS-ROUSAI32 OR
-                        CONS-ROUSAI20 OR  CONS-ROUSAI21 OR
-                        CONS-ROUSAI22 OR  CONS-ROUSAI23 OR
-                        CONS-ROUSAI24 OR  CONS-ROUSAI25 OR
-                        CONS-ROUSAI26 OR  CONS-ROUSAI27 OR
-                        CONS-ROUSAI28 OR  CONS-ROUSAI29 OR
-                        CONS-ROUSAI30 OR  CONS-ROUSAI31 OR
-                        CONS-ROUSAI39                       ) AND
-                       (RECE41-SRYYM    >=  "201307"        ))
-                       CONTINUE
-                 ELSE
-                   IF ((ACCT-SRYKBN          =  "80"    )  AND
-                       (SRY-SRYCD(IDX3)(1:5) =  "09593" ))
-                   OR ((SRY-SRYCD(IDX3) >= "101801010" AND
-                                        <= "101801020"  )  AND
-                       (RECE41-SRYYM    >= "201307"     ))
-                   OR ((SRY-SRYCD(IDX3)  = "101801030"  )  AND
-                       (RECE41-SRYYM    >= "201307"     ))
-                       IF   (FLG-TAISYO           =   1     )
-                       AND  (SRY-SRYCD(IDX3)(1:5) =  "09593")
-                          COMPUTE WRK-ZAITENNASHI  =
-                                  WRK-ZAITENNASHI  +
-                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                       END-IF
-                   ELSE               
-                    IF  SRY-SRYCD(IDX3) =  CONS-SHOHOKSN1
-                                        OR CONS-SHOHOKSN2
-                                        OR CONS-SHOHOKSN3
-                                        OR CONS-SHOHOKSN4
-                                        OR CONS-SHOHOKSN5
-                                        OR CONS-SHOHOKSN6
-                                        OR CONS-SHOHOKSN7
-                                        OR CONS-SHOHOKSN8
-                       COMPUTE  WRK-SYOSEN-KAISU  =  WRK-SYOSEN-KAISU
-                                                  +  ACCT-ZAIKAISU
-                    END-IF
-                    IF   SRY-SRYCD(IDX3)   =  CONS-SHOHOSEN1 OR
-                                              CONS-SHOHOSEN2 OR
-                                              CONS-SHOHOSEN3 OR
-                                              CONS-SHOHOSEN4 OR
-                                              CONS-SHOHOSEN5 OR
-                                              CONS-SHOHOKSN1 OR
-                                              CONS-SHOHOKSN2 OR
-                                              CONS-SHOHOKSN3 OR
-                                              CONS-SHOHOKSN4 OR
-                                              CONS-SHOHOKSN5 OR
-                                              CONS-SHOHOKSN6 OR
-                                              CONS-SHOHOKSN7 OR
-                                              CONS-SHOHOKSN8
-                         ADD  ACCT-ZAIKAISU  TO  RECE41-KAISU(36)
-                         COMPUTE   RECE41-TENSU(36)  =
-                                   RECE41-TENSU(36)  +
-                                  (WK-ZAITEN  *   ACCT-ZAIKAISU)
-                    ELSE
-                         COMPUTE   RECE41-TENSU(37)  =
-                                   RECE41-TENSU(37)  +
-                                  (WK-SYUTEN  *   ACCT-ZAIKAISU)
-                         IF    WRK-TNS-GAITENTTLKBN(IDX3)   =    130
-                           COMPUTE   RECE41-TENSU(9)  =
-                                     RECE41-TENSU(9)  +
-                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                           COMPUTE   RECE41-TENSU(37) =
-                                     RECE41-TENSU(37) -
-                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
-                         END-IF
-                    END-IF
-                    COMPUTE   RECE41-TENSU(38)  =
-                              RECE41-TENSU(38)  +
-                             (WK-YKZTEN   *   ACCT-ZAIKAISU)
-                   END-IF
-                 END-IF
-           END-EVALUATE
-      *
-           .
-      *
-       2101225-RECE-LEFT-SET5-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    •«°º•øΩ–ŒœΩËÕ˝
-      *****************************************************************
-       210123-RECE45-WRITE-SEC                SECTION.
-      *
-           MOVE    RECE45-REC          TO   RECE4B-REC      
-           MOVE    RECE45-REC          TO   RECE45C-REC
-      *
-           WRITE   RECE45-REC
-           ADD     1                   TO   CNT-OUT2
-      *
-           WRITE   RECE4B-REC
-           ADD     1                   TO   CNT-OUT5
-      *
-           IF  (RECE41-SRYYM        <   201307              )
-           OR  (RECE41-PTNUM        =   SPACE               )
-           OR  (RECE41-TSTPTNUMKBN  =   "1"                 )
-           OR  (RECE41-RECESYUBETU  =   ZERO OR 7021 OR 7051)
-           OR  (RECE41-RSIIRYOKBN   =   "0"                 )
-             CONTINUE
+           INITIALIZE                           TNS-TENSU-REC
+           MOVE    SRY-SRYCD(IDX2)      TO      TNS-SRYCD
+           MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
+           MOVE    RECE45-SRYYM         TO      WK-TAIHI-SRYYM
+           MOVE    WK-TAIHI-DAY         TO      WK-TAIHI-SRYD
+           MOVE    WK-TAIHI-SRYYMD      TO      ORC-DBYMD
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "TENSU-KEY"          TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+               MOVE    "TENSU-KEY"      TO      ORC-DBPATH
+               PERFORM  TENSU-READ-SEC
            ELSE
-             WRITE RECE45C-REC
-             ADD   1                   TO   CNT-OUT7
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1               TO  FLG-TENSU
            END-IF
+      *
+           MOVE   "TENSU-KEY"      TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
       *
            .
-       210123-RECE45-WRITE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    •«°º•øΩ–ŒœΩËÕ˝
-      *****************************************************************
-       210124-RECE45-REWRITE-SEC              SECTION.                        
-      *
-           MOVE    ZERO                TO  FLG-REWRITE
-      *
-           INITIALIZE                      RECE45-REC
-           MOVE    RECE44-HOSPNUM      TO  RECE45-HOSPNUM
-           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
-           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
-           MOVE    RECE44-PTID         TO  RECE45-PTID
-           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
-           MOVE    RECE44-HKNID        TO  RECE45-HKNID
-           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
-           MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
-           START   RECE45-FILE
-                 KEY IS    >=   RECE45-KEY
-                 INVALID
-                     MOVE    1         TO  FLG-RECE45
-                 NOT INVALID
-                     MOVE    ZERO      TO  FLG-RECE45
-                     READ    RECE45-FILE   NEXT
-                       AT  END
-                         MOVE    1     TO  FLG-RECE45
-                     END-READ
-           END-START
-           PERFORM   UNTIL
-               (RECE44-HOSPNUM      NOT =  RECE45-HOSPNUM)     OR
-               (RECE44-SRYYM        NOT =  RECE45-SRYYM)       OR
-               (RECE44-NYUGAIKBN    NOT =  RECE45-NYUGAIKBN)   OR
-               (RECE44-PTID         NOT =  RECE45-PTID)        OR
-               (RECE44-RECEKA       NOT =  RECE45-RECEKA)      OR
-               (RECE44-HKNID        NOT =  RECE45-HKNID)       OR
-               (RECE44-TEKSTYMD     NOT =  RECE45-TEKSTYMD)    OR
-               (RECE44-ZAINUM       NOT =  RECE45-ZAINUM)      OR
-               (FLG-RECE45                =      1        )    OR
-               (FLG-REWRITE               =      1        )
-                IF    RECE45-RENNUM   =   WRK-RENNUM
-                   MOVE    1              TO  FLG-REWRITE
-                   PERFORM  VARYING  IDXB  FROM  5   BY  -1
-                             UNTIL   IDXB   <    1
-                     IF  RECE45-SRYCD(IDXB)  NOT = SPACE
-                       MOVE WRK-SRYSURYO3 TO RECE45-SRYSURYO(IDXB)
-                       MOVE 1             TO IDXB
-                     END-IF
-                   END-PERFORM
-                   REWRITE   RECE45-REC
-                END-IF
-                READ    RECE45-FILE   NEXT
-                  AT  END
-                    MOVE    1     TO  FLG-RECE45
-                END-READ
-           END-PERFORM
-      *
-      *****
-      *
-           IF  (RECE41-SRYYM        <   201307              )
-           OR  (RECE41-PTNUM        =   SPACE               )
-           OR  (RECE41-TSTPTNUMKBN  =   "1"                 )
-           OR  (RECE41-RECESYUBETU  =   ZERO OR 7021 OR 7051)
-           OR  (RECE41-RSIIRYOKBN   =   "0"                 )
-             CONTINUE
-           ELSE
-      *
-             MOVE    ZERO                TO  FLG-REWRITE
-      *
-             INITIALIZE                      RECE45C-REC
-             MOVE    RECE44-HOSPNUM      TO  RECE45C-HOSPNUM
-             MOVE    RECE44-SRYYM        TO  RECE45C-SRYYM
-             MOVE    RECE44-NYUGAIKBN    TO  RECE45C-NYUGAIKBN
-             MOVE    RECE44-PTID         TO  RECE45C-PTID
-             MOVE    RECE44-RECEKA       TO  RECE45C-RECEKA
-             MOVE    RECE44-HKNID        TO  RECE45C-HKNID
-             MOVE    RECE44-TEKSTYMD     TO  RECE45C-TEKSTYMD
-             MOVE    RECE44-ZAINUM       TO  RECE45C-ZAINUM
-             START   RECE45C-FILE
-                 KEY IS    >=   RECE45C-KEY
-                 INVALID
-                     MOVE    1         TO  FLG-RECE45
-                 NOT INVALID
-                     MOVE    ZERO      TO  FLG-RECE45
-                     READ    RECE45C-FILE   NEXT
-                       AT  END
-                         MOVE    1     TO  FLG-RECE45
-                     END-READ
-             END-START
-             PERFORM   UNTIL
-               (RECE44-HOSPNUM      NOT =  RECE45C-HOSPNUM)     OR
-               (RECE44-SRYYM        NOT =  RECE45C-SRYYM)       OR
-               (RECE44-NYUGAIKBN    NOT =  RECE45C-NYUGAIKBN)   OR
-               (RECE44-PTID         NOT =  RECE45C-PTID)        OR
-               (RECE44-RECEKA       NOT =  RECE45C-RECEKA)      OR
-               (RECE44-HKNID        NOT =  RECE45C-HKNID)       OR
-               (RECE44-TEKSTYMD     NOT =  RECE45C-TEKSTYMD)    OR
-               (RECE44-ZAINUM       NOT =  RECE45C-ZAINUM)      OR
-               (FLG-RECE45                =      1        )    OR
-               (FLG-REWRITE               =      1        )
-                IF    RECE45C-RENNUM   =   WRK-RENNUM
-                   MOVE    1              TO  FLG-REWRITE
-                   PERFORM  VARYING  IDXB  FROM  5   BY  -1
-                             UNTIL   IDXB   <    1
-                     IF  RECE45C-SRYCD(IDXB)  NOT = SPACE
-                       MOVE WRK-SRYSURYO3 TO RECE45C-SRYSURYO(IDXB)
-                       MOVE 1             TO IDXB
-                     END-IF
-                   END-PERFORM
-                   REWRITE   RECE45C-REC
-                END-IF
-                READ    RECE45C-FILE   NEXT
-                  AT  END
-                    MOVE    1     TO  FLG-RECE45
-                END-READ
-             END-PERFORM
-      *
-           END-IF
-      *
-           .
-       210124-RECE45-REWRITE-EXT.
-           EXIT.                                                       
-      *
-      *****************************************************************
-      *    •«°º•øΩ–ŒœΩËÕ˝
-      *****************************************************************
-       210124-RECE45-REWRITE2-SEC              SECTION.
-      *
-           MOVE    ZERO                TO  FLG-REWRITE
-      *
-           INITIALIZE                      RECE45-REC
-           MOVE    RECE44-HOSPNUM      TO  RECE45-HOSPNUM
-           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
-           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
-           MOVE    RECE44-PTID         TO  RECE45-PTID
-           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
-           MOVE    RECE44-HKNID        TO  RECE45-HKNID
-           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
-           MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
-           START   RECE45-FILE
-                 KEY IS    >=   RECE45-KEY
-                 INVALID
-                     MOVE    1         TO  FLG-RECE45
-                 NOT INVALID
-                     MOVE    ZERO      TO  FLG-RECE45
-                     READ    RECE45-FILE   NEXT
-                       AT  END
-                         MOVE    1     TO  FLG-RECE45
-                     END-READ
-           END-START
-           PERFORM   UNTIL
-               (RECE44-HOSPNUM      NOT =  RECE45-HOSPNUM)     OR
-               (RECE44-SRYYM        NOT =  RECE45-SRYYM)       OR
-               (RECE44-NYUGAIKBN    NOT =  RECE45-NYUGAIKBN)   OR
-               (RECE44-PTID         NOT =  RECE45-PTID)        OR
-               (RECE44-RECEKA       NOT =  RECE45-RECEKA)      OR
-               (RECE44-HKNID        NOT =  RECE45-HKNID)       OR
-               (RECE44-TEKSTYMD     NOT =  RECE45-TEKSTYMD)    OR
-               (RECE44-ZAINUM       NOT =  RECE45-ZAINUM)      OR
-               (FLG-RECE45                =      1        )    OR
-               (FLG-REWRITE               =      1        )
-                IF    RECE45-RENNUM   =   WRK-RENNUM2
-                   MOVE    1              TO  FLG-REWRITE
-                   PERFORM  VARYING  IDXB  FROM  5   BY  -1
-                             UNTIL   IDXB   <    1
-                     IF  RECE45-SRYCD(IDXB)  NOT = SPACE
-                       MOVE   "1"  TO   RECE45-RECEPTFLG(IDXB)
-                       MOVE    1   TO   IDXB
-                     END-IF
-                   END-PERFORM
-                   REWRITE   RECE45-REC
-                END-IF
-                READ    RECE45-FILE   NEXT
-                  AT  END
-                    MOVE    1     TO  FLG-RECE45
-                END-READ
-           END-PERFORM
-      *
-      *****
-      *
-           IF  (RECE41-SRYYM        <   201307              )
-           OR  (RECE41-PTNUM        =   SPACE               )
-           OR  (RECE41-TSTPTNUMKBN  =   "1"                 )
-           OR  (RECE41-RECESYUBETU  =   ZERO OR 7021 OR 7051)
-           OR  (RECE41-RSIIRYOKBN   =   "0"                 )
-             CONTINUE
-           ELSE
-      *
-             MOVE    ZERO                TO  FLG-REWRITE
-      *
-             INITIALIZE                      RECE45C-REC
-             MOVE    RECE44-HOSPNUM      TO  RECE45C-HOSPNUM
-             MOVE    RECE44-SRYYM        TO  RECE45C-SRYYM
-             MOVE    RECE44-NYUGAIKBN    TO  RECE45C-NYUGAIKBN
-             MOVE    RECE44-PTID         TO  RECE45C-PTID
-             MOVE    RECE44-RECEKA       TO  RECE45C-RECEKA
-             MOVE    RECE44-HKNID        TO  RECE45C-HKNID
-             MOVE    RECE44-TEKSTYMD     TO  RECE45C-TEKSTYMD
-             MOVE    RECE44-ZAINUM       TO  RECE45C-ZAINUM
-             START   RECE45C-FILE
-                 KEY IS    >=   RECE45C-KEY
-                 INVALID
-                     MOVE    1         TO  FLG-RECE45
-                 NOT INVALID
-                     MOVE    ZERO      TO  FLG-RECE45
-                     READ    RECE45C-FILE   NEXT
-                       AT  END
-                         MOVE    1     TO  FLG-RECE45
-                     END-READ
-             END-START
-             PERFORM   UNTIL
-               (RECE44-HOSPNUM      NOT =  RECE45C-HOSPNUM)     OR
-               (RECE44-SRYYM        NOT =  RECE45C-SRYYM)       OR
-               (RECE44-NYUGAIKBN    NOT =  RECE45C-NYUGAIKBN)   OR
-               (RECE44-PTID         NOT =  RECE45C-PTID)        OR
-               (RECE44-RECEKA       NOT =  RECE45C-RECEKA)      OR
-               (RECE44-HKNID        NOT =  RECE45C-HKNID)       OR
-               (RECE44-TEKSTYMD     NOT =  RECE45C-TEKSTYMD)    OR
-               (RECE44-ZAINUM       NOT =  RECE45C-ZAINUM)      OR
-               (FLG-RECE45                =      1        )    OR
-               (FLG-REWRITE               =      1        )
-                IF    RECE45C-RENNUM   =   WRK-RENNUM2
-                   MOVE    1              TO  FLG-REWRITE
-                   PERFORM  VARYING  IDXB  FROM  5   BY  -1
-                             UNTIL   IDXB   <    1
-                     IF  RECE45C-SRYCD(IDXB)  NOT = SPACE
-                       MOVE   "1"  TO   RECE45C-RECEPTFLG(IDXB)
-                       MOVE    1   TO   IDXB
-                     END-IF
-                   END-PERFORM
-                   REWRITE   RECE45C-REC
-                END-IF
-                READ    RECE45C-FILE   NEXT
-                  AT  END
-                    MOVE    1     TO  FLG-RECE45
-                END-READ
-             END-PERFORM
-      *
-           END-IF
-      *
-           .
-       210124-RECE45-REWRITE2-EXT.
-           EXIT.                                                       
-      *
-      *****************************************************************
-      *    ∞ÂŒ≈æ Ûœ¢∑» ‘Ω∏
-      *****************************************************************
-       210125-IRYORENKEI-HENSYU-SEC               SECTION.
-      *
-           IF   (ACCT-SRYKBN       =  "14" OR "21" OR "22" OR "23")
-           AND  (ACCT-ZAITEN       =  ZERO                        )
-           AND  (ACCT-ZAIKBN   NOT =   1                          )
-           AND  (ACCT-JIHOKBN      =  SPACE                       )
-      *
-             INITIALIZE                   SRYACT-REC
-             MOVE    ACCT-HOSPNUM     TO  SRY-HOSPNUM
-             MOVE    ACCT-NYUGAIKBN   TO  SRY-NYUGAIKBN
-             MOVE    ACCT-PTID        TO  SRY-PTID
-             MOVE    ACCT-SRYYM       TO  SRY-SRYYM
-             MOVE    ACCT-ZAINUM      TO  SRY-ZAINUM
-             MOVE    "820000046"      TO  SRY-SRYCD(1)
-             MOVE    "820000046"      TO  SRY-SRYCD(2)
-             MOVE    "820000046"      TO  SRY-SRYCD(3)
-             MOVE    "820000046"      TO  SRY-SRYCD(4)
-             MOVE    "820000046"      TO  SRY-SRYCD(5)
-             MOVE    SRYACT-REC       TO  MCPDATA-REC
-             MOVE    "tbl_sryact"     TO  MCP-TABLE
-             MOVE    "key8"           TO  MCP-PATHNAME
-             PERFORM 900-DBSELECT-SEC
-             IF      MCP-RC   =   ZERO
-               MOVE    "tbl_sryact"   TO  MCP-TABLE
-               MOVE    "key8"         TO  MCP-PATHNAME
-               PERFORM  800-SRYACT-READ-SEC
-               IF   FLG-SRYACT  =  ZERO
-                 CONTINUE
-               ELSE
-                 MOVE    1            TO  FLG-IRYORENKEI
-               END-IF
-             END-IF
-             MOVE    "tbl_sryact"     TO  MCP-TABLE
-             MOVE    "key8"           TO  MCP-PATHNAME
-             PERFORM 900-CLOSE-SEC
-      *
-           END-IF
-      *
-           IF    FLG-IRYORENKEI   =   1
-      *
-             INITIALIZE                      ORCSGETGENERICAREA
-             MOVE    RECE41-HOSPNUM      TO  ORCSGETGE-HOSPNUM
-             MOVE    RECE41-PTID         TO  ORCSGETGE-PTID
-             MOVE    RECE41-SRYYM        TO  ORCSGETGE-SRYYM
-             MOVE    "2"                 TO  ORCSGETGE-NYUGAIKBN
-             MOVE    ACCT-ZAINUM         TO  ORCSGETGE-ZAINUM
-             MOVE    WRK-1030-KOUHATUKA  TO  ORCSGETGE-KOUHATUKA
-             CALL    "ORCSGETGENERIC"    USING
-                                         ORCSGETGENERICAREA
-                                         SPA-AREA
-             IF      ORCSGETGE-ERRCD     =   ZERO
-               PERFORM   VARYING  IDX15    FROM    1   BY  1
-                          UNTIL   IDX15     >     50
-                 MOVE  ORCSGETGE-YAKKAKJNCD(IDX15)
-                            TO  WRK-ORCSGETGE-YAKKAKJNCD(IDX15)
-                 MOVE  ORCSGETGE-GENERIC-KBN(IDX15)
-                            TO  WRK-ORCSGETGE-GENERIC-KBN(IDX15)
-                 MOVE  ORCSGETGE-GENERICNAME(IDX15)
-                            TO  WRK-ORCSGETGE-GENERICNAME(IDX15)
-               END-PERFORM
-             END-IF
-      *
-           END-IF
-      *
-           .
-      *
-       210125-IRYORENKEI-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ºæ…€ÃÙ•¡•ß•√•Ø
-      *****************************************************************
-       210126-SIPPU-CHECK-SEC               SECTION.
-      *
-           INITIALIZE                     SRYACT-REC
-           MOVE    ACCT-HOSPNUM       TO  SRY-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN     TO  SRY-NYUGAIKBN
-           MOVE    ACCT-PTID          TO  SRY-PTID
-           MOVE    ACCT-SRYKA         TO  SRY-SRYKA
-           MOVE    ACCT-SRYYM         TO  SRY-SRYYM
-           MOVE    ACCT-ZAINUM        TO  SRY-ZAINUM
-           MOVE    SRYACT-REC         TO  MCPDATA-REC
-           MOVE    "tbl_sryact"       TO  MCP-TABLE
-           MOVE    "key2"             TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC  =  ZERO
-             MOVE    "tbl_sryact"     TO  MCP-TABLE
-             MOVE    "key2"           TO  MCP-PATHNAME
-             PERFORM  800-SRYACT-READ-SEC
-             PERFORM  UNTIL (FLG-SRYACT     =  1)
-                       OR   (FLG-SIPPU-ARI  =  1)
-      *
-               PERFORM  VARYING  IDX2  FROM  1  BY  1
-                         UNTIL  (IDX2            >   5   )
-                          OR    (SRY-SRYCD(IDX2) =  SPACE)
-                          OR    (FLG-SIPPU-ARI   =   1   )
-                  PERFORM    800-TENSU-TBL-SEC
-                  IF  (SRY-SRYCD(IDX2)(1:1)  =  "6")
-                  AND (TNS-MEIUSESKB         =   1 )
-                     MOVE    1        TO  FLG-SIPPU-ARI
-                  END-IF
-               END-PERFORM
-      *
-               MOVE    "tbl_sryact"   TO  MCP-TABLE
-               MOVE    "key2"         TO  MCP-PATHNAME
-               PERFORM   800-SRYACT-READ-SEC
-             END-PERFORM
-           END-IF
-           MOVE    "tbl_sryact"       TO  MCP-TABLE
-           MOVE    "key2"             TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-      *
-       210126-SIPPU-CHECK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    •«°º•øΩ–ŒœΩËÕ˝
-      *****************************************************************
-       21013-RECE44-WRITE-SEC                SECTION.
-      *
-           MOVE    RECE44-REC          TO  RECE4A-REC
-           MOVE    RECE44-REC          TO  RECE44C-REC
-      *
-           COMPUTE  RECE44-ZAITEN      =  RECE44-ZAITEN     -  
-                                          WRK-TEN
-           COMPUTE  RECE44-MEISAISU    =  RECE44-MEISAISU   -
-                                          WRK-MEISAI-CNT
-           COMPUTE  RECE44-SYUTEN1     =  RECE44-SYUTEN1    -
-                                          WRK-TEN
-           COMPUTE  RECE44-SRYCDTOTAL  =  RECE44-SRYCDTOTAL -
-                                          WRK-SRYCDTOTAL
-           COMPUTE  RECE44-SURYOUTOTAL =  RECE44-SURYOUTOTAL -
-                                          WRK-SURYOUTOTAL     
-      *
-           MOVE     WRK-TEN         TO  RECE4A-ZAITEN
-           MOVE     WRK-MEISAI-CNT  TO  RECE4A-MEISAISU
-           MOVE     WRK-TEN         TO  RECE4A-SYUTEN1  
-           MOVE     WRK-SRYCDTOTAL  TO  RECE4A-SRYCDTOTAL
-           MOVE     WRK-SURYOUTOTAL TO  RECE4A-SURYOUTOTAL
-      *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *      ø«Œ≈≤Ò∑◊•ﬁ•π•ø…’≤√æ Û¿ﬂƒÍ
-             PERFORM   920-SRYACCTPLUS-HENSYU-SEC
-           END-IF
-      *
-           MOVE    RECE44-ZAITEN    TO  RECE44-HOKATU-ZAITEN
-           MOVE    RECE44-SYUTEN1   TO  RECE44-HOKATU-SYUTEN1
-           MOVE    RECE44-SYUTEN2   TO  RECE44-HOKATU-SYUTEN2
-           MOVE    RECE44-YKZTEN    TO  RECE44-HOKATU-YKZTEN
-           MOVE    RECE44-KIZAITEN  TO  RECE44-HOKATU-KIZAITEN
-      *
-           MOVE    RECE4A-ZAITEN    TO  RECE4A-HOKATU-ZAITEN
-           MOVE    RECE4A-SYUTEN1   TO  RECE4A-HOKATU-SYUTEN1
-           MOVE    RECE4A-SYUTEN2   TO  RECE4A-HOKATU-SYUTEN2
-           MOVE    RECE4A-YKZTEN    TO  RECE4A-HOKATU-YKZTEN
-           MOVE    RECE4A-KIZAITEN  TO  RECE4A-HOKATU-KIZAITEN
-      *
-           WRITE   RECE44-REC
-           ADD     1                TO  CNT-OUT1
-      *
-           WRITE   RECE4A-REC
-           ADD     1                TO  CNT-OUT4
-      *
-           IF  (RECE41-SRYYM        <   201307              )
-           OR  (RECE41-PTNUM        =   SPACE               )
-           OR  (RECE41-TSTPTNUMKBN  =   "1"                 )
-           OR  (RECE41-RECESYUBETU  =   ZERO OR 7021 OR 7051)
-           OR  (RECE41-RSIIRYOKBN   =   "0"                 )
-             CONTINUE
-           ELSE
-      *
-             COMPUTE  RECE44C-ZAI-TENSU  =  RECE44C-ZAITEN
-                                         -  WRK-TEN
-             MOVE  WRK-ZAI-KINGAKU  TO  RECE44C-ZAI-KINGAKU
-      *
-             COMPUTE  RECE44C-ZAITEN     =  RECE44C-ZAITEN
-                                         -  WRK-TEN
-             COMPUTE  RECE44C-SYUTEN1    =  RECE44C-SYUTEN1
-                                         -  WRK-TEN
-      *
-             MOVE  RECE44C-ZAITEN   TO  RECE44C-HOKATU-ZAITEN
-             MOVE  RECE44C-SYUTEN1  TO  RECE44C-HOKATU-SYUTEN1
-             MOVE  RECE44C-SYUTEN2  TO  RECE44C-HOKATU-SYUTEN2
-             MOVE  RECE44C-YKZTEN   TO  RECE44C-HOKATU-YKZTEN
-             MOVE  RECE44C-KIZAITEN TO  RECE44C-HOKATU-KIZAITEN
-      *
-             WRITE RECE44C-REC
-             ADD   1                TO  CNT-OUT6
-      *
-           END-IF
-      *
-           .
-       21013-RECE44-WRITE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ∫ﬁ§Œø«Œ≈∆‚Õ∆•¡•ß•√•Ø
-      *****************************************************************
-       21014-SINRYO-CHECK-SEC                 SECTION.
-      *
-      ***  PERFORM   VARYING   IDU   FROM   1   BY   1
-           PERFORM   VARYING   IDU   FROM   2   BY   1
-                      UNTIL  ( IDU   >   TBL-ZAICHECK-MAX )
-                       OR    ( FLG-RINYAK  NOT =  ZERO    )
-      *
-              IF  ( IDU  =  1                                  )
-              OR  ((IDU  =  2) AND (ACCT-SRYKBN = "60" OR "64"))
-              OR  ((IDU  =  3) AND (ACCT-SRYKBN = "80"        ))
-              OR  ((IDU  =  4) AND (ACCT-SRYKBN = "80"        ))
-      *
-                 INITIALIZE                  SRYACT-REC
-                 MOVE RECE41-HOSPNUM     TO  SRY-HOSPNUM
-                 MOVE RECE41-NYUGAIKBN   TO  SRY-NYUGAIKBN
-                 MOVE RECE41-PTID        TO  SRY-PTID
-                 MOVE RECE41-SRYYM       TO  SRY-SRYYM
-                 MOVE ACCT-ZAINUM        TO  SRY-ZAINUM
-                 MOVE TBL-ZAICHECK(IDU)  TO  SRY-SRYCD(1)
-                 MOVE TBL-ZAICHECK(IDU)  TO  SRY-SRYCD(2)
-                 MOVE TBL-ZAICHECK(IDU)  TO  SRY-SRYCD(3)
-                 MOVE TBL-ZAICHECK(IDU)  TO  SRY-SRYCD(4)
-                 MOVE TBL-ZAICHECK(IDU)  TO  SRY-SRYCD(5)
-                 MOVE SRYACT-REC         TO  MCPDATA-REC
-                 MOVE "tbl_sryact"       TO  MCP-TABLE
-                 MOVE "key8"             TO  MCP-PATHNAME
-grpsys           PERFORM 900-DBSELECT-SEC
-                 IF      MCP-RC        =  ZERO
-                     MOVE "tbl_sryact"   TO  MCP-TABLE
-                     MOVE "key8"         TO  MCP-PATHNAME
-                     PERFORM   800-SRYACT-READ-SEC
-                     IF     FLG-SRYACT   =  ZERO
-                         EVALUATE   IDU
-                           WHEN      1
-                             MOVE   1   TO  FLG-RINYAK
-                           WHEN      2
-                           WHEN      3
-                           WHEN      4
-                             MOVE   2   TO  FLG-RINYAK
-                         END-EVALUATE
-                     END-IF
-                 END-IF
-                 MOVE "tbl_sryact"   TO  MCP-TABLE
-                 MOVE "key8"         TO  MCP-PATHNAME
-                 PERFORM 900-CLOSE-SEC
-      *
-              END-IF
-      *
-           END-PERFORM
-      *
-           .
-       21014-SINRYO-CHECK-EXT.
-           EXIT.
-      *
-      **************************************************************
-      *    ø«Œ≈≤Ò∑◊…’≤√æ Û∏°∫˜
-      **************************************************************
-       21015-SRYACCTPLUS-KENSAKU-SEC           SECTION.
-      *
-           INITIALIZE                      SRYACCTPLUS-REC
-           MOVE    ACCT-HOSPNUM       TO   ACCTP-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN     TO   ACCTP-NYUGAIKBN
-           MOVE    ACCT-PTID          TO   ACCTP-PTID
-           MOVE    ACCT-SRYKA         TO   ACCTP-SRYKA
-           MOVE    ACCT-SRYYM         TO   ACCTP-SRYYM
-           MOVE    ACCT-ZAINUM        TO   ACCTP-ZAINUM
-           MOVE    1                  TO   ACCTP-RENNUM
-           MOVE    SRYACCTPLUS-REC    TO   MCPDATA-REC
-           MOVE    "tbl_sryacctplus"  TO   MCP-TABLE
-           MOVE    "key"              TO   MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryacctplus"  TO   MCP-TABLE
-               MOVE    "key"              TO   MCP-PATHNAME
-               PERFORM  800-SRYACCTPLUS-READ-SEC
-               IF        FLG-SRYACCTPLUS   =   ZERO
-                 IF   ACCTP-RSIKINGAKU  NOT = ZERO
-                    MOVE    1   TO   FLG-TAISYO
-                 END-IF
-               END-IF
-           END-IF
-      *
-           MOVE    "tbl_sryacctplus"  TO   MCP-TABLE
-           MOVE    "key"              TO   MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-      *
-       21015-SRYACCTPLUS-KENSAKU-EXT.
+       TENSU-TBL-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œ¥À‹≈¿øÙ…Ù ¨§Œ•Ø•Í•¢ΩËÕ˝
       *****************************************************************
-       2102-KHNTEN-CLEAR-SEC               SECTION.
+       KHNTEN-CLEAR-SEC               SECTION.
       *
            IF        FLG-KHNTEN2        =    1
                MOVE    ZERO             TO   RECE41-KHNTEN(2)
@@ -10994,1069 +3176,216 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF        FLG-KHNTEN19        =    1
                MOVE    ZERO             TO   RECE41-KHNTEN(19)
            END-IF
-      *
-           IF   RECE41-SRYYM   >=  "201004"
-             IF  CNT-JIKANTAI1     NOT = ZERO
-               IF   CNT-JIKANTAI2  NOT = ZERO
-                 IF   CNT-JIKANTAI1  NOT =  CNT-JIKANTAI2
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-JIKANTAI3  NOT = ZERO
-                 IF   CNT-JIKANTAI1  NOT =  CNT-JIKANTAI3
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-MESAIKSN   NOT = ZERO
-                 IF   CNT-JIKANTAI1  NOT =  CNT-MESAIKSN
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-CHIHOKATU  NOT = ZERO
-                 IF   CNT-JIKANTAI1  NOT =  CNT-CHIHOKATU
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-CHIHOKAT2  NOT = ZERO
-                 IF   CNT-JIKANTAI1  NOT =  CNT-CHIHOKAT2
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-             END-IF
-             IF  CNT-JIKANTAI2     NOT = ZERO
-               IF   CNT-JIKANTAI1  NOT = ZERO
-                 IF   CNT-JIKANTAI2  NOT =  CNT-JIKANTAI1
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-JIKANTAI3  NOT = ZERO
-                 IF   CNT-JIKANTAI2  NOT =  CNT-JIKANTAI3
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-MESAIKSN   NOT = ZERO
-                 IF   CNT-JIKANTAI2  NOT =  CNT-MESAIKSN
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-CHIHOKATU  NOT = ZERO
-                 IF   CNT-JIKANTAI2  NOT =  CNT-CHIHOKATU
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-CHIHOKAT2  NOT = ZERO
-                 IF   CNT-JIKANTAI2  NOT =  CNT-CHIHOKAT2
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-             END-IF
-             IF  CNT-JIKANTAI3     NOT = ZERO
-               IF   CNT-JIKANTAI2  NOT = ZERO
-                 IF   CNT-JIKANTAI3  NOT =  CNT-JIKANTAI2
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-JIKANTAI3  NOT = ZERO
-                 IF   CNT-JIKANTAI3  NOT =  CNT-JIKANTAI3
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-MESAIKSN   NOT = ZERO
-                 IF   CNT-JIKANTAI3  NOT =  CNT-MESAIKSN
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-CHIHOKATU  NOT = ZERO
-                 IF   CNT-JIKANTAI3  NOT =  CNT-CHIHOKATU
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-CHIHOKAT2  NOT = ZERO
-                 IF   CNT-JIKANTAI3  NOT =  CNT-CHIHOKAT2
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-             END-IF
-             IF  CNT-MESAIKSN      NOT = ZERO
-               IF   CNT-JIKANTAI1  NOT = ZERO
-                 IF   CNT-MESAIKSN   NOT =  CNT-JIKANTAI1
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-JIKANTAI2  NOT = ZERO
-                 IF   CNT-MESAIKSN   NOT =  CNT-JIKANTAI2
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-JIKANTAI3  NOT = ZERO
-                 IF   CNT-MESAIKSN   NOT =  CNT-JIKANTAI3
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-CHIHOKATU  NOT = ZERO
-                 IF   CNT-MESAIKSN   NOT =  CNT-CHIHOKATU
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-CHIHOKAT2  NOT = ZERO
-                 IF   CNT-MESAIKSN   NOT =  CNT-CHIHOKAT2
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-             END-IF
-             IF  CNT-CHIHOKATU     NOT = ZERO
-               IF   CNT-JIKANTAI1  NOT = ZERO
-                 IF   CNT-CHIHOKATU  NOT =  CNT-JIKANTAI1
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-JIKANTAI2  NOT = ZERO
-                 IF   CNT-CHIHOKATU  NOT =  CNT-JIKANTAI2
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-JIKANTAI3  NOT = ZERO
-                 IF   CNT-CHIHOKATU  NOT =  CNT-JIKANTAI3
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-MESAIKSN   NOT = ZERO
-                 IF   CNT-CHIHOKATU  NOT =  CNT-MESAIKSN
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-CHIHOKAT2  NOT = ZERO
-                 IF   CNT-CHIHOKATU  NOT =  CNT-CHIHOKAT2
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-             END-IF
-             IF  CNT-CHIHOKAT2     NOT = ZERO
-               IF   CNT-JIKANTAI1  NOT = ZERO
-                 IF   CNT-CHIHOKAT2  NOT =  CNT-JIKANTAI1
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-JIKANTAI2  NOT = ZERO
-                 IF   CNT-CHIHOKAT2  NOT =  CNT-JIKANTAI2
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-JIKANTAI3  NOT = ZERO
-                 IF   CNT-CHIHOKAT2  NOT =  CNT-JIKANTAI3
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-MESAIKSN   NOT = ZERO
-                 IF   CNT-CHIHOKAT2  NOT =  CNT-MESAIKSN
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-               IF   CNT-CHIHOKATU  NOT = ZERO
-                 IF   CNT-CHIHOKAT2  NOT =  CNT-CHIHOKATU
-                   MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-             END-IF
-           END-IF
-      *
            .
-       2102-KHNTEN-CLEAR-EXT.
+       KHNTEN-CLEAR-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œ¥À‹≈¿øÙ…Ù ¨§Œ•Ø•Í•¢ΩËÕ˝° º´«Â¿’°À
       *****************************************************************
-       2103-KHNTEN-JI-CLEAR-SEC               SECTION.
+       KHNTEN-JI-CLEAR-SEC               SECTION.
       *
-           IF     RECE41-HKNKBN   =   "4"
-            EVALUATE  WRK-PARA-RECEKBN
-              WHEN      "4"
-      **********° ø∑ÕÕº∞°À
-                IF        FLG-KHNTEN10-JI    =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(10)
-                END-IF
-                IF        FLG-KHNTEN13-JI    =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(13)
-                END-IF
-                IF        FLG-KHNTEN14-JI    =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(14)
-                END-IF
-              WHEN      "5"
-      **********° ΩæÕËÕÕº∞°À
-                IF        FLG-KHNTEN2-JI2  =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(2)
-                END-IF
-                IF        FLG-KHNTEN3-JI2  =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(3)
-                END-IF
-                IF        FLG-KHNTEN4-JI2  =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(4)
-                END-IF
-                IF        FLG-KHNTEN5-JI2  =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(5)
-                END-IF
-                IF        FLG-KHNTEN6-JI2  =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(6)
-                END-IF
-                IF        FLG-KHNTEN11-JI2   =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(11)
-                END-IF
-                IF        FLG-KHNTEN14-JI2   =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(14)
-                END-IF
-                IF        FLG-KHNTEN15-JI2   =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(15)
-                END-IF
-      *
-                IF    (RECE41-JIBAIKBN      =  "2"         )
-                AND   (CNT-NYUYOJI2     NOT =  ZERO        )
-                AND   (CNT-SAISIN-ETC   NOT =  CNT-NYUYOJI2)
-                AND   (RECE41-SRYYM        >=  "200604"    )
-                  MOVE    "1"              TO   RECE41-NYUYOJIFLG
-                END-IF
-            END-EVALUATE
+           IF        FLG-KHNTEN10-JI    =    1
+               MOVE    ZERO             TO   RECE41-KHNTEN(10)
            END-IF
-      *
-           IF     RECE41-HKNKBN   =   "6"
-                IF        FLG-KHNTEN2-JI2  =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(2)
-                END-IF
-                IF        FLG-KHNTEN3-JI2  =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(3)
-                END-IF
-                IF        FLG-KHNTEN4-JI2  =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(4)
-                END-IF
-                IF        FLG-KHNTEN5-JI2  =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(5)
-                END-IF
-                IF        FLG-KHNTEN6-JI2  =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(6)
-                END-IF
-                IF        FLG-KHNTEN11-JI2   =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(11)
-                END-IF
-                IF        FLG-KHNTEN14-JI2   =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(14)
-                END-IF
-                IF        FLG-KHNTEN15-JI2   =    1
-                  MOVE    ZERO             TO   RECE41-KHNTEN(15)
-                END-IF
-      *
-                IF    (CNT-NYUYOJI2     NOT =  ZERO        )
-                AND   (CNT-SAISIN-ETC   NOT =  CNT-NYUYOJI2)
-                AND   (RECE41-SRYYM        >=  "200604"    )
-                  MOVE    "1"              TO   RECE41-NYUYOJIFLG
-                END-IF
+           IF        FLG-KHNTEN13-JI    =    1
+               MOVE    ZERO             TO   RECE41-KHNTEN(13)
            END-IF
-      *
+           IF        FLG-KHNTEN14-JI    =    1
+               MOVE    ZERO             TO   RECE41-KHNTEN(14)
+           END-IF
            .
-       2103-KHNTEN-JI-CLEAR-EXT.
+       KHNTEN-JI-CLEAR-EXT.
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œ∫Ó¿Æ
+      *    •«°º•øΩ–ŒœΩËÕ˝
       *****************************************************************
-       2104-RECE44-HENSYU2-SEC                SECTION.
+       RECE44-WRITE-SEC                SECTION.
       *
-           INITIALIZE                           SRYACCT-REC
-           MOVE    RECE41-HOSPNUM       TO      ACCT-HOSPNUM
-           MOVE    RECE41-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-           MOVE    RECE41-PTID          TO      ACCT-PTID
-           MOVE    RECE41-SRYKA(IDX)    TO      ACCT-SRYKA
-           MOVE    RECE41-SRYYM         TO      ACCT-SRYYM
-           MOVE    RECE41-HKNCOMBI      TO      ACCT-HKNCOMBI
-           MOVE    SRYACCT-REC          TO      MCPDATA-REC
-           MOVE    "tbl_sryacct"        TO      MCP-TABLE
-           MOVE    "key24"              TO      MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC               =       ZERO
-               MOVE    "tbl_sryacct"    TO      MCP-TABLE
-               MOVE    "key24"          TO      MCP-PATHNAME
-               PERFORM  800-SRYACCT-READ-SEC
-               PERFORM  UNTIL     FLG-SRYACCT   =   1 
+           MOVE    RECE44-REC          TO  RECE4A-REC
       *
-                 MOVE   ZERO          TO  FLG-RINYAK
+           COMPUTE  RECE44-ZAITEN      =  RECE44-ZAITEN     -  
+                                          WRK-TEN
+           COMPUTE  RECE44-MEISAISU    =  RECE44-MEISAISU   -
+                                          WRK-MEISAI-CNT
+           COMPUTE  RECE44-SYUTEN1     =  RECE44-SYUTEN1    -
+                                          WRK-TEN
+           COMPUTE  RECE44-SRYCDTOTAL  =  RECE44-SRYCDTOTAL -
+                                          WRK-SRYCDTOTAL
+           COMPUTE  RECE44-SURYOUTOTAL =  RECE44-SURYOUTOTAL -
+                                          WRK-SURYOUTOTAL     
       *
-                 IF    ACCT-SRYKBN       =  "95"  OR  "96"
-                   CONTINUE
-                 ELSE
+           MOVE     WRK-TEN         TO  RECE4A-ZAITEN
+           MOVE     WRK-MEISAI-CNT  TO  RECE4A-MEISAISU
+           MOVE     WRK-TEN         TO  RECE4A-SYUTEN1  
+           MOVE     WRK-SRYCDTOTAL  TO  RECE4A-SRYCDTOTAL
+           MOVE     WRK-SURYOUTOTAL TO  RECE4A-SURYOUTOTAL
       *
-                   MOVE     ZERO    TO    FLG-TAISYO
-                   IF   (ACCT-SRYKBN         =   "80" )
-                   AND  (ACCT-ZAITEN         =   ZERO )
-                   AND  (ACCT-ZAIKAISU   NOT =   ZERO )
-                   AND  (ACCT-JIHOKBN        =   SPACE)
-                     PERFORM  21015-SRYACCTPLUS-KENSAKU-SEC
-                   END-IF
+           WRITE   RECE44-REC
+           ADD     1                TO  CNT-OUT1
       *
-                   MOVE   RECE41-TEKSTYMD(7:2)   TO   WRK-DAY
-                   IF  ACCT-DAY(1 WRK-DAY)   NOT =    ZERO
-                        MOVE    1       TO   FLG-DAY
-                   ELSE
-                        MOVE    ZERO    TO   FLG-DAY  
-                   END-IF
-      *
-                   IF      FLG-DAY         =   1
-                           IF  ((ACCT-ZAITEN    NOT =    ZERO ) AND
-                                (ACCT-ZAIKAISU  NOT =    ZERO ) AND
-                                (WRK-PARA-PRTKBN    =
-                                            "1" OR "2" OR "3" ) AND
-                                (ACCT-JIHOKBN       =    SPACE))
-                           OR  ((ACCT-ZAITEN    NOT =    ZERO ) AND
-                                (ACCT-ZAIKAISU  NOT =    ZERO ) AND
-                                (WRK-PARA-PRTKBN    =
-                                                   "4" OR "5" ))
-                           OR  ( FLG-TAISYO         =      1   )
-                               MOVE  ACCT-DAY(1 WRK-DAY)  
-                                               TO    WRK-ZAIKAISU-XXX
-                               MOVE    ZERO    TO    WRK-TEN
-                                                     WRK-MEISAI-CNT
-                                                     WRK-SRYCDTOTAL
-                                                     WRK-SURYOUTOTAL
-                                                     WRK-YOUBUKASAN
-                                                     WRK-KYOBUKASAN
-                                                     WRK-KEIBUKASAN
-                                                     WRK-SOGAIKASAN
-                                                     WRK-RYOYOTEATE
-                                                     WRK-ZAI-KINGAKU
-      *
-                               MOVE    ZERO    TO    WRK-SRYSURYO
-                                                     WRK-SRYSURYO2
-                                                     WRK-SRYSURYO3
-                                                     WRK-TANICD
-                                                     WRK-TANIMOJISU
-                               MOVE    SPACE   TO    WRK-TANINAME
-                               MOVE    ZERO    TO    FLG-HOUSIJI-COM
-                                                     FLG-HOUTEN-COM
-                                                     FLG-SYOBYO-COM
-                                                     FLG-RYOYO-COM
-                                                     FLG-SYODOU-COM
-                                                     FLG-SAIDOU-COM
-                                                     FLG-NIKOCHIN-COM
-                                                     FLG-ZENSOKU-COM
-                                                     FLG-OSIN-COM
-                                                     FLG-ZAIHOU-COM
-                                                     FLG-TAHOKEN
-                                                     FLG-SYOUNI-COM
-                                                     FLG-SRYKBN-HEN
-                                                     FLG-KENSA-COM
-                                                     FLG-ZAIRIHA-COM
-                                                     FLG-ZAIKYO-COM
-                                                     FLG-BOKOHO-COM
-                                                     FLG-IZONSYO-COM
-                                                     FLG-SEIJYU-COM
-                                                     FLG-NINRYO-COM
-      *
-                               MOVE    SPACE   TO    WRK-KYUGYOFLG
-                               MOVE    ZERO    TO    FLG-COUNT-ARI
-      *
-                               MOVE    SPACE   TO    WRK-FORMALNAME
-                               MOVE    ZERO    TO
-                                               WRK-KZI058-TEN
-                                               WRK-KZI058-TANICD
-                                               WRK-KZI058-TANIMOJISU
-                               MOVE    SPACE   TO
-                                               WRK-KZI058-TANINAME
-      *
-                               MOVE    ZERO    TO    FLG-WRITE45
-                               MOVE    ZERO    TO    FLG-HENSYU-NG
-                               MOVE    ZERO    TO    FLG-SETCOM
-                               MOVE    ZERO    TO    WRK-SETCOM-JIDO
-                               MOVE    ZERO    TO    WRK-SETCOM-JIDO2
-                               MOVE    ZERO    TO    FLG-ZAITAKU-CHECK
-                               MOVE    ZERO    TO    FLG-KIN-OKIKAE
-                               MOVE    ZERO    TO    FLG-KIN-OKIKAE2
-                               MOVE    ZERO    TO    FLG-SIPPU-COM
-                               MOVE    ZERO    TO    FLG-SIPPU-ARI
-                               MOVE    ZERO    TO    FLG-YKZ-PRTKBN
-                               PERFORM   21011-RECE44-TENSOU-SEC
-                               PERFORM   21012-RECE45-HENSYU-SEC
-                               IF    FLG-WRITE45  =   1
-                                 PERFORM 21013-RECE44-WRITE-SEC
-                               END-IF
-                           ELSE
-                             IF    ACCT-ZAIKAISU  NOT =    ZERO
-                             AND   ACCT-JIHOKBN       =    SPACE
-      **>                    IF  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
-      **>                         (WRK-PARA-PRTKBN    =
-      **>                                     "1" OR "2" OR "3" ) AND
-      **>                         (ACCT-JIHOKBN       =    SPACE))
-      **>                    OR  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
-      **>                         (WRK-PARA-PRTKBN    =
-      **>                                            "4" OR "5" ))
-                               IF ( ACCT-SRYKBN  NOT =
-                                    "24" AND "90" AND "92" AND
-                                    "93" AND "97"                 )
-                               OR ( ACCT-ZAIKBN  =   1            )
-                                 IF  (ACCT-SRYCDTOTAL(1:12)  =
-                                                    "000000999901")
-                                 AND (ACCT-MEISAISU      =   1    )
-                                      CONTINUE
-                                 ELSE
-                                      MOVE  ACCT-DAY(1 WRK-DAY)  
-                                                  TO  WRK-ZAIKAISU-XXX
-                                      MOVE  ZERO  TO  WRK-TEN
-                                                      WRK-MEISAI-CNT
-                                                      WRK-SRYCDTOTAL
-                                                      WRK-SURYOUTOTAL
-                                                      WRK-YOUBUKASAN
-                                                      WRK-KYOBUKASAN
-                                                      WRK-KEIBUKASAN
-                                                      WRK-SOGAIKASAN
-                                                      WRK-RYOYOTEATE
-                                                      WRK-ZAI-KINGAKU
-      *
-                                      MOVE  ZERO  TO  WRK-SRYSURYO
-                                                      WRK-SRYSURYO2
-                                                      WRK-SRYSURYO3
-                                                      WRK-TANICD
-                                                      WRK-TANIMOJISU
-                                      MOVE  SPACE TO  WRK-TANINAME
-                                      MOVE  ZERO  TO  FLG-HOUSIJI-COM
-                                                      FLG-HOUTEN-COM
-                                                      FLG-SYOBYO-COM
-                                                      FLG-RYOYO-COM
-                                                      FLG-SYODOU-COM
-                                                      FLG-SAIDOU-COM
-                                                      FLG-NIKOCHIN-COM
-                                                      FLG-ZENSOKU-COM
-                                                      FLG-OSIN-COM
-                                                      FLG-ZAIHOU-COM
-                                                      FLG-TAHOKEN
-                                                      FLG-SYOUNI-COM
-                                                      FLG-SRYKBN-HEN
-                                                      FLG-KENSA-COM
-                                                      FLG-ZAIRIHA-COM
-                                                      FLG-ZAIKYO-COM
-                                                      FLG-BOKOHO-COM
-                                                      FLG-IZONSYO-COM
-                                                      FLG-SEIJYU-COM
-                                                      FLG-NINRYO-COM
-      *
-                                      MOVE  SPACE TO  WRK-KYUGYOFLG
-                                      MOVE  ZERO  TO  FLG-COUNT-ARI
-      *
-                                      MOVE  SPACE TO  WRK-FORMALNAME
-                                      MOVE  ZERO  TO
-                                                  WRK-KZI058-TEN
-                                                  WRK-KZI058-TANICD
-                                                  WRK-KZI058-TANIMOJISU
-                                      MOVE  SPACE TO
-                                                  WRK-KZI058-TANINAME
-      *
-                                      MOVE  ZERO  TO  FLG-WRITE45
-                                      MOVE  ZERO  TO  FLG-HENSYU-NG
-                                      MOVE  ZERO  TO  FLG-SETCOM
-                                      MOVE  ZERO  TO  WRK-SETCOM-JIDO
-                                      MOVE  ZERO  TO  WRK-SETCOM-JIDO2
-                                      MOVE  ZERO  TO  FLG-ZAITAKU-CHECK
-                                      MOVE  ZERO  TO  FLG-KIN-OKIKAE
-                                      MOVE  ZERO  TO  FLG-KIN-OKIKAE2
-                                      MOVE  ZERO  TO  FLG-SIPPU-COM
-                                      MOVE  ZERO  TO  FLG-SIPPU-ARI
-                                      MOVE  ZERO  TO  FLG-YKZ-PRTKBN
-                                      IF    ACCT-SRYKBN  =
-                                            "60" OR "64" OR "80"
-                                        PERFORM 21014-SINRYO-CHECK-SEC
-                                      END-IF
-                                      PERFORM   21011-RECE44-TENSOU-SEC
-                                      PERFORM   21012-RECE45-HENSYU-SEC
-                                      IF    FLG-WRITE45  =   1
-                                        PERFORM 21013-RECE44-WRITE-SEC
-                                      END-IF
-                                 END-IF
-                               END-IF
-                             END-IF
-                           END-IF
-                   END-IF
-                 END-IF
-                 MOVE     "tbl_sryacct"    TO      MCP-TABLE
-                 MOVE     "key24"          TO      MCP-PATHNAME
-                 PERFORM   800-SRYACCT-READ-SEC
-               END-PERFORM
-           END-IF
-      *
-           MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key24"             TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
+           WRITE   RECE4A-REC
+           ADD     1                TO  CNT-OUT4
       *
            .
-       2104-RECE44-HENSYU2-EXT.
+       RECE44-WRITE-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    •«°º•øΩ–ŒœΩËÕ˝
+      *****************************************************************
+       RECE45-WRITE-SEC                SECTION.
+      *
+           MOVE    RECE45-REC          TO   RECE4B-REC      
+      *
+           WRITE   RECE45-REC
+           ADD     1                   TO   CNT-OUT2
+      *
+           WRITE   RECE4B-REC
+           ADD     1                   TO   CNT-OUT5
+      *
+           .
+       RECE45-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    •«°º•øΩ–ŒœΩËÕ˝
+      *****************************************************************
+       RECE45-REWRITE-SEC              SECTION.                        
+      *
+           MOVE    ZERO                TO  FLG-REWRITE
+      *
+           INITIALIZE                      RECE45-REC
+           MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
+           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
+           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
+           MOVE    RECE44-PTID         TO  RECE45-PTID
+           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
+           MOVE    RECE44-HKNID        TO  RECE45-HKNID
+           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
+           MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
+           START   RECE45-FILE
+                 KEY IS    >=   RECE45-KEY
+                 INVALID
+                     MOVE    1         TO  FLG-RECE45
+                 NOT INVALID
+                     MOVE    ZERO      TO  FLG-RECE45
+                     READ    RECE45-FILE   NEXT
+                       AT  END
+                         MOVE    1     TO  FLG-RECE45
+                     END-READ
+           END-START
+           PERFORM   UNTIL
+               (RECE44-HOSPID       NOT =  RECE45-HOSPID)      OR
+               (RECE44-SRYYM        NOT =  RECE45-SRYYM)       OR
+               (RECE44-NYUGAIKBN    NOT =  RECE45-NYUGAIKBN)   OR
+               (RECE44-PTID         NOT =  RECE45-PTID)        OR
+               (RECE44-RECEKA       NOT =  RECE45-RECEKA)      OR
+               (RECE44-HKNID        NOT =  RECE45-HKNID)       OR
+               (RECE44-TEKSTYMD     NOT =  RECE45-TEKSTYMD)    OR
+               (RECE44-ZAINUM       NOT =  RECE45-ZAINUM)      OR
+               (FLG-RECE45                =      1        )    OR
+               (FLG-REWRITE               =      1        )
+                IF    RECE45-RENNUM   =   WRK-RENNUM
+                   MOVE    1              TO  FLG-REWRITE
+                   MOVE    WRK-SRYSURYO3  TO  RECE45-SRYSURYO(5)
+                   REWRITE   RECE45-REC
+                END-IF
+                READ    RECE45-FILE   NEXT
+                  AT  END
+                    MOVE    1     TO  FLG-RECE45
+                END-READ
+           END-PERFORM
+      *
+           .
+       RECE45-REWRITE-EXT.
+           EXIT.                                                       
       *
       *****************************************************************
       *    •«°º•øππø∑ΩËÕ˝
       *****************************************************************
-       2105-RECE41-REWRITE-SEC                SECTION.
-      *
-           IF   RECE41-HKNKBN     NOT  =   "4" AND "6"
-             COMPUTE  RECE41-TOTALKIN2  =  RECE41-TOTALKIN2
-                                        +  WRK-ZAITENNASHI
-             IF    RECE41-HKNKBN   =   "5"
-             AND   RECE41-KOMUKBN  =   "2"
-               COMPUTE  RECE41-TOTALKIN   =   RECE41-TOTALTEN   *
-                                              RECE41-KOMUTENTANKA
-             ELSE
-               COMPUTE  RECE41-TOTALKIN   =   RECE41-TOTALTEN   *
-                                              RECE41-TANKA
-             END-IF
-           END-IF
+       RECE41-REWRITE-SEC                SECTION.
       *
            IF   RECE41-HKNKBN     =   "4"                               
       *
-             EVALUATE  WRK-PARA-RECEKBN
-              WHEN      "4"
-      ********° ø∑ÕÕº∞°À
-               IF   WRK-PARA-JIBAIPRTKBN  =  "2"
-                 COMPUTE   RECE41-TENSU(8)    =  RECE41-TENSU(1)
-                                              +  RECE41-TENSU(2)
-                                              +  RECE41-TENSU(3)
-                                              +  RECE41-TENSU(4)
-                                              +  RECE41-TENSU(5)
-                                              +  RECE41-TENSU(6)
-                                              +  RECE41-TENSU(7)
+               COMPUTE   RECE41-TENSU(8)      =  RECE41-TENSU(1)        
+                                              +  RECE41-TENSU(2)        
+                                              +  RECE41-TENSU(3)        
+                                              +  RECE41-TENSU(4)        
+                                              +  RECE41-TENSU(5)        
+                                              +  RECE41-TENSU(6)        
+                                              +  RECE41-TENSU(7)        
       *
-                 COMPUTE   RECE41-TENSU-YAK(8)  =  RECE41-TENSU-YAK(7)
+               COMPUTE   RECE41-TENSU-YAK(8)  =  RECE41-TENSU-YAK(7)    
       *
-                 COMPUTE   RECE41-TENSU(17)   =  RECE41-TENSU(10)
-                                              +  RECE41-TENSU(13)
-                                              +  RECE41-TENSU(14)
-                                              +  RECE41-TENSU(15)
-                                              +  RECE41-TENSU(16)
+               COMPUTE   RECE41-TENSU(17)     =  RECE41-TENSU(10)       
+                                              +  RECE41-TENSU(13)       
+                                              +  RECE41-TENSU(14)       
+                                              +  RECE41-TENSU(15)       
+                                              +  RECE41-TENSU(16)       
       *
-                 COMPUTE   RECE41-TENSU-YAK(17) =  RECE41-TENSU-YAK(9)
-                                                +  RECE41-TENSU-YAK(11)
-                                                +  RECE41-TENSU-YAK(12)
+               COMPUTE   RECE41-TENSU-YAK(18) =  RECE41-TENSU-YAK(9)    
+                                              +  RECE41-TENSU-YAK(11)   
+                                              +  RECE41-TENSU-YAK(12)   
       *
-                 COMPUTE   RECE41-TENSU(22)     =  RECE41-TENSU(18)
-                                                +  RECE41-TENSU(19)
-                                                +  RECE41-TENSU(20)
+               COMPUTE   RECE41-TENSU(23)     =  RECE41-TENSU(19)       
+                                              +  RECE41-TENSU(20)       
+                                              +  RECE41-TENSU(21)       
       *
-                 COMPUTE   RECE41-TENSU-YAK(22) =  RECE41-TENSU-YAK(21)
+               COMPUTE   RECE41-TENSU-YAK(24) =  RECE41-TENSU-YAK(22)   
       *
-                 COMPUTE   WRK-KSNRATE          =  RECE41-KSNRATE / 100
+               COMPUTE   WRK-KSNRATE          =  RECE41-KSNRATE / 100   
       *
-                 PERFORM    VARYING    ID1    FROM    1   BY   1
-                             UNTIL     ID1     >     31
+      ***      PERFORM    VARYING    ID1    FROM    1   BY   1          
+      ***                 UNTIL      ID1    >     31                    
+      *              
+      ***         ADD   RECE41-SYUTEN-JI(ID1)  TO  RECE41-TOTALTEN
+      ***         ADD   RECE41-YKZTEN-JI(ID1)  TO  RECE41-TOTALTEN-YAK
       *
-                   ADD   RECE41-SYUTEN-JI(ID1)  TO  RECE41-TOTALTEN
-                   ADD   RECE41-YKZTEN-JI(ID1)  TO  RECE41-TOTALTEN-YAK
+      ***         COMPUTE   WRK-KEISAN        =  RECE41-SYUTEN-JI(ID1)  
+      ***                                     *  WRK-TANKA              
+      ***         COMPUTE   RECE41-TOTALKIN   =  RECE41-TOTALKIN  +
+      ***                              ( WRK-KEISAN  *  WRK-KSNRATE )   
       *
-                 END-PERFORM
+      ***         COMPUTE   WRK-KEISAN        =  RECE41-YKZTEN-JI(ID1)  
+      ***                                     *  WRK-TANKA              
+      ***         COMPUTE   RECE41-TOTALKIN-YAK =  RECE41-TOTALKIN-YAK
+      ***                                       +  WRK-KEISAN           
       *
-      *          ∏∫≈¿ ‘Ω∏
-                 COMPUTE   RECE41-TOTALTEN  =  RECE41-TOTALTEN
-                                            -  WRK-RECE4G-TENSU(2)
-                                            -  WRK-RECE4G-TENSU(3)
-                                            -  WRK-RECE4G-TENSU(5)
-                                            -  WRK-RECE4G-TENSU(6)
-                                            -  WRK-RECE4G-TENSU(7)
-                                            -  WRK-RECE4G-TENSU(8)
-                                            -  WRK-RECE4G-TENSU(9)
-                                            -  WRK-RECE4G-TENSU(12)
-                                            -  WRK-RECE4G-TENSU(14)
+      ***      END-PERFORM                                              
       *
-                 COMPUTE   RECE41-TOTALKIN   =
-                    (RECE41-TOTALTEN  *  RECE41-TANKA  *  WRK-KSNRATE)
-                                                       +  0.5
-      *
-                 COMPUTE   RECE41-TOTALKIN-YAK =
-                    (RECE41-TOTALTEN-YAK  *  RECE41-TANKA)  +  0.5
-      *
-                 COMPUTE   RECE41-KINGAKU2(5)   =  RECE41-KINGAKU2(1)
-                                                +  RECE41-KINGAKU2(2)
-                                                +  RECE41-KINGAKU2(3)
-                                                +  RECE41-KINGAKU2(4)
-      *
-      ***        COMPUTE   RECE41-TOTALKIN2     =  RECE41-KINGAKU2(5)
-      ***                                       *  WRK-KSNRATE
-      *
-                 COMPUTE   RECE41-TOTALKIN2     =
-                    (RECE41-KINGAKU2(5)  *  WRK-KSNRATE)  +  0.5
-      *
-                 COMPUTE   RECE41-TOTALKIN2-ETC =  RECE41-KINGAKU2(6)
-                                                +  RECE41-SINDAN-KIN
-                                                +  RECE41-MEISAI-KIN
-      *
-                 PERFORM   21054-JIBAI-KINGAKU-HENSYU-SEC
-               ELSE
-                 COMPUTE   RECE41-TENSU(8)    =  RECE41-TENSU(1)
-                                              +  RECE41-TENSU(2)
-                                              +  RECE41-TENSU(3)
-                                              +  RECE41-TENSU(4)
-                                              +  RECE41-TENSU(5)
-                                              +  RECE41-TENSU(6)
-                                              +  RECE41-TENSU(7)
-      *
-                 COMPUTE   RECE41-TENSU-YAK(8)  =  RECE41-TENSU-YAK(7)
-      *
-                 COMPUTE   RECE41-TENSU(17)   =  RECE41-TENSU(10)
-                                              +  RECE41-TENSU(13)
-                                              +  RECE41-TENSU(14)
-                                              +  RECE41-TENSU(15)
-                                              +  RECE41-TENSU(16)
-      *
-                 COMPUTE   RECE41-TENSU-YAK(18) =  RECE41-TENSU-YAK(9)
-                                                +  RECE41-TENSU-YAK(11)
-                                                +  RECE41-TENSU-YAK(12)
-      *
-                 COMPUTE   RECE41-TENSU(23)     =  RECE41-TENSU(19)
-                                                +  RECE41-TENSU(20)
-                                                +  RECE41-TENSU(21)
-      *
-                 COMPUTE   RECE41-TENSU-YAK(24) =  RECE41-TENSU-YAK(22)
-      *
-                 COMPUTE   WRK-KSNRATE          =  RECE41-KSNRATE / 100
-      *
-                 PERFORM    VARYING    ID1    FROM    1   BY   1
-                             UNTIL     ID1     >     31
-      *
-                   ADD   RECE41-SYUTEN-JI(ID1)  TO  RECE41-TOTALTEN
-                   ADD   RECE41-YKZTEN-JI(ID1)  TO  RECE41-TOTALTEN-YAK
-      *
-                 END-PERFORM
-      *
-      *          ∏∫≈¿ ‘Ω∏
-                 COMPUTE   RECE41-TOTALTEN  =  RECE41-TOTALTEN
-                                            -  WRK-RECE4G-TENSU(2)
-                                            -  WRK-RECE4G-TENSU(3)
-                                            -  WRK-RECE4G-TENSU(5)
-                                            -  WRK-RECE4G-TENSU(6)
-                                            -  WRK-RECE4G-TENSU(7)
-                                            -  WRK-RECE4G-TENSU(8)
-                                            -  WRK-RECE4G-TENSU(9)
-                                            -  WRK-RECE4G-TENSU(12)
-                                            -  WRK-RECE4G-TENSU(14)
-      *
-                 COMPUTE   RECE41-TOTALKIN   =
-                    (RECE41-TOTALTEN  *  RECE41-TANKA  *  WRK-KSNRATE)
-                                                       +  0.5
-      *
-                 COMPUTE   RECE41-TOTALKIN-YAK =
-                    (RECE41-TOTALTEN-YAK  *  RECE41-TANKA)  +  0.5
-      *
-                 COMPUTE   RECE41-KINGAKU2(5)   =  RECE41-KINGAKU2(1)
-                                                +  RECE41-KINGAKU2(2)
-                                                +  RECE41-KINGAKU2(3)
-                                                +  RECE41-KINGAKU2(4)
-      *
-      ***        COMPUTE   RECE41-TOTALKIN2     =  RECE41-KINGAKU2(5)
-      ***                                       *  WRK-KSNRATE
-      *
-                 COMPUTE   RECE41-TOTALKIN2     =
-                    (RECE41-KINGAKU2(5)  *  WRK-KSNRATE)  +  0.5
-      *
-                 COMPUTE   RECE41-TOTALKIN2-ETC =  RECE41-KINGAKU2(6)
-                                                +  RECE41-SINDAN-KIN
-                                                +  RECE41-MEISAI-KIN
-               END-IF
-      *
-              WHEN      "5"
-      ********° ΩæÕËÕÕº∞°À
-      *
-               COMPUTE   RECE41-TENSU(9)      =  RECE41-TENSU(1)
-                                              +  RECE41-TENSU(2)
-                                              +  RECE41-TENSU(3)
-                                              +  RECE41-TENSU(4)
-                                              +  RECE41-TENSU(5)
-                                              +  RECE41-TENSU(6)
-                                              +  RECE41-TENSU(7)
-                                              +  RECE41-TENSU(8)
-      *
-               COMPUTE   RECE41-TENSU(18)     =  RECE41-TENSU(10)
-                                              +  RECE41-TENSU(11)
-                                              +  RECE41-TENSU(12)
-                                              +  RECE41-TENSU(13)
-                                              +  RECE41-TENSU(14)
-                                              +  RECE41-TENSU(15)
-                                              +  RECE41-TENSU(16)
-                                              +  RECE41-TENSU(17)
-      *
-               COMPUTE   RECE41-TENSU(22)     =  RECE41-TENSU(19)
-                                              +  RECE41-TENSU(20)
-                                              +  RECE41-TENSU(21)
-      *
-               COMPUTE   RECE41-TENSU(25)     =  RECE41-TENSU(23)
-                                              +  RECE41-TENSU(24)
-      *
-               COMPUTE   RECE41-TENSU(28)     =  RECE41-TENSU(26)
-                                              +  RECE41-TENSU(27)
-      *
-               COMPUTE   RECE41-TENSU(31)     =  RECE41-TENSU(29)
-                                              +  RECE41-TENSU(30)
-      *
-               COMPUTE   RECE41-TENSU(34)     =  RECE41-TENSU(32)
-                                              +  RECE41-TENSU(33)
-      *
-               COMPUTE   RECE41-TENSU(38)     =  RECE41-TENSU(35)
-                                              +  RECE41-TENSU(36)
-                                              +  RECE41-TENSU(37)
-      *
-      ***      COMPUTE   RECE41-TOTALTEN      =  RECE41-TENSU(9)
-      ***                                     +  RECE41-TENSU(18)
-      ***                                     +  RECE41-TENSU(22)
-      ***                                     +  RECE41-TENSU(25)
-      ***                                     +  RECE41-TENSU(28)
-      ***                                     +  RECE41-TENSU(31)
-      ***                                     +  RECE41-TENSU(34)
-      ***                                     +  RECE41-TENSU(38)
-      *
-               MOVE       ZERO         TO        WRK-SYUTEN-JI
-                                                 WRK-YKZTEN-JI
-               PERFORM    VARYING    ID1    FROM    1   BY   1
-                           UNTIL     ID1     >     31
+               PERFORM    VARYING    ID1    FROM    1   BY   1          
+                       UNTIL      ID1    >     31                    
+      *              
                   ADD   RECE41-SYUTEN-JI(ID1)  TO  RECE41-TOTALTEN
-                                                   WRK-SYUTEN-JI
-                  ADD   RECE41-YKZTEN-JI(ID1)  TO  RECE41-TOTALTEN
-                                                   WRK-YKZTEN-JI
-               END-PERFORM
-      *        ∏∫≈¿ ‘Ω∏
-               COMPUTE   RECE41-TOTALTEN  =  RECE41-TOTALTEN
-                                          -  WRK-RECE4G-TENSU(2)
-                                          -  WRK-RECE4G-TENSU(3)
-                                          -  WRK-RECE4G-TENSU(5)
-                                          -  WRK-RECE4G-TENSU(6)
-                                          -  WRK-RECE4G-TENSU(7)
-                                          -  WRK-RECE4G-TENSU(8)
-                                          -  WRK-RECE4G-TENSU(9)
-                                          -  WRK-RECE4G-TENSU(12)
-                                          -  WRK-RECE4G-TENSU(14)
-               COMPUTE   WRK-SYUTEN-JI    =  WRK-SYUTEN-JI
-                                          -  WRK-RECE4G-TENSU(2)
-                                          -  WRK-RECE4G-TENSU(3)
-                                          -  WRK-RECE4G-TENSU(5)
-                                          -  WRK-RECE4G-TENSU(6)
-                                          -  WRK-RECE4G-TENSU(7)
-                                          -  WRK-RECE4G-TENSU(8)
-                                          -  WRK-RECE4G-TENSU(9)
-                                          -  WRK-RECE4G-TENSU(12)
-                                          -  WRK-RECE4G-TENSU(14)
+                  ADD   RECE41-YKZTEN-JI(ID1)  TO  RECE41-TOTALTEN-YAK
       *
-               IF   TBL-SYUTEN-JI(2)  >=  WRK-RECE4G-TENSU(2)
-                 COMPUTE  TBL-SYUTEN-JI(2) =
-                          TBL-SYUTEN-JI(2) -  WRK-RECE4G-TENSU(2)
-               ELSE
-                 MOVE     ZERO    TO   TBL-SYUTEN-JI(2)
-               END-IF
-               IF   TBL-SYUTEN-JI(7)  >=  WRK-RECE4G-TENSU(7)
-                 COMPUTE  TBL-SYUTEN-JI(7) =
-                          TBL-SYUTEN-JI(7) -  WRK-RECE4G-TENSU(7)
-               ELSE
-                 MOVE     ZERO    TO   TBL-SYUTEN-JI(7)
-               END-IF
-               IF   TBL-SYUTEN-JI(8)  >=  WRK-RECE4G-TENSU(8)
-                 COMPUTE  TBL-SYUTEN-JI(8) =
-                          TBL-SYUTEN-JI(8) -  WRK-RECE4G-TENSU(8)
-               ELSE
-                 MOVE     ZERO    TO   TBL-SYUTEN-JI(8)
-               END-IF
-      *
-               EVALUATE   RECE41-JIBAIKBN
-      *
-                 WHEN       "1"
-      *
-                   COMPUTE   WRK-KSNRATE   =  RECE41-KSNRATE / 100
-      *
-                   COMPUTE  RECE41-TOTALKIN-JYU   =
-                            RECE41-TOTALKIN-JYU   +
-                      (WRK-SYUTEN-JI  *  RECE41-TANKA  *  WRK-KSNRATE)
-                                                       +  0.5
-                   COMPUTE  RECE41-TOTALKIN-JYU   =
-                            RECE41-TOTALKIN-JYU   +
-                      (WRK-YKZTEN-JI  *  RECE41-TANKA) +  0.5
-      *
-                   COMPUTE  RECE41-SONOTAKIN-JYU  =
-                            RECE41-SONOTAKIN-JYU  +
-                      (WRK-KINGAKU-JI *  WRK-KSNRATE)  +  0.5
-      ***
-                   PERFORM    VARYING    ID1    FROM    1   BY   1
-                               UNTIL     ID1     >     38
-                     IF   ID1  =   9  OR  18  OR  22  OR  25  OR
-                                  28  OR  31  OR  34  OR  38
-                        CONTINUE
-                     ELSE
-                        COMPUTE  RECE41-KINGAKU-JYU(ID1) =
-                                 RECE41-KINGAKU-JYU(ID1) +
-                        (TBL-SYUTEN-JI(ID1) * RECE41-TANKA
-                                            * WRK-KSNRATE )
-                                                           + 0.5
-                        COMPUTE  RECE41-KINGAKU-JYU(ID1) =
-                                 RECE41-KINGAKU-JYU(ID1) +
-                        (TBL-YKZTEN-JI(ID1) * RECE41-TANKA)
-                                                           + 0.5
-                     END-IF
-                   END-PERFORM
-      *
-                 WHEN       "2"
-      *
-                   COMPUTE  RECE41-TOTALKIN-JYU   =
-                            RECE41-TOTALKIN-JYU   +
-                      (WRK-SYUTEN-JI  *  RECE41-SYUTENTANKA)
-                   COMPUTE  RECE41-TOTALKIN-JYU   =
-                            RECE41-TOTALKIN-JYU   +
-                      (WRK-YKZTEN-JI  *  RECE41-YKZTENTANKA)
-      ***
-                   PERFORM    VARYING    ID1    FROM    1   BY   1
-                               UNTIL     ID1     >     38
-                     IF   ID1  =   9  OR  18  OR  22  OR  25  OR
-                                  28  OR  31  OR  34  OR  38
-                        CONTINUE
-                     ELSE
-                        COMPUTE  RECE41-KINGAKU-JYU(ID1) =
-                                 RECE41-KINGAKU-JYU(ID1) +
-                        (TBL-SYUTEN-JI(ID1) * RECE41-SYUTENTANKA)
-                        COMPUTE  RECE41-KINGAKU-JYU(ID1) =
-                                 RECE41-KINGAKU-JYU(ID1) +
-                        (TBL-YKZTEN-JI(ID1) * RECE41-YKZTENTANKA)
-                     END-IF
-                   END-PERFORM
-      *
-               END-EVALUATE
-      *
-               COMPUTE   RECE41-KINGAKU-JYU(9)  =
-                         RECE41-KINGAKU-JYU(1)  +
-                         RECE41-KINGAKU-JYU(2)  +
-                         RECE41-KINGAKU-JYU(3)  +
-                         RECE41-KINGAKU-JYU(4)  +
-                         RECE41-KINGAKU-JYU(5)  +
-                         RECE41-KINGAKU-JYU(6)  +
-                         RECE41-KINGAKU-JYU(7)  +
-                         RECE41-KINGAKU-JYU(8)   
-      *
-               COMPUTE   RECE41-KINGAKU-JYU(18)  =
-                         RECE41-KINGAKU-JYU(10)  +
-                         RECE41-KINGAKU-JYU(11)  +
-                         RECE41-KINGAKU-JYU(12)  +
-                         RECE41-KINGAKU-JYU(13)  +
-                         RECE41-KINGAKU-JYU(14)  +
-                         RECE41-KINGAKU-JYU(15)  +
-                         RECE41-KINGAKU-JYU(16)  +
-                         RECE41-KINGAKU-JYU(17)   
-      *
-               COMPUTE   RECE41-KINGAKU-JYU(22)  =
-                         RECE41-KINGAKU-JYU(19)  +
-                         RECE41-KINGAKU-JYU(20)  +
-                         RECE41-KINGAKU-JYU(21)   
-      *
-               COMPUTE   RECE41-KINGAKU-JYU(25)  =
-                         RECE41-KINGAKU-JYU(23)  +
-                         RECE41-KINGAKU-JYU(24)   
-      *
-               COMPUTE   RECE41-KINGAKU-JYU(28)  =
-                         RECE41-KINGAKU-JYU(26)  +
-                         RECE41-KINGAKU-JYU(27)   
-      *
-               COMPUTE   RECE41-KINGAKU-JYU(31)  =
-                         RECE41-KINGAKU-JYU(29)  +
-                         RECE41-KINGAKU-JYU(30)   
-      *
-               COMPUTE   RECE41-KINGAKU-JYU(34)  =
-                         RECE41-KINGAKU-JYU(32)  +
-                         RECE41-KINGAKU-JYU(33)   
-      *
-               COMPUTE   RECE41-KINGAKU-JYU(38)  =
-                         RECE41-KINGAKU-JYU(35)  +
-                         RECE41-KINGAKU-JYU(36)  +
-                         RECE41-KINGAKU-JYU(37)   
-      *
-             END-EVALUATE
-      *
-           END-IF                                                       
-      *
-           IF   RECE41-HKNKBN     =   "6"
-      *
-               COMPUTE   RECE41-TENSU(9)      =  RECE41-TENSU(1)
-                                              +  RECE41-TENSU(2)
-                                              +  RECE41-TENSU(3)
-                                              +  RECE41-TENSU(4)
-                                              +  RECE41-TENSU(5)
-                                              +  RECE41-TENSU(6)
-                                              +  RECE41-TENSU(7)
-                                              +  RECE41-TENSU(8)
-      *
-               COMPUTE   RECE41-TENSU(18)     =  RECE41-TENSU(10)
-                                              +  RECE41-TENSU(11)
-                                              +  RECE41-TENSU(12)
-                                              +  RECE41-TENSU(13)
-                                              +  RECE41-TENSU(14)
-                                              +  RECE41-TENSU(15)
-                                              +  RECE41-TENSU(16)
-                                              +  RECE41-TENSU(17)
-      *
-               COMPUTE   RECE41-TENSU(22)     =  RECE41-TENSU(19)
-                                              +  RECE41-TENSU(20)
-                                              +  RECE41-TENSU(21)
-      *
-               COMPUTE   RECE41-TENSU(25)     =  RECE41-TENSU(23)
-                                              +  RECE41-TENSU(24)
-      *
-               COMPUTE   RECE41-TENSU(28)     =  RECE41-TENSU(26)
-                                              +  RECE41-TENSU(27)
-      *
-               COMPUTE   RECE41-TENSU(31)     =  RECE41-TENSU(29)
-                                              +  RECE41-TENSU(30)
-      *
-               COMPUTE   RECE41-TENSU(34)     =  RECE41-TENSU(32)
-                                              +  RECE41-TENSU(33)
-      *
-               COMPUTE   RECE41-TENSU(38)     =  RECE41-TENSU(35)
-                                              +  RECE41-TENSU(36)
-                                              +  RECE41-TENSU(37)
-      *
-               MOVE       ZERO         TO        WRK-SYUTEN-JI
-                                                 WRK-YKZTEN-JI
-               PERFORM    VARYING    ID1    FROM    1   BY   1
-                           UNTIL     ID1     >     31
-                  ADD   RECE41-SYUTEN-JI(ID1)  TO  RECE41-TOTALTEN
-                                                   WRK-SYUTEN-JI
-                  ADD   RECE41-YKZTEN-JI(ID1)  TO  RECE41-TOTALTEN
-                                                   WRK-YKZTEN-JI
-               END-PERFORM
-      *        ∏∫≈¿ ‘Ω∏
-               COMPUTE   RECE41-TOTALTEN  =  RECE41-TOTALTEN
-                                          -  WRK-RECE4G-TENSU(2)
-                                          -  WRK-RECE4G-TENSU(3)
-                                          -  WRK-RECE4G-TENSU(5)
-                                          -  WRK-RECE4G-TENSU(6)
-                                          -  WRK-RECE4G-TENSU(7)
-                                          -  WRK-RECE4G-TENSU(8)
-                                          -  WRK-RECE4G-TENSU(9)
-                                          -  WRK-RECE4G-TENSU(12)
-                                          -  WRK-RECE4G-TENSU(14)
-               COMPUTE   WRK-SYUTEN-JI    =  WRK-SYUTEN-JI
-                                          -  WRK-RECE4G-TENSU(2)
-                                          -  WRK-RECE4G-TENSU(3)
-                                          -  WRK-RECE4G-TENSU(5)
-                                          -  WRK-RECE4G-TENSU(6)
-                                          -  WRK-RECE4G-TENSU(7)
-                                          -  WRK-RECE4G-TENSU(8)
-                                          -  WRK-RECE4G-TENSU(9)
-                                          -  WRK-RECE4G-TENSU(12)
-                                          -  WRK-RECE4G-TENSU(14)
-      *
-               IF   TBL-SYUTEN-JI(2)  >=  WRK-RECE4G-TENSU(2)
-                 COMPUTE  TBL-SYUTEN-JI(2) =
-                          TBL-SYUTEN-JI(2) -  WRK-RECE4G-TENSU(2)
-               ELSE
-                 MOVE     ZERO    TO   TBL-SYUTEN-JI(2)
-               END-IF
-               IF   TBL-SYUTEN-JI(7)  >=  WRK-RECE4G-TENSU(7)
-                 COMPUTE  TBL-SYUTEN-JI(7) =
-                          TBL-SYUTEN-JI(7) -  WRK-RECE4G-TENSU(7)
-               ELSE
-                 MOVE     ZERO    TO   TBL-SYUTEN-JI(7)
-               END-IF
-               IF   TBL-SYUTEN-JI(8)  >=  WRK-RECE4G-TENSU(8)
-                 COMPUTE  TBL-SYUTEN-JI(8) =
-                          TBL-SYUTEN-JI(8) -  WRK-RECE4G-TENSU(8)
-               ELSE
-                 MOVE     ZERO    TO   TBL-SYUTEN-JI(8)
-               END-IF
-      *
-               COMPUTE  RECE41-TOTALKIN-JYU   =
-                        RECE41-TOTALKIN-JYU   +
-                       (WRK-SYUTEN-JI  *  RECE41-SYUTENTANKA)
-               COMPUTE  RECE41-TOTALKIN-JYU   =
-                        RECE41-TOTALKIN-JYU   +
-                       (WRK-YKZTEN-JI  *  RECE41-YKZTENTANKA)
-      ***
-               PERFORM    VARYING    ID1    FROM    1   BY   1
-                           UNTIL     ID1     >     38
-                 IF   ID1  =   9  OR  18  OR  22  OR  25  OR
-                              28  OR  31  OR  34  OR  38
-                    CONTINUE
-                 ELSE
-                    COMPUTE  RECE41-KINGAKU-JYU(ID1) =
-                             RECE41-KINGAKU-JYU(ID1) +
-                            (TBL-SYUTEN-JI(ID1) * RECE41-SYUTENTANKA)
-                    COMPUTE  RECE41-KINGAKU-JYU(ID1) =
-                             RECE41-KINGAKU-JYU(ID1) +
-                            (TBL-YKZTEN-JI(ID1) * RECE41-YKZTENTANKA)
-                 END-IF
                END-PERFORM
       *
-               COMPUTE   RECE41-KINGAKU-JYU(9)  =
-                         RECE41-KINGAKU-JYU(1)  +
-                         RECE41-KINGAKU-JYU(2)  +
-                         RECE41-KINGAKU-JYU(3)  +
-                         RECE41-KINGAKU-JYU(4)  +
-                         RECE41-KINGAKU-JYU(5)  +
-                         RECE41-KINGAKU-JYU(6)  +
-                         RECE41-KINGAKU-JYU(7)  +
-                         RECE41-KINGAKU-JYU(8)   
+               COMPUTE   RECE41-TOTALKIN   =  
+                  (RECE41-TOTALTEN  *  WRK-TANKA  *  WRK-KSNRATE) 
+                                                  +  0.5
       *
-               COMPUTE   RECE41-KINGAKU-JYU(18)  =
-                         RECE41-KINGAKU-JYU(10)  +
-                         RECE41-KINGAKU-JYU(11)  +
-                         RECE41-KINGAKU-JYU(12)  +
-                         RECE41-KINGAKU-JYU(13)  +
-                         RECE41-KINGAKU-JYU(14)  +
-                         RECE41-KINGAKU-JYU(15)  +
-                         RECE41-KINGAKU-JYU(16)  +
-                         RECE41-KINGAKU-JYU(17)   
+               COMPUTE   RECE41-TOTALKIN-YAK =  
+                  (RECE41-TOTALTEN-YAK  *  WRK-TANKA)  
+                                                  +  0.5
       *
-               COMPUTE   RECE41-KINGAKU-JYU(22)  =
-                         RECE41-KINGAKU-JYU(19)  +
-                         RECE41-KINGAKU-JYU(20)  +
-                         RECE41-KINGAKU-JYU(21)   
+               COMPUTE   RECE41-KINGAKU2(5)   =  RECE41-KINGAKU2(1)     
+                                              +  RECE41-KINGAKU2(2)     
+                                              +  RECE41-KINGAKU2(3)     
+                                              +  RECE41-KINGAKU2(4)     
       *
-               COMPUTE   RECE41-KINGAKU-JYU(25)  =
-                         RECE41-KINGAKU-JYU(23)  +
-                         RECE41-KINGAKU-JYU(24)   
+      ***      COMPUTE   RECE41-TOTALKIN2     =  RECE41-KINGAKU2(5)     
+      ***                                     *  WRK-KSNRATE            
       *
-               COMPUTE   RECE41-KINGAKU-JYU(28)  =
-                         RECE41-KINGAKU-JYU(26)  +
-                         RECE41-KINGAKU-JYU(27)   
+               COMPUTE   RECE41-TOTALKIN2     =  
+                  (RECE41-KINGAKU2(5)   *  WRK-KSNRATE)  +  0.5         
       *
-               COMPUTE   RECE41-KINGAKU-JYU(31)  =
-                         RECE41-KINGAKU-JYU(29)  +
-                         RECE41-KINGAKU-JYU(30)   
-      *
-               COMPUTE   RECE41-KINGAKU-JYU(34)  =
-                         RECE41-KINGAKU-JYU(32)  +
-                         RECE41-KINGAKU-JYU(33)   
-      *
-               COMPUTE   RECE41-KINGAKU-JYU(38)  =
-                         RECE41-KINGAKU-JYU(35)  +
-                         RECE41-KINGAKU-JYU(36)  +
-                         RECE41-KINGAKU-JYU(37)   
-      *
-               IF    RECE41-DAISAN-CHIKAN   =   1
-                 IF  RECE41-TOTALKIN-JYU < RECE41-FTNMONEY
-                   MOVE   RECE41-TOTALKIN-JYU   TO
-                                           RECE41-FTNMONEY
-                 END-IF
-               END-IF
-      *
-      *        ¬Ëª∞º‘π‘∞Ÿ§Œ∏Ω ™µÎ…’»ΩƒÍ
-               PERFORM   21053-DAISAN-GENBUTU-HANTEI-SEC
-      *
-               EVALUATE  RECE41-DAISAN-GENBUTU-GAITO
-                 WHEN      ZERO
-                   IF    RECE41-DAISAN-CHIKAN   =  ZERO
-                     IF   WRK-DAISAN-DAISANKBN  =  "1"
-                       PERFORM   21051-DAISAN-CHECK-SEC
-                       MOVE  WRK-DAISAN-FTNMONEY   TO  RECE41-FTNMONEY
-                     ELSE
-                       IF   RECE41-TOTALKIN-JYU  NOT =  ZERO
-                       AND  RECE41-FTNRATE       NOT =  ZERO
-                         COMPUTE RECE41-FTNMONEY = RECE41-TOTALKIN-JYU
-                                                 * RECE41-FTNRATE
-                                                 / 100
-                       END-IF
-                     END-IF
-                   END-IF
-                 WHEN       1
-                   IF    RECE41-DAISAN-CHIKAN   =  ZERO
-                     PERFORM     21052-DAISAN-CHECK2-SEC
-                     MOVE    WRK-DAISAN-FTNMONEY   TO  RECE41-FTNMONEY
-                   END-IF
-               END-EVALUATE
-               COMPUTE   RECE41-SKYMONEY = RECE41-TOTALKIN-JYU
-                                         - RECE41-FTNMONEY
-      *
+               COMPUTE   RECE41-TOTALKIN2-ETC =  RECE41-KINGAKU2(6)     
+                                              +  RECE41-SINDAN-KIN      
+                                              +  RECE41-MEISAI-KIN      
+      * 
            END-IF                                                       
       *
            REWRITE   RECE41-REC
@@ -12064,883 +3393,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ADD     1                   TO  CNT-OUT3
       *
            .
-       2105-RECE41-REWRITE-EXT.
+       RECE41-WRITE-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    ¬Ëª∞º‘π‘∞Ÿ§Œ∞Ï…Ù…È√¥∂‚∑◊ªª° £±£∞±ﬂÃ§À˛ªÕºŒ∏ﬁ∆˛§ŒæÏπÁ°À
-      *****************************************************************
-       21051-DAISAN-CHECK-SEC      SECTION.
-      *
-           MOVE     ZERO     TO    WRK-DAISAN-TOTALTEN-SYUNOU
-           MOVE     ZERO     TO    WRK-DAISAN-FTNMONEY
-           MOVE     SPACE    TO    WRK-DAISAN-ACCT-UPDKBN
-      *
-           INITIALIZE                       SYUNOU-REC
-           MOVE  RECE41-HOSPNUM         TO  SYU-HOSPNUM
-           MOVE  RECE41-NYUGAIKBN       TO  SYU-NYUGAIKBN
-           MOVE  RECE41-PTID            TO  SYU-PTID
-           MOVE  RECE41-SRYYM           TO  SYU-SRYYMD(1:6)
-           MOVE  "__"                   TO  SYU-SRYYMD(7:2)
-           MOVE  RECE41-HKNCOMBI        TO  SYU-HKNCOMBINUM
-           MOVE  SYUNOU-REC             TO  MCPDATA-REC
-           MOVE  "tbl_syunou"           TO  MCP-TABLE
-           MOVE  "key41"                TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF    MCP-RC   =   ZERO
-             MOVE    "tbl_syunou"       TO  MCP-TABLE
-             MOVE    "key41"            TO  MCP-PATHNAME
-             PERFORM  800-SYUNOU-READ-SEC
-             PERFORM  UNTIL  (FLG-SYUNOU  =  1)
-               IF    SYU-DENPJTIKBN    NOT =  "3"
-                 IF  SYU-TOTAL-HKNTEN  NOT = ZERO
-                   ADD  SYU-TOTAL-HKNTEN
-                              TO  WRK-DAISAN-TOTALTEN-SYUNOU
-                   COMPUTE  WRK-DAISAN-FTNMONEY2 = SYU-TOTAL-HKNTEN
-                                                 * 10
-                                                 * RECE41-FTNRATE
-                                                 / 100
-                   COMPUTE  WRK-DAISAN-FTNMONEY2 =
-                            WRK-DAISAN-FTNMONEY2 +  5
-                   COMPUTE  WRK-DAISAN-FTNMONEY2 =
-                            WRK-DAISAN-FTNMONEY2 /  10
-                   COMPUTE  WRK-DAISAN-FTNMONEY2 =
-                            WRK-DAISAN-FTNMONEY2 *  10
-      *
-                   COMPUTE  WRK-DAISAN-FTNMONEY  =
-                            WRK-DAISAN-FTNMONEY  +
-                            WRK-DAISAN-FTNMONEY2
-                 END-IF
-                 IF  SYU-ACCT-UPDKBN   =   "1"
-                   MOVE  "1"  TO  WRK-DAISAN-ACCT-UPDKBN
-                 END-IF
-               END-IF
-               MOVE    "tbl_syunou"     TO  MCP-TABLE
-               MOVE    "key41"          TO  MCP-PATHNAME
-               PERFORM  800-SYUNOU-READ-SEC
-             END-PERFORM
-           END-IF
-           MOVE      "tbl_syunou"       TO  MCP-TABLE
-           MOVE      "key41"            TO  MCP-PATHNAME
-           PERFORM    900-CLOSE-SEC
-      *
-      *    •Í•¢•Î•ø•§•‡•◊•Ï•”•Â°ºª˛
-           IF   (WRK-PARA-SHELLID        =   "RECEPTX")
-           AND  (WRK-DAISAN-ACCT-UPDKBN  =    SPACE   )
-      *
-             COMPUTE WRK-DAISAN-TOTALTEN = RECE41-TOTALKIN-JYU
-                                         / 10
-             IF   WRK-DAISAN-TOTALTEN  >  WRK-DAISAN-TOTALTEN-SYUNOU
-               COMPUTE  WRK-DAISAN-FTNMONEY2 =
-                  (WRK-DAISAN-TOTALTEN - WRK-DAISAN-TOTALTEN-SYUNOU)
-                                             * 10
-                                             * RECE41-FTNRATE
-                                             / 100
-               COMPUTE  WRK-DAISAN-FTNMONEY2 =
-                        WRK-DAISAN-FTNMONEY2 +  5
-               COMPUTE  WRK-DAISAN-FTNMONEY2 =
-                        WRK-DAISAN-FTNMONEY2 /  10
-               COMPUTE  WRK-DAISAN-FTNMONEY2 =
-                        WRK-DAISAN-FTNMONEY2 *  10
-      *
-               COMPUTE  WRK-DAISAN-FTNMONEY  =
-                        WRK-DAISAN-FTNMONEY  +
-                        WRK-DAISAN-FTNMONEY2
-             END-IF
-      *
-           END-IF
-      *
-           .
-       21051-DAISAN-CHECK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¬Ëª∞º‘π‘∞Ÿ§Œ∞Ï…Ù…È√¥∂‚∑◊ªª°„∏Ω ™µÎ…’°‰
-      *****************************************************************
-       21052-DAISAN-CHECK2-SEC      SECTION.
-      *
-           MOVE     ZERO     TO    WRK-DAISAN-TOTALTEN-SYUNOU
-           MOVE     ZERO     TO    WRK-DAISAN-FTNMONEY
-           MOVE     SPACE    TO    WRK-DAISAN-ACCT-UPDKBN
-      *
-           INITIALIZE                       SYUNOU-REC
-           MOVE  RECE41-HOSPNUM         TO  SYU-HOSPNUM
-           MOVE  RECE41-NYUGAIKBN       TO  SYU-NYUGAIKBN
-           MOVE  RECE41-PTID            TO  SYU-PTID
-           MOVE  RECE41-SRYYM           TO  SYU-SRYYMD(1:6)
-           MOVE  "__"                   TO  SYU-SRYYMD(7:2)
-           MOVE  RECE41-HKNCOMBI        TO  SYU-HKNCOMBINUM
-           MOVE  SYUNOU-REC             TO  MCPDATA-REC
-           MOVE  "tbl_syunou"           TO  MCP-TABLE
-           MOVE  "key41"                TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF    MCP-RC   =   ZERO
-             MOVE    "tbl_syunou"       TO  MCP-TABLE
-             MOVE    "key41"            TO  MCP-PATHNAME
-             PERFORM  800-SYUNOU-READ-SEC
-             PERFORM  UNTIL  (FLG-SYUNOU  =  1)
-               IF    SYU-DENPJTIKBN    NOT =  "3"
-                 IF  SYU-TOTAL-HKNTEN  NOT = ZERO
-                   ADD  SYU-TOTAL-HKNTEN
-                              TO  WRK-DAISAN-TOTALTEN-SYUNOU
-      *
-                   COMPUTE  WRK-DAISAN-FTNMONEY  =
-                            WRK-DAISAN-FTNMONEY  +
-                            SYU-SYUCOMPFTN
-                 END-IF
-                 IF  SYU-ACCT-UPDKBN   =   "1"
-                   MOVE  "1"  TO  WRK-DAISAN-ACCT-UPDKBN
-                 END-IF
-               END-IF
-               MOVE    "tbl_syunou"     TO  MCP-TABLE
-               MOVE    "key41"          TO  MCP-PATHNAME
-               PERFORM  800-SYUNOU-READ-SEC
-             END-PERFORM
-           END-IF
-           MOVE      "tbl_syunou"       TO  MCP-TABLE
-           MOVE      "key41"            TO  MCP-PATHNAME
-           PERFORM    900-CLOSE-SEC
-      *
-      *    •Í•¢•Î•ø•§•‡•◊•Ï•”•Â°ºª˛
-      ***  IF   (WRK-PARA-SHELLID        =   "RECEPTX")
-      ***  AND  (WRK-DAISAN-ACCT-UPDKBN  =    SPACE   )
-      *
-      ***    COMPUTE WRK-DAISAN-TOTALTEN = RECE41-TOTALKIN-JYU
-      ***                                / 10
-      ***    IF   WRK-DAISAN-TOTALTEN  >  WRK-DAISAN-TOTALTEN-SYUNOU
-      ***      COMPUTE  WRK-DAISAN-FTNMONEY2 =
-      ***         (WRK-DAISAN-TOTALTEN - WRK-DAISAN-TOTALTEN-SYUNOU)
-      ***                                    * 10
-      ***                                    * RECE41-FTNRATE
-      ***                                    / 100
-      ***      COMPUTE  WRK-DAISAN-FTNMONEY2 =
-      ***               WRK-DAISAN-FTNMONEY2 +  5
-      ***      COMPUTE  WRK-DAISAN-FTNMONEY2 =
-      ***               WRK-DAISAN-FTNMONEY2 /  10
-      ***      COMPUTE  WRK-DAISAN-FTNMONEY2 =
-      ***               WRK-DAISAN-FTNMONEY2 *  10
-      *
-      ***      COMPUTE  WRK-DAISAN-FTNMONEY  =
-      ***               WRK-DAISAN-FTNMONEY  +
-      ***               WRK-DAISAN-FTNMONEY2
-      ***    END-IF
-      *
-      ***  END-IF
-      *
-           .
-       21052-DAISAN-CHECK2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¬Ëª∞º‘π‘∞Ÿ§Œ∏Ω ™µÎ…’»ΩƒÍ
-      *****************************************************************
-       21053-DAISAN-GENBUTU-HANTEI-SEC      SECTION.
-      *
-      *    ∏Ω ™µÎ…’∑◊ªª¬–æ›§´•¡•ß•√•Ø
-      *    ¡¥§∆§Œº˝«º§¨∏Ω ™µÎ…’∑◊ªª§µ§Ï§∆§§§Î§´•¡•ß•√•Ø
-           MOVE     ZERO       TO     FLG-DAISAN-GENBUTU
-           IF    RECE41-DAISAN-GENBUTU-GAITO   =   1
-      *
-             INITIALIZE                       SYUNOU-REC
-             MOVE  RECE41-HOSPNUM         TO  SYU-HOSPNUM
-             MOVE  RECE41-NYUGAIKBN       TO  SYU-NYUGAIKBN
-             MOVE  RECE41-PTID            TO  SYU-PTID
-             MOVE  RECE41-SRYYM           TO  SYU-SRYYMD(1:6)
-             MOVE  "__"                   TO  SYU-SRYYMD(7:2)
-             MOVE  RECE41-HKNCOMBI        TO  SYU-HKNCOMBINUM
-             MOVE  SYUNOU-REC             TO  MCPDATA-REC
-             MOVE  "tbl_syunou"           TO  MCP-TABLE
-             MOVE  "key41"                TO  MCP-PATHNAME
-             PERFORM 900-DBSELECT-SEC
-             IF    MCP-RC   =   ZERO
-               MOVE    "tbl_syunou"       TO  MCP-TABLE
-               MOVE    "key41"            TO  MCP-PATHNAME
-               PERFORM  800-SYUNOU-READ-SEC
-               PERFORM  UNTIL  (FLG-SYUNOU  =  1)
-                 IF    SYU-DENPJTIKBN    NOT =  "3"
-                   IF  SYU-TOTAL-HKNTEN  NOT = ZERO
-                   AND SYU-SKJ-FTNGAKU(2)    = ZERO
-                     MOVE     1           TO  FLG-DAISAN-GENBUTU
-                   END-IF
-                 END-IF
-                 MOVE    "tbl_syunou"     TO  MCP-TABLE
-                 MOVE    "key41"          TO  MCP-PATHNAME
-                 PERFORM  800-SYUNOU-READ-SEC
-               END-PERFORM
-             END-IF
-             MOVE      "tbl_syunou"       TO  MCP-TABLE
-             MOVE      "key41"            TO  MCP-PATHNAME
-             PERFORM    900-CLOSE-SEC
-      *
-             IF   FLG-DAISAN-GENBUTU    =   1
-               MOVE     ZERO       TO     RECE41-DAISAN-GENBUTU-GAITO
-             END-IF
-      *
-           END-IF
-      *
-           .
-       21053-DAISAN-GENBUTU-HANTEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    º´«Â¿’° ø∑ÕÕº∞°À° £œ£√£“ÕÕº∞°À§Œ∂‚≥€ ‘Ω∏
-      *****************************************************************
-       21054-JIBAI-KINGAKU-HENSYU-SEC      SECTION.
-      *
-           COMPUTE  WRK-JIBAI-SKYKIN-A   =  RECE41-TOTALKIN
-                                         +  RECE41-TOTALKIN-YAK
-                                         +  RECE41-TOTALKIN2
-                                         +  RECE41-TOTALKIN2-ETC
-      *
-           MOVE     WRK-JIBAI-SKYKIN-A  TO  RECE41-JIBAI-GOKEI-BE
-                                            RECE41-JIBAI-GOKEI-AF
-      *
-           IF       WRK-JIBAI-SKYKIN-A   >  ZERO
-             EVALUATE   RECE41-JIBAI-HASUKBN
-               WHEN       "1"
-                  COMPUTE  WRK-JIBAI-SKYKIN-A  =
-                           WRK-JIBAI-SKYKIN-A  +   5
-                  COMPUTE  WRK-JIBAI-SKYKIN-A  =
-                           WRK-JIBAI-SKYKIN-A  /  10
-                  COMPUTE  WRK-JIBAI-SKYKIN-A  =
-                           WRK-JIBAI-SKYKIN-A  *  10
-               WHEN       "2"
-                  COMPUTE  WRK-JIBAI-SKYKIN-A  =
-                           WRK-JIBAI-SKYKIN-A  /  10
-                  COMPUTE  WRK-JIBAI-SKYKIN-A  =
-                           WRK-JIBAI-SKYKIN-A  *  10
-               WHEN       "3"
-                  COMPUTE  WRK-JIBAI-SKYKIN-A  =
-                           WRK-JIBAI-SKYKIN-A  +   9
-                  COMPUTE  WRK-JIBAI-SKYKIN-A  =
-                           WRK-JIBAI-SKYKIN-A  /  10
-                  COMPUTE  WRK-JIBAI-SKYKIN-A  =
-                           WRK-JIBAI-SKYKIN-A  *  10
-             END-EVALUATE
-             IF   RECE41-SEIKYUKBN    =  "1"
-               MOVE  1                   TO  RECE41-JIBAI-JYUKINFLG
-               MOVE  WRK-JIBAI-SKYKIN-A  TO  RECE41-JIBAI-JYUKIN
-             ELSE
-               MOVE  1                   TO  RECE41-JIBAI-SKYKINFLG
-               MOVE  WRK-JIBAI-SKYKIN-A  TO  RECE41-JIBAI-SKYKIN
-             END-IF
-             MOVE    WRK-JIBAI-SKYKIN-A  TO  RECE41-JIBAI-GOKEI-AF
-           END-IF
-      *
-           IF       RECE41-JIBAI-CHIKANKINFLG  =  1
-             IF  WRK-JIBAI-SKYKIN-A  >  ZERO
-               IF   WRK-JIBAI-SKYKIN-A  <  RECE41-JIBAI-CHIKANKIN
-                 MOVE    WRK-JIBAI-SKYKIN-A  TO  RECE41-JIBAI-CHIKANKIN
-               END-IF
-               IF   RECE41-JIBAI-CHIKANKIN  >  ZERO
-                 MOVE    1                   TO  RECE41-JIBAI-JYUKINFLG
-                 MOVE    RECE41-JIBAI-CHIKANKIN
-                                             TO  RECE41-JIBAI-JYUKIN
-                 COMPUTE WRK-JIBAI-SKYKIN-B = WRK-JIBAI-SKYKIN-A
-                                            - RECE41-JIBAI-CHIKANKIN
-                 IF    WRK-JIBAI-SKYKIN-B  >  ZERO
-                   MOVE  1                   TO  RECE41-JIBAI-SKYKINFLG
-                   MOVE  WRK-JIBAI-SKYKIN-B  TO  RECE41-JIBAI-SKYKIN
-                 ELSE
-                   MOVE  ZERO                TO  RECE41-JIBAI-SKYKINFLG
-                   MOVE  ZERO                TO  RECE41-JIBAI-SKYKIN
-                 END-IF
-               ELSE
-                 MOVE    ZERO                TO  RECE41-JIBAI-JYUKINFLG
-                 MOVE    ZERO                TO  RECE41-JIBAI-JYUKIN
-                 MOVE    1                   TO  RECE41-JIBAI-SKYKINFLG
-                 MOVE    WRK-JIBAI-SKYKIN-A  TO  RECE41-JIBAI-SKYKIN
-               END-IF
-             ELSE
-               MOVE      2        TO  RECE41-JIBAI-CHIKANKINFLG
-             END-IF
-           END-IF
-      *
-           IF       RECE41-JIBAI-CHIKANNAMEFLG  =  1
-             IF  WRK-JIBAI-SKYKIN-A  >  ZERO
-               IF     RECE41-JIBAI-JYUKINFLG      =  1
-                 MOVE    1        TO  RECE41-JIBAI-JYUNAMEFLG
-                 MOVE    RECE41-JIBAI-CHIKANNAME
-                                  TO  RECE41-JIBAI-JYUNAME
-               ELSE
-                 MOVE    2        TO  RECE41-JIBAI-CHIKANNAMEFLG
-               END-IF
-             ELSE
-                 MOVE    2        TO  RECE41-JIBAI-CHIKANNAMEFLG
-             END-IF
-           END-IF
-      *
-           .
-       21054-JIBAI-KINGAKU-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œ¥À‹≈¿øÙ…Ù ¨§Œ•Ø•Í•¢ΩËÕ˝° ∏¯Ã≥∫“≥≤°À
-      *****************************************************************
-       2106-KHNTEN-KO-CLEAR-SEC               SECTION.
-      *
-           IF        FLG-KHNTEN2-KO  =    1
-             MOVE    ZERO             TO   RECE41-KHNTEN(2)
-           END-IF
-           IF        FLG-KHNTEN3-KO  =    1
-             MOVE    ZERO             TO   RECE41-KHNTEN(3)
-           END-IF
-           IF        FLG-KHNTEN4-KO  =    1
-             MOVE    ZERO             TO   RECE41-KHNTEN(4)
-           END-IF
-           IF        FLG-KHNTEN5-KO  =    1
-             MOVE    ZERO             TO   RECE41-KHNTEN(5)
-           END-IF
-           IF        FLG-KHNTEN6-KO  =    1
-             MOVE    ZERO             TO   RECE41-KHNTEN(6)
-           END-IF
-           IF        FLG-KHNTEN7-KO  =    1
-             MOVE    ZERO             TO   RECE41-KHNTEN(7)
-           END-IF
-           IF        FLG-KHNTEN8-KO  =    1
-             MOVE    ZERO             TO   RECE41-KHNTEN(8)
-           END-IF
-           IF        FLG-KHNTEN17-KO =    1
-             MOVE    ZERO             TO   RECE41-KHNTEN(17)
-           END-IF
-           IF        FLG-KHNTEN19-KO =    1
-             MOVE    ZERO             TO   RECE41-KHNTEN(19)
-           END-IF
-           IF        FLG-KHNTEN21-KO =    1
-             MOVE    ZERO             TO   RECE41-KHNTEN(21)
-           END-IF
-           IF        FLG-KHNTEN22-KO =    1
-             MOVE    ZERO             TO   RECE41-KHNTEN(22)
-           END-IF
-      *
-           IF     RECE41-KOMUKBN  =   "2"
-             IF    (CNT-SAISIN-ETC      NOT =  ZERO)
-             AND   (CNT-SAISIN-DOUJITU  NOT =  ZERO)
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-             END-IF
-             IF   RECE41-SRYYM   >=  "201004"
-               IF    (CNT-JIKANTAI1    NOT =  ZERO         )
-               AND   (CNT-SAISIN-ETC   NOT =  CNT-JIKANTAI1)
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-               END-IF
-               IF    (CNT-JIKANTAI2    NOT =  ZERO         )
-               AND   (CNT-SAISIN-ETC   NOT =  CNT-JIKANTAI2)
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-               END-IF
-               IF    (CNT-JIKANTAI3    NOT =  ZERO         )
-               AND   (CNT-SAISIN-ETC   NOT =  CNT-JIKANTAI3)
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-               END-IF
-               IF    (CNT-MESAIKSN     NOT =  ZERO        )
-               AND   (CNT-SAISIN-ETC   NOT =  CNT-MESAIKSN)
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-               END-IF
-               IF    (CNT-CHIHOKATU    NOT =  ZERO         )
-               AND   (CNT-SAISIN-ETC   NOT =  CNT-CHIHOKATU)
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-               END-IF
-               IF    (CNT-CHIHOKAT2    NOT =  ZERO         )
-               AND   (CNT-SAISIN-ETC   NOT =  CNT-CHIHOKAT2)
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-               END-IF
-             END-IF
-           ELSE
-             IF   RECE41-SRYYM   >=  "201004"
-               IF  CNT-JIKANTAI1     NOT = ZERO
-                 IF   CNT-JIKANTAI2  NOT = ZERO
-                   IF   CNT-JIKANTAI1  NOT =  CNT-JIKANTAI2
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-JIKANTAI3  NOT = ZERO
-                   IF   CNT-JIKANTAI1  NOT =  CNT-JIKANTAI3
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-MESAIKSN   NOT = ZERO
-                   IF   CNT-JIKANTAI1  NOT =  CNT-MESAIKSN
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-CHIHOKATU  NOT = ZERO
-                   IF   CNT-JIKANTAI1  NOT =  CNT-CHIHOKATU
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-CHIHOKAT2  NOT = ZERO
-                   IF   CNT-JIKANTAI1  NOT =  CNT-CHIHOKAT2
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-SAITOKKSN  NOT = ZERO
-                   IF   CNT-JIKANTAI1  NOT =  CNT-SAITOKKSN
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-               END-IF
-               IF  CNT-JIKANTAI2     NOT = ZERO
-                 IF   CNT-JIKANTAI1  NOT = ZERO
-                   IF   CNT-JIKANTAI2  NOT =  CNT-JIKANTAI1
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-JIKANTAI3  NOT = ZERO
-                   IF   CNT-JIKANTAI2  NOT =  CNT-JIKANTAI3
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-MESAIKSN   NOT = ZERO
-                   IF   CNT-JIKANTAI2  NOT =  CNT-MESAIKSN
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-CHIHOKATU  NOT = ZERO
-                   IF   CNT-JIKANTAI2  NOT =  CNT-CHIHOKATU
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-CHIHOKAT2  NOT = ZERO
-                   IF   CNT-JIKANTAI2  NOT =  CNT-CHIHOKAT2
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-SAITOKKSN  NOT = ZERO
-                   IF   CNT-JIKANTAI2  NOT =  CNT-SAITOKKSN
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-               END-IF
-               IF  CNT-JIKANTAI3     NOT = ZERO
-                 IF   CNT-JIKANTAI2  NOT = ZERO
-                   IF   CNT-JIKANTAI3  NOT =  CNT-JIKANTAI2
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-JIKANTAI3  NOT = ZERO
-                   IF   CNT-JIKANTAI3  NOT =  CNT-JIKANTAI3
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-MESAIKSN   NOT = ZERO
-                   IF   CNT-JIKANTAI3  NOT =  CNT-MESAIKSN
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-CHIHOKATU  NOT = ZERO
-                   IF   CNT-JIKANTAI3  NOT =  CNT-CHIHOKATU
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-CHIHOKAT2  NOT = ZERO
-                   IF   CNT-JIKANTAI3  NOT =  CNT-CHIHOKAT2
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-SAITOKKSN  NOT = ZERO
-                   IF   CNT-JIKANTAI3  NOT =  CNT-SAITOKKSN
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-               END-IF
-               IF  CNT-MESAIKSN      NOT = ZERO
-                 IF   CNT-JIKANTAI1  NOT = ZERO
-                   IF   CNT-MESAIKSN   NOT =  CNT-JIKANTAI1
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-JIKANTAI2  NOT = ZERO
-                   IF   CNT-MESAIKSN   NOT =  CNT-JIKANTAI2
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-JIKANTAI3  NOT = ZERO
-                   IF   CNT-MESAIKSN   NOT =  CNT-JIKANTAI3
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-CHIHOKATU  NOT = ZERO
-                   IF   CNT-MESAIKSN   NOT =  CNT-CHIHOKATU
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-CHIHOKAT2  NOT = ZERO
-                   IF   CNT-MESAIKSN   NOT =  CNT-CHIHOKAT2
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-SAITOKKSN  NOT = ZERO
-                   IF   CNT-MESAIKSN   NOT =  CNT-SAITOKKSN
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-               END-IF
-               IF  CNT-CHIHOKATU     NOT = ZERO
-                 IF   CNT-JIKANTAI1  NOT = ZERO
-                   IF   CNT-CHIHOKATU  NOT =  CNT-JIKANTAI1
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-JIKANTAI2  NOT = ZERO
-                   IF   CNT-CHIHOKATU  NOT =  CNT-JIKANTAI2
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-JIKANTAI3  NOT = ZERO
-                   IF   CNT-CHIHOKATU  NOT =  CNT-JIKANTAI3
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-MESAIKSN   NOT = ZERO
-                   IF   CNT-CHIHOKATU  NOT =  CNT-MESAIKSN
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-CHIHOKAT2  NOT = ZERO
-                   IF   CNT-CHIHOKATU  NOT =  CNT-CHIHOKAT2
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-SAITOKKSN  NOT = ZERO
-                   IF   CNT-CHIHOKATU  NOT =  CNT-SAITOKKSN
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-               END-IF
-               IF  CNT-CHIHOKAT2     NOT = ZERO
-                 IF   CNT-JIKANTAI1  NOT = ZERO
-                   IF   CNT-CHIHOKAT2  NOT =  CNT-JIKANTAI1
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-JIKANTAI2  NOT = ZERO
-                   IF   CNT-CHIHOKAT2  NOT =  CNT-JIKANTAI2
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-JIKANTAI3  NOT = ZERO
-                   IF   CNT-CHIHOKAT2  NOT =  CNT-JIKANTAI3
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-MESAIKSN   NOT = ZERO
-                   IF   CNT-CHIHOKAT2  NOT =  CNT-MESAIKSN
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-CHIHOKATU  NOT = ZERO
-                   IF   CNT-CHIHOKAT2  NOT =  CNT-CHIHOKATU
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-SAITOKKSN  NOT = ZERO
-                   IF   CNT-CHIHOKAT2  NOT =  CNT-SAITOKKSN
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-               END-IF
-               IF  CNT-SAITOKKSN     NOT = ZERO
-                 IF   CNT-JIKANTAI1  NOT = ZERO
-                   IF   CNT-SAITOKKSN  NOT =  CNT-JIKANTAI1
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-JIKANTAI2  NOT = ZERO
-                   IF   CNT-SAITOKKSN  NOT =  CNT-JIKANTAI2
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-JIKANTAI3  NOT = ZERO
-                   IF   CNT-SAITOKKSN  NOT =  CNT-JIKANTAI3
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-MESAIKSN   NOT = ZERO
-                   IF   CNT-SAITOKKSN  NOT =  CNT-MESAIKSN
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-CHIHOKATU  NOT = ZERO
-                   IF   CNT-SAITOKKSN  NOT =  CNT-CHIHOKATU
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-                 IF   CNT-CHIHOKAT2  NOT = ZERO
-                   IF   CNT-SAITOKKSN  NOT =  CNT-CHIHOKAT2
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 END-IF
-               END-IF
-      *
-               IF  CNT-SAITOKKSN2    NOT = ZERO
-                 IF   ((RECE41-KAISU(2)  NOT =  ZERO          ) AND
-                       (RECE41-KAISU(2)      =  CNT-SAITOKKSN2))
-                   IF   CNT-SAITOKKSN    NOT = ZERO
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                   END-IF
-                 ELSE
-                     MOVE   ZERO         TO   RECE41-KHNTEN(2)
-                 END-IF
-               END-IF
-      *
-               IF  CNT-SAITOKKSN     NOT = ZERO
-                 IF   ( RECE41-KAISU(2)      =  ZERO           )
-                 OR   ((RECE41-KAISU(2)  NOT =  ZERO          ) AND
-                       (RECE41-KAISU(2)      =  CNT-SAITOKKSN2))
-                     ADD    CNT-SAITOKKSN    TO   RECE41-KAISU(2)
-                 END-IF
-               END-IF
-             END-IF
-           END-IF
-      *
-           .
-       2106-KHNTEN-KO-CLEAR-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     Ò≥Á≈¿øÙ§Œº£∏≥∏∫≈¿ ¨ ‘Ω∏
-      *****************************************************************
-       2107-GENTEN-HENSYU-SEC      SECTION.
-      *
-           IF   RECE41-TENSU(2)  >=  WRK-RECE4G-TENSU(2)
-             COMPUTE  RECE41-TENSU(2)  =
-                      RECE41-TENSU(2)  -  WRK-RECE4G-TENSU(2)
-           ELSE
-             MOVE     ZERO    TO   RECE41-TENSU(2)
-           END-IF
-           IF   RECE41-TENSU(3)  >=  WRK-RECE4G-TENSU(3)
-             COMPUTE  RECE41-TENSU(3)  =
-                      RECE41-TENSU(3)  -  WRK-RECE4G-TENSU(3)
-           ELSE
-             MOVE     ZERO    TO   RECE41-TENSU(3)
-           END-IF
-           IF   RECE41-TENSU(5)  >=  WRK-RECE4G-TENSU(5)
-             COMPUTE  RECE41-TENSU(5)  =
-                      RECE41-TENSU(5)  -  WRK-RECE4G-TENSU(5)
-           ELSE
-             MOVE     ZERO    TO   RECE41-TENSU(5)
-           END-IF
-           IF   RECE41-TENSU(6)  >=  WRK-RECE4G-TENSU(6)
-             COMPUTE  RECE41-TENSU(6)  =
-                      RECE41-TENSU(6)  -  WRK-RECE4G-TENSU(6)
-           ELSE
-             MOVE     ZERO    TO   RECE41-TENSU(6)
-           END-IF
-           IF   RECE41-TENSU(7)  >=  WRK-RECE4G-TENSU(7)
-             COMPUTE  RECE41-TENSU(7)  =
-                      RECE41-TENSU(7)  -  WRK-RECE4G-TENSU(7)
-           ELSE
-             MOVE     ZERO    TO   RECE41-TENSU(7)
-           END-IF
-           IF   RECE41-TENSU(8)  >=  WRK-RECE4G-TENSU(8)
-             COMPUTE  RECE41-TENSU(8)  =
-                      RECE41-TENSU(8)  -  WRK-RECE4G-TENSU(8)
-           ELSE
-             MOVE     ZERO    TO   RECE41-TENSU(8)
-           END-IF
-           IF   RECE41-TENSU(9)  >=  WRK-RECE4G-TENSU(9)
-             COMPUTE  RECE41-TENSU(9)  =
-                      RECE41-TENSU(9)  -  WRK-RECE4G-TENSU(9)
-           ELSE
-             MOVE     ZERO    TO   RECE41-TENSU(9)
-           END-IF
-           IF   RECE41-TENSU(12) >=  WRK-RECE4G-TENSU(12)
-             COMPUTE  RECE41-TENSU(12) =
-                      RECE41-TENSU(12) -  WRK-RECE4G-TENSU(12)
-           ELSE
-             MOVE     ZERO    TO   RECE41-TENSU(12)
-           END-IF
-           IF   RECE41-TENSU(14) >=  WRK-RECE4G-TENSU(14)
-             COMPUTE  RECE41-TENSU(14) =
-                      RECE41-TENSU(14) -  WRK-RECE4G-TENSU(14)
-           ELSE
-             MOVE     ZERO    TO   RECE41-TENSU(14)
-           END-IF
-      *
-      *    πÁ∑◊≈¿øÙ§Œ ‘Ω∏
-           IF   RECE41-HKNKBN     NOT  =   "4" AND "6"
-              COMPUTE  RECE41-TOTALTEN  =  RECE41-TOTALTEN
-                                        -  WRK-RECE4G-TENSU(2)
-                                        -  WRK-RECE4G-TENSU(3)
-                                        -  WRK-RECE4G-TENSU(5)
-                                        -  WRK-RECE4G-TENSU(6)
-                                        -  WRK-RECE4G-TENSU(7)
-                                        -  WRK-RECE4G-TENSU(8)
-                                        -  WRK-RECE4G-TENSU(9)
-                                        -  WRK-RECE4G-TENSU(12)
-                                        -  WRK-RECE4G-TENSU(14)
-           END-IF
-      *
-           .
-       2107-GENTEN-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ∫ﬂ¬≤ÛøÙ§Œ∫∆ ‘Ω∏
-      *****************************************************************
-       2108-ZAITAKU-KAISU-HENSYU-SEC               SECTION.
-      *
-           IF    RECE41-SRYYM   >=  "201404"
-             EVALUATE   RECE41-HKNKBN
-               WHEN      "1"
-               WHEN      "2"
-      *          ¥µ≤»ø«Œ≈ª˛¥÷≤√ªª° ±˝ø«°À§À¥ÿ§π§Î≤ÛøÙ§Œ∫∆ ‘Ω∏
-                 PERFORM  VARYING  IDX19  FROM  1  BY  1
-                           UNTIL   IDX19   >    9
-                   PERFORM  VARYING  IDX20  FROM  1  BY  1
-                             UNTIL   IDX20   >   31
-                     IF  TBL-ZAITAKU-KAISU(1 IDX19 IDX20) NOT = ZERO
-                     AND TBL-ZAITAKU-KAISU(2 IDX19 IDX20) NOT = ZERO
-                       COMPUTE  RECE41-KAISU(8) =
-                                RECE41-KAISU(8) -
-                                TBL-ZAITAKU-KAISU(2 IDX19 IDX20)
-                     END-IF
-                   END-PERFORM
-                 END-PERFORM
-      *          ¥µ≤»ø«Œ≈ª˛¥÷≤√ªª° ∆√ Ã±˝ø«°À§À¥ÿ§π§Î≤ÛøÙ§Œ∫∆ ‘Ω∏
-                 PERFORM  VARYING  IDX19  FROM  1  BY  1
-                           UNTIL   IDX19   >    9
-                   PERFORM  VARYING  IDX20  FROM  1  BY  1
-                             UNTIL   IDX20   >   31
-                     IF  TBL-ZAITAKU-KAISU(3 IDX19 IDX20) NOT = ZERO
-                     AND TBL-ZAITAKU-KAISU(4 IDX19 IDX20) NOT = ZERO
-                       COMPUTE  RECE41-KAISU(8) =
-                                RECE41-KAISU(8) -
-                                TBL-ZAITAKU-KAISU(4 IDX19 IDX20)
-                     END-IF
-                   END-PERFORM
-                 END-PERFORM
-      *          ¥µ≤»ø«Œ≈ª˛¥÷≤√ªª° ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈Œ¡°À§À¥ÿ§π§Î≤ÛøÙ§Œ∫∆ ‘Ω∏
-                 PERFORM  VARYING  IDX19  FROM  1  BY  1
-                           UNTIL   IDX19   >    9
-                   PERFORM  VARYING  IDX20  FROM  1  BY  1
-                             UNTIL   IDX20   >   31
-                     IF  TBL-ZAITAKU-KAISU(5 IDX19 IDX20) NOT = ZERO
-                     AND TBL-ZAITAKU-KAISU(6 IDX19 IDX20) NOT = ZERO
-                       COMPUTE  RECE41-KAISU(11) =
-                                RECE41-KAISU(11) -
-                                TBL-ZAITAKU-KAISU(6 IDX19 IDX20)
-                     END-IF
-                   END-PERFORM
-                 END-PERFORM
-               WHEN      "5"
-      *          ¥µ≤»ø«Œ≈ª˛¥÷≤√ªª° ±˝ø«°À§À¥ÿ§π§Î≤ÛøÙ§Œ∫∆ ‘Ω∏
-                 PERFORM  VARYING  IDX19  FROM  1  BY  1
-                           UNTIL   IDX19   >    9
-                   PERFORM  VARYING  IDX20  FROM  1  BY  1
-                             UNTIL   IDX20   >   31
-                     IF  TBL-ZAITAKU-KAISU(1 IDX19 IDX20) NOT = ZERO
-                     AND TBL-ZAITAKU-KAISU(2 IDX19 IDX20) NOT = ZERO
-                       COMPUTE  RECE41-KAISU(10) =
-                                RECE41-KAISU(10) -
-                                TBL-ZAITAKU-KAISU(2 IDX19 IDX20)
-                     END-IF
-                   END-PERFORM
-                 END-PERFORM
-      *          ¥µ≤»ø«Œ≈ª˛¥÷≤√ªª° ∆√ Ã±˝ø«°À§À¥ÿ§π§Î≤ÛøÙ§Œ∫∆ ‘Ω∏
-                 PERFORM  VARYING  IDX19  FROM  1  BY  1
-                           UNTIL   IDX19   >    9
-                   PERFORM  VARYING  IDX20  FROM  1  BY  1
-                             UNTIL   IDX20   >   31
-                     IF  TBL-ZAITAKU-KAISU(3 IDX19 IDX20) NOT = ZERO
-                     AND TBL-ZAITAKU-KAISU(4 IDX19 IDX20) NOT = ZERO
-                       COMPUTE  RECE41-KAISU(10) =
-                                RECE41-KAISU(10) -
-                                TBL-ZAITAKU-KAISU(4 IDX19 IDX20)
-                     END-IF
-                   END-PERFORM
-                 END-PERFORM
-      *          ¥µ≤»ø«Œ≈ª˛¥÷≤√ªª° ∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈Œ¡°À§À¥ÿ§π§Î≤ÛøÙ§Œ∫∆ ‘Ω∏
-                 PERFORM  VARYING  IDX19  FROM  1  BY  1
-                           UNTIL   IDX19   >    9
-                   PERFORM  VARYING  IDX20  FROM  1  BY  1
-                             UNTIL   IDX20   >   31
-                     IF  TBL-ZAITAKU-KAISU(5 IDX19 IDX20) NOT = ZERO
-                     AND TBL-ZAITAKU-KAISU(6 IDX19 IDX20) NOT = ZERO
-                       COMPUTE  RECE41-KAISU(13) =
-                                RECE41-KAISU(13) -
-                                TBL-ZAITAKU-KAISU(6 IDX19 IDX20)
-                     END-IF
-                   END-PERFORM
-                 END-PERFORM
-             END-EVALUATE
-           END-IF
-      *
-           .
-       2108-ZAITAKU-KAISU-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    º´«Â¿’°¶¿¡µ·∂‚≥€ÕÛ√ºøÙΩËÕ˝∂Ë ¨ ‘Ω∏
-      *****************************************************************
-       2109-JIBAI-HASUKBN-HENSYU-SEC               SECTION.
-      *
-           EVALUATE   RECE41-HKNKBN
-             WHEN       "4"
-               EVALUATE   SYS-200501-JIBAI-FRACTION-KBN(1)
-                 WHEN      "1"
-                   IF   WRK-HASU1001-JIBAI   NOT = "4"
-                     MOVE  WRK-HASU1001-JIBAI   TO  RECE41-JIBAI-HASUKBN
-                   END-IF
-                 WHEN      "2"
-                   IF   RECE41-SEIKYUKBN         = "1"
-                   AND  WRK-HASU1001-JIBAI   NOT = "4"
-                     MOVE  WRK-HASU1001-JIBAI   TO  RECE41-JIBAI-HASUKBN
-                   END-IF
-               END-EVALUATE
-             WHEN       "6"
-               EVALUATE   SYS-200501-JIBAI-FRACTION-KBN(2)
-                 WHEN      "1"
-                   IF   WRK-HASU1001-DAISAN  NOT = "4"
-                     MOVE  WRK-HASU1001-DAISAN  TO  RECE41-JIBAI-HASUKBN
-                   END-IF
-                 WHEN      "2"
-                   IF   RECE41-SEIKYUKBN         = "1"
-                   AND  WRK-HASU1001-DAISAN  NOT = "4"
-                     MOVE  WRK-HASU1001-DAISAN  TO  RECE41-JIBAI-HASUKBN
-                   END-IF
-               END-EVALUATE
-           END-EVALUATE
-      *
-           .
-       2109-JIBAI-HASUKBN-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ω™ŒªΩËÕ˝
-      *****************************************************************
-       300-TERM-SEC                SECTION.
-      *
-           CLOSE   RECE41-FILE
-                   RECE44-FILE
-                   RECE45-FILE
-                   RECE4A-FILE
-                   RECE4B-FILE
-                   RECE44C-FILE
-                   RECE45C-FILE
-      *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *    •π•∆•√•◊¥…Õ˝Ω™ŒªΩËÕ˝
-               MOVE    "STE"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
-      *
-               PERFORM 900-DBDISCONNECT-SEC
-           END-IF
-      *
-           DISPLAY "RECE41-IN  :" CNT-IN   
-           DISPLAY "RECE41-MOD :" CNT-OUT3  
-           DISPLAY "RECE44-OUT :" CNT-OUT1 
-           DISPLAY "RECE45-OUT :" CNT-OUT2  
-           DISPLAY "RECE4A-OUT :" CNT-OUT4 
-           DISPLAY "RECE4B-OUT :" CNT-OUT5  
-           DISPLAY "RECE44C-OUT :" CNT-OUT6 
-           DISPLAY "RECE45C-OUT :" CNT-OUT7  
-           DISPLAY "*** ORCR0420 END ***"
-      * 
-           .
-       300-TERM-EXT.
-           EXIT.
-      *
+057400*
       *****************************************************************
       *    •®•È°ºΩ–ŒœΩËÕ˝
       *****************************************************************
@@ -12955,74 +3410,58 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    WRK-RECEERR         TO  RECEERR-REC
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
-      *
-               IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            •∏•Á•÷¥…Õ˝≥´ªœΩËÕ˝
-                   MOVE    "JBE"           TO  SJOBKANRI-MODE
-                   INITIALIZE                  JOBKANRI-REC
-                   MOVE    WRK-RECEERR     TO  JOB-YOBI
-                   MOVE    "9999"          TO  JOB-ERRCD
-grpsys             PERFORM 900-CALL-ORCSJOB-SEC
-               END-IF
+      *         
+      *        •∏•Á•÷¥…Õ˝≥´ªœΩËÕ˝
+               MOVE    "JBE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+               MOVE    WRK-RECEERR     TO  JOB-YOBI
+               MOVE    "9999"          TO  JOB-ERRCD
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
            END-IF
       *                             
-           MOVE    1                   TO  FLG-END
            .
        500-ERR-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    •®•È°ºª˛Ω™ŒªΩËÕ˝
+      *    Ω™ŒªΩËÕ˝
       *****************************************************************
-       500-COBABORT-SEC                SECTION.
+       300-TERM-SEC                SECTION.
       *
-           CALL    "cobabort"          USING   WRK-ERRMSG
+           CLOSE   RECE41-FILE
+                   RECE44-FILE
+                   RECE45-FILE
+                   RECE4A-FILE
+                   RECE4B-FILE
       *
+      *    •π•∆•√•◊¥…Õ˝Ω™ŒªΩËÕ˝
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+           PERFORM 900-DBDISCONNECT-SEC
+      *
+           DISPLAY "RECE41-IN  :" CNT-IN   
+           DISPLAY "RECE41-MOD :" CNT-OUT3  
+           DISPLAY "RECE44-OUT :" CNT-OUT1 
+           DISPLAY "RECE45-OUT :" CNT-OUT2  
+           DISPLAY "RECE4A-OUT :" CNT-OUT4 
+           DISPLAY "RECE4B-OUT :" CNT-OUT5  
+           
+           DISPLAY "*** ORCR0420 END ***"
+      * 
            .
-       500-COBABORT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ΩËÕ˝√ÊªﬂΩËÕ˝
-      *****************************************************************
-       500-CANCEL-HENSYU-SEC                SECTION.
-      *
-           IF      WRK-PARA-SHELLID    =   "RECEPTX"
-               CONTINUE
-           ELSE
-               MOVE    "CHK"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
-               IF    ( SJOBKANRI-RETURN
-                                       =   ZERO )
-               AND   ( JOB-STOPFLG     =   1    )
-                   MOVE    "ΩËÕ˝§¨√Êªﬂ§µ§Ï§ﬁ§∑§ø"
-                                           TO  WRK-RECEERR
-      *
-                   OPEN    INPUT   RECEERR-FILE
-                   IF      STS-RECEERR         =   ZERO
-                       CLOSE   RECEERR-FILE
-                   ELSE
-                       OPEN    OUTPUT              RECEERR-FILE
-      *    
-                       MOVE    WRK-RECEERR         TO  RECEERR-REC
-                       WRITE   RECEERR-REC
-                       CLOSE   RECEERR-FILE
-      *         
-      *                •∏•Á•÷¥…Õ˝Ω™ŒªΩËÕ˝
-                       MOVE    "CAN"           TO  SJOBKANRI-MODE
-                       INITIALIZE                  JOBKANRI-REC
-                       MOVE    WRK-RECEERR     TO  JOB-YOBI
-                       MOVE    "8888"          TO  JOB-ERRCD
-                       MOVE    2               TO  JOB-STOPFLG
-grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
-                   END-IF
-      *                             
-                   MOVE    1                   TO  FLG-END
-               END-IF
-           END-IF
-           .
-       500-CANCEL-HENSYU-EXT.
+       300-TERM-EXT.
            EXIT.
       *
       *****************************************************************
@@ -13030,25 +3469,37 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        800-SYSKANRI-READ-SEC           SECTION.
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBFETCH-SEC
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    WRK-PATH            TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+                   MOVE    ZERO            TO  FLG-SYSKANRI
                ELSE
-                   MOVE    1                   TO  FLG-SYSKANRI
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    1               TO  FLG-SYSKANRI
                END-IF
            ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        800-SYSKANRI-READ-EXT.
@@ -13059,13 +3510,18 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *****************************************************************
        810-SYSKANRI-READ-SEC         SECTION.
       *
-grpsys     PERFORM 900-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
+               INITIALIZE                  SYSKANRI-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-      *
            .
        810-SYSKANRI-READ-EXT.
            EXIT.
@@ -13073,523 +3529,164 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *****************************************************************
       *    ø«Œ≈≤Ò∑◊∆…π˛
       *****************************************************************
-       800-SRYACCT-READ-SEC           SECTION.
+       SRYACCT-READ-SEC           SECTION.
       *
-grpsys     PERFORM 900-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  SRYACCT-REC
-               MOVE    ZERO                TO  FLG-SRYACCT
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+               MOVE    ZERO            TO  FLG-SRYACCT
            ELSE
-               INITIALIZE                      SRYACCT-REC
-               MOVE    1                   TO  FLG-SRYACCT
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
            END-IF
       *
            .
-       800-SRYACCT-READ-EXT.
+       SRYACCT-READ-EXT.
            EXIT.
-      *
       *****************************************************************
       *    ø«Œ≈π‘∞Ÿ∆…π˛
       *****************************************************************
-       800-SRYACT-READ-SEC           SECTION.
+       SRYACT-READ-SEC           SECTION.
       *
-grpsys     PERFORM 900-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  SRYACT-REC
-               MOVE    ZERO                TO  FLG-SRYACT
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
+               MOVE    ZERO            TO  FLG-SRYACT
            ELSE
-               INITIALIZE                      SRYACT-REC
-               MOVE    1                   TO  FLG-SRYACT
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
            END-IF
       *
            .
-       800-SRYACT-READ-EXT.
+       SRYACT-READ-EXT.
            EXIT.
-      *
       *****************************************************************
-      *    ø«Œ≈≤Ò∑◊…’≤√æ Û∆…π˛
+      *    ≈¿øÙ∆…π˛
       *****************************************************************
-       800-SRYACCTPLUS-READ-SEC           SECTION.
+       TENSU-READ-SEC           SECTION.
       *
-grpsys     PERFORM 900-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  SRYACCTPLUS-REC
-               MOVE    ZERO                TO  FLG-SRYACCTPLUS
+               MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
+               MOVE    ZERO            TO  FLG-TENSU
            ELSE
-               INITIALIZE                      SRYACCTPLUS-REC
-               MOVE    1                   TO  FLG-SRYACCTPLUS
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1               TO  FLG-TENSU
            END-IF
       *
            .
-       800-SRYACT-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ≈¿øÙ•∆°º•÷•Î§Œ∏°∫˜
-      *****************************************************************
-       800-TENSU-TBL-SEC               SECTION.
-      *
-           INITIALIZE                           TNS-TENSU-REC
-grpsys     MOVE    SRY-HOSPNUM          TO      TNS-HOSPNUM
-           MOVE    SRY-SRYCD(IDX2)      TO      TNS-SRYCD
-           MOVE    SRY-SRYYM            TO      WK-TAIHI-SRYYM
-           MOVE    WK-TAIHI-DAY         TO      WK-TAIHI-SRYD
-           MOVE    WK-TAIHI-SRYYMD      TO      TNS-YUKOSTYMD
-                                                TNS-YUKOEDYMD
-           MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-           MOVE    "tbl_tensu"          TO      MCP-TABLE
-           MOVE    "key"                TO      MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC               =       ZERO
-               MOVE    "tbl_tensu"      TO      MCP-TABLE
-               MOVE    "key"            TO      MCP-PATHNAME
-grpsys         PERFORM 900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE   MCPDATA-REC   TO  TNS-TENSU-REC
-                   MOVE   ZERO          TO  FLG-TENSU
-               ELSE
-                   INITIALIZE               TNS-TENSU-REC
-                   MOVE    1            TO  FLG-TENSU
-               END-IF
-           ELSE
-               INITIALIZE                   TNS-TENSU-REC
-               MOVE    1                TO  FLG-TENSU
-           END-IF
-      *
-           MOVE    "tbl_tensu"          TO  MCP-TABLE
-           MOVE    "key"                TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-       800-TENSU-TBL-EXT.
+       TENSU-READ-EXT.
            EXIT.
       *
       *****************************************************************
       *    ¥µº‘•≥•·•Û•»•ﬁ•π•ø∆…§ﬂπ˛§ﬂ
       *****************************************************************
-       800-PTCOM-READ-SEC           SECTION.
+       950-PTCOM-READ-SEC           SECTION.
       *
            MOVE    PTCOM-REC           TO  MCPDATA-REC
-      *
-           MOVE    "tbl_ptcom"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptcom"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBFETCH-SEC
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  PTCOM-REC
-                   MOVE    ZERO            TO  FLG-PTCOM
+                   MOVE    MCPDATA-REC         TO  PTCOM-REC
+                   MOVE    ZERO                TO  FLG-PTCOM
                ELSE
-                   MOVE    1               TO  FLG-PTCOM
+                   MOVE    1                   TO  FLG-PTCOM
                    INITIALIZE                  PTCOM-REC
                END-IF
            ELSE
                MOVE    1                   TO  FLG-PTCOM
-               INITIALIZE                      PTCOM-REC
+               INITIALIZE                  PTCOM-REC
            END-IF
       *
-           MOVE    "tbl_ptcom"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           IF      FLG-PTCOM           =   ZERO
-               IF      PTCOM-INPUTCOMENT   NOT =   SPACE
-                   MOVE    ZERO            TO  WRK-COL
-                                               IDZ1
-                                               IDZ2 
-                   INSPECT PTCOM-INPUTCOMENT   TALLYING    WRK-COL
-                                               FOR ALL WRK-CONS-RETURN
-                   IF      WRK-COL         >   ZERO
-                       DISPLAY "PTCOM=" PTCOM-KEY
-                       PERFORM VARYING IDZ1    FROM    1   BY  1
-                               UNTIL   IDZ1    >       80
-                           IF      PTCOM-INPUTCOMENT(IDZ1:1)
-                                               =   WRK-CONS-RETURN
-                               COMPUTE IDZ2    =   IDZ1    -   1
-                               MOVE    80      TO  IDZ1
-                           END-IF
-                       END-PERFORM
-      *
-                       CALL    "coblog" USING   "ptcom returncd err"
-                       MOVE    SPACE               TO  WRK-RECEERR
-                       MOVE    SPACE               TO  WRK-ERRMSG
-                       STRING
-                        "•≥•·•Û•» ∏ª˙•≥°º•……‘¿µ°°¥µº‘»÷πÊ="
-                                                   DELIMITED  BY  SIZE
-                               RECE41-PTNUM        DELIMITED  BY  SPACE
-                               "°°ø«Œ≈∂Ë ¨="       DELIMITED  BY  SIZE
-                               SRY-SRYKBN          DELIMITED  BY  SPACE
-                                                   INTO    WRK-ERRMSG
-                       END-STRING
-                       IF      IDZ2        >   1    
-                           STRING   WRK-ERRMSG     DELIMITED  BY  SPACE
-                                   "°°•≥•·•Û•»="   DELIMITED  BY  SIZE
-                                   PTCOM-INPUTCOMENT(1:IDZ2)
-                                                   DELIMITED  BY  SPACE
-                                                   INTO    WRK-RECEERR
-                           END-STRING
-                       ELSE
-                           STRING   WRK-ERRMSG     DELIMITED  BY  SPACE
-                                    "°°•≥•·•Û•»="  DELIMITED  BY  SIZE
-                                    PTCOM-SRYCD    DELIMITED  BY  SPACE
-                                                   INTO    WRK-RECEERR
-                           END-STRING
-                       END-IF
-                       PERFORM 500-ERR-HENSYU-SEC
-      *
-                       MOVE    SPACE               TO  WRK-ERRMSG
-                       STRING  "ORCR0420 "         DELIMITED  BY  SIZE
-                               WRK-RECEERR         DELIMITED  BY  SIZE
-                               LOW-VALUE           DELIMITED  BY  SIZE
-                                                   INTO    WRK-ERRMSG
-                       END-STRING
-                       PERFORM 500-COBABORT-SEC
-                   END-IF
-               END-IF
-           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
-       800-PTCOM-READ-EXT.
+       950-PTCOM-READ-EXT.
            EXIT.
-      *
+      *      
       *****************************************************************
-      *    º˝«º∆…π˛
-      *****************************************************************
-       800-SYUNOU-READ-SEC           SECTION.
-      *
-           PERFORM 900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SYUNOU-REC
-               MOVE    ZERO            TO  FLG-SYUNOU
-           ELSE
-               INITIALIZE                  SYUNOU-REC
-               MOVE    1               TO  FLG-SYUNOU
-           END-IF
-      *
-           .
-       800-SYUNOU-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    √Ê¥÷•’•°•§•Î£“£≈£¡£ƒΩËÕ˝
-      *****************************************************************
-       900-RECE41-READ-SEC            SECTION.
-      *
-           READ    RECE41-FILE   NEXT
-               AT  END
-                   MOVE    1     TO    FLG-END
-               NOT  AT  END
-                   ADD     1     TO    CNT-IN
-                   ADD     1     TO    CNT-IN-COMMIT
-                                       CNT-IN-CANCEL
-      *
-                   DISPLAY "RECE41  PTNUM=" RECE41-PTNUM
-      *
-                   MOVE  RECE41-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
-                   MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
-                   PERFORM 910-SYSKANRI-HENSYU-SEC
-      *
-           END-READ
-           .
-       900-RECE41-READ-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    ø«Œ≈«Ø∑Ó§Œ¬–æ›§»§ §Î•∑•π¥…Õ˝§ÚºË∆¿° ∏ƒ ÃΩËÕ˝§Œ§ﬂ
-      ****************************************************************
-       910-SYSKANRI-HENSYU-SEC         SECTION.
-      *
-           IF   WRK-PARA-SRYYM    NOT =  ZERO
-             CONTINUE
-           ELSE
-      *      ∞ÂŒ≈µ°¥ÿ£…£ƒ ‘Ω∏
-             MOVE  ZERO           TO  FLG-SET
-             PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                   UNTIL  ( SYSKAN-IDX              >  100  )
-                    OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
-                    OR    ( FLG-SET                 =   1   )
-      *
-                MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
-                IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
-                AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
-                   MOVE     1       TO    FLG-SET
-                   MOVE    SYS-1001-TAX-HASU-KBN
-                                    TO    WRK-TAX1001-KBN
-                   IF   WRK-TAX1001-KBN = SPACE
-                      MOVE   "2"    TO    WRK-TAX1001-KBN
-                   END-IF
-                   MOVE    SYS-1001-DAISANKBN
-                                    TO    WRK-DAISAN-DAISANKBN
-                   IF  WRK-DAISAN-DAISANKBN = SPACE
-                     MOVE  "2"      TO    WRK-DAISAN-DAISANKBN
-                   END-IF
-                   MOVE    SYS-1001-DISCOUNT-HASU-KBN4
-                                    TO    WRK-HASU1001-JIBAI
-                   IF  WRK-HASU1001-JIBAI = SPACE
-                     MOVE  "4"      TO    WRK-HASU1001-JIBAI
-                   END-IF
-                   MOVE    SYS-1001-DISCOUNT-HASU-KBN6
-                                    TO    WRK-HASU1001-DAISAN
-                   IF  WRK-HASU1001-DAISAN = SPACE
-                     MOVE  WRK-HASU1001-JIBAI
-                                    TO    WRK-HASU1001-DAISAN
-                   END-IF
-                END-IF
-      *
-             END-PERFORM
-             IF     FLG-SET  =  ZERO
-      *
-               STRING "∞ÂŒ≈µ°¥ÿæ Û§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø°£ø«Œ≈«Ø∑Ó°·"
-                                          DELIMITED  BY  SIZE 
-                       RECE41-SRYYM       DELIMITED  BY  SIZE
-                                      INTO    WRK-RECEERR
-               END-STRING
-      *
-               PERFORM 500-ERR-HENSYU-SEC
-               MOVE    1               TO  FLG-END
-               GO  TO  910-SYSKANRI-HENSYU-EXT
-             END-IF
-      *
-      *      ª‹¿ﬂ¥Ω‡æ Û
-             MOVE    ZERO                TO  FLG-SET
-      *
-             PERFORM  VARYING  SYSKAN-IDX2  FROM  1   BY  1
-                       UNTIL ( SYSKAN-IDX2               >  100  )
-                        OR   ( TBL-SYS10062(SYSKAN-IDX2) = SPACE )
-                        OR   ( FLG-SET                   =   1   )
-                 MOVE    TBL-SYS10062(SYSKAN-IDX2)  TO  SYS-1006-REC
-                 IF   ( SYS-1006-STYUKYMD  <=  WRK-SYS-SRYYMD    )
-                 AND  ( WRK-SYS-SRYYMD     <=  SYS-1006-EDYUKYMD )
-                     MOVE     1                  TO  FLG-SET
-                 END-IF
-             END-PERFORM
-             IF      FLG-SET    =   ZERO
-                 MOVE  ZERO                    TO  WRK-SISETU613
-                 MOVE  ZERO                    TO  WRK-SISETU695
-             ELSE
-                 MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
-                 MOVE  SYS-1006-SSTKIJUN(195)  TO  WRK-SISETU695
-             END-IF
-      *
-             MOVE    ZERO                TO  FLG-SET
-      *
-             PERFORM  VARYING  SYSKAN-IDX2  FROM  1   BY  1
-                       UNTIL ( SYSKAN-IDX2               >  100  )
-                        OR   ( TBL-SYS10067(SYSKAN-IDX2) = SPACE )
-                        OR   ( FLG-SET                   =   1   )
-                 MOVE    TBL-SYS10067(SYSKAN-IDX2)  TO  SYS-1006-REC
-                 IF   ( SYS-1006-STYUKYMD  <=  WRK-SYS-SRYYMD    )
-                 AND  ( WRK-SYS-SRYYMD     <=  SYS-1006-EDYUKYMD )
-                     MOVE     1                  TO  FLG-SET
-                 END-IF
-             END-PERFORM
-             IF      FLG-SET    =   ZERO
-                 MOVE  ZERO                    TO  WRK-SISETU3055
-                 MOVE  ZERO                    TO  WRK-SISETU3056
-                 MOVE  ZERO                    TO  WRK-SISETU3057
-                 MOVE  ZERO                    TO  WRK-SISETU3058
-                 MOVE  ZERO                    TO  WRK-SISETU3168
-                 MOVE  ZERO                    TO  WRK-SISETU3169
-             ELSE
-                 MOVE  SYS-1006-SSTKIJUN(55)   TO  WRK-SISETU3055
-                 MOVE  SYS-1006-SSTKIJUN(56)   TO  WRK-SISETU3056
-                 MOVE  SYS-1006-SSTKIJUN(57)   TO  WRK-SISETU3057
-                 MOVE  SYS-1006-SSTKIJUN(58)   TO  WRK-SISETU3058
-                 MOVE  SYS-1006-SSTKIJUN(168)  TO  WRK-SISETU3168
-                 MOVE  SYS-1006-SSTKIJUN(169)  TO  WRK-SISETU3169
-             END-IF
-      *
-      *      ƒ¢…º ‘Ω∏∂Ë ¨æ Û
-             MOVE    ZERO                TO  FLG-SET
-             MOVE    SPACE               TO  WRK-1030-KOUHATUKA
-      *
-      **>    IF      WRK-PARA-PRTKBN = "2" OR "3" OR "4" OR "5"
-               PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
-                       UNTIL ( SYSKAN-IDX              >  100  )
-                       OR    ( TBL-SYS1030(SYSKAN-IDX) = SPACE )
-                       OR    ( FLG-SET                 =   1   )
-                 MOVE    TBL-SYS1030(SYSKAN-IDX) TO  SYS-1030-REC
-                 IF    ( SYS-1030-STYUKYMD       <= WRK-SYS-SRYYMD    )
-                 AND   ( WRK-SYS-SRYYMD          <= SYS-1030-EDYUKYMD )
-                     MOVE     1            TO  FLG-SET
-                     MOVE    SYS-1030-KOUHATUKA
-                                           TO  WRK-1030-KOUHATUKA
-                 END-IF
-               END-PERFORM
-      **>    END-IF
-      *
-           END-IF
-      *
-           .
-      *
-       910-SYSKANRI-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ø«Œ≈≤Ò∑◊•ﬁ•π•ø…’≤√æ Û¿ﬂƒÍΩËÕ˝
-      *****************************************************************
-       920-SRYACCTPLUS-HENSYU-SEC     SECTION.
-      *
-           IF  RECE44-SRYKBN  =  "11" OR "12" OR "13" OR "14"
-             CONTINUE
-           ELSE
-             GO  TO  920-SRYACCTPLUS-HENSYU-EXT
-           END-IF
-           IF  RECE44-ZAIREQFLG  =  "1"
-             CONTINUE
-           ELSE
-             GO  TO  920-SRYACCTPLUS-HENSYU-EXT
-           END-IF
-      *
-           INITIALIZE                      SRYACCTPLUS-REC
-           MOVE    RECE44-HOSPNUM     TO   ACCTP-HOSPNUM
-           MOVE    RECE44-NYUGAIKBN   TO   ACCTP-NYUGAIKBN
-           MOVE    RECE44-PTID        TO   ACCTP-PTID
-           MOVE    RECE44-SRYKA       TO   ACCTP-SRYKA
-           MOVE    RECE44-SRYYM       TO   ACCTP-SRYYM
-           MOVE    RECE44-ZAINUM      TO   ACCTP-ZAINUM
-           MOVE    1                  TO   ACCTP-RENNUM
-           MOVE    SRYACCTPLUS-REC    TO   MCPDATA-REC
-           MOVE    "tbl_sryacctplus"  TO   MCP-TABLE
-           MOVE    "key"              TO   MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-             MOVE    "tbl_sryacctplus"  TO   MCP-TABLE
-             MOVE    "key"              TO   MCP-PATHNAME
-             PERFORM  800-SRYACCTPLUS-READ-SEC
-             IF        FLG-SRYACCTPLUS   =   ZERO
-               MOVE   ACCTP-SYUGI-TBL-G
-                                      TO   RECE44-ACCTP-SYUGI-TBL-G
-               MOVE   ACCTP-SANSOTEN  TO   RECE44-ACCTP-SANSOTEN
-               MOVE   ACCTP-CHISOTEN  TO   RECE44-ACCTP-CHISOTEN
-      *
-               MOVE   ACCTP-SYUGI-TBL-G
-                                      TO   RECE4A-ACCTP-SYUGI-TBL-G
-               MOVE   ACCTP-SANSOTEN  TO   RECE4A-ACCTP-SANSOTEN
-               MOVE   ACCTP-CHISOTEN  TO   RECE4A-ACCTP-CHISOTEN
-      *
-               MOVE   ACCTP-SYUGI-TBL-G
-                                      TO   RECE44C-ACCTP-SYUGI-TBL-G
-               MOVE   ACCTP-SANSOTEN  TO   RECE44C-ACCTP-SANSOTEN
-               MOVE   ACCTP-CHISOTEN  TO   RECE44C-ACCTP-CHISOTEN
-             END-IF
-           END-IF
-      *
-           MOVE    "tbl_sryacctplus"  TO   MCP-TABLE
-           MOVE    "key"              TO   MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-       920-SRYACCTPLUS-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    •∏•Á•÷¥…Õ˝£ƒ£¬¿©∏ÊΩËÕ˝
-      *****************************************************************
-       900-CALL-ORCSJOB-SEC            SECTION.
-      *
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
-                                   SPA-AREA
-           .
-       900-CALL-ORCSJOB-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £ƒ£¬£”£≈£Ã£≈£√£‘ΩËÕ˝
-      *****************************************************************
-       900-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-           IF      MCP-RC              =   ZERO
-               CONTINUE
-           ELSE
-               DISPLAY "SELECT ERR table=" MCP-TABLE
-                       " pathname="        MCP-PATHNAME
-           END-IF
-           .
-       900-DBSELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £ƒ£¬£∆£≈£‘£√£»ΩËÕ˝
-      *****************************************************************
-       900-DBFETCH-SEC                SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-      *
-           .
-       900-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    •Ø•Ì°º•∫ΩËÕ˝
-      *****************************************************************
-       900-CLOSE-SEC                  SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-      *
-           .
-       900-CLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    •∆°º•÷•Î•¢•Ø•ª•πΩËÕ˝
-      *****************************************************************
-       900-ORCDBMAIN-SEC               SECTION.
-      *
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-      *
-       900-ORCDBMAIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £ƒ£¬•™°º•◊•ÛΩËÕ˝
+      *    £ƒ£¬°°•™°º•◊•ÛΩËÕ˝
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBOPEN"            TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBSTART"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬•Ø•Ì°º•∫ΩËÕ˝
+      *    £ƒ£¬°°•Ø•Ì°º•∫ΩËÕ˝
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            .
-       900-DBDISCONNECT-EXT.
+       900-DBCLOSE-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    •´°º•Ω•Î•Ø•Ì°º•∫ΩËÕ˝
+      *****************************************************************
+       CSR-CLOSE-SEC            SECTION.
+      *
+           INITIALIZE                  MCPAREA
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WK-PATH             TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       CSR-CLOSE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -13597,10 +3694,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "MCPSUB"          USING
+                                        MCPAREA
+                                        MCPDATA-REC.
       *
            .
        900-DBCOMMIT-EXT.
@@ -13611,11 +3708,68 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBSTART"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            .
        900-DBSTART-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    √Ê¥÷•’•°•§•Î£“£≈£¡£ƒΩËÕ˝
+      *****************************************************************
+       RECE41-READ-SEC            SECTION.
+      *
+           READ    RECE41-FILE   NEXT
+               AT  END
+                   MOVE    1     TO    FLG-END
+               NOT  AT  END
+                   ADD     1     TO    CNT-IN
+                   ADD     1     TO    CNT-IN-COMMIT
+      *
+                   DISPLAY "RECE41  PTNUM=" RECE41-PTNUM
+      *
+                   IF   WRK-PARA-SRYYM    NOT =  ZERO
+                     CONTINUE
+                   ELSE
+      *              œ´∫“º´«Â∞ÂŒ≈µ°¥ÿæ Û
+                     MOVE  ZERO           TO  FLG-SET
+                     MOVE  RECE41-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
+                     MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+                     PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                           UNTIL  ( SYSKAN-IDX              >  10   )
+                            OR    ( TBL-SYS4001(SYSKAN-IDX) = SPACE )
+                            OR    ( FLG-SET                 =   1   )
+      *
+                       MOVE  TBL-SYS4001(SYSKAN-IDX)  TO  SYS-4001-REC
+                       IF   ( SYS-4001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                       AND  ( WRK-SYS-SRYYMD     <=  SYS-4001-EDYUKYMD )
+                          MOVE     1       TO    FLG-SET
+                          EVALUATE  SYS-4001-TENKBN
+                            WHEN  "1"
+                                MOVE     11.5    TO    WRK-TANKA
+                            WHEN  "2"
+                                MOVE     12.0    TO    WRK-TANKA
+                          END-EVALUATE
+                       END-IF
+      *
+                     END-PERFORM
+                     IF     FLG-SET  =  ZERO
+             STRING
+               "œ´∫“º´«Â∞ÂŒ≈µ°¥ÿæ Û§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø°£ø«Œ≈«Ø∑Ó°·"
+                                           DELIMITED  BY  SIZE 
+                        RECE41-SRYYM       DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+             END-STRING
+                         PERFORM 500-ERR-HENSYU-SEC
+                         MOVE    1               TO  FLG-END
+                     END-IF
+                   END-IF
+      *
+           END-READ
+           .
+       RECE41-READ-EXT.
            EXIT.
       *
