@@ -36,9 +36,9 @@
       *
       *
       *    定期請求収納ファイル(IN)
-           SELECT  TEIKI01-FILE   ASSIGN   TEIKI01PARA
+           SELECT  TEIKI06-FILE   ASSIGN   TEIKI06PARA
                    ORGANIZATION   LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-TEIKI01.
+                                   FILE    STATUS  IS  STS-TEIKI06.
       *
       *    患者請求履歴ファイル(IN)
            SELECT  TEIKI02-FILE    ASSIGN  TEIKI02PARA
@@ -46,9 +46,9 @@
                                    FILE    STATUS  IS  STS-TEIKI02.
       *
       *    請求取消対象収納ファイル(IN)
-           SELECT  TEIKI04-FILE   ASSIGN   TEIKI04PARA
+           SELECT  TEIKI07-FILE   ASSIGN   TEIKI07PARA
                    ORGANIZATION   LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-TEIKI04.
+                                   FILE    STATUS  IS  STS-TEIKI07.
       *
       *    削除対象患者請求履歴ファイル(IN)
            SELECT  TEIKI05-FILE    ASSIGN  TEIKI05PARA
@@ -63,10 +63,10 @@
        FILE                    SECTION.
       *
       *    定期請求収納ファイル
-       FD  TEIKI01-FILE.
-       01  TEIKI01-REC.
+       FD  TEIKI06-FILE.
+       01  TEIKI06-REC.
            COPY    "CPSYUNOU.INC"      REPLACING   //SYU-//
-                                       BY          //TEIKI01-//.
+                                       BY          //TEIKI06-//.
       *
       *    定期請求履歴情報ファイル
        FD  TEIKI02-FILE.
@@ -75,10 +75,10 @@
                                        BY          //TEIKI02-//.
       *
       *    請求取消対象収納ファイル
-       FD  TEIKI04-FILE.
-       01  TEIKI04-REC.
+       FD  TEIKI07-FILE.
+       01  TEIKI07-REC.
            COPY    "CPSYUNOU.INC"      REPLACING   //SYU-//
-                                       BY          //TEIKI04-//.
+                                       BY          //TEIKI07-//.
       *
       *    削除対象患者請求履歴ファイル
        FD  TEIKI05-FILE.
@@ -94,7 +94,9 @@
       *
       *
       *    定期請求収納ファイル名称領域 
-           COPY    "CPCOMMONDAT5.INC".
+           COPY    "CPCOMMONDAT5.INC"
+                                   REPLACING  //TEIKI01//
+                                   BY         //TEIKI06//.
       *
       *
       *    定期請求履歴情報ファイル名称領域 
@@ -105,7 +107,7 @@
       *    請求取消対象収納ファイル名称領域 
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01//
-                                   BY         //TEIKI04//.
+                                   BY         //TEIKI07//.
       *
       *    削除対象患者請求履歴ファイル名称領域 
            COPY    "CPCOMMONDAT5.INC"
@@ -121,17 +123,17 @@
       *    フラグ領域
        01  STS-AREA.
            03  STS-TEIKIERR                            PIC X(02).
-           03  STS-TEIKI01                             PIC X(02).
+           03  STS-TEIKI06                             PIC X(02).
            03  STS-TEIKI02                             PIC X(02).
-           03  STS-TEIKI04                             PIC X(02).
+           03  STS-TEIKI07                             PIC X(02).
            03  STS-TEIKI05                             PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-ERR                                 PIC 9(01).
-           03  FLG-TEIKI01                             PIC 9(01).
+           03  FLG-TEIKI06                             PIC 9(01).
            03  FLG-TEIKI02                             PIC 9(01).
-           03  FLG-TEIKI04                             PIC 9(01).
+           03  FLG-TEIKI07                             PIC 9(01).
            03  FLG-TEIKI05                             PIC 9(01).
            03  FLG-SYUNOU                              PIC 9(01).
            03  FLG-SYUMEI                              PIC 9(01).
@@ -188,6 +190,8 @@
            03  WRK-TEIKIERR                    PIC X(200).
            03  WRK-SKYMONEY                    PIC  S9(07).
            03  WRK-NYUKIN-TOTAL                PIC  S9(07).
+           03  WRK-DENPNUM                     PIC 9(07).
+           03  WRK-DENPNUM-X                   PIC X(08).
       *
       *    定期請求管理集計用ワーク
        01  SUMTEIKIKANRI-REC.
@@ -270,6 +274,8 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
+      *    伝票番号
+           COPY    "CPSK0041.INC".
       *    医療機関情報
            COPY    "CPSK1001.INC".
       *    患者番号構成管理情報
@@ -326,7 +332,8 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  CNT-AREA
+           INITIALIZE                  INDEX-AREA
+                                       CNT-AREA
                                        WRK-AREA
                                        SYS-AREA
                                        SPA-AREA
@@ -367,14 +374,14 @@
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
       *
-           MOVE    "TEIKI001"          TO  TEIKI01PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TEIKI01PARA-TERMID
+           MOVE    "TEIKI006"          TO  TEIKI06PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TEIKI06PARA-TERMID
       *
            MOVE    "TEIKI002"          TO  TEIKI02PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  TEIKI02PARA-TERMID
       *
-           MOVE    "TEIKI004"          TO  TEIKI04PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TEIKI04PARA-TERMID
+           MOVE    "TEIKI007"          TO  TEIKI07PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TEIKI07PARA-TERMID
       *
            MOVE    "TEIKI005"          TO  TEIKI05PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  TEIKI05PARA-TERMID
@@ -382,9 +389,9 @@
            MOVE    "TEIKIERR"          TO  TEIKIERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  TEIKIERR-TERMID
       *
-           OPEN    INPUT               TEIKI01-FILE
+           OPEN    INPUT               TEIKI06-FILE
            OPEN    INPUT               TEIKI02-FILE
-           OPEN    INPUT               TEIKI04-FILE
+           OPEN    INPUT               TEIKI07-FILE
            OPEN    INPUT               TEIKI05-FILE
       *
       *
@@ -565,12 +572,12 @@
       *****************************************************************
        2002-MAE-SEIKYU-KOUSIN-SEC      SECTION.
       *
-           MOVE    ZERO                TO  FLG-TEIKI04
+           MOVE    ZERO                TO  FLG-TEIKI07
       *
       *    請求取消対象収納ファイル読込
-           PERFORM 910-TEIKI04-READ-SEC
+           PERFORM 910-TEIKI07-READ-SEC
       *
-           PERFORM UNTIL ( FLG-TEIKI04 NOT =   ZERO )
+           PERFORM UNTIL ( FLG-TEIKI07 NOT =   ZERO )
       *
       *        収納データ更新処理
                PERFORM 20021-SYUNOU-KOUSIN-SEC
@@ -579,7 +586,7 @@
                END-IF
       *
       *        請求取消対象収納ファイル読込
-               PERFORM 910-TEIKI04-READ-SEC
+               PERFORM 910-TEIKI07-READ-SEC
       *
            END-PERFORM
       *
@@ -612,7 +619,7 @@
       *****************************************************************
        20021-SYUNOU-KOUSIN-SEC         SECTION.
       *
-           MOVE    TEIKI04-REC         TO  SYUNOU-REC
+           MOVE    TEIKI07-REC         TO  SYUNOU-REC
       *
       *    収納明細作成処理
            PERFORM 20021-SYUMEI-SAKUSEI-SEC
@@ -819,15 +826,21 @@
       *****************************************************************
        2003-SEIKYU-KOUSIN-SEC          SECTION.
       *
-           MOVE    ZERO                    TO  FLG-TEIKI01
+           MOVE    ZERO                    TO  FLG-TEIKI06
       *
       *    定期請求収納ファイル読込
-           PERFORM 910-TEIKI01-READ-SEC
-           DISPLAY "====FLG-TEIKI01 = " FLG-TEIKI01
+           PERFORM 910-TEIKI06-READ-SEC
       *
-           PERFORM UNTIL ( FLG-TEIKI01 NOT =   ZERO )
+           PERFORM UNTIL ( FLG-TEIKI06 NOT =   ZERO )
       *
-               MOVE    TEIKI01-REC         TO  SYUNOU-REC
+      *        伝票番号取得処理
+               PERFORM 20031-DENPNUM-GET-SEC
+               IF (  FLG-ERR   =   1 )
+                   GO  TO  2003-SEIKYU-KOUSIN-EXT
+               END-IF
+               MOVE    WRK-DENPNUM         TO  TEIKI06-DENPNUM
+      *
+               MOVE    TEIKI06-REC         TO  SYUNOU-REC
       *
       *        更新前チェック（既に重複するデータがある場合はエラー）
                MOVE   ZERO                 TO  FLG-SYUNOU
@@ -839,7 +852,7 @@
                    GO  TO  2003-SEIKYU-KOUSIN-EXT
                END-IF
       *
-               MOVE    TEIKI01-REC         TO  SYUNOU-REC
+               MOVE    TEIKI06-REC         TO  SYUNOU-REC
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -873,7 +886,7 @@
                END-IF
       *
       *        定期請求収納ファイル読込
-               PERFORM 910-TEIKI01-READ-SEC
+               PERFORM 910-TEIKI06-READ-SEC
       *
            END-PERFORM
       *
@@ -935,11 +948,69 @@
        2003-SEIKYU-KOUSIN-EXT.
            EXIT. 
       *****************************************************************
+      *    伝票番号取得処理
+      *****************************************************************
+       20031-DENPNUM-GET-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+                                           WRK-DENPNUM
+      *
+           INITIALIZE                  SYS-0041-REC.
+           MOVE    "0041"              TO  SYS-0041-KANRICD
+           MOVE    "*"                 TO  SYS-0041-KBNCD
+           MOVE    ZERO                TO  SYS-0041-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-0041-EDYUKYMD
+      *
+           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
+           MOVE    SYS-0041-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-READ-SEC
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-0041-REC
+           END-IF
+      *
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    SYS-0041-DENPNUMMAX-NYU
+                                       TO  WRK-DENPNUM-X
+               IF    ( WRK-DENPNUM-X   =   SPACE )
+                   MOVE    ZERO        TO  SYS-0041-DENPNUMMAX-NYU
+               ELSE
+                   MOVE    WRK-DENPNUM-X
+                                       TO  SYS-0041-DENPNUMMAX-NYU
+               END-IF
+      *
+               COMPUTE SYS-0041-DENPNUMMAX-NYU
+                   =   SYS-0041-DENPNUMMAX-NYU +   1
+      *
+               MOVE    SYS-0041-DENPNUMMAX-NYU
+                                           TO  WRK-DENPNUM
+      *
+               MOVE    SYS-0041-REC        TO  MCPDATA-REC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    "伝票番号の更新に失敗しました"
+                                       TO  WRK-TEIKIERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  20031-DENPNUM-GET-EXT
+               END-IF
+           ELSE
+               MOVE    "伝票番号の取得に失敗しました"
+                                       TO  WRK-TEIKIERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  20031-DENPNUM-GET-EXT
+           END-IF
+      *
+           .
+       20031-DENPNUM-GET-EXT.
+           EXIT.
+      *****************************************************************
       *    収納明細作成処理
       *****************************************************************
        20031-SYUMEI-SAKUSEI-SEC        SECTION.
-      *
-           DISPLAY "20031-SYUMEI-SAKUSEI-SEC "
       *
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
@@ -987,7 +1058,6 @@
                GO  TO  20031-SYUMEI-SAKUSEI-EXT
            END-IF
       *
-           DISPLAY "WKSYUMEI-REC = " WKSYUMEI-REC
            MOVE    WKSYUMEI-REC    TO  SYUMEI-REC
            MOVE    SYUMEI-REC      TO  MCPDATA-REC
            MOVE    "SYUMEI-KEY"    TO  ORC-DBPATH
@@ -1334,9 +1404,9 @@
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
-           CLOSE   TEIKI01-FILE
+           CLOSE   TEIKI06-FILE
                    TEIKI02-FILE
-                   TEIKI04-FILE
+                   TEIKI07-FILE
                    TEIKI05-FILE
       *
       *    ステップ管理終了処理
@@ -1351,7 +1421,7 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *     
-           DISPLAY "TEIKI01 (ORCT0040) CNT " CNT-OUT1 
+           DISPLAY "TEIKI06 (ORCT0040) CNT " CNT-OUT1 
            DISPLAY "*** ORCT0040 END ***"
       ***  ACCEPT  WRK-IN FROM CONSOLE 
            .
@@ -1440,15 +1510,15 @@
       *****************************************************************
       *    定期請求収納ファイル読込
       *****************************************************************
-       910-TEIKI01-READ-SEC            SECTION.
+       910-TEIKI06-READ-SEC            SECTION.
       *
-           READ    TEIKI01-FILE
+           READ    TEIKI06-FILE
            AT  END
-               MOVE    1               TO  FLG-TEIKI01
+               MOVE    1               TO  FLG-TEIKI06
            END-READ
       *
            .
-       910-TEIKI01-READ-EXT.
+       910-TEIKI06-READ-EXT.
            EXIT.
       *****************************************************************
       *    患者請求履歴ファイル読込
@@ -1466,15 +1536,15 @@
       *****************************************************************
       *    請求取消対象収納ファイル読込
       *****************************************************************
-       910-TEIKI04-READ-SEC            SECTION.
+       910-TEIKI07-READ-SEC            SECTION.
       *
-           READ    TEIKI04-FILE
+           READ    TEIKI07-FILE
            AT  END
-               MOVE    1               TO  FLG-TEIKI04
+               MOVE    1               TO  FLG-TEIKI07
            END-READ
       *
            .
-       910-TEIKI04-READ-EXT.
+       910-TEIKI07-READ-EXT.
            EXIT.
       *
       *****************************************************************

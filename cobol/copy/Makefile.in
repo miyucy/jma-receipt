@@ -627,6 +627,7 @@ COPYS = \
         CPTEIKIPRT.INC \
         CPTEIKIRRK.INC \
         CPPTTEIKIRRK.INC \
+        CPTEIKI01.INC \
         CPTEIKI03.INC \
         CPORCGI4A.INC \
         CPORCGI4B.INC \

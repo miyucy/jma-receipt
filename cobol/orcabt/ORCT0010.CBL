@@ -36,8 +36,10 @@
       *
       *    定期請求収納ファイル(OT)
            SELECT  TEIKI01-FILE   ASSIGN   TEIKI01PARA
-                   ORGANIZATION   LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-TEIKI01.
+                                  ORGANIZATION    IS  INDEXED
+                                  ACCESS  MODE    IS  SEQUENTIAL
+                                  RECORD  KEY     IS  TEIKI01-KEY
+                                  FILE    STATUS  IS  STS-TEIKI01.
       *
       *    患者請求履歴ファイル(OT)
            SELECT  TEIKI02-FILE    ASSIGN  TEIKI02PARA
@@ -59,8 +61,7 @@
       *    定期請求収納ファイル
        FD  TEIKI01-FILE.
        01  TEIKI01-REC.
-           COPY    "CPSYUNOU.INC"      REPLACING   //SYU-//
-                                       BY          //TEIKI01-//.
+           COPY    "CPTEIKI01.INC".
       *
       *    定期請求履歴情報ファイル
        FD  TEIKI02-FILE.
@@ -188,8 +189,6 @@
                05  WRK-DD              PIC X(02).
            03  WRK-NISSU1              PIC 9(05).
            03  WRK-NISSU2              PIC 9(05).
-           03  WRK-DENPNUM             PIC 9(07).
-           03  WRK-DENPNUM-X           PIC X(08).
            03  WRK-NYUINKA             PIC X(02).
            03  WRK-BTUNUM              PIC X(02).
            03  WRK-BRMNUM              PIC X(08).
@@ -219,8 +218,6 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    伝票番号
-           COPY    "CPSK0041.INC".
       *    医療機関情報
            COPY    "CPSK1001.INC".
       *
@@ -300,7 +297,8 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  CNT-AREA
+           INITIALIZE                  INDEX-AREA
+                                       CNT-AREA
                                        WRK-AREA
                                        SYS-AREA
                                        SPA-AREA
@@ -689,13 +687,6 @@
            MOVE    LNK-SYUNOU-REC (IDX1)
                                        TO  SYUNOU-REC
       *
-      *    伝票番号取得処理
-           PERFORM 20011-DENPNUM-GET-SEC
-           IF (  FLG-ERR   =   1 )
-               GO  TO  20011-TEIKI01-OUTPUT-EXT
-           END-IF
-           MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
-      *
            MOVE    PTNYUINRRK-REC      TO  WKPTNYUINRRK-REC
       *    請求時最終履歴取得処理
            PERFORM 20011-SEILASTRRK-SET-SEC
@@ -715,7 +706,13 @@
                                            SYU-UPYMD
            MOVE    SYS-TIME            TO  SYU-UPHMS
       *
-           MOVE    SYUNOU-REC          TO  TEIKI01-REC
+           MOVE    SYU-HOSPID          TO  TEIKI01-HOSPID
+           MOVE    SYU-PTID            TO  TEIKI01-PTID
+           MOVE    SYU-SKYSTYMD        TO  TEIKI01-SKYSTYMD
+           MOVE    SYU-SKYEDYMD        TO  TEIKI01-SKYEDYMD
+           MOVE    SYU-HKNCOMBINUM     TO  TEIKI01-HKNCOMBINUM
+      *
+           MOVE    SYUNOU-REC          TO  TEIKI01-DAT
       *
            WRITE   TEIKI01-REC
       *
@@ -772,67 +769,6 @@
            .
        20011-TEIKI03-OUTPUT-EXT.
            EXIT. 
-      *****************************************************************
-      *    伝票番号取得処理
-      *****************************************************************
-       20011-DENPNUM-GET-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SYSKANRI
-                                           WRK-DENPNUM
-      *
-           INITIALIZE                  SYS-0041-REC.
-           MOVE    "0041"              TO  SYS-0041-KANRICD
-           MOVE    "*"                 TO  SYS-0041-KBNCD
-           MOVE    ZERO                TO  SYS-0041-STYUKYMD
-           MOVE    ALL "9"             TO  SYS-0041-EDYUKYMD
-      *
-           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
-           MOVE    SYS-0041-REC        TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF    ( FLG-SYSKANRI        =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-0041-REC
-           END-IF
-      *
-           IF    ( FLG-SYSKANRI        =   ZERO )
-               MOVE    SYS-0041-DENPNUMMAX-NYU
-                                       TO  WRK-DENPNUM-X
-               IF    ( WRK-DENPNUM-X   =   SPACE )
-                   MOVE    ZERO        TO  SYS-0041-DENPNUMMAX-NYU
-               ELSE
-                   MOVE    WRK-DENPNUM-X
-                                       TO  SYS-0041-DENPNUMMAX-NYU
-               END-IF
-      *
-               COMPUTE SYS-0041-DENPNUMMAX-NYU
-                   =   SYS-0041-DENPNUMMAX-NYU +   1
-      *
-               MOVE    SYS-0041-DENPNUMMAX-NYU
-                                           TO  WRK-DENPNUM
-      *
-               MOVE    SYS-0041-REC        TO  MCPDATA-REC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    "伝票番号の更新に失敗しました"
-                                       TO  WRK-TEIKIERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  20011-DENPNUM-GET-EXT
-               END-IF
-           ELSE
-               MOVE    "伝票番号の取得に失敗しました"
-                                       TO  WRK-TEIKIERR
-               PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  20011-DENPNUM-GET-EXT
-           END-IF
-      *
-           .
-       20011-DENPNUM-GET-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    請求時最終履歴取得処理
       *****************************************************************

@@ -42,6 +42,13 @@ fi
 ##   -- ORCT0030 START --  
             $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0030 -parameter $1,$2,$3,$4,$5,$6,$7,
         fi 
+        
+	if  [ -e $8 ]; then
+            exit  
+        else
+##   -- ORCT0060 START --  
+            $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0060 -parameter $1,$2,$3,$4,$5,$6,$7,
+        fi 
 
         if  [ -e $8 ]; then
             exit  
@@ -57,5 +64,6 @@ fi
         fi 
 
         exit
+
 
 

@@ -242,7 +242,7 @@
                MOVE    WRK-HENTIME     TO  O99-ENDTIME  (IDX)
                MOVE    JOB-YOBI        TO  O99-ERRMSG   (IDX)
                COMPUTE O99-PROGRESSBAR-VALUE  =
-                           JOB-STEPCNT  /  2     *   100
+                           JOB-STEPCNT  /  4 *   100 
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "処理中です"    TO  O99-MSG
                ELSE
