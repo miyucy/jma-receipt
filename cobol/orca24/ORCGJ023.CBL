@@ -162,6 +162,9 @@
       *    保険組合せセット領域
            COPY    "CPORCSHKNSET.INC".
       *
+      *    レセプト作成管理マスタ更新サブ
+           COPY    "CPORCSRECEUPD.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -1709,7 +1712,6 @@
                    DISPLAY "J023 RECECOM UPD ERR:" MCP-RC
                            ",KEY:"   RECECOM-KEY    "."
                    MOVE    "0020"              TO  SPA-ERRCD
-                   GO      TO      2121-TOUROKU-SYORI-EXT
                END-IF
            ELSE
       *        追加
@@ -1746,14 +1748,18 @@
                    DISPLAY "J023 RECECOM INS ERR:" MCP-RC
                            ",KEY:"   RECECOM-KEY    "."
                    MOVE    "0020"              TO  SPA-ERRCD
-                   GO      TO      2121-TOUROKU-SYORI-EXT
                END-IF
+           END-IF
+      *    レセプト作成管理マスタ更新
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 21212-RECEUPD-UPDATE-SEC
            END-IF
       *
       *    再表示
-           PERFORM                     310-SPA-SET-SEC
-      *
-           MOVE    1                   TO  SPA-J023-CUR
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM                     310-SPA-SET-SEC
+               MOVE    1                   TO  SPA-J023-CUR
+           END-IF
       *    コメント編集編集
       *    PERFORM 3103-RECECOM-HEN-SEC
       *
@@ -1766,6 +1772,26 @@
       *
            .
        2121-TOUROKU-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセプト作成管理マスタ更新処理
+      *****************************************************************
+        21212-RECEUPD-UPDATE-SEC           SECTION.
+      *
+           INITIALIZE                      ORCSRECEUPDAREA
+           MOVE    "1"                 TO  LNK-UPD-SYORI
+           MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
+           MOVE    SPA-GMN-PTID        TO  LNK-UPD-PTID
+           MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
+           MOVE    SPA-OPID            TO  LNK-UPD-OPID
+           CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
+           IF      LNK-UPD-RC      NOT =   ZERO
+               MOVE    "0020"              TO  SPA-ERRCD
+               DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC
+           END-IF
+      *
+           .
+        21212-RECEUPD-UPDATE-EXT.
            EXIT.
       *
       *****************************************************************

@@ -276,6 +276,8 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    レセプト作成管理マスタ更新サブ
+           COPY    "CPORCSRECEUPD.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -427,6 +429,10 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *    レセプト作成管理マスタ更新
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 2009-RECEUPD-UPDATE-SEC
+           END-IF
       *
       *    カルテ／処方箋発行処理
            PERFORM 2100-HC01-SYORI-SEC
@@ -439,6 +445,27 @@
        200-MAIN-EXT.
            EXIT.
            .
+      *
+      *****************************************************************
+      *    レセプト作成管理マスタ更新処理
+      *****************************************************************
+        2009-RECEUPD-UPDATE-SEC           SECTION.
+      *
+           INITIALIZE                      ORCSRECEUPDAREA
+           MOVE    "1"                 TO  LNK-UPD-SYORI
+           MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
+           MOVE    SPA-GMN-PTID        TO  LNK-UPD-PTID
+           MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
+           MOVE    SPA-OPID            TO  LNK-UPD-OPID
+           CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
+           IF      LNK-UPD-RC      NOT =   ZERO
+               MOVE    "9000"              TO  SPA-ERRCD
+               DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC
+           END-IF
+      *
+           .
+        2009-RECEUPD-UPDATE-EXT.
+           EXIT.
       *****************************************************************
       *    患者マスター処理
       *****************************************************************
