@@ -389,27 +389,27 @@ path	key19	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
-			AND   BYOMEICD_1  in (:BYOMEICD_1,
-			                      :BYOMEICD_2,
-			                      :BYOMEICD_3,
-			                      :BYOMEICD_4,
-			                      :BYOMEICD_5,
-			                      :BYOMEICD_6,
-			                      :BYOMEICD_7,
-			                      :BYOMEICD_8,
-			                      :BYOMEICD_9,
-			                      :BYOMEICD_10,
-			                      :BYOMEICD_11,
-			                      :BYOMEICD_12,
-			                      :BYOMEICD_13,
-			                      :BYOMEICD_14,
-			                      :BYOMEICD_15,
-			                      :BYOMEICD_16,
-			                      :BYOMEICD_17,
-			                      :BYOMEICD_18,
-			                      :BYOMEICD_19,
-			                      :BYOMEICD_20,
-			                      :BYOMEICD_21 )
+			AND   :BYOMEICD_1  in (BYOMEICD_1,
+			                       BYOMEICD_2,
+			                       BYOMEICD_3,
+			                       BYOMEICD_4,
+			                       BYOMEICD_5,
+			                       BYOMEICD_6,
+			                       BYOMEICD_7,
+			                       BYOMEICD_8,
+			                       BYOMEICD_9,
+			                       BYOMEICD_10,
+			                       BYOMEICD_11,
+			                       BYOMEICD_12,
+			                       BYOMEICD_13,
+			                       BYOMEICD_14,
+			                       BYOMEICD_15,
+			                       BYOMEICD_16,
+			                       BYOMEICD_17,
+			                       BYOMEICD_18,
+			                       BYOMEICD_19,
+			                       BYOMEICD_20,
+			                       BYOMEICD_21 )
 			ORDER BY SRYYMD DESC,RENNUM 
 		;
 	};
