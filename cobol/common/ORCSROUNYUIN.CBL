@@ -454,7 +454,7 @@
                             OR (IDX2    >      20)
                    PERFORM    210-TENSU-KEISAN-SEC
                    IF    IDX2     =     1
-                       MOVE    TNS-SRYKBN    TO   LNK-SROUNYUIN-SRYKBN
+                       MOVE   TNS-SRYKBN  TO  LNK-SROUNYUIN-SRYKBN(IDX)
                    END-IF
                END-PERFORM
            END-PERFORM
