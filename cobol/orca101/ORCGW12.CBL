@@ -657,11 +657,11 @@
            MOVE    "0"                 TO  SPA-GMN-KKHRECEKBNL      (1)
            MOVE    "½ÐÎÏ¤Ê¤·"          TO  SPA-GMN-KKHRECEKBNMEIL   (1)
            MOVE    "1"                 TO  SPA-GMN-KKHRECEKBNL      (2)
-           MOVE    "£Ã£Ó£Ö¡ÊÆþ±¡³°¡Ë"  TO  SPA-GMN-KKHRECEKBNMEIL   (2)
+           MOVE    "Æþ±¡³°¤Î¤ß"        TO  SPA-GMN-KKHRECEKBNMEIL   (2)
            MOVE    "2"                 TO  SPA-GMN-KKHRECEKBNL      (3)
-           MOVE    "£Ã£Ó£Ö¡ÊÆþ±¡¡Ë"    TO  SPA-GMN-KKHRECEKBNMEIL   (3)
+           MOVE    "Æþ±¡¤Î¤ß"          TO  SPA-GMN-KKHRECEKBNMEIL   (3)
            MOVE    "3"                 TO  SPA-GMN-KKHRECEKBNL      (4)
-           MOVE    "£Ã£Ó£Ö¡ÊÆþ±¡³°¡¦Æþ±¡¡Ë"
+           MOVE    "Æþ±¡¡¦Æþ±¡³°"
                                        TO  SPA-GMN-KKHRECEKBNMEIL   (4)
            MOVE    4                   TO  SPA-GMN-KKHRECEKBN-MAX 
       *     
@@ -672,7 +672,7 @@
            MOVE    "2"                 TO  SPA-GMN-SYARECEKBNL      (3)
            MOVE    "Æþ±¡¤Î¤ß"          TO  SPA-GMN-SYARECEKBNMEIL   (3)
            MOVE    "3"                 TO  SPA-GMN-SYARECEKBNL      (4)
-           MOVE    "Æþ±¡³°¡¦Æþ±¡"      TO  SPA-GMN-SYARECEKBNMEIL   (4)
+           MOVE    "Æþ±¡¡¦Æþ±¡³°"      TO  SPA-GMN-SYARECEKBNMEIL   (4)
            MOVE    4                   TO  SPA-GMN-SYARECEKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KKHOCRKBNL    (1)
