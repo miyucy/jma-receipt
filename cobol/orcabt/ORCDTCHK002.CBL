@@ -286,7 +286,7 @@
            03  WRK-PTBYO-SRYYMD                        PIC X(08).
            03  WRK-HKNCOMBI                            PIC X(04).
            03  WRK-HKNCOMBI-DAY-G.
-               05  WRK-HKNCOMBI-DAY                    PIC 9(01)
+               05  WRK-HKNCOMBI-DAY                    PIC 9(03)
                                                        OCCURS  31.
            03  WRK-TKAISU-SRYCD                        PIC X(09).
            03  WRK-MAX                                 PIC 9(05).
@@ -323,7 +323,7 @@
       *    入院保険組合せ退避ワーク
       *    （TNACCT-HKNCOMBI-MAXは患者氏名のチェック対象の判定にも使用）
        01  TNACCT-HKNCOMBI-AREA.
-           03  TNACCT-HKNCOMBI-DAY                     PIC 9(01)
+           03  TNACCT-HKNCOMBI-DAY                     PIC 9(03)
                                                        OCCURS 31.
            03  TNACCT-HKNCOMBI-MAX                     PIC 9(05).
            03  TNACCT-HKNCOMBI-OCC                     OCCURS 20.
@@ -332,7 +332,7 @@
                    TNACCT-HKNCOMBI-HKNCOMBI            PIC X(04).
                05  TNACCT-HKNCOMBI-STYMD               PIC X(08).
                05  TNACCT-HKNCOMBI-EDYMD               PIC X(08).
-               05  TNACCT-HKNCOMBI-HKNCOMBI-DAY        PIC 9(01)
+               05  TNACCT-HKNCOMBI-HKNCOMBI-DAY        PIC 9(03)
                                                        OCCURS 31.
 
       *
