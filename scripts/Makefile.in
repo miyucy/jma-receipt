@@ -132,6 +132,8 @@ filecheck:
 	-name "recept7.sh" -o \
 	-name "recept8.sh" -o \
 	-name "recept9.sh" -o \
+        -name "recept10.sh" -o \
+        -name "recept11.sh" -o \
 	-name "sample.sh" -o \
 	-name "site-upgrade.sh"  -o \
 	-name "sokatsu.sh" -o \
