@@ -956,6 +956,8 @@
                       MOVE    MCPDATA-REC     TO  SYUNOU-REC
                       IF    ( SPA-I01-I04-SKYSTYMD   <= SYU-SKYSTYMD )
                        AND  ( SPA-I01-I04-SKYEDYMD   >= SYU-SKYEDYMD )
+                       AND  ( SPA-I01-I04-RRKNUM
+                                                = SYU-NYUIN-RRKNUM )
                            CONTINUE
                       ELSE
                            IF  SYU-DENPPRTYMD  <=  SPA-NAI-I04-TAIINYMD
@@ -2529,7 +2531,8 @@
       *
                MOVE    MCPDATA-REC     TO  SYUNOU-REC
       *
-               IF    ( SYU-DENPJTIKBN  NOT =   "3" )
+               IF    ( SYU-NYUIN-RRKNUM    =   SPA-NAI-I04-PTRRKNUM )
+                AND  ( SYU-DENPJTIKBN  NOT =   "3" )
       *            収納明作成処理
                    PERFORM 4701-SYUMEI-SAKUSEI-SEC
                    IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -2696,8 +2699,10 @@
       *
                MOVE    MCPDATA-REC     TO  PTTEIKIRRK-REC
       *
-      *        定期履歴管理情報集計
-               PERFORM 4701-TEIKIRRK-SUM-SEC
+               IF    ( PTTEIKIRRK-RRKNUM   =   SPA-NAI-I04-PTRRKNUM )
+      *            定期履歴管理情報集計
+                   PERFORM 4701-TEIKIRRK-SUM-SEC
+               END-IF
       *
                MOVE    "PTTEIKIRRK-KEY4"   TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
@@ -2718,8 +2723,10 @@
                                        TO  PTTEIKIRRK-SKYSTYMD
            MOVE    SPA-I01-I04-SKYEDYMD
                                        TO  PTTEIKIRRK-SKYEDYMD
+           MOVE    SPA-I01-I04-RRKNUM
+                                       TO  PTTEIKIRRK-RRKNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTTEIKIRRK-DEL2"   TO  WRK-DBPATH
+           MOVE    "PTTEIKIRRK-DEL3"   TO  WRK-DBPATH
            PERFORM 900-TBL-DELETE-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
                MOVE    "4004"          TO  SPA-ERRCD

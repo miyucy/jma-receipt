@@ -58,6 +58,10 @@
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
       *****************************************************************
       *
+      *    ´µ¼ÔÆþ±¡ÍúÎò
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -113,6 +117,10 @@
       *
            INITIALIZE                  SDNTCHK-OT
       *
+           IF    ( SDNTCHK-KJNYMD      =   SPACE )
+               MOVE    LNKNRRK-TAIINYMD    TO  SDNTCHK-KJNYMD
+           END-IF
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -122,13 +130,12 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-           MOVE    ZERO                TO  SDNTCHK-DJFLG
+           MOVE    SPACE               TO  SDNTCHK-DJKBN
            MOVE    ZERO                TO  SDNTCHK-STYMD
       *
-           MOVE    LNKNRRK-REC         TO  MCPDATA-REC
-           PERFORM 900-PTNYUINRRK-KEY37-SEL-SEC
-           IF    ( FLG-PTNYUINRRK      =   ZERO )
-               MOVE    1               TO  SDNTCHK-DJFLG
+           IF    ( LNKNRRK-DOUJITSUKBN =   "1" )
+      *
+               MOVE    "1"             TO  SDNTCHK-DJKBN
       *
                IF    ( LNKNRRK-NYUINYMD    <  LNKNRRK-TAIINYMD )
                 AND  ( LNKNRRK-NYUINYMD    <  SDNTCHK-KJNYMD )
@@ -174,27 +181,6 @@
       *
            .
        800-CALENDAR-EXT.
-           EXIT.
-      *****************************************************************
-      *    Æþ±¡ÍúÎò¸¡º÷½èÍý(KEY37)
-      *****************************************************************
-       900-PTNYUINRRK-KEY37-SEL-SEC    SECTION.
-      *
-           MOVE    ZERO                TO  FLG-PTNYUINRRK
-      *
-           MOVE    PATH-TBL-PTNYUINRRK-KEY37
-                                       TO  MCP-PATH
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    1               TO  FLG-PTNYUINRRK
-           END-IF
-      *
-           MOVE    PATH-TBL-PTNYUINRRK-KEY37
-                                       TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
-      *
-           .
-       900-PTNYUINRRK-KEY37-SEL-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â¸¡º÷½èÍý

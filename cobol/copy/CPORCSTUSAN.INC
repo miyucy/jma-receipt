@@ -68,7 +68,7 @@
                        09  STUSAN-RRK-JTIKBN   PIC X(01).
                        09  STUSAN-RRK-NYUINYMD PIC X(08).
                        09  STUSAN-RRK-TAIINYMD PIC X(08).
-                       09  STUSAN-RRK-DJFLG    PIC 9(01).
+                       09  STUSAN-RRK-DJKBN    PIC X(01).
       *                一般入院料で入院していた日数
       *                （歴作成データの場合は対象日数）
                        09  STUSAN-RRK-NISSU    PIC 9(08).

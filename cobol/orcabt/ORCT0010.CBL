@@ -257,6 +257,13 @@
       *    サブプロ用領域
       *****************************************************************
       *
+      *    同日入院チェックサブ
+           COPY    "CPORCSDNTCHK.INC".
+      *
+       01  LNKNRRK-REC.
+           COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-// 
+                                       BY         //LNKNRRK-//.
+      *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -471,7 +478,10 @@
       *        処理対象チェック処理
                PERFORM 20011-TAISYO-CHK-SEC
                IF    ( FLG-TAISYO  =   1 )
-                   PERFORM 20011-HENSYU-SEC
+                   PERFORM 800-ORCSDNTCHK-SEC
+                   IF    ( SDNTCHK-STYMD   NOT =   ZERO )
+                       PERFORM 20011-HENSYU-SEC
+                   END-IF
                END-IF
       *
                MOVE    "PTNYUINRRK-KEY14"  TO  ORC-DBPATH
@@ -606,8 +616,9 @@
                                    TO  WRK-YMD
            END-IF
       *
-           IF  ( PTNYUINRRK-NYUINYMD   >   WRK-YMD )
-               MOVE    PTNYUINRRK-NYUINYMD
+      *
+           IF  ( SDNTCHK-STYMD     >   WRK-YMD )
+               MOVE    SDNTCHK-STYMD
                                    TO  WRK-SEIKYUSTYMD
            ELSE
                MOVE    WRK-YMD     TO  WRK-SEIKYUSTYMD
@@ -928,7 +939,10 @@
                PERFORM 910-DBCLOSE-SEC
       *
                IF    ( FLG-PTNYUINRRK  =   ZERO )
-                   PERFORM 20011-HENSYU-SEC
+                   PERFORM 800-ORCSDNTCHK-SEC
+                   IF    ( SDNTCHK-STYMD   NOT =   ZERO )
+                       PERFORM 20011-HENSYU-SEC
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -1238,6 +1252,20 @@
        800-ERRMSG-EDIT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    同日再入院チェックサブ
+      *****************************************************************
+       800-ORCSDNTCHK-SEC              SECTION.
+      *
+           INITIALIZE                  SDNTCHK-AREA
+           MOVE    PTNYUINRRK-REC      TO      LNKNRRK-REC
+           MOVE    WRK-TEIKIEDYMD      TO      SDNTCHK-KJNYMD
+           CALL    "ORCSDNTCHK"        USING   SDNTCHK-AREA
+                                               LNKNRRK-REC
+      *
+           .
+       800-ORCSDNTCHK-EXT.
+           EXIT.
       *****************************************************************
       *    システム管理マスタ読込
       *****************************************************************

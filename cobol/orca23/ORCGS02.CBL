@@ -3087,7 +3087,7 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTTEIKIRRK-KEY2"   TO  ORC-DBPATH
+           MOVE    "PTTEIKIRRK-KEY6"   TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                            MCPAREA
                                            ORCMCPAREA

@@ -130,7 +130,7 @@
       *****************************************************************
       *
       *
-      *    入院チェックサブ
+      *    同日再入院チェックサブ
            COPY    "CPORCSDNTCHK.INC".
       *
        01  LNKNRRK-REC.
@@ -740,7 +740,7 @@
            MOVE    PTNYUINRRK-JTIKBN   TO  STUSAN-RRK-JTIKBN   (IDX2)
            MOVE    PTNYUINRRK-NYUINYMD TO  STUSAN-RRK-NYUINYMD (IDX2)
            MOVE    PTNYUINRRK-TAIINYMD TO  STUSAN-RRK-TAIINYMD (IDX2)
-           MOVE    SDNTCHK-DJFLG       TO  STUSAN-RRK-DJFLG    (IDX2)
+           MOVE    SDNTCHK-DJKBN       TO  STUSAN-RRK-DJKBN    (IDX2)
            IF    ( PTNYUINRRK-JTIKBN   =   "5" OR  "6" )
                MOVE    PTNYUINRRK-TAISYONISSU
                                        TO  STUSAN-RRK-NISSU    (IDX2)

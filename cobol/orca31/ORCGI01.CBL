@@ -402,6 +402,7 @@
            03  WRK-I01-I04-PROCKBN         PIC X(01).
            03  WRK-FTN-NYUINYMD            PIC X(08).
            03  WRK-FTN-TAIINYMD            PIC X(08).
+           03  WRK-FTN-DJKBN               PIC X(01).
            03  WRK-FTN-RRKNUM              PIC 9(03).
            03  WRK-NYUREKILST-SEL          PIC 9(05).
       *    転科／転棟／転室時に食事会計を退避する項目（最大２カ月分）
@@ -594,6 +595,13 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    同日入院チェックサブ
+           COPY    "CPORCSDNTCHK.INC".
+      *
+       01  LNKNRRK-REC.
+           COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-// 
+                                       BY         //LNKNRRK-//.
       *
       *    入院登録サブ
            COPY    "CPI0SUB01.INC".
@@ -2151,6 +2159,11 @@
       *
            MOVE    ZERO            TO  SPA-NAI-I01-NYURRK-FLG
       *
+      *    同日再入院フラグ
+           PERFORM 800-ORCSDNTCHK-SEC
+           MOVE    SDNTCHK-DJKBN   TO  SPA-NAI-I01-DJKBN
+           MOVE    SDNTCHK-STYMD   TO  SPA-NAI-I01-DJSTYMD
+      *
       *    前回異動日
            MOVE    PTNYUINRRK-TENNYUYMD
                                    TO  WRK-YMD
@@ -2346,6 +2359,11 @@
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *
            MOVE    1               TO  SPA-NAI-I01-NYURRK-FLG
+      *
+      *    同日再入院フラグ
+           PERFORM 800-ORCSDNTCHK-SEC
+           MOVE    SDNTCHK-DJKBN   TO  SPA-NAI-I01-DJKBN
+           MOVE    SDNTCHK-STYMD   TO  SPA-NAI-I01-DJSTYMD
       *
       *    病棟名称
            MOVE    PTNYUINRRK-BTUNAME
@@ -2784,6 +2802,11 @@
                PERFORM 900-TBL-CLOSE-SEC
            END-IF
       *
+      *    同日再入院フラグ
+           PERFORM 800-ORCSDNTCHK-SEC
+           MOVE    SDNTCHK-DJKBN   TO  SPA-NAI-I01-TDJKBN  (IDX1)
+           MOVE    SDNTCHK-STYMD   TO  SPA-NAI-I01-TDJSTYMD(IDX1)
+      *
       *    入院歴
            MOVE    PTNYUINRRK-RRKNUM
                                    TO  SPA-NAI-I01-TRRKNUM (IDX1)
@@ -2900,6 +2923,11 @@
            ELSE
                MOVE    2           TO  SPA-NAI-I01-TZITA-FLG (IDX1)
            END-IF
+      *
+      *    同日再入院フラグ
+           PERFORM 800-ORCSDNTCHK-SEC
+           MOVE    SDNTCHK-DJKBN   TO  SPA-NAI-I01-TDJKBN  (IDX1)
+           MOVE    SDNTCHK-STYMD   TO  SPA-NAI-I01-TDJSTYMD(IDX1)
       *
       *    入院歴
            MOVE    PTNYUINRRK-RRKNUM
@@ -3148,6 +3176,8 @@
       *
            PERFORM UNTIL ( FLG-DBRC    NOT =   ZERO )
       *
+               PERFORM 800-ORCSDNTCHK-SEC
+      *
                MOVE    ZERO            TO  WRK-TSUSAN
                MOVE    PTNYUINRRK-SHONUM
                                        TO  WRK-CHK-SHONUM
@@ -3161,15 +3191,17 @@
                                =   WRK-TSUSAN
                                +   PTNYUINRRK-TAISYONISSU
                    ELSE
-                       MOVE    PTNYUINRRK-NYUINYMD
+                       IF    ( SDNTCHK-STYMD   NOT =   ZERO )
+                           MOVE    SDNTCHK-STYMD
                                        TO  WRK-STYMD
-                       MOVE    PTNYUINRRK-TAIINYMD
+                           MOVE    PTNYUINRRK-TAIINYMD
                                        TO  WRK-EDYMD
-                       PERFORM 5002-KIKAN-CALC-SEC
-                       IF    ( FLG-ORCSDAY =   ZERO )
-                           COMPUTE WRK-TSUSAN
-                               =   WRK-TSUSAN
-                               +   WRK-NISSU2
+                           PERFORM 5002-KIKAN-CALC-SEC
+                           IF    ( FLG-ORCSDAY =   ZERO )
+                               COMPUTE WRK-TSUSAN
+                                   =   WRK-TSUSAN
+                                   +   WRK-NISSU2
+                           END-IF
                        END-IF
                    END-IF
       *
@@ -3226,35 +3258,20 @@
                    MOVE    WRK-NISSU2
                                TO  WRK-NISSU
       *
-                   IF    ( SPA-GMN-I01-NYUREKILST-CNT
-                                       >   IDX2 )
-                    AND  ( SPA-NAI-I01-TNYUINYMD (IDX2)
-                       =   SPA-NAI-I01-TTAIINYMD (IDX2 + 1) )
-                       COMPUTE WRK-TSUSAN
-                           =   WRK-TSUSAN  +   WRK-NISSU2  -   1
-                   ELSE
+                   IF    ( SPA-NAI-I01-TDJKBN (IDX2)   =   SPACE )
                        COMPUTE WRK-TSUSAN
                            =   WRK-TSUSAN  +   WRK-NISSU2
+                   ELSE
+                       COMPUTE WRK-TSUSAN
+                           =   WRK-TSUSAN  +   WRK-NISSU2  -   1
                    END-IF
       *
                ELSE
                    MOVE    SPA-NAI-I01-TNYURRKTAISYO (IDX2)
                                TO  WRK-NISSU
-                   IF    ( SPA-GMN-I01-NYUREKILST-CNT
-                                       >   IDX2 )
-                    AND  ( SPA-NAI-I01-TNYUINYMD (IDX2)
-                       =   SPA-NAI-I01-TTAIINYMD (IDX2 + 1)
-                    AND    SPA-NAI-I01-TNYURRKTAISYO (IDX2)
-                                       =   WRK-NISSU2 )
-                       COMPUTE WRK-TSUSAN
-                           =   WRK-TSUSAN
-                           +   SPA-NAI-I01-TNYURRKTAISYO (IDX2)
-                           -   1
-                   ELSE
-                       COMPUTE WRK-TSUSAN
-                           =   WRK-TSUSAN
-                           +   SPA-NAI-I01-TNYURRKTAISYO (IDX2)
-                   END-IF
+                   COMPUTE WRK-TSUSAN
+                       =   WRK-TSUSAN
+                       +   SPA-NAI-I01-TNYURRKTAISYO (IDX2)
       *
                END-IF
                MOVE    WRK-NISSU   TO  WRK-ZZZZ9
@@ -6631,15 +6648,28 @@
       *****************************************************************
        4801-NYUIN-TOUROKU-CHK-SEC      SECTION.
       *
-      *    前回退院日＜入院日となっていること
+      *    前回退院日≦入院日となっていること
+      *    前歴が自（他）院歴の場合は前回退院日＜入院日となっていること
            IF    ( SPA-NAI-I01-TTAIINYMD (1) NOT =   SPACE )
-               IF    ( SPA-NAI-I01-TTAIINYMD (1)
+      *
+               IF    ( SPA-NAI-I01-TZITA-FLG (1)  =   ZERO )
+                   IF    ( SPA-NAI-I01-TTAIINYMD (1)
                                   <=    SPA-NAI-I01-NYUINYMD )
-                   CONTINUE
+                       CONTINUE
+                   ELSE
+                       MOVE    "1018"      TO  SPA-ERRCD
+                       MOVE    7           TO  SPA-GMN-I01-CUR
+                       GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
+                   END-IF
                ELSE
-                   MOVE    "1018"      TO  SPA-ERRCD
-                   MOVE    7           TO  SPA-GMN-I01-CUR
-                   GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
+                   IF    ( SPA-NAI-I01-TTAIINYMD (1)
+                                  <     SPA-NAI-I01-NYUINYMD )
+                       CONTINUE
+                   ELSE
+                       MOVE    "1036"      TO  SPA-ERRCD
+                       MOVE    7           TO  SPA-GMN-I01-CUR
+                       GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
+                   END-IF
                END-IF
            END-IF
       *
@@ -6753,6 +6783,15 @@
                END-IF
            END-IF
       *
+      *    同日再入院の場合、入院日≠退院日となっていること
+           IF    ( SPA-NAI-I01-DJKBN   =   "1" )
+               IF    ( SPA-NAI-I01-NYUINYMD =   SPA-NAI-I01-TAIINYMD )
+                   MOVE    "1037"      TO  SPA-ERRCD
+                   MOVE    11          TO  SPA-GMN-I01-CUR
+                   GO  TO  4801-TAIIN-TOUROKU-CHK-EXT
+               END-IF
+           END-IF
+      *
       *    定期請求との関連チェック
       *    請求開始日取得処理
            PERFORM 4801-SKYSTYMD-GET-SEC
@@ -6808,7 +6847,10 @@
                    PERFORM UNTIL   ( FLG-SYUNOU    NOT =   ZERO )
                             OR     ( SPA-ERRCD     NOT =   SPACE )
                        MOVE    MCPDATA-REC     TO  SYUNOU-REC
-                       IF    ( SYU-DENPJTIKBN  NOT =   "3" )
+                       IF    ( SYU-NYUIN-RRKNUM
+                                           =   SPA-NAI-I01-PTRRKNUM )
+                        AND  ( SYU-DENPJTIKBN
+                                       NOT =   "3" )
       *                 AND  ( SYU-CREATEKBN   =   "2" )
                            MOVE    1           TO  FLG-SYUARI
                            IF    ( SYU-NYUKIN-TOTAL    >   ZERO )
@@ -6881,6 +6923,15 @@
            ELSE
                MOVE    SPA-NAI-I01-NYUINYMD
                                        TO  WRK-NOW-SKYSTYMD
+               IF    ( SPA-NAI-I01-DJKBN   =   "1" )
+                   MOVE    SPA-NAI-I01-NYUINYMD
+                                       TO  WRK-YMD
+                   MOVE    "1"         TO  WRK-ZOGENPTN
+                   MOVE    1           TO  WRK-ZOGEN
+                   PERFORM 5002-CALENDAR-SEC
+                   MOVE    WRK-KEISANYMD
+                                       TO  WRK-NOW-SKYSTYMD
+               END-IF
            END-IF
       *
            .
@@ -7242,6 +7293,18 @@
       *    入院中区分 ("0"固定)
            MOVE    "0"             TO  PTNYUINRRK-NYUINCHUKBN
       *
+           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
+               IF    ( SPA-NAI-I01-TTAIINYMD (1)   NOT =   SPACE )
+                   IF    ( SPA-NAI-I01-TTAIINYMD (1)
+                                   =   SPA-NAI-I01-NYUINYMD )
+                       MOVE    "1" TO  PTNYUINRRK-DOUJITSUKBN
+                   END-IF
+               END-IF
+           ELSE
+                       MOVE    SPA-NAI-I01-DJKBN
+                                   TO  PTNYUINRRK-DOUJITSUKBN
+           END-IF
+      *
            IF    ( WRK-UPDKBN      =   "UPD" )
       *
                PERFORM 800-MCNDATE-SEC
@@ -7531,7 +7594,9 @@
       *
                MOVE    MCPDATA-REC     TO  SYUNOU-REC
       *
-               IF    ( SYU-DENPJTIKBN  NOT =   "3" )
+               IF    ( SYU-NYUIN-RRKNUM    =   SPA-NAI-I01-PTRRKNUM )
+                AND  ( SYU-DENPJTIKBN  NOT =   "3" )
+      *
       *            収納明作成処理
                    PERFORM 4801-SYUMEI-SAKUSEI-SEC
                    IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -7589,6 +7654,8 @@
       *        現在入院分の定期請求データかチェック
                IF    ( SPA-NAI-I01-NYUINYMD
                                       <=   PTTEIKIRRK-SKYEDYMD )
+                AND  ( SPA-NAI-I01-PTRRKNUM
+                                       =   PTTEIKIRRK-RRKNUM )
                    MOVE    PTTEIKIRRK-SKYEDYMD
                                        TO  WRK-MAE-SKYEDYMD
                END-IF
@@ -7728,8 +7795,11 @@
       *
                MOVE    MCPDATA-REC     TO  PTTEIKIRRK-REC
       *
-      *        定期履歴管理情報集計
-               PERFORM 4801-TEIKIRRK-SUM-SEC
+               IF    ( PTTEIKIRRK-RRKNUM   =   SPA-NAI-I01-PTRRKNUM )
+      *
+      *            定期履歴管理情報集計
+                   PERFORM 4801-TEIKIRRK-SUM-SEC
+               END-IF
       *
                MOVE    "PTTEIKIRRK-KEY4"   TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
@@ -7748,8 +7818,10 @@
            MOVE    SPA-NAI-I01-PTID    TO  PTTEIKIRRK-PTID
            MOVE    WRK-SKYSTYMD        TO  PTTEIKIRRK-SKYSTYMD
            MOVE    WRK-SKYEDYMD        TO  PTTEIKIRRK-SKYEDYMD
+           MOVE    SPA-NAI-I01-PTRRKNUM
+                                       TO  PTTEIKIRRK-RRKNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTTEIKIRRK-DEL2"   TO  WRK-DBPATH
+           MOVE    "PTTEIKIRRK-DEL3"   TO  WRK-DBPATH
            PERFORM 900-TBL-DELETE-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
                MOVE    "4010"          TO  SPA-ERRCD
@@ -12177,9 +12249,11 @@
            MOVE    SPA-NAI-I01-PTID
                                    TO  LNK-S02-PTID
            MOVE    WRK-NISSU1      TO  LNK-S02-NYUIN-TSUSAN-NISSU
-      *    請求開始日（入院日または前回定期請求終了日の翌日）を設定
+      *
+      *    請求開始日（入院日（同日再入院の場合は入院日翌日）または
+      *    前回定期請求終了日の翌日）を設定
            MOVE    WRK-NOW-SKYSTYMD
-                                   TO  LNK-S02-SKYSTYMD
+                                       TO  LNK-S02-SKYSTYMD
            MOVE    WRK-FTN-TAIINYMD
                                    TO  LNK-S02-SKYEDYMD
            MOVE    SPA-SYSYMD      TO  LNK-S02-SYSYMD
@@ -12663,6 +12737,7 @@
       *    負担金計算処理
            MOVE    SPA-NAI-I01-NYUINYMD    TO  WRK-FTN-NYUINYMD
            MOVE    SPA-NAI-I01-TAIINYMD    TO  WRK-FTN-TAIINYMD
+           MOVE    SPA-NAI-I01-DJKBN       TO  WRK-FTN-DJKBN
            PERFORM 490-FTNKIN-CALC-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  490-TAIIN-SYORI-EXT
@@ -12685,6 +12760,8 @@
                                            TO  WRK-FTN-NYUINYMD
            MOVE    SPA-NAI-I01-TRRKNUM (IDX1)
                                            TO  WRK-FTN-RRKNUM
+           MOVE    SPA-NAI-I01-TDJKBN (IDX1)
+                                           TO  WRK-FTN-DJKBN
            PERFORM 4901-SKYSTYMD-GET-SEC
       *
       *    負担金計算処理
@@ -12821,6 +12898,15 @@
            IF    ( WRK-NOW-SKYSTYMD    =   SPACE )
                MOVE    WRK-FTN-NYUINYMD
                                        TO  WRK-NOW-SKYSTYMD
+               IF    ( WRK-FTN-DJKBN   =   "1" )
+                   MOVE    WRK-FTN-NYUINYMD
+                                       TO  WRK-YMD
+                   MOVE    "1"         TO  WRK-ZOGENPTN
+                   MOVE    1           TO  WRK-ZOGEN
+                   PERFORM 5002-CALENDAR-SEC
+                   MOVE    WRK-KEISANYMD
+                                       TO  WRK-NOW-SKYSTYMD
+               END-IF
            END-IF
       *
            .
@@ -13634,6 +13720,12 @@
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE    "です"
                                        TO  SPA-ERRMSG (41 : )
+           WHEN    "1036"
+               MOVE  "入院日≦前回退院日となっています"
+                                       TO  SPA-ERRMSG
+           WHEN    "1037"
+               MOVE    "同日再入院の場合、同日の退院登録は行えません"
+                                       TO  SPA-ERRMSG
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"
                                        TO  SPA-ERRMSG
@@ -13894,6 +13986,19 @@
       *
            .
        800-ENRTRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    同日再入院チェックサブ
+      *****************************************************************
+       800-ORCSDNTCHK-SEC              SECTION.
+      *
+           INITIALIZE                  SDNTCHK-AREA
+           MOVE    PTNYUINRRK-REC      TO      LNKNRRK-REC
+           CALL    "ORCSDNTCHK"        USING   SDNTCHK-AREA
+                                               LNKNRRK-REC
+      *
+           .
+       800-ORCSDNTCHK-EXT.
            EXIT.
       *****************************************************************
       *    マシン日付取得サブ

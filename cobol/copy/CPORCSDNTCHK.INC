@@ -26,6 +26,6 @@
            03  SDNTCHK-IN.
                05  SDNTCHK-KJNYMD          PIC  X(08).
            03  SDNTCHK-OT.
-               05  SDNTCHK-DJFLG           PIC  9(01).
+               05  SDNTCHK-DJKBN           PIC  X(01).
                05  SDNTCHK-STYMD           PIC  X(08).
       *
