@@ -4245,60 +4245,60 @@
       *
            MOVE     ZERO       TO     FLG-SYUTOTAL-SET
       *
-           IF    (RECE02-RECEKA      NOT =  SPACE)
-           OR    (SYS-1038-KAGRPFLG      =   "1" )
-              CONTINUE
-           ELSE
+      ***     IF    (RECE02-RECEKA      NOT =  SPACE)
+      ***     OR    (SYS-1038-KAGRPFLG      =   "1" )
+      ***        CONTINUE
+      ***     ELSE
       *
-             IF   SYU-FUKU-DENPNUM    NOT =   ZERO
-             AND  SYU-GRP-DENPNUM     NOT =   ZERO
+      ***       IF   SYU-FUKU-DENPNUM    NOT =   ZERO
+      ***       AND  SYU-GRP-DENPNUM     NOT =   ZERO
       *
-               MOVE     ZERO     TO    FLG-SET
-               PERFORM  VARYING  IDX9    FROM    1   BY  1
-                         UNTIL   IDX9                  > 100
-                          OR    TBL-FUKU-DENPNUM(IDX9) = ZERO
-                          OR    FLG-SET                =  1
-                  IF  TBL-FUKU-DENPNUM(IDX9)  =  SYU-FUKU-DENPNUM
-                      MOVE      1      TO      FLG-SET
-                      MOVE      2      TO      FLG-SYUTOTAL-SET
-                  END-IF
-               END-PERFORM
+      ***         MOVE     ZERO     TO    FLG-SET
+      ***         PERFORM  VARYING  IDX9    FROM    1   BY  1
+      ***                   UNTIL   IDX9                  > 100
+      ***                    OR    TBL-FUKU-DENPNUM(IDX9) = ZERO
+      ***                    OR    FLG-SET                =  1
+      ***            IF  TBL-FUKU-DENPNUM(IDX9)  =  SYU-FUKU-DENPNUM
+      ***                MOVE      1      TO      FLG-SET
+      ***                MOVE      2      TO      FLG-SYUTOTAL-SET
+      ***            END-IF
+      ***         END-PERFORM
       *
-               IF  FLG-SET  =  ZERO
+      ***         IF  FLG-SET  =  ZERO
       *
-                  INITIALIZE                         SYUTTL-REC
-                  MOVE    SYU-HOSPID         TO      SYUTTL-HOSPID
-                  MOVE    SYU-NYUGAIKBN      TO      SYUTTL-NYUGAIKBN
-                  MOVE    SYU-PTID           TO      SYUTTL-PTID
-                  MOVE    SYU-FUKU-DENPNUM   TO      SYUTTL-DENPNUM
-                  MOVE    SYUTTL-REC         TO      MCPDATA-REC
-                  MOVE    "DBSELECT"         TO      MCP-FUNC
-                  MOVE    "SYUTOTAL-KEY"     TO      ORC-DBPATH
-                  CALL    "ORCMCPSUB"         USING   MCPAREA
-                                                      ORCMCPAREA
-                                                      MCPDATA-REC
-                  IF      MCP-RC             =       ZERO
-                       MOVE      "SYUTOTAL-KEY"   TO   ORC-DBPATH
-                       PERFORM    900-SYUTOTAL-READ-SEC
-                       IF   FLG-SYUTOTAL   =    ZERO
-                            MOVE   SYU-FUKU-DENPNUM
-                                         TO    TBL-FUKU-DENPNUM(IDX9)
-                            MOVE    1    TO    FLG-SYUTOTAL-SET
-                       ELSE
-                            DISPLAY   "SYUTOTAL FETCH ERR"
-                       END-IF
-                  ELSE
-                       DISPLAY   "SYUTOTAL SELECT ERR"
-                  END-IF
+      ***            INITIALIZE                         SYUTTL-REC
+      ***            MOVE    SYU-HOSPID         TO      SYUTTL-HOSPID
+      ***            MOVE    SYU-NYUGAIKBN      TO      SYUTTL-NYUGAIKBN
+      ***            MOVE    SYU-PTID           TO      SYUTTL-PTID
+      ***            MOVE    SYU-FUKU-DENPNUM   TO      SYUTTL-DENPNUM
+      ***            MOVE    SYUTTL-REC         TO      MCPDATA-REC
+      ***            MOVE    "DBSELECT"         TO      MCP-FUNC
+      ***            MOVE    "SYUTOTAL-KEY"     TO      ORC-DBPATH
+      ***            CALL    "ORCMCPSUB"         USING   MCPAREA
+      ***                                                ORCMCPAREA
+      ***                                                MCPDATA-REC
+      ***            IF      MCP-RC             =       ZERO
+      ***                 MOVE      "SYUTOTAL-KEY"   TO   ORC-DBPATH
+      ***                 PERFORM    900-SYUTOTAL-READ-SEC
+      ***                 IF   FLG-SYUTOTAL   =    ZERO
+      ***                      MOVE   SYU-FUKU-DENPNUM
+      ***                                   TO    TBL-FUKU-DENPNUM(IDX9)
+      ***                      MOVE    1    TO    FLG-SYUTOTAL-SET
+      ***                 ELSE
+      ***                      DISPLAY   "SYUTOTAL FETCH ERR"
+      ***                 END-IF
+      ***            ELSE
+      ***                 DISPLAY   "SYUTOTAL SELECT ERR"
+      ***            END-IF
       *
-                  MOVE    "SYUTOTAL-KEY"     TO  WK-PATH
-                  PERFORM 900-CSR-CLOSE-SEC
+      ***            MOVE    "SYUTOTAL-KEY"     TO  WK-PATH
+      ***            PERFORM 900-CSR-CLOSE-SEC
       *
-               END-IF
+      ***         END-IF
       *
-             END-IF
+      ***       END-IF
       *
-           END-IF
+      ***     END-IF
       *
            .
       *
