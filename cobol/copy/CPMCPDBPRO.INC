@@ -199,6 +199,11 @@
       *  01.01.39    NACL-多々納  03/02/17  SRYACCT-KEY17追加
       *  01.01.39    NACL-太田    03/02/22  PTNYUINRRK-ALL追加
       *  01.01.40    ひさなが     03/02/25  PTNYUINRRK-KEY18の追加
+      *  01.01.41    NACL-藤原    03/02/28  KOHSKY-KEY,KEY2,KEY3,KEY4,
+      *                                     DEL1,DEL2,DEL3追加
+      *                                     SEIKYU-KEY15追加 
+      *                                     RECEKANRI-DEL1,DEL2追加 
+      *                                     RECEPRT-DEL1,DEL2追加 
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -781,11 +786,18 @@
                WHEN    "DBDELETE"      ALSO   "DBKANRI-KEY"
                    MOVE    PATH-TBL-DBKANRI-KEY
                                        TO  WRK-PATH
+      *
                WHEN    "DBUPDATE"      ALSO   "RECEKANRI-KEY"
                WHEN    "DBDELETE"      ALSO   "RECEKANRI-KEY"
                WHEN    "DBUPDATE"      ALSO   "RECEKANRI-KEY2"
                WHEN    "DBDELETE"      ALSO   "RECEKANRI-KEY2"
                    MOVE    PATH-TBL-RECEKANRI-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "RECEKANRI-DEL1"
+                   MOVE    PATH-TBL-RECEKANRI-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "RECEKANRI-DEL2"
+                   MOVE    PATH-TBL-RECEKANRI-DEL2
                                        TO  WRK-PATH
       *
                WHEN    "DBUPDATE"      ALSO   "PTRSIINF-KEY"
@@ -881,6 +893,24 @@
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "NYUINACT-DEL12"
                    MOVE    PATH-TBL-NYUINACT-DEL12
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "KOHSKY-KEY"
+                   MOVE    PATH-TBL-KOHSKY-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "KOHSKY-DEL1"
+                   MOVE    PATH-TBL-KOHSKY-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "KOHSKY-DEL2"
+                   MOVE    PATH-TBL-KOHSKY-DEL2
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "KOHSKY-DEL3"
+                   MOVE    PATH-TBL-KOHSKY-DEL3
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "RECEPRT-DEL1"
+                   MOVE    PATH-TBL-RECEPRT-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "RECEPRT-DEL2"
+                   MOVE    PATH-TBL-RECEPRT-DEL2
                                        TO  WRK-PATH
       *---- (NYUIN.08) LINE ADD END      ------------------------------
                WHEN    ANY             ALSO   "SYSKANRI-KEY"
@@ -1906,6 +1936,9 @@
                 WHEN    ANY             ALSO   "SEIKYU-KEY14"
                    MOVE    PATH-TBL-SEIKYU-KEY14
                                        TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY15"
+                   MOVE    PATH-TBL-SEIKYU-KEY15
+                                       TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SEIKYU-ALL"
                    MOVE    PATH-TBL-SEIKYU-ALL
@@ -2351,7 +2384,7 @@
                    MOVE    PATH-TBL-TEIKIRRK-ALL
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTEIKIRRK-KEY"
-                   MOVE    PATH-TBL-PTTEIKIRRK-KEY
+                   MOVE    PATH-TBL-PTTEIKIRRK-KEY 
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTEIKIRRK-KEY2"
                    MOVE    PATH-TBL-PTTEIKIRRK-KEY2
@@ -2364,6 +2397,21 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTEIKIRRK-ALL"
                    MOVE    PATH-TBL-PTTEIKIRRK-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KOHSKY-KEY"
+                   MOVE    PATH-TBL-KOHSKY-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KOHSKY-KEY2"
+                   MOVE    PATH-TBL-KOHSKY-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KOHSKY-KEY3"
+                   MOVE    PATH-TBL-KOHSKY-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KOHSKY-KEY4"
+                   MOVE    PATH-TBL-KOHSKY-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KOHSKY-ALL"
+                   MOVE    PATH-TBL-KOHSKY-ALL
                                        TO  WRK-PATH
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC

@@ -26,6 +26,8 @@
       *
       *  01.01.01    NACL-藤原    02/10/07  年齢・給付割合の追加
       *  01.01.02    NACL-藤原    02/10/17  在宅区分の追加
+      *  01.01.03    NACL-藤原    03/02/12  補助区分の追加
+      *                                     入院対応
       *****************************************************************
        01  SPA-H01FREE.
       *
@@ -38,6 +40,8 @@
                    07  SPA-H01GMN-MIDASI-TBL          OCCURS  35.
                        09  SPA-H01GMN-MIDASI          PIC X(18).
                        09  SPA-H01GMN-MIDASI-STYLE    PIC X(05).
+                   07  SPA-H01GMN-SHOMIDASI-TBL       OCCURS  3.
+                       09  SPA-H01GMN-SHOMIDASI       PIC X(14).
       * 
                    07  SPA-H01GMN-SRYYM               PIC X(07).
                    07  SPA-H01GMN-KOUMOKU1.
@@ -51,6 +55,7 @@
                        09  SPA-H01GMN-HTEISYUTUSAKI   PIC X(10).
                        09  SPA-H01GMN-HRECESYUBETU    PIC X(08).
                        09  SPA-H01GMN-HHKNJANUM       PIC X(08).
+                       09  SPA-H01GMN-HHOJOKBN        PIC X(08).
                        09  SPA-H01GMN-HKIGO           PIC X(20).
                        09  SPA-H01GMN-SKYYM           PIC X(07).
                        09  SPA-H01GMN-HENREIYM        PIC X(07).
@@ -76,7 +81,7 @@
                            11  SPA-H01GMN-NKAISU      PIC 9(05).
                        09  SPA-H01GMN-TENSU-TBL       OCCURS  3.
                            11  SPA-H01GMN-TENSU-G1    OCCURS  35.
-                               13  SPA-H01GMN-TENSU   PIC 9(08).
+                               13  SPA-H01GMN-TENSU   PIC S9(08).
       *
                        09  SPA-H01GMN-TBL1            OCCURS  3.
                            11  SPA-H01GMN-TOTALTEN    PIC 9(08).
@@ -87,9 +92,16 @@
                            11  SPA-H01GMN-NFTNMONEY   PIC 9(08).
                            11  SPA-H01GMN-NYKZFTN     PIC 9(08).
                            11  SPA-H01GMN-NJNISSU     PIC 9(02).
+                           11  SPA-H01GMN-SHORYOYOHI  PIC 9(08).
+                           11  SPA-H01GMN-SHOFTN      PIC 9(08).
+                           11  SPA-H01GMN-SHONISSU    PIC 9(02).
+                           11  SPA-H01GMN-NSHORYOYOHI PIC 9(08).
+                           11  SPA-H01GMN-NSHOFTN     PIC 9(08).
+                           11  SPA-H01GMN-NSHONISSU   PIC 9(02).
+                       09  SPA-H01GMN-SHO-STATE       PIC S9(9) BINARY.
                        09  SPA-H01GMN-TENSU-TBL1      OCCURS  3.
                            11  SPA-H01GMN-NTENSU-G1   OCCURS  35.
-                               13  SPA-H01GMN-NTENSU  PIC 9(08).
+                               13  SPA-H01GMN-NTENSU  PIC S9(08).
       * 
                    07  SPA-UPDFLG                     PIC X(01).
                    07  SPA-HENFLG                     PIC X(01).
@@ -111,6 +123,7 @@
                    07  SPA-RECE10-TEISYUTUSAKI PIC  9(01).
                    07  SPA-RECE10-RECESYUBETU  PIC  X(04).
                    07  SPA-RECE10-HKNJANUM     PIC  X(08).
+                   07  SPA-RECE10-HOJOKBN      PIC  X(01).
                    07  SPA-RECE10-TEKSTYMD     PIC  X(08).
       *
                05  SPA-SYS-1001-HOSPSBT1       PIC 9(01).
@@ -138,6 +151,7 @@
                        09  SPA-H99GMN-TRECESYUBETU
                                                   PIC X(4).
                        09  SPA-H99GMN-THKNJANUM   PIC X(8).
+                       09  SPA-H99GMN-THOJOKBN    PIC X(8).
                        09  SPA-H99GMN-TKIGO       PIC X(20).
       *
                05  SPA-H99NAI-SRYYM           PIC 9(06).
@@ -157,5 +171,6 @@
                                                      PIC X(04).
                        09  SPA-H99NAI-RECE10-HKNJANUM
                                                      PIC X(08).
+                       09  SPA-H99NAI-RECE10-HOJOKBN PIC X(01).
                        09  SPA-H99NAI-RECE10-TEKSTYMD
                                                      PIC X(08).

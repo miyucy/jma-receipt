@@ -33,6 +33,7 @@
                     06  H99-TTEISYUTUSAKI PIC X(10).
                     06  H99-TRECESYUBETU  PIC X(4).
                     06  H99-THKNJANUM     PIC X(8).
+                    06  H99-THOJOKBN      PIC X(8).
                     06  H99-TKIGO         PIC X(20).
                   05  H99-SELECT  PIC X       OCCURS  5 TIMES.
               03  H99-SELNUM.

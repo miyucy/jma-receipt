@@ -25,7 +25,7 @@
                 04  H01-SRYKA-VALUE   PIC X(2).
               03  H01-MIDASI-G  OCCURS  35.
                 04  H01-MIDASI-STYLE   PIC X(20).
-                04  H01-MIDASI         PIC X(18).
+                04  H01-MIDASI         PIC X(20).
               03  H01-KHNTEN-G  OCCURS  35.
                 04  H01-KHNTEN-STATE   PIC S9(9)   BINARY.
                 04  H01-KHNTEN   PIC 9(8).
@@ -35,7 +35,7 @@
               03  H01-TENSU-G   OCCURS  3.
                 04  H01-TENSU-TBL OCCURS  35.
                   05  H01-TENSU-STATE   PIC S9(9)   BINARY.
-                  05  H01-TENSU   PIC 9(8).
+                  05  H01-TENSU   PIC S9(8).
               03  H01-TOTALTEN-G  OCCURS  3.
                 04  H01-TOTALTEN-STATE   PIC S9(9)   BINARY.
                 04  H01-TOTALTEN   PIC 9(8).
@@ -48,13 +48,22 @@
               03  H01-JNISSU-G  OCCURS  3.
                 04  H01-JNISSU-STATE   PIC S9(9)   BINARY.
                 04  H01-JNISSU   PIC 9(2).
+              03  H01-SHORYOYOHI-G  OCCURS  3.
+                04  H01-SHORYOYOHI-STATE   PIC S9(9)   BINARY.
+                04  H01-SHORYOYOHI   PIC 9(8).
+              03  H01-SHOFTN-G  OCCURS  3.
+                04  H01-SHOFTN-STATE   PIC S9(9)   BINARY.
+                04  H01-SHOFTN   PIC 9(8).
+              03  H01-SHONISSU-G  OCCURS  3.
+                04  H01-SHONISSU-STATE   PIC S9(9)   BINARY.
+                04  H01-SHONISSU   PIC 9(2).
               03  H01-NKHNTEN-G  OCCURS  35.
                 04  H01-NKHNTEN   PIC 9(8).
               03  H01-NKAISU-G  OCCURS  35.
                 04  H01-NKAISU   PIC 9(5).
               03  H01-NTENSU-G  OCCURS  3.
                 04  H01-NTENSU-TBL  OCCURS  35.
-                  05  H01-NTENSU   PIC 9(8).
+                  05  H01-NTENSU   PIC S9(8).
               03  H01-NTOTALTEN-G OCCURS  3.
                 04  H01-NTOTALTEN-STATE   PIC S9(9)   BINARY.
                 04  H01-NTOTALTEN   PIC 9(8).
@@ -64,6 +73,17 @@
                 04  H01-NYKZFTN   PIC 9(8).
               03  H01-NJNISSU-G   OCCURS  3.
                 04  H01-NJNISSU   PIC 9(2).
+              03  H01-NSHORYOYOHI-G  OCCURS  3.
+                04  H01-NSHORYOYOHI-STATE   PIC S9(9)   BINARY.
+                04  H01-NSHORYOYOHI   PIC 9(8).
+              03  H01-NSHOFTN-G  OCCURS  3.
+                04  H01-NSHOFTN-STATE   PIC S9(9)   BINARY.
+                04  H01-NSHOFTN   PIC 9(8).
+              03  H01-NSHONISSU-G  OCCURS  3.
+                04  H01-NSHONISSU-STATE   PIC S9(9)   BINARY.
+                04  H01-NSHONISSU   PIC 9(2).
+              03  H01-SHOMIDASI-G  OCCURS  6.
+                04  H01-SHOMIDASI  PIC X(14).
               03  H01-SKYKBN-COMBO.
                 04  H01-SKYKBN.
                   05  H01-VALUE   PIC X(15).
@@ -94,6 +114,9 @@
               03  H01-HHKNJANUM.
                 04  H01-HHKNJANUM-STYLE   PIC X(20).
                 04  H01-HHKNJANUM-VALUE   PIC X(8).
+              03  H01-HHOJOKBN.
+                04  H01-HHOJOKBN-STYLE   PIC X(20).
+                04  H01-HHOJOKBN-VALUE   PIC X(6).
               03  H01-HKIGO.
                 04  H01-HKIGO-STYLE   PIC X(20).
                 04  H01-HKIGO-VALUE   PIC X(20).
