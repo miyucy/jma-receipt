@@ -61,6 +61,8 @@
       *  01.02.03    NACL-Æ£¸¶    03/04/23  ¸øÈñÀÁµá½ñ£Ä£Â¤ÎµëÉÕ³ä¹ç¤ò½¤Àµ
       *  01.02.04    NACL-Æ£¸¶    03/05/23  µëÉÕ³ä¹ç¤Î¥«¥¹¥¿¥Þ¥¤¥ºÊýË¡¤Î½¤Àµ
       *  01.00.05    NACL-Æ£¸¶    03/06/10  ÊÝ¸±ÍúÎò¤Î²þÊÇ½èÍý¤Î½¤Àµ
+      *  01.00.06    NACL-Æ£¸¶    03/07/10  ¼£¸³¤Î¤È¤­ÀÁµá´ÉÍý£Ä£Â¤Ë
+      *                                     £°¡§ÀÁµá¤·¤Ê¤¤¤È¤·¤Æ¹¹¿·¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3542,6 +3544,12 @@
                MOVE    RECE08-PREFNUM      TO  RECE10-PREFNUM
                MOVE    WRK-PARA-SYSYMD     TO  RECE10-CREYMD
                MOVE    ZERO                TO  RECE10-UPDYMD
+           END-IF
+      *
+      *    ¼£¸³¤ÏÀÁµá¶èÊ¬¤ò£°¡§ÀÁµá¤·¤Ê¤¤¤È¤¹¤ë
+           IF      RECE10-HKNNUM       >=  "900"
+           AND     RECE10-HKNNUM       <=  "969"
+                   MOVE    ZERO            TO  RECE10-SKYKBN
            END-IF
       *
            PERFORM VARYING IDX FROM    1   BY  1

@@ -39,6 +39,8 @@
       *  01.00.06    NACL-藤原    03/06/30  カスタマイズ項目をＯＣＲにも対応
       *  01.00.07    NACL-藤原    03/07/02  主病名編集フラグによって区切り線の
       *                                     編集方法を変更する 
+      *  01.00.08    NACL-藤原    03/07/10  治験のとき請求管理ＤＢに
+      *                                     ０：請求しないとして更新する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3849,6 +3851,12 @@
                MOVE    RECE08-PREFNUM      TO  RECE10-PREFNUM
                MOVE    WRK-PARA-SYSYMD     TO  RECE10-CREYMD
                MOVE    ZERO                TO  RECE10-UPDYMD
+           END-IF
+      *
+      *    治験は請求区分を０：請求しないとする
+           IF      RECE10-HKNNUM       >=  "900"
+           AND     RECE10-HKNNUM       <=  "969"
+                   MOVE    ZERO            TO  RECE10-SKYKBN
            END-IF
       *
            PERFORM VARYING IDX FROM    1   BY  1
