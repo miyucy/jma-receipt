@@ -46,6 +46,8 @@
       *  02.00.11    NACL-多々納  02/12/18  継続の時今回請求額を編集する
       *  02.00.12    NACL-多々納  03/01/08  入金額の上限修正
       *  02.00.13    NACL-多々納  03/02/13  訂正時の診療科履歴修正
+      *  02.00.14    NACL-多々納  03/03/04  複数診療科まとめ追加
+      *                                     収納明細削除追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -88,96 +90,6 @@
       *    画面スパ領域
            COPY    "K03SCR-SPA".
       *
-      *    画面スパ領域
-      *01  SPA-K03.
-      *    03  SPA-K03-AREA.
-      *        05  SPA-GMN-PAGE                  PIC 9(02).
-      *        05  SPA-MAX-PAGE                  PIC 9(02).
-      *        05  SPA-GMN-LINE                  PIC 9(02).
-      *        05  SPA-GMN-MAX                   PIC 9(02).
-      *        05  SPA-GMN-CUR                   PIC 9(02).
-      *        05  SPA-GMN-AREA.
-      *
-      *            07  SPA-GMN-HAKYMD            PIC X(09).
-      *            07  SPA-GMN-DENPNUM           PIC X(07).
-      *
-      *            07  SPA-GMN-HKNRYO            PIC 9(07)  OCCURS  11.
-      *            07  SPA-GMN-TGMONEY           PIC 9(07)  OCCURS  11.
-      *
-      *            07  SPA-GMN-HKNTEKI           PIC 9(10).
-      *            07  SPA-GMN-ROUFTN            PIC 9(07).
-      *            07  SPA-GMN-KOHFTN            PIC 9(07).
-      *            07  SPA-GMN-JIHI1             PIC 9(07).
-      *            07  SPA-GMN-JIHI2             PIC 9(07).
-      *            07  SPA-GMN-JIHI3             PIC 9(07).
-      *            07  SPA-GMN-JIHI4             PIC 9(07).
-      *            07  SPA-GMN-JIHI5             PIC 9(07).
-      *            07  SPA-GMN-JIHIKEI           PIC 9(07).
-      *            07  SPA-GMN-JIHITAX1          PIC 9(07).
-      *            07  SPA-GMN-JIHITAX2          PIC 9(07).
-      *            07  SPA-GMN-JIHITAX3          PIC 9(07).
-      *            07  SPA-GMN-JIHITAX4          PIC 9(07).
-      *            07  SPA-GMN-JIHITAX5          PIC 9(07).
-      *            07  SPA-GMN-JIHITAXKEI        PIC 9(07).
-      *            07  SPA-GMN-JIHIZEI           PIC 9(07).
-      *            07  SPA-GMN-HKNGAI            PIC 9(07).
-      *            07  SPA-GMN-ICHIFTN           PIC 9(07).
-      *            07  SPA-GMN-JIHIGOK           PIC 9(07).
-      *            07  SPA-GMN-YKZFTN            PIC 9(07).
-      *            07  SPA-GMN-CHOSEI            PIC S9(07).
-      *            07  SPA-GMN-CHOSEI-X          PIC  X(10).
-      *            07  SPA-GMN-SEIKYU            PIC S9(07).
-      *            07  SPA-GMN-ZENMISYU          PIC S9(07).
-      *            07  SPA-GMN-SEIGOK            PIC S9(07).
-      *            07  SPA-GMN-NYUKIN            PIC S9(07).
-      *            07  SPA-GMN-NYUKIN-X          PIC  X(10).
-      *
-      *            07  SPA-GMN-ROUSYOSIN         PIC S9(07).
-      *            07  SPA-GMN-ROUSAISIN         PIC S9(07).
-      *            07  SPA-GMN-ROUSIDOU          PIC S9(07).
-      *            07  SPA-GMN-ROUETC            PIC S9(07).
-      *
-      *            07  SPA-GMN-HAKFLG-G.
-      *                09  SPA-GMN-HAKFLG            PIC X(01).
-      *                09  SPA-GMN-HAKFLGF           PIC X(01).
-      *                09  SPA-GMN-HAKFLGMSG         PIC X(16).
-      *            07  SPA-GMN-HAKFLG-LIST.
-      *                09  SPA-GMN-HAKFLGLST        PIC X(18)
-      *                                             OCCURS   2.
-      *
-      *            07  SPA-GMN-SYOHOPRTFLG-G.
-      *                09  SPA-GMN-SYOHOPRTFLG      PIC X(01).
-      *                09  SPA-GMN-SYOHOH           PIC X(01).
-      *                09  SPA-GMN-SYOHOPRTMSG      PIC X(16).
-      *            07  SPA-GMN-SYOHOPRT-LIST.
-      *                09  SPA-GMN-SYOHOPRTLST        PIC X(18)
-      *                                             OCCURS   3.
-      *            薬剤情報
-      *            07  SPA-GMN-YAKJYOFLG-G.
-      *                09  SPA-GMN-YAKJYOFLG        PIC X(01).
-      *                09  SPA-GMN-YAKJYOH          PIC X(01).
-      *                09  SPA-GMN-YAKJYOFLGMSG     PIC X(16).
-      *            07  SPA-GMN-YAKUJYO-LIST.
-      *                09  SPA-GMN-YAKJYOLST        PIC X(18)
-      *                                             OCCURS   3.
-      *
-      *            07  SPA-GMN-JIHIMSG           PIC X(20)
-      *                                          OCCURS   5.
-      *            07  SPA-GMN-DRCD-G.
-      *                09  SPA-GMN-DRCD        PIC X(04).
-      *                09  SPA-GMN-F1          PIC X(01).
-      *                09  SPA-GMN-DRCDMEI     PIC X(20).
-      *            07  SPA-GMN-DRCDLST                    OCCURS  10.
-      *                09  SPA-GMN-DRCDL       PIC X(04).
-      *                09  SPA-GMN-F1L         PIC X(01).
-      *                09  SPA-GMN-DRCDMEIL    PIC X(20).
-      *            07  SPA-DRCD-MAX            PIC 9(04).
-      *
-      *        05  SPA-NAI-AREA.
-      *            07  SPA-NAI-SEIKYU            PIC S9(07).
-      *            07  SPA-KON-SKYMONEY          PIC S9(07).
-      *            07  SPA-NAI-CHOSEI            PIC X(01).
-      *
       *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
@@ -214,6 +126,8 @@
            03  FLG-CLAIM-OK        PIC 9(01).
       *
            03  FLG-CHK-OK          PIC 9(01).
+      *    複数科まとめ有無
+           03  FLG-FUKU-FLG              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -307,6 +221,8 @@
            03  WRK-KON-SKYMONEY        PIC  9(07).
       *請求金額
            03  WRK-SKYMONEY            PIC  9(07).
+      *差額
+           03  WRK-SAGAKU              PIC S9(07).
       *入金合計額
            03  WRK-NYUKIN-TOTAL        PIC  9(07).
       *入金回数
@@ -331,6 +247,23 @@
       *    診療種別
            03  WRK-SRYSYUKBN              PIC X(03).
            03  WRK-MAE-SRYSYUKBN          PIC X(03).
+      *    複数科集計用
+           03  WRK-SYUKEI-AREA.
+               05  WRK-SUM-SKYMONEY            PIC  9(07).
+               05  WRK-SUM-HKNTEN              PIC  9(07).
+      *
+               05  WRK-SUM-MONEY               PIC  9(07).
+               05  WRK-SUM-TGMONEY             PIC  9(07).
+               05  WRK-SUM-TGMONEY-TAX         PIC  9(07).
+               05  WRK-SUM-JIHI-TOTAL          PIC  9(07).
+               05  WRK-SUM-JIHI-TOTAL-TAX      PIC  9(07).
+               05  WRK-SUM-JIHI-TAX            PIC  9(07).
+               05  WRK-SUM-YKZ-FTN             PIC  9(07).
+      *
+               05  WRK-HKNTEN-KIN              PIC 9(07).
+               05  WRK-SKYMONEY                PIC 9(07).
+      *
+               05  WRK-HKNTEN-KEI              PIC 9(07)V99.
       *
       *    診療行為内容比較用テーブル
        01  TBL-AREA.
@@ -357,6 +290,14 @@
                05  WRK-TBL-ZAINUM          PIC 9(08).
            03  WRK-TBL-IDX                 PIC 9(04).
            03  FLG-ZAINUM                  PIC 9(01).
+      *
+      *    まとめテーブル領域
+       01  TBL-FUKU-AREA.
+           03  TBL-FUKU-OCCURS             OCCURS   5.
+               05  TBL-FUKU-DENPNUM        PIC 9(07).
+               05  TBL-FUKU-MATKBN         PIC X(01).
+               05  TBL-FUKU-CNT            PIC 9(04).
+               05  TBL-FUKU-SRYKA          PIC X(01).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -566,7 +507,7 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
-           MOVE    SPA-COMMON      TO  SPA-AREA.
+           MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-K03
            MOVE    SPA-WORK        TO  SPA-K01KYOUTU
       *
@@ -691,6 +632,10 @@
            PERFORM                 310-SPA-SET-SEC
       *
            MOVE    1               TO  SPA-GMN-CUR
+      *    複数科の差額ある時、調整へ
+           IF      SPA-GMN-FUKUSAGAKU  NOT =   ZERO
+               MOVE    6               TO  SPA-GMN-CUR
+           END-IF
       *
            .
        300-SCREEN-EXT.
@@ -892,6 +837,9 @@
       *    ドクター編集
            PERFORM 3103-DRCD-HEN-SEC
       *
+      *    複数科編集
+           PERFORM 3104-FUKU-HEN-SEC
+      *
             .
        310-SPA-SET-EXT.
            EXIT.
@@ -1024,7 +972,7 @@
            MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
            MOVE    SPA-SRYKA           TO  ORCSDR-SRYKA
            MOVE    SPA-DRCD(2:4)       TO  ORCSDR-IN-DRCD
-           CALL   "ORCSDRSET"          USING
+           CALL    "ORCSDRSET"         USING
                                        SPA-AREA
                                        ORCSDRSETAREA
            MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
@@ -1034,6 +982,264 @@
       *
            .
        3103-DRCD-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    複数科編集処理
+      *****************************************************************
+       3104-FUKU-HEN-SEC                  SECTION.
+      *
+           INITIALIZE                  SPA-FUKU-AREA
+      *    当日の複数科まとめの有無判定
+           PERFORM 31040-FUKU-CHK-SEC
+      *
+      *    対象がない時
+           IF      SPA-FUKU-DENPNUM    =   ZERO
+               GO      TO      3104-FUKU-HEN-EXT
+           END-IF
+      *    新規時、まとめ集計をする
+           IF      SPA-SYORIFLG        =   ZERO
+               PERFORM 31041-FUKU-SYUKEI-SEC
+           END-IF
+      *
+      *    訂正で確定によりメッセージ表示
+           EVALUATE    SPA-FUKU-MATKBN
+               WHEN    "1"
+                   MOVE    "＜複数科の継続中＞"    TO  SPA-GMN-FUKUMSG
+               WHEN    "2"
+                   MOVE    "＜複数科の確定済＞"    TO  SPA-GMN-FUKUMSG
+               WHEN    OTHER
+                   MOVE    SPACE                   TO  SPA-GMN-FUKUMSG
+           END-EVALUATE
+      *
+           .
+       3104-FUKU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    対象のまとめ判定処理
+      *****************************************************************
+       31040-FUKU-CHK-SEC                  SECTION.
+      *
+      *    訂正で、訂正分の時
+           INITIALIZE                      TBL-FUKU-AREA
+           INITIALIZE                      SPA-FUKU-AREA
+           IF      SPA-SYORIFLG        =   1
+               IF      SYU-FUKU-DENPNUM    NOT =   ZERO
+                   ADD     1               TO  SPA-FUKU-CNT
+               END-IF
+               MOVE    SYU-FUKU-DENPNUM    TO  SPA-FUKU-DENPNUM
+               MOVE    SYU-FUKU-KBN        TO  SPA-FUKU-MATKBN
+           END-IF
+      *
+           MOVE    SYUNOU-REC          TO  WRK-SYUNOU-REC
+      *
+           INITIALIZE                      SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SYU-PTID
+           MOVE    SPA-SRYYMD          TO  SYU-SRYYMD
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY11"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUNOU-KEY11"      TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+           PERFORM UNTIL    FLG-SYUNOU     =   1
+      *        複数伝票番号あるもの
+               IF      SYU-FUKU-DENPNUM    NOT =   ZERO
+      *            保険が同じ時対象とする
+                   IF     (SYU-HKNCOMBINUM     =   SPA-HKNCOMBINUM)
+                       PERFORM 310401-HKNCOBMI-CHK-SEC
+                   END-IF
+               END-IF
+      *
+               MOVE    "SYUNOU-KEY11"      TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           END-PERFORM
+      *
+      *    複数科判定
+           PERFORM 310402-FUKU-HEN-SEC
+      *
+           MOVE    WRK-SYUNOU-REC          TO  SYUNOU-REC
+      *
+           .
+       31040-FUKU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    対象の保険組合せ編集処理
+      *****************************************************************
+       310401-HKNCOBMI-CHK-SEC                  SECTION.
+      *
+      *    伝票番号毎にテーブルに保存する
+           PERFORM VARYING    IDX2     FROM    1   BY   1
+                   UNTIL      IDX2     >   5
+               IF      TBL-FUKU-DENPNUM (IDX2)  =   ZERO
+                   MOVE    SYU-FUKU-DENPNUM     TO  TBL-FUKU-DENPNUM
+                                                                (IDX2)
+               END-IF
+               IF      SYU-FUKU-DENPNUM    =   TBL-FUKU-DENPNUM (IDX2)
+                   MOVE    SYU-FUKU-KBN    TO  TBL-FUKU-MATKBN  (IDX2)
+                   ADD     1               TO  TBL-FUKU-CNT     (IDX2)
+                   IF      SYU-SRYKA       =   SPA-SRYKA
+                       MOVE    "1"             TO  TBL-FUKU-SRYKA(IDX2)
+                   END-IF
+                   MOVE    5                   TO   IDX2
+               END-IF
+           END-PERFORM
+           .
+       310401-HKNCOBMI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    対象の保険組合せ編集処理
+      *****************************************************************
+       310402-FUKU-HEN-SEC                  SECTION.
+      *
+           PERFORM VARYING    IDX2     FROM    1   BY   1
+                   UNTIL     (IDX2     >   5    )  OR
+                             (TBL-FUKU-DENPNUM (IDX2)  =   ZERO)
+      *        訂正の時は同じ伝票番号を対象とする
+               IF      SPA-SYORIFLG        =   1
+                   IF      SPA-FUKU-DENPNUM    =   TBL-FUKU-DENPNUM
+                                                               (IDX2)
+                       MOVE    TBL-FUKU-MATKBN (IDX2)
+                                                TO  SPA-FUKU-MATKBN
+                       MOVE    TBL-FUKU-CNT (IDX2)
+                                                TO  SPA-FUKU-CNT
+                       MOVE    5                TO  IDX2
+                   END-IF
+      *
+               ELSE
+      *            同じ科で、確定がない時
+                   IF      TBL-FUKU-SRYKA(IDX2)     =   "1"
+                       IF      TBL-FUKU-MATKBN (IDX2)   =   "1"
+                           MOVE    "1"          TO  SPA-FUKU-SYORI
+                       END-IF
+                   ELSE
+                       IF      TBL-FUKU-MATKBN (IDX2)   =   "1"
+      *                    科が違うもの
+                           MOVE    TBL-FUKU-DENPNUM (IDX2)
+                                                TO  SPA-FUKU-DENPNUM
+                           MOVE    TBL-FUKU-MATKBN (IDX2)
+                                                TO  SPA-FUKU-MATKBN
+                           MOVE    TBL-FUKU-CNT (IDX2)
+                                                TO  SPA-FUKU-CNT
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       310402-FUKU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    対象のまとめ集計処理
+      *****************************************************************
+       31041-FUKU-SYUKEI-SEC                  SECTION.
+      *
+           MOVE    SYUNOU-REC          TO  WRK-SYUNOU-REC
+           INITIALIZE                      SYUNOU-REC
+           INITIALIZE                      WRK-SYUKEI-AREA
+      *
+      *    対象のまとめを集計
+           INITIALIZE                      SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SYU-PTID
+           MOVE    SPA-FUKU-DENPNUM    TO  SYU-FUKU-DENPNUM
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY12"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUNOU-KEY12"      TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+           PERFORM UNTIL    FLG-SYUNOU     =   1
+      *
+               PERFORM 310411-SYUNOU-ADD-SEC
+      *
+               MOVE    "SYUNOU-KEY12"      TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           END-PERFORM
+      *    今回入力分集計
+           MOVE    WRK-SYUNOU-REC      TO  SYUNOU-REC
+           PERFORM 310411-SYUNOU-ADD-SEC
+      *
+      *    集計の点数から負担額計算
+           COMPUTE WRK-HKNTEN-KEI      =  (WRK-SUM-HKNTEN  *  10 )
+                                       *  (SPA-FTNRATE   /  100)
+           COMPUTE WRK-HKNTEN-KIN      =  (WRK-HKNTEN-KEI
+                                       +   5   )
+                                       /   10
+           COMPUTE WRK-HKNTEN-KIN      =   WRK-HKNTEN-KIN
+                                       *   10
+      *    今回請求額計算
+           COMPUTE WRK-SKYMONEY        =   WRK-HKNTEN-KIN
+                                       +   WRK-SUM-MONEY
+                                       +   WRK-SUM-TGMONEY
+                                       +   WRK-SUM-TGMONEY-TAX
+                                       +   WRK-SUM-JIHI-TOTAL
+                                       +   WRK-SUM-JIHI-TOTAL-TAX
+                                       +   WRK-SUM-JIHI-TAX
+                                       +   WRK-SUM-YKZ-FTN
+           IF      WRK-SUM-SKYMONEY    NOT =   WRK-SKYMONEY
+               COMPUTE SPA-GMN-FUKUSAGAKU  =   WRK-SKYMONEY
+                                           -   WRK-SUM-SKYMONEY
+           ELSE
+               MOVE    ZERO                TO  SPA-GMN-FUKUSAGAKU
+           END-IF
+      *
+           IF      SPA-GMN-FUKUSAGAKU  NOT =   ZERO
+               MOVE    "まとめ計算差額"    TO  SPA-GMN-FUKUMDS
+           END-IF
+      *T??
+           MOVE    "今回まとめ請求額"  TO  SPA-GMN-FUKUZENMDS
+           MOVE    WRK-SKYMONEY        TO  SPA-MAT-SKYMONEY
+           MOVE    WRK-SKYMONEY        TO  WRK-Z9
+           MOVE    WRK-Z9              TO  SPA-GMN-FUKUZENMDS(19:)
+      *
+           .
+       31041-FUKU-SYUKEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    合計請求額計算処理
+      *****************************************************************
+       310411-SYUNOU-ADD-SEC           SECTION.
+      *
+      *    請求額
+           ADD     SYU-SKYMONEY        TO  WRK-SUM-SKYMONEY
+      *    点数
+           ADD     SYU-TOTAL-HKNTEN    TO  WRK-SUM-HKNTEN
+      *    各金額
+           ADD     SYU-TOTAL-MONEY     TO  WRK-SUM-MONEY
+           ADD     SYU-TOTAL-TGMONEY   TO  WRK-SUM-TGMONEY
+           ADD     SYU-TOTAL-TGMONEY-TAX   TO  WRK-SUM-TGMONEY-TAX
+      *
+           ADD     SYU-JIHI-TOTAL      TO  WRK-SUM-JIHI-TOTAL
+           ADD     SYU-JIHI-TOTAL-TAX  TO  WRK-SUM-JIHI-TOTAL-TAX
+           ADD     SYU-JIHI-TAX        TO  WRK-SUM-JIHI-TAX
+           ADD     SYU-YKZ-FTN         TO  WRK-SUM-YKZ-FTN
+           .
+       310411-SYUNOU-ADD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1298,6 +1504,18 @@
            MOVE    SPA-GMN-ROUETC      TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-ROUETC
       *
+      *    複数診療科まとめ
+           MOVE    SPA-GMN-FUKUSAGAKU  TO  WRK-Z92
+           MOVE    WRK-Z92             TO  K03-FUKUSAGAKU
+           MOVE    SPA-GMN-FUKUMDS     TO  K03-FUKUMDS
+           IF      SPA-GMN-FUKUMSG     =   SPACE
+               MOVE    SPACE               TO  K03-FUKUMSG
+           ELSE
+               MOVE    "red"               TO  K03-FUKUMSG-STYLE
+               MOVE    SPA-GMN-FUKUMSG     TO  K03-FUKUMSG-VALUE
+           END-IF
+           MOVE    SPA-GMN-FUKUZENMDS  TO  K03-FUKUZENMDS
+      *
            PERFORM 5001-MAPCUR-SEC
            .
        500-GMNHEN-EXT.
@@ -1329,6 +1547,10 @@
                    MOVE    "CHOSEI"          TO  MCP-WIDGET
                WHEN    07
                    MOVE    "B12"             TO  MCP-WIDGET
+               WHEN    08
+                   MOVE    "B09"             TO  MCP-WIDGET
+               WHEN    09
+                   MOVE    "B10"             TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -1347,6 +1569,11 @@
       *        調整金
                WHEN    "CHOSEI"
                    MOVE    07          TO  SPA-GMN-CUR
+      *            複数科継続中の時、確定へ
+                   IF     (SPA-FUKU-DENPNUM    NOT =   ZERO )  AND
+                          (SPA-SYORIFLG            =   ZERO )
+                       MOVE    09              TO  SPA-GMN-CUR
+                   END-IF
       *       請求発行
                WHEN    "HAKFLG"
                    MOVE    03          TO  SPA-GMN-CUR
@@ -1358,12 +1585,22 @@
                    IF      (SPA-GMN-SYOHOPRTFLG    =   ZERO )  OR
                            (SPA-DRCD-MAX           =   ZERO )
                        MOVE    7                 TO  SPA-GMN-CUR
+      *                複数科継続中の時、確定へ
+                       IF     (SPA-FUKU-DENPNUM    NOT =   ZERO )  AND
+                              (SPA-SYORIFLG            =   ZERO )
+                           MOVE    09              TO  SPA-GMN-CUR
+                       END-IF
                    ELSE
                        MOVE    5                 TO  SPA-GMN-CUR
                    END-IF
       *       ドクター
                WHEN    "DRCD"
                    MOVE    07          TO  SPA-GMN-CUR
+      *            複数科継続中の時、確定へ
+                   IF     (SPA-FUKU-DENPNUM    NOT =   ZERO )  AND
+                          (SPA-SYORIFLG            =   ZERO )
+                       MOVE    09              TO  SPA-GMN-CUR
+                   END-IF
            END-EVALUATE
            .
       *
@@ -1385,7 +1622,14 @@
                    MOVE    6           TO  SPA-GMN-CUR
       *        登録
                WHEN    "CLICKED"       ALSO    "B12"
+                    MOVE    ZERO                TO  SPA-GMN-SYORI
                     PERFORM 450-TOROKU-SEC
+      *        複数診療科継続
+               WHEN    "CLICKED"       ALSO    "B09"
+                    PERFORM 460-FUKU-KEIZOKU-SEC
+      *        複数診療科確定
+               WHEN    "CLICKED"       ALSO    "B10"
+                    PERFORM 460-FUKU-KAKUATEI-SEC
            END-EVALUATE
           .
       *
@@ -1555,8 +1799,8 @@
                END-IF
       *        合計再計算
                PERFORM 3101-SEIKYU-KEI-SEC
-      *        合計額がゼロ以下の時、発行なしとする
       *
+      *        合計額がゼロ以下の時、発行なしとする
                EVALUATE    WRK-MCP-WIDGET
       *        調整金
                WHEN    "CHOSEI"
@@ -1564,6 +1808,24 @@
                        MOVE    SPA-GMN-HAKFLGLST(1)
                                                TO  SPA-GMN-HAKFLG-G
                    END-IF
+      *            複数科まとめの時、入金額を変更する
+                   IF      SPA-GMN-FUKUZENMDS  NOT =   SPACE
+                       COMPUTE WRK-SAGAKU  =   SPA-GMN-CHOSEI
+                                           -   SPA-GMN-FUKUSAGAKU
+                       COMPUTE WRK-SKYMONEY    =   SPA-MAT-SKYMONEY
+                                               +   WRK-SAGAKU
+                       MOVE    SPACE           TO  SPA-GMN-FUKUZENMDS
+                       MOVE    "今回まとめ請求額"
+                                               TO  SPA-GMN-FUKUZENMDS
+                       MOVE    WRK-SKYMONEY    TO  WRK-Z9
+                       MOVE    WRK-Z9          TO  SPA-GMN-FUKUZENMDS
+                                                               (19:)
+      *                入金額を変更する
+                       MOVE    SPA-GMN-SEIKYU  TO  SPA-GMN-NYUKIN
+                       MOVE    SPA-GMN-NYUKIN  TO  WRK-Z99
+                       MOVE    WRK-Z99         TO  SPA-GMN-NYUKIN-X
+                   END-IF
+      *
                END-EVALUATE
            END-IF
            .
@@ -1994,6 +2256,148 @@
            EXIT.
       *
       *****************************************************************
+      *    複数診療科継続処理
+      *****************************************************************
+       460-FUKU-KEIZOKU-SEC             SECTION.
+      *
+      *    請求書発行なし
+           IF      SPA-GMN-HAKFLG  NOT =   "1"
+               MOVE    "0024"              TO  SPA-ERRCD
+               MOVE    07                  TO  SPA-GMN-CUR
+               GO      TO      460-FUKU-KEIZOKU-EXT
+           END-IF
+           MOVE    ZERO                TO  FLG-FUKU-FLG
+      *    一般保険で、主保険単独の時のみ
+           IF      SPA-HKNKBN          =   ZERO
+               IF     (SPA-HKNNUM      NOT =   SPACE )  AND
+                      (SPA-KOH1HKNNUM      =   SPACE )  AND
+                      (SPA-KOH2HKNNUM      =   SPACE )  AND
+                      (SPA-KOH3HKNNUM      =   SPACE )  AND
+                      (SPA-KOH4HKNNUM      =   SPACE )
+                   MOVE    1               TO  FLG-FUKU-FLG
+               END-IF
+               IF     (SPA-HKNNUM      NOT =   SPACE )  AND
+                      (SPA-KOH1HKNNUM      =   "027" )  AND
+                      (SPA-KOH2HKNNUM      =   SPACE )  AND
+                      (SPA-KOH3HKNNUM      =   SPACE )  AND
+                      (SPA-KOH4HKNNUM      =   SPACE )
+                   MOVE    1               TO  FLG-FUKU-FLG
+               END-IF
+           END-IF
+      *    保険継続分
+           IF      SPA-CONTKBN         =   "1"  OR  "2"
+               MOVE    ZERO            TO  FLG-FUKU-FLG
+           END-IF
+      *    複数科まとめ有無
+           IF      FLG-FUKU-FLG        =   ZERO
+               MOVE    "0020"              TO  SPA-ERRCD
+               MOVE    07                  TO  SPA-GMN-CUR
+               GO      TO      460-FUKU-KEIZOKU-EXT
+           END-IF
+      *    訂正の時
+           IF      SPA-SYORIFLG        =   1
+               IF      SPA-FUKU-MATKBN     =   "2"
+                   MOVE    "0021"              TO  SPA-ERRCD
+                   MOVE    07                  TO  SPA-GMN-CUR
+                   GO      TO      460-FUKU-KEIZOKU-EXT
+               END-IF
+           END-IF
+      *    複数科まとめ中
+           IF      SPA-FUKU-SYORI      =   "1"
+               MOVE    "0025"              TO  SPA-ERRCD
+               MOVE    07                  TO  SPA-GMN-CUR
+               GO      TO      460-FUKU-KEIZOKU-EXT
+           END-IF
+      *
+           MOVE    1                   TO  SPA-GMN-SYORI
+      *    確定　処理
+           PERFORM 450-TOROKU-SEC
+           .
+       460-FUKU-KEIZOKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    複数診療科確定処理
+      *****************************************************************
+       460-FUKU-KAKUATEI-SEC             SECTION.
+      *
+      *    請求書発行なし
+           IF      SPA-GMN-HAKFLG  NOT =   "1"
+               MOVE    "0024"              TO  SPA-ERRCD
+               MOVE    07                  TO  SPA-GMN-CUR
+               GO      TO      460-FUKU-KEIZOKU-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-FUKU-FLG
+      *    一般保険で、主保険単独の時のみ
+           IF      SPA-HKNKBN          =   ZERO
+               IF     (SPA-HKNNUM      NOT =   SPACE )  AND
+                      (SPA-KOH1HKNNUM      =   SPACE )  AND
+                      (SPA-KOH2HKNNUM      =   SPACE )  AND
+                      (SPA-KOH3HKNNUM      =   SPACE )  AND
+                      (SPA-KOH4HKNNUM      =   SPACE )
+                   MOVE    1               TO  FLG-FUKU-FLG
+               END-IF
+               IF     (SPA-HKNNUM      NOT =   SPACE )  AND
+                      (SPA-KOH1HKNNUM      =   "027" )  AND
+                      (SPA-KOH2HKNNUM      =   SPACE )  AND
+                      (SPA-KOH3HKNNUM      =   SPACE )  AND
+                      (SPA-KOH4HKNNUM      =   SPACE )
+                   MOVE    1               TO  FLG-FUKU-FLG
+               END-IF
+           END-IF
+      *    保険継続分
+           IF      SPA-CONTKBN         =   "1"  OR  "2"
+               MOVE    ZERO            TO  FLG-FUKU-FLG
+           END-IF
+      *    複数科まとめ有無
+           IF      FLG-FUKU-FLG        =   ZERO
+               MOVE    "0020"              TO  SPA-ERRCD
+               MOVE    07                  TO  SPA-GMN-CUR
+               GO      TO      460-FUKU-KAKUATEI-EXT
+           END-IF
+      *    複数科継続なし
+           IF      SPA-FUKU-MATKBN     =   SPACE
+               MOVE    "0022"              TO  SPA-ERRCD
+               MOVE    07                  TO  SPA-GMN-CUR
+               GO      TO      460-FUKU-KAKUATEI-EXT
+           END-IF
+      *    複数科まとめ中
+           IF      SPA-FUKU-SYORI      =   "1"
+               MOVE    "0025"              TO  SPA-ERRCD
+               MOVE    07                  TO  SPA-GMN-CUR
+               GO      TO      460-FUKU-KAKUATEI-EXT
+           END-IF
+      *
+      *    訂正の時
+           IF      SPA-SYORIFLG        =   1
+               MOVE    ZERO            TO  FLG-OK
+      *        継続中で１件の時
+               IF     (SPA-FUKU-MATKBN     =   "1" )  AND
+                      (SPA-FUKU-CNT        =   1   )
+                   MOVE    1               TO  FLG-OK
+               END-IF
+      *        継続中で複数件の時、基準でないこと
+               IF     (SPA-FUKU-MATKBN     =   "1" )  AND
+                      (SPA-FUKU-CNT        >   1   )  AND
+                      (SPA-FUKU-DENPNUM    NOT =   SPA-DENPNUM)
+                   MOVE    1               TO  FLG-OK
+               END-IF
+               IF      FLG-OK              =   ZERO
+                   MOVE    "0023"              TO  SPA-ERRCD
+                   MOVE    07                  TO  SPA-GMN-CUR
+                   GO      TO      460-FUKU-KAKUATEI-EXT
+               END-IF
+           END-IF
+      *
+           MOVE    2                   TO  SPA-GMN-SYORI
+      *    確定　処理
+           PERFORM 450-TOROKU-SEC
+           .
+       460-FUKU-KAKUATEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    収納マスタ更新処理
       *****************************************************************
        4501-SYUNOU-OUT-SEC             SECTION.
@@ -2091,6 +2495,17 @@
            MOVE    SPA-INGAIKBN        TO  SYU-INGAISHOHOKBN
       *    同時診療伝票番号
            MOVE    SPA-DOUJI-DENPNUM   TO  SYU-DOUJI-DENPNUM
+      *
+      *    複数科まとめ編集
+           IF      SPA-GMN-SYORI       =   ZERO
+      *        訂正の時はそのまま
+               IF      SPA-SYORIFLG        =   ZERO
+                   MOVE    ZERO                TO  SYU-FUKU-DENPNUM
+                   MOVE    SPACE               TO  SYU-FUKU-KBN
+               END-IF
+           ELSE
+               PERFORM 45011-SYUNOU-FUKU-SEC
+           END-IF
       *
            IF      SPA-SYORIFLG        =   ZERO
       *
@@ -2328,6 +2743,27 @@
            EXIT.
       *
       *****************************************************************
+      *    複数科まとめ編集処理
+      *****************************************************************
+       45011-SYUNOU-FUKU-SEC            SECTION.
+      *
+           IF      SPA-GMN-SYORI       =   1
+      *        継続
+               IF      SPA-FUKU-DENPNUM    =   ZERO
+                   MOVE    SYU-DENPNUM     TO  SPA-FUKU-DENPNUM
+               END-IF
+               MOVE    SPA-FUKU-DENPNUM    TO  SYU-FUKU-DENPNUM
+               MOVE    "1"                 TO  SYU-FUKU-KBN
+           ELSE
+      *        確定
+               MOVE    SPA-FUKU-DENPNUM    TO  SYU-FUKU-DENPNUM
+               MOVE    "2"                 TO  SYU-FUKU-KBN
+           END-IF
+      *
+           .
+       45011-SYUNOU-FUKU-EXT.
+           EXIT.
+      *****************************************************************
       *    システム管理より、伝票番号取得処理
       *****************************************************************
        45001-DENPNUM-SET-SEC            SECTION.
@@ -2420,6 +2856,8 @@
            MOVE    SMEI-SKYPRINTYMD    TO  SMEI-NYUHEN-YMD
       *入金連番
            MOVE    01                  TO  SMEI-NYUKINRENNUM
+      *診療科
+           MOVE    SPA-SRYKA           TO  SMEI-SRYKA
       *
       *    入金額がゼロの時、入金力なし
            IF      SPA-GMN-NYUKIN      =   ZERO
@@ -2520,6 +2958,8 @@
            MOVE    SPACE               TO  SMEI-RYOSYUPRINTYMD
       *領収書再発行日
            MOVE    SPACE               TO  SMEI-RYOSYUREPRINTYMD
+      *診療科
+           MOVE    SPA-SRYKA           TO  SMEI-SRYKA
       *請求金額
            IF      SYU-SKYMONEY    NOT =   WRK-SKYMONEY
                COMPUTE SMEI-SKYMONEY       =   SYU-SKYMONEY
@@ -3021,7 +3461,7 @@
       *
            CALL    "ORCSKARRK"         USING
                                        ORCSKARRKAREA
-                                       SPA-AREA.
+                                       SPA-AREA
       *
            .
        450012-TEISEI-DELETE-EXT.
@@ -3203,6 +3643,20 @@
                        MOVE    SYUNOU-REC          TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
                        MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"         USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+      *                収納明細削除
+                       MOVE    SPACE               TO  SYUMEI-REC
+                       INITIALIZE                      SYUMEI-REC
+                       MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+                       MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+                       MOVE    SYU-PTID            TO  SMEI-PTID
+                       MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
+                       MOVE    SYUMEI-REC          TO  MCPDATA-REC
+                       MOVE    "DBDELETE"          TO  MCP-FUNC
+                       MOVE    "SYUMEI-DEL2"       TO  ORC-DBPATH
                        CALL    "ORCMCPSUB"         USING
                                                    MCPAREA
                                                    ORCMCPAREA
@@ -4380,7 +4834,39 @@
            MOVE    WRK-DENPNUM         TO  ORCHC03-DENPNUM
            MOVE    SPA-GMN-SEIKYU      TO  ORCHC03-SEIKYU
            MOVE    SPA-GMN-NYUKIN      TO  ORCHC03-NYUKIN
-           IF      SPA-GMN-HAKFLG      =   "1"
+           IF      SPA-FUKU-DENPNUM    =   ZERO
+               IF      SPA-GMN-HAKFLG      =   "1"
+                   CALL    WRK-SEIKYU-PG       USING   SPA-AREA
+                                                   ORCHC03AREA
+               END-IF
+           END-IF
+      *    複数科まとめ請求書印刷
+           IF     (SPA-GMN-HAKFLG      =   "1"  )  AND
+                  (SPA-FUKU-DENPNUM    >   ZERO )  AND
+                  (SPA-GMN-SYORI       =   2    )
+               INITIALIZE                      ORCHC03AREA
+               MOVE    WRK-DENPNUM         TO  ORCHC03-DENPNUM
+               MOVE    SPA-GMN-SEIKYU      TO  ORCHC03-SEIKYU
+               MOVE    SPA-GMN-NYUKIN      TO  ORCHC03-NYUKIN
+               MOVE    SPA-FUKU-DENPNUM    TO  ORCHC03-FUKU-DENPNUM
+      *        訂正・継続中の時
+               IF     (SPA-SYORIFLG        =   1    )  AND
+                      (SPA-FUKU-MATKBN     =   "1"  )
+                   COMPUTE SPA-MAT-SKYMONEY    =   SPA-MAT-SKYMONEY
+                                               +   SPA-KON-SKYMONEY
+               END-IF
+      *
+      *        まとめ請求額＋調整金
+               IF      SPA-GMN-CHOSEI      =   ZERO
+                   MOVE    ZERO                TO  WRK-SAGAKU
+               ELSE
+                   COMPUTE WRK-SAGAKU          =   SPA-GMN-CHOSEI
+                                               -   SPA-GMN-FUKUSAGAKU
+               END-IF
+               COMPUTE WRK-SKYMONEY        =   SPA-MAT-SKYMONEY
+                                           +   WRK-SAGAKU
+               MOVE    WRK-SAGAKU          TO  ORCHC03-KON-CHOSEI
+               MOVE    WRK-SKYMONEY        TO  ORCHC03-KON-SEIKYU
                CALL    WRK-SEIKYU-PG       USING   SPA-AREA
                                                    ORCHC03AREA
            END-IF
@@ -4716,6 +5202,36 @@
                WHEN    "0011"
                    MOVE    "ドクター選択エラー"
                                        TO  SPA-ERRMSG
+               WHEN    "0020"
+                   MOVE    "複数科まとめのできない保険です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "登録を押下して下さい。"
+                                       TO  SPA-ERRMSG(33:)
+               WHEN    "0021"
+                   MOVE    "既に複数科まとめの確定済です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "登録を押下して下さい。"
+                                       TO  SPA-ERRMSG(31:)
+               WHEN    "0022"
+                   MOVE    "複数科まとめの継続がありません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "登録を押下して下さい。"
+                                       TO  SPA-ERRMSG(33:)
+               WHEN    "0023"
+                   MOVE    "複数科まとめ確定へ変更できません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "登録を押下して下さい。"
+                                       TO  SPA-ERRMSG(35:)
+               WHEN    "0024"
+                   MOVE    "複数科まとめは請求書発行ありの時"
+                                       TO  SPA-ERRMSG
+                   MOVE    "選択して下さい。"
+                                       TO  SPA-ERRMSG(33:)
+               WHEN    "0025"
+                   MOVE    "複数科まとめ継続中の科です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "複数科選択はできません。"
+                                       TO  SPA-ERRMSG(33:)
            END-EVALUATE
       *
            MOVE    SPACE               TO  KERR

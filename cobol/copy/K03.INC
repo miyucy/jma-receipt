@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
         02  K03.
-      ****02  K03-FIXED3.
+      ***  02  K03-FIXED3.
               03  K03-PTNUM.
                 04  K03-VALUE   PIC X(20).
               03  K03-SRYYMD.
@@ -134,10 +134,6 @@
                 04  K03-VALUE   PIC X(8).
               03  K03-JIHIMSG3.
                 04  K03-VALUE   PIC X(8).
-              03  K03-JIHIMSG4.
-                04  K03-VALUE   PIC X(8).
-              03  K03-JIHIMSG5.
-                04  K03-VALUE   PIC X(8).
               03  K03-JIHITAXGOK.
                 04  K03-VALUE   PIC X(10).
               03  K03-JIHITAX1.
@@ -172,3 +168,16 @@
                   05  K03-VALUE   PIC X(29).
                 04  K03-DRCD-COUNT   PIC S9(9)   BINARY.
                 04  K03-DRCD-ITEM    PIC X(29)   OCCURS  20 TIMES.
+              03  K03-FUKUSAGAKU.
+                04  K03-VALUE   PIC X(10).
+              03  K03-JIHIMSG4.
+                04  K03-VALUE   PIC X(8).
+              03  K03-JIHIMSG5.
+                04  K03-VALUE   PIC X(8).
+              03  K03-FUKUMSG.
+                04  K03-FUKUMSG-STYLE   PIC X(20).
+                04  K03-FUKUMSG-VALUE   PIC X(20).
+              03  K03-FUKUZENMDS.
+                04  K03-VALUE   PIC X(30).
+              03  K03-FUKUMDS.
+                04  K03-VALUE   PIC X(20).

@@ -175,12 +175,6 @@ K03	{
 		JIHIMSG3	{
 			value	varchar(8);
 		};
-		JIHIMSG4	{
-			value	varchar(8);
-		};
-		JIHIMSG5	{
-			value	varchar(8);
-		};
 		JIHITAXGOK	{
 			value	varchar(10);
 		};
@@ -229,6 +223,25 @@ K03	{
 			};
 			count	int;
 			item	varchar(29)[20];
+		};
+		FUKUSAGAKU	{
+			value	varchar(10);
+		};
+		JIHIMSG4	{
+			value	varchar(8);
+		};
+		JIHIMSG5	{
+			value	varchar(8);
+		};
+		FUKUMSG	{
+		    style   varchar(20);
+			value	varchar(20);
+		};
+		FUKUZENMDS	{
+			value	varchar(30);
+		};
+		FUKUMDS	{
+			value	varchar(20);
 		};
 	};
 };

@@ -144,6 +144,13 @@
       *        Âà±¡Æü
                05  SPA-K02N-TAIINYMD           PIC X(08).
       *
+      *Ê£¿ô¿ÇÎÅ²ÊÍÑ
+           03  SPA-FUKU-AREA.
+               05  SPA-FUKU-SYORI          PIC  X(01).
+               05  SPA-FUKU-DENPNUM        PIC  9(07).
+               05  SPA-FUKU-MATKBN         PIC  X(01).
+               05  SPA-FUKU-CNT            PIC  9(04).
+      *
            03  SPA-K02SET-AREA.
       *¾®»ù²Ê³°Íè¿ÇÎÅ²Ê
                05  SPA-SYONIKA             PIC  9(01).

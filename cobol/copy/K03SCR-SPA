@@ -108,6 +108,18 @@
                            11  SPA-GMN-DRCDMEIL    PIC X(24).
                    07  SPA-DRCD-MAX            PIC 9(04).
       *
+      *            複数科処理
+                   07  SPA-GMN-FUKUSAGAKU        PIC S9(10).
+                   07  SPA-GMN-FUKUMDS           PIC X(20).
+      *            前回内容（テスト）
+                   07  SPA-GMN-FUKUZENMDS        PIC X(50).
+      *            複数科処理中
+                   07  SPA-GMN-FUKUMSG           PIC X(20).
+      *            複数科まとめ請求額
+                   07  SPA-MAT-SKYMONEY          PIC 9(07).
+      *            （１：まとめ継続、２：まとめ確定）
+                   07  SPA-GMN-SYORI             PIC 9(01).
+      *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SEIKYU            PIC S9(07).
                    07  SPA-KON-SKYMONEY          PIC S9(07).
