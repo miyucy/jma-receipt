@@ -39,6 +39,7 @@
       *  01.01.01    NACL-Æ£¸¶    03/04/10  £²£°£°£³¡¥£³°ÊÁ°¤Î¤ßÂÐ¾Ý¤È¤¹¤ë
       *  01.01.02    NACL-Æ£¸¶    03/07/10  ÆÃÄê¼À´µÍ­¤ê¡¦Ìµ¤·¤Î½¸·×¤ò
       *                                     Æ±¤¸Íó¤ËÊÔ½¸¤¹¤ë
+      *  01.01.03    NACL-Æ£¸¶    03/10/30  È÷¹ÍÍó¤ËÏ·¿ÍºÆ·Ç¤òÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -99,6 +100,7 @@
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
+           03  IDW                 PIC 9(04).
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -180,6 +182,17 @@
                        09  SUM-KOH-SHOKUJIKENSU   PIC  9(06).
                        09  SUM-KOH-SHOKUJIRYOYOHI PIC  9(10).
                        09  SUM-KOH-SHOKUJIFTN     PIC  9(10).
+      *        Ï·¿ÍÊÝ·ò¡ÊºÆ·Ç¡Ë      
+               05  SUM-ROU-KOH-TABLE           OCCURS  10. 
+                   07  SUM-ROU-KOH-TBL.
+                       09  SUM-ROU-KOH-KENSU          PIC  9(06).
+                       09  SUM-ROU-KOH-NISSU          PIC  9(06).
+                       09  SUM-ROU-KOH-YKZFTN         PIC  9(08).
+                       09  SUM-ROU-KOH-FTNMONEY       PIC  9(09).
+                       09  SUM-ROU-KOH-SHOKUJIKENSU   PIC  9(06).
+                       09  SUM-ROU-KOH-SHOKUJINISSU   PIC  9(06).
+                       09  SUM-ROU-KOH-SHOKUJIRYOYOHI PIC  9(10).
+                       09  SUM-ROU-KOH-SHOKUJIFTN     PIC  9(10).
       *        ¹ç·×         
                05  SUM-GOK-TBL         OCCURS  4.
                    07  SUM-GOK-KENSU      PIC 9(06).    
@@ -780,6 +793,54 @@
            IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
                ADD     1       TO  SUM-ROU-SHOKUJIKENSU (IDY3 IDY1 3)
            END-IF
+      *
+      *    ¸øÈñºÆ·Ç                      
+           IF      RECE10-KOHNUM (1)   NOT =   SPACE
+               PERFORM VARYING IDW FROM    1   BY  1
+                       UNTIL   IDW >       4
+                       OR      RECE10-KOHNUM (IDW) =   SPACE
+                   EVALUATE    RECE10-KOHNUM (IDW)
+                       WHEN    "019"
+                       WHEN    "018"
+                           MOVE    1               TO  IDY1
+                       WHEN    "010"
+                           MOVE    2               TO  IDY1
+                       WHEN    "011"
+                           MOVE    3               TO  IDY1
+                       WHEN    "012"
+                           MOVE    4               TO  IDY1
+                       WHEN    "015"
+                           MOVE    5               TO  IDY1
+                       WHEN    "020"
+                           MOVE    6               TO  IDY1
+                       WHEN    "021"
+                           MOVE    7               TO  IDY1
+                       WHEN    "022"
+                           MOVE    8               TO  IDY1
+                       WHEN    "028"
+                           MOVE    9               TO  IDY1
+                       WHEN    "051"
+                           MOVE    10              TO  IDY1
+                   END-EVALUATE
+      *
+                   COMPUTE IDX1    =   IDW     +       1
+                   ADD     1
+                             TO  SUM-ROU-KOH-KENSU          (IDY3 IDY1)
+      *************IF      IDY1                =   1           
+                       ADD     RECE10-JNISSU         (IDX1)
+                             TO  SUM-ROU-KOH-NISSU          (IDY3 IDY1)
+                       ADD     RECE10-FTNMONEY       (IDX1)
+                             TO  SUM-ROU-KOH-FTNMONEY       (IDY3 IDY1)
+      *                           
+                       ADD     RECE10-SHOKUJINISSU   (IDX1)
+                             TO  SUM-ROU-KOH-SHOKUJINISSU   (IDY3 IDY1)
+                       ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
+                             TO  SUM-ROU-KOH-SHOKUJIRYOYOHI (IDY3 IDY1)
+                       ADD     RECE10-SHOKUJIFTN     (IDX1)
+                             TO  SUM-ROU-KOH-SHOKUJIFTN     (IDY3 IDY1)
+      *************END-IF          
+               END-PERFORM
+           END-IF                  
       *
            MOVE    1               TO  FLG-UPD 
            .
