@@ -36,6 +36,10 @@
       *                                     ように修正
       *  01.01.06    MCC-藤原     02/03/28  氏名検索画面から戻ったときの
       *                                     チェックを中止
+      *  ２００２．１０改正対応 
+      *  01.02.01    NACL-藤原    02/10/7   県内県外区分・県番号・
+      *                                     年齢・給付割合の追加
+      *  01.02.02    NACL-藤原    02/10/10  レセプト種別の出力の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -372,11 +376,11 @@
                MOVE    "blue"      TO  SPA-H01GMN-MIDASI-STYLE (IDX)
            END-PERFORM
       *
-           MOVE    "　　　　初　　診"  TO SPA-H01GMN-MIDASI(01)
-           MOVE    "　　　　再　　診"  TO SPA-H01GMN-MIDASI(02)
-           MOVE    "　　外来管理加算"  TO SPA-H01GMN-MIDASI(03)
-           MOVE    "　　　　　時間外"  TO SPA-H01GMN-MIDASI(04)
-           MOVE    "　　　　休　　日"  TO SPA-H01GMN-MIDASI(05)
+           MOVE    "        初    診"  TO SPA-H01GMN-MIDASI(01)
+           MOVE    "        再    診"  TO SPA-H01GMN-MIDASI(02)
+           MOVE    "    外来管理加算"  TO SPA-H01GMN-MIDASI(03)
+           MOVE    "          時間外"  TO SPA-H01GMN-MIDASI(04)
+           MOVE    "        休    日"  TO SPA-H01GMN-MIDASI(05)
            MOVE    "　　　　深　　夜"  TO SPA-H01GMN-MIDASI(06)
            MOVE    "　　　　指　　導"  TO SPA-H01GMN-MIDASI(07)
            MOVE    "　　　　往　　診"  TO SPA-H01GMN-MIDASI(08)
@@ -971,7 +975,10 @@
                MOVE    RECE10-JNISSU   (IDY)
                                    TO  SPA-H01GMN-JNISSU   (IDY)
                                        SPA-H01GMN-NJNISSU  (IDY)
-           END-PERFORM        
+           END-PERFORM
+      *
+           MOVE    RECE10-AGE      TO  SPA-H01GMN-AGE
+           MOVE    RECE10-KYURATE  TO  SPA-H01GMN-KYURATE             
       *
            MOVE    "1"                 TO  SPA-HENFLG
       *         
@@ -1765,6 +1772,9 @@
                                        H01-NTOTALTEN-STATE (IDX)
            END-PERFORM
       *
+           MOVE    SPA-H01GMN-AGE     TO  H01-AGE
+           MOVE    SPA-H01GMN-KYURATE TO  H01-KYURATE     
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -1955,6 +1965,11 @@
        530-RECESYUBETU-HENSYU-SEC          SECTION.
       *
       *
+           IF      RECE10-SRYYM        >   "200209"
+               MOVE    RECE10-RECESYUBETU  TO  WRK-RECESYUBETU
+               GO  TO  530-RECESYUBETU-HENSYU-EXT
+           END-IF        
+      *         
            EVALUATE  RECE10-RECESYUBETU
                                  ALSO  RECE10-TEISYUTUSAKI
            WHEN    1111      ALSO      2

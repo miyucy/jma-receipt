@@ -30,6 +30,9 @@
       *  01.01.01    MCC-Æ£¸¶     01/09/21  JOIN¤Î½¤Àµ      
       *  01.01.02    MCC-Æ£¸¶     01/10/02  Ï¢ÈÖ¤ÎÄÉ²Ã      
       *  01.01.03    MCC-Æ£¸¶     01/10/26  ÊÝ¸±¼ïÊÌ¤Îµ­¹æ½¤Àµ
+      *
+      *  £²£°£°£²¡¥£±£°²þÀµÂÐ±þ 
+      *  01.02.01    NACL-Æ£¸¶    02/10/10  ¥ì¥»¥×¥È¼ïÊÌ¤Î½ÐÎÏ¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -491,122 +494,125 @@
                                    SPA-H99GMN-TTEISYUTUSAKI(IDX)
                END-IF
       *
-               EVALUATE  RECE10-RECESYUBETU
+               IF      RECE10-SRYYM        >   "200209"
+                   MOVE    RECE10-RECESYUBETU  TO  WRK-RECESYUBETU
+               ELSE        
+                 EVALUATE  RECE10-RECESYUBETU
                                  ALSO  RECE10-TEISYUTUSAKI
-               WHEN    1111      ALSO      2
+                 WHEN    1111      ALSO      2
                    IF  RECE10-HONKZKKBN    =   2
                        MOVE    "¡ú¡ú¡ú"    TO  WRK-RECESYUBETU
                    ELSE
                        MOVE    "¡ú"        TO  WRK-RECESYUBETU
                    END-IF
-               WHEN    1111      ALSO      1
-               WHEN    1111      ALSO      ANY
+                 WHEN    1111      ALSO      1
+                 WHEN    1111      ALSO      ANY
                    MOVE    "¡ú"            TO  WRK-RECESYUBETU
       *
-               WHEN    1112      ALSO      2
+                 WHEN    1112      ALSO      2
                    IF  RECE10-HONKZKKBN    =   2
                        MOVE    "¡ù¡ù¡ù¡ù"  TO  WRK-RECESYUBETU
                    ELSE
                        MOVE    "¡ù¡ù"      TO  WRK-RECESYUBETU
                    END-IF
-               WHEN    1112      ALSO      1
+                 WHEN    1112      ALSO      1
                    MOVE    "¡ù¡ù"          TO  WRK-RECESYUBETU
       *
-               WHEN    1115      ALSO      ANY
+                 WHEN    1115      ALSO      ANY
                    MOVE    "¡ú¡ú¡ú"        TO  WRK-RECESYUBETU
       *
-               WHEN    1116      ALSO      ANY
+                 WHEN    1116      ALSO      ANY
                    MOVE    "¡ù¡ù¡ù¡ù"      TO  WRK-RECESYUBETU
-      ****         MOVE    "¡ú¡ú¡ú¡ú"      TO  WRK-RECESYUBETU
       *
-               WHEN    1121      ALSO      2
+                 WHEN    1121      ALSO      2
                    IF  RECE10-HONKZKKBN    =   2
                        MOVE    "¡ú¡ú¡ú"    TO  WRK-RECESYUBETU
                    ELSE
                        MOVE    "¡ú"        TO  WRK-RECESYUBETU
                    END-IF
-                WHEN    1121      ALSO      1
+                  WHEN    1121      ALSO      1
                    MOVE    "¡ú"            TO  WRK-RECESYUBETU
       *
-               WHEN    1122      ALSO      2
+                 WHEN    1122      ALSO      2
                    IF  RECE10-HONKZKKBN    =   2
                        MOVE    "¡ù¡ù¡ù¡ù"  TO  WRK-RECESYUBETU
                    ELSE
                        MOVE    "¡ù¡ù"      TO  WRK-RECESYUBETU
                    END-IF
-               WHEN    1122      ALSO      1
+                 WHEN    1122      ALSO      1
                    MOVE    "¡ù¡ù"          TO  WRK-RECESYUBETU
       *
-               WHEN    1125      ALSO      ANY
+                 WHEN    1125      ALSO      ANY
                    MOVE    "¡ú¡ú¡ú"        TO  WRK-RECESYUBETU
       *
-               WHEN    1126      ALSO      ANY
+                 WHEN    1126      ALSO      ANY
                    MOVE    "¡ù¡ù¡ù¡ù"      TO  WRK-RECESYUBETU
       *
-               WHEN    1131      ALSO      2
+                 WHEN    1131      ALSO      2
                    IF  RECE10-HONKZKKBN    =   2
                        MOVE    "¡ú¡ú¡ú"    TO  WRK-RECESYUBETU
                    ELSE
                        MOVE    "¡ú"        TO  WRK-RECESYUBETU
                    END-IF
-               WHEN    1131      ALSO      1
+                 WHEN    1131      ALSO      1
                    MOVE    "¡ú"            TO  WRK-RECESYUBETU
       *
-               WHEN    1132      ALSO      2
+                 WHEN    1132      ALSO      2
                    IF  RECE10-HONKZKKBN    =   2
                        MOVE    "¡ù¡ù¡ù¡ù"  TO  WRK-RECESYUBETU
                    ELSE
                        MOVE    "¡ù¡ù"      TO  WRK-RECESYUBETU
                    END-IF
-               WHEN    1132      ALSO      1
+                 WHEN    1132      ALSO      1
                    MOVE    "¡ù¡ù"          TO  WRK-RECESYUBETU
       *
-               WHEN    1135      ALSO      ANY
+                 WHEN    1135      ALSO      ANY
                    MOVE    "¡ú¡ú¡ú"        TO  WRK-RECESYUBETU
       *
-               WHEN    1136      ALSO      ANY
+                 WHEN    1136      ALSO      ANY
                    MOVE    "¡ù¡ù¡ù¡ù"      TO  WRK-RECESYUBETU
       *
-               WHEN    1211      ALSO      ANY
-               WHEN    1221      ALSO      ANY
-               WHEN    1231      ALSO      ANY
+                 WHEN    1211      ALSO      ANY
+                 WHEN    1221      ALSO      ANY
+                 WHEN    1231      ALSO      ANY
                    MOVE    "¡ü"            TO  WRK-RECESYUBETU
       *
-               WHEN    1212      ALSO      ANY
-               WHEN    1222      ALSO      ANY
-               WHEN    1232      ALSO      ANY
+                 WHEN    1212      ALSO      ANY
+                 WHEN    1222      ALSO      ANY
+                 WHEN    1232      ALSO      ANY
                    MOVE    "¡û¡û"          TO  WRK-RECESYUBETU
       *
-               WHEN    1311      ALSO      ANY
-               WHEN    1321      ALSO      ANY
-               WHEN    1331      ALSO      ANY
+                 WHEN    1311      ALSO      ANY
+                 WHEN    1321      ALSO      ANY
+                 WHEN    1331      ALSO      ANY
                    MOVE    "¢¥"            TO  WRK-RECESYUBETU
       *
-               WHEN    1312      ALSO      ANY
-               WHEN    1322      ALSO      ANY
-               WHEN    1332      ALSO      ANY
+                 WHEN    1312      ALSO      ANY
+                 WHEN    1322      ALSO      ANY
+                 WHEN    1332      ALSO      ANY
                    MOVE    "¢¤¢¤"          TO  WRK-RECESYUBETU
       *
-               WHEN    1411      ALSO      ANY
-               WHEN    1421      ALSO      ANY
-               WHEN    1431      ALSO      ANY
+                 WHEN    1411      ALSO      ANY
+                 WHEN    1421      ALSO      ANY
+                 WHEN    1431      ALSO      ANY
                    MOVE    "¢¡"            TO  WRK-RECESYUBETU
       *
-               WHEN    1412      ALSO      ANY
-               WHEN    1422      ALSO      ANY
-               WHEN    1432      ALSO      ANY
+                 WHEN    1412      ALSO      ANY
+                 WHEN    1422      ALSO      ANY
+                 WHEN    1432      ALSO      ANY
                    MOVE    "¡þ¡þ"          TO  WRK-RECESYUBETU
       *
-               WHEN    1415      ALSO      ANY
-               WHEN    1425      ALSO      ANY
-               WHEN    1435      ALSO      ANY
+                 WHEN    1415      ALSO      ANY
+                 WHEN    1425      ALSO      ANY
+                 WHEN    1435      ALSO      ANY
                    MOVE    "¢¡¢¡¢¡"        TO  WRK-RECESYUBETU
       *
-               WHEN    1416      ALSO      ANY
-               WHEN    1426      ALSO      ANY
-               WHEN    1436      ALSO      ANY
+                 WHEN    1416      ALSO      ANY
+                 WHEN    1426      ALSO      ANY
+                 WHEN    1436      ALSO      ANY
                    MOVE    "¡þ¡þ¡þ¡þ"      TO  WRK-RECESYUBETU
-               END-EVALUATE
+                 END-EVALUATE
+               END-IF  
                MOVE    WRK-RECESYUBETU  TO
                                        SPA-H99GMN-TRECESYUBETU (IDX)
                MOVE    RECE10-HKNJANUM     TO
