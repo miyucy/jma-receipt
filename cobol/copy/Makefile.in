@@ -984,18 +984,18 @@ COPYS = \
         CPORCSKOREIFTNCHK.INC \
         CPORCSDNTCHK.INC \
         CPNCLAIMERRCD.INC \
-        HC2CV04.INC \
-        HC2DV02.INC \
-        HC2AV03.INC \
-        HC2BV02.INC \
-        HC2KV02.INC \
-        HC2LV02.INC \
-        HC2IV02.INC \
-        HC2JV03.INC \
-        HC2MV01.INC \
-        HC2NV01.INC \
-        HC2OV01.INC \
-        HC2PV01.INC \
+        HCM2CV04.INC \
+        HCM2DV02.INC \
+        HCM2AV03.INC \
+        HCM2BV02.INC \
+        HCM2KV02.INC \
+        HCM2LV02.INC \
+        HCM2IV02.INC \
+        HCM2JV03.INC \
+        HCM2MV01.INC \
+        HCM2NV01.INC \
+        HCM2OV01.INC \
+        HCM2PV01.INC \
 
 DBPATH = \
 	ORCA-DBPATH
