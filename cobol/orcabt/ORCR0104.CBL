@@ -41,7 +41,9 @@
       *                                     編集方法を変更する 
       *  01.00.08    NACL-藤原    03/07/10  治験のとき請求管理ＤＢに
       *                                     ０：請求しないとして更新する
-      *  01.00.09    NACL-藤原    03/07/30  カスタマイズ項目をＯＣＲ対応の修正
+      *  01.00.09    NACL-藤原    03/07/30  カスタマイズ項目のＯＣＲ対応の修正
+      *  01.00.10    NACL-藤原    03/08/05  月内で保険者が変わったときの
+      *                                     件数の集計方法を変更する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -246,6 +248,7 @@
                    07  KEY-N-RECEKA    PIC  X(02).
                05  KEY-N-TEISYUTUSAKI  PIC  9(01).
                05  KEY-N-RECESYUBETU   PIC  9(04).
+               05  KEY-N-HKNJANUM-KEY  PIC  X(08).
            03  KEY-OLD.
                05  KEY-OLD1.
                    07  KEY-O-HOSPID    PIC  X(24).
@@ -255,6 +258,7 @@
                    07  KEY-O-RECEKA    PIC  X(02).
                05  KEY-O-TEISYUTUSAKI  PIC  9(01).
                05  KEY-O-RECESYUBETU   PIC  9(04).
+               05  KEY-O-HKNJANUM-KEY  PIC  X(08).
       *
       *    一時領域
        01  WRK-AREA.
@@ -4087,6 +4091,8 @@
                                                    KEY-N-TEISYUTUSAKI
                                MOVE    RECE02-RECESYUBETU
                                                    TO  KEY-N-RECESYUBETU
+                               MOVE    RECE02-HKNJANUM-KEY
+                                                   TO KEY-N-HKNJANUM-KEY
                            END-IF
                        END-IF 
                    END-IF    

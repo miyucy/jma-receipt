@@ -36,6 +36,9 @@
       *                                     編集方法を変更する 
       *  01.00.05    NACL-藤原    03/07/10  治験のとき請求管理ＤＢに
       *                                     ０：請求しないとして更新する
+      *  01.00.06    NACL-藤原    03/07/30  カスタマイズ項目のＯＣＲ対応の修正
+      *  01.00.07    NACL-藤原    03/08/05  月内で保険者が変わったときの
+      *                                     件数の集計方法を変更する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -242,6 +245,7 @@
                    07  KEY-N-RECEKA    PIC  X(02).
                05  KEY-N-TEISYUTUSAKI  PIC  9(01).
                05  KEY-N-RECESYUBETU   PIC  9(04).
+               05  KEY-N-HKNJANUM-KEY  PIC  X(08).
            03  KEY-OLD.
                05  KEY-OLD1.
                    07  KEY-O-HOSPID    PIC  X(24).
@@ -251,6 +255,7 @@
                    07  KEY-O-RECEKA    PIC  X(02).
                05  KEY-O-TEISYUTUSAKI  PIC  9(01).
                05  KEY-O-RECESYUBETU   PIC  9(04).
+               05  KEY-O-HKNJANUM-KEY  PIC  X(08).
       *
       *    一時領域
        01  WRK-AREA.
@@ -3111,50 +3116,60 @@
            ELSE
                    MOVE  ZERO           TO      OCR2-CHKDGT2
            END-IF
-      *チェックディジット３
-           INITIALIZE                           LNK-CHKDGT-AREA
-           MOVE    1                    TO      LNK-I-SYORIKBN
-           MOVE    OCR2-AREA(27:15)     TO      LNK-I-CODE
-           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
-           IF      LNK-O-ERRCD          =       ZERO
-                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT3
-           ELSE
-                   MOVE  ZERO           TO      OCR2-CHKDGT3
-           END-IF
-      *チェックディジット４
-           INITIALIZE                           LNK-CHKDGT-AREA
-           MOVE    1                    TO      LNK-I-SYORIKBN
-           MOVE    OCR2-AREA(45:7)      TO      LNK-I-CODE
-           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
-           IF      LNK-O-ERRCD          =       ZERO
-                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT4
-           ELSE
-                   MOVE  ZERO           TO      OCR2-CHKDGT4
-           END-IF
-      *チェックディジット６
-           INITIALIZE                           LNK-CHKDGT-AREA
-           MOVE    1                    TO      LNK-I-SYORIKBN
-           MOVE    OCR2-AREA(59:5)      TO      LNK-I-CODE
-           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
-           IF      LNK-O-ERRCD          =       ZERO
-                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT6
-           ELSE
-                   MOVE  ZERO           TO      OCR2-CHKDGT6
-           END-IF
-      *チェックディジット７
-           INITIALIZE                           LNK-CHKDGT-AREA
-           MOVE    1                    TO      LNK-I-SYORIKBN
-           MOVE    OCR2-AREA(43:22)     TO      LNK-I-CODE
-           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
-           IF      LNK-O-ERRCD          =       ZERO
-                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT7
-           ELSE
-                   MOVE  ZERO           TO      OCR2-CHKDGT7
-           END-IF
       *
-           IF      OCR2-AREA-X          =   ALL "0"
-               MOVE    SPACE                    TO  OCR2-AREA-X
-           END-IF  
+           IF      OCR2-AREA-X          =   SPACE
+               CONTINUE
+           ELSE
+      *
+               INSPECT OCR2-AREA-X
+                           REPLACING    ALL   " "   BY   "0"
+      *
+      *        チェックディジット３
+               INITIALIZE                           LNK-CHKDGT-AREA
+               MOVE    1                    TO      LNK-I-SYORIKBN
+               MOVE    OCR2-AREA(27:15)     TO      LNK-I-CODE
+               CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+               IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT3
+               ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT3
+               END-IF
+      *        チェックディジット４
+               INITIALIZE                           LNK-CHKDGT-AREA
+               MOVE    1                    TO      LNK-I-SYORIKBN
+               MOVE    OCR2-AREA(45:7)      TO      LNK-I-CODE
+               CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+               IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT4
+               ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT4
+               END-IF
+      *        チェックディジット６
+               INITIALIZE                           LNK-CHKDGT-AREA
+               MOVE    1                    TO      LNK-I-SYORIKBN
+               MOVE    OCR2-AREA(59:5)      TO      LNK-I-CODE
+               CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+               IF      LNK-O-ERRCD          =       ZERO
+                  MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT6
+               ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT6
+               END-IF
+      *        チェックディジット７
+               INITIALIZE                           LNK-CHKDGT-AREA
+               MOVE    1                    TO      LNK-I-SYORIKBN
+               MOVE    OCR2-AREA(43:22)     TO      LNK-I-CODE
+               CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+               IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT7
+               ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT7
+               END-IF
+      *
+               IF      OCR2-AREA-X          =   ALL "0"
+                   MOVE    SPACE                    TO  OCR2-AREA-X
+               END-IF
+           END-IF
+      *  
            MOVE    OCR2-AREA            TO      RECE02-OCR2
       *
            .
@@ -3165,6 +3180,13 @@
       *    レセプトＯＣＲ領域のセット３（Ｆ００２）
       *****************************************************************
        3303-OCR3-HENSYU-SEC                   SECTION.
+      *
+           IF      OCR3-AREA-X          =   SPACE
+               GO  TO  3303-OCR3-HENSYU-EXT
+           END-IF
+      *
+           INSPECT OCR3-AREA-X
+                           REPLACING    ALL   " "   BY   "0"
       *
       *チェックディジット１
            INITIALIZE                           LNK-CHKDGT-AREA
@@ -4164,6 +4186,8 @@
                                                    KEY-N-TEISYUTUSAKI
                                MOVE    RECE02-RECESYUBETU
                                                    TO  KEY-N-RECESYUBETU
+                               MOVE    RECE02-HKNJANUM-KEY
+                                                   TO KEY-N-HKNJANUM-KEY
                            END-IF
                        END-IF 
                    END-IF    
