@@ -324,6 +324,9 @@
            WHEN    "CLICKED"       ALSO    "B01"
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
                PERFORM 210-BACK
+      *    クリア
+           WHEN    "CLICKED"       ALSO    "B02"
+               PERFORM 220-CLEAR-SEC
       *    削除
            WHEN    "CLICKED"       ALSO    "B03"
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
@@ -466,6 +469,26 @@
       *
            .
        210-BACK-EXT.
+           EXIT.
+      *****************************************************************
+      *    クリア　処理
+      *****************************************************************
+       220-CLEAR-SEC                   SECTION.
+      *
+           INITIALIZE                  SPA-W60
+      *
+           PERFORM VARYING IDX-MTRX    FROM    1   BY  1
+                   UNTIL ( IDX-MTRX    >   CONST-CHKMTRX-MAX )
+      *
+               MOVE    CONST-CHKMTRX (IDX-MTRX)
+                                   TO  SPA-GMN-CHKMTRX (IDX-MTRX)
+      *
+           END-PERFORM
+      *
+           MOVE    1               TO  SPA-GMN-CUR
+      *
+           .
+       220-CLEAR-EXT.
            EXIT.
       *
       *****************************************************************
