@@ -268,6 +268,7 @@
       *                                     PTBYOMEI-KEY12追加
       *  01.01.90    NACL-藤原    03/09/06  RECEDENの追加
       *  01.01.91    NACL-多々納　03/08/11  CHK-KEY7追加 
+      *  01.01.92    NACL-太田  　03/08/12  SRYACCT-KEY23追加 
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1581,6 +1582,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-KEY22"
                    MOVE    PATH-TBL-SRYACCT-KEY22
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY23"
+                   MOVE    PATH-TBL-SRYACCT-KEY23
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-ALL"
                    MOVE    PATH-TBL-SRYACCT-ALL
