@@ -214,6 +214,7 @@
                MOVE    "1"                 TO  LNK-BYO-BYOMEIHENFLG
                MOVE    1                   TO  LNK-BYO-BYOMEICDSU
                                                LNK-BYO-BYOMEI-MAX
+               MOVE    SPACE               TO  LNK-BYO-BYOMEICD-ERR
            END-IF
       *
       *    コードが検索できなかったとき（コード存在エラー以外）
