@@ -20,11 +20,15 @@ shell_sources = \
 	allways/orcbsf03.sh.in \
 	allways/orhcml09.sh.in \
 	allways/print.sh.in \
+	allways/print_prv.sh.in \
+	allways/preprint.sh.in \
+	allways/orc_file_del.sh.in \
 	allways/tensu.sh.in \
 	daily/HCALL.sh.in \
 	daily/execoprg.sh.in \
 	daily/HC01.sh.in \
 	daily/HCALL2.sh.in \
+	daily/HCALL_prv.sh.in \
 	monthly/recept1.sh.in \
 	monthly/recept2.sh.in \
 	monthly/recept3.sh.in \
@@ -46,8 +50,11 @@ shell_sources = \
 
 ruby_scripts = \
 	daily/print-data.rb \
+	daily/print-data_prv.rb \
 	daily/print_parent2.rb \
-	daily/print_parent.rb
+	daily/print_parent.rb \
+	daily/orcred2ps.rb \
+	daily/print_parent_prv.rb
 
 claim_scripts = \
 	claim/rb/clm_rcv.rb \
