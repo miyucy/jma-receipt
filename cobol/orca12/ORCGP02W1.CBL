@@ -4048,12 +4048,16 @@
       *
            MOVE    1                   TO  SPA-HKNKOH-FLG
            MOVE    ZERO                TO  SPA-GMN-CUR
-      *    入力チェック処理
-           PERFORM 410-INPUT-CHK-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-PIDCD       NOT =   SPACE )  OR
-                  (SPA-FLG-END     NOT =   ZERO  )
-               GO      TO      450-HKNCOMBI-EXT
+           IF      FLG-TOUROKU2        =   2
+               CONTINUE
+           ELSE
+      *        入力チェック処理
+               PERFORM 410-INPUT-CHK-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                      (SPA-PIDCD       NOT =   SPACE )  OR
+                      (SPA-FLG-END     NOT =   ZERO  )
+                   GO      TO      450-HKNCOMBI-EXT
+               END-IF
            END-IF
       *
       *    保険ＴＢＬからＰＡＲＡファイルへ編集
@@ -4640,6 +4644,12 @@
       *
            MOVE    1                   TO  FLG-TOUROKU 
            MOVE    1                   TO  FLG-TOUROKU2
+      *
+           EVALUATE    SPA-P02-GAMEN
+      *        保険組合せ履歴
+               WHEN    "P027"
+                   MOVE    2               TO  FLG-TOUROKU2
+           END-EVALUATE
       *
       *    保険組合せを作成する（入力チェック込み）
            PERFORM 450-HKNCOMBI-SEC
