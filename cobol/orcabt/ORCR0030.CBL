@@ -271,7 +271,7 @@
            03  IDX2                                    PIC 9(03).
            03  IDX3                                    PIC 9(03).
            03  IDX4                                    PIC 9(03).
-           03  IDX5                                    PIC 9(02).
+           03  IDX8                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
@@ -3478,9 +3478,9 @@
                IF   SYU-KOH-HKNNUM(IDX3)(1:1) = "1" OR "2" OR "3" OR
                                                 "4" OR "5" OR "6" OR
                                                 "7" OR "8"
-                    MOVE   SYU-SRYYMD(7:2)  TO   IDX5
-                    IF    RECE02-JNISSUTBL(IDX5)  =  "1"
-                       MOVE   "1"   TO   RECE02-KOHJNISSUTBL(IDX5)
+                    MOVE   SYU-SRYYMD(7:2)  TO   IDX8
+                    IF    RECE02-JNISSUTBL(IDX8)  =  "1"
+                       MOVE   "1"   TO   RECE02-KOHJNISSUTBL(IDX8)
                     END-IF
                END-IF
       *
