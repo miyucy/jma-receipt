@@ -259,6 +259,8 @@
       *  01.01.84    NACL-多々納　03/07/25  SANTEI-KEY7,KEY8追加
       *                                     TENSU-KEY22追加
       *  01.01.85    NACL-太田  　03/07/24  PTBYOMEI-KEY11追加 
+      *  01.01.86    NACL-藤原    03/07/25  PTNYUINRRK-KEY21,KEY22,KEY23
+      *                                     追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2476,6 +2478,15 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY20"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY20
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY21"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY21
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY22"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY22
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY23"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY23
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-ALL"
                    MOVE    PATH-TBL-PTNYUINRRK-ALL
