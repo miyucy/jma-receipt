@@ -72,6 +72,9 @@
       *Ê£¿ô¿ÇÎÅ²Ê¤¢¤ê
            03  LNK-ORCSC-FUKU-SRYKA        PIC  9(01).
       *
+      *¿Ç»¡ÎÁ¤¢¤ê
+           03  LNK-ORCSC-SINSATU-ARI       PIC  9(01).
+      *
       *½é¿Ç»»ÄêÆü¡¢Âà±¡Æü
            03  LNK-ORCSC-SYOYMD            PIC  X(08).
       *ºÇ½ª¼õ¿ÇÆü

@@ -33,3 +33,19 @@
       *    システム管理 職員情報 
            03  SPA-SYS-1010-REC            PIC X(500).
       *
+      *日付変更画面
+           03  SPA-M95GMN-AREA.
+               05  SPA-M95-CUR         PIC 9(02).
+               05  SPA-GMN-SYSYMD      PIC X(10).
+               05  SPA-NAI-SYSYMD      PIC X(08).
+      *
+               05  SPA-GMN-JIKANKBN-G.
+                   07  SPA-GMN-JIKANKBN        PIC X(01).
+                   07  SPA-GMN-JIKANKBN-F      PIC X(01).
+                   07  SPA-GMN-JIKANKBN-MEI    PIC X(28).
+               05  SPA-GMN-JIKANKBN-LIST       OCCURS   5.
+                   07  SPA-GMN-JIKANKBN-LST    PIC X(30).
+      *
+               05  SPA-NAI-SYSYMDW     PIC X(07).
+               05  SPA-M95-MOTOPG      PIC X(08).
+      *

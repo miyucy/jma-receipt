@@ -6,7 +6,14 @@ M95	{
 			day	int;
 		};
 		SYSYMD	{
-			value	varchar(11);
+			value	varchar(10);
+		};
+		JIKANKBN_COMB	{
+			JIKANKBN	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[5];
 		};
 	};
 };

@@ -5,13 +5,9 @@
   <name>M00</name>
   <program_name>M00</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -34,7 +30,7 @@
     <handler>window_close</handler>
     <last_modification_time>Thu, 13 Sep 2001 00:46:42 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -139,7 +135,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:28 GMT</last_modification_time>
       </signal>
-      <label>日付設定</label>
+      <label>環境設定</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -442,22 +438,6 @@
       <label>このソフトウェアは「日医オープンソース使用許諾契約」の下に公開
 されたものです。</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>LBLMSG</name>
-      <x>287</x>
-      <y>350</y>
-      <width>500</width>
-      <height>24</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>

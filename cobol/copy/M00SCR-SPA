@@ -34,10 +34,10 @@
                    07  SPA-GMN-LBLMSG  PIC X(60).
                    07  SPA-GMN-ERRCD   PIC X(04).
       *
-               05  SPA-M95GMN-AREA.
-                   07  SPA-M95-CUR         PIC 9(02).
-                   07  SPA-GMN-SYSYMD      PIC X(10).
-                   07  SPA-NAI-SYSYMD      PIC X(08).
+      ***      05  SPA-M95GMN-AREA.
+      *            07  SPA-M95-CUR         PIC 9(02).
+      *            07  SPA-GMN-SYSYMD      PIC X(10).
+      *            07  SPA-NAI-SYSYMD      PIC X(08).
       *
-                   07  SPA-NAI-SYSYMDW     PIC X(07).
+      ****         07  SPA-NAI-SYSYMDW     PIC X(07).
       *

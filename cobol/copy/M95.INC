@@ -1,25 +1,14 @@
-      *******************************************************************
-      * Project code name "ORCA"
-      * 日医標準レセプトソフト（JMA standard receipt software）
-      * Copyright(C) 2002 JMA (Japan Medical Association)
-      *
-      * This program is part of "JMA standard receipt software".
-      *
-      *     This program is distributed in the hope that it will be useful
-      * for further advancement in medical care, according to JMA Open
-      * Source License, but WITHOUT ANY WARRANTY.
-      *     Everyone is granted permission to use, copy, modify and
-      * redistribute this program, but only under the conditions described
-      * in the JMA Open Source License. You should have received a copy of
-      * this license along with this program. If not, stop using this
-      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
-      * 113-8621, Japan.
-      ********************************************************************
         02  M95.
-      *      02  M95-FIXED1.
+   ******   02  M95-FIXED1.
               03  M95-CALENDAR1.
                 04  M95-YEAR    PIC S9(9)   BINARY.
                 04  M95-MONTH   PIC S9(9)   BINARY.
                 04  M95-DAY PIC S9(9)   BINARY.
               03  M95-SYSYMD.
-                04  M95-VALUE   PIC X(11).
+                04  M95-VALUE   PIC X(10).
+              03  M95-JIKANKBN-COMB.
+                04  M95-JIKANKBN.
+                  05  M95-VALUE   PIC X(30).
+                04  M95-JIKANKBN-COUNT   PIC S9(9)   BINARY.
+                04  M95-JIKANKBN-ITEM
+                        PIC X(30)   OCCURS  5 TIMES.
