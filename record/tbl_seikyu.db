@@ -420,6 +420,7 @@ UPDYMD				char(8);
 UPHKNJANUM			char(10),virtual;
 #-----> ¸¡º÷ÍÑ¹àÌÜ
 XXPREFNUM 			char(2),virtual;
+XXSRYYM 			number(6),virtual;
 };
 
 primary	{
@@ -525,7 +526,7 @@ path	key6	{
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      ))          )
-                  AND (      SUBSTR(HKNJANUM_S,1,2) =  :XXPREFNUM ) 
+                  AND (      PREFKBN     =   '1'                  ) 
                 ORDER  BY  HKNJANUM_S   
 		;
 	};
@@ -546,7 +547,7 @@ path	key7	{
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      ))          )
-                  AND (      SUBSTR(HKNJANUM_S,1,2) <>  :XXPREFNUM ) 
+                  AND (      PREFKBN     =   '2'                  ) 
                 ORDER  BY  HKNJANUM_S   
 		;
 	};
@@ -587,6 +588,7 @@ path	key9	{
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )))
                   AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
                   AND (      ZAITAKU     <>  '1'         )
 		;
 	};
@@ -607,6 +609,7 @@ path	key10	{
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )))
                   AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
                   AND (      ZAITAKU     =   '1'         )
 		;
 	};
@@ -772,6 +775,7 @@ path	key18	{
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )))
                   AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
                   AND (      NYUGAIKBN   =   '1'         )
 		;
 	};
