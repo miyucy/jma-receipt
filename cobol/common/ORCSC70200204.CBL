@@ -14,7 +14,7 @@
       * this license along with this program. If not, stop using this
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
-      *******************************************************************
+      ********************************************************************
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSC70200204.
       *****************************************************************
@@ -41,12 +41,6 @@
       * 01.00.12     NACL-Â¿¡¹Ç¼  03/02/26  ÅÀ¿ô¥¼¥í¤Î¤­¤¶¤ßÃÍ·×»»¤Î½¤Àµ
       * 01.00.13     NACL-Â¿¡¹Ç¼  03/04/25  Ã±½ã»£±Æ¤Ë´ÖÀÜ»£±Æ¤Ê¤É¤òÄÉ²Ã
       * 01.00.14     NACL-Â¿¡¹Ç¼  03/07/30  Æ±»þÊ»»ÜÅÀ¿ô·×»»½¤ÀµÂ¾
-      * 01.00.15     NACL-Â¿¡¹Ç¼  03/09/26  £Ã£Ô¡¢£Í£Ò£ÉÆ±»þÆþÎÏÄÉ²Ã
-      * 01.00.16     NACL-Â¿¡¹Ç¼  03/12/03  Æ±»þÊ»»Ü¤ÎÃ±ÆÈÆþÎÏ·Ù¹ð¤Ø
-      * 01.00.17     NACL-Â¿¡¹Ç¼  04/12/17  £Ã£Ô¡¢£Í£Ò£É¤ÎÂ¤±ÆºÞÈ½Äê½¤Àµ
-      * 01.00.18     NACL-Â¿¡¹Ç¼  05/01/27  »ÀÁÇÄÉ²Ã
-      * 01.00.19     NACL-Â¿¡¹Ç¼  05/12/14  MONFUNC ÂÐ±þ
-      * 03.05.00     NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
       *
@@ -104,8 +98,6 @@
       *    ¿ÇÃÇÎÁÅÀ¿ôÄþ¸º
            03  FLG-SATU-GEN        PIC 9(01).
       *
-           03  FLG-NENREI          PIC 9(01).
-      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -113,7 +105,6 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDXS                PIC 9(04).
-           03  IDXS1               PIC 9(04).
            03  IDX-Z               PIC 9(04).
            03  IDX-Z2              PIC 9(04).
            03  IDX-T               PIC 9(04).
@@ -124,7 +115,6 @@
            03  IDX-SYU             PIC 9(04).
            03  IDX-SA              PIC 9(04).
            03  IDX-KAS             PIC 9(04).
-           03  IDX-SIN             PIC 9(04).
       *
            03  IDX-GEN             PIC 9(04).
            03  IDX-GEN2            PIC 9(04).
@@ -150,9 +140,6 @@
            03  IDX-DOJI1           PIC 9(04).
            03  IDX-DOJI2           PIC 9(04).
       *
-           03  IDX-XSEN             PIC 9(04).
-           03  IDX-KAKUI            PIC 9(04).
-           03  IDX-CTMRI            PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -165,9 +152,6 @@
            03  WRK-TENSU           PIC 9(08)V99.
            03  WRK-TENSU1          PIC 9(08).
            03  WRK-IDX             PIC 9(04).
-      *
-           03  WRK-SRYCD1          PIC X(09). 
-           03  WRK-SRYCD2          PIC X(09). 
       *
       *    »£±ÆÎÁ¤ÎÅÀ¿ô·×
            03  WRK-TENSUKEI1       PIC S9(08)V999.
@@ -234,28 +218,10 @@
            03  WRK-XSEN-SRYCD-I     PIC X(09).
            03  WRK-XSEN-SRYCD-R     PIC X(09).
       *
-      *    £Ã£Ô¡¤£Í£Ò£É²ó¿ô
-           03  WRK-CTMRI-CNT-G.
-               05  WRK-CTMRI-CNT-TBL            OCCURS  3.
-                   07  WRK-CTMRI-CNT   PIC 9(04).
-                   07  WRK-CTMRI-DCNT  PIC 9(04).
-           03  WRK-CTMRI-KAI       PIC 9(03).
-      *
       *    ·Ù¹ð¥á¥Ã¥»¡¼¥¸
            03  WRK-KIDCD           PIC X(04).
       *
            03  WRK-ERRCD           PIC X(04).
-      *
-           03  WRK-SRYKA           PIC X(02).
-           03  WRK-HKNCOMBI        PIC X(04).
-      *!
-      *    »ÀÁÇ·×»»ÍÑ
-           03  WRK-SANSO               PIC 9(08).
-           03  WRK-SANSOKIN            PIC 9(08)V99.
-           03  WRK-SANKEI              PIC 9(08).
-           03  WRK-SANTEN              PIC 9(08).
-           03  WRK-SANSOKIN-SUM        PIC 9(08)V99.
-           03  IDX-SANSO               PIC 9(04).
       *
       *    Æþ±¡Æü
        01  WRK-NYUINDAY-AREA.
@@ -321,12 +287,12 @@
       *    ÆÃ¼ì»£±Æ¡Ê»£±Æ¡¦¿ÇÃÇ¡ËÆýÍÄ»ù
            03  FILLER              PIC X(09)  VALUE   "170019230".
            03  FILLER              PIC X(09)  VALUE   "170019430".
-      *****Ã±½ã»£±Æ¡¦ÆÃ¼ì»£±Æ
-      *    03  FILLER              PIC X(09)  VALUE   "170001910".
-      *****03  FILLER              PIC X(09)  VALUE   "170002010".
+      *    Ã±½ã»£±Æ¡¦ÆÃ¼ì»£±Æ
+           03  FILLER              PIC X(09)  VALUE   "170001910".
+           03  FILLER              PIC X(09)  VALUE   "170002010".
       *
        01  TBL-DOUJI-HEISI-R       REDEFINES  TBL-DOUJI-HEISI-AREA.
-           03  TBL-DOUJI-OCC       OCCURS     15  INDEXED  TBL-IDX.
+           03  TBL-DOUJI-OCC       OCCURS   14  INDEXED  TBL-IDX.
                05  TBL-DOUJI-1     PIC X(09).
                05  TBL-DOUJI-2     PIC X(09).
       *
@@ -383,32 +349,6 @@
                05  TBL-XSEN-KBN2       PIC X(02).
                05  TBL-XSEN-SRYCD-R    PIC X(09).
       *
-      *    Ç¯ÎðÊÌ¥³¡¼¥É¡Ê¿ÇÃÇ¡¦»£±Æ¡Ë
-       01  TBL-DOUJI-NEBREI-AREA.
-      *    ÆÃ¼ì»£±Æ
-           03  FILLER              PIC X(09)  VALUE   "170005530".
-           03  FILLER              PIC X(09)  VALUE   "170019130".
-           03  FILLER              PIC X(09)  VALUE   "170019230".
-      *    ÆÃ¼ì»£±Æ¡ÊÆ±»þÊ»»Ü¡Ë
-           03  FILLER              PIC X(09)  VALUE   "170005630".
-           03  FILLER              PIC X(09)  VALUE   "170019330".
-           03  FILLER              PIC X(09)  VALUE   "170019430".
-      *    £É¡¥£É´ÖÀÜ»£±Æ
-           03  FILLER              PIC X(09)  VALUE   "170011430".
-           03  FILLER              PIC X(09)  VALUE   "170019730".
-           03  FILLER              PIC X(09)  VALUE   "170019830".
-      *
-       01  TBL-DOUJI-NEBREI-AREA-R   REDEFINES  TBL-DOUJI-NEBREI-AREA.
-           03  TBL-DOUJI-NEBREI-OCC    OCCURS   3   INDEXED  TBL-NIDX.
-      *        °ìÈÌ
-               05  TBL-NEN-SRYCD0      PIC X(09).
-      *        ¿·À¸»ù
-               05  TBL-NEN-SRYCD1      PIC X(09).
-      *        ÆýÍÄ»ù
-               05  TBL-NEN-SRYCD2      PIC X(09).
-      *
-      *    »ÀÁÇ¥³¡¼¥É¥Æ¡¼¥Ö¥ë
-           COPY     "CMSANSOTBL.INC".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -440,10 +380,7 @@
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-      **** COPY    "CPORCMCP.INC".
-      *
-      *    ¿ÇÎÅ¹Ô°ÙÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
-           COPY    "K01COMMON-SPA".
+           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -540,7 +477,7 @@
            INITIALIZE                  WRK-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )  OR
                               (WRK-ERRCD       NOT =   SPACE )
       *
@@ -573,12 +510,6 @@
                PERFORM 1002-JIDO-KASAN-SEC
            END-IF
       *
-      *    »ÀÁÇ¤ÎÊäÀµÎ¨¤ò¼«Æ°È¯À¸¤¹¤ë
-           IF     (WRK-ERRCD           =   SPACE)   AND
-                  (IDX-SANSO           >   ZERO )
-               PERFORM 10011-SANSO-ADD-SEC
-           END-IF
-      *
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KIDCD           TO  WRK-ERRCD
            END-IF
@@ -607,8 +538,6 @@
                            EVALUATE    WRK-COM-BUIKBN (IDX-Z)
       *                        Æ¬Éô
                                WHEN    "1"
-      *                        ¶í´´
-                               WHEN    "2"
                                    MOVE    2       TO  FLG-BUIKBN
       *                        ¶»Éô¡¦Ê¢Éô
                                WHEN    "5"
@@ -719,18 +648,11 @@
                                        MOVE    "1"     TO  WRK-COM-CUR
                                                                 (IDX-Z)
       *********************************GO      TO      10011-CHK-EXT
-                                       GO      TO      10011-CHK-EXT
                                    END-IF
-      **************************   GO      TO      10011-CHK-EXT
+                                   GO      TO      10011-CHK-EXT
                                END-IF
-      *                        Æ©»ë¿ÇÃÇ¤Ï£ØÀþ¤È¤¹¤ë
-                               IF     WRK-COM-INPUTCD (IDX-Z)
-                                                       =   "170000310"
-                                   CONTINUE
-                               ELSE
-                                    MOVE    4           TO  FLG-SINDAN
-                                    MOVE    IDX-Z       TO  IDX-SAT
-                               END-IF
+                               MOVE    4               TO  FLG-SINDAN
+                               MOVE    IDX-Z           TO  IDX-SAT
       *--(01.00.01)----- END  
                        END-EVALUATE
                    END-IF
@@ -764,12 +686,7 @@
                WHEN    "6"
       *            Â¤±ÆºÞ
                    IF      WRK-COM-ZOEIZAIKBN(IDX-Z)   =   1
-      *                ÆâÉþÌôºÞ¤ÏÂÐ¾Ý³°¤È¤¹¤ë
-                       IF      WRK-COM-YKZKBN (IDX-Z)  =   "1"
-                           CONTINUE
-                       ELSE
-                           MOVE   1                TO  FLG-ZOEIZAI
-                       END-IF
+                       MOVE   1                TO  FLG-ZOEIZAI
                    END-IF
       *            ËãÆÇ¶èÊ¬
                    IF      WRK-COM-MADOKUKBN (IDX-Z)   =   1
@@ -803,87 +720,16 @@
                                                                (IDX-Z))
                    END-IF
       *
-      **********   »ÀÁÇ¡¦ÃâÁÇ¤Ï¥¨¥é¡¼
-      *            IF      WRK-COM-TOKUKIZAISBT1 (IDX-Z) =   2
-      *                MOVE    "0039"          TO  WRK-ERRCD
-      *                MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
-      ***********  END-IF
-      *            »ÀÁÇ¶èÊ¬È½Äê
-                   IF      WRK-COM-SANSOKBN (IDX-Z)    =   1
-      *                »ÀÁÇ¤Î»þ¡¢»ÀÁÇÊäÀµÎ¨¤ò¼«Æ°²Ã»»
-                       MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
-                       PERFORM 100115-SANSO-CHK-SEC
-                       IF      FLG-SANSO-OK        =   1
-                           MOVE    IDX-Z       TO  IDX-SANSO
-                       ELSE
-                           IF      IDX-SANSO        =   ZERO
-                               MOVE    "0038"       TO  WRK-ERRCD
-                               MOVE    "1"          TO  WRK-COM-CUR
-                                                              (IDX-Z)
-                           END-IF
-                       END-IF
+      *            »ÀÁÇ¡¦ÃâÁÇ¤Ï¥¨¥é¡¼
+                   IF      WRK-COM-TOKUKIZAISBT1 (IDX-Z) =   2
+                       MOVE    "0039"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                    END-IF
            END-EVALUATE
       *
            .
        10011-CHK-EXT.
            EXIT.
-      *****************************************************************
-      *    »ÀÁÇÈ½Äê½èÍý
-      *****************************************************************
-       100115-SANSO-CHK-SEC           SECTION.
-      *
-      *
-           SET     TBL-SANSO           TO  1
-           SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
-                   AT  END
-                       MOVE    ZERO            TO  FLG-SANSO-OK
-                   WHEN    WRK-SRYCD       =   TBL-SANSO-SRYCD
-                                                           (TBL-SANSO)
-                       MOVE    1               TO  FLG-SANSO-OK
-           END-SEARCH 
-      *
-           .
-       100115-SANSO-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    »ÀÁÇÊäÀµÎ¨¼«Æ°²Ã»»½èÍý
-      *****************************************************************
-       10011-SANSO-ADD-SEC                  SECTION.
-      *
-           MOVE    "770020070"         TO  WRK-SRYCD
-           MOVE    ZERO                TO  FLG-ARI
-           PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1    >   SPA-MAX-LINE  )  OR
-                              (WRK-COM-INPUTCD(IDX1)   =   SPACE AND
-                               WRK-GMN-INPUTCD(IDX1)   =   SPACE )
-               IF     (WRK-COM-INPUTCD  (IDX1)(1:1)    =   "7" ) AND
-                      (WRK-COM-SANSOKBN (IDX1) =   1           )
-                   IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD OR
-                                                       "770030070"
-                       CONTINUE
-                   ELSE
-                       IF      IDX-SANSO       NOT =   IDX1
-                           MOVE    IDX1                TO  IDX-SANSO
-                       END-IF
-                   END-IF
-               END-IF
-               IF      WRK-COM-INPUTCD (IDX1)  =   WRK-SRYCD
-                   MOVE    IDX1                TO  IDX-T
-                   MOVE    1                   TO  FLG-ARI
-               END-IF
-           END-PERFORM
-           IF      FLG-ARI             =   ZERO
-               MOVE    IDX-SANSO           TO  IDX-S
-           END-IF
-      *    »ÀÁÇÊäÀµÎ¨¼«Æ°²Ã»»
-           MOVE    ZERO                TO  FLG-NENREI
-           PERFORM 1002-JIDOUSET-SEC
-      *
-           .
-       10011-SANSO-ADD-EXT.
-           EXIT.
-      *!
       *
       *****************************************************************
       *    »ÜÀß´ð½àÉÔÅ¬¹ç¥Á¥§¥Ã¥¯²Ã»»½èÍý
@@ -937,24 +783,23 @@
            MOVE    SPACE               TO  SYS-1006-REC
            MOVE    "1006"              TO  SYS-1006-KANRICD
            MOVE    "1"                 TO  SYS-1006-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
+           MOVE    ZERO                TO  SYS-1006-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1006-EDYUKYMD
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
-           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
                PERFORM 900-KANRIMST-READ-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
            ELSE
@@ -1045,11 +890,6 @@
                GO      TO      10012-SYUGI-CHK-EXT
            END-IF
       *
-      *    Êñ³ç¤Þ¤È¤áÆþÎÏ¤ÏÂÐ¾Ý³°
-           IF      SPA-HKNCOMBINUM     =   "9999"
-               GO      TO      10012-SYUGI-CHK-EXT
-           END-IF
-      *
            MOVE    IDX-SAT             TO  IDX-Z
       *
       *****MOVE    SPACE               TO  WRK-HEN-SRYCD
@@ -1073,14 +913,12 @@
       *
       *    »»ÄêÍúÎò¥Á¥§¥Ã¥¯
            INITIALIZE                      ORCSC91AREA
-      *****MOVE    "3"                 TO  LNK-SC91-KBN
-           MOVE    "4"                 TO  LNK-SC91-KBN
+           MOVE    "3"                 TO  LNK-SC91-KBN
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
            MOVE    WRK-HEN-SRYCD       TO  LNK-SC91-SRYCD
            MOVE    IDX-Z               TO  LNK-SC91-GMN-IDX
-           MOVE    LNK-ORCSC-KAISU     TO  LNK-SC91-KAISU
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
-           CALL    "ORCSC91"           USING
+           CALL    "ORCSC91"       USING
                                        MCPAREA
                                        ORCSC91AREA
                                        WRK-SCR-REC
@@ -1094,7 +932,23 @@
       *
       *    Åö·î»»Äê¤Ê¤·
            IF      LNK-SC91-CNT        =   ZERO
-               CONTINUE
+      *
+      *        £Ã£Ô¡¥£Í£Ò£É¤Î»»Äê¥Á¥§¥Ã¥¯
+               IF      WRK-COM-INPUTCD (IDX-Z)     =   "170022290"  OR
+                                                       "170022390"  OR
+                                                       "170022490"  OR
+                                                       "170701470"  OR
+                                                       "170701570"  OR
+                                                       "170701670"
+                   IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE )  AND 
+                          (LNK-ORCSC-TOROKU    NOT =   "2"   )
+                       MOVE    "K003"              TO  WRK-KIDCD
+                       MOVE    "1"                 TO  WRK-COM-KZMFLG
+                                                             (IDX-Z)
+                       MOVE    "2"                 TO  WRK-COM-CUR
+                                                             (IDX-Z)
+                   END-IF
+               END-IF
            ELSE
       *        Êñ³çÄþ¸º¶èÊ¬È½Äê
                EVALUATE    WRK-COM-HOUKATUTEIGENKBN (IDX-Z)
@@ -1165,12 +1019,6 @@
                END-IF
            END-PERFORM
       *
-      *    ²èÁü¿ÇÃÇ¤Î²Ã»»¤Î¤ß
-           IF     (WRK-COM-SRYSYUKBN(IDX-Z)    =   "704" )  AND
-                  (WRK-COM-SRYKBN (IDX-Z)      =   "70"  )
-               MOVE    1                   TO  FLG-ARI
-           END-IF
-      *
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
@@ -1222,31 +1070,8 @@
                   (WRK-SRYCD               =   SPACE )
                CONTINUE
            ELSE
-      ******   MOVE    "0070"          TO  WRK-ERRCD
-      *****    MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-      *        ·Ù¹ð¤ØÊÑ¹¹¤¹¤ë
-               IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE ) AND
-                      (LNK-ORCSC-KEI-IDX       =   ZERO  )
-                   MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
-                   MOVE    "1"                 TO  WRK-COM-KZMFLG(IDX-Z)
-                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
-                   MOVE    "K070"              TO  WRK-ERRCD
-                   GO      TO      10013-DOUJI-CHK-EXT
-               END-IF
-           END-IF
-      *
-      *    Ç¯ÎðÊÌ¤Ë¤¢¤ë¾ì¹ç¤Ï¡¢Ç¯ÎðËè¤Î¥³¡¼¥É¤Ø
-           IF      LNK-ORCSC-NENREI-YY <=  3
-               MOVE    SPACE               TO  WRK-SRYCD
-               PERFORM 10023-DOUJI-NENREI-SEC
-               IF      WRK-SRYCD       NOT =   SPACE
-      *            ¿ÇÎÅ¥³¡¼¥ÉÊÑ¹¹
-                   MOVE    1                   TO  FLG-ARI
-                   MOVE    IDX-Z               TO  IDX-T
-                   PERFORM 1002-JIDOUSET-SEC
-                   MOVE    SPACE               TO  WRK-COM-AUTOKBN
-                                                       (IDX-S)
-               END-IF
+               MOVE    "0070"          TO  WRK-ERRCD
+               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
            END-IF
            .
       *
@@ -1257,15 +1082,6 @@
       *****************************************************************
        10015-SIDAN-DOUJI-CHK-SEC           SECTION.
       *
-      *    »£±ÆÎÁ¤¬¤¢¤ë¤³¤È
-           IF      FLG-SINDAN          =   1
-               CONTINUE
-           ELSE
-               MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
-               MOVE    "0079"          TO  WRK-ERRCD
-               GO      TO      10015-SIDAN-DOUJI-CHK-EXT
-           END-IF
-      *
            EVALUATE    WRK-COM-INPUTCD (IDX-Z)
                WHEN    "170000730"
       *            ÆÃ¼ì»£±Æ¤Î¼Ì¿¿¿ÇÃÇ¡ÊÆ±»þ¡Ë
@@ -1274,18 +1090,8 @@
                                                =   "170002010")
                        CONTINUE
                    ELSE
-      ***********      MOVE    "0071"          TO  WRK-ERRCD
-      ***********      MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-      *                ·Ù¹ð¤ØÊÑ¹¹¤¹¤ë
-                       IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE ) AND
-                              (LNK-ORCSC-KEI-IDX       =   ZERO  )
-                           MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
-                           MOVE    "1"             TO  WRK-COM-KZMFLG
-                                                             (IDX-Z)
-                           MOVE    "1"             TO  WRK-COM-CUR
-                                                             (IDX-Z)
-                           MOVE    "K070"          TO  WRK-ERRCD
-                       END-IF
+                       MOVE    "0071"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                    END-IF
                WHEN    "170022930"
       *            Â¤±ÆºÞ»ÈÍÑ¼Ì¿¿¿ÇÃÇ¡ÊÆ±»þ¡Ë
@@ -1294,32 +1100,10 @@
                                                =   "170002110")
                        CONTINUE
                    ELSE
-      ***************  MOVE    "0071"          TO  WRK-ERRCD
-      **************   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-      *                ·Ù¹ð¤ØÊÑ¹¹¤¹¤ë
-                       IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE ) AND
-                              (LNK-ORCSC-KEI-IDX       =   ZERO  )
-                           MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
-                           MOVE    "1"             TO  WRK-COM-KZMFLG
-                                                             (IDX-Z)
-                           MOVE    "1"             TO  WRK-COM-CUR
-                                                             (IDX-Z)
-                           MOVE    "K070"          TO  WRK-ERRCD
-                       END-IF
+                       MOVE    "0071"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                    END-IF
            END-EVALUATE
-      *
-      *    Æ±»þÊ»»Ü¤Î¿ÇÃÇÎÁ¤Ç»£±Æ¤¬£±²ó¤Î¾ì¹ç·Ù¹ð
-           IF     (WRK-CNT-SATUEI      =   1   )  AND
-                  (WRK-COM-TNSSRYSYUKBN(IDX-Z) =   "710")
-               IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE ) AND
-                      (LNK-ORCSC-KEI-IDX       =   ZERO  )
-                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
-                   MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
-                   MOVE    "1"             TO  WRK-COM-CUR   (IDX-Z)
-                   MOVE    "K070"          TO  WRK-ERRCD
-               END-IF
-           END-IF
            .
       *
        10015-SIDAN-DOUJI-CHK-EXT.
@@ -1340,10 +1124,6 @@
                        MOVE    TBL-DOUJI-2 (TBL-IDX)
                                                 TO  WRK-SRYCD
            END-SEARCH
-      *    Ç¯ÎðÊÌ¤Ë¤¢¤ë¾ì¹ç¤Ï¡¢Ç¯ÎðËè¤Î¥³¡¼¥É¤Ø
-           IF      LNK-ORCSC-NENREI-YY <=  3
-               PERFORM 10023-DOUJI-NENREI-SEC
-           END-IF
       *
       *    Ã±½ã»£±ÆÎÁ¤Î£²²óÌÜ¤òÆÃ¼ì»£±ÆÎÁ¤ØÊÑ´¹
            IF      WRK-SRYCD       NOT =   SPACE
@@ -1359,7 +1139,6 @@
       *****MOVE    1                   TO  IDX-HOZ
            PERFORM 10001-XSEN-SINDAN-SEC
       *
-           MOVE    ZERO                TO  IDX-NYU
            MOVE    ZERO                TO  IDX-SAT
            MOVE    ZERO                TO  IDX-GEN
            MOVE    ZERO                TO  LNK-SC90-BUNGSU
@@ -1370,55 +1149,17 @@
       *
       *    ¸½ºß¤Î¥Á¥§¥Ã¥¯°ÌÃÖ¤ËÌá¤¹
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-MAX-LINE
+                   UNTIL       IDX     >   200
                IF      WRK-COM-AUTOKBN (IDX)   =   "K"
                    MOVE    SPACE           TO  WRK-COM-AUTOKBN (IDX)
                    MOVE    IDX             TO  IDX-Z
-                   MOVE    SPA-MAX-LINE    TO  IDX
+                   MOVE    200             TO  IDX
                END-IF
            END-PERFORM
       *
            MOVE    IDX-Z               TO  IDX-HOZ
            .
        1002-XSEN-END-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ç¯ÎðÊÌ¥³¡¼¥ÉÊÑ´¹½èÍý
-      *****************************************************************
-       10023-DOUJI-NENREI-SEC           SECTION.
-      *
-      *    Æ±»þÊ»»Ü¤Î¥Á¥§¥Ã¥¯
-           SET     TBL-NIDX            TO  1
-           SEARCH      TBL-DOUJI-NEBREI-OCC    VARYING   TBL-NIDX
-                   AT   END
-                       MOVE    SPACE            TO  WRK-SRYCD1
-                       MOVE    SPACE            TO  WRK-SRYCD2
-                   WHEN    WRK-COM-INPUTCD (IDX-Z) =   TBL-NEN-SRYCD0
-                                                           (TBL-NIDX)
-                       MOVE    TBL-NEN-SRYCD1 (TBL-NIDX)
-                                                TO  WRK-SRYCD1
-                       MOVE    TBL-NEN-SRYCD2 (TBL-NIDX)
-                                                TO  WRK-SRYCD2
-           END-SEARCH
-           IF      WRK-SRYCD1          =   SPACE
-               GO      TO      10023-DOUJI-NENREI-EXT
-           END-IF
-      *
-      *    ¿·À¸»ùÈ½Äê
-           IF     (LNK-ORCSC-NENREI-YY     =   ZERO )  AND
-                  (LNK-ORCSC-NENREI-MM     =   ZERO )  AND
-                  (LNK-ORCSC-NENREI-DD     <   28   )
-               MOVE    WRK-SRYCD1          TO  WRK-SRYCD
-           ELSE
-      *        ÆýÍÄ»ù¡Ê£³ºÐÌ¤Ëþ¡Ë
-               IF      LNK-ORCSC-NENREI-YY     <   3
-                   MOVE    WRK-SRYCD2          TO  WRK-SRYCD
-               END-IF
-           END-IF
-           .
-      *
-       10023-DOUJI-NENREI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1437,10 +1178,6 @@
                MOVE    IDX-SAT         TO  IDX-SAT2
            END-IF
       *
-      *    ÆýÍÄ»ù²Ã»»¤¢¤ê
-           IF      IDX-NYU             >   ZERO
-               MOVE    IDX-NYU         TO  IDX-SAT2
-           END-IF
       *
            MOVE    IDX-SAT2            TO  IDX-S
            PERFORM 100012-SINDAN-SET-SEC
@@ -1455,7 +1192,7 @@
            INITIALIZE                  ORCSC90AREA
            MOVE    ZERO                TO  IDX-MAX
            PERFORM VARYING     IDX-Z   FROM    IDX-HOZ BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX-Z       >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE ) OR
                               (WRK-COM-AUTOKBN(IDX-Z)  =   "K"   )
       *
@@ -1549,32 +1286,9 @@
                            ADD     LNK-SC90-FIRTEN     TO  WRK-FIRTEN
                        END-IF
                    END-IF
-      *            »ÀÁÇ·×»»
-                   IF      WRK-COM-SANSOKBN (IDX-Z)    =   1
-                       PERFORM 100211-SANSO-KEI-SEC
-                   END-IF
            END-EVALUATE
            .
        100013-XSEN-KEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    »ÀÁÇ·×»»½èÍý
-      *****************************************************************
-       100211-SANSO-KEI-SEC            SECTION.
-      *
-      *    »ÀÁÇÈ½Äê
-           MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
-           PERFORM 100115-SANSO-CHK-SEC
-           IF      FLG-SANSO-OK        =   1
-      *        »ÀÁÇ¶â³Û·×»»
-               COMPUTE WRK-SANSOKIN    =   WRK-COM-KISOTEN (IDX-Z)
-                                       *   WRK-COM-SURYO (IDX-Z)
-               ADD     WRK-SANSOKIN    TO  WRK-SANSOKIN-SUM
-           END-IF
-      *
-           .
-       100211-SANSO-KEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1588,7 +1302,7 @@
            IF     (WRK-CNT-SATUEI      =   1  )  AND
                   (IDX-GEN             >   ZERO )
                PERFORM VARYING     IDX-Z2  FROM    IDX-SAT BY  1
-                   UNTIL      (IDX-Z2      >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX-Z2      >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z2)  =   SPACE ) OR
                               (WRK-COM-AUTOKBN(IDX-Z2)  =   "K"   )
                    IF     (WRK-COM-TENSIKIBETU (IDX-Z2) =   6 )  AND
@@ -1603,16 +1317,15 @@
                                                -   WRK-GENTEN
                        MOVE    1               TO  WRK-COM-SANFLG
                                                           (IDX-Z2)
-                       MOVE    SPA-MAX-LINE        TO  IDX-Z2
+                       MOVE    200            TO  IDX-Z2
                    END-IF
                END-PERFORM
            END-IF
       *
            MOVE    ZERO                TO  WRK-SATU-KASAN
       *    ÆýÍÄ»ù²Ã»»¡Ê¡ó²Ã»»¡Ë
-      **** PERFORM VARYING     IDX-Z2  FROM    1    BY  1
-           PERFORM VARYING     IDX-Z2  FROM    IDX-SAT  BY  1
-                   UNTIL      (IDX-Z2      >   SPA-MAX-LINE  )  OR
+           PERFORM VARYING     IDX-Z2  FROM    1    BY  1
+                   UNTIL      (IDX-Z2      >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z2)  =   SPACE ) OR
                               (WRK-COM-AUTOKBN(IDX-Z2)  =   "K"   )
               IF     (WRK-COM-SANFLG(IDX-Z2)  =   2 OR 5 )  AND
@@ -1628,7 +1341,7 @@
                    COMPUTE WRK-SATU-KASAN      =   WRK-COM-TEN (IDX-Z2)
                                                /   100
       *
-                   MOVE    SPA-MAX-LINE        TO  IDX-Z2
+                   MOVE    200                 TO  IDX-Z2
                END-IF
            END-PERFORM
       *
@@ -1666,7 +1379,7 @@
                   (WRK-COM-TNSSRYSYUKBN(IDX-Z)(1:2)  =  "71" ) AND
                   (IDX-GEN             >   ZERO )
                PERFORM VARYING     IDX-Z2  FROM    IDX-SAT BY  1
-                   UNTIL      (IDX-Z2      >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX-Z2      >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z2)  =   SPACE ) OR
                               (WRK-COM-AUTOKBN(IDX-Z2)  =   "K"   )
                    IF     (WRK-COM-TENSIKIBETU (IDX-Z2) =   6 )  AND
@@ -1681,15 +1394,15 @@
                                                -   WRK-GENTEN
                        MOVE    1               TO  WRK-COM-SANFLG
                                                           (IDX-Z2)
-                       MOVE    SPA-MAX-LINE    TO  IDX-Z2
+                       MOVE    200            TO  IDX-Z2
                    END-IF
                END-PERFORM
            END-IF
       *
       *    Æ±»þ»£±Æ¤Ë¤è¤ëÄþ¸º
-           IF    ((WRK-CNT-SATUEI      >   1   )  AND
-                  (WRK-COM-TNSSRYSYUKBN(IDX-Z) =  "711" )) OR
-                 ( WRK-COM-TNSSRYSYUKBN(IDX-Z) =  "710"  )
+           IF     (WRK-CNT-SATUEI      >   1   )  AND
+                  (WRK-COM-TNSSRYSYUKBN(IDX-Z) =  "711"
+                                               OR "710"  )
                IF      WRK-COM-TNSSRYSYUKBN(IDX-Z) =  "711"
                    COMPUTE WRK-SATU-TEN        =   WRK-SATU-TEN
                                                /   2
@@ -1799,19 +1512,7 @@
                WHEN    TNS-KZMJGN        <   WRK-SURYO
                    IF      TNS-KZMERR        =   0  OR  2
       *            ÅÀ¿ô·×»»¼°£±¤ò¤»¤º¡¢¥¨¥é¡¼¤È¤¹¤ë
-      *************    MOVE    "0022"        TO  SPA-ERRCD
-      *            ·Ù¹ð¥¨¥é¡¼¤È¤¹¤ë
-                       MOVE    "K030"            TO  SPA-ERRCD
-      *            ÅÀ¿ô·×»»¼°£±
-                       COMPUTE WRK-KEI-TEN1    =  (WRK-SURYO
-                                               -  TNS-KZMKGN)
-                                               /   TNS-KZM
-                                               +   0.999
-                       MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
-                       COMPUTE WRK-KEI-TEN     =   TNS-TEN
-                                               + ( WRK-KEI-TEN2
-                                               *   TNS-KZMTEN )
-                       COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
+                       MOVE    "0022"        TO  SPA-ERRCD
                    ELSE
       *            ÅÀ¿ô·×»»¼°£²
                        COMPUTE WRK-KEI-TEN1    =  (TNS-KZMJGN
@@ -1932,103 +1633,55 @@
            MOVE    ZERO                TO  IDX-DOJI1
            MOVE    ZERO                TO  IDX-DOJI2
            PERFORM VARYING     IDX-S1  FROM    IDX-SAT   BY  1
-                   UNTIL      (IDX-S1      >   SPA-MAX-LINE )  OR
+                   UNTIL      (IDX-S1      >   200 )  OR
                               (IDX-DOJI1   >   ZERO )    OR
                               (IDX-DOJI2   >   ZERO )    OR
                               (WRK-COM-INPUTCD (IDX-S1)  =   SPACE AND
                                WRK-GMN-INPUTCD (IDX-S1)  =   SPACE )
-      *        Æ±»þÊ»»Ü¤Î¿ÇÃÇÎÁÈ½Äê
-               IF      WRK-COM-TNSSRYSYUKBN(IDX-S1)    =   "710"
-                   MOVE    IDX-S1              TO  IDX-DOJI1
-               END-IF
-               IF      WRK-COM-TNSSRYSYUKBN(IDX-S1)    =   "711"
-                   MOVE    IDX-S1              TO  IDX-DOJI2
-               END-IF
-      *******  EVALUATE    WRK-COM-INPUTCD (IDX-S1)
+               EVALUATE    WRK-COM-INPUTCD (IDX-S1)
       *            ÆÃ¼ì»£±Æ¡ÊÆ±»þÊ»»Ü¡Ë
-      *            WHEN    "170000730"
-      *                MOVE    IDX-S1              TO  IDX-DOJI1
+                   WHEN    "170000730"
+                       MOVE    IDX-S1              TO  IDX-DOJI1
       *            Â¤±ÆºÞ»ÈÍÑ¡ÊÆ±»þÊ»»Ü¡Ë
-      *            WHEN    "170022930"
-      *                MOVE    IDX-S1              TO  IDX-DOJI2
-      *********END-EVALUATE
+                   WHEN    "170022930"
+                       MOVE    IDX-S1              TO  IDX-DOJI2
+               END-EVALUATE
       *
                IF     (IDX-S1          NOT =   IDX-SAT)  AND
                       (WRK-COM-TNSSRYSYUKBN (IDX-S1)    =   "721")
-                   MOVE   SPA-MAX-LINE         TO  IDX-S1
+                   MOVE   200              TO  IDX-S1
                END-IF
            END-PERFORM
       *
            EVALUATE    WRK-COM-INPUTCD (IDX-SAT)
                WHEN    "170002010"
-      *            ÆÃ¼ì»£±Æ¤Î¼Ì¿¿¿ÇÃÇ
-                   IF      WRK-CNT-SATUEI      =   1
-                       MOVE    "170000610"         TO  WRK-SRYCD
-                       MOVE    "170000730"         TO  WRK-SRYCD-2
-                   ELSE
-                       MOVE    "170000730"         TO  WRK-SRYCD
-                       MOVE    "170000610"         TO  WRK-SRYCD-2
-                   END-IF
-      ************ MOVE    SPACE               TO  WRK-SRYCD-2
-                   IF     (IDX-DOJI1           >   ZERO )  AND
-                          (WRK-COM-INPUTCD (IDX-DOJI1)
-                                               =   "170000730")
-      *                Æ±»þÊ»»Ü¤Î¥³¡¼¥É¤¢¤ê
+      *            ÆÃ¼ì»£±Æ¤Î¼Ì¿¿¿ÇÃÇ¡Ê£²²óÌÜ°Ê¹ß¡Ë
+                   MOVE    "170000610"         TO  WRK-SRYCD
+                   MOVE    SPACE               TO  WRK-SRYCD-2
+                   IF     (WRK-CNT-SATUEI      >   1    )  AND
+                          (IDX-DOJI1           >   ZERO )
+                       PERFORM 1003-JIDOU-CHK-SEC
+                       IF      FLG-ARI             =   1
+                           MOVE    SPACE       TO  WRK-GMN-INPUTCD
+                                                             (IDX-T)
+                       END-IF
                        MOVE    SPACE               TO  WRK-SRYCD
                    END-IF
                WHEN    "170002110"
       *            Â¤±ÆºÞ»ÈÍÑ¤Î¿ÇÃÇÎÁ
-                   IF      WRK-CNT-SATUEI      =   1
-                       MOVE    "170000810"         TO  WRK-SRYCD
-                       MOVE    "170022930"         TO  WRK-SRYCD-2
-                   ELSE
-                       MOVE    "170022930"         TO  WRK-SRYCD
-                       MOVE    "170000810"         TO  WRK-SRYCD-2
-                   END-IF
-      **********   MOVE    SPACE               TO  WRK-SRYCD-2
-                   IF     (IDX-DOJI1           >   ZERO )  AND
-                          (WRK-COM-INPUTCD (IDX-DOJI1)
-                                               =   "170022930")
-      *                Æ±»þÊ»»Ü¤Î¥³¡¼¥É¤¢¤ê
+                   MOVE    "170000810"         TO  WRK-SRYCD
+                   MOVE    SPACE               TO  WRK-SRYCD-2
+                   IF     (WRK-CNT-SATUEI      >   1    )  AND
+                          (IDX-DOJI2           >   ZERO )
+                       PERFORM 1003-JIDOU-CHK-SEC
+                       IF      FLG-ARI             =   1
+                           MOVE    SPACE       TO  WRK-GMN-INPUTCD
+                                                             (IDX-T)
+                       END-IF
                        MOVE    SPACE               TO  WRK-SRYCD
                    END-IF
-               WHEN    "170001910"
-      *            Ã±½ã»£±Æ¤Î¿ÇÃÇÎÁ
-                   EVALUATE    FLG-BUIKBN
-                       WHEN    1
-                       WHEN    3
-      *                    ¤½¤ÎÂ¾¡Ê¥í¡Ë
-                           MOVE    WRK-XSEN-SRYCD-R    TO  WRK-SRYCD
-                           MOVE    WRK-XSEN-SRYCD-I    TO  WRK-SRYCD-2
-      *                    Æ±»þÊ»»Ü¤Î¾ì¹ç
-                           IF      WRK-CNT-SATUEI      >   1
-                               MOVE    "170022830"     TO  WRK-SRYCD
-                               MOVE    "170022730"     TO  WRK-SRYCD-2
-                           END-IF
-                           IF     (IDX-DOJI1           >   ZERO )  AND
-                                  (WRK-COM-INPUTCD (IDX-DOJI1)
-                                                       =   "170022830")
-      *                        Æ±»þÊ»»Ü¤Î¥³¡¼¥É¤¢¤ê
-                               MOVE    SPACE               TO  WRK-SRYCD
-                           END-IF
-                       WHEN    2
-      *                    Æ¬¡¦¶»¡¦Ê¢¡¦ÀÔ¿ñ¡Ê¥¤¡Ë
-                           MOVE    WRK-XSEN-SRYCD-I    TO  WRK-SRYCD
-                           MOVE    WRK-XSEN-SRYCD-R    TO  WRK-SRYCD-2
-      *                    Æ±»þÊ»»Ü¤Î¾ì¹ç
-                           IF      WRK-CNT-SATUEI      >   1
-                               MOVE    "170022730"     TO  WRK-SRYCD
-                               MOVE    "170022830"     TO  WRK-SRYCD-2
-                           END-IF
-                           IF     (IDX-DOJI1           >   ZERO )  AND
-                                  (WRK-COM-INPUTCD (IDX-DOJI1)
-                                                       =   "170022730")
-      *                        Æ±»þÊ»»Ü¤Î¥³¡¼¥É¤¢¤ê
-                               MOVE    SPACE               TO  WRK-SRYCD
-                           END-IF
-                   END-EVALUATE
                WHEN    OTHER
-      *            ¤½¤ÎÂ¾¤ÎÃ±½ã»£±Æ¤Î¿ÇÃÇÎÁ
+      *            Ã±½ã»£±Æ¤Î¿ÇÃÇÎÁ
                    EVALUATE    FLG-BUIKBN
                        WHEN    1
                        WHEN    3
@@ -2045,16 +1698,11 @@
                MOVE    SPACE               TO  WRK-SRYCD
            END-IF
       *    ¿ÇÃÇÎÁ¼«Æ°ÄÉ²Ã
-           MOVE    IDX-SAT             TO  IDX-SIN
            IF      WRK-SRYCD       NOT =   SPACE
                MOVE    1                   TO  FLG-SATU
                MOVE    IDX-SAT2            TO  IDX-S
-               MOVE    ZERO                TO  FLG-NENREI
                PERFORM 1003-JIDOU-CHK-SEC
                PERFORM 1002-JIDOUSET-SEC
-               IF      FLG-ADD             =   1
-                   MOVE    IDX-S               TO  IDX-SIN
-               END-IF
       *
       ******   £±²óÌÜ¤Ç´ÖÀÜ»£±Æ¥³¡¼¥É¤ÎÆþÎÏ¤¬¤¢¤ë»þ¡¢¿ÇÃÇÎÁ¤Î¸å¤Ë¤âÄÉ²Ã
       *        IF      (FLG-ADD            =   1    )  AND
@@ -2074,7 +1722,6 @@
                COMPUTE IDX-S               =   IDX-SAT    -    1
                MOVE    ZERO                TO  FLG-SATU
                MOVE    SPACE               TO  WRK-SRYCD-2
-               MOVE    ZERO                TO   FLG-NENREI
                PERFORM 1003-JIDOU-CHK-SEC
                PERFORM 1002-JIDOUSET-SEC
                IF      FLG-ADD             =   1
@@ -2110,9 +1757,6 @@
            ELSE
                MOVE    SPACE               TO  WRK-COM-CHKFLG (IDX-S)
                MOVE    SPACE               TO  WRK-COM-GMNFLG (IDX-S)
-           END-IF
-           IF      FLG-NENREI          =   1
-               MOVE    "1"                 TO  LNK-SC92-CHUKSN
            END-IF
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
            MOVE    IDX-S               TO  LNK-SC92-GMN-IDX
@@ -2167,17 +1811,8 @@
       *    Â¸ºß¥Á¥§¥Ã¥¯
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
-           IF      FLG-NENREI          =   1
-               MOVE    IDX-SYU             TO  IDXS1
-           ELSE
-               MOVE    1                   TO  IDXS1
-      *        ¿ÇÃÇÎÁ¤Î»þ¡¢»£±ÆÎÁ°Ê²¼
-               IF      FLG-SATU            =   1
-                   MOVE    IDX-SAT             TO  IDXS1
-               END-IF
-           END-IF
-           PERFORM VARYING     IDX1    FROM    IDXS1  BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE   )   OR
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
                               (WRK-GMN-INPUTCD(IDX1)(1:1)  =   "*")
@@ -2193,7 +1828,7 @@
       *                                             "170000410" )
       *             MOVE    IDX1           TO  IDX-T
       *!            MOVE    1              TO  FLG-ARI
-      *!!      END-IF
+      **!      END-IF
            END-PERFORM
            .
        1003-JIDOU-CHK-EXT.
@@ -2213,10 +1848,9 @@
                MOVE    IDX-SYU            TO   IDX-T
                MOVE    IDX-SYU            TO   IDX-S
                MOVE    SPACE              TO   WRK-SRYCD-2
-               MOVE    1                  TO   FLG-NENREI
-               MOVE    3                   TO  FLG-SATU
                PERFORM 1003-JIDOU-CHK-SEC
       *        ²Ã»»ÄÉ²Ã
+               MOVE    3                   TO  FLG-SATU
                PERFORM 1002-JIDOUSET-SEC
                IF      FLG-ADD             =   1
                    MOVE    2                   TO  WRK-COM-SANFLG 
@@ -2355,7 +1989,7 @@
            INITIALIZE                  ORCSC90AREA
            MOVE    ZERO                TO  IDX-MAX
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX-Z       >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -2422,7 +2056,6 @@
                END-IF
                MOVE    IDX-SAT             TO  IDX-S
                MOVE    ZERO                TO  FLG-SATU
-               MOVE    ZERO                TO  FLG-NENREI
                PERFORM 1003-JIDOU-CHK-SEC
                IF      FLG-ZOEIZAI         =   1
       *            Â¤±ÆºÞ»ÈÍÑ²Ã»»ÎÁ¤¢¤ê
@@ -2443,7 +2076,7 @@
            MOVE    ZERO                TO  IDX-MAX
            MOVE    ZERO                TO  IDX-KAS
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX-Z       >   200  )  OR
                              ((WRK-GMN-INPUTCD(IDX-Z)  =   SPACE ) AND
                               (WRK-COM-INPUTCD(IDX-Z)  =   SPACE ))
       *
@@ -2537,7 +2170,7 @@
            INITIALIZE                  ORCSC90AREA
            MOVE    ZERO                TO  IDX-MAX
            PERFORM VARYING     IDX-Z   FROM    1       BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX-Z       >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -2609,72 +2242,10 @@
                                        +   0.5
            MOVE    WRK-SYOKEIS2        TO  LNK-SC90-KIZTEN
       *
-      *    ´ïºàÅÀ¿ô·×»»½èÍý¡ÊÃâÁÇ¡Ë
-      *    ¶â³Û·×¡à£±£°¡¡»Í¼Î¸ÞÆþ
-           COMPUTE WRK-SYOKEIS2        =  (LNK-SC90-CHIKEI
-                                       /   10  )
-                                       +   0.5
-           MOVE    WRK-SYOKEIS2        TO  LNK-SC90-CHITEN
-           COMPUTE LNK-SC90-KIZTEN     =   LNK-SC90-KIZTEN
-                                       +   LNK-SC90-CHITEN
-      *
-      *    »ÀÁÇ¤ÎÅÀ¿ô¿ô·×»»
-           IF      WRK-SANSOKIN-SUM    NOT =   ZERO
-               PERFORM 10071-SANSO-KEISAN-SEC
-           END-IF
       *
            .
        1005-KIZAI-TENSU-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *     »ÀÁÇ¤ÎÅÀ¿ô¿ô·×»»½èÍý
-      *****************************************************************
-       10071-SANSO-KEISAN-SEC                SECTION.
-      *
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   IDX-MAX
-               EVALUATE    WRK-COM-INPUTCD (IDX)
-      *            »ÀÁÇÊäÀµÎ¨¼«Æ°²Ã»»
-                   WHEN    "770020070"
-      *                »ÀÁÇ¶â³Û¡Ü¡Ê»ÀÁÇ¶â³Û¡ßÊäÀµÎ¨¡¿£±£°£°¡Ë¡¡»Í¼Î¸ÞÆþ
-                       COMPUTE WRK-SYOKEIS     =   WRK-SANSOKIN-SUM
-                                               *   WRK-COM-KISOTEN (IDX)
-                                               /   100
-                       COMPUTE WRK-SANSOKIN    =   WRK-SANSOKIN-SUM
-                                               +   WRK-SYOKEIS
-               END-EVALUATE
-           END-PERFORM
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   IDX-MAX
-               EVALUATE    WRK-COM-INPUTCD (IDX)
-      *            ¹âµ¤°µ»ÀÁÇ·×»»
-                   WHEN    "770030070"
-      *                »ÀÁÇ¶â³Û¡Ü¡Ê»ÀÁÇ¶â³Û¡ßÊäÀµÎ¨¡¿£±£°£°¡Ë
-      *                                           ¡ßµ¤°µ¿ô¡¡»Í¼Î¸ÞÆþ
-                       COMPUTE WRK-SYOKEIS     =   WRK-SANSOKIN
-                                               *   WRK-COM-SURYO (IDX)
-                       MOVE    WRK-SYOKEIS     TO  WRK-SANSOKIN
-               END-EVALUATE
-           END-PERFORM
-      *    »ÀÁÇ¤ÎÅÀ¿ô¿ô·×»»
-      *    ¶â³Û·×¡¡»Í¼Î¸ÞÆþ
-           COMPUTE WRK-SYOKEI          =   WRK-SANSOKIN
-                                       +   0.5
-      *    ¶â³Û·×¡à£±£°¡¡»Í¼Î¸ÞÆþ
-           COMPUTE WRK-SYOKEIS2        =   WRK-SYOKEI
-                                       /   10
-                                       +   0.5
-           MOVE    WRK-SYOKEIS2        TO  WRK-SANTEN
-      *    »ÀÁÇ¤ÎÅÀ¿ô¤ò´ïºàÅÀ¿ô¤Ë²Ã»»
-           ADD     WRK-SANTEN          TO  LNK-SC90-KIZTEN
-      *
-           .
-       10071-SANSO-KEISAN-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    ¥Õ¥£¥ë¥àÅÀ¿ô·×»»½èÍý
@@ -2713,39 +2284,25 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  WRK-IDX
            PERFORM VARYING     IDX1    FROM    IDX-HOZ  BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE   )   OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
       *            ¥Õ¥£¥ë¥àÈ½Äê
-               IF    ((WRK-COM-INPUTCD (IDX1)(1:1) =   "7" ) OR
-                      (WRK-COM-INPUTCD (IDX1)(1:3) =   "059"))  AND
-                      (WRK-COM-DATAKBN (IDX1)      =   "3" )   AND
-                      (WRK-COM-INPUTCD (IDX1)  NOT =   WRK-SRYCD )
-      *            ÆÃÄê´ïºàÇ¯Îð²Ã»»¶èÊ¬¤ÎÈ½Äê
-                   IF      WRK-COM-TOKUKIZAIAGEKSNKBN (IDX1)
-                                               =   1
-                       IF      WRK-COM-INPUTCD (IDX1 + 1)
-                                               =   WRK-SRYCD
-                           CONTINUE
-                       ELSE
-                           MOVE    IDX1                TO  IDX-S
-                           MOVE    1                   TO  FLG-NENREI
-                           PERFORM 1002-JIDOUSET-SEC
-                           IF      FLG-ADD             =   1
-                               MOVE    IDX-S           TO  WRK-NYU-IDX
-                               ADD     1               TO  IDX-MAX
-                               ADD     1               TO  IDX1
-                           END-IF
-                       END-IF
-                   END-IF
+               IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "7"  OR
+                       WRK-COM-INPUTCD(IDX-Z)(1:3) =   "059")  AND
+                      (WRK-COM-DATAKBN (IDX1)      =   "3" )
+                   MOVE    IDX1                TO  IDX-S
+               END-IF
+               IF      WRK-COM-INPUTCD (IDX1)  =   WRK-SRYCD
+                   MOVE    IDX1                TO  IDX-T
+                   MOVE    1                   TO  FLG-ARI
                END-IF
            END-PERFORM
       *
-      **** MOVE    WRK-NYU-IDX         TO  IDX-S
-      *    MOVE    1                   TO  FLG-NENREI
-      *    PERFORM 1002-JIDOUSET-SEC
-      *    IF      FLG-ADD             =   1
-      *        ADD     1                   TO  IDX-MAX
-      ***  END-IF
+           MOVE    WRK-NYU-IDX         TO  IDX-S
+           PERFORM 1002-JIDOUSET-SEC
+           IF      FLG-ADD             =   1
+               ADD     1                   TO  IDX-MAX
+           END-IF
       *
       *    ²Ã»»ÎÁÊÔ½¸
            IF      WRK-COM-TENSIKIBETU(IDX-S)  =   5
@@ -2782,29 +2339,14 @@
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *
-      *    Êñ³ç¤Þ¤È¤áÆþÎÏ¤ÏÂÐ¾Ý³°
-           IF      SPA-HKNCOMBINUM     =   "9999"
-               GO      TO      200-ALL-SYORI-EXT
-           END-IF
-      *
-      *
            MOVE    ZERO                TO  FLG-JIKASAN
            MOVE    ZERO                TO  IDX-GAI
            MOVE    ZERO                TO  IDX-CT
       *
            MOVE    ZERO                TO  FLG-TENTEKI
-      *    £Ã£Ô¡¢£Í£Ò£É¥Á¥§¥Ã¥¯
-      *        Ï«ºÒ¤Î»þ¡¢ÊÑ¹¹¤Ê¤·
-           IF      SPA-HKNKBN          =   1
-               INITIALIZE                  WRK-CTMRI-CNT-G
-           ELSE
-               PERFORM 2002-CTMRI-CNT-SEC
-           END-IF
-      *
-           MOVE    ZERO                TO  FLG-TENTEKI
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *        »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»
@@ -2856,8 +2398,6 @@
                IF     (FLG-JIKASAN         =   ZERO         )  AND
                       (WRK-COM-KZMFLG (IDX-Z)  =   SPACE    )  AND
                       (LNK-ORCSC-TOROKU    NOT =   "2"   )
-      *            ³°Íè¤Î¾ì¹ç¤Î¤ß
-                 AND  (SPA-NYUGAIKBN       =   "2"       )
                    MOVE    "K001"              TO  SPA-ERRCD
                    MOVE    "2"                 TO  WRK-COM-CUR (IDX-Z)
                    MOVE    "1"                 TO  WRK-COM-KZMFLG
@@ -2872,58 +2412,27 @@
                    MOVE    ZERO                TO  FLG-SATU
                    MOVE    IDX-Z               TO  IDX-S
                    MOVE    SPACE               TO  WRK-SRYCD-2
-                   MOVE    ZERO                TO  FLG-NENREI
                    PERFORM 1003-JIDOU-CHK-SEC
                    PERFORM 1002-JIDOUSET-SEC
-                   IF      FLG-ADD             =   1
-                       MOVE    "1"             TO  WRK-COM-IN  (IDX-S)
-                       MOVE    "2"             TO  WRK-COM-IN2 (IDX-S)
-                   END-IF
                END-IF
            END-IF
       *
            .
        200-ALL-SYORI-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    £Ã£Ô¡¥£Í£Ò£É¤Î»»Äê²ó¿ôÊÔ½¸½èÍý
-      *****************************************************************
-       2002-CTMRI-CNT-SEC                SECTION.
-      *
-           INITIALIZE                      WRK-CTMRI-CNT-G
-      *    Æ¬Éô
-           MOVE    "099700101"         TO  WRK-SRYCD
-           PERFORM 20021-CTMRI-SANTEI-SEC
-           MOVE    LNK-SC91-CNT        TO  WRK-CTMRI-CNT (1)
-           MOVE    LNK-SC91-DAYCNT     TO  WRK-CTMRI-DCNT(1)
-      *    ¶í´´
-           MOVE    "099700102"         TO  WRK-SRYCD
-           PERFORM 20021-CTMRI-SANTEI-SEC
-           MOVE    LNK-SC91-CNT        TO  WRK-CTMRI-CNT (2)
-           MOVE    LNK-SC91-DAYCNT     TO  WRK-CTMRI-DCNT (2)
-      *        »Í»è
-           MOVE    "099700103"         TO  WRK-SRYCD
-           PERFORM 20021-CTMRI-SANTEI-SEC
-           MOVE    LNK-SC91-CNT        TO  WRK-CTMRI-CNT (3)
-           MOVE    LNK-SC91-DAYCNT     TO  WRK-CTMRI-DCNT (3)
-      *
-           .
-       2002-CTMRI-CNT-EXT.
-           EXIT.
-      *
+      *        
       *****************************************************************
       *    £Ã£Ô¡¥£Í£Ò£É¤Î»»Äê¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       20021-CTMRI-SANTEI-SEC                SECTION.
+       2001-CTMRI-CHK-SEC                SECTION.
       *
       *    »»ÄêÍúÎò¥Á¥§¥Ã¥¯
            INITIALIZE                      ORCSC91AREA
-      *****MOVE    "3"                 TO  LNK-SC91-KBN
-           MOVE    "4"                 TO  LNK-SC91-KBN
+           MOVE    "3"                 TO  LNK-SC91-KBN
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
-           MOVE    WRK-SRYCD           TO  LNK-SC91-SRYCD
-           MOVE    ZERO                TO  LNK-SC91-GMN-IDX
+           MOVE    WRK-COM-CHK-SRYCD (IDX-Z)
+                                       TO  LNK-SC91-SRYCD
+           MOVE    IDX-Z               TO  LNK-SC91-GMN-IDX
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
            CALL    "ORCSC91"           USING
                                        MCPAREA
@@ -2931,6 +2440,11 @@
                                        WRK-SCR-REC
                                        SPA-AREA
                                        TNS-TENSU-REC
+           IF      LNK-SC91-ERRCD      =   "0001"
+               MOVE    LNK-SC91-ERRCD      TO  SPA-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+               GO      TO      2001-CTMRI-CHK-EXT
+           END-IF
       *
       *    Åö·î»»Äê¤Ê¤·
            IF      LNK-SC91-ATO-CNT    <=  LNK-SC91-CNT
@@ -2939,149 +2453,64 @@
            ELSE
                MOVE    ZERO            TO  LNK-SC91-CNT
            END-IF
-      *    ÄûÀµ»þ
-           IF     LNK-ORCSC-SYORIFLG   =   "1"
-               IF      LNK-SC91-DAYCNT     <=  LNK-SC91-CNT
-                   COMPUTE LNK-SC91-CNT    =   LNK-SC91-CNT
-                                           -   LNK-SC91-DAYCNT
+           IF      LNK-SC91-CNT        =  ZERO
+      *        £Ã£Ô¡¥£Í£Ò£É¤Î»»Äê¥Á¥§¥Ã¥¯
+               IF      WRK-COM-INPUTCD (IDX-Z)     =   "170022290"  OR
+                                                       "170022390"  OR
+                                                       "170022490"  OR
+                                                       "170701470"  OR
+                                                       "170701570"  OR
+                                                       "170701670"
+                   IF     (WRK-COM-KZMFLG (IDX-Z)      =   SPACE ) AND 
+                          (LNK-ORCSC-TOROKU        NOT =   "2"   )
+                       MOVE    "K003"              TO  SPA-ERRCD
+                       MOVE    "2"                 TO  WRK-COM-CUR
+                                                               (IDX-Z)
+                       MOVE    "1"                 TO  WRK-COM-KZMFLG
+                                                               (IDX-Z)
+                       MOVE    IDX-Z               TO  IDX-CT
+                   END-IF
                END-IF
            ELSE
-               MOVE    ZERO                TO  LNK-SC91-DAYCNT
-           END-IF
-      *
-           .
-       20021-CTMRI-SANTEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £Ã£Ô¡¥£Í£Ò£É¤Î»»Äê¥Á¥§¥Ã¥¯½èÍý
-      *****************************************************************
-       2001-CTMRI-CHK-SEC                SECTION.
-      *
-           MOVE    SPACE               TO  WRK-KIDCD
-           MOVE    SPACE               TO  WRK-SRYCD
-      *
-      *    Ï«ºÒ¤Î»þ¡¢·Ù¹ð¥Á¥§¥Ã¥¯
-           IF      SPA-HKNKBN          =   1
-               PERFORM 20012-RSI-CTMRI-CHK-SEC
-               GO      TO      2001-CTMRI-CHK-EXT
-           END-IF
-      *
-           IF      SPA-NYUGAIKBN       =   "2"
-               MOVE    WRK-COM-KAISU (IDX-Z)   TO  WRK-CTMRI-KAI
-           ELSE
-               MOVE    WRK-COM-NYU-KAI(IDX-Z)  TO  WRK-CTMRI-KAI
-           END-IF
-      *
-      *    Êñ³çÄþ¸º¶èÊ¬È½Äê
-           EVALUATE    WRK-COM-HOUKATUTEIGENKBN (IDX-Z)
-      *        Æ¬Éô
-               WHEN    "201"
-                   IF      WRK-COM-INPUTCD (IDX-Z) =   "170022290"
-                       IF     (WRK-CTMRI-CNT (1)   =   ZERO )  AND
-                              (WRK-CTMRI-DCNT(1)   =   ZERO )
-                            MOVE    "K003"             TO  WRK-KIDCD
-                       END-IF
-                   ELSE
-                       IF      WRK-CTMRI-CNT (1)   >   ZERO
-                           MOVE    "170022290"     TO  WRK-SRYCD
+               IF      WRK-COM-INPUTCD (IDX-Z)     =   "170022290"  OR
+                                                       "170022390"  OR
+                                                       "170022490"  OR
+                                                       "170701470"  OR
+                                                       "170701570"  OR
+                                                       "170701670"
+                   CONTINUE
+               ELSE
+      *************MOVE    "0034"              TO  SPA-ERRCD
+                   MOVE    "0078"              TO  SPA-ERRCD
+                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+                   MOVE    IDX-Z               TO  IDX-CT
+                   MOVE    ZERO                TO  FLG-CHK
+                   IF      LNK-SC91-CNT        =   1
+      *                ²èÌÌÆâ¤Ë¤Î¤ßÂ¸ºß¤¹¤ë»þ¡¢¸å¤ò¥¨¥é¡¼¤È¤¹¤ë 
+                       PERFORM VARYING     IDX-Z2  FROM   IDX-Z   BY  1
+                               UNTIL       IDX-Z2  >   200
+                           IF     (IDX-Z2      NOT =   IDX-Z  )  AND
+                                  (WRK-COM-CHK-SRYCD (IDX-Z2)
+                                                   =  WRK-COM-CHK-SRYCD
+                                                               (IDX-Z))
+                               MOVE    1              TO  FLG-CHK
+                               MOVE    200            TO  IDX-Z2
+                           END-IF
+                       END-PERFORM
+                       IF      FLG-CHK             =   1
+                           MOVE    SPACE           TO  SPA-ERRCD
+                           MOVE    ZERO            TO  IDX-CT
                        END-IF
                    END-IF
-                   ADD     WRK-CTMRI-KAI       TO  WRK-CTMRI-CNT (1)
-      *        ¶í´´
-               WHEN    "202"
-                   IF      WRK-COM-INPUTCD (IDX-Z) =   "170022390"
-                       IF     (WRK-CTMRI-CNT (2)   =   ZERO )  AND
-                              (WRK-CTMRI-DCNT(2)   =   ZERO )
-                            MOVE    "K003"              TO  WRK-KIDCD
-                       END-IF
-                   ELSE
-                       IF      WRK-CTMRI-CNT (2)   >   ZERO
-                           MOVE    "170022390"     TO  WRK-SRYCD
-                       END-IF
+                   IF      IDX-CT          NOT =   ZERO
+                       MOVE    "1"                 TO  WRK-COM-CUR
+                                                              (IDX-Z)
                    END-IF
-                   ADD     WRK-CTMRI-KAI       TO  WRK-CTMRI-CNT (2)
-      *        »Í»è
-               WHEN    "203"
-                   IF      WRK-COM-INPUTCD (IDX-Z) =   "170022490"
-                       IF     (WRK-CTMRI-CNT (3)   =   ZERO )  AND
-                              (WRK-CTMRI-DCNT (3)   =   ZERO )
-                            MOVE    "K003"              TO  WRK-KIDCD
-                       END-IF
-                   ELSE
-                       IF      WRK-CTMRI-CNT (3)   >   ZERO
-                           MOVE    "170022490"     TO  WRK-SRYCD
-                       END-IF
-                   END-IF
-                   ADD     WRK-CTMRI-KAI       TO  WRK-CTMRI-CNT (3)
-           END-EVALUATE
-      *
-           IF      WRK-SRYCD       NOT =   SPACE
-      *        ¿ÇÎÅ¥³¡¼¥ÉÊÑ¹¹
-               MOVE    WRK-COM-CHK-SRYCD(IDX-Z)
-                                           TO  WRK-HEN-SRYCD
-               MOVE    1                   TO  FLG-ARI
-               MOVE    IDX-Z               TO  IDX-T
-               PERFORM 1002-JIDOUSET-SEC
-               MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-Z)
-               IF      FLG-ADD             =   1
-      *            ÊÑ¹¹¤Î¿ÇÎÅ¥³¡¼¥É¤ò¥»¥Ã¥È
-                   MOVE    WRK-HEN-SRYCD   TO  WRK-COM-CHK-SRYCD(IDX-S)
-               END-IF
-           END-IF
-      *
-           IF      WRK-KIDCD       NOT =  SPACE
-      *        £Ã£Ô¡¥£Í£Ò£É¤Î·Ù¹ð¥Á¥§¥Ã¥¯
-               IF      WRK-COM-KZMFLG (IDX-Z)  =   SPACE
-                   MOVE    "K003"              TO  SPA-ERRCD
-                   MOVE    "2"                 TO  WRK-COM-CUR
-                                                               (IDX-Z)
-                   MOVE    "1"                 TO  WRK-COM-KZMFLG
-                                                               (IDX-Z)
                END-IF
            END-IF
            .
       *
        2001-CTMRI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *   Ï«ºÒ¤Î»þ¡¢·Ù¹ð¥Á¥§¥Ã¥¯½èÍý
-      *****************************************************************
-       20012-RSI-CTMRI-CHK-SEC                SECTION.
-      *
-      *    Êñ³çÄþ¸º¶èÊ¬È½Äê
-           EVALUATE    WRK-COM-HOUKATUTEIGENKBN (IDX-Z)
-      *        Æ¬Éô
-               WHEN    "201"
-                   IF      WRK-COM-INPUTCD (IDX-Z) =   "170022290"
-                        MOVE    "K003"              TO  WRK-KIDCD
-                   END-IF
-      *        ¶í´´
-               WHEN    "202"
-                   IF      WRK-COM-INPUTCD (IDX-Z) =   "170022390"
-                        MOVE    "K003"              TO  WRK-KIDCD
-                   END-IF
-      *        »Í»è
-               WHEN    "203"
-                   IF      WRK-COM-INPUTCD (IDX-Z) =   "170022490"
-                        MOVE    "K003"              TO  WRK-KIDCD
-                   END-IF
-           END-EVALUATE
-           IF      WRK-KIDCD       NOT =  SPACE
-      *        £Ã£Ô¡¥£Í£Ò£É¤Î·Ù¹ð¥Á¥§¥Ã¥¯
-               IF      WRK-COM-KZMFLG (IDX-Z)  =   SPACE
-                   MOVE    "K003"              TO  SPA-ERRCD
-                   MOVE    "2"                 TO  WRK-COM-CUR
-                                                               (IDX-Z)
-                   MOVE    "1"                 TO  WRK-COM-KZMFLG
-                                                               (IDX-Z)
-               END-IF
-           END-IF
-      *
-           .
-      *
-       20012-RSI-CTMRI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3093,7 +2522,7 @@
            INITIALIZE                      WRK-SCR-REC
            MOVE    ZERO                TO  IDX-D2
            PERFORM VARYING     IDX-D1  FROM    1   BY  1
-                   UNTIL       IDX-D1      >   SPA-MAX-LINE
+                   UNTIL       IDX-D1      >   200
                IF      IDX-T           =   IDX-D1
                    CONTINUE
                ELSE
@@ -3112,17 +2541,10 @@
       *****************************************************************
        300-AUTO-SYORI-SEC                SECTION.
       *
-      *    Êñ³ç¤Þ¤È¤áÆþÎÏ¤ÏÂÐ¾Ý³°
-           IF      SPA-HKNCOMBINUM     =   "9999"
-               GO      TO      300-AUTO-SYORI-EXT
-           END-IF
+      *2001.3.21  ¼«Æ°»»Äê¤òÊÝÎ±»ö¹à¤È¤¹¤ë
+      *****GO      TO      300-AUTO-SYORI-EXT.
       *
-           IF      LNK-ORCSC-PG        =   "K02"
-               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-           END-IF
       *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  IDX-AREA
            MOVE    ZERO                TO  FLG-CTMRI
            MOVE    ZERO                TO  FLG-XSEN
            MOVE    ZERO                TO  FLG-KAKUI
@@ -3136,7 +2558,7 @@
            INITIALIZE                  WRK-NYUINDAY-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
                IF     (WRK-COM-SRYKBN (IDX-Z)  =   "70")  AND
@@ -3149,9 +2571,6 @@
                        WHEN    "721"
                            MOVE    1                   TO  FLG-XSEN
                            MOVE    1                   TO  FLG-XSEN-ARI
-                           IF      IDX-XSEN            =   ZERO
-                               MOVE    IDX-Z           TO  IDX-XSEN
-                           END-IF
                    END-EVALUATE
       *
       *            ¸¡ººÅù¼Â»ÜÈ½Äê¥°¥ë¡¼¥×
@@ -3160,16 +2579,10 @@
                        WHEN    31
                            MOVE    1                   TO  FLG-KAKUI
                            MOVE    1                   TO  FLG-KAKUI-ARI
-                           IF      IDX-KAKUI           =   ZERO
-                               MOVE    IDX-Z           TO  IDX-KAKUI
-                           END-IF
       *                ¥³¥ó¥Ô¥å¡¼¥¿
                        WHEN    32
                            MOVE    1                   TO  FLG-CTMRI
                            MOVE    1                   TO  FLG-CTMRI-ARI
-                           IF      IDX-CTMRI           =   ZERO
-                               MOVE    IDX-Z           TO  IDX-CTMRI
-                           END-IF
                    END-EVALUATE
       *
       *            ±ó³Ö²èÁü¿ÇÃÇ´ÉÍý²Ã»»¥Á¥§¥Ã¥¯
@@ -3205,18 +2618,6 @@
                    MOVE    ZERO                TO  FLG-KAKUI-ARI
                END-IF
            END-PERFORM
-      *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»ÄÉ²Ã
-           PERFORM 3001-GAZOUKSN-SET-SEC
-      *
-           .
-      *
-       300-AUTO-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»ÄÉ²Ã½èÍý
-      *****************************************************************
-       3001-GAZOUKSN-SET-SEC             SECTION.
       *
            MOVE    ZERO                TO  IDXS
       *
@@ -3224,18 +2625,10 @@
            IF     (FLG-XSEN            =   1    )  AND
                   (FLG-ENKALL          =   ZERO )  AND
                   (FLG-ENK1            =   ZERO )
-      *        ¥·¥¹¥Æ¥à´ÉÍý¤Î¶èÊ¬È½Äê
-             AND  (SPA-GAZOUKSN1       =   1   )
       *        ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±
                MOVE    "170025210"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2
                MOVE    WRK-XSEN-DAY        TO  WRK-NYU-DAY
-               MOVE    SPACE               TO  WRK-SRYKA
-               MOVE    SPACE               TO  WRK-HKNCOMBI
-               IF      IDX-XSEN            >   ZERO
-                   MOVE    WRK-COM-SRYKA (IDX-XSEN)    TO  WRK-SRYKA
-                   MOVE    WRK-COM-HKNCOMBI(IDX-XSEN)  TO  WRK-HKNCOMBI
-               END-IF
                PERFORM 3002-KASAN-SYORI-SEC
            END-IF
       *
@@ -3245,18 +2638,10 @@
                MOVE    "170015310"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2
                MOVE    WRK-KAKUI-DAY       TO  WRK-NYU-DAY
-               MOVE    SPACE               TO  WRK-SRYKA
-               MOVE    SPACE               TO  WRK-HKNCOMBI
-               IF      IDX-KAKUI           >   ZERO
-                   MOVE    WRK-COM-SRYKA (IDX-KAKUI)   TO  WRK-SRYKA
-                   MOVE    WRK-COM-HKNCOMBI(IDX-KAKUI) TO  WRK-HKNCOMBI
-               END-IF
                PERFORM 3002-KASAN-SYORI-SEC
                IF     (FLG-ERR             =   ZERO )  AND
                       (FLG-ENKALL          =   ZERO )  AND
                       (FLG-ENK2            =   ZERO )
-      *            ¥·¥¹¥Æ¥à´ÉÍý¤Î¶èÊ¬È½Äê
-                 AND  (SPA-GAZOUKSN1       =   1   )
       *            ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê³Ë°å³Ø¡Ë
                    MOVE    "170025610"         TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD-2
@@ -3282,18 +2667,10 @@
                MOVE    "170015410"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2
                MOVE    WRK-CTMRI-DAY       TO  WRK-NYU-DAY
-               MOVE    SPACE               TO  WRK-SRYKA
-               MOVE    SPACE               TO  WRK-HKNCOMBI
-               IF      IDX-CTMRI           >   ZERO
-                   MOVE    WRK-COM-SRYKA (IDX-CTMRI)   TO  WRK-SRYKA
-                   MOVE    WRK-COM-HKNCOMBI(IDX-CTMRI) TO  WRK-HKNCOMBI
-               END-IF
                PERFORM 3002-KASAN-SYORI-SEC
                IF     (FLG-ERR             =   ZERO )  AND
                       (FLG-ENKALL          =   ZERO )  AND
                       (FLG-ENK3            =   ZERO )
-      *          ¥·¥¹¥Æ¥à´ÉÍý¤Î¶èÊ¬È½Äê
-                 AND  (SPA-GAZOUKSN1       =   1   )
       *            ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ¡Ë
                    MOVE    "170025710"         TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD-2
@@ -3315,7 +2692,7 @@
       *
            .
       *
-       3001-GAZOUKSN-SET-EXT.
+       300-AUTO-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3339,7 +2716,7 @@
            IF      FLG-XSEN-ARI        =   1
       *        Æþ±¡»þ¤Î½éÆü
                IF     (WRK-XSEN-DAY    =   ZERO )  OR
-                      (WRK-XSEN-DAY    >   IDN1 )
+                      (WRK-XSEN-DAY    <   IDN1 )
                    MOVE    IDN1            TO  WRK-XSEN-DAY
                END-IF
            END-IF
@@ -3347,7 +2724,7 @@
            IF      FLG-KAKUI-ARI       =   1
       *        Æþ±¡»þ¤Î½éÆü
                IF     (WRK-KAKUI-DAY   =   ZERO )  OR
-                      (WRK-KAKUI-DAY   >   IDN1 )
+                      (WRK-KAKUI-DAY   <   IDN1 )
                    MOVE    IDN1            TO  WRK-KAKUI-DAY
                END-IF
            END-IF
@@ -3355,7 +2732,7 @@
            IF      FLG-CTMRI-ARI       =   1
       *        Æþ±¡»þ¤Î½éÆü
                IF     (WRK-CTMRI-DAY   =   ZERO )  OR
-                      (WRK-CTMRI-DAY   >   IDN1 )
+                      (WRK-CTMRI-DAY   <   IDN1 )
                    MOVE    IDN1            TO  WRK-CTMRI-DAY
                END-IF
            END-IF
@@ -3373,7 +2750,7 @@
       *
       *    º£²óÆþÎÏ¤Ë¤Ê¤¤¤³¤È
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX     >   200  )  OR
                               (FLG-ERR              =   1    )   OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)
                IF      WRK-COM-INPUTCD(IDX)    =   WRK-SRYCD
@@ -3382,12 +2759,6 @@
            END-PERFORM
            IF      FLG-ERR             =   1
                GO      TO      3002-KASAN-SYORI-EXT
-           END-IF
-           IF      WRK-SRYKA           =   SPACE
-               MOVE    SPA-SRYKA           TO  WRK-SRYKA
-           END-IF
-           IF      WRK-HKNCOMBI        =   SPACE
-               MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
            END-IF
       *    ÄÉ²Ã¤Î¥Á¥§¥Ã¥¯
            PERFORM 3001-SANTEI-CHK-SEC
@@ -3400,12 +2771,6 @@
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                        (08 IDXS)
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
-                                                       (08 IDXS)
-               MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
-                                                       (08 IDXS)
-               MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
-                                                       (08 IDXS)
-               MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                        (08 IDXS)
                MOVE    "700"           TO  LNK-ORCSC-SRYSYUKBN
                                                         (08 IDXS)
@@ -3435,14 +2800,13 @@
            MOVE    WRK-SCR-REC         TO  HOZ-SCR-REC
            MOVE    WRK-GMN-MAX         TO  WRK-IDX
            ADD     1                   TO  WRK-IDX
-           IF      WRK-IDX             >   SPA-MAX-LINE
-               MOVE    SPA-MAX-LINE        TO  WRK-IDX
+           IF      WRK-IDX              >   200
+               MOVE    200                 TO  WRK-IDX
            END-IF
       *    ÅÀ¿ô¥Þ¥¹¥¿ÊÔ½¸¡¦´ðËÜ¥Á¥§¥Ã¥¯
            INITIALIZE                  ORCSC92AREA
            MOVE    "3"                 TO  LNK-SC92-KBN
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
-           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
            MOVE    WRK-IDX             TO  LNK-SC92-GMN-IDX
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
            MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
@@ -3477,18 +2841,24 @@
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
-           MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
+           MOVE    ZERO                TO  TNS-YUKOSTYMD
+           MOVE    ALL "9"             TO  TNS-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU
@@ -3501,9 +2871,12 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        910-TENSU-READ-EXT.
@@ -3514,7 +2887,11 @@
       *****************************************************************
        900-KANRIMST-READ-SEC         SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -3523,48 +2900,6 @@
       *
            .
        900-KANRIMST-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
-      *****************************************************************
-       910-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
-      *****************************************************************
-       990-DBCLOSE-SEC           SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       990-DBCLOSE-EXT.
            EXIT.
       *
       *

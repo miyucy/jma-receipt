@@ -16,26 +16,27 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION      DIVISION.
-       PROGRAM-ID.         ORCSNYUFTN.
+       PROGRAM-ID.         ORCSTEIKI.
       ****************************************************************
       *    OS           LINUX                                         
       *                                                               
-      *    PROGRAM      ORCSNYUFTN  /  ÉéÃ´¶â³Û»»Äê¥µ¥Ö               
+      *    PROGRAM      ORCSTEIKI  /  Äê´üÀÁµáÍÑ¼ýÇ¼ºîÀ®¥µ¥Ö               
       *                                ¡ÊÆþ±¡ÍÑ¡Ë                     
       *  ´ÉÍý¼Ô            : 
       *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  02/10/29    NACL¡ÝÌçÏÆ    ¿·µ¬ºîÀ®
+      *  02/12/16    NACL¡Ý¾®Æ¦Âô  ¿·µ¬ºîÀ®
       ****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  00.00.01    NACL-ÌçÏÆ    03/02/17  ¸øÈñÍ¥Àè¤Ç¤ÎÉéÃ´·×»»
-      *  00.00.02    NACL-¾®Æ¦Âô  03/03/06  ÅÀÅ©ÌôºÞ¤Î¤Þ¤È¤á·×»»
-      *  00.00.03    NACL-ÂÀÅÄ    03/04/02  ÆþÎÏ°ú¿ô½¤Àµ
-      *  00.00.04    NACL-ÌçÏÆ    03/04/16  Á¥°÷ÊÝ¸±¡ÊÈïÊÝ¸±¼Ô¡Ë¡ÜÄÌ¶ÐºÒ³²
+      *  00.00.01    NACL-ÂÀÅÄ    03/01/14  ¥·¥¹¥Æ¥àÆüÉÕ¤ò¥Ñ¥é¥á¡¼¥¿¤è¤ê
+      *                                     ¼èÆÀ¤¹¤ë¤è¤¦½¤Àµ
+      *  00.00.02    NACL-¾®Æ¦Âô  03/02/10  Æþ±¡Ä´ºÞÎÁ¤Î°ì³ç¹¹¿·¤ò½èÍýÄÉ²Ã
+      *  00.00.03    NACL-ÌçÏÆ    03/02/17  ¸øÈñÍ¥Àè¤Ç¤ÎÉéÃ´·×»»
+      *  00.00.04    NACL-¾®Æ¦Âô  03/03/06  ÅÀÅ©ÌôºÞ¤Î¤Þ¤È¤á·×»»
+      *  00.00.05    NACL-ÂÀÅÄ    03/04/02  ÆþÎÏ°ú¿ô½¤Àµ
+      *  00.00.06    NACL-ÌçÏÆ    03/04/16  Á¥°÷ÊÝ¸±¡ÊÈïÊÝ¸±¼Ô¡Ë¡ÜÄÌ¶ÐºÒ³²
       *                                     ¡Ü½é¿Ç»þ¡¡ÂÐ±þ
-      *  00.00.05    NACL-¾®Æ¦Âô  03/05/16  ÁªÄêÆþ±¡ÎÁ¤Î¼«¸ÊÉéÃ´·×»»ÊÑ¹¹
-      *  00.00.06    NACL-ÌçÏÆ    03/07/28  Ï«ºÒ¡¦¼«ÇåÀÕÆþ±¡ÂÐ±þ
-      *  00.00.07    NACL-¾®Æ¦Âô  03/08/04  Æþ±¡ÎÁ¤ÎÊÝ¸±Å¬ÍÑ³°ÂÐ±þ
+      *  00.00.07    NACL-ÌçÏÆ    03/07/28  Ï«ºÒ¡¦¼«ÇåÀÕÆþ±¡ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -400,7 +401,12 @@
                                                SYUNOU-REC
                                                WRK-SYUNOU-REC-T
       *
-                MOVE     "1"                  TO  SYU-CREATEKBN
+      *         MOVE     "2"                  TO  SYU-DENPJTIKBN
+                IF       WRK-S02-TEIKI-KBN    =   "X"
+                    MOVE     "3"              TO  SYU-CREATEKBN
+                ELSE
+                    MOVE     "2"              TO  SYU-CREATEKBN
+                END-IF
                 MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
                 MOVE     WRK-ORCS02-REC       TO  LNK-ORCS02-REC 
       *
@@ -1035,7 +1041,8 @@
                                       TO LNK-SYU-SRYYMD(IDX)(1:6)
               MOVE WRK-HANBETU-KAISHI(IDX)
                                       TO LNK-SYU-SRYYMD(IDX)(7:2)
-      ***>    MOVE "2"                TO LNK-SYU-DENPJTIKBN(IDX)
+      *       Äê´üÀÁµá»þ¤ÏÌµ¾ò·ï¤ËÌ¤¼ý¾õÂÖ¤ÇºîÀ®
+              MOVE "2"                TO LNK-SYU-DENPJTIKBN(IDX)
       *       MOVE WRK-SYSYMD         TO LNK-SYU-DENPPRTYMD(IDX)
               MOVE LNK-S02-SYSYMD     TO LNK-SYU-DENPPRTYMD(IDX)
               MOVE WRK-HANBETU-SKYYM(IDX)
@@ -3174,6 +3181,7 @@
            MOVE    SYU-PTID            TO  ORCSTEN-PTID
            MOVE    SYU-SRYYMD(1:6)     TO  ORCSTEN-SRYYM
            MOVE    SYU-HKNCOMBINUM     TO  ORCSTEN-HKNCOMBI
+           MOVE    SYU-HOSPID          TO  SPA-HOSPID
            CALL    "ORCSTENTEK"        USING
                                        SPA-AREA
                                        ORCSTENTEKAREA
