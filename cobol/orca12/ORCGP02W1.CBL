@@ -1001,15 +1001,19 @@
       *
            INITIALIZE                  SPA-GMN-HKN-AREA
            MOVE    ZERO                TO  FLG-CHK
-           PERFORM VARYING     IDX     FROM    SPA-NAI-HKNSTR   BY  1
+           IF      SPA-NAI-HKNSTR      =   ZERO
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDX     FROM    SPA-NAI-HKNSTR   BY  1
                    UNTIL      (IDX         >   SPA-PTHKN-MAX )  OR
                               (FLG-CHK NOT =   ZERO )
-               IF      SPA-PTHKN-SAKJOKBN (IDX)    =   SPACE
-                   MOVE    IDX             TO  SPA-NAI-HKNSTR
-                   PERFORM 3101-HOKEN-HEN-SEC
-                   MOVE    1               TO  FLG-CHK
-               END-IF
-           END-PERFORM
+                   IF      SPA-PTHKN-SAKJOKBN (IDX)    =   SPACE
+                       MOVE    IDX             TO  SPA-NAI-HKNSTR
+                       PERFORM 3101-HOKEN-HEN-SEC
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+               END-PERFORM
+           END-IF
       *    対象の保険がない時、新規とする
            IF      FLG-CHK             =   ZERO
                MOVE    ZERO                TO  SPA-NAI-HKNSTR
@@ -1027,6 +1031,9 @@
            MOVE    ZERO                TO  IDY
            MOVE    ZERO                TO  FLG-CHK
            MOVE    ZERO                TO  SPA-NAI-KOHEND
+           IF      SPA-NAI-KOHSTR      =   ZERO
+               CONTINUE
+           ELSE
       *
            PERFORM VARYING     IDX     FROM    SPA-NAI-KOHSTR BY  1
                    UNTIL      (IDX         >   SPA-PTKOH-MAX )  OR
@@ -1041,6 +1048,8 @@
                    PERFORM 3102-KOUHI-HEN-SEC
                END-IF
            END-PERFORM
+           END-IF
+      *
       *    対象の保険がない時、新規とする
            IF      FLG-CHK             =   ZERO
                MOVE    ZERO                TO  SPA-NAI-KOHSTR
@@ -4280,7 +4289,9 @@
                END-IF
                MOVE    WRK-NAI-HKNSTR      TO  SPA-NAI-HKNSTR
                MOVE    SPA-NAI-HKNSTR      TO  IDX
-               PERFORM 3101-HOKEN-HEN-SEC
+               IF      IDX                 >   ZERO
+                   PERFORM 3101-HOKEN-HEN-SEC
+               END-IF
            END-IF
       *
       *    公費は３件以上の時行う

@@ -32,6 +32,7 @@
       * 01.00.03     NACL-多々納  02/10/31  船員保険補助区分追加
       * 01.00.04     NACL-多々納  02/11/21  共済下船３月追加
       * 01.00.05     NACL-多々納  03/02/14  法別番号チェック区分追加
+      * 01.00.06     NACL-多々納  03/03/19  Ｈ１５年４月改正対応追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2127,6 +2128,7 @@
       *
       *    新規で保険を追加する
            MOVE    ZERO                TO  SPA-NAI-HKNSTR
+           ADD     1                   TO  SPA-PTHKN-MAX
       *    開始日
            MOVE    SPA-STR-TEKSTYMD    TO  SPA-NAI-HTEKSTYMD
            MOVE    SPA-STR-TEKSTYMD    TO  WRK-SYMD
@@ -2135,8 +2137,9 @@
       *    確認日
            MOVE    SPA-SYSYMDWH        TO  SPA-GMN-HKAKUNINYMD
            MOVE    SPA-SYSYMD          TO  SPA-NAI-HKAKUNINYMD
-      *    終了日
-      *    継続区分なしの時、そのまま
+      *    補助区分
+           PERFORM 310110-HOJKBN-HENSYU-SEC
+      *    終了日変更なし
            EVALUATE    SPA-GMN-CONTKBN
                WHEN    SPACE
                    CONTINUE
