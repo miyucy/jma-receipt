@@ -423,8 +423,8 @@
                        MOVE    9                   TO  IDX
                    WHEN    WRK-CONS-ROUSAI-HKNNUM    
                        MOVE    8                   TO  IDX
-                   WHEN    WRK-CONS-JIHI-HKNNUM    
-                       MOVE    7                   TO  IDX
+      ***          WHEN    WRK-CONS-JIHI-HKNNUM    
+      ***              MOVE    7                   TO  IDX
                    WHEN    "060"    
                    WHEN    "067"
                        IF      BD002-KOH1HKNNUM      =   "027" 
@@ -433,9 +433,12 @@
                            MOVE    4                   TO  IDX
                        END-IF
                    WHEN    OTHER
-                       IF      BD002-KOH1HKNNUM      =   "027" 
-                           MOVE    3                   TO  IDX
+                       IF  BD002-SYUHKNNUM(1:2) = "98"
+                           MOVE    7                   TO  IDX
                        ELSE
+                         IF      BD002-KOH1HKNNUM      =   "027" 
+                           MOVE    3                   TO  IDX
+                         ELSE
                            PERFORM 3201-PTHKNINF-HENSYU-SEC
                            EVALUATE    PTHKN-HONKZKKBN
                                WHEN    "1"
@@ -443,6 +446,7 @@
                                WHEN    "2"     
                                    MOVE    2                   TO  IDX
                            END-EVALUATE
+                         END-IF
                        END-IF
                END-EVALUATE
       *

@@ -1928,7 +1928,8 @@
        230-RECE69-HENSYU-SEC                   SECTION.
       *
            IF      RECE61-HKNID             NOT =   ZERO
-           AND     RECE61-HKNNUM            NOT =   WRK-CONS-JIHI-HKNNUM
+      ***  AND     RECE61-HKNNUM            NOT =   WRK-CONS-JIHI-HKNNUM
+           AND     RECE61-HKNNUM(1:2)       NOT =   "98"
            AND     RECE61-TEISEIKBN             =   SPACE
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       10
