@@ -87,9 +87,11 @@
                            11  SPA-GMN-TRENNUM     PIC 9(03).
                            11  SPA-GMN-THKNNUM     PIC X(03).
                            11  SPA-GMN-TSEIDONAME  PIC X(50).
-                           11  SPA-GMN-THKNJANUM   PIC X(08).
                            11  SPA-GMN-TTEISYUTUSAKI
                                                    PIC X(10).
+                           11  SPA-GMN-THKNJANUM   PIC X(08).
+                           11  SPA-GMN-TRJNKBN     PIC X(10).
+                           11  SPA-GMN-TZAITAKU    PIC X(10).
                            11  SPA-GMN-TSTYUKYMD   PIC X(09).
                            11  SPA-GMN-TEDYUKYMD   PIC X(09).  
       *
@@ -492,7 +494,14 @@
                                                                  (IDX)
       *
                MOVE    SYS-2006-RJNKBN     TO  SPA-NAI-TRJNKBN   (IDX)
+                                               WRK-KBN
+               PERFORM 5001-RJNKBN-HENSYU-SEC
+               MOVE    WRK-KBNMEI          TO  SPA-GMN-TRJNKBN   (IDX)
+      *
                MOVE    SYS-2006-ZAITAKU    TO  SPA-NAI-TZAITAKU  (IDX)
+                                               WRK-KBN
+               PERFORM 5001-ZAITAKU-HENSYU-SEC
+               MOVE    WRK-KBNMEI          TO  SPA-GMN-TZAITAKU  (IDX)
       *
                MOVE    PATH-TBL-SYSKANRI-KEY5
                                        TO WRK-SYSKANRI-PATH
@@ -1168,6 +1177,10 @@
            ELSE
                IF      SPA-GMN-KYURATE     >   100
                    MOVE    "0010"              TO  SPA-ERRCD
+               ELSE
+                   IF      SPA-GMN-HKNNUM          =   SPACE
+                       MOVE    "0014"              TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF 
       *
@@ -1220,6 +1233,10 @@ x           IF      SPA-GMN-RECEDEN-TOKKI
            ELSE
                IF      SPA-GMN-RECEDEN-KYURATE     >   100
                    MOVE    "0012"              TO  SPA-ERRCD
+               ELSE
+                   IF      SPA-GMN-HKNNUM          =   SPACE
+                       MOVE    "0014"              TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF 
       *
@@ -1248,6 +1265,9 @@ x           IF      SPA-GMN-RECEDEN-TOKKI
                ELSE
                    MOVE    WRK-KBNMEI          TO
                                            SPA-GMN-RECEDEN-KORECKBNMEI
+                   IF      SPA-GMN-HKNNUM          =   SPACE
+                       MOVE    "0014"              TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF 
       *
@@ -1391,7 +1411,7 @@ x           IF      SPA-GMN-RECEDEN-TOKKI
                                            MCPAREA
                                            MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               MOVE    "????"              TO  SPA-ERRCD
+               MOVE    "1003"              TO  SPA-ERRCD
            END-IF    
       *
            IF      SPA-ERRCD           =   SPACE
@@ -1602,6 +1622,8 @@ x           IF      SPA-GMN-RECEDEN-TOKKI
                                                TO
                                                W61-TTEISYUTUSAKI  (IDX)
                MOVE    SPA-GMN-THKNJANUM (IDX) TO  W61-THKNJANUM  (IDX)
+               MOVE    SPA-GMN-TRJNKBN   (IDX) TO  W61-TRJNKBN    (IDX)
+               MOVE    SPA-GMN-TZAITAKU  (IDX) TO  W61-TZAITAKU   (IDX)
                MOVE    SPA-GMN-TSTYUKYMD (IDX) TO  W61-TSTYUKYMD  (IDX)
                MOVE    SPA-GMN-TEDYUKYMD (IDX) TO  W61-TEDYUKYMD  (IDX)
       *         
@@ -1809,6 +1831,10 @@ x           IF      SPA-GMN-RECEDEN-TOKKI
                                            TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "レセプト電算・公費レコード区分入力エラー"
+                                           TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE
+                       "保険番号が未入力のときは入力できない項目です"
                                            TO  SPA-ERRMSG
       *
                WHEN    "0101"

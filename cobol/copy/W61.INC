@@ -51,6 +51,8 @@
                     06  W61-TSEIDONAME    PIC X(50).
                     06  W61-TTEISYUTUSAKI PIC X(10).
                     06  W61-THKNJANUM     PIC X(8).
+                    06  W61-TRJNKBN       PIC X(10).
+                    06  W61-TZAITAKU      PIC X(10).
                     06  W61-TSTYUKYMD     PIC X(9).
                     06  W61-TEDYUKYMD     PIC X(9).
                   05  W61-SELECT
