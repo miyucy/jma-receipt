@@ -2259,7 +2259,7 @@
                GO      TO      290-MAE-EXT
            END-IF
       *
-           INSPECT SPA-Z98-GMN-INPUT   REPLACING  ALL "¡ö"  BY  SPACE
+           INSPECT SPA-Z98-GMN-INPUT   REPLACING  ALL "¡ö"  BY  "  "
            MOVE    SPACE               TO  WRK-INPUTCD
            MOVE    ZERO                TO  ID2
            PERFORM VARYING     ID1     FROM    1   BY  1
@@ -2295,7 +2295,7 @@
                GO      TO      291-BUB-EXT
            END-IF
       *
-           INSPECT SPA-Z98-GMN-INPUT   REPLACING  ALL "¡ö"  BY  SPACE
+           INSPECT SPA-Z98-GMN-INPUT   REPLACING  ALL "¡ö"  BY  "  "
            MOVE    SPACE               TO  WRK-INPUTCD
            MOVE    ZERO                TO  ID2
            PERFORM VARYING     ID1     FROM    1   BY  1
@@ -2335,7 +2335,7 @@
                GO      TO      292-ATO-EXT
            END-IF
       *
-           INSPECT SPA-Z98-GMN-INPUT   REPLACING  ALL "¡ö"  BY  SPACE
+           INSPECT SPA-Z98-GMN-INPUT   REPLACING  ALL "¡ö"  BY  "  "
            MOVE    SPACE               TO  WRK-INPUTCD
            MOVE    ZERO                TO  ID2
            PERFORM VARYING     ID1     FROM    1   BY  1
