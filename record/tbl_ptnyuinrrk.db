@@ -289,7 +289,7 @@ path	key18		{
 			AND		TENNYUYMD	<=	:TENNYUYMD
 			AND		TENSTUYMD	>=	:TENSTUYMD
 			ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC,RRKEDANUM DESC
-		;
+		; 
 	};
 };
 
@@ -318,6 +318,57 @@ path	key20		{
 			AND		NYUINYMD	>	:NYUINYMD
 			AND		SHONUM  	=	:SHONUM
 			ORDER BY NYUINYMD ,TAIINYMD, RRKNUM ,RRKEDANUM 
+		;
+	};
+};
+
+path	key21		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key21_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND	    PTID        =   :PTID
+			AND	    NYUINYMD    <=	:NYUINYMD
+			AND	    JTIKBN      <>	'5'
+            AND	(   (NYUINYMD   <=	:NYUINYMD  AND
+                     NYUINYMD   >=	:TAIINYMD      )
+                OR  (TAIINYMD   >=  :TAIINYMD      ) )
+            AND     HKNCOMBINUM =   :HKNCOMBINUM
+			ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC,RRKEDANUM DESC
+		;
+	};
+};
+
+path	key22		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key22_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND	    PTID        =   :PTID
+			AND	    NYUINYMD    <=	:NYUINYMD
+			AND	    SHONUM      =	:SHONUM
+			AND	    JTIKBN      <>	'5'
+            AND     HKNCOMBINUM =   :HKNCOMBINUM
+			ORDER BY NYUINYMD,TAIINYMD,RRKNUM,RRKEDANUM
+		;
+	};
+};
+
+path	key23		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key23_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND		PTID        =   :PTID
+			AND		NYUINYMD	<=	:NYUINYMD
+			AND		JTIKBN		<>	'5'
+            AND	(   (NYUINYMD	<=	:NYUINYMD  AND
+                     NYUINYMD	>=	:TAIINYMD      )
+                 OR (TAIINYMD   >=  :TAIINYMD      ) )
+            ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC,RRKEDANUM DESC
 		;
 	};
 };
