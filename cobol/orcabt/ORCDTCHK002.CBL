@@ -212,6 +212,9 @@
            03  IDX18                                   PIC 9(05). 
            03  IDX19                                   PIC 9(05). 
            03  IDX20                                   PIC 9(05). 
+           03  IDX21                                   PIC 9(05). 
+           03  IDX22                                   PIC 9(05). 
+           03  IDX23                                   PIC 9(05). 
            03  IDXA                                    PIC 9(05). 
            03  IDXE                                    PIC 9(05). 
            03  IDX-TSRYKA                              PIC 9(05).
@@ -219,6 +222,7 @@
            03  IDX-ERRCD                               PIC 9(05).
            03  IDX-TSRYCD                              PIC 9(05).
            03  IDX-TTNS                                PIC 9(05).
+           03  IDX-COMB                                PIC 9(05).
            03  IDX-DAY                                 PIC 9(02).
       *
        01  WRK-AREA.
@@ -290,12 +294,35 @@
                                                        OCCURS  31.
            03  WRK-TKAISU-SRYCD                        PIC X(09).
            03  WRK-MAX                                 PIC 9(05).
-      *    
-      *    TEST
-           03  WRK-DATE                                PIC X(08).
-           03  WRK-TIME                                PIC X(08).
-      *    TEST
            03  WRK-KIGONUM-STR                         PIC X(50).
+           03  WRK-STIDX                               PIC  9(02).
+           03  WRK-EDIDX                               PIC  9(02).
+           03  WRK-NISSU-AREA.
+               05  WRK-NISSU-DAY-G.
+                   07  WRK-NISSU-DAY                   PIC 9(01)
+                                                       OCCURS  31.
+               05  WRK-NISSU-KUGIRI-FLG                PIC 9(01).
+               05  WRK-NISSU-RENZOKU-CNT               PIC 9(03).
+               05  WRK-NISSU-ST-G.
+                   07  WRK-NISSU-ST                    PIC 9(02).
+                   07  WRK-NISSU-ST-X                  PIC X(02).
+                   07  WRK-NISSU-ST-R1 REDEFINES   WRK-NISSU-ST-X.
+                       09  WRK-NISSU-ST-Z9             PIC Z9.
+                   07  WRK-NISSU-ST-R2 REDEFINES   WRK-NISSU-ST-X.
+                       09  WRK-NISSU-ST-9              PIC 9(01).
+                       09                              PIC X(01).
+               05  WRK-NISSU-ED-G.
+                   07  WRK-NISSU-ED                    PIC 9(02).
+                   07  WRK-NISSU-ED-X                  PIC X(02).
+                   07  WRK-NISSU-ED-R1 REDEFINES   WRK-NISSU-ED-X.
+                       09  WRK-NISSU-ED-Z9             PIC Z9.
+                   07  WRK-NISSU-ED-R2 REDEFINES   WRK-NISSU-ED-X.
+                       09  WRK-NISSU-ED-9              PIC 9(01).
+                       09                              PIC X(01).
+               05  WRK-NISSU-MES                       PIC X(200).
+               05  WRK-NISSU-PTR                       PIC 9(03).
+           03  WRK-ORCSHKN-HKNCOMBI                    PIC X(04).
+           03  WRK-ORCSHKN-HKNCOMBIMEI                 PIC X(200).
       *
       *    保険ＩＤ退避ワーク
        01  THKNID-AREA.
@@ -423,6 +450,60 @@
                05  TCHK-HEI-YKZ-SRYCD                  PIC X(09).
                05  TCHK-HEI-SRY-SRYCD                  PIC X(09).
       *
+      *    減算情報重複チェック用ワーク
+       01  TGENZAN-AREA.
+           03  TGENZAN-VAL.
+               05  TGENZAN-INNAI-G.
+                   07  TGENZAN-INNAI-SRYCD         PIC X(09).
+                   07  TGENZAN-INNAI-SYS-DAY       PIC 9(01)
+                                                   OCCURS  31.
+                   07  TGENZAN-INNAI-SRY-DAY       PIC 9(01)
+                                                   OCCURS  31.
+                   07  TGENZAN-INNAI-ERR-CNT       PIC 9(02).
+                   07  TGENZAN-INNAI-ERR-DAY       PIC 9(01)
+                                                   OCCURS  31.
+               05  TGENZAN-ANZEN-G.
+                   07  TGENZAN-ANZEN-SRYCD         PIC X(09).
+                   07  TGENZAN-ANZEN-SYS-DAY       PIC 9(01)
+                                                   OCCURS  31.
+                   07  TGENZAN-ANZEN-SRY-DAY       PIC 9(01)
+                                                   OCCURS  31.
+                   07  TGENZAN-ANZEN-ERR-CNT       PIC 9(02).
+                   07  TGENZAN-ANZEN-ERR-DAY       PIC 9(01)
+                                                   OCCURS  31.
+               05  TGENZAN-JOKUSO-G.
+                   07  TGENZAN-JOKUSO-SRYCD        PIC X(09).
+                   07  TGENZAN-JOKUSO-SYS-DAY      PIC 9(01)
+                                                   OCCURS  31.
+                   07  TGENZAN-JOKUSO-SRY-DAY      PIC 9(01)
+                                                   OCCURS  31.
+                   07  TGENZAN-JOKUSO-ERR-CNT      PIC 9(02).
+                   07  TGENZAN-JOKUSO-ERR-DAY      PIC 9(01)
+                                                   OCCURS  31.
+           03  TGENZAN-R   REDEFINES   TGENZAN-VAL.
+               05  TGENZAN-OCC                     OCCURS  3.
+                   07  TGENZAN-SRYCD               PIC X(09).
+                   07  TGENZAN-SYS-DAY             PIC 9(01)
+                                                   OCCURS  31.
+                   07  TGENZAN-SRY-DAY             PIC 9(01)
+                                                   OCCURS  31.
+                   07  TGENZAN-ERR-CNT             PIC 9(02).
+                   07  TGENZAN-ERR-DAY-G.
+                       09  TGENZAN-ERR-DAY         PIC 9(01)
+                                                   OCCURS  31.
+      *
+      *    入院料加算保険チェック用ワーク
+       01  TNYUKSN-AREA.
+           03  TNYUKSN-MAX                         PIC 9(05).
+           03  TNYUKSN-OCC                         OCCURS  20.
+               05  TNYUKSN-HKNCOMBI                PIC X(04).
+               05  TNYUKSN-HKNCOMBI-DAY            PIC 9(01)
+                                                   OCCURS  31.
+               05  TNYUKSN-ERR-CNT                 PIC 9(02).
+               05  TNYUKSN-ERR-DAY-G.
+                   07  TNYUKSN-ERR-DAY             PIC 9(01)
+                                                   OCCURS  31.
+      *
        01  KEY-AREA.
            03  KEY-HKNCOMBI                        PIC X(04).
       *
@@ -525,6 +606,10 @@
                                                        VALUE   2000.
            03  CONST-TBYOMEICD-MAX                     PIC 9(05)
                                                        VALUE   100.
+           03  CONST-TNYUKSN-MAX                       PIC 9(05)
+                                                       VALUE   20.
+           03  CONST-TGENZAN-MAX                       PIC 9(05)
+                                                       VALUE   3.
            03  CONST-TCHK-MAX                          PIC 9(05)
                                                        VALUE   2000.
            03  CONST-TTNS-MAX                          PIC 9(05)
@@ -601,6 +686,9 @@
       *
       *    レセプト編集区分
            COPY    "CPSK2005.INC".
+      *
+      *    入院基本情報
+           COPY    "CPSK5000.INC".
       *
       *    患者病名
        01  PTBYOMEI-REC.
@@ -1120,6 +1208,9 @@
       *    退避エリア初期処理
            PERFORM 200111-TAIHI-AREA-INIT-SEC
       *
+      *    減算情報ワークシステム管理退避処理
+           PERFORM 200111-TGENZAN-SYS-HEN-SEC
+      *
       *    診療会計情報退避処理
            PERFORM 200111-SRYACCT-TAIHI-SEC
       *
@@ -1184,9 +1275,84 @@
                                        TBYOMEICD-AREA
                                        TNYUIN-CHOZAI-AREA
                                        TNYUIN-ACCT-AREA
+                                       TNYUKSN-AREA
+                                       TGENZAN-AREA
       *
            .
        200111-TAIHI-AREA-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    減算情報ワークシステム管理退避処理
+      *****************************************************************
+       200111-TGENZAN-SYS-HEN-SEC      SECTION.
+      *
+           MOVE    "190080570"         TO  TGENZAN-INNAI-SRYCD
+           MOVE    "190111690"         TO  TGENZAN-ANZEN-SRYCD
+           MOVE    "190111790"         TO  TGENZAN-JOKUSO-SRYCD
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           INITIALIZE                      SYS-5000-REC
+           MOVE    "5000"              TO  SYS-5000-KANRICD
+           MOVE    "*"                 TO  SYS-5000-KBNCD
+           MOVE    SYS-5000-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-5000-REC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+      *
+      *
+               IF    ( ORCBSD01-SRYYM  >=  SYS-5000-STYUKYMD (1:6))
+                AND  ( ORCBSD01-SRYYM  <=  SYS-5000-EDYUKYMD (1:6))
+      *
+                   MOVE    01          TO  WRK-STIDX
+                   MOVE    31          TO  WRK-EDIDX
+      *
+                   IF    ( ORCBSD01-SRYYM  =    SYS-5000-STYUKYMD (1:6))
+                       MOVE    SYS-5000-STYUKYMD (7:2)
+                                       TO  WRK-STIDX
+                   END-IF
+      *
+                   IF    ( ORCBSD01-SRYYM  =    SYS-5000-EDYUKYMD (1:6))
+                       MOVE    SYS-5000-EDYUKYMD (7:2)
+                                       TO   WRK-EDIDX
+                   END-IF
+      *
+                   PERFORM VARYING IDX0    FROM    WRK-STIDX   BY  1
+                           UNTIL ( IDX0        >   WRK-EDIDX )
+                       IF    ( SYS-5000-GENKBN (2) =   "2" )
+                           MOVE    1   TO   TGENZAN-INNAI-SYS-DAY (IDX0)
+                       END-IF
+                       IF    ( SYS-5000-GENKBN (3) =   "2" )
+                           MOVE    1   TO   TGENZAN-ANZEN-SYS-DAY (IDX0)
+                       END-IF
+                       IF    ( SYS-5000-GENKBN (4) =   "2" )
+                           MOVE    1   TO   TGENZAN-JOKUSO-SYS-DAY(IDX0)
+                       END-IF
+                   END-PERFORM
+      *
+               END-IF
+      *
+               MOVE    "SYSKANRI-KEY4" TO  ORC-DBPATH
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYS-5000-REC
+               ELSE
+                   MOVE    1           TO  FLG-SYSKANRI
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       200111-TGENZAN-SYS-HEN-EXT.
            EXIT.
       *****************************************************************
       *    診療会計情報退避処理
@@ -1244,26 +1410,18 @@
                END-IF
       *
       *        診療行為情報退避処理
-      *        以下のチェックの際に退避する
-      *        ・診療開始日
-      *        ・薬剤と病名
-      *        ・診療行為と病名
-      *        ・併用禁忌の薬剤
-      *        ・併用算定の診療行為
-      *        ・実日数
-               IF    ( ORCBSD01-CHKKBN (06)    NOT =   ZERO )
-                OR   ( ORCBSD01-CHKKBN (08)    NOT =   ZERO )
-                OR   ( ORCBSD01-CHKKBN (09)    NOT =   ZERO )
-                OR   ( ORCBSD01-CHKKBN (10)    NOT =   ZERO )
-                OR   ( ORCBSD01-CHKKBN (11)    NOT =   ZERO )
-                OR   ( ORCBSD01-CHKKBN (12)    NOT =   ZERO )
-      *
-                   IF    ( FLG-TAISYO-HKN      =   1 )
-                       PERFORM 200111-SRYACT-TAIHI-SEC
-                   END-IF
+               IF    ( FLG-TAISYO-HKN      =   1 )
+                   PERFORM 200111-SRYACT-TAIHI-SEC
                END-IF
       *
                IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
+      *
+                   IF    ( FLG-TAISYO-HKN      =   1 )
+      *                入院料加算退避ワーク編集処理
+                       IF    ( ACCT-SRYKBN     =   "90"    OR  "92" )
+                           PERFORM 200111-TNYUKSN-HEN-SEC
+                       END-IF
+                   END-IF
       *
       *            入院診療行為日編集処理（実日数チェック用）
                    PERFORM 200111-TNYUIN-ACCT-HEN-SEC
@@ -1555,6 +1713,11 @@
       *                診療行為コード退避ワーク編集処理
                        PERFORM 200111-TSRYCD-HEN-SEC
       *
+      *                減算情報ワーク診療行為退避処理
+                       IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
+                           PERFORM 200111-TGENZAN-SRY-HEN-SEC
+                       END-IF
+      *
                        IF    ( ORCBSD01-NYUGAIKBN  =   "2" )
       *                    実日数退避ワーク編集処理（外来）
                            IF    ( FLG-SHOSAISIN   =   ZERO )
@@ -1757,6 +1920,47 @@
       *
            .
        200111-TSRYCD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    減算情報ワーク診療行為退避処理
+      *****************************************************************
+       200111-TGENZAN-SRY-HEN-SEC      SECTION.
+      *
+           EVALUATE    SRY-SRYCD (IDX1)
+      *
+      *    院内感染防止対策未実施減算
+           WHEN    "190080570"
+           WHEN    "190799770"
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   31 )
+                   IF    ( ACCT-DAY (1 IDX0)   >   ZERO )
+                       MOVE    1       TO  TGENZAN-INNAI-SRY-DAY (IDX0)
+                   END-IF
+               END-PERFORM
+      *
+      *    医療安全管理体制未整備減算
+           WHEN    "190111690"
+           WHEN    "190809090"
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   31 )
+                   IF    ( ACCT-DAY (1 IDX0)   >   ZERO )
+                       MOVE    1       TO  TGENZAN-ANZEN-SRY-DAY (IDX0)
+                   END-IF
+               END-PERFORM
+      *
+      *    褥瘡対策未実施減算
+           WHEN    "190111790"
+           WHEN    "190809190"
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   31 )
+                   IF    ( ACCT-DAY (1 IDX0)   >   ZERO )
+                       MOVE    1       TO  TGENZAN-JOKUSO-SRY-DAY (IDX0)
+                   END-IF
+               END-PERFORM
+           END-EVALUATE
+      *
+           .
+       200111-TGENZAN-SRY-HEN-EXT.
            EXIT.
       *****************************************************************
       *    実日数退避ワーク編集処理（外来）
@@ -1995,6 +2199,8 @@
       *****************************************************************
        200111-TKAISU-SRYCD-HEN-SEC    SECTION.
       *
+           MOVE    ZERO            TO  IDXA
+      *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   TKAISU-SRYCD-MAX (IDX-TKAISU) )
                     OR   ( IDX0    >   CONST-TKAISU-SRYCD-MAX )
@@ -2039,6 +2245,52 @@
       *
            .
        200111-TKAISU-SRYCD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院料加算退避ワーク編集処理
+      *****************************************************************
+       200111-TNYUKSN-HEN-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  IDXA
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   TNYUKSN-MAX )
+                    OR   ( ACCT-HKNCOMBI
+                                   =   TNYUKSN-HKNCOMBI (IDX0) )
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX0            >   TNYUKSN-MAX )
+      *
+               COMPUTE TNYUKSN-MAX
+                   =   TNYUKSN-MAX +   1
+      *
+               IF    ( TNYUKSN-MAX >   CONST-TNYUKSN-MAX )
+                   MOVE    CONST-TNYUKSN-MAX
+                                   TO  TNYUKSN-MAX
+               ELSE
+                   MOVE    ACCT-HKNCOMBI
+                                   TO  TNYUKSN-HKNCOMBI (TNYUKSN-MAX)
+                   MOVE    TNYUKSN-MAX
+                                   TO  IDXA
+               END-IF
+           ELSE
+               MOVE    IDX0        TO  IDXA
+           END-IF
+      *
+           IF    ( IDXA            >   ZERO )
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL ( IDX2    >   31 )
+                   IF    ( ACCT-DAY (1 IDX2)   >   ZERO )
+                       MOVE    1   TO  TNYUKSN-HKNCOMBI-DAY (IDXA IDX2)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       200111-TNYUKSN-HEN-EXT.
            EXIT.
       *****************************************************************
       *    算定回数退避ワーク診療行為コード編集処理
@@ -2355,6 +2607,9 @@
            IF    ( ORCBSD01-CHKKBN(14) NOT =   ZERO  )
                PERFORM 200111-HKNCOMBI-CHK-SEC
            END-IF
+      *
+      *    その他必須チェック処理
+           PERFORM 200111-SONOTA-HISSU-CHK-SEC
       *
            .
        20011-DATA-CHK-EXT.
@@ -5076,6 +5331,274 @@
        200111-NACCT-HKNCOMBI-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    その他必須チェック処理
+      *****************************************************************
+       200111-SONOTA-HISSU-CHK-SEC     SECTION.
+      *
+           IF    ( ORCBSD01-NYUGAIKBN    = "1" )
+      *
+      *        減算情報チェック処理
+               PERFORM 200111-GENZAN-CHK-SEC
+      *
+      *        入院料加算チェック処理
+               PERFORM 200111-NYUKSN-CHK-SEC
+      *
+           END-IF
+      *
+           .
+       200111-SONOTA-HISSU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    減算情報チェック処理
+      *****************************************************************
+       200111-GENZAN-CHK-SEC           SECTION.
+      *
+           PERFORM VARYING IDX21   FROM    1   BY  1
+                   UNTIL ( IDX21   >   CONST-TGENZAN-MAX )
+      *
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   31 )
+      *
+                   IF    ( TGENZAN-SYS-DAY (IDX21 IDX0)    =   1 )
+                    AND  ( TGENZAN-SRY-DAY (IDX21 IDX0)    =   1 )
+      *
+                       COMPUTE TGENZAN-ERR-CNT (IDX21)
+                           =   TGENZAN-ERR-CNT (IDX21)     +   1
+      *
+                       MOVE    1       TO  TGENZAN-ERR-DAY (IDX21 IDX0)
+      *
+                   END-IF
+      *
+               END-PERFORM
+      *
+               IF    ( TGENZAN-ERR-CNT (IDX21) >   ZERO )
+      *
+                   MOVE    TGENZAN-SRYCD (IDX21)
+                                               TO  WRK-SRYCD
+                   MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   IF    ( FLG-TENSU       NOT =   ZERO )
+                       MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+                       PERFORM 800-ZENKAKU-HEN-SEC
+                       MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+                   END-IF
+      *
+                   INITIALIZE  WRK-NISSU-AREA
+                   MOVE    TGENZAN-ERR-DAY-G (IDX21)
+                                               TO  WRK-NISSU-DAY-G
+                   PERFORM 200111-NISSU-HEN-SEC
+      *
+                   MOVE    SPACE       TO  WRK-ERRMES-PLUS
+      *
+                   STRING  TNS-NAME        DELIMITED   BY  SPACE
+                           WRK-NISSU-MES   DELIMITED   BY  SPACE
+                   INTO    WRK-ERRMES-PLUS
+                   END-STRING
+      *
+                   MOVE    "990001"    TO  WRK-ERRCD
+                   PERFORM 215-ERRMES-HEN-SEC
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       200111-GENZAN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院料加算チェック処理
+      *****************************************************************
+       200111-NYUKSN-CHK-SEC           SECTION.
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   TNACCT-HKNCOMBI-MAX )
+      *
+               PERFORM VARYING IDX22   FROM    1   BY  1
+                       UNTIL ( IDX22   >   31 )
+      *
+                   IF    ( TNACCT-HKNCOMBI-HKNCOMBI-DAY (IDX0 IDX22)
+                                       NOT =   ZERO )
+                       PERFORM VARYING IDX23   FROM    1   BY  1
+                               UNTIL ( IDX23   >   TNYUKSN-MAX )
+                           IF    ( TNACCT-HKNCOMBI-HKNCOMBI-X (IDX0)
+                                       NOT =   TNYUKSN-HKNCOMBI (IDX23))
+                               IF  ( TNYUKSN-HKNCOMBI-DAY (IDX23 IDX22)
+                                       NOT =   ZERO )
+                                   COMPUTE TNYUKSN-ERR-CNT (IDX23)
+                                       =   TNYUKSN-ERR-CNT (IDX23)
+                                       +   1
+                                   MOVE    1   TO  TNYUKSN-ERR-DAY
+                                                          (IDX23 IDX22)
+                               END-IF
+                           END-IF
+                       END-PERFORM
+                   END-IF
+      *
+               END-PERFORM
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   TNYUKSN-MAX )
+      *
+               IF    ( TNYUKSN-ERR-CNT (IDX0) >   ZERO )
+      *
+                   MOVE    TNYUKSN-HKNCOMBI (IDX0)
+                                       TO  WRK-ORCSHKN-HKNCOMBI
+                   PERFORM 200111-HKNCOMBIMEI-HEN-SEC
+      *
+                   INITIALIZE  WRK-NISSU-AREA
+                   MOVE    TNYUKSN-ERR-DAY-G (IDX0)
+                                       TO  WRK-NISSU-DAY-G
+                   PERFORM 200111-NISSU-HEN-SEC
+      *
+                   MOVE    SPACE       TO  WRK-ERRMES-PLUS
+      *
+                   STRING  WRK-ORCSHKN-HKNCOMBIMEI
+                                           DELIMITED   BY  SPACE
+                           WRK-NISSU-MES   DELIMITED   BY  SPACE
+                   INTO    WRK-ERRMES-PLUS
+                   END-STRING
+      *
+                   MOVE    "990002"    TO  WRK-ERRCD
+                   PERFORM 215-ERRMES-HEN-SEC
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       200111-NYUKSN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    日数編集処理
+      *****************************************************************
+       200111-NISSU-HEN-SEC            SECTION.
+      *
+           MOVE    1                   TO  WRK-NISSU-PTR
+           MOVE    1                   TO  WRK-NISSU-ST
+           MOVE    SPACE               TO  WRK-NISSU-MES
+           MOVE    ZERO                TO  WRK-NISSU-KUGIRI-FLG
+      *
+           PERFORM UNTIL ( WRK-NISSU-ST    >   31 )
+      *
+               IF    ( WRK-NISSU-DAY (WRK-NISSU-ST )
+                                       NOT =   ZERO )
+      *
+                   MOVE    ZERO        TO  WRK-NISSU-RENZOKU-CNT
+                   COMPUTE WRK-NISSU-ED    =   WRK-NISSU-ST    +   1
+                   PERFORM UNTIL ( WRK-NISSU-ED    >   31 )
+                            OR   ( WRK-NISSU-DAY (WRK-NISSU-ED)
+                                           =   ZERO )
+                       COMPUTE WRK-NISSU-ED
+                            =  WRK-NISSU-ED  +   1
+      *
+                       COMPUTE WRK-NISSU-RENZOKU-CNT
+                            =  WRK-NISSU-RENZOKU-CNT   +   1
+      *
+                   END-PERFORM
+      *
+                   IF    ( WRK-NISSU-KUGIRI-FLG   =   ZERO )
+                       STRING  "　"            DELIMITED   BY  SIZE
+                       INTO    WRK-NISSU-MES
+                       WITH    POINTER WRK-NISSU-PTR
+                       END-STRING
+      *
+                       MOVE    1       TO  WRK-NISSU-KUGIRI-FLG
+      *
+                   ELSE
+                       STRING  "，"            DELIMITED   BY  SIZE
+                       INTO    WRK-NISSU-MES
+                       WITH    POINTER WRK-NISSU-PTR
+                       END-STRING
+                   END-IF
+      *
+                   IF    ( WRK-NISSU-RENZOKU-CNT  >   ZERO )
+                       COMPUTE WRK-NISSU-ED    =   WRK-NISSU-ED    -   1
+      *
+                       IF    ( WRK-NISSU-ST    <   10 )
+                           MOVE    WRK-NISSU-ST    TO  WRK-NISSU-ST-9
+                       ELSE
+                           MOVE    WRK-NISSU-ST    TO  WRK-NISSU-ST-Z9
+                       END-IF
+      *
+                       IF    ( WRK-NISSU-ED    <   10 )
+                           MOVE    WRK-NISSU-ED    TO  WRK-NISSU-ED-9
+                       ELSE
+                           MOVE    WRK-NISSU-ED    TO  WRK-NISSU-ED-Z9
+                       END-IF
+      *
+                       STRING  WRK-NISSU-ST-X      DELIMITED   BY  SPACE
+                               "日"                DELIMITED   BY  SIZE
+                               "〜"                DELIMITED   BY  SIZE
+                               WRK-NISSU-ED-X      DELIMITED   BY  SPACE
+                               "日"                DELIMITED   BY  SIZE
+                       INTO    WRK-NISSU-MES
+                       WITH    POINTER WRK-NISSU-PTR
+                       END-STRING
+                       COMPUTE WRK-NISSU-ST
+                           =   WRK-NISSU-ED      +   1
+                   ELSE
+      *
+                       IF    ( WRK-NISSU-ST    <   10 )
+                           MOVE    WRK-NISSU-ST    TO  WRK-NISSU-ST-9
+                       ELSE
+                           MOVE    WRK-NISSU-ST    TO  WRK-NISSU-ST-Z9
+                       END-IF
+      *
+                       STRING  WRK-NISSU-ST-X      DELIMITED   BY  SPACE
+                               "日"                DELIMITED   BY  SIZE
+                       INTO    WRK-NISSU-MES
+                       WITH    POINTER WRK-NISSU-PTR
+                       END-STRING
+                       COMPUTE WRK-NISSU-ST
+                           =   WRK-NISSU-ST      +   1
+                   END-IF
+      *
+               ELSE
+                   COMPUTE WRK-NISSU-ST
+                       =   WRK-NISSU-ST      +   1
+               END-IF
+           END-PERFORM
+      *
+           MOVE    WRK-NISSU-MES       TO  WRK-MAE-INPUT
+           PERFORM 800-ZENKAKU-HEN-SEC
+           MOVE    WRK-OUT-INPUT       TO  WRK-NISSU-MES
+      *
+           .
+       200111-NISSU-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ名称編集処理
+      *****************************************************************
+       200111-HKNCOMBIMEI-HEN-SEC      SECTION.
+      *
+           MOVE    SPACE           TO  WRK-ORCSHKN-HKNCOMBIMEI
+      *
+           PERFORM VARYING IDX-COMB    FROM    1   BY  1
+                   UNTIL ( IDX-COMB    >   ORCSHKN-HKN-MAX )
+                    OR   ( WRK-ORCSHKN-HKNCOMBI
+                                       =   ORCSHKN-GMN-HKNCOMBINUM
+                                                        (IDX-COMB))
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX-COMB            >   ORCSHKN-HKN-MAX )
+               MOVE    WRK-ORCSHKN-HKNCOMBI
+                                   TO  WRK-MAE-INPUT
+           ELSE
+               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX-COMB)
+                                   TO  WRK-MAE-INPUT
+           END-IF
+      *
+           PERFORM 800-ZENKAKU-HEN-SEC
+           MOVE    WRK-OUT-INPUT   TO  WRK-ORCSHKN-HKNCOMBIMEI
+      *
+           .
+       200111-HKNCOMBIMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    エラーメッセージ編集処理（メッセージに付加する情報なし）
       *****************************************************************
        210-ERRMES-HEN-SEC              SECTION.
@@ -5661,23 +6184,9 @@
                MOVE    1               TO  FLG-DTCHK003
            END-READ
       *
-      *    TEST
            IF    ( FLG-DTCHK003        =   ZERO )
                COMPUTE CNT-DTCHK003    =   CNT-DTCHK003    +   1
-               IF    ( CNT-DTCHK003 (6:1)  =   "0" )
-                   ACCEPT WRK-DATE FROM DATE
-                   ACCEPT WRK-TIME FROM TIME
-                   DISPLAY WRK-DATE (1:2) "/"
-                           WRK-DATE (3:2) "/"
-                           WRK-DATE (5:2) "/"
-                                          " "
-                           WRK-TIME (1:2) ":"
-                           WRK-TIME (3:2) ":"
-                           WRK-TIME (5:2) " "
-                           CNT-DTCHK003
-               END-IF
            END-IF
-      *    TEST
       *
            .
        900-DTCHK003-READ-EXT.

@@ -283,8 +283,20 @@
            05 PIC  X(30)   VALUE   "ります                        ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+      *    ** 990xxx その他必須チェック
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "990001".
+           05 PIC  X(30)   VALUE   "システム管理と診療行為より入力".
+           05 PIC  X(30)   VALUE   "された減算のコードが重複してい".
+           05 PIC  X(30)   VALUE   "ます                          ".
+      *
+           05 PIC  X(06)   VALUE   "990002".
+           05 PIC  X(30)   VALUE   "入院基本料と異なる保険組合せで".
+           05 PIC  X(30)   VALUE   "入院料加算が登録されています  ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  45.
+           05 ERRMES-OCC   OCCURS  47.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   45.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   47.
