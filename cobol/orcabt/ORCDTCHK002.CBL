@@ -368,16 +368,16 @@
       *
       *    チェックマスタに存在しない診療行為退避ワーク
        01  TCHK-AREA.
-           05  TCHK-FLG                                PIC 9(01).
-           05  TCHK-YKZ-BYO-MAX                        PIC 9(05).
-           05  TCHK-SRY-BYO-MAX                        PIC 9(05).
-           05  TCHK-HEI-YKZ-MAX                        PIC 9(05).
-           05  TCHK-HEI-SRY-MAX                        PIC 9(05).
-           05  TCHK-SRYCD-OCC                          OCCURS  2000.
-               07  TCHK-YKZ-BYO-SRYCD                  PIC X(09).
-               07  TCHK-SRY-BYO-SRYCD                  PIC X(09).
-               07  TCHK-HEI-YKZ-SRYCD                  PIC X(09).
-               07  TCHK-HEI-SRY-SRYCD                  PIC X(09).
+           03  TCHK-FLG                                PIC 9(01).
+           03  TCHK-YKZ-BYO-MAX                        PIC 9(05).
+           03  TCHK-SRY-BYO-MAX                        PIC 9(05).
+           03  TCHK-HEI-YKZ-MAX                        PIC 9(05).
+           03  TCHK-HEI-SRY-MAX                        PIC 9(05).
+           03  TCHK-SRYCD-OCC                          OCCURS  2000.
+               05  TCHK-YKZ-BYO-SRYCD                  PIC X(09).
+               05  TCHK-SRY-BYO-SRYCD                  PIC X(09).
+               05  TCHK-HEI-YKZ-SRYCD                  PIC X(09).
+               05  TCHK-HEI-SRY-SRYCD                  PIC X(09).
       *
        01  KEY-AREA.
            03  KEY-HKNCOMBI                        PIC X(04).
@@ -3280,11 +3280,13 @@
       *
                    MOVE    TBYOMEICD-BYOMEICD (IDX0)
                                                TO  WRK-BYOMEICD
+                   DISPLAY "WRK-BYOMEICD =" WRK-BYOMEICD
                    PERFORM 900-BYOMEI-KEY-SEL-SEC
       *
-                   STRING TNS-NAME            DELIMITED BY SPACE
-                          "、"                DELIMITED BY SIZE
-                          BYO-BYOMEI          DELIMITED BY SPACE
+                   MOVE   SPACE                TO  WRK-ERRMES-PLUS
+                   STRING TNS-NAME             DELIMITED BY SPACE
+                          "、"                 DELIMITED BY SIZE
+                          BYO-BYOMEI           DELIMITED BY SPACE
                    INTO   WRK-ERRMES-PLUS
                    END-STRING
       *
@@ -3456,9 +3458,10 @@
                                                TO  WRK-BYOMEICD
                    PERFORM 900-BYOMEI-KEY-SEL-SEC
       *
-                   STRING TNS-NAME            DELIMITED BY SPACE
-                          "、"                DELIMITED BY SIZE
-                          BYO-BYOMEI          DELIMITED BY SPACE
+                   MOVE   SPACE                TO  WRK-ERRMES-PLUS
+                   STRING TNS-NAME             DELIMITED BY SPACE
+                          "、"                 DELIMITED BY SIZE
+                          BYO-BYOMEI           DELIMITED BY SPACE
                    INTO   WRK-ERRMES-PLUS
                    END-STRING
       *
@@ -5213,15 +5216,9 @@
            MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC      =   ZERO )
-               MOVE    "BYOMEI-KEY"    TO  ORC-DBPATH
-               PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC      =   ZERO )
-                   MOVE    MCPDATA-REC TO  BYOMEI-REC
-               ELSE
-                   INITIALIZE              BYOMEI-REC
-               END-IF
+               MOVE    MCPDATA-REC     TO  BYOMEI-REC
            ELSE
-                   INITIALIZE              BYOMEI-REC
+               INITIALIZE                  BYOMEI-REC
            END-IF
       *
            MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
