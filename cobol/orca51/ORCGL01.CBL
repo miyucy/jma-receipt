@@ -170,8 +170,8 @@
            03  WRK-EDPAGE                      PIC 9(05).
            03  WRK-CHK-CUR                     PIC 9(05).
            03  WRK-MCP-WIDGET                  PIC X(64).
-           03  WRK-PARA-NUM1                   PIC 9(03).
-           03  WRK-PARA-NUM2                   PIC 9(03).
+           03  WRK-PARA-NUM1                   PIC 9(02).
+           03  WRK-PARA-NUM2                   PIC 9(01).
       *
       *    •∑•π•∆•‡ŒŒ∞Ë
        01  SYS-AREA.
