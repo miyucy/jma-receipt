@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  04/03/11  Ｈ１６．４改正対応
       *****************************************************************
       *
       *
@@ -136,8 +137,16 @@
       *    小児科外来診察料(初診時時間外特例)
            03  FILLER              PIC X(13)   VALUE   "111010770 2 4".
       *
+      *    小児科外来診察料(初診時乳幼児夜間）
+           03  FILLER              PIC X(13)   VALUE   "113007070 2 5".
+      *    小児科外来診察料(初診時乳幼児休日）
+           03  FILLER              PIC X(13)   VALUE   "113007170 2 6".
+      *    小児科外来診察料(初診時乳幼児深夜）
+           03  FILLER              PIC X(13)   VALUE   "113007270 2 7".
+      *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
-           03  TBL-SINSATU-OCC         OCCURS  18    INDEXED  TBL-IDX.
+      *****03  TBL-SINSATU-OCC         OCCURS  18    INDEXED  TBL-IDX.
+           03  TBL-SINSATU-OCC         OCCURS  21    INDEXED  TBL-IDX.
       *        診療コード
                05  TBL-SRYCD           PIC X(09).
       *
@@ -147,7 +156,8 @@
       *
                05  TBL-YOBO2           PIC X(01).
       *        往診加算（0:なし,1:夜間、2:深夜・緊急）
-      *        時間加算（0:なし,1:時間外、2:休日、3:深夜、4:特例）
+      *        時間加算（0:なし,1:時間外、2:休日、3:深夜、4:特例
+      *                 (5:乳幼児夜間、6:乳幼児休日、7:乳幼児深夜）
                05  TBL-KASAN           PIC X(01).
       *
       *
@@ -485,6 +495,15 @@
                    WHEN    "4"
       *                時間外特例休日
                        MOVE    "111000870"         TO  WRK-SRYCD
+                   WHEN    "5"
+      *                乳幼児夜間
+                       MOVE    "111011570"         TO  WRK-SRYCD
+                   WHEN    "2"
+      *                乳幼児休日
+                       MOVE    "111011670"         TO  WRK-SRYCD
+                   WHEN    "3"
+      *                乳幼児深夜
+                       MOVE    "111011770"         TO  WRK-SRYCD
                    WHEN    OTHER
       *                時間外なし
                        MOVE    SPACE               TO  WRK-SRYCD
