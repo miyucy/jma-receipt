@@ -133,6 +133,7 @@
       *
            03  WRK-STR1                PIC X(2048).
            03  WRK-STR2                PIC X(2048).
+           03  WRK-STR                 PIC X(2048).
            03  WRK-CRCNT               PIC 9(02).
       *
            03  WRK-IN                  PIC X(01).
@@ -629,26 +630,20 @@
            MOVE    ZERO         TO         WRK-CRCNT
            INSPECT IN-SYOJYOU   TALLYING   WRK-CRCNT
                                 FOR        ALL "¡ï£î"
-           IF IN-SYOJYOUCD = "S000735"
-             DISPLAY "WRK-CRCNT = " WRK-CRCNT
-           END-IF
            IF      WRK-CRCNT        >      0
              PERFORM VARYING IDX FROM 1 BY 1 UNTIL IDX > WRK-CRCNT
+               MOVE     SPACE    TO        WRK-STR
+               MOVE     SPACE    TO        WRK-STR1
+               MOVE     SPACE    TO        WRK-STR2
                UNSTRING IN-SYOJYOU DELIMITED BY "¡ï£î"
                         INTO WRK-STR1 WRK-STR2
                END-UNSTRING
-               IF IN-SYOJYOUCD = "S000735"
-                 DISPLAY "WRK-STR1 = " WRK-STR1
-                 DISPLAY "WRK-STR1 = " WRK-STR1
-               END-IF
                STRING WRK-STR1 DELIMITED BY SPACE
                       CONST-CR DELIMITED BY SIZE
                       WRK-STR2 DELIMITED BY SPACE
-                      INTO IN-SYOJYOU
+                      INTO WRK-STR
                END-STRING
-               IF IN-SYOJYOUCD = "S000735"
-                 DISPLAY "IN-SYOJYOU = " IN-SYOJYOU
-               END-IF
+               MOVE   WRK-STR  TO        IN-SYOJYOU
              END-PERFORM
            END-IF
       *
@@ -658,14 +653,18 @@
                                 FOR        ALL "¡ï£î"
            IF      WRK-CRCNT        >      0
              PERFORM VARYING IDX FROM 1 BY 1 UNTIL IDX > WRK-CRCNT
+               MOVE     SPACE    TO        WRK-STR
+               MOVE     SPACE    TO        WRK-STR1
+               MOVE     SPACE    TO        WRK-STR2
                UNSTRING IN-SAYOKIJYO DELIMITED BY "¡ï£î"
                         INTO WRK-STR1 WRK-STR2
                END-UNSTRING
                STRING WRK-STR1 DELIMITED BY SPACE
                       CONST-CR DELIMITED BY SIZE
                       WRK-STR2 DELIMITED BY SPACE
-                      INTO IN-SAYOKIJYO
+                      INTO WRK-STR
                END-STRING
+               MOVE   WRK-STR  TO        IN-SAYOKIJYO
              END-PERFORM
            END-IF
       *
