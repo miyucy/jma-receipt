@@ -120,6 +120,8 @@
       *                                     注加算コードの追加
       *  01.05.02    NACL-小豆沢  04.06.11  皮下筋肉注射で、薬剤点・器材点
       *                                     が無いの場合の摘要欄記載対応
+      *  01.05.03    NACL-藤原    04.07.16  検査のまとめを回数テーブルの
+      *                                     合計で行うようにする 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2152,35 +2154,7 @@
       *    検査まとめ処理
       *****************************************************************
        2007-SRYKBN60-HENSYU-SEC         SECTION.
-      *
-      *    検査の剤がひとつのときまとめ処理はしない
-      **      IF      WRK-RECE04-MAX      =   1
-      **          MOVE    WRK-RECE04-REC (1)    TO  RECE04-REC
-      **          IF      RECE04-ZAIKAISU       =   1
-      **              MOVE    ZERO                  TO  FLG-SRYCD1
-      *
-      **             INITIALIZE                      WRK-ZAIW-AREA
-      **             MOVE    ZERO                TO  WRK-ZAIWMAX-G
-      **             MOVE    ZERO                TO  WRK-TBLMAX
-      **             MOVE    ZERO                TO  FLG-TEIGEN
-      **                                             FLG-COMMENT
-      **                                             FLG-HIKAKIN 
-      **             MOVE    ZERO                TO  WRK-RECE05
-      **                                             IDY                           
-      **             PERFORM 2002-TBLZAIW-TAIHI-SEC
-      *            レセプト０４剤編集前処理
-      **             PERFORM 2001-RECE04-ZAIHEN-MAE-SEC
-      *
-      **             IF      SPA-STS          =   ZERO
-      **                 PERFORM 20051-SRYKBNELSE-KENSA-SEC
-      *                剤・診療行為テーブル出力処理
-      **                 PERFORM 450-RECE06-OUT-SEC
-      **             END-IF    
-      **             GO  TO  2007-SRYKBN60-HENSYU-EXT
-      **         END-IF    
-      **     END-IF
       *     
-      *    検査のまとめ処理
            MOVE    1                    TO  IDXX 
            PERFORM              UNTIL   IDXX >       31
                INITIALIZE                  WRK-RECE04-FLG-TABLE
@@ -2196,23 +2170,25 @@
                            IF      WRK-KAISU (1)   =   ZERO
                                MOVE    WRK-RECE04-KAISU (IDY 1 IDXX)
                                                    TO  WRK-KAISU (1)
-                               MOVE    WRK-RECE04-KAISU (IDY 2 IDXX)
-                                                   TO  WRK-KAISU (2)
-                               MOVE    WRK-RECE04-KAISU (IDY 3 IDXX)
-                                                   TO  WRK-KAISU (3)
-                               MOVE    WRK-RECE04-KAISU (IDY 4 IDXX)
-                                                   TO  WRK-KAISU (4)
+      *************************MOVE    WRK-RECE04-KAISU (IDY 2 IDXX)
+      *************************                    TO  WRK-KAISU (2)
+      *************************MOVE    WRK-RECE04-KAISU (IDY 3 IDXX)
+      *************************                    TO  WRK-KAISU (3)
+      *************************MOVE    WRK-RECE04-KAISU (IDY 4 IDXX)
+      *************************                    TO  WRK-KAISU (4)
                                MOVE    WRK-RECE04-HOUKNSKBN (IDY)
                                                    TO  WRK-HOUKNSKBN                    
                                MOVE    WRK-RECE04-KOHBUNRI (IDY)
                                                    TO  WRK-KOHBUNRI                  
                            END-IF
-                           IF      WRK-RECE04-KAISU (IDY 2 IDXX)
-                                                   =   WRK-KAISU (2)
-                           AND     WRK-RECE04-KAISU (IDY 3 IDXX)
-                                                   =   WRK-KAISU (3)
-                           AND     WRK-RECE04-KAISU (IDY 4 IDXX)
-                                                   =   WRK-KAISU (4)
+      *********************IF      WRK-RECE04-KAISU (IDY 2 IDXX)
+      *********************                        =   WRK-KAISU (2)
+      *********************AND     WRK-RECE04-KAISU (IDY 3 IDXX)
+      *********************                        =   WRK-KAISU (3)
+      *********************AND     WRK-RECE04-KAISU (IDY 4 IDXX)
+      *********************                        =   WRK-KAISU (4)
+                           IF      WRK-RECE04-KAISU (IDY 1 IDXX)
+                                                   =   WRK-KAISU (1)
                            AND     WRK-RECE04-HOUKNSKBN (IDY)
                                                    =   WRK-HOUKNSKBN
                            AND     WRK-RECE04-KOHBUNRI  (IDY)
@@ -2245,12 +2221,14 @@
                                UNTIL   IDW >       WRK-RECE04-MAX
                                OR      FLG-OK      =   1
                            IF      WRK-RECE04-FLG   (IDW)  =   "1"
-                               IF      WRK-RECE04-KAISU (IDW 2 IDZ)
-                                                   =   WRK-KAISU (2)
-                               AND     WRK-RECE04-KAISU (IDW 3 IDZ)
-                                                   =   WRK-KAISU (3)
-                               AND     WRK-RECE04-KAISU (IDW 4 IDZ)
-                                                   =   WRK-KAISU (4)                  
+      *************************IF      WRK-RECE04-KAISU (IDW 2 IDZ)
+      *************************                    =   WRK-KAISU (2)
+      *************************AND     WRK-RECE04-KAISU (IDW 3 IDZ)
+      *************************                    =   WRK-KAISU (3)
+      *************************AND     WRK-RECE04-KAISU (IDW 4 IDZ)
+      *************************                    =   WRK-KAISU (4)                  
+                               IF      WRK-RECE04-KAISU (IDW 1 IDZ)
+                                                   =   WRK-KAISU (1)
                                    MOVE    2               TO  FLG-OK                                    
                                ELSE                    
                                    MOVE    1               TO  FLG-OK                                    

@@ -51,6 +51,8 @@
       *  01.01.01    NACL-門脇    04.04.01  初診（乳幼児）（夜間・休日・
       *                                     深夜）加算の摘要欄記載
       *  01.01.02    NACL-門脇    04.04.26  ユーザーコメント追加対応
+      *  01.01.03    NACL-藤原    04.07.16  検査のまとめを回数テーブルの
+      *                                     合計で行うようにする 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1678,23 +1680,25 @@
                            IF      WRK-KAISU (1)   =   ZERO
                                MOVE    WRK-RECE64-KAISU (IDY 1 IDXX)
                                                    TO  WRK-KAISU (1)
-                               MOVE    WRK-RECE64-KAISU (IDY 2 IDXX)
-                                                   TO  WRK-KAISU (2)
-                               MOVE    WRK-RECE64-KAISU (IDY 3 IDXX)
-                                                   TO  WRK-KAISU (3)
-                               MOVE    WRK-RECE64-KAISU (IDY 4 IDXX)
-                                                   TO  WRK-KAISU (4)
+      *************************MOVE    WRK-RECE64-KAISU (IDY 2 IDXX)
+      *************************                    TO  WRK-KAISU (2)
+      *************************MOVE    WRK-RECE64-KAISU (IDY 3 IDXX)
+      *************************                    TO  WRK-KAISU (3)
+      *************************MOVE    WRK-RECE64-KAISU (IDY 4 IDXX)
+      *************************                    TO  WRK-KAISU (4)
                                MOVE    WRK-RECE64-HOUKNSKBN (IDY)
                                                    TO  WRK-HOUKNSKBN                    
                                MOVE    WRK-RECE64-KOHBUNRI (IDY)
                                                    TO  WRK-KOHBUNRI                  
                            END-IF
-                           IF      WRK-RECE64-KAISU (IDY 2 IDXX)
-                                                   =   WRK-KAISU (2)
-                           AND     WRK-RECE64-KAISU (IDY 3 IDXX)
-                                                   =   WRK-KAISU (3)
-                           AND     WRK-RECE64-KAISU (IDY 4 IDXX)
-                                                   =   WRK-KAISU (4)
+      *********************IF      WRK-RECE64-KAISU (IDY 2 IDXX)
+      *********************                        =   WRK-KAISU (2)
+      *********************AND     WRK-RECE64-KAISU (IDY 3 IDXX)
+      *********************                        =   WRK-KAISU (3)
+      *********************AND     WRK-RECE64-KAISU (IDY 4 IDXX)
+      *********************                        =   WRK-KAISU (4)
+                           IF      WRK-RECE64-KAISU (IDY 1 IDXX)
+                                                   =   WRK-KAISU (1)
                            AND     WRK-RECE64-HOUKNSKBN (IDY)
                                                    =   WRK-HOUKNSKBN
                            AND     WRK-RECE64-KOHBUNRI  (IDY)
@@ -1727,12 +1731,14 @@
                                UNTIL   IDW >       WRK-RECE64-MAX
                                OR      FLG-OK      =   1
                            IF      WRK-RECE64-FLG   (IDW)  =   "1"
-                               IF      WRK-RECE64-KAISU (IDW 2 IDZ)
-                                                   =   WRK-KAISU (2)
-                               AND     WRK-RECE64-KAISU (IDW 3 IDZ)
-                                                   =   WRK-KAISU (3)
-                               AND     WRK-RECE64-KAISU (IDW 4 IDZ)
-                                                   =   WRK-KAISU (4)                  
+      *************************IF      WRK-RECE64-KAISU (IDW 2 IDZ)
+      *************************                    =   WRK-KAISU (2)
+      *************************AND     WRK-RECE64-KAISU (IDW 3 IDZ)
+      *************************                    =   WRK-KAISU (3)
+      *************************AND     WRK-RECE64-KAISU (IDW 4 IDZ)
+      *************************                    =   WRK-KAISU (4)                  
+                               IF      WRK-RECE64-KAISU (IDW 1 IDZ)
+                                                   =   WRK-KAISU (1)
                                    MOVE    2               TO  FLG-OK                                    
                                ELSE                    
                                    MOVE    1               TO  FLG-OK                                    
