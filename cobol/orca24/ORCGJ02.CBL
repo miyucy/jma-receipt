@@ -394,7 +394,7 @@
            03  WRK-ERRMSG              PIC X(80).
            03  WRK-JIDMSG.
                05  WRK-JIDMSG1              PIC X(40).
-               05  WRK-JIDMSG2              PIC X(40).
+               05  WRK-JIDMSG2              PIC X(60).
       *
       *    診療コード
            03  WRK-SRYCD              PIC X(09).
@@ -9111,10 +9111,8 @@
                WHEN    "0118"
                    MOVE    "まとめ入力分もすべて診療日変更します。"
                                        TO  WRK-JIDMSG
-                   MOVE    "現在までの修正分の登録もしますので"
+                   MOVE    "現在までの修正分の登録もします。"
                                        TO  WRK-JIDMSG(39:)
-                   MOVE    "取消はできません"
-                                       TO  WRK-JIDMSG(73:)
       *
                WHEN    OTHER
                    MOVE    SPA-JIDCD
