@@ -61,6 +61,8 @@
       *                                     告示等識別区分１
       *                                     きざみ値計算識別
       *                                     注加算コードの追加  
+      *  01.02.02    NACL-門脇    04.07.30  電話再診、同日複数再診のコメント
+      *                                     修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -260,6 +262,9 @@
            03  WRK-KYUSEIYMD       PIC 9(08).
            03  WRK-HINKAIYMD       PIC 9(08).
            03  WRK-DAY             PIC 9(02).
+      *
+           03  WRK-HENSYU-KAISU    PIC X(02).
+           03  WRK-HENSYU-KAISU2   PIC X(04).
       *
            03  TBL-SANTEI-DAY.
                05  TB-SANTEI-DAY     PIC 9(02)   OCCURS  31.
@@ -1350,8 +1355,13 @@
            MOVE    ZERO                 TO  WRK-RECE05XX-SRYSURYO(1 1)
            MOVE    9                    TO  WRK-RECE05XX-YUKOKETA(1 1)
            MOVE    "電話再診（　　回）" TO  WRK-RECE05XX-NAME(1 1)
-           MOVE    CNT-DENWA(IDX)       TO  DAY-IDX
-           MOVE    TBL-DAY(DAY-IDX)     TO  WRK-RECE05XX-NAME(1 1)(11:4)
+      ***  MOVE    CNT-DENWA(IDX)       TO  DAY-IDX
+      ***  MOVE    TBL-DAY(DAY-IDX)     TO  WRK-RECE05XX-NAME(1 1)(11:4)
+      *
+           MOVE    CNT-DENWA(IDX)       TO  DAY-IDX2
+           PERFORM    20011-KAISU-HENSYU-SEC
+           MOVE    WRK-HENSYU-KAISU2    TO  WRK-RECE05XX-NAME(1 1)(11:4)
+      *
            MOVE    WRK-RECE05XX-SRYACT-TBL (1 1)
                                         TO  RECE051-SRYACT-TBL(1)
       *    同日複数再診のコメントの挿入
@@ -1360,8 +1370,13 @@
            MOVE    11                   TO  WRK-RECE05XX-YUKOKETA(2 1)
            MOVE    "同日複数再診（　　回）"
                                         TO  WRK-RECE05XX-NAME(2 1)
-           MOVE    CNT-DOUJITU(IDX)     TO  DAY-IDX
-           MOVE    TBL-DAY(DAY-IDX)     TO  WRK-RECE05XX-NAME(2 1)(15:4)
+      ***  MOVE    CNT-DOUJITU(IDX)     TO  DAY-IDX
+      ***  MOVE    TBL-DAY(DAY-IDX)     TO  WRK-RECE05XX-NAME(2 1)(15:4)
+      *
+           MOVE    CNT-DOUJITU(IDX)     TO  DAY-IDX2
+           PERFORM    20011-KAISU-HENSYU-SEC
+           MOVE    WRK-HENSYU-KAISU2    TO  WRK-RECE05XX-NAME(2 1)(15:4)
+      *
            MOVE    WRK-RECE05XX-SRYACT-TBL(2 1)
                                         TO  RECE051-SRYACT-TBL (2)
       *
@@ -1427,8 +1442,13 @@
            MOVE    ZERO                 TO  WRK-RECE05XX-SRYSURYO(1 1)
            MOVE    9                    TO  WRK-RECE05XX-YUKOKETA(1 1)
            MOVE    "電話再診（　　回）" TO  WRK-RECE05XX-NAME(1 1)
-           MOVE    CNT-DENWA(IDX)       TO  DAY-IDX
-           MOVE    TBL-DAY(DAY-IDX)     TO  WRK-RECE05XX-NAME(1 1)(11:4)
+      ***  MOVE    CNT-DENWA(IDX)       TO  DAY-IDX
+      ***  MOVE    TBL-DAY(DAY-IDX)     TO  WRK-RECE05XX-NAME(1 1)(11:4)
+      *
+           MOVE    CNT-DENWA(IDX)       TO  DAY-IDX2
+           PERFORM    20011-KAISU-HENSYU-SEC
+           MOVE    WRK-HENSYU-KAISU2    TO  WRK-RECE05XX-NAME(1 1)(11:4)
+      *
            MOVE    WRK-RECE05XX-SRYACT-TBL(1 1)
                                         TO  RECE051-SRYACT-TBL(1)
            WRITE   RECE051-REC
@@ -1494,8 +1514,13 @@
            MOVE    11                   TO  WRK-RECE05XX-YUKOKETA(1 1)
            MOVE    "同日複数再診（　　回）"
                                         TO  WRK-RECE05XX-NAME(1 1)
-           MOVE    CNT-DOUJITU(IDX)     TO  DAY-IDX
-           MOVE    TBL-DAY(DAY-IDX)     TO  WRK-RECE05XX-NAME(1 1)(15:4)
+      ***  MOVE    CNT-DOUJITU(IDX)     TO  DAY-IDX
+      ***  MOVE    TBL-DAY(DAY-IDX)     TO  WRK-RECE05XX-NAME(1 1)(15:4)
+      *
+           MOVE    CNT-DOUJITU(IDX)     TO  DAY-IDX2
+           PERFORM    20011-KAISU-HENSYU-SEC
+           MOVE    WRK-HENSYU-KAISU2    TO  WRK-RECE05XX-NAME(1 1)(15:4)
+      *
            MOVE    WRK-RECE05XX-SRYACT-TBL(1 1)
                                         TO  RECE051-SRYACT-TBL(1)
            WRITE   RECE051-REC
@@ -1503,6 +1528,32 @@
       *
            .
        2001-DOUJITU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    回数編集
+      *****************************************************************
+       20011-KAISU-HENSYU-SEC          SECTION.
+      *
+           MOVE    SPACE                TO  WRK-HENSYU-KAISU
+           MOVE    SPACE                TO  WRK-HENSYU-KAISU2
+      *
+           MOVE    DAY-IDX2             TO  WRK-HENSYU-KAISU
+           IF      WRK-HENSYU-KAISU(1:1) =  "0"
+               MOVE      SPACE          TO  WRK-HENSYU-KAISU(1:1)
+           END-IF
+      *
+           INITIALIZE                       ORCSKANACHKAREA
+           MOVE    "2"                  TO  KANACHK-SYORI
+           MOVE    WRK-HENSYU-KAISU     TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+           IF      KANACHK-RC      =   ZERO
+                MOVE    KANACHK-OUT-INPUT(1:4)
+                                        TO  WRK-HENSYU-KAISU2
+           END-IF
+      *
+           .
+       20011-KAISU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

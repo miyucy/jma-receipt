@@ -52,6 +52,7 @@
       *  01.01.04    NACL-門脇    04.04.15  脳血管疾患急性発症日のコメント
       *                                     対応
       *  01.01.05    NACL-門脇    04.06.07  コピー句０４５変更に伴う修正
+      *  01.01.06    NACL-門脇    04.07.30  同日複数再診のコメント修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -240,6 +241,9 @@
            03  WRK-KYUSEIYMD       PIC 9(08).
            03  WRK-HINKAIYMD       PIC 9(08).
            03  WRK-DAY             PIC 9(02).
+      *
+           03  WRK-HENSYU-KAISU    PIC X(02).
+           03  WRK-HENSYU-KAISU2   PIC X(04).
       *
            03  TBL-SANTEI-DAY.
                05  TB-SANTEI-DAY   PIC 9(02)   OCCURS  31.
@@ -1283,8 +1287,13 @@
            MOVE    11                   TO  WRK-RECE45XX-YUKOKETA(1 1)
            MOVE    "同日複数再診（　　回）"
                                         TO  WRK-RECE45XX-NAME(1 1)
-           MOVE    CNT-DOUJITU          TO  DAY-IDX
-           MOVE    TBL-DAY(DAY-IDX)     TO  WRK-RECE45XX-NAME(1 1)(15:4)
+      ***  MOVE    CNT-DOUJITU          TO  DAY-IDX
+      ***  MOVE    TBL-DAY(DAY-IDX)     TO  WRK-RECE45XX-NAME(1 1)(15:4)
+      *
+           MOVE    CNT-DOUJITU          TO  DAY-IDX2
+           PERFORM    20011-KAISU-HENSYU-SEC
+           MOVE    WRK-HENSYU-KAISU2    TO  WRK-RECE45XX-NAME(1 1)(15:4)
+      *
            MOVE    "1"                  TO  WRK-RECE45XX-SIKFLG(1 1)
            MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
                                         TO  RECE451-SRYACT-TBL(1)
@@ -1293,6 +1302,32 @@
       *
            .
        2001-DOUJITU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    回数編集
+      *****************************************************************
+       20011-KAISU-HENSYU-SEC          SECTION.
+      *
+           MOVE    SPACE                TO  WRK-HENSYU-KAISU
+           MOVE    SPACE                TO  WRK-HENSYU-KAISU2
+      *
+           MOVE    DAY-IDX2             TO  WRK-HENSYU-KAISU
+           IF      WRK-HENSYU-KAISU(1:1) =  "0"
+               MOVE      SPACE          TO  WRK-HENSYU-KAISU(1:1)
+           END-IF
+      *
+           INITIALIZE                       ORCSKANACHKAREA
+           MOVE    "2"                  TO  KANACHK-SYORI
+           MOVE    WRK-HENSYU-KAISU     TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+           IF      KANACHK-RC      =   ZERO
+                MOVE    KANACHK-OUT-INPUT(1:4)
+                                        TO  WRK-HENSYU-KAISU2
+           END-IF
+      *
+           .
+       20011-KAISU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
