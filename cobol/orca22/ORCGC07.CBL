@@ -572,13 +572,18 @@
                    UNTIL      (IDX     >   40  )  OR
                               (SPA-GMN-C02-SRYKAL (IDX)
                                            =   SPACE )
-               ADD     1                   TO  SPA-C07-SRYKAMAX
-               MOVE    SPA-GMN-C02-SRYKAL (IDX)
-                                           TO  SPA-C07-SRYKAL
-                                                  (SPA-C07-SRYKAMAX)
-               MOVE    SPA-GMN-C02-SRYKAMEIL (IDX)
-                                           TO  SPA-C07-SRYKAMEIL
-                                                  (SPA-C07-SRYKAMAX)
+               IF      SPA-GMN-C02-SRYKAL (IDX)
+                                           =   ZERO
+                   CONTINUE
+               ELSE
+                   ADD     1                   TO  SPA-C07-SRYKAMAX
+                   MOVE    SPA-GMN-C02-SRYKAL (IDX)
+                                               TO  SPA-C07-SRYKAL
+                                                      (SPA-C07-SRYKAMAX)
+                   MOVE    SPA-GMN-C02-SRYKAMEIL (IDX)
+                                               TO  SPA-C07-SRYKAMEIL
+                                                      (SPA-C07-SRYKAMAX)
+               END-IF    
            END-PERFORM
       *
            .
