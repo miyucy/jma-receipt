@@ -256,7 +256,9 @@
       *            返却領域のセット
                    MOVE   KOHPLUS-FTNKBN  TO LNK-SKOHPLUS-FTNKBN
                    MOVE   KOHPLUS-NYUSKJRYYKBN
-                                          TO LNK-SKOHPLUS-NYUSKJRYYKBN
+                                          TO  LNK-SKOHPLUS-NYUSKJRYYKBN
+               ELSE
+                   MOVE    3              TO  LNK-SKOHPLUS-RC
                END-IF
            END-IF
       *    公費付加情報クローズ
