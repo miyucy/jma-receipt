@@ -694,7 +694,7 @@
                MOVE    SPACE           TO  SPA-GMN-TEISEIYM
                PERFORM 4110-TEISEIYM-SEC
                IF      SPA-ERRCD       =   SPACE
-                   MOVE    11              TO  SPA-GMN-CUR
+                   MOVE    8               TO  SPA-GMN-CUR
                ELSE
                    MOVE    SPACE           TO  SPA-ERRCD
                    MOVE    8               TO  SPA-GMN-CUR
