@@ -22,6 +22,8 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  02/08/09  療養の給付請求書取扱料追加
+      *  01.00.02    NACL-多々納  04/03/15  Ｈ１６年４月改正追加
+      *                                     介達牽引追加
       *****************************************************************
       *
       *    算定履歴保険番号毎のコード
@@ -75,26 +77,31 @@
            03  FILLER              PIC X(12)   VALUE   " P 140002210".
       *    湿布処置２
            03  FILLER              PIC X(12)   VALUE   " P 140002310".
+      *    介達牽引
+           03  FILLER              PIC X(12)   VALUE   " T 140048010".
       *
       *    労災の救急医療管理加算
-           03  FILLER              PIC X(12)   VALUE   "   101110020".
-           03  FILLER              PIC X(12)   VALUE   "   101110030".
-      *
+           03  FILLER              PIC X(12)   VALUE   "  R101110020".
+           03  FILLER              PIC X(12)   VALUE   "  R101110030".
+      *    労災の再就労療養指導管理料
+           03  FILLER              PIC X(12)   VALUE   "   101130010".
       *    労災の療養の給付請求書取扱料
-           03  FILLER              PIC X(12)   VALUE   "   101130020".
-      *
+           03  FILLER              PIC X(12)   VALUE   "  R101130020".
+      *    労災の初診時ブラッシング料
+           03  FILLER              PIC X(12)   VALUE   "  R101400030".
       *    労災の手指の創傷に係る機能回復指導加算
-           03  FILLER              PIC X(12)   VALUE   "   101500080".
+           03  FILLER              PIC X(12)   VALUE   "  R101500080".
       *
        01  TBL-SANTEI-AREA-R       REDEFINES   TBL-SANTEI-AREA.
-           03  TBL-SANTEI-OCC      OCCURS   36  INDEXED   TBL-SAN.
+           03  TBL-SANTEI-OCC      OCCURS   39  INDEXED   TBL-SAN.
       *        リハビリ（K:個別、S:集団）
                05  TBL-RIGAKU-RYO      PIC X(01).
       *        リハビリ（R:理学,S:作業, G:言語)
-      *        消炎鎮痛処置(M:マッサージ等,K:器具等、P:湿布)
+      *        消炎鎮痛処置(M:マッサージ等,K:器具等、P:湿布
+      *                     T:介達牽引)
                05  TBL-RIGAKU-KBN      PIC X(01).
-      *        予備
-               05  FILLER              PIC X(01).
+      *        (R:労災毎１回)
+               05  TBL-RSI-KBN         PIC X(01).
       *
                05  TBL-SANTEI-SRYCD    PIC X(09).
       *
@@ -102,4 +109,6 @@
        01  FLG-HKNSAN                  PIC 9(01).
       *    リハビリ有無
        01  FLG-HKN-SANTEI              PIC 9(01).
+      *    労災毎算定
+       01  WRK-RSI-KBN                 PIC X(01).
       *

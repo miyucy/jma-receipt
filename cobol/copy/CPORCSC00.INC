@@ -150,6 +150,9 @@
            03  LNK-ORCSC-SAISIN-CHK        PIC  9(01).
       *消炎鎮痛処置当月内算定
            03  LNK-ORCSC-SYOEN-CNT         PIC  9(03).
+      *急性発生１８０日以内
+           03  LNK-ORCSC-KYUSEI-180          PIC  X(08).
+           03  LNK-ORCSC-KYUSEI-FLG          PIC  9(01).
       *当月外来管理加算の取れない患者
            03  LNK-ORCSC-GAIRAI-NASI       PIC  9(01).
       *時間外特例区分
