@@ -360,8 +360,8 @@
       *
            MOVE    ZERO                TO  CNT-LINE
       *
-           PERFORM             UNTIL   FLG-END     =   1
-                               OR      CNT-LINE    =   15 
+           PERFORM             UNTIL   FLG-TENSU   =   1
+                               OR      CNT-LINE    =  15 
       *
                ADD     1                  TO  CNT-LINE
       *
