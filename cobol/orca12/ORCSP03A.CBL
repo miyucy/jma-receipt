@@ -509,9 +509,9 @@
                        GO      TO      100-HKNJANUM-CHK-EXT
                    END-IF
       *            保険区分を変更する
-                   IF      SPA-GMN-HKNNUM      =   SPACE
+      ***          IF      SPA-GMN-HKNNUM      =   SPACE
                         MOVE    WRK-HKNJA-HKNNUM    TO  SPA-GMN-HKNNUM
-                   END-IF
+      ****         END-IF
                END-IF
            END-IF
            .
@@ -593,7 +593,7 @@
            MOVE    SPACE               TO  WRK-HKNHBTNUM-2
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-HKNMAX
-               IF      SPA-GMN-HKNNUML(IDX)  =   SPA-GMN-HKNNUM
+               IF      SPA-GMN-HKNNUML(IDX)  =   WRK-HKNJA-HKNNUM
                     MOVE    SPA-NAI-HKNHBTNUM (IDX)
                                              TO  WRK-HKNHBTNUM-1
                END-IF
@@ -602,6 +602,16 @@
                                              TO  WRK-HKNHBTNUM-2
                END-IF
            END-PERFORM
+           IF     (WRK-HKNHBTNUM-1     =   SPACE )  AND
+                  (WRK-HKNHBTNUM-2     =   SPACE )
+               IF     (WRK-HKNJA-HKNNUM    =   "060"
+                                           OR  "001" )  OR
+                      (SPA-MAE-HKNNUM      =   "060"
+                                           OR  "001" )
+                   MOVE    "0042"          TO  SPA-ERRCD
+                   MOVE    8               TO  SPA-GMN-CUR
+               END-IF
+           END-IF
            IF      WRK-HKNHBTNUM-1     NOT =   WRK-HKNHBTNUM-2
                MOVE    "0042"          TO  SPA-ERRCD
                MOVE    8               TO  SPA-GMN-CUR
@@ -625,7 +635,7 @@
                    PERFORM VARYING     IDX     FROM    1   BY  1
                            UNTIL       IDX     >   SPA-GMN-HKNMAX
                        IF      SPA-GMN-HKNNUML(IDX)  =   SPA-GMN-HKNNUM
-                            MOVE    SPA-GMN-HKNNUMLST (IDX)
+                           MOVE    SPA-GMN-HKNNUMLST (IDX)
                                                TO  SPA-GMN-HKNNUM-G
       *                    識別
                            MOVE    SPA-NAI-HKNSBTKBN (IDX)
