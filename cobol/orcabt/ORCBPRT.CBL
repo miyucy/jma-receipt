@@ -330,19 +330,16 @@
                WHEN    "2"               
                    MOVE    PRTDATA-SITEKBN     TO  PRT-SITEKBN
                WHEN    OTHER
-                   SEARCH  PRTCONST-TX VARYING TBL-IDX
+                   SET     PRTCONST-IDX        TO  1
+                   SEARCH  PRTCONST-TX VARYING PRTCONST-IDX
                        AT  END
                            MOVE    "2"         TO  PRT-SITEKBN
-                       WHEN    PRTCONST-PRTID (TBL-IDX)
+                       WHEN    PRTCONST-PRTID (PRTCONST-IDX)
                                                =   PRTDATA-PRTID
                            MOVE    "1"         TO  PRT-SITEKBN
                    END-SEARCH
            END-EVALUATE                                                                
            MOVE    PRTDATA-PRTDATA     TO  PRT-PRTDATA
-      *???
-           DISPLAY "DATA=" PRTDATA-PRTID "##" PRTDATA-SITEKBN "##"
-                           PRT-SITEKBN "##"     
-      *??                     
            WRITE   PRT-REC
       *
            ADD     1                   TO  CNT-OUT     
