@@ -2339,7 +2339,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>15</text_max_length>
 	  <text></text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -2367,7 +2367,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>15</text_max_length>
 	  <text></text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -5584,7 +5584,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>15</text_max_length>
 	  <text></text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -5612,7 +5612,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>15</text_max_length>
 	  <text></text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -5752,7 +5752,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>7</text_max_length>
 	  <text></text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -5836,14 +5836,14 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>15</text_max_length>
 	  <text></text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>P021_RENTEL2</name>
-	  <x>276</x>
+	  <x>268</x>
 	  <y>208</y>
 	  <width>130</width>
 	  <height>24</height>
@@ -5920,7 +5920,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>7</text_max_length>
 	  <text></text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -6004,7 +6004,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>15</text_max_length>
 	  <text></text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -6060,7 +6060,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>7</text_max_length>
 	  <text></text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -6144,7 +6144,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>15</text_max_length>
 	  <text></text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
