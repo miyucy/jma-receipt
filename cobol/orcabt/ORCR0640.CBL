@@ -5379,14 +5379,14 @@
                                 COMPUTE  WRK-KINGAKU2  =
                                       RECE62-TOTALTEN(5) *  10
                            END-EVALUATE
-                           IF   WRK-KINGAKU2  >  361500
-                              COMPUTE  WRK-KINGAKU3 =
-                              (( WRK-KINGAKU2 -  361500 ) * 0.01 ) + 0.5
-                              COMPUTE  WRK-KINGAKU  =   72300
-                                                    +   WRK-KINGAKU3
-                           ELSE
+      ***                  IF   WRK-KINGAKU2  >  361500
+      ***                     COMPUTE  WRK-KINGAKU3 =
+      ***                     (( WRK-KINGAKU2 -  361500 ) * 0.01 ) + 0.5
+      ***                     COMPUTE  WRK-KINGAKU  =   72300
+      ***                                           +   WRK-KINGAKU3
+      ***                  ELSE
                               MOVE    72300  TO   WRK-KINGAKU
-                           END-IF                     
+      ***                  END-IF                     
                            PERFORM   ICHIBUFTN-KOH-SET-SEC
                         ELSE
                            MOVE    40200     TO   WRK-KINGAKU
