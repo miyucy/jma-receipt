@@ -114,7 +114,7 @@
                05  WRK-SMM2            PIC 9(02).
                05  WRK-SDD2            PIC 9(02).
       *
-           03  WRK-POST                PIC X(07).
+           03  WRK-SAVE-POST           PIC X(07).
            03  WRK-ERRCD               PIC 9(02).
       *
       *    出力ファイル領域
@@ -260,10 +260,10 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           IF      IN-POST     NOT =   WRK-POST
+           IF      IN-POST     NOT =   WRK-SAVE-POST
       *        ユーザーカスタマイズ分削除処理
                PERFORM 2010-USER-DELETE-SYORI-SEC
-               MOVE    IN-POST     TO  WRK-POST
+               MOVE    IN-POST     TO  WRK-SAVE-POST
            END-IF
       *
            MOVE    ZERO            TO  WRK-ERRCD
