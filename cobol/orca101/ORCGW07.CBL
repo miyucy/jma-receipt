@@ -1724,14 +1724,18 @@
                        PERFORM 4108-HAKHOUFLG-CHK-SEC
                    END-IF
                WHEN    "1039"
+      *            請求書兼領収書発行区分（外来）チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4110-SYUSKYPRTG-CHK-SEC
+                   END-IF
+      *            請求書兼領収書発行区分（入院）チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4110-SYUSKYPRTN-CHK-SEC
+                   END-IF
       *            入金管理区分チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4109-SYUNYKNKNRKBN-CHK-SEC
                    END-IF
-      *            請求書兼領収書発行区分（外来）チェック
-                   PERFORM 4110-SYUSKYPRTG-CHK-SEC
-      *            請求書兼領収書発行区分（入院）チェック
-                   PERFORM 4110-SYUSKYPRTN-CHK-SEC
                WHEN    "1042"
       *            主病名確認メッセージ表示有無チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -2608,7 +2612,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    40              TO  SPA-GMN-CUR
+               MOVE    42              TO  SPA-GMN-CUR
                MOVE    "0025"          TO  SPA-ERRCD
            END-IF
       *
@@ -2631,7 +2635,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    41              TO  SPA-GMN-CUR
+               MOVE    40              TO  SPA-GMN-CUR
                MOVE    "0026"          TO  SPA-ERRCD
            END-IF
       *
@@ -2654,7 +2658,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    42              TO  SPA-GMN-CUR
+               MOVE    41              TO  SPA-GMN-CUR
                MOVE    "0026"          TO  SPA-ERRCD
            END-IF
       *
@@ -4156,11 +4160,11 @@
                    MOVE  "HAKHOUFLG"       TO   MCP-WIDGET
       *
                WHEN    40
-                   MOVE  "SYUNYKNKNRKBN"   TO   MCP-WIDGET
-               WHEN    41
                    MOVE  "SYUSKYPRTG"      TO   MCP-WIDGET
-               WHEN    42
+               WHEN    41
                    MOVE  "SYUSKYPRTN"      TO   MCP-WIDGET
+               WHEN    42
+                   MOVE  "SYUNYKNKNRKBN"   TO   MCP-WIDGET
       *
                WHEN    70
                    MOVE  "MSG1_DSPKBN"     TO   MCP-WIDGET
@@ -4309,11 +4313,11 @@
                WHEN    "HAKHOUFLG"
                    MOVE    99              TO  SPA-GMN-CUR
       *
-               WHEN    "SYUNYKNKNRKBN"
-                   MOVE    41              TO  SPA-GMN-CUR
                WHEN    "SYUSKYPRTG"
-                   MOVE    42              TO  SPA-GMN-CUR
+                   MOVE    41              TO  SPA-GMN-CUR
                WHEN    "SYUSKYPRTN"
+                   MOVE    42              TO  SPA-GMN-CUR
+               WHEN    "SYUNYKNKNRKBN"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN    "MSG1_DSPKBN"
