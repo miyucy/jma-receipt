@@ -105,6 +105,7 @@ RECORD_files = \
 	KID1.rec \
 	KID2.rec \
 	L01.rec \
+	L02.rec \
 	L99.rec \
 	LERR.rec \
 	LID1.rec \
