@@ -691,6 +691,7 @@
                WHEN    20
       *            ´µ¼Ô¸¡º÷¤Ø
                    MOVE    ZERO                TO  SPA-P02-SYORI
+                   MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
                WHEN    10
       *            ¿·µ¬´µ¼Ô¸¡º÷¤Ø
                    IF      SPTNUM-SYUBETU       =   1
@@ -1242,6 +1243,7 @@
                        GO      TO      4100-PTNUM-SYORI-EXT
                    END-IF
                WHEN    20
+                   MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
       *            ´µ¼Ô¸¡º÷¤Ø
                    MOVE    SPACE               TO  LINKAREA
                    MOVE    SPA-KYOUTU          TO  LNK-COMMON

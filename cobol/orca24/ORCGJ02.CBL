@@ -2971,6 +2971,7 @@
                    MOVE    "0017"              TO  SPA-ERRCD
                    GO      TO     41010-PTNUM-SYORI-EXT
                WHEN    20
+                   MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
       *            »áÌ¾¸¡º÷¤Ø
                    MOVE    SPACE               TO  LINKAREA
                    MOVE    SPA-KYOUTU          TO  LNK-COMMON
