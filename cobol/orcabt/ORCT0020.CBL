@@ -116,6 +116,9 @@
       *    Ä¢É¼£Ð£ÇÌ¾
            COPY    "CPSK1035.INC".
       *
+      *    Äê´üÀÁµá¾ðÊó
+           COPY    "CPSK5010.INC".
+      *
       *    ¼ýÇ¼¥Þ¥¹¥¿¡¼
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
@@ -198,7 +201,7 @@
                                                TEIKI2P-HOSPID
                                                TEIKI2P-STAFFCD
                                                TEIKI2P-ERRFILE
-      *
+                                               TEIKI2P-SKYPRT
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -217,6 +220,23 @@
            MOVE    ZERO                TO  FLG-END
       *
            MOVE    TEIKI2P-ERRFILE     TO  TEIKIERR
+      *
+      *    Äê´üÀÁµá¾ðÊó
+           INITIALIZE                      SYS-5010-REC
+           MOVE    "5010"              TO  SYS-5010-KANRICD
+           MOVE    "*"                 TO  SYS-5010-KBNCD
+           MOVE    TEIKI2P-SYSYMD      TO  ORC-DBYMD
+           MOVE    SYS-5010-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-5010-REC
+           ELSE
+               INITIALIZE                  SYS-5010-REC
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
       *
            .
        100-INIT-EXT.
@@ -283,7 +303,9 @@
            PERFORM 20011-PRINT-PG-EDIT-SEC
       *
       *    Æþ±¡ÀÁµá½ñ°õºþ
-           CALL    WRK-PRINT-PG    USING   ORCHCN03AREA
+           IF    ( ORCHCN03-CNT    >   ZERO )
+               CALL    WRK-PRINT-PG    USING   ORCHCN03AREA
+           END-IF
       *
       *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
            MOVE    WRK-DBPATH          TO  ORC-DBPATH
@@ -380,6 +402,12 @@
            MOVE    "PTTEIKIRRK-KEY6"   TO  ORC-DBPATH
            PERFORM 910-DBCLOSE-SEC
       *
+           IF    ( TEIKI2P-SKYPRT      =   "2" )
+               IF    ( PTTEIKIRRK-SKYMONEY <=   ZERO )
+                   GO  TO  20011-HENSYU-EXT
+               END-IF
+           END-IF
+      *
            COMPUTE CNT-OUT1    =   CNT-OUT1    +   1
       *
       *    ÀÁµá½ñ¥µ¥Ö´µ¼Ô¾ðÊó¥Ñ¥é¥á¥¿ÀßÄê
@@ -394,7 +422,15 @@
                                        TO  ORCHCN03-SEIKYU-TAX-SAI
                                                               (CNT-OUT1)
            MOVE    PTTEIKIRRK-SKYMONEY TO  ORCHCN03-SEIKYU    (CNT-OUT1)
+      *
            MOVE    ZERO                TO  ORCHCN03-NYUKIN    (CNT-OUT1)
+           IF    ( SYS-5010-NYUKINKBN      =   "2" )
+            AND  ( SYS-5010-NYUKINPRTKBN   =   "2" )
+               IF    ( PTTEIKIRRK-SKYMONEY >   ZERO )
+                   MOVE    PTTEIKIRRK-SKYMONEY
+                                       TO  ORCHCN03-NYUKIN    (CNT-OUT1)
+               END-IF
+           END-IF
       *
            IF    ( PTTEIKIRRK-SKYUPDFLG    =   1 )
                MOVE    2               TO  ORCHCN03-HAKKOFLG  (CNT-OUT1)

@@ -412,7 +412,14 @@ O03	{
 		PAGE	{
 			value	number(4);
 		};
-		PRTJYUN_COMBO	{
+		CMB_SKYPRTKBN	{
+			SKYPRTKBN	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[05];
+		};
+		CMB_PRTJYUN	{
 			PRTJYUN	{
 				value	varchar(25);
 			};

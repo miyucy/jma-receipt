@@ -324,10 +324,10 @@ W24	{
 		};
 		CMB_SKYPRTKBN	{
 			SKYPRTKBN	{
-				value	varchar(20);
+				value	varchar(30);
 			};
 			count	int;
-			item	varchar(20)[05];
+			item	varchar(30)[05];
 		};
 		CMB_SKYMISYUPRTKBN	{
 			SKYMISYUPRTKBN	{

@@ -638,7 +638,7 @@
                                                      PIC X(01).
                            13                        PIC X(01).
                            13   SPA-GMN-I04-SKYPRTOUT-NM
-                                                     PIC X(18).
+                                                     PIC X(28).
       *                轉情據抸踏�笆�
                        11  SPA-GMN-I04-TAIPRTOUT.
                            13   SPA-GMN-I04-TAIPRTOUT-CD
@@ -714,8 +714,8 @@
                            13  SPA-GMN-I04-SKYPRTOUT-CNT
                                                      PIC S9(9)   BINARY.
                            13  SPA-GMN-I04-SKYPRTOUT-ITM
-                                                     PIC X(20)
-                                                     OCCURS  2
+                                                     PIC X(30)
+                                                     OCCURS  3
                                                INDEXED BY  CMB-IDX12.
       *                    轉情據抸踏
                        11  SPA-GMN-I04-CMB-TAIPRTOUT.

@@ -81,6 +81,12 @@
                        09                     PIC   X(01).
                        09  SPA-GMN-NYUKINKBNMEI
                                               PIC   X(58).
+                   07  SPA-GMN-NYUKINPRTKBN-G.
+                       09  SPA-GMN-NYUKINPRTKBN
+                                              PIC   X(01).
+                       09                     PIC   X(01).
+                       09  SPA-GMN-NYUKINPRTKBNMEI
+                                              PIC   X(28).
                    07  SPA-GMN-SAISYORIKBN-G.
                        09  SPA-GMN-SAISYORIKBN  PIC   X(01).
                        09                     PIC   X(01).
@@ -93,6 +99,13 @@
                            11                      PIC   X(01).
                            11  SPA-GMN-NYUKINKBNMEIL
                                                    PIC   X(58).
+                   07  SPA-GMN-NYUKINPRTKBNLST-G.
+                       09  SPA-GMN-NYUKINPRTKBN-MAX    PIC   9(03).
+                       09  SPA-GMN-NYUKINPRTKBNLST     OCCURS  2.
+                           11  SPA-GMN-NYUKINPRTKBNL   PIC   X(01).
+                           11                          PIC   X(01).
+                           11  SPA-GMN-NYUKINPRTKBNMEIL
+                                                       PIC   X(28).
                    07  SPA-GMN-SAISYORIKBNLST-G.
                        09  SPA-GMN-SAISYORIKBN-MAX   PIC   9(03).
                        09  SPA-GMN-SAISYORIKBNLST    OCCURS  2.
@@ -347,6 +360,16 @@
            MOVE    SPA-GMN-NYUKINKBNLST(1)
                                        TO  SPA-GMN-NYUKINKBN-G
       *
+           MOVE    2                   TO  SPA-GMN-NYUKINPRTKBN-MAX
+           MOVE    "1"                 TO  SPA-GMN-NYUKINPRTKBNL(1)
+           MOVE    "入金額を印字しない"
+                                       TO  SPA-GMN-NYUKINPRTKBNMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-NYUKINPRTKBNL(2)
+           MOVE    "入金額を印字する"
+                                       TO  SPA-GMN-NYUKINPRTKBNMEIL(2)
+           MOVE    SPA-GMN-NYUKINPRTKBNLST(1)
+                                       TO  SPA-GMN-NYUKINPRTKBN-G
+      *
            MOVE    2                   TO  SPA-GMN-SAISYORIKBN-MAX
            MOVE    "1"                 TO  SPA-GMN-SAISYORIKBNL(1)
            MOVE    "請求取消後、再作成"
@@ -363,42 +386,59 @@
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD.
            MOVE    SYS-5010-REC        TO  MCPDATA-REC.
            PERFORM 900-SYSKANRI-INV-SEC.
-           IF  FLG-SYSKANRI   =   ZERO
+           IF    ( FLG-SYSKANRI   =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-5010-REC
-               PERFORM VARYING IDX1    FROM    1   BY  1
-                       UNTIL ( IDX1    >   3 )
-                   MOVE    SYS-5010-SEIKYU-DAY (IDX1)
+           ELSE
+               INITIALIZE                  SYS-5010-REC
+           END-IF
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   3 )
+               MOVE    SYS-5010-SEIKYU-DAY (IDX1)
                                        TO  SPA-NAI-SEIKYU (IDX1)
                                            SPA-GMN-SEIKYU (IDX1)
-                   IF    ( SYS-5010-SEIKYU-DAY (IDX1)
-                                       =   ZERO )
-                       MOVE    SPACE   TO  SPA-GMN-SEIKYU (IDX1)
-                   END-IF
-               END-PERFORM
+               IF    ( SYS-5010-SEIKYU-DAY (IDX1)
+                                   =   ZERO )
+                   MOVE    SPACE       TO  SPA-GMN-SEIKYU (IDX1)
+               END-IF
+           END-PERFORM
       *
-               PERFORM VARYING IDX1    FROM    1   BY  1
+           PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   SPA-GMN-NYUKINKBN-MAX )
       *
-                   IF    ( SYS-5010-NYUKINKBN
+               IF    ( SYS-5010-NYUKINKBN
                                    =   SPA-GMN-NYUKINKBNL (IDX1))
-                       MOVE    SPA-GMN-NYUKINKBNLST (IDX1)
+                   MOVE    SPA-GMN-NYUKINKBNLST (IDX1)
                                        TO  SPA-GMN-NYUKINKBN-G
-                   END-IF
+               END-IF
       *
-               END-PERFORM
+           END-PERFORM
       *
-               PERFORM VARYING IDX1    FROM    1   BY  1
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-NYUKINPRTKBN-MAX )
+      *
+               IF    ( SYS-5010-NYUKINPRTKBN
+                                   =   SPA-GMN-NYUKINPRTKBNL (IDX1))
+                   MOVE    SPA-GMN-NYUKINPRTKBNLST (IDX1)
+                                       TO  SPA-GMN-NYUKINPRTKBN-G
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   SPA-GMN-SAISYORIKBN-MAX )
       *
-                   IF    ( SYS-5010-SAISYORIKBN
+               IF    ( SYS-5010-SAISYORIKBN
                                    =   SPA-GMN-SAISYORIKBNL (IDX1))
-                       MOVE    SPA-GMN-SAISYORIKBNLST (IDX1)
+                   MOVE    SPA-GMN-SAISYORIKBNLST (IDX1)
                                        TO  SPA-GMN-SAISYORIKBN-G
-                   END-IF
+               END-IF
       *
-               END-PERFORM
+           END-PERFORM
       *
-           END-IF.
+           IF    ( SPA-GMN-NYUKINKBN   =   "1" )
+               MOVE    SPACE           TO  SPA-GMN-NYUKINPRTKBN-G
+           END-IF
       *
            .
       *
@@ -460,11 +500,12 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
-           MOVE    W23-SEIKYU01    TO  SPA-GMN-SEIKYU01
-           MOVE    W23-SEIKYU02    TO  SPA-GMN-SEIKYU02
-           MOVE    W23-SEIKYU03    TO  SPA-GMN-SEIKYU03
-           MOVE    W23-NYUKINKBN   TO  SPA-GMN-NYUKINKBN-G
-           MOVE    W23-SAISYORIKBN TO  SPA-GMN-SAISYORIKBN-G
+           MOVE    W23-SEIKYU01        TO  SPA-GMN-SEIKYU01
+           MOVE    W23-SEIKYU02        TO  SPA-GMN-SEIKYU02
+           MOVE    W23-SEIKYU03        TO  SPA-GMN-SEIKYU03
+           MOVE    W23-NYUKINKBN       TO  SPA-GMN-NYUKINKBN-G
+           MOVE    W23-NYUKINPRTKBN    TO  SPA-GMN-NYUKINPRTKBN-G
+           MOVE    W23-SAISYORIKBN     TO  SPA-GMN-SAISYORIKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -495,6 +536,12 @@
       *
       *    入金区分チェック
            PERFORM 4100-NYUKINKBN-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    入金額印字区分
+           PERFORM 4100-NYUKINPRTKBN-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -662,6 +709,41 @@
        4100-NYUKINKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入金額印字区分チェック処理
+      *****************************************************************
+       4100-NYUKINPRTKBN-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-NYUKINKBN      =   "1" )
+               MOVE    SPACE           TO  SPA-GMN-NYUKINPRTKBN-G
+               GO  TO  4100-NYUKINPRTKBN-CHK-EXT
+           END-IF
+      *
+           IF    ( SPA-GMN-NYUKINPRTKBN-G =   SPACE )
+               MOVE    SPA-GMN-NYUKINPRTKBNLST(1)
+                                       TO  SPA-GMN-NYUKINPRTKBN-G
+               GO  TO  4100-NYUKINPRTKBN-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   SPA-GMN-NYUKINPRTKBN-MAX )
+                     OR  ( SPA-GMN-NYUKINPRTKBN
+                                   =   SPA-GMN-NYUKINPRTKBNL (IDXA))
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDXA    >   SPA-GMN-NYUKINPRTKBN-MAX )
+               MOVE    SPA-GMN-NYUKINPRTKBNLST(1)
+                                       TO  SPA-GMN-NYUKINPRTKBN-G
+           ELSE
+               MOVE    SPA-GMN-NYUKINPRTKBNLST(IDXA)
+                                       TO  SPA-GMN-NYUKINPRTKBN-G
+           END-IF
+      *
+           .
+      *
+       4100-NYUKINPRTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    再処理区分チェック処理
       *****************************************************************
        4100-SAISYORIKBN-CHK-SEC          SECTION.
@@ -742,6 +824,7 @@
            MOVE    SPA-NAI-SEIKYU02        TO  SYS-5010-SEIKYU-DAY2
            MOVE    SPA-NAI-SEIKYU03        TO  SYS-5010-SEIKYU-DAY3
            MOVE    SPA-GMN-NYUKINKBN       TO  SYS-5010-NYUKINKBN
+           MOVE    SPA-GMN-NYUKINPRTKBN    TO  SYS-5010-NYUKINPRTKBN
            MOVE    SPA-GMN-SAISYORIKBN     TO  SYS-5010-SAISYORIKBN
            MOVE    SPA-TERMID              TO  SYS-5010-TERMID
            MOVE    SPA-OPID                TO  SYS-5010-OPID
@@ -832,6 +915,13 @@
                MOVE    SPA-GMN-NYUKINKBNLST(IDX1)
                                            TO  W23-NYUKINKBNLST(IDX1)
            END-PERFORM
+           MOVE    SPA-GMN-NYUKINPRTKBN-G     TO  W23-NYUKINPRTKBN
+           MOVE    SPA-GMN-NYUKINPRTKBN-MAX   TO  W23-NYUKINPRTKBN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-NYUKINPRTKBN-MAX )
+               MOVE    SPA-GMN-NYUKINPRTKBNLST(IDX1)
+                                           TO  W23-NYUKINPRTKBNLST(IDX1)
+           END-PERFORM
            MOVE    SPA-GMN-SAISYORIKBN-G     TO  W23-SAISYORIKBN
            MOVE    SPA-GMN-SAISYORIKBN-MAX   TO  W23-SAISYORIKBN-COUNT
            PERFORM VARYING IDX1    FROM    1   BY  1
@@ -839,6 +929,14 @@
                MOVE    SPA-GMN-SAISYORIKBNLST(IDX1)
                                            TO  W23-SAISYORIKBNLST(IDX1)
            END-PERFORM
+      *
+           IF    ( SPA-GMN-NYUKINKBN       =   "1" )
+               MOVE    WIDGET-INSENSITIVE  TO  W23-NYUKINPRTKBN-STATE
+                                               W23-NYUKINPRTKBNLST-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  W23-NYUKINPRTKBN-STATE
+                                               W23-NYUKINPRTKBNLST-STATE
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC.
       *
@@ -886,7 +984,7 @@
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                    TO  FLG-END              
+           MOVE    1                    TO  FLG-END
       *
            .
        510-ERRSET-EXT.
@@ -933,6 +1031,8 @@
                PERFORM 50011-CUR-SET-SEC
           END-IF
       *
+           PERFORM 50012-CUR-SKIP-SEC
+      *
            EVALUATE    SPA-GMN-CUR
            WHEN    01
                    MOVE    "SEIKYU01"      TO  MCP-WIDGET
@@ -944,6 +1044,8 @@
                    MOVE    "NYUKINKBN"     TO  MCP-WIDGET
            WHEN    05
                    MOVE    "SAISYORIKBN"   TO  MCP-WIDGET
+           WHEN    06
+                   MOVE    "NYUKINPRTKBN"  TO  MCP-WIDGET
            WHEN    101
                    MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE.
@@ -958,26 +1060,36 @@
       *
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "SEIKYU01"
-                   MOVE    1           TO  SPA-GMN-CUR
-           WHEN    "SEIKYU02"
                    MOVE    2           TO  SPA-GMN-CUR
-           WHEN    "SEIKYU03"
+           WHEN    "SEIKYU02"
                    MOVE    3           TO  SPA-GMN-CUR
-           WHEN    "NYUKINKBN"
+           WHEN    "SEIKYU03"
                    MOVE    4           TO  SPA-GMN-CUR
-           WHEN    "SAISYORIKBN"
+           WHEN    "NYUKINKBN"
+                   MOVE    6           TO  SPA-GMN-CUR
+           WHEN    "NYUKINPRTKBN"
                    MOVE    5           TO  SPA-GMN-CUR
-           END-EVALUATE
-      *
-           EVALUATE    WRK-MCP-WIDGET
            WHEN    "SAISYORIKBN"
-               MOVE    101             TO  SPA-GMN-CUR
-           WHEN    OTHER
-               COMPUTE SPA-GMN-CUR =   SPA-GMN-CUR +   1
+                   MOVE    101         TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .
        50011-CUR-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    カーソルスキップ処理
+      *****************************************************************
+       50012-CUR-SKIP-SEC              SECTION.
+      *
+           IF    ( SPA-GMN-CUR         =   6 )
+               IF   ( W23-NYUKINPRTKBN-STATE   =   WIDGET-INSENSITIVE )
+                   MOVE    7           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+      *
+       50012-CUR-SKIP-EXT.
            EXIT.
       *****************************************************************
       *    確認メッセージ表示理

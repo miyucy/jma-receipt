@@ -82,10 +82,22 @@
                    07  SPA-GMN-CREYMD              PIC X(22).
                    07  SPA-GMN-PAGEH               PIC 9(04).
                    07  SPA-GMN-KENSUH              PIC 9(04).
+                   07  SPA-GMN-SKYPRTKBN-G.
+                       09  SPA-GMN-SKYPRTKBN       PIC X(01).
+                       09  SPA-GMN-F1              PIC X(01).
+                       09  SPA-GMN-SKYPRTKBNMEI
+                                                   PIC X(28).
                    07  SPA-GMN-PRTJYUN-G.
                        09  SPA-GMN-PRTJYUN         PIC X(02).
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-PRTJYUNMEI      PIC X(22).
+                   07  SPA-GMN-SKYPRTKBNLST-G.
+                       09  SPA-GMN-SKYPRTKBN-MAX   PIC 9(05).
+                       09  SPA-GMN-SKYPRTKBNLST    OCCURS  5.
+                           11  SPA-GMN-SKYPRTKBNL  PIC X(01).
+                           11  SPA-GMN-F1L         PIC X(01).
+                           11  SPA-GMN-SKYPRTKBNMEIL
+                                                   PIC X(28).
                    07  SPA-GMN-PRTJYUNLST          OCCURS  5.
                        09  SPA-GMN-PRTJYUNL        PIC X(02).
                        09  SPA-GMN-F1L             PIC X(01).
@@ -135,11 +147,13 @@
       *
       *    添字領域
        01  IDX-AREA.
+           03  IDX0                PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDX4                PIC 9(04).
            03  IDX5                PIC 9(04).
+           03  IDX-CMB             PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -165,6 +179,10 @@
       *     
            03  WRK-JYUNI           PIC 9(02).
            03  WRK-CNT             PIC 9(05).
+           03  WRK-CMB-CD          PIC X(10).
+           03  WRK-CMB-ITM-G.
+               05  WRK-CMB-ITM     PIC X(200).
+           03  WRK-MCP-WIDGET      PIC X(64).
       *
       *
        01  WRK-HEN-AREA.
@@ -207,6 +225,8 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
+      *
+           COPY    "CPSK5000.INC".
       *
            COPY    "CPSK5001.INC".
       *
@@ -365,6 +385,8 @@
            END-IF
       *
            EVALUATE    SPA-MOTOPG
+               WHEN    "O99"
+                   GO      TO      300-SCREEN-EXT
       *    作表処理
                WHEN    "OID1"
                    PERFORM 330-OID1-SET-SEC
@@ -414,6 +436,18 @@
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMDG3        TO  SPA-GMN-CREYMD
       *
+      *    請求書発行区分
+           MOVE    "1"               TO  SPA-GMN-SKYPRTKBNL    (1)
+           MOVE    "すべて発行"
+                                     TO  SPA-GMN-SKYPRTKBNMEIL (1)
+           MOVE    "2"               TO  SPA-GMN-SKYPRTKBNL    (2)
+           MOVE    "請求額があるもののみ"
+                                     TO  SPA-GMN-SKYPRTKBNMEIL (2)
+      *
+           MOVE    2                 TO  SPA-GMN-SKYPRTKBN-MAX
+      *
+           MOVE    SPA-GMN-SKYPRTKBNLST(01)
+                                     TO  SPA-GMN-SKYPRTKBN-G
       *
       *    印刷順
            MOVE    "01"                  TO  SPA-GMN-PRTJYUNL    (1)
@@ -429,6 +463,21 @@
       *
            MOVE    SPA-GMN-PRTJYUNLST(01)
                                          TO  SPA-GMN-PRTJYUN-G
+      *
+           MOVE    ZERO            TO  FLG-SYSKANRI
+           INITIALIZE                  SYS-5000-REC
+           MOVE    "5000"          TO  SYS-5000-KANRICD
+           MOVE    "*"             TO  SYS-5000-KBNCD
+           MOVE    SYS-5000-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           MOVE    MCPDATA-REC     TO  SYS-5000-REC
+      *
+           MOVE    SYS-5000-SKYPRTKBN
+                                   TO  WRK-CMB-CD
+           PERFORM 4200-SKYPRTKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM NOT =   SPACE )
+               MOVE    WRK-CMB-ITM TO   SPA-GMN-SKYPRTKBN-G
+           END-IF
       *
            IF    ( SPA-GMN-PRTJYUN     =   "01"    OR  "02" )
                PERFORM 3101-PAGE-HENSYU-01-SEC
@@ -700,6 +749,8 @@
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
+           MOVE    MCP-WIDGET      TO  WRK-MCP-WIDGET
+      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
@@ -774,15 +825,84 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
+           MOVE    MCP-WIDGET      TO  WRK-MCP-WIDGET
+      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"      ALSO    "PRTJYUN"
-                   PERFORM 4105-PRTJYUN-CHK-SEC
+           WHEN    "ACTIVATE"      ALSO    "PRTJYUN"
+               PERFORM 4105-PRTJYUN-CHK-SEC
+           WHEN    OTHER
+      *        入力チェック処理
+               PERFORM 410-INPUT-CHK-SEC
            END-EVALUATE
       *
            .
        200-ENTRY-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC          SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+      *
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面ＳＰＡ編集処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC            SECTION.
+      *
+      *    請求書発行区分
+           MOVE    O03-SKYPRTKBN   TO  SPA-GMN-SKYPRTKBN-G
+      *
+           .
+      *
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC              SECTION.
+      *
+      *    請求書発行区分チェック
+           PERFORM 4105-SKYPRTKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           .
+      *
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求書発行区分チェック
+      *****************************************************************
+       4105-SKYPRTKBN-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-SKYPRTKBN   TO  WRK-CMB-CD
+           PERFORM 4200-SKYPRTKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SKYPRTKBN-G
+           ELSE
+               MOVE    SPA-GMN-SKYPRTKBNLST (1)
+                                       TO  SPA-GMN-SKYPRTKBN-G
+           END-IF
+      *
+           .
+       4105-SKYPRTKBN-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    印刷順入力処理
       *****************************************************************
@@ -821,6 +941,29 @@
        4105-PRTJYUN-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    請求書発行区分コンボチェック
+      *****************************************************************
+       4200-SKYPRTKBNLST-CHK-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+               UNTIL ( IDX-CMB     >   SPA-GMN-SKYPRTKBN-MAX )
+                OR   ( WRK-CMB-CD  =   SPA-GMN-SKYPRTKBNL (IDX-CMB) )
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX-CMB     <=  SPA-GMN-SKYPRTKBN-MAX )
+               MOVE    SPA-GMN-SKYPRTKBNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-SKYPRTKBNLST-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    戻る前処理
       *****************************************************************
@@ -1063,6 +1206,8 @@
            MOVE    SPA-STAFFCD     TO  SHELLTBL-ARG9
            MOVE    TEIKIERR
                                    TO  SHELLTBL-ARG10
+           MOVE    SPA-GMN-SKYPRTKBN
+                                   TO  SHELLTBL-ARG11
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -1310,6 +1455,15 @@
       *
            MOVE    SPA-GMN-KENSUH      TO  O03-KENSU
       *
+           MOVE    SPA-GMN-SKYPRTKBN-G   TO  O03-SKYPRTKBN
+           PERFORM VARYING IDX1    FROM    1       BY  1
+                   UNTIL ( IDX1            >   5 )
+                   OR    ( SPA-GMN-SKYPRTKBNL    (IDX1)  =   SPACE )
+               MOVE    SPA-GMN-SKYPRTKBNLST(IDX1)
+                                   TO  O03-SKYPRTKBNLST (IDX1)
+               MOVE    IDX1        TO  O03-SKYPRTKBN-COUNT
+           END-PERFORM
+      *
            MOVE    SPA-GMN-PRTJYUN-G   TO  O03-PRTJYUN
            PERFORM VARYING IDX1    FROM    1       BY  1
                    UNTIL ( IDX1            >   5 )
@@ -1352,7 +1506,11 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-         EVALUATE    SPA-GMN-CUR
+           IF    ( SPA-GMN-CUR         =   ZERO )
+               PERFORM 50011-GMN-CUR-SET-SEC
+           END-IF
+      *
+           EVALUATE    SPA-GMN-CUR
              WHEN    1
                     MOVE  "SYOKBN"     TO  MCP-WIDGET
              WHEN    2
@@ -1577,11 +1735,25 @@
       *             MOVE  "EDDATA36"    TO  MCP-WIDGET
              WHEN    199
                     MOVE  "B12"        TO  MCP-WIDGET   
-         END-EVALUATE
+           END-EVALUATE
       *
            .
        5001-MAPCUR-EXT.
            EXIT.
+      *****************************************************************
+      *    入力カーソル位置編集処理
+      *****************************************************************
+       50011-GMN-CUR-SET-SEC           SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+           WHEN    "SKYPRTKBN"
+               MOVE    3           TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
+           .
+       50011-GMN-CUR-SET-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    エラーメッセージ表示理
@@ -1646,9 +1818,9 @@
       *
            EVALUATE    SPA-OIDCD
                WHEN    "1001"
-                   MOVE    "全件印刷をします"        TO  WRK-OIDMSG
                WHEN    "1002"
-                   MOVE    "指定印刷をします"        TO  WRK-OIDMSG
+                   MOVE    "印刷処理を開始します。よろしいですか"
+                                       TO  WRK-OIDMSG
                WHEN    "6666"
                    MOVE    "請求書印刷中です"      TO  WRK-OIDMSG
                WHEN    "8888"
@@ -1833,6 +2005,7 @@
                MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
+               INITIALIZE          MCPDATA-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
@@ -1852,13 +2025,14 @@
        900-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
+               INITIALIZE              MCPDATA-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            .

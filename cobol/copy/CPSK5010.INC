@@ -54,6 +54,8 @@
                05  SYS-5010-NYUKINKBN       PIC  X(01).
       *        ºÆ½èÍý¶èÊ¬
                05  SYS-5010-SAISYORIKBN     PIC  X(01).
+      *        Æþ¶â°õ»ú¶èÊ¬
+               05  SYS-5010-NYUKINPRTKBN    PIC  X(01).
       *        Í½È÷
                05                           PIC  X(481).
       *Ã¼Ëö£É£Ä

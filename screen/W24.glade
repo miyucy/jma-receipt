@@ -729,61 +729,61 @@
       </widget>
     </widget>
 
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>CMB_BRMSGK_TAX</name>
-	  <x>855</x>
-	  <y>80</y>
-	  <width>100</width>
-	  <height>25</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_BRMSGK_TAX</name>
+      <x>855</x>
+      <y>80</y>
+      <width>100</width>
+      <height>25</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
 
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>BRMSGK_TAX</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 04 Feb 2002 03:04:50 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 04 Feb 2002 03:05:03 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>10</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>BRMSGK_TAX</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 04 Feb 2002 03:04:50 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 04 Feb 2002 03:05:03 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>10</text_max_length>
+	<text></text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
 
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label1017</name>
-	  <x>750</x>
-	  <y>80</y>
-	  <width>98</width>
-	  <height>25</height>
-	  <label>ººŒ¡∫π≥€æ√»Ò¿«</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1017</name>
+      <x>750</x>
+      <y>80</y>
+      <width>98</width>
+      <height>25</height>
+      <label>ººŒ¡∫π≥€æ√»Ò¿«</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
 
     <widget>
       <class>GtkFrame</class>
@@ -2344,12 +2344,28 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label1011</name>
-      <x>680</x>
-      <y>605</y>
-      <width>70</width>
+      <name>label1016</name>
+      <x>670</x>
+      <y>635</y>
+      <width>84</width>
       <height>25</height>
-      <label>¿¡µ·ΩÒ»Øπ‘</label>
+      <label>¿¡µ·ΩÒÃ§º˝≥€</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1012</name>
+      <x>670</x>
+      <y>665</y>
+      <width>98</width>
+      <height>25</height>
+      <label>¬‡±°æ⁄Ã¿ΩÒ»Øπ‘</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -2360,9 +2376,9 @@
 
     <widget>
       <class>GtkPandaCombo</class>
-      <name>CMB_SKYPRTKBN</name>
-      <x>790</x>
-      <y>605</y>
+      <name>CMB_SKYMISYUPRTKBN</name>
+      <x>775</x>
+      <y>635</y>
       <width>150</width>
       <height>25</height>
       <value_in_list>False</value_in_list>
@@ -2375,7 +2391,7 @@
       <widget>
 	<class>GtkPandaEntry</class>
 	<child_name>GtkPandaCombo:entry</child_name>
-	<name>SKYPRTKBN</name>
+	<name>SKYMISYUPRTKBN</name>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>activate</name>
@@ -2399,25 +2415,9 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label1016</name>
-      <x>680</x>
-      <y>635</y>
-      <width>84</width>
-      <height>25</height>
-      <label>¿¡µ·ΩÒÃ§º˝≥€</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_TAIPRTKBN</name>
-      <x>790</x>
+      <x>775</x>
       <y>665</y>
       <width>150</width>
       <height>25</height>
@@ -2455,27 +2455,11 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label1012</name>
-      <x>680</x>
-      <y>665</y>
-      <width>98</width>
-      <height>25</height>
-      <label>¬‡±°æ⁄Ã¿ΩÒ»Øπ‘</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
-      <name>CMB_SKYMISYUPRTKBN</name>
-      <x>790</x>
-      <y>635</y>
-      <width>150</width>
+      <name>CMB_SKYPRTKBN</name>
+      <x>775</x>
+      <y>605</y>
+      <width>220</width>
       <height>25</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -2487,7 +2471,7 @@
       <widget>
 	<class>GtkPandaEntry</class>
 	<child_name>GtkPandaCombo:entry</child_name>
-	<name>SKYMISYUPRTKBN</name>
+	<name>SKYPRTKBN</name>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>activate</name>
@@ -2503,11 +2487,27 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>20</text_max_length>
+	<text_max_length>30</text_max_length>
 	<text></text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1011</name>
+      <x>670</x>
+      <y>605</y>
+      <width>70</width>
+      <height>25</height>
+      <label>¿¡µ·ΩÒ»Øπ‘</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

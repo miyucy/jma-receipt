@@ -118,10 +118,10 @@
                 05  W24-REKI-DISPKBN-ITM       PIC X(24)
                                                OCCURS  5.
               04  W24-CMB-SKYPRTKBN.
-                05  W24-SKYPRTKBN              PIC X(20).
+                05  W24-SKYPRTKBN              PIC X(30).
                 05  W24-SKYPRTKBN-CNT          PIC S9(9)
                                                BINARY.
-                05  W24-SKYPRTKBN-ITM          PIC X(20)
+                05  W24-SKYPRTKBN-ITM          PIC X(30)
                                                OCCURS  5.
               04  W24-CMB-SKYMISYUPRTKBN.
                 05  W24-SKYMISYUPRTKBN         PIC X(20).

@@ -134,7 +134,7 @@
                  11  SPA-GMN-W24-SKYPRTKBN.
                    13  SPA-GMN-W24-SKYPRTKBN-CD        PIC X(01).
                    13                                  PIC X(01).
-                   13  SPA-GMN-W24-SKYPRTKBN-NM        PIC X(18).
+                   13  SPA-GMN-W24-SKYPRTKBN-NM        PIC X(28).
       *          ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬
                  11  SPA-GMN-W24-SKYMISYUPRTKBN.
                    13  SPA-GMN-W24-SKYMISYUPRTKBN-CD   PIC X(01).
@@ -229,7 +229,7 @@
                  11  SPA-GMN-W24-CMB-SKYPRTKBN.
                    13  SPA-GMN-W24-SKYPRTKBN-CNT       PIC S9(9)
                                                        BINARY.
-                   13  SPA-GMN-W24-SKYPRTKBN-ITM       PIC X(20)
+                   13  SPA-GMN-W24-SKYPRTKBN-ITM       PIC X(30)
                                                        OCCURS  5
                                            INDEXED BY  CMB-IDX10.
       *

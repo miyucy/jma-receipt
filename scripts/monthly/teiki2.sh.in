@@ -22,6 +22,7 @@ fi
 #        $8  HOSPID
 #        $9  STAFFCD
 #        $10 エラーファイル
+#        $11 SKYPRT
 #-------------------------------------------#
 ##      エラーファイル削除
 
@@ -37,7 +38,7 @@ ERR_FILE=${10}
         rm  /var/tmp/TEIKI*
 
 ##   -- ORCT0020 START --  
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0020 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10}
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0020 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},
         if  [ -e $ERR_FILE ]; then
             exit  
         fi 

@@ -97,6 +97,7 @@
            03  FLG-ENTRYCHK        PIC 9(01).
            03  FLG-ZI-SAISIN       PIC 9(01).
            03  FLG-NYUINKA         PIC 9(01).
+           03  FLG-SKYPRT          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -179,12 +180,6 @@
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
                                //SPA-// BY //WRK-SPA-//.
-      *
-      *    患者マスターワーク
-       01  WKPTINF-REC.
-           COPY    "CPPTINF.INC"
-                                     REPLACING
-                               //PTINF-// BY //WKPTINF-//.
       *
       *    患者入院履歴ワーク
        01  WKPTNYUINRRK-REC.
@@ -572,13 +567,17 @@
            MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
-           IF    ( SYS-5000-SKYPRTKBN   =   "0" )
-               MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (01)
+
+           MOVE    SYS-5000-SKYPRTKBN
+                                   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-SKYPRTOUT-SRH-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (1)
                                    TO  SPA-GMN-I04-SKYPRTOUT
            ELSE
-               MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (02)
-                                   TO  SPA-GMN-I04-SKYPRTOUT
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I04-SKYPRTOUT
            END-IF
+      *
            IF    ( SPA-I01-I04-PROCKBN      =   "1" )
                IF    ( SYS-5000-TAIPRTKBN   =   "0" )
                    MOVE    SPA-GMN-I04-TAIPRTOUT-ITM (01)
@@ -773,9 +772,11 @@
       *****************************************************************
        3100-CMB-SKYPRTOUT-SET-SEC      SECTION.
       *
-           MOVE    2               TO  SPA-GMN-I04-SKYPRTOUT-CNT
+           MOVE    3               TO  SPA-GMN-I04-SKYPRTOUT-CNT
            MOVE    "0:発行なし"    TO  SPA-GMN-I04-SKYPRTOUT-ITM (01)
            MOVE    "1:発行あり"    TO  SPA-GMN-I04-SKYPRTOUT-ITM (02)
+           MOVE    "2:請求額がある場合は発行する"  
+                                   TO  SPA-GMN-I04-SKYPRTOUT-ITM (03)
       *
             .
        3100-CMB-SKYPRTOUT-SET-EXT.
@@ -2263,9 +2264,7 @@
        451-TOUROKU-SYORI-SEC           SECTION.
       *
            MOVE    SPACE               TO  WKPTNYUINRRK-REC
-                                           WKPTINF-REC
            INITIALIZE                      WKPTNYUINRRK-REC
-                                           WKPTINF-REC
       *
       *    退院日更新処理
            PERFORM 4801-TAIINYMD-UPD-SEC
@@ -3277,24 +3276,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    患者マスタ検索
-           MOVE    ZERO                TO  FLG-PTINF
-           INITIALIZE  PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
-           MOVE    SPA-NAI-I04-PTID    TO  PTINF-PTID
-           MOVE    PTINF-REC           TO  MCPDATA-REC
-      *
-           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF     ( FLG-DBRC           =  ZERO )
-               MOVE    MCPDATA-REC     TO  PTINF-REC
-           ELSE
-               MOVE    1               TO  FLG-PTINF
-           END-IF
-      *
-      *    患者マスタクローズ
-           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
+           PERFORM 900-PTINF-KEY-SEL-SEC
            IF    ( FLG-PTINF           NOT =   ZERO )
                MOVE    "4017"          TO  SPA-ERRCD
                GO  TO  4801-PTINF-UPD-EXT
@@ -3310,9 +3292,6 @@
                MOVE    ZERO            TO  PTINF-RRKNUM
                                            PTINF-RRKEDANUM
            END-IF
-      *
-      *    更新前の情報をワークエリアに退避
-           MOVE    PTINF-REC           TO  WKPTINF-REC
       *
            PERFORM 800-MCNDATE-SEC
            MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
@@ -3335,18 +3314,20 @@
       *****************************************************************
        451-PRTOUT-SEC              SECTION.
       *
+           PERFORM 900-PTINF-KEY-SEL-SEC
+      *
            MOVE    SPA-AREA        TO  WRK-SPA-AREA
       *
            MOVE    "1"             TO  WRK-SPA-NYUGAIKBN
       *
-           MOVE    WKPTINF-PTID    TO  WRK-SPA-PTID
+           MOVE    PTINF-PTID      TO  WRK-SPA-PTID
            MOVE    SPA-GMN-I04-PTNUM
                                    TO  WRK-SPA-PTNUM
-           MOVE    WKPTINF-KANANAME
+           MOVE    PTINF-KANANAME
                                    TO  WRK-SPA-KANANAME
-           MOVE    WKPTINF-NAME    TO  WRK-SPA-NAME
-           MOVE    WKPTINF-SEX     TO  WRK-SPA-SEX
-           MOVE    WKPTINF-BIRTHDAY
+           MOVE    PTINF-NAME      TO  WRK-SPA-NAME
+           MOVE    PTINF-SEX       TO  WRK-SPA-SEX
+           MOVE    PTINF-BIRTHDAY
                                    TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
            MOVE    WRK-HENYMDG     TO  WRK-SPA-BIRTHDAYW
@@ -3354,7 +3335,7 @@
       *
       *    請求書兼領収書
            IF    ( SPA-GMN-I04-SKYPRTOUT-CD
-                                       =   "1" )
+                                       =   "1" OR "2" )
                PERFORM 451-SKYPRT-OUT-SEC
            END-IF
       *
@@ -3384,8 +3365,23 @@
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1        >   SPA-I0-SYUNOU-CNT )
+      *
+               MOVE    SPA-I0-SYUNOU-DAT (IDX1)
+                                       TO  WKSYUNOU-REC
+      *
+               MOVE  1                 TO  FLG-SKYPRT
+      *
                IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX1)
-                                       =   ZERO )
+                                   NOT =   ZERO )
+                       MOVE    ZERO    TO  FLG-SKYPRT
+               ELSE
+                   IF    ( SPA-GMN-I04-SKYPRTOUT-CD    =   "2" )
+                     AND ( WKSYU-SKYMONEY             <=   ZERO )
+                       MOVE    ZERO    TO  FLG-SKYPRT
+                   END-IF
+               END-IF
+      *
+               IF    ( FLG-SKYPRT      =   1 )
       *
                    COMPUTE ORCHCN03-CNT
                                        =   ORCHCN03-CNT +   1
@@ -3400,8 +3396,6 @@
                                        TO ORCHCN03-PTNUM  (IDX2)
                    MOVE    "1"         TO ORCHCN03-NYUGAIKBN (IDX2)
       *
-                   MOVE    SPA-I0-SYUNOU-DAT (IDX1)
-                                       TO  WKSYUNOU-REC
                    MOVE    WKSYU-SKYSTYMD
                                        TO  ORCHCN03-KJNYMD  (IDX2)
                    MOVE    WKSYU-DENPNUM
@@ -3418,7 +3412,9 @@
                END-IF
            END-PERFORM
       *
-           CALL    WRK-PRINT-PG    USING   ORCHCN03AREA
+           IF    ( ORCHCN03-CNT        >   ZERO )
+               CALL    WRK-PRINT-PG    USING   ORCHCN03AREA
+           END-IF
       *
            .
        451-SKYPRT-OUT-EXT.
@@ -3681,6 +3677,32 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者情報検索処理
+      *****************************************************************
+       900-PTINF-KEY-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTINF
+           INITIALIZE  PTINF-REC
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-NAI-I04-PTID    TO  PTINF-PTID
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+      *
+           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF     ( FLG-DBRC           =  ZERO )
+               MOVE    MCPDATA-REC     TO  PTINF-REC
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+               INITIALIZE                  PTINF-REC
+           END-IF
+      *
+           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+       900-PTINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

@@ -42,8 +42,15 @@
                 04  O03-VALUE   PIC  9(4).
               03  O03-PAGE.
                 04  O03-VALUE   PIC  9(4).
-              03  O03-PRTJYUN-COMBO.
+              03  O03-CMB-SKYPRTKBN.
+                04  O03-SKYPRTKBN.
+                  05  O03-VALUE   PIC X(30).
+                04  O03-SKYPRTKBN-COUNT
+                                       PIC S9(9)   BINARY.
+                04  O03-SKYPRTKBNLST
+                                       PIC X(30)   OCCURS  5 TIMES.
+              03  O03-CMB-PRTJYUN.
                 04  O03-PRTJYUN.
                   05  O03-VALUE   PIC X(25).
-                04  O03-PRTJYUN-COUNT   PIC S9(9)   BINARY.
-                04  O03-PRTJYUNLST      PIC X(25)   OCCURS  5 TIMES.
+                04  O03-PRTJYUN-COUNT  PIC S9(9)   BINARY.
+                04  O03-PRTJYUNLST     PIC X(25)   OCCURS  5 TIMES.

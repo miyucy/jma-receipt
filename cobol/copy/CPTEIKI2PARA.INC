@@ -36,3 +36,4 @@
            03  TEIKI2P-HOSPID              PIC X(24).
            03  TEIKI2P-STAFFCD             PIC X(05).
            03  TEIKI2P-ERRFILE             PIC X(200).
+           03  TEIKI2P-SKYPRT              PIC X(01).

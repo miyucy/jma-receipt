@@ -650,13 +650,16 @@
       *****************************************************************
        310-CMB-SKYPRTKBN-SET-SEC    SECTION.
       *
-           MOVE    2               TO  SPA-GMN-W24-SKYPRTKBN-CNT
+           MOVE    3               TO  SPA-GMN-W24-SKYPRTKBN-CNT
       *
            MOVE    "0 発行しない" 
                                    TO  SPA-GMN-W24-SKYPRTKBN-ITM (1)
       *
            MOVE    "1 発行する"
                                    TO  SPA-GMN-W24-SKYPRTKBN-ITM (2)
+      *
+           MOVE    "2 請求額がある場合は発行する"
+                                   TO  SPA-GMN-W24-SKYPRTKBN-ITM (3)
       *
            .
        310-CMB-SKYPRTKBN-SET-EXT.

@@ -22,6 +22,15 @@ W23	{
 			count	int;
 			item	varchar(60)[5];
 		};
+		CMB_NYUKINPRTKBN	{
+			NYUKINPRTKBN	{
+				value	varchar(30);
+				state	int;
+			};
+			count	int;
+			item	varchar(30)[5];
+			state	int;
+		};
 		CMB_SAISYORIKBN	{
 			SAISYORIKBN {
 				value	varchar(60);
