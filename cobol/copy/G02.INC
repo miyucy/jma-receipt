@@ -2,9 +2,9 @@
               03  G02-SRYYM.
                 04  G02-VALUE   PIC X(7).
               03  G02-FILENM1.
-                04  G02-VALUE   PIC X(256).
+                04  G02-VALUE   PIC X(150).
               03  G02-FILENM2.
-                04  G02-VALUE   PIC X(256).
+                04  G02-VALUE   PIC X(150).
               03  G02-HOUKATUKBN1.
                 04  G02-VALUE   PIC X.
               03  G02-HOUKATUKBN2.
