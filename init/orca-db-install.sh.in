@@ -1,255 +1,217 @@
-#!/bin/bash
+#!/bin/sh
 
-JMARECEIPT_ENV="@jma-receipt-env@"
-if [ ! -f ${JMARECEIPT_ENV} ]; then
-    echo "${JMARECEIPT_ENV} does not found."
-    exit 1
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
 fi
-. $JMARECEIPT_ENV
-
-TMPDIR=/var/tmp
-MSTDIR=orca-$(date +%Y%m%d)
-VERSIONFL=${DOCDIR}/version
-
-DBLISTSQL="SELECT * FROM tbl_dbkanri WHERE kanricd='ORCADB00';"
-DBVERSIONSQL="SELECT version FROM tbl_dbkanri WHERE kanricd='ORCADB00';"
-
-UPDKANRIFILE=info/ORCADBS.DAT
-
-UPDFILE=$TMPDIR/$MSTDIR/ORCADBS.OUT
-LEN=100
-INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
-THISTIMELOG="$LOGDIR"/orca-db-install-thistime.log
-
-PATH=$BINDIR:$PATCHSCRIPTSDIR/allways:$SCRIPTSDIR/allways:$PATCHLIBDIR:$ORCALIBDIR:$PATH
-
-ECHO_STDERR() {
-    echo "$@" >&2
-}
-
-ECHO_RUN () {
-  echo -e "\e[1;34m${@}\e[m"
-}
-ECHO_N_RUN () {
-  echo -ne "\e[1;34m${@}\e[m"
-}
-
-err () {
-  MSG="ERROR: $1"
-  NUM=$2
-  ECHO_STDERR -e $MSG
-  exit ${NUM}
-}
-
-orcawget () {
-    DWNFL=`echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
-    if [ ${DWNFL:1:10} = "XXXXXXXXXX" ] ; then
-        return 0;
-    fi
-#å—ä¿¡ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤
-    if [ -e $DWNFL ] ; then
-        rm $DWNFL;
-    fi
-    RST=`orcadt_verify.rb --dir . --cacert ${CACERTFILE} ${DBUPGRADEPATH}/$1.p7m 2>&1`
-    RC=$?
-    ECHO_STDERR "$RST : $DWNFL"
-#æŽ¥ç¶šç¢ºèª && ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºãƒã‚§ãƒƒã‚¯
-    if [ $RC -eq 0 ] && [ -s $DWNFL ] ; then
-        return 0;
-    else
-        return 1;
-    fi
-}
-
-orcatar () {
-    TARFL=`echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
-    TAR=`echo $TARFL | awk '{i=split($0,arr,"."); print arr[i-1] arr[i]} ' `
-    LOCALFL=`echo $TARFL | awk '{i=split($0,arr,"."); print arr[1]".dat"} ' `
-#è§£å‡å‡¦ç†
-    if [ $TAR = "targz" ] ; then
-        tar zxf $TARFL
-    else
-        return 0;
-    fi
-#tarç¢ºèª
-    if [ $? -eq 0 ] ; then
-        ECHO_STDERR "$TARFL tar end OK"
-    else
-        ECHO_STDERR "$TARFL tar end NG"
-        return 1;
-    fi
-#ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºãƒã‚§ãƒƒã‚¯
-    if [ -s $LOCALFL ] ; then
-        return 0;
-    else
-        return 1;
-    fi
-}
-
-create_pgpass
-
-if [ ! -e "$INSTALLLOG" ]; then
-    su - $ORCAUSER -c "touch $INSTALLLOG"
-fi
-rm -f $THISTIMELOG
-su - $ORCAUSER -c "touch $THISTIMELOG"
-
-#æ•´åˆæ€§ãƒã‚§ãƒƒã‚¯
-VERLIST=`awk '/version/{gsub(/\t| |;/,""); print} ' $VERSIONFL`
-VERDATA=`echo $VERLIST | awk '{i=split($0,arr,"("); print arr[i]} ' `
-VERDATA1=`echo $VERDATA | awk '{gsub(/[-)]/,""); print } ' `
-VERDATA2=`echo $VERDATA | awk '{gsub(/[)]/,""); print } ' `
-
-DBVERSION=`su - $ORCAUSER -c "psql ${DBCONNOPTION} -At -c \"${DBVERSIONSQL}\" $DBNAME"`
-if [ $? -ne 0 ] ; then
-    err "ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ç®¡ç†æƒ…å ±ãŒèª­ã¿å–ã‚Œã¾ã›ã‚“ã€‚å‡¦ç†ã‚’ä¸­æ­¢ã—ã¾ã™" 99
-fi
-
-DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
-if [ -z "$DBVERSION1" ] ; then
-    err "ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ãƒãƒ¼ã‚¸ãƒ§ãƒ³(tbl_dbkanri:$DBVERSION)ãŒèª­ã¿å–ã‚Œã¾ã›ã‚“ã€‚å‡¦ç†ã‚’ä¸­æ­¢ã—ã¾ã™" 99
-fi
-if [ "$DBVERSION1" -gt "$VERDATA1" ] ; then
-    ECHO_STDERR "Database: ${DBVERSION1}"
-    ECHO_STDERR " Version: ${VERDATA1}"
-    err "ãƒ€ã‚¦ãƒ³ã‚°ãƒ¬ãƒ¼ãƒ‰ã®å‡¦ç†ã¨ãªã£ã¦ã„ã¾ã™ã€‚å‡¦ç†ã‚’ä¸­æ­¢ã—ã¾ã™" 99
-fi
-
-echo -ne "UPDATE CHECK:\t"
-#DBç®¡ç†æƒ…å ±æ›´æ–°
-echo "update tbl_dbkanri set version='$VERDATA2' where kanricd='ORCADB00';" | su - $ORCAUSER -c "psql ${DBCONNOPTION} -q $DBNAME" >&2
-
-#ã‚ªãƒ•ãƒ©ã‚¤ãƒ³ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ã§ã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
-OFFLINEPATH=`echo $DBUPGRADEPATH | sed -ne 's#file://##p'`
-if [ -z $OFFLINEPATH ]; then
-    OFFLINE="online"
-else
-    OFFLINE="offline"
-fi
-
-if ! [ -d $TMPDIR/$MSTDIR ] ; then
-    mkdir $TMPDIR/$MSTDIR
-    chown "$ORCAUSER":"$ORCAGROUP" $TMPDIR/$MSTDIR
-fi
-cd $TMPDIR/$MSTDIR
-rm -f *
-if  [ $OFFLINE = "offline" ]; then
-    if  [ ! -e $OFFLINEPATH/$UPDKANRIFILE ]; then
-        err "DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ãŒã‚ã‚Šã¾ã›ã‚“ã§ã—ãŸ" 99
-    fi
-    cp $OFFLINEPATH/$UPDKANRIFILE ./
-    echo "OK (${OFFLINE})"
-    ECHO_STDERR "OFFLINE: DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ã‚’è¤‡å†™ã—ã¾ã—ãŸ"
-else
-    #ã‚»ãƒ³ã‚¿ã‹ã‚‰ã®DBæ§‹é€ ä½“ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰
-    if orcawget $UPDKANRIFILE ; then
-	echo "OK (${OFFLINE})"
-        ECHO_STDERR "ONLINE: ã‚»ãƒ³ã‚¿ã‹ã‚‰ã®DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãŒçµ‚äº†ã—ã¾ã—ãŸ"
-    else
-        err "ã‚»ãƒ³ã‚¿ã‹ã‚‰ã®DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã«å¤±æ•—ã—ã¾ã—ãŸ" 99
-    fi
-fi
-
-echo -ne "DBLIST:\t\t"
-DBLIST=`su - $ORCAUSER -c "psql ${DBCONNOPTION} -At -c \"${DBLISTSQL}\" $DBNAME"`
-if [ $? -ne 0 ] || [ -z "$DBLIST" ] ; then
-    err "ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ç®¡ç†æƒ…å ±ãŒèª­ã¿å–ã‚Œã¾ã›ã‚“ã€‚å‡¦ç†ã‚’ä¸­æ­¢ã—ã¾ã™" 99
-fi
-echo "OK (`echo $DBLIST|cut -d'|' -f2`)"
-
-#ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ç”Ÿæˆ
-echo -ne "LIST DOWNLOAD:\t"
-RST=`ORCXSMST1 $MSTDIR$DBLIST 2>&1`
-RC=$?
-ECHO_STDERR "$RST"
-if [ $RC -ne 0 ] ; then
-    err "ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ç”Ÿæˆã«å¤±æ•—ã—ã¾ã—ãŸ" 99
-fi
-#æ›´æ–°ç”¨ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«å—ä¿¡
-#ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºãƒã‚§ãƒƒã‚¯
-if [ -s $UPDFILE ] ; then
-    UPDNUM=`cat $UPDFILE|wc -l`
-    ECHO_RUN "FILE ($UPDNUM)"
-    ECHO_STDERR "æ›´æ–°ç”¨ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®ä½œæˆãŒçµ‚äº†ã—ã¾ã—ãŸ"
-else
-    echo "OK (nothing)"
-    ECHO_STDERR "æ›´æ–°ç”¨ãƒ•ã‚¡ã‚¤ãƒ«ã¯ã‚ã‚Šã¾ã›ã‚“"
-    rm -r $TMPDIR/$MSTDIR
+if ! test -f "$JMARECEIPT_ENV"; then
     exit 0
 fi
 
+. $JMARECEIPT_ENV
+
+umask 022
+
+HOME=/home/orca
+MSTDIR=orca-$(date +%Y%m%d)
+VERSIONFL=${DOCDIR}/version
+
+UPDSQL1="update tbl_dbkanri set termid='##' where kanricd='ORCADB00';"
+SQLSELECT="SELECT * FROM TBL_DBKANRI WHERE KANRICD='ORCADB00';"
+
+DBHOST=localhost
+UPDFILE=/home/orca/$MSTDIR/ORCADBS.OUT
+TBLFILE=/home/orca/$MSTDIR/ORCADBS.TBL
+LEN=100
+#
+FTP=ftp.orca.med.or.jp/pub/orca_data/
+
+function orcawget () {
+	DWNFL=`echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
+	if [ ${DWNFL:1:10}	= "XXXXXXXXXX"	] ;	then
+		return 0;
+	fi
+#¼õ¿®¥Õ¥¡¥¤¥ëºï½ü
+	if [	-e	$DWNFL	]
+	then
+#	echo "rm start" $DWNFL
+		rm $DWNFL;
+	fi
+	wget -q --passive-ftp ftp://$FTP/$1
+#ÀÜÂ³³ÎÇ§
+	if [ $? -eq 0 ]	;	then 
+#	echo "wget end OK"
+		return 0;
+	else
+		return 1;
+	fi
+#¥Õ¥¡¥¤¥ë¥µ¥¤¥º¥Á¥§¥Ã¥¯
+	if [	-s	$DWNFL	]
+	then
+		return 0;
+	else
+		return 1;
+	fi
+}
+
+function orcatar () {
+	TARFL=`echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
+	TAR=`echo $TARFL | awk '{i=split($0,arr,"."); print arr[i-1] arr[i]} ' `
+	LOCALFL=`echo $TARFL | awk '{i=split($0,arr,"."); print arr[1]".dat"} ' ` 
+#²òÅà½èÍý
+	echo $1
+	if [	$TAR = "targz" ]
+	then
+		tar zxf $TARFL
+	else
+		return 0;
+	fi
+#tar³ÎÇ§
+	if [ $? -eq 0 ]	;	then 
+		echo "tar end OK"
+	else
+		echo "tar end NG"
+		return 1;
+	fi
+#¥Õ¥¡¥¤¥ë¥µ¥¤¥º¥Á¥§¥Ã¥¯
+	if [	-s	$LOCALFL	]
+	then
+		return 0;
+	else
+		return 1;
+	fi
+}
+
+#¥¨¥é¡¼¥Õ¥¡¥¤¥ëÍÑ¥Õ¥©¥ë¥ÀºîÀ®
+if ! [	-d	$HOME/orca-mstlog	];	then 
+	cd $HOME
+	su - orca -c "mkdir orca-mstlog" 
+fi
+#À°¹çÀ­¥Á¥§¥Ã¥¯
+	VERLIST=`awk '/version/{gsub(/\t| |;/,""); print} ' $VERSIONFL`
+	VERDATA=`echo $VERLIST | awk '{i=split($0,arr,"("); print arr[i]} ' `
+	VERDATA1=`echo $VERDATA | awk '{gsub(/[-)]/,""); print } ' `
+	VERDATA2=`echo $VERDATA | awk '{gsub(/[)]/,""); print } ' `
+	echo "VERDATA1=" $VERDATA1
+	echo "$SQLSELECT" > $HOME/orca-mstlog/SQLSELECT.TXT
+	su - orca -c "psql -o $HOME/orca-mstlog/sql.out -f $HOME/orca-mstlog/SQLSELECT.TXT orca"  
+#	su - orca -c "psql -o $HOME/orca-mstlog/sql.out -c '$SQLSELECT' orca"  
+	DBLIST=`awk '/--------|row/ {skip = ! skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $HOME/orca-mstlog/sql.out`
+	DBVERSION=`echo $DBLIST | awk '{i=split($0,arr,"|"); print arr[2]} ' `
+	DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
+#	if [ `echo $DBVERSION1 $VERDATA1 | awk '{print($1<$2) ? "true" : "false"} '` = "true" ];	then
+	if [ `echo $DBVERSION1 $VERDATA1 | awk '{print($1<=$2) ? "true" : "false"} '` = "true" ];	then
+		echo "OK"
+	else
+		echo "¥À¥¦¥ó¥°¥ì¡¼¥É¤Î½èÍý¤È¤Ê¤Ã¤Æ¤¤¤Þ¤¹¡£½èÍý¤òÃæ»ß¤·¤Þ¤¹" >>$HOME/orca-mstlog/master_log
+        	exit 99
+	fi 
+#À°¹çÀ­¥Á¥§¥Ã¥¯¤³¤³¤Þ¤Ç
+#DB´ÉÍý¾ðÊó¹¹¿·
+        echo "update tbl_dbkanri set version=' $VERDATA2 ' where kanricd='ORCADB00';" | su - orca -c "psql orca"
+echo $MSTDIR
+echo $UPDFILE
+if ! [	-d	$HOME/$MSTDIR	];	then 
+	cd $HOME
+	su - orca -c "mkdir $MSTDIR"
+fi
+cd $HOME/$MSTDIR
+rm -f *
+#¥»¥ó¥¿¤«¤é¤ÎDB¹½Â¤ÂÎ¥À¥¦¥ó¥í¡¼¥É
+if	orcawget info/ORCADBS.DAT ;	then
+	echo "¥»¥ó¥¿¤«¤é¤ÎDB¥ì¥³¡¼¥É´ÉÍý¾ðÊó¤Î¥À¥¦¥ó¥í¡¼¥É¤¬½ªÎ»¤·¤Þ¤·¤¿" >>master_log
+else
+	echo "¥»¥ó¥¿¤«¤é¤ÎDB¥ì¥³¡¼¥É´ÉÍý¾ðÊó¤Î¥À¥¦¥ó¥í¡¼¥É¤Ë¼ºÇÔ¤·¤Þ¤·¤¿" >>master_log
+        exit 99
+fi
+
+#DB´ÉÍý¾ðÊó¤Î¼èÆÀ
+	su - orca -c "psql -o $HOME/orca-mstlog/sql.out -f $HOME/orca-mstlog/SQLSELECT.TXT orca"  
+	DBLIST=`awk '/--------|row/ {skip = ! skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $HOME/orca-mstlog/sql.out`
+	echo "$DBLIST" "DBLIST" 
+#¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ëÀ¸À®
+	echo "$MSTDIR$DBLIST"
+	${ORCALIBDIR}/ORCXSMST1 $MSTDIR$DBLIST
+	if [ $? -ne 0 ]	;	then 
+		echo "¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ëÀ¸À®¤Ë¼ºÇÔ¤·¤Þ¤·¤¿" >>master_log
+		exit 99
+	fi
+#¹¹¿·ÍÑ¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ë¼õ¿®
+#¥Õ¥¡¥¤¥ë¥µ¥¤¥º¥Á¥§¥Ã¥¯
+	if [	-s	$UPDFILE	]
+	then
+		echo "¹¹¿·ÍÑ¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ë¤ÎºîÀ®¤¬½ªÎ»¤·¤Þ¤·¤¿" >>master_log
+	else
+		echo "¹¹¿·ÍÑ¥Õ¥¡¥¤¥ë¤Ï¤¢¤ê¤Þ¤»¤ó" >>master_log
+		rm -r $HOME/$MSTDIR
+		exit 
+	fi
+
+#TBL¥Ð¥Ã¥¯¥¢¥Ã¥×½èÍý
+TBLLIST=`awk '{gsub(/\t| |;/,""); print} ' $TBLFILE`
+for TBL in $TBLLIST
+do
+	echo "TBL=" $TBL
+	su - orca -c "pg_dump -R -t $TBL orca > $TBL.out"
+done
+#TBL¥Ð¥Ã¥¯¥¢¥Ã¥×½èÍý½ªÎ»
+
 UPDLIST=`awk '{gsub(/\t| |;/,""); print} ' $UPDFILE`
-echo -ne "DOWNLOAD:\t"
+
 for UPD in $UPDLIST
 do
-    if  [ $OFFLINE = "offline" ]; then
-        DWNFL=`echo ${UPD:35:$LEN} | awk '{i=split($0,arr,"/"); print arr[i]} ' `
-        if [ ${DWNFL:1:10} = "XXXXXXXXXX" ] ; then
-            ECHO_STDERR ${UPD:35:$LEN} "ã‚ªãƒªã‚¸ãƒŠãƒ«ãƒ€ãƒ³ãƒ—ã‚¹ã‚­ãƒƒãƒ—ã—ã¾ã—ãŸ"
-        else
-            if  [ -e $OFFLINEPATH/${UPD:35:$LEN} ]; then
-                cp $OFFLINEPATH/${UPD:35:$LEN} ./
-                ECHO_STDERR ${UPD:35:$LEN} "è¤‡å†™ãŒçµ‚äº†ã—ã¾ã—ãŸ"
-            else
-		echo "$OFFLINEPATH/"
-                err "${UPD:35:$LEN} è¤‡å†™ã«å¤±æ•—ã—ã¾ã—ãŸ" 99
-            fi
-        fi
-    else
-        if orcawget ${UPD:35:$LEN} ; then
-            ECHO_STDERR ${UPD:35:$LEN} "ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãŒçµ‚äº†ã—ã¾ã—ãŸ"
-        else
-            err "${UPD:35:$LEN} ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã«å¤±æ•—ã—ã¾ã—ãŸ" 99
-        fi
-    fi
-    ECHO_N_RUN "."
+	echo ${UPD:34:$LEN}
+	if	orcawget ${UPD:34:$LEN} ;	then
+		echo ${UPD:34:$LEN} "¥À¥¦¥ó¥í¡¼¥É¤¬½ªÎ»¤·¤Þ¤·¤¿" >>master_log
+	else
+		echo ${UPD:34:$LEN} "¥À¥¦¥ó¥í¡¼¥É¤Ë¼ºÇÔ¤·¤Þ¤·¤¿" >>master_log
+	        exit 99
+	fi
 done
-ECHO_RUN "OK"
 
-echo -ne "EXTRACT:\t"
 for UPD in $UPDLIST
 do
-    ECHO_STDERR $UPD
-    if orcatar $UPD ; then
-        ECHO_STDERR "$UPD è§£å‡å‡¦ç†ãŒçµ‚äº†ã—ã¾ã—ãŸ"
-    else
-        err "$UPD è§£å‡å‡¦ç†ã«å¤±æ•—ã—ã¾ã—ãŸ" 99
-    fi
-    ECHO_N_RUN "."
+#	echo $UPD
+	if	orcatar $UPD ;	then
+		echo $UPD "²òÅà½èÍý¤¬½ªÎ»¤·¤Þ¤·¤¿" >>master_log
+	else
+		echo $UPD "²òÅà½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿" >>master_log
+	        exit 99
+	fi
 done
-ECHO_RUN "OK"
-
-#DBæ§‹é€ å¤‰æ›´å‡¦ç†
-DBOPTION="${DBCONNOPTION} ${DBNAME}"
-
-echo -ne "UPDATE:\t\t"
+#DB¹½Â¤ÊÑ¹¹½èÍý
 for UPD in $UPDLIST
 do
-    UPD1=`echo $UPD | awk '{gsub(/.tar.gz/,".dat"); print} ' `
-    UPD2=`echo $UPD1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
-    if [ -s $TMPDIR/$MSTDIR/$UPD2 ]; then
-        if [ "${UPD2:0:7}" = "ORCADBC" ]; then
-	    echo $UPD2 >>${THISTIMELOG}
-            su - $ORCAUSER -c "bash $TMPDIR/$MSTDIR/$UPD2 \"${DBOPTION}\" ${INSTALLLOG} ${THISTIMELOG}" >&2
-        else
-            su - $ORCAUSER -c "psql ${DBCONNOPTION} -e $DBNAME < \"$TMPDIR/$MSTDIR/$UPD2\" " >&2
-        fi
-	echo "$TMPDIR/$MSTDIR/$UPD2 done." >&2
-    fi
-    LOGLIST=`awk '/ERROR:/{gsub(/\t| |;/,""); print} ' $THISTIMELOG`
-    for LOG in $LOGLIST
-    do
-        if [ "${LOG:0:6}" = "ERROR:" ] ; then
-            err "$UDP2 æ›´æ–°å‡¦ç†ã«å¤±æ•—ã—ã¾ã—ãŸ" 99
-        fi
-    done
-    #DBç®¡ç†æƒ…å ±æ›´æ–°
-    echo "UPDATE tbl_dbkanri set dbsversion1='${UPD:0:21}',dbsversion2='${UPD:0:21}',upymd=to_char(now(),'yyyymmdd'),uphms=to_char(now(),'hh24miss') WHERE kanricd='ORCADB00';" | su - $ORCAUSER -c "psql ${DBCONNOPTION} -e $DBNAME >&2"
-    ECHO_N_RUN "."
+	UPD1=`echo $UPD | awk '{gsub(/.tar.gz/,".dat"); print} ' `
+	UPD2=`echo $UPD1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
+#SQL
+#
+	if	[ -s $HOME/$MSTDIR/$UPD2 ]; then
+		su - orca -c "psql -o dblog orca < $HOME/$MSTDIR/$UPD2 2>&1 | tee $HOME/$MSTDIR/log" 
+	else
+		su - orca -c "touch $HOME/$MSTDIR/log" 
+	fi
+#	LOGLIST=`awk '/NOTICE:/ {skip = !skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $HOME/$MSTDIR/log`
+	LOGLIST=`awk '/ERROR:/{gsub(/\t| |;/,""); print} ' $HOME/$MSTDIR/log`
+	for LOG in $LOGLIST
+	do
+		if [ "${LOG:0:6}" = "ERROR:" ];	then
+			echo $UDP2 "¹¹¿·½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿" >>master_log
+			exit 99
+		fi
+	done
+#	if [ $? -ne 0 ]	;	then 
+#	echo $UDP2 "¹¹¿·½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿" >>master_log
+#		exit 99
+#	fi
+
+#DB´ÉÍý¾ðÊó¹¹¿·
+
+        echo "update tbl_dbkanri set dbsversion1=' ${UPD:0:21} ',dbsversion2=' ${UPD:0:21} ' where kanricd='ORCADB00';" | su - orca -c "psql orca"
 done
-ECHO_RUN "OK"
 
-ECHO_STDERR "å…¨ã¦ã®å‡¦ç†ãŒå®Œäº†ã—ã¾ã—ãŸ"
+echo  "Á´¤Æ¤Î½èÍý¤¬´°Î»¤·¤Þ¤·¤¿" >>master_log
+#Ãí°Õ¡ù¡ù¡ù¥Æ¥¹¥È¤¬½ªÎ»¤·¤¿¤é¸µ¤ËÌá¤¹
+rm -r $HOME/$MSTDIR
 
-rm -r $TMPDIR/$MSTDIR
-exit 0
+
+#wait
