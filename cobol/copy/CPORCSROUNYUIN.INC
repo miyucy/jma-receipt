@@ -18,6 +18,11 @@
       ************************************************************
       *    労災入院会計作成用パラメタ　　　COPY (CPORCSROUNYUIN.INC)
       *                                使用プログラム (ORCSROUNYUIN)
+      *    設定項目
+      *      医療機関ＩＤ
+      *      患者ＩＤ
+      *      算定年月
+      *      保険組合せ
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
@@ -29,20 +34,22 @@
            03  LNK-SROUNYUIN-HOSPID                  PIC  X(24).
       *患者ＩＤ
            03  LNK-SROUNYUIN-PTID                    PIC  9(10).
-      *算定日
-           03  LNK-SROUNYUIN-SANTEIYMD               PIC  X(08).
+      *算定年月
+           03  LNK-SROUNYUIN-SANTEIYM                PIC  X(06).
       *保険組合せ
            03  LNK-SROUNYUIN-HKNCOMBI                PIC  9(04).
+      *返却項目
+           03  LNK-SROUNYUIN-HENKYAKU-AREA           OCCURS  31.
       *剤点数
-           03  LNK-SROUNYUIN-ZAITEN                  PIC  9(08).
+               05  LNK-SROUNYUIN-ZAITEN              PIC  9(08).
       *診療コード計
-           03  LNK-SROUNYUIN-SRYCDTOTAL              PIC  9(14).
+               05  LNK-SROUNYUIN-SRYCDTOTAL          PIC  9(14).
       *明細数
-           03  LNK-SROUNYUIN-MEISAISU                PIC  9(07).
+               05  LNK-SROUNYUIN-MEISAISU            PIC  9(07).
       *診療コード
-           03  LNK-SROUNYUIN-ROUSAI.
-               05  LNK-SROUNYUIN-SRYCD               PIC  X(09)
+               05  LNK-SROUNYUIN-ROUSAI.
+                   07  LNK-SROUNYUIN-SRYCD           PIC  X(09)
                                                      OCCURS 20.
-      *復帰コード
+      *復帰コード（１：算定年月エラー　２：患者検索エラー　３：労災入院なし）
            03  LNK-SROUNYUIN-RC                      PIC S9(9) BINARY.
       *
