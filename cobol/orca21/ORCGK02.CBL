@@ -10100,6 +10100,7 @@
                                            SPA-AREA
                                            SPA-K02
                                            SPA-SCR-REC
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *!   END-IF
            .
        4410-WSINPARA-EXT.
