@@ -28,19 +28,14 @@
             02  HCM03V02-JIHIMSG3   PIC X(20).
             02  HCM03V02-JIHIMSG4   PIC X(20).
             02  HCM03V02-JIHIMSG5   PIC X(20).
-            02  HCM03V02-JIHI1  PIC X(18).
-            02  HCM03V02-JIHI2  PIC X(18).
-            02  HCM03V02-JIHI3  PIC X(18).
-            02  HCM03V02-JIHI4  PIC X(18).
-            02  HCM03V02-JIHI5  PIC X(18).
-            02  HCM03V02-JIHI6  PIC X(18).
-            02  HCM03V02-JIHI7  PIC X(18).
-            02  HCM03V02-JIHI8  PIC X(18).
+            02  HCM03V02-JIHI
+                    PIC X(18)   OCCURS  7 TIMES.
             02  HCM03V02-YAKUZAI    PIC X(18).
             02  HCM03V02-ROUJIN PIC X(18).
             02  HCM03V02-KOUHI  PIC X(18).
             02  HCM03V02-CHOSEI PIC X(18).
             02  HCM03V02-KONSEIKYU  PIC X(18).
+            02  HCM03V02-SEIKYUZEI  PIC X(18).
             02  HCM03V02-ZENMISYU   PIC X(18).
             02  HCM03V02-GOUKEIGAK  PIC X(18).
             02  HCM03V02-KONNYUKIN  PIC X(18).

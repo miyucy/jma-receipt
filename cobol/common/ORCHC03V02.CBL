@@ -961,39 +961,42 @@
                    UNTIL       IDX     >   5
                COMPUTE WRK-JIHI (IDX)      =   SYU-JIHI-TAXNASI (IDX)
                                            +   SYU-JIHI-TAXARI  (IDX)
+               MOVE    WRK-JIHI (IDX)  TO  WRK-Z72
+               PERFORM 800-HENKAN-SEC
+               MOVE    WRK-Z72-G       TO  HC03-JIHI(IDX)
            END-PERFORM
       *
-           MOVE    WRK-JIHI (1)        TO  WRK-Z72
-           PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G           TO  HC03-JIHI1
-           MOVE    WRK-JIHI (2)        TO  WRK-Z72
-           PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G           TO  HC03-JIHI2
-           MOVE    WRK-JIHI (3)        TO  WRK-Z72
-           PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G           TO  HC03-JIHI3
-           MOVE    WRK-JIHI (4)        TO  WRK-Z72
-           PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G           TO  HC03-JIHI4
-           MOVE    WRK-JIHI (5)        TO  WRK-Z72
-           PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G           TO  HC03-JIHI5
+      **     MOVE    WRK-JIHI (1)        TO  WRK-Z72
+      **     PERFORM 800-HENKAN-SEC
+      **     MOVE    WRK-Z72-G           TO  HC03-JIHI1
+      **     MOVE    WRK-JIHI (2)        TO  WRK-Z72
+      **     PERFORM 800-HENKAN-SEC
+      **     MOVE    WRK-Z72-G           TO  HC03-JIHI2
+      **     MOVE    WRK-JIHI (3)        TO  WRK-Z72
+      **     PERFORM 800-HENKAN-SEC
+      **     MOVE    WRK-Z72-G           TO  HC03-JIHI3
+      **     MOVE    WRK-JIHI (4)        TO  WRK-Z72
+      **     PERFORM 800-HENKAN-SEC
+      **     MOVE    WRK-Z72-G           TO  HC03-JIHI4
+      **     MOVE    WRK-JIHI (5)        TO  WRK-Z72
+      **     PERFORM 800-HENKAN-SEC
+      **     MOVE    WRK-Z72-G           TO  HC03-JIHI5
       *    ¼«Èñ·×
            COMPUTE WRK-JIHI-TOTAL      =   SYU-JIHI-TOTAL
                                        +   SYU-JIHI-TOTAL-TAX
-           MOVE    WRK-JIHI-TOTAL      TO  WRK-Z72
-           PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G           TO  HC03-JIHI6
+      **     MOVE    WRK-JIHI-TOTAL      TO  WRK-Z72
+      **     PERFORM 800-HENKAN-SEC
+      **     MOVE    WRK-Z72-G           TO  HC03-JIHI6
       *    ¼«Èñ¾ÃÈñÀÇ
            MOVE    SYU-JIHI-TAX        TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G           TO  HC03-JIHI7
+           MOVE    WRK-Z72-G           TO  HC03-JIHI(7)
       *    ¼«Èñ¹ç·×
            COMPUTE WRK-GOKTEN          =   WRK-JIHI-TOTAL
                                        +   SYU-JIHI-TAX
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G           TO  HC03-JIHI8
+           MOVE    WRK-Z72-G           TO  HC03-JIHI(6)
       *    ÌôºÞ°ìÉôÉéÃ´
            MOVE    SYU-YKZ-FTN         TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
