@@ -79,6 +79,10 @@
            03  PTRSI-SAIGAIKBN             PIC  X(01).
       *极清勒吹荚懒滇惰尸
            03  PTRSI-JIBAISEIKBN           PIC  X(01).
+      *极清勒么碰板コ〖ド
+           03  PTRSI-DRCD                  PIC  X(05).
+      *极清勒瘦副柴家叹
+           03  PTRSI-HOKENNAME             PIC  X(80).
       *眉琐ＩＤ
            03  PTRSI-TERMID                PIC  X(16).
       *オペ〖レ〖タＩＤ
