@@ -90,6 +90,12 @@
                                              PIC S9(9)   BINARY.
                     06  W02-DISCOUNTHASULST  PIC X(32)
                                                       OCCURS  4.
+                  05  W02-DISCOUNTHASU2-CMB.
+                    06  W02-DISCOUNTHASU2     PIC X(32).
+                    06  W02-DISCOUNTHASU2-COUNT
+                                             PIC S9(9)   BINARY.
+                    06  W02-DISCOUNTHASU2LST PIC X(32)
+                                                      OCCURS  4.
                   05  W02-TAXHASU-COMBO.
                     06  W02-TAXHASU          PIC X(32).
                     06  W02-TAXHASU-COUNT
