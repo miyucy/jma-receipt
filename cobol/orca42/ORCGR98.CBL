@@ -534,8 +534,8 @@
                                             MCPDATA-REC
       *
       *        入院会計読み込み（基本）
-               IF      SPA-R01-NYUGAIKBN    =   "1"
-               AND     FLG-SEIHO            =   ZERO
+               IF    ( SPA-R01-NYUGAIKBN    =   "1"  )
+               AND   ( FLG-SEIHO            =   ZERO )
                    INITIALIZE                  NYUINACCT-REC
                    MOVE    SPA-HOSPID          TO  NACCT-HOSPID
                    MOVE    PTKOH-PTID          TO  NACCT-PTID
@@ -562,7 +562,7 @@
                                                 MCPDATA-REC
       *
                    IF      FLG-NYUINACCT       =   ZERO
-                       MOVE    "1"                 TO  FLG-SEIHO
+                       MOVE    1                   TO  FLG-SEIHO
                        PERFORM 31011-SEH-GMN-HENSYU-SEC
                    END-IF      
                END-IF
