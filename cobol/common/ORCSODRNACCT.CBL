@@ -106,6 +106,7 @@
            03  IDX15                       PIC 9(05).
            03  IDX16                       PIC 9(05).
            03  IDX-CMB                     PIC 9(05).
+           03  START-IDX                   PIC 9(05).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1976,7 +1977,7 @@
       *
            DISPLAY "4801-GAIHAKU-SEC"
       *    外泊のセット
-           IF      LNK-PTNYUINRRK-TAIINYMD =   SPACE
+           IF      LNK-PTNYUINRRK-TAIINYMD =   "99999999"
                PERFORM    4801-GAIHAKU-1-SEC
            ELSE
                PERFORM    4801-GAIHAKU-2-SEC
@@ -2008,10 +2009,10 @@
                MOVE    SODRNACCT-STARTYMD  TO  WRK-STARTYMD
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
       *            開始日のセット
-                   IF      NACCT-SRYYM    =   WRK-STARTYMD-YM
-                       MOVE   WRK-STARTYMD-D   TO   IDX
+                   IF      NACCT-SRYYM    =   SODRNACCT-STARTYMD(1:6)
+                       MOVE   WRK-STARTYMD-D   TO   START-IDX
                    ELSE
-                       MOVE   1                TO   IDX
+                       MOVE   1                TO   START-IDX
                    END-IF
       *            月末日を算定
                    INITIALIZE                STS-AREA-DAY
@@ -2022,7 +2023,7 @@
                                                    LNK-DAY7-AREA
                    MOVE   LNK-DAY7-KOYOMI    TO    WRK-GETSUMATSU-YMD
       *            外泊区分のセット
-                   PERFORM  VARYING IDX  FROM  IDX   BY 1
+                   PERFORM  VARYING IDX  FROM  START-IDX   BY 1
                                 UNTIL   IDX  >    WRK-GETSUMATSU-D
                        EVALUATE   SODRNACCT-ORDERID(3:2)
                            WHEN   "01"
@@ -2096,10 +2097,10 @@
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)  OR
                       (NACCT-SRYYM    > LNK-PTNYUINRRK-TAIINYMD(1:6))
       *            開始日のセット
-                   IF      NACCT-SRYYM       =   WRK-STARTYMD-YM
-                       MOVE   WRK-STARTYMD-D   TO   IDX
+                   IF      NACCT-SRYYM      =  SODRNACCT-STARTYMD(1:6)
+                       MOVE   WRK-STARTYMD-D   TO   START-IDX
                    ELSE
-                       MOVE   1                TO   IDX
+                       MOVE   1                TO   START-IDX
                    END-IF
       *            月末日を算定
                    INITIALIZE                STS-AREA-DAY
@@ -2115,7 +2116,7 @@
                                              TO    WRK-GETSUMATSU-YMD
                    END-IF
       *            外泊区分のセット
-                   PERFORM  VARYING IDX  FROM  IDX   BY 1
+                   PERFORM  VARYING IDX  FROM  START-IDX   BY 1
                                 UNTIL   IDX  >    WRK-GETSUMATSU-D
                        EVALUATE   SODRNACCT-ORDERID(3:2)
                            WHEN   "01"
