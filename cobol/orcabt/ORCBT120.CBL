@@ -400,7 +400,7 @@
                PERFORM   UNTIL   FLG-PTNYUINRRK    =   1
                    IF    WRK-OLD-PTID       NOT =   WRK-NEW-PTID
                        MOVE   WRK-NEW-PTID  TO  WRK-OLD-PTID 
-                       PERFORM   2001-HENSYU-SYORI-SEC
+                       PERFORM   2001-HENSYU-SEC
                    END-IF
                    MOVE      PATH-TBL-PTNYUINRRK-KEY40
                                                 TO  ORC-DBPATH
@@ -459,7 +459,7 @@
       *****************************************************************
       *    Åý·×¥Ç¡¼¥¿¤ÎÊÔ½¸½èÍý
       *****************************************************************
-       20011-MEISAI-HENYU-SEC              SECTION.
+       20011-MEISAI-HENSYU-SEC              SECTION.
       *
            INITIALIZE                      TOUKEI04-REC
       *    °åÎÅµ¡´Ø£É£Ä
@@ -948,6 +948,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
 
