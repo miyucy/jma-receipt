@@ -1123,24 +1123,24 @@
       *****************************************************************
       *    複数科まとめ編集処理
       *****************************************************************
-       45011-SYUNOU-FUKU-SEC            SECTION.
+      *45011-SYUNOU-FUKU-SEC            SECTION.
       *
-           IF      ORCSCGAIRAI-SYORI   =   1
+      *    IF      ORCSCGAIRAI-SYORI   =   1
       *        継続
-               IF      SPA-FUKU-DENPNUM    =   ZERO
-                   MOVE    SYU-DENPNUM     TO  SPA-FUKU-DENPNUM
-               END-IF
-               MOVE    SPA-FUKU-DENPNUM    TO  SYU-FUKU-DENPNUM
-               MOVE    "1"                 TO  SYU-FUKU-KBN
-           ELSE
+      *        IF      SPA-FUKU-DENPNUM    =   ZERO
+      *            MOVE    SYU-DENPNUM     TO  SPA-FUKU-DENPNUM
+      *        END-IF
+      *        MOVE    SPA-FUKU-DENPNUM    TO  SYU-FUKU-DENPNUM
+      *        MOVE    "1"                 TO  SYU-FUKU-KBN
+      *    ELSE
       *        確定
-               MOVE    SPA-FUKU-DENPNUM    TO  SYU-FUKU-DENPNUM
-               MOVE    "2"                 TO  SYU-FUKU-KBN
-           END-IF
+      *        MOVE    SPA-FUKU-DENPNUM    TO  SYU-FUKU-DENPNUM
+      *        MOVE    "2"                 TO  SYU-FUKU-KBN
+      *    END-IF
       *
-           .
-       45011-SYUNOU-FUKU-EXT.
-           EXIT.
+      *    .
+      *45011-SYUNOU-FUKU-EXT.
+      *    EXIT.
       *****************************************************************
       *    システム管理より、伝票番号取得処理
       *****************************************************************
@@ -3400,8 +3400,8 @@
            END-IF
       *
       *    診療科履歴変更
-           IF     (SPA-HKNCOMBINUM     =   "9999" ) AND
-                  (SPA-TEI-DENPNUM (1) =   ZERO   )
+           IF     (SPA-HKNCOMBINUM     =   "9999" ) OR
+                  (SPA-TEI-DENPNUM (1) NOT =   ZERO   )
                CONTINUE
            ELSE
                INITIALIZE                  ORCSKARRKAREA
@@ -3578,6 +3578,7 @@
                    END-IF
                    IF      TBL-SRYKA (IDH3)    =   WRK-SRYKA
                        ADD     1           TO  TBL-SRYKA-MAX(IDH3)
+                       MOVE    15          TO  IDH3
                    END-IF
                END-PERFORM
            END-PERFORM
