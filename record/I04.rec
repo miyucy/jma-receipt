@@ -234,7 +234,7 @@ I04	{
 				value	varchar(29);
 			};
 			count	int;
-			item	varchar(29)[10];
+			item	varchar(29)[50];
 		};
 		scrolledwindow1	{
 			HKNCOMBILST	{

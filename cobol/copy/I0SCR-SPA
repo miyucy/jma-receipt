@@ -696,7 +696,7 @@
                        11  SPA-GMN-I04-CMB-DR.
                            13  SPA-GMN-I04-DR-CNT    PIC S9(9)   BINARY.
                            13  SPA-GMN-I04-DR-ITM    PIC X(29)
-                                                     OCCURS  10
+                                                     OCCURS  50
                                                INDEXED BY  CMB-IDX15.
       *  ¼ýÇ¼¥Ç¡¼¥¿
          03  SPA-I0-SYUNOU-TBL.
