@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
+      * 01.00.01     NACL-森脇     03/01/06  最終受診日セット修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -747,18 +748,6 @@
                MOVE    TOKEI-MISYU     TO  WRK-Z11
                MOVE    WRK-Z11         TO  HCM38-MISYU(CNT-LINE)
       *
-      *        入院したことのある患者の場合
-               IF          PTINF-RRKNUM    NOT =   ZERO
-      *            入院履歴読み込み
-                   PERFORM 900-PTNYUINRRK-READ-SEC
-      *            入院期間チェック
-                   IF        ( PTNYUINRRK-NYUINYMD <=  WRK-SYSYMD )
-                       AND   ( PTNYUINRRK-TAIINYMD >=  WRK-SYSYMD )
-      *                備考編集
-                       PERFORM 3201-BODY-BIKOU-HEN-SEC
-                   END-IF
-               END-IF
-      *
                COMPUTE WRK-GSURYO      =   WRK-GSURYO
                                        +   TOKEI-MISYU
       *
@@ -939,27 +928,79 @@
        3201-BODY-PTNUM-HEN-EXT.
            EXIT.
       *
+      *----(01.00.01)--UPD-START---
       *****************************************************************
       *    最終受診日編集処理
       *****************************************************************
        3201-BODY-LASTYMD-HEN-SEC   SECTION.
       *
-      *    受診履歴読み込み
-           PERFORM 900-JYURRK-READ-SEC
-      *
-           IF          FLG-JYURRK      NOT =   ZERO
+      *    病床数なし
+           IF          SYS-1001-BEDSU      =   ZERO
+      *        受診履歴読み込み
+               PERFORM 900-JYURRK-READ-SEC
+               IF      FLG-JYURRK      =   ZERO
+      *            最終受診日セット
+                   MOVE    JYURRK-SRYYMD   TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMD      TO  HCM38-LASTYMD(CNT-LINE)
+               ELSE
+                   MOVE    SPACE       TO  HCM38-LASTYMD(CNT-LINE)
+               END-IF
                GO  TO  3201-BODY-LASTYMD-HEN-EXT
            END-IF
       *
-      *    最終受診日セット
-           MOVE    JYURRK-SRYYMD   TO  WRK-SYMD
-           PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMD      TO  HCM38-LASTYMD(CNT-LINE)
+      *    入院履歴読み込み
+           PERFORM 900-PTNYUINRRK-READ-SEC
+           IF          FLG-PTNYUINRRK      =   ZERO
+      *        入院中チェック
+               IF         PTNYUINRRK-TAIINYMD  >   WRK-SYSYMD
+      *            備考編集
+                   PERFORM 3201-BODY-BIKOU-HEN-SEC
+                   MOVE    SPACE       TO  HCM38-LASTYMD(CNT-LINE)
+               ELSE
+      *            受診履歴読み込み
+                   PERFORM 900-JYURRK-READ-SEC
+                   IF          FLG-JYURRK      =   ZERO
+                       IF      PTNYUINRRK-TAIINYMD <=  JYURRK-SRYYMD
+      *                    最終受診日セット
+                           MOVE    JYURRK-SRYYMD   TO  WRK-SYMD
+                           PERFORM 31012-SEIWA-HEN-SEC
+                           MOVE    WRK-HENYMD
+                               TO  HCM38-LASTYMD(CNT-LINE)
+                       ELSE
+      *                    退院日セット
+                           MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SYMD
+                           PERFORM 31012-SEIWA-HEN-SEC
+                           MOVE    WRK-HENYMD
+                               TO  HCM38-LASTYMD(CNT-LINE)
+                           MOVE    "*"         TO  HCM38-MARK(CNT-LINE)
+                       END-IF
+                   ELSE
+      *                退院日セット
+                       MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SYMD
+                       PERFORM 31012-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMD  TO  HCM38-LASTYMD(CNT-LINE)
+                       MOVE    "*"         TO  HCM38-MARK(CNT-LINE)
+                   END-IF
+               END-IF
+           ELSE
+      *        受診履歴読み込み
+               PERFORM 900-JYURRK-READ-SEC
+               IF      FLG-JYURRK      =   ZERO
+      *            最終受診日セット
+                   MOVE    JYURRK-SRYYMD   TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMD      TO  HCM38-LASTYMD(CNT-LINE)
+               ELSE
+                   MOVE    SPACE       TO  HCM38-LASTYMD(CNT-LINE)
+               END-IF
+            END-IF
       *
            .
        3201-BODY-LASTYMD-HEN-EXT.
            EXIT.
       *
+      *----(01.00.01)--UPD-END-----
       *****************************************************************
       *    診療科編集処理
       *****************************************************************
@@ -1265,6 +1306,7 @@
        900-PTINF-READ-EXT.
            EXIT.
       *
+      *----(01.00.01)--UPD-START---
       ******************************************************************
       *    受診履歴読込
       *****************************************************************
@@ -1273,35 +1315,23 @@
            INITIALIZE                  JYURRK-REC
            MOVE    PARA-HOSPID     TO  JYURRK-HOSPID
            MOVE    TOKEI-PTID      TO  JYURRK-PTID
-           MOVE    WRK-SYSYMD      TO  JYURRK-SRYYMD
+           MOVE    "2"             TO  JYURRK-NYUGAIKBN
            MOVE    JYURRK-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "JYURRK-KEY10"  TO  ORC-DBPATH
+           MOVE    "JYURRK-KEY2"   TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF          MCP-RC      =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "JYURRK-KEY10"  TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF          MCP-RC      =   ZERO
-                   MOVE    MCPDATA-REC     TO  JYURRK-REC
-                   MOVE    ZERO            TO  FLG-JYURRK
-               ELSE
-                   INITIALIZE                  JYURRK-REC
-                   MOVE    1               TO  FLG-JYURRK
-               END-IF
+               PERFORM 900-JYURRK-FETCH-SEC
            ELSE
                INITIALIZE                  JYURRK-REC
                MOVE    1               TO  FLG-JYURRK
            END-IF
       *
            MOVE    "DBCLOSE"       TO  MCP-FUNC
-           MOVE    "JYURRK-KEY10"  TO  ORC-DBPATH
+           MOVE    "JYURRK-KEY2"   TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -1309,6 +1339,32 @@
       *
            .
        900-JYURRK-READ-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    受診履歴読込
+      *****************************************************************
+       900-JYURRK-FETCH-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           MOVE    "JYURRK-KEY2"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF          MCP-RC      =   ZERO
+               MOVE    MCPDATA-REC     TO  JYURRK-REC
+               IF      JYURRK-SRYYMD   >   WRK-SYSYMD
+                   GO  TO  900-JYURRK-FETCH-SEC
+               ELSE
+                   MOVE    ZERO            TO  FLG-JYURRK
+               END-IF
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+           .
+       900-JYURRK-FETCH-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1319,11 +1375,13 @@
            INITIALIZE                  PTNYUINRRK-REC
            MOVE    PARA-HOSPID     TO  PTNYUINRRK-HOSPID
            MOVE    TOKEI-PTID      TO  PTNYUINRRK-PTID
-           MOVE    PTINF-RRKNUM    TO  PTNYUINRRK-RRKNUM
-           MOVE    PTINF-RRKEDANUM TO  PTNYUINRRK-RRKEDANUM
+      *     MOVE    PTINF-RRKNUM    TO  PTNYUINRRK-RRKNUM
+      *     MOVE    PTINF-RRKEDANUM TO  PTNYUINRRK-RRKEDANUM
+           MOVE    WRK-SYSYMD      TO  PTNYUINRRK-NYUINYMD
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY"
+      *     MOVE    "PTNYUINRRK-KEY"
+           MOVE    "PTNYUINRRK-KEY17"
                                    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -1331,7 +1389,8 @@
                                        MCPDATA-REC
            IF          MCP-RC      =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "PTNYUINRRK-KEY"
+      *         MOVE    "PTNYUINRRK-KEY"
+               MOVE    "PTNYUINRRK-KEY17"
                                        TO  ORC-DBPATH
                CALL    "ORCMCPSUB"         USING
                                            MCPAREA
@@ -1350,7 +1409,8 @@
            END-IF
       *
            MOVE    "DBCLOSE"       TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY"
+      *     MOVE    "PTNYUINRRK-KEY"
+           MOVE    "PTNYUINRRK-KEY17"
                                    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -1361,6 +1421,7 @@
        900-PTNYUINRRK-READ-EXT.
            EXIT.
       *
+      *----(01.00.01)--UPD-END-----
       *****************************************************************
       *    未収金一覧用収納明細読み込み
       *****************************************************************
