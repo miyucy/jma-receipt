@@ -100,6 +100,8 @@
       *
            03  IDX-KAI1            PIC 9(04).
            03  IDX-KAI2            PIC 9(02).
+           03  IDX-KAI3            PIC 9(04).
+           03  IDX-KAI4            PIC 9(04).
            03  IDX-DAY             PIC 9(02).
            03  IDX-SIN             PIC 9(04).
            03  IDX-ATO             PIC 9(04).
@@ -153,6 +155,9 @@
       *    診療種別
            03  WRK-SRYSYUKBN              PIC X(03).
            03  WRK-MAE-SRYSYUKBN          PIC X(03).
+      *    末日
+           03  WRK-MATU                    PIC 9(02).
+           03  WRK-NEXT-SRYYMD             PIC X(08).
       *
       *    診療行為内容比較用テーブル
        01  TBL-AREA.
@@ -184,6 +189,18 @@
            03  TBL-KAISUU-OCCU         OCCURS   10.
                05  TBL-KAISU           PIC 9(03).
                05  TBL-DAY             PIC 9(02)
+                                       OCCURS   31.
+      *翌月用テーブル
+       01  TBL2-KAISUU-AREA.
+           03  TBL2-KAISUU-OCCU        OCCURS   10.
+               05  TBL2-KAISU          PIC 9(03).
+               05  TBL2-DAY            PIC 9(02)
+                                       OCCURS   31.
+      *当月用保存
+       01  HZN-KAISUU-AREA.
+           03  HZN-KAISUU-OCCU         OCCURS   10.
+               05  HZN-KAISU           PIC 9(03).
+               05  HZN-DAY             PIC 9(02)
                                        OCCURS   31.
       *
       *****************************************************************
@@ -388,7 +405,7 @@
                PERFORM 100-SRYACT-KOU-SEC
                PERFORM 200-JYURRK-SYORI-SEC
            END-IF
-      * 
+      *
       *    診療科履歴変更
            INITIALIZE                  ORCSKARRKAREA
            MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
@@ -417,6 +434,7 @@
       *
       *    回数・日付決定
            INITIALIZE                      TBL-KAISUU-AREA
+           INITIALIZE                      TBL2-KAISUU-AREA
            MOVE    ZERO                TO  IDX-KAI1
            MOVE    ZERO                TO  IDX-KAI2
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -474,6 +492,11 @@
       *
       *    算定履歴更新処理
            PERFORM 4502-SANTEI-SYORI-SEC
+      *
+      *    翌月がある時、翌月分を作成する
+           IF      TBL2-KAISUU-AREA    NOT =   ZERO
+               PERFORM 1000-NEXT-SRYACT-KOU-SEC
+           END-IF
            .
        100-SRYACT-KOU-EXT.
            EXIT.
@@ -498,6 +521,19 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      1001-KAISUU-SYORI-EXT
            END-IF
+      *TEST
+           DISPLAY "CNYU LNK-WKSRY-INPUTCD:" LNK-WKSRY-INPUTCD(IDX IDY)
+                  ",SRYCDU:" LNK-WKSRY-SRYCD  (IDX IDY)
+                  ",LNK-SC97-KAISU:" LNK-SC97-KAISU
+                  ",AUTO:" LNK-WKSRY-AUTOKBN (01 01)
+      *TEST
+      *    自動発生で、回数が１以上の時、入院調剤料とする
+           IF     (LNK-WKSRY-AUTOKBN (01 01)   =   "3" ) AND
+                  (LNK-WKSRY-SRYKBN  (01)      =   "24" OR "26")
+               PERFORM 10011-NISUU-SYORI-SEC
+               GO      TO      1001-KAISUU-SYORI-EXT
+           END-IF
+      *
       *    回数
            IF      LNK-SC97-KAISU      =   ZERO
                MOVE    1               TO  LNK-SC97-KAISU
@@ -533,6 +569,142 @@
            END-IF
            .
        1001-KAISUU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     日数分作成処理
+      *****************************************************************
+       10011-NISUU-SYORI-SEC              SECTION.
+      *
+      *    診療年月の末日算定
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY7-AREA
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    SPA-SRYYMD(1:6)     TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING
+                                           STS-AREA-DAY
+                                           LNK-DAY7-AREA
+           MOVE    LNK-DAY7-KOYOMI(7:2)    TO  WRK-MATU
+      *
+      *    算定開始日を設定する
+           IF      LNK-SC97-NYUIN-KAISU    =   ZERO
+               MOVE    SPA-SRYYMD(7:2) TO  IDX-2
+               MOVE    1               TO  LNK-SC97-NYU-DAY (IDX-2)
+           END-IF
+      *    １日１回とする
+           MOVE    1                   TO  IDX-KAI1
+           MOVE    1                   TO  TBL-KAISU (IDX-KAI1)
+      *
+      *    算定日
+           PERFORM VARYING     IDX-2       FROM    1   BY  1
+                   UNTIL       IDX-2       >   31
+               IF      LNK-SC97-NYU-DAY (IDX-2) NOT =   ZERO
+                   PERFORM VARYING  IDX-KAI3    FROM    1   BY  1
+                           UNTIL    IDX-KAI3    >   LNK-SC97-KAISU
+                       COMPUTE IDX-KAI4    =   IDX-2
+                                           +   IDX-KAI3
+                                           -   1
+                       IF      IDX-KAI4    >   WRK-MATU
+      *                    翌月へ
+                           COMPUTE IDX-KAI4    =   IDX-KAI4
+                                               -   WRK-MATU
+                           IF      IDX-KAI4    >   31
+                               MOVE    31          TO  IDX-KAI4
+                           END-IF
+                           MOVE    1           TO  TBL2-DAY
+                                                   (IDX-KAI1 IDX-KAI4)
+                           MOVE    1           TO  TBL2-KAISU
+                                                   (IDX-KAI1)
+                       ELSE
+                           MOVE    1           TO  TBL-DAY
+                                                   (IDX-KAI1 IDX-KAI4)
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+      *    既に他科で算定済みの時、作成しない
+           MOVE    SPACE               TO  SRYACCT-REC
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  ACCT-PTID
+           MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
+           MOVE    LNK-WKSRY-SRYKBN (01)
+                                       TO  ACCT-SRYKBN
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 930-SRYACCT-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+           PERFORM
+               UNTIL        FLG-SRYACCT         =   1
+               PERFORM VARYING     IDX-2       FROM    1   BY  1
+                       UNTIL       IDX-2       >   31
+                   IF      ACCT-DAY (1 IDX-2)  >   ZERO
+                       MOVE    ZERO            TO  TBL-DAY (1 IDX-2)
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 930-SRYACCT-NEXT-SEC
+           END-PERFORM
+      *
+      *    次月がある時、次月の判定
+           IF      TBL2-KAISUU-AREA    NOT =   ZERO
+               GO      TO      10011-KAISUU-SYORI-EXT
+           END-IF
+           MOVE    SPA-SRYYMD          TO  WRK-SYMD
+           COMPUTE WRK-SMM             =   WRK-SMM   +   1
+           IF      WRK-SMM             >   12
+               ADD     1               TO  WRK-SYY
+               MOVE    1               TO  WRK-SMM
+           END-IF
+           MOVE    SPACE               TO  SRYACCT-REC
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  ACCT-PTID
+           MOVE    WRK-SYMD (1:6)      TO  ACCT-SRYYM
+           MOVE    LNK-WKSRY-SRYKBN (01)
+                                       TO  ACCT-SRYKBN
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 930-SRYACCT-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+           PERFORM
+               UNTIL        FLG-SRYACCT         =   1
+               PERFORM VARYING     IDX-2       FROM    1   BY  1
+                       UNTIL       IDX-2       >   31
+                   IF      ACCT-DAY (1 IDX-2)  >   ZERO
+                       MOVE    ZERO            TO  TBL2-DAY (1 IDX-2)
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 930-SRYACCT-NEXT-SEC
+           END-PERFORM
+           .
+       10011-KAISUU-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -611,7 +783,8 @@
            MOVE    LNK-WKSRY-NYUGAIKBN(01) TO  ACCT-NYUGAIKBN
            MOVE    LNK-WKSRY-PTID   (01)   TO  ACCT-PTID
            MOVE    LNK-WKSRY-SRYKA  (01)   TO  ACCT-SRYKA
-           MOVE    LNK-WKSRY-SRYYMD (01)(1:6)
+      *****MOVE    LNK-WKSRY-SRYYMD (01)(1:6)
+           MOVE    SPA-SRYYMD(1:6)
                                            TO  ACCT-SRYYM
            MOVE    LNK-WKSRY-SRYKBN (01)   TO  ACCT-SRYKBN
       *
@@ -678,8 +851,8 @@
            MOVE    LNK-WKSRY-NYUGAIKBN(01) TO  ACCT-NYUGAIKBN
            MOVE    LNK-WKSRY-PTID   (01)   TO  ACCT-PTID
            MOVE    LNK-WKSRY-SRYKA  (01)   TO  ACCT-SRYKA
-           MOVE    LNK-WKSRY-SRYYMD (01)(1:6)
-                                           TO  ACCT-SRYYM
+      *****MOVE    LNK-WKSRY-SRYYMD (01)(1:6)
+           MOVE    SPA-SRYYMD(1:6)         TO  ACCT-SRYYM
            MOVE    LNK-WKSRY-SRYKBN (01)   TO  ACCT-SRYKBN
            MOVE    WRK-ZAINUM              TO  ACCT-ZAINUM
       *
@@ -937,8 +1110,8 @@
            MOVE    LNK-WKSRY-NYUGAIKBN(01) TO  ACCT-NYUGAIKBN
            MOVE    LNK-WKSRY-PTID   (01)   TO  ACCT-PTID
            MOVE    LNK-WKSRY-SRYKA  (01)   TO  ACCT-SRYKA
-           MOVE    LNK-WKSRY-SRYYMD (01)(1:6)
-                                           TO  ACCT-SRYYM
+      *****MOVE    LNK-WKSRY-SRYYMD (01)(1:6)
+           MOVE    SPA-SRYYMD (1:6)        TO  ACCT-SRYYM
            MOVE    LNK-WKSRY-SRYKBN (01)   TO  ACCT-SRYKBN
            MOVE    WRK-ZAINUM          TO  ACCT-ZAINUM
            MOVE    SPA-HKNCOMBINUM     TO  ACCT-HKNCOMBI
@@ -1016,7 +1189,8 @@
                MOVE    LNK-WKSRY-NYUGAIKBN (IDX)   TO  SRY-NYUGAIKBN
                MOVE    LNK-WKSRY-PTID   (IDX)  TO  SRY-PTID
                MOVE    LNK-WKSRY-SRYKA  (IDX)  TO  SRY-SRYKA
-               MOVE    LNK-WKSRY-SRYYMD (IDX)(1:6)
+      *********MOVE    LNK-WKSRY-SRYYMD (IDX)(1:6)
+               MOVE    SPA-SRYYMD      (1:6)
                                                TO  SRY-SRYYM
       *        剤番号
                MOVE    WRK-ZAINUM              TO  SRY-ZAINUM
@@ -1216,10 +1390,65 @@
            EXIT.
       *
       *****************************************************************
+      *    翌月分診療行為マスター更新処理
+      *****************************************************************
+       1000-NEXT-SRYACT-KOU-SEC          SECTION.
+      *
+      *    診療年月の翌月算定
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-SRYYMD          TO  LNK-DAY6-KIJUN
+           MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    1                   TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KOYOMI     TO  WRK-NEXT-SRYYMD
+           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+           MOVE    WRK-NEXT-SRYYMD     TO  SPA-SRYYMD
+      *
+      *    回数・日付決定
+      *    当月用保存
+           MOVE    TBL-KAISUU-AREA     TO  HZN-KAISUU-AREA
+           MOVE    TBL2-KAISUU-AREA    TO  TBL-KAISUU-AREA
+      *
+           MOVE    ZERO                TO  FLG-SINKI
+      *    診療会計マスター処理
+           PERFORM 1002-SRYACCT-SYORI-SEC
+      *
+      *    診療コードがない時、処理をしない
+      *    IF      WRK-MEISAISU        =   ZERO
+      *        GO      TO      100-SRYACT-KOU-EXT
+      *    END-IF
+      *
+      *    診療行為マスター処理 
+           IF      FLG-SINKI           =   1
+               PERFORM 4501-SRYACT-SYORI-SEC
+           END-IF
+      *
+      *    算定履歴更新処理
+           PERFORM 4502-SANTEI-SYORI-SEC
+      *
+      *    当月分を元へ
+           MOVE    WRK-SRYYMD          TO  SPA-SRYYMD
+           MOVE    HZN-KAISUU-AREA     TO  TBL-KAISUU-AREA
+      *
+           .
+       1000-NEXT-SRYACT-KOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    受診履歴作成処理
       *****************************************************************
        200-JYURRK-SYORI-SEC          SECTION.
       *
+      *    入院の調剤料・麻毒で自動算定の時、受診履歴に追加しない
+           IF      (LNK-WKSRY-SRYKBN (1)   =   "24"  OR  "26" )  AND
+                   (LNK-WKSRY-AUTOKBN(1 1) =   "3"   )
+               GO      TO      200-JYURRK-SYORI-EXT
+           END-IF
+      *
+      *    当月
            PERFORM VARYING     IDX-KAI1    FROM    1   BY  1
                    UNTIL      (IDX-KAI1    >   10  )  OR
                               (TBL-KAISU (IDX-KAI1)    =   ZERO )
@@ -1233,6 +1462,7 @@
                    END-IF
                END-PERFORM
            END-PERFORM
+      *
       *
            .
        200-JYURRK-SYORI-EXT.
@@ -1638,6 +1868,10 @@
                PERFORM
                    UNTIL   (FLG-SRYACCT        =   1    ) OR
                            (FLG-OK             =   1    )
+      *         入院調剤料と麻毒については後で一括変更するのでそのまま
+                 IF      ACCT-SRYKBN             =   "24"  OR "26"
+                       CONTINUE
+                 ELSE
       *
                    MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
                    EVALUATE    JYURRK-RENNUM
@@ -1706,6 +1940,8 @@
                             DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
                        END-IF
                    END-IF
+      *
+                  END-IF
       *
                    MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
                    PERFORM 930-SRYACCT-NEXT-SEC

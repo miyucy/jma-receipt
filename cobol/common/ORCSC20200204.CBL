@@ -143,6 +143,7 @@
                05  WRK-TENSU-Z     PIC ZZZZZZZZ.
            03  WRK-KAISU-X.
                05  WRK-KAISU-Z     PIC ZZZZ.
+           03  WRK-KAISU-H         PIC X(04).
       *
            03  WRK-ZAIKEI-AREA.
                05  WRK-KONGO           PIC 9(05).
@@ -700,11 +701,12 @@
        300-AUTO-SYORI-SEC              SECTION.
       *
            INITIALIZE                      WRK-CONTCHK-TBL
+           MOVE    ZERO                TO  WRK-KAISU
       *
       *    継続の時、算定分の編集
-           IF      LNK-ORCSC-CONTKBN    =   "1"  OR  "2"
+           IF     (LNK-ORCSC-CONTKBN    =   "1"  OR  "2" )
       *        入院の時
-               OR  SPA-NYUGAIKBN        =   "1"
+               OR (SPA-NYUGAIKBN        =   "1"  )
                PERFORM 30010-JYURRK-SYORI-SEC
            END-IF
       *
@@ -922,8 +924,8 @@
       *        投薬で入院回数の時、回数集計
                IF     (SPA-NYUGAIKBN               =   "1" )  AND
                       (WRK-COM-SRYKBN (IDX)(1:1)   =   "2" )  AND
-                      (WRK-GMN-INPUTCD(IDX)(1:1)   =   "*"   OR
-                       WRK-COM-KAIFLG (IDX)        =   "1" )
+                      ((WRK-GMN-INPUTCD(IDX)(1:1)  =   "*" )  OR
+                       (WRK-COM-KAIFLG (IDX)       =   "1" ))
                    PERFORM 3009-NYUINKAISU-SEC
                END-IF
                IF      WRK-COM-ZAIEND (IDX)    =   "1"
@@ -977,6 +979,19 @@
       *    院外　算定処理
       *****************************************************************
        3009-NYUINKAISU-SEC              SECTION.
+      *
+      *TEST
+           DISPLAY "3009-NYUINKAISU SRYKBN:" WRK-COM-SRYKBN (IDX)
+                 ",KAISU:" WRK-COM-KAISU (IDX)
+                 ",WRK-KAISU:" WRK-KAISU
+      *TEST
+      *    内服は日数分作成する
+           IF      WRK-COM-SRYKBN (IDX)    =   "21"
+               IF      WRK-COM-KAISU (IDX)     >   WRK-KAISU
+                   MOVE    WRK-COM-KAISU (IDX) TO  WRK-KAISU
+               END-IF
+           END-IF
+      *
       *    入院回数以外
            IF       WRK-GMN-INPUTCD(IDX)(1:1)  NOT =   "*"
                MOVE    SPA-SRYYMD (7:2)    TO  IDN1
@@ -1500,6 +1515,12 @@
                    MOVE    "24"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
                END-IF
+      *TEST
+               DISPLAY "WRK-SRYCD:" WRK-SRYCD
+                       ",INPUTCD:" LNK-ORCSC-INPUTCD(02 IDXS IDN2)
+                       ",IDS:" IDXS
+                        ",WRK-KAISU:" WRK-KAISU
+      *TEST
            END-IF
       *    麻毒加算料
            IF      FLG-MADOKU          =   1
@@ -1595,6 +1616,29 @@
                END-IF
            END-PERFORM
            INITIALIZE                      LNK-ORCSC-INPUTCD-G (02 IDXS)
+      *
+      *    日数なしか調基は最初の日とする
+           IF    ( WRK-KAISU           =   1  OR  ZERO ) OR
+                 ( FLG-DAY             =   3    )
+               MOVE    SPACE           TO  WRK-KAISU-H
+               MOVE    ZERO            TO  IDN4
+           ELSE
+               MOVE    WRK-KAISU       TO  WRK-KAISU-Z
+               MOVE    SPACE           TO  WRK-KAISU-H
+               MOVE    ZERO            TO  IDN4
+               PERFORM VARYING     IDN1    FROM    1   BY  1
+                       UNTIL       IDN1    >   4
+                   IF     (WRK-KAISU-X (IDN1:1)    NOT =   SPACE) OR
+                          (IDN4                    >   ZERO  )
+                       ADD     1               TO  IDN4
+                       MOVE    WRK-KAISU-X (IDN1:1)    TO  WRK-KAISU-H
+                                                             (IDN4:1)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *TEST
+           DISPLAY "WRK-KAISU-H:" WRK-KAISU-H
+      *TEST
            MOVE    1                   TO  IDN2
            MOVE    1                   TO  IDN3
            PERFORM VARYING     IDN1    FROM    1   BY  1
@@ -1605,9 +1649,14 @@
                    ADD     1               TO  IDN2
                END-IF
                IF      LNK-ORCSC-INPUTCD(02 IDXS IDN2)   =   SPACE
-                   MOVE    "*/"            TO  LNK-ORCSC-INPUTCD
-                                                   (02 IDXS IDN2) (1:2)
+                   STRING  "*"             DELIMITED  BY  SIZE
+                           WRK-KAISU-H     DELIMITED  BY  SPACE
+                           "/"             DELIMITED  BY  SIZE
+                           INTO            LNK-ORCSC-INPUTCD
+                                                   (02 IDXS IDN2)
+                   END-STRING
                    ADD     2               TO  IDN3
+                   ADD     IDN4            TO  IDN3
                END-IF
                IF      WRK-SEL (IDN1)      =   SPACE
                    MOVE    ","             TO  WRK-SEL (IDN1)
