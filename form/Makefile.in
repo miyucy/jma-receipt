@@ -29,6 +29,7 @@ EXTRA_DIST = \
               HC15x.dia \
               HC17.dia \
               HC17V01.dia \
+              HC17V02.dia \
               HC18.dia \
               HC19.dia \
               HC20.dia \
