@@ -1558,7 +1558,7 @@
       *
       *    診療行為コード＝'０'のとき対象外出力しない
            IF      RECE05-SRYCD (IDX) (1:1) =   "0"
-               IF      RECE05-SRYCD (IDX)(1:3)  =   "001"   OR  "002"
+               IF      RECE05-SRYCD (IDX)(1:3)  =   "002"
                    CONTINUE
                ELSE
                    GO  TO  200711-COMMENT-TAIHI-EXT
