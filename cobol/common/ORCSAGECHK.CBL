@@ -32,6 +32,7 @@
       * 01.00.02     NACL-多々納  02/10/07  船員本人追加
       *                                     ７５歳以上の老人公費有無追加
       * 01.00.03     NACL-多々納  02/11/21  共済下船３月追加
+      * 01.00.04     NACL-多々納  03/02/05  原爆単独老人判定をしない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -344,6 +345,22 @@
                MOVE    1               TO  FLG-OK2
       *********GO      TO      200-FTNRATE-EXT
            END-IF
+      *
+      *    原爆のみの時
+           IF     (COMB-HKNNUM         =   SPACE )  AND
+                 ((COMB-KOH1HKNNUM     =   "018" )  OR
+                  (COMB-KOH2HKNNUM     =   "018" )  OR
+                  (COMB-KOH3HKNNUM     =   "018" )  OR
+                  (COMB-KOH4HKNNUM     =   "018" ))
+               MOVE    1               TO  FLG-OK2
+           END-IF
+           IF     (COMB-HKNNUM         =   SPACE )  AND
+                 ((COMB-KOH1HKNNUM     =   "019" )  OR
+                  (COMB-KOH2HKNNUM     =   "019" )  OR
+                  (COMB-KOH3HKNNUM     =   "019" )  OR
+                  (COMB-KOH4HKNNUM     =   "019" ))
+               MOVE    1               TO  FLG-OK2
+           END-IF
       *    老人公費で、支払区分がある時
            IF    ((COMB-KOH1HKNNUM     =   "027" )  AND
                   (COMB-KOH1PAYKBN     =   "01" OR "02" ))  OR
@@ -401,6 +418,15 @@
                END-IF
       *
            END-IF
+      *    原爆のみの時
+           IF     (COMB-HKNNUM         =   SPACE )  AND
+                 ((COMB-KOH1HKNNUM     =   "012" )  OR
+                  (COMB-KOH2HKNNUM     =   "012" )  OR
+                  (COMB-KOH3HKNNUM     =   "012" )  OR
+                  (COMB-KOH4HKNNUM     =   "012" ))
+               MOVE    1               TO  FLG-OK2
+           END-IF
+      *
            IF      FLG-OK              =   ZERO   AND
                    FLG-OK2             =   ZERO
                MOVE    1               TO  AGECHK-RJNCHK
