@@ -694,6 +694,7 @@ COPYS = \
         HCMSL55.INC \
         HCMSL80.INC \
         CPORCHC01.INC \
+        CPORCSHKNSET.INC \
 
 DBPATH = \
 	ORCA-DBPATH
