@@ -52,16 +52,6 @@ K01	{
 		HKNKUMI	{
 			value	varchar(4);
 		};
-		CONTKBNCOMB	{
-			CONTKBN	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[5];
-		};
-		KZKKBNNAME	{
-			value	varchar(50);
-		};
 		scrolledwindow3	{
 			HKNKUMILST	{
 				count	int;

@@ -127,7 +127,7 @@ J02	{
 			value	varchar(3);
 		};
 		HENSRYYMD	{
-			value	varchar(10);
+			value	varchar(2);
 		};
 		scrolledwindow1	{
 			DATALIST	{
@@ -176,9 +176,6 @@ J02	{
 				select	bool[400];
 			};
 		};
-		SRYKAMEI	{
-			value	varchar(4);
-		};
 		scrolledwindow2	{
 			RRKLIST	{
 				count	int;
@@ -193,19 +190,8 @@ J02	{
 				select	bool[100];
 			};
 		};
-		SRYKBNCOMB	{
-			SRYKBN	{
-				value	varchar(19);
-			};
-			count	int;
-			item	varchar(19)[30];
-		};
-		SRYKACOMB	{
-			SRYKA	{
-				value	varchar(16);
-			};
-			count	int;
-			item	varchar(16)[41];
+		SRYKAMEI	{
+			value	varchar(4);
 		};
 		NYUGAIKBNCOMB	{
 			NYUGAIKBN	{
@@ -214,6 +200,23 @@ J02	{
 			count	int;
 			item	varchar(10)[2];
 		};
+		SRYKACOMB	{
+			SRYKA	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[41];
+		};
+		SRYKBNCOMB	{
+			SRYKBN	{
+				value	varchar(9);
+			};
+			count	int;
+			item	varchar(9)[30];
+		};
+		NYUINKIKAN	{
+			value	varchar(30);
+		};
 		HHKNCOMBICOMB	{
 			HHKNCOMBI	{
 				value	varchar(55);
@@ -221,16 +224,16 @@ J02	{
 			count	int;
 			item	varchar(55)[20];
 		};
-		NYUINMSG2	{
-		    style   varchar(20);
-			value	varchar(50);
+		IKKATU	{
+			value	varchar(20);
 		};
 		NYUINMSG1	{
 		    style   varchar(20);
 			value	varchar(50);
 		};
-		NYUINKIKAN	{
-			value	varchar(30);
+		NYUINMSG2	{
+		    style   varchar(20);
+			value	varchar(50);
 		};
 	};
 };

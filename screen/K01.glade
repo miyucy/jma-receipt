@@ -372,164 +372,6 @@
     </widget>
 
     <widget>
-      <class>GtkPandaCombo</class>
-      <name>CONTKBNCOMB</name>
-      <x>144</x>
-      <y>432</y>
-      <width>180</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>CONTKBN</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 10 Sep 2001 05:34:50 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 10 Sep 2001 05:35:03 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>20</text_max_length>
-	<text></text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>KZKKBNNAME</name>
-      <x>344</x>
-      <y>432</y>
-      <width>480</width>
-      <height>24</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>50</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkScrolledWindow</class>
-      <name>scrolledwindow3</name>
-      <x>100</x>
-      <y>480</y>
-      <width>764</width>
-      <height>196</height>
-      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
-      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-
-      <widget>
-	<class>GtkPandaCList</class>
-	<name>HKNKUMILST</name>
-	<width>626</width>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>select_row</name>
-	  <handler>clist_send_event</handler>
-	  <after>True</after>
-	  <data>SELECT</data>
-	  <last_modification_time>Mon, 10 Sep 2001 07:34:30 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>select_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Mon, 10 Sep 2001 07:35:07 GMT</last_modification_time>
-	</signal>
-	<columns>5</columns>
-	<column_widths>35,381,107,105,48</column_widths>
-	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-	<show_titles>True</show_titles>
-	<shadow_type>GTK_SHADOW_IN</shadow_type>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>tkumino</name>
-	  <label>番号</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>thknkumi</name>
-	  <label>組み合わせの内容</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>ttekstymd</name>
-	  <label>適用開始日</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>ttekedymd</name>
-	  <label>適用終了日</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>tftnwari</name>
-	  <label>負担割合</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>SYORIMEI</name>
       <x>628</x>
@@ -853,22 +695,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label468</name>
-      <x>32</x>
-      <y>436</y>
-      <width>92</width>
-      <height>20</height>
-      <label>継続入力区分</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label465</name>
       <x>32</x>
       <y>292</y>
@@ -961,6 +787,109 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow3</name>
+      <x>88</x>
+      <y>432</y>
+      <width>764</width>
+      <height>196</height>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+      <widget>
+	<class>GtkPandaCList</class>
+	<name>HKNKUMILST</name>
+	<width>626</width>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>select_row</name>
+	  <handler>clist_send_event</handler>
+	  <after>True</after>
+	  <data>SELECT</data>
+	  <last_modification_time>Mon, 10 Sep 2001 07:34:30 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>select_row</name>
+	  <handler>selection_changed</handler>
+	  <data>SELECT</data>
+	  <last_modification_time>Mon, 10 Sep 2001 07:35:07 GMT</last_modification_time>
+	</signal>
+	<columns>5</columns>
+	<column_widths>35,381,107,105,48</column_widths>
+	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+	<show_titles>True</show_titles>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>tkumino</name>
+	  <label>番号</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>thknkumi</name>
+	  <label>組み合わせの内容</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>ttekstymd</name>
+	  <label>適用開始日</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>ttekedymd</name>
+	  <label>適用終了日</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>tftnwari</name>
+	  <label>負担割合</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+      </widget>
     </widget>
   </widget>
 </widget>

@@ -1,0 +1,21 @@
+J025	{
+	knmino	{
+		scrolledwindow1	{
+			SYUNOULIST	{
+				count	int;
+				item	{
+					value0	varchar(7);
+					value1	varchar(6);
+					value2	varchar(50);
+					value3	varchar(3);
+					value4	varchar(10);
+					value5	varchar(10);
+					value6	varchar(10);
+					value7	varchar(10);
+					value8	varchar(6);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};

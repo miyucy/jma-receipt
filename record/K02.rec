@@ -375,5 +375,11 @@ K02	{
 		B09S	{
 	           	state	int;
 		};
+		B06S	{
+			label	varchar(10);
+		};
+		DRNAME	{
+			value	varchar(50);
+		};
 	};
 };

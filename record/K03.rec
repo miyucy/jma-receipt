@@ -1,3 +1,4 @@
+
 K03	{
 	fixed3	{
 		PTNUM	{
@@ -18,14 +19,8 @@ K03	{
 		BIRTHDAY	{
 			value	varchar(9);
 		};
-		HKNCOMBI	{
-			value	varchar(60);
-		};
 		FTNRATE	{
 			value	varchar(5);
-		};
-		SRYKA	{
-			value	varchar(10);
 		};
 		HAKYMD	{
 			value	varchar(9);
@@ -97,6 +92,7 @@ K03	{
 			value	varchar(10);
 		};
 		CHOSEI	{
+	           	state	int;
 			value	varchar(10);
 		};
 		GOKSKY	{
@@ -152,7 +148,7 @@ K03	{
 		};
 		SYORIMEI	{
 		    style   varchar(20);
-			value	varchar(12);
+			value	varchar(20);
 		};
 		ROUSYOSIN	{
 			value	varchar(10);
@@ -165,9 +161,6 @@ K03	{
 		};
 		ROUETC	{
 			value	varchar(10);
-		};
-		JIHIMSG1	{
-			value	varchar(8);
 		};
 		JIHIMSG2	{
 			value	varchar(8);
@@ -194,7 +187,59 @@ K03	{
 			value	varchar(10);
 		};
 		NYUKIN	{
+	           	state	int;
 			value	varchar(10);
+		};
+		JIHIMSG4	{
+			value	varchar(8);
+		};
+		JIHIMSG5	{
+			value	varchar(8);
+		};
+		CHOUKAKIN	{
+			value	varchar(10);
+		};
+		HKNCOMBI_COMB	{
+			HKNCOMBI	{
+				value	varchar(60);
+			};
+			count	int;
+			item	varchar(60)[15];
+		};
+		SRYKA_COMB	{
+			SRYKA	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[40];
+		};
+		DRCDCOMBO	{
+			DRCD	{
+				value	varchar(29);
+			};
+			count	int;
+			item	varchar(29)[20];
+		};
+		NYUKINHOU_COMB	{
+			NYUKINHOU	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[10];
+		};
+		NYUKINKBN_COMB	{
+			NYUKINKBN	{
+				value	varchar(40);
+			};
+			count	int;
+			item	varchar(40)[10];
+		};
+		YAKJYOFLGCOMBO	{
+			YAKJYOFLG	{
+				value	varchar(18);
+			};
+			count	int;
+			item	varchar(18)[4];
 		};
 		SYOHOPRTFLGCOMBO	{
 			SYOHOPRTFLG	{
@@ -205,53 +250,33 @@ K03	{
 		};
 		HAKFLGCOMBO	{
 			HAKFLG	{
-				value	varchar(18);
+				value	varchar(24);
 			};
 			count	int;
-			item	varchar(18)[2];
+			item	varchar(24)[3];
 		};
-		YAKJYOFLGCOMBO	{
-			YAKJYOFLG	{
-				value	varchar(18);
+		HAKHOUFLGCOMB	{
+			HAKHOUFLG	{
+				value	varchar(30);
 			};
 			count	int;
-			item	varchar(18)[4];
+			item	varchar(30)[5];
 		};
-		DRCDCOMBO	{
-			DRCD	{
-				value	varchar(29);
-			};
-			count	int;
-			item	varchar(29)[20];
-		};
-		FUKUSAGAKU	{
-			value	varchar(10);
-		};
-		JIHIMSG4	{
+		JIHIMSG1	{
 			value	varchar(8);
 		};
-		JIHIMSG5	{
-			value	varchar(8);
+		FUKUZENMDS2	{
+			value	varchar(50);
+		};
+		FUKUZENMDS	{
+			value	varchar(30);
 		};
 		FUKUMSG	{
 		    style   varchar(20);
 			value	varchar(20);
 		};
-		FUKUZENMDS	{
-			value	varchar(30);
-		};
-		FUKUMDS	{
-			value	varchar(20);
-		};
-		NYUKINKBN_COMB	{
-			NYUKINKBN	{
-				value	varchar(40);
-			};
-			count	int;
-			item	varchar(40)[9];
-		};
-		CHOUKAKIN	{
-			value	varchar(10);
+		NYUKINMSG	{
+			value	varchar(50);
 		};
 	};
 };
