@@ -185,6 +185,7 @@
       *  01.01.29    NACL-多々納  03/01/08  SRYACCT-KEY14 追加
       *  01.01.30    NACL-太田    03/01/17  TEIKIRRK-KEY,ALL追加        
       *                                     PTTEIKIRRK-KEY〜KEY3,ALL追加
+      *  01.01.31    NACL-太田    03/01/20  PTTEIKIRRK-KEY4追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2294,6 +2295,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTEIKIRRK-KEY3"
                    MOVE    PATH-TBL-PTTEIKIRRK-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTTEIKIRRK-KEY4"
+                   MOVE    PATH-TBL-PTTEIKIRRK-KEY4
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTEIKIRRK-ALL"
                    MOVE    PATH-TBL-PTTEIKIRRK-ALL

@@ -51,6 +51,18 @@ path	key3		{
 	};
 };
 
+path	key4		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptteikirrk_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptteikirrk
+        WHERE  PTID        = :PTID
+		AND    SKYSTYMD   >= :SKYSTYMD
+		AND    SKYEDYMD   <= :SKYEDYMD
+		;
+	};
+};
+
 path	all		{ 	
 	DBSELECT	{
 		DECLARE tbl_ptteikirrk_all_csr CURSOR FOR
