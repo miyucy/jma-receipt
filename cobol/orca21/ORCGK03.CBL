@@ -4413,16 +4413,12 @@
                ELSE
                    MOVE    SYS-9000-CODE       TO  SPA-K03X-CODE
                    IF      SYS-9000-UKEBUTTON (02) =   "T"
-                       MOVE    1               TO  FLG-CLAIM
-                   ELSE
                        MOVE    2               TO  FLG-CLAIM
+                   ELSE
+                       MOVE    1               TO  FLG-CLAIM
                    END-IF
                END-IF
            END-IF
-      *TEST!!!
-      *    MOVE    2             TO  FLG-CLAIM
-      *    MOVE    "1"           TO  SPA-K03X-CODE
-      *TEST!!!
       *
            IF      FLG-CLAIM           =   2
                CONTINUE
