@@ -2574,12 +2574,12 @@
                                MOVE    ZERO            TO  FLG-HEN-CHK
                            END-IF
                        END-IF
-      *                訂正自動作成で時間外の時、時間外区分とする
-                       IF      (WRK-SYORIFLG             =   1  )  AND
-                               (SPA-NAI-TIMEFLG          =   ZERO) AND
-                               (LNK-WKSRY-AUTOKBN(IDX IDY)   =   "2")
-                           PERFORM 31013-JIKANCHK-SEC
-                       END-IF
+      ***              訂正自動作成で時間外の時、時間外区分とする
+      *                IF      (WRK-SYORIFLG             =   1  )  AND
+      *                        (SPA-NAI-TIMEFLG          =   ZERO) AND
+      *                        (LNK-WKSRY-AUTOKBN(IDX IDY)   =   "2")
+      *                    PERFORM 31013-JIKANCHK-SEC
+      *******          END-IF
                        IF      FLG-HEN-CHK         =   ZERO
                            PERFORM 31011-SPA-HEN-SEC
                        END-IF
@@ -3095,6 +3095,7 @@
                PERFORM VARYING     IDX-G   FROM    IDX2  BY -1
                        UNTIL       IDX-G   <=   1
                    IF     (SPA-COM-INPUTCD (IDX-G)(1:1)  =   "1" ) AND
+                          (SPA-COM-DATAKBN (IDX-G)       =   "1" ) AND
                           (SPA-COM-AUTOKBN (IDX-G)       =   SPACE )
                       IF      (SPA-GMN-INPUTCD (IDX-G)(1:1)  NUMERIC )
                           AND (SPA-GMN-INPUTCD (IDX-G)(2:1)  =   SPACE)
@@ -5788,17 +5789,7 @@
                        ((LNK-SC97-NYURYOKU     =   ZERO   )  AND
                         (SPA-COM-DATAKBN(SPA-GMN-IDX)
                                                =   "1"  )) )
-      *********入力された時間外を優先する
-      *            IF     (SPA-NAI-TIMEFLG     NOT =   ZERO    )  AND
-      *                   (SPA-NAI-TIMEFLG     NOT =   LNK-SC97-JIKAN)
-      *                                                           AND
-      *                   (SPA-COM-TIMEFLG(SPA-GMN-IDX)
-      *                                            =   ZERO    )
-      *                MOVE    "9030"              TO  SPA-ERRCD
-      ************ ELSE
-                       MOVE    LNK-SC97-JIKAN      TO  SPA-COM-TIMEFLG
-                                                          (SPA-GMN-IDX)
-      *************END-IF
+                   PERFORM 41011211-JIKANGAI-CHK-SEC
                ELSE
                    MOVE    "0030"          TO  SPA-ERRCD
                END-IF
@@ -5812,6 +5803,33 @@
            END-IF
            .
        4101121-INPUTCD-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    時間外区分チェック処理
+      *****************************************************************
+       41011211-JIKANGAI-CHK-SEC      SECTION.
+      *
+           IF      LNK-SC97-NYURYOKU   =   ZERO
+               MOVE    SPA-COM-SRYKBN (SPA-GMN-IDX)
+                                           TO  TNS-SRYKBN
+               MOVE    SPA-COM-TIMEKSNKBN(SPA-GMN-IDX)
+                                           TO  TNS-TIMEKSNKBN
+           END-IF
+           IF       TNS-SRYKBN         =   "11"
+               CONTINUE
+           ELSE
+      *        診察料以外は時間外加算が算定できること
+               IF      TNS-TIMEKSNKBN      =   ZERO
+                   MOVE    "0030"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    LNK-SC97-JIKAN      TO  SPA-COM-TIMEFLG
+                                                          (SPA-GMN-IDX)
+           END-IF
+           .
+       41011211-JIKANGAI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -10826,7 +10844,9 @@
                END-EVALUATE
       *
            ELSE
-               IF      SPA-COM-DATAKBN (IDX)   =   "1"
+               IF     (SPA-COM-DATAKBN (IDX)   =   "1" ) AND
+      *               時間加算区分
+                      (SPA-COM-TIMEKSNKBN(IDX) NOT =   SPACE )
                    EVALUATE    SPA-COM-TIMEFLG (IDX)
                        WHEN    1
                            MOVE    "A"      TO  WKSRY-AUTOKBN  (IDY)
