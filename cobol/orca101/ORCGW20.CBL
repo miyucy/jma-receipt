@@ -3487,7 +3487,7 @@
       *
       *    ´Ç¸î»Õ£³¿Í°Ê¾å
            IF    ( SPA-GMN-W20-BTU-SBT-CD  =   "08" )
-            AND  ( W20SUB01-O-SSTKIJUNKBN  =   "3" )
+            AND  ( W20SUB01-O-SSTKIJUNKBN  =   "3" OR "5" )
                    MOVE    "T"     TO  SPA-GMN-W20-CHK-BTU-KNGSIS
            ELSE
                    MOVE    "F"     TO  SPA-GMN-W20-CHK-BTU-KNGSIS
@@ -3495,7 +3495,7 @@
       *
       *    °å»Õ£³¿Í°Ê¾å
            IF    ( SPA-GMN-W20-BTU-SBT-CD  =   "08" )
-            AND  ( W20SUB01-O-SSTKIJUNKBN  =   "4" )
+            AND  ( W20SUB01-O-SSTKIJUNKBN  =   "4" OR "5" )
                    MOVE    "T"     TO  SPA-GMN-W20-CHK-BTU-ISISU
            ELSE
                    MOVE    "F"     TO  SPA-GMN-W20-CHK-BTU-ISISU
