@@ -91,3 +91,18 @@ path	del1 	{
 		;
 	};
 };
+
+path	key4		{ 	
+	DBSELECT	{
+		DECLARE tbl_rececom_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_rececom
+			WHERE   HOSPID    =   :HOSPID
+			AND     PTID      =   :PTID
+			AND     NYUGAIKBN =   :NYUGAIKBN
+			AND     SRYYM     =   :SRYYM
+			AND     HKNCOMBI  =   :HKNCOMBI
+			ORDER   BY        SRYKA
+		;
+	};
+};
