@@ -45,6 +45,7 @@
       *                                     のみの変更も可とする
       *  01.00.12    NACL-太田    03.03.18  入院カスタマイズ帳票対応
       *  01.00.13    NACL-太田    03.04.02  負担金計算サブ引数修正
+      *  01.00.14    NACL-太田    03.04.08  患者登録への遷移を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1106,15 +1107,19 @@
        330-P02-SET-SEC                 SECTION.
       *
            IF    ( SPA-ERRMSG(1:2)     =   "NO" )
+      *        戻る
+               IF      SPA-PTNUM(1:1)     =   "*"
+      *            画面初期化
+                   PERFORM 420-CLEAR-SEC
+               END-IF
                GO  TO  330-P02-SET-EXT
            END-IF
       *
            IF    ( SPA-PTID            =   ZERO )
+      *        画面初期化
+               PERFORM 420-CLEAR-SEC
                GO  TO  330-P02-SET-EXT
            END-IF
-      *
-      *    画面初期化
-           PERFORM 420-CLEAR-SEC
       *
            MOVE    SPA-PTID            TO  SPA-NAI-I01-PTID
            MOVE    SPA-PTNUM           TO  SPA-GMN-I01-PTNUM
@@ -1349,6 +1354,9 @@
            WHEN    "CLICKED"       ALSO    "B03"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 420-MAEPTINF-SET-SEC
+           WHEN    "CLICKED"       ALSO    "B05"
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+               PERFORM 480-KANJATOROKU-SEC
            WHEN    "CLICKED"       ALSO    "B06"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 480-NYUINREKI-SEC
@@ -1370,7 +1378,6 @@
            WHEN    "CLICKED"       ALSO    "B23"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 480-ZOKUSI-PRT-SEC
-           WHEN    "CLICKED"       ALSO    "B04"
            WHEN    "CLICKED"       ALSO    "B21"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 480-NYUINKAIKEI-SEC
@@ -1699,7 +1706,7 @@
       *    ＊のとき、患者新規登録へ
            IF    ( SPA-GMN-I01-PTNUM(1:1)  =   "*" )
                MOVE    "*"                 TO  SPA-PTNUM
-               PERFORM 440-KNJADD-SEC
+               PERFORM 481-KANJATOROKU-SEC
                GO  TO      4101-PTNUM-CHK-EXT
            END-IF
       *
@@ -5002,7 +5009,19 @@
       *****************************************************************
       *    患者登録へ
       *****************************************************************
-       440-KNJADD-SEC             SECTION.
+       480-KANJATOROKU-SEC             SECTION.
+      *
+           MOVE    SPA-NAI-I01-PTID    TO  SPA-PTID
+           MOVE    SPA-GMN-I01-PTNUM   TO  SPA-PTNUM
+           PERFORM 481-KANJATOROKU-SEC
+      *
+          .
+       480-KANJATOROKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者登録へ
+      *****************************************************************
+       481-KANJATOROKU-SEC             SECTION.
       *
       *    ＳＰＡの内容を退避
            INITIALIZE                  I0SUB01-LNK
@@ -5030,7 +5049,7 @@
            MOVE    1                   TO  FLG-END
       *
           .
-       440-KNJADD-EXT.
+       481-KANJATOROKU-EXT.
            EXIT.
       *****************************************************************
       *    入院歴画面遷移処理
