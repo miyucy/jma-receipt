@@ -24,6 +24,9 @@
            03  BD002-SRYYMD              PIC  X(08).
       *≈¡…ºæı¬÷∂Ë ¨
            03  BD002-DENPJTIKBN          PIC  X(01).
+      *≈¡…º∫Ó¿Æ∂Ë ¨° ∂ı«Ú°ß≥∞ÕË°°£±°ß¬‡±°ª˛∫Ó¿Æ°°£≤°ßƒÍ¥¸¿¡µ·
+      *              £≥°ß∆˛±°•Ï•ª•◊•»Õ—•¿•ﬂ°º°À
+           03  BD002-CREATEKBN           PIC  X(01).
       *≈¡…º»Øπ‘∆¸
            03  BD002-DENPPRTYMD          PIC  X(08).
       *¿¡µ·¥¸¥÷
@@ -46,60 +49,77 @@
            03  BD002-SYUCOMPTOTAL        PIC  9(07).
       *ºÁ ›∏±°›ÃÙ∫ﬁ…È√¥∂Ë ¨
            03  BD002-SYUYKZFTNKBN        PIC  X(01).
+      *∏¯»Ò°›…È√¥æ Û
+           03  BD002-KOH-AREA.
       *∏¯»Ò£±°› ›∏±»÷πÊ
-           03  BD002-KOH1HKNNUM          PIC  X(03).
+               05  BD002-KOH1HKNNUM          PIC  X(03).
       *∏¯»Ò£±°›¥µº‘…È√¥∂‚≥€
-           03  BD002-KOH1HKNFTNMONEY     PIC  9(07).
+               05  BD002-KOH1HKNFTNMONEY     PIC  9(07).
       *∏¯»Ò£±°›∑◊ªª…È√¥∂‚
-           03  BD002-KOH1COMPFTN         PIC  9(07).
+               05  BD002-KOH1COMPFTN         PIC  9(07).
       *∏¯»Ò£±°›∑◊ªªÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚
-           03  BD002-KOH1COMPYKZFTN      PIC  9(07).
+               05  BD002-KOH1COMPYKZFTN      PIC  9(07).
       *∏¯»Ò£±°›∑◊ªª…È√¥∂‚∑◊
-           03  BD002-KOH1COMPTOTAL       PIC  9(07).
+               05  BD002-KOH1COMPTOTAL       PIC  9(07).
       *∏¯»Ò£±°›ÃÙ∫ﬁ…È√¥∂Ë ¨
-           03  BD002-KOH1YKZFTNKBN       PIC  X(01).
+               05  BD002-KOH1YKZFTNKBN       PIC  X(01).
       *∏¯»Ò£≤°› ›∏±»÷πÊ
-           03  BD002-KOH2HKNNUM          PIC  X(03).
+               05  BD002-KOH2HKNNUM          PIC  X(03).
       *∏¯»Ò£≤°›¥µº‘…È√¥∂‚≥€
-           03  BD002-KOH2HKNFTNMONEY     PIC  9(07).
+               05  BD002-KOH2HKNFTNMONEY     PIC  9(07).
       *∏¯»Ò£≤°›∑◊ªª…È√¥∂‚
-           03  BD002-KOH2COMPFTN         PIC  9(07).
+               05  BD002-KOH2COMPFTN         PIC  9(07).
       *∏¯»Ò£≤°›∑◊ªªÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚
-           03  BD002-KOH2COMPYKZFTN      PIC  9(07).
+               05  BD002-KOH2COMPYKZFTN      PIC  9(07).
       *∏¯»Ò£≤°›∑◊ªª…È√¥∂‚∑◊
-           03  BD002-KOH2COMPTOTAL       PIC  9(07).
+               05  BD002-KOH2COMPTOTAL       PIC  9(07).
       *∏¯»Ò£≤°›ÃÙ∫ﬁ…È√¥∂Ë ¨
-           03  BD002-KOH2YKZFTNKBN       PIC  X(01).
+               05  BD002-KOH2YKZFTNKBN       PIC  X(01).
       *∏¯»Ò£≥°› ›∏±»÷πÊ
-           03  BD002-KOH3HKNNUM          PIC  X(03).
+               05  BD002-KOH3HKNNUM          PIC  X(03).
       *∏¯»Ò£≥°›¥µº‘…È√¥∂‚≥€
-           03  BD002-KOH3HKNFTNMONEY     PIC  9(07).
+               05  BD002-KOH3HKNFTNMONEY     PIC  9(07).
       *∏¯»Ò£≥°›∑◊ªª…È√¥∂‚
-           03  BD002-KOH3COMPFTN         PIC  9(07).
+               05  BD002-KOH3COMPFTN         PIC  9(07).
       *∏¯»Ò£≥°›∑◊ªªÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚
-           03  BD002-KOH3COMPYKZFTN      PIC  9(07).
+               05  BD002-KOH3COMPYKZFTN      PIC  9(07).
       *∏¯»Ò£≥°›∑◊ªª…È√¥∂‚∑◊
-           03  BD002-KOH3COMPTOTAL       PIC  9(07).
+               05  BD002-KOH3COMPTOTAL       PIC  9(07).
       *∏¯»Ò£≥°›ÃÙ∫ﬁ…È√¥∂Ë ¨
-           03  BD002-KOH3YKZFTNKBN       PIC  X(01).
+               05  BD002-KOH3YKZFTNKBN       PIC  X(01).
       *∏¯»Ò£¥°› ›∏±»÷πÊ
-           03  BD002-KOH4HKNNUM          PIC  X(03).
+               05  BD002-KOH4HKNNUM          PIC  X(03).
       *∏¯»Ò£¥°›¥µº‘…È√¥∂‚≥€
-           03  BD002-KOH4HKNFTNMONEY     PIC  9(07).
+               05  BD002-KOH4HKNFTNMONEY     PIC  9(07).
       *∏¯»Ò£¥°›∑◊ªª…È√¥∂‚
-           03  BD002-KOH4COMPFTN         PIC  9(07).
+               05  BD002-KOH4COMPFTN         PIC  9(07).
       *∏¯»Ò£¥°›∑◊ªªÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚
-           03  BD002-KOH4COMPYKZFTN      PIC  9(07).
+               05  BD002-KOH4COMPYKZFTN      PIC  9(07).
       *∏¯»Ò£¥°›∑◊ªª…È√¥∂‚∑◊
-           03  BD002-KOH4COMPTOTAL       PIC  9(07).
+               05  BD002-KOH4COMPTOTAL       PIC  9(07).
       *∏¯»Ò£¥°›ÃÙ∫ﬁ…È√¥∂Ë ¨
-           03  BD002-KOH4YKZFTNKBN       PIC  X(01).
+               05  BD002-KOH4YKZFTNKBN       PIC  X(01).
+      *∏¯»Ò…È√¥æ Û∫∆ƒÍµ¡
+           03  BD002-KOHFTN-TABLE  REDEFINES   BD002-KOH-AREA.
+               05  BD002-KOHFTN-TBL          OCCURS  4.
+      *∏¯»Ò°› ›∏±»÷πÊ
+                 07  BD002-KOH-HKNNUM          PIC  X(03).
+      *∏¯»Ò°›¥µº‘…È√¥∂‚≥€
+                 07  BD002-KOH-HKNFTNMONEY     PIC  9(07).
+      *∏¯»Ò°›∑◊ªª…È√¥∂‚
+                 07  BD002-KOH-COMPFTN         PIC  9(07).
+      *∏¯»Ò°›∑◊ªªÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚
+                 07  BD002-KOH-COMPYKZFTN      PIC  9(07).
+      *∏¯»Ò°›∑◊ªª…È√¥∂‚∑◊
+                 07  BD002-KOH-COMPTOTAL       PIC  9(07).
+      *∏¯»Ò°›ÃÙ∫ﬁ…È√¥∂Ë ¨
+                 07  BD002-KOH-YKZFTNKBN       PIC  X(01).
       *¥µº‘…È√¥Œ®
            03  BD002-PTFTNRATE           PIC  9(03).
       *…Ù≤∞£Œ£œ
-           03  BD002-ROOMNUM             PIC  X(05).
+           03  BD002-ROOMNUM             PIC  X(08).
       *…¬≈Ô•≥°º•…
-           03  BD002-BYOTONUM            PIC  X(03).
+           03  BD002-BYOTONUM            PIC  X(02).
       *¿¡µ·ΩÒ∫Ó¿Æ∂Ë ¨
            03  BD002-SKYKUKBN            PIC  X(01).
       *æ√»Ò¿«¬–æ›∂‚≥€
@@ -205,7 +225,7 @@
                05  BD002-JIHI-4-TAX          PIC  9(07). 
                05  BD002-JIHI-5              PIC  9(07). 
                05  BD002-JIHI-5-TAX          PIC  9(07). 
-           03  BD002-JIHI-NAIYOU-R       REDEFINES  BD002-JIHI-NAIYOU.
+           03  BD002-JIHI-NAIYOU-R           REDEFINES  BD002-JIHI-NAIYOU.
                05  BD002-JIHI-TBL            OCCURS   5.
                  07  BD002-JIHI-TAXNASI        PIC  9(07).
                  07  BD002-JIHI-TAXARI         PIC  9(07).
@@ -241,6 +261,14 @@
            03  BD002-DISCOUNT-TEIRITU    PIC  X(01).
       *≥‰∞˙Œ®
            03  BD002-DISCOUNT-RATE       PIC  9(07).
+      *œ´∫“ ›∏±°›ΩÈø«Œ¡
+           03  BD002-RSISHOSHIN-MONEY    PIC  9(07).
+      *œ´∫“ ›∏±°›∫∆ø«Œ¡
+           03  BD002-RSISAISHIN-MONEY    PIC  9(07).
+      *œ´∫“ ›∏±°›ªÿ∆≥Œ¡
+           03  BD002-RSISDO-MONEY        PIC  9(07).
+      *œ´∫“ ›∏±°›§Ω§Œ¬æ
+           03  BD002-RSIETC-MONEY        PIC  9(07).
       *¿¡µ·∂‚≥€
            03  BD002-SKYMONEY            PIC  9(07).
       *∆˛∂‚πÁ∑◊≥€
@@ -255,17 +283,81 @@
            03  BD002-NYNSHOKAISU         PIC  9(02).
       *ÃÙ∫ﬁ»Ø∑Ù»÷πÊ
            03  BD002-YKZKENNUM           PIC  9(05).
+      *ººŒ¡∫π≥€
+           03  BD002-RMSAGAKU            PIC  9(07).
       *ø©ªˆ£±§´§Èø©ªˆ£∑
            03  BD002-SHOKUJI-NAIYOU.
+               05  BD002-SHOKUJI1-NISSU  PIC  9(02).
                05  BD002-SHOKUJI1        PIC  9(07).
+               05  BD002-SHOKUJI2-NISSU  PIC  9(02).
                05  BD002-SHOKUJI2        PIC  9(07).
+               05  BD002-SHOKUJI3-NISSU  PIC  9(02).
                05  BD002-SHOKUJI3        PIC  9(07).
+               05  BD002-SHOKUJI4-NISSU  PIC  9(02).
                05  BD002-SHOKUJI4        PIC  9(07).
+               05  BD002-SHOKUJI5-NISSU  PIC  9(02).
                05  BD002-SHOKUJI5        PIC  9(07).
+               05  BD002-SHOKUJI6-NISSU  PIC  9(02).
                05  BD002-SHOKUJI6        PIC  9(07).
+               05  BD002-SHOKUJI7-NISSU  PIC  9(02).
                05  BD002-SHOKUJI7        PIC  9(07).
-           03  BD002-SYOKUJI-NAIYOUR REDEFINES   BD002-SHOKUJI-NAIYOU.
-               05  BD002-SHOKUJI         PIC  9(07)  OCCURS   7.
+           03  BD002-SYOKUJI-NAIYOUR     REDEFINES   BD002-SHOKUJI-NAIYOU.
+               05  BD002-SYOKUJI-TBL     OCCURS   7.
+                 07  BD002-SHOKUJI-NISSU   PIC  9(02).
+                 07  BD002-SHOKUJI         PIC  9(07).
+      *ø©ªˆŒ≈Õ‹»Òæ Û° ø©ªˆ∆¸øÙ°¶ø©ªˆŒ≈Õ‹»Ò°¶…∏Ω‡…È√¥≥€°À
+           03  BD002-SKJ-AREA.
+               05  BD002-SYUSKJ-NISSU      PIC  9(02).
+               05  BD002-SYUSKJ-RYOYOHI    PIC  9(07).
+               05  BD002-SYUSKJ-FTN        PIC  9(07).
+               05  BD002-SYUSKJ-FTN-RECE   PIC  9(07).
+               05  BD002-SYUSKJ-FTNKBN     PIC  X(01).
+           03  BD002-SKJ-AREA2.
+               05  BD002-KOH1SKJ-NISSU     PIC  9(02).
+               05  BD002-KOH1SKJ-RYOYOHI   PIC  9(07).
+               05  BD002-KOH1SKJ-FTN       PIC  9(07).
+               05  BD002-KOH1SKJ-FTN-RECE  PIC  9(07).
+               05  BD002-KOH1SKJ-FTNKBN    PIC  X(01).
+               05  BD002-KOH2SKJ-NISSU     PIC  9(02).
+               05  BD002-KOH2SKJ-RYOYOHI   PIC  9(07).
+               05  BD002-KOH2SKJ-FTN       PIC  9(07).
+               05  BD002-KOH2SKJ-FTN-RECE  PIC  9(07).
+               05  BD002-KOH2SKJ-FTNKBN    PIC  X(01).
+               05  BD002-KOH3SKJ-NISSU     PIC  9(02).
+               05  BD002-KOH3SKJ-RYOYOHI   PIC  9(07).
+               05  BD002-KOH3SKJ-FTN       PIC  9(07).
+               05  BD002-KOH3SKJ-FTN-RECE  PIC  9(07).
+               05  BD002-KOH3SKJ-FTNKBN    PIC  X(01).
+               05  BD002-KOH4SKJ-NISSU     PIC  9(02).
+               05  BD002-KOH4SKJ-RYOYOHI   PIC  9(07).
+               05  BD002-KOH4SKJ-FTN       PIC  9(07).
+               05  BD002-KOH4SKJ-FTN-RECE  PIC  9(07).
+               05  BD002-KOH4SKJ-FTNKBN    PIC  X(01).
+           03  BD002-SKJ-AREA2R          REDEFINES   BD002-SKJ-AREA2.
+               05  BD002-SKJ-TBL         OCCURS   4.
+                 07  BD002-SKJ-NISSU       PIC  9(02).
+                 07  BD002-SKJ-RYOYOHI     PIC  9(07).
+                 07  BD002-SKJ-FTN         PIC  9(07).
+                 07  BD002-SKJ-FTN-RECE    PIC  9(07).
+                 07  BD002-SKJ-FTNKBN      PIC  X(01).
+      *ø©ªˆŒ≈Õ‹»Ò°  ›∏±°À
+           03  BD002-RYOYOHI-SKJ         PIC  9(07).
+      *ø©ªˆ…È√¥≥€°  ›∏±°ßº´∏ …È√¥°À
+           03  BD002-SKYMONEY-SKJ        PIC  9(07).
+      *ø©ªˆ…È√¥≥€°  ›∏±°ßº´∏ …È√¥æ√»Ò¿«°À
+           03  BD002-SKYMONEY-SKJ-TAX    PIC  9(07).
+      *ø©ªˆ…È√¥≥€°  ›∏±°ßº´∏ …È√¥πÁ∑◊°À
+           03  BD002-SKYMONEY-SKJ-KEI    PIC  9(07).
+      *ø©ªˆŒ≈Õ‹»Ò° º´»Ò°À
+           03  BD002-RYOYOHI-SKJ-JIHI    PIC  9(07).
+      *ø©ªˆ…È√¥≥€° º´»Ò°ßº´∏ …È√¥°À
+           03  BD002-SKYMONEY-SKJ-JIHI   PIC  9(07).
+      *ø©ªˆ…È√¥≥€° º´»Ò°ßº´∏ …È√¥æ√»Ò¿«°À
+           03  BD002-SKYMONEY-SKJ-JIHI-TAX
+                                       PIC  9(07).
+      *ø©ªˆ…È√¥≥€° º´»Ò°ßº´∏ …È√¥πÁ∑◊°À
+           03  BD002-SKYMONEY-SKJ-JIHI-KEI
+                                       PIC  9(07).
       *∫∆∑◊ªª∂Ë ¨
            03  BD002-SAIKEISANKBN        PIC  X(01).
       *±°≥∞ΩË ˝∂Ë ¨
@@ -274,6 +366,51 @@
            03  BD002-DOUJI-DENPNUM       PIC  9(07).
       *∑—¬≥∂Ë ¨
            03  BD002-CONTKBN             PIC  X(01).
+      *ø«Œ≈•’•È•∞•∆°º•÷•Î
+           03  BD002-DAY-AREA.
+      *        ø«Œ≈•’•È•∞•∆°º•÷•Î
+             04  BD002-DAY-TBL.
+      *        ø«Œ≈•’•È•∞° £±∆¸§´§È£≥£±∆¸°À
+               05  BD002-DAY-1           PIC  X(01).
+               05  BD002-DAY-2           PIC  X(01).
+               05  BD002-DAY-3           PIC  X(01).
+               05  BD002-DAY-4           PIC  X(01).
+               05  BD002-DAY-5           PIC  X(01).
+               05  BD002-DAY-6           PIC  X(01).
+               05  BD002-DAY-7           PIC  X(01).
+               05  BD002-DAY-8           PIC  X(01).
+               05  BD002-DAY-9           PIC  X(01).
+               05  BD002-DAY-10          PIC  X(01).
+               05  BD002-DAY-11          PIC  X(01).
+               05  BD002-DAY-12          PIC  X(01).
+               05  BD002-DAY-13          PIC  X(01).
+               05  BD002-DAY-14          PIC  X(01).
+               05  BD002-DAY-15          PIC  X(01).
+               05  BD002-DAY-16          PIC  X(01).
+               05  BD002-DAY-17          PIC  X(01).
+               05  BD002-DAY-18          PIC  X(01).
+               05  BD002-DAY-19          PIC  X(01).
+               05  BD002-DAY-20          PIC  X(01).
+               05  BD002-DAY-21          PIC  X(01).
+               05  BD002-DAY-22          PIC  X(01).
+               05  BD002-DAY-23          PIC  X(01).
+               05  BD002-DAY-24          PIC  X(01).
+               05  BD002-DAY-25          PIC  X(01).
+               05  BD002-DAY-26          PIC  X(01).
+               05  BD002-DAY-27          PIC  X(01).
+               05  BD002-DAY-28          PIC  X(01).
+               05  BD002-DAY-29          PIC  X(01).
+               05  BD002-DAY-30          PIC  X(01).
+               05  BD002-DAY-31          PIC  X(01).
+           03  BD002-DAY-AREA-R          REDEFINES   BD002-DAY-AREA.
+      *        ø«Œ≈≤ÛøÙ•∆°º•÷•Î
+               05  BD002-DAY-TBL2.
+                   07  BD002-DAY         PIC  X(01)
+                                         OCCURS   31.
+      * £øÙ≤ §ﬁ§»§·º± Ã≈¡…º»÷πÊ
+           03  BD002-FUKU-DENPNUM        PIC  9(07).
+      * £øÙ≤ §ﬁ§»§·∂Ë ¨° £±°ß∑—¬≥°°£≤°ß≥ŒƒÍ°À
+           03  BD002-FUKU-KBN            PIC  X(01).
       *√ºÀˆ£…£ƒ
            03  BD002-TERMID              PIC  X(16).
       *•™•⁄°º•Ï°º•ø£…£ƒ
