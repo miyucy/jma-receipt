@@ -36,6 +36,7 @@
       *  01.00.07    NACL-多々納  02/12/02  食事の追加
       *  01.00.08    NACL-多々納  02/12/13  継続区分再編集、継続訂正修正
       *  01.00.09    NACL-多々納  03/01/16  自費回数表示修正
+      *  01.00.10    NACL-多々納  03/03/05  排他制御処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -442,6 +443,9 @@
       *
       *    診療行為入院更新パラメタ領域
            COPY    "CPORCSCNYUIN.INC".
+      *
+      *    排他制御サブパラメタ
+           COPY    "CPORCSLOCK.INC".
       *
       *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
        01  SPA-SCR-REC.
@@ -2756,6 +2760,9 @@
                                        SPA-AREA
                                        ORCSCNYUINAREA
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            INITIALIZE                      SPA-KYOTUKEY
            INITIALIZE                      SPA-K01KYOUTU
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -3229,6 +3236,21 @@
       *
            .
        900-SRYACT-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC         SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           .
+       990-LOCK-OUT-EXT.
            EXIT.
       *
       *****************************************************************

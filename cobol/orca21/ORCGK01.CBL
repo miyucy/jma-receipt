@@ -35,6 +35,7 @@
       *  02.00.01    MCC-多々納   02/04/25  労災追加
       *  02.00.02    NACL-多々納  02/10/18  入院追加
       *  02.00.03    NACL-多々納  02/11/15  一括入力、保険選択修正
+      *  02.00.04    NACL-多々納  03/03/05  排他制御処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -423,6 +424,9 @@
       *
       *    ドクター編集処理パラメタ
            COPY    "CPORCSDRSET.INC".
+      *
+      *    排他制御サブパラメタ
+           COPY    "CPORCSLOCK.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -1280,6 +1284,12 @@
            IF      FLG-PTINF       NOT =   ZERO
                MOVE    SPACE               TO  SPA-GMN-NAME
                MOVE    "0011"              TO  SPA-ERRCD
+               GO      TO      4101-PTNUM-CHK-EXT
+           END-IF
+      *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4101-PTNUM-CHK-EXT
            END-IF
       *
@@ -2568,6 +2578,11 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
+           IF      SPA-GMN-PTID    NOT =   ZERO
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
+           END-IF
+      *
       *****MOVE    "K02"               TO  SPA-SAKIPG
            MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
            MOVE    SPACE               TO  SPA-MOTOPG2
@@ -2596,6 +2611,11 @@
       *    初期画面へ
       *****************************************************************
        230-CLEAR-SEC             SECTION.
+      *
+           IF      SPA-GMN-PTID    NOT =   ZERO
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
+           END-IF
       *
            INITIALIZE              SPA-K01
       *
@@ -3055,6 +3075,12 @@
                WHEN    "0022"
                    MOVE    "前回処方区分がありません。"
                                                TO  SPA-ERRMSG
+      *
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
+      *
                WHEN    OTHER
                    MOVE    SPACE               TO  SPA-ERRMSG
            END-EVALUATE
@@ -3443,6 +3469,41 @@
            .
        993-PTRSIINF-NEXT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    排他制御処理
+      *****************************************************************
+       990-LOCK-IN-SEC         SECTION.
+      *
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-GMN-PTID        TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF      SLOCK-RETURN    NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+           .
+       990-LOCK-IN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC         SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           .
+       990-LOCK-OUT-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ＰＵＴ　処理

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  03/03/05  排他制御処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -160,6 +161,10 @@
            COPY    "CPORCSNUM.INC".
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *
+      *    排他制御サブパラメタ
+           COPY    "CPORCSLOCK.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -620,6 +625,9 @@
            ELSE
                IF      SPA-K10-SELNUM      >   ZERO
                    PERFORM 4510-KAKUTEI-SYORI-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      450-TOROKU-EXT
+                   END-IF
                END-IF
            END-IF
       *
@@ -646,6 +654,12 @@
        4510-KAKUTEI-SYORI-SEC             SECTION.
       *
            MOVE    SPA-K10-SELNUM      TO  IDX
+      *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4510-KAKUTEI-SYORI-EXT
+           END-IF
       *
            MOVE    SPA-K10-PTID (IDX)  TO  SPA-PTID
            MOVE    SPA-K10-SRYKA(IDX)  TO  SPA-SRYKA
@@ -857,7 +871,13 @@
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
                    MOVE    "番号選択入力エラー"
-                                       TO  SPA-ERRMSG
+                                               TO  SPA-ERRMSG
+      *
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
+      *
            END-EVALUATE
       *
            MOVE    SPACE               TO  KERR
@@ -1016,6 +1036,41 @@
       *
            .
        980-PARA-READ-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    排他制御処理
+      *****************************************************************
+       990-LOCK-IN-SEC         SECTION.
+      *
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-K10-PTID (IDX)  TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF      SLOCK-RETURN    NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+           .
+       990-LOCK-IN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC         SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           .
+       990-LOCK-OUT-EXT.
            EXIT.
       *
       *

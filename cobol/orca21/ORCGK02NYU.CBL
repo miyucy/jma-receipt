@@ -31,6 +31,7 @@
       * 01.00.02     NACL-多々納  02/12/02  食事追加
       * 01.00.03     NACL-多々納  02/12/17  算定チェック修正
       * 01.00.04     NACL-多々納  03/02/19  約束セット名称編集修正
+      * 01.00.05     NACL-多々納  03/03/05  排他制御処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -807,6 +808,9 @@
       *    保険年齢・負担割合算定サブ
            COPY    "CPORCSAGECHK.INC".
       *
+      *    排他制御サブパラメタ
+           COPY    "CPORCSLOCK.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -1169,6 +1173,10 @@
       *                戻る
                        MOVE    ZERO               TO  FLG-PARASET
                        PERFORM 3002-PARA-SET-SEC
+                       IF      SPA-GMN-PTID   NOT =   ZERO
+      *                    排他制御処理
+                           PERFORM 990-LOCK-IN-SEC
+                       END-IF
                    ELSE
                        MOVE    ZERO               TO  SPA-SAISIN-CHK
                        MOVE    2                  TO  FLG-PARASET
@@ -1313,6 +1321,12 @@
       *
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
       *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      3003-GMN-HEN-EXT
+           END-IF
+      *
       *    保険組合
            PERFORM 3101-HKNCOMBI-HEN-SEC
            .
@@ -1355,6 +1369,13 @@
            IF      SPA-PTID            =   ZERO
                GO      TO      3009-SAIHEN-EXT
            END-IF
+      *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN2-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      3009-SAIHEN-EXT
+           END-IF
+      *
       *    入院が存在するかのチェック
            PERFORM 410101-NYUINRRK-CHK-SEC
       *    入外区分
@@ -1363,6 +1384,7 @@
                PERFORM 410109-K02IDOU-SEC
                GO      TO      3009-SAIHEN-EXT
            END-IF
+      *
       *
            INITIALIZE                  ORCSC95AREA
            MOVE    "5"                 TO  LNK-SC95-KBN
@@ -3423,6 +3445,13 @@
                MOVE    "1003"              TO  SPA-ERRCD
                GO      TO      41010-PTNUM-SYORI-EXT
            END-IF
+      *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41010-PTNUM-SYORI-EXT
+           END-IF
+      *
       *    入院が存在するかのチェック
            PERFORM 410101-NYUINRRK-CHK-SEC
       *    入外区分
@@ -7771,6 +7800,9 @@
       *
            PERFORM 210-PARA-DEL-SEC
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            INITIALIZE                  SPA-KYOTUKEY
            MOVE    WRK-SAKIPG          TO  SPA-SAKIPG
            MOVE    "K02N"              TO  SPA-MOTOPG
@@ -7811,6 +7843,9 @@
        210-BACK-OK-SEC                SECTION.
       *
            PERFORM 210-PARA-DEL-SEC
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
       *
            MOVE    SPACE               TO  LINKAREA
            INITIALIZE                  SPA-KYOTUKEY
@@ -7854,6 +7889,9 @@
                                        SPA-K02
       *
            MOVE    0               TO  SPA-GMN-CUR
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
       *
            .
        222-PTNUMCLEAR-EXT.
@@ -11111,6 +11149,13 @@
                MOVE    1               TO  SPA-NAI-ROUSTR
            END-IF
       *
+           EVALUATE    SPA-ERRCD
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
+           END-EVALUATE
+      *
       *
            IF      SPA-ERRMSG2     NOT =   SPACE
       *        エラー画面２
@@ -11846,7 +11891,61 @@
            .
        960-KANRIMST-READ-EXT.
            EXIT.
-     *
+      *
+      *****************************************************************
+      *    排他制御処理
+      *****************************************************************
+       990-LOCK-IN-SEC         SECTION.
+      *
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-GMN-PTID        TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF      SLOCK-RETURN    NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+           .
+       990-LOCK-IN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御処理
+      *****************************************************************
+       990-LOCK-IN2-SEC         SECTION.
+      *
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-PTID            TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF      SLOCK-RETURN    NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+           .
+       990-LOCK-IN2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC         SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           .
+       990-LOCK-OUT-EXT.
+           EXIT.
+      *
+      *
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
