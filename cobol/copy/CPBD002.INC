@@ -5,6 +5,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     02.02.27  収納ＤＢの変更により修正
+      *  01.00.02    NACL-小豆沢  04.01.21  収納ＤＢの変更により修正
       ************************************************************
       *01  BD002-REC.
            03  BD002-KEY.
@@ -43,6 +44,8 @@
            03  BD002-SYUHKNFTNMONEY      PIC  9(07).
       *主保険−計算負担金
            03  BD002-SYUCOMPFTN          PIC  9(07).
+      *主保険−計算負担金（円単位記録用）
+           03  BD002-SYUCOMPFTN-ENTANI   PIC  9(07).
       *主保険−計算薬剤一部負担金
            03  BD002-SYUCOMPYKZFTN       PIC  9(07).
       *主保険−計算負担金計
@@ -57,6 +60,8 @@
                05  BD002-KOH1HKNFTNMONEY     PIC  9(07).
       *公費１−計算負担金
                05  BD002-KOH1COMPFTN         PIC  9(07).
+      *公費１−計算負担金（円単位記録用）
+               05  BD002-KOH1COMPFTN-ENTANI  PIC  9(07).
       *公費１−計算薬剤一部負担金
                05  BD002-KOH1COMPYKZFTN      PIC  9(07).
       *公費１−計算負担金計
@@ -69,6 +74,8 @@
                05  BD002-KOH2HKNFTNMONEY     PIC  9(07).
       *公費２−計算負担金
                05  BD002-KOH2COMPFTN         PIC  9(07).
+      *公費２−計算負担金（円単位記録用）
+               05  BD002-KOH2COMPFTN-ENTANI  PIC  9(07).
       *公費２−計算薬剤一部負担金
                05  BD002-KOH2COMPYKZFTN      PIC  9(07).
       *公費２−計算負担金計
@@ -81,6 +88,8 @@
                05  BD002-KOH3HKNFTNMONEY     PIC  9(07).
       *公費３−計算負担金
                05  BD002-KOH3COMPFTN         PIC  9(07).
+      *公費３−計算負担金（円単位記録用）
+               05  BD002-KOH3COMPFTN-ENTANI  PIC  9(07).
       *公費３−計算薬剤一部負担金
                05  BD002-KOH3COMPYKZFTN      PIC  9(07).
       *公費３−計算負担金計
@@ -93,6 +102,8 @@
                05  BD002-KOH4HKNFTNMONEY     PIC  9(07).
       *公費４−計算負担金
                05  BD002-KOH4COMPFTN         PIC  9(07).
+      *公費４−計算負担金（円単位記録用）
+               05  BD002-KOH4COMPFTN-ENTANI  PIC  9(07).
       *公費４−計算薬剤一部負担金
                05  BD002-KOH4COMPYKZFTN      PIC  9(07).
       *公費４−計算負担金計
@@ -213,6 +224,8 @@
                   09  BD002-TOTAL-MONEY         PIC  9(07).
                   09  BD002-TOTAL-TGMONEY       PIC  9(07).
                   09  BD002-TOTAL-TGMONEY-TAX   PIC  9(07).
+      *保険適用外金額−消費税（再掲）
+           03  BD002-TGMONEY-TAX-SAI         PIC  9(07).
       *自費１から５
            03  BD002-JIHI-NAIYOU.
                05  BD002-JIHI-1              PIC  9(07). 
@@ -270,6 +283,14 @@
            03  BD002-RSISDO-MONEY        PIC  9(07).
       *労災保険−その他
            03  BD002-RSIETC-MONEY        PIC  9(07).
+      *労災保険−消費税（再掲）
+           03  BD002-RSI-TAX-SAI         PIC  9(07).
+      *労災保険−患者請求分円建て合計額
+           03  BD002-RSI-TOTAL           PIC  9(07).
+      *労災自賠−請求金額（日計表記載用）
+           03  BD002-RSIJIBAI-SKYMONEY   PIC  9(07).
+      *請求金額−消費税（再掲）
+           03  BD002-SKYMONEY-TAX-SAI    PIC  9(07).
       *請求金額
            03  BD002-SKYMONEY            PIC  9(07).
       *入金合計額
@@ -286,6 +307,8 @@
            03  BD002-YKZKENNUM           PIC  9(05).
       *室料差額
            03  BD002-RMSAGAKU            PIC  9(07).
+      *室料差額−消費税（再掲）
+           03  BD002-RMSAGAKU-TAX-SAI    PIC  9(07).
       *食事１から食事７
            03  BD002-SHOKUJI-NAIYOU.
                05  BD002-SHOKUJI1-NISSU  PIC  9(02).
@@ -360,6 +383,10 @@
       *食事負担額（自費：自己負担合計）
            03  BD002-SKYMONEY-SKJ-JIHI-KEI
                                        PIC  9(07).
+      *食事負担（負担額別管理用）
+           03  BD002-SKJ-PTFTN           OCCURS 3.
+               05  BD002-SKJ-FTNGAKU     PIC  9(05).
+               05  BD002-SKJ-FTNDAY      PIC  9(02).
       *再計算区分
            03  BD002-SAIKEISANKBN        PIC  X(01).
       *院外処方区分
@@ -413,6 +440,29 @@
            03  BD002-FUKU-DENPNUM        PIC  9(07).
       *複数科まとめ区分（１：継続　２：確定）
            03  BD002-FUKU-KBN            PIC  X(01).
+      *在総診区分
+           03  BD002-ZAITAKU             PIC  X(01).
+      *診療区分別給付外点数
+           03  BD002-KYUFUGAI.
+               05  BD002-KYUFUGAI-TBL          OCCURS   6.
+      *    給付対象外点数
+                   09  BD002-KYUFUGAI-TEN      PIC  9(07).
+      *診療区分別給付外点数再定義
+           03  BD002-KYUFUGAI-R      REDEFINES   BD002-KYUFUGAI.
+      *給付対象外点数（初診）
+              05  BD002-KYUFUGAI-SHOSHIN-TEN    PIC  9(07).
+      *給付対象外点数（指導）
+              05  BD002-KYUFUGAI-SIDOU-TEN      PIC  9(07).
+      *給付対象外点数（往診）
+              05  BD002-KYUFUGAI-OSIN1-TEN      PIC  9(07).
+      *給付対象外点数（往診／夜間）
+              05  BD002-KYUFUGAI-OSIN2-TEN      PIC  9(07).
+      *給付対象外点数（往診／深夜／緊急）
+              05  BD002-KYUFUGAI-OSIN3-TEN      PIC  9(07).
+      *給付対象外点数（合計）
+              05  BD002-KYUFUGAI-GOKEI-TEN      PIC  9(07).
+      *日別収納フラグ
+           03  BD002-DAYINFFLG           PIC  X(01).
       *端末ＩＤ
            03  BD002-TERMID              PIC  X(16).
       *オペーレータＩＤ
