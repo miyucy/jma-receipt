@@ -1661,15 +1661,15 @@
                                            SPA-K02
            END-IF
       *
-           IF     SPA-HKNCOMBINUM      =   SPACE  OR  ZERO
+      *!   IF     SPA-HKNCOMBINUM      =   SPACE  OR  ZERO
       *        スパ共通編集処理
-               PERFORM                 310-SPA-SET-SEC
-               MOVE   "1006"           TO  SPA-ERRCD 
-               MOVE    1               TO  SPA-GMN-PAGE
-               MOVE    00              TO  SPA-GMN-CUR
-               MOVE    3               TO  SPA-HKN-ERR
-               GO      TO      30091-SAIHEN2-EXT
-           END-IF
+      *        PERFORM                 310-SPA-SET-SEC
+      *        MOVE   "1006"           TO  SPA-ERRCD 
+      *        MOVE    1               TO  SPA-GMN-PAGE
+      *        MOVE    00              TO  SPA-GMN-CUR
+      *        MOVE    3               TO  SPA-HKN-ERR
+      *        GO      TO      30091-SAIHEN2-EXT
+      *!   END-IF
       *    パラメタファイルより表示
            MOVE    3               TO  FLG-PARASET
            PERFORM                 3002-PARA-SET-SEC

@@ -140,6 +140,8 @@
       *
            03  FLG-CHK-ALL         PIC 9(01).
       *
+           03  FLG-JIKANKBN        PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -2030,7 +2032,9 @@
                   (SPA-NYUGAIKBN       =   "2"  )  AND
                   (WRK-SRYCD(1:1)      =   "1"  )  AND
                   (SPA-SRYYMD          =   SPA-SYSYMD) AND
-                  (SPA-GAI-JIKANKBN    NOT =   ZERO )
+                  (SPA-GAI-JIKANKBN    NOT =   ZERO )  AND
+      *           診察料再算定時は付けない
+                  (FLG-JIKANKBN        =   ZERO )
                MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
                                            TO  WRK-INPUTCD
                MOVE    SPACE               TO  SPA-GMN-INPUTCD
@@ -2474,7 +2478,9 @@
            IF     (SPA-SYORIFLG        =   ZERO )  AND
                   (SPA-NYUGAIKBN       =   "2"  )  AND
                   (SPA-SRYYMD          =   SPA-SYSYMD) AND
-                  (SPA-GAI-JIKANKBN    NOT =   ZERO )
+                  (SPA-GAI-JIKANKBN    NOT =   ZERO )  AND
+      *           診察料再算定時は付けない
+                  (FLG-JIKANKBN        =   ZERO )
                MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
                                            TO  WRK-INPUTCD
                MOVE    SPACE               TO  SPA-GMN-INPUTCD
@@ -3176,7 +3182,9 @@
                   (SPA-NYUGAIKBN       =   "2"  )  AND
                   (WRK-SRYCD(1:1)      =   "1"  )  AND
                   (SPA-SRYYMD          =   SPA-SYSYMD) AND
-                  (SPA-GAI-JIKANKBN    NOT =   ZERO )
+                  (SPA-GAI-JIKANKBN    NOT =   ZERO )  AND
+      *           診察料再算定時は付けない
+                  (FLG-JIKANKBN        =   ZERO )
                MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
                                            TO  WRK-INPUTCD
                MOVE    SPACE               TO  SPA-GMN-INPUTCD
@@ -4510,6 +4518,8 @@
            MOVE    ZERO                TO  FLG-DUMMY
            MOVE    ZERO                TO  FLG-SINSATU-ARI
            MOVE    SPACE               TO  WRK-KBN3
+      *    時間外なし
+           MOVE    1                   TO  FLG-JIKANKBN
       *    訂正の時、初診料を算定中かの判定
            IF     (SPA-SYORIFLG        =   1    )  OR
                   (LNK-SC10S-SYORI     =   "W"  )
