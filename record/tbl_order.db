@@ -1,0 +1,71 @@
+tbl_order {
+	HOSPID			 	char(24);
+	KARTE_KEY			varchar(36);
+	NYUGAIKBN			char(1);
+	PTNUM				char(20);
+	PTID				number(10,0);
+	SRYKA				char(2);
+	SRYYMD				char(8);
+	HKNCOMBI			number(4,0);
+	ORDERNUM			number(2,0);
+	RENNUM				number(2,0);
+	UKEYMD   			char(8);
+	UKEHMS   			char(6);
+	DRCD				char(5);
+	STATUS				char(1);
+	ERRCD1				char(4);
+	ERRCD2				char(4);
+	ZAICD				char(02);
+	SRYSYUKBN			char(3);
+	IDOKBN				char(2);
+	SRYSKBKBN			char(5);
+	SRYCD				char(9);
+	SRYSURYO			number(8,3);
+	SRYKAISU			number(3,0);
+	ZAIKAISU			number(8,0);
+	ERRCD_ZAI			char(4);
+	ERRCD_ITEM			char(4);
+	CREKBN				char(1);
+	KARTE_KEY_STS		char(1);
+	TERMID   			varchar(16);
+	OPID     			varchar(16);
+	CREYMD   			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+primary	{
+	HOSPID,KARTE_KEY,NYUGAIKBN,PTNUM,PTID,SRYKA,SRYYMD,HKNCOMBI,ORDERNUM,RENNUM,UKEYMD,UKEHMS;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_order_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_order
+			WHERE HOSPID      =   :HOSPID
+			AND   KARTE_KEY   =   :KARTE_KEY
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTNUM       =   :PTNUM
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYMD      =   :SRYYMD
+			AND   HKNCOMBI    =   :HKNCOMBI
+			AND   ORDERNUM    =   :ORDERNUM
+			AND   RENNUM      =   :RENNUM
+			AND   UKEYMD      =   :UKEYMD
+			AND   UKEHMS      =   :UKEHMS
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_order_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_order
+			WHERE   HOSPID    =   :HOSPID
+			AND     KARTE_KEY =   :KARTE_KEY
+		;
+	};
+};
+

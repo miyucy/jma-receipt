@@ -82,6 +82,7 @@ db	{
         tbl_syutotal;
         tbl_toukeimemo;
 	tbl_btpara;
+        tbl_order;
 };
 db	"shell"	{
 	shell;

@@ -286,6 +286,7 @@ RECORD_files = \
 	G03.rec \
 	L03.rec \
 	W19.rec \
+	tbl_order.db \
 
 
 DEF_files = \
