@@ -37,8 +37,6 @@
            03  LNK-SKOHPLUS-HOSPID                  PIC  X(24).
       *¸©ÈÖ¹æ
            03  LNK-SKOHPLUS-PREFNUM                 PIC  X(02).
-      *»ÔÄ®Â¼ÈÖ¹æ
-           03  LNK-SKOHPLUS-CITYNUM                 PIC  X(03).
       *»»ÄêÇ¯·î
            03  LNK-SKOHPLUS-SANTEIYM                PIC  X(06).
       *´µ¼Ô£É£Ä
