@@ -38,6 +38,7 @@
       *                                     印刷する・しないのボタン追加
       *  01.01.04    NACL-太田    03/07/11  自費追加
       *  01.01.05    NACL-森脇    03/08/22  分類区分追加
+      *  02.00.01    NACL-森脇    03/12/24  その他材料追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -88,6 +89,9 @@
                        09  SPA-GMN-IYKCHK  PIC X     OCCURS  7.
       *----(01.01.05)--UPD-END-----
                    07  SPA-GMN-TOKCHK      PIC X.
+      *----(02.00.01)--ADD-START---
+                   07  SPA-GMN-HOKACHK     PIC X.
+      *----(02.00.01)--ADD-END-----
                    07  SPA-GMN-JIHCHK      PIC X.
       *----(01.01.01)--ADD-START----
                    07  SPA-GMN-COMCHK-G.
@@ -430,6 +434,9 @@
       *----(01.01.05)--ADD-END-----
       *
            MOVE  "F"     TO  SPA-GMN-TOKCHK
+      *----(02.00.01)--ADD-START---
+           MOVE  "F"     TO  SPA-GMN-HOKACHK
+      *----(02.00.01)--ADD-END-----
            MOVE  "F"     TO  SPA-GMN-JIHCHK
       *
       *----(01.01.01)--ADD-START---
@@ -643,6 +650,7 @@
                            MOVE    "T"  TO  SPA-GMN-IYKCHK(6)
                    END-EVALUATE
                    MOVE  12             TO  SPA-GMN-CUR
+      *----(02.00.01)--UPD-START---
       *----(01.01.05)--ADD-START---
                WHEN    "CLICKED"       ALSO    "IYKCHK7"
                    EVALUATE    SPA-GMN-IYKCHK(7)
@@ -651,7 +659,7 @@
                        WHEN    "F"
                            MOVE    "T"  TO  SPA-GMN-IYKCHK(7)
                    END-EVALUATE
-                   MOVE  30             TO  SPA-GMN-CUR
+                   MOVE  13             TO  SPA-GMN-CUR
       *----(01.01.05)--ADD-END-----
       *        特定器材チェック
                WHEN    "CLICKED"       ALSO    "TOKCHK" 
@@ -661,11 +669,17 @@
                        WHEN    "F"
                            MOVE    "T"  TO  SPA-GMN-TOKCHK
                    END-EVALUATE                
-                   MOVE  13             TO  SPA-GMN-CUR
+                   MOVE  14             TO  SPA-GMN-CUR
+      *----(02.00.01)--ADD-START---
+      *        その他材料チェック
+               WHEN    "CLICKED"       ALSO    "HOKACHK" 
+                   MOVE  Z91-HOKACHK     TO  SPA-GMN-HOKACHK
+                   MOVE  15             TO  SPA-GMN-CUR
+      *----(02.00.01)--ADD-END-----
       *        自費チェック
                WHEN    "CLICKED"       ALSO    "JIHCHK" 
                    MOVE  Z91-JIHCHK     TO  SPA-GMN-JIHCHK
-                   MOVE  14             TO  SPA-GMN-CUR
+                   MOVE  16             TO  SPA-GMN-CUR
       *----(01.01.01)--UPD-END-----
       *----(01.01.01)--ADD-START---
       *        コメントチェック
@@ -682,7 +696,7 @@
                                MOVE    "T"  TO  SPA-GMN-COMCHK(IDX)
                            END-PERFORM
                    END-EVALUATE
-                   MOVE  15             TO  SPA-GMN-CUR
+                   MOVE  17             TO  SPA-GMN-CUR
                WHEN    "CLICKED"       ALSO    "COMCHK1"
                    EVALUATE    SPA-GMN-COMCHK(1)
                        WHEN    "T"
@@ -690,7 +704,7 @@
                        WHEN    "F"
                            MOVE    "T"  TO  SPA-GMN-COMCHK(1)
                    END-EVALUATE  
-                   MOVE  16             TO  SPA-GMN-CUR
+                   MOVE  18             TO  SPA-GMN-CUR
                WHEN    "CLICKED"       ALSO    "COMCHK2"
                    EVALUATE    SPA-GMN-COMCHK(2)
                        WHEN    "T"
@@ -698,7 +712,7 @@
                        WHEN    "F"
                            MOVE    "T"  TO  SPA-GMN-COMCHK(2)
                    END-EVALUATE 
-                   MOVE  17             TO  SPA-GMN-CUR
+                   MOVE  19             TO  SPA-GMN-CUR
                WHEN    "CLICKED"       ALSO    "COMCHK3"
                    EVALUATE    SPA-GMN-COMCHK(3)
                        WHEN    "T"
@@ -706,7 +720,8 @@
                        WHEN    "F"
                            MOVE    "T"  TO  SPA-GMN-COMCHK(3)
                    END-EVALUATE
-                   MOVE  18             TO  SPA-GMN-CUR
+                   MOVE  20             TO  SPA-GMN-CUR
+      *----(02.00.01)--UPD-END-----
       *----(01.01.01)--ADD-END-----
                WHEN    "CLICKED"       ALSO    "SRY1" 
                    MOVE  Z91-SRY(1)           TO  SPA-GMN-SRY(1)
@@ -863,7 +878,9 @@
                MOVE    WRK-SYMD            TO  SPA-NAI-MSTYMD
            END-IF 
            
-           MOVE  14                        TO  SPA-GMN-CUR              
+      *----(02.00.01)--UPD-START---
+           MOVE  15                        TO  SPA-GMN-CUR
+      *----(02.00.01)--UPD-END---
            .
        400-MSTYMD-CHK-EXT.
            EXIT.
@@ -986,6 +1003,9 @@
                   AND    (SPA-GMN-TOKCHK     =   "F")
                   AND    (SPA-GMN-JIHCHK     =   "F")
                   AND    (SPA-GMN-COMCHKALL  =   "F")
+      *----(02.00.01)--ADD-START---
+                  AND    (SPA-GMN-HOKACHK    =   "F")
+      *----(02.00.01)--ADD-END-----
                   MOVE    "0004"    TO  SPA-ERRCD
            END-IF
       *----(01.01.01)--UPD-END-----
@@ -1171,7 +1191,6 @@
                    END-EVALUATE        
                END-IF
            END-PERFORM
-
       *
       *    特定器材チェックセット
            IF      SPA-GMN-TOKCHK      =   "T"
@@ -1179,6 +1198,15 @@
            ELSE
                MOVE  ZERO                  TO  SHELL-TOKCHK 
            END-IF
+      *
+      *----(02.00.01)--ADD-START---
+      *    その他チェックセット
+           IF      SPA-GMN-HOKACHK     =   "T"
+               MOVE  1                     TO  SHELL-HOKACHK
+           ELSE
+               MOVE  ZERO                  TO  SHELL-HOKACHK
+           END-IF
+      *----(02.00.01)--ADD-END-----
       *
       *    自費チェックセット
            IF      SPA-GMN-JIHCHK      =   "T"
@@ -1263,10 +1291,19 @@
                END-IF
       *----(01.01.05)--UPD-END-----
       *
-               IF      SHELL-TOKCHK        =   1    
+      *----(02.00.01)--UPD-START---
+               IF      SHELL-TOKCHK        =   1
+                   MOVE    1                 TO  SHELL-KBN
                    MOVE    "ORHCML02"        TO  WRK-PGID
                    PERFORM 4901-PRINT-SYORI-SEC
                END-IF
+      *
+               IF      SHELL-HOKACHK       =   1
+                   MOVE    2                 TO  SHELL-KBN
+                   MOVE    "ORHCML02"        TO  WRK-PGID
+                   PERFORM 4901-PRINT-SYORI-SEC
+               END-IF
+      *----(02.00.01)--UPD-END-----
       *
                IF      SHELL-JIHCHK        =   1    
                    MOVE    "ORHCML10"        TO  WRK-PGID
@@ -1283,8 +1320,8 @@
       *----(01.01.01)--ADD-END-----
            ELSE
                IF      SHELL-SRYCHK          =   1
-                       MOVE    "ORHCML08"        TO  WRK-PGID
-                       PERFORM 4901-PRINT-SYORI-SEC
+                   MOVE    "ORHCML08"        TO  WRK-PGID
+                   PERFORM 4901-PRINT-SYORI-SEC
                END-IF
       *
                IF      SHELL-IYKCHK-G      =   ALL "0"
@@ -1306,10 +1343,19 @@
                END-IF
       *----(01.01.05)--UPD-END-----
       *
-               IF      SHELL-TOKCHK        =   1    
+      *----(02.00.01)--UPD-START---
+               IF      SHELL-TOKCHK        =   1
+                   MOVE    1                 TO  SHELL-KBN
                    MOVE    "ORHCML07"        TO  WRK-PGID
                    PERFORM 4901-PRINT-SYORI-SEC
                END-IF
+      *
+               IF      SHELL-HOKACHK       =   1
+                   MOVE    2                 TO  SHELL-KBN
+                   MOVE    "ORHCML07"        TO  WRK-PGID
+                   PERFORM 4901-PRINT-SYORI-SEC
+               END-IF
+      *----(02.00.01)--UPD-END-----
       *
                IF      SHELL-JIHCHK        =   1    
                    MOVE    "ORHCML11"        TO  WRK-PGID
@@ -1696,6 +1742,9 @@
            MOVE  SPA-GMN-SRYCHK     TO  Z91-SRYCHK
            MOVE  SPA-GMN-TOKCHK     TO  Z91-TOKCHK
            MOVE  SPA-GMN-JIHCHK     TO  Z91-JIHCHK
+      *----(02.00.01)--ADD-START---
+           MOVE  SPA-GMN-HOKACHK    TO  Z91-HOKACHK
+      *----(02.00.01)--ADD-END-----
            MOVE  SPA-GMN-SRY(1)     TO  Z91-SRY(1)
            MOVE  SPA-GMN-SRY(2)     TO  Z91-SRY(2)
            MOVE  SPA-GMN-SYU(1)     TO  Z91-SYU(1)
@@ -1734,7 +1783,7 @@
       *    
            MOVE  SPA-SRYSTR-MAX  TO  Z91-SRYSTR-COUNT
            MOVE  SPA-SRYEND-MAX  TO  Z91-SRYEND-COUNT
-           
+      *
            IF  (SPA-GMN-SRYCHK  =  "T")  AND  (SPA-GMN-SRY(2)  =  "T")
                MOVE    SPA-Z91-SRYSTR      TO  Z91-SRYSTR 
                MOVE    SPA-Z91-SRYEND      TO  Z91-SRYEND 
@@ -1798,42 +1847,47 @@
                    MOVE    "IYKCHK5"           TO  MCP-WIDGET
                WHEN    12
                    MOVE    "IYKCHK6"           TO  MCP-WIDGET
+      *----(02.00.01)--UPD-START---
+      *----(01.01.05)--ADD-START---
                WHEN    13
+                   MOVE    "IYKCHK7"           TO  MCP-WIDGET
+      *----(01.01.05)--ADD-END-----
+               WHEN    14
                    MOVE    "TOKCHK"            TO  MCP-WIDGET
       *----(01.01.01)--UPD-END-----
-               WHEN    14
+      *----(02.00.01)--ADD-START---
+               WHEN    15
+                   MOVE    "HOKACHK"           TO  MCP-WIDGET
+      *----(02.00.01)--ADD-END-----
+               WHEN    16
                    MOVE    "JIHCHK"            TO  MCP-WIDGET
       *----(01.01.01)--ADD-START---
-               WHEN    15
-                   MOVE    "COMCHKALL"         TO  MCP-WIDGET
-               WHEN    16
-                   MOVE    "COMCHK1"           TO  MCP-WIDGET
                WHEN    17
-                   MOVE    "COMCHK2"           TO  MCP-WIDGET
+                   MOVE    "COMCHKALL"         TO  MCP-WIDGET
                WHEN    18
+                   MOVE    "COMCHK1"           TO  MCP-WIDGET
+               WHEN    19
+                   MOVE    "COMCHK2"           TO  MCP-WIDGET
+               WHEN    20
                    MOVE    "COMCHK3"           TO  MCP-WIDGET
       *----(01.01.01)--ADD-END-----
       *----(01.01.01)--UPD-START---
-               WHEN    19
-                   MOVE    "MSTYMD"            TO  MCP-WIDGET
-               WHEN    20
-                   MOVE    "KEI1"              TO  MCP-WIDGET
                WHEN    21
-                   MOVE    "KEI2"              TO  MCP-WIDGET
-               WHEN    22 
-                   MOVE    "CYU1"              TO  MCP-WIDGET
+                   MOVE    "MSTYMD"            TO  MCP-WIDGET
+               WHEN    22
+                   MOVE    "KEI1"              TO  MCP-WIDGET
                WHEN    23
+                   MOVE    "KEI2"              TO  MCP-WIDGET
+               WHEN    24 
+                   MOVE    "CYU1"              TO  MCP-WIDGET
+               WHEN    25
                    MOVE    "CYU2"              TO  MCP-WIDGET
-               WHEN    24
-                   MOVE    "SYU1"              TO  MCP-WIDGET
-               WHEN    25 
-                   MOVE    "SYU2"              TO  MCP-WIDGET
                WHEN    26
+                   MOVE    "SYU1"              TO  MCP-WIDGET
+               WHEN    27
+                   MOVE    "SYU2"              TO  MCP-WIDGET
+               WHEN    28
                    MOVE    "SYU3"              TO  MCP-WIDGET
-      *----(01.01.05)--ADD-START---
-               WHEN    30
-                   MOVE    "IYKCHK7"           TO  MCP-WIDGET
-      *----(01.01.05)--ADD-END-----
       *----(01.01.01)--UPD-END-----
                WHEN    99
                    MOVE    "B12"               TO  MCP-WIDGET
