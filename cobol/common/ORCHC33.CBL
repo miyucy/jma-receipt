@@ -1530,7 +1530,7 @@
                PERFORM 980-SYUNOU-READ-SEC
            END-PERFORM
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           MOVE    "SYUNOU-KEY14"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -1610,7 +1610,7 @@
                PERFORM 980-SYUNOU-READ-SEC
            END-PERFORM
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           MOVE    "SYUNOU-KEY14"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA

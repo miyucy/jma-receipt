@@ -69,6 +69,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
+           03  FLG-NYUINACCT       PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -111,6 +112,7 @@
       *
            03  IDZ                 PIC 9(04).
            03  IDX-D               PIC 9(02).
+           03  IDXH                PIC 9(04).
       *
            03  IDX-END             PIC 9(02).
       *
@@ -137,6 +139,9 @@
            03  WRK-BIRTHDAY            PIC X(30).
       *
            03  WRK-SRYYMD              PIC X(08).
+      *
+           03  WRK-HKNCOMBI-G.
+               05  WRK-HKNCOMBI-9      PIC 9(04).
       *
            03  WRK-ZZ9                 PIC ZZ9.
            03  WRK-Z9                  PIC Z9.
@@ -278,6 +283,10 @@
       *    ¼ýÇ¼
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
+      *
+      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡Ý
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
       *
       *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
       *01  TENSU-REC.
@@ -623,9 +632,7 @@
       *        ½¸·×½èÍý
                PERFORM 2001-SYUKEI-SYORI-SEC
       *        °õºþ½èÍý
-               IF      FLG-SYORI           =   1
-                   PERFORM 2002-PRINT-SYORI-SEC
-               END-IF
+               PERFORM 2002-PRINT-SYORI-SEC
       *        ¿ÇÎÅÇ¯·î¡Ü£±
                COMPUTE WRK-SRYMM           =   WRK-SRYMM    +   1
                IF      WRK-SRYMM           >   12
@@ -692,7 +699,6 @@
       *            ÊÝ¸±ÊÔ½¸
                    PERFORM 20013-HKNCOMBI-HEN-SEC
                    IF      ACCT-ZAITEN         >   ZERO
-                       MOVE    1                   TO  FLG-SYORI
                        PERFORM 20011-SRYACCT-HEN-SEC
                    END-IF
                END-IF
@@ -975,6 +981,12 @@
                INITIALIZE                  SRYACT-REC
                MOVE    1               TO  FLG-SRYACT
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    ¼«Èñ¶â³Û
            IF      SRY-JIHIMONEYTOTAL  NOT =   ZERO
@@ -1081,8 +1093,8 @@
        200131-HKNCOMBI-MEI-SEC                SECTION.
       *
            INITIALIZE                  HKNCOMBI-REC
-           MOVE    ACCT-HOSPID         TO  COMB-HOSPID
-           MOVE    ACCT-PTID           TO  COMB-PTID
+           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    ORCHC33-PTID        TO  COMB-PTID
            MOVE    ACCT-HKNCOMBI       TO  COMB-HKNCOMBINUM
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
@@ -1165,8 +1177,6 @@
       *****************************************************************
        2002-PRINT-SYORI-SEC                SECTION.
       *
-      *    Æþ±¡ÎÁ¤Î»»Äê
-           PERFORM 200221-NYUIN-SYORI-SEC
       *
            MOVE    ZERO                TO  WRK-TUK-ZAITEN
            MOVE    ZERO                TO  WRK-TUK-SYOKUJI
@@ -1184,6 +1194,9 @@
            ELSE
                MOVE    31                  TO  IDX-END
            END-IF
+      *
+      *    Æþ±¡ÎÁ¤Î»»Äê
+           PERFORM 200221-NYUIN-SYORI-SEC
       *
            PERFORM VARYING     IDX     FROM    ORCHC33-STRDD  BY  1
                    UNTIL       IDX     >   IDX-END
@@ -1208,6 +1221,7 @@
                IF     (FLG-ARI             =   1 )  OR
                       (LNK-ORCHCN33SUB-TEN(IDX)    NOT =   ZERO) OR
                       (LNK-ORCHCN33SUB-SKJ(IDX)    NOT =   ZERO)
+                   MOVE    1                   TO  FLG-SYORI
                    MOVE    IDX                 TO  WRK-DAY
       *            ÆüËè¤Î¥Æ¡¼¥Ö¥ëÊÔ½¸
                    PERFORM 20022-TBL-HENSYU-SEC
@@ -1217,15 +1231,17 @@
            END-PERFORM
       *
       *    ·î·×°õºþ
-           IF     (FLG-HCN331           =   1   )  AND
-                  (FLG-HCN331-END       =   ZERO)
+           IF     (FLG-SYORI           =   1   )  AND
+                  (FLG-HCN331          =   1   )  AND
+                  (FLG-HCN331-END      =   ZERO)
       *        ·î¹ç·×°õºþ¡Ê£È£Ã£³£³£±¡Ë
                PERFORM 20042-HCN331-TUKIKEI-SEC
                MOVE    1                   TO  FLG-TUKI-END
                MOVE    ZERO                TO  CNT-MEI
            END-IF
       *    ·î·×°õºþ¡Ê£È£Ã£³£³¡Ë
-           IF      FLG-TUKI-END        =   ZERO
+           IF     (FLG-SYORI           =   1   )  AND
+                  (FLG-TUKI-END        =   ZERO)
                PERFORM 20024-TUKIKEI-SEC
            END-IF
       *
@@ -1357,10 +1373,49 @@
            MOVE    ORCHC33-SRYKA       TO  LNK-ORCHCN33SUB-SRYKA
            CALL   "ORCHCN33SUB"        USING
                                        ORCHCN33SUB-AREA
-      *
            IF      LNK-ORCHCN33SUB-RC  NOT =   ZERO
                DISPLAY "ORCHCN33 ORCHCN33SUB ERR:"  LNK-ORCHCN33SUB-RC
            END-IF
+      *
+      *    Æþ±¡¤ÎÊÝ¸±ÁÈ¹ç¤»¤òÀßÄê¤¹¤ë
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    ORCHC33-NYUGAIKBN   TO  NACCT-NYUGAIKBN
+           MOVE    ORCHC33-PTID        TO  NACCT-PTID
+           MOVE    WRK-SRYYM           TO  NACCT-SRYYM
+           MOVE    "5"                 TO  NACCT-ZAISKBKBN
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+               PERFORM 900-NYUINACCT-READ-SEC
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           PERFORM VARYING     IDXH    FROM    ORCHC33-STRDD  BY  1
+                   UNTIL       IDXH    >   IDX-END
+               IF      NACCT-DAY (IDXH)    NOT =   ZERO
+                   MOVE    ZERO                TO  WRK-HKNCOMBI-9
+                   MOVE    NACCT-DAY(IDXH)     TO  WRK-HKNCOMBI-9
+                   MOVE    WRK-HKNCOMBI-G      TO  ACCT-HKNCOMBI
+                   PERFORM 20013-HKNCOMBI-HEN-SEC
+               END-IF
+           END-PERFORM
+      *
            .
        200221-NYUIN-SYORI-EXT.
            EXIT.
@@ -2017,4 +2072,26 @@
            .
        910-TENSU-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡¼¼¡ÆÉ¹þ
+      *****************************************************************
+       900-NYUINACCT-READ-SEC       SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  NYUINACCT-REC
+               MOVE    ZERO                TO  FLG-NYUINACCT
+           ELSE
+               INITIALIZE                      NYUINACCT-REC
+               MOVE    1                   TO  FLG-NYUINACCT
+           END-IF.
+      *
+       900-NYUINACCT-READ-EXT.
+           EXIT.
+      *
       *
