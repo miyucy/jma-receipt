@@ -1150,6 +1150,12 @@
       *    県単用項目
            IF      CNT-PAGE            =   1
            AND     FLG-RECE11          =   ZERO
+               INSPECT RECE11-HC06-HEAD1-G  REPLACING   ALL "  "
+                                                        BY  "　" 
+               INSPECT RECE11-HC06-HEAD2-G  REPLACING   ALL "  "
+                                                        BY  "　" 
+               INSPECT RECE11-HC06-HEAD3-G  REPLACING   ALL "  "
+                                                        BY  "　" 
                MOVE    RECE11-HC06-HEAD1-G TO  HC06-HEAD1-G
                MOVE    RECE11-HC06-HEAD2-G TO  HC06-HEAD2-G
                MOVE    RECE11-HC06-HEAD3-G TO  HC06-HEAD3-G
@@ -2285,9 +2291,13 @@
       *
       *    県単用項目
            IF      FLG-RECE11           =   ZERO
+               INSPECT RECE11-HC06-BODY     REPLACING   ALL "  "
+                                                        BY  "　" 
+               INSPECT RECE11-HC06-FOOT-G   REPLACING   ALL "  "
+                                                        BY  "　" 
                MOVE    RECE11-HC06-BODY     TO  HC06-BODY
                MOVE    RECE11-HC06-FOOT-G   TO  HC06-FOOT-G
-           END-IF    
+           END-IF
       *
            .
        350-HC101-HOSOKU-HEN-EXT.
