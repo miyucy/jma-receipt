@@ -30,6 +30,7 @@
       *  01.00.01    NACL-ÌçÏÆ    03.03.07  Ì¤¼Â»Ü¸º»»¤ÎÎ¬¾ÎÄÉ²Ã
       *  01.00.02    NACL-ÌçÏÆ    03.03.10  ¿©»ö¶èÊ¬¡É£´¡É¤ÎÂÐ±þÄÉ²Ã
       *  01.00.03    NACL-ÌçÏÆ    03.03.12  ÁªÄêÆþ±¡ÎÁÂÐ±þ
+      *  01.00.04    NACL-ÌçÏÆ    03.03.20  Æþ±¡ÎÁÆü¿ô·×»»½¤Àµ
       *****************************************************************
       *
       *
@@ -1230,6 +1231,7 @@
                                   OR    FLG-ARI               = 1
                       IF  RECE62-NYUKHNRYO(ID1)  =  WRK-NYUKHNRYO
                             IF   KH-IDX =  1
+                            OR   RECE62-HKNNUM  =  SPACE
                               ADD   1   TO   RECE62-NYUKHNNISSU(ID1)
                             END-IF
                             ADD   WRK-NYUKHNRYO
@@ -1291,6 +1293,7 @@
                           OR  ( FLG-ARI                      = 1     )
                       IF  RECE62-NYUTOKRYO-RYAKU(ID1)  =  WRK-RYAKUSHO
                             IF   KH-IDX =  1
+                            OR   RECE62-HKNNUM  =  SPACE
                               ADD   1   TO   RECE62-NYUTOKNISSU(ID1)
                             END-IF
                             ADD   WRK-NYUTOKRYO
@@ -1314,6 +1317,7 @@
                           OR  ( FLG-ARI                      = 1     )
                       IF  RECE62-NYUTOKRYO(ID1)  =  WRK-NYUTOKRYO
                             IF   KH-IDX =  1
+                            OR   RECE62-HKNNUM  =  SPACE
                               ADD   1   TO   RECE62-NYUTOKNISSU(ID1)
                             END-IF
                             ADD   WRK-NYUTOKRYO
