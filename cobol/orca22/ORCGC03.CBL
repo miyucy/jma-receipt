@@ -159,23 +159,12 @@
                    07  WRK-RECECD  OCCURS  4
                                    PIC X(01).
                05  WRK-MOJISU      PIC 9(03).
-      *     
-           03  WRK-TANDOKU-AREA.
-               05  WRK-TANDOKUKBN-BYOMEICD
-                                   PIC X(07).
-               05  WRK-TANDOKUKBN-BYOMEI
-                                   PIC X(80).                    
-               05  WRK-TANDOKUKBN-G.
-                   07  WRK-TANDOKUKBN 
-                                   PIC 9(02)    OCCURS  21.
       *
            03  WRK-STR             PIC 9(05).
       *                             
            03  WRK-DBPATH          PIC X(64).
       *     
            03  WRK-HAISIYMDH       PIC X(22).
-      *
-           03  WRK-BYOMEI-OLD      PIC X(480).
       * 
            03  WRK-SYOKBN          PIC 9(01).
            03  WRK-BANGO           PIC S9(05).
@@ -2247,40 +2236,6 @@
                    GO  TO  450-TOUROKU-EXT
                END-IF
       *
-      *        単独病名チェック
-      *********IF      SPA-NAI-BYOMEIHENFLG    =   SPACE
-      *********    INITIALIZE                  WRK-TANDOKU-AREA
-      *            
-      *********    PERFORM VARYING IDZ FROM    1   BY  1
-      *********            UNTIL   IDZ >       WRK-CONS-BYOMEICD-MAX    
-      *********            OR      SPA-GMN-BYOMEICD(IDZ)
-      *********                                =   SPACE
-      *********        MOVE    SPA-GMN-BYOMEICD (IDZ)
-      *********                                TO  BYO-BYOMEICD
-      *********        PERFORM 900-BYOMEI-READ-SEC
-      *********        MOVE    BYO-TANDOKUKBN  TO  WRK-TANDOKUKBN (IDZ)
-      *********    END-PERFORM
-      *     
-      *********    MOVE    ZERO                TO  IDX
-      *********    PERFORM VARYING IDZ FROM    1   BY  1
-      *********            UNTIL   IDZ >       WRK-CONS-BYOMEICD-MAX
-      *********            OR      SPA-GMN-BYOMEICD (IDZ)  
-      *********                            =   SPACE
-      *********        IF      WRK-TANDOKUKBN (IDZ)    =   ZERO   
-      *********            MOVE    1                   TO  IDX
-      *********        ELSE
-      *********            MOVE    SPA-GMN-BYOMEICD (IDZ)
-      *********                            TO  WRK-TANDOKUKBN-BYOMEICD  
-      *********            MOVE    SPA-NAI-BYOMEI   (IDZ)
-      *********                            TO  WRK-TANDOKUKBN-BYOMEI  
-      *********        END-IF   
-      *********    END-PERFORM
-      *********    IF      IDX                 =   ZERO
-      *********        MOVE    "0076"              TO  SPA-ERRCD  
-      *********        GO  TO  450-TOUROKU-EXT
-      *********    END-IF
-      *********END-IF
-      *
                MOVE    SPA-GMN-UTAGAIFLG-G     TO  C03-UTAGAIFLG
                PERFORM 41007-UTAGAI-CHK-SEC
                IF      SPA-ERRCD       NOT =   SPACE
@@ -3038,12 +2993,6 @@
                                        TO  SPA-ERRMSG (29:22)
                    MOVE    "で廃止の扱いとなっています。"
                                        TO  SPA-ERRMSG (51:)
-               WHEN    "0076"
-                   STRING   WRK-TANDOKUKBN-BYOMEI  DELIMITED  BY  SPACE
-                           "は単独使用禁止の病名です"
-                                                   DELIMITED  BY  SIZE
-                                                   INTO    SPA-ERRMSG
-                   END-STRING 
                WHEN    "0077"
                    MOVE
               "病名コードが２２個以上になりますので、編集病名とします。"
