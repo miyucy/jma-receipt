@@ -2007,8 +2007,8 @@
       **>         (RECE02-TOTALTEN(1)   NOT =  RECE02-TOTALTEN(2))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
-                      UNTIL   (IDX2      >       4)     OR
-                              (RECE02-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
+                      UNTIL   (IDX2      >       4)
+                     IF    RECE02-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(1)
                            MOVE      2       TO     BUN-IDX2
@@ -2022,6 +2022,7 @@
                                END-PERFORM                              XXX
                            END-IF                                       XXX
                       END-IF
+                     END-IF
                    END-PERFORM
       **>      END-IF
       **>  END-IF
@@ -2034,8 +2035,8 @@
       **>         (RECE02-TOTALTEN(1)   NOT =  RECE02-TOTALTEN(3))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
-                      UNTIL   (IDX2      >       4)     OR
-                              (RECE02-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
+                      UNTIL   (IDX2      >       4)
+                     IF    RECE02-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(2)
                            MOVE      3       TO     BUN-IDX3
@@ -2049,6 +2050,7 @@
                                END-PERFORM                              XXX
                            END-IF                                       XXX
                       END-IF
+                     END-IF
                    END-PERFORM
       **>      END-IF
       **>  END-IF
@@ -2061,8 +2063,8 @@
       **>         (RECE02-TOTALTEN(1)   NOT =  RECE02-TOTALTEN(4))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
-                      UNTIL   (IDX2      >       4)     OR
-                              (RECE02-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
+                      UNTIL   (IDX2      >       4)
+                     IF    RECE02-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(3)
                            MOVE      4       TO     BUN-IDX4
@@ -2076,6 +2078,7 @@
                                END-PERFORM                              XXX
                            END-IF                                       XXX
                       END-IF
+                     END-IF
                    END-PERFORM
       **>      END-IF
       **>  END-IF
@@ -2088,8 +2091,8 @@
       **>         (RECE02-TOTALTEN(1)   NOT =  RECE02-TOTALTEN(5))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
-                      UNTIL   (IDX2      >       4)     OR
-                              (RECE02-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
+                      UNTIL   (IDX2      >       4)
+                     IF    RECE02-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(4)
                            MOVE      5       TO     BUN-IDX5
@@ -2103,6 +2106,7 @@
                                END-PERFORM                              XXX
                            END-IF                                       XXX
                       END-IF
+                     END-IF
                    END-PERFORM
       **>      END-IF
       **>  END-IF
