@@ -4665,7 +4665,7 @@
            MOVE   SPA-GMN-DAY-G-41        TO  SPA-NAI-DAY-AREA-41 (IDX).
       *
            MOVE   SPA-GMN-ROUJIN-41       TO  SPA-NAI-ROUJIN-41   (IDX).
-      *    回数
+      *
            MOVE    ZERO                   TO  WRK-ZAIKAISU.
            PERFORM VARYING    IDK      FROM    1   BY  1
                    UNTIL      IDK      >   31
@@ -4742,10 +4742,17 @@
                    PERFORM VARYING    IDK      FROM    1   BY  1
                            UNTIL      IDK      >   31
                        IF    SPA-WRK-CHK-SIKIBETU (IDK)   =    "1"
-                           MOVE    SPACE  TO  SPA-NAI-DAY-41 (IDX IDK)
+                           MOVE    ZERO   TO  SPA-NAI-DAY-41 (IDX IDK)
                        END-IF
                    END-PERFORM
                END-IF
+               MOVE    ZERO              TO  WRK-ZAIKAISU
+               PERFORM VARYING    IDK      FROM    1   BY  1
+                       UNTIL      IDK      >   31
+                   ADD     SPA-NAI-DAY-41  (IDX IDK)
+                                         TO  WRK-ZAIKAISU
+               END-PERFORM
+               MOVE    WRK-ZAIKAISU      TO  SPA-NAI-ZAIKAISU-41 (IDX)
            END-PERFORM.
       *
       *    変更項目クリア
