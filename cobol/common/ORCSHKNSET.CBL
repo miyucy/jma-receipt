@@ -452,8 +452,13 @@
                END-STRING
            END-IF
       *
+      *    保険区分
+           MOVE    ZERO                TO  ORCSHKN-NAI-HKNKBN(IDX)
       *    労災の時、コメントの追加
            IF      COMB-HKNNUM         =   "971"  OR  "973"
+      *        保険区分
+               MOVE    1                   TO  ORCSHKN-NAI-HKNKBN(IDX)
+      *
       *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
                MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
@@ -788,6 +793,9 @@
                MOVE    "00.00.00"          TO  ORCSHKN-GMN-TEKSTYMD
                                                       (ORCSHKN-HKN-MAX)
                MOVE    "99.99.99"          TO  ORCSHKN-GMN-TEKEDYMD
+                                                      (ORCSHKN-HKN-MAX)
+      *        保険区分
+               MOVE    ZERO                TO  ORCSHKN-NAI-HKNKBN
                                                       (ORCSHKN-HKN-MAX)
       *
            END-IF
