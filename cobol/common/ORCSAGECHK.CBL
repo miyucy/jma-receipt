@@ -34,6 +34,7 @@
       * 01.00.03     NACL-多々納  02/11/21  共済下船３月追加
       * 01.00.04     NACL-多々納  03/02/05  原爆単独老人判定をしない
       * 01.00.05     NACL-多々納  03/03/06  ３歳未満判定に自費・地験をはずす
+      * 01.00.06     NACL-多々納  03/04/14  労災の割合変更追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -56,6 +57,7 @@
            03  FLG-PTHKNINF        PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
            03  FLG-HKNNUM-OK       PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-OK2             PIC 9(01).
@@ -93,6 +95,9 @@
       *
       *    共通領域
            COPY    "MCPAREA".
+      *
+      *    労災医療機関情報
+           COPY    "CPSK4001.INC".
       *
       *    患者マスタ−
        01  PTINF-REC.
@@ -244,6 +249,11 @@
                GO      TO      200-FTNRATE-EXT
            END-IF
       *
+      *    労災の時、割合の変更
+           IF      COMB-HKNNUM         =   "971"
+               PERFORM 2001-RSI-FTNRATE-SEC
+           END-IF
+      *
            MOVE    COMB-GAI-KFTNRATE   TO  AGECHK-FTNRATE
            IF      COMB-GAI-KFTNRATE   =   ZERO
                MOVE    SPACE               TO  AGECHK-FTNRATEMEI
@@ -260,8 +270,9 @@
                MOVE    COMB-HKNNUM         TO  WRK-HKNNUM
                MOVE    ZERO                TO  WRK-PAYKBN
                PERFORM 3001-HKNNUM-CHK-SEC
-      *        自費・治験
-               IF      HKN-HKNKOHSBTKBN    =   "8"  OR  "9"
+      *        自費・治験・労災・自賠責
+               IF     (HKN-HKNKOHSBTKBN    =   "8"  OR  "9" )  OR
+                      (COMB-HKNNUM         =   "971"  OR  "973")
                    CONTINUE
                ELSE
                    IF      COMB-GAI-KFTNRATE   >   20
@@ -466,6 +477,55 @@
        2001-KOH-CHK-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    労災の時、割合の変更処理
+      *****************************************************************
+       2001-RSI-FTNRATE-SEC         SECTION.
+      *
+      *    システム管理検索（医療機関情報）
+           MOVE    SPACE               TO  SYS-4001-REC
+           INITIALIZE                  SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    AGECHK-SRYYMD       TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-4001-REC
+               INITIALIZE                  SYS-4001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *TEST
+             DISPLAY "FLG-SYSKANRI:" FLG-SYSKANRI
+      *TEST
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-4001-REC
+      *
+               IF      SYS-4001-RSIIRYOKBN     =   "1"
+                   MOVE    ZERO                TO  COMB-GAI-KFTNRATE
+               ELSE
+                   MOVE    100                 TO  COMB-GAI-KFTNRATE
+               END-IF
+           END-IF
+      *TEST
+             DISPLAY "COMB-GAI-KFTNRATE:" COMB-GAI-KFTNRATE
+                 ",SYS-4001-RSIIRYOKBN:" SYS-4001-RSIIRYOKBN
+      *TEST
+      *
+           .
+       2001-RSI-FTNRATE-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    保険情報処理
       *****************************************************************
@@ -654,5 +714,25 @@
            .
        910-PTHKNINF-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    システム管理マスタ読み込み処理
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
       *
       *
