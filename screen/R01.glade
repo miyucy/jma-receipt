@@ -386,7 +386,6 @@
       <xim_enabled>False</xim_enabled>
     </widget>
 
-
     <widget>
       <class>GtkPandaEntry</class>
       <name>STJYUSINYMD</name>
@@ -772,22 +771,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label478</name>
-      <x>286</x>
-      <y>645</y>
-      <width>54</width>
-      <height>18</height>
-      <label>患者番号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label476</name>
       <x>222</x>
       <y>645</y>
@@ -804,12 +787,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>LABEL</name>
-      <x>350</x>
-      <y>576</y>
-      <width>200</width>
-      <height>24</height>
-      <label></label>
+      <name>label478</name>
+      <x>286</x>
+      <y>645</y>
+      <width>54</width>
+      <height>18</height>
+      <label>患者番号</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -824,6 +807,54 @@
       <x>300</x>
       <y>608</y>
       <width>160</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LABEL</name>
+      <x>530</x>
+      <y>576</y>
+      <width>100</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LABEL2</name>
+      <x>320</x>
+      <y>576</y>
+      <width>100</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LABEL1</name>
+      <x>210</x>
+      <y>576</y>
+      <width>100</width>
       <height>24</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>

@@ -46,5 +46,9 @@
               03  R01-SYOKBN         PIC X(25).
               03  R01-LABEL.
                 04  R01-VALUE   PIC X(10).
+              03  R01-LABEL1.
+                04  R01-VALUE   PIC X(12).
+              03  R01-LABEL2.
+                04  R01-VALUE   PIC X(14).
               03  R01-CREYMD.
                 04  R01-VALUE   PIC X(22).

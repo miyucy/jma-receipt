@@ -64,6 +64,12 @@ R01	{
 		LABEL	{
 			value	varchar(10);
 		};
+		LABEL1	{
+			value	varchar(12);
+		};
+		LABEL2	{
+			value	varchar(14);
+		};
 		CREYMD	{
 			value	varchar(22);
 		};
