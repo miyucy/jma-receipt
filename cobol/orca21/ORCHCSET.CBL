@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  03/06/30  出力先プリンタサブ追加
+      *  01.00.02    NACL-多々納  05/03/08  名称２５文字以上に対応
+      *                                     ＭＯＮＰＥに対応
       *****************************************************************
       *
       *
@@ -45,7 +47,7 @@
       *
       *    印刷用データ
        FD  PRT-FILE.
-           COPY    "HCPO.INC".
+           COPY    "HCPOM.INC".
       *
        WORKING-STORAGE             SECTION.
       *
@@ -157,7 +159,7 @@
            03  FILLER                  PIC X(02).
            03  H02-DSPNAME             PIC X(100).
        01  HEAD-03.
-           03  FILLER                  PIC X(04).
+           03  FILLER                  PIC X(01).
            03  H03-MIDASI              PIC X(14).
            03  H03-INPUTCD-G           OCCURS  5.
                05  H03-INPUTCD         PIC X(10).
@@ -168,11 +170,22 @@
            03  B01-YOBI2               PIC X(02).
            03  B01-SRYCD               PIC X(09).
            03  B01-YOBI3               PIC X(02).
-           03  B01-NAME                PIC X(50).
-           03  FILLER                  PIC X(01).
-           03  B01-HENSYU.
-               05  B01-SURYO-HEN           PIC X(15).
-               05  B01-KAISU-HEN           PIC X(15).
+           03  B01-NAME-G.
+               05  B01-NAME                PIC X(50).
+               05  FILLER                  PIC X(01).
+               05  B01-HENSYU.
+                   07  B01-SURYO-HEN           PIC X(15).
+                   07  B01-KAISU-HEN           PIC X(05).
+           03  B01-NAME-G2             REDEFINES   B01-NAME-G.
+               05  B01-NAME-2              PIC X(70).
+               05  FILLER                  PIC X(01).
+      *
+       01  WRK-B01-HENSYU.
+           03  WRK-B01-SURYO-HEN           PIC X(15).
+           03  WRK-B01-KAISU-HEN           PIC X(05).
+      *
+       01  WRK-HEN-NAME.
+           03  WRK-NAME                PIC X(100).
       *
        01  WRK-HEN-SURYO.
            03  B01-SURYO1              PIC ZZZZ9.999.
@@ -197,7 +210,7 @@
       *
       *    内容
        01  WRK-HEN-AREA.
-           03  WRK-TBL-REC             PIC X(90)   OCCURS   69.
+           03  WRK-TBL-REC             PIC X(90)   OCCURS   200.
       *
            03  WRK-PAGE-MAX            PIC 9(03).
       *
@@ -309,7 +322,7 @@
            PERFORM 400-PRINT-SEC
       *
            MOVE    ZERO                TO  IDX-P
-           MOVE    SPACE               TO  HCPO
+           MOVE    SPACE               TO  HCPOM
       *
            .
        400-PRINT-SYORI-EXT.
@@ -339,7 +352,7 @@
        400-PRINT-SEC                SECTION.
       *
       *　　印刷用データ出力
-            WRITE  HCPO
+            WRITE  HCPOM
       *
       ****  MOVE   "HC01.sh"           TO  SHELL-ID
       *     MOVE   "HCPO.dia"          TO  SHELL-DIA
@@ -350,8 +363,8 @@
       *
             INITIALIZE                 ORCSMKPRTAREA
             MOVE   "HC01.sh"           TO  MKPRT-ID
-            MOVE   "HCPO.dia"          TO  MKPRT-DIA
-            MOVE   "HCPO.def"          TO  MKPRT-DEF
+            MOVE   "HCPOM.red"         TO  MKPRT-DIA
+            MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
@@ -443,10 +456,12 @@
                MOVE    1                   TO  FLG-INPUTSET
                MOVE    1                   TO  FLG-END
            END-IF
+           MOVE    "INPUTSET-KEY4"     TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
       *
       *    初期クリア
            MOVE    ZERO                TO  IDX-P
-           MOVE    SPACE               TO  HCPO
+           MOVE    SPACE               TO  HCPOM
       *
            MOVE    "セット登録一覧表"  TO  H01-MIDASI
       *
@@ -487,16 +502,16 @@
                    ADD     1                   TO  PCNT
                    MOVE    PCNT                TO  H01-PCNT
                    ADD     1                   TO  IDX-P
-                   MOVE    HEAD-01             TO  HCPO-MOJI  (IDX-P)
+                   MOVE    HEAD-01             TO  HCPOM-MOJI  (IDX-P)
                    ADD     1                   TO  IDX-P
                END-IF
                ADD     1                   TO  IDX-P
-               MOVE    WRK-TBL-REC (IDX)   TO  HCPO-MOJI  (IDX-P)
+               MOVE    WRK-TBL-REC (IDX)   TO  HCPOM-MOJI  (IDX-P)
            END-PERFORM
       *
            ADD     1                   TO  IDX-P
            IF      IDX-P               <=  69
-               MOVE    ALL "-"             TO  HCPO-MOJI  (IDX-P)
+               MOVE    ALL "-"             TO  HCPOM-MOJI  (IDX-P)
            END-IF
       *
            .
@@ -559,12 +574,8 @@
                PERFORM                     920-INPUTCD-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "INPUTCD-KEY3"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            ADD     1                   TO  WRK-HEN-MAX
            MOVE    HEAD-02             TO  WRK-TBL-REC (WRK-HEN-MAX)
@@ -583,6 +594,7 @@
        2002-MEISAI-HEN-SEC          SECTION.
       *
            MOVE    SPACE               TO  BODY-01
+           MOVE    SPACE               TO  WRK-NAME
            MOVE    ISET-INPUTCD        TO  B01-SRYCD
            EVALUATE    ISET-INPUTCD(1:1)
                WHEN    "S"
@@ -596,14 +608,37 @@
                    PERFORM 20023-SRYCD-HEN-SEC
            END-EVALUATE
       *
+           IF      WRK-NAME(51:)       =   SPACE
+               MOVE    WRK-NAME (1:50)     TO  B01-NAME
+               INSPECT B01-NAME            REPLACING  ALL "  "  BY  "　"
+           ELSE
+               MOVE    B01-HENSYU          TO  WRK-B01-HENSYU
+               MOVE    SPACE               TO  B01-NAME-G
+               MOVE    WRK-NAME (1:70)     TO  B01-NAME-2
+               INSPECT B01-NAME-2          REPLACING  ALL "  "  BY  "　"
+           END-IF
            INSPECT B01-YOBI1           REPLACING  ALL "  "  BY  "　"
            INSPECT B01-ZUMIFLG         REPLACING  ALL "  "  BY  "　"
            INSPECT B01-YOBI2           REPLACING  ALL "  "  BY  "　"
            INSPECT B01-YOBI3           REPLACING  ALL "  "  BY  "　"
-           INSPECT B01-NAME            REPLACING  ALL "  "  BY  "　"
       *
            ADD     1                   TO  WRK-HEN-MAX
            MOVE    BODY-01             TO  WRK-TBL-REC (WRK-HEN-MAX)
+           IF      WRK-NAME(51:)   NOT =   SPACE
+               IF     (WRK-NAME(71:)   NOT =   SPACE )  OR
+                      (WRK-B01-HENSYU  NOT =   SPACE )
+                   MOVE    SPACE               TO  BODY-01
+                   MOVE    WRK-NAME(71:)       TO  B01-NAME
+                   MOVE    WRK-B01-HENSYU      TO  B01-HENSYU
+                   INSPECT B01-YOBI1       REPLACING  ALL "  "  BY  "　"
+                   INSPECT B01-ZUMIFLG     REPLACING  ALL "  "  BY  "　"
+                   INSPECT B01-YOBI2       REPLACING  ALL "  "  BY  "　"
+                   INSPECT B01-YOBI3       REPLACING  ALL "  "  BY  "　"
+                   INSPECT B01-NAME        REPLACING  ALL "  "  BY  "　"
+                   ADD     1               TO  WRK-HEN-MAX
+                   MOVE    BODY-01         TO  WRK-TBL-REC (WRK-HEN-MAX)
+               END-IF
+           END-IF
       *
            MOVE    "INPUTSET-KEY4"     TO  ORC-DBPATH
            PERFORM                     900-INPUTSET-READ-SEC
@@ -635,9 +670,11 @@
            ELSE
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
+           MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-INPUTCD         =   ZERO
       *        表示名
-               MOVE    ICD-DSPNAME         TO  B01-NAME
+               MOVE    ICD-DSPNAME         TO  WRK-NAME
            END-IF
       *
            .
@@ -656,11 +693,11 @@
            SET     MSYU-IDX            TO  1
            SEARCH      MSYU-TBL-OCC    VARYING   MSYU-IDX
                    AT   END
-                       MOVE    SPACE           TO  B01-NAME
+                       MOVE    SPACE           TO  WRK-NAME
                    WHEN    ISET-INPUTCD(2:3)   =   MSYU-SRYSYUKBN 
                                                            (MSYU-IDX)
                        MOVE    MSYU-SRYMEI (MSYU-IDX)
-                                                TO  B01-NAME
+                                                TO  WRK-NAME
            END-SEARCH 
       *
       *
@@ -695,7 +732,7 @@
            MOVE    ZERO                TO  FLG-OK
            PERFORM UNTIL    (FLG-TENSU     =   1  )  OR
                             (FLG-OK        =   1  )
-               MOVE    TNS-NAME            TO  B01-NAME
+               MOVE    TNS-NAME            TO  WRK-NAME
                IF     (TNS-YUKOSTYMD       <=  SPA-SRYYMD )  AND
                       (TNS-YUKOEDYMD       >=  SPA-SRYYMD )
       *            診療日対象分
@@ -704,13 +741,15 @@
                MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
                PERFORM 910-TENSU-READ-SEC
            END-PERFORM
+           MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-OK              =   ZERO
                MOVE    "削"            TO  B01-ZUMIFLG
            END-IF
       *
            IF      ISET-COMMENT    NOT =   SPACE
-               MOVE    ISET-COMMENT        TO  B01-NAME
+               MOVE    ISET-COMMENT        TO  WRK-NAME
            END-IF
       *
            MOVE    SPACE               TO  WRK-HEN-SURYO
@@ -840,6 +879,20 @@
       *
            .
        900-INPUTSET-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *****************************************************************
       *    終了　　処理
