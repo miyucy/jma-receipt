@@ -8104,6 +8104,7 @@
            IF    ( FLG-DBRC        =   ZERO )
                MOVE    MCPDATA-REC TO  NYUKSNCHK-REC
            ELSE
+               MOVE   1        TO     FLG-NYUKSN
                GO  TO          4801-NYUKSN-CHK-EXT
            END-IF
       *
