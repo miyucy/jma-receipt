@@ -34,9 +34,11 @@
       *                                     Âà±¡¾ÚÌÀ½ñÈ¯¹Ô¶èÊ¬¤òÄÉ²Ã
       *  00.00.04    NACL-ÂÀÅÄ    03.03.24  ÁªÄêÎÅÍÜÈñ¾ðÊó¤òÄÉ²Ã
       *  00.00.05    NACL-ÂÀÅÄ    03.04.10  ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬¤òÄÉ²Ã
-      *  00.00.06    NACL-ÂÀÅÄ    03/06/25  ÅÀ¿ô¥Þ¥¹¥¿Í­¸ú´ü´Ö¤Î»ØÄê¤ò½¤Àµ
-      *  00.00.07    NACL-ÂÀÅÄ    04/01/07  ¹¹¿·ÆüÉÕÊÔ½¸ÂÐ±þ
-      *  00.00.08    NACL-ÂÀÅÄ    04/01/15  ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬ÄÉ²Ã
+      *  00.00.06    NACL-ÂÀÅÄ    03.06.25  ÅÀ¿ô¥Þ¥¹¥¿Í­¸ú´ü´Ö¤Î»ØÄê¤ò½¤Àµ
+      *  00.00.07    NACL-ÂÀÅÄ    04.01.07  ¹¹¿·ÆüÉÕÊÔ½¸ÂÐ±þ
+      *  00.00.08    NACL-ÂÀÅÄ    04.01.15  ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬ÄÉ²Ã
+      *  01.00.01    NACL-ÂÀÅÄ    04.03.04  Î×¾²¸¦½¤ÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»
+      *                                     Î¥Åç²Ã»»ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -160,6 +162,27 @@
                05                      PIC X(09)   VALUE   "190100670".
                05                      PIC X(09)   VALUE   "190100970".
                05                      PIC X(09)   VALUE   "190107170".
+               05                      PIC X(09)   VALUE   "190117170".
+               05                      PIC X(09)   VALUE   "190117270".
+               05                      PIC X(09)   VALUE   "         ".
+               05                      PIC X(09)   VALUE   "         ".
+               05                      PIC X(09)   VALUE   "         ".
+               05                      PIC X(09)   VALUE   "         ".
+               05                      PIC X(09)   VALUE   "         ".
+           03  CONST-NYUKSN-SRYCD-040331.
+               05                      PIC X(09)   VALUE   "190098870".
+               05                      PIC X(09)   VALUE   "190098970".
+               05                      PIC X(09)   VALUE   "190099170".
+               05                      PIC X(09)   VALUE   "190099270".
+               05                      PIC X(09)   VALUE   "190099570".
+               05                      PIC X(09)   VALUE   "190099870".
+               05                      PIC X(09)   VALUE   "190099970".
+               05                      PIC X(09)   VALUE   "190100370".
+               05                      PIC X(09)   VALUE   "190100470".
+               05                      PIC X(09)   VALUE   "190100770".
+               05                      PIC X(09)   VALUE   "190100670".
+               05                      PIC X(09)   VALUE   "190100970".
+               05                      PIC X(09)   VALUE   "190107170".
                05                      PIC X(09)   VALUE   "         ".
                05                      PIC X(09)   VALUE   "         ".
                05                      PIC X(09)   VALUE   "         ".
@@ -167,10 +190,6 @@
                05                      PIC X(09)   VALUE   "         ".
                05                      PIC X(09)   VALUE   "         ".
                05                      PIC X(09)   VALUE   "         ".
-           03  CONST-NYUKSN-SRYCD-R
-                       REDEFINES   CONST-NYUKSN-SRYCD-VAL.
-               05  CONST-NYUKSN-SRYCD-OCC  OCCURS  20.
-                   07  CONST-NYUKSN-SRYCD  PIC X(09).
       *
       *    ÃÏ°è²Ã»»¾ðÊó
            03  CONST-CHIIKIKSNSRYCD-VAL.
@@ -383,7 +402,7 @@
       *
       *
       *    ÆþÎÏ¾ðÊóÎÎ°è½é´ü²½½èÍý
-           PERFORM 4201-INPUT-AREA-CLEAR-SEC
+           PERFORM 4201-INPUT-AREA-INIT-SEC
       *
       *    ÆþÎÏ¾ðÊóÊÔ½¸½èÍý
            PERFORM 310-INPUT-AREA-EDIT-SEC
@@ -1410,7 +1429,7 @@
       *****************************************************************
        420-CLEAR-SEC               SECTION.
       *
-           PERFORM 4201-INPUT-AREA-CLEAR-SEC
+           PERFORM 4201-INPUT-AREA-INIT-SEC
            .
        420-CLEAR-EXT.
            EXIT.
@@ -1607,7 +1626,7 @@
       *    Æþ±¡ÎÁ²Ã»»¾ðÊó
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >    20 )
-               MOVE    CONST-NYUKSN-SRYCD (IDX1)
+               MOVE    SPA-NAI-W24-NYUKSN-SRYCD (IDX1)
                                    TO   SYS-5000-KSNCD (IDX1)
                IF    ( SPA-GMN-W24-CHK-NYUKSNFLG (IDX1)
                                    =    "F" )
@@ -2870,7 +2889,15 @@
       *****************************************************************
       *    ÆþÎÏ¾ðÊóÎÎ°è½é´ü²½½èÍý
       *****************************************************************
-       4201-INPUT-AREA-CLEAR-SEC       SECTION.
+       4201-INPUT-AREA-INIT-SEC        SECTION.
+      *
+           IF    ( SPA-W01-STYUKYMD    <   "20040401" )
+               MOVE    CONST-NYUKSN-SRYCD-040331
+                                       TO  SPA-NAI-W24-NYUKSN-SRYCD-G
+           ELSE
+               MOVE    CONST-NYUKSN-SRYCD-VAL
+                                       TO  SPA-NAI-W24-NYUKSN-SRYCD-G
+           END-IF
       *
            INITIALIZE  SPA-GMN-W24-INPUT-AREA
            PERFORM VARYING IDXC    FROM    1   BY  1
@@ -2933,7 +2960,7 @@
       *
            .
       *
-       4201-INPUT-AREA-CLEAR-EXT.
+       4201-INPUT-AREA-INIT-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡²Ã»»Ì¾¾ÎÊÔ½¸½èÍý
@@ -2942,8 +2969,8 @@
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   20 )
-                    OR   ( CONST-NYUKSN-SRYCD (IDX1)   =   SPACE )
-               MOVE    CONST-NYUKSN-SRYCD (IDX1)
+                    OR   ( SPA-NAI-W24-NYUKSN-SRYCD (IDX1) =   SPACE )
+               MOVE    SPA-NAI-W24-NYUKSN-SRYCD (IDX1)
                                    TO  WRK-SRYCD
                PERFORM 4201-TENSU-SEL-SEC
                IF    ( FLG-TENSU   =   ZERO )

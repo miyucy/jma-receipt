@@ -272,6 +272,10 @@
                    13  SPA-GMN-W24-BRMSGK-TAX-ITM      PIC X(10)
                                                        OCCURS  5
                                            INDEXED BY  CMB-IDX15.
+             07  SPA-NAI-W24-AREA.
+               09  SPA-NAI-W24-NYUKSN-SRYCD-G.
+                 11  SPA-NAI-W24-NYUKSN-SRYCD    PIC X(09)
+                                                 OCCURS 20.
       *
       *    ¿ÇÎÅ¹Ô°Ù¸¡º÷²èÌÌ£Ó£Ð£Á
            03  SPA-W25-MOTOPG                    PIC X(08).
