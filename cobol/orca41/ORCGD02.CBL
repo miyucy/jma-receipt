@@ -276,7 +276,7 @@
                    07  W-SRYCD-21      PIC X(09).
                    07  W-SRYCD-22      PIC X(09).
                    07  W-ZAINUM-21     PIC 9(08).
-      *    （未設定コード用）
+      *    （設定コード判定用）
            03  W-TABLE-S3.
                05  W-SRYCD-S3-KBN      PIC X(01).
                05  W-SRYCD-S3-TABLE    OCCURS  3000.
@@ -288,8 +288,10 @@
                    07  W-SRYCD-52      PIC X(01).
                    07  W-SRYCD-61      PIC X(09).
                    07  W-SRYCD-62      PIC X(01).
+                   07  W-SRYCD-63      PIC X(09).
                    07  W-SRYCD-71      PIC X(09).
                    07  W-SRYCD-72      PIC X(01).
+                   07  W-SRYCD-73      PIC X(09).
                    07  W-SRYCD-81      PIC X(09).
                    07  W-SRYCD-82      PIC X(01).
            03  W-TABLE-S4.
@@ -299,6 +301,10 @@
                    07  W-SRYCD-92      PIC X(01).
                    07  W-SRYCD-93      PIC 9(01).
                    07  W-SRYCD-94      PIC 9(01).
+           03  W-CHK-KUBUN.
+               05  W-CHK-ST1-KBN       PIC X(01).
+               05  W-CHK-ST2-KBN       PIC X(01).
+               05  W-CHK-ST3-KBN       PIC X(01).
       *修正/*開始*03.04.17*********************************************
       *    入院会計の区分作業
            03  WK-ZAISKBKBN        PIC X(01).
@@ -661,7 +667,137 @@
            PERFORM T-000-CHEKCHEK-SEC VARYING IDX1  FROM  1  BY 1
                                       UNTIL   IDX1  >     4.
       *
+
+           MOVE    SPACE                   TO  W-CHK-ST1-KBN.
+           MOVE    SPACE                   TO  W-CHK-ST2-KBN.
+           MOVE    SPACE                   TO  W-CHK-ST3-KBN.
+      *
+           INITIALIZE                CHK-REC.
+           MOVE    "1"               TO  CHK-CHKKBN.
+           MOVE    "1"               TO  CHK-CDKBN.
+           MOVE    CHK-REC           TO  MCPDATA-REC.
+           MOVE    "DBSELECT"        TO  MCP-FUNC.
+           MOVE    "CHK-KEY5"        TO  ORC-DBPATH.
+           MOVE    T-SINRYOU-AREA    TO  ORC-DBYMD(1:6).
+           MOVE    "01"              TO  ORC-DBYMD(7:2).
+      *
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           IF  MCP-RC   NOT =   ZERO
+               MOVE    ZERO                    TO  FLG-CHK
+               MOVE    SPACE                   TO  DID2-REC
+               MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+               WRITE   DID2-REC
+               MOVE    SPACE                   TO  DID3-REC
+               MOVE    T-MESSAGE-530-01(1:60)  TO  DID3-REC(1:60)
+               WRITE   DID3-REC
+           ELSE
+               PERFORM T-000-RECECHEK-READ-SEC
+               IF  MCP-RC   NOT =   ZERO
+                   MOVE    "*"                 TO  W-CHK-ST1-KBN
+               END-IF
+           END-IF.
+      *
+           INITIALIZE                  MCPAREA.
+           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "CHK-KEY5"          TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           INITIALIZE                CHK-REC.
+           MOVE    "2"               TO  CHK-CHKKBN.
+           MOVE    "1"               TO  CHK-CDKBN.
+           MOVE    CHK-REC           TO  MCPDATA-REC.
+           MOVE    "DBSELECT"        TO  MCP-FUNC.
+           MOVE    "CHK-KEY5"        TO  ORC-DBPATH.
+           MOVE    T-SINRYOU-AREA    TO  ORC-DBYMD(1:6).
+           MOVE    "01"              TO  ORC-DBYMD(7:2).
+      *
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           IF  MCP-RC   NOT =   ZERO
+               MOVE    ZERO                    TO  FLG-CHK
+               MOVE    SPACE                   TO  DID2-REC
+               MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+               WRITE   DID2-REC
+               MOVE    SPACE                   TO  DID3-REC
+               MOVE    T-MESSAGE-530-01(1:60)  TO  DID3-REC(1:60)
+               WRITE   DID3-REC
+           ELSE
+               PERFORM T-000-RECECHEK-READ-SEC
+               IF  MCP-RC   NOT =   ZERO
+                   MOVE    "*"                 TO  W-CHK-ST2-KBN
+               END-IF
+           END-IF.
+      *
+           INITIALIZE                  MCPAREA.
+           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "CHK-KEY5"          TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           INITIALIZE                CHK-REC.
+           MOVE    "5"               TO  CHK-CHKKBN.
+           MOVE    "2"               TO  CHK-CDKBN.
+           MOVE    CHK-REC           TO  MCPDATA-REC.
+           MOVE    "DBSELECT"        TO  MCP-FUNC.
+           MOVE    "CHK-KEY5"        TO  ORC-DBPATH.
+           MOVE    T-SINRYOU-AREA    TO  ORC-DBYMD(1:6).
+           MOVE    "01"              TO  ORC-DBYMD(7:2).
+      *
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           IF  MCP-RC   NOT =   ZERO
+               MOVE    ZERO                    TO  FLG-CHK
+               MOVE    SPACE                   TO  DID2-REC
+               MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+               WRITE   DID2-REC
+               MOVE    SPACE                   TO  DID3-REC
+               MOVE    T-MESSAGE-530-01(1:60)  TO  DID3-REC(1:60)
+               WRITE   DID3-REC
+           ELSE
+               PERFORM T-000-RECECHEK-READ-SEC
+               IF  MCP-RC   NOT =   ZERO
+                   MOVE    "*"                 TO  W-CHK-ST3-KBN
+               END-IF
+           END-IF.
+      *
+           INITIALIZE                  MCPAREA.
+           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "CHK-KEY5"          TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
        T-000-CHEKINITK-EXT.
+           EXIT.
+      *
+      *******************
+      *
+       T-000-RECECHEK-READ-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           MOVE    "CHK-KEY5"          TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+       T-000-RECECHEK-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -977,8 +1113,9 @@
                MOVE    SPACE             TO  T-ERR-13-2
                MOVE    SPACE             TO  T-ERR-14
       *修正/*開始*03.04.17*********************************************
-               IF  (T-NYUGAIKBN-AREA    =  "1")   AND
-                   (SPA-GMN-CNV (12)    =  "1")
+               IF  (T-NYUGAIKBN-AREA       =  "1")   AND
+                   (SPA-GMN-CNV (12)       =  "1")   AND
+                   (PTINF-TSTPTNUMKBN  NOT =  "1")
                    PERFORM T-540-RECECHEK-CHK3-SEC
                    PERFORM T-540-RECECHEK-CHK7-SEC
                END-IF
@@ -2283,9 +2420,9 @@
                                ELSE
                                    IF  W-SRYCD-81 (IDY1)   =
                                                         SRY-SRYCD (IDX3)
-                                       MOVE    4000   TO  IDY1
                                        MOVE    W-SRYCD-82 (IDY1)
                                                       TO  W-SRYCD-S3-KBN
+                                       MOVE    4000   TO  IDY1
                                    END-IF
                                END-IF
                            END-PERFORM
@@ -2298,6 +2435,7 @@
                            (SRY-SRYCD (IDX3)   NOT =   SPACE)
                            IF  SPA-GMN-CNV (11)   =   "1"
                                MOVE    SPACE         TO  W-SRYCD-S3-KBN
+                               MOVE    ZERO          TO  IDY5
                                PERFORM VARYING IDY1  FROM  1  BY 1
                                        UNTIL   IDY1  >  3000
                                    IF  W-SRYCD-31 (IDY1)   =   SPACE
@@ -2312,12 +2450,14 @@
                                        END-IF
                                    END-IF
                                END-PERFORM
-                               IF  (T-ERR-11           =   SPACE)    AND
-                                   (W-SRYCD-S3-KBN     =   SPACE)    AND
-                                   (WK1-HKNNUM-S       =   W-HKNNUM1)
+                               IF  (T-ERR-11            =  SPACE)    AND
+                                   (W-SRYCD-S3-KBN  NOT =  "*")      AND
+                                   (W-CHK-ST3-KBN   NOT =  "*")      AND
+                                   (WK1-HKNNUM-S        =  W-HKNNUM1)
                                    PERFORM T-530-RECECHEK-CHK3-1-SEC
                                END-IF
                                MOVE    SPACE         TO  W-SRYCD-S3-KBN
+                               MOVE    ZERO          TO  IDY5
                                PERFORM VARYING IDY1  FROM  1  BY 1
                                        UNTIL   IDY1  >  3000
                                    IF  W-SRYCD-41 (IDY1)   =   SPACE
@@ -2332,13 +2472,15 @@
                                        END-IF
                                    END-IF
                                END-PERFORM
-                               IF  (T-ERR-11-2         =   SPACE)    AND
-                                   (W-SRYCD-S3-KBN     =   SPACE)    AND
-                                   (WK1-HKNNUM-S   NOT =   W-HKNNUM1)
+                               IF  (T-ERR-11-2          =  SPACE)    AND
+                                   (W-SRYCD-S3-KBN  NOT =  "*")      AND
+                                   (W-CHK-ST3-KBN   NOT =  "*")      AND
+                                   (WK1-HKNNUM-S    NOT =  W-HKNNUM1)
                                    PERFORM T-530-RECECHEK-CHK3-2-SEC
                                END-IF
                            END-IF
                            MOVE    SPACE             TO  W-SRYCD-S3-KBN
+                           MOVE    ZERO              TO  IDY5
                            PERFORM VARYING IDY1  FROM  1  BY 1
                                    UNTIL   IDY1  >  3000
                                IF  W-SRYCD-51 (IDY1)   =   SPACE
@@ -2353,12 +2495,13 @@
                                    END-IF
                                END-IF
                            END-PERFORM
-                           IF  (SPA-GMN-CNV (10)   =   "1")    AND
-                               (W-SRYCD-S3-KBN     =   SPACE)  AND
-                               (T-ERR-10           =   SPACE)
+                           IF  (SPA-GMN-CNV (10)      =  "1")    AND
+                               (W-SRYCD-S3-KBN    NOT =  "*")    AND
+                               (T-ERR-10              =  SPACE)
                                PERFORM T-530-RECECHEK-CHK4-1-SEC
                            END-IF
                            MOVE    SPACE             TO  W-SRYCD-S3-KBN
+                           MOVE    ZERO              TO  IDY5
                            PERFORM VARYING IDY1  FROM  1  BY 1
                                    UNTIL   IDY1  >  3000
                                IF  W-SRYCD-61 (IDY1)   =   SPACE
@@ -2369,16 +2512,19 @@
                                                         SRY-SRYCD (IDX3)
                                        MOVE    W-SRYCD-62 (IDY1)
                                                       TO  W-SRYCD-S3-KBN
+                                       MOVE    IDY1   TO  IDY5
                                        MOVE    4000   TO  IDY1
                                    END-IF
                                END-IF
                            END-PERFORM
-                           IF  (SPA-GMN-CNV (9)   =   "1")    AND
-                               (W-SRYCD-S3-KBN    =   SPACE)  AND
-                               (T-ERR-09          =   SPACE)
+                           IF  (SPA-GMN-CNV (9)      =  "1")    AND
+                               (W-SRYCD-S3-KBN   NOT =  "*")    AND
+                               (W-CHK-ST2-KBN    NOT =  "*")    AND
+                               (T-ERR-09             =  SPACE)
                                PERFORM T-530-RECECHEK-CHK6-SEC
                            END-IF
                            MOVE    SPACE             TO  W-SRYCD-S3-KBN
+                           MOVE    ZERO              TO  IDY5
                            PERFORM VARYING IDY1  FROM  1  BY 1
                                    UNTIL   IDY1  >  3000
                                IF  W-SRYCD-71 (IDY1)   =   SPACE
@@ -2389,13 +2535,15 @@
                                                         SRY-SRYCD (IDX3)
                                        MOVE    W-SRYCD-72 (IDY1)
                                                       TO  W-SRYCD-S3-KBN
+                                       MOVE    IDY1   TO  IDY5
                                        MOVE    4000   TO  IDY1
                                    END-IF
                                END-IF
                            END-PERFORM
-                           IF  (SPA-GMN-CNV (8)   =   "1")    AND
-                               (W-SRYCD-S3-KBN    =   SPACE)  AND
-                               (T-ERR-08          =   SPACE)
+                           IF  (SPA-GMN-CNV (8)      =  "1")    AND
+                               (W-SRYCD-S3-KBN   NOT =  "*")    AND
+                               (W-CHK-ST1-KBN    NOT =  "*")    AND
+                               (T-ERR-08             =  SPACE)
                                PERFORM T-530-RECECHEK-CHK7-SEC
                            END-IF
                        END-IF
@@ -2525,9 +2673,13 @@
                WRITE   DID3-REC
            ELSE
                PERFORM T-530-RECECHEK-READ2-SEC
-               MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-31 (IDY5)
-               IF  MCP-RC   NOT =   ZERO
-                   MOVE    "*"                 TO  W-SRYCD-32 (IDY5)
+               IF  IDY5   NOT =   ZERO
+                   MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-31 (IDY5)
+                   IF  MCP-RC   NOT =   ZERO
+                       MOVE    "*"                 TO  W-SRYCD-32 (IDY5)
+                   ELSE
+                       MOVE    "+"                 TO  W-SRYCD-32 (IDY5)
+                   END-IF
                END-IF
                PERFORM UNTIL   MCP-RC    NOT =   ZERO
                    MOVE    MCPDATA-REC         TO  CHK-REC
@@ -2587,9 +2739,13 @@
                WRITE   DID3-REC
            ELSE
                PERFORM T-530-RECECHEK-READ2-SEC
-               MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-41 (IDY5)
-               IF  MCP-RC   NOT =   ZERO
-                   MOVE    "*"                 TO  W-SRYCD-42 (IDY5)
+               IF  IDY5   NOT =   ZERO
+                   MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-41 (IDY5)
+                   IF  MCP-RC   NOT =   ZERO
+                       MOVE    "*"                 TO  W-SRYCD-42 (IDY5)
+                   ELSE
+                       MOVE    "+"                 TO  W-SRYCD-42 (IDY5)
+                   END-IF
                END-IF
                PERFORM UNTIL   MCP-RC    NOT =   ZERO
                    MOVE    MCPDATA-REC         TO  CHK-REC
@@ -2666,10 +2822,10 @@
                    IF  (W-SRYCD-11 (IDX4)   =   SPACE)  AND
                        (W-SRYCD-12 (IDX4)   =   SPACE)
                        MOVE    IDX4                TO  IDY1
+                       MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-11 (IDX4)
                        PERFORM T-530-RECECHEK-CHK2-1-SEC
-                       IF  IDX4   =   IDY1
-                           MOVE    SRY-SRYCD (IDX3)
-                                                  TO  W-SRYCD-11 (IDX4)
+                       IF  W-SRYCD-S3-KBN  =  SPACE
+                           PERFORM T-530-RECECHEK-CHK2-1-SEC
                        END-IF
                        MOVE    2000                TO  IDX4
                    ELSE
@@ -2715,10 +2871,9 @@
                    IF  (W-SRYCD-13 (IDX4)   =   SPACE)  AND
                        (W-SRYCD-14 (IDX4)   =   SPACE)
                        MOVE    IDX4                TO  IDY1
-                       PERFORM T-530-RECECHEK-CHK2-2-SEC
-                       IF  IDX4   =   IDY1
-                           MOVE    SRY-SRYCD (IDX3)
-                                                  TO  W-SRYCD-13 (IDX4)
+                       MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-13 (IDX4)
+                       IF  W-SRYCD-S3-KBN  =  SPACE
+                           PERFORM T-530-RECECHEK-CHK2-2-SEC
                        END-IF
                        MOVE    2000                TO  IDX4
                    ELSE
@@ -2758,9 +2913,13 @@
                WRITE   DID3-REC
            ELSE
                PERFORM T-530-RECECHEK-READ4-SEC
-               MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-51 (IDY5)
-               IF  MCP-RC   NOT =   ZERO
-                   MOVE    "*"                 TO  W-SRYCD-52 (IDY5)
+               IF  IDY5   NOT =   ZERO
+                   MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-51 (IDY5)
+                   IF  MCP-RC   NOT =   ZERO
+                       MOVE    "*"                 TO  W-SRYCD-52 (IDY5)
+                   ELSE
+                       MOVE    "+"                 TO  W-SRYCD-52 (IDY5)
+                   END-IF
                END-IF
                PERFORM UNTIL   MCP-RC    NOT =   ZERO
                    MOVE    MCPDATA-REC         TO  INTERACT-REC
@@ -2829,10 +2988,9 @@
                    IF  (W-SRYCD-21 (IDX4)   =   SPACE)  AND
                        (W-SRYCD-22 (IDX4)   =   SPACE)
                        MOVE    IDX4                TO  IDY1
-                       PERFORM T-530-RECECHEK-CHK4-SEC
-                       IF  IDX4   =   IDY1
-                           MOVE    SRY-SRYCD (IDX3)
-                                                  TO  W-SRYCD-21 (IDX4)
+                       MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-21 (IDX4)
+                       IF  W-SRYCD-S3-KBN  =  SPACE
+                           PERFORM T-530-RECECHEK-CHK4-SEC
                        END-IF
                        MOVE    2000                TO  IDX4
                    ELSE
@@ -2950,15 +3108,18 @@
                MOVE    ZERO                    TO  FLG-END
                MOVE    ZERO                    TO  FLG-TBL
                MOVE    ZERO                    TO  FLG-TENKIYMD-ER
-               MOVE    SRY-SRYCD (IDX3)        TO  W-SRYCD-61 (IDY5)
                PERFORM T-530-RECECHEK-READ2-SEC
-               IF  MCP-RC   NOT =   ZERO
-                   MOVE    "*"                 TO  W-SRYCD-62 (IDY5)
-               ELSE
-                   MOVE    SPACE               TO  W-SRYCD-62 (IDY5)
+               IF  IDY5   NOT =   ZERO
+                   MOVE    SRY-SRYCD (IDX3)        TO  W-SRYCD-61 (IDY5)
+                   IF  MCP-RC   NOT =   ZERO
+                       MOVE    "*"                 TO  W-SRYCD-62 (IDY5)
+                   ELSE
+                       MOVE    "+"                 TO  W-SRYCD-62 (IDY5)
+                   END-IF
                END-IF
                PERFORM UNTIL   (MCP-RC    NOT =   ZERO)  OR
                                (FLG-END   NOT =   ZERO)
+                   MOVE    MCPDATA-REC         TO  CHK-REC
                    PERFORM VARYING IDY2  FROM  1  BY 1
                            UNTIL   IDY2  >    10
                        MOVE    SPACE             TO  W-SRYCD-S4-KBN
@@ -2967,6 +3128,15 @@
                            IF  W-SRYCD-91 (IDY1)   =   SPACE
                                MOVE    IDY1               TO  IDY5
                                MOVE    2000               TO  IDY1
+                               IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
+                                   (CHK-CD (IDY2)   NOT =   ZERO)  AND
+                                   (W-SRYCD-S4-KBN      =   SPACE)
+                                   PERFORM T-530-RECECHEK-CHK5-SEC
+                                   MOVE    W-SRYCD-93 (IDY5)
+                                                  TO  FLG-TBL
+                                   MOVE    W-SRYCD-94 (IDY5)
+                                                  TO  FLG-TENKIYMD-ER
+                               END-IF
                            ELSE
                                IF  W-SRYCD-91 (IDY1)  =  CHK-CD (IDY2)
                                    MOVE    W-SRYCD-92 (IDY1)
@@ -2979,11 +3149,6 @@
                                END-IF
                            END-IF
                        END-PERFORM
-                       IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
-                           (CHK-CD (IDY2)   NOT =   ZERO)  AND
-                           (W-SRYCD-S4-KBN      =   SPACE)
-                           PERFORM T-530-RECECHEK-CHK5-SEC
-                       END-IF
                        IF  (CHK-CD (IDY2)       =   SPACE) OR
                            (CHK-CD (IDY2)       =   ZERO)  OR
                            (IDY2                =   20)    OR
@@ -3041,12 +3206,14 @@
                MOVE    ZERO                    TO  FLG-END
                MOVE    ZERO                    TO  FLG-TBL
                MOVE    ZERO                    TO  FLG-TENKIYMD-ER
-               MOVE    SRY-SRYCD (IDX3)        TO  W-SRYCD-71 (IDY5)
                PERFORM T-530-RECECHEK-READ2-SEC
-               IF  MCP-RC   NOT =   ZERO
-                   MOVE    "*"                 TO  W-SRYCD-72 (IDY5)
-               ELSE
-                   MOVE    SPACE               TO  W-SRYCD-72 (IDY5)
+               IF  IDY5   NOT =   ZERO
+                   MOVE    SRY-SRYCD (IDX3)        TO  W-SRYCD-71 (IDY5)
+                   IF  MCP-RC   NOT =   ZERO
+                       MOVE    "*"                 TO  W-SRYCD-72 (IDY5)
+                   ELSE
+                       MOVE    "+"                 TO  W-SRYCD-72 (IDY5)
+                   END-IF
                END-IF
                PERFORM UNTIL   (MCP-RC    NOT =   ZERO)  OR
                                (FLG-END   NOT =   ZERO)
@@ -3059,6 +3226,15 @@
                            IF  W-SRYCD-91 (IDY1)   =   SPACE
                                MOVE    IDY1               TO  IDY5
                                MOVE    2000               TO  IDY1
+                               IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
+                                   (CHK-CD (IDY2)   NOT =   ZERO)  AND
+                                   (W-SRYCD-S4-KBN      =   SPACE)
+                                   PERFORM T-530-RECECHEK-CHK5-SEC
+                                   MOVE    W-SRYCD-93 (IDY5)
+                                                  TO  FLG-TBL
+                                   MOVE    W-SRYCD-94 (IDY5)
+                                                  TO  FLG-TENKIYMD-ER
+                               END-IF
                            ELSE
                                IF  W-SRYCD-91 (IDY1)  =  CHK-CD (IDY2)
                                    MOVE    W-SRYCD-92 (IDY1)
@@ -3071,11 +3247,6 @@
                                END-IF
                            END-IF
                        END-PERFORM
-                       IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
-                           (CHK-CD (IDY2)   NOT =   ZERO)  AND
-                           (W-SRYCD-S4-KBN      =   SPACE)
-                           PERFORM T-530-RECECHEK-CHK5-SEC
-                       END-IF
                        IF  (CHK-CD (IDY2)       =   SPACE) OR
                            (CHK-CD (IDY2)       =   ZERO)  OR
                            (IDY2                =   20)    OR
