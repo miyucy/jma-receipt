@@ -119,14 +119,16 @@
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDX-D                   PIC 9(04).
+           03  IDX1                    PIC 9(04).
       *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE                PIC 9(02).
            03  CNT-PAGE                PIC 9(04).
            03  CNT-TOKEI               PIC 9(04).
+           03  CNT-KETA-SEISU          PIC 9(02).
+           03  CNT-KETA-SYOSU          PIC 9(02).
            03  CNT-KETA                PIC 9(02).
-           03  CNT-KETA2               PIC 9(02).
            03  CNT-DAY                 PIC 9(02).
       *
       *    パラメタ領域
@@ -160,25 +162,26 @@
                05  WRK-SDD             PIC 9(02).
            03  WRK-HENYMDG             PIC X(22).
       *
-           03  WRK-SURYO               PIC 9(05)V9(03).
+           03  WRK-SURYO               PIC 9(04)V9(03).
            03  WRK-SURYO-R             REDEFINES   WRK-SURYO.
-               05  WRK-SURYO-S1        PIC 9(05).
+               05  WRK-SURYO-S1        PIC 9(04).
                05  WRK-SURYO-S2        PIC 9(03).
       *
-           03  WRK-SURYO-X.
-               05  WRK-SURYO-Z1        PIC ZZZZZ.
-               05  WRK-SURYO-Z1-9      REDEFINES   WRK-SURYO-Z1
-                                       PIC ZZZZ9.
+           03  WRK-SURYO-Z.
+               05  WRK-SURYO-Z1        PIC X(04).
                05  WRK-SURYO-Z2        PIC X(01).
-               05  WRK-SURYO-Z3        PIC ZZZ.
+               05  WRK-SURYO-Z3        PIC X(03).
+           03  WRK-ZZZZ                PIC Z(04).
+           03  WRK-STR                 PIC X(100).
       *
            03  WRK-DATAYM              PIC X(16).
            03  WRK-NAIYO               PIC 9(08).
            03  WRK-SYUBETU             PIC 9(01).
            03  WRK-YKZKBN              PIC 9(01).
       *
-           03  WRK-HENSURYO            PIC X(02).
-           03  WRK-COM                 PIC X(01).
+           03  WRK-HENSURYO            PIC X(04).
+           03  WRK-COM-G.
+               05  WRK-COM             PIC X(01) OCCURS    3.
            03  WRK-DD                  PIC 9(02).
            03  WRK-DAY                 PIC 9(02).
            03  WRK-DAYED               PIC 9(02).
@@ -807,8 +810,8 @@
                    MOVE    TOKEI-CNT(IDX)      TO  WRK-SURYO
                    PERFORM 400-ZHEN-SURYO-SET-SEC
                    MOVE    WRK-HENSURYO
-                                       TO  HCM35-USERYO(CNT-LINE IDX)
-                   MOVE    WRK-COM     TO  HCM35-USETEN(CNT-LINE IDX)
+                                       TO  HCM35-USERYO-G(CNT-LINE IDX)
+                   MOVE    WRK-COM-G   TO  HCM35-USETEN-G(CNT-LINE IDX)
                END-PERFORM
       *
       *        統計ファイル読み込み
@@ -842,6 +845,7 @@
                                        TO  SPRT-PRIORITY
            MOVE    "HCM35.red"         TO  SPRT-PRTID
            MOVE    "経過表"            TO  SPRT-TITLE
+      *
            MOVE    HCM35               TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
@@ -960,46 +964,66 @@
       *****************************************************************
        400-ZHEN-SURYO-SET-SEC      SECTION.
       *
-      *    数量Ｚ編集
-           MOVE    SPACE               TO  WRK-SURYO-X
-           MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
+           INITIALIZE                      WRK-COM-G
+                                           WRK-HENSURYO
+      *
+           MOVE    SPACE               TO  WRK-SURYO-Z
+           MOVE    ZERO                TO  CNT-KETA-SEISU
+                                           CNT-KETA-SYOSU
+      *
+      *    整数部編集
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   4 )
+               IF          WRK-SURYO-S1(IDX1:1)    NOT =   ZERO
+                   MOVE    WRK-SURYO-S1(IDX1:)
+                                       TO  WRK-SURYO-Z1
+                   COMPUTE CNT-KETA-SEISU  =   5   -   IDX1
+                   MOVE    4           TO  IDX1
+               END-IF
+           END-PERFORM
       *
       *    数量小数点以下編集
-           MOVE    ZERO                TO  FLG-SP
-           PERFORM VARYING CNT-KETA    FROM    3   BY  -1
-                   UNTIL   CNT-KETA    <   1
-               IF          WRK-SURYO-S2(CNT-KETA:1)    NOT =   ZERO
-                   MOVE    1               TO  FLG-SP
-               END-IF
-               IF          FLG-SP          =   1
-                   MOVE    WRK-SURYO-S2(CNT-KETA:1)
-                           TO  WRK-SURYO-Z3(CNT-KETA:1)
+           PERFORM VARYING IDX1    FROM    3   BY  -1
+                   UNTIL ( IDX1    <   1 )
+               IF          WRK-SURYO-S2(IDX1:1)    NOT =   ZERO
+                   MOVE    WRK-SURYO-S2(1:IDX1)
+                                       TO  WRK-SURYO-Z3
+                   MOVE    IDX1        TO  CNT-KETA-SYOSU
+                   MOVE    1           TO  IDX1
                END-IF
            END-PERFORM
       *
-           IF          WRK-SURYO-Z3    NOT =   SPACE
-               MOVE    "."             TO  WRK-SURYO-Z2
-               IF          WRK-SURYO-X(1:5)    =   SPACE
-                   MOVE    WRK-SURYO-S1    TO  WRK-SURYO-Z1-9
-               END-IF
-           END-IF
-      *
-           MOVE    SPACE               TO  WRK-HENSURYO
-           MOVE    SPACE               TO  WRK-COM
-           MOVE    ZERO                TO  CNT-KETA
-           PERFORM VARYING CNT-KETA2   FROM    1   BY  1
-                   UNTIL   CNT-KETA2   >   8
-                   OR      CNT-KETA    >=  2
-               IF          WRK-SURYO-X(CNT-KETA2:1)  NOT =   SPACE
-                   IF          WRK-SURYO-X(CNT-KETA2:1)  =   "."
-                       MOVE    "."       TO  WRK-COM
-                   ELSE
-                       COMPUTE CNT-KETA    =   CNT-KETA    +   1
-                       MOVE  WRK-SURYO-X(CNT-KETA2:1)
-                                         TO  WRK-HENSURYO(CNT-KETA:1)
+           EVALUATE    TRUE
+           WHEN    CNT-KETA-SYOSU      =   ZERO
+               MOVE    WRK-SURYO-S1    TO  WRK-ZZZZ
+               MOVE    WRK-ZZZZ        TO  WRK-HENSURYO
+           WHEN    CNT-KETA-SEISU      =   ZERO
+               MOVE    "0"             TO  WRK-HENSURYO 
+                                           (4 - CNT-KETA-SYOSU : 1)
+               MOVE    WRK-SURYO-Z3    TO  WRK-HENSURYO 
+                                           (5 - CNT-KETA-SYOSU : )
+               MOVE    "."             TO  WRK-COM
+                                           (4 - CNT-KETA-SYOSU)
+           WHEN    OTHER
+               COMPUTE CNT-KETA    =   CNT-KETA-SEISU
+                                   +   CNT-KETA-SYOSU
+               MOVE    SPACE           TO  WRK-STR
+               STRING  WRK-SURYO-Z1 (1:CNT-KETA-SEISU) DELIMITED BY SIZE
+                       WRK-SURYO-Z3 (1:CNT-KETA-SYOSU) DELIMITED BY SIZE
+               INTO    WRK-STR
+               END-STRING
+               IF    ( CNT-KETA    >   4 )
+                   MOVE    WRK-STR     TO  WRK-HENSURYO
+                   IF    ( CNT-KETA-SEISU  <   4 )
+                       MOVE    "."     TO  WRK-COM
+                                           (CNT-KETA-SEISU)
                    END-IF
+               ELSE
+                   MOVE    WRK-STR     TO  WRK-HENSURYO (5 - CNT-KETA :)
+                   MOVE    "."         TO  WRK-COM
+                                           (4 - CNT-KETA-SYOSU)
                END-IF
-           END-PERFORM
+           END-EVALUATE
       *
            .
        400-ZHEN-SURYO-SET-EXT.
