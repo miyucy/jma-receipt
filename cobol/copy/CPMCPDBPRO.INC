@@ -243,6 +243,7 @@
       *  01.01.71    NACL-太田    03/05/15  I001-KEY3追加
       *  01.01.72    NACL-太田    03/05/17  NYUINACCT-KEY19追加
       *  01.01.73    ひさなが     03/05/19  NYUKSNCHK-ALLの追加
+      *  01.01.74    ひさなが     03/05/21  ALL2の追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1265,11 +1266,12 @@
                WHEN    ANY             ALSO   "JYURRK-KEY23"
                    MOVE    PATH-TBL-JYURRK-KEY23
                                        TO  WRK-PATH
-      *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "JYURRK-ALL"
                    MOVE    PATH-TBL-JYURRK-ALL
                                        TO  WRK-PATH
-      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "JYURRK-ALL2"
+                   MOVE    PATH-TBL-JYURRK-ALL2
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYKARRK-KEY"
                    MOVE    PATH-TBL-SRYKARRK-KEY 
                                        TO  WRK-PATH
@@ -1290,16 +1292,12 @@
                WHEN    ANY             ALSO   "PTBYOMEI-KEY3"
                    MOVE    PATH-TBL-PTBYOMEI-KEY3 
                                        TO  WRK-PATH
-      *追加/*開始*01.09.12********************************************
                WHEN    ANY             ALSO   "PTBYOMEI-KEY4"
                    MOVE    PATH-TBL-PTBYOMEI-KEY4 
                                        TO  WRK-PATH
-      *追加/*終了*01.09.12********************************************
-      *追加/*開始*02.03.19********************************************
                WHEN    ANY             ALSO   "PTBYOMEI-KEY5"
                    MOVE    PATH-TBL-PTBYOMEI-KEY5 
                                        TO  WRK-PATH
-      *追加/*終了*02.03.19********************************************
                WHEN    ANY             ALSO   "PTBYOMEI-KEY6"
                    MOVE    PATH-TBL-PTBYOMEI-KEY6 
                                        TO  WRK-PATH
@@ -1309,11 +1307,12 @@
                WHEN    ANY             ALSO   "PTBYOMEI-KEY8"
                    MOVE    PATH-TBL-PTBYOMEI-KEY8 
                                        TO  WRK-PATH
-      *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "PTBYOMEI-ALL"
                    MOVE    PATH-TBL-PTBYOMEI-ALL
                                        TO  WRK-PATH
-      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "PTBYOMEI-ALL2"
+                   MOVE    PATH-TBL-PTBYOMEI-ALL2
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "PTCOM-KEY"
                    MOVE    PATH-TBL-PTCOM-KEY 
                                        TO  WRK-PATH
@@ -1507,11 +1506,12 @@
                WHEN    ANY             ALSO   "SRYACCT-KEY19"
                    MOVE    PATH-TBL-SRYACCT-KEY19
                                        TO  WRK-PATH
-      *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SRYACCT-ALL"
                    MOVE    PATH-TBL-SRYACCT-ALL
                                        TO  WRK-PATH
-      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "SRYACCT-ALL2"
+                   MOVE    PATH-TBL-SRYACCT-ALL2
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACT-KEY"
                    MOVE    PATH-TBL-SRYACT-KEY
                                        TO  WRK-PATH
@@ -1527,7 +1527,6 @@
                WHEN    ANY             ALSO   "SRYACT-KEY5"
                    MOVE    PATH-TBL-SRYACT-KEY5
                                        TO  WRK-PATH
-      *追加/*開始*01.09.12********************************************
                WHEN    ANY             ALSO   "SRYACT-KEY6"
                    MOVE    PATH-TBL-SRYACT-KEY6
                                        TO  WRK-PATH
@@ -1537,15 +1536,15 @@
                WHEN    ANY             ALSO   "SRYACT-KEY8"
                    MOVE    PATH-TBL-SRYACT-KEY8
                                        TO  WRK-PATH
-      *追加/*終了*01.09.12********************************************
                WHEN    ANY             ALSO   "SRYACT-KEY9"
                    MOVE    PATH-TBL-SRYACT-KEY9
                                        TO  WRK-PATH
-      *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SRYACT-ALL"
                    MOVE    PATH-TBL-SRYACT-ALL
                                        TO  WRK-PATH
-      *追加/*終了*01.01.45********************************************
+               WHEN    ANY             ALSO   "SRYACT-ALL2"
+                   MOVE    PATH-TBL-SRYACT-ALL2
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUMEI-KEY"
                    MOVE    PATH-TBL-SYUMEI-KEY
                                        TO  WRK-PATH
@@ -1913,11 +1912,12 @@
                WHEN    ANY             ALSO   "WKSRYACT-KEY5"
                    MOVE    PATH-TBL-WKSRYACT-KEY5
                                        TO  WRK-PATH
-      *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "WKSRYACT-ALL"
                    MOVE    PATH-TBL-WKSRYACT-ALL
                                        TO  WRK-PATH
-      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "WKSRYACT-ALL2"
+                   MOVE    PATH-TBL-WKSRYACT-ALL2
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "PARA-KEY"
                    MOVE    PATH-TBL-PARA-KEY
                                        TO  WRK-PATH
@@ -1954,11 +1954,12 @@
                WHEN    ANY             ALSO   "SANTEI-KEY6"
                    MOVE    PATH-TBL-SANTEI-KEY6
                                        TO  WRK-PATH
-      *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SANTEI-ALL"
                    MOVE    PATH-TBL-SANTEI-ALL
                                        TO  WRK-PATH
-      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "SANTEI-ALL2"
+                   MOVE    PATH-TBL-SANTEI-ALL2
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "TENSUPLUS-KEY"
                    MOVE    PATH-TBL-TENSUPLUS-KEY
                                        TO  WRK-PATH
@@ -2103,11 +2104,12 @@
                 WHEN    ANY             ALSO   "SEIKYU-KEY22"
                    MOVE    PATH-TBL-SEIKYU-KEY22
                                        TO  WRK-PATH
-      *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SEIKYU-ALL"
                    MOVE    PATH-TBL-SEIKYU-ALL
                                        TO  WRK-PATH
-      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "SEIKYU-ALL2"
+                   MOVE    PATH-TBL-SEIKYU-ALL2
+                                       TO  WRK-PATH
                 WHEN    ANY             ALSO   "HKNJAINF-KEY"
                    MOVE    PATH-TBL-HKNJAINF-KEY
                                        TO  WRK-PATH
@@ -2136,11 +2138,12 @@
                 WHEN    ANY             ALSO   "BD002-KEY3"
                    MOVE    PATH-VIEW-BD002-KEY3
                                        TO  WRK-PATH
-      *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "BD002-ALL"
                    MOVE    PATH-VIEW-BD002-ALL
                                        TO  WRK-PATH
-      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "BD002-ALL2"
+                   MOVE    PATH-VIEW-BD002-ALL2
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "USERBYOMEI-KEY"
                    MOVE    PATH-TBL-USERBYOMEI-KEY
                                        TO  WRK-PATH
@@ -2474,6 +2477,9 @@
                WHEN    ANY             ALSO   "NYUINACCT-ALL"
                    MOVE    PATH-TBL-NYUINACCT-ALL
                                        TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-ALL2"
+                   MOVE    PATH-TBL-NYUINACCT-ALL2
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINACT-KEY"
                    MOVE    PATH-TBL-NYUINACT-KEY
                                        TO  WRK-PATH
@@ -2503,6 +2509,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINACT-ALL"
                    MOVE    PATH-TBL-NYUINACT-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACT-ALL2"
+                   MOVE    PATH-TBL-NYUINACT-ALL2
                                        TO  WRK-PATH
       *---- (NYUIN.08) LINE ADD END      -----------------------------
       *---- (NYUIN.10) LINE ADD START    -----------------------------
@@ -2594,6 +2603,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTEIKIRRK-ALL"
                    MOVE    PATH-TBL-PTTEIKIRRK-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTTEIKIRRK-ALL2"
+                   MOVE    PATH-TBL-PTTEIKIRRK-ALL2
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "KOHSKY-KEY"
                    MOVE    PATH-TBL-KOHSKY-KEY
