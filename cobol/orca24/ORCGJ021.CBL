@@ -741,11 +741,11 @@
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    "0001"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-J021-CUR
-               GO      TO      4001-MAE-HKNCOMBI-EXT
-           END-IF
+      **   IF      FLG-OK              =   ZERO
+      *        MOVE    "0001"              TO  SPA-ERRCD
+      *        MOVE    1                   TO  SPA-J021-CUR
+      *        GO      TO      4001-MAE-HKNCOMBI-EXT
+      ***  END-IF
       *
       *    受診履歴が存在すること
            INITIALIZE                  JYURRK-REC
@@ -779,9 +779,82 @@
                MOVE    1                   TO  SPA-J021-CUR
                GO      TO      4001-MAE-HKNCOMBI-EXT
            END-IF
+           IF      FLG-OK              =   ZERO
+      *        今回対象外の時、保険組合せより保険を判定する
+               PERFORM 40012-MAE-HKNCHK-SEC
+           END-IF
       *
            .
        4001-MAE-HKNCOMBI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    後保険組合せチェック処理
+      *****************************************************************
+       40012-MAE-HKNCHK-SEC               SECTION.
+      *
+      *
+      *    保険組合検索
+           MOVE    SPACE               TO  HKNCOMBI-REC
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-GMN-PTID        TO  COMB-PTID
+           MOVE    SPA-J021-MAE-HKNCOMBI
+                                       TO  COMB-HKNCOMBINUM
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               PERFORM 910-HKNCOMBI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+               INITIALIZE                  HKNCOMBI-REC
+           END-IF
+           IF      FLG-HKNCOMBI        =   1
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-J021-CUR
+               GO      TO      40012-MAE-HKNCHK-EXT
+           END-IF
+      *    労災・自賠責は対象外
+           IF      COMB-HKNNUM         =   "971"  OR
+                                           "973"
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-J021-CUR
+               GO      TO      40012-MAE-HKNCHK-EXT
+           END-IF
+      *
+           PERFORM 31011-HKNCOMBI-HEN-SEC
+           MOVE    WRK-HKNCOMBIMEI     TO  SPA-J021-MAE-HKNCOMBIMEI
+           IF      COMB-DELKBN         =   "1"
+               MOVE    SPACE               TO  SPA-J021-MAE-HKNCOMBIMEI
+               STRING  "（削除）"          DELIMITED  BY  SIZE
+                       WRK-HKNCOMBIMEI     DELIMITED  BY  SIZE
+                                       INTO    SPA-J021-MAE-HKNCOMBIMEI
+               END-STRING
+           END-IF
+           IF      COMB-GAI-KFTNRATE   >   ZERO
+               MOVE    COMB-GAI-KFTNRATE   TO  WRK-ZZZ
+               MOVE    WRK-ZZZ             TO  SPA-J021-MAE-FTNRATE
+               MOVE    "%"                 TO  SPA-J021-MAE-FTNRATE(4:)
+           END-IF
+      *
+      *    老人判定
+           IF    ((COMB-KOH1HKNNUM     =   "027"  )  OR
+                  (COMB-KOH2HKNNUM     =   "027"  )  OR
+                  (COMB-KOH3HKNNUM     =   "027"  )  OR
+                  (COMB-KOH4HKNNUM     =   "027"  ) )  OR
+                  ( SPA-J02-ROUJIN     =   1        )
+               MOVE    1               TO  FLG-MAE-ROUJIN
+           END-IF
+      *
+           .
+       40012-MAE-HKNCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1309,7 +1382,7 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "変更前の保険組合せがありません"
+                   MOVE    "変更前の保険組合せは変更できません"
                                        TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "この保険組合せでは受診はありません"
