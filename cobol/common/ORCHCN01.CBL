@@ -131,49 +131,11 @@
                05  WRK-HKNJA-G         PIC X(16).
                05  WRK-HEN-KIGONUM     PIC X(80).
       *
-           03  WRK-MOJI                PIC X(10).
            03  WRK-MAE-INPUT           PIC X(200).
            03  WRK-OUT-INPUT           PIC X(200).
       *
            03  WRK-Z9                  PIC Z9.
            03  WRK-Z3                  PIC ZZ9.
-      *
-           03  WRK-TEKSTYMD        PIC X(22).
-           03  WRK-TEKEDYMD        PIC X(22).
-      *
-           03  WRK-STRYMD.
-               05  WRK-STRGO       PIC X(04).
-               05  WRK-STRYY       PIC X(04).
-               05  WRK-STR1        PIC X(02).
-               05  WRK-STRMM       PIC X(04).
-               05  WRK-STR2        PIC X(02).
-               05  WRK-STRDD       PIC X(04).
-               05  WRK-STR3        PIC X(02).
-           03  WRK-ENDYMD.
-               05  WRK-ENDGO       PIC X(04).
-               05  WRK-ENDYY       PIC X(04).
-               05  WRK-END1        PIC X(02).
-               05  WRK-ENDMM       PIC X(04).
-               05  WRK-END2        PIC X(02).
-               05  WRK-ENDDD       PIC X(04).
-               05  WRK-END3        PIC X(02).
-      *
-           03  WRK-STRYMDW.
-               05  WRK-STRGOW      PIC X(01).
-               05  WRK-STRYYW      PIC X(02).
-               05  WRK-STR1W       PIC X(01).
-               05  WRK-STRMMW      PIC X(02).
-               05  WRK-STR2W       PIC X(01).
-               05  WRK-STRDDW      PIC X(02).
-           03  WRK-ENDYMDW.
-               05  WRK-ENDGOW      PIC X(01).
-               05  WRK-ENDYYW      PIC X(02).
-               05  WRK-END1W       PIC X(01).
-               05  WRK-ENDMMW      PIC X(02).
-               05  WRK-END2W       PIC X(01).
-               05  WRK-ENDDDW      PIC X(02).
-      *
-           03  WRK-ERRMSG          PIC X(40).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -255,7 +217,6 @@
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
       *
-      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
