@@ -530,7 +530,7 @@
            03  WRK-JYOGEN41                            PIC 9(09).
       *
            03  WRK-FILMTEN                             PIC 9(07)V9(02).
-           03  WRK-FILMTEN2                            PIC 9(07).
+           03  WRK-FILMTEN2                            PIC 9(07)V9(02).
       *
       *    1∑ÂÃ‹:¿∏ › 2∑ÂÃ‹:∑Î≥À 3∑ÂÃ‹:¿∫ø¿
            03  WRK-3SYU-KBN.
@@ -1736,7 +1736,6 @@
                   AND  TNS-DATAKBN           =  "3"
                          COMPUTE WRK-FILMTEN2   =
                                 (TNS-TEN  * SRY-SRYSURYO(IDX2) / 10)
-                                          +   0.5
                          IF   TNS-JGNTEN  NOT =  ZERO
                          AND  TNS-JGNTEN   <  WRK-FILMTEN2
                              COMPUTE  WRK-FILMTEN  =
@@ -1745,7 +1744,7 @@
                          ELSE
                              COMPUTE  WRK-FILMTEN  =
                                       WRK-FILMTEN  +
-                                (TNS-TEN  * SRY-SRYSURYO(IDX2) / 10)
+                                      WRK-FILMTEN2
                          END-IF
                   END-IF
                END-IF
