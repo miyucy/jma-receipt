@@ -30,17 +30,17 @@
       *  01.00.01    NACL-藤原    03.03.03  診療科数１０から２０へ変更
       *  01.00.02    NACL-藤原    03/03/11  種別不明の情報を編集
       *  01.00.03    NACL-藤原    03/03/15  入院会計からの診療科の編集の修正
-      *  01.01.04    NACL-藤原    03/04/21  レセのとき地方公費のみの場合は
+      *  01.00.04    NACL-藤原    03/04/21  レセのとき地方公費のみの場合は
       *                                     出力しない
-      *  01.01.05    NACL-藤原    03/07/28  診療回数テーブルを編集
-      *  01.01.06    NACL-藤原    03/11/18  社保・国保別で作成のとき
+      *  01.00.05    NACL-藤原    03/07/28  診療回数テーブルを編集
+      *  01.00.06    NACL-藤原    03/11/18  社保・国保別で作成のとき
       *                                     読み飛ばしをしない
-      *  01.01.07    NACL-藤原    03/11/19  老人＋原爆のレセ記載をシス管
+      *  01.00.07    NACL-藤原    03/11/19  老人＋原爆のレセ記載をシス管
       *                                     より取得
-      *  01.01.08    NACL-門脇    04/01/14  診療行為の包括分は除く
+      *  01.00.08    NACL-門脇    04/01/14  診療行為の包括分は除く
       *                                     SRYACCT8→29
       *                                     SRYACCT9→30
-      *  01.01.09    NACL-藤原    04/04/15  ＤＢ更新エラー時の処理
+      *  01.00.09    NACL-藤原    04/04/15  ＤＢ更新エラー時の処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -148,6 +148,7 @@
            03  FLG-KOH                                 PIC 9(01).
            03  FLG-CONTKBN                             PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
+           03  FLG-LASTHKNID                           PIC 9(01). 
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1627,6 +1628,7 @@
                    END-IF    
                END-PERFORM
            END-IF
+           MOVE    1                       TO  FLG-LASTHKNID
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
                IF      WRK-RECE61-TEKSTYMDX (IDX)  =   SPACE
@@ -1634,15 +1636,17 @@
                                            WRK-RECE61-TEKSTYMDX (IDX)
                    MOVE    PTHKN-TEKEDYMD  TO
                                            WRK-RECE61-TEKEDYMDX (IDX)
-                   MOVE    PTHKN-HKNID     TO  WRK-RECE61-HKNID
                    MOVE    10              TO  IDX
                ELSE
                    IF      WRK-RECE61-TEKSTYMDX(IDX)
-                                           >=  PTHKN-TEKSTYMD
-                       MOVE    10                  TO  IDX
-                   END-IF    
-               END-IF    
+                                               >=  PTHKN-TEKSTYMD
+                       MOVE    ZERO                TO  FLG-LASTHKNID
+                   END-IF
+               END-IF        
            END-PERFORM
+           IF      FLG-LASTHKNID       =   1
+                   MOVE    PTHKN-HKNID     TO  WRK-RECE61-HKNID
+           END-IF
       *
            IF      WRK-DBKBN          =   "2"
       ***      MOVE    WRK-DAY-TBL (2)    TO  WRK-RECE61-DAY-AREA
@@ -2678,7 +2682,6 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC.
-      *
            .
        900-DBDISCONNECT-EXT.
            EXIT.
