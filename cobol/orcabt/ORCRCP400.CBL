@@ -50,6 +50,7 @@
       *  01.01.06    NACL-Æ£¸¶    04/06/22  °õºþ½ç¤ÎÄÉ²Ã¡Ê¸ÄÊÌºîÀ®»þ¤Î¤ß¡Ë
       *  01.01.07    NACL-Æ£¸¶    04/07/12  µëÉÕ³ä¹ç¤ÎÊÔ½¸¾ò·ï¤òÊÑ¹¹
       *  01.01.08    NACL-Æ£¸¶    04/08/18  ¸øÈñ£²¤ÎÀÁµáÅÀ¤ÎÊÔ½¸¾ò·ï¤ò½¤Àµ
+      *  01.01.09    NACL-Æ£¸¶    04/09/13  Ä¢É¼ÊÌ»ØÄêÊÔ½¸¾ðÊó¤«¤é¤ÎÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -222,6 +223,9 @@
            03  FLG-SRYKBNPRT       PIC 9(01).
            03  FLG-SET             PIC 9(01).
            03  FLG-OPECOM-CHK      PIC 9(01).
+           03  FLG-SYS-1900        PIC 9(01).
+           03  FLG-SYS-1901        PIC 9(01).
+           03  FLG-SYS-1902        PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -294,6 +298,10 @@
        01  TBL-SYS1002-T.
            03  TBL-SYS1002-OCC         OCCURS  10.
                05  TBL-SYS1002         PIC  X(610).
+      *    Ä¢É¼ÊÌ»ØÄê°åÎÅµ¡´ØÊÔ½¸¾ðÊóÂàÈòÍÑÎÎ°è
+       01  TBL-SYS1900-T.
+           03  TBL-SYS1900-OCC         OCCURS  10.
+               05  TBL-SYS1900         PIC  X(610).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -712,6 +720,11 @@
            COPY    "CPSK1001.INC".
            COPY    "CPSK1002.INC".
       *
+      *    °åÎÅµ¡´ØÊÔ½¸¾ðÊó
+           COPY    "CPSK1900.INC".
+           COPY    "CPSK1901.INC".
+           COPY    "CPSK1902.INC".
+      *
            COPY    "CPRCF008.INC".
       *
            COPY    "CPRCF010.INC".
@@ -1036,6 +1049,87 @@
                    GO  TO  120-HOSPINF-GET-EXT
                END-IF
            END-IF
+      *
+      *    Ä¢É¼ÊÌ»ØÄê¾ðÊó
+           IF   WRK-PARA-SRYYM     NOT =  ZERO
+              INITIALIZE                   SYSKANRI-REC
+              MOVE    "1900"           TO  SYS-KANRICD
+              MOVE    "*"              TO  SYS-KBNCD
+              MOVE    WRK-PARA-SRYYM   TO  ORC-DBYMD (1:6)
+              MOVE    "01"             TO  ORC-DBYMD (7:2) 
+              PERFORM 960-KANRIMST-READ-SEC
+              IF      FLG-KANRIMST     =   ZERO
+                  MOVE    MCPDATA-REC      TO  SYS-1900-REC
+              ELSE    
+                  INITIALIZE                   SYS-1900-REC
+              END-IF
+              IF      SYS-1900-PRTKBN (1)  =   SPACE
+                  CONTINUE
+              ELSE
+                  INITIALIZE                       SYSKANRI-REC
+                  MOVE    "1901"               TO  SYS-KANRICD
+                  MOVE    SYS-1900-PRTKBN (1)  TO  SYS-KBNCD
+                  MOVE    WRK-PARA-SRYYM       TO  ORC-DBYMD (1:6)
+                  MOVE    "01"                 TO  ORC-DBYMD (7:2) 
+                  PERFORM 960-KANRIMST-READ-SEC
+                  IF      FLG-KANRIMST     =   ZERO
+                      MOVE    MCPDATA-REC      TO  SYS-1901-REC
+                      MOVE    1                TO  FLG-SYS-1901
+                  END-IF
+                  INITIALIZE                       SYSKANRI-REC
+                  MOVE    "1902"               TO  SYS-KANRICD
+                  MOVE    SYS-1900-PRTKBN (1)  TO  SYS-KBNCD
+                  MOVE    WRK-PARA-SRYYM       TO  ORC-DBYMD (1:6)
+                  MOVE    "01"                 TO  ORC-DBYMD (7:2) 
+                  PERFORM 960-KANRIMST-READ-SEC
+                  IF      FLG-KANRIMST     =   ZERO
+                      MOVE    MCPDATA-REC      TO  SYS-1902-REC
+                      MOVE    1                TO  FLG-SYS-1902
+                  END-IF
+              END-IF    
+           ELSE
+              MOVE     ZERO               TO  SYSKAN-IDX
+              MOVE     SPACE              TO  TBL-SYS1900-T
+              INITIALIZE                      TBL-SYS1900-T
+      *
+              INITIALIZE                      SYSKANRI-REC
+              MOVE    "1900"              TO  SYS-KANRICD
+              MOVE    "*"                 TO  SYS-KBNCD
+              MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                  PERFORM  900-KANRIMST-NEXT-SEC
+                  PERFORM  UNTIL   FLG-KANRIMST  =    1
+      *
+                    MOVE    MCPDATA-REC   TO  SYS-1900-REC
+                    IF      SYS-1900-PRTKBN (1)  =   SPACE
+                        CONTINUE
+                    ELSE
+                        ADD     1             TO  SYSKAN-IDX
+                        MOVE    SYS-1900-REC  TO
+                                              TBL-SYS1900 (SYSKAN-IDX)
+                        MOVE    1            TO  FLG-SYS-1900
+                    END-IF 
+      *
+                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                    PERFORM 900-KANRIMST-NEXT-SEC
+      *
+                  END-PERFORM
+              END-IF
+      *
+              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           END-IF 
       *         
       *    ¥ì¥»¥×¥ÈÊÔ½¸¶èÊ¬¾ðÊó
            MOVE    SPACE            TO  SYSKANRI-REC
@@ -1891,13 +1985,27 @@
       *****END-IF                 
       *
       *    °åÎÅµ¡´Ø½êºßÃÏ
-           MOVE    SYS-1002-ADRS       TO  HC06-HOSPADRS
+           IF      FLG-SYS-1902        =   1
+               MOVE    SYS-1902-ADRS1      TO  HC06-HOSPADRS (1:)
+               MOVE    SYS-1902-ADRS2      TO  HC06-HOSPADRS (51:)
+           ELSE
+               MOVE    SYS-1002-ADRS       TO  HC06-HOSPADRS
+           END-IF
       *
       *    °åÎÅµ¡´ØÌ¾¾Î
-           MOVE    SYS-1001-HOSPNAME   TO  HC06-HOSPNAME
+           IF      FLG-SYS-1901        =   1
+               MOVE    SYS-1901-HOSPNAME1  TO  HC06-HOSPNAME (1:)
+               MOVE    SYS-1901-HOSPNAME2  TO  HC06-HOSPNAME (41:)
+           ELSE 
+               MOVE    SYS-1001-HOSPNAME   TO  HC06-HOSPNAME
+           END-IF
       *
       *    °åÎÅµ¡´Ø£Ô£Å£Ì
-           MOVE    SYS-1002-TEL        TO  HC06-HOSPTEL
+           IF      FLG-SYS-1902        =   1
+               MOVE    SYS-1902-TEL        TO  HC06-HOSPTEL
+           ELSE
+               MOVE    SYS-1002-TEL        TO  HC06-HOSPTEL
+           END-IF
       *
       **    ¿ÇÎÅ²Ê¡©¡©¡©
       *     IF  RECE02-SRYKA        NOT =   SPACE
@@ -5222,6 +5330,9 @@
       ****************************************************************
        900-SYSKANRI-HENSYU-SEC         SECTION.
       *
+           MOVE    ZERO                TO  FLG-SYS-1901
+                                           FLG-SYS-1902
+      *
       *    °åÎÅµ¡´Ø¾ðÊó¡Ê´ðËÜ¾ðÊó¡Ë
            MOVE    ZERO                TO  FLG-SET
       *
@@ -5268,6 +5379,44 @@
                END-STRING
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    2                   TO  SPA-STS
+           END-IF
+      *
+      *    Ä¢É¼ÊÌ»ØÄê°åÎÅµ¡´ØÊÔ½¸¾ðÊó
+           IF      FLG-SYS-1900        =   1
+               MOVE    ZERO                TO  FLG-SET
+      *
+               PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
+                       UNTIL ( SYSKAN-IDX              >  10   )
+                       OR    ( TBL-SYS1900(SYSKAN-IDX) = SPACE )
+                       OR    ( FLG-SET                 =   1   )
+                   MOVE    TBL-SYS1900(SYSKAN-IDX) TO  SYS-1900-REC
+                   IF    ( SYS-1900-STYUKYMD   <= WRK-SYS-SRYYMD    )
+                   AND   ( WRK-SYS-SRYYMD      <= SYS-1900-EDYUKYMD )
+                           MOVE     1              TO  FLG-SET
+                   END-IF
+               END-PERFORM
+               IF      FLG-SET             =   1
+                  INITIALIZE                       SYSKANRI-REC
+                  MOVE    "1901"               TO  SYS-KANRICD
+                  MOVE    SYS-1900-PRTKBN (1)  TO  SYS-KBNCD
+                  MOVE    WRK-SYS-SRYYMD (1:6) TO  ORC-DBYMD (1:6)
+                  MOVE    "01"                 TO  ORC-DBYMD (7:2) 
+                  PERFORM 960-KANRIMST-READ-SEC
+                  IF      FLG-KANRIMST     =   ZERO
+                      MOVE    MCPDATA-REC      TO  SYS-1901-REC
+                      MOVE    1                TO  FLG-SYS-1901
+                  END-IF
+                  INITIALIZE                       SYSKANRI-REC
+                  MOVE    "1902"               TO  SYS-KANRICD
+                  MOVE    SYS-1900-PRTKBN (1)  TO  SYS-KBNCD
+                  MOVE    WRK-SYS-SRYYMD (1:6) TO  ORC-DBYMD (1:6)
+                  MOVE    "01"                 TO  ORC-DBYMD (7:2) 
+                  PERFORM 960-KANRIMST-READ-SEC
+                  IF      FLG-KANRIMST     =   ZERO
+                      MOVE    MCPDATA-REC      TO  SYS-1902-REC
+                      MOVE    1                TO  FLG-SYS-1902
+                  END-IF
+              END-IF    
            END-IF
            .
        900-SYSKANRI-HENSYU-EXT.

@@ -77,6 +77,8 @@
       *                                     HCRCP060V02.red 
       *                                     HCRCP400V02.red
       *                                     カスタマイズ項目の追加
+      *  01.04.02    NACL-藤原    04/09/13  HCN06V03.red
+      *                                     ＯＣＲエリアの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -206,6 +208,7 @@
            COPY    "HCN06.INC".
            COPY    "HCN06V01.INC".
            COPY    "HCN06V02.INC".
+           COPY    "HCN06V03.INC".
            COPY    "HCN061.INC".
            COPY    "HCN061V01.INC".
            COPY    "HCN062.INC".
@@ -584,6 +587,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN06V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN06V02-RENNUM
                        MOVE    HCN06V02            TO  RECE08-PRTDATA
+                   WHEN    "HCN06V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN06V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN06V03-RENNUM
+                       MOVE    HCN06V03            TO  RECE08-PRTDATA
                    WHEN    "HCN061.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN061
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN061-RENNUM
@@ -716,6 +723,7 @@
                WHEN    "HCN06.red"     ALSO    ANY             
                WHEN    "HCN06V01.red"  ALSO    ANY             
                WHEN    "HCN06V02.red"  ALSO    ANY             
+               WHEN    "HCN06V03.red"  ALSO    ANY             
                WHEN    "HCN061.red"    ALSO    "1"              
                WHEN    "HCN061V01.red" ALSO    "1"              
                WHEN    "HCN062.red"    ALSO    "1"              
