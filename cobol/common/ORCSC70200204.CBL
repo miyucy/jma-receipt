@@ -1278,17 +1278,17 @@
       *
            MOVE    ZERO                TO  WRK-SATU-KASAN
       *    乳幼児加算（％加算）
-           PERFORM VARYING     IDX-Z2  FROM    IDX-SAT BY  1
+           PERFORM VARYING     IDX-Z2  FROM    1    BY  1
                    UNTIL      (IDX-Z2      >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z2)  =   SPACE ) OR
                               (WRK-COM-AUTOKBN(IDX-Z2)  =   "K"   )
-              IF     (WRK-COM-SANFLG(IDX-Z2)  =   2  )  AND
+              IF     (WRK-COM-SANFLG(IDX-Z2)  =   2 OR 5 )  AND
                      (WRK-COM-TENSIKIBETU(IDX-Z2)  =   5  )
                    MOVE    ZERO                TO  WRK-TENSUKEIS
                    COMPUTE WRK-TENSUKEIS       =   WRK-SATU-TEN
                                                *   WRK-COM-TEN (IDX-Z2)
                                                /   100
-                   MOVE    1               TO  WRK-COM-SANFLG(IDX-Z2)
+                   MOVE    5               TO  WRK-COM-SANFLG (IDX-Z2)
                    COMPUTE WRK-SATU-TEN        =   WRK-SATU-TEN
                                                +   WRK-TENSUKEIS
       *            加算の割合を編集する
@@ -1744,7 +1744,7 @@
                MOVE    IDX-SYU            TO   IDX-T
                MOVE    IDX-SYU            TO   IDX-S
                MOVE    SPACE              TO   WRK-SRYCD-2
-               PERFORM 1003-JIDOU-AGECHK-SEC
+               PERFORM 1003-JIDOU-CHK-SEC
       *        加算追加
                MOVE    3                   TO  FLG-SATU
                PERFORM 1002-JIDOUSET-SEC
@@ -1761,29 +1761,6 @@
       *
            .
        1007-NYUYOJI-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    自動加算　存在チェック（乳幼児加算）処理
-      *****************************************************************
-       1003-JIDOU-AGECHK-SEC        SECTION.
-      *
-      *    存在チェック
-           MOVE    ZERO                TO  FLG-ARI
-           MOVE    ZERO                TO  IDX-T
-           PERFORM VARYING     IDX1    FROM    IDX-SYU  BY  1
-                   UNTIL      (IDX1        >   200     )   OR
-                              (FLG-ARI                 =   1    ) OR
-                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
-                              (WRK-GMN-INPUTCD(IDX1)(1:1)  =   "*")
-              IF      (IDX1                NOT =   IDX-SYU   )  AND
-                      (WRK-COM-INPUTCD (IDX1)  =   WRK-SRYCD )
-                    MOVE    IDX1           TO  IDX-T
-                    MOVE    1              TO  FLG-ARI
-               END-IF
-           END-PERFORM
-           .
-       1003-JIDOU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
