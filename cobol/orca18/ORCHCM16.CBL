@@ -64,6 +64,7 @@
        01  CNT-AREA.
            03  CNT-PAGE            PIC 9(03).
            03  CNT-LINE            PIC 9(02).
+           03  CNT-HCM16           PIC 9(04).
       *
       *    システム領域
        01  SYS-AREA.
@@ -246,9 +247,10 @@
            PERFORM UNTIL   FLG-UKETUKE =   1
                    OR      CNT-LINE    >=  35
                ADD     1               TO  CNT-LINE
+               ADD     1               TO  CNT-HCM16
       *
       *        番号
-               MOVE    UKE-UKEID       TO  WRK-ZZZ9
+               MOVE    CNT-HCM16       TO  WRK-ZZZ9
                MOVE    WRK-ZZZ9        TO  HCM16-NUM(CNT-LINE)
       *
       *        患者名称
