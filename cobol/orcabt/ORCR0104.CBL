@@ -51,6 +51,8 @@
       *                                     摘要欄記載対応
       *  01.00.15    NACL-藤原    04/01/16  続紙四分割の記載数の修正
       *  01.00.16    NACL-藤原    04/01/19  病床数の記載の修正
+      *  01.00.17    NACL-門脇    04/01/20  自費レセ摘要欄編集レコード
+      *                                     の読み込み判定追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4244,17 +4246,7 @@
                                                 MCPDATA-REC
       *
                IF      MCP-RC     =   ZERO
-                   IF      RECE02-RECESYUBETU  =   8888
-                   AND     RECE02-TOTALTEN (1) =   ZERO
-                   AND     RECE02-TOTALTEN (2) =   ZERO
-                   AND     RECE02-TOTALTEN (3) =   ZERO
-                   AND     RECE02-TOTALTEN (4) =   ZERO
-                   AND     RECE02-TOTALTEN (5) =   ZERO
-                   AND     CNT-RECE061         =   ZERO
-                       CONTINUE
-                   ELSE
-                       ADD     1                 TO  CNT-OUT
-                   END-IF
+                   ADD     1                 TO  CNT-OUT
                ELSE 
                    DISPLAY "ORCR0104 RECE08=" MCP-RC " " RECE08-KEY 
                    STRING
@@ -4634,6 +4626,15 @@
                    AND     RECE02-RECESYUBETU  NOT =  8888
                        GO  TO  990-RECE02-READ-SEC
                    ELSE
+                     IF      RECE02-TOTALTEN (1) =   ZERO
+                     AND     RECE02-TOTALTEN (2) =   ZERO 
+                     AND     RECE02-TOTALTEN (3) =   ZERO 
+                     AND     RECE02-TOTALTEN (4) =   ZERO
+                     AND     RECE02-TOTALTEN (5) =   ZERO
+                     AND     RECE02-RECESYUBETU  =   8888
+                     AND     RECE02-JIHTEKFLG    =   SPACE
+                       GO  TO  990-RECE02-READ-SEC
+                     ELSE
                        IF      RECE02-SRYYM        <   WRK-CONS-SRYYM
                            GO  TO  990-RECE02-READ-SEC
                        ELSE
@@ -4669,6 +4670,7 @@
                            END-IF
                          END-IF
                        END-IF 
+                     END-IF
                    END-IF    
            END-READ
       *
@@ -4800,7 +4802,7 @@
                    ADD     1         TO  CNT-RECE061
                    IF      RECE061-SRYKBN    =   "54"
                        MOVE    "50"          TO  RECE061-SRYKBN
-                   END-IF    
+                   END-IF
            END-READ
       *
            .
