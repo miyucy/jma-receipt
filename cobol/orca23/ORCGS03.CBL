@@ -521,11 +521,6 @@
                                        TO  SPA-GMN-SKYPRT-G
            END-IF
       *
-           IF    ( SPA-S01-SYORINO     =   CONST-PROC-SYOKAI )
-               MOVE    SPA-GMN-SKYPRTLST (2)
-                                       TO  SPA-GMN-SKYPRT-G
-           END-IF
-      *
            IF    ( SPA-NAI-HEAD-DENPJTIKBN =    "3" )
                MOVE    SPACE           TO  SPA-GMN-SKYPRT-G
            END-IF
@@ -1274,12 +1269,30 @@
                                                S03-SKYPRT-STATE
                                                S03-SKYPRTLST-STATE
                                                S03-B12S-STATE
+      *
+               MOVE    SPACE               TO  S03-B03-LABEL
+      *
            ELSE
                MOVE    WIDGET-NORMAL       TO  S03-NAIYO-STATE
                                                S03-NAIYOLST-STATE
                                                S03-SKYPRT-STATE
                                                S03-SKYPRTLST-STATE
                                                S03-B12S-STATE
+      *
+               EVALUATE SPA-S01-SYORINO
+      *
+               WHEN    CONST-PROC-NYUKIN
+                   MOVE    "履歴修正"      TO  S03-B03-LABEL
+      *
+               WHEN    CONST-PROC-RRKSYU
+                   MOVE    "照会"          TO  S03-B03-LABEL
+      *
+               WHEN    CONST-PROC-SYOKAI
+                   MOVE    "入金"          TO  S03-B03-LABEL
+      *
+               WHEN    OTHER
+                   MOVE    "照会"          TO  S03-B03-LABEL
+               END-EVALUATE
            END-IF
       *
            EVALUATE    FLG-SMEILIST1-ROW
@@ -1889,11 +1902,7 @@
       *****************************************************************
        4101-SKYPRT-CHK-SEC             SECTION.
       *
-           IF    ( SPA-S01-SYORINO     =   CONST-PROC-SYOKAI )
-               MOVE    2               TO  IDX-SKY
-           ELSE
-               MOVE    1               TO  IDX-SKY
-           END-IF
+           MOVE    1                   TO  IDX-SKY
       *
            IF    ( SPA-GMN-SKYPRT-G    =   SPACE )
                MOVE    SPA-GMN-SKYPRTLST (IDX-SKY)
@@ -1923,17 +1932,19 @@
       *
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-           PERFORM 4101-SKYPRT-CHK-SEC
-      *
-           IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 41011-SELNUM-CHK-SEC
+           IF    ( SPA-GMN-SELNUM  =   ZERO )
+               MOVE    "0006"      TO  SPA-ERRCD
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( SPA-GMN-SKYPRT  =   "1" )
+               IF    ( SPA-GMN-SELNUM  >=  1 )
+                AND  ( SPA-GMN-SELNUM  <=  SPA-GMN-SMEILIST-MAX )
                    MOVE    SPA-GMN-TDENPEDANUM(SPA-GMN-SELNUM)
                                    TO  WRK-SKYPRT-DENPEDANUM
                    PERFORM 4101-SKYPRT-PRINT-SEC
+               ELSE
+                   MOVE    1       TO  SPA-GMN-CUR
+                   MOVE    "0005"  TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -2408,13 +2419,32 @@
        49021-SYUMEI-UPD-EXT.
            EXIT.
       **************************************************************
-      *    処理区分へカーソル移動
+      *    処理区分変更処理
       **************************************************************
        430-SYORIKBN-SEC                SECTION.
       *
-           PERFORM 4101-GMN-SPA-SET-SEC
+           IF    ( SPA-NAI-HEAD-DENPJTIKBN NOT =   "3" )
       *
-           MOVE    6                       TO  SPA-GMN-CUR
+               EVALUATE SPA-S01-SYORINO
+      *
+               WHEN    CONST-PROC-NYUKIN
+               MOVE    CONST-PROC-RRKSYU   TO  SPA-S01-SYORINO
+      *
+               WHEN    CONST-PROC-RRKSYU
+               MOVE    CONST-PROC-SYOKAI   TO  SPA-S01-SYORINO
+      *
+               WHEN    CONST-PROC-SYOKAI
+               MOVE    CONST-PROC-NYUKIN   TO  SPA-S01-SYORINO
+      *
+               WHEN    OTHER
+               MOVE    CONST-PROC-SYOKAI   TO  SPA-S01-SYORINO
+               END-EVALUATE
+      *
+               PERFORM 310-SPA-SET-SEC
+      *
+               MOVE    1               TO  FLG-SMEILIST1-ROW
+      *
+           END-IF
       *
            .
        430-SYORIKBN-EXT.

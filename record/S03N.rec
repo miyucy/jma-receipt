@@ -1,5 +1,8 @@
 S03N	{
 	fixed14	{
+		B03	{
+			label	varchar(10);
+		};
 		B12	{
 	           	state	int;
 		};

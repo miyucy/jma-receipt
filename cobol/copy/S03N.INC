@@ -16,6 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
         02  S03N.
+              03  S03N-B03-LABEL    PIC X(10).
               03  S03N-B12-STATE PIC S9(9)   BINARY.
               03  S03N-B12S-STATE PIC S9(9)  BINARY.
               03  S03N-PTNUM     PIC X(20).
