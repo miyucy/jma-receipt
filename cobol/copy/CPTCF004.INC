@@ -116,6 +116,10 @@
                05  TOUKEI04-SKJ            PIC  9(07).
       *        æ√»Ò¿«≥€
                05  TOUKEI04-SKJ-TAX        PIC  9(07).
+      *        ººŒ¡∫π≥€
+               05  TOUKEI04-RMSAGAKU       PIC  9(07).
+      *        ººŒ¡∫π≥€¿«≥€
+               05  TOUKEI04-RMSAGAKU-TAX   PIC  9(07).
       *        ¿¡µ·∂‚≥€
                05  TOUKEI04-SKYMONEY       PIC  9(07).
       *     ›∏±æ Û

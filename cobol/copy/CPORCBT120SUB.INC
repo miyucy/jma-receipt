@@ -92,6 +92,10 @@
                    07  LNK-ORCBT120SUB-SKJ             PIC  9(07).
       *æ√»Ò¿«≥€
                    07  LNK-ORCBT120SUB-SKJ-TAX         PIC  9(07).
+      *ººŒ¡∫π≥€
+                   07  LNK-ORCBT120SUB-RMSAGAKU        PIC  9(07).
+      *ººŒ¡∫π≥€¿«≥€
+                   07  LNK-ORCBT120SUB-RMSAGAKU-TAX    PIC  9(07).
       *¿¡µ·∂‚≥€
                    07  LNK-ORCBT120SUB-SKYMONEY        PIC  9(07).
       *•Ï•ª•◊•»ºÔ Ã
