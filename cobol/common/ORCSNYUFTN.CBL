@@ -85,6 +85,13 @@
            03  WRK-YOUBUKASAN              PIC 9(09).
            03  WRK-RYOYOTEATE              PIC 9(09).
       *
+       01  WRK-JIBAI-TABLE.
+           02  WRK-JIBAI-TBL     OCCURS   10.
+              03 WRK-JIBAI-SYUTEN          PIC 9(09).
+              03 WRK-JIBAI-SINDAN          PIC 9(09).
+              03 WRK-JIBAI-MEISAI          PIC 9(09).
+              03 WRK-JIBAI-RYOYO           PIC 9(09).
+      *
        01  WRK-SKYYM-TABLE.
            02  WRK-SKYYM-TBL     OCCURS    2.
               03   WRK-SKYYM               PIC X(06).
@@ -395,6 +402,7 @@
                          WRK-HANBETU2-TABLE
                          WRK-KOSEI-TABLE
                          WRK-IKUSEI-TABLE
+                         WRK-JIBAI-TABLE
                          FLG-AREA.
       *
       *    Ä´ºÞÎÁ°ì³çÊÑ¹¹½èÍý
@@ -435,6 +443,14 @@
       *
                 MOVE     WRK-HANBETU-SENINFLG2(IDX)                     
                                               TO  LNK-S02-SENINFLG      
+      *
+                MOVE     WRK-JIBAI-SYUTEN(IDX)
+                                              TO  LNK-S02-SYUTEN
+                MOVE     WRK-JIBAI-SINDAN(IDX)
+                                              TO  LNK-S02-SINDAN
+                MOVE     WRK-JIBAI-MEISAI(IDX)
+                                              TO  LNK-S02-MEISAI
+                MOVE     WRK-JIBAI-RYOYO(IDX) TO  LNK-S02-RYOYO
       *
                 MOVE     LNK-ORCS02-REC       TO  WRK-ORCS02-REC
                 MOVE     LNK-SYUNOU-REC(IDX)  TO  SYUNOU-REC
@@ -3078,19 +3094,20 @@
       *
            IF  SYU-SYUHKNNUM       =   "973"
       *
-             COMPUTE   LNK-S02-SYUTEN   =    WRK-SYUTEN
+             COMPUTE   WRK-JIBAI-SYUTEN(IDX)
+                                        =    WRK-SYUTEN
                                         -    WRK-RSISHOSHIN
                                         -    WRK-RSISDO
                                         -    WRK-RSIETC
                                         -    WRK-YOUBUKASAN
                                         -    WRK-RYOYOTEATE
       *
-             ADD    SYU-HKNTEN(11)     TO    LNK-S02-SYUTEN
+             ADD    SYU-HKNTEN(11)     TO    WRK-JIBAI-SYUTEN(IDX)
       *
-             MOVE      WRK-SINDAN      TO    LNK-S02-SINDAN
-             MOVE      WRK-MEISAI      TO    LNK-S02-MEISAI
+             MOVE      WRK-SINDAN      TO    WRK-JIBAI-SINDAN(IDX)
+             MOVE      WRK-MEISAI      TO    WRK-JIBAI-MEISAI(IDX)
       *
-             MOVE      WRK-RYOYOTEATE  TO    LNK-S02-RYOYO
+             MOVE      WRK-RYOYOTEATE  TO    WRK-JIBAI-RYOYO(IDX)
       *
            END-IF
       *
