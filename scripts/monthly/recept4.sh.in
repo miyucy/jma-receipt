@@ -44,19 +44,27 @@ fi
         exit 
     fi
         
-    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${14}${15}
-
 #   ´Á»ú¥³¡¼¥ÉÊÑ´¹¡Ê£Å£Õ£Ã¤«¤é¥·¥Õ¥È£Ê£É£Ó¡Ë	
     nkf -s /var/tmp/RECE300.dat > ${13}RECEIPTC.UKE
 
     if  [ ${17} -eq '1' ]; then
 	$FDW -host ${18} -command jma-receipt-fd-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
-        exit
+	if  [ $? -ne 0 ]; then
+	    ERRCD='0000'$?
+	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4}
+            exit
+	fi
     fi
 
     if  [ ${17} -eq '2' ]; then
 	$FDW -host ${18} -command jma-receipt-mo-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
-        exit
+	if  [ $? -ne 0 ]; then
+	    ERRCD='0000'$?
+	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4}
+            exit
+	fi
     fi
+
+    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${14}${15}
 
     exit 

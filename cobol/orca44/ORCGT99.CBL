@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03.07.05  タイマー機能の追加
+      *  01.00.02    NACL-伊藤    04.02.17  レセ電ファイルの転送エラー
+      *                                     メッセージの追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -302,20 +304,24 @@
                            IF      JOB-ERRCD       =   SPACE
                                CONTINUE
                            ELSE
-                               STRING  JOB-YOBI    DELIMITED  BY  SPACE
-                                       "【"        DELIMITED  BY  SIZE
-                                      JOB-SHELLMSG DELIMITED  BY  SPACE
-                                      "】"         DELIMITED  BY  SIZE      
-                                                   INTO  T99-MSG
-                           END-IF                          
-                       END-IF    
-                       MOVE    IDX                     TO  T99-COUNT    
+                               MOVE    SPACE       TO  T99-MSG
+                               PERFORM 510-ERRSET-SEC
+                               IF      T99-MSG     =   SPACE
+                                 STRING  JOB-YOBI    DELIMITED BY SPACE
+                                         "【"        DELIMITED BY SIZE
+                                        JOB-SHELLMSG DELIMITED BY SPACE
+                                        "】"         DELIMITED BY SIZE
+                                                     INTO  T99-MSG
+                               END-IF
+                           END-IF
+                       END-IF
+                       MOVE    IDX                     TO  T99-COUNT
                    END-IF
                END-PERFORM
            END-IF
            IF      T99-MSG              =   SPACE
                MOVE    "B01"                TO  MCP-WIDGET
-               IF      T99-COUNT            >   ZERO    
+               IF      T99-COUNT            >   ZERO
                    MOVE    "処理は正常に終了しました"
                                                 TO  T99-MSG
                ELSE
@@ -334,6 +340,40 @@
            PERFORM 900-PUT-WINDOW
            .
        490-KAKUNIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージセット処理
+      *****************************************************************
+       510-ERRSET-SEC              SECTION.
+      *
+           EVALUATE    JOB-ERRCD
+               WHEN    "0001"
+                   MOVE    "【ファイルがありません】" 
+                                               TO  T99-MSG
+               WHEN    "0002"
+                   MOVE    "【ｆｄｄが起動されていません】" 
+                                               TO  T99-MSG
+               WHEN    "0003"
+               WHEN    "0004"
+                   MOVE    "【ｆｄｄで処理が失敗しました】" 
+                                               TO  T99-MSG
+               WHEN    "0011"
+                   MOVE    "【媒体がマウントできませんでした】" 
+                                               TO  T99-MSG
+               WHEN    "0012"
+                   MOVE    "【媒体がアンマウントできませんでした】" 
+                                               TO  T99-MSG
+               WHEN    "0021"
+                   MOVE    "【ファイルコピーでエラーが発生しました】" 
+                                               TO  T99-MSG
+               WHEN    "0127"
+                   MOVE    "【スクリプトが実行できませんでした】" 
+                                               TO  T99-MSG
+           END-EVALUATE
+      *
+           .
+       510-ERRSET-EXT.
            EXIT.
       *
       *****************************************************************

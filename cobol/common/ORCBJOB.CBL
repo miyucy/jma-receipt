@@ -15,49 +15,51 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-000200 IDENTIFICATION          DIVISION.
-000300 PROGRAM-ID.             ORCBJOB.
-000400*****************************************************************
-000500*  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : ジョブ管理
-000700*  コンポーネント名  : 終了情報書き込み
-000800*  管理者            : 
-000900*  作成日付    作業者        記述
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCBJOB.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ジョブ管理
+      *  コンポーネント名  : 終了情報書き込み
+      *  管理者            : 
+      *  作成日付    作業者        記述
       *  02/01/20    MCC−藤原　   新規作成
-001100*****************************************************************
+      *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-伊藤    04/02/17  エラーコードセット
       *****************************************************************
-001200*
-001300 ENVIRONMENT             DIVISION.
-001400 CONFIGURATION           SECTION.
-001500 INPUT-OUTPUT            SECTION.
-001600 FILE-CONTROL.
       *
-006900*
-007000 DATA                    DIVISION.
-010200 WORKING-STORAGE             SECTION.
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION           SECTION.
+       INPUT-OUTPUT            SECTION.
+       FILE-CONTROL.
       *
       *
-018000*    フラグ領域
-018100 01  FLG-AREA.
+       DATA                    DIVISION.
+       WORKING-STORAGE             SECTION.
+      *
+      *
+      *    フラグ領域
+       01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
-018900     03  FLG-JOBKANRI                            PIC 9(01).
-018900     03  FLG-RETURN                              PIC S9(03).
-020700*
-020800*    カウント領域
-020900 01  CNT-AREA.
-021000     03  CNT-IN                                  PIC 9(06).
+           03  FLG-JOBKANRI                            PIC 9(01).
+           03  FLG-RETURN                              PIC S9(03).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-IN                                  PIC 9(06).
       *
        01  INDEX-AREA.
            03  IDX                                     PIC 9(03). 
       *
-024100*    一時領域
+      *    一時領域
       *
-024200 01  WRK-PARA.
+       01  WRK-PARA.
            03  WRK-PARA-MODE             PIC X(03). 
            03  WRK-PARA-JOBID            PIC  9(07).
            03  WRK-PARA-SHELLID          PIC  X(08).
+           03  WRK-PARA-ERRCD            PIC  X(04).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -153,6 +155,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    WRK-PARA-ERRCD  TO  JOB-ERRCD
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
