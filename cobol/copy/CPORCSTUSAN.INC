@@ -29,6 +29,10 @@
            03  STUSAN-PTID                 PIC  9(10).
       *    基準日
            03  STUSAN-KJNYMD               PIC X(08).
+      *    特定入院料コード（設定は任意）
+           03  STUSAN-TOKUTEI-SRYCD        PIC X(09)
+                                           OCCURS  5.
+      *
       *  出力領域
       *    通算日数
            03  STUSAN-OUT-AREA.
@@ -45,8 +49,13 @@
       *            日数５：初回入院から基準日までの通算日数
       *            （一般入院料で入院していた日数（他院分含めず））
                    07  STUSAN-NISSU05      PIC 9(08).
+      *            日数６：今回入院から基準日までの特定入院料通算日数
+                   07  STUSAN-NISSU06      PIC 9(08).
+      *            日数７：今回入院から基準日までの引数で指定した
+      *            特定入院料での通算日数
+                   07  STUSAN-NISSU07      PIC 9(08).
                05  STUSAN-TUSAN-R  REDEFINES   STUSAN-NISSU-VAL.
-                   07  STUSAN-TUSAN-OCC    OCCURS  5.
+                   07  STUSAN-TUSAN-OCC    OCCURS  7.
                        09  STUSAN-NISSU    PIC 9(08).
       *            基準日チェックフラグ　（0:対象外／1:対象）
       *            （基準日の入院料が通算日数の対象となるかチェック）
