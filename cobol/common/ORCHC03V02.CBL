@@ -1035,6 +1035,10 @@
                MOVE    WRK-Z72-G           TO  HC03-KONSEIKYU
                MOVE    ORCHC03-KON-SEIKYU  TO  WRK-SKYMONEY
            END-IF
+      *    ∫£≤Û¿¡µ·≥€æ√»Ò¿«° ∫∆∑«°À
+           MOVE    SYU-SKYMONEY-TAX-SAI TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G            TO  HC03-SEIKYUZEI
       *
       *    ∫£≤Û∆˛∂‚≥€
       *****MOVE    SYU-NYUKIN-TOTAL    TO  WRK-Z7

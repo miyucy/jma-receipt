@@ -751,6 +751,11 @@
            MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU24       TO  HCN03-KONSEIKYU
+      *    ∫£≤Û¿¡µ·≥€æ√»Ò¿«° ∫∆∑«°À
+           MOVE    SYU-SKYMONEY-TAX-SAI TO WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-ZHENSYU24       TO  HCN03-KONZEI
       *    ∫£≤Û∆˛∂‚≥€
            MOVE    ORCHCN03-NYUKIN (IDX-M)
                                        TO  WRK-KINGAKU-Z
