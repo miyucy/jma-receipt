@@ -27,6 +27,7 @@
       *  02.00.00    MCC-多々納   02/06/20  レイアウト変更による変更
       *  02.00.01    NACL-多々納  02/09/09  平成１４年１０月対応
       *  02.00.02    NACL-多々納  02/11/26  診療科・ドクター件数修正
+      *  02.00.03    NACL-多々納  03/01/08  公費の最大件数１００件へ
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -278,14 +279,16 @@
                                13  SPA-NAI-HKNPAYKBN     PIC X(02).
                    07  SPA-KOH-AREA.
                        09  SPA-GMN-HOKNUM-LIST.
-                           11  SPA-GMN-KOHNUMLST       OCCURS 50.
+      ******************** 11  SPA-GMN-KOHNUMLST       OCCURS 50.
+                           11  SPA-GMN-KOHNUMLST       OCCURS 100.
                                13  SPA-GMN-KOHNUML     PIC X(03).
       ************************ 13  SPA-GMM-HL1         PIC X(01).
                                13  SPA-GMN-KOHKBNL     PIC X(01).
                                13  SPA-GMN-KOHNUMMEIL  PIC X(16).
                        09  SPA-GMN-KOHMAX              PIC 9(04).
                        09  SPA-NAI-KOHNUM-LIST.
-                           11  SPA-NAI-KOHNUMLST       OCCURS 50.
+      *****************    11  SPA-NAI-KOHNUMLST       OCCURS 50.
+                           11  SPA-NAI-KOHNUMLST       OCCURS 100.
                                13  SPA-NAI-KOHSBTKBN     PIC X(01).
       *                        検証番号チェック区分
                                13  SPA-NAI-KENSNUMCHKKBN    PIC X(01).
