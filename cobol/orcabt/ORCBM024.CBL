@@ -213,6 +213,13 @@
                        09  SUM-ROU-SHOKUJINISSU   PIC  9(06).
                        09  SUM-ROU-SHOKUJIRYOYOHI PIC  9(10).
                        09  SUM-ROU-SHOKUJIFTN     PIC  9(10).
+               05  SUM-ROU-GOKEI.
+                   07  SUM-ROU-GOK-NISSU          PIC  9(06).
+                   07  SUM-ROU-GOK-TOTALTEN       PIC  9(10).
+                   07  SUM-ROU-GOK-FTNMONEY       PIC  9(10).
+                   07  SUM-ROU-GOK-SHOKUJINISSU   PIC  9(06).
+                   07  SUM-ROU-GOK-SHOKUJIRYOYOHI PIC  9(10).
+                   07  SUM-ROU-GOK-SHOKUJIFTN     PIC  9(10).
       *        ¸øÈñÉéÃ´ 
                05  SUM-KOH-TABLE           OCCURS  3. 
                    07  SUM-KOH-TBL         OCCURS  100.
@@ -729,7 +736,26 @@
            MOVE    WRK-KENSUZ              TO  HCM2B-KENSUG (1)    
            MOVE    SUM-GOK-SHOKENSU (IDX1 2)
                                            TO  WRK-SHOKENSUZ
-           MOVE    WRK-SHOKENSUZ           TO  HCM2B-SYOKENSUG (1) 
+           MOVE    WRK-SHOKENSUZ           TO  HCM2B-SYOKENSUG (1)
+      * 
+           MOVE    SUM-ROU-GOK-NISSU (IDX1)
+                                           TO  WRK-NISSUZ 
+           MOVE    WRK-NISSUZ              TO  HCM2B-ROU-GOK-NISSU
+           MOVE    SUM-ROU-GOK-TOTALTEN  (IDX1)
+                                           TO  WRK-TENSUZ
+           MOVE    WRK-TENSUZ              TO  HCM2B-ROU-GOK-TENSU
+           MOVE    SUM-ROU-GOK-FTNMONEY  (IDX1)
+                                           TO  WRK-FTNMONEYZ
+           MOVE    WRK-FTNMONEYZ           TO  HCM2B-ROU-GOK-ITBFTN
+           MOVE    SUM-ROU-GOK-SHOKUJINISSU  (IDX1)
+                                           TO  WRK-SHONISSUZ 
+           MOVE    WRK-SHONISSUZ           TO  HCM2B-ROU-GOK-SYONISSU
+           MOVE    SUM-ROU-GOK-SHOKUJIRYOYOHI  (IDX1)
+                                           TO  WRK-SHORYOYOHIZ
+           MOVE    WRK-SHORYOYOHIZ         TO  HCM2B-ROU-GOK-SYOKINGAK
+           MOVE    SUM-ROU-GOK-SHOKUJIFTN   (IDX1)
+                                           TO  WRK-SHOFTNZ
+           MOVE    WRK-SHOFTNZ             TO  HCM2B-ROU-GOK-SYOFTNGAK
       *     
       *    Ä¢É¼°õºþ½èÍý¡Ê£±ÊÇÌÜ¡Ë
            MOVE    ZERO                TO  FLG-PRTKBN

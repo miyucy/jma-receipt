@@ -29,6 +29,7 @@
       *****************************************************************
       *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  01.00.01    NACL-∆£∏∂    03/03/19  ΩÍ∫ﬂ√œ§Œ —ππ§À§Ë§Îƒ¢…º£…£ƒ —ππ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -55,7 +56,9 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-           COPY    "HCM2C.INC".
+      *****COPY    "HCM2C.INC".
+           COPY    "HCM2CV01.INC"  REPLACING  //HCM2CV01//
+                                   BY         //HCM2C//.
            COPY    "HCM2D.INC".
       *
       *    •π•—ŒŒ∞Ë
@@ -209,6 +212,13 @@
                        09  SUM-ROU-SHOKUJINISSU   PIC  9(06).
                        09  SUM-ROU-SHOKUJIRYOYOHI PIC  9(10).
                        09  SUM-ROU-SHOKUJIFTN     PIC  9(10).
+               05  SUM-ROU-GOKEI.
+                   07  SUM-ROU-GOK-NISSU          PIC  9(06).
+                   07  SUM-ROU-GOK-TOTALTEN       PIC  9(10).
+                   07  SUM-ROU-GOK-FTNMONEY       PIC  9(10).
+                   07  SUM-ROU-GOK-SHOKUJINISSU   PIC  9(06).
+                   07  SUM-ROU-GOK-SHOKUJIRYOYOHI PIC  9(10).
+                   07  SUM-ROU-GOK-SHOKUJIFTN     PIC  9(10).
       *        ∏¯»Ò…È√¥ 
                05  SUM-KOH-TABLE           OCCURS  3. 
                    07  SUM-KOH-TBL         OCCURS  100.
@@ -758,7 +768,8 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            IF      FLG-PRTKBN          =   ZERO                            
-               MOVE    "HCM2C.red"         TO  SPRT-PRTID
+      *********MOVE    "HCM2C.red"         TO  SPRT-PRTID
+               MOVE    "HCM2CV01.red"      TO  SPRT-PRTID
                MOVE    HCM2C               TO  SPRT-PRTDATA
            ELSE                          
                MOVE    "HCM2D.red"         TO  SPRT-PRTID

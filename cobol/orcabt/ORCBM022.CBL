@@ -155,6 +155,13 @@
                        09  SUM-ROU-SHOKUJINISSU   PIC  9(06).
                        09  SUM-ROU-SHOKUJIRYOYOHI PIC  9(10).
                        09  SUM-ROU-SHOKUJIFTN     PIC  9(10).
+               05  SUM-ROU-GOKEI.
+                   07  SUM-ROU-GOK-NISSU          PIC  9(06).
+                   07  SUM-ROU-GOK-TOTALTEN       PIC  9(10).
+                   07  SUM-ROU-GOK-FTNMONEY       PIC  9(10).
+                   07  SUM-ROU-GOK-SHOKUJINISSU   PIC  9(06).
+                   07  SUM-ROU-GOK-SHOKUJIRYOYOHI PIC  9(10).
+                   07  SUM-ROU-GOK-SHOKUJIFTN     PIC  9(10).
       *        ¸øÈñÉéÃ´ 
                05  SUM-KOH-TABLE           OCCURS  3. 
                    07  SUM-KOH-TBL         OCCURS  100.
@@ -699,22 +706,31 @@
       *    ¿ÇÎÅ¼ÂÆü¿ô¡Á°ìÉôÉéÃ´¶â 
            ADD     RECE10-JNISSU         (IDX1)
                              TO  SUM-ROU-NISSU          (IDY3 IDY1 IDY2)
+                                 SUM-ROU-GOK-NISSU      (IDY3)
            ADD     RECE10-TOTALTEN       (IDX1)
                              TO  SUM-ROU-TOTALTEN       (IDY3 IDY1 IDY2)
+                                 SUM-ROU-GOK-TOTALTEN   (IDY3)
            ADD     RECE10-FTNMONEY       (IDX1)
                              TO  SUM-ROU-FTNMONEY       (IDY3 IDY1 IDY2)
+                                 SUM-ROU-GOK-FTNMONEY   (IDY3)
       *                           
            ADD     RECE10-SHOKUJINISSU   (IDX1)
                              TO  SUM-ROU-SHOKUJINISSU   (IDY3 IDY1 IDY2)
+                                 SUM-ROU-GOK-SHOKUJINISSU(IDY3)
            ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
                              TO  SUM-ROU-SHOKUJIRYOYOHI (IDY3 IDY1 IDY2)
+                                 SUM-ROU-GOK-SHOKUJIRYOYOHI(IDY3)
            ADD     RECE10-SHOKUJIFTN     (IDX1)
                              TO  SUM-ROU-SHOKUJIFTN     (IDY3 IDY1 IDY2)
+                                 SUM-ROU-GOK-SHOKUJIFTN (IDY3)
       *
       *    ¾®·×   
            ADD     1         TO  SUM-ROU-KENSU    (IDY3 IDY1 3)
            ADD     RECE10-FTNMONEY       (IDX1)
                              TO  SUM-ROU-FTNMONEY (IDY3 IDY1 3)
+           IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
+               ADD     1       TO  SUM-ROU-SHOKUJIKENSU (IDY3 IDY1 3)
+           END-IF
       *
            MOVE    1               TO  FLG-UPD 
            .
