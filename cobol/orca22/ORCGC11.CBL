@@ -103,6 +103,7 @@
            03  WRK-KBN-HENSYU-AREA.
                05  WRK-KBN         PIC X(03).
                05  WRK-KBNMEI      PIC X(20).
+               05  WRK-HKNID       PIC 9(10).
       *    ÆþÎÏ¹àÌÜÌ¾
            03  WRK-MCP-WIDGET      PIC X(64).
       *
@@ -751,6 +752,8 @@
                                        SPA-GMN-C11-OPE-TSRYYMD   (IDX)
                    MOVE    SRY-SRYCD (IDY) TO  
                                        SPA-NAI-C11-OPE-TSRYCD    (IDX)
+                   MOVE    ACCT-NYUGAIKBN  TO  
+                                       SPA-NAI-C11-OPE-TNYUGAIKBN(IDX)
       *
                    MOVE    IDX             TO  SPA-GMN-C11-OPE-MAX
                END-IF
@@ -860,14 +863,40 @@
            MOVE    WRK-KBNMEI          TO
                                        SPA-GMN-C11-COM-TSRYKA    (IDX)
            IF      OPECOM-HKNNUM   NOT =   SPACE    
-               INITIALIZE                  HKNNUM-REC
-               MOVE    SPA-HOSPID          TO  HKN-HOSPID
-               MOVE    OPECOM-HKNNUM       TO  HKN-HKNNUM
-               MOVE    OPECOM-SRYYMD       TO  HKN-TEKSTYMD
-                                               HKN-TEKEDYMD
-               PERFORM 900-HKNNUM-READ-SEC
-               MOVE    HKN-TANSEIDONAME    TO
+               IF      OPECOM-HKNNUM       =   "971"   OR  "973"
+                   INITIALIZE                      PTRSIINF-REC
+                   MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+                   MOVE    SPA-NAI-C11-PTID    TO  PTRSI-PTID
+                   MOVE    OPECOM-HKNID        TO  PTRSI-HKNID
+                   PERFORM 900-PTRSIINF-READ-SEC
+                   MOVE    SPACE               TO  WRK-HKNCOMBIMEI
+                                                   WRK-HKNKBNMEI
+                   EVALUATE    PTRSI-HKNKBN
+                       WHEN    "1"
+                           MOVE    "Ã»"        TO  WRK-HKNKBNMEI
+                       WHEN    "2"
+                           MOVE    "½ý"        TO  WRK-HKNKBNMEI
+                       WHEN    "3"
+                           MOVE    "¥¢"        TO  WRK-HKNKBNMEI
+                   END-EVALUATE
+                   STRING  COMB-SYU-TANSEIDONAME
+                                               DELIMITED  BY  SPACE
+                           " "                 DELIMITED  BY  SIZE
+                           WRK-HKNKBNMEI       DELIMITED  BY  SPACE
+                           INTO                WRK-HKNCOMBIMEI
+                   END-STRING
+                   MOVE    WRK-HKNCOMBIMEI     TO
+                                           SPA-GMN-C11-COM-THKNNUM (IDX)
+               ELSE
+                   INITIALIZE                  HKNNUM-REC
+                   MOVE    SPA-HOSPID          TO  HKN-HOSPID
+                   MOVE    OPECOM-HKNNUM       TO  HKN-HKNNUM
+                   MOVE    OPECOM-SRYYMD       TO  HKN-TEKSTYMD
+                                                   HKN-TEKEDYMD
+                   PERFORM 900-HKNNUM-READ-SEC
+                   MOVE    HKN-TANSEIDONAME    TO
                                        SPA-GMN-C11-COM-THKNNUM   (IDX)
+               END-IF
            END-IF
            MOVE    OPECOM-TEKSTYM      TO  WRK-SYMD (1:6)
            MOVE    "01"                TO  WRK-SYMD (7:2)
@@ -1169,6 +1198,11 @@
                                        TO  SPA-NAI-C11-HKNCOMBI
            MOVE    SPA-NAI-C11-OPE-TSRYCD  (SPA-NAI-C11-SELNUM1)
                                        TO  SPA-NAI-C11-SRYCD
+           MOVE    SPA-NAI-C11-OPE-TNYUGAIKBN (SPA-NAI-C11-SELNUM1)
+                                       TO  SPA-GMN-C11-NYUGAIKBN
+                                           WRK-KBN
+           PERFORM 5001-NYUGAIKBN-HENSYU-SEC
+           MOVE    WRK-KBNMEI          TO  SPA-GMN-C11-NYUGAIKBNMEI
            MOVE    SPA-GMN-C11-OPE-TSRYYMD (SPA-NAI-C11-SELNUM1) (1:6)
                                        TO  SPA-GMN-C11-TEKSTYM
            MOVE    SPA-NAI-C11-OPE-TSRYYMD (SPA-NAI-C11-SELNUM1) (1:6)
@@ -1200,8 +1234,6 @@
            IF      COMB-HKNNUM     NOT =   SPACE
                ADD     1               TO  IDX
                MOVE    COMB-HKNNUM     TO  SPA-GMN-C11-HKNNUML   (IDX)
-               MOVE    COMB-SYU-TANSEIDONAME
-                                       TO  SPA-GMN-C11-HKNNUMMEIL(IDX)
                MOVE    COMB-HKNID      TO  SPA-NAI-C11-HKNIDL    (IDX)
                IF      COMB-HKNNUM         =   "971"   OR  "973"
                    INITIALIZE                      PTRSIINF-REC
@@ -1209,8 +1241,29 @@
                    MOVE    SPA-NAI-C11-PTID    TO  PTRSI-PTID
                    MOVE    COMB-HKNID          TO  PTRSI-HKNID
                    PERFORM 900-PTRSIINF-READ-SEC
+                   MOVE    SPACE               TO  WRK-HKNCOMBIMEI
+                                                   WRK-HKNKBNMEI
+                   EVALUATE    PTRSI-HKNKBN
+                       WHEN    "1"
+                           MOVE    "Ã»"        TO  WRK-HKNKBNMEI
+                       WHEN    "2"
+                           MOVE    "½ý"        TO  WRK-HKNKBNMEI
+                       WHEN    "3"
+                           MOVE    "¥¢"        TO  WRK-HKNKBNMEI
+                   END-EVALUATE
+                   STRING  COMB-SYU-TANSEIDONAME
+                                               DELIMITED  BY  SPACE
+                           " "                 DELIMITED  BY  SIZE
+                           WRK-HKNKBNMEI       DELIMITED  BY  SPACE
+                           INTO                WRK-HKNCOMBIMEI
+                   END-STRING
+                   MOVE    WRK-HKNCOMBIMEI     TO
+                                           SPA-GMN-C11-HKNNUMMEIL(IDX)
                    MOVE    PTRSI-HKNKBN        TO
-                                               SPA-NAI-C11-HKNKBNL (IDX)
+                                           SPA-NAI-C11-HKNKBNL   (IDX)
+               ELSE
+                   MOVE    COMB-SYU-TANSEIDONAME
+                                       TO  SPA-GMN-C11-HKNNUMMEIL(IDX)
                END-IF
            END-IF
            IF      COMB-KOHHKNNUM (1)
@@ -1254,6 +1307,15 @@
                                        TO  SPA-NAI-C11-HKNIDL    (IDX)
            END-IF
            MOVE    IDX                 TO  SPA-GMN-C11-HKNNUM-MAX
+      *
+      *    Ï«ºÒ¡¦¼«ÇåÀÕ¤Î¤È¤­¤ÏÉ½¼¨
+           IF    ( SPA-GMN-C11-HKNNUM-MAX
+                                        =   1                 )
+           AND   ( SPA-GMN-C11-HKNNUML (1)
+                                        =   "971"   OR  "973" )
+               MOVE    SPA-GMN-C11-HKNNUMLST (1)
+                                           TO  SPA-GMN-C11-HKNNUM-G
+           END-IF     
            .
        410411-HKNNUM-HENSYU-EXT.
            EXIT.
@@ -1349,6 +1411,7 @@
            MOVE    SPA-GMN-C11-HKNNUM  TO  WRK-KBN
            PERFORM 5001-HKNNUM-HENSYU-SEC
            MOVE    WRK-KBNMEI          TO  SPA-GMN-C11-HKNNUMMEI
+           MOVE    WRK-HKNID           TO  SPA-NAI-C11-HKNID
       *
            MOVE    5                   TO  SPA-GMN-C11-CUR
            .
@@ -1669,6 +1732,7 @@
                MOVE    SPA-GMN-C11-HKNNUM  TO  WRK-KBN
                PERFORM 5001-HKNNUM-HENSYU-SEC
                MOVE    WRK-KBNMEI          TO  SPA-GMN-C11-HKNNUMMEI
+               MOVE    WRK-HKNID           TO  SPA-NAI-C11-HKNID
            END-IF
            IF      SPA-GMN-C11-HKNNUM   =   SPACE
                CONTINUE
@@ -2395,6 +2459,7 @@
        5001-HKNNUM-HENSYU-SEC       SECTION.
       * 
            MOVE    SPACE              TO  WRK-KBNMEI
+           MOVE    ZERO               TO  WRK-HKNID 
       *     
            IF      WRK-KBN            =   SPACE   
                CONTINUE
@@ -2404,6 +2469,8 @@
                    IF      WRK-KBN        =   SPA-GMN-C11-HKNNUML (IDXX)
                        MOVE    SPA-GMN-C11-HKNNUMMEIL (IDXX)
                                           TO  WRK-KBNMEI
+                       MOVE    SPA-NAI-C11-HKNIDL (IDXX)
+                                          TO  WRK-HKNID
                        MOVE    SPA-GMN-C11-HKNNUM-MAX
                                           TO  IDXX
                    END-IF
