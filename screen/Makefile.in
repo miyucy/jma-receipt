@@ -102,6 +102,7 @@ SCREEN_screen = \
 	KID1.glade \
 	KID2.glade \
 	L01.glade \
+	L02.glade \
 	L99.glade \
 	LERR.glade \
 	LID1.glade \
