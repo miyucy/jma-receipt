@@ -1507,5 +1507,11 @@ H01	{
                     style   varchar(20);
 			value	varchar(20);
 		};
+		AGE 	{
+			value	number(3);
+		};
+		KYURATE	{
+			value	number(3);
+		};
 	};
 };
