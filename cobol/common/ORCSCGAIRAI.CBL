@@ -563,6 +563,7 @@
                GO      TO      1002-SYUNOU-OUT-EXT
            END-IF
       *
+      *
            MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
       *    伝票番号発行日
            MOVE    SPA-SYSYMD          TO  SYU-DENPPRTYMD
@@ -1289,7 +1290,8 @@
       *
            MOVE    SPA-DRCD            TO  JYURRK-DRCD
            MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
-           MOVE    SYU-DENPNUM         TO  JYURRK-DENPNUM
+      *
+           MOVE    WRK-DENPNUM         TO  JYURRK-DENPNUM
       *
       *    労災用に保険区分をセットする
            MOVE    SPA-HKNKBN          TO  JYURRK-HKNKBN
@@ -1394,6 +1396,7 @@
                MOVE    ZERO                TO  WRK-JYURRK-DOUJI-RENNUM
            END-IF
            MOVE    SPA-DENPNUM         TO  SYU-DENPNUM
+           MOVE    SPA-DENPNUM         TO  WRK-DENPNUM
            PERFORM 45001-JYURRK-SYOKI-SEC
       *
            .
