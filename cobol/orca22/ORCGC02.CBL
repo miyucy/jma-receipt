@@ -3985,7 +3985,7 @@
                    UNTIL       IDX     >   SPA-GMN-C02-HKN-MAX
                IF      C02-HKN-SELECT (IDX)    =   "T"
                    MOVE    IDX                  TO  WRK-SELNO
-                   MOVE    10                   TO  IDX
+                   MOVE    20                   TO  IDX
                END-IF
            END-PERFORM
       *
@@ -4005,7 +4005,7 @@
                        MOVE    "0011"     TO  SPA-ERRCD
                    END-IF        
                    MOVE    1              TO  WRK-HENFLG
-                   MOVE    10             TO  IDY
+                   MOVE    20             TO  IDY
                END-IF
            END-PERFORM
            IF      WRK-HENFLG         =   ZERO
