@@ -228,6 +228,7 @@
       *  01.01.57    NACL-多々納　03/04/17  SYUNOU-KEY13追加
       *  01.01.58    ひさなが     03/04/17  NYUINACCT-KEY18の追加
       *  01.01.59    NACL-多々納　03/04/18  JYURRK-KEY20追加
+      *  01.01.55    NACL-藤原    03/04/09  SEIKYU-KEY21,JEY22追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2038,6 +2039,12 @@
                                        TO  WRK-PATH
                 WHEN    ANY             ALSO   "SEIKYU-KEY20"
                    MOVE    PATH-TBL-SEIKYU-KEY20
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY21"
+                   MOVE    PATH-TBL-SEIKYU-KEY21
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY22"
+                   MOVE    PATH-TBL-SEIKYU-KEY22
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SEIKYU-ALL"
