@@ -201,6 +201,13 @@ W07	{
 				LASTKIKAN	{
 					value	number(2);
 				};
+				CLEARCHK_COMBO	{
+					CLEARCHK	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
 			};
 			TAGNAME1    {
 			    state   int;
