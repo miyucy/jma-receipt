@@ -283,10 +283,16 @@
            03  WRK-ERR-BYOMEI      PIC X(80).
            03  WRK-ERR-SRYYMD      PIC X(22).
       *
+      *    傷病名編集フラグ（疑い）
+           03  WRK-HENFLG1         PIC X(01).
+      *    傷病名編集フラグ（急性）
+           03  WRK-HENFLG2         PIC X(01). 
+      *
+      *
            03  WRK-KBN-HENSYU-AREA.
-               05  WRK-KBN             PIC X(04).
-               05  WRK-KBNMEI          PIC X(42).
-               05  WRK-KBNMEITAN       PIC X(10).                            
+               05  WRK-KBN         PIC X(04).
+               05  WRK-KBNMEI      PIC X(42).
+               05  WRK-KBNMEITAN   PIC X(10).                            
       *     
            03  WRK-TANDOKU-AREA.
                05  WRK-TANDOKUKBN-BYOMEICD
@@ -296,22 +302,10 @@
                05  WRK-TANDOKUKBN  PIC 9(01).
       *     
            03  WRK-BYOMEICD-KENSAKU-AREA.
-               05  WRK-KEN-BYOMEI  PIC X(80).
-               05  WRK-KEN-LENGTH  PIC 9(04).
-               05  WRK-KEN-UTAGAIFLG 
-                                   PIC X(01).
-               05  WRK-KEN-ADDKBN  PIC X(01).
                05  WRK-BYOMEICD    PIC X(07).
                05  WRK-IKOSAKICD   PIC X(07).
                05  WRK-HAISIYMD    PIC X(08).
                05  WRK-BYO-MAX     PIC 9(01).
-               05  WRK-BYO-BYOMEICD-G.
-                   07  WRK-BYO-BYOMEICD 
-                                   PIC X(07)    OCCURS  6.
-                   07  WRK-BYO-IKOSAKICD 
-                                   PIC X(07)    OCCURS  6.
-                   07  WRK-BYO-HAISIYMD 
-                                   PIC X(08)    OCCURS  6.
       *                             
            03  WRK-DBPATH          PIC X(64).
       *
@@ -320,16 +314,26 @@
            03  WRK-SEIGYO          PIC X(01).  
       *
       *    未コード化傷病名コード
-       01  WRK-CONS-BYOMEICD       PIC X(07)   VALUE   "0000999".                                     
-      *    の疑い
-       01  WRK-CONS-UTAGAI         PIC X(07)   VALUE   "ZZZ8002".                                     
+       01  WRK-CONS-BYOMEICD       PIC X(07)   VALUE   "0000999". 
+      *                                    
       *    自院病名検索画面ＭＡＸ行
-       01  WRK-CONS-C04-MAX             PIC 9(03)   VALUE   100.
+       01  WRK-CONS-C04-MAX        PIC 9(03)   VALUE   100.
       *    病名登録画面ＭＡＸ行
-       01  WRK-CONS-C02-MAX             PIC 9(03)   VALUE   200.
-       01  WRK-CONS-C02-HKNCOMBI-MAX    PIC 9(03)   VALUE   20.
+       01  WRK-CONS-C02-MAX        PIC 9(03)   VALUE   200.
+       01  WRK-CONS-C02-HKNCOMBI-MAX
+                                   PIC 9(03)   VALUE   20.
       *
        01  WRK-CONS-BYOMEICD-MAX   PIC 9(02)   VALUE   21.
+      *
+      *    疑い編集
+       01  WRK-UTAGAI-AREA.
+      *    の疑い
+           03  WRK-CONS-UTAGAI     PIC X(07)   VALUE   "ZZZ8002".                                     
+           03  WRK-CONS-UTAGAI-MOJISU
+                                   PIC 9(02)   VALUE   6.       
+      *    急性
+           03  WRK-CONS-KYUSEI-MOJISU
+                                   PIC 9(02)   VALUE   4. 
       *
        01  WRK-HEN-AREA.
            03  WRK-LENGTH          PIC 9(02).
@@ -5114,7 +5118,7 @@
                    IF      WRK-PTBYO-BYOMEICD (IDXX IDY) (1:4)
                                                    =   "ZZZ1"
                        ADD     1       TO  IDZ
-                       IF      IDX         <   4
+                       IF      IDZ         <   4
                            MOVE    WRK-PTBYO-BYOMEICD (IDXX IDY)
                                        TO  WRK-PTBYO-KHNBUICD(IDXX IDZ)
                        END-IF
@@ -5145,6 +5149,83 @@
                            MOVE    "1" TO  WRK-PTBYO-RECEDENFLG (IDXX)
                        END-IF
                END-EVALUATE
+           END-IF
+      *
+      *    レセ電エラーフラグ（疑いフラグが設定されているとき）
+           IF    ( WRK-PTBYO-RECEDENFLG (IDXX) =   SPACE ) 
+           AND   ( WRK-PTBYO-UTAGAIFLG  (IDXX) 
+                                           NOT =   SPACE )
+               MOVE    SPACE               TO  WRK-HENFLG1
+                                               WRK-HENFLG2
+      *     
+      *        病名文字数を計算
+               COMPUTE WRK-MOJISU      =   WRK-PTBYO-BYOMEIMOJI (IDXX)
+                                           *   2
+               IF      WRK-PTBYO-UTAGAIFLG (IDXX)  =   "1" OR  "3"
+                   IF      WRK-MOJISU      <   8
+                       MOVE    1               TO  IDZ
+                   ELSE    
+                       COMPUTE IDZ     =   WRK-MOJISU    -   7
+                   END-IF    
+                   PERFORM VARYING IDY FROM    IDZ BY  2
+                           UNTIL   IDY >       WRK-MOJISU
+                       IF      WRK-PTBYO-BYOMEI (IDXX) (IDY:2) =   "疑"
+                           MOVE    "1"              TO  WRK-HENFLG1
+                           MOVE    WRK-MOJISU       TO  IDY
+                       END-IF
+                   END-PERFORM
+               END-IF                
+               IF      WRK-PTBYO-UTAGAIFLG (IDXX)  =   "2" OR  "3"
+                   PERFORM VARYING IDY FROM    1   BY  2
+                           UNTIL   IDY >       WRK-MOJISU
+                       IF      WRK-PTBYO-BYOMEI (IDXX) (IDY:4) =  "急性"
+                           MOVE    "1"              TO  WRK-HENFLG2
+                           MOVE    WRK-MOJISU       TO  IDY
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
+      *        疑いフラグがセットされているとき
+               IF    ( WRK-PTBYO-UTAGAIFLG (IDXX)
+                                           =   "1" OR  "3" )
+               AND   ( WRK-HENFLG1         =   SPACE       )                         
+                   COMPUTE WRK-MOJISU          =      
+                                WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
+                   IF      WRK-PTBYO-BYOMEICD (IDXX 21) NOT =   SPACE             
+                       EVALUATE    WRK-PTBYO-SYUBYOFLG (IDXX)
+                           WHEN    "1"
+                               IF      WRK-MOJISU      >   17
+                                   MOVE    "1"     TO
+                                           WRK-PTBYO-RECEDENFLG (IDXX)
+                               END-IF
+                           WHEN    SPACE
+                               IF      WRK-MOJISU      >   20
+                                   MOVE    "1"     TO
+                                           WRK-PTBYO-RECEDENFLG (IDXX)
+                               END-IF
+                       END-EVALUATE
+                   END-IF
+               END-IF    
+               IF    ( WRK-PTBYO-UTAGAIFLG (IDXX)
+                                           =   "2" OR  "3" )
+               AND   ( WRK-HENFLG2         =   SPACE       )                         
+                   COMPUTE WRK-MOJISU          =      
+                                WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
+                   IF      WRK-PTBYO-BYOMEICD (IDXX 21) NOT =   SPACE             
+                       EVALUATE    WRK-PTBYO-SYUBYOFLG (IDXX)
+                           WHEN    "1"
+                               IF      WRK-MOJISU      >   17
+                                   MOVE    "1"     TO
+                                           WRK-PTBYO-RECEDENFLG (IDXX)
+                               END-IF
+                           WHEN    SPACE
+                               IF      WRK-MOJISU      >   20
+                                   MOVE    "1"     TO
+                                           WRK-PTBYO-RECEDENFLG (IDXX)
+                               END-IF
+                       END-EVALUATE
+                   END-IF
+               END-IF
            END-IF    
       *****MOVE    SPA-GMN-C02-HKNNUM  TO  WRK-PTBYO-HKNNUM (IDXX)
            .
@@ -5246,6 +5327,7 @@
                        MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
                        PERFORM 5002-HIZUKE-HEN-SEC
                        MOVE    LNK-DAY2-EDTYMD3    TO  WRK-ERR-SRYYMD
+                   END-IF
                END-IF
       *
                PERFORM 900-PTBYO-READ-SEC
