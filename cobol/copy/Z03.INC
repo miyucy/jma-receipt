@@ -51,9 +51,9 @@
                     06  Z03-HOSPSRYKBN-ITEM    PIC X(20)   OCCURS  70.
                   05  Z03-TANICDCOB.
                     06  Z03-TANICD.
-                      07  Z03-VALUE   PIC X(20).
+                      07  Z03-VALUE   PIC X(28).
                     06  Z03-TANICD-COUNT   PIC S9(9)   BINARY.
-                    06  Z03-TANICD-ITEM    PIC X(20)   OCCURS  90 TIMES.
+                    06  Z03-TANICD-ITEM    PIC X(28)   OCCURS  90 TIMES.
                   05  Z03-SRYKBNCOB.
                     06  Z03-SRYKBN.
                       07  Z03-VALUE   PIC X(20).

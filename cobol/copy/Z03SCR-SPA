@@ -34,12 +34,15 @@
                05  SPA-GMN-MAX         PIC 9(04).
                05  SPA-GMN-IDX         PIC 9(04).
                05  SPA-GMN-MOTOPG      PIC X(08).
+               05  SPA-GMN-CUR                 PIC 9(04).
+      *
+      ******** 05  SPA-GMN-WIDGET              PIC X(30).
       *
                05  SPA-GMN-SRYCDH              PIC X(09).
                05  SPA-GMN-NAMEH               PIC X(100).
                05  SPA-GMN-YUKOSTYMDH          PIC X(09).
                05  SPA-GMN-YUKOEDYMDH          PIC X(09).
-               05  SPA-GMN-PAGENO              PIC S9(9).
+               05  SPA-GMN-PAGENO              PIC 9(09).
                05  SPA-GMN-KIHON.
                    07  SPA-GMN-YUKOSTYMD       PIC X(10).
                    07  SPA-GMN-YUKOEDYMD       PIC X(10).
@@ -53,6 +56,7 @@
                            11  SPA-GMN-SRYKBN-L    PIC X(02).
                            11  SPA-GMN-FL1         PIC X(01).
                            11  SPA-GMN-SRYKBNME-L  PIC X(10).
+                   07  SPA-SRYKBN-MAX              PIC 9(04).
       *
                    07  SPA-GMN-SRYSYUKBN-G.
                        09  SPA-GMN-SRYSYUKBN       PIC X(3).
@@ -61,6 +65,7 @@
                    07  SPA-GMN-SRYSYUKBNCOB-G.
                        09  SPA-GMN-SRYSYUKBNCOB    PIC X(44)
                                                    OCCURS  100.
+                   07  SPA-SRYSYUKBN-MAX           PIC 9(04).
       *
                    07  SPA-GMN-DATAKBN-G.
                        09  SPA-GMN-DATAKBN         PIC 9(1).
@@ -69,6 +74,7 @@
                    07  SPA-GMN-DATAKBNCOB-G.
                        09  SPA-GMN-DATAKBNCOB      PIC X(12)
                                                    OCCURS  3.
+                   07  SPA-DATAKBN-MAX             PIC 9(04).
       *
                    07  SPA-GMN-KANANAME        PIC X(100).
                    07  SPA-GMN-NAME            PIC X(100).
@@ -95,15 +101,16 @@
                    07  SPA-GMN-OLDTENSKBCOB-G.
                        09  SPA-GMN-OLDTENSKBCOB    PIC X(26)
                                                    OCCURS  10.
-                   07  SPA-OLDTENSIKI-MAX          PIC 9(04).
+                   07  SPA-OLDTENSKB-MAX          PIC 9(04).
       *
                    07  SPA-GMN-TANICD-G.
                        09  SPA-GMN-TANICD          PIC X(3).
                        09  SPA-GMN-F3              PIC X(1).
                        09  SPA-GMN-TANINAME        PIC X(24).
                    07  SPA-GMN-TANICDCOB-G.
-                       09  SPA-GMN-TANICDCOB       PIC X(24)
+                       09  SPA-GMN-TANICDCOB       PIC X(28)
                                                    OCCURS  90.
+                   07  SPA-TANICD-MAX              PIC 9(04).
       *
                    07  SPA-GMN-HKNTEKKBN-G.
                        09  SPA-GMN-HKNTEKKBN       PIC 9(1).
@@ -112,6 +119,7 @@
                    07  SPA-GMN-HKNTEKKBNCOB-G.
                        09  SPA-GMN-HKNTEKKBNCOB    PIC X(20)
                                                    OCCURS  2.
+                   07  SPA-HKNTEKKBN-MAX           PIC 9(04).
       *
                    07  SPA-GMN-BYOKANRENKBN-G.
                        09  SPA-GMN-BYOKANRENKBN    PIC 9(2).
@@ -120,6 +128,7 @@
                    07  SPA-GMN-BYOKANRENKBNCOB-G.
                        09  SPA-GMN-BYOKANRENKBNCOB    PIC X(54)
                                                    OCCURS  5.
+                   07  SPA-BYOKANRENKBN-MAX        PIC 9(04).
       *
                    07  SPA-GMN-SDOKNRYO-G.
                        09  SPA-GMN-SDOKNRYO        PIC 9(2).
@@ -128,6 +137,7 @@
                    07  SPA-GMN-SDOKNRYOCOB-G.
                        09  SPA-GMN-SDOKNRYOCOB     PIC X(54)
                                                    OCCURS  50.
+                   07  SPA-SDOKNRYO-MAX            PIC 9(04).
       *
                    07  SPA-GMN-YKZKNRKBN-G.
                        09  SPA-GMN-YKZKNRKBN       PIC 9(1).
@@ -136,6 +146,7 @@
                    07  SPA-GMN-YKZKNRKBNCOB-G.
                        09  SPA-GMN-YKZKNRKBNCOB    PIC X(30)
                                                    OCCURS  5.
+                   07  SPA-YKZKNRKBN-MAX        PIC 9(04).
       *
                    07  SPA-GMN-NYUGAITEKKBN-G.
                        09  SPA-GMN-NYUGAITEKKBN    PIC 9(1).
@@ -144,6 +155,7 @@
                    07  SPA-GMN-NYUGAITEKKBNCOB-G.
                        09  SPA-GMN-NYUGAITEKKBNCOB PIC X(20)
                                                    OCCURS  3.
+                   07  SPA-NYUGAITEKKBN-MAX        PIC 9(04).
       *
                    07  SPA-GMN-ROUTEKKBN-G.
                        09  SPA-GMN-ROUTEKKBN       PIC 9(1).
@@ -152,6 +164,7 @@
                    07  SPA-GMN-ROUTEKKBNCOB-G.
                        09  SPA-GMN-ROUTEKKBNCOB    PIC X(20)
                                                    OCCURS  3.
+                   07  SPA-ROUTEKKBN-MAX           PIC 9(04).
       *
                    07  SPA-GMN-HOSPSRYKBN-G.
                        09  SPA-GMN-HOSPSRYKBN      PIC 9(1).
@@ -160,6 +173,7 @@
                    07  SPA-GMN-HOSPSRYKBNCOB-G.
                        09  SPA-GMN-HOSPSRYKBNCOB   PIC X(20)
                                                    OCCURS  3.
+                   07  SPA-HOSPSRYKBN-MAX           PIC 9(04).
       *
                    07  SPA-GMN-OSINKBN-G.
                        09  SPA-GMN-OSINKBN         PIC 9(1).
@@ -168,6 +182,7 @@
                    07  SPA-GMN-OSINKBNCOB-G.
                        09  SPA-GMN-OSINKBNCOB      PIC X(20)
                                                    OCCURS  8.
+                   07  SPA-OSINKBN-MAX           PIC 9(04).
       *
                    07  SPA-GMN-BYOSYOKBN       PIC 9(1).
       *
@@ -178,6 +193,7 @@
                    07  SPA-GMN-SANTEIRRKKBNCOB-G.
                        09  SPA-GMN-SANTEIRRKKBNCOB PIC X(32)
                                                    OCCURS  5.
+                   07  SPA-SANTEIRRKKBN-MAX        PIC 9(04).
       *
                    07  SPA-GMN-TIMEKSNKBN-G.
                        09  SPA-GMN-TIMEKSNKBN      PIC 9(1).
@@ -186,6 +202,7 @@
                    07  SPA-GMN-TIMEKSNKBNCOB-G.
                        09  SPA-GMN-TIMEKSNKBNCOB   PIC X(32)
                                                    OCCURS  7.
+                   07  SPA-TIMEKSNKBN-MAX          PIC 9(04).
       *
                    07  SPA-GMN-GAIKANRIKBN-G.
                        09  SPA-GMN-GAIKANRIKBN     PIC 9(1).
@@ -194,6 +211,7 @@
                    07  SPA-GMN-GAIKANRIKBNCOB-G.
                        09  SPA-GMN-GAIKANRIKBNCOB  PIC X(32)
                                                    OCCURS  3.
+                   07  SPA-GAIKANRIKBN-MAX         PIC 9(04).
       *
                    07  SPA-GMN-TSUSOKUAGE      PIC 9(1).
                    07  SPA-GMN-KGNAGE          PIC X(2).
@@ -206,8 +224,10 @@
                    07  SPA-GMN-SAIKETUCOMB-G.
                        09  SPA-GMN-SAIKETUCOMB     PIC X(16)
                                                OCCURS  4.
+                   07  SPA-SAIKETUKBN-MAX          PIC 9(04).
       *            入力チェック区分
                    07  SPA-GMN-INPCHKKBN       PIC 9(01).
+      *
                05  SPA-GMN-KAISU.
                    07  SPA-GMN-JITUDAY         PIC 9(1).
                    07  SPA-GMN-DAYCNT          PIC 9(1).
@@ -275,7 +295,6 @@
                    07  SPA-GMN-KOKUCHI-KOUBAN  PIC 9(2).
                    07  SPA-GMN-KOKUJISKBKBN1   PIC 9(1).
                    07  SPA-GMN-KOKUJISKBKBN2   PIC 9(1).
-               05  SPA-GMN-CUR                 PIC X(30).
       *
       *    第三画面内容
            03  SPA-NAI-AREA.

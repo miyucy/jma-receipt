@@ -135,4 +135,4 @@
                05  SPA-Z99-FLG                 PIC 9(1).
       *
       *    他の画面
-           03  SPA-Z01SONOTA                     PIC X(19000). 
+           03  SPA-Z01SONOTA                     PIC X(59000). 
