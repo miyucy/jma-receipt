@@ -129,7 +129,6 @@ EXTRA_DIST = \
              RERR.glade \
              RID1.glade \
              RID2.glade \
-             S01.glade \
              S02.glade \
              S03.glade \
              SERR.glade \

@@ -1,7 +1,0 @@
-P01	{
-	fixed1	{
-		PTNUM	{
-			value	varchar(21);
-		};
-	};
-};
