@@ -1,36 +1,45 @@
 M96	{
 	fixed3	{
 		LIST1	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value1	varchar(64);
-					value2	varchar(64);
-					value3	varchar(64);
-					value4	varchar(64);
-					value5	varchar(64);
-					value6	varchar(09);
-				}	[02];
-				select	bool[02];
+			count	int;
+			row	int;
+			rowattr	int;
+			item	{
+				value0	varchar(64);
+				value1	varchar(64);
+				value2	varchar(64);
+				value3	varchar(9);
+			}	[2];
+			select	bool[2];
 		};
 		LIST2	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value1	varchar(09);
-					value2	varchar(08);
-					value3	varchar(09);
-					value4	varchar(08);
-					value5	varchar(08);
-					value6	varchar(08);
-				}	[02];
-				select	bool[02];
+			count	int;
+			row	int;
+			rowattr	int;
+			item	{
+				value0	varchar(9);
+				value1	varchar(8);
+				value2	varchar(9);
+				value3	varchar(8);
+				value4	varchar(8);
+				value5	varchar(8);
+			}	[2];
+			select	bool[2];
+		};
+		LIST3	{
+			count	int;
+			row	int;
+			rowattr	int;
+			item	{
+				value0	varchar(30);
+				value1	varchar(64);
+				value2	varchar(64);
+			}	[99];
+			select	bool[99];
 		};
 		MSG1	{
 		        style   varchar(20);
-				value	varchar(62);
+			value	varchar(62);
 		};
 	};
 };

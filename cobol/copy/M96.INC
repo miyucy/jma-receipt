@@ -1,45 +1,39 @@
-      *******************************************************************
-      * Project code name "ORCA"
-      * 日医標準レセプトソフト（JMA standard receipt software）
-      * Copyright(C) 2002 JMA (Japan Medical Association)
-      *
-      * This program is part of "JMA standard receipt software".
-      *
-      *     This program is distributed in the hope that it will be useful
-      * for further advancement in medical care, according to JMA Open
-      * Source License, but WITHOUT ANY WARRANTY.
-      *     Everyone is granted permission to use, copy, modify and
-      * redistribute this program, but only under the conditions described
-      * in the JMA Open Source License. You should have received a copy of
-      * this license along with this program. If not, stop using this
-      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
-      * 113-8621, Japan.
-      ********************************************************************
         02  M96.
-            03  M96-LIST1.
-              04  M96-COUNT1   PIC S9(9)   BINARY.
-              04  M96-ROW1     PIC S9(9)   BINARY.
-              04  M96-ROWATTR1 PIC S9(9)   BINARY.
-              04  M96-ITEM1        OCCURS  2 TIMES.
-                05  M96-VALUE11  PIC X(64).
-                05  M96-VALUE12  PIC X(64).
-                05  M96-VALUE13  PIC X(64).
-                05  M96-VALUE14  PIC X(64).
-                05  M96-VALUE15  PIC X(64).
-                05  M96-VALUE16  PIC X(09).
-              04  M96-SELECT1  PIC X       OCCURS  2 TIMES.
-            03  M96-LIST2.
-              04  M96-COUNT2   PIC S9(9)   BINARY.
-              04  M96-ROW2     PIC S9(9)   BINARY.
-              04  M96-ROWATTR2 PIC S9(9)   BINARY.
-              04  M96-ITEM2        OCCURS  2 TIMES.
-                05  M96-VALUE21  PIC X(09).
-                05  M96-VALUE22  PIC X(08).
-                05  M96-VALUE23  PIC X(09).
-                05  M96-VALUE24  PIC X(08).
-                05  M96-VALUE25  PIC X(08).
-                05  M96-VALUE26  PIC X(08).
-              04  M96-SELECT2  PIC X       OCCURS  2 TIMES.
+    ******* 02  M96-FIXED3.
+              03  M96-LIST1.
+                04  M96-LIST1-COUNT   PIC S9(9)   BINARY.
+                04  M96-LIST1-ROW PIC S9(9)   BINARY.
+                04  M96-LIST1-ROWATTR PIC S9(9)   BINARY.
+                04  M96-ITEM        OCCURS  2 TIMES.
+                  05  M96-VERSION      PIC X(64).
+                  05  M96-DBSVERSION1  PIC X(64).
+                  05  M96-DBSVERSION2  PIC X(64).
+                  05  M96-CREYMD       PIC X(9).
+                04  M96-SELECT
+                        PIC X       OCCURS  2 TIMES.
+              03  M96-LIST2.
+                04  M96-LIST2-COUNT   PIC S9(9)   BINARY.
+                04  M96-LIST2-ROW PIC S9(9)   BINARY.
+                04  M96-LIST2-ROWATTR PIC S9(9)   BINARY.
+                04  M96-ITEM        OCCURS  2 TIMES.
+                  05  M96-STARTYMD   PIC X(9).
+                  05  M96-STARTTIME  PIC X(8).
+                  05  M96-ENDYMD   PIC X(9).
+                  05  M96-ENDTIME  PIC X(8).
+                  05  M96-STEPSTARTTIME  PIC X(8).
+                  05  M96-STEPENDTIME    PIC X(8).
+                04  M96-SELECT
+                        PIC X       OCCURS  2 TIMES.
+              03  M96-LIST3.
+                04  M96-LIST3-COUNT   PIC S9(9)   BINARY.
+                04  M96-LIST3-ROW PIC S9(9)   BINARY.
+                04  M96-LIST3-ROWATTR PIC S9(9)   BINARY.
+                04  M96-ITEM        OCCURS  99 TIMES.
+                  05  M96-MASTNAME     PIC X(30).
+                  05  M96-DBRVERSION1  PIC X(64).
+                  05  M96-DBRVERSION2  PIC X(64).
+                04  M96-SELECT
+                        PIC X       OCCURS  99 TIMES.
             03  M96-MSG1.
               04  M96-MSG1-STYLE PIC X(20).
-              04  M96-VALUE3     PIC X(62).
+              04  M96-MSG1-VALUE     PIC X(62).
