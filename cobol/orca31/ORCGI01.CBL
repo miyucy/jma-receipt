@@ -40,6 +40,7 @@
       *  01.00.08    NACL-太田    03.03.07  排他制御対応
       *  01.00.09    NACL-太田    03.03.12  選定療養費１８０日越えの
       *                                     日数算定方法修正
+      *  01.00.10    NACL-太田    03.03.12  カルテ印刷機能追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -277,6 +278,8 @@
                05  WRK-TAIINYM             PIC X(06).
                05  WRK-TAIINDD             PIC 9(02).
            03  WRK-MCP-PUTTYPE             PIC X(08).
+           03  WRK-ORCHCN01-SYORIKBN       PIC X(01).
+           03  WRK-ORCHCN01-PRTKBN         PIC X(01).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -447,6 +450,8 @@
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
+      *    入院カルテ
+           COPY    "CPORCHCN01.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1294,9 +1299,12 @@
       *****************************************************************
        200-GMNSENI                     SECTION.
       *
-           IF      ( MCP-WIDGET        =   "B06"   
+           IF      ( MCP-WIDGET        =   "B06"
                                        OR  "B07"
-                                       OR  "B12" )
+                                       OR  "B11"
+                                       OR  "B12"
+                                       OR  "B23"
+                                                 )
       *        患者番号チェック
                PERFORM 4102-PTNUM-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -1331,6 +1339,12 @@
            WHEN    "CLICKED"       ALSO    "B12"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 480-TOUROKU-SEC
+           WHEN    "CLICKED"       ALSO    "B11"
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+               PERFORM 480-KARUTE-PRT-SEC
+           WHEN    "CLICKED"       ALSO    "B23"
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+               PERFORM 480-ZOKUSI-PRT-SEC
            WHEN    "CLICKED"       ALSO    "B04"
            WHEN    "CLICKED"       ALSO    "B21"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -5254,6 +5268,96 @@
            .
       *
        480-KENSAKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    カルテ発行処理
+      *****************************************************************
+       480-KARUTE-PRT-SEC              SECTION.
+      *
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  480-KARUTE-PRT-EXT
+           END-IF
+      *
+           MOVE    "1"                 TO  WRK-ORCHCN01-SYORIKBN
+           MOVE    "1"                 TO  WRK-ORCHCN01-PRTKBN
+      *
+      *    入院カルテ編集サブ呼出
+           PERFORM 4801-ORCHCN01-CALL-SEC
+      *
+           .
+       480-KARUTE-PRT-EXT.
+           EXIT.
+      *****************************************************************
+      *    続紙発行処理
+      *****************************************************************
+       480-ZOKUSI-PRT-SEC              SECTION.
+      *
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  480-ZOKUSI-PRT-EXT
+           END-IF
+      *
+           MOVE    "1"                 TO  WRK-ORCHCN01-SYORIKBN
+           MOVE    "2"                 TO  WRK-ORCHCN01-PRTKBN
+      *
+      *    入院カルテ編集サブ呼出
+           PERFORM 4801-ORCHCN01-CALL-SEC
+      *
+           .
+       480-ZOKUSI-PRT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院診療禄サブ呼出処理
+      *****************************************************************
+       4801-ORCHCN01-CALL-SEC          SECTION.
+      *
+           INITIALIZE                      SPA-KYOTUKEY
+                                           SPA-KYOTU-SET
+                                           ORCHCN01AREA
+      *
+           MOVE    WRK-ORCHCN01-SYORIKBN
+                                       TO  ORCHCN01-SYORIKBN
+           MOVE    WRK-ORCHCN01-PRTKBN
+                                       TO  ORCHCN01-PRTKBN
+           MOVE    SPA-NAI-I01-PTID    TO  SPA-PTID
+           MOVE    SPA-GMN-I01-PTNUM   TO  SPA-PTNUM
+           MOVE    SPA-GMN-I01-NYUINKA-CD
+                                       TO  SPA-SRYKA
+           MOVE    SPA-GMN-I01-HKNCOMBI-CD
+                                       TO  SPA-HKNCOMBINUM
+      *
+           MOVE    ZERO                TO  IDX2
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   3 )
+               IF    ( SPA-GMN-I01-DR-CD (IDX1)
+                                   NOT =   SPACE )
+                   COMPUTE IDX2    =   IDX2    +   1
+                   MOVE    "1"         TO  ORCHCN01-DR (IDX2) (1 : 1)
+                   MOVE    SPA-GMN-I01-DR-CD (IDX1)
+                                       TO  ORCHCN01-DR (IDX2) (2 : )
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPA-NAI-I01-NYUINYMD
+                                       TO  ORCHCN01-NYUINYMD
+      *
+      *    DISPLAY "ORCHCN01-SYORIKBN  = " ORCHCN01-SYORIKBN
+      *    DISPLAY "ORCHCN01-PRTKBN    = " ORCHCN01-PRTKBN
+      *    DISPLAY "SPA-PTID           = " SPA-PTID
+      *    DISPLAY "SPA-PTNUM          = " SPA-PTNUM
+      *    DISPLAY "SPA-SRYKA          = " SPA-SRYKA
+      *    DISPLAY "SPA-HKNCOMBINUM    = " SPA-HKNCOMBINUM
+      *    DISPLAY "ORCHCN01-DR (1)    = " ORCHCN01-DR (1)
+      *    DISPLAY "ORCHCN01-DR (2)    = " ORCHCN01-DR (2)
+      *    DISPLAY "ORCHCN01-DR (3)    = " ORCHCN01-DR (3)
+      *    DISPLAY "ORCHCN01-NYUINYMD  = " ORCHCN01-NYUINYMD
+      *
+           CALL    "ORCHCN01N" USING   SPA-AREA
+                                       ORCHCN01AREA
+      *
+           .
+       4801-ORCHCN01-CALL-EXT.
            EXIT.
       *****************************************************************
       *    入院会計照会遷移処理
