@@ -2473,14 +2473,19 @@
            ELSE
                MOVE    ZERO                TO  SPA-NAI-ZAITENFLG (IDX)
            END-IF
-      *    算定履歴情報
-           MOVE    TNS-SANTEIRRKKBN    TO  SPA-NAI-SANTEIRRKKBN (IDX)
-           MOVE    TNS-JGNCNT          TO  SPA-NAI-JGNCNT    (IDX)
-           MOVE    TNS-JGNCNT1D        TO  SPA-NAI-JGNCNT1D  (IDX)
-           MOVE    TNS-JGNCNTETC       TO  SPA-NAI-JGNCNTETC (IDX)
-           MOVE    TNS-JGNCNTERR       TO  SPA-NAI-JGNCNTERR (IDX)
-      *    内分泌負荷試験判定
-           MOVE    TNS-HOUKNSKBN       TO  SPA-NAI-HOUKNSKBN (IDX)
+      *    算定履歴情報（剤内の最初に対象となるもの）
+           IF     (TNS-SRYCD(1:1)      =   "1"  )  AND
+                  (TNS-DATAKBN         =   "1"  )  AND
+                  (TNS-SANTEIRRKKBN    NOT  =  ZERO )  AND
+                  (SPA-NAI-SANTEIRRKKBN(IDX)   =  ZERO )
+               MOVE    TNS-SANTEIRRKKBN    TO  SPA-NAI-SANTEIRRKKBN(IDX)
+               MOVE    TNS-JGNCNT          TO  SPA-NAI-JGNCNT    (IDX)
+               MOVE    TNS-JGNCNT1D        TO  SPA-NAI-JGNCNT1D  (IDX)
+               MOVE    TNS-JGNCNTETC       TO  SPA-NAI-JGNCNTETC (IDX)
+               MOVE    TNS-JGNCNTERR       TO  SPA-NAI-JGNCNTERR (IDX)
+      *        内分泌負荷試験判定
+               MOVE    TNS-HOUKNSKBN       TO  SPA-NAI-HOUKNSKBN (IDX)
+           END-IF
       *
       *    コメント以外の最終行セット
            IF      SRY-SRYCD  (IDZ)(1:1)   =   "0"  OR  "8"
@@ -7431,6 +7436,7 @@
            END-IF
       *
            MOVE    ZERO                TO  WRK-CNT-TUKI
+      *
            MOVE    SPA-NAI-BANGO       TO  IDX-C
       *    受診歴有無のチェック
            PERFORM   VARYING   IDX     FROM    1   BY  1
