@@ -9339,10 +9339,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O281">
       <attribute name="obj_pos">
-        <point val="10.35,4.625"/>
+        <point val="10.375,2.56231"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.35,4.23409;10.855,4.73409"/>
+        <rectangle val="10.375,2.1714;10.88,2.6714"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HEAD2-G.HEAD2[0]#</string>
@@ -9362,7 +9362,7 @@
             <real val="0.5"/>
           </attribute>
           <attribute name="pos">
-            <point val="10.35,4.625"/>
+            <point val="10.375,2.56231"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9381,10 +9381,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O282">
       <attribute name="obj_pos">
-        <point val="10.35,5.05"/>
+        <point val="10.375,2.99564"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.35,4.65909;10.855,5.15909"/>
+        <rectangle val="10.375,2.60473;10.88,3.10473"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HEAD2-G.HEAD2[1]#</string>
@@ -9404,7 +9404,7 @@
             <real val="0.5"/>
           </attribute>
           <attribute name="pos">
-            <point val="10.35,5.05"/>
+            <point val="10.375,2.99564"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9423,10 +9423,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O283">
       <attribute name="obj_pos">
-        <point val="10.3424,2.57167"/>
+        <point val="10.375,3.42897"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.3424,2.18076;10.8474,2.68076"/>
+        <rectangle val="10.375,3.03807;10.88,3.53807"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HEAD2-G.HEAD2[2]#</string>
@@ -9446,7 +9446,7 @@
             <real val="0.5"/>
           </attribute>
           <attribute name="pos">
-            <point val="10.3424,2.57167"/>
+            <point val="10.375,3.42897"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9465,10 +9465,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O284">
       <attribute name="obj_pos">
-        <point val="10.3424,3"/>
+        <point val="10.375,3.86231"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.3424,2.60909;10.8474,3.10909"/>
+        <rectangle val="10.375,3.4714;10.88,3.9714"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HEAD2-G.HEAD2[3]#</string>
@@ -9488,7 +9488,7 @@
             <real val="0.5"/>
           </attribute>
           <attribute name="pos">
-            <point val="10.3424,3"/>
+            <point val="10.375,3.86231"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9507,10 +9507,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O285">
       <attribute name="obj_pos">
-        <point val="10.35,3.40981"/>
+        <point val="10.375,4.29564"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.35,3.0189;10.855,3.5189"/>
+        <rectangle val="10.375,3.90473;10.88,4.40473"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HEAD2-G.HEAD2[4]#</string>
@@ -9530,7 +9530,7 @@
             <real val="0.5"/>
           </attribute>
           <attribute name="pos">
-            <point val="10.35,3.40981"/>
+            <point val="10.375,4.29564"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9549,10 +9549,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O286">
       <attribute name="obj_pos">
-        <point val="10.3424,3.8"/>
+        <point val="10.375,4.72897"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.3424,3.40909;10.8474,3.90909"/>
+        <rectangle val="10.375,4.33807;10.88,4.83807"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HEAD2-G.HEAD2[5]#</string>
@@ -9572,7 +9572,7 @@
             <real val="0.5"/>
           </attribute>
           <attribute name="pos">
-            <point val="10.3424,3.8"/>
+            <point val="10.375,4.72897"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9591,10 +9591,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O287">
       <attribute name="obj_pos">
-        <point val="10.35,4.20981"/>
+        <point val="10.375,5.16231"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.35,3.8189;10.855,4.3189"/>
+        <rectangle val="10.375,4.7714;10.88,5.2714"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HEAD2-G.HEAD2[6]#</string>
@@ -9614,7 +9614,7 @@
             <real val="0.5"/>
           </attribute>
           <attribute name="pos">
-            <point val="10.35,4.20981"/>
+            <point val="10.375,5.16231"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
