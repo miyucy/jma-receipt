@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-藤原    02/09/19  アフターケア・自賠責対応
+      * 01.00.02     NACL-藤原    02/11/27  受診履歴の読込に入外区分を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -642,6 +643,7 @@
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
            MOVE    SPA-C07-SRYYMS     TO  JYURRK-UPSRYYMD(1:6)
            MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -871,6 +873,7 @@
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
            MOVE    SPA-C07-SRYYMS     TO  JYURRK-UPSRYYMD(1:6)
            MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1496,6 +1499,7 @@
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
            MOVE    SPA-C07-SRYYMS     TO  JYURRK-UPSRYYMD(1:6)
            MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN 
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC

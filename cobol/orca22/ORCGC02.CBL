@@ -568,7 +568,7 @@
                    GO      TO      300-SCREEN-EXT
                END-IF
       *
-               IF      WRK-MOTOPG(1:3)     =   "M01"  OR  "U02"  OR
+               IF      WRK-MOTOPG          =   "M01"  OR  "U02"  OR
                                                "K02"  OR  "K02N"
                    MOVE    SPA-MOTOPG          TO  SPA-C02-MOTOPG
                END-IF
@@ -882,7 +882,12 @@
                MOVE    26              TO  SPA-GMN-C02-CUR
            END-IF   
       *
-           MOVE    "2"             TO  SPA-NYUGAIKBN
+           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
+                                                   OR  "K02N")
+               CONTINUE
+           ELSE                                                
+               MOVE    "2"             TO  SPA-NYUGAIKBN
+           END-IF    
       *        
            PERFORM 3104-SRYKA-SPA-SEC
       *
