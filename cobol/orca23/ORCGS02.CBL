@@ -147,7 +147,7 @@
                            11  SPA-GMN-THAKYMD     PIC X(09).
                            11  SPA-GMN-TSEIKYU     PIC 9(10).
                            11  SPA-GMN-TMISYU      PIC S9(10).
-                           11  SPA-GMN-TJYOTAI     PIC X(10).
+                           11  SPA-GMN-TJYOTAI     PIC X(16).
       *
                    07  SPA-GMN-INPUT.
                        09  SPA-GMN-SELBAN          PIC 9(05).

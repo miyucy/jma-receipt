@@ -41,7 +41,7 @@ S02	{
 					value6	varchar(15);
 					value7	varchar(11);
 					value8	varchar(11);
-					value9	varchar(12);
+					value9	varchar(16);
 				}	[60];
 				select	bool[60];
 			};

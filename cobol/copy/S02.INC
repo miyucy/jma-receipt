@@ -48,7 +48,7 @@
                   06  S02-SRYYMD2    PIC X(15).
                   06  S02-SKYMONEY   PIC X(11).
                   06  S02-MISYUMONEY PIC X(11).
-                  06  S02-DENPJTI    PIC X(12).
+                  06  S02-DENPJTI    PIC X(16).
                   05  S02-SELECT  PIC X       OCCURS  60 TIMES.
               03  S02-SRYKACOMBO.
                 04  S02-SRYKA         PIC X(21).
