@@ -126,7 +126,7 @@
            03  WRK-KHNTEN                  PIC  9(08). 
            03  WRK-KSNTEN                  PIC  S9(08).
            03  NYUIN-COUNT                 PIC  9(02). 
-           03  SINRYO-COUNT                PIC  9(02). 
+           03  SINRYO-COUNT                PIC  9(04). 
            03  WRK-SENTEI-ZAITEN           PIC  9(08).
            03  WRK-SENTEI-KHNTEN           PIC  9(08).
       *
