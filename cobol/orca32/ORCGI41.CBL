@@ -4825,7 +4825,8 @@
            EXIT.
       *
       *****************************************************************
-      *
+      *   ¼¡·î·×»»½èÍý
+      *****************************************************************
        41019-JIGETU-COMPUTE-SEC            SECTION.
       *
            MOVE    SPA-NAI-SRYYM-41    TO  SPA-SAG-SRYYM-41.
@@ -5097,7 +5098,6 @@
                  MOVE    "99999999"
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
            END-IF
-           DISPLAY "SYOKIKSN-IN-KHNSRYCD = " SYOKIKSN-IN-KHNSRYCD
       *    Ï·¿ÍÀ­ÃÔÊò¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190739910"
                  MOVE   SPACE        TO   SYOKIKSN-IN-KHNSRYCD
@@ -5323,7 +5323,10 @@
                  MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
                                   TO      WRK-IPN-HANTEI-YMD2
       *          °ìÈÌÆþ±¡²ñ·×ºîÀ®ÍÑ¤Î¥Õ¥é¥°ÀßÄê
-                 IF      WRK-IPN-HANTEI-YMD1 > WRK-IPN-HANTEI-YMD2
+                 DISPLAY "WRK-IPN-HANTEI-YMD1 = " WRK-IPN-HANTEI-YMD1
+                 DISPLAY "WRK-IPN-HANTEI-YMD2 = " WRK-IPN-HANTEI-YMD2
+                 IF    (WRK-IPN-HANTEI-YMD1 > WRK-IPN-HANTEI-YMD2) AND
+                       (WRK-IPN-HANTEI-YMD2(1:6) = SPA-NAI-SRYYM-41)
                      MOVE    "1"   TO     IPN-NYUKAIKEI-SAKUSEI-FLG
                  END-IF
            END-IF
@@ -5434,7 +5437,6 @@
        410191-IPNNYUACCT-SAKUSEI-SEC   SECTION.                             021118
       *                                                                 021118
       *     DISPLAY   "410191-NYUACCT-SAKUSEI-SEC"
-            DISPLAY   "SPA-NAI-SRYYM-41 = " SPA-NAI-SRYYM-41
            INITIALIZE      ORCSSYOKIKSNAREA
            MOVE    IPN-SANTEISTYMD(1:6)  TO WRK-NAI-SRYYM-41(1:6)
       *
