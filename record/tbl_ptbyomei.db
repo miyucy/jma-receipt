@@ -497,7 +497,7 @@ path	key25	{
 			AND   SRYYMD      <=  :SRYYMD
 			AND  (TENKIKBN    =   :TENKIKBN  OR
                               TENKIYMD    >=  :SRYYMD)
-			ORDER BY SRYKA,SRYYMD,RENNUM 
+			ORDER BY SRYYMD,SRYKA,RENNUM
 		;
 	};
 };
