@@ -54,6 +54,7 @@
       *  01.00.14    NACL-藤原    03/10/22  摘要情報の編集の修正
       *  01.00.15    NACL-藤原    03/10/27  テスト患者を対象としない
       *  01.00.16    NACL-藤原    03/11/12  時間加算の追加
+      *  01.00.17    NACL-藤原    03/11/17  傷病名データファイル名の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -113,6 +114,7 @@
        FD  RECE03-FILE.
        01  RECE031-REC.
            COPY    "CPRCF0031.INC".
+           03  RECE031-SYUBYOFLG-X PIC X(01).
       *
       *    レセプト０４データ
        FD  RECE041-FILE.
@@ -650,7 +652,7 @@
            MOVE    "RECE020"           TO  RECE02PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE02PARA-TERMID
       *
-           MOVE    "RECE031"           TO  RECE03PARA-FILE-ID
+           MOVE    "RECE039"           TO  RECE03PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE03PARA-TERMID
       *
            MOVE    "RECE049"           TO  RECE04PARA-FILE-ID
@@ -1141,22 +1143,22 @@
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    負担金額（老人減免区分）
-           IF      RECE02-RJNGENMENKBN >   ZERO
-           MOVE    RECE02-RJNGENMENKBN     TO  WRK-NUM
-               MOVE    1                   TO  WRK-NAGASA
-           END-IF    
+      *****IF      RECE02-RJNGENMENKBN >   ZERO
+      *****    MOVE    RECE02-RJNGENMENKBN     TO  WRK-NUM
+      *****    MOVE    1                   TO  WRK-NAGASA
+      *****END-IF    
            PERFORM 5005-NUM-HENSYU-SEC     
       *    老人医療（老人外来金額）
-           IF      RECE02-NYUGAIKBN    =   "2"
-               MOVE    RECE02-RJNGAIFTN    TO  WRK-NUM
-               MOVE    6                   TO  WRK-NAGASA
-           END-IF    
+      *****IF      RECE02-NYUGAIKBN    =   "2"
+      *****    MOVE    RECE02-RJNGAIFTN    TO  WRK-NUM
+      *****    MOVE    6                   TO  WRK-NAGASA
+      *****END-IF    
            PERFORM 5005-NUM-HENSYU-SEC     
       *    老人医療（老人入院金額）
-           IF      RECE02-NYUGAIKBN    =   "1"
-               MOVE    RECE02-RJNNYUFTN    TO  WRK-NUM
-               MOVE    6                   TO  WRK-NAGASA
-           END-IF    
+      *****IF      RECE02-NYUGAIKBN    =   "1"
+      *****    MOVE    RECE02-RJNNYUFTN    TO  WRK-NUM
+      *****    MOVE    6                   TO  WRK-NAGASA
+      *****END-IF    
            MOVE    1                   TO  WRK-END 
            PERFORM 5005-NUM-HENSYU-SEC     
       *
@@ -1377,7 +1379,7 @@
       *     
            IF      RECE031-BYOMEIHENFLG =   "1"
       *        編集病名のとき未傷病名コードにする
-               IF      RECE031-SYUBYOFLG            =   "1" 
+               IF      RECE031-SYUBYOFLG-X          =   "1" 
                AND     SYS-2005-SYUBYOHENFLG    NOT =   ZERO
                    MOVE    "0000998"            TO  WRK-BYOMEICD
                ELSE
@@ -1397,7 +1399,7 @@
                            PERFORM 900-BYOMEI-READ-SEC
                            IF      BYO-HAISIYMD    NOT =   SPACE
                                IF      BYO-HAISIYMD    <   RECE031-SRYYMD
-                                   IF      RECE031-SYUBYOFLG    =   "1" 
+                                   IF      RECE031-SYUBYOFLG-X  =   "1" 
                                    AND     SYS-2005-SYUBYOHENFLG
                                                             NOT =   ZERO
                                        MOVE    "0000998"
@@ -1470,7 +1472,7 @@
            END-IF    
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    主傷病
-           IF      RECE031-SYUBYOFLG           =   "1" 
+           IF      RECE031-SYUBYOFLG-X         =   "1" 
            AND     SYS-2005-SYUBYOHENFLG   NOT =   ZERO
                MOVE    "01"                TO  WRK-DATA
            END-IF 
@@ -1813,7 +1815,7 @@
                                            TBL-KOUI-SRYCD (WRK-TBLMAX1)
                MOVE    RECE05-NAME  (IDX)  TO
                                            TBL-KOUI-NAME  (WRK-TBLMAX1)
-      *                             
+      *
                IF      RECE05-SRYCD (IDX) (1:1) =   "0"
       *            部位／薬剤
                    MOVE    "810000001"     TO  
