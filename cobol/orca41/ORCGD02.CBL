@@ -483,6 +483,9 @@
            03  T-MESSAGE-530-09    PIC X(90)   VALUE
                "530-09適応病名には転帰日が設定されています              
       -        "                                  ".
+           03  T-MESSAGE-530-10    PIC X(90)   VALUE
+               "530-10適応病名の開始日に診療日より新しい日付がセットされ
+      -        "ています                          ".
            03  T-MESSAGE-540-01    PIC X(90)   VALUE
                "540-01点数情報テーブル異常                              
       -        "                                  ".
@@ -2288,6 +2291,13 @@
                            (PTBYO-TENKIYMD    NOT = ZERO)
                            MOVE    SPACE             TO  T-HANNTEI3
                        END-IF
+      *修正/*開始*03.06.20*********************************************
+                       IF  (PTBYO-SRYYMD   NOT  =   SPACE)      AND
+                           (PTBYO-SRYYMD   NOT  =   ZERO)       AND
+                           (PTBYO-SRYYMD(1:6)   >   ACCT-SRYYM)
+                           PERFORM T-510-RECECHEK-CHK1-SEC
+                       END-IF
+      *修正/*終了*03.06.20*********************************************
                        IF  (SPA-GMN-CNV (5)   = "1")    AND
                            (T-ERR-05          = SPACE)  AND
                            ((T-HANNTEI3      = "*")     OR
@@ -2471,6 +2481,64 @@
        T-510-RECECHEK-READ-EXT.
            EXIT.
       *
+      *******************
+      *
+      *修正/*開始*03.06.20*********************************************
+       T-510-RECECHEK-CHK1-SEC           SECTION.
+      *
+           INITIALIZE                  SRYKARRK-REC.
+           MOVE    ACCT-HOSPID         TO  KARRK-HOSPID.
+           MOVE    ACCT-PTID           TO  KARRK-PTID.
+           MOVE    PTBYO-SRYKA         TO  KARRK-SRYKA.
+      *
+           MOVE    SRYKARRK-REC        TO  MCPDATA-REC.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           IF  MCP-RC   NOT =   ZERO
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-520-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+               MOVE    SPACE                   TO  DID3-REC
+               MOVE    T-MESSAGE-520-01(1:60)  TO  DID3-REC(1:60)
+               WRITE   DID3-REC
+           ELSE
+               PERFORM T-520-RECECHEK-READ-SEC
+               IF  MCP-RC    NOT  =   ZERO
+                   MOVE    SPACE                 TO  DID2-REC
+                   MOVE    ACCT-HOSPID           TO  DID2-REC(1:24)
+                   MOVE    "-"                   TO  DID2-REC(25:1)
+                   MOVE    ACCT-PTID             TO  DID2-REC(26:10)
+                   MOVE    "-"                   TO  DID2-REC(36:1)
+                   MOVE    PTBYO-SRYKA           TO  DID2-REC(37:2)
+                   MOVE    T-MESSAGE-520-02      TO  DID2-REC(71:90)
+                   MOVE    PTBYO-SRYKA           TO  DID2-REC(191:2)
+               ELSE
+                   MOVE    MCPDATA-REC           TO  SRYKARRK-REC
+                   IF  PTBYO-SRYYMD(1:6)   >   KARRK-LASTYMD(1:6)
+                       MOVE    "*"                   TO  T-HANNTEI3
+                   END-IF
+               END-IF
+           END-IF.
+      *
+           INITIALIZE                  MCPAREA.
+           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+       T-510-RECECHEK-CHK1.
+           EXIT.
+      *修正/*終了*03.06.20*********************************************
       *****************************************************************
       *    診療科履歴情報テーブル 参照処理
       *****************************************************************
@@ -3291,7 +3359,7 @@
                    IF  (PTBYO-SRYYMD   NOT  =   SPACE)      AND
                        (PTBYO-SRYYMD   NOT  =   ZERO)       AND
                        (PTBYO-SRYYMD(1:6)   >   T-SINRYOU-AREA)
-                       MOVE    1                    TO  FLG-TBL
+                       MOVE    3                    TO  FLG-TBL
                    END-IF
                END-IF
            END-IF.
@@ -3412,7 +3480,7 @@
                        PERFORM T-530-RECECHEK-READ2-SEC
                    END-IF
                END-PERFORM
-               IF  (FLG-TBL             =   1) OR
+               IF  (FLG-TBL             =   1  OR  3) OR
                    (FLG-TENKIYMD-ER     =   1)
                    PERFORM T-530-RECECHEK-CHK8-1-SEC
                END-IF
@@ -3519,7 +3587,7 @@
                        PERFORM T-530-RECECHEK-READ2-SEC
                    END-IF
                END-PERFORM
-               IF  (FLG-TBL             =   1) OR
+               IF  (FLG-TBL             =   1  OR  3) OR
                    (FLG-TENKIYMD-ER     =   1)
                    PERFORM T-530-RECECHEK-CHK9-1-SEC
                END-IF
@@ -3550,7 +3618,11 @@
            IF  FLG-TENKIYMD-ER     =   1
                MOVE    T-MESSAGE-530-09    TO  DID2-REC(71:90)
            ELSE
-               MOVE    T-MESSAGE-530-04    TO  DID2-REC(71:90)
+               IF  FLG-TBL   =   3
+                   MOVE    T-MESSAGE-530-10    TO  DID2-REC(71:90)
+               ELSE
+                   MOVE    T-MESSAGE-530-04    TO  DID2-REC(71:90)
+               END-IF
            END-IF.
            WRITE   DID2-REC.
            MOVE    "*"                 TO  T-ERR-09.
@@ -3572,7 +3644,11 @@
            IF  FLG-TENKIYMD-ER     =   1
                MOVE    T-MESSAGE-530-09    TO  DID2-REC(71:90)
            ELSE
-               MOVE    T-MESSAGE-530-03    TO  DID2-REC(71:90)
+               IF  FLG-TBL   =   3
+                   MOVE    T-MESSAGE-530-10    TO  DID2-REC(71:90)
+               ELSE
+                   MOVE    T-MESSAGE-530-03    TO  DID2-REC(71:90)
+               END-IF
            END-IF.
            WRITE   DID2-REC.
            MOVE    "*"                 TO  T-ERR-08.
