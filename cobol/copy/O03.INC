@@ -15,18 +15,35 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
         02  O03.
-      *     02  O03-FIXED6.
-              03  O03-LISTWIND.
-                04  O03-LIST11.
-                  05  O03-LIST11-COUNT   PIC S9(9)   BINARY.
-                  05  O03-LIST11-ITEM        OCCURS  50 TIMES.
-                    06  O03-VALUE1  PIC X(28).
-                    06  O03-VALUE2  PIC X(10).
-                    06  O03-VALUE3  PIC X(10).
-                  05  O03-LIST11-SELECT  PIC X       OCCURS  50 TIMES.
-              03  O03-PRJUNCOMBO.
-                04  O03-PRJUN.
-                  05  O03-VALUE   PIC X(22).
-                04  O03-PRJUN-COUNT   PIC S9(9)   BINARY.
-                04  O03-PRJUN-ITEM    PIC X(22)   OCCURS  10 TIMES.
+      *    02  O03-FIXED6.
+              03  O03-SYOKBN-VALUE     PIC X.
+              03  O03-SYOKBN-LABEL     PIC X(8).
+              03  O03-TPAGE-G  OCCURS 36.
+                04  O03-TPAGE.
+                  05  O03-VALUE        PIC  9(4).
+              03  O03-TKENSU-G OCCURS 36.
+                04  O03-TKENSU.
+                  05  O03-VALUE        PIC  9(4).
+              03  O03-TCHK-G OCCURS 36.
+                04  O03-TCHK.
+                  05  O03-TCHK-STATE   PIC S9(09) BINARY.
+                  05  O03-TCHK-VALUE   PIC X.
+                  05  O03-TCHK-LABEL   PIC X(20).
+              03  O03-FILEKBN.
+                04  O03-VALUE   PIC X(34).
+              03  O03-CREYMD.
+                04  O03-VALUE   PIC X(22).
+              03  O03-KENSU.
+                04  O03-VALUE   PIC  9(4).
+              03  O03-PAGE.
+                04  O03-VALUE   PIC  9(4).
+              03  O03-PRTJYUN-COMBO.
+                04  O03-PRTJYUN.
+                  05  O03-VALUE   PIC X(25).
+                04  O03-PRTJYUN-COUNT   PIC S9(9)   BINARY.
+                04  O03-PRTJYUNLST      PIC X(25)   OCCURS  5 TIMES.
