@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  03.08.22  患者番号チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -65,6 +66,9 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-KOUSEI              PIC 9(01).
       *
+           03  FLG-ERR                 PIC 9(01).
+           03  FLG-ERR2                PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE                PIC 9(03).
@@ -102,7 +106,8 @@
            03  WRK-HENYMDG             PIC X(22).
       *
            03  WRK-KOUSEI              PIC X(94).
-           03  WRK-KETA                PIC 9(02).
+           03  WRK-KETA                PIC 9(03).
+           03  WRK-KETA2               PIC 9(03).
       *
            03  WRK-KETAHEN             PIC X(04).
       *
@@ -257,6 +262,20 @@
                MOVE    "患者番号の構成が正しくありません"
                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
+               GO      TO             100-INIT-EXT
+           END-IF
+      *
+           IF      FLG-ERR             =   1
+               MOVE    "開始患者番号の桁数が違います。"
+                                      TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO      TO             100-INIT-EXT
+           END-IF
+           IF      FLG-ERR2            =   1
+               MOVE    "終了患者番号の桁数が違います。"
+                                      TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO      TO             100-INIT-EXT
            END-IF
       *
            .
@@ -434,6 +453,65 @@
            WHEN    OTHER
                MOVE    1           TO  FLG-KOUSEI
            END-EVALUATE
+      *
+      *    桁数チェック
+           MOVE    ZERO                TO  WRK-KETA
+           MOVE    ZERO                TO  WRK-KETA2
+           MOVE    ZERO                TO  FLG-ERR
+           MOVE    ZERO                TO  FLG-ERR2
+           EVALUATE    SYS-1009-PTNUMKSIKBN
+               WHEN    "1"
+                   EVALUATE    SYS-1009-JIYKSIKBN
+                       WHEN    "2"
+      *                桁編集
+                           MOVE    SYS-1009-JIYKSIKETA     TO  WRK-KETA
+                   END-EVALUATE
+               WHEN    "2"
+                   MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  WRK-KETA
+                   IF      SYS-1009-HJNKSINENKBN   =   "1"
+      *                和暦
+                       MOVE    3                  TO  WRK-KETA2
+                   ELSE
+      *                西暦
+                       MOVE    4                  TO  WRK-KETA2
+                   END-IF
+                   EVALUATE    SYS-1009-HJNKSIKBN
+                       WHEN    "1"
+                           COMPUTE WRK-KETA    =   WRK-KETA
+                                               +   WRK-KETA2
+                                               +   1
+                       WHEN    "2"
+                           COMPUTE WRK-KETA    =   WRK-KETA
+                                               +   WRK-KETA2
+                       WHEN    "3"
+                           COMPUTE WRK-KETA    =   WRK-KETA
+                                               +   1
+                       WHEN    "4"
+                           CONTINUE
+                   END-EVALUATE
+           END-EVALUATE
+           IF      WRK-KETA            >   ZERO
+               COMPUTE WRK-KETA2       =   WRK-KETA    +  1
+      *        開始患者番号チェック
+               IF      WRK-PARA-PTNUM  NOT =   SPACE
+                   IF     (WRK-PARA-PTNUM(1:WRK-KETA)  NUMERIC )  AND
+                          (WRK-PARA-PTNUM(WRK-KETA2:)  =   SPACE)
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  FLG-ERR
+                   END-IF
+               END-IF
+      *        終了患者番号チェック
+               IF      WRK-PARA-PTNUM-END  NOT =   SPACE
+                   IF     (WRK-PARA-PTNUM-END(1:WRK-KETA)
+                                                       NUMERIC )  AND
+                          (WRK-PARA-PTNUM-END(WRK-KETA2:)  =   SPACE)
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  FLG-ERR2
+                   END-IF
+               END-IF
+           END-IF
       *
            .
        120-KOUSEI-SET-EXT.
