@@ -17,6 +17,6 @@
       ********************************************************************
          02  I4ID1.
               03  I4ID1-ID1CODE.
-                04  I4ID1-VALUE  PIC X(11).
+                04  I4ID1-VALUE  PIC X(10).
               03  I4ID1-ID1MSG.
-                04  I4ID1-VALUE  PIC X(71).
+                04  I4ID1-VALUE  PIC X(70).

@@ -1,367 +1,367 @@
 I44	{
 	fixed2	{
 		SRYKBN01	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN02	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN03	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN04	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN05	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN06	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN07	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN08	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN09	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN10	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN11	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN12	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN13	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN14	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN15	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN16	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN17	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN18	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN19	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKBN20	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		INPUTCD01	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD02	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD03	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD04	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD05	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD06	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD07	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD08	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD09	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD10	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD11	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD12	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD13	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD14	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD15	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD16	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD17	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD18	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD19	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		INPUTCD20	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		MEISYO01	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO02	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO03	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO04	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO05	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO06	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO07	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO08	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO09	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO10	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO11	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO12	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO13	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO14	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO15	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO16	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO17	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO18	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO19	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		MEISYO20	{
-			value	varchar(63);
+			value	varchar(62);
 		};
 		SURYO01	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO02	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO03	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO04	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO05	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO06	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO07	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO08	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO09	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO10	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO11	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO12	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO13	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO14	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO15	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO16	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO17	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO18	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO19	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SURYO20	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		PTNUM	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SRYYM	{
-			value	varchar(9);
+			value	varchar(8);
 		};
 		KANANAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		NAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		BIRTHDAY	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		SEX	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		HKNCOMBI	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SRYKA	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		RATE	{
-			value	varchar(7);
+			value	varchar(6);
 		};
 		RRKYMD	{
-			value	varchar(14);
+			value	varchar(13);
 		};
 		DAY01	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY02	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY03	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY04	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY05	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY06	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY07	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY08	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY09	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY10	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY11	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY12	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY13	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY14	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY15	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY16	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY17	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY18	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY19	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY20	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY21	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY22	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY23	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY24	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY25	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY26	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY27	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY28	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY29	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY30	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY31	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 	};
 };

@@ -18,6 +18,6 @@
         02  I4ERR.
             03  I4ERR-FIXED1.
               04  I4ERR-ERRCODE.
-                05  I4ERR-VALUE  PIC X(11).
+                05  I4ERR-VALUE  PIC X(10).
               04  I4ERR-ERRMSG.
-                05  I4ERR-VALUE  PIC X(81).
+                05  I4ERR-VALUE  PIC X(80).

@@ -17,38 +17,38 @@
       ********************************************************************
         02  I41.
           03  I41-PTNUM.
-            04  I41-VALUE       PIC X(21).
+            04  I41-VALUE       PIC X(20).
           03  I41-SRYYM.
-            04  I41-VALUE       PIC X(7).
+            04  I41-VALUE       PIC X(6).
           03  I41-KANANAME.
-            04  I41-VALUE       PIC X(51).
+            04  I41-VALUE       PIC X(50).
           03  I41-NAME.
-            04  I41-VALUE       PIC X(51).
+            04  I41-VALUE       PIC X(50).
           03  I41-BIRTHDAY.
-            04  I41-VALUE       PIC X(10).
+            04  I41-VALUE       PIC X(9).
           03  I41-SEX.
-            04  I41-VALUE       PIC X(3).
+            04  I41-VALUE       PIC X(2).
           03  I41-IJYOU91.
-            04  I41-VALUE       PIC X(10).
+            04  I41-VALUE       PIC X(9).
           03  I41-IJYOU180.
-            04  I41-VALUE       PIC X(10).
+            04  I41-VALUE       PIC X(9).
           03  I41-NYUINBI.
-            04  I41-VALUE       PIC X(10).
+            04  I41-VALUE       PIC X(9).
           03  I41-TAINBI.
-            04  I41-VALUE       PIC X(10).
+            04  I41-VALUE       PIC X(9).
           03  I41-NUM.
-            04  I41-VALUE       PIC X(4).
+            04  I41-VALUE       PIC X(3).
           03  I41-MEISYO.
-            04  I41-VALUE       PIC X(51).
+            04  I41-VALUE       PIC X(50).
           03  I41-KOMENTO.
-            04  I41-VALUE       PIC X(51).
+            04  I41-VALUE       PIC X(50).
           03  I41-DAY           OCCURS 31.
             04  I41-VALUE       PIC X(2).
           03  I41-NYUINKACOMB.
             04  I41-NYUINKA.
-              05  I41-VALUE            PIC X(17).
+              05  I41-VALUE            PIC X(16).
             04  I41-NYUINKA-COUNT      PIC S9(9)   BINARY.
-            04  I41-NYUINKA-ITEM       PIC X(16)   OCCURS  30 TIMES.
+            04  I41-NYUINKA-ITEM       PIC X(16)   OCCURS  100 TIMES.
           03  I41-SCROLLEDWINDOW1.
             04  I41-DATELIST.
               05  I41-DATELIST-COUNT   PIC S9(9)   BINARY.

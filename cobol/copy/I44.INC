@@ -17,32 +17,32 @@
       ********************************************************************
         02  I44.
               03  I44-SRYKBN    OCCURS 20.
-                04  I44-VALUE   PIC X(3).
+                04  I44-VALUE   PIC X(2).
               03  I44-INPUTCD   OCCURS  20.
-                04  I44-VALUE   PIC X(23).
+                04  I44-VALUE   PIC X(22).
               03  I44-MEISYO    OCCURS  20.
-                04  I44-VALUE   PIC X(63).
+                04  I44-VALUE   PIC X(62).
               03  I44-SURYO     OCCURS  20.
-                04  I44-VALUE   PIC X(41).
+                04  I44-VALUE   PIC X(40).
               03  I44-PTNUM.
-                04  I44-VALUE   PIC X(21).
+                04  I44-VALUE   PIC X(20).
               03  I44-SRYYM.
-                04  I44-VALUE   PIC X(9).
+                04  I44-VALUE   PIC X(8).
               03  I44-KANANAME.
-                04  I44-VALUE   PIC X(51).
+                04  I44-VALUE   PIC X(50).
               03  I44-NAME.
-                04  I44-VALUE   PIC X(51).
+                04  I44-VALUE   PIC X(50).
               03  I44-BIRTHDAY.
-                04  I44-VALUE   PIC X(10).
+                04  I44-VALUE   PIC X(9).
               03  I44-SEX.
-                04  I44-VALUE   PIC X(3).
+                04  I44-VALUE   PIC X(2).
               03  I44-HKNCOMBI.
-                04  I44-VALUE   PIC X(41).
+                04  I44-VALUE   PIC X(40).
               03  I44-SRYKA.
-                04  I44-VALUE   PIC X(11).
+                04  I44-VALUE   PIC X(10).
               03  I44-RATE.
-                04  I44-VALUE   PIC X(7).
+                04  I44-VALUE   PIC X(6).
               03  I44-RRKYMD.
-                04  I44-VALUE   PIC X(14).
+                04  I44-VALUE   PIC X(13).
               03  I44-DAY       OCCURS  31.
-                04  I44-VALUE   PIC X(3).
+                04  I44-VALUE   PIC X(2).

@@ -17,17 +17,17 @@
       ********************************************************************
         02  I42.
               03  I42-PTNUM.
-                04  I42-VALUE   PIC X(21).
+                04  I42-VALUE   PIC X(20).
               03  I42-KANANAME.
-                04  I42-VALUE   PIC X(31).
+                04  I42-VALUE   PIC X(30).
               03  I42-NAME.
-                04  I42-VALUE   PIC X(31).
+                04  I42-VALUE   PIC X(30).
               03  I42-BIRTHDAY.
-                04  I42-VALUE   PIC X(10).
+                04  I42-VALUE   PIC X(9).
               03  I42-SEX.
-                04  I42-VALUE   PIC X(3).
+                04  I42-VALUE   PIC X(2).
               03  I42-SRYKA.
-                04  I42-VALUE   PIC X(11).
+                04  I42-VALUE   PIC X(10).
               03  I42-SCROLLEDWINDOW1.
                 04  I42-SRYACTYMD.
                   05  I42-SRYACTYMD-COUNT   PIC S9(9)   BINARY.
@@ -40,6 +40,6 @@
                   05  I42-SRYACTCNT-COUNT   PIC S9(9)   BINARY.
                   05  I42-SRYACTCNT-ITEM        OCCURS  100 TIMES.
                     06  I42-SRYACTCNT-YM    PIC X(7).
-                    06  I42-SRYACTCNT-NAME  PIC X(41).
+                    06  I42-SRYACTCNT-NAME  PIC X(40).
                     06  I42-SRYACTCNT-CNT    PIC X(5).
                   05  I42-SRYACTCNT-SELECT  PIC X    OCCURS  100 TIMES.

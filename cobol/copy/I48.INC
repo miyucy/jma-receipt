@@ -17,10 +17,10 @@
       ********************************************************************
         02  I48.
               03  I48-INPUT.
-                04  I48-VALUE   PIC X(23).
+                04  I48-VALUE   PIC X(22).
               03  I48-SENTAKU.
-                04  I48-VALUE   PIC X(31).
-              03  I48-SELNUM     PIC X(04)   OCCURS  5.
+                04  I48-VALUE   PIC X(30).
+              03  I48-SELNUM     PIC X(03)   OCCURS  5.
               03  I48-SCROLLEDWINDOW26.
                 04  I48-LIST.
                   05  I48-COUNT   PIC S9(9)   BINARY.
@@ -32,12 +32,12 @@
                   05  I48-SELECT  PIC X       OCCURS  200 TIMES.
               03  I48-JIINCOB.
                 04  I48-JIIN.
-                  05  I48-VALUE   PIC X(17).
+                  05  I48-VALUE   PIC X(16).
                 04  I48-JIIN-COUNT   PIC S9(9)   BINARY.
                 04  I48-JIIN-ITEM    PIC X(16)   OCCURS  10 TIMES.
               03  I48-USERCOB.
                 04  I48-USER.
-                  05  I48-VALUE   PIC X(11).
+                  05  I48-VALUE   PIC X(10).
                 04  I48-USER-COUNT   PIC S9(9)   BINARY.
                 04  I48-USER-ITEM    PIC X(10)   OCCURS  10 TIMES.
 

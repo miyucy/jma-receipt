@@ -1,13 +1,13 @@
 I47	{
 	fixed10	{
 		POP_TOUMEI	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		scrolledwindow1	{
 			viewport1	{
 				list1	{
 					count	int;
-					item	varchar(41)[50];
+					item	varchar(40)[50];
 					select	bool[50];
 				};
 			};
