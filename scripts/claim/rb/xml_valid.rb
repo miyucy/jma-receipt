@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 #
 # claim test Rcv server
 #   xml valid parser check interface module

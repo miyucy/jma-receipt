@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # orca xml send module by socket
 #   method "xml_send"
 #      IN 1: file_path_name
