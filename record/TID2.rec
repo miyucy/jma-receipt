@@ -4,7 +4,7 @@ TID2	{
 			value	varchar(10);
 		};
 		ID1MSG	{
-			value	varchar(70);
+			value	varchar(72);
 		};
 	};
 };

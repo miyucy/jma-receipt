@@ -57,3 +57,10 @@
                 04  T01-DATA-COUNT PIC S9(9)   BINARY.
                 04  T01-DATA-ITEM
                         PIC X(22)   OCCURS  3 TIMES.
+              03  T01-NYUGAIKBN-COMBO.
+                04  T01-NYUGAIKBN-STATE PIC S9(9)   BINARY.
+                04  T01-NYUGAIKBN.
+                  05  T01-VALUE    PIC X(14).
+                04  T01-NYUGAIKBN-COUNT PIC S9(9)   BINARY.
+                04  T01-NYUGAIKBN-ITEM
+                        PIC X(14)   OCCURS  3 TIMES.

@@ -58,5 +58,13 @@ T01	{
 			count	int;
 			item	varchar(22)[3];
 		};
+		NYUGAIKBN_COMBO	{
+			 state   int;
+			NYUGAIKBN	{
+				value	varchar(14);
+			};
+			count	int;
+			item	varchar(14)[3];
+		};
 	};
 };

@@ -20,4 +20,4 @@
               04  TID2-ID1CODE.
                 05  TID2-VALUE  PIC X(10).
               04  TID2-ID1MSG.
-                05  TID2-VALUE  PIC X(70).
+                05  TID2-VALUE  PIC X(72).
