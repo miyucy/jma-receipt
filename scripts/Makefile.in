@@ -116,6 +116,7 @@ filecheck:
 	-name "HC01.sh" -o \
 	-name "HCALL.sh" -o \
 	-name "HCALL2.sh" -o \
+	-name "HCALL_prv.sh" -o \
 	-name "HL01.sh" -o \
 	-name "HL02.sh" -o \
 	-name "HL03.sh" -o \
@@ -130,6 +131,9 @@ filecheck:
 	-name "orcbsf03.sh" -o \
 	-name "orhcml09.sh" -o \
 	-name "print.sh" -o \
+	-name "print_prv.sh" -o \
+	-name "orc_file_del.sh" -o \
+	-name "preprint.sh" -o \
 	-name "recept1.sh" -o \
 	-name "recept2.sh" -o \
 	-name "recept3.sh" -o \
