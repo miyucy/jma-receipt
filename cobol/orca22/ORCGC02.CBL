@@ -128,6 +128,8 @@
       *                                     病名文字数のエラー時の表示
       *  01.08.03    NACL-藤原    04/03/08  コラムリストの行制御
       *  01.08.04    NACL-藤原    04/03/09  手術歴の追加
+      *  01.08.05    NACL-藤原    04/03/25  レセ電エラーフラグの判定に
+      *                                     廃止年月日を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -214,6 +216,9 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
       *
+           03  IDX4                PIC 9(04).
+           03  IDX5                PIC 9(04).
+      *
            03  IDXX                PIC 9(04).
       *
       *    一時領域
@@ -266,6 +271,7 @@
            03  WRK-SYSYMD          PIC 9(08).
            03  WRK-BUNRUICD        PIC 9(03).
            03  WRK-GMN-BANGO       PIC ZZZZZ.
+           03  WRK-BYOMEIHENFLG    PIC X(01).
       *
            03  WRK-KANTAN-HENSYU-AREA.
                05  WRK-HENSYU-NUM  PIC X(40).
@@ -306,11 +312,7 @@
                                    PIC X(80).                    
                05  WRK-TANDOKUKBN  PIC 9(01).
       *     
-           03  WRK-BYOMEICD-KENSAKU-AREA.
-               05  WRK-BYOMEICD    PIC X(07).
-               05  WRK-IKOSAKICD   PIC X(07).
-               05  WRK-HAISIYMD    PIC X(08).
-               05  WRK-BYO-MAX     PIC 9(01).
+           03  WRK-BYOMEICD        PIC X(07).
       *                             
            03  WRK-DBPATH          PIC X(64).
       *
@@ -354,8 +356,17 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
+      *    患者病名マスタ−（レセ電エラーフラグチェック用）
+       01  WRK-PTBYOMEI-CHK-AREA.
+           02  WRK-HAISIYMD-CHK    PIC 9(08).
+           02  WRK-PTBYOMEI-CHK-REC.
+           COPY    "CPPTBYOMEI.INC"
+                                   REPLACING   //PTBYO-//
+                                   BY          //WRK-PTBYO-CHK-//.
+      *
       *    患者病名マスタ−（ワーク）
        01  WRK-PTBYOMEI-AREA.
+           02  WRK-HAISIYMD-O      PIC 9(08)   OCCURS  6.
            02  WRK-PTBYOMEI-REC    OCCURS  6.
            COPY    "CPPTBYOMEI.INC"
                                    REPLACING   //PTBYO-//
@@ -770,6 +781,8 @@
                        IF      FLG-BYOMEI      =   ZERO
                            MOVE    BYO-BYOMEI      TO
                                        SPA-NAI-C02-BYOMEI-O (IDZ IDX2)
+                           MOVE    BYO-HAISIYMD    TO
+                                       SPA-NAI-C02-HAISIYMD (IDZ)
                        END-IF
                        MOVE    SPA-NAI-C02-BYOMEI-O (IDZ 1)
                                                TO
@@ -1599,6 +1612,9 @@
       *   入力病名コード数カウント
            PERFORM 410111-BYOMEICDSU-HENSYU-SEC
       *
+      *    レセ電エラーフラグ
+           PERFORM 41041-RECEDENFLG-CHK-SEC
+      *
            MOVE    28                  TO  SPA-GMN-C02-CUR
            .
        320-C05SPASET-EXT.
@@ -1652,6 +1668,13 @@
       *
       *   入力病名コード数カウント
            PERFORM 410111-BYOMEICDSU-HENSYU-SEC
+      *
+      *    レセ電エラーフラグ（複数病名以外）
+           IF      SPA-NAI-C02-BYOMEICD-MAX    =   1
+               PERFORM 41041-RECEDENFLG-CHK-SEC
+           ELSE
+               MOVE    SPACE               TO  SPA-NAI-C02-RECEDENFLG
+           END-IF
       *
            MOVE    9                   TO  SPA-GMN-C02-CUR
            .
@@ -2246,7 +2269,7 @@
                END-IF
            ELSE
              PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       5
+                     UNTIL   IDXX    >       5
                    OR      SPA-ERRCD   NOT =   SPACE
                MOVE    SPACE               TO  WRK-STNUM
                                                WRK-EDNUM
@@ -2780,109 +2803,27 @@
            END-EVALUATE      
       *
       *    レセ電エラーフラグ
-      *    （主病名・疑いフラグに変更があったとき）
-           IF    ( WRK-HENSYU-DATA-O (3) =   SPACE )
-           AND   ( WRK-HENSYU-DATA-O (4) =   SPACE )
-               CONTINUE
-           ELSE
-               MOVE    SPACE       TO  PTBYO-RECEDENFLG
-               IF      WRK-HENSYU-DATA-O (4) =   SPACE
-                   CONTINUE
-               ELSE
-                   IF      PTBYO-BYOMEIHENFLG          =   "1"
-                       EVALUATE    PTBYO-SYUBYOFLG       
-                           WHEN    "1"
-                               IF      PTBYO-BYOMEIMOJI    >   17
-                                   MOVE    "1" TO  PTBYO-RECEDENFLG       
-                               END-IF
-                           WHEN    SPACE
-                               IF      PTBYO-BYOMEIMOJI    >   20
-                                   MOVE    "1" TO  PTBYO-RECEDENFLG       
-                               END-IF
-                       END-EVALUATE
-                   END-IF
-               END-IF
-      *
-               IF      WRK-HENSYU-DATA-O (3) =   SPACE
-                   CONTINUE
-               ELSE
-                   IF    ( PTBYO-RECEDENFLG    =   SPACE ) 
-                   AND   ( PTBYO-UTAGAIFLG         
-                                           NOT =   SPACE )
-                       MOVE    SPACE       TO  WRK-HENFLG1
-                                               WRK-HENFLG2
-      *                病名文字数を計算
-                       COMPUTE WRK-MOJISU      =   PTBYO-BYOMEIMOJI       
-                                                   *   2
-                       IF      PTBYO-UTAGAIFLG     =   "1" OR  "3"
-                           IF      WRK-MOJISU      <   8
-                               MOVE    1               TO  IDZ
-                           ELSE    
-                               COMPUTE IDZ     =   WRK-MOJISU    -   7
-                           END-IF    
-                           PERFORM VARYING IDY FROM    IDZ BY  2
-                                   UNTIL   IDY >       WRK-MOJISU
-                               IF      PTBYO-BYOMEI (IDY:2) =   "疑"
-                                   MOVE    "1"          TO  WRK-HENFLG1
-                                   MOVE    WRK-MOJISU   TO  IDY
-                               END-IF
-                           END-PERFORM
-                       END-IF                
-                       IF      PTBYO-UTAGAIFLG     =   "2" OR  "3"
-                           PERFORM VARYING IDY FROM    1   BY  2
-                                   UNTIL   IDY >       WRK-MOJISU
-                               IF      PTBYO-BYOMEI (IDY:4) =  "急性"
-                                   MOVE    "1"         TO  WRK-HENFLG2
-                                   MOVE    WRK-MOJISU  TO  IDY
-                               END-IF
-                           END-PERFORM
+           INITIALIZE                      WRK-PTBYOMEI-CHK-AREA
+           IF      PTBYO-BYOMEIHENFLG  =   SPACE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       WRK-CONS-BYOMEICD-MAX
+                       OR      PTBYO-BYOMEICD (IDY)    =   SPACE
+                   MOVE    PTBYO-BYOMEICD (IDY)    TO   BYO-BYOMEICD
+                   PERFORM 900-BYOMEI-READ-SEC
+                   IF      FLG-BYOMEI          =   ZERO
+                       IF    ( WRK-HAISIYMD-CHK
+                                               =   ZERO                )
+                       AND   ( BYO-HAISIYMD
+                                         NOT   =   ZERO    AND ALL "9" )
+                           MOVE    BYO-HAISIYMD    TO  WRK-HAISIYMD-CHK
                        END-IF
-      *
-      *                疑いフラグがセットされているとき
-                       IF    ( PTBYO-UTAGAIFLG     =   "1" OR  "3" )
-                       AND   ( WRK-HENFLG1         =   SPACE       )                         
-                           COMPUTE WRK-MOJISU  =
-                                              WRK-MOJISU   +
-                                              WRK-CONS-UTAGAI-MOJISU
-                           IF      PTBYO-BYOMEICD (21) NOT =   SPACE             
-                               EVALUATE    PTBYO-SYUBYOFLG       
-                                   WHEN    "1"
-                                       IF      WRK-MOJISU  >   17
-                                           MOVE    "1"     TO
-                                                   PTBYO-RECEDENFLG       
-                                       END-IF
-                                   WHEN    SPACE
-                                       IF      WRK-MOJISU  >   20
-                                           MOVE    "1"     TO
-                                                   PTBYO-RECEDENFLG       
-                                       END-IF
-                               END-EVALUATE
-                           END-IF
-                       END-IF    
-                       IF    ( PTBYO-UTAGAIFLG       
-                                                   =   "2" OR  "3" )
-                       AND   ( WRK-HENFLG2         =   SPACE       )                         
-                           COMPUTE WRK-MOJISU  =
-                                              WRK-MOJISU   +
-                                              WRK-CONS-KYUSEI-MOJISU
-                           IF      PTBYO-BYOMEICD (21) NOT =   SPACE             
-                               EVALUATE    PTBYO-SYUBYOFLG       
-                                   WHEN    "1"
-                                       IF      WRK-MOJISU  >   17
-                                           MOVE    "1"     TO
-                                                   PTBYO-RECEDENFLG       
-                                       END-IF
-                                   WHEN    SPACE
-                                       IF      WRK-MOJISU  >   20
-                                           MOVE    "1"     TO
-                                                   PTBYO-RECEDENFLG       
-                                       END-IF
-                               END-EVALUATE
-                           END-IF
-                       END-IF
-                   END-IF
-               END-IF
-           END-IF            
+                   END-IF    
+               END-PERFORM
+           END-IF
+           MOVE    PTBYOMEI-REC        TO  WRK-PTBYOMEI-CHK-REC
+           PERFORM 5001-RECEDENFLG-HENSYU-SEC
+           MOVE    WRK-PTBYO-CHK-RECEDENFLG
+                                       TO  PTBYO-RECEDENFLG
       *
            MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
@@ -3127,6 +3068,8 @@
                        END-IF    
                        MOVE    BYO-TOKSKNCD
                                          TO  SPA-NAI-C02-TOKSKNCD  (IDZ)
+                       MOVE    BYO-HAISIYMD
+                                         TO  SPA-NAI-C02-HAISIYMD  (IDZ)
                        MOVE    BYO-BYOMEICD
                                          TO
                                          SPA-NAI-C02-BYOMEICD-O (IDZ 1)
@@ -3330,6 +3273,13 @@
                                MOVE    BYO-TANDOKUKBN
                                            TO
                                    SPA-NAI-C02-TANDOKUKBN-O(IDZ IDXX)
+                               IF    ( SPA-NAI-C02-HAISIYMD (IDZ)
+                                               =   ZERO                )
+                               AND   ( BYO-HAISIYMD
+                                           NOT =   ZERO    AND ALL "9" )
+                                   MOVE    BYO-HAISIYMD    TO
+                                           SPA-NAI-C02-HAISIYMD (IDZ)
+                               END-IF
                            END-IF 
                        END-IF    
                    END-PERFORM
@@ -3433,6 +3383,9 @@
       *
       *    新規のときエラーがなかったら登録処理へ     
            IF      SPA-ERRCD           =   SPACE
+      *
+      *        レセ電エラーフラグ
+               PERFORM 41041-RECEDENFLG-CHK-SEC
       *********IF      SPA-GMN-C02-BANGO   =   ZERO
       *********    MOVE    1                   TO  FLG-UPDKBN
       *********ELSE
@@ -3819,6 +3772,13 @@
                GO  TO  41021-BYOMEICD-HENSYU-EXT
            END-IF
       *
+      *    レセ電エラーフラグ（複数病名以外）
+           IF      SPA-NAI-C02-BYOMEICD-MAX    =   1
+               PERFORM 41041-RECEDENFLG-CHK-SEC
+           ELSE
+               MOVE    SPACE               TO  SPA-NAI-C02-RECEDENFLG
+           END-IF
+      *
       *    全ての病名コード未入力のとき病名へ遷移
            IF    ( IDZ                 =   1      )
            AND   ( SPA-GMN-C02-BYOMEICD-G  
@@ -4193,10 +4153,51 @@
                   GO  TO  4104-UTAGAI-CHK-EXT
                END-IF
            END-IF    
+      *
+      *    レセ電エラーフラグ
+           PERFORM 41041-RECEDENFLG-CHK-SEC
       *        
            MOVE    19                   TO  SPA-GMN-C02-CUR
            .
        4104-UTAGAI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセ電エラーフラグチェック処理
+      *****************************************************************
+       41041-RECEDENFLG-CHK-SEC        SECTION.
+      *   
+           INITIALIZE                      WRK-PTBYOMEI-CHK-AREA
+           IF      SPA-NAI-C02-BYOMEIHENFLG    =   SPACE
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       WRK-CONS-BYOMEICD-MAX
+                       OR      SPA-NAI-C02-BYOMEICD (IDXX) =   SPACE
+                   IF    ( WRK-HAISIYMD-CHK    =   ZERO                )
+                   AND   ( SPA-NAI-C02-HAISIYMD (IDXX)
+                                           NOT =   ZERO    AND ALL "9" )
+                       MOVE    SPA-NAI-C02-HAISIYMD (IDXX)
+                                               TO  WRK-HAISIYMD-CHK
+                   END-IF
+               END-PERFORM
+           END-IF
+           MOVE    SPA-NAI-C02-BYOMEIHENFLG
+                                       TO  WRK-PTBYO-CHK-BYOMEIHENFLG
+           MOVE    SPA-NAI-C02-BYOMEIMOJI
+                                       TO  WRK-PTBYO-CHK-BYOMEIMOJI
+           MOVE    SPA-GMN-C02-UTAGAIFLG
+                                       TO  WRK-PTBYO-CHK-UTAGAIFLG 
+           MOVE    SPA-GMN-C02-SYUBYOFLG
+                                       TO  WRK-PTBYO-CHK-SYUBYOFLG 
+           MOVE    SPA-GMN-C02-BYOMEI  TO  WRK-PTBYO-CHK-BYOMEI
+           MOVE    SPA-NAI-C02-SRYYMD  TO  WRK-PTBYO-CHK-SRYYMD 
+           PERFORM 5001-RECEDENFLG-HENSYU-SEC
+           MOVE    WRK-PTBYO-CHK-RECEDENFLG
+                                       TO  SPA-NAI-C02-RECEDENFLG
+      *???
+               DISPLAY "RECEDENFLG=" SPA-NAI-C02-RECEDENFLG "#"
+      *??
+           .
+       41041-RECEDENFLG-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4227,6 +4228,9 @@
                    GO  TO  4105-SYUBYOFLG-CHK-EXT
                END-IF
            END-IF        
+      *
+      *    レセ電エラーフラグ
+           PERFORM 41041-RECEDENFLG-CHK-SEC
       *     
            MOVE    20                   TO  SPA-GMN-C02-CUR
            .
@@ -4634,6 +4638,8 @@
                                        TO  SPA-NAI-C02-UTAGAIFLG(IDZ)
                MOVE    LNK-BYO-TTOKSKNCD (IDX)
                                        TO  SPA-NAI-C02-TOKSKNCD (IDZ)
+               MOVE    LNK-BYO-THAISIYMD (IDX)
+                                       TO  SPA-NAI-C02-HAISIYMD (IDZ)
                MOVE    LNK-BYO-TTANDOKUKBN (IDX)
                                        TO
                                        SPA-NAI-C02-TANDOKUKBN-O (IDZ 1)
@@ -4656,7 +4662,7 @@
                PERFORM 5001-MANSEIKBN-HENSYU-SEC                                
                MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-MANSEIKBNMEI
            ELSE
-               MOVE    SPACE               TO  SPA-GMN-C02-MANSEIKBN-G 
+               MOVE    SPACE               TO  SPA-GMN-C02-MANSEIKBN-G
            END-IF
            MOVE    LNK-BYO-RECEDENFLG  TO  SPA-NAI-C02-RECEDENFLG
            MOVE    LNK-BYO-BYOMEIHENFLG
@@ -5522,6 +5528,18 @@
                END-PERFORM
            END-IF
       *
+      *    廃止年月日（レセ電フラグチェック用）
+           IF      WRK-PTBYO-BYOMEICDSU (IDXX)
+                                       <=  21
+               IF      SPA-NAI-C02-HAISIYMD (IDX)
+                                           =   ZERO   OR  ALL "9"
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-NAI-C02-HAISIYMD (IDX)
+                                           TO  WRK-HAISIYMD-O (IDXX)
+               END-IF         
+           END-IF  
+      *
            IF      SPA-NAI-C02-BYOMEICD-MAX    >   1    
                PERFORM 45011-BYOMEI-HENSYU-SEC
            END-IF
@@ -5670,6 +5688,7 @@
                MOVE    WRK-CONS-BYOMEICD
                                        TO  WRK-PTBYO-BYOMEICD  (IDXX 1)
                MOVE    1               TO  WRK-PTBYO-BYOMEICDSU(IDXX)
+               MOVE    "1"             TO  WRK-PTBYO-BYOMEIHENFLG(IDXX)
            END-IF
       *      
       *    基本病名コード・基本部位コード
@@ -5707,96 +5726,17 @@
            MOVE    SPA-NAI-C02-TENKIYMD
                                        TO  WRK-PTBYO-TENKIYMD (IDXX)
       *
-      *    レセ電エラーフラグ（編集病名のとき）
-           IF      WRK-PTBYO-BYOMEIHENFLG (IDXX)   =   "1"
-               EVALUATE    WRK-PTBYO-SYUBYOFLG (IDXX)
-                   WHEN    "1"
-                       IF      WRK-PTBYO-BYOMEIMOJI (IDXX) >   17
-                           MOVE    "1" TO  WRK-PTBYO-RECEDENFLG (IDXX)
-                       END-IF
-                   WHEN    SPACE
-                       IF      WRK-PTBYO-BYOMEIMOJI (IDXX) >   20
-                           MOVE    "1" TO  WRK-PTBYO-RECEDENFLG (IDXX)
-                       END-IF
-               END-EVALUATE
-           END-IF
+      *    レセ電エラーフラグ
+           INITIALIZE                      WRK-PTBYOMEI-CHK-AREA
+           MOVE    WRK-HAISIYMD-O   (IDXX)
+                                       TO  WRK-HAISIYMD-CHK
+           MOVE    WRK-PTBYOMEI-REC (IDXX)
+                                       TO  WRK-PTBYOMEI-CHK-REC
+           MOVE    SPA-NAI-C02-SRYYMD  TO  WRK-PTBYO-CHK-SRYYMD 
+           PERFORM 5001-RECEDENFLG-HENSYU-SEC
+           MOVE    WRK-PTBYO-CHK-RECEDENFLG
+                                       TO  WRK-PTBYO-RECEDENFLG (IDXX)
       *
-      *    レセ電エラーフラグ（疑いフラグが設定されているとき）
-           IF    ( WRK-PTBYO-RECEDENFLG (IDXX) =   SPACE ) 
-           AND   ( WRK-PTBYO-UTAGAIFLG  (IDXX) 
-                                           NOT =   SPACE )
-               MOVE    SPACE               TO  WRK-HENFLG1
-                                               WRK-HENFLG2
-      *     
-      *        病名文字数を計算
-               COMPUTE WRK-MOJISU      =   WRK-PTBYO-BYOMEIMOJI (IDXX)
-                                           *   2
-               IF      WRK-PTBYO-UTAGAIFLG (IDXX)  =   "1" OR  "3"
-                   IF      WRK-MOJISU      <   8
-                       MOVE    1               TO  IDZ
-                   ELSE    
-                       COMPUTE IDZ     =   WRK-MOJISU    -   7
-                   END-IF    
-                   PERFORM VARYING IDY FROM    IDZ BY  2
-                           UNTIL   IDY >       WRK-MOJISU
-                       IF      WRK-PTBYO-BYOMEI (IDXX) (IDY:2) =   "疑"
-                           MOVE    "1"              TO  WRK-HENFLG1
-                           MOVE    WRK-MOJISU       TO  IDY
-                       END-IF
-                   END-PERFORM
-               END-IF                
-               IF      WRK-PTBYO-UTAGAIFLG (IDXX)  =   "2" OR  "3"
-                   PERFORM VARYING IDY FROM    1   BY  2
-                           UNTIL   IDY >       WRK-MOJISU
-                       IF      WRK-PTBYO-BYOMEI (IDXX) (IDY:4) =  "急性"
-                           MOVE    "1"              TO  WRK-HENFLG2
-                           MOVE    WRK-MOJISU       TO  IDY
-                       END-IF
-                   END-PERFORM
-               END-IF
-      *
-      *        疑いフラグがセットされているとき
-               IF    ( WRK-PTBYO-UTAGAIFLG (IDXX)
-                                           =   "1" OR  "3" )
-               AND   ( WRK-HENFLG1         =   SPACE       )                         
-                   COMPUTE WRK-MOJISU          =      
-                                WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
-                   IF      WRK-PTBYO-BYOMEICD (IDXX 21) NOT =   SPACE             
-                       EVALUATE    WRK-PTBYO-SYUBYOFLG (IDXX)
-                           WHEN    "1"
-                               IF      WRK-MOJISU      >   17
-                                   MOVE    "1"     TO
-                                           WRK-PTBYO-RECEDENFLG (IDXX)
-                               END-IF
-                           WHEN    SPACE
-                               IF      WRK-MOJISU      >   20
-                                   MOVE    "1"     TO
-                                           WRK-PTBYO-RECEDENFLG (IDXX)
-                               END-IF
-                       END-EVALUATE
-                   END-IF
-               END-IF    
-               IF    ( WRK-PTBYO-UTAGAIFLG (IDXX)
-                                           =   "2" OR  "3" )
-               AND   ( WRK-HENFLG2         =   SPACE       )                         
-                   COMPUTE WRK-MOJISU          =      
-                                WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
-                   IF      WRK-PTBYO-BYOMEICD (IDXX 21) NOT =   SPACE             
-                       EVALUATE    WRK-PTBYO-SYUBYOFLG (IDXX)
-                           WHEN    "1"
-                               IF      WRK-MOJISU      >   17
-                                   MOVE    "1"     TO
-                                           WRK-PTBYO-RECEDENFLG (IDXX)
-                               END-IF
-                           WHEN    SPACE
-                               IF      WRK-MOJISU      >   20
-                                   MOVE    "1"     TO
-                                           WRK-PTBYO-RECEDENFLG (IDXX)
-                               END-IF
-                       END-EVALUATE
-                   END-IF
-               END-IF
-           END-IF    
       *****MOVE    SPA-GMN-C02-HKNNUM  TO  WRK-PTBYO-HKNNUM (IDXX)
            .
        4503-BYOMEICD-HENSYU-02-EXT.
@@ -6669,6 +6609,97 @@
            .
        490-USERBYOMEI-KENSAKU-EXT.
            EXIT.
+      *     
+      *****************************************************************
+      *    レセ電エラーフラグ編集処理
+      *****************************************************************
+       5001-RECEDENFLG-HENSYU-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  WRK-PTBYO-CHK-RECEDENFLG
+      *
+           COMPUTE WRK-MOJISU      =   WRK-PTBYO-CHK-BYOMEIMOJI
+                                       *   2
+           MOVE    WRK-PTBYO-CHK-BYOMEIHENFLG
+                                   TO  WRK-BYOMEIHENFLG
+      *   
+      *    疑いフラグが設定されているとき
+           IF      WRK-PTBYO-CHK-UTAGAIFLG
+                                       NOT =   SPACE
+               MOVE    SPACE               TO  WRK-HENFLG1
+                                               WRK-HENFLG2
+      *
+               IF      WRK-PTBYO-CHK-UTAGAIFLG =   "1" OR  "3"
+                   IF      WRK-MOJISU      <   8
+                       MOVE    1               TO  IDX4
+                   ELSE    
+                       COMPUTE IDX4    =   WRK-MOJISU    -   7
+                   END-IF    
+                   PERFORM VARYING IDX5    FROM    IDX4    BY  2
+                           UNTIL   IDX5    >       WRK-MOJISU
+                       IF      WRK-PTBYO-CHK-BYOMEI (IDX5:2) =   "疑"
+                           MOVE    "1"              TO  WRK-HENFLG1
+                           MOVE    WRK-MOJISU       TO  IDX5
+                       END-IF
+                   END-PERFORM
+               END-IF                
+               IF      WRK-PTBYO-CHK-UTAGAIFLG =   "2" OR  "3"
+                   PERFORM VARYING IDX5    FROM    1   BY  2
+                           UNTIL   IDX5    >       WRK-MOJISU
+                       IF      WRK-PTBYO-CHK-BYOMEI (IDX5:4) =  "急性"
+                           MOVE    "1"              TO  WRK-HENFLG2
+                           MOVE    WRK-MOJISU       TO  IDX5
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
+               IF    ( WRK-PTBYO-CHK-UTAGAIFLG
+                                           =   "1" OR  "3" )
+               AND   ( WRK-HENFLG1         =   SPACE       )       
+                   COMPUTE WRK-MOJISU          =      
+                                WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
+                   IF      WRK-PTBYO-CHK-BYOMEICD (21)
+                                           NOT =   SPACE             
+                       MOVE    "1"             TO  WRK-BYOMEIHENFLG
+                   END-IF
+               END-IF    
+               IF    ( WRK-PTBYO-CHK-UTAGAIFLG
+                                           =   "2" OR  "3" )
+               AND   ( WRK-HENFLG2         =   SPACE       )     
+                   COMPUTE WRK-MOJISU          =      
+                                WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
+                   IF      WRK-PTBYO-CHK-BYOMEICD (21)
+                                           NOT =   SPACE             
+                       MOVE    "1"             TO  WRK-BYOMEIHENFLG
+                   END-IF
+               END-IF
+           END-IF    
+      *
+           COMPUTE WRK-MOJISU      =   WRK-MOJISU  /   2
+      *
+           IF  (   WRK-BYOMEIHENFLG    =   "1"                       )
+           OR  ( ( WRK-HAISIYMD-CHK    >   ZERO                 ) AND
+                 ( WRK-HAISIYMD-CHK    <   WRK-PTBYO-CHK-SRYYMD )    )
+               EVALUATE    WRK-PTBYO-CHK-SYUBYOFLG
+                   WHEN    "1"
+                       IF      WRK-MOJISU  >   17
+                           MOVE    "1"     TO  WRK-PTBYO-CHK-RECEDENFLG
+                       END-IF
+                   WHEN    SPACE
+                       IF      WRK-MOJISU  >   20
+                           MOVE    "1"     TO  WRK-PTBYO-CHK-RECEDENFLG
+                       END-IF
+               END-EVALUATE
+           END-IF    
+      *???
+           DISPLAY "MOJISU=" WRK-MOJISU "#" WRK-BYOMEIHENFLG "#"
+                   WRK-HAISIYMD-CHK "#" WRK-PTBYO-CHK-SRYYMD "#"
+                   WRK-PTBYO-CHK-SYUBYOFLG "#"
+                   WRK-PTBYO-CHK-RECEDENFLG "#" WRK-PTBYO-CHK-UTAGAIFLG
+      *???
+           .
+       5001-RECEDENFLG-HENSYU-EXT.
+           EXIT
+           .
       *
       *****************************************************************
       *    疑いフラグ編集処理
@@ -7196,9 +7227,11 @@
            MOVE    SPA-GMN-C02-BYOMEI         TO  C02-BYOMEI
            MOVE    SPA-GMN-C02-BYOMEIHENFLG   TO  C02-BYOMEIHENFLG-VALUE
            MOVE    "black"                    TO  C02-BYOMEIHENFLG-STYLE
-           IF    ( SPA-NAI-C02-BYOMEIHENFLG   =   "1" )
-           AND   ( SPA-NAI-C02-RECEDENFLG     =   "1" )
+           IF      SPA-NAI-C02-RECEDENFLG     =   "1"
                MOVE    "red"                  TO  C02-BYOMEIHENFLG-STYLE
+               IF       SPA-GMN-C02-BYOMEIHENFLG   =   SPACE
+                   MOVE    "文字超過"         TO  C02-BYOMEIHENFLG-VALUE
+               END-IF
            END-IF
            MOVE    SPA-GMN-C02-CHARTBYOMEI    TO  C02-CHARTBYOMEI
       *
@@ -7221,8 +7254,8 @@
            MOVE    ZERO                   TO  C02-HKN-ROW 
       *
            MOVE    SPA-GMN-C02-TENKIKBN-G TO  C02-TENKIKBN
-           PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL       IDX             >   5
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-GMN-C02-TENKIKBN-MAX 
                    OR          SPA-GMN-C02-TENKIKBNL  (IDX)   =   SPACE
                MOVE    SPA-GMN-C02-TENKIKBNLST (IDX)
                                            TO  C02-TENKIKBN-ITEM (IDX)
@@ -7230,8 +7263,8 @@
            END-PERFORM
       *
            MOVE    SPA-GMN-C02-UTAGAIFLG-G TO  C02-UTAGAIFLG
-           PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL       IDX             >   5
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-GMN-C02-UTAGAIFLG-MAX
                    OR          SPA-GMN-C02-UTAGAIFLGL  (IDX)  =   SPACE
                MOVE    SPA-GMN-C02-UTAGAIFLGLST (IDX)
                                            TO  C02-UTAGAIFLG-ITEM (IDX)
@@ -7239,8 +7272,8 @@
            END-PERFORM
       *
            MOVE    SPA-GMN-C02-SYUBYOFLG-G TO  C02-SYUBYOFLG
-           PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL       IDX             >   5
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-GMN-C02-SYUBYOFLG-MAX
                    OR          SPA-GMN-C02-SYUBYOFLGL  (IDX)  =   SPACE
                MOVE    SPA-GMN-C02-SYUBYOFLGLST (IDX)
                                            TO  C02-SYUBYOFLG-ITEM (IDX)
@@ -7248,8 +7281,8 @@
            END-PERFORM
       *
            MOVE    SPA-GMN-C02-MANSEIKBN-G TO  C02-MANSEIFLG
-           PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL       IDX             >   5
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-GMN-C02-MANSEIKBN-MAX
                    OR          SPA-GMN-C02-MANSEIKBNL  (IDX)  =   SPACE
                MOVE    SPA-GMN-C02-MANSEIKBNLST (IDX)
                                            TO  C02-MANSEIFLG-ITEM (IDX)
@@ -7257,8 +7290,8 @@
            END-PERFORM
       *
            MOVE    SPA-GMN-C02-NYUGAIKBN-G TO  C02-NYUGAIKBN
-           PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL       IDX             >   5
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-GMN-C02-NYUGAIKBN-MAX
                    OR          SPA-GMN-C02-NYUGAIKBNL  (IDX)  =   SPACE
                MOVE    SPA-GMN-C02-NYUGAIKBNLST (IDX)
                                            TO  C02-NYUGAIKBN-ITEM (IDX)
@@ -7285,17 +7318,18 @@
            MOVE    SPA-GMN-C02-HKNCOMBI-MAX    TO  C02-HKNCOMBI-COUNT
       *
            MOVE    SPA-GMN-C02-HKNBYOMEIFLG-G TO  C02-HKNBYOMEIFLG
-           PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL       IDX             >   5
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX         >
+                                           SPA-GMN-C02-HKNBYOMEIFLG-MAX
                    OR          SPA-GMN-C02-HKNBYOMEIFLGL(IDX) =   SPACE
                MOVE    SPA-GMN-C02-HKNBYOMEIFLGLST (IDX)
                                        TO  C02-HKNBYOMEIFLG-ITEM (IDX)
                MOVE    IDX             TO  C02-HKNBYOMEIFLG-COUNT
            END-PERFORM
       *
-           MOVE    SPA-GMN-C02-REZEFLG-G TO  C02-REZEFLG
-           PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL       IDX             >   5
+           MOVE    SPA-GMN-C02-REZEFLG-G   TO  C02-REZEFLG
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-GMN-C02-REZEFLG-MAX
                    OR          SPA-GMN-C02-REZEFLGL  (IDX)   =   SPACE
                MOVE    SPA-GMN-C02-REZEFLGLST (IDX)
                                            TO  C02-REZEFLG-ITEM (IDX)
