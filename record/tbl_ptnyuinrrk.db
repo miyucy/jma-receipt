@@ -138,6 +138,7 @@ path	key8		{
 		FROM tbl_ptnyuinrrk
 			WHERE	HOSPID      =   :HOSPID 
 			AND	PTID        =   :PTID
+                        AND     JTIKBN        <>  '5'
 			ORDER BY RRKNUM,
                                  RRKEDANUM
 		;
