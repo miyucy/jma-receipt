@@ -2626,7 +2626,7 @@
                GO  TO  4101-TOKNYUIN-CHK-EXT
            END-IF
       *
-           MOVE    SPA-GMN-TOKNYUIN     TO  WRK-CMB-CD
+           MOVE    SPA-GMN-TOKNYUIN    TO  WRK-CMB-CD
            PERFORM 4200-TOKNYUINLST-CHK-SEC
            IF    ( WRK-CMB-ITM         =   SPACE )
                MOVE    "0016"          TO  SPA-ERRCD
@@ -3031,6 +3031,11 @@
       *****************************************************************
        212-TOUROKU-SEC                 SECTION.
       *
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  212-TOUROKU-EXT
+           END-IF
+      *
            EVALUATE    SPA-NAI-ORDERID
            WHEN    NORDERID-NYUINID
                PERFORM 2121-NYUIN-TOUROKU-SEC
@@ -3113,6 +3118,11 @@
            WHEN  ( SODR-ERRCD   NOT =   SPACE )
                MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
                PERFORM 3101-ERRMESLST-SEC
+               IF    ( SPA-GMN-TOKNYUIN-G  =   SPACE )
+                   MOVE    "01"     TO  SPA-NAI-NYUKBN
+               ELSE
+                   MOVE    "02"     TO  SPA-NAI-NYUKBN
+               END-IF
            WHEN  OTHER
                PERFORM 220-CLEAR-SEC
       *        異動リスト編集処理
