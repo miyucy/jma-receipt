@@ -2,8 +2,6 @@ db_group {
  type "PostgreSQL";
  port "localhost";
  name "orca";
- file "orca.log";
- redirect_port "localhost";
  redirect "log";
 };
 db_group "log" {
@@ -12,6 +10,7 @@ db_group "log" {
  port "localhost";
  name "orca";
  file "/var/lib/jma-receipt/dbredirector/orca.log";
+ redirect_port "localhost";
 };
 db_group "shell" {
  type "Shell";
