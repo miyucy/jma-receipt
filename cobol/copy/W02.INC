@@ -132,7 +132,7 @@
                     06  W02-DISCOUNTKBN-COUNT
                                              PIC S9(9)   BINARY.
                     06  W02-DISCOUNTKBNLST   PIC X(23)
-                                                         OCCURS  10.
+                                                         OCCURS  99.
                   05  W02-DISCOUNTOBJ-COMBO.
                     06  W02-DISCOUNTOBJ      PIC X(20).
                     06  W02-DISCOUNTOBJ-COUNT
