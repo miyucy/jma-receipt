@@ -4353,8 +4353,8 @@
            MOVE    ZERO                TO  FLG-CHK-ALL
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
-                              (HZN-COM-INPUTCD (IDX)   =   SPACE   AND
-                               HZN-GMN-INPUTCD (IDX)   =   SPACE )
+                             ((HZN-COM-INPUTCD (IDX)   =   SPACE ) AND
+                              (HZN-GMN-INPUTCD (IDX)   =   SPACE ))
       *
                MOVE    ZERO                    TO  FLG-ARI
                IF     (HZN-COM-SRYKBN(IDX)     =   "11"  OR  "12"
@@ -4362,7 +4362,9 @@
       *                Œ≈Õ‹√¥≈ˆºÍ≈ˆ
                      ( HZN-COM-INPUTCD(IDX)     =   "199000610" )
                    MOVE    HZN-COM-INPUTCD(IDX) TO  WRK-SRYCD
-                   PERFORM 10101-SINSATU-CHK-SEC
+                   IF      HZN-COM-INPUTCD(IDX) NOT =   SPACE
+                       PERFORM 10101-SINSATU-CHK-SEC
+                   END-IF
                    IF      FLG-ARI             =   1
                        IF     (HZN-GMN-INPUTCD(IDX)(1:1) NUMERIC  )  AND
                               (HZN-GMN-INPUTCD(IDX)(2:1) =   SPACE)
