@@ -1242,7 +1242,8 @@
       *
       *    入金額がゼロの時、入金力なし
            IF      WRK-KON-NYUKIN      =   ZERO
-               CONTINUE
+      *入金方法
+               MOVE    ZERO                TO  SMEI-NYUKIN-HOHO
            ELSE
       *入返金区分
                MOVE    "1"                 TO  SMEI-NYUHEN-KBN
@@ -1387,7 +1388,8 @@
       *
       *    入金額がゼロの時、入金力なし
            IF      WRK-KON-NYUKIN      =   ZERO
-               CONTINUE
+      *入金方法
+               MOVE    ZERO                TO  SMEI-NYUKIN-HOHO
            ELSE
       *入返金区分
                MOVE    "1"                 TO  SMEI-NYUHEN-KBN

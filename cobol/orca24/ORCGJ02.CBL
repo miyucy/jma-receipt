@@ -8676,7 +8676,8 @@
       *
       *    入金額がゼロの時、入金力なし
            IF      SYU-NYUKIN-TOTAL    =   ZERO
-               CONTINUE
+      *入金方法
+               MOVE    ZERO                TO  SMEI-NYUKIN-HOHO
            ELSE
       *入返金区分
                MOVE    "1"                 TO  SMEI-NYUHEN-KBN
