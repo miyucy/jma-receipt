@@ -130,6 +130,8 @@
                    07  WRK-SO-SRYCDTOTAL   PIC 9(14).
                    07  WRK-SO-TEN          PIC 9(07).
                    07  WRK-SO-KAISU        PIC 9(02).
+                   07  WRK-SO-GAIHAKU-TBL.
+                     09  WRK-SO-GAIHAKU-KBN  PIC 9(01)  OCCURS 31.
       *
       *    同一剤まとめ用比較キー
            03  WRK-OLD-KEY.
@@ -192,11 +194,6 @@
            03  WRK-SRYCD-X                 PIC X(09).
            03  WRK-SRYCD-9    REDEFINES    WRK-SRYCD-X
                                            PIC 9(09).
-      *
-      *    保険組合せ退避
-           03  WRK-HKNCOMBI-TAIHI.
-               05  WRK-HKNCOMBI-X          PIC X(01).
-               05  WRK-HKNCOMBI-9          PIC 9(03).
       *
       *    システム管理食事退避領域
            03  WRK-SYS5000-SKJ             OCCURS  5.
@@ -910,8 +907,11 @@
       *        外泊
                IF         WRK-GAIHAKU(IDX1)   NOT =        SPACE
                    ADD      1               TO  WRK-MEISAISU
-                   MOVE   WRK-GAIHAKU(IDX1)  TO  WRK-SO-SRYCD
+                   MOVE   WRK-GAIHAKU(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
+                   MOVE   WRK-GAIHAKU-KBN(IDX1)
+                                            TO  WRK-SO-GAIHAKU-KBN
+                                                           (IDX1 IDX1)
                END-IF
       *        入院会計加算情報
                PERFORM   VARYING   KSN-IDX   FROM   1  BY   1
@@ -1088,6 +1088,12 @@
                              (WRK-SO-TEN(IDX3)  =
                                          WRK-SO-TEN(IDX1))
                              ADD     1    TO    WRK-SO-KAISU(IDX1)
+                             IF  WRK-SO-GAIHAKU-KBN(IDX3 IDX3)
+                                                             NOT = ZERO
+                                 MOVE  WRK-SO-GAIHAKU-KBN(IDX3 IDX3)
+                                          TO  WRK-SO-GAIHAKU-KBN
+                                                            (IDX1 IDX3)
+                             END-IF
                              INITIALIZE   WRK-NYUIN-SORT-TBL(IDX3)
                        END-IF
                    END-PERFORM
@@ -1109,6 +1115,12 @@
       **          DISPLAY  "WRK-SO-SRYCDTOTAL = " WRK-SO-SRYCDTOTAL(IDX1)
       **          DISPLAY  "WRK-SO-TEN      = " WRK-SO-TEN(IDX1)
       **          DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
+      **          PERFORM   VARYING  IDX2  FROM  1  BY  1
+      **                    UNTIL  IDX2  >  31
+      **                     DISPLAY  "IDX2 = " IDX2
+      **                     DISPLAY  "WRK-SO-GAIHAKU-KBN = " 
+      **                               WRK-SO-GAIHAKU-KBN(IDX1 IDX2)
+      **          END-PERFORM
       **     END-PERFORM
       *
       *    レセ電サブ返却エリアへのセット
@@ -1119,9 +1131,6 @@
                     (WRK-SO-TEN(IDX1)       NOT =   ZERO)
                      ADD    1      TO    IDX2
                      MOVE  WRK-SO-HKNCOMBI-DAY(IDX1) TO
-                                     WRK-HKNCOMBI-9
-                     MOVE  "0"       TO   WRK-HKNCOMBI-X
-                     MOVE   WRK-HKNCOMBI-TAIHI  TO
                                      LNK-NYURECEDEN-HKNCOMBI(IDX2)
                      MOVE  WRK-SO-MEISAISU(IDX1)   TO
                                      LNK-NYURECEDEN-MEISAISU(IDX2)
@@ -1435,9 +1444,6 @@
                 IF    WRK-SKJ-SRYCD(IDX1 1)   NOT =  SPACE
                     ADD    1     TO    IDX2
                     MOVE  WRK-SKJ-HKNCOMBI-DAY(IDX1) TO
-                                    WRK-HKNCOMBI-9
-                    MOVE  "0"       TO   WRK-HKNCOMBI-X
-                    MOVE   WRK-HKNCOMBI-TAIHI  TO
                                     LNK-NYURECEDEN-SKJ-HKNCOMBI(IDX2)
                     MOVE   ZERO     TO    IDX4
                     PERFORM    VARYING    IDX3   FROM  1   BY  1
@@ -1467,9 +1473,6 @@
                 IF    WRK-SKJ3-TOKU-SHOKU(IDX1)   NOT =  SPACE
                     ADD    1     TO    IDX2
                     MOVE  WRK-SKJ3-HKNCOMBI-DAY(IDX1) TO
-                                    WRK-HKNCOMBI-9
-                    MOVE  "0"       TO   WRK-HKNCOMBI-X
-                    MOVE   WRK-HKNCOMBI-TAIHI  TO
                                     LNK-NYURECEDEN-SKJ-HKNCOMBI(IDX2)
                     MOVE   "SI"   TO
                                   LNK-NYURECEDEN-SKJ-RECSKB(IDX2 1)
@@ -1490,9 +1493,6 @@
                 IF    WRK-SKJ2-FUKUSU(IDX1)   NOT =  SPACE
                     ADD    1     TO    IDX2
                     MOVE  WRK-SKJ2-HKNCOMBI-DAY(IDX1) TO
-                                    WRK-HKNCOMBI-9
-                    MOVE  "0"       TO   WRK-HKNCOMBI-X
-                    MOVE   WRK-HKNCOMBI-TAIHI  TO
                                     LNK-NYURECEDEN-SKJ-HKNCOMBI(IDX2)
                     MOVE   "SI"   TO
                                   LNK-NYURECEDEN-SKJ-RECSKB(IDX2 1)
@@ -1513,9 +1513,6 @@
                 IF    WRK-SKJFTN-SRYCD(IDX1)   NOT =  SPACE
                     ADD    1     TO    IDX2
                     MOVE  WRK-SKJFTN-HKNCOMBI-DAY(IDX1) TO
-                                    WRK-HKNCOMBI-9
-                    MOVE  "0"       TO   WRK-HKNCOMBI-X
-                    MOVE   WRK-HKNCOMBI-TAIHI  TO
                                     LNK-NYURECEDEN-SKJ-HKNCOMBI(IDX2)
                     MOVE   "SI"   TO
                                   LNK-NYURECEDEN-SKJ-RECSKB(IDX2 1)

@@ -43,7 +43,7 @@
       *入院料返却テーブル
                05  LNK-NYURECEDEN-HENKYAKU-TBL       OCCURS  31.
       *保険組合せ
-                   07  LNK-NYURECEDEN-HKNCOMBI       PIC  X(04).
+                   07  LNK-NYURECEDEN-HKNCOMBI       PIC  9(04).
       *明細数
                    07  LNK-NYURECEDEN-MEISAISU       PIC  9(03).
       *レセ電記録エリア
@@ -63,7 +63,7 @@
       *食事返却テーブル
                05  LNK-NYURECEDEN-SKJ-HENKYAKU-TBL   OCCURS  31.
       *保険組合せ
-                   07  LNK-NYURECEDEN-SKJ-HKNCOMBI   PIC  X(04).
+                   07  LNK-NYURECEDEN-SKJ-HKNCOMBI   PIC  9(04).
       *明細数
                    07  LNK-NYURECEDEN-SKJ-MEISAISU   PIC  9(03).
       *レセ電記録エリア（食事）
