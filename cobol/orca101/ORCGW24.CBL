@@ -3534,7 +3534,7 @@
                MOVE    "±ß"            TO  W24-LBL-SENTEI-EN
                MOVE    "°ìÈÌ£±Æü"      TO  W24-LBL-SENTEI-TANKAIP
                MOVE    "±ß"            TO  W24-LBL-SENTEI-ENIP
-               MOVE    "Ï·¿Í°ìÆü"      TO  W24-LBL-SENTEI-TANKARJ
+               MOVE    "Ï·¿Í£±Æü"      TO  W24-LBL-SENTEI-TANKARJ
                MOVE    "±ß"            TO  W24-LBL-SENTEI-ENRJ
            WHEN    OTHER
                MOVE    SPACE           TO  W24-LBL-SENTEI-TANKA
