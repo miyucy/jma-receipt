@@ -20,26 +20,17 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-藤原    04/02/01  病名コード２１に変更
-      *                                     病名コード数９（０２）に変更
-      *
-      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *
-      *  04.06.01    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
       ************************************************************
       *01  TOUKEI03-REC.
            03  TOUKEI03-KEY.
       *        医療機関ＩＤ
-               05  TOUKEI03-HOSPNUM        PIC 9(2).
+               05  TOUKEI03-HOSPID         PIC  X(24).
       *        診療年月
                05  TOUKEI03-SRYYM          PIC  9(06).
       *        入外区分
                05  TOUKEI03-NYUGAIKBN      PIC  X(01).
       *        患者ＩＤ
                05  TOUKEI03-PTID           PIC  9(10).
-      *        入所中区分
-               05  TOUKEI03-RECEIPT-KBN    PIC  X(10).
       *        レセプト診療科
                05  TOUKEI03-RECEKA         PIC  X(02).
       *        診療科
@@ -51,11 +42,11 @@
       *レセ電診療科
            03  TOUKEI03-RECESRYKA      PIC  X(02).
       *病名コード数
-           03  TOUKEI03-BYOMEICDSU     PIC 9(02).
+           03  TOUKEI03-BYOMEICDSU     PIC 9(01).
       *病名コード
            03  TOUKEI03-BYOMEICD-G.
                05  TOUKEI03-BYOMEICD   PIC X(07)
-                                       OCCURS   21.
+                                       OCCURS   6.
       *疑いフラグ
            03  TOUKEI03-UTAGAIFLG      PIC X(01).
       *主病名フラグ
