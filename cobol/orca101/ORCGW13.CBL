@@ -33,6 +33,7 @@
       *  02.00.01    NACL-多々納  02/11/14  一括入力 
       *  02.00.02    NACL-太田    03.04.04  文書料（消費税）追加
       *  02.00.03    NACL-太田    04.02.09  自賠責食事療養費追加
+      *  02.00.04    NACL-太田    04.09.15  削除ボタン追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -196,6 +197,7 @@
                05  WRK-WDD         PIC 9(02).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-KANRICD         PIC X(04).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -240,6 +242,7 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -393,7 +396,11 @@
        330-WID1-SET-SEC            SECTION.
       *
            IF      SPA-WID1-FLG    =   "OK"
-               PERFORM 490-KOUSHIN-SEC
+               IF      SPA-WIDCD            =   "1002"
+                   PERFORM 4031-DEL-SEC
+               ELSE
+                   PERFORM 490-KOUSHIN-SEC
+               END-IF
            END-IF
       *
            MOVE    SPACE           TO  SPA-WID1-FLG
@@ -679,6 +686,9 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM 210-BACK
+      *    削除
+               WHEN    "CLICKED"       ALSO    "B03"
+                   PERFORM 403-DEL-SEC
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
@@ -1144,6 +1154,61 @@
            EXIT.
       *
       *****************************************************************
+      *    削除確認画面表示処理
+      *****************************************************************
+       403-DEL-SEC                               SECTION.
+      *
+           MOVE    "1002"              TO  SPA-WIDCD
+      *
+           .    
+       403-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    削除処理
+      *****************************************************************
+       4031-DEL-SEC                              SECTION.
+      *
+           MOVE    "4001"              TO  WRK-KANRICD
+           PERFORM 4032-DEL-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    "1004"          TO  SPA-ERRCD
+               GO  TO  4031-DEL-EXT
+           END-IF
+      *
+           MOVE    "4002"              TO  WRK-KANRICD
+           PERFORM 4032-DEL-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    "1005"          TO  SPA-ERRCD
+               GO  TO  4031-DEL-EXT
+           END-IF
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           PERFORM 210-BACK
+           .
+       4031-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理削除処理
+      *****************************************************************
+       4032-DEL-SEC                        SECTION.
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    WRK-KANRICD             TO  SYS-KANRICD
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD        TO  SYS-EDYUKYMD
+           MOVE    SYSKANRI-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"              TO  MCP-FUNC
+           MOVE    PATH-TBL-SYSKANRI-DEL11
+                                           TO  MCP-PATH
+           CALL    "MCPSUB"                USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       4032-DEL-EXT.
+           EXIT.
+      *****************************************************************
       *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC              SECTION.
@@ -1403,6 +1468,7 @@
            END-PERFORM
            MOVE    SPA-GMN-MAX         TO  W13-SONSHOUKBN-COUNT    
       *
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -1413,6 +1479,13 @@
       *    業務権限非活性処理
       *****************************************************************
        510-GSRAUTH-SEC             SECTION.
+      *
+           MOVE    WIDGET-NORMAL       TO  W13-B03-STATE
+      *
+           IF    ( SPA-W01-STYUKYMD    =   ZERO )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  W13-B03-STATE
+           END-IF
       *
            .
        51O-GSRAUTH-EXT.
@@ -1448,6 +1521,15 @@
                    MOVE    "更新ができませんでした"
                                                TO  SPA-ERRMSG
                WHEN    "1002"
+                   MOVE    "追加ができませんでした"
+                                               TO  SPA-ERRMSG
+               WHEN    "1003"
+                   MOVE    "追加ができませんでした"
+                                               TO  SPA-ERRMSG
+               WHEN    "1004"
+                   MOVE    "削除ができませんでした"
+                                               TO  SPA-ERRMSG
+               WHEN    "1005"
                    MOVE    "削除ができませんでした"
                                                TO  SPA-ERRMSG
            END-EVALUATE
@@ -1481,6 +1563,9 @@
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
                    MOVE    "労災自賠医療機関情報を登録します"
+                                                TO  WRK-WIDMSG
+               WHEN    "1002"
+                   MOVE    "労災自賠医療機関情報を削除します"
                                                 TO  WRK-WIDMSG
            END-EVALUATE
       *
