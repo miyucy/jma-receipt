@@ -242,11 +242,13 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-SHELL-ARG1.
-             05  WRK-SHELL-SRYYM   PIC  X(06).
-             05  WRK-SHELL-TERMID  PIC  X(16).
-             05  WRK-SHELL-SYSYMD  PIC  X(08).  
+             05  WRK-SHELL-SRYYM   PIC X(06).
+             05  WRK-SHELL-TERMID  PIC X(16).
+             05  WRK-SHELL-SYSYMD  PIC X(08).  
            03  WRK-RECEKBN         PIC X(06).
            03  WRK-NYUGAIKBN       PIC X(10).
+      * 
+           03  WRK-PREFNUM         PIC 9(02).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1747,18 +1749,53 @@
            OPEN    OUTPUT   RECEERR-FILE
            CLOSE   RECEERR-FILE
       *
-      *    県番号の取得
-           INITIALIZE                  SYS-1001-REC
-           MOVE    "1001"          TO  SYS-1001-KANRICD
-           MOVE    "*"             TO  SYS-1001-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
-           MOVE    SYS-1001-REC    TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI    =   ZERO
-               MOVE   MCPDATA-REC  TO  SYS-1001-REC
-           ELSE
-               MOVE   SPACE        TO  SYS-1001-REC
+      *****県番号の取得
+      *    INITIALIZE                  SYS-1001-REC
+      *    MOVE    "1001"          TO  SYS-1001-KANRICD
+      *    MOVE    "*"             TO  SYS-1001-KBNCD
+      *    MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+      *    MOVE    SYS-1001-REC    TO  MCPDATA-REC
+      *    PERFORM 900-SYSKANRI-INV-SEC
+      *    IF      FLG-SYSKANRI    =   ZERO
+      *        MOVE   MCPDATA-REC  TO  SYS-1001-REC
+      *    ELSE
+      *        MOVE   SPACE        TO  SYS-1001-REC
+      *****END-IF
+           MOVE    ZERO                TO  WRK-PREFNUM
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "1001"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+               PERFORM  900-SYSKANRI-READ-SEC
+               PERFORM  UNTIL   FLG-SYSKANRI   =    1
+                   MOVE    MCPDATA-REC   TO  SYS-1001-REC
+                   EVALUATE    SYS-1001-PREFNUM
+                       WHEN    "40"
+                       WHEN    "06"
+                           MOVE    SYS-1001-PREFNUM    TO  WRK-PREFNUM
+                           MOVE    1                   TO  FLG-SYSKANRI
+                   END-EVALUATE    
+      *
+                   MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                   PERFORM 900-SYSKANRI-READ-SEC
+      *
+               END-PERFORM
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
       *    カスタマイズＰＧ・レセ電情報の設定
            INITIALIZE                  SYS-2005-REC
@@ -1843,8 +1880,8 @@
                                    TO  SHELLTBL-ARG8
            MOVE    WRK-SYSYMD      TO  SHELLTBL-ARG9
            MOVE    SYS-TIME        TO  SHELLTBL-ARG10
-           MOVE    SYS-1001-PREFNUM
-                                   TO  SHELLTBL-ARG11
+      *****MOVE    SYS-1001-PREFNUM
+           MOVE    "00"            TO  SHELLTBL-ARG11
            IF      SYS-2005-SYARECEKBN
                                    =   ZERO
                MOVE    "0"             TO  SHELLTBL-ARG12
@@ -1857,6 +1894,7 @@
            ELSE
                MOVE    "1"             TO  SHELLTBL-ARG13
            END-IF
+           MOVE    WRK-PREFNUM     TO  SHELLTBL-ARG14
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL

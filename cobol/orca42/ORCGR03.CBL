@@ -65,6 +65,7 @@
       *  労災・自賠責入院機能追加
       *  01.04.01    NACL-藤原    03/06/05  労災・自賠責の入院処理追加
       *  01.04.02    NACL-藤原    03/08/05  外来レセ電処理の追加
+      *  01.04.03    NACL-藤原    03/11/05  県番号を診療年月から取得
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1448,7 +1449,9 @@
                    INITIALIZE                  SYS-1001-REC
                    MOVE    "1001"          TO  SYS-1001-KANRICD
                    MOVE    "*"             TO  SYS-1001-KBNCD
-                   MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+      *************MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+                   MOVE    SPA-NAI-SRYYM   TO  ORC-DBYMD (1:6)
+                   MOVE    "01"            TO  ORC-DBYMD (7:2)
                    MOVE    SYS-1001-REC    TO  MCPDATA-REC
                    PERFORM 900-SYSKANRI-INV-SEC
                    IF      FLG-SYSKANRI    =   ZERO
@@ -1562,6 +1565,7 @@
                    ELSE
                        MOVE    "1"             TO  SHELLTBL-ARG13
                    END-IF
+                   MOVE    "00"            TO  SHELLTBL-ARG14
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    PATH-SHELL-SHELL
