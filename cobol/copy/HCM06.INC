@@ -49,7 +49,7 @@
             02  HCM06-KHNTEN    PIC X(7)        OCCURS  5 TIMES.
             02  HCM06-HOSPNAME  PIC X(80).
             02  HCM06-HOSPADRS  PIC X(50).
-            02  HCM06-NAME  PIC X(32).
+            02  HCM06-NAME  PIC X(50).
             02  HCM06-HEAD1-G.
               03  HCM06-HEAD1 PIC X(46)   OCCURS  2 TIMES.
             02  HCM06-HEAD2-G.
