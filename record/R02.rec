@@ -1,11 +1,5 @@
 R02	{
 	fixed6	{
-		B09	{
-			state   int;
-		};
-		B10	{
-			state   int;
-		};
 		SYOKBN	{
 			value	bool;
 			label	varchar(9);
