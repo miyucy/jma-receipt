@@ -31,6 +31,7 @@
       *                                     不具合を修正
       *  00.00.02    NACL-太田    03/06/10  重症者等療養環境特別加算、
       *                                     無菌治療室管理加算を追加
+      *  01.00.01    NACL-太田    04/01/07  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -252,6 +253,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -899,6 +903,11 @@
                    MOVE    MCPDATA-REC     TO  SYS-5002-REC
       *
                    PERFORM 4811-BRM-KSN-EDIT-SEC
+      *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  SYS-5002-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  SYS-5002-UPHMS
+      *
                    MOVE    SYS-5002-REC    TO  MCPDATA-REC
                    MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
                    PERFORM 900-TBL-UPDATE-SEC
@@ -2818,6 +2827,17 @@
       *
            .
        800-ENRTRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

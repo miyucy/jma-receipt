@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    04/01/07  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -228,6 +229,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -888,6 +892,11 @@
                    MOVE    MCPDATA-REC     TO  SYS-5001-REC
       *
                    PERFORM 4811-SYS5001-EDIT-SEC
+      *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  SYS-5001-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  SYS-5001-UPHMS
+      *
                    MOVE    SYS-5001-REC    TO  MCPDATA-REC
                    MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
                    PERFORM 900-TBL-UPDATE-SEC
@@ -1786,6 +1795,17 @@
       *
            .
        800-ENRTRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
