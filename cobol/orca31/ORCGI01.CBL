@@ -7828,7 +7828,7 @@
       *
                    MOVE     MCPDATA-REC   TO   NYUINACCT-REC
       *
-      *            最終日の食事を退避
+      *            食事を退避
                    IF      NACCT-ZAISKBKBN     =   "4"
                        MOVE    SPA-NAI-I01-IDOYMD(7:2)
                                          TO    IDX-SHOKUJIX
@@ -7962,6 +7962,55 @@
            DISPLAY "PTNYUINRRK-PTID = " PTNYUINRRK-PTID
            DISPLAY "PTNYUINRRK-NYUINKA = " PTNYUINRRK-NYUINKA
            DISPLAY "SPA-NAI-I01-IDOYMD-MAE = " SPA-NAI-I01-IDOYMD-MAE
+           DISPLAY "LNK-SCNYUACCT-EDSRYYMD = " LNK-SCNYUACCT-EDSRYYMD
+      *
+      *    入院会計削除前に会計データの食事区分と保険組合せを退避
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    "00"                TO  NACCT-SRYKA
+           MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
+                                       TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "NYUINACCT-KEY16"   TO  WRK-DBPATH
+           PERFORM   900-TBL-SELECT-SEC
+           IF      FLG-DBRC            =   ZERO
+               MOVE    ZERO        TO      WRK-TAIHI-SHOKUJI
+               PERFORM UNTIL       FLG-DBRC     NOT =   ZERO
+      *
+                   MOVE     MCPDATA-REC   TO   NYUINACCT-REC
+      *
+      *            食事を退避
+                   IF      NACCT-ZAISKBKBN     =   "4"
+                       MOVE    LNK-SCNYUACCT-EDSRYYMD(7:2)
+                                         TO    IDX-SHOKUJIX
+                       IF      NACCT-DAY(IDX-SHOKUJI9)  NOT =   ZERO
+                            MOVE   NACCT-DAY(IDX-SHOKUJI9) TO
+                                                  WRK-TAIHI-SHOKUJI
+                       END-IF
+                   END-IF
+      *            保険を退避
+                   IF      NACCT-ZAISKBKBN     =   "5"
+                       MOVE    LNK-SCNYUACCT-EDSRYYMD(7:2)
+                                         TO    IDX-SHOKUJIX
+                       IF      NACCT-DAY(IDX-SHOKUJI9)  NOT =   ZERO
+                            MOVE   NACCT-DAY(IDX-SHOKUJI9) TO
+                                                  WRK-TAIHI-HKN
+                       END-IF
+                   END-IF
+      *
+                   MOVE    "NYUINACCT-KEY16"   TO  WRK-DBPATH
+                   PERFORM 900-TBL-READ-SEC
+               END-PERFORM
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+           END-IF
+      *    入院会計マスタクローズ
+           MOVE    "NYUINACCT-KEY16"      TO  ORC-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    保険組合せ
            MOVE   PTNYUINRRK-HKNCOMBINUM
                                        TO  WRK-HKNCOMBINUM
@@ -8092,7 +8141,12 @@
            END-IF
       *    食事区分
            MOVE   "099999913"   TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
-           MOVE   1             TO  LNK-SCNYUACCT-SHOKUJIKBN
+           IF     WRK-TAIHI-SHOKUJI    NOT =   ZERO
+                  MOVE   WRK-TAIHI-SHOKUJI
+                                TO  LNK-SCNYUACCT-SHOKUJIKBN
+           ELSE
+                  MOVE   1      TO  LNK-SCNYUACCT-SHOKUJIKBN
+           END-IF
       *    食堂加算
            PERFORM     4801-BTUSEL-SEC
            IF   FLG-SYSKANRI           =    ZERO
@@ -8104,10 +8158,15 @@
            END-IF
       *    保険組合せ
            MOVE   "099999914"   TO  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
-           MOVE   PTNYUINRRK-HKNCOMBINUM
-                                TO  WRK-HKNCOMBINUM
-           MOVE   WRK-HKNCOMBINUM9 
+           IF     WRK-TAIHI-HKN    NOT =   ZERO
+                  MOVE   WRK-TAIHI-HKN
                                 TO  LNK-SCNYUACCT-HKNCOMBINUM
+           ELSE
+                  MOVE   PTNYUINRRK-HKNCOMBINUM
+                                TO  WRK-HKNCOMBINUM
+                  MOVE   WRK-HKNCOMBINUM9 
+                                TO  LNK-SCNYUACCT-HKNCOMBINUM
+           END-IF
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
            MOVE   "00"          TO  SPA-SRYKA
            PERFORM 4801-SENTEI-SET-SEC
