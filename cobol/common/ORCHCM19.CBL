@@ -824,8 +824,9 @@
                        ELSE
                            MOVE    ZERO                TO  WRK-PAGE-MAX
                        END-IF
-                   WHEN    OTHER
-                       MOVE    ZERO                TO  WRK-PAGE-MAX
+                   WHEN    "1"
+                   WHEN    "2"
+                       MOVE    1                   TO  WRK-PAGE-MAX
                END-EVALUATE
       *---(01.00.01) LINE ADD START ------------------------------------
                MOVE    ZERO            TO  FLG-PRINT
