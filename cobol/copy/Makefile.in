@@ -665,6 +665,8 @@ COPYS = \
         CPKENSASORTWK.INC \
         HCM2A.INC \
         HCM2B.INC \
+        HCM07.INC \
+        HCM08.INC \
 
 DBPATH = \
 	ORCA-DBPATH
