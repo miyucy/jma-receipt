@@ -51,7 +51,6 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-CHKMST          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
-           03  FLG-SANTEI          PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -448,26 +447,6 @@
            MOVE    ZERO                TO  FLG-SOUKI-ALL
            INITIALIZE                  WRK-SOUKI-G
            MOVE    LNK-ORCSC-SOUKI-G   TO  WRK-SOUKI-G
-      *TEST
-            DISPLAY  "ORCSC SRYCD:" LNK-ORCSC-RIGAKU-SRYCD (1)
-                    ",KBN:" LNK-ORCSC-RIG-KBN(1)
-                    ",RYO:" LNK-ORCSC-RIG-RYO(1)
-                    ",DAY:" LNK-ORCSC-RIG-DAY (1 16)
-                    ",DAY:" LNK-ORCSC-RIG-DAY (1 17)
-                    ",SOU:" LNK-ORCSC-SOUKI-FLG (1)
-            DISPLAY  "ORCSC SRYCD:" LNK-ORCSC-RIGAKU-SRYCD (2)
-                    ",KBN:" LNK-ORCSC-RIG-KBN(2)
-                    ",RYO:" LNK-ORCSC-RIG-RYO(2)
-                    ",DAY:" LNK-ORCSC-RIG-DAY (2 16)
-                    ",DAY:" LNK-ORCSC-RIG-DAY (2 17)
-                    ",SOU:" LNK-ORCSC-SOUKI-FLG (2)
-            DISPLAY  "ORCSC SRYCD:" LNK-ORCSC-RIGAKU-SRYCD (3)
-                    ",KBN:" LNK-ORCSC-RIG-KBN(3)
-                    ",RYO:" LNK-ORCSC-RIG-RYO(3)
-                    ",DAY:" LNK-ORCSC-RIG-DAY (3 16)
-                    ",DAY:" LNK-ORCSC-RIG-DAY (3 17)
-                    ",SOU:" LNK-ORCSC-SOUKI-FLG (3)
-      *TEST
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
@@ -973,33 +952,17 @@
                GO      TO      1001121-NYU-RIGAKU-CHK-EXT
            END-IF
       *
-      *TEST
-           DISPLAY "C80 WRK-RIGAKU-RYO:" WRK-RIGAKU-RYO
-                   ",WRK-RIGAKU-KBN:" WRK-RIGAKU-KBN
-      *TEST
       *    個別・集団療法チェック
            PERFORM VARYING    IDX2     FROM    1   BY  1
                    UNTIL     (IDX2     >   31  )   OR
                              (WRK-ERRCD    NOT =   SPACE)
                IF      WRK-COM-NYUINDAY (IDX-Z IDX2)     >   ZERO
                    MOVE    ZERO            TO  WRK-RIGAK-CNTALL
-      *TEST
-              DISPLAY "C80 NYUINDAY IDX2:" IDX2
-                      ",INPUTCD:" WRK-COM-INPUTCD (IDX-Z)
-      *TEST
                    PERFORM VARYING    IDY2     FROM    1   BY  1
                            UNTIL     (IDY2     >   6  )  OR
                                      (WRK-ERRCD    NOT =   SPACE)  OR
                                      (LNK-ORCSC-RIGAKU-SRYCD(IDY2)
                                                        =   SPACE)
-      *TEST
-            DISPLAY "IDY2:" IDY2 ",IDX2:" IDX2
-                    ",SRYCD:" LNK-ORCSC-RIGAKU-SRYCD (IDY2)
-                    ",KBN:" LNK-ORCSC-RIG-KBN(IDY2)
-                    ",RYO:" LNK-ORCSC-RIG-RYO(IDY2)
-                    ",DAY:" LNK-ORCSC-RIG-DAY (IDY2 IDX2)
-                    ",SOU:" LNK-ORCSC-SOUKI-FLG (IDX2)
-      *TEST
                        IF     (LNK-ORCSC-RIG-DAY (IDY2 IDX2)  >  ZERO )
                        AND    (WRK-RIGAKU-KBN     =   LNK-ORCSC-RIG-KBN
                                                                 (IDY2))
@@ -1072,12 +1035,6 @@
                            MOVE    "0092"          TO  WRK-ERRCD
                        END-IF
                    END-IF
-      *TEST
-                    DISPLAY "WRK-ERRCD:" WRK-ERRCD
-                          ",WRK-RIGAK-MAX:" WRK-RIGAK-MAX
-                          ",WRK-RIGAK-CNTALL:" WRK-RIGAK-CNTALL
-                          ",SOUKIL:" WRK-SOUKI-FLG (IDX2)
-      *TEST
                END-IF
            END-PERFORM
            IF      WRK-ERRCD       NOT =   SPACE
@@ -1117,15 +1074,6 @@
            COMPUTE WRK-TUKI-GOK        =   WRK-COM-NYU-KAI(IDX-Z)
                                        *   LNK-ORCSC-KAISU
       *
-      *TEST
-           DISPLAY "C80 WRK-TUKI-CNT:" WRK-TUKI-CNT
-                  ",WRK-RIG-CNT:" WRK-RIG-CNT
-                  ",WRK-TUKI-GOK:" WRK-TUKI-GOK
-                  ",LNK-ORCSC-KAISU:" LNK-ORCSC-KAISU
-                  ",NYU-KAI:" WRK-COM-NYU-KAI(IDX-Z)
-           DISPLAY "C80 WRK-RIGAKU-RYO:" WRK-RIGAKU-RYO
-                  ",FLG-SOUKI-ALL:" FLG-SOUKI-ALL
-      *TEST
       *    現在の位置
            MOVE    IDX-Z               TO  IDX-SYU
            IF      WRK-RIGAKU-RYO      =   "K"
@@ -1166,20 +1114,11 @@
       *
            PERFORM VARYING    IDX2     FROM    1   BY  1
                    UNTIL      IDX2     >   31
-      *TEST
-                  DISPLAY "IDX2:" IDX2
-                         ",DAY:" WRK-COM-NYUINDAY(IDX-SYU IDX2)
-      *TEST
                IF      WRK-COM-NYUINDAY (IDX-SYU IDX2)   >   ZERO
                    ADD      LNK-ORCSC-KAISU    TO  LNK-ORCSC-RIG-DAY
                                                            (IDX-RG IDX2)
                    ADD      LNK-ORCSC-KAISU    TO  LNK-ORCSC-RIGAKU-CNT
                                                              (IDX-RG)
-      *TEST
-                  DISPLAY "IDX2:" IDX2
-                         ",DAY:" LNK-ORCSC-RIG-DAY (IDX-RG IDX2)
-                         ",CNT:"  LNK-ORCSC-RIGAKU-CNT (IDX-RG)
-      *TEST
                END-IF
       *        早期リハビリあり
                IF      WRK-SOUKI-FLG (IDX2)    =   1
