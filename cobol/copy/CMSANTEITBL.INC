@@ -25,6 +25,7 @@
       *  01.00.02    NACL-多々納  04/03/15  Ｈ１６年４月改正追加
       *                                     介達牽引追加
       *                                     言語視覚療法３追加
+      *  01.00.03    NACL-多々納  04/12/02  急性発生日追加
       *****************************************************************
       *
       *    算定履歴保険番号毎のコード
@@ -97,9 +98,15 @@
       *    労災の手指の創傷に係る機能回復指導加算
            03  FILLER              PIC X(12)   VALUE   "  R101500080".
       *
+      *    脳血管急性発生日
+           03  FILLER              PIC X(12)   VALUE   "   099800101".
+      *    脳血管急性発生終了
+           03  FILLER              PIC X(12)   VALUE   "   099800102".
+      *
        01  TBL-SANTEI-AREA-R       REDEFINES   TBL-SANTEI-AREA.
       **** 03  TBL-SANTEI-OCC      OCCURS   39  INDEXED   TBL-SAN.
-           03  TBL-SANTEI-OCC      OCCURS   41  INDEXED   TBL-SAN.
+      *****03  TBL-SANTEI-OCC      OCCURS   41  INDEXED   TBL-SAN.
+           03  TBL-SANTEI-OCC      OCCURS   43  INDEXED   TBL-SAN.
       *        リハビリ（K:個別、S:集団）
                05  TBL-RIGAKU-RYO      PIC X(01).
       *        リハビリ（R:理学,S:作業, G:言語)

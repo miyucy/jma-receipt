@@ -293,6 +293,8 @@
                05  SPA-KYUSEI-90           PIC  X(08).
       *急性発症日
                05  SPA-KYUSEI-YMD          PIC  X(08).
+      *急性発症終了日
+               05  SPA-KYUSEI-END          PIC  X(08).
       *急性発症（当日）
                05  SPA-KYUSEI-FLG          PIC  9(01).
       *急性発症編集日
