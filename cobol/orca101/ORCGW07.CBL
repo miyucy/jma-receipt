@@ -39,6 +39,7 @@
       *  01.02.05    NACL-多々納  03/02/19  療養担当手当て追加
       *  01.02.06    NACL-多々納  03/03/14  特定薬剤治療管理料追加
       *  02.01.01    NACL-森脇    03/10/17  画面変更につき一括変更
+      *  02.01.02    NACL-多々納  03/11/07  入院初診料追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -80,9 +81,14 @@
       *                自動算定科
                        09  SPA-GMN-SRYKACD             PIC X(02).
                        09  SPA-GMN-SRYKAMEI            PIC X(20).
+      *                入院初診料
+                       09  SPA-GMN-NYUSYOSIN-G.
+                           11  SPA-GMN-NYUSYOSIN       PIC X(01).
+                           11  SPA-GMN-FN              PIC X(01).
+                           11  SPA-GMN-NYUSYOSINMEI    PIC X(10).
       *
       *                相互作用チェック期間
-                       09  SPA-GMN-KIKAN               PIC 9(02).
+                       09  SPA-GMN-INTERACT-KIKAN      PIC 9(02).
       *
       *                外来管理加算チェック
                        09  SPA-GMN-GAIKANRIKBN-G.
@@ -371,14 +377,18 @@
            IF      SPA-WID1-FLG    =   "OK"
                EVALUATE      SPA-WIDCD
                    WHEN   "1001"
+      *                自動算定情報の更新
                        PERFORM  491-KOUSHIN-1007-SEC
                        PERFORM  491-KOUSHIN-1008-SEC
                    WHEN   "1002"
+      *                自動算定情報の削除
                        PERFORM  4032-DEL-1007-SEC
                        PERFORM  4032-DEL-1008-SEC
                    WHEN   "1003"
+      *                患者登録報の更新
                        PERFORM  491-KOUSHIN-1017-SEC
                    WHEN   "1004"
+      *                患者登録報の削除
                        PERFORM  4032-DEL-1017-SEC
                END-EVALUATE
            ELSE
@@ -510,13 +520,33 @@
                END-IF
       *
                MOVE    SYS-1008-INTERACT-KIKAN
-                                           TO  SPA-GMN-KIKAN
+                                           TO  SPA-GMN-INTERACT-KIKAN
       *        外来管理加算チェック
                MOVE    SYS-1008-GAIKANRIKBN-CHK
                                            TO  SPA-GMN-GAIKANRIKBN-CHK
       *        外来カーソル移動
                MOVE    SYS-1008-GAI-CURSOR-SET-1
                                            TO  SPA-GMN-GAIMOVE
+      *
+      *        入院初診料自動発生
+               MOVE    SYS-1008-NYU-SYOSIN
+                                       TO  SPA-GMN-NYUSYOSIN
+           END-IF
+      *
+      *    入院初診料
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-NYUSYOSIN
+                                       =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST(IDY)
+                                               TO SPA-GMN-NYUSYOSIN-G
+                   MOVE    1                   TO  FLG-OK
+                   MOVE    SPA-GMN-DATA-MAX    TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-DATALST(01) TO SPA-GMN-NYUSYOSIN-G
            END-IF
       *
       *    初期設定
@@ -703,12 +733,14 @@
                    UNTIL       IDX     >   7
                MOVE    W07-DATA (IDX)      TO  SPA-GMN-DATA-G (IDX)
            END-PERFORM
+      *    入院初診料自動算定
+           MOVE    W07-NYUSYOSIN       TO  SPA-GMN-NYUSYOSIN-G
       *
            MOVE    W07-SRYKACD         TO  SPA-GMN-SRYKACD
            MOVE    W07-SRYKAMEI        TO  SPA-GMN-SRYKAMEI
       *
       *    チェック制御
-           MOVE    W07-KIKAN           TO  SPA-GMN-KIKAN
+           MOVE    W07-KIKAN           TO  SPA-GMN-INTERACT-KIKAN
            MOVE    W07-GAIKANKBN       TO  SPA-GMN-GAIKANRIKBN-G
            MOVE    W07-GAIMOVE         TO  SPA-GMN-GAIMOVE-G
       *
@@ -736,6 +768,11 @@
                    END-IF
       *            診療科チェック
                    PERFORM 4102-SRYKACD-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+      *            入院初診料自動算定チェック
+                   PERFORM 4103-NYUSYOSIN-CHK-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
@@ -832,6 +869,31 @@
       *
           .
        4100-KIKAN-CHK2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院初診料自動算定チェック処理
+      *****************************************************************
+       4103-NYUSYOSIN-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-NYUSYOSIN   =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST (IDY)
+                                           TO  SPA-GMN-NYUSYOSIN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0013"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+           END-IF
+      *
+          .
+       4103-DATA08-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1088,6 +1150,7 @@
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1002"              TO  SPA-ERRCD
                DISPLAY "SYSKANRI-KEY =>" SYS-1007-KEY 
+                       ",MCP-RC:" MCP-RC 
                GO  TO  4032-DEL-1007-EXT
            END-IF
       *
@@ -1119,6 +1182,7 @@
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1002"              TO  SPA-ERRCD
                DISPLAY "SYSKANRI-KEY =>" SYS-1008-KEY 
+                       ",MCP-RC:" MCP-RC 
                GO  TO  4032-DEL-1008-EXT
            END-IF
       *
@@ -1150,6 +1214,7 @@
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1002"                  TO  SPA-ERRCD
                DISPLAY "SYSKANRI-KEY =>" SYS-1017-KEY
+                       ",MCP-RC:" MCP-RC 
                GO  TO  4032-DEL-1017-EXT
            END-IF
       *
@@ -1233,6 +1298,8 @@
                                                MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1003"                  TO  SPA-ERRCD
+               DISPLAY "SYSKANRI-KEY =>" SYS-1017-KEY
+                       ",MCP-RC:" MCP-RC 
                GO  TO  490-KOUSHIN-1007-EXT
            END-IF      
       *
@@ -1265,11 +1332,13 @@
       *
            MOVE    SPA-W01-STYUKYMD        TO  SYS-1008-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-1008-EDYUKYMD
-           MOVE    SPA-GMN-KIKAN           TO  SYS-1008-INTERACT-KIKAN
+           MOVE    SPA-GMN-INTERACT-KIKAN  TO  SYS-1008-INTERACT-KIKAN
            MOVE    SPA-GMN-GAIKANRIKBN-CHK TO  SYS-1008-GAIKANRIKBN-CHK
            MOVE    SPA-GMN-DATA(7)         TO  SYS-1008-IKUJIEIYO-FLG
            MOVE    SPA-GMN-SRYKACD         TO  SYS-1008-IKUJIEIYO-SRYKA
            MOVE    SPA-GMN-GAIMOVE         TO  SYS-1008-GAI-CURSOR-SET-1
+      *    入院初診料自動発生
+           MOVE    SPA-GMN-NYUSYOSIN       TO  SYS-1008-NYU-SYOSIN
       *
            MOVE    SYS-1008-REC            TO  SYSKANRI-REC
       *     
@@ -1291,9 +1360,8 @@
                                                MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1003"                  TO  SPA-ERRCD
-               DISPLAY "W07 ERR:" MCP-RC
-                        ",MCP-FUNC:" MCP-FUNC
-                        ",ORC-DBPATH:" ORC-DBPATH
+               DISPLAY "W07 SYSKANRI-KEY =>" SYS-1008-KEY
+                       ",MCP-RC:" MCP-RC 
                GO  TO  490-KOUSHIN-1008-EXT
            END-IF      
       *
@@ -1352,8 +1420,8 @@
            IF      MCP-RC              NOT =   ZERO
                MOVE    "1003"                  TO  SPA-ERRCD
                DISPLAY "W07 ERR:" MCP-RC
+                        ",SYS-1017-KEY:" SYS-1017-KEY
                         ",MCP-FUNC:" MCP-FUNC
-                        ",ORC-DBPATH:" ORC-DBPATH
                GO  TO  490-KOUSHIN-1017-EXT
            END-IF
       *
@@ -1436,10 +1504,18 @@
                MOVE    SPA-GMN-DATA-MAX    TO  W07-COUNT(IDX)
            END-PERFORM
       *
-           MOVE  SPA-GMN-SRYKACD    TO  W07-SRYKACD
-           MOVE  SPA-GMN-SRYKAMEI   TO  W07-SRYKAMEI
+           MOVE    SPA-GMN-SRYKACD     TO  W07-SRYKACD
+           MOVE    SPA-GMN-SRYKAMEI    TO  W07-SRYKAMEI
+      *    入院初診料
+           MOVE    SPA-GMN-NYUSYOSIN-G TO  W07-NYUSYOSIN
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               MOVE    SPA-GMN-DATALST(IDY)
+                                       TO  W07-NYUSYOSIN-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-NYUSYOSIN-COUNT
       *
-           MOVE  SPA-GMN-KIKAN      TO  W07-KIKAN
+           MOVE  SPA-GMN-INTERACT-KIKAN    TO  W07-KIKAN
       *    外来管理加算チェック
            MOVE    SPA-GMN-GAIKANRIKBN-G   TO  W07-GAIKANKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1572,6 +1648,10 @@
                WHEN    "0012"
                    MOVE    "外来カーソル移動区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "0013"
+                   MOVE    "入院初診料入力エラー"
+                                                       TO  SPA-ERRMSG
+      *
                WHEN    "0020"
                    MOVE    "カルテの病名対象区分がありません。"
                                                        TO  SPA-ERRMSG
@@ -1682,12 +1762,15 @@
                    MOVE  "DATA07"          TO   MCP-WIDGET
                WHEN    9
                    MOVE  "SRYKACD"         TO   MCP-WIDGET
+               WHEN    13
+                   MOVE  "NYUSYOSIN"       TO   MCP-WIDGET
                WHEN    10
                    MOVE  "KIKAN"           TO   MCP-WIDGET
                WHEN    11
                    MOVE  "GAIKANKBN"       TO   MCP-WIDGET
                WHEN    12
                    MOVE  "GAIMOVE"         TO   MCP-WIDGET
+      *
                WHEN    20
                    MOVE  "BYOMEIKBN"       TO   MCP-WIDGET
                WHEN    21
@@ -1696,12 +1779,13 @@
                    MOVE  "HAKKOKBN"        TO   MCP-WIDGET
                WHEN    23
                    MOVE  "HOJYOKBN"        TO   MCP-WIDGET
+      *
                WHEN    99
                    MOVE  "B12"             TO   MCP-WIDGET
            END-EVALUATE
       *
            EVALUATE    SPA-GMN-CUR
-               WHEN    2   THRU    12
+               WHEN    2   THRU    13
                    MOVE    0               TO  W07-PAGENO
                WHEN    20  THRU    23
                    MOVE    1               TO  W07-PAGENO
@@ -1733,9 +1817,11 @@
                    IF      SPA-GMN-DATA(7)     =   "1"
                        MOVE    9           TO  SPA-GMN-CUR
                    ELSE
-                       MOVE    10          TO  SPA-GMN-CUR
+                       MOVE    13          TO  SPA-GMN-CUR
                    END-IF
                WHEN    "SRYKACD"
+                   MOVE    13              TO  SPA-GMN-CUR
+               WHEN    "NYUSYOSIN"
                    MOVE    10              TO  SPA-GMN-CUR
                WHEN    "KIKAN"
                    MOVE    11              TO  SPA-GMN-CUR

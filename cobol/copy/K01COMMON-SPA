@@ -69,6 +69,8 @@
                05  SPA-IKUJIEIYO-FLG       PIC X(01).
       *育児栄養加算自動算定科
                05  SPA-IKUJIEIYO-SRYKA     PIC X(02).
+      *入院初診料自動発生
+               05  SPA-NYU-SYOSIN          PIC X(02).
       *
            03  SPA-K01SET-AREA.
       *処理フラグ（０：通常、１：訂正）
