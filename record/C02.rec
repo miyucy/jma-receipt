@@ -39,11 +39,21 @@ C02	{
 			count	int;
 			item	varchar(6)[3];
 		};
+		HNYUGAIKBN_COMBO	{
+			HNYUGAIKBN	{
+				value	varchar(8);
+			};
+			count	int;
+			item	varchar(8)[3];
+		};
 		B03	{
 	           	state	int;
 		};
 		B09	{
 	           	state	int;
+		};
+		B20	{
+			label	varchar(6);
 		};
 		B21	{
 			label	varchar(4);
