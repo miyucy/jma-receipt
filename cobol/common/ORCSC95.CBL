@@ -2653,7 +2653,7 @@
       *                中止
                        WHEN    "3"
       ****************** IF      PTBYO-TENKIYMD  <=  SPA-SRYYMD
-                         IF      PTBYO-TENKIYMD  <   SPA-SRYYMD
+                         IF      PTBYO-TENKIYMD  <=  SPA-SRYYMD
                            IF      PTBYO-TENKIYMD  >=  WRK-TENKIYMD
                                MOVE    PTBYO-TENKIYMD  TO  WRK-TENKIYMD
                            END-IF
@@ -2696,8 +2696,8 @@
                        MOVE    1               TO  FLG-TENKI
                        MOVE    ZERO            TO  FLG-CHIYU
                    ELSE
-      *D               MOVE    ZERO           TO  FLG-TENKI
-                       IF     (WRK-CHIYUYMD        <   WRK-TENKIYMD)
+      *D               MOVE    ZERO            TO  FLG-TENKI
+                       IF     (WRK-CHIYUYMD        <=   WRK-TENKIYMD)
       *                最終日より前の時、初診算定へ
                        AND    (WRK-TENKIYMD        >=  SPA-LSTYMD )
                            MOVE    1               TO  FLG-CHIYU
@@ -2991,10 +2991,10 @@
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTBYOMEI-KEY10"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "PTBYOMEI-KEY10"    TO  ORC-DBPATH
                PERFORM 980-PTBYOMEI-READ-SEC
@@ -3360,16 +3360,15 @@
            PERFORM UNTIL       FLG-SANTEI          =   1
       *        終了判定
                IF      SANTEI-MSANTEICNT   >   ZERO
-                   IF      SANTEI-SRYYM    <   WRK-YYMM
-                       MOVE    1                   TO  FLG-SANTEI
-                   ELSE
+                   IF      SANTEI-SRYYM    <=  SPA-SRYYMD(1:6)
                        PERFORM VARYING     IDX-Y2  FROM    1  BY  1
                                UNTIL       IDX-Y2      >   31
                            IF      SANTEI-DAY (IDX-Y2) >   ZERO
                                MOVE    IDX-Y2          TO  WRK-DD
                            END-IF
                        END-PERFORM
-                       MOVE    SANTEI-SRYYM        TO  WRK-YYMM
+                       MOVE    SANTEI-SRYYM        TO  WRK-YMD(1:6)
+                       MOVE    1                   TO  FLG-SANTEI
                    END-IF
                END-IF
       *
