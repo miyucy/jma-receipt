@@ -535,15 +535,15 @@
       *
       *    診療行為コード表名称セット
            INITIALIZE                  MKNO-DATA-REC
+           MOVE    ZERO                TO  FLG-TENSUKBN
       *
            OPEN    INPUT               TENSUKBN-FILE
            IF      STS-TENSUKBN    NOT =   ZERO
                DISPLAY "TENSUKBN-FILE OPEN ERR:" STS-TENSUKBN
-               GO     TO      1001-TENSUKBN-SET-EXT
+               MOVE    1                    TO  FLG-TENSUKBN
            END-IF
       *
            MOVE    ZERO                TO  IDX
-           MOVE    ZERO                TO  FLG-TENSUKBN
            PERFORM UNTIL    FLG-TENSUKBN     =   1
                READ                    TENSUKBN-FILE
                    AT  END
@@ -1198,6 +1198,13 @@
                PERFORM 930-NYUINACCT-READ-SEC
            END-PERFORM
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
            .
        3102-NYUACCT-SYORI-EXT.
            EXIT.
@@ -1261,6 +1268,12 @@
                MOVE    "NYUINACT-KEY2"     TO  ORC-DBPATH
                PERFORM 940-NYUINACT-RAED-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "NYUINACT-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        31021-NYUINACCT-SPA-EXT.
@@ -1306,13 +1319,12 @@
       *
            IF      TBL-IDX2            =   ZERO
                MOVE    "9999"              TO  SPA-ERRCD
-               GO      TO      31011-NYUINACT-SPA-EXT
            END-IF
       *
       *    診療行為回数計算
            PERFORM VARYING     TBL-IDX3    FROM    1   BY  1
-                   UNTIL       TBL-IDX3    >   31
-      *
+                   UNTIL      (TBL-IDX3    >   31   )
+                           OR (SPA-ERRCD   NOT =   SPACE )
                IF      NACCT-DAY(TBL-IDX3)
                                           NOT =   ZERO
                        ADD     1              TO  WRK-TBL-KAISU
@@ -1790,6 +1802,12 @@
                MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
                PERFORM 930-NYUINACCT-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    保険毎の計算
            PERFORM VARYING     IDX-D   FROM    1   BY  1
@@ -1861,6 +1879,12 @@
                MOVE    1               TO  FLG-HKNCOMBI
                INITIALIZE                  HKNCOMBI-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    労災・自賠責チェック
            IF      COMB-HKNNUM         =   "971"  OR  "973"
@@ -2259,14 +2283,14 @@
       *    診療科選択
            IF      FLG-CHK             =   ZERO
                MOVE    "0001"          TO  SPA-ERRCD
-               GO      TO      41013-SRYKAI-SYORI-EXT
+           ELSE
+      *
+      *        画面編集用内容編集処理
+               PERFORM 3100-GMNSET-SYORI-SEC
+      *
+               MOVE    1                   TO  SPA-GMN-SYORI
+               MOVE    1                   TO  SPA-GMN-CUR
            END-IF
-      *
-      *    画面編集用内容編集処理
-           PERFORM 3100-GMNSET-SYORI-SEC
-      *
-           MOVE    1                   TO  SPA-GMN-SYORI
-           MOVE    1                   TO  SPA-GMN-CUR
            .
        41013-SRYKAI-SYORI-EXT.
            EXIT.
@@ -2293,14 +2317,14 @@
            IF      FLG-CHK             =   ZERO
                MOVE    3                   TO  SPA-GMN-CUR
                MOVE    "0002"              TO  SPA-ERRCD
-               GO      TO      41017-NYUGAIKBN-CHK-EXT
+           ELSE
+      *
+      *        画面編集用内容編集処理
+               PERFORM 3100-GMNSET-SYORI-SEC
+      *
+               MOVE    1                   TO  SPA-GMN-SYORI
+               MOVE    1                   TO  SPA-GMN-CUR
            END-IF
-      *
-      *    画面編集用内容編集処理
-           PERFORM 3100-GMNSET-SYORI-SEC
-      *
-           MOVE    1                   TO  SPA-GMN-SYORI
-           MOVE    1                   TO  SPA-GMN-CUR
       *
            .
        41017-NYUGAIKBN-CHK-EXT.

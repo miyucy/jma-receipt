@@ -338,6 +338,12 @@
                MOVE    "EXAMPLE-KEY1"      TO  ORC-DBPATH
                PERFORM 930-EXAMPLE-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "EXAMPLE-KEY1"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            MOVE    ZERO                TO  SPA-J024-SELNUM
       *
@@ -549,6 +555,12 @@
                MOVE    1               TO  FLG-EXAMPLE
                INITIALIZE                  EXAMPLE-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      FLG-EXAMPLE         =   ZERO
                IF      FLG-OK              =   1
       *            コメント追加
@@ -580,10 +592,10 @@
       *
            IF      SPA-J024-TBL        =   ZERO
                MOVE    "0003"              TO  SPA-ERRCD
-               GO      TO      240-COMMENT-DEL-EXT
+           ELSE
+               MOVE    "0104"              TO  SPA-JIDCD
            END-IF
       *
-           MOVE    "0104"              TO  SPA-JIDCD
            .
        240-COMMENT-DEL-EXT.
            EXIT.

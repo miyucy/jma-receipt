@@ -1144,11 +1144,12 @@
                END-IF
       *
            END-IF
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    システム管理検索（チェック機能制御情報）
            MOVE    SPACE               TO  SYS-1008-REC
@@ -1172,6 +1173,12 @@
                INITIALIZE                  SYS-1008-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1008-REC
       *
@@ -2605,12 +2612,18 @@
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0080"          TO  SPA-ERRCD
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G
+                                                       (SPA-GMN-IDX)
+                                                            (IDX-STR:)
+               END-IF
                MOVE    "3"             TO  SPA-COM-CUR (SPA-GMN-IDX)
                MOVE    2               TO  SPA-GMN-CUR
-               GO      TO      40113-MEISYOU-CHK-EXT
-           END-IF
-           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G(SPA-GMN-IDX)
+           ELSE
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G
+                                                         (SPA-GMN-IDX)
                                                             (IDX-STR:)
+           END-IF
       *
            .
        40113-MEISYOU-CHK-EXT.
@@ -3756,8 +3769,8 @@
            ELSE
                MOVE    1                   TO  FLG-CHKMST
            END-IF
-           IF      FLG-CHKMST          =   1
       *
+           IF      FLG-CHKMST          =   1
                MOVE    "DBCLOSE"           TO  MCP-FUNC
                MOVE    "CHK-KEY3"          TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
@@ -5047,6 +5060,12 @@
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SRYACT-NEXT-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        45013-SANTEI-DELETE-EXT.
@@ -5492,6 +5511,12 @@
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SRYACT-NEXT-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            .
       *
        450422-SANTEI-UPD-EXT.
@@ -5845,6 +5870,12 @@
                INITIALIZE                  SYUNOU-REC
                MOVE    1               TO  FLG-SYUNOU
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            IF      FLG-SYUNOU          =   ZERO
                MOVE    "1"                 TO  SYU-ACCT-UPDKBN
@@ -5931,6 +5962,12 @@
                    PERFORM 990-PARA-READ-SEC
                END-IF
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
       *

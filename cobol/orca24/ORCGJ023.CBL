@@ -475,6 +475,12 @@
                    INITIALIZE                      PTRSIINF-REC
                    MOVE    1                   TO  FLG-PTRSIINF
                END-IF
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                MOVE    SPACE               TO  WRK-HKNKBN-MEI
                EVALUATE    PTRSI-HKNKBN
                    WHEN    "1"
@@ -608,6 +614,12 @@
                MOVE    "RECECOM-KEY2"      TO  ORC-DBPATH
                PERFORM 920-RECECOM-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "RECECOM-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            MOVE    SPACE               TO  SPA-J023-COMMENT
            MOVE    ZERO                TO  SPA-J023-SELNUM
@@ -683,6 +695,12 @@
                MOVE    "JYURRK-KEY13"    TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "JYURRK-KEY13"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    受診のあった保険組合せのみ表示する
            INITIALIZE                  SPA-J023-HKNCOMB-COMB
@@ -781,6 +799,12 @@
                MOVE    WRK-DBPATH          TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            MOVE    ZERO                TO  SPA-J023-RRKMAX
            PERFORM VARYING     IDY     FROM    1   BY  1
@@ -905,6 +929,12 @@
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "JYURRK-KEY13"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        3141-JYURRK-CHK-EXT.
@@ -958,6 +988,12 @@
                MOVE    1               TO  FLG-HKNCOMBI
                INITIALIZE                  HKNCOMBI-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      FLG-HKNCOMBI        =   ZERO
                PERFORM 31011-HKNCOMBI-HEN-SEC
            ELSE
@@ -1563,6 +1599,12 @@
                MOVE    "JYURRK-KEY13"    TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "JYURRK-KEY13"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0012"          TO  SPA-ERRCD
@@ -1626,6 +1668,12 @@
                MOVE    1               TO  FLG-RECECOM
                INITIALIZE                  RECECOM-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        2120-RECECOM-SEL-EXT.
@@ -1776,6 +1824,9 @@
                   (KANACHK-SYUBETU     =   1     )
       *        全角以外エラー
                MOVE    "0013"          TO  SPA-ERRCD
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-J023-COMMENT
+               END-IF
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  SPA-J023-COMMENT
            END-IF
@@ -1842,6 +1893,12 @@
                MOVE    1               TO  FLG-EXAMPLE
                INITIALIZE                  EXAMPLE-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        28001-EXAMPLE-CHK-EXT.
@@ -1878,6 +1935,13 @@
                    MOVE    1               TO  FLG-EXAMPLE
                    INITIALIZE                  EXAMPLE-REC
                END-IF
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "EXAMPLE-KEY2"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+      *
                MOVE    EXAMPLE-RENNUM      TO  SPA-J023-BUNNUM
                IF      SPA-J023-BUNNUM     =   999
                    MOVE    "0010"              TO  SPA-ERRCD
