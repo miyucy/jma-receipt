@@ -702,7 +702,8 @@
       ******************************************************************
        MAIN-RTN            SECTION.
        MAIN-000.
-           MOVE    ZERO            TO  LNK-S01-RC.
+      *
+      ***  MOVE    ZERO            TO  LNK-S01-RC.
            MOVE    LNK-S01-IDX     TO  IDY.
            MOVE    SPACE           TO  KEISAN-AREA.
            INITIALIZE                  KEISAN-AREA.
@@ -3130,16 +3131,14 @@
                IF      MCP-RC             =       ZERO
                        MOVE      "SYUTOTAL-KEY"   TO   ORC-DBPATH
                        PERFORM    SYUTOTAL-READ-SEC
-                       PERFORM  UNTIL  (FLG-SYUTOTAL   =    1)
-                         IF   SYUTTL-DENPJTIKBN  NOT =  "3"
+                       IF   FLG-SYUTOTAL   =    ZERO
                             PERFORM        2201-SYUNOU-HENKAN-SEC
                             PERFORM        2201-SYUNOU-COUNT-SEC
                             MOVE  SYUTTL-DENPNUM    TO  WK-TAIHI-DENPNUM
                             MOVE     1              TO  FLG-SYUTOTAL-SET
-                         END-IF
-                         MOVE    "SYUTOTAL-KEY"   TO   ORC-DBPATH
-                         PERFORM  SYUTOTAL-READ-SEC
-                       END-PERFORM
+                       ELSE
+                           MOVE    12             TO   LNK-S01-RC
+                       END-IF
                 ELSE
                        MOVE    12                 TO   LNK-S01-RC
                 END-IF

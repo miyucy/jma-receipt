@@ -46,6 +46,15 @@
            03  IDY                         PIC 9(02).
            03  IDZ                         PIC 9(02).
       *
+      *    ワーク領域
+       01  WRK-AREA.
+           03  WRK-TAIHI-HKNCOMBINUM       PIC X(04).
+           03  WRK-SYUTEN                  PIC 9(07).
+           03  WRK-SINDAN                  PIC 9(07).
+           03  WRK-MEISAI                  PIC 9(07).
+           03  WRK-RYOYO                   PIC 9(07).
+           03  WRK-SENINFLG                PIC X(01).
+      *
       *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
@@ -99,13 +108,21 @@
        MAIN-RTN            SECTION.
        MAIN-000.
       *
-           MOVE    ZERO         TO  LNK-S01-RC.
+           MOVE       ZERO      TO     LNK-S01-RC.
       *
-      *    合計レコードをもつレコードのフラグセット
+      *    合計レコードをもつレコードのフラグセット等
+           MOVE       SPACE     TO     WRK-TAIHI-HKNCOMBINUM.
+           MOVE       ZERO      TO     WRK-SYUTEN.
+           MOVE       ZERO      TO     WRK-SINDAN.
+           MOVE       ZERO      TO     WRK-MEISAI.
+           MOVE       ZERO      TO     WRK-RYOYO.
+           MOVE       SPACE     TO     WRK-SENINFLG.
+      *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL  (IDX                 >    15 )
                                 OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
                 IF   LNK-SYU-SRYKA(IDX)  =  "00"
+      *
                     PERFORM    VARYING   IDY    FROM   1   BY   1
                                 UNTIL    IDY    >    IDX
       *
@@ -115,6 +132,48 @@
                       END-IF
       *
                     END-PERFORM
+      *
+                    IF     LNK-SYU-SYUHKNNUM(IDX)  =   "973"
+      *
+                       MOVE   WRK-SYUTEN    TO    LNK-S01-SYUTEN(IDX)
+                       MOVE   WRK-SINDAN    TO    LNK-S01-SINDAN(IDX)
+                       MOVE   WRK-MEISAI    TO    LNK-S01-MEISAI(IDX)
+                       MOVE   WRK-RYOYO     TO    LNK-S01-RYOYO(IDX)
+      *
+                    END-IF
+      *
+                    MOVE      WRK-SENINFLG  TO    LNK-S01-SENINFLG(IDX)
+                ELSE
+                    IF   WRK-TAIHI-HKNCOMBINUM  NOT =  SPACE
+                    AND  WRK-TAIHI-HKNCOMBINUM
+                                        NOT =   LNK-SYU-HKNCOMBINUM(IDX)
+                          MOVE    ZERO    TO   WRK-SYUTEN
+                          MOVE    ZERO    TO   WRK-SINDAN
+                          MOVE    ZERO    TO   WRK-MEISAI
+                          MOVE    ZERO    TO   WRK-RYOYO
+                          MOVE    SPACE   TO   WRK-SENINFLG
+                    END-IF
+      *
+                    IF  LNK-SYU-SYUHKNNUM(IDX)  =   "973"
+      *
+                      COMPUTE   WRK-SYUTEN  =  WRK-SYUTEN
+                                            +  LNK-S01-SYUTEN(IDX)
+                      COMPUTE   WRK-SINDAN  =  WRK-SINDAN
+                                            +  LNK-S01-SINDAN(IDX)
+                      COMPUTE   WRK-MEISAI  =  WRK-MEISAI
+                                            +  LNK-S01-MEISAI(IDX)
+                      COMPUTE   WRK-RYOYO   =  WRK-RYOYO
+                                            +  LNK-S01-RYOYO(IDX)
+      *
+                    END-IF
+      *
+                    IF      WRK-SENINFLG            =  SPACE
+                    AND     LNK-S01-SENINFLG(IDX)   =   "1"
+                        MOVE     "1"       TO  WRK-SENINFLG
+                    END-IF
+      *
+                    MOVE    LNK-SYU-HKNCOMBINUM(IDX)
+                                           TO  WRK-TAIHI-HKNCOMBINUM
                 END-IF
       *
            END-PERFORM.

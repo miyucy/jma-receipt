@@ -197,7 +197,7 @@
            COPY    "CPORCS01.INC".
       *
       *    ワーク負担金額計算用パラメタ（合計用）
-           COPY    "CPORCS01.INC" REPLACING  //LNK-// BY //WRK-//.
+      ***  COPY    "CPORCS01.INC" REPLACING  //LNK-// BY //WRK-//.
       *
       *    ワーク収納マスター
        01  LNK-SYUNOU-REC-T.
@@ -353,7 +353,7 @@
       *    収納データの再編集
       *
            INITIALIZE                  WRK-SYUNOU-REC
-           INITIALIZE                  WRK-ORCS01-REC
+      ***  INITIALIZE                  WRK-ORCS01-REC
            MOVE       SPACE     TO     WRK-TAIHI-HKNCOMBINUM
       *
            PERFORM    VARYING   IDY    FROM   1   BY   1
@@ -535,7 +535,7 @@
                  AND  WRK-TAIHI-HKNCOMBINUM
                                      NOT =   LNK-SYU-HKNCOMBINUM(IDY)
                        INITIALIZE       WRK-SYUNOU-REC
-                       INITIALIZE       WRK-ORCS01-REC
+      ***              INITIALIZE       WRK-ORCS01-REC
                  END-IF
       *
                  PERFORM   4403-GOKEI-TAIHI-SEC
@@ -1815,23 +1815,23 @@
            END-PERFORM
       *
       *    自賠責保険処理
-           IF  LNK-SYU-SYUHKNNUM(IDY)  =   "973"
+      ***  IF  LNK-SYU-SYUHKNNUM(IDY)  =   "973"
       *
-               COMPUTE   WRK-S01-SYUTEN(1)  =  WRK-S01-SYUTEN(1)
-                                            +  LNK-S01-SYUTEN(IDY)
-               COMPUTE   WRK-S01-SINDAN(1)  =  WRK-S01-SINDAN(1)
-                                            +  LNK-S01-SINDAN(IDY)
-               COMPUTE   WRK-S01-MEISAI(1)  =  WRK-S01-MEISAI(1)
-                                            +  LNK-S01-MEISAI(IDY)
-               COMPUTE   WRK-S01-RYOYO(1)   =  WRK-S01-RYOYO(1)
-                                            +  LNK-S01-RYOYO(IDY)
+      ***      COMPUTE   WRK-S01-SYUTEN(1)  =  WRK-S01-SYUTEN(1)
+      ***                                   +  LNK-S01-SYUTEN(IDY)
+      ***      COMPUTE   WRK-S01-SINDAN(1)  =  WRK-S01-SINDAN(1)
+      ***                                   +  LNK-S01-SINDAN(IDY)
+      ***      COMPUTE   WRK-S01-MEISAI(1)  =  WRK-S01-MEISAI(1)
+      ***                                   +  LNK-S01-MEISAI(IDY)
+      ***      COMPUTE   WRK-S01-RYOYO(1)   =  WRK-S01-RYOYO(1)
+      ***                                   +  LNK-S01-RYOYO(IDY)
       *
-           END-IF
+      ***  END-IF
       *
-           IF      WRK-S01-SENINFLG(1)     =  SPACE
-           AND     LNK-S01-SENINFLG(IDY)   =  "1"
-                 MOVE     "1"          TO   WRK-S01-SENINFLG(1)
-           END-IF
+      ***  IF      WRK-S01-SENINFLG(1)     =  SPACE
+      ***  AND     LNK-S01-SENINFLG(IDY)   =  "1"
+      ***        MOVE     "1"          TO   WRK-S01-SENINFLG(1)
+      ***  END-IF
       *
            .
       *
@@ -1877,16 +1877,16 @@
            END-PERFORM
       *
       *    自賠責保険処理
-           IF  LNK-SYU-SYUHKNNUM(IDY)  =   "973"
+      ***  IF  LNK-SYU-SYUHKNNUM(IDY)  =   "973"
       *
-               MOVE   WRK-S01-SYUTEN(1)    TO    LNK-S01-SYUTEN(IDY)
-               MOVE   WRK-S01-SINDAN(1)    TO    LNK-S01-SINDAN(IDY)
-               MOVE   WRK-S01-MEISAI(1)    TO    LNK-S01-MEISAI(IDY)
-               MOVE   WRK-S01-RYOYO(1)     TO    LNK-S01-RYOYO(IDY)
+      ***      MOVE   WRK-S01-SYUTEN(1)    TO    LNK-S01-SYUTEN(IDY)
+      ***      MOVE   WRK-S01-SINDAN(1)    TO    LNK-S01-SINDAN(IDY)
+      ***      MOVE   WRK-S01-MEISAI(1)    TO    LNK-S01-MEISAI(IDY)
+      ***      MOVE   WRK-S01-RYOYO(1)     TO    LNK-S01-RYOYO(IDY)
       *
-           END-IF
+      ***  END-IF
       *
-           MOVE       WRK-S01-SENINFLG(1)  TO    LNK-S01-SENINFLG(IDY)
+      ***  MOVE       WRK-S01-SENINFLG(1)  TO    LNK-S01-SENINFLG(IDY)
       *
            .
       *
