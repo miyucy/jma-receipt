@@ -327,6 +327,20 @@ path	key16 	{
 	};
 };
 
+path	key17 	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key17_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPID      =   :HOSPID
+			AND     PTID        =   :PTID
+			AND     SRYYM       =   :SRYYM
+			AND     ZAISKBKBN   =   :ZAISKBKBN
+			ORDER  BY   SRYKA
+		;
+	};
+};
+
 path	upd1 	{
 	DBUPDATE	{
 		UPDATE tbl_nyuinacct
