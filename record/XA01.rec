@@ -4,7 +4,7 @@ XA01	{
 			value	number(3);
 		};
 		TBL_GROUP	{
-			value	varchar(15);
+			value	varchar(14);
 		};
 		RENNUM	{
 			value	number(4);
