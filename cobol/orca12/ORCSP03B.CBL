@@ -972,7 +972,8 @@
            IF      SPA-NAI-BIRTHDAY    =   SPACE
                GO      TO      200-KANREN-CHK-EXT
            END-IF
-           IF      SPA-NAI-PTKOH-SBTKBN(IDX-K) =   "3"
+      *****IF      SPA-NAI-PTKOH-SBTKBN(IDX-K) =   "3"
+           IF      SPA-GMN-KOHNUM (IDX-K)  =   "027"
       *        老人保険年齢チェック
                PERFORM 2004-RJN-TAISYOAGE-CHECK-SEC
            ELSE
