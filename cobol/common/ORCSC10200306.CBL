@@ -252,6 +252,10 @@
       *    ½é¿Ç»»ÄêÆü
            03  WRK-SYOYMD              PIC X(08).
       *
+      *    ½ÅÊ£·Ù¶ç¥¨¥é¡¼ÍÑ
+           03  IDX-KEI                 PIC 9(04).
+           03  FLG-KEI                 PIC 9(01).
+      *
       *    ÊÝÂ¸ÍÑ£Ó£Ð£Á
        01  HZN-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
@@ -592,13 +596,14 @@
       *        ½é¿Ç¡¢ºÆ¿Ç¡¢»ØÆ³¡¢ºßÂð¤Î»þ¡¢²ó¿ô¤Ï£±¤Î¤ß
                IF     (WRK-COM-SRYKBN (IDX-Z)  =   "11"  OR
                                                    "12"  OR
-                                                   "13" ) OR
-                      (WRK-COM-SRYKBN (IDX-Z)  =   "14" )
+                                                   "13"  OR
+                                                   "14" )
+                  AND (WRK-ERRCD               =   SPACE )
+      *?????          (WRK-COM-SRYKBN (IDX-Z)  =   "14" )
       *??????     AND  WRK-COM-SRYSYUKBN(IDX-Z)  = "140" )
                   IF      (WRK-COM-KAIFLG (IDX-Z)  =   1  )  AND
-                         (WRK-COM-KAISU(IDX-Z)    >   1  )
-                       MOVE    "0008"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                          (WRK-COM-KAISU(IDX-Z)    >   1  )
+                       PERFORM 10012-KAISU-CHK-SEC
                    END-IF
                END-IF
            END-PERFORM
@@ -607,6 +612,25 @@
       *
            .
        1001-NAI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ²ó¿ô¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       10012-KAISU-CHK-SEC            SECTION.
+      *
+      *    ¿ÇÎÅ¾ðÊóÄó¶¡ÎÁ¡Ê£Á¡Ë¡¤¡Ê£Â¡Ë¤Ï½ÅÊ££Ï£Ë¤È¤¹¤ë
+           IF     (IDX-SYU             >   ZERO )  AND
+                  (WRK-COM-INPUTCD (IDX-SYU)   =   "180016110"
+                                               OR  "180016210" )
+               CONTINUE
+           ELSE
+               MOVE    "0008"          TO  WRK-ERRCD
+               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+           END-IF
+      *
+           .
+       10012-KAISU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2706,37 +2730,72 @@
       *****************************************************************
        2000-JYUFUKU-CHK-SEC               SECTION.
       *
-      *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+               MOVE    ZERO                TO  FLG-CHK
+               MOVE    ZERO                TO  FLG-KEI
       *        ¿Ç»¡¤Ç¼êµ»¤Î»þ¡¢½ÅÊ£¥Á¥§¥Ã¥¯¤ò¹Ô¤¦
                IF     (WRK-COM-SRYKBN(IDX-Z)(1:1)  =   "1"   )  AND
                       (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "1"  )   AND
                       (WRK-COM-DATAKBN(IDX-Z)      =   "1"  )
-      *            ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍýÎÁ
-                 IF    WRK-COM-INPUTCD(IDX-Z)      =   "113000410" OR
-                                                       "113000510"
-                     CONTINUE
-                 ELSE
+      *            ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍýÎÁ¤ÏÂÐ¾Ý³°¤È¤¹¤ë
+                   IF    WRK-COM-INPUTCD(IDX-Z)      =   "113000410" OR
+                                                         "113000510"
+                       CONTINUE
+                   ELSE
+                       MOVE    1                 TO  FLG-CHK
+                   END-IF
+      *            ¿ÇÎÅ¾ðÊóÄó¶¡ÎÁ¡Ê£Á¡Ë¡¤¡Ê£Â¡Ë¤Ï½ÅÊ£»þ·Ù¹ð¤È¤¹¤ë
+                   IF    WRK-COM-INPUTCD (IDX-Z) =   "180016110"
+                                                 OR  "180016210"
+                      MOVE    1                  TO  FLG-KEI
+                   END-IF
+               END-IF
       *
+               IF      FLG-CHK             =   1
+                   MOVE    ZERO                TO  IDX-KEI
                    COMPUTE IDX-Z3          =   IDX-Z   +   1
                    PERFORM VARYING     IDX-Z2  FROM    IDX-Z3 BY  1
                            UNTIL      (IDX-Z2      >   200       )  OR
                                       (SPA-ERRCD   NOT =   SPACE )  OR
+                                      (IDX-KEI         >   ZERO  )  OR
                                       (WRK-GMN-INPUTCD (IDX-Z2)
                                                        =   SPACE )
                        IF     (WRK-COM-SRYKBN  (IDX-Z)
                                            =   WRK-COM-SRYKBN(IDX-Z2))
                          AND  (WRK-COM-INPUTCD (IDX-Z)
                                            =   WRK-COM-INPUTCD(IDX-Z2))
-                           MOVE    "0134"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  WRK-COM-CUR
+      *                    ·Ù¹ð
+                           IF      FLG-KEI         =   1
+                               MOVE    IDX-Z2          TO  IDX-KEI
+                           ELSE
+      *                    ¥¨¥é¡¼
+                               MOVE    "0134"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  WRK-COM-CUR
                                                               (IDX-Z2)
+                           END-IF
                        END-IF
                    END-PERFORM
-                 END-IF
+      *
+      *            ·Ù¹ð
+                   IF      FLG-KEI         =   1
+                       IF     (IDX-KEI         =   ZERO )  AND
+                              (WRK-COM-KAISU(IDX-Z)    >   1  )
+                           MOVE    IDX-Z           TO  IDX-KEI
+                       END-IF
+                       IF      IDX-KEI             >   ZERO
+                           IF      WRK-COM-KZMFLG (IDX-KEI)
+                                                   =   SPACE
+                               MOVE    "K016"      TO  SPA-ERRCD
+                               MOVE    "1"         TO  WRK-COM-CUR
+                                                             (IDX-KEI)
+                               MOVE    "1"         TO  WRK-COM-KZMFLG
+                                                             (IDX-KEI)
+                           END-IF
+                       END-IF
+                   END-IF
                END-IF
            END-PERFORM
       *

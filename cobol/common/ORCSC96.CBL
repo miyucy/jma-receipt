@@ -926,6 +926,11 @@
                WHEN    "K020"
                    MOVE    "警告！再診料の受診回数が違います。"
                                        TO  SPA-ERRMSG
+               WHEN    "K016"
+                   MOVE    "警告！診療情報提供料が"
+                                       TO  SPA-ERRMSG
+                   MOVE    "２回以上の算定になります。"
+                                       TO  SPA-ERRMSG(23:)
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG

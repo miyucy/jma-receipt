@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−多々納 02/10/18  入院追加
+      *  01.00.02    NACL-多々納  03/06/17  回数編集修正
       *****************************************************************
       *
       *
@@ -347,6 +348,8 @@
                STRING  WRK-HEN-INPUTCD         DELIMITED   BY  SPACE
                        " "                     DELIMITED   BY  SIZE
                        WRK-ATAI                DELIMITED   BY  "  "
+                       WRK-KAKERU              DELIMITED   BY  SPACE
+                       WRK-KAISU-H             DELIMITED   BY  SPACE
                        INTO                    SPA-GMN-INPUTCD(IDX)
                END-STRING
            END-IF

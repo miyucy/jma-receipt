@@ -252,6 +252,10 @@
       *    初診算定日
            03  WRK-SYOYMD              PIC X(08).
       *
+      *    重複警句エラー用
+           03  IDX-KEI                 PIC 9(04).
+           03  FLG-KEI                 PIC 9(01).
+      *
       *    保存用ＳＰＡ
        01  HZN-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
@@ -732,13 +736,14 @@
       *        初診、再診、指導、在宅の時、回数は１のみ
                IF     (WRK-COM-SRYKBN (IDX-Z)  =   "11"  OR
                                                    "12"  OR
-                                                   "13" ) OR
-                      (WRK-COM-SRYKBN (IDX-Z)  =   "14" )
+                                                   "13"  OR
+                                                   "14" )
+                  AND (WRK-ERRCD               =   SPACE )
+      *?????          (WRK-COM-SRYKBN (IDX-Z)  =   "14" )
       *??????     AND  WRK-COM-SRYSYUKBN(IDX-Z)  = "140" )
                   IF      (WRK-COM-KAIFLG (IDX-Z)  =   1  )  AND
-                         (WRK-COM-KAISU(IDX-Z)    >   1  )
-                       MOVE    "0008"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                          (WRK-COM-KAISU  (IDX-Z)  >   1  )
+                       PERFORM 10012-KAISU-CHK-SEC
                    END-IF
                END-IF
            END-PERFORM
@@ -747,6 +752,25 @@
       *
            .
        1001-NAI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    回数チェック処理
+      *****************************************************************
+       10012-KAISU-CHK-SEC            SECTION.
+      *
+      *    診療情報提供料（Ａ），（Ｂ）は重複ＯＫとする
+           IF     (IDX-SYU             >   ZERO )  AND
+                  (WRK-COM-INPUTCD (IDX-SYU)   =   "180016110"
+                                               OR  "180016210" )
+               CONTINUE
+           ELSE
+               MOVE    "0008"          TO  WRK-ERRCD
+               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+           END-IF
+      *
+           .
+       10012-KAISU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2904,16 +2928,28 @@
                    UNTIL      (IDX-Z       >   200      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+               MOVE    ZERO                TO  FLG-CHK
+               MOVE    ZERO                TO  FLG-KEI
       *        診察で手技の時、重複チェックを行う
                IF     (WRK-COM-SRYKBN(IDX-Z)(1:1)  =   "1"   )  AND
                       (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "1"  )   AND
                       (WRK-COM-DATAKBN(IDX-Z)      =   "1"  )
       *            特定薬剤治療管理料
-                 IF    WRK-COM-INPUTCD(IDX-Z)      =   "113000410" OR
+                   IF    WRK-COM-INPUTCD(IDX-Z)    =   "113000410" OR
                                                        "113000510"
-                     CONTINUE
-                 ELSE
+                       CONTINUE
+                   ELSE
+                       MOVE    1                 TO  FLG-CHK
+                   END-IF
+      *            診療情報提供料（Ａ），（Ｂ）は重複時警告とする
+                   IF    WRK-COM-INPUTCD (IDX-Z) =   "180016110"
+                                                 OR  "180016210"
+                      MOVE    1                  TO  FLG-KEI
+                   END-IF
+               END-IF
       *
+               IF      FLG-CHK             =   1
+                   MOVE    ZERO                TO  IDX-KEI
                    COMPUTE IDX-Z3          =   IDX-Z   +   1
                    PERFORM VARYING     IDX-Z2  FROM    IDX-Z3 BY  1
                            UNTIL      (IDX-Z2      >   200       )  OR
@@ -2924,12 +2960,35 @@
                                            =   WRK-COM-SRYKBN(IDX-Z2))
                          AND  (WRK-COM-INPUTCD (IDX-Z)
                                            =   WRK-COM-INPUTCD(IDX-Z2))
-                           MOVE    "0134"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  WRK-COM-CUR
+      *                    警告
+                           IF      FLG-KEI         =   1
+                               MOVE    IDX-Z2          TO  IDX-KEI
+                           ELSE
+      *                    エラー
+                               MOVE    "0134"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  WRK-COM-CUR
                                                               (IDX-Z2)
+                           END-IF
                        END-IF
                    END-PERFORM
-                 END-IF
+      *
+      *            警告
+                   IF      FLG-KEI         =   1
+                       IF     (IDX-KEI         =   ZERO )  AND
+                              (WRK-COM-KAISU(IDX-Z)    >   1  )
+                           MOVE    IDX-Z           TO  IDX-KEI
+                       END-IF
+                       IF      IDX-KEI             >   ZERO
+                           IF      WRK-COM-KZMFLG (IDX-KEI)
+                                                   =   SPACE
+                               MOVE    "K016"      TO  SPA-ERRCD
+                               MOVE    "1"         TO  WRK-COM-CUR
+                                                             (IDX-KEI)
+                               MOVE    "1"         TO  WRK-COM-KZMFLG
+                                                             (IDX-KEI)
+                           END-IF
+                       END-IF
+                   END-IF
                END-IF
            END-PERFORM
       *
