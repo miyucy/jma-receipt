@@ -982,15 +982,27 @@
                                          ORCMCPAREA
                                          MCPDATA-REC.
       *
-           EVALUATE    FLG-TSYRRK       ALSO     FLG-TNKRRK
-               WHEN    1                ALSO     0
-               WHEN    1                ALSO     1
-                       MOVE     "1"     TO       FLG-SANSHOU
-               WHEN    0                ALSO     1
-                       MOVE     "2"     TO       FLG-SANSHOU
-               WHEN    0                ALSO     0
-                       MOVE     "3"     TO       FLG-SANSHOU
-           END-EVALUATE.
+           IF  LNK-SYU-SRYYMD(1:6)          <  "200210"
+              EVALUATE   FLG-TSYRRK       ALSO     FLG-TNKRRK
+                 WHEN    1                ALSO     0
+                 WHEN    1                ALSO     1
+                         MOVE     "1"     TO       FLG-SANSHOU
+                 WHEN    0                ALSO     1
+                         MOVE     "2"     TO       FLG-SANSHOU
+                 WHEN    0                ALSO     0
+                         MOVE     "3"     TO       FLG-SANSHOU
+              END-EVALUATE
+           ELSE
+              EVALUATE   FLG-TSYRRK       ALSO     FLG-TNKRRK
+                 WHEN    1                ALSO     1
+                         MOVE     "1"     TO       FLG-SANSHOU
+                 WHEN    0                ALSO     1
+                         MOVE     "2"     TO       FLG-SANSHOU
+                 WHEN    0                ALSO     0
+                 WHEN    1                ALSO     0
+                         MOVE     "3"     TO       FLG-SANSHOU
+              END-EVALUATE
+           END-IF.
       *
       *    ¸øÈñÉéÃ´ÉôÊ¬¸¡º÷ÍÑ¤Î»²¾ÈÉôÊ¬¥»¥Ã¥È¡ÊËÜ¿Í¤Ç¸ÇÄê¡Ë
            MOVE       "1"       TO    FLG-SANSHOU2.
@@ -1958,7 +1970,7 @@
       *Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
       *¹âÎð¼Ô¤ÎºßÂðÁí¹ç¡¦ºßÂðËö´ü»»Äê´µ¼Ô
       *
-           MOVE     ZERO     TO     FLG-ZAITAKU                         
+           MOVE     ZERO     TO     FLG-ZAITAKU.                         
       *
            IF  LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
                IF  LNK-SYU-SYUHKNNUM    =  SYU-SYUHKNNUM
