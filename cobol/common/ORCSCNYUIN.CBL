@@ -30,6 +30,7 @@
       *  01.00.01    NACL-多々納  02/12/17  診療種別の判定追加
       *  01.00.02    NACL-多々納  03/04/01  翌月調剤料の算定修正
       *  01.00.03    NACL-多々納  03/05/12  剤チェックをサブへ
+      *  01.00.04    NACL-多々納  04/11/11  調剤料算定判定の追加
       *****************************************************************
       *
       *
@@ -95,6 +96,8 @@
            03  FLG-DAY             PIC 9(01).
       *
            03  FLG-CHOZAI          PIC 9(01).
+      *
+           03  FLG-TOUYAKU         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -385,6 +388,7 @@
        100-SAKUSEI-SYORI-SEC           SECTION.
       *
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           MOVE    ZERO                TO  FLG-TOUYAKU
       *
       *    剤番号テーブル
            INITIALIZE                  WRK-TBL-ZAINUM-AREA
@@ -454,16 +458,18 @@
            END-IF
       *
       *    当月の調剤料を算定しなおす
-           INITIALIZE                  ORCSCHOZAIAREA
-           MOVE    "1"                 TO  ORCSCHO-KBN
-           MOVE    SPA-PTID            TO  ORCSCHO-PTID
-           MOVE    SPA-SRYYMD(1:6)     TO  ORCSCHO-SRYYM
-           CALL    "ORCSCHOZAI"        USING
-                                       SPA-AREA
-                                       ORCSCHOZAIAREA
+           IF     FLG-TOUYAKU          =   1
+               INITIALIZE                  ORCSCHOZAIAREA
+               MOVE    "1"                 TO  ORCSCHO-KBN
+               MOVE    SPA-PTID            TO  ORCSCHO-PTID
+               MOVE    SPA-SRYYMD(1:6)     TO  ORCSCHO-SRYYM
+               CALL    "ORCSCHOZAI"        USING
+                                           SPA-AREA
+                                           ORCSCHOZAIAREA
       *
-      *    来月の調剤料を算定しなおす
-           PERFORM 600-NEXT-CHOZAI-SEC
+      *        来月の調剤料を算定しなおす
+               PERFORM 600-NEXT-CHOZAI-SEC
+           END-IF
       *
       *    診療科履歴変更
            INITIALIZE                  ORCSKARRKAREA
@@ -872,6 +878,15 @@
                IF      LNK-WKSRY-JIHIMONEYTOTAL (IDX)  NOT =   ZERO
                    MOVE    LNK-WKSRY-JIHIMONEYTOTAL (IDX) 
                                                    TO  WRK-JIHIMONEY
+               END-IF
+      *        投薬判定
+               IF    (LNK-WKSRY-SRYKBN (IDX)       =   "21"  OR
+                                                       "22"  OR
+                                                       "23"  )  AND
+                     (LNK-WKSRY-SRYSYUKBN (IDX)(3:1)
+                                               NOT =   "4"   )  AND
+                     (LNK-WKSRY-ZAITENKEI (IDX)    >   ZERO  )
+                   MOVE    1                   TO  FLG-TOUYAKU
                END-IF
       *
                PERFORM VARYING     IDY     FROM    1   BY  1
@@ -1903,6 +1918,11 @@
                PERFORM
                    UNTIL   (FLG-SRYACCT        =   1    ) OR
                            (FLG-OK             =   1    )
+      *          投薬関係の有無
+                 IF      ACCT-SRYKBN(1:1)      =   "2"
+                     MOVE    1                 TO  FLG-TOUYAKU
+                 END-IF
+      *
       *          入院調剤料と麻毒については後で一括変更するのでそのまま
                  IF      ACCT-SRYKBN             =   "24"  OR "26"
                        CONTINUE
