@@ -297,6 +297,18 @@ W07	{
 			TAGNAME4    {
 			  	state   int;
 			};
+			TAG5	{
+				MSG1_DSPKBN_COMBO	{
+					MSG1_DSPKBN	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+			};
+			TAGNAME5    {
+			  	state   int;
+			};
 		};
 	};
 };

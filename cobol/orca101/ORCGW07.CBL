@@ -53,6 +53,7 @@
       *                                     請求書発行方法他追加
       *  02.01.13    NACL-藤原    04/07/08  生保受給者番号を削除
       *  02.01.14    NACL-多々納  04/10/06  同姓同名者、二重登録疑い追加
+      *  02.01.15    NACL-藤原    04/11/15  病名機能情報を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -294,6 +295,19 @@
                                13                          PIC X(01).
                                13  SPA-GMN-SYUSKYPRTKBNMEIL
                                                            PIC X(18).
+                   07  SPA-GMN-PAGE5-AREA.
+      *                入金管理情報（病名機能情報）
+                       09  SPA-GMN-MSG1-DSPKBN-G.
+                           11  SPA-GMN-MSG1-DSPKBN         PIC X(01).
+                           11  SPA-GMN-MSG1-DSPKBN-F1      PIC X(01).
+                           11  SPA-GMN-MSG1-DSPKBNMEI      PIC X(10).
+      *
+                       09  SPA-GMN-MSG1-DSPKBNLST-G.
+                           11  SPA-GMN-MSG1-DSPKBN-MAX     PIC 9(03).
+                           11  SPA-GMN-MSG1-DSPKBNLST      OCCURS  2.
+                               13  SPA-GMN-MSG1-DSPKBNL    PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-MSG1-DSPKBNMEIL PIC X(10).
       *
                    07  SPA-GMN-DATALST        OCCURS  2.
                        09  SPA-GMN-DATAL      PIC X(01).
@@ -388,6 +402,8 @@
            COPY  "CPSK1038.INC".
       *    収納機能情報
            COPY  "CPSK1039.INC".
+      *    病名機能情報
+           COPY  "CPSK1042.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -590,6 +606,12 @@
                    WHEN   "1008"
       *                収納情報の削除
                        PERFORM  4032-DEL-1039-SEC
+                   WHEN   "1009"
+      *                病名情報の更新
+                       PERFORM  491-KOUSHIN-1042-SEC
+                   WHEN   "1010"
+      *                病名情報の更新
+                       PERFORM  4032-DEL-1042-SEC
                END-EVALUATE
            ELSE
                EVALUATE    SPA-W01-KANRICD
@@ -720,6 +742,10 @@
            MOVE    "1 発行する"        TO  SPA-GMN-SYUSKYPRTKBNLST(2)
            MOVE    2                   TO  SPA-GMN-SYUSKYPRTKBN-MAX
       *
+           MOVE    "0 表示する"        TO  SPA-GMN-MSG1-DSPKBNLST(1)
+           MOVE    "1 表示しない"      TO  SPA-GMN-MSG1-DSPKBNLST(2)
+           MOVE    2                   TO  SPA-GMN-MSG1-DSPKBN-MAX
+      *
            EVALUATE    SPA-W01-KANRICD
       *        診療行為情報
                WHEN    "1007"
@@ -733,6 +759,9 @@
       *        収納機能情報
                WHEN    "1039"
                    PERFORM 310-SPASET-1039-SEC
+      *        収納機能情報
+               WHEN    "1042"
+                   PERFORM 310-SPASET-1042-SEC
            END-EVALUATE
       *
            . 
@@ -1299,6 +1328,51 @@
        31O-SPASET-1039-EXT.
            EXIT.
       *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       310-SPASET-1042-SEC         SECTION.
+      *
+      *    病名機能情報
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "1042"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1042-REC
+           ELSE
+               INITIALIZE  SYS-1042-REC
+           END-IF
+      *
+      *    主病名確認メッセージ表示有無
+           MOVE    SYS-1042-MSG1-DSPKBN
+                                       TO  SPA-GMN-MSG1-DSPKBN
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-MSG1-DSPKBN-MAX
+               IF      SPA-GMN-MSG1-DSPKBN
+                                       =   SPA-GMN-MSG1-DSPKBNL (IDY)
+                   MOVE    SPA-GMN-MSG1-DSPKBNLST(IDY)
+                                       TO  SPA-GMN-MSG1-DSPKBN-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-MSG1-DSPKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-MSG1-DSPKBNLST (1)
+                                       TO  SPA-GMN-MSG1-DSPKBN-G
+           END-IF
+      *
+           MOVE    70                 TO  SPA-GMN-CUR
+      *
+           . 
+       31O-SPASET-1042-EXT.
+           EXIT.
+      *****************************************************************
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
@@ -1409,6 +1483,9 @@
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
            MOVE    W07-SYUSKYPRTKBN    TO  SPA-GMN-SYUSKYPRTKBN-G
       *
+      *    病名機能情報
+           MOVE    W07-MSG1-DSPKBN     TO  SPA-GMN-MSG1-DSPKBN-G
+      *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -1517,6 +1594,11 @@
                    END-IF
       *            請求書兼領収書発行区分区分チェック
       *            PERFORM 4110-SYUSKYPRTKBN-CHK-SEC
+               WHEN    "1042"
+      *            主病名確認メッセージ表示有無チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4111-MSG1-DSPKBN-CHK-SEC
+                   END-IF
            END-EVALUATE
       *
            .
@@ -2393,6 +2475,29 @@
            .
        4110-SYUSKYPRTKBN-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    主病名確認メッセージ表示有無チェック処理（病名機能情報）
+      *****************************************************************
+       4111-MSG1-DSPKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-MSG1-DSPKBN-MAX
+               IF      SPA-GMN-MSG1-DSPKBN
+                                       =   SPA-GMN-MSG1-DSPKBNL (IDX)
+                   MOVE    SPA-GMN-MSG1-DSPKBNLST(IDX)
+                                          TO  SPA-GMN-MSG1-DSPKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    70              TO  SPA-GMN-CUR
+               MOVE    "0027"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4111-MSG1-DSPKBN-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る　処理
@@ -2429,6 +2534,8 @@
                    MOVE    "1006"              TO  SPA-WIDCD
                WHEN    "1039"
                    MOVE    "1008"              TO  SPA-WIDCD
+               WHEN    "1042"
+                   MOVE    "1010"              TO  SPA-WIDCD
            END-EVALUATE
       *
            .    
@@ -2592,6 +2699,37 @@
            .
        4032-DEL-1039-EXT.
            EXIT.
+      *****************************************************************
+      *    削除処理１０４２
+      *****************************************************************
+       4032-DEL-1042-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1042-REC
+           INITIALIZE                      SYS-1042-REC
+           MOVE    "1042"              TO  SYS-1042-KANRICD
+           MOVE    "*"                 TO  SYS-1042-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1042-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD    TO  SYS-1042-EDYUKYMD
+           MOVE    SYS-1042-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+           IF      MCP-RC              NOT =   ZERO 
+               MOVE    "1002"              TO  SPA-ERRCD
+               DISPLAY "SYSKANRI-KEY =>" SYS-1042-KEY 
+                       ",MCP-RC:" MCP-RC 
+               GO  TO  4032-DEL-1042-EXT
+           END-IF
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           PERFORM 210-BACK
+           .
+       4032-DEL-1042-EXT.
+           EXIT.
       *
       *****************************************************************
       *       登録前処理
@@ -2619,6 +2757,10 @@
                WHEN    "1039"
                    IF      SPA-ERRCD        =   SPACE
                        MOVE    "1007"           TO  SPA-WIDCD
+                   END-IF
+               WHEN    "1042"
+                   IF      SPA-ERRCD        =   SPACE
+                       MOVE    "1009"           TO  SPA-WIDCD
                    END-IF
               END-EVALUATE
           END-IF
@@ -3014,6 +3156,73 @@
            .
        490-KOUSHIN-1039-EXT.
            EXIT.
+      ******************************************************************
+      *       登録処理
+      *****************************************************************
+       491-KOUSHIN-1042-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1042-REC
+           INITIALIZE                      SYS-1042-REC
+           MOVE    "1042"              TO  SYS-1042-KANRICD
+           MOVE    "*"                 TO  SYS-1042-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SYS-1042-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI            =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1042-REC
+           ELSE
+               MOVE    SPACE               TO  SYS-1042-REC
+               INITIALIZE                      SYS-1042-REC
+               MOVE    "1042"              TO  SYS-1042-KANRICD
+               MOVE    "*"                 TO  SYS-1042-KBNCD
+           END-IF
+      *
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-1042-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD        TO  SYS-1042-EDYUKYMD
+           MOVE    SPA-GMN-MSG1-DSPKBN     TO  SYS-1042-MSG1-DSPKBN
+      *
+           MOVE    SYS-1042-REC            TO  SYSKANRI-REC
+      *
+           IF      FLG-SYSKANRI            =   ZERO
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
+               MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
+               MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
+               MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
+               MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
+               MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
+               MOVE    "DBUPDATE"              TO  MCP-FUNC
+           ELSE
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
+                                                   SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
+               MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
+               MOVE    "DBINSERT"              TO  MCP-FUNC
+           END-IF
+           MOVE    SYSKANRI-REC            TO  MCPDATA-REC
+           CALL    "ORCMCPSUB"                 USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+           IF      MCP-RC              NOT =   ZERO
+               MOVE    "1003"                  TO  SPA-ERRCD
+               DISPLAY "W07 ERR:" MCP-RC
+                        ",SYS-1042-KEY:" SYS-1042-KEY
+                        ",MCP-FUNC:" MCP-FUNC
+               GO  TO  491-KOUSHIN-1042-EXT
+           END-IF
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           PERFORM 210-BACK
+           .
+       491-KOUSHIN-1042-EXT.
+           EXIT.
       *****************************************************************
       *       入力項目の関連チェック処理
       *****************************************************************
@@ -3338,6 +3547,16 @@
            MOVE    SPA-GMN-SYUSKYPRTKBN-MAX
                                        TO  W07-SYUSKYPRTKBN-COUNT
       *
+      *    主病名確認メッセージ表示有無区分（病名機能情報）
+           MOVE    SPA-GMN-MSG1-DSPKBN-G   TO  W07-MSG1-DSPKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-MSG1-DSPKBN-MAX
+               MOVE    SPA-GMN-MSG1-DSPKBNLST (IDX)
+                                       TO  W07-MSG1-DSPKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-MSG1-DSPKBN-MAX
+                                       TO  W07-MSG1-DSPKBN-COUNT
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -3354,6 +3573,7 @@
                                            W07-TAGNAME2-STATE
                                            W07-TAGNAME3-STATE
                                            W07-TAGNAME4-STATE
+                                           W07-TAGNAME5-STATE
                                            W07-SRYKACD-STATE
       *
            IF      SPA-W01-SELNUM          >   ZERO
@@ -3369,6 +3589,8 @@
                    MOVE    WIDGET-NORMAL   TO  W07-TAGNAME3-STATE
                WHEN    "1039" 
                    MOVE    WIDGET-NORMAL   TO  W07-TAGNAME4-STATE
+               WHEN    "1042" 
+                   MOVE    WIDGET-NORMAL   TO  W07-TAGNAME5-STATE
            END-EVALUATE
       *
            IF      SPA-GMN-DATA(7)         =   "1"
@@ -3521,7 +3743,8 @@
                    MOVE    "請求書兼領収書発行区分がありません。"
                                                        TO  SPA-ERRMSG
                WHEN    "0027"
-                   MOVE    "生活受給者番号がありません。"
+                   MOVE
+                       "主病名確認メッセージ表示有無区分がありません。"
                                                        TO  SPA-ERRMSG
                WHEN    "0035"
                    MOVE    "請求書発行方法区分がありません。"
@@ -3592,6 +3815,10 @@
                WHEN    "1008"
                    MOVE    "収納機能情報を削除します"
                                                        TO  WRK-WIDMSG
+               WHEN    "1009"
+                   MOVE    "病名機能情報を登録します"  TO  WRK-WIDMSG
+               WHEN    "1010"
+                   MOVE    "病名機能情報を削除します"  TO  WRK-WIDMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  WID1
@@ -3720,6 +3947,9 @@
                WHEN    41
                    MOVE  "SYUSKYPRTKBN"    TO   MCP-WIDGET
       *
+               WHEN    70
+                   MOVE  "MSG1_DSPKBN"     TO   MCP-WIDGET
+      *
                WHEN    99
                    MOVE  "B12"             TO   MCP-WIDGET
            END-EVALUATE
@@ -3738,6 +3968,9 @@
                WHEN    40  THRU    49
                    MOVE    3               TO  W07-PAGENO
                    MOVE    3               TO  SPA-GMN-PAGENO
+               WHEN    70  THRU    79
+                   MOVE    4               TO  W07-PAGENO
+                   MOVE    4               TO  SPA-GMN-PAGENO
                WHEN    OTHER
                    MOVE    SPA-GMN-PAGENO  TO  W07-PAGENO
            END-EVALUATE
@@ -3860,6 +4093,9 @@
                    MOVE    99              TO  SPA-GMN-CUR
       *        WHEN    "SYUSKYPRTKBN"
       *            MOVE    99              TO  SPA-GMN-CUR
+      *
+               WHEN    "MSG1_DSPKBN"
+                   MOVE    99              TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .
