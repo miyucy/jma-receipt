@@ -1067,7 +1067,8 @@
                   (SNUM-MINKBN     NOT =   SPACE )   OR
                   (SNUM-SYOKBN     NOT =   SPACE )
                MOVE    "0001"              TO  SPA-ERRCD
-               GO      TO      4102-PTNUM-CHK-EXT
+      *        GO      TO      4102-PTNUM-CHK-EXT
+               GO      TO      4101-SELNUM-CHK-EXT
            ELSE
                MOVE    SNUM-OUTNUM     TO  SPA-GMN-SELBAN
            END-IF
