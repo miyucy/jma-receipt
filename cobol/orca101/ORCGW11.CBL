@@ -2757,6 +2757,7 @@
       *
       *
            MOVE    SPACE               TO  W11
+           INITIALIZE                      W11
       *
            MOVE    SPA-GMN-USERKBN-G   TO  W11-USERKBN
       *
