@@ -645,6 +645,7 @@ COPYS = \
         HCM20.INC \
         HCM21.INC \
         HCM22.INC \
+        HCM22V01.INC \
         HCM23.INC \
         HCM24.INC \
         HCM29.INC
