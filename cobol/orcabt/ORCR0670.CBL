@@ -31,7 +31,6 @@
       *  01.00.02    NACL-藤原    03/07/02  主病名編集フラグによる編集の追加
       *  01.00.03    NACL-藤原    04/02/01  疑いフラグからのコードの編集
       *                                     病名コード２１に変更
-      *  01.00.04    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -730,6 +729,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -745,6 +750,12 @@
        900-DBDISCONNECT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA

@@ -94,12 +94,11 @@
       *                                     加算点数でも告示区分１により
       *                                     剤回数を編集する
       *  01.01.07    NACL-小豆沢  04/05/19  ＤＢ書き込み時のコミット追加
-      *  01.01.08    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
-      *  01.01.09    NACL-藤原    03/05/21  指導料・在宅料のとき
+      *  01.01.08    NACL-藤原    03/05/21  指導料・在宅料のとき
       *                                     加算点数で告示区分１が７の
       *                                     ときの点数・回数の編集
-      *  01.01.10    NACL-太田    03/05/21  処理高速化対応（保険組合せ）
-      *  01.01.11    NACL-太田    03/05/25  処理高速化対応（点数マスタ）
+      *  01.01.09    NACL-太田    03/05/21  処理高速化対応（保険組合せ）
+      *  01.01.10    NACL-太田    03/05/25  処理高速化対応（点数マスタ）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4610,6 +4609,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -4625,6 +4630,12 @@
        900-DBDISCONNECT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
