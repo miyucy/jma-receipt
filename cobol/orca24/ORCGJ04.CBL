@@ -1387,11 +1387,17 @@
                    MOVE    SRY-JIHIMONEY(IDS)
                                                TO  SPA-COM-KEI   (IDX2)
                    MOVE    SRY-JIHIMONEY(IDS)
+                                               TO  SPA-COM-JIHIMONEY
+                                                                  (IDX2)
+                   MOVE    SRY-JIHIMONEY(IDS)
                                                TO  SPA-GMN-KEI   (IDX2)
                ELSE
                    MOVE    "2"                 TO  SPA-COM-KEIFLG(IDX2)
                    MOVE    SPA-COM-KISOTEN (IDX2)
                                                TO  SPA-COM-KEI   (IDX2)
+                   MOVE    SPA-COM-KISOTEN (IDX2)
+                                               TO  SPA-COM-JIHIMONEY
+                                                                 (IDX2)
                    MOVE    SPA-COM-KISOTEN (IDX2)
                                                TO  SPA-GMN-KEI   (IDX2)
                END-IF
@@ -1402,6 +1408,9 @@
                    MOVE    "2"                 TO  SPA-COM-KEIFLG(IDX2)
                    MOVE    SRY-JIHIMONEY(IDS)
                                                TO  SPA-COM-KEI   (IDX2)
+                   MOVE    SRY-JIHIMONEY(IDS)
+                                               TO  SPA-COM-JIHIMONEY
+                                                                 (IDX2)
                    MOVE    SRY-JIHIMONEY(IDS)
                                                TO  SPA-GMN-KEI   (IDX2)
                ELSE
@@ -2328,6 +2337,8 @@
                MOVE    1               TO  SPA-COM-SURYO(SPA-GMN-IDX)
                IF      SPA-COM-KISOTEN (SPA-GMN-IDX)  =   ZERO
                    MOVE    WRK-SURYO       TO  SPA-COM-KEI(SPA-GMN-IDX)
+                   MOVE    WRK-SURYO       TO  SPA-COM-JIHIMONEY
+                                                          (SPA-GMN-IDX)
                    MOVE    WRK-SURYO       TO  SPA-GMN-KEI(SPA-GMN-IDX)
                    MOVE    "1"             TO  SPA-COM-KEIFLG
                                                           (SPA-GMN-IDX)
@@ -3013,6 +3024,8 @@
                    MOVE    "1"                 TO  SPA-COM-KEIFLG
                                                           (SPA-GMN-IDX)
                    MOVE    ISET-SURYO1         TO  SPA-COM-KEI
+                                                          (SPA-GMN-IDX)
+                   MOVE    ISET-SURYO1         TO  SPA-COM-JIHIMONEY
                                                           (SPA-GMN-IDX)
                    MOVE    ISET-SURYO1         TO  SPA-GMN-KEI
                                                           (SPA-GMN-IDX)
@@ -4569,7 +4582,8 @@
       *        自費
       *********IF      SPA-COM-SRYKBN (IDX)    =   "95" OR "96"
                IF      SPA-COM-KEIFLG (IDX)    =   "1"  OR  "2"
-                   ADD     SPA-COM-KEI  (IDX)  TO  WRK-KINGAK
+      *************ADD     SPA-COM-KEI  (IDX)  TO  WRK-KINGAK
+                   ADD     SPA-COM-JIHIMONEY  (IDX)  TO  WRK-KINGAK
                END-IF
       *
       *        画面の計を集計する（１剤で１件）
@@ -5050,8 +5064,8 @@
       *    自費
       *****IF      SPA-COM-SRYKBN (IDX)    =   "95" OR "96"
            IF      SPA-COM-KEIFLG (IDX)    =   "1"  OR  "2"
-               MOVE    SPA-COM-KEI  (IDX)      TO  SRY-JIHIMONEY(IDS)
-               ADD     SPA-COM-KEI  (IDX)      TO  WRK-KINGAK
+               MOVE    SPA-COM-JIHIMONEY(IDX)  TO  SRY-JIHIMONEY(IDS)
+               ADD     SPA-COM-JIHIMONEY(IDX)  TO  WRK-KINGAK
                MOVE    WRK-KINGAK              TO  SRY-JIHIMONEYTOTAL
            END-IF
       *
