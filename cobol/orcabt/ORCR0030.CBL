@@ -2630,8 +2630,8 @@
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
       *               END-IF
-      **>             IF   RECE02-KOHNUM(1) = "010" OR  "021" OR "051"
-                      IF   RECE02-KOHNUM(1) = "010" OR  "021" 
+                      IF   RECE02-KOHNUM(1) = "010" OR  "021" OR "051"
+      **>             IF   RECE02-KOHNUM(1) = "010" OR  "021" 
                             MOVE    "1"  TO   FLG-KOH
                       END-IF
                  END-IF
@@ -2655,8 +2655,8 @@
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
       *               END-IF
-      **>             IF   RECE02-KOHNUM(2) = "010" OR  "021" OR "051"
-                      IF   RECE02-KOHNUM(2) = "010" OR  "021" 
+                      IF   RECE02-KOHNUM(2) = "010" OR  "021" OR "051"
+      **>             IF   RECE02-KOHNUM(2) = "010" OR  "021" 
                             MOVE    "1"  TO   FLG-KOH
                       END-IF 
                  END-IF
@@ -2680,8 +2680,8 @@
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
       *               END-IF
-      **>             IF   RECE02-KOHNUM(3) = "010" OR  "021" OR "051"
-                      IF   RECE02-KOHNUM(3) = "010" OR  "021" 
+                      IF   RECE02-KOHNUM(3) = "010" OR  "021" OR "051"
+      **>             IF   RECE02-KOHNUM(3) = "010" OR  "021" 
                             MOVE    "1"  TO   FLG-KOH
                       END-IF
                  END-IF
@@ -2705,8 +2705,8 @@
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
       *               END-IF
-      **>             IF   RECE02-KOHNUM(4) = "010" OR  "021" OR "051"
-                      IF   RECE02-KOHNUM(4) = "010" OR  "021" 
+                      IF   RECE02-KOHNUM(4) = "010" OR  "021" OR "051"
+      **>             IF   RECE02-KOHNUM(4) = "010" OR  "021" 
                             MOVE    "1"  TO   FLG-KOH
                       END-IF
                  END-IF
