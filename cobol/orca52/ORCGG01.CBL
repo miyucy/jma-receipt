@@ -36,6 +36,7 @@
       *  01.00.06    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *  01.00.07    NACL-森脇    03/02/12  パラメタ入力チェック追加
       *  01.00.08    NACL-多々納  03/03/31  未入力時、画面編集追加
+      *  01.00.09    NACL-太田    03/04/30  確定のとき自動的に情報確認画面を表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1116,7 +1117,8 @@
                INITIALIZE              SPA-GMN-PARA-TBL     (IDZ)
                                        SPA-NAI-HENPARA-TBL  (IDZ) 
            END-PERFORM
-           MOVE    1                   TO  SPA-GMN-CUR
+      *
+           PERFORM 490-KAKUNIN-SEC
            .
        490-PRINT-EXT.
            EXIT.
