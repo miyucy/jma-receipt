@@ -69,8 +69,8 @@
       *                     
                        09  SPA-GMN-C02-HEAD.                            
                            11  SPA-GMN-C02-PTNUM       PIC X(20).
-                           11  SPA-GMN-C02-KANANAME    PIC X(25).
-                           11  SPA-GMN-C02-NAME        PIC X(20).
+                           11  SPA-GMN-C02-KANANAME    PIC X(30).
+                           11  SPA-GMN-C02-NAME        PIC X(30).
                            11  SPA-GMN-C02-SEX         PIC X(02).
                            11  SPA-GMN-C02-BIRTHDAY    PIC X(09).
       *
