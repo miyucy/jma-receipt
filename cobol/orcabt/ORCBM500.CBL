@@ -492,7 +492,7 @@
       *
            MOVE    SPACE               TO  WRK-REC
       *
-           IF      RECEDEN-SRYYM       <=  "200403"
+      *****IF      RECEDEN-SRYYM       <=  "200403"
                MOVE    ZERO             TO  WRK-MOJISU
                                             WRK-NAGASA
                EVALUATE    RECEDEN-RECEDATA (1:2)
@@ -539,7 +539,7 @@
                            MOVE    WRK-REC         TO  RECEDEN-RECEDATA
                        END-IF     
                END-EVALUATE
-           END-IF
+      *****END-IF
       *          
            MOVE    RECEDEN-RECEDATA    TO  RECE30-R
            WRITE   RECE30-R
