@@ -402,3 +402,27 @@
       *戻り先
            03  SPA-HZN-MOTOPG          PIC X(08).
       *
+      *ヘルプ画面
+           03  SPA-HELP-AREA.
+               05  SPA-KHELP-MOTOPG         PIC X(08).
+               05  SPA-KHELP-CUR            PIC  9(02).
+               05  SPA-KHELP-NEXT           PIC  9(04).
+               05  SPA-KHELP-PAGE           PIC  9(04).
+               05  SPA-KHELP-SYORIFLG       PIC  9(01).
+               05  SPA-KHELP-KEY.
+                   07  SPA-KHELP-HELPKBN        PIC  X(01).
+                   07  SPA-KHELP-LDNAME         PIC  X(20).
+                   07  SPA-KHELP-MENUNUM1       PIC  9(04).
+                   07  SPA-KHELP-MENUNUM2       PIC  9(04).
+               05  SPA-KHELP-SELNUM         PIC  9(04).
+               05  SPA-KHELP-GMN-INPUT      PIC  X(30).
+      *
+               05  SPA-KHELP-TBL-AREA.
+                   07  SPA-KHELP-TBL-OCC    OCCURS   100.
+                       09  SPA-KHELP-THELPKBN    PIC X(01).
+                       09  SPA-KHELP-TRENNUM     PIC 9(04).
+      *
+                       09  SPA-KHELP-TMENUNUM1   PIC 9(04).
+                       09  SPA-KHELP-TMENUNUM2   PIC 9(04).
+                   07  SPA-KHELP-TBLMAX         PIC  9(04).
+      *

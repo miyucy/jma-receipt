@@ -42,8 +42,10 @@
       *----(01.02.05)----START----
                 05  M02-G108.
                   06  M02-G108-STATE   PIC S9(9)   BINARY.
+                05  M02-G09.
+                  06  M02-G109-STATE   PIC S9(9)   BINARY.
               04  M02-STATE-R       REDEFINES  M02-STATE-G.
-                05  M02-STATE-O     PIC S9(09) BINARY  OCCURS  8.
+                05  M02-STATE-O     PIC S9(09) BINARY  OCCURS  9.
       *----(01.02.05)----END------
       *----(01.02.04)----END------
               04  M02-SELNUM.
