@@ -88,6 +88,7 @@
       *                                     転帰日の範囲を修正
       *                                     診療開始日のチェックを修正
       *  01.00.34    NACL-太田    03/11/18  病名文字列長チェック修正
+      *  01.00.35    NACL-太田    03/12/08  保険組合せ有効期間チェック修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1885,8 +1886,9 @@
                IF  ACCT-DAY (1,IDX6)   NOT =    ZERO
                    MOVE    ACCT-SRYYM         TO  W-NACCT-DAY-B(1:6)
                    MOVE    IDX6(2:2)          TO  W-NACCT-DAY-B(7:2)
-                   IF  (COMB-TEKSTYMD  >  W-NACCT-DAY-B)  OR
-                       (COMB-TEKEDYMD  <  W-NACCT-DAY-B)
+                   IF  ( COMB-DELKBN          =   "1" ) OR
+                      ((COMB-TEKSTYMD  >  W-NACCT-DAY-B)  OR
+                       (COMB-TEKEDYMD  <  W-NACCT-DAY-B))
                        MOVE    SPACE              TO  DID2-REC
                        MOVE    ACCT-HOSPID        TO  DID2-REC(1:24)
                        MOVE    "-"                TO  DID2-REC(25:1)
