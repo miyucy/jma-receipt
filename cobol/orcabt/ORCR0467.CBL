@@ -586,6 +586,7 @@
                                                =   SPACE
                        MOVE    1               TO  FLG-HENSYU
                    END-IF                                                  
+               END-IF
            END-PERFORM        
            .
        4302-MEISAI-KETA-HEN1-EXT.

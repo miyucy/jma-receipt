@@ -4422,6 +4422,7 @@
                                              =   SPACE
                    MOVE    RECE62-NYUTOKRYO  (IDY)
                                          TO  RECE10-KHNTEN (IDX)
+               END-IF
                MOVE    RECE62-NYUTOKNISSU(IDY)
                                          TO  RECE10-KAISU  (IDX)
                PERFORM   VARYING   IDY1  FROM    1   BY  1
