@@ -61,6 +61,8 @@
       *  01.01.03    NACL-門脇    04.04.26  ユーザーコメント追加対応
       *  01.01.04    NACL-門脇    04.06.11  皮下筋肉注射で、薬剤点・器材点
       *                                     が無いの場合の摘要欄記載対応
+      *  01.01.05    NACL-藤原    04.07.16  検査のまとめを回数テーブルの
+      *                                     合計で行うようにする 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1806,34 +1808,6 @@
       *****************************************************************
        2007-SRYKBN60-HENSYU-SEC         SECTION.
       *
-      *    検査の剤がひとつのときまとめ処理はしない
-      **      IF      WRK-RECE44-MAX      =   1
-      **          MOVE    WRK-RECE44-REC (1)    TO  RECE44-REC
-      **          IF      RECE44-ZAIKAISU       =   1
-      **              MOVE    ZERO                  TO  FLG-SRYCD1
-      *
-      **             INITIALIZE                      TBL-ZAIW-AREA
-      **             MOVE    ZERO                TO  WRK-ZAIWMAX-G
-      **             MOVE    ZERO                TO  WRK-TBLMAX
-      **             MOVE    ZERO                TO  FLG-TEIGEN
-      **                                             FLG-COMMENT
-      **                                             FLG-HIKAKIN 
-      **             MOVE    ZERO                TO  WRK-RECE45
-      **                                             IDY                           
-      **             PERFORM 2002-TBLZAIW-TAIHI-SEC
-      *            レセプト０４剤編集前処理
-      **             PERFORM 2001-RECE44-ZAIHEN-MAE-SEC
-      *
-      **             IF      SPA-STS          =   ZERO
-      **                 PERFORM 20051-SRYKBNELSE-KENSA-SEC
-      *                剤・診療行為テーブル出力処理
-      **                 PERFORM 450-RECE46-OUT-SEC
-      **             END-IF    
-      **             GO  TO  2007-SRYKBN60-HENSYU-EXT
-      **         END-IF    
-      **     END-IF
-      *     
-      *    検査のまとめ処理
            MOVE    1                    TO  IDXX 
            PERFORM              UNTIL   IDXX >       31
                INITIALIZE                  WRK-RECE44-FLG-TABLE
@@ -1848,21 +1822,23 @@
                            IF      WRK-KAISU (1)   =   ZERO
                                MOVE    WRK-RECE44-KAISU (IDY 1 IDXX)
                                                    TO  WRK-KAISU (1)
-                               MOVE    WRK-RECE44-KAISU (IDY 2 IDXX)
-                                                   TO  WRK-KAISU (2)
-                               MOVE    WRK-RECE44-KAISU (IDY 3 IDXX)
-                                                   TO  WRK-KAISU (3)
-                               MOVE    WRK-RECE44-KAISU (IDY 4 IDXX)
-                                                   TO  WRK-KAISU (4)
+      *************************MOVE    WRK-RECE44-KAISU (IDY 2 IDXX)
+      *************************                    TO  WRK-KAISU (2)
+      *************************MOVE    WRK-RECE44-KAISU (IDY 3 IDXX)
+      *************************                    TO  WRK-KAISU (3)
+      *************************MOVE    WRK-RECE44-KAISU (IDY 4 IDXX)
+      *************************                    TO  WRK-KAISU (4)
                                MOVE    WRK-RECE44-HOUKNSKBN (IDY)
                                                    TO  WRK-HOUKNSKBN
                            END-IF
-                           IF      WRK-RECE44-KAISU (IDY 2 IDXX)
-                                                   =   WRK-KAISU (2)
-                           AND     WRK-RECE44-KAISU (IDY 3 IDXX)
-                                                   =   WRK-KAISU (3)
-                           AND     WRK-RECE44-KAISU (IDY 4 IDXX)
-                                                   =   WRK-KAISU (4)
+      *********************IF      WRK-RECE44-KAISU (IDY 2 IDXX)
+      *********************                        =   WRK-KAISU (2)
+      *********************AND     WRK-RECE44-KAISU (IDY 3 IDXX)
+      *********************                        =   WRK-KAISU (3)
+      *********************AND     WRK-RECE44-KAISU (IDY 4 IDXX)
+      *********************                        =   WRK-KAISU (4)
+                           IF      WRK-RECE44-KAISU (IDY 1 IDXX)
+                                                   =   WRK-KAISU (1)
                            AND     WRK-RECE44-HOUKNSKBN (IDY)
                                                    =   WRK-HOUKNSKBN
                                MOVE    ZERO        TO
@@ -1893,12 +1869,14 @@
                                UNTIL   IDW >       WRK-RECE44-MAX
                                OR      FLG-OK      =   1
                            IF      WRK-RECE44-FLG   (IDW)  =   "1"
-                               IF      WRK-RECE44-KAISU (IDW 2 IDZ)
-                                                   =   WRK-KAISU (2)
-                               AND     WRK-RECE44-KAISU (IDW 3 IDZ)
-                                                   =   WRK-KAISU (3)
-                               AND     WRK-RECE44-KAISU (IDW 4 IDZ)
-                                                   =   WRK-KAISU (4)                  
+      *************************IF      WRK-RECE44-KAISU (IDW 2 IDZ)
+      *************************                    =   WRK-KAISU (2)
+      *************************AND     WRK-RECE44-KAISU (IDW 3 IDZ)
+      *************************                    =   WRK-KAISU (3)
+      *************************AND     WRK-RECE44-KAISU (IDW 4 IDZ)
+      *************************                    =   WRK-KAISU (4)                  
+                               IF      WRK-RECE44-KAISU (IDW 1 IDZ)
+                                                   =   WRK-KAISU (1)
                                    MOVE    2               TO  FLG-OK                                    
                                ELSE                    
                                    MOVE    1               TO  FLG-OK                                    
@@ -1920,8 +1898,8 @@
                                                       (IDW 4 IDZ)
                                    COMPUTE WRK-SUM-KAISU (IDZ) 
                                                    =
-                                                   WRK-SUM-KAISU (IDZ) - 
-                                                   WRK-KAISU   (1)                                       
+                                                   WRK-SUM-KAISU (IDZ) -
+                                                   WRK-KAISU   (1)
                                END-IF
                            END-PERFORM
                            ADD     1              TO  WRK-KAISU1                                                               
