@@ -109,6 +109,8 @@
       *    保険期間変換用
            03  SPA-HKN-KENKAN-AREA.
                05  SPA-HKN-IDX1             PIC 9(04).
+               05  SPA-END-TEKEDYMD         PIC X(08).
+               05  SPA-STR-TEKSTYMD         PIC X(08).
       *    公費期間変換用
            03  SPA-KOH-KENKAN-AREA.
                05  SPA-KOH-IDX1             PIC 9(04).

@@ -421,6 +421,9 @@
                         08  P02-P027-TEKEDYMD  PIC X(10).
                       07  P02-P027-HKNKUMI-SELECT PIC X
                                                  OCCURS 50 TIMES.
+                  05  P02-P027-NYUGAIKBN.
+                    06  P02-P027-NYUGAIKBN-VALUE   PIC X.
+                    06  P02-P027-NYUGAIKBN-LABEL   PIC X(20).
                 04  P02-FIXPAGE4.
                   05  P02-P021-FAX.
                     06  P02-VALUE   PIC X(15).
@@ -531,6 +534,37 @@
                         08  P02-P024-TNKLEDYMD PIC X(10).
                       07  P02-P024-TNKLIST-SELECT PIC X
                                                OCCURS  10 TIMES.
+                  05  P02-P024-FTNTEKSTYMD.
+                    06  P02-VALUE   PIC X(10).
+                  05  P02-P024-FTNTEKEDYMD.
+                    06  P02-VALUE   PIC X(10).
+                  05  P02-P024-GAIJGNGAK.
+                    06  P02-VALUE   PIC X(9).
+                  05  P02-P024-NYUJGNGAK.
+                    06  P02-VALUE   PIC X(9).
+                  05  P02-P024-PTKOHFTNLST.
+                    06  P02-P024-PTKOHFTN.
+                      07  P02-P024-HFTNLST-COUNT   PIC S9(9)   BINARY.
+                      07  P02-ITEM        OCCURS  10 TIMES.
+                        08  P02-P024-TFTNNUM  PIC X(3).
+                        08  P02-P024-TFTNKOH  PIC X(20).
+                        08  P02-P024-TKOHSTYMD    PIC X(09).
+                        08  P02-P024-TKOHEDYMD    PIC X(9).
+                      07  P02-P024-HFTNLST-SELECT  PIC X   OCCURS  10.
+                  05  P02-P024-PTKOHFTNLST2.
+                    06  P02-P024-PTKOHFTN2.
+                      07  P02-P024-HFTNLST2-COUNT   PIC S9(9)   BINARY.
+                      07  P02-ITEM        OCCURS  50 TIMES.
+                        08  P02-P024-TFTNNUM2  PIC X(3).
+                        08  P02-P024-TFTNSTYMD  PIC X(9).
+                        08  P02-P024-TFTNEDYMD  PIC X(9).
+                        08  P02-P024-TGAIJGNGAK PIC X(9).
+                        08  P02-P024-TNYUJGNGAK PIC X(9).
+                      07  P02-P024-HFTNLST2-SELECT  PIC X   OCCURS  50.
+                  05  P02-P024-FTNSELNUM.
+                    06  P02-VALUE   PIC S9(3).
+                  05  P02-P024-FTNSELNUM2.
+                    06  P02-VALUE   PIC S9(3).
                 04  P02-FIXPAGE8.
                   05  P02-P025-SELNUM1.
                     06  P02-VALUE   PIC X(4).
