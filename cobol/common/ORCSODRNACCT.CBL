@@ -578,6 +578,15 @@
        4801-NYUKAIKEI-EDIT-SEC         SECTION.
       *
            DISPLAY "4801-NYUKAIKEI-EDIT-SEC START "
+           INITIALIZE                      PTINF-REC
+           MOVE    LNK-PTNYUINRRK-HOSPID   TO  PTINF-HOSPID
+           MOVE    LNK-PTNYUINRRK-PTID     TO  PTINF-PTID
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO  )
+               MOVE    MCPDATA-REC     TO  PTINF-REC
+           END-IF
            INITIALIZE      ORCSSYOKIKSNAREA
       *
       *    通算日数、算定開始日を求める
