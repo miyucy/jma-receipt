@@ -109,7 +109,7 @@ fi
 		echo "更新用ダウンロードファイルの作成が終了しました"
 	else
 		echo "更新用ダウンロードファイルの作成に失敗しました"
-		$DBSTUB  -dir "$LDDEFDIR"/directory-dir -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT01
+		$DBSTUB  -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT01
 		exit 99
 	fi
 
