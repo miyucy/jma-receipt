@@ -3879,7 +3879,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#162;&#168;&#185;&#226;&#179;&#219;&#206;&#197;&#205;&#220;&#198;&#252;#</string>
+            <string>#&#162;&#168;&#185;&#226;&#179;&#219;&#206;&#197;&#205;&#220;&#200;&#241;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -7363,7 +7363,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#162;&#168; &#183;&#232;  &#196;&#234;  &#197;&#192;#</string>
+            <string>#&#162;&#168; &#183;&#232;  &#196;&#234;  &#177;&#223;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
