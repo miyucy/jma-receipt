@@ -581,6 +581,7 @@
       *****************************************************************
        2001-INIT-SYORI-SEC              SECTION.
       *
+           INITIALIZE                  WRK-HENSYU-AREA
       *    テスト患者のときは読み飛ばす
            MOVE    JYURRK-HOSPID       TO  PTINF-HOSPID
            MOVE    JYURRK-PTID         TO  PTINF-PTID
@@ -611,7 +612,6 @@
       *****************************************************************
        2002-HENSYU-SYORI-SEC              SECTION.
       *
-           INITIALIZE                  WRK-HENSYU-AREA
       *    患者情報編集
            PERFORM 20021-PTINF-HENSYU-SEC
       *
