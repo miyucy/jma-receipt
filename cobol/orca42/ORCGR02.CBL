@@ -63,7 +63,7 @@
       *  01.04.06    NACL-藤原    03/05/23  レセ電のボタンを削除
       *  01.04.07    NACL-藤原    03/08/05  ヴで始まるカナ氏名のレセプト
       *                                     を対象とするように修正
-      *                                     レセ電のボタンを復活
+      *  01.04.08    NACL-藤原    03/08/05  レセ電のボタンを削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -164,9 +164,6 @@
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-WIDGET              PIC X(08). 
-                   07  SPA-NAI-2005-KKHRECEKBN     PIC X(01).
-                   07  SPA-NAI-2005-SYARECEKBN     PIC X(01).
-                   07  SPA-NAI-2005-RECEDENOUT     PIC X(30).
                    07  SPA-NAI-2005-SYAPRTNM       PIC X(16).
                    07  SPA-NAI-2005-KKHPRTNM       PIC X(16).
                    07  SPA-NAI-TBL.
@@ -581,18 +578,6 @@
                MOVE    SPACE            TO  SYS-2005-REC
                INITIALIZE                   SYS-2005-REC
            END-IF    
-           IF      SYS-2005-KKHRECEKBN
-                                    NOT =   "0" AND "1" AND "2"
-               MOVE    ZERO             TO  SYS-2005-KKHRECEKBN
-               MOVE    ZERO             TO  SYS-2005-SYARECEKBN
-               MOVE    "/var/tmp/"      TO  SYS-2005-RECEDENOUT
-           END-IF                             
-           IF      SYS-2005-RECEDENOUT  =   SPACE
-               MOVE    "/var/tmp/"      TO  SYS-2005-RECEDENOUT
-           END-IF    
-           MOVE    SYS-2005-KKHRECEKBN  TO  SPA-NAI-2005-KKHRECEKBN
-           MOVE    SYS-2005-SYARECEKBN  TO  SPA-NAI-2005-SYARECEKBN
-           MOVE    SYS-2005-RECEDENOUT  TO  SPA-NAI-2005-RECEDENOUT
            MOVE    SYS-2005-SYAPRTNM    TO  SPA-NAI-2005-SYAPRTNM
            MOVE    SYS-2005-KKHPRTNM    TO  SPA-NAI-2005-KKHPRTNM
       *
@@ -981,9 +966,6 @@
                    WHEN    "1001"
                    WHEN    "1002"    
                        PERFORM 450-PRINT-SEC
-                   WHEN    "1003"
-                   WHEN    "1004"
-                       PERFORM 490-RECEDEN-SEC
                    WHEN    "8888"
                        CONTINUE    
                END-EVALUATE        
@@ -1028,12 +1010,6 @@
                WHEN    "CLICKED"       ALSO    "B08"
                WHEN    "CLICKED"       ALSO    "SYOKBN"
                    PERFORM 410-SYOKBN-CHK-SEC
-      *     社保レセ電処理
-               WHEN    "CLICKED"       ALSO    "B09"
-                   PERFORM 490-RECEDEN-CHK-SEC
-      *     国保レセ電処理
-               WHEN    "CLICKED"       ALSO    "B10"
-                   PERFORM 490-RECEDEN-CHK-SEC
       *     情報削除
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-JYOUHOU-DEL-SEC
@@ -1977,139 +1953,6 @@
            EXIT.
       *
       *****************************************************************
-      *    レセ電前処理
-      *****************************************************************
-       490-RECEDEN-CHK-SEC                SECTION.
-      *                                      
-      *    画面移行用のパラメタ
-           PERFORM 4901-PARA-HENSYU-SEC
-      *
-      *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  JOB-JOBID
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC 
-           IF      SJOBKANRI-RETURN
-                                   =   ZERO
-               IF      JOB-ENDYMD      =   SPACE
-                   MOVE    "7777"          TO  SPA-ERRCD
-                   GO  TO  490-RECEDEN-CHK-EXT
-               END-IF
-           END-IF    
-      *
-      *
-           MOVE    MCP-WIDGET          TO  SPA-NAI-WIDGET
-      *    ガイドメッセージセット
-           EVALUATE    MCP-WIDGET
-               WHEN    "B09"
-                   MOVE    "1003"              TO  SPA-RIDCD
-               WHEN    "B10"
-                   MOVE    "1004"              TO  SPA-RIDCD
-           END-EVALUATE
-      *
-           .
-       490-RECEDEN-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    レセ電出力処理
-      *****************************************************************
-       490-RECEDEN-SEC                SECTION.
-      *
-      *    ジョブ開始セット
-           MOVE    "DEL"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  JOB-JOBID
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
-      *
-           MOVE    "JBS"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  JOB-JOBID
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    SPA-TERMID      TO  JOB-TERMID                        
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
-      *                            
-      *    レセ電出力処理
-      *
-      *****MOVE    "recept4.sh"        TO  SHELL-SHELL
-      *    MOVE    WRK-SHELL-NAME      TO  SHELL-NAME
-      *    MOVE    SPA-R01-RECE07-SRYYM
-      *                                TO  SHELL-SRYYM    
-      *    MOVE    SPA-TERMID          TO  SHELL-TERMID
-      *****MOVE    SPA-SYSYMD          TO  SHELL-SYSYMD
-      *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-      *****MOVE    RECEERR             TO  SHELL-ERRFILE
-      *
-           OPEN    OUTPUT   RECEERR-FILE
-           CLOSE   RECEERR-FILE
-      *
-           MOVE    SPACE               TO  SHELLTBL
-           MOVE    "recept4.sh"        TO  WRK-SHELL-SHELL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
-      *     
-           MOVE    SPA-R01-RECE07-SRYYM
-                                       TO  WRK-SHELL-SRYYM    
-           MOVE    SPA-TERMID          TO  WRK-SHELL-TERMID
-           MOVE    SPA-SYSYMD          TO  WRK-SHELL-SYSYMD
-           MOVE    WRK-SHELL-ARG1      TO  SHELLTBL-ARG1
-           INITIALIZE                     STS-AREA-DAY
-           INITIALIZE                     LNK-DAY6-AREA
-           MOVE    "61"                   TO  LNK-DAY6-IRAI
-           MOVE    SPA-R01-SRYYM          TO  LNK-DAY6-KIJUN (1:6)
-           MOVE    "01"                   TO  LNK-DAY6-KIJUN (7:2)
-           MOVE    "2"                    TO  LNK-DAY6-ZOGENPTN
-           MOVE    1                      TO  LNK-DAY6-ZOGEN
-           CALL    "ORCSDAY"              USING   STS-AREA-DAY
-                                                  LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KEISAN(1:6)   TO  SHELLTBL-ARG2
-           EVALUATE    SPA-NAI-WIDGET     
-               WHEN    "B09"
-                   MOVE    "1"                     TO  SHELLTBL-ARG3
-                   MOVE    SPA-NAI-2005-SYARECEKBN TO  SHELLTBL-ARG4
-               WHEN    "B10"
-                   MOVE    "2"                     TO  SHELLTBL-ARG3
-                   MOVE    SPA-NAI-2005-KKHRECEKBN TO  SHELLTBL-ARG4
-           END-EVALUATE
-           MOVE    SPA-NAI-2005-RECEDENOUT
-                                   TO  SHELLTBL-ARG5
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  SHELLTBL-ARG6
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  SHELLTBL-ARG7
-           MOVE    RECEERR         TO  SHELLTBL-ARG8
-           MOVE    SHELLTBL        TO  MCPDATA-REC
-           MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"        USING
-                                       MCPAREA
-                                       MCPDATA-REC                         
-           .
-       490-RECEDEN-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
@@ -2346,24 +2189,6 @@
                MOVE    SPA-GMN-TSYURUINAME (IDW IDX)
                                            TO  R02-TCHK-LABEL (IDX)
            END-PERFORM
-      *
-      *    一括新規作成の時だけシス管の設定により
-      *    レセ電作成のボタンを設定
-           MOVE    WIDGET-INSENSITIVE      TO  R02-B10-STATE
-                                               R02-B09-STATE
-           IF      SPA-R01-SYOKBN          =   "T"
-           AND     SPA-R01-FILEKBN         =   "1"                                    
-               IF      SPA-NAI-2005-KKHRECEKBN =   ZERO
-                   CONTINUE
-               ELSE
-                   MOVE    WIDGET-NORMAL           TO  R02-B10-STATE
-               END-IF    
-               IF      SPA-NAI-2005-SYARECEKBN =   ZERO
-                   CONTINUE
-               ELSE
-                   MOVE    WIDGET-NORMAL           TO  R02-B09-STATE
-               END-IF    
-           END-IF 
       *
       *
            PERFORM 5001-MAPCUR-SEC
@@ -2676,10 +2501,6 @@
                    MOVE    "全件印刷をします"        TO  WRK-RIDMSG
                WHEN    "1002"
                    MOVE    "指定印刷をします"        TO  WRK-RIDMSG
-               WHEN    "1003"
-                   MOVE    "社保レセ電処理をします"  TO  WRK-RIDMSG
-               WHEN    "1004"
-                   MOVE    "国保レセ電処理をします"  TO  WRK-RIDMSG
                WHEN    "6666"
                    MOVE    "レセプト印刷中です"      TO  WRK-RIDMSG
                WHEN    "8888"

@@ -16,10 +16,6 @@
       * 113-8621, Japan.
       ********************************************************************
         02  R02.
-              04  R02-B09.
-                05  R02-B09-STATE   PIC S9(9)   BINARY.
-              04  R02-B10.
-                05  R02-B10-STATE   PIC S9(9)   BINARY.
               04  R02-SYOKBN.
                 05  R02-SYOKBN-VALUE   PIC X.
                 05  R02-SYOKBN-LABEL   PIC X(9).
