@@ -2546,8 +2546,9 @@
            MOVE    ZERO                  TO  FLG-BYOMEI
       *
            IF     BYO-BYOMEICD       NOT =   SPACE
-               IF    ( BYO-BYOMEICD (1:3)    =   "ZZZ" )
-               AND   ( BYO-BYOMEICD (4:1)    <   "1"   )
+               IF  (   BYO-BYOMEICD (1:3)    =   "ZZZ"    )
+               AND ( ( BYO-BYOMEICD (4:1)    <   "1" ) OR 
+                     ( BYO-BYOMEICD (4:1)    =   "C" )    )
       *            Í½ÌóÉÂÌ¾¥³¡¼¥É¸¡º÷
                    SET     TBL-BYOMEICD-IDX  TO  1
                    SEARCH  TBL-BYOMEICD-OCC  VARYING TBL-BYOMEICD-IDX
