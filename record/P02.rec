@@ -260,16 +260,16 @@ P02	{
 					item	varchar(20)[50];
 				};
 				P02_HKNNAME	{
-					value	varchar(25);
+					value	varchar(24);
 				};
 				P02_HKNNAME2	{
-					value	varchar(25);
+					value	varchar(24);
 				};
 				P02_HKNJAADRS	{
 					value	varchar(22);
 				};
 				P02_HKNJAADRS2	{
-					value	varchar(23);
+					value	varchar(22);
 				};
 				P02_HKNJATEL	{
 					value	varchar(16);

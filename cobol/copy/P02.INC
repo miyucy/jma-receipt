@@ -208,13 +208,13 @@
                     06  P02-KOHNUM1-COUNT   PIC S9(9)   BINARY.
                     06  P02-KOHNUM1-ITEM    PIC X(20)   OCCURS 50 TIMES.
                   05  P02-P02-HKNNAME.
-                    06  P02-VALUE   PIC X(25).
+                    06  P02-VALUE   PIC X(24).
                   05  P02-P02-HKNNAME2.
-                    06  P02-VALUE   PIC X(25).
+                    06  P02-VALUE   PIC X(24).
                   05  P02-P02-HKNJAADRS.
                     06  P02-VALUE   PIC X(22).
                   05  P02-P02-HKNJAADRS2.
-                    06  P02-VALUE   PIC X(23).
+                    06  P02-VALUE   PIC X(22).
                   05  P02-P02-HKNJATEL.
                     06  P02-VALUE   PIC X(16).
                   05  P02-TSTPTNUMKBN-COB.
