@@ -274,6 +274,7 @@
       *  01.01.95    NACL-太田    03/08/26  PTNYUINRRK-KEY24追加
       *  01.01.96    NACL-太田    03/08/26  PTNYUINRRK-KEY25追加
       *  01.01.97    NACL-小豆沢　03/08/29  PTHKNINF-KEY6追加
+      *  01.01.98    NACL-小豆沢  03/08/29  KOHPLUSの追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1040,6 +1041,14 @@
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "RECEDEN-DEL2"
                    MOVE    PATH-TBL-RECEDEN-DEL2
+                                       TO  WRK-PATH
+      *
+               WHEN    "DBUPDATE"      ALSO   "KOHPLUS-KEY"
+               WHEN    "DBDELETE"      ALSO   "KOHPLUS-KEY"
+                   MOVE    PATH-TBL-KOHPLUS-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "KOHPLUS-DEL1"
+                   MOVE    PATH-TBL-KOHPLUS-DEL1
                                        TO  WRK-PATH
       *---- (NYUIN.08) LINE ADD END      ------------------------------
                WHEN    ANY             ALSO   "SYSKANRI-KEY"
@@ -2838,6 +2847,18 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "RECEDEN-ALL2"
                    MOVE    PATH-TBL-RECEDEN-ALL2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KOHPLUS-KEY"
+                   MOVE    PATH-TBL-KOHPLUS-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KOHPLUS-KEY2"
+                   MOVE    PATH-TBL-KOHPLUS-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KOHPLUS-KEY3"
+                   MOVE    PATH-TBL-KOHPLUS-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KOHPLUS-ALL"
+                   MOVE    PATH-TBL-KOHPLUS-ALL
                                        TO  WRK-PATH
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC

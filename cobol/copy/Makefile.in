@@ -768,6 +768,7 @@ COPYS = \
         HCM37.INC \
         HCMC001.INC \
         CPORCSSYU40.INC \
+        CPORCSKOHPLUS.INC \
 
 DBPATH = \
 	ORCA-DBPATH
