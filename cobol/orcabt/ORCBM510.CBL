@@ -30,6 +30,7 @@
       *  01.01.01     NACL-¿¹ÏÆ    03/10/10  ¸øÈñ¾ðÊóÆÉ¤ß¹þ¤ß½¤Àµ
       *  01.01.02     NACL-¿¹ÏÆ    04/06/10  ·îÂå¤ï¤ê¼õµë¼ÔÈÖ¹æ
       *  01.01.03     NACL-¿¹ÏÆ    04/08/05  ½¤Àµ
+      *  01.01.04     NACL-¿¹ÏÆ    04/09/09  ÂÐ¾ÝÆüÉÕ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -841,10 +842,10 @@
            MOVE    SYS-1001-HOSPID     TO  PTKOH-HOSPID
            MOVE    RECE10-PTID         TO  PTKOH-PTID
            MOVE    WRK-KOHNUM          TO  PTKOH-KOHNUM
-           MOVE    RECE10-SKYYM        TO  PTKOH-TEKSTYMD(1:6)
-           MOVE    "01"                TO  PTKOH-TEKSTYMD(7:2)
-           MOVE    RECE10-SKYYM        TO  PTKOH-TEKEDYMD(1:6)
-           MOVE    "01"                TO  PTKOH-TEKEDYMD(7:2)
+      *----(01.01.04)--UPD-START---
+           MOVE    RECE10-TEKSTYMD     TO  PTKOH-TEKSTYMD
+           MOVE    RECE10-TEKSTYMD     TO  PTKOH-TEKEDYMD
+      *----(01.01.04)--UPD-END-----
            MOVE    PTKOH-REC           TO  MCPDATA-REC
       *     MOVE    RECE10-TEKSTYMD     TO  ORC-DBYMD
            MOVE    "DBSELECT"          TO  MCP-FUNC
