@@ -73,6 +73,7 @@
                05  WRK-RECE09-PREFKBN      PIC X(01).
                05  WRK-RECE09-TEISYUTUSAKI PIC X(01).
                05  WRK-RECE09-RECESYUBETU  PIC X(04).
+               05  WRK-RECE09-NYUGAIKBN    PIC X(01).
                05  WRK-RECE09-PRTJYUN      PIC X(02).
            03  WRK-RECE09-STDATA           PIC X(100).
            03  WRK-RECE09-EDDATA           PIC X(100).
@@ -501,7 +502,9 @@
       *        レセプト作成指示（印刷順）読み込み
            MOVE    SPACE               TO  SYS-2003-KEY
            MOVE    "2003"              TO  SYS-2003-KANRICD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+      *****MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SPA-R01-SRYYM       TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
       * 
            MOVE    SYS-2003-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -519,15 +522,17 @@
            END-IF
       *
            MOVE    ZERO                TO  IDX     
-           PERFORM UNTIL       (IDX            =   24   )  OR
-                               (FLG-SYSKANRI   =   1    )
+      *****PERFORM UNTIL       (IDX            =   24   )  OR
+      *****                    (FLG-SYSKANRI   =   1    )
+           PERFORM    UNTIL   FLG-SYSKANRI    =   1
                MOVE    MCPDATA-REC       TO  SYS-2003-REC
                EVALUATE    SPA-R01-RECE07-RECEKBN
                    WHEN    "3"
                        IF      SYS-2003-TEISYUTUSAKI =   "3"
-                           ADD     1             TO  IDX  
-                           MOVE    SYS-2003-KBNCD (1:2)
-                                         TO  SPA-NAI-PRTJYUNI    (IDX)
+                           MOVE    SYS-2003-DSPSEQ         TO  IDX                            
+      *************        MOVE    SYS-2003-KBNCD (1:2)    TO 
+                           MOVE    SYS-2003-DSPSEQ (2:2)   TO                         
+                                         SPA-NAI-PRTJYUNI    (IDX)
                            MOVE    SYS-2003-TEISYUTUSAKI
                                          TO  SPA-NAI-TEISYUTUSAKI(IDX)
                            MOVE    SYS-2003-SYUBETU-G
@@ -539,8 +544,9 @@
                    WHEN    "4"
                        IF      SYS-2003-TEISYUTUSAKI =   "4"
                            ADD     1             TO  IDX  
-                           MOVE    SYS-2003-KBNCD (1:2)
-                                         TO  SPA-NAI-PRTJYUNI    (IDX)
+      *************        MOVE    SYS-2003-KBNCD (1:2)    TO 
+                           MOVE    SYS-2003-DSPSEQ (2:2)   TO                         
+                                         SPA-NAI-PRTJYUNI    (IDX)
                            MOVE    SYS-2003-TEISYUTUSAKI
                                          TO  SPA-NAI-TEISYUTUSAKI(IDX)
                            MOVE    SYS-2003-SYUBETU-G
@@ -825,7 +831,7 @@
                            END-IF                        
                        ELSE
                            MOVE    "0001"             TO  SPA-ERRCD
-                           END-IF
+                       END-IF
                END-EVALUATE
            END-IF   
       *
@@ -1281,12 +1287,21 @@
       *    印刷用パラメタ
            INITIALIZE                  WRK-RECE09-REC
       *
-           MOVE    SPA-R01-RECE07-KEY  TO  WRK-RECE09-KEY
+           MOVE    SPA-R01-RECE07-PRTID
+                                       TO  WRK-RECE09-PRTID
+           IF      SPA-R01-RECE07-SYOKBN   =   "1"
+               MOVE    SPA-R01-SRYYM       TO  WRK-RECE09-SRYYM
+           ELSE
+               MOVE    ZERO                TO  WRK-RECE09-SRYYM
+           END-IF                                    
+           MOVE    SPA-R01-RECE07-CREYMD   TO  WRK-RECE09-CREYMD
+           MOVE    SPA-R01-RECE07-CREHMS   TO  WRK-RECE09-CREHMS
            MOVE    SPA-NAI-SYUBETU (IDX 1)
                                        TO  WRK-RECE09-RECESYUBETU
            MOVE    WRK-TEISYUTUSAKI    TO  WRK-RECE09-TEISYUTUSAKI
            MOVE    WRK-PREFKBN         TO  WRK-RECE09-PREFKBN
            MOVE    SPA-GMN-PRTJYUN     TO  WRK-RECE09-PRTJYUN
+           MOVE    "2"                 TO  WRK-RECE09-NYUGAIKBN
            MOVE    SPA-GMN-TSTDATA (IDX)
                                        TO  WRK-RECE09-STDATA
            MOVE    SPA-GMN-TEDDATA (IDX)
@@ -1983,9 +1998,9 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *
-      *****************************************************`PN@`PN@ ******
+      ***********************************************************
       *    ＰＵＴ　処理
-      *****************************************************************
+      ***********************************************************
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
