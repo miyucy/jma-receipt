@@ -652,7 +652,7 @@
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            PERFORM 4401-PRVKANRI-UPD-SEC
       *
-           MOVE    2                   TO  SPA-GMN-CUR
+           MOVE    1                   TO  SPA-GMN-CUR
            .
        202-MEMO-EXT.
            EXIT.
