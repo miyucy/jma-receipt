@@ -29,6 +29,8 @@
       *  00.00.01    NACL-藤原    04/03/17  開始日と廃止日のよるチェック
       *  00.00.02    NACL-藤原    04/04/13  複数の病名コードが存在する
       *                                     病名のコード編集
+      *                                     ２１個のコード検索時に未検索の
+      *                                     病名が存在するときの処理
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -684,6 +686,11 @@
                GO  TO  200-TBL-HENSYU-EXT
            END-IF 
       *
+      *    検索できなかった病名があるとき
+           IF      FLG-BUBUN           >   ZERO
+               GO  TO  200-TBL-HENSYU-EXT
+           END-IF 
+      *
       *    検索病名コード情報編集
            MOVE    ZERO                TO  IDY
                                            WRK-BUI-MAX
@@ -1124,10 +1131,6 @@
       *
            COMPUTE WRK-LENGTH  =   IDZ     -   FLG-BUBUN
            MOVE    FLG-BUBUN       TO  WRK-ST
-      *???
-      *     DISPLAY "2007 UP=" FLG-BUBUN "#" IDY "#"
-      *                       WRK-KEN-BYOMEI (WRK-ST:WRK-LENGTH) "#"
-      *???
       *     
            MOVE    WRK-KEN-BYOMEI (WRK-ST:WRK-LENGTH)
                                    TO  WRK-BYOMEI-BYOMEI    (IDY)
