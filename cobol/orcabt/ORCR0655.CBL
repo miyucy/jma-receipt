@@ -30,6 +30,7 @@
       *  01.00.01    NACL-門脇    03.03.12  剤点数をキーに追加対応
       *  01.00.02    NACL-門脇    04.02.05  診療コード＊数量の累計編集
       *  01.00.03    NACL-門脇    04.07.12  ファイルクリア追加
+      *  01.00.04    NACL-門脇    04.08.17  レセプト科の編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -357,6 +358,7 @@
                    MOVE    RECE64-SRYYM        TO  RECE642-SRYYM
                    MOVE    RECE64-NYUGAIKBN    TO  RECE642-NYUGAIKBN
                    MOVE    RECE64-PTID         TO  RECE642-PTID
+                   MOVE    RECE64-RECEKA       TO  RECE642-RECEKA
                    MOVE    RECE64-TEISYUTUSAKI TO  RECE642-TEISYUTUSAKI
                    MOVE    RECE64-RECESYUBETU  TO  RECE642-RECESYUBETU
                    MOVE    RECE64-HKNJANUM     TO  RECE642-HKNJANUM
@@ -395,6 +397,7 @@
                    MOVE    RECE64-SRYYM        TO  RECE642-SRYYM
                    MOVE    RECE64-NYUGAIKBN    TO  RECE642-NYUGAIKBN
                    MOVE    RECE64-PTID         TO  RECE642-PTID
+                   MOVE    RECE64-RECEKA       TO  RECE642-RECEKA
                    MOVE    RECE64-TEISYUTUSAKI TO  RECE642-TEISYUTUSAKI
                    MOVE    RECE64-RECESYUBETU  TO  RECE642-RECESYUBETU
                    MOVE    RECE64-HKNJANUM     TO  RECE642-HKNJANUM

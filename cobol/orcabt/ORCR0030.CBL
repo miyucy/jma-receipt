@@ -175,6 +175,7 @@
       *  01.04.05   NACL-ÌçÏÆ     04/06/21  À¸³èÊÝ¸î¤ÎÉéÃ´¶â³Ûµ­ºÜ½¤Àµ
       *  01.04.06   NACL-ÌçÏÆ     04/07/28  ÅêÌôÎÁ¤Î´ïºàÅÀ¤Î½¸·×½¤Àµ
       *  01.04.07   NACL-ÌçÏÆ     04/08/04  Æ±°ìÊÝ¸±ÈÖ¹æÂÐ±þ
+      *  01.04.08   NACL-ÌçÏÆ     04/08/11  Ê£¿ôÊÝ¸±¡¦Ê£¿ô²ÊÆþÎÏÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -288,6 +289,8 @@
            03  FLG-HOUTEN-COM                          PIC 9(01).
            03  FLG-FUKUSHI                             PIC 9(01).
            03  FLG-HKNNUM                              PIC 9(01).
+           03  FLG-SYUTOTAL                            PIC 9(01).
+           03  FLG-SYUTOTAL-SET                        PIC 9(01).
       *
       *    ´ðËÜÅÀ¿ô¤ÎÈóÉ½¼¨È½ÄêÍÑ¥Õ¥é¥°
        01  FLG-KHNTEN-AREA.
@@ -328,6 +331,7 @@
            03  IDX3                                    PIC 9(03).
            03  IDX4                                    PIC 9(03).
            03  IDX8                                    PIC 9(02).
+           03  IDX9                                    PIC 9(03).
            03  IDXX                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
            03  IDZ                                     PIC 9(03).
@@ -469,6 +473,14 @@
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC                         OCCURS  10.
                05  TBL-SYS1001                         PIC X(610).
+      *    ¿ÇÎÅ¹Ô°Ùµ¡Ç½¾ðÊóÂàÈòÍÑÎÎ°è
+       01  TBL-SYS1038-T.
+           03  TBL-SYS1038-OCC                         OCCURS  10.
+               05  TBL-SYS1038                         PIC X(610).
+      *
+       01  TBL-DENPNUM.
+           03  TBL-DENPNUM-OCC                         OCCURS  100.
+               05  TBL-FUKU-DENPNUM                    PIC 9(07).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -764,10 +776,16 @@
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
+      *    ¼ýÇ¼¹ç·×¥Þ¥¹¥¿
+       01  SYUTTL-REC.
+           COPY    "CPSYUTOTAL.INC".
+      *
       *    ¥·¥¹¥Æ¥à´ÉÍý
            COPY    "CPSYSKANRI.INC".
       *    
            COPY    "CPSK1001.INC".
+      *    
+           COPY    "CPSK1038.INC".
       *    
            COPY    "CPSK2005.INC".     
       *
@@ -915,6 +933,58 @@
                                            MCPDATA-REC
            END-IF
       *
+           IF   WRK-PARA-SRYYM    NOT =  ZERO
+      *       ¿ÇÎÅ¹Ô°Ùµ¡Ç½¾ðÊó
+              INITIALIZE                   SYSKANRI-REC
+              MOVE    "1038"           TO  SYS-KANRICD
+              MOVE    "*"              TO  SYS-KBNCD
+              MOVE    WRK-PARA-SRYYM   TO  ORC-DBYMD (1:6)
+              MOVE    "01"             TO  ORC-DBYMD (7:2)
+              PERFORM 960-KANRIMST-READ-SEC
+              IF      FLG-SYSKANRI     =   ZERO
+                  MOVE    MCPDATA-REC  TO  SYS-1038-REC
+              ELSE
+                  INITIALIZE               SYS-1038-REC
+                  MOVE    "0"          TO  SYS-1038-KAGRPFLG
+              END-IF
+           ELSE
+              MOVE     ZERO               TO  SYSKAN-IDX
+              MOVE     SPACE              TO  TBL-SYS1038-T
+              INITIALIZE                      TBL-SYS1038-T
+      *
+              INITIALIZE                      SYSKANRI-REC
+              MOVE    "1038"              TO  SYS-KANRICD
+              MOVE    "*"                 TO  SYS-KBNCD
+              MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                  PERFORM  970-KANRIMST-READ-SEC
+                  PERFORM  UNTIL   FLG-SYSKANRI  =    1
+      *
+                    MOVE    MCPDATA-REC   TO  SYS-1038-REC
+                    ADD     1             TO  SYSKAN-IDX
+                    MOVE    SYS-1038-REC  TO  TBL-SYS1038(SYSKAN-IDX)
+      *
+                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                    PERFORM 970-KANRIMST-READ-SEC
+      *
+                  END-PERFORM
+              END-IF
+      *
+              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           END-IF
+      *
       *    ¥ì¥»¥×¥ÈÊÔ½¸¶èÊ¬¾ðÊó
            MOVE    SPACE            TO  SYSKANRI-REC
            INITIALIZE                   SYSKANRI-REC
@@ -1032,6 +1102,7 @@
       *
            INITIALIZE                   WRK-AREA-SAIKEI
            INITIALIZE                   TBL-JNISSU                      
+           INITIALIZE                   TBL-DENPNUM
       *
            INITIALIZE                   FLG-KHNTEN-AREA
            INITIALIZE                   FLG-SAISIN-AREA
@@ -3910,28 +3981,38 @@
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    "SYUNOU-KEY16"       TO      ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SYUNOU-KEY16"   TO      ORC-DBPATH
                PERFORM  900-SYUNOU-READ-SEC
                PERFORM  UNTIL
-                  (FLG-SYUNOU             =    1)
-                   PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL   IDX1    >       10
-                           OR      RECE02-HKNCOMBI (IDX1)   =   ZERO 
-                       IF      SYU-HKNCOMBINUM   =
-                                                RECE02-HKNCOMBI (IDX1)
-                           PERFORM 21021-RECE02-HENSYU3-SEC
-                           MOVE    10              TO  IDX1
+                        (FLG-SYUNOU             =    1)
+                   PERFORM  VARYING  IDX1   FROM  1   BY  1
+                             UNTIL   IDX1    >    10
+                              OR   RECE02-HKNCOMBI (IDX1)   =   ZERO
+                       IF    SYU-HKNCOMBINUM   =
+                                            RECE02-HKNCOMBI (IDX1)
+                          PERFORM       21022-SYUTOTAL-FIND-SEC
+                          EVALUATE  FLG-SYUTOTAL-SET
+                             WHEN     ZERO
+                                PERFORM 21021-RECE02-HENSYU3-SEC
+                                MOVE    10              TO  IDX1
+                             WHEN      1
+                                PERFORM 21023-SYUNOU-HENKAN-SEC
+                                PERFORM 21021-RECE02-HENSYU3-SEC
+                                MOVE    10              TO  IDX1
+                             WHEN      2
+                                MOVE    10              TO  IDX1
+                          END-EVALUATE
                        END-IF
-                   END-PERFORM          
+                   END-PERFORM
                    MOVE     "SYUNOU-KEY16"  TO   ORC-DBPATH
                    PERFORM   900-SYUNOU-READ-SEC
                END-PERFORM
            ELSE
-               DISPLAY   "SYUNOU SELECT ERR" 
+               DISPLAY   "SYUNOU SELECT ERR"
            END-IF
       *
            MOVE    "SYUNOU-KEY16"     TO  WK-PATH
@@ -4155,6 +4236,107 @@
            END-PERFORM
            .
        21021-RECE02-HENSYU3-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ¼ýÇ¼¹ç·×¥Þ¥¹¥¿¤ÎÆÉ¤ß¹þ¤ß¤ÎÈ½ÊÌ
+      ******************************************************************
+       21022-SYUTOTAL-FIND-SEC           SECTION.
+      *
+           MOVE     ZERO       TO     FLG-SYUTOTAL-SET
+      *
+           IF    (RECE02-RECEKA      NOT =  SPACE)
+           OR    (SYS-1038-KAGRPFLG      =   "1" )
+              CONTINUE
+           ELSE
+      *
+             IF   SYU-FUKU-DENPNUM    NOT =   ZERO
+             AND  SYU-GRP-DENPNUM     NOT =   ZERO
+      *
+               MOVE     ZERO     TO    FLG-SET
+               PERFORM  VARYING  IDX9    FROM    1   BY  1
+                         UNTIL   IDX9                  > 100
+                          OR    TBL-FUKU-DENPNUM(IDX9) = ZERO
+                          OR    FLG-SET                =  1
+                  IF  TBL-FUKU-DENPNUM(IDX9)  =  SYU-FUKU-DENPNUM
+                      MOVE      1      TO      FLG-SET
+                      MOVE      2      TO      FLG-SYUTOTAL-SET
+                  END-IF
+               END-PERFORM
+      *
+               IF  FLG-SET  =  ZERO
+      *
+                  INITIALIZE                         SYUTTL-REC
+                  MOVE    SYU-HOSPID         TO      SYUTTL-HOSPID
+                  MOVE    SYU-NYUGAIKBN      TO      SYUTTL-NYUGAIKBN
+                  MOVE    SYU-PTID           TO      SYUTTL-PTID
+                  MOVE    SYU-FUKU-DENPNUM   TO      SYUTTL-DENPNUM
+                  MOVE    SYUTTL-REC         TO      MCPDATA-REC
+                  MOVE    "DBSELECT"         TO      MCP-FUNC
+                  MOVE    "SYUTOTAL-KEY"     TO      ORC-DBPATH
+                  CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                      ORCMCPAREA
+                                                      MCPDATA-REC
+                  IF      MCP-RC             =       ZERO
+                       MOVE      "SYUTOTAL-KEY"   TO   ORC-DBPATH
+                       PERFORM    900-SYUTOTAL-READ-SEC
+                       IF   FLG-SYUTOTAL   =    ZERO
+                            MOVE   SYU-FUKU-DENPNUM
+                                         TO    TBL-FUKU-DENPNUM(IDX9)
+                            MOVE    1    TO    FLG-SYUTOTAL-SET
+                       ELSE
+                            DISPLAY   "SYUTOTAL FETCH ERR"
+                       END-IF
+                  ELSE
+                       DISPLAY   "SYUTOTAL SELECT ERR"
+                  END-IF
+      *
+                  MOVE    "SYUTOTAL-KEY"     TO  WK-PATH
+                  PERFORM 900-CSR-CLOSE-SEC
+      *
+               END-IF
+      *
+             END-IF
+      *
+           END-IF
+      *
+           .
+      *
+       21022-SYUTOTAL-FIND-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ¼ýÇ¼¹ç·×¥Þ¥¹¥¿¤ÎÆâÍÆ¤ò¼ýÇ¼¥Þ¥¹¥¿¤Ø
+      ******************************************************************
+       21023-SYUNOU-HENKAN-SEC           SECTION.
+      *
+           INITIALIZE                             SYUNOU-REC
+      *£Ë£Å£Ù
+           MOVE     SYUTTL-KEY                TO  SYU-KEY
+      *¿ÇÎÅÆü
+           MOVE     SYUTTL-SRYYMD             TO  SYU-SRYYMD
+      *ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
+           MOVE     SYUTTL-HKNCOMBINUM        TO  SYU-HKNCOMBINUM
+      *¼çÊÝ¸±¡ÝÉéÃ´¾ðÊó
+           MOVE     SYUTTL-SYUHKNNUM          TO  SYU-SYUHKNNUM
+           MOVE     SYUTTL-SYUHKNFTNMONEY     TO  SYU-SYUHKNFTNMONEY
+           MOVE     SYUTTL-SYUCOMPFTN         TO  SYU-SYUCOMPFTN
+           MOVE     SYUTTL-SYUCOMPFTN-ENTANI  TO  SYU-SYUCOMPFTN-ENTANI
+           MOVE     SYUTTL-SYUCOMPYKZFTN      TO  SYU-SYUCOMPYKZFTN
+           MOVE     SYUTTL-SYUCOMPTOTAL       TO  SYU-SYUCOMPTOTAL
+           MOVE     SYUTTL-SYUYKZFTNKBN       TO  SYU-SYUYKZFTNKBN
+      *¸øÈñ¡ÝÉéÃ´¾ðÊó
+           MOVE     SYUTTL-KOH-AREA           TO  SYU-KOH-AREA
+      *ÀÁµáÆâÍÆ
+           MOVE     SYUTTL-SKY-NAIYOU         TO  SYU-SKY-NAIYOU
+      *¸øÈñ°ìÉôÉéÃ´¶â
+           MOVE     SYUTTL-KOH-FTN            TO  SYU-KOH-FTN
+      *¸øÈñ°ìÉôÉéÃ´¶â¡Ê±ßÃ±°Ì¡Ë
+           MOVE     SYUTTL-KOH-FTN-ENTANI     TO  SYU-KOH-FTN-ENTANI
+      *
+           .
+      *
+       21023-SYUNOU-HENKAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5531,6 +5713,29 @@
            EXIT.
       *
       *****************************************************************
+      *    ¼ýÇ¼¹ç·×¥Þ¥¹¥¿ÆÉ¹þ
+      *****************************************************************
+       900-SYUTOTAL-READ-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYUTTL-REC
+               MOVE    ZERO            TO  FLG-SYUTOTAL
+           ELSE
+               INITIALIZE                  SYUTTL-REC
+               MOVE    1               TO  FLG-SYUTOTAL
+           END-IF
+      *
+           .
+      *
+       900-SYUTOTAL-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ´µ¼Ô¸øÈñÉéÃ´¥Þ¥¹¥¿¡¼ÆÉ¹þ
       *****************************************************************
        900-PTKOHFTN-READ-SEC          SECTION.
@@ -5773,6 +5978,32 @@
                         MOVE    1              TO  FLG-RECE02
                      END-IF
                    END-IF
+      *
+                   IF   WRK-PARA-SRYYM    NOT =  ZERO
+                     CONTINUE
+                   ELSE
+      *              ¿ÇÎÅ¹Ô°Ùµ¡Ç½¾ðÊó
+                     MOVE  ZERO           TO  FLG-SET
+                     MOVE  RECE02-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
+                     MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+                     PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                           UNTIL  ( SYSKAN-IDX              >  10   )
+                            OR    ( TBL-SYS1038(SYSKAN-IDX) = SPACE )
+                            OR    ( FLG-SET                 =   1   )
+      *
+                       MOVE  TBL-SYS1038(SYSKAN-IDX)  TO  SYS-1038-REC
+                       IF   ( SYS-1038-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                       AND  ( WRK-SYS-SRYYMD     <=  SYS-1038-EDYUKYMD )
+                          MOVE     1       TO    FLG-SET
+                       END-IF
+      *
+                     END-PERFORM
+                     IF     FLG-SET  =  ZERO
+                           INITIALIZE               SYS-1038-REC
+                           MOVE    "0"          TO  SYS-1038-KAGRPFLG
+                     END-IF
+                   END-IF
+      *
            END-READ
            .
        RECE02-READ-EXT.

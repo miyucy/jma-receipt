@@ -34,6 +34,7 @@
       *  01.01.01    NACL-門脇    04.04.10  在宅患者訪問点滴注射管理指導料
       *                                     算定時の点滴注射のコメント対応
       *  01.01.02    NACL-門脇    04.07.12  ファイルクリア追加
+      *  01.01.03    NACL-門脇    04.08.17  レセプト科の編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -359,6 +360,7 @@
                    MOVE    RECE04-SRYYM        TO  RECE042-SRYYM
                    MOVE    RECE04-NYUGAIKBN    TO  RECE042-NYUGAIKBN
                    MOVE    RECE04-PTID         TO  RECE042-PTID
+                   MOVE    RECE04-RECEKA       TO  RECE042-RECEKA
                    MOVE    RECE04-TEISYUTUSAKI TO  RECE042-TEISYUTUSAKI
                    MOVE    RECE04-RECESYUBETU  TO  RECE042-RECESYUBETU
                    MOVE    RECE04-HKNJANUM     TO  RECE042-HKNJANUM
@@ -399,6 +401,7 @@
                    MOVE    RECE04-SRYYM        TO  RECE042-SRYYM
                    MOVE    RECE04-NYUGAIKBN    TO  RECE042-NYUGAIKBN
                    MOVE    RECE04-PTID         TO  RECE042-PTID
+                   MOVE    RECE04-RECEKA       TO  RECE042-RECEKA
                    MOVE    RECE04-TEISYUTUSAKI TO  RECE042-TEISYUTUSAKI
                    MOVE    RECE04-RECESYUBETU  TO  RECE042-RECESYUBETU
                    MOVE    RECE04-HKNJANUM     TO  RECE042-HKNJANUM

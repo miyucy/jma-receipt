@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    04.02.05  診療コード＊数量の累計編集
       *  01.00.02    NACL-門脇    04.07.12  ファイルクリア追加
+      *  01.00.03    NACL-門脇    04.08.17  レセプト科の編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -339,6 +340,7 @@
                    MOVE    RECE84-SRYYM        TO  RECE842-SRYYM
                    MOVE    RECE84-NYUGAIKBN    TO  RECE842-NYUGAIKBN
                    MOVE    RECE84-PTID         TO  RECE842-PTID
+                   MOVE    RECE84-RECEKA       TO  RECE842-RECEKA
                    MOVE    RECE84-HKNID        TO  RECE842-HKNID
                    MOVE    RECE84-TEKSTYMD     TO  RECE842-TEKSTYMD
                    MOVE    RECE84-SRYKBN       TO  RECE842-SRYKBN
@@ -371,6 +373,7 @@
                    MOVE    RECE84-SRYYM        TO  RECE842-SRYYM
                    MOVE    RECE84-NYUGAIKBN    TO  RECE842-NYUGAIKBN
                    MOVE    RECE84-PTID         TO  RECE842-PTID
+                   MOVE    RECE84-RECEKA       TO  RECE842-RECEKA
                    MOVE    RECE84-HKNID        TO  RECE842-HKNID
                    MOVE    RECE84-TEKSTYMD     TO  RECE842-TEKSTYMD
                    MOVE    RECE84-SRYKBN       TO  RECE842-SRYKBN
