@@ -187,12 +187,10 @@
            03  MEISAI-HEAD-DD          PIC X(02).
       *
        01  MEISAI-HEAD2.
-           03  FILLER                  PIC X(20)   VALUE
+           03  FILLER                  PIC X(22)   VALUE
                "患者番号".
-           03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  FILLER                  PIC X(20)   VALUE
                "氏　　名".
-           03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  FILLER                  PIC X(08)   VALUE
                "診療年月".
            03  FILLER                  PIC X(02)   VALUE   SPACE.
@@ -204,9 +202,8 @@
       *
        01  MEISAI-BODY1.
            03  MEISAI-PTNUM            PIC X(20).
-           03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  MEISAI-NAME             PIC X(20).
-           03  FILLER                  PIC X(01)   VALUE   SPACE.
+           03  FILLER                  PIC X(02)   VALUE   SPACE.
            03  MEISAI-SRYYM            PIC X(08).
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  MEISAI-MSG              PIC X(60).
@@ -410,7 +407,7 @@
       *
            INITIALIZE                  HCMSL80
            MOVE    MEISAI-HEAD         TO  HCMSL80-MOJI (CNT-LCNT1)
-           ADD     1                   TO  CNT-LCNT1
+           ADD     2                   TO  CNT-LCNT1
            MOVE    MEISAI-HEAD2        TO  HCMSL80-MOJI (CNT-LCNT1)
       *
            PERFORM             UNTIL   FLG-END     =   1
@@ -433,7 +430,9 @@
                MOVE    PTINF-REC           TO      MCPDATA-REC
                PERFORM 900-PTINF-READ-SEC
                IF      FLG-PTINF           =   ZERO
-                   MOVE   PTINF-NAME       TO  MEISAI-NAME
+                   INSPECT PTINF-NAME      REPLACING   ALL "  "
+                                                       BY  "　"
+                   MOVE    PTINF-NAME      TO  MEISAI-NAME
                END-IF 
       *
                MOVE    PRVKANRI-SRYYM      TO  MEISAI-SRYYM
