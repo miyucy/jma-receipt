@@ -1379,6 +1379,7 @@
                    MOVE    ZERO            TO  SPA-TOKUTEIFLG
                    MOVE    ZERO            TO  SPA-NAIFUKU-CHK
                    MOVE    ZERO            TO  SPA-NAIFUKU-OK
+                   MOVE    ZERO            TO  SPA-CHOKITOFLG-CHK
       *            診療行為、計計算処理、編集
       *            MOVE    "2"             TO  FLG-TOROKU
                    MOVE    SPACE           TO  FLG-TOROKU
@@ -1401,6 +1402,7 @@
                        MOVE    ZERO            TO  SPA-TOKUTEIFLG
                        MOVE    ZERO            TO  SPA-NAIFUKU-CHK
                        MOVE    ZERO            TO  SPA-NAIFUKU-OK
+                       MOVE    ZERO            TO  SPA-CHOKITOFLG-CHK
                    END-IF
                    PERFORM 3003-GMN-HEN-SEC
                    IF      SPA-MOTOPG      =   "S02"  OR  "J02" OR "C02"
@@ -2136,6 +2138,20 @@
       *            画面制御
                    MOVE    "JOIN"              TO  WRK-PUTTYPE
                    PERFORM 41002-KOUSIN-SYORI-SEC
+      *        長期投与加算の算定確認
+               WHEN    "0130"
+                   IF      SPA-KID1-FLG        =   "OK"
+                       MOVE    2                   TO  SPA-CHOKITOFLG
+                   ELSE
+                       MOVE    1                   TO  SPA-CHOKITOFLG
+                   END-IF
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   MOVE    SPACE               TO  SPA-KID1-FLG
+      *            画面制御
+                   PERFORM 41002-KOUSIN-SYORI-SEC
+                   IF      SPA-KIDCD           =   SPACE
+                       MOVE    "JOIN"              TO  WRK-PUTTYPE
+                   END-IF
       *
       *        再診の振替え
                WHEN    "0114"
@@ -8552,11 +8568,17 @@
       *            診療
            IF     (SPA-SRYKBN-CNT (01) >   ZERO )
              OR   (SPA-HKNKBN          =   1    )
+               IF      LNK-ORCSC-KBN       =   "3"
+                   MOVE    SPA-K01KYOUTU   TO  SPA-WORK
+               END-IF
                CALL    "ORCSC10"       USING
                                        MCPAREA
                                        ORCSC00AREA
                                        SPA-SCR-REC
                                        SPA-AREA
+               IF      LNK-ORCSC-KBN       =   "3"
+                   MOVE    SPA-WORK        TO  SPA-K01KYOUTU
+               END-IF
       *
       *        小児科外来診療科の時、年齢エラーはそのまま
                IF      SPA-SYONIKA-ARI     NOT =   ZERO
@@ -10547,6 +10569,9 @@
                GO      TO      4100-TOROKU-EXT
            END-IF
       *
+      *    特定疾患処方管理・長期投薬加算有無クリア
+           MOVE    ZERO                TO  SPA-CHOKITOFLG
+           MOVE    ZERO                TO  SPA-TOKUTEIFLG
       *    更新前のチェック
            MOVE    "1"                 TO  FLG-TOROKU
            PERFORM 510-TBLHEN-SEC
@@ -13089,6 +13114,11 @@
                                        TO  WRK-KIDMSG
                    MOVE    "ＯＫで自動算定します。"
                                        TO  WRK-KIDMSG(37:)
+               WHEN    "0130"
+                   MOVE    "長期投薬加算が算定できます。"
+                                       TO  WRK-KIDMSG
+                   MOVE    "ＯＫで自動算定します。"
+                                       TO  WRK-KIDMSG(29:)
                WHEN    "0114"
                    MOVE    "厚生労働大臣が定める患者の再診４回目以降へ"
                                        TO  WRK-KIDMSG
@@ -13168,6 +13198,7 @@
            EVALUATE    SPA-KIDCD
                WHEN    "0109"
                WHEN    "0113"
+               WHEN    "0130"
                WHEN    "0118"
                WHEN    "0119"
                WHEN    "0107"

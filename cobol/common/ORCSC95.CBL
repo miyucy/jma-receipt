@@ -2958,6 +2958,7 @@
            MOVE    ZERO                TO  SPA-TOKUTEI
            MOVE    ZERO                TO  SPA-TOKUTEI-F
            MOVE    ZERO                TO  SPA-TOKUTEIFLG
+           MOVE    ZERO                TO  SPA-CHOKITOFLG
       *
       *    特定疾患の有無検索
            MOVE    SPACE               TO  PTBYOMEI-REC

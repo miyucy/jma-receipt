@@ -1048,6 +1048,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "です。自動算定しません。"
                                        TO  SPA-ERRMSG(41:)
+               WHEN    "K019"
+                   MOVE    "警告！既に特定疾患処方管理加算算定済。"
+                                       TO  SPA-ERRMSG
+                   MOVE  "長期投薬加算を算定する場合は削除して下さい。"
+                                       TO  SPA-ERRMSG(39:)
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG
