@@ -1,0 +1,32 @@
+S04	{
+	fixed2	{
+		PTNUM	{
+			value	varchar(20);
+		};
+		NAME	{
+			value	varchar(50);
+		};
+		KKN1	{
+			value	bool;
+		};
+		KKN2	{
+			value	bool;
+		};
+		KKN3	{
+			value	bool;
+		};
+		STRSRYYMD	{
+			value	varchar(10);
+		};
+		ENDSRYYMD	{
+			value	varchar(10);
+                        state	int;
+		};
+		CHK1	{
+			value	bool;
+		};
+		CHK2	{
+			value	bool;
+		};
+	};
+};

@@ -235,7 +235,8 @@ SCREEN_files = \
 	I46.glade \
 	I47.glade \
 	I48.glade \
-	I49.glade
+	I49.glade \
+        S04.glade \
 
 all:   
 

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    NACL-太田    02.12.16  コラムリストの金額欄を
       *                                     カンマ編集するよう修正
+      *  01.01.02    NACL-森脇    03.01.06  S04の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -353,6 +354,7 @@
            COPY    "S02.INC".
            COPY    "S03.INC".
            COPY    "S03N.INC".
+           COPY    "S04.INC".
            COPY    "SERR.INC".
       *
        PROCEDURE                   DIVISION    USING

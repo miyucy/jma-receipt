@@ -73,6 +73,7 @@
       *                                     収納の入外区分を渡すよう修正
       *                                     コラムリストの金額欄を
       *                                     カンマ編集するよう修正
+      *  01.01.19    NACL-森脇    02/12/19  支払証明書印刷追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -441,12 +442,15 @@
       *
            COPY    "LINKAREA".
       *
+      *----(01.01.19)--ADD-START---
        01  SCRAREA.
       *****COPY    "S01.INC".
            COPY    "S02.INC".
            COPY    "S03.INC".
            COPY    "S03N.INC".
+           COPY    "S04.INC".
            COPY    "SERR.INC".
+      *----(01.01.19)--ADD-END-----
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -599,6 +603,9 @@
                    END-IF
                WHEN    "S03"
                WHEN    "S03N"
+      *----(01.01.19)--ADD-START---
+               WHEN    "S04"
+      *----(01.01.19)--ADD-END-----
                    PERFORM 320-S03SPASET-SEC
                WHEN    OTHER
                    PERFORM 310-SPA-SET-SEC
@@ -852,6 +859,11 @@
            ELSE        
                MOVE    1                   TO  SPA-GMN-CUR
            END-IF    
+      *----(01.01.19)--ADD-START---
+           IF      SPA-MOTOPG          =   "S04"
+               MOVE    2                   TO  SPA-GMN-CUR
+           END-IF
+      *----(01.01.19)--ADD-END-----
            .
        320-S03SPASET-EXT.
            EXIT.
@@ -1274,6 +1286,11 @@
       *    受付一覧へ（Ｕ０１）
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-UKEICHI-SEC
+      *----(01.01.19)--ADD-START---
+      *    支払証明書処理
+               WHEN    "CLICKED"         ALSO    "B04S"
+                   PERFORM 500-SHIHARAI-SEC
+      *----(01.01.19)--ADD-END-----
            END-EVALUATE
            .
        200-GMNSENI-EXT.
@@ -3796,6 +3813,66 @@
        490-UKEICHI-EXT.
            EXIT.
       *
+      *----(01.01.19)--ADD-START---
+      *****************************************************************
+      *    支払証明書
+      *****************************************************************
+       500-SHIHARAI-SEC            SECTION.
+      *
+           INITIALIZE                  SPA-S01KYOUTU
+           PERFORM 4901-SPAKYOTUKEY-SET-SEC
+      *
+           IF       SPA-S01-PTNUM  =   SPACE
+               MOVE    "1003"      TO  SPA-ERRCD
+               GO  TO  500-SHIHARAI-EXT
+           END-IF
+      *
+           PERFORM  41011-S04-SET-SEC
+      *
+      *     MOVE    "B01"                TO  MCP-WIDGET
+      *
+           MOVE    "S02"                TO  SPA-MOTOPG
+           MOVE    "S04"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE.
+           MOVE    "S04    "            TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                    TO  FLG-END
+      *
+           .
+       500-SHIHARAI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    支払証明書印刷画面編集処理
+      *****************************************************************
+       41011-S04-SET-SEC               SECTION.
+      *
+           MOVE    SPA-S01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-S02             TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGS04"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+      *
+           MOVE    SPA-COMMON                    TO  SPA-AREA
+           MOVE    SPA-WORK                      TO  SPA-S01KYOUTU
+           MOVE    SPA-FREE                      TO  SPA-S02
+      *
+           .
+       41011-S04-SET-EXT.
+           EXIT.
+      *
+      *----(01.01.19)--ADD-END-----
       **************************************************************
       *    エラーメッセージ表示理
       **************************************************************
@@ -3860,6 +3937,11 @@
                WHEN    "1002"
                    MOVE    "収納の更新処理でエラーになりました"
                                                TO  SPA-ERRMSG
+      *----(01.01.19)--ADD-START---
+               WHEN    "1003"
+                   MOVE    "患者が選択されていません"
+                                               TO  SPA-ERRMSG
+      *----(01.01.19)--ADD-END-----
            END-EVALUATE
       *
            MOVE    SPACE                TO  SERR
