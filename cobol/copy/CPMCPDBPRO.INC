@@ -133,6 +133,8 @@
       *  01.00.87    NACL-ÂÀÅÄ    02/09/19  PTBYOMEI-KEY6ÄÉ²Ã
       *  01.00.88    NACL-Â¿¡¹Ç¼  02/09/25  SRYACCT-KEY11
       *                                     SANTEI-KEY6
+      *  01.00.89    NACL-Æ£¸¶    02/09/30  RECEKANRI-KEY4¡ÁKEY7
+      *                                     RECEPRT-KEY10¡ÁKEY17
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1589,6 +1591,30 @@
                 WHEN    ANY             ALSO   "RECEPRT-KEY9"
                    MOVE    PATH-TBL-RECEPRT-KEY9
                                        TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY10"
+                   MOVE    PATH-TBL-RECEPRT-KEY10
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY11"
+                   MOVE    PATH-TBL-RECEPRT-KEY11
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY12"
+                   MOVE    PATH-TBL-RECEPRT-KEY12
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY13"
+                   MOVE    PATH-TBL-RECEPRT-KEY13
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY14"
+                   MOVE    PATH-TBL-RECEPRT-KEY14
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY15"
+                   MOVE    PATH-TBL-RECEPRT-KEY15
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY16"
+                   MOVE    PATH-TBL-RECEPRT-KEY16
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY17"
+                   MOVE    PATH-TBL-RECEPRT-KEY17
+                                       TO  WRK-PATH
       *ÄÉ²Ã/*³«»Ï*01.09.15********************************************
                WHEN    ANY             ALSO   "RECEPRT-ALL"
                    MOVE    PATH-TBL-RECEPRT-ALL
@@ -1734,6 +1760,18 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "RECEKANRI-KEY3"
                    MOVE    PATH-TBL-RECEKANRI-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECEKANRI-KEY4"
+                   MOVE    PATH-TBL-RECEKANRI-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECEKANRI-KEY5"
+                   MOVE    PATH-TBL-RECEKANRI-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECEKANRI-KEY6"
+                   MOVE    PATH-TBL-RECEKANRI-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECEKANRI-KEY7"
+                   MOVE    PATH-TBL-RECEKANRI-KEY7
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "RECEKANRI-ALL"
                    MOVE    PATH-TBL-RECEKANRI-ALL
