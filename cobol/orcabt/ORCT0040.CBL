@@ -37,18 +37,22 @@
       *
       *    定期請求収納ファイル(IN)
            SELECT  TEIKI01-FILE   ASSIGN   TEIKI01PARA
+                   ORGANIZATION   LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI01.
       *
       *    患者請求履歴ファイル(IN)
            SELECT  TEIKI02-FILE    ASSIGN  TEIKI02PARA
+                   ORGANIZATION   LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI02.
       *
       *    請求取消対象収納ファイル(IN)
            SELECT  TEIKI04-FILE   ASSIGN   TEIKI04PARA
+                   ORGANIZATION   LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI04.
       *
       *    削除対象患者請求履歴ファイル(IN)
            SELECT  TEIKI05-FILE    ASSIGN  TEIKI05PARA
+                   ORGANIZATION   LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI05.
       *
       *    エラーファイル

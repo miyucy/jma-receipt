@@ -36,14 +36,17 @@
       *
       *    定期請求収納ファイル(OT)
            SELECT  TEIKI01-FILE   ASSIGN   TEIKI01PARA
+                   ORGANIZATION   LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI01.
       *
       *    患者請求履歴ファイル(OT)
            SELECT  TEIKI02-FILE    ASSIGN  TEIKI02PARA
+                   ORGANIZATION   LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI02.
       *
       *    定期請求期間情報ファイル(OT)
            SELECT  TEIKI03-FILE    ASSIGN  TEIKI03PARA
+                   ORGANIZATION   LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI03.
       *
       *    エラーファイル
