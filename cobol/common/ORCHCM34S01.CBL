@@ -389,6 +389,9 @@
       *    …¬≈Ô¡™ƒÍ∆˛±°º´∏ …È√¥ºË∆¿•µ•÷
            COPY    "CPORCSBTUSENTEI.INC".
       *
+      *     ›∏±ªªƒÍÕ—«ØŒ°¶≥‰πÁ∑◊ªª•µ•÷
+           COPY    "CPORCSAGECHK.INC".
+      *
       *    £ƒ£¬∏°∫˜
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -1568,6 +1571,20 @@
       *****************************************************************
        200111-SENTEIPTFTN-HEN-SEC      SECTION.
       *
+      *    ∆˛±°¥µº‘§Œœ∑øÕ»ΩƒÍ
+           INITIALIZE   ORCSAGECHKAREA
+           MOVE    HCM34S01-HOSPID     TO  AGECHK-HOSPID
+           MOVE    HCM34S01-PTID       TO  AGECHK-PTID
+           MOVE    HCM34S01-SANTEIYM   TO  AGECHK-SRYYMD(1:6)
+           MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+           IF      ( AGECHK-RC    =    ZERO )
+               CONTINUE
+           ELSE
+               INITIALIZE    ORCSAGECHKAREA
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-TAISYO
            PERFORM VARYING IDXD    FROM    1   BY  1
                UNTIL ( IDXD        >   31 )
@@ -1594,8 +1611,27 @@
                        END-IF
                        MOVE    SYS-5000-SENTEI-TANKA-X
                                            TO  WRK-SENTEI-TANKA-X
-                       MOVE    SYS-5000-SENTEI-KINGAKU-X
-                                           TO  WRK-SENTEI-KINGAKU-X
+                       IF  (SYS-5000-SENTEI-KINGAKU-X NOT = SPACE) AND
+                           (SYS-5000-SENTEI-KINGAKU-X NOT = "0000")
+                           MOVE    SYS-5000-SENTEI-KINGAKU
+                                              TO  WRK-SENTEI-KINGAKU
+                       ELSE
+                         IF   AGECHK-ROUJIN2    =   0
+                           IF  SYS-5000-SENTEI-IPN-KINGAKU-X  =  SPACE
+                               MOVE   ZERO TO  WRK-SENTEI-KINGAKU
+                           ELSE
+                               MOVE   SYS-5000-SENTEI-IPN-KINGAKU
+                                           TO  WRK-SENTEI-KINGAKU
+                           END-IF
+                         ELSE
+                           IF  SYS-5000-SENTEI-RJN-KINGAKU-X  =  SPACE
+                               MOVE   ZERO  TO  WRK-SENTEI-KINGAKU
+                           ELSE
+                               MOVE   SYS-5000-SENTEI-RJN-KINGAKU
+                                                TO  WRK-SENTEI-KINGAKU
+                           END-IF
+                         END-IF
+                       END-IF
                        PERFORM 2001111-SENTEI-PTFTN-SEC
                    WHEN    "3"
                        MOVE    SBTUSENTEI-DAY-FTNKBN   (IDXD)
@@ -1640,12 +1676,14 @@
            END-IF
       *
       *    …¬≈Ô¿ﬂƒÍ§Œ¡™ƒÍº´∏ …È√¥æ Û§ŒºË∆¿
-           INITIALIZE                  ORCSBTUSENTEIAREA
-           MOVE    HCM34S01-HOSPID     TO  SBTUSENTEI-HOSPID
-           MOVE    HCM34S01-PTID       TO  SBTUSENTEI-PTID
-           MOVE    HCM34S01-SANTEIYM   TO  SBTUSENTEI-SRYYM
-           CALL    "ORCSBTUSENTEI"     USING
+           IF    SYS-5000-SENTEI-FTNKBN   =   "3"
+               INITIALIZE                  ORCSBTUSENTEIAREA
+               MOVE    HCM34S01-HOSPID     TO  SBTUSENTEI-HOSPID
+               MOVE    HCM34S01-PTID       TO  SBTUSENTEI-PTID
+               MOVE    HCM34S01-SANTEIYM   TO  SBTUSENTEI-SRYYM
+               CALL    "ORCSBTUSENTEI"     USING
                                            ORCSBTUSENTEIAREA
+           END-IF
       *
            .
        2001111-SENTEI-FTN-TNS-SET-EXT.
