@@ -527,7 +527,8 @@
            INITIALIZE                  KEISAN-AREA.
            MOVE    ZERO            TO  LNK-SYU-RJN-FTN
                                        LNK-SYU-KOH-FTN
-                                       LNK-SYU-YKZ-FTN.
+                                       LNK-SYU-YKZ-FTN
+                                       LNK-SYU-HKNTEKMONEY.
            MOVE    ZERO            TO  LNK-SYU-SYUHKNFTNMONEY
                                        LNK-SYU-SYUCOMPFTN
                                        LNK-SYU-SYUCOMPFTN-ENTANI
