@@ -20,9 +20,9 @@ echo SITELDDEFDIR=$SITELDDEFDIR
 echo DBSTUB = $DBSTUB
 
 # example
-echo $DBSTUB -record $RECORDDIR -dir $LDDERDIR/directory -bddir $LDDEFDIR -db orca -bd orcabt ORCBQ01 -parameter
+echo $DBSTUB -dir $LDDERDIR/directory -bd orcabt ORCBQ01 -parameter
 
 # CHIHOUKOUHI example
-echo $DBSTUB -host $DBHOST -record $SITERECORDDIR -dir $LDDEFDIR/directory -bddir $SITELDDEFDIR -db orca  -bd shimane ORCBS321 -parameter $1
+echo $DBSTUB -dir $LDDEFDIR/directory -bd shimane ORCBS321 -parameter $1
 
 exit 0
