@@ -1218,6 +1218,14 @@
       *
            MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
+      *    入院機能の判定
+           IF     (SPA-MOTOPG(1:3)     =   "M01" )
+               PERFORM 3009-NYUINCHK-SEC
+               IF      FLG-END             =   1
+                   GO      TO      300-SCREEN-EXT
+               END-IF
+           END-IF
+      *
       *    内部画面より
            EVALUATE    SPA-MOTOPG
                WHEN    "K99"
@@ -1326,14 +1334,6 @@
            MOVE    SPACE               TO  SPA-KIDCD
            MOVE    SPACE               TO  SPA-KIDCD2
       *
-      *    入院機能の判定
-           IF     (SPA-MOTOPG(1:3)     =   "M01" )
-               PERFORM 3009-NYUINCHK-SEC
-               IF      FLG-END             =   1
-                   GO      TO      300-SCREEN-EXT
-               END-IF
-           END-IF
-      *
       *    患者の確定していない時、クリア画面の表示、M01より
            IF    ( SPA-MOTOPG(1:3)     =   "M01"    )  OR
                  ((SPA-MOTOPG          =   "K03"  OR  "K08")  AND
@@ -1438,7 +1438,6 @@
                    MOVE    ZERO            TO  SPA-SYOHOU-CHK
                    MOVE    SPACE           TO  SPA-TOKUTEI-SRYKA 
       *            診療行為、計計算処理、編集
-      *            MOVE    "2"             TO  FLG-TOROKU
                    MOVE    SPACE           TO  FLG-TOROKU
                    PERFORM 510-TBLHEN-SEC
                    MOVE    SPACE           TO  FLG-TOROKU
@@ -1579,6 +1578,8 @@
            INITIALIZE              SPA-KYOTUKEY
            INITIALIZE              SPA-K02
            INITIALIZE              SPA-SCR-REC
+           MOVE    SPACE               TO  SPA-KIDCD
+           MOVE    SPACE               TO  SPA-KIDCD2
       *
            MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
@@ -7595,8 +7596,8 @@
       *                                            >   SPA-COM-KZMJGN
       *                                                    (SPA-GMN-IDX)
       *                        MOVE    "0037"          TO  SPA-ERRCD
-      *                    END-IF
-      *!!              END-IF
+      *!!                  END-IF
+                       END-IF
                    END-IF
       *
       *        医薬品
