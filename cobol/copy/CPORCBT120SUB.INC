@@ -94,6 +94,8 @@
                    07  LNK-ORCBT120SUB-SKJ-TAX         PIC  9(07).
       *請求金額
                    07  LNK-ORCBT120SUB-SKYMONEY        PIC  9(07).
+      *レセプト種別
+                   07  LNK-ORCBT120SUB-RECESYUBETU     PIC  X(04).
       *保険組合せ番号
                    07  LNK-ORCBT120SUB-HKNCOMBINUM     PIC  9(04).
       *保険番号
