@@ -356,7 +356,8 @@
       *            １，２桁目以外の '/'は、空白とする
                    IF     (WRK-INPUTCD2(IDX:1)     =   "/" )  AND
                           (IDX                 NOT =   1  AND   2)
-                       IF      WRK-INPUTCD2(1:1)   =   "*"
+                       IF     (WRK-INPUTCD2(1:1)   =   "*" )  OR
+                              (WRK-INPUTCD2(1:3)   =   "///")
                            CONTINUE
                        ELSE
                            MOVE    SPACE       TO  WRK-INPUTCD2(IDX:1)
