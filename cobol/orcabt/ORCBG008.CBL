@@ -26,7 +26,8 @@
       *  03/07/17    NACL−森脇    新規作成
       *****************************************************************
       *  プログラム修正履歴
-      * Maj/Min/Rev  修正者       日付      内容
+      * Maj/Min/Rev  修正者        日付      内容
+      * 01.01.01     NACL-森脇     03/08/27  印刷状況確認画面帳票名変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -337,7 +338,8 @@
            MOVE    PARA-JOBID          TO  JOB-JOBID
            MOVE    PARA-SHELLID        TO  JOB-SHELLID
            MOVE    "ORCBG008"          TO  JOB-PGID
-           MOVE    "経過表"            TO  JOB-SHELLMSG
+           MOVE    "日計表（高額請求添付資料）"
+                                       TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
