@@ -12,7 +12,7 @@ lddefdir = ${exec_prefix}/lddef
 recorddir = ${exec_prefix}/record
 screendir = ${exec_prefix}/screen
 scriptsdir = ${exec_prefix}/scripts
-libdir  = ${exec_prefix}/lib
+libdir  = @libdir@
 
 
 
