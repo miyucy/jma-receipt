@@ -95,6 +95,8 @@
       *                                     ¤Î£Ë£Å£Ù¤ÎÊÔ½¸¤Î½¤Àµ
       *  01.00.36    NACL-ÌçÏÆ    04/02/12  Ç¯ÎðÈ½ÄêÊ¸½¤Àµ
       *  01.00.37    NACL-Æ£¸¶    04/03/08  ¥·¥¹´É¤Ë¤è¤ëÀ¸ÊÝ¼õµë¼ÔÈÖ¹æ¤ÎÊÔ½¸
+      *  01.00.38    NACL-ÌçÏÆ    04/04/06  ¸øÈñÃ±ÆÈ£·£°ºÐÌ¤Ëþ¤ÇÏ·¿ÍÊÝ¸±ÆþÎÏ
+      *                                     ¤Î¤¢¤ëÊý¤ÎºßÁí¿Ç¥Õ¥é¥°ÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -220,6 +222,7 @@
            03  FLG-TSYRRK                              PIC 9(01).
            03  FLG-TNKRRK                              PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
+           03  FLG-ROUJINHOKEN                         PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -923,6 +926,7 @@
       *
       *    ÆÃµ­»ö¹à¤Î¥»¥Ã¥È
       *    Ï·ÊÝ¤ÎÊÔ½¸
+           MOVE    ZERO       TO     FLG-ROUJINHOKEN
       ***> IF      RECE02-HKNHBTNUM     =   SPACE
            IF      RECE02-HKNNUM        =   SPACE
       ***> AND     RECE02-KOHHBTNUM (1) =   "12"
@@ -959,6 +963,7 @@
                                ADD      1           TO  TOKKI-IDX
                                MOVE    "04"         TO  RECE02-TOKKI
                                                             (TOKKI-IDX)
+                               MOVE    1            TO  FLG-ROUJINHOKEN
                                MOVE    1            TO  FLG-PTKOHINF     
                            ELSE
                               MOVE    "PTKOHINF-KEY4"  TO  ORC-DBPATH
@@ -2265,7 +2270,9 @@
              IF    WRK-ZAITAKU   =   "1"
                IF  ( RECE02-AGE          >=  70      )   OR
                    ( RECE02-AGE          >=  65  AND                    
-                     RECE01-KOHID    NOT  =   ZERO   )                  
+                     RECE01-KOHID    NOT  =   ZERO   )   OR
+                   ( RECE02-AGE          >=  65  AND                    
+                     FLG-ROUJINHOKEN      =   1      )
                  MOVE    "1"           TO  RECE02-ZAITAKU
       *
                  IF  RECE02-RECESYUBETU   =   "8888"
