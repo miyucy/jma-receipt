@@ -1,0 +1,35 @@
+M97	{
+	fixed1	{
+		ONKBN	{
+			value	bool;
+		};
+		OFFKBN	{
+			value	bool;
+		};
+		OFFCOMBO	{
+			OFFNAIYO	{
+				value	varchar(14);
+			};
+			state	int;
+			count	int;
+			item	varchar(14)[02];
+		};
+		scrolledwindow1	{
+			NAIYOLIST	{
+				count	int;
+				row		int;
+				rowattr	int;
+				item	{
+					value0	varchar(09);
+					value1	varchar(08);
+					value2	varchar(100);
+				}	[99];
+				select	bool[99];
+			};
+		};
+		MESSEGE	{
+			style   varchar(20);
+			value	varchar(122);
+		};
+	};
+};
