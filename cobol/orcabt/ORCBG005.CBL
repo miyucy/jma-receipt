@@ -334,6 +334,7 @@
            END-IF
       *
            PERFORM UNTIL ( FLG-PTNYUINRRK  =   1 )
+                   OR    ( FLG-END     NOT =   ZERO )
       *
                MOVE    SPACE               TO  HCMG005
       *
@@ -343,9 +344,13 @@
                MOVE    ZERO                TO  CNT-LINE
                PERFORM UNTIL ( FLG-PTNYUINRRK  =   1 )
                        OR    ( CNT-LINE        >=  CONST-LINE-MAX )
+                       OR    ( FLG-END     NOT =   ZERO )
       *
       *            明細編集処理
                    PERFORM 210-BODY-EDIT-SEC
+                   IF    ( FLG-END     NOT =   ZERO )
+                       GO  TO  200-MAIN-EXT
+                   END-IF
       *
                END-PERFORM
       *
