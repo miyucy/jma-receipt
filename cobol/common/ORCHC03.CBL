@@ -44,24 +44,6 @@
       *  01.00.13    NACL-太田    04/03/17  （再）の文字の編集を削除
       *  01.00.14    NACL-多々納  04/07/15  複数科・保険組合せ対応
       *  01.00.15    NACL-多々納  05/01/11  前回未収額の複数科・保険対応
-      *  01.00.16    NACL-小豆沢  05/05/25  労災・自賠責の患者請求分は明細を
-      *                                     表示するように変更
-      *  01.00.17    NACL-多々納  06/04/21  MONFUNCへ変更
-      *  01.00.18    NACL-多々納  06/07/07  領収書変更
-      *  01.00.19    NACL-太田    06/08/22  パラメタテーブルより編集データ
-      *                                     を参照する区分を追加
-      *                                     月まとめ請求書発行機能追加
-      *  03.03.00    NACL-多々納  06/09/27  返金対応追加
-      *  03.04.01    NACL-森脇    07/01/17  医療機関名称、住所セット変更
-      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
-      *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
-      *  03.05.00    NACL-太田    07/08/03  月別発行実日数記載追加
-      *  03.05.01    NACL-多々納  07/08/06  訂正時合計対応
-      *  04.01.00    NACL-太田    07/10/22  公務災害対応
-      *  04.02.00    NACL-太田    08/03/06  改正対応
-      *  04.03.00    NACL-太田    08/09/17  改正対応
-      *  04.04.00    NACL-太田    09/01/14  プログラムオプション対応
-      *  04.05.00    NACL-太田    09/07/24  ORCHCN03V03に統合
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -69,19 +51,234 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    印刷用データ
+           SELECT  PRT-FILE        ASSIGN  HC01PARA
+                                   FILE    STATUS  IS  STS-PARA.
+      *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
+      *    印刷用データ
+       FD  PRT-FILE.
+      *****COPY    "HC03.INC".
+           COPY    "HCM03.INC"     REPLACING   //HCM03//
+                                   BY          //HC03//.
+      *
        WORKING-STORAGE             SECTION.
+      *
+      *     印刷用データ 名称領域 
+           COPY    "CPCOMMONPRT.INC".
+      *    シェル用領域
+      **** COPY    "CPCOMMONSHELL.INC".
+      *
+      *    シェル用領域
+      *    COPY    "CPSHELLTBL.INC".
+      *****COPY    "ORCA-DBPATH".
+      *
+      *
+      *    フラグ領域
+       01  STS-AREA.
+           03  STS-PARA            PIC X(02).
+      *
+      *    フラグ領域
+       01  FLG-AREA.
+           03  FLG-END             PIC 9(01).
+           03  FLG-PARA            PIC 9(01).
+           03  FLG-PTINF           PIC 9(01).
+           03  FLG-SYUNOU          PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-PTRSIINF        PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
+      *
+           03  FLG-SP              PIC 9(01).
+           03  FLG-OK              PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
+      *
+      *    添字領域
+       01  IDX-AREA.
+           03  IDX                 PIC 9(04).
+           03  IDY                 PIC 9(04).
+           03  IDX-Z               PIC 9(04).
+           03  IDX-S               PIC 9(04).
+           03  IDX-MAX             PIC 9(04).
+           03  IDXA                PIC 9(04).
+           03  IDX-ACT             PIC 9(02).
+           03  IDX-REN             PIC 9(04).
+           03  IDX-JYU             PIC 9(04).
+      *
+           03  IDX-SYU             PIC 9(04).
+           03  IDH3                PIC 9(04).
+      *
+           03  IDX2                PIC 9(02).
+           03  IDX3                PIC 9(02).
+           03  IDXP                PIC 9(02).
+           03  IDXM                PIC 9(02).
+           03  IDK                 PIC 9(04).
+           03  IDX2-1              PIC 9(01).
+      *
+      *    システム領域
+       01  SYS-AREA.
+           03  SYS-TIME            PIC 9(08).
+      *
+      *    一時領域
+       01  WRK-AREA.
+      *
+           03  WRK-SYMD.
+               05  WRK-SYY         PIC 9(04).
+               05  WRK-SMM         PIC 9(02).
+               05  WRK-SDD         PIC 9(02).
+           03  WRK-WYMD.
+               05  WRK-WYY         PIC X(03).
+               05  WRK-WMM         PIC 9(02).
+               05  WRK-WDD         PIC 9(02).
+           03  WRK-HENYMDG         PIC X(22).
+      *
+           03  WRK-HKNCOMBIMEI     PIC X(40).
+      *
+           03  WRK-SKYMONEY        PIC S9(11).
+           03  WRK-MISYUMONEY      PIC S9(11).
+           03  WRK-MISYU           PIC S9(11).
+           03  WRK-GOKTEN          PIC S9(11).
+      *
+           03  WRK-DENPNUM             PIC 9(07).
+           03  WRK-SRYKA               PIC X(02).
+           03  WRK-HKNCOMBI            PIC X(04).
+      *
+           03  WRK-WARI            PIC 9(02)V9.
+      *****03  WRK-Z6              PIC ZZZZZZ.
+      *****03  WRK-Z62             PIC ZZZ9.9.
+           03  WRK-Z6              PIC ZZZ.
+           03  WRK-Z62             PIC 9.9.
+      *
+           03  WRK-ZZZ             PIC ZZZ.
+           03  WRK-NO              PIC Z(7).
+           03  WRK-Z7-G.
+               05  WRK-FIL             PIC X(09).
+               05  WRK-Z7              PIC Z,ZZZ,ZZZ.
+           03  WRK-Z72-G.
+      *****    05  WRK-FIL2            PIC X(09).
+      ****     05  WRK-Z72             PIC -,---,---.
+               05  WRK-FIL2            PIC X(18).
+           03  WRK-Z72                 PIC S9(07).
+           03  WRK-Z72-H               PIC Z,ZZZ,ZZZ.
+           03  WRK-Z72-HS              REDEFINES   WRK-Z72-H
+                                       PIC -,---,---.
+      *    自費集計
+           03  WRK-JIHI-REC.
+               05  WRK-JIHI            PIC S9(07)   OCCURS  5.
+           03  WRK-JIHI-TOTAL          PIC S9(08).
+           03  WRK-JIHIMEI-REC.
+               05  WRK-JIHIMEI         PIC X(20)   OCCURS  5.
+      *
+      *    複数科まとめ集計
+           03  WRK-HKNTEN-KIN              PIC 9(07).
+           03  WRK-HKNTEN-KEI              PIC 9(07)V99.
+           03  WRK-NYUKIN                  PIC S9(07).
+      *
+           03  WRK-NYUKIN-TOTAL            PIC S9(07).
+           03  WRK-ZENMISYU                PIC S9(07).
+      *
+           03  WRK-SRYKA-MEI               PIC X(30).
+           03  WRK-PAGE                    PIC 9(03).
+      *
+      *    文字変換
+           03  WRK-ZENKAKU-G.
+               05  WRK-ZENKAKU         PIC X(02)   OCCURS   10.
+           03  WRK-MOJI                PIC X(10).
+           03  WRK-MOJISU              PIC 9(02).
       *
       *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    医療機関情報−基本情報 
+           COPY    "CPSK1001.INC".
+      *    医療機関情報−所在地、連絡先 
+           COPY    "CPSK1002.INC".
+      *
+           COPY    "CPSK1005.INC".
+      *
+           COPY    "CPSK1010.INC".
+      *
+           COPY    "CPSK1013.INC".
+      *
+      *    労災医療機関情報
+           COPY    "CPSK4001.INC".
+      *
+      *    出力先プリンタ名割り当て情報
+           COPY  "CPSK1031.INC".
+      *
+      *    患者マスタ
+       01  PTINF-REC.
+           COPY    "CPPTINF.INC".
+      *
+      *    保険マスタ
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
+      *
+      *    収納
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
+      *
+      *    保険組合せ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *
+      *    保険マスタ
+       01  HKNNUM-REC.
+           COPY    "CPHKNNUM.INC".
+      *
+      *    点数マスタ−
+      *01  TENSU-REC.
+           COPY    "CPTENSU.INC".
+      *
+      *    診療行為マスタ−
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
+      *
+      *    診療会計マスタ−
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
+      *
+      *    受診履歴
+       01  JYURRK-REC.
+           COPY    "CPJYURRK.INC".
+      *
+      *    保存用収納ワーク
+       01  WRK-SYUNOU-REC.
+           COPY    "CPSYUNOU.INC"  REPLACING
+                                     //SYU-// BY //WRK-SYU-//.
+      *
+      *    患者労災保険情報
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
+      *    印刷パラメタ
+           COPY    "CPORCSMKPRT.INC".
+      *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *    請求書収納パラメタ
+           COPY    "CPORCHC03SUB.INC".
+      *
+      *01  MCPDATA-REC                 PIC X(5000).
+           COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
+      *
+      *
+           COPY    "MCPAREA".
       *
       *****************************************************************
       *    連絡　領域
@@ -104,12 +301,1093 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           MOVE    "V1"            TO      ORCHC03-SIZE
-           CALL    "ORCHC03V03"    USING   SPA-AREA
-                                           ORCHC03AREA
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  WRK-AREA
+      *
+           ACCEPT  SYS-TIME            FROM    TIME
+      *
+      *    各ＤＢ読込
+           PERFORM 100-SYORI-SEC
+      *
+           IF      ORCHC03-HAKHOUFLG   =   ZERO
+      *        対象の伝票番号分のみ
+               PERFORM 201-ONLY-SYUNOU-SEC
+           ELSE
+      *        発行区分による
+               PERFORM 202-KAKHOU-SYUNOU-SEC
+           END-IF
       *
            .
        000-PROC-EXT.
            EXIT    PROGRAM
            .
+      *
+      *****************************************************************
+      *    帳票印刷開始処理
+      *****************************************************************
+       400-SYOKI-PRINT-SEC             SECTION.
+      *
+      *    ファイルＯＰＥＮ
+           MOVE    "HC03"              TO  HC01PARA-FORM-ID
+           MOVE    SPA-TERMID          TO  HC01PARA-TERMID
+           MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
+      *    変更★★★★★★
+           ADD     1                   TO  WRK-PAGE
+           MOVE    WRK-PAGE            TO  HC01PARA-CNT
+           OPEN    OUTPUT              PRT-FILE
+      *
+           .
+       400-SYOKI-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票印刷処理
+      *****************************************************************
+       400-PRINT-SEC                SECTION.
+      *
+      *
+      *　　印刷用データ出力
+              WRITE  HC03
+      *
+      ******MOVE   "HC01.sh"           TO  SHELL-ID
+      *     MOVE   "HC03.dia"          TO  SHELL-DIA
+      *     MOVE   "HC03.def"          TO  SHELL-DEF
+      *     MOVE   HC01PARA            TO  SHELL-DAT
+      ***** MOVE   SYS-1031-PRTNM(3)   TO  SHELL-PRTNM 
+            CLOSE                       PRT-FILE
+      *
+            INITIALIZE                 ORCSMKPRTAREA
+            MOVE   "HC01.sh"           TO  MKPRT-ID
+      ***** MOVE   "HC03.dia"          TO  MKPRT-DIA
+      ***** MOVE   "HC03.def"          TO  MKPRT-DEF
+            MOVE   "HCM03.red"         TO  MKPRT-DIA
+            MOVE   SPACE               TO  MKPRT-DEF
+            MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
+            CALL   "ORCSMKPRT"         USING
+                                       ORCSMKPRTAREA
+      *
+      *   印刷用スクリプト処理
+      *★   ETC-EXEC SHELL   SHELL-AREA 10
+      *    MOVE    SHELL-NAME          TO  SHELLTBL-NAME
+      *    MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
+      *    MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
+      *    MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
+      *    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
+      *    MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
+      *    MOVE    SHELLTBL            TO  MCPDATA-REC
+      *    MOVE    "SHELL"             TO  MCP-FUNC
+      *    MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+      *    CALL    "MCPSUB"            USING
+      *            MCPAREA
+      **********   MCPDATA-REC
+      *
+      *
+           .
+       400-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   対象の伝票番号分のみ処理
+      *****************************************************************
+       201-ONLY-SYUNOU-SEC                SECTION.
+      *
+      *    収納マスタ検索
+           INITIALIZE                  SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SYU-PTID
+           MOVE    ORCHC03-DENPNUM     TO  SYU-DENPNUM
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    診療科名編集
+           MOVE    SPACE                TO  WRK-SRYKA-MEI
+           MOVE    SYU-SRYKA            TO  WRK-SRYKA
+           PERFORM 1000-SRYKAMEI-HEN-SEC
+      *    保険組合せ
+           PERFORM 1001-HKNCOMBI-HEN-SEC
+      *
+           MOVE    ORCHC03-DENPNUM     TO  WRK-DENPNUM
+           MOVE    ORCHC03-SEIKYU      TO  WRK-SKYMONEY
+           MOVE    ORCHC03-NYUKIN      TO  WRK-NYUKIN
+           MOVE    ORCHC03-ZENMISYU    TO  WRK-MISYUMONEY
+      *
+      *    帳票印刷開始処理
+           PERFORM 400-SYOKI-PRINT-SEC
+      *
+      *    帳票編集処理
+           PERFORM 300-HC03-HEN-SEC
+      *
+      *    帳票印刷処理
+           PERFORM 400-PRINT-SEC
+      *
+           .
+       201-ONLY-SYUNOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初期編集処理
+      *****************************************************************
+       100-SYORI-SEC                SECTION.
+      *
+      *    医療機関情報−所在地、連絡先
+           MOVE    SPACE               TO  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    ZERO                TO  SYS-1001-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1001-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-1001-REC
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-1001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *
+      *    医療機関情報−所在地、連絡先
+           MOVE    SPACE               TO  SYS-1002-REC
+           MOVE    "1002"              TO  SYS-1002-KANRICD
+           MOVE    "*"                 TO  SYS-1002-KBNCD
+           MOVE    ZERO                TO  SYS-1002-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1002-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1002-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-1002-REC
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-1002-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    出力先プリンタ名割り当て情報編集
+           INITIALIZE                      SYS-1031-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    SPA-SRYYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+      *
+      **** 出力先プリンタ名割り当て情報編集
+      *    MOVE    SPACE               TO  SYS-1031-REC
+      *    INITIALIZE                  SYS-1031-REC
+      *    MOVE    "1031"              TO  SYS-1031-KANRICD
+      *    MOVE    "*"                 TO  SYS-1031-KBNCD
+      *    MOVE    SYS-1031-REC        TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *    MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *        PERFORM 900-KANRIMST-READ-SEC
+      *        IF      MCP-RC              =   ZERO
+      *            MOVE    MCPDATA-REC     TO  SYS-1031-REC
+      *        END-IF
+      *    ELSE
+      *        INITIALIZE                  SYS-1031-REC
+      *        MOVE    1               TO  FLG-SYSKANRI
+      *    END-IF
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *****                             MCPDATA-REC
+      *
+      *    労災医療機関情報編集
+           MOVE    SPACE               TO  SYS-4001-REC
+           INITIALIZE                  SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-4001-REC
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-4001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    自費名称編集
+           PERFORM 1002-JIHIMSG-HEN-SEC
+      *
+           .
+       100-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    自費名称編集処理
+      *****************************************************************
+       1002-JIHIMSG-HEN-SEC             SECTION.
+      *
+      *    医療機関情報−所在地、連絡先
+           MOVE    SPACE               TO  SYS-1013-REC
+           MOVE    "1013"              TO  SYS-1013-KANRICD
+           MOVE    ZERO                TO  SYS-1013-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1013-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1013-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1013-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           INITIALIZE                  WRK-JIHIMEI-REC
+           PERFORM
+               UNTIL       FLG-SYSKANRI    =   1
+               MOVE    MCPDATA-REC         TO  SYS-1013-REC
+               IF      SPA-NYUGAIKBN       =   SYS-1013-KBNCD(1:1)
+                   EVALUATE    SYS-1013-KBNCD(2:1)
+                       WHEN    "1"
+                           MOVE    SYS-1013-JIHINAME   TO  WRK-JIHIMEI
+                                                                    (1)
+                       WHEN    "2"
+                           MOVE    SYS-1013-JIHINAME   TO  WRK-JIHIMEI
+                                                                    (2)
+                       WHEN    "3"
+                           MOVE    SYS-1013-JIHINAME   TO  WRK-JIHIMEI
+                                                                    (3)
+                       WHEN    "4"
+                           MOVE    SYS-1013-JIHINAME   TO  WRK-JIHIMEI
+                                                                    (4)
+                       WHEN    "5"
+                           MOVE    SYS-1013-JIHINAME   TO  WRK-JIHIMEI
+                                                                    (5)
+                   END-EVALUATE
+               END-IF
+      *
+               MOVE    "SYSKANRI-KEY2"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *
+           .
+       1002-JIHIMSG-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ名称編集処理
+      *****************************************************************
+       1001-HKNCOMBI-HEN-SEC             SECTION.
+      *
+      *    保険組合せマスター検索
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-PTID            TO  COMB-PTID
+           MOVE    SYU-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
+           PERFORM 910-HKNCOMBI-READ-SEC
+           IF      FLG-HKNCOMBI        =   1
+                DISPLAY "*** HKNCOMBI  ERR:"   COMB-KEY "."
+           END-IF
+           PERFORM 10011-HKNCOMBIMEI-HEN-SEC
+      *
+           IF    ( COMB-HKNNUM         =   "971" OR "973" )
+      *
+      *        患者労災保険情報検索
+               INITIALIZE                      PTRSIINF-REC
+               MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+               MOVE    SPA-PTID            TO  PTRSI-PTID
+               MOVE    COMB-HKNID          TO  PTRSI-HKNID
+               PERFORM 910-PTRSIINF-READ-SEC
+           ELSE
+               INITIALIZE                      PTRSIINF-REC
+           END-IF
+      *
+           .
+       1001-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ名称編集処理
+      *****************************************************************
+       10011-HKNCOMBIMEI-HEN-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  WRK-HKNCOMBIMEI
+      *
+           STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+                   "　"                    DELIMITED  BY  SIZE
+                   COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                   "　"                    DELIMITED  BY  SIZE
+                   COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                   "　"                    DELIMITED  BY  SIZE
+                   COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                   "　"                    DELIMITED  BY  SIZE
+                   COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                         INTO              WRK-HKNCOMBIMEI
+           END-STRING
+      *
+           .
+       10011-HKNCOMBIMEI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科名編集処理
+      *****************************************************************
+       1000-SRYKAMEI-HEN-SEC                SECTION.
+      *
+      *    診療科
+           MOVE    SPACE               TO  SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    WRK-SRYKA           TO  SYS-1005-KBNCD
+           MOVE    ZERO                TO  SYS-1005-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1005-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1005-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1005-REC
+               IF      WRK-SRYKA-MEI       =   SPACE
+                   MOVE    SYS-1005-SRYKANAME2
+                                               TO  WRK-SRYKA-MEI
+               ELSE
+                   IF      WRK-SRYKA-MEI(19:2) NOT =   SPACE
+                       CONTINUE
+                   ELSE
+                       STRING  WRK-SRYKA-MEI   DELIMITED  BY  SPACE
+                               "、"            DELIMITED  BY  SIZE
+                               SYS-1005-SRYKANAME2
+                                               DELIMITED  BY  SPACE
+                               INTO                WRK-SRYKA-MEI
+                       END-STRING
+                   END-IF
+               END-IF
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       1000-SRYKAMEI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票編集処理
+      *****************************************************************
+       300-HC03-HEN-SEC                SECTION.
+      *
+           INITIALIZE                  HC03
+      *
+      *    伝票番号
+           MOVE    WRK-DENPNUM         TO  WRK-NO  
+           MOVE    WRK-NO              TO  HC03-NO
+      *    診療科
+           MOVE    WRK-SRYKA-MEI(1:20) TO  HC03-MIDASI
+      *    患者番号
+           MOVE    SPA-PTNUM           TO  HC03-KNJNO
+      *    患者名称
+           MOVE    SPA-NAME            TO  HC03-KNJNAMW
+      *    保険種別
+           MOVE    WRK-HKNCOMBIMEI     TO  HC03-HOKEN
+      *    負担割合
+           IF      SYU-PTFTNRATE       >   ZERO
+               COMPUTE WRK-WARI        =   SYU-PTFTNRATE   /   10
+               IF      SYU-PTFTNRATE(3:1)  =   ZERO
+                   MOVE    WRK-WARI            TO  WRK-Z6
+                   MOVE    WRK-Z6              TO  HC03-FUTAN
+               ELSE
+                   MOVE    WRK-WARI            TO  WRK-Z62
+                   MOVE    WRK-Z62             TO  HC03-FUTAN
+               END-IF
+           END-IF
+      *    診療日
+           MOVE    SYU-SRYYMD          TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  HC03-SRYYMD
+      *    発行日
+           MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  HC03-HAKYMD
+      *
+      *    医療機関住所
+           MOVE    SYS-1002-ADRS       TO  HC03-IRYOADRS
+      *    医療機関名
+           MOVE    SYS-1001-HOSPNAME   TO  HC03-IRYOMEI
+      *    医療機関ＴＥＬ
+           MOVE    SYS-1002-TEL        TO  HC03-IRYOTEL
+      *    自費名称編集
+           PERFORM 3102-JIHIMSG-HEN-SEC
+      *
+           MOVE    SPACE               TO  WRK-Z7-G
+           MOVE    SPACE               TO  WRK-Z72-G
+      *    診療科
+           MOVE    SYU-HKNTEN (01)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO1
+      *    指導科
+           MOVE    SYU-HKNTEN (02)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO2
+      *    在宅科
+           MOVE    SYU-HKNTEN (03)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO3
+      *    投薬科
+           MOVE    SYU-HKNTEN (04)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO4
+      *    注射科
+           MOVE    SYU-HKNTEN (05)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO5
+      *    処置科
+           MOVE    SYU-HKNTEN (06)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO6
+      *    手術科
+           MOVE    SYU-HKNTEN (07)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO7
+      *    検査科
+           MOVE    SYU-HKNTEN (08)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO8
+      *    Ｘ線科
+           MOVE    SYU-HKNTEN (09)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G          TO  HC03-HKNRYO9
+      *    その他料
+           MOVE    SYU-HKNTEN (10)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO10
+      *    合計点数
+           COMPUTE WRK-GOKTEN          =   SYU-HKNTEN (01)
+                                       +   SYU-HKNTEN (02)
+                                       +   SYU-HKNTEN (03)
+                                       +   SYU-HKNTEN (04)
+                                       +   SYU-HKNTEN (05)
+                                       +   SYU-HKNTEN (06)
+                                       +   SYU-HKNTEN (07)
+                                       +   SYU-HKNTEN (08)
+                                       +   SYU-HKNTEN (09)
+                                       +   SYU-HKNTEN (10)
+           MOVE    WRK-GOKTEN          TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-GOKTEN
+      *
+      *    労災・自賠の時、点数表示なし
+           IF    ( COMB-HKNNUM             =    "971"  OR  "973" )
+               MOVE    SPACE               TO  HC03-HKNRYO1
+               MOVE    SPACE               TO  HC03-HKNRYO2
+               MOVE    SPACE               TO  HC03-HKNRYO3
+               MOVE    SPACE               TO  HC03-HKNRYO4
+               MOVE    SPACE               TO  HC03-HKNRYO5
+               MOVE    SPACE               TO  HC03-HKNRYO6
+               MOVE    SPACE               TO  HC03-HKNRYO7
+               MOVE    SPACE               TO  HC03-HKNRYO8
+               MOVE    SPACE               TO  HC03-HKNRYO9
+               MOVE    SPACE               TO  HC03-HKNRYO10
+               MOVE    ALL "*"             TO  HC03-GOKTEN
+           END-IF
+      *
+      *    保険適用分
+           MOVE    SYU-HKNTEKMONEY     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HOKENBUN
+      *
+           IF    ( COMB-HKNNUM             =    "971"
+                                           OR   "973" )
+      *        労災・自賠の時、点数表示なし
+               EVALUATE    TRUE
+               WHEN      ( COMB-HKNNUM             =    "971" )
+                   AND   ( SYS-4001-RSIIRYOKBN NOT =   "1" )
+      *
+               WHEN      ( COMB-HKNNUM             =    "973" )
+                   AND   ( PTRSI-HKNKBN        =    "4" ) 
+                   AND   ( SYU-PTFTNRATE   NOT =   ZERO  )
+      *
+                   COMPUTE WRK-GOKTEN      =    SYU-HKNTEKMONEY
+                                           +    SYU-RSISHOSHIN-MONEY
+                                           +    SYU-RSISAISHIN-MONEY
+                                           +    SYU-RSISDO-MONEY
+                                           +    SYU-RSIETC-MONEY
+                   MOVE    WRK-GOKTEN      TO  WRK-Z72
+                   PERFORM 800-HENKAN-SEC
+                   MOVE    WRK-Z72-G           TO  HC03-HOKENBUN
+               WHEN    OTHER
+                   MOVE    SPACE               TO  HC03-HOKENBUN
+               END-EVALUATE
+           END-IF
+      *
+      *    保険適用外分
+           MOVE    ZERO                TO  WRK-GOKTEN
+           COMPUTE WRK-GOKTEN          =   SYU-TGMONEY (12)
+                                       +   SYU-TGMONEY-TAX  (12)
+           MOVE    WRK-GOKTEN          TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HOKENGAI
+      *    自費１
+           MOVE    ZERO                TO  WRK-JIHI-REC
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   5
+               COMPUTE WRK-JIHI (IDX)      =   SYU-JIHI-TAXNASI (IDX)
+                                           +   SYU-JIHI-TAXARI  (IDX)
+           END-PERFORM
+      *
+           MOVE    WRK-JIHI (1)        TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-JIHI1
+           MOVE    WRK-JIHI (2)        TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-JIHI2
+           MOVE    WRK-JIHI (3)        TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-JIHI3
+           MOVE    WRK-JIHI (4)        TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-JIHI4
+           MOVE    WRK-JIHI (5)        TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-JIHI5
+      *    自費計
+           COMPUTE WRK-JIHI-TOTAL      =   SYU-JIHI-TOTAL
+                                       +   SYU-JIHI-TOTAL-TAX
+           MOVE    WRK-JIHI-TOTAL      TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-JIHI6
+      *    自費消費税
+           MOVE    SYU-JIHI-TAX        TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-JIHI7
+      *    自費合計
+           COMPUTE WRK-GOKTEN          =   WRK-JIHI-TOTAL
+                                       +   SYU-JIHI-TAX
+           MOVE    WRK-GOKTEN          TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-JIHI8
+      *    薬剤一部負担
+           MOVE    SYU-YKZ-FTN         TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-YAKUZAI
+      *    老人一部負担金
+           MOVE    SYU-RJN-FTN         TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-ROUJIN
+      *    公費一部負担金
+           MOVE    SYU-KOH-FTN         TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-KOUHI
+      *
+      *    調整金
+           MOVE    SYU-CHOSEI          TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-CHOSEI
+      *    今回請求額
+           MOVE    WRK-SKYMONEY        TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-KONSEIKYU
+      *
+      *    今回入金額
+           MOVE    WRK-NYUKIN          TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-KONNYUKIN
+      *    前回未収額計算
+      *!!! PERFORM 3101-MISYU-HEN-SEC
+      *****MOVE    ORCHC03-ZENMISYU    TO  WRK-MISYUMONEY
+           MOVE    WRK-MISYUMONEY      TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-ZENMISYU
+      *    合計請求額
+           COMPUTE WRK-GOKTEN          =   WRK-SKYMONEY
+                                       +   WRK-MISYUMONEY
+           MOVE    WRK-GOKTEN          TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-GOUKEIGAK
+      *
+      *    発行区分
+           EVALUATE    ORCHC03-HAKKOFLG
+      *        WHEN    1
+      *            MOVE    "（再）"        TO  HC03-MIDASHI
+               WHEN    2
+                   MOVE    "（訂正）"      TO  HC03-MIDASHI
+           END-EVALUATE
+      *
+           .
+       300-HC03-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   複数科・保険入力の印刷処理
+      *****************************************************************
+       202-KAKHOU-SYUNOU-SEC                SECTION.
+      *
+           INITIALIZE                  ORCHC03SUBAREA
+      *    収納マスタまとめ計算
+           CALL    "ORCHC03SUB"        USING
+                                       SPA-AREA
+                                       ORCHC03AREA
+                                       ORCHC03SUBAREA
+      *    入金合計
+           MOVE    ZERO                TO  WRK-NYUKIN-TOTAL
+           PERFORM VARYING IDX-SYU     FROM    1   BY  1
+                   UNTIL   IDX-SYU     >   ORCHC03SUB-MAX
+               ADD     ORCHC03SUB-NYUKIN-TOTAL(IDX-SYU)
+                                           TO  WRK-NYUKIN-TOTAL
+           END-PERFORM
+      *    入金合計から前回未収額の入金額を求める
+           IF      ORCHC03-NYUKIN      >   WRK-NYUKIN-TOTAL
+               COMPUTE WRK-ZENMISYU    =   ORCHC03-NYUKIN
+                                       -   WRK-NYUKIN-TOTAL
+           ELSE
+               MOVE    ZERO            TO  WRK-ZENMISYU
+           END-IF
+      *
+           PERFORM VARYING IDX-SYU     FROM    1   BY  1
+                   UNTIL   IDX-SYU     >   ORCHC03SUB-MAX
+               MOVE    ORCHC03SUB-SYUNOU-REC(IDX-SYU)
+                                           TO  SYUNOU-REC
+      *        診療科名編集
+               MOVE    SPACE               TO  WRK-SRYKA-MEI
+               IF      ORCHC03SUB-DOUJI-SRYKA-G (IDX-SYU)
+                                           =   SPACE
+                   MOVE    SYU-SRYKA           TO  WRK-SRYKA
+                   PERFORM 1000-SRYKAMEI-HEN-SEC
+               ELSE
+                   PERFORM 2021-GRP-SRYKAMEI-HEN-SEC
+               END-IF
+      *        保険組合せ
+               IF      SYU-HKNCOMBINUM     =   ZERO  OR  SPACE
+                   MOVE    "複数保険使用"      TO  WRK-HKNCOMBIMEI
+                   MOVE    ZERO                TO  SYU-PTFTNRATE
+               ELSE
+                   PERFORM 1001-HKNCOMBI-HEN-SEC
+               END-IF
+      *
+               MOVE    SYU-DENPNUM         TO  WRK-DENPNUM
+               MOVE    ORCHC03SUB-SKYMONEY (IDX-SYU)
+                                           TO  WRK-SKYMONEY
+               MOVE    ORCHC03SUB-NYUKIN-TOTAL(IDX-SYU)
+                                           TO  WRK-NYUKIN
+      *
+      *        １枚目に前回未収額を表示する
+               IF      IDX-SYU             =   1
+                   MOVE    ORCHC03-ZENMISYU    TO  WRK-MISYUMONEY
+                   COMPUTE WRK-NYUKIN          =   WRK-NYUKIN
+                                               +   WRK-ZENMISYU
+               ELSE
+                   MOVE    ZERO                TO  WRK-MISYUMONEY
+               END-IF
+      *
+      *        帳票印刷開始処理
+               PERFORM 400-SYOKI-PRINT-SEC
+      *
+      *        帳票編集処理
+               PERFORM 300-HC03-HEN-SEC
+      *
+      *        帳票印刷処理
+               PERFORM 400-PRINT-SEC
+           END-PERFORM
+      *
+           .
+       202-KAKHOU-SYUNOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    複数診療科編集処理
+      *****************************************************************
+       2021-GRP-SRYKAMEI-HEN-SEC             SECTION.
+      *
+           PERFORM VARYING     IDH3    FROM    1   BY  1
+                   UNTIL       IDH3    >   10
+               IF      ORCHC03SUB-DOUJI-SRYKA (IDX-SYU IDH3)
+                                       NOT =   SPACE
+                   MOVE    ORCHC03SUB-DOUJI-SRYKA(IDX-SYU IDH3)
+                                           TO  WRK-SRYKA
+                   PERFORM 1000-SRYKAMEI-HEN-SEC
+               END-IF
+           END-PERFORM
+           .
+       2021-GRP-SRYKAMEI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    半角全角変換処理
+      *****************************************************************
+       800-HENKAN-SEC             SECTION.
+     *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+      *****MOVE    WRK-Z72             TO  KANACHK-MAE-INPUT
+           IF      WRK-Z72             <   ZERO
+               MOVE    WRK-Z72             TO  WRK-Z72-HS
+               MOVE    WRK-Z72-HS          TO  KANACHK-MAE-INPUT
+           ELSE
+               MOVE    WRK-Z72             TO  WRK-Z72-H
+               MOVE    WRK-Z72-H           TO  KANACHK-MAE-INPUT
+           END-IF
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF      KANACHK-RC          =   ZERO
+               MOVE    KANACHK-OUT-INPUT(1:18)    TO  WRK-Z72-G
+           END-IF
+           .
+       800-HENKAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    未収金額編集処理
+      *****************************************************************
+      *3101-MISYU-HEN-SEC             SECTION.
+      *
+      *    MOVE    ZERO                TO  WRK-MISYUMONEY
+      *    MOVE    SYU-DENPNUM         TO  WRK-DENPNUM
+      *    収納テーブル読み込み
+      *    INITIALIZE                  SYUNOU-REC
+      *    MOVE    SPA-HOSPID          TO  SYU-HOSPID
+      *    MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+      *    MOVE    SPA-PTID            TO  SYU-PTID
+      *
+      *    MOVE    SYUNOU-REC          TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+      *        PERFORM 980-SYUNOU-READ-SEC
+      *    ELSE
+      *        INITIALIZE                  SYUNOU-REC
+      *        MOVE    1               TO  FLG-SYUNOU
+      *    END-IF
+      *    MOVE    ZERO                TO  WRK-MISYUMONEY
+      *    PERFORM
+      *        UNTIL     FLG-SYUNOU    =   1
+      *        IF      ORCHC03-FUKU-DENPNUM    =   ZERO
+      *            IF      SYU-DENPNUM     NOT =   WRK-DENPNUM
+      *                COMPUTE WRK-MISYU       =   SYU-SKYMONEY
+      *                                        -   SYU-NYUKIN-TOTAL
+      *                ADD     WRK-MISYU           TO  WRK-MISYUMONEY
+      *            END-IF
+      *        ELSE
+      *            IF      SYU-FUKU-DENPNUM    =   ORCHC03-FUKU-DENPNUM
+      *                CONTINUE
+      *            ELSE
+      *                COMPUTE WRK-MISYU       =   SYU-SKYMONEY
+      *                                        -   SYU-NYUKIN-TOTAL
+      *                ADD     WRK-MISYU           TO  WRK-MISYUMONEY
+      *            END-IF
+      *        END-IF
+      *
+      *        MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+      *        PERFORM 980-SYUNOU-READ-SEC
+      *    END-PERFORM
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    .
+      *3101-MISYU-HEN-EXT.
+      *****EXIT.
+      *
+      *****************************************************************
+      *    自費名称編集処理
+      *****************************************************************
+       3102-JIHIMSG-HEN-SEC             SECTION.
+      *
+           MOVE    WRK-JIHIMEI(1)      TO  HC03-JIHIMSG1
+           MOVE    WRK-JIHIMEI(2)      TO  HC03-JIHIMSG2
+           MOVE    WRK-JIHIMEI(3)      TO  HC03-JIHIMSG3
+           MOVE    WRK-JIHIMEI(4)      TO  HC03-JIHIMSG4
+           MOVE    WRK-JIHIMEI(5)      TO  HC03-JIHIMSG5
+      *
+           .
+       3102-JIHIMSG-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    西暦日本語変換処理
+      *****************************************************************
+       31012-SEIWA-HEN-SEC        SECTION.
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY2-AREA
+           MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
+           .
+       31012-SEIWA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理マスタ読み込み処理
+      *****************************************************************
+       900-KANRIMST-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-KANRIMST-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者マスター読み込み
+      *****************************************************************
+       900-PTINF-READ-SEC         SECTION.
+      *
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTINF-REC
+                   MOVE    ZERO            TO  FLG-PTINF
+               ELSE
+                   MOVE    1               TO  FLG-PTINF
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       900-PTINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納マスター読込
+      *****************************************************************
+       980-SYUNOU-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+               MOVE    ZERO            TO  FLG-SYUNOU
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       980-SYUNOU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せマスター読み込み
+      *****************************************************************
+       910-HKNCOMBI-READ-SEC         SECTION.
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+                   MOVE    ZERO            TO  FLG-HKNCOMBI
+               ELSE
+                   MOVE    1               TO  FLG-HKNCOMBI
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+     *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       910-HKNCOMBI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者労災保険情報読み込み
+      *****************************************************************
+       910-PTRSIINF-READ-SEC         SECTION.
+      *
+           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTRSIINF-REC
+                   MOVE    ZERO            TO  FLG-PTRSIINF
+               ELSE
+                   MOVE    1               TO  FLG-PTRSIINF
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTRSIINF
+           END-IF
+     *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       910-PTRSIINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    終了　　処理
+      *****************************************************************
+       300-END-SEC                 SECTION.
+      *
+           .
+       300-END-EXT.
+           EXIT.
       *
