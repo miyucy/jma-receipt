@@ -720,7 +720,7 @@
                    WHEN    "1"    
                        IF      SPA-GMN-T02-PARA (9:)
                                            NOT =   SPACE    
-                           MOVE    "0003"          TO  SPA-ERRCD
+                           MOVE    "0012"          TO  SPA-ERRCD
                        ELSE
                            INITIALIZE                  HKNJAINF-REC
                            MOVE    SPA-HOSPID      TO  HKNJA-HOSPID
@@ -731,7 +731,7 @@
                                MOVE    HKNJA-HKNJANAME
                                                    TO  SPA-GMN-T02-NAME
                            ELSE
-                               MOVE    "0003"      TO  SPA-ERRCD
+                               MOVE    "0012"      TO  SPA-ERRCD
                            END-IF
                        END-IF
                    WHEN    "2"
@@ -750,10 +750,10 @@
                            IF      FLG-PTINF       =   ZERO
                                MOVE    PTINF-NAME  TO  SPA-GMN-T02-NAME
                            ELSE
-                               MOVE    "0012"      TO  SPA-ERRCD
+                               MOVE    "0003"      TO  SPA-ERRCD
                            END-IF
                        ELSE
-                           MOVE    "0012"          TO  SPA-ERRCD
+                           MOVE    "0003"          TO  SPA-ERRCD
                        END-IF
                    WHEN    OTHER
                        MOVE    "0011"      TO  SPA-ERRCD
@@ -823,7 +823,7 @@
                                                SPA-GMN-T02-TSYORIFLG
                                                    (SPA-NAI-T02-SELNUM1)
                    WHEN    OTHER
-                       MOVE    "0004"          TO  SPA-ERRCD
+                       MOVE    "0008"          TO  SPA-ERRCD
                END-EVALUATE            
       *
                IF      SPA-ERRCD          =   SPACE
@@ -965,18 +965,23 @@
       *****************************************************************
        420-TUIKA-SEC                SECTION.
       *
-           IF      SPA-GMN-T02-SELNUM1  =  ZERO
-               MOVE    "0005"              TO  SPA-ERRCD
-               GO  TO  420-TUIKA-EXT
-           END-IF
-      *
-           IF      SPA-GMN-T02-SELNUM2  >   ZERO
+           IF      SPA-NAI-T02-SELNUM1  =  ZERO
                MOVE    "0006"              TO  SPA-ERRCD
                GO  TO  420-TUIKA-EXT
            END-IF
       *
+           IF      SPA-NAI-T02-SELNUM2  >   ZERO
+               MOVE    "0005"              TO  SPA-ERRCD
+               GO  TO  420-TUIKA-EXT
+           END-IF
+      *
            IF      SPA-GMN-T02-PARA    =  SPACE
-               MOVE    "0015"              TO  SPA-ERRCD
+               EVALUATE    SPA-NAI-T02-TPARAKBN (SPA-NAI-T02-SELNUM1)
+                   WHEN    "1"
+                       MOVE    "0016"              TO  SPA-ERRCD
+                   WHEN    "2"
+                       MOVE    "0015"              TO  SPA-ERRCD
+               END-EVALUATE
                GO  TO  420-TUIKA-EXT
            END-IF
       *
@@ -1076,13 +1081,23 @@
       *****************************************************************
        430-HENKOU-SEC              SECTION.
       *
-           IF      SPA-GMN-T02-SELNUM2 =   ZERO
-               MOVE    "0008"              TO  SPA-ERRCD
+           IF      SPA-NAI-T02-SELNUM1  =  ZERO
+               MOVE    "0006"              TO  SPA-ERRCD
+               GO  TO  430-HENKOU-EXT
+           END-IF
+      *
+           IF      SPA-NAI-T02-SELNUM2 =   ZERO
+               MOVE    "0004"              TO  SPA-ERRCD
                GO  TO  430-HENKOU-EXT
            END-IF
       *
            IF      SPA-GMN-T02-PARA    =  SPACE
-               MOVE    "0015"              TO  SPA-ERRCD
+               EVALUATE    SPA-NAI-T02-TPARAKBN (SPA-NAI-T02-SELNUM1)
+                   WHEN    "1"
+                       MOVE    "0016"              TO  SPA-ERRCD
+                   WHEN    "2"
+                       MOVE    "0015"              TO  SPA-ERRCD
+               END-EVALUATE
                GO  TO  430-HENKOU-EXT
            END-IF
       *   
@@ -1153,8 +1168,13 @@
       *****************************************************************
        440-SAKUJYO-SEC             SECTION.
       *
-           IF      SPA-GMN-T02-SELNUM2 =   ZERO
-               MOVE    "0008"              TO  SPA-ERRCD
+           IF      SPA-NAI-T02-SELNUM1  =  ZERO
+               MOVE    "0006"              TO  SPA-ERRCD
+               GO  TO  440-SAKUJYO-EXT
+           END-IF
+      *
+           IF      SPA-NAI-T02-SELNUM2 =   ZERO
+               MOVE    "0004"              TO  SPA-ERRCD
                GO  TO  440-SAKUJYO-EXT
            END-IF
       *
@@ -1507,20 +1527,21 @@
                WHEN    "0002"
                    MOVE    "これ以上追加できません"    TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "保険者番号入力エラー"      TO  SPA-ERRMSG
+                   MOVE
+                       "該当の患者が存在しません"      TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "処理区分入力エラー"        TO  SPA-ERRMSG
-               WHEN    "0005"
-                   MOVE    "対象の処理が選択してありません"
+                   MOVE    "対象のデータを選択してありません" 
                                                        TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE    "項目が選択してありますので追加できません"
+                   MOVE    "対象の処理が選択してありません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0005"
+                   MOVE    "対象のデータが選択してあります"
                                                        TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "既に入力済です"            TO  SPA-ERRMSG
                WHEN    "0008"
-                   MOVE    "対象のパラメタが選択してありません" 
-                                                       TO  SPA-ERRMSG
+                   MOVE    "処理区分入力エラー"        TO  SPA-ERRMSG
                WHEN    "0009"
                    MOVE    "選択番号エラー"            TO  SPA-ERRMSG
                WHEN    "0010"
@@ -1531,8 +1552,8 @@
                        "パラメタ区分が指定してないので入力できません"
                                                        TO  SPA-ERRMSG
                WHEN    "0012"
-                   MOVE
-                       "患者番号入力エラー"            TO  SPA-ERRMSG
+                   MOVE    "該当の保険者番号が存在しません"
+                                                       TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE
                        "処理対象の処理が選択してありません"
@@ -1542,7 +1563,13 @@
                        "パラメタの入力中です"          TO  SPA-ERRMSG
                WHEN    "0015" 
                    MOVE
-                       "パラメタが未入力です"          TO  SPA-ERRMSG
+                       "患者番号が未入力です"          TO  SPA-ERRMSG
+               WHEN    "0016" 
+                   MOVE
+                       "保険者番号が未入力です"        TO  SPA-ERRMSG
+               WHEN    "0016" 
+                   MOVE
+                       "保険者番号が未入力です"        TO  SPA-ERRMSG
                WHEN    "1002"
                    MOVE    "パラメタＤＢの追加処理でエラーとなりました" 
                                                        TO  SPA-ERRMSG
