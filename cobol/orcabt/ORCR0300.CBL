@@ -1046,7 +1046,6 @@
                PERFORM 301-RECE11-HENSYU-SEC
       *
                MOVE    ZERO               TO  WRK-RENNUM
-                                              
       *
                MOVE    ZERO               TO  WRK-COM-RENNUM
                                               FLG-COMMENT
@@ -1172,16 +1171,6 @@
       *    ∆˛±°«Ø∑Ó∆¸
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    …¬≈Ô∂Ë ¨
-           IF      RECE02-NYUGAIKBN    =   "1"
-               MOVE    1               TO  IDZ                  
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       4
-                   MOVE    RECE02-BYOTOKBN (IDX)
-                                           TO  WRK-DATA (IDZ:2)
-                   ADD     2               TO  IDZ
-               END-PERFORM                            
-               MOVE    8                   TO  WRK-NAGASA
-           END-IF    
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    ∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò…∏Ω‡…È√¥≥€∂Ë ¨
            PERFORM 5004-MOJI-HENSYU-SEC         
@@ -2296,6 +2285,7 @@
                                            =   "82"
                    MOVE    SPACE              TO
                                        TBL-COMMENT-NAME  (WRK-TBLMAX8)
+               END-IF
            END-IF
           .
        200711-SRYKBN13-COMMENT-TAIHI-EXT.
