@@ -34,7 +34,7 @@ I03	{
 			state	int;
 		};
 		TAISYONISSU	{
-			value	number(4);
+			value	number(5);
 			state	int;
 		};
 		BYOMEI1	{

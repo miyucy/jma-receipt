@@ -103,8 +103,8 @@
                05  WRK-CMB-ITM             PIC X(100).
            03  WRK-STYMD                   PIC X(08).
            03  WRK-EDYMD                   PIC X(08).
-           03  WRK-NISSU1                  PIC 9(05).
-           03  WRK-NISSU2                  PIC 9(05).
+           03  WRK-NISSU1                  PIC 9(06).
+           03  WRK-NISSU2                  PIC 9(06).
            03  WRK-UPDKBN                  PIC X(3).
            03  WRK-TAINFUKA.
                05  WRK-TAINFUKA-OCC        OCCURS 25.
@@ -877,10 +877,10 @@
                MOVE    SPA-NAI-I03-TAIINYMD
                                    TO  WRK-EDYMD
                PERFORM 5002-KIKAN-CALC-SEC
-               IF    ( WRK-NISSU2  <   10000 )
+               IF    ( WRK-NISSU2  <   100000 )
                    MOVE    WRK-NISSU2  TO  SPA-GMN-I03-TAISYONISSU
                ELSE
-                   MOVE    ZERO        TO  SPA-GMN-I03-TAISYONISSU
+                   MOVE    99999       TO  SPA-GMN-I03-TAISYONISSU
                END-IF
            END-IF
       *

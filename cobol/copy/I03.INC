@@ -35,7 +35,7 @@
               04  I03-NYUINYMD-STT         PIC S9(9)   BINARY.
               04  I03-TAIINYMD             PIC X(10).
               04  I03-TAIINYMD-STT         PIC S9(9)   BINARY.
-              04  I03-TAISYONISSU          PIC S9(4).
+              04  I03-TAISYONISSU          PIC S9(5).
               04  I03-TAISYONISSU-STT      PIC S9(9)   BINARY.
               04  I03-BYOMEI               PIC X(50)
                                            OCCURS  5.

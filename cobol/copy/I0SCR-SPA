@@ -465,7 +465,7 @@
       *          退院日
                  11  SPA-GMN-I03-TAIINYMD          PIC X(10).
       *          通算対象日数
-                 11  SPA-GMN-I03-TAISYONISSU       PIC S9(4).
+                 11  SPA-GMN-I03-TAISYONISSU       PIC S9(5).
       *          病名
                  11  SPA-GMN-I03-BYOMEI-G.
                      15  SPA-GMN-I03-BYOMEI        PIC X(50)

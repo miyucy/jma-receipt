@@ -345,7 +345,7 @@
       <name>TAISYONISSU</name>
       <x>280</x>
       <y>100</y>
-      <width>45</width>
+      <width>55</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -361,7 +361,7 @@
 	<last_modification_time>Mon, 02 Sep 2002 03:05:11 GMT</last_modification_time>
       </signal>
       <editable>True</editable>
-      <format>ZZZ9</format>
+      <format>ZZZZ9</format>
     </widget>
 
     <widget>
