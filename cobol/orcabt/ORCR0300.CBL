@@ -1581,8 +1581,11 @@
       *            Éô°Ì¡¿ÌôºÞ
                    MOVE    "810000001"     TO  
                                    TBL-COMMENT-SRYCD (WRK-TBLMAX8)
-               ELSE 
-                   IF      RECE05-INPUTNUM(IDX)    NOT =   ZERO
+               ELSE
+                   IF      RECE05-SRYCD (IDX)   =   "810000001"
+                       CONTINUE
+                   ELSE  
+                     IF      RECE05-INPUTNUM(IDX)    NOT =   ZERO
                        MOVE    RECE02-HOSPID           TO  PTCOM-HOSPID
                        MOVE    RECE02-PTID             TO  PTCOM-PTID
                        MOVE    RECE05-ZAINUM           TO  PTCOM-ZAINUM
@@ -1590,7 +1593,11 @@
                        MOVE    RECE05-INPUTNUM(IDX)    TO  PTCOM-RENNUM
                        PERFORM 950-PTCOM-READ-SEC
                        IF      PTCOM-INPUTCHI1     =   SPACE
-                           MOVE    PTCOM-INPUTCOMENT
+                           INITIALIZE                  TNS-TENSU-REC
+                           MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
+                           PERFORM 900-TENSU-READ-SEC
+                           COMPUTE IDW =   TNS-YUKOKETA    *   2   +   1
+                           MOVE    PTCOM-INPUTCOMENT (IDW:)
                                                    TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)
                        ELSE    
@@ -1612,6 +1619,7 @@
                                           TBL-COMMENT-NAME (WRK-TBLMAX8)
                            END-IF
                        END-IF
+                     END-IF
                    END-IF    
                END-IF
            END-IF
