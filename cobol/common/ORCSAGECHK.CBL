@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  02/10/01  生活保護追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -51,6 +52,7 @@
            03  FLG-HKNNUM          PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
+           03  FLG-HKN-ERR         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -73,7 +75,9 @@
            03  WRK-HKNNUM              PIC X(03).
            03  WRK-PAYKBN              PIC X(02).
       *
-           03  WRK-ZZ9             PIC ZZZ.
+           03  WRK-ZZ9                 PIC ZZZ.
+      *
+           03  WRK-SEIDONAME           PIC X(20).
       *
       *
       *****************************************************************
@@ -305,6 +309,16 @@
                                                 MCPDATA-REC
            END-IF
            IF      FLG-OK                  =   1
+               GO      TO      200-FTNRATE-EXT
+           END-IF
+      *
+      *    生活保護のみの時
+           IF     (COMB-HKNNUM         =   SPACE )  AND
+                 ((COMB-KOH1HKNNUM     =   "012" )  OR
+                  (COMB-KOH2HKNNUM     =   "012" )  OR
+                  (COMB-KOH3HKNNUM     =   "012" )  OR
+                  (COMB-KOH4HKNNUM     =   "012" ))
+               MOVE    1               TO  FLG-OK
                GO      TO      200-FTNRATE-EXT
            END-IF
       *    老人公費で、支払区分がある時
