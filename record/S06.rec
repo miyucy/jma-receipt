@@ -45,6 +45,13 @@ S06	{
 		NYUKINYMD	{
 			value	varchar(10);
 		};
+		CMB_NYKNHOHO	{
+			NYKNHOHO	{
+				value	varchar(33);
+			};
+			count	int;
+			item	varchar(33)[50];
+		};
 		CMB_SKYPRTKBN	{
 			SKYPRTKBN	{
 				value	varchar(14);

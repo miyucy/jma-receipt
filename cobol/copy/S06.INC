@@ -41,6 +41,10 @@
                 04  S06-NYKNKNRKBN-ITEM-STATE
                                            PIC S9(9)   BINARY.
               03  S06-NYUKINYMD            PIC X(10).
+              03  S06-CMB-NYKNHOHO.
+                04  S06-NYKNHOHO           PIC X(33).
+                04  S06-NYKNHOHO-COUNT     PIC S9(9)   BINARY.
+                04  S06-NYKNHOHO-ITEM      PIC X(33)   OCCURS  50 TIMES.
               03  S06-CMB-SKYPRTKBN.
                 04  S06-SKYPRTKBN          PIC X(14).
                 04  S06-SKYPRTKBN-COUNT    PIC S9(9)   BINARY.

@@ -75,6 +75,11 @@
                            11  SPA-GMN-NYKNKNRKBNMEI
                                                    PIC X(40).
                        09  SPA-GMN-NYUKINYMD       PIC X(10).
+                       09  SPA-GMN-NYKNHOHO-G.
+                           11  SPA-GMN-NYKNHOHO    PIC X(02).
+                           11                      PIC X(01).
+                           11  SPA-GMN-NYKNHOHOMEI
+                                                   PIC X(30).
                        09  SPA-GMN-SKYPRTKBN-G.
                            11  SPA-GMN-SKYPRTKBN   PIC X(01).
                            11                      PIC X(01).
@@ -111,6 +116,13 @@
                            11                      PIC X(01).
                            11  SPA-GMN-NYKNKNRKBNMEIL
                                                    PIC X(40).
+                   07  SPA-GMN-NYKNHOHOLST-G.
+                       09  SPA-GMN-NYKNHOHO-MAX    PIC 9(03).
+                       09  SPA-GMN-NYKNHOHOLST     OCCURS  5.
+                           11  SPA-GMN-NYKNHOHOL   PIC X(02).
+                           11                      PIC X(01).
+                           11  SPA-GMN-NYKNHOHOMEIL
+                                                   PIC X(30).
                    07  SPA-GMN-SKYPRTKBNLST-G.
                        09  SPA-GMN-SKYPRTKBN-MAX   PIC 9(03).
                        09  SPA-GMN-SKYPRTKBNLST    OCCURS  2.
@@ -180,6 +192,7 @@
            03  IDX1                                PIC 9(05).
            03  IDX2                                PIC 9(05).
            03  IDX3                                PIC 9(05).
+           03  IDX4                                PIC 9(05).
            03  IDXA                                PIC 9(05).
            03  IDXB                                PIC 9(05).
            03  IDX-OUT                             PIC 9(05).
@@ -246,6 +259,7 @@
            COPY    "CPSK1032.INC".
            COPY    "CPSK1035.INC".
            COPY    "CPSK1039.INC".
+           COPY    "CPSK1041.INC".
       *
       *    収納マスター
        01  SYUNOU-REC.
@@ -442,6 +456,9 @@
       *    入金管理区分コンボ編集
            PERFORM 3101-NYKNKNRKBNLST-HEN-SEC
       *
+      *    入金方法コンボ編集
+           PERFORM 3101-NYKNHOHOLST-HEN-SEC
+      *
       *    請求書発行区分コンボ編集
            PERFORM 3101-SKYPRTKBNLST-HEN-SEC
       *
@@ -457,6 +474,12 @@
                                        TO  SPA-GMN-NYKNKNRKBN-G
            ELSE
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYKNKNRKBN-G
+           END-IF
+      *
+      *    入金方法コンボ初期値
+           IF    ( SPA-GMN-NYKNHOHO-MAX    >   ZERO )
+               MOVE    SPA-GMN-NYKNHOHOLST (1)
+                                       TO  SPA-GMN-NYKNHOHO-G
            END-IF
       *
       *    請求書兼領収書発行区分コンボ初期値
@@ -902,6 +925,55 @@
        3101-NYKNKNRKBNLST-HEN-EXT.
            EXIT.
       *************************************************************
+      *    入金方法コンボ編集処理
+      *************************************************************
+       3101-NYKNHOHOLST-HEN-SEC       SECTION.
+      *
+           INITIALIZE                      SPA-GMN-NYKNHOHOLST-G
+      *
+      *    入金方法
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYS-1041-REC
+           MOVE    "1041"              TO  SYS-1041-KANRICD
+           MOVE    SYS-1041-REC        TO  MCPDATA-REC
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF  ( MCP-RC                =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-1041-REC
+           ELSE
+               INITIALIZE                  SYS-1041-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX4
+           PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
+      *
+               COMPUTE IDX4    =   IDX4    +   1
+      *
+               MOVE    SYS-1041-KBNCD  TO  SPA-GMN-NYKNHOHOL    (IDX4)
+               MOVE    SYS-1041-NYKN-NAME
+                                       TO  SPA-GMN-NYKNHOHOMEIL (IDX4)
+      *
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC        NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    MCPDATA-REC TO  SYS-1041-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    IDX4                TO  SPA-GMN-NYKNHOHO-MAX
+      *
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       3101-NYKNHOHOLST-HEN-EXT.
+           EXIT.
+      *************************************************************
       *    請求書発行区分コンボ編集処理
       *************************************************************
        3101-SKYPRTKBNLST-HEN-SEC       SECTION.
@@ -1164,6 +1236,8 @@
            MOVE    S06-NYKNKNRKBN      TO  SPA-GMN-NYKNKNRKBN-G
       *    入金日
            MOVE    S06-NYUKINYMD       TO  SPA-GMN-NYUKINYMD
+      *    入金方法
+           MOVE    S06-NYKNHOHO        TO  SPA-GMN-NYKNHOHO-G
       *    請求書発行区分
            MOVE    S06-SKYPRTKBN       TO  SPA-GMN-SKYPRTKBN-G
       *    外来入金額
@@ -1223,6 +1297,12 @@
       *
       *    入金日チェック処理
            PERFORM 4101-NYUKINYMD-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    入金方法チェック
+           PERFORM 4101-NYKNHOHO-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1642,6 +1722,24 @@
        4101-NYUKINYMD-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入金方法チェック
+      *****************************************************************
+       4101-NYKNHOHO-CHK-SEC           SECTION.
+      *
+           MOVE    SPA-GMN-NYKNHOHO    TO  WRK-CMB-CD
+           PERFORM 4200-NYKNHOHOLST-CHK-SEC
+           IF    ( WRK-CMB-ITM             =   SPACE )
+               MOVE    "0014"          TO  SPA-ERRCD
+               MOVE    9               TO  SPA-GMN-CUR
+               GO  TO  4101-NYKNHOHO-CHK-EXT
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYKNHOHO-G
+           END-IF
+      *
+           .
+       4101-NYKNHOHO-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    請求書兼領収書発行区分チェック処理
       *****************************************************************
        4101-SKYPRTKBN-CHK-SEC          SECTION.
@@ -1704,6 +1802,29 @@
       *
            .
        4200-NYKNKNRKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金方法コンボチェック処理
+      *****************************************************************
+       4200-NYKNHOHOLST-CHK-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+               UNTIL ( IDX-CMB     >   SPA-GMN-NYKNHOHO-MAX )
+                OR   ( WRK-CMB-CD  =   SPA-GMN-NYKNHOHOL (IDX-CMB))
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX-CMB     <=  SPA-GMN-NYKNHOHO-MAX )
+               MOVE    SPA-GMN-NYKNHOHOLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-NYKNHOHOLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    請求書兼領収書区分コンボチェック処理
@@ -1787,6 +1908,12 @@
                GO  TO  4801-KANREN-CHK-EXT
            END-IF
       *
+      *    入金方法チェック
+           PERFORM 4101-NYKNHOHO-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4801-KANREN-CHK-EXT
+           END-IF
+      *
       *    請求書兼領収書発行区分チェック
       *    PERFORM 4101-SKYPRTKBN-CHK-SEC
       *    IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -1824,6 +1951,7 @@
            MOVE    SPA-HOSPID          TO  LNK-SCNYUKINS-HOSPID
            MOVE    SPA-GMN-PTID        TO  LNK-SCNYUKINS-PTID
            MOVE    SPA-NAI-NYUKINYMD   TO  LNK-SCNYUKINS-NYUKIN-YMD
+           MOVE    SPA-GMN-NYKNHOHO    TO  LNK-SCNYUKINS-NYUKIN-HOHO
       *
            MOVE    ZERO                TO  LNK-SCNYUKINS-MAX
            PERFORM VARYING IDX0    FROM    1   BY  1
@@ -2081,6 +2209,16 @@
       *
            MOVE    SPA-GMN-NYUKINYMD   TO  S06-NYUKINYMD
       *
+           MOVE    SPA-GMN-NYKNHOHO-G
+                                       TO  S06-NYKNHOHO
+           MOVE    SPA-GMN-NYKNHOHO-MAX
+                                       TO  S06-NYKNHOHO-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-NYKNHOHO-MAX )
+               MOVE    SPA-GMN-NYKNHOHOLST (IDX1)
+                                       TO  S06-NYKNHOHO-ITEM (IDX1)
+           END-PERFORM
+      *
            MOVE    SPA-GMN-SKYPRTKBN-G
                                        TO  S06-SKYPRTKBN
            MOVE    SPA-GMN-SKYPRTKBN-MAX
@@ -2232,6 +2370,9 @@
            WHEN    "0013"
                MOVE    "選択番号を入力してください"
                                            TO  SPA-ERRMSG
+           WHEN    "0014"
+               MOVE    "入金方法入力エラー"
+                                           TO  SPA-ERRMSG
            WHEN    "4001"  THRU    "4999"
                MOVE    "更新処理に失敗しました"
                                            TO  SPA-ERRMSG
@@ -2315,6 +2456,8 @@
                MOVE  "NYUKINYMD"       TO  MCP-WIDGET
            WHEN    08
                MOVE  "SKYPRTKBN"       TO  MCP-WIDGET
+           WHEN    09
+               MOVE  "NYKNHOHO"        TO  MCP-WIDGET
            WHEN    212
                MOVE  "B12"             TO  MCP-WIDGET
            END-EVALUATE
@@ -2352,9 +2495,13 @@
       *    入金額　　　　　→　選択番号
            WHEN    "NYUKIN"
                MOVE    02              TO  SPA-GMN-CUR
-      *    入金日　　→請求書兼領収書
+      *    入金日　　→入金方法
            WHEN    "NYUKINYMD"
-               MOVE    08              TO  SPA-GMN-CUR
+               MOVE    09              TO  SPA-GMN-CUR
+      *    入金方法　→請求書兼領収書
+           WHEN    "NYKNHOHO"
+      *********MOVE    08              TO  SPA-GMN-CUR
+               MOVE    04              TO  SPA-GMN-CUR
       *    請求兼領収書　　→外来入金額
            WHEN    "SKYPRTKBN"
                MOVE    04              TO  SPA-GMN-CUR
