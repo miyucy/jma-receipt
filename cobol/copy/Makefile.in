@@ -538,7 +538,7 @@ install:
 installdirs:
 
 install-copys: install-copydirs
-	for f in $(COPYS); do \
+	for f in $(COPYS) $(COPYS_inc); do \
 	  $(INSTALL_DATA) $${f} $(copydir) ; done
 
 install-copydirs:
