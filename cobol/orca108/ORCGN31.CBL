@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
+      * 01.01.01     NACL-森脇     04/10/04  全角半角チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -427,28 +428,28 @@
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
                WHEN    "ACTIVATE"      ALSO    "PREFCD"
-      *            都道府県番号入力
+      *            都道府県番号チェック
                    PERFORM 4100-PREFCD-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "POST"
       *            郵便番号入力
-                   PERFORM 4100-POST-CHK-SEC
+                   PERFORM 4100-POST-SET-SEC
                WHEN    "ACTIVATE"      ALSO    "CITYKANA"
-      *            市町村名カナ処理
+      *            市町村名カナチェック
                    PERFORM 4100-CITYKANA-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "TOWNKANA"
-      *            町域名カナ処理
+      *            町域名カナチェック
                    PERFORM 4100-TOWNKANA-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "CITYNAME"
-      *            市町村名処理
+      *            市町村名チェック
                    PERFORM 4100-CITYNAME-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "TOWNNAME"
-      *            町域名処理
+      *            町域名チェック
                    PERFORM 4100-TOWNNAME-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
       *            選択番号処理
-                   PERFORM 4100-SELNUM-CHK-SEC
+                   PERFORM 4100-SELNUM-SET-SEC
                WHEN    ANY             ALSO    "CYOIKILST"
-      *            町域リスト処理
+      *            町域リストチェック
                    PERFORM 4100-CYOIKILST-CHK-SEC
            END-EVALUATE
            .
@@ -459,11 +460,12 @@
       *****************************************************************
       *    郵便番号入力
       *****************************************************************
-       4100-POST-CHK-SEC           SECTION.
+       4100-POST-SET-SEC           SECTION.
       *
-           IF    ( SPA-GMN-POST    =   SPACE )
-               MOVE    1               TO  SPA-GMN-CUR
-               GO  TO  4100-POST-CHK-EXT
+      *    郵便番号チェック
+           PERFORM 4100-POST-CHK-SEC
+           IF    SPA-ERRCD         NOT =   SPACE
+               GO  TO  4100-POST-SET-EXT
            END-IF
       *
            MOVE    ZERO            TO  SPA-GMN-SELNUM
@@ -479,6 +481,35 @@
       *
       *    該当町域リストセット
            PERFORM 4100-CYOIKILST-SET-SEC
+           .
+      *
+       4100-POST-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     郵便番号チェック
+      *****************************************************************
+       4100-POST-CHK-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-POST    =   SPACE )
+               MOVE    "0011"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+               GO  TO  4100-POST-CHK-EXT
+           END-IF
+      *
+           INITIALIZE                      ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-POST        TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-POST
+           IF    ( KANACHK-RC      NOT =   ZERO )  OR
+                 ( KANACHK-RC2         =   7    )  OR
+                 ( KANACHK-SYUBETU     =   2    )
+      *        全角半角混在エラー
+               MOVE    "0011"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+           END-IF
            .
       *
        4100-POST-CHK-EXT.
@@ -561,7 +592,8 @@
                END-IF
            END-PERFORM
       *
-           PERFORM 4100-SELNUM-CHK-SEC
+      *    選択番号入力
+           PERFORM 4100-SELNUM-SET-SEC
       *
            .
       *
@@ -571,17 +603,17 @@
       *****************************************************************
       *    選択番号入力
       *****************************************************************
-       4100-SELNUM-CHK-SEC         SECTION.
+       4100-SELNUM-SET-SEC         SECTION.
       *
            IF    ( SPA-GMN-SELNUM      =   ZERO )
                MOVE    3               TO  SPA-GMN-CUR
-               GO  TO  4100-SELNUM-CHK-EXT
+               GO  TO  4100-SELNUM-SET-EXT
            END-IF
       *
-           IF    ( SPA-GMN-SELNUM      >   SPA-GMN-CYOIKI-MAX )
-               MOVE    "0002"          TO  SPA-ERRCD
-               MOVE    2               TO  SPA-GMN-CUR
-               GO  TO  4100-SELNUM-CHK-EXT
+      *    選択番号チェック
+           PERFORM 4100-SELNUM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4100-SELNUM-SET-EXT
            END-IF
       *
            INITIALIZE                  ADRS-REC
@@ -634,11 +666,25 @@
            MOVE    4               TO  SPA-GMN-CUR
            .
       *
+       4100-SELNUM-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    選択番号チェック
+      *****************************************************************
+       4100-SELNUM-CHK-SEC         SECTION.
+      *
+           IF    ( SPA-GMN-SELNUM      >   SPA-GMN-CYOIKI-MAX )
+               MOVE    "0002"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+           END-IF
+           .
+      *
        4100-SELNUM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    都道府県番号入力
+      *    都道府県番号チェック
       *****************************************************************
        4100-PREFCD-CHK-SEC         SECTION.
       *
@@ -651,7 +697,7 @@
            MOVE    ZERO            TO  FLG-OK
       *
            PERFORM VARYING IDXC    FROM    1   BY  1
-                   UNTIL   IDXC    >       SPA-GMN-PREFCD-MAX
+                   UNTIL ( IDXC    >   SPA-GMN-PREFCD-MAX )
                IF      SPA-GMN-PREFCD  =   SPA-GMN-PREFCDL(IDXC)
                    MOVE    1                   TO  FLG-OK
                    MOVE    SPA-GMN-PREFCD-LIST(IDXC)
@@ -675,13 +721,13 @@
            EXIT.
       *
       *****************************************************************
-      *    市町村名カナ入力
+      *    市町村名カナチェック
       *****************************************************************
        4100-CITYKANA-CHK-SEC       SECTION.
       *
-           MOVE    5               TO  SPA-GMN-CUR
-      *
            IF    ( SPA-GMN-CITYKANA    =   SPACE )
+               MOVE    "0004"          TO  SPA-ERRCD
+               MOVE    4               TO  SPA-GMN-CUR
                GO  TO  4100-CITYKANA-CHK-EXT
            END-IF
       *
@@ -690,14 +736,17 @@
            MOVE    SPA-GMN-CITYKANA    TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-CITYKANA
            IF    ( KANACHK-RC      NOT =   ZERO )  OR
-                 ( KANACHK-SYUBETU     =   1    )  OR
-                 ( KANACHK-MAX         >   100  )
+                 ( KANACHK-RC2         =   7    )  OR
+                 ( KANACHK-SYUBETU     =   1    )
       *        全角半角混在エラー
                MOVE    "0004"          TO  SPA-ERRCD
                MOVE    4               TO  SPA-GMN-CUR
                GO  TO  4100-CITYKANA-CHK-EXT
            END-IF
+      *
+           MOVE    5               TO  SPA-GMN-CUR
       *
            .
       *
@@ -705,13 +754,13 @@
            EXIT.
       *
       *****************************************************************
-      *    町域名カナ入力
+      *    町域名カナチェック
       *****************************************************************
        4100-TOWNKANA-CHK-SEC       SECTION.
       *
-           MOVE    6               TO  SPA-GMN-CUR
-      *
            IF    ( SPA-GMN-TOWNKANA    =   SPACE )
+               MOVE    "0005"          TO  SPA-ERRCD
+               MOVE    5               TO  SPA-GMN-CUR
                GO  TO  4100-TOWNKANA-CHK-EXT
            END-IF
       *
@@ -720,14 +769,17 @@
            MOVE    SPA-GMN-TOWNKANA    TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-TOWNKANA
            IF    ( KANACHK-RC      NOT =   ZERO )  OR
-                 ( KANACHK-SYUBETU     =   1    )  OR
-                 ( KANACHK-MAX         >   100  )
+                 ( KANACHK-RC2         =   7    )  OR
+                 ( KANACHK-SYUBETU     =   1    )
       *        全角半角混在エラー
                MOVE    "0005"          TO  SPA-ERRCD
                MOVE    5               TO  SPA-GMN-CUR
                GO  TO  4100-TOWNKANA-CHK-EXT
            END-IF
+      *
+           MOVE    6               TO  SPA-GMN-CUR
       *
            .
       *
@@ -735,13 +787,13 @@
            EXIT.
       *
       *****************************************************************
-      *    市町村名入力
+      *    市町村名チェック
       *****************************************************************
        4100-CITYNAME-CHK-SEC       SECTION.
       *
-           MOVE    7               TO  SPA-GMN-CUR
-      *
            IF    ( SPA-GMN-CITYNAME    =   SPACE )
+               MOVE    "0006"          TO  SPA-ERRCD
+               MOVE    6               TO  SPA-GMN-CUR
                GO  TO  4100-CITYNAME-CHK-EXT
            END-IF
       *
@@ -750,14 +802,17 @@
            MOVE    SPA-GMN-CITYNAME    TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-CITYNAME
            IF    ( KANACHK-RC      NOT =   ZERO )  OR
-                 ( KANACHK-SYUBETU     =   1    )  OR
-                 ( KANACHK-MAX         >   100  )
+                 ( KANACHK-RC2         =   7    )  OR
+                 ( KANACHK-SYUBETU     =   1    )
       *        全角半角混在エラー
                MOVE    "0006"          TO  SPA-ERRCD
                MOVE    6               TO  SPA-GMN-CUR
                GO  TO  4100-CITYNAME-CHK-EXT
            END-IF
+      *
+           MOVE    7               TO  SPA-GMN-CUR
       *
            .
       *
@@ -765,13 +820,13 @@
            EXIT.
       *
       *****************************************************************
-      *    町域名入力
+      *    町域名チェック
       *****************************************************************
        4100-TOWNNAME-CHK-SEC       SECTION.
       *
-           MOVE    99              TO  SPA-GMN-CUR
-      *
            IF    ( SPA-GMN-TOWNNAME    =   SPACE )
+               MOVE    "0007"          TO  SPA-ERRCD
+               MOVE    7               TO  SPA-GMN-CUR
                GO  TO  4100-TOWNNAME-CHK-EXT
            END-IF
       *
@@ -780,17 +835,64 @@
            MOVE    SPA-GMN-TOWNNAME    TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-TOWNNAME
            IF    ( KANACHK-RC      NOT =   ZERO )  OR
-                 ( KANACHK-SYUBETU     =   1    )  OR
-                 ( KANACHK-MAX         >   100  )
+                 ( KANACHK-RC2         =   7    )  OR
+                 ( KANACHK-SYUBETU     =   1    )
       *        全角半角混在エラー
                MOVE    "0007"          TO  SPA-ERRCD
                MOVE    7               TO  SPA-GMN-CUR
                GO  TO  4100-TOWNNAME-CHK-EXT
            END-IF
+      *
+           MOVE    99              TO  SPA-GMN-CUR
            .
       *
        4100-TOWNNAME-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    更新前チェック
+      *****************************************************************
+       4100-KOUSHINMAE-CHK-SEC     SECTION.
+      *
+           PERFORM 4100-POST-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4100-KOUSHINMAE-CHK-EXT
+           END-IF
+      *
+           PERFORM 4100-SELNUM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4100-KOUSHINMAE-CHK-EXT
+           END-IF
+      *
+           PERFORM 4100-PREFCD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4100-KOUSHINMAE-CHK-EXT
+           END-IF
+      *
+           PERFORM 4100-CITYKANA-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4100-KOUSHINMAE-CHK-EXT
+           END-IF
+      *
+           PERFORM 4100-TOWNKANA-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4100-KOUSHINMAE-CHK-EXT
+           END-IF
+      *
+           PERFORM 4100-CITYNAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4100-KOUSHINMAE-CHK-EXT
+           END-IF
+      *
+           PERFORM 4100-TOWNNAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4100-KOUSHINMAE-CHK-EXT
+           END-IF
+           .
+      *
+       4100-KOUSHINMAE-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -860,13 +962,13 @@
       *****************************************************************
        403-DEL-SEC                 SECTION.
       *
-           IF      SPA-GMN-POST        =   SPACE
-               MOVE    "0011"          TO  SPA-ERRCD
-               MOVE    1               TO  SPA-GMN-CUR
+           PERFORM 4100-POST-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  403-DEL-EXT
            END-IF
       *
-           IF      SPA-GMN-SELNUM      =   ZERO
+           IF    ( SPA-GMN-SELNUM  =   ZERO )  OR
+                 ( SPA-GMN-SELNUM  >   SPA-GMN-CYOIKI-MAX )
                MOVE    "0002"          TO  SPA-ERRCD
                MOVE    2               TO  SPA-GMN-CUR
                GO  TO  403-DEL-EXT
@@ -968,9 +1070,9 @@
                GO  TO  490-TOUROKU-EXT
            END-IF
       *
-           IF      SPA-GMN-PREFCD      =   SPACE
-               MOVE    "0003"          TO  SPA-ERRCD
-               MOVE    3               TO  SPA-GMN-CUR
+      *    更新前チェック
+           PERFORM 4100-KOUSHINMAE-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  490-TOUROKU-EXT
            END-IF
       *

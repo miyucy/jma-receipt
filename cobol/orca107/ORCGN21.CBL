@@ -38,6 +38,7 @@
       * 01.01.03     NACL-森脇     03/01/08  画面入力文字数変更
       * 01.01.04     NACL-森脇     03/05/30  初期値変更
       * 02.01.01     NACL-森脇     03/06/13  一括更新
+      * 02.01.02     NACL-森脇     04/10/05  半角全角チェック追加
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -550,11 +551,15 @@
            MOVE    SPA-GMN-KENCD   TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+      *----(02.01.02)--UPD-START---
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-KENCD
       *    全角半角混在エラー
-           IF          KANACHK-RC  NOT     =   ZERO
+           IF    ( KANACHK-RC          NOT =   ZERO )  OR
+                 ( KANACHK-RC2             =   7    )
                MOVE    "0005"          TO  SPA-ERRCD
                GO  TO  4120-INPUTCD-CDSYU-HAN-EXT
            END-IF
+      *----(02.01.02)--UPD-END-----
       *
       *    種別判定
            EVALUATE    KANACHK-SYUBETU
@@ -742,118 +747,123 @@
            MOVE    N21-CAUTION     TO  SPA-GMN-CAUTION
            MOVE    N21-PHOTO       TO  SPA-GMN-PHOTO
       *
+      *----(02.01.02)--UPD-START---
       *    名前半角文字混在チェック
-           IF          SPA-GMN-NAME    NOT     =   SPACE
-               INITIALIZE              ORCSKANACHKAREA
+           IF          SPA-GMN-NAME    NOT =   SPACE
+               INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI
                MOVE    80              TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-NAME    TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
       *
-               IF          KANACHK-SYUBETU     NOT     =   2
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAME
+               IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
+                     ( KANACHK-RC          NOT =   ZERO )  OR
+                     ( KANACHK-RC2             =   7    )
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    4           TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
-               ELSE
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAME
                END-IF
            END-IF
       *
       *    効能効果半角文字混在チェック
-           IF          SPA-GMN-EFFECT    NOT     =   SPACE
-               INITIALIZE                ORCSKANACHKAREA
-               MOVE    "1"               TO  KANACHK-SYORI
-               MOVE    186               TO  KANACHK-MAX-CNT
-               MOVE    SPA-GMN-EFFECT    TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"         USING
-                                             ORCSKANACHKAREA
+           IF          SPA-GMN-EFFECT  NOT =   SPACE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    186             TO  KANACHK-MAX-CNT
+               MOVE    SPA-GMN-EFFECT  TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
       *
-               IF          KANACHK-SYUBETU     NOT     =   2
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-EFFECT
+               IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
+                     ( KANACHK-RC          NOT =   ZERO )  OR
+                     ( KANACHK-RC2             =   7    )
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    5           TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
-               ELSE
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-EFFECT
                END-IF
            END-IF
       *
       *    色半角文字混在チェック
-           IF          SPA-GMN-COLOR     NOT     =   SPACE
-               INITIALIZE                ORCSKANACHKAREA
-               MOVE    "1"               TO  KANACHK-SYORI
-               MOVE    136               TO  KANACHK-MAX-CNT
-               MOVE    SPA-GMN-COLOR     TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"         USING
-                                             ORCSKANACHKAREA
+           IF          SPA-GMN-COLOR   NOT =   SPACE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    136             TO  KANACHK-MAX-CNT
+               MOVE    SPA-GMN-COLOR   TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
       *
-               IF          KANACHK-SYUBETU     NOT     =   2
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-COLOR
+               IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
+                     ( KANACHK-RC          NOT =   ZERO )  OR
+                     ( KANACHK-RC2             =   7    )
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    6           TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
-               ELSE
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-COLOR
                END-IF
            END-IF
       *
       *    形半角文字混在チェック
-           IF          SPA-GMN-SHAPE     NOT     =   SPACE
-               INITIALIZE                ORCSKANACHKAREA
-               MOVE    "1"               TO  KANACHK-SYORI
-               MOVE    136               TO  KANACHK-MAX-CNT
-               MOVE    SPA-GMN-SHAPE     TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"         USING
-                                             ORCSKANACHKAREA
+           IF          SPA-GMN-SHAPE   NOT =   SPACE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    136             TO  KANACHK-MAX-CNT
+               MOVE    SPA-GMN-SHAPE   TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
       *
-               IF          KANACHK-SYUBETU     NOT     =   2
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-SHAPE
+               IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
+                     ( KANACHK-RC          NOT =   ZERO )  OR
+                     ( KANACHK-RC2             =   7    )
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    7           TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
-               ELSE
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-SHAPE
                END-IF
            END-IF
       *
       *----(00.01.05)--ADD-START----
       *    記号半角文字混在チェック
-           IF          SPA-GMN-MARK      NOT     =   SPACE
-               INITIALIZE                ORCSKANACHKAREA
-               MOVE    "1"               TO  KANACHK-SYORI
-               MOVE    136               TO  KANACHK-MAX-CNT
-               MOVE    SPA-GMN-MARK      TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"         USING
-                                             ORCSKANACHKAREA
+           IF          SPA-GMN-MARK    NOT =   SPACE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    136             TO  KANACHK-MAX-CNT
+               MOVE    SPA-GMN-MARK    TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
       *
-               IF          KANACHK-RC      =   1
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MARK
+               IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
+                     ( KANACHK-RC          NOT =   ZERO )  OR
+                     ( KANACHK-RC2             =   7    )
                    MOVE    "0005"      TO  SPA-ERRCD
                    MOVE    8           TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
                END-IF
-      *
-               IF          KANACHK-SYUBETU     =   2
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MARK
-               END-IF
-      *
            END-IF
       *----(00.01.05)--ADD-END------
       *
       *    注意事項半角文字混在チェック
-           IF          SPA-GMN-CAUTION   NOT     =   SPACE
-               INITIALIZE                ORCSKANACHKAREA
-               MOVE    "1"               TO  KANACHK-SYORI
-               MOVE    410               TO  KANACHK-MAX-CNT
-               MOVE    SPA-GMN-CAUTION   TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"         USING
-                                             ORCSKANACHKAREA
+           IF          SPA-GMN-CAUTION NOT =   SPACE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    410             TO  KANACHK-MAX-CNT
+               MOVE    SPA-GMN-CAUTION TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
       *
-               IF          KANACHK-SYUBETU     NOT     =   2
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-CAUTION
+               IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
+                     ( KANACHK-RC          NOT =   ZERO )  OR
+                     ( KANACHK-RC2             =   7    )
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    9           TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
-               ELSE
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-CAUTION
                END-IF
            END-IF
+      *----(02.01.02)--UPD-END-----
       *
       *    画像半角文字混在チェック
            IF          SPA-GMN-PHOTO   NOT =   SPACE
@@ -863,7 +873,10 @@
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
       *
-               IF          KANACHK-SYUBETU     NOT     =   1
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-PHOTO
+               IF    ( KANACHK-SYUBETU     NOT =   1    )  OR
+                     ( KANACHK-RC          NOT =   ZERO )  OR
+                     ( KANACHK-RC2             =   7    )
                    MOVE    "0003"      TO  SPA-ERRCD
                ELSE
                    IF          KANACHK-RC2     =   8

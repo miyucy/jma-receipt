@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-森脇    03/05/13  カナ入力のチェック中止
+      *  00.00.02    NACL-森脇    04/10/05  半角全角チェックの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -108,6 +109,10 @@
       *
       *    カナ変換
            COPY    "CPORCSKANACNV.INC".
+      *----(00.00.02)--ADD-START---
+      *    全角半角変換サブ
+           COPY    "CPORCSKANACHK.INC".
+      *----(00.00.02)--ADD-END-----
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -355,6 +360,23 @@
       *****************************************************************
        4121-JYOKEN-CHK-SEC         SECTION.
       *
+      *----(01.00.02)--ADD-START---
+           INITIALIZE              ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI
+           MOVE    SPA-GMN-JYOKEN  TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-JYOKEN
+      *    全角半角混在エラー
+           IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
+                 ( KANACHK-RC          NOT =   ZERO )  OR
+                 ( KANACHK-RC2             =   7    )
+               MOVE    "0002"      TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+               GO  TO  4121-JYOKEN-CHK-EXT
+           END-IF
+      *----(01.00.02)--ADD-END-----
+      *
       *    半角文字混在チェック
            INITIALIZE              KANACNV-LNK
            MOVE    SPA-GMN-JYOKEN  TO  KANACNV-IN-STR
@@ -464,6 +486,23 @@
       *    登録内容チェック
       *****************************************************************
        4123-NAIYO-CHK-SEC         SECTION.
+      *
+      *----(01.00.02)--ADD-START---
+           INITIALIZE              ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI
+           MOVE    SPA-GMN-NAIYO   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAIYO
+      *    全角半角混在エラー
+           IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
+                 ( KANACHK-RC          NOT =   ZERO )  OR
+                 ( KANACHK-RC2             =   7    )
+               MOVE    "0002"      TO  SPA-ERRCD
+               MOVE    4               TO  SPA-GMN-CUR
+               GO  TO  4123-NAIYO-CHK-EXT
+           END-IF
+      *----(01.00.02)--ADD-END-----
       *
       *    半角文字混在チェック
            INITIALIZE              KANACNV-LNK
