@@ -746,6 +746,8 @@
                         MOVE "継続"     TO  SPA-GMN-JOUTAI-T (IDX)
                        WHEN "8"
                         MOVE "診療訂正" TO  SPA-GMN-JOUTAI-T (IDX)
+                        MOVE   "01  現金"
+                                        TO  SPA-GMN-JOUTAI-TX (IDX)
                        WHEN "9"
                         MOVE "請求"     TO  SPA-GMN-JOUTAI-T (IDX)
                    END-EVALUATE
@@ -779,7 +781,7 @@
       *****    MOVE    "02  デビットカード"
       *****                            TO  SPA-GMN-NYUKINLST (2)
            END-IF.
-           IF     SPA-S01-SYORINO      =   "05"
+           IF     SPA-S01-SYORINO      =   "05"  OR  "08"
                IF  SPA-GMN-NYUKIN-DSP  =   SPACE
                  MOVE    "01  現金"      TO  SPA-GMN-NYUKIN-DSP
                END-IF
@@ -1241,7 +1243,7 @@
                            MOVE WRK-MAP-INDEX   TO   SPA-IDX
                            IF    ( SPA-S01-SYORINO =   "08" )
                                IF    ( SPA-GMN-JOUTAIKBN-T (SPA-IDX)
-                                                   =   "1" OR "2" )
+                                               =   "1" OR "2" OR "8" )
                                    CONTINUE
                                ELSE
                                    MOVE    1       TO  SPA-GMN-CUR
@@ -1282,7 +1284,7 @@
                    ELSE    
                        IF    ( SPA-S01-SYORINO =   "08" )
                            IF    ( SPA-GMN-JOUTAIKBN-T (SPA-IDX)
-                                                   =   "1" OR "2" )
+                                               =   "1" OR "2" OR "8" )
                                CONTINUE
                            ELSE
                                MOVE    1       TO  SPA-GMN-CUR
@@ -1941,8 +1943,11 @@
       *入金方法
                       MOVE  SPA-GMN-NYUKINCD  TO  SMEI-NYUKIN-HOHO
       *伝票状態区分
-                      IF  SPA-GMN-NYUKIN-IN  NOT = ZERO
-                          MOVE    "2"         TO  SMEI-JOUTAIKBN
+                      IF    ( SPA-GMN-JOUTAIKBN-T (SPA-GMN-RIREKIIN9)
+                                             NOT = "8" )
+                          IF  SPA-GMN-NYUKIN-IN  NOT = ZERO
+                              MOVE    "2"         TO  SMEI-JOUTAIKBN
+                          END-IF 
                       END-IF 
       *
                       PERFORM 800-MCNDATE-SEC
