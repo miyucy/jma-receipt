@@ -46,7 +46,7 @@
            COPY    "COMMON-SPA".
       *
       *    会計照会共通パラメタ
-           COPY    "J01COMMON-SPA".
+           COPY    "I4COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -75,6 +75,14 @@
       *
        01  SCRAREA.
            COPY    "I41.INC".
+           COPY    "I42.INC".
+           COPY    "I43.INC".
+           COPY    "I44.INC".
+           COPY    "I45.INC".
+           COPY    "I46.INC".
+           COPY    "I47.INC".
+           COPY    "I48.INC".
+           COPY    "I49.INC".
            COPY    "I4ERR.INC".
            COPY    "I4ID1.INC".
       *
@@ -90,7 +98,7 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
-           MOVE    SPA-WORK        TO  SPA-J01KYOUTU.
+           MOVE    SPA-WORK        TO  SPA-I4KYOUTU.
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -100,7 +108,7 @@
                    PERFORM 200-GMNSENI
            END-EVALUATE.
       *
-           MOVE    SPA-J01KYOUTU   TO  SPA-WORK.
+           MOVE    SPA-I4KYOUTU    TO  SPA-WORK.
            MOVE    SPA-AREA        TO  SPA-COMMON.
       *
            EXIT    PROGRAM.
@@ -122,11 +130,11 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
-                   MOVE    SPACE           TO  SPA-JID1-FLG
+                   MOVE    SPACE           TO  SPA-I4ID-FLG
                    PERFORM 210-BACK
       *        登録
                WHEN    "CLICKED"       ALSO    "B12"
-                   MOVE    "OK"            TO  SPA-JID1-FLG
+                   MOVE    "OK"            TO  SPA-I4ID-FLG
                    PERFORM 210-BACK
            END-EVALUATE.
       *
