@@ -30,6 +30,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-太田    03/01/08  保険番号マスタレイアウト変更
       *                                     対応
+      * 01.00.02     NACL-伊藤    03/02/13  保険番号マスタレイアウト変更
+      *                                     対応−法別番号チェック区分
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -741,6 +743,14 @@
       *保険公費種別区分
            MOVE    HKNWKV01-HKNKOHSBTKBN
                                        TO  HKNWK-HKNKOHSBTKBN
+      *---(01.00.02) LINE UPD START -------------------------------------
+      *法別番号チェック区分
+           IF      HKNWK-HBTNUM        =   SPACE
+               MOVE    "0"             TO  HKNWK-HBTNUMCHKKBN
+           ELSE
+               MOVE    "1"             TO  HKNWK-HBTNUMCHKKBN
+           END-IF
+      *---(01.00.02) LINE UPD END   -------------------------------------
       *検証番号チェック区分
            MOVE    HKNWKV01-KENSNUMCHKKBN
                                        TO  HKNWK-KENSNUMCHKKBN
