@@ -316,11 +316,13 @@
                WHEN    "DBUPDATE"      ALSO   "BYOMEI-KEY3"
                WHEN    "DBUPDATE"      ALSO   "BYOMEI-KEY4"
                WHEN    "DBUPDATE"      ALSO   "BYOMEI-KEY5"
+               WHEN    "DBUPDATE"      ALSO   "BYOMEI-KEY6"
                WHEN    "DBDELETE"      ALSO   "BYOMEI-KEY"
                WHEN    "DBDELETE"      ALSO   "BYOMEI-KEY2"
                WHEN    "DBDELETE"      ALSO   "BYOMEI-KEY3"
                WHEN    "DBDELETE"      ALSO   "BYOMEI-KEY4"
                WHEN    "DBDELETE"      ALSO   "BYOMEI-KEY5"
+               WHEN    "DBDELETE"      ALSO   "BYOMEI-KEY6"
                    MOVE    PATH-TBL-BYOMEI-KEY 
                                        TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO   "CHK-KEY"
@@ -1062,6 +1064,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "BYOMEI-KEY5"
                    MOVE    PATH-TBL-BYOMEI-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "BYOMEI-KEY6"
+                   MOVE    PATH-TBL-BYOMEI-KEY6
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "BYOMEI-ALL"

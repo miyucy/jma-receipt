@@ -102,6 +102,10 @@
       *  02.07.12    NACL-藤原    03/03/14  同一開始日の病名の表示順の修正
       *  02.07.13    NACL-藤原    03/03/26  選択番号がエラーのときクリアする
       *  02.07.14    NACL-藤原    03/04/15  診療科から病名を編集しておく
+      *  02.07.15    NACL-藤原    03/05/28  変更・削除処理後の選択の解除
+      *  02.07.16    NACL-藤原    03/06/03  未コード化傷病名コードのとき
+      *                                     病名よりコード検索をする
+      *                                     病名からのコード検索方法の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -182,6 +186,8 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
       *
+           03  IDXX                PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-MOTOPG          PIC X(08).
@@ -242,17 +248,22 @@
                                    PIC 9(02)    OCCURS  6.
       *     
            03  WRK-BYOMEICD-KENSAKU-AREA.
+               05  WRK-KEN-BYOMEI  PIC X(80).
+               05  WRK-KEN-LENGTH  PIC 9(04).
+               05  WRK-KEN-UTAGAIFLG 
+                                   PIC X(01).
+               05  WRK-KEN-ADDKBN  PIC X(01).
                05  WRK-BYOMEICD    PIC X(07).
                05  WRK-IKOSAKICD   PIC X(07).
                05  WRK-HAISIYMD    PIC X(08).
                05  WRK-BYO-MAX     PIC 9(01).
                05  WRK-BYO-BYOMEICD-G.
                    07  WRK-BYO-BYOMEICD 
-                                   PIC X(07)    OCCURS  3.
+                                   PIC X(07)    OCCURS  6.
                    07  WRK-BYO-IKOSAKICD 
-                                   PIC X(07)    OCCURS  3.
+                                   PIC X(07)    OCCURS  6.
                    07  WRK-BYO-HAISIYMD 
-                                   PIC X(08)    OCCURS  3.
+                                   PIC X(08)    OCCURS  6.
       *                             
            03  WRK-DBPATH          PIC X(64).
       *
@@ -809,8 +820,12 @@
                         PERFORM 41016-SRYKA-CHK-SEC
                        MOVE    1                  TO  SPA-GMN-C02-CUR
                    ELSE
-                       PERFORM 330-SPASET-JYURRK-HENSYU-SEC     
-                       MOVE    27                TO  SPA-GMN-C02-CUR
+                       PERFORM 330-SPASET-JYURRK-HENSYU-SEC
+                       IF      SPA-GMN-C02-SRYKA-MAX =   1
+                           MOVE    1               TO  SPA-GMN-C02-CUR
+                       ELSE      
+                           MOVE    27              TO  SPA-GMN-C02-CUR
+                       END-IF
                        IF      SPA-GMN-C02-SRYKA NOT =   SPACE 
                            PERFORM 310-SPASET-PTBYO-HENSYU-SEC
                        END-IF
@@ -2371,7 +2386,6 @@
                GO  TO  4102-BYOMEICD-CHK-EXT
            END-IF
       *
-      *
            MOVE    C02-BYOMEICD (IDZ)  TO  SPA-GMN-C02-BYOMEICD(IDZ)
       *
            INITIALIZE                    SPA-NAI-C02-BYOMEI-G(IDZ)
@@ -2823,7 +2837,6 @@
            END-PERFORM                                
       *
            MOVE    ZERO                TO  SPA-NAI-C02-CHARTBYOMEIMOJI
-      *　　病名編集
       *　　病名編集
            MOVE    SPA-NAI-C02-CHARTBYOMEI (1)
                                        TO  WRK-BYOMEI
@@ -3384,14 +3397,16 @@
            MOVE    ZERO                 TO  SPA-NAI-C02-BYOMEIMOJI
       *
            IF      SPA-GMN-C02-BYOMEI   =   SPACE
-               INITIALIZE                   SPA-GMN-C02-BYOMEICD-G
-                                            SPA-NAI-C02-BYOMEI-TBL
-               MOVE    SPACE            TO  SPA-NAI-C02-BYOMEIHENFLG
-                                            SPA-GMN-C02-BYOMEIHENFLG
-               MOVE    ZERO             TO  SPA-NAI-C02-BYOMEIMOJI
-               MOVE    ZERO             TO  SPA-NAI-C02-BYOMEICD-MAX
-               MOVE    28               TO  SPA-GMN-C02-CUR
-               GO  TO  41013-BYOMEI-CHK-EXT
+                INITIALIZE                   SPA-GMN-C02-BYOMEICD-G
+                                             SPA-NAI-C02-BYOMEI-TBL
+                MOVE    SPACE            TO  SPA-NAI-C02-BYOMEIHENFLG
+                                             SPA-GMN-C02-BYOMEIHENFLG
+                MOVE    ZERO             TO  SPA-NAI-C02-BYOMEIMOJI
+                MOVE    ZERO             TO  SPA-NAI-C02-BYOMEICD-MAX
+                INITIALIZE                   SPA-GMN-C02-UTAGAIFLG-G
+                                             SPA-GMN-C02-MANSEIKBN-G
+                MOVE    28               TO  SPA-GMN-C02-CUR
+                GO  TO  41013-BYOMEI-CHK-EXT
            END-IF
       *          
            IF      SPA-GMN-C02-BYOMEI (81:) NOT =   SPACE
@@ -3414,18 +3429,30 @@
            END-IF
       *
       *    病名のみ入力のとき検索処理をする
-      *    （病名コード未入力、または未コード化傷病名コードのとき）
+      *    （病名コード未入力、または未コード化傷病名コードのとき
+      *                                     、または編集病名以外のとき）
            IF      SPA-GMN-C02-BYOMEI   NOT =   SPACE
-               IF      SPA-GMN-C02-BYOMEICD-G   =   SPACE
-               OR      SPA-GMN-C02-BYOMEICD (1) =   WRK-CONS-BYOMEICD
-                   MOVE    SPACE        TO  SPA-GMN-C02-BYOMEICD-G
+               IF      SPA-NAI-C02-USERBYOMEIFLG (1)
+                                                =   "1"
+                   CONTINUE
+               ELSE 
+      *********IF      SPA-GMN-C02-BYOMEICD-G   =   SPACE
+      *********OR      SPA-GMN-C02-BYOMEICD (1) =   WRK-CONS-BYOMEICD
+      *********OR (      ( SPA-NAI-C02-BYOMEIHENFLG =   SPACE )
+      *********    AND   ( SPA-NAI-C02-USERBYOMEIFLG (1)
+      *********                                 =   SPACE     ) )
+      ************ MOVE    SPACE        TO  SPA-GMN-C02-BYOMEICD-G
       ************ MOVE    ZERO         TO  SPA-NAI-C02-BYOMEICD-MAX
                    PERFORM 410131-BYOMEI-KENSAKU-SEC
                    IF      WRK-BYO-MAX      >   ZERO
-                       MOVE    SPACE        TO  SPA-GMN-C02-BYOMEICD-G
+                       INITIALIZE               SPA-GMN-C02-BYOMEICD-G
+                                                SPA-NAI-C02-BYOMEI-TBL
+                     IF      WRK-BYO-MAX      >   6
+                         MOVE    "0077"           TO  SPA-ERRCD
+                     ELSE
                        MOVE    ZERO         TO  IDZ
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       3
+                               UNTIL   IDX >       6
                            IF      WRK-BYO-BYOMEICD (IDX)
                                                    NOT =   SPACE
                                ADD     1           TO  IDZ
@@ -3483,6 +3510,7 @@
                            MOVE    "0075"          TO  SPA-ERRCD
                        END-IF    
                        GO  TO  41013-BYOMEI-CHK-EXT
+                     END-IF
                    END-IF    
                END-IF        
            END-IF    
@@ -3520,12 +3548,19 @@
                    SPA-NAI-C02-BYOMEI (6) DELIMITED  BY  SPACE
                               INTO          WRK-BYOMEI
            END-STRING
-           IF      WRK-BYOMEI           NOT =   SPA-GMN-C02-BYOMEI 
-               MOVE    "1"              TO  SPA-NAI-C02-BYOMEIHENFLG
-               MOVE    " 病名編集"      TO  SPA-GMN-C02-BYOMEIHENFLG
+      * 
+      *    自院コードで編集病名のときは編集しない
+           IF      SPA-NAI-C02-USERBYOMEIFLG (1)    =   "1"
+           AND     SPA-NAI-C02-BYOMEIHENFLG         =   "1"
+               CONTINUE
            ELSE
-               MOVE    SPACE            TO  SPA-GMN-C02-BYOMEIHENFLG
-                                            SPA-NAI-C02-BYOMEIHENFLG
+               IF      WRK-BYOMEI           NOT =   SPA-GMN-C02-BYOMEI 
+                   MOVE    "1"              TO  SPA-NAI-C02-BYOMEIHENFLG
+                   MOVE    " 病名編集"      TO  SPA-GMN-C02-BYOMEIHENFLG
+               ELSE
+                   MOVE    SPACE            TO  SPA-GMN-C02-BYOMEIHENFLG
+                                                SPA-NAI-C02-BYOMEIHENFLG
+               END-IF
            END-IF
       *
       *    病名が未入力のとき未コード化傷病名コードをクリア
@@ -3572,8 +3607,9 @@
            END-PERFORM
       *
            INITIALIZE                  WRK-BYOMEICD-KENSAKU-AREA
+                                       WRK-KEN-UTAGAIFLG
       *
-      *    病名で検索
+      *    入力された病名で検索
            MOVE    "BYOMEI-KEY4"       TO  WRK-DBPATH
            INITIALIZE                  BYOMEI-REC
            MOVE    SPA-GMN-C02-BYOMEI  TO  BYO-BYOMEI
@@ -3586,102 +3622,126 @@
                GO  TO  410131-BYOMEI-KENSAKU-EXT
            END-IF
       *
-      *    接頭語の検索
-           MOVE    1                   TO  IDZ
-           PERFORM VARYING IDW FROM    8   BY  -2 
-                   UNTIL   IDW <       1
-               IF      IDW             >   WRK-MOJISU
-                   CONTINUE
-               ELSE
-                   MOVE    "BYOMEI-KEY5"       TO  WRK-DBPATH
+      *    接尾語（の疑い）以外の病名で検索
+           IF      WRK-MOJISU          >   6
+               COMPUTE IDW     =   WRK-MOJISU   -   5
+               IF      SPA-GMN-C02-BYOMEI (IDW:6)   =   "の疑い"
+                   MOVE    1                   TO  WRK-KEN-UTAGAIFLG
+                   MOVE    "BYOMEI-KEY4"       TO  WRK-DBPATH
                    INITIALIZE                  BYOMEI-REC
-                   MOVE    SPA-GMN-C02-BYOMEI(1:IDW)  
+                   COMPUTE IDX     =   IDW     -   1
+                   MOVE    SPA-GMN-C02-BYOMEI  (1:IDX)
                                                TO  BYO-BYOMEI
                    PERFORM 410131-BYOKEN-HEN-SEC
                    IF      IDX                 =   1
-                       MOVE    WRK-BYOMEICD
-                                           TO  WRK-BYO-BYOMEICD (1)
-                       MOVE    WRK-IKOSAKICD
-                                           TO  WRK-BYO-IKOSAKICD(1)
-                       MOVE    WRK-HAISIYMD
-                                           TO  WRK-BYO-HAISIYMD (1) 
-                       MOVE    1           TO  WRK-BYO-MAX
-                       COMPUTE IDZ     =   IDW     +   1
-                       MOVE    2               TO  IDW
+                       MOVE    WRK-BYOMEICD    TO  WRK-BYO-BYOMEICD (1)
+                       MOVE    WRK-IKOSAKICD   TO  WRK-BYO-IKOSAKICD(1)
+                       MOVE    WRK-HAISIYMD    TO  WRK-BYO-HAISIYMD (1) 
+                       MOVE    "ZZZ8002"       TO  WRK-BYO-BYOMEICD (2)
+                       MOVE    2               TO  WRK-BYO-MAX
+                       GO  TO  410131-BYOMEI-KENSAKU-EXT
                    END-IF
                END-IF
-           END-PERFORM
+           END-IF
       *
-      *    接頭語以降の病名で検索
-           IF      IDZ                 >   1                 
-               MOVE    "BYOMEI-KEY4"       TO  WRK-DBPATH
-               INITIALIZE                  BYOMEI-REC
-               MOVE    SPA-GMN-C02-BYOMEI (IDZ:)
-                                           TO  BYO-BYOMEI
-               PERFORM 410131-BYOKEN-HEN-SEC
-               IF      IDX                 =   1
-                   MOVE    WRK-BYOMEICD    TO  WRK-BYO-BYOMEICD (2)
-                   MOVE    WRK-IKOSAKICD   TO  WRK-BYO-IKOSAKICD(2)
-                   MOVE    WRK-HAISIYMD    TO  WRK-BYO-HAISIYMD (2) 
-                   ADD     1               TO  WRK-BYO-MAX
-                   GO  TO  410131-BYOMEI-KENSAKU-EXT
+      *    接尾語（急性増悪）以外の病名で検索
+           IF      WRK-MOJISU          >   8
+               COMPUTE IDW     =   WRK-MOJISU   -   7
+               IF      SPA-GMN-C02-BYOMEI (IDW:8)   =   "急性増悪"
+                   MOVE    2                   TO  WRK-KEN-UTAGAIFLG
+                   MOVE    "BYOMEI-KEY4"       TO  WRK-DBPATH
+                   INITIALIZE                  BYOMEI-REC
+                   COMPUTE IDX     =   IDW     -   1
+                   MOVE    SPA-GMN-C02-BYOMEI  (1:IDX)
+                                               TO  BYO-BYOMEI
+                   PERFORM 410131-BYOKEN-HEN-SEC
+                   IF      IDX                 =   1
+                       MOVE    WRK-BYOMEICD    TO  WRK-BYO-BYOMEICD (1)
+                       MOVE    WRK-IKOSAKICD   TO  WRK-BYO-IKOSAKICD(1)
+                       MOVE    WRK-HAISIYMD    TO  WRK-BYO-HAISIYMD (1) 
+                       MOVE    "ZZZ8007"       TO  WRK-BYO-BYOMEICD (2)
+                       MOVE    2               TO  WRK-BYO-MAX
+                       GO  TO  410131-BYOMEI-KENSAKU-EXT
+                   END-IF
                END-IF
-           END-IF    
+           END-IF
       *
-      *    接尾語の確認
-           COMPUTE IDW     =   WRK-MOJISU   -   5
-           IF      SPA-GMN-C02-BYOMEI (IDW:6)   =   "の疑い"
-               ADD     1                   TO  WRK-BYO-MAX
-               MOVE    "ZZZ8002"           TO
-                                           WRK-BYO-BYOMEICD (3)
-           ELSE    
-               COMPUTE IDW     =   WRK-MOJISU   -   3
-               IF      SPA-GMN-C02-BYOMEI (IDW:4)   =   "疾患"
-                   ADD     1               TO  WRK-BYO-MAX
-                   MOVE    "ZZZ8010"       TO  
-                                           WRK-BYO-BYOMEICD (3)
-               ELSE    
-                   COMPUTE IDW     =   WRK-MOJISU   -   1
-                   IF      SPA-GMN-C02-BYOMEI (IDW:2)   =   "症"
-                       ADD     1           TO  WRK-BYO-MAX
-                       MOVE    "ZZZ8011"   TO   
-                                           WRK-BYO-BYOMEICD (3)
-                   ELSE    
-                       IF      SPA-GMN-C02-BYOMEI (IDW:2)   =   "病"
-                           ADD     1       TO  WRK-BYO-MAX
-                           MOVE    "ZZZ8036"   TO 
-                                           WRK-BYO-BYOMEICD (3)
+      *    接頭語の検索
+           MOVE    ZERO                TO  IDXX
+           EVALUATE    WRK-KEN-UTAGAIFLG
+               WHEN    "1"
+                   COMPUTE IDW     =   WRK-MOJISU  -   6
+                   MOVE    SPA-GMN-C02-BYOMEI (1:IDW) 
+                                                   TO  WRK-KEN-BYOMEI
+               WHEN    "2"
+                   COMPUTE IDW     =   WRK-MOJISU  -   8
+                   MOVE    SPA-GMN-C02-BYOMEI (1:IDW)
+                                                   TO  WRK-KEN-BYOMEI
+               WHEN    OTHER
+                   MOVE    WRK-MOJISU              TO  IDW
+                   MOVE    SPA-GMN-C02-BYOMEI      TO  WRK-KEN-BYOMEI
+           END-EVALUATE
+           MOVE    IDW                 TO  WRK-MOJISU
+                                           WRK-KEN-LENGTH
+           MOVE    1                   TO  IDZ
+      *
+           PERFORM                     UNTIL   IDZ     >=  WRK-MOJISU
+      *
+      *        病名の検索
+               MOVE    ZERO                TO  WRK-KEN-ADDKBN
+               PERFORM VARYING IDW FROM    WRK-KEN-LENGTH  BY  -2 
+                       UNTIL   IDW <       2
+                   MOVE    "BYOMEI-KEY6"       TO  WRK-DBPATH
+                   INITIALIZE                  BYOMEI-REC
+                   MOVE    WRK-KEN-BYOMEI(IDZ:IDW)  
+                                               TO  BYO-BYOMEI
+                   PERFORM 410131-BYOKEN-HEN-SEC
+                   IF      IDX                 =   1
+                       ADD     1       TO  WRK-BYO-MAX
+                       IF      WRK-BYO-MAX     <   7
+                           ADD     1       TO  IDXX
+                           MOVE    WRK-BYOMEICD
+                                       TO  WRK-BYO-BYOMEICD (IDXX)
+                           MOVE    WRK-IKOSAKICD
+                                       TO  WRK-BYO-IKOSAKICD(IDXX)
+                           MOVE    WRK-HAISIYMD
+                                       TO  WRK-BYO-HAISIYMD (IDXX) 
                        ELSE
-                           INITIALIZE      WRK-BYOMEICD-KENSAKU-AREA
                            GO  TO  410131-BYOMEI-KENSAKU-EXT
                        END-IF
-                   END-IF
-               END-IF        
-           END-IF
+                       COMPUTE IDZ     =   IDZ   +   IDW
+                       COMPUTE WRK-KEN-LENGTH  =   WRK-KEN-LENGTH  -
+                                                   IDW
+                       MOVE    2                   TO  IDW
+                       MOVE    1                   TO  WRK-KEN-ADDKBN   
+                   END-IF      
+               END-PERFORM
       *
-      *    接頭語・接尾語以外の病名がないとき             
-           IF      IDW                 =   IDZ    
-      ****     INITIALIZE                  WRK-BYOMEICD-KENSAKU-AREA
-               GO  TO  410131-BYOMEI-KENSAKU-EXT
-           END-IF
+      *        検索できなかったときは終了
+               IF      WRK-KEN-ADDKBN          =   ZERO
+                   INITIALIZE                  WRK-BYOMEICD-KENSAKU-AREA
+                   GO  TO  410131-BYOMEI-KENSAKU-EXT
+               END-IF
+           END-PERFORM     
       *
-      *    接頭語・接尾語以外の病名より検索             
-           COMPUTE IDW     =   IDW     -   IDZ
-           MOVE    "BYOMEI-KEY4"       TO  WRK-DBPATH
-           INITIALIZE                  BYOMEI-REC
-           MOVE    SPA-GMN-C02-BYOMEI (IDZ:IDW)
-                                       TO  BYO-BYOMEI
-           PERFORM 410131-BYOKEN-HEN-SEC
-           IF      IDX                 =   1
-               MOVE    WRK-BYOMEICD    TO  WRK-BYO-BYOMEICD (2)
-               MOVE    WRK-IKOSAKICD   TO  WRK-BYO-IKOSAKICD(2)
-               MOVE    WRK-HAISIYMD    TO  WRK-BYO-HAISIYMD (2) 
-               ADD     1               TO  WRK-BYO-MAX
-               GO  TO  410131-BYOMEI-KENSAKU-EXT
+           IF      WRK-KEN-UTAGAIFLG   =   "1"
+               ADD     1       TO  WRK-BYO-MAX
+               IF      WRK-BYO-MAX     <   7
+                   ADD     1           TO  IDXX
+                   MOVE    "ZZZ8002"   TO  WRK-BYO-BYOMEICD (IDXX)
+               ELSE
+                   GO  TO  410131-BYOMEI-KENSAKU-EXT
+               END-IF
            END-IF
-      *
-      *     
-           INITIALIZE                  WRK-BYOMEICD-KENSAKU-AREA
+           IF      WRK-KEN-UTAGAIFLG   =   "2"
+               ADD     1       TO  WRK-BYO-MAX
+               IF      WRK-BYO-MAX     <   7
+                   ADD     1           TO  IDXX
+                   MOVE    "ZZZ8007"   TO  WRK-BYO-BYOMEICD (IDXX)
+               ELSE
+                   GO  TO  410131-BYOMEI-KENSAKU-EXT
+               END-IF
+           END-IF
            .
        410131-BYOMEI-KENSAKU-EXT.
            EXIT.
@@ -5104,6 +5164,7 @@
            PERFORM 4203-INTBL-SORT-SEC
       *----(01.02.04) LINE ADD END   ----------------------------------
       *
+           MOVE    ZERO                TO   SPA-NAI-C02-SELNO
       *
            MOVE    1                   TO  SPA-GMN-C02-CUR 
       *
@@ -5165,6 +5226,7 @@
       *
            INITIALIZE                  SPA-GMN-C02-KOUMOKU
                                        SPA-NAI-C02-KOUMOKU
+                                        SPA-NAI-C02-SELNO 
       *
       *----(01.02.04) LINE ADD START ----------------------------------
       *        診療開始日別に並び替え
@@ -6564,6 +6626,10 @@
                            "は単独使用禁止の病名です"
                                                    DELIMITED  BY  SIZE
                                                    INTO    SPA-ERRMSG 
+               WHEN    "0077"
+                   MOVE
+                   "病名コードが６個以上になります。"
+                                       TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "更新処理でエラーになりました"
                                                        TO  SPA-ERRMSG

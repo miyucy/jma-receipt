@@ -82,6 +82,17 @@ path	key5	{
 	};
 };
 
+
+path	key6	{ 	
+	DBSELECT	{
+		DECLARE tbl_byomei_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_byomei
+			WHERE   BYOMEI       =   :BYOMEI
+		;
+	};
+};
+
 path	all	{ 	
 	DBSELECT	{
 		DECLARE tbl_byomei_all_csr CURSOR FOR
