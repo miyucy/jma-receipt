@@ -1091,6 +1091,7 @@
       *
            INITIALIZE                  WRK-SEIKYUKBN-KOHI-AREA
                                        FLG-KOH
+                                       FLG-KOHRECEDSP
            MOVE    ZERO                TO  IDY
                                            IDZ    
       *
