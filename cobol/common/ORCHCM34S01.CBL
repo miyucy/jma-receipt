@@ -33,8 +33,7 @@
       *  01.00.02    NACL¡ÝÂÀÅÄ   04/03/03  °åÎÅµ¡´Ø¸º»»ÂÐ±þ
       *  01.00.03    NACL¡ÝÂÀÅÄ   04/03/11  Í­¾²¿ÇÎÅ½ê£±·²Æþ±¡´ðËÜÎÁ£±
       *                                     ¡Ê°å»ÕÇÛÃÖÅ¬¹ç¡ËÂÐ±þ
-      *  01.00.04    NACL¡ÝÂÀÅÄ   04/08/23  Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬¡¢
-      *                                     ¿©»ö¶èÊ¬ÂÐ±þ
+      *  01.00.04    NACL¡ÝÂÀÅÄ   04/08/23  Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬
       *****************************************************************
       *
       *
@@ -84,9 +83,6 @@
                                                OCCURS  31.
            03  FLG-BRMSGKSANTEIDAY-G.
                05  FLG-BRMSGKSANTEIDAY         PIC 9(01)
-                                               OCCURS  31.
-           03  FLG-SKJSANTEIDAY-G.
-               05  FLG-SKJSANTEIDAY            PIC 9(01)
                                                OCCURS  31.
            03  FLG-SANTEI                      PIC 9(01).
       *
@@ -552,7 +548,6 @@
                                            WRK-SENTEI-PTFTN-G
                                            FLG-NYUINGENDAY-G
                                            FLG-BRMSGKSANTEIDAY-G
-                                           FLG-SKJSANTEIDAY-G
       *
       *    °åÎÅµ¡´Ø¾ðÊó¼èÆÀ½èÍý
            PERFORM 1501-SYS1001-GET-SEC
@@ -696,15 +691,6 @@
                            UNTIL ( IDX0        >   WRK-EDIDX )
       *
                    MOVE   1        TO  FLG-BRMSGKSANTEIDAY (IDX0)
-      *
-               END-PERFORM
-           END-IF
-      *
-           IF   ( SYS-5000-NACCT-SKJKBN     =   "2" )
-               PERFORM VARYING IDX0    FROM    WRK-STIDX   BY  1
-                           UNTIL ( IDX0        >   WRK-EDIDX )
-      *
-                   MOVE   1        TO  FLG-SKJSANTEIDAY (IDX0)
       *
                END-PERFORM
            END-IF
@@ -2052,12 +2038,8 @@
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
-                    IF    (  FLG-SKJSANTEIDAY (IDXD)   =   1 )
-                            MOVE   1       TO  FLG-SANTEI
-                    ELSE
-                        IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
-                            MOVE   1       TO  FLG-SANTEI
-                        END-IF
+                    IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
+                        MOVE   1       TO  FLG-SANTEI
                     END-IF
                END-IF
       *

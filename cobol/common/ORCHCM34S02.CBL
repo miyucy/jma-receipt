@@ -1474,12 +1474,8 @@
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
-                    IF    (  SYS-5000-NACCT-SKJKBN =   "2" )
-                            MOVE   1       TO  FLG-SANTEI
-                    ELSE
-                        IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
-                            MOVE   1       TO  FLG-SANTEI
-                        END-IF
+                    IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
+                        MOVE   1       TO  FLG-SANTEI
                     END-IF
                END-IF
       *
