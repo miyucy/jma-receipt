@@ -35,6 +35,7 @@
       * 01.00.06     NACL-多々納  02/11/20  自賠責器材追加
       * 01.00.07     NACL-多々納  02/11/22  画像診断の点滴追加（731)
       * 01.00.08     NACL-多々納  02/12/17  在宅指導料の追加（143)
+      * 01.00.09     NACL-多々納  02/12/20  自費修正時の修正
       *****************************************************************
       *
       *
@@ -377,6 +378,7 @@
                    MOVE    "1"                 TO  SPA-COM-ZAIEND
                                                              (IDX - 1)
                END-IF
+               MOVE    SPACE               TO  SPA-COM-ZAIEND (IDX)
       *        自費の時、回数入力まで自費とする
                IF      WRK-SRYSYUKBN       =   "950"  OR  "960"
                    MOVE    1                   TO  FLG-JIHI
@@ -954,6 +956,18 @@
       *
            IF      SPA-COM-TNSSRYKBN (IDX) NOT =   ZERO
                MOVE    SPA-COM-TNSSRYKBN (IDX) TO  WRK-SRYKBN
+           END-IF
+      *    前回自費の時、元へ
+           IF      SPA-COM-SRYSYUKBN (IDX) =   "960"  OR
+                                               "950"
+               MOVE    SPA-COM-TNSSRYSYUKBN(IDX)
+                                           TO  SPA-COM-SRYSYUKBN (IDX)
+               MOVE    SPACE               TO  SPA-COM-KEIFLG    (IDX)
+      *        画像診断の時、すべて"700"とする
+               EVALUATE    SPA-COM-SRYSYUKBN (IDX)(1:1)
+                   WHEN    "7"
+                       MOVE    "700"       TO  SPA-COM-SRYSYUKBN(IDX)
+               END-EVALUATE
            END-IF
       *
            .
