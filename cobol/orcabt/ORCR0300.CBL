@@ -86,6 +86,7 @@
       *                                     （特定器材）の追加
       *  01.01.02    NACL-藤原    04/04/22  画像診断の加算が複数ある場合の
       *                                     出力の修正
+      *  01.01.03    NACL-藤原    04/04/26  乳幼児の時間加算の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -587,17 +588,30 @@
                05  FILLER             PIC X(09)    VALUE   "112701910".
       *        時間外特例（外来診療科）
                05  FILLER             PIC X(09)    VALUE   "112702010".
+      *    乳幼児
+      *        夜間（再診）
+               05  FILLER             PIC X(09)    VALUE   "112014170".
+      *        休日（再診）
+               05  FILLER             PIC X(09)    VALUE   "112014270".
+      *        深夜（再診）
+               05  FILLER             PIC X(09)    VALUE   "112014370".
+      *        夜間（外来診療科）
+               05  FILLER             PIC X(09)    VALUE   "112014470".
+      *        休日（外来診療科）
+               05  FILLER             PIC X(09)    VALUE   "112014570".
+      *        深夜（外来診療科）
+               05  FILLER             PIC X(09)    VALUE   "112014670".
       *
            03  WRK-CONS-JIKANGAI-TABLE-R  REDEFINES   
                                       WRK-CONS-JIKANGAI-TABLE.
-               05  WRK-CONS-JIKANGAI-SRYCD-G       OCCURS  16.
+               05  WRK-CONS-JIKANGAI-SRYCD-G       OCCURS  22.
                    07  WRK-CONS-JIKANGAI-SRYCD
                                       PIC X(09).
            03  WRK-CONS-JIKANGAI-TEN-TABLE.
-               05  WRK-CONS-JIKANGAI-TEN-G         OCCURS  16.
+               05  WRK-CONS-JIKANGAI-TEN-G         OCCURS  22.
                    07  WRK-CONS-JIKANGAI-TEN
                                       PIC 9(09).
-           03  WRK-CONS-JIKANGAI-MAX  PIC 9(02)    VALUE   16.    
+           03  WRK-CONS-JIKANGAI-MAX  PIC 9(02)    VALUE   22.    
       *
       *    液体酸素・可搬式液体酸素容器（ＬＧＣ）
            03  WRK-CONS-SANSO1        PIC X(09)   VALUE   "739210000".
