@@ -85,3 +85,16 @@
                     06  W07-SRYNYKNKNRKBN-ITEM    PIC X(40)   OCCURS  5.
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
+                04  W07-TAG4.
+                  05  W07-SYUNYKNKNRKBN-COMBO.
+                    06  W07-SYUNYKNKNRKBN.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-SYUNYKNKNRKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-SYUNYKNKNRKBN-ITEM    PIC X(40)   OCCURS  5.
+                  05  W07-SYUSKYPRTKBN-COMBO.
+                    06  W07-SYUSKYPRTKBN.
+                      07  W07-VALUE   PIC X(20).
+                    06  W07-SYUSKYPRTKBN-COUNT    PIC S9(9)   BINARY.
+                    06  W07-SYUSKYPRTKBN-ITEM     PIC X(20)   OCCURS  2.
+                04  W07-TAGNAME4.
+                  05  W07-TAGNAME4-STATE   PIC S9(9)   BINARY.

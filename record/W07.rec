@@ -162,6 +162,25 @@ W07	{
 			TAGNAME3    {
 			  	state   int;
 			};
+			TAG4	{
+				SYUNYKNKNRKBN_COMBO	{
+					SYUNYKNKNRKBN	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[5];
+				};
+				SYUSKYPRTKBN_COMBO	{
+					SYUSKYPRTKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
+			};
+			TAGNAME4    {
+			  	state   int;
+			};
 		};
 	};
 };

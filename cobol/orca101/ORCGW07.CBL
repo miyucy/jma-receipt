@@ -44,6 +44,7 @@
       *  02.01.04    NACL-多々納  04/01/15  数量ゼロ入力追加
       *  02.01.05    NACL-太田    04/01/16  診療行為機能情報タグ追加
       *  02.01.06    NACL-多々納  04/01/23  入院調基チェック追加
+      *  02.01.07    NACL-太田    04/01/23  収納機能情報タグ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -180,6 +181,32 @@
                                13                          PIC X(01).
                                13  SPA-GMN-SRYNYKNKNRKBNMEIL
                                                            PIC X(38).
+                   07  SPA-GMN-PAGE4-AREA.
+      *                入金管理情報（収納機能情報）
+                       09  SPA-GMN-SYUNYKNKNRKBN-G.
+                           11  SPA-GMN-SYUNYKNKNRKBN       PIC X(01).
+                           11  SPA-GMN-SYUNYKNKNRKBN-F1    PIC X(01).
+                           11  SPA-GMN-SYUNYKNKNRKBNMEI    PIC X(38).
+      *                請求書兼領収書発行区分
+                       09  SPA-GMN-SYUSKYPRTKBN-G.
+                           11  SPA-GMN-SYUSKYPRTKBN        PIC X(01).
+                           11  SPA-GMN-SYUSKYPRTKBN-F1     PIC X(01).
+                           11  SPA-GMN-SYUSKYPRTKBNMEI     PIC X(18).
+      *
+                       09  SPA-GMN-SYUNYKNKNRKBNLST-G.
+                           11  SPA-GMN-SYUNYKNKNRKBN-MAX   PIC 9(03).
+                           11  SPA-GMN-SYUNYKNKNRKBNLST    OCCURS  5.
+                               13  SPA-GMN-SYUNYKNKNRKBNL  PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-SYUNYKNKNRKBNMEIL
+                                                           PIC X(38).
+                       09  SPA-GMN-SYUSKYPRTKBNLST-G.
+                           11  SPA-GMN-SYUSKYPRTKBN-MAX    PIC 9(03).
+                           11  SPA-GMN-SYUSKYPRTKBNLST     OCCURS  2.
+                               13  SPA-GMN-SYUSKYPRTKBNL   PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-SYUSKYPRTKBNMEIL
+                                                           PIC X(18).
       *
                    07  SPA-GMN-DATALST        OCCURS  2.
                        09  SPA-GMN-DATAL      PIC X(01).
@@ -253,6 +280,8 @@
            COPY  "CPSK1005.INC".
       *    診療行為機能情報
            COPY  "CPSK1038.INC".
+      *    収納機能情報
+           COPY  "CPSK1039.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -442,6 +471,12 @@
                    WHEN   "1006"
       *                診療行為情報の削除
                        PERFORM  4032-DEL-1038-SEC
+                   WHEN   "1007"
+      *                収納情報の更新
+                       PERFORM  491-KOUSHIN-1039-SEC
+                   WHEN   "1008"
+      *                収納情報の削除
+                       PERFORM  4032-DEL-1039-SEC
                END-EVALUATE
            ELSE
                EVALUATE    SPA-W01-KANRICD
@@ -529,6 +564,16 @@
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(5)
            MOVE    5                   TO  SPA-GMN-SRYNYKNKNRKBN-MAX
       *
+           MOVE    "1 伝票の古い未収順に入金"
+                                       TO  SPA-GMN-SYUNYKNKNRKBNLST(1)
+           MOVE    "2 伝票の新しい未収順に入金"
+                                       TO  SPA-GMN-SYUNYKNKNRKBNLST(2)
+           MOVE    2                   TO  SPA-GMN-SYUNYKNKNRKBN-MAX
+      *
+           MOVE    "0 発行しない"      TO  SPA-GMN-SYUSKYPRTKBNLST(1)
+           MOVE    "1 発行する"        TO  SPA-GMN-SYUSKYPRTKBNLST(2)
+           MOVE    2                   TO  SPA-GMN-SYUSKYPRTKBN-MAX
+      *
            EVALUATE    SPA-W01-KANRICD
       *        診療行為情報
                WHEN    "1007"
@@ -539,6 +584,9 @@
       *        診療行為機能情報
                WHEN    "1038"
                    PERFORM 310-SPASET-1038-SEC
+      *        収納機能情報
+               WHEN    "1039"
+                   PERFORM 310-SPASET-1039-SEC
            END-EVALUATE
       *
            . 
@@ -844,7 +892,7 @@
                IF      SPA-GMN-SRYNYKNKNRKBN
                                        =   SPA-GMN-SRYNYKNKNRKBNL (IDY)
                    MOVE    SPA-GMN-SRYNYKNKNRKBNLST(IDY)
-                                       TO SPA-GMN-SRYNYKNKNRKBN-G
+                                       TO  SPA-GMN-SRYNYKNKNRKBN-G
                    MOVE    1           TO  FLG-OK
                    MOVE    SPA-GMN-SRYNYKNKNRKBN-MAX
                                        TO  IDY
@@ -855,10 +903,74 @@
                                        TO  SPA-GMN-SRYNYKNKNRKBN-G
            END-IF
       *
-            MOVE    30                 TO  SPA-GMN-CUR
+           MOVE    30                  TO  SPA-GMN-CUR
       *
            . 
-       31O-SPASET-1007-EXT.
+       31O-SPASET-1038-EXT.
+           EXIT.
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       310-SPASET-1039-SEC         SECTION.
+      *
+      *    収納機能情報
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "1039"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1039-REC
+           ELSE
+               INITIALIZE  SYS-1039-REC
+           END-IF
+      *
+      *    入金管理区分
+           MOVE    SYS-1039-NYKNKNRKBN TO  SPA-GMN-SYUNYKNKNRKBN
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-SYUNYKNKNRKBN-MAX
+               IF      SPA-GMN-SYUNYKNKNRKBN
+                                       =   SPA-GMN-SYUNYKNKNRKBNL (IDY)
+                   MOVE    SPA-GMN-SYUNYKNKNRKBNLST(IDY)
+                                       TO  SPA-GMN-SYUNYKNKNRKBN-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-SYUNYKNKNRKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-SYUNYKNKNRKBNLST (1)
+                                       TO  SPA-GMN-SYUNYKNKNRKBN-G
+           END-IF
+      *
+      *    請求書兼領収書発行区分
+      *    MOVE    SYS-1039-SKYPRTKBN  TO  SPA-GMN-SYUSKYPRTKBN
+      *
+      *    MOVE    ZERO                TO  FLG-OK
+      *    PERFORM VARYING IDY         FROM    1   BY  1
+      *            UNTIL   IDY         >   SPA-GMN-SYUSKYPRTKBN-MAX
+      *        IF      SPA-GMN-SYUSKYPRTKBN
+      *                                =   SPA-GMN-SYUSKYPRTKBNL (IDY)
+      *            MOVE    SPA-GMN-SYUSKYPRTKBNLST(IDY)
+      *                                TO  SPA-GMN-SYUSKYPRTKBN-G
+      *            MOVE    1           TO  FLG-OK
+      *            MOVE    SPA-GMN-SYUSKYPRTKBN-MAX
+      *                                TO  IDY
+      *        END-IF
+      *    END-PERFORM
+      *    IF      FLG-OK              =   ZERO
+      *        MOVE    SPA-GMN-SYUSKYPRTKBNLST (1)
+      *                                TO  SPA-GMN-SYUSKYPRTKBN-G
+      *    END-IF
+      *
+           MOVE    40                 TO  SPA-GMN-CUR
+      *
+           . 
+       31O-SPASET-1039-EXT.
            EXIT.
       *****************************************************************
       *    画面遷移処理
@@ -946,6 +1058,10 @@
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
       *
+      *    収納機能情報
+           MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
+           MOVE    W07-SYUSKYPRTKBN    TO  SPA-GMN-SYUSKYPRTKBN-G
+      *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -1029,6 +1145,17 @@
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
+               WHEN    "1039"
+      *            入金管理区分チェック
+                   PERFORM 4109-SYUNYKNKNRKBN-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+      *            請求書兼領収書発行区分区分チェック
+      *            PERFORM 4110-SYUSKYPRTKBN-CHK-SEC
+      *            IF      SPA-ERRCD       NOT =   SPACE
+      *                GO      TO      4102-KIHON-CHK-EXT
+      *            END-IF
            END-EVALUATE
       *
            .
@@ -1411,6 +1538,54 @@
        4108-SRYNYKNKNRKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入金管理区分チェック処理（収納行為機能情報）
+      *****************************************************************
+       4109-SYUNYKNKNRKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SYUNYKNKNRKBN-MAX
+               IF      SPA-GMN-SYUNYKNKNRKBN
+                                       =   SPA-GMN-SYUNYKNKNRKBNL (IDX)
+                   MOVE    SPA-GMN-SYUNYKNKNRKBNLST(IDX)
+                                          TO  SPA-GMN-SYUNYKNKNRKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    40              TO  SPA-GMN-CUR
+               MOVE    "0025"          TO  SPA-ERRCD
+               GO      TO      4109-SYUNYKNKNRKBN-CHK-EXT
+           END-IF
+      *
+           .
+       4109-SYUNYKNKNRKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求書兼領収書発行区分チェック処理（収納行為機能情報）
+      *****************************************************************
+       4110-SYUSKYPRTKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SYUSKYPRTKBN-MAX
+               IF      SPA-GMN-SYUSKYPRTKBN
+                                       =   SPA-GMN-SYUSKYPRTKBNL (IDX)
+                   MOVE    SPA-GMN-SYUSKYPRTKBNLST(IDX)
+                                          TO  SPA-GMN-SYUSKYPRTKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    41              TO  SPA-GMN-CUR
+               MOVE    "0026"          TO  SPA-ERRCD
+               GO      TO      4110-SYUSKYPRTKBN-CHK-EXT
+           END-IF
+      *
+           .
+       4110-SYUSKYPRTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -1443,6 +1618,8 @@
                    MOVE    "1004"              TO  SPA-WIDCD
                WHEN    "1038"
                    MOVE    "1006"              TO  SPA-WIDCD
+               WHEN    "1039"
+                   MOVE    "1008"              TO  SPA-WIDCD
            END-EVALUATE
       *
            .    
@@ -1575,6 +1752,37 @@
            .
        4032-DEL-1038-EXT.
            EXIT.
+      *****************************************************************
+      *    削除処理１０３９
+      *****************************************************************
+       4032-DEL-1039-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1039-REC
+           INITIALIZE                      SYS-1039-REC
+           MOVE    "1039"              TO  SYS-1039-KANRICD
+           MOVE    "*"                 TO  SYS-1039-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1039-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD    TO  SYS-1039-EDYUKYMD
+           MOVE    SYS-1039-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+           IF      MCP-RC              NOT =   ZERO 
+               MOVE    "1002"              TO  SPA-ERRCD
+               DISPLAY "SYSKANRI-KEY =>" SYS-1039-KEY 
+                       ",MCP-RC:" MCP-RC 
+               GO  TO  4032-DEL-1039-EXT
+           END-IF
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           PERFORM 210-BACK
+           .
+       4032-DEL-1039-EXT.
+           EXIT.
       *
       *****************************************************************
       *       登録前処理
@@ -1600,6 +1808,10 @@
                WHEN    "1038"
                    IF      SPA-ERRCD        =   SPACE
                        MOVE    "1005"           TO  SPA-WIDCD
+                   END-IF
+               WHEN    "1039"
+                   IF      SPA-ERRCD        =   SPACE
+                       MOVE    "1007"           TO  SPA-WIDCD
                    END-IF
           END-EVALUATE
       *     
@@ -1893,6 +2105,74 @@
            .
        490-KOUSHIN-1038-EXT.
            EXIT.
+      ******************************************************************
+      *       登録処理
+      *****************************************************************
+       491-KOUSHIN-1039-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1039-REC
+           INITIALIZE                      SYS-1039-REC
+           MOVE    "1039"              TO  SYS-1039-KANRICD
+           MOVE    "*"                 TO  SYS-1039-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SYS-1039-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI            =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1039-REC
+           ELSE
+               MOVE    SPACE               TO  SYS-1039-REC
+               INITIALIZE                      SYS-1039-REC
+               MOVE    "1039"              TO  SYS-1039-KANRICD
+               MOVE    "*"                 TO  SYS-1039-KBNCD
+           END-IF
+      *
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-1039-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD        TO  SYS-1039-EDYUKYMD
+           MOVE    SPA-GMN-SYUNYKNKNRKBN   TO  SYS-1039-NYKNKNRKBN
+      *    MOVE    SPA-GMN-SYUSKYPRTKBN    TO  SYS-1039-SKYPRTKBN
+      *
+           MOVE    SYS-1039-REC            TO  SYSKANRI-REC
+      *
+           IF      FLG-SYSKANRI            =   ZERO
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
+               MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
+               MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
+               MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
+               MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
+               MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
+               MOVE    "DBUPDATE"              TO  MCP-FUNC
+           ELSE
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
+                                                   SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
+               MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
+               MOVE    "DBINSERT"              TO  MCP-FUNC
+           END-IF
+           MOVE    SYSKANRI-REC            TO  MCPDATA-REC
+           CALL    "ORCMCPSUB"                 USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+           IF      MCP-RC              NOT =   ZERO
+               MOVE    "1003"                  TO  SPA-ERRCD
+               DISPLAY "W07 ERR:" MCP-RC
+                        ",SYS-1039-KEY:" SYS-1039-KEY
+                        ",MCP-FUNC:" MCP-FUNC
+               GO  TO  490-KOUSHIN-1039-EXT
+           END-IF
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           PERFORM 210-BACK
+           .
+       490-KOUSHIN-1039-EXT.
+           EXIT.
       *****************************************************************
       *       入力項目の関連チェック処理
       *****************************************************************
@@ -2059,8 +2339,6 @@
            END-PERFORM
            MOVE    2               TO  W07-HOJYOKBN-COUNT
       *
-           PERFORM 5001-MAPCUR-SEC
-      *
       *    入金管理区分（診療行為機能情報）
            MOVE    SPA-GMN-SRYNYKNKNRKBN-G TO  W07-SRYNYKNKNRKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2070,6 +2348,26 @@
            END-PERFORM
            MOVE    SPA-GMN-SRYNYKNKNRKBN-MAX
                                        TO  W07-SRYNYKNKNRKBN-COUNT
+      *
+      *    入金管理区分（収納機能情報）
+           MOVE    SPA-GMN-SYUNYKNKNRKBN-G TO  W07-SYUNYKNKNRKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SYUNYKNKNRKBN-MAX
+               MOVE    SPA-GMN-SYUNYKNKNRKBNLST (IDX)
+                                       TO  W07-SYUNYKNKNRKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-SYUNYKNKNRKBN-MAX
+                                       TO  W07-SYUNYKNKNRKBN-COUNT
+      *
+      *    請求書兼領収書発行区分
+           MOVE    SPA-GMN-SYUSKYPRTKBN-G TO  W07-SYUSKYPRTKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SYUSKYPRTKBN-MAX
+               MOVE    SPA-GMN-SYUSKYPRTKBNLST (IDX)
+                                       TO  W07-SYUSKYPRTKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-SYUSKYPRTKBN-MAX
+                                       TO  W07-SYUSKYPRTKBN-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -2086,6 +2384,7 @@
                                            W07-TAGNAME1-STATE
                                            W07-TAGNAME2-STATE
                                            W07-TAGNAME3-STATE
+                                           W07-TAGNAME4-STATE
                                            W07-SRYKACD-STATE
       *
            IF      SPA-W01-SELNUM          >   ZERO
@@ -2099,6 +2398,8 @@
                    MOVE    WIDGET-NORMAL   TO  W07-TAGNAME2-STATE
                WHEN    "1038" 
                    MOVE    WIDGET-NORMAL   TO  W07-TAGNAME3-STATE
+               WHEN    "1039" 
+                   MOVE    WIDGET-NORMAL   TO  W07-TAGNAME4-STATE
            END-EVALUATE
       *
            IF      SPA-GMN-DATA(7)         =   "1"
@@ -2180,6 +2481,12 @@
                WHEN    "0024"
                    MOVE    "入金管理区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "0025"
+                   MOVE    "入金管理区分がありません。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0026"
+                   MOVE    "請求書兼領収書発行区分がありません。"
+                                                       TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"    TO  SPA-ERRMSG
                WHEN    "1001"
@@ -2236,6 +2543,12 @@
                                                        TO  WRK-WIDMSG
                WHEN    "1006"
                    MOVE    "診療行為機能情報を削除します"
+                                                       TO  WRK-WIDMSG
+               WHEN    "1007"
+                   MOVE    "収納機能情報を登録します"
+                                                       TO  WRK-WIDMSG
+               WHEN    "1008"
+                   MOVE    "収納機能情報を削除します"
                                                        TO  WRK-WIDMSG
            END-EVALUATE
       *
@@ -2309,6 +2622,10 @@
                    MOVE  "HOJYOKBN"        TO   MCP-WIDGET
                WHEN    30
                    MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
+               WHEN    40
+                   MOVE  "SYUNYKNKNRKBN"   TO   MCP-WIDGET
+               WHEN    41
+                   MOVE  "SYUSKYPRTKBN"    TO   MCP-WIDGET
       *
                WHEN    99
                    MOVE  "B12"             TO   MCP-WIDGET
@@ -2321,6 +2638,8 @@
                    MOVE    1               TO  W07-PAGENO
                WHEN    30  THRU    30
                    MOVE    2               TO  W07-PAGENO
+               WHEN    40  THRU    41
+                   MOVE    3               TO  W07-PAGENO
            END-EVALUATE
       *
            .
@@ -2378,6 +2697,11 @@
                    MOVE    99              TO  SPA-GMN-CUR
                WHEN    "SRYNYKNKNRKBN"
                    MOVE    99              TO  SPA-GMN-CUR
+               WHEN    "SYUNYKNKNRKBN"
+      *            MOVE    41              TO  SPA-GMN-CUR
+                   MOVE    99              TO  SPA-GMN-CUR
+      *        WHEN    "SYUSKYPRTKBN"
+      *            MOVE    99              TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .
