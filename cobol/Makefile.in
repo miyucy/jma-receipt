@@ -2,6 +2,7 @@ top_srcdir = @top_srcdir@
 include $(top_srcdir)/Makefile.directories
 
 INSTALL = @INSTALL@
+HOSP = @HOSP@
 
 SUBDIRS = \
 	common \
