@@ -6670,13 +6670,13 @@
                        MOVE    7           TO  SPA-GMN-I01-CUR
                        GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
                    END-IF
-               END-IF
-           END-IF
       *
-      *    前回自院歴チェック
-           PERFORM 4801-ZENKAI-ZIINRRK-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   ZERO )
-               GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
+      *            前回自院歴チェック
+                   PERFORM 4801-ZENKAI-ZIINRRK-CHK-SEC
+                   IF    ( SPA-ERRCD   NOT =   ZERO )
+                       GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
+                   END-IF
+               END-IF
            END-IF
       *
            .
