@@ -69,6 +69,7 @@
       *  01.00.29    NACL-ÌçÏÆ    04/09/24  ÀÁµá³ÛÃ¼¿ô½èÍýÂÐ±þ
       *  01.00.30    NACL-ÌçÏÆ    04/10/01  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ±þ
       *  01.00.31    NACL-ÌçÏÆ    04/10/21  ¸øÈñ»Í¼Î¸ÞÆþ¤·¤Ê¤¤¾ì¹ç¤Î½¤Àµ
+      *  01.00.32    NACL-ÌçÏÆ    04/11/12  Ê¡²¬¸©ÃÏÊý¸øÈñÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -161,6 +162,9 @@
            03  WK-TAIHI-RECEFTNDSPKBN-OCC.
                05  WK-TAIHI-RECEFTNDSPKBN
                                        PIC X(1)    OCCURS   4.
+      *    Ê¡²¬¸©ÃÏÊý¸øÈñÉéÃ´¶èÊ¬¡¦¼çÊÝ¸±¤ÎÉéÃ´³ä¹ç
+           03  WK-KOH-FTNKBN           PIC X(1).
+           03  WK-KOH-FTNRATE          PIC 9(3).
       *
       *****Ï«ºÒ¡¦¼«ÇåÀÕ
       *    ¼«ÇåÀÕ¡Ê²Ã»»Î¨¡Ë
@@ -569,6 +573,9 @@
            COPY    "CPORCSGDAY.INC".
       *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
            COPY    "CPORCSAGECHK.INC".
+      *    ¸øÈñÉÕ²Ã¾ðÊó¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSKOHPLUS.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -3983,6 +3990,7 @@
       *
       *    ÊÝ¸±¡¦¸øÈñËè¤Î´µ¼ÔÉéÃ´¶â³Û¤Î·×»»
            MOVE     ZERO       TO       WK-DAY-NYUKFTNRATE.
+           MOVE     ZERO       TO       WK-KOH-FTNRATE.
            IF    ((COMB-KOH1-HKNKOHSBTKBN    =   "3")    AND
                   (COMB-KOH1HKNNUM           =   "027")) OR 
                  ((COMB-KOH2-HKNKOHSBTKBN    =   "3")    AND
@@ -5277,6 +5285,8 @@
                         IF    HKN-HON-NYUKFTNRATE     NOT =    ZERO
                               MOVE   HKN-HON-NYUKFTNRATE
                                            TO   WK-DAY-NYUKFTNRATE
+                              MOVE   HKN-HON-NYUKFTNRATE
+                                           TO   WK-KOH-FTNRATE
                               COMPUTE   WK-FUTANWARI  =
                                         HKN-HON-NYUKFTNRATE  /  100
                               COMPUTE   LNK-SYU-SYUCOMPFTN  =
@@ -5345,6 +5355,8 @@
                         IF    HKN-KZK-NYUKFTNRATE     NOT =    ZERO
                               MOVE   HKN-KZK-NYUKFTNRATE
                                            TO   WK-DAY-NYUKFTNRATE
+                              MOVE   HKN-KZK-NYUKFTNRATE
+                                           TO   WK-KOH-FTNRATE
                               COMPUTE   WK-FUTANWARI  =
                                         HKN-KZK-NYUKFTNRATE  /  100
                               COMPUTE   LNK-SYU-SYUCOMPFTN  =
@@ -5740,7 +5752,17 @@
                    MOVE    HKN-HON-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
                    MOVE    HKN-HON-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
       *
+                   MOVE    HKN-HON-NYUKFTNRATE  TO   WK-KOH-FTNRATE
+      *
                    MOVE    "1"                  TO   HKN-RECEFTNDSPKBN
+           END-IF.
+      *
+      *    Ê¡²¬¸©¤ÎÃÏÊý¸øÈñÂÐ±þ¡Ê¸øÈñÉÕ²Ã¾ðÊó¤Î¼èÆÀ¡Ë
+           MOVE     SPACE     TO     WK-KOH-FTNKBN.
+           IF  (WK-1001-PREFNUM           =       40)    AND
+               (COMB-KOHHKNNUM(KOH-IDX)(1:1)  >= "1")    AND
+               (COMB-KOHHKNNUM(KOH-IDX)(1:1)  <= "8")
+               PERFORM     23061-KOHPLUS-FUKUOKA-SEC
            END-IF.
       *
            IF  (WK-1001-PREFNUM         =  01                    ) AND
@@ -5754,6 +5776,35 @@
            END-IF.
       *
        2306-KOH-HKNREAD-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *        ¸øÈñÉÕ²Ã¾ðÊó¤Î¼èÆÀ¡ÊÊ¡²¬¸©ÂÐ±þ¡Ë                  *
+      ******************************************************************
+       23061-KOHPLUS-FUKUOKA-SEC           SECTION.
+      *
+           INITIALIZE                  ORCSKOHPLUS-AREA
+           MOVE    LNK-SYU-HOSPID  TO  LNK-SKOHPLUS-HOSPID
+           MOVE    WK-1001-PREFNUM TO  LNK-SKOHPLUS-PREFNUM
+           MOVE    LNK-SYU-PTID    TO  LNK-SKOHPLUS-PTID
+           MOVE    LNK-SYU-HKNCOMBINUM
+                                   TO  LNK-SKOHPLUS-HKNCOMBI
+           MOVE    LNK-SYU-SRYYMD  TO  LNK-SKOHPLUS-SRYYMD
+           CALL    "ORCSKOHPLUS"       USING
+                                       ORCSKOHPLUS-AREA
+           IF      LNK-SKOHPLUS-RC =   ZERO
+               MOVE   LNK-SKOHPLUS-FTNKBN    TO   WK-KOH-FTNKBN
+               MOVE   LNK-SKOHPLUS-NYUSKJRYYKBN
+                                             TO   WK-NYUSKJRYYKBN
+               MOVE   WK-KOH-FTNRATE         TO   WK-NYUKFTNRATE
+               IF     WK-NYUKFTNRATE  =  ZERO
+                      MOVE    SPACE   TO  COMB-KOH-NYUJGNKBN(KOH-IDX)
+               END-IF
+           END-IF
+      *
+           .
+      *
+       23061-KOHPLUS-FUKUOKA-EXT.
            EXIT.
       *
       ******************************************************************
@@ -5780,10 +5831,35 @@
       *
                COMPUTE   WK-FUTANWARI  =
                               WK-NYUKFTNRATE  /  100
-               COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
-                         WK-ZENGAKU   *  WK-FUTANWARI
-               COMPUTE   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =         
-                         WK-ZENGAKU   *  WK-FUTANWARI                   
+               IF    WK-KOH-FTNKBN   NOT =  SPACE
+                 EVALUATE  WK-KOH-FTNKBN
+                    WHEN  "1"
+                      COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
+                                LNK-SYU-KYUFUGAI-GOKEI-TEN
+                                        *  10
+                                        *  WK-FUTANWARI
+                      COMPUTE   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =
+                                LNK-SYU-KYUFUGAI-GOKEI-TEN
+                                        *  10
+                                        *  WK-FUTANWARI
+                    WHEN  "2"
+                      MOVE    ZERO   TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                      MOVE    ZERO   TO
+                                   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                      MOVE    ZERO   TO   LNK-SYU-KYUFUGAI-SHOSHIN-TEN
+                                          LNK-SYU-KYUFUGAI-SIDOU-TEN
+                                          LNK-SYU-KYUFUGAI-OSIN1-TEN
+                                          LNK-SYU-KYUFUGAI-OSIN2-TEN
+                                          LNK-SYU-KYUFUGAI-OSIN3-TEN
+                                          LNK-SYU-KYUFUGAI-GOKEI-TEN
+                 END-EVALUATE
+               ELSE
+                 COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
+                           WK-ZENGAKU   *  WK-FUTANWARI
+                 COMPUTE   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =
+                           WK-ZENGAKU   *  WK-FUTANWARI
+               END-IF
+      *
                IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "027"           
                     MOVE   LNK-SYU-KOH-COMPFTN(KOH-IDX)                 
                                             TO WK-TOKUTEI-COMPFTN3      
@@ -6544,10 +6620,35 @@
       *
                COMPUTE   WK-FUTANWARI  =
                               WK-NYUKFTNRATE  /  100
-               COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
-                         WK-ZENGAKU   *  WK-FUTANWARI
-               COMPUTE   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =         
-                         WK-ZENGAKU   *  WK-FUTANWARI                   
+               IF    WK-KOH-FTNKBN   NOT =  SPACE
+                 EVALUATE  WK-KOH-FTNKBN
+                    WHEN  "1"
+                      COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
+                                LNK-SYU-KYUFUGAI-GOKEI-TEN
+                                        *  10
+                                        *  WK-FUTANWARI
+                      COMPUTE   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =
+                                LNK-SYU-KYUFUGAI-GOKEI-TEN
+                                        *  10
+                                        *  WK-FUTANWARI
+                    WHEN  "2"
+                      MOVE    ZERO   TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                      MOVE    ZERO   TO
+                                   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                      MOVE    ZERO   TO   LNK-SYU-KYUFUGAI-SHOSHIN-TEN
+                                          LNK-SYU-KYUFUGAI-SIDOU-TEN
+                                          LNK-SYU-KYUFUGAI-OSIN1-TEN
+                                          LNK-SYU-KYUFUGAI-OSIN2-TEN
+                                          LNK-SYU-KYUFUGAI-OSIN3-TEN
+                                          LNK-SYU-KYUFUGAI-GOKEI-TEN
+                 END-EVALUATE
+               ELSE
+                 COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
+                           WK-ZENGAKU   *  WK-FUTANWARI
+                 COMPUTE   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =
+                           WK-ZENGAKU   *  WK-FUTANWARI
+               END-IF
+      *
                IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "027"           
                     MOVE   LNK-SYU-KOH-COMPFTN(KOH-IDX)                 
                                             TO WK-TOKUTEI-COMPFTN3      
