@@ -273,6 +273,7 @@
                                                SYUNOU-REC
                                                WRK-SYUNOU-REC-T
       *
+                MOVE     "X"                  TO  SYU-DENPJTIKBN
                 MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
                 MOVE     WRK-ORCS02-REC       TO  LNK-ORCS02-REC 
       *
@@ -873,17 +874,13 @@
                                WHEN   1
                                    COMPUTE  SYU-HKNTEN(11)  =
                                             SYU-HKNTEN(11)  +
-                                           ((WRK-KHNTEN    *  0.85)
+                                           ((WRK-KHNTEN    *  0.15)
                                                            +  0.5)
-                                   ADD      WRK-KSNTEN   TO
-                                                        SYU-HKNTEN(11)
                                WHEN   2
                                    COMPUTE  SYU-HKNTEN(11)  =
                                             SYU-HKNTEN(11)  +
-                                          ((WRK-KHNTEN      *  0.7)
+                                          ((WRK-KHNTEN      *  0.3)
                                                             +  0.5)
-                                   ADD      WRK-KSNTEN   TO
-                                                        SYU-HKNTEN(11)
                            END-EVALUATE
                        END-IF
                    END-PERFORM
