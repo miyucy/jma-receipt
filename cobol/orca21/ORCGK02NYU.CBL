@@ -1812,6 +1812,7 @@
       *
       *        リハビリ逓減確認
                WHEN    "0180"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                         MOVE    1                  TO  FLG-RIHTEI
       *                 診療行為、計計算処理、編集
@@ -1825,7 +1826,6 @@
                         PERFORM 510-TBLHEN-SEC
                         MOVE    SPACE              TO  FLG-TOROKU
                    END-IF
-                   MOVE    SPACE               TO  SPA-KIDCD
       *
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KID1-FLG
@@ -7255,12 +7255,6 @@
                        END-IF
                    END-IF
                END-IF
-      *TEST
-               DISPLAY "ATO"
-                    ",GMN:" WRK-GMN-INPUTCD(IDX-Z)
-                    ",END:" WRK-COM-ZAIEND(IDX-Z)
-                   ",KAIFLG:" WRK-COM-KAIFLG (IDX-Z)
-      *TEST
            END-PERFORM
       *
       *    点数再セット
