@@ -620,6 +620,10 @@
                MOVE    SPA-GMN-SYARECEKBNLST (1)
                                            TO  SPA-GMN-SYARECEKBN-G
            END-IF                                              
+           IF     SPA-GMN-RENNUMHENKBN-G   =   SPACE
+               MOVE    SPA-GMN-RENNUMHENKBNLST (1)
+                                           TO  SPA-GMN-RENNUMHENKBN-G
+           END-IF                                              
       *
            MOVE    1                   TO  SPA-GMN-CUR
            . 
