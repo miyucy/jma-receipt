@@ -2054,7 +2054,7 @@
                WHEN    "13"
                          COMPUTE    RECE41-TENSU(5)  =
                                     RECE41-TENSU(5)  +
-                                   (WK-ZAITENSU   *   WRK-ZAIKAISU-XXX)
+                                   (WK-ZAITEN   *   WRK-ZAIKAISU-XXX)
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
