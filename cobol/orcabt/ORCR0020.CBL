@@ -81,6 +81,8 @@
       *                                     フラグセット
       *  01.00.29    NACL-藤原    03/04/21  地方公費データのとき主保険が
       *                                     無い場合は不明分とする
+      *  01.00.30    NACL-小豆沢  03/05/30  山形県の地方公費は主保険が
+      *                                     国保の場合は公費カウントしない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -242,6 +244,7 @@
                05  WRK-PARA-SYSYMD                     PIC  X(08).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
+           03  WRK-PREFNUM                             PIC  9(02).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -339,6 +342,9 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
+      *    医療機関情報
+           COPY  "CPSK1001.INC".
+      *
       *    患者番号構成管理情報
            COPY  "CPSK1009.INC".
       *
@@ -434,6 +440,28 @@
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
+      *    県番号取得
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1001-REC
+               MOVE    SYS-1001-PREFNUM
+                                           TO  WRK-PREFNUM
+           ELSE
+               MOVE    "県番号が取得できませんでした"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1                   TO  FLG-END
+           END-IF
+           MOVE     "SYSKANRI-KEY"         TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
       *
       *    患者番号構成管理情報編集
            INITIALIZE                  SYS-1009-REC
@@ -1177,6 +1205,21 @@
                    MOVE    3               TO    WK-KOHI-CNT
            END-EVALUATE
       *
+      *    山形地方公費対応
+           IF      WRK-PREFNUM             =     6
+               IF  WK-KOKUHO               =     "1"  OR  "2"
+                   IF   (RECE02-KOHNUM(1) (1:1)  =   "1")   OR
+                        (RECE02-KOHNUM(2) (1:1)  =   "1")   OR
+                        (RECE02-KOHNUM(3) (1:1)  =   "1")   OR
+                        (RECE02-KOHNUM(4) (1:1)  =   "1")   OR
+                        (RECE02-KOHNUM(1) (1:1)  =   "2")   OR
+                        (RECE02-KOHNUM(2) (1:1)  =   "2")   OR
+                        (RECE02-KOHNUM(3) (1:1)  =   "2")   OR
+                        (RECE02-KOHNUM(4) (1:1)  =   "2")
+                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
+                   END-IF
+               END-IF
+           END-IF
       *----(01.00.13) LINE ADD START --------------------------
       *   平成１４年１０月対応
       *    ３歳未満の場合、ＷＫ−ＨＯＮＫＺＫＫＢＮに"３"をセット
