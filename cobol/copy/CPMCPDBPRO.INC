@@ -162,6 +162,7 @@
       *                                     SYUNOU-KEY5追加
       *                                     SYUMEI-KEY3追加
       *                                     PTNYUINRRK-KEY10追加
+      *  01.01.18    NACL-藤原    02/12/10  SEIKYU-DEL5,DEL6追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -667,6 +668,12 @@
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SEIKYU-DEL4"
                    MOVE    PATH-TBL-SEIKYU-DEL4
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SEIKYU-DEL5"
+                   MOVE    PATH-TBL-SEIKYU-DEL5
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SEIKYU-DEL6"
+                   MOVE    PATH-TBL-SEIKYU-DEL6
                                        TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO   "HKNJAINF-KEY"
                WHEN    "DBDELETE"      ALSO   "HKNJAINF-KEY"
