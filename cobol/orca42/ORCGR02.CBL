@@ -1546,7 +1546,7 @@
       *****************************************************************
        440-PRINT-KENSU-SEC                SECTION.
       *
-           CALL    "ORCHC**"           USING   SPA-GMN-CREYMD
+           CALL    "ORCHC**"           USING   SPA-GMN-FILEKBN
                                                SPA-GMN-TBL1
       *
            .
