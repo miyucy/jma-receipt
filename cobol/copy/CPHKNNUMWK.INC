@@ -74,6 +74,8 @@
            03 HKNWK-RECESKYKBN            PIC  X(01).
       *レセプト１円単位表示区分
            03 HKNWK-RECEFTNDSPKBN         PIC  X(01).
+      *レセプト患者負担額判定表示区分
+           03 HKNWK-RECEJGNDSPKBN         PIC  X(01).
       *
            03 HKNWK-NAIYOU.
       *本人
@@ -120,6 +122,8 @@
                   09 HKNWK-HON-NYUMJGNCNT          PIC  9(02).
       *    本人−入院−食事療養区分
                   09 HKNWK-HON-NYUSKJRYYKBN        PIC  X(01).
+      *    本人−入院−食事負担助成額（日）
+                  09 HKNWK-HON-NYUSKJJYOGAK        PIC  9(06).
       *家族
               05 HKNWK-KZK.
       *  家族−外来−負担区分
@@ -164,6 +168,8 @@
                   09 HKNWK-KZK-NYUMJGNCNT          PIC  9(02).
       *    家族−入院−食事療養区分
                   09 HKNWK-KZK-NYUSKJRYYKBN        PIC  X(01).
+      *    家族−入院−食事負担助成額（日）
+                  09 HKNWK-KZK-NYUSKJJYOGAK        PIC  9(06).
       *低所得
               05 HKNWK-TSY.
       *  低所得−外来−負担区分
@@ -208,6 +214,8 @@
                   09 HKNWK-TSY-NYUMJGNCNT       PIC  9(02).
       *    低所得−入院−食事療養区分
                   09 HKNWK-TSY-NYUSKJRYYKBN     PIC  X(01).
+      *    低所得−入院−食事負担助成額（日）
+                  09 HKNWK-TSY-NYUSKJJYOGAK     PIC  9(06).
       *低年金
               05 HKNWK-TNK.
       *  低年金−外来−負担区分
@@ -252,6 +260,8 @@
                   09 HKNWK-TNK-NYUMJGNCNT       PIC  9(02).
       *    低年金−入院−食事療養区分
                   09 HKNWK-TNK-NYUSKJRYYKBN     PIC  X(01).
+      *    低年金−入院−食事負担助成額（日）
+                  09 HKNWK-TNK-NYUSKJJYOGAK     PIC  9(06).
       *
            03 HKNWK-NAIYOU-R                REDEFINES   HKNWK-NAIYOU.
               05 HKNWK-TBL                  OCCURS  4.
@@ -297,6 +307,8 @@
                   09 HKNWK-NYUMJGNCNT          PIC  9(02).
       *    入院−食事療養区分
                   09 HKNWK-NYUSKJRYYKBN        PIC  X(01).
+      *    入院−食事負担助成額（日）
+                  09 HKNWK-NYUSKJJYOGAK        PIC  9(06).
       *　　端末ＩＤ
            03 HKNWK-TERMID                  PIC  X(16).
       *　　オペーレータＩＤ

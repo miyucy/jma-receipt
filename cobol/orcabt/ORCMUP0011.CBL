@@ -32,6 +32,8 @@
       *                                     対応
       * 01.00.02     NACL-伊藤    03/02/13  保険番号マスタレイアウト変更
       *                                     対応−法別番号チェック区分
+      * 01.00.03     NACL-太田    04/02/09  保険番号マスタレイアウト変更
+      *                                     対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -76,12 +78,12 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *---(01.00.01) LINE UPD START -------------------------------------
            COPY    "CPHKNNUMWK.INC".
       *
       *    旧レイアウト
            COPY    "CPHKNNUMWKV01.INC".
-      *---(01.00.01) LINE UPD END   -------------------------------------
+           COPY    "CPHKNNUMWKV02.INC".
+      *
       *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
@@ -701,6 +703,9 @@
            WHEN    LNK-DBRVERSION (3:6)    <   "010003"
                PERFORM 900-HKNWK-V01-SET-SEC
       *
+           WHEN    LNK-DBRVERSION (3:6)    <   "020100"
+               PERFORM 900-HKNWK-V02-SET-SEC
+      *
            WHEN    OTHER
                MOVE    IN-REC      TO  HKNWK-REC
            END-EVALUATE
@@ -778,6 +783,10 @@
       *レセプト１円単位表示区分
            MOVE   "1"                  TO  HKNWK-RECEFTNDSPKBN
       *
+      * 
+      *レセプト患者負担額判定表示区分 (02.01.00 追加 )
+           MOVE   "0"                  TO  HKNWK-RECEJGNDSPKBN
+      *
            PERFORM VARYING IDX FROM 1 BY 1 UNTIL IDX > 4
       *
       *  外来−負担区分
@@ -839,6 +848,8 @@
       *    入院−食事療養区分
                MOVE   HKNWKV01-NYUSKJRYYKBN (IDX)
                                        TO  HKNWK-NYUSKJRYYKBN (IDX)
+      *    入院−食事負担助成額 (02.01.00 追加 )
+               MOVE   ZERO             TO  HKNWK-NYUSKJJYOGAK  (IDX)
            END-PERFORM
       *　　端末ＩＤ
            MOVE   HKNWKV01-TERMID      TO  HKNWK-TERMID
@@ -853,6 +864,154 @@
       *
           .
        900-HKNWK-V01-SET-EXT.
+           EXIT.
+      *
+      *---(01.00.01) LINE ADD END   -------------------------------------
+      *****************************************************************
+      *    変更後レイアウト移送処理
+      *****************************************************************
+       900-HKNWK-V02-SET-SEC           SECTION.
+      *
+           MOVE    IN-REC              TO  HKNWKV02-REC
+      *
+           INITIALIZE  HKNWK-REC
+      *
+      *処理区分
+           MOVE    HKNWKV02-SYORIKBN   TO  HKNWK-SYORIKBN
+      *キー
+      *医療機関ＩＤ
+           MOVE    HKNWKV02-HOSPID     TO  HKNWK-HOSPID
+      *保険番号
+           MOVE    HKNWKV02-HKNNUM     TO  HKNWK-HKNNUM
+      *適用開始年月日
+           MOVE    HKNWKV02-TEKSTYMD   TO  HKNWK-TEKSTYMD
+      *支払区分
+           MOVE    HKNWKV02-PAYKBN     TO  HKNWK-PAYKBN
+      *適用終了年月日
+           MOVE    HKNWKV02-TEKEDYMD   TO  HKNWK-TEKEDYMD
+      *適用終了年月日２
+           MOVE    HKNWKV02-TEKEDYMD2  TO  HKNWK-TEKEDYMD2
+      *法別番号
+           MOVE    HKNWKV02-HBTNUM     TO  HKNWK-HBTNUM
+      *制度名
+           MOVE    HKNWKV02-SEIDONAME  TO  HKNWK-SEIDONAME
+      *短縮制度名
+           MOVE    HKNWKV02-TANSEIDONAME
+                                       TO  HKNWK-TANSEIDONAME
+      *保険公費種別区分
+           MOVE    HKNWKV02-HKNKOHSBTKBN
+                                       TO  HKNWK-HKNKOHSBTKBN
+      *法別番号チェック区分
+           MOVE    HKNWKV02-HBTNUMCHKKBN
+                                       TO  HKNWK-HBTNUMCHKKBN
+      *検証番号チェック区分
+           MOVE    HKNWKV02-KENSNUMCHKKBN
+                                       TO  HKNWK-KENSNUMCHKKBN
+      *受給者検証番号チェック区分
+           MOVE    HKNWKV02-JKYSKENSNUMCHKKBN
+                                       TO  HKNWK-JKYSKENSNUMCHKKBN
+      *公費主保区分
+           MOVE    HKNWKV02-HKNKOHKBN  TO  HKNWK-HKNKOHKBN
+      *限定保険番号
+           PERFORM VARYING IDX FROM 1 BY 1 UNTIL IDX > 3
+               MOVE    HKNWKV02-GENHKNNUM (IDX)
+                                       TO  HKNWK-GENHKNNUM (IDX)
+           END-PERFORM
+      *条件−年齢開始
+           MOVE   HKNWKV02-JOKEN-STYEAR
+                                       TO  HKNWK-JOKEN-STYEAR
+      *条件−年齢終了
+           MOVE   HKNWKV02-JOKEN-EDYEAR
+                                       TO  HKNWK-JOKEN-EDYEAR
+      *点数単価
+           MOVE   HKNWKV02-TENTNK      TO  HKNWK-TENTNK
+      *レセプト請求区分
+           MOVE   HKNWKV02-RECESKYKBN  TO  HKNWK-RECESKYKBN
+      *
+      *レセプト１円単位表示区分
+           MOVE   HKNWKV02-RECEFTNDSPKBN
+                                       TO  HKNWK-RECEFTNDSPKBN
+      *
+      *レセプト患者負担額判定表示区分 (02.01.00 追加 )
+           MOVE   "0"                  TO  HKNWK-RECEJGNDSPKBN
+      *
+           PERFORM VARYING IDX FROM 1 BY 1 UNTIL IDX > 4
+      *
+      *  外来−負担区分
+               MOVE   HKNWKV02-GAIFTNKBN (IDX)
+                                       TO  HKNWK-GAIFTNKBN (IDX)
+      *  外来−内容
+      *    外来−回−負担割合
+               MOVE   HKNWKV02-GAIKFTNRATE (IDX)
+                                       TO  HKNWK-GAIKFTNRATE (IDX)
+      *    外来−回−固定額
+               MOVE   HKNWKV02-GAIKKOTGAK (IDX)
+                                       TO  HKNWK-GAIKKOTGAK (IDX)
+      *    外来−回−上限額
+               MOVE   HKNWKV02-GAIKJGNGAK (IDX)
+                                       TO  HKNWK-GAIKJGNGAK (IDX)
+      *    外来−日−上限額
+               MOVE   HKNWKV02-GAIDJGNGAK (IDX)
+                                       TO  HKNWK-GAIDJGNGAK (IDX)
+      *    外来−日−上限回数
+               MOVE   HKNWKV02-GAIDJGNCNT (IDX)
+                                       TO  HKNWK-GAIDJGNCNT (IDX)
+      *    外来−月−院内−上限額
+               MOVE   HKNWKV02-GAIMNAIJGNGAK (IDX)
+                                       TO  HKNWK-GAIMNAIJGNGAK (IDX)
+      *    外来−月−院外−上限額
+               MOVE   HKNWKV02-GAIMGAIJGNGAK (IDX)
+                                       TO  HKNWK-GAIMGAIJGNGAK (IDX)
+      *    外来−月−上限回数
+               MOVE   HKNWKV02-GAIMJGNCNT (IDX)
+                                       TO  HKNWK-GAIMJGNCNT (IDX)
+      *    外来−薬剤負担区分
+               MOVE   HKNWKV02-GAIYKZFTNKBN (IDX)
+                                       TO  HKNWK-GAIYKZFTNKBN (IDX)
+      *  入院−負担区分
+               MOVE   HKNWKV02-NYUFTNKBN (IDX)
+                                       TO  HKNWK-NYUFTNKBN (IDX)
+      *  入院−内容
+      *    入院−回−負担割合
+               MOVE   HKNWKV02-NYUKFTNRATE (IDX)
+                                       TO  HKNWK-NYUKFTNRATE (IDX)
+      *    入院−回−固定額
+               MOVE   HKNWKV02-NYUKKOTGAK (IDX)
+                                       TO  HKNWK-NYUKKOTGAK (IDX)
+      *    入院−回−上限額
+               MOVE   HKNWKV02-NYUKJGNGAK (IDX)
+                                       TO  HKNWK-NYUKJGNGAK (IDX)
+      *    入院−日−上限額
+               MOVE   HKNWKV02-NYUDJGNGAK (IDX)
+                                       TO  HKNWK-NYUDJGNGAK (IDX)
+      *    入院−日−上限回数
+               MOVE   HKNWKV02-NYUDJGNCNT (IDX)
+                                       TO  HKNWK-NYUDJGNCNT (IDX)
+      *    入院−月−上限額
+               MOVE   HKNWKV02-NYUMJGNGAK (IDX)
+                                       TO  HKNWK-NYUMJGNGAK (IDX)
+      *    入院−月−上限回数
+               MOVE   HKNWKV02-NYUMJGNCNT (IDX)
+                                       TO  HKNWK-NYUMJGNCNT (IDX)
+      *    入院−食事療養区分
+               MOVE   HKNWKV02-NYUSKJRYYKBN (IDX)
+                                       TO  HKNWK-NYUSKJRYYKBN (IDX)
+      *    入院−食事負担助成額 (02.01.00 追加 )
+               MOVE   ZERO             TO  HKNWK-NYUSKJJYOGAK  (IDX)
+           END-PERFORM
+      *　　端末ＩＤ
+           MOVE   HKNWKV02-TERMID      TO  HKNWK-TERMID
+      *　　オペーレータＩＤ
+           MOVE   HKNWKV02-OPID        TO  HKNWK-OPID
+      *　　作成年月日
+           MOVE   HKNWKV02-CREYMD      TO  HKNWK-CREYMD
+      *　　更新年月日
+           MOVE   HKNWKV02-UPYMD       TO  HKNWK-UPYMD
+      *　　更新時間
+           MOVE   HKNWKV02-UPHMS       TO  HKNWK-UPHMS
+      *
+          .
+       900-HKNWK-V02-SET-EXT.
            EXIT.
       *
       *---(01.00.01) LINE ADD END   -------------------------------------
