@@ -292,7 +292,6 @@
                ELSE
                    MOVE    SYOKIKSN-IN-SANTEISTYMD
                                    TO  WRK-KGNTEN-YUKOSTYMD (IDX1)
-                   MOVE    7       TO  IDX1
                END-IF
       *
            END-PERFORM
