@@ -1796,7 +1796,7 @@
       *****************************************************************
        CSR-CLOSE-SEC            SECTION.
       *
-           INITIALIZE                  MCPAREA
+      *    INITIALIZE                  MCPAREA
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    WK-PATH             TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
