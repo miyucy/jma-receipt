@@ -1716,6 +1716,9 @@
       *
                        MOVE    SPA-SYSYMDWH    TO  SPA-GMN-EDJYUSINYMD
                        MOVE    SPA-SYSYMD      TO  SPA-NAI-EDJYUSINYMD
+                       IF      RECE07-CREYMD       >   SPA-SYSYMD
+                           MOVE    "0028"          TO  SPA-ERRCD
+                       END-IF
                    END-IF
                ELSE
                    MOVE    "0025"              TO  SPA-ERRCD
@@ -3084,6 +3087,9 @@
                                                        TO  SPA-ERRMSG
                WHEN    "0027"
                    MOVE    "一括作成した日に訂正日指定はできません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0028"
+                   MOVE    "訂正日の範囲が誤っています"
                                                        TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "レセプト指示コード（個別）が削除できません"
