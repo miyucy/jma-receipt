@@ -36,6 +36,8 @@
            03  ORCHC03-SEIKYU           PIC S9(07).
       *    ∫£≤Û∆˛∂‚≥€
            03  ORCHC03-NYUKIN           PIC S9(07).
+      *    ∫£≤Û¿¡µ·°›æ√»Ò¿«° ∫∆∑«°À
+           03  ORCHC03-SEIKYU-TAX-SAI   PIC S9(07).
       *
       *     £øÙ≤ §ﬁ§»§·≈¡…º»÷πÊ
            03  ORCHC03-FUKU-DENPNUM     PIC 9(07).
