@@ -552,7 +552,7 @@
                        GO  TO  250-TOKEI-HEN-EXT
                    END-IF
                WHEN    5
-                   IF          TNS-YKZKBN  NOT =   5
+                   IF          TNS-YKZKBN  NOT =   9
                        GO  TO  250-TOKEI-HEN-EXT
                    END-IF
                WHEN    OTHER
