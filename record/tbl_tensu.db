@@ -1132,6 +1132,7 @@ path	key93	{
                                             CDKBN_KBN,
                                             CDKBN_KBNNUM,
 					    CDKBN_KBNNUM_EDA,
+                                            CDKBN_KOUBAN,
 					    SRYCD
 			;
 	};
