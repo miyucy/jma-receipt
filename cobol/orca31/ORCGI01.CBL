@@ -69,6 +69,7 @@
       *  01.00.29    NACL-太田    03.07.10  排他制御処理修正
       *  01.00.30    NACL-小豆沢  03.07.10  異動取消時に診療会計を削除しないよう
       *                                     変更
+      *  01.00.31    NACL-小豆沢  03.07.11  診療録管理体制加算の特別チェック削除
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -7808,14 +7809,14 @@
       *
            MOVE    ZERO            TO  FLG-NYUKSN
       *
-           EVALUATE   WRK-NYUKHNKSN-SRYCD(IDX8)
+      **     EVALUATE   WRK-NYUKHNKSN-SRYCD(IDX8)
       *        診療録管理体制加算
-               WHEN   "190100370"
-                   IF   SPA-GMN-I01-SYORIKBN-CD   =  "07" OR "08"
-                        MOVE   1        TO     FLG-NYUKSN
-                   END-IF
+      **         WHEN   "190100370"
+      **             IF   SPA-GMN-I01-SYORIKBN-CD   =  "07" OR "08"
+      **                  MOVE   1        TO     FLG-NYUKSN
+      **             END-IF
       *            自院での継続入院チェック
-           END-EVALUATE
+      **     END-EVALUATE
       *
       *    入院料加算チェックテーブルによる判定
            INITIALIZE  NYUKSNCHK-REC
