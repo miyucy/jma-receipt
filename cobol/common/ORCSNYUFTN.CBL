@@ -914,6 +914,9 @@
            PERFORM   CSR-CLOSE-SEC
       *
       *Æþ±¡ÎÁ´Ø·¸¤Î¼èÆÀ
+      *
+           MOVE    ZERO                TO  NYUIN-COUNT
+      *
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                      NYUINACCT-REC
            MOVE    SYU-HOSPID          TO  NACCT-HOSPID
