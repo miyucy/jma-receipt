@@ -2782,6 +2782,7 @@
            MOVE    SPA-PTID            TO  AGECHK-PTID
            MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
            MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
            MOVE    AGECHK-NENREI2-YY   TO  SPA-NENREI-YY
@@ -2797,69 +2798,6 @@
                MOVE    "才"                TO  WRK-NENREI-MEI
            END-IF
            MOVE    WRK-NENREI-G        TO  SPA-NENREI-HEN
-      *
-      *
-      **** MOVE    ZERO                TO  SPA-NAI-ROUSTR
-      *****MOVE    ZERO                TO  SPA-NAI-ROUFLG
-      *****MOVE    ZERO                TO  SPA-NAI-ROUJIN
-      *老人判定は，ORCSAGECHK へ
-      *    老人判定
-      *    IF     (SPA-KOH1HKNNUM       =   "027"   )  OR
-      *           (SPA-KOH2HKNNUM       =   "027"   )  OR
-      *           (SPA-KOH3HKNNUM       =   "027"   )  OR
-      *           (SPA-KOH4HKNNUM       =   "027"   )
-      *        MOVE    1                TO  SPA-NAI-ROUJIN
-      *    ELSE
-      *        Ｈ１４．１０以降７０歳を７５歳とする
-      *        Ｈ１４．１０時点で７０歳未満の時
-      *        IF     (SPA-SRYYMD          >=   "20021001" )  AND
-      *               (SPA-BIRTHDAY        >=   "19321001" )
-      *            MOVE    75                   TO  WRK-ROU-NEN
-      *        ELSE
-      *            MOVE    70                   TO  WRK-ROU-NEN
-      *        END-IF
-      *        ７０歳以上は老人とする（該当月１日に７０歳）
-      *        年齢計算（診療月の１日の年齢）
-      *        MOVE    SPA-BIRTHDAY        TO  WRK-YMDS1
-      *        MOVE    SPA-SRYYMD          TO  WRK-YMDS2
-      *        MOVE    01                  TO  WRK-DDS2
-      *        COMPUTE WRK-NENREI-YY       =   WRK-YYS2
-      *                                    -   WRK-YYS1
-      *        IF      WRK-YMDS1(5:4)      >   WRK-YMDS2(5:4)
-      *            COMPUTE WRK-NENREI-YY   =   WRK-NENREI-YY
-      *                                    -   1
-      *            COMPUTE WRK-NENREI-MM   =  (WRK-MMS2  +  12 )
-      *                                    -   WRK-MMS1
-      *        ELSE
-      *            COMPUTE WRK-NENREI-MM   =   WRK-MMS2
-      *                                    -   WRK-MMS1
-      *        END-IF
-      *        IF      WRK-DDS1            >   WRK-DDS2
-      *            COMPUTE WRK-NENREI-MM   =   WRK-NENREI-MM
-      *                                    -   1
-      *        END-IF
-      *********IF      WRK-NENREI-YY       >=  70
-      *        IF      WRK-NENREI-YY       >=  WRK-ROU-NEN
-      *            MOVE    1               TO  SPA-NAI-ROUJIN
-      *        END-IF
-      ******** ７０歳到達月の最初の診療判定（老人保険がない時警告）
-      *        MOVE    SPA-BIRTHDAY        TO  WRK-YMDS1
-      ******** COMPUTE WRK-YYS1            =   WRK-YYS1   +  70
-      *        COMPUTE WRK-YYS1            =   WRK-YYS1   +  WRK-ROU-NEN
-      *******  IF     (WRK-NENREI-YY       >=  70 )  AND
-      *        IF     (WRK-NENREI-YY       >=  WRK-ROU-NEN )  AND
-      *               (SPA-LSTYMD          <=  WRK-YMDS1)
-      *            MOVE    1               TO  SPA-NAI-ROUFLG
-      *        END-IF
-      ******** MOVE    ZERO                TO  SPA-NAI-ROUSTR
-      *    END-IF
-      *    労災・自賠責の場合、老人でも一般とする
-      *    IF      SPA-HKNKBN          =   1
-      *        MOVE    ZERO                TO  SPA-NAI-ROUJIN
-      *****END-IF
-      *
-      *    ＤＯ診療日付編集
-      *****PERFORM 3101-DORRKYMD-HEN-SEC
       *
       *    ＤＯ編集
            MOVE    "F"                 TO  SPA-GMN-TEISEI
@@ -2944,6 +2882,7 @@
            MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
            MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
            MOVE    SPA-HKNCOMBINUM     TO  AGECHK-HKNCOMBINUM
+           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
       **** IF      AGECHK-FTNRATE      =   ZERO
@@ -3728,7 +3667,8 @@
                    ELSE
                        MOVE    LNK-WKSRY-INPUTCOMENT (IDX IDY)
                                            TO  SPA-GMN-MEISYO   (IDX2)
-                       IF      SPA-COM-INPUTCD (IDX2)(1:2)  =   "83" 
+                       IF     (SPA-COM-INPUTCD (IDX2)(1:2)  =   "83" )
+                         OR   (SPA-COM-INPUTCD (IDX2)(1:4)  =   "0083")
                            MOVE    "1"     TO  SPA-COM-MEIFLG   (IDX2)
                        END-IF
                    END-IF
@@ -5659,8 +5599,10 @@
                END-IF
       *        フリーコメントの名称の全角チェックはすべて行う
                IF     (SPA-ERRCD           =   SPACE )  AND
-                      (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
-                                           =   "81" OR "83" OR "84") AND
+                     ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
+                                           =   "81" OR "83" OR "84") OR
+                      (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
+                                           =   "008"         ))  AND
                       (SPA-GMN-MEISYO-G(SPA-GMN-IDX) 
                                        NOT =   SPACE  )
                    PERFORM 401131-MEISYO-HENKAN-SEC
@@ -6205,8 +6147,10 @@
            END-IF
       *    名称入力へのカーソル移動
            IF      WRK-IN-IDX          >   ZERO
-               IF      SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
-                                           =   "81"  OR  "83"
+               IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
+                                           =   "81"  OR  "83")  OR
+                      (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
+                                           =   "0083"        )
                    MOVE    "3"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
                END-IF
            END-IF
@@ -6244,6 +6188,10 @@
                                                        =   SPACE ))
                          OR  ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
                                                    =   "84" ) AND
+                              (SPA-COM-SURFLG (SPA-GMN-IDX)
+                                                       =   SPACE ))
+                         OR  ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:4)
+                                                   =   "0084" ) AND
                               (SPA-COM-SURFLG (SPA-GMN-IDX)
                                                        =   SPACE ))
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
@@ -6379,8 +6327,10 @@
                        END-IF
                    END-IF
                END-IF
-               IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
-                                                   =   "84"
+               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
+                                                   =   "84" )  OR
+                      (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:4)
+                                                   =   "0084")
       *            コメント
                    MOVE    1                   TO  FLG-IN1
                END-IF
@@ -6741,6 +6691,9 @@
       *
            IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)   =   "059"
                MOVE    "7"                 TO  WRK-MOJI
+           END-IF
+           IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)   =   "008"
+               MOVE    "8"                 TO  WRK-MOJI
            END-IF
       *
            EVALUATE    WRK-MOJI
@@ -7332,7 +7285,8 @@
                         MOVE    1               TO  FLG-TAISYO
                    END-IF
       *            自動追加コメントで入力値ありの時対象外
-                   IF       SPA-COM-INPUTCD (IDX)(1:2)   =  "84"
+                   IF     (SPA-COM-INPUTCD (IDX)(1:2)   =  "84" ) OR
+                          (SPA-COM-INPUTCD (IDX)(1:4)   =  "0084")
                         MOVE    ZERO            TO  FLG-TAISYO
                    END-IF
       *            自動追加で画像診断の時対象外
@@ -7481,6 +7435,7 @@
            MOVE    SPA-NAI-ROUJIN      TO  LNK-ORCSC-ROUJIN 
            MOVE    SPA-NENREI          TO  LNK-ORCSC-NENREI 
            MOVE    SPA-SYOYMD          TO  LNK-ORCSC-SYOYMD 
+           MOVE    SPA-SYOYMD-OLD      TO  LNK-ORCSC-SYOYMD-OLD
            MOVE    SPA-LSTYMD          TO  LNK-ORCSC-LSTYMD 
            MOVE    SPA-LSTSRYKA        TO  LNK-ORCSC-LSTSRYKA 
            MOVE    SPA-LSTSRYKAMEI     TO  LNK-ORCSC-LSTSRYKAMEI 
@@ -7797,7 +7752,8 @@
                                            TO  WRK-COM-SRYSYUKBN(IDX-Z)
                END-IF
       *        名称（最初の行に’＊’）
-               IF      WRK-COM-INPUTCD(IDX-Z)(1:1) =   "8"
+               IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "8" )  OR
+                      (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "008" )
                    CONTINUE
                ELSE
                    IF      IDX-Z               =   1
@@ -8182,20 +8138,26 @@
                                                        (SPA-GMN-IDX)
            END-IF
            IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  = "83" OR
-                                                         "84")
+                                                         "84")   OR
+                  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  = "0083" OR
+                                                         "0084")
                IF     (LNK-SC97-NYURYOKU   =   ZERO )  AND
                       (FLG-IN-ATAI         =   ZERO )  AND
-                      (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
-                                           = "83"   )
+                     ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
+                                           =   "83"   )  OR
+                      (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
+                                           =   "0083" ))
                    MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
                                                          (SPA-GMN-IDX)
                END-IF
                MOVE    "1"             TO  SPA-COM-MEIFLG
                                                        (SPA-GMN-IDX)
            END-IF
-           IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  =  "81"
+           IF    ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  =  "81"
                                                        OR "83"
-                                                       OR "84") AND
+                                                       OR "84") OR
+                  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  =  "0083"
+                                                       OR "0084")) AND
                   (SPA-GMN-MEISYO-G(SPA-GMN-IDX) NOT =   SPACE)
                CONTINUE
            ELSE
@@ -8587,6 +8549,7 @@
            MOVE    SPA-NAIACCT-AREA    TO  LNK-NAIACCT-AREA
            MOVE    SPA-NAIACCT2-AREA   TO  LNK-NAIACCT2-AREA
            MOVE    SPA-SYOYMD          TO  LNK-ORCSC-SYOYMD 
+           MOVE    SPA-SYOYMD-OLD      TO  LNK-ORCSC-SYOYMD-OLD
            MOVE    SPA-LSTYMD          TO  LNK-ORCSC-LSTYMD 
            MOVE    SPA-LSTSRYKA        TO  LNK-ORCSC-LSTSRYKA 
            MOVE    SPA-LSTSRYKAMEI     TO  LNK-ORCSC-LSTSRYKAMEI 
@@ -9070,6 +9033,8 @@
       *    パラメタファイルより表示
            MOVE    3               TO  FLG-PARASET
            PERFORM 3002-PARA-SET-SEC
+      *
+           PERFORM 3109-NYUIN-CHK-SEC
       *
       *    訂正処理
       *****MOVE    1                   TO  SPA-SYORIFLG
@@ -11014,7 +10979,8 @@
                                                                  (IDY)
                    END-IF
       *            入力コメント番号
-                   IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "8"
+                   IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "8" )  OR
+                          (SPA-COM-INPUTCD(IDX)(1:3)   =   "008")
                        ADD     1                   TO  WRK-MEINUM
                        MOVE    WRK-MEINUM          TO  WKSRY-INPUTNUM
                                                                  (IDY)
@@ -11031,8 +10997,10 @@
                                                                (IDY 4)
       *                入力コメント
                        IF      SPA-COM-MEIFLG (IDX)    =   "1"
-                           IF      SPA-COM-INPUTCD(IDX)(1:2) =   "83"
-                                                             OR  "84"
+                           IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
+                                                             OR  "84")
+                              OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
+                                                             OR  "0084")
                                MOVE    SPA-GMN-MEISYO (IDX)
                                                   TO  WKSRY-INPUTCOMENT
                                                                   (IDY)
@@ -11042,10 +11010,10 @@
                                                                   (IDY)
                            END-IF
                        ELSE
-                           IF     (SPA-COM-INPUTCD (IDX)(1:1)
-                                                       =  "8" )
-      *****************      AND  (SPA-COM-INPUTCHI-G(IDX)
-      *****************                            NOT =  SPACE)
+                           IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
+                                                             OR  "84")
+                              OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
+                                                             OR  "0084")
                                MOVE    SPA-GMN-MEISYO(IDX)
                                                  TO  WKSRY-INPUTCOMENT
                                                                   (IDY)
@@ -11558,7 +11526,8 @@
                                                                  (IDY)
                    END-IF
       *            入力コメント番号
-                   IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "8"
+                   IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "8"  )  OR
+                          (SPA-COM-INPUTCD(IDX)(1:3)   =   "008")
                        ADD     1                   TO  WRK-MEINUM
                        MOVE    WRK-MEINUM          TO  WKSRY-INPUTNUM
                                                                  (IDY)
@@ -11575,8 +11544,10 @@
                                                                 (IDY 4)
       *                入力コメント
                        IF      SPA-COM-MEIFLG (IDX)    =   "1"
-                           IF      SPA-COM-INPUTCD(IDX)(1:2) =   "83"
-                                                             OR  "84"
+                           IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
+                                                             OR  "84" )
+                              OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
+                                                             OR  "0084")
                                MOVE    SPA-GMN-MEISYO (IDX)
                                                   TO  WKSRY-INPUTCOMENT
                                                                   (IDY)
@@ -11586,10 +11557,10 @@
                                                                   (IDY)
                            END-IF
                        ELSE
-                           IF     (SPA-COM-INPUTCD (IDX)(1:1)
-                                                       =   "8" )  AND
-                                  (SPA-COM-INPUTCHI-G(IDX)
-                                                   NOT =   SPACE)
+                           IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
+                                                             OR  "84")
+                              OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
+                                                             OR  "0084")
                                MOVE    SPA-GMN-MEISYO(IDX)
                                                   TO  WKSRY-INPUTCOMENT
                                                                   (IDY)

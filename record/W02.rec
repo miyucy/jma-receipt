@@ -179,7 +179,7 @@ W02	{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				DISCOUNTOBJ_COMBO	{
 					DISCOUNTOBJ	{

@@ -189,8 +189,8 @@ J02	{
 					value1	varchar(20);
 					value2	varchar(2);
 					value3	varchar(4);
-				}	[60];
-				select	bool[60];
+				}	[100];
+				select	bool[100];
 			};
 		};
 		SRYKBNCOMB	{

@@ -218,6 +218,23 @@
            03  FLG-BA-ARI              PIC 9(01).
            03  FLG-BC-ARI              PIC 9(01).
            03  FLG-BV-ARI              PIC 9(01).
+      *    Æþ±¡¤Î²ó¿ô¡Ê£Â¡Ý£Á¡ÊÆ°Ì®ºÎ·ìÎÁ¡Ë¡Ë
+      *    Æþ±¡Æü
+           03  TBL-NYUINDAY-AREA.
+               05  TBL-NYUINDAY-OCC        OCCURS   31.
+                   07  TBL-NYUINDAY        PIC 9(01).
+           03  WRK-NISUU-AREA.
+               05  WRK-NISUU-TBL           OCCURS   31.
+                   07  WRK-DAY             PIC 9(02).
+                   07  WRK-SEL             PIC X(01).
+           03  IDN3                    PIC 9(04).
+           03  IDN4                    PIC 9(04).
+           03  FLG-DAY                 PIC 9(01).
+           03  WRK-H-DAY               PIC 9(02).
+           03  WRK-H-SEL               PIC X(01).
+           03  WRK-KAISU-H             PIC X(04).
+      *    ËöÆü
+           03  WRK-MATU                    PIC 9(02).
       *    Æþ±¡Äþ¸ºÍÑ
        01  TBL-TEIGEN-AREA.
            03  TBL-TEIGEN-OCC          OCCURS   20.
@@ -451,7 +468,9 @@
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
       *
-      *
+      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
       *    ¿ÇÎÅ¹Ô°Ù»»ÄêÊÔ½¸¥Ñ¥é¥á¥¿
            COPY    "CPORCSC90.INC".
       *
@@ -832,7 +851,6 @@
                END-IF
            END-PERFORM
       *
-      *
            .
        1007-NYUYOJI-SET-EXT.
            EXIT.
@@ -1093,12 +1111,10 @@
        108121-SANTEI-CHK-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    ¿À·Ð¼§µ¤¿ÇÃÇ¤Î¥³¥á¥ó¥È¼«Æ°È¯À¸½èÍý
       *****************************************************************
        100112-COMMNT-SET-SEC                  SECTION.
-      *
       *
            MOVE    "840000090"         TO  WRK-SRYCD
            MOVE    IDX-Z               TO  IDX-S
@@ -1113,7 +1129,6 @@
            .
        100112-COMMNT-SET-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    ÅÀ¿ô·×»»ÊÔ½¸½èÍý
@@ -2523,6 +2538,7 @@
            MOVE    ZERO                TO  WRK-KENIDX
            INITIALIZE                  WRK-KENSA-AREA
            INITIALIZE                  WRK-NYUINDAY-AREA
+           INITIALIZE                  TBL-NYUINDAY-AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE  AND
@@ -2794,8 +2810,12 @@
            IF      FLG-BA              =   1
       *        Æ°Ì®·ìºÎ·ì
                MOVE    "160101210"         TO  WRK-SRYCD
-               MOVE    WRK-BA-DAY          TO  WRK-SAI-DAY
-               PERFORM 3005-AUTO-SAIKETU-SEC
+               IF      SPA-NYUGAIKBN       =   "1"
+                   PERFORM 3007-BA-DAY-SEC
+               ELSE
+                   MOVE    WRK-BA-DAY          TO  WRK-SAI-DAY
+                   PERFORM 3005-AUTO-SAIKETU-SEC
+               END-IF
       *        £Ó£Ð£Á¤ò¸µ¤ØÌá¤¹
                MOVE    HZN-SCR-REC         TO  WRK-SCR-REC
                GO      TO      300-AUTO-SYORI-EXT
@@ -2869,12 +2889,17 @@
                    MOVE    IDN1            TO  WRK-BC-DAY
                END-IF
            END-IF
-      *    ºÎ·ìÎÁ
+      *    ºÎ·ìÎÁ¡ÊÆ°Ì®¡Ë
            IF      FLG-BA-ARI          =   1
-      *        Æþ±¡»þ¤Î½éÆü
-               IF     (WRK-BA-DAY      =   ZERO )  OR
-                      (WRK-BA-DAY      >   IDN1 )
-                   MOVE    IDN1            TO  WRK-BA-DAY
+               MOVE    1               TO  TBL-NYUINDAY(IDN1)
+               IF       WRK-GMN-INPUTCD(IDX)(1:1)  =   "*"
+                   PERFORM VARYING     IDN2    FROM    1   BY  1
+                           UNTIL       IDN2    >   31
+                       IF      WRK-COM-NYUINDAY (IDX IDN2) >   ZERO
+                           MOVE    IDN2        TO  IDN1
+                           MOVE    1           TO  TBL-NYUINDAY(IDN1)
+                       END-IF
+                   END-PERFORM
                END-IF
            END-IF
       *
@@ -3097,6 +3122,139 @@
       *
            .
        300511-NENREI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡Æ°Ì®·ìºÎ·ìÎÁ½èÍý
+      *****************************************************************
+       3007-BA-DAY-SEC         SECTION.
+      *    ¶¦ÄÌ¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 3001-KYOUTU-CHEK-SEC
+      *
+           IF      FLG-ERR         =   ZERO
+      *
+               MOVE    WRK-SRYCD           TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+      *
+               ADD     1               TO  IDXS
+               MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
+                                                   (07 IDXS)
+               MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
+                                                   (07 IDXS)
+               MOVE    "600"           TO  LNK-ORCSC-SRYSYUKBN
+                                                   (07 IDXS)
+               MOVE    "60"            TO  LNK-ORCSC-SRYKBN
+                                                   (07 IDXS)
+      *        Æþ±¡²ó¿ô
+               IF      TBL-NYUINDAY-AREA   NOT =   ZERO
+                    PERFORM 30071-BA-DAY-HENSYU-SEC
+               END-IF
+      *        Ê»ÍÑ¥Á¥§¥Ã¥¯ÍÑ
+               ADD     1               TO  WRK-GMN-MAX
+               IF      WRK-GMN-MAX     >   200
+                    MOVE    200             TO  WRK-GMN-MAX
+               END-IF
+               MOVE    WRK-SRYCD       TO  WRK-COM-INPUTCD
+                                              (WRK-GMN-MAX)
+           END-IF
+           .
+       3007-BA-DAY-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡Æ°Ì®·ìºÎ·ìÎÁ½èÍý
+      *****************************************************************
+       30071-BA-DAY-HENSYU-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  IDN1
+           MOVE    ZERO                TO  IDN2
+      *    ¿ÇÎÅÇ¯·î¤ÎËöÆü»»Äê
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY7-AREA
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    SPA-SRYYMD(1:6)     TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING
+                                           STS-AREA-DAY
+                                           LNK-DAY7-AREA
+           MOVE    LNK-DAY7-KOYOMI(7:2)    TO  WRK-MATU
+      *
+           INITIALIZE                      WRK-NISUU-AREA
+           MOVE    ZERO                TO  WRK-H-DAY
+           MOVE    SPACE               TO  WRK-H-SEL
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL       IDN1    >   32
+               IF     (IDN1                =   32  )  OR
+                      (IDN1                >   WRK-MATU)  OR
+                      (TBL-NYUINDAY(IDN1)  =   ZERO)
+                   IF      WRK-H-DAY       NOT =   ZERO
+                       IF      WRK-H-SEL   NOT =   SPACE
+                           ADD     1               TO  IDN2
+                           MOVE    WRK-H-DAY       TO  WRK-DAY(IDN2)
+                           MOVE    WRK-H-SEL       TO  WRK-SEL(IDN2 - 1)
+                       END-IF
+                       MOVE    ZERO            TO  WRK-H-DAY
+                       MOVE    SPACE           TO  WRK-H-SEL
+                   END-IF
+               ELSE
+                   IF      WRK-H-DAY           =   ZERO
+                       MOVE    IDN1            TO  WRK-H-DAY
+                       ADD     1               TO  IDN2
+                       MOVE    WRK-H-DAY       TO  WRK-DAY(IDN2)
+                   ELSE
+                       IF      WRK-H-DAY       =  (IDN1  -  1 )
+                           MOVE    "-"             TO  WRK-H-SEL
+                       END-IF
+                       MOVE    IDN1            TO  WRK-H-DAY
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL       IDN1    >   31
+               IF     (WRK-SEL (IDN1)      =   SPACE )  AND
+                      (IDN1                <   31    )
+                   IF      WRK-DAY (IDN1 + 1 )     NOT =   ZERO
+                       MOVE    ","          TO  WRK-SEL (IDN1)
+                   END-IF
+               ELSE
+                   IF     (IDN1                    =   31    )  OR
+                          (WRK-DAY (IDN1 + 1 )     =   ZERO  )
+                       MOVE    SPACE        TO  WRK-SEL (IDN1)
+                   END-IF
+               END-IF
+           END-PERFORM
+           INITIALIZE                      LNK-ORCSC-INPUTCD-G (07 IDXS)
+      *    £±Æü£±²ó¤È¤¹¤ë
+           MOVE    SPACE               TO  WRK-KAISU-H
+           MOVE    ZERO                TO  IDN4
+           MOVE    1                   TO  IDN2
+           MOVE    1                   TO  IDN3
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL      (IDN1    >   31  )  OR
+                              (IDN2            >=  5  )  OR
+                              (WRK-DAY (IDN1)  =   ZERO )
+               IF      IDN3                >   19
+                   ADD     1               TO  IDN2
+                   MOVE    1               TO  IDN3
+               END-IF
+               IF      LNK-ORCSC-INPUTCD(07 IDXS IDN2)   =   SPACE
+                   STRING  "*"             DELIMITED  BY  SIZE
+                           WRK-KAISU-H     DELIMITED  BY  SPACE
+                           "/"             DELIMITED  BY  SIZE
+                           INTO            LNK-ORCSC-INPUTCD
+                                                   (07 IDXS IDN2)
+                   END-STRING
+                   ADD     2               TO  IDN3
+                   ADD     IDN4            TO  IDN3
+               END-IF
+               IF      WRK-SEL (IDN1)      =   SPACE
+                   MOVE    ","             TO  WRK-SEL (IDN1)
+               END-IF
+               MOVE    WRK-NISUU-TBL(IDN1) TO  LNK-ORCSC-INPUTCD
+                                                  (07 IDXS IDN2)(IDN3:3)
+               ADD     3                   TO  IDN3
+           END-PERFORM
+      *
+           .
+       30071-BA-DAY-HENSYU-EXT.
            EXIT.
       *****************************************************************
       *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ

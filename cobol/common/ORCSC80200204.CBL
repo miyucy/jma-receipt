@@ -618,22 +618,23 @@
                GO     TO      100113-SEISIN-CHK-EXT
            END-IF
       *
-      *    初診算定日から６月以内
-           IF     (LNK-ORCSC-SYOYMD    =   SPACE  )  OR
-                  (LNK-ORCSC-SYOSIN2   =   1      )
-               MOVE    SPA-SRYYMD          TO  LNK-ORCSC-SYOYMD
+           IF      LNK-ORCSC-SYORIFLG      =   1
+      *        訂正時点の初診算定日
+               MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
+           ELSE
+               MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
            END-IF
-      **** MOVE    LNK-ORCSC-SYOYMD    TO  WRK-SYOYMD
-      *    COMPUTE WRK-SYO-MM          =   WRK-SYO-MM    +   6
-      *    IF      WRK-SYO-MM          >   12
-      *        COMPUTE WRK-SYO-YY      =   WRK-SYO-YY    +   1
-      *        COMPUTE WRK-SYO-MM      =   WRK-SYO-MM    -   12
-      *****END-IF
+      *    初診算定日から６月以内
+           IF     (WRK-SYOYMD          =   SPACE  )  OR
+                  (LNK-ORCSC-SYOSIN2   =   1      )
+               MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
+           END-IF
       *    初診料算定日＋６月後
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY6-AREA
            MOVE    "61"                TO  LNK-DAY6-IRAI
-           MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
+      *****MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
+           MOVE    WRK-SYOYMD          TO  LNK-DAY6-KIJUN
            MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
            MOVE    6                   TO  LNK-DAY6-ZOGEN
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
@@ -1123,10 +1124,12 @@
       *
       *    労災の外来管理加算読み替え処理
            IF      SPA-HKNKBN          =   1
-      *        回数を掛けた点数で判定する
-      *          （２単位以上の時、読み替えはないはず）
-               COMPUTE WRK-SYOKEI      =   WRK-COM-SYUTEN2 (IDX-SYU)
-                                       *   LNK-ORCSC-KAISU
+      *!       回数を掛けた点数で判定する
+      *!         （２単位以上の時、読み替えはないはず）
+      *!       COMPUTE WRK-SYOKEI      =   WRK-COM-SYUTEN2 (IDX-SYU)
+      *!                               *   LNK-ORCSC-KAISU
+               MOVE    WRK-COM-SYUTEN2 (IDX-SYU)
+                                       TO  WRK-SYOKEI
                IF     (WRK-COM-RSIGIRI (IDX-SYU)
                                            =   1  )  AND
                       (WRK-SYOKEI          <   LNK-ORCSC-GAIRAI-TEN)

@@ -80,14 +80,7 @@
            03  FLG-SP              PIC 9(01).
       *
            03  FLG-KYUJITU         PIC 9(01).
-           03  FLG-KANJI           PIC X(01).
-           03  FLG-TOROKU          PIC X(01).
-           03  FLG-SYORI           PIC X(01).
-      *
-           03  FLG-NAIYAK          PIC X(01).
-           03  FLG-TONPUK          PIC X(01).
-           03  FLG-GAIYAK          PIC X(01).
-           03  FLG-GAIKAN          PIC X(01).
+           03  FLG-GAIKAN          PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *    電話再診有無
            03  FLG-TELSAI          PIC 9(01).
@@ -3387,10 +3380,17 @@
                GO      TO      230-SIDOU-SYOSIN-EXT
            END-IF
       *
+      *
+           IF      LNK-ORCSC-SYORIFLG      =   1
+      *        訂正時点の初診算定日
+               MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
+           ELSE
+               MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
+           END-IF
       *    最終退院日がある時、退院日
            IF     (LNK-ORCSC-TAIINYMD  =   SPACE )  OR
-                  (LNK-ORCSC-TAIINYMD  <=  LNK-ORCSC-SYOYMD)
-               MOVE    LNK-ORCSC-SYOYMD    TO  WRK-SYOYMD
+                  (LNK-ORCSC-TAIINYMD  <=  WRK-SYOYMD)
+               CONTINUE
            ELSE
                MOVE    LNK-ORCSC-TAIINYMD  TO  WRK-SYOYMD
            END-IF
@@ -3641,6 +3641,13 @@
                    END-IF
                 END-IF
            END-PERFORM
+      *    最初の読み替え分の回数が１以上の時、エラー
+           IF      WRK-GAI-CNT     >   ZERO
+               IF      WRK-COM-KAISU (WRK-GAI-IDX)   >   1
+                   MOVE    "0140"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (WRK-GAI-IDX)
+               END-IF
+           END-IF
       *
            IF      WRK-GAI-CNT         >   1
       *        外来管理加算へ読み替える

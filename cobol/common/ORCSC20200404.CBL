@@ -2268,7 +2268,7 @@
                ELSE
                    MOVE    ZERO                TO  FLG-ERR
                    IF      FLG-SINSATU         =   ZERO
-                       MOVE    "1"             TO  SPA-SYOHO-KBN
+                       MOVE    1               TO  SPA-SYOHO-KBN
                        MOVE    WRK-TBL-HKNCOMBI
                                                TO  SPA-SYOHO-HKN
                        PERFORM 30021-DOUJI-HEN-SEC

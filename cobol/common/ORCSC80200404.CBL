@@ -626,10 +626,16 @@
                GO     TO      100113-SEISIN-CHK-EXT
            END-IF
       *
+           IF      LNK-ORCSC-SYORIFLG      =   1
+      *        訂正時点の初診算定日
+               MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
+           ELSE
+               MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
+           END-IF
       *    初診算定日から６月以内
-           IF     (LNK-ORCSC-SYOYMD    =   SPACE  )  OR
+           IF     (WRK-SYOYMD          =   SPACE  )  OR
                   (LNK-ORCSC-SYOSIN2   =   1      )
-               MOVE    SPA-SRYYMD          TO  LNK-ORCSC-SYOYMD
+               MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
            END-IF
       **** MOVE    LNK-ORCSC-SYOYMD    TO  WRK-SYOYMD
       *    COMPUTE WRK-SYO-MM          =   WRK-SYO-MM    +   6
@@ -641,7 +647,8 @@
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY6-AREA
            MOVE    "61"                TO  LNK-DAY6-IRAI
-           MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
+      *****MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
+           MOVE    WRK-SYOYMD          TO  LNK-DAY6-KIJUN
            MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
            MOVE    6                   TO  LNK-DAY6-ZOGEN
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
@@ -1131,10 +1138,12 @@
       *
       *    労災の外来管理加算読み替え処理
            IF      SPA-HKNKBN          =   1
-      *        回数を掛けた点数で判定する
-      *          （２単位以上の時、読み替えはないはず）
-               COMPUTE WRK-SYOKEI      =   WRK-COM-SYUTEN2 (IDX-SYU)
-                                       *   LNK-ORCSC-KAISU
+      *!       回数を掛けた点数で判定する
+      *!         （２単位以上の時、読み替えはないはず）
+      *!       COMPUTE WRK-SYOKEI      =   WRK-COM-SYUTEN2 (IDX-SYU)
+      *!                               *   LNK-ORCSC-KAISU
+               MOVE    WRK-COM-SYUTEN2 (IDX-SYU)
+                                       TO  WRK-SYOKEI
                IF     (WRK-COM-RSIGIRI (IDX-SYU)
                                            =   1  )  AND
                       (WRK-SYOKEI          <   LNK-ORCSC-GAIRAI-TEN)
@@ -1142,7 +1151,6 @@
                                            TO  LNK-SC90-TENSUKEI
                END-IF
            END-IF
-      *
       *
            ADD     LNK-SC90-TENSUKEI   TO  WRK-GOK-TENSUKEI
            ADD     LNK-SC90-TENGAKEI   TO  WRK-GOK-TENGAKEI
@@ -1285,6 +1293,13 @@
                PERFORM 20023-KAISU-HEN-SEC
                GO      TO      2002-GAIRAI-ALL-CHK-EXT
            END-IF
+      *    労災の時、理学療法の逓減は傷病発生６ヶ月日以降とする
+           IF     (SPA-HKNKBN          =   1        )  AND
+                  (SPA-SRYYMD(1:6)     =   SPA-RSI-SHOBYOYMD3(1:6))
+               MOVE    SPA-RSI-SHOBYOYMD3(7:2) TO  IDX-STR
+           ELSE
+               MOVE    1                       TO  IDX-STR
+           END-IF
       *
       *    急性発生１８０日以内の時、上限回数変更
            IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
@@ -1293,11 +1308,6 @@
            ELSE
                MOVE    8                   TO  WRK-MAX-CNT
            END-IF
-      *TEST
-           DISPLAY "C80 WRK-MAX-CNT:" WRK-MAX-CNT
-                 ",LNK-ORCSC-KYUSEI-180:" LNK-ORCSC-KYUSEI-180
-                 ",WRK-RIGAKU-RYO:" WRK-RIGAKU-RYO
-      *TEST
       *    急性発生９０日以内の時、逓減なし
            IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
                    (LNK-ORCSC-KYUSEI-90    >   WRK-SRYYMD)
@@ -1309,16 +1319,12 @@
       *        集団
                WHEN    "S"
                    MOVE    ZERO                TO  WRK-TUKI-CNT
-                   PERFORM VARYING     IDY     FROM    1   BY  1
+                   PERFORM VARYING     IDY     FROM    IDX-STR BY  1
                            UNTIL       IDY     >   IDD
                        COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
                                                +   WRK-DCNT-SN
                                                           (IDX-R1 IDY)
                    END-PERFORM
-      *TEST
-           DISPLAY "C80 WRK-TUKI-CNT:" WRK-TUKI-CNT
-                 ",WRK-KAISU:" WRK-KAISU
-      *TEST
       *            １月８単位、１２単位まで
                    IF     (WRK-TUKI-CNT    +   WRK-KAISU)
                                            >   WRK-MAX-CNT
@@ -1354,7 +1360,7 @@
       *!               MOVE    LNK-ORCSC-KYUSEI-90(7:2)
       *!                                       TO  IDX-STR
       *!           ELSE
-                       MOVE    1               TO  IDX-STR
+      *!               MOVE    1               TO  IDX-STR
       *!           END-IF
                    PERFORM VARYING     IDY     FROM    IDX-STR  BY  1
                            UNTIL       IDY     >   IDD
@@ -1718,11 +1724,6 @@
            ELSE
                MOVE    8                   TO  WRK-MAX-CNT
            END-IF
-      *TEST
-           DISPLAY "C80 WRK-MAX-CNT:" WRK-MAX-CNT
-                 ",LNK-ORCSC-SYOEN-CNT:" LNK-ORCSC-SYOEN-CNT
-                 ",LNK-ORCSC-KYUSEI-180:" LNK-ORCSC-KYUSEI-180
-      *TEST
       *    急性発生９０日以内の時、逓減なし
            IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
                    (LNK-ORCSC-KYUSEI-90    >   WRK-SRYYMD)
@@ -1736,13 +1737,20 @@
                PERFORM 20023-KAISU-HEN-SEC
                GO      TO      20012-NTUKIMAX-CHK-EXT
            END-IF
+      *    労災の時、理学療法の逓減は傷病発生６ヶ月日以降とする
+           IF     (SPA-HKNKBN          =   1        )  AND
+                  (SPA-SRYYMD(1:6)     =   SPA-RSI-SHOBYOYMD3(1:6))
+               MOVE    SPA-RSI-SHOBYOYMD3(7:2) TO  IDX-STR
+           ELSE
+               MOVE    1                       TO  IDX-STR
+           END-IF
       *
       *    月上限判定
            EVALUATE    WRK-RIGAKU-RYO
       *        集団
                WHEN    "S"
                    MOVE    ZERO                TO  WRK-TUKI-CNT
-                   PERFORM VARYING     IDY     FROM    1   BY  1
+                   PERFORM VARYING     IDY     FROM    IDX-STR  BY  1
                            UNTIL       IDY     >   IDD
                        COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
                                                +   WRK-DCNT-SN
@@ -1786,7 +1794,7 @@
       *                MOVE    LNK-ORCSC-KYUSEI-90(7:2)
       *                                        TO  IDX-STR
       *!           ELSE
-                       MOVE    1               TO  IDX-STR
+      *!               MOVE    1               TO  IDX-STR
       *!           END-IF
                    PERFORM VARYING     IDY     FROM    IDX-STR   BY  1
                            UNTIL       IDY     >   IDD

@@ -78,6 +78,8 @@
       *
       *初診算定日、退院日
            03  LNK-ORCSC-SYOYMD            PIC  X(08).
+      *訂正時時の初診算定日
+           03  LNK-ORCSC-SYOYMD-OLD        PIC  X(08).
       *最終受診日
            03  LNK-ORCSC-LSTYMD            PIC  X(08).
       *最終受診科

@@ -350,11 +350,15 @@
                MOVE    2               TO  AGECHK-HKNKBN
            END-IF
       *
-           MOVE    COMB-GAI-KFTNRATE   TO  AGECHK-FTNRATE
-           IF      COMB-GAI-KFTNRATE   =   ZERO
+           IF      AGECHK-NYUGAIKBN    =   "1"
+               MOVE    COMB-NYU-KFTNRATE   TO  AGECHK-FTNRATE
+           ELSE
+               MOVE    COMB-GAI-KFTNRATE   TO  AGECHK-FTNRATE
+           END-IF
+           IF      AGECHK-FTNRATE      =   ZERO
                MOVE    SPACE               TO  AGECHK-FTNRATEMEI
            ELSE
-               MOVE    COMB-GAI-KFTNRATE   TO  WRK-ZZ9
+               MOVE    AGECHK-FTNRATE      TO  WRK-ZZ9
                MOVE    WRK-ZZ9             TO  AGECHK-FTNRATEMEI(1:3)
                MOVE    "%"                 TO  AGECHK-FTNRATEMEI(4:)
            END-IF
@@ -375,7 +379,7 @@
                        MOVE    3               TO  AGECHK-HKNKBN
                    END-IF
                ELSE
-                   IF      COMB-GAI-KFTNRATE   >   20
+                   IF      AGECHK-FTNRATE      >   20
                        MOVE    20                  TO  AGECHK-FTNRATE
                        MOVE    " 20%"              TO  AGECHK-FTNRATEMEI
                    END-IF

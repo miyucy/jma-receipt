@@ -92,6 +92,7 @@
            03  FLG-PTBYOMEI        PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
+           03  FLG-SANTEI          PIC 9(01).
       *
            03  FLG-SYSKANRIOK      PIC 9(01).
            03  FLG-HKNCOMBICHK     PIC 9(01).
@@ -127,6 +128,8 @@
       *
            03  IDX-J1              PIC 9(04).
            03  IDX-J2              PIC 9(04).
+      *
+           03  IDX-Y2              PIC 9(02).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -206,6 +209,12 @@
                05  WRK-SYS-SS          PIC 9(04).
       *
            03  SYS-TIME                PIC 9(08).
+      *    Ä¾µ¢¤Î½é¿Ç»»ÄêÆü
+           03  WRK-YMD.
+               05  WRK-YYMM            PIC X(06).
+               05  WRK-DD              PIC X(02).
+           03  WRK-SYOSINYMD1          PIC X(08).
+           03  WRK-SRYCD               PIC X(09).
       *
       *Â¾²Ê¼õ¿Ç²ÊÍ­¤ê
        01  WRK-TAKA-SRYKA-AREA.
@@ -303,6 +312,10 @@
       *    ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
+      *
+      *    »»ÄêÍúÎò
+       01  SANTEI-REC.
+           COPY    "CPSANTEI.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -1938,9 +1951,9 @@
                                        SPA-AREA
                                        ORCSHKNSETAREA
       *
-      *
            PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL       IDX     >   ORCSHKN-HKN-MAX
+                   UNTIL      (IDX     >   ORCSHKN-HKN-MAX )
+                           OR (IDX     >   15   )
                MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
                                        TO  SPA-GMN-THKNCOMBINUM (IDX)
                MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
@@ -2057,6 +2070,7 @@
            MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
            MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
            MOVE    SPA-HKNCOMBINUM     TO  AGECHK-HKNCOMBINUM
+           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
       *****IF      AGECHK-FTNRATE  NOT =   ZERO
@@ -2685,7 +2699,7 @@
       *D               MOVE    ZERO           TO  FLG-TENKI
                        IF     (WRK-CHIYUYMD        <   WRK-TENKIYMD)
       *                ºÇ½ªÆü¤è¤êÁ°¤Î»þ¡¢½é¿Ç»»Äê¤Ø
-                       AND    (WRK-TENKIYMD        >   SPA-LSTYMD )
+                       AND    (WRK-TENKIYMD        >=  SPA-LSTYMD )
                            MOVE    1               TO  FLG-CHIYU
                        END-IF
                    END-IF
@@ -3185,6 +3199,9 @@
       *    ÆÃÄê¼À´µ¤ÎÍ­Ìµ¸¡º÷
            PERFORM 11011-TOKUTEI-SYORI-SEC
       *
+      *    ÄûÀµÆü¤Î½é¿Ç»»ÄêÆü
+           PERFORM 3009-SYOSIN-SYORI-SEC
+      *
       *    ÊÝ¸±ÁÈ¹ç¤»¤¬»ÈÍÑ¤Ç¤­¤ë¤«¤Î¥Á¥§¥Ã¥¯
       *****PERFORM 100131-HKNCOMBI-CHK-SEC
       *
@@ -3231,6 +3248,146 @@
       *
           .
        300-WKSRYACT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÄûÀµÆü¤Î½é¿Ç»»ÄêÆüÊÔ½¸
+      *****************************************************************
+       3009-SYOSIN-SYORI-SEC               SECTION.
+      *
+      *    ½é¿ÇÎÁ¤Î»»ÄêÍúÎò¤Î¥Á¥§¥Ã¥¯
+           MOVE    SPACE               TO  WRK-SYOSINYMD1
+      *
+           EVALUATE    SPA-HOSPSBT
+      *        ÉÂ±¡
+               WHEN    1
+      *            Ï·¿Í
+                   MOVE    "111700110"         TO  WRK-SRYCD
+                   PERFORM 30091-SANTEI-CHK-SEC
+                   IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                          (WRK-YMD             >   WRK-SYOSINYMD1)
+                       MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+                   END-IF
+      *            Ï·¿Í³°
+                   MOVE    "111000110"         TO  WRK-SRYCD
+                   PERFORM 30091-SANTEI-CHK-SEC
+                   IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                          (WRK-YMD             >   WRK-SYOSINYMD1)
+                       MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+                   END-IF
+      *        ¿ÇÎÅ½ê
+               WHEN    2
+      *            Ï·¿Í
+                   MOVE    "111700210"         TO  WRK-SRYCD
+                   PERFORM 30091-SANTEI-CHK-SEC
+                   IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                          (WRK-YMD             >   WRK-SYOSINYMD1)
+                       MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+                   END-IF
+      *            Ï·¿Í³°
+                   MOVE    "111003610"         TO  WRK-SRYCD
+                   PERFORM 30091-SANTEI-CHK-SEC
+                   IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                          (WRK-YMD             >   WRK-SYOSINYMD1)
+                       MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+                   END-IF
+           END-EVALUATE
+      *    ¾®»ù²Ê¿Ç»¡ÎÁ
+      *    ¡¡¡¡±¡³°½èÊý   ½é¿Ç
+           MOVE    "113003510"         TO  WRK-SRYCD
+           PERFORM 30091-SANTEI-CHK-SEC
+           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD1)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+           END-IF
+      *    ¡¡¡¡±¡Æâ½èÊý   ½é¿Ç
+           MOVE    "113003710"         TO  WRK-SRYCD
+           PERFORM 30091-SANTEI-CHK-SEC
+           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD1)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+           END-IF
+      *
+      *    ²¾¤Î½é¿ÇÎÁ
+           MOVE    "099110001"         TO  WRK-SRYCD
+           PERFORM 30091-SANTEI-CHK-SEC
+           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD1)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+           END-IF
+      *
+      *    Ï«ºÒ½é¿ÇÎÁ
+           MOVE    "101110010"         TO  WRK-SRYCD
+           PERFORM 30091-SANTEI-CHK-SEC
+           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD1)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+           END-IF
+           MOVE    WRK-SYOSINYMD1      TO  SPA-SYOYMD-OLD
+      *
+          .
+       3009-SYOSIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¤òºîÀ®¤¹¤ë 
+      *****************************************************************
+       30091-SANTEI-CHK-SEC               SECTION.
+      *
+           MOVE    SPACE               TO  WRK-YMD
+      *
+      *    »»ÄêÍúÎò¸¡º÷
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           PERFORM UNTIL       FLG-SANTEI          =   1
+      *        ½ªÎ»È½Äê
+               IF      SANTEI-MSANTEICNT   >   ZERO
+                   IF      SANTEI-SRYYM    <   WRK-YYMM
+                       MOVE    1                   TO  FLG-SANTEI
+                   ELSE
+                       PERFORM VARYING     IDX-Y2  FROM    1  BY  1
+                               UNTIL       IDX-Y2      >   31
+                           IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                               MOVE    IDX-Y2          TO  WRK-DD
+                           END-IF
+                       END-PERFORM
+                       MOVE    SANTEI-SRYYM        TO  WRK-YYMM
+                   END-IF
+               END-IF
+      *
+               IF      FLG-SANTEI          =   ZERO
+                   MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
+                   PERFORM 920-SANTEI-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+          .
+       30091-SANTEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4238,6 +4395,28 @@
       *
            .
        910-TENSU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »»ÄêÎò¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       920-SANTEI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SANTEI-REC
+               MOVE    ZERO                TO  FLG-SANTEI
+           ELSE
+               INITIALIZE                      SANTEI-REC
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           .
+       920-SANTEI-READ-EXT.
            EXIT.
       *
       *****************************************************************

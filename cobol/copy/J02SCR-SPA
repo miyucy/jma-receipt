@@ -86,7 +86,7 @@
       *
       *        ø«Œ≈Õ˙ŒÚ∆‚Õ∆
                05  SPA-GMN-RRKTBL.
-                   07  SPA-GMN-RRK-LIST          OCCURS  60.
+                   07  SPA-GMN-RRK-LIST          OCCURS  100.
                        09  SPA-GMN-RRKNO         PIC 9(03).
                        09  SPA-GMN-RRKYMD        PIC X(16).
                        09  SPA-GMN-RRKSRYKA      PIC X(04).
@@ -121,7 +121,7 @@
                    07  SPA-DAY-IDX         PIC 9(02).
       *            ø«Œ≈Õ˙ŒÚ
                    07  SPA-NAI-RRKTBL.
-                       09  SPA-NAI-RRK-LIST          OCCURS   60.
+                       09  SPA-NAI-RRK-LIST          OCCURS  100.
                            11  SPA-RRK-RRKYMD        PIC  X(08).
                            11  SPA-RRK-RENNUM        PIC  9(01).
                            11  SPA-RRK-SRYKA         PIC  X(02).

@@ -522,6 +522,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "初診料を入力して下さい。"
                                        TO  SPA-ERRMSG(29:)
+               WHEN    "0140"
+                   MOVE    "労災の読み替え加算ができません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "回数を１回にして分けて入力して下さい。"
+                                       TO  SPA-ERRMSG(33:)
                WHEN    "7007"
                    MOVE    "自動算定で２００行を超えます。"
                                        TO  SPA-ERRMSG
