@@ -137,6 +137,7 @@
            03  FLG-DAY24                               PIC 9(01).
            03  FLG-NYUKHN                              PIC 9(01).
            03  FLG-MIJISI                              PIC 9(01).
+           03  FLG-MIJISI2                             PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -252,6 +253,16 @@
                05  WRK-SKJ2-SRYCD-T.
                 06  WRK-SKJ2-SRYCD-OCC                 OCCURS    5.
                  07  WRK-SKJ2-SRYCD                    PIC 9(09).
+      *
+       01  WRK-MIJ-TABLE.
+           03  WRK-MIJ-T                               OCCURS   10.
+             04  WRK-MIJ-HKNCOMBI                      PIC 9(04).
+             04  WRK-MIJ-T2                            OCCURS    4.
+               05  WRK-MIJ-CNT90                       PIC 9(02).
+               05  WRK-MIJ-CNT92                       PIC 9(02).
+               05  WRK-MIJ-T3                          OCCURS   31.
+                   07  WRK-MIJ-DAY90                   PIC 9(04).
+                   07  WRK-MIJ-DAY92                   PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -613,6 +624,7 @@
            INITIALIZE          WRK-AREA-SAIKEI
       *
            INITIALIZE          WRK-DAY-TABLE
+                               WRK-MIJ-TABLE
       *
       ***  PERFORM    VARYING    IDX    FROM   1   BY   1
       ***             UNTIL     (IDX      >   10)  OR
@@ -872,13 +884,27 @@
                             PERFORM VARYING SYUKEI-IDX3 FROM 1 BY 1
                                UNTIL  SYUKEI-IDX3           > 4
       *
-                              IF    WRK-MIJISI(SYUKEI-IDX3) = 1
-      *
-                                PERFORM   RECE64-TENSOU2-MIJ-SEC
-                                PERFORM   RECE65-HENSYU2-MIJ-SEC
-                                PERFORM   RECE64-WRITE-SEC
-      *
-                              END-IF
+                             IF    WRK-MIJISI(SYUKEI-IDX3) = 1
+                               PERFORM  VARYING  IDY  FROM  1  BY  1
+                                      UNTIL   IDY     >       31
+                                IF   WRK-DAY21(IDY)  NOT =  ZERO
+                                  EVALUATE WRK-DAY1-NYUTENTTLKBN(IDY)
+                                    WHEN   903
+                                      MOVE   RECE62-HKNCOMBI (IDX1)
+                                        TO   WRK-MIJ-HKNCOMBI(IDX1)
+                                      MOVE   WRK-DAY21(IDY)  
+                                        TO   WRK-MIJ-DAY90
+                                             (IDX1 SYUKEI-IDX3 IDY) 
+                                    WHEN   920
+                                      MOVE   RECE62-HKNCOMBI (IDX1)
+                                        TO   WRK-MIJ-HKNCOMBI(IDX1)
+                                      MOVE   WRK-DAY21(IDY)  
+                                        TO   WRK-MIJ-DAY92
+                                             (IDX1 SYUKEI-IDX3 IDY)
+                                  END-EVALUATE
+                                END-IF
+                               END-PERFORM
+                             END-IF
       *
                             END-PERFORM
                          END-IF
@@ -924,6 +950,74 @@
       *
            MOVE   "NYUINACCT-KEY7"         TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
+      *
+      *
+      *    Ì¤¼Â»Ü¸º»»
+           PERFORM  VARYING  IDX1  FROM  1  BY  1
+                    UNTIL  IDX1         >  10
+      *
+             IF    WRK-MIJ-HKNCOMBI(IDX1)  NOT =  ZERO 
+      *
+               PERFORM  VARYING  SYUKEI-IDX3  FROM  1  BY  1
+                      UNTIL  SYUKEI-IDX3  >   4
+      *
+                 PERFORM   VARYING   IDY   FROM   1   BY   1
+                         UNTIL   IDY    >  31
+                    IF   WRK-MIJ-DAY90(IDX1 SYUKEI-IDX3 IDY)  
+                                                  NOT =  ZERO
+                        ADD   1   TO  WRK-MIJ-CNT90(IDX1 SYUKEI-IDX3)
+                    END-IF
+                    IF   WRK-MIJ-DAY92(IDX1 SYUKEI-IDX3 IDY)  
+                                                  NOT =  ZERO
+                        ADD   1   TO  WRK-MIJ-CNT92(IDX1 SYUKEI-IDX3)
+                    END-IF
+                 END-PERFORM
+      *
+               END-PERFORM
+      *
+             END-IF
+      *
+           END-PERFORM
+      *
+      *
+           MOVE     ZERO       TO    CNT-ZAIREN
+      *
+           PERFORM  VARYING  IDX1  FROM  1  BY  1
+                    UNTIL  IDX1         >  10
+      *
+             IF    WRK-MIJ-HKNCOMBI(IDX1)  NOT =  ZERO  
+      *
+               ADD       1      TO     CNT-ZAIREN
+      *
+               PERFORM  VARYING  SYUKEI-IDX3  FROM  1  BY  1
+                      UNTIL  SYUKEI-IDX3  >   4
+      *
+                 IF   WRK-MIJ-CNT90(IDX1 SYUKEI-IDX3)  NOT =  ZERO
+                       MOVE      1      TO     FLG-MIJISI2
+                       PERFORM   RECE64-TENSOU2-MIJ-SEC
+                       PERFORM   RECE65-TENSOU2-MIJ-SEC
+                       PERFORM   RECE65-WRITE-SEC
+                       PERFORM   RECE64-WRITE-SEC
+                 END-IF
+      *
+               END-PERFORM
+      *
+               PERFORM  VARYING  SYUKEI-IDX3  FROM  1  BY  1
+                    UNTIL  SYUKEI-IDX3  >   4
+      *
+                 IF   WRK-MIJ-CNT92(IDX1 SYUKEI-IDX3)  NOT =  ZERO
+                       MOVE      2      TO     FLG-MIJISI2
+                       PERFORM   RECE64-TENSOU2-MIJ-SEC
+                       PERFORM   RECE65-TENSOU2-MIJ-SEC
+                       PERFORM   RECE65-WRITE-SEC
+                       PERFORM   RECE64-WRITE-SEC
+                 END-IF
+      *
+               END-PERFORM
+      *
+             END-IF
+      *
+           END-PERFORM
       *
            .
        RECE64-HENSYU2-EXT.
@@ -1452,14 +1546,12 @@
            MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
            MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
-      **   MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
            IF      WRK-GAI2-SRYKBNFLG(SYUKEI-IDX3)  =   1
               MOVE    "90"              TO      RECE64-SRYKBN
            ELSE
               MOVE    "92"              TO      RECE64-SRYKBN
            END-IF 
            MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
-      **   MOVE    NACCT-ZAINUM         TO      RECE64-ZAINUM
            COMPUTE WRK-ZAINUM    =  99900  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO      RECE64-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE64-ZAIREN
@@ -1521,7 +1613,6 @@
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
            MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
-      **   MOVE    NACCT-ZAINUM         TO      RECE64-ZAINUM
            COMPUTE WRK-ZAINUM    =  99930  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO      RECE64-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE64-ZAIREN
@@ -1582,24 +1673,37 @@
            MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
            MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
-           MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
-      **   MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
+           IF      FLG-MIJISI2   =   1
+              MOVE    "90"              TO      RECE64-SRYKBN
+           ELSE
+              MOVE    "92"              TO      RECE64-SRYKBN
+           END-IF 
            MOVE    "6"                  TO      RECE64-ZAISKBKBN
-      **   MOVE    NACCT-ZAINUM         TO      RECE64-ZAINUM
-           COMPUTE WRK-ZAINUM    =  99970  +  SYUKEI-IDX3
+           IF      FLG-MIJISI2   =   1
+             COMPUTE WRK-ZAINUM    =  99970  +  SYUKEI-IDX3
+           ELSE
+             COMPUTE WRK-ZAINUM    =  99980  +  SYUKEI-IDX3
+           END-IF
            MOVE    WRK-ZAINUM           TO      RECE64-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE64-ZAIREN
            MOVE    RECE62-PTNUM         TO      RECE64-PTNUM
       *
-           MOVE    NACCT-SRYKA          TO      RECE64-SRYKA
-           MOVE    RECE62-HKNCOMBI(IDX1)
+      **   MOVE    NACCT-SRYKA          TO      RECE64-SRYKA
+           MOVE    "00"                 TO      RECE64-SRYKA
+           MOVE    WRK-MIJ-HKNCOMBI(IDX1)
                                         TO      RECE64-HKNCOMBI
            MOVE    SPACE                TO      RECE64-JIHOKBN
            EVALUATE   SYUKEI-IDX3
                WHEN  2
                  MOVE    5              TO      RECE64-ZAITEN
                  MOVE    1              TO      RECE64-MEISAISU
-                 MOVE    CNT-DAY21      TO      RECE64-ZAIKAISU
+                 IF      FLG-MIJISI2   =   1
+                    MOVE    WRK-MIJ-CNT90(IDX1 2)
+                                        TO      RECE64-ZAIKAISU
+                 ELSE
+                    MOVE    WRK-MIJ-CNT92(IDX1 2)
+                                        TO      RECE64-ZAIKAISU
+                 END-IF
                  MOVE    5              TO      RECE64-SYUTEN1
                  IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190080570   TO      RECE64-SRYCDTOTAL
@@ -1609,7 +1713,13 @@
                WHEN  3
                  MOVE    10             TO      RECE64-ZAITEN
                  MOVE    1              TO      RECE64-MEISAISU
-                 MOVE    CNT-DAY21      TO      RECE64-ZAIKAISU
+                 IF      FLG-MIJISI2   =   1
+                    MOVE    WRK-MIJ-CNT90(IDX1 3)
+                                        TO      RECE64-ZAIKAISU
+                 ELSE
+                    MOVE    WRK-MIJ-CNT92(IDX1 3)
+                                        TO      RECE64-ZAIKAISU
+                 END-IF
                  MOVE    10             TO      RECE64-SYUTEN1
                  IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190111690   TO      RECE64-SRYCDTOTAL
@@ -1619,7 +1729,13 @@
                WHEN  4
                  MOVE    5              TO      RECE64-ZAITEN
                  MOVE    1              TO      RECE64-MEISAISU
-                 MOVE    CNT-DAY21      TO      RECE64-ZAIKAISU
+                 IF      FLG-MIJISI2   =   1
+                    MOVE    WRK-MIJ-CNT90(IDX1 4)
+                                        TO      RECE64-ZAIKAISU
+                 ELSE
+                    MOVE    WRK-MIJ-CNT92(IDX1 4)
+                                        TO      RECE64-ZAIKAISU
+                 END-IF
                  MOVE    5              TO      RECE64-SYUTEN1
                  IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190111790   TO      RECE64-SRYCDTOTAL
@@ -1631,21 +1747,37 @@
            MOVE    ZERO                 TO      RECE64-SYUTEN2
            MOVE    ZERO                 TO      RECE64-YKZTEN
            MOVE    ZERO                 TO      RECE64-KIZAITEN
-           MOVE    NACCT-DRCD           TO      RECE64-DRCD
+      **   MOVE    NACCT-DRCD           TO      RECE64-DRCD
            MOVE    SPACE                TO      RECE64-ZAIREQFLG
            MOVE    ZERO                 TO      RECE64-TEIGENRATE
            MOVE        ZERO             TO      WK-TAIHI-DAY
            MOVE        ZERO             TO      WK-TAIHI-FLG
-           PERFORM     VARYING   IDX2   FROM    1    BY   1
+           IF      FLG-MIJISI2   =   1
+              PERFORM     VARYING   IDX2   FROM    1    BY   1
                            UNTIL     IDX2   >       31
-                   MOVE    WRK-DAY21(IDX2)  TO
-                                            RECE64-KAISU (1 IDX2)
-                   IF     (WK-TAIHI-FLG           =   ZERO)   AND
-                          (WRK-DAY21(IDX2)    NOT =   ZERO)
+                   MOVE    WRK-MIJ-DAY90(IDX1 SYUKEI-IDX3 IDX2)
+                                      TO      RECE64-KAISU (1 IDX2)
+                   IF     (WK-TAIHI-FLG           =   ZERO)   
+                   AND    (WRK-MIJ-DAY90(IDX1 SYUKEI-IDX3 IDX2)
+                                              NOT =   ZERO)
                        MOVE     IDX2    TO      WK-TAIHI-DAY
                        MOVE     1       TO      WK-TAIHI-FLG
                    END-IF    
-           END-PERFORM
+              END-PERFORM
+           ELSE
+              PERFORM     VARYING   IDX2   FROM    1    BY   1
+                           UNTIL     IDX2   >       31
+                   MOVE    WRK-MIJ-DAY92(IDX1 SYUKEI-IDX3 IDX2)
+                                      TO      RECE64-KAISU (1 IDX2)
+                   IF     (WK-TAIHI-FLG           =   ZERO)   
+                   AND    (WRK-MIJ-DAY92(IDX1 SYUKEI-IDX3 IDX2)
+                                              NOT =   ZERO)
+                       MOVE     IDX2    TO      WK-TAIHI-DAY
+                       MOVE     1       TO      WK-TAIHI-FLG
+                   END-IF    
+              END-PERFORM
+           END-IF
+      *
            .
        RECE64-TENSOU2-MIJ-EXT.
            EXIT.
@@ -1798,43 +1930,6 @@
       *
            .
        RECE65-HENSYU2-SKJ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¥ì¥»¥×¥ÈÃæ´Ö¥Õ¥¡¥¤¥ë¤ÎºîÀ®¡Ê£Æ£°£°£µ¡Ë
-      *****************************************************************
-       RECE65-HENSYU2-MIJ-SEC               SECTION.
-      *
-           INITIALIZE                      NYUINACT-REC
-           MOVE    NACCT-HOSPID       TO   NSRY-HOSPID
-           MOVE    NACCT-NYUGAIKBN    TO   NSRY-NYUGAIKBN
-           MOVE    NACCT-PTID         TO   NSRY-PTID
-      ***  MOVE    NACCT-SRYKA        TO   NSRY-SRYKA
-           MOVE    NACCT-SRYYM        TO   NSRY-SRYYM
-           MOVE    NACCT-ZAINUM       TO   NSRY-ZAINUM
-           MOVE    NYUINACT-REC       TO   MCPDATA-REC
-           MOVE    "DBSELECT"         TO   MCP-FUNC
-           MOVE    "NYUINACT-KEY9"    TO   ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           IF      MCP-RC               =       ZERO
-               MOVE    "NYUINACT-KEY9"  TO      ORC-DBPATH
-               PERFORM  NYUINACT-READ-SEC
-           ELSE
-               MOVE     1               TO      FLG-NYUINACT
-           END-IF
-           IF  FLG-NYUINACT   =   ZERO
-               PERFORM   RECE65-TENSOU2-MIJ-SEC
-               PERFORM   RECE65-WRITE-SEC
-           END-IF
-      *
-           MOVE   "NYUINACT-KEY9"      TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
-      *
-           .
-       RECE65-HENSYU2-MIJ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2109,7 +2204,6 @@
            MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
            MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
-      **   MOVE    NSRY-ZAINUM          TO      RECE65-ZAINUM
            COMPUTE WRK-ZAINUM    =  99900  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE65-ZAIREN
@@ -2117,13 +2211,11 @@
            MOVE    RECE62-PTNUM         TO      RECE65-PTNUM
       *
            MOVE    NSRY-SRYKA           TO      RECE65-SRYKA
-      **   MOVE    NSRY-SRYKBN          TO      RECE65-SRYKBN
            IF      WRK-GAI2-SRYKBNFLG(SYUKEI-IDX3)  =   1
               MOVE    "90"              TO      RECE65-SRYKBN
            ELSE
               MOVE    "92"              TO      RECE65-SRYKBN
            END-IF 
-      **   MOVE    NSRY-SRYSYUKBN       TO      RECE65-SRYSYUKBN
            IF      WRK-GAI2-SRYKBNFLG(SYUKEI-IDX3)  =   1
               MOVE    "900"             TO      RECE65-SRYSYUKBN
            ELSE
@@ -2179,7 +2271,6 @@
            MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
            MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
-      **   MOVE    NSRY-ZAINUM          TO      RECE65-ZAINUM
            COMPUTE WRK-ZAINUM    =  99930  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE65-ZAIREN
@@ -2250,17 +2341,29 @@
            MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
            MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
-      **   MOVE    NSRY-ZAINUM          TO      RECE65-ZAINUM
-           COMPUTE WRK-ZAINUM    =  99970  +  SYUKEI-IDX3
+           IF      FLG-MIJISI2   =   1
+             COMPUTE WRK-ZAINUM    =  99970  +  SYUKEI-IDX3
+           ELSE
+             COMPUTE WRK-ZAINUM    =  99980  +  SYUKEI-IDX3
+           END-IF
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE65-ZAIREN
-           MOVE    NSRY-RENNUM          TO      RECE65-RENNUM
+           MOVE    1                    TO      RECE65-RENNUM
            MOVE    RECE62-PTNUM         TO      RECE65-PTNUM
       *
-           MOVE    NSRY-SRYKA           TO      RECE65-SRYKA
-           MOVE    NSRY-SRYKBN          TO      RECE65-SRYKBN
-           MOVE    NSRY-SRYSYUKBN       TO      RECE65-SRYSYUKBN
-           MOVE    NSRY-JIHIMONEYTOTAL  TO      RECE65-JIHIMONEY
+      **   MOVE    NSRY-SRYKA           TO      RECE65-SRYKA
+           MOVE    "00"                 TO      RECE65-SRYKA
+           IF      FLG-MIJISI2   =   1
+              MOVE    "90"              TO      RECE65-SRYKBN
+           ELSE
+              MOVE    "92"              TO      RECE65-SRYKBN
+           END-IF 
+           IF      FLG-MIJISI2   =   1
+              MOVE    "900"             TO      RECE65-SRYSYUKBN
+           ELSE
+              MOVE    "920"             TO      RECE65-SRYSYUKBN
+           END-IF 
+      **   MOVE    NSRY-JIHIMONEYTOTAL  TO      RECE65-JIHIMONEY
       *
            EVALUATE   SYUKEI-IDX3
                WHEN  2
