@@ -29,7 +29,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 04 Jan 2001 03:26:09 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -1729,22 +1729,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label162</name>
-      <x>392</x>
-      <y>10</y>
-      <width>100</width>
-      <height>18</height>
-      <label>有効期間      </label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label163</name>
       <x>584</x>
       <y>12</y>
@@ -2389,6 +2373,22 @@
       </signal>
       <editable>True</editable>
       <format>9</format>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label162</name>
+      <x>392</x>
+      <y>10</y>
+      <width>70</width>
+      <height>18</height>
+      <label>有効期間</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
