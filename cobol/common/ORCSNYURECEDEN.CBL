@@ -57,6 +57,8 @@
            03  FLG-KSN                     PIC 9(01).
            03  FLG-SENTEI-SET              PIC 9(01).
            03  FLG-SENTEICDCHG             PIC 9(01).
+           03  FLG-TSYRRK                  PIC 9(01).
+           03  FLG-TNKRRK                  PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
@@ -275,6 +277,14 @@
       *    選定療養費
        01  SENTEICDCHG-REC.
            COPY    "CPSENTEICDCHG.INC".
+      *
+      *    低所得
+       01  TSYRRK-REC.
+           COPY    "CPTSYRRK.INC".
+      *
+      *    年金
+       01  TNKRRK-REC.
+           COPY    "CPTNKRRK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1227,6 +1237,71 @@
                END-PERFORM
            END-IF
       *
+      *低所得情報の取得
+           INITIALIZE                          TSYRRK-REC
+           MOVE    LNK-NYURECEDEN-HOSPID   TO  TSYRRK-HOSPID
+           MOVE    LNK-NYURECEDEN-PTID     TO  TSYRRK-PTID
+           MOVE    "TSYRRK-KEY3"           TO  ORC-DBPATH
+           PERFORM 910-TSYRRK-SELECT-SEC
+           IF      FLG-TSYRRK              =   ZERO
+               MOVE    "TSYRRK-KEY3"       TO  ORC-DBPATH
+               PERFORM 910-TSYRRK-READ-SEC
+               PERFORM  UNTIL  
+                  ( FLG-TSYRRK          =   1                ) OR
+                 (( TSYRRK-NINSTYMD(1:6) <= LNK-NYURECEDEN-SANTEIYM AND
+                    LNK-NYURECEDEN-SANTEIYM <= TSYRRK-NINEDYMD(1:6) ))
+      *
+                   MOVE    "TSYRRK-KEY3"      TO  ORC-DBPATH
+                   PERFORM 910-TSYRRK-READ-SEC
+      *
+               END-PERFORM
+           END-IF
+           IF      FLG-TSYRRK              =   ZERO
+                PERFORM   VARYING   IDX1   FROM   1  BY  1
+                          UNTIL     IDX1   >    31
+                    IF    WRK-SKJ-RYOYO(IDX1)  NOT =  SPACE
+                        MOVE   "197000910"
+                                        TO  WRK-SKJFTN-SRYCD(IDX1)
+                    END-IF
+                END-PERFORM
+           END-IF
+      *
+           MOVE     "TSYRRK-KEY3"       TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
+      *低年金情報の取得
+           INITIALIZE                          TNKRRK-REC
+           MOVE    LNK-NYURECEDEN-HOSPID   TO  TNKRRK-HOSPID
+           MOVE    LNK-NYURECEDEN-PTID     TO  TNKRRK-PTID
+           MOVE    "TNKRRK-KEY3"           TO  ORC-DBPATH
+           PERFORM 910-TNKRRK-SELECT-SEC
+           IF      FLG-TNKRRK              =   ZERO
+               MOVE    "TNKRRK-KEY3"       TO  ORC-DBPATH
+               PERFORM 910-TNKRRK-READ-SEC
+               PERFORM  UNTIL  
+                  ( FLG-TNKRRK          =   1                ) OR
+                 (( TNKRRK-STYMD(1:6) <= LNK-NYURECEDEN-SANTEIYM AND
+                    LNK-NYURECEDEN-SANTEIYM <= TNKRRK-EDYMD(1:6) ))
+      *
+                   MOVE    "TNKRRK-KEY3"      TO  ORC-DBPATH
+                   PERFORM 910-TNKRRK-READ-SEC
+      *
+               END-PERFORM
+           END-IF
+           IF      FLG-TNKRRK              =   ZERO
+                PERFORM   VARYING   IDX1   FROM   1  BY  1
+                          UNTIL     IDX1   >    31
+                    IF    WRK-SKJ-RYOYO(IDX1)  NOT =  SPACE
+                        MOVE   "197001110"
+                                        TO  WRK-SKJFTN-SRYCD(IDX1)
+                    END-IF
+                END-PERFORM
+           END-IF
+      *
+           MOVE     "TNKRRK-KEY3"       TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
+      *
       *    食事の診療コード計
            PERFORM    VARYING   IDX1    FROM  1  BY  1
                       UNTIL     IDX1    >   31
@@ -2093,7 +2168,7 @@
            EXIT.
       *
       *****************************************************************
-      *    選定入院料振替マスターマスター読込
+      *    選定入院料振替マスター読込
       *****************************************************************
        910-SENTEICDCHG-READ-SEC        SECTION.
       *
@@ -2112,6 +2187,92 @@
       *
            .
        910-SENTEICDCHG-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    低所得マスター検索
+      *****************************************************************
+       910-TSYRRK-SELECT-SEC        SECTION.
+      *
+           MOVE    TSYRRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-TSYRRK
+           ELSE
+               MOVE    1                  TO  FLG-TSYRRK
+           END-IF
+      *
+           .
+       910-TSYRRK-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    低所得マスター読込
+      *****************************************************************
+       910-TSYRRK-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC        TO  TSYRRK-REC
+               MOVE    ZERO               TO  FLG-TSYRRK
+           ELSE
+               INITIALIZE                     TSYRRK-REC
+               MOVE    1                  TO  FLG-TSYRRK
+           END-IF
+      *
+           .
+       910-TSYRRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    低年金マスター検索
+      *****************************************************************
+       910-TNKRRK-SELECT-SEC        SECTION.
+      *
+           MOVE    TNKRRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-TNKRRK
+           ELSE
+               MOVE    1                  TO  FLG-TNKRRK
+           END-IF
+      *
+           .
+       910-TNKRRK-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    低年金マスター読込
+      *****************************************************************
+       910-TNKRRK-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC        TO  TNKRRK-REC
+               MOVE    ZERO               TO  FLG-TNKRRK
+           ELSE
+               INITIALIZE                     TNKRRK-REC
+               MOVE    1                  TO  FLG-TNKRRK
+           END-IF
+      *
+           .
+       910-TNKRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************
