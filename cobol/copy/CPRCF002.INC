@@ -133,40 +133,48 @@
                05  RECE02-RJNFTNJANUM     PIC  X(08).
       *老人保険−受給者番号
                05  RECE02-RJNJKYSNUM      PIC  X(07).
+      *
       *公費情報
-           03  RECE02-KOHINF              OCCURS  4.
+           03  RECE02-KOHINF-AREA.
+               05  RECE02-KOHINF          OCCURS  4.
       *公費−保険ＩＤ
-               05  RECE02-KOHID           PIC  9(10).
+                   07  RECE02-KOHID       PIC  9(10).
       *公費−保険番号
-               05  RECE02-KOHNUM          PIC  X(03).
+                   07  RECE02-KOHNUM      PIC  X(03).
       *公費−法別番号
-               05  RECE02-KOHHBTNUM       PIC  X(02).
+                   07  RECE02-KOHHBTNUM   PIC  X(02).
       *公費−負担者番号
-               05  RECE02-KOHFTNJANUM     PIC  X(08).
+                   07  RECE02-KOHFTNJANUM PIC  X(08).
       *公費−受給者番号
-               05  RECE02-KOHJKYSNUM      PIC  X(20).
+                   07  RECE02-KOHJKYSNUM  PIC  X(20).
       *公費−任意給付区分
-               05  RECE02-KOHNINIKYUKBN   PIC  X(01).
+                   07  RECE02-KOHNINIKYUKBN
+                                          PIC  X(01).
       *公費−件数
-               05  RECE02-KOHKENSU        PIC  9(03).
+                   07  RECE02-KOHKENSU    PIC  9(03).
       *公費−レセプト請求区分
-               05  RECE02-RECESKYKBN      PIC  X(01).
+                   07  RECE02-RECESKYKBN  PIC  X(01).
+      *
       *保険組合せ番号情報
-           03  RECE02-HKNCOMBIINF         OCCURS  10.
+           03  RECE02-HKNCOMBIINF-AREA.
+               05  RECE02-HKNCOMBIINF     OCCURS  10.
       *保険組合せ番号
-               05  RECE02-HKNCOMBI        PIC  9(04).
+                   07  RECE02-HKNCOMBI    PIC  9(04).
       *主保険番号
-               05  RECE02-HKNNUMHC        PIC  X(03).
+                   07  RECE02-HKNNUMHC    PIC  X(03).
       *組合せ公費保険番号情報
-               05  RECE02-KOHNUMHCINF     OCCURS  4.
+                   07  RECE02-KOHNUMHCINF OCCURS  4.
       *組合せ公費保険番号
-                   07  RECE02-KOHNUMHC    PIC  X(03).
+                       09  RECE02-KOHNUMHC
+                                          PIC  X(03).
       *組合せ公費保険ＩＤ
-                   07  RECE02-KOHIDHC     PIC  9(10).
+                       09  RECE02-KOHIDHC PIC  9(10).
+      *
       *特記事項情報
            03  RECE02-TOKKIINF            OCCURS  5.
       *特記事項
                05  RECE02-TOKKI           PIC  X(02).
+      *
       *診療区分別点数情報
            03  RECE02-SRYKBNINF           OCCURS  50.
       *基本点数
@@ -174,21 +182,29 @@
       *回数
                05  RECE02-KAISU           PIC  9(05).
       *明細点数情報
-               05  RECE02-TENSUINF        OCCURS  5.
+               05  RECE02-TENSUINF-AREA.
+                   07  RECE02-TENSUINF    OCCURS  5.
       *明細点数
-                   07  RECE02-TENSU       PIC  9(08).
+                       09  RECE02-TENSU   PIC  9(08).
+      *
       *実日数情報
-           03  RECE02-JNISSUINF           OCCURS  5.
+           03  RECE02-JNISSUINF-AREA.
+               05  RECE02-JNISSUINF       OCCURS  5.
       *実日数
-               05  RECE02-JNISSU          PIC  9(02).
+                   07  RECE02-JNISSU      PIC  9(02).
+      *
       *合計点数情報
-           03  RECE02-TOTALTENINF         OCCURS  5.
+           03  RECE02-TOTALTENINF-AREA.
+               05  RECE02-TOTALTENINF     OCCURS  5.
       *合計点数
-               05  RECE02-TOTALTEN        PIC  9(08).
+                   07  RECE02-TOTALTEN    PIC  9(08).
+      *
       *負担金額情報
-           03  RECE02-FTNMONEYINF         OCCURS  5.
+           03  RECE02-FTNMONEYINF-AREA.
+               05  RECE02-FTNMONEYINF     OCCURS  5.
       *負担金額
-               05  RECE02-FTNMONEY        PIC  9(09).
+                   07  RECE02-FTNMONEY    PIC  9(09).
+      *
       *老人減免区分
            03  RECE02-RJNGENMENKBN        PIC  X(01).
       *老人外来金額
@@ -219,29 +235,34 @@
                05  RECE02-RJNGAIKOHFTN    PIC  9(09).
       *老人入院公費負担額
                05  RECE02-RJNNYUKOHFTN    PIC  9(09).
+      *
       *薬剤一部負担金情報
-           03  RECE02-YKZFTNINF           OCCURS  5.
+           03  RECE02-YKZFTNINF-AREA.
+               05  RECE02-YKZFTNINF       OCCURS  5.
       *薬剤一部負担金
-               05  RECE02-YKZFTN          PIC  9(05).
+                   07  RECE02-YKZFTN      PIC  9(05).
       *レセプトＯＣＲ１
            03  RECE02-OCR1                PIC  X(67).
       *レセプトＯＣＲ２
            03  RECE02-OCR2                PIC  X(67).
       *レセプトＯＣＲ３
            03  RECE02-OCR3                PIC  X(67).
-      *レセプト記載外公費情報（保険番号以外は現在未設定）
+      *
+      *レセプト記載外公費情報
            03  RECE02-ETC-KOH-G.
                05  RECE02-ETC-KOHINF      OCCURS  4.
       *記載外公費−保険番号
                    07  RECE02-ETC-KOHNUM  PIC  X(03).
       *記載外公費−実日数
-                   07  RECE02-ETC-JNISSU   PIC  9(02).
+                   07  RECE02-ETC-JNISSU  PIC  9(02).
       *記載外公費−合計点数
-                   07  RECE02-ETC-TOTALTEN PIC  9(08).
+                   07  RECE02-ETC-TOTALTEN
+                                          PIC  9(08).
       *記載外公費−負担金額
-                   07  RECE02-ETC-FTNMONEY PIC  9(09).
+                   07  RECE02-ETC-FTNMONEY
+                                          PIC  9(09).
       *記載外公費−薬剤一部負担金情報
-                   07  RECE02-ETC-YKZFTN   PIC  9(05).
+                   07  RECE02-ETC-YKZFTN  PIC  9(05).
       *補足区分
            03  RECE02-HOSOKUKBN           PIC  X(01).
       *初診時間区分
@@ -295,9 +316,10 @@
       *福祉編集フラグ
            03  RECE02-FUKUSHIFLG          PIC  X(01).
       *合計点数情報（ぶん点・公費分離区分編集用）
-           03  RECE02-HENTOTALTENINF      OCCURS  5.
+           03  RECE02-HENTOTALTENINF-AREA.
+               05  RECE02-HENTOTALTENINF  OCCURS  5.
       *合計点数（ぶん点・公費分離区分編集用）
-               05  RECE02-HENTOTALTEN     PIC  9(08).
+                   09  RECE02-HENTOTALTEN PIC  9(08).
       *印刷順
            03  RECE02-PRTSEQ              PIC  9(03).
       *

@@ -126,36 +126,43 @@
                05  RECE62-RJNFTNJANUM     PIC  X(08).
       *老人保険−受給者番号
                05  RECE62-RJNJKYSNUM      PIC  X(07).
+      *
       *公費情報
-           03  RECE62-KOHINF              OCCURS  4.
+           03  RECE62-KOHINF-AREA.
+               05  RECE62-KOHINF          OCCURS  4.
       *公費−保険ＩＤ
-               05  RECE62-KOHID           PIC  9(10).
+                   07  RECE62-KOHID       PIC  9(10).
       *公費−保険番号
-               05  RECE62-KOHNUM          PIC  X(03).
+                   07  RECE62-KOHNUM      PIC  X(03).
       *公費−法別番号
-               05  RECE62-KOHHBTNUM       PIC  X(02).
+                   07  RECE62-KOHHBTNUM   PIC  X(02).
       *公費−負担者番号
-               05  RECE62-KOHFTNJANUM     PIC  X(08).
+                   07  RECE62-KOHFTNJANUM PIC  X(08).
       *公費−受給者番号
-               05  RECE62-KOHJKYSNUM      PIC  X(20).
+                   07  RECE62-KOHJKYSNUM  PIC  X(20).
       *公費−任意給付区分
-               05  RECE62-KOHNINIKYUKBN   PIC  X(01).
+                   07  RECE62-KOHNINIKYUKBN
+                                          PIC  X(01).
       *公費−件数
-               05  RECE62-KOHKENSU        PIC  9(03).
+                   07  RECE62-KOHKENSU    PIC  9(03).
       *公費−レセプト請求区分
-               05  RECE62-RECESKYKBN      PIC  X(01).
+                   07  RECE62-RECESKYKBN  PIC  X(01).
+      *
       *保険組合せ番号情報
-           03  RECE62-HKNCOMBIINF         OCCURS  10.
+           03  RECE62-HKNCOMBIINF-AREA.
+               05  RECE62-HKNCOMBIINF     OCCURS  10.
       *保険組合せ番号
-               05  RECE62-HKNCOMBI        PIC  9(04).
-      *組合せ主保険番号
-               05  RECE62-HKNNUMHC        PIC  X(03).
+                   07  RECE62-HKNCOMBI    PIC  9(04).
+      *主保険番号
+                   07  RECE62-HKNNUMHC    PIC  X(03).
       *組合せ公費保険番号情報
-               05  RECE62-KOHNUMHCINF     OCCURS  4.
+                   07  RECE62-KOHNUMHCINF OCCURS  4.
       *組合せ公費保険番号
-                   07  RECE62-KOHNUMHC    PIC  X(03).
+                       09  RECE62-KOHNUMHC
+                                          PIC  X(03).
       *組合せ公費保険ＩＤ
-                   07  RECE62-KOHIDHC     PIC  9(10).
+                       09  RECE62-KOHIDHC PIC  9(10).
+      *
       *診療区分別点数情報
            03  RECE62-SRYKBNINF           OCCURS  30.
       *基本点数
@@ -163,21 +170,28 @@
       *回数
                05  RECE62-KAISU           PIC  9(05).
       *明細点数情報
-               05  RECE62-TENSUINF        OCCURS  5.
+               05  RECE62-TENSUINF-AREA.
+                   07  RECE62-TENSUINF    OCCURS  5.
       *明細点数
-                   07  RECE62-TENSU       PIC  9(08).
+                       09  RECE62-TENSU   PIC  9(08).
+      *
       *合計点数情報
-           03  RECE62-TOTALTENINF         OCCURS  5.
+           03  RECE62-TOTALTENINF-AREA.
+               05  RECE62-TOTALTENINF     OCCURS  5.
       *合計点数
-               05  RECE62-TOTALTEN        PIC  9(08).
+                   07  RECE62-TOTALTEN    PIC  9(08).
+      *
       *負担金額情報
-           03  RECE62-FTNMONEYINF         OCCURS  5.
+           03  RECE62-FTNMONEYINF-AREA.
+               05  RECE62-FTNMONEYINF     OCCURS  5.
       *負担金額
-               05  RECE62-FTNMONEY        PIC  9(09).
+                   07  RECE62-FTNMONEY    PIC  9(09).
+      *
       *実日数情報
-           03  RECE62-JNISSUINF           OCCURS  5.
+           03  RECE62-JNISSUINF-AREA.
+               05  RECE62-JNISSUINF       OCCURS  5.
       *実日数
-               05  RECE62-JNISSU          PIC  9(02).
+                   07  RECE62-JNISSU      PIC  9(02).
       *
       *入院基本料種別情報
            03  RECE62-NYUSYUINF           OCCURS  20.
@@ -222,15 +236,18 @@
                    07  RECE62-NYUTOKKEI2  PIC S9(09).
       *
       *食事療養費情報
-           03  RECE62-SHOKUJIINF          OCCURS  5.
+           03  RECE62-SHOKUJIINF-AREA.
+               05  RECE62-SHOKUJIINF      OCCURS  5.
       *食事日数
-               05  RECE62-SHOKUJINISSU    PIC  9(02).
+                   07  RECE62-SHOKUJINISSU
+                                          PIC  9(02).
       *食事療養費
-               05  RECE62-SHOKUJIRYOYOHI  PIC  9(09).
+                   07  RECE62-SHOKUJIRYOYOHI
+                                          PIC  9(09).
       *標準負担額
-               05  RECE62-SHOKUJIFTN      PIC  9(09).
+                   07  RECE62-SHOKUJIFTN  PIC  9(09).
       *標準負担区分
-           03  RECE62-SHOKUJIFTNKBN       PIC  X(01).
+               05  RECE62-SHOKUJIFTNKBN   PIC  X(01).
       *
       *食事種別情報
            03  RECE62-SHOKUJISYUINF       OCCURS   3.
@@ -272,19 +289,29 @@
            03  RECE62-OCR2                PIC  X(67).
       *レセプトＯＣＲ３
            03  RECE62-OCR3                PIC  X(67).
-      *レセプト記載外公費情報（保険番号以外は現在未設定）
+      *
+      *レセプト記載外公費情報
            03  RECE62-ETC-KOH-G.
                05  RECE62-ETC-KOHINF      OCCURS  4.
       *記載外公費−保険番号
                    07  RECE62-ETC-KOHNUM  PIC  X(03).
       *記載外公費−実日数
-                   07  RECE62-ETC-JNISSU   PIC  9(02).
+                   07  RECE62-ETC-JNISSU  PIC  9(02).
       *記載外公費−合計点数
-                   07  RECE62-ETC-TOTALTEN PIC  9(08).
+                   07  RECE62-ETC-TOTALTEN
+                                          PIC  9(08).
       *記載外公費−負担金額
-                   07  RECE62-ETC-FTNMONEY PIC  9(09).
-      *記載外公費−薬剤一部負担金情報
-                   07  RECE62-ETC-YKZFTN   PIC  9(05).
+                   07  RECE62-ETC-FTNMONEY
+                                          PIC  9(09).
+      *記載外公費−食事日数
+                   07  RECE62-ETC-SHOKUJINISSU
+                                          PIC  9(02).
+      *記載外公費−食事療養費
+                   07  RECE62-ETC-SHOKUJIRYOYOHI
+                                          PIC  9(09).
+      *記載外公費−標準負担額
+                   07  RECE62-ETC-SHOKUJIFTN
+                                          PIC  9(09).
       *低所得フラグ
            03  RECE62-TEISYOTOKU          PIC  X(01).
       *高齢者フラグ
@@ -356,9 +383,10 @@
       *福祉編集フラグ（食事療養）
                05  RECE62-FUKUSHIFLG-SKJ  PIC  X(01).
       *合計点数情報（ぶん点・公費分離区分編集用）
-           03  RECE62-HENTOTALTENINF      OCCURS  5.
+           03  RECE62-HENTOTALTENINF-AREA.
+               05  RECE62-HENTOTALTENINF  OCCURS  5.
       *合計点数（ぶん点・公費分離区分編集用）
-               05  RECE62-HENTOTALTEN     PIC  9(08).
+                   07  RECE62-HENTOTALTEN PIC  9(08).
       *印刷順
            03  RECE62-PRTSEQ              PIC  9(03).
       *
