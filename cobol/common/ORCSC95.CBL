@@ -2499,7 +2499,8 @@
                MOVE    PTINF-COMMENT-1     TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
-               IF      KANACHK-SYUBETU     =   ZERO
+               IF     (KANACHK-SYUBETU     =   ZERO ) OR
+                      (KANACHK-RC2         =   8    )
                    MOVE    1                   TO  FLG-COMMENT
                ELSE
                    MOVE    ZERO                TO  FLG-COMMENT
