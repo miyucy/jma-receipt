@@ -1,5 +1,8 @@
 S03	{
 	fixed14	{
+		B12	{
+	           	state	int;
+		};
 		PTNUM	{
 			value	varchar(20);
 		};
@@ -30,8 +33,12 @@ S03	{
 		NYUGAIKBN	{
 			value	varchar(6);
 		};
-		NAIYO	{
-			value	varchar(10);
+		NAIYO_COMBO	{
+			NAIYO	{
+				value	varchar(12);
+			};
+			count	int;
+			item	varchar(12)[5];
 		};
 		DENPNUM	{
 			value	varchar(10);
@@ -206,16 +213,27 @@ S03	{
 		};
 		NYUKINGK2	{
 			value	number(10);
+			state	int;
 		};
 		NYUKINYMD	{
 			value	varchar(10);
+			state	int;
 		};
 		NYUKINHOUHOU_COMBO	{
 			NYUKINHOUHOU	{
-				value	varchar(27);
+				value	varchar(33);
+				state	int;
 			};
 			count	int;
-			item	varchar(27)[3];
+			item	varchar(33)[50];
+			state	int;
+		};
+		SKYPRT_COMBO	{
+			SKYPRT	{
+				value	varchar(24);
+			};
+			count	int;
+			item	varchar(24)[5];
 		};
 		RIREKIIN	{
 			value	number(2);
@@ -231,6 +249,7 @@ S03	{
 					value2	varchar(12);
 					value3	varchar(11);
 					value4	varchar(12);
+					value5	varchar(10);
 				}	[50];
 				select	bool[50];
 			};

@@ -4659,6 +4659,12 @@
                                        TO  SPA-S01-DENPPRTYMD
                MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
                                        TO  SPA-S01-NYUGAIKBN
+               MOVE    SPA-NAI-TSRYYMD    (SPA-GMN-SELBAN)
+                                       TO  SPA-S01-SRYYMD
+               MOVE    SPA-NAI-THKNNUM  (SPA-GMN-SELBAN)
+                                       TO  SPA-S01-HKNNUM
+               MOVE    SPA-NAI-TRSI-HKNKBN  (SPA-GMN-SELBAN)
+                                       TO  SPA-S01-RSI-HKNKBN
            END-IF
       *
            MOVE    SPA-GMN-SRYYM       TO  SPA-S01-SRYYMW

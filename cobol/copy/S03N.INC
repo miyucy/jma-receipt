@@ -16,6 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
         02  S03N.
+              03  S03N-B12-STATE PIC S9(9)   BINARY.
               03  S03N-PTNUM     PIC X(20).
               03  S03N-SRYYMD    PIC X(9).
               03  S03N-KANANAME  PIC X(50).
@@ -26,7 +27,10 @@
               03  S03N-RATE      PIC X(6).
               03  S03N-SRYKA     PIC X(10).
               03  S03N-NYUGAIKBN PIC X(6).
-              03  S03N-NAIYO     PIC X(10).
+              03  S03N-NAIYO-COMBO.
+                04  S03N-NAIYO PIC X(12).
+                04  S03N-NAIYO-COUNT   PIC S9(9)   BINARY.
+                04  S03N-NAIYOLST      PIC X(12) OCCURS 5 TIMES.
               03  S03N-DENPNUM   PIC X(10).
               03  S03N-DENPJTI   PIC X(10).
               03  S03N-HAKYMD    PIC X(9).
@@ -103,12 +107,24 @@
               03  S03N-ZENMISYU-NYU  PIC S9(10).
               03  S03N-GOKMISYU  PIC S9(10).
               03  S03N-NYUKINGK2 PIC S9(10).
+              03  S03N-NYUKINGK2-STATE
+                                 PIC S9(9)   BINARY.
               03  S03N-NYUKINYMD.
                 04  S03N-VALUE   PIC X(10).
+              03  S03N-NYUKINYMD-STATE
+                                 PIC S9(9)   BINARY.
               03  S03N-NYUKINHOUHOU-COMBO.
-                04  S03N-NYUKINHOUHOU PIC X(27).
+                04  S03N-NYUKINHOUHOU PIC X(33).
+                04  S03N-NYUKINHOUHOU-STATE
+                                 PIC S9(9)   BINARY.
                 04  S03N-NYUKINHOUHOU-COUNT   PIC S9(9)   BINARY.
-                04  S03N-NYUKINHOUHOULST      PIC X(27) OCCURS 3 TIMES.
+                04  S03N-NYUKINHOUHOULST      PIC X(33) OCCURS 50 TIMES.
+                04  S03N-NYUKINHOUHOULST-STATE
+                                 PIC S9(9)   BINARY.
+              03  S03N-SKYPRT-COMBO.
+                04  S03N-SKYPRT PIC X(24).
+                04  S03N-SKYPRT-COUNT   PIC S9(9)   BINARY.
+                04  S03N-SKYPRTLST      PIC X(24) OCCURS 5 TIMES.
               03  S03N-RIREKIIN PIC S9(2).
               03  S03N-SCROLLEDWINDOW1.
                 04  S03N-CLIST1.
@@ -116,9 +132,10 @@
                   05  S03N-CLIST1-ROW         PIC S9(9)   BINARY.
                   05  S03N-CLIST1-ROWATTR     PIC S9(9)   BINARY.
                   05  S03N-ITEM        OCCURS  50 TIMES.
-                  06  S03N-TRENNUM PIC X(4).
-                  06  S03N-TSKYMONY    PIC X(12).
-                  06  S03N-TNYUKINMONEY    PIC X(12).
-                  06  S03N-TSYORIYMD   PIC X(11).
-                  06  S03N-TJTI    PIC X(12).
+                      06  S03N-TRENNUM PIC X(4).
+                      06  S03N-TSKYMONY    PIC X(12).
+                      06  S03N-TNYUKINMONEY    PIC X(12).
+                      06  S03N-TSYORIYMD   PIC X(11).
+                      06  S03N-TJTI    PIC X(12).
+                      06  S03N-TNYKN-NAME    PIC X(10).
                   05  S03N-SELECT  PIC X       OCCURS  50 TIMES.

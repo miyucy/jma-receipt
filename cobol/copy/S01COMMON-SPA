@@ -56,6 +56,8 @@
            05  SPA-S01-SRYYM             PIC X(06).
       *ø«Œ≈«Ø∑Ó° œ¬ŒÒ ‘Ω∏∫—°À
            05  SPA-S01-SRYYMW            PIC X(07).
+      *ø«Œ≈«Ø∑Ó∆¸
+           05  SPA-S01-SRYYMD            PIC X(08).
       *ø«Œ≈≤ 
            05  SPA-S01-SRYKA             PIC X(02).
       *ø«Œ≈≤ Ãæ
@@ -66,6 +68,10 @@
            05  SPA-S01-FTNRATEMEI        PIC X(10).
       * ›∏±¡»πÁ§ª∆‚Õ∆
            05  SPA-S01-HKNCOMBIMEI       PIC X(50).
+      * ›∏±»÷πÊ
+           05  SPA-S01-HKNNUM            PIC X(03).
+      *œ´∫“ ›∏±∂Ë ¨
+           05  SPA-S01-RSI-HKNKBN        PIC X(01).
       *∆˛≥∞∂Ë ¨
            05  SPA-S01-NYUGAIKBN         PIC X(01).
       *∆˛≥∞∂Ë ¨° •ÿ•√•¿°º°À
