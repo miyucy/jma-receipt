@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.01.01     NACL-森脇    03/08/21  分類区分判定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -59,6 +60,9 @@
            03  TOKEI-KEY.
                05  TOKEI-PTID          PIC 9(10).
                05  TOKEI-YKZKBN        PIC 9(01).
+      *----(01.01.01)--ADD-START---
+               05  TOKEI-BUNRUI        PIC 9(02).
+      *----(01.01.01)--ADD-END-----
                05  TOKEI-SRYCD         PIC X(09).
            03  TOKEI-NAME              PIC X(48).
            03  TOKEI-TANINAME          PIC X(04).
@@ -69,7 +73,10 @@
        01  TOKEIX-REC. 
            03  TOKEIX-KEY.
                05  TOKEIX-PTID         PIC 9(10).
-               05  TOKEIX-YKZKBN        PIC 9(01).
+               05  TOKEIX-YKZKBN       PIC 9(01).
+      *----(01.01.01)--ADD-START---
+               05  TOKEIX-BUNRUI       PIC 9(02).
+      *----(01.01.01)--ADD-END-----
                05  TOKEIX-SRYCD        PIC X(09).
            03  TOKEIX-NAME             PIC X(48).
            03  TOKEIX-TANINAME         PIC X(04).
@@ -110,6 +117,9 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-OK                  PIC 9(01).
            03  FLG-SP                  PIC 9(01).
+      *----(01.01.01)--ADD-START---
+           03  FLG-TENSUPLUS           PIC 9(01).
+      *----(01.01.01)--ADD-END-----
       *
       *    システム領域
        01  SYS-AREA.
@@ -228,6 +238,12 @@
       *    印刷用データ
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
+      *
+      *----(01.01.01)--ADD-START---
+      *    点数付加情報マスタ
+       01  TENSUPLUS-REC.
+           COPY    "CPTENSUPLUS.INC".
+      *----(01.01.01)--ADD-END-----
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -684,6 +700,19 @@
       *****************************************************************
        250-TOKEI-HEN-SEC           SECTION.
       *
+      *----(01.01.01)--ADD-START---
+           INITIALIZE                  TENSUPLUS-REC
+           MOVE    SRY-SRYCD(IDX)      TO  TNSP-SRYCD
+           MOVE    WRK-SYSYMD          TO  TNSP-YUKOSTYMD
+           MOVE    WRK-SYSYMD          TO  TNSP-YUKOEDYMD
+      *    点数付加情報マスタ検索
+           PERFORM 900-TENSUPLUS-READ-SEC
+      *
+           IF      TNSP-TENPUYAKKBN    =   SPACE
+               GO  TO  250-TOKEI-HEN-EXT
+           END-IF
+      *----(01.01.01)--ADD-END-----
+      *
            INITIALIZE                  TNS-TENSU-REC
            MOVE    SRY-SRYCD(IDX)      TO  TNS-SRYCD
       *    点数マスタ検索
@@ -715,6 +744,7 @@
            INITIALIZE                  TOKEI-REC
            MOVE    ACCT-PTID           TO  TOKEI-PTID
            MOVE    WRK-YKZKBN          TO  TOKEI-YKZKBN
+           MOVE    TNSP-TENPUYAKKBN    TO  TOKEI-BUNRUI
            MOVE    SRY-SRYCD(IDX)      TO  TOKEI-SRYCD
            PERFORM 900-TOKEI-READ-SEC
       *
@@ -722,6 +752,7 @@
                INITIALIZE                  TOKEI-REC
                MOVE    ACCT-PTID           TO  TOKEI-PTID
                MOVE    WRK-YKZKBN          TO  TOKEI-YKZKBN
+               MOVE    TNSP-TENPUYAKKBN    TO  TOKEI-BUNRUI
                MOVE    SRY-SRYCD(IDX)      TO  TOKEI-SRYCD
                MOVE    TNS-NAME            TO  TOKEI-NAME
                MOVE    TNS-TANINAME        TO  TOKEI-TANINAME
@@ -1203,6 +1234,50 @@
        900-TNS-READ-EXT.
            EXIT.
       *
+      *----(01.01.01)--ADD-START---
+      ******************************************************************
+      *    点数付加情報マスター読込
+      *****************************************************************
+       900-TENSUPLUS-READ-SEC      SECTION.
+      *
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF          MCP-RC          =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF          MCP-RC          =   ZERO
+                   MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
+                   MOVE    ZERO                TO  FLG-TENSUPLUS
+               ELSE
+                   INITIALIZE                  TENSUPLUS-REC
+                   MOVE    1                   TO  FLG-TENSUPLUS
+               END-IF
+           ELSE
+               INITIALIZE                  TENSUPLUS-REC
+               MOVE    1                   TO  FLG-TENSUPLUS
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-TENSUPLUS-READ-EXT.
+           EXIT.
+      *
+      *----(01.01.01)--ADD-END-----
       *****************************************************************
       *    請求管理読み込み
       *****************************************************************
