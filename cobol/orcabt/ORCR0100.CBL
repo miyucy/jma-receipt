@@ -108,6 +108,8 @@
       *  01.01.05    NACL-藤原    02.11.07  医療機関ＩＤ・診療年月を追加
       *  01.01.06    NACL-藤原    02.11.08  国保の特定の保険者番号のとき
       *                                     県内分とするように修正
+      *  01.00.07    NACL-藤原    02/11/28  国保の県内扱い保険者番号をシス管より
+      *                                     編集するように修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -343,6 +345,16 @@
       *
            03  WRK-ERRMSG          PIC X(40).
       *
+           03  WRK-1033-TABLE.
+               05  WRK-1033-TBL    OCCURS  5.
+                   07  WRK-1033-HKNJANUM-G.
+                       09  WRK-1033-HKNJANUM
+                                   PIC X(08) OCCURS  20.
+                   07  WRK-1033-STYUKYMD
+                                   PIC X(08).
+                   07  WRK-1033-EDYUKYMD 
+                                   PIC X(08).                                       
+      *
       *    県単用項目ファイル用ワーク     
            COPY    "HC06.INC"      REPLACING  //HC06//
                                    BY         //RECE11-HC06//.
@@ -551,21 +563,6 @@
       *    改行コード
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
       *
-      *    国保保険者（県内分特例）
-       01  WRK-CONS-KKH-HKNJANUM.
-      *    全国土木建築
-           03  WRK-CONS-KKH-HKNJANUM1
-                                    PIC X(08)   VALUE   "133033".
-      *    中央建設
-           03  WRK-CONS-KKH-HKNJANUM2
-                                    PIC X(08)   VALUE   "133264".
-      *    全国建設工事業
-           03  WRK-CONS-KKH-HKNJANUM3
-                                    PIC X(08)   VALUE   "133298".
-      *    全国歯科医師
-           03  WRK-CONS-KKH-HKNJANUM4
-                                    PIC X(08)   VALUE   "093013".
-      *
        01  WRK-TENSU-AREA.
            03  WRK-KHNTEN.
                05  WRK-KHNTENZ     PIC  ZZZZZZZ.
@@ -597,6 +594,9 @@
       *    医療機関情報
            COPY    "CPSK1001.INC".
            COPY    "CPSK1002.INC".
+      *     
+      *    県内扱い保険者情報
+           COPY    "CPSK1033.INC".
       *
            COPY    "CPRCF008.INC".
       *
@@ -829,6 +829,53 @@
            IF      SYS-2005-TENKIHENKBN     =   SPACE
                MOVE    ZERO             TO  SYS-2005-TENKIHENKBN
            END-IF
+      * 
+      *    県内扱い保険者情報
+           MOVE    SPACE            TO  WRK-1033-TABLE
+      *     
+           MOVE    SPACE            TO  SYSKANRI-REC
+           INITIALIZE                   SYSKANRI-REC
+           MOVE    "1033"           TO  SYS-KANRICD
+           MOVE    "*"              TO  SYS-KBNCD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-NEXT-SEC
+           ELSE
+               MOVE    1               TO  FLG-KANRIMST
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM             UNTIL   FLG-KANRIMST   =   1
+                               OR      IDX            >=  5
+               MOVE    MCPDATA-REC         TO  SYS-1033-REC
+               IF      SYS-1033-STYUKYMD   >   "20020930"
+                   CONTINUE
+               ELSE    
+                   ADD     1              TO  IDX
+                   MOVE    SYS-1033-STYUKYMD
+                                          TO  WRK-1033-STYUKYMD   (IDX)
+                   MOVE    SYS-1033-EDYUKYMD
+                                          TO  WRK-1033-EDYUKYMD   (IDX)
+                   MOVE    SYS-1033-TBL   TO  WRK-1033-HKNJANUM-G (IDX)
+               END-IF    
+      *
+               MOVE    "SYSKANRI-KEY5"    TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-NEXT-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            .
        120-HOSPINF-GET-EXT.
            EXIT.
@@ -2855,19 +2902,31 @@
                    MOVE    RECE02-HKNJANUM-KEY (1:2)
                                            TO  RECE08-PREFNUM
                END-IF
-               EVALUATE    RECE02-HKNJANUM-KEY
-                   WHEN    WRK-CONS-KKH-HKNJANUM1
-                   WHEN    WRK-CONS-KKH-HKNJANUM2
-                   WHEN    WRK-CONS-KKH-HKNJANUM3
-                   WHEN    WRK-CONS-KKH-HKNJANUM4
-                       MOVE    "1"             TO  RECE08-PREFKBN
-                   WHEN    OTHER    
-                       IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
-                           MOVE    "1"             TO  RECE08-PREFKBN
-                       ELSE
-                           MOVE    "2"             TO  RECE08-PREFKBN
-                       END-IF
-               END-EVALUATE        
+               IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
+                   MOVE    "1"             TO  RECE08-PREFKBN
+               ELSE
+                   MOVE    "2"             TO  RECE08-PREFKBN
+                   MOVE    RECE02-SRYYM        TO  WRK-SYMD (1:6)
+                   MOVE    "01"                TO  WRK-SYMD (7:2)
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       5
+                           OR      WRK-1033-STYUKYMD (IDX) =   SPACE
+                       IF      WRK-1033-STYUKYMD   (IDX) <=  WRK-SYMD
+                       AND     WRK-1033-EDYUKYMD   (IDX) >=  WRK-SYMD      
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >       20
+                                   OR      WRK-1033-HKNJANUM (IDX IDY)
+                                                       =   SPACE     
+                               IF      RECE02-HKNJANUM-KEY = 
+                                       WRK-1033-HKNJANUM (IDX IDY)
+                                   MOVE    "1"     TO  RECE08-PREFKBN
+                                   MOVE    20      TO  IDY
+                                   MOVE    5       TO  IDX
+                               END-IF
+                           END-PERFORM
+                       END-IF            
+                   END-PERFORM
+               END-IF        
            ELSE
                MOVE    "0"             TO  RECE08-PREFKBN
                MOVE    "00"            TO  RECE08-PREFNUM
@@ -3546,6 +3605,27 @@
                                        MCPDATA-REC
            .
        960-KANRIMST-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読み込み処理
+      *****************************************************************
+       900-KANRIMST-NEXT-SEC         SECTION.
+      *
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-KANRIMST
+           ELSE
+               MOVE    1               TO  FLG-KANRIMST
+           END-IF
+      *
+           .
+       900-KANRIMST-NEXT-EXT.
            EXIT.
       *****************************************************************
       *    保険番号マスタ次検索処理
