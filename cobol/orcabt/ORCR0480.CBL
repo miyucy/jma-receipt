@@ -42,6 +42,7 @@
       *  01.00.08    NACL-門脇    03.06.03  外来診療料対応
       *                                     （平成１５年６月以降）
       *  01.00.09    NACL-門脇    04/01/26  カナ氏名の長さ等修正
+      *  01.00.10    NACL-藤原    04/03/26  手術歴の記載
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -189,7 +190,7 @@
            03  FLG-RECE08          PIC 9(01).
            03  FLG-RECECOM         PIC 9(01).
            03  FLG-ERR             PIC 9(01).
-           03  FLG-PTINF           PIC 9(01).
+           03  FLG-OPECOM          PIC 9(01).
       *
            03  FLG-KUGIRI          PIC 9(01).
            03  FLG-SET             PIC 9(01).
@@ -313,6 +314,8 @@
            03  WRK-STYMDW          PIC X(06).
            03  WRK-EDYMDW          PIC X(06).
       *
+           03  WRK-OPECOM-PATH     PIC X(64).
+      *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG.
                05  WRK-HENGENGO    PIC X(01).
@@ -357,6 +360,10 @@
            03  WRK-COL                         PIC 9(03). 
            03  WRK-RECECOM         PIC 9(01).
            03  WRK-RECEHEN         PIC 9(01).
+      *
+      *    手術歴編集
+           03  WRK-OPECOM          PIC 9(01).
+           03  WRK-OPECOM-HEN      PIC X(50).
       *
       *    区切り線
        01  WRK-LINE-AREA.
@@ -425,10 +432,6 @@
       *
            COPY    "CPRCF008.INC".
       *
-      *    保険マスタ
-       01  HKNNUM-REC.
-           COPY    "CPHKNNUM.INC".
-      *
       *    レセプトコメントマスタ
        01  RECECOM-REC.
            COPY    "CPRECECOM.INC".
@@ -437,13 +440,13 @@
        01  RECE07-REC. 
            COPY    "CPRCF007.INC".
       *
-      *    患者情報
-       01  PTINF-REC.
-           COPY    "CPPTINF.INC".
-      *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    手術歴レセプトコメントマスター
+       01  OPECOM-REC.
+           COPY    "CPOPECOM.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -840,6 +843,9 @@
       *
       *    帳票編集<傷病の経過>処理
            PERFORM 360-HC101-COMMENT-HEN-SEC 
+      *
+      *    帳票編集<手術歴>処理
+           PERFORM 380-HC101-OPECOM-HEN-SEC 
       *
       *    帳票編集<適用（点数）>処理
            PERFORM 340-HC101-ZAI-HEN-SEC
@@ -1474,12 +1480,7 @@
                IF  WRK-LINETEK          >=   WRK-LINE-MAX
                    PERFORM 34120-PAGE-SEC
                END-IF    
-               ADD     1               TO  WRK-LINETEK
-               IF      CNT-PAGE        =   1   
-                   MOVE    WRK-KUGIRI1 TO  HC22-TEKIYO2 (WRK-LINETEK)
-               ELSE   
-                   MOVE    WRK-KUGIRI1 TO  HC24-TEKIYO  (WRK-LINETEK)
-               END-IF    
+               PERFORM 34110-KUGIRI-LINE-SEC
            END-IF
       *
            MOVE    ZERO                TO  WRK-R061-ZAINUM-O
@@ -1730,14 +1731,7 @@
                                IF      WRK-LINETEK >=  WRK-LINE-MAX
                                    PERFORM 34120-PAGE-SEC
                                ELSE
-                                   ADD     1           TO  WRK-LINETEK
-                                   IF      CNT-PAGE    =   1 
-                                       MOVE    WRK-KUGIRI1     TO 
-                                               HC22-TEKIYO2(WRK-LINETEK)
-                                   ELSE
-                                       MOVE    WRK-KUGIRI1     TO 
-                                               HC24-TEKIYO (WRK-LINETEK)
-                                   END-IF
+                                   PERFORM 34110-KUGIRI-LINE-SEC
                                END-IF
                            END-IF    
                        END-IF
@@ -1766,6 +1760,133 @@
       *
            .
        3601-COMMENT-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票編集<手術歴>処理
+      *****************************************************************
+       380-HC101-OPECOM-HEN-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  WRK-OPECOM
+                                           WRK-OPECOM-HEN
+      *
+      *    手術歴編集
+           INITIALIZE                      OPECOM-REC
+           MOVE    RECE41-HOSPID       TO  OPECOM-HOSPID
+           MOVE    RECE41-PTID         TO  OPECOM-PTID
+           MOVE    RECE41-SRYYM        TO  OPECOM-TEKSTYM
+                                           OPECOM-TEKEDYM
+           MOVE    RECE41-NYUGAIKBN    TO  OPECOM-NYUGAIKBN
+           MOVE    "OPECOM-KEY4"       TO  WRK-OPECOM-PATH
+           PERFORM 900-OPECOM-READ-SEC
+      *
+           PERFORM             UNTIL   FLG-OPECOM   =   1
+               IF    ( OPECOM-HKNNUM    =   RECE41-HKNNUM )
+               AND   ( OPECOM-HKNID     =   RECE41-HKNID  )
+                   MOVE    OPECOM-SRYYMD       TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD3    TO  WRK-OPECOM-HEN
+                   PERFORM 3801-OPECOM-HENSYU-SEC                 
+                   MOVE    OPECOM-OPENAME      TO  WRK-OPECOM-HEN
+                   PERFORM 3801-OPECOM-HENSYU-SEC
+                   IF      OPECOM-OPECOMMENT   NOT =   SPACE                
+                       MOVE    OPECOM-OPECOMMENT   TO  WRK-OPECOM-HEN
+                       PERFORM 3801-OPECOM-HENSYU-SEC
+                   END-IF                 
+               END-IF               
+      *                 
+               MOVE    WRK-OPECOM-PATH TO  ORC-DBPATH
+               PERFORM 900-OPECOM-READ-N-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-OPECOM-PATH     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+      *    コメント編集
+           INITIALIZE                      OPECOM-REC
+           MOVE    RECE41-HOSPID       TO  OPECOM-HOSPID
+           MOVE    RECE41-PTID         TO  OPECOM-PTID
+           MOVE    RECE41-SRYYM        TO  OPECOM-TEKSTYM
+                                           OPECOM-TEKEDYM
+           MOVE    RECE41-NYUGAIKBN    TO  OPECOM-NYUGAIKBN
+           MOVE    "OPECOM-KEY5"       TO  WRK-OPECOM-PATH
+           PERFORM 900-OPECOM-READ-SEC
+      *
+           PERFORM             UNTIL   FLG-OPECOM   =   1
+               IF    ( OPECOM-HKNNUM    =   RECE41-HKNNUM )
+               AND   ( OPECOM-HKNID     =   RECE41-HKNID  )
+                   MOVE    OPECOM-OPENAME      TO  WRK-OPECOM-HEN
+                   PERFORM 3801-OPECOM-HENSYU-SEC
+                   IF      OPECOM-OPECOMMENT   NOT =   SPACE                
+                       MOVE    OPECOM-OPECOMMENT   TO  WRK-OPECOM-HEN
+                       PERFORM 3801-OPECOM-HENSYU-SEC
+                   END-IF                 
+               END-IF               
+      *                 
+               MOVE    WRK-OPECOM-PATH TO  ORC-DBPATH
+               PERFORM 900-OPECOM-READ-N-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-OPECOM-PATH     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       380-HC101-OPECOM-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    コメントの改行コード削除処理
+      *****************************************************************
+       3801-OPECOM-HENSYU-SEC    SECTION.
+      *
+           IF      WRK-OPECOM          =   ZERO
+      *        傷病名との間に区切り線を出力
+               IF      WRK-LINETEK         >   ZERO
+                   IF      WRK-LINETEK >=  WRK-LINE-MAX
+                       PERFORM 34120-PAGE-SEC
+                   ELSE
+                       PERFORM 34110-KUGIRI-LINE-SEC
+                   END-IF
+               END-IF
+           ELSE
+      *        手術歴とコメントの間に改行
+               IF    ( WRK-OPECOM-PATH     =   "OPECOM-KEY5" )
+               AND   ( WRK-OPECOM          =   1             )
+                   IF      WRK-LINETEK     >=  WRK-LINE-MAX
+                       PERFORM 34120-PAGE-SEC
+                   ELSE
+                       ADD     1                   TO  WRK-LINETEK
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF      WRK-OPECOM-PATH     =   "OPECOM-KEY4"
+               MOVE    1                   TO  WRK-OPECOM
+           ELSE
+               MOVE    2                   TO  WRK-OPECOM
+           END-IF                 
+      *
+           IF      WRK-LINETEK         >=  WRK-LINE-MAX
+               PERFORM 34120-PAGE-SEC
+           END-IF
+           ADD     1                   TO  WRK-LINETEK
+           IF      CNT-PAGE            =   1   
+               MOVE    WRK-OPECOM-HEN      TO  HC22-TEKIYO2(WRK-LINETEK)
+           ELSE                
+               MOVE    WRK-OPECOM-HEN      TO  HC24-TEKIYO (WRK-LINETEK)
+           END-IF                
+      *
+           MOVE    SPACE               TO  WRK-OPECOM-HEN
+           .
+       3801-OPECOM-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1885,6 +2006,7 @@
                                                DELIMITED  BY  SIZE
                         RECE41-PTNUM           DELIMITED  BY  SIZE  
                                                INTO  WRK-RECEERR
+                   END-STRING
                    PERFORM 500-ERR-HENSYU-SEC
                    MOVE    1                  TO  FLG-ERR
                END-IF
@@ -2426,6 +2548,53 @@
            .
        900-RECECOM-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    手術歴マスター読込
+      *****************************************************************
+       900-OPECOM-READ-SEC           SECTION.
+      *
+           MOVE    OPECOM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-OPECOM-PATH          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-OPECOM-PATH          TO  ORC-DBPATH
+               PERFORM 900-OPECOM-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-OPECOM
+               INITIALIZE                      OPECOM-REC
+           END-IF
+      *
+           .
+       900-OPECOM-READ-EXT.
+           EXIT.
+      *
+     *****************************************************************
+      *    手術歴マスター読込
+      *****************************************************************
+       900-OPECOM-READ-N-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  OPECOM-REC
+               MOVE    ZERO                TO  FLG-OPECOM
+           ELSE
+               INITIALIZE                      OPECOM-REC
+               MOVE    1                   TO  FLG-OPECOM
+           END-IF
+      *
+           .
+       900-OPECOM-READ-N-EXT.
+           EXIT.
+      *      
       *      
       *****************************************************************
       *    ＤＢ　オープン処理

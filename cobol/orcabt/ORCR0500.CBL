@@ -54,6 +54,12 @@
       *                                     HCN22V01.REDを追加
       *                                     HCN21V01.REDを追加
       *                                     HCN23V01.REDを追加
+      *
+      *  ２００４年４月改正
+      *  01.02.01    NACL-藤原    04/03/29  請求点の桁数の変更
+      *                                     HCN21V02.red
+      *                                     HCN22V02.red
+      *                                     HCN23V02.red
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -180,8 +186,10 @@
       *
            COPY    "HCN21.INC".
            COPY    "HCN21V01.INC".
+           COPY    "HCN21V02.INC".
            COPY    "HCN22.INC".
            COPY    "HCN22V01.INC".
+           COPY    "HCN22V02.INC".
       *
       *    自賠責レセプト
            COPY    "HCM23.INC".
@@ -192,6 +200,7 @@
       *
            COPY    "HCN23.INC".
            COPY    "HCN23V01.INC".
+           COPY    "HCN23V02.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -589,6 +598,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN21V01
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN21V01-RENNUM
                        MOVE    HCN21V01            TO  RECE08-PRTDATA
+                   WHEN    "HCN21V02.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN21V02
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN21V02-RENNUM
+                       MOVE    HCN21V02            TO  RECE08-PRTDATA
                    WHEN    "HCN22.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN22
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN22-RENNUM
@@ -597,6 +610,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN22V01
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN22V01-RENNUM
                        MOVE    HCN22V01            TO  RECE08-PRTDATA
+                   WHEN    "HCN22V02.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN22V02
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN22V02-RENNUM
+                       MOVE    HCN22V02            TO  RECE08-PRTDATA
                    WHEN    "HCN23.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN23
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN23-RENNUM
@@ -605,6 +622,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN23V01
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN23V01-RENNUM
                        MOVE    HCN23V01            TO  RECE08-PRTDATA
+                   WHEN    "HCN23V02.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN23V02
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN23V02-RENNUM
+                       MOVE    HCN23V02            TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
@@ -678,13 +699,16 @@
                    MOVE    "自賠責レセプト（入院外）"  TO  SPRT-TITLE
                WHEN    "HCN21.red"     ALSO    ANY
                WHEN    "HCN21V01.red"  ALSO    ANY
+               WHEN    "HCN21V02.red"  ALSO    ANY
                WHEN    "HCN22.red"     ALSO    ANY
                WHEN    "HCN22V01.red"  ALSO    ANY
+               WHEN    "HCN22V02.red"  ALSO    ANY
                WHEN    "HCM24V01.red"  ALSO    "1"
                WHEN    "HCM24V02.red"  ALSO    "1"
                    MOVE    "労災レセプト（入院）"      TO  SPRT-TITLE
                WHEN    "HCN23.red"     ALSO    ANY
                WHEN    "HCN23V01.red"  ALSO    ANY
+               WHEN    "HCN23V02.red"  ALSO    ANY
                WHEN    "HCM29.red"     ALSO    "1"
                WHEN    "HCM29V01.red"  ALSO    "1"
                    MOVE    "自賠責レセプト（入院）"    TO  SPRT-TITLE
