@@ -2586,6 +2586,8 @@
                   (SPA-GAI-JIKANKBN    NOT =   ZERO )  AND
       *           診察料再算定時は付けない
                   (FLG-JIKANKBN        =   ZERO )
+      *           時間外指定が無い時
+             AND  (SPA-COM-TIMEFLG (SPA-GMN-IDX) =   ZERO )
                MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
                                            TO  WRK-INPUTCD
                MOVE    SPACE               TO  SPA-GMN-INPUTCD
