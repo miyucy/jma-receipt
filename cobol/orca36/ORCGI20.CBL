@@ -674,7 +674,7 @@
            MOVE    "退院済"            TO  SPA-GMN-JOTAIMEIL (2)
            MOVE    2                   TO  SPA-GMN-JOTAI-MAX
       *
-           MOVE    "F"                 TO  SPA-GMN-CHKTESTPT
+           PERFORM 420-CLEAR-SEC
       *
            MOVE    1                   TO  SPA-GMN-CUR                                 
            .
@@ -920,6 +920,7 @@
                IF      SPA-ERRCD       NOT =   SPACE
                    GO  TO  410-INPUT-CHK-EXT
                END-IF
+      *
            END-IF
       *
            MOVE    ZERO            TO  SPA-GMN-CUR
@@ -1193,7 +1194,7 @@
       *
            MOVE    6                    TO  SPA-GMN-CUR
       *
-           IF     SPA-GMN-STNYUINYMD    =   SPACE
+           IF     SPA-GMN-STNYUINYMD    =   SPACE OR "00000000"
                MOVE    "00000000"       TO  SPA-NAI-STNYUINYMD
            ELSE    
       *        日付画面チェックサブ
@@ -1219,7 +1220,7 @@
       *
            MOVE    7                    TO  SPA-GMN-CUR
       *
-           IF     SPA-GMN-EDNYUINYMD    =   SPACE
+           IF     SPA-GMN-EDNYUINYMD    =   SPACE OR "99999999"
                MOVE    "99999999"           TO  SPA-NAI-EDNYUINYMD
            ELSE    
       *        日付画面チェックサブ
@@ -1244,7 +1245,7 @@
       *
            MOVE    13                   TO  SPA-GMN-CUR
       *
-           IF     SPA-GMN-STTAIINYMD    =   SPACE
+           IF     SPA-GMN-STTAIINYMD    =   SPACE OR "00000000"
                MOVE    "00000000"       TO  SPA-NAI-STTAIINYMD
            ELSE    
       *        日付画面チェックサブ
@@ -1270,8 +1271,9 @@
       *
            MOVE    14                   TO  SPA-GMN-CUR
       *
-           IF     SPA-GMN-EDTAIINYMD    =   SPACE
-               MOVE    "99999999"           TO  SPA-NAI-EDTAIINYMD
+           IF     SPA-GMN-EDTAIINYMD    =   SPACE OR "99999999"
+               MOVE    "99999999"       TO  SPA-NAI-EDTAIINYMD
+               MOVE    "99999999"       TO  SPA-GMN-EDTAIINYMD
            ELSE    
       *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
@@ -1690,6 +1692,14 @@
                                        SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX
                                            SPA-NAI-NAME-MAX                            
+      *
+           MOVE   "00000000"           TO  SPA-NAI-STNYUINYMD
+           MOVE   "99999999"           TO  SPA-NAI-EDNYUINYMD
+      *
+           MOVE   "00000000"           TO  SPA-NAI-STTAIINYMD
+           MOVE   "99999999"           TO  SPA-NAI-EDTAIINYMD
+      *
+           MOVE   "99999999"           TO  SPA-GMN-EDTAIINYMD
       *
            MOVE    "F"                 TO  SPA-GMN-CHKTESTPT
       *
@@ -2258,24 +2268,16 @@
            MOVE    1                   TO  FLG-JYOKEN
       *
       *    退院日
-           IF    ( SPA-NAI-STTAIINYMD      =   "00000000" )
-            AND  ( SPA-NAI-EDTAIINYMD      =   "99999999" )
-               CONTINUE
-           ELSE
-               PERFORM 45011-JYOKEN-HENSYU-SEC
-               STRING  "(taiinymd <> '99999999' )"
-                                           DELIMITED  BY  SIZE
-                   "and"                   DELIMITED  BY  SIZE
-                   "(taiinymd >= '"        DELIMITED  BY  SIZE
+           PERFORM 45011-JYOKEN-HENSYU-SEC
+           STRING  "(taiinymd >= '"        DELIMITED  BY  SIZE
                    SPA-NAI-STTAIINYMD      DELIMITED  BY  SIZE
                    "' and taiinymd <= '"   DELIMITED  BY  SIZE
                    SPA-NAI-EDTAIINYMD      DELIMITED  BY  SIZE
                    "')"                    DELIMITED  BY  SIZE                        
                    INTO    WRK-SQL
                    WITH    POINTER WRK-SQL-PNT
-               END-STRING
-               MOVE    1                   TO  FLG-JYOKEN
-           END-IF    
+           END-STRING
+           MOVE    1                   TO  FLG-JYOKEN
       *
       *    診療科
            IF      SPA-GMN-SRYKA       =   SPACE
