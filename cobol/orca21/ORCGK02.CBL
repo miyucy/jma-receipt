@@ -5699,7 +5699,8 @@
       *    点数計算・剤別チェック処理
            MOVE    SPACE           TO  FLG-TOROKU
            PERFORM 510-TBLHEN-SEC
-           IF     (SPA-ERRCD       =   SPACE
+           IF     (SPA-KIDCD       =   SPACE  )  AND
+                  (SPA-ERRCD       =   SPACE
                                    OR  "0021" )  AND
                   (FLG-END         =   ZERO   )
                CONTINUE
@@ -9512,7 +9513,8 @@
       *
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" )
                GO      TO      430-SANTEIRRK-EXT
            END-IF
       *
@@ -9556,7 +9558,8 @@
       *
       *    更新前の基本チェック
            PERFORM 41001-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF     (SPA-ERRCD       NOT =   SPACE  )  OR
+                  (SPA-KIDCD           =   "0180" )
                GO      TO      4106S-INPUTCD-SYORI-EXT
            END-IF
       *
@@ -9633,7 +9636,8 @@
       *
       *    更新前の基本チェック
            PERFORM 41001-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF     (SPA-ERRCD       NOT =   SPACE  )  OR
+                  (SPA-KIDCD           =   "0180" )
                GO      TO      440-BYOTOROKU-EXT
            END-IF
       *
@@ -9713,7 +9717,8 @@
       *
       *            診療行為入力チェック
                    PERFORM 41011-KOUI-ALLHEN-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
+                   IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                          (SPA-KIDCD           =   "0180" )
                       GO      TO      440-KNJADD-EXT
                    END-IF
       *
@@ -9788,7 +9793,8 @@
       *
       *        更新前の基本チェック
                PERFORM 41001-KIHON-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
+               IF     (SPA-ERRCD       NOT =   SPACE  )  OR
+                      (SPA-KIDCD           =   "0180" )
                    GO      TO      450-KAIKEI-EXT
                END-IF
       *
@@ -9837,7 +9843,8 @@
            IF      SPA-GMN-PTID    NOT =   ZERO
       *        更新前の基本チェック
                PERFORM 41001-KIHON-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
+               IF     (SPA-ERRCD       NOT =   SPACE  )  OR
+                      (SPA-KIDCD           =   "0180" )
                    GO      TO      460-SYUNOU-EXT
                END-IF
       *
@@ -9972,7 +9979,8 @@
       *
       *    更新前の基本チェック
            PERFORM 41001-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" )
                GO      TO      4110-KYOSEIEND-EXT
            END-IF
       *
@@ -10014,6 +10022,7 @@
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" )  OR
                   (FLG-END             =   1     )
                GO      TO      450-MAEGMN-EXT
            END-IF
@@ -10038,6 +10047,7 @@
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" )  OR
                   (FLG-END             =   1     )
                GO      TO      460-ATOGMN-EXT
            END-IF
@@ -10107,6 +10117,7 @@
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" )  OR
                   (FLG-END             =   1     )
                GO      TO      480-DOSYORI-EXT
            END-IF
@@ -10174,6 +10185,7 @@
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" )  OR
                   (FLG-END             =   1     )
                GO      TO      4001-K01-SYORI-EXT
            END-IF
@@ -10212,6 +10224,7 @@
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" )  OR
                   (FLG-END             =   1     )
                GO      TO      470-SANTEI-EXT
            END-IF
@@ -10302,6 +10315,7 @@
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" )  OR
                   (FLG-END             =   1     )
                GO      TO      480-YOYAKU-EXT
            END-IF
@@ -10350,6 +10364,7 @@
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" )  OR
                   (FLG-END             =   1     )
                GO      TO      490-UKEICHI-EXT
            END-IF
@@ -10393,6 +10408,7 @@
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" )  OR
                   (FLG-END             =   1     )
                GO      TO      4102-UKETUKE-EXT
            END-IF
@@ -10513,6 +10529,7 @@
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180")  OR
                   (FLG-END             =   1     )
                GO      TO      41001-KIHON-CHK-EXT
            END-IF
@@ -10698,7 +10715,8 @@
       *
       *    更新前の基本チェック
            PERFORM 41001-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180")
                GO      TO      4100-TOROKU-EXT
            END-IF
       *
