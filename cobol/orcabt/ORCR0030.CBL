@@ -108,6 +108,7 @@
       *                                     §Œ√±≤¡§Ú…Ωº®§π§Î§Ë§¶§ÀΩ§¿µ
       *  01.02.17   NACL-ÃÁœ∆     03.04.16  ¡•∞˜ ›∏±° »Ô ›∏±º‘°À°‹ƒÃ∂–∫“≥≤
       *                                     °‹ΩÈø«ª˛°°¬–±˛
+      *  01.02.18   NACL-ÃÁœ∆     03.04.17  ∑Î≥À°¢¿∫ø¿§Œ∞Ï…Ù…È√¥≥€ ‘Ω∏Ω§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2972,8 +2973,13 @@
                                           SYU-KOH-COMPYKZFTN(IDX3)
                       ADD      1          TO   RECE02-KOHKENSU(1)
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
+                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
+                      AND   (RECE02-KOHNUM(1)    =  "010" OR "021")
+                            CONTINUE
+                      ELSE
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
+                      END-IF
       *               END-IF
                       IF   RECE02-KOHNUM(1) =  "051"
                       AND  FLG-KOH      NOT =   2
@@ -3000,8 +3006,13 @@
                                           SYU-KOH-COMPYKZFTN(IDX3)
                       ADD      1          TO   RECE02-KOHKENSU(2)
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
+                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
+                      AND   (RECE02-KOHNUM(2)    =  "010" OR "021")
+                            CONTINUE
+                      ELSE
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
+                      END-IF
       *               END-IF
                       IF   RECE02-KOHNUM(2) =  "051"
                       AND  FLG-KOH      NOT =   2
@@ -3028,8 +3039,13 @@
                                           SYU-KOH-COMPYKZFTN(IDX3)
                       ADD      1          TO   RECE02-KOHKENSU(3)
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
+                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
+                      AND   (RECE02-KOHNUM(3)    =  "010" OR "021")
+                            CONTINUE
+                      ELSE
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
+                      END-IF
       *               END-IF
                       IF   RECE02-KOHNUM(3) =  "051"
                       AND  FLG-KOH      NOT =   2
@@ -3056,8 +3072,13 @@
                                           SYU-KOH-COMPYKZFTN(IDX3)
                       ADD      1          TO   RECE02-KOHKENSU(4)
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
+                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
+                      AND   (RECE02-KOHNUM(4)    =  "010" OR "021")
+                            CONTINUE
+                      ELSE
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
+                      END-IF
       *               END-IF
                       IF   RECE02-KOHNUM(4) =  "051"
                       AND  FLG-KOH      NOT =   2

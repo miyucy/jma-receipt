@@ -35,6 +35,7 @@
       *  01.00.05    NACL-ÌçÏÆ    03.04.10  ´Ç¸îÇÛÃÖÅ¬¹ç¤Î³°ÇñÂÐ±þ
       *  01.00.06    NACL-ÌçÏÆ    03.04.16  Á¥°÷ÊÝ¸±¡ÊÈïÊÝ¸±¼Ô¡Ë¡ÜÄÌ¶ÐºÒ³²
       *                                     ¡Ü½é¿Ç»þ¡¡ÂÐ±þ
+      *  01.00.07    NACL-ÌçÏÆ    03.04.17  ·ë³Ë¡¢Àº¿À¤Î°ìÉôÉéÃ´³ÛÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4968,6 +4969,10 @@
                       END-EVALUATE
                       ADD      1          TO   RECE62-KOHKENSU(1)
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
+                      IF    (RECE62-FTNMONEY(1)  =  ZERO)
+                      AND   (RECE62-KOHNUM(1)    =  "010" OR "021")
+                            CONTINUE
+                      ELSE
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
                             IF   RECE62-KOHNUM(1) =  "051"              
@@ -5009,6 +5014,7 @@
                                COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
                                         RECE62-FTNMONEY(KH-IDX) * 10    
                             END-IF                 
+                      END-IF
       *               END-IF
       *
                       ADD   SYU-SKJ-NISSU(IDX3)    TO
@@ -5040,6 +5046,10 @@
                       END-EVALUATE
                       ADD      1          TO   RECE62-KOHKENSU(2)
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
+                      IF    (RECE62-FTNMONEY(1)  =  ZERO)
+                      AND   (RECE62-KOHNUM(2)    =  "010" OR "021")
+                            CONTINUE
+                      ELSE
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
                             IF   RECE62-KOHNUM(2) =  "051"              
@@ -5081,6 +5091,7 @@
                                COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
                                         RECE62-FTNMONEY(KH-IDX) * 10    
                             END-IF                 
+                      END-IF
       *               END-IF
       *
                       ADD   SYU-SKJ-NISSU(IDX3)    TO
@@ -5112,6 +5123,10 @@
                       END-EVALUATE
                       ADD      1          TO   RECE62-KOHKENSU(3)
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
+                      IF    (RECE62-FTNMONEY(1)  =  ZERO)
+                      AND   (RECE62-KOHNUM(3)    =  "010" OR "021")
+                            CONTINUE
+                      ELSE
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
                             IF   RECE62-KOHNUM(3) =  "051"              
@@ -5153,6 +5168,7 @@
                                COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
                                         RECE62-FTNMONEY(KH-IDX) * 10    
                             END-IF                 
+                      END-IF
       *               END-IF
       *
                       ADD   SYU-SKJ-NISSU(IDX3)    TO
@@ -5184,6 +5200,10 @@
                       END-EVALUATE
                       ADD      1          TO   RECE62-KOHKENSU(4)
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
+                      IF    (RECE62-FTNMONEY(1)  =  ZERO)
+                      AND   (RECE62-KOHNUM(4)    =  "010" OR "021")
+                            CONTINUE
+                      ELSE
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
                             IF   RECE62-KOHNUM(4) =  "051"              
@@ -5225,6 +5245,7 @@
                                COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
                                         RECE62-FTNMONEY(KH-IDX) * 10    
                             END-IF                 
+                      END-IF
       *               END-IF
       *
                       ADD   SYU-SKJ-NISSU(IDX3)    TO
