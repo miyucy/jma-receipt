@@ -19,15 +19,16 @@
        PROGRAM-ID.             ORCR0620.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : レセプト（入院）
-000700*  コンポーネント名  : レセプト基本情報
-000800*  管理者            : 
+      *  サブシステム名    : レセプト（入院）
+      *  コンポーネント名  : レセプト基本情報
+      *  管理者            : 
       *  作成日付    作業者        記述
       *  02/12/10    NACL−藤原　  新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03.03.03  診療科数１０から２０へ変更
+      *  01.00.02    NACL-藤原    03/03/07  レセプト記載外公費情報追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -783,6 +784,7 @@
            END-IF
       *
       *    長期高額療養費の編集
+           MOVE    SPACE              TO   WRK-CHOKI
            PERFORM   VARYING   IDX   FROM    1   BY   1
                      UNTIL    (IDX     >   4)    
                      OR       (RECE61-KOHHKNNUM-O(IDX)  =   SPACE)
@@ -851,8 +853,20 @@
       *    組合せ公費保険番号情報のセット
            PERFORM   KOHNUMHC-SET-SEC
       *
-      *    補足区分のセット
-           MOVE    RECE61-HOSOKUKBN     TO  RECE62-HOSOKUKBN     
+      *    補足区分・レセプト記載外公費のセット
+           IF      RECE61-ETC-HKNNUM   NOT =   SPACE
+               MOVE    "1"                 TO  RECE62-HOSOKUKBN
+               MOVE    RECE61-ETC-HKNNUM   TO  RECE62-ETC-KOHNUM (1)
+           END-IF  
+           IF      WRK-CHOKI           NOT =   SPACE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       4
+                   IF         RECE62-ETC-KOHNUM (IDX)  =   SPACE
+                       MOVE    WRK-CHOKI   TO  RECE62-ETC-KOHNUM (IDX)
+                       MOVE    4           TO  IDX
+                   END-IF
+               END-PERFORM  
+           END-IF  
       *
       *    特記事項のセット
       *    老保の編集

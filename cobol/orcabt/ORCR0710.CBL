@@ -3895,6 +3895,13 @@
            MOVE    RECE62-AGE          TO  RECE10-AGE  
            MOVE    RECE62-KOUREI      TO  RECE10-ZAITAKU    
       *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+                   OR      RECE62-ETC-KOHNUM (IDX) =   SPACE
+               MOVE    RECE62-ETC-KOHNUM (IDX) TO
+                                       RECE10-ETC-KOHNUM (IDX)
+           END-PERFORM
+      *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
            IF      FLG-SEIKYU          =   1    

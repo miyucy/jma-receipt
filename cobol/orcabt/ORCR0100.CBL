@@ -1268,7 +1268,7 @@
                MOVE    RECE02X-AGE         TO  KOHSKY-AGE  
                MOVE    RECE02X-DEATHKBN    TO  KOHSKY-DEATHKBN
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       10
+                       UNTIL   IDX >       20
                    MOVE    RECE02X-SRYKA   (IDX)
                                            TO  KOHSKY-SRYKA (IDX)
                END-PERFORM
@@ -3452,8 +3452,19 @@
                MOVE    WRK-KYURATE-9   TO  RECE10-KYURATE
            ELSE
       *********MOVE    ZERO            TO  RECE10-SHOKUJINISSU (1)
-               MOVE    ZERO            TO  RECE10-KYURATE
+               IF      RECE02-TEISYUTUSAKI =   "1"
+                   MOVE    ZERO            TO  RECE10-KYURATE
+               ELSE
+                   MOVE    10              TO  RECE10-KYURATE
+               END-IF        
            END-IF             
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+                   OR      RECE02-ETC-KOHNUM (IDX) =   SPACE
+               MOVE    RECE02-ETC-KOHNUM (IDX) TO
+                                       RECE10-ETC-KOHNUM (IDX)
+           END-PERFORM
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH

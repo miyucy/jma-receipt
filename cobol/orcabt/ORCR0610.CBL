@@ -1462,7 +1462,8 @@
                IF      WRK-RECE61-KOHID    NOT =   ZERO
                AND     WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)  
                                                =   "019"
-                   MOVE    "1"                 TO  WRK-RECE61-HOSOKUKBN
+                   MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
+                                           TO  WRK-RECE61-ETC-HKNNUM
                ELSE                                    
                    PERFORM VARYING IDY FROM    1   BY  1
                            UNTIL   IDY >       4

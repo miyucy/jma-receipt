@@ -38,6 +38,7 @@
       *  01.00.08    NACL-Æ£¸¶    02.11.11  Å¾µ¢Æü¤¬Ì¤ÍèÆü¤Î¤È¤­ÉÂÌ¾¤ÎÉ½¼¨
       *                                     ¤ò¤¹¤ë¤è¤¦¤Ë½¤Àµ
       *  01.00.09    NACL-Æ£¸¶    03.03.12  Êä½õ¶èÊ¬¤ÎÄÉ²Ã
+      *                                     ¿ÇÎÅ²Ê¿ô£±£°¤«¤é£²£°¤ØÊÑ¹¹
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -356,11 +357,11 @@
            MOVE    ZERO                TO  FLG-CHK 
            IF      SYS-2005-BYOMEIHENKBN1      =   ZERO     
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       10
+                       UNTIL   IDX >       20
                        OR      RECE02-SRYKA(IDX)   =   SPACE
                    IF      PTBYO-SRYKA          =   RECE02-SRYKA (IDX)
                        MOVE    1                    TO  FLG-CHK
-                       MOVE    10                   TO  IDX
+                       MOVE    20                   TO  IDX
                    END-IF
                END-PERFORM
                IF      FLG-CHK              =   ZERO

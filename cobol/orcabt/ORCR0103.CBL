@@ -46,6 +46,7 @@
       *  01.00.11    NACL-Æ£¸¶    03.03.12  Êä½õ¶èÊ¬¤ÎÄÉ²Ã
       *  01.00.12    NACL-ÌçÏÆ    03.03.03  ºÞÈÖ¹æ·å½¤ÀµÂÐ±þ
       *  01.00.13    NACL-Æ£¸¶    03.03.05  ¥ì¥»¥×¥È¥³¥á¥ó¥È£Ä£Â¤ËÆþ³°¶èÊ¬¤òÄÉ²Ã
+      *  01.01.14    NACL-Æ£¸¶    03.03.07  ¿ÇÎÅ²Ê¿ô£±£°¤«¤é£²£°¤ØÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1197,7 +1198,7 @@
                MOVE    RECE02X-AGE         TO  KOHSKY-AGE  
                MOVE    RECE02X-DEATHKBN    TO  KOHSKY-DEATHKBN
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       10
+                       UNTIL   IDX >       20
                    MOVE    RECE02X-SRYKA   (IDX)
                                            TO  KOHSKY-SRYKA (IDX)
                END-PERFORM
@@ -3189,10 +3190,10 @@
                                        RECE10-TOTALTENINF (IDX)
                MOVE    RECE02-FTNMONEYINF(IDX) TO
                                        RECE10-FTNMONEYINF (IDX)
-               MOVE    RECE02-SHOKUJIINF (IDX) TO
-                                       RECE10-SHOKUJIINF (IDX)
                MOVE    RECE02-YKZFTNINF  (IDX) TO
                                        RECE10-YKZFTNINF   (IDX)
+      *********MOVE    RECE02-SHOKUJIINF (IDX) TO
+      *********                        RECE10-SHOKUJIINF (IDX)
            END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       45
@@ -3214,7 +3215,14 @@
            END-IF             
       *     
            MOVE    RECE02-AGE          TO  RECE10-AGE  
-           MOVE    RECE02-ZAITAKU      TO  RECE10-ZAITAKU    
+           MOVE    RECE02-ZAITAKU      TO  RECE10-ZAITAKU
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+                   OR      RECE02-ETC-KOHNUM (IDX) =   SPACE
+               MOVE    RECE02-ETC-KOHNUM (IDX) TO
+                                       RECE10-ETC-KOHNUM (IDX)
+           END-PERFORM
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH

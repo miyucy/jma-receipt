@@ -71,7 +71,9 @@
       *  01.00.21   NACL-藤原     03.01.20  月代り受給者番号に入外区分を追加
       *  01.00.22   NACL-藤原     03.01.30  特記事項０４老保の判定にを７０歳
       *                                     を追加
-      *  01.00.23    NACL-藤原    03/03/12  テスト患者番号区分・補助区分の追加
+      *  01.00.23    NACL-藤原    03/02/12  テスト患者番号区分・補助区分の追加
+      *  01.02.24    NACL-藤原    03/03/07  レセプト記載外公費情報追加
+      *                                     診療科数１０から２０へ変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -556,7 +558,7 @@
            MOVE    SPTID-PTNUM          TO  RECE02-PTNUM
       *    診療科情報のセット
            PERFORM   VARYING   IDX   FROM   1   BY   1
-                     UNTIL    (IDX      >   10)    OR
+                     UNTIL    (IDX      >   20)    OR
                               (RECE01-SRYKA(IDX)  =   SPACE)
                MOVE  RECE01-SRYKA(IDX)    TO   RECE02-SRYKA(IDX)
            END-PERFORM
@@ -776,6 +778,7 @@
            PERFORM   CSR-CLOSE-SEC
       *
       *    長期高額療養費の編集
+           MOVE    SPACE              TO   WRK-CHOKI
            PERFORM   VARYING   IDX   FROM    1   BY   1
                      UNTIL    (IDX     >   4)    
                      OR       (RECE01-KOHHKNNUM-O(IDX)  =   SPACE)
@@ -844,8 +847,20 @@
       *    組合せ公費保険番号情報のセット
            PERFORM   KOHNUMHC-SET-SEC
       *
-      *    補足区分のセット
-           MOVE    RECE01-HOSOKUKBN     TO  RECE02-HOSOKUKBN     
+      *    補足区分・レセプト記載外公費のセット
+           IF      RECE01-ETC-HKNNUM   NOT =   SPACE
+               MOVE    "1"                 TO  RECE02-HOSOKUKBN
+               MOVE    RECE01-ETC-HKNNUM   TO  RECE02-ETC-KOHNUM (1)
+           END-IF  
+           IF      WRK-CHOKI           NOT =   SPACE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       4
+                   IF         RECE02-ETC-KOHNUM (IDX)  =   SPACE
+                       MOVE    WRK-CHOKI   TO  RECE02-ETC-KOHNUM (IDX)
+                       MOVE    4           TO  IDX
+                   END-IF
+               END-PERFORM  
+           END-IF  
       *
       *    特記事項のセット
       *    老保の編集

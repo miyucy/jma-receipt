@@ -1089,13 +1089,13 @@
                END-IF
            END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       10
+                   UNTIL   IDX >       20
                IF      WRK-RECE01-SRYKA    (IDX)       =   SPACE
                    MOVE    ACCT-SRYKA      TO  WRK-RECE01-SRYKA (IDX)
-                   MOVE    10              TO  IDX
+                   MOVE    20              TO  IDX
                ELSE
                    IF      WRK-RECE01-SRYKA    (IDX)   =   ACCT-SRYKA
-                       MOVE    10                  TO  IDX
+                       MOVE    20                  TO  IDX
                    END-IF
                END-IF    
            END-PERFORM
@@ -1155,7 +1155,8 @@
                IF      WRK-RECE01-KOHID    NOT =   ZERO
                AND     WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)  
                                                =   "019"
-                   MOVE    "1"                 TO  WRK-RECE01-HOSOKUKBN
+                   MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
+                                           TO  WRK-RECE01-ETC-HKNNUM
                ELSE                                    
                    PERFORM VARYING IDY FROM    1   BY  1
                            UNTIL   IDY >       4
