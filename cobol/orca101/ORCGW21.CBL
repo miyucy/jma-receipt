@@ -31,8 +31,9 @@
       *                                     情報を取得するよう修正
       * 00.00.02     NACL−太田   03/01/29  有効開始日のチェック追加
       *                                     入院中患者チェック追加
-      * 00.00.03    NACL-太田     03/06/10  重症者等療養環境特別加算、
+      * 00.00.03     NACL-太田    03/06/10  重症者等療養環境特別加算、
       *                                     無菌治療室管理加算を追加
+      * 01.00.01     NACL-太田    03.11.17  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -198,6 +199,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -1963,6 +1967,11 @@
                                    TO  SYSUP-STYUKYMD
            MOVE    SPA-NAI-W21-YUKOEDYMD-OLD
                                    TO  SYSUP-EDYUKYMD
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD    TO  SYS-UPYMD
+           MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
+      *
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
            MOVE    "SYSKANRI-UPD1" TO  WRK-DBPATH
@@ -2000,6 +2009,11 @@
       *
       *    病室加算情報編集処理
            PERFORM 4201-BRM-KSN-EDIT-SEC
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD    TO  SYS-5002-CREYMD
+                                       SYS-5002-UPYMD
+           MOVE    SMCNDATE-HMS    TO  SYS-5002-UPHMS
       *
            MOVE    SYS-5002-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
@@ -3665,6 +3679,17 @@
       *
            .
        800-ENRTRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
