@@ -1856,14 +1856,17 @@
                           END-EVALUATE
                       END-IF
                   WHEN    "067"
-                      IF      COMB-HOJOKBN          NOT =  SPACE
+                      IF       WRK-NENREI           <     3
+                          MOVE  20      TO    RECE02-KYURATE
+                      ELSE
+                        IF      COMB-HOJOKBN          NOT =  SPACE
                           EVALUATE   COMB-HOJOKBN
                               WHEN   "8"
                                   MOVE   20        TO   RECE02-KYURATE
                               WHEN   "9"
                                   MOVE   10        TO   RECE02-KYURATE
                           END-EVALUATE
-                      ELSE
+                        ELSE
                           IF      COMB-HONKZKKBN        =    "1"
                               MOVE   HKN-HON-GAIKFTNRATE
                                                    TO   RECE02-KYURATE
@@ -1871,6 +1874,7 @@
                               MOVE   HKN-KZK-GAIKFTNRATE
                                                    TO   RECE02-KYURATE
                           END-IF
+                        END-IF
                       END-IF
                   WHEN    OTHER
                       IF   WRK-NENREI           <     3
