@@ -543,12 +543,22 @@
                    END-IF
       *
                    IF    ( FLG-TOKUTEI     =   1 )
-                       COMPUTE WRK-ACCT-TOK-NISSU1
-                           =   WRK-ACCT-TOK-NISSU1 +   1
+                       IF    ( STUSAN-KJNYMD (1:6) =   NACCT-SRYYM )
+                        AND  ( STUSAN-KJNYMD (7:2) =   WRK-DAY-X   )
+                           CONTINUE
+                       ELSE
+                           COMPUTE WRK-ACCT-TOK-NISSU1
+                               =   WRK-ACCT-TOK-NISSU1 +   1
+                       END-IF
       *
                        IF    ( FLG-TOKUTEI-SITEI   =   1 )
-                           COMPUTE WRK-ACCT-TOK-NISSU2
-                               =   WRK-ACCT-TOK-NISSU2 +   1
+                           IF    ( STUSAN-KJNYMD (1:6) =   NACCT-SRYYM )
+                            AND  ( STUSAN-KJNYMD (7:2) =   WRK-DAY-X   )
+                               CONTINUE
+                           ELSE
+                               COMPUTE WRK-ACCT-TOK-NISSU2
+                                   =   WRK-ACCT-TOK-NISSU2 +   1
+                           END-IF
                        END-IF
                    END-IF
       *
