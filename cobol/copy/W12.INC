@@ -49,6 +49,10 @@
                 04  W12-KKHOCRKBNLST    PIC X(20)   OCCURS  2 TIMES.
               03  W12-PREFPRGID.
                 04  W12-VALUE   PIC X(15).
+              03 W12-PREFPRGID1-STATE
+                                PIC S9(9)   BINARY.
+              03  W12-PREFPRGID1.
+                04  W12-VALUE   PIC X(15).
               03  W12-SYAPRTNM.
                 04  W12-VALUE   PIC X(16).
               03  W12-KKHPRTNM.

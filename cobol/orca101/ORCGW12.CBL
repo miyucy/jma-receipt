@@ -36,7 +36,8 @@
       *  01.00.05    MCC-藤原     02/06/04  転帰日編集区分の追加
       *  01.00.06    MCC-藤原     02/07/04  出力先プリンタ情報の追加
       *  02.00.01    NACL-多々納  02/11/13  一括入力 
-      *  02.00.01    NACL-藤原    03/01/08  通し番号編集区分の追加 
+      *  02.00.02    NACL-藤原    03/01/08  通し番号編集区分の追加 
+      *  02.00.03    NACL-藤原    03/02/27  入院用県単用項目編集プログラム名の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -105,6 +106,7 @@
                            11  SPA-GMN-KKHOCRKBNMEI
                                               PIC X(18).
                        09  SPA-GMN-PREFPRGID  PIC X(15).              
+                       09  SPA-GMN-PREFPRGID1 PIC X(15).              
                        09  SPA-GMN-KKHPRTKBN-G.
                            11  SPA-GMN-KKHPRTKBN
                                               PIC X(01).
@@ -569,6 +571,8 @@
       *
                MOVE    SYS-2005-PREFPRGID (1)
                                            TO  SPA-GMN-PREFPRGID
+               MOVE    SYS-2005-PREFPRGID (2)
+                                           TO  SPA-GMN-PREFPRGID1
       *         
                MOVE    SYS-2005-KKHPRTKBN  TO  SPA-GMN-KKHPRTKBN
                PERFORM VARYING IDY FROM    1   BY  1
@@ -690,6 +694,7 @@
            MOVE    W12-RECEDENOUT      TO  SPA-GMN-RECEDENOUT 
            MOVE    W12-KKHOCRKBN       TO  SPA-GMN-KKHOCRKBN-G 
            MOVE    W12-PREFPRGID       TO  SPA-GMN-PREFPRGID
+           MOVE    W12-PREFPRGID1      TO  SPA-GMN-PREFPRGID1
            MOVE    W12-KKHPRTKBN       TO  SPA-GMN-KKHPRTKBN-G 
            MOVE    W12-BYOMEIHENKBN1   TO  SPA-GMN-BYOMEIHENKBN1-G 
            MOVE    W12-TENKIHENKBN     TO  SPA-GMN-TENKIHENKBN-G 
@@ -742,6 +747,11 @@
            END-IF
       *
            PERFORM 4106-PREFPRGID-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4112-PREFPRGID1-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -904,6 +914,27 @@
       *
            .
        4106-PREFPRGID-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    県単用項目編集プログラム名（入院用）チェック
+      *****************************************************************
+       4112-PREFPRGID1-CHK-SEC       SECTION.
+      *
+      *
+           IF      SPA-GMN-PREFPRGID1     =   SPACE
+               CONTINUE
+           ELSE     
+               IF      SPA-GMN-PREFPRGID1(1:1) =   "S"
+                   CONTINUE
+               ELSE
+                  MOVE    13                     TO  SPA-GMN-CUR
+                  MOVE    "0006"                 TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       4112-PREFPRGID1-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1100,6 +1131,7 @@
            MOVE    SPA-GMN-KKHOCRKBN       TO  SYS-2005-KKHOCRKBN
            MOVE    SPA-GMN-KKHPRTKBN       TO  SYS-2005-KKHPRTKBN
            MOVE    SPA-GMN-PREFPRGID       TO  SYS-2005-PREFPRGID (1)
+           MOVE    SPA-GMN-PREFPRGID1      TO  SYS-2005-PREFPRGID (2)
            MOVE    SPA-GMN-SYAPRTNM        TO  SYS-2005-SYAPRTNM
            MOVE    SPA-GMN-KKHPRTNM        TO  SYS-2005-KKHPRTNM
            MOVE    SPA-GMN-RENNUMHENKBN    TO  SYS-2005-RENNUMHENKBN
@@ -1266,6 +1298,7 @@
                                        TO  W12-KKHOCRKBN-COUNT 
       *
            MOVE    SPA-GMN-PREFPRGID   TO  W12-PREFPRGID
+           MOVE    SPA-GMN-PREFPRGID1  TO  W12-PREFPRGID1
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-KKHPRTKBN-MAX
@@ -1286,6 +1319,12 @@
            MOVE    SPA-GMN-SYAPRTNM    TO  W12-SYAPRTNM
       *
            MOVE    SPA-GMN-KKHPRTNM    TO  W12-KKHPRTNM 
+      *
+           IF      SPA-BEDSU       >   ZERO
+               MOVE    WIDGET-NORMAL       TO  W12-PREFPRGID1-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  W12-PREFPRGID1-STATE
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1428,6 +1467,8 @@
                     MOVE  "KKHPRTKBN"        TO   MCP-WIDGET
                 WHEN    12
                     MOVE  "RENNUMHENKBN"     TO   MCP-WIDGET
+                WHEN    13
+                    MOVE  "PREFPRGID1"       TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -1456,6 +1497,12 @@
                WHEN    "KKHOCRKBN"
                    MOVE    8           TO  SPA-GMN-CUR
                WHEN    "PREFPRGID"
+                   IF      SPA-BEDSU       >   ZERO
+                       MOVE    13          TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    9           TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "PREFPRGID1"
                    MOVE    9           TO  SPA-GMN-CUR
                WHEN    "SYAPRTNM"
                    MOVE    10          TO  SPA-GMN-CUR
