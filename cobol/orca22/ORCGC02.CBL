@@ -3564,6 +3564,8 @@
       *                入力病名コード数カウント
                        PERFORM 410111-BYOMEICDSU-HENSYU-SEC
                        IF      SPA-ERRCD       =    "0006"
+                       OR      SPA-NAI-C02-BYOMEICD-MAX
+                                               >    1
                            PERFORM 410132-BYOMEIHENFLG-SET-SEC
                            MOVE    "0103"          TO  SPA-ERRCD
                            MOVE    SPACE           TO  SPA-CIDCD2
