@@ -179,6 +179,7 @@
       *  01.01.25    NACL-太田    02/12/20  SYUNOU-KEY7,8追加
       *                                     SYUMEI-DEL2追加
       *                                     SYUNOU-DEL6追加
+      *  01.01.26    NACL-太田    02/12/20  BD002-KEY3追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1882,6 +1883,9 @@
                                        TO  WRK-PATH
                 WHEN    ANY             ALSO   "BD002-KEY2"
                    MOVE    PATH-VIEW-BD002-KEY2
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "BD002-KEY3"
+                   MOVE    PATH-VIEW-BD002-KEY3
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "BD002-ALL"
