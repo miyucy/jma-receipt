@@ -1523,9 +1523,9 @@
                MOVE    RECE02-OCR1     TO  HC06-OCR3
            END-IF
       *
-      *    山形特別公費欄の削除線（国保で地方公費がないとき）
-           IF      RECE02-TEISYUTUSAKI  =   "2"
-           AND     KOHIDX               =   ZERO
+      *    山形特別公費欄の削除線（地方公費がないときまたは続紙のとき）
+           IF      KOHIDX               =   ZERO
+           OR      CNT-PAGE             >   1
                MOVE    WRK-KUGIRI4      TO  HC06-SAKUJYOSEN
            END-IF
       *
@@ -1840,16 +1840,18 @@
                                        TO  HC06-KOHFTNJANUM1N
                        END-IF
                    ELSE
-                       IF      KANACHK-SYUBETU =   1
-                           MOVE    RECE02-KOHFTNJANUM(IDA)(1:2)
-                                       TO  HC06-KBN
-                           MOVE    RECE02-KOHFTNJANUM(IDA)(3:)
-                                       TO  HC06-SICYOSON
-                       ELSE
-                           MOVE    RECE02-KOHFTNJANUM(IDA)(1:2)
-                                       TO  HC06-KBNN
-                           MOVE    RECE02-KOHFTNJANUM(IDA)(3:)
-                                       TO  HC06-SICYOSONN
+                       IF      CNT-PAGE        =   1
+                           IF      KANACHK-SYUBETU =   1
+                               MOVE    RECE02-KOHFTNJANUM(IDA)(1:2)
+                                           TO  HC06-KBN
+                               MOVE    RECE02-KOHFTNJANUM(IDA)(3:)
+                                           TO  HC06-SICYOSON
+                           ELSE
+                               MOVE    RECE02-KOHFTNJANUM(IDA)(1:2)
+                                           TO  HC06-KBNN
+                               MOVE    RECE02-KOHFTNJANUM(IDA)(3:)
+                                           TO  HC06-SICYOSONN
+                           END-IF
                        END-IF
                    END-IF
                END-IF                           
@@ -1872,17 +1874,19 @@
                                        TO  HC06-KOHFTNJANUM2N
                        END-IF
                    ELSE
-                       IF      KANACHK-SYUBETU =   1
-                           MOVE    RECE02-KOHFTNJANUM(IDB)(1:2)
-                                       TO  HC06-KBN
-                           MOVE    RECE02-KOHFTNJANUM(IDB)(3:)
-                                       TO  HC06-SICYOSON
-                       ELSE
-                           MOVE    RECE02-KOHFTNJANUM(IDB)(1:2)
-                                       TO  HC06-KBNN
-                           MOVE    RECE02-KOHFTNJANUM(IDB)(3:)
-                                       TO  HC06-SICYOSONN
-                       END-IF
+                       IF      CNT-PAGE        =   1
+                           IF      KANACHK-SYUBETU =   1
+                               MOVE    RECE02-KOHFTNJANUM(IDB)(1:2)
+                                           TO  HC06-KBN
+                               MOVE    RECE02-KOHFTNJANUM(IDB)(3:)
+                                           TO  HC06-SICYOSON
+                           ELSE
+                               MOVE    RECE02-KOHFTNJANUM(IDB)(1:2)
+                                           TO  HC06-KBNN
+                               MOVE    RECE02-KOHFTNJANUM(IDB)(3:)
+                                           TO  HC06-SICYOSONN
+                           END-IF
+                       END-IF 
                    END-IF
                END-IF                         
            END-IF    
@@ -1904,12 +1908,14 @@
                                        TO  HC06-KOHJKYSNUM1N
                        END-IF
                    ELSE
-                       IF      KANACHK-SYUBETU =   1
-                           MOVE    RECE02-KOHJKYSNUM(IDA)
-                                       TO  HC06-SYONUM
-                       ELSE
-                           MOVE    RECE02-KOHJKYSNUM(IDA)
-                                       TO  HC06-SYONUMN
+                       IF      CNT-PAGE        =   1
+                           IF      KANACHK-SYUBETU =   1
+                               MOVE    RECE02-KOHJKYSNUM(IDA)
+                                           TO  HC06-SYONUM
+                           ELSE
+                               MOVE    RECE02-KOHJKYSNUM(IDA)
+                                           TO  HC06-SYONUMN
+                           END-IF
                        END-IF
                    END-IF
                END-IF                        
@@ -1932,12 +1938,14 @@
                                        TO  HC06-KOHJKYSNUM2N
                        END-IF
                    ELSE
-                       IF      KANACHK-SYUBETU =   1
-                           MOVE    RECE02-KOHJKYSNUM(IDB)
-                                       TO  HC06-SYONUM
-                       ELSE
-                           MOVE    RECE02-KOHJKYSNUM(IDB)
-                                       TO  HC06-SYONUMN
+                       IF      CNT-PAGE        =   1
+                           IF      KANACHK-SYUBETU =   1
+                               MOVE    RECE02-KOHJKYSNUM(IDB)
+                                           TO  HC06-SYONUM
+                           ELSE
+                               MOVE    RECE02-KOHJKYSNUM(IDB)
+                                           TO  HC06-SYONUMN
+                           END-IF
                        END-IF
                    END-IF
                END-IF                    
