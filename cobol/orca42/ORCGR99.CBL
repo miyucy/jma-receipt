@@ -256,7 +256,7 @@
            END-IF
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC 
+                                   JOBKANRI-REC
            IF    ( SJOBKANRI-RETURN
                                    =   ZERO  )
              IF    ( SPA-R01-GMNKBN  =   "R02"  OR  "R04"           )
@@ -322,6 +322,7 @@
                                            MCPAREA
                                            MCPDATA-REC
                END-IF
+             END-IF
            END-IF
       *
            MOVE    WIDGET-INSENSITIVE  TO  R99-B12-STATE

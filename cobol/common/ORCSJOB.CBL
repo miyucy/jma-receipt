@@ -527,7 +527,7 @@
        500-SYSYMD-HENSYU-SEC       SECTION.
       *
            ACCEPT  WRK-SYSYMD          FROM DATE
-           MOVE    "20"                TO  WRK-SYSYY
+           MOVE    20                  TO  WRK-SYSYY
       *
            .
        500-SYSYMD-HENSYU-EXT.
