@@ -217,6 +217,10 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
+      *    入院回数処理なし
+           IF      LNK-SC91-SRYCD(1:1) =   "*"  OR  SPACE
+               GO      TO      000-PROC-EXT
+           END-IF
       *
            IF      LNK-SC91-KBN        =   "2"  OR  "3"  OR  "4"
                MOVE    LNK-SC91-SRYCD      TO  TNS-SRYCD
@@ -541,7 +545,7 @@
                    MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                    ADD     1                   TO  IDX-Y2
                    PERFORM VARYING     IDY     FROM    IDX-Y2  BY  1
-                           UNTIL       IDY     >   30
+                           UNTIL       IDY     >   31
                        ADD     SANTEI-DAY (IDY)    TO  WRK-ATO-CNT
                    END-PERFORM
       *****    END-IF
@@ -565,7 +569,7 @@
                    MOVE    SPA-RSI-SHOBYOYMD3(7:2)     TO  IDX-Y2
                    MOVE    ZERO                TO  WRK-RSI-CNT
                    PERFORM VARYING     IDY     FROM    IDX-Y2  BY  1
-                           UNTIL       IDY     >   30
+                           UNTIL       IDY     >   31
                        ADD     SANTEI-DAY (IDY)    TO  WRK-RSI-CNT
                    END-PERFORM
                END-IF
@@ -669,7 +673,7 @@
                    MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                    ADD     1                   TO  IDX-Y2
                    PERFORM VARYING     IDY     FROM    IDX-Y2  BY  1
-                           UNTIL       IDY     >   30
+                           UNTIL       IDY     >   31
                        ADD     SANTEI-DAY (IDY)    TO  WRK-ATO-CNT
                    END-PERFORM
                END-IF
