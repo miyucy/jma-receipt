@@ -30,6 +30,7 @@
       * 00.00.01     NACL-¿¹ÏÆ    03/04/25  NYUGAIKBN¥­¡¼¤ËÄÉ²Ã
       *                                     »ÈÍÑ¤¹¤ëHOSPID¤ÎÊÑ¹¹
       * 00.00.02     NACL-¿¹ÏÆ    03/05/02  ¶â³Û¤ò¥«¥ó¥ÞÊÔ½¸
+      * 00.00.03     NACL-¿¹ÏÆ    03/06/05  °õºþ¶èÊ¬ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -56,7 +57,11 @@
                                    BY          //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-           COPY    "HCM07.INC".
+      *----(00.00.03)--UPD-START---
+      *     COPY    "HCM07.INC".
+           COPY    "HCM07V01.INC"  REPLACING   //HCM07V01//
+                                   BY          //HCM07//.
+      *----(00.00.03)--UPD-END-----
       *
       *    ¥¹¥ÑÎÎ°è
        01  STS-AREA.
@@ -98,6 +103,9 @@
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPID     PIC X(24).
            03  WRK-PARA-DENPPRTYMD PIC X(08).
+      *----(00.00.03)--ADD-START---
+           03  WRK-PARA-SYORIKBN   PIC X(01).
+      *----(00.00.03)--ADD-END-----
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -120,7 +128,7 @@
            03  WRK-SRYKA           PIC X(20).
            03  WRK-SYORIYMD        PIC X(24).
            03  WRK-PAGE            PIC ZZ9.
-           03  WRK-HSRYMD          PIC X(12).
+      *     03  WRK-HSRYMD          PIC X(12).
       *
            03  WRK-NAI-TBL.
                05  WRK-NAI-G       OCCURS  30.
@@ -128,7 +136,11 @@
                    07  WRK-NAME        PIC X(36).
                    07  WRK-SEX         PIC X(2).
                    07  WRK-BIRTHDAY    PIC X(22).
+      *----(00.00.03)--UPD-START---
                    07  WRK-DENPNUM     PIC 9(07).
+                   07  WRK-DENPNUM-X   REDEFINES  WRK-DENPNUM
+                                       PIC X(07).
+      *----(00.00.03)--UPD-END-----
                    07  WRK-SRYMD       PIC X(12).
                    07  WRK-SEIKYU      PIC S9(07).
                    07  WRK-RYOSYU      PIC S9(07).
@@ -274,6 +286,9 @@
                                                WRK-PARA-SHELLID
                                                WRK-PARA-HOSPID
                                                WRK-PARA-DENPPRTYMD
+      *----(00.00.03)--ADD-START---
+                                               WRK-PARA-SYORIKBN
+      *----(00.00.03)--ADD-END-----
       *
       *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -328,6 +343,25 @@
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
+      *
+      *----(00.00.03)--ADD-START---
+           EVALUATE    WRK-PARA-SYORIKBN
+           WHEN    "0"
+           WHEN    "1"
+           WHEN    "2"
+               CONTINUE
+           WHEN    SPACE
+               MOVE    "0"             TO  WRK-PARA-SYORIKBN
+           WHEN    OTHER
+               MOVE    SPACE           TO  WRK-RECEERR
+               STRING  "½èÍý¶èÊ¬¤¬¸í¤ê¤Ç¤¹¡§["     DELIMITED   BY  SIZE
+                       WRK-PARA-SYORIKBN           DELIMITED   BY  SIZE
+                       "]"                         DELIMITED   BY  SIZE
+               INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+           END-EVALUATE
+      *----(00.00.03)--UPD-END-----
            .
        110-PARA-HENSYU-EXT.
            EXIT.
@@ -399,6 +433,17 @@
       *
            MOVE    CNT-PAGE        TO  WRK-PAGE
            MOVE    WRK-PAGE        TO  HCM07-PAGE
+      *
+      *----(00.00.03)--ADD-START---
+           EVALUATE    WRK-PARA-SYORIKBN
+           WHEN    "0"
+               MOVE    "¡Ê¼ýÇ¼ÌÀºÙÊÌ¡Ë"    TO  HCM07-SYORIKBN
+           WHEN    "1"
+               MOVE    "¡ÊÅÁÉ¼ÊÌ¡Ë"        TO  HCM07-SYORIKBN
+           WHEN    "2"
+               MOVE    "¡Ê´µ¼ÔÊÌ¡Ë"        TO  HCM07-SYORIKBN
+           END-EVALUATE
+      *----(00.00.03)--ADD-END-----
            .
        310-HEAD-HEN-EXT.
            EXIT.
@@ -418,12 +463,10 @@
                    PERFORM 3201-BODY-PTINF-HEN-SEC
                END-IF
       *
-               PERFORM UNTIL ( FLG-END         =   1 )
-                       OR    ( KEY-N-SRYKA NOT =   KEY-O-SRYKA )
-                       OR    ( KEY-N-PTID  NOT =   KEY-O-PTID )
-                       OR    ( CNT-LINE        =   30 )
-                   PERFORM 3201-BODY-NAIYO-HEN-SEC
-               END-PERFORM
+      *----(00.00.03)--UPD-START---
+      *        Ä¢É¼ÊÔ½¸<ÌÀºÙ¹Ô>½èÍý
+               PERFORM 3201-BODY-NAIYO-HEN-SEC
+      *----(00.00.03)--UPD-END-----
       *
            END-PERFORM
       *
@@ -478,13 +521,11 @@
       *****************************************************************
        3201-BODY-NAIYO-HEN-SEC     SECTION.
       *
+      *----(00.00.03)--UPD-START---
            PERFORM UNTIL ( FLG-END             =   1 )
                    OR    ( KEY-N-SRYKA     NOT =   KEY-O-SRYKA )
                    OR    ( KEY-N-PTID      NOT =   KEY-O-PTID )
-                   OR    ( KEY-N-DENPNUM   NOT =   SMEI-DENPNUM )
-      *
-               MOVE    ZERO                TO  CNT-DENP
-               INITIALIZE                      WRK-SUM-TBL(4)
+                   OR    ( CNT-LINE        =   30 )
       *
       *        ¼ýÇ¼ÆÉ¤ß¹þ¤ß
                INITIALIZE                  SYU-REC
@@ -505,80 +546,33 @@
                END-PERFORM
                PERFORM 900-SMEI2-CLOSE-SEC
       *
-               IF      SYU-SRYYMD      <   WRK-PARA-DENPPRTYMD
-      *            ¿ÇÎÅ·îÆüÊÔ½¸
-                   MOVE    SYU-SRYYMD          TO  WRK-SYMD
-                   PERFORM 31012-SEIWA-HEN-SEC
-                   MOVE    WRK-HENYMDG(11:12)  TO  WRK-HSRYMD
+      *        Ä¢É¼ÊÔ½¸<ÌÀºÙ¹Ô>½èÍý
+               PERFORM 32012-BODY-NAIYO-HEN-SEC
+      *
+               IF      WRK-PARA-SYORIKBN   =   "2"
+                   MOVE    SMEI-PTID       TO  KEY-N-PTID
+                   MOVE    SMEI-DENPNUM    TO  KEY-N-DENPNUM
                ELSE
-                   MOVE    SPACE               TO  WRK-HSRYMD
+                   COMPUTE IDY         =   30  -   CNT-LINE
+      *
+                   IF        ( CNT-DENP    >  IDY )
+                       MOVE    30          TO  CNT-LINE
+                   ELSE
+      *                Ä¢É¼ÊÔ½¸<ÌÀºÙ¹Ô>¥»¥Ã¥È½èÍý
+                       PERFORM 3202-BODY-NAIYO-SET-SEC
+                   END-IF
                END-IF
-      *
-               PERFORM UNTIL ( FLG-END             =   1 )
-                       OR    ( KEY-N-SRYKA     NOT =   KEY-O-SRYKA )
-                       OR    ( KEY-N-PTID      NOT =   KEY-O-PTID )
-                       OR    ( KEY-N-DENPNUM   NOT =   SMEI-DENPNUM )
-                       OR    ( CNT-DENP            =   30 )
-      *
-                   ADD     1                   TO  CNT-DENP
-      *
-      *            ÅÁÉ¼ÈÖ¹æ
-                   MOVE    SMEI-DENPNUM        TO  WRK-DENPNUM(CNT-DENP)
-      *
-      *            ¿ÇÎÅ·îÆü
-                   MOVE    WRK-HSRYMD          TO  WRK-SRYMD(CNT-DENP)
-      *
-      *            ½èÍý¶èÊ¬
-                   EVALUATE    SMEI-JOUTAIKBN
-                       WHEN    SPACE
-                           MOVE    "ÀÁµá³Û¤Ê¤·"
-                                               TO  WRK-JYOTAI(CNT-DENP)
-                       WHEN    "1"
-                            IF   ( SYU-SKYMONEY
-                                           >   SMEI-NYUHEN-MONEY )
-                               MOVE    "ÀÁµá¡¦Ì¤¼ý"
-                                               TO  WRK-JYOTAI(CNT-DENP)
-                            ELSE
-                               MOVE    "ÀÁµá¡¦Æþ¶â"
-                                               TO  WRK-JYOTAI(CNT-DENP)
-                            END-IF
-                       WHEN    "2"
-                           MOVE    "Æþ¶â"      TO  WRK-JYOTAI(CNT-DENP)
-                       WHEN    "3"
-                           MOVE    "ºÆ·×»»"    TO  WRK-JYOTAI(CNT-DENP)
-                       WHEN    "4"
-                           MOVE    "ÊÖ¶â"      TO  WRK-JYOTAI(CNT-DENP)
-                       WHEN    "5"
-                           MOVE    "ÀÁµá¼è¾Ã"  TO  WRK-JYOTAI(CNT-DENP)
-                       WHEN    "6"
-                           MOVE    "Æþ¶â¼è¾Ã"  TO  WRK-JYOTAI(CNT-DENP)
-                       WHEN    "8"
-                           MOVE    "¿ÇÎÅÄûÀµ"  TO  WRK-JYOTAI(CNT-DENP)
-                   END-EVALUATE
-      *
-                   ADD     SMEI-SKYMONEY       TO  WRK-GSEIKYU(4)
-      *
-                   ADD     SMEI-NYUHEN-MONEY   TO  WRK-GRYOSYU(4)
-      *
-                   COMPUTE WRK-GMISYU(4)       =   WRK-GSEIKYU(4)
-                                               -   WRK-GRYOSYU(4)
-      *            ÀÁµá¶â³Û
-                   MOVE    SMEI-SKYMONEY       TO  WRK-SEIKYU(CNT-DENP)
-      *            ÎÎ¼ý¶â³Û
-                   MOVE    SMEI-NYUHEN-MONEY   TO  WRK-RYOSYU(CNT-DENP)
-      *            Ì¤¼ý¶â³Û
-                   MOVE    WRK-GMISYU(4)       TO  WRK-MISYU(CNT-DENP)
-      *
-                   PERFORM 900-DBFETCH-SEC
-               END-PERFORM
            END-PERFORM
       *
-           COMPUTE IDY         =   30  -   CNT-LINE
+           IF          WRK-PARA-SYORIKBN       =   "2"
+               COMPUTE IDY         =   30  -   CNT-LINE
       *
-           IF        ( CNT-DENP    >  IDY )
-               MOVE    30          TO  CNT-LINE
-           ELSE
-               PERFORM 3202-BODY-NAIYO-SET-SEC
+               IF        ( CNT-DENP    >  IDY )
+                   MOVE    30          TO  CNT-LINE
+               ELSE
+      *            Ä¢É¼ÊÔ½¸<ÌÀºÙ¹Ô>¥»¥Ã¥È½èÍý
+                   PERFORM 3202-BODY-NAIYO-SET-SEC
+               END-IF
            END-IF
       *
            .
@@ -586,7 +580,114 @@
            EXIT.
       *
       *****************************************************************
-      *    Ä¢É¼ÊÔ½¸<ÌÀºÙ>½èÍý
+      *    Ä¢É¼ÊÔ½¸<ÌÀºÙ¹Ô>½èÍý
+      *****************************************************************
+       32012-BODY-NAIYO-HEN-SEC     SECTION.
+      *
+           PERFORM UNTIL ( FLG-END             =   1 )
+                   OR    ( KEY-N-SRYKA     NOT =   KEY-O-SRYKA )
+                   OR    ( KEY-N-PTID      NOT =   KEY-O-PTID )
+                   OR    ( KEY-N-DENPNUM   NOT =   SMEI-DENPNUM )
+      *
+               IF      CNT-DENP            =   30
+                   GO  TO  32012-BODY-NAIYO-HEN-EXT
+               END-IF
+      *
+               EVALUATE    WRK-PARA-SYORIKBN
+               WHEN    "1"
+               WHEN    "2"
+                   MOVE    1                   TO  CNT-DENP
+               WHEN    "0"
+                   ADD     1                   TO  CNT-DENP
+               END-EVALUATE
+      *
+      *        ÅÁÉ¼ÈÖ¹æ
+               IF        ( WRK-DENPNUM-X(CNT-DENP) =   SPACE )
+                   OR    ( WRK-DENPNUM-X(CNT-DENP) =   ZERO )
+                   MOVE    SMEI-DENPNUM    TO  WRK-DENPNUM-X(CNT-DENP)
+      *            ¿ÇÎÅ·îÆü
+                   IF      SYU-SRYYMD      <   WRK-PARA-DENPPRTYMD
+      *                ¿ÇÎÅ·îÆüÊÔ½¸
+                       MOVE    SYU-SRYYMD          TO  WRK-SYMD
+                       PERFORM 31012-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG(11:12)
+                                           TO  WRK-SRYMD(CNT-DENP)
+                   ELSE
+                       MOVE    SPACE       TO  WRK-SRYMD(CNT-DENP)
+                   END-IF
+               ELSE
+                   IF      WRK-DENPNUM-X(CNT-DENP) NOT =   SMEI-DENPNUM
+                       MOVE    "*******"   TO  WRK-DENPNUM-X(CNT-DENP)
+                       MOVE    "*******"   TO  WRK-SRYMD(CNT-DENP)
+                   END-IF
+               END-IF
+      *
+               IF          WRK-PARA-SYORIKBN       =   "0"
+      *            ½èÍý¶èÊ¬
+                   EVALUATE    SMEI-JOUTAIKBN
+                   WHEN    SPACE
+                       MOVE    "ÀÁµá³Û¤Ê¤·"
+                                           TO  WRK-JYOTAI(CNT-DENP)
+                   WHEN    "1"
+                       IF   ( SYU-SKYMONEY
+                                       >   SMEI-NYUHEN-MONEY )
+                           MOVE    "ÀÁµá¡¦Ì¤¼ý"
+                                           TO  WRK-JYOTAI(CNT-DENP)
+                       ELSE
+                           MOVE    "ÀÁµá¡¦Æþ¶â"
+                                           TO  WRK-JYOTAI(CNT-DENP)
+                       END-IF
+                   WHEN    "2"
+                       MOVE    "Æþ¶â"      TO  WRK-JYOTAI(CNT-DENP)
+                   WHEN    "3"
+                       MOVE    "ºÆ·×»»"    TO  WRK-JYOTAI(CNT-DENP)
+                   WHEN    "4"
+                       MOVE    "ÊÖ¶â"      TO  WRK-JYOTAI(CNT-DENP)
+                   WHEN    "5"
+                       MOVE    "ÀÁµá¼è¾Ã"  TO  WRK-JYOTAI(CNT-DENP)
+                   WHEN    "6"
+                       MOVE    "Æþ¶â¼è¾Ã"  TO  WRK-JYOTAI(CNT-DENP)
+                   WHEN    "8"
+                       MOVE    "¿ÇÎÅÄûÀµ"  TO  WRK-JYOTAI(CNT-DENP)
+                   END-EVALUATE
+               END-IF
+      *
+               ADD     SMEI-SKYMONEY       TO  WRK-GSEIKYU(4)
+      *
+               ADD     SMEI-NYUHEN-MONEY   TO  WRK-GRYOSYU(4)
+      *
+               COMPUTE WRK-GMISYU(4)       =   WRK-GSEIKYU(4)
+                                           -   WRK-GRYOSYU(4)
+      *
+               EVALUATE    WRK-PARA-SYORIKBN
+               WHEN    "1"
+               WHEN    "2"
+      *            ÀÁµá¶â³Û
+                   ADD     SMEI-SKYMONEY   TO  WRK-SEIKYU(CNT-DENP)
+      *            ÎÎ¼ý¶â³Û
+                   ADD     SMEI-NYUHEN-MONEY
+                                           TO  WRK-RYOSYU(CNT-DENP)
+               WHEN    "0"
+      *            ÀÁµá¶â³Û
+                   MOVE    SMEI-SKYMONEY   TO  WRK-SEIKYU(CNT-DENP)
+      *            ÎÎ¼ý¶â³Û
+                   MOVE    SMEI-NYUHEN-MONEY
+                                           TO  WRK-RYOSYU(CNT-DENP)
+               END-EVALUATE
+      *
+      *        Ì¤¼ý¶â³Û
+               MOVE    WRK-GMISYU(4)       TO  WRK-MISYU(CNT-DENP)
+      *
+               PERFORM 900-DBFETCH-SEC
+      *
+           END-PERFORM
+           .
+       32012-BODY-NAIYO-HEN-EXT.
+           EXIT.
+      *
+      *----(00.00.03)--UPD-END----
+      *****************************************************************
+      *    Ä¢É¼ÊÔ½¸<ÌÀºÙ>¥»¥Ã¥È½èÍý
       *****************************************************************
        3202-BODY-NAIYO-SET-SEC     SECTION.
       *
@@ -599,7 +700,7 @@
                MOVE    WRK-NAME(IDZ)       TO  HCM07-NAME(CNT-LINE)
                MOVE    WRK-SEX(IDZ)        TO  HCM07-SEX(CNT-LINE)
                MOVE    WRK-BIRTHDAY(IDZ)   TO  HCM07-BIRTHDAY(CNT-LINE)
-               MOVE    WRK-DENPNUM(IDZ)    TO  HCM07-DENPNUM(CNT-LINE)
+               MOVE    WRK-DENPNUM-X(IDZ)  TO  HCM07-DENPNUM(CNT-LINE)
                MOVE    WRK-SRYMD(IDZ)      TO  HCM07-SRYMD(CNT-LINE)
                MOVE    WRK-SEIKYU(IDZ)     TO  WRK-Z9
                MOVE    WRK-Z9              TO  HCM07-SEIKYU(CNT-LINE)
@@ -636,6 +737,7 @@
       *
            MOVE    ZERO            TO  CNT-DENP
            INITIALIZE                  WRK-NAI-TBL
+           INITIALIZE                  WRK-SUM-TBL(4)
       *
            IF      FLG-SMEI        =   1
                MOVE    1           TO  FLG-END
@@ -712,7 +814,10 @@
                                    TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
-           MOVE   "HCM07.red"      TO  SPRT-PRTID
+      *----(00.00.03)--UPD-START---
+      *     MOVE   "HCM07.red"      TO  SPRT-PRTID
+           MOVE   "HCM07V01.red"   TO  SPRT-PRTID
+      *----(00.00.03)--UPD-END-----
            MOVE    "¼ýÇ¼°ìÍ÷É½"    TO  SPRT-TITLE
            MOVE    HCM07           TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID
