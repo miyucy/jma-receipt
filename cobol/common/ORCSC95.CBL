@@ -3588,7 +3588,7 @@
                    MOVE    1                   TO  FLG-JYURRK
                ELSE
       *
-                   MOVE    WRK-PATH            TO  ORC-DBPATH
+                  MOVE    WRK-PATH            TO  ORC-DBPATH
                   PERFORM 970-JYURRK-READ-SEC
                END-IF
            END-PERFORM

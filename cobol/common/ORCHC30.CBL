@@ -1073,27 +1073,32 @@
                MOVE    END-KET     TO  NUM-KET
            END-IF
       *
+      *
            EVALUATE    NUM-KET
            WHEN    0
                GO  TO  265-NAMEHEN-SET-EXT
            WHEN    1   THRU    30
                MOVE    SPA-NAME(1:NUM-KET) TO  WRK-YKJ-NAME(1:NUM-KET)
+               MOVE    "　様"         TO  WRK-YKJ-NAME(END-KET:)
            WHEN    31  THRU    40
                COMPUTE END-KET =   END-KET +   44
                MOVE    SPA-NAME(1:NUM-KET) TO  WRK-YKJ-NAME(45:NUM-KET)
+               MOVE    "　様"         TO  WRK-YKJ-NAME(END-KET:)
            WHEN    41  THRU    50
-               COMPUTE END-KET =   END-KET +   1
-               COMPUTE NUM-KET =   NUM-KET -   40
-               MOVE    SPA-NAME(1:40)      TO  WRK-YKJ-NAME(1:40)
-               MOVE    SPA-NAME(41:NUM-KET)
-                                           TO  WRK-YKJ-NAME(45:NUM-KET)
-               PERFORM UNTIL   END-KET     >=  85
-                   MOVE    "　"            TO  WRK-YKJ-NAME(END-KET:2)
-                   COMPUTE END-KET =   END-KET +   2
-               END-PERFORM
+      *********COMPUTE END-KET =   END-KET +   1
+      *        COMPUTE NUM-KET =   NUM-KET -   40
+      *        MOVE    SPA-NAME(1:40)      TO  WRK-YKJ-NAME(1:40)
+      *        MOVE    SPA-NAME(41:NUM-KET)
+      *                                    TO  WRK-YKJ-NAME(45:NUM-KET)
+      *        PERFORM UNTIL   END-KET     >=  85
+      *            MOVE    "　"            TO  WRK-YKJ-NAME(END-KET:2)
+      *            COMPUTE END-KET =   END-KET +   2
+      ******** END-PERFORM
+               MOVE    SPA-NAME            TO  WRK-YKJ-NAME
+               INSPECT WRK-YKJ-NAME        REPLACING  ALL "  "  BY  "　"
+               MOVE    "　様"              TO  WRK-YKJ-NAME(85:)
            END-EVALUATE
       *
-           MOVE    "　様"         TO  WRK-YKJ-NAME(END-KET:4)
       *
            .
        265-NAMEHEN-SET-EXT.
