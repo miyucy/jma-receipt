@@ -1161,10 +1161,10 @@
                            END-IF
                        END-IF
                    END-IF
-                   IF     LNK-FTNJGNCHK-RC   =   1
-                       MOVE       2        TO    IDX1
-                   ELSE
-                       MOVE       1        TO    IDX1
+                   IF     IDX1          =        1
+                       IF     LNK-FTNJGNCHK-RC   =   1
+                           MOVE       2        TO    IDX1
+                       END-IF
                    END-IF
                ELSE
                    MOVE    1                      TO  IDX1
