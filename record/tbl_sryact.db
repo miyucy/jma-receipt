@@ -257,3 +257,59 @@ path	all2	{
 		;
 	};
 };
+
+
+#sitekey
+path	st_key1 	{
+	DBSELECT	{
+		DECLARE tbl_sryact_st_key1_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryact
+			WHERE   HOSPID    =   :HOSPID
+			AND     SRYYM     =   :SRYYM
+			ORDER  BY  NYUGAIKBN,PTID,SRYKA,ZAINUM
+		;
+	};
+};
+
+#sitekey
+path	st_key2 	{
+	DBSELECT	{
+		DECLARE tbl_sryact_st_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryact
+			WHERE   HOSPID    =   :HOSPID
+			AND     SRYYM     =   :SRYYM
+			ORDER  BY  SRYKA,NYUGAIKBN,PTID,ZAINUM
+		;
+	};
+};
+
+#sitekey
+path	st_key3 	{
+	DBSELECT	{
+		DECLARE tbl_sryact_st_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryact
+			WHERE   HOSPID    =   :HOSPID
+			AND     SRYYM     =   :SRYYM
+			ORDER  BY  PTID,NYUGAIKBN,SRYKA,ZAINUM
+		;
+	};
+};
+
+#sitekey
+path	st_key4 	{
+	DBSELECT	{
+		DECLARE tbl_sryact_st_key4_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_sryact a,tbl_ptinf b
+		WHERE   a.HOSPID        =  :HOSPID
+		AND     a.SRYYM         =  :SRYYM
+		AND     a.HOSPID        =  b.HOSPID
+		AND     a.PTID          =  b.PTID
+		AND     b.TSTPTNUMKBN  <> '1'
+		ORDER   BY a.PTID,a.SRYKA,a.ZAINUM
+		;
+	};
+};
