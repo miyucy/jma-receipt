@@ -106,6 +106,8 @@
       * 
            03  WRK-C04-BYO-ROW     PIC S9(09). 
       *
+           03  WRK-CIDMSG          PIC X(80).
+      *
        01  WRK-TBL-MAX             PIC 9(03)   VALUE   100.
       *
       *    患者病名マスタ−（ワーク）
@@ -256,6 +258,47 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
+      *???
+           DISPLAY "SPA=" SPA-MOTOPG "#" SPA-CID2-FLG "#"
+      *    病名移行確認画面より
+           IF      SPA-MOTOPG(1:4)     =   "CID2"
+               IF      SPA-CID2-FLG    =   "OK"
+                   MOVE    SPA-C04-IKOSAKI-INDEX
+                                               TO  IDZ
+                   MOVE    SPA-C04-IKOSAKI-INDEX1
+                                               TO  IDX2
+                   MOVE    SPA-C04-IKOSAKI-BYOMEICD
+                                               TO
+                                       SPA-NAI-C04-BYOMEICD-O (IDZ IDX2)
+                   MOVE     SPA-C04-IKOSAKI-BYOMEI TO
+                                       SPA-NAI-C04-BYOMEI-O   (IDZ IDX2)
+                   MOVE    SPA-NAI-C04-BYOMEI-O (IDZ 1)
+                                               TO
+                                           SPA-NAI-C04-BYOMEI (IDZ)
+                   PERFORM VARYING IDX2    FROM    2   BY  1
+                           UNTIL   IDX2    >       21
+                           OR      SPA-NAI-C04-BYOMEICD-O (IDZ IDX2)
+                                               =   SPACE
+                       STRING   SPA-NAI-C04-BYOMEI (IDZ)
+                                           DELIMITED  BY  SPACE
+                                SPA-NAI-C04-BYOMEI-O (IDZ IDX2)
+                                           DELIMITED  BY  SPACE
+                                    INTO    SPA-NAI-C04-BYOMEI (IDZ)
+                       END-STRING
+                   END-PERFORM        
+      *???
+               DISPLAY "CD=" IDZ "#" IDX2 "#" SPA-C04-IKOSAKI-BYOMEICD 
+                             "#" SPA-C04-IKOSAKI-BYOMEI "#"
+                             SPA-NAI-C04-BYOMEI (IDZ) "#"
+      *???
+               END-IF
+               MOVE    SPACE           TO  SPA-CIDCD2
+                                           SPA-ERRCD
+                                           WRK-HAISIYMDH
+               PERFORM 410022-BYOMEI-HENSYU-SEC
+               GO      TO      300-SCREEN-EXT
+           END-IF
+      *
            PERFORM 310-SPASET-SEC
            .
        300-SCREEN-EXT.
@@ -285,6 +328,12 @@
                IF      FLG-USERBYOMEI      =   ZERO
                    MOVE    USBYO-BYOMEISBT     TO
                                            SPA-NAI-C04-BYOMEISBT (IDX)
+                   PERFORM VARYING IDY FROM    1   BY  1
+                           UNTIL   IDY >       21
+                           OR      USBYO-BYOMEICD (IDY)    =   SPACE
+                       MOVE    USBYO-BYOMEICD (IDY)    TO
+                                       SPA-NAI-C04-BYOMEICD-O (IDX IDY)
+                   END-PERFORM   
                END-IF
            END-PERFORM
       *
@@ -706,6 +755,11 @@
                    END-PERFORM
                END-IF    
            END-IF
+      *
+           IF      SPA-CIDCD2      NOT =   SPACE
+               GO  TO  41002-SELNUM2-CHK-EXT
+           END-IF
+      *      
            PERFORM 410022-BYOMEI-HENSYU-SEC 
       *
            IF      SPA-ERRCD           =   SPACE
@@ -738,8 +792,14 @@
                    MOVE    USBYO-BYOMEI    TO  SPA-NAI-C04-BYOMEI (IDZ)
                    MOVE    USBYO-BYOMEISBT TO
                                            SPA-NAI-C04-BYOMEISBT (IDZ)
-      *            廃止年月日がある病名のチェック
-                   IF      USBYO-BYOMEIHENFLG  =   SPACE 
+                   PERFORM VARYING IDY FROM    1   BY  1
+                           UNTIL   IDY >       21
+                           OR      USBYO-BYOMEICD (IDY)    =   SPACE
+                       MOVE    USBYO-BYOMEICD (IDY)    TO
+                                       SPA-NAI-C04-BYOMEICD-O (IDZ IDY)
+                   END-PERFORM   
+      *            廃止年月日・移行先がある病名のチェック
+                   IF      USBYO-BYOMEIHENFLG      =   SPACE        
                        PERFORM 4100211-HAISIYMD-CHECK-SEC
                    END-IF
                END-IF
@@ -787,27 +847,51 @@
        4100211-HAISIYMD-CHECK-SEC      SECTION.
       * 
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       6
+                   UNTIL   IDX1    >       21
                    OR      USBYO-BYOMEICD (IDX1)   =   SPACE
-               MOVE    USBYO-BYOMEICD (IDX1)
-                                       TO  BYO-BYOMEICD
-               MOVE    ZERO            TO  FLG-BYOMEI
-               PERFORM 900-BYOMEI-READ-SEC
-               IF      FLG-BYOMEI          =   ZERO
-                   IF      BYO-IKOSAKICD       =   SPACE
-                       IF      BYO-HAISIYMD        =   ALL "9"
-                                                   OR  SPACE
-                           CONTINUE
-                       ELSE
-                           MOVE    BYO-HAISIYMD    TO  WRK-SYMD
-                           PERFORM 5002-HIZUKE-HEN-SEC
-                           MOVE    LNK-DAY2-EDTYMD3
-                                                   TO  WRK-HAISIYMDH
-                           MOVE    6           TO  IDX1                     
-                       END-IF
-                   END-IF                
-               END-IF
-           END-PERFORM                
+               IF      USBYO-BYOMEICD (IDX1) (1:1)     =   "Z"
+                   CONTINUE
+               ELSE
+                   MOVE    USBYO-BYOMEICD (IDX1)
+                                           TO  BYO-BYOMEICD
+                   MOVE    ZERO            TO  FLG-BYOMEI
+                   PERFORM 900-BYOMEI-READ-SEC
+                   IF      FLG-BYOMEI          =   ZERO
+                       IF      BYO-IKOSAKICD   =   SPACE
+                           IF      BYO-HAISIYMD    =   ALL "9" OR  SPACE
+                               CONTINUE
+                           ELSE
+                               MOVE    BYO-HAISIYMD    TO  WRK-SYMD
+                               PERFORM 5002-HIZUKE-HEN-SEC
+                               MOVE    LNK-DAY2-EDTYMD3
+                                                       TO  WRK-HAISIYMDH
+                           END-IF
+                       ELSE        
+                           MOVE     USBYO-BYOMEICD (IDX1)
+                                           TO  SPA-C04-IKOMOTO-BYOMEICD
+                           MOVE    BYO-BYOMEI 
+                                           TO  SPA-C04-IKOMOTO-BYOMEI
+                           MOVE    BYO-IKOSAKICD
+                                           TO  BYO-BYOMEICD
+                           PERFORM 900-BYOMEI-READ-SEC
+                           IF      FLG-BYOMEI          =   ZERO
+                               MOVE    BYO-BYOMEICD    TO
+                                               SPA-C04-IKOSAKI-BYOMEICD
+                               MOVE    BYO-BYOMEI      TO
+                                               SPA-C04-IKOSAKI-BYOMEI
+                               MOVE    IDZ             TO
+                                               SPA-C04-IKOSAKI-INDEX                    
+                               MOVE    IDX1            TO
+                                               SPA-C04-IKOSAKI-INDEX1                    
+                               MOVE    "0104"          TO
+                                               SPA-CIDCD2
+                               GO  TO  4100211-HAISIYMD-CHECK-EXT
+                            END-IF
+                        END-IF
+                    END-IF
+                    MOVE    21                  TO  IDX1
+                END-IF    
+            END-PERFORM        
            .
         4100211-HAISIYMD-CHECK-EXT.
            EXIT.         
@@ -933,6 +1017,9 @@
            MOVE    C04-INPUTCD (IDZ)   TO  SPA-GMN-C04-INPUTCD(IDZ)
       *
            PERFORM 410021-INPUTCD-HENSYU-SEC
+           IF      SPA-CIDCD2      NOT =   SPACE
+               GO  TO  41003-INPUTCD-CHK-EXT
+           END-IF     
       *
            PERFORM 410022-BYOMEI-HENSYU-SEC 
       *
@@ -1257,6 +1344,11 @@
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
+           IF      SPA-CIDCD2      NOT =   SPACE
+               PERFORM 530-CIDSET2-SEC
+               GO      TO      500-SET-SCREEN-EXT
+           END-IF
+      *
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
@@ -1430,6 +1522,46 @@
       *
            .
        510-ERRMSG-EXT.
+           EXIT.
+      *****************************************************************
+      *    病名移行確認画面表示処理
+      *****************************************************************
+       530-CIDSET2-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SPA-CID2-FLG
+      *
+           EVALUATE    SPA-CIDCD2
+               WHEN    "0104"
+                   MOVE    "入力された自院病名の病名はマスタ"
+                                       TO  WRK-CIDMSG
+                   MOVE    "ー上で移行病名の扱いとなっています。"
+                                       TO  WRK-CIDMSG (41:)
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  CID2
+           MOVE    WRK-CIDMSG          TO  CID2-MSG
+           MOVE    SPA-C04-IKOMOTO-BYOMEICD
+                                       TO  CID2-BYOMEICD1
+           MOVE    SPA-C04-IKOMOTO-BYOMEI  
+                                       TO  CID2-BYOMEI1
+           MOVE    SPA-C04-IKOSAKI-BYOMEICD
+                                       TO  CID2-BYOMEICD2
+           MOVE    SPA-C04-IKOSAKI-BYOMEI
+                                       TO  CID2-BYOMEI2
+           MOVE    "B12"               TO  MCP-WIDGET
+      *
+           MOVE    "C04"               TO  SPA-MOTOPG
+           MOVE    "CID2"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "CID2"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       530-CIDSET2-EXT.
            EXIT.
       *
       *****************************************************************

@@ -1580,6 +1580,19 @@
                MOVE    SPA-NAI-C02-BYOMEICD (IDZ)
                                            TO  USBYO-BYOMEIINPUTCD
                PERFORM 410112-USERBYOMEI-HENSYU-SEC
+               PERFORM VARYING IDX3    FROM    1   BY  1
+                       UNTIL   IDX3    >       21
+                       OR      SPA-NAI-C04-BYOMEICD-O (IDZ IDX3)
+                                       =   SPACE
+                   MOVE    SPA-NAI-C04-BYOMEICD-O (IDZ IDX3)
+                                       TO  SPA-NAI-C02-BYOMEICD-O
+                                                          (IDZ IDX3)
+                   MOVE    SPA-NAI-C04-BYOMEI-O (IDZ IDX3)
+                                       TO  SPA-NAI-C02-BYOMEI-O
+                                                          (IDZ IDX3)
+               END-PERFORM
+               MOVE    SPA-NAI-C04-BYOMEI  (IDZ)
+                                       TO  SPA-NAI-C02-BYOMEI (IDZ)
            END-PERFORM
       *
            PERFORM VARYING IDX3    FROM    1   BY  1
@@ -3167,9 +3180,6 @@
                                            SPA-NAI-C02-BYOMEITOP (IDX3)
                    END-EVALUATE    
                END-IF    
-      *???
-           DISPLAY "TOP=" IDX3 "#" SPA-NAI-C02-BYOMEITOP (IDX3) "#"
-      *???        
            .
        4101111-BYOMEITOP-HENSYU-EXT.
            EXIT.
@@ -5248,9 +5258,6 @@
                MOVE    "0076"              TO  SPA-ERRCD  
                GO  TO  450-TOUROKU-EXT
            END-IF
-      *???
-           DISPLAY "450 MAX=" SPA-NAI-C02-BYOMEICD-MAX "#"
-      *???
       *
       *    ибл╬йт╫╦
            IF      SPA-NAI-C02-SRYYMD   =   SPACE
@@ -6848,9 +6855,21 @@
       *
            IF      SPA-GMN-C02-BANGO-X NOT =   SPACE
                MOVE    SPA-GMN-C02-BANGO-X     TO  C02-BANGO
-           ELSE    
-               MOVE    SPA-GMN-C02-BANGO       TO  WRK-GMN-BANGO
-               MOVE    WRK-GMN-BANGO           TO  C02-BANGO
+           ELSE
+               INITIALIZE                      ORCSGDAYAREA
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-GMN-C02-BANGO       TO  SNUM-INX
+               CALL    "ORCSNUM"               USING
+                                               ORCSNUMAREA
+               IF      SNUM-RC                 =   ZERO
+                   PERFORM VARYING IDX FROM    11  BY  1
+                           UNTIL   IDX >       15
+                       IF      SNUM-OUTEDT (IDX:1) NOT =   ZERO
+                           MOVE    SNUM-OUTEDT (IDX:)  TO  C02-BANGO
+                           MOVE    15                  TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF             
            END-IF
            MOVE    SPA-GMN-C02-SRYYMD      TO  C02-SRYYMD
            PERFORM VARYING     IDX     FROM   1   BY  1
