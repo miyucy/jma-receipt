@@ -456,6 +456,23 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
+      *    施設基準があるかの判定
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   IDX
+               MOVE    SPACE               TO  SYS-0031-REC
+               INITIALIZE                      SYS-0031-REC
+               MOVE    "0031"              TO  SYS-0031-KANRICD
+               MOVE    IDY                 TO  SYS-0031-KBNCD (1:4)
+               MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+               MOVE    SYS-0031-REC        TO  MCPDATA-REC
+               PERFORM 900-SYSKANRI-INV-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO                TO  SPA-NAI-TSSTKIJUN
+                                                                (IDY)
+               END-IF
+           END-PERFORM
       *    対象がない時、１レコード分とする
            IF      IDX                 =   ZERO
                MOVE    1               TO  SPA-SYORIFLG
@@ -497,7 +514,7 @@
                        MOVE    SYS-0031-SSTKIJUN
                                                TO  SPA-GMN-TNAME(IDY)
                    END-IF
-               END-IF                                
+               END-IF 
            END-PERFORM      
       *
            MOVE    1                   TO  SPA-GMN-CUR
