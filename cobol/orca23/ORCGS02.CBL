@@ -600,11 +600,9 @@
                    GO  TO  300-SCREEN-EXT
                WHEN    "S04"
                    PERFORM 320-S03SPASET-SEC
-                   IF    ( SPA-SID1-FLG    =   "NO" OR "OK" )
+                   IF    ( SPA-S01-SHR-ORDER  =   "NO" OR "OK" )
                        PERFORM 340-SHIHARAI-PRT-SEC
                    END-IF
-                   MOVE    SPACE       TO  SPA-SID1-FLG
-                   MOVE    SPACE       TO  SPA-SIDCD
                    GO  TO  300-SCREEN-EXT
                WHEN    "S05"
                    PERFORM 320-S05SPASET-SEC
@@ -1194,7 +1192,7 @@
       *
            MOVE    PATH-TBL-SYSKANRI-KEY10 TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-PATH            =   ZERO )
+           IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-3003-REC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
@@ -1367,7 +1365,7 @@
       *
       *    °õºþ½èÍý
       *
-           IF     ( SPA-SID1-FLG        =   "OK" )
+           IF     ( SPA-S01-SHR-ORDER  =   "OK" )
                PERFORM 45011-JOBKANRI-HENSYU-SEC
       *
                MOVE    0                   TO  WRK-STPAGE

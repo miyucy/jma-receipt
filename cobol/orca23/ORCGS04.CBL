@@ -131,8 +131,6 @@
       *
            03  WRK-SYORI-PG        PIC X(20).
            03  WRK-SIDMSG          PIC X(70).
-           03  WRK-SID1-FLG        PIC X(02).
-           03  WRK-SIDCD           PIC X(04).
            03  WRK-ERRMSG          PIC X(80).
       *
        01  CONST-AREA.
@@ -449,22 +447,18 @@
       *****************************************************************
        330-SID2-SET-SEC            SECTION.
       *
-           MOVE    SPA-SID1-FLG    TO  WRK-SID1-FLG
-           MOVE    SPA-SIDCD       TO  WRK-SIDCD
       *
-           MOVE    SPACE           TO  SPA-SID1-FLG
-           MOVE    SPACE           TO  SPA-SIDCD
-      *
-           IF      WRK-SID1-FLG    =   "OK" OR "NO"
-               IF      WRK-SIDCD   =   "1001"
+           IF      SPA-SID1-FLG    =   "OK" OR "NO"
+               IF      SPA-SIDCD   =   "1001"
                    PERFORM 4900-JOBKANRICHK-SEC
                    IF    ( SPA-ERRCD   =    SPACE )
                        PERFORM 400-PRINT-SEC
-                       MOVE    WRK-SID1-FLG    TO  SPA-SID1-FLG
-                       MOVE    WRK-SIDCD       TO  SPA-SIDCD
                    END-IF
                END-IF
            END-IF
+      *
+           MOVE    SPACE           TO  SPA-SID1-FLG
+           MOVE    SPACE           TO  SPA-SIDCD
       *
            .
        330-SID2-SET-EXT.
@@ -833,6 +827,8 @@
       *
            INITIALIZE                  SPA-S01-SHIHARAI-PARA
       *
+           MOVE    SPA-SID1-FLG        TO  SPA-S01-SHR-ORDER
+      *
            MOVE    SPA-GMN-KIKANKBN    TO  SPA-S01-SHR-KIKANKBN
            MOVE    SPA-GMN-SYORIKBN    TO  SPA-S01-SHR-SYORIKBN
            MOVE    SPA-GMN-DSPKBN      TO  SPA-S01-SHR-DSPKBN
@@ -883,7 +879,7 @@
       *
            MOVE    PATH-TBL-SYSKANRI-KEY10 TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-PATH            =   ZERO )
+           IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-3003-REC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI

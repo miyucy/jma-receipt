@@ -88,6 +88,7 @@
            05  SPA-SID1-AREA. 
                07  SPA-SID1-FLG          PIC  X(02).
            05  SPA-S01-SHIHARAI-PARA.
+               07  SPA-S01-SHR-ORDER     PIC  X(02).
                07  SPA-S01-SHR-KIKANKBN  PIC  X(01).
                07  SPA-S01-SHR-STYMD     PIC  X(08).
                07  SPA-S01-SHR-EDYMD     PIC  X(08).
