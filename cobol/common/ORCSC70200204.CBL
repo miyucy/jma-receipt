@@ -421,6 +421,9 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+      *    ¿ÇÎÅ¹Ô°ÙÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
+           COPY    "K01COMMON-SPA".
+      *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
@@ -2879,6 +2882,10 @@
                GO      TO      300-AUTO-SYORI-EXT
            END-IF
       *
+           IF      LNK-ORCSC-PG        =   "K02"
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           END-IF
+      *
       *
            MOVE    ZERO                TO  FLG-CTMRI
            MOVE    ZERO                TO  FLG-XSEN
@@ -2960,6 +2967,8 @@
            IF     (FLG-XSEN            =   1    )  AND
                   (FLG-ENKALL          =   ZERO )  AND
                   (FLG-ENK1            =   ZERO )
+      *        ¥·¥¹¥Æ¥à´ÉÍý¤Î¶èÊ¬È½Äê
+             AND  (SPA-GAZOUKSN1       =   1   )
       *        ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±
                MOVE    "170025210"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2

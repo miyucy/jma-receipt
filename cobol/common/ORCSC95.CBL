@@ -528,7 +528,7 @@
                END-IF
       *        ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¡Ê¼Ì¿¿¿ÇÃÇ¡Ë
                IF      SYS-1008-GAZOUKSN1-FLG  =   SPACE
-                   MOVE    ZERO            TO  SPA-GAZOUKSN1
+                   MOVE    "1"             TO  SPA-GAZOUKSN1
                ELSE
                    MOVE    SYS-1008-GAZOUKSN1-FLG
                                            TO  SPA-GAZOUKSN1
@@ -570,7 +570,7 @@
                MOVE    ZERO                TO  SPA-SURYOZERO-FLG
                MOVE    ZERO                TO  SPA-CHOKICHK-FLG
                MOVE    ZERO                TO  SPA-JIKANTOKU-NYU
-               MOVE    ZERO                TO  SPA-GAZOUKSN1
+               MOVE    "1"                 TO  SPA-GAZOUKSN1
                MOVE    ZERO                TO  SPA-JIKANCHK-TIME-G
                MOVE    ZERO                TO  SPA-JIKANTOKU-CHK
            END-IF
@@ -844,7 +844,7 @@
                END-IF
       *        ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¡Ê¼Ì¿¿¿ÇÃÇ¡Ë
                IF      SYS-1008-GAZOUKSN1-FLG  =   SPACE
-                   MOVE    ZERO            TO  SPA-GAZOUKSN1
+                   MOVE    "1"             TO  SPA-GAZOUKSN1
                ELSE
                    MOVE    SYS-1008-GAZOUKSN1-FLG
                                            TO  SPA-GAZOUKSN1
@@ -859,7 +859,7 @@
                MOVE    ZERO                TO  SPA-SURYOZERO-FLG
                MOVE    ZERO                TO  SPA-CHOKICHK-FLG
                MOVE    ZERO                TO  SPA-JIKANTOKU-NYU
-               MOVE    ZERO                TO  SPA-GAZOUKSN1
+               MOVE    "1"                 TO  SPA-GAZOUKSN1
            END-IF
       *
       *    ¿ÇÎÅ²Ê

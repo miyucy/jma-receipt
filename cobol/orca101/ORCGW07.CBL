@@ -894,8 +894,9 @@
                    MOVE    SPA-GMN-DATA-MAX    TO  IDY
                END-IF
            END-PERFORM
+      *    初期値は’１’とする
            IF      FLG-OK              =   ZERO
-               MOVE    SPA-GMN-DATALST(01) TO SPA-GMN-GAZOUKSN1-G
+               MOVE    SPA-GMN-DATALST(02) TO SPA-GMN-GAZOUKSN1-G
            END-IF
       *
       *    包括まとめ
