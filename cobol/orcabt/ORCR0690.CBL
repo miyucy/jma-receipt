@@ -439,10 +439,12 @@
            03  FILLER          PIC X(09)   VALUE   "099110001".
       *    ½é¿ÇÎÁ»»Äê²Ê¡§
            03  FILLER          PIC X(09)   VALUE   "830000020".
+      *    °é»ù±ÉÍÜ»ØÆ³²Ã»»¡Ê£Ä£Õ£Í£Í£Ù¡Ë
+           03  FILLER          PIC X(09)   VALUE   "099134001".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   11.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   12.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   11.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   12.         
       *
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
