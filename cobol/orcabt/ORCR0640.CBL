@@ -244,6 +244,8 @@
            03  WRK-FTNKEI2                             PIC 9(09).
            03  WRK-FTNKEI3                             PIC 9(09).
            03  WRK-KINGAKU                             PIC 9(09).
+           03  WRK-KINGAKU2                            PIC 9(09).
+           03  WRK-KINGAKU3                            PIC 9(09).
       *
        01  WRK-DAY-TABLE.
            03  WRK-DAY-T                               OCCURS   31.
@@ -5148,8 +5150,23 @@
                             PERFORM   ICHIBUFTN-KOH-SET-SEC
                         END-EVALUATE
                       ELSE
-                        MOVE    40200     TO   WRK-KINGAKU
-                        PERFORM   ICHIBUFTN-KOH-SET-SEC
+                        IF   (  RECE62-KYURATE         =  20     )
+                        AND  (  FLG-CHIHOU             =  1      )
+                           COMPUTE  WRK-KINGAKU2  =  RECE62-TOTALTEN(1)
+                                                  *  10
+                           IF   WRK-KINGAKU2  >  361500
+                              COMPUTE  WRK-KINGAKU3 =
+                              (( WRK-KINGAKU2 -  361500 ) * 0.01 ) + 0.5
+                              COMPUTE  WRK-KINGAKU  =   72300
+                                                    +   WRK-KINGAKU3
+                           ELSE
+                              MOVE    72300  TO   WRK-KINGAKU
+                           END-IF                     
+                           PERFORM   ICHIBUFTN-KOH-SET-SEC
+                        ELSE
+                           MOVE    40200     TO   WRK-KINGAKU
+                           PERFORM   ICHIBUFTN-KOH-SET-SEC
+                        END-IF
                       END-IF
                     END-IF
                   END-IF                                              

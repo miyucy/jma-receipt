@@ -3252,8 +3252,14 @@
                         MOVE  8000     TO   WRK-KINGAKU
                         PERFORM   ICHIBUFTN-KOH-SET-SEC
                       ELSE
-                        MOVE 12000     TO   WRK-KINGAKU
-                        PERFORM   ICHIBUFTN-KOH-SET-SEC
+                        IF   (  RECE02-KYURATE         =  20     )
+                        AND  (  FLG-CHIHOU             =  1      )
+                           MOVE 40200     TO   WRK-KINGAKU
+                           PERFORM   ICHIBUFTN-KOH-SET-SEC
+                        ELSE
+                           MOVE 12000     TO   WRK-KINGAKU
+                           PERFORM   ICHIBUFTN-KOH-SET-SEC
+                        END-IF
                       END-IF
                     END-IF
                   END-IF                                              
