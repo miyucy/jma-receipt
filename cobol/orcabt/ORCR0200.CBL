@@ -15,52 +15,54 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-000200 IDENTIFICATION          DIVISION.
-000300 PROGRAM-ID.             ORCR0200.
-000400*****************************************************************
-000500*  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : レセプト
-000700*  コンポーネント名  : レセプト電算ファイル作成
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCR0200.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : レセプト電算ファイル作成
       *                      レセプト明細書の並び替え処理 
-000800*  管理者            : 
+      *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−小豆沢   新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03/08/06  診療区分９９は１１に変更
+      *  01.00.02    NACL-藤原    04/05/19  診療区分＝９５と９６(自費)の
+      *                                     は対象としない
       *****************************************************************
-001200*
-001300 ENVIRONMENT             DIVISION.
-001400 CONFIGURATION           SECTION.
-001500 INPUT-OUTPUT            SECTION.
-001600 FILE-CONTROL.
+      *
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION           SECTION.
+       INPUT-OUTPUT            SECTION.
+       FILE-CONTROL.
       *
       *    レセプト明細書  
-006900*
+      *
            SELECT  RECE04-FILE     ASSIGN  RECE04PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE04-KEY
                                    FILE    STATUS  IS  STS-RECE04.
-006900*
+      *
            SELECT  RECE041-FILE    ASSIGN  RECE041PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE041-KEY
                                    FILE    STATUS  IS  STS-RECE041.
-006900*
+      *
            SELECT  RECE04W-FILE     ASSIGN  RECE041PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE04W-KEY
                                    FILE    STATUS  IS  STS-RECE041.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
-006900*
-007000 DATA                    DIVISION.
-007100 FILE                    SECTION.
+      *
+       DATA                    DIVISION.
+       FILE                    SECTION.
       *
       *    レセプト明細書  
        FD  RECE04-FILE.
@@ -75,11 +77,11 @@
        01  RECE04W-REC. 
            COPY    "CPRCF0041.INC"  REPLACING  //RECE041//
                                    BY          //RECE04W//.
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
-010200 WORKING-STORAGE             SECTION.
+       WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル 名称領域 
       *
@@ -97,27 +99,27 @@
                                    BY         //RECEERR//.
            03                      PIC X(04)   VALUE   ".dat".
       *
-018000*    フラグ領域
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE041                             PIC X(02).
            03  STS-RECE04                              PIC X(02).
            03  STS-RECEERR                             PIC X(02).
       *
-018100 01  FLG-AREA.
+       01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
-020700*
-020800*    カウント領域
-020900 01  CNT-AREA.
-021000     03  CNT-IN                                  PIC 9(06).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-IN                                  PIC 9(06).
            03  CNT-OUT                                 PIC 9(06).
-020700*
-020800*    添字領域
-020900 01  IDX-AREA.
-021000     03  IDX                     PIC 9(06).
-021000     03  IDY                     PIC 9(06).
-024000*
-024100*    一時領域
-024200 01  WRK-AREA.
+      *
+      *    添字領域
+       01  IDX-AREA.
+           03  IDX                     PIC 9(06).
+           03  IDY                     PIC 9(06).
+      *
+      *    一時領域
+       01  WRK-AREA.
       *****03  WRK-IN                  PIC X(01).
            03  WRK-PARA.
                05  WRK-PARA1.
@@ -290,13 +292,13 @@
       *
            WRITE   RECE041-REC
            ADD     1                   TO  CNT-OUT
-057400*
+      *
       *
            PERFORM 900-RECE04-READ-SEC      
            .
        200-MAIN-EXT.
            EXIT. 
-057400*
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -370,6 +372,7 @@
                                        NOT =   WRK-PARA-TEISYUTUSAKI )
                    OR    ( RECE04-RECESYUBETU
                                            =   ZERO    OR    8888    )
+                   OR    ( RECE04-SRYKBN   =  "95"     OR    "96"    )
                            GO  TO  900-RECE04-READ-SEC
                    END-IF                       
                    ADD     1           TO  CNT-IN
