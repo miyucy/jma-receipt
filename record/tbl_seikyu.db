@@ -876,6 +876,44 @@ path	key22	{
 	};
 };
 
+path	key23	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key23_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    <>  '060'       )
+                  AND (      HKNNUM_S    <>  '067'       ) 
+                  AND (      RECESYUBETU <>  '0000'      )
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                ORDER  BY  RECEKA,PTNUM,SRYYM
+		;
+	};
+};
+
+path	key24	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key24_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    =  '060'                   
+                        OR   HKNNUM_S    =  '067'        ) 
+                  AND (      RECESYUBETU <>  '0000'      ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )) )
+                ORDER  BY  RECEKA,PTNUM,SRYYM
+		;
+	};
+};
+
 path	all	{
 	DBSELECT	{
 		DECLARE tbl_seikyu_all_csr CURSOR FOR

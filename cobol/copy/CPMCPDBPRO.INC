@@ -266,9 +266,10 @@
       *  01.01.89    NACL-門脇  　03/08/01  SRYACCT-KEY22追加 
       *                                     SYUNOU-KEY19追加
       *                                     PTBYOMEI-KEY12追加
-      *  01.01.90    NACL-藤原    03/09/06  RECEDENの追加
+      *  01.01.90    NACL-藤原    03/08/06  RECEDENの追加
       *  01.01.91    NACL-多々納　03/08/11  CHK-KEY7追加 
       *  01.01.92    NACL-太田  　03/08/12  SRYACCT-KEY23追加 
+      *  01.01.93    NACL-藤原    03/08/18  SEIKYU-KEY23,KEY24追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2214,6 +2215,12 @@
                    MOVE    PATH-TBL-SEIKYU-KEY22
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-SEIKYU-SEC
+                WHEN    ANY             ALSO   "SEIKYU-KEY23"
+                   MOVE    PATH-TBL-SEIKYU-KEY23
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY24"
+                   MOVE    PATH-TBL-SEIKYU-KEY24
+                                       TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SEIKYU-ALL"
                    MOVE    PATH-TBL-SEIKYU-ALL
