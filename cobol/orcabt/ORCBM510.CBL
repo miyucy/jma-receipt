@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       *  Maj/Min/Rev  修正者       日付      内容
+      *  01.01.01     NACL-森脇    03/10/10  公費情報読み込み修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -814,8 +815,10 @@
            MOVE    SYS-1001-HOSPID     TO  PTKOH-HOSPID
            MOVE    RECE10-PTID         TO  PTKOH-PTID
            MOVE    WRK-KOHNUM          TO  PTKOH-KOHNUM
+           MOVE    RECE10-TEKSTYMD     TO  PTKOH-TEKSTYMD
+           MOVE    RECE10-TEKSTYMD     TO  PTKOH-TEKEDYMD
            MOVE    PTKOH-REC           TO  MCPDATA-REC
-           MOVE    RECE10-TEKSTYMD     TO  ORC-DBYMD
+      *     MOVE    RECE10-TEKSTYMD     TO  ORC-DBYMD
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTKOHINF-KEY5"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
@@ -842,7 +845,7 @@
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "PTKOHINF-KEY4"     TO  ORC-DBPATH
+           MOVE    "PTKOHINF-KEY5"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
