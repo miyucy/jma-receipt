@@ -278,6 +278,7 @@
                                                SYUNOU-REC
                                                WRK-SYUNOU-REC-T
       *
+      *         MOVE     "2"                  TO  SYU-DENPJTIKBN
                 IF       WRK-S02-TEIKI-KBN    =   "X"
                     MOVE     "3"              TO  SYU-CREATEKBN
                 ELSE
