@@ -6,6 +6,11 @@
         <embed object="string" length="16"/>
       </appinfo>
     </element>
+    <element name="BTUNAME" occurs="1">
+      <appinfo>
+        <embed object="string" length="30"/>
+      </appinfo>
+    </element>
     <element name="NYUGAI" occurs="1">
       <appinfo>
         <embed object="string" length="4"/>
@@ -50329,6 +50334,48 @@
           </attribute>
           <attribute name="multi">
             <real val="0.168317"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O1259">
+      <attribute name="obj_pos">
+        <point val="5.3,0.9"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="5.3,0.637714;7.72784,0.977714"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BTUNAME#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#201;&#194;&#197;&#239;&#204;&#190;&#161;&#167;&#201;&#194;&#197;&#239;&#204;&#190;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.34"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="5.3,0.9"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.20604"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.173417"/>
           </attribute>
         </composite>
       </attribute>

@@ -1,5 +1,6 @@
         01  HCM342.
             02  HCM342-SRYYM    PIC X(16).
+            02  HCM342-BTUNAME  PIC X(30).
             02  HCM342-NYUGAI   PIC X(4).
             02  HCM342-SAKYMD   PIC X(22).
             02  HCM342-PTNUM    PIC X(10).
