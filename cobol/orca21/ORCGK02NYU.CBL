@@ -2598,6 +2598,8 @@
       *****************MOVE    "*"             TO  SPA-GMN-INPUTCD(IDX2)
                        MOVE    "1"             TO  SPA-COM-KAIFLG
                                                                (IDX2)
+                       MOVE    "1"             TO  SPA-COM-ZAIEND
+                                                               (IDX2)
                        MOVE    ZERO            TO  FLG-SET
                      END-IF
                    END-IF
