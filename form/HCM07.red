@@ -1392,15 +1392,15 @@
     </object>
     <object type="Standard - Text" version="0" id="O59">
       <attribute name="obj_pos">
-        <point val="14.6,1.3"/>
+        <point val="14.8,1.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5953,1.03982;17.6047,1.38982"/>
+        <rectangle val="10.9115,1.03982;18.6885,1.38982"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#161;&#246;&#161;&#246;&#161;&#246;&#161;&#161;&#188;&#253;&#161;&#161;&#199;&#188;&#161;&#161;&#176;&#236;&#161;&#161;&#205;&#247;&#161;&#161;&#201;&#189;&#161;&#161;&#161;&#246;&#161;&#246;&#161;&#246;#</string>
+            <string>#&#161;&#246;&#161;&#246;&#161;&#246;&#161;&#161;&#188;&#253;&#161;&#161;&#199;&#188;&#161;&#161;&#176;&#236;&#161;&#161;&#205;&#247;&#161;&#161;&#201;&#189;&#161;&#161;&#161;&#246;&#161;&#246;&#161;&#246;&#161;&#202;&#198;&#254;&#177;&#161;&#179;&#176;&#161;&#203;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -1409,7 +1409,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="14.6,1.3"/>
+            <point val="14.8,1.3"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
