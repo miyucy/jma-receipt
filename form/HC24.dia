@@ -38,10 +38,10 @@
   <layer name="&#186;&#185;&#164;&#183;&#185;&#254;&#164;&#223;" visible="true">
     <object type="ORCA - Text" version="0" id="O0">
       <attribute name="obj_pos">
-        <point val="15.575,1.7"/>
+        <point val="15.6,1.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.575,1.45789;20.12,1.75789"/>
+        <rectangle val="15.6,1.55789;20.145,1.85789"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTNAME#</string>
@@ -50,7 +50,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="20"/>
+        <int val="26"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="false"/>
@@ -67,7 +67,7 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="15.575,1.7"/>
+            <point val="15.6,1.8"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -80,10 +80,10 @@
     </object>
     <object type="ORCA - Text" version="0" id="O1">
       <attribute name="obj_pos">
-        <point val="9.25671,1.725"/>
+        <point val="9.3,1.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.25671,1.48289;13.8017,1.78289"/>
+        <rectangle val="9.3,1.55789;13.845,1.85789"/>
       </attribute>
       <attribute name="orca_id">
         <string>#HOSPNAME#</string>
@@ -109,7 +109,7 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="9.25671,1.725"/>
+            <point val="9.3,1.8"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -122,10 +122,10 @@
     </object>
     <object type="ORCA - Text" version="0" id="O2">
       <attribute name="obj_pos">
-        <point val="2.80671,1.725"/>
+        <point val="2.8,1.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.80671,1.48289;7.35171,1.78289"/>
+        <rectangle val="2.8,1.55789;7.345,1.85789"/>
       </attribute>
       <attribute name="orca_id">
         <string>#HOSPNUM#</string>
@@ -151,7 +151,7 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="2.80671,1.725"/>
+            <point val="2.8,1.8"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10210,7 +10210,7 @@
           <point val="10.6051,3.69257"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.6051,3.35805;10.8778,3.80805"/>
+          <rectangle val="10.6051,3.35806;10.8778,3.80806"/>
         </attribute>
         <attribute name="orca_id">
           <string>#NENNUM1#</string>
@@ -10252,7 +10252,7 @@
           <point val="11.1106,3.69257"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.1106,3.35805;11.3833,3.80805"/>
+          <rectangle val="11.1106,3.35806;11.3833,3.80806"/>
         </attribute>
         <attribute name="orca_id">
           <string>#NENNUM2#</string>
@@ -10294,7 +10294,7 @@
           <point val="11.6162,3.69257"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.6162,3.35805;11.8889,3.80805"/>
+          <rectangle val="11.6162,3.35806;11.8889,3.80806"/>
         </attribute>
         <attribute name="orca_id">
           <string>#NENNUM3#</string>
@@ -10336,7 +10336,7 @@
           <point val="12.1217,3.69257"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="12.1217,3.35805;12.3944,3.80805"/>
+          <rectangle val="12.1217,3.35806;12.3944,3.80806"/>
         </attribute>
         <attribute name="orca_id">
           <string>#NENNUM4#</string>
@@ -10378,7 +10378,7 @@
           <point val="12.6273,3.69257"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="12.6273,3.35805;12.9,3.80805"/>
+          <rectangle val="12.6273,3.35806;12.9,3.80806"/>
         </attribute>
         <attribute name="orca_id">
           <string>#NENNUM5#</string>
@@ -10420,7 +10420,7 @@
           <point val="13.1328,3.69257"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13.1328,3.35805;13.4055,3.80805"/>
+          <rectangle val="13.1328,3.35806;13.4055,3.80806"/>
         </attribute>
         <attribute name="orca_id">
           <string>#NENNUM6#</string>
@@ -10462,7 +10462,7 @@
           <point val="13.6384,3.69257"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13.6384,3.35805;13.9111,3.80805"/>
+          <rectangle val="13.6384,3.35806;13.9111,3.80806"/>
         </attribute>
         <attribute name="orca_id">
           <string>#NENNUM7#</string>
@@ -10504,7 +10504,7 @@
           <point val="14.1439,3.69257"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="14.1439,3.35805;14.4166,3.80805"/>
+          <rectangle val="14.1439,3.35806;14.4166,3.80806"/>
         </attribute>
         <attribute name="orca_id">
           <string>#NENNUM8#</string>
@@ -10546,7 +10546,7 @@
           <point val="14.6495,3.69257"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="14.6495,3.35805;14.9222,3.80805"/>
+          <rectangle val="14.6495,3.35806;14.9222,3.80806"/>
         </attribute>
         <attribute name="orca_id">
           <string>#NENNUM9#</string>
@@ -11174,5 +11174,47 @@
         </attribute>
       </object>
     </group>
+    <object type="ORCA - Text" version="0" id="O265">
+      <attribute name="obj_pos">
+        <point val="15.6,1.5"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="15.6,1.25789;20.145,1.55789"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#PTKANANAME#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="30"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Times-Roman"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="15.6,1.5"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
   </layer>
 </diagram>
