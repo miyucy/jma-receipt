@@ -6011,7 +6011,7 @@
                        UNTIL   IDY >      SPA-GMN-C02-SYUBYOFLG-MAX
                    IF      WRK-KBN (1:1)
                                       =   SPA-GMN-C02-SYUBYOFLGL (IDY)
-                       MOVE    SPA-GMN-C02-SYUBYOFLGMEIL (IDY)
+                       MOVE    SPA-GMN-C02-SYUBYOFLGMEIL (IDY) (1:6)
                                           TO  WRK-KBNMEI
                        MOVE    SPA-GMN-C02-SYUBYOFLG-MAX
                                           TO  IDY
