@@ -299,9 +299,9 @@
            03  SYU-RSISDO-MONEY        PIC  9(07).
       *労災保険−その他
            03  SYU-RSIETC-MONEY        PIC  9(07).
-      *労災保険−消費税（再掲）
+      *労災保険−請求分消費税（再掲）
            03  SYU-RSI-TAX-SAI         PIC  9(07).
-      *労災保険−円建て合計額
+      *労災保険−請求分円建て合計額
            03  SYU-RSI-TOTAL           PIC  9(07).
       *労災自賠−請求金額（日計表記載用）
            03  SYU-RSIJIBAI-SKYMONEY   PIC  9(07).
@@ -476,7 +476,7 @@
               05  SYU-KYUFUGAI-OSIN3-TEN      PIC  9(07).
       *給付対象外点数（合計）
               05  SYU-KYUFUGAI-GOKEI-TEN      PIC  9(07).
-      *入院収納診療日単位負担情報フラグ
+      *日別収納フラグ
            03  SYU-DAYINFFLG           PIC  X(01).
       *端末ＩＤ
            03  SYU-TERMID              PIC  X(16).
