@@ -89,14 +89,14 @@
                            11  SPA-GMN-C02-HNYUGAIKBNL PIC X(01).
                            11  SPA-GMN-F1L             PIC X(01).
                            11  SPA-GMN-C02-HNYUGAIKBNMEIL
-                                                       PIC X(06).    
+                                                       PIC X(12).    
                        09  SPA-GMN-C02-HNYUGAIKBN-MAX  PIC 9(02).
       *
                        09  SPA-GMN-C02-HNYUGAIKBN-G.
                            11  SPA-GMN-C02-HNYUGAIKBN  PIC X(01).
                            11  SPA-GMN-F1              PIC X(01).
                            11  SPA-GMN-C02-HNYUGAIKBNMEI
-                                                       PIC X(06).
+                                                       PIC X(12).
       *                     
                        09  SPA-GMN-C02-HEAD.                            
                            11  SPA-GMN-C02-HKNCOMBIMEIH

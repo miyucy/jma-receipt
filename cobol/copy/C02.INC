@@ -47,17 +47,17 @@
                                 PIC X(6)   OCCURS  3 TIMES.
               03  C02-HNYUGAIKBN-COMBO.
                 04  C02-HNYUGAIKBN
-                                PIC X(8).
+                                PIC X(14).
                 04  C02-HNYUGAIKBN-COUNT
                                 PIC S9(9)   BINARY.
                 04  C02-HNYUGAIKBNLST
-                                PIC X(8)   OCCURS  3 TIMES.
+                                PIC X(14)   OCCURS  3 TIMES.
               03  C02-B03-STATE
                                 PIC S9(9)   BINARY.
               03  C02-B09-STATE
                                 PIC S9(9)   BINARY.
-              03  C02-B20-LABEL PIC X(6).
               03  C02-B21-LABEL PIC X(4).
+              03  C02-B23-LABEL PIC X(6).
               03  C02-BANGO.
                 04  C02-VALUE   PIC X(50).
               03  C02-SRYYMD.
