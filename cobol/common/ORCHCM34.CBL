@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    03.09.19  自院歴より継続して入院している
+      *                                     場合の入院日を修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -137,6 +139,7 @@
            03  IDX19                               PIC 9(05).
            03  IDX20                               PIC 9(05).
            03  IDX21                               PIC 9(05).
+           03  IDX22                               PIC 9(05).
            03  IDXA                                PIC 9(05).
            03  IDXB                                PIC 9(05).
            03  IDXC                                PIC 9(05).
@@ -601,6 +604,9 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    入退院日取得サブパラメタ
+           COPY    "CPORCSNTYMD.INC".
+      *
       *    入院会計編集サブ
            COPY    "CPORCHCM34S01.INC".
       *
@@ -828,6 +834,15 @@
            MOVE    WRK-BASEYMD         TO  WRK-AGE70-YMD
            COMPUTE WRK-AGE70-YY        =   WRK-AGE70-YY    +   70
       *
+      *    入退院歴取得
+           IF    ( ORCHCM34-NYUGAIKBN  =   "1" )
+               INITIALIZE                  ORCSNTYMDAREA
+               MOVE    PTINF-HOSPID        TO  SNTYMD-HOSPID
+               MOVE    PTINF-PTID          TO  SNTYMD-PTID
+               MOVE    "2"                 TO  SNTYMD-KBN
+               CALL    "ORCSNTYMD" USING   ORCSNTYMDAREA
+           END-IF
+      *
            EVALUATE    ORCHCM34-NYUGAIKBN
            WHEN    "1"
                MOVE    "入院科"        TO  WRK-HCM34-LBLSRYKA
@@ -889,16 +904,27 @@
            PERFORM 200111-SRYKA-HEN-SEC
            MOVE    SRH-SRYKAMEI1       TO  WRK-HCM34-SRYKA(2)
       *
-           MOVE    PTNYUINRRK-NYUINYMD TO  WRK-SYMD
-           PERFORM 800-SEIWA-HEN-SEC
-           MOVE    WRK-EDTYMD3         TO  WRK-HCM34-NYUINYMD
+           PERFORM VARYING IDX22   FROM    1   BY  1
+                   UNTIL ( IDX22       >   SNTYMD-MAX )
+               IF    ( PTNYUINRRK-RRKNUM   = SNTYMD-RRKNUM (IDX22))
       *
-           IF    ( PTNYUINRRK-TAIINYMD NOT =   "99999999" )
-            AND  ( PTNYUINRRK-TAIINYMD NOT =   SPACE  )
-               MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SYMD
-               PERFORM 800-SEIWA-HEN-SEC
-               MOVE    WRK-EDTYMD3     TO  WRK-HCM34-TAIINYMD
-           END-IF
+                   MOVE    SNTYMD-NYUINYMD (IDX22)
+                                               TO  WRK-SYMD
+                   PERFORM 800-SEIWA-HEN-SEC
+                   MOVE    WRK-EDTYMD3         TO  WRK-HCM34-NYUINYMD
+      *
+                   IF    ( SNTYMD-TAIINYMD (IDX22) NOT =   "99999999" )
+                    AND  ( SNTYMD-TAIINYMD (IDX22) NOT =   SPACE  )
+                       MOVE    SNTYMD-TAIINYMD (IDX22) TO  WRK-SYMD
+                       PERFORM 800-SEIWA-HEN-SEC
+                       MOVE    WRK-EDTYMD3     TO  WRK-HCM34-TAIINYMD
+                   END-IF
+      *
+                   MOVE    SNTYMD-MAX      TO  IDX22
+      *
+               END-IF
+      *
+           END-PERFORM
       *
       *    病棟名称
            MOVE    ZERO                TO  FLG-SYSKANRI
@@ -3603,44 +3629,21 @@
       *
            MOVE    ZERO                TO  CNT-PTNYUINRRK
       *
-           MOVE    ZERO                TO  FLG-PTNYUINRRK
-           INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
-           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-           MOVE    ORCHCM34-SRYYM      TO  WRK-SYMD
-           PERFORM 800-GETUMATU-SEC
-           MOVE    WRK-SYMD            TO  PTNYUINRRK-NYUINYMD
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY25"  TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC            NOT =   ZERO )
-               MOVE    "1"             TO  FLG-PTNYUINRRK
-           ELSE
-               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
-           END-IF
-      *
-           PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
+           PERFORM VARYING IDX22   FROM    SNTYMD-MAX   BY  -1
+                   UNTIL ( IDX22       <   1 )
+                    OR   ( SNTYMD-NYUINYMD (IDX22) (1:6)
+                                       >   ORCHCM34-SRYYM )
       *
                PERFORM VARYING IDX18   FROM    1   BY  1
                        UNTIL ( IDX18   >   WRK-SHONUM-MAX )
-                   IF    ( PTNYUINRRK-SHONUM
+                   IF    ( SNTYMD-SHONUM (IDX22)
                                        =   WRK-SHONUM (IDX18))
                        PERFORM 20021-NYUINRRK-HEN-SEC
                        MOVE    WRK-SHONUM-MAX  TO  IDX18
                    END-IF
                END-PERFORM
       *
-               MOVE    "PTNYUINRRK-KEY25"  TO  WRK-DBPATH
-               PERFORM 900-TBL-READ-SEC
-               IF    ( FLG-DBRC            NOT =   ZERO )
-                   MOVE    "1"             TO  FLG-PTNYUINRRK
-               ELSE
-                   MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
-               END-IF
            END-PERFORM
-      *
-           MOVE    "PTNYUINRRK-KEY25"      TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
       *
            MOVE    6                       TO  WRK-ITEM-KBN
            MOVE    1                       TO  FLG-LINE
@@ -3720,13 +3723,15 @@
            MOVE    SPACE               TO  WRK-RRK-NYUINYMD
            MOVE    SPACE               TO  WRK-RRK-TAIINYMD
       *
-           MOVE    PTNYUINRRK-NYUINYMD TO  WRK-SYMD
+           MOVE    SNTYMD-NYUINYMD (IDX22)
+                                       TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-EDTYMD3 (5:18)  TO  WRK-RRK-NYUINYMD
       *
-           IF    ( PTNYUINRRK-TAIINYMD NOT =   "99999999" )
-            AND  ( PTNYUINRRK-TAIINYMD NOT =   SPACE )
-               MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SYMD
+           IF    ( SNTYMD-TAIINYMD (IDX22) NOT =   "99999999" )
+            AND  ( SNTYMD-TAIINYMD (IDX22) NOT =   SPACE )
+               MOVE    SNTYMD-TAIINYMD (IDX22)
+                                           TO  WRK-SYMD
                PERFORM 800-SEIWA-HEN-SEC
                MOVE    WRK-EDTYMD3 (5:18)  TO  WRK-RRK-TAIINYMD
            END-IF

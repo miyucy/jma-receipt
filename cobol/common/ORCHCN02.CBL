@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.07.01  出力先プリンタサブ追加
+      *  01.00.02    NACL-太田    03.09.19  自院歴より継続して入院している
+      *                                     場合の入院日を修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,6 +77,7 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
+           03  IDX2                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -150,7 +153,6 @@
                05  WRK-HCN02-KIKANENDDD     PIC X(4).
                05  FILLER                   PIC X(8)  VALUE  "日）".
       *
-       01  DUMMY PIC X(03).
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -177,6 +179,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    入退院日取得サブパラメタ
+           COPY    "CPORCSNTYMD.INC".
       *
       *    日付サブルーチン領域
            COPY  "CPORCSDAY.INC".
@@ -427,27 +432,9 @@
            MOVE    WRK-NENREI          TO  WRK-Z3
            MOVE    WRK-Z3              TO  HCN02-PTNENREI
       *
-      *    入院日
-           IF      LNK-PTNYUINRRK-NYUINYMD =   SPACE
-               CONTINUE
-           ELSE
-               MOVE    LNK-PTNYUINRRK-NYUINYMD TO  WRK-SYMD
-               PERFORM 31012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG(5:4)    TO  HCN02-NYUINYY
-               MOVE    WRK-HENYMDG(11:4)   TO  HCN02-NYUINMM
-               MOVE    WRK-HENYMDG(17:4)   TO  HCN02-NYUINDD
-           END-IF
       *
-      *    退院日
-           IF      LNK-PTNYUINRRK-TAIINYMD =   SPACE
-               CONTINUE
-           ELSE
-               MOVE    LNK-PTNYUINRRK-TAIINYMD TO  WRK-SYMD
-               PERFORM 31012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG(5:4)    TO  HCN02-TAIINYY
-               MOVE    WRK-HENYMDG(11:4)   TO  HCN02-TAIINMM
-               MOVE    WRK-HENYMDG(17:4)   TO  HCN02-TAIINDD
-           END-IF
+      *    入退院日編集処理
+           PERFORM 3101-NTYMD-HEN-SEC
       *
       *    通算期間統計
       *     MOVE    ORCHCMT-TKIKAN      TO  WRK-Z4
@@ -510,6 +497,46 @@
        310-HC01-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入退院日編集処理
+      *****************************************************************
+       3101-NTYMD-HEN-SEC              SECTION.
+      *
+           INITIALIZE                  ORCSNTYMDAREA
+           MOVE    PTINF-HOSPID        TO  SNTYMD-HOSPID
+           MOVE    PTINF-PTID          TO  SNTYMD-PTID
+           MOVE    "3"                 TO  SNTYMD-KBN
+           CALL    "ORCSNTYMD" USING   ORCSNTYMDAREA
+      *
+           PERFORM VARYING IDX2    FROM    1   BY   1
+                   UNTIL ( IDX2    >   SNTYMD-MAX )
+               IF    ( LNK-PTNYUINRRK-RRKNUM
+                                   =   SNTYMD-RRKNUM (IDX2))
+      *            入院日
+                   MOVE    SNTYMD-NYUINYMD(IDX2)
+                                               TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG(5:4)    TO  HCN02-NYUINYY
+                   MOVE    WRK-HENYMDG(11:4)   TO  HCN02-NYUINMM
+                   MOVE    WRK-HENYMDG(17:4)   TO  HCN02-NYUINDD
+      *
+      *            退院日
+                   MOVE    SNTYMD-TAIINYMD(IDX2)
+                                               TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG(5:4)    TO  HCN02-TAIINYY
+                   MOVE    WRK-HENYMDG(11:4)   TO  HCN02-TAIINMM
+                   MOVE    WRK-HENYMDG(17:4)   TO  HCN02-TAIINDD
+      *
+                   MOVE    SNTYMD-MAX          TO  IDX2
+      *
+               END-IF
+           END-PERFORM
+      *
+      *
+           .
+       3101-NTYMD-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    西暦日本語変換処理
       *****************************************************************
