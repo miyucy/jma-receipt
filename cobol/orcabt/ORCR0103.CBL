@@ -38,6 +38,7 @@
       *                                     Á¥°÷ÊÝ¸±¤Î¿¦Ì³¾å¤Î»öÍ³¤Î½¤Àµ 
       *  01.00.06    NACL-Æ£¸¶    02.11.08  ¹ñÊÝ¤ÎÆÃÄê¤ÎÊÝ¸±¼ÔÈÖ¹æ¤Î¤È¤­
       *                                     ¸©ÆâÊ¬¤È¤¹¤ë¤è¤¦¤Ë½¤Àµ
+      *  01.00.07    NACL-Æ£¸¶    02/11/26  ¶¦ºÑÁÈ¹ç¤Î²¼Á¥£³¥ö·î¤ÎÉ½¼¨¤ÎÄÉ²Ã 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -409,17 +410,28 @@
       *
       *   ÆÃµ­»ö¹à
        01  TBL-TOKKI-AREA.
-           03  FILLER          PIC X(12)   VALUE   "01£°£±¸ø".
-           03  FILLER          PIC X(12)   VALUE   "02£°£²Ä¹".
-           03  FILLER          PIC X(12)   VALUE   "03£°£³Ä¹½è".
-           03  FILLER          PIC X(12)   VALUE   "04£°£´Ï·ÊÝ".
-           03  FILLER          PIC X(12)   VALUE   "05£°£µ¹âÅÙ".
-           03  FILLER          PIC X(12)   VALUE   "07£°£·Ï·Ê»".
-           03  FILLER          PIC X(12)   VALUE   "08£°£¸Ï··ò".
-           03  FILLER          PIC X(12)   VALUE   "09£°£¹»Ü".
-           03  FILLER          PIC X(12)   VALUE   "10£±£°Âè»°".
-           03  FILLER          PIC X(12)   VALUE   "11£±£±Ìô¼£".
-           03  FILLER          PIC X(12)   VALUE   "12£±£²ºà¼£".
+           03  FILLER          PIC X(02)   VALUE   "01".
+           03  FILLER          PIC X(10)   VALUE   "£°£±¸ø".
+           03  FILLER          PIC X(02)   VALUE   "02".
+           03  FILLER          PIC X(10)   VALUE   "£°£²Ä¹".
+           03  FILLER          PIC X(02)   VALUE   "03".
+           03  FILLER          PIC X(10)   VALUE   "£°£³Ä¹½è".
+           03  FILLER          PIC X(02)   VALUE   "04".
+           03  FILLER          PIC X(10)   VALUE   "£°£´Ï·ÊÝ".
+           03  FILLER          PIC X(02)   VALUE   "05".
+           03  FILLER          PIC X(10)   VALUE   "£°£µ¹âÅÙ".
+           03  FILLER          PIC X(02)   VALUE   "07".
+           03  FILLER          PIC X(10)   VALUE   "£°£·Ï·Ê»".
+           03  FILLER          PIC X(02)   VALUE   "08".
+           03  FILLER          PIC X(10)   VALUE   "£°£¸Ï··ò".
+           03  FILLER          PIC X(02)   VALUE   "09".
+           03  FILLER          PIC X(10)   VALUE   "£°£¹»Ü".
+           03  FILLER          PIC X(02)   VALUE   "10".
+           03  FILLER          PIC X(10)   VALUE   "£±£°Âè»°".
+           03  FILLER          PIC X(02)   VALUE   "11".
+           03  FILLER          PIC X(10)   VALUE   "£±£±Ìô¼£".
+           03  FILLER          PIC X(02)   VALUE   "12".
+           03  FILLER          PIC X(10)   VALUE   "£±£²ºà¼£".
        01  TBL-TOKKI-R         REDEFINES   TBL-TOKKI-AREA.
            03  TBL-TOKKI       OCCURS   11.
                05  TBL-TOKKICD             PIC X(02).
@@ -1135,22 +1147,26 @@
            PERFORM 3110-TOKKI-SET-SEC
       *
       *    ¿¦Ì³¾å¤Î»öÍ³
-           IF      RECE02-HKNNUM       =   "002"
-               EVALUATE    RECE02-HOJOKBN
-                   WHEN    "1"
-                   WHEN    "A"
-                   WHEN    "D"
-                       MOVE    "¿¦Ì³¾å"              TO  HC06-JIYU
-                   WHEN    "2"
-                   WHEN    "B"
-                   WHEN    "E"
-                       MOVE    "²¼Á¥¸å£³¥ö·î°ÊÆâ"    TO  HC06-JIYU
-                   WHEN    "3"
-                   WHEN    "C"
-                   WHEN    "F"
-                       MOVE    "ÄÌ¶ÐºÒ³²"            TO  HC06-JIYU
-               END-EVALUATE
-           END-IF                 
+      *****IF      RECE02-HKNNUM       =   "002"
+           EVALUATE    RECE02-HKNNUM
+               WHEN    "002"
+               WHEN    "031"  THRU  "034"
+                   EVALUATE    RECE02-HOJOKBN
+                       WHEN    "1"
+                       WHEN    "A"
+                       WHEN    "D"
+                           MOVE    "¿¦Ì³¾å"              TO  HC06-JIYU
+                       WHEN    "2"
+                       WHEN    "B"
+                       WHEN    "E"
+                           MOVE    "²¼Á¥¸å£³¥ö·î°ÊÆâ"    TO  HC06-JIYU
+                       WHEN    "3"
+                       WHEN    "C"
+                       WHEN    "F"
+                           MOVE    "ÄÌ¶ÐºÒ³²"            TO  HC06-JIYU
+                   END-EVALUATE
+           END-EVALUATE        
+      *****END-IF                 
       *
       *    °åÎÅµ¡´Ø½êºßÃÏ
            MOVE    SYS-1002-ADRS       TO  HC06-HOSPADRS
