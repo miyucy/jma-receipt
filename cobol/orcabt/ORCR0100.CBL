@@ -102,6 +102,7 @@
       *  01.01.01    NACL-Æ£¸¶    02/09/17  ¸©Æâ¸©³°¶èÊ¬¡¦¸©ÈÖ¹æ¡¦
       *                                     Ç¯Îð¡¦µëÉÕ³ä¹ç¤ÎÄÉ²Ã
       *  01.01.02    NACL-Æ£¸¶    02/10/17  »áÌ¾¤ò£³£²¤«¤é£µ£°¤ËÊÑ¹¹
+      *  01.01.03    NACL-ÌçÏÆ    02/10/17  ¸øÈñ£²¤Î°ìÉôÉéÃ´¶âÍó¤ÎÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2370,8 +2371,12 @@
                                       NOT =   RECE02-TOTALTEN (IDX1)) OR
                   (RECE02-FTNMONEY (IDX3)
                                       NOT =   RECE02-FTNMONEY (IDX1))  )
-               MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK9
-               MOVE    WRK-KGK9               TO  HC06-TOTALTEN(3)
+      *
+             IF    RECE02-FTNMONEY (IDX3)
+                                      NOT =   RECE02-FTNMONEY (IDX2)
+      *
+      **       MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK9
+      **       MOVE    WRK-KGK9               TO  HC06-TOTALTEN(3)
       *********IF      RECE02-YKZFTN   (IDX3) >   ZERO
       *             MOVE    RECE02-YKZFTN   (IDX3) TO  WRK-KGK9
       *             MOVE    WRK-KGK9               TO  HC06-YKZFTN  (3)
@@ -2380,6 +2385,9 @@
                    MOVE    RECE02-FTNMONEY (IDX3) TO  WRK-KGK9
                    MOVE    WRK-KGK9               TO  HC06-FTNMONEY(3)
                END-IF
+      *
+             END-IF
+      * 
            END-IF
            IF      RECE02-TOTALTEN (IDX3) >   ZERO                      
            AND     RECE02-TOTALTEN (IDX3)
