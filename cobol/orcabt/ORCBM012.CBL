@@ -149,9 +149,9 @@
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA1.
-               05  WRK-PARA-SKYYM  PIC X(06).
-               05  WRK-PARA-TERMID PIC X(16).
-               05  WRK-PARA-SYSYMD PIC X(08).
+      *********05  WRK-PARA-SKYYM  PIC X(06).
+      *********05  WRK-PARA-TERMID PIC X(16).
+      *********05  WRK-PARA-SYSYMD PIC X(08).
            03  WRK-PARA-HOSPID     PIC X(24).
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
@@ -187,9 +187,6 @@
            03  WRK-RECEERR           PIC X(200). 
       *     
            03  WRK-HC01PARA-CNT      PIC  9(06).
-      *
-       01  WRK-CONS-KYURATE          PIC 9(02)   VALUE   7.
-       01  WRK-CONS-KYURATE2         PIC 9(02)   VALUE   8.
       * 
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -236,6 +233,10 @@
            COPY    "ORCA-DBPATH".
       *
        01  WRK-CONS-AREA.
+      *    É½¼¨µëÉÕ³ä¹ç
+           03  WRK-CONS-KYURATE          PIC 9(02)   VALUE   7.
+           03  WRK-CONS-KYURATE2         PIC 9(02)   VALUE   8.
+      *     
       *    £²£°£°£²Ç¯£±£°·î²þÀµ
            03  WRK-CONS-SRYYM        PIC X(06)   VALUE   "200210".              
       *
@@ -342,7 +343,7 @@
                                                LNK-PRTKANRI-TERMID
                                                LNK-PRTKANRI-OPID    
                                                LNK-PRTKANRI-PRTNM    
-                                               WRK-PARA1
+      *****************************************WRK-PARA1
                                                WRK-PARA-HOSPID
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
@@ -360,17 +361,17 @@
                                    JOBKANRI-REC
       *
            MOVE    "MF01ZZZ"           TO  MF01PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  MF01PARA-TERMID
+           MOVE    LNK-PRTKANRI-TERMID TO  MF01PARA-TERMID
       *
            MOVE    "RECEUPD"           TO  RECEUPD-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEUPD-TERMID
+           MOVE    LNK-PRTKANRI-TERMID TO  RECEUPD-TERMID
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+           MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
       *
-           MOVE    WRK-PARA-SKYYM      TO  WRK-SRYYMD (1:6)
+           MOVE    LNK-PRTKANRI-SRYYM  TO  WRK-SRYYMD (1:6)
            MOVE    "01"                TO  WRK-SRYYMD (7:2)
-           MOVE    WRK-PARA-SKYYM      TO  WRK-SYMD (1:6)
+           MOVE    LNK-PRTKANRI-SRYYM  TO  WRK-SYMD (1:6)
            MOVE    "01"                TO  WRK-SYMD (7:2)
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-SRYYMWH 
@@ -378,7 +379,7 @@
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY2-AREA
            MOVE    "21"                TO  LNK-DAY2-IRAI
-           MOVE    WRK-PARA-SYSYMD     TO  LNK-DAY2-YMD
+           MOVE    LNK-PRTKANRI-SKYYMD TO  LNK-DAY2-YMD
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY2-AREA
            IF      STS-DAY-RC1         =   ZERO 
@@ -581,21 +582,18 @@
                ADD     RECE10-FTNMONEY (IDX1) TO
                                    SUM-ROU-FTNMONEY   (IDX3)
       *    ¿©»öÎÅÍÜ
-      ****     IF      IDX3                   =   1 
-      *            IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
-      *                ADD     1              TO
-      *                                SUM-ROU-SHOKUJIKENSU (IDX2)
-      *            END-IF
-      *            ADD     RECE10-SHOKUJINISSU   (IDX1)
-      *                                   TO
-      *                            SUM-ROU-SHOKUJINISSU   (IDX2)
-      *            ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
-      *                                   TO
-      *                            SUM-ROU-SHOKUJIRYOYOHI (IDX2)
-      *            ADD     RECE10-SHOKUJIFTN     (IDX1)
-      *                                   TO
-      *                            SUM-ROU-SHOKUJIFTN     (IDX2)
-      ****     END-IF
+               IF      IDX3                   =   1 
+                   IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
+                       ADD     1              TO
+                                              SUM-ROU-SHOKUJIKENSU 
+                   END-IF
+                   ADD     RECE10-SHOKUJINISSU   (IDX1)
+                                          TO  SUM-ROU-SHOKUJINISSU   
+                   ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
+                                          TO  SUM-ROU-SHOKUJIRYOYOHI 
+                   ADD     RECE10-SHOKUJIFTN     (IDX1)
+                                          TO  SUM-ROU-SHOKUJIFTN     
+               END-IF
            ELSE                        
       *    ·ï¿ô
                ADD     1               TO  SUM-KENSU (IDX2 IDX3 IDX5)
@@ -610,21 +608,21 @@
                ADD     RECE10-FTNMONEY (IDX1) TO
                                    SUM-FTNMONEY   (IDX2 IDX3 IDX5)
       *        ¿©»öÎÅÍÜ
-      ****     IF      IDX3                   =   1 
-      *            IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
-      *                ADD     1              TO
-      *                            SUM-SHOKUJIKENSU (IDX2 IDX5)
-      *            END-IF
-      *            ADD     RECE10-SHOKUJINISSU   (IDX1)
-      *                                   TO
-      *                            SUM-SHOKUJINISSU   (IDX2 IDX5)
-      *            ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
-      *                                   TO
-      *                            SUM-SHOKUJIRYOYOHI (IDX2 IDX5)
-      *            ADD     RECE10-SHOKUJIFTN     (IDX1)
-      *                                   TO
-      *                            SUM-SHOKUJIFTN     (IDX2 IDX5)
-      ****     END-IF
+               IF      IDX3                   =   1 
+                   IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
+                       ADD     1              TO
+                                   SUM-SHOKUJIKENSU (IDX2 IDX5)
+                   END-IF
+                   ADD     RECE10-SHOKUJINISSU   (IDX1)
+                                          TO
+                                   SUM-SHOKUJINISSU   (IDX2 IDX5)
+                   ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
+                                          TO
+                                   SUM-SHOKUJIRYOYOHI (IDX2 IDX5)
+                   ADD     RECE10-SHOKUJIFTN     (IDX1)
+                                          TO
+                                   SUM-SHOKUJIFTN     (IDX2 IDX5)
+               END-IF
            END-IF      
       *
            MOVE    1               TO  FLG-UPD 
@@ -658,17 +656,17 @@
                ADD     RECE10-YKZFTN     (IDY) TO  MF01-YKZFTN   (IDX3)
                ADD     RECE10-FTNMONEY   (IDY) TO  MF01-FTNMONEY (IDX3)
       *        ¿©»öÎÅÍÜ
-      ******** IF      IDX3                    =   1       
-      *            IF      RECE10-SHOKUJINISSU   (IDY) >   ZERO
-      *                ADD     1               TO  MF01-SHOKUJIKENSU
-      *                ADD     RECE10-SHOKUJINISSU   (IDY)
-      *                                        TO  MF01-SHOKUJINISSU 
-      *                ADD     RECE10-SHOKUJIRYOYOHI (IDY)
-      *                                        TO  MF01-SHOKUJIRYOYOHI 
-      *                ADD     RECE10-SHOKUJIFTN     (IDY)
-      *                                        TO  MF01-SHOKUJIFTN
-      *            END-IF
-      ******** END-IF
+               IF      IDX3                    =   1       
+                   IF      RECE10-SHOKUJINISSU   (IDY) >   ZERO
+                       ADD     1               TO  MF01-SHOKUJIKENSU
+                       ADD     RECE10-SHOKUJINISSU   (IDY)
+                                               TO  MF01-SHOKUJINISSU 
+                       ADD     RECE10-SHOKUJIRYOYOHI (IDY)
+                                               TO  MF01-SHOKUJIRYOYOHI 
+                       ADD     RECE10-SHOKUJIFTN     (IDY)
+                                               TO  MF01-SHOKUJIFTN
+                   END-IF
+               END-IF
       *
                IF      FLG-MF01                =   1
                    WRITE   MF01-REC
@@ -682,9 +680,9 @@
            .
        220-KOH-SYUKEI-EXT.
            EXIT.
-057400*
+      *
       *****************************************************************
-006900*    ÀÁµá£Ä£Â¹¹¿·ÍÑ¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
+      *    ÀÁµá£Ä£Â¹¹¿·ÍÑ¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
       *****************************************************************
        230-UPD-FILE-HENSYU-SEC         SECTION.
       *
@@ -1096,9 +1094,6 @@
       *
       *
            IF      CNT-RECE10            =   ZERO 
-      *****    MOVE    "*** ORCBM012 FILE CNT:ZERO ***"
-      *****                               TO  WRK-RECEERR
-      *****    PERFORM 500-ERR-HENSYU-SEC
                CONTINUE
            ELSE
                IF      FLG-UPD        =   1
@@ -1110,7 +1105,6 @@
       *
            DISPLAY "*** ORCBM012 IN  "  CNT-RECE10 
            DISPLAY "*** ORCBM012 END ***"
-      ***     ACCEPT  WRK-IN
       *     
       *    ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -1143,8 +1137,10 @@
                PERFORM 910-SEIKYU-INV-SEC
                IF      FLG-SEIKYU          =   ZERO
                    MOVE    "2"             TO  RECE10-SKYKBN
-                   MOVE    WRK-PARA-SKYYM  TO  RECE10-SKYYM
-                   MOVE    WRK-PARA-SYSYMD TO  RECE10-UPDYMD  
+                   MOVE    LNK-PRTKANRI-SRYYM
+                                           TO  RECE10-SKYYM
+                   MOVE    LNK-PRTKANRI-SKYYMD
+                                           TO  RECE10-UPDYMD  
                    MOVE    RECE10-REC      TO  MCPDATA-REC
                    MOVE    "DBUPDATE"      TO  MCP-FUNC
                    MOVE    "SEIKYU-KEY"    TO  ORC-DBPATH
@@ -1203,7 +1199,7 @@
       *    ÀÁµá´ÉÍý£Ä£Â¸¡º÷
            INITIALIZE                  RECE10-REC
            MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
-           MOVE    WRK-PARA-SKYYM      TO  RECE10-SKYYM
+           MOVE    LNK-PRTKANRI-SRYYM      TO  RECE10-SKYYM
            MOVE    WRK-CONS-SRYYM      TO  RECE10-SRYYM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1356,7 +1352,7 @@
       *****************************************************************
        910-SYSKANRI-INV-SEC         SECTION.
       *
-           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
+           MOVE    LNK-PRTKANRI-SKYYMD TO  ORC-DBYMD
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
