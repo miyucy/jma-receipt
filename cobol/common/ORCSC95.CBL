@@ -1548,9 +1548,14 @@
                        MOVE    1               TO  FLG-UKETUKE-ARI
                    END-IF
                END-IF
+      *        ¿ÇÎÅ²ÊÁªÂò»þ
                IF      FLG-UKETUKE-ARI     =   1
-      ******** IF     (UKE-KAIKEITIME      =   ZERO )  AND
-      ****************(UKE-UKEID       NOT =   ZERO )
+                   IF     (SPA-GMN-SRYKA   NOT =   SPACE  )  AND
+                          (SPA-GMN-SRYKA   NOT =   UKE-SRYKA)
+                       MOVE    ZERO            TO  FLG-UKETUKE-ARI
+                   END-IF
+               END-IF
+               IF      FLG-UKETUKE-ARI     =   1
                    IF     (SPA-GMN-SRYKA   NOT =   SPACE  )  AND
                           (SPA-GMN-SRYKA       =   UKE-SRYKA )
                        MOVE    UKE-SRYKA           TO  SPA-SRYKA
