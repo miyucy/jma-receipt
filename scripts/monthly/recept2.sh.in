@@ -64,10 +64,9 @@ fi
 	             $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$1$2
               else
                  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV1 -parameter ${13},${14},${15},$rennum,${17},${18},${19},${20},${21},${22},${23},$1,$2,$8,$9,${27},$5,$6
-               fi
+	             $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$1$2
+              fi
            fi
-
-	       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$1$2
         fi
 
         exit
