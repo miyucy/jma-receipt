@@ -70,13 +70,14 @@ $(LDFILE) $(BDFILE):  orcadb.inc
 filecheck:
 
 directory: directory.in
+	awk -f mkdirectory.awk $(DIRECTORYFILE_in) @DEBUG@ @HOSP@ | \
 	sed -e 's,\@ORCA_DIR\@,$(ORCA_DIR),g' \
 	    -e 's,\@lddefdir\@,$(lddefdir),g' \
 	    -e 's,\@recorddir\@,$(recorddir),g' \
 	    -e 's,\@sitedir\@,$(SITEDIR),g' \
 	    -e 's,\@sitelddefdir\@,$(SITELDDEFDIR),g' \
 	    -e 's,\@siterecorddir\@,$(SITERECORDDIR),g' \
-	$(DIRECTORYFILE_in) > $(DIRECTORYFILE) 
+	    > $(DIRECTORYFILE) 
 
 dbgroup.inc: 
 	ln -sf ../etc/dbgroup.inc .
