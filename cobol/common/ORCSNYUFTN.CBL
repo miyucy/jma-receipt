@@ -476,6 +476,7 @@
                                                WRK-SYUDAY-REC-T        
       *
                 EVALUATE    WRK-S02-SYORI-KBN
+                   WHEN    " "
                    WHEN    "1"
                       MOVE     "1"            TO  SYU-CREATEKBN
                                                   SDAY-CREATEKBN
@@ -1136,6 +1137,7 @@
               MOVE WRK-HANBETU-KAISHI(IDX)
                                       TO LNK-SYU-SRYYMD(IDX)(7:2)
               EVALUATE    LNK-S02-SYORI-KBN
+                   WHEN    " "
                    WHEN    "1"
       ************>    MOVE "2"       TO LNK-SYU-DENPJTIKBN(IDX)
                        CONTINUE
