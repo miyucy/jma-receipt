@@ -356,7 +356,7 @@
       *         
                    IF      JOB-STOPFLG     =   1
       *                ジョブ管理終了処理
-                       MOVE    "CAN"           TO  SJOBKANRI-MODE
+                       MOVE    "CA2"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
                        MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
                        MOVE    WRK-PARA-SHELLID
