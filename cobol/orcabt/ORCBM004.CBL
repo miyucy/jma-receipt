@@ -53,33 +53,33 @@
       *  01.01.04    NACL-藤原    03/05/19  対象保険者番号の追加
       *  01.01.05    NACL-藤原    03/07/10  特定疾患有り・無しの集計を
       *                                     同じ欄に編集する
+      *  01.01.06    NACL-藤原    03/07/21  公費欄の特定疾患の名称の変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
-
       *    集計ファイル  
            SELECT  MF01-FILE     ASSIGN    MF01PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  MF01-KEY
                                    FILE    STATUS  IS  STS-MF01.
-006900*
+      *
            SELECT  MF011-FILE    ASSIGN    MF01PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  MF011-KEY
                                    FILE    STATUS  IS  STS-MF01.
       *
-006900*    請求ＤＢ更新用ファイル
+      *    請求ＤＢ更新用ファイル
            SELECT  UPD-FILE        ASSIGN  RECEUPD
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-RECEUPD.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -96,12 +96,12 @@
            COPY    "CPRMF001.INC"  REPLACING  //MF01//
                                    BY         //MF011//.
       *
-006900*    請求ＤＢ更新用ファイル
+      *    請求ＤＢ更新用ファイル
        FD  UPD-FILE.
            COPY    "CPRCF010.INC"  REPLACING  //RECE10//
                                    BY         //RECE10X//.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -111,7 +111,7 @@
                                    REPLACING  //RECE01//
                                    BY         //MF01//.
       *
-006900*    請求ＤＢ更新用ファイル 名称領域 
+      *    請求ＤＢ更新用ファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEUPD//.
@@ -846,26 +846,31 @@
       *
            MOVE    MF011-KOHNUM (1)    TO  WRK-Z9
            MOVE    WRK-Z9 (3:3)        TO  WRK-KOHNUM
-      *        保険番号読込み  
-           INITIALIZE                      HKNNUM-REC
-           MOVE   SYS-1001-HOSPID      TO    HKN-HOSPID
-           MOVE   MF011-KOHNUM (1)     TO    HKN-HKNNUM
-           MOVE   HKNNUM-REC           TO    MCPDATA-REC
-           MOVE   "DBSELECT"           TO    MCP-FUNC
-           MOVE   "HKNNUM-KEY2"        TO    ORC-DBPATH
-           CALL   "ORCMCPSUB"           USING MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
-               PERFORM 900-HKNNUM-READ-SEC
-           ELSE
-               MOVE    1                  TO  FLG-HKNNUM
-           END-IF
       *
-           PERFORM UNTIL       FLG-HKNNUM      =   1
-               IF      HKN-TEKSTYMD            <=  WRK-SRYYMD
-               AND     HKN-TEKEDYMD            >=  WRK-SRYYMD
+      *    特定疾患のとき 
+           IF      MF011-KOHNUM (1)    =   "051"
+               MOVE    "特定疾患"      TO   WRK-HKNNAME
+           ELSE
+      *        保険番号読込み  
+               INITIALIZE                      HKNNUM-REC
+               MOVE   SYS-1001-HOSPID      TO    HKN-HOSPID
+               MOVE   MF011-KOHNUM (1)     TO    HKN-HKNNUM
+               MOVE   HKNNUM-REC           TO    MCPDATA-REC
+               MOVE   "DBSELECT"           TO    MCP-FUNC
+               MOVE   "HKNNUM-KEY2"        TO    ORC-DBPATH
+               CALL   "ORCMCPSUB"           USING MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                   PERFORM 900-HKNNUM-READ-SEC
+               ELSE
+                   MOVE    1                  TO  FLG-HKNNUM
+               END-IF
+      *
+               PERFORM UNTIL       FLG-HKNNUM      =   1
+                 IF      HKN-TEKSTYMD            <=  WRK-SRYYMD
+                 AND     HKN-TEKEDYMD            >=  WRK-SRYYMD
                    IF     MF011-KOHNUM (1)     =   "027"
                        IF      SYS-1001-HOSPSBT    =   HKN-PAYKBN (1:1)
                        AND     SYS-1001-ROUPAYKBN  =   HKN-PAYKBN (2:1)
@@ -876,20 +881,21 @@
                        MOVE    HKN-TANSEIDONAME    TO   WRK-HKNNAME
                        MOVE    1                   TO  FLG-HKNNUM   
                    END-IF     
-               END-IF
+                 END-IF
       *
-               IF      FLG-HKNNUM           =   ZERO
+                 IF      FLG-HKNNUM           =   ZERO
                    MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
                    PERFORM 900-HKNNUM-READ-SEC
-               END-IF 
-115900     END-PERFORM
-      *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+                 END-IF 
+               END-PERFORM
+      *        カーソルクロース
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+           END-IF
       *
            INSPECT WRK-HKNNAME      REPLACING   ALL "（" BY  "・"
                                                 ALL "）" BY  "　"  

@@ -35,6 +35,8 @@
       *  01.00.03    NACL-藤原    03/05/19  対象保険者番号の追加
       *  01.00.04    NACL-藤原    03/07/10  特定疾患有り・無しの集計を
       *                                     同じ欄に編集する
+      *  01.01.05    NACL-藤原    03/07/21  公費欄の特定疾患の名称の変更
+      *  01.01.06    NACL-藤原    03/07/21  公費欄の特定疾患の名称の変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1003,26 +1005,31 @@
            MOVE    SUM-KOH-KOHNUM (IDX2)
                                        TO  WRK-KOHNUM9
            MOVE    WRK-KOHNUM9         TO  HCM2H-KOH-NUM (IDY)
-      *        保険番号読込み  
-           INITIALIZE                      HKNNUM-REC
-           MOVE   SYS-1001-HOSPID      TO    HKN-HOSPID
-           MOVE   SUM-KOH-KOHNUM (IDX2)    TO    HKN-HKNNUM
-           MOVE   HKNNUM-REC           TO    MCPDATA-REC
-           MOVE   "DBSELECT"           TO    MCP-FUNC
-           MOVE   "HKNNUM-KEY2"        TO    ORC-DBPATH
-           CALL   "ORCMCPSUB"           USING MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
-               PERFORM 900-HKNNUM-READ-SEC
-           ELSE
-               MOVE    1                  TO  FLG-HKNNUM
-           END-IF
       *
-           PERFORM UNTIL       FLG-HKNNUM      =   1
-               IF      HKN-TEKSTYMD            <=  WRK-SRYYMD
-               AND     HKN-TEKEDYMD            >=  WRK-SRYYMD
+      *    特定疾患のとき 
+           IF      SUM-KOH-KOHNUM (IDX2)    =   "051"
+               MOVE    "特定疾患"      TO   WRK-HKNNAME
+           ELSE
+      *        保険番号読込み  
+               INITIALIZE                      HKNNUM-REC
+               MOVE   SYS-1001-HOSPID      TO    HKN-HOSPID
+               MOVE   SUM-KOH-KOHNUM (IDX2)    TO    HKN-HKNNUM
+               MOVE   HKNNUM-REC           TO    MCPDATA-REC
+               MOVE   "DBSELECT"           TO    MCP-FUNC
+               MOVE   "HKNNUM-KEY2"        TO    ORC-DBPATH
+               CALL   "ORCMCPSUB"           USING MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                   PERFORM 900-HKNNUM-READ-SEC
+               ELSE
+                   MOVE    1                  TO  FLG-HKNNUM
+               END-IF
+      *
+               PERFORM UNTIL       FLG-HKNNUM      =   1
+                 IF      HKN-TEKSTYMD            <=  WRK-SRYYMD
+                 AND     HKN-TEKEDYMD            >=  WRK-SRYYMD
                    IF     SUM-KOH-KOHNUM (IDX2)    =   "027"
                        IF      SYS-1001-HOSPSBT    =   HKN-PAYKBN (1:1)
                        AND     SYS-1001-ROUPAYKBN  =   HKN-PAYKBN (2:1)
@@ -1033,20 +1040,21 @@
                        MOVE    HKN-TANSEIDONAME    TO   WRK-HKNNAME
                        MOVE    1                   TO  FLG-HKNNUM   
                    END-IF     
-               END-IF
+                 END-IF
       *
-               IF      FLG-HKNNUM           =   ZERO
-                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
-                   PERFORM 900-HKNNUM-READ-SEC
-               END-IF 
-           END-PERFORM
-      *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+                 IF      FLG-HKNNUM           =   ZERO
+                     MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                     PERFORM 900-HKNNUM-READ-SEC
+                 END-IF
+               END-PERFORM
+      *        カーソルクロース
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+           END-IF
       *
            INSPECT WRK-HKNNAME      REPLACING   ALL "（" BY  "・"
                                                 ALL "）" BY  "　"  
