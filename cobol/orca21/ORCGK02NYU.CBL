@@ -6104,7 +6104,8 @@
                        MOVE    SPA-SRYYMD(7:2)     TO  IDX-N2
                        MOVE    1                   TO  WRK-NYUINDAY
                                                            (IDX-N2)
-                       MOVE    WRK-KAISU           TO  WRK-NYU-KAI
+      **************   MOVE    WRK-KAISU           TO  WRK-NYU-KAI
+                       MOVE    1                   TO  WRK-NYU-KAI
                    END-IF
       *            入院回数入力分以外
                    IF      SPA-GMN-INPUTCD(IDX)(1:1)   NOT =   "*"
