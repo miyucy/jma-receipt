@@ -2340,6 +2340,14 @@
            MOVE    PTNYUINRRK-BTUNAME
                                    TO  SPA-GMN-I01-TBTUNAME (IDX1)
       *
+      *    ÉÂ¼¼ÈÖ¹æ¡Ê¼«±¡Îò¡¿Â¾±¡Îò¡Ë¤òÉ½¼¨
+           EVALUATE    PTNYUINRRK-JTIKBN
+           WHEN    "5"
+               MOVE    "Â¾±¡Îò"    TO  SPA-GMN-I01-TBRMNUM (IDX1)
+           WHEN    "6"
+               MOVE    "¼«±¡Îò"    TO  SPA-GMN-I01-TBRMNUM (IDX1)
+           END-EVALUATE
+      *
       *    Æþ±¡Æü
            MOVE    PTNYUINRRK-NYUINYMD
                                    TO  WRK-YMD
@@ -8506,8 +8514,6 @@
                                        TO  I01-TSHONUM (IDX1)
                MOVE    SPA-GMN-I01-TBTUNAME (IDX1)
                                        TO  I01-TBTUNAME (IDX1)
-               MOVE    SPA-GMN-I01-TBRMNUM (IDX1)
-                                       TO  I01-TBRMNUM (IDX1)
                MOVE    SPA-GMN-I01-TBRMNUM (IDX1)
                                        TO  I01-TBRMNUM (IDX1)
                MOVE    SPA-GMN-I01-TNYUINYMD (IDX1)

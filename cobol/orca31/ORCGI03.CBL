@@ -795,6 +795,13 @@
            MOVE    WRK-HENYMDG     TO  SPA-GMN-I03-NYUINYMD
            MOVE    WRK-SYMD        TO  SPA-NAI-I03-NYUINYMD
       *
+           IF      ( SPA-GMN-I03-TAIINYMD  =   SPACE )
+               MOVE    SPA-GMN-I03-NYUINYMD
+                                   TO  SPA-GMN-I03-TAIINYMD
+               MOVE    SPA-NAI-I03-NYUINYMD
+                                   TO  SPA-NAI-I03-TAIINYMD
+           END-IF
+      *
       *    通算日数計算処理
            PERFORM 4101-TUSAN-CALC-SEC
       *
