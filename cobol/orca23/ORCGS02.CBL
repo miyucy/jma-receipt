@@ -968,13 +968,15 @@
            INITIALIZE                  SPA-NAI-HKNCOMBI-G
       *
            INITIALIZE                  ORCSHKNSETAREA
+                                       WRK-SPA-AREA
       *
-           MOVE    "1"                 TO  SPA-NYUGAIKBN
-           MOVE    SPA-GMN-PTID        TO  SPA-PTID
-           MOVE    SPA-NAI-BIRTHDAY    TO  SPA-BIRTHDAY
+           MOVE    SPA-AREA            TO  WRK-SPA-AREA
+      *
+           MOVE    SPA-GMN-PTID        TO  WRK-SPA-PTID
+           MOVE    SPA-NAI-BIRTHDAY    TO  WRK-SPA-BIRTHDAY
            MOVE    "2"                 TO  ORCSHKN-KBN
       *
-           CALL    "ORCSHKNSET"        USING   SPA-AREA
+           CALL    "ORCSHKNSET"        USING   WRK-SPA-AREA
                                                ORCSHKNSETAREA
            IF    ( ORCSHKN-ERRCD   NOT =   ZERO )
                INITIALIZE              ORCSHKNSETAREA
