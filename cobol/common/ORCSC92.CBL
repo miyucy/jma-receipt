@@ -890,34 +890,75 @@
       *****************************************************************
        2004-BYOSYOKBN-CHK-SEC      SECTION.
       *
+      *    病床数チェック（ＳＰＡの病床数）
+           EVALUATE    TNS-BYOSYOKBN
+               WHEN    1
+                   IF      SPA-BEDSU           >=  1  AND  <=  99
+                       CONTINUE
+                   ELSE
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                   END-IF
+               WHEN    2
+                   IF      SPA-BEDSU           >=  100 AND  <=  199
+                       CONTINUE
+                   ELSE
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                   END-IF
+               WHEN    3
+                   IF      SPA-BEDSU           <   200
+                       CONTINUE
+                   ELSE
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                   END-IF
+               WHEN    4
+                   IF      SPA-BEDSU           >=  200
+                       CONTINUE
+                   ELSE
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                   END-IF
+      *        一般病床数判定
+               WHEN    5
+                   IF      SPA-BEDSUIPN        >=  0  AND  <=  199
+                       CONTINUE
+                   ELSE
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                   END-IF
+               WHEN    6
+                   IF      SPA-BEDSUIPN        >=  200
+                       CONTINUE
+                   ELSE
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                   END-IF
+           END-EVALUATE
+      *
       *     医療機関情報
-           MOVE    SPACE               TO  SYS-1001-REC
-           INITIALIZE                  SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-     ****  MOVE    "1"                 TO  SYS-1001-KBNCD
-           MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    ZERO                TO  SYS-1001-STYUKYMD
-           MOVE    ALL "9"             TO  SYS-1001-EDYUKYMD
+      ***  MOVE    SPACE               TO  SYS-1001-REC
+      *    INITIALIZE                  SYS-1001-REC
+      *    MOVE    "1001"              TO  SYS-1001-KANRICD
+      ***  MOVE    "1"                 TO  SYS-1001-KBNCD
+      *    MOVE    "*"                 TO  SYS-1001-KBNCD
+      *    MOVE    ZERO                TO  SYS-1001-STYUKYMD
+      *    MOVE    ALL "9"             TO  SYS-1001-EDYUKYMD
       *    システム管理検索
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               PERFORM 900-KANRIMST-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1001-REC
-           ELSE
-               INITIALIZE                  SYS-1001-REC
-           END-IF
+      *    MOVE    SYS-1001-REC        TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *    MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *        PERFORM 900-KANRIMST-READ-SEC
+      *    ELSE
+      *        MOVE    1               TO  FLG-SYSKANRI
+      *    END-IF
+      *    IF      FLG-SYSKANRI        =   ZERO
+      *        MOVE    MCPDATA-REC         TO  SYS-1001-REC
+      *    ELSE
+      *        INITIALIZE                  SYS-1001-REC
+      *    END-IF
       *
       *    カーソルクロース
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -927,49 +968,49 @@
       *                                MCPDATA-REC
       *
       *    病床数チェック
-           EVALUATE    TNS-BYOSYOKBN
-               WHEN    1
-                   IF      SYS-1001-BEDSU      >=  1  AND  <=  99
-                       CONTINUE
-                   ELSE
+      *    EVALUATE    TNS-BYOSYOKBN
+      *        WHEN    1
+      *            IF      SYS-1001-BEDSU      >=  1  AND  <=  99
+      *                CONTINUE
+      *            ELSE
       *****************MOVE    "0025"          TO  LNK-SC92-ERRCD6
-                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
-                   END-IF
-               WHEN    2
-                   IF      SYS-1001-BEDSU      >=  100 AND  <=  199
-                       CONTINUE
-                   ELSE
+      *                MOVE    "0075"          TO  LNK-SC92-ERRCD6
+      *            END-IF
+      *        WHEN    2
+      *            IF      SYS-1001-BEDSU      >=  100 AND  <=  199
+      *                CONTINUE
+      *            ELSE
       *****************MOVE    "0025"          TO  LNK-SC92-ERRCD6
-                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
-                   END-IF
-               WHEN    3
-                   IF      SYS-1001-BEDSU      <   200
-                       CONTINUE
-                   ELSE
+      *                MOVE    "0075"          TO  LNK-SC92-ERRCD6
+      *            END-IF
+      *        WHEN    3
+      *            IF      SYS-1001-BEDSU      <   200
+      *                CONTINUE
+      *            ELSE
       *****************MOVE    "0025"          TO  LNK-SC92-ERRCD6
-                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
-                   END-IF
-               WHEN    4
-                   IF      SYS-1001-BEDSU      >=  200
-                       CONTINUE
-                   ELSE
+      *                MOVE    "0075"          TO  LNK-SC92-ERRCD6
+      *            END-IF
+      *        WHEN    4
+      *            IF      SYS-1001-BEDSU      >=  200
+      *                CONTINUE
+      *            ELSE
       *****************MOVE    "0025"          TO  LNK-SC92-ERRCD6
-                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
-                   END-IF
+      *                MOVE    "0075"          TO  LNK-SC92-ERRCD6
+      *            END-IF
       *        一般病床数判定
-               WHEN    5
-                   IF      SYS-1001-BEDSUIPN   >=  0  AND  <=  199
-                       CONTINUE
-                   ELSE
-                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
-                   END-IF
-               WHEN    6
-                   IF      SYS-1001-BEDSUIPN   >=  200
-                       CONTINUE
-                   ELSE
-                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
-                   END-IF
-           END-EVALUATE
+      *        WHEN    5
+      *            IF      SYS-1001-BEDSUIPN   >=  0  AND  <=  199
+      *                CONTINUE
+      *            ELSE
+      *                MOVE    "0075"          TO  LNK-SC92-ERRCD6
+      *            END-IF
+      *        WHEN    6
+      *            IF      SYS-1001-BEDSUIPN   >=  200
+      *                CONTINUE
+      *            ELSE
+      *                MOVE    "0075"          TO  LNK-SC92-ERRCD6
+      *            END-IF
+      **** END-EVALUATE
       *
            .
        2004-BYOSYOKBN-CHK-EXT.
