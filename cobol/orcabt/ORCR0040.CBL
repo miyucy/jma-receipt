@@ -506,11 +506,19 @@
            03  FILLER          PIC X(09)   VALUE   "112705050".
       *    老：同日電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
            03  FILLER          PIC X(09)   VALUE   "112706850".
+      *    電話等再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112007950".
+      *    老：電話等再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112702750".
+      *    同日電話等再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112008850".
+      *    老：同日電話等再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112703450".
       *
        01  TBL-DENWA-R         REDEFINES   TBL-DENWA-AREA.
-            03  TBL-DENWA      PIC X(09)   OCCURS   18.       
+            03  TBL-DENWA      PIC X(09)   OCCURS   22.       
       *
-       01  TBL-DENWA-MAX       PIC 9(02)   VALUE    18.  
+       01  TBL-DENWA-MAX       PIC 9(02)   VALUE    22.  
       *
       *
       *   同日再診対象診療行為テーブル
@@ -551,11 +559,19 @@
            03  FILLER          PIC X(09)   VALUE   "112705050".
       *    老：同日電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
            03  FILLER          PIC X(09)   VALUE   "112706850".
+      *    同日電話等再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112008850".
+      *    老：同日電話等再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112703450".
+      *    同日再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112008350".
+      *    老：同日再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112703050".
       *
        01  TBL-DOUJITU-R       REDEFINES   TBL-DOUJITU-AREA.
-            03  TBL-DOUJITU    PIC X(09)   OCCURS   18.       
+            03  TBL-DOUJITU    PIC X(09)   OCCURS   22.       
       *
-       01  TBL-DOUJITU-MAX     PIC 9(02)   VALUE    18.  
+       01  TBL-DOUJITU-MAX     PIC 9(02)   VALUE    22.  
       *
       *
       *   ＣＴ・ＭＲＩ対象診療行為テーブル
