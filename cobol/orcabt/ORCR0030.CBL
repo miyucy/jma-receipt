@@ -798,6 +798,9 @@
                INITIALIZE                   SYS-2005-REC
                MOVE    ZERO             TO  SYS-2005-KKHOCRKBN 
            END-IF
+           IF      SYS-2005-JIHITEKKSIKBN     =   SPACE
+               MOVE    ZERO             TO  SYS-2005-JIHITEKKSIKBN
+           END-IF
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
@@ -1402,6 +1405,7 @@
                MOVE    SRY-INPUTNUM(IDX2) TO    RECE05-INPUTNUM(IDX4)
       *
                IF      RECE02-RECESYUBETU  =  8888
+               AND     SYS-2005-JIHITEKKSIKBN  =  "1"
                  IF      SRY-SRYKBN    =     "95" OR "96"
                    IF      SRY-SRYCD(IDX2)(1:3)  =  "095" OR "096"
                      IF      SRY-SRYCD(IDX2)(1:5)  =  "09500" OR "09600"
@@ -1410,7 +1414,10 @@
                                                   OR  "09593" OR "09693"
                           CONTINUE
                      ELSE
+                       IF     TNS-TEN     NOT =  ZERO
                           ADD     TNS-TEN    TO   RECE04-SYUTEN1
+                          MOVE    "1"        TO   RECE02-JIHTEKFLG
+                       END-IF
                      END-IF
                    END-IF
                  END-IF

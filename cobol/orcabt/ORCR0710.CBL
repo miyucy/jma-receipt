@@ -4306,22 +4306,7 @@
                                                 MCPDATA-REC
       *
                IF      MCP-RC     =   ZERO
-                   IF      RECE62-RECESYUBETU       =   8888
-                   AND     RECE62-TOTALTEN (1)      =   ZERO
-                   AND     RECE62-TOTALTEN (2)      =   ZERO 
-                   AND     RECE62-TOTALTEN (3)      =   ZERO 
-                   AND     RECE62-TOTALTEN (4)      =   ZERO
-                   AND     RECE62-TOTALTEN (5)      =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI(1) =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI(2) =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI(3) =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI(4) =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI(5) =   ZERO
-                   AND     CNT-RECE661              =   ZERO
-                       CONTINUE
-                   ELSE
-                       ADD     1                 TO  CNT-OUT
-                   END-IF
+                   ADD     1                 TO  CNT-OUT
                ELSE 
                    DISPLAY "ORCR0710 RECE08=" MCP-RC " " RECE08-KEY 
                    STRING
@@ -4792,6 +4777,25 @@
                    AND     RECE62-RECESYUBETU  NOT =  8888
                        GO  TO  900-RECE62-READ-SEC
                    ELSE    
+                     IF      RECE62-TOTALTEN (1) =   ZERO
+                     AND     RECE62-TOTALTEN (2) =   ZERO 
+                     AND     RECE62-TOTALTEN (3) =   ZERO 
+                     AND     RECE62-TOTALTEN (4) =   ZERO
+                     AND     RECE62-TOTALTEN (5) =   ZERO
+                     AND     RECE62-SHOKUJIRYOYOHI (1)
+                                               =   ZERO
+                     AND     RECE62-SHOKUJIRYOYOHI (2)
+                                               =   ZERO
+                     AND     RECE62-SHOKUJIRYOYOHI (3)
+                                               =   ZERO
+                     AND     RECE62-SHOKUJIRYOYOHI (4)
+                                               =   ZERO
+                     AND     RECE62-SHOKUJIRYOYOHI (5)
+                                               =   ZERO
+                     AND     RECE62-RECESYUBETU  =   8888
+                     AND     RECE62-JIHTEKFLG    =   SPACE
+                       GO  TO  900-RECE62-READ-SEC
+                     ELSE
                        ADD     1                   TO  CNT-RECE62
                        MOVE    RECE62-HOSPID       TO  KEY-N-HOSPID
                        MOVE    RECE62-SRYYM        TO  KEY-N-SRYYM
@@ -4803,6 +4807,7 @@
                        MOVE    RECE62-RECESYUBETU  TO  KEY-N-RECESYUBETU
                        MOVE    RECE62-HKNJANUM-KEY TO
                                                    KEY-N-HKNJANUM-KEY
+                     END-IF
                    END-IF    
            END-READ
       *

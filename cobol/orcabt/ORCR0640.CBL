@@ -599,6 +599,8 @@
            COPY    "CPSYSKANRI.INC".
       *    
            COPY    "CPSK1001.INC".
+      *    
+           COPY    "CPSK2005.INC".
       *
            COPY    "CPSK5000.INC".
       *    
@@ -799,6 +801,37 @@
              PERFORM   CSR-CLOSE-SEC
       *
            END-IF
+      *
+      *    レセプト編集区分情報
+           INITIALIZE                   SYSKANRI-REC
+           MOVE    "2005"           TO  SYS-KANRICD
+           MOVE    "*"              TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM   TO  ORC-DBYMD (1:6)
+           MOVE    "01"             TO  ORC-DBYMD (7:2) 
+           MOVE    SYSKANRI-REC     TO  MCPDATA-REC
+           MOVE    "DBSELECT"       TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+                 MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+                 PERFORM 960-KANRIMST-READ-SEC
+                 IF      FLG-SYSKANRI     =   ZERO
+                     MOVE    MCPDATA-REC      TO  SYS-2005-REC
+                 ELSE    
+                     INITIALIZE                   SYS-2005-REC
+                 END-IF
+           ELSE
+                     INITIALIZE                   SYS-2005-REC
+           END-IF
+           IF      SYS-2005-JIHITEKKSIKBN     =   SPACE
+               MOVE    ZERO             TO  SYS-2005-JIHITEKKSIKBN
+           END-IF
+      *
+           MOVE   "SYSKANRI-KEY"        TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
       *
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
@@ -3405,6 +3438,7 @@
                PERFORM    TENSU-TBL-SEC
       *
                IF      RECE62-RECESYUBETU  =  8888
+               AND     SYS-2005-JIHITEKKSIKBN  =  "1"
                  IF      SRY-SRYKBN    =     "95" OR "96"
                    IF      SRY-SRYCD(IDX2)(1:3)  =  "095" OR "096"
                      IF      SRY-SRYCD(IDX2)(1:5)  =  "09500" OR "09600"
@@ -3413,7 +3447,10 @@
                                                   OR  "09593" OR "09693"
                           CONTINUE
                      ELSE
+                       IF     TNS-TEN     NOT =  ZERO
                           ADD     TNS-TEN    TO   RECE64-SYUTEN1
+                          MOVE    "1"        TO   RECE62-JIHTEKFLG
+                       END-IF
                      END-IF
                    END-IF
                  END-IF
