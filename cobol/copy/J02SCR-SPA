@@ -77,6 +77,8 @@
                        09  SPA-GMN-RRKSELNUM         PIC X(03).
                        09  SPA-GMN-HENSRYYMD         PIC X(11).
       *
+                       09  SPA-NAI-BANGO             PIC 9(03).
+      *
       *        ø«Œ≈Õ˙ŒÚ∆‚Õ∆
                05  SPA-GMN-RRKTBL.
                    07  SPA-GMN-RRK-LIST          OCCURS  60.
@@ -138,6 +140,7 @@
                    07  SPA-MAE-SRYKAH        PIC X(01).
                    07  SPA-MAE-SRYKAMEI      PIC X(12).
                05  SPA-MAE-BANGO             PIC 9(03).
+               05  SPA-MAEN-BANGO            PIC 9(03).
                05  SPA-MAE-SRYKBN            PIC X(02).
       *
       *    ΩÈ¥¸§Œ§ﬂ
