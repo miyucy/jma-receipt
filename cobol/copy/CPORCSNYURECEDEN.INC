@@ -59,7 +59,7 @@
       *回数
                        09  LNK-NYURECEDEN-KAISU      PIC  9(02).
       *コメント記録データ
-                       09  LNK-NYURECEDEN-COMMENT    PIC  X(200).
+                       09  LNK-NYURECEDEN-COMMENT    PIC  X(76).
       *食事返却テーブル
                05  LNK-NYURECEDEN-SKJ-HENKYAKU-TBL   OCCURS  31.
       *保険組合せ
