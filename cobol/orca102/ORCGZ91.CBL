@@ -913,10 +913,15 @@
            IF      SPA-ERRCD           =   SPACE
                MOVE    WRK-LNKYMD          TO  SPA-GMN-MSTYMD
                MOVE    WRK-SYMD            TO  SPA-NAI-MSTYMD
+      *----(02.00.04)--ADD-START---
+               MOVE    99                  TO  SPA-GMN-CUR
+           ELSE
+               MOVE    21                  TO  SPA-GMN-CUR
+      *----(02.00.04)--ADD-END-----
            END-IF 
            
       *----(02.00.01)--UPD-START---
-           MOVE  15                        TO  SPA-GMN-CUR
+      *     MOVE  15                        TO  SPA-GMN-CUR
       *----(02.00.01)--UPD-END---
            .
        400-MSTYMD-CHK-EXT.
