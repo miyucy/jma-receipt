@@ -1332,8 +1332,7 @@
                                  END-IF
                                END-IF
                          END-PERFORM
-                     END-IF
-                     PERFORM   VARYING  IDX5  FROM  1  BY  1
+                       PERFORM   VARYING  IDX5  FROM  1  BY  1
                        UNTIL   (IDX5  >  31)   OR
                                (WRK-GAIHAKU-DAY-ST(IDX5) =  ZERO)
                            ADD    1     TO
@@ -1362,7 +1361,8 @@
                                                           (5:4)
                            END-IF
                            ADD    1     TO   IDX3
-                     END-PERFORM
+                       END-PERFORM
+                     END-IF
                 END-IF
            END-PERFORM
       *
