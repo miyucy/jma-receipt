@@ -80,6 +80,7 @@
       *  01.02.01    NACL-藤原    04/10/13  中止処理の追加
       *  01.02.02    NACL-門脇    04/12/17  胸部固定帯加算、創外固定器
       *                                     使用加算を薬剤等へ
+      *  01.02.03    NACL-門脇    05/01/18  酸素計算式コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -564,8 +565,8 @@
       *    麻薬注射
            03  CONS-MAYAKU           PIC X(09)  VALUE  "130000310".
       *
-      *****酸素 
-      *****COPY    "CMSANSOTBL.INC".
+      *    酸素 
+           COPY    "CMSANSOTBL.INC".
       *
       *   日本語数字
        01  TBL-SUJI-AREA.
@@ -1776,6 +1777,20 @@
                                             CONS-CTMRI-COMMENT16 OR
                                             CONS-CTMRI-COMMENT17
                    MOVE   "1"   TO    RECE44-FLG-CTMRI-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE44-SRYKBN      =     "40" OR "50" OR "54" OR "60"
+              SET     TBL-SANSO    TO      1
+              SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
+                   AT  END
+                       MOVE    ZERO            TO  FLG-SANSO-OK
+                   WHEN    SRY-SRYCD (IDX2)    =   TBL-SANSO-SRYCD
+                                                        (TBL-SANSO)
+                       MOVE    1               TO  FLG-SANSO-OK
+              END-SEARCH
+              IF      FLG-SANSO-OK        =    1
+                   MOVE   "1"   TO    RECE44-FLG-SANSO-COMMENT
               END-IF
            END-IF
       *

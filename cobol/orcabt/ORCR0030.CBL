@@ -190,6 +190,7 @@
       *                                     ¤ÎÊÔ½¸
       *                                     ¸øÈñ°ìÉôÉéÃ´¶â£°±ßµ­ºÜ¥Õ¥é¥°
       *                                     ¤ÎÊÔ½¸
+      *  01.05.08    NACL-ÌçÏÆ    05/01/18  »ÀÁÇ·×»»¼°¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -757,7 +758,7 @@
            03  CONS-GAIKAN3          PIC X(09)  VALUE  "112705310".
       *
       *    »ÀÁÇ 
-      *****COPY    "CMSANSOTBL.INC".
+           COPY    "CMSANSOTBL.INC".
       *
       *   ÆüËÜ¸ì¿ô»ú
        01  TBL-SUJI-AREA.
@@ -2422,6 +2423,20 @@
                                             CONS-CTMRI-COMMENT16 OR
                                             CONS-CTMRI-COMMENT17
                    MOVE   "1"   TO    RECE04-FLG-CTMRI-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE04-SRYKBN      =     "40" OR "50" OR "54" OR "60"
+              SET     TBL-SANSO    TO      1
+              SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
+                   AT  END
+                       MOVE    ZERO            TO  FLG-SANSO-OK
+                   WHEN    SRY-SRYCD (IDX2)    =   TBL-SANSO-SRYCD
+                                                        (TBL-SANSO)
+                       MOVE    1               TO  FLG-SANSO-OK
+              END-SEARCH
+              IF      FLG-SANSO-OK        =    1
+                   MOVE   "1"   TO    RECE04-FLG-SANSO-COMMENT
               END-IF
            END-IF
       *

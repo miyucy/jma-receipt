@@ -56,6 +56,7 @@
       *  中止処理追加
       *  01.02.01    NACL-藤原    04/10/13  中止処理の追加
       *  01.02.02    NACL-門脇    04/12/09  脳血管疾患急性発症終了日対応
+      *  01.02.03    NACL-門脇    05/01/18  酸素計算式コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -197,6 +198,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-FIRST           PIC 9(01).
+           03  FLG-DABURU          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -216,6 +218,8 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(02).
+           03  IDX4                PIC 9(04).
+           03  IDX5                PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  DAY-IDX             PIC 9(04).
@@ -260,6 +264,11 @@
                05  WRK-SRYYM         PIC 9(06).
                05  WRK-SRYDD         PIC 9(02).
       *
+           03  WRK-KEISAN            PIC 9(09).
+           03  WRK-KEISAN2           PIC 9(03).
+           03  WRK-KEISAN3           PIC 9(09)V9(03).
+           03  WRK-KEISAN-TAIHI      PIC X(09).
+      *
        01  WRK-RECE44-REC. 
            COPY    "CPRCF044.INC"  REPLACING   //RECE44//
                                    BY          //WRK-RECE44//.
@@ -282,6 +291,11 @@
            03  WRK-FREEINF2                    OCCURS 50.               
                05  WK-FREE-YUKOKETA2         PIC  9(02).                
                05  WK-FREE-NAME2             PIC  X(200).               
+      *
+       01  WRK-FREE-AREA3.                                              
+           03  WRK-FREEINF3.
+               05  WK-FREE-NAME3             PIC  X(1000).              
+               05  WK-FREE-NAME3-TAIHI       PIC  X(1000).              
       *
       *理学療法剤番号退避領域
        01  WRK-TAIHI-ZAINUM.
@@ -426,8 +440,19 @@
                05  TBL-JUSHIN-ARI         PIC X(01).
                05  TBL-JUSHIN-DAY         PIC X(01)   OCCURS  31.
       *
+      *    酸素（金額・数量）情報
+       01  TBL-SANSO-INF.
+           03  TBL-SANSO-INF2       OCCURS    10.
+               05  TBL-SANSO-TEN          PIC 9(09)V9(02).
+               05  TBL-SANSO-SRYSURYO     PIC 9(05)V9(03).
+           03  TBL-SANSO-INF3.
+               05  TBL-KASAN-SRYSURYO     PIC 9(05)V9(03).
+      *
       *    パス名領域
        01  WRK-PATH                        PIC X(64).
+      *
+      *    酸素 
+           COPY    "CMSANSOTBL.INC".
       *
            COPY    "MCPAREA".
       *
@@ -772,6 +797,8 @@
                OR     ( RECE41-HKNID     NOT =   RECE44-HKNID        )
                OR     ( RECE41-TEKSTYMD  NOT =   RECE44-TEKSTYMD     )
       *
+               MOVE     ZERO    TO    FLG-DABURU
+      *
                IF   RECE41-HKNKBN    NOT  =  "4"                        
                  EVALUATE      RECE44-SRYKBN                   
                    WHEN      "13"
@@ -809,9 +836,32 @@
       *            （在宅患者訪問点滴注射管理指導料算定時の点滴注射の
       *              コメントのセット）
                       PERFORM    2001-HOUTEN-HANTEI-SEC
+                   WHEN      "40"
+                   WHEN      "54"
+                   WHEN      "60"
+                      MOVE   ZERO   TO  FLG-COMMENT
+      *            （酸素計算式のコメントのセット）
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SANSO-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2099-RECE44-TENSOU-SEC
+                      END-IF
                    WHEN      "50"
-      *            （手術日のセット）
-                      PERFORM    2001-SHUJUTSU-HANTEI-SEC
+                      EVALUATE  RECE44-FLG-SHUJUTU-COMMENT  ALSO
+                                              RECE44-FLG-SANSO-COMMENT
+      *                 （手術日のセット）（酸素計算式のコメントのセット）
+                        WHEN    SPACE      ALSO     "1"
+                            PERFORM    2001-SHUJUTSU-SANSO-SEC
+      *                 （手術日のセット）
+                        WHEN    SPACE      ALSO     SPACE
+                            PERFORM    2001-SHUJUTSU-HANTEI-SEC
+      *                 （酸素計算式のコメントのセット）
+                        WHEN    "1"        ALSO     "1"
+                            PERFORM    2001-SANSO-HANTEI-SEC
+                        WHEN    "1"        ALSO     SPACE
+                            PERFORM    2099-RECE44-TENSOU-SEC
+                      END-EVALUATE
                    WHEN      "70"
       *            （ＣＴ・ＭＲＩ実施日のセット）
                       PERFORM    2001-CTMRI-HANTEI-SEC
@@ -871,25 +921,56 @@
       *              コメントのセット）
                       PERFORM    2001-HOUTEN-HANTEI-SEC
                    WHEN      "50"                                       
-      *            （手術日のセット）                                   
-                      PERFORM    2001-SHUJUTSU-HANTEI-SEC               
+                      EVALUATE  RECE44-FLG-SHUJUTU-COMMENT  ALSO
+                                              RECE44-FLG-SANSO-COMMENT
+      *                 （手術日のセット）（酸素計算式のコメントのセット）
+                        WHEN    SPACE      ALSO     "1"
+                            PERFORM    2001-SHUJUTSU-SANSO-SEC
+      *                 （手術日のセット）
+                        WHEN    SPACE      ALSO     SPACE
+                            PERFORM    2001-SHUJUTSU-HANTEI-SEC
+      *                 （酸素計算式のコメントのセット）
+                        WHEN    "1"        ALSO     "1"
+                            PERFORM    2001-SANSO-HANTEI-SEC
+                        WHEN    "1"        ALSO     SPACE
+                            PERFORM    2099-RECE44-TENSOU-SEC
+                      END-EVALUATE
+                   WHEN      "54"
+                   WHEN      "60"
+                      MOVE   ZERO   TO  FLG-COMMENT
+      *            （酸素計算式のコメントのセット）
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SANSO-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2099-RECE44-TENSOU-SEC
+                      END-IF
                    WHEN      "70"
       *            （ＣＴ・ＭＲＩ実施日のセット）
                       PERFORM    2001-CTMRI-HANTEI-SEC
                    WHEN      "40"          
       *            （リハビリのセット）
-                      MOVE    ZERO     TO    FLG-ARI
-                      PERFORM   VARYING   IDX    FROM   1   BY   1
-                            UNTIL   (IDX             >      18)         
-                             OR     (FLG-ARI         =       1)
-                          IF  RECE44-ZAINUM  =  WRK-RIHA-ZAINUM(IDX)
-                              MOVE    1    TO   FLG-ARI 
-                          END-IF
-                      END-PERFORM
-                      IF  FLG-ARI  =  1
-                          PERFORM   2001-RIHA-COMMENT-SEC
-                      ELSE
-                          PERFORM   2099-RECE44-TENSOU-SEC
+                      MOVE    ZERO     TO    FLG-COMMENT
+                      IF   FLG-COMMENT  =  ZERO
+                        MOVE    ZERO     TO    FLG-ARI
+                        PERFORM   VARYING   IDX    FROM   1   BY   1
+                              UNTIL   (IDX             >      18)         
+                               OR     (FLG-ARI         =       1)
+                            IF  RECE44-ZAINUM  =  WRK-RIHA-ZAINUM(IDX)
+                                MOVE    1    TO   FLG-ARI 
+                            END-IF
+                        END-PERFORM
+                        IF  FLG-ARI  =  1
+                            MOVE      99     TO   FLG-COMMENT
+                            PERFORM   2001-RIHA-COMMENT-SEC
+                        END-IF
+                      END-IF
+      *            （酸素計算式のコメントのセット）
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SANSO-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN   OTHER                                         
                       PERFORM       2099-RECE44-TENSOU-SEC
@@ -1916,12 +1997,53 @@
            IF     RECE44-FLG-SHUJUTU-COMMENT   =    SPACE
                MOVE       1       TO     FLG-COMMENT
                PERFORM    20011-SHUJUTSU-ETC-COMMENT-SEC
-           ELSE
-               PERFORM    2099-RECE44-TENSOU-SEC
            END-IF
       *
            .
        2001-SHUJUTSU-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    酸素があるか判定
+      *****************************************************************
+       2001-SANSO-HANTEI-SEC          SECTION.
+      *
+           IF     RECE44-FLG-SANSO-COMMENT   =    "1"
+               MOVE       99      TO     FLG-COMMENT
+      *
+               PERFORM     20011-SANSO-TAIHI-SEC
+      *
+               PERFORM     20011-SANSO-COMMENT-SEC
+      *
+           END-IF
+      *
+           .
+       2001-SANSO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    手術日のコメントがあるか判定・酸素があるか判定
+      *****************************************************************
+       2001-SHUJUTSU-SANSO-SEC          SECTION.
+      *
+           MOVE      1      TO      FLG-DABURU
+      *
+           IF     RECE44-FLG-SHUJUTU-COMMENT   =    SPACE
+               MOVE       1       TO     FLG-COMMENT
+               PERFORM    20011-SHUJUTSU-ETC-COMMENT-SEC
+           END-IF
+      *
+           IF     RECE44-FLG-SANSO-COMMENT   =    "1"
+               MOVE       99      TO     FLG-COMMENT
+      *
+               PERFORM     20011-SANSO-TAIHI-SEC
+      *
+               PERFORM     20011-SANSO-COMMENT-SEC
+      *
+           END-IF
+      *
+           .
+       2001-SHUJUTSU-SANSO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1973,7 +2095,9 @@
                 MOVE    "1"   TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
            END-PERFORM 
       *
-           PERFORM    200111-SRYACTINF-HENSYU-SEC
+           IF     FLG-DABURU    =     ZERO
+                 PERFORM    200111-SRYACTINF-HENSYU-SEC
+           END-IF
       *
            .
        20011-SHUJUTSU-ETC-COMMENT-EXT.
@@ -2018,6 +2142,125 @@
       *
            .
        20011-SHUJUTSU-ETC2-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    酸素のコメント編集（差込：下）
+      *****************************************************************
+       20011-SANSO-COMMENT-SEC          SECTION.
+      *
+           MOVE       ZERO       TO   IDZ                               
+           INITIALIZE            WRK-FREE-AREA2                         
+           INITIALIZE            WRK-FREE-AREA3
+      *
+           PERFORM  200111-FREE-COMMENT3-SEC                            
+      *
+           PERFORM  200111-RECE45-TAIHI-SEC
+      *
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
+           IF     FLG-DABURU    =     ZERO
+              MOVE    ZERO                 TO  IDX-RECE45
+              MOVE    SPACE                TO  WRK-RECE45XX-REC
+              INITIALIZE                       WRK-RECE45XX-REC
+      *
+              MOVE    RECE44-MEISAISU      TO  MAX-MEISAISU
+           ELSE
+              COMPUTE   MAX-MEISAISU  =  RECE44-MEISAISU + IDX-RECE45
+           END-IF
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   50    )
+                         OR      ( WK-FREE-NAME2(IDX) =   SPACE )
+                COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
+                MOVE   "810000001"
+                             TO  WRK-RECE45XX-SRYCD(MAX-MEISAISU 1)
+                MOVE   ZERO  TO  WRK-RECE45XX-SRYSURYO(MAX-MEISAISU 1)
+                MOVE   WK-FREE-YUKOKETA2(IDX)
+                             TO  WRK-RECE45XX-YUKOKETA(MAX-MEISAISU 1)
+                MOVE   WK-FREE-NAME2(IDX)
+                             TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)
+                MOVE    "1"  TO  WRK-RECE45XX-SIKFLG(MAX-MEISAISU 1)
+           END-PERFORM 
+      *
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
+      *
+           .
+       20011-SANSO-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    酸素の数量・単価退避
+      *****************************************************************
+       20011-SANSO-TAIHI-SEC          SECTION.
+      *
+           MOVE       ZERO    TO     IDX4
+           INITIALIZE                TBL-SANSO-INF
+      *
+           INITIALIZE                      RECE45-REC
+           MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
+           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
+           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
+           MOVE    RECE44-PTID         TO  RECE45-PTID
+           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
+           MOVE    RECE44-HKNID        TO  RECE45-HKNID
+           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
+           MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
+           START   RECE45-FILE
+               KEY IS    >=   RECE45-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE45
+               NOT INVALID
+                   PERFORM 990-RECE45-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE45           =   1                )
+               OR     ( RECE44-HOSPID    NOT =   RECE45-HOSPID    )
+               OR     ( RECE44-SRYYM     NOT =   RECE45-SRYYM     )
+               OR     ( RECE44-NYUGAIKBN NOT =   RECE45-NYUGAIKBN )
+               OR     ( RECE44-PTID      NOT =   RECE45-PTID      )
+               OR     ( RECE44-RECEKA    NOT =   RECE45-RECEKA    )
+               OR     ( RECE44-HKNID     NOT =   RECE45-HKNID     )
+               OR     ( RECE44-TEKSTYMD  NOT =   RECE45-TEKSTYMD  )
+               OR     ( RECE44-ZAINUM    NOT =   RECE45-ZAINUM    )
+      *
+               PERFORM   VARYING   IDX   FROM    1   BY  1
+                          UNTIL  ( IDX               >   5     )
+                           OR    ( RECE45-SRYCD(IDX) =   SPACE )
+      *
+                  SET     TBL-SANSO    TO     1
+                  SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
+                       AT  END
+                           MOVE    ZERO    TO   FLG-SANSO-OK
+                       WHEN   RECE45-SRYCD(IDX) = TBL-SANSO-SRYCD
+                                                       (TBL-SANSO)
+                           MOVE    1       TO   FLG-SANSO-OK
+                  END-SEARCH
+                  IF      FLG-SANSO-OK        =    1
+                     ADD      1            TO  IDX4
+                     MOVE  RECE45-TEN(IDX) TO  TBL-SANSO-TEN(IDX4)
+                     MOVE  RECE45-SRYSURYO(IDX)
+                                           TO  TBL-SANSO-SRYSURYO
+                                                            (IDX4)
+                  END-IF
+                  IF    RECE45-SRYCD(IDX) = "770030070"
+                     IF   TBL-KASAN-SRYSURYO  =  ZERO
+                        MOVE   RECE45-SRYSURYO(IDX)
+                                     TO  TBL-KASAN-SRYSURYO
+                     ELSE
+                        COMPUTE   TBL-KASAN-SRYSURYO  =  
+                                  TBL-KASAN-SRYSURYO  *  
+                                  RECE45-SRYSURYO(IDX)   
+                     END-IF
+                  END-IF
+      *
+               END-PERFORM 
+      *
+               PERFORM 990-RECE45-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       20011-SANSO-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2206,6 +2449,200 @@
            END-PERFORM
            .
        200111-FREE-COMMENT2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    酸素計算式編集
+      *****************************************************************
+       200111-FREE-COMMENT3-SEC          SECTION.                      
+      *
+           MOVE     1          TO    WRK-KETA
+           MOVE    ZERO        TO    WRK-KEISAN3
+      *
+           PERFORM   VARYING   IDX    FROM   1   BY   1
+                      UNTIL   (IDX                 >    10)
+                       OR     (TBL-SANSO-TEN(IDX)  =  ZERO)
+      *
+             IF   IDX  >  1
+                MOVE    "＋"   TO  WK-FREE-NAME3(WRK-KETA:2)
+                COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+             END-IF
+      *
+             MOVE    "（"   TO  WK-FREE-NAME3(WRK-KETA:2)
+             COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+      *単価
+             MOVE     TBL-SANSO-TEN(IDX)   TO   WRK-KEISAN
+             COMPUTE  WRK-KEISAN2  = (TBL-SANSO-TEN(IDX) -  WRK-KEISAN)
+                                   *   1000
+      *
+             PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
+      *
+             MOVE    "円×" TO  WK-FREE-NAME3(WRK-KETA:4)
+             COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+      *数量
+             MOVE     TBL-SANSO-SRYSURYO(IDX)  TO  WRK-KEISAN
+             COMPUTE  WRK-KEISAN2  
+                             = (TBL-SANSO-SRYSURYO(IDX) -  WRK-KEISAN)
+                             *   1000
+      *
+             PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
+      *
+             IF    TBL-KASAN-SRYSURYO  =  ZERO
+                MOVE    "Ｌ×１．３）" TO  WK-FREE-NAME3(WRK-KETA:12)
+                COMPUTE  WRK-KETA   =  WRK-KETA   +  12
+      *
+                COMPUTE  WRK-KEISAN3   =   WRK-KEISAN3  +
+                  (TBL-SANSO-TEN(IDX) * TBL-SANSO-SRYSURYO(IDX) * 1.3)
+             ELSE
+                MOVE    "Ｌ×１．３×" TO  WK-FREE-NAME3(WRK-KETA:12)
+                COMPUTE  WRK-KETA   =  WRK-KETA   +  12
+      *
+                MOVE     TBL-KASAN-SRYSURYO  TO  WRK-KEISAN
+                COMPUTE  WRK-KEISAN2  
+                             = (TBL-KASAN-SRYSURYO -  WRK-KEISAN)
+                             *   1000
+      *
+                PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
+      *
+                MOVE    "）" TO  WK-FREE-NAME3(WRK-KETA:2)
+                COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+      *
+                COMPUTE  WRK-KEISAN3   =   WRK-KEISAN3  +
+                  (TBL-SANSO-TEN(IDX) * TBL-SANSO-SRYSURYO(IDX) * 1.3
+                                      * TBL-KASAN-SRYSURYO)
+             END-IF
+      *
+           END-PERFORM
+      *
+           IF   IDX  =  2
+              MOVE    "÷１０＝"  TO  WK-FREE-NAME3(WRK-KETA:8)
+              COMPUTE  WRK-KETA   =  WRK-KETA   +  8
+      *
+              COMPUTE  WRK-KEISAN =   WRK-KEISAN3  +  0.5
+              COMPUTE  WRK-KEISAN =  (WRK-KEISAN   /  10)  +  0.5
+              MOVE     ZERO       TO   WRK-KEISAN2
+      *
+              PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
+      *
+              MOVE    "点"   TO  WK-FREE-NAME3(WRK-KETA:2)
+              COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+           ELSE
+              IF   IDX  >  2
+                  MOVE   WK-FREE-NAME3  TO  WK-FREE-NAME3-TAIHI
+                  MOVE    "（"    TO   WK-FREE-NAME3(1:2)
+                  MOVE   WK-FREE-NAME3-TAIHI
+                                  TO   WK-FREE-NAME3(3:)
+                  COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                  MOVE    "）÷１０＝"  TO  WK-FREE-NAME3(WRK-KETA:10)
+                  COMPUTE  WRK-KETA   =  WRK-KETA   +  10
+      *
+                  COMPUTE  WRK-KEISAN =   WRK-KEISAN3  +  0.5
+                  COMPUTE  WRK-KEISAN =  (WRK-KEISAN   /  10)  +  0.5
+                  MOVE     ZERO       TO   WRK-KEISAN2
+      *
+                  PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
+      *
+                  MOVE    "点"   TO  WK-FREE-NAME3(WRK-KETA:2)
+                  COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+              END-IF
+           END-IF
+      *
+           IF     WRK-KETA    >   1
+               PERFORM   VARYING   IDX4    FROM   1   BY   50
+                          UNTIL   (IDX4     >    1000)
+                            OR    (WK-FREE-NAME3(IDX4:1) = SPACE)
+                   ADD     1      TO    IDZ
+                   MOVE    ZERO   TO    WRK-KETA2
+                   PERFORM   VARYING   IDX5    FROM   1   BY   2
+                              UNTIL   (IDX5     >    50)
+                      IF   WK-FREE-NAME3(IDX4:IDX5) = SPACE
+                          MOVE   IDX5   TO   WRK-KETA2
+                          MOVE   50     TO   IDX5
+                      END-IF
+                   END-PERFORM
+                   IF   WRK-KETA2 =  ZERO
+                        MOVE   25   TO  WK-FREE-YUKOKETA2(IDZ)
+                   ELSE
+                        COMPUTE   WK-FREE-YUKOKETA2(IDZ)  =
+                                       ( WRK-KETA2 - 1 )  /  2
+                   END-IF
+                   MOVE   WK-FREE-NAME3(IDX4:50)
+                                   TO    WK-FREE-NAME2(IDZ)
+               END-PERFORM
+           END-IF
+      *
+           .
+       200111-FREE-COMMENT3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    酸素計算式・数値編集
+      *****************************************************************
+       2001111-FREE-COMMENT3-SUCHI-SEC          SECTION.                      
+      *
+           IF    WRK-KEISAN  NOT  =  ZERO
+               PERFORM   VARYING   IDX4    FROM   1   BY   1
+                          UNTIL   (IDX4               >    9)
+                     IF   WRK-KEISAN(IDX4:1) =   "0"
+                        CONTINUE
+                     ELSE
+                        MOVE  IDX4   TO  IDX5
+                        MOVE   9     TO  IDX4
+                     END-IF
+               END-PERFORM
+               MOVE  SPACE             TO  WRK-KEISAN-TAIHI
+               MOVE  WRK-KEISAN(IDX5:) TO  WRK-KEISAN-TAIHI
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"             TO  KANACHK-SYORI
+               MOVE  WRK-KEISAN-TAIHI  TO  KANACHK-MAE-INPUT
+               CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF      KANACHK-RC      =   ZERO
+                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                               TO  WK-FREE-NAME3(WRK-KETA:KANACHK-MAX)
+                   COMPUTE  WRK-KETA   =  WRK-KETA   +  KANACHK-MAX
+               END-IF
+           END-IF
+      *
+           IF    WRK-KEISAN2  NOT  =  ZERO
+                PERFORM   VARYING   IDX4    FROM   3   BY  -1
+                           UNTIL   (IDX4               <    1)
+                      IF   WRK-KEISAN2(IDX4:1) =   "0"
+                         CONTINUE
+                      ELSE
+                         MOVE  IDX4   TO  IDX5
+                         MOVE   1     TO  IDX4
+                      END-IF
+                END-PERFORM
+                MOVE  SPACE               TO  WRK-KEISAN-TAIHI
+                MOVE  WRK-KEISAN2(1:IDX5) TO  WRK-KEISAN-TAIHI
+      *
+                IF    WRK-KEISAN  NOT  =  ZERO
+                   MOVE    "．"     TO  WK-FREE-NAME3(WRK-KETA:2)
+                   COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                ELSE
+                   MOVE    "０．"   TO  WK-FREE-NAME3(WRK-KETA:4)
+                   COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                END-IF
+      *
+                INITIALIZE                  ORCSKANACHKAREA
+                MOVE    "2"             TO  KANACHK-SYORI
+                MOVE  WRK-KEISAN-TAIHI  TO  KANACHK-MAE-INPUT
+                CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                IF      KANACHK-RC      =   ZERO
+                    MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                TO  WK-FREE-NAME3(WRK-KETA:KANACHK-MAX)
+                    COMPUTE  WRK-KETA   =  WRK-KETA   +  KANACHK-MAX
+                END-IF
+           END-IF
+      *
+           IF    WRK-KEISAN    =  ZERO
+           AND   WRK-KEISAN2   =  ZERO
+               MOVE    "０"   TO  WK-FREE-NAME3(WRK-KETA:2)
+               COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+           END-IF
+      *
+           .
+       2001111-FREE-COMMENT3-SUCHI-EXT.
            EXIT.
       *
       *****************************************************************

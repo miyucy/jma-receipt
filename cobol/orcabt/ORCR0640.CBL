@@ -116,6 +116,8 @@
       *                                     §Œ ‘Ω∏
       *                                     ∏¯»Ò∞Ï…Ù…È√¥∂‚£∞±ﬂµ≠∫‹•’•È•∞
       *                                     §Œ ‘Ω∏
+      *  01.02.07    NACL-ÃÁœ∆    05/01/18  ª¿¡«∑◊ªªº∞•≥•·•Û•»¬–±˛
+      *  01.02.08    NACL-ÃÁœ∆    05/01/24  ª˘∆∏ ›∏Óø©ªˆŒ≈Õ‹µ≠∫‹Ω§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -698,8 +700,8 @@
       *    ∫ﬂ¬∑Ï±’∆©¿œ…—≤Ûªÿ∆≥¥…Õ˝Œ¡
            03  CONS-HINKAI-COMMENT   PIC X(09)  VALUE  "114009410".
       *
-      *****ª¿¡« 
-      *****COPY    "CMSANSOTBL.INC".
+      *    ª¿¡« 
+           COPY    "CMSANSOTBL.INC".
       *
       *   ∆¸À‹∏ÏøÙª˙
        01  TBL-SUJI-AREA.
@@ -4346,6 +4348,20 @@
               END-IF
            END-IF
       *
+           IF      RECE64-SRYKBN      =     "40" OR "50" OR "54" OR "60"
+              SET     TBL-SANSO    TO      1
+              SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
+                   AT  END
+                       MOVE    ZERO            TO  FLG-SANSO-OK
+                   WHEN    SRY-SRYCD (IDX2)    =   TBL-SANSO-SRYCD
+                                                        (TBL-SANSO)
+                       MOVE    1               TO  FLG-SANSO-OK
+              END-SEARCH
+              IF      FLG-SANSO-OK        =    1
+                   MOVE   "1"   TO    RECE64-FLG-SANSO-COMMENT
+              END-IF
+           END-IF
+      *
            .
        RECE65-TENSOU-COMCNT-HEN-EXT.
            EXIT.
@@ -6197,7 +6213,8 @@
                          END-IF
                       ELSE
                         IF    (SYU-SYUHKNNUM       =   SPACE         )
-                        AND   (SYU-KOH1HKNNUM      =   "012" OR "019")
+                        AND   (SYU-KOH1HKNNUM      =   "012" OR "019" 
+                                                             OR "053")
                         AND   (SYU-KOH2HKNNUM      =   SPACE         )
                         AND   (SYU-KOH3HKNNUM      =   SPACE         )
                         AND   (SYU-KOH4HKNNUM      =   SPACE         )
@@ -6269,7 +6286,8 @@
                          END-IF
                       ELSE
                         IF    (SYU-SYUHKNNUM       =   SPACE         )
-                        AND   (SYU-KOH1HKNNUM      =   "012" OR "019")
+                        AND   (SYU-KOH1HKNNUM      =   "012" OR "019" 
+                                                             OR "053")
                         AND   (SYU-KOH2HKNNUM      =   SPACE         )
                         AND   (SYU-KOH3HKNNUM      =   SPACE         )
                         AND   (SYU-KOH4HKNNUM      =   SPACE         )
@@ -6341,7 +6359,8 @@
                          END-IF
                       ELSE
                         IF    (SYU-SYUHKNNUM       =   SPACE         )
-                        AND   (SYU-KOH1HKNNUM      =   "012" OR "019")
+                        AND   (SYU-KOH1HKNNUM      =   "012" OR "019" 
+                                                             OR "053")
                         AND   (SYU-KOH2HKNNUM      =   SPACE         )
                         AND   (SYU-KOH3HKNNUM      =   SPACE         )
                         AND   (SYU-KOH4HKNNUM      =   SPACE         )
@@ -6413,7 +6432,8 @@
                          END-IF
                       ELSE
                         IF    (SYU-SYUHKNNUM       =   SPACE         )
-                        AND   (SYU-KOH1HKNNUM      =   "012" OR "019")
+                        AND   (SYU-KOH1HKNNUM      =   "012" OR "019" 
+                                                             OR "053")
                         AND   (SYU-KOH2HKNNUM      =   SPACE         )
                         AND   (SYU-KOH3HKNNUM      =   SPACE         )
                         AND   (SYU-KOH4HKNNUM      =   SPACE         )

@@ -53,6 +53,7 @@
       *  01.02.01    NACL-Æ£¸¶    04/10/13  Ãæ»ß½èÍý¤ÎÄÉ²Ã
       *  01.02.02    NACL-ÌçÏÆ    04/12/17  ¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
       *                                     »ÈÍÑ²Ã»»¤òÌôºÞÅù¤Ø
+      *  01.02.03    NACL-ÌçÏÆ    05/01/18  »ÀÁÇ·×»»¼°¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -550,6 +551,9 @@
            03  CONS-BYOITAIYO        PIC X(09)  VALUE  "101910060".
       *    ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ
            03  CONS-HINKAI-COMMENT   PIC X(09)  VALUE  "114009410".
+      *
+      *    »ÀÁÇ 
+           COPY    "CMSANSOTBL.INC".
       *
       *   ÆüËÜ¸ì¿ô»ú
        01  TBL-SUJI-AREA.
@@ -2996,6 +3000,20 @@
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-CHIRYO-COMMENT
                    MOVE   "1"   TO    RECE84-FLG-CHIRYO-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE84-SRYKBN      =     "40" OR "50" OR "54" OR "60"
+              SET     TBL-SANSO    TO      1
+              SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
+                   AT  END
+                       MOVE    ZERO            TO  FLG-SANSO-OK
+                   WHEN    SRY-SRYCD (IDX2)    =   TBL-SANSO-SRYCD
+                                                        (TBL-SANSO)
+                       MOVE    1               TO  FLG-SANSO-OK
+              END-SEARCH
+              IF      FLG-SANSO-OK        =    1
+                   MOVE   "1"   TO    RECE84-FLG-SANSO-COMMENT
               END-IF
            END-IF
       *

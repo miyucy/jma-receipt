@@ -66,6 +66,7 @@
       *  Ãæ»ß½èÍýÄÉ²Ã
       *  01.03.01    NACL-Æ£¸¶    04/09/28  Ãæ»ß½èÍý¤ÎÄÉ²Ã
       *  01.03.02    NACL-ÌçÏÆ    04/12/09  Ç¾·ì´É¼À´µµÞÀ­È¯¾É½ªÎ»ÆüÂÐ±þ
+      *  01.03.03    NACL-ÌçÏÆ    05/01/18  »ÀÁÇ·×»»¼°¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -212,6 +213,7 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-FIRST           PIC 9(01).
            03  FLG-ARI             PIC 9(01).
+           03  FLG-DABURU          PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -231,6 +233,8 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(02).
+           03  IDX4                PIC 9(04).
+           03  IDX5                PIC 9(04).
            03  DAY-IDX             PIC 9(04).
            03  DAY-IDX2            PIC 9(02).
            03  IDY                 PIC 9(04).
@@ -278,6 +282,11 @@
                05  WRK-SRYYM         PIC 9(06).
                05  WRK-SRYDD         PIC 9(02).
       *
+           03  WRK-KEISAN            PIC 9(09).
+           03  WRK-KEISAN2           PIC 9(03).
+           03  WRK-KEISAN3           PIC 9(09)V9(03).
+           03  WRK-KEISAN-TAIHI      PIC X(09).
+      *
        01  WRK-RECE04-REC. 
            COPY    "CPRCF004.INC"  REPLACING   //RECE04//
                                    BY          //WRK-RECE04//.
@@ -300,6 +309,11 @@
            03  WRK-FREEINF2                    OCCURS 50.               
                05  WK-FREE-YUKOKETA2         PIC  9(02).                
                05  WK-FREE-NAME2             PIC  X(200).               
+      *
+       01  WRK-FREE-AREA3.                                              
+           03  WRK-FREEINF3.
+               05  WK-FREE-NAME3             PIC  X(1000).              
+               05  WK-FREE-NAME3-TAIHI       PIC  X(1000).              
       *
       *Íý³ØÎÅË¡ºÞÈÖ¹æÂàÈòÎÎ°è
        01  WRK-TAIHI-ZAINUM.
@@ -468,9 +482,19 @@
                05  CNT-DOUJITU            PIC 9(06).
                05  TBL-COUNT-HKNCOMBI     PIC 9(04).
       *
+      *    »ÀÁÇ¡Ê¶â³Û¡¦¿ôÎÌ¡Ë¾ðÊó
+       01  TBL-SANSO-INF.
+           03  TBL-SANSO-INF2       OCCURS    10.
+               05  TBL-SANSO-TEN          PIC 9(09)V9(02).
+               05  TBL-SANSO-SRYSURYO     PIC 9(05)V9(03).
+           03  TBL-SANSO-INF3.
+               05  TBL-KASAN-SRYSURYO     PIC 9(05)V9(03).
       *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
        01  WRK-PATH                        PIC X(64).
+      *
+      *    »ÀÁÇ 
+           COPY    "CMSANSOTBL.INC".
       *
            COPY    "MCPAREA".
       *
@@ -898,6 +922,8 @@
                                          NOT =   RECE04-HOJOKBN      )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE04-TEKSTYMD     )
       *
+               MOVE     ZERO    TO    FLG-DABURU
+      *
                EVALUATE      RECE04-SRYKBN
                    WHEN      "13"
                       MOVE   ZERO   TO  FLG-COMMENT
@@ -934,9 +960,32 @@
       *            ¡ÊºßÂð´µ¼ÔË¬ÌäÅÀÅ©Ãí¼Í´ÉÍý»ØÆ³ÎÁ»»Äê»þ¤ÎÅÀÅ©Ãí¼Í¤Î
       *              ¥³¥á¥ó¥È¤Î¥»¥Ã¥È¡Ë
                       PERFORM    2001-HOUTEN-HANTEI-SEC
+                   WHEN      "40"
+                   WHEN      "54"
+                   WHEN      "60"
+                      MOVE   ZERO   TO  FLG-COMMENT
+      *            ¡Ê»ÀÁÇ·×»»¼°¤Î¥³¥á¥ó¥È¤Î¥»¥Ã¥È¡Ë
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SANSO-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2099-RECE04-TENSOU-SEC
+                      END-IF
                    WHEN      "50"
-      *            ¡Ê¼ê½ÑÆü¤Î¥»¥Ã¥È¡Ë
-                      PERFORM    2001-SHUJUTSU-HANTEI-SEC
+                      EVALUATE  RECE04-FLG-SHUJUTU-COMMENT  ALSO
+                                              RECE04-FLG-SANSO-COMMENT
+      *                 ¡Ê¼ê½ÑÆü¤Î¥»¥Ã¥È¡Ë¡Ê»ÀÁÇ·×»»¼°¤Î¥³¥á¥ó¥È¤Î¥»¥Ã¥È¡Ë
+                        WHEN    SPACE      ALSO     "1"
+                            PERFORM    2001-SHUJUTSU-SANSO-SEC
+      *                 ¡Ê¼ê½ÑÆü¤Î¥»¥Ã¥È¡Ë
+                        WHEN    SPACE      ALSO     SPACE
+                            PERFORM    2001-SHUJUTSU-HANTEI-SEC
+      *                 ¡Ê»ÀÁÇ·×»»¼°¤Î¥³¥á¥ó¥È¤Î¥»¥Ã¥È¡Ë
+                        WHEN    "1"        ALSO     "1"
+                            PERFORM    2001-SANSO-HANTEI-SEC
+                        WHEN    "1"        ALSO     SPACE
+                            PERFORM    2099-RECE04-TENSOU-SEC
+                      END-EVALUATE
                    WHEN      "70"
       *            ¡Ê£Ã£Ô¡¦£Í£Ò£É¼Â»ÜÆü¤Î¥»¥Ã¥È¡Ë
                       PERFORM    2001-CTMRI-HANTEI-SEC
@@ -2487,12 +2536,53 @@
            IF     RECE04-FLG-SHUJUTU-COMMENT   =    SPACE
                MOVE       1       TO     FLG-COMMENT
                PERFORM    20011-SHUJUTSU-ETC-COMMENT-SEC
-           ELSE
-               PERFORM    2099-RECE04-TENSOU-SEC
            END-IF
       *
            .
        2001-SHUJUTSU-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »ÀÁÇ¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-SANSO-HANTEI-SEC          SECTION.
+      *
+           IF     RECE04-FLG-SANSO-COMMENT   =    "1"
+               MOVE       99      TO     FLG-COMMENT
+      *
+               PERFORM     20011-SANSO-TAIHI-SEC
+      *
+               PERFORM     20011-SANSO-COMMENT-SEC
+      *
+           END-IF
+      *
+           .
+       2001-SANSO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ê½ÑÆü¤Î¥³¥á¥ó¥È¤¬¤¢¤ë¤«È½Äê¡¦»ÀÁÇ¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-SHUJUTSU-SANSO-SEC          SECTION.
+      *
+           MOVE      1      TO      FLG-DABURU
+      *
+           IF     RECE04-FLG-SHUJUTU-COMMENT   =    SPACE
+               MOVE       1       TO     FLG-COMMENT
+               PERFORM    20011-SHUJUTSU-ETC-COMMENT-SEC
+           END-IF
+      *
+           IF     RECE04-FLG-SANSO-COMMENT   =    "1"
+               MOVE       99      TO     FLG-COMMENT
+      *
+               PERFORM     20011-SANSO-TAIHI-SEC
+      *
+               PERFORM     20011-SANSO-COMMENT-SEC
+      *
+           END-IF
+      *
+           .
+       2001-SHUJUTSU-SANSO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2543,7 +2633,9 @@
                               TO  WRK-RECE05XX-NAME(IDX-RECE05 1)
            END-PERFORM 
       *
-           PERFORM    200111-SRYACTINF-HENSYU-SEC
+           IF     FLG-DABURU    =     ZERO
+                 PERFORM    200111-SRYACTINF-HENSYU-SEC
+           END-IF
       *
            .
        20011-SHUJUTSU-ETC-COMMENT-EXT.
@@ -2587,6 +2679,133 @@
       *
            .
        20011-SHUJUTSU-ETC2-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »ÀÁÇ¤Î¥³¥á¥ó¥ÈÊÔ½¸¡Êº¹¹þ¡§²¼¡Ë
+      *****************************************************************
+       20011-SANSO-COMMENT-SEC          SECTION.
+      *
+           MOVE       ZERO       TO   IDZ                               
+           INITIALIZE            WRK-FREE-AREA2                         
+           INITIALIZE            WRK-FREE-AREA3
+      *
+           PERFORM  200111-FREE-COMMENT3-SEC                            
+      *
+           PERFORM  200111-RECE05-TAIHI-SEC
+      *
+      *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+           IF     FLG-DABURU    =     ZERO
+              MOVE    ZERO                 TO  IDX-RECE05
+              MOVE    SPACE                TO  WRK-RECE05XX-REC
+              INITIALIZE                       WRK-RECE05XX-REC
+      *
+              MOVE    RECE04-MEISAISU      TO  MAX-MEISAISU
+           ELSE
+              COMPUTE   MAX-MEISAISU  =  RECE04-MEISAISU + IDX-RECE05
+           END-IF
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   50    )
+                         OR      ( WK-FREE-NAME2(IDX) =   SPACE )
+                COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
+                MOVE   "810000001"
+                             TO  WRK-RECE05XX-SRYCD(MAX-MEISAISU 1)
+                MOVE   ZERO  TO  WRK-RECE05XX-SRYSURYO(MAX-MEISAISU 1)
+                MOVE   WK-FREE-YUKOKETA2(IDX)
+                             TO  WRK-RECE05XX-YUKOKETA(MAX-MEISAISU 1)
+                MOVE   WK-FREE-NAME2(IDX)
+                             TO  WRK-RECE05XX-NAME(MAX-MEISAISU 1)
+                MOVE   "1"   TO  WRK-RECE05XX-RECEDENFLG(MAX-MEISAISU 1)
+           END-PERFORM
+      *
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
+      *
+           .
+       20011-SANSO-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »ÀÁÇ¤Î¿ôÎÌ¡¦Ã±²ÁÂàÈò
+      *****************************************************************
+       20011-SANSO-TAIHI-SEC          SECTION.
+      *
+           MOVE       ZERO    TO     IDX4
+           INITIALIZE                TBL-SANSO-INF
+      *
+           INITIALIZE                      RECE05-REC
+           MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
+           MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
+           MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
+           MOVE    RECE04-PTID         TO  RECE05-PTID
+           MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
+           MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
+           MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
+           MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
+           MOVE    RECE04-HOJOKBN      TO  RECE05-HOJOKBN
+           MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
+           MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
+           START   RECE05-FILE
+               KEY IS    >=   RECE05-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE05
+               NOT INVALID
+                   PERFORM 990-RECE05-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL ( FLG-RECE05           =  1                   )
+               OR    ( RECE04-HOSPID    NOT =  RECE05-HOSPID       )
+               OR    ( RECE04-SRYYM     NOT =  RECE05-SRYYM        )
+               OR    ( RECE04-NYUGAIKBN NOT =  RECE05-NYUGAIKBN    )
+               OR    ( RECE04-PTID      NOT =  RECE05-PTID         )
+               OR    ( RECE04-RECEKA    NOT =  RECE05-RECEKA       )
+               OR    ( RECE04-TEISYUTUSAKI
+                                        NOT =  RECE05-TEISYUTUSAKI )
+               OR    ( RECE04-RECESYUBETU
+                                        NOT =  RECE05-RECESYUBETU  )
+               OR    ( RECE04-HKNJANUM  NOT =  RECE05-HKNJANUM     )
+               OR    ( RECE04-HOJOKBN   NOT =  RECE05-HOJOKBN      )
+               OR    ( RECE04-TEKSTYMD  NOT =  RECE05-TEKSTYMD     )
+               OR    ( RECE04-ZAINUM    NOT =  RECE05-ZAINUM       )
+      *
+               PERFORM   VARYING   IDX   FROM    1   BY  1
+                          UNTIL  ( IDX               >   5     )
+                           OR    ( RECE05-SRYCD(IDX) =   SPACE )
+      *
+                  SET     TBL-SANSO    TO     1
+                  SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
+                       AT  END
+                           MOVE    ZERO    TO   FLG-SANSO-OK
+                       WHEN   RECE05-SRYCD(IDX) = TBL-SANSO-SRYCD
+                                                       (TBL-SANSO)
+                           MOVE    1       TO   FLG-SANSO-OK
+                  END-SEARCH
+                  IF      FLG-SANSO-OK        =    1
+                     ADD      1            TO  IDX4
+                     MOVE  RECE05-TEN(IDX) TO  TBL-SANSO-TEN(IDX4)
+                     MOVE  RECE05-SRYSURYO(IDX)
+                                           TO  TBL-SANSO-SRYSURYO
+                                                            (IDX4)
+                  END-IF
+                  IF    RECE05-SRYCD(IDX) = "770030070"
+                     IF   TBL-KASAN-SRYSURYO  =  ZERO
+                        MOVE   RECE05-SRYSURYO(IDX)
+                                     TO  TBL-KASAN-SRYSURYO
+                     ELSE
+                        COMPUTE   TBL-KASAN-SRYSURYO  =  
+                                  TBL-KASAN-SRYSURYO  *  
+                                  RECE05-SRYSURYO(IDX)   
+                     END-IF
+                  END-IF
+      *
+               END-PERFORM 
+      *
+               PERFORM 990-RECE05-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       20011-SANSO-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2781,6 +3000,200 @@
            END-PERFORM
            .
        20011-FREE-COMMENT2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »ÀÁÇ·×»»¼°ÊÔ½¸
+      *****************************************************************
+       200111-FREE-COMMENT3-SEC          SECTION.                      
+      *
+           MOVE     1          TO    WRK-KETA
+           MOVE    ZERO        TO    WRK-KEISAN3
+      *
+           PERFORM   VARYING   IDX    FROM   1   BY   1
+                      UNTIL   (IDX                 >    10)
+                       OR     (TBL-SANSO-TEN(IDX)  =  ZERO)
+      *
+             IF   IDX  >  1
+                MOVE    "¡Ü"   TO  WK-FREE-NAME3(WRK-KETA:2)
+                COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+             END-IF
+      *
+             MOVE    "¡Ê"   TO  WK-FREE-NAME3(WRK-KETA:2)
+             COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+      *Ã±²Á
+             MOVE     TBL-SANSO-TEN(IDX)   TO   WRK-KEISAN
+             COMPUTE  WRK-KEISAN2  = (TBL-SANSO-TEN(IDX) -  WRK-KEISAN)
+                                   *   1000
+      *
+             PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
+      *
+             MOVE    "±ß¡ß" TO  WK-FREE-NAME3(WRK-KETA:4)
+             COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+      *¿ôÎÌ
+             MOVE     TBL-SANSO-SRYSURYO(IDX)  TO  WRK-KEISAN
+             COMPUTE  WRK-KEISAN2  
+                             = (TBL-SANSO-SRYSURYO(IDX) -  WRK-KEISAN)
+                             *   1000
+      *
+             PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
+      *
+             IF    TBL-KASAN-SRYSURYO  =  ZERO
+                MOVE    "£Ì¡ß£±¡¥£³¡Ë" TO  WK-FREE-NAME3(WRK-KETA:12)
+                COMPUTE  WRK-KETA   =  WRK-KETA   +  12
+      *
+                COMPUTE  WRK-KEISAN3   =   WRK-KEISAN3  +
+                  (TBL-SANSO-TEN(IDX) * TBL-SANSO-SRYSURYO(IDX) * 1.3)
+             ELSE
+                MOVE    "£Ì¡ß£±¡¥£³¡ß" TO  WK-FREE-NAME3(WRK-KETA:12)
+                COMPUTE  WRK-KETA   =  WRK-KETA   +  12
+      *
+                MOVE     TBL-KASAN-SRYSURYO  TO  WRK-KEISAN
+                COMPUTE  WRK-KEISAN2  
+                             = (TBL-KASAN-SRYSURYO -  WRK-KEISAN)
+                             *   1000
+      *
+                PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
+      *
+                MOVE    "¡Ë" TO  WK-FREE-NAME3(WRK-KETA:2)
+                COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+      *
+                COMPUTE  WRK-KEISAN3   =   WRK-KEISAN3  +
+                  (TBL-SANSO-TEN(IDX) * TBL-SANSO-SRYSURYO(IDX) * 1.3
+                                      * TBL-KASAN-SRYSURYO)
+             END-IF
+      *
+           END-PERFORM
+      *
+           IF   IDX  =  2
+              MOVE    "¡à£±£°¡á"  TO  WK-FREE-NAME3(WRK-KETA:8)
+              COMPUTE  WRK-KETA   =  WRK-KETA   +  8
+      *
+              COMPUTE  WRK-KEISAN =   WRK-KEISAN3  +  0.5
+              COMPUTE  WRK-KEISAN =  (WRK-KEISAN   /  10)  +  0.5
+              MOVE     ZERO       TO   WRK-KEISAN2
+      *
+              PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
+      *
+              MOVE    "ÅÀ"   TO  WK-FREE-NAME3(WRK-KETA:2)
+              COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+           ELSE
+              IF   IDX  >  2
+                  MOVE   WK-FREE-NAME3  TO  WK-FREE-NAME3-TAIHI
+                  MOVE    "¡Ê"    TO   WK-FREE-NAME3(1:2)
+                  MOVE   WK-FREE-NAME3-TAIHI
+                                  TO   WK-FREE-NAME3(3:)
+                  COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                  MOVE    "¡Ë¡à£±£°¡á"  TO  WK-FREE-NAME3(WRK-KETA:10)
+                  COMPUTE  WRK-KETA   =  WRK-KETA   +  10
+      *
+                  COMPUTE  WRK-KEISAN =   WRK-KEISAN3  +  0.5
+                  COMPUTE  WRK-KEISAN =  (WRK-KEISAN   /  10)  +  0.5
+                  MOVE     ZERO       TO   WRK-KEISAN2
+      *
+                  PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
+      *
+                  MOVE    "ÅÀ"   TO  WK-FREE-NAME3(WRK-KETA:2)
+                  COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+              END-IF
+           END-IF
+      *
+           IF     WRK-KETA    >   1
+               PERFORM   VARYING   IDX4    FROM   1   BY   50
+                          UNTIL   (IDX4     >    1000)
+                            OR    (WK-FREE-NAME3(IDX4:1) = SPACE)
+                   ADD     1      TO    IDZ
+                   MOVE    ZERO   TO    WRK-KETA2
+                   PERFORM   VARYING   IDX5    FROM   1   BY   2
+                              UNTIL   (IDX5     >    50)
+                      IF   WK-FREE-NAME3(IDX4:IDX5) = SPACE
+                          MOVE   IDX5   TO   WRK-KETA2
+                          MOVE   50     TO   IDX5
+                      END-IF
+                   END-PERFORM
+                   IF   WRK-KETA2 =  ZERO
+                        MOVE   25   TO  WK-FREE-YUKOKETA2(IDZ)
+                   ELSE
+                        COMPUTE   WK-FREE-YUKOKETA2(IDZ)  =
+                                       ( WRK-KETA2 - 1 )  /  2
+                   END-IF
+                   MOVE   WK-FREE-NAME3(IDX4:50)
+                                   TO    WK-FREE-NAME2(IDZ)
+               END-PERFORM
+           END-IF
+      *
+           .
+       200111-FREE-COMMENT3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »ÀÁÇ·×»»¼°¡¦¿ôÃÍÊÔ½¸
+      *****************************************************************
+       2001111-FREE-COMMENT3-SUCHI-SEC          SECTION.                      
+      *
+           IF    WRK-KEISAN  NOT  =  ZERO
+               PERFORM   VARYING   IDX4    FROM   1   BY   1
+                          UNTIL   (IDX4               >    9)
+                     IF   WRK-KEISAN(IDX4:1) =   "0"
+                        CONTINUE
+                     ELSE
+                        MOVE  IDX4   TO  IDX5
+                        MOVE   9     TO  IDX4
+                     END-IF
+               END-PERFORM
+               MOVE  SPACE             TO  WRK-KEISAN-TAIHI
+               MOVE  WRK-KEISAN(IDX5:) TO  WRK-KEISAN-TAIHI
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"             TO  KANACHK-SYORI
+               MOVE  WRK-KEISAN-TAIHI  TO  KANACHK-MAE-INPUT
+               CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF      KANACHK-RC      =   ZERO
+                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                               TO  WK-FREE-NAME3(WRK-KETA:KANACHK-MAX)
+                   COMPUTE  WRK-KETA   =  WRK-KETA   +  KANACHK-MAX
+               END-IF
+           END-IF
+      *
+           IF    WRK-KEISAN2  NOT  =  ZERO
+                PERFORM   VARYING   IDX4    FROM   3   BY  -1
+                           UNTIL   (IDX4               <    1)
+                      IF   WRK-KEISAN2(IDX4:1) =   "0"
+                         CONTINUE
+                      ELSE
+                         MOVE  IDX4   TO  IDX5
+                         MOVE   1     TO  IDX4
+                      END-IF
+                END-PERFORM
+                MOVE  SPACE               TO  WRK-KEISAN-TAIHI
+                MOVE  WRK-KEISAN2(1:IDX5) TO  WRK-KEISAN-TAIHI
+      *
+                IF    WRK-KEISAN  NOT  =  ZERO
+                   MOVE    "¡¥"     TO  WK-FREE-NAME3(WRK-KETA:2)
+                   COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                ELSE
+                   MOVE    "£°¡¥"   TO  WK-FREE-NAME3(WRK-KETA:4)
+                   COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                END-IF
+      *
+                INITIALIZE                  ORCSKANACHKAREA
+                MOVE    "2"             TO  KANACHK-SYORI
+                MOVE  WRK-KEISAN-TAIHI  TO  KANACHK-MAE-INPUT
+                CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                IF      KANACHK-RC      =   ZERO
+                    MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                TO  WK-FREE-NAME3(WRK-KETA:KANACHK-MAX)
+                    COMPUTE  WRK-KETA   =  WRK-KETA   +  KANACHK-MAX
+                END-IF
+           END-IF
+      *
+           IF    WRK-KEISAN    =  ZERO
+           AND   WRK-KEISAN2   =  ZERO
+               MOVE    "£°"   TO  WK-FREE-NAME3(WRK-KETA:2)
+               COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+           END-IF
+      *
+           .
+       2001111-FREE-COMMENT3-SUCHI-EXT.
            EXIT.
       *
       *****************************************************************
