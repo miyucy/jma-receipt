@@ -1205,6 +1205,10 @@
       *
            MOVE    ZERO                TO  SPA-GMN-PTID
       *
+           IF      SPTNUM-PTNUM    NOT =   SPACE
+               MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
+           END-IF
+      *
       *    桁数チェック
            MOVE    ZERO                TO  WRK-KETA
            MOVE    ZERO                TO  FLG-KETA
@@ -1250,6 +1254,7 @@
            CALL    "ORCSP01"           USING
                                        ORCSP01AREA
                                        SPA-AREA
+      *
       *
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPA-HZN-PTNUM       TO  WRK-HZN-PTNUM
