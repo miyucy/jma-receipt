@@ -685,7 +685,7 @@ MCPAREA: $(top_builddir)/lddef/directory
 	test -s $@ || (rm -f $@; false)
 
 clean: 
-	-rm $(COPYS_inc) $(DBPATH) $(MCPAREA)
+	rm -f $(COPYS_inc) $(DBPATH) $(MCPAREA)
 
 distclean: clean
 	-rm -f Makefile
