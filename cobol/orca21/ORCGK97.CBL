@@ -269,7 +269,11 @@
            INITIALIZE                  ORCSDRSETAREA
            MOVE    "1"                 TO  ORCSDR-KBN
            MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
-           MOVE    SPA-K97-SRYKA       TO  ORCSDR-SRYKA
+           IF      SPA-K97-SRYKA       =   SPACE
+               MOVE    SPA-GMN-SRYKA       TO  ORCSDR-SRYKA
+           ELSE
+               MOVE    SPA-K97-SRYKA       TO  ORCSDR-SRYKA
+           END-IF
            MOVE    SPA-K97-DRCD        TO  ORCSDR-IN-DRCD
            CALL    "ORCSDRSET"         USING
                                        SPA-AREA
@@ -277,7 +281,7 @@
            MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
            MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
            IF      SPA-K97-SRYKA       =   SPACE  OR  ZERO
-               CONTINUE
+               MOVE    SPA-GMN-SRYKA       TO  SPA-K97-SRYKA
            ELSE
                MOVE    SPA-K97-SRYKA       TO  SPA-K97-SELNUM2
                PERFORM 22031-UKETUKE-CHK-SEC

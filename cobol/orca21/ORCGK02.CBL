@@ -6434,9 +6434,6 @@
                                            TO  SPA-K97-SRYKA
                END-IF
            END-IF
-           IF      SPA-K97-SRYKA       =   SPACE
-               MOVE    SPA-GMN-SRYKA       TO  SPA-K97-SRYKA
-           END-IF
       *    初期画面セット
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPACE               TO  SPA-MOTOPG
