@@ -138,6 +138,7 @@
            03  IDX2                PIC 9(02).
            03  IDX3                PIC 9(02).
            03  IDX6                PIC 9(02).
+           03  IDY2                PIC 9(02).
       *
        01  WRK-KCOMB-AREA.
       *      組合せ退避用
@@ -2884,33 +2885,33 @@
                  (WRK-KOH-SAKJOKBN (IDX)   =   SPACE)
       *
       *        [保険テーブル]より主保険を検索
-               PERFORM     VARYING   IDY   FROM    1   BY  1
-                           UNTIL   ( IDY   >       100 )
-                           OR      ( IDY   >       CNT-HKN )
+               PERFORM     VARYING   IDY2  FROM    1   BY  1
+                           UNTIL   ( IDY2  >       100 )
+                           OR      ( IDY2  >       CNT-HKN )
       *
                  INITIALIZE                    WRK-COMB-AREA
                  INITIALIZE                    WRK-KCOMB-AREA
                  MOVE    ZERO              TO  WRK-KCOMB-MAX
                  MOVE    ZERO              TO  WRK-RCOMB-MAX
       *
-                 IF  WRK-HKN-SAKJOKBN (IDY)    =   SPACE
+                 IF  WRK-HKN-SAKJOKBN (IDY2)    =   SPACE
       *              [公費]適用年月日と[保険]適用年月日
-                     IF  (WRK-HKN-TEKEDYMD(IDY)
+                     IF  (WRK-HKN-TEKEDYMD(IDY2)
                                       <   WRK-KOH-TEKSTYMD(IDX))  OR
-                         (WRK-HKN-TEKSTYMD(IDY)
+                         (WRK-HKN-TEKSTYMD(IDY2)
                                       >   WRK-KOH-TEKEDYMD(IDX))
                          CONTINUE
                      ELSE
       *                [主保険]
-                       IF  WRK-HKN-SBT(IDY)  =   "1"
+                       IF  WRK-HKN-SBT(IDY2)  =   "1"
       ****                 IF  ((WRK-HKN-HKNNUM (IDY)  =   "002") AND
       *                         (WRK-HKN-HOJOKBN(IDY)  =   SPACE OR
       *                                                    "8"  OR
       *                                                    "9"  ))  OR
       *****                    ( WRK-HKN-HKNNUM (IDY)  NOT =  "002")
       *                船員以外
-                           IF  ((WRK-HKN-HKNNUM (IDY)  =   "002" ) AND
-                                (WRK-HKN-HOJOKBN(IDY)  =   "1"  OR
+                           IF  ((WRK-HKN-HKNNUM (IDY2)  =   "002" ) AND
+                                (WRK-HKN-HOJOKBN(IDY2)  =   "1"  OR
                                                            "2"  OR
                                                            "3"  OR
                                                            "A"  OR
@@ -2919,17 +2920,17 @@
                                                            "D"  OR
                                                            "E"  OR
                                                            "F"  ))  OR
-                               ((WRK-HKN-HKNNUM (IDY)  =   "031" OR
+                               ((WRK-HKN-HKNNUM (IDY2)  =   "031" OR
                                                            "032" OR
                                                            "033" OR
                                                            "034" )  AND
-                                (WRK-HKN-HOJOKBN(IDY)  =   "2" OR
+                                (WRK-HKN-HOJOKBN(IDY2)  =   "2" OR
                                                            "B" OR
                                                            "E"  ))
                                CONTINUE
                            ELSE
                                MOVE    IDX       TO  WRK-COMB-SYUKOHIDX
-                               MOVE    IDY       TO  WRK-COMB-SYUHOIDX
+                               MOVE    IDY2      TO  WRK-COMB-SYUHOIDX
       *                        <主公費 & 主保険 組合せ処理>
                                PERFORM 570141-SYUKOH-SYUHO-HEN-SEC
                            END-IF
