@@ -31,6 +31,8 @@
            03  LNK-SC92-KBN            PIC X(01).
       *    訂正フラグ（１：訂正）
            03  LNK-SC92-SYORIFLG       PIC 9(01).
+      *    1:注加算チェックなし（画像診断の乳幼児加算等）
+           03  LNK-SC92-CHUKSN         PIC X(01).
       *
       *    診療コード
            03  LNK-SC92-SRYCD          PIC X(09).
