@@ -931,7 +931,6 @@
       *            確認画面より
                WHEN    "JID1"
                    PERFORM 3003-JID1-SET-SEC
-                   MOVE    SPACE           TO  SPA-JIDCD
                    IF      SPA-ERRCD       NOT =   SPACE
                        PERFORM 500-GMNHEN-SEC
                        PERFORM 510-ERRSET-SEC
@@ -1124,6 +1123,7 @@
            EVALUATE    SPA-JIDCD
                WHEN    "0101"
                WHEN    "0102"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            戻るの確認
                    IF      SPA-JID1-FLG        =   "OK"
                        MOVE    1                   TO  SPA-GMN-CUR
@@ -1134,6 +1134,7 @@
                    END-IF
       *
                WHEN    "0103"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            明細選択の確認
                    IF      SPA-JID1-FLG        =   "OK"
                        MOVE    1                   TO  SPA-GMN-CUR
@@ -1146,6 +1147,7 @@
                    END-IF
       *
                WHEN    "0104"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            剤変更の確認
                    IF      SPA-JID1-FLG        =   "OK"
                        MOVE     1             TO  SPA-J02-SYORI
@@ -1155,6 +1157,7 @@
                    END-IF
       *
                WHEN    "0106"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            診療年月変更の確認
                    IF      SPA-JID1-FLG        =   "OK"
                        IF      SPA-J02-SEL         =   1
@@ -1169,6 +1172,7 @@
                    END-IF
       *
                WHEN    "0107"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            診療科変更の確認
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 41013-SRYKA-CHANGE-SEC
@@ -1179,6 +1183,7 @@
                    END-IF
       *
                WHEN    "0108"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            診療年月変更の確認
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 410181-SRYYM-CHANGE-SEC
@@ -1189,6 +1194,7 @@
                        MOVE    1                  TO  SPA-GMN-CUR
                    END-IF
                WHEN    "0109"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            保険一括変換の確認
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 41001-HKNHEN-SYORI-SEC
@@ -1197,6 +1203,7 @@
                    END-IF
       *
                WHEN    "0110"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            診療内容変更の確認
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 410171-NYUGAIKBN-CHANGE-SEC
@@ -1207,6 +1214,7 @@
                        MOVE    1                  TO  SPA-GMN-CUR
                    END-IF
                WHEN    "0111"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            保険組合せ確認
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 410171-NYUGAIKBN-CHANGE-SEC
@@ -1219,6 +1227,7 @@
                        MOVE    1                   TO  SPA-GMN-CUR
                    END-IF
                WHEN    "0112"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            診療内容
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 410171-NYUGAIKBN-CHANGE-SEC
@@ -1232,6 +1241,7 @@
                    END-IF
       *
                WHEN    "0113"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            前頁表示の確認
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 4401-MAEGMN-SYORI-SEC
@@ -1240,6 +1250,7 @@
                    END-IF
       *
                WHEN    "0114"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            前頁表示の確認
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 4501-ATOGMN-SYORI-SEC
@@ -1249,6 +1260,7 @@
       *
       *********WHEN    "0115"
                WHEN    "0118"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            受診日の変更確認
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 410161-HENSRYYMD-UPDSYORI-SEC
@@ -1261,6 +1273,7 @@
       *
                WHEN    "0116"
                WHEN    "0117"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            印刷確認
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 41201-PRINT-SYORI-SEC
@@ -1268,6 +1281,7 @@
                        MOVE    1                  TO  SPA-GMN-CUR
                    END-IF
                WHEN    "0119"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            診療日追加
                    IF      SPA-JID1-FLG        =   "OK"
       *                受診日追加処理
@@ -1276,12 +1290,14 @@
                        MOVE    1                  TO  SPA-GMN-CUR
                    END-IF
                WHEN    "0120"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            内分泌負荷試験警告
       *            収納変更時、再計算
                    IF      SPA-SYUNOU-KOUSIN   =   1
                        PERFORM 49012-SYUNOU-SAIKEISAN-SEC
                    END-IF
                WHEN    "0130"
+                   MOVE    SPACE           TO  SPA-JIDCD
       *            回数ゼロ剤削除
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 42001-ZAIDELETE-SYORI-SEC
@@ -9944,6 +9960,7 @@
       *****************************************************************
        41001-HKNHEN-SYORI-SEC            SECTION.
       *
+           MOVE    SPACE               TO  SPA-JIDCD
       *    現在表示されている内容を更新する
       *    診療会計マスター更新
            PERFORM 4901-SRYACCT-UPD-SEC
