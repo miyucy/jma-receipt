@@ -41,6 +41,8 @@
                05  SPA-ZENSYOHOFLG         PIC  X(01).
       *相互作用チェック期間
                05  SPA-INTERACT-KIKAN      PIC 9(02).
+      *外来管理加算チェック
+               05  SPA-GAIKANRIKBN-CHK     PIC X(01).
       *分散入力フラグ
                05  SPA-BUNSAN              PIC  X(01).
       *薬剤情報発行フラグ
