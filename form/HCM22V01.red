@@ -108,7 +108,7 @@
     </element>
     <element name="HOSPNAME" occurs="1">
       <appinfo>
-        <embed object="string" length="30"/>
+        <embed object="string" length="60"/>
       </appinfo>
     </element>
     <element name="GUNSIKUKBN1" occurs="1">
@@ -249,6 +249,12 @@
       <composite type="paper">
         <attribute name="name">
           <string>#A4#</string>
+        </attribute>
+        <attribute name="pswidth">
+          <real val="21"/>
+        </attribute>
+        <attribute name="psheight">
+          <real val="29.7"/>
         </attribute>
         <attribute name="tmargin">
           <real val="0"/>
@@ -6503,13 +6509,16 @@
     </object>
     <object type="Embed - Text" version="0" id="O148">
       <attribute name="obj_pos">
-        <point val="15.6,0.956391"/>
+        <point val="15.6,0.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.6,0.714286;20.145,1.01429"/>
+        <rectangle val="15.6,0.557895;20.145,1.15789"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOSPNAME#</string>
+      </attribute>
+      <attribute name="embed_text_column">
+        <int val="30"/>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -6517,7 +6526,8 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#186;&#226;&#195;&#196;&#203;&#161;&#191;&#205;&#161;&#161;&#198;&#252;&#203;&#220;&#193;&#237;&#184;&#166;&#161;&#161;&#165;&#203;&#165;&#193;&#165;&#164;&#176;&#229;&#177;&#161;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;
+&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;#</string>
           </attribute>
           <attribute name="font">
             <font name="Times-Roman"/>
@@ -6526,7 +6536,7 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="15.6,0.956391"/>
+            <point val="15.6,0.8"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>

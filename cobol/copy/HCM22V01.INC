@@ -20,7 +20,7 @@
             02  HCM22V01-KHNTEN PIC X(7)        OCCURS  19 TIMES.
             02  HCM22V01-KAISU  PIC X(3)        OCCURS  35 TIMES.
             02  HCM22V01-RSIIRYOCD  PIC X(30).
-            02  HCM22V01-HOSPNAME   PIC X(30).
+            02  HCM22V01-HOSPNAME   PIC X(60).
             02  HCM22V01-GUNSIKUKBN1    PIC X(2).
             02  HCM22V01-GUNSIKUKBN2    PIC X(2).
             02  HCM22V01-GUNSIKUKBN3    PIC X(2).
@@ -34,12 +34,14 @@
             02  HCM22V01-SYOSHIN3   PIC X(2).
             02  HCM22V01-KEIZOKUKANRI   PIC X(16).
             02  HCM22V01-SYOKEI PIC X(7).
-            02  HCM22V01-KINGAKU    PIC X(7)    OCCURS  6 TIMES.
+            02  HCM22V01-KINGAKU    PIC X(7)      OCCURS  6 TIMES.
             02  HCM22V01-PTNUM  PIC X(20).
             02  HCM22V01-TANJYOYMD.
-              03  HCM22V01-TANJYOYMD-S    PIC X(1)   OCCURS  7 TIMES.
+              03  HCM22V01-TANJYOYMD-S    PIC X(1)
+                                                  OCCURS  7 TIMES.
             02  HCM22V01-SYOBYOYMD.
-              03  HCM22V01-SYOBYOYMD-S    PIC X(1)   OCCURS  6 TIMES.
+              03  HCM22V01-SYOBYOYMD-S    PIC X(1)
+                                                  OCCURS  6 TIMES.
             02  HCM22V01-NISSU.
               03  HCM22V01-NISSU-S    PIC X(1)    OCCURS  3 TIMES.
             02  HCM22V01-GOKEI.
