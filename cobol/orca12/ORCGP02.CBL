@@ -1112,6 +1112,11 @@
       *****************************************************************
        4100-PTNUM-SYORI-SEC            SECTION.
       *
+      *    排他制御解除処理
+           IF      SPA-GMN-PTID    NOT =   ZERO
+               PERFORM 990-LOCK-OUT-SEC
+           END-IF
+      *
            MOVE    ZERO                TO  SPA-GMN-CUR
            MOVE    P02-PTNUM           TO  SPA-GMN-PTNUM
            IF      SPA-GMN-PTNUM(1:1)      =   "*"
