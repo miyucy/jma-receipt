@@ -220,6 +220,7 @@
            MOVE    SYS-DD          TO  WRK-SYSDD.
       *
            MOVE    ZERO            TO  LNK-S02-RC.
+           MOVE    ZERO            TO  NYUIN-COUNT.
       *
            INITIALIZE    LNK-SYUNOU-REC-T.
       *
@@ -862,7 +863,6 @@
       *
       *        入院料の集計
                IF   NACCT-ZAISKBKBN      =   "1"
-                   MOVE      ZERO        TO    NYUIN-COUNT
       *            入院基本料と加減算点数の取得
                    PERFORM   NYUINKHN-GET-SEC
       *            入院料と外泊を比較して点数算定
