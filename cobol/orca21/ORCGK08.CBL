@@ -34,7 +34,7 @@
       *  01.00.05    NACL-Â¿¡¹Ç¼  02/10/18  Æþ±¡¤ÎÄÉ²Ã
       *  01.00.06    NACL-Â¿¡¹Ç¼  02/11/20  ¼«ÇåÀÕ´ïºàÄÉ²Ã
       *  01.00.07    NACL-Â¿¡¹Ç¼  02/12/02  ¿©»ö¤ÎÄÉ²Ã
-      *  01.00.08    NACL-Â¿¡¹Ç¼  02/12/13  ·ÑÂ³¶èÊ¬ºÆÊÔ½¸ÄÉ²Ã
+      *  01.00.08    NACL-Â¿¡¹Ç¼  02/12/13  ·ÑÂ³¶èÊ¬ºÆÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2531,7 +2531,8 @@
            PERFORM
                UNTIL    FLG-JYURRK         =   1
             IF     (SPA-SYORIFLG           =   1      AND
-                    SPA-DOUJI-RENNUM    NOT =   JYURRK-DOUJI-RENNUM) OR
+      **********    SPA-DOUJI-RENNUM    NOT =   JYURRK-DOUJI-RENNUM) OR
+                    SPA-DOUJI-RENNUM       >    JYURRK-DOUJI-RENNUM) OR
                    (SPA-SYORIFLG           =   ZERO      )
                IF      JYURRK-EDANUM       =   1
                    MOVE    ZERO                TO  FLG-CHK
