@@ -31,6 +31,7 @@
       *                                     するよう修正
       *  01.00.02    NACL-太田    03/12/03  通算日数チェックに失敗時
       *                                     処理がループする不具合を修正
+      *  01.00.03    NACL-太田    04/05/28  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -473,7 +474,7 @@
            END-IF
       *
       *    ９１日以上
-           IF        ( STUSANCHK-DAY-91-STS    =   ZERO )
+           IF        ( STUSANCHK-DAY-91-STS    =   ZERO OR "1" )
                MOVE    STUSANCHK-DAY-91    TO  WRK-SYMD
                PERFORM 800-SEIWA-HEN-SEC
                MOVE    WRK-EDTYMD1         TO  HCMG005-DAY-91(CNT-LINE)
@@ -490,7 +491,7 @@
            END-IF
       *
       *    １８０日以上
-           IF        ( STUSANCHK-DAY-180-STS   =   ZERO )
+           IF        ( STUSANCHK-DAY-180-STS   =   ZERO OR "2"  )
                MOVE    STUSANCHK-DAY-180   TO  WRK-SYMD
                PERFORM 800-SEIWA-HEN-SEC
                MOVE    WRK-EDTYMD1         TO  HCMG005-DAY-180(CNT-LINE)
@@ -892,12 +893,6 @@
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
-           MOVE    "DBOPEN"        TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-      *
            MOVE    "DBSTART"       TO  MCP-FUNC.
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -917,12 +912,6 @@
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC.
-      *
-           MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.

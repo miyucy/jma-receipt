@@ -33,6 +33,7 @@
       *  01.00.04    NACL-太田    02/10/21  印刷用ファイルにサイト区分を追加
       *  01.00.05    NACL-太田    03/07/01  出力先プリンタサブ追加
       *  01.00.06    NACL-太田    03/09/11  郵便番号を追加
+      *  01.00.07    NACL-太田    04/05/28  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -949,12 +950,6 @@
       *****************************************************************
        120-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC
            CALL    "MCPSUB"             USING
                                         MCPAREA
@@ -970,12 +965,6 @@
        900-DBDISCONNECT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
            CALL    "MCPSUB"            USING
                                        MCPAREA
                                        ORCMCPAREA

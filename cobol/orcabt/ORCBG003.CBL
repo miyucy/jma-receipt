@@ -31,6 +31,7 @@
       *                                     するよう修正
       *  01.00.02    NACL-太田    03/12/03  通算日数チェックに失敗時
       *                                     処理がループする不具合を修正
+      *  01.00.03    NACL-太田    04/05/28  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -929,12 +930,6 @@
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
-           MOVE    "DBOPEN"        TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-      *
            MOVE    "DBSTART"       TO  MCP-FUNC.
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -955,11 +950,6 @@
                                        ORCMCPAREA
                                        MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者        日付      内容
       * 01.00.01     NACL-森脇     04/01/05  番号を患者ごとにカウント
       * 01.00.02     NACL-森脇     04/01/06  期間表示変更
+      * 01.00.03     NACL-太田     04/05/28  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1545,12 +1546,6 @@
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
-           MOVE    "DBOPEN"        TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-      *
            MOVE    "DBSTART"       TO  MCP-FUNC.
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -1566,12 +1561,6 @@
        900-DBDISCONNECT-SEC        SECTION.
       *
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-      *
-           MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -1604,5 +1593,5 @@
                                        ORCMCPAREA
                                        MCPDATA-REC.
            .
-       900-DBSTART-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
