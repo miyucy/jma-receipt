@@ -753,8 +753,8 @@
                END-IF
            END-IF
       *
-           IF    SPA-GMN-NAME                 =  SPACE  AND
-                 SPA-Z01-SRYCD            NOT =  "810000001"
+           IF   (SPA-GMN-NAME                 =  SPACE   )  AND
+                (SPA-Z01-SRYCD            NOT =  "810000001" )
                MOVE    "NAME"                    TO  SPA-GMN-CUR
                MOVE    "0001"                    TO  SPA-ERRCD
                GO                                TO  412-TOUROKU-EXT
@@ -1070,7 +1070,7 @@
       *        氏名チェック
                WHEN  MCP-WIDGET = "FORMALNAME"   OR CNT-ERRCHK = 18
                    MOVE  "COLUMN1"               TO  SPA-GMN-CUR
-                   MOVE  Z02-FORMALNAME          TO  SPA-GMN-FORMALNAME
+                   MOVE    Z02-FORMALNAME        TO  SPA-GMN-FORMALNAME
                    MOVE    SPA-GMN-FORMALNAME    TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
                    MOVE    WRK-OUT-INPUT          TO  SPA-GMN-FORMALNAME
