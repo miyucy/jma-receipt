@@ -77,6 +77,7 @@
            03  FLG-PTINF                   PIC 9(01).
            03  FLG-ZI-SAISIN               PIC 9(01).
            03  FLG-TOKSET-LOOP             PIC 9(01).
+           03  FLG-SYUNOU                  PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -224,7 +225,9 @@
            03  WRK-TOKNYUIN-KBN            PIC X(01).
            03  WRK-TOKNYUIN-CD             PIC X(02).
            03  WRK-TAIHI-SRYKA             PIC X(02).
+           03  WRK-NOW-SKYSTYMD            PIC X(08).
            03  WRK-SKYSTYM                 PIC X(06).
+           03  WRK-SKYEDYMD                PIC X(08).
            03  WRK-SYU-SUM-IDX             PIC 9(05).
            03  WRK-TAIINUPDCNT             PIC 9(05).
       *
@@ -5197,10 +5200,17 @@
                END-IF
            END-IF
       *
-      *    前回定期請求日の翌日〜算定開始日の翌月までの
+      *    定期請求との関連チェック
+      *    請求開始日取得処理
+           PERFORM 4801-SKYSTYMD-GET-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4801-TAIIN-TOUROKU-CHK-EXT
+           END-IF
+      *
+      *    前回定期請求日の翌日（あるいは入院日）
+      *    〜算定開始日の翌月までの
       *    日付が入力されていること
-      * *  前回定期請求日の翌日→暫定的に入院日とする * 
-           MOVE    SPA-NAI-I01-NYUINYMD
+           MOVE    WRK-NOW-SKYSTYMD
                                    TO  WRK-YMD
            MOVE    "2"             TO  WRK-ZOGENPTN
            MOVE    1               TO  WRK-ZOGEN
@@ -5218,6 +5228,72 @@
            .
        4801-TAIIN-TOUROKU-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    請求開始日取得処理
+      *****************************************************************
+       4801-SKYSTYMD-GET-SEC           SECTION.
+      *
+      *    ＝＝　暫定　＝＝
+      *    収納マスタより、最新の定期請求で作成された
+      *    収納データを検索し、その収納の請求終了日が退院日
+      *    以前となっていること
+           MOVE    SPACE           TO  WRK-SKYEDYMD
+           MOVE    ZERO            TO  FLG-SYUNOU
+           INITIALIZE  SYUNOU-REC
+           MOVE    SPA-HOSPID      TO  SYU-HOSPID
+           MOVE    SPA-NAI-I01-PTID
+                                   TO  SYU-PTID
+           MOVE    "1"             TO  SYU-NYUGAIKBN
+           MOVE    "A"             TO  SYU-DENPJTIKBN
+           MOVE    "00000000"      TO  SYU-SKYSTYMD
+           MOVE    "99999999"      TO  SYU-SKYEDYMD
+           MOVE    SYUNOU-REC      TO  MCPDATA-REC
+           MOVE    "SYUNOU-KEY7"   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        =   ZERO )
+               MOVE    MCPDATA-REC TO  SYUNOU-REC
+           ELSE
+               MOVE    1           TO  FLG-SYUNOU
+           END-IF
+      *
+           MOVE    "SYUNOU-KEY7"   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-SYUNOU      =   ZERO )
+               IF    ( SYU-SKYEDYMD    >=  SPA-NAI-I01-TAIINYMD )
+                   MOVE    "1026"      TO  SPA-ERRCD
+                   MOVE    11          TO  SPA-GMN-I01-CUR
+                   GO  TO  4801-SKYSTYMD-GET-EXT
+               ELSE
+                   MOVE    SYU-SKYEDYMD    TO  WRK-SKYEDYMD
+               END-IF
+           ELSE
+               MOVE    SPA-NAI-I01-NYUINYMD
+                                           TO  WRK-SKYEDYMD
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-NOW-SKYSTYMD
+           IF    ( FLG-SYUNOU      =   ZERO )
+               IF    ( WRK-SKYEDYMD    <   SPA-NAI-I01-NYUINYMD )
+                   MOVE    SPA-NAI-I01-NYUINYMD
+                                       TO  WRK-NOW-SKYSTYMD
+               ELSE
+                   MOVE    WRK-SKYEDYMD    TO  WRK-YMD
+                   MOVE    "1"             TO  WRK-ZOGENPTN
+                   MOVE    1               TO  WRK-ZOGEN
+                   PERFORM 5002-CALENDAR-SEC
+                   MOVE    WRK-KEISANYMD
+                                       TO  WRK-NOW-SKYSTYMD
+               END-IF
+           ELSE
+               MOVE    SPA-NAI-I01-NYUINYMD
+                                       TO  WRK-NOW-SKYSTYMD
+           END-IF
+      *
+           .
+       4801-SKYSTYMD-GET-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    変更時関連チェック
       *****************************************************************
@@ -7020,8 +7096,9 @@
       *    通算日数を求める
            MOVE    SPA-NAI-I01-NYUINYMD
                                    TO  WRK-STYMD
-      *    暫定的に入院日を設定（実際は請求開始日）
-           MOVE    SPA-NAI-I01-NYUINYMD
+      *
+      *    請求開始日（入院日または前回定期請求終了日の翌日）を設定
+           MOVE    WRK-NOW-SKYSTYMD
                                    TO  WRK-EDYMD
            PERFORM 5002-KIKAN-CALC-SEC
            IF    ( FLG-ORCSDAY     NOT =   ZERO )
@@ -7040,8 +7117,9 @@
            MOVE    SPA-NAI-I01-PTID
                                    TO  LNK-S02-PTID
            MOVE    WRK-NISSU1      TO  LNK-S02-NYUIN-TSUSAN-NISSU
-      *    暫定的に入院日を設定（実際は請求開始日）
-           MOVE    SPA-NAI-I01-NYUINYMD
+      *    請求開始日（入院日または前回定期請求終了日の翌日）を設定
+           DISPLAY "WRK-NOW-SKYSTYMD = " WRK-NOW-SKYSTYMD
+           MOVE    WRK-NOW-SKYSTYMD
                                    TO  LNK-S02-SKYSTYMD
            MOVE    SPA-NAI-I01-TAIINYMD
                                    TO  LNK-S02-SKYEDYMD
@@ -8098,6 +8176,11 @@
                MOVE    "定期請求が行われていないため、負担金計算"
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE    "は行えません"  TO  SPA-ERRMSG (41 : )
+           WHEN    "1026"
+               MOVE    "定期請求済みの期間に該当するため、退院登"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "録は行えません" 
+                                       TO  SPA-ERRMSG (41 : )
            WHEN    "2001"
                MOVE    "登録処理に失敗しました"
                                        TO  SPA-ERRMSG
