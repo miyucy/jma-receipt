@@ -488,11 +488,11 @@
       *        患者定期請求履歴データ更新処理
                PERFORM 20021-PTTEIKIRRK-KOUSIN-SEC
       *
-      *        定期請求管理情報集計（マイナス分）
-               PERFORM 20021-TEIKIRRK-SUM-SEC
-      *
       *        収納データ更新処理
                PERFORM 20021-SYUNOU-KOUSIN-SEC
+      *
+      *        定期請求管理情報集計（マイナス分）
+               PERFORM 20021-TEIKIRRK-SUM-SEC
       *
       *        請求取消対象収納ファイル読込
                PERFORM 910-TEIKI07-READ-SEC
