@@ -45,6 +45,7 @@
       *  01.00.10    NACL-藤原    03/01/27  公費請求書ＤＢを追加
       *  01.00.11    NACL-藤原    03.03.12  補助区分の追加
       *  01.00.12    NACL-門脇    03.03.03  剤番号桁修正対応
+      *  01.00.13    NACL-藤原    03.03.05  レセプトコメントＤＢに入外区分を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2711,6 +2712,7 @@
            MOVE    RECE02-HOSPID       TO  RECECOM-HOSPID
            MOVE    RECE02-SRYYM        TO  RECECOM-SRYYM
            MOVE    RECE02-PTID         TO  RECECOM-PTID
+           MOVE    RECE02-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
       * 
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC

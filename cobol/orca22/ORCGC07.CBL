@@ -88,6 +88,8 @@
            03  WRK-ZZZ             PIC ZZZ.
            03  WRK-ZZ              PIC ZZ.
       *
+           03  WRK-NYUGAIKBN       PIC X(01).
+      *
            03  WRK-DBPATH          PIC X(20).
       *
            03  WRK-CIDMSG          PIC X(80).
@@ -330,6 +332,20 @@
       *
            INITIALIZE                  SPA-C07-AREA
       *
+           IF      SPA-BEDSU       >   ZERO
+               MOVE    "1"             TO  SPA-C07-NYUGAIKBNL       (1)
+               MOVE    "Æþ±¡"          TO  SPA-C07-NYUGAIKBNMEIL    (1)
+               MOVE    "2"             TO  SPA-C07-NYUGAIKBNL       (2)
+               MOVE    "Æþ±¡³°"        TO  SPA-C07-NYUGAIKBNMEIL    (2)
+               MOVE    2               TO  SPA-C07-NYUGAIKBNMAX
+           ELSE
+               MOVE    "2"             TO  SPA-C07-NYUGAIKBNL       (1)
+               MOVE    "Æþ±¡³°"        TO  SPA-C07-NYUGAIKBNMEIL    (1)
+               MOVE    1               TO  SPA-C07-NYUGAIKBNMAX
+           END-IF
+           MOVE    SPA-C07-NYUGAIKBN-LIST (1)
+                                       TO  SPA-C07-NYUGAIKBN-G
+      *
            MOVE    SPA-NAI-C02-SYSYMD (1:6)
                                        TO  SPA-C07-SRYYMS
            MOVE    SPA-GMN-C02-SYSYMD (1:6)
@@ -557,7 +573,8 @@
            MOVE    SPACE               TO  RECECOM-REC
            INITIALIZE                  RECECOM-REC
            MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
-           MOVE    SPA-NAI-C02-PTID        TO  RECECOM-PTID
+           MOVE    SPA-NAI-C02-PTID    TO  RECECOM-PTID
+           MOVE    SPA-C07-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -639,12 +656,13 @@
       *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
-           MOVE    SPA-NAI-C02-PTID        TO  JYURRK-PTID
-           MOVE    SPA-C07-SRYYMS     TO  JYURRK-SRYYMD(1:6)
+           MOVE    SPA-NAI-C02-PTID    TO  JYURRK-PTID
+           MOVE    SPA-C07-SRYYMS      TO  JYURRK-SRYYMD(1:6)
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
-           MOVE    SPA-C07-SRYYMS     TO  JYURRK-UPSRYYMD(1:6)
+           MOVE    SPA-C07-SRYYMS      TO  JYURRK-UPSRYYMD(1:6)
            MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
-           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+      *****MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-C07-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -732,7 +750,8 @@
            MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
            MOVE    SPA-C07-HKNCOMBINUM
                                        TO  JYURRK-HKNCOMBINUM
-           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN                            
+      *****MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN                            
+           MOVE    SPA-C07-NYUGAIKBN   TO  JYURRK-NYUGAIKBN                            
            IF      SPA-C07-SRYKA      =   "00"
                MOVE    "JYURRK-KEY17"      TO  WRK-DBPATH
            ELSE
@@ -870,12 +889,13 @@
       *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
-           MOVE    SPA-NAI-C02-PTID        TO  JYURRK-PTID
-           MOVE    SPA-C07-SRYYMS     TO  JYURRK-SRYYMD(1:6)
+           MOVE    SPA-NAI-C02-PTID    TO  JYURRK-PTID
+           MOVE    SPA-C07-SRYYMS      TO  JYURRK-SRYYMD(1:6)
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
-           MOVE    SPA-C07-SRYYMS     TO  JYURRK-UPSRYYMD(1:6)
+           MOVE    SPA-C07-SRYYMS      TO  JYURRK-UPSRYYMD(1:6)
            MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
-           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+      *****MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-C07-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1009,6 +1029,17 @@
            END-PERFORM
            MOVE    SPA-C07-SRYKAMAX   TO  C07-SRYKA-COUNT
            MOVE    SPA-C07-SRYKA-G    TO  C07-SRYKA
+      *
+      *    Æþ³°¶èÊ¬
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-C07-NYUGAIKBNMAX
+               MOVE    SPA-C07-NYUGAIKBN-LIST (IDX)
+                                           TO  C07-NYUGAIKBN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-C07-NYUGAIKBNMAX
+                                      TO  C07-NYUGAIKBN-COUNT
+           MOVE    SPA-C07-NYUGAIKBN-G
+                                      TO  C07-NYUGAIKBN
       *    ÊÝ¸±ÁÈ¹ç¤»
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-C07-HKNMAX
@@ -1106,6 +1137,8 @@
                    MOVE    "B05"               TO  MCP-WIDGET
                WHEN    9
                    MOVE    "JYURRKNUM"         TO  MCP-WIDGET
+               WHEN    10
+                   MOVE    "NYUGAIKBN"         TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -1183,6 +1216,9 @@
       *        ¼õ¿ÇÍúÎòÁªÂò
                WHEN    ANY             ALSO    "JYURRKLIST"
                    PERFORM 460-RECELIST-SEC
+      *        Æþ³°¶èÊ¬
+               WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
+                   PERFORM 470-NYUGAIKBN-SEC
            END-EVALUATE
       *
            .
@@ -1424,10 +1460,62 @@
            EXIT.
       *
       *****************************************************************
+      *    Æþ³°¶èÊ¬½èÍý
+      *****************************************************************
+       470-NYUGAIKBN-SEC                    SECTION.
+      *
+           MOVE    10                  TO  SPA-C07-CUR
+      *
+           IF      SPA-NAI-C02-PTID        =   ZERO
+               MOVE    "0011"              TO  SPA-ERRCD
+               GO      TO      470-NYUGAIKBN-EXT
+           END-IF
+      *
+           MOVE    SPA-C07-NYUGAIKBN  TO  WRK-NYUGAIKBN
+      *
+           MOVE    C07-NYUGAIKBN       TO  SPA-C07-NYUGAIKBN-G
+      *
+           IF      SPA-C07-NYUGAIKBN   =   WRK-NYUGAIKBN
+               GO  TO  470-NYUGAIKBN-EXT
+           END-IF
+      *
+           IF      SPA-C07-NYUGAIKBN   =   SPACE
+               MOVE    "2"                 TO  SPA-C07-NYUGAIKBN
+           END-IF
+      * 
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING    IDX      FROM    1   BY  1
+                   UNTIL      IDX      >   SPA-C07-NYUGAIKBNMAX
+               IF      SPA-C07-NYUGAIKBN   =   SPA-C07-NYUGAIKBNL (IDX)
+                   MOVE    SPA-C07-NYUGAIKBN-LIST (IDX)
+                                           TO  SPA-C07-NYUGAIKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0005"              TO  SPA-ERRCD
+               GO  TO  470-NYUGAIKBN-EXT
+           END-IF
+      *
+      *     ÊÝ¸±ÁÈ¹ç¤»
+            PERFORM 3101-HKNCOMBI-HEN-SEC
+      *
+      *     ¥³¥á¥ó¥ÈÊÔ½¸ÊÔ½¸
+            PERFORM 3103-RECECOM-HEN-SEC
+      *
+      *     ½é´üÊÔ½¸
+            PERFORM 314-SYOKI-SEC
+      *
+           .
+       470-NYUGAIKBN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ¥¯¥ê¥¢¡¡½èÍý
       *****************************************************************
        220-CLEA-SEC                   SECTION.
       *
+           MOVE    SPA-C07-NYUGAIKBN-G    TO  WRK-NYUGAIKBN
            PERFORM                     310-SPA-SET-SEC
       *
            MOVE    1                  TO  SPA-C07-CUR
@@ -1496,12 +1584,13 @@
       *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
-           MOVE    SPA-NAI-C02-PTID        TO  JYURRK-PTID
-           MOVE    SPA-C07-SRYYMS     TO  JYURRK-SRYYMD(1:6)
+           MOVE    SPA-NAI-C02-PTID    TO  JYURRK-PTID
+           MOVE    SPA-C07-SRYYMS      TO  JYURRK-SRYYMD(1:6)
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
-           MOVE    SPA-C07-SRYYMS     TO  JYURRK-UPSRYYMD(1:6)
+           MOVE    SPA-C07-SRYYMS      TO  JYURRK-UPSRYYMD(1:6)
            MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
-           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN 
+      *****MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN 
+           MOVE    SPA-C07-NYUGAIKBN   TO  JYURRK-NYUGAIKBN 
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1586,6 +1675,7 @@
            ELSE
                MOVE    ZERO                TO  RECECOM-SRYDD
            END-IF
+           MOVE    SPA-C07-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1642,7 +1732,8 @@
                ELSE
                    MOVE    ZERO                TO  RECECOM-SRYDD
                END-IF
-               MOVE    SPA-C07-COMMENT    TO  RECECOM-COMMENT
+               MOVE    SPA-C07-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
+               MOVE    SPA-C07-COMMENT     TO  RECECOM-COMMENT
       *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1938,6 +2029,7 @@
            IF      SPA-C07-TSRYDD (IDX)   =   SPACE
                MOVE    ZERO                TO  RECECOM-SRYDD
            END-IF
+           MOVE    SPA-C07-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -2082,6 +2174,11 @@
                GO      TO      270-BACK-MONTH-EXT
            END-IF
       *
+           IF      SPA-C07-NYUGAIKBN       =   SPACE
+               MOVE    "0005"              TO  SPA-ERRCD
+               GO      TO      270-BACK-MONTH-EXT
+           END-IF
+      *
            INITIALIZE                     STS-AREA-DAY
            INITIALIZE                     LNK-DAY6-AREA
            MOVE    "61"                   TO  LNK-DAY6-IRAI
@@ -2115,6 +2212,11 @@
       *
            IF      SPA-NAI-C02-PTID        =   ZERO
                MOVE    "0011"              TO  SPA-ERRCD
+               GO      TO      280-NEXT-MONTH-EXT
+           END-IF
+      *
+           IF      SPA-C07-NYUGAIKBN       =   SPACE
+               MOVE    "0005"              TO  SPA-ERRCD
                GO      TO      280-NEXT-MONTH-EXT
            END-IF
       * 
@@ -2209,6 +2311,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE    "Ê¸ÎãÅÐÏ¿ÈÖ¹æ¥¨¥é¡¼"
+                                       TO  SPA-ERRMSG
+               WHEN    "0005"
+                   MOVE    "Æþ³°¶èÊ¬ÁªÂò¥¨¥é¡¼"
                                        TO  SPA-ERRMSG
                WHEN    "0006"
                    MOVE    "¿ÇÎÅÇ¯·î¤Ë¿ÇÎÅ¹Ô°Ù¤¬¤¢¤ê¤Þ¤»¤ó¡£"

@@ -35,6 +35,7 @@
       *  01.00.03    NACL-門脇    03/02/12  医療機関名の長さ変更のため
       *                                     帳票ＩＤ変更
       *  01.00.04    NACL-門脇    03.03.03  剤番号桁修正対応
+      *  01.00.05    NACL-藤原    03.03.05  レセプトコメントＤＢに入外区分を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1458,6 +1459,7 @@
            MOVE    RECE41-HOSPID       TO  RECECOM-HOSPID
            MOVE    RECE41-SRYYM        TO  RECECOM-SRYYM
            MOVE    RECE41-PTID         TO  RECECOM-PTID
+           MOVE    RECE41-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
       * 
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC

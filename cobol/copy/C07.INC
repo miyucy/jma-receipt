@@ -29,6 +29,11 @@
                   05  C07-VALUE  PIC X(21).
                 04  C07-SRYKA-COUNT  PIC S9(9)   BINARY.
                 04  C07-SRYKA-ITEM   PIC X(20)   OCCURS  41 TIMES.
+              03  C07-NYUGAIKBNCOMB.
+                04  C07-NYUGAIKBN.
+                  05  C07-VALUE  PIC X(9).
+                04  C07-NYUGAIKBN-COUNT  PIC S9(9)   BINARY.
+                04  C07-NYUGAIKBN-ITEM   PIC X(8)    OCCURS  2 TIMES.
               03  C07-MIDASI-G.
                 04  C07-MIDASI-STYLE  PIC X(20).
                 04  C07-MIDASI       PIC X(20).

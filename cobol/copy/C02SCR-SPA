@@ -41,6 +41,7 @@
       *  新傷病名マスタ対応 
       *  01.04.01    NACL-藤原    02/08/20  病名コード移行用項目の追加
       *  01.04.02    NACL-藤原    03/02/28  診療科４０に変更
+      *  01.04.03    NACL-藤原    03/03/05  コメント画面に入外区分を追加
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -338,15 +339,26 @@
                05  SPA-C07-JYURRKNUM           PIC 9(02).
       *
                05  SPA-C07-SRYKA-G.
-                   07  SPA-C07-SRYKA         PIC X(02).
-                   07  SPA-C07-SRYKAH        PIC X(01).
-                   07  SPA-C07-SRYKAMEI      PIC X(12).
+                   07  SPA-C07-SRYKA           PIC X(02).
+                   07  SPA-C07-SRYKAH          PIC X(01).
+                   07  SPA-C07-SRYKAMEI        PIC X(12).
                05  SPA-C07-SRYKA-AREA.
                    07  SPA-C07-SRYKA-LIST      OCCURS  41.
                        09  SPA-C07-SRYKAL      PIC X(02).
                        09  SPA-C07-F1L         PIC X(01).
                        09  SPA-C07-SRYKAMEIL   PIC X(12).
                    07  SPA-C07-SRYKAMAX        PIC 9(04).
+               05  SPA-C07-NYUGAIKBN-G.
+                   07  SPA-C07-NYUGAIKBN       PIC X(01).
+                   07  SPA-C07-NYUGAIKBNH      PIC X(01).
+                   07  SPA-C07-NYUGAIKBNMEI    PIC X(06).
+               05  SPA-C07-NYUGAIKBN-AREA.
+                   07  SPA-C07-NYUGAIKBN-LIST  OCCURS  2.
+                       09  SPA-C07-NYUGAIKBNL  PIC X(01).
+                       09  SPA-C07-F2L         PIC X(01).
+                       09  SPA-C07-NYUGAIKBNMEIL
+                                               PIC X(06).
+                   07  SPA-C07-NYUGAIKBNMAX    PIC 9(04).
       *
                05  SPA-C07-RECECOMLIST-G.
                    07  SPA-C07-RECECOM-LIST      OCCURS  100.
