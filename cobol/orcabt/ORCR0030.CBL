@@ -3987,6 +3987,7 @@
       *****************************************************************
        210141-TENSU-TBL-SEC               SECTION.
       *
+           MOVE    ZERO                 TO      FLG-TENSU
            MOVE    SRY-SRYCD(IDX2)      TO      TTNS-CHK-SRYCD
            MOVE    RECE05-SRYYM         TO      WK-TAIHI-SRYYM
            MOVE    WK-TAIHI-DAY         TO      WK-TAIHI-SRYD
