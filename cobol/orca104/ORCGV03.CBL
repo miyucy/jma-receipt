@@ -59,14 +59,10 @@
                        09  SPA-GMN-CITYNUM             PIC X(3).
                        09  SPA-GMN-KOHNUM              PIC X(3).
                        09  SPA-GMN-SEIDONAME           PIC X(100).
-                       09  SPA-GMN-HKNKBN-G.
-                           11  SPA-GMN-HKNKBN          PIC X(1).
+                       09  SPA-GMN-PTKBN-G.
+                           11  SPA-GMN-PTKBN           PIC X(1).
                            11                          PIC X(1).
-                           11  SPA-GMN-HKNKBNMEI       PIC X(18).
-                       09  SPA-GMN-RJNHKNKBN-G.
-                           11  SPA-GMN-RJNHKNKBN       PIC X(1).
-                           11                          PIC X(1).
-                           11  SPA-GMN-RJNHKNKBNMEI    PIC X(18).
+                           11  SPA-GMN-PTKBNMEI        PIC X(18).
                        09  SPA-GMN-FTNKBN-G.
                            11  SPA-GMN-FTNKBN          PIC X(1).
                            11                          PIC X(1).
@@ -87,18 +83,12 @@
                            11  SPA-GMN-PREFNUML        PIC X(02).
                            11                          PIC X(01).
                            11  SPA-GMN-PREFNUMMEIL     PIC X(20).
-                   07  SPA-GMN-HKNKBNLST-G.
-                       09  SPA-GMN-HKNKBN-MAX          PIC 9(03).
-                       09  SPA-GMN-HKNKBNLST           OCCURS  5.
-                           11  SPA-GMN-HKNKBNL         PIC X(01).
+                   07  SPA-GMN-PTKBNLST-G.
+                       09  SPA-GMN-PTKBN-MAX           PIC 9(03).
+                       09  SPA-GMN-PTKBNLST            OCCURS  5.
+                           11  SPA-GMN-PTKBNL          PIC X(01).
                            11                          PIC X(01).
-                           11  SPA-GMN-HKNKBNMEIL      PIC X(18).
-                   07  SPA-GMN-RJNHKNKBNLST-G.
-                       09  SPA-GMN-RJNHKNKBN-MAX       PIC 9(03).
-                       09  SPA-GMN-RJNHKNKBNLST        OCCURS  5.
-                           11  SPA-GMN-RJNHKNKBNL      PIC X(01).
-                           11                          PIC X(01).
-                           11  SPA-GMN-RJNHKNKBNMEIL   PIC X(18).
+                           11  SPA-GMN-PTKBNMEIL       PIC X(18).
                    07  SPA-GMN-FTNKBNLST-G.
                        09  SPA-GMN-FTNKBN-MAX          PIC 9(03).
                        09  SPA-GMN-FTNKBNLST           OCCURS  5.
@@ -127,7 +117,7 @@
                            11  SPA-GMN-TKOHNUM         PIC X(3).
                            11  SPA-GMN-TSEIDONAME      PIC X(100).
                            11  SPA-GMN-THKNKBN         PIC X(4).
-                           11  SPA-GMN-TRJNHKNKBN      PIC X(4).
+                           11  SPA-GMN-TPTKBN          PIC X(6).
                            11  SPA-GMN-TFTNKBN         PIC X(4).
                            11  SPA-GMN-TYUKOSTYMD      PIC X(9).
                            11  SPA-GMN-TYUKOEDYMD      PIC X(9).
@@ -139,8 +129,7 @@
                        09  SPA-NAI-PREFNUM-MOT         PIC X(02).
                        09  SPA-NAI-CITYNUM-MOT         PIC X(03).
                        09  SPA-NAI-KOHNUM-MOT          PIC X(03).
-                       09  SPA-NAI-HKNKBN-MOT          PIC X(01).
-                       09  SPA-NAI-RJNHKNKBN-MOT       PIC X(01).
+                       09  SPA-NAI-PTKBN-MOT           PIC X(01).
                        09  SPA-NAI-YUKOSTYMD-MOT       PIC X(08).
                        09  SPA-NAI-YUKOEDYMD-MOT       PIC X(08).
                    07  SPA-NAI-KOHPLUSLST.
@@ -149,7 +138,7 @@
                            11  SPA-NAI-TYUKOFLG        PIC 9(1).
                            11  SPA-NAI-TPREFNUM        PIC X(02).
                            11  SPA-NAI-THKNKBN         PIC X(1).
-                           11  SPA-NAI-TRJNHKNKBN      PIC X(1).
+                           11  SPA-NAI-TPTKBN          PIC X(1).
                            11  SPA-NAI-TFTNKBN         PIC X(1).
                            11  SPA-NAI-TYUKOSTYMD      PIC X(8).
                            11  SPA-NAI-TYUKOEDYMD      PIC X(8).
@@ -406,11 +395,8 @@
       *    ≈‘∆ª…‹∏©»÷πÊ•≥•Û•‹π‡Ã‹¿ﬂƒÍ
            PERFORM 3101-PREFNUMLST-SET-SEC
       *
-      *     ›∏±∂Ë ¨•≥•Û•‹π‡Ã‹¿ﬂƒÍ
-           PERFORM 3101-HKNKBNLST-SET-SEC
-      *
-      *    œ∑øÕ ›∑Ú∂Ë ¨•≥•Û•‹π‡Ã‹¿ﬂƒÍ
-           PERFORM 3101-RJNHKNKBNLST-SET-SEC
+      *    ¥µº‘∂Ë ¨•≥•Û•‹π‡Ã‹¿ﬂƒÍ
+           PERFORM 3101-PTKBNLST-SET-SEC
       *
       *    ¥µº‘…È√¥∂Ë ¨•≥•Û•‹π‡Ã‹¿ﬂƒÍ
            PERFORM 3101-FTNKBNLST-SET-SEC
@@ -531,38 +517,24 @@
        3101-PREFNUMLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *     ›∏±∂Ë ¨•≥•Û•‹π‡Ã‹¿ﬂƒÍΩËÕ˝
+      *    ¥µº‘∂Ë ¨•≥•Û•‹π‡Ã‹¿ﬂƒÍΩËÕ˝
       *****************************************************************
-       3101-HKNKBNLST-SET-SEC          SECTION.
+       3101-PTKBNLST-SET-SEC       SECTION.
       *
-           INITIALIZE                      SPA-GMN-HKNKBNLST-G
-           MOVE     2                  TO  SPA-GMN-HKNKBN-MAX
+           INITIALIZE                      SPA-GMN-PTKBNLST-G
+           MOVE     3                  TO  SPA-GMN-PTKBN-MAX
       *
-           MOVE    "0"                 TO  SPA-GMN-HKNKBNL    (1)
-           MOVE    "ºÁ ›∏±§ §∑"        TO  SPA-GMN-HKNKBNMEIL (1)
+           MOVE    "0"                 TO  SPA-GMN-PTKBNL    (1)
+           MOVE    "∞Ï»Ã°¶œ∑øÕ"        TO  SPA-GMN-PTKBNMEIL (1)
       *
-           MOVE    "1"                 TO  SPA-GMN-HKNKBNL    (2)
-           MOVE    "ºÁ ›∏±§¢§Í"        TO  SPA-GMN-HKNKBNMEIL (2)
+           MOVE    "1"                 TO  SPA-GMN-PTKBNL    (2)
+           MOVE    "∞Ï»Ã"              TO  SPA-GMN-PTKBNMEIL (2)
+      *
+           MOVE    "2"                 TO  SPA-GMN-PTKBNL    (3)
+           MOVE    "œ∑øÕ"              TO  SPA-GMN-PTKBNMEIL (3)
       *
            . 
-       3101-HKNKBNLST-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    œ∑øÕ ›∑Ú∂Ë ¨•≥•Û•‹π‡Ã‹¿ﬂƒÍΩËÕ˝
-      *****************************************************************
-       3101-RJNHKNKBNLST-SET-SEC       SECTION.
-      *
-           INITIALIZE                      SPA-GMN-RJNHKNKBNLST-G
-           MOVE     2                  TO  SPA-GMN-RJNHKNKBN-MAX
-      *
-           MOVE    "0"                 TO  SPA-GMN-RJNHKNKBNL    (1)
-           MOVE    "œ∑øÕ ›∑Ú§ §∑"      TO  SPA-GMN-RJNHKNKBNMEIL (1)
-      *
-           MOVE    "1"                 TO  SPA-GMN-RJNHKNKBNL    (2)
-           MOVE    "œ∑øÕ ›∑Ú§¢§Í"      TO  SPA-GMN-RJNHKNKBNMEIL (2)
-      *
-           . 
-       3101-RJNHKNKBNLST-SET-EXT.
+       3101-PTKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    ¥µº‘…È√¥∂Ë ¨•≥•Û•‹π‡Ã‹¿ﬂƒÍΩËÕ˝
@@ -697,7 +669,7 @@
       *
            MOVE    KOHPLUS-PREFNUM     TO  WRK-CMB-CD
            PERFORM 4200-PREFNUMLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-TPREFNUM    (IDX-LST)
+           MOVE    WRK-CMB-ITM (4:)    TO  SPA-GMN-TPREFNUM    (IDX-LST)
       *
            MOVE    KOHPLUS-CITYNUM     TO  SPA-GMN-TCITYNUM    (IDX-LST)
       *
@@ -705,28 +677,23 @@
       *
            MOVE    KOHPLUS-SEIDONAME   TO  SPA-GMN-TSEIDONAME  (IDX-LST)
       *
-           MOVE    KOHPLUS-HKNKBN      TO  SPA-NAI-THKNKBN     (IDX-LST)
+           MOVE    KOHPLUS-PTKBN   TO  SPA-NAI-TPTKBN  (IDX-LST)
       *
-           IF    ( KOHPLUS-HKNKBN      =   "1" )
-               MOVE    "°ª"            TO  SPA-GMN-THKNKBN     (IDX-LST)
-           ELSE
-               MOVE    "°›"            TO  SPA-GMN-THKNKBN     (IDX-LST)
-           END-IF
-      *
-           MOVE    KOHPLUS-RJNHKNKBN   TO  SPA-NAI-TRJNHKNKBN  (IDX-LST)
-      *
-           IF    ( KOHPLUS-RJNHKNKBN   =   "1" )
-               MOVE    "°ª"            TO  SPA-GMN-TRJNHKNKBN  (IDX-LST)
-           ELSE
-               MOVE    "°›"            TO  SPA-GMN-TRJNHKNKBN  (IDX-LST)
-           END-IF
+           EVALUATE    KOHPLUS-PTKBN
+           WHEN    "0"
+               MOVE    "∞Ï°¶œ∑"        TO  SPA-GMN-TPTKBN  (IDX-LST)
+           WHEN    "1"
+               MOVE    "∞Ï»Ã"          TO  SPA-GMN-TPTKBN  (IDX-LST)
+           WHEN    "2"
+               MOVE    "œ∑øÕ"          TO  SPA-GMN-TPTKBN  (IDX-LST)
+           END-EVALUATE
       *
            MOVE    KOHPLUS-FTNKBN      TO  SPA-NAI-TFTNKBN     (IDX-LST)
       *
            IF    ( KOHPLUS-FTNKBN      =   "1" )
-               MOVE    "°ª"            TO  SPA-GMN-TFTNKBN     (IDX-LST)
+               MOVE    "°°°ª"          TO  SPA-GMN-TFTNKBN     (IDX-LST)
            ELSE
-               MOVE    "°›"            TO  SPA-GMN-TFTNKBN     (IDX-LST)
+               MOVE    "°°°›"          TO  SPA-GMN-TFTNKBN     (IDX-LST)
            END-IF
       *
            MOVE    KOHPLUS-YUKOSTYMD   TO  WRK-YMD
@@ -826,8 +793,7 @@
            MOVE    V03-CITYNUM         TO  SPA-GMN-CITYNUM
            MOVE    V03-KOHNUM          TO  SPA-GMN-KOHNUM
            MOVE    V03-SEIDONAME       TO  SPA-GMN-SEIDONAME
-           MOVE    V03-HKNKBN          TO  SPA-GMN-HKNKBN-G
-           MOVE    V03-RJNHKNKBN       TO  SPA-GMN-RJNHKNKBN-G
+           MOVE    V03-PTKBN           TO  SPA-GMN-PTKBN-G
            MOVE    V03-FTNKBN          TO  SPA-GMN-FTNKBN-G
            MOVE    V03-RECESKYKBN      TO  SPA-GMN-RECESKYKBN-G
            MOVE    V03-NYUSKJRYYKBN    TO  SPA-GMN-NYUSKJRYYKBN-G
@@ -884,14 +850,8 @@
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ºÁ ›∏±∂Ë ¨•¡•ß•√•Ø
-           PERFORM 4105-HKNKBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
-      *
-      *    œ∑øÕ ›∑Ú∂Ë ¨•¡•ß•√•Ø
-           PERFORM 4106-RJNHKNKBN-CHK-SEC
+      *    ¥µº‘∂Ë ¨•¡•ß•√•Ø
+           PERFORM 4106-PTKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -956,10 +916,8 @@
                                            TO  KOHPLUS-CITYNUM
            MOVE    SPA-GMN-TKOHNUM     (IDX-LST)
                                            TO  KOHPLUS-KOHNUM
-           MOVE    SPA-NAI-THKNKBN     (IDX-LST)
-                                           TO  KOHPLUS-HKNKBN
-           MOVE    SPA-NAI-TRJNHKNKBN  (IDX-LST)
-                                           TO  KOHPLUS-RJNHKNKBN
+           MOVE    SPA-NAI-TPTKBN  (IDX-LST)
+                                           TO  KOHPLUS-PTKBN
            MOVE    SPA-NAI-TYUKOSTYMD  (IDX-LST)
                                            TO  KOHPLUS-YUKOSTYMD
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
@@ -992,15 +950,10 @@
       *    ¿©≈ŸÃæ
            MOVE    KOHPLUS-SEIDONAME       TO  SPA-GMN-SEIDONAME
       *
-      *    ºÁ ›∏±∂Ë ¨
-           MOVE    KOHPLUS-HKNKBN          TO  WRK-CMB-CD
-           PERFORM 4200-HKNKBNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM             TO  SPA-GMN-HKNKBN-G
-      *
-      *    œ∑øÕ ›∑Ú∂Ë ¨
-           MOVE    KOHPLUS-RJNHKNKBN       TO  WRK-CMB-CD
-           PERFORM 4200-RJNHKNKBNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM             TO  SPA-GMN-RJNHKNKBN-G
+      *    ¥µº‘∂Ë ¨
+           MOVE    KOHPLUS-PTKBN       TO  WRK-CMB-CD
+           PERFORM 4200-PTKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM             TO  SPA-GMN-PTKBN-G
       *
       *    ¥µº‘…È√¥∂Ë ¨
            MOVE    KOHPLUS-FTNKBN          TO  WRK-CMB-CD
@@ -1033,8 +986,7 @@
            MOVE    KOHPLUS-PREFNUM         TO  SPA-NAI-PREFNUM-MOT
            MOVE    KOHPLUS-CITYNUM         TO  SPA-NAI-CITYNUM-MOT
            MOVE    KOHPLUS-KOHNUM          TO  SPA-NAI-KOHNUM-MOT
-           MOVE    KOHPLUS-HKNKBN          TO  SPA-NAI-HKNKBN-MOT
-           MOVE    KOHPLUS-RJNHKNKBN       TO  SPA-NAI-RJNHKNKBN-MOT
+           MOVE    KOHPLUS-PTKBN           TO  SPA-NAI-PTKBN-MOT
            MOVE    KOHPLUS-YUKOSTYMD       TO  SPA-NAI-YUKOSTYMD-MOT
            MOVE    KOHPLUS-YUKOEDYMD       TO  SPA-NAI-YUKOEDYMD-MOT
       *
@@ -1210,50 +1162,27 @@
        4104-SEIDONAME-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ºÁ ›∏±∂Ë ¨•¡•ß•√•ØΩËÕ˝
+      *    ¥µº‘∂Ë ¨•¡•ß•√•ØΩËÕ˝
       *****************************************************************
-       4105-HKNKBN-CHK-SEC             SECTION.
+       4106-PTKBN-CHK-SEC          SECTION.
       *
-           IF    ( SPA-GMN-HKNKBN-G    =   SPACE )
-               GO  TO  4105-HKNKBN-CHK-EXT
+           IF    ( SPA-GMN-PTKBN-G =   SPACE )
+               GO  TO  4106-PTKBN-CHK-EXT
            END-IF
       *
-           MOVE    SPA-GMN-HKNKBN      TO  WRK-CMB-CD
-           PERFORM 4200-HKNKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM         =   SPACE )
-               MOVE    "0006"          TO  SPA-ERRCD
-               MOVE    6               TO  SPA-GMN-CUR
-               GO  TO  4105-HKNKBN-CHK-EXT
-           END-IF
-      *
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-HKNKBN-G
-      *
-           .
-      *
-       4105-HKNKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    œ∑øÕ ›∑Ú∂Ë ¨•¡•ß•√•ØΩËÕ˝
-      *****************************************************************
-       4106-RJNHKNKBN-CHK-SEC          SECTION.
-      *
-           IF    ( SPA-GMN-RJNHKNKBN-G =   SPACE )
-               GO  TO  4106-RJNHKNKBN-CHK-EXT
-           END-IF
-      *
-           MOVE    SPA-GMN-RJNHKNKBN   TO  WRK-CMB-CD
-           PERFORM 4200-RJNHKNKBNLST-CHK-SEC
+           MOVE    SPA-GMN-PTKBN   TO  WRK-CMB-CD
+           PERFORM 4200-PTKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM         =   SPACE )
                MOVE    "0007"          TO  SPA-ERRCD
-               MOVE    7               TO  SPA-GMN-CUR
-               GO  TO  4106-RJNHKNKBN-CHK-EXT
+               MOVE    6               TO  SPA-GMN-CUR
+               GO  TO  4106-PTKBN-CHK-EXT
            END-IF
       *
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-RJNHKNKBN-G
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-PTKBN-G
       *
            .
       *
-       4106-RJNHKNKBN-CHK-EXT.
+       4106-PTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ¥µº‘…È√¥∂Ë ¨•¡•ß•√•ØΩËÕ˝
@@ -1268,7 +1197,7 @@
            PERFORM 4200-FTNKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM         =   SPACE )
                MOVE    "0008"          TO  SPA-ERRCD
-               MOVE    8               TO  SPA-GMN-CUR
+               MOVE    7               TO  SPA-GMN-CUR
                GO  TO  4107-FTNKBN-CHK-EXT
            END-IF
       *
@@ -1291,7 +1220,7 @@
            PERFORM 4200-RECESKYKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM         =   SPACE )
                MOVE    "0009"          TO  SPA-ERRCD
-               MOVE    9               TO  SPA-GMN-CUR
+               MOVE    8               TO  SPA-GMN-CUR
                GO  TO  4108-RECESKYKBN-CHK-EXT
            END-IF
       *
@@ -1314,7 +1243,7 @@
            PERFORM 4200-NYUSKJRYYKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM         =   SPACE )
                MOVE    "0010"          TO  SPA-ERRCD
-               MOVE    10              TO  SPA-GMN-CUR
+               MOVE    9               TO  SPA-GMN-CUR
                GO  TO  4109-NYUSKJRYYKBN-CHK-EXT
            END-IF
       *
@@ -1345,7 +1274,7 @@
                MOVE    WRK-HENYMDG     TO  SPA-GMN-YUKOSTYMD
                MOVE    WRK-SYMD        TO  SPA-NAI-YUKOSTYMD
                MOVE    "0011"          TO  SPA-ERRCD
-               MOVE    11              TO  SPA-GMN-CUR
+               MOVE    10              TO  SPA-GMN-CUR
                GO  TO  4110-YUKOSTYMD-CHK-EXT
            END-IF
       *
@@ -1377,7 +1306,7 @@
                MOVE    WRK-HENYMDG     TO  SPA-GMN-YUKOEDYMD
                MOVE    WRK-SYMD        TO  SPA-NAI-YUKOEDYMD
                MOVE    "0012"          TO  SPA-ERRCD
-               MOVE    12              TO  SPA-GMN-CUR
+               MOVE    11              TO  SPA-GMN-CUR
                GO  TO  4111-YUKOEDYMD-CHK-EXT
            END-IF
       *
@@ -1411,50 +1340,27 @@
        4200-PREFNUMLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *     ›∏±∂Ë ¨•≥•Û•‹•¡•ß•√•ØΩËÕ˝
+      *    ¥µº‘∂Ë ¨•≥•Û•‹•¡•ß•√•ØΩËÕ˝
       *****************************************************************
-       4200-HKNKBNLST-CHK-SEC         SECTION.
+       4200-PTKBNLST-CHK-SEC         SECTION.
       *
            MOVE    SPACE               TO  WRK-CMB-ITM-G
       *
            PERFORM VARYING IDX-CMB FROM    1   BY  1
-               UNTIL ( IDX-CMB     >   SPA-GMN-HKNKBN-MAX )
-                OR   ( WRK-CMB-CD  =   SPA-GMN-HKNKBNL (IDX-CMB) )
+               UNTIL ( IDX-CMB     >   SPA-GMN-PTKBN-MAX )
+                OR   ( WRK-CMB-CD  =   SPA-GMN-PTKBNL (IDX-CMB) )
       *
                CONTINUE
       *
            END-PERFORM
       *
-           IF    ( IDX-CMB     <=  SPA-GMN-HKNKBN-MAX )
-               MOVE    SPA-GMN-HKNKBNLST (IDX-CMB)
+           IF    ( IDX-CMB     <=  SPA-GMN-PTKBN-MAX )
+               MOVE    SPA-GMN-PTKBNLST (IDX-CMB)
                                        TO  WRK-CMB-ITM
            END-IF
       *
            .
-       4200-HKNKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    œ∑øÕ ›∑Ú∂Ë ¨•≥•Û•‹•¡•ß•√•ØΩËÕ˝
-      *****************************************************************
-       4200-RJNHKNKBNLST-CHK-SEC         SECTION.
-      *
-           MOVE    SPACE               TO  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-               UNTIL ( IDX-CMB     >   SPA-GMN-RJNHKNKBN-MAX )
-                OR   ( WRK-CMB-CD  =   SPA-GMN-RJNHKNKBNL (IDX-CMB) )
-      *
-               CONTINUE
-      *
-           END-PERFORM
-      *
-           IF    ( IDX-CMB     <=  SPA-GMN-RJNHKNKBN-MAX )
-               MOVE    SPA-GMN-RJNHKNKBNLST (IDX-CMB)
-                                       TO  WRK-CMB-ITM
-           END-IF
-      *
-           .
-       4200-RJNHKNKBNLST-CHK-EXT.
+       4200-PTKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ¥µº‘…È√¥∂Ë ¨•≥•Û•‹•¡•ß•√•ØΩËÕ˝
@@ -1561,11 +1467,8 @@
            PERFORM 4200-PREFNUMLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-PREFNUM-G
       *
-           MOVE    SPA-GMN-HKNKBNLST (2)
-                                       TO  SPA-GMN-HKNKBN-G
-      *
-           MOVE    SPA-GMN-RJNHKNKBNLST (1)
-                                       TO  SPA-GMN-RJNHKNKBN-G
+           MOVE    SPA-GMN-PTKBNLST (1)
+                                       TO  SPA-GMN-PTKBN-G
       *
            MOVE    SPA-GMN-FTNKBNLST (1)
                                        TO  SPA-GMN-FTNKBN-G
@@ -1674,10 +1577,8 @@
            MOVE    SPA-GMN-CITYNUM         TO  KOHPLUS-CITYNUM
       *    ∏¯»Ò»÷πÊ
            MOVE    SPA-GMN-KOHNUM          TO  KOHPLUS-KOHNUM
-      *    ºÁ ›∏±∂Ë ¨
-           MOVE    SPA-GMN-HKNKBN          TO  KOHPLUS-HKNKBN
-      *    œ∑øÕ ›∑Ú∂Ë ¨
-           MOVE    SPA-GMN-RJNHKNKBN       TO  KOHPLUS-RJNHKNKBN
+      *    ¥µº‘∂Ë ¨
+           MOVE    SPA-GMN-PTKBN           TO  KOHPLUS-PTKBN
       *    Õ≠∏˙≥´ªœ«Ø∑Ó∆¸
            MOVE    SPA-NAI-YUKOSTYMD       TO  KOHPLUS-YUKOSTYMD
       *    Õ≠∏˙Ω™Œª«Ø∑Ó∆¸
@@ -1738,8 +1639,7 @@
            MOVE    SPA-NAI-PREFNUM-MOT     TO  KOHPLUSUP-PREFNUM
            MOVE    SPA-NAI-CITYNUM-MOT     TO  KOHPLUSUP-CITYNUM
            MOVE    SPA-NAI-KOHNUM-MOT      TO  KOHPLUSUP-KOHNUM
-           MOVE    SPA-NAI-HKNKBN-MOT      TO  KOHPLUSUP-HKNKBN
-           MOVE    SPA-NAI-RJNHKNKBN-MOT   TO  KOHPLUSUP-RJNHKNKBN
+           MOVE    SPA-NAI-PTKBN-MOT       TO  KOHPLUSUP-PTKBN
            MOVE    SPA-NAI-YUKOSTYMD-MOT   TO  KOHPLUSUP-YUKOSTYMD
       *
       *    ππø∑ƒæ¡∞•¡•ß•√•Ø
@@ -1750,8 +1650,7 @@
            MOVE    SPA-NAI-PREFNUM-MOT     TO  KOHPLUS-PREFNUM
            MOVE    SPA-NAI-CITYNUM-MOT     TO  KOHPLUS-CITYNUM
            MOVE    SPA-NAI-KOHNUM-MOT      TO  KOHPLUS-KOHNUM
-           MOVE    SPA-NAI-HKNKBN-MOT      TO  KOHPLUS-HKNKBN
-           MOVE    SPA-NAI-RJNHKNKBN-MOT   TO  KOHPLUS-RJNHKNKBN
+           MOVE    SPA-NAI-PTKBN-MOT       TO  KOHPLUS-PTKBN
            MOVE    SPA-NAI-YUKOSTYMD-MOT   TO  KOHPLUS-YUKOSTYMD
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
            MOVE    "KOHPLUS-KEY"           TO  WRK-DBPATH
@@ -1818,8 +1717,7 @@
            MOVE    SPA-NAI-PREFNUM-MOT     TO  KOHPLUS-PREFNUM
            MOVE    SPA-NAI-CITYNUM-MOT     TO  KOHPLUS-CITYNUM
            MOVE    SPA-NAI-KOHNUM-MOT      TO  KOHPLUS-KOHNUM
-           MOVE    SPA-NAI-HKNKBN-MOT      TO  KOHPLUS-HKNKBN
-           MOVE    SPA-NAI-RJNHKNKBN-MOT   TO  KOHPLUS-RJNHKNKBN
+           MOVE    SPA-NAI-PTKBN-MOT       TO  KOHPLUS-PTKBN
            MOVE    SPA-NAI-YUKOSTYMD-MOT   TO  KOHPLUS-YUKOSTYMD
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
            MOVE    "KOHPLUS-KEY"           TO  WRK-DBPATH
@@ -1867,14 +1765,14 @@
       *    Õ≠∏˙≥´ªœ∆¸
            IF    ( SPA-GMN-YUKOSTYMD       =   SPACE )
                MOVE    "1011"          TO  SPA-ERRCD
-               MOVE    11              TO  SPA-GMN-CUR
+               MOVE    10              TO  SPA-GMN-CUR
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
       *    Õ≠∏˙Ω™Œª∆¸∆¸
            IF    ( SPA-GMN-YUKOEDYMD       =   SPACE )
                MOVE    "1012"          TO  SPA-ERRCD
-               MOVE    12              TO  SPA-GMN-CUR
+               MOVE    11              TO  SPA-GMN-CUR
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
@@ -1911,38 +1809,31 @@
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
-      *    ºÁ ›∏±∂Ë ¨
-           IF    ( SPA-GMN-HKNKBN-G        =   SPACE )
-               MOVE    "1006"          TO  SPA-ERRCD
-               MOVE    6               TO  SPA-GMN-CUR
-               GO  TO  4900-KANRENCHK-EXT
-           END-IF
-      *
-      *    œ∑øÕ ›∑Ú∂Ë ¨
-           IF    ( SPA-GMN-RJNHKNKBN-G     =   SPACE )
+      *    ¥µº‘∂Ë ¨
+           IF    ( SPA-GMN-PTKBN-G     =   SPACE )
                MOVE    "1007"          TO  SPA-ERRCD
-               MOVE    7               TO  SPA-GMN-CUR
+               MOVE    6               TO  SPA-GMN-CUR
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
       *    ¥µº‘…È√¥∂Ë ¨
            IF    ( SPA-GMN-FTNKBN-G        =   SPACE )
                MOVE    "1008"          TO  SPA-ERRCD
-               MOVE    8               TO  SPA-GMN-CUR
+               MOVE    7               TO  SPA-GMN-CUR
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
       *    •Ï•ª•◊•»¿¡µ·∂Ë ¨
            IF    ( SPA-GMN-RECESKYKBN-G    =   SPACE )
                MOVE    "1009"          TO  SPA-ERRCD
-               MOVE    9               TO  SPA-GMN-CUR
+               MOVE    8               TO  SPA-GMN-CUR
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
       *    ø©ªˆŒ≈Õ‹»Ò∂Ë ¨
            IF    ( SPA-GMN-NYUSKJRYYKBN-G  =   SPACE )
                MOVE    "1010"          TO  SPA-ERRCD
-               MOVE    10              TO  SPA-GMN-CUR
+               MOVE    9               TO  SPA-GMN-CUR
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
@@ -1963,8 +1854,7 @@
            MOVE    SPA-GMN-PREFNUM     TO  KOHPLUS-PREFNUM
            MOVE    SPA-GMN-CITYNUM     TO  KOHPLUS-CITYNUM
            MOVE    SPA-GMN-KOHNUM      TO  KOHPLUS-KOHNUM
-           MOVE    SPA-GMN-HKNKBN      TO  KOHPLUS-HKNKBN
-           MOVE    SPA-GMN-RJNHKNKBN   TO  KOHPLUS-RJNHKNKBN
+           MOVE    SPA-GMN-PTKBN   TO  KOHPLUS-PTKBN
            MOVE    KOHPLUS-REC         TO  MCPDATA-REC
            MOVE    "KOHPLUS-KEY3"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -1981,9 +1871,8 @@
                 AND  ( SPA-NAI-PREFNUM-MOT     =   KOHPLUS-PREFNUM )
                 AND  ( SPA-NAI-CITYNUM-MOT     =   KOHPLUS-CITYNUM )
                 AND  ( SPA-NAI-KOHNUM-MOT      =   KOHPLUS-KOHNUM )
-                AND  ( SPA-NAI-HKNKBN-MOT      =   KOHPLUS-HKNKBN )
-                AND  ( SPA-NAI-RJNHKNKBN-MOT
-                                               =   KOHPLUS-RJNHKNKBN )
+                AND  ( SPA-NAI-PTKBN-MOT
+                                               =   KOHPLUS-PTKBN )
                 AND  ( SPA-NAI-YUKOSTYMD-MOT
                                                =   KOHPLUS-YUKOSTYMD )
                 AND  ( SPA-NAI-YUKOEDYMD-MOT
@@ -2082,22 +1971,13 @@
       *    ¿©≈ŸÃæ
            MOVE    SPA-GMN-SEIDONAME       TO  V03-SEIDONAME
       *
-      *    ºÁ ›∏±∂Ë ¨
-           MOVE    SPA-GMN-HKNKBN-G        TO  V03-HKNKBN
-           MOVE    SPA-GMN-HKNKBN-MAX      TO  V03-HKNKBN-COUNT
+      *    ¥µº‘∂Ë ¨
+           MOVE    SPA-GMN-PTKBN-G     TO  V03-PTKBN
+           MOVE    SPA-GMN-PTKBN-MAX   TO  V03-PTKBN-COUNT
            PERFORM VARYING IDX-CMB     FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-HKNKBN-MAX )
-               MOVE    SPA-GMN-HKNKBNLST (IDX-CMB)
-                                           TO  V03-HKNKBNLST (IDX-CMB)
-           END-PERFORM
-      *
-      *    œ∑øÕ ›∑Ú∂Ë ¨
-           MOVE    SPA-GMN-RJNHKNKBN-G     TO  V03-RJNHKNKBN
-           MOVE    SPA-GMN-RJNHKNKBN-MAX   TO  V03-RJNHKNKBN-COUNT
-           PERFORM VARYING IDX-CMB     FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-RJNHKNKBN-MAX )
-               MOVE    SPA-GMN-RJNHKNKBNLST (IDX-CMB)
-                                           TO  V03-RJNHKNKBNLST(IDX-CMB)
+                   UNTIL ( IDX-CMB     >   SPA-GMN-PTKBN-MAX )
+               MOVE    SPA-GMN-PTKBNLST (IDX-CMB)
+                                           TO  V03-PTKBNLST(IDX-CMB)
            END-PERFORM
       *
       *    ¥µº‘…È√¥∂Ë ¨
@@ -2165,12 +2045,9 @@
       *        ¿©≈ŸÃæ
                MOVE    SPA-GMN-TSEIDONAME(IDX-LST)
                                            TO  V03-TSEIDONAME  (IDX-LST)
-      *        ºÁ ›∏±∂Ë ¨
-               MOVE    SPA-GMN-THKNKBN   (IDX-LST)
-                                           TO  V03-THKNKBN     (IDX-LST)
-      *        œ∑øÕ ›∑Ú∂Ë ¨
-               MOVE    SPA-GMN-TRJNHKNKBN(IDX-LST)
-                                           TO  V03-TRJNHKNKBN  (IDX-LST)
+      *        ¥µº‘∂Ë ¨
+               MOVE    SPA-GMN-TPTKBN(IDX-LST)
+                                           TO  V03-TPTKBN  (IDX-LST)
       *        ¥µº‘…È√¥∂Ë ¨
                MOVE    SPA-GMN-TFTNKBN   (IDX-LST)
                                            TO  V03-TFTNKBN     (IDX-LST)
@@ -2370,18 +2247,16 @@
            WHEN    05
                MOVE  "SEIDONAME"       TO  MCP-WIDGET
            WHEN    06
-               MOVE  "HKNKBN"          TO  MCP-WIDGET
+               MOVE  "PTKBN"           TO  MCP-WIDGET
            WHEN    07
-               MOVE  "RJNHKNKBN"       TO  MCP-WIDGET
-           WHEN    08
                MOVE  "FTNKBN"          TO  MCP-WIDGET
-           WHEN    09
+           WHEN    08
                MOVE  "RECESKYKBN"      TO  MCP-WIDGET
-           WHEN    10
+           WHEN    09
                MOVE  "NYUSKJRYYKBN"    TO  MCP-WIDGET
-           WHEN    11
+           WHEN    10
                MOVE  "YUKOSTYMD"       TO  MCP-WIDGET
-           WHEN    12
+           WHEN    11
                MOVE  "YUKOEDYMD"       TO  MCP-WIDGET
            WHEN    206
                MOVE  "B06"             TO  MCP-WIDGET
@@ -2407,20 +2282,18 @@
                MOVE    04              TO  SPA-GMN-CUR
            WHEN    "SEIDONAME"
                MOVE    05              TO  SPA-GMN-CUR
-           WHEN    "HKNKBN"
+           WHEN    "PTKBN"
                MOVE    06              TO  SPA-GMN-CUR
-           WHEN    "RJNHKNKBN"
-               MOVE    07              TO  SPA-GMN-CUR
            WHEN    "FTNKBN"
-               MOVE    08              TO  SPA-GMN-CUR
+               MOVE    07              TO  SPA-GMN-CUR
            WHEN    "RECESKYKBN"
-               MOVE    09              TO  SPA-GMN-CUR
+               MOVE    08              TO  SPA-GMN-CUR
            WHEN    "NYUSKJRYYKBN"
-               MOVE    10              TO  SPA-GMN-CUR
+               MOVE    09              TO  SPA-GMN-CUR
            WHEN    "YUKOSTYMD"
-               MOVE    11              TO  SPA-GMN-CUR
+               MOVE    10              TO  SPA-GMN-CUR
            WHEN    "YUKOEDYMD"
-               MOVE    12              TO  SPA-GMN-CUR
+               MOVE    11              TO  SPA-GMN-CUR
       *
            END-EVALUATE
       *
