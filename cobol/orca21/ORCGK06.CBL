@@ -218,6 +218,7 @@
                    07  WRK-GMN-TFSANTEIYMD PIC X(09).
                    07  WRK-GMN-TMSANTEID   PIC 9(02).
                    07  WRK-GMN-TMSANTEICNT PIC 9(03).
+                   07  WRK-GMN-TMSANTEITEN PIC 9(08).
       * 
            03  WRK-NAI-TBL.
                05  WRK-NAI-TBLO        OCCURS  100.
@@ -228,6 +229,7 @@
                    07  WRK-NAI-TDAY-G      OCCURS  31.
                        09  WRK-NAI-TDAY    PIC 9(02).
                    07  WRK-NAI-TUPDFLG     PIC 9(01).
+                   07  WRK-NAI-TMSANTEIFLG PIC 9(01).
       *
       *    ÊÝ¸±ÊÌ»»ÄêÍúÎò¥Æ¡¼¥Ö¥ë
            COPY   "CMSANTEITBL.INC".

@@ -2310,7 +2310,6 @@
                                   (WRK-KARRK-SYOSINYMD2    =   SPACE)
                                MOVE    SYU-SRYYMD  TO
                                                    WRK-KARRK-SYOSINYMD2
-                               MOVE    1           TO  FLG-SYOSIN-DUMMY
                            END-IF
                    END-EVALUATE
                END-PERFORM
@@ -3007,13 +3006,17 @@
            MOVE    WRK-HKNCOMBI        TO  SSANTEI-HKNCOMBINUM
       *     ›∏±∂Ë ¨§œ∆±§∏
            MOVE    SPA-HKNKBN          TO  SSANTEI-HKNKBN
-      *    ∆‚ ¨»Á…È≤ŸªÓ∏≥Õ—
-           IF      LNK-WKSRYP-MSANTEITFLG(IDX)   =   1
-               MOVE    LNK-WKSRYP-MSANTEITEN (IDX)
+           IF      FLG-SYOSIN-DUMMY    =   1
+               CONTINUE
+           ELSE
+      *        ∆‚ ¨»Á…È≤ŸªÓ∏≥Õ—
+               IF      LNK-WKSRYP-MSANTEITFLG(IDX)   =   1
+                   MOVE    LNK-WKSRYP-MSANTEITEN (IDX)
                                         TO  SSANTEI-MSANTEITEN
-               MOVE    LNK-WKSRYP-MSANTEITENKBN (IDX)
+                   MOVE    LNK-WKSRYP-MSANTEITENKBN (IDX)
                                         TO  SSANTEI-MSANTEITENKBN
-               MOVE    1                TO  FLG-NAIBUN
+                   MOVE    1                TO  FLG-NAIBUN
+               END-IF
            END-IF
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
@@ -4017,11 +4020,13 @@
                MOVE    1               TO  WRK-KAISU
                MOVE    SPA-SRYKA       TO  WRK-SRYKA
                MOVE    SPA-HKNCOMBINUM TO  WRK-HKNCOMBI
+               MOVE    1               TO  FLG-SYOSIN-DUMMY
       *        ªªƒÍÕ˙ŒÚ∫Ó¿Æ
                PERFORM 45021-SANTEI-UPD-SEC
       *        ø«Œ≈≤ Õ˙ŒÚΩËÕ˝
                PERFORM 45099-SRYKARRK-ADD-SEC
            END-IF
+           MOVE    ZERO                TO  FLG-SYOSIN-DUMMY
       *
            .
        400-SYOSIN-SYORI-EXT.
