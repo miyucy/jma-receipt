@@ -113,6 +113,7 @@
            03  WRK-SRYCDTOTAL                  PIC 9(09).
            03  WRK-BRMSAGAKU                   PIC 9(05).
            03  WRK-SKJ-TEN-G.
+               05  WRK-SKJ-TEN                 PIC 9(08).
                05  WRK-SKJ-TEN-RYOYO1          PIC 9(08).
                05  WRK-SKJ-TEN-RYOYO2          PIC 9(08).
                05  WRK-SKJ-TEN-TOKKANRI        PIC 9(08).
@@ -325,6 +326,9 @@
       *    労災乗数
            03  CONST-RSI-JOUSU                 PIC X(09)
                                                    VALUE "101970010".
+      *    自賠責食事療養費乗数
+           03  CONST-JBISKJ-JOUSU              PIC X(09)
+                                                   VALUE "099609901".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -334,6 +338,8 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1001.INC".
+      *
+           COPY    "CPSK4001.INC".
       *
            COPY    "CPSK5000.INC".
       *
@@ -540,6 +546,9 @@
       *    医療機関情報取得処理
            PERFORM 1501-SYS1001-GET-SEC
       *
+      *    労災自賠責医療機関情報取得処理
+           PERFORM 1501-SYS4001-GET-SEC
+      *
       *    入院基本情報取得
            PERFORM 1501-SYS5000-GET-SEC
       *
@@ -570,6 +579,37 @@
       *
            .
        1501-SYS1001-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    労災自賠責医療機関情報取得処理
+      *****************************************************************
+       1501-SYS4001-GET-SEC                SECTION.
+      *
+      *    医療機関ＩＤ編集
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    HCM34S01-SANTEIYM   TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-4001-REC
+           ELSE
+               INITIALIZE                  SYS-4001-REC
+           END-IF
+      *
+           .
+       1501-SYS4001-GET-EXT.
            EXIT.
       *****************************************************************
       *    入院基本情報取得
@@ -1554,22 +1594,27 @@
       *****************************************************************
        2001111-SKJ-RYOYO1-SET-SEC      SECTION.
       *
-           IF    ( IDX5                <   19 )
+           IF    ( IDX5                <   18 )
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-SKJ-RYOYO1    TO  WRK-SKJ-SRYCD (IDX5)
                                                WRK-SRYCD-NUM
       *
-               COMPUTE WRK-KEISAN  =   WRK-SKJ-TEN-RYOYO1 * 1.2
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      +   5
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      /   10
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      *   10
-      *
-               COMPUTE WRK-SKJ-ZAITEN
-                   =   WRK-SKJ-ZAITEN      +   WRK-KEISAN
-      *
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
+      *
+               IF    ( HCM34S01-HKNNUM =   "973" )
+                AND  ( SYS-4001-SKJKBN =   "2" )
+      *
+                   COMPUTE IDX5    =   IDX5    +   1
+                   MOVE    CONST-JBISKJ-JOUSU
+                                           TO  WRK-SKJ-SRYCD (IDX5)
+      *
+               END-IF
+      *
+               MOVE    WRK-SKJ-TEN-RYOYO1  TO  WRK-SKJ-TEN
+               PERFORM 200111-SKJ-JOUSU-HEN-SEC
            END-IF
+      *
       *
            .
        2001111-SKJ-RYOYO1-SET-EXT.
@@ -1579,21 +1624,25 @@
       *****************************************************************
        2001111-SKJ-RYOYO2-SET-SEC      SECTION.
       *
-           IF    ( IDX5                <   19 )
+           IF    ( IDX5                <   18 )
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-SKJ-RYOYO2    TO  WRK-SKJ-SRYCD (IDX5)
                                                WRK-SRYCD-NUM
       *
-               COMPUTE WRK-KEISAN  =   WRK-SKJ-TEN-RYOYO2 * 1.2
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      +   5
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      /   10
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      *   10
-      *
-               COMPUTE WRK-SKJ-ZAITEN
-                   =   WRK-SKJ-ZAITEN      +   WRK-KEISAN
-      *
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
+      *
+               IF    ( HCM34S01-HKNNUM =   "973" )
+                AND  ( SYS-4001-SKJKBN =   "2" )
+      *
+                   COMPUTE IDX5    =   IDX5    +   1
+                   MOVE    CONST-JBISKJ-JOUSU
+                                           TO  WRK-SKJ-SRYCD (IDX5)
+      *
+               END-IF
+      *
+               MOVE    WRK-SKJ-TEN-RYOYO2  TO  WRK-SKJ-TEN
+               PERFORM 200111-SKJ-JOUSU-HEN-SEC
            END-IF
       *
            .
@@ -1604,20 +1653,25 @@
       *****************************************************************
        2001111-SKJ-TOKKANRI-SET-SEC    SECTION.
       *
-           IF    ( IDX5                <   19 )
+           IF    ( IDX5                <   18 )
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-SKJ-TOKKANRI  TO  WRK-SKJ-SRYCD (IDX5)
       *
-               COMPUTE WRK-KEISAN  =   WRK-SKJ-TEN-TOKKANRI * 1.2
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      +   5
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      /   10
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      *   10
-      *
-               COMPUTE WRK-SKJ-ZAITEN
-                   =   WRK-SKJ-ZAITEN      +   WRK-KEISAN
-      *
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
+      *
+               IF    ( HCM34S01-HKNNUM =   "973" )
+                AND  ( SYS-4001-SKJKBN =   "2" )
+      *
+                   COMPUTE IDX5    =   IDX5    +   1
+                   MOVE    CONST-JBISKJ-JOUSU
+                                           TO  WRK-SKJ-SRYCD (IDX5)
+      *
+               END-IF
+      *
+               MOVE    WRK-SKJ-TEN-TOKKANRI
+                                           TO  WRK-SKJ-TEN
+               PERFORM 200111-SKJ-JOUSU-HEN-SEC
            END-IF
       *
            .
@@ -1628,20 +1682,25 @@
       *****************************************************************
        2001111-SKJ-TOKSYOKU-SET-SEC    SECTION.
       *
-           IF    ( IDX5                <   19 )
+           IF    ( IDX5                <   18 )
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-SKJ-TOKSYOKU  TO  WRK-SKJ-SRYCD (IDX5)
       *
-               COMPUTE WRK-KEISAN  =   WRK-SKJ-TEN-TOKSYOKU * 1.2
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      +   5
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      /   10
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      *   10
-      *
-               COMPUTE WRK-SKJ-ZAITEN
-                   =   WRK-SKJ-ZAITEN      +   WRK-KEISAN
-      *
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
+      *
+               IF    ( HCM34S01-HKNNUM =   "973" )
+                AND  ( SYS-4001-SKJKBN =   "2" )
+      *
+                   COMPUTE IDX5    =   IDX5    +   1
+                   MOVE    CONST-JBISKJ-JOUSU
+                                           TO  WRK-SKJ-SRYCD (IDX5)
+      *
+               END-IF
+      *
+               MOVE    WRK-SKJ-TEN-TOKSYOKU
+                                           TO  WRK-SKJ-TEN
+               PERFORM 200111-SKJ-JOUSU-HEN-SEC
            END-IF
       *
            .
@@ -1652,20 +1711,25 @@
       *****************************************************************
        2001111-SKJ-SYOKUDO-SET-SEC     SECTION.
       *
-           IF    ( IDX5                <   19 )
+           IF    ( IDX5                <   18 )
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-SKJ-SYOKUDO   TO  WRK-SKJ-SRYCD (IDX5)
       *
-               COMPUTE WRK-KEISAN  =   WRK-SKJ-TEN-SYOKUDO * 1.2
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      +   5
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      /   10
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      *   10
-      *
-               COMPUTE WRK-SKJ-ZAITEN
-                   =   WRK-SKJ-ZAITEN      +   WRK-KEISAN
-      *
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
+      *
+               IF    ( HCM34S01-HKNNUM =   "973" )
+                AND  ( SYS-4001-SKJKBN =   "2" )
+      *
+                   COMPUTE IDX5    =   IDX5    +   1
+                   MOVE    CONST-JBISKJ-JOUSU
+                                           TO  WRK-SKJ-SRYCD (IDX5)
+      *
+               END-IF
+      *
+               MOVE    WRK-SKJ-TEN-SYOKUDO
+                                           TO  WRK-SKJ-TEN
+               PERFORM 200111-SKJ-JOUSU-HEN-SEC
            END-IF
       *
            .
@@ -1676,25 +1740,51 @@
       *****************************************************************
        2001111-SKJ-FKSKONDATE-SET-SEC  SECTION.
       *
-           IF    ( IDX5                <   19 )
+           IF    ( IDX5                <   18 )
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-SKJ-FKSKONDATE
                                            TO  WRK-SKJ-SRYCD (IDX5)
       *
-               COMPUTE WRK-KEISAN  =   WRK-SKJ-TEN-FKSKONDATE * 1.2
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      +   5
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      /   10
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN      *   10
-      *
-               COMPUTE WRK-SKJ-ZAITEN
-                   =   WRK-SKJ-ZAITEN      +   WRK-KEISAN
-      *
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
+      *
+               IF    ( HCM34S01-HKNNUM =   "973" )
+                AND  ( SYS-4001-SKJKBN =   "2" )
+      *
+                   COMPUTE IDX5    =   IDX5    +   1
+                   MOVE    CONST-JBISKJ-JOUSU
+                                           TO  WRK-SKJ-SRYCD (IDX5)
+      *
+               END-IF
+      *
+               MOVE    WRK-SKJ-TEN-FKSKONDATE
+                                           TO  WRK-SKJ-TEN
+               PERFORM 200111-SKJ-JOUSU-HEN-SEC
            END-IF
       *
            .
        2001111-SKJ-FKSKONDATE-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事乗数編集処理
+      *****************************************************************
+       200111-SKJ-JOUSU-HEN-SEC   SECTION.
+      *
+           COMPUTE WRK-KEISAN  =   WRK-SKJ-TEN     * 1.2
+           COMPUTE WRK-KEISAN  =   WRK-KEISAN      +   5
+           COMPUTE WRK-KEISAN  =   WRK-KEISAN      /   10
+           COMPUTE WRK-KEISAN  =   WRK-KEISAN      *   10
+      *
+           IF    ( HCM34S01-HKNNUM =   "973" )
+            AND  ( SYS-4001-SKJKBN =   "2" )
+               COMPUTE WRK-KEISAN  =   WRK-KEISAN  * 1.2
+           END-IF
+      *
+           COMPUTE WRK-SKJ-ZAITEN
+               =   WRK-SKJ-ZAITEN  +   WRK-KEISAN
+      *
+           .
+       2001111-SKJ-JOUSU-HEN-EXT.
            EXIT.
       *****************************************************************
       *    食事基本情報設定処理

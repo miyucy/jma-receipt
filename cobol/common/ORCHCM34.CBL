@@ -95,6 +95,7 @@
            03  FLG-PTCOM                           PIC 9(01).
            03  FLG-YAKUSOKU                        PIC 9(01).
            03  FLG-HOUKATU                         PIC 9(01).
+           03  FLG-ZAIMATOME                       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -288,10 +289,12 @@
            03  WRK-ZAITEN                          PIC 9(08).
            03  WRK-ZAIKAISU                        PIC 9(07).
            03  WRK-SRYCD                           PIC X(09).
+           03  WRK-SRYCD-9                         PIC 9(09).
            03  WRK-SRYSYUKBN                       PIC X(03).
            03  WRK-TANINAME                        PIC X(24).
            03  WRK-JBI-SONOTA-KBN                  PIC X(01).
            03  WRK-JBI-RYOYO-TEATE-KBN             PIC X(01).
+           03  WRK-RUIKEITOTAL                     PIC 9(15)V9(03).
       *
        01  COMMENT-CHK-AREA.
            03  COMMENT-IDX                         PIC 9(03).
@@ -512,6 +515,9 @@
                                        INDEXED WKSRYACCT-IDX.
            COPY    "CPSRYACCT.INC"
                    REPLACING   //ACCT-//  BY //WKACCT-//.
+               03 WKACCT-RUIKEITOTAL      PIC 9(15)V9(03).
+               03 WKACCT-SRT-SRYCD        PIC X(09).
+               03 WKACCT-SRT-SRYSYUKBN    PIC X(03).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -2159,8 +2165,9 @@
            PERFORM UNTIL ( FLG-SRYACCT     =   1 )
                     OR   ( WKSRYACCT-MAX  >=   CONST-SRYACCT-MAX )
       *
-      *        約束処方チェック処理
-               PERFORM 20011-YAKUSOKU-CHK-SEC
+      *        診療行為マスタ処理
+               PERFORM 200111-SRYACT-SEL-SEC
+      *
                IF    ( FLG-YAKUSOKU        =   1 )
                    COMPUTE ACCT-MEISAISU
                        =   ACCT-MEISAISU   -   1
@@ -2206,64 +2213,23 @@
        2001-SRYACT-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    約束処方チェック処理
-      *****************************************************************
-       20011-YAKUSOKU-CHK-SEC          SECTION.
-      *
-           MOVE    ZERO                TO  FLG-YAKUSOKU
-      *
-           MOVE    ZERO                TO  FLG-SRYACT
-           INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
-           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
-           MOVE    ACCT-PTID           TO  SRY-PTID
-           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
-           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
-           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
-           MOVE    1                   TO  SRY-RENNUM
-           MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "SRYACT-KEY"        TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC            NOT =   ZERO )
-               MOVE    1               TO  FLG-SRYACT
-           ELSE
-               MOVE    MCPDATA-REC     TO  SRYACT-REC
-           END-IF
-      *
-           MOVE    "SRYACT-KEY"        TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
-           IF    ( FLG-SRYACT      NOT =   ZERO )
-               GO  TO  20011-YAKUSOKU-CHK-EXT
-           END-IF
-      *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0                >   5    )
-                    OR   ( FLG-YAKUSOKU    NOT =   ZERO )
-      *
-               IF    ( SRY-SRYCD (IDX0) (1:1)  =   "S" )
-                   MOVE    1           TO  FLG-YAKUSOKU
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       20011-YAKUSOKU-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    同一剤まとめ編集処理
       *****************************************************************
        20011-SRYACT-MATOME-SEC         SECTION.
       *
+           MOVE    ZERO                TO  FLG-ZAIMATOME
+      *
            SET     WKSRYACCT-IDX       TO  1
            SEARCH  WKSRYACCT-OCC   VARYING WKSRYACCT-IDX
            AT  END
-               COMPUTE WKSRYACCT-MAX   =   WKSRYACCT-MAX   +   1
-               MOVE    SRYACCT-REC     TO  WKSRYACCT-OCC (WKSRYACCT-MAX)
+      *
+                   MOVE    ZERO        TO  FLG-ZAIMATOME
+      *
            WHEN    WKACCT-HOSPID (WKSRYACCT-IDX)
                                        =   SPACE
-               COMPUTE WKSRYACCT-MAX   =   WKSRYACCT-MAX   +   1
-               MOVE    SRYACCT-REC     TO  WKSRYACCT-OCC (WKSRYACCT-MAX)
+      *
+                   MOVE    ZERO        TO  FLG-ZAIMATOME
+      *
            WHEN    ACCT-HOSPID         =   WKACCT-HOSPID
                                                        (WKSRYACCT-IDX)
             AND    ACCT-NYUGAIKBN      =   WKACCT-NYUGAIKBN
@@ -2284,26 +2250,40 @@
                                                        (WKSRYACCT-IDX)
             AND    ACCT-MEISAISU       =   WKACCT-MEISAISU
                                                        (WKSRYACCT-IDX)
+            AND    WRK-RUIKEITOTAL     =   WKACCT-RUIKEITOTAL
+                                                       (WKSRYACCT-IDX)
                INITIALIZE  COMMENT-CHK-AREA
                MOVE    ACCT-ZAINUM     TO  COMMENT-ZAINUM (1)
                MOVE    WKACCT-ZAINUM (WKSRYACCT-IDX)
                                        TO  COMMENT-ZAINUM (2)
                PERFORM 200111-PTCOM-CHK-SEC
                IF    ( FLG-COMMENT-CHK =   ZERO )
-                   COMPUTE WKACCT-ZAIKAISU  (WKSRYACCT-IDX)
-                       =   WKACCT-ZAIKAISU  (WKSRYACCT-IDX)
-                       +   ACCT-ZAIKAISU
-                   PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL ( IDX1    >   31 )
-                       COMPUTE WKACCT-DAY (WKSRYACCT-IDX 1 IDX1)
-                            =  WKACCT-DAY (WKSRYACCT-IDX 1 IDX1)
-                            +   ACCT-DAY (1 IDX1)
-                  END-PERFORM
+                   MOVE    1           TO  FLG-ZAIMATOME
                ELSE
-                   COMPUTE WKSRYACCT-MAX   =   WKSRYACCT-MAX   +   1
-                   MOVE    SRYACCT-REC TO  WKSRYACCT-OCC (WKSRYACCT-MAX)
+                   MOVE    ZERO        TO  FLG-ZAIMATOME
                END-IF
            END-SEARCH
+      *
+           IF    ( FLG-ZAIMATOME       =   1 )
+               COMPUTE WKACCT-ZAIKAISU  (WKSRYACCT-IDX)
+                   =   WKACCT-ZAIKAISU  (WKSRYACCT-IDX)
+                   +   ACCT-ZAIKAISU
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   31 )
+                   COMPUTE WKACCT-DAY (WKSRYACCT-IDX 1 IDX1)
+                        =  WKACCT-DAY (WKSRYACCT-IDX 1 IDX1)
+                        +   ACCT-DAY (1 IDX1)
+               END-PERFORM
+           ELSE
+               COMPUTE WKSRYACCT-MAX   =   WKSRYACCT-MAX   +   1
+               MOVE    SRYACCT-REC     TO  WKSRYACCT-OCC (WKSRYACCT-MAX)
+               MOVE    WRK-RUIKEITOTAL TO  WKACCT-RUIKEITOTAL
+                                                     (WKSRYACCT-MAX)
+               MOVE    WRK-SRYCD       TO  WKACCT-SRT-SRYCD
+                                                     (WKSRYACCT-MAX)
+               MOVE    WRK-SRYSYUKBN   TO  WKACCT-SRT-SRYSYUKBN
+                                                     (WKSRYACCT-MAX)
+           END-IF
       *
            .
        20011-SRYACT-MATOME-EXT.
@@ -2398,8 +2378,10 @@
            PERFORM VARYING SRT-IDX1    FROM    1   BY  1
                    UNTIL ( SRT-IDX1    >   WKSRYACCT-MAX )
       *
-               MOVE    SPACE           TO  WRK-SRYCD
-                                           WRK-SRYSYUKBN
+               MOVE    WKACCT-SRT-SRYCD (SRT-IDX1)
+                                       TO  WRK-SRYCD
+               MOVE    WKACCT-SRT-SRYSYUKBN (SRT-IDX1)
+                                       TO  WRK-SRYSYUKBN
       *
                MOVE    WKSRYACCT-OCC (SRT-IDX1)
                                        TO  SRYACCT-REC
@@ -2409,7 +2391,6 @@
                                                            (SRT-IDX1)
                MOVE    ACCT-SRYKBN     TO  SRT-SRYACCT-SRYKBN
                                                            (SRT-IDX1)
-               PERFORM 200111-SRYACT-SEL-SEC
                IF    ( WRK-SRYCD   NOT =   SPACE )
                    PERFORM 200111-TENSU-SEL-SEC
                    IF    ( FLG-TENSU   =   ZERO )
@@ -2523,6 +2504,13 @@
       *****************************************************************
        200111-SRYACT-SEL-SEC           SECTION.
       *
+           MOVE    ZERO                TO  FLG-YAKUSOKU
+      *
+           MOVE    SPACE               TO  WRK-SRYCD
+                                           WRK-SRYSYUKBN
+      *
+           MOVE    ZERO                TO  WRK-RUIKEITOTAL
+      *
            MOVE    ZERO                TO  FLG-SRYACT
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPID         TO  SRY-HOSPID
@@ -2541,7 +2529,6 @@
            END-IF
       *
            PERFORM UNTIL ( FLG-SRYACT  NOT =   ZERO )
-                      OR ( WRK-SRYCD   NOT =   SPACE )
       *
                IF    ( WRK-SRYSYUKBN   =   SPACE )
                    MOVE    SRY-SRYSYUKBN   TO  WRK-SRYSYUKBN
@@ -2549,12 +2536,28 @@
       *
                PERFORM VARYING IDX20   FROM    1   BY  1
                        UNTIL ( IDX20           >   5 )
-                          OR ( WRK-SRYCD   NOT =   SPACE )
-                   IF    ( SRY-SRYCD (IDX20) (1:1) =   "0" OR "8" )
-                       CONTINUE
-                   ELSE
-                       MOVE    SRY-SRYCD (IDX20)   TO  WRK-SRYCD
+                   IF    ( SRY-SRYCD (IDX20) (1:1)  =   "S" )
+                       MOVE    1           TO  FLG-YAKUSOKU
                    END-IF
+      *
+                   IF    ( SRY-SRYCD(IDX20)    IS  NUMERIC )
+      *
+                      MOVE     SRY-SRYCD(IDX20) TO  WRK-SRYCD-9
+                      COMPUTE  WRK-RUIKEITOTAL =
+                               WRK-RUIKEITOTAL +
+                             ( WRK-SRYCD-9     *    SRY-SRYSURYO(IDX20))
+      *
+                       IF    ( WRK-SRYCD       =   SPACE )
+                           IF    ( SRY-SRYCD (IDX20) (1:1)
+                                               =   "0" OR "8" )
+                               CONTINUE
+                           ELSE
+                               MOVE    SRY-SRYCD (IDX20)
+                                           TO  WRK-SRYCD
+                           END-IF
+                       END-IF
+                   END-IF
+      *
                END-PERFORM
       *
                MOVE    "SRYACT-KEY2"   TO  WRK-DBPATH
@@ -4082,6 +4085,8 @@
                                        TO    HCM34S01-HKNCOMBI
                                              WRK-HKNCOMBINUM
            PERFORM 200111-HKNCOMBI-SEL-SEC
+      *
+           MOVE    COMB-HKNNUM         TO    HCM34S01-HKNNUM
       *
            IF    ( COMB-HKNNUM         =     "971" OR "973" )
       *

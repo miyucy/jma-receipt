@@ -38,6 +38,8 @@
            03  HCM34S01-SANTEIYM               PIC X(06).
       *保険組合せ
            03  HCM34S01-HKNCOMBI               PIC 9(04).
+      *保険番号
+           03  HCM34S01-HKNNUM                 PIC X(03).
       *返却項目
            03  HCM34S01-HENKYAKU-AREA.
       *
