@@ -30,6 +30,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/11/21  西暦年’３０００’以上エラー
+      * 01.00.02     NACL-多々納  02/12/12  入力タイプなし追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -49,6 +50,7 @@
            03  FLG-ERR             PIC 9(01).
            03  FLG-TEN             PIC 9(01).
            03  FLG-SEKI            PIC 9(01).
+           03  FLG-TYPE            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -113,6 +115,9 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
+      *
+           INITIALIZE                      WRK-AREA
+           INITIALIZE                      FLG-AREA
       *
            MOVE    ZERO                TO  SGDAY-RC
            INITIALIZE                      SGDAY-OT-AREA
@@ -195,25 +200,64 @@
              END-IF
            END-PERFORM
       *
-           IF      SGDAY-INTYPE        =   SPACE
-      *        年月日
-               IF      FLG-TEN             =   ZERO
-                   IF      WRK-KETA        NOT =   7   AND 8
-                       MOVE    "99"                TO  WRK-ERRCD
+           EVALUATE    SGDAY-INTYPE
+               WHEN    SPACE
+      *            年月日
+                   IF      FLG-TEN             =   ZERO
+                       IF      WRK-KETA        NOT =   7   AND 8
+                           MOVE    "99"                TO  WRK-ERRCD
+                       END-IF
+                   ELSE
+                       IF      WRK-DD          =   SPACE
+                           MOVE    "99"                TO  WRK-ERRCD
+                       END-IF
                    END-IF
-               ELSE
-                   IF      WRK-DD          =   SPACE
-                       MOVE    "99"                TO  WRK-ERRCD
-                   END-IF
-               END-IF
-           ELSE
+               WHEN    "1"
       *        年月
-               IF      FLG-TEN             =   ZERO
-                   IF      WRK-KETA        NOT =   5  AND 6
-                       MOVE    "99"                TO  WRK-ERRCD
+                   IF      FLG-TEN             =   ZERO
+                       IF      WRK-KETA        NOT =   5  AND 6
+                           MOVE    "99"                TO  WRK-ERRCD
+                       END-IF
                    END-IF
-               END-IF
-           END-IF
+               WHEN    "2"
+      *        チェックなし
+                   IF      FLG-TEN             =   ZERO
+                       EVALUATE    WRK-KETA
+                           WHEN    2
+      *                        和暦年
+                               MOVE    3                   TO  FLG-TYPE
+                               MOVE    "01"                TO  WRK-MM
+                               MOVE    "01"                TO  WRK-DD
+                           WHEN    3
+                           WHEN    4
+      *                        年
+                               MOVE    3                   TO  FLG-TYPE
+                           WHEN    5
+                           WHEN    6
+      *                        年月
+                               MOVE    2                   TO  FLG-TYPE
+                           WHEN    7
+                           WHEN    8
+      *                        年月日
+                               MOVE    1                   TO  FLG-TYPE
+                           WHEN    OTHER
+                               MOVE    "99"                TO  WRK-ERRCD
+                       END-EVALUATE
+                   ELSE
+                       MOVE    1                   TO  FLG-TYPE
+                       IF      WRK-YY          =   SPACE
+                           MOVE    "99"                TO  WRK-ERRCD
+                       END-IF
+                       IF      WRK-DD          =   SPACE
+                           MOVE    "01"                TO  WRK-DD
+                           MOVE    2                   TO  FLG-TYPE
+                       END-IF
+                       IF      WRK-MM          =   SPACE
+                           MOVE    "01"                TO  WRK-MM
+                           MOVE    3                   TO  FLG-TYPE
+                       END-IF
+                   END-IF
+           END-EVALUATE
       *
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      100-INDAY-CHK-EXT
@@ -222,13 +266,17 @@
       *    ”．”なしのチェック
            IF      FLG-TEN             =   ZERO
                EVALUATE    WRK-KETA
+                   WHEN    3
                    WHEN    5
                    WHEN    7
+                       MOVE    SGDAY-INDAY       TO  WRK-WYMD
+                       IF      WRK-KETA          =   3
+                           MOVE    SGDAY-INDAY(1:3)  TO  WRK-WYMD(1:3)
+                           MOVE    "0101"            TO  WRK-WYMD(4:4)
+                       END-IF
                        IF      WRK-KETA          =   5
                            MOVE    SGDAY-INDAY(1:5)  TO  WRK-WYMD(1:5)
                            MOVE    "01"              TO  WRK-WDD
-                       ELSE
-                           MOVE    SGDAY-INDAY       TO  WRK-WYMD
                        END-IF
                        MOVE    1                 TO  FLG-SEKI
       *                和暦
@@ -254,13 +302,17 @@
                            MOVE    "99"        TO  WRK-ERRCD
                        END-IF
       *            西暦
+                   WHEN    4
                    WHEN    8
                    WHEN    6
+                       MOVE    SGDAY-INDAY       TO  WRK-SYMD
+                       IF      WRK-KETA          =   4
+                           MOVE    SGDAY-INDAY(1:4)  TO  WRK-SYMD(1:4)
+                           MOVE    "0101"            TO  WRK-SYMD(5:4)
+                       END-IF
                        IF      WRK-KETA          =   6
                            MOVE    SGDAY-INDAY(1:6)  TO  WRK-SYMD(1:6)
                            MOVE    "01"              TO  WRK-SDD
-                       ELSE
-                           MOVE    SGDAY-INDAY       TO  WRK-SYMD
                        END-IF
       *                西暦の年３０００以下であること
                        IF      WRK-SYMD(1:2)       >=  "30"
@@ -271,15 +323,21 @@
                            MOVE    "99"            TO  WRK-ERRCD
                        END-IF
       *
+                   WHEN    2
+                       MOVE    1                 TO  FLG-SEKI
+      *
                    WHEN    OTHER
                        MOVE    "99"            TO  WRK-ERRCD
                END-EVALUATE
-               GO      TO      100-INDAY-CHK-EXT
+               IF      WRK-KETA        >   2
+                   GO      TO      100-INDAY-CHK-EXT
+               END-IF
            ELSE
       *        年の桁数
                IF      WRK-KETA        >   4
                    MOVE    "99"                TO  WRK-ERRCD
-               GO      TO      100-INDAY-CHK-EXT
+                   GO      TO      100-INDAY-CHK-EXT
+               END-IF
            END-IF
       *
       *    日なしの時、０１とする
@@ -454,7 +512,27 @@
            MOVE    WRK-SYMD            TO  SGDAY-SDAY
            MOVE    WRK-WYMD            TO  SGDAY-WDAY
       *
-      *
+           IF      SGDAY-INTYPE        =   "2"
+               MOVE    SPACE               TO  SGDAY-SDAY
+               MOVE    SPACE               TO  SGDAY-WDAY
+               MOVE    SPACE               TO  SGDAY-OTDAY
+               EVALUATE   FLG-TYPE
+                   WHEN    1
+                       MOVE    LNK-DAY2-EDTYMD1    TO  SGDAY-OTDAY
+                       MOVE    WRK-SYMD            TO  SGDAY-SDAY
+                       MOVE    WRK-WYMD            TO  SGDAY-WDAY
+                   WHEN    2
+                       MOVE    LNK-DAY2-EDTYMD1(1:6)
+                                                   TO  SGDAY-OTDAY(1:6)
+                       MOVE    WRK-SYMD(1:6)       TO  SGDAY-SDAY (1:6)
+                       MOVE    WRK-WYMD(1:5)       TO  SGDAY-WDAY (1:5)
+                   WHEN    3
+                       MOVE    LNK-DAY2-EDTYMD1(1:3)
+                                                   TO  SGDAY-OTDAY(1:3)
+                       MOVE    WRK-SYMD(1:4)       TO  SGDAY-SDAY (1:4)
+                       MOVE    WRK-WYMD(1:3)       TO  SGDAY-WDAY (1:3)
+               END-EVALUATE
+           END-IF
            .
        200-DAY-HEN-EXT.
            EXIT.
