@@ -107,6 +107,10 @@
       *  01.02.02    NACL-藤原    04/06/17  症状詳記をデータにも編集する
       *                                     01:保険履歴、手術歴
       *                                     99:レセコメント
+      *  01.02.03    NACL-藤原    04/08/05  神奈川対応
+      *                                     地方公費のとき、負担者番号・
+      *                                     受給者番号が空白のとき公費
+      *                                     レコードを出力しない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1483,7 +1487,15 @@
                        UNTIL   IDY >       3
                        OR      RECE02-KOHNUM (IDY) =   SPACE
                    COMPUTE IDX     =   IDY     +   1
-                   PERFORM 20051-KOH-HENSYU-SEC
+                   IF    ( RECE02-PREFNUM              =   "14"    )
+                   AND   ( RECE02-KOHNUM (IDY) (1:1)   >=  "1" AND 
+                                                       <=  "8"     )
+                   AND   ( RECE02-KOHFTNJANUM (IDY)    =   SPACE   )
+                   AND   ( RECE02-KOHJKYSNUM  (IDY)    =   SPACE   )
+                       CONTINUE
+                   ELSE 
+                       PERFORM 20051-KOH-HENSYU-SEC
+                   END-IF
                END-PERFORM                      
       *****END-IF                            
            .
