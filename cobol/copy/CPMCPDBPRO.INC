@@ -290,6 +290,7 @@
       *  01.01.110   NACL-多々納　03/11/11  RECECOM-KEY4
       *                                     PTKOHINF-KEY6追加 
       *  01.01.111   NACL-太田  　03/11/19  PTNYUINRRK-KEY27,KEY28追加
+      *  01.01.112   NACL-森脇  　03/11/27  SRYACCT-KEY26追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1646,6 +1647,11 @@
                WHEN    ANY             ALSO   "SRYACCT-KEY25"
                    MOVE    PATH-TBL-SRYACCT-KEY25
                                        TO  WRK-PATH
+      *----(01.01.112)-ADD-START---
+               WHEN    ANY             ALSO   "SRYACCT-KEY26"
+                   MOVE    PATH-TBL-SRYACCT-KEY26
+                                       TO  WRK-PATH
+      *----(01.01.112)-ADD-END-----
                WHEN    ANY             ALSO   "SRYACCT-ALL"
                    MOVE    PATH-TBL-SRYACCT-ALL
                                        TO  WRK-PATH
