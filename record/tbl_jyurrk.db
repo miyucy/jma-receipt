@@ -546,3 +546,20 @@ path	key21	{
 		;
 	};
 };
+path	key22	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key22_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYMD      =   :SRYYMD
+			AND   RENNUM      =   :RENNUM
+			AND   DOUJI_RENNUM =  :DOUJI_RENNUM
+			AND   EDANUM      =   :EDANUM
+			AND   LASTKBN     =   '1'
+		;
+	};
+};
