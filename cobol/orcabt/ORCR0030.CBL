@@ -4494,13 +4494,13 @@
                                                    MCPDATA-REC
            IF      MCP-RC               =       ZERO
              MOVE    "PTKOHFTN-KEY4"     TO      ORC-DBPATH
-             PERFORM  900-PTKOHFTN-READ-SEC
+             PERFORM  PTKOHFTN-READ-SEC
              PERFORM  UNTIL
                  (FLG-PTKOHFTN       =   1)    OR
                 ((PTKOHFTN-TEKSTYMD(1:6) <=   RECE02-SRYYM   )  AND
                  (RECE02-SRYYM           <=   PTKOHFTN-TEKEDYMD(1:6)))
                MOVE     "PTKOHFTN-KEY4"  TO      ORC-DBPATH
-               PERFORM   900-PTKOHFTN-READ-SEC
+               PERFORM   PTKOHFTN-READ-SEC
              END-PERFORM
            ELSE
              MOVE    1                   TO      FLG-PTKOHFTN
