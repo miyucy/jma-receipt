@@ -116,8 +116,8 @@ K08	{
 					value0	varchar(4);
 					value1	varchar(2);
 					value2	varchar(150);
-				}	[300];
-				select	bool[300];
+				}	[400];
+				select	bool[400];
 		    style   varchar(20);
 			};
 		};
