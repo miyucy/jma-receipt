@@ -1909,7 +1909,7 @@
       *
            MOVE    SPACE               TO  R99
            MOVE    ZERO                TO  R99-COUNT
-                                           R99-PROGRESSBAR-VALUE  
+           MOVE    "F12:印    刷"      TO  R99-B12-LABEL
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
@@ -1941,6 +1941,8 @@
                                        TO  WRK-SS
                MOVE    WRK-HENTIME     TO  R99-ENDTIME  (IDX)
                MOVE    JOB-YOBI        TO  R99-ERRMSG   (IDX)
+               COMPUTE R99-PROGRESSBAR-VALUE  =
+                           JOB-STEPCNT  /   13     *   100
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "処理中です"    TO  R99-MSG
                ELSE
@@ -1982,6 +1984,8 @@
                    MOVE    "B12"                TO  MCP-WIDGET
                    MOVE    "処理は正常に終了しました"
                                                 TO  R99-MSG
+                   MOVE   100                   TO
+                                            R99-PROGRESSBAR-VALUE   
                ELSE
                    MOVE    "B01"                TO  MCP-WIDGET
                    MOVE    "該当する処理はありません"
