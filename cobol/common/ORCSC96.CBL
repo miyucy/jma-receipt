@@ -140,13 +140,24 @@
                    MOVE    "手技料を入力して下さい" 
                                        TO  SPA-ERRMSG
                WHEN    "0014"
-                   MOVE    "入外適用エラー" 
+                   MOVE    "入院のコードです。外来では入力できません。" 
+                                       TO  SPA-ERRMSG
+               WHEN    "0114"
+                   MOVE    "外来のコードです。入院では入力できません。" 
                                        TO  SPA-ERRMSG
                WHEN    "0015"
-                   MOVE    "老人適用エラー" 
+                   MOVE    "老人のコードです。入力できません。" 
                                        TO  SPA-ERRMSG
+               WHEN    "0115"
+                   MOVE    "老人のコードではありません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "入力できません。" 
+                                       TO  SPA-ERRMSG(29:)
                WHEN    "0016"
-                   MOVE    "病院診療所適用エラー" 
+                   MOVE    "病院のコードです。診療所では入力できません"
+                                       TO  SPA-ERRMSG
+               WHEN    "0116"
+                   MOVE    "診療所のコードです。病院では入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0017"
                    MOVE    "初診・再診は重複できません"
@@ -283,11 +294,6 @@
                WHEN    "0157"
                    MOVE    "動脈注射は１日１回しか算定できません。"
                                        TO  SPA-ERRMSG
-               WHEN    "0140"
-                   MOVE    "手術が算定されています。注射料は算定"
-                                       TO  SPA-ERRMSG
-                   MOVE    "できません。手技料なしの種別にして下さい。"
-                                       TO  SPA-ERRMSG(37:)
                WHEN    "0058"
                    MOVE    "外来管理加算は算定済です。算定できません。"
                                        TO  SPA-ERRMSG
@@ -340,8 +346,12 @@
                    MOVE    "同時併施分です。入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0071"
-                   MOVE    "撮影料が違います。"
+      ************ MOVE    "撮影料が違います。"
+      ***********                      TO  SPA-ERRMSG
+                   MOVE    "剤内に撮影料が算定されています。"
                                        TO  SPA-ERRMSG
+                   MOVE    "剤を分けて下さい。"
+                                       TO  SPA-ERRMSG(33:)
                WHEN    "0072"
                    MOVE
                "撮影料はこれ以上入力できません。剤を変えて下さい"
@@ -734,6 +744,13 @@
                WHEN    "9200"
                    MOVE    "入院・食事は外来では入力できません。"
                                        TO  SPA-ERRMSG
+      *
+               WHEN    "9300"
+                   MOVE    "患者登録の業務権限はありません。"
+                                                TO  SPA-ERRMSG
+                   MOVE    "患者登録はできません。"
+                                                TO  SPA-ERRMSG(33:)
+      *
                WHEN    "K140"
                    MOVE    "警告！手術が算定されています。"
                                        TO  SPA-ERRMSG

@@ -28,9 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  02/09/03  住所一覧を５０件へ変更
-      *  01.00.02    NACL-多々納  05/11/14  MONFUNC 対応
-      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
-      *  04.05.00    NACL-多々納  09/12/22  検索方法修正、上限なしへ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -42,9 +39,6 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-      *
-      *    画面スタイル
-           COPY    "ENUM-VALUE".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -59,9 +53,6 @@
        01  FLG-AREA.
            03  FLG-END                           PIC 9(01).
            03  FLG-SYSKANRI                      PIC 9(01).
-           03  FLG-ADRS                          PIC 9(01).
-           03  FLG-OK                            PIC 9(01).
-           03  FLG-ADRS-OK                       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -77,7 +68,6 @@
       *
            03  IDX1                              PIC 9(01).
            03  IDX2                              PIC 9(02).
-           03  IDX-STR                           PIC 9(04).
       *
         01 WRK-AREA.
            03  WRK-IDX3                          PIC 9(03).
@@ -100,7 +90,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *****COPY    "CPORCMCP.INC".
+           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -112,34 +102,23 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+           COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -195,15 +174,15 @@
       *    エラー画面より
            IF      SPA-MOTOPG          =   "PERR"
                MOVE    SPACE           TO  SPA-MOTOPG
-               PERFORM 5001-MAPCUR-SEC
-           ELSE
-      *
-      *        初期画面編集
-               PERFORM 300-SCREEN-SEC
-      *
-      *        画面編集
-               PERFORM 500-GMNHEN-SEC
            END-IF
+      *
+      *    住所登録画面より
+           IF      SPA-MOTOPG          =   "P981"
+               PERFORM 310-P981SPASET-SEC
+           END-IF
+      *
+           MOVE    1                   TO  SPA-GMN98-CUR
+           PERFORM  500-GMNHEN-SEC
       *
            MOVE    SPACE                         TO  LINKAREA.
       *
@@ -213,106 +192,75 @@
       *
            PERFORM 900-PUT-WINDOW.
       *
-           MOVE    1                             TO  FLG-END
-           .
+           MOVE    1                             TO  FLG-END.
        100-INIT-EXT.
            EXIT.
-      *
       *****************************************************************
-      *    初期画面処理
-      *****************************************************************
-       300-SCREEN-SEC             SECTION.
-      *
-           MOVE  ZERO                  TO  SPA-GMN98-PAGE
-      *    住所登録画面より
-           PERFORM 310-P981SPASET-SEC
-           MOVE    1                   TO  SPA-GMN98-CUR
-           .
-       300-SCREEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    住所登録画面遷移処理
+      *    画面遷移処理
       *****************************************************************
        310-P981SPASET-SEC                         SECTION.
       *
-           IF      SPA-GMN98-PAGE      =   ZERO
-               MOVE    1                   TO  SPA-GMN98-PAGE
-           END-IF
-           COMPUTE IDX-STR             =  (SPA-GMN98-PAGE   -   1  )
-                                       *   50
-                                       +   1
-      *
-           INITIALIZE                      SPA-GMN98-TABLE
-           MOVE  ZERO                  TO  SPA-GMN98-MAX
-           MOVE  ZERO                  TO  SPA-GMN98-NEXT
+           INITIALIZE                            SPA-GMN98-TABLE.
+           MOVE  ZERO                        TO  SPA-GMN98-MAX
+           MOVE  ZERO                        TO  SPA-GMN98-PAGE
       *    システム管理より周辺住所を取る
-           INITIALIZE                      SYS-1015-REC.
-           MOVE    "1015"              TO  SYS-1015-KANRICD.
-           MOVE    SPA-SYSYMD          TO  SYS-1015-STYUKYMD
-           MOVE    SPA-SYSYMD          TO  SYS-1015-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1015-HOSPNUM
-           MOVE    SYS-1015-REC        TO  MCPDATA-REC.
+           INITIALIZE                            SYS-1015-REC.
+           MOVE  "1015"                          TO  SYS-1015-KANRICD.
+           MOVE  SYS-1015-REC                    TO  MCPDATA-REC.
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE  "DBSELECT"                      TO  MCP-FUNC.
+           MOVE  SPA-SYSYMD                      TO  ORC-DBYMD.
+           MOVE  "SYSKANRI-KEY2"                 TO  ORC-DBPATH.
+           CALL  "ORCMCPSUB"                      USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC.
       *
            IF      MCP-RC                        =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE  "SYSKANRI-KEY2"                 TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
            MOVE    ZERO                TO  IDXX
-           MOVE    ZERO                TO  IDXZ
            PERFORM             UNTIL   FLG-SYSKANRI   =   1
+                               OR      IDXX           >=  100
+               ADD     1                  TO  IDXX
+               MOVE    MCPDATA-REC        TO  SYS-1015-REC
+               MOVE    SYS-1015-KBNCD     TO  SPA-GMN98-KBNCD  (IDXX)
+               MOVE    SYS-1015-LPUBCD    TO  SPA-GMN98-TLPUBCD(IDXX)
+               MOVE    SYS-1015-POST      TO  SPA-GMN98-TPOST (IDXX)
+               MOVE    SYS-1015-RENNUM    TO  SPA-GMN98-TRENNUM(IDXX)
+               MOVE    SYS-1015-TOWNNAMEDSP
+                                          TO  SPA-GMN98-TADRS (IDXX)
       *
-               MOVE    MCPDATA-REC         TO  SYS-1015-REC
-               ADD     1                   TO  IDXZ
-               IF      IDXZ                >=  IDX-STR
-                   ADD     1               TO  IDXX
-                   IF      IDXX            >   50
-                       MOVE    1               TO  SPA-GMN98-NEXT
-                       MOVE    1               TO  FLG-SYSKANRI
-                   ELSE
-                       PERFORM 31011-TBLHENSYU-SEC
-                       MOVE    IDXX            TO  SPA-GMN98-MAX
-                   END-IF
-               END-IF
-      *
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "key2"              TO  MCP-PATHNAME
-                   PERFORM 900-SYSKANRI-READ-SEC
-               END-IF
+               MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           MOVE  "SYSKANRI-KEY2"             TO  ORC-DBPATH
+           MOVE  "DBCLOSE"                   TO  MCP-FUNC
+           CALL  "ORCMCPSUB"                  USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
       *
-           INITIALIZE                  SPA-GMN98-INPUT
+      *****COMPUTE SPA-GMN98-MAX =   (IDXX   -   1)  /   25  +   1    
+           COMPUTE SPA-GMN98-MAX =   (IDXX   -   1)  /   50  +   1    
+      *
+           IF      IDXX                      >   ZERO
+               MOVE    1                         TO  SPA-GMN98-PAGE
+           END-IF
+      *
+           INITIALIZE                  SPA-GMN98-SELNUM
+           INITIALIZE                  SPA-GMN98-ADRS
+           INITIALIZE                  SPA-GMN98-POST
+      *
            MOVE    1                   TO  SPA-GMN98-CUR
       *
            .
        310-P981SPASET-EXT.
-           EXIT.
-      *****************************************************************
-      *    画面編集処理
-      *****************************************************************
-       31011-TBLHENSYU-SEC               SECTION.
-      *
-           MOVE    SYS-1015-KBNCD     TO  SPA-GMN98-KBNCD  (IDXX)
-           MOVE    SYS-1015-LPUBCD    TO  SPA-GMN98-TLPUBCD(IDXX)
-           MOVE    SYS-1015-POST      TO  SPA-GMN98-TPOST (IDXX)
-           MOVE    SYS-1015-RENNUM    TO  SPA-GMN98-TRENNUM(IDXX)
-           MOVE    SYS-1015-TOWNNAMEDSP
-                                      TO  SPA-GMN98-TADRS (IDXX)
-           .
-       31011-TBLHENSYU-EXT.
            EXIT.
       *****************************************************************
       *    画面遷移処理
@@ -365,19 +313,15 @@
        500-GMNHEN-SEC                            SECTION.
       *
            MOVE    SPACE               TO  P98
-           INITIALIZE                      P98
       *
-      *    COMPUTE IDXY    =  (SPA-GMN98-PAGE  -   1)  *   50
+           COMPUTE IDXY    =  (SPA-GMN98-PAGE  -   1)  *   50
       *
            PERFORM VARYING     IDXX    FROM    1   BY  1
                    UNTIL       IDXX    >       50
-      *        COMPUTE IDXZ    =       IDXY    +   IDXX
-               MOVE  "whitebutton"         TO  P98-TADRS-STYLE (IDXX)
-               MOVE  SPA-GMN98-KBNCD(IDXX) TO  P98-TADRS(IDXX)(1:3)
-               MOVE  SPA-GMN98-TADRS(IDXX)
+               COMPUTE IDXZ    =       IDXY    +   IDXX
+               MOVE  SPA-GMN98-KBNCD(IDXZ) TO  P98-TADRS(IDXX)(1:3)
+               MOVE  SPA-GMN98-TADRS(IDXZ)
                                            TO  P98-TADRS(IDXX)(5:16)
-               INSPECT P98-TADRS(IDXX)(5:16)
-                       REPLACING  ALL "  "  BY  "　"
 	   END-PERFORM
       *
            MOVE    SPA-GMN98-ADRS      TO  P98-ADRS 
@@ -417,11 +361,6 @@
                                                   TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "数字のみ入力可能です" TO  SPA-ERRMSG
-               WHEN    "0003"
-                   STRING  "住所マスタに登録されていません。"
-                           "再登録して下さい。"
-                                                  INTO    SPA-ERRMSG
-                   END-STRING
            END-EVALUATE.
       *
            MOVE    SPACE               TO  PERR
@@ -490,10 +429,9 @@
            MOVE  "P98"                       TO  SPA-MOTOPG.
       *
            MOVE  SPACE                       TO  JPAR-POST.
-           MOVE  SPACE                       TO  JPAR-EDITADRS-NAME 
-           MOVE  SPACE                       TO  JPAR-CITYNAME-NAME 
-      **   MOVE  ZERO                        TO  JPAR-CNT.
-      *    MOVE  ZERO                        TO  JPAR-ERRCD.
+           MOVE  SPACE                       TO  JPAR-EDITADRS-NAME.
+           MOVE  ZERO                        TO  JPAR-CNT.
+           MOVE  ZERO                        TO  JPAR-ERRCD.
       *
       *****MOVE   "BACK"                     TO  MCP-PUTTYPE.
            MOVE   "JOIN"                     TO  MCP-PUTTYPE.
@@ -519,7 +457,6 @@
            MOVE    "P98"               TO  SPA-GMN981-MOTOPG
            MOVE    SPACE               TO  P981
       *
-           INITIALIZE                      P981
            MOVE   "NEW"                TO  MCP-PUTTYPE.
            MOVE   "P981   "            TO  MCP-WINDOW.
       *
@@ -536,11 +473,9 @@
       *****************************************************************
        430-ADRFW-SEC                             SECTION.
       *
-           IF      SPA-GMN98-PAGE      >  1
-               COMPUTE SPA-GMN98-PAGE  =  SPA-GMN98-PAGE    -  1
-      *
-               PERFORM 310-P981SPASET-SEC
-           END-IF
+           IF SPA-GMN98-PAGE                     >  1
+               COMPUTE  SPA-GMN98-PAGE  =  SPA-GMN98-PAGE    -  1
+           END-IF.
            MOVE    1                   TO  SPA-GMN98-CUR
       *
            .
@@ -553,9 +488,8 @@
       *****************************************************************
        440-ADRBK-SEC                             SECTION.
       *
-           IF      SPA-GMN98-NEXT      =   1
-               COMPUTE  SPA-GMN98-PAGE =   SPA-GMN98-PAGE    +  1
-               PERFORM 310-P981SPASET-SEC
+           IF  SPA-GMN98-PAGE                    <  SPA-GMN98-MAX
+               COMPUTE  SPA-GMN98-PAGE  =  SPA-GMN98-PAGE    +  1
            END-IF
            MOVE    1                   TO  SPA-GMN98-CUR
       *
@@ -568,48 +502,27 @@
       *****************************************************************
        450-KAKUTEI-SEC                           SECTION.
       *
-           PERFORM 4501-KAKUTEI-CHK-SEC
-      *
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 45012-KAKUTEI-SYORI-SEC
+           IF  SPA-GMN98-PAGE                    =   ZERO
+               GO    TO      450-KAKUTEI-EXT
            END-IF
       *
-           .
-       450-KAKUTEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    確定チェック処理
-      *****************************************************************
-       4501-KAKUTEI-CHK-SEC            SECTION.
-      *
-           IF     (SPA-GMN98-PAGE      =   ZERO )  OR
-                  (SPA-GMN98-SELNUM    =   ZERO )
-               MOVE    "0001"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-GMN98-CUR
-           ELSE
-               PERFORM 510-SELNUM-CHK-SEC
-           END-IF
-      *
-           .
-       4501-KAKUTEI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    確定処理
-      *****************************************************************
-       45012-KAKUTEI-SYORI-SEC         SECTION.
-      *
-      *    住所編集
-           PERFORM 45012-ADRS-HEN-SEC
-      ***  MOVE    1                   TO  JPAR-CNT
-      **   MOVE    ZERO                TO  JPAR-ERRCD
+           IF  SPA-GMN98-SELNUM              =   ZERO
+               MOVE  "0001"                      TO  SPA-ERRCD
+               GO    TO      450-KAKUTEI-EXT
+           END-IF.
       *
       *    共通ＳＰＡ編集
+      *
            MOVE    SPA-GMN98-MOTOPG    TO  SPA-SAKIPG
       *
-           MOVE    "P98"               TO  SPA-MOTOPG
+           MOVE  "P98"                 TO  SPA-MOTOPG.
       *
+           MOVE  P98-POST              TO  JPAR-POST.
+           MOVE  P98-ADRS              TO  JPAR-EDITADRS-NAME.
+           MOVE  1                     TO  JPAR-CNT.
+           MOVE  ZERO                  TO  JPAR-ERRCD.
+      *
+      *****MOVE  "BACK"                TO  MCP-PUTTYPE.
            MOVE  "JOIN"                TO  MCP-PUTTYPE.
            MOVE  SPA-SAKIPG            TO  MCP-WINDOW.
       *
@@ -617,77 +530,7 @@
       *
            MOVE  1                               TO  FLG-END.
       *
-       45012-KAKUTEI-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    住所編集処理
-      *****************************************************************
-       45012-ADRS-HEN-SEC                SECTION.
-      *
-           INITIALIZE                      ADRS-REC
-           MOVE    SPA-GMN98-POST      TO  ADRS-POST
-           MOVE    SPA-GMN98-EDANUM    TO  ADRS-EDANUM
-           MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
-      *
-           MOVE    ADRS-REC            TO  MCPDATA-REC
-           MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_adrs"          TO  MCP-TABLE
-               MOVE    "key9"              TO  MCP-PATHNAME
-               PERFORM 900-ADRS-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-ADRS
-           END-IF
-           MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-ADRS            =   ZERO
-               MOVE    ADRS-POST           TO  JPAR-POST
-               MOVE    ADRS-EDITADRS-NAME  TO  JPAR-EDITADRS-NAME
-      *        市町村名＋町域名
-               MOVE    SPACE               TO  JPAR-CITYNAME-NAME
-               STRING  ADRS-CITYNAME
-                       ADRS-TOWNNAME       DELIMITED  BY  SPACE
-                                           INTO    JPAR-CITYNAME-NAME
-               END-STRING
-               IF      ADRS-TOWNNAME       =   "以下に掲載がない場合"
-                   MOVE    ADRS-CITYNAME   TO  JPAR-CITYNAME-NAME
-               END-IF
-      *        京都で通り名称を編集する時
-               IF     (ADRS-LPUBCD(1:2)    =   "26"  )
-                 AND  (ADRS-TOWNNAME2  NOT =   SPACE )
-                 AND  (SPA-NAI-TOWNNAME2KBN-FLG    =   "1" )
-                   IF     (ADRS-TOWNNAME2(1:2)     =   "（"  )
-                       CONTINUE
-                   ELSE
-      *                市町村名＋町域名
-                       MOVE    SPACE           TO  JPAR-CITYNAME-NAME
-                       STRING  ADRS-CITYNAME
-                               ADRS-TOWNNAME2
-                               ADRS-TOWNNAME       DELIMITED  BY  SPACE
-                                           INTO    JPAR-CITYNAME-NAME
-                       END-STRING
-      *                市町村名＋町域名
-                       MOVE    SPACE           TO  JPAR-CITYNAME-NAME
-                       STRING  ADRS-PREFNAME
-                               ADRS-CITYNAME
-                               ADRS-TOWNNAME2
-                               ADRS-TOWNNAME       DELIMITED  BY  SPACE
-                                           INTO    JPAR-EDITADRS-NAME
-                       END-STRING
-                   END-IF
-               END-IF
-           ELSE
-               MOVE    SPACE               TO  JPAR-POST
-               MOVE    SPACE               TO  JPAR-EDITADRS-NAME
-               MOVE    SPACE               TO  JPAR-CITYNAME-NAME
-           END-IF
-           .
-       45012-ADRS-HEN-EXT.
+       450-KAKUTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -709,18 +552,16 @@
            MOVE    WRK-IDX3(3:1)       TO  IDX1
            COMPUTE IDXZ                =   ((IDX2   -   1  )  *  5 )
                                        +   IDX1
-      *    COMPUTE IDXY        =  ((SPA-GMN98-PAGE  -   1)  *   50)
-      *                        +  IDXZ
-      *    MOVE    IDXY                TO  IDXZ
+           COMPUTE IDXY        =  ((SPA-GMN98-PAGE  -   1)  *   50)
+                               +  IDXZ
+           MOVE    IDXY                TO  IDXZ
       *
            MOVE    1                   TO  SPA-GMN98-CUR
            IF     (IDXZ                >   ZERO  AND  <=   100  )  AND
                   (SPA-GMN98-KBNCD(IDXZ)   NOT =   SPACE )
                MOVE    SPA-GMN98-KBNCD(IDXZ)   TO  SPA-GMN98-SELNUM
                PERFORM 5101-ADRS-HENSYU-SEC
-               IF      SPA-ERRCD           =   SPACE
-                   MOVE    2                   TO  SPA-GMN98-CUR
-               END-IF
+               MOVE    2                   TO  SPA-GMN98-CUR
            END-IF
            .
       *
@@ -734,28 +575,26 @@
       *
            MOVE    1                   TO  SPA-GMN98-CUR
       *
-           MOVE    SPACE               TO  SPA-GMN98-POST
-           MOVE    SPACE               TO  SPA-GMN98-ADRS
+           MOVE  SPACE                   TO  SPA-GMN98-POST
+           MOVE  SPACE                   TO  SPA-GMN98-ADRS
       *
-           MOVE    P98-SELNUM          TO  SPA-GMN98-SELNUM
+           MOVE  P98-SELNUM              TO  SPA-GMN98-SELNUM
       *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDXZ    FROM    1   BY  1
-                   UNTIL      (IDXZ        >       50  )  OR
-                              (FLG-OK      =   1       )
+           COMPUTE IDXY    =  (SPA-GMN98-PAGE  -   1)  *   50
+           PERFORM VARYING     IDXX    FROM    1   BY  1
+                   UNTIL       IDXX    >       50
+               COMPUTE IDXZ    =       IDXY    +   IDXX
                IF      SPA-GMN98-KBNCD(IDXZ)       =   SPACE
-                   MOVE    50                      TO  IDXZ
+                   MOVE    50                          TO  IDXX
                ELSE
                    IF      SPA-GMN98-KBNCD(IDXZ)   =   SPA-GMN98-SELNUM
-                       MOVE    1                   TO  FLG-OK
                        PERFORM 5101-ADRS-HENSYU-SEC
+                       GO      TO      510-SELNUM-CHK-EXT
                    END-IF
-               END-IF
+               END-IF     
 	   END-PERFORM
       *
-           IF      FLG-OK              =   ZERO
-               MOVE    "0001"              TO  SPA-ERRCD
-           END-IF
+           MOVE    "0001"                TO  SPA-ERRCD
            .
       *
        510-SELNUM-CHK-EXT.
@@ -766,56 +605,40 @@
       *****************************************************************
        5101-ADRS-HENSYU-SEC                        SECTION.
       *
-           MOVE    ZERO                TO  FLG-ADRS
-           MOVE    SPACE               TO  SPA-GMN98-POST
-           MOVE    SPACE               TO  SPA-GMN98-ADRS
-           MOVE    ZERO                TO  SPA-GMN98-EDANUM
       *    住所データ読み出し
-           INITIALIZE                          ADRS-REC
-           MOVE    SPA-GMN98-TPOST  (IDXZ) TO  ADRS-POST
-           MOVE    SPA-GMN98-TRENNUM(IDXZ) TO  ADRS-EDANUM
-           MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
-           MOVE    ADRS-REC            TO  MCPDATA-REC
-           MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_adrs"          TO  MCP-TABLE
-               MOVE    "key9"              TO  MCP-PATHNAME
-               PERFORM 900-ADRS-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-ADRS
-           END-IF
-           MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-ADRS            =   ZERO
-               MOVE    ADRS-POST           TO  SPA-GMN98-POST
-               MOVE    ADRS-EDITADRS-NAME  TO  SPA-GMN98-ADRS
-      *        京都で通り名称を編集する時
-               IF     (ADRS-LPUBCD(1:2)    =   "26"  )
-                 AND  (ADRS-TOWNNAME2  NOT =   SPACE )
-                 AND  (SPA-NAI-TOWNNAME2KBN-FLG    =   "1" )
-                   IF     (ADRS-TOWNNAME2(1:2)     =   "（"  )
-                       CONTINUE
-                   ELSE
-      *                市町村名＋町域名
-                       MOVE    SPACE           TO  SPA-GMN98-ADRS
-                       STRING  ADRS-PREFNAME
-                               ADRS-CITYNAME
-                               ADRS-TOWNNAME2
-                               ADRS-TOWNNAME       DELIMITED  BY  SPACE
-                                           INTO    SPA-GMN98-ADRS
-                       END-STRING
-                   END-IF
+           INITIALIZE                            ADRS-REC
+           MOVE  SPA-GMN98-TLPUBCD(IDXZ)     TO  ADRS-LPUBCD
+           MOVE  SPA-GMN98-TPOST  (IDXZ)     TO  ADRS-POST
+           MOVE  SPA-GMN98-TRENNUM(IDXZ)     TO  ADRS-EDANUM
+           MOVE  ADRS-REC                    TO  MCPDATA-REC
+           MOVE  "DBSELECT"                  TO  MCP-FUNC
+           MOVE  "ADRS-KEY"                  TO  ORC-DBPATH
+           CALL  "ORCMCPSUB"                  USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+           IF  MCP-RC                        =  ZERO
+               MOVE  "DBFETCH"               TO  MCP-FUNC
+               MOVE  "ADRS-KEY"              TO  ORC-DBPATH
+               CALL  "ORCMCPSUB"              USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+               IF  MCP-RC                    =   ZERO
+                   MOVE  MCPDATA-REC         TO  ADRS-REC
+                   MOVE  ADRS-POST           TO  SPA-GMN98-POST
+                   MOVE  ADRS-EDITADRS-NAME  TO  SPA-GMN98-ADRS
                END-IF
-               MOVE    ADRS-EDANUM         TO  SPA-GMN98-EDANUM
-               MOVE    2                   TO  SPA-GMN98-CUR
-           ELSE
-               MOVE    "0003"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-GMN98-CUR
            END-IF
+      *
+           MOVE  "ADRS-KEY"                  TO  ORC-DBPATH
+           MOVE  "DBCLOSE"                   TO  MCP-FUNC
+           CALL  "ORCMCPSUB"                  USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+      * 
+           MOVE    2                   TO  SPA-GMN98-CUR 
            .
       *
        5101-ADRS-HENSYU-EXT.
@@ -826,9 +649,12 @@
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -838,73 +664,17 @@
            .
        900-SYSKANRI-READ-EXT.
            EXIT.
-      *****************************************************************
-      *    住所マスタ読み込み処理
-      *****************************************************************
-       900-ADRS-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  ADRS-REC
-               MOVE    ZERO                TO  FLG-ADRS
-           ELSE
-               MOVE    1                   TO  FLG-ADRS
-           END-IF
-           .
-       900-ADRS-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブル検索処理
-      *****************************************************************
-       910-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＤＢクローズ処理
-      *****************************************************************
-       990-DBCLOSE-SEC         SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       990-DBCLOSE-EXT.
-           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW                            SECTION.
       *
-           MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
+           MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
+           CALL   "ORCMCPSUB"                     USING  MCPAREA
+                                                         ORCMCPAREA
+                                                         MCPDATA-REC.
+      *
        900-PUT-WINDOW-EXT.
            EXIT.
       *

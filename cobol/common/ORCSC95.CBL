@@ -2181,6 +2181,47 @@
                END-IF
            END-IF
       *
+      *    コメント１
+           IF      PTINF-COMMENT-1   NOT =   SPACE
+                ADD     1                  TO  IDX
+                MOVE    "コメント："       TO  SPA-GMN-TABOO (IDX)
+                MOVE    PTINF-COMMENT-1    TO  SPA-GMN-TABOO (IDX)
+                                                             (11:)
+                IF      PTINF-COMMENT-1(49:)   NOT =   SPACE
+                    ADD     1                  TO  IDX
+                    MOVE    PTINF-COMMENT-1(49:) TO  SPA-GMN-TABOO (IDX)
+                END-IF
+                IF      PTINF-COMMENT-1(111:)  NOT =   SPACE
+                    ADD     1                  TO  IDX
+                    MOVE    PTINF-COMMENT-1(111:)
+                                               TO  SPA-GMN-TABOO (IDX)
+                END-IF
+                IF      PTINF-COMMENT-1(173:)  NOT =   SPACE
+                    ADD     1                  TO  IDX
+                    MOVE    PTINF-COMMENT-1(173:)
+                                               TO  SPA-GMN-TABOO (IDX)
+                END-IF
+           END-IF
+      *    コメント２
+           IF      PTINF-COMMENT-2 NOT =   SPACE
+               ADD     1                   TO  IDX
+               MOVE    PTINF-COMMENT-2     TO  SPA-GMN-TABOO (IDX)
+               IF      PTINF-COMMENT-2(63:)     NOT =   SPACE
+                   ADD     1                   TO  IDX
+                   MOVE    PTINF-COMMENT-2(63:)
+                                               TO  SPA-GMN-TABOO (IDX)
+               END-IF
+               IF      PTINF-COMMENT-2(125:)   NOT =   SPACE
+                   ADD     1                   TO  IDX
+                   MOVE    PTINF-COMMENT-2(125:)
+                                               TO  SPA-GMN-TABOO (IDX)
+               END-IF
+               IF      PTINF-COMMENT-2(187:)   NOT =   SPACE
+                   ADD     1                   TO  IDX
+                   MOVE    PTINF-COMMENT-2(187:)
+                                               TO  SPA-GMN-TABOO (IDX)
+               END-IF
+           END-IF
            MOVE    IDX                 TO  SPA-TABOO-MAX
       *
            .

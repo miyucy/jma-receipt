@@ -59,6 +59,7 @@
       *  02.00.09    NACL-多々納  03/06/30  カスタマイズ帳票名取得サブ追加
       *  02.00.10    NACL-多々納  03/09/26  業務権限判定追加
       *                                     処方せんにドクターなし追加
+      *  02.00.11    NACL-多々納  03/10/15  ２００明細へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -178,7 +179,7 @@
                 05  WRK-COMBO-SCODEMEIL               PIC X(18).  
       *
 026700  01  WRK-SORT-TBL.
-026800      03  WRK-SORT-TBLO                         OCCURS   100.
+026800      03  WRK-SORT-TBLO                         OCCURS   200.
                 05  WRK-SORT-TUKEID                   PIC 9(05).  
 026900          05  WRK-SORT-TYYKTIME                 PIC X(04).
 027000          05  WRK-SORT-TUKETIME                 PIC X(06).
@@ -696,7 +697,7 @@
            END-IF
       *
            PERFORM UNTIL     (FLG-YYK            =  1     )  OR
-                             (IDX               >=  100   )
+                             (IDX               >=  200   )
                IF     (YYK-YYKID       NOT       =   ZERO       ) AND
                       (YYK-RAIINZUMI             =   SPACE      )
                    ADD     1             TO  IDX
@@ -744,7 +745,7 @@
            END-IF
 061700*
 061800     PERFORM     UNTIL  (FLG-UKETUKE        =  1     )  OR
-062000                        (IDX               >=  100   )
+062000                        (IDX               >=  200   )
                IF     (UKE-UKEID         >   ZERO    )   AND
 062300                (UKE-KAIKEITIME    =   ZERO    ) 
 062400                 ADD     1             TO  IDX
@@ -810,7 +811,7 @@
 070700     INITIALIZE              SPA-GMN-TBL
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       100 
+                   UNTIL   IDX >       200 
                    OR      WRK-SORT-NARABE(IDX)   =   SPACE
                MOVE    IDX                 TO  SPA-UKE-MAX
       *
@@ -902,11 +903,11 @@
 070400 31012-SORT-SEC              SECTION.
 070800*  
 070900     PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >=      100
+                   UNTIL   IDX     >=      200
                    OR      WRK-SORT-NARABE(IDX)   =   SPACE
                COMPUTE IDY     =   IDX     +   1
                PERFORM VARYING IDZ     FROM    IDY     BY  1
-                       UNTIL   IDZ     >       100
+                       UNTIL   IDZ     >       200
                        OR      WRK-SORT-NARABE(IDZ)   =   SPACE
                    IF      WRK-SORT-NARABE (IDX)   >   
                                            WRK-SORT-NARABE (IDZ)
@@ -1769,8 +1770,8 @@
                MOVE    62                  TO  SPA-GMN-CUR
            ELSE
                IF     (SPA-GMN-PTID        =   ZERO  )
-      **           権限がある場合
-      **        AND   (SPA-GSRAUTH-12      =   "1"  )
+      *            権限がある場合
+                AND   (SPA-GSRAUTH-12      =   "1"  )
       *            患者登録へ
                    MOVE    58                  TO  SPA-GMN-CUR
                ELSE
@@ -3356,14 +3357,14 @@
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
-      ***  患者登録の権限がない時、エラー
-      *    IF      SPA-GSRAUTH-12      =   "1"
-      *        CONTINUE
-      *    ELSE
-      *        MOVE    "0028"              TO  SPA-ERRCD
-      *        MOVE    2                   TO  SPA-GMN-CUR
-      *        GO  TO  492-ORCGP01-EXT
-      **** END-IF
+      *    患者登録の権限がない時、エラー
+           IF      SPA-GSRAUTH-12      =   "1"
+               CONTINUE
+           ELSE
+               MOVE    "0028"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
+               GO  TO  492-ORCGP01-EXT
+           END-IF
       *
       *
            IF      SPA-GMN-SELNUM      >   ZERO
@@ -3841,35 +3842,35 @@
       *
       *業務処理権限設定
       *    患者登録
-      *    IF      SPA-GSRAUTH-12      =   "1"
-      *        MOVE    WIDGET-NORMAL       TO  U02-B05-STATE
-      *    ELSE
-      *        MOVE    WIDGET-INSENSITIVE  TO  U02-B05-STATE
-      *    END-IF
+           IF      SPA-GSRAUTH-12      =   "1"
+               MOVE    WIDGET-NORMAL       TO  U02-B05-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  U02-B05-STATE
+           END-IF
       *    診療行為
-      *    IF      SPA-GSRAUTH-21      =   "1"
-      *        MOVE    WIDGET-NORMAL       TO  U02-B06-STATE
-      *    ELSE
-      *        MOVE    WIDGET-INSENSITIVE  TO  U02-B06-STATE
-      *    END-IF
+           IF      SPA-GSRAUTH-21      =   "1"
+               MOVE    WIDGET-NORMAL       TO  U02-B06-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  U02-B06-STATE
+           END-IF
       *    病名登録
-      *    IF      SPA-GSRAUTH-22      =   "1"
-      *        MOVE    WIDGET-NORMAL       TO  U02-B07-STATE
-      *    ELSE
-      *        MOVE    WIDGET-INSENSITIVE  TO  U02-B07-STATE
-      *    END-IF
+           IF      SPA-GSRAUTH-22      =   "1"
+               MOVE    WIDGET-NORMAL       TO  U02-B07-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  U02-B07-STATE
+           END-IF
       *    収納登録
-      *    IF      SPA-GSRAUTH-23      =   "1"
-      *        MOVE    WIDGET-NORMAL       TO  U02-B08-STATE
-      *    ELSE
-      *        MOVE    WIDGET-INSENSITIVE  TO  U02-B08-STATE
-      *    END-IF
+           IF      SPA-GSRAUTH-23      =   "1"
+               MOVE    WIDGET-NORMAL       TO  U02-B08-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  U02-B08-STATE
+           END-IF
       *    会計照会
-      *    IF      SPA-GSRAUTH-24      =   "1"
-      *        MOVE    WIDGET-NORMAL       TO  U02-B09S-STATE
-      *    ELSE
-      *        MOVE    WIDGET-INSENSITIVE  TO  U02-B09S-STATE
-      ***  END-IF
+           IF      SPA-GSRAUTH-24      =   "1"
+               MOVE    WIDGET-NORMAL       TO  U02-B09S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  U02-B09S-STATE
+           END-IF
       *
            .
        51O-GSRAUTH-EXT.
