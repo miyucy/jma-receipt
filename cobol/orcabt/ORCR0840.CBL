@@ -44,6 +44,8 @@
       *                                     コメント対応
       *  01.01.04    NACL-門脇    04/04/26  ユーザーコメント追加対応
       *  01.01.05    NACL-門脇    04/05/20  点滴の器材単価編集
+      *  01.01.06    NACL-小豆沢  04/06/08  ＣＴ・ＭＲＩ（２回目以降）の
+      *                                     摘要欄記載順修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2470,6 +2472,14 @@
                                       TO RECE85-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE85-KOUHYOJYUNNUM(IDX4)
+      *
+               IF     TNS-SRYCD       =  "170022290"  OR
+                                         "170022390"  OR
+                                         "170022490"
+                      MOVE   202      TO  RECE85-CDKBN-KBNNUM(IDX4)
+                      MOVE   99       TO  RECE85-CDKBN-KOUBAN(IDX4)
+               END-IF
+      *
                IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
                       (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
                AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )

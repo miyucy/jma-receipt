@@ -88,6 +88,8 @@
       *                                     £²¤Ä°Ê¾å¤¢¤Ã¤¿¾ì¹ç¤Îµ­ºÜÂÐ±þ
       *  01.01.07    NACL-ÌçÏÆ    04/05/20  ÅÀÅ©¤Î´ïºàÃ±²ÁÊÔ½¸
       *  01.01.08    NACL-ÌçÏÆ    04/06/08  ÁªÄê³°Çñ¤Î¥³¥á¥ó¥ÈÂÐ±þ
+      *  01.01.09    NACL-¾®Æ¦Âô  04/06/08  £Ã£Ô¡¦£Í£Ò£É¡Ê£²²óÌÜ°Ê¹ß¡Ë¤Î
+      *                                     Å¦Í×Íóµ­ºÜ½ç½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3776,6 +3778,14 @@
                                       TO RECE65-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE65-KOUHYOJYUNNUM(IDX4)
+      *
+               IF     TNS-SRYCD       =  "170022290"  OR
+                                         "170022390"  OR
+                                         "170022490"
+                      MOVE   202      TO  RECE65-CDKBN-KBNNUM(IDX4)
+                      MOVE   99       TO  RECE65-CDKBN-KOUBAN(IDX4)
+               END-IF
+      *
                IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
                       (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
                AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )

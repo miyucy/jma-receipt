@@ -68,6 +68,8 @@
       *  01.01.04    NACL-門脇    04.04.10  在宅患者訪問点滴注射管理指導料
       *                                     算定時の点滴注射のコメント対応
       *  01.01.05    NACL-門脇    04.04.26  ユーザーコメント追加対応
+      *  01.01.06    NACL-小豆沢  04.06.08  ＣＴ・ＭＲＩ（２回目以降）の
+      *                                     摘要欄記載順修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1368,6 +1370,14 @@
                                       TO RECE45-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE45-KOUHYOJYUNNUM(IDX4)
+      *
+               IF     TNS-SRYCD       =  "170022290"  OR
+                                         "170022390"  OR
+                                         "170022490"
+                      MOVE   202      TO  RECE45-CDKBN-KBNNUM(IDX4)
+                      MOVE   99       TO  RECE45-CDKBN-KOUBAN(IDX4)
+               END-IF
+      *
                IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
                       (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
                AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )
@@ -2240,7 +2250,8 @@
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(11)
                        COMPUTE   RECE41-TENSU(11)  =
                                  RECE41-TENSU(11)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                                (WK-SYUTEN         * ACCT-ZAIKAISU)
+      ***                       (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    END-IF
       *            その他
                    IF    FLG-ZAITAKU    =   ZERO
@@ -2945,7 +2956,8 @@
                        MOVE   1              TO   FLG-ZAITAKU
                        COMPUTE   RECE41-TENSU(7)  =
                                  RECE41-TENSU(7)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                                (WK-SYUTEN         * ACCT-ZAIKAISU)
+      ***                       (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    END-IF
       *            その他
                    IF    FLG-ZAITAKU    =   ZERO
