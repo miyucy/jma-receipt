@@ -375,7 +375,7 @@ path	del2 	{
 		FROM tbl_syunou
 			WHERE   HOSPID       =   :HOSPID
 			AND     NYUGAIKBN    =   :NYUGAIKBN
-			AND     DENPJTIKBN   =   :DENPJTIKBN
+			AND     CREATEKBN    =   :CREATEKBN
 		;
 	};
 };
@@ -384,53 +384,12 @@ path	del3 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syunou
-			WHERE   HOSPID    =   :HOSPID
-			AND     NYUGAIKBN    =   :NYUGAIKBN
-			AND     DENPJTIKBN   =   :DENPJTIKBN
-			AND     SKYSTYMD     >=  :SKYSTYMD
-			AND     SKYEDYMD     <=  :SKYEDYMD
-		;
-	};
-};
-
-path	del4 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_syunou
 			WHERE   HOSPID       =   :HOSPID
 			AND     NYUGAIKBN    =   :NYUGAIKBN
 			AND     PTID         =   :PTID
-			AND     DENPJTIKBN   =   :DENPJTIKBN
+			AND     CREATEKBN    =   :CREATEKBN
 		;
 	};
 };
 
-path	del5 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_syunou
-			WHERE   HOSPID    =   :HOSPID
-			AND     NYUGAIKBN    =   :NYUGAIKBN
-			AND     PTID         =   :PTID
-			AND     DENPJTIKBN   =   :DENPJTIKBN
-			AND     SKYSTYMD     >=  :SKYSTYMD
-			AND     SKYEDYMD     <=  :SKYEDYMD
-		;
-	};
-};
-
-path	del6 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_syunou
-			WHERE   HOSPID    =   :HOSPID
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTID        =   :PTID
-			AND (  DENPJTIKBN <>  '2' 
-               AND DENPJTIKBN <>  '3' )
-			AND   SKYSTYMD    >=  :SKYSTYMD
-			AND   SKYEDYMD    <=  :SKYEDYMD
-		;
-	};
-};
 
