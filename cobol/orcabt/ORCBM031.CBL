@@ -680,12 +680,17 @@
       *                                 TO  WRK-ITBFTNZ
       *                 MOVE    WRK-ITBFTNZ
       *                         TO  HCM2R-TAI-ITBFTN(CNT-LINE IDZ)
-      *----(01.01.01)--UPD-END-----
-                   WHEN    6   THRU    7
+                   WHEN    6
                        MOVE    SUM-FTNMONEY(IDX)
                                        TO  WRK-ITBFTNZ
                        MOVE    WRK-ITBFTNZ
-                               TO  HCM2R-TAI-ITBFTN(CNT-LINE IDZ)
+                               TO  HCM2R-TAI-ITBFTN(CNT-LINE 1)
+                   WHEN    7
+                       MOVE    SUM-FTNMONEY(IDX)
+                                       TO  WRK-ITBFTNZ
+                       MOVE    WRK-ITBFTNZ
+                               TO  HCM2R-TAI-ITBFTN(CNT-LINE 2)
+      *----(01.01.01)--UPD-END-----
                    END-EVALUATE
       *
                    ADD     SUM-SHOKUJIKENSU(IDX)
@@ -821,12 +826,17 @@
       *                                 TO  WRK-ITBFTNZ
       *                 MOVE    WRK-ITBFTNZ
       *                         TO  HCM2R-TAI-ITBFTN(CNT-LINE IDZ)
-      *----(01.01.01)--UPD-END-----
-                   WHEN    6   THRU    7
+                   WHEN    6
                        MOVE    GSUM-FTNMONEY(IDX)
                                        TO  WRK-ITBFTNZ
                        MOVE    WRK-ITBFTNZ
-                               TO  HCM2R-TAI-ITBFTN(CNT-LINE IDZ)
+                               TO  HCM2R-TAI-ITBFTN(CNT-LINE 1)
+                   WHEN    7
+                       MOVE    GSUM-FTNMONEY(IDX)
+                                       TO  WRK-ITBFTNZ
+                       MOVE    WRK-ITBFTNZ
+                               TO  HCM2R-TAI-ITBFTN(CNT-LINE 2)
+      *----(01.01.01)--UPD-END-----
                    END-EVALUATE
       *
       *        Ï·¿ÍÊÝ·ò
