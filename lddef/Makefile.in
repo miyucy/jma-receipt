@@ -93,7 +93,7 @@ directory: directory.in
 dbgroup.inc: 
 	ln -sf ../etc/dbgroup.inc .
 
-orcadbs.inc:
+orcadbs.inc: 
 	ln -sf ../etc/orcadbs.inc .
 
 kentan.inc:

@@ -50,7 +50,7 @@ bd	{
         orcabt;
 #include	<./kentan.inc>
 };
-db      {
+db	{
 #include	<./orcadbs.inc>
 };
 #include	<./dbgroup.inc>
