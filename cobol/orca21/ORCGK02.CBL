@@ -926,14 +926,6 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *TEST
-           ACCEPT  WRK-SYSTIME         FROM    TIME
-           DISPLAY "K02 START:" WRK-SYSTIME (1:2) ":" 
-                                WRK-SYSTIME (3:2) ":" 
-                                WRK-SYSTIME (5:2) ":" 
-                                WRK-SYSTIME (7:2) "/" 
-      *TEST
-      *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
@@ -987,13 +979,6 @@
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-K02         TO  SPA-FREE
       *
-      *TEST
-           ACCEPT  WRK-SYSTIME         FROM    TIME
-           DISPLAY "K02 END  :" WRK-SYSTIME (1:2) ":" 
-                                WRK-SYSTIME (3:2) ":" 
-                                WRK-SYSTIME (5:2) ":" 
-                                WRK-SYSTIME (7:2) "/" 
-      *TEST
       *
            .
            EXIT    PROGRAM
@@ -1338,7 +1323,13 @@
                    IF     (SPA-PTNUM       NOT =   SPACE    ) AND
                           (SPA-GMN-PTNUM   NOT =   SPA-PTNUM)
                        PERFORM 3009-SAIHEN-SEC
-                   ELSE
+                       IF      SPA-KIDCD           =   "0121"
+      *                     入院中の時、入院画面へ
+                           MOVE    SPACE               TO  WRK-PUTTYPE
+                           PERFORM 450-K02N-SYORI-SEC
+                           GO      TO      300-SCREEN-EXT
+                       END-IF
+                  ELSE
                        IF     (SPA-PTNUM       =   SPACE )  AND
                               (SPA-GMN-PTNUM   =   SPACE )
                            PERFORM 30010-INIT-GMN-SEC
@@ -3337,6 +3328,8 @@
                                                               (IDX2)
                    MOVE    LNK-WKSRY-SRYKBN (IDX)
                                                TO  SPA-COM-SRYKBN(IDX2)
+                   MOVE    LNK-WKSRY-SRYKBN (IDX)
+                                               TO  SPA-GMN-SRYKBN(IDX2)
                END-IF
       *     訂正の時、診療種別が未入力で院外の薬剤があった時
                IF     (LNK-WKSRY-SRYSYUKBN (IDX)   =   SPACE OR
@@ -3367,6 +3360,8 @@
            END-IF
            MOVE    LNK-WKSRY-SRYKBN(IDX)
                                        TO  SPA-COM-SRYKBN  (IDX2)
+           MOVE    LNK-WKSRY-SRYKBN(IDX)
+                                       TO  SPA-GMN-SRYKBN  (IDX2)
            MOVE    LNK-WKSRY-SRYSYUKBN(IDX)
                                        TO  SPA-COM-SRYSYUKBN  (IDX2)
            MOVE    LNK-WKSRY-SRYCD (IDX IDY)
@@ -5458,7 +5453,11 @@
                                                TO  WRK-SRYSYUKBN
       *        診療種別区分名称チェック
                PERFORM 510-SRYKBN-MEI-SEC
-               MOVE    WRK-SRYSYUKBNMEI    TO  SPA-GMN-MEISYO-G
+               MOVE    WRK-SRYSYUKBNMEI    TO  SPA-GMN-MEISYO
+                                                    (SPA-GMN-IDX)
+               MOVE    "*"                 TO  SPA-GMN-MEIH
+                                                    (SPA-GMN-IDX)
+               MOVE    WRK-SRYKBN          TO  SPA-GMN-SRYKBN
                                                     (SPA-GMN-IDX)
            ELSE
       *        文字変換・編集処理
@@ -8425,6 +8424,11 @@
                           (WRK-COM-DATAKBN(IDX)        =   "1"  OR
                            WRK-COM-INPUTCD(IDX)        =   SPACE)
                        MOVE    1               TO  FLG-ZAIEND
+                   END-IF
+      *            前も空白の時対象行のみ
+                   IF     (WRK-COM-INPUTCD(IDX)        =   SPACE )  AND
+                          (WRK-MAE-INPUTCD(IDX)        =   SPACE )
+                       MOVE    ZERO            TO  FLG-ZAIEND
                    END-IF
                ELSE
                    IF      FLG-ZAIEND          =   1

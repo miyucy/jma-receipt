@@ -2305,8 +2305,8 @@
            MOVE    SPACE               TO  SPA-ERRCD
            MOVE    SPACE               TO  SPA-KIDCD
       *    初診料自動発生
-      *    受診履歴がない時
-           IF       SPA-SYOSIN         =   1
+           IF      (SPA-NYU-SYOSIN     =   "1" )  AND
+                   (SPA-SYORIFLG       =   ZERO)
                PERFORM 330-SYOSIN-SET-SEC
            END-IF
       *
@@ -2655,6 +2655,8 @@
                                                               (IDX2)
                        MOVE    LNK-WKSRY-SRYKBN (IDX)
                                                TO  SPA-COM-SRYKBN(IDX2)
+                       MOVE    LNK-WKSRY-SRYKBN (IDX)
+                                               TO  SPA-GMN-SRYKBN(IDX2)
                    END-IF
                END-IF
            END-IF
@@ -2667,6 +2669,8 @@
            END-IF
            MOVE    LNK-WKSRY-SRYKBN(IDX)
                                        TO  SPA-COM-SRYKBN  (IDX2)
+           MOVE    LNK-WKSRY-SRYKBN(IDX)
+                                       TO  SPA-GMN-SRYKBN  (IDX2)
            MOVE    LNK-WKSRY-SRYSYUKBN(IDX)
                                        TO  SPA-COM-SRYSYUKBN  (IDX2)
            MOVE    LNK-WKSRY-SRYCD (IDX IDY)
@@ -3312,6 +3316,13 @@
       *****************************************************************
        330-SYOSIN-SET-SEC                  SECTION.
       *
+      *    初診料が算定できる時
+           IF       SPA-SYOSIN         =   1
+               CONTINUE
+           ELSE
+               GO      TO      330-SYOSIN-SET-EXT
+           END-IF
+      *
       *    入院年月であること
            IF      SPA-K02N-NYUINYMD(1:6)  NOT =   SPA-SRYYMD(1:6)
                GO      TO      330-SYOSIN-SET-EXT
@@ -3655,6 +3666,10 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
+      *
+      *    入退院日
+           MOVE    WRK-NYUINYMD        TO  SPA-K02N-NYUINYMD
+           MOVE    WRK-TAIINYMD        TO  SPA-K02N-TAIINYMD
       *
            MOVE    "5"                 TO  LNK-SC95-KBN
            MOVE    "K02"               TO  LNK-SC95-PG
@@ -4654,6 +4669,12 @@
                                                TO  WRK-SRYSYUKBN
       *        診療種別区分名称チェック
                PERFORM 510-SRYKBN-MEI-SEC
+               MOVE    WRK-SRYSYUKBNMEI    TO  SPA-GMN-MEISYO
+                                                    (SPA-GMN-IDX)
+               MOVE    "*"                 TO  SPA-GMN-MEIH
+                                                    (SPA-GMN-IDX)
+               MOVE    WRK-SRYKBN          TO  SPA-GMN-SRYKBN
+                                                    (SPA-GMN-IDX)
            ELSE
       *        文字変換・編集処理
                PERFORM 410112-INPUTCD-HENKAN-SEC
@@ -5448,12 +5469,8 @@
        4101129-KAISUU-CHK-SEC           SECTION.
       *
       *    回数に変更があった時、剤内の警告はクリアする
-      *TEST
-           DISPLAY "LNK-SC97-NYURYOKU :" LNK-SC97-NYURYOKU 
-      *TEST
            IF     SPA-GMN-INPUTCD(SPA-GMN-IDX)
                                    NOT =   SPA-MAE-INPUTCD(SPA-GMN-IDX)
-      *****IF     LNK-SC97-NYURYOKU    =   1
                COMPUTE IDX-K           =   SPA-GMN-IDX   -   1
                PERFORM VARYING     IDX-K2  FROM    IDX-K  BY  -1
                        UNTIL       IDX-K2  <   1
@@ -7733,6 +7750,11 @@
                           (WRK-COM-DATAKBN(IDX)        =   "1"  OR
                            WRK-COM-INPUTCD(IDX)        =   SPACE)
                        MOVE    1               TO  FLG-ZAIEND
+                   END-IF
+      *            前も空白の時対象行のみ
+                   IF     (WRK-COM-INPUTCD(IDX)        =   SPACE )  AND
+                          (WRK-MAE-INPUTCD(IDX)        =   SPACE )
+                       MOVE    ZERO            TO  FLG-ZAIEND
                    END-IF
                ELSE
                    IF      FLG-ZAIEND          =   1
