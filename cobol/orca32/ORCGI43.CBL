@@ -61,7 +61,7 @@
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-RECECOM         PIC 9(01).
            03  FLG-EXAMPLE         PIC 9(01).
-           03  FLG-PTNYUINRRK      PIC 9(01).
+           03  FLG-NYUINACCT       PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
       *
            03  FLG-HKNCOMBICHK     PIC 9(01).
@@ -71,6 +71,7 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDZ                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -79,8 +80,8 @@
            03  WRK-HKNCOMBIMEI     PIC X(100).
            03  WRK-HKNKBN-MEI      PIC X(02).
       *
-           03  WRK-SRYKA           PIC X(02).
-           03  WRK-SRYKAMEI        PIC X(20).
+           03  WRK-NSRYKA          PIC X(02).
+           03  WRK-NSRYKAMEI       PIC X(20).
       *
            03  WRK-SELNUM          PIC 9(03).
            03  WRK-SELNUM2         PIC 9(03).
@@ -101,6 +102,12 @@
                    07  WRK-I43-FLG             PIC X(01).
                    07  WRK-I43-RSI-HKNKBN      PIC X(01).
                05  WRK-I43-HKNMAX              PIC 9(04).
+      *
+      *    入院科ワーク
+           03  WRK-I43-NSRYKA-AREA.
+               05  WRK-I43-NSRYKA-LIST    OCCURS  100.
+                   07  WRK-I43-NSRYKA          PIC X(02).
+                   07  WRK-I43-NSRYKA-KBN      PIC X(01).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -129,13 +136,13 @@
        01  EXAMPLE-REC.
            COPY    "CPEXAMPLE.INC".
       *
-      *    患者入院履歴
-       01  PTNYUINRRK-REC.
-           COPY    "CPPTNYUINRRK.INC".
-      *
       *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
+      *
+      *    入院会計マスタ−
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
       *
       *
       *****************************************************************
@@ -378,13 +385,6 @@
                IF      COMB-DELKBN         =   "1"
                    CONTINUE
                ELSE
-                   IF      (SPA-I43-SRYYMS >=  COMB-TEKSTYMD(1:6)) AND
-                           (SPA-I43-SRYYMS <=  COMB-TEKEDYMD(1:6))
-                       MOVE    1                   TO  FLG-HKNCOMBICHK
-                   END-IF
-               END-IF
-      *
-               IF      FLG-HKNCOMBICHK    =    1
                    ADD     1                   TO  SPA-I43-HKNMAX
                    MOVE    COMB-HKNCOMBINUM    TO  SPA-I43-THKNCOMBINUM
                                                   (SPA-I43-HKNMAX)
@@ -520,20 +520,20 @@
                MOVE    RECECOM-SRYYM       TO  SPA-I43-NSRYYM  (IDX)
                MOVE    RECECOM-HKNCOMBI    TO  SPA-I43-NHKNCOMBI(IDX)
                MOVE    RECECOM-COMMENT     TO  SPA-I43-TCOMMENT(IDX)
-      *        診療年月
+      *        入院年月
                MOVE    RECECOM-SRYYM       TO  WRK-SYMD(1:6)
                MOVE    "01"                TO  WRK-SYMD(7:2)
                PERFORM 800-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG (1:6)   TO  SPA-I43-TSRYYM (IDX)
-      *        診療科
-               MOVE    RECECOM-SRYKA       TO  WRK-SRYKA
-               PERFORM 810-SRYKA-SET-SEC
-               MOVE    WRK-SRYKAMEI        TO  SPA-I43-TSRYKA (IDX)
+      *        入院科
+               MOVE    RECECOM-SRYKA       TO  WRK-NSRYKA
+               PERFORM 810-NSRYKA-SET-SEC
+               MOVE    WRK-NSRYKAMEI       TO  SPA-I43-TSRYKA (IDX)
       *        保険組合せ番号
                MOVE    RECECOM-HKNCOMBI    TO  WRK-HKNCOMBI
                PERFORM 820-HKNCOMBI-SET-SEC
                MOVE    WRK-HKNCOMBIMEI     TO  SPA-I43-THKNCOMBI(IDX)
-      *        診療日
+      *        入院日
                IF      RECECOM-SRYDD       =   ZERO
                    MOVE    SPACE               TO  SPA-I43-TSRYDD (IDX)
                ELSE
@@ -559,8 +559,30 @@
       *****************************************************************
        314-SYOKI-SEC             SECTION.
       *
+      *    初期編集
+           IF      SPA-MOTOPG(1:3)     =   "I41"
+               MOVE    SPA-GMN-SRYKA-LIST-L-41(01)
+                                           TO  SPA-I43-SRYKA-G
+               MOVE    SPA-I43-HKN-LIST(01)
+                                           TO  SPA-I43-HKNCOMBI-G
+           END-IF.
+      *
       *    保険組合せの再編集
            INITIALIZE                  WRK-I43-HKNCOMB-COMB.
+           INITIALIZE                  WRK-I43-NSRYKA-AREA.
+           MOVE    ZERO                TO  IDY.
+      *
+      *    入院科セット
+           PERFORM VARYING    IDX      FROM    1   BY  1
+                   UNTIL      IDX      >   SPA-GMN-SRYKA-MAX-41
+               IF      SPA-GMN-SRYKA-L-41 (IDX)     NOT =   "00"
+                   ADD     1               TO  IDY
+                   MOVE    SPA-GMN-SRYKA-L-41 (IDX)
+                                           TO  WRK-I43-NSRYKA (IDY)
+                   MOVE    IDY             TO  IDZ
+               END-IF
+           END-PERFORM.
+      *
            MOVE    ZERO                TO  WRK-I43-HKNMAX.
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >    SPA-I43-HKNMAX
@@ -571,40 +593,46 @@
            END-PERFORM.
            MOVE    SPA-I43-HKNMAX     TO  WRK-I43-HKNMAX.
       *
-      *    患者入院履歴を検索する  医療機関、患者ＩＤ
-           INITIALIZE                  PTNYUINRRK-REC.
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID.
-           MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID.
+      *    入院会計を検索する  医療機関、患者ＩＤ、年月
+           INITIALIZE                  NYUINACCT-REC.
+           MOVE    SPA-HOSPID          TO  NACCT-HOSPID.
+           MOVE    SPA-GMN-PTID        TO  NACCT-PTID.
+           MOVE    SPA-I43-SRYYMS      TO  NACCT-SRYYM.
       *
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC.
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
            MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "PTNYUINRRK-KEY3"   TO  ORC-DBPATH.
+           MOVE    "NYUINACCT-KEY12"   TO  ORC-DBPATH.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC.
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY3"   TO  ORC-DBPATH
-               PERFORM 970-PTNYUINRRK-READ-SEC
+               MOVE    "NYUINACCT-KEY12"   TO  ORC-DBPATH
+               PERFORM 970-NYUINACCT-READ-SEC
            ELSE
-               INITIALIZE                  PTNYUINRRK-REC
-               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
            END-IF.
       *
            MOVE    ZERO                TO  WRK-HKNCOMBI.
-           MOVE    SPACE               TO  WRK-SRYKA.
-           PERFORM UNTIL    FLG-PTNYUINRRK     =   1
+           MOVE    SPACE               TO  WRK-NSRYKA.
+           PERFORM UNTIL    FLG-NYUINACCT     =   1
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >   WRK-I43-HKNMAX
-                   IF      PTNYUINRRK-HKNCOMBINUM
-                                       =   WRK-I43-THKNCOMBINUM(IDX)
+                   IF      NACCT-HKNCOMBI
+                                       =   WRK-I43-THKNCOMBINUM (IDX)
                        MOVE    "1"             TO  WRK-I43-FLG (IDX)
-                       MOVE    WRK-I43-HKNMAX TO  IDX
+                   END-IF
+               END-PERFORM
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL       IDY     >   IDZ
+                   IF     WRK-I43-NSRYKA (IDY)   =   NACCT-SRYKA
+                       MOVE    "1"         TO   WRK-I43-NSRYKA-KBN (IDY)
                    END-IF
                END-PERFORM
       *
-               MOVE    "PTNYUINRRK-KEY3"   TO  ORC-DBPATH
-               PERFORM 970-PTNYUINRRK-READ-SEC
+               MOVE    "NYUINACCT-KEY12"   TO  ORC-DBPATH
+               PERFORM 970-NYUINACCT-READ-SEC
            END-PERFORM.
       *
       *    入院のあった保険組合せのみ表示する
@@ -623,75 +651,28 @@
                END-IF
            END-PERFORM.
       *
-      *    初期編集
-           IF      SPA-MOTOPG(1:3)     =   "I41"
-               MOVE    SPA-GMN-SRYKA-LIST-L-41(01)
-                                           TO  SPA-I43-SRYKA-G
-               MOVE    SPA-I43-HKN-LIST(01)
-                                           TO  SPA-I43-HKNCOMBI-G
-           END-IF.
-      *
        314-SYOKI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *   入院履歴より診療科決定処理
-      *****************************************************************
-       3141-JYURRK-CHK-SEC             SECTION.
-      *
-      *    患者入院歴を検索する  医療機関、患者ＩＤ
-           INITIALIZE                  PTNYUINRRK-REC.
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID.
-           MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID.
-      *
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "PTNYUINRRK-KEY13"  TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY3"   TO  ORC-DBPATH
-               PERFORM 970-PTNYUINRRK-READ-SEC
-           ELSE
-               INITIALIZE                  PTNYUINRRK-REC
-               MOVE    1               TO  FLG-PTNYUINRRK
-           END-IF.
-      *
-           MOVE    ZERO                TO  WRK-HKNCOMBI.
-           MOVE    SPACE               TO  WRK-SRYKA.
-           PERFORM
-               UNTIL    FLG-PTNYUINRRK     =   1
-               MOVE    PTNYUINRRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
-               MOVE    PTNYUINRRK-NYUINKA      TO  WRK-SRYKA
-      *
-               MOVE    "PTNYUINRRK-KEY3"       TO  ORC-DBPATH
-               PERFORM 970-PTNYUINRRK-READ-SEC
-           END-PERFORM.
-      *
-       3141-JYURRK-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    入院科名編集処理
       *****************************************************************
-       810-SRYKA-SET-SEC             SECTION.
+       810-NSRYKA-SET-SEC            SECTION.
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   SPA-GMN-SRYKA-MAX-41
-               IF      WRK-SRYKA           =   SPA-GMN-SRYKA-L-41 (IDY)
+               IF      WRK-NSRYKA          =   SPA-GMN-SRYKA-L-41 (IDY)
                    MOVE    SPA-GMN-SRYKAMEI-L-41 (IDY)
-                                                   TO  WRK-SRYKAMEI
+                                                   TO  WRK-NSRYKAMEI
                    MOVE    SPA-GMN-SRYKA-MAX-41    TO  IDY
                END-IF
            END-PERFORM.
       *
-           IF      WRK-SRYKA           =   ZERO
-               MOVE    SPACE               TO  WRK-SRYKAMEI
+           IF      WRK-NSRYKA          =   ZERO
+               MOVE    SPACE               TO  WRK-NSRYKAMEI
            END-IF.
       *
-       810-SRYKA-SET-EXT.
+       810-NSRYKA-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -764,13 +745,13 @@
            MOVE    SPA-I43-SRYYM      TO  I43-SRYYM.
            MOVE    SPA-I43-COMMENT    TO  I43-COMMENT.
       *
-      *    診療科
+      *    入院科
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-SRYKA-MAX-41
                MOVE    SPA-GMN-SRYKA-LIST-L-41 (IDX)
                                            TO  I43-SRYKA-ITEM (IDX)
            END-PERFORM.
-           MOVE    IDY                  TO  I43-SRYKA-COUNT.
+           MOVE    SPA-GMN-SRYKA-MAX-41 TO  I43-SRYKA-COUNT.
            MOVE    SPA-I43-SRYKA-G      TO  I43-SRYKA.
       *    保険組合せ
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -893,9 +874,9 @@
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        診療科
+      *        入院科
                WHEN    "ACTIVATE"      ALSO    "SRYKA"
-                   PERFORM 400-SRYKA-SEC
+                   PERFORM 400-NSRYKA-SEC
       *        保険組合せ
                WHEN    "ACTIVATE"      ALSO    "HKNCOMBI"
                    PERFORM 410-HKNCOMBI-SEC
@@ -938,7 +919,7 @@
       *****************************************************************
       *    入院科処理
       *****************************************************************
-       400-SRYKA-SEC                    SECTION.
+       400-NSRYKA-SEC                   SECTION.
       *
            MOVE    2                   TO  SPA-I43-CUR.
       *
@@ -950,7 +931,14 @@
                IF      SPA-I43-SRYKA      =   SPA-GMN-SRYKA-L-41 (IDX)
                    MOVE    SPA-GMN-SRYKA-LIST-L-41 (IDX)
                                            TO  SPA-I43-SRYKA-G
-                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM.
+           PERFORM VARYING    IDX      FROM    1   BY  1
+                   UNTIL      WRK-I43-NSRYKA (IDX)   =   SPACE
+               IF    ((WRK-I43-NSRYKA (IDX)     =  SPA-I43-SRYKA)  AND
+                      (WRK-I43-NSRYKA-KBN (IDX) =  "1"))  OR
+                     (SPA-I43-SRYKA             =  "00")
+                       MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM.
            IF      FLG-OK              =   ZERO
@@ -959,7 +947,7 @@
                MOVE    1                   TO  SPA-I43-CUR
            END-IF.
       *
-       400-SRYKA-EXT.
+       400-NSRYKA-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せ処理
@@ -984,6 +972,8 @@
                MOVE    "0002"              TO  SPA-ERRCD
                GO      TO      410-HKNCOMBI-EXT
            END-IF.
+      *
+           MOVE    1                   TO  SPA-I43-CUR.
       *
        410-HKNCOMBI-EXT.
            EXIT.
@@ -1108,9 +1098,17 @@
                GO      TO      212-TOUROKU-EXT
            END-IF.
       *
-           PERFORM 2130-HKNCOMBI-CHK-SEC.
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   IDZ
+              IF    ((SPA-I43-SRYKA              =   "00")  AND
+                     (WRK-I43-NSRYKA-KBN (IDY)   =   "1"))  OR
+                    ((SPA-I43-SRYKA          NOT =   "00")  AND
+                     (WRK-I43-NSRYKA (IDY)       =   SPA-I43-SRYKA) AND
+                     (WRK-I43-NSRYKA-KBN (IDY)   =   "1"))
+                  PERFORM 2120-RECECOM-SEL-SEC
+              END-IF
+           END-PERFORM.
       *
-           PERFORM 2120-RECECOM-SEL-SEC.
            IF      FLG-RECECOM         =   ZERO
                MOVE    "0105"              TO  SPA-IIDCD
            ELSE
@@ -1118,34 +1116,6 @@
            END-IF.
       *
        212-TOUROKU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    受診のチェック処理
-      *****************************************************************
-       2130-HKNCOMBI-CHK-SEC          SECTION.
-      *
-      *    患者入院歴を検索する  医療機関、患者ＩＤ
-           INITIALIZE                  PTNYUINRRK-REC.
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID.
-           MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID.
-      *
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "PTNYUINRRK-KEY3"   TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY3"       TO  ORC-DBPATH
-               PERFORM 970-PTNYUINRRK-READ-SEC
-           ELSE
-               INITIALIZE                  PTNYUINRRK-REC
-               MOVE    1               TO  FLG-PTNYUINRRK
-           END-IF.
-      *
-       2130-HKNCOMBI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1157,7 +1127,7 @@
            INITIALIZE                    RECECOM-REC.
            MOVE    SPA-HOSPID            TO  RECECOM-HOSPID.
            MOVE    SPA-GMN-PTID          TO  RECECOM-PTID.
-           MOVE    SPA-I43-SRYKA         TO  RECECOM-SRYKA.
+           MOVE    WRK-I43-NSRYKA (IDY)  TO  RECECOM-SRYKA.
            MOVE    SPA-I43-SRYYMS        TO  RECECOM-SRYYM.
            MOVE    SPA-I43-HKNCOMBINUM   TO  RECECOM-HKNCOMBI.
       *
@@ -1184,43 +1154,52 @@
       *****************************************************************
        2121-TOUROKU-SYORI-SEC          SECTION.
       *
-           PERFORM 2120-RECECOM-SEL-SEC.
-           IF      FLG-RECECOM         =   ZERO
-      *        更新
-               MOVE    SPA-I43-COMMENT    TO  RECECOM-COMMENT
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   IDZ
+              IF    ((SPA-I43-SRYKA              =   "00")  AND
+                     (WRK-I43-NSRYKA-KBN (IDY)   =   "1"))  OR
+                    ((SPA-I43-SRYKA          NOT =   "00")  AND
+                     (WRK-I43-NSRYKA (IDY)       =   SPA-I43-SRYKA) AND
+                     (WRK-I43-NSRYKA-KBN (IDY)   =   "1"))
+                  PERFORM 2120-RECECOM-SEL-SEC
+                  IF      FLG-RECECOM         =   ZERO
+      *               更新
+                      MOVE    SPA-I43-COMMENT       TO  RECECOM-COMMENT
       *
-               MOVE    RECECOM-REC         TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "I43 RECECOM UPD ERR:" MCP-RC "."
-               END-IF
-           ELSE
-      *        追加
-               MOVE    SPACE               TO  RECECOM-REC
-               INITIALIZE                  RECECOM-REC
-               MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
-               MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
-               MOVE    SPA-I43-SRYKA       TO  RECECOM-SRYKA
-               MOVE    SPA-I43-SRYYMS      TO  RECECOM-SRYYM
-               MOVE    SPA-I43-HKNCOMBINUM TO  RECECOM-HKNCOMBI
-               MOVE    SPA-I43-COMMENT     TO  RECECOM-COMMENT
+                      MOVE    RECECOM-REC           TO  MCPDATA-REC
+                      MOVE    "DBUPDATE"            TO  MCP-FUNC
+                      MOVE    "RECECOM-KEY"         TO  ORC-DBPATH
+                      CALL    "ORCMCPSUB"           USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+                      IF      MCP-RC          NOT =   ZERO
+                          DISPLAY "I43 RECECOM UPD ERR:" MCP-RC "."
+                      END-IF
+                  ELSE
+      *               追加
+                      MOVE    SPACE                 TO  RECECOM-REC
+                      INITIALIZE                    RECECOM-REC
+                      MOVE    SPA-HOSPID            TO  RECECOM-HOSPID
+                      MOVE    SPA-GMN-PTID          TO  RECECOM-PTID
+                      MOVE    WRK-I43-NSRYKA (IDY)  TO  RECECOM-SRYKA
+                      MOVE    SPA-I43-SRYYMS        TO  RECECOM-SRYYM
+                      MOVE    SPA-I43-HKNCOMBINUM   TO  RECECOM-HKNCOMBI
+                      MOVE    SPA-I43-COMMENT       TO  RECECOM-COMMENT
       *
-               MOVE    RECECOM-REC         TO  MCPDATA-REC
-               MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "I43 RECECOM INS ERR:" MCP-RC "."
-               END-IF
-           END-IF.
+                      MOVE    RECECOM-REC           TO  MCPDATA-REC
+                      MOVE    "DBINSERT"            TO  MCP-FUNC
+                      MOVE    "RECECOM-KEY"         TO  ORC-DBPATH
+                      CALL    "ORCMCPSUB"           USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+                      IF      MCP-RC          NOT =   ZERO
+                          DISPLAY "I43 RECECOM INS ERR:" MCP-RC "."
+                      END-IF
+                  END-IF
+              END-IF
+           END-PERFORM.
       *    再表示
            PERFORM                     310-SPA-SET-SEC.
       *
@@ -1509,15 +1488,9 @@
            MOVE    SPA-I43-NSRYYM  (SPA-I43-SELNUM)
                                        TO  SPA-I43-SRYYMS.
       *
-      *    保険組合せ
-           PERFORM 3101-HKNCOMBI-HEN-SEC.
-      *
-      *    初期編集
-           PERFORM 314-SYOKI-SEC.
-      *
            MOVE    SPA-I43-NSRYKA  (SPA-I43-SELNUM)
                                        TO  I43-SRYKA.
-           PERFORM 400-SRYKA-SEC.
+           PERFORM 400-NSRYKA-SEC.
            MOVE    SPA-I43-NHKNCOMBI  (SPA-I43-SELNUM)
                                        TO  I43-HKNCOMBI.
            PERFORM 410-HKNCOMBI-SEC.
@@ -1626,7 +1599,7 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "診療科選択エラー"
+                   MOVE    "入院科選択エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "保険組合せ選択エラー"
@@ -1638,7 +1611,7 @@
                    MOVE    "文例登録番号エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE    "診療年月に診療行為がありません。"
+                   MOVE    "入院年月に診療行為がありません。"
                                        TO  SPA-ERRMSG
                    MOVE    "コメントは登録できません。"
                                        TO  SPA-ERRMSG(33:)
@@ -1655,16 +1628,16 @@
                                        TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE
-                   "対象の診療科と保険組合せは受診が有りません。"
+                   "対象の入院科と保険組合せは受診が有りません。"
                                        TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "コメントは全角で入力して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0014"
-                   MOVE    "アフターケアの時、診療日を選択して下さい"
+                   MOVE    "アフターケアの時、入院日を選択して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0015"
-                   MOVE    "アフターケア診療日選択番号がありません"
+                   MOVE    "アフターケア入院日選択番号がありません"
                                        TO  SPA-ERRMSG
            END-EVALUATE.
       *
@@ -1693,7 +1666,7 @@
       *
            EVALUATE    SPA-IIDCD
                WHEN    "0101"
-                   MOVE    "診療年月のレセプトコメントを入力します。"
+                   MOVE    "入院年月のレセプトコメントを入力します。"
                                        TO  WRK-JIDMSG
                    MOVE    "よろしいですか？"
                                        TO  WRK-JIDMSG(41:)
@@ -1810,9 +1783,9 @@
        930-EXAMPLE-READ-EXT.
            EXIT.
       *****************************************************************
-      *    患者入院履歴マスター読込
+      *    入院会計マスター読込
       *****************************************************************
-       970-PTNYUINRRK-READ-SEC       SECTION.
+       970-NYUINACCT-READ-SEC       SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
@@ -1820,14 +1793,14 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
-               MOVE    ZERO            TO  FLG-PTNYUINRRK
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+               MOVE    ZERO            TO  FLG-NYUINACCT
            ELSE
-               INITIALIZE                  PTNYUINRRK-REC
-               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
            END-IF.
       *
-       970-PTNYUINRRK-READ-EXT.
+       970-NYUINACCT-READ-EXT.
            EXIT.
       *
       *****************************************************************
