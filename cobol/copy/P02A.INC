@@ -21,6 +21,8 @@
       *****************************************************************
          02  P02A.
       ****  02  P02A-FIXED1.
+              03  P02A-MIDASI.
+                04  P02A-VALUE  PIC X(22).
               03  P02A-SCROLLEDWINDOW1.
                 04  P02A-DUALLIST.
                   05  P02A-DUALLIST-COUNT  PIC S9(9)   BINARY.
@@ -28,8 +30,9 @@
                     07  P02A-NUM   PIC X(4).
                     07  P02A-PTNUM PIC X(20).
                     07  P02A-NAME  PIC X(30).
+                    07  P02A-BIRTHDAY  PIC X(9).
                     07  P02A-ADRS  PIC X(50).
                     07  P02A-TEL   PIC X(16).
                   05  P02A-DUALLIST-SELECT PIC X       OCCURS  20 TIMES.
-              03  P02A-MIDASI.
-                04  P02A-VALUE  PIC X(22).
+              03  P02A-SELNUM.
+                04  P02A-VALUE  PIC S9(3).

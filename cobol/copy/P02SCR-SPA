@@ -429,6 +429,8 @@
       *
       *    P02A (二重登録確認画面）
            03  SPA-P02A-AREA.
+               05  SPA-P02A-SYORI        PIC 9(01).
+      *
                05  SPA-GMN2A-PAGE        PIC 9(02).
                05  SPA-GMN2A-MAX         PIC 9(02).
                05  SPA-GMN2A-CUR         PIC 9(02).
@@ -436,10 +438,14 @@
                    07  SPA-GMN2A-TBL             OCCURS   20.
                        09  SPA-GMN2A-NUM         PIC 9(04).
                        09  SPA-GMN2A-PTID        PIC X(10).
-                       09  SPA-GMN2A-PTNUM       PIC X(10).
+                       09  SPA-GMN2A-PTNUM       PIC X(20).
                        09  SPA-GMN2A-NAME        PIC X(16).
+                       09  SPA-GMN2A-BIRTHDAY    PIC X(09).
                        09  SPA-GMN2A-ADRS        PIC X(48).
                        09  SPA-GMN2A-TEL1        PIC X(15).
+               05  SPA-GMN2A-SELNUM          PIC 9(03).
+      *
+               05  SPA-NAI2A-PTNUM           PIC X(20).
       *
       *    P020(受付）
            03  SPA-P020-AREA.
