@@ -129,6 +129,8 @@
       *  01.00.51    NACL-門脇    04/07/27  国保負担割合編集修正
       *  01.00.52    NACL-門脇    04/07/27  新潟県地方公費対応
       *  01.00.53    NACL-門脇    04/08/04  同一保険番号対応
+      *
+      *  01.01.01    NACL-門脇    04/08/10  複数保険・複数科入力対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -180,6 +182,7 @@
            03  FLG-INGAI               PIC X(01).
        01  WK-FLG.
            03  FLG-SYUNOU              PIC 9(01).
+           03  FLG-SYUTOTAL            PIC 9(01).
            03  FLG-TNKRRK              PIC 9(01).
            03  FLG-TSYRRK              PIC 9(01).
            03  FLG-PTKOHFTN            PIC 9(01).
@@ -208,7 +211,9 @@
            03  FLG-ADDKBN              PIC 9(01). 
       *----(01.00.03) LINE ADD END   --------------------------
            03  FLG-LOCALRJN            PIC 9(01).
-           03  FLG-JGNKAISU            PIC 9(01).
+           03  FLG-SYUTOTAL-SET        PIC 9(01).
+           03  FLG-NOCOUNT             PIC 9(01).
+           03  FLG-GRPNYURYOKU         PIC 9(01).
       *
            03  WK-ERR                  PIC 9(01).
            03  WK-UERR                 PIC 9(01).
@@ -236,6 +241,12 @@
       *    福岡県地方公費負担区分・主保険の負担割合
            03  WK-KOH-FTNKBN           PIC X(1).
            03  WK-KOH-FTNRATE          PIC 9(3).
+      *
+           03  WK-GRP-DENPNUM          PIC 9(7).
+           03  WK-TAIHI-DENPNUM        PIC 9(7).
+      *
+           03  WK-TAIHI-DENPNUMXX-OCC.
+               05  WK-TAIHI-DENPNUMXX  PIC 9(7)    OCCURS   4.
       *
       *    公費の患者負担上限回数と上限金額の退避用エリア
        01  HOKEN-MAX-AREA.
@@ -276,11 +287,15 @@
            03  KAISU-KOHI4-M           PIC 9(05).
       *
        01  HOKEN-KAISU-TABLE.
-           03  HOKEN-KAISU-TBL         OCCURS  32.
+           03  HOKEN-KAISU-TBL.
+             04 HOKEN-KAISU-TBL2       OCCURS  32.
                05  KOHI1-TBL           PIC 9(02).
                05  KOHI2-TBL           PIC 9(02).
                05  KOHI3-TBL           PIC 9(02).
                05  KOHI4-TBL           PIC 9(02).
+           03  HOKEN-KAISU-TBL-R   REDEFINES   HOKEN-KAISU-TBL.
+             04 HOKEN-KAISU-TBL2-R     OCCURS  32.
+               05  KOHI-TBL            PIC 9(02)   OCCURS   4.
       *
       *    公費の患者負担済み金額の加算用エリア
        01  HOKEN-FUTAN-AREA.
@@ -517,9 +532,12 @@
       *    添え字領域
        01  IDX-AREA.
            03  IDX                     PIC  9(02)  VALUE  ZERO.
+           03  IDY                     PIC  9(02)  VALUE  ZERO.
+           03  IDZ                     PIC  9(02)  VALUE  ZERO.
            03  IDX2X                   PIC  X(02).
            03  IDX2R                   REDEFINES    IDX2X.
                05  IDX2                PIC  9(02).
+           03  IDX3                    PIC  9(02).
            03  Y-IDX                   PIC  9(03)  VALUE  ZERO.
            03  Y-IDX2                  PIC  9(03)  VALUE  ZERO.
            03  Y-IDX3                  PIC  9(03)  VALUE  ZERO.
@@ -594,6 +612,10 @@
        01  SYU-SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
+      *    収納合計マスタ
+       01  SYUTTL-REC.
+           COPY    "CPSYUTOTAL.INC".
+      *
       *    低所得者履歴
        01  TSYRRK-REC.
            COPY    "CPTSYRRK.INC".
@@ -657,25 +679,31 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
-      *
       /
       ***
        LINKAGE             SECTION.
-           COPY  "MCPAREA". 
+           COPY  "MCPAREA".
            COPY  "CPORCS01.INC".
        01  LNK-SYU-SYUNOU-REC.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
+       01  LNK-WRK-SYUNOU-REC-T.
+        02 LNK-WRK-SYUNOU-REC      OCCURS 15.
+           COPY  "CPSYUNOU.INC" 
+                               REPLACING  //SYU-// BY //LNK-WRK-SYU-//.
       /
        PROCEDURE           DIVISION  USING
                                      MCPAREA
                                      LNK-ORCS01-REC
-                                     LNK-SYU-SYUNOU-REC.
+                                     LNK-SYU-SYUNOU-REC
+                                     LNK-WRK-SYUNOU-REC-T.
+      *
       ******************************************************************
       *        依頼制御処理
       ******************************************************************
        MAIN-RTN            SECTION.
        MAIN-000.
            MOVE    ZERO            TO  LNK-S01-RC.
+           MOVE    LNK-S01-IDX     TO  IDY.
            MOVE    SPACE           TO  KEISAN-AREA.
            INITIALIZE                  KEISAN-AREA.
            MOVE    ZERO            TO  LNK-SYU-RJN-FTN
@@ -1115,31 +1143,31 @@
                    IF    WK-TAX1001-KBN  =  "1"
                      COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
                               LNK-SYU-RSI-TAX-SAI       +               
-                            ((LNK-S01-SINDAN  *  0.05)  +  0.5)         
+                            ((LNK-S01-SINDAN(IDY)  *  0.05)  +  0.5)    
                      COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
                               LNK-SYU-RSI-TAX-SAI       +               
-                            ((LNK-S01-MEISAI  *  0.05)  +  0.5)         
+                            ((LNK-S01-MEISAI(IDY)  *  0.05)  +  0.5)    
       *
                      COMPUTE  LNK-SYU-RSIETC-MONEY      =               
                               LNK-SYU-RSIETC-MONEY      +               
-                            ((LNK-S01-SINDAN  *  0.05)  +  0.5)         
+                            ((LNK-S01-SINDAN(IDY)  *  0.05)  +  0.5)    
                      COMPUTE  LNK-SYU-RSIETC-MONEY      =               
                               LNK-SYU-RSIETC-MONEY      +               
-                            ((LNK-S01-MEISAI  *  0.05)  +  0.5)         
+                            ((LNK-S01-MEISAI(IDY)  *  0.05)  +  0.5)    
                    ELSE
                      COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
                               LNK-SYU-RSI-TAX-SAI       +               
-                             (LNK-S01-SINDAN  *  0.05)                  
+                             (LNK-S01-SINDAN(IDY)  *  0.05)             
                      COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
                               LNK-SYU-RSI-TAX-SAI       +               
-                             (LNK-S01-MEISAI  *  0.05)                  
+                             (LNK-S01-MEISAI(IDY)  *  0.05)             
       *
                      COMPUTE  LNK-SYU-RSIETC-MONEY      =               
                               LNK-SYU-RSIETC-MONEY      +               
-                             (LNK-S01-SINDAN  *  0.05)                  
+                             (LNK-S01-SINDAN(IDY)  *  0.05)             
                      COMPUTE  LNK-SYU-RSIETC-MONEY      =               
                               LNK-SYU-RSIETC-MONEY      +               
-                             (LNK-S01-MEISAI  *  0.05)                  
+                             (LNK-S01-MEISAI(IDY)  *  0.05)             
                    END-IF
                  END-IF                                                 
                  COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY  +
@@ -1174,31 +1202,31 @@
                    IF    WK-TAX1001-KBN  =  "1"
                      COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
                               LNK-SYU-RSI-TAX-SAI       +               
-                            ((LNK-S01-SINDAN  *  0.05)  +  0.5)         
+                            ((LNK-S01-SINDAN(IDY)  *  0.05)  +  0.5)    
                      COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
                               LNK-SYU-RSI-TAX-SAI       +               
-                            ((LNK-S01-MEISAI  *  0.05)  +  0.5)         
+                            ((LNK-S01-MEISAI(IDY)  *  0.05)  +  0.5)    
       *
                      COMPUTE  LNK-SYU-RSIETC-MONEY      =               
                               LNK-SYU-RSIETC-MONEY      +               
-                            ((LNK-S01-SINDAN  *  0.05)  +  0.5)         
+                            ((LNK-S01-SINDAN(IDY)  *  0.05)  +  0.5)    
                      COMPUTE  LNK-SYU-RSIETC-MONEY      =               
                               LNK-SYU-RSIETC-MONEY      +               
-                            ((LNK-S01-MEISAI  *  0.05)  +  0.5)         
+                            ((LNK-S01-MEISAI(IDY)  *  0.05)  +  0.5)    
                    ELSE
                      COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
                               LNK-SYU-RSI-TAX-SAI       +               
-                             (LNK-S01-SINDAN  *  0.05)                  
+                             (LNK-S01-SINDAN(IDY)  *  0.05)             
                      COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
                               LNK-SYU-RSI-TAX-SAI       +               
-                             (LNK-S01-MEISAI  *  0.05)                  
+                             (LNK-S01-MEISAI(IDY)  *  0.05)             
       *
                      COMPUTE  LNK-SYU-RSIETC-MONEY      =               
                               LNK-SYU-RSIETC-MONEY      +               
-                             (LNK-S01-SINDAN  *  0.05)                  
+                             (LNK-S01-SINDAN(IDY)  *  0.05)             
                      COMPUTE  LNK-SYU-RSIETC-MONEY      =               
                               LNK-SYU-RSIETC-MONEY      +               
-                             (LNK-S01-MEISAI  *  0.05)                  
+                             (LNK-S01-MEISAI(IDY)  *  0.05)             
                    END-IF
                  END-IF                                                 
                  MOVE    ZERO      TO       LNK-SYU-SKYMONEY
@@ -1537,13 +1565,13 @@
       *    （自賠責の場合、７点を８４円に読み替える）
       *    （療養担当手当：１月１回の算定）
            IF    LNK-SYU-SYUHKNNUM       =    "973"
-           AND   LNK-S01-RYOYO       NOT =    ZERO
+           AND   LNK-S01-RYOYO(IDY)  NOT =    ZERO
                COMPUTE  LNK-SYU-HKNTEN (10)  =  LNK-SYU-HKNTEN (10)
-                                             -  LNK-S01-RYOYO
+                                             -  LNK-S01-RYOYO(IDY)
                COMPUTE  LNK-SYU-HKNTEN (12)  =  LNK-SYU-HKNTEN (12)
-                                             -  LNK-S01-RYOYO
+                                             -  LNK-S01-RYOYO(IDY)
       *
-               COMPUTE  WK-RYOYO  =  LNK-S01-RYOYO  /   7
+               COMPUTE  WK-RYOYO  =  LNK-S01-RYOYO(IDY)  /   7
       *
                COMPUTE  LNK-SYU-RSIETC-MONEY =  LNK-SYU-RSIETC-MONEY
                                              +  ( 84 *  WK-RYOYO )
@@ -2988,17 +3016,9 @@
       ******************************************************************
        220-SYUNOU-SEC           SECTION.
       *
-           MOVE     ZERO        TO    FLG-JGNKAISU.
-           IF  (MAX-KAI-KOHI1-D  NOT = ZERO)   OR
-               (MAX-KAI-KOHI2-D  NOT = ZERO)   OR
-               (MAX-KAI-KOHI3-D  NOT = ZERO)   OR
-               (MAX-KAI-KOHI4-D  NOT = ZERO)   OR
-               (MAX-KAI-KOHI1-M  NOT = ZERO)   OR
-               (MAX-KAI-KOHI2-M  NOT = ZERO)   OR
-               (MAX-KAI-KOHI3-M  NOT = ZERO)   OR
-               (MAX-KAI-KOHI4-M  NOT = ZERO)   
-                  MOVE     1    TO    FLG-JGNKAISU
-           END-IF.
+           MOVE     ZERO        TO    WK-TAIHI-DENPNUM.
+           INITIALIZE                 WK-TAIHI-DENPNUMXX-OCC.
+           MOVE     ZERO        TO    FLG-GRPNYURYOKU.
       *
            IF  (COMB-KOH1-GAIJGNKBN        =       "1")      OR
                (COMB-KOH2-GAIJGNKBN        =       "1")      OR
@@ -3006,6 +3026,7 @@
                (COMB-KOH4-GAIJGNKBN        =       "1")      OR
                (LNK-S01-KOUREI-ZAITAKU-KBN =       "1")      OR
                (FLG-KOUREI-KBN             =       "1")
+      *
                INITIALIZE                         SYU-SYUNOU-REC
                MOVE    LNK-SYU-HOSPID     TO      SYU-HOSPID
                MOVE    LNK-SYU-NYUGAIKBN  TO      SYU-NYUGAIKBN
@@ -3014,27 +3035,28 @@
                MOVE    "__"                 TO    SYU-SRYYMD(7:2)
                MOVE    SYU-SYUNOU-REC     TO      MCPDATA-REC
                MOVE    "DBSELECT"         TO      MCP-FUNC
-               MOVE    "SYUNOU-KEY14"     TO      ORC-DBPATH
+               MOVE    "SYUNOU-KEY26"     TO      ORC-DBPATH
                CALL    "ORCMCPSUB"         USING   MCPAREA
                                                    ORCMCPAREA
                                                    MCPDATA-REC
                IF      MCP-RC             =       ZERO
-                   MOVE    "SYUNOU-KEY14" TO      ORC-DBPATH
-                   IF   FLG-JGNKAISU  =  1
-                       PERFORM  SYUNOU-READ2-SEC
-                   ELSE
-                       PERFORM  SYUNOU-READ-SEC
-                   END-IF
+                   MOVE    "SYUNOU-KEY26" TO      ORC-DBPATH
+                   PERFORM  SYUNOU-READ-SEC
                    PERFORM  UNTIL  (FLG-SYUNOU   =    "1")
                      IF   SYU-DENPJTIKBN  NOT =  "3"
-                             PERFORM        2201-SYUNOU-COUNT-SEC
+                        IF   WK-TAIHI-DENPNUM  NOT =  ZERO
+                        AND  SYU-FUKU-DENPNUM  NOT =  ZERO
+                        AND  WK-TAIHI-DENPNUM   =   SYU-FUKU-DENPNUM
+                          CONTINUE
+                        ELSE
+                          PERFORM        2201-SYUTOTAL-FIND-SEC
+                          IF   FLG-SYUTOTAL-SET  =  ZERO
+                             PERFORM     2201-SYUNOU-COUNT-SEC
+                          END-IF
+                        END-IF
                      END-IF
-                     MOVE           "SYUNOU-KEY14"   TO   ORC-DBPATH
-                     IF   FLG-JGNKAISU  =  1
-                       PERFORM  SYUNOU-READ2-SEC
-                     ELSE
-                       PERFORM  SYUNOU-READ-SEC
-                     END-IF
+                     MOVE     "SYUNOU-KEY26"   TO   ORC-DBPATH
+                     PERFORM   SYUNOU-READ-SEC
                    END-PERFORM
                    MOVE        LNK-SYU-SRYYMD(7:2)   TO   IDX2X
                    MOVE        KOHI1-TBL(IDX2) TO    KAISU-KOHI1-D
@@ -3050,14 +3072,122 @@
                END-IF
       *
                MOVE    "DBCLOSE"               TO  MCP-FUNC
-               MOVE    "SYUNOU-KEY14"          TO  ORC-DBPATH
+               MOVE    "SYUNOU-KEY26"          TO  ORC-DBPATH
                CALL    "ORCMCPSUB"              USING
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC
+      *
+      *
+               PERFORM    VARYING   IDZ    FROM   1   BY   1
+                           UNTIL  (IDZ    >    15)
+                             OR   (LNK-WRK-SYU-SRYYMD(IDZ) =  SPACE)
+      *
+                      MOVE    1              TO  FLG-GRPNYURYOKU
+      *
+                      MOVE    LNK-WRK-SYUNOU-REC(IDZ)
+                                             TO  SYU-SYUNOU-REC
+                      PERFORM        2201-SYUNOU-COUNT-SEC
+      *
+               END-PERFORM
+      *
            END-IF.
       *
        220-SYUNOU-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    収納合計マスタがあるか
+      ******************************************************************
+       2201-SYUTOTAL-FIND-SEC           SECTION.
+      *
+           MOVE     ZERO       TO     FLG-SYUTOTAL-SET.
+      *
+           IF  ( LNK-S01-KAGRPFLG            =   "1"   )
+           OR  ((LNK-S01-TTLARIFLG(IDY)      =   "1"  )  AND
+                (LNK-SYU-SRYKA           NOT =   "00" ))
+      *
+             CONTINUE
+      *
+           ELSE
+      *
+             IF   SYU-FUKU-DENPNUM    NOT =   ZERO
+             AND  SYU-GRP-DENPNUM     NOT =   ZERO
+      *
+               MOVE    SYU-GRP-DENPNUM    TO      WK-GRP-DENPNUM
+      *
+               INITIALIZE                         SYUTTL-REC
+               MOVE    SYU-HOSPID         TO      SYUTTL-HOSPID
+               MOVE    SYU-NYUGAIKBN      TO      SYUTTL-NYUGAIKBN
+               MOVE    SYU-PTID           TO      SYUTTL-PTID
+               MOVE    SYU-FUKU-DENPNUM   TO      SYUTTL-DENPNUM
+               MOVE    SYUTTL-REC         TO      MCPDATA-REC
+               MOVE    "DBSELECT"         TO      MCP-FUNC
+               MOVE    "SYUTOTAL-KEY"     TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+               IF      MCP-RC             =       ZERO
+                       MOVE      "SYUTOTAL-KEY"   TO   ORC-DBPATH
+                       PERFORM    SYUTOTAL-READ-SEC
+                       PERFORM  UNTIL  (FLG-SYUTOTAL   =    1)
+                         IF   SYUTTL-DENPJTIKBN  NOT =  "3"
+                            PERFORM        2201-SYUNOU-HENKAN-SEC
+                            PERFORM        2201-SYUNOU-COUNT-SEC
+                            MOVE  SYUTTL-DENPNUM    TO  WK-TAIHI-DENPNUM
+                            MOVE     1              TO  FLG-SYUTOTAL-SET
+                         END-IF
+                         MOVE    "SYUTOTAL-KEY"   TO   ORC-DBPATH
+                         PERFORM  SYUTOTAL-READ-SEC
+                       END-PERFORM
+                ELSE
+                       MOVE    12                 TO   LNK-S01-RC
+                END-IF
+      *
+                MOVE    "DBCLOSE"               TO  MCP-FUNC
+                MOVE    "SYUTOTAL-KEY"          TO  ORC-DBPATH
+                CALL    "ORCMCPSUB"              USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+      *
+             END-IF
+      *
+           END-IF.
+      *
+       2201-SYUTOTAL-FIND-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    収納合計マスタの内容を収納マスタへ
+      ******************************************************************
+       2201-SYUNOU-HENKAN-SEC           SECTION.
+      *
+           INITIALIZE                             SYU-SYUNOU-REC.
+      *ＫＥＹ
+           MOVE     SYUTTL-KEY                TO  SYU-KEY.
+      *診療日
+           MOVE     SYUTTL-SRYYMD             TO  SYU-SRYYMD.
+      *主保険−負担情報
+           MOVE     SYUTTL-SYUHKNNUM          TO  SYU-SYUHKNNUM.
+           MOVE     SYUTTL-SYUHKNFTNMONEY     TO  SYU-SYUHKNFTNMONEY.
+           MOVE     SYUTTL-SYUCOMPFTN         TO  SYU-SYUCOMPFTN.
+           MOVE     SYUTTL-SYUCOMPFTN-ENTANI  TO  SYU-SYUCOMPFTN-ENTANI.
+           MOVE     SYUTTL-SYUCOMPYKZFTN      TO  SYU-SYUCOMPYKZFTN.
+           MOVE     SYUTTL-SYUCOMPTOTAL       TO  SYU-SYUCOMPTOTAL.
+           MOVE     SYUTTL-SYUYKZFTNKBN       TO  SYU-SYUYKZFTNKBN.
+      *公費−負担情報
+           MOVE     SYUTTL-KOH-AREA           TO  SYU-KOH-AREA.
+      *請求内容
+           MOVE     SYUTTL-SKY-NAIYOU         TO  SYU-SKY-NAIYOU.
+      *公費一部負担金
+           MOVE     SYUTTL-KOH-FTN            TO  SYU-KOH-FTN.
+      *公費一部負担金（円単位）
+           MOVE     SYUTTL-KOH-FTN-ENTANI     TO  SYU-KOH-FTN-ENTANI.
+      *まとめ入力伝票番号
+           MOVE     WK-GRP-DENPNUM            TO  SYU-GRP-DENPNUM.
+      *
+       2201-SYUNOU-HENKAN-EXT.
            EXIT.
       *
       ******************************************************************
@@ -3271,82 +3401,12 @@
                OR   ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH4HKNNUM ) AND
                      (COMB-KOH1ID         =  WRK-COMB-KOH4ID))
                    MOVE   SYU-SRYYMD(7:2)     TO   IDX2X
+                   MOVE   1                   TO   IDX3
                    IF   (MAX-KIN-KOHI1-D    NOT =  ZERO)
                    OR   (MAX-KIN-KOHI1-M    NOT =  ZERO)
-                       IF  KOHI1-TBL(IDX2)   =  ZERO
-                       AND SYU-HKNTEN(12)   NOT =  ZERO
-                         IF  ( SYU-CONTKBN  = "2")
-                         OR  ( SYU-FUKU-KBN = "2")
-                         OR  ((SYU-CONTKBN  = "1") AND 
-                              (SYU-DOUJI-DENPNUM  NOT = SYU-DENPNUM))
-                         OR  ((SYU-FUKU-KBN = "1") AND 
-                              (SYU-FUKU-DENPNUM   NOT = SYU-DENPNUM))
-                           CONTINUE
-                         ELSE
-                           IF  ((SYU-CONTKBN  = "1")              AND
-                                (SYU-DOUJI-DENPNUM = SYU-DENPNUM) AND
-                                (SYU-DOUJI-DENPNUM =
-                                           LNK-SYU-DOUJI-DENPNUM))
-                           OR  ((SYU-FUKU-KBN = "1")              AND
-                                (SYU-FUKU-DENPNUM  = SYU-DENPNUM) AND
-                                (SYU-FUKU-DENPNUM  =
-                                           LNK-SYU-FUKU-DENPNUM ))
-                              CONTINUE
-                           ELSE
-                              ADD     1      TO    KOHI1-TBL(IDX2)
-                              ADD     1      TO    KOHI1-TBL(32)
-                           END-IF
-                         END-IF
-                       ELSE
-                         IF  SYU-HKNTEN(12)   NOT =  ZERO
-                            IF  ( SYU-CONTKBN  = "2")
-                            OR  ( SYU-FUKU-KBN = "2")
-                            OR  ((SYU-CONTKBN  = "1") AND 
-                                 (SYU-DOUJI-DENPNUM  NOT = SYU-DENPNUM))
-                            OR  ((SYU-FUKU-KBN = "1") AND 
-                                 (SYU-FUKU-DENPNUM   NOT = SYU-DENPNUM))
-                              CONTINUE
-                            ELSE
-                              IF  ((SYU-CONTKBN  = "1")              AND
-                                   (SYU-DOUJI-DENPNUM = SYU-DENPNUM) AND
-                                   (SYU-DOUJI-DENPNUM =
-                                              LNK-SYU-DOUJI-DENPNUM))
-                              OR  ((SYU-FUKU-KBN = "1")              AND
-                                   (SYU-FUKU-DENPNUM  = SYU-DENPNUM) AND
-                                   (SYU-FUKU-DENPNUM  =
-                                              LNK-SYU-FUKU-DENPNUM ))
-                                 CONTINUE
-                              ELSE
-                                 ADD     1    TO    KOHI1-TBL(IDX2)
-                              END-IF
-                            END-IF
-                         END-IF
-                       END-IF
+                       PERFORM   2201-KAISU-COUNT-SEC
                    ELSE
-                       IF  SYU-HKNTEN(12)   NOT =  ZERO
-                         IF  ( SYU-CONTKBN  = "2")
-                         OR  ( SYU-FUKU-KBN = "2")
-                         OR  ((SYU-CONTKBN  = "1") AND 
-                              (SYU-DOUJI-DENPNUM  NOT = SYU-DENPNUM))
-                         OR  ((SYU-FUKU-KBN = "1") AND 
-                              (SYU-FUKU-DENPNUM   NOT = SYU-DENPNUM))
-                           CONTINUE
-                         ELSE
-                           IF  ((SYU-CONTKBN  = "1")              AND
-                                (SYU-DOUJI-DENPNUM = SYU-DENPNUM) AND
-                                (SYU-DOUJI-DENPNUM =
-                                           LNK-SYU-DOUJI-DENPNUM))
-                           OR  ((SYU-FUKU-KBN = "1")              AND
-                                (SYU-FUKU-DENPNUM  = SYU-DENPNUM) AND
-                                (SYU-FUKU-DENPNUM  =
-                                           LNK-SYU-FUKU-DENPNUM ))
-                              CONTINUE
-                           ELSE
-                              ADD     1      TO    KOHI1-TBL(IDX2)
-                              ADD     1      TO    KOHI1-TBL(32)
-                           END-IF
-                         END-IF
-                       END-IF
+                       PERFORM   2201-KAISU-COUNT2-SEC
                    END-IF
                    IF        LNK-SYU-SRYYMD(7:2)    =  SYU-SRYYMD(7:2)
                        EVALUATE  TRUE
@@ -3370,12 +3430,18 @@
                                            SYU-KOH1COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI1-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH1HKNFTNMONEY
                                                       TO  FTN-KOHI1-D-K
                                    IF  SYU-KOH1YKZFTNKBN   =    "2"       
@@ -3416,12 +3482,18 @@
                                            SYU-KOH2COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI1-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH2HKNFTNMONEY
                                                       TO  FTN-KOHI1-D-K
                                    IF  SYU-KOH2YKZFTNKBN   =    "2"       
@@ -3462,12 +3534,18 @@
                                            SYU-KOH3COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI1-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH3HKNFTNMONEY
                                                       TO  FTN-KOHI1-D-K
                                    IF  SYU-KOH3YKZFTNKBN   =    "2"       
@@ -3508,12 +3586,18 @@
                                            SYU-KOH4COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI1-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH4HKNFTNMONEY
                                                       TO  FTN-KOHI1-D-K
                                    IF  SYU-KOH4YKZFTNKBN   =    "2"       
@@ -3633,82 +3717,12 @@
                OR   ((LNK-SYU-KOH2HKNNUM  =  SYU-KOH4HKNNUM ) AND
                      (COMB-KOH2ID         =  WRK-COMB-KOH4ID))
                    MOVE   SYU-SRYYMD(7:2)     TO    IDX2X
+                   MOVE   2                   TO    IDX3
                    IF   (MAX-KIN-KOHI2-D    NOT =  ZERO)
                    OR   (MAX-KIN-KOHI2-M    NOT =  ZERO)
-                       IF  KOHI2-TBL(IDX2)   =  ZERO
-                       AND SYU-HKNTEN(12)   NOT =  ZERO
-                         IF  ( SYU-CONTKBN  = "2")
-                         OR  ( SYU-FUKU-KBN = "2")
-                         OR  ((SYU-CONTKBN  = "1") AND 
-                              (SYU-DOUJI-DENPNUM  NOT = SYU-DENPNUM))
-                         OR  ((SYU-FUKU-KBN = "1") AND 
-                              (SYU-FUKU-DENPNUM   NOT = SYU-DENPNUM))
-                           CONTINUE
-                         ELSE
-                           IF  ((SYU-CONTKBN  = "1")              AND
-                                (SYU-DOUJI-DENPNUM = SYU-DENPNUM) AND
-                                (SYU-DOUJI-DENPNUM =
-                                           LNK-SYU-DOUJI-DENPNUM))
-                           OR  ((SYU-FUKU-KBN = "1")              AND
-                                (SYU-FUKU-DENPNUM  = SYU-DENPNUM) AND
-                                (SYU-FUKU-DENPNUM  =
-                                           LNK-SYU-FUKU-DENPNUM ))
-                              CONTINUE
-                           ELSE
-                              ADD     1      TO    KOHI2-TBL(IDX2)
-                              ADD     1      TO    KOHI2-TBL(32)
-                           END-IF
-                         END-IF
-                       ELSE
-                         IF  SYU-HKNTEN(12)   NOT =  ZERO
-                            IF  ( SYU-CONTKBN  = "2")
-                            OR  ( SYU-FUKU-KBN = "2")
-                            OR  ((SYU-CONTKBN  = "1") AND 
-                                 (SYU-DOUJI-DENPNUM  NOT = SYU-DENPNUM))
-                            OR  ((SYU-FUKU-KBN = "1") AND 
-                                 (SYU-FUKU-DENPNUM   NOT = SYU-DENPNUM))
-                              CONTINUE
-                            ELSE
-                              IF  ((SYU-CONTKBN  = "1")              AND
-                                   (SYU-DOUJI-DENPNUM = SYU-DENPNUM) AND
-                                   (SYU-DOUJI-DENPNUM =
-                                              LNK-SYU-DOUJI-DENPNUM))
-                              OR  ((SYU-FUKU-KBN = "1")              AND
-                                   (SYU-FUKU-DENPNUM  = SYU-DENPNUM) AND
-                                   (SYU-FUKU-DENPNUM  =
-                                              LNK-SYU-FUKU-DENPNUM ))
-                                 CONTINUE
-                              ELSE
-                                 ADD     1    TO    KOHI2-TBL(IDX2)
-                              END-IF
-                            END-IF
-                         END-IF
-                       END-IF
+                       PERFORM   2201-KAISU-COUNT-SEC
                    ELSE
-                       IF  SYU-HKNTEN(12)   NOT =  ZERO
-                         IF  ( SYU-CONTKBN  = "2")
-                         OR  ( SYU-FUKU-KBN = "2")
-                         OR  ((SYU-CONTKBN  = "1") AND 
-                              (SYU-DOUJI-DENPNUM  NOT = SYU-DENPNUM))
-                         OR  ((SYU-FUKU-KBN = "1") AND 
-                              (SYU-FUKU-DENPNUM   NOT = SYU-DENPNUM))
-                           CONTINUE
-                         ELSE
-                           IF  ((SYU-CONTKBN  = "1")              AND
-                                (SYU-DOUJI-DENPNUM = SYU-DENPNUM) AND
-                                (SYU-DOUJI-DENPNUM =
-                                           LNK-SYU-DOUJI-DENPNUM))
-                           OR  ((SYU-FUKU-KBN = "1")              AND
-                                (SYU-FUKU-DENPNUM  = SYU-DENPNUM) AND
-                                (SYU-FUKU-DENPNUM  =
-                                           LNK-SYU-FUKU-DENPNUM ))
-                              CONTINUE
-                           ELSE
-                              ADD     1      TO    KOHI2-TBL(IDX2)
-                              ADD     1      TO    KOHI2-TBL(32)
-                           END-IF
-                         END-IF
-                       END-IF
+                       PERFORM   2201-KAISU-COUNT2-SEC
                    END-IF
                    IF        LNK-SYU-SRYYMD(7:2) =  SYU-SRYYMD(7:2)
                        EVALUATE  TRUE
@@ -3732,12 +3746,18 @@
                                            SYU-KOH1COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI2-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH1HKNFTNMONEY
                                                       TO  FTN-KOHI2-D-K
                                    IF  SYU-KOH1YKZFTNKBN   =    "2"       
@@ -3778,12 +3798,18 @@
                                            SYU-KOH2COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI2-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH2HKNFTNMONEY
                                                       TO  FTN-KOHI2-D-K
                                    IF  SYU-KOH2YKZFTNKBN   =    "2"       
@@ -3824,12 +3850,18 @@
                                            SYU-KOH3COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI2-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH3HKNFTNMONEY
                                                       TO  FTN-KOHI2-D-K
                                    IF  SYU-KOH3YKZFTNKBN   =    "2"       
@@ -3870,12 +3902,18 @@
                                            SYU-KOH4COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI2-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH4HKNFTNMONEY
                                                       TO  FTN-KOHI2-D-K
                                    IF  SYU-KOH4YKZFTNKBN   =    "2"       
@@ -3994,82 +4032,12 @@
                OR   ((LNK-SYU-KOH3HKNNUM  =  SYU-KOH4HKNNUM ) AND
                      (COMB-KOH3ID         =  WRK-COMB-KOH4ID))
                    MOVE   SYU-SRYYMD(7:2)     TO    IDX2X
+                   MOVE   3                   TO    IDX3
                    IF   (MAX-KIN-KOHI3-D    NOT =  ZERO)
                    OR   (MAX-KIN-KOHI3-M    NOT =  ZERO)
-                       IF  KOHI3-TBL(IDX2)   =  ZERO
-                       AND SYU-HKNTEN(12)   NOT =  ZERO
-                         IF  ( SYU-CONTKBN  = "2")
-                         OR  ( SYU-FUKU-KBN = "2")
-                         OR  ((SYU-CONTKBN  = "1") AND 
-                              (SYU-DOUJI-DENPNUM  NOT = SYU-DENPNUM))
-                         OR  ((SYU-FUKU-KBN = "1") AND 
-                              (SYU-FUKU-DENPNUM   NOT = SYU-DENPNUM))
-                           CONTINUE
-                         ELSE
-                           IF  ((SYU-CONTKBN  = "1")              AND
-                                (SYU-DOUJI-DENPNUM = SYU-DENPNUM) AND
-                                (SYU-DOUJI-DENPNUM =
-                                           LNK-SYU-DOUJI-DENPNUM))
-                           OR  ((SYU-FUKU-KBN = "1")              AND
-                                (SYU-FUKU-DENPNUM  = SYU-DENPNUM) AND
-                                (SYU-FUKU-DENPNUM  =
-                                           LNK-SYU-FUKU-DENPNUM ))
-                              CONTINUE
-                           ELSE
-                              ADD     1      TO    KOHI3-TBL(IDX2)
-                              ADD     1      TO    KOHI3-TBL(32)
-                           END-IF
-                         END-IF
-                       ELSE
-                         IF  SYU-HKNTEN(12)   NOT =  ZERO
-                            IF  ( SYU-CONTKBN  = "2")
-                            OR  ( SYU-FUKU-KBN = "2")
-                            OR  ((SYU-CONTKBN  = "1") AND 
-                                 (SYU-DOUJI-DENPNUM  NOT = SYU-DENPNUM))
-                            OR  ((SYU-FUKU-KBN = "1") AND 
-                                 (SYU-FUKU-DENPNUM   NOT = SYU-DENPNUM))
-                              CONTINUE
-                            ELSE
-                              IF  ((SYU-CONTKBN  = "1")              AND
-                                   (SYU-DOUJI-DENPNUM = SYU-DENPNUM) AND
-                                   (SYU-DOUJI-DENPNUM =
-                                              LNK-SYU-DOUJI-DENPNUM))
-                              OR  ((SYU-FUKU-KBN = "1")              AND
-                                   (SYU-FUKU-DENPNUM  = SYU-DENPNUM) AND
-                                   (SYU-FUKU-DENPNUM  =
-                                              LNK-SYU-FUKU-DENPNUM ))
-                                 CONTINUE
-                              ELSE
-                                 ADD     1    TO    KOHI3-TBL(IDX2)
-                              END-IF
-                            END-IF
-                         END-IF
-                       END-IF
+                       PERFORM   2201-KAISU-COUNT-SEC
                    ELSE
-                       IF  SYU-HKNTEN(12)   NOT =  ZERO
-                         IF  ( SYU-CONTKBN  = "2")
-                         OR  ( SYU-FUKU-KBN = "2")
-                         OR  ((SYU-CONTKBN  = "1") AND 
-                              (SYU-DOUJI-DENPNUM  NOT = SYU-DENPNUM))
-                         OR  ((SYU-FUKU-KBN = "1") AND 
-                              (SYU-FUKU-DENPNUM   NOT = SYU-DENPNUM))
-                           CONTINUE
-                         ELSE
-                           IF  ((SYU-CONTKBN  = "1")              AND
-                                (SYU-DOUJI-DENPNUM = SYU-DENPNUM) AND
-                                (SYU-DOUJI-DENPNUM =
-                                           LNK-SYU-DOUJI-DENPNUM))
-                           OR  ((SYU-FUKU-KBN = "1")              AND
-                                (SYU-FUKU-DENPNUM  = SYU-DENPNUM) AND
-                                (SYU-FUKU-DENPNUM  =
-                                           LNK-SYU-FUKU-DENPNUM ))
-                              CONTINUE
-                           ELSE
-                              ADD     1      TO    KOHI3-TBL(IDX2)
-                              ADD     1      TO    KOHI3-TBL(32)
-                           END-IF
-                         END-IF
-                       END-IF
+                       PERFORM   2201-KAISU-COUNT2-SEC
                    END-IF
                    IF        LNK-SYU-SRYYMD(7:2)   =   SYU-SRYYMD(7:2)
                        EVALUATE  TRUE
@@ -4093,12 +4061,18 @@
                                            SYU-KOH1COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI3-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH1HKNFTNMONEY
                                                       TO  FTN-KOHI3-D-K
                                    IF  SYU-KOH1YKZFTNKBN   =    "2"       
@@ -4139,12 +4113,18 @@
                                            SYU-KOH2COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI3-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH2HKNFTNMONEY
                                                       TO  FTN-KOHI3-D-K
                                    IF  SYU-KOH2YKZFTNKBN   =    "2"       
@@ -4185,12 +4165,18 @@
                                            SYU-KOH3COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI3-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH3HKNFTNMONEY
                                                       TO  FTN-KOHI3-D-K
                                    IF  SYU-KOH3YKZFTNKBN   =    "2"       
@@ -4231,12 +4217,18 @@
                                            SYU-KOH4COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI3-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH4HKNFTNMONEY
                                                       TO  FTN-KOHI3-D-K
                                    IF  SYU-KOH4YKZFTNKBN   =    "2"       
@@ -4355,82 +4347,12 @@
                OR   ((LNK-SYU-KOH4HKNNUM  =  SYU-KOH4HKNNUM ) AND
                      (COMB-KOH4ID         =  WRK-COMB-KOH4ID))
                    MOVE   SYU-SRYYMD(7:2)     TO    IDX2X
+                   MOVE   4                   TO    IDX3
                    IF   (MAX-KIN-KOHI4-D    NOT =  ZERO)
                    OR   (MAX-KIN-KOHI4-M    NOT =  ZERO)
-                       IF  KOHI4-TBL(IDX2)   =  ZERO
-                       AND SYU-HKNTEN(12)   NOT =  ZERO
-                         IF  ( SYU-CONTKBN  = "2")
-                         OR  ( SYU-FUKU-KBN = "2")
-                         OR  ((SYU-CONTKBN  = "1") AND 
-                              (SYU-DOUJI-DENPNUM  NOT = SYU-DENPNUM))
-                         OR  ((SYU-FUKU-KBN = "1") AND 
-                              (SYU-FUKU-DENPNUM   NOT = SYU-DENPNUM))
-                           CONTINUE
-                         ELSE
-                           IF  ((SYU-CONTKBN  = "1")              AND
-                                (SYU-DOUJI-DENPNUM = SYU-DENPNUM) AND
-                                (SYU-DOUJI-DENPNUM =
-                                           LNK-SYU-DOUJI-DENPNUM))
-                           OR  ((SYU-FUKU-KBN = "1")              AND
-                                (SYU-FUKU-DENPNUM  = SYU-DENPNUM) AND
-                                (SYU-FUKU-DENPNUM  =
-                                           LNK-SYU-FUKU-DENPNUM ))
-                              CONTINUE
-                           ELSE
-                              ADD     1      TO    KOHI4-TBL(IDX2)
-                              ADD     1      TO    KOHI4-TBL(32)
-                           END-IF
-                         END-IF
-                       ELSE
-                         IF  SYU-HKNTEN(12)   NOT =  ZERO
-                            IF  ( SYU-CONTKBN  = "2")
-                            OR  ( SYU-FUKU-KBN = "2")
-                            OR  ((SYU-CONTKBN  = "1") AND 
-                                 (SYU-DOUJI-DENPNUM  NOT = SYU-DENPNUM))
-                            OR  ((SYU-FUKU-KBN = "1") AND 
-                                 (SYU-FUKU-DENPNUM   NOT = SYU-DENPNUM))
-                              CONTINUE
-                            ELSE
-                              IF  ((SYU-CONTKBN  = "1")              AND
-                                   (SYU-DOUJI-DENPNUM = SYU-DENPNUM) AND
-                                   (SYU-DOUJI-DENPNUM =
-                                              LNK-SYU-DOUJI-DENPNUM))
-                              OR  ((SYU-FUKU-KBN = "1")              AND
-                                   (SYU-FUKU-DENPNUM  = SYU-DENPNUM) AND
-                                   (SYU-FUKU-DENPNUM  =
-                                              LNK-SYU-FUKU-DENPNUM ))
-                                 CONTINUE
-                              ELSE
-                                 ADD     1    TO    KOHI4-TBL(IDX2)
-                              END-IF
-                            END-IF
-                         END-IF
-                       END-IF
+                       PERFORM   2201-KAISU-COUNT-SEC
                    ELSE
-                       IF  SYU-HKNTEN(12)   NOT =  ZERO
-                         IF  ( SYU-CONTKBN  = "2")
-                         OR  ( SYU-FUKU-KBN = "2")
-                         OR  ((SYU-CONTKBN  = "1") AND 
-                              (SYU-DOUJI-DENPNUM  NOT = SYU-DENPNUM))
-                         OR  ((SYU-FUKU-KBN = "1") AND 
-                              (SYU-FUKU-DENPNUM   NOT = SYU-DENPNUM))
-                           CONTINUE
-                         ELSE
-                           IF  ((SYU-CONTKBN  = "1")              AND
-                                (SYU-DOUJI-DENPNUM = SYU-DENPNUM) AND
-                                (SYU-DOUJI-DENPNUM =
-                                           LNK-SYU-DOUJI-DENPNUM))
-                           OR  ((SYU-FUKU-KBN = "1")              AND
-                                (SYU-FUKU-DENPNUM  = SYU-DENPNUM) AND
-                                (SYU-FUKU-DENPNUM  =
-                                           LNK-SYU-FUKU-DENPNUM ))
-                              CONTINUE
-                           ELSE
-                              ADD     1      TO    KOHI4-TBL(IDX2)
-                              ADD     1      TO    KOHI4-TBL(32)
-                           END-IF
-                         END-IF
-                       END-IF
+                       PERFORM   2201-KAISU-COUNT2-SEC
                    END-IF
                    IF        LNK-SYU-SRYYMD(7:2)   =  SYU-SRYYMD(7:2)
                        EVALUATE  TRUE
@@ -4454,12 +4376,18 @@
                                            SYU-KOH1COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI4-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH1HKNFTNMONEY
                                                       TO  FTN-KOHI4-D-K
                                    IF  SYU-KOH1YKZFTNKBN   =    "2"       
@@ -4500,12 +4428,18 @@
                                            SYU-KOH2COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI4-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH2HKNFTNMONEY
                                                       TO  FTN-KOHI4-D-K
                                    IF  SYU-KOH2YKZFTNKBN   =    "2"       
@@ -4546,12 +4480,18 @@
                                            SYU-KOH3COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI4-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH3HKNFTNMONEY
                                                       TO  FTN-KOHI4-D-K
                                    IF  SYU-KOH3YKZFTNKBN   =    "2"       
@@ -4592,12 +4532,18 @@
                                            SYU-KOH4COMPFTN-ENTANI + 0.5
                                    ADD   WK-ENTANI  TO  FTN-KOHI4-D3    
                                  END-IF                                 
-                                 IF  ((SYU-CONTKBN  = "1") AND 
-                                      (SYU-DOUJI-DENPNUM  = 
-                                                 LNK-SYU-DOUJI-DENPNUM))
-                                 OR  ((SYU-FUKU-KBN = "1") AND 
-                                      (SYU-FUKU-DENPNUM   = 
-                                                 LNK-SYU-FUKU-DENPNUM))
+                                 IF  ((LNK-SYU-GRP-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-GRP-DENPNUM
+                                                 =  SYU-GRP-DENPNUM))
+                                 OR  ((LNK-SYU-FUKU-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-FUKU-DENPNUM
+                                                 =  SYU-FUKU-DENPNUM))
+                                 OR  ((LNK-SYU-DOUJI-DENPNUM
+                                                       NOT =  ZERO ) AND
+                                      (LNK-SYU-DOUJI-DENPNUM
+                                                 =  SYU-DOUJI-DENPNUM))
                                    ADD   SYU-KOH4HKNFTNMONEY
                                                       TO  FTN-KOHI4-D-K
                                    IF  SYU-KOH4YKZFTNKBN   =    "2"       
@@ -4706,6 +4652,317 @@
            END-IF.
       *
        2201-SYUNOU-COUNT-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    回数カウント
+      ******************************************************************
+       2201-KAISU-COUNT-SEC           SECTION.
+      *
+           MOVE     ZERO     TO     FLG-NOCOUNT.
+           IF   FLG-GRPNYURYOKU   =   ZERO
+               PERFORM    2201-KAISU-SELECT-SEC
+           END-IF.
+      *
+           IF     FLG-NOCOUNT          =  ZERO
+           AND    FLG-GRPNYURYOKU      =  ZERO
+      *
+             IF    KOHI-TBL(IDX2 IDX3)  =  ZERO
+             AND   SYU-HKNTEN(12)   NOT =  ZERO
+      *
+               IF   SYU-GRP-DENPNUM   NOT  =  ZERO
+      *
+                 IF  (WK-TAIHI-DENPNUMXX(IDX3) =  SYU-GRP-DENPNUM)
+                 AND (WK-TAIHI-DENPNUMXX(IDX3)   NOT = ZERO      )
+                     CONTINUE
+                 ELSE
+                     ADD   1    TO   KOHI-TBL(IDX2 IDX3)
+                     ADD   1    TO   KOHI-TBL(32 IDX3)
+                     MOVE  SYU-GRP-DENPNUM
+                                TO   WK-TAIHI-DENPNUMXX(IDX3)
+                 END-IF
+      *
+               ELSE
+      *          まとめ入力以外で、継続等で入力したものはカウントしない
+                 IF  ((SYU-DOUJI-DENPNUM      NOT =  ZERO)  AND
+                      (LNK-SYU-DOUJI-DENPNUM  NOT =  ZERO)  AND
+                      (SYU-DOUJI-DENPNUM =
+                                    LNK-SYU-DOUJI-DENPNUM))
+                 OR  ((SYU-FUKU-DENPNUM       NOT =  ZERO)  AND
+                      (LNK-SYU-FUKU-DENPNUM   NOT =  ZERO)  AND
+                      (SYU-FUKU-DENPNUM  =
+                                    LNK-SYU-FUKU-DENPNUM ))
+                   CONTINUE
+                 ELSE
+                   IF  (SYU-DOUJI-DENPNUM      NOT =  ZERO)
+                   OR  (SYU-FUKU-DENPNUM       NOT =  ZERO)
+                         IF  (SYU-DOUJI-DENPNUM      NOT =  ZERO   )
+                           IF  (WK-TAIHI-DENPNUMXX(IDX3)     =
+                                                SYU-DOUJI-DENPNUM  )
+                           AND (WK-TAIHI-DENPNUMXX(IDX3) NOT = ZERO)
+                               CONTINUE
+                           ELSE
+                               ADD   1    TO  KOHI-TBL(IDX2 IDX3)
+                               ADD   1    TO  KOHI-TBL(32 IDX3)
+                               MOVE  SYU-DOUJI-DENPNUM
+                                          TO  WK-TAIHI-DENPNUMXX(IDX3)
+                           END-IF
+                         END-IF
+                         IF  (SYU-FUKU-DENPNUM       NOT =  ZERO   )
+                           IF  (WK-TAIHI-DENPNUMXX(IDX3)     =
+                                                SYU-FUKU-DENPNUM   )
+                           AND (WK-TAIHI-DENPNUMXX(IDX3) NOT = ZERO)
+                               CONTINUE
+                           ELSE
+                               ADD   1    TO  KOHI-TBL(IDX2 IDX3)
+                               ADD   1    TO  KOHI-TBL(32 IDX3)
+                               MOVE  SYU-FUKU-DENPNUM
+                                          TO  WK-TAIHI-DENPNUMXX(IDX3)
+                           END-IF
+                         END-IF
+                   ELSE
+                               ADD   1    TO   KOHI-TBL(IDX2 IDX3)
+                               ADD   1    TO   KOHI-TBL(32 IDX3)
+                   END-IF
+      *
+                 END-IF
+      *
+               END-IF
+      *
+             ELSE
+      *
+               IF  SYU-HKNTEN(12)   NOT =  ZERO
+      *
+                 IF   SYU-GRP-DENPNUM   NOT  =  ZERO
+      *
+                   IF  (WK-TAIHI-DENPNUMXX(IDX3) =  SYU-GRP-DENPNUM)
+                   AND (WK-TAIHI-DENPNUMXX(IDX3)   NOT = ZERO      )
+                       CONTINUE
+                   ELSE
+                       ADD   1    TO   KOHI-TBL(IDX2 IDX3)
+                       MOVE  SYU-GRP-DENPNUM
+                                  TO   WK-TAIHI-DENPNUMXX(IDX3)
+                   END-IF
+      *
+                 ELSE
+      *            まとめ入力以外で、継続等で入力したものはカウントしない
+                   IF  ((SYU-DOUJI-DENPNUM      NOT =  ZERO)  AND
+                        (LNK-SYU-DOUJI-DENPNUM  NOT =  ZERO)  AND
+                        (SYU-DOUJI-DENPNUM =
+                                      LNK-SYU-DOUJI-DENPNUM))
+                   OR  ((SYU-FUKU-DENPNUM       NOT =  ZERO)  AND
+                        (LNK-SYU-FUKU-DENPNUM   NOT =  ZERO)  AND
+                        (SYU-FUKU-DENPNUM  =
+                                      LNK-SYU-FUKU-DENPNUM ))
+                     CONTINUE
+                   ELSE
+                     IF  (SYU-DOUJI-DENPNUM      NOT =  ZERO)
+                     OR  (SYU-FUKU-DENPNUM       NOT =  ZERO)
+                           IF  (SYU-DOUJI-DENPNUM      NOT =  ZERO   )
+                             IF  (WK-TAIHI-DENPNUMXX(IDX3)     =
+                                                  SYU-DOUJI-DENPNUM  )
+                             AND (WK-TAIHI-DENPNUMXX(IDX3) NOT = ZERO)
+                                 CONTINUE
+                             ELSE
+                                 ADD   1    TO  KOHI-TBL(IDX2 IDX3)
+                                 MOVE  SYU-DOUJI-DENPNUM
+                                            TO  WK-TAIHI-DENPNUMXX(IDX3)
+                             END-IF
+                           END-IF
+                           IF  (SYU-FUKU-DENPNUM       NOT =  ZERO   )
+                             IF  (WK-TAIHI-DENPNUMXX(IDX3)     =
+                                                  SYU-FUKU-DENPNUM   )
+                             AND (WK-TAIHI-DENPNUMXX(IDX3) NOT = ZERO)
+                                 CONTINUE
+                             ELSE
+                                 ADD   1    TO  KOHI-TBL(IDX2 IDX3)
+                                 MOVE  SYU-FUKU-DENPNUM
+                                            TO  WK-TAIHI-DENPNUMXX(IDX3)
+                             END-IF
+                           END-IF
+                     ELSE
+                                 ADD   1    TO   KOHI-TBL(IDX2 IDX3)
+                     END-IF
+      *
+                   END-IF
+      *
+                 END-IF
+      *
+               END-IF
+      *
+             END-IF
+      *
+           END-IF.
+      *
+       2201-KAISU-COUNT-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    回数カウント判定２
+      ******************************************************************
+       2201-KAISU-COUNT2-SEC           SECTION.
+      *
+           MOVE     ZERO     TO     FLG-NOCOUNT.
+           IF   FLG-GRPNYURYOKU   =   ZERO
+               PERFORM    2201-KAISU-SELECT-SEC
+           END-IF.
+      *
+           IF     FLG-NOCOUNT          =  ZERO
+           AND    FLG-GRPNYURYOKU      =  ZERO
+      *
+             IF  SYU-HKNTEN(12)   NOT =  ZERO
+      *
+               IF   SYU-GRP-DENPNUM   NOT  =  ZERO
+      *
+                 IF  (WK-TAIHI-DENPNUMXX(IDX3) =  SYU-GRP-DENPNUM)
+                 AND (WK-TAIHI-DENPNUMXX(IDX3)   NOT = ZERO      )
+                     CONTINUE
+                 ELSE
+                     ADD   1    TO   KOHI-TBL(IDX2 IDX3)
+                     ADD   1    TO   KOHI-TBL(32 IDX3)
+                     MOVE  SYU-GRP-DENPNUM
+                                TO   WK-TAIHI-DENPNUMXX(IDX3)
+                 END-IF
+      *
+               ELSE
+      *          まとめ入力以外で、継続等で入力したものはカウントしない
+                 IF  ((SYU-DOUJI-DENPNUM      NOT =  ZERO)  AND
+                      (LNK-SYU-DOUJI-DENPNUM  NOT =  ZERO)  AND
+                      (SYU-DOUJI-DENPNUM =
+                                    LNK-SYU-DOUJI-DENPNUM))
+                 OR  ((SYU-FUKU-DENPNUM       NOT =  ZERO)  AND
+                      (LNK-SYU-FUKU-DENPNUM   NOT =  ZERO)  AND
+                      (SYU-FUKU-DENPNUM  =
+                                    LNK-SYU-FUKU-DENPNUM ))
+                   CONTINUE
+                 ELSE
+                   IF  (SYU-DOUJI-DENPNUM      NOT =  ZERO)
+                   OR  (SYU-FUKU-DENPNUM       NOT =  ZERO)
+                         IF  (SYU-DOUJI-DENPNUM      NOT =  ZERO   )
+                           IF  (WK-TAIHI-DENPNUMXX(IDX3)     =
+                                                SYU-DOUJI-DENPNUM  )
+                           AND (WK-TAIHI-DENPNUMXX(IDX3) NOT = ZERO)
+                               CONTINUE
+                           ELSE
+                               ADD   1    TO  KOHI-TBL(IDX2 IDX3)
+                               ADD   1    TO  KOHI-TBL(32 IDX3)
+                               MOVE  SYU-DOUJI-DENPNUM
+                                          TO  WK-TAIHI-DENPNUMXX(IDX3)
+                           END-IF
+                         END-IF
+                         IF  (SYU-FUKU-DENPNUM       NOT =  ZERO   )
+                           IF  (WK-TAIHI-DENPNUMXX(IDX3)     =
+                                                SYU-FUKU-DENPNUM   )
+                           AND (WK-TAIHI-DENPNUMXX(IDX3) NOT = ZERO)
+                               CONTINUE
+                           ELSE
+                               ADD   1    TO  KOHI-TBL(IDX2 IDX3)
+                               ADD   1    TO  KOHI-TBL(32 IDX3)
+                               MOVE  SYU-FUKU-DENPNUM
+                                          TO  WK-TAIHI-DENPNUMXX(IDX3)
+                           END-IF
+                         END-IF
+                   ELSE
+                               ADD   1    TO   KOHI-TBL(IDX2 IDX3)
+                               ADD   1    TO   KOHI-TBL(32 IDX3)
+                   END-IF
+      *
+                 END-IF
+      *
+               END-IF
+      *
+             END-IF
+      *
+           END-IF.
+      *
+       2201-KAISU-COUNT2-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    回数カウント判定
+      ******************************************************************
+       2201-KAISU-SELECT-SEC           SECTION.
+      *
+           EVALUATE  IDX3
+               WHEN    1 
+                  EVALUATE  TRUE
+                       WHEN  LNK-SYU-KOH1HKNNUM = SYU-KOH1HKNNUM
+                         IF  SYU-KOH1HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                       WHEN  LNK-SYU-KOH1HKNNUM = SYU-KOH2HKNNUM
+                         IF  SYU-KOH2HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                       WHEN  LNK-SYU-KOH1HKNNUM = SYU-KOH3HKNNUM
+                         IF  SYU-KOH3HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                       WHEN  LNK-SYU-KOH1HKNNUM = SYU-KOH4HKNNUM
+                         IF  SYU-KOH4HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                  END-EVALUATE
+               WHEN    2 
+                  EVALUATE  TRUE
+                       WHEN  LNK-SYU-KOH2HKNNUM = SYU-KOH1HKNNUM
+                         IF  SYU-KOH1HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                       WHEN  LNK-SYU-KOH2HKNNUM = SYU-KOH2HKNNUM
+                         IF  SYU-KOH2HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                       WHEN  LNK-SYU-KOH2HKNNUM = SYU-KOH3HKNNUM
+                         IF  SYU-KOH3HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                       WHEN  LNK-SYU-KOH2HKNNUM = SYU-KOH4HKNNUM
+                         IF  SYU-KOH4HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                  END-EVALUATE
+               WHEN    3 
+                  EVALUATE  TRUE
+                       WHEN  LNK-SYU-KOH3HKNNUM = SYU-KOH1HKNNUM
+                         IF  SYU-KOH1HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                       WHEN  LNK-SYU-KOH3HKNNUM = SYU-KOH2HKNNUM
+                         IF  SYU-KOH2HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                       WHEN  LNK-SYU-KOH3HKNNUM = SYU-KOH3HKNNUM
+                         IF  SYU-KOH3HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                       WHEN  LNK-SYU-KOH3HKNNUM = SYU-KOH4HKNNUM
+                         IF  SYU-KOH4HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                  END-EVALUATE
+               WHEN    4 
+                  EVALUATE  TRUE
+                       WHEN  LNK-SYU-KOH4HKNNUM = SYU-KOH1HKNNUM
+                         IF  SYU-KOH1HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                       WHEN  LNK-SYU-KOH4HKNNUM = SYU-KOH2HKNNUM
+                         IF  SYU-KOH2HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                       WHEN  LNK-SYU-KOH4HKNNUM = SYU-KOH3HKNNUM
+                         IF  SYU-KOH3HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                       WHEN  LNK-SYU-KOH4HKNNUM = SYU-KOH4HKNNUM
+                         IF  SYU-KOH4HKNFTNMONEY = ZERO
+                             MOVE   1    TO    FLG-NOCOUNT
+                         END-IF
+                  END-EVALUATE
+           END-EVALUATE.
+      *
+       2201-KAISU-SELECT-EXT.
            EXIT.
       *
       ******************************************************************
@@ -6013,8 +6270,8 @@
       *
       *    保険組合せテーブルの補助区分から患者の負担割合を保険番号
       *    テーブルに再セット（船員保険時）
-           IF    COMB-HKNNUM           =    "002"
-           AND   LNK-S01-SENINFLG  NOT =    "1"                         
+           IF    COMB-HKNNUM                =    "002"
+           AND   LNK-S01-SENINFLG(IDY)  NOT =    "1"  
                EVALUATE   COMB-HOJOKBN
                    WHEN   "1"
                    WHEN   "2"
@@ -6060,8 +6317,8 @@
                                         WK-ZENGAKU   *  WK-FUTANWARI
                               COMPUTE   LNK-SYU-SYUCOMPFTN-ENTANI  =
                                         WK-ZENGAKU   *  WK-FUTANWARI
-                              IF   LNK-S01-SENINFLG    =  "1"           
-                                IF LNK-SYU-SYUCOMPFTN  >  200           
+                              IF   LNK-S01-SENINFLG(IDY)    =  "1"      
+                                IF LNK-SYU-SYUCOMPFTN       >  200      
                                    MOVE   200  TO
                                            LNK-SYU-SYUCOMPFTN
                                            LNK-SYU-SYUCOMPFTN-ENTANI
@@ -6322,9 +6579,11 @@
                        EVALUATE  SYS-4001-TENKBN
                            WHEN  "1"
                               COMPUTE  WK-ZENGAKU  =  WK-ZENGAKU  /  10  
-                              MOVE  LNK-S01-SYUTEN  TO  WK-ZENGAKU-SYU
-                              COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU 
-                                                      - LNK-S01-SYUTEN
+                              MOVE  LNK-S01-SYUTEN(IDY)
+                                                TO  WK-ZENGAKU-SYU
+                              COMPUTE  WK-ZENGAKU-YAK
+                                                  = WK-ZENGAKU 
+                                                  - LNK-S01-SYUTEN(IDY)
       ***                     COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU  
       ***                                             * 11.5            
       ***                     COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU  
@@ -6341,9 +6600,11 @@
                                                       + WK-ZENGAKU-YAK
                            WHEN  "2"
                               COMPUTE  WK-ZENGAKU  =  WK-ZENGAKU  /  10  
-                              MOVE  LNK-S01-SYUTEN  TO  WK-ZENGAKU-SYU
-                              COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU 
-                                                      - LNK-S01-SYUTEN
+                              MOVE  LNK-S01-SYUTEN(IDY)
+                                                TO  WK-ZENGAKU-SYU
+                              COMPUTE  WK-ZENGAKU-YAK
+                                                  = WK-ZENGAKU 
+                                                  - LNK-S01-SYUTEN(IDY)
       ***                     COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU  
       ***                                             * 12.0            
       ***                     COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU  
@@ -7961,8 +8222,8 @@
                    UNTIL      (Y-IDX        >       3)
              PERFORM VARYING     Y-IDX2    FROM    1   BY  1
                      UNTIL    (Y-IDX2       >       40)
-               IF    (LNK-S01-SRYKBN(Y-IDX Y-IDX2)  NOT =  SPACE) AND
-                     (LNK-S01-SRYCD(Y-IDX Y-IDX2) (1:1) =  "6")
+               IF    (LNK-S01-SRYKBN(Y-IDX Y-IDX2)   NOT =  SPACE)
+               AND   (LNK-S01-SRYCD (Y-IDX Y-IDX2) (1:1) =  "6"  )
                    ADD        1     TO    Y-IDX3
                    MOVE  LNK-S01-SRYKBN (Y-IDX Y-IDX2)
                                          TO    LNK-S02-SRYKBN (Y-IDX3)
@@ -8891,69 +9152,21 @@
        SYUNOU-READ-SEC          SECTION.
       *
        SYUNOU-READ-100.
-      *----(01.00.23) LINE MOD START --------------------------
-      *平成１４年１０月改正対応
-      *高齢者の在宅総合・在宅末期算定患者
       *
-      **>  IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1")
-      **>  OR  (FLG-SYUHEN                   =   "1")
-               MOVE    "DBFETCH"           TO  MCP-FUNC.
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC.
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYU-SYUNOU-REC
-                   IF     (LNK-S01-SAIKEISAN-KBN    =   "1")    AND
-                          (LNK-S01-SAIKEISAN-DENPYO =   SYU-DENPNUM)
-                           GO    TO    SYUNOU-READ-100
-                   ELSE
-                           MOVE    ZERO    TO  FLG-SYUNOU
-                   END-IF
-               ELSE
-                   INITIALIZE                  SYU-SYUNOU-REC
-                   MOVE    1               TO  FLG-SYUNOU
-               END-IF.
-      **>  ELSE
-      **>      MOVE    "DBFETCH"           TO  MCP-FUNC
-      **>      CALL    "ORCMCPSUB"          USING
-      **>                                   MCPAREA
-      **>                                   ORCMCPAREA
-      **>                                   MCPDATA-REC
-      **>      IF      MCP-RC              =   ZERO
-      **>          MOVE    MCPDATA-REC     TO  SYU-SYUNOU-REC
-      **>          IF     (LNK-S01-SAIKEISAN-KBN    =   "1")    AND
-      **>                 (LNK-S01-SAIKEISAN-DENPYO <=   SYU-DENPNUM)
-      **>                  GO    TO    SYUNOU-READ-100
-      **>          ELSE
-      **>                  MOVE    ZERO    TO  FLG-SYUNOU
-      **>          END-IF
-      **>      ELSE
-      **>          INITIALIZE                  SYU-SYUNOU-REC
-      **>          MOVE    1               TO  FLG-SYUNOU
-      **>      END-IF
-      **>  END-IF.
-      *----(01.00.23) LINE MOD END   --------------------------
-      *
-       SYUNOU-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    収納マスター読込（上限回数がある場合）
-      *****************************************************************
-       SYUNOU-READ2-SEC          SECTION.
-      *
-       SYUNOU-READ2-100.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
-                                        MCPDATA-REC
+                                        MCPDATA-REC.
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYU-SYUNOU-REC
-               IF     (LNK-S01-SAIKEISAN-KBN    =   "1")    AND
-                      (LNK-S01-SAIKEISAN-DENPYO <=   SYU-DENPNUM)
-                       GO    TO    SYUNOU-READ2-100
+               IF    ((LNK-S01-SAIKEISAN-KBN    =   "1"           ) AND
+                      (LNK-SYU-DENPNUM      NOT =  ZERO           ) AND
+                      (LNK-SYU-DENPNUM          =  SYU-DENPNUM    ))
+               OR    ((LNK-S01-SAIKEISAN-KBN    =   "1"           ) AND
+                      (LNK-SYU-GRP-DENPNUM  NOT =  ZERO           ) AND
+                      (LNK-SYU-GRP-DENPNUM      =  SYU-GRP-DENPNUM))
+                       GO    TO    SYUNOU-READ-100
                ELSE
                        MOVE    ZERO    TO  FLG-SYUNOU
                END-IF
@@ -8962,7 +9175,27 @@
                MOVE    1               TO  FLG-SYUNOU
            END-IF.
       *
-       SYUNOU-READ2-EXT.
+       SYUNOU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納合計マスタ読込
+      *****************************************************************
+       SYUTOTAL-READ-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYUTTL-REC
+               MOVE    ZERO            TO  FLG-SYUTOTAL
+           ELSE
+               INITIALIZE                  SYUTTL-REC
+               MOVE    1               TO  FLG-SYUTOTAL
+           END-IF.
+      *
+       SYUTOTAL-READ-EXT.
            EXIT.
       *****************************************************************
       *    患者情報読込
