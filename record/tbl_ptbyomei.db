@@ -414,3 +414,17 @@ path	key19	{
 		;
 	};
 };
+
+path	key20	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key20_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND     PTID      =   :PTID
+			AND     SRYYMD    =   :SRYYMD
+			AND     BYOMEI       :BYOMEI
+			ORDER  BY  SRYKA
+		;
+	};
+};
