@@ -643,8 +643,7 @@
            WHEN    "2"
                MOVE    "帕杉戎规界"    TO  HEAD-SRTKBN
            WHEN    "3"
-               MOVE    "吹荚カナ会叹界"
-                                       TO  HEAD-SRTKBN
+               MOVE    "カナ会叹界"    TO  HEAD-SRTKBN
            WHEN    OTHER
                MOVE    "吹荚戎规界"    TO  HEAD-SRTKBN
            END-EVALUATE
