@@ -182,3 +182,15 @@ path	all	{
       		;
 	};
 };
+
+path	key11		{ 	
+	DBSELECT	{
+		DECLARE tbl_syskanri_key11_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD 
+			AND		STYUKYMD   LIKE  :STYUKYMD
+			ORDER	BY	STYUKYMD
+		;
+	};
+};

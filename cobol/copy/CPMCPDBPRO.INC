@@ -306,6 +306,7 @@
       *  01.01.124   NACL-小豆沢  04/02/07  SYUNOU-KEY25追加
       *  01.01.125   NACL-藤原    04/02/24  PTBYOMEI-KEY20追加
       *  01.01.126   NACL-多々納　04/02/24  TENSYU-KEY90,KEY91,KEY92追加
+      *  01.01.127   NACL-小豆沢  04/02/24  SYSKANRI-KEY11追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1136,6 +1137,10 @@
                    PERFORM 2001-SEL-SYSKANRI-SEC
                WHEN    ANY             ALSO   "SYSKANRI-KEY10"
                    MOVE    PATH-TBL-SYSKANRI-KEY10
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-SYSKANRI-SEC
+               WHEN    ANY             ALSO   "SYSKANRI-KEY11"
+                   MOVE    PATH-TBL-SYSKANRI-KEY11
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-SYSKANRI-SEC
       *追加/*開始*01.09.15********************************************
