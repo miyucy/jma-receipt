@@ -4607,10 +4607,10 @@
                    MOVE    SYU-HKNCOMBINUM     TO  SHELLTBL-ARG5
                    MOVE    SPA-HOSPID          TO  SHELLTBL-ARG6
       *            ドクター
-                   IF      SYU-DRCD            =   SPACE
+                   IF      SYU-DRCD-G          =   SPACE
                        MOVE    "@@@@@"             TO  SHELLTBL-ARG9
                    ELSE
-                       MOVE    SYU-DRCD            TO  SHELLTBL-ARG9
+                       MOVE    SYU-DRCD-G          TO  SHELLTBL-ARG9
                    END-IF
                    MOVE    SHELLTBL            TO  MCPDATA-REC
                    MOVE    "SHELL"             TO  MCP-FUNC
