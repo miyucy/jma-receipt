@@ -57,12 +57,27 @@ AC_ARG_WITH(open-cobol-exec-prefix,[--with-open-cobol-exec-prefix=<direcotry> Pr
   fi
   if test "x$no_cobc" = x ; then
       AC_MSG_RESULT(yes)
+      cobc_major_version=`$COBC --version | \
+	sed -n 's/OpenCOBOL \([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)/\1/p'`
+      cobc_minor_version=`$COBC --version | \
+	sed -n 's/OpenCOBOL \([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)/\2/p'`
+      cobc_micro_version=`$COBC --version | \
+	sed -n 's/OpenCOBOL \([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)/\3/p'`
+      if test "x${cobc_major_version}${cobc_minor_version}" = x08; then
+	COBOLFLAGS=" -m -dynamic -F "
+	EXEC_COBOLFLAGS="-dynamic -F "
+      else
+	COBOLFLAGS="-m -dynamic -fixed "
+	EXEC_COBOLFLAGS="-m -dynamic -fixed -main "
+      fi	
   else
       AC_MSG_RESULT(no)
       AC_MSG_ERROR(OpenCOBOL compiler not found.)
   fi
 
 AC_SUBST(COBC)
+AC_SUBST(COBOLFLAGS)
+AC_SUBST(EXEC_COBOLFLAGS)
 
 dnl Checks for libraries.
 

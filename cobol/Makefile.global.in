@@ -24,8 +24,8 @@ MKDIR = mkdir -p
 
 COBCOPYS = -I$(srcdir)/../../cobol/copy
 
-COBOLFLAGS =  -m -dynamic -F
-EXEC_COBOLFLAGS = -dynamic -F
+COBOLFLAGS = @COBOLFLAGS@
+EXEC_COBOLFLAGS = @EXEC_COBOLFLAGS@
 DEPDIR = .deps
 
 OBJS = ${SRCS:.CBL=.so}
