@@ -23,5 +23,6 @@ ORCASCRIPT=$ORCA_DIR/scripts/claim/rb
 #-------------------------------------------#
 #        $2 SequencialFile
 #-------------------------------------------#
-       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCL0030 -parameter $2 >L0030.log
+       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCL0030 -parameter $2 >/tmp/L0030.log
+	rm ${2:0:29}*
        exit 
