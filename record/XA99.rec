@@ -1,5 +1,8 @@
 XA99	{
 	fixed6	{
+		B12	{
+	       	state	int;
+		};
 		MSG	{
 			value	varchar(80);
 		};

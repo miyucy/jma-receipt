@@ -17,7 +17,8 @@ R99	{
 			};
 		};
 		B12	{
-	           	state	int;
+	       	state	int;
+			label	varchar(14);
 		};
 		PROGRESSBAR	{
 	           	value	int;
