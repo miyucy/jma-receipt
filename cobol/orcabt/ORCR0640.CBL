@@ -221,15 +221,19 @@
        01  WRK-GAI-TABLE.
            03  WRK-GAI-TBL                             OCCURS    7.
              04  WRK-GAI-T                             OCCURS   10.
+               05  WRK-GAI-DAY                         PIC 9(02).
                05  WRK-GAI-ZAITEN                      PIC 9(08).
                05  WRK-GAI-ZAIKAISU                    PIC 9(04).
       *
        01  WRK-GAI-TABLE2.
            03  WRK-GAI-T2                              OCCURS   20.
+               05  WRK-GAI2-DAY                        PIC 9(02).
                05  WRK-GAI2-SRYCD                      PIC 9(09).
                05  WRK-GAI2-ZAITEN                     PIC 9(08).
                05  WRK-GAI2-ZAIKAISU                   PIC 9(04).
                05  WRK-GAI2-SRYKBNFLG                  PIC 9(01).
+      *
+       01  WRK-GAI-DATA                                PIC X(24).
       *
        01  WRK-SKJ-TABLE.
            03  WRK-SKJ-T                               OCCURS   31.
@@ -885,7 +889,7 @@
                          ADD    1     TO   CNT-ZAIREN
                          PERFORM  VARYING  SYUKEI-IDX3  FROM  1  BY  1
                             UNTIL  SYUKEI-IDX3           > 20
-                             OR    WRK-GAI2-SRYCD(SYUKEI-IDX3) = ZERO
+                             OR    WRK-GAI2-DAY(SYUKEI-IDX3) = ZERO
       *
                              PERFORM   RECE64-TENSOU2-GAI-SEC
                              PERFORM   RECE65-HENSYU2-GAI-SEC
@@ -1095,7 +1099,7 @@
            MOVE     ZERO     TO    FLG-ARI
            PERFORM  VARYING  SYUKEI-IDX2    FROM    1   BY  1
                   UNTIL  SYUKEI-IDX2           > 10
-                   OR    WRK-GAI-ZAITEN(SYUKEI-IDX SYUKEI-IDX2) = ZERO
+                   OR    WRK-GAI-DAY(SYUKEI-IDX SYUKEI-IDX2) = ZERO
                    OR    FLG-ARI               = 1
               IF  WRK-GAI-ZAITEN(SYUKEI-IDX SYUKEI-IDX2)
                                             =  WRK-DAY22-NYUKHNRYO(IDY)
@@ -1104,6 +1108,8 @@
               END-IF
            END-PERFORM  
            IF  FLG-ARI  =  ZERO  
+                 MOVE  IDY 
+                          TO   WRK-GAI-DAY     (SYUKEI-IDX SYUKEI-IDX2)
                  MOVE  WRK-DAY22-NYUKHNRYO(IDY)
                           TO   WRK-GAI-ZAITEN  (SYUKEI-IDX SYUKEI-IDX2) 
                  ADD   1  TO   WRK-GAI-ZAIKAISU(SYUKEI-IDX SYUKEI-IDX2)
@@ -1126,9 +1132,12 @@
       *
              PERFORM  VARYING  SYUKEI-IDX2    FROM    1   BY  1
                   UNTIL  SYUKEI-IDX2           > 10
-                   OR    WRK-GAI-ZAITEN(SYUKEI-IDX SYUKEI-IDX2) = ZERO
+                   OR    WRK-GAI-DAY(SYUKEI-IDX SYUKEI-IDX2) = ZERO
       *
                ADD      1      TO     SYUKEI-IDX3
+      *
+               MOVE   WRK-GAI-DAY(SYUKEI-IDX SYUKEI-IDX2)
+                                    TO   WRK-GAI2-DAY     (SYUKEI-IDX3)
                EVALUATE  SYUKEI-IDX
                   WHEN     1
                      MOVE   "190107290" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
@@ -1164,6 +1173,31 @@
              END-PERFORM
       *
            END-PERFORM  
+      *
+      *    ÆüÉÕ½ç¤ËÊÂ¤ÓÂØ¤¨
+      *
+           PERFORM    VARYING   SYUKEI-IDX     FROM    1   BY  1
+                  UNTIL  ( SYUKEI-IDX                   >   20  )
+                    OR   ( WRK-GAI2-DAY(SYUKEI-IDX)     =  ZERO )
+      *
+             COMPUTE    SYUKEI-IDX2  =  SYUKEI-IDX  +  1
+      *
+             PERFORM  VARYING  SYUKEI-IDX3  FROM  SYUKEI-IDX2  BY  1
+                        UNTIL  ( SYUKEI-IDX3                >   20  )
+                          OR   ( WRK-GAI2-DAY(SYUKEI-IDX3)  =  ZERO )
+      *
+                IF       WRK-GAI2-DAY(SYUKEI-IDX)  >
+                                           WRK-GAI2-DAY(SYUKEI-IDX3)
+                   MOVE  WRK-GAI-T2(SYUKEI-IDX)  
+                                           TO  WRK-GAI-DATA
+                   MOVE  WRK-GAI-T2(SYUKEI-IDX3)  
+                                           TO  WRK-GAI-T2(SYUKEI-IDX)
+                   MOVE  WRK-GAI-DATA      TO  WRK-GAI-T2(SYUKEI-IDX3)
+                END-IF
+      *
+             END-PERFORM
+      *
+           END-PERFORM
       *
            .
       *
