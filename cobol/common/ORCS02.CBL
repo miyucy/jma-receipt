@@ -2999,7 +2999,7 @@
                                                 HKN-TNK-NYUKFTNRATE
                        END-IF
       *
-                       MOVE      "3"       TO   HKN-HON-NYUSKJRYYKBN
+                       MOVE      "0"       TO   HKN-HON-NYUSKJRYYKBN
                                                 HKN-KZK-NYUSKJRYYKBN
                                                 HKN-TSY-NYUSKJRYYKBN
                                                 HKN-TNK-NYUSKJRYYKBN
@@ -3017,7 +3017,7 @@
                                                 HKN-TSY-NYUKFTNRATE
                                                 HKN-TNK-NYUKFTNRATE
       *
-                          MOVE   "3"       TO   HKN-HON-NYUSKJRYYKBN
+                          MOVE   "0"       TO   HKN-HON-NYUSKJRYYKBN
                                                 HKN-KZK-NYUSKJRYYKBN
                                                 HKN-TSY-NYUSKJRYYKBN
                                                 HKN-TNK-NYUSKJRYYKBN
