@@ -418,6 +418,9 @@
       *    ドクター編集変換サブ
            COPY    "CPORCSDRSET.INC".
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
@@ -1570,6 +1573,20 @@
                IF      SPA-GMN-YYKNAME     =   SPA-GMN-NAME
                    GO      TO      41014-YYKNAME-EXT
                END-IF
+           END-IF
+      *
+      *    全角半角チェック
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-YYKNAME     TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0017"          TO  SPA-ERRCD
+               GO      TO      41014-YYKNAME-EXT
+           ELSE
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-YYKNAME
            END-IF
       *
            MOVE    SPACE           TO  WRK-KNJ
@@ -3722,6 +3739,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0016"
                    MOVE    "選択番号選択エラーです。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0017"
+                   MOVE    "予約氏名は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "1000"
                    MOVE    "予約件数がオーバーしてます"
