@@ -19,8 +19,8 @@
        PROGRAM-ID.             ORCR0410.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : レセプト（労災）
-      *  コンポーネント名  : 月次業務　労災明細書ファイル作成
+      *  サブシステム名    : レセプト（労災・自賠責）
+      *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
       *                              （保険情報編集）
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    02.09.09  自賠責対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -105,6 +106,8 @@
            03  FLG-KYUSEIRRK                           PIC  9(01).
            03  FLG-SRYACCT                             PIC  9(01).
            03  FLG-SHOSAISIN                           PIC  9(01).
+           03  FLG-SHOSAISIN2                          PIC  9(01).      
+           03  FLG-SHOSIN                              PIC  9(01).      
            03  FLG-KYUKYU                              PIC  9(01).
            03  FLG-GAIRAIXX                            PIC  9(01).
            03  FLG-GAIRAI26                            PIC  9(01).
@@ -122,6 +125,7 @@
            03  IDX                                     PIC  9(03).
            03  IDY                                     PIC  9(03).
            03  IDZ                                     PIC  9(03).
+           03  ID1                                     PIC  9(03).
       *    パス名領域
        01  WK-PATH                                     PIC  X(20).
       *    一時領域
@@ -140,11 +144,22 @@
            03  WRK-TEN                                 PIC  9(09).
            03  WRK-KIN                                 PIC  9(09).
            03  WRK-TANKA                               PIC  9(02)V99.
+           03  WRK-KSNRATE                             PIC  9(03).      
       *
            03  WRK-TAIHI-FLG                           PIC  9(01).
            03  WRK-TAIHI-SRYYMD.
                05  WRK-TAIHI-SRYYM                     PIC  9(06).
                05  WRK-TAIHI-SRYD                      PIC  9(02).
+      *
+           03  WRK-TAIHI-FLG2                          PIC  9(01).      
+           03  WRK-TAIHI-SRYYMD2.                                       
+               05  WRK-TAIHI-SRYYM2                    PIC  9(06).      
+               05  WRK-TAIHI-SRYD2                     PIC  9(02).      
+      *
+           03  WRK-SINDAN-TUU                          PIC  9(02).      
+           03  WRK-SINDAN-KIN                          PIC  9(09).      
+           03  WRK-MEISAI-TUU                          PIC  9(02).      
+           03  WRK-MEISAI-KIN                          PIC  9(09).      
       *
            03  WRK-DAY                                 PIC  9(02).
       *
@@ -156,10 +171,24 @@
       *
            03  WRK-ZAIKAISU                            PIC  9(03).
       *
+           03  WRK-ZAIKAISU-JI                         PIC  9(03).
+           03  WRK-KEISAN-JI                           PIC  9(09).
+           03  WRK-TEN-JI                              PIC  9(09).
+      *
+      *    手技点・薬剤等点数用領域
+       01  TBL-TENSUG-JI.
+           03  TBL-TENSU-JI                            OCCURS   31.
+              05  TBL-SYUTEN-JI                        PIC  9(09).
+              05  TBL-YKZTEN-JI                        PIC  9(09).  
+      *
       *    実日数カウント用領域
        01  TBL-JNISSU.
            03  TBL-JNISSU-DAY                          PIC  X(01)
                                                        OCCURS   31.
+      *    通院日情報カウント用領域
+       01  TBL-JNISSU2.                                                 
+           03  TBL-JNISSU2-DAY                         PIC  X(01)       
+                                                       OCCURS   31.     
       *    外来管理加算（特例：５２）用領域
        01  TBL-G52NISSU.
            03  TBL-G52NISSU-DAY                        PIC  X(01)
@@ -230,7 +259,7 @@
       *
       *    患者番号構成管理情報
            COPY    "CPSK1009.INC".
-      *    労災医療機関情報
+      *    労災自賠医療機関情報
            COPY    "CPSK4001.INC".
       *
       *    診療会計
@@ -307,7 +336,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCR0410"      TO  JOB-PGID
-           MOVE    "保険情報編集（労災）"
+           MOVE    "保険情報編集（労災・自賠責）"                       
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -365,8 +394,14 @@
                    WHEN  "2"
                        MOVE     12.0    TO    WRK-TANKA
                END-EVALUATE
+               IF      SYS-4001-KSNRATE(1:2)  =  SPACE                  
+                   MOVE   100           TO    WRK-KSNRATE               
+               ELSE                                                     
+                   COMPUTE WRK-KSNRATE  =  SYS-4001-KSNRATE             
+                                        +  100                          
+               END-IF                                                   
            ELSE
-               MOVE    "労災医療機関情報が取得できませんでした"
+               MOVE    "労災自賠医療機関情報が取得できませんでした"     
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1                   TO  FLG-END
@@ -543,19 +578,32 @@
       *
               MOVE       SPACE             TO     TBL-JNISSU
               INITIALIZE                          TBL-JNISSU
+              MOVE       SPACE             TO     TBL-JNISSU2           
+              INITIALIZE                          TBL-JNISSU2           
               MOVE       SPACE             TO     TBL-G52NISSU
               INITIALIZE                          TBL-G52NISSU
               MOVE       SPACE             TO     TBL-G26NISSU
               INITIALIZE                          TBL-G26NISSU
               MOVE       SPACE             TO     TBL-GXXNISSU
               INITIALIZE                          TBL-GXXNISSU
+              MOVE       SPACE             TO     TBL-TENSUG-JI
+              INITIALIZE                          TBL-TENSUG-JI
       *
               MOVE       ZERO              TO     WRK-TAIHI-FLG
+                                                  WRK-TAIHI-FLG2        
+      *
+              MOVE       ZERO              TO     WRK-SINDAN-TUU        
+                                                  WRK-SINDAN-KIN        
+                                                  WRK-MEISAI-TUU        
+                                                  WRK-MEISAI-KIN        
       *        
               PERFORM    VARYING    IDX    FROM   1   BY   1
                          UNTIL     (IDX      >   10)  OR
                                    (RECE40-SRYKA(IDX)   =   SPACE)
                   PERFORM    NISUU-HENSYU-SEC
+                  IF    RECE41-HKNKBN   =   "4"                         
+                     PERFORM    NISUU-HENSYU4-SEC                       
+                  END-IF                                                
               END-PERFORM
       *
               PERFORM     HENSYU-SET-SEC
@@ -576,6 +624,9 @@
               PERFORM     HENSYU-SET3-SEC
       *
            END-IF 
+      *
+      *    自賠責加算率
+           MOVE    WRK-KSNRATE   TO     RECE41-KSNRATE                  
       *
            .
        210-HENSYU-EXT.
@@ -603,6 +654,8 @@
                    MOVE    7092            TO    RECE41-RECESYUBETU
                WHEN    "3"          ALSO    ANY   
                    MOVE    7021            TO    RECE41-RECESYUBETU
+               WHEN    "4"          ALSO    ANY                         
+                   MOVE    7001            TO    RECE41-RECESYUBETU     
            END-EVALUATE
            .
        RECESYUBETU-SET-EXT.
@@ -635,6 +688,7 @@
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO    TO      FLG-SHOSAISIN
+                                                       FLG-SHOSAISIN2   
                                                        FLG-KYUKYU
                                                        FLG-GAIRAIXX
                                                        FLG-GAIRAI26
@@ -657,6 +711,21 @@
                                    PERFORM   GAIRAI-HANTEI-SEC
                                END-IF
                                PERFORM   ENDATE-HANTEI-SEC 
+                               IF    RECE41-HKNKBN   =   "4"            
+                                 IF   ACCT-SRYKBN  =  "80"              
+                                   PERFORM   SINDAN-HANTEI-SEC          
+                                 END-IF                                 
+                               END-IF                                   
+      *
+                               PERFORM VARYING ID1 FROM 1  BY 1
+                                           UNTIL    ID1     >    31
+                                 IF  ACCT-DAY(1 ID1)   NOT =    ZERO
+                                   MOVE  ACCT-DAY(1 ID1)  
+                                               TO      WRK-ZAIKAISU-JI
+                                   PERFORM   SYUGITEN-HANTEI-SEC
+                                 END-IF
+                               END-PERFORM
+      *
                                PERFORM   TENSOU-SEC
                                PERFORM   TENSOU2-SEC
                            END-IF
@@ -664,6 +733,7 @@
                            IF   (ACCT-ZAITEN        =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO    TO      FLG-SHOSAISIN 
+                                                       FLG-SHOSAISIN2   
                                IF   ACCT-SRYKBN  =  "99"  
                                    PERFORM   SHOSAISIN-HANTEI-SEC
                                END-IF
@@ -788,6 +858,51 @@
            EXIT.
       *
       *****************************************************************
+      *    実日数等編集４
+      *****************************************************************
+       NISUU-HENSYU4-SEC                SECTION.
+      *
+           INITIALIZE                           SRYACCT-REC
+           MOVE    RECE40-HOSPID        TO      ACCT-HOSPID
+           MOVE    RECE40-NYUGAIKBN     TO      ACCT-NYUGAIKBN
+           MOVE    RECE40-PTID          TO      ACCT-PTID
+           MOVE    RECE40-SRYKA(IDX)    TO      ACCT-SRYKA
+           MOVE    SRYACCT-REC          TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "SRYACCT-KEY4"       TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+               MOVE    "SRYACCT-KEY4"   TO      ORC-DBPATH
+               PERFORM  SRYACCT-READ-SEC
+               PERFORM  UNTIL
+                              FLG-SRYACCT        =    1
+      *
+                   IF      ACCT-HKNCOMBI   =   RECE40-HKNCOMBI
+                           IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                                (ACCT-ZAIKAISU  NOT =    ZERO)
+                               MOVE    ZERO    TO      FLG-SHOSIN
+                               IF   ACCT-SRYKBN  =  "11"   
+                                   PERFORM   SHOSIN-HANTEI-SEC
+                               END-IF
+                               PERFORM   TENSOU5-SEC
+                           END-IF
+                   END-IF
+      *                 
+                   MOVE     "SRYACCT-KEY4"   TO   ORC-DBPATH
+                   PERFORM   SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE   "SRYACCT-KEY4"      TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+       NISUU-HENSYU4-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    診療会計テーブルの内容から診療行為テーブルを読み込み、
       *    診療実日数のカウントを行える剤であるかの判定
       *****************************************************************
@@ -819,7 +934,15 @@
                        IF  (( TNS-JITUDAY    =     2          ) AND       
                             ( TNS-DAYCNT     =     1   OR   2 ))
                        OR  (  SRY-SRYCD(IDY) =  "099409901"    )    
-                             MOVE    1      TO    FLG-SHOSAISIN
+      *
+                          MOVE       1      TO    FLG-SHOSAISIN
+      *
+                          IF  SRY-SRYCD(IDY) =  "099409901"             
+                             CONTINUE                                   
+                          ELSE                                          
+                             MOVE    1      TO    FLG-SHOSAISIN2         
+                          END-IF                                        
+      *
                        END-IF
                    END-PERFORM
       *
@@ -1048,6 +1171,218 @@
            EXIT.
       *
       *****************************************************************
+      *    診療会計テーブルの内容から診療行為テーブルを読み込み、
+      *    自賠責の診断書料・明細書料であるかの判定
+      *****************************************************************
+       SINDAN-HANTEI-SEC                 SECTION.
+      *
+           INITIALIZE                           SRYACT-REC
+           MOVE    ACCT-HOSPID          TO      SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
+           MOVE    ACCT-PTID            TO      SRY-PTID
+           MOVE    ACCT-SRYKA           TO      SRY-SRYKA
+           MOVE    ACCT-SRYYM           TO      SRY-SRYYM
+           MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
+           MOVE    SRYACT-REC           TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "SRYACT-KEY2"        TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+               MOVE    "SRYACT-KEY2"    TO      ORC-DBPATH
+               PERFORM  SRYACT-READ-SEC
+               PERFORM  UNTIL  FLG-SRYACT    =    1
+      *
+                   PERFORM   VARYING   IDY   FROM   1   BY   1
+                             UNTIL    (IDY            >       5)  OR
+                                      (SRY-SRYCD(IDY) =   SPACE)  
+      *
+                       PERFORM   TENSU-TBL-SEC
+      *
+                       IF   SRY-SRYCD(IDY)(1:5) =  "09591"
+      *
+                          COMPUTE  WRK-SINDAN-TUU = WRK-SINDAN-TUU +
+                                                    ACCT-ZAIKAISU
+                          COMPUTE  WRK-SINDAN-KIN = WRK-SINDAN-KIN +
+                                       ( TNS-TEN  *  ACCT-ZAIKAISU )         
+      *
+                       END-IF
+      *
+                       IF   SRY-SRYCD(IDY)(1:5) =  "09592"
+      *
+      *
+                          COMPUTE  WRK-MEISAI-TUU = WRK-MEISAI-TUU +
+                                                    ACCT-ZAIKAISU
+                          COMPUTE  WRK-MEISAI-KIN = WRK-MEISAI-KIN +
+                                       ( TNS-TEN  *  ACCT-ZAIKAISU )         
+      *
+                       END-IF
+      *
+      *
+                   END-PERFORM
+      *
+                   MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
+                   PERFORM   SRYACT-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE   "SRYACT-KEY2"      TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+           .
+      *
+       SINDAN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計テーブルの内容から診療行為テーブルを読み込み、
+      *    初診料があるかの判定
+      *****************************************************************
+       SHOSIN-HANTEI-SEC                 SECTION.
+      *
+           INITIALIZE                           SRYACT-REC
+           MOVE    ACCT-HOSPID          TO      SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
+           MOVE    ACCT-PTID            TO      SRY-PTID
+           MOVE    ACCT-SRYKA           TO      SRY-SRYKA
+           MOVE    ACCT-SRYYM           TO      SRY-SRYYM
+           MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
+           MOVE    SRYACT-REC           TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "SRYACT-KEY2"        TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+               MOVE    "SRYACT-KEY2"    TO      ORC-DBPATH
+               PERFORM  SRYACT-READ-SEC
+               PERFORM  UNTIL  FLG-SRYACT    =    1
+      *
+                   PERFORM   VARYING   IDY   FROM   1   BY   1
+                             UNTIL    (IDY            >       5)  OR
+                                      (SRY-SRYCD(IDY) =   SPACE)  OR
+                                      (FLG-SHOSIN     =       1)
+                       IF   SRY-SRYCD(IDY) =  CONS-ROUSAI1  
+                             MOVE    1      TO    FLG-SHOSIN
+                       END-IF
+                   END-PERFORM
+      *
+                   MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
+                   PERFORM   SRYACT-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE   "SRYACT-KEY2"      TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+           .
+      *
+       SHOSIN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計テーブルの内容から診療行為テーブルを読み込み、
+      *    日単位の手技点・薬剤点等をセット
+      *****************************************************************
+       SYUGITEN-HANTEI-SEC                 SECTION.
+      *
+           INITIALIZE                           SRYACT-REC
+           MOVE    ACCT-HOSPID          TO      SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
+           MOVE    ACCT-PTID            TO      SRY-PTID
+           MOVE    ACCT-SRYKA           TO      SRY-SRYKA
+           MOVE    ACCT-SRYYM           TO      SRY-SRYYM
+           MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
+           MOVE    SRYACT-REC           TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "SRYACT-KEY2"        TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+               MOVE    "SRYACT-KEY2"    TO      ORC-DBPATH
+               PERFORM  SRYACT-READ-SEC
+               PERFORM  UNTIL  FLG-SRYACT    =    1
+      *
+                 IF    SRY-RENNUM     =     1
+      *
+                   IF    ACCT-SRYKBN       =  "95"  OR  "96"       
+                         CONTINUE
+                   ELSE
+                     IF        ACCT-SRYCDTOTAL    =    630010002
+                         COMPUTE  TBL-YKZTEN-JI(ID1)  =
+                                  TBL-YKZTEN-JI(ID1)  -
+                                 ( WRK-ZAIKAISU-JI * ACCT-ZAITEN   )
+                     ELSE 
+                         COMPUTE  TBL-SYUTEN-JI(ID1)  =
+                                  TBL-SYUTEN-JI(ID1)  +
+                                 ( WRK-ZAIKAISU-JI * ACCT-SYUTEN1  )
+                         COMPUTE  WRK-KEISAN-JI   =  ACCT-KIZAITEN  +
+                                                     ACCT-YKZTEN
+                         COMPUTE  TBL-YKZTEN-JI(ID1)  =
+                                  TBL-YKZTEN-JI(ID1)  +
+                                 ( WRK-ZAIKAISU-JI * WRK-KEISAN-JI )
+                     END-IF
+                   END-IF
+      *
+                 END-IF
+      *
+                 PERFORM   VARYING   IDY   FROM   1   BY   1
+                             UNTIL    (IDY            >       5)  OR
+                                      (SRY-SRYCD(IDY) =   SPACE)  
+      *
+                       PERFORM   TENSU-TBL-SEC
+      *
+                       IF   SRY-SRYCD(IDY) =  CONS-ROUSAI1  OR
+                                              CONS-ROUSAI2  OR
+                                              CONS-ROUSAI3  OR
+                                              CONS-ROUSAI4  OR
+                                              CONS-ROUSAI5  OR
+                                              CONS-ROUSAI6  OR
+                                              CONS-ROUSAI7  OR
+                                              CONS-ROUSAI8  OR
+                                              CONS-ROUSAI9  OR
+                                              CONS-ROUSAI10 OR
+                                              CONS-ROUSAI11 OR
+                                              CONS-ROUSAI12 OR
+                                              CONS-ROUSAI13 OR
+                                              CONS-ROUSAI14 OR
+                                              CONS-ROUSAI15 OR
+                                              CONS-ROUSAI16 OR
+                                              CONS-ROUSAI17   
+      *
+      *                     IF     TNS-TENSIKIBETU   =   1
+                               COMPUTE  WRK-TEN-JI   =  TNS-TEN / 10
+                               COMPUTE  TBL-SYUTEN-JI(ID1)  =
+                                        TBL-SYUTEN-JI(ID1)  -
+                                 ( WRK-ZAIKAISU-JI * WRK-TEN-JI )
+      *                     END-IF
+      *
+                       END-IF
+      *
+                       IF  ( ACCT-SRYKBN         =  "80"    ) AND
+                           ( SRY-SRYCD(IDY)(1:5) =  "09591" 
+                                                 OR "09592" )
+                               COMPUTE  WRK-TEN-JI   =  TNS-TEN / 10
+                               COMPUTE  TBL-SYUTEN-JI(ID1)  =
+                                        TBL-SYUTEN-JI(ID1)  -
+                                 ( WRK-ZAIKAISU-JI * WRK-TEN-JI )
+                       END-IF
+      *
+                 END-PERFORM
+      *
+                 MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
+                 PERFORM   SRYACT-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE   "SRYACT-KEY2"      TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+           .
+      *
+       SYUGITEN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    点数テーブルの検索
       *****************************************************************
        TENSU-TBL-SEC                    SECTION.
@@ -1089,6 +1424,15 @@
                            END-IF
                     END-PERFORM
                END-IF
+               IF   FLG-SHOSAISIN2       =       1                      
+                    PERFORM    VARYING   IDZ   FROM   1    BY   1       
+                                    UNTIL    IDZ     >    31            
+                           IF  ACCT-DAY(1 IDZ)   NOT =    ZERO          
+                               MOVE    "1"       TO                     
+                                             TBL-JNISSU2-DAY(IDZ)       
+                           END-IF                                       
+                    END-PERFORM                                         
+               END-IF                                                   
       *    END-IF
            .
        TENSOU-EXT.
@@ -1141,26 +1485,31 @@
                            END-IF
                     END-PERFORM
                END-IF
-               IF        ACCT-SRYKBN        =    "95"   OR  "96"
+               IF    RECE41-HKNKBN   =   "4"
                    CONTINUE
                ELSE
-                 IF        ACCT-SRYCDTOTAL    =    630010002
-                   COMPUTE  RECE41-TOTALTEN =  RECE41-TOTALTEN   -
-                                               (ACCT-ZAITEN    *  
-                                                ACCT-ZAIKAISU)
+                 IF        ACCT-SRYKBN        =    "95"   OR  "96"
+                     CONTINUE
                  ELSE
-                   COMPUTE  RECE41-TOTALTEN =  RECE41-TOTALTEN   +
-                                               (ACCT-ZAITEN    *  
-                                                ACCT-ZAIKAISU)
-                   IF   WRK-KIN  NOT =  ZERO
-                       COMPUTE  RECE41-TOTALTEN  =  RECE41-TOTALTEN  -
-                                                   (WRK-TEN    *
-                                                    ACCT-ZAIKAISU) 
+                   IF        ACCT-SRYCDTOTAL    =    630010002
+                     COMPUTE  RECE41-TOTALTEN =  RECE41-TOTALTEN   -
+                                                 (ACCT-ZAITEN    *  
+                                                  ACCT-ZAIKAISU)
+                   ELSE
+                     COMPUTE  RECE41-TOTALTEN =  RECE41-TOTALTEN   +
+                                                 (ACCT-ZAITEN    *  
+                                                  ACCT-ZAIKAISU)
+                     IF  ( WRK-KIN  NOT =  ZERO )
+                     OR  ( WRK-TEN  NOT =  ZERO )                       
+                         COMPUTE  RECE41-TOTALTEN  =  RECE41-TOTALTEN  -
+                                                     (WRK-TEN    *
+                                                      ACCT-ZAIKAISU) 
       *
-                       COMPUTE  RECE41-TOTALKIN2 =  RECE41-TOTALKIN2 +
-                                                   (WRK-KIN    *
-                                                    ACCT-ZAIKAISU)
-                   END-IF 
+                         COMPUTE  RECE41-TOTALKIN2 =  RECE41-TOTALKIN2 +
+                                                     (WRK-KIN    *
+                                                      ACCT-ZAIKAISU)
+                     END-IF 
+                   END-IF
                  END-IF
                END-IF
       *    END-IF
@@ -1185,7 +1534,8 @@
                    COMPUTE  RECE41-TOTALTEN =  RECE41-TOTALTEN   +
                                                (ACCT-ZAITEN    *  
                                                 WRK-ZAIKAISU)
-                   IF   WRK-KIN  NOT =  ZERO
+                   IF  ( WRK-KIN  NOT =  ZERO )
+                   OR  ( WRK-TEN  NOT =  ZERO )                         
                        COMPUTE  RECE41-TOTALTEN  =  RECE41-TOTALTEN  -
                                                    (WRK-TEN    *
                                                     WRK-ZAIKAISU) 
@@ -1229,6 +1579,31 @@
            .
        TENSOU4-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの項目転送５
+      *****************************************************************
+       TENSOU5-SEC                 SECTION.
+      *
+      *    IF     RECE41-HKNNUM          NOT =   SPACE   
+               IF   FLG-SHOSIN           =       1
+                    PERFORM    VARYING   IDZ   FROM   1    BY   1
+                         UNTIL  ( IDZ                  >    31 )  OR
+                                ( WRK-TAIHI-FLG2       =     1 )
+                           IF  ACCT-DAY(1 IDZ)   NOT =    ZERO
+                               MOVE   ACCT-SRYYM    TO 
+                                                 WRK-TAIHI-SRYYM2
+                               MOVE   IDZ             TO 
+                                                 WRK-TAIHI-SRYD2
+                               MOVE   1               TO
+                                                 WRK-TAIHI-FLG2
+                           END-IF
+                    END-PERFORM
+               END-IF
+      *    END-IF
+           .
+       TENSOU5-EXT.
+           EXIT. 
       *
       *****************************************************************
       *    実日数等の項目転送
@@ -1280,6 +1655,41 @@
                 MOVE   WRK-TAIHI-SRYYMD    TO  RECE41-KYUKYUYMD
            END-IF
       *
+           PERFORM    VARYING    IDZ    FROM    1   BY   1              
+                          UNTIL      IDZ    >     31                    
+                    IF    TBL-JNISSU2-DAY(IDZ)                          
+                                        NOT =  SPACE                    
+                          MOVE  "1"     TO    RECE41-TUUIN-DAY(IDZ)     
+                          ADD    1      TO    RECE41-TUUIN-KEI          
+                    END-IF                                              
+           END-PERFORM                                                  
+      *
+           IF     WRK-TAIHI-FLG2      =   1                             
+                MOVE   WRK-TAIHI-SRYYMD2   TO  RECE41-SHOSHINYMD        
+           END-IF                                                       
+      *
+           IF     WRK-SINDAN-TUU      =   ZERO                          
+                CONTINUE                                                
+           ELSE                                                         
+                MOVE   WRK-SINDAN-TUU      TO  RECE41-SINDAN-TUU        
+                MOVE   WRK-SINDAN-KIN      TO  RECE41-SINDAN-KIN        
+           END-IF
+      *
+           IF     WRK-MEISAI-TUU      =   ZERO                          
+                CONTINUE                                                
+           ELSE                                                         
+                MOVE   WRK-MEISAI-TUU      TO  RECE41-MEISAI-TUU        
+                MOVE   WRK-MEISAI-KIN      TO  RECE41-MEISAI-KIN        
+           END-IF                                                       
+      *
+           PERFORM    VARYING    IDZ    FROM    1   BY   1              
+                          UNTIL      IDZ    >     31                    
+      *              
+                MOVE  TBL-SYUTEN-JI(IDZ)  TO  RECE41-SYUTEN-JI(IDZ)     
+                MOVE  TBL-YKZTEN-JI(IDZ)  TO  RECE41-YKZTEN-JI(IDZ)     
+      *
+           END-PERFORM                                                  
+      *
            .
        HENSYU-SET-EXT.
            EXIT.
@@ -1289,8 +1699,12 @@
       *****************************************************************
        HENSYU-SET2-SEC                    SECTION.
       *
-           COMPUTE  RECE41-TOTALKIN   =   RECE41-TOTALTEN   *
-                                          WRK-TANKA    
+           IF    RECE41-HKNKBN   =   "4"                                
+               CONTINUE                                                 
+           ELSE                                                         
+               COMPUTE  RECE41-TOTALKIN   =   RECE41-TOTALTEN   *
+                                              WRK-TANKA    
+           END-IF                                                       
       *
            .
        HENSYU-SET2-EXT.

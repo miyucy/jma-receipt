@@ -19,8 +19,9 @@
 000300 PROGRAM-ID.             ORCR0450.
 000400*****************************************************************
 000500*  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : レセプト
-000700*  コンポーネント名  : 月次業務　労災明細書ファイル作成（傷病名並替え）
+000600*  サブシステム名    : レセプト（労災・自賠責）
+000700*  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
+      *                      （傷病名並替え）
 000800*  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−藤原　   新規作成
@@ -220,7 +221,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCR0450"      TO  JOB-PGID
-           MOVE    "傷病名並び替え（労災）"
+           MOVE    "傷病名並び替え（労災・自賠責）"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -361,8 +362,8 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-           DISPLAY "RECE42   IN  " CNT-IN  UPON CONSOLE 
-           DISPLAY "RECE43  CNT " CNT-OUT UPON CONSOLE 
+           DISPLAY "RECE42   IN  " CNT-IN  
+           DISPLAY "RECE43  CNT " CNT-OUT  
            DISPLAY "*** ORCR0450 END ***"
       ***     ACCEPT  WRK-IN FROM CONSOLE 
            .

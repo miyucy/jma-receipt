@@ -19,8 +19,8 @@
        PROGRAM-ID.             ORCR0430.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : レセプト（労災）
-      *  コンポーネント名  : 月次業務　労災明細書ファイル作成
+      *  サブシステム名    : レセプト（労災・自賠責）
+      *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
       *                      （レセプトコメント編集） 
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    02.09.18  自賠責対応　　　　　　
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -459,7 +460,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCR0430"      TO  JOB-PGID
-           MOVE    "コメント編集（労災）"    TO  JOB-SHELLMSG
+           MOVE    "コメント編集（労災・自賠責）"    TO  JOB-SHELLMSG   
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
@@ -554,16 +555,29 @@
       *
                MOVE          SPACE       TO      RECE441-REC
                INITIALIZE    RECE441-REC
-               EVALUATE      RECE44-SRYKBN
-                   WHEN      "12"
-      *            （再診４回目のカウント）
-                      PERFORM    2001-SAISHIN4-COUNT-SEC
-                   WHEN      "40"
-      *            （人工腎臓のカウント）
-                      PERFORM    2001-JINZOU-COUNT-SEC
-                   WHEN      "80"
-                      PERFORM    2001-RIHA-COUNT-SEC
-               END-EVALUATE
+               IF   RECE41-HKNKBN    NOT  =  "4"                        
+                  EVALUATE      RECE44-SRYKBN
+                      WHEN      "12"
+      *               （再診４回目のカウント）
+                         PERFORM    2001-SAISHIN4-COUNT-SEC
+                      WHEN      "40"
+      *               （人工腎臓のカウント）
+                         PERFORM    2001-JINZOU-COUNT-SEC
+                      WHEN      "80"
+                         PERFORM    2001-RIHA-COUNT-SEC
+                  END-EVALUATE
+               ELSE                                                     
+                  EVALUATE      RECE44-SRYKBN                           
+                      WHEN      "12"                                    
+      *               （再診４回目のカウント）                          
+                         PERFORM    2001-SAISHIN4-COUNT-SEC             
+                      WHEN      "40"                                    
+      *               （人工腎臓のカウント）                            
+                         PERFORM    2001-JINZOU-COUNT-SEC               
+      *               （リハビリのカウント）                            
+                         PERFORM    2001-RIHA-COUNT-SEC                 
+                  END-EVALUATE                                          
+               END-IF                                                   
       *
                PERFORM 990-RECE44-NEXT-SEC
       *
@@ -604,7 +618,8 @@
       *
                MOVE          SPACE       TO      RECE441-REC
                INITIALIZE    RECE441-REC
-               EVALUATE      RECE44-SRYKBN
+               IF   RECE41-HKNKBN    NOT  =  "4"                        
+                 EVALUATE      RECE44-SRYKBN                   
                    WHEN      "13"
                       PERFORM    2001-SHIDOU-HANTEI-SEC
                       IF      FLG-SHIDOU-COMMENT    =      1
@@ -658,7 +673,64 @@
                       WRITE      RECE441-REC
                       ADD     1          TO      CNT-RECE44
                       PERFORM    2002-RECE45-TENSOU-SEC
-               END-EVALUATE
+                 END-EVALUATE
+               ELSE                                                     
+                 EVALUATE      RECE44-SRYKBN                            
+                   WHEN      "13"                                       
+                      PERFORM    2001-SHIDOU-HANTEI-SEC                 
+                      IF      FLG-SHIDOU-COMMENT    =      1            
+                          PERFORM    2001-SHIDOU-COMMENT-SEC            
+                      ELSE                                              
+                          MOVE       RECE44-REC    TO   RECE441-REC     
+                          WRITE      RECE441-REC                        
+                          ADD     1          TO      CNT-RECE44         
+                          PERFORM    2002-RECE45-TENSOU-SEC             
+                      END-IF                                            
+                   WHEN      "50"                                       
+      *            （手術日のセット）                                   
+                      PERFORM    2001-SHUJUTSU-HANTEI-SEC               
+                      IF     (FLG-SHUJUTU-COMMENT   =      1)  AND      
+                             (RECE44-SYUTEN1    NOT =   ZERO)           
+                          PERFORM    2001-SHUJUTSU-COMMENT-SEC          
+                      ELSE                                              
+                          MOVE       RECE44-REC    TO   RECE441-REC     
+                          WRITE      RECE441-REC                        
+                          ADD     1          TO      CNT-RECE44         
+                          PERFORM    2002-RECE45-TENSOU-SEC             
+                      END-IF                                            
+                   WHEN      "40"                                       
+      *            （リハビリのセット）                                 
+                      IF  RECE44-ZAINUM    =   WRK-RIGA1-SHU-ZAINUM OR  
+                                               WRK-RIGA1-KO-ZAINUM  OR  
+                                               WRK-RIGA2-SHU-ZAINUM OR  
+                                               WRK-RIGA2-KO-ZAINUM  OR  
+                                               WRK-RIGA3-SHU-ZAINUM OR  
+                                               WRK-RIGA3-KO-ZAINUM  OR  
+                                               WRK-RIGA4-SHU-ZAINUM OR  
+                                               WRK-RIGA4-KO-ZAINUM  OR  
+                                               WRK-SAGYO1-SHU-ZAINUM OR 
+                                               WRK-SAGYO1-KO-ZAINUM  OR 
+                                               WRK-SAGYO2-SHU-ZAINUM OR 
+                                               WRK-SAGYO2-KO-ZAINUM  OR 
+                                               WRK-GENGO1-SHU-ZAINUM OR 
+                                               WRK-GENGO1-KO-ZAINUM  OR 
+                                               WRK-GENGO2-SHU-ZAINUM OR 
+                                               WRK-GENGO2-KO-ZAINUM     
+                          PERFORM   2001-RIHA-COMMENT-SEC               
+                      ELSE                                              
+                          MOVE       RECE44-REC    TO   RECE441-REC     
+                          WRITE      RECE441-REC                        
+                          ADD     1          TO      CNT-RECE44         
+                          PERFORM    2002-RECE45-TENSOU-SEC             
+                      END-IF                                            
+      *                                                                 
+                   WHEN   OTHER                                         
+                      MOVE       RECE44-REC    TO   RECE441-REC         
+                      WRITE      RECE441-REC                            
+                      ADD     1          TO      CNT-RECE44             
+                      PERFORM    2002-RECE45-TENSOU-SEC                 
+                 END-EVALUATE                                           
+               END-IF                                                   
       *
                PERFORM 990-RECE44-NEXT-SEC
       *
@@ -2079,9 +2151,9 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-           DISPLAY "RECE41  IN  " CNT-RECE41 CONSOLE 
-           DISPLAY "RECE44  CNT " CNT-RECE44 CONSOLE 
-           DISPLAY "RECE45  CNT " CNT-RECE45 CONSOLE 
+           DISPLAY "RECE41  IN  " CNT-RECE41  
+           DISPLAY "RECE44  CNT " CNT-RECE44  
+           DISPLAY "RECE45  CNT " CNT-RECE45  
            DISPLAY "*** ORCR0430 END ***"
       *
            .

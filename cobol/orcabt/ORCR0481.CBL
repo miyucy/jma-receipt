@@ -20,8 +20,8 @@
        PROGRAM-ID.                 ORCR0481.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : レセプト
-      *  コンポーネント名  : 月次業務　労災明細書ファイル作成
+      *  サブシステム名    : レセプト（労災・自賠責）
+      *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
       *                               （傷病年金・印刷データ編集）
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -590,7 +590,7 @@
                    MOVE    SPACE                TO  SYS-4001-RSIIRYOCDN
                END-IF     
            ELSE    
-               MOVE    "労災医療機関情報が取得できませんでした。"
+               MOVE    "労災自賠責医療機関情報が取得できませんでした。"
                                         TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    2               TO  SPA-STS
@@ -921,7 +921,9 @@
       *                傷病名欄に編集
                        WHEN    WRK-LINEBYO     <   WRK-BYOMEI-LINE
                            IF  WRK-WCLM          >   WRK-BYOMEI1-MAX
-                               PERFORM 3221-BYOMEI1-OUT-SEC
+                               IF  WRK-BYOMEI1  NOT =  SPACE
+                                   PERFORM 3221-BYOMEI1-OUT-SEC
+                               END-IF
                            ELSE
                                IF  WRK-CLM       >   ZERO
       *                            前の病名の直後に編集

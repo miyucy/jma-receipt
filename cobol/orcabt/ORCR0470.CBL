@@ -19,15 +19,17 @@
        PROGRAM-ID.             ORCR0470.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : レセプト
-      *  コンポーネント名  : 月次業務　労災明細書ファイル作成
-      *                               （点数摘要欄並び替え）
+      *  サブシステム名    : レセプト（労災・自賠責）
+      *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
+      *                      （点数摘要欄並び替え）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−小豆沢   新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    02.09.20  検査のときは表用番号を編集しない
+      *                                     検査のときZAITENを編集する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -184,7 +186,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCR0470"      TO  JOB-PGID
-           MOVE    "摘要欄並び替え（労災）"
+           MOVE    "摘要欄並び替え（労災・自賠責）"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -265,17 +267,22 @@
                END-IF
            END-IF     
            IF      RECE46-SRYKBN        NOT =   "21"
-               IF   RECE46-SRYKBN       NOT =   "40" AND "60" AND "80"  
+      *********IF   RECE46-SRYKBN       NOT =   "40" AND "60" AND "80"  
+               IF   RECE46-SRYKBN       NOT =   "40" AND "80"  
                    MOVE    RECE46-ZAITEN    TO      RECE47-ZAITEN
                END-IF
-               MOVE    RECE46-CDKBN-SYO     TO  RECE47-CDKBN-SYO
-               MOVE    RECE46-CDKBN-BU      TO  RECE47-CDKBN-BU
-               MOVE    RECE46-CDKBN-KBN     TO  RECE47-CDKBN-KBN
-               MOVE    RECE46-CDKBN-KBNNUM  TO  RECE47-CDKBN-KBNNUM
-               MOVE    RECE46-CDKBN-KBNNUM-EDA
-                                        TO  RECE47-CDKBN-KBNNUM-EDA
-               MOVE    RECE46-CDKBN-KOUBAN  TO  RECE47-CDKBN-KOUBAN
-               MOVE    RECE46-KOUHYOJUNNUM  TO  RECE47-KOUHYOJUNNUM
+               IF      RECE46-SRYKBN        =   "60"
+                   CONTINUE
+               ELSE    
+                   MOVE    RECE46-CDKBN-SYO     TO  RECE47-CDKBN-SYO
+                   MOVE    RECE46-CDKBN-BU      TO  RECE47-CDKBN-BU
+                   MOVE    RECE46-CDKBN-KBN     TO  RECE47-CDKBN-KBN
+                   MOVE    RECE46-CDKBN-KBNNUM  TO  RECE47-CDKBN-KBNNUM
+                   MOVE    RECE46-CDKBN-KBNNUM-EDA
+                                            TO  RECE47-CDKBN-KBNNUM-EDA
+                   MOVE    RECE46-CDKBN-KOUBAN  TO  RECE47-CDKBN-KOUBAN
+                   MOVE    RECE46-KOUHYOJUNNUM  TO  RECE47-KOUHYOJUNNUM
+               end-if    
            END-IF
       *****IF     RECE46-SRYKBN  NOT =  "11" AND "95" AND "96"
            IF     RECE46-SRYKBN  NOT =  "95" AND "96"
@@ -352,8 +359,8 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-           DISPLAY "RECE46-IN   :" CNT-IN   UPON CONSOLE 
-           DISPLAY "RECE47-OUT :" CNT-OUT  UPON CONSOLE 
+           DISPLAY "RECE46-IN   :" CNT-IN   
+           DISPLAY "RECE47-OUT :" CNT-OUT   
            DISPLAY "*** ORCR0470 END ***"
       ***     ACCEPT  WRK-IN FROM CONSOLE 
            .

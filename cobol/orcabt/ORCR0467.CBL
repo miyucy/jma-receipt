@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCR0466.
+       PROGRAM-ID.             ORCR0467.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（労災・自賠責）
@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    02.09.19  自賠責対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -182,7 +183,8 @@
                05  WRK-ZAI-NAME                PIC X(52).
       *
            03  WRK-ZAI1.
-               05  WRK-ZAI1-NAME               PIC X(28).
+      ***      05  WRK-ZAI1-NAME               PIC X(28).               
+               05  WRK-ZAI1-NAME               PIC X(24).               
       *
       *    点数・回数編集用
            03  WRK-ZAITENX                     PIC ZZZZZZZZ9.99.
@@ -256,7 +258,8 @@
        01  CONST-AREA.
       *         
       *    適用欄最大文字数（金額欄）
-           03  CONS-TEKIYOU1-LEN           PIC 9(02)   VALUE   28.
+      ***  03  CONS-TEKIYOU1-LEN           PIC 9(02)   VALUE   28.      
+           03  CONS-TEKIYOU1-LEN           PIC 9(02)   VALUE   24.      
       *     
       *    適用欄最大文字数（点数欄）
            03  CONS-TEKIYOU2-LEN           PIC 9(02)   VALUE   52.
@@ -265,7 +268,8 @@
            03  CONS-TEKIYOU2-LINE-MAX      PIC  9(03)  VALUE   100.   
       *            
       *    適用欄最大行数（金額欄）
-           03  CONS-TEKIYOU1-LINE-MAX      PIC  9(03)  VALUE   9.
+      ***  03  CONS-TEKIYOU1-LINE-MAX      PIC  9(03)  VALUE   9.       
+           03  CONS-TEKIYOU1-LINE-MAX      PIC  9(03)  VALUE   6.       
       *
       *    パス名領域
        01  WRK-PATH                        PIC X(64).
@@ -346,8 +350,8 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "ORCR0466"      TO  JOB-PGID
-           MOVE    "金額摘要欄編集（労災）"
+           MOVE    "ORCR0467"      TO  JOB-PGID
+           MOVE    "金額摘要欄編集（自賠責）"                           
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -673,7 +677,7 @@
       *
            WRITE   RECE47-REC
            IF      STS-RECE47          NOT =   ZERO
-               DISPLAY "*** ORCR0466 RECE47 WRITE ERR  ***"
+               DISPLAY "*** ORCR0467 RECE47 WRITE ERR  ***"
                MOVE    2             TO  SPA-STS                       
            ELSE
                ADD     1             TO  CNT-RECE47
@@ -741,7 +745,7 @@
       *
            DISPLAY "RECE41  IN  " CNT-RECE41   
            DISPLAY "RECE47  CNT " CNT-RECE47 
-           DISPLAY "*** ORCR0466 END ***"
+           DISPLAY "*** ORCR0467 END ***"
       ***     ACCEPT  WRK-IN FROM CONSOLE 
       *
            .

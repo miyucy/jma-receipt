@@ -20,8 +20,8 @@
        PROGRAM-ID.             ORCR0500.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 月次帳票
-      *  コンポーネント名  : 労災レセプト帳票ＤＢの印刷
+      *  サブシステム名    : 月次帳票（労災・自賠責）
+      *  コンポーネント名  : 労災・自賠責レセプト帳票ＤＢの印刷
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC-藤原      新規作成
@@ -326,6 +326,11 @@
                    MOVE    "HC18"          TO  PRT-PRTID   
                WHEN    "7023"
                    MOVE    "HC20"          TO  PRT-PRTID   
+      *        自賠責             
+               WHEN    "7001"
+                   MOVE    "HC23"          TO  PRT-PRTID   
+               WHEN    "7002"
+                   MOVE    "HC29"          TO  PRT-PRTID   
            END-EVALUATE
            MOVE    SYS-1031-PRTNM(4)   TO  PRT-PRTNM 
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA

@@ -19,8 +19,8 @@
        PROGRAM-ID.             ORCR0435.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : レセプト（労災）
-      *  コンポーネント名  : 月次業務　労災明細書ファイル作成
+      *  サブシステム名    : レセプト（労災・自賠責）
+      *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
       *                      （レセプトコメント編集２） 
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    02.09.18  自賠責対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -316,7 +317,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCR0435"      TO  JOB-PGID
-           MOVE    "コメント編集２（労災）"    TO  JOB-SHELLMSG
+           MOVE    "コメント編集２（労災・自賠責）"  TO  JOB-SHELLMSG   
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
@@ -602,9 +603,9 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-           DISPLAY "RECE41  IN  " CNT-RECE41 CONSOLE 
-           DISPLAY "RECE44  CNT " CNT-RECE44 CONSOLE 
-           DISPLAY "RECE45  CNT " CNT-RECE45 CONSOLE 
+           DISPLAY "RECE41  IN  " CNT-RECE41  
+           DISPLAY "RECE44  CNT " CNT-RECE44  
+           DISPLAY "RECE45  CNT " CNT-RECE45  
            DISPLAY "*** ORCR0435 END ***"
       *
            .
