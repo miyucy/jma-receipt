@@ -2844,7 +2844,7 @@
            MOVE    DTCHK003-PTID       TO  PTBYO-PTID
            MOVE    TSRYKA-SRYKA (IDX4) TO  PTBYO-SRYKA
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-           MOVE    "PTBYOMEI-KEY16"    TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY18"    TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
@@ -2896,7 +2896,7 @@
                    MOVE    1           TO  FLG-CHK-END
                END-IF
       *
-               MOVE    "PTBYOMEI-KEY16"
+               MOVE    "PTBYOMEI-KEY18"
                                        TO  ORC-DBPATH
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
@@ -2907,7 +2907,7 @@
       *
            END-PERFORM
       *
-           MOVE    "PTBYOMEI-KEY16"    TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY18"    TO  ORC-DBPATH
            PERFORM 910-DBCLOSE-SEC
       *
       *    患者病名登録チェック
@@ -3163,7 +3163,7 @@
            MOVE    ZERO                TO  FLG-MICODSYOBYO
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >       6 )
+                   UNTIL ( IDX0    >       21 )
       *
       *        病名のの廃止年月日が診療開始日よりも前かチェック
                IF    ( PTBYO-BYOMEICD(IDX0)    NOT =   SPACE )
@@ -3175,7 +3175,7 @@
                            MOVE    1       TO  FLG-MICODSYOBYO
                        END-IF
       *
-                       MOVE    6           TO  IDX0
+                       MOVE    21          TO  IDX0
                    END-IF
                END-IF
            END-PERFORM
@@ -3477,14 +3477,10 @@
            MOVE    DTCHK003-PTID       TO  PTBYO-PTID
            MOVE    WRK-SRYKA           TO  PTBYO-SRYKA
       *
-           PERFORM VARYING IDX8    FROM    1   BY  1
-                   UNTIL ( IDX8    >   6 )
-               MOVE    WRK-CHK-CD
-                                       TO  PTBYO-BYOMEICD (IDX8)
-           END-PERFORM
+           MOVE    WRK-CHK-CD          TO  PTBYO-BYOMEICD (01)
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-           MOVE    "PTBYOMEI-KEY17"    TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY19"    TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
@@ -3538,7 +3534,7 @@
                    END-IF
                END-IF
       *
-               MOVE    "PTBYOMEI-KEY17"
+               MOVE    "PTBYOMEI-KEY19"
                                        TO  ORC-DBPATH
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
@@ -3549,7 +3545,7 @@
       *
            END-PERFORM
       *
-           MOVE    "PTBYOMEI-KEY17"    TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY19"    TO  ORC-DBPATH
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-CHKMST-BYOMEI   =   ZERO )
