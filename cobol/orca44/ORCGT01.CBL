@@ -54,8 +54,9 @@
       *  01.04.03    NACL-藤原    03.05.14  印刷する・しないのボタン追加
       *  01.04.04    NACL-藤原    03.05.19  国保総括に個別指定の
       *                                     保険者番号を追加
-      *
+      * レセ電機能追加
       *  01.05.01    NACL-藤原    03.08.06  レセ電処理の追加
+      *  01.05.02    NACL-藤原    03.09.02  メッセージコードの修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -621,7 +622,7 @@
            IF      SPA-TID1-FLG    =   "OK"    OR  "NO"
                EVALUATE    SPA-TIDCD
                    WHEN    "1010"
-                   WHEN    "1011"
+                   WHEN    "1014"
                        PERFORM 460-RECEDEN-SEC
                    WHEN    OTHER
                        PERFORM 450-PRINT-SEC
@@ -1788,7 +1789,7 @@
                    WHEN    "B06"
                        MOVE    "1010"              TO  SPA-TIDCD
                    WHEN    "B07"
-                       MOVE    "1011"              TO  SPA-TIDCD
+                       MOVE    "1014"              TO  SPA-TIDCD
                END-EVALUATE
            END-IF
       *
@@ -2307,7 +2308,7 @@
                    WHEN    "1004"
                    WHEN    "1005"
                    WHEN    "1010"
-                   WHEN    "1011"  
+                   WHEN    "1014"  
                        PERFORM 530-TID2SET-SEC
                        GO  TO  500-SET-SCREEN-EXT
                    WHEN    OTHER
@@ -2520,7 +2521,7 @@
                                        TO  WRK-TIDMSG
                    MOVE    "（症状詳記の印刷を指定）"
                                        TO  WRK-TIDMSG (39:)
-               WHEN    "1011"
+               WHEN    "1014"
                    MOVE    "国保分のレセプト電算データを作成します"
                                        TO  WRK-TIDMSG
                    MOVE    "（症状詳記の印刷を指定）"
