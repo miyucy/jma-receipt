@@ -249,7 +249,10 @@
       *                                     に初期値を編集
       *  01.01.76    NACL-小豆沢　03/05/28  JYURRK-KEY24追加
       *  01.01.77    NACL-太田    03/06/05  PTNYUINRRK-KEY20追加
-      *  01.01.76    NACL-多々納　03/06/16  TENSU-KEY20追加
+      *  01.01.78    NACL-多々納　03/06/16  TENSU-KEY20追加
+      *  01.01.79    NACL-小豆沢　03/06/20  BYOMEI-KEY6追加
+      *  01.01.80    NACL-多々納　03/06/24  TENSU-KEY21追加
+      *                                     PTNUM-KEY3 追加 
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -530,8 +533,10 @@
                                        TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO    "PTNUM-KEY"
                WHEN    "DBUPDATE"      ALSO    "PTNUM-KEY2"
+               WHEN    "DBUPDATE"      ALSO    "PTNUM-KEY3"
                WHEN    "DBDELETE"      ALSO    "PTNUM-KEY"
                WHEN    "DBDELETE"      ALSO    "PTNUM-KEY2"
+               WHEN    "DBDELETE"      ALSO    "PTNUM-KEY3"
                    MOVE    PATH-TBL-PTNUM-KEY 
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO    "PTNUM-DEL1"
@@ -1343,6 +1348,9 @@
                    MOVE    PATH-TBL-PTNUM-KEY2 
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-PTNUM-SEC
+               WHEN    ANY             ALSO   "PTNUM-KEY3"
+                   MOVE    PATH-TBL-PTNUM-KEY3 
+                                       TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "PTNUM-ALL"
                    MOVE    PATH-TBL-PTNUM-ALL
@@ -1836,6 +1844,9 @@
                    MOVE    PATH-TBL-TENSU-KEY20
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY21"
+                   MOVE    PATH-TBL-TENSU-KEY21
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "TENSU-UPD1"
                    MOVE    PATH-TBL-TENSU-KEY
                                        TO  WRK-PATH
