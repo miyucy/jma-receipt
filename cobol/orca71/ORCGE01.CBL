@@ -1064,7 +1064,7 @@
                                               MOVE    ZERO
                                                       TO  IDY8
                                           ELSE
-                                              MOVE  WK-SEW04 (IDY8:1)                              
+                                              MOVE  WK-SEW04 (IDY8:1)
                                                 TO  WK-SEW05 (IDY7:1)
                                               COMPUTE      IDY7
                                                            = IDY7 - 1
@@ -1152,9 +1152,8 @@
                                         TO  SPA-GMN-MAX-B
                    END-READ
                END-PERFORM
+               CLOSE                           EIE00-FILE
            END-IF.
-      *
-           CLOSE                           EIE00-FILE.
       *
        T-000-READCHEK-EXT.
            EXIT.

@@ -1049,9 +1049,8 @@
                                 PERFORM T-000-READCHEK1-SEC
                    END-READ
                END-PERFORM
+               CLOSE                           EIE00-FILE
            END-IF.
-      *
-           CLOSE                           EIE00-FILE.
       *
        T-000-READCHEK-EXT.
            EXIT.
@@ -1079,8 +1078,8 @@
                        MOVE    "*"              TO  WK-TBL-KBN2 (IDX1)
                    END-READ
                END-READ
+               CLOSE                        EIE01-FILE
            END-IF.
-           CLOSE                        EIE01-FILE.
       *
        T-000-READCHEK1-EXT.
            EXIT.
@@ -1117,9 +1116,8 @@
                                END-READ
                            END-PERFORM
               END-READ
+              CLOSE                           EIE01-FILE
            END-IF.
-      *
-           CLOSE                           EIE01-FILE.
       *
        T-001-READCHEK-EXT.
            EXIT.
@@ -1259,9 +1257,8 @@
                                 COMPUTE   IDX4 = IDX4 + 1
                    END-READ
                END-PERFORM
+               CLOSE                           EIE02-FILE
            END-IF.
-      *
-           CLOSE                           EIE02-FILE.
       *
        T-000-SETECHEK-EXT.
            EXIT.
