@@ -510,6 +510,7 @@
                END-IF
                MOVE    ZERO                TO  FLG-BUIKBN
                MOVE    ZERO                TO  FLG-SYUGI
+               MOVE    ZERO                TO  FLG-HASSYO
                MOVE    ZERO                TO  WRK-KENSA-CNT
                GO      TO      5101-SYRKBN-SET-EXT
            END-IF
