@@ -18,31 +18,31 @@
         02  J02.
       ****  02  J02-FIXED1.
               03  J02-PTNUM.
-                04  J02-VALUE   PIC X(21).
+                04  J02-VALUE   PIC X(20).
               03  J02-SRYYM.
-                04  J02-VALUE   PIC X(7).
+                04  J02-VALUE   PIC X(6).
               03  J02-KANANAME.
-                04  J02-VALUE   PIC X(51).
+                04  J02-VALUE   PIC X(50).
               03  J02-NAME.
-                04  J02-VALUE   PIC X(51).
+                04  J02-VALUE   PIC X(50).
               03  J02-BIRTHDAY.
-                04  J02-VALUE   PIC X(10).
+                04  J02-VALUE   PIC X(09).
               03  J02-MEISYO.
-                04  J02-VALUE   PIC X(51).
+                04  J02-VALUE   PIC X(50).
               03  J02-NUM.
-                04  J02-VALUE   PIC X(4).
+                04  J02-VALUE   PIC X(3).
               03  J02-HKNCOMBI.
-                04  J02-VALUE   PIC X(5).
-              03  J02-HKNCOMBIMEI.
-                04  J02-VALUE   PIC X(61).
-              03  J02-SEX.
-                04  J02-VALUE   PIC X(3).
-              03  J02-DAY       OCCURS 31.
-                04  J02-VALUE   PIC X(3).
-              03  J02-RRKSELNUM.
                 04  J02-VALUE   PIC X(4).
+              03  J02-HKNCOMBIMEI.
+                04  J02-VALUE   PIC X(60).
+              03  J02-SEX.
+                04  J02-VALUE   PIC X(2).
+              03  J02-DAY       OCCURS 31.
+                04  J02-VALUE   PIC X(2).
+              03  J02-RRKSELNUM.
+                04  J02-VALUE   PIC X(3).
               03  J02-HENSRYYMD.
-                04  J02-VALUE   PIC X(11).
+                04  J02-VALUE   PIC X(10).
               03  J02-SCROLLEDWINDOW1.
                 04  J02-DATALIST.
                   05  J02-DATALIST-COUNT   PIC S9(9)   BINARY.
@@ -57,7 +57,7 @@
                   05  J02-DATALIST-SELECT  PIC X   OCCURS  400 TIMES.
               03  J02-SRYKACOMB.
                 04  J02-SRYKA.
-                  05  J02-VALUE   PIC X(17).
+                  05  J02-VALUE   PIC X(16).
                 04  J02-SRYKA-COUNT   PIC S9(9)   BINARY.
                 04  J02-SRYKA-ITEM    PIC X(16)   OCCURS  10 TIMES.
               03  J02-SCROLLEDWINDOW2.

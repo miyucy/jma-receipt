@@ -16,21 +16,22 @@
       * 113-8621, Japan.
       ********************************************************************
         02  K09.
-      *****  02  K09-FIXED1.
+      ***  02  K09-FIXED1.
               03  K09-DOSEL.
                 04  K09-VALUE   PIC X(40).
               03  K09-SELNUM.
                 04  K09-VALUE   PIC X(3).
               03  K09-SCROLLEDWINDOW2.
                 04  K09-RRKLIST.
-                  05  K09-COUNT1   PIC S9(9)   BINARY.
-                  05  K09-ITEM1        OCCURS  100 TIMES.
+                  05  K09-RRKLIST-COUNT   PIC S9(9)   BINARY.
+                  05  K09-ITEM        OCCURS  100 TIMES.
                     06  K09-NO      PIC X(3).
                     06  K09-RRKYMD  PIC X(16).
-                  05  K09-SELECT1  PIC X       OCCURS  100 TIMES.
-              03  K09-SCROLLEDWINDOW1.
-                04  K09-VIEWPORT1.
-                  05  K09-LIST1.
-                    06  K09-COUNT2   PIC S9(9)   BINARY.
-                    06  K09-ITEM     PIC X(90)  OCCURS  200 TIMES.
-                    06  K09-SELECT2  PIC X       OCCURS  200 TIMES.
+                  05  K09-RRKLIST-SELECT  PIC X       OCCURS  100 TIMES.
+              03  K09-SCROLLEDWINDOW3.
+                04  K09-MEILIST.
+                  05  K09-MEILIST-COUNT   PIC S9(9)   BINARY.
+                  05  K09-ITEM        OCCURS  400 TIMES.
+                    06  K09-MNO     PIC X(3).
+                    06  K09-MEISAI  PIC X(90).
+                  05  K09-MEILIST-SELECT  PIC X       OCCURS  400 TIMES.
