@@ -44,6 +44,9 @@
       *  01.00.12    ひさなが     02/12/18  院外処方のチェック追加
       *  01.00.13    ひさなが     03/01/31  テスト患者を処理対象外に
       *                                     老人保健の条件修正
+      *  01.00.14    ひさなが     03/02/05  老人保健の条件を診療年月の
+      *                                     １日現在に修正
+      *  01.00.15    ひさなが     03/02/07  初診日と病名関係の確認修正
       *
       *****************************************************************
       *
@@ -157,7 +160,10 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
-           03  FLG-RUN             PIC 9(01).
+           03  FLG-RUN1             PIC 9(01).
+      *修正/*開始*03.02.07*********************************************
+           03  FLG-RUN2            PIC 9(01).
+      *修正/*終了*03.05.07*********************************************
            03  FLG-CHK             PIC 9(01).
            03  FLG-TBL             PIC 9(01).
            03  FLG-TENKIYMD-ER     PIC 9(01).
@@ -335,12 +341,8 @@
                "500-02該当患者は患者情報に登録されていません            
       -        "                                  ".
            03  T-MESSAGE-500-03    PIC X(90)   VALUE
-      *修正/*開始*02.12.06*********************************************
-      *         "500-03該当患者は１５歳未満で社会保険の本人で登録されてい
-      *-        "ます                              ".
                "500-03該当患者は１５歳未満ですが本人で登録されています  
       -        "                                  ".
-      *修正/*終了*02.12.06*********************************************
            03  T-MESSAGE-500-04    PIC X(90)   VALUE
                "500-04該当患者は老人保険の適応年齢誤りです              
       -        "                                  ".
@@ -727,15 +729,9 @@
                PERFORM UNTIL      MCP-RC   NOT  =  ZERO
                    MOVE    MCPDATA-REC               TO    SRYACCT-REC
                    COMPUTE T-CNT-IN    =   T-CNT-IN    +   1
-      *修正/*開始*02.12.18*********************************************
-      *             IF  (ACCT-ZAIKAISU   NOT =  ZERO)  AND
-      *                 (ACCT-ZAITEN     NOT =  ZERO)
-      *                 PERFORM T-100-RECECHEK-HANTI-SEC
-      *             END-IF
                    IF  ACCT-ZAIKAISU   NOT =  ZERO
                        PERFORM T-100-RECECHEK-HANTI-SEC
                    END-IF
-      *修正/*終了*02.12.18*********************************************
                    PERFORM T-100-RECECHEK-READ-SEC
                END-PERFORM
                IF  (W1-SRY-HOSPID   NOT =   ALL "*")  AND
@@ -824,9 +820,7 @@
                    PERFORM T-500-RECECHEK-SEC
                END-IF
                IF  (SPA-GMN-CNV (12)   =  "1")          AND
-      *修正/*開始*03.01.31*********************************************
                    (PTINF-TSTPTNUMKBN  =  "0")          AND
-      *修正/*終了*03.01.31*********************************************
                    (T-ERR-12           =  SPACE)        AND
                    (W-JITU-DAY4    NOT =  ZERO)         AND
                    (W-JITU-DAY4        <  W-JITU-DAY5)
@@ -1595,8 +1589,20 @@
                            WRITE   DID2-REC
                            MOVE    "*"               TO  T-ERR-04
                        END-IF
+      *修正/*開始*03.02.05*********************************************
+      *                 IF  (W-COMB-HANNTEI1      =   "---")  AND
+      *                     (T-SINRYOU-AREA   NOT <   W-YM3)
+      *                     COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+      *                     MOVE    SPACE             TO  DID2-REC
+      *                     MOVE    W1-SRY-HOSPID     TO  DID2-REC(1:24)
+      *                     MOVE    "-"               TO  DID2-REC(25:1)
+      *                     MOVE    W1-SRY-PTID       TO  DID2-REC(26:10)
+      *                     MOVE    T-MESSAGE-500-05  TO  DID2-REC(71:90)
+      *                     WRITE   DID2-REC
+      *                     MOVE    "*"               TO  T-ERR-04
+      *                 END-IF
                        IF  (W-COMB-HANNTEI1      =   "---")  AND
-                           (T-SINRYOU-AREA   NOT <   W-YM3)
+                           (T-SINRYOU-AREA       >   W-YM3)
                            COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                            MOVE    SPACE             TO  DID2-REC
                            MOVE    W1-SRY-HOSPID     TO  DID2-REC(1:24)
@@ -1606,6 +1612,19 @@
                            WRITE   DID2-REC
                            MOVE    "*"               TO  T-ERR-04
                        END-IF
+                       IF  (W-COMB-HANNTEI1      =   "---")  AND
+                           (T-SINRYOU-AREA       =   W-YM3)  AND
+                           (PTINF-BIRTHDAY(7:2)  =   01)
+                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                           MOVE    SPACE             TO  DID2-REC
+                           MOVE    W1-SRY-HOSPID     TO  DID2-REC(1:24)
+                           MOVE    "-"               TO  DID2-REC(25:1)
+                           MOVE    W1-SRY-PTID       TO  DID2-REC(26:10)
+                           MOVE    T-MESSAGE-500-05  TO  DID2-REC(71:90)
+                           WRITE   DID2-REC
+                           MOVE    "*"               TO  T-ERR-04
+                       END-IF
+      *修正/*終了*03.05.05*********************************************
                    END-IF
                    IF  (T-ERR-13           =   SPACE)  AND
                        (SPA-GMN-CNV (13)   =   "1")
@@ -1678,16 +1697,22 @@
            IF  (ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                (ACCT-PTID     NOT =   W1-SRY-PTID)    OR
                (ACCT-SRYKA    NOT =   W1-SRY-SRYKA)
-               MOVE    1                 TO  FLG-RUN
+               MOVE    1                 TO  FLG-RUN1
+      *修正/*開始*03.02.07*********************************************
+               MOVE    1                 TO  FLG-RUN2
+      *修正/*終了*03.05.07*********************************************
                MOVE    SPACE             TO  T-ERR-05
                MOVE    SPACE             TO  T-ERR-06
                MOVE    SPACE             TO  T-ERR-07
                MOVE    SPACE             TO  T-ERR-13-3
            ELSE
-               MOVE    ZERO              TO  FLG-RUN
+               MOVE    ZERO              TO  FLG-RUN1
+      *修正/*開始*03.02.07*********************************************
+               MOVE    ZERO              TO  FLG-RUN2
+      *修正/*終了*03.05.07*********************************************
            END-IF.
       *
-           IF  (FLG-RUN    =   1)      OR
+           IF  (FLG-RUN1   =   1)      OR
                (T-ERR-05   =   SPACE)  OR
                (T-ERR-06   =   SPACE)
                PERFORM T-510-RECECHEK-CHK1-SEC
@@ -1737,7 +1762,7 @@
            ELSE
                PERFORM T-510-RECECHEK-READ-SEC
                IF  MCP-RC   NOT =   ZERO
-                   IF  (FLG-RUN           =   1)     AND
+                   IF  (FLG-RUN1          =   1)     AND
                        ((SPA-GMN-CNV (5)   =  "1")    OR
                         (SPA-GMN-CNV (7)   =  "1"))  AND
                        (T-ERR-05          = SPACE)   AND
@@ -1757,7 +1782,7 @@
                    PERFORM UNTIL      MCP-RC   NOT  =  ZERO
                        MOVE    MCPDATA-REC       TO  PTBYOMEI-REC
                        MOVE    "*"               TO  T-HANNTEI3
-                       IF  FLG-RUN   =   1
+                       IF  FLG-RUN1  =   1
                            IF  PTBYO-SRYYMD(1:6)      > ACCT-SRYYM
                                MOVE    SPACE             TO  T-HANNTEI3
                            END-IF
@@ -1841,16 +1866,24 @@
                                END-IF
                            END-IF
                        END-IF
-                       IF  (T-HANNTEI6              =  "OK")       AND
-                           (PTBYO-BYOMEI        NOT = SPACE)       AND
-                           (PTBYO-SRYYMD(1:6)       = ACCT-SRYYM)  AND
-                           (T-ERR-05                = SPACE)
-                           MOVE    SPACE              TO  T-HANNTEI8
-                           MOVE    PTBYO-SRYYMD(7:2)  TO  IDX7
-                           IF  W-ACCT-DAY (IDX7) =  ZERO
-                               MOVE    "ER"               TO  T-HANNTEI7
+      *修正/*開始*03.02.07*********************************************
+                       IF  (FLG-RUN1  =   1)       AND
+                           (FLG-RUN2  =   1)
+      *修正/*終了*03.05.07*********************************************
+                           IF  (T-HANNTEI6           =  "OK")       AND
+                               (PTBYO-BYOMEI     NOT = SPACE)       AND
+                               (PTBYO-SRYYMD(1:6)    = ACCT-SRYYM)  AND
+                               (T-ERR-05             = SPACE)
+                               MOVE    SPACE              TO  T-HANNTEI8
+                               MOVE    PTBYO-SRYYMD(7:2)  TO  IDX7
+                               IF  W-ACCT-DAY (IDX7) =  ZERO
+                                   MOVE    "ER"           TO  T-HANNTEI7
+                               END-IF
                            END-IF
+      *修正/*開始*03.02.07*********************************************
+                           MOVE    ZERO               TO  FLG-RUN2
                        END-IF
+      *修正/*終了*03.05.07*********************************************
                        IF  (ACCT-SRYKBN            = "11")      AND
                            (ACCT-DAY-TBL (1)   NOT = ALL ZERO)  AND
                            (SPA-GMN-CNV (6)        = "1")       AND
