@@ -138,7 +138,7 @@
            03  WRK-KED                 PIC 9(04).
            03  WRK-KBNCD               PIC X(02).
       *
-           03  WRK-Z7                  PIC Z,ZZZ,ZZZ.
+           03  WRK-Z7                  PIC Z,ZZZ,ZZ9.
       *
            03  WRK-RATE-AREA.
                05  WRK-RATE-KBN        PIC X(02).
