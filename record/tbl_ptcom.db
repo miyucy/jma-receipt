@@ -34,6 +34,20 @@ path	key 	{
 		;
 	};
 };
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_ptcom_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptcom
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   ZAINUM      =   :ZAINUM
+			ORDER BY INPUTCOMENT
+		;
+	};
+};
+
 path	del11 	{
 	DBDELETE	{
 		DELETE

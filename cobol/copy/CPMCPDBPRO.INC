@@ -278,6 +278,7 @@
       *  01.01.99    NACL-藤原    03/08/29  RECEPRT-KEY18〜KEY29追加
       *  01.01.100   NACL-太田    03/08/29  KOHPLUS-UPD1の追加
       *  01.01.101   NACL-太田    03/09/02  PTNYUINRRK-KEY26追加
+      *  01.01.102   NACL-太田    03/09/08  PTCOM-KEY2追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1399,6 +1400,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTCOM-KEY"
                    MOVE    PATH-TBL-PTCOM-KEY 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTCOM-KEY2"
+                   MOVE    PATH-TBL-PTCOM-KEY2
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "PTCOM-ALL"
