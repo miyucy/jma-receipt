@@ -249,6 +249,7 @@
       *
            03  FLG-SYOKI           PIC 9(01).
            03  FLG-NYUIN           PIC 9(01).
+           03  FLG-UKETUKE-ARI     PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1639,9 +1640,18 @@
            END-IF
            PERFORM
                UNTIL   FLG-UKETUKE        =   1
+               MOVE    ZERO               TO  FLG-UKETUKE-ARI
       *        会計のまだの最初の受付を対象とする
                IF     (UKE-KAIKEITIME      =   ZERO )  AND
                       (UKE-UKEID       NOT =   ZERO )
+                   MOVE    1                  TO  FLG-UKETUKE-ARI
+               END-IF
+      *        診療科変更時
+               IF     (FLG-HEN            =   1  )  AND
+                      (UKE-SRYKA      NOT =   SPA-GMN-SRYKA)
+                   MOVE    ZERO               TO  FLG-UKETUKE-ARI
+               END-IF
+               IF      FLG-UKETUKE-ARI     =   1
       *        診療科
                    MOVE    UKE-SRYKA           TO  SPA-GMN-SRYKA
                    MOVE    UKE-SRYKA           TO  SPA-SRYKA
@@ -1649,6 +1659,10 @@
                    IF      UKE-DRCD        NOT =   SPACE
                        MOVE    UKE-DRCD            TO  SPA-NAI-DRCD
                        PERFORM 3101-DRCD-SET-SEC
+                   END-IF
+      *            保険組合せ
+                   IF      UKE-HKNCOMBI    NOT =   ZERO
+                       MOVE    UKE-HKNCOMBI    TO  SPA-GMN-HKNCOMBINUM
                    END-IF
                    MOVE    1               TO  FLG-UKETUKE
                END-IF
@@ -1901,7 +1915,7 @@
                END-IF
       *
                IF      SPA-GMN-SRYKA       =   JYURRK-SRYKA
-                   MOVE    JYURRK-HKNCOMBINUM  TO  SPA-GMN-HKNCOMBINUM
+                   MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBINUM
                    MOVE    JYURRK-DRCD         TO  WRK-DRCD
                END-IF
       *
@@ -1931,6 +1945,10 @@
            IF      SPA-NAI-DRCD        =   SPACE
                MOVE    WRK-DRCD            TO  SPA-NAI-DRCD
                PERFORM 3101-DRCD-SET-SEC
+           END-IF
+      *    保険組合せがない時編集
+           IF      SPA-GMN-HKNCOMBINUM =   SPACE
+               MOVE    WRK-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
            END-IF
       *
       *****継続区分名称セット
@@ -2078,8 +2096,13 @@
       *        受診歴より、保険組合せを確定する
                IF     (FLG-HEN             =   1   )  AND
                       (SPA-NYUGAIKBN       =   "2" )
-      *            ドクターを受診履歴より
                    MOVE    SPACE               TO  SPA-NAI-DRCD
+                   MOVE    SPACE               TO  SPA-GMN-HKNCOMBINUM
+      *            ドクター、保険組合せを受付より
+                   IF      SPA-SYSYMD          =   SPA-NAI-SRYYMDS
+                       PERFORM 4102-UKETUKE-HEN-SEC
+                   END-IF
+      *            ドクターを受診履歴より
                    PERFORM 41014-JYURRK-HKNCOMBI-SEC
                END-IF
            END-IF
