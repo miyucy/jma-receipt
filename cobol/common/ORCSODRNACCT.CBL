@@ -531,7 +531,12 @@
            MOVE    SPACE           TO  WRK-ERRCD
            MOVE    ZERO            TO  FLG-END
       *
-           PERFORM   4801-NYUKAIKEI-EDIT-SEC
+           EVALUATE    SODRNACCT-IDOKBN
+               WHEN    "01"
+                   PERFORM   4801-NYUKAIKEI-EDIT-SEC
+               WHEN    "02"
+                   PERFORM   4801-TAIINKAIKEI-EDIT-SEC
+           END-EVALUATE
       *
            MOVE      ZERO    TO   SODRNACCT-RC
            .
@@ -1890,6 +1895,42 @@
       *
            .
        5002-CALENDAR-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院　会計テーブル編集処理
+      *****************************************************************
+       4801-TAIINKAIKEI-EDIT-SEC         SECTION.
+      *
+           DISPLAY "4801-TAIINKAIKEI-EDIT-SEC"
+      *    入院会計作成サブの呼出し
+           INITIALIZE            ORCSNYUACCT-AREA
+           MOVE     "2"     TO   LNK-SCNYUACCT-SYORI-KBN
+           MOVE     "1"                TO  SPA-NYUGAIKBN
+           MOVE     LNK-PTNYUINRRK-HOSPID  TO  SPA-HOSPID
+           MOVE     LNK-PTNYUINRRK-PTID    TO  SPA-PTID
+           MOVE     LNK-PTNYUINRRK-NYUINKA TO  SPA-SRYKA
+           MOVE     LNK-PTNYUINRRK-TAIINYMD
+                                       TO   LNK-SCNYUACCT-EDSRYYMD
+           DISPLAY "LNK-PTNYUINRRK-PTID = " LNK-PTNYUINRRK-PTID
+           DISPLAY "LNK-PTNYUINRRK-NYUINKA = " LNK-PTNYUINRRK-NYUINKA
+           DISPLAY "LNK-PTNYUINRRK-TAIINYMD = "
+                                              LNK-PTNYUINRRK-TAIINYMD
+      *    保険組合せ
+           MOVE   LNK-PTNYUINRRK-HKNCOMBINUM
+                                       TO  WRK-HKNCOMBINUM
+           MOVE   WRK-HKNCOMBINUM9     TO  LNK-SCNYUACCT-HKNCOMBINUM
+      *     MOVE   SPA-SRYKA           TO  WRK-TAIHI-SRYKA
+           MOVE   "00"                 TO  SPA-SRYKA
+           CALL   "ORCSNYUACCT"  USING   SPA-AREA
+                                         ORCSNYUACCT-AREA
+      *     MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
+           IF     LNK-SCNYUACCT-RC   NOT =  ZERO
+                  DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
+                            LNK-SCNYUACCT-RC
+           END-IF
+      *
+           .
+       4801-TAIINKAIKEI-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    マシン日付取得サブ
