@@ -327,6 +327,7 @@
       *  01.01.140   NACL-太田    04/05/17  PTTEIKIRRK-KEY7追加
       *  01.01.141   NACL-小豆沢  04/05/28  DBOPEN,DBDISCONNECT削除
       *  01.01.142   NACL-太田    04/05/28  PTNYUINRRK-KEY32追加
+      *  01.01.143   NACL-藤原    04/06/26  RECEPRT-KEY30追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2446,6 +2447,9 @@
                                        TO  WRK-PATH
                 WHEN    ANY             ALSO   "RECEPRT-KEY29"
                    MOVE    PATH-TBL-RECEPRT-KEY29
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY30"
+                   MOVE    PATH-TBL-RECEPRT-KEY30
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "RECEPRT-ALL"
