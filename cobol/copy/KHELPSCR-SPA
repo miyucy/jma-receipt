@@ -45,5 +45,6 @@
       *
                        09  SPA-KHELP-TMENUNUM1   PIC 9(04).
                        09  SPA-KHELP-TMENUNUM2   PIC 9(04).
+                       09  SPA-KHELP-TEDANUM     PIC 9(01).
                    07  SPA-KHELP-TBLMAX         PIC  9(04).
       *
