@@ -1369,6 +1369,9 @@
                WHEN    OTHER
                    MOVE    "入力コード全体（自院）"
                                               TO  K98-SENTAKU
+                   IF      SPA-K98-GMN-INPUT(1:1) =   "."
+                       MOVE    "診療種別"     TO  K98-SENTAKU
+                   END-IF
            END-EVALUATE
       *
       *    漢字入力で、入力コードで検索

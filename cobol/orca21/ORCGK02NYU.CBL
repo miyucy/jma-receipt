@@ -4494,7 +4494,12 @@
                    MOVE    "U"                 TO  SPA-K98-GMN-SYORI
                    MOVE    "U1"                TO  SPA-K98-GMN-SYORI3
                END-IF
-               MOVE    SPACE                   TO  SPA-K98-INPUTCD
+      *        診療種別一覧
+               IF      SPA-K98-INPUTCD(3:1)    =   "."
+                   MOVE    "."                 TO  SPA-K98-INPUTCD
+               ELSE
+                   MOVE    SPACE               TO  SPA-K98-INPUTCD
+               END-IF
       *        画面編集
                PERFORM 4101-K98-SET-SEC
            ELSE
