@@ -10,6 +10,7 @@ bind	"Z03"		"OpenCOBOL"	"ORCGZ03";
 bind	"Z04"		"OpenCOBOL"	"ORCGZ04";
 bind	"Z05"		"OpenCOBOL"	"ORCGZ05";
 bind	"Z06"		"OpenCOBOL"	"ORCGZ06";
+bind	"Z07"		"OpenCOBOL"	"ORCGZ07";
 bind	"Z90"		"OpenCOBOL"	"ORCGZ90";
 bind	"Z91"		"OpenCOBOL"	"ORCGZ91";
 bind	"Z97"		"OpenCOBOL"	"ORCGZ97";
@@ -31,6 +32,7 @@ data	{
 		Z04;
 		Z05;
 		Z06;
+		Z07;
                 Z90;
                 Z91;
                 Z97;
