@@ -239,7 +239,28 @@
            MOVE    RECE46-HKNID         TO      RECE47-HKNID
            MOVE    RECE46-TEKSTYMD      TO      RECE47-TEKSTYMD
            MOVE    RECE46-ZAINUM        TO      RECE47-ZAINUM
-           MOVE    RECE46-KNSJISKBN     TO      RECE47-KNSJISKBN
+           IF      RECE46-SRYKBN        =       "60"
+              IF   RECE46-KNSJISKBN     =       2
+                   MOVE    5            TO      RECE47-KNSJISKBN
+              ELSE
+                  IF   (RECE46-CDKBN-KBNNUM >=        0)   AND
+                       (RECE46-CDKBN-KBNNUM <=      199)
+                          MOVE   1      TO      RECE47-KNSJISKBN
+                  END-IF
+                  IF   (RECE46-CDKBN-KBNNUM >=      400)   AND
+                       (RECE46-CDKBN-KBNNUM <=      499)
+                          MOVE   2      TO      RECE47-KNSJISKBN
+                  END-IF
+                  IF   (RECE46-CDKBN-KBNNUM >=      200)   AND
+                       (RECE46-CDKBN-KBNNUM <=      399)
+                          MOVE   3      TO      RECE47-KNSJISKBN
+                  END-IF
+                  IF   RECE46-CDKBN-KBN      =      "9"
+                          MOVE   4      TO      RECE47-KNSJISKBN
+                  END-IF
+              END-IF
+           END-IF     
+      ***  MOVE    RECE46-KNSJISKBN     TO      RECE47-KNSJISKBN
            MOVE    RECE46-LINENUM       TO      RECE47-LINENUM
            MOVE    RECE46-ZAIMEISAISU   TO      RECE47-ZAIMEISAISU
            MOVE    RECE46-PTNUM         TO      RECE47-PTNUM
@@ -267,23 +288,32 @@
                END-IF
            END-IF     
            IF      RECE46-SRYKBN        NOT =   "21"
-      *********IF   RECE46-SRYKBN       NOT =   "40" AND "60" AND "80"  
-               IF   RECE46-SRYKBN       NOT =   "40" AND "80"  
+               IF   RECE46-SRYKBN       NOT =   "40" AND "60" AND "80"  
+      ***      IF   RECE46-SRYKBN       NOT =   "40" AND "80"  
                    MOVE    RECE46-ZAITEN    TO      RECE47-ZAITEN
                END-IF
-               IF      RECE46-SRYKBN        =   "60"
-                   CONTINUE
-               ELSE    
-                   MOVE    RECE46-CDKBN-SYO     TO  RECE47-CDKBN-SYO
-                   MOVE    RECE46-CDKBN-BU      TO  RECE47-CDKBN-BU
-                   MOVE    RECE46-CDKBN-KBN     TO  RECE47-CDKBN-KBN
-                   MOVE    RECE46-CDKBN-KBNNUM  TO  RECE47-CDKBN-KBNNUM
-                   MOVE    RECE46-CDKBN-KBNNUM-EDA
-                                            TO  RECE47-CDKBN-KBNNUM-EDA
-                   MOVE    RECE46-CDKBN-KOUBAN  TO  RECE47-CDKBN-KOUBAN
-                   MOVE    RECE46-KOUHYOJUNNUM  TO  RECE47-KOUHYOJUNNUM
-               end-if    
+               MOVE   RECE46-CDKBN-SYO     TO  RECE47-CDKBN-SYO
+               MOVE   RECE46-CDKBN-BU      TO  RECE47-CDKBN-BU
+               MOVE   RECE46-CDKBN-KBN     TO  RECE47-CDKBN-KBN
+               MOVE   RECE46-CDKBN-KBNNUM  TO  RECE47-CDKBN-KBNNUM
+               MOVE   RECE46-CDKBN-KBNNUM-EDA
+                                           TO  RECE47-CDKBN-KBNNUM-EDA
+               MOVE   RECE46-CDKBN-KOUBAN  TO  RECE47-CDKBN-KOUBAN
+               MOVE   RECE46-KOUHYOJUNNUM  TO  RECE47-KOUHYOJUNNUM
            END-IF
+      ***      IF      RECE46-SRYKBN        =   "60"
+      ***          CONTINUE
+      ***      ELSE    
+      ***          MOVE    RECE46-CDKBN-SYO     TO  RECE47-CDKBN-SYO
+      ***          MOVE    RECE46-CDKBN-BU      TO  RECE47-CDKBN-BU
+      ***          MOVE    RECE46-CDKBN-KBN     TO  RECE47-CDKBN-KBN
+      ***          MOVE    RECE46-CDKBN-KBNNUM  TO  RECE47-CDKBN-KBNNUM
+      ***          MOVE    RECE46-CDKBN-KBNNUM-EDA
+      ***                                   TO  RECE47-CDKBN-KBNNUM-EDA
+      ***          MOVE    RECE46-CDKBN-KOUBAN  TO  RECE47-CDKBN-KOUBAN
+      ***          MOVE    RECE46-KOUHYOJUNNUM  TO  RECE47-KOUHYOJUNNUM
+      ***      END-IF  
+      ***  END-IF
       *****IF     RECE46-SRYKBN  NOT =  "11" AND "95" AND "96"
            IF     RECE46-SRYKBN  NOT =  "95" AND "96"
                PERFORM     RECE47-WRITE-SEC
