@@ -105,7 +105,7 @@
       *****************************************************************
       *
       *    システム管理
-           COPY    "CPSK3002.INC".
+           COPY    "CPSK3001.INC".
            COPY    "CPSK3003.INC".
       *
        01  PRTKANRI-REC.
@@ -326,7 +326,7 @@
       *
            INITIALIZE                      TOUKEIMEMO-REC
            MOVE    SPA-GMN-L03-PRGNAME TO  TKIMEMO-PGID
-           MOVE    "3002"              TO  TKIMEMO-KANRICD
+           MOVE    "3001"              TO  TKIMEMO-KANRICD
            MOVE    WRK-KBNCD-G         TO  TKIMEMO-KBNCD
            MOVE    SPA-SYSYMD          TO  TKIMEMO-STYUKYMD
                                            TKIMEMO-EDYUKYMD
@@ -1064,7 +1064,7 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF   ( MCP-RC               =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-3002-REC
+               MOVE    MCPDATA-REC     TO  SYS-3001-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
