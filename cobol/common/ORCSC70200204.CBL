@@ -1052,6 +1052,12 @@
                END-IF
            END-PERFORM
       *
+      *    ²èÁü¿ÇÃÇ¤Î²Ã»»¤Î¤ß
+           IF     (WRK-COM-SRYSYUKBN(IDX-Z)    =   "704" )  AND
+                  (WRK-COM-SRYKBN (IDX-Z)      =   "70"  )
+               MOVE    1                   TO  FLG-ARI
+           END-IF
+      *
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
