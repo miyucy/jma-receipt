@@ -37,7 +37,7 @@
       * ›∏±»÷πÊ
            03  SYS-2006-HKNNUM          PIC  X(03).
       *ø≥∫∫ªŸ ßµ°¥ÿ
-           03  SYS-2006-TEISYUTUSAKI    PIC  9(01).
+           03  SYS-2006-TEISYUTUSAKI    PIC  X(01).
       * ›∏±º‘»÷πÊ
            03  SYS-2006-HKNJANUM        PIC  X(08).
       *œ∑øÕ∂Ë ¨
