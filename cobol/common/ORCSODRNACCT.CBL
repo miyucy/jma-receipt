@@ -352,11 +352,6 @@
            03  WRK-GETSUMATSU-Y            PIC 9(04).
            03  WRK-GETSUMATSU-M            PIC 9(02).
            03  WRK-GETSUMATSU-D            PIC 9(02).
-       01  WRK-TAIINYMD.
-           03  WRK-TAIINYMD-YM.
-               05  WRK-TAIINYMD-Y          PIC 9(04).
-               05  WRK-TAIINYMD-M          PIC 9(02).
-           03  WRK-TAIINYMD-D              PIC 9(02).
       *
        01  WRK-ROW.
            03  WRK-NYUREKILST-ROW          PIC S9(9)   BINARY.
