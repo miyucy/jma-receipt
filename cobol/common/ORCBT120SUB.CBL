@@ -91,7 +91,7 @@
            03  WK-KOHI-CNT                     PIC 9(02).
            03  WK-HONKZKKBN                    PIC X(01).
            03  WRK-AGE                         PIC 9(03).
-           03  WRK-RECESYUBETU                 PIC X(04).
+           03  WRK-RECESYUBETU                 PIC 9(04).
            03  WRK-NYUGAIKBN                   PIC X(01).
       *
        01  WRK-CONS-AREA.
