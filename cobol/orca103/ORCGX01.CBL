@@ -434,35 +434,16 @@
       *
            MOVE    X01-SELNUM          TO  SPA-GMN-SELNUM
       *
-           INITIALIZE                     ORCSNUMAREA
-           MOVE    SPA-GMN-SELNUM      TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF     (SNUM-RC         NOT =   ZERO  )   OR
-                  (SNUM-MINKBN     NOT =   SPACE )   OR
-                  (SNUM-SYOKBN     NOT =   SPACE )
-               MOVE    3                   TO  SPA-GMN-CUR
-               MOVE    "0001"              TO  SPA-ERRCD
-               GO      TO      4101-SELNUM-CHK-EXT
-           ELSE
-               MOVE    SNUM-OUTNUM     TO  SPA-NAI-SELNUM
-            END-IF
+           PERFORM 41012-SELNUM-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4101-SELNUM-CHK-EXT
+           END-IF
       *
            IF      SPA-NAI-SELNUM      =   ZERO
-               MOVE    ZERO                TO  SPA-NAI-SELNUM
-               MOVE    SPACE               TO  SPA-GMN-SELNUM
-               MOVE    4                   TO  SPA-GMN-CUR
-               GO  TO  4101-SELNUM-CHK-EXT 
-           ELSE
-      *        選択番号チェック
-               IF      SPA-NAI-SELNUM      >=  1
-               AND     SPA-NAI-SELNUM      <=  SPA-GMN-MAX   
-                   CONTINUE
-               ELSE
-                   MOVE    3                   TO  SPA-GMN-CUR
-                   MOVE    "0001"              TO  SPA-ERRCD
-                   GO  TO  4101-SELNUM-CHK-EXT 
-               END-IF
+               MOVE    ZERO            TO  SPA-NAI-SELNUM
+               MOVE    SPACE           TO  SPA-GMN-SELNUM
+               MOVE    4               TO  SPA-GMN-CUR
+               GO  TO  4101-SELNUM-CHK-EXT
            END-IF
       *
            MOVE    SPA-NAI-SELNUM      TO  SPA-NAI-SELNO
@@ -494,6 +475,42 @@
        41011-SELNUM-HENSYU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    番号選択　入力処理
+      *****************************************************************
+       41012-SELNUM-CHK-SEC       SECTION.
+      *
+           INITIALIZE                     ORCSNUMAREA
+           MOVE    SPA-GMN-SELNUM      TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN     NOT =   SPACE )   OR
+                  (SNUM-SYOKBN     NOT =   SPACE )
+               MOVE    3                   TO  SPA-GMN-CUR
+               MOVE    "0001"              TO  SPA-ERRCD
+               GO      TO      41012-SELNUM-CHK-EXT
+           ELSE
+               MOVE    SNUM-OUTNUM     TO  SPA-NAI-SELNUM
+           END-IF
+      *
+           IF      SPA-NAI-SELNUM      =   ZERO
+               GO  TO  41012-SELNUM-CHK-EXT
+           ELSE
+      *        選択番号チェック
+               IF      SPA-NAI-SELNUM      >=  1
+               AND     SPA-NAI-SELNUM      <=  SPA-GMN-MAX   
+                   CONTINUE
+               ELSE
+                   MOVE    3                   TO  SPA-GMN-CUR
+                   MOVE    "0001"              TO  SPA-ERRCD
+                   GO  TO  41012-SELNUM-CHK-EXT
+               END-IF
+           END-IF
+      *
+           .
+       41012-SELNUM-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    一括分　入力処理
       *****************************************************************
@@ -577,6 +594,13 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
+      *
+      *    選択番号
+           PERFORM  41012-SELNUM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
       *    有効開始年月日
            PERFORM  4102-STYUKYMD-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -1119,6 +1143,12 @@
                GO  TO  410-KAKUTEI-EXT
            END-IF
       *
+           IF    ( SPA-NAI-EDYUKYMD    <   SPA-NAI-STYUKYMD )
+               MOVE    4               TO  SPA-GMN-CUR
+               MOVE    "0011"          TO  SPA-ERRCD 
+               GO  TO  410-KAKUTEI-EXT
+           END-IF
+      *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-MAX
                    OR      SPA-ERRCD   NOT =   SPACE
@@ -1365,6 +1395,9 @@
                                                       TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "薬剤と禁忌のチェックコードは使用できません"
+                                                      TO  SPA-ERRMSG
+               WHEN    "0011"
+                   MOVE    "有効期間を正しく入力してください"
                                                       TO  SPA-ERRMSG
            END-EVALUATE
       *
