@@ -213,11 +213,11 @@
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".
       *    ¿ÇÎÅ¹Ô°ÙÆþ±¡¹¹¿·¥Ñ¥é¥á¥¿ÎÎ°è
-           COPY    "CPORCSTENTEKI.INC".
+           COPY    "CPORCSTENTEK.INC".
       *
        PROCEDURE                   DIVISION    USING
            SPA-AREA
-           ORCSTENTEKIAREA
+           ORCSTENTEKAREA
            .
       *
       *****************************************************************
