@@ -38,6 +38,7 @@
       *  01.00.08    NACL-多々納  03/06/23  自費７桁対応
       *  01.00.09    NACL-多々納  03/06/30  出力先プリンタサブ追加
       *  01.00.10    NACL-太田    03/08/26  労災自賠責編集修正
+      *  01.00.11    NACL-太田    03/09/12  前回未収額をマイナス表示可とする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -140,6 +141,8 @@
            03  WRK-Z7-G.
                05  WRK-FIL             PIC X(09).
                05  WRK-Z7              PIC Z,ZZZ,ZZZ.
+               05  WRK-Z7S             REDEFINES   WRK-Z7
+                                       PIC -,---,---.
            03  WRK-Z72-G.
       *****    05  WRK-FIL2            PIC X(09).
       ****     05  WRK-Z72             PIC -,---,---.
@@ -1015,7 +1018,7 @@
            END-IF
       *    前回未収額計算
            PERFORM 3101-MISYU-HEN-SEC
-           MOVE    WRK-MISYUMONEY      TO  WRK-Z7
+           MOVE    WRK-MISYUMONEY      TO  WRK-Z7S
            MOVE    WRK-Z7-G            TO  HC03-ZENMISYU
       *    合計請求額
            COMPUTE WRK-GOKTEN          =   WRK-SKYMONEY
