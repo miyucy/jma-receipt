@@ -158,12 +158,13 @@
       *
       *    公費の使用回数カウント用エリア（日単位）
        01  HOKEN-KAISU-TABLE.                                           XXX
-           03  HOKEN-KAISU-TBL         OCCURS  32.                      XXX
+           03  HOKEN-KAISU-TABLE1.                                      XXX
+             04 HOKEN-KAISU-TBL        OCCURS  32.                      XXX
                05  KOHI1-TBL           PIC 9(02).                       XXX
                05  KOHI2-TBL           PIC 9(02).                       XXX
                05  KOHI3-TBL           PIC 9(02).                       XXX
                05  KOHI4-TBL           PIC 9(02).                       XXX
-           03  HOKEN-KAISU-TBL-R   REDEFINES   HOKEN-KAISU-TBL          XXX
+           03  HOKEN-KAISU-TBL-R   REDEFINES   HOKEN-KAISU-TABLE1       XXX
                                        OCCURS  32.                      XXX
                05  KOHI-TBL            PIC 9(02)   OCCURS   4.          XXX
       *
@@ -219,12 +220,13 @@
       *
       *    公費の患者負担可能な残額算定用エリア（日単位）
        01  HOKEN-ZAN-D-AREA.                                            XXX
-           03  HOKEN-ZAN-D-TBL         OCCURS  31.                      XXX
+           03  HOKEN-ZAN-D-TABLE1.                                      XXX
+             04  HOKEN-ZAN-D-TBL       OCCURS  31.                      XXX
                05  ZAN-KOHI1-D         PIC 9(05).                       XXX
                05  ZAN-KOHI2-D         PIC 9(05).                       XXX
                05  ZAN-KOHI3-D         PIC 9(05).                       XXX
                05  ZAN-KOHI4-D         PIC 9(05).                       XXX
-           03  HOKEN-ZAN-D-TBL-R   REDEFINES   HOKEN-ZAN-D-TBL          XXX
+           03  HOKEN-ZAN-D-TBL-R   REDEFINES   HOKEN-ZAN-D-TABLE1       XXX
                                        OCCURS  31.                      XXX
                05  ZAN-KOHI-D          PIC 9(05)   OCCURS   4.          XXX
       *
@@ -247,12 +249,13 @@
       *    公費のレセプト負担区分四捨五入しない場合,
       *    レセ記載可能な残額算定用エリア（日単位）
        01  HOKEN-ZAN-D2-AREA.                                           XXX
-           03  HOKEN-ZAN-D2-TBL         OCCURS  31.                     XXX
+           03  HOKEN-ZAN-D2-TABLE1.                                     XXX
+             04  HOKEN-ZAN-D2-TBL       OCCURS  31.                     XXX
                05  ZAN-KOHI1-D2         PIC 9(05).                      XXX
                05  ZAN-KOHI2-D2         PIC 9(05).                      XXX
                05  ZAN-KOHI3-D2         PIC 9(05).                      XXX
                05  ZAN-KOHI4-D2         PIC 9(05).                      XXX
-           03  HOKEN-ZAN-D2-TBL-R   REDEFINES   HOKEN-ZAN-D2-TBL        XXX
+           03  HOKEN-ZAN-D2-TBL-R   REDEFINES   HOKEN-ZAN-D2-TABLE1     XXX
                                         OCCURS  31.                     XXX
                05  ZAN-KOHI-D2          PIC 9(05)   OCCURS   4.         XXX
       *
@@ -275,12 +278,13 @@
       *    公費のレセプト負担区分四捨五入しない場合,
       *    レセ記載可能な残額算定用エリア（日単位）（ワーク用）
        01  HOKEN-ZAN-D3-AREA.                                           XXX
-           03  HOKEN-ZAN-D3-TBL         OCCURS  31.                     XXX
+           03  HOKEN-ZAN-D3-TABLE1.                                     XXX
+             04  HOKEN-ZAN-D3-TBL       OCCURS  31.                     XXX
                05  ZAN-KOHI1-D3         PIC 9(05).                      XXX
                05  ZAN-KOHI2-D3         PIC 9(05).                      XXX
                05  ZAN-KOHI3-D3         PIC 9(05).                      XXX
                05  ZAN-KOHI4-D3         PIC 9(05).                      XXX
-           03  HOKEN-ZAN-D3-TBL-R   REDEFINES   HOKEN-ZAN-D3-TBL        XXX
+           03  HOKEN-ZAN-D3-TBL-R   REDEFINES   HOKEN-ZAN-D3-TABLE1     XXX
                                         OCCURS  31.                     XXX
                05  ZAN-KOHI-D3          PIC 9(05)   OCCURS   4.         XXX
       *
