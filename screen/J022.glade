@@ -56,7 +56,6 @@
       <y>8</y>
       <width>158</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -147,7 +146,7 @@
       <text_visible>True</text_visible>
       <text_max_length>3</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -175,7 +174,7 @@
       <text_visible>True</text_visible>
       <text_max_length>3</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -203,7 +202,7 @@
       <text_visible>True</text_visible>
       <text_max_length>3</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
