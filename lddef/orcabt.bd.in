@@ -105,4 +105,5 @@ bind	"ORCT0040"	"OpenCOBOL";
 bind	"ORCT0050"	"OpenCOBOL";
 bind	"ORCT0060"	"OpenCOBOL";
 bind	"ORCBDXXX"	"OpenCOBOL";
+bind	"ORCBG001"	"OpenCOBOL";
 #include "orcadb.inc"
