@@ -360,6 +360,10 @@
        01  OPECOM-REC.
            COPY    "CPOPECOM.INC".
       *
+      *    ¼ýÇ¼¹ç·×¥Þ¥¹¥¿¡Ý
+       01  SYUTTL-REC.
+           COPY    "CPSYUTOTAL.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -1880,7 +1884,7 @@
       *    ´µ¼ÔÉÂÌ¾
            INITIALIZE                      PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
-           MOVE    SPA-GMN-PTID            TO  PTBYO-PTID
+           MOVE    SPA-GMN-PTID        TO  PTBYO-PTID
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH
@@ -1892,7 +1896,7 @@
       *    ´µ¼Ô¥³¥á¥ó¥È
            INITIALIZE                      PTCOM-REC
            MOVE    SPA-HOSPID          TO  PTCOM-HOSPID
-           MOVE    SPA-GMN-PTID            TO  PTCOM-PTID
+           MOVE    SPA-GMN-PTID        TO  PTCOM-PTID
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "PTCOM-DEL2"        TO  ORC-DBPATH
@@ -1936,7 +1940,6 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
-      *
       *    µìÀ«ÍúÎò
            INITIALIZE                      KYUSEIRRK-REC
            MOVE    SPA-HOSPID          TO  KYUSEI-HOSPID
@@ -2019,6 +2022,18 @@
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "SYUMEI-DEL1"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    ¼ýÇ¼¹ç·×
+           INITIALIZE                      SYUTTL-REC
+           MOVE    SPA-HOSPID          TO  SYUTTL-HOSPID
+           MOVE    SPA-GMN-PTID        TO  SYUTTL-PTID
+           MOVE    SYUTTL-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SYUTOTAL-DEL1"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
