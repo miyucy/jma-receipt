@@ -10,6 +10,7 @@ bind	"J022"		"OpenCOBOL"	"ORCGJ022";
 bind	"J023"		"OpenCOBOL"	"ORCGJ023";
 bind	"J024"		"OpenCOBOL"	"ORCGJ024";
 bind	"J025"		"OpenCOBOL"	"ORCGJ025";
+bind	"J026"		"OpenCOBOL"	"ORCGJ026";
 bind	"J03"		"OpenCOBOL"	"ORCGJ03";
 bind	"J04"		"OpenCOBOL"	"ORCGJ04";
 bind	"J041"		"OpenCOBOL"	"ORCGJ041";
@@ -33,6 +34,7 @@ data	{
                 J023;
                 J024;
                 J025;
+                J026;
 		J03;
 		J04;
 		J041;
