@@ -82,6 +82,7 @@
       *                                     場合、１００００円上限とする
       *  01.00.41    NACL-門脇    05/03/07  北海道、大阪、広島４１老人の
       *                                     ７２３００超、低所得低年金対応
+      *  01.00.42    NACL-門脇    05/03/23  保険組合せの上限区分編集
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -144,6 +145,7 @@
                05  WRK-SKJGNSTYYMM2    PIC 9(06).
                05  WRK-SKJGNSTDD2      PIC 9(02).
       *
+           03  WK-NYUJGNKBN            PIC X(01).
            03  WK-NYUJGNGAK            PIC 9(07).
       *
       *    保険区分（空白：医保　１：労災・自賠）
@@ -809,6 +811,9 @@
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC.
+      *
+      *    保険組合せの上限区分編集
+           PERFORM   105-JYOGENKBN-HENSYU-SEC.
       *
       *    保険組合せマスタから主保険の保険種類を判定
       *    （空白：医保、１：労災・自賠）
@@ -1750,6 +1755,242 @@
       *
        100-KAKUTEI-EXT.
            EXIT.
+      *
+      ******************************************************************
+      *    保険組合せの上限区分編集                                *
+      ******************************************************************
+       105-JYOGENKBN-HENSYU-SEC          SECTION.
+      *
+           MOVE    SPACE    TO   COMB-KOH1-NYUJGNKBN.
+           MOVE    SPACE    TO   COMB-KOH2-NYUJGNKBN.
+           MOVE    SPACE    TO   COMB-KOH3-NYUJGNKBN.
+           MOVE    SPACE    TO   COMB-KOH4-NYUJGNKBN.
+      *
+      *    公費１の上限区分編集
+           IF  COMB-KOH1HKNNUM           NOT =  SPACE
+      *
+               INITIALIZE                      HKNNUM-REC
+               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-KOH1HKNNUM    TO    HKN-HKNNUM
+               IF     COMB-KOH1HKNNUM    =     "027"
+                       MOVE     COMB-KOH1PAYKBN
+                                         TO    WK-PAYKBN
+               ELSE
+                       MOVE     "00"     TO    WK-PAYKBN
+               END-IF
+               MOVE   HKNNUM-REC         TO    MCPDATA-REC
+               MOVE   "DBSELECT"         TO    MCP-FUNC
+               MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
+               CALL   "ORCMCPSUB"         USING MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC            =     ZERO
+                 MOVE    "HKNNUM-KEY2" TO    ORC-DBPATH
+                 PERFORM  HKNNUM-READ-SEC
+                 PERFORM  UNTIL
+                   (FLG-HKNNUM     =    1)                       OR
+                  ((HKN-TEKSTYMD(1:6)     <=  LNK-SYU-SRYYMD(1:6)  ) AND
+                   (LNK-SYU-SRYYMD(1:6)   <=  HKN-TEKEDYMD(1:6))     AND
+                   (WK-PAYKBN            =  HKN-PAYKBN))
+                     PERFORM   HKNNUM-READ-SEC
+                 END-PERFORM
+                 IF     FLG-HKNNUM         =       0
+                        PERFORM   1051-JYOGENKBN-CHECK-SEC
+                        MOVE   WK-NYUJGNKBN  TO  COMB-KOH1-NYUJGNKBN
+                 END-IF
+               END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+      *
+           END-IF.
+      *
+      *    公費２の上限区分編集
+           IF  COMB-KOH2HKNNUM           NOT = SPACE
+      *
+               INITIALIZE                      HKNNUM-REC
+               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-KOH2HKNNUM    TO    HKN-HKNNUM
+               MOVE     "00"             TO    WK-PAYKBN
+               MOVE   HKNNUM-REC         TO    MCPDATA-REC
+               MOVE   "DBSELECT"         TO    MCP-FUNC
+               MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
+               CALL   "ORCMCPSUB"         USING MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC            =     ZERO
+                 MOVE    "HKNNUM-KEY2" TO    ORC-DBPATH
+                 PERFORM  HKNNUM-READ-SEC
+                 PERFORM  UNTIL
+                   (FLG-HKNNUM     =    1)                      OR
+                  ((HKN-TEKSTYMD(1:6)     <= LNK-SYU-SRYYMD(1:6)  ) AND
+                   (LNK-SYU-SRYYMD(1:6)   <= HKN-TEKEDYMD(1:6))     AND
+                   (WK-PAYKBN            = HKN-PAYKBN))
+                     PERFORM   HKNNUM-READ-SEC
+                 END-PERFORM
+                 IF     FLG-HKNNUM         =       0
+                        PERFORM   1051-JYOGENKBN-CHECK-SEC
+                        MOVE   WK-NYUJGNKBN  TO  COMB-KOH2-NYUJGNKBN
+                 END-IF
+               END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+      *
+           END-IF.
+      *
+      *    公費３の上限区分編集
+           IF  COMB-KOH3HKNNUM           NOT = SPACE
+      *
+               INITIALIZE                      HKNNUM-REC
+               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-KOH3HKNNUM    TO    HKN-HKNNUM
+               MOVE     "00"             TO    WK-PAYKBN
+               MOVE   HKNNUM-REC         TO    MCPDATA-REC
+               MOVE   "DBSELECT"         TO    MCP-FUNC
+               MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
+               CALL   "ORCMCPSUB"         USING MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC            =     ZERO
+                 MOVE    "HKNNUM-KEY2" TO    ORC-DBPATH
+                 PERFORM  HKNNUM-READ-SEC
+                 PERFORM  UNTIL
+                   (FLG-HKNNUM     =    1)                      OR
+                  ((HKN-TEKSTYMD(1:6)     <= LNK-SYU-SRYYMD(1:6)  ) AND
+                   (LNK-SYU-SRYYMD(1:6)   <= HKN-TEKEDYMD(1:6))     AND
+                   (WK-PAYKBN            = HKN-PAYKBN))
+                     PERFORM   HKNNUM-READ-SEC
+                 END-PERFORM
+                 IF     FLG-HKNNUM         =       0
+                        PERFORM   1051-JYOGENKBN-CHECK-SEC
+                        MOVE   WK-NYUJGNKBN  TO  COMB-KOH3-NYUJGNKBN
+                 END-IF
+               END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+      *
+           END-IF.
+      *
+      *    公費４の上限区分編集
+           IF  COMB-KOH4HKNNUM           NOT = SPACE
+      *
+               INITIALIZE                      HKNNUM-REC
+               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-KOH4HKNNUM    TO    HKN-HKNNUM
+               MOVE     "00"             TO    WK-PAYKBN
+               MOVE   HKNNUM-REC         TO    MCPDATA-REC
+               MOVE   "DBSELECT"         TO    MCP-FUNC
+               MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
+               CALL   "ORCMCPSUB"         USING MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC            =     ZERO
+                 MOVE    "HKNNUM-KEY2" TO    ORC-DBPATH
+                 PERFORM  HKNNUM-READ-SEC
+                 PERFORM  UNTIL
+                   (FLG-HKNNUM     =    1)                       OR
+                  ((HKN-TEKSTYMD(1:6)     <= LNK-SYU-SRYYMD(1:6)  ) AND
+                   (LNK-SYU-SRYYMD(1:6)   <= HKN-TEKEDYMD(1:6))     AND
+                   (WK-PAYKBN            = HKN-PAYKBN))
+                     PERFORM   HKNNUM-READ-SEC
+                 END-PERFORM
+                 IF     FLG-HKNNUM         =       0
+                        PERFORM   1051-JYOGENKBN-CHECK-SEC
+                        MOVE   WK-NYUJGNKBN  TO  COMB-KOH4-NYUJGNKBN
+                 END-IF
+               END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+      *
+           END-IF.
+      *
+       105-JYOGENKBN-HENSYU-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    保険組合せの上限区分チェック                                *
+      ******************************************************************
+       1051-JYOGENKBN-CHECK-SEC           SECTION.
+      *
+           MOVE     SPACE     TO    WK-NYUJGNKBN.
+      *
+           IF  ( WK-1001-PREFNUM         =  01  OR  27  OR 34  ) AND
+               ( HKN-HKNNUM              = "141"               )
+              EVALUATE   FLG-SANSHOU2
+                  WHEN   "1"
+                      IF   HKN-HON-NYUMJGNGAK  NOT = ZERO
+                      OR   HKN-HON-NYUMJGNCNT  NOT = ZERO
+                      OR   HKN-HON-NYUDJGNGAK  NOT = ZERO
+                             MOVE     "1"      TO     WK-NYUJGNKBN
+                      END-IF
+                  WHEN   "2"
+                      IF   HKN-TSY-NYUMJGNGAK  NOT = ZERO
+                      OR   HKN-TSY-NYUMJGNCNT  NOT = ZERO
+                      OR   HKN-TSY-NYUDJGNGAK  NOT = ZERO
+                             MOVE     "1"      TO     WK-NYUJGNKBN
+                      END-IF
+                  WHEN   "3"
+                      IF   HKN-TNK-NYUMJGNGAK  NOT = ZERO
+                      OR   HKN-TNK-NYUMJGNCNT  NOT = ZERO
+                      OR   HKN-TNK-NYUDJGNGAK  NOT = ZERO
+                             MOVE     "1"      TO     WK-NYUJGNKBN
+                      END-IF
+              END-EVALUATE
+           ELSE
+      ***     EVALUATE   FLG-SANSHOU2
+      ***         WHEN   "1"
+                      IF   HKN-HON-NYUMJGNGAK  NOT = ZERO
+                      OR   HKN-HON-NYUMJGNCNT  NOT = ZERO
+                      OR   HKN-HON-NYUDJGNGAK  NOT = ZERO
+                             MOVE     "1"      TO     WK-NYUJGNKBN
+                      END-IF
+      ***         WHEN   "2"
+      ***             IF   HKN-TSY-NYUMJGNGAK  NOT = ZERO
+      ***             OR   HKN-TSY-NYUMJGNCNT  NOT = ZERO
+      ***             OR   HKN-TSY-NYUDJGNGAK  NOT = ZERO
+      ***                    MOVE     "1"      TO     WK-NYUJGNKBN
+      ***             END-IF
+      ***         WHEN   "3"
+      ***             IF   HKN-TNK-NYUMJGNGAK  NOT = ZERO
+      ***             OR   HKN-TNK-NYUMJGNCNT  NOT = ZERO
+      ***             OR   HKN-TNK-NYUDJGNGAK  NOT = ZERO
+      ***                    MOVE     "1"      TO     WK-NYUJGNKBN
+      ***             END-IF
+      ***     END-EVALUATE
+           END-IF.
+      *
+           IF     HKN-HKNNUM   =     "027"
+                      IF   HKN-HON-NYUMJGNGAK  NOT = ZERO
+                      OR   HKN-HON-NYUMJGNCNT  NOT = ZERO
+                      OR   HKN-HON-NYUDJGNGAK  NOT = ZERO
+                             MOVE     "1"      TO     WK-NYUJGNKBN
+                      ELSE
+                             MOVE    SPACE     TO     WK-NYUJGNKBN
+                      END-IF
+           END-IF.
+      *
+       1051-JYOGENKBN-CHECK-EXT.
+           EXIT.
+      *
       ******************************************************************
       *        保険負担額算定処理                                      *
       ******************************************************************

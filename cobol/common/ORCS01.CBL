@@ -149,6 +149,7 @@
       *  01.01.15    NACL-ÌçÏÆ    05/01/14  ²¬»³¸©ÆýÍÄ»ùÆÃ¼ì·×»»ÂÐ±þ
       *  01.01.16    NACL-ÌçÏÆ    05/03/04  ÀÅ²¬¸©Êì»Ò¾ã³²¤¬Ä¹´ü¤ÈÊ»ÍÑ¤Î
       *                                     ¾ì¹ç¡¢£±£°£°£°£°±ß¾å¸Â¤È¤¹¤ë
+      *  01.01.17    NACL-ÌçÏÆ    05/03/23  ÊÝ¸±ÁÈ¹ç¤»¤Î¾å¸Â¶èÊ¬ÊÔ½¸
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -246,6 +247,7 @@
            03  WK-1001-HOSPSBT         PIC 9(01).
            03  WK-1001-ROUPAYKBN       PIC X(01).
       *
+           03  WK-GAIJGNKBN            PIC X(01).
            03  WK-GAIJGNGAK            PIC 9(07).
       *
       *    ÊÝ¸±¶èÊ¬¡Ê¶õÇò¡§°åÊÝ¡¡£±¡§Ï«ºÒ¡¡£²¡§¼«ÇåÀÕ¡Ë
@@ -866,6 +868,9 @@
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC.
+      *
+      *    ÊÝ¸±ÁÈ¹ç¤»¤Î¾å¸Â¶èÊ¬ÊÔ½¸
+           PERFORM   105-JYOGENKBN-HENSYU-SEC.
       *
       *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¤«¤é¼çÊÝ¸±¤ÎÊÝ¸±¼ïÎà¤òÈ½Äê
       *    ¡Ê¶õÇò¡§°åÊÝ¡¢£±¡§Ï«ºÒ¡¢£²¡§¼«Çå¡Ë
@@ -1868,12 +1873,7 @@
                  WHEN    0                ALSO     0
                          MOVE     "3"     TO       FLG-SANSHOU
               END-EVALUATE
-              IF   ( LNK-SYU-KOH1HKNNUM     =  SPACE OR "027" )
-              AND  ( LNK-SYU-KOH2HKNNUM     =  SPACE          )
-              AND  ( LNK-SYU-KOH3HKNNUM     =  SPACE          )
-              AND  ( LNK-SYU-KOH4HKNNUM     =  SPACE          )
-                         MOVE     "1"     TO       FLG-SANSHOU
-              END-IF
+              MOVE       "1"              TO       FLG-SANSHOU
            ELSE
               IF    LNK-SYU-SRYYMD(1:6)   <   "200304"
                  EVALUATE   FLG-TSYRRK       ALSO     FLG-TNKRRK
@@ -1885,12 +1885,7 @@
                     WHEN    1                ALSO     0
                             MOVE     "3"     TO       FLG-SANSHOU
                  END-EVALUATE
-                 IF   ( LNK-SYU-KOH1HKNNUM     =  SPACE OR "027" )
-                 AND  ( LNK-SYU-KOH2HKNNUM     =  SPACE          )
-                 AND  ( LNK-SYU-KOH3HKNNUM     =  SPACE          )
-                 AND  ( LNK-SYU-KOH4HKNNUM     =  SPACE          )
-                            MOVE     "1"     TO       FLG-SANSHOU
-                 END-IF
+                 MOVE       "1"              TO       FLG-SANSHOU
               ELSE
                  MOVE       SPACE            TO       FLG-SANSHOU
               END-IF
@@ -1921,6 +1916,230 @@
       *
        100-KAKUTEI-EXT.
            EXIT.
+      *
+      ******************************************************************
+      *    ÊÝ¸±ÁÈ¹ç¤»¤Î¾å¸Â¶èÊ¬ÊÔ½¸                                *
+      ******************************************************************
+       105-JYOGENKBN-HENSYU-SEC          SECTION.
+      *
+           MOVE    SPACE    TO   COMB-KOH1-GAIJGNKBN.
+           MOVE    SPACE    TO   COMB-KOH2-GAIJGNKBN.
+           MOVE    SPACE    TO   COMB-KOH3-GAIJGNKBN.
+           MOVE    SPACE    TO   COMB-KOH4-GAIJGNKBN.
+      *
+      *    ¸øÈñ£±¤Î¾å¸Â¶èÊ¬ÊÔ½¸
+           IF  COMB-KOH1HKNNUM           NOT =  SPACE
+      *
+               INITIALIZE                      HKNNUM-REC
+               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-KOH1HKNNUM    TO    HKN-HKNNUM
+               IF     COMB-KOH1HKNNUM    =     "027"
+                   IF    LNK-SYU-SRYYMD  >=    "20021001"
+                       MOVE     COMB-KOH1PAYKBN     TO  WK-PAYKBN
+                   ELSE
+                       MOVE     WK-1001-HOSPSBT     TO  WK-PAYKBN(1:1)
+                       MOVE     WK-1001-ROUPAYKBN   TO  WK-PAYKBN(2:1)
+                   END-IF
+               ELSE
+                       MOVE     "00"         TO    WK-PAYKBN
+               END-IF
+               MOVE   HKNNUM-REC         TO    MCPDATA-REC
+               MOVE   "DBSELECT"         TO    MCP-FUNC
+               MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
+               CALL   "ORCMCPSUB"         USING MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC            =     ZERO
+                   MOVE    "HKNNUM-KEY2" TO    ORC-DBPATH
+                   PERFORM  HKNNUM-READ-SEC
+                   PERFORM  UNTIL
+                     (FLG-HKNNUM     =    1)                       OR
+                    ((HKN-TEKSTYMD(1:6)   <=  LNK-SYU-SRYYMD(1:6)) AND
+                     (LNK-SYU-SRYYMD(1:6) <=  HKN-TEKEDYMD(1:6))   AND
+                     (WK-PAYKBN            =  HKN-PAYKBN))
+                       PERFORM   HKNNUM-READ-SEC
+                   END-PERFORM
+                   IF     FLG-HKNNUM         =       0
+                          PERFORM   1051-JYOGENKBN-CHECK-SEC
+                          MOVE   WK-GAIJGNKBN  TO  COMB-KOH1-GAIJGNKBN
+                   END-IF
+               END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+      *
+           END-IF.
+      *
+      *    ¸øÈñ£²¤Î¾å¸Â¶èÊ¬ÊÔ½¸
+           IF  COMB-KOH2HKNNUM           NOT = SPACE
+      *
+               INITIALIZE                      HKNNUM-REC
+               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-KOH2HKNNUM    TO    HKN-HKNNUM
+               MOVE     "00"             TO    WK-PAYKBN
+               MOVE   HKNNUM-REC         TO    MCPDATA-REC
+               MOVE   "DBSELECT"         TO    MCP-FUNC
+               MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
+               CALL   "ORCMCPSUB"         USING MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC            =     ZERO
+                   MOVE    "HKNNUM-KEY2" TO    ORC-DBPATH
+                   PERFORM  HKNNUM-READ-SEC
+                   PERFORM  UNTIL
+                     (FLG-HKNNUM     =    1)                      OR
+                    ((HKN-TEKSTYMD(1:6)   <= LNK-SYU-SRYYMD(1:6)) AND
+                     (LNK-SYU-SRYYMD(1:6) <= HKN-TEKEDYMD(1:6))   AND
+                     (WK-PAYKBN            = HKN-PAYKBN))
+                       PERFORM   HKNNUM-READ-SEC
+                   END-PERFORM
+                   IF     FLG-HKNNUM         =       0
+                          PERFORM   1051-JYOGENKBN-CHECK-SEC
+                          MOVE   WK-GAIJGNKBN  TO  COMB-KOH2-GAIJGNKBN
+                   END-IF
+               END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+      *
+           END-IF.
+      *
+      *    ¸øÈñ£³¤Î¾å¸Â¶èÊ¬ÊÔ½¸
+           IF  COMB-KOH3HKNNUM           NOT = SPACE
+      *
+               INITIALIZE                      HKNNUM-REC
+               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-KOH3HKNNUM    TO    HKN-HKNNUM
+               MOVE     "00"             TO    WK-PAYKBN
+               MOVE   HKNNUM-REC         TO    MCPDATA-REC
+               MOVE   "DBSELECT"         TO    MCP-FUNC
+               MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
+               CALL   "ORCMCPSUB"         USING MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC            =     ZERO
+                   MOVE    "HKNNUM-KEY2" TO    ORC-DBPATH
+                   PERFORM  HKNNUM-READ-SEC
+                   PERFORM  UNTIL
+                     (FLG-HKNNUM     =    1)                      OR
+                    ((HKN-TEKSTYMD(1:6)   <= LNK-SYU-SRYYMD(1:6)) AND
+                     (LNK-SYU-SRYYMD(1:6) <= HKN-TEKEDYMD(1:6))   AND
+                     (WK-PAYKBN            = HKN-PAYKBN))
+                       PERFORM   HKNNUM-READ-SEC
+                   END-PERFORM
+                   IF     FLG-HKNNUM         =       0
+                          PERFORM   1051-JYOGENKBN-CHECK-SEC
+                          MOVE   WK-GAIJGNKBN  TO  COMB-KOH3-GAIJGNKBN
+                   END-IF
+               END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+      *
+           END-IF.
+      *
+      *    ¸øÈñ£´¤Î¾å¸Â¶èÊ¬ÊÔ½¸
+           IF  COMB-KOH4HKNNUM           NOT = SPACE
+      *
+               INITIALIZE                      HKNNUM-REC
+               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-KOH4HKNNUM    TO    HKN-HKNNUM
+               MOVE     "00"             TO    WK-PAYKBN
+               MOVE   HKNNUM-REC         TO    MCPDATA-REC
+               MOVE   "DBSELECT"         TO    MCP-FUNC
+               MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
+               CALL   "ORCMCPSUB"         USING MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC            =     ZERO
+                   MOVE    "HKNNUM-KEY2" TO    ORC-DBPATH
+                   PERFORM  HKNNUM-READ-SEC
+                   PERFORM  UNTIL
+                     (FLG-HKNNUM     =    1)                       OR
+                    ((HKN-TEKSTYMD(1:6)   <= LNK-SYU-SRYYMD(1:6)) AND
+                     (LNK-SYU-SRYYMD(1:6) <= HKN-TEKEDYMD(1:6))   AND
+                     (WK-PAYKBN            = HKN-PAYKBN))
+                       PERFORM   HKNNUM-READ-SEC
+                   END-PERFORM
+                   IF     FLG-HKNNUM         =       0
+                          PERFORM   1051-JYOGENKBN-CHECK-SEC
+                          MOVE   WK-GAIJGNKBN  TO  COMB-KOH4-GAIJGNKBN
+                   END-IF
+               END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+      *
+           END-IF.
+      *
+       105-JYOGENKBN-HENSYU-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ÊÝ¸±ÁÈ¹ç¤»¤Î¾å¸Â¶èÊ¬¥Á¥§¥Ã¥¯                                *
+      ******************************************************************
+       1051-JYOGENKBN-CHECK-SEC           SECTION.
+      *
+           MOVE     SPACE     TO    WK-GAIJGNKBN.
+      *
+      ***  EVALUATE   FLG-SANSHOU2
+      ***      WHEN   "1"
+                  IF   HKN-HON-GAIMNAIJGNGAK  NOT = ZERO
+                  OR   HKN-HON-GAIMGAIJGNGAK  NOT = ZERO
+                  OR   HKN-HON-GAIMJGNCNT     NOT = ZERO
+                  OR   HKN-HON-GAIDJGNGAK     NOT = ZERO
+                  OR   HKN-HON-GAIDJGNCNT     NOT = ZERO
+                         MOVE     "1"      TO     WK-GAIJGNKBN
+                  END-IF
+      ***      WHEN   "2"
+      ***         IF   HKN-TSY-GAIMNAIJGNGAK  NOT = ZERO
+      ***         OR   HKN-TSY-GAIMGAIJGNGAK  NOT = ZERO
+      ***         OR   HKN-TSY-GAIMJGNCNT     NOT = ZERO
+      ***         OR   HKN-TSY-GAIDJGNGAK     NOT = ZERO
+      ***         OR   HKN-TSY-GAIDJGNCNT     NOT = ZERO
+      ***                MOVE     "1"      TO     WK-GAIJGNKBN
+      ***         END-IF
+      ***      WHEN   "3"
+      ***         IF   HKN-TNK-GAIMNAIJGNGAK  NOT = ZERO
+      ***         OR   HKN-TNK-GAIMGAIJGNGAK  NOT = ZERO
+      ***         OR   HKN-TNK-GAIMJGNCNT     NOT = ZERO
+      ***         OR   HKN-TNK-GAIDJGNGAK     NOT = ZERO
+      ***         OR   HKN-TNK-GAIDJGNCNT     NOT = ZERO
+      ***                MOVE     "1"      TO     WK-GAIJGNKBN
+      ***         END-IF
+      ***  END-EVALUATE.
+      *
+           IF     HKN-HKNNUM   =     "027"
+                  IF   HKN-HON-GAIMNAIJGNGAK  NOT = ZERO
+                  OR   HKN-HON-GAIMGAIJGNGAK  NOT = ZERO
+                  OR   HKN-HON-GAIMJGNCNT     NOT = ZERO
+                  OR   HKN-HON-GAIDJGNGAK     NOT = ZERO
+                  OR   HKN-HON-GAIDJGNCNT     NOT = ZERO
+                         MOVE     "1"      TO     WK-GAIJGNKBN
+                  ELSE
+                         MOVE    SPACE     TO     WK-GAIJGNKBN
+                  END-IF
+           END-IF.
+      *
+       1051-JYOGENKBN-CHECK-EXT.
+           EXIT.
+      *
       ******************************************************************
       *        ÊÝ¸±ÉéÃ´³Û»»Äê½èÍý                                      *
       ******************************************************************
@@ -2637,12 +2856,7 @@
                INITIALIZE                      HKNNUM-REC
                MOVE   COMB-HOSPID        TO    HKN-HOSPID
                MOVE   COMB-KOH2HKNNUM    TO    HKN-HKNNUM
-               IF     COMB-KOH2HKNNUM    =     "027"
-                   MOVE     WK-1001-HOSPSBT     TO  WK-PAYKBN(1:1)
-                   MOVE     WK-1001-ROUPAYKBN   TO  WK-PAYKBN(2:1)
-               ELSE
-                   MOVE     "00"                TO  WK-PAYKBN
-               END-IF
+               MOVE     "00"             TO    WK-PAYKBN
                MOVE   HKNNUM-REC         TO    MCPDATA-REC
                MOVE   "DBSELECT"         TO    MCP-FUNC
                MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
@@ -2716,12 +2930,7 @@
                INITIALIZE                      HKNNUM-REC
                MOVE   COMB-HOSPID        TO    HKN-HOSPID
                MOVE   COMB-KOH3HKNNUM    TO    HKN-HKNNUM
-               IF     COMB-KOH3HKNNUM    =     "027"
-                   MOVE     WK-1001-HOSPSBT     TO  WK-PAYKBN(1:1)
-                   MOVE     WK-1001-ROUPAYKBN   TO  WK-PAYKBN(2:1)
-               ELSE
-                   MOVE     "00"                TO  WK-PAYKBN
-               END-IF
+               MOVE     "00"             TO    WK-PAYKBN
                MOVE   HKNNUM-REC         TO    MCPDATA-REC
                MOVE   "DBSELECT"         TO    MCP-FUNC
                MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
@@ -2795,12 +3004,7 @@
                INITIALIZE                      HKNNUM-REC
                MOVE   COMB-HOSPID        TO    HKN-HOSPID
                MOVE   COMB-KOH4HKNNUM    TO    HKN-HKNNUM
-               IF     COMB-KOH4HKNNUM    =     "027"
-                   MOVE     WK-1001-HOSPSBT     TO  WK-PAYKBN(1:1)
-                   MOVE     WK-1001-ROUPAYKBN   TO  WK-PAYKBN(2:1)
-               ELSE
-                   MOVE     "00"                TO  WK-PAYKBN
-               END-IF
+               MOVE     "00"             TO    WK-PAYKBN
                MOVE   HKNNUM-REC         TO    MCPDATA-REC
                MOVE   "DBSELECT"         TO    MCP-FUNC
                MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
