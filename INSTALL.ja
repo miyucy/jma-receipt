@@ -1,0 +1,73 @@
+            日医標準レセプトソフトインストール方法(まだ不完全)
+-----------------------------------------------------------------------------
+
+$./configure
+$ make
+$ su
+Passowrd: [パスワードを入力]
+# make install
+
+(ユーザの作成・DBの作成)
+(権限の調整)
+
+※インストール先を変える場合はまだソースを編集する必要があります。
+cobol/*
+scripts/*
+
+----------------------------------------------------------------------------
+必要なソフト
+
+・PostgreSQL
+・MONTSUQI(panda)
+・OpenCOBOL
+....
+
+----------------------------------------------------------------------------
+configure オプション
+
+  --prefix=PREFIX
+    デフォルト(/usr/local/orca)
+    日医標準レセプトソフトのインストール先を指定します。
+
+  --libdir=DIRECTORY
+     デフォルト(/usr/local/orca/lib)
+    COBOLライブラリのインストール先を指定します。
+
+  --sysconfdir=DIRECTORY
+     デフォルト(/usr/local/orca/etc)
+     設定ファイルのインストール先を指定します。
+
+  --with-sitedir=DIRRECTORY
+    デフォルト(/usr/local/orca)
+     独自ソフトのインストール先
+
+  --with-sitesrcdir=DIRRECTORY
+     独自ソフトのソースがあるディレクトリを指定します。
+
+  --with-sitelibdir=DIRRECTORY
+     デフォルト(/usr/local/orca/lib)
+     独自ソフトのCOBOLライブラリのインストール先を指定します。
+
+  --with-open-cobol-prefix=DIRECTORY
+  --with-open-cobol-exec-prefix=DIRECTORY
+    OpenCOBOLのcobcのインストール先を指定します。
+    パスが通っている所にインストールされている場合は指定する
+    必要はありません。
+
+----------------------------------------------------------------------------
+
+例)
+# for potato deb package
+$ ./configure 
+$ make install 
+
+# for woody deb package
+$ ./configure \
+           --prefix=/usr/lib/jma-receipt \
+           --libdir=/usr/lib/jma-receipt \
+           --sysconfdir=/etc/jma-receipt \
+           --with-sitedir=/usr/lib/jma-receipt/site-lib \
+           --with-sitesrcdir=/usr/lib/jma-receipt/site-src \
+           --with-sitelibdir=/usr/lib/jma-receipt/site-lib
+$ make install 
+----------------------------------------------------------------------------
