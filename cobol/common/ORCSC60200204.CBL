@@ -2525,6 +2525,7 @@
            IF       WRK-GMN-INPUTCD(IDX)(1:1)  NOT =   "*"
                MOVE    SPA-SRYYMD (7:2)    TO  IDN1
            ELSE
+               MOVE    ZERO                TO  IDN1
                PERFORM VARYING     IDN2    FROM    1   BY  1
                        UNTIL       IDN2    >   31
                    IF      WRK-COM-NYUINDAY (IDX IDN2) >   ZERO
@@ -2532,6 +2533,9 @@
                        MOVE    31              TO  IDN2
                    END-IF
                END-PERFORM
+               IF      IDN1            =   ZERO
+                   MOVE    SPA-SRYYMD (7:2)    TO  IDN1
+               END-IF
            END-IF
       *    判断料の時、初日を設定
            IF      WRK-KENIDX          >   ZERO
