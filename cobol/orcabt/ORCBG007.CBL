@@ -34,6 +34,10 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    処理対象患者ファイル
+           SELECT  BG00701-FILE   ASSIGN   ORCBG00701PARA
+                                  ORGANIZATION         LINE SEQUENTIAL
+                                  FILE     STATUS  IS  STS-BG00701.
 006900*    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -41,11 +45,22 @@
        DATA                    DIVISION.
        FILE                        SECTION.
       *
+      *    処理対象患者ファイル
+       FD  BG00701-FILE.
+       01  BG00701-REC.
+           03  BG00701-PTID                        PIC 9(10).
+      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
+      *
+      *    処理対象患者ファイル
+           COPY    "CPCOMMONDAT2.INC"
+                                           REPLACING   //RECE01//
+                                           BY          //ORCBG00701//.
+           03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"      REPLACING  //RECE01PARA//
@@ -55,6 +70,7 @@
       *    ステータス領域
        01  STS-AREA.
            03  STS-RECEERR                         PIC X(02).
+           03  STS-BG00701                         PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -62,14 +78,17 @@
            03  FLG-DBRC                            PIC 9(01).
            03  FLG-SYSKANRI                        PIC 9(01).
            03  FLG-SRYACCT                         PIC 9(01).
+           03  FLG-BG00701                         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-BG007                           PIC 9(05).
            03  CNT-PAGE                            PIC 9(08).
+           03  CNT-JOB-UPDCNT                      PIC 9(08).
       *
       *    システム領域
        01  SYS-AREA.
+           03  SYS-TIME                            PIC 9(08).
            03  SYS-YMD.
                05  SYS-YY                          PIC 9(02).
                05  SYS-MM                          PIC 9(02).
@@ -80,6 +99,7 @@
            03  IDX1                                PIC 9(05).
            03  IDX2                                PIC 9(05).
            03  IDX3                                PIC 9(05).
+           03  IDXE                                PIC 9(05).
       *
       *    パラメタ領域
        01  WRK-PARA.
@@ -104,6 +124,18 @@
            03  WRK-LEN                             PIC 9(05).
            03  WRK-SHO                             PIC 9(05).
            03  WRK-AMARI                           PIC 9(05).
+           03  WRK-MAE-INPUT                       PIC X(300).
+           03  WRK-OUT-INPUT                       PIC X(300).
+           03  WRK-OUT-MAX                         PIC 9(05).
+           03  WRK-STR-LEFT                        PIC X(500).
+           03  WRK-STR-LEFT-Z      REDEFINES       WRK-STR-LEFT.
+               05  WRK-STR-LEFT-ZX99               PIC Z(9)9.
+               05                                  PIC X(490).
+           03  WRK-STR-LEFT-TMP                    PIC X(500).
+      *        全角編集用項目
+           03  WRK-N.
+               05  WRK-BG007-KNS-N                 PIC X(10).
+               05  WRK-BG007-TIME-N                PIC X(16).
       *
        01  ERR-EDIT-AREA.
            03  ERR-PTID                            PIC 9(10).
@@ -159,6 +191,12 @@
       *
       *    会計カード編集サブ
            COPY    "CPORCHCM34.INC".
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -255,6 +293,9 @@
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
       *
+           MOVE    "BG00701"           TO  ORCBG00701PARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  ORCBG00701PARA-TERMID
+      *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
       *
@@ -266,6 +307,7 @@
       *
            MOVE    ZERO                TO  CNT-BG007
                                            CNT-PAGE
+                                           CNT-JOB-UPDCNT
       *
            .
        100-INIT-EXT.
@@ -392,6 +434,29 @@
       *****************************************************************
        210-GAI-ALL-HEN-SEC         SECTION.
       *
+      *    処理対象患者ファイル出力処理
+           PERFORM 2101-BG007-OUT-SEC
+      *
+      *    会計カード編集処理
+           PERFORM 2101-KAIKEI-HEN-SEC
+      *
+      *    処理対象患者ファイル削除処理
+           PERFORM 2101-BG00701-DEL-SEC
+      *
+           IF    ( FLG-END     NOT =   ZERO )
+               GO  TO  210-GAI-ALL-HEN-EXT
+           END-IF
+      *
+           .
+       210-GAI-ALL-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    処理対象患者ファイル出力処理
+      *****************************************************************
+       2101-BG007-OUT-SEC              SECTION.
+      *
+           OPEN    OUTPUT  BG00701-FILE
+      *
            MOVE    ZERO            TO  FLG-SRYACCT
       *
            INITIALIZE                  SRYACCT-REC
@@ -410,11 +475,8 @@
       *
            PERFORM UNTIL ( FLG-SRYACCT NOT =   ZERO )
       *
-               MOVE    ACCT-PTID       TO  WRK-PTID
-               PERFORM 2101-ORCHCM34-CALL-SEC
-               IF    ( FLG-END         NOT =   ZERO )
-                   GO  TO  210-GAI-ALL-HEN-EXT
-               END-IF
+               MOVE    ACCT-PTID   TO  BG00701-PTID
+               WRITE   BG00701-REC
       *
                MOVE    "SRYACCT-KEY21" TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
@@ -423,13 +485,130 @@
                ELSE
                    MOVE    MCPDATA-REC TO  SRYACCT-REC
                END-IF
+      *
            END-PERFORM
       *
            MOVE    "SRYACCT-KEY21" TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
+           CLOSE   BG00701-FILE
+      *
            .
-       210-GAI-ALL-HEN-EXT.
+       2101-BG007-OUT-EXT.
+           EXIT.
+      *****************************************************************
+      *    会計カード編集処理
+      *****************************************************************
+       2101-KAIKEI-HEN-SEC             SECTION.
+      *
+           MOVE    ZERO            TO  FLG-BG00701
+           OPEN    INPUT  BG00701-FILE
+      *
+           PERFORM 2101-BG00701-READ-SEC
+      *
+           PERFORM UNTIL ( FLG-BG00701 NOT =   ZERO )
+      *
+               MOVE    BG00701-PTID    TO  WRK-PTID
+               PERFORM 2101-ORCHCM34-CALL-SEC
+               IF    ( FLG-END     NOT =   ZERO )
+                   GO  TO  2101-KAIKEI-HEN-EXT
+               END-IF
+      *
+               PERFORM 2101-SYORI-KEIKA-HEN-SEC
+      *
+               PERFORM 2101-BG00701-READ-SEC
+      *
+           END-PERFORM
+      *
+           CLOSE   BG00701-FILE
+      *
+           .
+       2101-KAIKEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    処理対象患者ファイル読込処理
+      *****************************************************************
+       2101-BG00701-READ-SEC           SECTION.
+      *
+           READ    BG00701-FILE
+           AT  END
+               MOVE    1       TO  FLG-BG00701
+           END-READ
+      *
+           .
+       2101-BG00701-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    処理対象患者ファイル削除処理
+      *****************************************************************
+       2101-BG00701-DEL-SEC            SECTION.
+      *
+           OPEN    OUTPUT              BG00701-FILE
+           CLOSE   BG00701-FILE
+      *
+      *    ファイル削除
+           MOVE    ZERO            TO  IF-RESULT
+           MOVE    ORCBG00701PARA  TO  IF-FILENAME
+           CALL    "orcfiledel"    USING
+                                       ORCSFDELAREA
+      *
+           .
+       2101-BG00701-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    処理経過編集処理
+      *****************************************************************
+       2101-SYORI-KEIKA-HEN-SEC        SECTION.
+      *
+           MOVE    ZERO            TO  WRK-SHO
+                                       WRK-AMARI
+           DIVIDE  50          INTO    CNT-BG007   GIVING  WRK-SHO
+           REMAINDER WRK-AMARI
+           END-DIVIDE
+      *
+           IF    ( WRK-AMARI       NOT =   ZERO )
+               GO  TO  2101-SYORI-KEIKA-HEN-EXT
+           END-IF
+      *
+           MOVE    CNT-BG007       TO  WRK-STR-LEFT-ZX99
+           PERFORM 800-STR-HIDARIZUME-HEN-SEC
+           MOVE    WRK-STR-LEFT    TO  WRK-MAE-INPUT
+           PERFORM 800-ZENKAKU-HEN-SEC
+           MOVE    WRK-OUT-INPUT   TO  WRK-BG007-KNS-N
+           ACCEPT  SYS-TIME        FROM    TIME
+           MOVE    SPACE           TO  WRK-MAE-INPUT
+           MOVE    SYS-TIME(1:2)   TO  WRK-MAE-INPUT(1:2)
+           MOVE    "."             TO  WRK-MAE-INPUT(3:1)
+           MOVE    SYS-TIME(3:2)   TO  WRK-MAE-INPUT(4:2)
+           MOVE    "."             TO  WRK-MAE-INPUT(6:1)
+           MOVE    SYS-TIME(5:2)   TO  WRK-MAE-INPUT(7:2)
+      *    PERFORM 800-ZENKAKU-HEN-SEC
+      *    MOVE    WRK-OUT-INPUT   TO  WRK-BG007-TIME-N
+           MOVE    WRK-MAE-INPUT   TO  WRK-BG007-TIME-N
+      *
+      *    ステップ途中処理
+           MOVE    "STM"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           STRING  "処理患者数："      DELIMITED BY SIZE
+                   WRK-BG007-KNS-N     DELIMITED BY SPACE
+                   "件　"              DELIMITED BY SIZE
+                   WRK-BG007-TIME-N    DELIMITED BY SPACE
+           INTO    JOB-YOBI
+           END-STRING
+           MOVE    CNT-JOB-UPDCNT      TO  JOB-UPDCNT
+           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+           MOVE    "ORCBG007"          TO  JOB-PGID
+           MOVE    WRK-TITLE           TO  JOB-SHELLMSG
+      *
+           CALL    "ORCSJOB"               USING
+                                           ORCSJOBKANRIAREA
+                                           JOBKANRI-REC
+      *
+           MOVE    ZERO                TO  CNT-JOB-UPDCNT
+      *
+           .
+       2101-SYORI-KEIKA-HEN-EXT.
            EXIT.
       *****************************************************************
       *    会計カード編集処理−外来対象診療年月指定患者−
@@ -491,6 +670,8 @@
       *
            COMPUTE CNT-BG007   =   CNT-BG007   +   1
            COMPUTE CNT-PAGE    =   CNT-PAGE    +   ORCHCM34-PAGE
+           COMPUTE CNT-JOB-UPDCNT  =   CNT-JOB-UPDCNT
+                                   +   ORCHCM34-PAGE
       *
            .
        2101-ORCHCM34-CALL-EXT.
@@ -549,7 +730,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    CNT-PAGE        TO  JOB-UPDCNT
+           MOVE    CNT-JOB-UPDCNT  TO  JOB-UPDCNT
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -560,6 +741,49 @@
        300-END-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    全角変換処理
+      *****************************************************************
+       800-ZENKAKU-HEN-SEC         SECTION.
+      *
+           MOVE    SPACE           TO  WRK-OUT-INPUT
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"             TO  KANACHK-SYORI
+           MOVE  WRK-MAE-INPUT     TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF    ( KANACHK-RC      =   ZERO )
+               MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-OUT-INPUT
+               MOVE    KANACHK-MAX TO  WRK-OUT-MAX
+           END-IF
+      *
+           .
+       800-ZENKAKU-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    文字列左詰処理
+      *****************************************************************
+       800-STR-HIDARIZUME-HEN-SEC      SECTION.
+      *
+           MOVE    WRK-STR-LEFT    TO  IDXE
+           PERFORM VARYING IDXE    FROM    1   BY  1
+                   UNTIL ( IDXE    >       500 )
+      *
+               IF    ( WRK-STR-LEFT (IDXE:1)
+                                       NOT =   SPACE )
+                   MOVE    WRK-STR-LEFT (IDXE:)
+                                           TO  WRK-STR-LEFT-TMP
+                   MOVE    WRK-STR-LEFT-TMP
+                                           TO  WRK-STR-LEFT
+                   MOVE    500             TO  IDXE
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       800-STR-HIDARIZUME-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    西暦日本語変換処理
       *****************************************************************
@@ -751,4 +975,31 @@
                                        MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ　ＣＯＭＭＩＴ処理
+      *****************************************************************
+       900-DBCOMMIT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC.
+      *
+           .
+       900-DBCOMMIT-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    ＤＢ　ＳＴＡＲＴ処理
+      *****************************************************************
+       900-DBSTART-SEC                SECTION.
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+           .
+       900-DBSTART-EXT.
            EXIT.
