@@ -40,6 +40,7 @@
       *  01.00.10    NACL-多々納  02/11/12  一括入力、全角チェック追加
       *  01.00.11    NACL-多々納  03/01/10  病床数（一般）追加
       *  01.00.12    NACL-太田    03/05/21  減免端数区分追加
+      *  01.00.13    NACL-多々納  03/05/27  診療内容追加（１０１２）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -216,6 +217,10 @@
                    07  SPA-GMN-1013-AREA.
                        09  SPA-GMN-JIHINAME       PIC X(20).
       *
+                   07  SPA-GMN-1012-AREA.
+                       09  SPA-GMN-SRYNAIYO       PIC X(20).
+                       09  SPA-GMN-SRYNAIYODSP    PIC X(12).
+      *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
                    07  SPA-NAI-EDYUKYMD           PIC 9(08).
@@ -286,6 +291,9 @@
            COPY  "CPSK1018.INC".
       *    請求書自費名称情報
            COPY  "CPSK1013.INC".
+      *
+      *    診療内容名称情報
+           COPY  "CPSK1012.INC".
       *
       *
       *****************************************************************
@@ -644,6 +652,7 @@
            INITIALIZE                      SYS-1001-REC
            MOVE    SPA-W01-KANRICD         TO  SYS-1001-KANRICD
            EVALUATE    SPA-W01-KANRICD
+               WHEN    "1012"
                WHEN    "1013"
                WHEN    "1018"
                WHEN    "1019"
@@ -844,6 +853,12 @@
                        MOVE    MCPDATA-REC         TO  SYS-1013-REC
                        MOVE    SYS-1013-JIHINAME   TO
                                                SPA-GMN-JIHINAME 
+      *    診療内容名称情報
+                   WHEN    "1012"
+                       MOVE    MCPDATA-REC         TO  SYS-1012-REC
+                       MOVE    SYS-1012-SRYNAIYO   TO  SPA-GMN-SRYNAIYO
+                       MOVE    SYS-1012-SRYNAIYODSP
+                                               TO  SPA-GMN-SRYNAIYODSP
                END-EVALUATE 
            END-IF 
       *  
@@ -865,6 +880,8 @@
                    MOVE    60                  TO  SPA-GMN-CUR
                WHEN    "1013"
                    MOVE    70                  TO  SPA-GMN-CUR
+               WHEN    "1012"
+                   MOVE    80                  TO  SPA-GMN-CUR
            END-EVALUATE
            . 
        31O-SPASET-EXT.
@@ -976,6 +993,10 @@
       *
            MOVE    W02-JIHINAME        TO  SPA-GMN-JIHINAME
       *
+      *    診療内容
+           MOVE    W02-SRYNAIYO        TO  SPA-GMN-SRYNAIYO
+           MOVE    W02-SRYNAIYODSP     TO  SPA-GMN-SRYNAIYODSP
+      *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -998,6 +1019,9 @@
                WHEN    "1013"
       *            医療機関情報ー請求書自費名称情報
                    PERFORM 41021-KIHON-1013-SEC
+               WHEN    "1012"
+      *            診療内容名称情報
+                   PERFORM 41021-KIHON-1012-SEC
                WHEN    "1018"
                WHEN    "1019"
                WHEN    "1020"
@@ -1142,6 +1166,16 @@
            .
        41021-KIHON-1013-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    診療内容名称情報チェック処理
+      *****************************************************************
+       41021-KIHON-1012-SEC       SECTION.
+      *
+           .
+       41021-KIHON-1012-EXT.
+           EXIT.
+      *            
       *
       *****************************************************************
       *    状態情報チェック処理
@@ -1677,6 +1711,7 @@
            MOVE    SPA-W01-KANRICD         TO  SYS-1001-KANRICD
            EVALUATE    SPA-W01-KANRICD
                WHEN    "1013"
+               WHEN    "1012"
                WHEN    "1018"
                WHEN    "1019"
                WHEN    "1020"
@@ -1739,6 +1774,7 @@
            MOVE    SPA-W01-KANRICD         TO  SYS-1001-KANRICD
            EVALUATE    SPA-W01-KANRICD
                WHEN    "1013"
+               WHEN    "1012"
                WHEN    "1018"
                WHEN    "1019"
                WHEN    "1020"
@@ -1838,6 +1874,23 @@
                    MOVE    SPA-W01-EDYUKYMD    TO  SYS-1013-EDYUKYMD
                    MOVE    SPA-GMN-JIHINAME    TO  SYS-1013-JIHINAME
                    MOVE    SYS-1013-REC        TO  SYSKANRI-REC
+      * 
+      * 
+      *    診療内容名称情報
+               WHEN    "1012"    
+                   IF      FLG-SYSKANRI        =   ZERO
+                       MOVE    MCPDATA-REC     TO  SYS-1012-REC
+                   ELSE
+                       MOVE    SPACE           TO  SYS-1012-REC
+                       INITIALIZE                  SYS-1012-REC
+                       MOVE   "1012"           TO  SYS-1012-KANRICD
+                       MOVE    SPA-W01-KBNCD   TO  SYS-1012-KBNCD
+                   END-IF 
+                   MOVE    SPA-W01-STYUKYMD    TO  SYS-1012-STYUKYMD
+                   MOVE    SPA-W01-EDYUKYMD    TO  SYS-1012-EDYUKYMD
+                   MOVE    SPA-GMN-SRYNAIYO    TO  SYS-1012-SRYNAIYO
+                   MOVE    SPA-GMN-SRYNAIYODSP TO  SYS-1012-SRYNAIYODSP
+                   MOVE    SYS-1012-REC        TO  SYSKANRI-REC
       * 
       *    医療機関情報ー状態情報
                WHEN    "1018"    
@@ -2169,6 +2222,10 @@
       *    請求書自費名称情報
            MOVE    SPA-GMN-JIHINAME     TO  W02-JIHINAME
       *
+      *    診療内容名称情報
+           MOVE    SPA-GMN-SRYNAIYO    TO  W02-SRYNAIYO
+           MOVE    SPA-GMN-SRYNAIYODSP TO  W02-SRYNAIYODSP
+      *
       *    画面カーソルセット処理    
            PERFORM 5001-MAPCUR-SEC
       *
@@ -2188,6 +2245,7 @@
                                                W02-N05-STATE
                                                W02-N06-STATE
                                                W02-N07-STATE
+                                               W02-N08-STATE
                                                W02-B03-STATE
       *
            IF      SPA-W01-SELNUM          >   ZERO    
@@ -2214,6 +2272,8 @@
                    MOVE    WIDGET-NORMAL      TO  W02-N06-STATE
                WHEN    "1013" 
                    MOVE    WIDGET-NORMAL      TO  W02-N07-STATE
+               WHEN    "1012" 
+                   MOVE    WIDGET-NORMAL      TO  W02-N08-STATE
            END-EVALUATE
            .
        51O-GSRAUTH-EXT.
@@ -2409,6 +2469,10 @@
                     MOVE  "ICONFILENAME"   TO   MCP-WIDGET
                 WHEN    70
                     MOVE  "JIHINAME"       TO   MCP-WIDGET
+                WHEN    80
+                    MOVE  "SRYNAIYO"       TO   MCP-WIDGET
+                WHEN    81
+                    MOVE  "SRYNAIYODSP"    TO   MCP-WIDGET
             END-EVALUATE
       *
             EVALUATE    SPA-GMN-CUR
@@ -2430,6 +2494,8 @@
                     MOVE    5                TO  W02-PAGENO
                 WHEN    70  THRU    79
                     MOVE    6                TO  W02-PAGENO
+                WHEN    80  THRU    89
+                    MOVE    7                TO  W02-PAGENO
             END-EVALUATE
       *
            .
@@ -2513,6 +2579,11 @@
       *       請求書情報
               WHEN    "JIHINAME"
                   MOVE    70               TO  SPA-GMN-CUR
+      *       診療内容情報
+              WHEN    "SRYNAIYO"
+                  MOVE    81               TO  SPA-GMN-CUR
+              WHEN    "SRYNAIYODSP"
+                  MOVE    80               TO  SPA-GMN-CUR
           END-EVALUATE
       *
            .

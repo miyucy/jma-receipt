@@ -189,6 +189,17 @@ W02	{
 	            N07	{
 	            	state	int;
 	            };
+			fixed30	{
+				SRYNAIYO	{
+					value	varchar(20);
+				};
+				SRYNAIYODSP	{
+					value	varchar(12);
+				};
+			};
+	            N08	{
+	            	state	int;
+	            };
 		};
 	};
 };

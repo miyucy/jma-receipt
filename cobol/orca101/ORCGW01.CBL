@@ -53,6 +53,7 @@
       *  01.05.05    NACL-藤原    02/11/27  W15の追加
       *  01.05.06    NACL-藤原    02/11/28  2004 レセプト種別情報を表示しない
       *  01.05.07    NACL-太田    03/03/05  9800 排他制御情報追加
+      *  01.05.08    NACL-多々納  03/05/27  診療内容追加（１０１２）
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -143,6 +144,7 @@
            03  IDX                               PIC 9(04).
            03  IDY                               PIC 9(04).
            03  IDZ                               PIC 9(04).
+           03  IDX-MAX                           PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -176,7 +178,107 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
-                    
+      *             
+      *    管理コード一覧
+       01  TBL-KANRICD-AREA.
+           03  FILLER              PIC X(35)   VALUE
+               "1001 医療機関情報ー基本".
+           03  FILLER              PIC X(35)   VALUE
+               "1002 医療機関情報ー所在地、連絡先".
+           03  FILLER              PIC X(35)   VALUE
+               "1003 医療機関情報ー広告".
+           03  FILLER              PIC X(35)   VALUE
+               "1005 診療科目情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1006 施設基準情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1007 自動算定情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1008 チェック機能制御情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1009 患者番号構成管理情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1010 職員情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1012 診療内容情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1013 請求書自費名称情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1018 患者状態コメント情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1019 患者状態コメント情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1020 患者状態コメント情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1026 減免事由情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1027 割引率情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1027 割引率情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1030 帳票編集区分情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1031 出力先プリンタ割り当て情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1033 県内扱い保険者情報".
+           03  FILLER              PIC X(35)   VALUE
+               "2003 レセプト作成指示（印刷順）情報".
+           03  FILLER              PIC X(35)   VALUE
+               "2005 レセプト・総括印刷情報".
+           03  FILLER              PIC X(35)   VALUE
+               "3001 統計帳票出力情報（日次）".
+           03  FILLER              PIC X(35)   VALUE
+               "3002 統計帳票出力情報（月次）".
+           03  FILLER              PIC X(35)   VALUE
+               "3004 県単独事業情報".
+           03  FILLER              PIC X(35)   VALUE
+               "4001 労災自賠医療機関情報".
+      *
+       01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
+           03  TBL-KANRICD-TBL         OCCURS   25.
+               05  TBL-KANRICD             PIC X(04).
+               05  TBL-FILLER              PIC X(01).
+               05  TBL-KANRICDMEI          PIC X(30).
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   25.
+      *
+      *外来のみ
+       01  TBL-KANRICD-G-AREA.
+           03  FILLER              PIC X(35)   VALUE
+               "9000 ＣＬＡＩＭ接続情報".
+       01  TBL-KANRICD-G-AREAR         REDEFINES   TBL-KANRICD-G-AREA.
+           03  TBL-KANRICD-G-TBL           OCCURS   1.
+               05  TBL-KANRICD-G           PIC X(04).
+               05  TBL-FILLER              PIC X(01).
+               05  TBL-KANRICDMEI-G        PIC X(30).
+       01  TBL-KANRICDG-MAX                 PIC 9(04)   VALUE   1.
+      *
+      *入院のみ
+       01  TBL-KANRICD-N-AREA.
+           03  FILLER              PIC X(35)   VALUE
+               "5000 医療機関情報−入院基本".
+           03  FILLER              PIC X(35)   VALUE
+               "5001 病棟管理情報".
+           03  FILLER              PIC X(35)   VALUE
+               "5002 病室管理情報".
+           03  FILLER              PIC X(35)   VALUE
+               "5003 病棟入院基本料加算情報".
+           03  FILLER              PIC X(35)   VALUE
+               "5004 病室入院基本料加算情報".
+           03  FILLER              PIC X(35)   VALUE
+               "5005 入院用管理マスタ設定".
+           03  FILLER              PIC X(35)   VALUE
+               "5006 病棟選定入院料情報".
+           03  FILLER              PIC X(35)   VALUE
+               "5010 定期請求情報".
+           03  FILLER              PIC X(35)   VALUE
+               "9800 排他制御情報".
+      *
+       01  TBL-KANRICD-N-AREAR         REDEFINES   TBL-KANRICD-N-AREA.
+           03  TBL-KANRICD-N-TBL           OCCURS   9.
+               05  TBL-KANRICD-N           PIC X(04).
+               05  TBL-FILLER              PIC X(01).
+               05  TBL-KANRICDMEI-N        PIC X(30).
+       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   9.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -194,6 +296,8 @@
            COPY    "CPSK1005.INC".
       *
            COPY    "CPSK1010.INC".
+      *
+           COPY    "CPSK1012.INC".
       *
            COPY    "CPSK1013.INC".
       *
@@ -374,107 +478,150 @@
       *
            INITIALIZE              SPA-W01-AREA
                                    SPA-W01KYOUTU
-      *
-           MOVE    "1001"                  TO  SPA-GMN-KANRICDL (1) 
-           MOVE    "医療機関情報ー基本"    TO  SPA-GMN-KANRICDMEIL(1)
-           MOVE    "1002"                  TO  SPA-GMN-KANRICDL (2)
-           MOVE    "医療機関情報ー所在地、連絡先"
-                                           TO  SPA-GMN-KANRICDMEIL(2)
-           MOVE    "1003"                  TO  SPA-GMN-KANRICDL (3)
-           MOVE    "医療機関情報ー広告"    TO  SPA-GMN-KANRICDMEIL(3) 
-           MOVE    "1005"                  TO  SPA-GMN-KANRICDL (4)
-           MOVE    "診療科目情報"          TO  SPA-GMN-KANRICDMEIL(4)
-           MOVE    "1006"                  TO  SPA-GMN-KANRICDL (5)
-           MOVE    "施設基準情報"          TO  SPA-GMN-KANRICDMEIL(5)
-           MOVE    "1007"                  TO  SPA-GMN-KANRICDL (6)
-           MOVE    "自動算定情報"          TO  SPA-GMN-KANRICDMEIL(6)
-      *---- (01.05.01) LINE ADD START --------------------------------
-           MOVE    "1008"                  TO  SPA-GMN-KANRICDL (7)
-           MOVE    "チェック機能制御情報"  TO  SPA-GMN-KANRICDMEIL(7)
-      *---- (01.05.01) LINE ADD END ----------------------------------
-           MOVE    "1009"                  TO  SPA-GMN-KANRICDL (8)
-           MOVE    "患者番号構成管理情報"  TO  SPA-GMN-KANRICDMEIL(8)
-           MOVE    "1010"                  TO  SPA-GMN-KANRICDL (9)
-           MOVE    "職員情報"              TO  SPA-GMN-KANRICDMEIL(9)
-           MOVE    "1013"                  TO  SPA-GMN-KANRICDL (10)
-           MOVE    "請求書自費名称情報"    TO  SPA-GMN-KANRICDMEIL(10)
-           MOVE    "1018"                  TO  SPA-GMN-KANRICDL (11)
-           MOVE    "患者状態コメント情報"  TO  SPA-GMN-KANRICDMEIL(11)
-           MOVE    "1019"                  TO  SPA-GMN-KANRICDL (12)
-           MOVE    "患者状態コメント情報"  TO  SPA-GMN-KANRICDMEIL(12)
-           MOVE    "1020"                  TO  SPA-GMN-KANRICDL (13)
-           MOVE    "患者状態コメント情報"  TO  SPA-GMN-KANRICDMEIL(13)
-           MOVE    "1026"                  TO  SPA-GMN-KANRICDL (14)
-           MOVE    "減免事由情報"          TO  SPA-GMN-KANRICDMEIL(14)
-           MOVE    "1027"                  TO  SPA-GMN-KANRICDL (15)
-           MOVE    "割引率情報"            TO  SPA-GMN-KANRICDMEIL(15)
-           MOVE    "1030"                  TO  SPA-GMN-KANRICDL (16)
-           MOVE    "帳票編集区分情報"      TO  SPA-GMN-KANRICDMEIL(16)
-           MOVE    "1031"                  TO  SPA-GMN-KANRICDL (17)
-           MOVE    "出力先プリンタ割り当て情報"
-                                           TO  SPA-GMN-KANRICDMEIL(17)
-           MOVE    "1033"                  TO  SPA-GMN-KANRICDL (18)
-           MOVE    "県内扱い保険者情報"    TO  SPA-GMN-KANRICDMEIL(18)
-           MOVE    "2003"                  TO  SPA-GMN-KANRICDL (19)
-           MOVE    "レセプト作成指示（印刷順）情報"
-                                           TO  SPA-GMN-KANRICDMEIL(19)
-      *****MOVE    "2004"                  TO  SPA-GMN-KANRICDL (20)
-      *****MOVE    "レセプト種別情報"      TO  SPA-GMN-KANRICDMEIL(20)
-           MOVE    "2005"                  TO  SPA-GMN-KANRICDL (20)
-           MOVE    "レセプト・総括印刷情報"
-                                           TO  SPA-GMN-KANRICDMEIL(20)
-           MOVE    "3001"                  TO  SPA-GMN-KANRICDL (21)
-           MOVE    "統計帳票出力情報（日次）"
-                                           TO  SPA-GMN-KANRICDMEIL(21)
-           MOVE    "3002"                  TO  SPA-GMN-KANRICDL (22)
-           MOVE    "統計帳票出力情報（月次）"
-                                           TO  SPA-GMN-KANRICDMEIL(22)
-           MOVE    "3004"                  TO  SPA-GMN-KANRICDL (23)
-           MOVE    "県単独事業情報"        TO  SPA-GMN-KANRICDMEIL(23)
-           MOVE    "4001"                  TO  SPA-GMN-KANRICDL (24)
-      *****MOVE    "労災医療機関情報"
-           MOVE    "労災自賠医療機関情報"  TO  SPA-GMN-KANRICDMEIL(24)
-           MOVE    "9000"                  TO  SPA-GMN-KANRICDL (25)
-      *****MOVE    "労災医療機関情報"
-           MOVE    "ＣＬＡＩＭ接続情報"    TO  SPA-GMN-KANRICDMEIL(25)
+           MOVE    ZERO                TO  IDX-MAX
+      *    共通の編集
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   TBL-KANRICD-MAX )  OR
+                              (IDX-MAX     >=  50  )
+               ADD     1                   TO  IDX-MAX
+               MOVE    TBL-KANRICD (IDX)   TO  SPA-GMN-KANRICDL
+                                                           (IDX-MAX)
+               MOVE    TBL-KANRICDMEI(IDX) TO  SPA-GMN-KANRICDMEIL
+                                                           (IDX-MAX)
+           END-PERFORM
       *
       *    入院はベット数がある時のみ
            IF      SPA-BEDSU           =   ZERO
-               MOVE    25                  TO  SPA-GMN-KANRICD-MAX
+      *        外来分
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX         >   TBL-KANRICDG-MAX) OR
+                                  (IDX-MAX     >=  50  )
+                   ADD     1                   TO  IDX-MAX
+                   MOVE    TBL-KANRICD-G (IDX) TO  SPA-GMN-KANRICDL
+                                                           (IDX-MAX)
+                   MOVE    TBL-KANRICDMEI-G(IDX)
+                                               TO  SPA-GMN-KANRICDMEIL
+                                                            (IDX-MAX)
+               END-PERFORM
+               MOVE    IDX-MAX             TO  SPA-GMN-KANRICD-MAX
                MOVE    1                   TO  SPA-GMN-CUR
                GO      TO        310-SPASET-EXT
            END-IF
       *
-           MOVE    "5000"                  TO  SPA-GMN-KANRICDL (25)
-           MOVE    "医療機関情報−入院基本"
-                                           TO  SPA-GMN-KANRICDMEIL(25)
-           MOVE    "5001"                  TO  SPA-GMN-KANRICDL (26)
-           MOVE    "病棟管理情報"          TO  SPA-GMN-KANRICDMEIL(26)
-           MOVE    "5002"                  TO  SPA-GMN-KANRICDL (27)
-           MOVE    "病室管理情報"          TO  SPA-GMN-KANRICDMEIL(27)
-           MOVE    "5003"                  TO  SPA-GMN-KANRICDL (28)
-           MOVE    "病棟入院基本料加算情報"
-                                           TO  SPA-GMN-KANRICDMEIL(28)
-           MOVE    "5004"                  TO  SPA-GMN-KANRICDL (29)
-           MOVE    "病室入院基本料加算情報"
-                                           TO  SPA-GMN-KANRICDMEIL(29)
-           MOVE    "5005"                  TO  SPA-GMN-KANRICDL (30)
-           MOVE    "入院用管理マスタ設定"  TO  SPA-GMN-KANRICDMEIL(30)
-           MOVE    "5006"                  TO  SPA-GMN-KANRICDL (31)
-           MOVE    "病棟選定入院料情報"    TO  SPA-GMN-KANRICDMEIL(31)
-           MOVE    "5010"                  TO  SPA-GMN-KANRICDL (32)
-           MOVE    "定期請求情報"          TO  SPA-GMN-KANRICDMEIL(32)
+      *    入院分
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   TBL-KANRICDN-MAX )  OR
+                              (IDX-MAX     >=  50  )
+               ADD     1                   TO  IDX-MAX
+               MOVE    TBL-KANRICD-N (IDX) TO  SPA-GMN-KANRICDL
+                                                           (IDX-MAX)
+               MOVE    TBL-KANRICDMEI-N(IDX) TO  SPA-GMN-KANRICDMEIL
+                                                           (IDX-MAX)
+           END-PERFORM
+           MOVE    IDX-MAX             TO  SPA-GMN-KANRICD-MAX
+           MOVE    1                   TO  SPA-GMN-CUR
+      *
+      *
+      *D   MOVE    "1001"                  TO  SPA-GMN-KANRICDL (1) 
+      *    MOVE    "医療機関情報ー基本"    TO  SPA-GMN-KANRICDMEIL(1)
+      *    MOVE    "1002"                  TO  SPA-GMN-KANRICDL (2)
+      *    MOVE    "医療機関情報ー所在地、連絡先"
+      *                                    TO  SPA-GMN-KANRICDMEIL(2)
+      *    MOVE    "1003"                  TO  SPA-GMN-KANRICDL (3)
+      *    MOVE    "医療機関情報ー広告"    TO  SPA-GMN-KANRICDMEIL(3) 
+      *    MOVE    "1005"                  TO  SPA-GMN-KANRICDL (4)
+      *    MOVE    "診療科目情報"          TO  SPA-GMN-KANRICDMEIL(4)
+      *    MOVE    "1006"                  TO  SPA-GMN-KANRICDL (5)
+      *    MOVE    "施設基準情報"          TO  SPA-GMN-KANRICDMEIL(5)
+      *    MOVE    "1007"                  TO  SPA-GMN-KANRICDL (6)
+      *    MOVE    "自動算定情報"          TO  SPA-GMN-KANRICDMEIL(6)
+      *---- (01.05.01) LINE ADD START --------------------------------
+      *    MOVE    "1008"                  TO  SPA-GMN-KANRICDL (7)
+      *    MOVE    "チェック機能制御情報"  TO  SPA-GMN-KANRICDMEIL(7)
+      *---- (01.05.01) LINE ADD END ----------------------------------
+      *    MOVE    "1009"                  TO  SPA-GMN-KANRICDL (8)
+      *    MOVE    "患者番号構成管理情報"  TO  SPA-GMN-KANRICDMEIL(8)
+      *    MOVE    "1010"                  TO  SPA-GMN-KANRICDL (9)
+      *    MOVE    "職員情報"              TO  SPA-GMN-KANRICDMEIL(9)
+      *    MOVE    "1013"                  TO  SPA-GMN-KANRICDL (10)
+      *    MOVE    "請求書自費名称情報"    TO  SPA-GMN-KANRICDMEIL(10)
+      *    MOVE    "1018"                  TO  SPA-GMN-KANRICDL (11)
+      *    MOVE    "患者状態コメント情報"  TO  SPA-GMN-KANRICDMEIL(11)
+      *    MOVE    "1019"                  TO  SPA-GMN-KANRICDL (12)
+      *    MOVE    "患者状態コメント情報"  TO  SPA-GMN-KANRICDMEIL(12)
+      *    MOVE    "1020"                  TO  SPA-GMN-KANRICDL (13)
+      *    MOVE    "患者状態コメント情報"  TO  SPA-GMN-KANRICDMEIL(13)
+      *    MOVE    "1026"                  TO  SPA-GMN-KANRICDL (14)
+      *    MOVE    "減免事由情報"          TO  SPA-GMN-KANRICDMEIL(14)
+      *    MOVE    "1027"                  TO  SPA-GMN-KANRICDL (15)
+      *    MOVE    "割引率情報"            TO  SPA-GMN-KANRICDMEIL(15)
+      *    MOVE    "1030"                  TO  SPA-GMN-KANRICDL (16)
+      *    MOVE    "帳票編集区分情報"      TO  SPA-GMN-KANRICDMEIL(16)
+      *    MOVE    "1031"                  TO  SPA-GMN-KANRICDL (17)
+      *    MOVE    "出力先プリンタ割り当て情報"
+      *                                    TO  SPA-GMN-KANRICDMEIL(17)
+      *    MOVE    "1033"                  TO  SPA-GMN-KANRICDL (18)
+      *    MOVE    "県内扱い保険者情報"    TO  SPA-GMN-KANRICDMEIL(18)
+      *    MOVE    "2003"                  TO  SPA-GMN-KANRICDL (19)
+      *    MOVE    "レセプト作成指示（印刷順）情報"
+      *                                    TO  SPA-GMN-KANRICDMEIL(19)
+      *****MOVE    "2004"                  TO  SPA-GMN-KANRICDL (20)
+      *****MOVE    "レセプト種別情報"      TO  SPA-GMN-KANRICDMEIL(20)
+      *    MOVE    "2005"                  TO  SPA-GMN-KANRICDL (20)
+      *    MOVE    "レセプト・総括印刷情報"
+      *                                    TO  SPA-GMN-KANRICDMEIL(20)
+      *    MOVE    "3001"                  TO  SPA-GMN-KANRICDL (21)
+      *    MOVE    "統計帳票出力情報（日次）"
+      *                                    TO  SPA-GMN-KANRICDMEIL(21)
+      *    MOVE    "3002"                  TO  SPA-GMN-KANRICDL (22)
+      *    MOVE    "統計帳票出力情報（月次）"
+      *                                    TO  SPA-GMN-KANRICDMEIL(22)
+      *    MOVE    "3004"                  TO  SPA-GMN-KANRICDL (23)
+      *    MOVE    "県単独事業情報"        TO  SPA-GMN-KANRICDMEIL(23)
+      *    MOVE    "4001"                  TO  SPA-GMN-KANRICDL (24)
+      *****MOVE    "労災医療機関情報"
+      *    MOVE    "労災自賠医療機関情報"  TO  SPA-GMN-KANRICDMEIL(24)
+      *    MOVE    "9000"                  TO  SPA-GMN-KANRICDL (25)
+      *****MOVE    "労災医療機関情報"
+      *    MOVE    "ＣＬＡＩＭ接続情報"    TO  SPA-GMN-KANRICDMEIL(25)
+      *
+      *    入院はベット数がある時のみ
+      *    IF      SPA-BEDSU           =   ZERO
+      *        MOVE    25                  TO  SPA-GMN-KANRICD-MAX
+      *        MOVE    1                   TO  SPA-GMN-CUR
+      *        GO      TO        310-SPASET-EXT
+      *    END-IF
+      *
+      *    MOVE    "5000"                  TO  SPA-GMN-KANRICDL (25)
+      *    MOVE    "医療機関情報−入院基本"
+      *                                    TO  SPA-GMN-KANRICDMEIL(25)
+      *    MOVE    "5001"                  TO  SPA-GMN-KANRICDL (26)
+      *    MOVE    "病棟管理情報"          TO  SPA-GMN-KANRICDMEIL(26)
+      *    MOVE    "5002"                  TO  SPA-GMN-KANRICDL (27)
+      *    MOVE    "病室管理情報"          TO  SPA-GMN-KANRICDMEIL(27)
+      *    MOVE    "5003"                  TO  SPA-GMN-KANRICDL (28)
+      *    MOVE    "病棟入院基本料加算情報"
+      *                                    TO  SPA-GMN-KANRICDMEIL(28)
+      *    MOVE    "5004"                  TO  SPA-GMN-KANRICDL (29)
+      *    MOVE    "病室入院基本料加算情報"
+      *                                    TO  SPA-GMN-KANRICDMEIL(29)
+      *    MOVE    "5005"                  TO  SPA-GMN-KANRICDL (30)
+      *    MOVE    "入院用管理マスタ設定"  TO  SPA-GMN-KANRICDMEIL(30)
+      *    MOVE    "5006"                  TO  SPA-GMN-KANRICDL (31)
+      *    MOVE    "病棟選定入院料情報"    TO  SPA-GMN-KANRICDMEIL(31)
+      *    MOVE    "5010"                  TO  SPA-GMN-KANRICDL (32)
+      *    MOVE    "定期請求情報"          TO  SPA-GMN-KANRICDMEIL(32)
       ***  排他 INS ST
-           MOVE    "9800"                  TO  SPA-GMN-KANRICDL (33)
-           MOVE    "排他制御情報"          TO  SPA-GMN-KANRICDMEIL(33)
+      *    MOVE    "9800"                  TO  SPA-GMN-KANRICDL (33)
+      *    MOVE    "排他制御情報"          TO  SPA-GMN-KANRICDMEIL(33)
       ***  排他 INS ED
       *
       ***  排他 UPD ST
       *    MOVE    31                      TO  SPA-GMN-KANRICD-MAX
-           MOVE    33                      TO  SPA-GMN-KANRICD-MAX
+      **** MOVE    33                      TO  SPA-GMN-KANRICD-MAX
       ***  排他 UPD ED
       *
-           MOVE    1               TO  SPA-GMN-CUR
+      *****MOVE    1               TO  SPA-GMN-CUR
       *
            .
        310-SPASET-EXT.
@@ -791,6 +938,7 @@
            EVALUATE    SPA-GMN-KANRICD
                WHEN    "1005"
                WHEN    "1010"
+               WHEN    "1012"
                WHEN    "1013"
                WHEN    "1018"
                WHEN    "1019"
@@ -943,6 +1091,12 @@
                        MOVE    SYSKANRI-REC   TO  SYS-1010-REC
                        MOVE    SYS-1010-NAME (1:26)
                                               TO  SPA-GMN-KBNCDMEIL(IDX)
+      *            診療内容
+                   WHEN    "1012"
+                       MOVE    SYSKANRI-REC   TO  SYS-1012-REC
+                       MOVE    SYS-1012-SRYNAIYO (1:26)
+                                              TO  SPA-GMN-KBNCDMEIL(IDX)
+      *
                    WHEN    "1013"
                        MOVE    SYSKANRI-REC   TO  SYS-1013-REC
                        MOVE    SYS-1013-JIHINAME (1:26)
@@ -1029,6 +1183,7 @@
       *
            EVALUATE    SPA-GMN-KANRICD
                WHEN    "1005"
+               WHEN    "1012"
                WHEN    "1018"
                WHEN    "1019"
                WHEN    "1020"
@@ -1261,6 +1416,7 @@
                WHEN    "1001"
                WHEN    "1002"
                WHEN    "1003" 
+               WHEN    "1012"
                WHEN    "1013"
                WHEN    "1018"
                WHEN    "1019"
@@ -1371,6 +1527,7 @@
            EVALUATE    SPA-GMN-KANRICD
                WHEN    "1005"
                WHEN    "1010"
+               WHEN    "1012"
                WHEN    "1013"
                WHEN    "1018"
                WHEN    "1019"
@@ -1423,6 +1580,7 @@
            EVALUATE    SPA-GMN-KANRICD
                WHEN    "1005"
                WHEN    "1010"
+               WHEN    "1012"
                WHEN    "1013"
                WHEN    "1018"
                WHEN    "1019"
