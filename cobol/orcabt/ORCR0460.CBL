@@ -2162,7 +2162,8 @@
                IF      IDY               =   1
       *
                  INITIALIZE                           TNS-TENSU-REC
-                 IF        TBL-ZAIW-SRYCD1  =   "6"
+      ***        IF        TBL-ZAIW-SRYCD1  =   "6"
+                 IF        TBL-ZAIW-SRYCD1(1:1)  =   "6"  OR  "7"
                      MOVE    ALL "9"            TO
                                             TNS-CDKBN-KBN
                                             TNS-CDKBN-SYO 
