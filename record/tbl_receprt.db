@@ -313,6 +313,8 @@ path	key16		{
                     AND     KANANAME     >=  :STKANANAME
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '8888' 
                    ORDER BY  KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
@@ -332,6 +334,8 @@ path	key17	{
                     AND     PTNUM        >=  :STKANANAME
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '8888' 
                    ORDER BY  PTNUM,SRYYM,RENNUM
 		;
 	};
