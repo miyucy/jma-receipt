@@ -2428,7 +2428,7 @@
            INSPECT WRK-PTHKN-NUM       REPLACING   ALL "¡¡"    BY  "  "
       *
            IF    ( WRK-PTHKN-KIGO      =   SPACE )
-            OR   ( WRK-PTHKN-NUM       =   SPACE )
+            AND  ( WRK-PTHKN-NUM       =   SPACE )
       *
                MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                MOVE    "020001"        TO  WRK-ERRCD
