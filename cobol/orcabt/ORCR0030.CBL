@@ -1475,10 +1475,12 @@
                END-IF
       *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
-                  MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
-                  COMPUTE  RECE04-RUIKEITOTAL  =
-                           RECE04-RUIKEITOTAL  +
-                          (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
+                 IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
+                   MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
+                   COMPUTE  RECE04-RUIKEITOTAL  =
+                            RECE04-RUIKEITOTAL  +
+                           (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
+                 END-IF
                END-IF
       *
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE05-SRYSURYO(IDX4)
