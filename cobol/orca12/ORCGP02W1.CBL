@@ -1170,15 +1170,19 @@
                WHEN    "002"
                    IF     (SPA-NAI-HTEKSTYMD       >=  "20021001") AND
                           (SPA-NAI-HTEKSTYMD       >=  SPA-BYMD-70)
+                       MOVE    4               TO  IDY
                        MOVE    11              TO  WRK-HJO-MAX
                    ELSE
+                       MOVE    1               TO  IDY
                        MOVE    3               TO  WRK-HJO-MAX
                    END-IF
-                   PERFORM VARYING     IDT     FROM    1  BY  1
+                   MOVE    ZERO                TO  SPA-GMN-HOJO-MAX
+                   PERFORM VARYING     IDT     FROM    IDY BY  1
                            UNTIL       IDT     >   WRK-HJO-MAX
+                       ADD     1           TO  SPA-GMN-HOJO-MAX
                        MOVE    WRK-HJO-REC1 (IDT)
-                                           TO  SPA-GMN-HOJOKBNL (IDT)
-                       MOVE    IDT         TO  SPA-GMN-HOJO-MAX
+                                           TO  SPA-GMN-HOJOKBNL
+                                                    (SPA-GMN-HOJO-MAX)
                    END-PERFORM
       *        πÒ ›
                WHEN    "060"

@@ -122,6 +122,7 @@
                    07  WRK-HONKA-REC   PIC X(06) OCCURS  2.
       *
            03  WRK-HJO-TBL.
+               05  WRK-HJO-MAX         PIC 9(04).
                05  WRK-HJO-REC-G1.
                    07  FILLER          PIC X(10) VALUE "1 職務".
                    07  FILLER          PIC X(10) VALUE "2 下船".
@@ -698,15 +699,19 @@
                          ((SPA-NAI-HTEKSTYMD       =   SPACE     ) AND
                           (SPA-SYSYMD              >=  "20021001") AND
                           (SPA-SYSYMD              >=  SPA-BYMD-70))
-                       MOVE    11              TO  SPA-GMN-HOJO-MAX
+                       MOVE    4               TO  IDY
+                       MOVE    11              TO  WRK-HJO-MAX
                    ELSE
-                       MOVE    3               TO  SPA-GMN-HOJO-MAX
+                       MOVE    1               TO  IDY
+                       MOVE    3               TO  WRK-HJO-MAX
                    END-IF
-                   PERFORM VARYING     IDT     FROM    1  BY  1
-                           UNTIL       IDT     >   SPA-GMN-HOJO-MAX
+                   MOVE    ZERO                TO  SPA-GMN-HOJO-MAX
+                   PERFORM VARYING     IDT     FROM    IDY BY  1
+                           UNTIL       IDT     >   WRK-HJO-MAX
+                       ADD     1           TO  SPA-GMN-HOJO-MAX
                        MOVE    WRK-HJO-REC1 (IDT)
-                                           TO  SPA-GMN-HOJOKBNL (IDT)
-      *****************MOVE    IDT         TO  SPA-GMN-HOJO-MAX
+                                           TO  SPA-GMN-HOJOKBNL
+                                                    (SPA-GMN-HOJO-MAX)
                    END-PERFORM
       *        国保
                WHEN    "060"
@@ -818,7 +823,7 @@
       *
       *    船員で老人家族の時、１割を対象とする
            IF      (SPA-GMN-HKNNUM     =   "002")  AND
-                   (SPA-GMN-HOJO-MAX   =   11    )  AND
+                   (SPA-GMN-HOJO-MAX   =   08    )  AND
                    (SPA-GMN-HOJOKBN    =   SPACE)  AND
                    (SPA-GMN-HONKZKKBN   =   "2" )
                IF     (SPA-NAI-HKNSTR      =   ZERO      ) OR
@@ -878,7 +883,7 @@
                    GO      TO      1001-HOJOKBN-CHK-EXT
                END-IF
       *        老人
-               IF      (SPA-GMN-HOJO-MAX    =   11     )  AND
+               IF      (SPA-GMN-HOJO-MAX    =   8      )  AND
                        (SPA-GMN-HOJOKBN     =   "1"   OR
                                                 "2"   OR
                                                 "3"   )
