@@ -2408,7 +2408,9 @@
            END-IF
       *
            PERFORM 3101-TOKNYUINLST-SET-SEC
-           PERFORM 4101-TOKNYUIN-SYOKI-SEC
+           IF    ( SPA-NAI-NYUKBN      =   "02" )
+               PERFORM 4101-TOKNYUIN-SYOKI-SEC
+           END-IF
       *
            MOVE    SPA-GMN-BRMNUM      TO  SPA-GMN-BRMNUM-ORG
            MOVE    SPA-GMN-BTUNAME     TO  SPA-GMN-BTUNAME-ORG

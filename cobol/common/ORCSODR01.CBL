@@ -872,8 +872,12 @@
            EVALUATE    ITEM-NYUKBN
            WHEN    SPACE
                MOVE    "1001"          TO  ERRCD-ORDER
+           WHEN    "01"
+               IF    ( ITEM-TOKNYUIN-G NOT =   SPACE )
+                   MOVE    "1014"      TO  ERRCD-ORDER
+               END-IF
            WHEN    "02"
-               IF    ( ITEM-TOKNYUIN-G =   SPACE )
+               IF    ( ITEM-TOKNYUIN-G     =   SPACE )
                    MOVE    "1014"      TO  ERRCD-ORDER
                END-IF
            END-EVALUATE
