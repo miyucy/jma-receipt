@@ -2900,6 +2900,7 @@
       *
            INITIALIZE                  SPA-C01KYOUTU
            MOVE    "C03"               TO  SPA-C01-MOTOPG
+                                           SPA-MOTOPG 
            MOVE    ZERO                TO  IDY
       * 
            IF      SPA-NAI-BYOMEIMOJI  >   ZERO

@@ -739,6 +739,10 @@
                                            TO  IDZ
                        MOVE    SPA-C02-IKOSAKI-BYOMEICD
                                            TO  SPA-NAI-C02-BYOMEICD(IDZ)
+                       IF      SPA-CIDCD2      =   "0103"
+                           MOVE    SPA-NAI-C02-BYOMEICD(IDZ)
+                                           TO  SPA-GMN-C02-BYOMEICD(IDZ)
+                       END-IF
                        MOVE    SPA-NAI-C02-BYOMEICD(IDZ)
                                            TO  BYO-BYOMEICD
                        PERFORM 410111-BYOMEI-HENSYU-SEC
@@ -6177,6 +6181,7 @@
       *
            INITIALIZE                  SPA-C01KYOUTU
            MOVE    "C02"               TO  SPA-C01-MOTOPG
+                                           SPA-MOTOPG 
            MOVE    ZERO                TO  IDY
       * 
            IF      SPA-NAI-C02-BYOMEIMOJI          >   ZERO
