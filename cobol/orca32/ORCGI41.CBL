@@ -99,6 +99,7 @@
            03  FLG-NYUKSN          PIC 9(01).
            03  FLG-SST             PIC 9(01).
            03  FLG-NYUINKHNRYO     PIC 9(01).
+           03  FLG-RJN             PIC 9(01).
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -396,6 +397,10 @@
       *    ÁªÄêÎÅÍÜÈñ
        01  SENTEICDCHG-REC.
            COPY    "CPSENTEICDCHG.INC".
+      *
+      *    ´µ¼Ô¸øÈñ¾ðÊó
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -5904,6 +5909,26 @@
       *
            MOVE    "HKNCOMBI-KEY"      TO   WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
+      *
+      *    ´µ¼Ô¸øÈñ¾ðÊó¤«¤éÏ·¿ÍÊÝ·ò¤ÎÅÐÏ¿¥Á¥§¥Ã¥¯
+           MOVE    ZERO                TO  FLG-RJN
+           INITIALIZE                      PTKOHINF-REC
+           MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO  PTKOH-PTID
+           MOVE    "027"               TO  PTKOH-KOHNUM
+           MOVE    SYOKIKSN-IN-SANTEISTYMD
+                                       TO  PTKOH-TEKSTYMD
+           MOVE    SYOKIKSN-IN-SANTEISTYMD
+                                       TO  PTKOH-TEKEDYMD
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "PTKOHINF-KEY6"     TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC 
+           IF    ( FLG-DBRC    =   ZERO )
+               MOVE    1            TO  FLG-RJN
+           END-IF
+           MOVE    "PTKOHINF-KEY6"  TO   WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    Ï·¿ÍÂÐ¾Ý´µ¼Ô¤Ç¤¢¤ì¤ÐÆþ±¡¿ÇÎÅ¥³¡¼¥É¤ÎÃÖ¤­´¹¤¨¡ÊÏ«ºÒ½ü¤¯¡Ë
            IF   (COMB-HKNNUM         NOT =   "971")  AND
                 (COMB-HKNNUM         NOT =   "973")
@@ -5911,7 +5936,7 @@
                   (COMB-KOH1HKNNUM  =   "027"))      OR
                  ((WRK-NENREI      >=    70)     AND
                   (PTINF-BIRTHDAY  <=   "19320930"))  OR
-                  (AGECHK-ROUJIN    =    1)
+                  (FLG-RJN          =    1)
                INITIALIZE              SRYCDCHG-REC
       *
                MOVE    SYOKIKSN-IN-KHNSRYCD
