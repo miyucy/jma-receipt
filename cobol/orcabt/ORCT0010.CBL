@@ -213,6 +213,10 @@
            03  WRK-SEIKYUEDYMD         PIC X(08).
            03  WRK-CNT                 PIC 9(05).
            03  WRK-SAKKBN              PIC X(01).
+           03  WRK-STR                 PIC X(200).
+           03  WRK-LEN                 PIC 9(05).
+           03  WRK-SHO                 PIC 9(05).
+           03  WRK-AMARI               PIC 9(05).
       *
        01  ERR-EDIT-AREA.
            03  ERR-PTID                PIC 9(10).
@@ -1296,12 +1300,36 @@
                END-STRING
            END-IF
       *
-           STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
-                   "［患者番号："      DELIMITED   BY  SIZE
-                   ERR-PTNUM           DELIMITED   BY  SPACE
-                   "］"                DELIMITED   BY  SIZE
-           INTO    ERR-HEN-ERRMSG
+           MOVE    1                   TO  WRK-LEN
+           MOVE    SPACE               TO  WRK-STR
+           STRING  ERR-PTNUM           DELIMITED   BY  SPACE
+           INTO    WRK-STR
+           WITH  POINTER WRK-LEN
            END-STRING
+      *
+           COMPUTE WRK-LEN =   WRK-LEN -   1
+      *
+           MOVE    ZERO                TO  WRK-SHO
+                                           WRK-AMARI
+           DIVIDE  2   INTO    WRK-LEN GIVING  WRK-SHO
+           REMAINDER WRK-AMARI
+           END-DIVIDE
+      *
+           IF    ( WRK-AMARI   =   ZERO )
+               STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
+                       "［患者番号："      DELIMITED   BY  SIZE
+                       ERR-PTNUM           DELIMITED   BY  SPACE
+                       "］"                DELIMITED   BY  SIZE
+               INTO    ERR-HEN-ERRMSG
+               END-STRING
+           ELSE
+               STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
+                       "［患者番号:"       DELIMITED   BY  SIZE
+                       ERR-PTNUM           DELIMITED   BY  SPACE
+                       "］"                DELIMITED   BY  SIZE
+               INTO    ERR-HEN-ERRMSG
+               END-STRING
+           END-IF
       *
            .
        800-ERRMSG-EDIT-EXT.
