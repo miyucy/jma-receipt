@@ -451,7 +451,7 @@
       *---- (01.02.08) LINE ADD END   --------------------------------
       *
       *    Ã¼Ëö£É£Ä
-           MOVE    MCP-TERM            TO  SPA-TERMID
+           MOVE    MCP-TERM(5:)        TO  SPA-TERMID
       **** PERFORM VARYING IDX FROM    32  BY  -1
            PERFORM VARYING IDX FROM    64  BY  -1
                    UNTIL   IDX <       1
