@@ -24,7 +24,8 @@ done
 
 # copy scripts file
 echo -n "Copying scripts files..."
-for d in scripts/daily scripts/kaisei scripts/monthly scripts/kentan; do
+for d in scripts/daily  scripts/kaisei scripts/monthly  \
+	 scripts/kentan scripts/allways; do
   if test -d "${SITESRCDIR}/${d}"; then
     mkdir -p "${SITEDIR}/${d}"
     for f in `ls ${SITESRCDIR}/${d}`; do 
@@ -37,7 +38,7 @@ echo "done"
 
 # copy data files
 echo -n "Copying data files..."
-for d in data doc form init lddef record screen scripts/allways ; do
+for d in data doc form init lddef record screen ; do
   if test -d "${SITESRCDIR}/${d}"; then
     mkdir -p "${SITEDIR}/${d}"
     chown orca.orca "${SITEDIR}/${d}"
