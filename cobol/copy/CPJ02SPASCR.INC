@@ -37,6 +37,7 @@
                        09  SPA-GMN-TTANMEI      PIC X(03).
                    07  SPA-GMN-TTENSU      PIC X(07).
                    07  SPA-GMN-THKNCOMBI   PIC X(04).
+                   07  SPA-GMN-TDAYGOK     PIC X(03).
                    07  SPA-GMN-TDAY-G.
                        09  SPA-GMN-TDAY    PIC X(03)
                                                    OCCURS  31.
