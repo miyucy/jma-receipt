@@ -1168,6 +1168,14 @@
                         PERFORM   2103-KOH1-KAISU-SEC
                  END-IF
                END-IF
+           ELSE
+      *
+               IF  (LNK-S02-KOUREI-NYUIN-KBN  =   "1" )
+               AND (COMB-KOH1HKNNUM           =  "010")
+                    MOVE   40200       TO   MAX-KIN-KOHI1-M
+                    MOVE    "1"        TO   COMB-KOH1-NYUJGNKBN
+               END-IF
+      *
            END-IF.
       *
            MOVE    "DBCLOSE"            TO  MCP-FUNC.
@@ -1204,6 +1212,14 @@
                         PERFORM   2104-KOH2-KAISU-SEC
                  END-IF
                END-IF
+           ELSE
+      *
+               IF  (LNK-S02-KOUREI-NYUIN-KBN  =   "1" )
+               AND (COMB-KOH2HKNNUM           =  "010")
+                    MOVE   40200       TO   MAX-KIN-KOHI2-M
+                    MOVE    "1"        TO   COMB-KOH2-NYUJGNKBN
+               END-IF
+      *
            END-IF.
       *
            MOVE    "DBCLOSE"            TO  MCP-FUNC.
@@ -1240,6 +1256,14 @@
                         PERFORM   2105-KOH3-KAISU-SEC
                  END-IF
                END-IF
+           ELSE
+      *
+               IF  (LNK-S02-KOUREI-NYUIN-KBN  =   "1" )
+               AND (COMB-KOH3HKNNUM           =  "010")
+                    MOVE   40200       TO   MAX-KIN-KOHI3-M
+                    MOVE    "1"        TO   COMB-KOH3-NYUJGNKBN
+               END-IF
+      *
            END-IF.
       *
            MOVE    "DBCLOSE"            TO  MCP-FUNC.
@@ -1276,6 +1300,14 @@
                         PERFORM   2106-KOH4-KAISU-SEC
                  END-IF
                END-IF
+           ELSE
+      *
+               IF  (LNK-S02-KOUREI-NYUIN-KBN  =   "1" )
+               AND (COMB-KOH4HKNNUM           =  "010")
+                    MOVE   40200       TO   MAX-KIN-KOHI4-M
+                    MOVE    "1"        TO   COMB-KOH4-NYUJGNKBN
+               END-IF
+      *
            END-IF.
       *
            MOVE    "DBCLOSE"            TO  MCP-FUNC.
@@ -1606,12 +1638,12 @@
                  MOVE    "__"                 TO    SYU-SRYYMD(7:2)
                  MOVE    SYU-SYUNOU-REC     TO      MCPDATA-REC
                  MOVE    "DBSELECT"         TO      MCP-FUNC
-                 MOVE    "SYUNOU-KEY17"     TO      ORC-DBPATH
+                 MOVE    "SYUNOU-KEY14"     TO      ORC-DBPATH
                  CALL    "ORCMCPSUB"         USING   MCPAREA
                                                      ORCMCPAREA
                                                      MCPDATA-REC
                  IF      MCP-RC             =       ZERO
-                   MOVE    "SYUNOU-KEY17"   TO      ORC-DBPATH
+                   MOVE    "SYUNOU-KEY14"   TO      ORC-DBPATH
                    PERFORM  SYUNOU-READ-SEC
                    PERFORM  UNTIL  (FLG-SYUNOU   =    "1")
                      IF  SYU-DENPJTIKBN    NOT =  "3"
@@ -1619,7 +1651,7 @@
                              PERFORM        2201-SYUNOU-COUNT-SEC
                       END-IF
                      END-IF
-                     MOVE           "SYUNOU-KEY17"   TO   ORC-DBPATH
+                     MOVE           "SYUNOU-KEY14"   TO   ORC-DBPATH
                      PERFORM        SYUNOU-READ-SEC
                    END-PERFORM
                  ELSE
@@ -1627,7 +1659,7 @@
                  END-IF
       *
                  MOVE    "DBCLOSE"               TO  MCP-FUNC
-                 MOVE    "SYUNOU-KEY17"          TO  ORC-DBPATH
+                 MOVE    "SYUNOU-KEY14"          TO  ORC-DBPATH
                  CALL    "ORCMCPSUB"              USING
                                                   MCPAREA
                                                   ORCMCPAREA
@@ -1703,24 +1735,11 @@
                                     WK-KOUREI-IRYOHI  +  
                                    (SYU-HKNTEN (12) * 10)
       *
-                        IF   WK-1001-PREFNUM  =  20
-                         IF  (SYU-KOH2HKNNUM(1:1)    =  "0" OR "9" )
-                         OR  (SYU-KOH3HKNNUM(1:1)    =  "0" OR "9" )
-                         OR  (SYU-KOH4HKNNUM(1:1)    =  "0" OR "9" )
-                          IF  FTN-KOH-XXX  <  40200                       
+                        IF  FTN-KOH-XXX  <  40200                       
                             ADD  WK-SYU-SYUCOMPFTN  TO  FTN-KOH-XXX       
                             IF   FTN-KOH-XXX     >   40200                
                                MOVE   40200   TO   FTN-KOH-XXX            
                             END-IF                                        
-                          END-IF
-                         END-IF
-                        ELSE
-                         IF  FTN-KOH-XXX  <  40200                       
-                            ADD  WK-SYU-SYUCOMPFTN  TO  FTN-KOH-XXX       
-                            IF   FTN-KOH-XXX     >   40200                
-                               MOVE   40200   TO   FTN-KOH-XXX            
-                            END-IF                                        
-                         END-IF
                         END-IF
                       ELSE
                         IF  (SYU-KOH2HKNNUM     =  SPACE)              
@@ -1753,25 +1772,11 @@
                                     WK-KOUREI-IRYOHI  +  
                                    (SYU-HKNTEN (12) * 10)
       *
-                        IF   WK-1001-PREFNUM  =  20
-                         IF  (SYU-KOH1HKNNUM(1:1)    =  "0" OR "9" )
-                         OR  (SYU-KOH2HKNNUM(1:1)    =  "0" OR "9" )
-                         OR  (SYU-KOH3HKNNUM(1:1)    =  "0" OR "9" )
-                         OR  (SYU-KOH4HKNNUM(1:1)    =  "0" OR "9" )
-                          IF  FTN-KOH-XXX    <  40200                     
+                        IF  FTN-KOH-XXX    <  40200                      
                             ADD  WK-SYU-SYUCOMPFTN  TO  FTN-KOH-XXX       
                             IF   FTN-KOH-XXX     >   40200                
                                MOVE   40200   TO   FTN-KOH-XXX            
                             END-IF                                        
-                          END-IF
-                         END-IF
-                        ELSE
-                         IF  FTN-KOH-XXX    <  40200                      
-                            ADD  WK-SYU-SYUCOMPFTN  TO  FTN-KOH-XXX       
-                            IF   FTN-KOH-XXX     >   40200                
-                               MOVE   40200   TO   FTN-KOH-XXX            
-                            END-IF                                        
-                         END-IF
                         END-IF
                       ELSE
                         IF  (SYU-KOH1HKNNUM     =  SPACE)              
