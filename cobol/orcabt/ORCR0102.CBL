@@ -38,6 +38,10 @@
       *                                     プリンタ名設定のため帳票ファイルの
       *                                     レイアウト変更
       *  01.00.05    NACL-藤原    02/09/12  ディレクトリをサブプロへ
+      *
+      *  ２００２年１０月改正対応
+      *  01.01.01    NACL-藤原    02/09/27  帳票ＩＤをＤＢより編集
+      *                                     パラメタに入外区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -125,6 +129,7 @@
                                                  PIC X(01).
                    07  WRK-PARA-RECE09-RECESYUBETU
                                                  PIC X(04).
+                   07  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).                              
                05  WRK-PARA-TERMID32             PIC X(32).
       *
            03  WRK-IN                PIC X(01).
@@ -233,7 +238,6 @@
            MOVE    WRK-PARA-TERMID32   TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    1                   TO  HC01PARA-CNT
-           OPEN    OUTPUT              PRT-FILE
            .
        100-INIT-EXT.
            EXIT.
@@ -287,26 +291,36 @@
        200-MAIN-SEC                SECTION.
       *
       *    帳票印刷処理
-           MOVE    "RECEPRT-KEY3"      TO  WRK-PATH
+      *
+           OPEN    OUTPUT              PRT-FILE
+      *     
+      *****MOVE    "RECEPRT-KEY3"      TO  WRK-PATH
+           MOVE    "RECEPRT-KEY12"     TO  WRK-PATH
            PERFORM 900-RECEPRT-SELECT-SEC
       *
            PERFORM 2001-RECEPRT-PRINT-SEC
                                        UNTIL   FLG-RECEPRT  =   1
       *
-           MOVE    "RECEPRT-KEY3"      TO  WRK-PATH
+      *****MOVE    "RECEPRT-KEY3"      TO  WRK-PATH
+           MOVE    "RECEPRT-KEY12"     TO  WRK-PATH
            PERFORM 900-RECEPRT-CLS-SEC
       *
+           CLOSE                       PRT-FILE
+      *
       *    帳票クリア処理
-           MOVE    "RECEPRT-KEY4"      TO  WRK-PATH
+      *
+      *****MOVE    "RECEPRT-KEY4"      TO  WRK-PATH
+           MOVE    "RECEPRT-KEY13"     TO  WRK-PATH
            PERFORM 900-RECEPRT-SELECT-SEC
       *
            PERFORM 2002-RECEPRT-CLEAR-SEC
                                        UNTIL   FLG-RECEPRT  =   1
       *
-           MOVE    "RECEPRT-KEY4"      TO  WRK-PATH
+      *****MOVE    "RECEPRT-KEY4"      TO  WRK-PATH
+           MOVE    "RECEPRT-KEY13"     TO  WRK-PATH
            PERFORM 900-RECEPRT-CLS-SEC
+      *     
            IF      CNT-OUT             >   ZERO 
-      *
                MOVE    SPACE           TO  SHELLTBL
       *        ファイルデイレクトリ位置指定
                INITIALIZE              ORCSMKPASSAREA
@@ -337,7 +351,8 @@
        2001-RECEPRT-PRINT-SEC          SECTION.
       * 
            MOVE    SPACE               TO  PRT-REC 
-           MOVE    "HC06"              TO  PRT-PRTID
+      *****MOVE    "HC06"              TO  PRT-PRTID
+           MOVE    RECE08-FORMID       TO  PRT-PRTID
       *     
            EVALUATE    RECE08-TEISYUTUSAKI
                WHEN    "0"
@@ -425,8 +440,6 @@
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
-      *
-           CLOSE                       PRT-FILE
       *     
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -459,6 +472,8 @@
            MOVE    WRK-PARA-RECE09-SRYYM    TO  RECE08-RECEYM
            MOVE    WRK-PARA-RECE09-CREYMD   TO  RECE08-CREYMD
            MOVE    WRK-PARA-RECE09-CREHMS   TO  RECE08-CREHMS
+           MOVE    WRK-PARA-RECE09-NYUGAIKBN
+                                            TO  RECE08-NYUGAIKBN
       *
            MOVE    RECE08-REC          TO  MCPDATA-REC
            MOVE    WRK-PATH            TO  ORC-DBPATH
