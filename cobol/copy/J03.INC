@@ -52,6 +52,11 @@
                   05  J03-VALUE   PIC X(20).
                 04  J03-SRYKA-COUNT   PIC S9(9)   BINARY.
                 04  J03-SRYKA-ITEM    PIC X(20)   OCCURS  41 TIMES.
+              03  J03-HHKNCOMBI-COMB.
+                04  J03-HHKNCOMBI.
+                  05  J03-VALUE   PIC X(55).
+                04  J03-HHKNCOMBI-COUNT   PIC S9(9)   BINARY.
+                04  J03-HHKNCOMBI-ITEM    PIC X(55)   OCCURS  17 TIMES.
               03  J03-MIDASI.
                 04  J03-MIDASI-STYLE   PIC X(20).
                 04  J03-MIDASI-VALUE   PIC X(20).

@@ -50,6 +50,13 @@ J03	{
 			count	int;
 			item	varchar(20)[41];
 		};
+		HHKNCOMBI_COMB	{
+			HHKNCOMBI	{
+				value	varchar(55);
+			};
+			count	int;
+			item	varchar(55)[17];
+		};
 		MIDASI	{
 		        style   varchar(20);
 			value	varchar(20);

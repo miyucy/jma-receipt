@@ -39,6 +39,7 @@
       *  01.00.10    NACL-多々納  03/04/04  中心静脈自動算定追加
       *  01.00.11    NACL-多々納  03/05/12  前次頁対応、診療日変更修正
       *  01.00.12    NACL-多々納  03/08/28  入院の受診履歴追加修正
+      *  01.00.13    NACL-多々納  04/01/09  保険毎表示追加修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -156,6 +157,8 @@
            03  FLG-HEN-OK          PIC 9(01).
       *    受診履歴変更フラグ
            03  FLG-JYURRK-UPD      PIC 9(01).
+      *
+           03  FLG-ACCT-ERR        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -374,6 +377,7 @@
       *    クリア用保存
            03  WRK-NYUGAIKBN-G         PIC X(10).
            03  WRK-SRYKBN-G            PIC X(19).
+           03  WRK-HKNCOMBI-G          PIC X(55).
       *    入院エラー
            03  WRK-NYUIN-ERR           PIC X(200).
            03  IDX-N2                  PIC 9(02).
@@ -543,6 +547,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    保険組合せセット領域
+           COPY    "CPORCSHKNSET.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -1213,6 +1220,9 @@
                GO      TO      310-SPA-SET-EXT
            END-IF
       *
+      *    保険一覧編集
+           PERFORM 3008-HKNCOMBI-HEN-SEC
+      *
       *    診療年月の末日算定
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY7-AREA
@@ -1438,6 +1448,71 @@
            END-IF
            .
        3006-SRYKBN-HEN-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *   保険一覧編集処理
+      *****************************************************************
+       3008-HKNCOMBI-HEN-SEC             SECTION.
+      *
+      *
+           INITIALIZE                  SPA-GMN-HKNCOMBI-LISTG
+      *
+           MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAY
+           MOVE    SPA-NAI-SRYYM       TO  SPA-SRYYMD(1:6)
+           MOVE    "01"                TO  SPA-SRYYMD(7:2)
+           MOVE    SPA-GMN-PTID        TO  SPA-PTID
+      *
+           INITIALIZE                  ORCSHKNSETAREA
+           MOVE    "1"                 TO  ORCSHKN-KBN
+           MOVE    "1"                 TO  ORCSHKN-KBN2
+           CALL    "ORCSHKNSET"        USING
+                                       SPA-AREA
+                                       ORCSHKNSETAREA
+      *
+           MOVE    ORCSHKN-HKN-MAX     TO  SPA-HKN-MAX
+           IF      SPA-HKN-MAX         =   ZERO
+               GO      TO      3008-HKNCOMBI-HEN-EXT
+           END-IF
+      *
+      *    全体を追加
+           MOVE    "0000"              TO  SPA-GMN-THKNCOMBINUM (01)
+           MOVE    "全保険"            TO  SPA-GMN-THKNCOMBIMEI (01)
+      *
+           MOVE    1                   TO  IDH
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   ORCSHKN-HKN-MAX
+               ADD     1                   TO  IDH
+               MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
+                                       TO  SPA-GMN-THKNCOMBINUM (IDH)
+               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
+                                       TO  SPA-GMN-THKNCOMBIMEI (IDH)
+      *
+      ******   MOVE    ORCSHKN-NAI-HKNID (IDX)
+      ******                           TO  SPA-NAI-HKNID  (IDH)
+               MOVE    ORCSHKN-NAI-HKNNUM (IDX)
+                                       TO  SPA-NAI-THKNNUM  (IDH)
+               MOVE    ORCSHKN-NAI-KOH1HKNNUM (IDX)
+                                       TO  SPA-NAI-TKOH1HKNNUM (IDH)
+               MOVE    ORCSHKN-NAI-KOH2HKNNUM (IDX)
+                                       TO  SPA-NAI-TKOH2HKNNUM (IDH)
+               MOVE    ORCSHKN-NAI-KOH3HKNNUM (IDX)
+                                       TO  SPA-NAI-TKOH3HKNNUM (IDH)
+               MOVE    ORCSHKN-NAI-KOH4HKNNUM (IDX)
+                                       TO  SPA-NAI-TKOH4HKNNUM (IDH)
+      *
+               MOVE    ORCSHKN-NAI-FTNRATE (IDX)
+                                       TO  SPA-NAI-TFTNRATE (IDH)
+      *
+               MOVE    IDH             TO  SPA-HKN-MAX
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-THKNCOMBINUM-G (01)
+                                       TO  SPA-GMN-HHKNCOMBI-G
+      *
+           .
+       3008-HKNCOMBI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1707,11 +1782,11 @@
                IF      JYURRK-SRYKA        =   SPA-GMN-SRYKAL (IDY)
                    MOVE    SPA-GMN-SRYKAMEIL(IDY)(1:2)
                                            TO  SPA-GMN-RRKSRYKA (IDX)
-                                                            (2:2)
-                   MOVE    "("             TO  SPA-GMN-RRKSRYKA(IDX)
-                                                            (1:1)
-                   MOVE    ")"             TO  SPA-GMN-RRKSRYKA(IDX)
-                                                            (4:1)
+      *!!                                                   (2:2)
+      *            MOVE    "("             TO  SPA-GMN-RRKSRYKA(IDX)
+      *                                                     (1:1)
+      *            MOVE    ")"             TO  SPA-GMN-RRKSRYKA(IDX)
+      *!!                                                   (4:1)
                END-IF
            END-PERFORM
       *
@@ -1962,6 +2037,14 @@
                    MOVE    WRK-ZZ-X            TO  SPA-GMN-TDAY(IDG IDK)
                END-IF
            END-PERFORM
+      *    合計
+           IF      SPA-NAI-ZAIKAISU(IDX)   >=  100
+               MOVE    SPA-NAI-ZAIKAISU(IDX)   TO  WRK-ZZZ
+               MOVE    WRK-ZZZ-X               TO  SPA-GMN-TDAYGOK(IDG)
+           ELSE
+               MOVE    SPA-NAI-ZAIKAISU(IDX)   TO  WRK-ZZ
+               MOVE    WRK-ZZ-X                TO  SPA-GMN-TDAYGOK(IDG)
+           END-IF
       *
       *    診療科が全科の時、次の行へ科名称を編集
            IF     SPA-J01-SRYKA        =   ZERO
@@ -2470,6 +2553,15 @@
            END-PERFORM
            MOVE    SPA-SRYKBN-MAX         TO  J02-SRYKBN-COUNT
       *
+      *    保険組合せ
+           MOVE    SPA-GMN-HHKNCOMBI-G TO  J02-HHKNCOMBI
+           PERFORM VARYING   IDX     FROM    1   BY  1
+                   UNTIL     IDX         >   SPA-HKN-MAX
+               MOVE    SPA-GMN-THKNCOMBINUM-G (IDX)
+                                          TO  J02-HHKNCOMBI-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-HKN-MAX         TO  J02-HHKNCOMBI-COUNT
+      *
       *    受診履歴
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-RRK-MAX
@@ -2484,10 +2576,13 @@
                END-IF
       *        全科の時科指定
                IF      SPA-J01-SRYKA       =   ZERO
-                   MOVE    SPA-GMN-RRKSRYKA(IDX)  TO  J02-RRKYMD  (IDX)
-                                                             (17:4)
+      *            MOVE    SPA-GMN-RRKSRYKA(IDX)  TO  J02-RRKYMD  (IDX)
+      *                                                      (17:4)
       *************MOVE    SPA-GMN-RRKSRYKA(IDX)  TO  J02-RRKSRYKA(IDX)
+                   MOVE    SPA-GMN-RRKSRYKA(IDX)  TO  J02-RRKSRYKA(IDX)
                END-IF
+      *        保険組合せ
+               MOVE    SPA-RRK-HKNCOMBI (IDX)  TO  J02-RRKHKNCOMBI (IDX)
       *
            END-PERFORM
            MOVE    SPA-RRK-MAX         TO  J02-RRKLIST-COUNT
@@ -2516,6 +2611,7 @@
                    MOVE    SPA-GMN-TTENSU  (IDX)   TO  J02-TTENSU (IDX)
                    MOVE    SPA-GMN-THKNCOMBI(IDX)  TO  J02-THKNCOMBI
                                                                  (IDX)
+                   MOVE    SPA-GMN-TDAYGOK (IDX)   TO  J02-TDAYGOK(IDX)
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
                        MOVE    SPA-GMN-TDAY (IDX IDY)
@@ -2653,6 +2749,8 @@
                    MOVE    "NYUGAIKBN"     TO  MCP-WIDGET
                WHEN    09
                    MOVE    "SRYKBN"        TO  MCP-WIDGET
+               WHEN    10
+                   MOVE    "HHKNCOMBI"     TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -2749,8 +2847,8 @@
                WHEN    ANY             ALSO    "DATALIST"
                    PERFORM 41012-DATALIST-SEC
       *        保険組合せ
-      ******** WHEN    "ACTIVATE"      ALSO    "HKNCOMBI"
-      ***********  PERFORM 41017-HKNCOMBI-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "HHKNCOMBI"
+                   PERFORM 41017-HKNCOMBI-CHK-SEC
       *        受診履歴選択
                WHEN    "ACTIVATE"      ALSO    "RRKSELNUM"
                    PERFORM 41014-RRKSELNUMI-CHK-SEC
@@ -3090,9 +3188,11 @@
            MOVE    SPA-NAI-SRYYM       TO  SPA-J02-SRYYMD (1:6)
            MOVE    SPA-GMN-NYUGAIKBN-G TO  WRK-NYUGAIKBN-G
            MOVE    SPA-GMN-SRYKBN-G    TO  WRK-SRYKBN-G
+           MOVE    SPA-GMN-HHKNCOMBI-G TO  WRK-HKNCOMBI-G
            INITIALIZE                  SPA-J02-AREA
            MOVE    WRK-NYUGAIKBN-G     TO  SPA-GMN-NYUGAIKBN-G
            MOVE    WRK-SRYKBN-G        TO  SPA-GMN-SRYKBN-G
+           MOVE    WRK-HKNCOMBI-G      TO  SPA-GMN-HHKNCOMBI-G
       *
            MOVE    SPA-J02-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
            MOVE    SPA-J02-SRYYMD (1:6)    TO  SPA-NAI-SRYYM
@@ -3214,6 +3314,9 @@
            INITIALIZE                  SPA-NAI-TBL
            INITIALIZE                  SPA-GMN-INPUT
            INITIALIZE                  SPA-GMN-NYUIN-AREA
+      *
+      *    保険一覧編集
+           PERFORM 3008-HKNCOMBI-HEN-SEC
       *
       *    受診履歴より診療科決定
            MOVE    SPACE               TO  SPA-J01-SRYKA
@@ -3349,30 +3452,38 @@
                MOVE    SPA-NAI-SRYKBN  (SPA-NAI-BANGO)
                                            TO  SPA-NAIGMN-SRYKBN
       *        保険内容編集
-               MOVE    SPA-GMN-HKNCOMBI    TO  WRK-HKNCOMBI
-               PERFORM 510-HKNCOMBI-MEI-SEC
-               MOVE    WRK-HKNCOMBIMEI     TO  SPA-GMN-HKNCOMBIMEI
+               PERFORM VARYING     IDH     FROM    1   BY  1
+                       UNTIL       IDH     >   SPA-HKN-MAX
+                   IF      SPA-GMN-THKNCOMBINUM (IDH)
+                                               =   SPA-GMN-HKNCOMBI
+                       MOVE    SPA-GMN-THKNCOMBIMEI (IDH)
+                                               TO  SPA-GMN-HKNCOMBIMEI
+                   END-IF
+               END-PERFORM
+      *!       MOVE    SPA-GMN-HKNCOMBI    TO  WRK-HKNCOMBI
+      *        PERFORM 510-HKNCOMBI-MEI-SEC
+      *        MOVE    WRK-HKNCOMBIMEI     TO  SPA-GMN-HKNCOMBIMEI
       *----(01.00.01) LINE ADD START ----------------------------------
       *        老人判定
-               IF     (COMB-KOH1HKNNUM     =   "027"  )  OR
-                      (COMB-KOH2HKNNUM     =   "027"  )  OR
-                      (COMB-KOH3HKNNUM     =   "027"  )  OR
-                      (COMB-KOH4HKNNUM     =   "027"  )  OR
-                      (SPA-J02-ROUJIN      =   1      )
-                   MOVE    1               TO  SPA-NAI-ROUJIN
-                                                      (SPA-NAI-BANGO)
-               ELSE
-                   MOVE    ZERO            TO  SPA-NAI-ROUJIN
-                                                     (SPA-NAI-BANGO)
-               END-IF
+      *        IF     (COMB-KOH1HKNNUM     =   "027"  )  OR
+      *               (COMB-KOH2HKNNUM     =   "027"  )  OR
+      *               (COMB-KOH3HKNNUM     =   "027"  )  OR
+      *               (COMB-KOH4HKNNUM     =   "027"  )  OR
+      *               (SPA-J02-ROUJIN      =   1      )
+      *            MOVE    1               TO  SPA-NAI-ROUJIN
+      *                                               (SPA-NAI-BANGO)
+      *        ELSE
+      *            MOVE    ZERO            TO  SPA-NAI-ROUJIN
+      *                                              (SPA-NAI-BANGO)
+      *        END-IF
       *        労災・自賠責の場合、老人でも一般とする
-               IF      SPA-NAI-HKNKBN      =   1
-                   MOVE    ZERO            TO  SPA-NAI-ROUJIN
-                                                     (SPA-NAI-BANGO)
-               END-IF
+      *        IF      SPA-NAI-HKNKBN      =   1
+      *            MOVE    ZERO            TO  SPA-NAI-ROUJIN
+      *                                              (SPA-NAI-BANGO)
+      *        END-IF
       *
-               MOVE    SPA-NAI-ROUJIN   (SPA-NAI-BANGO)
-                                           TO  SPA-GMN-ROUJIN
+      *        MOVE    SPA-NAI-ROUJIN   (SPA-NAI-BANGO)
+      *!                                   TO  SPA-GMN-ROUJIN
       *----(01.00.01) LINE ADD START ----------------------------------
       *
                MOVE    1                   TO  SPA-IDXZ
@@ -3751,11 +3862,11 @@
       *    画面編集
            MOVE    SPA-HENNYMD(11:)    TO  J022-SRYYMD
            MOVE    SPA-J022-DAY1       TO  WRK-ZZZ
-           MOVE    WRK-ZZZ-X            TO  J022-DAY1
+           MOVE    WRK-ZZZ-X           TO  J022-DAY1
            MOVE    SPA-J022-DAY2       TO  WRK-ZZZ
-           MOVE    WRK-ZZZ-X            TO  J022-DAY2
+           MOVE    WRK-ZZZ-X           TO  J022-DAY2
            MOVE    SPA-J022-DAY3       TO  WRK-ZZZ
-           MOVE    WRK-ZZZ-X            TO  J022-DAY3
+           MOVE    WRK-ZZZ-X           TO  J022-DAY3
       *
            MOVE    1                   TO  SPA-J022-CUR
       *
@@ -4512,6 +4623,13 @@
                    END-IF
                END-PERFORM
                MOVE    WRK-ZAIKAISU        TO  SPA-NAI-ZAIKAISU (IDX)
+               IF      SPA-NAI-ZAIKAISU (IDX)  >=  100
+                   MOVE    SPA-NAI-ZAIKAISU (IDX)  TO  WRK-ZZZ
+                   MOVE    WRK-ZZZ-X           TO  SPA-GMN-TDAYGOK(IDG)
+               ELSE
+                   MOVE    SPA-NAI-ZAIKAISU (IDX)  TO  WRK-ZZ
+                   MOVE    WRK-ZZ-X            TO  SPA-GMN-TDAYGOK(IDG)
+               END-IF
            END-PERFORM
            .
        410161-HENSRYYMD-SYORI-EXT.
@@ -4648,147 +4766,42 @@
       *****************************************************************
       *    保険組合せ入力処理
       *****************************************************************
-      *41017-HKNCOMBI-CHK-SEC             SECTION.
+       41017-HKNCOMBI-CHK-SEC             SECTION.
       *
-      *    MOVE    7                   TO  SPA-GMN-CUR
+           MOVE    SPA-GMN-HHKNCOMBI   TO  SPA-MAE-HHKNCOMBI
+           MOVE    J02-HHKNCOMBI       TO  SPA-GMN-HHKNCOMBI-G
       *
-      *    IF      J02-HKNCOMBI(1:1)   =   "/"
-      *        保険組合せ一覧画面表示へ
-      *        PERFORM 410171-HKMGMN-SYORI-SEC
-      *        GO      TO      41017-HKNCOMBI-CHK-EXT
-      *    END-IF
+           MOVE    ZERO                TO  FLG-OK
       *
-      *    入力時、保険名称表示へ
-      *    IF      J02-HKNCOMBI        =   SPA-GMN-HKNCOMBI
-      *        ADD     1                   TO  SPA-GMN-CUR
-      *        GO      TO      41017-HKNCOMBI-CHK-EXT
-      *    END-IF
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   SPA-HKN-MAX
+              IF      SPA-GMN-THKNCOMBINUM(IDX)
+                                           =   SPA-GMN-HHKNCOMBI
+                   MOVE    SPA-GMN-THKNCOMBINUM-G (IDX)
+                                               TO  SPA-GMN-HHKNCOMBI-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
       *
-      *    IF      J02-HKNCOMBI        =   SPACE
-      *        MOVE    ZERO                TO  J02-HKNCOMBI
-      *    END-IF
-      *    INITIALIZE                      ORCSNUMAREA
-      *    MOVE    J02-HKNCOMBI        TO  SNUM-INX
-      *    CALL    "ORCSNUM"           USING
-      *                                ORCSNUMAREA
-      *    IF     (SNUM-RC         NOT =   ZERO  )   OR
-      *          (SNUM-MINKBN     NOT =   SPACE )   OR
-      *           (SNUM-SYOKBN     NOT =   SPACE )
-      *        MOVE    "0001"              TO  SPA-ERRCD
-      *        MOVE    ZERO                TO  SPA-GMN-HKNCOMBI
-      *        GO      TO      41017-HKNCOMBI-CHK-EXT
-      *    ELSE
-      *        MOVE    SNUM-OUTEDT(12:4)   TO  SPA-GMN-HKNCOMBI
-      *    END-IF
+           IF      FLG-OK              =   ZERO
+               MOVE    "0032"              TO  SPA-ERRCD
+               MOVE    10                  TO  SPA-GMN-CUR
+               GO      TO      41017-HKNCOMBI-CHK-EXT
+           END-IF
+      *    変更の有無
+           IF     (SPA-GMN-HHKNCOMBI   =   SPA-MAE-HHKNCOMBI)
+               GO      TO      41017-HKNCOMBI-CHK-EXT
+           END-IF
       *
-      *    対象チェック処理
-      *    MOVE    ZERO                TO  SPA-J021-HKNIDX
-      *    PERFORM VARYING     IDX     FROM    1   BY  1
-      *            UNTIL       IDX     >   SPA-J021-MAX
-      *        IF      SPA-GMN-HKNCOMBI    =   SPA-J021-THKNCOMBI (IDX)
-      *            MOVE    IDX             TO  SPA-J021-HKNIDX
-      *            MOVE    SPA-J021-MAX    TO  IDX
-      *        END-IF
-      *    END-PERFORM
+           PERFORM 410171-NYUGAIKBN-CHANGE-SEC
+           IF      SPA-GMN-MAX         =   ZERO
+               MOVE    10                  TO  SPA-GMN-CUR
+           END-IF
       *
-      *    IF      SPA-NAI-TEKEDYMD (SPA-J021-HKNIDX)
-      *                                =   ZERO
-      *        MOVE    ALL "9"             TO  WRK-TEKEDYMD
-      *    ELSE
-      *        MOVE    SPA-NAI-TEKEDYMD (SPA-J021-HKNIDX)
-      *                                    TO  WRK-TEKEDYMD
-      *    END-IF
-      *    IF     (SPA-NAI-SRYYM       >=  SPA-NAI-TEKSTYMD
-      *                                    (SPA-J021-HKNIDX)(1:6)) AND
-      *           (SPA-NAI-SRYYM       <=  WRK-TEKEDYMD (1:6) )
-      *        CONTINUE
-      *    ELSE
-      *        MOVE    "0008"              TO  SPA-ERRCD
-      *    END-IF
+           .
+       41017-HKNCOMBI-CHK-EXT.
+           EXIT.
       *
-      *    MOVE    SPA-J021-TKUMI (SPA-J021-HKNIDX )
-      *                                TO  SPA-GMN-HKNCOMBIMEI
-      *
-      *    MOVE    SPA-NAI-TROUJIN(SPA-J021-HKNIDX )
-      *                                TO  SPA-GMN-ROUJIN
-      *
-      *    老人適用外チェック
-      *    EVALUATE    SPA-NAI-ROUTEKKBN(SPA-GMN-BANGO)
-      *        WHEN    1
-      *            IF      SPA-GMN-ROUJIN      =   1
-      *                MOVE    "0008"          TO  SPA-ERRCD
-      *            END-IF
-      *        WHEN    2
-      *            IF      SPA-GMN-ROUJIN      =   ZERO
-      *                MOVE    "0008"          TO  SPA-ERRCD
-      *            END-IF
-      *    END-EVALUATE
-      *
-      *    IF      SPA-ERRCD       NOT =   SPACE
-      *        GO      TO      41017-HKNCOMBI-CHK-EXT
-      *    END-IF
-      *
-      *    MOVE    8                   TO  SPA-GMN-CUR
-      *
-      *    .
-      *41017-HKNCOMBI-CHK-EXT.
-      *    EXIT.
-      *
-      *****************************************************************
-      *    保険組合せ一覧画面表示処理
-      *****************************************************************
-      *410171-HKMGMN-SYORI-SEC         SECTION.
-      *
-      *    PERFORM 410171-J021-HEN-SEC
-      *
-      *    MOVE    SPA-GMN-SRYYM       TO  SPA-J02-SRYYMD(1:6)
-      *    MOVE    SPA-NAI-SRYYM       TO  SPA-J02-SRYYMD (1:6)
-      * 
-      *    MOVE    "J02"               TO  SPA-MOTOPG
-      *    MOVE    "J021"              TO  SPA-SAKIPG
-      *
-      *    MOVE    "NEW"               TO  MCP-PUTTYPE.
-      *    MOVE    "J021"              TO  MCP-WINDOW.
-      *
-      *    PERFORM 900-PUT-WINDOW.
-      *
-      *    MOVE    1                   TO  FLG-END
-      *
-      *    .
-      *410171-HKMGMN-SYORI-EXT.
-      *    EXIT.
-      *
-      *
-      *****************************************************************
-      *    画面編集処理
-      *****************************************************************
-      *410171-J021-HEN-SEC                  SECTION.
-      *
-      *    画面編集処理
-      *    MOVE    SPACE               TO  SPA-J021-HKNCOMBI
-      *
-      *    MOVE    SPACE               TO  J021
-      *    画面編集
-      *    PERFORM VARYING   IDX       FROM    1   BY  1
-      *            UNTIL     IDX       >   SPA-J021-MAX
-      *        MOVE    SPA-J021-THKNCOMBI (IDX) TO  J021-NUM      (IDX)
-      *        MOVE    SPA-J021-TKUMI     (IDX) TO  J021-HKNKUMI  (IDX)
-      *        MOVE    SPA-J021-TTEKSTYMD (IDX) TO  J021-TEKSTYMD (IDX)
-      *        MOVE    SPA-J021-TTEKEDYMD (IDX) TO  J021-TEKEDYMD (IDX)
-      *        MOVE    SPA-J021-TFTNWARI  (IDX) TO  J021-FTNRATE  (IDX)
-      *    END-PERFORM
-      *
-      *    MOVE    SPA-J021-MAX        TO  J021-COUNT
-      *
-      *    MOVE    ZERO                TO  SPA-J021-SELNUM
-      *    MOVE    SPACE               TO  J021-SELNUM
-      *    カーソル移動
-      *    MOVE    "SELNUM"            TO  MCP-WIDGET
-      *
-      *     PERFORM 5001-MAPCUR-SEC
-      *    .
-      *410171-J021-HEN-EXT.
-      *    EXIT.
       *
       *****************************************************************
       *    入外区分処理
@@ -4832,7 +4845,7 @@
       *****************************************************************
       *    入外区分変更処理
       *****************************************************************
-       410171-NYUGAIKBN-CHANGE-SEC             SECTION.
+       410171-NYUGAIKBN-CHANGE-SEC     SECTION.
       *
       *    現在表示されている内容を更新する
       *    診療会計マスター更新
@@ -4904,7 +4917,9 @@
            END-PERFORM
       *
            IF      FLG-OK              =   ZERO
-               MOVE    "0031"              TO  SPA-ERRCD
+               MOVE    "0033"              TO  SPA-ERRCD
+               MOVE    09                  TO  SPA-GMN-CUR
+               GO      TO      41018-SRYKBN-CHK-EXT
            END-IF
       *    変更の有無
            IF     (SPA-GMN-SRYKBN      =   SPA-MAE-SRYKBN )  OR
@@ -5234,10 +5249,24 @@
            END-IF
            MOVE    ZERO                TO  SPA-SRYACCT-MAX
            PERFORM UNTIL      (FLG-SRYACCT     =   1   )
+      *
+               MOVE    ZERO                 TO  FLG-ACCT-ERR
+               IF     (SPA-GMN-HHKNCOMBI        =   ZERO    )  OR
+                     ((SPA-GMN-HHKNCOMBI    NOT =   ZERO    )  AND
+                      (SPA-GMN-HHKNCOMBI        =   ACCT-HKNCOMBI))
+                  CONTINUE
+               ELSE
+                  MOVE    1                    TO  FLG-ACCT-ERR
+               END-IF
                IF     (SPA-GMN-SRYKBN      =   ZERO            )  OR
                       (SPA-GMN-SRYKBN  NOT =   ZERO    AND
                        SPA-GMN-SRYKBN(1:1) =   ACCT-SRYKBN(1:1) )
+                  CONTINUE
+               ELSE
+                  MOVE    1                    TO  FLG-ACCT-ERR
+               END-IF
       *
+               IF      FLG-ACCT-ERR        =   ZERO
                    ADD     1                   TO  SPA-SRYACCT-MAX
       *            パラメタ登録
                    INITIALIZE                      PARA-REC
@@ -5553,6 +5582,9 @@
            INITIALIZE                  SPA-GMN-INPUT
            INITIALIZE                  SPA-GMN-NYUIN-AREA
       *
+      *    保険一覧編集
+           PERFORM 3008-HKNCOMBI-HEN-SEC
+      *
       *    受診履歴より診療科決定
            MOVE    SPACE               TO  SPA-J01-SRYKA
            MOVE    SPACE               TO  SPA-J01-SRYKAMEI
@@ -5761,6 +5793,10 @@
            INITIALIZE                  SPA-NAI-TBL
            INITIALIZE                  SPA-GMN-INPUT
            INITIALIZE                  SPA-GMN-NYUIN-AREA
+      *
+      *    保険一覧編集
+           PERFORM 3008-HKNCOMBI-HEN-SEC
+      *
       *    受診履歴より診療科決定
            MOVE    SPACE               TO  SPA-J01-SRYKA
            MOVE    SPACE               TO  SPA-J01-SRYKAMEI
@@ -5952,7 +5988,7 @@
            MOVE   SPA-GNAI-DAY-G       TO  SPA-NAI-DAY-AREA (IDX)
       *
            MOVE   SPA-GMN-HKNCOMBI     TO  SPA-NAI-HKNCOMBI  (IDX)
-           MOVE   SPA-GMN-ROUJIN       TO  SPA-NAI-ROUJIN    (IDX)
+      *!   MOVE   SPA-GMN-ROUJIN       TO  SPA-NAI-ROUJIN    (IDX)
       *    組合せ
            MOVE   SPA-GMN-HKNCOMBI     TO  SPA-GMN-THKNCOMBI (IDG)
       *    回数
@@ -5970,6 +6006,13 @@
                END-IF
            END-PERFORM
            MOVE    WRK-ZAIKAISU        TO  SPA-NAI-ZAIKAISU (IDX)
+           IF      SPA-NAI-ZAIKAISU (IDX)  >=   100
+               MOVE    SPA-NAI-ZAIKAISU (IDX)  TO  WRK-ZZZ
+               MOVE    WRK-ZZZ-X               TO  SPA-GMN-TDAYGOK(IDG)
+           ELSE
+               MOVE    SPA-NAI-ZAIKAISU (IDX)   TO  WRK-ZZ
+               MOVE    WRK-ZZ-X                 TO  SPA-GMN-TDAYGOK(IDG)
+           END-IF
       *
       *    合計回数の再表示
            IF      SPA-NAIGMN-SRYKBN   =   "95"  OR  "96"
@@ -6964,10 +7007,24 @@
            MOVE    ZERO                TO  SSANTEI-MSANTEICNT
       *    保険組合せ
            MOVE    ACCT-HKNCOMBI       TO  SPA-HKNCOMBINUM
+      *!   保険内容編集
+      *!   MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
+      *!   PERFORM 510-HKNCOMBI-MEI-SEC
+      *!   MOVE    SPA-NAI-HKNKBN      TO  SPA-HKNKBN
       *    保険内容編集
-           MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
-           PERFORM 510-HKNCOMBI-MEI-SEC
-           MOVE    SPA-NAI-HKNKBN      TO  SPA-HKNKBN
+           PERFORM VARYING     IDH     FROM    1   BY  1
+                   UNTIL       IDH     >   SPA-HKN-MAX
+               IF      SPA-GMN-THKNCOMBINUM (IDH)
+                                           =   SPA-HKNCOMBINUM
+      *            労災判定
+                   IF      SPA-NAI-THKNNUM (IDH)   =   "971"
+                                                   OR  "973"
+                       MOVE    1                   TO  SPA-HKNKBN
+                   ELSE
+                       MOVE    ZERO                TO  SPA-HKNKBN
+                   END-IF
+               END-IF
+           END-PERFORM
       *
       *    今回分
            PERFORM VARYING IDX-D       FROM    1   BY  1
@@ -7848,6 +7905,12 @@
                                        TO  WRK-ERRMSG
                WHEN    "0031"
                    MOVE    "診療種別がありません。"
+                                       TO  WRK-ERRMSG
+               WHEN    "0032"
+                   MOVE    "保険組合せがありません。"
+                                       TO  WRK-ERRMSG
+               WHEN    "0033"
+                   MOVE    "診療科がありません。"
                                        TO  WRK-ERRMSG
                WHEN    "0040"
                    MOVE    "算定できる点滴手技料がありません。"

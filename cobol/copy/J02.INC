@@ -52,6 +52,7 @@
                     06  J02-TSURYO       PIC X(13).
                     06  J02-TTENSU       PIC X(7).
                     06  J02-THKNCOMBI    PIC X(4).
+                    06  J02-TDAYGOK      PIC X(3).
                     06  J02-TDAY-G.
                         08  J02-TDAY    PIC X(3)  OCCURS  31.
                   05  J02-DATALIST-SELECT  PIC X   OCCURS  400 TIMES.
@@ -63,6 +64,8 @@
                   05  J02-ITEM        OCCURS  60 TIMES.
                     06  J02-RRKNO     PIC X(3).
                     06  J02-RRKYMD    PIC X(20).
+                    06  J02-RRKSRYKA  PIC X(2).
+                    06  J02-RRKHKNCOMBI   PIC X(4).
                   05  J02-RRKLIST-SELECT  PIC X       OCCURS  60 TIMES.
               03  J02-SRYKBNCOMB.
                 04  J02-SRYKBN.
@@ -79,6 +82,11 @@
                   05  J02-VALUE   PIC X(10).
                 04  J02-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
                 04  J02-NYUGAIKBN-ITEM    PIC X(10)   OCCURS  2 TIMES.
+              03  J02-HHKNCOMBICOMB.
+                04  J02-HHKNCOMBI.
+                  05  J02-VALUE   PIC X(55).
+                04  J02-HHKNCOMBI-COUNT   PIC S9(9)   BINARY.
+                04  J02-HHKNCOMBI-ITEM    PIC X(55)   OCCURS  17 TIMES.
               03  J02-NYUINMSG2.
                 04  J02-NYUINMSG2-STYLE   PIC X(20).
                 04  J02-NYUINMSG2-VALUE   PIC X(50).

@@ -2342,7 +2342,9 @@
            END-IF
       *
       *    数量５文字以上はエラー
-           IF      WRK-SUR-MCNT        >   5
+           IF     (SPA-COM-INPUTCD(SPA-GMN-IDX) (1:2)
+                                           NOT =   "09" )  AND
+                  (LNK-SC97-SURYOFLG       >   5    )
                MOVE    "0051"          TO  SPA-ERRCD
                GO      TO      4101113-INPUTCD-CHK-EXT
            END-IF

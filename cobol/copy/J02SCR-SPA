@@ -60,6 +60,11 @@
                        09  SPA-GMN-SRYKBN            PIC X(02).
                        09  SPA-GMN-SRYKBNH           PIC X(01).
                        09  SPA-GMN-SRYKBNMEI         PIC X(16).
+      *            保険組合せ
+                   07  SPA-GMN-HHKNCOMBI-G.
+                       09  SPA-GMN-HHKNCOMBI          PIC X(04).
+                       09  SPA-GMN-HHKNCOMBIH         PIC X(01).
+                       09  SPA-GMN-HHKNCOMBIMEI       PIC X(50).
       *
                    07  SPA-GMN-INPUT.
                        09  SPA-GMN-BANGO             PIC 9(03).
@@ -142,6 +147,7 @@
                05  SPA-MAE-BANGO             PIC 9(03).
                05  SPA-MAEN-BANGO            PIC 9(03).
                05  SPA-MAE-SRYKBN            PIC X(02).
+               05  SPA-MAE-HHKNCOMBI         PIC X(04).
       *
       *    初期のみ
         03  SPA-J02-SYOKI.
@@ -160,6 +166,23 @@
                05  SPA-GMN-NYUIN-AREA.
                    07  SPA-GMN-NYUINMSG          PIC X(50)
                                                  OCCURS   2.
+      *
+      *  保険組合せ一覧
+               05  SPA-HKNCOMI-AREA.
+                   07  SPA-GMN-HKNCOMBI-LISTG.
+                       09  SPA-GMN-HKN-LIST    OCCURS  17.
+                           11  SPA-GMN-THKNCOMBINUM-G.
+                               13  SPA-GMN-THKNCOMBINUM    PIC X(04).
+                               13  SPA-GMN-THKNCOMBY1      PIC X(01).
+                               13  SPA-GMN-THKNCOMBIMEI    PIC X(50).
+      *
+                           11  SPA-NAI-TFTNRATE     PIC  9(03).
+                           11  SPA-NAI-THKNNUM      PIC  X(03).
+                           11  SPA-NAI-TKOH1HKNNUM  PIC  X(03).
+                           11  SPA-NAI-TKOH2HKNNUM  PIC  X(03).
+                           11  SPA-NAI-TKOH3HKNNUM  PIC  X(03).
+                           11  SPA-NAI-TKOH4HKNNUM  PIC  X(03).
+                       09  SPA-HKN-MAX             PIC  9(04).
       *
       *    保険組合せ一覧画面用
            03  SPA-J021-AREA.

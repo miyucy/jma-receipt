@@ -133,11 +133,12 @@ J02	{
 			DATALIST	{
 				count	int;
 				item	{
-					value1	varchar(3);
-					value2	varchar(80);
-					value3	varchar(13);
-					value4	varchar(7);
-					value5	varchar(4);
+					value0	varchar(3);
+					value1	varchar(80);
+					value2	varchar(13);
+					value3	varchar(7);
+					value4	varchar(4);
+					value5	varchar(3);
 					value6	varchar(3);
 					value7	varchar(3);
 					value8	varchar(3);
@@ -182,6 +183,8 @@ J02	{
 				item	{
 					value0	varchar(3);
 					value1	varchar(20);
+					value2	varchar(2);
+					value3	varchar(4);
 				}	[60];
 				select	bool[60];
 			};
@@ -206,6 +209,13 @@ J02	{
 			};
 			count	int;
 			item	varchar(10)[2];
+		};
+		HHKNCOMBICOMB	{
+			HHKNCOMBI	{
+				value	varchar(55);
+			};
+			count	int;
+			item	varchar(55)[17];
 		};
 		NYUINMSG2	{
 		    style   varchar(20);

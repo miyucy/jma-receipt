@@ -126,6 +126,30 @@
                                                      OCCURS  2.
                05  SPA-NYUGAI-MAX                PIC 9(04).
       *
+      *
+      *        保険組合せ
+               05  SPA-GMN-HHKNCOMBI-G.
+                   07  SPA-GMN-HHKNCOMBI          PIC X(04).
+                   07  SPA-GMN-HHKNCOMBIH         PIC X(01).
+                   07  SPA-GMN-HHKNCOMBIMEI       PIC X(50).
+      *  保険組合せ一覧
+               05  SPA-HKNCOMI-AREA.
+                   07  SPA-GMN-HKNCOMBI-LISTG.
+                       09  SPA-GMN-HKN-LIST    OCCURS  18.
+                           11  SPA-GMN-THKNCOMBINUM-G.
+                               13  SPA-GMN-THKNCOMBINUM    PIC X(04).
+                               13  SPA-GMN-THKNCOMBY1      PIC X(01).
+                               13  SPA-GMN-THKNCOMBIMEI    PIC X(50).
+      *
+                           11  SPA-NAI-TFTNRATE     PIC  9(03).
+                           11  SPA-NAI-THKNNUM      PIC  X(03).
+                           11  SPA-NAI-TKOH1HKNNUM  PIC  X(03).
+                           11  SPA-NAI-TKOH2HKNNUM  PIC  X(03).
+                           11  SPA-NAI-TKOH3HKNNUM  PIC  X(03).
+                           11  SPA-NAI-TKOH4HKNNUM  PIC  X(03).
+                       09  SPA-HKN-MAX             PIC  9(04).
+      *
+      *
       *    画面作成時にのみ使用
       *01  WRK-SPA-AREA.
 007900         05  SPA-J03NAI-AREA.
@@ -159,6 +183,7 @@
            03  FLG-CHK             PIC 9(01).
       *
            03  FLG-HKNKBN          PIC 9(01).
+           03  FLG-OK              PIC 9(01).
 012400*
 012500*    カウント領域
 012600 01  CNT-AREA.
@@ -181,6 +206,7 @@
 014400     03  IDX3                PIC 9(04).
 014400     03  IDX-D               PIC 9(04).
            03  IDX-MAX             PIC 9(04).
+           03  IDH                 PIC 9(04).
 014500*
 014600*    一時領域
 014700 01  WRK-AREA.
@@ -352,6 +378,9 @@
       *
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *
+      *    保険組合せセット領域
+           COPY    "CPORCSHKNSET.INC".
       *
       *    フィアルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -551,6 +580,9 @@
                END-IF
            END-PERFORM
       *
+      *    保険一覧編集
+           PERFORM 3008-HKNCOMBI-HEN-SEC
+      *
            PERFORM 3100-GMNSET-SYORI-SEC
       *
            .
@@ -578,6 +610,70 @@
            .
        3101-SRYKA-HEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *   保険一覧編集処理
+      *****************************************************************
+       3008-HKNCOMBI-HEN-SEC             SECTION.
+      *
+      *
+           INITIALIZE                  SPA-GMN-HKNCOMBI-LISTG
+      *
+           MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAY
+           MOVE    SPA-NAI-SRYYM       TO  SPA-SRYYMD(1:6)
+           MOVE    "01"                TO  SPA-SRYYMD(7:2)
+           MOVE    SPA-GMN-PTID        TO  SPA-PTID
+      *
+           INITIALIZE                  ORCSHKNSETAREA
+           MOVE    "1"                 TO  ORCSHKN-KBN
+           MOVE    "1"                 TO  ORCSHKN-KBN2
+           CALL    "ORCSHKNSET"        USING
+                                       SPA-AREA
+                                       ORCSHKNSETAREA
+      *
+           MOVE    ORCSHKN-HKN-MAX     TO  SPA-HKN-MAX
+           IF      SPA-HKN-MAX         =   ZERO
+               GO      TO      3008-HKNCOMBI-HEN-EXT
+           END-IF
+      *
+      *    全体を追加
+           MOVE    "0000"              TO  SPA-GMN-THKNCOMBINUM (01)
+           MOVE    "全保険（包括まとめ以外）"
+                                       TO  SPA-GMN-THKNCOMBIMEI (01)
+      *
+           MOVE    1                   TO  IDH
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   ORCSHKN-HKN-MAX
+               ADD     1                   TO  IDH
+               MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
+                                       TO  SPA-GMN-THKNCOMBINUM (IDH)
+               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
+                                       TO  SPA-GMN-THKNCOMBIMEI (IDH)
+      *
+               MOVE    ORCSHKN-NAI-HKNNUM (IDX)
+                                       TO  SPA-NAI-THKNNUM  (IDH)
+               MOVE    ORCSHKN-NAI-KOH1HKNNUM (IDX)
+                                       TO  SPA-NAI-TKOH1HKNNUM (IDH)
+               MOVE    ORCSHKN-NAI-KOH2HKNNUM (IDX)
+                                       TO  SPA-NAI-TKOH2HKNNUM (IDH)
+               MOVE    ORCSHKN-NAI-KOH3HKNNUM (IDX)
+                                       TO  SPA-NAI-TKOH3HKNNUM (IDH)
+               MOVE    ORCSHKN-NAI-KOH4HKNNUM (IDX)
+                                       TO  SPA-NAI-TKOH4HKNNUM (IDH)
+      *
+               MOVE    ORCSHKN-NAI-FTNRATE (IDX)
+                                       TO  SPA-NAI-TFTNRATE (IDH)
+      *
+               MOVE    IDH             TO  SPA-HKN-MAX
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-THKNCOMBINUM-G (01)
+                                       TO  SPA-GMN-HHKNCOMBI-G
+      *
+           .
+       3008-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *
       *
       *
       **************************************************************
@@ -712,6 +808,19 @@
                    WHEN    "80"
                        MOVE    7               TO  IDX
                END-EVALUATE
+      *
+               IF      SPA-GMN-HHKNCOMBI   =   ZERO
+      *            包括まとめ以外
+                   IF      ACCT-HKNCOMBI       =   "9999"
+                       MOVE    ZERO            TO  IDX
+                   END-IF
+               ELSE
+                   IF      SPA-GMN-HHKNCOMBI   =   ACCT-HKNCOMBI
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO            TO  IDX
+                   END-IF
+               END-IF
       *
                IF      IDX             NOT =   ZERO
                    PERFORM 3101-SRYACCT-SPA-SEC
@@ -985,6 +1094,11 @@
       *    入院診療会計編集処理
       *****************************************************************
        3102-NYUACCT-SYORI-SEC             SECTION.
+      *
+      *    包括まとめは対象外
+           IF      SPA-GMN-HHKNCOMBI   =   "9999"
+               GO      TO      3102-NYUACCT-SYORI-EXT
+           END-IF
       *
            INITIALIZE                      NYUINACCT-REC
            MOVE    SPA-HOSPID          TO  NACCT-HOSPID
@@ -1407,7 +1521,21 @@
            END-IF
            PERFORM
                UNTIL      (FLG-SRYACCT     =   1   )
-               IF      ACCT-ZAIKAISU       >   ZERO
+               MOVE    ZERO                TO  FLG-OK
+               IF      SPA-GMN-HHKNCOMBI   =   ZERO
+      *            包括まとめ以外
+                   IF      ACCT-HKNCOMBI       =   "9999"
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               ELSE
+                   IF      SPA-GMN-HHKNCOMBI   =   ACCT-HKNCOMBI
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               END-IF
+               IF     (FLG-OK              =   1   )  AND
+                      (ACCT-ZAIKAISU       >   ZERO)
       *            保険チェック
                    PERFORM 31091-HKNCOMBI-CHK-SEC
       *            自費と労災の時、診療行為検索へ
@@ -1658,6 +1786,15 @@
            END-PERFORM
            MOVE    SPA-NYUGAI-MAX      TO  J03-NYUGAIKBN-COUNT
       *
+      *    保険組合せ
+           MOVE    SPA-GMN-HHKNCOMBI-G TO  J03-HHKNCOMBI
+           PERFORM VARYING   IDX       FROM    1   BY  1
+                   UNTIL     IDX       >   SPA-HKN-MAX
+               MOVE    SPA-GMN-THKNCOMBINUM-G (IDX)
+                                           TO  J03-HHKNCOMBI-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-HKN-MAX         TO  J03-HHKNCOMBI-COUNT
+      *
            IF      SPA-GMN-SYORI       =   ZERO
                MOVE   1                TO  SPA-GMN-SYORI
            END-IF
@@ -1747,6 +1884,8 @@
                    MOVE    "SRYKA"         TO  MCP-WIDGET
                WHEN    03
                    MOVE    "NYUGAIKBN"     TO  MCP-WIDGET
+               WHEN    04
+                   MOVE    "HHKNCOMBI"     TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -1811,6 +1950,9 @@
       *        入外区分
                WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
                    PERFORM 41017-NYUGAIKBN-CHK-SEC
+      *        保険組合せ
+               WHEN    "ACTIVATE"      ALSO    "HHKNCOMBI"
+                   PERFORM 41018-HKNCOMBI-CHK-SEC
            END-EVALUATE
       *
            .
@@ -1875,6 +2017,41 @@
       *
            .
        41017-NYUGAIKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ処理
+      *****************************************************************
+       41018-HKNCOMBI-CHK-SEC             SECTION.
+      *
+           MOVE    J03-HHKNCOMBI       TO  SPA-GMN-HHKNCOMBI-G
+      *
+           MOVE    ZERO                TO  FLG-CHK
+      *
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   SPA-HKN-MAX
+              IF      SPA-GMN-THKNCOMBINUM(IDX)
+                                           =   SPA-GMN-HHKNCOMBI
+                   MOVE    SPA-GMN-THKNCOMBINUM-G (IDX)
+                                               TO  SPA-GMN-HHKNCOMBI-G
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-CHK             =   ZERO
+               MOVE    4                   TO  SPA-GMN-CUR
+               MOVE    "0003"              TO  SPA-ERRCD
+               GO      TO      41018-HKNCOMBI-CHK-EXT
+           END-IF
+      *
+      *    画面編集用内容編集処理
+           PERFORM 3100-GMNSET-SYORI-SEC
+      *
+           MOVE    1                   TO  SPA-GMN-SYORI
+           MOVE    1                   TO  SPA-GMN-CUR
+      *
+           .
+       41018-HKNCOMBI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1986,6 +2163,9 @@
                MOVE    12                  TO  SPA-NAI-SRYMM
                COMPUTE SPA-NAI-SRYYY       =   SPA-NAI-SRYYY    -   1
            END-IF
+      *
+      *    保険一覧編集
+           PERFORM 3008-HKNCOMBI-HEN-SEC
       *    画面編集用内容編集処理
            PERFORM 3100-GMNSET-SYORI-SEC
       *
@@ -2005,6 +2185,9 @@
                MOVE    1                   TO  SPA-NAI-SRYMM
                COMPUTE SPA-NAI-SRYYY       =   SPA-NAI-SRYYY    +   1
            END-IF
+      *
+      *    保険一覧編集
+           PERFORM 3008-HKNCOMBI-HEN-SEC
       *    画面編集用内容編集処理
            PERFORM 3100-GMNSET-SYORI-SEC
       *
@@ -2075,6 +2258,9 @@
                                        TO  WRK-ERRMSG
                WHEN    "0002"
                    MOVE    "入外区分入力エラー"
+                                       TO  WRK-ERRMSG
+               WHEN    "0003"
+                   MOVE    "保険組合せエラー"
                                        TO  WRK-ERRMSG
                WHEN     OTHER 
                    MOVE    SPA-ERRCD
