@@ -34,6 +34,7 @@
       *                                     退院証明書発行区分を追加
       *  00.00.04    NACL-太田    03.03.24  選定療養費情報を追加
       *  00.00.05    NACL-太田    03.04.10  請求書未収額印刷区分を追加
+      *  00.00.06    NACL-太田    03/06/25  点数マスタ有効期間の指定を修正
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -2046,8 +2047,8 @@
                GO  TO  4100-SRYCD-CHK-EXT
            END-IF
       *
-      *    "//" 入力の時、検索画面へ
-           IF    ( SPA-GMN-W24-SRYCD (IDXZ)(1 : 2)   =  "//" )
+      *    "/" 入力の時、検索画面へ
+           IF    ( SPA-GMN-W24-SRYCD (IDXZ)(1 : 1)   =  "/" )
                MOVE    SPACE           TO  WRK-INPUTCD
                PERFORM 409-KENSAKU-SEC
                GO  TO  4100-SRYCD-CHK-EXT
@@ -2808,8 +2809,13 @@
       *    点数マスタ検索
            INITIALIZE  TNS-TENSU-REC
            MOVE    WRK-SRYCD       TO  TNS-SRYCD
-           MOVE    SPA-W01-STYUKYMD
+           IF    ( SPA-W01-STYUKYMD    <   "20020401" )
+               MOVE    "20020401"  TO  ORC-DBYMD
+           ELSE
+               MOVE    SPA-W01-STYUKYMD
                                    TO  ORC-DBYMD
+           END-IF
+      *
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
            MOVE    "TENSU-KEY" TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
