@@ -3343,6 +3343,16 @@
       *        訂正の展開時はすべて自動発生済みとする
                IF      FLG-TEISEI          =   1
                    MOVE    "1"             TO  SPA-COM-AUTOFLG (IDX)
+      *            寝たきり老人在宅総合診療科判定
+                   IF     (SPA-COM-INPUTCD(IDX)    =   "114701210" OR
+                                                       "114701710" )
+      *                次行が自動発生の２４時間加算の時、自動としない
+                       IF      (SPA-COM-AUTOKBN (IDX + 1)  =   "2")
+                           MOVE    SPACE           TO  SPA-COM-AUTOKBN
+                                                           (IDX + 1)
+                       END-IF
+                   END-IF
+      *
       *            検査の逓減がある場合、フラグを変更する
                    IF     (SPA-COM-SRYKBN (IDX)    =   "60" )  AND
                           (SPA-COM-INPUTCD(IDX)(1:1)   =   "1")
