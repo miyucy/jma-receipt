@@ -88,6 +88,7 @@
       *                                     ２つ以上あった場合の記載対応
       *  01.01.07    NACL-門脇    04/05/20  点滴の器材単価編集
       *  01.01.08    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
+      *  01.01.09    NACL-門脇    04/06/08  選定外泊のコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2275,7 +2276,10 @@
       **************************************************************
        NYUINACCT-SYU-SEC           SECTION.
       *
-           IF   WRK-DAY22-NYUKHNRYO(IDY)  NOT =  ZERO
+           IF  ( WRK-DAY22-NYUKHNRYO(IDY)  NOT =  ZERO     )
+      *
+           OR  ((WRK-DAY22-NYUKHNRYO(IDY)      =  ZERO    )  AND
+                (SYUKEI-IDX   =   3  OR  5  OR  8  OR  10 ))
       *
              MOVE     ZERO     TO    FLG-ARI
              PERFORM  VARYING  SYUKEI-IDX2    FROM    1   BY  1

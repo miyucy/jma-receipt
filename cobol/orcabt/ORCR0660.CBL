@@ -53,6 +53,7 @@
       *                                     対応
       *  01.01.04    NACL-門脇    04.05.21  DBOPEN,DBDISCONNECT削除
       *  01.01.05    NACL-門脇    04.06.07  コピー句０６５変更に伴う修正
+      *  01.01.06    NACL-門脇    04.06.08  選定外泊のコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2635,6 +2636,46 @@
                     ADD    1             TO      IDX-RECE65
                     MOVE   RECE65-SRYACT-TBL(IDX)
                              TO   WRK-RECE65XX-SRYACT-TBL(IDX-RECE65 1)
+                    IF   RECE64-ZAITEN   =   ZERO
+                       EVALUATE   WRK-RECE65XX-SRYCD(IDX-RECE65 1)
+                         WHEN   "190111590"
+                             MOVE    "810000001"
+                                TO  WRK-RECE65XX-SRYCD(IDX-RECE65 1)
+                             MOVE    ZERO
+                                TO  WRK-RECE65XX-SRYSURYO(IDX-RECE65 1)
+                             MOVE    8
+                                TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+                             MOVE    "外泊（選定療養）"
+                                TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
+                         WHEN   "190116590"
+                             MOVE    "810000001"
+                                TO  WRK-RECE65XX-SRYCD(IDX-RECE65 1)
+                             MOVE    ZERO
+                                TO  WRK-RECE65XX-SRYSURYO(IDX-RECE65 1)
+                             MOVE    22
+                                TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+       MOVE "特定入院料減算（他医療機関受診）（選定療養）"
+                                TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
+                         WHEN   "190116690"
+                             MOVE    "810000001"
+                                TO  WRK-RECE65XX-SRYCD(IDX-RECE65 1)
+                             MOVE    ZERO
+                                TO  WRK-RECE65XX-SRYSURYO(IDX-RECE65 1)
+                             MOVE    26
+                                TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+       MOVE "療養病棟入院基本料減算（他医療機関受診）（選定療養）"
+                                TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
+                         WHEN   "190116790"
+                             MOVE    "810000001"
+                                TO  WRK-RECE65XX-SRYCD(IDX-RECE65 1)
+                             MOVE    ZERO
+                                TO  WRK-RECE65XX-SRYSURYO(IDX-RECE65 1)
+                             MOVE    29
+                                TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+       MOVE "診療所療養病床入院基本料減算（他医療機関受診）（選定療養）"
+                                TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
+                       END-EVALUATE
+                    END-IF
                END-PERFORM
       *
                PERFORM 990-RECE65-NEXT-SEC
