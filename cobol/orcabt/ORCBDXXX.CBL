@@ -339,8 +339,14 @@
       *    ª·Ãæ
                MOVE    PTINF-NAME          TO  HC17-NAME   (CNT-LINE)
       *    ≈¡…º»÷πÊ
-               MOVE    BD002-DENPNUM         TO  WRK-DENPNUM
+               MOVE    BD002-DENPNUM       TO  WRK-DENPNUM
                MOVE    WRK-DENPNUM         TO  HC17-HKNTEN (CNT-LINE)
+      *    ≈¡…º»Øπ‘∆¸
+               MOVE    BD002-DENPPRTYMD    TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    LNK-DAY2-EDTYMD1 (5:)
+                                           TO
+                                           HC17-MONEY (1 CNT-LINE) (2:)
       *
                MOVE    ZERO                TO  FLG-ROJIN                                            
       *
