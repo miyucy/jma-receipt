@@ -83,6 +83,10 @@
            03  IDX-MAX             PIC 9(04).
            03  HZN-IDX             PIC 9(04).
       *
+           03  IDX-SYU             PIC 9(04).
+           03  IDX-NEN             PIC 9(04).
+           03  IDX-TUS             PIC 9(04).
+      *
       *
       *    一時領域
        01  WRK-AREA.
@@ -446,7 +450,31 @@
       *****************************************************************
        1002-JIDO-KASAN-SEC        SECTION.
       *
-           MOVE    IDX-ZS              TO  IDX-S
+           MOVE    ZERO                TO  IDX-SYU
+           MOVE    ZERO                TO  IDX-NEN
+           MOVE    ZERO                TO  IDX-TUS
+      *
+           PERFORM VARYING     IDX1    FROM    1    BY  1
+                   UNTIL      (IDX1        >   200     )   OR
+                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE  AND
+                               WRK-COM-INPUTCD (IDX1)  =   SPACE )
+      *        主たる手技を判定対象とする
+               IF     (WRK-COM-DATAKBN (IDX1)  =   "1"   )   AND
+                      (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )
+                   IF      IDX-SYU         =   ZERO
+                       MOVE    IDX1            TO  IDX-SYU
+                  END-IF
+               END-IF
+      *        最後の通則加算対象位置
+               IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )  AND
+                      (WRK-COM-TUSOKUGAIKBN(IDX1)  NOT =   "1" )
+                   MOVE    IDX1            TO  IDX-NEN
+               END-IF
+           END-PERFORM
+      *
+           MOVE    IDX-SYU             TO  IDX-ZS
+      *
+      **** MOVE    IDX-ZS              TO  IDX-S
       *
       *    乳幼児加算
            IF     (LNK-ORCSC-NENREI-YY <   6  )  AND
@@ -486,6 +514,10 @@
            MOVE    "150231590"         TO  WRK-SRYCD
       *    加算料追加処理
            PERFORM 100111-KASAN-CHK-SEC
+           IF      FLG-ARI             =   ZERO
+      *        最後の通則年齢加算位置
+               MOVE    IDX-NEN             TO  IDX-S
+           END-IF
       *    加算料追加処理
            PERFORM 1002-KASAN-SET-SEC
            IF      FLG-ADD             =   1
@@ -497,6 +529,10 @@
            MOVE    "150231690"         TO  WRK-SRYCD
       *    加算料追加処理
            PERFORM 100111-KASAN-CHK-SEC
+           IF      FLG-ARI             =   ZERO
+      *        最後の通則年齢加算位置
+               MOVE    IDX-NEN             TO  IDX-S
+           END-IF
       *    加算料追加処理
            PERFORM 1002-KASAN-SET-SEC
            IF      FLG-ADD             =   1
@@ -623,18 +659,29 @@
       *    時間自動加算　存在チェック
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
+           MOVE    ZERO                TO  IDX-TUS
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL      (IDX1        >   200     )   OR
-                              (FLG-ARI                 =   1    ) OR
-                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
+      *****************       (FLG-ARI                 =   1    )  OR
+                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE  AND
+                               WRK-COM-INPUTCD (IDX1)  =   SPACE )
                IF     (WRK-COM-DATAKBN    (IDX1)       =   "2"  )  AND
                       (WRK-COM-TIMEKSNKBN (IDX1)   NOT =   ZERO )
                     MOVE    1              TO  FLG-ARI
                     MOVE    IDX1           TO  IDX-T
                END-IF
+      *        最後の通加算対象位置
+               IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )  AND
+                      (WRK-COM-TUSOKUGAIKBN (IDX1) =   "0" )
+                   MOVE    IDX1            TO  IDX-TUS
+               END-IF
            END-PERFORM
            IF      IDX-T               =   ZERO
-               CONTINUE
+               IF      IDX-TUS             =   ZERO
+                   MOVE    IDX-ZS              TO  IDX-S
+               ELSE
+                   MOVE    IDX-TUS             TO  IDX-S
+               END-IF
            ELSE
                MOVE    IDX-T               TO  IDX-S
            END-IF

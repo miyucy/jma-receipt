@@ -93,6 +93,10 @@
            03  HZN-IDX             PIC 9(04).
            03  IDX-Z2              PIC 9(04).
       *
+           03  IDX-SYU             PIC 9(04).
+           03  IDX-NEN             PIC 9(04).
+           03  IDX-TUS             PIC 9(04).
+      *
       *
       *    一時領域
        01  WRK-AREA.
@@ -628,13 +632,39 @@
       *****************************************************************
        1002-JIDO-KASAN-SEC        SECTION.
       *
-           MOVE    IDX-ZS2             TO  IDX-S
+           MOVE    ZERO                TO  IDX-SYU
+           MOVE    ZERO                TO  IDX-NEN
+           MOVE    ZERO                TO  IDX-TUS
+      *
+           PERFORM VARYING     IDX1    FROM    1    BY  1
+                   UNTIL      (IDX1        >   200     )   OR
+                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE  AND
+                               WRK-COM-INPUTCD (IDX1)  =   SPACE )
+      *        主たる手術を判定対象とする
+               IF     (WRK-COM-DATAKBN (IDX1)  =   "1"   )   AND
+                      (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )
+                   IF      IDX-SYU         =   ZERO
+                       MOVE    IDX1            TO  IDX-SYU
+                  END-IF
+               END-IF
+      *        最後の通則加算対象位置
+               IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )  AND
+                      (WRK-COM-TUSOKUGAIKBN(IDX1)  NOT =   "1" )
+                   MOVE    IDX1            TO  IDX-NEN
+               END-IF
+           END-PERFORM
+      *
+      *****MOVE    IDX-ZS2             TO  IDX-S
+           MOVE    IDX-SYU             TO  IDX-ZS
       *
       *    乳幼児加算（６歳未満で手術の時）
            IF     (LNK-ORCSC-NENREI-YY <   6  )  AND
                   (WRK-COM-SRYSYUKBN (IDX-ZS) =   "500" )
                PERFORM 10011-YOUJIKASAN-SET-SEC
            END-IF
+      *
+      *    年齢加算処理
+           PERFORM 10013-NENREI-SET-SEC
       *
       *    時間加算
            IF      (LNK-ORCSC-TIMEFLG          NOT =   ZERO   OR
@@ -643,8 +673,6 @@
                PERFORM 10012-JIKANKASAN-SET-SEC
            END-IF
       *
-      *    年齢加算処理
-           PERFORM 10013-NENREI-SET-SEC
            .
        1002-JIDO-KASAN-EXT.
            EXIT.
@@ -668,11 +696,10 @@
       *
       *    加算料追加処理
            PERFORM 100111-KASAN-CHK-SEC
-      *****IF      FLG-ARI             =   1
-      *        GO      TO      10011-YOUJIKASAN-SET-EXT
-      *    END-IF
-      *
-      *****COMPUTE IDX-S               =   IDX-ZS   +  1
+           IF      FLG-ARI             =   ZERO
+      *        最後の通則年齢加算位置
+               MOVE    IDX-NEN             TO  IDX-S
+           END-IF
       *    加算料追加処理
            PERFORM 1002-KASAN-SET-SEC
       *
@@ -687,11 +714,10 @@
            MOVE    "150000290"         TO  WRK-SRYCD
       *    加算料追加処理
            PERFORM 100111-KASAN-CHK-SEC
-      *****IF      FLG-ARI             =   1
-      *        GO      TO      10011-YOUJIKASAN-SET-EXT
-      *    END-IF
-      *
-      *****COMPUTE IDX-S               =   IDX-ZS   +  1
+           IF      FLG-ARI             =   ZERO
+      *        最後の通則年齢加算位置
+               MOVE    IDX-NEN             TO  IDX-S
+           END-IF
       *    加算料追加処理
            PERFORM 1002-KASAN-SET-SEC
       *
@@ -732,7 +758,6 @@
        10012-JIKANKASAN-SET-SEC        SECTION.
       *
            MOVE    SPACE               TO  WRK-SRYCD
-      *
       *
            MOVE    LNK-ORCSC-TIMEFLG   TO  WRK-TIMEFLG
            IF      WRK-TIMEFLG         =   ZERO
@@ -779,18 +804,31 @@
       *    時間自動加算　存在チェック
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
+           MOVE    ZERO                TO  IDX-TUS
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL      (IDX1        >   200     )   OR
-                              (FLG-ARI                 =   1    ) OR
-                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
+      *********************** (FLG-ARI                 =   1    ) OR
+                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE  AND
+                               WRK-COM-INPUTCD (IDX1)  =   SPACE )
                IF     (WRK-COM-DATAKBN    (IDX1)       =   "2"  )  AND
                       (WRK-COM-TIMEKSNKBN (IDX1)   NOT =   ZERO )
                     MOVE    1              TO  FLG-ARI
-                    MOVE    IDX1           TO  IDX-T
+                    IF      IDX-T          =   ZERO
+                        MOVE    IDX1           TO  IDX-T
+                    END-IF
+               END-IF
+      *        最後の通加算対象位置
+               IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )  AND
+                      (WRK-COM-TUSOKUGAIKBN (IDX1) =   "0" )
+                   MOVE    IDX1            TO  IDX-TUS
                END-IF
            END-PERFORM
            IF      IDX-T               =   ZERO
-               CONTINUE
+               IF      IDX-TUS             =   ZERO
+                   MOVE    IDX-ZS              TO  IDX-S
+               ELSE
+                   MOVE    IDX-TUS             TO  IDX-S
+               END-IF
            ELSE
                MOVE    IDX-T               TO  IDX-S
            END-IF
@@ -815,6 +853,8 @@
       *    年齢加算追加処理（共通）
       *****************************************************************
        10013-NENREI-SET-SEC            SECTION.
+      *    手技料の直下とする
+           MOVE    IDX-ZS              TO  IDX-S
       *
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2        >   4       )   OR
