@@ -5,12 +5,9 @@
   <name>Z01</name>
   <program_name>z01</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
@@ -28,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Sat, 03 Feb 2001 02:48:40 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -294,13 +291,18 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F7</key>
+	<signal>clicked</signal>
+      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 02:51:05 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>期限切置換</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 

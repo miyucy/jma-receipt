@@ -5,12 +5,9 @@
   <name>Z05</name>
   <program_name>z05</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
@@ -28,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Sat, 03 Feb 2001 06:08:36 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -344,7 +341,6 @@
       <y>8</y>
       <width>104</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>9</text_max_length>
@@ -360,7 +356,6 @@
       <y>8</y>
       <width>300</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>100</text_max_length>
@@ -376,7 +371,6 @@
       <y>8</y>
       <width>120</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>9</text_max_length>
@@ -392,7 +386,6 @@
       <y>8</y>
       <width>120</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>9</text_max_length>
@@ -696,7 +689,7 @@
       <label>金額</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -737,7 +730,7 @@
       <label>有効年月日</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -753,7 +746,7 @@
       <label>カナ名称</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -769,7 +762,7 @@
       <label>漢字名称</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -785,7 +778,7 @@
       <label>正式名称</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -841,7 +834,7 @@
       <label>上限点数</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -906,7 +899,7 @@
       <label>旧金額種別</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -922,7 +915,7 @@
       <label>金額種別</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -938,7 +931,7 @@
       <label>旧金額</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -954,7 +947,7 @@
       <label>単位コード</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -970,7 +963,7 @@
       <label>入力チェック区分</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -995,7 +988,7 @@
       <label>特定器材種別２</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1011,7 +1004,7 @@
       <label>特定器材種別１</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1027,7 +1020,7 @@
       <label>下限年齢</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1043,7 +1036,7 @@
       <label>上下限年齢</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1059,7 +1052,7 @@
       <label>年齢加算</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1195,7 +1188,7 @@
       <label>公表順序番号</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1211,7 +1204,7 @@
       <label>酸素等</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1227,23 +1220,7 @@
       <label>名称識別</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label58</name>
-      <x>244</x>
-      <y>364</y>
-      <width>96</width>
-      <height>16</height>
-      <label>〜    上限年齢</label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1259,7 +1236,7 @@
       <label>データ区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1423,6 +1400,22 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label58</name>
+      <x>244</x>
+      <y>364</y>
+      <width>96</width>
+      <height>16</height>
+      <label>〜 上限年齢</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
