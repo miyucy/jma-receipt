@@ -2335,9 +2335,12 @@
        4931-UKELIST-SEC                   SECTION.
       *
       *    ÁªÂòÃæ¤Ç¤Ê¤¤¤³¤È
-           IF      SPA-GMN-SELNUM  NOT =   ZERO
-               MOVE    "0027"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-GMN-CUR
+           IF     (SPA-GMN-SELNUM  NOT =   ZERO )  OR
+                  (SPA-GMN-NAME    NOT =   SPACE)
+               IF      MCP-WIDGET          =   "B11S"
+                   MOVE    "0027"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-GMN-CUR
+               END-IF
                GO      TO      4931-UKELIST-EXT
            END-IF
       *    ¼õÉÕ°ìÍ÷ÊÔ½¸
@@ -2801,6 +2804,8 @@
        4901-UKEADD-SEC              SECTION.
       *
       *    ¼õÉÕ£É£Ä¡á£°£°¸¡º÷
+           MOVE    SPACE               TO  UKETUKE-REC
+           INITIALIZE                  UKETUKE-REC
            MOVE    SPA-HOSPID          TO  UKE-HOSPID
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    ZERO                TO  UKE-UKEID
@@ -4207,12 +4212,12 @@
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "UKETUKE-KEY"           TO  ORC-DBPATH
+               MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
                PERFORM 910-UKETUKE-READ-SEC
            ELSE
                 MOVE    1              TO  FLG-UKETUKE
