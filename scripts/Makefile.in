@@ -168,6 +168,7 @@ filecheck:
 	-name "program_upgrade_online.sh" -o \
 	-name "program_upgrade_copy.sh" -o \
 	-name "program_upgrade_restart.sh" -o \
+	-name "receden_sokatu.sh" -o \
 	-printf "file\t%f\n") \
 	|sort +1 |uniq -u -f1
 
