@@ -33,6 +33,7 @@
       *  01.00.02    NACL-太田    03/02/12  期別の指定を可能にする
       *                           03/02/25  再請求区分を削除
       *  01.00.03    NACL-太田    03/10/14  入金区分を追加
+      *  01.00.04    NACL-太田    03/11/18  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -145,6 +146,9 @@
       *
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -671,7 +675,11 @@
            MOVE    SYS-5010-REC            TO  SYSKANRI-REC
       *
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    SPA-SYSYMD              TO  SYS-UPYMD
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
                MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
@@ -679,7 +687,12 @@
                MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
                MOVE    "DBUPDATE"              TO  MCP-FUNC
            ELSE
-               MOVE    SPA-SYSYMD              TO  SYS-CREYMD
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
+                                                   SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
                MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
@@ -945,6 +958,17 @@
        530-RIDSET2-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
+           EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
