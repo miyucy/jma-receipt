@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03.03.03  診療科数１０から２０へ変更
+      *  01.00.02    NACL-藤原    03/03/11  種別不明の情報を編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -187,9 +188,16 @@
       *
            03  WRK-STYMD               PIC X(08).
            03  WRK-EDYMD               PIC X(08).
-           03  WRK-UPDKBN              PIC X(01).
-           03  WRK-TEISEIKBN           PIC X(01).
-           03  WRK-ROUSAIKBN           PIC X(01).
+      *
+           03  WRK-ERR-AREA.
+               05  WRK-UPDKBN          PIC X(01).
+               05  WRK-TEISEIKBN       PIC X(01).
+               05  WRK-ROUSAIKBN       PIC X(01).
+               05  WRK-ERR-DAY         PIC 9(02).
+               05  WRK-ERR-HKNCOMBINUM PIC 9(04).
+               05  WRK-ERR-ERRKBN      PIC X(01).
+               05  WRK-ERR-TEKSTYMD    PIC 9(08).
+               05  WRK-ERR-TEKEDYMD    PIC 9(08).
       * 
            03  WRK-YMD.
                05  WRK-YY              PIC 9(04).
@@ -254,6 +262,7 @@
            COPY    "CPHKNCOMBI.INC"    REPLACING  //COMB-//
                                        BY         //WRK-COMB-//.
            03  WRK-HKNCOMBI-SYOKBN     PIC X(01).   
+           03  WRK-HKNCOMBI-ERR-DAY    PIC 9(02).   
       *
        01  WRK-CONS-AREA.
       *    労災保険番号 
@@ -683,9 +692,8 @@
                    PERFORM 910-HKNCOMBI-INV-SEC
       *
       *            未訂正分があるか
-                   MOVE    SPACE               TO  WRK-UPDKBN
-                                                   WRK-TEISEIKBN
-                                                   WRK-ROUSAIKBN
+                   MOVE    SPACE               TO  WRK-ERR-AREA
+                   INITIALIZE                      WRK-ERR-AREA
       *
                    IF      FLG-HKNCOMBI    =   ZERO
                        IF      COMB-HKNNUM     =
@@ -702,6 +710,8 @@
                        END-IF    
                    ELSE
                        MOVE    "1"             TO  WRK-TEISEIKBN    
+                       MOVE    1               TO  WRK-ERR-ERRKBN
+                       MOVE    KEY-N-HKNCOMBI  TO  WRK-ERR-HKNCOMBINUM
                    END-IF    
       *             
                    MOVE    KEY-NEW             TO  KEY-OLD
@@ -760,11 +770,20 @@
                            OR      WRK-TEISEIKBN   =   "1"
                        IF      ACCT-DAY (1 IDX)    >   ZERO
                            MOVE    "1"             TO  WRK-TEISEIKBN
+                           MOVE    IDX             TO  WRK-ERR-DAY
+                           MOVE    2               TO  WRK-ERR-ERRKBN
+                           MOVE    KEY-N-HKNCOMBI  TO
+                                                   WRK-ERR-HKNCOMBINUM
+                           MOVE    COMB-TEKSTYMD   TO  WRK-ERR-TEKSTYMD    
                        END-IF
                    END-PERFORM
                ELSE
                    IF      COMB-TEKSTYMD(1:6)  >   WRK-STYMD (1:6)
                        MOVE    "1"             TO  WRK-TEISEIKBN
+                       MOVE    3               TO  WRK-ERR-ERRKBN
+                       MOVE    KEY-N-HKNCOMBI  TO
+                                               WRK-ERR-HKNCOMBINUM
+                       MOVE    COMB-TEKSTYMD   TO  WRK-ERR-TEKSTYMD    
                    END-IF
                END-IF      
                IF      COMB-TEKEDYMD(1:6)  =   WRK-EDYMD (1:6)
@@ -775,11 +794,20 @@
                            OR      WRK-TEISEIKBN   =   "1"
                        IF      ACCT-DAY (1 IDX)    >   ZERO
                            MOVE    "1"             TO  WRK-TEISEIKBN
+                           MOVE    IDX             TO  WRK-ERR-DAY
+                           MOVE    4               TO  WRK-ERR-ERRKBN
+                           MOVE    KEY-N-HKNCOMBI  TO
+                                                   WRK-ERR-HKNCOMBINUM
+                           MOVE    COMB-TEKEDYMD   TO  WRK-ERR-TEKEDYMD    
                        END-IF
                    END-PERFORM
                ELSE
                    IF      COMB-TEKEDYMD(1:6)  <   WRK-EDYMD (1:6)
                        MOVE    "1"             TO  WRK-TEISEIKBN
+                       MOVE    5               TO  WRK-ERR-ERRKBN
+                       MOVE    KEY-N-HKNCOMBI  TO
+                                               WRK-ERR-HKNCOMBINUM
+                       MOVE    COMB-TEKEDYMD   TO  WRK-ERR-TEKEDYMD    
                    END-IF    
                END-IF    
            END-IF
@@ -959,7 +987,7 @@
                            MOVE    2               TO  IDX
                    END-EVALUATE
                    PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL   IDX1  >        31
+                           UNTIL   IDX1    >       31
                        IF      NACCT-DAY  (IDX1)       >   ZERO
                            MOVE    NACCT-DAY (IDX1)    TO
                                                    WRK-DAY (IDX IDX1)
@@ -985,12 +1013,28 @@
                    IF      WRK-HKNCOMBI-SYOKBN (IDX2)  =   "1"
                        CONTINUE
                    ELSE    
-                       MOVE    SPACE           TO  WRK-TEISEIKBN    
+                       MOVE    SPACE               TO  WRK-ERR-AREA
+                       INITIALIZE                      WRK-ERR-AREA
+      *
                        MOVE    WRK-HKNCOMBI-REC (IDX2)
                                                TO  HKNCOMBI-REC    
                        IF      WRK-HKNCOMBI-SYOKBN (IDX2)  =   "2"
-                           MOVE    "1"         TO  WRK-TEISEIKBN
+                           MOVE    "1"             TO  WRK-TEISEIKBN
+                           IF      WRK-HKNCOMBI-ERR-DAY (IDX2)
+                                                   =   ZERO
+                               MOVE    1           TO  WRK-ERR-ERRKBN
+                           ELSE
+                               MOVE    WRK-HKNCOMBI-ERR-DAY (IDX2)
+                                                   TO  WRK-ERR-DAY
+                               MOVE    6           TO  WRK-ERR-ERRKBN
+                           END-IF
+                           MOVE    WRK-COMB-HKNCOMBINUM (IDX2)  TO
+                                                   WRK-ERR-HKNCOMBINUM
                        END-IF        
+      *
+                    DISPLAY "HENSYU-ERR=" WRK-TEISEIKBN "#" 
+                                          WRK-ERR-ERRKBN "##"
+      *
                        PERFORM 200122-NYUINACCT-HENSYU-SEC
                    END-IF 
                END-PERFORM
@@ -1016,7 +1060,7 @@
                                            COMB-HKNCOMBINUM 
                    MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
                    PERFORM 910-HKNCOMBI-INV-SEC
-      *
+      *            （対象外の組合せは１をセット）
                    IF      FLG-HKNCOMBI    =   ZERO
                        MOVE    HKNCOMBI-REC    TO
                                            WRK-HKNCOMBI-REC  (IDX1)
@@ -1052,11 +1096,11 @@
                    ELSE
                        MOVE    WRK-DAY (2 IDX) TO
                                            WRK-COMB-HKNCOMBINUM (IDX1)
-                       MOVE    "2"     TO  WRK-HKNCOMBI-SYOKBN (IDX1)
+                       MOVE    "2"     TO  WRK-HKNCOMBI-SYOKBN  (IDX1)
                    END-IF
                END-IF
       *
-      *        適用範囲かチェック
+      *        適用範囲かチェック（範囲外のとき２をセット）
                IF      WRK-DAY (2 IDX)     =
                                        WRK-COMB-HKNCOMBINUM (IDX1)
                    IF      WRK-HKNCOMBI-SYOKBN (IDX1)   NOT =   SPACE
@@ -1071,7 +1115,9 @@
                            CONTINUE
                        ELSE   
                            MOVE    "2"         TO
-                                           WRK-HKNCOMBI-SYOKBN (IDX1)
+                                           WRK-HKNCOMBI-SYOKBN  (IDX1)
+                           MOVE    IDX         TO
+                                           WRK-HKNCOMBI-ERR-DAY (IDX1)
                        END-IF
                    END-IF
                    MOVE    10              TO  IDX1
@@ -1290,6 +1336,12 @@
       *    ファイル編集処理
       *****************************************************************
        20011-FILE-HENSYU-SEC              SECTION.
+      *
+      *    公費で不明分は出力しない
+           IF      WRK-SYOKBN         =   "2"
+           AND     WRK-TEISEIKBN      =   1
+               GO  TO  20011-FILE-HENSYU-EXT
+           END-IF
       *     
            INITIALIZE                      WRK-RECE61-REC
            MOVE    SYS-1001-HOSPID     TO  WRK-RECE61-HOSPID
@@ -1362,6 +1414,14 @@
            MOVE    PTHKN-CONTKBN      TO  WRK-RECE61-CONTKBN
            MOVE    PTHKN-HKNID        TO  WRK-RECE61-HKNID
            MOVE    WRK-TEISEIKBN      TO  WRK-RECE61-TEISEIKBN
+           IF      WRK-TEISEIKBN      =   "1"
+               MOVE    WRK-ERR-ERRKBN     TO  WRK-RECE61-ERR-ERRKBN
+               MOVE    WRK-ERR-DAY        TO  WRK-RECE61-ERR-DAY
+               MOVE    WRK-ERR-HKNCOMBINUM 
+                                          TO  WRK-RECE61-ERR-HKNCOMBINUM
+               MOVE    WRK-ERR-TEKSTYMD   TO  WRK-RECE61-ERR-TEKSTYMD
+               MOVE    WRK-ERR-TEKEDYMD   TO  WRK-RECE61-ERR-TEKEDYMD
+           END-IF 
       *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
@@ -1426,6 +1486,16 @@
            END-PERFORM
       *
            IF      WRK-TEISEIKBN           =   "1"
+               IF      WRK-RECE61-TEISEIKBN    =   SPACE
+                   MOVE    WRK-ERR-ERRKBN  TO  WRK-RECE61-ERR-ERRKBN
+                   MOVE    WRK-ERR-DAY     TO  WRK-RECE61-ERR-DAY
+                   MOVE    WRK-ERR-HKNCOMBINUM TO 
+                                           WRK-RECE61-ERR-HKNCOMBINUM
+                   MOVE    WRK-ERR-TEKSTYMD
+                                           TO  WRK-RECE61-ERR-TEKSTYMD
+                   MOVE    WRK-ERR-TEKEDYMD
+                                           TO  WRK-RECE61-ERR-TEKEDYMD
+               END-IF            
                MOVE    "1"                 TO  WRK-RECE61-TEISEIKBN     
            END-IF          
       *
@@ -1747,9 +1817,8 @@
                PERFORM  910-HKNCOMBI-INV-SEC
       *
       *        未訂正分があるか
-               MOVE    SPACE               TO  WRK-UPDKBN
-                                               WRK-TEISEIKBN
-                                               WRK-ROUSAIKBN
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
       *
                IF      FLG-HKNCOMBI        =   ZERO
                    IF      COMB-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM OR 
@@ -1765,6 +1834,8 @@
                    END-IF    
                ELSE
                    MOVE    "1"                 TO  WRK-TEISEIKBN        
+                   MOVE    1                   TO  WRK-ERR-ERRKBN
+                   MOVE    ACCT-HKNCOMBI       TO  WRK-ERR-HKNCOMBINUM        
                END-IF    
       *
                MOVE    KEY-NEW             TO  KEY-OLD
@@ -1848,11 +1919,22 @@
                IF      WRK-HKNCOMBI-SYOKBN (IDX2)  =   "1"
                    CONTINUE
                ELSE    
-                   MOVE    SPACE           TO  WRK-TEISEIKBN    
+                   MOVE    SPACE               TO  WRK-ERR-AREA
+                   INITIALIZE                      WRK-ERR-AREA
                    MOVE    WRK-HKNCOMBI-REC (IDX2)
                                            TO  HKNCOMBI-REC    
                    IF      WRK-HKNCOMBI-SYOKBN (IDX2)  =   "2"
                        MOVE    "1"         TO  WRK-TEISEIKBN
+                       IF      WRK-HKNCOMBI-ERR-DAY (IDX2)
+                                                   =   ZERO
+                           MOVE    1           TO  WRK-ERR-ERRKBN
+                       ELSE
+                           MOVE    WRK-HKNCOMBI-ERR-DAY (IDX2)
+                                               TO  WRK-ERR-DAY
+                           MOVE    6           TO  WRK-ERR-ERRKBN
+                       END-IF
+                       MOVE    WRK-COMB-HKNCOMBINUM (IDX2)  TO
+                                               WRK-ERR-HKNCOMBINUM
                    END-IF        
                    PERFORM 200122-NYUINACCT-HENSYU-SEC
                END-IF 

@@ -75,6 +75,7 @@
       *  01.00.24    NACL-藤原    03/03/07  レセプト記載外公費情報追加
       *                                     診療科数１０から２０へ変更
       *  01.00.25    NACL-門脇    03/03/07  在総診フラグセット
+      *  01.00.26    NACL-藤原    03/03/11  種別不明の情報を編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1006,6 +1007,15 @@
       *    在総診フラグセット
            PERFORM    ZAITAKU-SET-SEC
       *
+      *    レセプト種別不明エラー情報
+           IF      RECE01-TEISEIKBN      =   "1"
+               MOVE    RECE01-ERR-ERRKBN     TO  RECE02-ERR-ERRKBN
+               MOVE    RECE01-ERR-DAY        TO  RECE02-ERR-DAY
+               MOVE    RECE01-ERR-HKNCOMBINUM
+                                             TO  RECE02-ERR-HKNCOMBINUM
+               MOVE    RECE01-ERR-TEKSTYMD   TO  RECE02-ERR-TEKSTYMD
+               MOVE    RECE01-ERR-TEKEDYMD   TO  RECE02-ERR-TEKEDYMD
+           END-IF 
            .
        210-HENSYU-EXT.
            EXIT.

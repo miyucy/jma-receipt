@@ -114,6 +114,7 @@
       *  01.00.09    NACL-藤原    03.02.12  補助区分の追加
       *  01.00.10    NACL-門脇    03.03.03  剤番号桁修正対応
       *  01.00.11    NACL-藤原    03.03.05  レセプトコメントＤＢに入外区分を追加
+      *  01.00.12    NACL-藤原    03/03/11  種別不明のとき情報を編集
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -497,6 +498,7 @@
            03  WRK-SRYYMD                      PIC X(08).
            03  WRK-KGKZ                        PIC ZZZ,ZZZ,ZZZ.
            03  WRK-KGK9                        PIC ZZZ,ZZZ,ZZ9.
+           03  WRK-KGK2                        PIC Z9.
       *
       *    レセプトコメント編集
            03  WRK-COMMENT-G.
@@ -606,6 +608,45 @@
                05  WRK-JINISSUZ    PIC  ZZ.
       *
        01  WRK-CNT                 PIC  9(5).
+      *
+       01  WRK-ERR-MSG-AREA.
+           03  WRK-ERR-MSG-1.
+               05  WRK-ERR-HKNCOMBINUM-1
+                                   PIC X(08).
+               05  FILLER          PIC X(28)   VALUE
+                   "の保険組合せが存在しません。". 
+      *
+           03  WRK-ERR-MSG-2.
+               05  WRK-ERR-DAY-2   PIC X(04).
+               05  FILLER          PIC X(04)   VALUE
+                   "日の". 
+               05  WRK-ERR-MSG-21.
+                   07  FILLER          PIC X(10)   VALUE
+                   "保険組合せ". 
+                   07  WRK-ERR-HKNCOMBINUM-2
+                                   PIC X(08).
+                   07  FILLER          PIC X(14)   VALUE
+                   "は適用開始日が". 
+                   07  WRK-ERR-TEKSTYMD-2
+                                   PIC X(20).
+                   07  FILLER          PIC X(14)   VALUE
+                   "となっています". 
+      *
+           03  WRK-ERR-MSG-3.
+               05  WRK-ERR-DAY-3   PIC X(04).
+               05  FILLER          PIC X(04)   VALUE
+                   "日の". 
+               05  WRK-ERR-MSG-31.
+                   07  FILLER          PIC X(10)   VALUE
+                   "保険組合せ". 
+                   07  WRK-ERR-HKNCOMBINUM-3
+                                   PIC X(08).
+                   07  FILLER          PIC X(14)   VALUE
+                   "は適用終了日が". 
+                   07  WRK-ERR-TEKEDYMD-3
+                                   PIC X(20).
+                   07  FILLER          PIC X(14)   VALUE
+                   "となっています". 
       *
       *    患者情報（ワーク）
        01  WRK-PTINF-REC.
@@ -1519,15 +1560,116 @@
            END-IF
       *
       *    県単用項目
+      *    但し、レセプト種別不明のときは原因を編集する
            IF      CNT-PAGE            =   1
-           AND     FLG-RECE11          =   ZERO
-               MOVE    RECE11-HC06-HEAD1-G TO  HC06-HEAD1-G
-               MOVE    RECE11-HC06-HEAD2-G TO  HC06-HEAD2-G
-               MOVE    RECE11-HC06-HEAD3-G TO  HC06-HEAD3-G
+               IF      RECE02-RECESYUBETU  =    ZERO
+                   PERFORM 3101-FUMEI-HENSYU-SEC
+               ELSE 
+                   IF      FLG-RECE11          =   ZERO
+                       INSPECT RECE11-HC06-HEAD1-G  REPLACING   ALL "  "
+                                                        BY  "　" 
+                       INSPECT RECE11-HC06-HEAD2-G  REPLACING   ALL "  "
+                                                        BY  "　" 
+                       INSPECT RECE11-HC06-HEAD3-G  REPLACING   ALL "  "
+                                                        BY  "　" 
+                       MOVE    RECE11-HC06-HEAD1-G TO  HC06-HEAD1-G
+                       MOVE    RECE11-HC06-HEAD2-G TO  HC06-HEAD2-G
+                       MOVE    RECE11-HC06-HEAD3-G TO  HC06-HEAD3-G
+                   END-IF
+               END-IF
            END-IF
       *
            .
        310-HC101-HEAD-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト種別不明のとき不明の原因を編集処理
+      *****************************************************************
+       3101-FUMEI-HENSYU-SEC              SECTION.
+      *
+      *
+           EVALUATE    RECE02-ERR-ERRKBN
+               WHEN    1
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-ERR-HKNCOMBINUM
+                                           TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-ERR-HKNCOMBINUM-1
+                   END-IF
+                   MOVE    WRK-ERR-MSG-1   TO   HC06-HEAD1-G
+               WHEN    2
+               WHEN    3
+                   IF      RECE02-ERR-DAY  >   ZERO
+                       INITIALIZE              ORCSKANACHKAREA
+                       MOVE    "2"             TO  KANACHK-SYORI 
+                       MOVE    RECE02-ERR-DAY  TO  WRK-KGK2
+                       MOVE    WRK-KGK2        TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  WRK-ERR-DAY-2
+                       END-IF
+                   END-IF
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-ERR-HKNCOMBINUM
+                                           TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-ERR-HKNCOMBINUM-2
+                   END-IF
+                   MOVE    RECE02-ERR-TEKSTYMD
+                                           TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD2
+                                           TO   WRK-ERR-TEKSTYMD-2
+                   IF      RECE02-ERR-ERRKBN    =   3
+                       MOVE    WRK-ERR-MSG-21  TO   HC06-HEAD1-G
+                   ELSE
+                       MOVE    WRK-ERR-MSG-2   TO   HC06-HEAD1-G
+                   END-IF
+               WHEN    4
+               WHEN    5
+                   IF      RECE02-ERR-DAY  >   ZERO
+                       INITIALIZE              ORCSKANACHKAREA
+                       MOVE    "2"             TO  KANACHK-SYORI 
+                       MOVE    RECE02-ERR-DAY  TO  WRK-KGK2
+                       MOVE    WRK-KGK2        TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  WRK-ERR-DAY-3
+                       END-IF
+                   END-IF
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-ERR-HKNCOMBINUM
+                                           TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-ERR-HKNCOMBINUM-3
+                   END-IF
+                   MOVE    RECE02-ERR-TEKEDYMD
+                                           TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD2
+                                           TO   WRK-ERR-TEKEDYMD-3
+                   IF      RECE02-ERR-ERRKBN    =   5
+                       MOVE    WRK-ERR-MSG-31  TO   HC06-HEAD1-G
+                   ELSE
+                       MOVE    WRK-ERR-MSG-3   TO   HC06-HEAD1-G
+                   END-IF
+           END-EVALUATE        
+           INSPECT HC06-HEAD1-G  REPLACING ALL "  "    BY  "　"
+      *
+           .
+       3101-FUMEI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03.03.03  診療科数１０から２０へ変更
       *  01.00.02    NACL-藤原    03/03/07  レセプト記載外公費情報追加
+      *  01.00.03    NACL-藤原    03/03/11  種別不明の情報を編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1029,6 +1030,16 @@
       *
       *    病棟区分セット
            PERFORM    BYOTOKBN-SET-SEC
+      *
+      *    レセプト種別不明エラー情報
+           IF      RECE61-TEISEIKBN      =   "1"
+               MOVE    RECE61-ERR-ERRKBN     TO  RECE62-ERR-ERRKBN
+               MOVE    RECE61-ERR-DAY        TO  RECE62-ERR-DAY
+               MOVE    RECE61-ERR-HKNCOMBINUM
+                                             TO  RECE62-ERR-HKNCOMBINUM
+               MOVE    RECE61-ERR-TEKSTYMD   TO  RECE62-ERR-TEKSTYMD
+               MOVE    RECE61-ERR-TEKEDYMD   TO  RECE62-ERR-TEKEDYMD
+           END-IF 
            .
        210-HENSYU-EXT.
            EXIT.
