@@ -1360,6 +1360,11 @@
                 OR  (SPA-RENNUM          <   JYURRK-RENNUM  ))
                CONTINUE
            ELSE
+      *      同時でなく、診察がない時対象外とする
+             IF     (JYURRK-DOUJI-RENNUM     =   ZERO  )  AND
+                    (JYURRK-SRYKBN-G         =   SPACE )
+                 CONTINUE
+             ELSE
       *
                IF      SPA-SRYKA           =   JYURRK-SRYKA
                    MOVE    JYURRK-REC          TO  HZN-JYURRK-REC
@@ -1391,6 +1396,9 @@
                        MOVE    10              TO  IDX-HKN
                    END-IF
                END-PERFORM
+      *
+             END-IF
+      *
            END-IF
       *
       *    複数科診療の判定をする
