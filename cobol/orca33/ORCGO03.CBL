@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.07.01  出力先プリンタサブ追加
+      *  01.00.01    NACL-太田    03.07.10  印刷処理時処理確認画面へ遷移
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -176,6 +177,12 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
+           03  WRK-HENTIME.
+               05  WRK-HH          PIC X(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-MM          PIC X(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-SS          PIC X(02).
       *                             
        01  WRK-SHELL-NAME.
            05  FILLER             PIC X(16) VALUE
@@ -361,6 +368,9 @@
       *    作表処理
                WHEN    "OID1"
                    PERFORM 330-OID1-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+               WHEN    "OID2"
+                   PERFORM 340-OID2-SET-SEC
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
@@ -673,6 +683,18 @@
        330-OID1-SET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    確認画面（ＣＩＤ２）ＯＫ処理
+      *****************************************************************
+       340-OID2-SET-SEC            SECTION.
+      *
+           MOVE    SPACE           TO  SPA-OID1-FLG
+                                       SPA-O99-FLG
+           MOVE    SPACE           TO  SPA-OIDCD
+           MOVE    SPACE           TO  SPA-OIDCD2      
+           .
+       340-OID2-SET-EXT.
+           EXIT.
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
@@ -1049,6 +1071,9 @@
            CALL    "MCPSUB"        USING
                                    MCPAREA
                                    MCPDATA-REC
+      *
+           PERFORM 490-KAKUNIN-SEC
+      *
            .
        450-PRINT-EXT.
            EXIT.
@@ -1127,6 +1152,10 @@
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
+           MOVE    SPACE               TO  O99
+           MOVE    ZERO                TO  O99-COUNT
+                                           O99-PROGRESSBAR-VALUE  
+      *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -1135,31 +1164,69 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
            CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
+                                   ORCSJOBKANRIAREA 
                                    JOBKANRI-REC 
            IF      SJOBKANRI-RETURN
                                    =   ZERO
-               IF      JOB-ENDYMD      =   SPACE
-                   MOVE    "7777"          TO  SPA-ERRCD
-                   MOVE    "請求書印刷中です"
-                                           TO  WRK-TEIKIERR
+               MOVE    1               TO  IDX1
+               MOVE    JOB-JOBID       TO  O99-RENNUM   (IDX1)
+               MOVE    JOB-SHELLMSG    TO  O99-SHORINM  (IDX1)
+               MOVE    JOB-STARTTIME(1:2)
+                                       TO  WRK-HH
+               MOVE    JOB-STARTTIME(3:2)
+                                       TO  WRK-MM
+               MOVE    JOB-STARTTIME(5:2)
+                                       TO  WRK-SS
+               MOVE    WRK-HENTIME     TO  O99-STARTTIME(IDX1)
+               MOVE    JOB-ENDTIME(1:2)
+                                       TO  WRK-HH
+               MOVE    JOB-ENDTIME(3:2)
+                                       TO  WRK-MM
+               MOVE    JOB-ENDTIME(5:2)
+                                       TO  WRK-SS
+               MOVE    WRK-HENTIME     TO  O99-ENDTIME  (IDX1)
+               MOVE    JOB-YOBI        TO  O99-ERRMSG   (IDX1)
+               IF    ( JOB-ENDYMD      =   SPACE )
+                   MOVE    "処理中です"    TO  O99-MSG
                ELSE
-      *************IF     JOB-TERMID       =   SPA-TERMID     
-                       IF      JOB-ERRCD       =   SPACE
-                           MOVE    "8888"          TO  SPA-OIDCD
-                       ELSE     
-                           MOVE    SPACE           TO  WRK-TEIKIERR
-                           STRING  JOB-YOBI        DELIMITED  BY  SPACE
-                                   "（"            DELIMITED  BY  SIZE
-                                   JOB-PGID        DELIMITED  BY  SPACE
-                                   "）"            DELIMITED  BY  SIZE      
-                                                   INTO  WRK-TEIKIERR
-                           END-STRING                      
-                           MOVE    "9999"          TO  SPA-ERRCD 
-                       END-IF
-      *************END-IF    
+                   IF    ( JOB-ERRCD       =   SPACE )
+                       CONTINUE
+                   ELSE
+                       STRING  JOB-YOBI    DELIMITED  BY  SPACE
+                               "【"        DELIMITED  BY  SIZE
+                              JOB-SHELLMSG DELIMITED  BY  SPACE
+                              "】"         DELIMITED  BY  SIZE      
+                                           INTO  O99-MSG
+                   END-IF                          
                END-IF
+               MOVE    IDX1                TO  O99-COUNT
            END-IF
+      *
+           MOVE    WIDGET-INSENSITIVE   TO  O99-B12-STATE
+           IF    ( O99-MSG              =   SPACE )
+               IF    ( O99-COUNT            >   ZERO )
+                   MOVE    "B12"                TO  MCP-WIDGET
+                   MOVE    "処理は正常に終了しました"
+                                                TO  O99-MSG
+               ELSE
+                   MOVE    "B01"                TO  MCP-WIDGET
+                   MOVE    "該当する処理はありません"
+                                                TO  O99-MSG
+               END-IF                                 
+           ELSE                                        
+               MOVE    "B11"                TO  MCP-WIDGET
+           END-IF                                 
+      *
+           MOVE    "O03"                TO  SPA-MOTOPG
+           MOVE    "O99"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "O99"                TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+      *
            .
        490-KAKUNIN-EXT.
            EXIT.

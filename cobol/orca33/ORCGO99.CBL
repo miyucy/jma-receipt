@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    03.07.10  印刷指示画面からの遷移を考慮
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -80,6 +81,9 @@
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "TEIKI1".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
+           03  WRK-CONS-JOB-SHELLID1
+                                   PIC X(08)   VALUE   "TEIKI2".
+           03  WRK-CONS-JOB-JOBID1 PIC 9(07)   VALUE   1.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -214,10 +218,17 @@
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-CONS-JOB-JOBID
+           IF    ( SPA-MOTOPG      =   "O03" )
+               MOVE    WRK-CONS-JOB-JOBID1
                                    TO  JOB-JOBID
-           MOVE    WRK-CONS-JOB-SHELLID
+               MOVE    WRK-CONS-JOB-SHELLID1
                                    TO  JOB-SHELLID
+           ELSE
+               MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+               MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           END-IF
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC 
@@ -241,8 +252,13 @@
                                        TO  WRK-SS
                MOVE    WRK-HENTIME     TO  O99-ENDTIME  (IDX)
                MOVE    JOB-YOBI        TO  O99-ERRMSG   (IDX)
-               COMPUTE O99-PROGRESSBAR-VALUE  =
-                           JOB-STEPCNT  /  4 *   100 
+               IF    ( SPA-MOTOPG  =   "O03" )
+                   COMPUTE O99-PROGRESSBAR-VALUE  =
+                           JOB-STEPCNT  /  1 *   100
+               ELSE
+                   COMPUTE O99-PROGRESSBAR-VALUE  =
+                           JOB-STEPCNT  /  4 *   100
+               END-IF
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "処理中です"    TO  O99-MSG
                ELSE
@@ -262,12 +278,16 @@
            MOVE    WIDGET-INSENSITIVE   TO  O99-B12-STATE
            IF      O99-MSG              =   SPACE
                IF      O99-COUNT            >   ZERO    
-                   MOVE    WIDGET-NORMAL        TO  O99-B12-STATE
-                   MOVE    "B12"                TO  MCP-WIDGET
                    MOVE    "処理は正常に終了しました"
                                                 TO  O99-MSG
                    MOVE   100                   TO
                                             O99-PROGRESSBAR-VALUE                             
+                   IF    ( SPA-MOTOPG  =   "O03" )
+                       MOVE    "B01"                TO  MCP-WIDGET
+                   ELSE
+                       MOVE    WIDGET-NORMAL        TO  O99-B12-STATE
+                       MOVE    "B12"                TO  MCP-WIDGET
+                   END-IF 
                ELSE
                    MOVE    "B01"                TO  MCP-WIDGET
                    MOVE    "該当する処理はありません"
