@@ -23,7 +23,7 @@
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
       *****************************************************************
        01  SPA-U02.
-           02  SPA-U02-AREA.
+           03  SPA-U02-AREA.
                05  SPA-GMN-PAGE                       PIC 9(02).
                05  SPA-GMN-MAX                        PIC 9(02).
                05  SPA-GMN-CUR                        PIC 9(02).
@@ -151,7 +151,7 @@
                            11  SPA-MAE-KAKUNINYMDW     PIC X(10).
       *
       *    £√£Ã£¡£…£Õ≤ËÃÃ
-           02  SPA-U02X-AREA.
+           03  SPA-U02X-AREA.
                05  SPA-U02X-FLG                        PIC X(02).
                05  SPA-U02X-CODE                       PIC X(01).
                05  SPA-U02X-CUR                        PIC 9(02).
@@ -168,4 +168,7 @@
                    07  SPA-GMN-SCODE           PIC X(01).
                    07  SPA-GMN-F1              PIC X(01).
                    07  SPA-GMN-SCODEMEI        PIC X(18).
+      *
+      *Ã·§Í¿Ë
+           03  SPA-HZN-MOTOPG          PIC X(08).
       *
