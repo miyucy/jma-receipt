@@ -4711,6 +4711,14 @@
                END-IF
            END-IF
       *
+      *    病名コード最大個数オーバー
+           IF      LNK-BYO-BYOMEICD-MAX-ERR =   1
+               MOVE    "0077"          TO  SPA-ERRCD
+               MOVE    SPACE           TO  SPA-CIDCD2
+                                           WRK-HAISIYMDH
+               GO  TO  41013-BYOMEI-CHK-EXT
+           END-IF
+      *
       *    修飾語コードのみのとき
            IF      LNK-BYO-BYOMEICD-ERR    =   1
                MOVE    "0006"          TO  SPA-ERRCD
@@ -4719,14 +4727,6 @@
                MOVE    ZERO            TO  SPA-NAI-C02-BYOMEIMOJI
                MOVE    SPACE           TO  SPA-NAI-C02-BYOMEIHENFLG
                                            SPA-GMN-C02-BYOMEIHENFLG
-               GO  TO  41013-BYOMEI-CHK-EXT
-           END-IF
-      *
-      *    病名コード最大個数オーバー
-           IF      LNK-BYO-BYOMEICD-MAX-ERR =   1
-               MOVE    "0077"          TO  SPA-ERRCD
-               MOVE    SPACE           TO  SPA-CIDCD2
-                                           WRK-HAISIYMDH
                GO  TO  41013-BYOMEI-CHK-EXT
            END-IF
       *
