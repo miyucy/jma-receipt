@@ -32,6 +32,7 @@
       * 02.00.01     MCC-多々納   02/04/12  自費の修正
       * 02.00.02     NACL-多々納  02/07/29  パラメタファイルをＤＢへ
       * 02.00.03     NACL−多々納 02/09/19  インターフェースの変更
+      * 02.00.04     NACL-多々納  02/11/20  自賠責器材追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -570,7 +571,7 @@
                05  WRK-HGMN-TBLREC.
                    07  WRK-HGMN-DATA   PIC X(130).
                05  WRK-HCOM-TBLREC.
-                   07  WRK-HCOM-DATA   PIC X(400).
+                   07  WRK-HCOM-DATA   PIC X(800).
            03  WRK-HOZ-IDX             PIC 9(04).
       *
       *
@@ -1364,7 +1365,8 @@
                                        =   "80"  )  AND
                   (SPA-COM-INPUTCD(IDX2)(1:5)
                                        =   "09591"  OR
-                                           "09592"  )
+                                           "09592"  OR
+                                           "09593"  )
                MOVE    SPACE               TO  SPA-COM-KEIFLG(IDX2)
                GO      TO      31011-SPA-HEN-EXT
            END-IF
@@ -2982,7 +2984,8 @@
                                        =   "80"  )  AND
                   (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
                                        =   "09591"  OR
-                                           "09592"  )
+                                           "09592"  OR
+                                           "09593"  )
                MOVE    SPACE               TO  SPA-COM-KEIFLG
                                                            (SPA-GMN-IDX)
                GO      TO      4101191-JIHI-HEN-EXT
@@ -5422,6 +5425,7 @@
            INITIALIZE                      JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-J01-SRYKA       TO  JYURRK-SRYKA
            MOVE    SPA-SEL-DENPNUM     TO  JYURRK-DENPNUM
       *

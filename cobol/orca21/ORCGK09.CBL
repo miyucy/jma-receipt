@@ -401,6 +401,7 @@
        01  SCRAREA.
            COPY    "K01.INC".
            COPY    "K02.INC".
+           COPY    "K02N.INC".
            COPY    "K021.INC".
            COPY    "K022.INC".
            COPY    "K023.INC".
@@ -416,6 +417,7 @@
            COPY    "K10.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
+           COPY    "K03X.INC".
            COPY    "KERR.INC".
            COPY    "KERR2.INC".
            COPY    "KID1.INC".
@@ -1062,7 +1064,7 @@
            INITIALIZE                  JYURRK-KEY
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
-      ***  MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
            MOVE    SPA-NAI-RRKYMD(SPA-NAI-DOSELNUM)
                                        TO  JYURRK-SRYYMD
@@ -1340,12 +1342,22 @@
                    ADD     1               TO  IDG
                    PERFORM 31011-GYO1-HEN-SEC
                END-IF
+      *TEST
+                  DISPLAY "IDZ:" IDZ
+      *TEST
       *
       *        剤明細編集
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5   )  OR
                                   (IDG         >   400 )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDZ) =  SPACE)
+      *TEST
+                  DISPLAY "IDZ:" IDZ
+                           ",IDG:" IDG
+                           ",IDX:" IDX
+                           ",LNK-WKSRY-SRYCD:" LNK-WKSRY-SRYCD (IDX IDZ)
+                           ",WRK-MEISAISU:" WRK-MEISAISU
+      *TEST
                    ADD     1                   TO  WRK-MEISAISU
       *            自費の時、金額を表示
                    IF      LNK-WKSRY-SRYKBN (IDX)  =   "95"  OR
@@ -2022,7 +2034,7 @@
            MOVE    ZERO                TO  SPA-NAI-DOSELNUM
            MOVE    SPACE               TO  SPA-GMN-DOSELNUM
       *
-           MOVE    "K02"               TO  SPA-SAKIPG
+           MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
            MOVE    "K09"               TO  SPA-MOTOPG
       *
            MOVE    SPACE               TO  LINKAREA

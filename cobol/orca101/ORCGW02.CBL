@@ -37,6 +37,7 @@
       *  01.00.08    MCC-伊藤     02/07/17  医療機関ＩＤは入力不可とする
       *                                     ためカーソル制御を変更
       *  01.00.09    NACL-森脇    02.08.16  薬剤情報発行フラグ追加
+      *  01.00.10    NACL-多々納  02/11/12  一括入力、全角チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -210,6 +211,8 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
+           03  FLG-OK              PIC 9(01).
+      *
       *    カウント領域
       *
        01  CNT-AREA.
@@ -235,6 +238,9 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+      *    入力項目名
+           03  WRK-MCP-WIDGET          PIC X(64).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -276,6 +282,9 @@
       *
            COPY  "CPORCSLNK.INC".
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -305,6 +314,14 @@
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
            COPY    "WERR.INC".
            COPY    "WID1.INC".
       *
@@ -314,14 +331,15 @@
            LINKAREA
            SCRAREA.
       *
-      *
-      *
       *****************************************************************
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           DISPLAY "000-PROC-SEC-START"
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
            MOVE    SPA-FREE        TO  SPA-W02
@@ -832,82 +850,265 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           .
+       200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
       *    基本情報タグ
-               WHEN    "ACTIVATE"      ALSO    "PREFNUM"
-                   PERFORM 4100-PREFNUM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "TENHYOKBN"
-                   PERFORM 4101-TENHYOKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HOSPCD"
-                   PERFORM 4102-HOSPCD-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HOSPSBT"
-                   PERFORM 4103-HOSPSBT-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HOSPID"
-                   PERFORM 4104-HOSPID-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HOSPNAME"
-                   PERFORM 4105-HOSPNAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "KAISETUNAME"
-                   PERFORM 4106-KAISETUNAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "KANRINAME"
-                   PERFORM 4107-KANRINAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "BEDSU"
-                   PERFORM 4108-BEDSU-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "ROUPAYKBN"
-                   PERFORM 4109-ROUPAYKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HOSPSBT1"
-                   PERFORM 4110-HOSPSBT1-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HOSPCDN"
-                   PERFORM 4111-HOSPCDN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SYOHOKBN"
-                   PERFORM 4118-SYOHOKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SKYPRTFLG"
-                   PERFORM 4126-SKYPRTFLG-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SYOHOPRTFLG"
-                   PERFORM 4127-SYOHOPRTFLG-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "ZENSYOHOFLG"
-                   PERFORM 4128-ZENSYOHOFLG-CHK-SEC
-      *----(01.00.09) LINE ADD START ----------------------------------
-               WHEN    "ACTIVATE"      ALSO    "YAKUJYOFLG"
-                   PERFORM 4129-YAKUJYOFLG-CHK-SEC
-      *----(01.00.09) LINE ADD END   ----------------------------------
+           MOVE    W02-PREFNUM         TO  SPA-GMN-PREFNUM-G
+           MOVE    W02-TENHYOKBN       TO  SPA-GMN-TENHYOKBN-G
+           MOVE    W02-HOSPCD          TO  SPA-GMN-HOSPCD
+           MOVE    W02-HOSPSBT         TO  SPA-GMN-HOSPSBT-G
+           MOVE    W02-HOSPID          TO  SPA-GMN-HOSPID
+           MOVE    W02-HOSPNAME        TO  SPA-GMN-HOSPNAME
+           MOVE    W02-KAISETUNAME     TO  SPA-GMN-KAISETUNAME
+           MOVE    W02-KANRINAME       TO  SPA-GMN-KANRINAME
+           MOVE    W02-BEDSU           TO  SPA-GMN-BEDSU
+           MOVE    W02-ROUPAYKBN       TO  SPA-GMN-ROUPAYKBN-G
+           MOVE    W02-HOSPSBT1        TO  SPA-GMN-HOSPSBT1-G
+           MOVE    W02-HOSPCDN         TO  SPA-GMN-HOSPCDN
+           MOVE    W02-SYOHOKBN        TO  SPA-GMN-SYOHOKBN-G
+           MOVE    W02-SKYPRTFLG       TO  SPA-GMN-SKYPRTFLG-G
+           MOVE    W02-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
+           MOVE    W02-ZENSYOHOFLG     TO  SPA-GMN-ZENSYOHOFLG-G
+           MOVE    W02-YAKUJYOFLG      TO  SPA-GMN-YAKUJYOFLG-G
+      *
       *    連絡先情報タグ
-               WHEN    "ACTIVATE"      ALSO    "POST"
-                   PERFORM 4112-POST-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "ADRS"
-                   PERFORM 4113-ADRS-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "TEL"
-                   PERFORM 4114-TEL-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "FAX" 
-                   PERFORM 4115-FAX-CHK-SEC
-      *    広告情報タグ
-               WHEN    "ACTIVATE"      ALSO    "EMAIL"  
-                   PERFORM 4116-EMAIL-CHK-SEC  
-               WHEN    "ACTIVATE"      ALSO    "HPURL"  
-                   PERFORM 4117-HPURL-CHK-SEC                
-      *    割引率情報タグ
-               WHEN    "ACTIVATE"      ALSO    "TEIRITU"  
-                   PERFORM 4119-TEIRITU-CHK-SEC  
-               WHEN    "ACTIVATE"      ALSO    "DISCOUNTRATE"  
-                   PERFORM 4120-DISCOUNT-RATE-CHK-SEC                
-      *    減免事由情報タグ
-               WHEN    "ACTIVATE"      ALSO    "DISCOUNTBODY"  
-                   PERFORM 4121-DISCOUNT-BODY-CHK-SEC  
-               WHEN    "ACTIVATE"      ALSO    "DISCOUNTKBN"  
-                   PERFORM 4122-DISCOUNT-KBN-CHK-SEC                
-      *    滋養対コメント情報タグ
-               WHEN    "ACTIVATE"      ALSO    "CONDITIONBODY"  
-                   PERFORM 4123-CONDITION-BODY-CHK-SEC  
-               WHEN    "ACTIVATE"      ALSO    "CONDITIONWORD"  
-                   PERFORM 4124-CONDITION-WORD-CHK-SEC                
-               WHEN    "ACTIVATE"      ALSO    "ICONFILENAME"  
-                   PERFORM 4125-ICON-FILENAME-CHK-SEC                
-      *    請求書自費名称情報タグ
-               WHEN    "ACTIVATE"      ALSO    "JIHINAME"  
-                   PERFORM 4126-JIHINAME-CHK-SEC  
+           MOVE    W02-POST            TO  SPA-GMN-POST
+           MOVE    W02-ADRS            TO  SPA-GMN-ADRS
+           MOVE    W02-TEL             TO  SPA-GMN-TEL
+           MOVE    W02-FAX             TO  SPA-GMN-FAX
+           MOVE    W02-EMAIL           TO  SPA-GMN-EMAIL
+           MOVE    W02-HPURL           TO  SPA-GMN-HPURL
+           MOVE    W02-TEIRITU         TO  SPA-GMN-TEIRITU
+      *
+           MOVE    W02-DISCOUNTRATE    TO  SPA-GMN-DISCOUNT-RATE
+      *
+           MOVE    W02-DISCOUNTBODY    TO  SPA-GMN-DISCOUNT-BODY
+           MOVE    W02-DISCOUNTKBN     TO  SPA-GMN-DISCOUNT-KBN
+      *
+           MOVE    W02-CONDITIONBODY   TO  SPA-GMN-CONDITION-BODY
+           MOVE    W02-CONDITIONWORD   TO  SPA-GMN-CONDITION-WORD
+           MOVE    W02-ICONFILENAME    TO  SPA-GMN-ICON-FILENAME
+      *
+           MOVE    W02-JIHINAME        TO  SPA-GMN-JIHINAME
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           EVALUATE    SPA-W01-KANRICD
+               WHEN    "1001"
+      *            医療機関情報ー基本情報
+                   PERFORM 41021-KIHON-1001-SEC
+               WHEN    "1002"
+      *            医療機関情報ー所在地、連絡先情報
+                   PERFORM 41021-KIHON-1002-SEC
+               WHEN    "1003"
+      *            医療機関情報ー広告情報
+                   PERFORM 41021-KIHON-1003-SEC
+               WHEN    "1013"
+      *            医療機関情報ー請求書自費名称情報
+                   PERFORM 41021-KIHON-1013-SEC
+               WHEN    "1018"
+               WHEN    "1019"
+               WHEN    "1020"
+      *            医療機関情報ー状態情報
+                   PERFORM 41021-KIHON-1018-SEC
+               WHEN    "1026"
+      *             医療機関情報ー減免事由情報
+                   PERFORM 41021-KIHON-1026-SEC
+               WHEN    "1027"
+      *             医療機関情報ー割引率情報
+                   PERFORM 41021-KIHON-1027-SEC
            END-EVALUATE
       *
            .
-       200-ENTRY-EXT.
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     医療機関情報ー基本情報基本チェック処理
+      *****************************************************************
+       41021-KIHON-1001-SEC       SECTION.
+      *
+           PERFORM 4100-PREFNUM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4101-TENHYOKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4102-HOSPCD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4103-HOSPSBT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4104-HOSPID-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4105-HOSPNAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4106-KAISETUNAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4107-KANRINAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4108-BEDSU-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4109-ROUPAYKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4110-HOSPSBT1-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+           PERFORM 4111-HOSPCDN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4118-SYOHOKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4126-SKYPRTFLG-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4127-SYOHOPRTFLG-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4128-ZENSYOHOFLG-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4129-YAKUJYOFLG-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           .
+       41021-KIHON-1001-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関情報ー所在地、連絡先情報チェック処理
+      *****************************************************************
+       41021-KIHON-1002-SEC       SECTION.
+      *
+      *    住所チェック
+           PERFORM 4113-ADRS-CHK-SEC
+      *
+           .
+       41021-KIHON-1002-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    広告情報タグ処理
+      *****************************************************************
+       41021-KIHON-1003-SEC       SECTION.
+      *
+           .
+       41021-KIHON-1003-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    請求書自費名称情報チェック処理
+      *****************************************************************
+       41021-KIHON-1013-SEC       SECTION.
+      *
+           .
+       41021-KIHON-1013-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    状態情報チェック処理
+      *****************************************************************
+       41021-KIHON-1018-SEC       SECTION.
+      *
+           .
+       41021-KIHON-1018-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    減免事由情報チェック処理
+      *****************************************************************
+       41021-KIHON-1026-SEC       SECTION.
+      *
+      *    割引率区分チェック処理
+           PERFORM 4122-DISCOUNT-KBN-CHK-SEC
+           .
+       41021-KIHON-1026-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    割引率情報タグ処理
+      *****************************************************************
+       41021-KIHON-1027-SEC       SECTION.
+      *
+           .
+       41021-KIHON-1027-EXT.
            EXIT.
       *
       *****************************************************************
@@ -915,17 +1116,21 @@
       *****************************************************************
        4100-PREFNUM-CHK-SEC       SECTION.
       *
-           MOVE    1                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-PREFNUM         TO  SPA-GMN-PREFNUM-G           
-      *
-           IF      SPA-GMN-PREFNUMMEI  =   SPACE
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       47
+               IF      SPA-GMN-PREFNUM     =   SPA-GMN-PREFNUML (IDY)
+                   MOVE    SPA-GMN-PREFNUMLST (IDY)
+                                           TO  SPA-GMN-PREFNUM-G
+                   MOVE    47              TO  IDY
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
                MOVE    "0001"              TO  SPA-ERRCD
-           END-IF    
+               MOVE    1                   TO  SPA-GMN-CUR
+           END-IF
       *
-           IF      SPA-ERRCD           =   SPACE 
-               MOVE    2                   TO  SPA-GMN-CUR
-           END-IF    
            .
        4100-PREFNUM-CHK-EXT.
            EXIT.
@@ -935,17 +1140,20 @@
       *****************************************************************
        4101-TENHYOKBN-CHK-SEC       SECTION.
       *
-           MOVE    2                   TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       1
+               IF      SPA-GMN-TENHYOKBN   =   SPA-GMN-TENHYOKBNL (IDY)
+                   MOVE    SPA-GMN-TENHYOKBNLST (IDY)
+                                           TO  SPA-GMN-TENHYOKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0002"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
+           END-IF
       *
-           MOVE    W02-TENHYOKBN       TO  SPA-GMN-TENHYOKBN-G
-      *
-           IF      SPA-GMN-TENHYOKBNMEI    =   SPACE
-               MOVE    "0002"             TO  SPA-ERRCD
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE 
-               MOVE    3                  TO  SPA-GMN-CUR
-           END-IF    
            .
        4101-TENHYOKBN-CHK-EXT.
            EXIT.
@@ -955,11 +1163,6 @@
       *****************************************************************
        4102-HOSPCD-CHK-SEC     SECTION.
       *
-           MOVE    3                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-HOSPCD          TO  SPA-GMN-HOSPCD
-      *                           
-           MOVE    4                   TO  SPA-GMN-CUR
            .
        4102-HOSPCD-CHK-EXT.
            EXIT.
@@ -969,17 +1172,20 @@
       *****************************************************************
        4103-HOSPSBT-CHK-SEC     SECTION.
       *
-           MOVE    4                   TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SPA-GMN-HOSPSBT     =   SPA-GMN-HOSPSBTL (IDY)
+                   MOVE    SPA-GMN-HOSPSBTLST (IDY)
+                                           TO  SPA-GMN-HOSPSBT-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE    4                   TO  SPA-GMN-CUR
+           END-IF
       *
-           MOVE    W02-HOSPSBT         TO  SPA-GMN-HOSPSBT-G
-      *
-           IF      SPA-GMN-HOSPSBTMEI    =   SPACE
-               MOVE    "0003"             TO  SPA-ERRCD
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE 
-               MOVE    6                  TO  SPA-GMN-CUR
-           END-IF    
            .
        4103-HOSPSBT-CHK-EXT.
            EXIT.
@@ -988,12 +1194,6 @@
       *    医療機関ＩＤチェック
       *****************************************************************
        4104-HOSPID-CHK-SEC          SECTION.
-      *
-           MOVE    5                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-HOSPID          TO  SPA-GMN-HOSPID
-      *
-           ADD     1                   TO  SPA-GMN-CUR
            .
        4104-HOSPID-CHK-EXT.
            EXIT.
@@ -1003,11 +1203,19 @@
       *****************************************************************
        4105-HOSPNAME-CHK-SEC          SECTION.
       *
-           MOVE    6                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-HOSPNAME        TO  SPA-GMN-HOSPNAME
-      *
-           ADD     1                   TO  SPA-GMN-CUR
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-HOSPNAME    TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0012"          TO  SPA-ERRCD
+               MOVE    6               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-HOSPNAME
+           END-IF
            .
        4105-HOSPNAME-CHK-EXT.
            EXIT.
@@ -1017,11 +1225,20 @@
       *****************************************************************
        4106-KAISETUNAME-CHK-SEC        SECTION.
       *
-           MOVE    7                   TO  SPA-GMN-CUR
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-KAISETUNAME TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0012"          TO  SPA-ERRCD
+               MOVE    7               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-KAISETUNAME
+           END-IF
       *
-           MOVE    W02-KAISETUNAME     TO  SPA-GMN-KAISETUNAME
-      *
-           ADD     1                   TO  SPA-GMN-CUR
            .
        4106-KAISETUNAME-CHK-EXT.
            EXIT.
@@ -1031,11 +1248,20 @@
       *****************************************************************
        4107-KANRINAME-CHK-SEC            SECTION.
       *
-           MOVE    8                   TO  SPA-GMN-CUR
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-KANRINAME   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0012"          TO  SPA-ERRCD
+               MOVE    8               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-KANRINAME
+           END-IF
       *
-           MOVE    W02-KANRINAME       TO  SPA-GMN-KANRINAME
-      *
-           ADD     1                    TO  SPA-GMN-CUR
            .
        4107-KANRINAME-CHK-EXT.
            EXIT.
@@ -1044,12 +1270,6 @@
       *    病床数チェック
       *****************************************************************
        4108-BEDSU-CHK-SEC        SECTION.
-      *
-           MOVE    9                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-BEDSU           TO  SPA-GMN-BEDSU
-      *
-           ADD     1                   TO  SPA-GMN-CUR
            .
        4108-BEDSU-CHK-EXT.
            EXIT.
@@ -1059,17 +1279,20 @@
       *****************************************************************
        4109-ROUPAYKBN-CHK-SEC            SECTION.
       *
-           MOVE    10                  TO  SPA-GMN-CUR
-      * 
-           MOVE    W02-ROUPAYKBN       TO  SPA-GMN-ROUPAYKBN-G
       *
-           IF      SPA-GMN-ROUPAYKBNMEI    =   SPACE
-               MOVE    "0004"             TO  SPA-ERRCD
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE 
-               MOVE    11                 TO  SPA-GMN-CUR
-           END-IF    
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SPA-GMN-ROUPAYKBN   =   SPA-GMN-ROUPAYKBNL (IDY)
+                   MOVE    SPA-GMN-ROUPAYKBNLST (IDY)
+                                           TO  SPA-GMN-ROUPAYKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0004"              TO  SPA-ERRCD
+               MOVE    10                  TO  SPA-GMN-CUR
+           END-IF
            .
        4109-ROUPAYKBN-CHK-EXT.
            EXIT.
@@ -1079,17 +1302,20 @@
       *****************************************************************
        4110-HOSPSBT1-CHK-SEC         SECTION.
       *
-           MOVE    11                  TO  SPA-GMN-CUR
-      *
-           MOVE    W02-HOSPSBT1        TO  SPA-GMN-HOSPSBT1-G
-      *
-           IF      SPA-GMN-HOSPSBT1MEI =   SPACE
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SPA-GMN-HOSPSBT1    =   SPA-GMN-HOSPSBT1L (IDY)
+                   MOVE    SPA-GMN-HOSPSBT1LST (IDY)
+                                           TO  SPA-GMN-HOSPSBT1-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
                MOVE    "0005"              TO  SPA-ERRCD
-           END-IF    
+               MOVE    11                  TO  SPA-GMN-CUR
+           END-IF
       *
-           IF      SPA-ERRCD           =   SPACE 
-               MOVE    32                  TO  SPA-GMN-CUR
-           END-IF    
            .
        4110-HOSPSBT1-CHK-EXT.
            EXIT.
@@ -1099,11 +1325,20 @@
       *****************************************************************
        4111-HOSPCDN-CHK-SEC       SECTION.
       *
-           MOVE    12                  TO  SPA-GMN-CUR
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-HOSPCDN     TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0012"          TO  SPA-ERRCD
+               MOVE    12              TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-HOSPCDN
+           END-IF
       *
-           MOVE    W02-HOSPCDN         TO  SPA-GMN-HOSPCDN
-      *
-           MOVE    1                   TO  SPA-GMN-CUR
            .
        4111-HOSPCDN-CHK-EXT.
            EXIT.
@@ -1113,17 +1348,21 @@
       *****************************************************************
        4118-SYOHOKBN-CHK-SEC       SECTION.
       *
-           MOVE    32                  TO  SPA-GMN-CUR
       *
-           MOVE    W02-SYOHOKBN        TO  SPA-GMN-SYOHOKBN-G
-      *
-           IF      SPA-GMN-SYOHOKBNMEI =   SPACE
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SPA-GMN-SYOHOKBN    =   SPA-GMN-SYOHOKBNL (IDY)
+                   MOVE    SPA-GMN-SYOHOKBNLST (IDY)
+                                           TO  SPA-GMN-SYOHOKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
                MOVE    "0006"              TO  SPA-ERRCD
-           END-IF    
+               MOVE    32                  TO  SPA-GMN-CUR
+           END-IF
       *
-           IF      SPA-ERRCD           =   SPACE 
-               MOVE    33                  TO  SPA-GMN-CUR
-           END-IF    
            .
        4118-SYOHOKBN-CHK-EXT.
            EXIT.
@@ -1133,18 +1372,21 @@
       *****************************************************************
        4126-SKYPRTFLG-CHK-SEC       SECTION.
       *
-           MOVE    33                  TO  SPA-GMN-CUR
-      *
-           MOVE    W02-SKYPRTFLG       TO  SPA-GMN-SKYPRTFLG-G
-      *
-           IF      SPA-GMN-SKYPRTFLGMEI    =   SPACE
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SPA-GMN-SKYPRTFLG    =   SPA-GMN-SKYPRTFLGL (IDY)
+                   MOVE    SPA-GMN-SKYPRTFLGLST (IDY)
+                                           TO  SPA-GMN-SKYPRTFLG-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
                MOVE    "0007"              TO  SPA-ERRCD
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE 
-               MOVE    34                  TO  SPA-GMN-CUR
+               MOVE    33                  TO  SPA-GMN-CUR
            END-IF
-           .    
+      *
+           .
        4126-SKYPRTFLG-CHK-EXT.
            EXIT.
       *
@@ -1153,41 +1395,45 @@
       *****************************************************************
        4127-SYOHOPRTFLG-CHK-SEC       SECTION.
       *
-           MOVE    34                  TO  SPA-GMN-CUR
-      *
-           MOVE    W02-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
-      *
-           IF      SPA-GMN-SYOHOPRTFLGMEI    =   SPACE
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SPA-GMN-SYOHOPRTFLG =   SPA-GMN-SYOHOPRTFLGL
+                                                              (IDY)
+                   MOVE    SPA-GMN-SYOHOPRTFLGLST (IDY)
+                                           TO  SPA-GMN-SYOHOPRTFLG-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
                MOVE    "0008"              TO  SPA-ERRCD
+               MOVE    34                  TO  SPA-GMN-CUR
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE 
-               MOVE    35                  TO  SPA-GMN-CUR
-           END-IF
            .
        4127-SYOHOPRTFLG-CHK-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    前回処方表示フラグ
       *****************************************************************
        4128-ZENSYOHOFLG-CHK-SEC       SECTION.
       *
-           MOVE    35                  TO  SPA-GMN-CUR
-      *
-           MOVE    W02-ZENSYOHOFLG     TO  SPA-GMN-ZENSYOHOFLG-G
-      *
-           IF      SPA-GMN-ZENSYOHOFLGMEI    =   SPACE
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SPA-GMN-ZENSYOHOFLG =   SPA-GMN-ZENSYOHOFLGL
+                                                              (IDY)
+                   MOVE    SPA-GMN-ZENSYOHOFLGLST (IDY)
+                                           TO  SPA-GMN-ZENSYOHOFLG-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
                MOVE    "0009"              TO  SPA-ERRCD
-           END-IF    
-      *
-      *----(01.00.09) LINE ADD START ----------------------------------
-           IF      SPA-ERRCD           =   SPACE 
-               MOVE    36                  TO  SPA-GMN-CUR
-      *         MOVE    12                  TO  SPA-GMN-CUR
+               MOVE    35                  TO  SPA-GMN-CUR
            END-IF
-      *----(01.00.09) LINE ADD END   ----------------------------------
+      *
            .
        4128-ZENSYOHOFLG-CHK-EXT.
            EXIT.
@@ -1198,17 +1444,21 @@
       *****************************************************************
        4129-YAKUJYOFLG-CHK-SEC       SECTION.
       *
-           MOVE    36                TO  SPA-GMN-CUR
-      *
-           MOVE    W02-YAKUJYOFLG    TO  SPA-GMN-YAKUJYOFLG-G
-      *
-           IF      SPA-GMN-YAKUJYOFLGMEI    =   SPACE
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SPA-GMN-YAKUJYOFLG =   SPA-GMN-YAKUJYOFLGL
+                                                              (IDY)
+                   MOVE    SPA-GMN-YAKUJYOFLGLST (IDY)
+                                           TO  SPA-GMN-YAKUJYOFLG-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
                MOVE    "0011"              TO  SPA-ERRCD
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE 
-               MOVE    12                  TO  SPA-GMN-CUR
+               MOVE    36                  TO  SPA-GMN-CUR
            END-IF
+      *
            .
        4129-YAKUJYOFLG-CHK-EXT.
            EXIT.
@@ -1219,11 +1469,6 @@
       *****************************************************************
        4112-POST-CHK-SEC           SECTION.
       *
-           MOVE    20                  TO  SPA-GMN-CUR
-      *
-           MOVE    W02-POST            TO  SPA-GMN-POST
-      *
-           ADD     1                   TO  SPA-GMN-CUR
            .
        4112-POST-CHK-EXT.
            EXIT.
@@ -1233,122 +1478,28 @@
       *****************************************************************
        4113-ADRS-CHK-SEC        SECTION.
       *
-           MOVE    21                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-ADRS             TO  SPA-GMN-ADRS
-      *
-           ADD     1                    TO  SPA-GMN-CUR
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-ADRS        TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0012"          TO  SPA-ERRCD
+               MOVE    21              TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-ADRS
+           END-IF
+     *
            . 
        4113-ADRS-CHK-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    電話番号チェック処理
-      *****************************************************************
-       4114-TEL-CHK-SEC        SECTION.
-      *
-           MOVE    22                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-TEL              TO  SPA-GMN-TEL
-      *
-           ADD     1                    TO  SPA-GMN-CUR
-           .
-       4114-TEL-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＦＡＸ番号チェック処理
-      *****************************************************************
-       4115-FAX-CHK-SEC        SECTION.
-      *
-           MOVE    23                  TO  SPA-GMN-CUR
-      *
-           MOVE    W02-FAX             TO  SPA-GMN-FAX
-      *
-           MOVE    20                  TO  SPA-GMN-CUR
-           .
-       4115-FAX-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ｅメールアドレスチェック処理
-      *****************************************************************
-       4116-EMAIL-CHK-SEC        SECTION.
-      *
-           MOVE    30                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-EMAIL            TO  SPA-GMN-EMAIL
-      *
-           ADD     1                   TO  SPA-GMN-CUR
-           .
-       4116-EMAIL-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＨＰアドレスチェック処理
-      *****************************************************************
-       4117-HPURL-CHK-SEC        SECTION.
-      *
-           MOVE    31                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-HPURL            TO  SPA-GMN-HPURL
-      *
-           MOVE    30                   TO  SPA-GMN-CUR
-           .
-       4117-HPURL-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    定率定額区分チェック処理
-      *****************************************************************
-       4119-TEIRITU-CHK-SEC        SECTION.
-      *
-           MOVE    40                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-TEIRITU          TO  SPA-GMN-TEIRITU
-      *
-           MOVE    41                   TO  SPA-GMN-CUR
-           .
-       4119-TEIRITU-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    割引率（定額）チェック処理
-      *****************************************************************
-       4120-DISCOUNT-RATE-CHK-SEC        SECTION.
-      *
-           MOVE    41                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-DISCOUNTRATE     TO  SPA-GMN-DISCOUNT-RATE
-      *
-           MOVE    40                   TO  SPA-GMN-CUR
-           .
-       4120-DISCOUNT-RATE-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    減免事由チェック処理
-      *****************************************************************
-       4121-DISCOUNT-BODY-CHK-SEC        SECTION.
-      *
-           MOVE    50                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-DISCOUNTBODY     TO  SPA-GMN-DISCOUNT-BODY
-      *
-           MOVE    51                   TO  SPA-GMN-CUR
-           .
-       4121-DISCOUNT-BODY-CHK-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    割引率区分チェック処理
       *****************************************************************
        4122-DISCOUNT-KBN-CHK-SEC        SECTION.
       *
-           MOVE    51                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-DISCOUNTKBN          TO  SPA-GMN-DISCOUNT-KBN
-      * 
            INITIALIZE                      SYS-1027-REC
            MOVE    "1027"                  TO  SYS-1027-KANRICD
            MOVE    SPA-GMN-DISCOUNT-KBN    TO  SYS-1027-KBNCD
@@ -1358,74 +1509,17 @@
            IF      FLG-SYSKANRI            =   ZERO
                CONTINUE
            ELSE
-               MOVE    "0010"                  TO  SPA-ERRCD
+               MOVE    "0010"              TO  SPA-ERRCD
+               MOVE    51                  TO  SPA-GMN-CUR
                GO  TO  4122-DISCOUNT-KBN-CHK-EXT
            END-IF
       *
-           MOVE    50                   TO  SPA-GMN-CUR
            .
        4122-DISCOUNT-KBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    状態内容チェック処理
-      *****************************************************************
-       4123-CONDITION-BODY-CHK-SEC        SECTION.
-      *
-           MOVE    60                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-CONDITIONBODY    TO  SPA-GMN-CONDITION-BODY
-      *
-           MOVE    61                   TO  SPA-GMN-CUR
-           .
-       4123-CONDITION-BODY-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    比喩単語チェック処理
-      *****************************************************************
-       4124-CONDITION-WORD-CHK-SEC        SECTION.
-      *
-           MOVE    61                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-CONDITIONWORD    TO  SPA-GMN-CONDITION-WORD
-      *
-           MOVE    62                   TO  SPA-GMN-CUR
-           .
-       4124-CONDITION-WORD-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    アイコンファイルチェック処理
-      *****************************************************************
-       4125-ICON-FILENAME-CHK-SEC        SECTION.
-      *
-           MOVE    62                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-ICONFILENAME     TO  SPA-GMN-ICON-FILENAME
-      *
-           MOVE    60                   TO  SPA-GMN-CUR
-           .
-       4125-ICON-FILENAME-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    アイコンファイルチェック処理
-      *****************************************************************
-       4126-JIHINAME-CHK-SEC        SECTION.
-      *
-           MOVE    70                   TO  SPA-GMN-CUR
-      *
-           MOVE    W02-JIHINAME         TO  SPA-GMN-JIHINAME
-      *
-           MOVE    70                   TO  SPA-GMN-CUR
-           .
-       4126-JIHINAME-CHK-EXT.
-           EXIT.
-
-      *
-      *****************************************************************
-      *    ｼタグ編集処理
+      *    タグ編集処理
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
       *
@@ -1530,11 +1624,16 @@
        4031-DEL-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC              SECTION.
+      *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      490-TOUROKU-EXT
+           END-IF
       *
            PERFORM 4900-KANRENCHK-SEC
            IF      SPA-ERRCD        =   SPACE
@@ -1974,9 +2073,7 @@
            MOVE    SPA-GMN-JIHINAME     TO  W02-JIHINAME
       *
       *    画面カーソルセット処理    
-           DISPLAY "5001-MAPCUR-SEC-START"
            PERFORM 5001-MAPCUR-SEC
-           DISPLAY "5001-MAPCUR-SEC-END"
       *
            .
        500-GMNHEN-EXT.
@@ -2066,6 +2163,9 @@
                WHEN    "0011"
                    MOVE    "薬剤情報発行フラグ入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0012"
+                   MOVE    "全角で入力して下さい。"
+                                               TO  SPA-ERRMSG
       *----(01.00.09) LINE ADD END   ----------------------------------
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
@@ -2134,6 +2234,10 @@
       *    画面カーソルセット処理    
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
+      *
+          IF      SPA-GMN-CUR          =   ZERO
+              PERFORM 50011-CUR-SET-SEC
+          END-IF
       *
           EVALUATE    SPA-GMN-CUR
                 WHEN    01
@@ -2221,10 +2325,88 @@
                     MOVE    5                TO  W02-PAGENO
                 WHEN    70  THRU    79
                     MOVE    6                TO  W02-PAGENO
-            END-EVALUATE      
+            END-EVALUATE
       *
            .
        5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面カーソルセット処理（入力位置より）
+      *****************************************************************
+       50011-CUR-SET-SEC             SECTION.
+      *   基本情報
+          EVALUATE    WRK-MCP-WIDGET
+              WHEN    "PREFNUM"
+                  MOVE    2                TO  SPA-GMN-CUR
+              WHEN    "TENHYOKBN"
+                  MOVE    3                TO  SPA-GMN-CUR
+              WHEN    "HOSPCD"
+                  MOVE    4                TO  SPA-GMN-CUR
+              WHEN    "HOSPSBT"
+                  MOVE    6                TO  SPA-GMN-CUR
+              WHEN    "HOSPNAME"
+                  MOVE    7                TO  SPA-GMN-CUR
+              WHEN    "KAISETUNAME"
+                  MOVE    8                TO  SPA-GMN-CUR
+              WHEN    "KANRINAME"
+                  MOVE    9                TO  SPA-GMN-CUR
+              WHEN    "BEDSU"
+                  MOVE    10               TO  SPA-GMN-CUR
+              WHEN    "ROUPAYKBN"
+                  MOVE    11               TO  SPA-GMN-CUR
+              WHEN    "HOSPSBT1"
+                  MOVE    32               TO  SPA-GMN-CUR
+              WHEN    "SYOHOKBN"
+                  MOVE    33               TO  SPA-GMN-CUR
+              WHEN    "SKYPRTFLG"
+                  MOVE    34               TO  SPA-GMN-CUR
+              WHEN    "SYOHOPRTFLG"
+                  MOVE    35               TO  SPA-GMN-CUR
+              WHEN    "ZENSYOHOFLG"
+                  MOVE    36               TO  SPA-GMN-CUR
+              WHEN    "YAKUJYOFLG"
+                  MOVE    12               TO  SPA-GMN-CUR
+              WHEN    "HOSPCDN"
+                  MOVE    01               TO  SPA-GMN-CUR
+      *       連絡先情報
+              WHEN    "POST"
+                  MOVE    21               TO  SPA-GMN-CUR
+              WHEN    "ADRS"
+                  MOVE    22               TO  SPA-GMN-CUR
+              WHEN    "TEL"
+                  MOVE    23               TO  SPA-GMN-CUR
+              WHEN    "FAX"
+                  MOVE    20               TO  SPA-GMN-CUR
+      *       広告情報
+              WHEN    "EMAIL"
+                  MOVE    31               TO  SPA-GMN-CUR
+              WHEN    "HPURL"
+                  MOVE    30               TO  SPA-GMN-CUR
+      *       割引率情報
+              WHEN    "TEIRITU"
+                  MOVE    41               TO  SPA-GMN-CUR
+              WHEN    "DISCOUNTRATE"
+                  MOVE    40               TO  SPA-GMN-CUR
+      *       減免事由情報
+              WHEN    "DISCOUNTBODY"
+                  MOVE    51               TO  SPA-GMN-CUR
+              WHEN    "DISCOUNTKBN"
+                  MOVE    50               TO  SPA-GMN-CUR
+      *       減免事由情報
+              WHEN    "CONDITIONBODY"
+                  MOVE    61               TO  SPA-GMN-CUR
+              WHEN    "CONDITIONWORD"
+                  MOVE    62               TO  SPA-GMN-CUR
+              WHEN    "ICONFILENAME"
+                  MOVE    60               TO  SPA-GMN-CUR
+      *       請求書情報
+              WHEN    "JIHINAME"
+                  MOVE    70               TO  SPA-GMN-CUR
+          END-EVALUATE
+      *
+           .
+       50011-CUR-SET-EXT.
            EXIT.
       *
       *****************************************************************

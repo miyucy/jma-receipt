@@ -72,6 +72,7 @@
        01  SCRAREA.
            COPY    "K01.INC".
            COPY    "K02.INC".
+           COPY    "K02N.INC".
            COPY    "K021.INC".
            COPY    "K022.INC".
            COPY    "K023.INC".
@@ -87,6 +88,7 @@
            COPY    "K10.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
+           COPY    "K03X.INC".
            COPY    "KERR.INC".
            COPY    "KERR2.INC".
            COPY    "KID1.INC".

@@ -42,6 +42,10 @@
       *  01.00.11    MCC-多々納   02/06/18  月代り受給者番号の追加
       *  02.00.00    MCC-多々納   02/06/21  画面レイアウト変更
       *  02.00.01    NACL-多々納  02/09/10  平成１４年１０月改正対応
+      *  02.00.02    NACL-多々納  02/10/23  入院追加
+      *  02.00.03    NACL-多々納  02/11/07  入院基本画面遷移追加
+      *  02.00.04    NACL-多々納  02/11/20  ＣＬＡＩＭ処理追加
+      *  02.00.05    NACL-多々納  02/11/21  共済下船３月追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -88,7 +92,17 @@
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-MONTHLYNUM      PIC 9(01).
       *
+           03  FLG-PTNYUINRRK      PIC 9(01).
+           03  FLG-PTTAINFUKA      PIC 9(01).
+           03  FLG-NYUINACT        PIC 9(01).
+           03  FLG-NYUINACCT       PIC 9(01).
+      *
+           03  FLG-SYSKANRI       PIC 9(01).
+      *
            03  FLG-HAKKOU          PIC 9(01).
+      *
+           03  FLG-CLAIM           PIC 9(01).
+           03  FLG-CLAIM-OK        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -137,6 +151,17 @@
       *保存元ＰＧ
            03  WRK-HZN-PTNUM              PIC X(20).
            03  WRK-HZN-MOTOPG             PIC X(08).
+      *    受付時間
+           03  WRK-UKETIME                PIC X(06).
+           03  WRK-PTID                   PIC X(10).
+      *
+      *    ＣＬＡＩＭファイル名
+       01  CLAIM-FILE.
+           03  FILLER              PIC X(30)   VALUE
+               "scripts/claim/HL01.sh".
+      *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
       *
       *    画面カーソル移動用
@@ -171,6 +196,10 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *　　（ＣＬＡＩＭ接続）
+           COPY    "CPSK9000.INC".
+           COPY    "CPSK9001.INC".
       *
       *    受付
        01  UKETUKE-REC.
@@ -278,6 +307,22 @@
        01  MONTHLYNUM-REC.
            COPY    "CPMONTHLYNUM.INC".
       *
+      *    患者入院履歴
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
+      *
+      *    患者他院歴付加情報
+       01  PTTAINFUKA-REC.
+           COPY    "CPPTTAINFUKA.INC".
+      *
+      *    入院診療行為マスター
+       01  NYUINACT-REC.
+           COPY    "CPNYUINACT.INC".
+      *
+      *    入院診療会計マスタ−
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -306,6 +351,11 @@
            COPY    "MCPAREA"          REPLACING
                                      //MCP// BY //WRK-MCP//.
       *
+      *===> For Claim Start
+           COPY    "CPSHELLTBL.INC".
+           COPY    "ORCA-DBPATH".
+      *===> For Claim End
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -331,6 +381,7 @@
            COPY    "P0201.INC".
            COPY    "P982.INC".
            COPY    "P100.INC".
+           COPY    "P02X.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -468,8 +519,10 @@
                    PERFORM 310-SPA-SET-SEC
       *        受付、診療行為、患者照会より
                WHEN    "K02"
+               WHEN    "K02N"
                WHEN    "U02"
                WHEN    "Q02"
+               WHEN    "I01"
                    INITIALIZE                  SPA-P02SCRAREA
                    INITIALIZE                  SPA-P02KYOUTU
                    MOVE    "P02"               TO  SPA-P02-GAMEN
@@ -513,6 +566,15 @@
                        MOVE    "P02E"              TO  SPA-MOTOPG
                        PERFORM 49012-GMNSPA-SET-SEC
                        MOVE    1                   TO  SPA-GMN-CUR
+                   END-IF
+                   GO      TO                  300-SCREEN-EXT
+      *        ＣＬＡＩＭ画面より
+               WHEN    "P02X"
+                   MOVE    "P02"               TO  SPA-P02-GAMEN
+                   IF      SPA-P02X-FLG        =   SPACE
+                       MOVE    1                   TO  SPA-GMN-CUR
+                   ELSE
+                       PERFORM 3009-CLAIM-SYORI-SEC
                    END-IF
                    GO      TO                  300-SCREEN-EXT
       *        各画面より
@@ -680,6 +742,25 @@
       *
            .
        310-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＣＬＡＭＥ画面よりの処理
+      *****************************************************************
+       3009-CLAIM-SYORI-SEC              SECTION.
+      *
+           IF      SPA-P02X-FLG        =  "OK"
+               MOVE    1               TO  FLG-CLAIM
+           ELSE
+               MOVE    ZERO            TO  FLG-CLAIM
+           END-IF
+      *
+      *    更新処理
+           MOVE    1                   TO  FLG-CLAIM-OK
+           PERFORM 4902-KOUSIN-SYORI-SEC
+      *
+          .
+       3009-CLAIM-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1375,7 +1456,8 @@
            END-IF
       *----(01.00.03) LINE ADD END   ----------------------------------
       *
-           IF      SPA-HZN-MOTOPG      =   "U02"  OR  "K02" OR "Q02"
+           IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
+                                                  OR  "I01"
                MOVE    "P02"               TO  SPA-MOTOPG
                MOVE    SPACE               TO  SPA-MOTOPG2
                MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
@@ -1409,7 +1491,8 @@
       *****************************************************************
        210-BACK-SYORI-SEC               SECTION.
       *
-           IF      SPA-HZN-MOTOPG      =   "U02"  OR  "K02" OR "Q02"
+           IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
+                                                  OR  "I01"
       *********MOVE    SPA-MACHIPG         TO  SPA-SAKIPG
                MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
                MOVE    "P02"               TO  SPA-MOTOPG
@@ -1543,7 +1626,9 @@
                GO      TO      4991-DELETE-SYORI-EXT
            END-IF
       *
-           IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
+      *****IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
+           IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
+                                                  OR  "I01"
                IF      SPA-HZN-PTNUM       =   SPACE
                    CONTINUE
                ELSE
@@ -1922,6 +2007,54 @@
                PERFORM 900-YOYAKU-READ-SEC
             END-PERFORM
       *
+      *    入院診療行為マスター
+           INITIALIZE                      NYUINACT-REC
+           MOVE    SPA-HOSPID          TO  NSRY-HOSPID
+           MOVE    SPA-GMN-PTID        TO  NSRY-PTID
+           MOVE    NYUINACT-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "NYUINACT-DEL12"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    入院診療会計マスター
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    SPA-GMN-PTID        TO  NACCT-PTID
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "NYUINACCT-DEL1"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    患者入院履歴
+           INITIALIZE                      PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "PTNYUINRRK-DEL2"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    患者他院歴付加情報
+           INITIALIZE                      PTTAINFUKA-REC
+           MOVE    SPA-HOSPID          TO  PTTAINFUKA-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTTAINFUKA-PTID
+           MOVE    PTTAINFUKA-REC      TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "PTTAINFUKA-DEL2"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
            .
        49911-DB-DELETE-EXT.
            EXIT.
@@ -1939,6 +2072,28 @@
                GO  TO                  490-TOUROKU-EXT
            END-IF
       *
+      *    ＣＬＡＩＭ接続チェック処理
+      *    受付があった時
+           MOVE    ZERO                TO  FLG-CLAIM
+           IF      SPA-NAI20-UKEMAX    >   ZERO
+               PERFORM 4905-CLAIM-CHK-SEC
+               IF      FLG-CLAIM       =   2
+                   GO      TO      490-TOUROKU-EXT
+               END-IF
+           END-IF
+      *
+      *    更新処理
+           MOVE    ZERO                TO  FLG-CLAIM-OK
+           PERFORM 4902-KOUSIN-SYORI-SEC
+           .
+       490-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    更新処理
+      *****************************************************************
+       4902-KOUSIN-SYORI-SEC           SECTION.
+      *
       *    更新サブへ
            CALL    "ORCGP029"      USING   MCPAREA
                                            SPAAREA
@@ -1949,7 +2104,14 @@
            MOVE    SPA-GMN-PTNUM       TO  SPA-LAST-PTNUM
            MOVE    SPA-GMN-PTID        TO  SPA-LAST-PTID
       *
-           IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
+      *    ＣＬＡＩＭ送信
+           IF      FLG-CLAIM           =   1
+               PERFORM 4906-CLAIM-SOUSIN-SEC
+           END-IF
+      *
+      **** IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
+           IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
+                                                  OR  "I01"
                IF     (SPA-HZN-PTNUM       =   SPACE  )  AND
                       (SPA-P02-UKEID       =   ZERO   )
                    CONTINUE
@@ -1959,8 +2121,12 @@
                    MOVE    SPA-GMN-PTID        TO  SPA-PTID
                    MOVE    SPACE               TO  SPA-ERRMSG
       *            更新後、元の画面へ
-                   PERFORM 210-BACK
-                   GO      TO      490-TOUROKU-EXT
+                   IF      FLG-CLAIM-OK        =   ZERO
+                       PERFORM 210-BACK
+                   ELSE
+                       PERFORM 210-BACK-SYORI-SEC
+                   END-IF
+                   GO      TO      4902-KOUSIN-SYORI-EXT
                END-IF
            END-IF
       *
@@ -1976,7 +2142,7 @@
            MOVE    ZERO                TO  SPA-GMN-CUR
            PERFORM 310-SPA-SET-SEC
            .
-       490-TOUROKU-EXT.
+       4902-KOUSIN-SYORI-EXT.
            EXIT.
       *----(01.00.05) LINE UPD START ----------------------------------
       *
@@ -2215,9 +2381,148 @@
       *
            MOVE    1                   TO  FLG-END
       *
-      *
            .
        499-COPY-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    ＣＬＡＩＭ接続情報取得処理
+      *****************************************************************
+       4905-CLAIM-CHK-SEC               SECTION.
+      *
+           INITIALIZE                  SPA-P02X-AREA
+      *
+           MOVE    ZERO                TO  FLG-CLAIM
+      *    ＣＬＡＩＭ接続判定
+           MOVE    SPACE               TO  SYS-9000-REC
+           INITIALIZE                  SYS-9000-REC
+           MOVE    "9000"              TO  SYS-9000-KANRICD
+           MOVE    "*"                 TO  SYS-9000-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+      *    システム管理検索
+           MOVE    SYS-9000-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-9000-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           IF      FLG-SYSKANRI        =   1
+               CONTINUE
+           ELSE
+               MOVE    MCPDATA-REC         TO  SYS-9000-REC
+               IF      SYS-9000-SETUZOKU   =   ZERO
+                   CONTINUE
+               ELSE
+                   MOVE    SYS-9000-CODE       TO  SPA-P02X-CODE
+                   IF      SYS-9000-UKEBUTTON (02) =   "T"
+                       MOVE    1               TO  FLG-CLAIM
+                   ELSE
+                       MOVE    2               TO  FLG-CLAIM
+                   END-IF
+               END-IF
+           END-IF
+      *TEST!!!
+           MOVE    2             TO  FLG-CLAIM
+           MOVE    "1"           TO  SPA-P02X-CODE
+      *TEST!!!
+      *
+           IF      FLG-CLAIM           =   2
+               CONTINUE
+           ELSE
+               GO      TO      4905-CLAIM-CHK-EXT
+           END-IF
+      *
+      *    ＣＬＡＩＭ接続情報
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP02X"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+     *
+           MOVE    "P02"               TO  SPA-MOTOPG
+           MOVE    "P02X"              TO  SPA-SAKIPG
+      *    カーソル移動
+           MOVE    "SELNUM"            TO  MCP-WIDGET
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "P02X"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4905-CLAIM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＣＬＡＩＭ接続情報取得処理
+      *****************************************************************
+       4906-CLAIM-SOUSIN-SEC               SECTION.
+      *
+      *    最後の受付時間を対象とする
+           MOVE    SPACE               TO  WRK-UKETIME
+           IF      SPA-NAI20-UKEMAX    >   ZERO
+               IF      SPA-NAI20-UKETIME (SPA-NAI20-UKEMAX)
+                                           =   SPACE
+                   GO      TO      4906-CLAIM-SOUSIN-EXT
+               END-IF
+               MOVE    SPA-NAI20-UKETIME (SPA-NAI20-UKEMAX)
+                                       TO  WRK-UKETIME
+           ELSE
+               GO      TO      4906-CLAIM-SOUSIN-EXT
+           END-IF
+      *
+      *    フィアルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    CLAIM-FILE          TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+      *
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *
+           MOVE    "1"                 TO  SHELLTBL-ARG1
+           MOVE    SPA-GMN-PTID        TO  WRK-PTID
+           MOVE    WRK-PTID            TO  SHELLTBL-ARG2
+           MOVE    SPA-GMN-SRYKA       TO  SHELLTBL-ARG3
+           MOVE    WRK-UKETIME         TO  SHELLTBL-ARG4
+           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG5
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                   MCPAREA
+                   MCPDATA-REC
+      *
+           .
+       4906-CLAIM-SOUSIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2536,6 +2841,12 @@
                WHEN    "0066"
                    MOVE    "本人のみ入力可能です。"
                                                TO  SPA-ERRMSG
+               WHEN    "1065"
+                   MOVE    "補助区分は本人の時のみ入力可能です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1066"
+                   MOVE    "補助区分は老人割合のみ入力可能です。"
+                                               TO  SPA-ERRMSG
                WHEN    "0067"
                    MOVE    "保険者番号と法別番号が違います。"
                                                TO  SPA-ERRMSG
@@ -2546,6 +2857,9 @@
                                                TO  SPA-ERRMSG(33:)
                WHEN    "0069"
                    MOVE    "５年（２年）後日付取得エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "1047"
+                   MOVE    "下船３月の時継続区分は選択できません。"
                                                TO  SPA-ERRMSG
       *    公費エラー
                WHEN    "0070"
@@ -3212,6 +3526,26 @@
            .
        991-TNKRRK-NEXT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ　ＲＥＡＤ
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           .
+       900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ＰＵＴ　処理

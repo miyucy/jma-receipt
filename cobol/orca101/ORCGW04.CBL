@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    MCC-藤原     01/09/21  JOINの修正      
       *  01.01.02    MCC-藤原     01/11/27  自由構成区分追加
+      *  02.00.01    NACL-多々納  02/11/12  一括入力 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -114,6 +115,8 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+           03  WRK-MCP-WIDGET      PIC X(64).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -172,6 +175,14 @@
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
            COPY    "WERR.INC".
            COPY    "WID1.INC".
       *
@@ -181,12 +192,13 @@
            LINKAREA
            SCRAREA.
       *
-      *
-      *
       *****************************************************************
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
@@ -379,32 +391,15 @@
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *
+      *        患者番号構成区分
                WHEN    "ACTIVATE"      ALSO    "PTNUMKSIKBN"
                    PERFORM 4101-PTNUMKSIKBN-CHK-SEC
-      *    自由構成情報タグ
-               WHEN    "ACTIVATE"      ALSO    "JIYKSIKBN"
-                   PERFORM 4120-JIYKSIKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "JIYKSIKETA"
-                   PERFORM 4100-JIYKSIKETA-CHK-SEC
-      *    標準構成情報タグ
-               WHEN    "ACTIVATE"      ALSO    "HJNKSIKBN"
-                   PERFORM 4112-HJNKSIKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HJNKSINENKBN"
-                   PERFORM 4113-HJNKSINENKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HJNKSIRENNUMKBN"
-                   PERFORM 4114-HJNKSIRENNUMKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HJNKSIRENNUMKETA" 
-                   PERFORM 4115-HJNKSIRENNUMKETA-CHK-SEC
-      *    拡張構成情報タグ
-               WHEN    "ACTIVATE"      ALSO    "KKCKSIKBN"  
-                   PERFORM 4116-KKCKSIKBN-CHK-SEC  
-               WHEN    "ACTIVATE"      ALSO    "KKCKSIMAEKETA"  
-                   PERFORM 4117-KKCKSIMAEKETA-CHK-SEC                
-               WHEN    "ACTIVATE"      ALSO    "KKCKSIRENNUMKETA"  
-                   PERFORM 4118-KKCKSIRENNUMKETA-CHK-SEC                
-               WHEN    "ACTIVATE"      ALSO    "KKCKSIATOKETA"  
-                   PERFORM 4119-KKCKSIATOKETA-CHK-SEC                
+               WHEN    "ACTIVATE"      ALSO    ANY
+      *            一括入力
+                   MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+                   MOVE    ZERO                TO  SPA-GMN-CUR
+      *            入力チェック処理
+                   PERFORM 410-INPUT-CHK-SEC
            END-EVALUATE
       *
            .
@@ -444,23 +439,113 @@
            EXIT.
       *
       *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *    自由構成
+           MOVE    W04-JIYKSIKBN           TO  SPA-GMN-JIYKSIKBN
+           MOVE    W04-JIYKSIKETA          TO  SPA-GMN-JIYKSIKETA
+      *    標準構成
+           MOVE    W04-HJNKSIKBN           TO  SPA-GMN-HJNKSIKBN
+           MOVE    W04-HJNKSINENKBN        TO  SPA-GMN-HJNKSINENKBN
+           MOVE    W04-HJNKSIRENNUMKBN     TO  SPA-GMN-HJNKSIRENNUMKBN
+           MOVE    W04-HJNKSIRENNUMKETA    TO  SPA-GMN-HJNKSIRENNUMKETA
+      *    拡張構成
+           MOVE    W04-KKCKSIKBN           TO  SPA-GMN-KKCKSIKBN
+           MOVE    W04-KKCKSIMAEKETA       TO  SPA-GMN-KKCKSIMAEKETA
+           MOVE    W04-KKCKSIRENNUMKETA    TO  SPA-GMN-KKCKSIRENNUMKETA
+           MOVE    W04-KKCKSIATOKETA       TO  SPA-GMN-KKCKSIATOKETA
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           EVALUATE    SPA-GMN-PTNUMKSIKBN
+               WHEN    "1"
+      *            自由構成
+                   PERFORM 4120-JIYKSIKBN-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4100-JIYKSIKETA-CHK-SEC
+               WHEN    "2"
+      *            標準構成
+                   PERFORM 4112-HJNKSIKBN-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4113-HJNKSINENKBN-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4114-HJNKSIRENNUMKBN-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4115-HJNKSIRENNUMKETA-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+               WHEN    "3"
+      *            拡張構成
+                   PERFORM 4116-KKCKSIKBN-CHK-SEC  
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4117-KKCKSIMAEKETA-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4118-KKCKSIRENNUMKETA-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4119-KKCKSIATOKETA-CHK-SEC
+           END-EVALUATE
+      *
+           .
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    自由構成区分チェック
       *****************************************************************
        4120-JIYKSIKBN-CHK-SEC       SECTION.
       *
-           MOVE    11               TO  SPA-GMN-CUR
-      *
-           MOVE    W04-JIYKSIKBN          TO  SPA-GMN-JIYKSIKBN           
            EVALUATE    SPA-GMN-JIYKSIKBN
                WHEN    "0"
                WHEN    "1"
                WHEN    "2"
-                   MOVE    2                  TO  SPA-GMN-CUR
-               WHEN    OTHER    
-                   MOVE    "0001"             TO  SPA-ERRCD
+                   CONTINUE
+     ****         MOVE    2                  TO  SPA-GMN-CUR
+               WHEN    OTHER
+                   MOVE    "0001"              TO  SPA-ERRCD
+                   MOVE    11                  TO  SPA-GMN-CUR
            END-EVALUATE
            .
-       4120-JIYKSIKETA-CHK-EXT.
+       4120-JIYKSIKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -468,13 +553,11 @@
       *****************************************************************
        4100-JIYKSIKETA-CHK-SEC       SECTION.
       *
-           MOVE    2                      TO  SPA-GMN-CUR
-      *
-           MOVE    W04-JIYKSIKETA         TO  SPA-GMN-JIYKSIKETA           
-           IF      SPA-GMN-JIYKSIKETA     >   ZERO
-               MOVE    99                      TO  SPA-GMN-CUR
+           IF      SPA-GMN-JIYKSIKETA  >   ZERO
+               CONTINUE
            ELSE
-               MOVE    "0001"               TO  SPA-ERRCD
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
            END-IF
            .
        4100-JIYKSIKETA-CHK-EXT.
@@ -485,15 +568,14 @@
       *****************************************************************
        4112-HJNKSIKBN-CHK-SEC           SECTION.
       *
-           MOVE    3                   TO  SPA-GMN-CUR
-      *
-           MOVE    W04-HJNKSIKBN            TO  SPA-GMN-HJNKSIKBN
       *
            EVALUATE    SPA-GMN-HJNKSIKBN
                WHEN    "1" THRU "4"
-                   MOVE    4                   TO  SPA-GMN-CUR
+                   CONTINUE
+      ****         MOVE    4                   TO  SPA-GMN-CUR
                WHEN    OTHER
-                       MOVE    "0001"            TO  SPA-ERRCD
+                   MOVE    "0001"              TO  SPA-ERRCD
+                   MOVE    3                   TO  SPA-GMN-CUR
            END-EVALUATE
            .
        4112-HJNKSIKBN-CHK-EXT.
@@ -504,16 +586,15 @@
       *****************************************************************
        4113-HJNKSINENKBN-CHK-SEC        SECTION.
       *
-           MOVE    4                    TO  SPA-GMN-CUR
-      *
-           MOVE    W04-HJNKSINENKBN     TO  SPA-GMN-HJNKSINENKBN
       *
            EVALUATE    SPA-GMN-HJNKSINENKBN
                WHEN    "1" 
                WHEN    "2"
-                   MOVE    5                   TO  SPA-GMN-CUR
+                   CONTINUE
+      ****         MOVE    5                   TO  SPA-GMN-CUR
                WHEN    OTHER
-                       MOVE    "0001"          TO  SPA-ERRCD
+                   MOVE    "0001"              TO  SPA-ERRCD
+                   MOVE    4                   TO  SPA-GMN-CUR
            END-EVALUATE
            . 
        4113-HJNKSINENKBN-CHK-EXT.
@@ -524,16 +605,15 @@
       *****************************************************************
        4114-HJNKSIRENNUMKBN-CHK-SEC        SECTION.
       *
-           MOVE    5                    TO  SPA-GMN-CUR
-      *
-           MOVE    W04-HJNKSIRENNUMKBN  TO  SPA-GMN-HJNKSIRENNUMKBN
       *
            EVALUATE    SPA-GMN-HJNKSIRENNUMKBN
                WHEN    "1" 
                WHEN    "2"
-                   MOVE    6                   TO  SPA-GMN-CUR
+                   CONTINUE
+      *******      MOVE    6                   TO  SPA-GMN-CUR
                WHEN    OTHER
-                       MOVE    "0001"          TO  SPA-ERRCD
+                   MOVE    "0001"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN-CUR
            END-EVALUATE
            .
        4114-HJNKSIRENNUMKBN-CHK-EXT.
@@ -544,13 +624,11 @@
       *****************************************************************
        4115-HJNKSIRENNUMKETA-CHK-SEC        SECTION.
       *
-           MOVE    6                       TO  SPA-GMN-CUR
-      *
-           MOVE    W04-HJNKSIRENNUMKETA    TO  SPA-GMN-HJNKSIRENNUMKETA
            IF      SPA-GMN-HJNKSIRENNUMKETA    >   ZERO
-               MOVE    99                      TO  SPA-GMN-CUR
+               CONTINUE
            ELSE
-               MOVE    "0001"               TO  SPA-ERRCD
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    6                   TO  SPA-GMN-CUR
            END-IF
            .
        4115-HJNKSIRENNUMKETA-CHK-EXT.
@@ -561,17 +639,16 @@
       *****************************************************************
        4116-KKCKSIKBN-CHK-SEC        SECTION.
       *
-           MOVE    7                 TO  SPA-GMN-CUR
-      *
-           MOVE    W04-KKCKSIKBN            TO  SPA-GMN-KKCKSIKBN
       *
            EVALUATE    SPA-GMN-KKCKSIKBN
                WHEN    "1" 
                WHEN    "2"
                WHEN    "3"
-                   MOVE    8                   TO  SPA-GMN-CUR
+                   CONTINUE
+      ****         MOVE    8                   TO  SPA-GMN-CUR
                WHEN    OTHER
-                       MOVE    "0001"          TO  SPA-ERRCD
+                   MOVE    "0001"          TO  SPA-ERRCD
+                   MOVE    7               TO  SPA-GMN-CUR
            END-EVALUATE
            .
        4116-KKCKSIKBN-CHK-EXT.
@@ -582,11 +659,6 @@
       *****************************************************************
        4117-KKCKSIMAEKETA-CHK-SEC        SECTION.
       *
-           MOVE    8                    TO  SPA-GMN-CUR
-      *
-           MOVE    W04-KKCKSIMAEKETA    TO  SPA-GMN-KKCKSIMAEKETA
-      *
-           MOVE    9                    TO  SPA-GMN-CUR
            .
        4117-KKCKSIMAEKETA-CHK-EXT.
            EXIT.
@@ -596,13 +668,11 @@
       *****************************************************************
        4118-KKCKSIRENNUMKETA-CHK-SEC       SECTION.
       *
-           MOVE    9                       TO  SPA-GMN-CUR
-      *
-           MOVE    W04-KKCKSIRENNUMKETA    TO  SPA-GMN-KKCKSIRENNUMKETA
            IF      SPA-GMN-KKCKSIRENNUMKETA    >   ZERO
-               MOVE    10                      TO  SPA-GMN-CUR
+               CONTINUE
            ELSE
-               MOVE    "0001"               TO  SPA-ERRCD
+               MOVE    9                       TO  SPA-GMN-CUR
+               MOVE    "0001"                  TO  SPA-ERRCD
            END-IF
            .
        4118-KKCKSIRENNUMKETA-CHK-EXT.
@@ -613,17 +683,12 @@
       *****************************************************************
        4119-KKCKSIATOKETA-CHK-SEC        SECTION.
       *
-           MOVE    10                   TO  SPA-GMN-CUR
-      *
-           MOVE    W04-KKCKSIATOKETA    TO  SPA-GMN-KKCKSIATOKETA
-      *
-           MOVE    99                   TO  SPA-GMN-CUR
            .
        4119-KKCKSIATOKETA-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ｼタグ編集処理
+      *    タグ編集処理
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
       *
@@ -772,6 +837,12 @@
       *       入力項目の関連チェック処理
       *****************************************************************
        4900-KANRENCHK-SEC           SECTION.
+      *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4900-KANRENCHK-EXT
+           END-IF
       *
            MOVE    SPACE                TO  SPA-ERRCD
       *
@@ -1089,7 +1160,11 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-          EVALUATE    SPA-GMN-CUR
+           IF      SPA-GMN-CUR         =   ZERO
+               PERFORM 50011-CUR-SET-SEC
+           END-IF
+      *
+           EVALUATE    SPA-GMN-CUR
                 WHEN    1
                     MOVE  "PTNUMKSIKBN"      TO   MCP-WIDGET
                 WHEN    2
@@ -1118,6 +1193,39 @@
       *
            .
        5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カーソル処理
+      *****************************************************************
+       50011-CUR-SET-SEC         SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "JIYKSIKBN"
+                   MOVE    2               TO  SPA-GMN-CUR
+               WHEN    "JIYKSIKETA"
+                   MOVE    99              TO  SPA-GMN-CUR
+      *        標準構成
+               WHEN    "HJNKSIKBN"
+                   MOVE    4               TO  SPA-GMN-CUR
+               WHEN    "HJNKSINENKBN"
+                   MOVE    5               TO  SPA-GMN-CUR
+               WHEN    "HJNKSIRENNUMKBN"
+                   MOVE    6               TO  SPA-GMN-CUR
+               WHEN    "HJNKSIRENNUMKETA"
+                   MOVE    99              TO  SPA-GMN-CUR
+      *    拡張構成情報タグ
+               WHEN    "KKCKSIKBN"
+                   MOVE    8               TO  SPA-GMN-CUR
+               WHEN    "KKCKSIMAEKETA"
+                   MOVE    9               TO  SPA-GMN-CUR
+               WHEN    "KKCKSIRENNUMKETA"
+                   MOVE    10              TO  SPA-GMN-CUR
+               WHEN    "KKCKSIATOKETA"
+                   MOVE    99              TO  SPA-GMN-CUR
+           END-EVALUATE
+           .
+       50011-CUR-SET-EXT.
            EXIT.
       *
       *****************************************************************

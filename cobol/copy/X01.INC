@@ -26,17 +26,17 @@
                     06  X01-TEDYUKYMD  PIC X(10).
                   05  X01-SELECT  PIC X       OCCURS  100 TIMES.
               03  X01-SELNUM.
-                04  X01-VALUE   PIC X(4).
+                04  X01-VALUE   PIC X(3).
               03  X01-STYUKYMD.
-                04  X01-VALUE   PIC X(11).
-              03  X01-EDYUKYMD.
-                04  X01-VALUE   PIC X(11).
-              03  X01-SRYCD.
                 04  X01-VALUE   PIC X(10).
+              03  X01-EDYUKYMD.
+                04  X01-VALUE   PIC X(10).
+              03  X01-SRYCD.
+                04  X01-VALUE   PIC X(9).
               03  X01-NAME.
-                04  X01-VALUE   PIC X(101).
+                04  X01-VALUE   PIC X(100).
               03  X01-CHKKBNCOMB.
                 04  X01-CHKKBN.
-                  05  X01-VALUE   PIC X(23).
+                  05  X01-VALUE   PIC X(22).
                 04  X01-CHKKBNCOUNT   PIC S9(9)   BINARY.
                 04  X01-CHKKBNLIST    PIC X(22)   OCCURS  9 TIMES.

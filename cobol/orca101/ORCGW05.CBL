@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     MCC-藤原     01/09/11  削除処理の修正 
       * 01.01.01     MCC-藤原     01/09/21  JOINの修正      
+      * 01.01.02     NACL-多々納  02/11/12  一括入力 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -101,6 +102,9 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+      *    入力項目名
+           03  WRK-MCP-WIDGET          PIC X(64).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -129,6 +133,9 @@
            COPY  "CPORCSDAY.INC".
       *
            COPY  "CPORCSLNK.INC".
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -159,6 +166,14 @@
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
            COPY    "WERR.INC".
            COPY    "WID1.INC".
       *
@@ -174,6 +189,9 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
@@ -344,21 +362,84 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"      ALSO    "SRYKANAME"
-                   PERFORM 4100-SRYKANAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SRYKANAME1"
-                   PERFORM 4112-SRYKANAME1-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SRYKANAME2"
-                   PERFORM 4113-SRYKANAME2-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SRYKANAME3"
-                   PERFORM 4114-SRYKANAME3-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "RECESRYKA" 
-                   PERFORM 4115-RECESRYKA-CHK-SEC
-           END-EVALUATE
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
       *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
            .
        200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           MOVE    W05-SRYKANAME       TO  SPA-GMN-SRYKANAME
+           MOVE    W05-SRYKANAME1      TO  SPA-GMN-SRYKANAME1
+           MOVE    W05-SRYKANAME2      TO  SPA-GMN-SRYKANAME2
+           MOVE    W05-SRYKANAME3      TO  SPA-GMN-SRYKANAME3
+           MOVE    W05-RECESRYKA       TO  SPA-GMN-RECESRYKA
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           PERFORM 4100-SRYKANAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4112-SRYKANAME1-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4113-SRYKANAME2-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4114-SRYKANAME3-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4115-RECESRYKA-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4100-SRYKANAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           .
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -366,11 +447,20 @@
       *****************************************************************
        4100-SRYKANAME-CHK-SEC       SECTION.
       *
-           MOVE    2                      TO  SPA-GMN-CUR
       *
-           MOVE    W05-SRYKANAME         TO  SPA-GMN-SRYKANAME
-      *  
-           MOVE    3                   TO  SPA-GMN-CUR
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-SRYKANAME   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0002"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-SRYKANAME
+           END-IF
            .
        4100-SRYKANAME-CHK-EXT.
            EXIT.
@@ -380,11 +470,20 @@
       *****************************************************************
        4112-SRYKANAME1-CHK-SEC           SECTION.
       *
-           MOVE    3                     TO  SPA-GMN-CUR
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-SRYKANAME1  TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0002"          TO  SPA-ERRCD
+               MOVE    3               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-SRYKANAME1
+           END-IF
       *
-           MOVE    W05-SRYKANAME1        TO  SPA-GMN-SRYKANAME1
-      *  
-           MOVE    4                   TO  SPA-GMN-CUR
            .
        4112-SRYKANAME1-CHK-EXT.
            EXIT.
@@ -394,11 +493,20 @@
       *****************************************************************
        4113-SRYKANAME2-CHK-SEC        SECTION.
       *
-           MOVE    4                    TO  SPA-GMN-CUR
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-SRYKANAME2  TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0002"          TO  SPA-ERRCD
+               MOVE    4               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-SRYKANAME2
+           END-IF
       *
-           MOVE    W05-SRYKANAME2     TO  SPA-GMN-SRYKANAME2
-      *  
-           MOVE    5                   TO  SPA-GMN-CUR
            . 
        4113-SRYKANAME2-CHK-EXT.
            EXIT.
@@ -408,11 +516,20 @@
       *****************************************************************
        4114-SRYKANAME3-CHK-SEC        SECTION.
       *
-           MOVE    5                    TO  SPA-GMN-CUR
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-SRYKANAME3  TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0002"          TO  SPA-ERRCD
+               MOVE    5               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-SRYKANAME3
+           END-IF
       *
-           MOVE    W05-SRYKANAME3  TO  SPA-GMN-SRYKANAME3
-      *  
-           MOVE    6                   TO  SPA-GMN-CUR
            .
        4114-SRYKANAME3-CHK-EXT.
            EXIT.
@@ -422,11 +539,6 @@
       *****************************************************************
        4115-RECESRYKA-CHK-SEC        SECTION.
       *
-           MOVE    6                   TO  SPA-GMN-CUR
-      *
-           MOVE    W05-RECESRYKA       TO  SPA-GMN-RECESRYKA
-      *  
-           MOVE    99                  TO  SPA-GMN-CUR
            .
        4115-RECESRYKA-CHK-EXT.
            EXIT.
@@ -570,6 +682,9 @@
        4900-KANRENCHK-SEC           SECTION.
       *
            MOVE    SPACE                TO  SPA-ERRCD
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+      *
            .
        4900-KANRENCHK-EXT.
            EXIT.
@@ -647,6 +762,9 @@
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
                    MOVE    "入力エラー"        TO  SPA-ERRMSG
+               WHEN    "0002"
+                   MOVE    "全角で入力して下さい"
+                                               TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
                                                TO  SPA-ERRMSG
@@ -717,7 +835,11 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-          EVALUATE    SPA-GMN-CUR
+           IF      SPA-GMN-CUR         =   ZERO
+               PERFORM 50011-CUR-SET-SEC
+           END-IF
+      *
+           EVALUATE    SPA-GMN-CUR
                 WHEN    2
                     MOVE  "SRYKANAME"        TO   MCP-WIDGET
                 WHEN    3
@@ -730,10 +852,32 @@
                     MOVE  "RECESRYKA"        TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
-            END-EVALUATE
+           END-EVALUATE
       *
            .
        5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カーソル編集処理
+      *****************************************************************
+       50011-CUR-SET-SEC         SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "SRYKANAME"
+                   MOVE    3               TO  SPA-GMN-CUR
+               WHEN    "SRYKANAME1"
+                   MOVE    4               TO  SPA-GMN-CUR
+               WHEN    "SRYKANAME2"
+                   MOVE    5               TO  SPA-GMN-CUR
+               WHEN    "SRYKANAME3"
+                   MOVE    6               TO  SPA-GMN-CUR
+               WHEN    "RECESRYKA"
+                   MOVE    99              TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
+           .
+       50011-CUR-SET-EXT.
            EXIT.
       *
       *****************************************************************

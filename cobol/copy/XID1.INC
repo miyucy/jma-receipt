@@ -22,6 +22,6 @@
         02  XID1.
       *D      02  XID1-FIXED1.
               03  XID1-ID1CODE.
-                04  XID1-VALUE  PIC X(11).
+                04  XID1-VALUE  PIC X(10).
               03  XID1-ID1MSG.
-                04  XID1-VALUE  PIC X(71).
+                04  XID1-VALUE  PIC X(80).

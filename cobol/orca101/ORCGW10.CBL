@@ -31,6 +31,7 @@
       *  01.00.02    MCC-藤原     01/09/11  削除処理の修正 
       *  01.01.01    MCC-藤原     01/09/21  JOINの修正      
       *  01.01.02    MCC-藤原     02/03/11  月次統計パラメタの追加     
+      *  01.01.03    NACL-多々納  02/11/13  一括入力 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -87,6 +88,8 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
+           03  FLG-TOUROKU         PIC 9(01).
+      *
       *    カウント領域
       *
        01  CNT-AREA.
@@ -118,6 +121,8 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+           03  WRK-MCP-WIDGET      PIC X(64).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -178,6 +183,14 @@
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
            COPY    "WERR.INC".
            COPY    "WID1.INC".
       *
@@ -191,6 +204,9 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
@@ -386,37 +402,106 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    日時統計情報タグ
-               WHEN    "ACTIVATE"      ALSO    "HCNAME"
-                   PERFORM 4101-HCNAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "PROGNAME"
-                   PERFORM 4102-PRGNAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "PARAHYOJI1"
-               WHEN    "ACTIVATE"      ALSO    "PARAHYOJI2"
-               WHEN    "ACTIVATE"      ALSO    "PARAHYOJI3"
-                   PERFORM 4103-PARAHYOJI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "PARA1"
-               WHEN    "ACTIVATE"      ALSO    "PARA2"
-               WHEN    "ACTIVATE"      ALSO    "PARA3"
-                   PERFORM 4104-PARA-CHK-SEC
-      *    月次統計情報タグ
-               WHEN    "ACTIVATE"      ALSO    "HCNAME1"
-                   PERFORM 4111-HCNAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "PROGNAME1"
-                   PERFORM 4112-PRGNAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "PARAHYOJI11"
-               WHEN    "ACTIVATE"      ALSO    "PARAHYOJI21"
-               WHEN    "ACTIVATE"      ALSO    "PARAHYOJI31"
-                   PERFORM 4113-PARAHYOJI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "PARA11"
-               WHEN    "ACTIVATE"      ALSO    "PARA21"
-               WHEN    "ACTIVATE"      ALSO    "PARA31"
-                   PERFORM 4114-PARA-CHK-SEC
-           END-EVALUATE
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  FLG-TOUROKU
       *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
            .
        200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+      *    日次統計情報
+           MOVE    W10-HCNAME          TO  SPA-GMN-HCNAME
+           MOVE    W10-PROGNAME        TO  SPA-GMN-PRGNAME
+           PERFORM VARYING     IDZ     FROM    1   BY  1
+                   UNTIL       IDZ     >   3
+               MOVE    W10-PARAHYOJI (IDZ) TO  SPA-GMN-PARAHYOJI(IDZ)
+               MOVE    W10-PARA (IDZ)      TO  SPA-GMN-PARA(IDZ)
+           END-PERFORM
+      *    月次統計情報
+           MOVE    W10-HCNAME1         TO  SPA-GMN-HCNAME1
+           MOVE    W10-PROGNAME1       TO  SPA-GMN-PRGNAME1
+           PERFORM VARYING     IDZ     FROM    1   BY  1
+                   UNTIL       IDZ     >   3
+               MOVE    W10-PARAHYOJI1(IDZ) TO  SPA-GMN-PARAHYOJI1(IDZ)
+               MOVE    W10-PARA1(IDZ)      TO  SPA-GMN-PARA1(IDZ)
+           END-PERFORM
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           EVALUATE    SPA-W01-KANRICD
+               WHEN    "3001"
+      *            日次統計情報チェック
+                   PERFORM 4101-HCNAME-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4102-PRGNAME-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4103-PARAHYOJI-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4104-PARA-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+               WHEN    "3002"
+      *            月次統計情報
+                   PERFORM 4111-HCNAME-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4112-PRGNAME-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4113-PARAHYOJI-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4114-PARA-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+           END-EVALUATE
+      *
+      *
+           .
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -424,11 +509,6 @@
       *****************************************************************
        4101-HCNAME-CHK-SEC       SECTION.
       *
-           MOVE    1                   TO  SPA-GMN-CUR
-      *
-           MOVE    W10-HCNAME          TO  SPA-GMN-HCNAME
-      *
-           MOVE    3                   TO  SPA-GMN-CUR
            .
        4101-HCNAME-CHK-EXT.
            EXIT.
@@ -438,11 +518,6 @@
       *****************************************************************
        4102-PRGNAME-CHK-SEC     SECTION.
       *
-           MOVE    3                   TO  SPA-GMN-CUR
-      *
-           MOVE    W10-PROGNAME         TO  SPA-GMN-PRGNAME
-      *                           
-           MOVE    4                   TO  SPA-GMN-CUR
            .
        4102-PRGNAME-CHK-EXT.
            EXIT.
@@ -452,20 +527,13 @@
       *****************************************************************
        4103-PARAHYOJI-CHK-SEC     SECTION.
       *
-           MOVE    2               TO  SPA-GMN-CUR
+           PERFORM VARYING     IDZ     FROM    1   BY  1
+                   UNTIL       IDZ     >   3
+               IF      SPA-GMN-PARAHYOJI(IDZ)  =   SPACE
+                   MOVE    SPACE           TO  SPA-GMN-PARA (IDZ)
+               END-IF
+           END-PERFORM
       *
-           MOVE    MCP-WIDGET      TO  WRK-WIDGET
-           MOVE    WRK-WIDGET2     TO  IDZ
-      *
-           COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR    +   IDZ  *   2
-               
-           MOVE    W10-PARAHYOJI (IDZ)  TO  SPA-GMN-PARAHYOJI(IDZ)
-      *
-           IF      SPA-GMN-PARAHYOJI(IDZ)   =   SPACE
-               MOVE    SPACE                TO  SPA-GMN-PARA (IDZ)
-           END-IF    
-      *                           
-           ADD     1                   TO  SPA-GMN-CUR
            .
        4103-PARAHYOJI-CHK-EXT.
            EXIT.
@@ -475,32 +543,33 @@
       *****************************************************************
        4104-PARA-CHK-SEC     SECTION.
       *
-           MOVE    3               TO  SPA-GMN-CUR
+           IF      FLG-TOUROKU         =   ZERO
+               GO      TO      4104-PARA-CHK-EXT
+           END-IF
       *
-           MOVE    MCP-WIDGET      TO  WRK-WIDGET
-           MOVE    WRK-WIDGET3     TO  IDZ
-      *
-           COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR    +   IDZ  *   2
-               
-           MOVE    W10-PARA (IDZ)  TO  SPA-GMN-PARA(IDZ)
-      *
-           IF      SPA-GMN-PARAHYOJI(IDZ)   =   SPACE
-               IF      SPA-GMN-PARA (IDZ)   NOT =   SPACE
-                   MOVE    "0001"           TO  SPA-ERRCD
+           PERFORM VARYING     IDZ     FROM    1   BY  1
+                   UNTIL      (IDZ     >   3   )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-GMN-PARAHYOJI(IDZ)  =   SPACE
+                   IF      SPA-GMN-PARA (IDZ)  NOT =   SPACE
+                       MOVE    "0001"              TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   IF      SPA-GMN-PARA (IDZ)   =   SPACE
+                       MOVE    "0001"           TO  SPA-ERRCD
+                   END-IF
                END-IF
-           ELSE        
-               IF      SPA-GMN-PARA (IDZ)   =   SPACE
-                   MOVE    "0001"           TO  SPA-ERRCD
+               IF      SPA-ERRCD       NOT =   SPACE
+                   EVALUATE    IDZ
+                      WHEN     1
+                          MOVE    5            TO  SPA-GMN-CUR
+                      WHEN     2
+                          MOVE    7            TO  SPA-GMN-CUR
+                      WHEN     3
+                          MOVE    9            TO  SPA-GMN-CUR
+                   END-EVALUATE
                END-IF
-           END-IF        
-      *
-           IF      SPA-ERRCD           =   SPACE
-               IF      IDZ                 =   3
-                   MOVE    99                  TO  SPA-GMN-CUR
-               ELSE                               
-                   ADD     1                   TO  SPA-GMN-CUR
-               END-IF
-           END-IF        
+           END-PERFORM
            .
        4104-PARA-CHK-EXT.
            EXIT.
@@ -510,11 +579,6 @@
       *****************************************************************
        4111-HCNAME-CHK-SEC       SECTION.
       *
-           MOVE    11                  TO  SPA-GMN-CUR
-      *
-           MOVE    W10-HCNAME1         TO  SPA-GMN-HCNAME1
-      *
-           MOVE    13                  TO  SPA-GMN-CUR
            .
        4101-HCNAME-CHK-EXT.
            EXIT.
@@ -524,11 +588,6 @@
       *****************************************************************
        4112-PRGNAME-CHK-SEC     SECTION.
       *
-           MOVE    13                   TO  SPA-GMN-CUR
-      *
-           MOVE    W10-PROGNAME1        TO  SPA-GMN-PRGNAME1
-      *                           
-           MOVE    14                   TO  SPA-GMN-CUR
            .
        4112-PRGNAME-CHK-EXT.
            EXIT.
@@ -538,20 +597,13 @@
       *****************************************************************
        4113-PARAHYOJI-CHK-SEC     SECTION.
       *
-           MOVE    12               TO  SPA-GMN-CUR
       *
-           MOVE    MCP-WIDGET      TO  WRK-WIDGET
-           MOVE    WRK-WIDGET2     TO  IDZ
-      *
-           COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR    +   IDZ  *   2
-               
-           MOVE    W10-PARAHYOJI1(IDZ)  TO  SPA-GMN-PARAHYOJI1(IDZ)
-      *
-           IF      SPA-GMN-PARAHYOJI1(IDZ)   =   SPACE
-               MOVE    SPACE                TO  SPA-GMN-PARA1 (IDZ)
-           END-IF    
-      *                           
-           ADD     1                   TO  SPA-GMN-CUR
+           PERFORM VARYING     IDZ     FROM    1   BY  1
+                   UNTIL       IDZ     >   3
+               IF      SPA-GMN-PARAHYOJI1(IDZ)  =   SPACE
+                   MOVE    SPACE           TO  SPA-GMN-PARA1 (IDZ)
+               END-IF
+           END-PERFORM
            .
        4113-PARAHYOJI-CHK-EXT.
            EXIT.
@@ -561,32 +613,33 @@
       *****************************************************************
        4114-PARA-CHK-SEC     SECTION.
       *
-           MOVE    13              TO  SPA-GMN-CUR
+           IF      FLG-TOUROKU         =   ZERO
+               GO      TO      4114-PARA-CHK-EXT
+           END-IF
       *
-           MOVE    MCP-WIDGET      TO  WRK-WIDGET
-           MOVE    WRK-WIDGET3     TO  IDZ
-      *
-           COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR    +   IDZ  *   2
-               
-           MOVE    W10-PARA1(IDZ)  TO  SPA-GMN-PARA1(IDZ)
-      *
-           IF      SPA-GMN-PARAHYOJI1(IDZ)  =   SPACE
-               IF      SPA-GMN-PARA1 (IDZ)  NOT =   SPACE
-                   MOVE    "0001"               TO  SPA-ERRCD
+           PERFORM VARYING     IDZ     FROM    1   BY  1
+                   UNTIL      (IDZ     >   3   )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-GMN-PARAHYOJI1(IDZ) =   SPACE
+                   IF      SPA-GMN-PARA1 (IDZ) NOT =   SPACE
+                       MOVE    "0001"              TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   IF      SPA-GMN-PARA1 (IDZ)  =   SPACE
+                       MOVE    "0001"           TO  SPA-ERRCD
+                   END-IF
                END-IF
-           ELSE        
-               IF      SPA-GMN-PARA1(IDZ)   =   SPACE
-                   MOVE    "0001"           TO  SPA-ERRCD
+               IF      SPA-ERRCD       NOT =   SPACE
+                   EVALUATE    IDZ
+                      WHEN     1
+                          MOVE    15           TO  SPA-GMN-CUR
+                      WHEN     2
+                          MOVE    17           TO  SPA-GMN-CUR
+                      WHEN     3
+                          MOVE    19           TO  SPA-GMN-CUR
+                   END-EVALUATE
                END-IF
-           END-IF        
-      *
-           IF      SPA-ERRCD           =   SPACE
-               IF      IDZ                 =   3
-                   MOVE    99                  TO  SPA-GMN-CUR
-               ELSE                               
-                   ADD     1                   TO  SPA-GMN-CUR
-               END-IF
-           END-IF        
+           END-PERFORM
            .
        4114-PARA-CHK-EXT.
            EXIT.
@@ -657,6 +710,13 @@
       *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC              SECTION.
+      *
+      *    入力チェック処理
+           MOVE    1                   TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      490-TOUROKU-EXT
+           END-IF
       *
            PERFORM 4900-KANRENCHK-SEC
            IF      SPA-ERRCD        =   SPACE
@@ -778,6 +838,7 @@
            IF      SPA-GMN-HCNAME      =   SPACE    
            OR      SPA-GMN-PRGNAME     =   SPACE   
                MOVE  "0099"                TO  SPA-ERRCD
+               MOVE   1                    TO  SPA-GMN-CUR
                GO  TO  4901-TAG1-CHK-EXT
            END-IF
       *
@@ -793,6 +854,7 @@
            IF      SPA-GMN-HCNAME1     =   SPACE    
            OR      SPA-GMN-PRGNAME1    =   SPACE   
                MOVE  "0099"                TO  SPA-ERRCD
+               MOVE   11                   TO  SPA-GMN-CUR
                GO  TO  4902-TAG2-CHK-EXT
            END-IF
       *
@@ -966,6 +1028,10 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+          IF      SPA-GMN-CUR          =   ZERO
+               PERFORM 50011-CUR-SET-SEC
+          END-IF
+      *
           EVALUATE    SPA-GMN-CUR
       *         日次統計情報    
                 WHEN    01
@@ -1014,6 +1080,51 @@
            END-EVALUATE                       
            .
        5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カーソル編集処理
+      *****************************************************************
+       50011-CUR-SET-SEC         SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "HCNAME"
+                   MOVE    3           TO  SPA-GMN-CUR
+               WHEN    "PROGNAME"
+                   MOVE    4           TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI1"
+                   MOVE    5           TO  SPA-GMN-CUR
+               WHEN    "PARA1 "
+                   MOVE    6           TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI2 "
+                   MOVE    7           TO  SPA-GMN-CUR
+               WHEN    "PARA2 "
+                   MOVE    8           TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI3 "
+                   MOVE    9           TO  SPA-GMN-CUR
+               WHEN    "PARA3 "
+                   MOVE    99          TO  SPA-GMN-CUR
+      *
+               WHEN    "HCNAME1"
+                   MOVE    13          TO  SPA-GMN-CUR
+               WHEN    "PROGNAME1"
+                   MOVE    14          TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI11"
+                   MOVE    15          TO  SPA-GMN-CUR
+               WHEN    "PARA11"
+                   MOVE    16          TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI21"
+                   MOVE    17          TO  SPA-GMN-CUR
+               WHEN    "PARA21"
+                   MOVE    18          TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI31"
+                   MOVE    19          TO  SPA-GMN-CUR
+               WHEN    "PARA31"
+                   MOVE    99          TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
+           .
+       50011-CUR-SET-EXT.
            EXIT.
       *
       *****************************************************************

@@ -21,5 +21,5 @@
       *****************************************************************
          02  XERR.
             03  XERR-FIXED1.
-              04  XERR-ERRCODE    PIC X(11).
-              04  XERR-ERRMSG PIC X(61).
+              04  XERR-ERRCODE    PIC X(10).
+              04  XERR-ERRMSG PIC X(80).

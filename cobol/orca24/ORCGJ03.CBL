@@ -344,6 +344,12 @@
 030500     MOVE    SPA-COMMON      TO  SPA-AREA
 030600     MOVE    SPA-FREE        TO  SPA-J03
 030700     MOVE    SPA-WORK        TO  SPA-J01KYOUTU
+           IF      LINKAREA        NOT =   SPACE
+               MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+               IF      SPA-MOTOPG(1:3)     =   "I41"
+                   MOVE    SPA-WORK        TO  SPA-J01KYOUTU
+               END-IF
+           END-IF.
 030800*
 030900     MOVE    SPACE           TO  SPA-ERRCD
 031000     MOVE    ZERO            TO  FLG-END
@@ -1178,13 +1184,17 @@
 099100 210-BACK                    SECTION.
 099200*
 099300     MOVE    "J02"               TO  SPA-SAKIPG
+           IF      SPA-MOTOPG(1:3)     =   "I41"
+               MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           END-IF
 099400     MOVE    "J03"               TO  SPA-MOTOPG
 099500*
 099600     MOVE    SPA-J01KYOUTU       TO  SPA-WORK
+           MOVE   SPA-KYOUTU           TO  LNK-KYOUTU
 099700*
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
 099800*****MOVE    "JOIN"              TO  MCP-PUTTYPE
-099900     MOVE    "J02"               TO  MCP-WINDOW
+099900     MOVE    SPA-SAKIPG          TO  MCP-WINDOW
 100000*
 100100     PERFORM 900-PUT-WINDOW
 100200*

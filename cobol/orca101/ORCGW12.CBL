@@ -35,6 +35,7 @@
       *  01.00.04    MCC-藤原     02/05/13  病名編集区分１（診療科別）の追加
       *  01.00.05    MCC-藤原     02/06/04  転帰日編集区分の追加
       *  01.00.06    MCC-藤原     02/07/04  出力先プリンタ情報の追加
+      *  02.00.01    NACL-多々納  02/11/13  一括入力 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -206,6 +207,9 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+      *
+           03  WRK-MCP-WIDGET      PIC X(64).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -265,6 +269,14 @@
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
            COPY    "WERR.INC".
            COPY    "WID1.INC".
       *
@@ -515,7 +527,7 @@
                    END-IF                                     
                END-PERFORM
       *
-               MOVE    SYS-2005-RECEDENOUT TO  SPA-GMN-RECEDENOUT         
+               MOVE    SYS-2005-RECEDENOUT TO  SPA-GMN-RECEDENOUT
       *         
                MOVE    SYS-2005-KKHOCRKBN  TO  SPA-GMN-KKHOCRKBN
                PERFORM VARYING IDY FROM    1   BY  1
@@ -530,7 +542,7 @@
                END-PERFORM
       *
                MOVE    SYS-2005-PREFPRGID (1)
-                                           TO  SPA-GMN-PREFPRGID          
+                                           TO  SPA-GMN-PREFPRGID
       *         
                MOVE    SYS-2005-KKHPRTKBN  TO  SPA-GMN-KKHPRTKBN
                PERFORM VARYING IDY FROM    1   BY  1
@@ -598,33 +610,115 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"      ALSO    "BYOMEIHENKBN"
-                   PERFORM 4100-BYOMEIHENKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "KKHRECEKBN"
-                   PERFORM 4101-KKHRECEKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SYARECEKBN"
-                   PERFORM 4102-SYARECEKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "RECEDENOUT"
-                   PERFORM 4103-RECEDENOUT-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "KKHOCRKBN"
-                   PERFORM 4104-KKHOCRKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "KKHPRTKBN"
-                   PERFORM 4105-KKHPRTKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "PREFPRGID"
-                   PERFORM 4106-PREFPRGID-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "BYOMEIHENKBN1"
-                   PERFORM 4107-BYOMEIHENKBN1-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "TENKIHENKBN"
-                   PERFORM 4108-TENKIHENKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SYAPRTNM"
-                   PERFORM 4109-SYAPRTNM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "KKHPRTNM"
-                   PERFORM 4110-KKHPRTNM-CHK-SEC
-           END-EVALUATE
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
       *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
            .
        200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           MOVE    W12-BYOMEIHENKBN    TO  SPA-GMN-BYOMEIHENKBN-G 
+           MOVE    W12-KKHRECEKBN      TO  SPA-GMN-KKHRECEKBN-G 
+           MOVE    W12-SYARECEKBN      TO  SPA-GMN-SYARECEKBN-G 
+           MOVE    W12-RECEDENOUT      TO  SPA-GMN-RECEDENOUT 
+           MOVE    W12-KKHOCRKBN       TO  SPA-GMN-KKHOCRKBN-G 
+           MOVE    W12-PREFPRGID       TO  SPA-GMN-PREFPRGID
+           MOVE    W12-KKHPRTKBN       TO  SPA-GMN-KKHPRTKBN-G 
+           MOVE    W12-BYOMEIHENKBN1   TO  SPA-GMN-BYOMEIHENKBN1-G 
+           MOVE    W12-TENKIHENKBN     TO  SPA-GMN-TENKIHENKBN-G 
+           MOVE    W12-SYAPRTNM        TO  SPA-GMN-SYAPRTNM
+           MOVE    W12-KKHPRTNM        TO  SPA-GMN-KKHPRTNM
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           PERFORM 4100-BYOMEIHENKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4107-BYOMEIHENKBN1-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4108-TENKIHENKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4102-SYARECEKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-KKHRECEKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4103-RECEDENOUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4104-KKHOCRKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4106-PREFPRGID-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4109-SYAPRTNM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4110-KKHPRTNM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4105-KKHPRTKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           .
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -632,9 +726,8 @@
       *****************************************************************
        4100-BYOMEIHENKBN-CHK-SEC       SECTION.
       *
-           MOVE    1                      TO  SPA-GMN-CUR
       *
-           MOVE    W12-BYOMEIHENKBN       TO  SPA-GMN-BYOMEIHENKBN-G 
+      **** MOVE    W12-BYOMEIHENKBN       TO  SPA-GMN-BYOMEIHENKBN-G 
       *
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-GMN-BYOMEIHENKBN-MAX
@@ -644,16 +737,14 @@
                                            TO  SPA-GMN-BYOMEIHENKBN-G
                    MOVE    SPA-GMN-BYOMEIHENKBN-MAX
                                            TO  IDY
-               END-IF                                     
+               END-IF
            END-PERFORM
       *     
            IF      SPA-GMN-BYOMEIHENKBNMEI =   SPACE
-               MOVE    "0001"                  TO  SPA-ERRCD
-           END-IF    
-      *
-           IF      SPA-ERRCD               =   SPACE
-               MOVE    8                       TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    "0001"              TO  SPA-ERRCD
            END-IF
+      *
            .
        4100-BYOMEIHENKBN-CHK-EXT.
            EXIT.
@@ -663,9 +754,6 @@
       *****************************************************************
        4101-KKHRECEKBN-CHK-SEC       SECTION.
       *
-           MOVE    3                      TO  SPA-GMN-CUR
-      *
-           MOVE    W12-KKHRECEKBN         TO  SPA-GMN-KKHRECEKBN-G 
       *
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-GMN-KKHRECEKBN-MAX
@@ -679,12 +767,10 @@
            END-PERFORM
       *     
            IF      SPA-GMN-KKHRECEKBNMEI   =   SPACE
+               MOVE    5                      TO  SPA-GMN-CUR
                MOVE    "0002"                  TO  SPA-ERRCD
            END-IF    
       *
-           IF      SPA-ERRCD               =   SPACE
-               MOVE    4                       TO  SPA-GMN-CUR
-           END-IF
            .
        4101-KKHRECEKBN-CHK-EXT.
            EXIT.
@@ -694,9 +780,6 @@
       *****************************************************************
        4102-SYARECEKBN-CHK-SEC       SECTION.
       *
-           MOVE    2                      TO  SPA-GMN-CUR
-      *
-           MOVE    W12-SYARECEKBN         TO  SPA-GMN-SYARECEKBN-G 
       *
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-GMN-SYARECEKBN-MAX
@@ -710,12 +793,10 @@
            END-PERFORM
       *     
            IF      SPA-GMN-SYARECEKBNMEI   =   SPACE
+               MOVE    4                       TO  SPA-GMN-CUR
                MOVE    "0003"                  TO  SPA-ERRCD
            END-IF    
       *
-           IF      SPA-ERRCD               =   SPACE
-               MOVE    3                       TO  SPA-GMN-CUR
-           END-IF
            .
        4102-SYARECEKBN-CHK-EXT.
            EXIT.
@@ -725,14 +806,7 @@
       *****************************************************************
        4103-RECEDENOUT-CHK-SEC       SECTION.
       *
-           MOVE    4                      TO  SPA-GMN-CUR
       *
-           MOVE    W12-RECEDENOUT         TO  SPA-GMN-RECEDENOUT 
-      *
-      *
-           IF      SPA-ERRCD               =   SPACE
-               MOVE    5                      TO  SPA-GMN-CUR
-           END-IF
            .
        4103-RECEDENOUT-CHK-EXT.
            EXIT.
@@ -742,9 +816,6 @@
       *****************************************************************
        4104-KKHOCRKBN-CHK-SEC       SECTION.
       *
-           MOVE    5                  TO  SPA-GMN-CUR
-      *
-           MOVE    W12-KKHOCRKBN      TO  SPA-GMN-KKHOCRKBN-G 
       *
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-GMN-KKHOCRKBN-MAX
@@ -758,12 +829,9 @@
            END-PERFORM
       *     
            IF      SPA-GMN-KKHOCRKBNMEI    =   SPACE
+               MOVE    7                  TO  SPA-GMN-CUR
                MOVE    "0004"                  TO  SPA-ERRCD
            END-IF    
-      *
-           IF      SPA-ERRCD               =   SPACE
-               MOVE    6                       TO  SPA-GMN-CUR
-           END-IF
            .
        4104-KKHOCRKBN-CHK-EXT.
            EXIT.
@@ -773,9 +841,6 @@
       *****************************************************************
        4106-PREFPRGID-CHK-SEC       SECTION.
       *
-           MOVE    6                      TO  SPA-GMN-CUR
-      *
-           MOVE    W12-PREFPRGID          TO  SPA-GMN-PREFPRGID
       *
            IF      SPA-GMN-PREFPRGID      =   SPACE
                CONTINUE
@@ -783,13 +848,11 @@
                IF      SPA-GMN-PREFPRGID(1:1) =   "S"
                    CONTINUE
                ELSE
+                  MOVE    8                      TO  SPA-GMN-CUR
                   MOVE    "0006"                 TO  SPA-ERRCD
                END-IF
-           END-IF            
-      *
-           IF      SPA-ERRCD              =   SPACE
-               MOVE    10                      TO  SPA-GMN-CUR
            END-IF
+      *
            .
        4106-PREFPRGID-CHK-EXT.
            EXIT.
@@ -799,9 +862,6 @@
       *****************************************************************
        4105-KKHPRTKBN-CHK-SEC       SECTION.
       *
-           MOVE    7                   TO  SPA-GMN-CUR
-      *
-           MOVE    W12-KKHPRTKBN       TO  SPA-GMN-KKHPRTKBN-G 
       *
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-GMN-KKHPRTKBN-MAX
@@ -815,12 +875,10 @@
            END-PERFORM
       *     
            IF      SPA-GMN-KKHPRTKBNMEI    =   SPACE
+               MOVE    11                  TO  SPA-GMN-CUR
                MOVE    "0005"                  TO  SPA-ERRCD
            END-IF    
       *
-           IF      SPA-ERRCD               =   SPACE
-               MOVE    99                      TO  SPA-GMN-CUR
-           END-IF
            .
        4105-KKHPRTKBN-CHK-EXT.
            EXIT.
@@ -830,9 +888,6 @@
       *****************************************************************
        4107-BYOMEIHENKBN1-CHK-SEC       SECTION.
       *
-           MOVE    8                       TO  SPA-GMN-CUR
-      *
-           MOVE    W12-BYOMEIHENKBN1       TO  SPA-GMN-BYOMEIHENKBN1-G 
       *
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-GMN-BYOMEIHENKBN1-MAX
@@ -846,12 +901,10 @@
            END-PERFORM
       *     
            IF      SPA-GMN-BYOMEIHENKBN1MEI =   SPACE
+               MOVE    2                       TO  SPA-GMN-CUR
                MOVE    "0001"                  TO  SPA-ERRCD
            END-IF    
       *
-           IF      SPA-ERRCD               =   SPACE
-               MOVE    9                       TO  SPA-GMN-CUR
-           END-IF
            .
        4107-BYOMEIHENKBN1-CHK-EXT.
            EXIT.
@@ -862,9 +915,6 @@
       *****************************************************************
        4108-TENKIHENKBN-CHK-SEC       SECTION.
       *
-           MOVE    9                   TO  SPA-GMN-CUR
-      *
-           MOVE    W12-TENKIHENKBN     TO  SPA-GMN-TENKIHENKBN-G 
       *
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-GMN-TENKIHENKBN-MAX
@@ -878,12 +928,10 @@
            END-PERFORM
       *     
            IF      SPA-GMN-TENKIHENKBNMEI =   SPACE
+               MOVE    3                   TO  SPA-GMN-CUR
                MOVE    "0007"                  TO  SPA-ERRCD
            END-IF    
       *
-           IF      SPA-ERRCD               =   SPACE
-               MOVE    2                       TO  SPA-GMN-CUR
-           END-IF
            .
        4108-TENKIHENKBN-CHK-EXT.
            EXIT.
@@ -893,13 +941,6 @@
       *****************************************************************
        4109-SYAPRTNM-CHK-SEC       SECTION.
       *
-           MOVE    10                     TO  SPA-GMN-CUR
-      *
-           MOVE    W12-SYAPRTNM           TO  SPA-GMN-SYAPRTNM
-      *
-           IF      SPA-ERRCD              =   SPACE
-               MOVE    11                      TO  SPA-GMN-CUR
-           END-IF
            .
        4109-SYAPRTNM-CHK-EXT.
            EXIT.
@@ -909,13 +950,6 @@
       *****************************************************************
        4110-KKHPRTNM-CHK-SEC       SECTION.
       *
-           MOVE    11                     TO  SPA-GMN-CUR
-      *
-           MOVE    W12-KKHPRTNM           TO  SPA-GMN-KKHPRTNM
-      *
-           IF      SPA-ERRCD              =   SPACE
-               MOVE    7                      TO  SPA-GMN-CUR
-           END-IF
            .
        4110-KKHPRTNM-CHK-EXT.
            EXIT.
@@ -944,6 +978,12 @@
       *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC              SECTION.
+      *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+              GO      TO      490-TOUROKU-EXT
+           END-IF
       *
            PERFORM 4900-KANRENCHK-SEC
            IF      SPA-ERRCD        =   SPACE
@@ -1021,35 +1061,35 @@
       *****************************************************************
        4900-KANRENCHK-SEC           SECTION.
       *
-           MOVE    SPACE                TO  SPA-ERRCD
-           MOVE    SPA-GMN-CUR          TO  WRK-GMN-CUR 
+      *    MOVE    SPACE                TO  SPA-ERRCD
+      *    MOVE    SPA-GMN-CUR          TO  WRK-GMN-CUR 
       *
-           PERFORM 4100-BYOMEIHENKBN-CHK-SEC
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4107-BYOMEIHENKBN1-CHK-SEC
-           END-IF    
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4108-TENKIHENKBN-CHK-SEC
-           END-IF    
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4101-KKHRECEKBN-CHK-SEC
-           END-IF    
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4102-SYARECEKBN-CHK-SEC
-           END-IF    
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4104-KKHOCRKBN-CHK-SEC
-           END-IF             
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4106-PREFPRGID-CHK-SEC
-           END-IF             
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4105-KKHPRTKBN-CHK-SEC
-           END-IF             
+      *    PERFORM 4100-BYOMEIHENKBN-CHK-SEC
+      *    IF      SPA-ERRCD            =   SPACE
+      *        PERFORM 4107-BYOMEIHENKBN1-CHK-SEC
+      *    END-IF    
+      *    IF      SPA-ERRCD            =   SPACE
+      *        PERFORM 4108-TENKIHENKBN-CHK-SEC
+      *    END-IF    
+      *    IF      SPA-ERRCD            =   SPACE
+      *        PERFORM 4101-KKHRECEKBN-CHK-SEC
+      *    END-IF    
+      *    IF      SPA-ERRCD            =   SPACE
+      *        PERFORM 4102-SYARECEKBN-CHK-SEC
+      *    END-IF    
+      *    IF      SPA-ERRCD            =   SPACE
+      *        PERFORM 4104-KKHOCRKBN-CHK-SEC
+      *    END-IF             
+      *    IF      SPA-ERRCD            =   SPACE
+      *        PERFORM 4106-PREFPRGID-CHK-SEC
+      *    END-IF             
+      *    IF      SPA-ERRCD            =   SPACE
+      *        PERFORM 4105-KKHPRTKBN-CHK-SEC
+      *    END-IF             
       *
-           IF      SPA-ERRCD            =   SPACE
-               MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
-           END-IF             
+      *    IF      SPA-ERRCD            =   SPACE
+      *        MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
+      *****END-IF             
            .
        4900-KANRENCHK-EXT.
            EXIT.
@@ -1272,35 +1312,74 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+          IF      SPA-GMN-CUR          =   ZERO
+               PERFORM 50011-CUR-SET-SEC
+          END-IF
+      *
           EVALUATE    SPA-GMN-CUR
                 WHEN    1
                     MOVE  "BYOMEIHENKBN"     TO   MCP-WIDGET
-                WHEN    3
-                    MOVE  "KKHRECEKBN"       TO   MCP-WIDGET
                 WHEN    2
-                    MOVE  "SYARECEKBN"       TO   MCP-WIDGET
-                WHEN    4
-                    MOVE  "RECEDENOUT"       TO   MCP-WIDGET
-                WHEN    5
-                    MOVE  "KKHOCRKBN"        TO   MCP-WIDGET
-                WHEN    6
-                    MOVE  "PREFPRGID"        TO   MCP-WIDGET
-                WHEN    7
-                    MOVE  "KKHPRTKBN"        TO   MCP-WIDGET
-                WHEN    8
                     MOVE  "BYOMEIHENKBN1"    TO   MCP-WIDGET
-                WHEN    9
+                WHEN    3
                     MOVE  "TENKIHENKBN"      TO   MCP-WIDGET
-                WHEN    10
+                WHEN    4
+                    MOVE  "SYARECEKBN"       TO   MCP-WIDGET
+                WHEN    5
+                    MOVE  "KKHRECEKBN"       TO   MCP-WIDGET
+                WHEN    6
+                    MOVE  "RECEDENOUT"       TO   MCP-WIDGET
+                WHEN    7
+                    MOVE  "KKHOCRKBN"        TO   MCP-WIDGET
+                WHEN    8
+                    MOVE  "PREFPRGID"        TO   MCP-WIDGET
+                WHEN    9
                     MOVE  "SYAPRTNM"         TO   MCP-WIDGET
-                WHEN    11
+                WHEN    10
                     MOVE  "KKHPRTNM"         TO   MCP-WIDGET
+                WHEN    11
+                    MOVE  "KKHPRTKBN"        TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
            .
        5001-MAPCUR-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    カーソル編集処理
+      *****************************************************************
+       50011-CUR-SET-SEC         SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "BYOMEIHENKBN"
+                   MOVE    2           TO  SPA-GMN-CUR
+               WHEN    "BYOMEIHENKBN1"
+                   MOVE    3           TO  SPA-GMN-CUR
+               WHEN    "TENKIHENKBN"
+                   MOVE    4           TO  SPA-GMN-CUR
+               WHEN    "SYARECEKBN"
+                   MOVE    5           TO  SPA-GMN-CUR
+               WHEN    "KKHRECEKBN"
+                   MOVE    6           TO  SPA-GMN-CUR
+               WHEN    "RECEDENOUT"
+                   MOVE    7           TO  SPA-GMN-CUR
+               WHEN    "KKHOCRKBN"
+                   MOVE    8           TO  SPA-GMN-CUR
+               WHEN    "PREFPRGID"
+                   MOVE    9           TO  SPA-GMN-CUR
+               WHEN    "SYAPRTNM"
+                   MOVE    10          TO  SPA-GMN-CUR
+               WHEN    "KKHPRTNM"
+                   MOVE    11          TO  SPA-GMN-CUR
+               WHEN    "KKHPRTKBN"
+                   MOVE    99          TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
+           .
+       50011-CUR-SET-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    日付チェック・編集処理

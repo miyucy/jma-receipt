@@ -72,6 +72,7 @@
       *
        01  SCRAREA.
            COPY    "U02.INC".
+           COPY    "U02X.INC".
            COPY    "U2ERR.INC".
       *
        PROCEDURE                   DIVISION    USING

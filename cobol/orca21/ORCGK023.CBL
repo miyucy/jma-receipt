@@ -193,6 +193,7 @@
        01  SCRAREA.
            COPY    "K01.INC".
            COPY    "K02.INC".
+           COPY    "K02N.INC".
            COPY    "K021.INC".
            COPY    "K022.INC".
            COPY    "K023.INC".
@@ -208,6 +209,7 @@
            COPY    "K10.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
+           COPY    "K03X.INC".
            COPY    "KERR.INC".
            COPY    "KERR2.INC".
            COPY    "KID1.INC".
@@ -1178,7 +1180,7 @@
       *    更新前の基本チェック
            PERFORM 41001-KIHON-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      450-MAEGMN-EXT
+               GO      TO      460-ATOGMN-EXT
            END-IF
       *
       *
@@ -1368,7 +1370,8 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "K02"               TO  SPA-SAKIPG
+      *****MOVE    "K02"               TO  SPA-SAKIPG
+           MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
            MOVE    "K023"              TO  SPA-MOTOPG
       *
            MOVE    SPACE               TO  LINKAREA

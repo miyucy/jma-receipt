@@ -289,6 +289,7 @@
        01  SCRAREA.
            COPY    "K01.INC".
            COPY    "K02.INC".
+           COPY    "K02N.INC".
            COPY    "K021.INC".
            COPY    "K022.INC".
            COPY    "K023.INC".
@@ -304,6 +305,7 @@
            COPY    "K10.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
+           COPY    "K03X.INC".
            COPY    "KERR.INC".
            COPY    "KERR2.INC".
            COPY    "KID1.INC".
@@ -1212,7 +1214,7 @@
            END-IF
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
-           MOVE    "K02"               TO  SPA-SAKIPG
+           MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
            MOVE    "K06"               TO  SPA-MOTOPG
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
@@ -1358,7 +1360,7 @@
                          CONTINUE
                      ELSE
                          MOVE    "0024"              TO  SPA-ERRCD
-                         GO      TO      4109-HKNCOMBI-CHK-EXT
+                         GO      TO      4202-INTBL-CHK-EXT
                      END-IF
                    END-IF
                END-IF

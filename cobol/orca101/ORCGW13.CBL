@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02.09.17  加算率追加
       *  01.00.02    NACL-藤原    02.09.30  指定病院番号の空白チェック修正
+      *  02.00.01    NACL-多々納  02/11/14  一括入力 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -124,6 +125,8 @@
                                13  SPA-NAI-TSONSHOUKBN2
                                               PIC X(01).
       *
+                   07  SPA-MAE-SONSHOUKBN     PIC X(03).
+      *
               05  SPA-NAI-SELNO               PIC 9(03).
       *
            COPY    "ENUM-VALUE".
@@ -132,6 +135,8 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-OK              PIC 9(01).
+           03  FLG-TOUROKU         PIC 9(01).
       *
       *    カウント領域
       *
@@ -162,6 +167,9 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+      *
+           03  WRK-MCP-WIDGET      PIC X(64).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -231,6 +239,14 @@
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
            COPY    "WERR.INC".
            COPY    "WID1.INC".
       *
@@ -449,7 +465,7 @@
                                       TO  SPA-GMN-TSONSHOUKBN1  (IDX)
                IF      SPA-NAI-TSONSHOUKBN2(IDX) 
                                       NOT =   SPACE
-                   MOVE    "-"        TO  SPA-GMN-TSONSHOUKBN-FL(IDX)               
+                   MOVE    "-"        TO  SPA-GMN-TSONSHOUKBN-FL(IDX)
                    MOVE    SPA-NAI-TSONSHOUKBN2 (IDX)
                                       TO  SPA-GMN-TSONSHOUKBN2  (IDX)
                END-IF   
@@ -503,28 +519,100 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"      ALSO    "RSIIRYOKBN"
-                   PERFORM 4100-RSIIRYOKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "TENKBN"
-                   PERFORM 4101-TENKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "KSNRATE"
-                   PERFORM 4102-KSNRATE-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "RSIIRYOCDN"
-                   PERFORM 4103-RSIIRYOCDN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SONSHOUKBN2"
-                   PERFORM 4104-SONSHOUKBN2-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SONSHOUNAME"
-                   PERFORM 4105-SONSHOUNAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SONSHOUKBN1"
-                   PERFORM 4106-SONSHOUKBN1-CHK-SEC
       *        行選択
                WHEN    ANY             ALSO    "SONSHOUKBNLST"
                    PERFORM 41015-LIST1SEL-SEC
            END-EVALUATE
       *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
            .
        200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           MOVE    W13-RSIIRYOKBN      TO  SPA-GMN-RSIIRYOKBN-G 
+           MOVE    W13-KSNRATE         TO  SPA-GMN-KSNRATE 
+           MOVE    W13-RSIIRYOCDN      TO  SPA-GMN-RSIIRYOCDN 
+           MOVE    W13-TENKBN          TO  SPA-GMN-TENKBN-G 
+      *    損傷区分
+           MOVE    W13-SONSHOUKBN1     TO  SPA-GMN-SONSHOUKBN1
+           MOVE    W13-SONSHOUKBN2     TO  SPA-GMN-SONSHOUKBN2
+           MOVE    W13-SONSHOUNAME     TO  SPA-GMN-SONSHOUNAME
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           PERFORM 4100-RSIIRYOKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4103-RSIIRYOCDN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-TENKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4102-KSNRATE-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4106-SONSHOUKBN1-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4104-SONSHOUKBN2-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4105-SONSHOUNAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *
+           .
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -532,10 +620,7 @@
       *****************************************************************
        4100-RSIIRYOKBN-CHK-SEC       SECTION.
       *
-           MOVE    1                      TO  SPA-GMN-CUR
-      *
-           MOVE    W13-RSIIRYOKBN       TO  SPA-GMN-RSIIRYOKBN-G 
-      *
+           MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-GMN-RSIIRYOKBN-MAX
                IF      SPA-GMN-RSIIRYOKBN 
@@ -544,16 +629,15 @@
                                            TO  SPA-GMN-RSIIRYOKBN-G
                    MOVE    SPA-GMN-RSIIRYOKBN-MAX
                                            TO  IDY
-               END-IF                                     
+                   MOVE    1               TO  FLG-OK
+               END-IF
            END-PERFORM
-      *     
-           IF      SPA-GMN-RSIIRYOKBNMEI =   SPACE
-               MOVE    "0001"                  TO  SPA-ERRCD
-           END-IF    
       *
-           IF      SPA-ERRCD               =   SPACE
-               MOVE    2                       TO  SPA-GMN-CUR
+           IF      FLG-OK              =   ZERO
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    "0001"              TO  SPA-ERRCD
            END-IF
+      *
            .
        4100-RSIIRYOKBN-CHK-EXT.
            EXIT.
@@ -563,13 +647,6 @@
       *****************************************************************
        4102-KSNRATE-CHK-SEC       SECTION.
       *
-           MOVE    7                      TO  SPA-GMN-CUR
-      *
-           MOVE    W13-KSNRATE            TO  SPA-GMN-KSNRATE 
-      *
-           IF      SPA-ERRCD               =   SPACE
-               MOVE    4                      TO  SPA-GMN-CUR
-           END-IF
            .
        4102-KSNRATE-CHK-EXT.
            EXIT.
@@ -579,10 +656,6 @@
       *    指定医療機関コード（漢字）チェック
       *****************************************************************
        4103-RSIIRYOCDN-CHK-SEC       SECTION.
-      *
-           MOVE    2                      TO  SPA-GMN-CUR
-      *
-           MOVE    W13-RSIIRYOCDN         TO  SPA-GMN-RSIIRYOCDN 
       *
       *    半角チェック
       *
@@ -596,19 +669,18 @@
                    MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-RSIIRYOCDN 
                ELSE
                    MOVE    "0004"              TO  SPA-ERRCD
+                   MOVE    2                   TO  SPA-GMN-CUR
                    GO  TO  4103-RSIIRYOCDN-CHK-EXT
                END-IF
            END-IF    
       *
-           IF      SPA-GMN-RSIIRYOKBN     =   "1"
-               IF      SPA-GMN-RSIIRYOCDN     =   SPACE
-                   MOVE    "0003"                 TO  SPA-ERRCD
+           IF      SPA-GMN-RSIIRYOKBN      =   "1"
+               IF      SPA-GMN-RSIIRYOCDN      =   SPACE
+                   MOVE    2                   TO  SPA-GMN-CUR
+                   MOVE    "0003"              TO  SPA-ERRCD
                END-IF
-           END-IF        
+           END-IF 
       *
-           IF      SPA-ERRCD               =   SPACE
-               MOVE    3                      TO  SPA-GMN-CUR
-           END-IF
            .
        4103-RSIIRYOCDN-CHK-EXT.
            EXIT.
@@ -618,33 +690,30 @@
       *****************************************************************
        4101-TENKBN-CHK-SEC       SECTION.
       *
-           MOVE    3                      TO  SPA-GMN-CUR
-      *
-           MOVE    W13-TENKBN         TO  SPA-GMN-TENKBN-G 
-      *
            IF      SPA-GMN-TENKBN     =   SPACE
                IF      SPA-GMN-RSIIRYOKBN     =   "1"
                    MOVE    "0003"                 TO  SPA-ERRCD
+                   MOVE    3                      TO  SPA-GMN-CUR
                END-IF
            ELSE
+               MOVE    ZERO                TO  FLG-OK
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-TENKBN-MAX
                    IF      SPA-GMN-TENKBN 
                                    =   SPA-GMN-TENKBNL (IDY)
                        MOVE    SPA-GMN-TENKBNLST (IDY)
-                                           TO  SPA-GMN-TENKBN-G
+                                               TO  SPA-GMN-TENKBN-G
                        MOVE    SPA-GMN-TENKBN-MAX
-                                           TO  IDY
-                   END-IF                                     
+                                               TO  IDY
+                       MOVE    1               TO  FLG-OK
+                   END-IF
                END-PERFORM
-               IF      SPA-GMN-TENKBNMEI   =   SPACE
-                   MOVE    "0002"                  TO  SPA-ERRCD
+               IF      FLG-OK              =   ZERO
+                   MOVE    "0002"              TO  SPA-ERRCD
+                   MOVE    3                   TO  SPA-GMN-CUR
                END-IF
            END-IF       
       *     
-           IF      SPA-ERRCD               =   SPACE
-               MOVE    7                       TO  SPA-GMN-CUR
-           END-IF
            .
        4101-TENKBN-CHK-EXT.
            EXIT.
@@ -654,12 +723,10 @@
       *****************************************************************
        4106-SONSHOUKBN1-CHK-SEC       SECTION.
       *
-           MOVE    4                   TO  SPA-GMN-CUR
-      *
-           MOVE    W13-SONSHOUKBN1     TO  SPA-GMN-SONSHOUKBN1
-      *
            IF      SPA-GMN-SONSHOUKBN1 =   SPACE
-               MOVE    99                  TO  SPA-GMN-CUR
+               MOVE    SPACE               TO  SPA-GMN-SONSHOUKBN2
+               MOVE    SPACE               TO  SPA-GMN-SONSHOUNAME
+      ******** MOVE    99                  TO  SPA-GMN-CUR
            ELSE   
                INITIALIZE                  ORCSNUMAREA
                MOVE    SPA-GMN-SONSHOUKBN1 TO  SNUM-INX
@@ -668,17 +735,15 @@
                IF     (SNUM-RC         NOT =   ZERO  )   OR
                       (SNUM-MINKBN     NOT =   SPACE )   OR
                       (SNUM-SYOKBN     NOT =   SPACE )
-                   MOVE    "0007"                  TO  SPA-ERRCD
+                   MOVE    "0007"              TO  SPA-ERRCD
+                   MOVE    4                   TO  SPA-GMN-CUR
                    GO  TO  4106-SONSHOUKBN1-CHK-EXT
                ELSE
                    MOVE    SNUM-OUTNUM        TO  WRK-NUM
                    MOVE    WRK-NUM            TO  SPA-GMN-SONSHOUKBN1
                END-IF
       *
-               IF      SPA-ERRCD              =   SPACE
-                   MOVE    5                      TO  SPA-GMN-CUR
-               END-IF
-           END-IF    
+           END-IF
            .
        4106-SONSHOUKBN1-CHK-EXT.
            EXIT.
@@ -688,13 +753,10 @@
       *****************************************************************
        4104-SONSHOUKBN2-CHK-SEC       SECTION.
       *
-           MOVE    5                   TO  SPA-GMN-CUR
-      *
-           MOVE    W13-SONSHOUKBN2     TO  SPA-GMN-SONSHOUKBN2
       *
            IF      SPA-GMN-SONSHOUKBN2 =   SPACE
                CONTINUE
-           ELSE             
+           ELSE
                INITIALIZE              ORCSNUMAREA
                MOVE    SPA-GMN-SONSHOUKBN2 TO  SNUM-INX
                CALL    "ORCSNUM"           USING
@@ -702,24 +764,29 @@
                IF     (SNUM-RC         NOT =   ZERO  )   OR
                       (SNUM-MINKBN     NOT =   SPACE )   OR
                       (SNUM-SYOKBN     NOT =   SPACE )
-                   MOVE    "0007"                  TO  SPA-ERRCD
+                   MOVE    "0007"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN-CUR
                    GO  TO  4104-SONSHOUKBN2-CHK-EXT
                END-IF
-           END-IF    
-      *
-           IF      SPA-ERRCD               =   SPACE
-               MOVE    ZERO                TO  IDX
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       SPA-GMN-MAX
-                   IF      SPA-GMN-SONSHOUKBN
-                                   =   SPA-NAI-TSONSHOUKBN (IDY)
-                       MOVE    SPA-GMN-TSONSHOUNAME (IDY)
-                                               TO  SPA-GMN-SONSHOUNAME
-                       MOVE    SPA-GMN-MAX     TO  IDY  
-                   END-IF                      
-               END-PERFORM
-               MOVE    6                       TO  SPA-GMN-CUR
            END-IF
+      *
+      *    入力変更がない時、そのままとする
+           IF      SPA-MAE-SONSHOUKBN      =   SPA-GMN-SONSHOUKBN
+               GO  TO  4104-SONSHOUKBN2-CHK-EXT
+           ELSE
+               MOVE    SPA-GMN-SONSHOUKBN  TO  SPA-MAE-SONSHOUKBN
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-MAX
+               IF      SPA-GMN-SONSHOUKBN
+                                   =   SPA-NAI-TSONSHOUKBN (IDY)
+                   MOVE    SPA-GMN-TSONSHOUNAME (IDY)
+                                               TO  SPA-GMN-SONSHOUNAME
+                   MOVE    SPA-GMN-MAX     TO  IDY
+               END-IF 
+           END-PERFORM
            .
        4104-SONSHOUKBN2-CHK-EXT.
            EXIT.
@@ -729,9 +796,12 @@
       *****************************************************************
        4105-SONSHOUNAME-CHK-SEC       SECTION.
       *
-           MOVE    6                   TO  SPA-GMN-CUR
-      *
-           MOVE    W13-SONSHOUNAME     TO  SPA-GMN-SONSHOUNAME
+           IF      (FLG-TOUROKU        =   1 )  OR
+                   (WRK-MCP-WIDGET     =   "SONSHOUNAME")
+               CONTINUE
+           ELSE
+               GO  TO  4105-SONSHOUNAME-CHK-EXT
+           END-IF
       *
            MOVE    ZERO                TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
@@ -740,11 +810,12 @@
                                    =   SPA-NAI-TSONSHOUKBN (IDY)
                    MOVE    IDY             TO  IDX
                    MOVE    SPA-GMN-MAX     TO  IDY
-               END-IF                                     
+               END-IF
            END-PERFORM
       *
            IF      IDX                 =   ZERO
                IF      SPA-GMN-MAX         >=  WRK-CONS-LINE-MAX
+                   MOVE    6                   TO  SPA-GMN-CUR
                    MOVE    "0010"              TO  SPA-ERRCD
                    GO  TO  4105-SONSHOUNAME-CHK-EXT
                END-IF    
@@ -754,7 +825,7 @@
                MOVE    SPA-GMN-SONSHOUKBN1 TO  SPA-GMN-TSONSHOUKBN1(IDX)
                IF      SPA-GMN-SONSHOUKBN2
                                        NOT =   SPACE
-                   MOVE    "-"         TO  SPA-GMN-TSONSHOUKBN-FL  (IDX)                 
+                   MOVE    "-"         TO  SPA-GMN-TSONSHOUKBN-FL  (IDX)
                    MOVE    SPA-GMN-SONSHOUKBN2 
                                        TO  SPA-GMN-TSONSHOUKBN2    (IDX)
                END-IF
@@ -764,8 +835,7 @@
       *
            INITIALIZE                  SPA-GMN-KOUMOKU1
            MOVE    ZERO                TO  SPA-NAI-SELNO
-      *                                        
-           MOVE    4                       TO  SPA-GMN-CUR
+      *
            .
        4105-SONSHOUNAME-CHK-EXT.
            EXIT.
@@ -800,7 +870,11 @@
                                        TO  SPA-GMN-SONSHOUKBN2
            MOVE    SPA-GMN-TSONSHOUNAME (SPA-NAI-SELNO)
                                        TO  SPA-GMN-SONSHOUNAME
-           MOVE    6                   TO  SPA-GMN-CUR                            
+      *
+           MOVE    SPA-GMN-SONSHOUKBN1 TO  W13-SONSHOUKBN1
+           MOVE    SPA-GMN-SONSHOUKBN2 TO  W13-SONSHOUKBN2
+           MOVE    SPA-GMN-SONSHOUNAME TO  W13-SONSHOUNAME
+      *
            .
        41015-LIST1SEL-EXT.
            EXIT.
@@ -829,6 +903,12 @@
       *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC              SECTION.
+      *    入力チェック処理
+           MOVE    1                   TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      490-TOUROKU-EXT
+           END-IF
       *
            PERFORM 4900-KANRENCHK-SEC
            IF      SPA-ERRCD        =   SPACE
@@ -956,26 +1036,26 @@
       *****************************************************************
        4900-KANRENCHK-SEC           SECTION.
       *
-           MOVE    SPACE                TO  SPA-ERRCD
-           MOVE    SPA-GMN-CUR          TO  WRK-GMN-CUR 
+      *    MOVE    SPACE                TO  SPA-ERRCD
+      *    MOVE    SPA-GMN-CUR          TO  WRK-GMN-CUR 
       *
-           PERFORM 4100-RSIIRYOKBN-CHK-SEC
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4103-RSIIRYOCDN-CHK-SEC
-           END-IF    
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4101-TENKBN-CHK-SEC
-           END-IF    
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4106-SONSHOUKBN1-CHK-SEC
-           END-IF             
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4104-SONSHOUKBN2-CHK-SEC
-           END-IF             
+      *    PERFORM 4100-RSIIRYOKBN-CHK-SEC
+      *    IF      SPA-ERRCD            =   SPACE
+      *        PERFORM 4103-RSIIRYOCDN-CHK-SEC
+      *    END-IF    
+      *    IF      SPA-ERRCD            =   SPACE
+      *        PERFORM 4101-TENKBN-CHK-SEC
+      *    END-IF    
+      *    IF      SPA-ERRCD            =   SPACE
+      *        PERFORM 4106-SONSHOUKBN1-CHK-SEC
+      *    END-IF             
+      *    IF      SPA-ERRCD            =   SPACE
+      *        PERFORM 4104-SONSHOUKBN2-CHK-SEC
+      *    END-IF             
       *
-           IF      SPA-ERRCD            =   SPACE
-               MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
-           END-IF             
+      *    IF      SPA-ERRCD            =   SPACE
+      *        MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
+      *****END-IF             
            .
        4900-KANRENCHK-EXT.
            EXIT.
@@ -1036,14 +1116,14 @@
            END-PERFORM
            MOVE    SPA-GMN-TENKBN-MAX  TO  W13-TENKBN-COUNT 
       *
-           MOVE    SPA-GMN-RSIIRYOCDN  TO  W13-RSIIRYOCDN                                  
+           MOVE    SPA-GMN-RSIIRYOCDN  TO  W13-RSIIRYOCDN
       *     
       *
-           MOVE    SPA-GMN-SONSHOUKBN1   TO  W13-SONSHOUKBN1                                  
+           MOVE    SPA-GMN-SONSHOUKBN1   TO  W13-SONSHOUKBN1
       *
-           MOVE    SPA-GMN-SONSHOUKBN2   TO  W13-SONSHOUKBN2                                  
+           MOVE    SPA-GMN-SONSHOUKBN2   TO  W13-SONSHOUKBN2
       *
-           MOVE    SPA-GMN-SONSHOUNAME   TO  W13-SONSHOUNAME                                  
+           MOVE    SPA-GMN-SONSHOUNAME   TO  W13-SONSHOUNAME
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-MAX
@@ -1164,6 +1244,10 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+          IF      SPA-GMN-CUR          =   ZERO
+               PERFORM 50011-CUR-SET-SEC
+          END-IF
+      *
           EVALUATE    SPA-GMN-CUR
                 WHEN    1
                     MOVE  "RSIIRYOKBN"     TO   MCP-WIDGET
@@ -1184,6 +1268,36 @@
             END-EVALUATE
            .
        5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カーソル編集処理
+      *****************************************************************
+       50011-CUR-SET-SEC         SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "RSIIRYOKBN"
+                   MOVE    2               TO  SPA-GMN-CUR
+               WHEN    "RSIIRYOCDN"
+                   MOVE    3               TO  SPA-GMN-CUR
+               WHEN    "TENKBN"
+                   MOVE    7               TO  SPA-GMN-CUR
+               WHEN    "KSNRATE"
+                   MOVE    4               TO  SPA-GMN-CUR
+               WHEN    "SONSHOUKBN1"
+                   IF      SPA-GMN-SONSHOUKBN1     =   SPACE
+                       MOVE    99              TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    5               TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "SONSHOUKBN2"
+                   MOVE    6               TO  SPA-GMN-CUR
+               WHEN    "SONSHOUNAME"
+                   MOVE    99              TO  SPA-GMN-CUR
+            END-EVALUATE
+      *
+           .
+       50011-CUR-SET-EXT.
            EXIT.
       *
       *****************************************************************

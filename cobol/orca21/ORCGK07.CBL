@@ -188,6 +188,7 @@
        01  SCRAREA.
            COPY    "K01.INC".
            COPY    "K02.INC".
+           COPY    "K02N.INC".
            COPY    "K021.INC".
            COPY    "K022.INC".
            COPY    "K023.INC".
@@ -203,7 +204,9 @@
            COPY    "K10.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
+           COPY    "K03X.INC".
            COPY    "KERR.INC".
+           COPY    "KERR2.INC".
            COPY    "KID1.INC".
            COPY    "KID2.INC".
       *
@@ -326,6 +329,7 @@
                INITIALIZE                  JYURRK-REC
                MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
                MOVE    SPA-PTID            TO  JYURRK-PTID
+               MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
                MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
                MOVE    SPA-NAI-RRKYMD(IDX) TO  JYURRK-SRYYMD
                MOVE    SPA-NAI-RENNUM(IDX) TO  JYURRK-RENNUM

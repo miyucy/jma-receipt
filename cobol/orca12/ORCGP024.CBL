@@ -199,6 +199,7 @@
            COPY    "P0201.INC".
            COPY    "P982.INC".
            COPY    "P100.INC".
+           COPY    "P02X.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -1481,7 +1482,7 @@
       *----(01.00.01) LINE ADD START --------------------------------
                    MOVE    7           TO  SPA-GMN24-CUR
       *----(01.00.01) LINE ADD END   --------------------------------
-                   GO      TO          413-TNKRRK-KOUSIN-EXT
+                   GO      TO          41092-RFUKUSI-CHK-EXT
                END-IF
              END-IF
            END-PERFORM

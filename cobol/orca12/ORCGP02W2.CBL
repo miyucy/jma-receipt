@@ -34,6 +34,7 @@
       *  01.00.05    MCC-太田     01/05/16  再書き込み対応修正
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
       *  02.00.02    NACL-多々納  02/10/31  船員保険補助区分追加
+      *  02.00.03    NACL-多々納  02/11/21  共済下船３月追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -624,8 +625,12 @@
       *
            MOVE    SPACE             TO  WRK-KEN-SEIDO
       *
-           IF  (WRK-KEN-HKNNUM       =   "002")   AND
-               (WRK-KEN-HOJOKBN  NOT =   SPACE)
+           IF ((WRK-KEN-HKNNUM       =   "002" )  AND
+               (WRK-KEN-HOJOKBN  NOT =   SPACE) )   OR
+      *    共済
+              ((WRK-KEN-HKNNUM       =   "031"  OR  "032"  OR
+                                         "033"  OR  "034" ) AND
+               (WRK-KEN-HOJOKBN      =   "2"  OR  "B"  OR  "E"))
                EVALUATE    WRK-KEN-HOJOKBN
                WHEN    "1"
                    MOVE    "船員職務上"        TO  WRK-KEN-SEIDO
@@ -814,7 +819,7 @@
                MOVE    WRK-HKN-SBT  (IDX)
                                   TO  WRK-KCOMB-SYU-HKNKOHSBTKBN(IDX2)
       *
-               IF  (WRK-HKN-HKNNUM (IDX)       =   "002")   AND
+               IF ((WRK-HKN-HKNNUM (IDX)       =   "002")   AND
       *************(WRK-HKN-HOJOKBN(IDX)   NOT =   SPACE)
                    (WRK-HKN-HOJOKBN(IDX)       =   "1"  OR
                                                    "2"  OR
@@ -824,7 +829,14 @@
                                                    "C"  OR
                                                    "D"  OR
                                                    "E"  OR
-                                                   "F" )
+                                                   "F" ) )   OR
+                  ((WRK-HKN-HKNNUM (IDX)       =   "031" OR
+                                                   "032" OR
+                                                   "033" OR
+                                                   "034" ) AND
+                   (WRK-HKN-HOJOKBN(IDX)       =   "2"  OR
+                                                   "B"  OR
+                                                   "E"   ))
                  ADD     1             TO  WRK-LCOMB-MAX
                  MOVE    WRK-KCOMB-REC (IDX2)
                                        TO  WRK-LCOMB-REC
@@ -1443,7 +1455,14 @@
                                                    "C"  OR
                                                    "D"  OR
                                                    "E"  OR
-                                                   "F" ))
+                                                   "F" ))   OR
+                  ((WRK-LCOMB-HKNNUM (IDX2)    =   "031" OR
+                                                   "032" OR
+                                                   "033" OR
+                                                   "034" ) AND
+                   (WRK-LCOMB-HOJOKBN(IDX2)    =   "2"  OR
+                                                   "B"  OR
+                                                   "E"   ))
             INITIALIZE                         WRK-KENSAKU-AREA
             MOVE    WRK-LCOMB-HKNNUM  (IDX2)   TO  WRK-KEN-HKNNUM
       *----(01.00.01) LINE MOD START ---------------------------------
@@ -2884,11 +2903,31 @@
                      ELSE
       *                [主保険]
                        IF  WRK-HKN-SBT(IDY)  =   "1"
-                           IF  ((WRK-HKN-HKNNUM (IDY)  =   "002") AND
-                                (WRK-HKN-HOJOKBN(IDY)  =   SPACE OR
-                                                           "8"  OR
-                                                           "9"  ))  OR
-                               ( WRK-HKN-HKNNUM (IDY)  NOT =  "002")
+      ****                 IF  ((WRK-HKN-HKNNUM (IDY)  =   "002") AND
+      *                         (WRK-HKN-HOJOKBN(IDY)  =   SPACE OR
+      *                                                    "8"  OR
+      *                                                    "9"  ))  OR
+      *****                    ( WRK-HKN-HKNNUM (IDY)  NOT =  "002")
+      *                船員以外
+                           IF  ((WRK-HKN-HKNNUM (IDY)  =   "002" ) AND
+                                (WRK-HKN-HOJOKBN(IDY)  =   "1"  OR
+                                                           "2"  OR
+                                                           "3"  OR
+                                                           "A"  OR
+                                                           "B"  OR
+                                                           "C"  OR
+                                                           "D"  OR
+                                                           "E"  OR
+                                                           "F"  ))  OR
+                               ((WRK-HKN-HKNNUM (IDY)  =   "031" OR
+                                                           "032" OR
+                                                           "033" OR
+                                                           "034" )  AND
+                                (WRK-HKN-HOJOKBN(IDY)  =   "2" OR
+                                                           "B" OR
+                                                           "E"  ))
+                               CONTINUE
+                           ELSE
                                MOVE    IDX       TO  WRK-COMB-SYUKOHIDX
                                MOVE    IDY       TO  WRK-COMB-SYUHOIDX
       *                        <主公費 & 主保険 組合せ処理>
@@ -3922,9 +3961,23 @@
                  (WRK-HKN-SAKJOKBN (IDZ)     =   SPACE)  AND
                  (WRK-HKN-CONTKBN (IDZ)     =   SPACE)
       *
-              IF  (WRK-HKN-HKNNUM  (IDZ)  NOT =   "002")   OR
-                 ((WRK-HKN-HKNNUM  (IDZ)      =   "002") AND
-                  (WRK-HKN-HOJOKBN (IDZ)      =   SPACE))
+      ******* IF  (WRK-HKN-HKNNUM  (IDZ)  NOT =   "002")   OR
+      *          ((WRK-HKN-HKNNUM  (IDZ)      =   "002") AND
+      *           (WRK-HKN-HOJOKBN (IDZ)      =   SPACE))
+      ******* IF  (WRK-HKN-HKNNUM  (IDZ)  NOT =   "002")   OR
+              IF ((WRK-HKN-HKNNUM  (IDZ)      =   "002") AND
+                  (WRK-HKN-HOJOKBN (IDZ)  NOT =    SPACE  AND
+                                                   "8"    AND
+                                                   "9" ))  OR
+                 ((WRK-HKN-HKNNUM  (IDZ)      =   "031"  OR
+                                                  "032"  OR
+                                                  "033"  OR
+                                                  "034"  )  AND
+                  (WRK-HKN-HOJOKBN (IDZ)  NOT =    SPACE  AND
+                                                   "8"    AND
+                                                   "9" ))
+                   CONTINUE
+               ELSE
       *
       *        [主保険]適用年月日と[生保]適用年月日
                IF  (WRK-HKN-TEKEDYMD(IDZ)

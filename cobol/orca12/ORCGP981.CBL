@@ -138,6 +138,7 @@
            COPY    "P0201.INC".
            COPY    "P982.INC".
            COPY    "P100.INC".
+           COPY    "P02X.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -547,7 +548,7 @@
                MOVE    SPA-GMN982-RENNUM   TO  SPA-GMN981-RENNUM
                MOVE    SPA-GMN981-RENNUM   TO  P981-RENNUM
                PERFORM 4103-RENNUM-CHK-SEC
-               GO  TO  490-KOUSHIN-EXT
+               GO  TO  420-P982-SYORI-EXT
            END-IF
       *
       *    画面カーソルセット処理

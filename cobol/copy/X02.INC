@@ -22,20 +22,20 @@
         02  X02.
             03  X02-FIXED2.
               04  X02-NAME.
-                05  X02-VALUE   PIC X(101).
+                05  X02-VALUE   PIC X(100).
               04  X02-B03.
                 05  X02-B03-STATE   PIC S9(9)   BINARY.
               04  X02-TEKCD-G   OCCURS  20.
                 05  X02-TEKCD.   
-                  06  X02-VALUE PIC X(10).
+                  06  X02-VALUE PIC X(9).
               04  X02-DSPNAME-G OCCURS  20.
                 05  X02-DSPNAME. 
-                  06  X02-VALUE PIC X(101).
+                  06  X02-VALUE PIC X(100).
               04  X02-SRYCD.
-                05  X02-VALUE   PIC X(10).
+                05  X02-VALUE   PIC X(9).
               04  X02-STYUKYMD.
-                05  X02-VALUE   PIC X(10).
+                05  X02-VALUE   PIC X(9).
               04  X02-EDYUKYMD.
-                05  X02-VALUE   PIC X(10).
+                05  X02-VALUE   PIC X(9).
               04  X02-CHKKBN.
-                05  X02-VALUE   PIC X(51).
+                05  X02-VALUE   PIC X(50).

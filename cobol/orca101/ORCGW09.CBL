@@ -33,6 +33,7 @@
       * 01.00.04     NACL-藤原    02/09/20  自賠責の提出先の追加     
       *
       * 01.01.01     NACL-藤原    02/09/25  入外区分・表示順の追加     
+      * 01.01.06     NACL-多々納  02/11/13  一括入力 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -132,6 +133,9 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+      *
+           03  WRK-MCP-WIDGET      PIC X(64).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -164,6 +168,9 @@
       *
            COPY  "CPORCSLNK.INC".
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -193,6 +200,14 @@
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
            COPY    "WERR.INC".
            COPY    "WID1.INC".
       *
@@ -208,6 +223,9 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
@@ -454,32 +472,85 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"      ALSO    "SYURUINAME"
-                   PERFORM 4100-SYURUINAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "TEISYUTUSAKI"
-                   PERFORM 4100-TEISYUTUSAKI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SYUBETU01"
-               WHEN    "ACTIVATE"      ALSO    "SYUBETU02"
-               WHEN    "ACTIVATE"      ALSO    "SYUBETU03"
-               WHEN    "ACTIVATE"      ALSO    "SYUBETU04"
-               WHEN    "ACTIVATE"      ALSO    "SYUBETU05"
-               WHEN    "ACTIVATE"      ALSO    "SYUBETU06"
-               WHEN    "ACTIVATE"      ALSO    "SYUBETU07"
-               WHEN    "ACTIVATE"      ALSO    "SYUBETU08"
-               WHEN    "ACTIVATE"      ALSO    "SYUBETU09"
-               WHEN    "ACTIVATE"      ALSO    "SYUBETU10"
-                   MOVE    MCP-WIDGET          TO  WRK-WIDGET
-                   MOVE    WRK-WIDGET2         TO  IDX 
-                   PERFORM 4101-SYUBETU-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
-                   PERFORM 4102-NYUGAIKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "DSPSEQ"
-                   PERFORM 4103-DSPSEQ-CHK-SEC
-           END-EVALUATE
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
       *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
            .
        200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           MOVE    W09-SYURUINAME      TO  SPA-GMN-SYURUINAME
+           MOVE    W09-TEISYUTUSAKI    TO  SPA-GMN-TEISYUTUSAKI-G
+      *    レセプト種別
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   10
+               MOVE    W09-SYUBETU (IDX)   TO  SPA-GMN-SYUBETU (IDX)
+           END-PERFORM
+      *
+           MOVE    W09-NYUGAIKBN        TO  SPA-GMN-NYUGAIKBN-G
+           MOVE    W09-DSPSEQ           TO  SPA-GMN-DSPSEQ
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           PERFORM 4100-SYURUINAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4100-TEISYUTUSAKI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-SYUBETU-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4102-NYUGAIKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4103-DSPSEQ-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *
+           .
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -487,16 +558,23 @@
       *****************************************************************
        4100-SYURUINAME-CHK-SEC       SECTION.
       *
-           MOVE    2                   TO  SPA-GMN-CUR
-      *
-           MOVE    W09-SYURUINAME      TO  SPA-GMN-SYURUINAME
-      *
-      **     IF      SPA-GMN-SYURUINAME      =   SPACE
-      **         MOVE    "0001"                      TO  SPA-ERRCD
-      **         GO  TO  4100-SYURUINAME-CHK-EXT
-      **     END-IF 
-      *  
-           MOVE    13                   TO  SPA-GMN-CUR
+           IF      SPA-GMN-SYURUINAME  NOT =   SPACE
+      *        全角チェック
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-SYURUINAME  TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                      (KANACHK-SYUBETU     =   1     )
+                   MOVE    "0001"          TO  SPA-ERRCD
+                   MOVE    2               TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    KANACHK-OUT-INPUT
+                                           TO  SPA-GMN-SYURUINAME
+               END-IF
+           END-IF
+      *****MOVE    13                   TO  SPA-GMN-CUR
            .
        4100-SYURUINAME-CHK-EXT.
            EXIT.
@@ -505,10 +583,6 @@
       *    提出先チェック
       *****************************************************************
        4100-TEISYUTUSAKI-CHK-SEC       SECTION.
-      *
-           MOVE    13                   TO  SPA-GMN-CUR
-      *
-           MOVE    W09-TEISYUTUSAKI     TO  SPA-GMN-TEISYUTUSAKI-G
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-TEISYUTUSAKI-MAX
@@ -519,13 +593,12 @@
                    MOVE    SPA-GMN-TEISYUTUSAKI-MAX
                                        TO  IDX
                END-IF
-           END-PERFORM                                                                              
+           END-PERFORM
       *
            IF      SPA-GMN-TEISYUTUSAKIMEI =   SPACE
+               MOVE    13                  TO  SPA-GMN-CUR
                MOVE    "0005"              TO  SPA-ERRCD
-           ELSE
-               MOVE    3                   TO  SPA-GMN-CUR
-           END-IF    
+           END-IF
            .
        4100-TEISYUTUSAKI-CHK-EXT.
            EXIT.
@@ -535,11 +608,9 @@
       *****************************************************************
        4101-SYUBETU-CHK-SEC       SECTION.
       *
-           MOVE    2                   TO  SPA-GMN-CUR
-      *
-           MOVE    W09-SYUBETU (IDX)   TO  SPA-GMN-SYUBETU (IDX)
-      *
-           COMPUTE SPA-GMN-CUR =   SPA-GMN-CUR    +   IDX
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL  (IDX     >       10  )  OR
+                          (SPA-ERRCD   NOT =   SPACE)
       *
            MOVE    SPACE               TO  SPA-GMN-SYUBETUNAME (IDX)
            IF      SPA-GMN-SYUBETU (IDX)   =   SPACE
@@ -554,10 +625,10 @@
                    AND     SYS-2004-PRTJYUNI
                                        NOT =   SPA-W01-KBNCD (1:2)
                        MOVE    "0002"                  TO  SPA-ERRCD
-                       GO  TO  4101-SYUBETU-CHK-EXT
                    END-IF
                    PERFORM VARYING IDY FROM    1   BY  1
                            UNTIL   IDY >       10
+                               OR (SPA-ERRCD   NOT =   SPACE)
                        IF      SPA-GMN-SYUBETU (IDY)   =   SPACE
                        OR      IDX                     =   IDY
                            CONTINUE
@@ -565,27 +636,27 @@
                            IF      SPA-GMN-SYUBETU (IDX)
                                             =   SPA-GMN-SYUBETU (IDY)
                                MOVE    "0003"          TO  SPA-ERRCD
-                               GO  TO  4101-SYUBETU-CHK-EXT
                            END-IF
-                       END-IF     
-                   END-PERFORM                                     
-               ELSE     
+                       END-IF
+                   END-PERFORM
+               ELSE
                    MOVE    "0001"                  TO  SPA-ERRCD
-                   GO  TO  4101-SYUBETU-CHK-EXT
                END-IF
       *
-               IF      IDX                 =   1   AND
-                       SPA-GMN-SYURUINAME  =   SPACE
+               IF     (SPA-ERRCD           =   SPACE )  AND
+                      (IDX                 =   1     )  AND
+                      (SPA-GMN-SYURUINAME  =   SPACE )
                    MOVE    SPA-GMN-SYUBETUNAME (IDX)
                                            TO  SPA-GMN-SYURUINAME
                END-IF
-           END-IF     
       *
-           IF      IDX                 =   10  
-               MOVE    99                  TO  SPA-GMN-CUR
-           ELSE  
-               ADD     1                   TO  SPA-GMN-CUR
+               IF      SPA-ERRCD       NOT =   SPACE
+                   COMPUTE SPA-GMN-CUR =   IDX     +   2
+               END-IF
            END-IF
+      *
+           END-PERFORM
+      *
            .
        4101-SYUBETU-CHK-EXT.
            EXIT.
@@ -595,9 +666,6 @@
       *****************************************************************
        4102-NYUGAIKBN-CHK-SEC       SECTION.
       *
-           MOVE    14                   TO  SPA-GMN-CUR
-      *
-           MOVE    W09-NYUGAIKBN        TO  SPA-GMN-NYUGAIKBN-G
       *
            IF      SPA-GMN-NYUGAIKBN   NOT =   SPACE 
                PERFORM VARYING IDX FROM    1   BY  1
@@ -613,12 +681,10 @@
       *
                IF      SPA-GMN-NYUGAIKBNMEI    =   SPACE
                    MOVE    "0005"              TO  SPA-ERRCD
-               END-IF                                                                             
+                   MOVE    14                   TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
-           IF      SPA-ERRCD               =   SPACE     
-               MOVE    15                  TO  SPA-GMN-CUR
-           END-IF    
            .
        4102-NYUGAIKBN-CHK-EXT.
            EXIT.
@@ -628,13 +694,8 @@
       *****************************************************************
        4103-DSPSEQ-CHK-SEC       SECTION.
       *
-           MOVE    15                   TO  SPA-GMN-CUR
-      *
-           MOVE    W09-DSPSEQ           TO  SPA-GMN-DSPSEQ
-      *     
-           MOVE    3                    TO  SPA-GMN-CUR
            .
-       4103-NYUGAIKBN-CHK-EXT.
+       4103-DSPSEQ-CHK-EXT.
            EXIT.
       *
       *
@@ -705,6 +766,12 @@
       *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC              SECTION.
+      *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      490-TOUROKU-EXT
+           END-IF
       *
            PERFORM 4900-KANRENCHK-SEC
            IF      SPA-ERRCD        =   SPACE
@@ -786,20 +853,20 @@
       *****************************************************************
        4900-KANRENCHK-SEC           SECTION.
       *
-           MOVE    SPACE                TO  SPA-ERRCD
-           MOVE    SPA-GMN-CUR          TO  WRK-GMN-CUR 
+      *    MOVE    SPACE                TO  SPA-ERRCD
+      *    MOVE    SPA-GMN-CUR          TO  WRK-GMN-CUR 
       *
-           PERFORM 4100-TEISYUTUSAKI-CHK-SEC
-           PERFORM 4102-NYUGAIKBN-CHK-SEC
-           PERFORM 4100-SYURUINAME-CHK-SEC
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       10
-               PERFORM 4101-SYUBETU-CHK-SEC
-           END-PERFORM
+      *    PERFORM 4100-TEISYUTUSAKI-CHK-SEC
+      *    PERFORM 4102-NYUGAIKBN-CHK-SEC
+      *    PERFORM 4100-SYURUINAME-CHK-SEC
+      *    PERFORM VARYING IDX FROM    1   BY  1
+      *            UNTIL   IDX >       10
+      *        PERFORM 4101-SYUBETU-CHK-SEC
+      *    END-PERFORM
       *
-           IF      SPA-ERRCD            =   SPACE
-               MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
-           END-IF             
+      *    IF      SPA-ERRCD            =   SPACE
+      *        MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
+      **   END-IF             
            .
        4900-KANRENCHK-EXT.
            EXIT.
@@ -981,6 +1048,10 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+          IF      SPA-GMN-CUR          =   ZERO
+               PERFORM 50011-CUR-SET-SEC
+          END-IF
+      *
           EVALUATE    SPA-GMN-CUR
                 WHEN    2
                     MOVE  "SYURUINAME"     TO   MCP-WIDGET
@@ -1017,6 +1088,48 @@
            .
        5001-MAPCUR-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    カーソル編集処理
+      *****************************************************************
+       50011-CUR-SET-SEC         SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "SYURUINAME"
+                   MOVE    13          TO  SPA-GMN-CUR
+               WHEN    "TEISYUTUSAKI"
+                   MOVE    3           TO  SPA-GMN-CUR
+               WHEN    "NYUGAIKBN"
+                   MOVE    15          TO  SPA-GMN-CUR
+               WHEN    "DSPSEQ"
+                   MOVE    99          TO  SPA-GMN-CUR
+               WHEN    "SYUBETU01"
+                   MOVE    4           TO  SPA-GMN-CUR
+               WHEN    "SYUBETU02"
+                   MOVE    5           TO  SPA-GMN-CUR
+               WHEN    "SYUBETU03"
+                   MOVE    6           TO  SPA-GMN-CUR
+               WHEN    "SYUBETU04"
+                   MOVE    7           TO  SPA-GMN-CUR
+               WHEN    "SYUBETU05"
+                   MOVE    8           TO  SPA-GMN-CUR
+               WHEN    "SYUBETU06"
+                   MOVE    9           TO  SPA-GMN-CUR
+               WHEN    "SYUBETU07"
+                   MOVE    10          TO  SPA-GMN-CUR
+               WHEN    "SYUBETU08"
+                   MOVE    11          TO  SPA-GMN-CUR
+               WHEN    "SYUBETU09"
+                   MOVE    12          TO  SPA-GMN-CUR
+               WHEN    "SYUBETU10"
+                   MOVE    14          TO  SPA-GMN-CUR
+                   MOVE    99          TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
+           .
+       50011-CUR-SET-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    日付チェック・編集処理

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  02/11/20  GO TO 修正
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -169,6 +170,7 @@
            COPY    "P0201.INC".
            COPY    "P982.INC".
            COPY    "P100.INC".
+           COPY    "P02X.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -375,7 +377,7 @@
            IF  ( SPA-GMN-P100-KANJINAME (IDX1)
                                        =   SPACE )
                PERFORM 4100-KANJINAME-CUR-SET-SEC
-               GO  TO  4100-SELNUM-CHK-EXT
+               GO  TO  4100-KANJINAME-CHK-EXT
       *
            END-IF
       *
@@ -387,7 +389,7 @@
            IF      SPA-ERRCD           =   SPACE
                MOVE    WRK-ATO-INPUT   TO  SPA-GMN-P100-KANJINAME (IDX1)
            ELSE
-               GO  TO  4100-SELNUM-CHK-EXT
+               GO  TO  4100-KANJINAME-CHK-EXT
            END-IF
       *
            PERFORM 4100-KANJINAME-CUR-SET-SEC
@@ -473,7 +475,7 @@
            PERFORM 490-KANJINAME-SET-SEC
            IF  ( SPA-ERRCD     NOT =   SPACE )
                COMPUTE SPA-GMN-P100-CUR    =   IDX1    +   2
-               GO  TO  490-TOUROKU
+               GO  TO  490-KAKUTEI-EXT
            END-IF
       *
       *
@@ -502,7 +504,7 @@
            PERFORM 490-KANJINAME-SET-SEC
            IF  ( SPA-ERRCD     NOT =   SPACE )
                COMPUTE SPA-GMN-P100-CUR    =   IDX1    +   2
-               GO  TO  490-TOUROKU
+               GO  TO  490-TOUROKU-EXT
            END-IF
       *
       *    人名ＤＢ編集処理

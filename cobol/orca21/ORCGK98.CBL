@@ -36,6 +36,7 @@
       *                                     コードを検索するように修正
       *  01.00.06    MCC−多々納  02/04/11  労災追加
       *  01.00.07    NACL−多々納 02/08/20  検査グループ変更
+      *  01.00.08    NACL−多々納 02/11/05  一括入力へ変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -318,6 +319,7 @@
        01  SCRAREA.
            COPY    "K01.INC".
            COPY    "K02.INC".
+           COPY    "K02N.INC".
            COPY    "K021.INC".
            COPY    "K022.INC".
            COPY    "K023.INC".
@@ -333,6 +335,7 @@
            COPY    "K10.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
+           COPY    "K03X.INC".
            COPY    "KERR.INC".
            COPY    "KERR2.INC".
            COPY    "KID1.INC".
@@ -1492,8 +1495,8 @@
                WHEN    "ACTIVATE"      ALSO    "SELNUM4"
                WHEN    "ACTIVATE"      ALSO    "SELNUM5"
                    MOVE    MCP-WIDGET(7:1)     TO  IDX-1
-                   PERFORM 41011-SELNUM-CHK-SEC
-      *DDDDDDDDDD  PERFORM 41011-SELNUM-ALLCHK-SEC
+      ************ PERFORM 41011-SELNUM-CHK-SEC
+                   PERFORM 41011-SELNUM-ALLCHK-SEC
       *        行選択
                WHEN    ANY             ALSO    "LIST"
                    PERFORM 41012-LISTSEL-SEC
@@ -1700,8 +1703,8 @@
       *********IF      SPA-K98-NAI-NO (IDX)    =   SPA-K98-NAI-SELNUM
                IF      SPA-K98-NAI-NO (IDX)    =   SPA-K98-NAI-SELNUM
                                                             (IDX-1)
-                   MOVE    IDX             TO  WRK-SELNO
-                   MOVE    200             TO  IDX
+                   MOVE    IDX                 TO  WRK-SELNO
+                   MOVE    SPA-K98-GMN-MAX     TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1709,6 +1712,7 @@
            IF      SPA-K98-GMN-SYORI   =   "9"
                IF      SPA-K98-GMN-SYORI2  =   SPACE
                    PERFORM 41013-KENSA-GRP-SEC
+                   MOVE    1               TO  FLG-HENSYU
                ELSE
                    PERFORM 41014-KENSA-SEL-SEC
                END-IF

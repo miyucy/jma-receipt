@@ -560,7 +560,7 @@
                05  WRK-HGMN-TBLREC.
                    07  WRK-HGMN-DATA   PIC X(130).
                05  WRK-HCOM-TBLREC.
-                   07  WRK-HCOM-DATA   PIC X(400).
+                   07  WRK-HCOM-DATA   PIC X(800).
            03  WRK-HOZ-IDX             PIC 9(04).
       *
       *    診療種別名テーブル
@@ -685,6 +685,7 @@
        01  SCRAREA.
            COPY    "K01.INC".
            COPY    "K02.INC".
+           COPY    "K02N.INC".
            COPY    "K021.INC".
            COPY    "K022.INC".
            COPY    "K023.INC".
@@ -700,6 +701,7 @@
            COPY    "K10.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
+           COPY    "K03X.INC".
            COPY    "KERR.INC".
            COPY    "KERR2.INC".
            COPY    "KID1.INC".
@@ -1524,6 +1526,7 @@
            CALL    "ORCSC94"           USING
                                        ORCSC94AREA
                                        SPA-SCR-REC
+                                       SPA-AREA
       *
            .
        3101-INPUTCD-HEN-EXT.
@@ -3984,6 +3987,7 @@
                CALL    "ORCSC94"           USING
                                            ORCSC94AREA
                                            WRK-SCR-REC
+                                           SPA-AREA
       *
                ADD     1                   TO  WRK-HOZ-IDX
                MOVE    WRK-COM-TBLREC (IDX-Z)
@@ -4591,12 +4595,12 @@
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
-           MOVE    "K02"               TO  SPA-SAKIPG
+           MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
            MOVE    "K05"               TO  SPA-MOTOPG
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
       **** MOVE    "JOIN"              TO  MCP-PUTTYPE.
-           MOVE    "K02"               TO  MCP-WINDOW
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -4613,12 +4617,12 @@
       *
       *
            MOVE    SPACE               TO  LINKAREA
-           MOVE    "K02"               TO  SPA-SAKIPG
+           MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
            MOVE    "K05"               TO  SPA-MOTOPG
       *
       *****MOVE    "CHANGE"            TO  MCP-PUTTYPE
            MOVE    "JOIN"              TO  MCP-PUTTYPE.
-           MOVE    "K02"               TO  MCP-WINDOW
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -4875,12 +4879,12 @@
                MOVE    ZERO                TO  SPA-NENREI-YY
            END-IF
       *
-           MOVE    "K02"               TO  SPA-SAKIPG
+           MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
            MOVE    "K05"               TO  SPA-MOTOPG
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
       **** MOVE    "JOIN"              TO  MCP-PUTTYPE.
-           MOVE    "K02"               TO  MCP-WINDOW
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *

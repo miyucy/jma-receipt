@@ -1211,7 +1211,7 @@
            MOVE    SPA-GMN-PTID        TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           =   1
-               GO      TO      1002-KYOUTU-SET-EXT
+               GO      TO      10021-PTINF-SET-EXT
            END-IF
       *
       **** 患者マスタ　パラメータ追加

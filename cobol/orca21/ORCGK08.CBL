@@ -31,6 +31,8 @@
       *  01.00.02    NACL-多々納  02/07/19  判断料の削除
       *  01.00.03    NACL-多々納  02/09/13  自賠責の追加
       *  01.00.04    NACL-多々納  02/09/18  内服薬粉砕の追加
+      *  01.00.05    NACL-多々納  02/10/18  入院の追加
+      *  01.00.06    NACL-多々納  02/11/20  自賠責器材追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -113,6 +115,11 @@
                                                        SPA-GMN-TZAIKEI3.
                                    15  SPA-GMN-TYOBI32     PIC X(06).
                                    15  SPA-GMN-TYOBI33     PIC X(34).
+                           11  SPA-GMN-HEN4    REDEFINES
+                                               SPA-GMN-HEN1.
+                               13  SPA-GMN-TYOBI41     PIC X(16).
+                               13  SPA-GMN-TZAIKEI4    PIC X(10).
+                               13  SPA-GMN-TKINGAK4    PIC X(40).
       *                内部位置
                        09  SPA-GMN-NAIIDX      PIC 9(03).
                        09  SPA-GMN-NAIBANGO    PIC 9(03).
@@ -171,6 +178,8 @@
            03  FLG-DEL-ARI         PIC 9(01).
            03  FLG-RSIFLG          PIC 9(01).
            03  FLG-KAISUU          PIC 9(01).
+           03  FLG-KAISUU-ARI      PIC 9(01).
+           03  FLG-KAISUU-ARI2     PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -184,6 +193,8 @@
            03  IDK2                PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
+           03  IDX4                PIC 9(04).
            03  IDX-KOUI            PIC 9(04).
            03  IDX-SIN             PIC 9(04).
            03  IDX-ATO             PIC 9(04).
@@ -228,6 +239,7 @@
                05  WRK-KEI         PIC -(08).
            03  WRK-KEI-G           PIC 9(08).
            03  WRK-KEI-GS          PIC S9(08).
+           03  WRK-KAISU-9         PIC 9(03).
       *
            03  WRK-ZZ              PIC ZZZ.
       *
@@ -254,6 +266,7 @@
       *    剤回数等画面編集用
       *!***03  WRK-KAISU-H         PIC X(08).
            03  WRK-KAISU-H         PIC X(03).
+           03  WRK-KAISU-H2        PIC X(03).
            03  WRK-KEI-H           PIC X(08).
            03  WRK-ZAIKEI          PIC X(40).
            03  WRK-IDG             PIC 9(04).
@@ -276,6 +289,7 @@
            03  WRK-SRYSURYOKEI         PIC 9(07)V9(03).
            03  WRK-MEISAISU            PIC 9(07).
            03  WRK-JIHIMONEY           PIC 9(07).
+           03  WRK-JIHIMONEY-KEI       PIC 9(07).
       *
            03  WRK-SEIKYU              PIC S9(07).
       *
@@ -306,6 +320,8 @@
                05  WRK-RENNUM          PIC  X(02).
                05  WRK-SRYKBN          PIC  X(02).
            03  WRK-MAX                 PIC  9(04).
+      *    日数
+           03  WRK-NISUU               PIC  9(02).
       *
       *    粉砕判定用
            03  WRK-FUNSA-AREA.
@@ -417,6 +433,16 @@
       *    保険年齢・負担割合算定サブ
            COPY    "CPORCSAGECHK.INC".
       *
+      *    診療行為入力項目変換パラメタ
+           COPY    "CPORCSC97.INC".
+      *
+      *    診療行為入院更新パラメタ領域
+           COPY    "CPORCSCNYUIN.INC".
+      *
+      *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
+       01  SPA-SCR-REC.
+           COPY    "CPK02SPASCR.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -435,6 +461,7 @@
        01  SCRAREA.
            COPY    "K01.INC".
            COPY    "K02.INC".
+           COPY    "K02N.INC".
            COPY    "K021.INC".
            COPY    "K022.INC".
            COPY    "K023.INC".
@@ -450,6 +477,7 @@
            COPY    "K10.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
+           COPY    "K03X.INC".
            COPY    "KERR.INC".
            COPY    "KERR2.INC".
            COPY    "KID1.INC".
@@ -633,6 +661,11 @@
                    UNTIL       IDX     >   10
                MOVE    SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNTEN (IDX)
            END-PERFORM
+      *    点数再計算
+           IF      SPA-SYORIFLG    NOT =   1    AND
+                   SPA-NYUGAIKBN       =   "1"
+               PERFORM 41032-TENSU-KEI-SEC
+           END-IF
       *
             .
        310-SPA-SET-EXT.
@@ -748,6 +781,9 @@
            MOVE    ZERO                TO  WRK-ZAITEN
            MOVE    ZERO                TO  WRK-SRYKAISUKEI
            MOVE    ZERO                TO  WRK-JIHIMONEY
+           MOVE    ZERO                TO  WRK-JIHIMONEY-KEI
+           MOVE    ZERO                TO  FLG-KAISUU-ARI
+           MOVE    ZERO                TO  FLG-KAISUU-ARI2
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   IDX-KOUI
@@ -761,6 +797,8 @@
       ***                                      NOT =   ZERO
                    MOVE    LNK-WKSRY-JIHIMONEYTOTAL (IDX)
                                                   TO  WRK-JIHIMONEY
+                   ADD     LNK-WKSRY-JIHIMONEYTOTAL (IDX)
+                                                  TO  WRK-JIHIMONEY-KEI
       ***      END-IF
       *
       *        剤内１行目
@@ -774,7 +812,16 @@
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5   )  OR
                                   (IDG         >   300 )  OR
-                                  (LNK-WKSRY-SRYCD (IDX IDZ) =   SPACE )
+                                  (LNK-WKSRY-SRYCD (IDX IDZ)
+                                                  =   SPACE  AND
+                                   LNK-WKSRY-INPUTCD(IDX IDZ)
+                                                  =   SPACE )
+      *          回数入力の有無
+                 PERFORM 310100-KAISUU-CHK-SEC
+                 IF      LNK-WKSRY-INPUTCD(IDX IDZ)(1:1) =   "*"
+                     CONTINUE
+                 ELSE
+      *
                    ADD     1                   TO  WRK-MEISAISU
       *            自費の時、金額を表示
                    IF      LNK-WKSRY-SRYKBN (IDX)  =   "95" OR "96"
@@ -791,8 +838,11 @@
                        MOVE    1                   TO  SPA-NAI-JIDFLG
                                                               (IDX-NAI)
                    END-IF
+      *
+                 END-IF
                END-PERFORM
            END-PERFORM
+      *
       *    合計点数集計
            IF      WRK-SRYKAISUKEI     =   ZERO
                MOVE   1                    TO  WRK-SRYKAISUKEI
@@ -820,7 +870,11 @@
            END-IF
       *
       *    自費の時、計を表示しない
-           IF      WRK-JIHIMONEY       >   ZERO
+           IF     (WRK-JIHIMONEY       >   ZERO  )  OR
+      *        回数入力がなく、入院回数入力がある時、入院回数のみ
+                  (FLG-KAISUU-ARI      =   ZERO  AND
+                   FLG-KAISUU-ARI2     =   1     )
+               MOVE    ZERO                TO  SPA-NAI-HKNTEN  (IDX-NAI)
                CONTINUE
            ELSE
       *        剤　点数＊日数　計　編集 （最終行に追加）
@@ -846,6 +900,11 @@
            END-IF
            MOVE    WRK-BANGO           TO  SPA-GMN-NAIBANGO (IDG)
       *
+      *    入院で訂正以外の時、日付により回数を変更する
+           IF      FLG-KAISUU-ARI2     =   1
+               PERFORM 31019-NYUIN-SYORI-SEC
+           END-IF
+      *
       *    剤終了編集
            ADD     1                   TO  IDG
            IF      IDG                 >   300
@@ -853,9 +912,275 @@
            END-IF
            MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
       *
-      *
             .
        3101-WKSRYACT-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   入院時回数編集処理
+      *****************************************************************
+       310100-KAISUU-CHK-SEC                  SECTION.
+      *
+           PERFORM VARYING     IDX3    FROM   1   BY  1
+                   UNTIL       IDX3    >   22
+               IF       LNK-WKSRY-INPUTCD(IDX IDZ)(IDX3:1) =   "*" 
+                   IF       IDX3                >   1
+                       MOVE    1               TO  FLG-KAISUU-ARI
+                   ELSE
+                       MOVE    1               TO  FLG-KAISUU-ARI2
+                   END-IF
+               END-IF
+           END-PERFORM
+            .
+       310100-KAISUU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   入院時回数編集処理
+      *****************************************************************
+       31019-NYUIN-SYORI-SEC                  SECTION.
+      *
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   IDX-KOUI
+      *        剤明細編集
+               PERFORM VARYING     IDZ     FROM    1   BY  1
+                       UNTIL       IDZ         >   5
+                   IF      LNK-WKSRY-INPUTCD (IDX IDZ)(1:1) =   "*"
+                       PERFORM 310191-DAYSET-SEC
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+            .
+       31019-NYUIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   入院編集処理
+      *****************************************************************
+       310191-DAYSET-SEC                  SECTION.
+      *
+           INITIALIZE                  ORCSC97AREA
+           MOVE    SPACE               TO  SPA-SCR-REC
+      *    ＰＧ名
+           MOVE    "K02N"              TO  LNK-SC97-PG
+           MOVE    LNK-WKSRY-INPUTCD (IDX IDZ)
+                                       TO  LNK-SC97-INPUTCD
+           CALL    "ORCSC97"           USING
+                                       SPA-AREA
+                                       ORCSC97AREA
+                                       SPA-SCR-REC
+      *    回数
+           IF      LNK-SC97-KAISU      =   ZERO
+               MOVE    1               TO  LNK-SC97-KAISU
+           END-IF
+           MOVE    ZERO                TO  IDX1
+           MOVE    ZERO                TO  WRK-NISUU
+           PERFORM VARYING     IDX4    FROM    1   BY  1
+                   UNTIL       IDX4        >   31
+               IF      LNK-SC97-NYU-DAY (IDX4) NOT =   ZERO
+                   ADD     1               TO  WRK-NISUU
+               END-IF
+           END-PERFORM
+      *    ゼロの時、
+           IF      WRK-NISUU           =   ZERO
+               MOVE    1                   TO  WRK-NISUU
+           END-IF
+      *
+      *    計を表示
+           ADD    1                    TO  IDG
+           IF      WRK-JIHIMONEY       >   ZERO
+      *        自費
+               PERFORM 3101913-NYUINPUTCD-JIHI-SEC
+           ELSE
+               PERFORM 3101912-NYUINPUTCD-HEN-SEC
+               MOVE    WRK-ZAIKEIJ         TO  SPA-GMN-HEN2 (IDG)
+      *
+               INSPECT SPA-GMN-TBANGO2 (IDG)   REPLACING
+                                               ALL "  "  BY  "　"
+               INSPECT SPA-GMN-TMEISYO2(IDG)   REPLACING
+                                               ALL "  "  BY  "　"
+               INSPECT SPA-GMN-TYOBI   (IDG)   REPLACING
+                                               ALL "  "  BY  "　"
+               INSPECT SPA-GMN-TZAIKEI (IDG)   REPLACING
+                                               ALL "  "  BY  "　"
+               INSPECT SPA-GMN-TYOBI2  (IDG)   REPLACING
+                                               ALL "  "  BY  "　"
+      *
+           END-IF
+           MOVE    WRK-BANGO           TO  SPA-GMN-NAIBANGO (IDG)
+      *
+            .
+       310191-DAYSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   入院回数編集処理
+      *****************************************************************
+       3101912-NYUINPUTCD-HEN-SEC      SECTION.
+      *
+      *    点数＊回数　計
+      *    点数
+           MOVE    WRK-ZAITEN          TO  WRK-TENSU
+      *
+           COMPUTE WRK-KAISU-9         =   WRK-NISUU
+                                       *   LNK-SC97-KAISU
+           COMPUTE WRK-KEI-G           =   WRK-ZAITEN
+                                       *   WRK-KAISU-9
+           ADD     WRK-KEI-G           TO  SPA-NAI-HKNTEN  (IDX-NAI)
+      *    労災金額の時、ゼロ（指導料、その他のみ）
+           IF      LNK-WKSRY-SRYKBN (01)   =   "13"  OR  "80"
+               IF      FLG-RSIFLG          =   1
+                   MOVE    ZERO            TO  SPA-NAI-HKNTEN
+                                                             (IDX-NAI)
+               END-IF
+           END-IF
+      *    計集計
+           MOVE    WRK-KEI-G           TO  WRK-KEI
+           ADD     WRK-KEI-G           TO  SPA-GMN-GOKEI
+           MOVE    SPACE               TO  WRK-ZAIKEI 
+           MOVE    SPACE               TO  WRK-KAISU-H 
+           MOVE    SPACE               TO  WRK-KAISU-H2
+           MOVE    SPACE               TO  WRK-KEI-H 
+      *    回数
+           MOVE    LNK-SC97-KAISU      TO  WRK-KAISU
+           MOVE    ZERO                TO  IDK2
+           PERFORM VARYING     IDK1    FROM    1   BY  1
+                   UNTIL       IDK1    >   3
+               IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
+                   ADD     1           TO  IDK2
+                   MOVE    WRK-KAISU-X (IDK1:1)
+                                       TO  WRK-KAISU-H (IDK2:1)
+               END-IF
+           END-PERFORM
+      *    回数
+           MOVE    WRK-NISUU           TO  WRK-KAISU
+           MOVE    ZERO                TO  IDK2
+           PERFORM VARYING     IDK1    FROM    1   BY  1
+                   UNTIL       IDK1    >   3
+               IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
+                   ADD     1           TO  IDK2
+                   MOVE    WRK-KAISU-X (IDK1:1)
+                                       TO  WRK-KAISU-H2 (IDK2:1)
+               END-IF
+           END-PERFORM
+      *    計
+           MOVE    ZERO                TO  IDK2
+           PERFORM VARYING     IDK1    FROM    1   BY  1
+                   UNTIL       IDK1    >   8
+               IF      WRK-KEI-X   (IDK1:1)    NOT =   SPACE
+                   ADD     1           TO  IDK2
+                   MOVE    WRK-KEI-X   (IDK1:1)
+                                       TO  WRK-KEI-H   (IDK2:1)
+               END-IF
+           END-PERFORM
+      *
+           STRING  WRK-TENSU               DELIMITED   BY  SIZE
+                   "X"                     DELIMITED   BY  SIZE
+                   WRK-KAISU-H             DELIMITED   BY  SPACE
+                   "X"                     DELIMITED   BY  SIZE
+                   WRK-KAISU-H2            DELIMITED   BY  SPACE
+                   "  "                    DELIMITED   BY  SIZE
+                   WRK-KEI-H               DELIMITED   BY  SPACE
+                   INTO                    WRK-ZAIKEI
+           END-STRING
+      *
+      *    日本語変換
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-ZAIKEI          TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-ZAIKEIJ
+           INSPECT WRK-ZAIKEIJ         REPLACING
+                                       ALL "Ｘ"  BY  "×"
+      *
+      *
+            .
+       3101912-NYUINPUTCD-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   入院回数編集処理
+      *****************************************************************
+       3101913-NYUINPUTCD-JIHI-SEC                  SECTION.
+      *
+           COMPUTE WRK-KAISU-9         =   WRK-NISUU
+                                       *   LNK-SC97-KAISU
+           COMPUTE WRK-KEI-G           =   WRK-JIHIMONEY-KEI
+                                       *   WRK-KAISU-9
+           MOVE    WRK-KEI-G           TO  WRK-KEI
+           MOVE    SPACE               TO  WRK-ZAIKEIJIJ
+      *    計集計
+           MOVE    SPACE               TO  WRK-ZAIKEI 
+           MOVE    SPACE               TO  WRK-KAISU-H 
+           MOVE    SPACE               TO  WRK-KAISU-H2
+           MOVE    SPACE               TO  WRK-KEI-H 
+      *    回数
+           MOVE    LNK-SC97-KAISU      TO  WRK-KAISU
+           MOVE    ZERO                TO  IDK2
+           PERFORM VARYING     IDK1    FROM    1   BY  1
+                   UNTIL       IDK1    >   3
+               IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
+                   ADD     1           TO  IDK2
+                   MOVE    WRK-KAISU-X (IDK1:1)
+                                       TO  WRK-KAISU-H (IDK2:1)
+               END-IF
+           END-PERFORM
+      *    回数
+           MOVE    WRK-NISUU           TO  WRK-KAISU
+           MOVE    ZERO                TO  IDK2
+           PERFORM VARYING     IDK1    FROM    1   BY  1
+                   UNTIL       IDK1    >   3
+               IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
+                   ADD     1           TO  IDK2
+                   MOVE    WRK-KAISU-X (IDK1:1)
+                                       TO  WRK-KAISU-H2 (IDK2:1)
+               END-IF
+           END-PERFORM
+      *
+           STRING  WRK-KAISU-H             DELIMITED   BY  SPACE
+                   "X"                     DELIMITED   BY  SIZE
+                   WRK-KAISU-H2            DELIMITED   BY  SPACE
+                   INTO                    WRK-ZAIKEI
+           END-STRING
+      *
+      *    日本語変換
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-ZAIKEI          TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-ZAIKEIJ
+           INSPECT WRK-ZAIKEIJ         REPLACING
+                                       ALL "Ｘ"  BY  "×"
+           MOVE    WRK-ZAIKEIJ         TO  SPA-GMN-TZAIKEI4(IDG)
+      *
+      *    日本語変換
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-KEI-X           TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-ZAIKEIJIJ
+      *
+           MOVE    "円"                TO  WRK-ZAIKEIJIJ(17:2)
+           MOVE    WRK-ZAIKEIJIJ       TO  SPA-GMN-TKINGAK4(IDG)
+      *
+           INSPECT SPA-GMN-TBANGO2 (IDG)  REPLACING
+                                              ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TMEISYO2(IDG)  REPLACING
+                                              ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TYOBI41(IDG)  REPLACING
+                                              ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TZAIKEI4 (IDG)  REPLACING
+                                              ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TKINGAK4 (IDG)  REPLACING
+                                              ALL "  "  BY  "　"
+      *
+            .
+       3101913-NYUINPUTCD-JIHI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -966,7 +1291,8 @@
                   (SPA-RSI-HKNKBN      =   "4"  )  AND
                   (LNK-WKSRY-SRYKBN(IDX)   =   "80" )  AND
                   (LNK-WKSRY-SRYCD (IDX IDZ)(1:5)  =   "09591" OR
-                                                       "09592" )
+                                                       "09592" OR
+                                                       "09593" )
                MOVE    1                   TO  FLG-RSIFLG
            END-IF
       *
@@ -1147,28 +1473,14 @@
            MOVE    WRK-KEI             TO  WRK-ZAIKEIJIH
       *
       *    日本語変換
-           MOVE    SPACE               TO  WRK-ZAIKEIJIJ
-           MOVE    1                   TO  IDJ2
-           PERFORM VARYING     IDJ     FROM    1  BY  1
-                   UNTIL       IDJ     >   15
-              EVALUATE     WRK-ZAIKEIJIH (IDJ:1)
-                   WHEN    SPACE
-                       MOVE    "　"            TO  WRK-ZAIKEIJIJ(IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "X"
-                       MOVE    "×"            TO  WRK-ZAIKEIJIJ(IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "1"  THRU  "9"
-                       MOVE    WRK-ZAIKEIJIH (IDJ:1)  TO  IDJ1
-                       MOVE    TBL-SUJI (IDJ1)     TO  WRK-ZAIKEIJIJ
-                                                               (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-                   WHEN    "0"
-                       MOVE    TBL-SUJI (10)       TO  WRK-ZAIKEIJIJ
-                                                               (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-               END-EVALUATE
-           END-PERFORM
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-ZAIKEIJIH       TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-ZAIKEIJIJ
+           INSPECT WRK-ZAIKEIJIJ       REPLACING
+                                       ALL "Ｘ"  BY  "×"
       *
            IF      LNK-WKSRY-JIHIMONEY(IDX IDZ)    =   ZERO
                MOVE    SPACE               TO  SPA-GMN-TZAIKEI3(IDG)
@@ -1263,28 +1575,36 @@
            END-IF
       *
       *    日本語変換
-           MOVE    SPACE               TO  WRK-SURYO-J
-           MOVE    1                   TO  IDJ2
-           PERFORM VARYING     IDJ     FROM    1  BY  1
-                   UNTIL       IDJ     >   9
-              EVALUATE     WRK-SURYO-X (IDJ:1)
-                   WHEN    SPACE
-                       MOVE    "　"            TO  WRK-SURYO-J (IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "."
-                       MOVE    "．"            TO  WRK-SURYO-J (IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "1"  THRU  "9"
-                       MOVE    WRK-SURYO-X (IDJ:1) TO  IDJ1
-                       MOVE    TBL-SUJI (IDJ1)     TO  WRK-SURYO-J
-                                                               (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-                   WHEN    "0"
-                       MOVE    TBL-SUJI (10)       TO  WRK-SURYO-J
-                                                               (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-               END-EVALUATE
-           END-PERFORM
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-SURYO-X         TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-SURYO-J
+           INSPECT WRK-SURYO-J         REPLACING
+                                       ALL "Ｘ"  BY  "×"
+      **** MOVE    SPACE               TO  WRK-SURYO-J
+      *    MOVE    1                   TO  IDJ2
+      *    PERFORM VARYING     IDJ     FROM    1  BY  1
+      *            UNTIL       IDJ     >   9
+      *       EVALUATE     WRK-SURYO-X (IDJ:1)
+      *            WHEN    SPACE
+      *                MOVE    "　"            TO  WRK-SURYO-J (IDJ2:2)
+      *                ADD     2               TO  IDJ2
+      *            WHEN    "."
+      *                MOVE    "．"            TO  WRK-SURYO-J (IDJ2:2)
+      *                ADD     2               TO  IDJ2
+      *            WHEN    "1"  THRU  "9"
+      *                MOVE    WRK-SURYO-X (IDJ:1) TO  IDJ1
+      *                MOVE    TBL-SUJI (IDJ1)     TO  WRK-SURYO-J
+      *                                                        (IDJ2:2)
+      *                ADD     2                   TO  IDJ2
+      *            WHEN    "0"
+      *                MOVE    TBL-SUJI (10)       TO  WRK-SURYO-J
+      *                                                        (IDJ2:2)
+      *                ADD     2                   TO  IDJ2
+      *        END-EVALUATE
+      *****END-PERFORM
            .
        310121-SURYO-HEN-EXT.
            EXIT.
@@ -1383,32 +1703,14 @@
            END-STRING
       *
       *    日本語変換
-           MOVE    SPACE               TO  WRK-ZAIKEIJ
-           MOVE    1                   TO  IDJ2
-           PERFORM VARYING     IDJ     FROM    1  BY  1
-                   UNTIL       IDJ     >   40
-              EVALUATE     WRK-ZAIKEI (IDJ:1)
-                   WHEN    SPACE
-                       MOVE    "　"            TO  WRK-ZAIKEIJ (IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "X"
-                       MOVE    "×"            TO  WRK-ZAIKEIJ (IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "-"
-                       MOVE    "−"            TO  WRK-ZAIKEIJ (IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "1"  THRU  "9"
-                       MOVE    WRK-ZAIKEI (IDJ:1)  TO  IDJ1
-                       MOVE    TBL-SUJI (IDJ1)     TO  WRK-ZAIKEIJ
-                                                               (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-                   WHEN    "0"
-                       MOVE    TBL-SUJI (10)       TO  WRK-ZAIKEIJ
-                                                               (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-               END-EVALUATE
-           END-PERFORM
-      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-ZAIKEI          TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-ZAIKEIJ
+           INSPECT WRK-ZAIKEIJ         REPLACING
+                                       ALL "Ｘ"  BY  "×"
       *
            .
        31013-INPUTCD-HEN-EXT.
@@ -1683,15 +1985,9 @@
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (08)
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (09)
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (10)
-      *???
-           DISPLAY "MAX=" SPA-GMN-MAX "##"
-      *???          
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
-      *???
-           DISPLAY "SPA-GMN-NAIIDX=" SPA-GMN-NAIIDX  (IDX)  "##"
-      *???          
-             IF     SPA-GMN-NAIIDX  (IDX)  >  ZERO
+             IF      SPA-GMN-NAIIDX  (IDX)   >   ZERO
                MOVE    SPA-GMN-NAIIDX  (IDX)   TO  IDX-NAI
                IF      SPA-GMN-TDELFLG (IDX)   =   2
                    CONTINUE
@@ -1751,7 +2047,7 @@
       *****************************************************************
        210-BACK                        SECTION.
       *
-           MOVE    "K02"               TO  SPA-SAKIPG
+           MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
            MOVE    "K08"               TO  SPA-MOTOPG
       *
            MOVE    SPACE               TO  LINKAREA
@@ -1760,7 +2056,7 @@
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
       **** MOVE    "JOIN"              TO  MCP-PUTTYPE.
-           MOVE    "K02"               TO  MCP-WINDOW
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -1777,6 +2073,12 @@
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      450-TOROKU-EXT
+           END-IF
+      *
+      *    入院更新処理
+           IF      SPA-HZN-MOTOPG      =   "K02N"
+               PERFORM 4502-NYUKOUSIN-SYORI-SEC
                GO      TO      450-TOROKU-EXT
            END-IF
       *
@@ -2037,12 +2339,8 @@
                                            LNK-S01-KOUREI-ZAITAKU-KBN
                END-IF
            END-IF
-      *TEST
-      *    DISPLAY "K08 LNK-S01-SYUTEN:"   LNK-S01-SYUTEN
-      *            ",ZAUTAKU:" LNK-S01-KOUREI-ZAITAKU-KBN
-      *TEST
       *
-      **** CALL    "ORCS01NEW"         USING   MCPAREA
+      *****CALL    "ORCS01NEW"         USING   MCPAREA
            CALL    "ORCS01"            USING   MCPAREA
                                                LNK-ORCS01-REC
                                                SYUNOU-REC
@@ -2146,7 +2444,8 @@
                    IF     (LNK-WKSRY-SRYKBN(IDX)       =   "80")  AND
                           (LNK-WKSRY-SRYCD (IDX IDS)(1:5)
                                                        =   "09591" OR
-                                                           "09592" )
+                                                           "09592" OR
+                                                           "09593" )
                        MOVE    1                   TO  FLG-RSIFLG
                    END-IF
                    IF      FLG-RSIFLG          =   1
@@ -2183,6 +2482,7 @@
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
            MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
       *****MOVE    SPA-DOUJI-RENNUM    TO  JYURRK-RENNUM
@@ -2368,6 +2668,88 @@
        450511-YAKFTN-SRYACT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入院更新処理
+      *****************************************************************
+       4502-NYUKOUSIN-SYORI-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDY
+           MOVE    ZERO                TO  IDG
+      *
+           MOVE    ZERO                TO  FLG-PARA
+           MOVE    SPACE               TO  LNK-WKSRYACT-AREA
+           INITIALIZE                  LNK-WKSRYACT-AREA
+           MOVE    SPACE               TO  SYUNOU-REC
+           MOVE    ZERO                TO  IDX-KOUI
+           MOVE    ZERO                TO  LNK-WKSRYACT-MAX
+           INITIALIZE                  HZN-PARA-AREA
+      *
+           MOVE    SPA-TERMID          TO  FILE-TERMID2
+           OPEN    INPUT               PARA-FILE
+      *
+           IF      STS-PARA           =  ZERO
+               PERFORM 980-PARA-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PARA 
+           END-IF
+           PERFORM
+                   UNTIL       FLG-PARA    =    1
+               EVALUATE    PARA-FILEMEI
+      *            ワーク診療行
+                   WHEN    "WKSRYACT"
+                       ADD     1                   TO  IDX
+                       MOVE    PARA-DATA-REC       TO  LNK-WKSRYACT-REC
+                                                                (IDX)
+                       MOVE    IDX                 TO  LNK-WKSRYACT-MAX
+      *            その他
+                   WHEN    OTHER
+                       ADD     1                   TO  IDY
+                       MOVE    PARA-REC            TO  HZN-PARA-REC(IDY)
+               END-EVALUATE
+      *
+               PERFORM 980-PARA-READ-SEC
+           END-PERFORM
+           MOVE    IDX                 TO  WRK-MAX
+      *
+           CLOSE                       PARA-FILE
+      *
+      *    追加
+           MOVE    SPA-TERMID          TO  FILE-TERMID2
+           OPEN    OUTPUT              PARA-FILE
+      *
+      *    診療行為更新
+           PERFORM 45011-SRYACT-SYORI-SEC
+      *
+           CLOSE                       PARA-FILE
+      *
+      *    入院更新処理
+           INITIALIZE                  ORCSCNYUINAREA
+           MOVE    "1"                 TO  ORCSCNYUIN-KBN
+           CALL    "ORCSCNYUIN"        USING
+                                       SPA-AREA
+                                       ORCSCNYUINAREA
+      *
+           INITIALIZE                      SPA-KYOTUKEY
+           INITIALIZE                      SPA-K01KYOUTU
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    "K02N"              TO  SPA-SAKIPG
+           MOVE    "K08"               TO  SPA-MOTOPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    "K02N"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4502-NYUKOUSIN-SYORI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    西暦和暦編集処理
@@ -2456,13 +2838,14 @@
       *    IF      SPA-SYORIFLG        =   1
       *        MOVE    ALL "*"             TO  K08-ZAITENTOTAL
       **** ELSE
+      *    累計点数（入院のみ）
+           IF      SPA-NYUGAIKBN       =   "2"
                COMPUTE WRK-GOKEI-Z2        =   SPA-GMN-GOKEI
                                            +   SPA-ZAITENTOTAL
                MOVE    WRK-GOKEI-Z2        TO  K08-ZAITENTOTAL
-      **** END-IF
+           END-IF
       *
       *
-           MOVE     "user-font"           TO  K08-MEI-STYLE
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-GMN-MAX
       *********MOVE    SPA-GMN-TMEISYO (IDX)   TO  K08-ITEM(IDX)
@@ -2488,6 +2871,7 @@
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-MAX         TO  K08-COUNT
+           MOVE    "user-font"         TO  K08-MEI-STYLE
       *
       *    各点数
            PERFORM   VARYING   IDX     FROM    1   BY  1

@@ -48,6 +48,9 @@
       *                                     自賠責保険の追加
       *  02.00.03    NACL-多々納  02/10/07  船員の老人補助区分の初期表示修正
       *  02.00.04    NACL-多々納  02/10/31  船員保険補助区分追加
+      *  02.00.05    NACL-多々納  02/11/06  保険・公費の確認日修正
+      *  02.00.06    NACL-多々納  02/11/14  船員保険の変更初期表示修正
+      *  02.00.07    NACL-多々納  02/11/21  共済下船３月追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -389,6 +392,15 @@
                    07  FILLER          PIC X(06) VALUE "9 １割".
                05  WRK-HJO-REC-R4      REDEFINES   WRK-HJO-REC-G4.
                    07  WRK-HJO-REC4    PIC X(06) OCCURS  2.
+      *        共済の下船後補助区分追加
+               05  WRK-HJO-REC-G5.
+                   07  FILLER          PIC X(10) VALUE "2 下船３月".
+                   07  FILLER          PIC X(10) VALUE "8 ２割".
+                   07  FILLER          PIC X(10) VALUE "9 １割".
+                   07  FILLER          PIC X(10) VALUE "B １割下船".
+                   07  FILLER          PIC X(10) VALUE "E ２割下船".
+               05  WRK-HJO-REC-R5      REDEFINES   WRK-HJO-REC-G5.
+                   07  WRK-HJO-REC5    PIC X(10) OCCURS  5.
       *
            03  WRK-KEI-TBL.
                05  WRK-KEI-REC-G.
@@ -583,6 +595,7 @@
            COPY    "P0201.INC".
            COPY    "P982.INC".
            COPY    "P100.INC".
+           COPY    "P02X.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -777,6 +790,14 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
+      *    年齢計算
+           IF     (SPA-NAI-BIRTHDAY    =   SPACE  OR  ZERO )  OR
+                  (SPA-BYMD-70     NOT =   ZERO            )
+               CONTINUE
+           ELSE
+               PERFORM 410121-NENREI-SET-SEC
+           END-IF
+      *
       *    テーブル内の保険情報に名称を編集する
            PERFORM 3100-HKNTBL-KBNHEN-SEC
       *    保険表示連番
@@ -832,11 +853,14 @@
                WHEN    "002"
                    IF     (SPA-PTHKN-TEKSTYMD(IDX) >=  "20021001") AND
                           (SPA-PTHKN-TEKSTYMD(IDX) >=  SPA-BYMD-70)
+                       MOVE    4               TO  IDY
                        MOVE    11              TO  WRK-HJO-MAX
                    ELSE
+                       MOVE    1               TO  IDY
                        MOVE    3               TO  WRK-HJO-MAX
                    END-IF
-                   PERFORM VARYING     IDT     FROM    1  BY  1
+                   MOVE    ZERO                TO  SPA-GMN-HOJO-MAX
+                   PERFORM VARYING     IDT     FROM    IDY BY  1
                            UNTIL       IDT     >   WRK-HJO-MAX
                        IF      WRK-HJO-REC1 (IDT)(1:1)
                                            =   SPA-PTHKN-HOJOKBN(IDX)
@@ -856,6 +880,30 @@
                                                TO  SPA-PTHKN-HOJOKBN-MEI
                                                                  (IDX)
                            MOVE    4           TO  IDT
+                       END-IF
+                   END-PERFORM
+      *        共済
+               WHEN    "031"
+               WHEN    "032"
+               WHEN    "033"
+               WHEN    "034"
+                   IF     (SPA-PTHKN-TEKSTYMD(IDX) >=  "20021001") AND
+                          (SPA-PTHKN-TEKSTYMD(IDX) >=  SPA-BYMD-70)
+                       MOVE    2               TO  IDY
+                       MOVE    5               TO  WRK-HJO-MAX
+                   ELSE
+                       MOVE    1               TO  IDY
+                       MOVE    1               TO  WRK-HJO-MAX
+                   END-IF
+                   MOVE    ZERO                TO  SPA-GMN-HOJO-MAX
+                   PERFORM VARYING     IDT     FROM    IDY BY  1
+                           UNTIL       IDT     >   WRK-HJO-MAX
+                       IF      WRK-HJO-REC5 (IDT)(1:1)
+                                           =   SPA-PTHKN-HOJOKBN(IDX)
+                           MOVE    WRK-HJO-REC5 (IDT)(3:)
+                                               TO  SPA-PTHKN-HOJOKBN-MEI
+                                                                 (IDX)
+                           MOVE    WRK-HJO-MAX     TO  IDT
                        END-IF
                    END-PERFORM
       *        その他
@@ -1191,6 +1239,27 @@
                        MOVE    WRK-HJO-REC2 (IDT)
                                            TO  SPA-GMN-HOJOKBNL (IDT)
                        MOVE    IDT         TO  SPA-GMN-HOJO-MAX
+                   END-PERFORM
+      *        共済
+               WHEN    "031"
+               WHEN    "032"
+               WHEN    "033"
+               WHEN    "034"
+                   IF     (SPA-PTHKN-TEKSTYMD(IDX) >=  "20021001") AND
+                          (SPA-PTHKN-TEKSTYMD(IDX) >=  SPA-BYMD-70)
+                       MOVE    2               TO  IDY
+                       MOVE    5               TO  WRK-HJO-MAX
+                   ELSE
+                       MOVE    1               TO  IDY
+                       MOVE    1               TO  WRK-HJO-MAX
+                   END-IF
+                   MOVE    ZERO                TO  SPA-GMN-HOJO-MAX
+                   PERFORM VARYING     IDT     FROM    IDY BY  1
+                           UNTIL       IDT     >   WRK-HJO-MAX
+                       ADD     1           TO  SPA-GMN-HOJO-MAX
+                       MOVE    WRK-HJO-REC5 (IDT)
+                                           TO  SPA-GMN-HOJOKBNL
+                                                    (SPA-GMN-HOJO-MAX)
                    END-PERFORM
       *        その他
                WHEN    OTHER
@@ -3431,6 +3500,15 @@
       *            船員で補助区分あり
                    IF     (SPA-PTHKN-HKNNUM(IDX)       =   "002" )  AND
                           (SPA-PTHKN-HOJOKBN (IDX) NOT =   SPACE )
+                       MOVE    1                   TO  FLG-RJNCHK
+                   END-IF
+      *            共済で老人区分あり
+                   IF     (SPA-PTHKN-HKNNUM(IDX)       =   "031"
+                                                       OR  "032"
+                                                       OR  "033"
+                                                       OR  "034")  AND
+                          (SPA-PTHKN-HOJOKBN (IDX)     =   "8" OR "9"
+                                                       OR  "B" OR "E")
                        MOVE    1                   TO  FLG-RJNCHK
                    END-IF
                END-IF

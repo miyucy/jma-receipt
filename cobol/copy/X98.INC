@@ -18,11 +18,11 @@
         02  X98.
     ****   02  X98-FIXED32.
               03  X98-SELNUM.
-                04  X98-VALUE   PIC X(4).
+                04  X98-VALUE   PIC X(3).
               03  X98-INPUT.
-                04  X98-VALUE   PIC X(23).
+                04  X98-VALUE   PIC X(22).
               03  X98-SENTAKU.
-                04  X98-VALUE   PIC X(21).
+                04  X98-VALUE   PIC X(20).
               03  X98-SCROLLEDWINDOW26.
                 04  X98-LIST.
                   05  X98-COUNT   PIC S9(9)   BINARY.

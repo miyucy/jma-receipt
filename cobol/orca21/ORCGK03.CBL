@@ -36,6 +36,9 @@
       *  02.00.02    NACL−多々納 02/08/26  薬剤情報発行を追加
       *  02.00.03    NACL−多々納 02/08/29  同一剤が同一履歴に存在する時
       *                                     受診履歴に編集しない
+      *  02.00.04    NACL−多々納 02/09/13  自賠責追加
+      *  02.00.05    NACL-多々納  02/11/11  ＤＵＭＭＹ診察料追加
+      *  02.00.06    NACL-多々納  02/11/15  自費消費税対応修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -76,94 +79,97 @@
            COPY    "K01COMMON-SPA".
       *
       *    画面スパ領域
-       01  SPA-K03.
-           03  SPA-K03-AREA.
-               05  SPA-GMN-PAGE                  PIC 9(02).
-               05  SPA-MAX-PAGE                  PIC 9(02).
-               05  SPA-GMN-LINE                  PIC 9(02).
-               05  SPA-GMN-MAX                   PIC 9(02).
-               05  SPA-GMN-CUR                   PIC 9(02).
-               05  SPA-GMN-AREA.
+           COPY    "K03SCR-SPA".
       *
-                   07  SPA-GMN-HAKYMD            PIC X(09).
-                   07  SPA-GMN-DENPNUM           PIC X(07).
+      *    画面スパ領域
+      *01  SPA-K03.
+      *    03  SPA-K03-AREA.
+      *        05  SPA-GMN-PAGE                  PIC 9(02).
+      *        05  SPA-MAX-PAGE                  PIC 9(02).
+      *        05  SPA-GMN-LINE                  PIC 9(02).
+      *        05  SPA-GMN-MAX                   PIC 9(02).
+      *        05  SPA-GMN-CUR                   PIC 9(02).
+      *        05  SPA-GMN-AREA.
       *
-                   07  SPA-GMN-HKNRYO            PIC 9(07)  OCCURS  11.
-                   07  SPA-GMN-TGMONEY           PIC 9(07)  OCCURS  11.
+      *            07  SPA-GMN-HAKYMD            PIC X(09).
+      *            07  SPA-GMN-DENPNUM           PIC X(07).
       *
-                   07  SPA-GMN-HKNTEKI           PIC 9(10).
-                   07  SPA-GMN-ROUFTN            PIC 9(07).
-                   07  SPA-GMN-KOHFTN            PIC 9(07).
-                   07  SPA-GMN-JIHI1             PIC 9(07).
-                   07  SPA-GMN-JIHI2             PIC 9(07).
-                   07  SPA-GMN-JIHI3             PIC 9(07).
-                   07  SPA-GMN-JIHI4             PIC 9(07).
-                   07  SPA-GMN-JIHI5             PIC 9(07).
-                   07  SPA-GMN-JIHIKEI           PIC 9(07).
-                   07  SPA-GMN-JIHITAX1          PIC 9(07).
-                   07  SPA-GMN-JIHITAX2          PIC 9(07).
-                   07  SPA-GMN-JIHITAX3          PIC 9(07).
-                   07  SPA-GMN-JIHITAX4          PIC 9(07).
-                   07  SPA-GMN-JIHITAX5          PIC 9(07).
-                   07  SPA-GMN-JIHITAXKEI        PIC 9(07).
-                   07  SPA-GMN-JIHIZEI           PIC 9(07).
-                   07  SPA-GMN-HKNGAI            PIC 9(07).
-                   07  SPA-GMN-ICHIFTN           PIC 9(07).
-                   07  SPA-GMN-JIHIGOK           PIC 9(07).
-                   07  SPA-GMN-YKZFTN            PIC 9(07).
-                   07  SPA-GMN-CHOSEI            PIC S9(07).
-                   07  SPA-GMN-CHOSEI-X          PIC  X(10).
-                   07  SPA-GMN-SEIKYU            PIC S9(07).
-                   07  SPA-GMN-ZENMISYU          PIC S9(07).
-                   07  SPA-GMN-SEIGOK            PIC S9(07).
-                   07  SPA-GMN-NYUKIN            PIC S9(07).
-                   07  SPA-GMN-NYUKIN-X          PIC  X(10).
+      *            07  SPA-GMN-HKNRYO            PIC 9(07)  OCCURS  11.
+      *            07  SPA-GMN-TGMONEY           PIC 9(07)  OCCURS  11.
       *
-                   07  SPA-GMN-ROUSYOSIN         PIC S9(07).
-                   07  SPA-GMN-ROUSAISIN         PIC S9(07).
-                   07  SPA-GMN-ROUSIDOU          PIC S9(07).
-                   07  SPA-GMN-ROUETC            PIC S9(07).
+      *            07  SPA-GMN-HKNTEKI           PIC 9(10).
+      *            07  SPA-GMN-ROUFTN            PIC 9(07).
+      *            07  SPA-GMN-KOHFTN            PIC 9(07).
+      *            07  SPA-GMN-JIHI1             PIC 9(07).
+      *            07  SPA-GMN-JIHI2             PIC 9(07).
+      *            07  SPA-GMN-JIHI3             PIC 9(07).
+      *            07  SPA-GMN-JIHI4             PIC 9(07).
+      *            07  SPA-GMN-JIHI5             PIC 9(07).
+      *            07  SPA-GMN-JIHIKEI           PIC 9(07).
+      *            07  SPA-GMN-JIHITAX1          PIC 9(07).
+      *            07  SPA-GMN-JIHITAX2          PIC 9(07).
+      *            07  SPA-GMN-JIHITAX3          PIC 9(07).
+      *            07  SPA-GMN-JIHITAX4          PIC 9(07).
+      *            07  SPA-GMN-JIHITAX5          PIC 9(07).
+      *            07  SPA-GMN-JIHITAXKEI        PIC 9(07).
+      *            07  SPA-GMN-JIHIZEI           PIC 9(07).
+      *            07  SPA-GMN-HKNGAI            PIC 9(07).
+      *            07  SPA-GMN-ICHIFTN           PIC 9(07).
+      *            07  SPA-GMN-JIHIGOK           PIC 9(07).
+      *            07  SPA-GMN-YKZFTN            PIC 9(07).
+      *            07  SPA-GMN-CHOSEI            PIC S9(07).
+      *            07  SPA-GMN-CHOSEI-X          PIC  X(10).
+      *            07  SPA-GMN-SEIKYU            PIC S9(07).
+      *            07  SPA-GMN-ZENMISYU          PIC S9(07).
+      *            07  SPA-GMN-SEIGOK            PIC S9(07).
+      *            07  SPA-GMN-NYUKIN            PIC S9(07).
+      *            07  SPA-GMN-NYUKIN-X          PIC  X(10).
       *
-                   07  SPA-GMN-HAKFLG-G.
-                       09  SPA-GMN-HAKFLG            PIC X(01).
-                       09  SPA-GMN-HAKFLGF           PIC X(01).
-                       09  SPA-GMN-HAKFLGMSG         PIC X(16).
-                   07  SPA-GMN-HAKFLG-LIST.
-                       09  SPA-GMN-HAKFLGLST        PIC X(18)
-                                                    OCCURS   2.
+      *            07  SPA-GMN-ROUSYOSIN         PIC S9(07).
+      *            07  SPA-GMN-ROUSAISIN         PIC S9(07).
+      *            07  SPA-GMN-ROUSIDOU          PIC S9(07).
+      *            07  SPA-GMN-ROUETC            PIC S9(07).
       *
-                   07  SPA-GMN-SYOHOPRTFLG-G.
-                       09  SPA-GMN-SYOHOPRTFLG      PIC X(01).
-                       09  SPA-GMN-SYOHOH           PIC X(01).
-                       09  SPA-GMN-SYOHOPRTMSG      PIC X(16).
-                   07  SPA-GMN-SYOHOPRT-LIST.
-                       09  SPA-GMN-SYOHOPRTLST        PIC X(18)
-                                                    OCCURS   3.
+      *            07  SPA-GMN-HAKFLG-G.
+      *                09  SPA-GMN-HAKFLG            PIC X(01).
+      *                09  SPA-GMN-HAKFLGF           PIC X(01).
+      *                09  SPA-GMN-HAKFLGMSG         PIC X(16).
+      *            07  SPA-GMN-HAKFLG-LIST.
+      *                09  SPA-GMN-HAKFLGLST        PIC X(18)
+      *                                             OCCURS   2.
+      *
+      *            07  SPA-GMN-SYOHOPRTFLG-G.
+      *                09  SPA-GMN-SYOHOPRTFLG      PIC X(01).
+      *                09  SPA-GMN-SYOHOH           PIC X(01).
+      *                09  SPA-GMN-SYOHOPRTMSG      PIC X(16).
+      *            07  SPA-GMN-SYOHOPRT-LIST.
+      *                09  SPA-GMN-SYOHOPRTLST        PIC X(18)
+      *                                             OCCURS   3.
       *            薬剤情報
-                   07  SPA-GMN-YAKJYOFLG-G.
-                       09  SPA-GMN-YAKJYOFLG        PIC X(01).
-                       09  SPA-GMN-YAKJYOH          PIC X(01).
-                       09  SPA-GMN-YAKJYOFLGMSG     PIC X(16).
-                   07  SPA-GMN-YAKUJYO-LIST.
-                       09  SPA-GMN-YAKJYOLST        PIC X(18)
-                                                    OCCURS   3.
+      *            07  SPA-GMN-YAKJYOFLG-G.
+      *                09  SPA-GMN-YAKJYOFLG        PIC X(01).
+      *                09  SPA-GMN-YAKJYOH          PIC X(01).
+      *                09  SPA-GMN-YAKJYOFLGMSG     PIC X(16).
+      *            07  SPA-GMN-YAKUJYO-LIST.
+      *                09  SPA-GMN-YAKJYOLST        PIC X(18)
+      *                                             OCCURS   3.
       *
-                   07  SPA-GMN-JIHIMSG           PIC X(20)
-                                                 OCCURS   5.
-                   07  SPA-GMN-DRCD-G.
-                       09  SPA-GMN-DRCD        PIC X(04).
-                       09  SPA-GMN-F1          PIC X(01).
-                       09  SPA-GMN-DRCDMEI     PIC X(20).
-                   07  SPA-GMN-DRCDLST                    OCCURS  10.
-                       09  SPA-GMN-DRCDL       PIC X(04).
-                       09  SPA-GMN-F1L         PIC X(01).
-                       09  SPA-GMN-DRCDMEIL    PIC X(20).
-                   07  SPA-DRCD-MAX            PIC 9(04).
+      *            07  SPA-GMN-JIHIMSG           PIC X(20)
+      *                                          OCCURS   5.
+      *            07  SPA-GMN-DRCD-G.
+      *                09  SPA-GMN-DRCD        PIC X(04).
+      *                09  SPA-GMN-F1          PIC X(01).
+      *                09  SPA-GMN-DRCDMEI     PIC X(20).
+      *            07  SPA-GMN-DRCDLST                    OCCURS  10.
+      *                09  SPA-GMN-DRCDL       PIC X(04).
+      *                09  SPA-GMN-F1L         PIC X(01).
+      *                09  SPA-GMN-DRCDMEIL    PIC X(20).
+      *            07  SPA-DRCD-MAX            PIC 9(04).
       *
-               05  SPA-NAI-AREA.
-                   07  SPA-NAI-SEIKYU            PIC S9(07).
-                   07  SPA-KON-SKYMONEY          PIC S9(07).
-                   07  SPA-NAI-CHOSEI            PIC X(01).
+      *        05  SPA-NAI-AREA.
+      *            07  SPA-NAI-SEIKYU            PIC S9(07).
+      *            07  SPA-KON-SKYMONEY          PIC S9(07).
+      *            07  SPA-NAI-CHOSEI            PIC X(01).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -196,6 +202,9 @@
            03  FLG-SYOSIN-DUMMY    PIC 9(01).
       *
            03  FLG-TOKTEI          PIC 9(01).
+      *
+           03  FLG-CLAIM           PIC 9(01).
+           03  FLG-CLAIM-OK        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -307,6 +316,8 @@
       *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
       *
+           03  WRK-PTID                   PIC X(10).
+      *
       *    診療行為内容比較用テーブル
        01  TBL-AREA.
            03  TBL-MAE-AREA.
@@ -345,6 +356,14 @@
        01  WRK-SYSTIME.
            03  WRK-SYSTIME-X       PIC X(08).
       *
+      *    ＣＬＡＩＭファイル名
+       01  CLAIM-FILE.
+           03  FILLER              PIC X(30)   VALUE
+               "scripts/claim/HL02.sh".
+      *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -359,6 +378,10 @@
            COPY    "CPSK1010.INC".
       *    帳票ＰＧ
            COPY    "CPSK1032.INC".
+      *
+      *　　（ＣＬＡＩＭ接続）
+           COPY    "CPSK9000.INC".
+           COPY    "CPSK9001.INC".
       *
       *    患者マスタ−
        01  PTINF-REC.
@@ -469,6 +492,12 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+      *===> For Claim Start
+           COPY    "CPSHELLTBL.INC".
+           COPY    "ORCA-DBPATH".
+      *===> For Claim End
+      *
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -482,6 +511,7 @@
        01  SCRAREA.
            COPY    "K01.INC".
            COPY    "K02.INC".
+           COPY    "K02N.INC".
            COPY    "K021.INC".
            COPY    "K022.INC".
            COPY    "K023.INC".
@@ -497,6 +527,7 @@
            COPY    "K10.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
+           COPY    "K03X.INC".
            COPY    "KERR.INC".
            COPY    "KERR2.INC".
            COPY    "KID1.INC".
@@ -597,6 +628,14 @@
       *            確認画面より
                    PERFORM 30010-KID1-SET-SEC
                    GO      TO      300-SCREEN-EXT
+      *        ＣＬＡＩＭ画面より
+               WHEN    "K03X"
+                   IF      SPA-K03X-FLG        =   SPACE
+                       MOVE    1                   TO  SPA-GMN-CUR
+                   ELSE
+                       PERFORM 3009-CLAIM-SYORI-SEC
+                   END-IF
+                   GO      TO                  300-SCREEN-EXT
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-KIDCD
@@ -650,7 +689,8 @@
                WHEN    "0101"
                    IF      SPA-KID1-FLG        =   "OK"
       *                訂正時、受診履歴等の削除
-                       PERFORM 450-TOROKU-SEC
+                       MOVE    ZERO                TO  FLG-CLAIM-OK
+                       PERFORM 4500-TOROKU-SYORI-SEC
                    END-IF
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KIDCD
@@ -710,9 +750,12 @@
                COMPUTE SPA-GMN-TGMONEY (IDX)   =   SYU-TGMONEY (IDX)
                                                +   SYU-TGMONEY-TAX(IDX)
       *    保険適用外
-               ADD     SYU-TGMONEY (IDX)       TO  SPA-GMN-HKNGAI
-               ADD     SYU-TGMONEY-TAX (IDX)   TO  SPA-GMN-HKNGAI
+      *        ADD     SYU-TGMONEY (IDX)       TO  SPA-GMN-HKNGAI
+      *        ADD     SYU-TGMONEY-TAX (IDX)   TO  SPA-GMN-HKNGAI
            END-PERFORM
+      *    保険適用外
+           COMPUTE SPA-GMN-HKNGAI      =   SYU-TGMONEY (12)
+                                       +   SYU-TGMONEY-TAX (12)
       *保険適用金額
            MOVE    SYU-HKNTEKMONEY     TO  SPA-GMN-HKNTEKI
       *    老人一部負担金
@@ -984,6 +1027,26 @@
            .
        3101-SEIKYU-KEI-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ＣＬＡＭＥ画面よりの処理
+      *****************************************************************
+       3009-CLAIM-SYORI-SEC              SECTION.
+      *
+           IF      SPA-K03X-FLG        =  "OK"
+               MOVE    1               TO  FLG-CLAIM
+           ELSE
+               MOVE    ZERO            TO  FLG-CLAIM
+           END-IF
+      *
+      *    更新処理
+           MOVE    1                   TO  FLG-CLAIM-OK
+           PERFORM 4500-TOROKU-SYORI-SEC
+      *
+          .
+       3009-CLAIM-SYORI-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    画面編集処理
@@ -1626,51 +1689,6 @@
       *    確定　処理
       *****************************************************************
        450-TOROKU-SEC             SECTION.
-      *    登録・更新処理
-           IF      SPA-KIDCD           =   SPACE
-               PERFORM 4500-TOROKU-SYORI-SEC
-               IF     (SPA-ERRCD       NOT =   SPACE )   OR
-                      (SPA-KIDCD       NOT =   SPACE )
-                   GO  TO      450-TOROKU-EXT
-               END-IF
-               MOVE    "CHANGE"            TO  WRK-MCP-PUTTYPE
-           ELSE
-      *        訂正時、受診履歴等の削除
-               PERFORM 450012-TEISEI-DELETE-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO  TO      450-TOROKU-EXT
-               END-IF
-               MOVE    "JOIN"              TO  WRK-MCP-PUTTYPE
-           END-IF
-      *
-      *    共通のキーをクリアする
-      *
-           MOVE    SPACE               TO  SPA-ERRMSG
-           INITIALIZE                      SPA-KYOTUKEY
-           INITIALIZE                      SPA-K01KYOUTU
-           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-      *
-           MOVE    SPACE               TO  LINKAREA
-      *
-      *****MOVE    "K01"               TO  SPA-SAKIPG
-           MOVE    "K02"               TO  SPA-SAKIPG
-           MOVE    "K03"               TO  SPA-MOTOPG
-      *
-      *****MOVE    "CHANGE"            TO  MCP-PUTTYPE
-           MOVE    WRK-MCP-PUTTYPE     TO  MCP-PUTTYPE
-           MOVE    "K02"               TO  MCP-WINDOW
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
-           .
-       450-TOROKU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    登録・更新処理
-      *****************************************************************
-       4500-TOROKU-SYORI-SEC             SECTION.
-      *
       *
            MOVE    ZERO                TO  IDX-KOUI
            MOVE    SPA-TERMID          TO  FILE-TERMID2
@@ -1698,16 +1716,101 @@
       *        訂正時、診療行為が無かった時、確認表示へ
                IF      IDX-KOUI         =   ZERO
                    MOVE    "0101"           TO  SPA-KIDCD
-                   GO  TO      4500-TOROKU-SYORI-EXT
-               ELSE
-                   PERFORM 450011-TEISEI-SYORI-SEC
+                   GO      TO      450-TOROKU-EXT
                END-IF
            END-IF
+      *    ＣＬＡＩＭ接続チェック処理
+           PERFORM 4905-CLAIM-CHK-SEC
+           IF      FLG-CLAIM           =   2
+                GO      TO      450-TOROKU-EXT
+           END-IF
+      *
+      *    更新処理
+           MOVE    ZERO                TO  FLG-CLAIM-OK
+           PERFORM 4500-TOROKU-SYORI-SEC
+           .
+       450-TOROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    登録・更新処理
+      *****************************************************************
+       4500-TOROKU-SYORI-SEC             SECTION.
+      *
+      *    登録・更新処理
+           IF      SPA-KIDCD           =   SPACE
+               PERFORM 45001-TOROKU-KOUSIN-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE )   OR
+                      (SPA-KIDCD       NOT =   SPACE )
+                   GO  TO      4500-TOROKU-SYORI-EXT
+               END-IF
+               IF      FLG-CLAIM-OK        =   ZERO
+                   MOVE    "CHANGE"            TO  WRK-MCP-PUTTYPE
+               ELSE
+                   MOVE    "JOIN"              TO  WRK-MCP-PUTTYPE
+               END-IF
+           ELSE
+      *        訂正時、受診履歴等の削除
+               PERFORM 450012-TEISEI-DELETE-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO      4500-TOROKU-SYORI-EXT
+               END-IF
+               MOVE    "JOIN"              TO  WRK-MCP-PUTTYPE
+           END-IF
+      *
+      *    共通のキーをクリアする
+      *
+           MOVE    SPACE               TO  SPA-ERRMSG
+           INITIALIZE                      SPA-KYOTUKEY
+           INITIALIZE                      SPA-K01KYOUTU
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+      *****MOVE    "K01"               TO  SPA-SAKIPG
+           MOVE    "K02"               TO  SPA-SAKIPG
+           MOVE    "K03"               TO  SPA-MOTOPG
+      *
+      *****MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    WRK-MCP-PUTTYPE     TO  MCP-PUTTYPE
+           MOVE    "K02"               TO  MCP-WINDOW
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       4500-TOROKU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    登録・更新処理
+      *****************************************************************
+       45001-TOROKU-KOUSIN-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  IDX-KOUI
+           MOVE    SPA-TERMID          TO  FILE-TERMID2
+           OPEN    INPUT               PARA-FILE
+           PERFORM 980-PARA-READ-SEC
+      *
+           PERFORM
+               UNTIL   FLG-PARA        NOT =   ZERO 
+               IF      PARA-FILEMEI        =   "SYUNOU"
+      *            パラメタの収納データ読込
+                   MOVE    PARA-DATA-REC       TO  SYUNOU-REC
+               END-IF
+      *        診療行為カウント
+               IF      PARA-FILEMEI        =   "WKSRYACT"
+                   ADD     1                   TO  IDX-KOUI
+               END-IF
+      *
+               PERFORM 980-PARA-READ-SEC
+           END-PERFORM
+      *
+           CLOSE                        PARA-FILE
       *
       *    収納マスタを更新する
            PERFORM 4501-SYUNOU-OUT-SEC
            IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO      4500-TOROKU-SYORI-EXT
+               GO  TO      45001-TOROKU-KOUSIN-EXT
            END-IF
       *
       *    剤番号テーブル
@@ -1715,14 +1818,14 @@
       *    受診履歴初期処理
            PERFORM 45001-JYURRK-SYORI1-SEC
            IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO      4500-TOROKU-SYORI-EXT
+               GO  TO      45001-TOROKU-KOUSIN-EXT
            END-IF
       *
            IF      SPA-SYORIFLG        =   ZERO
       *    診療科履歴初期処理
                PERFORM 45009-SRYKARRK-SYOKI-SEC
                IF      SPA-ERRCD       NOT =   SPACE
-                   GO  TO      4500-TOROKU-SYORI-EXT
+                   GO  TO      45001-TOROKU-KOUSIN-EXT
                END-IF
            END-IF
       *
@@ -1803,8 +1906,13 @@
       *    各帳票印刷
            PERFORM 45009-PRINT-SEC
       *
+      *    ＣＬＡＩＭ送信
+           IF      FLG-CLAIM           =   1
+               PERFORM 4906-CLAIM-SOUSIN-SEC
+           END-IF
+      *
            .
-       4500-TOROKU-SYORI-EXT.
+       45001-TOROKU-KOUSIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2397,6 +2505,7 @@
            INITIALIZE                      JYURRK-REC
            MOVE    SYU-HOSPID          TO  JYURRK-HOSPID
            MOVE    SYU-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SYU-SRYKA           TO  JYURRK-SRYKA
            MOVE    SYU-SRYYMD          TO  JYURRK-SRYYMD
            IF      SPA-DOUJI-RENNUM    =   ZERO
@@ -2467,6 +2576,7 @@
            INITIALIZE                      JYURRK-REC
            MOVE    SYU-HOSPID          TO  JYURRK-HOSPID
            MOVE    SYU-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SYU-SRYKA           TO  JYURRK-SRYKA
            MOVE    SYU-SRYYMD          TO  JYURRK-SRYYMD
            MOVE    WRK-JYURRK-RENNUM   TO  JYURRK-RENNUM
@@ -2518,6 +2628,7 @@
            INITIALIZE                      JYURRK-REC
            MOVE    SYU-HOSPID          TO  JYURRK-HOSPID
            MOVE    SYU-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SYU-SRYKA           TO  JYURRK-SRYKA
            MOVE    SPA-DENPNUM         TO  JYURRK-DENPNUM
       *
@@ -2742,6 +2853,8 @@
       *
       *            手技料の時、算定歴を判定する
                    IF      SRY-SRYCD (IDY)(1:1)    =   "1"
+      *                ダミー追加
+                       OR (SRY-SRYCD (IDY)         =   "099110001" )
                        MOVE    SRY-SRYCD (IDY)     TO  WRK-SRYCD
       *
                        MOVE    WRK-SRYCD           TO  TNS-SRYCD
@@ -2843,6 +2956,7 @@
            INITIALIZE                      JYURRK-REC
            MOVE    SYU-HOSPID          TO  JYURRK-HOSPID
            MOVE    SYU-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SYU-SRYKA           TO  JYURRK-SRYKA
            MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
            MOVE    SPA-RENNUM          TO  JYURRK-RENNUM
@@ -2898,6 +3012,7 @@
            INITIALIZE                      JYURRK-REC
            MOVE    SYU-HOSPID          TO  JYURRK-HOSPID
            MOVE    SYU-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
            MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
       *
@@ -2979,6 +3094,7 @@
                    INITIALIZE                      JYURRK-REC
                    MOVE    WRK-SYU-HOSPID      TO  JYURRK-HOSPID
                    MOVE    WRK-SYU-PTID        TO  JYURRK-PTID
+                   MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
                    MOVE    WRK-SYU-SRYKA       TO  JYURRK-SRYKA
                    MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
                    MOVE    SPA-RENNUM          TO  JYURRK-RENNUM
@@ -3925,10 +4041,11 @@
                        UNTIL      (IDY     >   5   )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDY) =   SPACE)
       *            手技料の時、算定歴を判定する
-                   IF      LNK-WKSRY-SRYCD (IDX IDY)(1:1)  =   "1"
+                   IF    ((LNK-WKSRY-SRYCD (IDX IDY)(1:1)  =   "1" )
+                       OR (LNK-WKSRY-SRYCD (IDX IDY) =   "099110001" ))
       *            自費の時、履歴なし
-                   AND     LNK-WKSRY-SRYKBN(IDX)   NOT =   "95"  AND
-                                                           "96"
+                   AND    (LNK-WKSRY-SRYKBN(IDX)   NOT =   "95"  AND
+                                                           "96"  )
                        MOVE    LNK-WKSRY-SRYCD (IDX IDY)
                                                    TO  WRK-SRYCD
       *
@@ -3954,18 +4071,18 @@
            END-PERFORM
       *
       *    検診等より診療行為の発生した時、仮の初診料を算定する
-           IF      FLG-SYOSIN-DUMMY    =   1
-               MOVE    "099110001"         TO  WRK-SRYCD
-               MOVE    WRK-SRYCD           TO  TNS-SRYCD
-               PERFORM 910-TENSU-READ-SEC
+      *    IF      FLG-SYOSIN-DUMMY    =   1
+      *        MOVE    "099110001"         TO  WRK-SRYCD
+      *        MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *        PERFORM 910-TENSU-READ-SEC
       *
-               IF      TNS-SANTEIRRKKBN    NOT =   ZERO
-                   MOVE    ZERO            TO  FLG-TOKTEI
-                   MOVE    1               TO  WRK-KAISU
-                   PERFORM 45021-SANTEI-UPD-SEC
-               END-IF
-               MOVE    ZERO                TO  FLG-SYOSIN-DUMMY
-           END-IF
+      *        IF      TNS-SANTEIRRKKBN    NOT =   ZERO
+      *            MOVE    ZERO            TO  FLG-TOKTEI
+      *            MOVE    1               TO  WRK-KAISU
+      *            PERFORM 45021-SANTEI-UPD-SEC
+      *        END-IF
+      *        MOVE    ZERO                TO  FLG-SYOSIN-DUMMY
+      **** END-IF
            .
        4502-SANTEI-SYORI-EXT.
            EXIT.
@@ -4245,6 +4362,128 @@
        4901-PRINT-PG-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ＣＬＡＩＭ接続情報取得処理
+      *****************************************************************
+       4905-CLAIM-CHK-SEC               SECTION.
+      *
+           INITIALIZE                  SPA-K03X-AREA
+      *
+           MOVE    ZERO                TO  FLG-CLAIM
+      *    ＣＬＡＩＭ接続判定
+           MOVE    SPACE               TO  SYS-9000-REC
+           INITIALIZE                  SYS-9000-REC
+           MOVE    "9000"              TO  SYS-9000-KANRICD
+           MOVE    "*"                 TO  SYS-9000-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+      *    システム管理検索
+           MOVE    SYS-9000-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 960-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-9000-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           IF      FLG-SYSKANRI        =   1
+               CONTINUE
+           ELSE
+               MOVE    MCPDATA-REC         TO  SYS-9000-REC
+               IF      SYS-9000-SETUZOKU   =   ZERO
+                   CONTINUE
+               ELSE
+                   MOVE    SYS-9000-CODE       TO  SPA-K03X-CODE
+                   IF      SYS-9000-UKEBUTTON (02) =   "T"
+                       MOVE    1               TO  FLG-CLAIM
+                   ELSE
+                       MOVE    2               TO  FLG-CLAIM
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF      FLG-CLAIM           =   2
+               CONTINUE
+           ELSE
+               GO      TO      4905-CLAIM-CHK-EXT
+           END-IF
+      *
+      *    ＣＬＡＩＭ接続情報
+           MOVE    SPA-K01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-K03         TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGK03X"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-K03
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+     *
+           MOVE    "K03"               TO  SPA-MOTOPG
+           MOVE    "K03X"              TO  SPA-SAKIPG
+      *    カーソル移動
+           MOVE    "SELNUM"            TO  MCP-WIDGET
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "K03X"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4905-CLAIM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＣＬＡＩＭ接続情報取得処理
+      *****************************************************************
+       4906-CLAIM-SOUSIN-SEC               SECTION.
+      *
+      *    フィアルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    CLAIM-FILE          TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+      *
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *
+           MOVE    "1"                 TO  SHELLTBL-ARG1
+           MOVE    SPA-PTID            TO  WRK-PTID
+           MOVE    WRK-PTID            TO  SHELLTBL-ARG2
+           MOVE    SPA-SRYKA           TO  SHELLTBL-ARG3
+           MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG4
+           MOVE    SPA-HKNCOMBINUM     TO  SHELLTBL-ARG5
+           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG6
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                   MCPAREA
+                   MCPDATA-REC
+      *
+           .
+       4906-CLAIM-SOUSIN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    自画面編集処理

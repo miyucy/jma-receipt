@@ -33,6 +33,7 @@
       * 01.00.02     MCC-Â¿¡¹Ç¼   02/04/22  ½é¿Ç¡¦ºÆ¿ÇÎÁ¤ÎÈ½Äê½¤Àµ
       * 01.00.03     MCC-Â¿¡¹Ç¼   02/04/**  Ï«ºÒÍÑÄÉ²Ã
       * 01.00.04     NACL-Â¿¡¹Ç¼  02/08/06  ¥¢¥Õ¥¿¡¼¥±¥¢¤Î»þ¼«Æ°»»ÄêÊÑ¹¹
+      * 01.00.05     NACL-Â¿¡¹Ç¼  02/11/11  £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁÄÉ²Ã
       *****************************************************************
       *
       *
@@ -116,6 +117,8 @@
            03  FLG-GAI             PIC 9(01).
       *    Æ±ÆüºÆ¿Ç
            03  FLG-DOUJITU         PIC 9(01).
+      *    £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁ
+           03  FLG-DUMMY           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -766,6 +769,7 @@
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
@@ -1002,6 +1006,10 @@
                    WHEN    "114007610"
                    WHEN    "114007710"
                        MOVE    1               TO  FLG-SINSATU
+      *            £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁ
+                   WHEN    "099110001"
+                   WHEN    "099120001"
+                       MOVE    1               TO  FLG-SINSATU
                END-EVALUATE
            END-IF
       *    ½é¿ÇÎÁ¤Ï»»Äê³°¤È¤¹¤ë
@@ -1056,6 +1064,13 @@
       *                    MOVE    ZERO            TO  FLG-ARI
       ***************  END-IF
                END-SEARCH
+      *
+               EVALUATE    SRY-SRYCD (IDY)
+      *            £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁ
+                   WHEN    "099110001"
+                   WHEN    "099120001"
+                       MOVE    1               TO  FLG-SINSATU
+               END-EVALUATE
            END-IF
       *    ½é¿ÇÎÁ¤Ï»»Äê³°¤È¤¹¤ë
            IF     (SRY-SRYKBN          =   "11" )  AND
@@ -3818,6 +3833,7 @@
       *
            MOVE    ZERO                TO  FLG-CHK
            MOVE    ZERO                TO  FLG-ARI
+           MOVE    ZERO                TO  FLG-DUMMY
       *    ¿ÇÎÅ¶èÊ¬
            IF      WKSRY-SRYKBN        =   "11"  OR  "12"  OR
                                            "13"  OR  "14"
@@ -3909,6 +3925,10 @@
                    WHEN    "113003710"
                    WHEN    "113003810"
                        MOVE    "0"             TO  SPA-INGAIKBN
+      *            £Ä£Õ£Í£Í£Ù¿ÇÎÅ²Ê
+                   WHEN    "099110001"
+                   WHEN    "099120001"
+                       MOVE    1               TO  FLG-DUMMY
                END-EVALUATE
       *
                IF      FLG-ARI         =   1
@@ -3940,6 +3960,12 @@
                    END-IF
                END-IF
            END-IF
+      *
+      *    DUMMY¿Ç»¡ÎÁ¤¬¤¢¤ë»þ¼«Æ°È¯À¸¤Ï¤·¤Ê¤¤
+           IF      FLG-DUMMY           =   1
+               MOVE    ZERO            TO  FLG-SINSATU-OK
+           END-IF
+      *
            .
        10001-SRYCD-CHK-EXT.
            EXIT.
@@ -3948,6 +3974,7 @@
       *****************************************************************
        1010-SINSATU-HEN-SEC              SECTION.
            MOVE    ZERO               TO  FLG-GAI
+           MOVE    ZERO               TO  FLG-DUMMY
       *    ÄûÀµ¤Î»þ¡¢½é¿ÇÎÁ¤ò»»ÄêÃæ¤«¤ÎÈ½Äê
            IF      SPA-SYORIFLG        =   1
                PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3970,6 +3997,10 @@
                            WHEN    "101120080"
                            WHEN    "101120090"
                                MOVE    1              TO  FLG-GAI
+      *                    £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁ
+                           WHEN    "099110001"
+                           WHEN    "099120001"
+                               MOVE    1              TO  FLG-DUMMY
                    END-EVALUATE
       *          ³°Íè´ÉÍý²Ã»»
                    SET     TBLG-IDX             TO  1
@@ -3988,6 +4019,10 @@
                IF      SPA-TAKA-SRYKA-R    NOT =   SPACE
                    GO      TO      1010-SINSATU-HEN-EXT
                END-IF
+           END-IF
+      *    £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁ¤ÎÊÑ¹¹¤ò¤ª¤³¤Ê¤ï¤Ê¤¤
+           IF      FLG-DUMMY           =   1
+               GO      TO      1010-SINSATU-HEN-EXT
            END-IF
       *
            MOVE    SPA-SCR-REC         TO  HZN-SCR-REC

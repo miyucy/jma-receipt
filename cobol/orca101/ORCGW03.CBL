@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    MCC-藤原     01/09/21  JOINの修正   
+      *  02.00.01    NACL-多々納  02/11/12  一括入力 
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -85,7 +86,8 @@
            03  WRK-WIDMSG          PIC X(70).
            03  WRK-KBNCD           PIC 9(01).
            03  WRK-MAX-X.
-               05  WRK-MAX         PIC 9(04).                
+               05  WRK-MAX         PIC 9(04). 
+           03  WRK-MCP-WIDGET      PIC X(64).
            03  WRK-WIDGET.
                05  WRK-WIDGET1     PIC X(08).
                05  WRK-WIDGET2     PIC 9(02).
@@ -160,6 +162,14 @@
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
            COPY    "WERR.INC".
            COPY    "WID1.INC".
       *
@@ -173,6 +183,10 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
@@ -446,38 +460,55 @@
       *****************************************************************
        200-ENTRY                             SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        診療コード
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN01"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN02"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN03"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN04"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN05"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN06"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN07"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN08"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN09"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN10"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN11"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN12"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN13"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN14"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN15"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN16"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN17"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN18"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN19"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN20"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN21"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN22"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN23"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN24"
-               WHEN    "ACTIVATE"       ALSO    "SSTKIJUN25"
-                   PERFORM  4101-SSTKIJUN-CHK-SEC
-           END-EVALUATE
-           .
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
       *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           .
        200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   25
+               MOVE    W03-SSTKIJUN (IDX)  TO  SPA-GMN-TSSTKIJUN (IDX)
+           END-PERFORM
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           PERFORM  4101-SSTKIJUN-CHK-SEC
+      *
+           .
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -504,36 +535,32 @@
       *****************************************************************
        4101-SSTKIJUN-CHK-SEC                         SECTION.
       *
-           MOVE    MCP-WIDGET         TO  WRK-WIDGET
-           MOVE    WRK-WIDGET2        TO  IDX
       *
-           MOVE    IDX                TO  SPA-GMN-CUR
-           COMPUTE IDZ           =   IDX  +   (SPA-GMN-PAGE - 1 ) * 25
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   25  )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
       *
-           MOVE  W03-SSTKIJUN (IDX)      TO  SPA-GMN-TSSTKIJUN (IDX)
-      *
-           EVALUATE    SPA-GMN-TSSTKIJUN (IDX)
-               WHEN    ZERO
-               WHEN    1  
-                   MOVE  SPA-GMN-TSSTKIJUN (IDX)
-                                         TO  SPA-NAI-TSSTKIJUN (IDZ)
-               WHEN    OTHER
+               COMPUTE IDZ             =   IDX
+                                       +   (SPA-GMN-PAGE - 1 ) * 25
+      *        施設基準名があること
+               IF      SPA-GMN-TNAME (IDX)     =   SPACE
+               AND     SPA-GMN-TSSTKIJUN (IDX) =   1
                    MOVE    "0002"             TO  SPA-ERRCD
-                   GO  TO  4101-SSTKIJUN-CHK-EXT
-           END-EVALUATE
+                   MOVE    IDX                TO  SPA-GMN-CUR
+               END-IF
       *
-           IF      SPA-GMN-TNAME (IDX)     =   SPACE
-           AND     SPA-GMN-TSSTKIJUN (IDX) =   "1"
-               MOVE    "0002"             TO  SPA-ERRCD
-               GO  TO  4101-SSTKIJUN-CHK-EXT
-           END-IF
-           
-      *
-           IF      SPA-GMN-CUR             <   25
-               ADD     1                   TO  SPA-GMN-CUR
-           ELSE
-               MOVE    1                   TO  SPA-GMN-CUR
-           END-IF
+               IF      SPA-ERRCD           =   SPACE
+                   EVALUATE    SPA-GMN-TSSTKIJUN (IDX)
+                       WHEN    ZERO
+                       WHEN    1
+                           MOVE  SPA-GMN-TSSTKIJUN (IDX)
+                                         TO  SPA-NAI-TSSTKIJUN (IDZ)
+                       WHEN    OTHER
+                           MOVE    "0002"             TO  SPA-ERRCD
+                           MOVE    IDX                TO  SPA-GMN-CUR
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
            .
        4101-SSTKIJUN-CHK-EXT.
            EXIT.
@@ -544,7 +571,7 @@
       *
            PERFORM 4901-KANRENCHK-SEC
            IF      SPA-ERRCD      NOT =   SPACE
-               GO  TO  440-ATOGMN-EXT
+               GO  TO  430-MAEGMN-EXT
            END-IF
       *
            IF      SPA-GMN-PAGE       =   1
@@ -653,23 +680,29 @@
       *****************************************************************
        4901-KANRENCHK-SEC           SECTION.
       *
-           MOVE    SPACE                TO  SPA-ERRCD
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4901-KANRENCHK-EXT
+           END-IF
       *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       25
-               EVALUATE    SPA-GMN-TSSTKIJUN (IDX)
-                   WHEN    ZERO
-                   WHEN    1  
-                       IF      SPA-GMN-TNAME     (IDX) =   SPACE
-                       AND     SPA-GMN-TSSTKIJUN (IDX) =   "1"
-                          MOVE    "0002"             TO  SPA-ERRCD
-                          GO  TO  4901-KANRENCHK-EXT
-                       END-IF
-                   WHEN    OTHER
-                       MOVE    "0002"             TO  SPA-ERRCD
-                       GO  TO  4901-KANRENCHK-EXT
-               END-EVALUATE
-           END-PERFORM      
+      *****MOVE    SPACE                TO  SPA-ERRCD
+      *
+      *    PERFORM VARYING IDX FROM    1   BY  1
+      *            UNTIL   IDX >       25
+      *        EVALUATE    SPA-GMN-TSSTKIJUN (IDX)
+      *            WHEN    ZERO
+      *            WHEN    1  
+      *                IF      SPA-GMN-TNAME     (IDX) =   SPACE
+      *                AND     SPA-GMN-TSSTKIJUN (IDX) =   "1"
+      *                   MOVE    "0002"             TO  SPA-ERRCD
+      *                   GO  TO  4901-KANRENCHK-EXT
+      *                END-IF
+      *            WHEN    OTHER
+      *                MOVE    "0002"             TO  SPA-ERRCD
+      *                GO  TO  4901-KANRENCHK-EXT
+      *        END-EVALUATE
+      *****END-PERFORM      
            .
        4901-KANRENCHK-EXT.
            EXIT.
@@ -689,7 +722,7 @@
                WHEN    OTHER
                    IF      WRK-YMD  (1:7)  NOT NUMERIC
                        INSPECT     WRK-YMD      REPLACING   ALL " "
-                                                            BY  "0"         
+                                                            BY  "0"
                        MOVE    WRK-YMD(1:1)      TO  WRK-WGO
                        MOVE    WRK-YMD(2:2)      TO  WRK-WYY
                        MOVE    WRK-YMD(5:2)      TO  WRK-WMM
@@ -798,6 +831,15 @@
       *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
+      *
+           IF      SPA-GMN-CUR         =   ZERO
+               MOVE    WRK-MCP-WIDGET      TO  WRK-WIDGET
+               IF      WRK-WIDGET2(1:2)    NOT NUMERIC
+                   MOVE    ZERO            TO  WRK-WIDGET2
+               END-IF
+               MOVE    WRK-WIDGET2         TO  SPA-GMN-CUR
+               ADD     1                   TO  SPA-GMN-CUR
+           END-IF
       *
            EVALUATE    SPA-GMN-CUR
                 WHEN   1

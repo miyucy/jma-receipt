@@ -49,6 +49,7 @@
       *  02.00.00    NACL-多々納  02/08/12  保険確認の追加、
       *                                     インターフェースの変更
       *  02.00.01    NACL-多々納  02/10/09  未確認に記号番号追加
+      *  02.00.02    NACL-多々納  02/11/20  ＣＬＡＩＭ処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -68,128 +69,7 @@
            COPY    "COMMON-SPA".
       *
       *    画面用ＳＰＡ
-       01  SPA-U02.
-           02  SPA-U02-AREA.
-               05  SPA-GMN-PAGE                       PIC 9(02).
-               05  SPA-GMN-MAX                        PIC 9(02).
-               05  SPA-GMN-CUR                        PIC 9(02).
-      *
-               05  SPA-GMN-AREA.
-                   07  SPA-GMN-SRYYMDH                PIC X(30).
-      *
-                   07  SPA-GMN-SELNUM                 PIC 9(04).
-                   07  SPA-GMN-PTNUM                  PIC X(20).
-                   07  SPA-GMN-PTID                   PIC 9(10).
-                   07  SPA-GMN-NAME                   PIC X(50).
-                   07  SPA-GMN-BIRTHDAY               PIC X(09).
-      *
-                   07  SPA-GMN-SRYKA-G.
-                       09  SPA-GMN-SRYKA              PIC X(02).
-                       09  SPA-GMN-SRYKA1             PIC X(01).
-                       09  SPA-GMN-SRYKANAME          PIC X(17).
-                   07  SPA-GMN-SRYKALST               PIC X(20)
-                                                      OCCURS  10.
-      *
-                   07  SPA-GMN-DRCD-G.
-                       09  SPA-GMN-DRCD               PIC X(04).
-                       09  SPA-GMN-DRCD1              PIC X(01).
-                       09  SPA-GMN-DRNAME             PIC X(22).
-                   07  SPA-GMN-DRCDLST                PIC X(27)
-                                                      OCCURS  10.
-      *
-                   07  SPA-GMN-SRYNAIYOCD-G.
-                       09  SPA-GMN-SRYNAIYOCD         PIC X(02).
-                       09  SPA-GMN-SRYNAIYO1          PIC X(01).
-                       09  SPA-GMN-SRYNAIYODSP        PIC X(17).
-                   07  SPA-GMN-SRYNAILST              PIC X(20)
-                                                      OCCURS  10.
-      *
-                   07  SPA-GMN-KARUTE-G.
-                       09  SPA-GMN-KARUTE             PIC X(01).
-                       09  SPA-GMN-KARUTE01           PIC X(01).
-                       09  SPA-GMN-KARUTEMEI          PIC X(08).
-                   07  SPA-GMN-KARUTELST              PIC X(14)
-                                                      OCCURS  2.
-      *
-                   07  SPA-GMN-SYOHO-G.
-                       09  SPA-GMN-SYOHO             PIC X(01).
-                       09  SPA-GMN-SYOHO01           PIC X(01).
-                       09  SPA-GMN-SYOHOMEI          PIC X(08).
-                   07  SPA-GMN-SYOHOLST              PIC X(14)
-                                                      OCCURS  2.
-      *
-                   07  SPA-GMN-COMBINUM               PIC 9(04).
-      *
-                   07  SPA-GMN-COMBI.
-                       09  SPA-GMN-COMBI-TBL          OCCURS  15.
-                           11  SPA-GMN-HKNCOMBINUM       PIC 9(04).
-                           11  SPA-GMN-SYU-TANSEIDONAME   PIC X(12).
-                           11  SPA-GMN-KOH1-TANSEIDONAME  PIC X(12).
-                           11  SPA-GMN-KOH2-TANSEIDONAME  PIC X(12).
-                           11  SPA-GMN-KOH3-TANSEIDONAME  PIC X(12).
-                           11  SPA-GMN-KOH4-TANSEIDONAME  PIC X(12).
-                   07  SPA-COMBI-MAX                   PIC 9(04).
-      *
-                   07  SPA-GMN-MIKAKUNIN.
-                       09  SPA-GMN-MIKAKU-TBL          OCCURS  10.
-                           11  SPA-GMN-TMIKAKUNAME     PIC X(22).
-                           11  SPA-GMN-TMIKIGONUM      PIC X(40).
-                           11  SPA-GMN-TMIKAKUYMD      PIC X(12).
-                   07  SPA-MIKAKU-MAX                  PIC 9(04).
-      *
-                   07  SPA-GMN-TBL.
-                       09  SPA-GMN-TBLO                OCCURS   100.
-                           11  SPA-GMN-TNUM            PIC 9(04).
-                           11  SPA-GMN-TUKEID          PIC 9(05).
-                           11  SPA-GMN-TYYKTIME        PIC X(04).
-                           11  SPA-GMN-TUKETIME        PIC X(06).
-                           11  SPA-GMN-TPTNUM          PIC X(20).
-                           11  SPA-GMN-TPTID           PIC 9(10).
-                           11  SPA-GMN-TNAME           PIC X(50).
-                           11  SPA-GMN-TSRYKA-G.
-                               13  SPA-GMN-TSRYKA      PIC X(02).
-                               13  SPA-GMN-TSRYKA1     PIC X(01).
-                               13  SPA-GMN-TSRYKANAME  PIC X(16).
-                           11  SPA-GMN-TDRCD-G.
-                               13  SPA-GMN-TDRCD       PIC X(04).
-                               13  SPA-GMN-TDRCD1      PIC X(01).
-                               13  SPA-GMN-TDRNAME     PIC X(22).
-                           11  SPA-GMN-TSRYNAIYOCD-G. 
-                               13  SPA-GMN-TSRYNAIYOCD PIC X(02).
-                               13  SPA-GMN-TSRYNAIYOCD1
-                                                       PIC X(01).
-                               13  SPA-GMN-TSRYNAIYODSP
-                                                       PIC X(17).
-                           11  SPA-GMN-NARABE          PIC X(04).
-                           11  SPA-GMN-TKYYKTIME       PIC X(04).
-                           11  SPA-GMN-TYYKID          PIC X(02).
-                           11  SPA-GMN-TRRKYMD         PIC X(10).
-                   07  SPA-UKE-MAX                     PIC 9(04).
-      *
-      *---- (01.00.03) LINE MOD START -------------------------------
-      **   03  SPA-NAIB-AREA.
-      **       05  SPA-NAI-PTID      PIC X(10).
-      *
-               05  SPA-NAIB-AREA.
-                   07  SPA-NAI-PTID                    PIC X(10).
-                   07  SPA-NAI-BIRTHDAY                PIC 9(08).
-                   07  SPA-NAI-SEX                     PIC X(01).
-      *---- (01.00.03) LINE MOD END -----------------------------------
-      *
-                   07  SPA-NAI-SELNUM                 PIC 9(04).
-      *
-                   07  SPA-MAE-PTNUM                  PIC X(20).
-                   07  SPA-MAE-NAME                   PIC X(50).
-                   07  SPA-MAE-SELNUM                 PIC 9(04).
-      *
-                   07  SPA-NAI-MIKAKUNIN.
-                       09  SPA-NAI-MIKAKU-TBL          OCCURS  10.
-                           11  SPA-NAI-HKNKBN          PIC 9(01).
-                           11  SPA-NAI-HKNID           PIC 9(10).
-                           11  SPA-NAI-KAKUNINYMD      PIC X(08).
-      *
-                           11  SPA-MAE-KAKUNINYMD      PIC X(08).
-                           11  SPA-MAE-KAKUNINYMDW     PIC X(10).
+           COPY    "U02COMMON-SPA".
       *
       *---- (01.02.02) LINE ADD START---------------------------------- 
       *    患者登録スパ領域
@@ -218,6 +98,7 @@
            03  FLG-TOUROKU             PIC 9(01).
            03  FLG-IN-PTNUM            PIC 9(01).
            03  FLG-IN-NAME             PIC 9(01).
+           03  FLG-CLAIM               PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -228,6 +109,13 @@
            03  IDZ                                     PIC 9(04).
            03  IDX-C                                   PIC 9(04).
       *
+      *    ＣＬＡＩＭファイル名
+       01  CLAIM-FILE.
+           03  FILLER              PIC X(30)   VALUE
+               "scripts/claim/HL01.sh".
+      *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
       *    一時領域
        01  WRK-AREA.
@@ -269,6 +157,13 @@
            03  WRK-SYOHOU-PG           PIC X(20).
       *
            03  WRK-HKNKBN-MEI      PIC X(02).
+      *
+        01  WRK-COMBO-SCODE-MAX                       PIC 9(03).
+026700  01  WRK-COMBO-TBL.
+026800      03  WRK-COMBO-TBLO                        OCCURS   3.
+                05  WRK-COMBO-SCODEL                  PIC X(01).  
+                05  WRK-COMBO-FIL                     PIC X(01).  
+                05  WRK-COMBO-SCODEMEIL               PIC X(18).  
       *
 026700  01  WRK-SORT-TBL.
 026800      03  WRK-SORT-TBLO                         OCCURS   100.
@@ -331,6 +226,9 @@
            COPY    "CPSK1012.INC".
       *　　（帳票プログラム）
            COPY    "CPSK1032.INC".
+      *　　（ＣＬＡＩＭ接続）
+           COPY    "CPSK9000.INC".
+           COPY    "CPSK9001.INC".
       *
       *    受付
        01  UKETUKE-REC.
@@ -394,6 +292,10 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+      *===> For Claim Start
+           COPY    "CPSHELLTBL.INC".
+           COPY    "ORCA-DBPATH".
+      *===> For Claim End
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -406,6 +308,7 @@
       *
        01  SCRAREA.
            COPY    "U02.INC".
+           COPY    "U02X.INC".
            COPY    "U2ERR.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -466,6 +369,9 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
+               IF      FLG-END                =   1   
+                   GO     TO              100-INIT-EXT
+               END-IF
       *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
@@ -486,8 +392,6 @@
       *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
-      *
-           INITIALIZE                  SPA-U02
       *
            MOVE    2                   TO  SPA-GMN-CUR
            MOVE    1                   TO  SPA-GMN-PAGE
@@ -518,6 +422,18 @@
                    MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
                END-IF
            END-IF
+      *    内部画面より
+           EVALUATE    SPA-MOTOPG
+               WHEN    "U02X"
+      *        ＣＬＡＩＭ画面より
+                   IF      SPA-U02X-FLG        =   SPACE
+                       MOVE    1                   TO  SPA-GMN-CUR
+                       MOVE    62                  TO  SPA-GMN-CUR
+                   ELSE
+                       PERFORM 3009-CLAIM-SYORI-SEC
+                   END-IF
+                   GO      TO                  300-SCREEN-EXT
+           END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
       *
@@ -567,6 +483,8 @@
       *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
+      *
+           INITIALIZE                  SPA-U02
       *
            MOVE    2                   TO  SPA-GMN-CUR
       *
@@ -1042,6 +960,24 @@
            EXIT.
       *
       *****************************************************************
+      *    ＣＬＡＭＥ画面よりの処理
+      *****************************************************************
+       3009-CLAIM-SYORI-SEC              SECTION.
+      *
+           IF      SPA-U02X-FLG        =  "OK"
+               MOVE    1               TO  FLG-CLAIM
+           ELSE
+               MOVE    ZERO            TO  FLG-CLAIM
+           END-IF
+      *
+      *    更新処理
+           PERFORM 49001-KOUSIN-SEC
+      *
+          .
+       3009-CLAIM-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
@@ -1220,7 +1156,7 @@
            IF      WRK-MCP-WIDGET      =   "SELNUM"
                PERFORM 4104-SELNUM-CHK-SEC
                IF      SPA-GMN-SELNUM      NOT =   ZERO
-                  GO      TO      4102-KIHON-CHK-EXT
+                   GO      TO      4102-KIHON-CHK-EXT
                END-IF
            END-IF
       *
@@ -2614,6 +2550,22 @@
                GO      TO      490-TOUROKU-EXT
            END-IF
       *
+      *    ＣＬＡＩＭ接続チェック処理
+           PERFORM 4905-CLAIM-CHK-SEC
+           IF      FLG-CLAIM       =   2 
+               GO      TO      490-TOUROKU-EXT
+           END-IF
+      *
+           PERFORM 49001-KOUSIN-SEC
+           .
+       490-TOUROKU-EXT.
+           EXIT.   
+      *
+      *****************************************************************
+      *    登録処理
+      *****************************************************************
+       49001-KOUSIN-SEC             SECTION.
+      *
       *    受付マスタ追加          
            IF      SPA-GMN-SELNUM            =   ZERO
                PERFORM 4901-UKEADD-SEC
@@ -2638,7 +2590,7 @@
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO  490-TOUROKU-EXT
+               GO  TO  49001-KOUSIN-EXT
            END-IF
       *
            MOVE    SPA-KYOUTU          TO  WRK-SPA-KYOUTU
@@ -2689,6 +2641,10 @@
                                                    ORCHC19AREA
            END-IF
       *
+           IF      FLG-CLAIM       =   1 
+               PERFORM 4906-CLAIM-SOUSIN-SEC
+           END-IF
+      *
            MOVE    WRK-SPA-KYOUTU          TO  SPA-KYOUTU
       *
       *??? INITIALIZE                            SPA-U02
@@ -2696,7 +2652,7 @@
            PERFORM 493-CLEAR-SEC  
            PERFORM 3101-UKETU-HEN-SEC
            .
-       490-TOUROKU-EXT.
+       49001-KOUSIN-EXT.
            EXIT.   
       *
       *****************************************************************
@@ -2793,7 +2749,7 @@
            MOVE    UKETUKE-REC              TO  WRK-UKETUKE-REC
            PERFORM 900-UKETUKE-READ-SEC
            IF      FLG-UKETUKE         =   ZERO
-               GO      TO      4901-UKEADD-SEC
+               GO      TO      4901-UKEADD-EXT
            END-IF
       *
            MOVE    WRK-UKETUKE-REC          TO  MCPDATA-REC
@@ -2888,6 +2844,132 @@
            END-IF
            .
        4903-YYKUPD-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    ＣＬＡＩＭ接続情報取得処理
+      *****************************************************************
+       4906-CLAIM-SOUSIN-SEC               SECTION.
+      *
+      *    フィアルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    CLAIM-FILE          TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+      *
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *
+           MOVE    "1"                 TO  SHELLTBL-ARG1
+           MOVE    SPA-GMN-PTID        TO  WRK-PTID
+           MOVE    WRK-PTID            TO  SHELLTBL-ARG2
+           MOVE    SPA-GMN-SRYKA       TO  SHELLTBL-ARG3
+           MOVE    UKE-UKETIME         TO  SHELLTBL-ARG4
+           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG5
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                   MCPAREA
+                   MCPDATA-REC
+      *
+           .
+       4906-CLAIM-SOUSIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＣＬＡＩＭ接続情報取得処理
+      *****************************************************************
+       4905-CLAIM-CHK-SEC               SECTION.
+      *
+           INITIALIZE                  SPA-U02X-AREA
+      *
+           MOVE    ZERO                TO  FLG-CLAIM
+      *    ＣＬＡＩＭ接続判定
+           MOVE    SPACE               TO  SYS-9000-REC
+           INITIALIZE                  SYS-9000-REC
+           MOVE    "9000"              TO  SYS-9000-KANRICD
+           MOVE    "*"                 TO  SYS-9000-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+      *    システム管理検索
+           MOVE    SYS-9000-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-9000-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           IF      FLG-SYSKANRI        =   1
+               CONTINUE
+           ELSE
+               MOVE    MCPDATA-REC         TO  SYS-9000-REC
+               IF      SYS-9000-SETUZOKU   =   ZERO
+                   CONTINUE
+               ELSE
+                   MOVE    SYS-9000-CODE       TO  SPA-U02X-CODE
+                   IF      SYS-9000-UKEBUTTON (02) =   "T"
+                       MOVE    1               TO  FLG-CLAIM
+                   ELSE
+                       MOVE    2               TO  FLG-CLAIM
+                   END-IF
+               END-IF
+           END-IF
+      *TEST!!!
+           MOVE    2             TO  FLG-CLAIM
+           MOVE    "1"           TO  SPA-U02X-CODE
+      *TEST!!!
+      *
+           IF      FLG-CLAIM           =   2
+               CONTINUE
+           ELSE
+               GO      TO      4905-CLAIM-CHK-EXT
+           END-IF
+      *
+      *    ＣＬＡＩＭ接続情報
+      *
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-U02             TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGU02X"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-U02
+     *
+           MOVE    "U02"               TO  SPA-MOTOPG
+           MOVE    "U02X"              TO  SPA-SAKIPG
+      *    カーソル移動
+           MOVE    "SELNUM"            TO  MCP-WIDGET
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "U02X"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4905-CLAIM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3645,6 +3727,7 @@
       *
        50011-INPUT-CUR-EXT.
            EXIT.
+      *
 122000*****************************************************************
 122100*    エラーメッセージ表示理
 122200*****************************************************************
@@ -3692,6 +3775,9 @@
                                                 TO  SPA-ERRMSG
                WHEN    "0017"
                    MOVE    "受付されていないデータです"
+                                                TO  SPA-ERRMSG
+               WHEN    "0019"
+                   MOVE    "診療科がありません。"
                                                 TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "ドクター入力エラー" TO  SPA-ERRMSG

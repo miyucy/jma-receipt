@@ -637,6 +637,17 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41011-HKNNUM-SYORI-EXT
            END-IF
+      *    £²£·¤ÎÏ·¿Í¸øÈñ¤Ç»ÙÊ§¶èÊ¬¤Î¤Ê¤¤»þ
+           IF     (FLG-OK              =   ZERO      )  AND
+                  (SPA-GMN-KOHNUM(IDX-K)   =   "027" AND
+                   SPA-GMN-KOHKBN(IDX-K)   =   SPACE )  AND
+                  (SPA-NAI-KTEKSTYMD(IDX-K) <  "20021001" )
+               MOVE    "3"                 TO  SPA-NAI-PTKOH-SBTKBN
+                                                              (IDX-K)
+               MOVE    SPACE               TO  SPA-NAI-PTKOH-PAYKBN
+                                                              (IDX-K)
+               MOVE    1                   TO  FLG-OK
+           END-IF
            IF      FLG-OK              =   ZERO
                MOVE    "0072"              TO  SPA-ERRCD
            END-IF
