@@ -202,6 +202,8 @@
       *
            03  WRK-DRCD                PIC X(05).
            03  WRK-DRCD2               PIC X(05).
+           03  WRK-DRCDNAME            PIC X(50).
+           03  WRK-DRCDNAME2           PIC X(50).
       *
       *    ЛўДж
            03  WRK-SYS-TIME.
@@ -1942,6 +1944,8 @@
            MOVE    ZERO                TO  FLG-DRCDOK
            MOVE    SPACE               TO  WRK-DRCD
            MOVE    SPACE               TO  WRK-DRCD2
+           MOVE    SPACE               TO  WRK-DRCDNAME
+           MOVE    SPACE               TO  WRK-DRCDNAME2
            MOVE    SPACE               TO  SPA-DRCD-NAME
            PERFORM
                    UNTIL      (FLG-SYSKANRI    =   1 )  OR
@@ -1955,10 +1959,12 @@
                        PERFORM 100121-SEMONKACD-CHK-SEC
                        IF      WRK-DRCD2           =   SPACE 
                            MOVE    SYS-1010-KBNCD(1:5) TO  WRK-DRCD2
+                           MOVE    SYS-1010-NAME       TO  WRK-DRCDNAME2
                        END-IF
                        IF     (WRK-DRCD            =   SPACE ) AND
                               (FLG-DRCDCHK         =   2     )
                            MOVE    SYS-1010-KBNCD(1:5) TO  WRK-DRCD
+                           MOVE    SYS-1010-NAME       TO  WRK-DRCDNAME
                        END-IF
                        IF      FLG-DRCDCHK         =   1
                            MOVE    SYS-1010-KBNCD(1:5) TO  SPA-DRCD
@@ -1989,8 +1995,12 @@
            IF      SPA-DRCD            =   SPACE
                IF      WRK-DRCD            =   SPACE
                    MOVE    WRK-DRCD2       TO  SPA-DRCD
+                   MOVE    SPA-DRCD(2:4)   TO  SPA-DRCD-NAME
+                   MOVE    WRK-DRCDNAME2   TO  SPA-DRCD-NAME (6:)
                ELSE
                    MOVE    WRK-DRCD        TO  SPA-DRCD
+                   MOVE    SPA-DRCD(2:4)   TO  SPA-DRCD-NAME
+                   MOVE    WRK-DRCDNAME    TO  SPA-DRCD-NAME (6:)
                END-IF
            END-IF
       *
