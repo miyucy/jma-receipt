@@ -119,6 +119,7 @@
       *
       *    パラメータチェック
            PERFORM   100-PRM-CHK-SEC
+           DISPLAY "LNK-SCNYUKIN-RC1 = " LNK-SCNYUKIN-RC.
            IF       (LNK-SCNYUKIN-RC   NOT =   ZERO)
                GO   TO   000-PROC-EXT
            END-IF
@@ -127,6 +128,7 @@
                PERFORM   200-MAIN-SEC
            END-IF
            .
+           DISPLAY "LNK-SCNYUKIN-RC2 = " LNK-SCNYUKIN-RC.
        000-PROC-EXT.
       *
            EXIT PROGRAM
@@ -137,6 +139,13 @@
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
+           DISPLAY "LNK-SCNYUKIN-SYORIKBN = " LNK-SCNYUKIN-SYORIKBN.
+           DISPLAY "LNK-SCNYUKIN-KOUSHINKBN = "
+                    LNK-SCNYUKIN-KOUSHINKBN. 
+           DISPLAY "LNK-SCNYUKIN-NYKNKNRKBN = " 
+                    LNK-SCNYUKIN-NYKNKNRKBN.
+           DISPLAY "LNK-SCNYUKIN-NYUKIN-MONEY = " 
+                    LNK-SCNYUKIN-NYUKIN-MONEY.
            IF    LNK-SCNYUKIN-SYORIKBN    =   "1"   OR   "2"
                CONTINUE
            ELSE
@@ -153,6 +162,8 @@
       *
            IF    LNK-SCNYUKIN-NYKNKNRKBN   = "1" OR "2" OR "3" OR
                                              "4" OR "5"
+               CONTINUE
+           ELSE
                MOVE    10              TO  LNK-SCNYUKIN-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
