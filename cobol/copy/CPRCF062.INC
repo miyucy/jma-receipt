@@ -24,6 +24,7 @@
       *  01.00.01    NACL-門脇    03.02.06  コメントカウントフラグの追加
       *  01.00.02    NACL-藤原    03.02.12  テスト患者番号区分の追加
       *  01.00.03    NACL-藤原    03.03.03  診療科数１０から２０へ変更
+      *  01.00.04    NACL-藤原    03/03/07  レセプト記載外公費情報追加
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -233,6 +234,19 @@
            03  RECE62-BYOTOKBNINF         OCCURS  4.
       *病棟区分
                05  RECE62-BYOTOKBN        PIC  X(02).
+      *レセプト記載外公費情報（保険番号以外は現在未設定）
+           03  RECE62-ETC-KOH-G.
+               05  RECE62-ETC-KOHINF      OCCURS  4.
+      *記載外公費−保険番号
+                   07  RECE62-ETC-KOHNUM  PIC  X(03).
+      *記載外公費−実日数
+                   07  RECE62-ETC-JNISSU   PIC  9(02).
+      *記載外公費−合計点数
+                   07  RECE62-ETC-TOTALTEN PIC  9(08).
+      *記載外公費−負担金額
+                   07  RECE62-ETC-FTNMONEY PIC  9(09).
+      *記載外公費−薬剤一部負担金情報
+                   07  RECE62-ETC-YKZFTN   PIC  9(05).
       *低所得フラグ
            03  RECE62-TEISYOTOKU          PIC  X(01).
       *高齢者フラグ

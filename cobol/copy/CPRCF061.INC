@@ -19,6 +19,7 @@
       ********************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    03.03.03  診療科数１０から２０へ変更
       ********************************************************************
       *01  RECE61-REC.
            03  RECE61-KEY.
@@ -61,7 +62,7 @@
                    07  RECE61-HKNCOMBI-O  PIC  9(04).
       *診療科情報
            03 RECE61-SRYKAINF.
-               05  RECE61-SRYKA           PIC  X(02)  OCCURS  10.
+               05  RECE61-SRYKA           PIC  X(02)  OCCURS  20.
       *適用年月日領域
            03 RECE61-TEKYMD-AREA.
                05  RECE61-TEKYMD-TBL      OCCURS  10.
@@ -71,8 +72,8 @@
                    07  RECE61-TEKEDYMDX   PIC  X(08). 
       *継続区分
            03  RECE61-CONTKBN             PIC  X(01).
-      *補足区分
-           03  RECE61-HOSOKUKBN           PIC  X(01).
+      *レセプト記載外公費番号
+           03  RECE61-ETC-HKNNUM          PIC  X(03).
       *未訂正区分
            03  RECE61-TEISEIKBN           PIC  X(01).
       *予備

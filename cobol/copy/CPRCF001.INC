@@ -30,7 +30,8 @@
       *                                     保険組合せを３から１０に変更
       *  01.01.05    MCC-藤原     02.03.13  適用年月日を複数個に変更
       *  01.01.06    MCC-藤原     02.05.24  保険変更時の未訂正フラグの追加
-      *  01.01.07    NACL-藤原    03/03/12  補助区分の追加
+      *  01.01.07    NACL-藤原    03.02.12  補助区分の追加
+      *  01.01.08    NACL-藤原    03.03.03  診療科数１０から２０へ変更
       ************************************************************
       *01  RECE01-REC.
            03  RECE01-KEY.
@@ -73,7 +74,7 @@
                    07  RECE01-HKNCOMBI-O  PIC  9(04).
       *診療科情報
            03 RECE01-SRYKAINF.
-               05  RECE01-SRYKA           PIC  X(02)  OCCURS  10.
+               05  RECE01-SRYKA           PIC  X(02)  OCCURS  20.
       *適用年月日領域
            03 RECE01-TEKYMD-AREA.
                05  RECE01-TEKYMD-TBL      OCCURS  10.
@@ -83,8 +84,8 @@
                    07  RECE01-TEKEDYMDX   PIC  X(08). 
       *継続区分
            03  RECE01-CONTKBN             PIC  X(01).
-      *補足区分
-           03  RECE01-HOSOKUKBN           PIC  X(01).
+      *レセプト記載外公費番号
+           03  RECE01-ETC-HKNNUM          PIC  X(03).
       *未訂正区分
            03  RECE01-TEISEIKBN           PIC  X(01).
       *予備
