@@ -38,6 +38,7 @@
       *                                     半角空白→全角空白追加
       *  01.01.06    NACL-多々納  02/12/02  食事追加
       *  01.01.07    NACL-多々納  02/12/20  点数識別８ 追加
+      *  01.01.08    NACL-多々納  03/01/24  入院追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -918,6 +919,9 @@
                        WHEN    "97"
                            MOVE    "食事"      TO  SPA-GMN-SRYKBNME-L
                                                                (IDX-1)
+                       WHEN    "90"
+                           MOVE    "入院"      TO  SPA-GMN-SRYKBNME-L
+                                                               (IDX-1)
                        WHEN    OTHER
                            MOVE    "その他"    TO  SPA-GMN-SRYKBNME-L
                                                                (IDX-1)
@@ -931,11 +935,11 @@
                                                            (IDX-2)(5:)
            END-PERFORM
       *
-           ADD     1                   TO  IDX-1
-           MOVE    "90"                 TO  SPA-GMN-SRYKBN-L(IDX-1)
-           MOVE    "入院"              TO  SPA-GMN-SRYKBNME-L (IDX-1)
-           ADD     1                   TO  IDX-2
-           MOVE    "900 入院"          TO  SPA-GMN-SRYSYUKBNCOB(IDX-2)
+      **** ADD     1                   TO  IDX-1
+      *    MOVE    "90"                 TO  SPA-GMN-SRYKBN-L(IDX-1)
+      *    MOVE    "入院"              TO  SPA-GMN-SRYKBNME-L (IDX-1)
+      *    ADD     1                   TO  IDX-2
+      **** MOVE    "900 入院"          TO  SPA-GMN-SRYSYUKBNCOB(IDX-2)
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   100
