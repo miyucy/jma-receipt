@@ -1448,6 +1448,13 @@
                                        WRK-SCR-REC
                                        SPA-AREA
       *
+      *    小児科外来診療科の時、年齢エラーはそのまま
+           IF      LNK-ORCSC-SYONIKA-ARI   NOT =   ZERO
+               IF      LNK-SC92-ERRCD5 NOT =   SPACE
+                   MOVE    SPACE           TO  LNK-SC92-ERRCD5
+               END-IF
+           END-IF
+      *
       *    エラーの時、追加なし
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
