@@ -695,6 +695,9 @@
                                MOVE    4               TO  SPA-GMN-CUR
                            WHEN    "2"
                                MOVE    9               TO  SPA-GMN-CUR
+                           MOVE    "訂正日"            TO  SPA-GMN-LABEL
+                           WHEN    "3"
+                               MOVE    9               TO  SPA-GMN-CUR
                            MOVE    "受診日"            TO  SPA-GMN-LABEL
                        END-EVALUATE                
                    WHEN    OTHER
@@ -1179,33 +1182,37 @@
       *    行選択処理
       *****************************************************************
        4106-RECESEL-SEC       SECTION.
+      *
+           IF      SPA-GMN-SYORI       =   "1"
       *        行選択
-           MOVE    ZERO                TO  WRK-SELNO
+               MOVE    ZERO                TO  WRK-SELNO
       *     
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       100
-               IF      R01-SELECT (IDX)    =   "T"
-                   IF      IDX             =   SPA-NAI-SELNO
-                       CONTINUE
-                   ELSE        
-                       MOVE    IDX             TO  WRK-SELNO
-                       MOVE    100             TO  IDX
-                   END-IF
-               END-IF    
-           END-PERFORM
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >       100
+                   IF      R01-SELECT (IDX)    =   "T"
+                       IF      IDX             =   SPA-NAI-SELNO
+                           CONTINUE
+                       ELSE        
+                           MOVE    IDX             TO  WRK-SELNO
+                           MOVE    100             TO  IDX
+                       END-IF
+                   END-IF    
+               END-PERFORM
       *
-           IF      WRK-SELNO           >   ZERO
-               MOVE    WRK-SELNO           TO  SPA-NAI-SELNO
-           END-IF
+               IF      WRK-SELNO           >   ZERO
+                   MOVE    WRK-SELNO           TO  SPA-NAI-SELNO
+               END-IF
       *
+               INITIALIZE                  SPA-GMN-KOUMOKU
+               INITIALIZE                  SPA-NAI-KOUMOKU
       *
-           INITIALIZE                  SPA-GMN-KOUMOKU
-           INITIALIZE                  SPA-NAI-KOUMOKU
-      *
-           MOVE    SPA-GMN-TRENNUM (SPA-NAI-SELNO)
+               MOVE    SPA-GMN-TRENNUM (SPA-NAI-SELNO)
                                        TO  SPA-GMN-RENNUM
       *
-           PERFORM 41021-RENNUM-HENSYU-SEC
+               PERFORM 41021-RENNUM-HENSYU-SEC
+           ELSE
+               MOVE    "0020"              TO  SPA-ERRCD
+           END-IF
            .
        4106-RECESEL-EXT.
            EXIT.
@@ -1286,17 +1293,21 @@
            END-IF
       *             
            IF      SPA-ERRCD           =   SPACE
-               INITIALIZE                     STS-AREA-DAY
-               INITIALIZE                     LNK-DAY7-AREA
-               MOVE  "71"                     TO  LNK-DAY7-IRAI
-               MOVE  SPA-NAI-STJYUSINYMD (1:6)
+               IF      SPA-NAI-STJYUSINYMD (1:6)
+                                       NOT =   SPA-NAI-EDJYUSINYMD (1:6)
+                   INITIALIZE                     STS-AREA-DAY
+                   INITIALIZE                     LNK-DAY7-AREA
+                   MOVE  "71"                 TO  LNK-DAY7-IRAI
+                   MOVE  SPA-NAI-STJYUSINYMD (1:6)
                                               TO  LNK-DAY7-YM
-               CALL  "ORCSDAY"                USING   STS-AREA-DAY
+                   CALL  "ORCSDAY"            USING   STS-AREA-DAY
                                                       LNK-DAY7-AREA
-               MOVE    LNK-DAY7-KOYOMI        TO  SPA-NAI-EDJYUSINYMD
-               MOVE    SPA-NAI-EDJYUSINYMD    TO  WRK-SYMD  
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYMDG            TO  SPA-GMN-EDJYUSINYMD
+                   MOVE    LNK-DAY7-KOYOMI    TO  SPA-NAI-EDJYUSINYMD
+                   MOVE    SPA-NAI-EDJYUSINYMD
+                                              TO  WRK-SYMD  
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    WRK-HENYMDG        TO  SPA-GMN-EDJYUSINYMD
+               END-IF
       *
                MOVE    10                     TO  SPA-GMN-CUR
            END-IF
@@ -2631,20 +2642,31 @@
       *
            MOVE    SPA-GMN-LABEL          TO  R01-LABEL
       *
-           EVALUATE    SPA-R01-NYUGAIKBN
-               WHEN    "1"
-                   MOVE    WIDGET-INSENSITIVE  TO  R01-STJYUSINYMD-STATE
-                                                   R01-EDJYUSINYMD-STATE
-                                                   R01-SYORI-STATE
-               WHEN    "2"
-                   MOVE    WIDGET-NORMAL       TO  R01-STJYUSINYMD-STATE
-                                                   R01-EDJYUSINYMD-STATE
-                                                   R01-SYORI-STATE
-           END-EVALUATE
-           MOVE    WIDGET-NORMAL       TO  R01-RENNUM-STATE
+           IF      SPA-R01-NYUGAIKBN   =   "1"
+               MOVE    WIDGET-INSENSITIVE  TO  R01-SYORI-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  R01-SYORI-STATE
+           END-IF
+      *
+           MOVE    WIDGET-INSENSITIVE  TO  R01-STJYUSINYMD-STATE
+                                           R01-EDJYUSINYMD-STATE
+                                           R01-RENNUM-STATE
                                            R01-PTNUM-STATE
                                            R01-SRYYM-STATE
                                            R01-NYUGAIKBN-STATE
+                                           R01-B09-STATE
+           EVALUATE    SPA-GMN-SYORI
+               WHEN    "1"
+                   MOVE    WIDGET-NORMAL       TO  R01-RENNUM-STATE
+                                                   R01-PTNUM-STATE
+                                                   R01-SRYYM-STATE
+                                                   R01-NYUGAIKBN-STATE
+                                                   R01-B09-STATE
+               WHEN    "2"
+               WHEN    "3" 
+                   MOVE    WIDGET-NORMAL       TO  R01-STJYUSINYMD-STATE
+                                                   R01-EDJYUSINYMD-STATE
+           END-EVALUATE
       *
            MOVE    SPA-GMN-STJYUSINYMD TO  R01-STJYUSINYMD
            MOVE    SPA-GMN-EDJYUSINYMD TO  R01-EDJYUSINYMD
@@ -2744,6 +2766,9 @@
                                                        TO  SPA-ERRMSG
                WHEN    "0019"
                    MOVE    "受診日に該当する患者がありません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0020"
+                   MOVE    "個別指定の時のみ選択できます"
                                                        TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "レセプト指示コード（個別）が削除できません"

@@ -1,5 +1,8 @@
 R01	{
 	fixed6	{
+		B09	{
+			state	int;
+		};
 		SYORI_COMBO	{
 			state	int;
 			SYORI	{
