@@ -64,6 +64,7 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
            03  FLG-NYUINACCT           PIC 9(01).
+           03  FLG-SRYACCT             PIC 9(01).
            03  FLG-SANSHOU             PIC X(01).
            03  FLG-SANSHOU2            PIC X(01).
            03  FLG-SANSHOU3            PIC X(01).                       
@@ -157,7 +158,12 @@
       *    03  WK-SHOKUDOKASAN         PIC 9(01).
            03  WK-SHOKUJI-NISSU        PIC 9(02).
            03  WK-SHOKUJI-RYOYOHI      PIC 9(07).
+           03  WK-SHOKUJI-RYOYOHI95    PIC 9(07).
+           03  WK-SHOKUJI-RYOYOHI96    PIC 9(07).
+           03  WK-SHOKUJI-JIHI         PIC 9(07).
            03  WK-SHOKUJI-FTN          PIC 9(07).
+           03  WK-SHOKUJI-FTN95        PIC 9(07).
+           03  WK-SHOKUJI-FTN96        PIC 9(07).
            03  WK-NYUSKJRYYKBN         PIC X(01).
            03  WK-NISSU-SKJ            PIC 9(02).
            03  WK-KNJFTNKIN-SKJ        PIC 9(07).
@@ -168,6 +174,12 @@
        01  WK-SHOKUDOKASAN-TABLE.
            03  WK-SHOKUDOKASAN-T       OCCURS   31.
                05  WK-SHOKUDOKASAN     PIC 9(04).
+      *    Ï«ºÒÆþ±¡Ãæ¤ÎÆÃÊÌ¿©²Ã»»ÂàÈò¥Æ¡¼¥Ö¥ë
+       01  WK-ROSAITOKU-TABLE.
+           03  WK-ROSAITOKU-T          OCCURS   31.
+               05  WK-ROSAITOKU95      PIC 9(04).
+               05  WK-ROSAITOKU96      PIC 9(04).
+               05  WK-ROSAITOKU97      PIC 9(04).
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -196,6 +208,10 @@
       *    Æþ±¡²ñ·×
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
+      *
+      *    ¿ÇÎÅ²ñ·×
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý
            COPY    "CPSK1001.INC".
@@ -273,15 +289,25 @@
            END-PERFORM.              
            MOVE           ZERO     TO  LNK-SYU-SYUSKJ-NISSU
                                        LNK-SYU-SYUSKJ-RYOYOHI
-                                       LNK-SYU-SYUSKJ-FTN.
+                                       LNK-SYU-SYUSKJ-FTN
+                                       LNK-SYU-SYUSKJ-FTN-RECE.
+           MOVE           SPACE    TO  LNK-SYU-SYUSKJ-FTNKBN.
            PERFORM   VARYING   IDX   FROM   1    BY   1
              UNTIL   IDX   >   4
                   MOVE    ZERO     TO  LNK-SYU-SKJ-NISSU(IDX)
                                        LNK-SYU-SKJ-RYOYOHI(IDX)
                                        LNK-SYU-SKJ-FTN(IDX)
+                                       LNK-SYU-SKJ-FTN-RECE(IDX)
+                  MOVE    SPACE    TO  LNK-SYU-SKJ-FTNKBN(IDX)
            END-PERFORM.
            MOVE           ZERO     TO  LNK-SYU-RYOYOHI-SKJ.
            MOVE           ZERO     TO  LNK-SYU-SKYMONEY-SKJ.
+           MOVE           ZERO     TO  LNK-SYU-SKYMONEY-SKJ-TAX.
+           MOVE           ZERO     TO  LNK-SYU-SKYMONEY-SKJ-KEI.
+           MOVE           ZERO     TO  LNK-SYU-RYOYOHI-SKJ-JIHI.
+           MOVE           ZERO     TO  LNK-SYU-SKYMONEY-SKJ-JIHI.
+           MOVE           ZERO     TO  LNK-SYU-SKYMONEY-SKJ-JIHI-TAX.
+           MOVE           ZERO     TO  LNK-SYU-SKYMONEY-SKJ-JIHI-KEI.
       *
       *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¤Î»²¾ÈÉôÊ¬³ÎÄê
            PERFORM   100-KAKUTEI-SEC.
@@ -407,14 +433,16 @@
                                              *  1.05.
       *
       *    ÀÁµá¶â³Û¤Î·×»»¡ÊÄ´À°¶â´Þ¤Þ¤º¡Ë
-           COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY        +
-                                            LNK-SYU-RMSAGAKU        +
-                                            LNK-SYU-SKYMONEY-SKJ    +
-                                            LNK-SYU-TGMONEY(12)     +
-                                            LNK-SYU-TGMONEY-TAX(12) +
-                                            LNK-SYU-JIHI-TOTAL      +
-                                            LNK-SYU-JIHI-TOTAL-TAX  +
-                                            LNK-SYU-JIHI-TAX.
+           COMPUTE    LNK-SYU-SKYMONEY  =   
+                                 LNK-SYU-SKYMONEY              +
+                                 LNK-SYU-RMSAGAKU              +
+                                 LNK-SYU-SKYMONEY-SKJ-KEI      +
+                                 LNK-SYU-SKYMONEY-SKJ-JIHI-KEI +
+                                 LNK-SYU-TGMONEY(12)           +
+                                 LNK-SYU-TGMONEY-TAX(12)       +
+                                 LNK-SYU-JIHI-TOTAL            +
+                                 LNK-SYU-JIHI-TOTAL-TAX        +
+                                 LNK-SYU-JIHI-TAX.
       *    ÉÂ±¡¸ºÌÈ¤Î·×»»
            IF     LNK-SYU-SKYMONEY      NOT =   ZERO
                    INITIALIZE                           PTINF-REC
@@ -1196,20 +1224,32 @@
                        WHEN  (LNK-SYU-KOH1HKNNUM = SYU-KOH1HKNNUM)
                              ADD   SYU-KOH1HKNFTNMONEY
                                                 TO  FTN-KOHI1-M
+                             IF    LNK-SYU-KOH1HKNNUM  =  "051"
+                                ADD   SYU-KOH1SKJ-FTN
+                                                TO  FTN-KOHI1-M
+                             END-IF
                        WHEN  (LNK-SYU-KOH1HKNNUM = SYU-KOH2HKNNUM)
                              ADD   SYU-KOH2HKNFTNMONEY
                                                 TO  FTN-KOHI1-M
+                             IF    LNK-SYU-KOH1HKNNUM  =  "051"
+                                ADD   SYU-KOH2SKJ-FTN
+                                                TO  FTN-KOHI1-M
+                             END-IF
                        WHEN  (LNK-SYU-KOH1HKNNUM = SYU-KOH3HKNNUM)
                              ADD   SYU-KOH3HKNFTNMONEY
                                                 TO  FTN-KOHI1-M
+                             IF    LNK-SYU-KOH1HKNNUM  =  "051"
+                                ADD   SYU-KOH3SKJ-FTN
+                                                TO  FTN-KOHI1-M
+                             END-IF
                        WHEN  (LNK-SYU-KOH1HKNNUM = SYU-KOH4HKNNUM)
                              ADD   SYU-KOH4HKNFTNMONEY
                                                 TO  FTN-KOHI1-M
-                   END-EVALUATE
-                   IF    LNK-SYU-KOH1HKNNUM  =  "051"
-                             ADD   SYU-SKYMONEY-SKJ
+                             IF    LNK-SYU-KOH1HKNNUM  =  "051"
+                                ADD   SYU-KOH4SKJ-FTN
                                                 TO  FTN-KOHI1-M
-                   END-IF
+                             END-IF
+                   END-EVALUATE
                END-IF
            END-IF.
       *    ¸øÈñ£²¥«¥¦¥ó¥È
@@ -1223,20 +1263,32 @@
                        WHEN  (LNK-SYU-KOH2HKNNUM = SYU-KOH1HKNNUM)
                              ADD   SYU-KOH1HKNFTNMONEY
                                                 TO  FTN-KOHI2-M
+                             IF    LNK-SYU-KOH2HKNNUM  =  "051"
+                                ADD   SYU-KOH1SKJ-FTN
+                                                TO  FTN-KOHI2-M
+                             END-IF
                        WHEN  (LNK-SYU-KOH2HKNNUM = SYU-KOH2HKNNUM)
                              ADD   SYU-KOH2HKNFTNMONEY
                                                 TO  FTN-KOHI2-M
+                             IF    LNK-SYU-KOH2HKNNUM  =  "051"
+                                ADD   SYU-KOH2SKJ-FTN
+                                                TO  FTN-KOHI2-M
+                             END-IF
                        WHEN  (LNK-SYU-KOH2HKNNUM = SYU-KOH3HKNNUM)
                              ADD   SYU-KOH3HKNFTNMONEY
                                                 TO  FTN-KOHI2-M
+                             IF    LNK-SYU-KOH2HKNNUM  =  "051"
+                                ADD   SYU-KOH3SKJ-FTN
+                                                TO  FTN-KOHI2-M
+                             END-IF
                        WHEN  (LNK-SYU-KOH2HKNNUM = SYU-KOH4HKNNUM)
                              ADD   SYU-KOH4HKNFTNMONEY
                                                 TO  FTN-KOHI2-M
-                   END-EVALUATE
-                   IF    LNK-SYU-KOH2HKNNUM  =  "051"
-                             ADD   SYU-SKYMONEY-SKJ
+                             IF    LNK-SYU-KOH2HKNNUM  =  "051"
+                                ADD   SYU-KOH4SKJ-FTN
                                                 TO  FTN-KOHI2-M
-                   END-IF
+                             END-IF
+                   END-EVALUATE
                END-IF
            END-IF.
       *    ¸øÈñ£³¥«¥¦¥ó¥È
@@ -1250,20 +1302,32 @@
                        WHEN  (LNK-SYU-KOH3HKNNUM = SYU-KOH1HKNNUM)
                              ADD   SYU-KOH1HKNFTNMONEY
                                                 TO  FTN-KOHI3-M
+                             IF    LNK-SYU-KOH3HKNNUM  =  "051"
+                                ADD   SYU-KOH1SKJ-FTN
+                                                TO  FTN-KOHI3-M
+                             END-IF
                        WHEN  (LNK-SYU-KOH3HKNNUM = SYU-KOH2HKNNUM)
                              ADD   SYU-KOH2HKNFTNMONEY
                                                 TO  FTN-KOHI3-M
+                             IF    LNK-SYU-KOH3HKNNUM  =  "051"
+                                ADD   SYU-KOH2SKJ-FTN
+                                                TO  FTN-KOHI3-M
+                             END-IF
                        WHEN  (LNK-SYU-KOH3HKNNUM = SYU-KOH3HKNNUM)
                              ADD   SYU-KOH3HKNFTNMONEY
                                                 TO  FTN-KOHI3-M
+                             IF    LNK-SYU-KOH3HKNNUM  =  "051"
+                                ADD   SYU-KOH3SKJ-FTN
+                                                TO  FTN-KOHI3-M
+                             END-IF
                        WHEN  (LNK-SYU-KOH3HKNNUM = SYU-KOH4HKNNUM)
                              ADD   SYU-KOH4HKNFTNMONEY
                                                 TO  FTN-KOHI3-M
-                   END-EVALUATE
-                   IF    LNK-SYU-KOH3HKNNUM  =  "051"
-                             ADD   SYU-SKYMONEY-SKJ
+                             IF    LNK-SYU-KOH3HKNNUM  =  "051"
+                                ADD   SYU-KOH4SKJ-FTN
                                                 TO  FTN-KOHI3-M
-                   END-IF
+                             END-IF
+                   END-EVALUATE
                END-IF
            END-IF.
       *    ¸øÈñ£´¥«¥¦¥ó¥È
@@ -1277,20 +1341,32 @@
                        WHEN  (LNK-SYU-KOH4HKNNUM = SYU-KOH1HKNNUM)
                              ADD   SYU-KOH1HKNFTNMONEY
                                                 TO  FTN-KOHI4-M
+                             IF    LNK-SYU-KOH4HKNNUM  =  "051"
+                                ADD   SYU-KOH1SKJ-FTN
+                                                TO  FTN-KOHI4-M
+                             END-IF
                        WHEN  (LNK-SYU-KOH4HKNNUM = SYU-KOH2HKNNUM)
                              ADD   SYU-KOH2HKNFTNMONEY
                                                 TO  FTN-KOHI4-M
+                             IF    LNK-SYU-KOH4HKNNUM  =  "051"
+                                ADD   SYU-KOH2SKJ-FTN
+                                                TO  FTN-KOHI4-M
+                             END-IF
                        WHEN  (LNK-SYU-KOH4HKNNUM = SYU-KOH3HKNNUM)
                              ADD   SYU-KOH3HKNFTNMONEY
                                                 TO  FTN-KOHI4-M
+                             IF    LNK-SYU-KOH4HKNNUM  =  "051"
+                                ADD   SYU-KOH3SKJ-FTN
+                                                TO  FTN-KOHI4-M
+                             END-IF
                        WHEN  (LNK-SYU-KOH4HKNNUM = SYU-KOH4HKNNUM)
                              ADD   SYU-KOH4HKNFTNMONEY
                                                 TO  FTN-KOHI4-M
-                   END-EVALUATE
-                   IF    LNK-SYU-KOH4HKNNUM  =  "051"
-                             ADD   SYU-SKYMONEY-SKJ
+                             IF    LNK-SYU-KOH4HKNNUM  =  "051"
+                                ADD   SYU-KOH4SKJ-FTN
                                                 TO  FTN-KOHI4-M
-                   END-IF
+                             END-IF
+                   END-EVALUATE
                END-IF
            END-IF.
       *
@@ -1481,7 +1557,8 @@
        2300-SHOKUJI-KEISAN-SEC         SECTION.
       *
            INITIALIZE    WK-SHOKUJI-TAIHI-AREA 
-                         WK-SHOKUDOKASAN-TABLE.
+                         WK-SHOKUDOKASAN-TABLE 
+                         WK-ROSAITOKU-TABLE.   
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡Ê£µ£°£°£°¡Ë¤«¤é¿©»ö¾ðÊó¼èÆÀ
            INITIALIZE                         SYS-5000-REC.
@@ -1544,17 +1621,17 @@
            MOVE    LNK-SYU-HOSPID        TO      NACCT-HOSPID.
            MOVE    LNK-SYU-NYUGAIKBN     TO      NACCT-NYUGAIKBN.
            MOVE    LNK-SYU-PTID          TO      NACCT-PTID.
-           MOVE    "00"                  TO      NACCT-SRYKA.
+      ***  MOVE    "00"                  TO      NACCT-SRYKA.
            MOVE    LNK-SYU-SKYSTYMD(1:6) TO      NACCT-SRYYM.
            MOVE    NYUINACCT-REC         TO      MCPDATA-REC.
            MOVE    "DBSELECT"            TO      MCP-FUNC.
-           MOVE    "NYUINACCT-KEY2"      TO      ORC-DBPATH.
+           MOVE    "NYUINACCT-KEY7"      TO      ORC-DBPATH.
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC.
            IF      MCP-RC             =       ZERO
       *
-               MOVE    "NYUINACCT-KEY2"  TO      ORC-DBPATH
+               MOVE    "NYUINACCT-KEY7"  TO      ORC-DBPATH
                PERFORM  NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
@@ -1562,34 +1639,70 @@
                              PERFORM        23001-SHOKUDOKASAN-TAIHI-SEC
                  END-IF
       * 
-                 MOVE          "NYUINACCT-KEY2"  TO   ORC-DBPATH
+                 MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
                  PERFORM        NYUINACCT-READ-SEC
                END-PERFORM
       *
            END-IF.
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC.
-           MOVE    "NYUINACCT-KEY2"        TO  ORC-DBPATH.
+           MOVE    "NYUINACCT-KEY7"        TO  ORC-DBPATH.
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC.
-      **
-           INITIALIZE                            NYUINACCT-REC.
-           MOVE    LNK-SYU-HOSPID        TO      NACCT-HOSPID.
-           MOVE    LNK-SYU-NYUGAIKBN     TO      NACCT-NYUGAIKBN.
-           MOVE    LNK-SYU-PTID          TO      NACCT-PTID.
-           MOVE    "00"                  TO      NACCT-SRYKA.
-           MOVE    LNK-SYU-SKYSTYMD(1:6) TO      NACCT-SRYYM.
-           MOVE    NYUINACCT-REC         TO      MCPDATA-REC.
+      *
+      *
+           INITIALIZE                            SRYACCT-REC.
+           MOVE    LNK-SYU-HOSPID        TO      ACCT-HOSPID.
+           MOVE    LNK-SYU-NYUGAIKBN     TO      ACCT-NYUGAIKBN.
+           MOVE    LNK-SYU-PTID          TO      ACCT-PTID.
+           MOVE    LNK-SYU-SKYSTYMD(1:6) TO      ACCT-SRYYM.
+           MOVE    SRYACCT-REC           TO      MCPDATA-REC.
            MOVE    "DBSELECT"            TO      MCP-FUNC.
-           MOVE    "NYUINACCT-KEY2"      TO      ORC-DBPATH.
+           MOVE    "SRYACCT-KEY7"        TO      ORC-DBPATH.
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC.
            IF      MCP-RC             =       ZERO
       *
-               MOVE    "NYUINACCT-KEY2"  TO      ORC-DBPATH
+               MOVE    "SRYACCT-KEY7"    TO      ORC-DBPATH
+               PERFORM  SRYACCT-READ-SEC
+               PERFORM  UNTIL  (FLG-SRYACCT    =    "1")
+      *
+                 IF     ACCT-SRYCDTOTAL    =    197001210
+                             PERFORM        23001-ROSAITOKU-TAIHI-SEC
+                 END-IF
+      *
+                 MOVE     "SRYACCT-KEY7"   TO   ORC-DBPATH
+                 PERFORM   SRYACCT-READ-SEC
+               END-PERFORM
+      *
+           END-IF.
+      *
+           MOVE    "DBCLOSE"               TO  MCP-FUNC.
+           MOVE    "SRYACCT-KEY7"          TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC.
+      *
+      *
+           INITIALIZE                            NYUINACCT-REC.
+           MOVE    LNK-SYU-HOSPID        TO      NACCT-HOSPID.
+           MOVE    LNK-SYU-NYUGAIKBN     TO      NACCT-NYUGAIKBN.
+           MOVE    LNK-SYU-PTID          TO      NACCT-PTID.
+      ***  MOVE    "00"                  TO      NACCT-SRYKA.
+           MOVE    LNK-SYU-SKYSTYMD(1:6) TO      NACCT-SRYYM.
+           MOVE    NYUINACCT-REC         TO      MCPDATA-REC.
+           MOVE    "DBSELECT"            TO      MCP-FUNC.
+           MOVE    "NYUINACCT-KEY7"      TO      ORC-DBPATH.
+           CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC.
+           IF      MCP-RC             =       ZERO
+      *
+               MOVE    "NYUINACCT-KEY7"  TO      ORC-DBPATH
                PERFORM  NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
@@ -1597,14 +1710,14 @@
                              PERFORM        23001-SHOKUJI-COUNT-SEC
                  END-IF
       * 
-                 MOVE          "NYUINACCT-KEY2"  TO   ORC-DBPATH
+                 MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
                  PERFORM        NYUINACCT-READ-SEC
                END-PERFORM
       *
            END-IF.
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC.
-           MOVE    "NYUINACCT-KEY2"        TO  ORC-DBPATH.
+           MOVE    "NYUINACCT-KEY7"        TO  ORC-DBPATH.
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -1625,7 +1738,7 @@
            EXIT.
       *
       ******************************************************************
-      *        ¿©Æ²²Ã»»ÂàÈò                                       *
+      *        ¿©Æ²²Ã»»ÂàÈò                                            *
       ******************************************************************
        23001-SHOKUDOKASAN-TAIHI-SEC         SECTION.
       *
@@ -1639,6 +1752,37 @@
            END-PERFORM.
       *
        23001-SHOKUDOKASAN-TAIHI-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *        Ï«ºÒÆþ±¡Ãæ¤ÎÆÃÊÌ¿©²Ã»»ÂàÈò                              *
+      ******************************************************************
+       23001-ROSAITOKU-TAIHI-SEC         SECTION.
+      *
+           PERFORM    VARYING   IDY   FROM   1   BY   1
+                                    UNTIL    IDY    >    31
+      *
+             IF   ACCT-SRYKBN   =   "95"  
+                IF       ACCT-DAY(1 IDY)   NOT =  ZERO 
+                    MOVE   ACCT-DAY(1 IDY)  TO   WK-ROSAITOKU95(IDY) 
+                END-IF
+             END-IF
+      *
+             IF   ACCT-SRYKBN   =   "96"  
+                IF       ACCT-DAY(1 IDY)   NOT =  ZERO 
+                    MOVE   ACCT-DAY(1 IDY)  TO   WK-ROSAITOKU96(IDY) 
+                END-IF
+             END-IF
+      *
+             IF   ACCT-SRYKBN   =   "97"
+                IF       ACCT-DAY(1 IDY)   NOT =  ZERO 
+                    MOVE   ACCT-DAY(1 IDY)  TO   WK-ROSAITOKU97(IDY) 
+                END-IF
+             END-IF
+      *
+           END-PERFORM.
+      *
+       23001-ROSAITOKU-TAIHI-EXT.
            EXIT.
       *
       ******************************************************************
@@ -1657,6 +1801,8 @@
              COMPUTE  WK-SEIKYUKIKAN-NISSU  =  WK-SEIKYUKIKAN-NISSU 
                                             +  1
       *
+             MOVE     ZERO     TO      WK-SHOKUJI-JIHI
+      *
              IF       ( NACCT-DAY(IDY)   NOT =  ZERO )
              AND      ( LNK-SYU-DAY(IDY)     =  "1"  )
       *
@@ -1669,19 +1815,23 @@
                           ADD       1    TO   WK-SHOKUJI-NISSU
                                               LNK-SYU-SHOKUJI1-NISSU
                           ADD    1920    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           MOVE   1920    TO   LNK-SYU-SHOKUJI1
                           IF    WK-TOKUKANRIKASAN  =  1
                             ADD   200    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                             ADD   200    TO   LNK-SYU-SHOKUJI1
                           END-IF
       *                   IF    WK-SHOKUDOKASAN    =  1
       *                     ADD    50    TO   WK-SHOKUJI-RYOYOHI
+      *                                       WK-SHOKUJI-JIHI
       *                     ADD    50    TO   LNK-SYU-SHOKUJI1
       *                   END-IF
                         WHEN  2
                           ADD       1    TO   WK-SHOKUJI-NISSU
                                               LNK-SYU-SHOKUJI1-NISSU
                           ADD    1520    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           MOVE   1520    TO   LNK-SYU-SHOKUJI1
                       END-EVALUATE
                   WHEN  2
@@ -1689,32 +1839,40 @@
                                               LNK-SYU-SHOKUJI1-NISSU
                                               LNK-SYU-SHOKUJI3-NISSU
                           ADD    1920    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           MOVE   1920    TO   LNK-SYU-SHOKUJI1
                           IF    WK-TOKUKANRIKASAN  =  1
                             ADD   200    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                             ADD   200    TO   LNK-SYU-SHOKUJI1
                           END-IF
       *                   IF    WK-SHOKUDOKASAN    =  1
       *                     ADD    50    TO   WK-SHOKUJI-RYOYOHI
+      *                                       WK-SHOKUJI-JIHI
       *                     ADD    50    TO   LNK-SYU-SHOKUJI1
       *                   END-IF
                           ADD     350    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           MOVE    350    TO   LNK-SYU-SHOKUJI3
                   WHEN  3
                           ADD       1    TO   WK-SHOKUJI-NISSU
                                               LNK-SYU-SHOKUJI1-NISSU
                                               LNK-SYU-SHOKUJI4-NISSU
                           ADD    1920    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           MOVE   1920    TO   LNK-SYU-SHOKUJI1
                           IF    WK-TOKUKANRIKASAN  =  1
                             ADD   200    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                             ADD   200    TO   LNK-SYU-SHOKUJI1
                           END-IF
       *                   IF    WK-SHOKUDOKASAN    =  1
       *                     ADD    50    TO   WK-SHOKUJI-RYOYOHI
+      *                                       WK-SHOKUJI-JIHI
       *                     ADD    50    TO   LNK-SYU-SHOKUJI1
       *                   END-IF
                           ADD      50    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           MOVE     50    TO   LNK-SYU-SHOKUJI4
                 END-EVALUATE
       *
@@ -1727,17 +1885,21 @@
                           ADD       1    TO   WK-SHOKUJI-NISSU
                                               LNK-SYU-SHOKUJI2-NISSU
                           ADD    1920    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           MOVE   1920    TO   LNK-SYU-SHOKUJI2
                           IF    WK-TOKUKANRIKASAN  =  1
                             ADD   200    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                             ADD   200    TO   LNK-SYU-SHOKUJI2
                           END-IF
                           ADD      50    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           ADD      50    TO   LNK-SYU-SHOKUJI2
                         WHEN  2
                           ADD       1    TO   WK-SHOKUJI-NISSU
                                               LNK-SYU-SHOKUJI1-NISSU
                           ADD    1520    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           MOVE   1520    TO   LNK-SYU-SHOKUJI1
                       END-EVALUATE
                   WHEN  2
@@ -1745,36 +1907,47 @@
                                               LNK-SYU-SHOKUJI2-NISSU
                                               LNK-SYU-SHOKUJI3-NISSU
                           ADD    1920    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           MOVE   1920    TO   LNK-SYU-SHOKUJI2
                           IF    WK-TOKUKANRIKASAN  =  1
                             ADD   200    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                             ADD   200    TO   LNK-SYU-SHOKUJI2
                           END-IF
                           ADD      50    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           ADD      50    TO   LNK-SYU-SHOKUJI2
       *
                           ADD     350    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           MOVE    350    TO   LNK-SYU-SHOKUJI3
                   WHEN  3
                           ADD       1    TO   WK-SHOKUJI-NISSU
                                               LNK-SYU-SHOKUJI2-NISSU
                                               LNK-SYU-SHOKUJI4-NISSU
                           ADD    1920    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           MOVE   1920    TO   LNK-SYU-SHOKUJI2
                           IF    WK-TOKUKANRIKASAN  =  1
                             ADD   200    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                             ADD   200    TO   LNK-SYU-SHOKUJI2
                           END-IF
                           ADD      50    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           ADD      50    TO   LNK-SYU-SHOKUJI2
       *
                           ADD      50    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
                           MOVE     50    TO   LNK-SYU-SHOKUJI4
                 END-EVALUATE
       *
               END-IF
       *
-              EVALUATE   FLG-SKJ
+              IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
+                ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
+              ELSE
+                EVALUATE   FLG-SKJ
                   WHEN  0
                           ADD     780    TO   WK-SHOKUJI-FTN
                   WHEN  1
@@ -1783,12 +1956,46 @@
                     COMPUTE   WK-TSUSAN-NISSU  =  
                                         LNK-S02-NYUIN-TSUSAN-NISSU  +
                                         WK-SEIKYUKIKAN-NISSU
-                    IF        WK-TSUSAN-NISSU  <=  90
+      **>           IF        WK-TSUSAN-NISSU  <=  90
                           ADD     650    TO   WK-SHOKUJI-FTN
-                    ELSE
-                          ADD     500    TO   WK-SHOKUJI-FTN
-                    END-IF
-              END-EVALUATE
+      **>           ELSE
+      **>                 ADD     500    TO   WK-SHOKUJI-FTN
+      **>           END-IF
+                END-EVALUATE
+              END-IF
+      *
+             END-IF
+      *
+             IF       ( WK-ROSAITOKU95(IDY)  NOT =  ZERO       )
+             AND      ( LNK-SYU-DAY(IDY)         =  "1" OR "2" )
+      *
+                ADD     350    TO   WK-SHOKUJI-RYOYOHI95
+                                    WK-SHOKUJI-FTN95
+      *
+             END-IF
+      *
+             IF       ( WK-ROSAITOKU96(IDY)  NOT =  ZERO       )
+             AND      ( LNK-SYU-DAY(IDY)         =  "1" OR "2" )
+      *
+                ADD     350    TO   WK-SHOKUJI-RYOYOHI96
+                                    WK-SHOKUJI-FTN96
+      *
+             END-IF
+      *
+             MOVE     ZERO     TO      WK-SHOKUJI-JIHI
+      *
+             IF       ( WK-ROSAITOKU97(IDY)  NOT =  ZERO       )
+             AND      ( LNK-SYU-DAY(IDY)         =  "1" OR "2" )
+      *
+                ADD       1    TO   WK-SHOKUJI-NISSU
+                                    LNK-SYU-SHOKUJI3-NISSU
+                ADD     350    TO   WK-SHOKUJI-RYOYOHI
+                                    WK-SHOKUJI-JIHI
+                MOVE    350    TO   LNK-SYU-SHOKUJI3
+      *
+                IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
+                  ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
+                END-IF
       *
              END-IF
       *
@@ -2007,15 +2214,19 @@
                         END-IF
                         COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                                   LNK-SYU-SYUCOMPFTN     
-                        IF    HKN-HON-NYUSKJRYYKBN  NOT =  "0"
-                            MOVE  WK-SHOKUJI-NISSU
+                        MOVE  HKN-HON-NYUSKJRYYKBN
+                                             TO   LNK-SYU-SYUSKJ-FTNKBN
+                        MOVE  WK-SHOKUJI-NISSU
                                              TO   LNK-SYU-SYUSKJ-NISSU
-                            MOVE  WK-SHOKUJI-RYOYOHI
+                        MOVE  WK-SHOKUJI-RYOYOHI
                                              TO   LNK-SYU-SYUSKJ-RYOYOHI
-                          IF    HKN-HON-NYUSKJRYYKBN  NOT =  "3"
-                            MOVE  WK-SHOKUJI-FTN
+                        IF    HKN-HON-NYUSKJRYYKBN  NOT =  "0"
+                            IF    HKN-HON-NYUSKJRYYKBN  NOT =  "3"
+                              MOVE  WK-SHOKUJI-FTN
                                              TO   LNK-SYU-SYUSKJ-FTN
-                          END-IF
+                            END-IF
+                            MOVE  WK-SHOKUJI-FTN
+                                            TO   LNK-SYU-SYUSKJ-FTN-RECE
                         END-IF
                    ELSE
                         IF    HKN-KZK-NYUKFTNRATE     NOT =    ZERO
@@ -2047,15 +2258,19 @@
                         END-IF
                         COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                                   LNK-SYU-SYUCOMPFTN     
-                        IF    HKN-KZK-NYUSKJRYYKBN  NOT =  "0"
-                            MOVE  WK-SHOKUJI-NISSU
+                        MOVE  HKN-KZK-NYUSKJRYYKBN
+                                             TO   LNK-SYU-SYUSKJ-FTNKBN
+                        MOVE  WK-SHOKUJI-NISSU
                                              TO   LNK-SYU-SYUSKJ-NISSU
-                            MOVE  WK-SHOKUJI-RYOYOHI
+                        MOVE  WK-SHOKUJI-RYOYOHI
                                              TO   LNK-SYU-SYUSKJ-RYOYOHI
-                          IF    HKN-KZK-NYUSKJRYYKBN  NOT =  "3"
-                            MOVE  WK-SHOKUJI-FTN
+                        IF    HKN-KZK-NYUSKJRYYKBN  NOT =  "0"
+                            IF    HKN-KZK-NYUSKJRYYKBN  NOT =  "3"
+                              MOVE  WK-SHOKUJI-FTN
                                              TO   LNK-SYU-SYUSKJ-FTN
-                          END-IF
+                            END-IF
+                            MOVE  WK-SHOKUJI-FTN
+                                            TO   LNK-SYU-SYUSKJ-FTN-RECE
                         END-IF
                    END-IF
                  WHEN   "2"
@@ -2088,15 +2303,19 @@
                    END-IF
                    COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                              LNK-SYU-SYUCOMPFTN     
-                   IF    HKN-TSY-NYUSKJRYYKBN  NOT =  "0"
-                            MOVE  WK-SHOKUJI-NISSU
+                   MOVE  HKN-TSY-NYUSKJRYYKBN
+                                             TO   LNK-SYU-SYUSKJ-FTNKBN
+                   MOVE  WK-SHOKUJI-NISSU
                                              TO   LNK-SYU-SYUSKJ-NISSU
-                            MOVE  WK-SHOKUJI-RYOYOHI
+                   MOVE  WK-SHOKUJI-RYOYOHI
                                              TO   LNK-SYU-SYUSKJ-RYOYOHI
-                     IF    HKN-TSY-NYUSKJRYYKBN  NOT =  "3"
-                            MOVE  WK-SHOKUJI-FTN
+                   IF    HKN-TSY-NYUSKJRYYKBN  NOT =  "0"
+                            IF    HKN-TSY-NYUSKJRYYKBN  NOT =  "3"
+                              MOVE  WK-SHOKUJI-FTN
                                              TO   LNK-SYU-SYUSKJ-FTN
-                     END-IF
+                            END-IF
+                            MOVE  WK-SHOKUJI-FTN
+                                            TO   LNK-SYU-SYUSKJ-FTN-RECE
                    END-IF
                  WHEN   "3"
                    IF    HKN-TNK-NYUKFTNRATE     NOT =    ZERO
@@ -2128,15 +2347,19 @@
                    END-IF
                    COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                              LNK-SYU-SYUCOMPFTN     
-                   IF    HKN-TNK-NYUSKJRYYKBN  NOT =  "0"
-                            MOVE  WK-SHOKUJI-NISSU
+                   MOVE  HKN-TNK-NYUSKJRYYKBN
+                                             TO   LNK-SYU-SYUSKJ-FTNKBN
+                   MOVE  WK-SHOKUJI-NISSU
                                              TO   LNK-SYU-SYUSKJ-NISSU
-                            MOVE  WK-SHOKUJI-RYOYOHI
+                   MOVE  WK-SHOKUJI-RYOYOHI
                                              TO   LNK-SYU-SYUSKJ-RYOYOHI
-                     IF    HKN-TNK-NYUSKJRYYKBN  NOT =  "3"
-                            MOVE  WK-SHOKUJI-FTN
+                   IF    HKN-TNK-NYUSKJRYYKBN  NOT =  "0"
+                            IF    HKN-TNK-NYUSKJRYYKBN  NOT =  "3"
+                              MOVE  WK-SHOKUJI-FTN
                                              TO   LNK-SYU-SYUSKJ-FTN
-                     END-IF
+                            END-IF
+                            MOVE  WK-SHOKUJI-FTN
+                                            TO   LNK-SYU-SYUSKJ-FTN-RECE
                    END-IF
                END-EVALUATE
              WHEN   "1"
@@ -2224,15 +2447,19 @@
       *                   WK-FTN   *  10
                COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                          LNK-SYU-SYUCOMPFTN     
-               IF    HKN-HON-NYUSKJRYYKBN  NOT =  "0"
-                       MOVE  WK-SHOKUJI-NISSU
+               MOVE  HKN-HON-NYUSKJRYYKBN
+                                        TO   LNK-SYU-SYUSKJ-FTNKBN
+               MOVE  WK-SHOKUJI-NISSU
                                         TO   LNK-SYU-SYUSKJ-NISSU
-                       MOVE  WK-SHOKUJI-RYOYOHI
+               MOVE  WK-SHOKUJI-RYOYOHI
                                         TO   LNK-SYU-SYUSKJ-RYOYOHI
-                 IF    HKN-HON-NYUSKJRYYKBN  NOT =  "3"
-                       MOVE  WK-SHOKUJI-FTN
+               IF    HKN-HON-NYUSKJRYYKBN  NOT =  "0"
+                       IF    HKN-HON-NYUSKJRYYKBN  NOT =  "3"
+                         MOVE  WK-SHOKUJI-FTN
                                         TO   LNK-SYU-SYUSKJ-FTN
-                 END-IF
+                       END-IF
+                       MOVE  WK-SHOKUJI-FTN
+                                        TO   LNK-SYU-SYUSKJ-FTN-RECE
                END-IF
            END-EVALUATE.
       *
@@ -2357,20 +2584,22 @@
                    COMPUTE   ZAN-KOHI-T(KOH-IDX) =
                              WK-FTN   *  10
                END-IF
+               MOVE  WK-NYUSKJRYYKBN    TO LNK-SYU-SKJ-FTNKBN(KOH-IDX)
+               MOVE  WK-SHOKUJI-NISSU   TO LNK-SYU-SKJ-NISSU(KOH-IDX)
+               MOVE  WK-SHOKUJI-RYOYOHI TO LNK-SYU-SKJ-RYOYOHI(KOH-IDX)
                EVALUATE   WK-NYUSKJRYYKBN
                    WHEN   "1"
                    WHEN   "2"
-                       MOVE  WK-SHOKUJI-NISSU
-                                      TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
-                       MOVE  WK-SHOKUJI-RYOYOHI
-                                      TO   LNK-SYU-SKJ-RYOYOHI(KOH-IDX)
+                   WHEN   "4"
                        MOVE  WK-SHOKUJI-FTN
                                       TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                           LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                        IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "051"
                          IF    LNK-SYU-SKJ-FTN(KOH-IDX)   >
                                               ZAN-KOHI-T(KOH-IDX)
                             MOVE   ZAN-KOHI-T(KOH-IDX)   TO
-                                            LNK-SYU-SKJ-FTN(KOH-IDX)
+                                        LNK-SYU-SKJ-FTN(KOH-IDX)
+      *                                 LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                             MOVE   ZERO      TO  ZAN-KOHI-T(KOH-IDX)
                          ELSE
                             COMPUTE  ZAN-KOHI-T(KOH-IDX)    =
@@ -2379,10 +2608,8 @@
                          END-IF
                        END-IF
                    WHEN   "3"
-                       MOVE  WK-SHOKUJI-NISSU
-                                      TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
-                       MOVE  WK-SHOKUJI-RYOYOHI
-                                      TO   LNK-SYU-SKJ-RYOYOHI(KOH-IDX)
+                       MOVE  WK-SHOKUJI-FTN
+                                      TO   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                END-EVALUATE
            ELSE
                IF      ((HKN-HKNKOHSBTKBN     =       "3")    AND
@@ -2498,20 +2725,22 @@
                    COMPUTE   ZAN-KOHI-T(KOH-IDX) =
                              WK-FTN   *  10
                END-IF
+               MOVE  WK-NYUSKJRYYKBN    TO LNK-SYU-SKJ-FTNKBN(KOH-IDX)
+               MOVE  WK-SHOKUJI-NISSU   TO LNK-SYU-SKJ-NISSU(KOH-IDX)
+               MOVE  WK-SHOKUJI-RYOYOHI TO LNK-SYU-SKJ-RYOYOHI(KOH-IDX)
                EVALUATE   WK-NYUSKJRYYKBN
                    WHEN   "1"
                    WHEN   "2"
-                       MOVE  WK-SHOKUJI-NISSU
-                                      TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
-                       MOVE  WK-SHOKUJI-RYOYOHI
-                                      TO   LNK-SYU-SKJ-RYOYOHI(KOH-IDX)
+                   WHEN   "4"
                        MOVE  WK-SHOKUJI-FTN
                                       TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                           LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                        IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "051"
                          IF    LNK-SYU-SKJ-FTN(KOH-IDX)   >
                                               ZAN-KOHI-T(KOH-IDX)
                             MOVE   ZAN-KOHI-T(KOH-IDX)   TO
-                                            LNK-SYU-SKJ-FTN(KOH-IDX)
+                                        LNK-SYU-SKJ-FTN(KOH-IDX)
+      *                                 LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                             MOVE   ZERO      TO  ZAN-KOHI-T(KOH-IDX)
                          ELSE
                             COMPUTE  ZAN-KOHI-T(KOH-IDX)    =
@@ -2520,10 +2749,8 @@
                          END-IF
                        END-IF
                    WHEN   "3"
-                       MOVE  WK-SHOKUJI-NISSU
-                                      TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
-                       MOVE  WK-SHOKUJI-RYOYOHI
-                                      TO   LNK-SYU-SKJ-RYOYOHI(KOH-IDX)
+                       MOVE  WK-SHOKUJI-FTN
+                                      TO   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                END-EVALUATE
            END-IF.
       *
@@ -2570,20 +2797,19 @@
            PERFORM    KOHHI-HIKAKU-SEC.
            COMPUTE   LNK-SYU-KOH-COMPTOTAL(KOH-IDX)   =
                      LNK-SYU-KOH-COMPFTN(KOH-IDX).     
+           MOVE  WK-NYUSKJRYYKBN    TO  LNK-SYU-SKJ-FTNKBN(KOH-IDX)
+           MOVE  WK-SHOKUJI-NISSU   TO  LNK-SYU-SKJ-NISSU(KOH-IDX)
+           MOVE  WK-SHOKUJI-RYOYOHI TO  LNK-SYU-SKJ-RYOYOHI(KOH-IDX)
            EVALUATE   WK-NYUSKJRYYKBN
                    WHEN   "1"
                    WHEN   "2"
-                       MOVE  WK-SHOKUJI-NISSU
-                                      TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
-                       MOVE  WK-SHOKUJI-RYOYOHI
-                                      TO   LNK-SYU-SKJ-RYOYOHI(KOH-IDX)
+                   WHEN   "4"
                        MOVE  WK-SHOKUJI-FTN
                                       TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                           LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                    WHEN   "3"
-                       MOVE  WK-SHOKUJI-NISSU
-                                      TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
-                       MOVE  WK-SHOKUJI-RYOYOHI
-                                      TO   LNK-SYU-SKJ-RYOYOHI(KOH-IDX)
+                       MOVE  WK-SHOKUJI-FTN
+                                      TO   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
            END-EVALUATE.
       *     
        2304-KOH-KEISAN-EXT.
@@ -2842,75 +3068,82 @@
            END-IF.
       *
       *¿©»öÆü¿ôÈæ³Ó
-           IF    COMB-KOH1HKNNUM          =   "027" 
-             MOVE        LNK-SYU-KOH1SKJ-NISSU TO  WK-NISSU-SKJ 
-             IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH2SKJ-NISSU <  WK-NISSU-SKJ
-                   MOVE  LNK-SYU-KOH2SKJ-NISSU TO  WK-NISSU-SKJ
-               END-IF
-             END-IF
-             IF   LNK-SYU-KOH3HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH3SKJ-NISSU <  WK-NISSU-SKJ
-                   MOVE  LNK-SYU-KOH3SKJ-NISSU TO  WK-NISSU-SKJ          
-               END-IF
-             END-IF
-             IF   LNK-SYU-KOH4HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH4SKJ-NISSU <  WK-NISSU-SKJ
-                   MOVE  LNK-SYU-KOH4SKJ-NISSU TO  WK-NISSU-SKJ          
-               END-IF
-             END-IF
-             MOVE        WK-NISSU-SKJ       TO  LNK-SYU-KOH1SKJ-NISSU
-             IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
-               MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH2SKJ-NISSU
-             END-IF
-             IF   LNK-SYU-KOH3HKNNUM   NOT =  SPACE
-               MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH3SKJ-NISSU
-             END-IF
-             IF   LNK-SYU-KOH4HKNNUM   NOT =  SPACE
-               MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH4SKJ-NISSU
-             END-IF
-           ELSE
-             MOVE        LNK-SYU-SYUSKJ-NISSU  TO  WK-NISSU-SKJ 
-             IF   LNK-SYU-KOH1HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH1SKJ-NISSU <  WK-NISSU-SKJ
-                   MOVE  LNK-SYU-KOH1SKJ-NISSU TO  WK-NISSU-SKJ
-               END-IF 
-             END-IF
-             IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH2SKJ-NISSU <  WK-NISSU-SKJ
-                   MOVE  LNK-SYU-KOH2SKJ-NISSU TO  WK-NISSU-SKJ
-               END-IF
-             END-IF
-             IF   LNK-SYU-KOH3HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH3SKJ-NISSU <  WK-NISSU-SKJ
-                   MOVE  LNK-SYU-KOH3SKJ-NISSU TO  WK-NISSU-SKJ
-               END-IF
-             END-IF 
-             IF   LNK-SYU-KOH4HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH4SKJ-NISSU <  WK-NISSU-SKJ
-                   MOVE  LNK-SYU-KOH4SKJ-NISSU TO  WK-NISSU-SKJ
-               END-IF
-             END-IF
-             MOVE        WK-NISSU-SKJ       TO  LNK-SYU-SYUSKJ-NISSU
-             IF   LNK-SYU-KOH1HKNNUM   NOT =  SPACE
-               MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH1SKJ-NISSU
-             END-IF
-             IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
-               MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH2SKJ-NISSU
-             END-IF
-             IF   LNK-SYU-KOH3HKNNUM   NOT =  SPACE
-               MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH3SKJ-NISSU
-             END-IF
-             IF   LNK-SYU-KOH4HKNNUM   NOT =  SPACE
-               MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH4SKJ-NISSU
-             END-IF
-           END-IF.
+      *    IF    COMB-KOH1HKNNUM          =   "027" 
+      *      MOVE        LNK-SYU-KOH1SKJ-NISSU TO  WK-NISSU-SKJ 
+      *      IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
+      *        IF  LNK-SYU-KOH2SKJ-NISSU <  WK-NISSU-SKJ
+      *            MOVE  LNK-SYU-KOH2SKJ-NISSU TO  WK-NISSU-SKJ
+      *        END-IF
+      *      END-IF
+      *      IF   LNK-SYU-KOH3HKNNUM   NOT =  SPACE
+      *        IF  LNK-SYU-KOH3SKJ-NISSU <  WK-NISSU-SKJ
+      *            MOVE  LNK-SYU-KOH3SKJ-NISSU TO  WK-NISSU-SKJ          
+      *        END-IF
+      *      END-IF
+      *      IF   LNK-SYU-KOH4HKNNUM   NOT =  SPACE
+      *        IF  LNK-SYU-KOH4SKJ-NISSU <  WK-NISSU-SKJ
+      *            MOVE  LNK-SYU-KOH4SKJ-NISSU TO  WK-NISSU-SKJ          
+      *        END-IF
+      *      END-IF
+      *      MOVE        WK-NISSU-SKJ       TO  LNK-SYU-KOH1SKJ-NISSU
+      *      IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
+      *        MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH2SKJ-NISSU
+      *      END-IF
+      *      IF   LNK-SYU-KOH3HKNNUM   NOT =  SPACE
+      *        MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH3SKJ-NISSU
+      *      END-IF
+      *      IF   LNK-SYU-KOH4HKNNUM   NOT =  SPACE
+      *        MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH4SKJ-NISSU
+      *      END-IF
+      *    ELSE
+      *      MOVE        LNK-SYU-SYUSKJ-NISSU  TO  WK-NISSU-SKJ 
+      *      IF   LNK-SYU-KOH1HKNNUM   NOT =  SPACE
+      *        IF  LNK-SYU-KOH1SKJ-NISSU <  WK-NISSU-SKJ
+      *            MOVE  LNK-SYU-KOH1SKJ-NISSU TO  WK-NISSU-SKJ
+      *        END-IF 
+      *      END-IF
+      *      IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
+      *        IF  LNK-SYU-KOH2SKJ-NISSU <  WK-NISSU-SKJ
+      *            MOVE  LNK-SYU-KOH2SKJ-NISSU TO  WK-NISSU-SKJ
+      *        END-IF
+      *      END-IF
+      *      IF   LNK-SYU-KOH3HKNNUM   NOT =  SPACE
+      *        IF  LNK-SYU-KOH3SKJ-NISSU <  WK-NISSU-SKJ
+      *            MOVE  LNK-SYU-KOH3SKJ-NISSU TO  WK-NISSU-SKJ
+      *        END-IF
+      *      END-IF 
+      *      IF   LNK-SYU-KOH4HKNNUM   NOT =  SPACE
+      *        IF  LNK-SYU-KOH4SKJ-NISSU <  WK-NISSU-SKJ
+      *            MOVE  LNK-SYU-KOH4SKJ-NISSU TO  WK-NISSU-SKJ
+      *        END-IF
+      *      END-IF
+      *      MOVE        WK-NISSU-SKJ       TO  LNK-SYU-SYUSKJ-NISSU
+      *      IF   LNK-SYU-KOH1HKNNUM   NOT =  SPACE
+      *        MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH1SKJ-NISSU
+      *      END-IF
+      *      IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
+      *        MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH2SKJ-NISSU
+      *      END-IF
+      *      IF   LNK-SYU-KOH3HKNNUM   NOT =  SPACE
+      *        MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH3SKJ-NISSU
+      *      END-IF
+      *      IF   LNK-SYU-KOH4HKNNUM   NOT =  SPACE
+      *        MOVE      WK-NISSU-SKJ       TO  LNK-SYU-KOH4SKJ-NISSU
+      *      END-IF
+      *    END-IF.
       *
       *    ¼ýÇ¼¥Æ¡¼¥Ö¥ë¤ÎÀÁµá³Û¤ò¥»¥Ã¥È
            MOVE    WK-KNJFTNKIN             TO  LNK-SYU-SKYMONEY.
       *    ¿©»öÎÅÍÜÈñ¡¦¿©»öÉéÃ´³Û¤ò¥»¥Ã¥È
            MOVE    WK-RYOYOHI-SKJ           TO  LNK-SYU-RYOYOHI-SKJ.
            MOVE    WK-KNJFTNKIN-SKJ         TO  LNK-SYU-SKYMONEY-SKJ.
+           IF   LNK-SYU-SYUSKJ-FTNKBN  =  "4"
+               COMPUTE LNK-SYU-SKYMONEY-SKJ-TAX 
+                                              = LNK-SYU-SKYMONEY-SKJ
+                                              * 0.05
+           END-IF.
+           COMPUTE  LNK-SYU-SKYMONEY-SKJ-KEI = LNK-SYU-SKYMONEY-SKJ
+                                             + LNK-SYU-SKYMONEY-SKJ-TAX.
       *    ÆÃÄê¼À´µ¤¬¤¢¤ëÊý¤ÎÆÃÎã½èÍý
            IF  ( LNK-SYU-KOH1HKNNUM    =  "051" )
            OR  ( LNK-SYU-KOH2HKNNUM    =  "051" )
@@ -2924,6 +3157,17 @@
                   MOVE      ZERO             TO  LNK-SYU-SKYMONEY-SKJ
                END-IF
            END-IF.
+      *
+           COMPUTE  LNK-SYU-RYOYOHI-SKJ-JIHI  = WK-SHOKUJI-RYOYOHI95
+                                              + WK-SHOKUJI-RYOYOHI96.
+           COMPUTE  LNK-SYU-SKYMONEY-SKJ-JIHI = WK-SHOKUJI-FTN95
+                                              + WK-SHOKUJI-FTN96.
+           COMPUTE  LNK-SYU-SKYMONEY-SKJ-JIHI-TAX
+                                              = WK-SHOKUJI-FTN96
+                                              * 0.05.
+           COMPUTE  LNK-SYU-SKYMONEY-SKJ-JIHI-KEI
+                                      = LNK-SYU-SKYMONEY-SKJ-JIHI
+                                      + LNK-SYU-SKYMONEY-SKJ-JIHI-TAX.
       *
       *    ¼ýÇ¼¥Æ¡¼¥Ö¥ë¤Î¸øÈñËè¤Î´µ¼ÔÉéÃ´¶â³Û¤ò¥»¥Ã¥È¤¹¤ë
            IF   (COMB-KOH1HKNNUM         NOT = SPACE)   AND
@@ -3189,5 +3433,27 @@
       *
            .
        NYUINACCT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ²ñ·×ÆÉ¹þ
+      *****************************************************************
+       SRYACCT-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+               MOVE    ZERO            TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+       SRYACCT-READ-EXT.
            EXIT.
       *
