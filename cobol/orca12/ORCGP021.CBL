@@ -35,7 +35,7 @@
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
-      *FILE-CONTROL.
+       FILE-CONTROL.
       *
       *    パラメタデータ
       *    SELECT  PARA-FILE       ASSIGN  FILE-NAME1
@@ -100,8 +100,8 @@
            03  WRK-ATO-INPUT       PIC X(400).
       *
            03  WRK-MAE-POST        PIC X(07).
-           03  WRK-POST            PIC X(07).
-           03  WRK-ADRS            PIC X(100).
+      **** 03  WRK-POST            PIC X(07).
+      **** 03  WRK-ADRS            PIC X(100).
       *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
       *

@@ -47,7 +47,7 @@
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
-      *FILE-CONTROL.
+       FILE-CONTROL.
       *
        DATA                    DIVISION.
       *FILE                        SECTION.

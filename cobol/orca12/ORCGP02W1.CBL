@@ -51,7 +51,7 @@
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
-      *FILE-CONTROL.
+       FILE-CONTROL.
       *
       *    パラメタデータ
       *    SELECT  PARA-FILE       ASSIGN  FILE-NAME1
@@ -144,6 +144,7 @@
       *
            03  FLG-RJNCHK          PIC 9(01).
            03  FLG-HKNCHK          PIC 9(01).
+           03  FLG-SEIHOGO         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -3388,6 +3389,7 @@
       *
            MOVE    ZERO                TO  FLG-RJNCHK
            MOVE    ZERO                TO  FLG-HKNCHK
+           MOVE    ZERO                TO  FLG-SEIHOGO
            MOVE    ZERO                TO  SPA-HKN-IDX1
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   SPA-PTHKN-MAX
@@ -3433,6 +3435,10 @@
                    IF     (SPA-PTKOH-KOHNUM  (IDX) =   "027" )  OR
                           (SPA-PTKOH-HKN-SBTKBN (IDX)  =   "3" )
                        MOVE    1                   TO  FLG-RJNCHK
+                   END-IF
+      *            生活保護
+                   IF      SPA-PTKOH-KOHNUM  (IDX) =   "012"
+                       MOVE    1                   TO  FLG-SEIHOGO
                    END-IF
                END-IF
            END-PERFORM

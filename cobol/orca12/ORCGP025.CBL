@@ -36,7 +36,7 @@
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
-      *FILE-CONTROL.
+       FILE-CONTROL.
       *
       *    パラメタデータ
       *    SELECT  PARA-FILE       ASSIGN  FILE-NAME1
