@@ -36,6 +36,7 @@
       ************************************  OpenCOBOL対応
       *  01.00.05    MCC-伊藤     02/02/14  文字と数字の変換
       *  01.01.01    NACL-森脇    02/11/28  支払区分の追加
+      *  01.01.02    NACL-伊藤    03/12/03  老人保健の適用開始日の設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -548,7 +549,9 @@
       *----(01.01.01)--ADD-START--
            IF      PTKOH-KOHNUM    =   "027"
                MOVE    "01"                TO  PTKOH-PAYKBN
-               MOVE    "20021001"          TO  PTKOH-TEKSTYMD
+               IF  PTKOH-TEKSTYMD  <   "20021001"
+                   MOVE    "20021001"      TO  PTKOH-TEKSTYMD
+               END-IF
            ELSE
                MOVE    "00"                TO  PTKOH-PAYKBN
            END-IF
