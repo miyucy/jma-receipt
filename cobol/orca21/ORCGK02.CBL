@@ -12281,7 +12281,7 @@
            EVALUATE    SPA-CONTKBN
                WHEN    SPACE
                    MOVE    SPACE           TO  K02-CONTKBN-VALUE
-                   IF      SPA-FUKU-SYORI      =   "1"
+                   IF      SPA-FUKU-SYORI      =   "1"  OR  "2"
                        MOVE    "red"       TO  K02-CONTKBN-STYLE
                        MOVE    "°Œ £°œ"    TO  K02-CONTKBN-VALUE
                    END-IF
