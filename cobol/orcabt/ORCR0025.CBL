@@ -524,29 +524,31 @@
       *
       *           DISPLAY   "KH-IDX   "  KH-IDX
       *
-                 IF   FLG-SHOSAISIN      =    1
-                      PERFORM    VARYING  ACCT-IDX   FROM   1    BY   1
+                 IF   KH-IDX             NOT =    ZERO
+                  IF   FLG-SHOSAISIN      =    1
+                      PERFORM    VARYING  ACCT-IDX   FROM   1   BY   1
                                  UNTIL    ACCT-IDX   >      31
                              IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
                                  MOVE    "1"       TO
                                       TBL-JNISSU-DAY(KH-IDX ACCT-IDX)
                              END-IF
                       END-PERFORM
-                 END-IF
-                 IF        ACCT-SRYKBN        =    "95"   OR  "96"
+                  END-IF
+                  IF        ACCT-SRYKBN        =    "95"   OR  "96"
                      CONTINUE
-                 ELSE
-                   IF        ACCT-SRYCDTOTAL    =    630010002
-                     COMPUTE  RECE02-TOTALTEN(KH-IDX) =
-                                             RECE02-TOTALTEN(KH-IDX) -
-                                            (ACCT-ZAITEN * 
-                                             ACCT-ZAIKAISU)
-                   ELSE
-                     COMPUTE  RECE02-TOTALTEN(KH-IDX) =
-                                             RECE02-TOTALTEN(KH-IDX) +
-                                            (ACCT-ZAITEN * 
-                                             ACCT-ZAIKAISU)
-                   END-IF
+                  ELSE
+                    IF        ACCT-SRYCDTOTAL    =    630010002
+                      COMPUTE  RECE02-TOTALTEN(KH-IDX) =
+                                              RECE02-TOTALTEN(KH-IDX) -
+                                             (ACCT-ZAITEN * 
+                                              ACCT-ZAIKAISU)
+                    ELSE
+                      COMPUTE  RECE02-TOTALTEN(KH-IDX) =
+                                              RECE02-TOTALTEN(KH-IDX) +
+                                             (ACCT-ZAITEN * 
+                                              ACCT-ZAIKAISU)
+                    END-IF
+                  END-IF
                  END-IF
                END-IF  
            END-PERFORM
