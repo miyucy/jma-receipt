@@ -5,16 +5,31 @@ textsize	400;
 
 bind	""		"OpenCOBOL"	"ORCGI41";
 bind	"I41"		"OpenCOBOL"	"ORCGI41";
+bind	"I42"		"OpenCOBOL"	"ORCGI42";
+bind	"I43"		"OpenCOBOL"	"ORCGI43";
+bind	"I44"		"OpenCOBOL"	"ORCGI44";
+bind	"I45"		"OpenCOBOL"	"ORCGI45";
+bind	"I46"		"OpenCOBOL"	"ORCGI46";
+bind	"I47"		"OpenCOBOL"	"ORCGI47";
+bind	"I48"		"OpenCOBOL"	"ORCGI48";
+bind	"I49"		"OpenCOBOL"	"ORCGI49";
 bind	"I4ERR"		"OpenCOBOL"	"ORCGI4ERR";
 bind	"I4ID1"		"OpenCOBOL"	"ORCGI4ID1";
 
 multiplex_group	orca32;
 
-
-data	{
+data 	{
 	spa	orcaspa;
 	window	{
 		I41;
+		I42;
+		I43;
+		I44;
+		I45;
+		I46;
+		I47;
+		I48;
+		I49;
 		I4ERR;
 		I4ID1;
 	};
