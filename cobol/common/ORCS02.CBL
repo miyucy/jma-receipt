@@ -3479,8 +3479,9 @@
                END-IF
            END-IF.
       *
-           IF   LNK-S02-KOUREI-NYUIN-KBN   =   "1"   
+           IF   LNK-S02-KOUREI-NYUIN-KBN     =   "1"   
            AND  COMB-KOH1HKNNUM        NOT   =   "027" 
+           AND  COMB-HKNNUM            NOT   =   SPACE 
                MOVE    LNK-SYU-SYUCOMPFTN     TO  WK-KNJFTNKIN
                IF   LNK-SYU-KOH1HKNNUM   NOT =  SPACE
                AND  LNK-SYU-KOH1COMPFTN      <     WK-KNJFTNKIN
