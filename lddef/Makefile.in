@@ -69,7 +69,7 @@ $(LDFILE) $(BDFILE):  orcadb.inc
 
 filecheck:
 
-directory:
+directory: directory.in
 	sed -e 's,\@ORCA_DIR\@,$(ORCA_DIR),g' \
 	    -e 's,\@lddefdir\@,$(lddefdir),g' \
 	    -e 's,\@recorddir\@,$(recorddir),g' \
