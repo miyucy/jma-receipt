@@ -35,6 +35,11 @@
                   06  Q01-EDLASTYMD            PIC X(10).
                   06  Q01-STPTNUM              PIC X(20).
                   06  Q01-EDPTNUM              PIC X(20).
+                  06  Q01-CMB-NYUGAIKBN.
+                    07  Q01-NYUGAIKBN          PIC X(12).
+                    07  Q01-CMB-NYUGAIKBN-COUNT
+                                               PIC S9(9)   BINARY.
+                    07  Q01-CMB-NYUGAIKBN-ITEM PIC X(12)   OCCURS  2.
                   06  Q01-CMB-SRYKA.
                     07  Q01-SRYKA              PIC X(23).
                     07  Q01-CMB-SRYKA-COUNT    PIC S9(9)   BINARY.

@@ -490,8 +490,6 @@
                END-IF
            END-IF
       *
-           DISPLAY "1:SPA-Q96-GMN-INPUT = " SPA-Q96-GMN-INPUT
-      *
            .
        310-SPA-SET-EXT.
            EXIT.
@@ -1232,8 +1230,6 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
-      *
-           DISPLAY "2:SPA-Q96-GMN-INPUT = " SPA-Q96-GMN-INPUT
            MOVE    SPACE               TO  Q96
            INITIALIZE                      Q96
       *

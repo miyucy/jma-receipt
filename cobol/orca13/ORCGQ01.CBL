@@ -154,6 +154,7 @@
            03  WRK-INPUTCD                         PIC X(20).
            03  WRK-CD-MCNT                         PIC 9(02).
            03  WRK-KANACHK-MAE-INPUT               PIC X(500).
+           03  WRK-KANACHK-OUT-INPUT               PIC X(500).
       *
       *
        01  WRK-WIDGET-AREA.
@@ -542,6 +543,9 @@
            MOVE    SPA-GMN-Q01-SEXLST (1)
                                        TO  SPA-GMN-Q01-SEX-G
       *
+      *    入外区分コンボ初期処理
+           PERFORM 3101-NYUGAIKBN-CMB-SYOKI-SEC
+      *
       *    診療科コンボ初期処理
            PERFORM 3101-SRYKA-CMB-SYOKI-SEC
       *
@@ -604,11 +608,30 @@
                                        TO  SPA-GMN-Q01-SEXLST (IDX5)
       *
            END-PERFORM
-	   .
+           .
       *
        3101-SEX-CMB-SYOKI-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入外区分コンボ初期処理
+      *****************************************************************
+       3101-NYUGAIKBN-CMB-SYOKI-SEC          SECTION.
+      *
+           INITIALIZE                  SPA-GMN-Q01-NYUGAIKBNLST-G
+      *
+           MOVE    2               TO  SPA-GMN-Q01-NYUGAIKBNLST-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-Q01-NYUGAIKBNL    (1)
+           MOVE    " 入院"         TO  SPA-GMN-Q01-NYUGAIKBNMEIL (1)
+      *
+           MOVE    "2"             TO  SPA-GMN-Q01-NYUGAIKBNL    (2)
+           MOVE    " 外来"         TO  SPA-GMN-Q01-NYUGAIKBNMEIL (2)
+      *
+           .
+      *
+       3101-NYUGAIKBN-CMB-SYOKI-EXT.
+           EXIT.
       *****************************************************************
       *    診療科コンボ
       *****************************************************************
@@ -1465,6 +1488,8 @@
            MOVE    Q01-STLASTYMD           TO  SPA-GMN-Q01-STLASTYMD
       *    終了最終受診日
            MOVE    Q01-EDLASTYMD           TO  SPA-GMN-Q01-EDLASTYMD
+      *    入外区分
+           MOVE    Q01-NYUGAIKBN           TO  SPA-GMN-Q01-NYUGAIKBN-G
       *    診療科
            MOVE    Q01-SRYKA               TO  SPA-GMN-Q01-SRYKA-G
       *    開始患者番号
@@ -1620,6 +1645,12 @@
       *
       *    終了最終受診日チェック
            PERFORM 4108-EDLASTYMD-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-KHN-INPUT-CHK-EXT
+           END-IF
+      *
+      *    入外区分チェック
+           PERFORM 4117-NYUGAIKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4101-KHN-INPUT-CHK-EXT
            END-IF
@@ -1985,6 +2016,13 @@
                IF  ( SNUM-RC       NOT =   ZERO  )
                 OR ( SNUM-MINKBN   NOT =   SPACE )
                 OR ( SNUM-SYOKBN   NOT =   SPACE )
+      *
+                   MOVE    SPA-GMN-Q01-STAGE
+                                       TO  WRK-KANACHK-MAE-INPUT
+                   PERFORM 800-KANACHK-CHK-SEC
+                   MOVE    WRK-KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-Q01-STAGE
+      *
                    MOVE    "0103"          TO  SPA-ERRCD
                    MOVE    103             TO  SPA-GMN-Q01-CUR
                    GO  TO  4104-STAGE-CHK-EXT
@@ -2013,6 +2051,13 @@
                IF  ( SNUM-RC       NOT =   ZERO  )
                 OR ( SNUM-MINKBN   NOT =   SPACE )
                 OR ( SNUM-SYOKBN   NOT =   SPACE )
+      *
+                   MOVE    SPA-GMN-Q01-EDAGE
+                                       TO  WRK-KANACHK-MAE-INPUT
+                   PERFORM 800-KANACHK-CHK-SEC
+                   MOVE    WRK-KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-Q01-EDAGE
+      *
                    MOVE    "0103"          TO  SPA-ERRCD
                    MOVE    104             TO  SPA-GMN-Q01-CUR
                    GO  TO  4105-EDAGE-CHK-EXT
@@ -2136,6 +2181,36 @@
       *
            .
        4108-EDLASTYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入外区分チェック
+      *****************************************************************
+       4117-NYUGAIKBN-CHK-SEC      SECTION.
+      *
+           IF    ( SPA-GMN-Q01-NYUGAIKBN-G     =   SPACE )
+               GO TO   4117-NYUGAIKBN-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   SPA-GMN-Q01-NYUGAIKBNLST-MAX )
+                      OR ( SPA-GMN-Q01-NYUGAIKBN
+                                   =   SPA-GMN-Q01-NYUGAIKBNL (IDX2))
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX2            <=  SPA-GMN-Q01-NYUGAIKBNLST-MAX )
+               MOVE    SPA-GMN-Q01-NYUGAIKBNLST (IDX2)
+                                   TO  SPA-GMN-Q01-NYUGAIKBN-G
+           ELSE
+               MOVE    "0118"      TO  SPA-ERRCD
+               MOVE    144         TO  SPA-GMN-Q01-CUR
+               GO TO   4117-NYUGAIKBN-CHK-EXT
+           END-IF
+      *
+           .
+       4117-NYUGAIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療科チェック
@@ -2392,6 +2467,12 @@
                GO  TO  4110-POST-CHK-EXT
            END-IF
       *
+           MOVE    SPA-GMN-Q01-POST(IDX1)
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-Q01-POST(IDX1)
+      *
            IF    ( WRK-WIDGET     (1:4) =  "POST" )
             AND  ( WRK-WIDGET4          =  IDX1 )
                CONTINUE
@@ -2499,6 +2580,11 @@
       *****************************************************************
        4110-JYUSHO-CHK-SEC         SECTION.
       *
+           MOVE    SPA-GMN-Q01-JYUSHO  (IDXA)
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-Q01-JYUSHO  (IDXA)
       *
            .
        4110-JYUSHO-CHK-EXT.
@@ -2512,15 +2598,14 @@
            MOVE    IDXA            TO  IDX1
       *
       *    全角変換処理
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"             TO  KANACHK-SYORI
            MOVE    SPA-GMN-Q01-KANANAME(IDX1)
-                                   TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-           IF      ( KANACHK-RC    =   ZERO )
-               MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-ZENKAKU-CHG-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  SPA-GMN-Q01-KANANAME(IDX1)
-           END-IF
       *
            .
        4111-KANANAME-CHK-EXT.
@@ -2534,15 +2619,14 @@
            MOVE    IDXA            TO  IDX1
       *
       *    全角変換処理
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"             TO  KANACHK-SYORI
            MOVE    SPA-GMN-Q01-NAME(IDX1)
-                                   TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-           IF      ( KANACHK-RC    =   ZERO )
-               MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-ZENKAKU-CHG-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  SPA-GMN-Q01-NAME(IDX1)
-           END-IF
       *
            .
        4112-NAME-CHK-EXT.
@@ -2652,6 +2736,11 @@
       *****************************************************************
        4113-COMMENT-CHK-SEC        SECTION.
       *
+           MOVE    SPA-GMN-Q01-COMMENT  (IDXA)
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-Q01-COMMENT  (IDXA)
       *
            .
        4113-COMMENT-CHK-EXT.
@@ -2698,6 +2787,11 @@
       *****************************************************************
        4114-HKNJANUM-CHK-SEC           SECTION.
       *
+           MOVE    SPA-GMN-Q01-HKNJANUM  (IDXA)
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-Q01-HKNJANUM  (IDXA)
       *
            .
        4114-HKNJANUM-CHK-EXT.
@@ -2749,15 +2843,14 @@
            MOVE    IDXA            TO  IDX1
       *
       *    全角変換処理
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"             TO  KANACHK-SYORI
            MOVE    SPA-GMN-Q01-KIGO(IDX1)
-                                   TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-           IF      ( KANACHK-RC    =   ZERO )
-               MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-ZENKAKU-CHG-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  SPA-GMN-Q01-KIGO(IDX1)
-           END-IF
       *
            .
        4114-KIGO-CHK-EXT.
@@ -2771,15 +2864,14 @@
            MOVE    IDXA            TO  IDX1
       *
       *    全角変換処理
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"             TO  KANACHK-SYORI
            MOVE    SPA-GMN-Q01-NUM (IDX1)
-                                   TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-           IF      ( KANACHK-RC    =   ZERO )
-               MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-ZENKAKU-CHG-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  SPA-GMN-Q01-NUM (IDX1)
-           END-IF
       *
            .
        4115-NUM-CHK-EXT.
@@ -2829,6 +2921,12 @@
       *****************************************************************
        4117-FTNJANUM-CHK-SEC        SECTION.
       *
+      *    全角変換処理
+           MOVE    SPA-GMN-Q01-FTNJANUM (IDXA)
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-Q01-FTNJANUM (IDXA)
       *
            .
        4117-FTNJANUM-CHK-EXT.
@@ -2884,6 +2982,10 @@
            MOVE   302                  TO  SPA-GMN-Q01-CUR
       *
            MOVE    Q01-BYOMEISEL       TO  SPA-GMN-Q01-BYOMEISEL
+      *
+           MOVE    SPA-GMN-Q01-BYOMEISEL   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT   TO  SPA-GMN-Q01-BYOMEISEL
       *
            IF  ( SPA-GMN-Q01-BYOMEISEL =   SPACE )
                COMPUTE SPA-GMN-Q01-CUR =   SPA-GMN-Q01-CUR
@@ -3017,6 +3119,8 @@
        4118-BYOMEI-LST-EDIT-SEC        SECTION.
       *
            INITIALIZE                      BYOMEI-REC
+      *
+      *
            MOVE    SPA-GMN-Q01-BYOMEISEL
                                        TO  BYO-BYOMEI
                                            BYO-BYOMEIKANA
@@ -3066,6 +3170,12 @@
        4119-BYOMEICD-CHK-SEC        SECTION.
       *
            MOVE    IDXA                TO  IDX1
+      *
+           MOVE    SPA-GMN-Q01-BYOMEICD (IDX1)
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-Q01-BYOMEICD (IDX1)
       *
            MOVE    WRK-MCP-WIDGET      TO  WRK-WIDGET
       *
@@ -3165,10 +3275,10 @@
            END-IF
       *
       *    全角半角混在チェック
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"             TO  KANACHK-SYORI
-           MOVE    WRK-BYOMEICD    TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           MOVE    WRK-BYOMEICD    TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  WRK-BYOMEICD
            IF      ( KANACHK-RC    NOT =   ZERO )
                MOVE    "0107"          TO  SPA-ERRCD
                GO  TO  4121-USERBYOMEI-SEL-EDIT-EXT
@@ -3306,6 +3416,10 @@
       *
            MOVE    Q01-SRYACTSEL       TO  SPA-GMN-Q01-SRYACTSEL
       *
+           MOVE    SPA-GMN-Q01-SRYACTSEL   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT   TO  SPA-GMN-Q01-SRYACTSEL
+      *
            IF  ( SPA-GMN-Q01-SRYACTSEL =   SPACE )
                COMPUTE SPA-GMN-Q01-CUR =   SPA-GMN-Q01-CUR
                                        +   1
@@ -3390,6 +3504,12 @@
        4121-SRYCD-CHK-SEC        SECTION.
       *
            MOVE    IDXA                TO  IDX1
+      *
+           MOVE    SPA-GMN-Q01-SRYCD (IDX1)
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-Q01-SRYCD (IDX1)
       *
            COMPUTE WRK-ERR-CUR         =   313
                                        +   IDX1
@@ -3508,10 +3628,10 @@
            END-IF
       *
       *    全角半角混在チェック
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"             TO  KANACHK-SYORI
-           MOVE    WRK-SRYCD       TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           MOVE    WRK-SRYCD       TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  WRK-SRYCD
            IF      ( KANACHK-RC    NOT =   ZERO )
                MOVE    "0108"          TO  SPA-ERRCD
                GO  TO  4121-INPUTCD-SELECT-EDIT-EXT
@@ -3601,11 +3721,7 @@
       *    画面ＳＰＡ編集処理
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-           IF    ( SPA-GMN-Q01-CHKTSTPT  = "T" )
-               MOVE    "F"         TO  SPA-GMN-Q01-CHKTSTPT
-           ELSE
-               MOVE    "T"         TO  SPA-GMN-Q01-CHKTSTPT
-           END-IF
+           MOVE    Q01-CHKTSTPT    TO  SPA-GMN-Q01-CHKTSTPT
       *
            .
       *
@@ -4466,6 +4582,7 @@
            MOVE    SPA-GMN-Q01-SEX         TO  SPA-Q01-SEX
            MOVE    SPA-NAI-Q01-STLASTYMD   TO  SPA-Q01-STLASTYMD
            MOVE    SPA-NAI-Q01-EDLASTYMD   TO  SPA-Q01-EDLASTYMD
+           MOVE    SPA-GMN-Q01-NYUGAIKBN   TO  SPA-Q01-NYUGAIKBN
            MOVE    SPA-GMN-Q01-SRYKA       TO  SPA-Q01-SRYKA
            MOVE    SPA-GMN-Q01-STPTNUM     TO  SPA-Q01-STPTNUM
            MOVE    SPA-GMN-Q01-EDPTNUM     TO  SPA-Q01-EDPTNUM
@@ -4808,6 +4925,7 @@
       *    該当（８）
            IF  ( SPA-Q01-STSRYYMD          NOT =   SPACE  )
             OR ( SPA-Q01-EDSRYYMD          NOT =   SPACE  )
+            OR ( SPA-Q01-NYUGAIKBN         NOT =   SPACE )
             OR ( SPA-Q01-SRYKA             NOT =   SPACE )
       *
                MOVE    "1"                 TO  SPA-Q01-GTBL(8)
@@ -4949,6 +5067,19 @@
                    UNTIL   IDX1    >       SPA-GMN-Q01-SEXLST-MAX
                MOVE    SPA-GMN-Q01-SEXLST (IDX1)
                                            TO  Q01-CMB-SEX-ITEM (IDX1)
+           END-PERFORM
+      *
+      *    入外区分
+           MOVE    SPA-GMN-Q01-NYUGAIKBN-G TO  Q01-NYUGAIKBN
+           MOVE    SPA-GMN-Q01-NYUGAIKBNLST-MAX
+                                           TO  Q01-CMB-NYUGAIKBN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   SPA-GMN-Q01-NYUGAIKBNLST-MAX )
+      *
+               MOVE    SPA-GMN-Q01-NYUGAIKBNLST (IDX1)
+                           TO  Q01-CMB-NYUGAIKBN-ITEM (IDX1)
+      *
+      *
            END-PERFORM
       *
       *    診療科
@@ -5230,8 +5361,6 @@
              AND ( SPA-GMN-Q01-CUR     =   ZERO )
                PERFORM 5011-INPUT-CUR-SEC
       *
-               PERFORM 5011-INPUT-CUR-NEXT-SEC
-      *
            END-IF
       *
            PERFORM 5012-CUR-SKIP-SEC
@@ -5261,6 +5390,8 @@
                MOVE  "STLASTYMD"   TO  MCP-WIDGET
            WHEN   108
                MOVE  "EDLASTYMD"   TO  MCP-WIDGET
+           WHEN   144
+               MOVE  "NYUGAIKBN"   TO  MCP-WIDGET
            WHEN   109
                MOVE  "SRYKA"       TO  MCP-WIDGET
            WHEN   110
@@ -5456,222 +5587,8 @@
       *
       *    診療年月日
            WHEN   "STSRYYMD"
-               MOVE  001           TO  SPA-GMN-Q01-CUR
-           WHEN   "EDSRYYMD"
                MOVE  002           TO  SPA-GMN-Q01-CUR
-      *
-      *    基本情報タブ
-           WHEN   "STBIRTHDAY"
-               MOVE  101           TO  SPA-GMN-Q01-CUR
-           WHEN   "EDBIRTHDAY"
-               MOVE  102           TO  SPA-GMN-Q01-CUR
-           WHEN   "STAGE"
-               MOVE  103           TO  SPA-GMN-Q01-CUR
-           WHEN   "EDAGE"
-               MOVE  104           TO  SPA-GMN-Q01-CUR
-           WHEN   "KJYNYMD"
-               MOVE  105           TO  SPA-GMN-Q01-CUR
-           WHEN   "SEX"
-               MOVE  106           TO  SPA-GMN-Q01-CUR
-           WHEN   "STLASTYMD"
-               MOVE  107           TO  SPA-GMN-Q01-CUR
-           WHEN   "EDLASTYMD"
-               MOVE  108           TO  SPA-GMN-Q01-CUR
-           WHEN   "SRYKA"
-               MOVE  109           TO  SPA-GMN-Q01-CUR
-           WHEN   "STPTNUM"
-               MOVE  110           TO  SPA-GMN-Q01-CUR
-           WHEN   "EDPTNUM"
-               MOVE  111           TO  SPA-GMN-Q01-CUR
-           WHEN   "POST1"
-               MOVE  112           TO  SPA-GMN-Q01-CUR
-           WHEN   "JYUSHO1"
-               MOVE  113           TO  SPA-GMN-Q01-CUR
-           WHEN   "POST2"
-               MOVE  114           TO  SPA-GMN-Q01-CUR
-           WHEN   "JYUSHO2"
-               MOVE  115           TO  SPA-GMN-Q01-CUR
-           WHEN   "POST3"
-               MOVE  116           TO  SPA-GMN-Q01-CUR
-           WHEN   "JYUSHO3"
-               MOVE  117           TO  SPA-GMN-Q01-CUR
-           WHEN   "POST4"
-               MOVE  118           TO  SPA-GMN-Q01-CUR
-           WHEN   "JYUSHO4"
-               MOVE  119           TO  SPA-GMN-Q01-CUR
-           WHEN   "POST5"
-               MOVE  120           TO  SPA-GMN-Q01-CUR
-           WHEN   "JYUSHO5"
-               MOVE  121           TO  SPA-GMN-Q01-CUR
-           WHEN   "KANANAME1"
-               MOVE  122           TO  SPA-GMN-Q01-CUR
-           WHEN   "KANANAME2"
-               MOVE  123           TO  SPA-GMN-Q01-CUR
-           WHEN   "KANANAME3"
-               MOVE  124           TO  SPA-GMN-Q01-CUR
-           WHEN   "KANANAME4"
-               MOVE  125           TO  SPA-GMN-Q01-CUR
-           WHEN   "KANANAME5"
-               MOVE  126           TO  SPA-GMN-Q01-CUR
-           WHEN   "NAME1"
-               MOVE  127           TO  SPA-GMN-Q01-CUR
-           WHEN   "NAME2"
-               MOVE  128           TO  SPA-GMN-Q01-CUR
-           WHEN   "NAME3"
-               MOVE  129           TO  SPA-GMN-Q01-CUR
-           WHEN   "NAME4"
-               MOVE  130           TO  SPA-GMN-Q01-CUR
-           WHEN   "NAME5"
-               MOVE  131           TO  SPA-GMN-Q01-CUR
-           WHEN   "CONDITION11"
-               MOVE  132           TO  SPA-GMN-Q01-CUR
-           WHEN   "CONDITION12"
-               MOVE  133           TO  SPA-GMN-Q01-CUR
-           WHEN   "CONDITION13"
-               MOVE  134           TO  SPA-GMN-Q01-CUR
-           WHEN   "CONDITION21"
-               MOVE  135           TO  SPA-GMN-Q01-CUR
-           WHEN   "CONDITION22"
-               MOVE  136           TO  SPA-GMN-Q01-CUR
-           WHEN   "CONDITION23"
-               MOVE  137           TO  SPA-GMN-Q01-CUR
-           WHEN   "CONDITION31"
-               MOVE  138           TO  SPA-GMN-Q01-CUR
-           WHEN   "CONDITION32"
-               MOVE  139           TO  SPA-GMN-Q01-CUR
-           WHEN   "CONDITION33"
-               MOVE  140           TO  SPA-GMN-Q01-CUR
-           WHEN   "COMMENT1"
-               MOVE  141           TO  SPA-GMN-Q01-CUR
-           WHEN   "COMMENT2"
-               MOVE  142           TO  SPA-GMN-Q01-CUR
-           WHEN   "COMMENT3"
-               MOVE  143           TO  SPA-GMN-Q01-CUR
-      *
-      *    保険・公費タブ
-           WHEN   "HONKZKKBN"
-               MOVE  201           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNJANUM1"
-               MOVE  202           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNJANUM2"
-               MOVE  203           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNJANUM3"
-               MOVE  204           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNJANUM4"
-               MOVE  205           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNJANUM5"
-               MOVE  206           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNNUM1"
-               MOVE  207           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNNUM2"
-               MOVE  208           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNNUM3"
-               MOVE  209           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNNUM4"
-               MOVE  210           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNNUM5"
-               MOVE  211           TO  SPA-GMN-Q01-CUR
-           WHEN   "KIGO1"
-               MOVE  212           TO  SPA-GMN-Q01-CUR
-           WHEN   "NUM1"
-               MOVE  213           TO  SPA-GMN-Q01-CUR
-           WHEN   "KIGO2"
-               MOVE  214           TO  SPA-GMN-Q01-CUR
-           WHEN   "NUM2"
-               MOVE  215           TO  SPA-GMN-Q01-CUR
-           WHEN   "KIGO3"
-               MOVE  216           TO  SPA-GMN-Q01-CUR
-           WHEN   "NUM3"
-               MOVE  217           TO  SPA-GMN-Q01-CUR
-           WHEN   "KIGO4"
-               MOVE  218           TO  SPA-GMN-Q01-CUR
-           WHEN   "NUM4"
-               MOVE  219           TO  SPA-GMN-Q01-CUR
-           WHEN   "KIGO5"
-               MOVE  220           TO  SPA-GMN-Q01-CUR
-           WHEN   "NUM5"
-               MOVE  221           TO  SPA-GMN-Q01-CUR
-           WHEN   "KOHNUM1"
-               MOVE  222           TO  SPA-GMN-Q01-CUR
-           WHEN   "KOHNUM2"
-               MOVE  223           TO  SPA-GMN-Q01-CUR
-           WHEN   "KOHNUM3"
-               MOVE  224           TO  SPA-GMN-Q01-CUR
-           WHEN   "KOHNUM4"
-               MOVE  225           TO  SPA-GMN-Q01-CUR
-           WHEN   "KOHNUM5"
-               MOVE  226           TO  SPA-GMN-Q01-CUR
-           WHEN   "FTNJANUM1"
-               MOVE  227           TO  SPA-GMN-Q01-CUR
-           WHEN   "FTNJANUM2"
-               MOVE  228           TO  SPA-GMN-Q01-CUR
-           WHEN   "FTNJANUM3"
-               MOVE  229           TO  SPA-GMN-Q01-CUR
-           WHEN   "FTNJANUM4"
-               MOVE  230           TO  SPA-GMN-Q01-CUR
-           WHEN   "FTNJANUM5"
-               MOVE  231           TO  SPA-GMN-Q01-CUR
-      *
-      *    病名・診療行為タブ
-           WHEN   "BYOBUN"
-               MOVE  301           TO  SPA-GMN-Q01-CUR
-           WHEN   "BYOMEISEL"
-               MOVE  302           TO  SPA-GMN-Q01-CUR
-           WHEN   "BYOMEICD1"
-               MOVE  303           TO  SPA-GMN-Q01-CUR
-           WHEN   "BYOMEI1"
-               MOVE  304           TO  SPA-GMN-Q01-CUR
-           WHEN   "BYOMEICD2"
-               MOVE  305           TO  SPA-GMN-Q01-CUR
-           WHEN   "BYOMEI2"
-               MOVE  306           TO  SPA-GMN-Q01-CUR
-           WHEN   "BYOMEICD3"
-               MOVE  307           TO  SPA-GMN-Q01-CUR
-           WHEN   "BYOMEI3"
-               MOVE  308           TO  SPA-GMN-Q01-CUR
-           WHEN   "BYOMEICD4"
-               MOVE  309           TO  SPA-GMN-Q01-CUR
-           WHEN   "BYOMEI4"
-               MOVE  310           TO  SPA-GMN-Q01-CUR
-           WHEN   "BYOMEICD5"
-               MOVE  311           TO  SPA-GMN-Q01-CUR
-           WHEN   "BYOMEI5"
-               MOVE  312           TO  SPA-GMN-Q01-CUR
-           WHEN   "SRYACTSEL"
-               MOVE  313           TO  SPA-GMN-Q01-CUR
-           WHEN   "SRYCD1"
-               MOVE  314           TO  SPA-GMN-Q01-CUR
-           WHEN   "SRYCD2"
-               MOVE  315           TO  SPA-GMN-Q01-CUR
-           WHEN   "SRYCD3"
-               MOVE  316           TO  SPA-GMN-Q01-CUR
-           WHEN   "SRYCD4"
-               MOVE  317           TO  SPA-GMN-Q01-CUR
-           WHEN   "SRYCD5"
-               MOVE  318           TO  SPA-GMN-Q01-CUR
-      *
-      *    並び順タブ
-           WHEN   "KMK1"
-               MOVE  401           TO  SPA-GMN-Q01-CUR
-           WHEN   "KMK2"
-               MOVE  402           TO  SPA-GMN-Q01-CUR
-           WHEN   "KMK3"
-               MOVE  403           TO  SPA-GMN-Q01-CUR
-           END-EVALUATE
-      *
-           .
-      *
-       5011-INPUT-CUR-EXT.
-           EXIT.
-      *****************************************************************
-      *    次カーソル位置設定処理
-      *****************************************************************
-       5011-INPUT-CUR-NEXT-SEC         SECTION.
-      *
-      *    次カーソル位置を設定
-           EVALUATE    WRK-MCP-WIDGET
-           WHEN    "EDSRYYMD"
-      *
+           WHEN   "EDSRYYMD"
                EVALUATE    SPA-GMN-Q01-PAGENO
                WHEN    ZERO
                    MOVE    101     TO  SPA-GMN-Q01-CUR
@@ -5683,19 +5600,210 @@
                    MOVE    401     TO  SPA-GMN-Q01-CUR
                END-EVALUATE
       *
-           WHEN    "COMMENT3"
-           WHEN    "FTNJANUM5"
-           WHEN    "SRYCD5"
-           WHEN    "KMK3"
-               MOVE    1           TO  SPA-GMN-Q01-CUR
-           WHEN    OTHER
-               COMPUTE SPA-GMN-Q01-CUR =   SPA-GMN-Q01-CUR
-                                       +   1
+      *    基本情報タブ
+           WHEN   "STBIRTHDAY"
+               MOVE  102           TO  SPA-GMN-Q01-CUR
+           WHEN   "EDBIRTHDAY"
+               MOVE  103           TO  SPA-GMN-Q01-CUR
+           WHEN   "STAGE"
+               MOVE  104           TO  SPA-GMN-Q01-CUR
+           WHEN   "EDAGE"
+               MOVE  105           TO  SPA-GMN-Q01-CUR
+           WHEN   "KJYNYMD"
+               MOVE  106           TO  SPA-GMN-Q01-CUR
+           WHEN   "SEX"
+               MOVE  107           TO  SPA-GMN-Q01-CUR
+           WHEN   "STLASTYMD"
+               MOVE  108           TO  SPA-GMN-Q01-CUR
+           WHEN   "EDLASTYMD"
+               MOVE  144           TO  SPA-GMN-Q01-CUR
+           WHEN   "NYUGAIKBN"
+               MOVE  109           TO  SPA-GMN-Q01-CUR
+           WHEN   "SRYKA"
+               MOVE  110           TO  SPA-GMN-Q01-CUR
+           WHEN   "STPTNUM"
+               MOVE  111           TO  SPA-GMN-Q01-CUR
+           WHEN   "EDPTNUM"
+               MOVE  112           TO  SPA-GMN-Q01-CUR
+           WHEN   "POST1"
+               MOVE  113           TO  SPA-GMN-Q01-CUR
+           WHEN   "JYUSHO1"
+               MOVE  114           TO  SPA-GMN-Q01-CUR
+           WHEN   "POST2"
+               MOVE  115           TO  SPA-GMN-Q01-CUR
+           WHEN   "JYUSHO2"
+               MOVE  116           TO  SPA-GMN-Q01-CUR
+           WHEN   "POST3"
+               MOVE  117           TO  SPA-GMN-Q01-CUR
+           WHEN   "JYUSHO3"
+               MOVE  118           TO  SPA-GMN-Q01-CUR
+           WHEN   "POST4"
+               MOVE  119           TO  SPA-GMN-Q01-CUR
+           WHEN   "JYUSHO4"
+               MOVE  120           TO  SPA-GMN-Q01-CUR
+           WHEN   "POST5"
+               MOVE  121           TO  SPA-GMN-Q01-CUR
+           WHEN   "JYUSHO5"
+               MOVE  122           TO  SPA-GMN-Q01-CUR
+           WHEN   "KANANAME1"
+               MOVE  123           TO  SPA-GMN-Q01-CUR
+           WHEN   "KANANAME2"
+               MOVE  124           TO  SPA-GMN-Q01-CUR
+           WHEN   "KANANAME3"
+               MOVE  125           TO  SPA-GMN-Q01-CUR
+           WHEN   "KANANAME4"
+               MOVE  126           TO  SPA-GMN-Q01-CUR
+           WHEN   "KANANAME5"
+               MOVE  127           TO  SPA-GMN-Q01-CUR
+           WHEN   "NAME1"
+               MOVE  128           TO  SPA-GMN-Q01-CUR
+           WHEN   "NAME2"
+               MOVE  129           TO  SPA-GMN-Q01-CUR
+           WHEN   "NAME3"
+               MOVE  130           TO  SPA-GMN-Q01-CUR
+           WHEN   "NAME4"
+               MOVE  131           TO  SPA-GMN-Q01-CUR
+           WHEN   "NAME5"
+               MOVE  132           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION11"
+               MOVE  133           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION12"
+               MOVE  134           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION13"
+               MOVE  135           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION21"
+               MOVE  136           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION22"
+               MOVE  137           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION23"
+               MOVE  138           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION31"
+               MOVE  139           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION32"
+               MOVE  140           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION33"
+               MOVE  141           TO  SPA-GMN-Q01-CUR
+           WHEN   "COMMENT1"
+               MOVE  142           TO  SPA-GMN-Q01-CUR
+           WHEN   "COMMENT2"
+               MOVE  143           TO  SPA-GMN-Q01-CUR
+           WHEN   "COMMENT3"
+               MOVE  001           TO  SPA-GMN-Q01-CUR
+      *
+      *    保険・公費タブ
+           WHEN   "HONKZKKBN"
+               MOVE  202           TO  SPA-GMN-Q01-CUR
+           WHEN   "HKNJANUM1"
+               MOVE  203           TO  SPA-GMN-Q01-CUR
+           WHEN   "HKNJANUM2"
+               MOVE  204           TO  SPA-GMN-Q01-CUR
+           WHEN   "HKNJANUM3"
+               MOVE  205           TO  SPA-GMN-Q01-CUR
+           WHEN   "HKNJANUM4"
+               MOVE  206           TO  SPA-GMN-Q01-CUR
+           WHEN   "HKNJANUM5"
+               MOVE  207           TO  SPA-GMN-Q01-CUR
+           WHEN   "HKNNUM1"
+               MOVE  208           TO  SPA-GMN-Q01-CUR
+           WHEN   "HKNNUM2"
+               MOVE  209           TO  SPA-GMN-Q01-CUR
+           WHEN   "HKNNUM3"
+               MOVE  210           TO  SPA-GMN-Q01-CUR
+           WHEN   "HKNNUM4"
+               MOVE  211           TO  SPA-GMN-Q01-CUR
+           WHEN   "HKNNUM5"
+               MOVE  212           TO  SPA-GMN-Q01-CUR
+           WHEN   "KIGO1"
+               MOVE  213           TO  SPA-GMN-Q01-CUR
+           WHEN   "NUM1"
+               MOVE  214           TO  SPA-GMN-Q01-CUR
+           WHEN   "KIGO2"
+               MOVE  215           TO  SPA-GMN-Q01-CUR
+           WHEN   "NUM2"
+               MOVE  216           TO  SPA-GMN-Q01-CUR
+           WHEN   "KIGO3"
+               MOVE  217           TO  SPA-GMN-Q01-CUR
+           WHEN   "NUM3"
+               MOVE  218           TO  SPA-GMN-Q01-CUR
+           WHEN   "KIGO4"
+               MOVE  219           TO  SPA-GMN-Q01-CUR
+           WHEN   "NUM4"
+               MOVE  220           TO  SPA-GMN-Q01-CUR
+           WHEN   "KIGO5"
+               MOVE  221           TO  SPA-GMN-Q01-CUR
+           WHEN   "NUM5"
+               MOVE  222           TO  SPA-GMN-Q01-CUR
+           WHEN   "KOHNUM1"
+               MOVE  223           TO  SPA-GMN-Q01-CUR
+           WHEN   "KOHNUM2"
+               MOVE  224           TO  SPA-GMN-Q01-CUR
+           WHEN   "KOHNUM3"
+               MOVE  225           TO  SPA-GMN-Q01-CUR
+           WHEN   "KOHNUM4"
+               MOVE  226           TO  SPA-GMN-Q01-CUR
+           WHEN   "KOHNUM5"
+               MOVE  227           TO  SPA-GMN-Q01-CUR
+           WHEN   "FTNJANUM1"
+               MOVE  228           TO  SPA-GMN-Q01-CUR
+           WHEN   "FTNJANUM2"
+               MOVE  229           TO  SPA-GMN-Q01-CUR
+           WHEN   "FTNJANUM3"
+               MOVE  230           TO  SPA-GMN-Q01-CUR
+           WHEN   "FTNJANUM4"
+               MOVE  231           TO  SPA-GMN-Q01-CUR
+           WHEN   "FTNJANUM5"
+               MOVE  001           TO  SPA-GMN-Q01-CUR
+      *
+      *    病名・診療行為タブ
+           WHEN   "BYOBUN"
+               MOVE  302           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOMEISEL"
+               MOVE  303           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOMEICD1"
+               MOVE  304           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOMEI1"
+               MOVE  305           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOMEICD2"
+               MOVE  306           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOMEI2"
+               MOVE  307           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOMEICD3"
+               MOVE  308           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOMEI3"
+               MOVE  309           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOMEICD4"
+               MOVE  310           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOMEI4"
+               MOVE  311           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOMEICD5"
+               MOVE  312           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOMEI5"
+               MOVE  313           TO  SPA-GMN-Q01-CUR
+           WHEN   "SRYACTSEL"
+               MOVE  314           TO  SPA-GMN-Q01-CUR
+           WHEN   "SRYCD1"
+               MOVE  315           TO  SPA-GMN-Q01-CUR
+           WHEN   "SRYCD2"
+               MOVE  316           TO  SPA-GMN-Q01-CUR
+           WHEN   "SRYCD3"
+               MOVE  317           TO  SPA-GMN-Q01-CUR
+           WHEN   "SRYCD4"
+               MOVE  318           TO  SPA-GMN-Q01-CUR
+           WHEN   "SRYCD5"
+               MOVE  001           TO  SPA-GMN-Q01-CUR
+      *
+      *    並び順タブ
+           WHEN   "KMK1"
+               MOVE  402           TO  SPA-GMN-Q01-CUR
+           WHEN   "KMK2"
+               MOVE  403           TO  SPA-GMN-Q01-CUR
+           WHEN   "KMK3"
+               MOVE  001           TO  SPA-GMN-Q01-CUR
            END-EVALUATE
       *
            .
       *
-       5011-INPUT-CUR-NEXT-EXT.
+       5011-INPUT-CUR-EXT.
            EXIT.
       *****************************************************************
       *    カーソルスキップ処理
@@ -5705,8 +5813,7 @@
            IF    ( SPA-GMN-Q01-CUR =   301 )
                IF    ( SPA-GMN-Q01-UBYOMEI-STATE
                                    =   WIDGET-INSENSITIVE )
-                   COMPUTE SPA-GMN-Q01-CUR =   SPA-GMN-Q01-CUR
-                                           +   1
+                   COMPUTE SPA-GMN-Q01-CUR =   302
                END-IF
            END-IF
       *
@@ -5797,7 +5904,10 @@
                MOVE    "状態３入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0117"
-               MOVE    "診療科エラー"
+               MOVE    "診療科入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0118"
+               MOVE    "入外区分入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "開始診療年月日＞終了診療年月日となっています"
@@ -5844,6 +5954,60 @@
        510-ERRSET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    全角半角チェック処理
+      *****************************************************************
+       800-KANACHK-CHK-SEC              SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI
+           MOVE    WRK-KANACHK-MAE-INPUT
+                                   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF      ( KANACHK-RC    =   ZERO )
+               MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+           ELSE
+               IF    ( KANACHK-RC2 =   7 )
+                   MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+               ELSE
+                   MOVE    WRK-KANACHK-MAE-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+               END-IF
+           END-IF
+      *
+           .
+       800-KANACHK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    全角変換処理
+      *****************************************************************
+       800-ZENKAKU-CHG-SEC             SECTION.
+      *
+           INITIALIZE                  WRK-KANACHK-OUT-INPUT
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"             TO  KANACHK-SYORI
+           MOVE    WRK-KANACHK-MAE-INPUT
+                                   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF      ( KANACHK-RC    =   ZERO )
+               MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+           ELSE
+               IF    ( KANACHK-RC2 =   7 )
+                   MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+               ELSE
+                   MOVE    WRK-KANACHK-MAE-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+               END-IF
+           END-IF
+      *
+           .
+       800-ZENKAKU-CHG-EXT.
+           EXIT.
       *****************************************************************
       *    患者マスター読込（主キー）
       *****************************************************************
