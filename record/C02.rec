@@ -130,6 +130,7 @@ C02	{
 			item	varchar(40)[20];
 		};
 		BYOMEIHENFLG	{
+			style	varchar(20);
 			value	varchar(10);
 		};
 		TENKICOMBO	{
