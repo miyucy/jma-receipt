@@ -971,6 +971,7 @@
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
            MOVE    SPACE           TO  SPA-JIDCD
+           MOVE    SPACE           TO  SPA-JID1-FLG
       *
            IF      FLG-GMN         NOT =   ZERO
       *        入力コード処理へ
@@ -1020,6 +1021,7 @@
                        MOVE    1                   TO  SPA-GMN-CUR
                    END-IF
                    MOVE    SPACE           TO  SPA-JIDCD
+                   MOVE    SPACE           TO  SPA-JID1-FLG
       *
                WHEN    "0102"
       *            外用の確認
@@ -1034,6 +1036,7 @@
                    ELSE
                        MOVE    1                   TO  SPA-GMN-CUR
                    END-IF
+                   MOVE    SPACE           TO  SPA-JID1-FLG
       *
            END-EVALUATE
            .
@@ -4516,14 +4519,6 @@
                GO      TO      4100-TOROKU-EXT
            END-IF
       *
-      *    外用薬で回数が２８以上の時、警告表示
-           IF      SPA-CHOKITOFLG      =   1
-               IF      SPA-JID1-FLG        =   SPACE
-                   MOVE    "0102"          TO  SPA-JIDCD
-                   GO      TO      4100-TOROKU-EXT
-               END-IF
-           END-IF
-      *
       **** 更新前のチェック
       *    MOVE    "1"                 TO  FLG-TOROKU
       *    PERFORM 510-TBLHEN-SEC
@@ -4555,6 +4550,14 @@
       *        剤変更なしとして、処理を終了する
                PERFORM 210-BACK
                GO      TO      4100-TOROKU-EXT
+           END-IF
+      *
+      *    外用薬で回数が２８以上の時、警告表示
+           IF      SPA-CHOKITOFLG      =   1
+               IF      SPA-JID1-FLG        =   SPACE
+                   MOVE    "0102"          TO  SPA-JIDCD
+                   GO      TO      4100-TOROKU-EXT
+               END-IF
            END-IF
       *
            MOVE    "0101"              TO  SPA-JIDCD
