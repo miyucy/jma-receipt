@@ -418,8 +418,7 @@
                                   (SRY-SRYCD(IDX2) =   SPACE )
       *            ÃÙ∫ﬁ
                    IF     (SRY-SRYCD (IDX2)(1:1)   =   "6" )  AND
-                          (SRY-SRYSYUKBN           =   "330"  OR
-                                                       "331")
+                          (SRY-SRYSYUKBN           =   "330")
                        PERFORM 10012-TBL-HENSYU-SEC
                    END-IF
       *            ºÍµªŒ¡
@@ -440,8 +439,7 @@
            END-PERFORM
       *
       *    ¥Ô∫‡•∆°º•÷•Î ‘Ω∏
-           IF     (TBL-SRY-SRYSYUKBN (1)   =   "330"  OR
-                                               "331")
+           IF     (TBL-SRY-SRYSYUKBN (1)   =   "330")
       *        ø«Œ≈π‘∞Ÿ§Ë§Í¥Ô∫‡ ‘Ω∏
                PERFORM 10016-TBL-KIZAIHEN-SEC
            END-IF

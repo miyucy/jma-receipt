@@ -1156,7 +1156,7 @@
                              ((WRK-GMN-INPUTCD(IDX)  =   SPACE ) AND
                               (WRK-COM-INPUTCD(IDX)  =   SPACE ))
       *        点滴の時のみ
-               IF      WRK-COM-SRYSYUKBN (IDX)     =   "330"  OR  "331"
+               IF      WRK-COM-SRYSYUKBN (IDX)     =   "330" 
                    MOVE    1                   TO  FLG-OK
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
@@ -1600,8 +1600,7 @@
                        UNTIL      (IDX2        >   5   )  OR
                                   (SRY-SRYCD(IDX2)     =   SPACE )
                    IF     (SRY-SRYCD (IDX2)(1:1)   =   "6" )  AND
-                          (SRY-SRYSYUKBN           =   "330"  OR
-                                                       "331")
+                          (SRY-SRYSYUKBN           =   "330")
       *                点数マスタより、液量取得
                        MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
