@@ -159,7 +159,7 @@
                05  WRK-TAISYO-YM                   PIC X(16).
                05  WRK-TAISYO-SYORIMEI             PIC X(44).
            03  WRK-SYMD                            PIC X(08).
-           03  WRK-EDTYMD1                         PIC X(08).
+           03  WRK-EDTYMD1                         PIC X(10).
            03  WRK-EDTYMD3                         PIC X(22).
            03  WRK-SYORIYMD                        PIC X(22).
            03  WRK-SPTID-PTNUM                     PIC X(20).
