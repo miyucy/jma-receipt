@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  05/01/06  年をシステム管理へ修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -43,6 +44,7 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-KANRIMST        PIC 9(01).
+           03  FLG-SYORI           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -72,6 +74,10 @@
       *
            03  WRK-RENNUM-X        PIC X(10).
       *
+           03  WRK-NEN-W.
+               05  WRK-NEN-WGO         PIC X(01).
+               05  WRK-NEN-WY          PIC 9(02).
+           03  WRK-NEN-9               PIC 9(04).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -117,6 +123,9 @@
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
+      *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -160,6 +169,7 @@
                WHEN    "1"
                WHEN    "3"
                    PERFORM 100-HAKKOU-SEC
+                           UNTIL    FLG-SYORI      =   1
       *        患者番号チェック
                WHEN    "2"
                    PERFORM 200-CHECK-SEC
@@ -173,13 +183,16 @@
       *****************************************************************
        100-HAKKOU-SEC               SECTION.
       *
+           MOVE    1                    TO  FLG-SYORI
+      *    年の和暦変換
+           PERFORM 1000-NEN-WAREKI-SEC
       *    連番の更新
            PERFORM 1001-RENNUM-SEC
            IF      SPA-ERRCD           =   SPACE   OR  "8000"
                CONTINUE
            ELSE
                GO      TO      100-HAKKOU-EXT
-            END-IF
+           END-IF
       *
       *    患者番号取得
            PERFORM 320-PTNUM-SET-SEC
@@ -213,7 +226,7 @@
                                                SPA-1009-TBL
                IF      SPTID-RC            =   ZERO
       *            既に患者番号が登録されている場合、再度取得
-                   GO      TO              100-HAKKOU-SEC
+                   MOVE    ZERO            TO  FLG-SYORI
                END-IF
            END-IF
       *
@@ -310,10 +323,12 @@
                    INITIALIZE                     LNK-CHKDGT-AREA
                    IF  SYS-1009-HJNKSINENKBN  =   "1"
       *                和暦
-                       MOVE    SPA-SYSYMDW(1:3)   TO  WRK-PTNUM1
+      **************** MOVE    SPA-SYSYMDW(1:3)   TO  WRK-PTNUM1
+                       MOVE    WRK-NEN-W          TO  WRK-PTNUM1
                    ELSE
       *                西暦
-                       MOVE    SPA-SYSYMD (1:4)   TO  WRK-PTNUM1
+      *****************MOVE    SPA-SYSYMD (1:4)   TO  WRK-PTNUM1
+                       MOVE    SYS-1009-NEN       TO  WRK-PTNUM1
                    END-IF
                    IF  SYS-1009-HJNKSIRENNUMKETA  <=  10
                        COMPUTE     IDY    =   10
@@ -346,10 +361,12 @@
                WHEN   "2"
                    IF  SYS-1009-HJNKSINENKBN     =   "1"
       *                和暦
-                       MOVE    SPA-SYSYMDW(1:3)  TO  WRK-PTNUM1
+      *****************MOVE    SPA-SYSYMDW(1:3)  TO  WRK-PTNUM1
+                       MOVE    WRK-NEN-W         TO  WRK-PTNUM1
                    ELSE
       *                西暦
-                       MOVE    SPA-SYSYMD (1:4)  TO  WRK-PTNUM1
+      **************** MOVE    SPA-SYSYMD (1:4)  TO  WRK-PTNUM1
+                       MOVE    SYS-1009-NEN      TO  WRK-PTNUM1
                    END-IF
                    IF  SYS-1009-HJNKSIRENNUMKETA <=  10
                        COMPUTE   IDY   =   10
@@ -696,6 +713,32 @@
        2001-KENBAN-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    年和暦変換処理
+      *****************************************************************
+       1000-NEN-WAREKI-SEC             SECTION.
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY1-AREA
+           MOVE    "11"                TO  LNK-DAY1-IRAI
+           MOVE    SPA-SYSYMD          TO  LNK-DAY1-YMD
+           MOVE    SYS-1009-NEN        TO  LNK-DAY1-YMD(1:4)
+           CALL    "ORCSDAY"           USING
+                                       STS-AREA-DAY
+                                       LNK-DAY1-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY1-YMD (2:3)  TO  WRK-NEN-W
+           ELSE
+      *        エラーの時、平成に変換する
+               MOVE    SYS-1009-NEN    TO  WRK-NEN-9
+               COMPUTE WRK-NEN-WY      =   WRK-NEN-9
+                                       -   1988
+               MOVE    "4"             TO  WRK-NEN-WGO
+           END-IF
+      *
+           .
+       1000-NEN-WAREKI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    患者番号採番検索
