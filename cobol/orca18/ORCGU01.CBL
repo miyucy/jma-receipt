@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     01/05/24  患者番号ゼロ詰め処理
       *  01.01.01    MCC-藤原     01/09/21  JOINの修正      
+      *  01.01.02    NACL-多々納  03/06/16  確認画面追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -40,8 +41,12 @@
       *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
+      *
       *    スパ領域
            COPY    "COMMON-SPA".
+      *
+      *    画面共通ＳＰＡ
+           COPY    "U01COMMON-SPA".
       *
        01  SPA-U01.
            03  SPA-GMN-AREA.
@@ -140,6 +145,8 @@
            03  WRK-ZZZ9            PIC ZZZ9.
       *
            03  WRK-UKETIME         PIC X(10).
+      *    確認メッセージ
+           03  WRK-U1IDMSG         PIC X(80).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -250,6 +257,7 @@
        01  SCRAREA.
            COPY    "U01.INC".
            COPY    "U1ERR.INC". 
+           COPY    "U1ID1.INC". 
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -268,6 +276,7 @@
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
+           MOVE    SPA-WORK        TO  SPA-U01KYOUTU
            MOVE    SPA-FREE        TO  SPA-U01.
       *
            MOVE    SPACE           TO  SPA-ERRCD
@@ -289,6 +298,7 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
+           MOVE    SPA-U01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-U01         TO  SPA-FREE
       *
@@ -332,8 +342,15 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
+           EVALUATE    SPA-MOTOPG
+      *        確認画面より
+               WHEN    "U1ID1"
+                   PERFORM 330-U1ID1-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+           END-EVALUATE
       *
-           INITIALIZE              SPA-GMN-AREA
+           INITIALIZE                  SPA-U01
+           INITIALIZE                  SPA-U01KYOUTU
       *
            PERFORM 310-SPASET-SEC
       *
@@ -343,7 +360,7 @@
       *
       *
            .
-       3OO-SCREEN-EXT.
+       300-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -384,6 +401,25 @@
        310-SPASET-EXT.
            EXIT.
       *****************************************************************
+      *    確認画面より
+      *****************************************************************
+       330-U1ID1-SET-SEC               SECTION.
+      *
+           EVALUATE    SPA-U1IDCD
+      *        印刷確認
+               WHEN    "0001"
+                   IF      SPA-U1ID1-FLG    =   "OK"
+      *                印刷処理
+                       PERFORM 800-PRINT-SYORI-SEC
+                   END-IF
+           END-EVALUATE
+           MOVE    SPACE               TO  SPA-U1IDCD
+           MOVE    SPACE               TO  SPA-U1ID1-FLG
+      *
+           .
+       330-U1ID1-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
@@ -402,6 +438,9 @@
       *            ＤＷボタン選択
                WHEN    "CLICKED"       ALSO    "BDOWN"
                    PERFORM 41012-DWNSYORI-SEC
+      *        印刷処理
+               WHEN    "CLICKED"       ALSO    "B04"
+                   PERFORM 4010-PRINT-SEC
            END-EVALUATE
       *
            .
@@ -577,7 +616,7 @@
                                          SPA-NAI-SELNO (1)
            MOVE    1                 TO  SPA-NAI-SELFLG
       *
-           MOVE     2                TO  SPA-GMN-CUR
+           MOVE    2                 TO  SPA-GMN-CUR
       *
            .
        41013-BANSELI-EXT.
@@ -806,6 +845,31 @@
            .
        49011-KNJMST-HEN-EXT.
            EXIT.
+           EXIT.
+      *
+      *****************************************************************
+      *    印刷処理
+      *****************************************************************
+       4010-PRINT-SEC              SECTION.
+      *    印刷処理
+           IF     (SPA-GMN-MAX (1)     =   ZERO )  AND
+                  (SPA-GMN-MAX (2)     =   ZERO )
+               MOVE    "0012"              TO  SPA-ERRCD
+           ELSE
+               MOVE    "0001"              TO  SPA-U1IDCD
+           END-IF
+      *
+           .
+       4010-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷処理
+      *****************************************************************
+       800-PRINT-SYORI-SEC              SECTION.
+      *
+           .
+       800-PRINT-SYORI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る　処理
@@ -863,6 +927,14 @@
                PERFORM 510-ERRSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
+      *
+      *    確認画面
+           IF      SPA-U1IDCD      NOT =   SPACE
+               PERFORM 520-U1ID1-SET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
+      *
+      *D   MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
            MOVE    "U01    "           TO  MCP-WINDOW.
@@ -1008,6 +1080,9 @@
                WHEN    "0011"
                    MOVE    "選択できません"
                                        TO  SPA-ERRMSG
+               WHEN    "0012"
+                   MOVE    "受付データがありません。印刷できません"
+                                       TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPACE       TO  SPA-ERRMSG
            END-EVALUATE
@@ -1025,25 +1100,57 @@
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                    TO  FLG-END              
+           MOVE    1                    TO  FLG-END
       *
            .
        510-ERRMSG-EXT.
            EXIT.
-060200*****************************************************************
-060300*    受付検索処理
-060400*****************************************************************
-060500 5001-U010-HEN-SEC        SECTION.
-060600*
-060700     MOVE    ZERO                TO  SPA-GMN-MAX(1)
-060800                                     SPA-GMN-MAX(2)
-060900     MOVE    ZERO                TO  SPA-GMN-PAGE
-061000
-061100     MOVE  ZERO                 TO  IDX.
-061200     MOVE  ZERO                 TO  IDX2.
-061200     MOVE  ZERO                 TO  IDX3.
-061300     INITIALIZE                 WORK-SORT-TBL.
-061400     INITIALIZE                 SPA-GMN-TBL.
+      *
+      *****************************************************************
+      *    確認メッセージ表示理
+      *****************************************************************
+       520-U1ID1-SET-SEC              SECTION.
+      *
+           EVALUATE    SPA-U1IDCD
+               WHEN    "0001"
+                   MOVE    "一覧表を印刷します。よろしいですか？"
+                                       TO  WRK-U1IDMSG
+               WHEN    OTHER
+                   MOVE    SPACE       TO  WRK-U1IDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE                TO  U1ID1
+           MOVE    SPA-U1IDCD           TO  U1ID1-ID1CODE
+           MOVE    WRK-U1IDMSG          TO  U1ID1-ID1MSG
+           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           MOVE    "U01"                TO  SPA-MOTOPG
+           MOVE    "U1ID1"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "U1ID1"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+      *
+           .
+       520-U1ID1-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    受付検索処理
+      *****************************************************************
+       5001-U010-HEN-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  SPA-GMN-MAX(1)
+                                           SPA-GMN-MAX(2)
+           MOVE    ZERO                TO  SPA-GMN-PAGE
+      *
+           MOVE  ZERO                 TO  IDX.
+           MOVE  ZERO                 TO  IDX2.
+           MOVE  ZERO                 TO  IDX3.
+           INITIALIZE                 WORK-SORT-TBL.
+           INITIALIZE                 SPA-GMN-TBL.
       *
       *    受付マスタよりドクターコード設定
            INITIALIZE                  UKETUKE-REC
