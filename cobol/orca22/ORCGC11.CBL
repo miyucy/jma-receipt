@@ -1703,7 +1703,7 @@
                GO  TO  4120-KAKUTEI-EXT
            END-IF
       *
-           MOVE    "0101"              TO  SPA-CIDCD
+           PERFORM 4120-TOUROKU-SEC
            .
        4120-KAKUTEI-EXT.
            EXIT.
