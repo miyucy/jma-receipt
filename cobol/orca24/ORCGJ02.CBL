@@ -160,6 +160,8 @@
            03  FLG-HEN-OK          PIC 9(01).
       *    受診履歴変更フラグ
            03  FLG-JYURRK-UPD      PIC 9(01).
+      *    受診履歴エラー
+           03  FLG-JYURRK-ERR      PIC 9(01).
       *
            03  FLG-ACCT-ERR        PIC 9(01).
            03  FLG-ERR             PIC 9(01).
@@ -1726,9 +1728,10 @@
            INITIALIZE                  SPA-GMN-RRKTBL
            INITIALIZE                  SPA-NAI-RRKTBL
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  FLG-JYURRK-ERR
            PERFORM
                UNTIL   (FLG-JYURRK         =   1   )  OR
-                       (SPA-RRK-MAX        >=  60  )
+                       (FLG-JYURRK-ERR NOT =   ZERO )
       *        診療日、連番で１行とする
                MOVE    ZERO            TO  IDX-S
       *        対象年月のみ
@@ -1753,27 +1756,41 @@
                    MOVE    99                  TO  IDX-S
                END-IF
       *
-               IF      IDX-S       NOT =   99
+               IF      JYURRK-SRYYMD(1:6)  =   SPA-NAI-SRYYM
                    IF      IDX-S           =   ZERO
                        ADD     1               TO  SPA-RRK-MAX
-                       MOVE    SPA-RRK-MAX     TO  IDX
+                       IF      SPA-RRK-MAX     >   100
+                           MOVE    1               TO  FLG-JYURRK-ERR
+                           MOVE    100             TO  SPA-RRK-MAX
+                           MOVE    ZERO            TO  IDX
+                       ELSE
+                           MOVE    SPA-RRK-MAX     TO  IDX
+                       END-IF
                    ELSE
                        MOVE    IDX-S           TO  IDX
                    END-IF
-      *
-      *            明細項目退避
-                   PERFORM 3101-JYURRK-HEN-SEC
+                   IF      IDX             >   ZERO  AND
+                                           <=  100
+      *                明細項目退避
+                       PERFORM 3101-JYURRK-HEN-SEC
+                   END-IF
                END-IF
       *
       *********MOVE    "JYURRK-KEY12"      TO  ORC-DBPATH
                MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
+           IF      FLG-JYURRK-ERR      =   1
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "0023"          TO  SPA-ERRCD
+               END-IF
+           END-IF
       *
       *    診察日の再編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-RRK-MAX
                IF     (SPA-RRK-RENNUM (IDX)    =   1  )  AND
+                      (IDX                     <   SPA-RRK-MAX )  AND
                       (SPA-RRK-RRKYMD (IDX)
                                            NOT =   SPA-RRK-RRKYMD
                                                        (IDX + 1))  AND
@@ -3688,8 +3705,11 @@
                        IF      WRK-DAY-S           >   ZERO
       *                    剤追加
                            ADD     1               TO  WRK-IDR-MAX
-                           MOVE    SPA-GMN-ZAINUM  TO  SPA-RRK-ZAINUM
+                           IF      WRK-IDR-MAX     <=  135
+                               MOVE    SPA-GMN-ZAINUM
+                                                   TO  SPA-RRK-ZAINUM
                                                  (IDX-RRK WRK-IDR-MAX)
+                           END-IF
                        END-IF
                    ELSE
                        IF      WRK-DAY-S           =   ZERO
@@ -3717,8 +3737,8 @@
       *****************************************************************
        41001221-RRK-ADD-SEC             SECTION.
       *
-           IF      SPA-RRK-MAX         >=  60
-               MOVE    "0004"          TO  SPA-ERRCD
+           IF      SPA-RRK-MAX         >=  100
+               MOVE    "0024"          TO  SPA-ERRCD
                GO      TO      41001221-RRK-ADD-EXT
            END-IF
       *
@@ -3748,6 +3768,12 @@
            MOVE    SPA-GMN-ZAINUM      TO  SPA-RRK-ZAINUM  (IDR 1)
            MOVE    SPA-NAIGMN-SRYKBN   TO  SPA-RRK-SRYKBN  (IDR)
            MOVE    "1"                 TO  SPA-RRK-ADD     (IDR)
+      *    画面表示用
+           MOVE    IDR                 TO  SPA-GMN-RRKNO (IDR)
+           MOVE    SPA-RRK-RRKYMD(IDR) TO  WRK-SYMD
+           PERFORM 41012-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-RRKYMD (IDR)
+           MOVE    SPA-GMN-BSRYKAMEI   TO  SPA-GMN-RRKSRYKA (IDR)
       *
            .
        41001221-RRK-ADD-EXT.
@@ -6275,11 +6301,6 @@
                    MOVE    1                   TO  FLG-UPD
                ELSE
                    MOVE    2                   TO  FLG-UPD
-                   DISPLAY "J02 JYURRK-UPD ERR:"   JYURRK-KEY
-                           ",TBL:"  SPA-RRK-RRKYMD (IDX)
-                           "," SPA-RRK-RENNUM (IDX)
-                           "," SPA-RRK-DOUJI-RENNUM (IDX)
-                           "," SPA-RRK-HKNCOMBI (IDX)
                END-IF
       *        剤番号変更
                INITIALIZE                  JYURRK-ZAINUM-G
@@ -7624,6 +7645,16 @@
                                        TO  WRK-ERRMSG
                    MOVE    "全科では変更できません。"
                                        TO  WRK-ERRMSG(37:)
+               WHEN    "0023"
+                   MOVE    "当月の受診履歴が１００以上になります。"
+                                       TO  WRK-ERRMSG
+                   MOVE    "全体の受診履歴表示はできません。"
+                                       TO  WRK-ERRMSG(39:)
+               WHEN    "0024"
+                   MOVE    "当月の受診履歴が１００以上になります。"
+                                       TO  WRK-ERRMSG
+                   MOVE    "追加はできません。"
+                                       TO  WRK-ERRMSG(39:)
                WHEN    "0030"
                    MOVE    "入外区分がありません。"
                                        TO  WRK-ERRMSG
