@@ -204,6 +204,8 @@
       *                                     SEIKYU-KEY15追加 
       *                                     RECEKANRI-DEL1,DEL2追加 
       *                                     RECEPRT-DEL1,DEL2追加 
+      *  01.01.42    NACL-伊藤    03/03/03  KENSASORT-KEY追加
+      *                                     KENSASORT-ALL追加 
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2413,6 +2415,14 @@
                WHEN    ANY             ALSO   "KOHSKY-ALL"
                    MOVE    PATH-TBL-KOHSKY-ALL
                                        TO  WRK-PATH
+      *---- (01.01.42) LINE ADD START --------------------------------
+               WHEN    ANY             ALSO   "KENSASORT-KEY"
+                   MOVE    PATH-TBL-KENSASORT-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KENSASORT-ALL"
+                   MOVE    PATH-TBL-KENSASORT-ALL
+                                       TO  WRK-PATH
+      *---- (01.01.42) LINE ADD END   --------------------------------
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC
            END-EVALUATE
