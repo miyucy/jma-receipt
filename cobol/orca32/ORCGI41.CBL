@@ -2990,14 +2990,19 @@
       *        室料差額診療コード
                WHEN    "3"
       *            入院基本料算定なし
-                   IF      SPA-CHK-NYUIN (IDX-D)   =   SPACE
-                        MOVE    "0033"             TO  SPA-ERRCD
-                        GO      TO      410121-DAY-NAI-CHK-EXT
+      *!           IF      SPA-CHK-NYUIN (IDX-D)   =   SPACE
+      *!                MOVE    "0033"             TO  SPA-ERRCD
+      *!                GO      TO      410121-DAY-NAI-CHK-EXT
+      *!           END-IF
+      *            入院期間
+                   IF      SPA-CHK-DAY (IDX-D)     =   SPACE
+                        MOVE    "0047"             TO  SPA-ERRCD
                    END-IF
       *            一覧にあること
                    MOVE    ZERO            TO  FLG-CHK
                    PERFORM VARYING IDY     FROM    1   BY  1
-                           UNTIL   IDY     >   SPA-SAGAKU-MAX-41
+                           UNTIL  (IDY     >   SPA-SAGAKU-MAX-41 )
+                               OR (SPA-ERRCD   NOT =   SPACE  )
                        IF      SPA-GMN-DAY-41(IDX-D)(2:2)
                                            =  SPA-GMN-SAGAKUNO-41(IDY)
                                                            (1:2)
@@ -3005,7 +3010,8 @@
                            MOVE    SPA-SAGAKU-MAX-41   TO  IDY
                        END-IF
                    END-PERFORM
-                   IF      FLG-CHK             =   ZERO
+                   IF     (FLG-CHK             =   ZERO ) AND
+                          (SPA-ERRCD           =   SPACE )
                        MOVE    "0037"          TO  SPA-ERRCD
                    END-IF
       *        食事
@@ -3013,7 +3019,6 @@
       *            入院基本料算定なし
                    IF      SPA-CHK-NYUIN (IDX-D)   =   SPACE
                        MOVE    "0033"             TO  SPA-ERRCD
-                       GO      TO      410121-DAY-NAI-CHK-EXT
                    END-IF
                    IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                    OR  1
@@ -3022,8 +3027,9 @@
                                                    OR  4
                        CONTINUE
                    ELSE
-                       MOVE    "0038"         TO  SPA-ERRCD
-                       GO      TO      410121-DAY-NAI-CHK-EXT
+                       IF      SPA-ERRCD       =   SPACE
+                           MOVE    "0038"         TO  SPA-ERRCD
+                       END-IF
                    END-IF
       *            外泊中でないこと
                    IF      SPA-GMN-DAY-41 (IDX-D)  =   SPA-NAI-DAY-41
@@ -3031,28 +3037,34 @@
                        CONTINUE
                    ELSE
                        IF      SPA-CHK-GAIHAKU (IDX-D) NOT =   SPACE 
-                           MOVE    "0039"         TO  SPA-ERRCD
-                           GO      TO      410121-DAY-NAI-CHK-EXT
-                       END-IF
+                           IF      SPA-ERRCD       =   SPACE
+                               MOVE    "0039"         TO  SPA-ERRCD
+                           END-IF
+                        END-IF
                    END-IF
       *        保険
                WHEN    "5"
-      *            入院基本料算定なし
-                   IF      SPA-CHK-NYUIN (IDX-D)   =   SPACE
-                        MOVE    "0033"             TO  SPA-ERRCD
-                        GO      TO      410121-DAY-NAI-CHK-EXT
+      *!           入院基本料算定なし
+      *!           IF      SPA-CHK-NYUIN (IDX-D)   =   SPACE
+      *!                MOVE    "0033"             TO  SPA-ERRCD
+      *!           END-IF
+      *            入院期間
+                   IF      SPA-CHK-DAY (IDX-D)     =   SPACE
+                        MOVE    "0047"             TO  SPA-ERRCD
                    END-IF
       *            一覧にあること
                    MOVE    ZERO            TO  FLG-CHK
                    PERFORM VARYING IDY     FROM    1   BY  1
-                           UNTIL   IDY     >   SPA-HKNCOMBI-MAX
+                           UNTIL  (IDY     >   SPA-HKNCOMBI-MAX )
+                               OR (SPA-ERRCD   NOT =   SPACE    )
                        IF      SPA-GMN-DAY-41(IDX-D)
                                            =  SPA-I41-THKNCOMBI(IDY)
                            MOVE    1                   TO  FLG-CHK
                            MOVE    SPA-HKNCOMBI-MAX    TO  IDY
                        END-IF
                    END-PERFORM
-                   IF      FLG-CHK             =   ZERO
+                   IF     (FLG-CHK             =   ZERO ) AND
+                          (SPA-ERRCD           =   SPACE )
       *                入力変更がなかった時、エラーとしない
                        IF      SPA-GMN-DAY-41 (IDX-D)
                                                =   SPA-NAI-DAY-41
@@ -3067,14 +3079,14 @@
       *            入院基本料算定なし
                    IF      SPA-CHK-NYUIN (IDX-D)   =   SPACE
                         MOVE    "0033"             TO  SPA-ERRCD
-                        GO      TO      410121-DAY-NAI-CHK-EXT
                    END-IF
                    IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                    OR  1
                        CONTINUE
                    ELSE
-                       MOVE    "0041"         TO  SPA-ERRCD
-                        GO      TO      410121-DAY-NAI-CHK-EXT
+                       IF      SPA-ERRCD           =   SPACE
+                           MOVE    "0041"         TO  SPA-ERRCD
+                       END-IF
                    END-IF
       *            外泊中でないこと
                    IF      SPA-GMN-DAY-41 (IDX-D)  =   SPA-NAI-DAY-41
@@ -3082,8 +3094,9 @@
                        CONTINUE
                    ELSE
                        IF      SPA-CHK-GAIHAKU (IDX-D) NOT =   SPACE
-                           MOVE    "0042"         TO  SPA-ERRCD
-                           GO      TO      410121-DAY-NAI-CHK-EXT
+                           IF      SPA-ERRCD           =   SPACE
+                               MOVE    "0042"         TO  SPA-ERRCD
+                           END-IF
                        END-IF
                    END-IF
            END-EVALUATE
@@ -3098,8 +3111,8 @@
       *****************************************************************
        410122-DAY-NASI-CHK-SEC             SECTION.
       *
-      *    入院基本料算定中
-           IF      SPA-CHK-NYUIN (IDX-D)   NOT =   SPACE
+      *    入院期間中
+           IF      SPA-CHK-DAY (IDX-D)    NOT =   SPACE
                MOVE    "0046"             TO  SPA-ERRCD
            END-IF
       *
@@ -6350,6 +6363,9 @@
                                        TO  WRK-ERRMSG
                WHEN    "0046"
                    MOVE    "保険組合せはクリアできません。"
+                                       TO  WRK-ERRMSG
+               WHEN    "0047"
+                   MOVE    "入院期間外のため設定はできません。"
                                        TO  WRK-ERRMSG
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません。"
