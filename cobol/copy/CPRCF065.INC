@@ -46,6 +46,8 @@
                05  RECE65-TEKSTYMD        PIC  X(08).
       *∫ﬁ»÷πÊ
                05  RECE65-ZAINUM          PIC  9(05).
+      *∫ﬁœ¢»÷
+               05  RECE65-ZAIREN          PIC  9(02).
       *œ¢»÷πÊ
                05  RECE65-RENNUM          PIC  9(02).
       *∏¯»Ò ¨Œ•∂Ë ¨
