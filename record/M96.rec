@@ -26,16 +26,18 @@ M96	{
 			}	[2];
 			select	bool[2];
 		};
-		LIST3	{
-			count	int;
-			row	int;
-			rowattr	int;
-			item	{
-				value0	varchar(30);
-				value1	varchar(64);
-				value2	varchar(64);
-			}	[99];
-			select	bool[99];
+		scrolledwindow1	{
+			LIST3	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(30);
+					value1	varchar(64);
+					value2	varchar(64);
+				}	[99];
+				select	bool[99];
+			};
 		};
 		MSG1	{
 		        style   varchar(20);

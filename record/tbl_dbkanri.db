@@ -31,6 +31,7 @@ path	all		{
 		DECLARE tbl_dbkanri_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_dbkanri
+                   ORDER BY  KANRICD
 ;
 	};
 };
