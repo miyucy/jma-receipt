@@ -466,6 +466,8 @@
                    END-IF
       * 
            END-EVALUATE
+      *     
+           MOVE    SPACE           TO  SPA-CIDCD
            .
        330-CID1-SET-EXT.
            EXIT.
