@@ -2699,6 +2699,8 @@
                    UNTIL ( IDX2    >   SPA-GMN-Q01-KOHNUMLST-MAX )
                IF    ( SPA-GMN-Q01-KOHNUM (IDX1)
                                        =   SPA-GMN-Q01-KOHNUML (IDX2))
+                 AND ( SPA-GMN-Q01-PAYKBN (IDX1)
+                                       =   SPA-GMN-Q01-PAYKBNL (IDX2))
                    MOVE    SPA-GMN-Q01-KOHNUMLST (IDX2)
                                        TO  SPA-GMN-Q01-KOHNUM-G (IDX1)
                    MOVE    1           TO  FLG-CHK
