@@ -144,6 +144,7 @@
       *    パス名領域
            03  WRK-DBPATH          PIC X(20).
       *    入院会計作成用ワーク
+           03  WRK-YMD             PIC X(10). 
            03  WRK-NAI-SRYYM-41.
                05  WRK-NAI-SRYYM-41-YY  PIC 9(04).
                05  WRK-NAI-SRYYM-41-MM  PIC 9(02).
@@ -154,6 +155,7 @@
            03  WRK-NISSU           PIC 9(05).
            03  WRK-NISSU1          PIC 9(05).
            03  WRK-NISSU2          PIC 9(05).
+           03  WRK-SENTEI-STYMD    PIC X(08).
            03  WRK-SANTEISTYMD     PIC X(08).
            03  WRK-TOKUTEI-NYUIN   PIC X(02).
            03  WRK-SAGAKU-KBN      PIC X(02).
@@ -167,6 +169,9 @@
            03  IDX8                PIC 9(03).
            03  IDX9                PIC 9(03).
            03  WRK-TAIHI-SRYKA     PIC X(02).
+           03  WRK-ZOGENPTN        PIC X(01).
+           03  WRK-ZOGEN           PIC S9(05).
+           03  WRK-KEISANYMD       PIC X(08).
       *    医療機関設定の入院料加算チェック用
            03  WRK-NYUKHNKSN-SRYCD PIC X(09)  OCCURS 20.
            03  WRK-NYUKSNKBN       PIC X(03).
@@ -362,6 +367,10 @@
         01  SRYCDCHG-REC.
             COPY    "CPSRYCDCHG.INC".
       *
+      *    選定療養費
+       01  SENTEICDCHG-REC.
+           COPY    "CPSENTEICDCHG.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -387,6 +396,9 @@
       *
       *    入院会計作成サブ
            COPY    "CPORCSNYUACCT.INC".
+      *
+      *    通算日数取得サブ
+           COPY "CPORCSTUSAN.INC".
       *
       *    排他制御パラメタ
            COPY    "CPORCSLOCK.INC".
@@ -4278,44 +4290,51 @@
                INITIALIZE                  PTNYUINRRK-REC
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
-           DISPLAY   "410191-NYUACCT-SAKUSEI-SEC2"
+      ****     DISPLAY   "410191-NYUACCT-SAKUSEI-SEC2"
       *
-           PERFORM    UNTIL   (FLG-PTNYUINRRK        =   1)   OR
-                              (PTNYUINRRK-SHONUM  NOT =  WRK-SHONUM)
-               IF      PTNYUINRRK-JTIKBN      NOT =    "5"
-                   MOVE    PTNYUINRRK-TENNYUYMD
-                                               TO  WRK-STYMD
-                   IF      PTNYUINRRK-TAISYONISSU   =    ZERO
+      ****     PERFORM    UNTIL   (FLG-PTNYUINRRK        =   1)   OR
+      ****                        (PTNYUINRRK-SHONUM  NOT =  WRK-SHONUM)
+      ****         IF      PTNYUINRRK-JTIKBN      NOT =    "5"
+      ****             MOVE    PTNYUINRRK-TENNYUYMD
+      ****                                         TO  WRK-STYMD
+      ****             IF      PTNYUINRRK-TAISYONISSU   =    ZERO
       *                   月末算定
-                           INITIALIZE                    STS-AREA-DAY
-                           INITIALIZE                    LNK-DAY7-AREA
-                           MOVE    "71"              TO  LNK-DAY7-IRAI
-                        DISPLAY "WRK-NAI-SRYYM-41 = " WRK-NAI-SRYYM-41
-                           IF      WRK-NAI-SRYYM-41-MM    =   1
-                                   COMPUTE  WRK-NAI-SRYYM-41-YY
-                                        =   WRK-NAI-SRYYM-41-YY   -  1
-                                   MOVE   12   TO  WRK-NAI-SRYYM-41-MM
-                           ELSE
-                                   COMPUTE  WRK-NAI-SRYYM-41-MM
-                                        =   WRK-NAI-SRYYM-41-MM   -  1
-                           END-IF
-                         DISPLAY "GETSUMATSU YYMM = " WRK-NAI-SRYYM-41
-                           MOVE    WRK-NAI-SRYYM-41    TO  LNK-DAY7-YM
-                           CALL    "ORCSDAY"       USING STS-AREA-DAY
-                                                         LNK-DAY7-AREA
-                           IF      STS-DAY-RC1         =   ZERO
-                               MOVE    LNK-DAY7-KOYOMI   TO  WRK-EDYMD
-                           END-IF
-                           PERFORM    410191-KIKAN-CALC-SEC
-                           ADD      WRK-NISSU2         TO  WRK-TSUSAN
-                   ELSE
-                       ADD    PTNYUINRRK-TAISYONISSU   TO  WRK-TSUSAN
-                   END-IF
-               END-IF
-               MOVE    "PTNYUINRRK-KEY9"   TO  ORC-DBPATH
-               PERFORM  970-PTNYUINRRK-READ-SEC
-           END-PERFORM
-           DISPLAY   "410191-NYUACCT-SAKUSEI-SEC3"
+      ****                     INITIALIZE                    STS-AREA-DAY
+      ****                     INITIALIZE                    LNK-DAY7-AREA
+      ****                     MOVE    "71"              TO  LNK-DAY7-IRAI
+      ****                  DISPLAY "WRK-NAI-SRYYM-41 = " WRK-NAI-SRYYM-41
+      ****                     IF      WRK-NAI-SRYYM-41-MM    =   1
+      ****                             COMPUTE  WRK-NAI-SRYYM-41-YY
+      ****                                  =   WRK-NAI-SRYYM-41-YY   -  1
+      ****                             MOVE   12   TO  WRK-NAI-SRYYM-41-MM
+      ****                     ELSE
+      ****                             COMPUTE  WRK-NAI-SRYYM-41-MM
+      ****                                  =   WRK-NAI-SRYYM-41-MM   -  1
+      ****                     END-IF
+      ****                   DISPLAY "GETSUMATSU YYMM = " WRK-NAI-SRYYM-41
+      ****                     MOVE    WRK-NAI-SRYYM-41    TO  LNK-DAY7-YM
+      ****                     CALL    "ORCSDAY"       USING STS-AREA-DAY
+      ****                                                   LNK-DAY7-AREA
+      ****                     IF      STS-DAY-RC1         =   ZERO
+      ****                         MOVE    LNK-DAY7-KOYOMI   TO  WRK-EDYMD
+      ****                     END-IF
+      ****                     PERFORM    410191-KIKAN-CALC-SEC
+      ****                     ADD      WRK-NISSU2         TO  WRK-TSUSAN
+      ****             ELSE
+      ****                 ADD    PTNYUINRRK-TAISYONISSU   TO  WRK-TSUSAN
+      ****             END-IF
+      ****         END-IF
+      ****         MOVE    "PTNYUINRRK-KEY9"   TO  ORC-DBPATH
+      ****         PERFORM  970-PTNYUINRRK-READ-SEC
+      ****     END-PERFORM
+      ****     DISPLAY   "410191-NYUACCT-SAKUSEI-SEC3"
+      *
+      *
+      *    通算日数を求める（通算日数取得サブを使用）
+           PERFORM 4801-TSUSAN-SANTEI-GET-SEC
+           IF    ( SPA-ERRCD    NOT =  SPACE )
+               GO  TO  410191-NYUACCT-SAKUSEI-EXT
+           END-IF
       *
            MOVE    WK-PTNYUINRRK-REC   TO  PTNYUINRRK-REC
       *
@@ -4447,6 +4466,7 @@
            DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(5) = "
                                      LNK-SCNYUACCT-NYUKHNKSN-SRYCD(5)
            DISPLAY  "ORCSNYUACCT CALL "
+           PERFORM 4801-SENTEI-SET-SEC
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
@@ -4459,6 +4479,113 @@
       *                                                                 021118
        410191-NYUACCT-SAKUSEI-EXT.                                       021118
            EXIT.                                                        021118
+      *
+      *****************************************************************
+      *    通算日数取得処理
+      *****************************************************************
+       4801-TSUSAN-SANTEI-GET-SEC      SECTION.
+      *
+           INITIALIZE                  WRK-TSUSAN
+                                       WRK-SANTEISTYMD
+      *
+           INITIALIZE                  ORCSTUSANAREA
+           MOVE    SPA-HOSPID      TO  STUSAN-HOSPID
+           MOVE    PTNYUINRRK-PTID TO  STUSAN-PTID
+           MOVE    SPA-NAI-SRYYM-41
+                                   TO  STUSAN-KJNYMD(1:6)
+           MOVE    "01"            TO  STUSAN-KJNYMD(7:2)
+           CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+           IF    ( STUSAN-RC       NOT =   ZERO )
+               MOVE    "2003"      TO  SPA-ERRCD
+               GO  TO  4801-TSUSAN-SANTEI-GET-EXT
+           END-IF
+      *
+           COMPUTE WRK-TSUSAN  =   STUSAN-NISSU03  -   1
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                   TO  WRK-SANTEISTYMD
+      *
+           MOVE    STUSAN-KJNYMD
+                                   TO  WRK-YMD
+           MOVE    "1"             TO  WRK-ZOGENPTN
+           DISPLAY "STUSAN-NISSU01 =   "  STUSAN-NISSU01
+           DISPLAY "STUSAN-NISSU02 =   "  STUSAN-NISSU02
+           DISPLAY "STUSAN-NISSU03 =   "  STUSAN-NISSU03
+           DISPLAY "STUSAN-NISSU04 =   "  STUSAN-NISSU04
+           COMPUTE WRK-ZOGEN       =   180 - ( STUSAN-NISSU02  -   1 )
+           PERFORM 5002-CALENDAR-SEC
+           MOVE    WRK-KEISANYMD   TO  WRK-SENTEI-STYMD
+      *
+           DISPLAY "************************"
+           DISPLAY "** TSUSAN-SANTEI      **"
+           DISPLAY "WRK-TSUSAN       = " WRK-TSUSAN
+           DISPLAY "WRK-SANTEISTYMD  = " WRK-SANTEISTYMD
+           DISPLAY "WRK-SENTEI-STYMD = " WRK-SENTEI-STYMD
+           DISPLAY "************************"
+      *
+           .
+       4801-TSUSAN-SANTEI-GET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カレンダー処理
+      *****************************************************************
+       5002-CALENDAR-SEC               SECTION.
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-YMD             TO  LNK-DAY6-KIJUN
+           MOVE    WRK-ZOGENPTN        TO  LNK-DAY6-ZOGENPTN
+           MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
+           CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  WRK-KEISANYMD
+      *
+           .
+       5002-CALENDAR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     選定療養費診療行為コード取得処理
+      *****************************************************************
+       4801-SENTEI-SET-SEC         SECTION.
+      *
+           IF    ( LNK-SCNYUACCT-TOKUTEINYUIN-KBN
+                                       =   "1" )
+               GO  TO  4801-SENTEI-SET-EXT
+           END-IF
+      *
+           INITIALIZE  SENTEICDCHG-REC
+           MOVE    LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                                   TO  SENCHG-IPNSRYCD
+           DISPLAY "SENCHG-IPNSRYCD = " SENCHG-IPNSRYCD
+           MOVE    SENTEICDCHG-REC TO  MCPDATA-REC
+           MOVE    "SENTEICDCHG-KEY2"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO  )
+               MOVE    MCPDATA-REC TO  SENTEICDCHG-REC
+           ELSE
+               INITIALIZE              SENTEICDCHG-REC
+           END-IF
+      *
+           MOVE    "SENTEICDCHG-KEY2"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           MOVE    SENCHG-SENTEISRYCD
+                                   TO  LNK-SCNYUACCT-SENTEI-SRYCD
+           MOVE    WRK-SENTEI-STYMD
+                                   TO  LNK-SCNYUACCT-SENTEI-STYMD
+      *
+      *
+           DISPLAY "LNK-SCNYUACCT-SENTEI-SRYCD = "
+                    LNK-SCNYUACCT-SENTEI-SRYCD
+           DISPLAY "LNK-SCNYUACCT-SENTEI-STYMD = "
+                    LNK-SCNYUACCT-SENTEI-STYMD
+           .
+       4801-SENTEI-SET-EXT.
+           EXIT.
       *
       *****************************************************************
       *    期間算出処理
