@@ -121,7 +121,7 @@ path	all	{
 		SELECT *
 		FROM tbl_kohplus
 		ORDER BY HOSPID,PREFNUM,CITYNUM,KOHNUM,
-		         PTKBN DESC,YUKOSTYMD
+		         PTKBN ,YUKOSTYMD
       		;
 	};
 };
