@@ -328,7 +328,7 @@
        01  LNK-SRYYMD           PIC X(08).
        01  LNK-NYUGAIKBN        PIC X(01).
        01  LNK-HKNCOMBINUM      PIC X(04).
-       01  LNK-DRCD             PIC X(10).
+       01  LNK-DRCD             PIC X(05).
       *
        01  WRK-LF02-REC. 
            COPY    "CPRLF002.INC"    REPLACING  //LF02//
@@ -446,15 +446,6 @@
                MOVE    LNK-SRYKA           TO  WRK-LF02-SRYKA-ID
                MOVE    LNK-SRYKA           TO  WRK-LF02-CRE001-DPERTID
                                            WRK-LF02-CRE401-DPERTID
-           END-IF
-      *
-      *    ドクター
-           IF      LNK-DRCD            =   "@@@@@"
-               CONTINUE
-           ELSE
-               PERFORM 2001-DRCD-NAME-SEC
-               MOVE    SYS-1010-NAME   TO  WRK-LF02-CRE401-FULLNAME
-               MOVE    LNK-DRCD        TO  WRK-LF02-CRE401-PERSONALID
            END-IF
       *
       *    入外区分
@@ -606,6 +597,15 @@
                   END-IF
                END-PERFORM
            END-IF     
+      *    ドクター
+           IF      LNK-DRCD            =   "@@@@@"
+               CONTINUE
+           ELSE
+               PERFORM 2001-DRCD-NAME-SEC
+               MOVE    SYS-1010-NAME   TO  WRK-LF02-CRE401-FULLNAME
+               MOVE    LNK-DRCD        TO  WRK-LF02-CRE401-PERSONALID
+           END-IF
+      *
            .
        200-MAIN-EXT.
            EXIT.

@@ -150,7 +150,7 @@
       *
       *
       *???
-           DISPLAY "PARA " WRK-PARA "##"
+           DISPLAY "L0020 DRCD= " WRK-PARA-DRCD "##"
       *???
            MOVE    WRK-PARA-HOSPID     TO  SPA-HOSPID 
            MOVE    WRK-PARA-SRYYMD     TO  SPA-SRYYMD
