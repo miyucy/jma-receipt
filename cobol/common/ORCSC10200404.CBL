@@ -3394,6 +3394,12 @@
            IF      WRK-KBN             =   "F"  OR  "S"
       *        ø«ª°Œ¡§¢§Í
                MOVE    1               TO  LNK-ORCSC-SINSATU-ARI
+      *        ΩÈø«Œ¡§Œ»ΩƒÍ
+               IF      WRK-KBN             =   "F"
+                   MOVE    1               TO  LNK-ORCSC-SYOSIN2
+               ELSE
+                   MOVE    ZERO            TO  LNK-ORCSC-SYOSIN2
+               END-IF
       *
                MOVE    WRK-KBN         TO  WRK-SINSATU-KBN
                MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
