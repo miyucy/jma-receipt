@@ -281,6 +281,9 @@
                05  WRK-TIME-N                          PIC X(16).
            03  WRK-PTBYO-SRYYMD                        PIC X(08).
            03  WRK-HKNCOMBI                            PIC X(04).
+           03  WRK-HKNCOMBI-DAY-G.
+               05  WRK-HKNCOMBI-DAY                    PIC 9(01)
+                                                       OCCURS  31.
            03  WRK-TKAISU-SRYCD                        PIC X(09).
            03  WRK-MAX                                 PIC 9(05).
       *    
@@ -324,6 +327,9 @@
                    TNACCT-HKNCOMBI-HKNCOMBI            PIC X(04).
                05  TNACCT-HKNCOMBI-STYMD               PIC X(08).
                05  TNACCT-HKNCOMBI-EDYMD               PIC X(08).
+               05  TNACCT-HKNCOMBI-HKNCOMBI-DAY        PIC 9(01)
+                                                       OCCURS 31.
+
       *
       *    診療科退避ワーク
        01  TSRYKA-AREA.
@@ -1052,31 +1058,37 @@
       *
       *    入院会計保険組み合わせ退避処理
            IF    ( ORCBSD01-NYUGAIKBN      =   "1" )
-               IF    ( ORCBSD01-CHKKBN (01)    NOT =   ZERO )
-                OR   ( ORCBSD01-CHKKBN (02)    NOT =   ZERO )
-                OR   ( ORCBSD01-CHKKBN (03)    NOT =   ZERO )
-                OR   ( ORCBSD01-CHKKBN (13)    NOT =   ZERO )
-                OR   ( ORCBSD01-CHKKBN (14)    NOT =   ZERO )
-                   PERFORM 200111-NACCT-COMBI-TAIHI-SEC
-               END-IF
       *
-               IF    ( ORCBSD01-CHKKBN (01)    NOT =   ZERO )
-                OR   ( ORCBSD01-CHKKBN (02)    NOT =   ZERO )
-                OR   ( ORCBSD01-CHKKBN (03)    NOT =   ZERO )
-                   PERFORM VARYING IDX18   FROM    1   BY  1
-                           UNTIL ( IDX18   >   TNACCT-HKNCOMBI-MAX )
-                       MOVE    TNACCT-HKNCOMBI-HKNCOMBI-X (IDX18)
+               PERFORM 200111-NACCT-COMBI-TAIHI-SEC
+      *
+               PERFORM VARYING IDX18   FROM    1   BY  1
+                       UNTIL ( IDX18   >   TNACCT-HKNCOMBI-MAX )
+                   MOVE    TNACCT-HKNCOMBI-HKNCOMBI-X (IDX18)
                                        TO  WRK-HKNCOMBI
-      *                主保険チェック
-                       PERFORM 200111-SYUHOKEN-CHK-SEC
+      *            主保険チェック
+                   PERFORM 200111-SYUHOKEN-CHK-SEC
       *
-      *                保険ＩＤ退避ワーク編集チェック処理
-                       PERFORM 200111-THKNID-HEN-CHK-SEC
+      *            保険ＩＤ退避ワーク編集チェック処理
+                   PERFORM 200111-THKNID-HEN-CHK-SEC
       *
-      *                公費ＩＤ退避ワーク編集チェック処理
-                       PERFORM 200111-TKOHID-HEN-CHK-SEC
-                   END-PERFORM
-               END-IF
+      *            公費ＩＤ退避ワーク編集チェック処理
+                   PERFORM 200111-TKOHID-HEN-CHK-SEC
+      *
+                   IF    ( FLG-TAISYO-HKN  =   1 )
+                       INITIALIZE WRK-HKNCOMBI-DAY-G
+                       PERFORM VARYING IDX0    FROM    1   BY  1
+                               UNTIL ( IDX0    >   31 )
+                           MOVE    TNACCT-HKNCOMBI-HKNCOMBI-DAY
+                                                  (IDX18 IDX0)
+                               TO  WRK-HKNCOMBI-DAY (IDX0)
+                       END-PERFORM
+      *
+      *                実日数退避ワーク編集処理（入院）
+                       PERFORM 200111-TJNISSU-NYU-HEN-SEC
+      *
+                   END-IF
+      *
+               END-PERFORM
            END-IF
       *
            .
@@ -1177,7 +1189,7 @@
                    END-IF
                END-IF
       *
-               IF    ( ORCBSD01-NYUGAIKBN  =   1 )
+               IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
       *
       *            入院診療行為日編集処理（実日数チェック用）
                    PERFORM 200111-TNYUIN-ACCT-HEN-SEC
@@ -1469,9 +1481,11 @@
       *                診療行為コード退避ワーク編集処理
                        PERFORM 200111-TSRYCD-HEN-SEC
       *
-      *                実日数退避ワーク編集処理
-                       IF    ( FLG-SHOSAISIN   =   ZERO )
-                           PERFORM 200111-TJNISSU-HEN-SEC
+                       IF    ( ORCBSD01-NYUGAIKBN  =   "2" )
+      *                    実日数退避ワーク編集処理（外来）
+                           IF    ( FLG-SHOSAISIN   =   ZERO )
+                               PERFORM 200111-TJNISSU-GAI-HEN-SEC
+                           END-IF
                        END-IF
       *
       *                算定回数退避ワーク編集処理
@@ -1671,16 +1685,16 @@
        200111-TSRYCD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    実日数退避ワーク編集処理
+      *    実日数退避ワーク編集処理（外来）
       *****************************************************************
-       200111-TJNISSU-HEN-SEC          SECTION.
+       200111-TJNISSU-GAI-HEN-SEC      SECTION.
       *
            MOVE    ZERO            TO  IDXA
       *
       *    実日数算定チェック
            PERFORM 200111-JNISSU-HEN-SEC
            IF    ( FLG-SHOSAISIN       =   ZERO )
-               GO  TO  200111-TJNISSU-HEN-EXT
+               GO  TO  200111-TJNISSU-GAI-HEN-EXT
            END-IF
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
@@ -1720,7 +1734,7 @@
            END-IF
       *
            .
-       200111-TJNISSU-HEN-EXT.
+       200111-TJNISSU-GAI-HEN-EXT.
            EXIT.
       *****************************************************************
       *    実日数算定チェック
@@ -1800,6 +1814,52 @@
       *
            .
        200111-JNISSU-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    実日数退避ワーク編集処理（入院）
+      *****************************************************************
+       200111-TJNISSU-NYU-HEN-SEC      SECTION.
+      *
+           MOVE    ZERO            TO  IDXA
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   TJNISSU-MAX )
+                    OR   ( IDX0    >   CONST-TJNISSU-MAX )
+                    OR   ( TJNISSU-HKNNUM (IDX0)
+                                   =   COMB-HKNNUM )
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX0            >   TJNISSU-MAX )
+      *
+               COMPUTE TJNISSU-MAX =   TJNISSU-MAX +   1
+      *
+               IF    ( TJNISSU-MAX >   CONST-TJNISSU-MAX )
+                   MOVE    CONST-TJNISSU-MAX
+                                   TO  TJNISSU-MAX
+               ELSE
+                   MOVE    COMB-HKNNUM
+                                   TO  TJNISSU-HKNNUM (TJNISSU-MAX)
+                   MOVE    TJNISSU-MAX
+                                   TO  IDXA
+               END-IF
+           ELSE
+               MOVE    IDX0        TO  IDXA
+           END-IF
+      *
+           IF    ( IDXA            >   ZERO )
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL ( IDX2    >   31 )
+                   IF    ( WRK-HKNCOMBI-DAY (IDX2)   >   ZERO )
+                       MOVE    1   TO  TJNISSU-DAY (IDXA IDX2)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       200111-TJNISSU-NYU-HEN-EXT.
            EXIT.
       *****************************************************************
       *    算定回数退避ワーク編集処理
@@ -2121,7 +2181,7 @@
                            MOVE    CONST-TNACCT-HKNCOMBI-MAX
                                        TO  TNACCT-HKNCOMBI-MAX
                        ELSE
-                           MOVE    NACCT-DAY (IDX15)
+                           MOVE    NACCT-DAY (IDX-DAY)
                                    TO  TNACCT-HKNCOMBI-HKNCOMBI
                                                   (TNACCT-HKNCOMBI-MAX)
                            MOVE    "99999999"
@@ -2130,9 +2190,11 @@
                            MOVE    "00000000"
                                    TO  TNACCT-HKNCOMBI-EDYMD
                                                   (TNACCT-HKNCOMBI-MAX)
+      *
                            MOVE    TNACCT-HKNCOMBI-MAX     TO  IDXA
                        END-IF
                    ELSE
+      *
                            MOVE    IDX15                   TO  IDXA
                    END-IF
       *
@@ -2151,6 +2213,9 @@
                                    TO  TNACCT-HKNCOMBI-EDYMD (IDXA)
                        END-IF
                    END-IF
+      *
+                   MOVE    1       TO  TNACCT-HKNCOMBI-HKNCOMBI-DAY
+                                           (IDXA IDX-DAY)
       *
                END-IF
       *
@@ -4474,7 +4539,7 @@
                    UNTIL ( IDX0    >   31 )
                     OR   ( FLG-CHKEND (12) =   1 )
       *
-               IF    ( TNACCT-HKNCOMBI-DAY (IDX0)  >   ZERO )
+               IF    ( TNACCT-HKNCOMBI-DAY (IDX0)  =   ZERO )
                    IF    ( TNYUIN-ACCT-DAY (IDX0)  =   1 )
                        MOVE    "120002"    TO  WRK-ERRCD
       *
