@@ -1233,6 +1233,7 @@
                                              ORCMCPAREA
                                              MCPDATA-REC
                IF      MCP-RC        =       ZERO
+                   MOVE    RECE44-REC        TO      WRK-RECE44-REC
                    MOVE    MCPDATA-REC       TO      SRYACT-REC
                    INITIALIZE                        SRYACCT-REC
                    MOVE    SRY-HOSPID        TO      ACCT-HOSPID
