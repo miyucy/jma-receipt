@@ -38,6 +38,7 @@
       *  01.00.04    NACL-伊藤    03/08/13  指導料・在宅料摘要欄編集
       *                                     加算点数でも告示区分１により
       *                                     基本点数剤とする
+      *  01.00.05    NACL-藤原    03/08/17  廃止年月日の取扱
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1203,8 +1204,30 @@
                        OR      RECE031-BYOMEICD(IDX)   =   SPACE
                    IF      RECE031-BYOMEICD(IDX)(1:3)  NOT =   "ZZZ"
                        IF      WRK-BYOMEICD                =   SPACE
+      *                    廃止年月日が設定されているとき診療開始日以前
+      *                    なら未傷病名コードにする
                            MOVE    RECE031-BYOMEICD(IDX)
-                                                   TO  WRK-BYOMEICD
+                                                   TO  BYO-BYOMEICD
+                           PERFORM 900-BYOMEI-READ-SEC
+                           IF      BYO-HAISIYMD    NOT =   SPACE
+                               IF      BYO-HAISIYMD    <   RECE031-SRYYMD
+                                   IF      RECE031-SYUBYOFLG    =   "1" 
+                                   AND     SYS-2005-SYUBYOHENFLG
+                                                            NOT =   ZERO
+                                       MOVE    "0000998"
+                                                       TO  WRK-BYOMEICD
+                                   ELSE
+                                       MOVE    "0000999"
+                                                       TO  WRK-BYOMEICD
+                                   END-IF
+                               ELSE
+                                   MOVE    RECE031-BYOMEICD(IDX)
+                                                       TO  WRK-BYOMEICD
+                               END-IF
+                           ELSE
+                               MOVE    RECE031-BYOMEICD(IDX)
+                                                       TO  WRK-BYOMEICD
+                           END-IF
                        END-IF    
                    ELSE            
                        ADD     1           TO  IDY
