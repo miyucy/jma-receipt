@@ -35,6 +35,7 @@
       * 01.00.04     NACL-多々納  02/08/06  アフターケアの時自動算定変更
       * 01.00.05     NACL-多々納  02/11/11  ＤＵＭＭＹ診察料追加
       * 01.00.06     NACL-多々納  02/11/28  中途終了再表示修正
+      * 01.00.07     NACL-多々納  02/12/02  生活習慣病のコードエラー修正
       *****************************************************************
       *
       *
@@ -120,6 +121,8 @@
            03  FLG-DOUJITU         PIC 9(01).
       *    ＤＵＭＭＹ診察料
            03  FLG-DUMMY           PIC 9(01).
+      *    電話再診あり
+           03  FLG-TEL-ARI         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -2941,7 +2944,7 @@
                    WHEN    "113005910"
                    WHEN    "113004010"
                    WHEN    "113006010"
-                   WHEN    "113006010"
+                   WHEN    "113006110"
                        MOVE    IDX                 TO  WRK-IDX-IN
                END-EVALUATE
            END-PERFORM
@@ -3163,7 +3166,7 @@
                    WHEN    "113005910"
                    WHEN    "113004010"
                    WHEN    "113006010"
-                   WHEN    "113006010"
+                   WHEN    "113006110"
                        MOVE    1               TO  SPA-SEIKATU-ARI
       *
       *            小児科外来診療科算定
@@ -3605,8 +3608,8 @@
                                                        "222" OR
                                                        "232"  )
       *                    院外処方箋を交付しない場合の時、エラー
-                           IF     (SPA-NETAKIRI-ARI   =   2 )  OR
-                                  (SPA-NETAKIRI-ARI2  =   2 )
+                           IF     (SPA-SEIKATU-ARI     =   2 )  OR
+                                  (SPA-SEIKATU-ARI2    =   2 )
       *                      処方のみはＯＫ
                              IF      SPA-COM-SRYSYUKBN(IDX)(3:1)
                                                    NOT =   "3" 
@@ -4073,6 +4076,11 @@
                IF      SPA-SRYYMD      NOT =   SPA-LSTYMD
                    GO      TO      1010-SINSATU-HEN-EXT
                END-IF
+           END-IF
+      *    中途終了で電話再診の時
+           IF     (LNK-SC10S-SYORI     =   "W"  )  AND
+                  (WRK-KBN2            =   "T"  OR  "S" )
+               GO      TO      1010-SINSATU-HEN-EXT
            END-IF
       *
            MOVE    SPA-SCR-REC         TO  HZN-SCR-REC
