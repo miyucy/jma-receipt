@@ -25,6 +25,7 @@
       *  管理者            : 
       *  作成日付    作業者        記述
       *  01.00.01    MCC-多々納   02.05.17  労災用保険種別毎の追加
+      *  01.00.02    NACL-多々納  02.12.05  慢性疼痛疾患管理料の初回算定日修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,6 +47,7 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
            03  FLG-SYOKAI          PIC 9(01).
+           03  FLG-SRYKARRK        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -67,6 +69,8 @@
            03  WRK-KON-FSANTEIYMD      PIC X(08).
       *    チェック用発生日
            03  WRK-HASSYOYMD3          PIC X(08).
+      *    初診料算定日
+           03  WRK-SYOYMD              PIC X(08).
       *
            03  WRK-KBN                 PIC X(02).
       * 
@@ -99,6 +103,10 @@
       *
        01  TBL-MAX                 PIC 9(04)   VALUE   4.
       *
+      *    慢性疼痛疾患
+       01  WRK-MANSE-AREA.
+           03  WRK-MANSEI          PIC X(09)   VALUE   "113006510".
+      *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
       *
@@ -120,6 +128,10 @@
       *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
+      *
+      *    診療科履歴
+       01  SRYKARRK-REC.
+           COPY    "CPSRYKARRK.INC".
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -145,16 +157,6 @@
       *
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
-      *
-      *DD  IF      SPA-HKNKBN      NOT =   ZERO
-      *        IF      SSANTEI-SRYCD(1:3)  =   "180"
-      *            リハビリの時、傷病日＋３月
-      *            MOVE    SPA-RSI-SHOBYOYMD3  TO  WRK-HASSYOYMD3
-      *        ELSE
-      *            以外の時、発生日＋３月
-      *            MOVE    SPA-RSI-HASSYOYMD3  TO  WRK-HASSYOYMD3
-      *        END-IF
-      *DDD END-IF
       *
            EVALUATE    SSANTEI-SYORI
       *        新規、変更
@@ -238,6 +240,12 @@
                END-IF
            END-PERFORM
       *
+      *    慢性疼痛疾患管理料の時、初診料算定日から初回算定日を始める
+           IF     (WRK-FSANTEIYMD  NOT =   SPACE      )  AND
+                  (WRK-MAE-SRYCD       =   WRK-MANSEI )
+               PERFORM 1009-MANSE-CHK-SEC
+           END-IF
+      *
       *    存在しない時、診療年月
            IF      WRK-FSANTEIYMD      =   SPACE
                 MOVE    SSANTEI-SRYYMD      TO  WRK-FSANTEIYMD
@@ -312,6 +320,77 @@
            .
       *
        1001-SANTEI-KEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    慢性疼痛疾患管理料判定処理
+      *****************************************************************
+       1009-MANSE-CHK-SEC      SECTION.
+      *
+      *    初診料算定日がない時、診療科履歴から算定
+           IF      SSANTEI-SYOYMD      =   SPACE
+               PERFORM 10091-SRYKARRK-CHK-SEC
+               IF      WRK-SYOYMD          <   SSANTEI-SRYYMD
+      *            初診料算定日が診療年月日より前の時
+                   IF      WRK-SYOYMD          >   WRK-FSANTEIYMD
+                       MOVE    SSANTEI-SRYYMD      TO  WRK-FSANTEIYMD
+                   END-IF
+               END-IF
+           ELSE
+               IF      SSANTEI-SYOYMD      >   WRK-FSANTEIYMD
+                   MOVE    SSANTEI-SRYYMD      TO  WRK-FSANTEIYMD
+               END-IF
+           END-IF
+      *
+           .
+      *
+       1009-MANSE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険毎のコードの判定処理
+      *****************************************************************
+       10091-SRYKARRK-CHK-SEC      SECTION.
+      *
+      *    初診料とは、同時算定できないので、診療科履歴から初診を決定
+           MOVE    SPACE               TO  SRYKARRK-REC
+           INITIALIZE                  SRYKARRK-REC
+           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SSANTEI-PTID        TO  KARRK-PTID
+      *
+           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
+               PERFORM 975-SRYKARRK-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+               MOVE    SPACE               TO  SRYKARRK-REC
+               INITIALIZE                  SRYKARRK-REC
+           END-IF
+           MOVE    SPACE               TO  WRK-SYOYMD
+           PERFORM UNTIL       FLG-SRYKARRK    =   1
+      *
+      *        初診算定日
+              IF      (KARRK-SRYKA         NOT =   SPACE  ) AND
+                      (KARRK-LASTYMD       NOT =   SPACE  ) AND
+                      (KARRK-SYOSINYMD2    NOT =   SPACE  ) AND
+                      (KARRK-SYOSINYMD2    >=  WRK-SYOYMD )
+                   MOVE    KARRK-SYOSINYMD2    TO  WRK-SYOYMD
+               END-IF
+      *
+               MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
+               PERFORM 975-SRYKARRK-READ-SEC
+           END-PERFORM
+      *
+           .
+      *
+       10091-SRYKARRK-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -414,12 +493,6 @@
       *        初回算定日
                MOVE    WRK-FSANTEIYMD      TO  SANTEI-FSANTEIYMD
                MOVE    WRK-SRYYMD(7:2)     TO  SANTEI-MSANTEID
-      *TEST
-               DISPLAY "SANTEI SPA-HKNCOMBINUM:" SPA-HKNCOMBINUM
-                       ",SPA-HKNKBN:" SPA-HKNKBN
-                       ",FLG-HKNSAN:" FLG-HKNSAN
-                       ",WRK-SRYCD:" WRK-SRYCD
-      *TEST
            ELSE
       *        修正
                MOVE    2                   TO  FLG-SYORI
@@ -885,5 +958,27 @@
       *
            .
        920-SANTEI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科歴データ主キー検索
+      *****************************************************************
+       975-SRYKARRK-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYKARRK-REC
+               MOVE    ZERO                TO  FLG-SRYKARRK
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+               INITIALIZE                  SRYKARRK-REC
+           END-IF
+      *
+           .
+       975-SRYKARRK-READ-EXT.
            EXIT.
       *
