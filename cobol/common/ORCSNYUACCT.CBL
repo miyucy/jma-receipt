@@ -996,27 +996,30 @@
            MOVE    ZERO                TO  WRK-KASAN-ALL
            MOVE    ZERO                TO  WRK-GENZAN
            MOVE    ZERO                TO  WRK-GENZAN-ALL
+      *    ÅÀ¿ô·×»»
+           IF      WRK-ZAITEN-G        >   WRK-ZAITEN
+               MOVE    ZERO                TO  WRK-ZAITEN
+           ELSE
+               COMPUTE WRK-ZAITEN          =   WRK-ZAITEN
+                                           -   WRK-ZAITEN-G
+           END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   10  )  OR
                               (TBL-SRYCD (IDX) =   SPACE )
                EVALUATE    TBL-TENSIKIBETU (IDX)
       *            ¡ó²Ã»»
                    WHEN    5
-                       IF      IDX-SYU         >   ZERO
-                           COMPUTE WRK-KASAN   =   TBL-TENSU  (IDX-SYU)
+                       COMPUTE WRK-KASAN   =   WRK-ZAITEN
                                                *   TBL-TENSU  (IDX)
                                                /   100
                                                +   0.5
-                           ADD     WRK-KASAN       TO  WRK-KASAN-ALL
-                       END-IF
+                       ADD     WRK-KASAN       TO  WRK-KASAN-ALL
       *            ¡ó¸º»»
                    WHEN    6
-                       IF      IDX-SYU         >   ZERO
-                           COMPUTE WRK-GENZAN  =   TBL-TENSU  (IDX-SYU)
+                       COMPUTE WRK-GENZAN  =   TBL-TENSU  (IDX-SYU)
                                                *   TBL-TENSU  (IDX)
                                                /   100
-                           ADD     WRK-GENZAN     TO  WRK-GENZAN-ALL
-                       END-IF
+                       ADD     WRK-GENZAN     TO  WRK-GENZAN-ALL
                END-EVALUATE
            END-PERFORM
       *
@@ -1024,7 +1027,6 @@
            COMPUTE WRK-ZAITEN          =   WRK-ZAITEN
                                        +   WRK-KASAN-ALL
                                        -   WRK-GENZAN-ALL
-                                       -   WRK-ZAITEN-G
       *
            .
        40091-NYUACT-KEISAN-EXT.

@@ -4171,27 +4171,30 @@
            MOVE    ZERO                TO  WRK-KASAN-ALL
            MOVE    ZERO                TO  WRK-GENZAN
            MOVE    ZERO                TO  WRK-GENZAN-ALL
+      *    ÅÀ¿ô·×»»
+           IF      WRK-ZAITEN-G        >   WRK-ZAITEN
+               MOVE    ZERO                TO  WRK-ZAITEN
+           ELSE
+               COMPUTE WRK-ZAITEN          =   WRK-ZAITEN
+                                           -   WRK-ZAITEN-G
+           END-IF
       *    ÅÀ¿ô»»Äê
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX         >   SPA-GMN-MAX
                EVALUATE    SPA-COM-TENSIKIBETU (IDX)
       *            ¡ó²Ã»»
                    WHEN    5
-                       IF      IDX-SYU         >   ZERO
-                           COMPUTE WRK-KASAN   =   SPA-COM-TEN (IDX-SYU)
+                       COMPUTE WRK-KASAN       =   WRK-ZAITEN
                                                *   SPA-COM-TEN (IDX)
                                                /   100
                                                +   0.5
-                           ADD     WRK-KASAN       TO  WRK-KASAN-ALL
-                       END-IF
+                       ADD     WRK-KASAN       TO  WRK-KASAN-ALL
       *            ¡ó¸º»»
                    WHEN    6
-                       IF      IDX-SYU         >   ZERO
-                           COMPUTE WRK-GENZAN  =   SPA-COM-TEN (IDX-SYU)
+                       COMPUTE WRK-GENZAN      =   WRK-ZAITEN
                                                *   SPA-COM-TEN (IDX)
                                                /   100
-                           ADD     WRK-GENZAN     TO  WRK-GENZAN-ALL
-                       END-IF
+                       ADD     WRK-GENZAN      TO  WRK-GENZAN-ALL
                END-EVALUATE
            END-PERFORM
       *
@@ -4199,7 +4202,7 @@
            COMPUTE WRK-ZAITEN          =   WRK-ZAITEN
                                        +   WRK-KASAN-ALL
                                        -   WRK-GENZAN-ALL
-                                       -   WRK-ZAITEN-G
+      *
            .
       *
        45012-TENSU-KEISEN-EXT.
