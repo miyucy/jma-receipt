@@ -1,6 +1,6 @@
 db_group {
  type "PostgreSQL";
- port "kado";
+ port "localhost";
  name "orca";
  file "orca.log";
  redirect_port "localhost";
