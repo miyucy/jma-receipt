@@ -88,7 +88,7 @@ fi
 cd $HOME/$MSTDIR
 rm -f *.*
 #センタからのDB構造体ダウンロード
-if	orcawget info/ORCADBR.DAT ;	then
+if	orcawget info/ORCADBR-1.DAT ;	then
 	echo "センタからのDBレコード管理情報のダウンロードが終了しました"
 else
 	echo "センタからのDBレコード管理情報のダウンロードに失敗しました"
