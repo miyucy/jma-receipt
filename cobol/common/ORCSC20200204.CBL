@@ -35,6 +35,7 @@
       *  02.00.01    多々納       02/03/29  臨時投薬１４日以上の組み込み
       *  02.00.02    多々納       02/04/19  生活習慣病指導算定時の追加
       *  02.00.03    NACL-多々納  02/09/04  臨時投薬の１４日以内を修正
+      *  02.00.04    NACL-多々納  02/12/03  他科受診メッセージ削除
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1058,12 +1059,12 @@
                                                      (02 IDXS)
                    MOVE    1               TO  FLG-SYOHOSENN
       *            他科受診の時、メッセージを追加
-                   IF      LNK-ORCSC-FUKU-SRYKA      =   1
-                       MOVE    "099999901"     TO  LNK-ORCSC-SRYCD-KS
-                                                       (02 IDXS)
-                       MOVE    ZERO            TO  LNK-ORCSC-TENSU-KS
-                                                       (02 IDXS)
-                   END-IF
+      *********    IF      LNK-ORCSC-FUKU-SRYKA      =   1
+      *                MOVE    "099999901"     TO  LNK-ORCSC-SRYCD-KS
+      *                                                (02 IDXS)
+      *                MOVE    ZERO            TO  LNK-ORCSC-TENSU-KS
+      *                                                (02 IDXS)
+      *********    END-IF
                END-IF
            ELSE
       *        処方箋料を算定しない場合の処方箋料の有無
@@ -1072,21 +1073,21 @@
                END-IF
            END-IF
       *    他科受診の時、メッセージを追加
-           IF     (FLG-NAIYAK2         =   1    )  OR
-                  (FLG-TONPUK2         =   1    )  OR
-                  (FLG-GAIYAK2         =   1    )
-               IF      LNK-ORCSC-FUKU-SRYKA      =   1
-                   MOVE    "099999901"         TO  WRK-SRYCD
-                   MOVE    SPACE               TO  WRK-SRYCD2
-                   PERFORM 3002-KASAN-SYORI-SEC
-                   IF      FLG-ERR             =   ZERO
-                       MOVE    "990"           TO  LNK-ORCSC-SRYSYUKBN
-                                                             (02 IDXS)
-                       MOVE    "99"            TO  LNK-ORCSC-SRYKBN
-                                                            (02 IDXS)
-                   END-IF
-               END-IF
-           END-IF
+      *****IF     (FLG-NAIYAK2         =   1    )  OR
+      *           (FLG-TONPUK2         =   1    )  OR
+      *           (FLG-GAIYAK2         =   1    )
+      *        IF      LNK-ORCSC-FUKU-SRYKA      =   1
+      *            MOVE    "099999901"         TO  WRK-SRYCD
+      *            MOVE    SPACE               TO  WRK-SRYCD2
+      *            PERFORM 3002-KASAN-SYORI-SEC
+      *            IF      FLG-ERR             =   ZERO
+      *                MOVE    "990"           TO  LNK-ORCSC-SRYSYUKBN
+      *                                                      (02 IDXS)
+      *                MOVE    "99"            TO  LNK-ORCSC-SRYKBN
+      *                                                     (02 IDXS)
+      *            END-IF
+      *        END-IF
+      *****END-IF
       *
       *    特定疾患処方管理加算のチェック
            IF     (FLG-SYOHOSENN       =   1  )  AND
@@ -1302,21 +1303,21 @@
            END-IF
       *
       *    他科受診の時、メッセージを追加
-           IF     (FLG-NAIYAK          =   1    )  OR
-                  (FLG-TONPUK          =   1    )  OR
-                  (FLG-GAIYAK          =   1    )
-               IF      LNK-ORCSC-FUKU-SRYKA      =   1
-                   MOVE    "099999901"         TO  WRK-SRYCD
-                   MOVE    SPACE               TO  WRK-SRYCD2
-                   PERFORM 3002-KASAN-SYORI-SEC
-                   IF      FLG-ERR             =   ZERO
-                       MOVE    "990"           TO  LNK-ORCSC-SRYSYUKBN
-                                                             (02 IDXS)
-                       MOVE    "99"            TO  LNK-ORCSC-SRYKBN
-                                                            (02 IDXS)
-                   END-IF
-               END-IF
-           END-IF
+      *    IF     (FLG-NAIYAK          =   1    )  OR
+      *           (FLG-TONPUK          =   1    )  OR
+      *           (FLG-GAIYAK          =   1    )
+      *        IF      LNK-ORCSC-FUKU-SRYKA      =   1
+      *            MOVE    "099999901"         TO  WRK-SRYCD
+      *            MOVE    SPACE               TO  WRK-SRYCD2
+      *            PERFORM 3002-KASAN-SYORI-SEC
+      *            IF      FLG-ERR             =   ZERO
+      *                MOVE    "990"           TO  LNK-ORCSC-SRYSYUKBN
+      *                                                      (02 IDXS)
+      *                MOVE    "99"            TO  LNK-ORCSC-SRYKBN
+      *                                                     (02 IDXS)
+      *            END-IF
+      *        END-IF
+      *****END-IF
       *
       *    特定疾患処方管理加算のチェック
            IF     (FLG-SYOHORYO            =   1  )  AND
@@ -1624,6 +1625,23 @@
       *    加算料算定処理(入院）
       *****************************************************************
        300211-NYUKASAN-SYORI-SEC         SECTION.
+           MOVE    ZERO                TO  FLG-ERR
+      *    今回入力にないこと
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   200  )  OR
+                              (FLG-ERR              =   1    )   OR
+                              (WRK-COM-INPUTCD(IDX) =   SPACE  AND
+                               WRK-GMN-INPUTCD(IDX) =   SPACE)
+               IF     (WRK-COM-INPUTCD(IDX)    =   WRK-SRYCD )  OR
+                      (WRK-SRYCD2          NOT =   SPACE   AND
+                       WRK-COM-INPUTCD(IDX)    =   WRK-SRYCD2)
+                   MOVE    1                   TO  FLG-ERR
+               END-IF
+           END-PERFORM
+           IF      FLG-ERR             =   1
+               GO      TO      300211-NYUKASAN-SYORI-EXT
+           END-IF
+      *
       *
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
