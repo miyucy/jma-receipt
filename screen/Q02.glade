@@ -77,7 +77,18 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
-      <label></label>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F2</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 22 Dec 2000 04:57:00 GMT</last_modification_time>
+      </signal>
+      <label>¥¯¥ê¥¢</label>
       <relief>GTK_RELIEF_NORMAL</relief>
 
     </widget>

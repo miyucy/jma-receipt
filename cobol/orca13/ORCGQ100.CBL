@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    03/06/10 一括入力対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -60,6 +61,7 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-NUM                             PIC 9(09).
+           03  WRK-MCP-WIDGET                      PIC X(64).
       *
       *    固定値領域
        01  CONST-AREA.
@@ -218,6 +220,8 @@
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
+           MOVE    MCP-WIDGET          TO        WRK-MCP-WIDGET
+      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *     戻る
                WHEN    "CLICKED"       ALSO    "B01"
@@ -235,30 +239,81 @@
       *****************************************************************
        200-ENTRY                             SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *            ファイル名
-               WHEN    "ACTIVATE"      ALSO    "FILENAME"
-                   PERFORM 4100-FILENAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "STNUM"
-      *            開始件数（ページ数）
-                   PERFORM 4100-STNUM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "EDNUM"
-      *            終了件数（ページ数）
-                   PERFORM 4100-EDNUM-CHK-SEC
-           END-EVALUATE
+           MOVE    MCP-WIDGET          TO        WRK-MCP-WIDGET
+      *
+      *    入力個所のセット
+           PERFORM 400-GMN-INPUT-SEC
+      *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+      *
            .
       *
        200-ENTRY-EXT.
            EXIT.
       *
       *****************************************************************
+      *    入力個所のセット処理
+      *****************************************************************
+       400-GMN-INPUT-SEC           SECTION.
+      *
+           MOVE    ZERO        TO      SPA-GMN-Q100-CUR
+      *
+           .
+      *
+       400-GMN-INPUT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC           SECTION.
+      *
+      *    画面をＳＰＡにセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+      *    ファイル名チェック
+           PERFORM 4100-FILENAME-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+      *    開始件数（ページ数）チェック
+           PERFORM 4100-STNUM-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+      *    終了件数（ページ数）チェック
+           PERFORM 4100-EDNUM-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+      *
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    画面ＳＰＡ編集処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC        SECTION.
+      *
+      *    ファイル名
+           MOVE    Q100-FILENAME   TO  SPA-GMN-Q100-FILENAME
+      *
+      *    開始件数（ページ数）
+           MOVE    Q100-STNUM      TO  SPA-GMN-Q100-STNUM
+      *
+      *    終了件数（ページ数）
+           MOVE    Q100-EDNUM      TO  SPA-GMN-Q100-EDNUM
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    ファイル名チェック
       *****************************************************************
        4100-FILENAME-CHK-SEC           SECTION.
-      *
-           MOVE    Q100-FILENAME   TO  SPA-GMN-Q100-FILENAME
-      *
-           MOVE    2               TO  SPA-GMN-Q100-CUR
       *
            .
        4100-FILENAME-CHK-EXT.
@@ -268,8 +323,6 @@
       *****************************************************************
        4100-STNUM-CHK-SEC              SECTION.
       *
-           MOVE    Q100-STNUM      TO  SPA-GMN-Q100-STNUM
-      *
            MOVE    SPA-GMN-Q100-STNUM
                                    TO  WRK-NUM
       *
@@ -277,8 +330,6 @@
            PERFORM 4100-NUM-HANI-CHK-SEC
       *
            MOVE    WRK-NUM         TO  SPA-GMN-Q100-STNUM
-      *
-           MOVE    3               TO  SPA-GMN-Q100-CUR
       *
            .
        4100-STNUM-CHK-EXT.
@@ -288,8 +339,6 @@
       *****************************************************************
        4100-EDNUM-CHK-SEC              SECTION.
       *
-           MOVE    Q100-EDNUM      TO  SPA-GMN-Q100-EDNUM
-      *
            MOVE    SPA-GMN-Q100-EDNUM
                                    TO  WRK-NUM
       *
@@ -297,8 +346,6 @@
            PERFORM 4100-NUM-HANI-CHK-SEC
       *
            MOVE    WRK-NUM         TO  SPA-GMN-Q100-EDNUM
-      *
-           MOVE    4               TO  SPA-GMN-Q100-CUR
       *
            .
        4100-STNUM-CHK-EXT.
@@ -346,6 +393,12 @@
       *    確定　処理
       *****************************************************************
        490-KAKUTEI                 SECTION.
+      *
+      *    入力時チェック
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  490-KAKUTEI-EXT
+           END-IF
       *
       *    出力ファイル名未入力チェック（ＣＳＶ出力時）
            IF  ( SPA-Q02-Q100-PROC-FLG     =   ZERO )
@@ -477,6 +530,11 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           IF     (SPA-ERRCD           =   SPACE)  AND
+                  (SPA-GMN-Q100-CUR    =   ZERO )
+               PERFORM 5011-INPUT-CUR-SEC
+           END-IF
+      *
            EVALUATE    SPA-GMN-Q100-CUR
       *
       *    ファイル名
@@ -500,6 +558,39 @@
        5001-MAPCUR-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入力個所のセット処理
+      *****************************************************************
+       5011-INPUT-CUR-SEC          SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+      *
+      *    表題
+           WHEN    "FILENAME"
+               MOVE    001         TO  SPA-GMN-Q100-CUR
+      *
+      *    条件上段
+           WHEN    "STNUM"
+               MOVE    002         TO  SPA-GMN-Q100-CUR
+      *
+      *    条件下段
+           WHEN    "EDNUM"
+               MOVE    003         TO  SPA-GMN-Q100-CUR
+      *
+           END-EVALUATE
+      *
+      *    次カーソル位置を設定
+           EVALUATE    WRK-MCP-WIDGET
+           WHEN    "EDNUM"
+               MOVE    004         TO  SPA-GMN-Q100-CUR
+           WHEN    OTHER
+               COMPUTE SPA-GMN-Q100-CUR    =   SPA-GMN-Q100-CUR +   1
+           END-EVALUATE
+      *
+           .
+      *
+       5011-INPUT-CUR-EXT.
+           EXIT.
       *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************

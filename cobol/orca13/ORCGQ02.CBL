@@ -55,6 +55,7 @@
       *                                   +テスト患者区分を条件に追加
       * 01.00.03     MCC-太田     02/09/12+パスをサブプロから取得
       * 01.00.04     NACL-太田    03/05/26+老人一割、２割を追加
+      * 01.00.05     NACL-太田    03/06/10+一括入力対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -598,6 +599,7 @@
                                    MCPAREA
                                    MCPDATA-REC
       *
+           PERFORM 490-KAKUNIN-SEC
       *
            .
        3001-Q100SPASET-EXT.
@@ -1156,10 +1158,15 @@
       *****************************************************************
        200-GMNSENI                           SECTION.
       *
+           MOVE        MCP-WIDGET      TO      WRK-MCP-WIDGET
+      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
+      *    クリア
+               WHEN    "CLICKED"       ALSO    "B02"
+                   PERFORM 480-CLEAR-SEC
       *    患者登録へ
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 480-KANJYA-SEC
@@ -1204,32 +1211,89 @@
       *****************************************************************
        200-ENTRY                             SECTION.
       *
+           MOVE        MCP-WIDGET      TO      WRK-MCP-WIDGET
+      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"      ALSO    "HYODAI"
-      *            表題チェック
-                   MOVE    MCP-WIDGET  TO  WRK-WIDGET
-                   PERFORM 4100-HYODAI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "JYOKEN1"
-      *            条件上段チェック
-                   MOVE    MCP-WIDGET  TO  WRK-WIDGET
-                   PERFORM 4101-JYOKEN1-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "JYOKEN2"
-      *            条件下段チェック
-                   MOVE    MCP-WIDGET  TO  WRK-WIDGET
-                   PERFORM 4102-JYOKEN2-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SELNUM"
-      *            選択番号チェック
-                   MOVE    MCP-WIDGET  TO  WRK-WIDGET
-                   PERFORM 4102-SELUM-CHK-SEC
-      *        行選択
-               WHEN    ANY             ALSO    "KEKKALST"
-                   PERFORM 4102-KEKKALSTSEL-SEC
+      *    行選択
+           WHEN    ANY             ALSO    "KEKKALST"
+               PERFORM 4102-KEKKALSTSEL-SEC
+           WHEN    OTHER
+      *
+      *        入力個所のセット
+               PERFORM 400-GMN-INPUT-SEC
+      *        入力チェック処理
+               PERFORM 410-INPUT-CHK-SEC
            END-EVALUATE
+      *
            .
       *
        200-ENTRY-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入力個所のセット処理
+      *****************************************************************
+       400-GMN-INPUT-SEC           SECTION.
+      *
+           MOVE    ZERO        TO      SPA-GMN-Q02-CUR
+      *
+           .
+      *
+       400-GMN-INPUT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC           SECTION.
+      *
+      *    画面をＳＰＡにセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+      *    表題チェック
+           PERFORM 4100-HYODAI-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+      *    条件上段チェック
+           PERFORM 4101-JYOKEN1-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+      *    条件下段チェック
+           PERFORM 4102-JYOKEN2-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+      *    選択番号チェック
+           PERFORM 4102-SELUM-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+      *
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    画面ＳＰＡ編集処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC        SECTION.
+      *
+      *    表題
+           MOVE    Q02-HYODAI      TO  SPA-GMN-Q02-HYODAI
+      *    条件１
+           MOVE    Q02-JYOKEN1     TO  SPA-GMN-Q02-JYOKEN1
+      *    条件２
+           MOVE    Q02-JYOKEN2     TO  SPA-GMN-Q02-JYOKEN2
+      *    選択番号
+           MOVE    Q02-SELNUM      TO  SPA-GMN-Q02-SELNUM
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
       *****************************************************************
       *    ＳＱＬ文編集処理
       *****************************************************************
@@ -2564,22 +2628,16 @@
       *****************************************************************
        4100-HYODAI-CHK-SEC         SECTION.
       *
-           MOVE    1                   TO  SPA-GMN-Q02-CUR
-      *
-           MOVE    Q02-HYODAI          TO  SPA-GMN-Q02-HYODAI
-      *
       *    全角半角混在チェック
            MOVE    SPA-GMN-Q02-HYODAI
                                        TO  WRK-KANACHK-MAE-INPUT
       *
            PERFORM     800-ENRTRY-CHK-SEC
            IF  ( FLG-ENTRYCHK      NOT =   ZERO )
+               MOVE    1               TO  SPA-GMN-Q02-CUR
                MOVE    "0003"          TO  SPA-ERRCD
                GO  TO  4100-HYODAI-CHK-EXIT
            END-IF
-      *
-           COMPUTE SPA-GMN-Q02-CUR     =   SPA-GMN-Q02-CUR
-                                       +   1
       *
            .
        4100-HYODAI-CHK-EXIT.
@@ -2589,22 +2647,16 @@
       *****************************************************************
        4101-JYOKEN1-CHK-SEC        SECTION.
       *
-           MOVE    2                   TO  SPA-GMN-Q02-CUR
-      *
-           MOVE    Q02-JYOKEN1         TO  SPA-GMN-Q02-JYOKEN1
-      *
       *    全角半角混在チェック
            MOVE    SPA-GMN-Q02-JYOKEN1
                                        TO  WRK-KANACHK-MAE-INPUT
       *
            PERFORM     800-ENRTRY-CHK-SEC
            IF  ( FLG-ENTRYCHK      NOT =   ZERO )
+               MOVE    2               TO  SPA-GMN-Q02-CUR
                MOVE    "0003"          TO  SPA-ERRCD
                GO  TO  4101-JYOKEN1-CHK-EXT
            END-IF
-      *
-           COMPUTE SPA-GMN-Q02-CUR     =   SPA-GMN-Q02-CUR
-                                       +   1
       *
            .
        4101-JYOKEN1-CHK-EXT.
@@ -2614,21 +2666,16 @@
       *****************************************************************
        4102-JYOKEN2-CHK-SEC        SECTION.
       *
-           MOVE    3                   TO  SPA-GMN-Q02-CUR
-      *
-           MOVE    Q02-JYOKEN2         TO  SPA-GMN-Q02-JYOKEN2
-      *
       *    全角半角混在チェック
            MOVE    SPA-GMN-Q02-JYOKEN2
                                        TO  WRK-KANACHK-MAE-INPUT
       *
            PERFORM     800-ENRTRY-CHK-SEC
            IF  ( FLG-ENTRYCHK      NOT =   ZERO )
+               MOVE    3               TO  SPA-GMN-Q02-CUR
                MOVE    "0003"          TO  SPA-ERRCD
                GO  TO  4102-JYOKEN2-CHK-EXT
            END-IF
-      *
-           MOVE    4                   TO  SPA-GMN-Q02-CUR
       *
            .
        4102-JYOKEN2-CHK-EXT.
@@ -2638,13 +2685,8 @@
       *****************************************************************
        4102-SELUM-CHK-SEC          SECTION.
       *
-           MOVE    4                   TO  SPA-GMN-Q02-CUR
-      *
-           MOVE    Q02-SELNUM          TO  SPA-GMN-Q02-SELNUM
-      *
       *    未入力時はチェックを行わない
            IF  ( SPA-GMN-Q02-SELNUM    =   ZERO )
-               MOVE    1               TO  SPA-GMN-Q02-CUR
                GO  TO  4102-SELUM-CHK-EXT
            END-IF
       *
@@ -2662,11 +2704,10 @@
                    =   SPA-GMN-Q02-SELNUM  -  SPA-GMN-Q02-SKIP-KNS
       *
            ELSE
+               MOVE    4               TO  SPA-GMN-Q02-CUR
                MOVE    "0002"          TO  SPA-ERRCD
                GO  TO  4102-SELUM-CHK-EXT
            END-IF
-      *
-           MOVE    1                   TO  SPA-GMN-Q02-CUR
       *
            .
        4102-SELUM-CHK-EXT.
@@ -2675,6 +2716,9 @@
       *    行選択処理
       *****************************************************************
        4102-KEKKALSTSEL-SEC        SECTION.
+      *
+      *    画面をＳＰＡにセット
+           PERFORM 4101-GMN-SPA-SET-SEC
       *
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL     ( IDX1    >       200 )
@@ -2753,6 +2797,9 @@
       *****************************************************************
        210-MAE-PAGE-SEC                SECTION.
       *
+      *    画面をＳＰＡにセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
            IF  ( SPA-GMN-Q02-SKIP-KNS      >   0 )
                COMPUTE SPA-GMN-Q02-SKIP-KNS    =   SPA-GMN-Q02-SKIP-KNS
                                                -   200
@@ -2767,6 +2814,9 @@
       *    次頁　処理
       *****************************************************************
        210-TUGI-PAGE-SEC               SECTION.
+      *
+      *    画面をＳＰＡにセット
+           PERFORM 4101-GMN-SPA-SET-SEC
       *
            IF  ( SPA-GMN-Q02-FLG-PTINF     =   0 )
                COMPUTE SPA-GMN-Q02-SKIP-KNS    =   SPA-GMN-Q02-SKIP-KNS
@@ -2783,6 +2833,9 @@
       *    情報削除へ
       *****************************************************************
        480-JYOUHOU-DEL-SEC             SECTION.
+      *
+      *    画面をＳＰＡにセット
+           PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
@@ -2837,9 +2890,31 @@
            EXIT.
       *
       *****************************************************************
+      *    クリア処理
+      *****************************************************************
+       480-CLEAR-SEC               SECTION.
+      *
+           INITIALIZE              SPA-GMN-Q02-HYODAI
+                                   SPA-GMN-Q02-JYOKEN1
+                                   SPA-GMN-Q02-JYOKEN2
+                                   SPA-GMN-Q02-SELNUM
+                                   SPA-GMN-Q02-KEKKA-SEL
+      *
+           MOVE    1               TO  SPA-GMN-Q02-CUR
+      *
+           .
+       480-CLEAR-EXT.
+           EXIT.
+      *****************************************************************
       *    患者登録へ
       *****************************************************************
        480-KANJYA-SEC             SECTION.
+      *
+      *    入力時チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF  ( SPA-ERRCD         NOT =   SPACE )
+               GO  TO  480-KANJYA-EXT
+           END-IF
       *
       *    画面遷移時のチェック処理
            PERFORM 4801-GAMEN-SENIJI-CHK-SEC
@@ -2939,6 +3014,9 @@
       *****************************************************************
        480-CSV-KAKUNIN-SEC             SECTION.
       *
+      *    画面をＳＰＡにセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
       *----(01.00.02) LINE ADD START ----------------------------------
       *    ジョブ管理チェック処理
            PERFORM 900-JOBKANRI-CHK-SEC
@@ -2970,6 +3048,9 @@
       *    印刷確認
       *****************************************************************
        480-PRINT-KAKUNIN-SEC           SECTION.
+      *
+      *    画面をＳＰＡにセット
+           PERFORM 4101-GMN-SPA-SET-SEC
       *
       *----(01.00.02) LINE ADD START ----------------------------------
       *    ジョブ管理チェック処理
@@ -3040,6 +3121,9 @@
       *    処理確認画面
       *****************************************************************
        490-KAKUNIN-SEC                 SECTION.
+      *
+      *    画面をＳＰＡにセット
+           PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    SPACE           TO  SPA-MOTOPG
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -3339,6 +3423,11 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           IF     (SPA-ERRCD           =   SPACE)  AND
+                  (SPA-GMN-Q02-CUR     =   ZERO )
+               PERFORM 5011-INPUT-CUR-SEC
+           END-IF
+      *
            EVALUATE    SPA-GMN-Q02-CUR
       *
       *    表題
@@ -3362,6 +3451,42 @@
        5001-MAPCUR-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入力個所のセット処理
+      *****************************************************************
+       5011-INPUT-CUR-SEC          SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+      *
+      *    表題
+           WHEN    "HYODAI"
+               MOVE    001         TO  SPA-GMN-Q02-CUR
+      *
+      *    条件上段
+           WHEN    "JYOKEN1"
+               MOVE    002         TO  SPA-GMN-Q02-CUR
+      *
+      *    条件下段
+           WHEN    "JYOKEN2"
+               MOVE    003         TO  SPA-GMN-Q02-CUR
+      *
+      *    選択番号
+           WHEN    "SELNUM"
+               MOVE    004         TO  SPA-GMN-Q02-CUR
+           END-EVALUATE
+      *
+      *    次カーソル位置を設定
+           EVALUATE    WRK-MCP-WIDGET
+           WHEN    "SELNUM"
+               MOVE    001         TO  SPA-GMN-Q02-CUR
+           WHEN    OTHER
+               COMPUTE SPA-GMN-Q02-CUR =   SPA-GMN-Q02-CUR +   1
+           END-EVALUATE
+      *
+           .
+      *
+       5011-INPUT-CUR-EXT.
+           EXIT.
       *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************
