@@ -2528,9 +2528,11 @@
            ELSE
       *
              IF     SYU-SYUHKNNUM   =   "973"
-                ADD    ACCT-SYUTEN1   TO   WRK-SYUTEN
-                IF     ACCT-SRYKBN     =   "70"
-                   COMPUTE  WRK-SYUTEN  =  WRK-SYUTEN  -  ACCT-SYUTEN2
+                COMPUTE     WRK-SYUTEN  =  WRK-SYUTEN
+                                 +  ( ACCT-SYUTEN1 * SINRYO-COUNT )
+                IF     ACCT-SRYKBN   =   "70"
+                   COMPUTE  WRK-SYUTEN  =  WRK-SYUTEN
+                                 -  ( ACCT-SYUTEN2 * SINRYO-COUNT )
                 END-IF
              END-IF
       *
