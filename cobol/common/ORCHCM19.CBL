@@ -34,6 +34,7 @@
       * 01.00.03     NACL-多々納  02/11/01  受給者番号の全角８文字以上対応
       * 01.00.04     NACL-多々納  02/12/29  高８、高９編集修正
       * 01.00.05     NACL-多々納  03/01/20  その他器材の編集追加
+      *                                     中途の在宅編集修正
       *****************************************************************
       *
       *
@@ -2013,9 +2014,9 @@
       *            END-IF
       *********END-IF
       *        在宅自己注射はすべてで対象とする
-               IF     (WKSRY-SRYKBN        =   "14"    )  AND
-                      (WKSRY-YKZTEN        >   ZERO   OR
-                       WKSRY-KIZAITEN      >   ZERO    )
+               IF     (WKSRY-SRYKBN        =   "14"    )
+      **        AND   (WKSRY-YKZTEN        >   ZERO   OR
+      **               WKSRY-KIZAITEN      >   ZERO    )
                    MOVE    1               TO  FLG-OK
       ************ MOVE    2               TO  FLG-OK2
                END-IF
@@ -2135,7 +2136,7 @@
                       (ORCHC19-KBN         =   "4"   )
                    MOVE    1               TO  FLG-OK2
                END-IF
-               IF     (SRY-SRYSYUKBN   NOT =   "148"  AND
+               IF     (WRK-SRYSYUKBN   NOT =   "148"  AND
                                                "149" )  AND
                       (ORCHC19-KBN         =   "5"  )
                    MOVE    1               TO  FLG-OK2
@@ -2149,6 +2150,7 @@
                       (ORCHC19-KBN         =   "5"   )
                    MOVE    1               TO  FLG-OK2
                END-IF
+           END-IF
       *
            IF      FLG-OK2             =   ZERO
                IF      IDX-Z               >   ZERO
