@@ -78,6 +78,8 @@
       *  01.00.37    NACL-ÌçÏÆ    05/01/14  ²¬»³¸©ÆýÍÄ»ùÆÃ¼ì·×»»ÂÐ±þ
       *  01.00.38    NACL-ÌçÏÆ    05/01/25  ËÌ³¤Æ»ÃÏÊý¸øÈñ½¤Àµ
       *  01.00.39    NACL-ÌçÏÆ    05/03/03  ¿©»ö¤Ë´Ø¤¹¤ëÊÔ½¸½¤Àµ
+      *  01.00.40    NACL-ÌçÏÆ    05/03/04  ÀÅ²¬¸©Êì»Ò¾ã³²¤¬Ä¹´ü¤ÈÊ»ÍÑ¤Î
+      *                                     ¾ì¹ç¡¢£±£°£°£°£°±ß¾å¸Â¤È¤¹¤ë
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2049,6 +2051,15 @@
                     MOVE    "1"    TO    COMB-KOH1-NYUJGNKBN
                END-IF
       *
+               IF  ( WK-1001-PREFNUM         =  22             ) AND
+                   ( COMB-KOH1HKNNUM         = "184" OR "185"  ) AND
+                   ((COMB-KOH2HKNNUM         = "972"          ) OR
+                    (COMB-KOH3HKNNUM         = "972"          ) OR
+                    (COMB-KOH4HKNNUM         = "972"          ))
+                    MOVE   10000   TO    MAX-KIN-KOHI1-M
+                    MOVE    "1"    TO    COMB-KOH1-NYUJGNKBN
+               END-IF
+      *
            END-IF.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
@@ -2108,6 +2119,15 @@
                    ((COMB-KOH1HKNNUM         = "972") OR
                     (COMB-KOH3HKNNUM         = "972") OR
                     (COMB-KOH4HKNNUM         = "972"))
+                    MOVE   10000   TO    MAX-KIN-KOHI2-M
+                    MOVE    "1"    TO    COMB-KOH2-NYUJGNKBN
+               END-IF
+      *
+               IF  ( WK-1001-PREFNUM         =  22             ) AND
+                   ( COMB-KOH2HKNNUM         = "184" OR "185"  ) AND
+                   ((COMB-KOH1HKNNUM         = "972"          ) OR
+                    (COMB-KOH3HKNNUM         = "972"          ) OR
+                    (COMB-KOH4HKNNUM         = "972"          ))
                     MOVE   10000   TO    MAX-KIN-KOHI2-M
                     MOVE    "1"    TO    COMB-KOH2-NYUJGNKBN
                END-IF
@@ -2175,6 +2195,15 @@
                     MOVE    "1"    TO    COMB-KOH3-NYUJGNKBN
                END-IF
       *
+               IF  ( WK-1001-PREFNUM         =  22             ) AND
+                   ( COMB-KOH3HKNNUM         = "184" OR "185"  ) AND
+                   ((COMB-KOH1HKNNUM         = "972"          ) OR
+                    (COMB-KOH2HKNNUM         = "972"          ) OR
+                    (COMB-KOH4HKNNUM         = "972"          ))
+                    MOVE   10000   TO    MAX-KIN-KOHI3-M
+                    MOVE    "1"    TO    COMB-KOH3-NYUJGNKBN
+               END-IF
+      *
            END-IF.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
@@ -2234,6 +2263,15 @@
                    ((COMB-KOH1HKNNUM         = "972") OR
                     (COMB-KOH2HKNNUM         = "972") OR
                     (COMB-KOH3HKNNUM         = "972"))
+                    MOVE   10000   TO    MAX-KIN-KOHI4-M
+                    MOVE    "1"    TO    COMB-KOH4-NYUJGNKBN
+               END-IF
+      *
+               IF  ( WK-1001-PREFNUM         =  22             ) AND
+                   ( COMB-KOH4HKNNUM         = "184" OR "185"  ) AND
+                   ((COMB-KOH1HKNNUM         = "972"          ) OR
+                    (COMB-KOH2HKNNUM         = "972"          ) OR
+                    (COMB-KOH3HKNNUM         = "972"          ))
                     MOVE   10000   TO    MAX-KIN-KOHI4-M
                     MOVE    "1"    TO    COMB-KOH4-NYUJGNKBN
                END-IF
@@ -2413,6 +2451,16 @@
                END-IF
            END-IF.
       *
+           IF  ( WK-1001-PREFNUM         =  22             ) AND
+               ( COMB-KOH1HKNNUM         = "184" OR "185"  ) AND
+               ((COMB-KOH2HKNNUM         = "972"          ) OR
+                (COMB-KOH3HKNNUM         = "972"          ) OR
+                (COMB-KOH4HKNNUM         = "972"          ))
+               IF   MAX-KIN-KOHI1-M   >     10000
+                     MOVE    10000   TO    MAX-KIN-KOHI1-M
+               END-IF
+           END-IF.
+      *
        2103-KOH1-KAISU-EXT.
            EXIT.
       ******************************************************************
@@ -2449,6 +2497,16 @@
                ((COMB-KOH1HKNNUM         = "972") OR
                 (COMB-KOH3HKNNUM         = "972") OR
                 (COMB-KOH4HKNNUM         = "972"))
+               IF   MAX-KIN-KOHI2-M   >     10000
+                     MOVE    10000   TO    MAX-KIN-KOHI2-M
+               END-IF
+           END-IF.
+      *
+           IF  ( WK-1001-PREFNUM         =  22             ) AND
+               ( COMB-KOH2HKNNUM         = "184" OR "185"  ) AND
+               ((COMB-KOH1HKNNUM         = "972"          ) OR
+                (COMB-KOH3HKNNUM         = "972"          ) OR
+                (COMB-KOH4HKNNUM         = "972"          ))
                IF   MAX-KIN-KOHI2-M   >     10000
                      MOVE    10000   TO    MAX-KIN-KOHI2-M
                END-IF
@@ -2495,6 +2553,16 @@
                END-IF
            END-IF.
       *
+           IF  ( WK-1001-PREFNUM         =  22             ) AND
+               ( COMB-KOH3HKNNUM         = "184" OR "185"  ) AND
+               ((COMB-KOH1HKNNUM         = "972"          ) OR
+                (COMB-KOH2HKNNUM         = "972"          ) OR
+                (COMB-KOH4HKNNUM         = "972"          ))
+               IF   MAX-KIN-KOHI3-M   >     10000
+                     MOVE    10000   TO    MAX-KIN-KOHI3-M
+               END-IF
+           END-IF.
+      *
        2105-KOH3-KAISU-EXT.
            EXIT.
       ******************************************************************
@@ -2531,6 +2599,16 @@
                ((COMB-KOH1HKNNUM         = "972") OR
                 (COMB-KOH2HKNNUM         = "972") OR
                 (COMB-KOH3HKNNUM         = "972"))
+               IF   MAX-KIN-KOHI4-M   >     10000
+                     MOVE    10000   TO    MAX-KIN-KOHI4-M
+               END-IF
+           END-IF.
+      *
+           IF  ( WK-1001-PREFNUM         =  22             ) AND
+               ( COMB-KOH4HKNNUM         = "184" OR "185"  ) AND
+               ((COMB-KOH1HKNNUM         = "972"          ) OR
+                (COMB-KOH2HKNNUM         = "972"          ) OR
+                (COMB-KOH3HKNNUM         = "972"          ))
                IF   MAX-KIN-KOHI4-M   >     10000
                      MOVE    10000   TO    MAX-KIN-KOHI4-M
                END-IF
