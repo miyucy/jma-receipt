@@ -2247,9 +2247,6 @@
                MOVE    WRK-HKN-RIREKI-TBL  (IDXX)
                                            TO  RECEDEN-RECEDATA
       *
-      *???
-                  DISPLAY "KEY="  RECEDEN-KEY "#"
-      *???
                MOVE    RECEDEN-REC         TO  MCPDATA-REC
                MOVE    "RECEDEN-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -2382,9 +2379,6 @@
                        MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                        MOVE    WRK-COMMENT (IDW)   TO  RECEDEN-RECEDATA
       *
-      *???
-                  DISPLAY "KEY="  RECEDEN-KEY "#"
-      *???
                        MOVE    RECEDEN-REC         TO  MCPDATA-REC
                        MOVE    "RECEDEN-KEY"       TO  ORC-DBPATH
                        MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -2541,9 +2535,6 @@
            MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
            MOVE    WRK-REC             TO  RECEDEN-RECEDATA
       *
-      *???
-                  DISPLAY "KEY="  RECEDEN-KEY "#"
-      *???
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
            MOVE    "RECEDEN-KEY"       TO  ORC-DBPATH
            MOVE    "DBINSERT"          TO  MCP-FUNC
