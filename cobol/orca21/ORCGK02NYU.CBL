@@ -7961,7 +7961,11 @@
       *
            MOVE    ZERO                TO  IDX-P
            MOVE    "2"                 TO  FLG-SYORI
-           PERFORM 45101-SNRYO-SYORI-SEC
+           IF      SPA-PTID            =   ZERO
+               CONTINUE
+           ELSE
+               PERFORM 45101-SNRYO-SYORI-SEC
+           END-IF
       *
            .
        4410-WSINPARA-EXT.
@@ -8794,7 +8798,9 @@
       *
       *     ∂¶ƒÃ£”£–£¡§ÿ ‘Ω∏
       *     ›∏±¡»πÁ
-           PERFORM 3101-HKNCOMBI-HEN-SEC
+           IF      SPA-PTID        NOT =   ZERO
+               PERFORM 3101-HKNCOMBI-HEN-SEC
+           END-IF
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
       *
