@@ -326,8 +326,8 @@
                PERFORM 3101-INPUTCD-SET-SEC
            END-IF.
            IF     (SPA-I48-GMN-MAX     =   ZERO  )  AND
-                  (SPA-I48-CDSYUBETU   =   "J"   )  OR
-                  (SPA-I48-GMN-SYORI   =   "8"  OR  "9"  OR  "U")
+                  ((SPA-I48-CDSYUBETU   =   "J"   )  OR
+                   (SPA-I48-GMN-SYORI   =   "8"  OR  "9"  OR  "U"))
                MOVE    "1"                 TO  WRK-WIDGET-SW
                PERFORM 3102-TENSU-SET-SEC
       *        点数マスタ検索時、自院がゼロ件の時、全体を検索
