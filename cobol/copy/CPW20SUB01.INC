@@ -38,11 +38,6 @@
       *
       *        検索キー２
                05  W20SUB01-I-KEY2.
-      *            特定機能病院区分
-                   07  W20SUB01-I-TOKKINOHOSPKBN
-                                               PIC X(01).
-      *            特別看護届出区分
-                   07  W20SUB01-I-TOKKNGTDKKBN PIC X(01).
       *            看護師数区分
                    07  W20SUB01-I-KNGSISUKBN   PIC X(01).
       *            病棟種別

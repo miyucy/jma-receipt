@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * 日医標準レセプトソフト（JMA standard receipt software）
+      * ﾆ�ｰ衙ｸｽ爭�･ｻ･ﾗ･ﾈ･ｽ･ﾕ･ﾈ｡ﾊJMA standard receipt software｡ﾋ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -69,7 +69,7 @@
                 05  W21-BRM-KA             PIC X(23).
                 05  W21-BRM-KA-STT         PIC S9(9)   BINARY.
                 05  W21-BRM-KA-CNT         PIC S9(9)   BINARY.
-                05  W21-BRM-KA-ITM         PIC X(23)   OCCURS  10.
+                05  W21-BRM-KA-ITM         PIC X(23)   OCCURS  99.
                 05  W21-BRM-KA-ITM-STT     PIC S9(9)   BINARY.
               04  W21-YUKOSTYMD            PIC X(9).
               04  W21-YUKOSTYMD-STT        PIC S9(9)   BINARY.

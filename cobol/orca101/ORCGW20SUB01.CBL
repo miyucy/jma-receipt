@@ -44,6 +44,7 @@
        01  FLG-AREA.
            03  FLG-NYUKHN                          PIC 9(01).
            03  FLG-TENSU                           PIC 9(01).
+           03  FLG-DBRC                            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -204,10 +205,6 @@
       *****************************************************************
        210-IPPAN-PARA-SET-SEC          SECTION.
       *
-           IF    ( W20SUB01-I-TOKKINOHOSPKBN   =   "1" )
-               MOVE    "1"         TO  NYUKHN-SSTKIJUNKBN
-           END-IF
-      *
            MOVE    W20SUB01-I-BTUSBTKBN
                                    TO  NYUKHN-BTUSBTKBN
            MOVE    W20SUB01-I-HEIKINZAIKBN
@@ -225,10 +222,6 @@
       *****************************************************************
        210-SEISIN-PARA-SET-SEC         SECTION.
       *
-           IF    ( W20SUB01-I-TOKKINOHOSPKBN   =   "1" )
-               MOVE    "1"         TO  NYUKHN-SSTKIJUNKBN
-           END-IF
-      *
            MOVE    W20SUB01-I-BTUSBTKBN
                                    TO  NYUKHN-BTUSBTKBN
            MOVE    W20SUB01-I-HEIKINZAIKBN
@@ -245,10 +238,6 @@
       *    結核病棟
       *****************************************************************
        210-KEKKAKU-PARA-SET-SEC        SECTION.
-      *
-           IF    ( W20SUB01-I-TOKKINOHOSPKBN   =   "1" )
-               MOVE    "1"         TO  NYUKHN-SSTKIJUNKBN
-           END-IF
       *
            MOVE    W20SUB01-I-BTUSBTKBN
                                    TO  NYUKHN-BTUSBTKBN
@@ -333,12 +322,9 @@
       *****************************************************************
        210-SINRYO-PARA-SET-SEC         SECTION.
       *
-           EVALUATE TRUE
-           WHEN   ( W20SUB01-I-TOKKNGTDKKBN    =   "1" )
-               MOVE    "2"         TO  NYUKHN-SSTKIJUNKBN
-           WHEN   ( W20SUB01-I-KNGSISUKBN      =   "1" )
-               MOVE    "3"         TO  NYUKHN-SSTKIJUNKBN
-           END-EVALUATE
+      *    IF    ( W20SUB01-I-KNGSISUKBN   =   "1" )
+      *        MOVE    "3"         TO  NYUKHN-SSTKIJUNKBN
+      *    END-IF
       *
            MOVE    W20SUB01-I-BTUSBTKBN
                                    TO  NYUKHN-BTUSBTKBN
@@ -375,32 +361,23 @@
            MOVE    NYUINKHN-REC        TO  MCPDATA-REC
       *
       *    入院料算定マスタ検索
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           PERFORM 910-DB-SELECT-SEC
-           IF    (  MCP-RC     NOT =  ZERO )
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    NOT =   ZERO )
                    MOVE    1           TO  FLG-NYUKHN
            ELSE
-      *        入院料算定マスタ読込
-               MOVE    WRK-DBPATH      TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    (  MCP-RC     NOT =   ZERO )
-                   MOVE    1           TO  FLG-NYUKHN
+               MOVE    MCPDATA-REC TO  NYUINKHN-REC
+      *        点数マスタより名称取得
+               PERFORM 800-TENSU-SEL-SEC
+               IF    ( FLG-TENSU   =   ZERO )
+                   MOVE    TNS-NAME
+                                   TO  WRK-TNS-NAME
                ELSE
-                   MOVE    MCPDATA-REC TO  NYUINKHN-REC
-      *            点数マスタより名称取得
-                   PERFORM 800-TENSU-SEL-SEC
-                   IF    ( FLG-TENSU   =   ZERO )
-                       MOVE    TNS-NAME
-                                       TO  WRK-TNS-NAME
-                   ELSE
-                       MOVE    SPACE   TO  WRK-TNS-NAME
-                   END-IF
+                   MOVE    SPACE   TO  WRK-TNS-NAME
                END-IF
            END-IF
       *
       *    入院料算定マスタクローズ
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 900-TBL-CLOSE-SEC
       *
            .
       *
@@ -422,29 +399,74 @@
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
       *    点数マスタ検索
-           MOVE    "TENSU-KEY"  TO  ORC-DBPATH
-           PERFORM 910-DB-SELECT-SEC
-           IF    (  MCP-RC     NOT =   ZERO )
+           MOVE    "TENSU-KEY"     TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    (  FLG-DBRC   NOT =   ZERO )
                MOVE    1           TO  FLG-TENSU
            ELSE
-      *        点数マスタ読込
-               MOVE    "TENSU-KEY" TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    (  MCP-RC     NOT =   ZERO )
-                   MOVE    1       TO  FLG-TENSU
-               ELSE
-                   MOVE    MCPDATA-REC TO  TNS-TENSU-REC
-               END-IF
+               MOVE    MCPDATA-REC TO  TNS-TENSU-REC
            END-IF
       *
       *    点数マスタクローズ
-           MOVE    "TENSU-KEY"     TO  ORC-DBPATH
-           PERFORM 910-DB-CLOSE-SEC
+           MOVE    "TENSU-KEY"     TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
       *
            .
       *
        800-TENSU-SEL-EXT.
            EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       900-TBL-SELECT-SEC              SECTION.
+      *
+           MOVE    ZERO            TO  FLG-DBRC
+           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+           PERFORM 910-DB-SELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    WRK-DBPATH  TO  ORC-DBPATH
+               PERFORM 910-DB-READ-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   CONTINUE
+               ELSE
+                   MOVE    1       TO  FLG-DBRC
+               END-IF
+           ELSE
+               MOVE    1           TO  FLG-DBRC
+           END-IF
+      *
+           .
+       900-TBL-SELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル読込処理
+      *****************************************************************
+       900-TBL-READ-SEC                SECTION.
+      *
+           MOVE    ZERO            TO  FLG-DBRC
+           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+           PERFORM 910-DB-READ-SEC
+           IF    ( MCP-RC          =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    1           TO  FLG-DBRC
+           END-IF
+      *
+           .
+       900-TBL-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-TBL-CLOSE-SEC               SECTION.
+      *
+           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC
+      *
+           .
+       900-TBL-CLOSE-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************

@@ -28,9 +28,6 @@
                    07  SPA-GMN-W20-LINE                    PIC 9(02).
                    07  SPA-GMN-W20-MAX                     PIC 9(04).
                    07  SPA-GMN-W20-CUR                     PIC 9(03).
-                   07  SPA-GMN-W20-ERRCD-TBL.
-                       09  SPA-GMN-W20-ERRCD               PIC X(04)
-                                                           OCCURS 30.
                    07  SPA-GMN-W20-MOTOPG                  PIC X(08).
                    07  SPA-GMN-W20-AREA.
       *                入力項目領域
@@ -68,164 +65,74 @@
                            11  SPA-GMN-W20-BTU-NAME        PIC X(20).
       *                    短縮病棟名
                            11  SPA-GMN-W20-BTU-TANNAME     PIC X(10).
-      *                    特定入院料コンボ
-                           11  SPA-GMN-W20-CMB-BTU-TOKNYUIN.
-                               13  SPA-GMN-W20-BTU-TOKNYUIN.
-                                   15  SPA-GMN-W20-BTU-TOKNYUIN-CD
+      *                    特定入院料
+                           11  SPA-GMN-W20-BTU-TOKNYUIN.
+                               13  SPA-GMN-W20-BTU-TOKNYUIN-CD
                                                            PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W20-BTU-TOKNYUIN-NM
+                               13                          PIC X(01).
+                               13  SPA-GMN-W20-BTU-TOKNYUIN-NM
                                                            PIC X(30).
-                               13  SPA-GMN-W20-BTU-TOKNYUIN-CNT
-                                                           PIC S9(9)
-                                                           BINARY.
-                               13  SPA-GMN-W20-BTU-TOKNYUIN-ITM
-                                                           PIC X(33)
-                                                           OCCURS  15 .
-      *                    病棟科名コンボ
-                           11  SPA-GMN-W20-CMB-BTU-KA.
-      *                        病棟科名
-                               13  SPA-GMN-W20-BTU-KA.
-                                   15  SPA-GMN-W20-BTU-KA-CD
+      *                    病棟科名
+                           11  SPA-GMN-W20-BTU-KA.
+                               13  SPA-GMN-W20-BTU-KA-CD
                                                            PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W20-BTU-KA-NM
+                               13                          PIC X(01).
+                               13  SPA-GMN-W20-BTU-KA-NM   PIC X(20).
+      *                    病棟種別
+                           11  SPA-GMN-W20-BTU-SBT.
+                               13  SPA-GMN-W20-BTU-SBT-CD
+                                                           PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-W20-BTU-SBT-NM
                                                            PIC X(20).
-      *                        病棟科名コンボ項目数
-                               13  SPA-GMN-W20-BTU-KA-CNT  PIC S9(9)
-                                                           BINARY.
-      *                        病棟科名コンボ項目
-                               13  SPA-GMN-W20-BTU-KA-ITM  PIC X(23)
-                                                           OCCURS  10.
-      *                    病棟種別コンボ
-                           11  SPA-GMN-W20-CMB-BTU-SBT.
-      *                        病棟種別
-                               13  SPA-GMN-W20-BTU-SBT.
-                                   15  SPA-GMN-W20-BTU-SBT-CD
+      *                    平均在院日数
+                           11  SPA-GMN-W20-BTU-HEIZAIKBN.
+                               13  SPA-GMN-W20-BTU-HEIZAIKBN-CD
                                                            PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W20-BTU-SBT-NM
-                                                           PIC X(20).
-      *                        病棟種別コンボ項目数
-                               13  SPA-GMN-W20-BTU-SBT-CNT PIC S9(9)
-                                                           BINARY.
-      *                        病棟種別コンボ項目
-                               13  SPA-GMN-W20-BTU-SBT-ITM PIC X(23)
-                                                           OCCURS  15 .
-      *                    平均在院日数コンボ
-                           11  SPA-GMN-W20-CMB-BTU-HEIZAIKBN.
-      *                        平均在院日数
-                               13  SPA-GMN-W20-BTU-HEIZAIKBN.
-                                   15  SPA-GMN-W20-BTU-HEIZAIKBN-CD
-                                                           PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W20-BTU-HEIZAIKBN-NM
+                               13                          PIC X(01).
+                               13  SPA-GMN-W20-BTU-HEIZAIKBN-NM
                                                            PIC X(12).
-      *                        平均在院日数項目数
-                               13  SPA-GMN-W20-BTU-HEIZAIKBN-CNT
-                                                           PIC S9(9)
-                                                           BINARY.
-      *                        平均在院日数項目
-                               13  SPA-GMN-W20-BTU-HEIZAIKBN-ITM
-                                                           PIC X(15)
-                                                           OCCURS  15 .
-      *                    看護配置コンボ
-                           11  SPA-GMN-W20-CMB-BTU-KNGHAIKBN.
-      *                        看護配置
-                               13  SPA-GMN-W20-BTU-KNGHAIKBN.
-                                   15  SPA-GMN-W20-BTU-KNGHAIKBN-CD
+      *                    看護配置
+                           11  SPA-GMN-W20-BTU-KNGHAIKBN.
+                               13  SPA-GMN-W20-BTU-KNGHAIKBN-CD
                                                            PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W20-BTU-KNGHAIKBN-NM
+                               13                          PIC X(01).
+                               13  SPA-GMN-W20-BTU-KNGHAIKBN-NM
                                                            PIC X(14).
-      *                        看護配置項目数
-                               13  SPA-GMN-W20-BTU-KNGHAIKBN-CNT
-                                                           PIC S9(9)
-                                                           BINARY.
-      *                        看護配置項目
-                               13  SPA-GMN-W20-BTU-KNGHAIKBN-ITM
-                                                           PIC X(17)
-                                                           OCCURS  20.
-      *                    看護師比率コンボ
-                           11  SPA-GMN-W20-CMB-BTU-KNGHIRIT.
-      *                        看護師比率
-                               13  SPA-GMN-W20-BTU-KNGHIRIT.
-                                   15  SPA-GMN-W20-BTU-KNGHIRIT-CD
+      *                    看護師比率
+                           11  SPA-GMN-W20-BTU-KNGHIRIT.
+                               13  SPA-GMN-W20-BTU-KNGHIRIT-CD
                                                            PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W20-BTU-KNGHIRIT-NM
+                               13                          PIC X(01).
+                               13  SPA-GMN-W20-BTU-KNGHIRIT-NM
                                                            PIC X(20).
-      *                        看護師比率項目数
-                               13  SPA-GMN-W20-BTU-KNGHIRIT-CNT
-                                                           PIC S9(9)
-                                                           BINARY.
-      *                        看護師比率項目
-                               13  SPA-GMN-W20-BTU-KNGHIRIT-ITM
-                                                           PIC X(23)
-                                                           OCCURS  10.
-      *                    看護補助配置コンボ
-                           11  SPA-GMN-W20-CMB-BTU-KNGHJOHAI.
-      *                        看護補助配置
-                               13  SPA-GMN-W20-BTU-KNGHJOHAI.
-                                   15  SPA-GMN-W20-BTU-KNGHJOHAI-CD
+      *                    看護補助配置
+                           11  SPA-GMN-W20-BTU-KNGHJOHAI.
+                               13  SPA-GMN-W20-BTU-KNGHJOHAI-CD
                                                            PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W20-BTU-KNGHJOHAI-NM
+                               13                          PIC X(01).
+                               13  SPA-GMN-W20-BTU-KNGHJOHAI-NM
                                                            PIC X(10).
-                               13  SPA-GMN-W20-BTU-KNGHJOHAI-STT
+                           11  SPA-GMN-W20-BTU-KNGHJOHAI-STT
                                                            PIC S9(9)
                                                            BINARY.
-      *                        看護補助配置項目数
-                               13  SPA-GMN-W20-BTU-KNGHJOHAI-CNT
-                                                           PIC S9(9)
-                                                           BINARY.
-      *                        看護補助配置項目
-                               13  SPA-GMN-W20-BTU-KNGHJOHAI-ITM
-                                                           PIC X(13)
-                                                           OCCURS  10.
-                               13  SPA-GMN-W20-BTU-KNGHJOHAI-ITM-STT
-                                                           PIC S9(9)
-                                                           BINARY.
-      *                    看護補助加算コンボ
-                           11  SPA-GMN-W20-CMB-BTU-KNGHJOKSN.
-      *                        看護補助加算
-                               13  SPA-GMN-W20-BTU-KNGHJOKSN.
-                                   15  SPA-GMN-W20-BTU-KNGHJOKSN-CD
+      *                    看護補助加算
+                           11  SPA-GMN-W20-BTU-KNGHJOKSN.
+                               13  SPA-GMN-W20-BTU-KNGHJOKSN-CD
                                                            PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W20-BTU-KNGHJOKSN-NM
+                               13                          PIC X(01).
+                               13  SPA-GMN-W20-BTU-KNGHJOKSN-NM
                                                            PIC X(10).
-                               13  SPA-GMN-W20-BTU-KNGHJOKSN-STT
+                           11  SPA-GMN-W20-BTU-KNGHJOKSN-STT
                                                            PIC S9(9)
                                                            BINARY.
-      *                        看護補助加算項目数
-                               13  SPA-GMN-W20-BTU-KNGHJOKSN-CNT
-                                                           PIC S9(9)
-                                                           BINARY.
-      *                        看護補助加算項目
-                               13  SPA-GMN-W20-BTU-KNGHJOKSN-ITM
-                                                           PIC X(13)
-                                                           OCCURS  10.
-                               13  SPA-GMN-W20-BTU-KNGHJOKSN-ITM-STT
-                                                           PIC S9(9)
-                                                           BINARY.
-      *                    夜間勤務等看護加算コンボ
-                           11  SPA-GMN-W20-CMB-BTU-YKNKNGKSN.
-      *                        夜間勤務等看護加算
-                               13  SPA-GMN-W20-BTU-YKNKNGKSN.
-                                   15  SPA-GMN-W20-BTU-YKNKNGKSN-CD
+      *                    夜間勤務等看護加算
+                           11  SPA-GMN-W20-BTU-YKNKNGKSN.
+                               13  SPA-GMN-W20-BTU-YKNKNGKSN-CD
                                                            PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W20-BTU-YKNKNGKSN-NM
+                               13                          PIC X(01).
+                               13  SPA-GMN-W20-BTU-YKNKNGKSN-NM
                                                            PIC X(20).
-      *                        夜間勤務等看護加算項目数
-                               13  SPA-GMN-W20-BTU-YKNKNGKSN-CNT
-                                                           PIC S9(9)
-                                                           BINARY.
-      *                        夜間勤務等看護加算項目
-                               13  SPA-GMN-W20-BTU-YKNKNGKSN-ITM
-                                                           PIC X(23)
-                                                           OCCURS  10.
       *                    食堂加算区分
                            11  SPA-GMN-W20-CHK-BTU-SYOKUDOKBN
                                                            PIC X.
@@ -241,58 +148,130 @@
                                            PIC S9(9)       BINARY.
       *                    有効開始日
                            11  SPA-GMN-W20-YUKOSTYMD       PIC X(09).
-                           11  SPA-GMN-W20-YUKOSTYMD-S     PIC X(08).
-                           11  SPA-GMN-W20-YUKOSTYMD-OLD   PIC X(08).
       *                    有効終了日
                            11  SPA-GMN-W20-YUKOEDYMD       PIC X(09).
-                           11  SPA-GMN-W20-YUKOEDYMD-S     PIC X(08).
-                           11  SPA-GMN-W20-YUKOEDYMD-OLD   PIC X(08).
       *                    病棟終了区分
-                           11  SPA-GMN-W20-CMB-BTU-EDKBN.
-      *                        病棟終了区分
-                               13  SPA-GMN-W20-BTU-EDKBN.
-                                   15  SPA-GMN-W20-BTU-EDKBN-CD
+                           11  SPA-GMN-W20-BTU-EDKBN.
+                               13  SPA-GMN-W20-BTU-EDKBN-CD
                                                            PIC X(01).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W20-BTU-EDKBN-NM
+                               13                          PIC X(01).
+                               13  SPA-GMN-W20-BTU-EDKBN-NM
                                                            PIC X(06).
-      *                        病棟終了区分項目数
+      *                    入院基本料
+                           11  SPA-GMN-W20-BTU-KHNRYO.
+                               13  SPA-GMN-W20-BTU-KHNRYO-CD
+                                                           PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-W20-BTU-KHNRYO-NM
+                                                           PIC X(60).
+      *                    選択番号
+                           11  SPA-GMN-W20-SELNUM          PIC S9(2).
+      *                病棟情報コンボ領域
+                       09  SPA-GMN-W20-CMB-DAT-AREA.
+      *                    特定入院料コンボ
+                           11  SPA-GMN-W20-CMB-BTU-TOKNYUIN.
+                               13  SPA-GMN-W20-BTU-TOKNYUIN-CNT
+                                                           PIC S9(9)
+                                                           BINARY.
+                               13  SPA-GMN-W20-BTU-TOKNYUIN-OCC
+                                                           OCCURS  15
+                                               INDEXED BY  CMB-IDX01.
+                                   15  SPA-GMN-W20-BTU-TOKNYUIN-ITM
+                                                           PIC X(33).
+                                   15  SPA-GMN-W20-BTU-TOKNYUIN-ITM2
+                                                           PIC X(20).
+      *                    病棟科名コンボ
+                           11  SPA-GMN-W20-CMB-BTU-KA.
+                               13  SPA-GMN-W20-BTU-KA-CNT  PIC S9(9)
+                                                           BINARY.
+                               13  SPA-GMN-W20-BTU-KA-ITM  PIC X(23)
+                                                           OCCURS  99
+                                               INDEXED BY  CMB-IDX02.
+      *                    病棟種別コンボ
+                           11  SPA-GMN-W20-CMB-BTU-SBT.
+                               13  SPA-GMN-W20-BTU-SBT-CNT PIC S9(9)
+                                                           BINARY.
+                               13  SPA-GMN-W20-BTU-SBT-ITM PIC X(23)
+                                                           OCCURS  15
+                                               INDEXED BY  CMB-IDX03.
+      *                    平均在院日数コンボ
+                           11  SPA-GMN-W20-CMB-BTU-HEIZAIKBN.
+                               13  SPA-GMN-W20-BTU-HEIZAIKBN-CNT
+                                                           PIC S9(9)
+                                                           BINARY.
+                               13  SPA-GMN-W20-BTU-HEIZAIKBN-ITM
+                                                           PIC X(15)
+                                                           OCCURS  15
+                                               INDEXED BY  CMB-IDX04.
+      *                    看護配置コンボ
+                           11  SPA-GMN-W20-CMB-BTU-KNGHAIKBN.
+                               13  SPA-GMN-W20-BTU-KNGHAIKBN-CNT
+                                                           PIC S9(9)
+                                                           BINARY.
+                               13  SPA-GMN-W20-BTU-KNGHAIKBN-ITM
+                                                           PIC X(17)
+                                                           OCCURS  20
+                                               INDEXED BY  CMB-IDX05.
+      *                    看護師比率コンボ
+                           11  SPA-GMN-W20-CMB-BTU-KNGHIRIT.
+                               13  SPA-GMN-W20-BTU-KNGHIRIT-CNT
+                                                           PIC S9(9)
+                                                           BINARY.
+                               13  SPA-GMN-W20-BTU-KNGHIRIT-ITM
+                                                           PIC X(23)
+                                                           OCCURS  10
+                                               INDEXED BY  CMB-IDX06.
+      *                    看護補助配置コンボ
+                           11  SPA-GMN-W20-CMB-BTU-KNGHJOHAI.
+                               13  SPA-GMN-W20-BTU-KNGHJOHAI-CNT
+                                                           PIC S9(9)
+                                                           BINARY.
+                               13  SPA-GMN-W20-BTU-KNGHJOHAI-ITM
+                                                           PIC X(13)
+                                                           OCCURS  10
+                                               INDEXED BY  CMB-IDX07.
+                           11  SPA-GMN-W20-BTU-KNGHJOHAI-ITM-STT
+                                                           PIC S9(9)
+                                                           BINARY.
+      *                    看護補助加算コンボ
+                           11  SPA-GMN-W20-CMB-BTU-KNGHJOKSN.
+                               13  SPA-GMN-W20-BTU-KNGHJOKSN-CNT
+                                                           PIC S9(9)
+                                                           BINARY.
+                               13  SPA-GMN-W20-BTU-KNGHJOKSN-ITM
+                                                           PIC X(13)
+                                                           OCCURS  10
+                                               INDEXED BY  CMB-IDX08.
+                           11  SPA-GMN-W20-BTU-KNGHJOKSN-ITM-STT
+                                                           PIC S9(9)
+                                                           BINARY.
+      *                    夜間勤務等看護加算コンボ
+                           11  SPA-GMN-W20-CMB-BTU-YKNKNGKSN.
+                               13  SPA-GMN-W20-BTU-YKNKNGKSN-CNT
+                                                           PIC S9(9)
+                                                           BINARY.
+                               13  SPA-GMN-W20-BTU-YKNKNGKSN-ITM
+                                                           PIC X(23)
+                                                           OCCURS  10
+                                               INDEXED BY  CMB-IDX09.
+      *                    病棟終了区分コンボ
+                           11  SPA-GMN-W20-CMB-BTU-EDKBN.
                                13  SPA-GMN-W20-BTU-EDKBN-CNT
                                                            PIC S9(9)
                                                            BINARY.
-      *                        病棟終了区分項目
                                13  SPA-GMN-W20-BTU-EDKBN-ITM
                                                            PIC X(08)
-                                                           OCCURS  2.
-      *                    入院基本料点数コード
-                           11  SPA-GMN-W20-BTU-KHNSRYCD-TBL.
-                               13  SPA-GMN-W20-BTU-KHNSRYCD
-                                                           PIC X(09).
-                               13  SPA-GMN-W20-BTU-KHNSRYCD-ITM
-                                                           PIC X(09)
-                                                           OCCURS 50.
+                                                           OCCURS  2
+                                               INDEXED BY  CMB-IDX10.
       *                    入院基本料コンボ
                            11  SPA-GMN-W20-CMB-BTU-KHNRYO.
-                               13  SPA-GMN-W20-BTU-KHNRYO.
-                                   15  SPA-GMN-W20-BTU-KHNRYO-CD
-                                                           PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W20-BTU-KHNRYO-NM
-                                                           PIC X(60).
                                13  SPA-GMN-W20-BTU-KHNRYO-CNT
                                                            PIC S9(9)
                                                            BINARY.
                                13  SPA-GMN-W20-BTU-KHNRYO-ITM
                                                            PIC X(63)
-                                                           OCCURS  50.
-      *                    入院基本点数
-                           11  SPA-GMN-W20-BTU-KHNTEN-TBL.
-                               13  SPA-GMN-W20-BTU-KHNTEN  PIC 99999.
-                               13  SPA-GMN-W20-BTU-KHNTEN-ITM
-                                                           PIC 99999
-                                                           OCCURS  50.
-      *                    選択番号
-                           11  SPA-GMN-W20-SELNUM          PIC S9(2).
+                                                           OCCURS  50
+                                               INDEXED BY  CMB-IDX11.
       *                病棟情報リスト
                        09  SPA-GMN-W20-BTULST-TBL.
       *                    病棟情報リスト項目数
@@ -369,94 +348,60 @@
                                13  SPA-GMN-W20-TRSELNUM    PIC 9(02).
       *                        病棟履歴開始日
                                13  SPA-GMN-W20-TRYUKOSTYMD PIC X(09).
-                               13  SPA-GMN-W20-TRYUKOSTYMD-S
-                                                           PIC X(08).
       *                        病棟履歴終了日
                                13  SPA-GMN-W20-TRYUKOEDYMD PIC X(09).
-                               13  SPA-GMN-W20-TRYUKOEDYMD-S
-                                                           PIC X(08).
       *                    履歴情報リスト選択行情報
                            11  SPA-GMN-W20-RIREKILST-SEL-NUM
                                                            PIC 9(05).
+      *                内部領域
+                       09  SPA-NAI-W20-AREA.
+      *                        医療機関種別
+                           11  SPA-NAI-W20-HOSPSBT         PIC  9(01).
+      *                入力領域内部領域
+                       09  SPA-NAI-W20-INPUT-AREA.
+                           11  SPA-NAI-W20-CHK-BTU-KNGSIS-MOT
+                                                            PIC X(01).
+                           11  SPA-NAI-W20-BTU-SBT-MOT      PIC X(02).
+                           11  SPA-NAI-W20-BTU-HEIZAIKBN-MOT
+                                                            PIC X(02).
+                           11  SPA-NAI-W20-BTU-KNGHAIKBN-MOT
+                                                            PIC X(02).
+                           11  SPA-NAI-W20-BTU-KNGHIRIT-MOT
+                                                            PIC X(02).
+                           11  SPA-NAI-W20-BTU-KNGHJOHAI-MOT
+                                                            PIC X(02).
+      *                    有効期間開始日
+                           11  SPA-NAI-W20-YUKOSTYMD       PIC X(08).
+                           11  SPA-NAI-W20-YUKOSTYMD-MOT   PIC X(08).
+                           11  SPA-NAI-W20-YUKOSTYMD-OLD   PIC X(08).
+      *                    有効期間終了日
+                           11  SPA-NAI-W20-YUKOEDYMD       PIC X(08).
+                           11  SPA-NAI-W20-YUKOEDYMD-OLD   PIC X(08).
+      *                    入院基本料点数コード
+                           11  SPA-NAI-W20-BTU-KHNSRYCD
+                                                           PIC X(09).
+                           11  SPA-NAI-W20-BTU-KHNSRYCD-TBL.
+                               13  SPA-NAI-W20-BTU-KHNSRYCD-ITM
+                                                           PIC X(09)
+                                                           OCCURS 50.
+      *                    入院基本点数
+                           11  SPA-NAI-W20-BTU-KHNTEN  PIC 99999.
+                           11  SPA-NAI-W20-BTU-KHNTEN-TBL.
+                               13  SPA-NAI-W20-BTU-KHNTEN-ITM
+                                                           PIC 99999
+                                                           OCCURS  50.
+      *                履歴リスト内部領域
+                       09  SPA-NAI-W20-RIREKILST-TBL.
+                           11  SPA-NAI-W20-RIREKILST-OCC   OCCURS  20.
+      *                        病棟履歴開始日
+                               13  SPA-NAI-W20-TRYUKOSTYMD
+                                                           PIC X(08).
+      *                        病棟履歴終了日
+                               13  SPA-NAI-W20-TRYUKOEDYMD
+                                                           PIC X(08).
       *                    履歴情報リスト病棟番号
-                           11  SPA-GMN-W20-RIREKILST-BTU-NUM
+                           11  SPA-NAI-W20-RIREKILST-BTU-NUM
                                                            PIC 9(02).
-      *    
-      *            シス管情報退避領域
-                   07  SPA-W20-SYSKANRI-TAIHI-AREA.
-      *                医療機関情報
-                       09  SPA-W20-1001-HOSPSBT            PIC  9(01).
-      *                施設基準
-                       09  SPA-W20-1006-TOKKINOHOSPKBN     PIC  X(01).
-                       09  SPA-W20-1006-TOKKNGTDKKBN       PIC  X(01).
-      *
-      *                診療科コード
-                       09  SPA-W20-1005-CNT                PIC  9(05).
-                       09  SPA-W20-1005-OCC                OCCURS  10
-                                                   INDEXED BY S1005-IDX.
-                           11  SPA-W20-1005-KBNCD          PIC  X(08).
-                           11  SPA-W20-1005-SRYKANAME      PIC  X(20).
-      *                病棟種別
-                       09  SPA-W20-5101-CNT                PIC  9(05).
-                       09  SPA-W20-5101-OCC                OCCURS  15 
-                                                   INDEXED BY S5101-IDX.
-                           11  SPA-W20-5101-KBNCD          PIC  X(08).
-                           11  SPA-W20-5101-BTU-SBT-NM     PIC  X(20).
-      *                平均在院日数
-                       09  SPA-W20-5102-CNT                PIC  9(05).
-                       09  SPA-W20-5102-OCC                OCCURS  15 
-                                                   INDEXED BY S5102-IDX.
-                           11  SPA-W20-5102-KBNCD          PIC  X(08).
-                           11  SPA-W20-5102-BTU-HEIZAIKBN-NM
-                                                           PIC  X(12).
-      *                看護配置
-                       09  SPA-W20-5103-CNT                PIC  9(05).
-                       09  SPA-W20-5103-OCC                OCCURS  20
-                                                   INDEXED BY S5103-IDX.
-                           11  SPA-W20-5103-KBNCD          PIC  X(08).
-                           11  SPA-W20-5103-BTU-KNGHAIKBN-NM
-                                                           PIC  X(14).
-      *                看護師比率
-                       09  SPA-W20-5104-CNT                PIC  9(05).
-                       09  SPA-W20-5104-OCC                OCCURS  10
-                                                   INDEXED BY S5104-IDX.
-                           11  SPA-W20-5104-KBNCD          PIC  X(08).
-                           11  SPA-W20-5104-BTU-KNGHIRIT-NM
-                                                           PIC  X(20).
-      *                看護補助配置
-                       09  SPA-W20-5115-CNT                PIC  9(05).
-                       09  SPA-W20-5115-OCC                OCCURS  10 
-                                                   INDEXED BY S5115-IDX.
-                           11  SPA-W20-5115-KBNCD          PIC  X(08).
-                           11  SPA-W20-5115-BTU-KNGHJOHAI-NM
-                                                           PIC  X(40).
-                           11  SPA-W20-5115-BTU-KNGHJOHAI-NM2
-                                                           PIC  X(20).
-      *                看護補助加算
-                       09  SPA-W20-5105-CNT                PIC  9(05).
-                       09  SPA-W20-5105-OCC                OCCURS  10
-                                                   INDEXED BY S5105-IDX.
-                           11  SPA-W20-5105-KBNCD          PIC  X(08).
-                           11  SPA-W20-5105-BTU-KNGHJOKSN-NM
-                                                           PIC  X(10).
-      *                夜間勤務等看護加算
-                       09  SPA-W20-5106-CNT                PIC  9(05).
-                       09  SPA-W20-5106-OCC                OCCURS  10
-                                                   INDEXED BY S5106-IDX.
-                           11  SPA-W20-5106-KBNCD          PIC  X(08).
-                           11  SPA-W20-5106-BTU-YKNKNGKSN-NM
-                                                           PIC  X(20).
-                           11  SPA-W20-5106-BTU-YKNKNGKSN-NM2
-                                                           PIC  X(10).
-      *                特定入院料（病棟）
-                       09  SPA-W20-5110-CNT                PIC  9(05).
-                       09  SPA-W20-5110-OCC                OCCURS  15 
-                                                   INDEXED BY S5110-IDX.
-                           11  SPA-W20-5110-KBNCD          PIC  X(08).
-                           11  SPA-W20-5110-BTU-TOKNYUIN-NM
-                                                           PIC  X(40).
-                           11  SPA-W20-5110-BTU-TOKNYUIN-NM2
-                                                           PIC  X(20).
            03  SPA-W21.
                05  SPA-W21-AREA.
                    07  SPA-GMN-W21-PAGE                    PIC 9(02).
@@ -471,22 +416,12 @@
                    07  SPA-GMN-W21-AREA.
       *                ヘッダ項目領域
                        09  SPA-GMN-W21-HEAD-AREA.
-      *                    病棟名称コンボ
-                           11  SPA-GMN-W21-CMB-BTU-NAME.
-      *                        病棟名称
-                               13  SPA-GMN-W21-BTU-NAME.
-                                   15  SPA-GMN-W21-BTU-NUM PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W21-BTU-NAME-NM
+      *                    病棟名称
+                           11  SPA-GMN-W21-BTU-NAME.
+                               13  SPA-GMN-W21-BTU-NUM     PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-W21-BTU-NAME-NM
                                                            PIC X(20).
-      *                        病棟名称コンボ項目数
-                               13  SPA-GMN-W21-BTU-NAME-CNT
-                                                           PIC S9(9)
-                                                           BINARY.
-      *                        病棟名称コンボ項目
-                               13  SPA-GMN-W21-BTU-NAME-ITM
-                                                           PIC X(23)
-                                                           OCCURS  50.
       *                    病棟入院基本料
                            11  SPA-GMN-W21-BTU-KHNRYO      PIC X(60).
       *                入力項目領域
@@ -520,55 +455,103 @@
                                                            BINARY.
       *                    選択番号１
                            11  SPA-GMN-W21-SELNUM1         PIC S9(3).
-      *
-      *                    区分コード（変更・削除時使用）
-                           11  SPA-GMN-W21-5002-KBNCD      PIC X(08).
       *                    病室番号
                            11  SPA-GMN-W21-BRM-NUM         PIC X(06).
-                           11  SPA-GMN-W21-BRM-NUM-OLD     PIC X(06).
-      *                    病室種別コンボ
-                           11  SPA-GMN-W21-CMB-BRM-SBT.
-      *                        病室種別
-                               13  SPA-GMN-W21-BRM-SBT.
-                                   15  SPA-GMN-W21-BRM-SBT-CD
+      *                    病室種別
+                           11  SPA-GMN-W21-BRM-SBT.
+                               13  SPA-GMN-W21-BRM-SBT-CD
                                                            PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W21-BRM-SBT-NM
-                                                           PIC X(20).
-      *                        病室種別コンボ項目数
-                               13  SPA-GMN-W21-BRM-SBT-CNT PIC S9(9)
-                                                           BINARY.
-      *                        病室種別コンボ項目
-                               13  SPA-GMN-W21-BRM-SBT-ITM 
-                                                           PIC X(23)
-                                                           OCCURS  15 .
-      *                    特定入院料コンボ
-                           11  SPA-GMN-W21-CMB-BRM-TOKNYUIN.
-                               13  SPA-GMN-W21-BRM-TOKNYUIN.
-                                   15  SPA-GMN-W21-BRM-TOKNYUIN-CD
+                               13                          PIC X(01).
+                               13  SPA-GMN-W21-BRM-SBT-NM  PIC X(20).
+      *                    特定入院料
+                           11  SPA-GMN-W21-BRM-TOKNYUIN.
+                               13  SPA-GMN-W21-BRM-TOKNYUIN-CD
                                                            PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W21-BRM-TOKNYUIN-NM
+                               13                          PIC X(01).
+                               13  SPA-GMN-W21-BRM-TOKNYUIN-NM
                                                            PIC X(30).
-                               13  SPA-GMN-W21-BRM-TOKNYUIN-CNT
-                                                           PIC S9(9)
-                                                           BINARY.
-                               13  SPA-GMN-W21-BRM-TOKNYUIN-ITM
-                                                           PIC X(33)
-                                                           OCCURS  15 .
       *
       *                    収容人数
                            11  SPA-GMN-W21-BRM-NINZU       PIC S9(2).
       *
+      *                    室料差額
+                           11  SPA-GMN-W21-BRM-SAGAKU.
+                               13  SPA-GMN-W21-BRM-SAGAKU-CD
+                                                           PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-W21-BRM-SAGAKU-NM
+                                                           PIC X(07).
+      *
+      *                    性別特定
+                           11  SPA-GMN-W21-BRM-SEX.
+                               13  SPA-GMN-W21-BRM-SEX-CD
+                                                           PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-W21-BRM-SEX-NM
+                                                           PIC X(10).
+      *
+      *                    内線番号
+                           11  SPA-GMN-W21-BRM-NAITEL      PIC X(5).
+      *
+      *                    病棟科名
+                           11  SPA-GMN-W21-BRM-KA.
+                               13  SPA-GMN-W21-BRM-KA-CD
+                                                           PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-W21-BRM-KA-NM
+                                                           PIC X(20).
+      *                    有効開始日
+                           11  SPA-GMN-W21-YUKOSTYMD       PIC X(09).
+      *                    有効終了日
+                           11  SPA-GMN-W21-YUKOEDYMD       PIC X(09).
+      *                    選択番号２
+                           11  SPA-GMN-W21-SELNUM2         PIC S9(2).
+      *                病室情報コンボ領域
+                       09  SPA-GMN-W21-CMB-DAT-AREA.
+      *                    病棟名称コンボ
+                           11  SPA-GMN-W21-CMB-BTU-NAME.
+      *                        病棟名称コンボ項目数
+                               13  SPA-GMN-W21-BTU-NAME-CNT
+                                                           PIC S9(9)
+                                                           BINARY.
+      *                        病棟名称コンボ項目
+                               13  SPA-GMN-W21-BTU-NAME-ITM-OCC
+                                                           OCCURS  50
+                                               INDEXED BY  CMB-IDX21.
+      *                            病棟名称
+                                   15  SPA-GMN-W21-BTU-NAME-ITM
+                                                           PIC X(23).
+      *                            特定入院料
+                                   15  SPA-GMN-W21-BTU-NAME-ITM2
+                                                           PIC  X(02).
+      *                            入院基本料
+                                   15  SPA-GMN-W21-BTU-NAME-ITM3
+                                                           PIC  X(09).
+      *                            有効開始日
+                                   15  SPA-GMN-W21-BTU-NAME-ITM4
+                                                           PIC  X(08).
+      *                    病室種別コンボ
+                           11  SPA-GMN-W21-CMB-BRM-SBT.
+                               13  SPA-GMN-W21-BRM-SBT-CNT PIC S9(9)
+                                                           BINARY.
+                               13  SPA-GMN-W21-BRM-SBT-ITM 
+                                                           PIC X(23)
+                                                           OCCURS  15
+                                               INDEXED BY  CMB-IDX22.
+      *                    特定入院料コンボ
+                           11  SPA-GMN-W21-CMB-BRM-TOKNYUIN.
+                               13  SPA-GMN-W21-BRM-TOKNYUIN-CNT
+                                                           PIC S9(9)
+                                                           BINARY.
+                               13  SPA-GMN-W21-BRM-TOKNYUIN-ITM-OCC
+                                                           OCCURS  15
+                                               INDEXED BY  CMB-IDX23.
+                                   15  SPA-GMN-W21-BRM-TOKNYUIN-ITM
+                                                           PIC X(33).
+                                   15  SPA-GMN-W21-BRM-TOKNYUIN-ITM2
+                                                           PIC X(20).
       *                    室料差額コンボ
                            11  SPA-GMN-W21-CMB-BRM-SAGAKU.
-      *                        室料差額
-                               13  SPA-GMN-W21-BRM-SAGAKU.
-                                   15  SPA-GMN-W21-BRM-SAGAKU-CD
-                                                           PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W21-BRM-SAGAKU-NM
-                                                           PIC X(07).
       *                        室料差額コンボ項目数
                                13  SPA-GMN-W21-BRM-SAGAKU-CNT
                                                            PIC S9(9)
@@ -576,17 +559,10 @@
       *                        室料差額コンボ項目
                                13  SPA-GMN-W21-BRM-SAGAKU-ITM
                                                            PIC X(10)
-                                                           OCCURS  20.
-      *
+                                                           OCCURS  20
+                                               INDEXED BY  CMB-IDX24.
       *                    性別特定コンボ
                            11  SPA-GMN-W21-CMB-BRM-SEX.
-      *                        性別特定
-                               13  SPA-GMN-W21-BRM-SEX.
-                                   15  SPA-GMN-W21-BRM-SEX-CD
-                                                           PIC X(01).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W21-BRM-SEX-NM
-                                                           PIC X(10).
       *                        性別特定コンボ項目数
                                13  SPA-GMN-W21-BRM-SEX-CNT
                                                            PIC S9(9)
@@ -594,20 +570,10 @@
       *                        性別特定コンボ項目
                                13  SPA-GMN-W21-BRM-SEX-ITM
                                                            PIC X(12)
-                                                           OCCURS  10.
-      *
-      *                    内線番号
-                           11  SPA-GMN-W21-BRM-NAITEL      PIC X(5).
-      *
+                                                           OCCURS  10
+                                               INDEXED BY  CMB-IDX25.
       *                    病室科名コンボ
                            11  SPA-GMN-W21-CMB-BRM-KA.
-      *                        病棟科名
-                               13  SPA-GMN-W21-BRM-KA.
-                                   15  SPA-GMN-W21-BRM-KA-CD
-                                                           PIC X(02).
-                                   15                      PIC X(01).
-                                   15  SPA-GMN-W21-BRM-KA-NM
-                                                           PIC X(20).
       *                        病棟科名コンボ項目数
                                13  SPA-GMN-W21-BRM-KA-CNT
                                                            PIC S9(9)
@@ -615,18 +581,8 @@
       *                        病棟科名コンボ項目
                                13  SPA-GMN-W21-BRM-KA-ITM
                                                            PIC X(23)
-                                                           OCCURS  10.
-      *                    有効開始日
-                           11  SPA-GMN-W21-YUKOSTYMD       PIC X(09).
-                           11  SPA-GMN-W21-YUKOSTYMD-S     PIC X(08).
-                           11  SPA-GMN-W21-YUKOSTYMD-OLD
-                                                           PIC X(08).
-      *                    有効終了日
-                           11  SPA-GMN-W21-YUKOEDYMD       PIC X(09).
-                           11  SPA-GMN-W21-YUKOEDYMD-S     PIC X(08).
-                           11  SPA-GMN-W21-YUKOEDYMD-OLD   PIC X(08).
-      *                    選択番号２
-                           11  SPA-GMN-W21-SELNUM2         PIC S9(2).
+                                                           OCCURS  99
+                                               INDEXED BY  CMB-IDX26.
       *                病室情報リスト
                        09  SPA-GMN-W21-BRMLST-TBL.
       *                    病室情報リスト項目数
@@ -668,67 +624,40 @@
                                13  SPA-GMN-W21-TRSELNUM    PIC 9(02).
       *                        病棟履歴開始日
                                13  SPA-GMN-W21-TRYUKOSTYMD PIC X(09).
-                               13  SPA-GMN-W21-TRYUKOSTYMD-S
-                                                           PIC X(08).
       *                        病棟履歴終了日
                                13  SPA-GMN-W21-TRYUKOEDYMD PIC X(09).
-                               13  SPA-GMN-W21-TRYUKOEDYMD-S
-                                                           PIC X(08).
       *                    履歴情報リスト選択行情報
                            11  SPA-GMN-W21-RIREKILST-SEL-NUM
                                                            PIC 9(05).
+      *
+      *                入力領域内部領域
+                       09  SPA-NAI-W21-INPUT-AREA.
+      *                    区分コード（変更・削除時使用）
+                           11  SPA-NAI-W21-5002-KBNCD      PIC X(08).
+      *                    病室番号
+                           11  SPA-NAI-W21-BRM-NUM-OLD     PIC X(06).
+      *                    有効開始日
+                           11  SPA-NAI-W21-YUKOSTYMD       PIC X(08).
+                           11  SPA-NAI-W21-YUKOSTYMD-MOT   PIC X(08).
+                           11  SPA-NAI-W21-YUKOSTYMD-OLD   PIC X(08).
+      *                    有効終了日
+                           11  SPA-NAI-W21-YUKOEDYMD       PIC X(08).
+                           11  SPA-NAI-W21-YUKOEDYMD-OLD   PIC X(08).
+      *                履歴リスト内部領域
+                       09  SPA-NAI-W21-RIREKILST-TBL.
+                           11  SPA-NAI-W21-RIREKILST-OCC   OCCURS  20.
+      *                        病棟履歴開始日
+                               13  SPA-NAI-W21-TRYUKOSTYMD
+                                                           PIC X(08).
+      *                        病棟履歴終了日
+                               13  SPA-NAI-W21-TRYUKOEDYMD
+                                                           PIC X(08).
       *                    履歴情報リスト選択番号
-                           11  SPA-GMN-W21-RIREKILST-SELNUM
+                           11  SPA-NAI-W21-RIREKILST-SELNUM
                                                            PIC 9(05).
       *                    履歴情報リスト病室番号
-                           11  SPA-GMN-W21-RIREKILST-BRM-NUM
+                           11  SPA-NAI-W21-RIREKILST-BRM-NUM
                                                            PIC X(06).
-      *
-      *            シス管情報退避領域
-                   07  SPA-W21-SYSKANRI-TAIHI-AREA.
-      *                病棟名称
-                       09  SPA-W21-5001-CNT                PIC  9(05).
-                       09  SPA-W21-5001-OCC                OCCURS  50
-                                                 INDEXED BY S5001-IDX.
-                           11  SPA-W21-5001-KBNCD          PIC  X(08).
-                           11  SPA-W21-5001-BTU-NAME       PIC  X(20).
-                           11  SPA-W21-5001-BTU-TOKTEI-NYUIN
-                                                           PIC  X(02).
-                           11  SPA-W21-5001-BTU-KHNSRYCD   PIC  X(09).
-      *                診療科コード
-                       09  SPA-W21-1005-CNT                PIC  9(05).
-                       09  SPA-W21-1005-OCC                OCCURS  10
-                                              INDEXED BY S21-1005-IDX.
-                           11  SPA-W21-1005-KBNCD          PIC  X(08).
-                           11  SPA-W21-1005-SRYKANAME      PIC  X(20).
-      *                病室種別
-                       09  SPA-W21-5108-CNT                PIC  9(05).
-                       09  SPA-W21-5108-OCC                OCCURS  15 
-                                                   INDEXED BY S5108-IDX.
-                           11  SPA-W21-5108-KBNCD          PIC  X(08).
-                           11  SPA-W21-5108-BRM-SBT-NM     PIC  X(20).
-      *                特定入院料（病室）
-                       09  SPA-W21-5111-CNT                PIC  9(05).
-                       09  SPA-W21-5111-OCC            OCCURS  15 
-                                                   INDEXED BY S5111-IDX.
-                           11  SPA-W21-5111-KBNCD          PIC  X(08).
-                           11  SPA-W21-5111-BRM-TOKNYUIN-NM
-                                                           PIC  X(40).
-                           11  SPA-W21-5111-BRM-TOKNYUIN-NM2
-                                                           PIC  X(20).
-      *                室料差額
-                       09  SPA-W21-5113-CNT                PIC  9(05).
-                       09  SPA-W21-5113-OCC            OCCURS  20
-                                                   INDEXED BY S5113-IDX.
-                           11  SPA-W21-5113-KBNCD          PIC  X(08).
-                           11  SPA-W21-5113-BRM-SAGAKU-NM
-                                                           PIC  9(05).
-      *                性別特定
-                       09  SPA-W21-5109-CNT                PIC  9(05).
-                       09  SPA-W21-5109-OCC            OCCURS  10
-                                                   INDEXED BY S5109-IDX.
-                           11  SPA-W21-5109-KBNCD          PIC  X(08).
-                           11  SPA-W21-5109-BRM-SEX-NM     PIC  X(10).
       *
            03    SPA-W20-W21-AREA.
       *            病棟番号

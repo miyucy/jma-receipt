@@ -138,25 +138,26 @@
       *  01.00.90    NACL-藤原    02/10/09  SEIKYU-KEY8〜KEY13
       *  01.00.91    NACL-藤原    02/10/17  SEIKYU-KEY14
       *                                     RECEPRT-KEY10〜KEY17
-      *  NYUIN.01    NACL-太田    02/08/05  NYUINKHN-KEY,ALLの追加
-      *  NYUIN.02    NACL-太田    02/09/02  NYUINKHN-KEY2の追加
-      *  NYUIN.03    NACL-太田    02/09/10  PTNYUINRRK-KEY,KEY2,KEY3追加
-      *  NYUIN.04    NACL-太田    02/09/13  PTNYUINRRK-DEL1追加
-      *  NYUIN.04    NACL-太田    02/09/18  PTNYUINRRK-KEY4追加
-      *  NYUIN.05    NACL-太田    02/09/19  PTNYUINRRK-KEY5追加
-      *  NYUIN.06    NACL-太田    02/09/24  PTTAINFUKA-KEY,ALL追加
-      *  NYUIN.07    NACL-太田    02/09/13  PTTAINFUKA-DEL1追加
-      *  NYUIN.08    NACL-小豆沢  02/10/07  NYUINACCT追加
+      *  01.01.01    NACL-太田    02/08/05  NYUINKHN-KEY,ALLの追加
+      *  01.01.02    NACL-太田    02/09/02  NYUINKHN-KEY2の追加
+      *  01.01.03    NACL-太田    02/09/10  PTNYUINRRK-KEY,KEY2,KEY3追加
+      *  01.01.04    NACL-太田    02/09/13  PTNYUINRRK-DEL1追加
+      *  01.01.04    NACL-太田    02/09/18  PTNYUINRRK-KEY4追加
+      *  01.01.05    NACL-太田    02/09/19  PTNYUINRRK-KEY5追加
+      *  01.01.06    NACL-太田    02/09/24  PTTAINFUKA-KEY,ALL追加
+      *  01.01.07    NACL-太田    02/09/13  PTTAINFUKA-DEL1追加
+      *  01.01.08    NACL-小豆沢  02/10/07  NYUINACCT追加
       *                                     NYUINACT追加
-      *  NYUIN.09    NACL-太田    02/10/16  PTNYUINRRK-KEY6,7,8追加
-      *  NYUIN.10    NACL-太田    02/10/21  I001-KEY,ALL追加
-      *  NYUIN.11    NACL-太田    02/10/23  PTTAINFUKA-DEL2追加
+      *  01.01.09    NACL-太田    02/10/16  PTNYUINRRK-KEY6,7,8追加
+      *  01.01.10    NACL-太田    02/10/21  I001-KEY,ALL追加
+      *  01.01.11    NACL-太田    02/10/23  PTTAINFUKA-DEL2追加
       *                                     PTNYUINRRK-DEL2追加
-      *  NYUIN.12    NACL-太田    02/10/25  JYURRK-KEY19追加
-      *  NYUIN.13    NACL-太田    02/10/30  JYURRK-KEY19追加
-      *  NYUIN.14    NACL-太田    02/10/31  PTNYUINRRK-KEY9追加
-      *  NYUIN.14    NACL-太田    02/11/01  SYUNOU-DEL2追加
-      *  NYUIN.15    NACL-太田    02/11/18  NYUKSNCHK-KEY追加
+      *  01.01.12    NACL-太田    02/10/25  JYURRK-KEY19追加
+      *  01.01.13    NACL-太田    02/10/30  JYURRK-KEY19追加
+      *  01.01.14    NACL-太田    02/10/31  PTNYUINRRK-KEY9追加
+      *              NACL-太田    02/11/01  SYUNOU-DEL2追加
+      *  01.01.15    NACL-太田    02/11/18  NYUKSNCHK-KEY追加
+      *  01.01.16    NACL-太田    02/11/27  TENSU-KEY15追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1490,6 +1491,10 @@
                    PERFORM 2001-SEL-TENSU-REC
                WHEN    ANY             ALSO   "TENSU-KEY14"
                    MOVE    PATH-TBL-TENSU-KEY14
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY15"
+                   MOVE    PATH-TBL-TENSU-KEY15
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-TENSU-REC
                WHEN    ANY             ALSO   "TENSU-UPD1"

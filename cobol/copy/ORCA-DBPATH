@@ -859,6 +859,10 @@
               03  FILLER      PIC S9(9)   BINARY  VALUE 2.
               03  FILLER      PIC S9(9)   BINARY  VALUE 22.
               03  FILLER      PIC S9(9)   BINARY  VALUE 41.
+            02  PATH-TBL-TENSU-KEY15.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 2.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 22.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 42.
             02  PATH-TBL-UKETUKE-KEY.
               03  FILLER      PIC S9(9)   BINARY  VALUE 1.
               03  FILLER      PIC S9(9)   BINARY  VALUE 23.

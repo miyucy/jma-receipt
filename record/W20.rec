@@ -48,7 +48,7 @@ W20	{
 				state	int;
 			};
 			count	int;
-			item	varchar(23)[10];
+			item	varchar(23)[99];
 			state	int;
 		};
 		CMB_BTU_SBT	{

@@ -171,4 +171,6 @@
                05  TNSUP-YUKOEDYMD     PIC  X(08).
       *
            03  TNSXX-STSRYKBN          PIC X(02).
-           03  TNSXX-EDSRYKBN          PIC X(02).    
+           03  TNSXX-EDSRYKBN          PIC X(02).
+           03  TNSXX-TK-CDKBN-KBNNUM   PIC  9(03).
+           03  TNSXX-TK-CDKBN-KOUBAN   PIC  9(02).

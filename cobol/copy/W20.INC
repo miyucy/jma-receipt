@@ -52,7 +52,7 @@
                 05  W20-BTU-KA-STT         PIC S9(9)   BINARY.
       *
                 05  W20-BTU-KA-CNT         PIC S9(9)   BINARY.
-                05  W20-BTU-KA-ITM         PIC X(23)   OCCURS  10.
+                05  W20-BTU-KA-ITM         PIC X(23)   OCCURS  99.
                 05  W20-BTU-KA-ITM-STT     PIC S9(9)   BINARY.
       *
               04  W20-CMB-BTU-SBT.

@@ -148,6 +148,8 @@ tbl_tensu {
 #-----> ¸¡º÷ÍÑ¹àÌÜ
 	STSRYKBN			char(2),virtual;
 	EDSRYKBN			char(2),virtual;
+	TK_CDKBN_KBNNUM		number(3,0),virtual;
+	TK_CDKBN_KOUBAN    	number(2,0),virtual;
 	
 };
 primary	{
@@ -894,6 +896,63 @@ path	key42jk	{
 			AND    a.SRYCD     =   c.SRYCD
 			ORDER   BY          c.DSPSEQ
 					;
+	};
+};
+
+path	key13	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key13_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE SRYCD        LIKE '19%'
+			AND   YUKOSTYMD    <=  :YUKOSTYMD
+			AND   YUKOEDYMD    >=  :YUKOEDYMD
+			AND   CDKBN_KBN     =  :CDKBN_KBN
+			AND   CDKBN_KBNNUM  =  :CDKBN_KBNNUM
+			AND   DATAKBN       =  1
+			AND   CHUKSNTSUBAN  =  '0'
+			AND   NYUKHNKSNKBN  BETWEEN 1  AND  135
+			ORDER   BY          NYUKHNKSNKBN
+			;
+	};
+};
+
+path	key14	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key14_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE SRYCD        LIKE '19%'
+			AND   YUKOSTYMD    <=  :YUKOSTYMD
+			AND   YUKOEDYMD    >=  :YUKOEDYMD
+			AND   CDKBN_KBN     =  :CDKBN_KBN
+			AND   CDKBN_KBNNUM  =  :CDKBN_KBNNUM
+			AND   CDKBN_KOUBAN  =  :CDKBN_KOUBAN
+			AND   DATAKBN       =  1
+			AND   CHUKSNTSUBAN  =  '0'
+			AND   NYUKHNKSNKBN  BETWEEN 1  AND  135
+			ORDER   BY          NYUKHNKSNKBN
+			;
+	};
+};
+
+path	key15	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key15_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE SRYCD        LIKE '19%'
+			AND   YUKOSTYMD    <=  :YUKOSTYMD
+			AND   YUKOEDYMD    >=  :YUKOEDYMD
+			AND   CDKBN_KBN     =  :CDKBN_KBN
+			AND  ((   CDKBN_KBNNUM  =  :TK_CDKBN_KBNNUM 
+			      AND CDKBN_KOUBAN  =  :TK_CDKBN_KOUBAN )
+               OR (   CDKBN_KBNNUM  =  :CDKBN_KBNNUM ))
+			AND   DATAKBN       =  1
+			AND   CHUKSNTSUBAN  =  '0'
+			AND   NYUKHNKSNKBN  BETWEEN 1  AND  135
+			ORDER   BY          NYUKHNKSNKBN
+			;
 	};
 };
 
