@@ -2079,6 +2079,15 @@
            IF      LNK-SCNYUACCT-STSRYYMD  =   SPACE  OR  ZERO
                GO      TO     900-NEXTTUKI-SYORI-EXT
            END-IF
+      *    終了日から退院処理をする
+      *    転科時元入院科を診療科へ
+           MOVE    SPA-SRYKA           TO  WRK-SRYKA
+           MOVE    LNK-SCNYUACCT-MOTO-NYUINKA
+                                       TO  SPA-SRYKA
+           MOVE    ZERO                TO  WRK-ZOGEN
+           PERFORM 200-TAIIN-SYORI-SEC
+      *    診療科を戻す
+           MOVE    WRK-SRYKA           TO  SPA-SRYKA
       *
       *    開始日の末日を求める
            MOVE    LNK-SCNYUACCT-STSRYYMD
