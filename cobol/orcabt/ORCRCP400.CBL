@@ -53,6 +53,8 @@
       *  01.01.09    NACL-∆£∏∂    04/09/13  ƒ¢…º ÃªÿƒÍ ‘Ω∏æ Û§´§È§Œ ‘Ω∏
       *  01.01.10    NACL-ÃÁœ∆    04/09/16  ∏¯»Ò£≤§Œº¬∆¸øÙ§Œ ‘Ω∏æÚ∑Ô§ÚΩ§¿µ
       *  01.01.11    NACL-∆£∏∂    04/09/17  £œ£√£“∂Ë ¨§Œ¿ﬂƒÍ§Àƒ…≤√
+      *
+      *  ver.2.5.0
       *  01.01.12    NACL-∆£∏∂    04/10/25  …È√¥∂‚≥€≈˘§Œ•´•π•ø•ﬁ•§•∫π‡Ã‹
       *                                     §Œ ‘Ω∏ ˝À°§Ú —ππ
       *  01.01.13    NACL-æÆ∆¶¬Ù  04/12/06  √œ ˝∏¯»Ò° ∆˝æ„ Ï°À§Œ ¨≈¿µ≠∫‹
@@ -68,6 +70,8 @@
       *  01.01.20    NACL-ÃÁœ∆    05/02/14  π‚Œº‘∞Ï…Ù…È√¥≥€µ≠∫‹Ω§¿µ
       *  01.01.21    NACL-ÃÁœ∆    05/03/17  ∏¯»Ò¿¡µ·°¶¿¡µ·¥…Õ˝§Œ…È√¥∂‚≥€
       *                                      ‘Ω∏Ω§¿µ
+      *  01.01.22    NACL-∆£∏∂    05/03/18  •Ï•ª•◊•»∆√µ≠ªˆπ‡ ‘Ω∏æ Û§À§Ë
+      *                                     §Î•Ï•ª•◊•» ‘Ω∏
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2858,6 +2862,24 @@
                END-IF
            END-IF
       *
+      *    •Ï•ª•◊•»∆√µ≠ªˆπ‡ ‘Ω∏æ Û
+           IF      RECE02-2006-KYURATE >   ZERO
+               COMPUTE WRK-KYURATE-9   =
+                                       RECE02-2006-KYURATE /   10 
+               MOVE   "µÎ≥‰"           TO  HC06-KYURATE
+               MOVE    WRK-KYURATE-9   TO  WRK-KYURATE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"             TO  KANACHK-SYORI
+               MOVE    WRK-KYURATE     TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING
+                                           ORCSKANACHKAREA
+               IF    ( KANACHK-RC      =   ZERO )
+               AND   ( KANACHK-MAX     >   ZERO )
+                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  HC06-KYURATE(5:)
+               END-IF
+           END-IF
+      *
       *    ∏©√±Õ—π‡Ã‹
            IF    ( FLG-RECE11          =   ZERO )
            AND   ( RECE11-KYURATE      >   ZERO )
@@ -2909,6 +2931,18 @@
                    END-IF
                END-PERFORM
            END-PERFORM
+      *
+      *    •Ï•ª•◊•»∆√µ≠ªˆπ‡ ‘Ω∏æ Û
+           IF      RECE02-2006-TOKKIINF    NOT =   SPACE
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX                 >   4
+                       OR      IDZ                 =   4     
+                       OR      RECE02-2006-TOKKI(IDX)  =   SPACE
+                   ADD     1                    TO  IDZ    
+                   MOVE    RECE02-2006-TOKKI (IDX)           
+                                                TO  HC06-TOKKI (IDZ)
+               END-PERFORM
+           END-IF
       *
       *    ∏©√±Õ—π‡Ã‹
            IF      FLG-RECE11           =   ZERO
