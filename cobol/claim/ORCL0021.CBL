@@ -326,6 +326,7 @@
        01  LNK-SRYYMD           PIC X(08).
        01  LNK-NYUGAIKBN        PIC X(01).
        01  LNK-HKNCOMBINUM      PIC X(04).
+       01  LNK-DRCD             PIC X(10).
       *
        01  WRK-LF02-REC. 
            COPY    "CPRLF002.INC"    REPLACING  //LF02//
@@ -342,6 +343,7 @@
                                                LNK-SRYYMD
                                                LNK-NYUGAIKBN
                                                LNK-HKNCOMBINUM
+                                               LNK-DRCD
                                                WRK-LF02-REC.
       *
       *****************************************************************

@@ -66,6 +66,7 @@
                05  WRK-PARA-HKNCOMBINUM
                                     PIC  X(04). 
                05  WRK-PARA-HOSPID  PIC  X(24).
+               05  WRK-PARA-DRCD    PIC  X(05).
       *
            03  WRK-IN               PIC X(01).
       *
@@ -145,6 +146,7 @@
                                             WRK-PARA-SRYYMD
                                             WRK-PARA-HKNCOMBINUM
                                             WRK-PARA-HOSPID
+                                            WRK-PARA-DRCD
       *
       *
       *???
@@ -174,6 +176,7 @@
                                                SPA-SRYYMD
                                                SPA-NYUGAIKBN
                                                SPA-HKNCOMBINUM
+                                               WRK-PARA-DRCD
                                                WRK-LF02-REC
       *
            MOVE    WRK-LF02-REC        TO  LF02-REC
