@@ -549,7 +549,7 @@
       * 第２医事請求コードのテーブル名 (claim:aliasTableId)
                    07  LF04-ALSTBLID   PIC  X(20).
       * 医事請求名称
-                   07  LF04-ALSNAME    PIC  X(40).
+                   07  LF04-ALSNAME    PIC  X(80).
       * 数量(Z編集)
                    07  LF04-SURYO      PIC  X(12).
       * 数量コード (claim:numberCode)
