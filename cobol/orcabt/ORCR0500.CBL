@@ -567,7 +567,7 @@
       *
       *    通し番号印刷のときのみ編集
            IF      SYS-2005-RENNUMHENKBN   =   "1"
-               ADD     1                   TO  WRK-RENNUM
+      *********ADD     1                   TO  WRK-RENNUM
                IF      WRK-PARA-SYOKBN     =   "1"
                    MOVE    WRK-RENNUM          TO  WRK-HEN-RENNUM1
                ELSE
