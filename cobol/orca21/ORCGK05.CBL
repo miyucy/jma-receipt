@@ -2794,6 +2794,10 @@
                        CONTINUE
                    ELSE
                        MOVE    "A002"          TO  SPA-ERRCD
+                       IF      LNK-SC97-NYURYOKU   =   1
+                           MOVE    TNS-NAME        TO  SPA-GMN-MEISYO
+                                                         (SPA-GMN-IDX)
+                       END-IF
                        GO      TO      4101113-INPUTCD-CHK-EXT
                    END-IF
                END-IF

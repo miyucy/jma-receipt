@@ -121,6 +121,10 @@
       *
            03  WRK-ERRMSG          PIC X(40).
       *
+      *    コラムリスト位置
+           03  WRK-K10-ROW             PIC S9(09).
+           03  FLG-GMN-INIT            PIC  9(01).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -333,6 +337,8 @@
       *    画面編集処理
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
+      *
+           MOVE    1                   TO  FLG-GMN-INIT
       *
       *    ワーク診療行為を検索する
            MOVE    ZERO                TO  IDX
@@ -817,7 +823,21 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+           IF     (FLG-GMN-INIT        =   1   )  OR
+                  (SPA-K10-MAX         =   ZERO)
+               MOVE    ZERO                TO  WRK-K10-ROW
+           ELSE
+               MOVE    K10-ROW             TO  WRK-K10-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  K10
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  K10-ROW
+           MOVE    ZERO                TO  K10-ROWATTR
+           IF      WRK-K10-ROW     NOT =   ZERO
+               MOVE    WRK-K10-ROW         TO  K10-ROW
+           END-IF
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-K10-MAX

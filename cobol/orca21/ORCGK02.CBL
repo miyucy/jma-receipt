@@ -565,6 +565,10 @@
            03  WRK-ERRCD1              PIC X(04).
            03  WRK-ERRCD2              PIC X(04).
       *
+      *    コラムリスト位置
+           03  WRK-K02-ROW             PIC S9(09).
+           03  FLG-GMN-INIT            PIC  9(01).
+      *
       *   年齢表示
        01  WRK-NENREI-G.
            03  WRK-NENREI-Z        PIC ZZ9.
@@ -2662,6 +2666,8 @@
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
       *
+           MOVE    1                   TO  FLG-GMN-INIT
+      *
       *    見出し
            MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
            MOVE    SPA-PTID            TO  SPA-GMN-PTID
@@ -4459,6 +4465,7 @@
        41010-PTNUM-SYORI-SEC           SECTION.
       *
            MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    1                   TO  FLG-GMN-INIT
       *    ＳＰＡクリア処理
            INITIALIZE                  SPA-SCR-REC
            INITIALIZE                  SPA-K02
@@ -5409,9 +5416,6 @@
                    END-IF
                END-IF
            END-PERFORM
-      *TEST
-           DISPLAY "K02 2 FLG-INPUT-NASI:" FLG-INPUT-NASI
-      *TEST
       *
            IF     (SPA-GMN-IDX     >=  200     )  AND
                   (WRK-IDX2        <=  20      )
@@ -5589,17 +5593,17 @@
                END-IF
            END-IF
       *
-      *!!  数量ゼロで、薬剤、器材以外は削除とする
+      *****数量ゼロで、薬剤、器材以外は削除とする
       *    IF     (LNK-SC97-NYURYOKU   =   ZERO         )  AND
       *           (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
-      *                            NOT =   "6"  AND "7" )  AND
-      *           (LNK-SC97-SURYOCNT   >   ZERO         )  AND
+      *                                =   "6"  OR  "7" )  AND
+      *           (LNK-SC97-SURYOCNT   >   1            )  AND
       *           (LNK-SC97-SURYO      =   ZERO         )
       *        MOVE    " "             TO  LNK-SC97-INPUTCD
       *        MOVE    ZERO            TO  LNK-SC97-SURYOCNT
       *        MOVE    ZERO            TO  LNK-SC97-SURYO
       *        MOVE    ZERO            TO  LNK-SC97-SURYOFLG
-      *!!  END-IF
+      *****END-IF
       *
            MOVE    LNK-SC97-INCD       TO  WRK-CD
       *
@@ -10034,16 +10038,24 @@
       *
       *            診療行為入力チェック
                    PERFORM 41011-KOUI-ALLHEN-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
+                   IF     (SPA-ERRCD       NOT =   SPACE) AND
+                          (SPA-ERRCD       NOT =   "A001")
                       GO      TO      440-KNJADD-EXT
                    END-IF
       *        更新前のチェック
+                   IF      SPA-ERRCD       =   "A001"
+                       MOVE    SPACE           TO  SPA-ERRCD
+                   ELSE
+      *
                    MOVE    "1"                 TO  FLG-TOROKU
                    PERFORM 510-TBLHEN-SEC
                    MOVE    SPACE               TO  FLG-TOROKU
                    IF      SPA-ERRCD       NOT =   SPACE
                       GO      TO      440-KNJADD-EXT
                    END-IF
+      *
+                   END-IF
+      *
                END-IF
            END-IF
       *
@@ -13316,6 +13328,12 @@
       *    行位置とカーソル位置の決定
            PERFORM 5002-GMNSPA-HEN-SEC
       *
+           IF     (FLG-GMN-INIT        =   1   )  OR
+                  (SPA-GMN-MAX1        =   ZERO )
+               MOVE    ZERO                TO  WRK-K02-ROW
+           ELSE
+               MOVE    K02-ROW             TO  WRK-K02-ROW
+           END-IF
            MOVE    SPACE               TO  K02
            INITIALIZE                      K02
       *
@@ -13516,6 +13534,14 @@
                                                              (IDX)
            END-PERFORM
            MOVE    SPA-TABOO-MAX       TO  K02-TABOO-COUNT
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  K02-ROW
+           MOVE    ZERO                TO  K02-ROWATTR
+           IF      WRK-K02-ROW     NOT =   ZERO
+               MOVE    WRK-K02-ROW         TO  K02-ROW
+               MOVE    ZERO                TO  K02-ROWATTR
+           END-IF
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC

@@ -318,6 +318,12 @@
       *
            03  WRK-PATH                    PIC X(64).
       *
+      *    コラムリスト位置
+           03  WRK-K09-RRKLIST-ROW     PIC S9(09).
+           03  WRK-K09-MEILIST-ROW     PIC S9(09).
+           03  FLG-GMN-INIT1           PIC  9(01).
+           03  FLG-GMN-INIT2           PIC  9(01).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -610,6 +616,9 @@
       *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC             SECTION.
+      *
+           MOVE    1                   TO  FLG-GMN-INIT1
+           MOVE    1                   TO  FLG-GMN-INIT2
       *
            INITIALIZE                  SPA-K09-AREA
            MOVE    ZERO                TO  SPA-K09-SELOK
@@ -1143,6 +1152,8 @@
       *     診察内容編集処理
       *****************************************************************
        4101-JYURRK-HEN-SEC              SECTION.
+      *
+           MOVE    1                   TO  FLG-GMN-INIT2
       *
       *    パラメタファイルより、診療会計マスターを編集
            MOVE    ZERO                TO  IDX
@@ -2249,7 +2260,31 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+           IF      FLG-GMN-INIT1       =   1
+               MOVE    ZERO            TO  WRK-K09-RRKLIST-ROW
+               MOVE    ZERO            TO  WRK-K09-MEILIST-ROW
+           ELSE
+               MOVE    K09-RRKLIST-ROW     TO  WRK-K09-RRKLIST-ROW
+               IF      FLG-GMN-INIT2       =   1
+                   MOVE    ZERO            TO  WRK-K09-MEILIST-ROW
+               ELSE
+                   MOVE    K09-MEILIST-ROW TO  WRK-K09-MEILIST-ROW
+               END-IF
+           END-IF
+      *
            MOVE    SPACE               TO  K09
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  K09-RRKLIST-ROW
+           MOVE    ZERO                TO  K09-RRKLIST-ROWATTR
+           MOVE    ZERO                TO  K09-MEILIST-ROW
+           MOVE    ZERO                TO  K09-MEILIST-ROWATTR
+           IF      WRK-K09-RRKLIST-ROW NOT =   ZERO
+               MOVE    WRK-K09-RRKLIST-ROW TO  K09-RRKLIST-ROW
+           END-IF
+           IF      WRK-K09-MEILIST-ROW NOT =   ZERO
+               MOVE    WRK-K09-MEILIST-ROW TO  K09-MEILIST-ROW
+           END-IF
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-GMN-MAX1
@@ -2262,6 +2297,11 @@
                                                                (IDX)
                IF      SPA-GMN-NO (IDX)    =   SPA-NAI-DOSELNUM
                    MOVE    "T"             TO  K09-RRKLIST-SELECT (IDX)
+      *            初期表示で選択がある場合、選択行を中央へ
+                   IF      FLG-GMN-INIT1   =   1
+                       MOVE    IDX             TO  K09-RRKLIST-ROW
+                       MOVE    2               TO  K09-RRKLIST-ROWATTR
+                   END-IF
                ELSE
                    MOVE    "F"             TO  K09-RRKLIST-SELECT (IDX)
                END-IF

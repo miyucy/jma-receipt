@@ -152,6 +152,9 @@
            03  WRK-HEN-NAME        PIC X(70).
            03  WRK-KENSA-HEN       PIC X(02).
       *
+           03  WRK-K98-ROW         PIC S9(09).
+           03  FLG-GMN-INIT        PIC  9(01).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
                05  WRK-HGO         PIC X(01).
@@ -483,6 +486,8 @@
       *****************************************************************
        310-SPA-SET-SEC                 SECTION.
       *
+           MOVE    1                   TO  FLG-GMN-INIT
+      *
            INITIALIZE                  SPA-K98-GMN-TBL
            MOVE    ZERO                TO  SPA-K98-GMN-MAX
            MOVE    ZERO                TO  FLG-MAX
@@ -708,11 +713,11 @@
                                         MCPDATA-REC
       *
            MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX
-               IF      FLG-MAX         NOT =   ZERO
-                   MOVE    "0005"              TO  SPA-ERRCD
-               ELSE
-                   MOVE    ZERO                TO  SPA-K98-NEXT
-               END-IF
+           IF      FLG-MAX         NOT =   ZERO
+               MOVE    "0005"              TO  SPA-ERRCD
+           ELSE
+               MOVE    ZERO                TO  SPA-K98-NEXT
+           END-IF
       *
            .
        3101-INPUTCD-SET-EXT.
@@ -1287,8 +1292,22 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+           IF     (FLG-GMN-INIT        =   1   )  OR
+                  (SPA-K98-GMN-MAX     =   ZERO )
+               MOVE    ZERO                TO  WRK-K98-ROW
+           ELSE
+               MOVE    K98-ROW             TO  WRK-K98-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  K98
            INITIALIZE                      K98
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  K98-ROW
+           MOVE    ZERO                TO  K98-ROWATTR
+           IF      WRK-K98-ROW     NOT =   ZERO
+               MOVE    WRK-K98-ROW         TO  K98-ROW
+           END-IF
       *
            MOVE    SPA-K98-GMN-INPUT   TO  K98-INPUT
       *
@@ -1654,6 +1673,7 @@
                    PERFORM 41011-SELNUM-ALLCHK-SEC
       *        行選択
                WHEN    ANY             ALSO    "LIST"
+                   MOVE    K98-ROW             TO  WRK-K98-ROW
                    PERFORM 41012-LISTSEL-SEC
       *        自院入力
                WHEN    "ACTIVATE"      ALSO    "JIIN"

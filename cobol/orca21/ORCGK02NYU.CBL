@@ -543,6 +543,10 @@
            03  WRK-SRYKA               PIC X(02).
            03  WRK-HKNCOMBINUM         PIC X(04).
       *
+      *    コラムリスト位置
+           03  WRK-K02-ROW             PIC S9(09).
+           03  FLG-GMN-INIT            PIC  9(01).
+      *
       *   年齢表示
        01  WRK-NENREI-G.
            03  WRK-NENREI-Z        PIC ZZ9.
@@ -2077,6 +2081,8 @@
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
       *
+           MOVE    1                   TO  FLG-GMN-INIT
+      *
       *    見出し
            MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
            MOVE    SPA-PTID            TO  SPA-GMN-PTID
@@ -2476,7 +2482,8 @@
       *
       *    診療室入力あり編集
            PERFORM     VARYING   IDX   FROM    1   BY  1
-                       UNTIL     IDX   >   LNK-WKSRYACT-MAX
+                       UNTIL    (IDX       >   LNK-WKSRYACT-MAX )
+                             OR (IDX2      >   WRK-GYO-MAX )
       *
       *        ワーク診療行為からの時は、訂正と同様に編集する
                IF     (LNK-WKSRY-TERMID (IDX)    =   "WKSRYACT" ) AND
@@ -2558,7 +2565,7 @@
                            (LNK-WKSRY-ZAINUM (IDX + 1)
                                            NOT =   LNK-WKSRY-ZAINUM
                                                               (IDX)))
-      **************** ADD     1               TO  IDX2
+                     IF      IDX2               <=  WRK-GYO-MAX
       *                回数を編集
                        MOVE    LNK-WKSRY-ZAIKAIKEI(IDX)
                                                TO  SPA-COM-KAISU(IDX2)
@@ -2568,6 +2575,7 @@
                        MOVE    "1"             TO  SPA-COM-KAIFLG
                                                                (IDX2)
                        MOVE    ZERO            TO  FLG-SET
+                     END-IF
                    END-IF
                END-IF
            END-PERFORM
@@ -3700,6 +3708,7 @@
        41010-PTNUM-SYORI-SEC           SECTION.
       *
            MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    1                   TO  FLG-GMN-INIT
       *    ＳＰＡクリア処理
            INITIALIZE                  SPA-SCR-REC
            INITIALIZE                  SPA-K02
@@ -11867,6 +11876,13 @@
       *    行位置とカーソル位置の決定
            PERFORM 5002-GMNSPA-HEN-SEC
       *
+           IF     (FLG-GMN-INIT        =   1   )  OR
+                  (SPA-GMN-MAX1        =   ZERO )
+               MOVE    ZERO                TO  WRK-K02-ROW
+           ELSE
+               MOVE    K02N-ROW            TO  WRK-K02-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  K02N
            INITIALIZE                      K02N
       *
@@ -12030,6 +12046,14 @@
                                                              (IDX)
            END-PERFORM
            MOVE    SPA-TABOO-MAX       TO  K02N-TABOO-COUNT
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  K02N-ROW
+           MOVE    ZERO                TO  K02N-ROWATTR
+           IF      WRK-K02-ROW     NOT =   ZERO
+               MOVE    WRK-K02-ROW         TO  K02N-ROW
+               MOVE    ZERO                TO  K02N-ROWATTR
+           END-IF
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC

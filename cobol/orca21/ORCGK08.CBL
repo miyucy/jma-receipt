@@ -349,6 +349,9 @@
       *
            03  WRK-KIDMSG          PIC X(80).
       *
+           03  WRK-K08-ROW         PIC S9(09).
+           03  FLG-GMN-INIT        PIC  9(01).
+      *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
            03  WRK-IDX-Y               PIC 9(04).
@@ -677,6 +680,8 @@
       *    画面編集処理
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
+      *
+           MOVE    1                   TO  FLG-GMN-INIT
       *
       *    未収金
            MOVE    SPA-MISYUMONEY      TO  SPA-GMN-MISYUMONEY
@@ -3277,7 +3282,22 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+           IF     (FLG-GMN-INIT        =   1   )  OR
+                  (SPA-K08-MAX         =   ZERO )
+               MOVE    ZERO                TO  WRK-K08-ROW
+           ELSE
+               MOVE    K08-ROW             TO  WRK-K08-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  K08
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  K08-ROW
+           MOVE    ZERO                TO  K08-ROWATTR
+           IF      WRK-K08-ROW     NOT =   ZERO
+               MOVE    WRK-K08-ROW         TO  K08-ROW
+           END-IF
+      *
       *
            MOVE    SPA-PTNUM           TO  K08-PTNUM
            MOVE    SPA-KANANAME        TO  K08-KANANAME
