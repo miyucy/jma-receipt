@@ -9211,15 +9211,15 @@
       *
            IF      SPA-GMN-BANGO   NOT =   ZERO
                MOVE    "0009"          TO  SPA-ERRCD
-               GO      TO      4100-HKNHEN-EXT
            END-IF
       *
-           IF      SPA-J01-SRYKA       =   ZERO
-               MOVE    "0022"          TO  SPA-ERRCD
-               GO      TO      4100-HKNHEN-EXT
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-J01-SRYKA       =   ZERO
+                   MOVE    "0022"          TO  SPA-ERRCD
+               ELSE
+                   MOVE    "0109"          TO  SPA-JIDCD
+               END-IF
            END-IF
-      *
-           MOVE    "0109"              TO  SPA-JIDCD
       *
            .
        4100-HKNHEN-EXT.
