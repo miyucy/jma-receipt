@@ -3599,11 +3599,11 @@
                    UNTIL      (FLG-PTNYUINRRK      =   1 )  OR
                               (FLG-OK              =   1 )
       *        Å¾ÆþÆü
-               IF      PTNYUINRRK-TENNYUYMD    <=  SPA-NAI-SRYYMD
+               IF      PTNYUINRRK-TENNYUYMD    <=  SPA-SRYYMD
       *            Å¾½ÐÆü
                    IF     (PTNYUINRRK-TENSTUYMD    =   SPACE )  OR
                           (PTNYUINRRK-TENSTUYMD    NOT =   SPACE AND
-                           PTNYUINRRK-TENSTUYMD    >=  SPA-NAI-SRYYMD)
+                           PTNYUINRRK-TENSTUYMD    >=  SPA-SRYYMD)
       *                Æþ±¡ÂÐ¾Ý½èÍý
                        MOVE    1               TO  FLG-OK
                        PERFORM 4101011-PTNYUINRRK-HEN-SEC
@@ -3618,7 +3618,7 @@
            IF      FLG-OK              =   ZERO
                IF     (HZN-PTNYUINRRK-NYUINYMD     =   SPACE )  OR
                       (HZN-PTNYUINRRK-TAIINYMD NOT =   SPACE   AND
-                       HZN-PTNYUINRRK-TAIINYMD     >   SPA-NAI-SRYYMD)
+                       HZN-PTNYUINRRK-TAIINYMD     >   SPA-SRYYMD)
                    MOVE    "2"                 TO  SPA-NYUGAIKBN
                ELSE
                    MOVE    "9001"          TO  SPA-ERRCD

@@ -39,6 +39,7 @@
       * 01.00.08     NACL-多々納  02/12/06  慢性疼痛の算定チェック修正
       * 01.00.09     NACL-多々納  03/02/19  療養担当手当追加
       * 01.00.10     NACL-多々納  03/03/28  自賠責の逓減を６ヶ月以降とする
+      * 01.00.11     NACL-多々納  03/04/07  入院日のチェック追加
       *****************************************************************
       *
       *
@@ -1657,6 +1658,15 @@
       *
            MOVE    SPACE               TO  WRK-SRYCD
       *
+      *    入院日の時、初診料のみ算定する
+           IF      SPA-K02N-NYUINYMD   =   SPA-NAI-SRYYMD
+               IF      SPA-SYOSIN          =   1
+                   CONTINUE
+               ELSE
+                   GO      TO      200-SYOSIN-SET-EXT
+               END-IF
+           END-IF
+      *
       *    労災の初診料算定
            IF      SPA-HKNKBN          =   1
                PERFORM 2009-RSIHKN-SET-SEC
@@ -1726,8 +1736,13 @@
       *
       *    初診料自動追加処理
            PERFORM 3301-SYOSIN-SYORI-SEC
+      *
            IF      WRK-SRYCD(1:2)      =   "83"
                MOVE    "0109"              TO  SPA-KIDCD
+           END-IF
+      *    入院日の時、初診料のみ算定する
+           IF      SPA-K02N-NYUINYMD   =   SPA-NAI-SRYYMD
+               MOVE    SPACE               TO  SPA-KIDCD
            END-IF
       *
       *    指導料の自動発生
@@ -2002,6 +2017,10 @@
            END-IF
       *
            MOVE    "0109"              TO  SPA-KIDCD
+      *    入院日の時、初診料のみ算定する
+           IF      SPA-K02N-NYUINYMD   =   SPA-NAI-SRYYMD
+               MOVE    SPACE               TO  SPA-KIDCD
+           END-IF
       *
            .
        3301-DOUSAISIN-EXT.
@@ -2897,7 +2916,12 @@
            IF      FLG-ADD             =   1
                ADD     1               TO  IDX2
            END-IF
-           IF      WRK-SRYCD(1:2)      =   "83"
+      *
+      *    入院日の時、初診料のみ算定する
+           IF      SPA-K02N-NYUINYMD   =   SPA-NAI-SRYYMD
+               GO      TO      2009-RSIHKN-SET-EXT
+           END-IF
+          IF      WRK-SRYCD(1:2)      =   "83"
                MOVE    "0109"              TO  SPA-KIDCD
                GO      TO      2009-RSIHKN-SET-EXT
            END-IF

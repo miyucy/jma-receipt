@@ -59,6 +59,7 @@
       *  03.00.11    NACL-多々納  02/12/26  前回処方のドクター変更
       *  03.00.12    NACL-多々納  03/02/19  約束セット名称編集修正
       *  03.00.13    NACL-多々納  03/03/05  排他制御処理追加
+      *  03.00.14    NACL-多々納  03/04/07  入院日のチェック追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1888,7 +1889,22 @@
                        MOVE    "JOIN"              TO  WRK-PUTTYPE
                        PERFORM 450-K02N-SYORI-SEC
                    ELSE
-                       MOVE    ZERO            TO  SPA-GMN-CUR
+      *                入院日を診療日にして登録する
+                       MOVE    SPA-K02N-NYUINYMD   TO  SPA-SRYYMD
+                       MOVE    SPA-K02N-NYUINYMD   TO  WRK-SYMD
+                       PERFORM 520-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG         TO  SPA-SRYYMDW
+      *                スパ共通編集処理
+                       PERFORM                 310-SPA-SET-SEC
+      *                チェック用月内診療行為セット
+                       PERFORM                 320-SPA-CHKSET-SEC
+      *
+      *                画面用スパ編集処理
+                       PERFORM                 310-SPA-GMNSET-SEC
+      *
+                       MOVE    1               TO  SPA-GMN-PAGE
+                       MOVE    1               TO  SPA-GMN-CUR
+                       MOVE    1               TO  SPA-MAP-IDX
                    END-IF
       *
            END-EVALUATE
@@ -2657,7 +2673,7 @@
                   (LNK-WKSRY-TERMID (01)   NOT =   SPACE ))   OR
                  ( SPA-DOUJI-DENPNUM   NOT =   ZERO  )   OR
                  ( SPA-SYORIFLG            =   1     )
-               MOVE    ZERO            TO  FLG-SYOSIN
+               MOVE    ZERO                TO  FLG-SYOSIN
                IF     (SPA-SYORIFLG            =   1     )  OR
                       (SPA-DOUJI-DENPNUM   NOT =   ZERO  )
       *            受診回数編集処理
@@ -2679,7 +2695,8 @@
       ******   END-IF
            ELSE
                MOVE    1               TO  FLG-SYOSIN
-               IF      FLG-NYUIN       =   ZERO
+               IF     (FLG-NYUIN       =   ZERO  )  OR
+                      (SPA-K02N-NYUINYMD   NOT =   SPACE )
                    PERFORM 330-SYOSIN-SET-SEC
                END-IF
                IF     (SPA-ERRCD       NOT =   SPACE ) OR
@@ -3307,6 +3324,9 @@
        3109-NYUIN-CHK-SEC              SECTION.
       *
            MOVE    ZERO                TO  FLG-NYUIN
+      *    入院日
+           MOVE    SPACE               TO  SPA-K02N-NYUINYMD
+           MOVE    SPACE               TO  SPA-K02N-TAIINYMD
       *
       *    入院履歴判定
            MOVE    SPACE               TO  PTNYUINRRK-REC
@@ -3341,11 +3361,22 @@
                IF     (PTNYUINRRK-TENNYUYMD    <=  SPA-NAI-SRYYMD) AND
                      ((PTNYUINRRK-TENSTUYMD    >=  SPA-NAI-SRYYMD) OR
                       (PTNYUINRRK-TENSTUYMD    =   SPACE         ))
-                   IF      PTNYUINRRK-TENNYUYMD    =   SPA-NAI-SRYYMD
+                   IF     (PTNYUINRRK-TENNYUYMD    =   SPA-NAI-SRYYMD)
+                       OR (PTNYUINRRK-TAIINYMD     =   SPA-NAI-SRYYMD)
                        CONTINUE
                    ELSE
                        MOVE    1               TO  FLG-NYUIN
+      *                入院日
+                       MOVE    PTNYUINRRK-NYUINYMD
+                                               TO  SPA-K02N-NYUINYMD
+                       MOVE    PTNYUINRRK-TAIINYMD
+                                               TO  SPA-K02N-TAIINYMD
                    END-IF
+      *            入院日
+                   MOVE    PTNYUINRRK-NYUINYMD
+                                               TO  SPA-K02N-NYUINYMD
+                   MOVE    PTNYUINRRK-TAIINYMD
+                                               TO  SPA-K02N-TAIINYMD
                END-IF
       *
                MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
