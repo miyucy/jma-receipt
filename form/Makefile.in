@@ -159,6 +159,7 @@ FORM_files = \
               HCRCP400.red \
               HCM38.red \
               HCM39.red \
+              HCM40.red \
 
 all:   
 

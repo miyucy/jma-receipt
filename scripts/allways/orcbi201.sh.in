@@ -1,0 +1,54 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+#-------------------------------------------#
+#    入院患者検索結果一覧出力
+#        $1  処理区分
+#        $2  CSVファイル名
+#        $3  パラメータファイル名
+#        $4  TERMID
+#        $5  SYSYMD
+#        $6  SYSDATE
+#        $7  HOSPID
+#        $8  STAFFCD
+#        $9  ジョブＩＤ
+#        $10 シェルＩＤ
+#
+#-------------------------------------------#
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBI201 -parameter $3,$4,$5,$6,$7,$8
+
+##      ＣＳＶファイル作成
+        if  [ $1 -eq "0" ]; then
+            if  [ -e $2 ]; then
+                awk ' {
+                #     行頭の空白を取り除く
+                      sub(/^ */,"");
+                #     行末の空白を取り除く
+                      sub(/ *$/,"");
+                #     カンマの後の空白を取り除く
+                      gsub(/, */,",");
+                #     カンマの前の空白を取り除く
+                      gsub(/ *,/,",");
+                      print $0
+                }'  $2 > $2.tmp
+
+                mv  $2.tmp $2
+            fi
+        fi
+
+##      パラメータファイル削除
+        if  [ -e $3 ]; then
+            rm  $3
+        fi
+
+       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$9${10}
+
+        exit
