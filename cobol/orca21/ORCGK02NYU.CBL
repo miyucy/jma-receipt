@@ -2599,6 +2599,7 @@
       *****************MOVE    "*"             TO  SPA-GMN-INPUTCD(IDX2)
                        MOVE    "1"             TO  SPA-COM-KAIFLG
                                                                (IDX2)
+                       MOVE    "1"             TO  SPA-COM-ZAIEND(IDX2)
                        MOVE    ZERO            TO  FLG-SET
                      END-IF
                    END-IF
@@ -2615,7 +2616,6 @@
                       (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "*"       )
                    CONTINUE
                ELSE
-      *
       *            点数マスタ編集
                    INITIALIZE                  ORCSC92AREA
                    MOVE    SPACE               TO  LNK-SC92-KBN
@@ -2708,7 +2708,6 @@
                        END-IF
                    END-IF
                END-IF
-      *
                IF      SPA-COM-ZAIEND (IDX)    =   "1"
                    MOVE    ZERO                TO  IDX-TEI
                END-IF
@@ -5278,11 +5277,11 @@
                                                        =   "S" ) AND
                               (SPA-COM-SURFLG (SPA-GMN-IDX)
                                                        =   SPACE ))
-                         OR  ((SPA-GMN-INPUTCD (SPA-GMN-IDX)(1:2)
+                         OR  ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
                                                        =   "84" ) AND
                               (SPA-COM-SURFLG (SPA-GMN-IDX)
                                                        =   SPACE ))
-                         OR  ((SPA-GMN-INPUTCD (SPA-GMN-IDX)(1:4)
+                         OR  ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
                                                        =   "0084") AND
                               (SPA-COM-SURFLG (SPA-GMN-IDX)
                                                        =   SPACE ))
@@ -10025,7 +10024,8 @@
                END-IF
            END-IF
       *    器材の時、その他へ
-           IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "7"
+           IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "7" )  OR
+                  (SPA-COM-INPUTCD(IDX)(1:3)   =   "059")
                MOVE    "80"                        TO  WRK-SRYKBN
            END-IF
       *
@@ -10081,6 +10081,9 @@
       *        その他
                WHEN    "80"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (10)
+      *        その他
+               WHEN    OTHER
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (10)
            END-EVALUATE
       *
            .
@@ -10126,6 +10129,9 @@
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (09)
       *        その他
                WHEN    "80"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (10)
+      *        その他
+               WHEN    OTHER
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (10)
            END-EVALUATE
       *

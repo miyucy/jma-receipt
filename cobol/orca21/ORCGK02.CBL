@@ -1430,6 +1430,8 @@
                    MOVE    ZERO            TO  SPA-NAIFUKU-CHK
                    MOVE    ZERO            TO  SPA-NAIFUKU-OK
                    MOVE    ZERO            TO  SPA-CHOKITOFLG-CHK
+                   MOVE    ZERO            TO  SPA-CHOZAI-CHK
+                   MOVE    ZERO            TO  SPA-SYOHOU-CHK
       *            診療行為、計計算処理、編集
       *            MOVE    "2"             TO  FLG-TOROKU
                    MOVE    SPACE           TO  FLG-TOROKU
@@ -13092,7 +13094,8 @@
                END-IF
            END-IF
       *    器材の時、その他へ
-           IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "7"
+           IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "7" )  OR
+                  (SPA-COM-INPUTCD(IDX)(1:3)   =   "059")
                MOVE    "80"                        TO  WRK-SRYKBN
            END-IF
       *
@@ -13148,6 +13151,9 @@
       *        その他
                WHEN    "80"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (10)
+      *        その他
+               WHEN    OTHER
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (10)
            END-EVALUATE
       *
            .
@@ -13193,6 +13199,9 @@
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (09)
       *        その他
                WHEN    "80"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (10)
+      *        その他
+               WHEN    OTHER
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (10)
            END-EVALUATE
       *
