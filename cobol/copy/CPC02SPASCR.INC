@@ -55,3 +55,4 @@
                    07  SPA-NAI-C02-TSRYYMD     PIC X(08).
                    07  SPA-NAI-C02-TRENNUM     PIC 9(02).
                    07  SPA-NAI-C02-TSRYKA      PIC X(02).
+                   07  SPA-NAI-C02-TTENKIYMD   PIC X(08).
