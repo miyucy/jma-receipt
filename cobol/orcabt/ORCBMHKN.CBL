@@ -716,6 +716,12 @@
       *****************************************************************
        2200-SRYKARRK-CHK-SEC          SECTION.
       *
+      *    パラメタ日付がない時、全件対象とする
+           IF      WRK-PARA-LSTYMD     =   SPACE    OR  ZERO
+               MOVE    1               TO  FLG-OK
+               GO      TO      2200-SRYKARRK-CHK-EXT
+           END-IF
+      *
       *    最終受診日判定
            MOVE    SPACE               TO  SRYKARRK-REC
            INITIALIZE                  SRYKARRK-REC
@@ -755,7 +761,7 @@
            END-IF
       *
            .
-       2200-SRYKARRK-CHKN-EXT.
+       2200-SRYKARRK-CHK-EXT.
            EXIT.
       *
       *
