@@ -43,6 +43,7 @@
       *  01.00.09    ひさなが     03/09/11  処理メッセージ修正
       *                                     指示に含まないを追加
       *  01.00.10    NACL-太田    03/11/19  シェルパラメータの変更他
+      *  01.00.11    NACL-森脇    04/07/29  直前ジョブ管理チェック
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -580,7 +581,13 @@
                    MOVE    "JOIN"      TO  MCP-PUTTYPE
                    PERFORM 210-BACK-SYORI-SEC
                WHEN    OTHER
-                   PERFORM 490-PRINT-SEC
+      *----(01.00.11)--UPD-START---
+      *            ジョブ管理チェック
+                   PERFORM 4900-JOBKANRICHK-SEC
+                   IF      SPA-ERRCD       =   SPACE
+                       PERFORM 490-PRINT-SEC
+                   END-IF
+      *----(01.00.11)--UPD-END-----
                END-EVALUATE
            END-IF
       *
@@ -597,7 +604,13 @@
        340-DID2-SET-SEC            SECTION.
       *
            IF    ( SPA-DID1-FLG    =   "OK" OR "NO" )
-               PERFORM 490-PRINT-SEC
+      *----(01.00.11)--UPD-START---
+      *        ジョブ管理チェック
+               PERFORM 4900-JOBKANRICHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+                   PERFORM 490-PRINT-SEC
+               END-IF
+      *----(01.00.11)--UPD-END-----
            END-IF
       *
            MOVE    SPACE           TO  SPA-DID1-FLG

@@ -43,6 +43,7 @@
       *  01.00.13    NACL-太田    03/07/30  編集パラメータにPTNUM追加
       *  01.00.14    NACL-太田    03/08/05  パラメータを８つまで設定可能
       *                                     に修正
+      *  01.00.15    NACL-森脇    04/07/29  直前ジョブ管理チェック追加
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -534,7 +535,13 @@
                    MOVE    "JOIN"      TO  MCP-PUTTYPE
                    PERFORM 210-BACK-SYORI-SEC
                WHEN    OTHER
-                   PERFORM 490-PRINT-SEC
+      *----(01.00.16)--UPD-START---
+      *            ジョブ管理チェック
+                   PERFORM 4900-JOBKANRICHK-SEC
+                   IF      SPA-ERRCD       =   SPACE
+                       PERFORM 490-PRINT-SEC
+                   END-IF
+      *----(01.00.16)--UPD-END------
                END-EVALUATE
            END-IF
       *
@@ -551,7 +558,13 @@
        340-LID2-SET-SEC            SECTION.
       *
            IF    ( SPA-LID1-FLG    =   "OK" OR "NO" )
-               PERFORM 490-PRINT-SEC
+      *----(01.00.16)--UPD-START---
+      *        ジョブ管理チェック
+               PERFORM 4900-JOBKANRICHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+                   PERFORM 490-PRINT-SEC
+               END-IF
+      *----(01.00.16)--UPD-END------
            END-IF
       *
            MOVE    SPACE           TO  SPA-LID1-FLG

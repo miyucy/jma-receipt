@@ -44,6 +44,7 @@
       *  01.00.14    NACL-太田    03/08/05  パラメータを８つまで設定可能
       *                                     に修正
       *  01.00.15    NACL-藤原    03/11/12  統計データ作成画面の追加
+      *  01.00.16    NACL-森脇    04/07/29  直前ジョブ管理チェック追加
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -530,7 +531,13 @@
                    MOVE    "JOIN"      TO  MCP-PUTTYPE
                    PERFORM 210-BACK-SYORI-SEC
                WHEN    OTHER
-                   PERFORM 490-PRINT-SEC
+      *----(01.00.16)--UPD-START---
+      *           ジョブ管理チェック
+                   PERFORM 4900-JOBKANRICHK-SEC
+                   IF      SPA-ERRCD       =   SPACE
+                       PERFORM 490-PRINT-SEC
+                   END-IF
+      *----(01.00.16)--UPD-END-----
                END-EVALUATE
            END-IF
       *
@@ -547,7 +554,13 @@
        340-GID2-SET-SEC            SECTION.
       *
            IF    ( SPA-GID1-FLG    =   "OK" OR "NO" )
-               PERFORM 490-PRINT-SEC
+      *----(01.00.16)--UPD-START---
+      *        ジョブ管理チェック
+               PERFORM 4900-JOBKANRICHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+                   PERFORM 490-PRINT-SEC
+               END-IF
+      *----(01.00.16)--UPD-END-----
            END-IF
       *
            MOVE    SPACE           TO  SPA-GID1-FLG

@@ -39,6 +39,7 @@
       *  01.01.04    NACL-太田    03/07/11  自費追加
       *  01.01.05    NACL-森脇    03/08/22  分類区分追加
       *  02.00.01    NACL-森脇    03/12/24  その他材料追加
+      *  02.00.02    NACL-森脇    04/07/29  直前ジョブ管理チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -513,7 +514,12 @@
                        PERFORM 210-BACK-SYORI-SEC
                    WHEN    "1001"
                    WHEN    "1002"    
-                       PERFORM 490-PRINT-SEC
+      *----(02.00.02)--UPD-START---
+                       PERFORM 4501-JOBKANRI-CHK-SEC
+                       IF      SPA-ERRCD       =   SPACE
+                           PERFORM 490-PRINT-SEC
+                       END-IF
+      *----(02.00.02)--UPD-END-----
                END-EVALUATE        
            END-IF
       *
@@ -539,7 +545,12 @@
        350-ZID3-SET-SEC            SECTION.
       *
            IF      SPA-ZID1-FLG    =   "OK"    OR  "NO"
-               PERFORM 490-PRINT-SEC
+      *----(02.00.02)--UPD-START---
+               PERFORM 4501-JOBKANRI-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+                   PERFORM 490-PRINT-SEC
+               END-IF
+      *----(02.00.02)--UPD-END-----
            END-IF
       *
            MOVE    SPACE           TO  SPA-ZID1-FLG
@@ -992,33 +1003,11 @@
            EXIT.
       *
       *
+      *----(02.00.02)--ADD-START---
       *****************************************************************
-      *    印刷前確認処理
+      *    ジョブ管理チェック処理
       *****************************************************************
-       490-PRINT-MAE-SEC                   SECTION.
-      *
-      *----(01.01.01)--UPD-START---
-           IF            (SPA-GMN-IYKCHKALL  =   "F")
-                  AND    (SPA-GMN-SRYCHK     =   "F")
-                  AND    (SPA-GMN-TOKCHK     =   "F")
-                  AND    (SPA-GMN-JIHCHK     =   "F")
-                  AND    (SPA-GMN-COMCHKALL  =   "F")
-      *----(02.00.01)--ADD-START---
-                  AND    (SPA-GMN-HOKACHK    =   "F")
-      *----(02.00.01)--ADD-END-----
-                  MOVE    "0004"    TO  SPA-ERRCD
-           END-IF
-      *----(01.01.01)--UPD-END-----
-      *
-           IF      SPA-ERRCD          =   SPACE
-               IF     SPA-NAI-MSTYMD  =   ZERO
-                      MOVE    "0003"      TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *
-           IF      SPA-ERRCD       NOT  =   SPACE
-               GO  TO  490-PRINT-MAE-EXT
-           END-IF
+       4501-JOBKANRI-CHK-SEC       SECTION.
       *
            MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
@@ -1028,6 +1017,7 @@
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SPACE               TO  SPA-ERRCD
                MOVE    MCPDATA-REC         TO  SYS-3003-REC 
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SYS-3003-JOBID
@@ -1055,6 +1045,41 @@
                END-PERFORM
            END-IF
       *
+         .
+       4501-JOBKANRI-CHK-EXT.
+           EXIT.
+      *
+      *----(02.00.02)--ADD-END-----
+      *****************************************************************
+      *    印刷前確認処理
+      *****************************************************************
+       490-PRINT-MAE-SEC                   SECTION.
+      *
+      *----(01.01.01)--UPD-START---
+           IF            (SPA-GMN-IYKCHKALL  =   "F")
+                  AND    (SPA-GMN-SRYCHK     =   "F")
+                  AND    (SPA-GMN-TOKCHK     =   "F")
+                  AND    (SPA-GMN-JIHCHK     =   "F")
+                  AND    (SPA-GMN-COMCHKALL  =   "F")
+      *----(02.00.01)--ADD-START---
+                  AND    (SPA-GMN-HOKACHK    =   "F")
+      *----(02.00.01)--ADD-END-----
+                  MOVE    "0004"    TO  SPA-ERRCD
+           END-IF
+      *----(01.01.01)--UPD-END-----
+      *
+           IF      SPA-ERRCD          =   SPACE
+               IF     SPA-NAI-MSTYMD  =   ZERO
+                      MOVE    "0003"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+      *----(02.00.02)--UPD-START---
+           PERFORM 4501-JOBKANRI-CHK-SEC
+           IF      SPA-ERRCD       NOT  =   SPACE
+               GO  TO  490-PRINT-MAE-EXT
+           END-IF
+      *----(02.00.02)--UPD-END-----
       *     
            IF     SPA-ERRCD           =   SPACE     
                IF      SPA-GMN-KEI(1)        =   "T"

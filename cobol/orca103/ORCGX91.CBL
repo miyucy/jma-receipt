@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-森脇    04/07/29  直前ジョブ管理チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -422,6 +423,14 @@
                WHEN    "6666"
                    MOVE    "JOIN"  TO  MCP-PUTTYPE
                    PERFORM 210-BACK-SYORI-SEC
+      *----(01.00.01)--UPD-START---
+               WHEN    OTHER
+      *            ジョブ管理チェック
+                   PERFORM 4501-JOBKANRI-CHK-SEC
+                   IF      SPA-ERRCD       =   SPACE
+                       PERFORM 490-PRINT-SEC
+                   END-IF
+      *----(01.00.01)--UPD-END-----
                END-EVALUATE
            END-IF
       *
@@ -438,7 +447,13 @@
        350-XID2-SET-SEC            SECTION.
       *
            IF    ( SPA-XID1-FLG    =   "OK"    OR  "NO" )
-               PERFORM 490-PRINT-SEC
+      *----(01.00.01)--UPD-START---
+      *        ジョブ管理チェック
+               PERFORM 4501-JOBKANRI-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+                   PERFORM 490-PRINT-SEC
+               END-IF
+      *----(01.00.01)--UPD-END-----
            END-IF
       *
            MOVE    SPACE           TO  SPA-XID1-FLG
@@ -1054,22 +1069,11 @@
        450-REPRINT-EXT.
            EXIT.
       *
+      *----(01.00.01)--ADD-START---
       *****************************************************************
-      *    印刷前確認処理
+      *    ジョブ管理チェック処理
       *****************************************************************
-       490-PRINT-MAE-SEC                   SECTION.
-      *
-      *    入力チェック
-           PERFORM 410-INPUT-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  490-PRINT-MAE-EXT
-           END-IF
-      *
-      *    関連チェック
-           PERFORM 4101-KANREN-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  490-PRINT-MAE-EXT
-           END-IF
+       4501-JOBKANRI-CHK-SEC       SECTION.
       *
            MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
@@ -1080,6 +1084,7 @@
            PERFORM 900-SYSKANRI-INV-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-3003-REC
+               MOVE    SPACE            TO  SPA-ERRCD
                PERFORM VARYING IDX0 FROM    1   BY  1
                        UNTIL ( IDX0 >       SYS-3003-JOBID )
       *
@@ -1107,9 +1112,35 @@
                END-PERFORM
            END-IF
       *
-           IF   ( SPA-ERRCD        NOT =   SPACE )
+           .
+       4501-JOBKANRI-CHK--EXT.
+           EXIT.
+      *
+      *----(01.00.01)--ADD-END-----
+      *****************************************************************
+      *    印刷前確認処理
+      *****************************************************************
+       490-PRINT-MAE-SEC                   SECTION.
+      *
+      *    入力チェック
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  490-PRINT-MAE-EXT
            END-IF
+      *
+      *    関連チェック
+           PERFORM 4101-KANREN-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  490-PRINT-MAE-EXT
+           END-IF
+      *
+      *----(01.00.01)--UPD-START---
+      *    ジョブ管理チェック
+           PERFORM 4501-JOBKANRI-CHK-SEC
+           IF   (  SPA-ERRCD        NOT =   SPACE )
+               GO  TO  490-PRINT-MAE-EXT
+           END-IF
+      *----(01.00.01)--UPD-END-----
       *
            MOVE    "1001"              TO  SPA-XIDCD
       *
