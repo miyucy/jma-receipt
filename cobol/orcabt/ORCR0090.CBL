@@ -87,6 +87,7 @@
       *  01.02.13    NACL-ÌçÏÆ    02.11.26  ¿ÇÎÅ¼ÂÆü¿ô»»ÄêÍÑ¤Î
       *                                     ¥³¡¼¥É¤ò°õºþ¤·¤Ê¤¤¤è¤¦ÄÉ²Ã 
       *                                     ¸¡¿Ç¥³¡¼¥É¤ò°õºþ¤¹¤ë¤è¤¦ÄÉ²Ã
+      *  01.02.14    NACL-¾®Æ¦Âô  02.11.28  ½é¿Ç²Ã»»¤Î¤È¤­ÊÔ½¸¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -622,10 +623,31 @@
       *½é¿Ç²Ã»»     
       *    ½é¿Ç¡Ê¿ÇÎÅ½ê¡Ë¾Ò²ð´µ¼Ô²Ã»»
            03  WRK-CONS-SYOSIN-KASAN1  PIC X(09)   VALUE 
-                                                   "111003770".                     
+                                                   "111003770".                
       *    Ï·¿Í½é¿Ç¡Ê¿ÇÎÅ½ê¡Ë¾Ò²ð´µ¼Ô²Ã»»
            03  WRK-CONS-SYOSIN-KASAN2  PIC X(09)   VALUE 
-                                                   "111700470".                     
+                                                   "111700470".
+      *    ½é¿Ç¡ÊÆýÍÄ»ù¡Ë²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN3  PIC X(09)   VALUE 
+                                                   "111000370".
+      *    ½é¿Ç¡Ê°é»ù±ÉÍÜ»ØÆ³¡Ë²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN4  PIC X(09)   VALUE 
+                                                   "111000470".
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê½é¿Ç»þ¿ÇÎÅ»þ¤Î¾Ò²ð´µ¼Ô¡Ë²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN5  PIC X(09)   VALUE 
+                                                   "111010370".
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£³¡Ë
+           03  WRK-CONS-SYOSIN-KASAN6  PIC X(09)   VALUE 
+                                                   "111010870".
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£´¡Ë
+           03  WRK-CONS-SYOSIN-KASAN7  PIC X(09)   VALUE 
+                                                   "111010970".
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£µ¡Ë
+           03  WRK-CONS-SYOSIN-KASAN8  PIC X(09)   VALUE 
+                                                   "111011070".
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£¶¡Ë
+           03  WRK-CONS-SYOSIN-KASAN9  PIC X(09)   VALUE 
+                                                   "111011170".
       *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
        01  WRK-PATH                        PIC X(64).
@@ -1099,6 +1121,13 @@
                IF      TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                                              =   WRK-CONS-SYOSIN-KASAN1
                                              OR  WRK-CONS-SYOSIN-KASAN2
+                                             OR  WRK-CONS-SYOSIN-KASAN3
+                                             OR  WRK-CONS-SYOSIN-KASAN4
+                                             OR  WRK-CONS-SYOSIN-KASAN5
+                                             OR  WRK-CONS-SYOSIN-KASAN6
+                                             OR  WRK-CONS-SYOSIN-KASAN7
+                                             OR  WRK-CONS-SYOSIN-KASAN8
+                                             OR  WRK-CONS-SYOSIN-KASAN9
                                              OR  CONS-COMMENT5         
                                              OR  CONS-COMMENT6         
                                              OR  CONS-COMMENT7         
