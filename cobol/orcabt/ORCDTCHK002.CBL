@@ -3248,6 +3248,7 @@
        2001121-PTBYO-UTAGAI-CHK-SEC    SECTION.
       *
            IF    ( PTBYO-UTAGAIFLG     = "1" OR "3")
+            AND  ( PTBYO-TENKIKBN      = SPACE)
             AND  ( PTBYO-SRYYMD (1:6) <= WRK-UTAIGAI-CHK-YM )
                MOVE    PTBYO-SRYKA         TO  SRH-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
