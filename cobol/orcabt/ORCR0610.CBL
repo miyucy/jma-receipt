@@ -1261,14 +1261,10 @@
                        MOVE    PTHKN-HOJOKBN   TO  WRK-RECE61-HOJOKBN
                    END-IF
            END-EVALUATE             
+           MOVE    SPACE               TO WRK-RECE61-RECEKA
       *   
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
-                   IF      SYS-1001-HOSPSBT1   =   1
-                       MOVE    SYS-1005-RECESRYKA  TO WRK-RECE61-RECEKA
-                   ELSE
-                       MOVE    SPACE               TO WRK-RECE61-RECEKA
-                   END-IF
                    MOVE    WRK-RECE61-KEY      TO  RECE61-KEY 
                    PERFORM 900-RECE61-READ-SEC
                    IF      FLG-RECE61          =   ZERO
@@ -1278,12 +1274,6 @@
                        PERFORM 20011-RECE61-WRITE-SEC
                    END-IF
                WHEN    "2"
-                   IF      SYS-1001-HOSPSBT1   =   1
-                       MOVE    SYS-1005-RECESRYKA
-                                               TO WRK-RECE61-RECEKA
-                   ELSE
-                       MOVE    SPACE           TO WRK-RECE61-RECEKA
-                   END-IF
                    MOVE    WRK-RECE61-KEY      TO  RECE61X-KEY 
                    PERFORM 900-RECE61X-READ-SEC
                    IF      FLG-RECE61X         =   ZERO
