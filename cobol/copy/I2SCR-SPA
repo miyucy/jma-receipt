@@ -62,10 +62,10 @@
                        09  SPA-GMN-NAME-R      REDEFINES   SPA-GMN-NAME.
                            11  SPA-GMN-NAME-X  PIC X(02)   OCCURS  15.
                        09  SPA-GMN-ADRS        PIC X(100).
-                       09  SPA-GMN-STNYUINYMD  PIC X(09).
-                       09  SPA-GMN-EDNYUINYMD  PIC X(09).
-                       09  SPA-GMN-STTAIINYMD  PIC X(09).
-                       09  SPA-GMN-EDTAIINYMD  PIC X(09).
+                       09  SPA-GMN-STNYUINYMD  PIC X(10).
+                       09  SPA-GMN-EDNYUINYMD  PIC X(10).
+                       09  SPA-GMN-STTAIINYMD  PIC X(10).
+                       09  SPA-GMN-EDTAIINYMD  PIC X(10).
                        09  SPA-GMN-SELNUM      PIC 9(03).
                        09  SPA-GMN-TOTAL       PIC X(22).
       *

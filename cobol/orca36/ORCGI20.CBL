@@ -1192,11 +1192,16 @@
       *****************************************************************
        41025-STNYUINYMD-CHK-SEC         SECTION.
       *
-           MOVE    6                    TO  SPA-GMN-CUR
+           MOVE    6                   TO  SPA-GMN-CUR
       *
-           IF     SPA-GMN-STNYUINYMD    =   SPACE OR "00000000"
-               MOVE    "00000000"       TO  SPA-NAI-STNYUINYMD
-           ELSE    
+           IF     SPA-GMN-STNYUINYMD   =   SPACE
+               MOVE    "00000000"      TO  SPA-NAI-STNYUINYMD
+               GO  TO  41025-STNYUINYMD-CHK-EXT
+           END-IF
+      *
+           IF     SPA-GMN-STNYUINYMD (1:3) =   "000"
+               MOVE    "00000000"      TO  SPA-GMN-STNYUINYMD
+           ELSE
       *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
                MOVE    SPA-GMN-STNYUINYMD  TO  SGDAY-INDAY
@@ -1220,9 +1225,14 @@
       *
            MOVE    7                    TO  SPA-GMN-CUR
       *
-           IF     SPA-GMN-EDNYUINYMD    =   SPACE OR "99999999"
-               MOVE    "99999999"           TO  SPA-NAI-EDNYUINYMD
-           ELSE    
+           IF     SPA-GMN-EDNYUINYMD    =   SPACE
+               MOVE    "99999999"       TO  SPA-NAI-EDNYUINYMD
+               GO  TO  41026-EDNYUINYMD-CHK-EXT
+           END-IF
+      *
+           IF     SPA-GMN-EDNYUINYMD (1:3) =   "999"
+               MOVE    "99999999"       TO  SPA-GMN-EDNYUINYMD
+           ELSE
       *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
                MOVE    SPA-GMN-EDNYUINYMD  TO  SGDAY-INDAY
@@ -1245,8 +1255,13 @@
       *
            MOVE    13                   TO  SPA-GMN-CUR
       *
-           IF     SPA-GMN-STTAIINYMD    =   SPACE OR "00000000"
+           IF     SPA-GMN-STTAIINYMD    =   SPACE
                MOVE    "00000000"       TO  SPA-NAI-STTAIINYMD
+               GO  TO  41025-STTAIINYMD-CHK-EXT
+           END-IF
+      *
+           IF     SPA-GMN-STTAIINYMD (1:3)  =   "000"
+               MOVE    "00000000"       TO  SPA-GMN-STTAIINYMD
            ELSE    
       *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
@@ -1271,8 +1286,12 @@
       *
            MOVE    14                   TO  SPA-GMN-CUR
       *
-           IF     SPA-GMN-EDTAIINYMD    =   SPACE OR "99999999"
+           IF     SPA-GMN-EDTAIINYMD    =   SPACE
                MOVE    "99999999"       TO  SPA-NAI-EDTAIINYMD
+               GO  TO  41026-EDTAIINYMD-CHK-EXT
+           END-IF
+      *
+           IF     SPA-GMN-EDTAIINYMD (1:3) =   "999"
                MOVE    "99999999"       TO  SPA-GMN-EDTAIINYMD
            ELSE    
       *        日付画面チェックサブ
