@@ -101,6 +101,7 @@
       *  £²£°£°£²Ç¯£±£°·î²þÀµÂÐ±þ
       *  01.01.01    NACL-Æ£¸¶    02/09/17  ¸©Æâ¸©³°¶èÊ¬¡¦¸©ÈÖ¹æ¡¦
       *                                     Ç¯Îð¡¦µëÉÕ³ä¹ç¤ÎÄÉ²Ã
+      *  01.01.02    NACL-Æ£¸¶    02/10/17  »áÌ¾¤ò£³£²¤«¤é£µ£°¤ËÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2890,7 +2891,8 @@
                MOVE    RECE02-KANANAME     TO  RECE08-KANANAME
       *********MOVE    WRK-RECENUM         TO  RECE08-RECENUM
                MOVE    "2"                 TO  RECE08-NYUGAIKBN
-               MOVE    "HC06"              TO  RECE08-FORMID
+      *********MOVE    "HC06"              TO  RECE08-FORMID
+               MOVE    "HC06V01"           TO  RECE08-FORMID
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
