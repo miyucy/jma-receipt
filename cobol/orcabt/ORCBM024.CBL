@@ -401,13 +401,15 @@
       *    
            MOVE    SYS-1001-HOSPCDN    TO  HCM2A-HOSPCD
       *
-           EVALUATE    IDX1
-               WHEN    1
-                   MOVE    "その他のレセ"      TO  HCM2A-TITLE  
-               WHEN    2
-                   MOVE    "在総診または在医総を算定したレセ"
-                                               TO  HCM2A-TITLE     
-           END-EVALUATE           
+           IF      WRK-NYUGAIKBN       =   "2"
+               EVALUATE    IDX1
+                   WHEN    1
+                       MOVE    "その他のレセ"      TO  HCM2A-TITLE  
+                   WHEN    2
+                       MOVE    "在総診または在医総を算定したレセ"
+                                                   TO  HCM2A-TITLE     
+               END-EVALUATE
+           END-IF           
       *
            EVALUATE    WRK-NYUGAIKBN
                WHEN    "1"
@@ -429,13 +431,15 @@
       *    
            MOVE    SYS-1001-HOSPCDN    TO  HCM2B-HOSPCD 
       *
-           EVALUATE    IDX1
-               WHEN    2
-                   MOVE    "在総診または在医総を算定したレセ"
+           IF      WRK-NYUGAIKBN       =   "2"
+               EVALUATE    IDX1
+                   WHEN    2
+                       MOVE    "在総診または在医総を算定したレセ"
                                                TO  HCM2B-TITLE     
-               WHEN    1
-                   MOVE    "その他のレセ"      TO  HCM2B-TITLE  
-           END-EVALUATE           
+                   WHEN    1
+                       MOVE    "その他のレセ"      TO  HCM2B-TITLE  
+               END-EVALUATE  
+           END-IF         
       *
            EVALUATE    WRK-NYUGAIKBN
               WHEN    "1"

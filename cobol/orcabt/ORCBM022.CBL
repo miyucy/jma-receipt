@@ -41,31 +41,31 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-006900*    請求ＤＢ更新用ファイル
+      *    請求ＤＢ更新用ファイル
            SELECT  UPD-FILE        ASSIGN  RECEUPD
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-RECEUPD.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-006900*    請求ＤＢ更新用ファイル
+      *    請求ＤＢ更新用ファイル
        FD  UPD-FILE.
            COPY    "CPRCF010.INC"  REPLACING  //RECE10//
                                    BY         //RECE10X//.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
-006900*    請求ＤＢ更新用ファイル 名称領域 
+      *    請求ＤＢ更新用ファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEUPD//.
@@ -288,8 +288,7 @@
            OPEN    OUTPUT              UPD-FILE
       *
       *    入院外分
-           MOVE    "2"                 TO  WRK-NYUGAIKBN
-           PERFORM 2001-SOKATU-SYUKEI-SEC
+           PERFORM 2001-GAIRAI-SYUKEI-SEC
       *
            IF      CNT-RECE10          >   ZERO 
                IF      WRK-PARA-NYUGAIKBN  =   "1"
@@ -307,8 +306,7 @@
       *    入院分
            IF      WRK-PARA-NYUGAIKBN  =   "1"
            AND     FLG-ERR             =   ZERO
-               MOVE    "1"                 TO  WRK-NYUGAIKBN
-               PERFORM 2001-SOKATU-SYUKEI-SEC
+               PERFORM 2001-NYUIN-SYUKEI-SEC
       *
                IF      CNT-RECE10          >   ZERO 
                    CALL    "ORCBM024"          USING 
@@ -331,9 +329,11 @@
            EXIT.
       *
       *****************************************************************
-      *    入外区分別集計処理
+      *    入院外分集計処理
       *****************************************************************
-      2001-SOKATU-SYUKEI-SEC         SECTION.
+       2001-GAIRAI-SYUKEI-SEC         SECTION.
+      *
+           MOVE    "2"                 TO  WRK-NYUGAIKBN
       *
            INITIALIZE                      SUM-AREA
            MOVE    ZERO                TO  CNT-RECE10
@@ -347,7 +347,7 @@
                                        OR      FLG-ERR      =   1
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SEIKYU-KEY9"       TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -363,14 +363,41 @@
                                            OR      FLG-ERR      =   1
       *
                MOVE    "DBCLOSE"           TO  MCP-FUNC
-               MOVE    "SEIKYU-KEY10"      TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  ORC-DBPATH
                CALL    "ORCMCPSUB"         USING
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
            END-IF
            .
-       2001-SOKATU-SYUKEI-EXT.
+       2001-GAIRAI-SYUKEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院分集計処理
+      *****************************************************************
+       2001-NYUIN-SYUKEI-SEC         SECTION.
+      *
+           MOVE    "1"                 TO  WRK-NYUGAIKBN
+      *
+           INITIALIZE                      SUM-AREA
+           MOVE    ZERO                TO  CNT-RECE10
+      *
+           MOVE    "SEIKYU-KEY18"       TO  WRK-PATH  
+           PERFORM 900-SEIKYU-SELECT-SEC
+      *
+           MOVE    1                   TO  WRK-INDEX
+           PERFORM 2001-SYUKEI-SEC     UNTIL   FLG-RECE10   =   1 
+                                       OR      FLG-ERR      =   1
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE     WRK-PATH           TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       2001-NYUIN-SYUKEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -837,9 +864,9 @@
            .
        2201-KOH-SYUKEI-01-EXT.
            EXIT.
-057400*
+      *
       *****************************************************************
-006900*    請求ＤＢ更新用ファイル出力処理
+      *    請求ＤＢ更新用ファイル出力処理
       *****************************************************************
        230-UPD-FILE-HENSYU-SEC         SECTION.
       *
@@ -850,7 +877,7 @@
            .
        230-UPD-FILE-HENSYU-EXT.
            EXIT.
-057400*
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************

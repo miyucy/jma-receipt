@@ -29,6 +29,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    03/03/16  入院対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -113,6 +114,7 @@
            03  WRK-PARA-HOSPID     PIC X(24).
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
+           03  WRK-PARA-NYUGAIKBN  PIC X(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -312,6 +314,7 @@
                                                WRK-PARA-HOSPID
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
+                                               WRK-PARA-NYUGAIKBN
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -403,11 +406,16 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    その他のレセ
+      *    入院外（その他のレセ）・入院集計
+      *    
            MOVE    LOW-VALUE           TO  KEY-AREA
            MOVE    1                   TO  WRK-INDEX
       *     
-           MOVE    "SEIKYU-KEY12"      TO  WRK-PATH  
+           IF      WRK-PARA-NYUGAIKBN  =   "1"
+               MOVE    "SEIKYU-KEY16"      TO  WRK-PATH
+           ELSE
+               MOVE    "SEIKYU-KEY12"      TO  WRK-PATH
+           END-IF  
            PERFORM 900-SEIKYU-SELECT-SEC
       *
            PERFORM 200-HENSYU-SEC      UNTIL   FLG-RECE10   =   1 
@@ -420,12 +428,16 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
       *
-      *    在総診または在医総を算定したレセ
+      *    入院外集計（在総診または在医総を算定したレセ）
            IF      FLG-ERR             =   ZERO
                MOVE    LOW-VALUE           TO  KEY-AREA
                MOVE    2                   TO  WRK-INDEX
       *         
-               MOVE    "SEIKYU-KEY13"      TO  WRK-PATH  
+               IF      WRK-PARA-NYUGAIKBN  =   "1"
+                   MOVE    "SEIKYU-KEY17"      TO  WRK-PATH
+               ELSE
+                   MOVE    "SEIKYU-KEY13"      TO  WRK-PATH
+               END-IF  
                PERFORM 900-SEIKYU-SELECT-SEC
       *
                PERFORM 200-HENSYU-SEC      UNTIL   FLG-RECE10   =   1 

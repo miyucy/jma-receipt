@@ -4068,7 +4068,7 @@
            END-IF             
       *     
            MOVE    RECE62-AGE          TO  RECE10-AGE  
-           MOVE    RECE62-KOUREI      TO  RECE10-ZAITAKU    
+      *****MOVE    RECE62-KOUREI      TO  RECE10-ZAITAKU
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
