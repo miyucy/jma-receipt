@@ -24,6 +24,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     MCC-多々納   01.06.15  入力値の追加 
       * 01.00.02     多々納       02/04/19  生活習慣病指導算定時の追加
+      * 01.00.03     NACL-多々納  02/10/25  入院対応
       ************************************************************
       *
        01  ORCSC00AREA.
@@ -178,6 +179,8 @@
       **** 03  LNK-ORCSC-RSI-KYUFU         PIC  9(01).
       *    手指の創傷に係る機能回復指導加算（労災・自賠責用）
       *****03  LNK-ORCSC-RSI-KAIFUKU       PIC  9(01).
+      *    外来管理加算削除のチェック
+           03  LNK-ORCSC-GAIKANRIKBN-CHK   PIC  X(01).
       *
       *    加算追加領域（更新時の自動加算（単独剤））
            03  LNK-ORCSC-KASAN.
@@ -191,6 +194,10 @@
                        09  LNK-ORCSC-TENSU-KS      PIC 9(05)V9(03).
                        09  LNK-ORCSC-ATAI-G.
                            11  LNK-ORCSC-ATAI   PIC X(08) OCCURS  4.
+      *                入院時の回数
+                       09  LNK-ORCSC-INPUTCD-G.
+                           11  LNK-ORCSC-INPUTCD       PIC X(22)
+                                                   OCCURS  5.
       *    確認メッセージ
            03  LNK-ORCSC-KIDCD              PIC  X(04).
       *

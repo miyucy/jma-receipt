@@ -38,6 +38,6 @@
                     06  W07-GAIKANRIKBN.
                       07  W07-VALUE   PIC X(23).
                     06  W07-GAIKANRIKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W07-GAIKANRIKBN-ITEM    PIC X(22)   OCCURS  2.
+                    06  W07-GAIKANRIKBN-ITEM    PIC X(22)   OCCURS  3.
                       05  W07-TAGNAME2.
                         06  W07-TG2-STATE       PIC S9(9)   BINARY.

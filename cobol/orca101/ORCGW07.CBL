@@ -33,6 +33,7 @@
       *  01.01.02    MCC-藤原     01/11/26  項目をコンボボックスに変更
       *  01.02.01    MCC-森脇     02/05/23  チェック機能制御情報の追加
       *  01.02.02    NACL-多々納  02/10/10  外来管理加算チェック追加
+      *  01.02.03    NACL-多々納  02/10/31  外来管理加算チェック区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -85,7 +86,7 @@
                            11  SPA-GMN-GAIKANRIKBN-MEI   PIC X(20).
                        09  SPA-GMN-GAIKANRIKBN-COMB.
                            11  SPA-GMN-GAIKANRIKBN-LIST  PIC X(22)
-                                                         OCCURS  2.
+                                                         OCCURS  3.
       *
       *---- (01.02.01) LINE MOD END ----------------------------------
                    07  SPA-GMN-DATALST                    OCCURS  2.
@@ -197,6 +198,14 @@
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
+      *     COPY    "W20.INC".
+      *     COPY    "W21.INC".
+      *     COPY    "W22.INC".
+      *     COPY    "W23.INC".
+      *     COPY    "W24.INC".
+      *     COPY    "W25.INC".
+      *     COPY    "W26.INC".
+      *     COPY    "W27.INC".
            COPY    "WERR.INC".
            COPY    "WID1.INC".
       *
@@ -400,13 +409,20 @@
                        MOVE    "1:チェックあり"
                                            TO  SPA-GMN-GAIKANRIKBN-LIST
                                                                     (2)
-                       IF      SPA-GMN-GAIKANRIKBN-CHK =  "1"
-                           MOVE    SPA-GMN-GAIKANRIKBN-LIST (2)
+                       MOVE    "2:自動発生なし"
+                                           TO  SPA-GMN-GAIKANRIKBN-LIST
+                                                                    (3)
+                       EVALUATE    SPA-GMN-GAIKANRIKBN-CHK
+                           WHEN    "1"
+                               MOVE    SPA-GMN-GAIKANRIKBN-LIST (2)
                                            TO  SPA-GMN-GAIKANRIKBN-G
-                       ELSE
-                           MOVE    SPA-GMN-GAIKANRIKBN-LIST (1)
+                           WHEN    "2"
+                               MOVE    SPA-GMN-GAIKANRIKBN-LIST (3)
                                            TO  SPA-GMN-GAIKANRIKBN-G
-                       END-IF
+                           WHEN    OTHER
+                               MOVE    SPA-GMN-GAIKANRIKBN-LIST (1)
+                                           TO  SPA-GMN-GAIKANRIKBN-G
+                       END-EVALUATE
                END-EVALUATE
            END-IF     
       *
@@ -540,7 +556,7 @@
            MOVE    W07-GAIKANRIKBN     TO  SPA-GMN-GAIKANRIKBN-G
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   2
+                   UNTIL       IDX     >   3
                IF      SPA-GMN-GAIKANRIKBN-CHK
                                       =   SPA-GMN-GAIKANRIKBN-LIST(IDX)
                                                                 (1:1)
@@ -786,6 +802,9 @@
                                                 MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1003"                  TO  SPA-ERRCD
+               DISPLAY "W07 ERR:" MCP-RC
+                        ",MCP-FUNC:" MCP-FUNC
+                        ",ORC-DBPATH:" ORC-DBPATH
                GO  TO  490-KOUSHIN-1008-EXT
            END-IF      
       *
@@ -885,11 +904,11 @@
       *    外来管理加算チェック
            MOVE    SPA-GMN-GAIKANRIKBN-G   TO  W07-GAIKANRIKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   2
+                   UNTIL       IDX     >   3
                MOVE    SPA-GMN-GAIKANRIKBN-LIST (IDX)
                                        TO  W07-GAIKANRIKBN-ITEM(IDX)
            END-PERFORM
-           MOVE    2                   TO  W07-GAIKANRIKBN-COUNT
+           MOVE    3                   TO  W07-GAIKANRIKBN-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -958,6 +977,12 @@
                                                TO  SPA-ERRMSG
                WHEN    "1002"
                    MOVE    "削除ができませんでした"
+                                               TO  SPA-ERRMSG
+               WHEN    "1003"
+                   MOVE    "更新ができませんでした"
+                                               TO  SPA-ERRMSG
+               WHEN    OTHER
+                   MOVE    SPA-ERRCD
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *
