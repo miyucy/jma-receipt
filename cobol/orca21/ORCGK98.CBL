@@ -39,6 +39,7 @@
       *  01.00.08    NACL−多々納 02/11/05  一括入力へ変更
       *  01.00.09    NACL−多々納 02/12/11  期限外の空白表示修正
       *  01.00.10    NACL−多々納 03/04/30  ５明細入力追加
+      *                                     確定ボタン追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -78,6 +79,8 @@
            03  FLG-MAX             PIC 9(01).
       *
            03  FLG-HENSYU          PIC 9(01).
+      *
+           03  FLG-TOUROKU         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -354,6 +357,10 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-K02
@@ -647,9 +654,9 @@
            END-IF
       *
       *    診療コードの時、種別
-      *!   IF      TNS-SRYCD (1:1)     =   "1"
-      *!       MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
-      *!   END-IF
+           IF      TNS-SRYCD (1:1)     =   "1"
+               MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
+           END-IF
       *
       *----(01.00.01) LINE ADD START ----------------------------------
       *    診療行為で老人の時、再編集
@@ -1096,9 +1103,13 @@
            END-IF
       *
       *    診療コードの時、種別
-      *!   IF      TNS-SRYCD (1:1)     =   "1"
-      *!       MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
-      *!   END-IF
+           IF      SPA-K98-GMN-SYORI   =   "9"
+               CONTINUE
+           ELSE
+               IF      TNS-SRYCD (1:1)     =   "1"
+                   MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
+               END-IF
+           END-IF
       *
       *    診療行為で老人の時、再編集
       *****IF     (SPA-K98-GMN-SYORI   =   "8" )  AND
@@ -1336,7 +1347,12 @@
                    MOVE    WRK-TENSUS          TO  K98-KISOTEN (IDX)
                END-IF
       *
-               MOVE    SPA-K98-GMN-TANI (IDX)  TO  K98-TANI (IDX)
+      *!!      MOVE    SPA-K98-GMN-TANI (IDX)  TO  K98-TANI (IDX)
+               IF      SPA-K98-GMN-SRYCD (IDX) (1:1)   =   "1"
+                   MOVE    SPA-K98-GMN-TANI (IDX)  TO  K98-SRYKBN(IDX)
+               ELSE
+                   MOVE    SPA-K98-GMN-TANI (IDX)  TO  K98-TANI (IDX)
+               END-IF
            END-PERFORM
       *
            MOVE    SPA-K98-GMN-MAX     TO  K98-COUNT
@@ -1484,6 +1500,9 @@
       *        次ページ
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 270-NEXT-SEC
+      *        確定
+               WHEN    "CLICKED"       ALSO    "B12"
+                   PERFORM 290-KAKUTEI-SEC
            END-EVALUATE
           .
       *
@@ -1504,8 +1523,9 @@
                WHEN    "ACTIVATE"      ALSO    "SELNUM3"
                WHEN    "ACTIVATE"      ALSO    "SELNUM4"
                WHEN    "ACTIVATE"      ALSO    "SELNUM5"
-                   MOVE    MCP-WIDGET(7:1)     TO  IDX-1
       ************ PERFORM 41011-SELNUM-CHK-SEC
+                   MOVE    MCP-WIDGET(7:1)     TO  IDX-N
+                   MOVE    ZERO                TO  FLG-TOUROKU
                    PERFORM 41011-SELNUM-ALLCHK-SEC
       *        行選択
                WHEN    ANY             ALSO    "LIST"
@@ -1641,7 +1661,6 @@
       *****************************************************************
        41011-SELNUM-ALLCHK-SEC                SECTION.
       *
-           MOVE    MCP-WIDGET(7:1)     TO  IDX-N
       *
            PERFORM VARYING     IDX-1   FROM   1   BY   1
                    UNTIL      (IDX-1       >   5  )
@@ -2467,6 +2486,26 @@
       *
            .
        210-BACK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確定処理
+      *****************************************************************
+       290-KAKUTEI-SEC            SECTION.
+      *
+           MOVE    1                   TO  FLG-TOUROKU
+           MOVE    ZERO                TO  IDX-N
+      *
+           PERFORM 41011-SELNUM-ALLCHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      290-KAKUTEI-EXT
+           END-IF
+      *
+      *    戻るへ
+           PERFORM 210-BACK
+      *
+           .
+       290-KAKUTEI-EXT.
            EXIT.
       *
       *****************************************************************
