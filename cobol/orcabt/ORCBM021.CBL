@@ -105,8 +105,8 @@
                05  WRK-PARA-SKYYM  PIC X(06).
                05  WRK-PARA-TERMID PIC X(16).
                05  WRK-PARA-SYSYMD PIC X(08).
-               05  WRK-PARA-TERMID32
-                                   PIC  X(32).
+               05  WRK-PARA-TERMID64
+                                   PIC  X(64).
       *          
       *****03  WRK-IN              PIC X(01).
       *
@@ -651,7 +651,7 @@
       *
            ADD     1                   TO  WRK-HC01PARA-CNT 
            MOVE    "HC27"              TO  HC01PARA-FORM-ID
-           MOVE    WRK-PARA-TERMID32   TO  HC01PARA-TERMID
+           MOVE    WRK-PARA-TERMID64   TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    WRK-HC01PARA-CNT    TO  HC01PARA-CNT
       *

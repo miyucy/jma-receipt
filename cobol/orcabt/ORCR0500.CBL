@@ -141,7 +141,7 @@
                    07  WRK-PARA-RECE09-RECESYUBETU
                                                  PIC X(04).
                    07  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).                              
-               05  WRK-PARA-TERMID32             PIC X(32).
+               05  WRK-PARA-TERMID64             PIC X(64).
                05  WRK-PARA-SYOKBN               PIC X(01).
                05  WRK-PARA-PRTNM                PIC X(16).
       *
@@ -251,7 +251,7 @@
                                              WRK-PARA-SHELLID
                                              WRK-PARA1
                                              WRK-PARA-RECE09-KEY
-                                             WRK-PARA-TERMID32
+                                             WRK-PARA-TERMID64
                                              WRK-PARA-SYOKBN
                                              WRK-PARA-PRTNM
                                              LNK-PRTKANRI-RENNUM
@@ -286,7 +286,7 @@
            PERFORM 110-SYSKANRI-HENSYU-SEC
       *
            MOVE    "HC21"              TO  HC01PARA-FORM-ID
-           MOVE    WRK-PARA-TERMID32   TO  HC01PARA-TERMID
+           MOVE    LNK-PRTKANRI-TERMID TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    1                   TO  HC01PARA-CNT
            .

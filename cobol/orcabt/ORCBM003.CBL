@@ -227,7 +227,7 @@
            03  WRK-PARA-SKYYM         PIC  X(06).
            03  WRK-PARA-TERMID        PIC  X(16).
            03  WRK-PARA-SYSYMD        PIC  X(08).
-           03  WRK-PARA-TERMID32      PIC  X(32).
+           03  WRK-PARA-TERMID64      PIC  X(64).
            03  WRK-PARA-HOSPID        PIC  X(24).
       *
       ******************************************************************

@@ -120,7 +120,7 @@
                05  WRK-PARA-HOSPID      PIC  X(24).
                05  WRK-PARA-TEISYUTUSAKI
                                         PIC  X(01).
-               05  WRK-PARA-TERMID32    PIC  X(32).
+               05  WRK-PARA-TERMID64    PIC  X(64).
       * 
            03  WRK-RECEERR           PIC X(200).        
       *
@@ -236,7 +236,7 @@
                                        INTO  WRK-PARA1
                                              WRK-PARA-HOSPID
                                              WRK-PARA-TEISYUTUSAKI
-                                             WRK-PARA-TERMID32 
+                                             WRK-PARA-TERMID64 
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -454,7 +454,7 @@
       *
            ADD     1                   TO  WRK-HC01PARA-CNT 
            MOVE    "HC05"              TO  HC01PARA-FORM-ID
-           MOVE    WRK-PARA-TERMID32   TO  HC01PARA-TERMID
+           MOVE    WRK-PARA-TERMID64   TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    WRK-HC01PARA-CNT    TO  HC01PARA-CNT
       *

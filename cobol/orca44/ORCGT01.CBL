@@ -250,8 +250,9 @@
                                    PIC 9(07)   VALUE   1.
       *    
       *    固定端末ＩＤ
-           03  WRK-CONS-TERMID     PIC X(64)   VALUE
-                                   "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
+           03  WRK-CONS-TERMID.
+               05  FILLER          PIC X(08)   VALUE   "0100007F". 
+               05  FILLER          PIC X(56)   VALUE   ALL "Z".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1213,8 +1214,7 @@
            MOVE    SPA-NAI-SKYYMD      TO  LNK-PRTKANRI-SKYYMD
            MOVE    "print.sh"          TO  LNK-PRTKANRI-SHELLID
            MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
-      *****MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
-           MOVE    WRK-CONS-TERMID     TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
            MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
            MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1       
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -1238,7 +1238,7 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
            MOVE    0                   TO  SHELLTBL-ARG15
-           MOVE    99999               TO  SHELLTBL-ARG16                                   
+           MOVE    99999               TO  SHELLTBL-ARG16
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
