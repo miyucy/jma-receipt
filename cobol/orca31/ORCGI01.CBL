@@ -346,7 +346,8 @@
       *
       *    ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ¡ÊÅ¾²Ê¡¢Å¾Åï¡Ë·×»»¥¨¥ê¥¢
        01  TN-IDX                          PIC 9(02).
-       01  WK-TOKUTEI-DAY                  PIC 9(02).
+       01  WK-TOKUTEI-DAY                  PIC 9(04).
+       01  WK-TOKUTEI-DAY2                 PIC 9(04).
       *
       *    ¥¹¥ÑÎÎ°è ¥ï¡¼¥¯
            COPY    "COMMON-SPA"      REPLACING
@@ -8256,17 +8257,12 @@
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
            MOVE    WRK-SANTEISTYMD
                                    TO  SYOKIKSN-IN-SANTEISTYMD
-      *-     IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
-      *-         PERFORM 4801-NYUTSUSAN-SANTEI-GET-SEC
-      *-     ELSE
-      *-         PERFORM 4801-IDOTSUSAN-SANTEI-GET-SEC
-      *-     END-IF
       *
-      *    ÆÃÄê½¸Ãæ¼£ÎÅ¼¼´ÉÍýÎÁ»»Äê»þ¤Ë£±£´Æü¤ò·Ð²á¤·¤Æ¤¤¤¿¾ì¹ç¤Ï
-      *    °ìÈÌ¤ÎÆþ±¡ÎÁ»»Äê¤È¤¹¤ë
+      *    ÆÃÄê½¸Ãæ¼£ÎÅ¼¼´ÉÍýÎÁ»»Äê»þ¤ËÆÃÄêÆþ±¡¤Ç¤Î»»ÄêÆü¤¬£±£´Æü¤ò
+      *    ·Ð²á¤·¤Æ¤¤¤¿¾ì¹ç¤Ï°ìÈÌ¤ÎÆþ±¡ÎÁ»»Äê¤È¤¹¤ë
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
                IF   PTNYUINRRK-TOKUTEI-NYUIN   =  "09"  OR  "16"
-                   IF   STUSAN-NISSU01   >   14
+                   IF   STUSAN-NISSU06   >   14
                        MOVE    SPACE   TO   SPA-GMN-I01-TOKNYUIN-CD
                    END-IF
                END-IF
@@ -8419,26 +8415,31 @@
                                         LNK-SCNYUACCT-NYUKHN-SRYCD(1)
       *          ÆÃÄê½¸Ãæ¼£ÎÅ¼¼´ÉÍýÎÁ¤Î»»Äê²ÄÇ½Æü¿ô¤ò·×»»
                  MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                 COMPUTE  WK-TOKUTEI-DAY  =  14  - STUSAN-NISSU01
-                 MOVE   "190024610"  TO  LNK-SCNYUACCT-KAGEN-SRYCD(1)
-                 MOVE   SPA-NAI-I01-IDOYMD
-                                  TO  LNK-SCNYUACCT-KAGEN-STYUKYMD(1)
-                 INITIALIZE                STS-AREA-DAY
-                 INITIALIZE                LNK-DAY6-AREA
-                 MOVE    "61"              TO  LNK-DAY6-IRAI
-                 MOVE   SPA-NAI-I01-IDOYMD
-                                           TO  LNK-DAY6-KIJUN
-                 MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
-      *           MOVE     6                TO  LNK-DAY6-ZOGEN
-                 IF     WK-TOKUTEI-DAY     >=   6
-                        MOVE   6            TO   LNK-DAY6-ZOGEN
-                 ELSE
-                        MOVE  WK-TOKUTEI-DAY   TO   LNK-DAY6-ZOGEN
-                 END-IF
-                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY6-AREA
-                 MOVE    LNK-DAY6-KEISAN
+                                         WK-TOKUTEI-DAY2
+                 COMPUTE  WK-TOKUTEI-DAY  =  14  - STUSAN-NISSU06
+                 IF       STUSAN-NISSU07  <  7
+                     COMPUTE  WK-TOKUTEI-DAY2 =  6   -  STUSAN-NISSU07
+                     MOVE   "190024610"  TO
+                                          LNK-SCNYUACCT-KAGEN-SRYCD(1)
+                     MOVE   SPA-NAI-I01-IDOYMD
+                                   TO  LNK-SCNYUACCT-KAGEN-STYUKYMD(1)
+                     INITIALIZE                STS-AREA-DAY
+                     INITIALIZE                LNK-DAY6-AREA
+                     MOVE    "61"              TO  LNK-DAY6-IRAI
+                     MOVE   SPA-NAI-I01-IDOYMD
+                                               TO  LNK-DAY6-KIJUN
+                     MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+      **               IF     WK-TOKUTEI-DAY     >=   6
+      **                      MOVE   6            TO   LNK-DAY6-ZOGEN
+      **               ELSE
+      **                      MOVE  WK-TOKUTEI-DAY  TO  LNK-DAY6-ZOGEN
+      **               END-IF
+                     MOVE   WK-TOKUTEI-DAY2      TO   LNK-DAY6-ZOGEN
+                     CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                     MOVE    LNK-DAY6-KEISAN
                                      TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+                 END-IF
       *
                  IF     WK-TOKUTEI-DAY   >=   7
                      MOVE   "190074610"  TO 
@@ -8465,7 +8466,9 @@
                                            TO  LNK-DAY6-KIJUN
                  MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
                  MOVE   WK-TOKUTEI-DAY     TO  LNK-DAY6-ZOGEN
-                 ADD    1                  TO  LNK-DAY6-ZOGEN
+                 IF     STUSAN-NISSU06     NOT =   ZERO
+                     ADD    1                  TO  LNK-DAY6-ZOGEN
+                 END-IF
                  CALL  "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                  MOVE    LNK-DAY6-KEISAN
@@ -8529,6 +8532,13 @@
            IF     LNK-SCNYUACCT-RC   NOT =  ZERO
                DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
                          LNK-SCNYUACCT-RC
+           END-IF
+      *
+           IF     IPN-NYUKAIKEI-SAKUSEI-FLG    =   "1"
+               MOVE    SPACE   TO   SPA-GMN-I01-TOKNYUIN-CD
+               MOVE    IPN-SANTEISTYMD   TO   WRK-SANTEISTYMD
+               MOVE    IPN-SANTEISTYMD   TO   SPA-NAI-I01-IDOYMD
+               MOVE    IPN-SANTEISTYMD   TO   PTNYUINRRK-TENNYUYMD
            END-IF
       *
            .
@@ -8894,6 +8904,16 @@
            MOVE    PTNYUINRRK-PTID TO  STUSAN-PTID
            MOVE    PTNYUINRRK-TENNYUYMD
                                    TO  STUSAN-KJNYMD
+      *    ÆÃÄêÆþ±¡¤Ç¤Î»»ÄêºÑÆü¿ô¤ò¼èÆÀÍÑ
+      *    ÆÃÄê½¸Ãæ¼£ÎÅ¼¼´ÉÍýÎÁ
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN   =  "09"  OR  "16"
+                       MOVE   "190024610"  TO  STUSAN-TOKUTEI-SRYCD(1)
+                       MOVE   "190074610"  TO  STUSAN-TOKUTEI-SRYCD(2)
+                       MOVE   "190116310"  TO  STUSAN-TOKUTEI-SRYCD(3)
+                       MOVE   "190116410"  TO  STUSAN-TOKUTEI-SRYCD(4)
+               END-IF
+           END-IF
            CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
            IF    ( STUSAN-RC       NOT =   ZERO )
                MOVE    "4025"      TO  SPA-ERRCD
