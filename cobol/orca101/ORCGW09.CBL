@@ -86,7 +86,7 @@
                            11  SPA-GMN-F1             PIC X(01).
                            11  SPA-GMN-TEISYUTUSAKIMEI
                                                       PIC X(24).
-                       09  SPA-GMN-NYUGAIKBN-G.                               
+                       09  SPA-GMN-NYUGAIKBN-G.
                            11  SPA-GMN-NYUGAIKBN      PIC X(01).
                            11  SPA-GMN-F1             PIC X(01).
                            11  SPA-GMN-NYUGAIKBNMEI   PIC X(06).
@@ -357,13 +357,13 @@
            MOVE    "Ï«Æ¯´ð½à´ÆÆÄ½ð"    TO  SPA-GMN-TEISYUTUSAKIMEIL(3)
            MOVE    "4"                 TO  SPA-GMN-TEISYUTUSAKIL   (4)
            MOVE    "ÊÝ¸±²ñ¼Ò"          TO  SPA-GMN-TEISYUTUSAKIMEIL(4)
-           MOVE    4                   TO  SPA-GMN-TEISYUTUSAKI-MAX                              
+           MOVE    4                   TO  SPA-GMN-TEISYUTUSAKI-MAX 
       *
            MOVE    "1"                 TO  SPA-GMN-NYUGAIKBNL   (1) 
            MOVE    "Æþ±¡"              TO  SPA-GMN-NYUGAIKBNMEIL(1)
            MOVE    "2"                 TO  SPA-GMN-NYUGAIKBNL   (2)
            MOVE    "Æþ±¡³°"            TO  SPA-GMN-NYUGAIKBNMEIL(2)
-           MOVE    2                   TO  SPA-GMN-NYUGAIKBN-MAX                              
+           MOVE    2                   TO  SPA-GMN-NYUGAIKBN-MAX
       *
            INITIALIZE                          SPA-GMN-KOUMOKU
       * 
@@ -388,7 +388,7 @@
                        MOVE    SPA-GMN-TEISYUTUSAKI-MAX
                                            TO  IDX
                    END-IF
-               END-PERFORM                                                                              
+               END-PERFORM
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       10
                    MOVE    SYS-2003-SYUBETU (IDX)
@@ -404,7 +404,7 @@
                        MOVE    SPA-GMN-NYUGAIKBN-MAX
                                            TO  IDX
                    END-IF
-               END-PERFORM                                                                              
+               END-PERFORM
                IF      SYS-2003-DSPSEQ (1:3)   NOT NUMERIC
                    MOVE    ZERO                TO  SYS-2003-DSPSEQ
                END-IF

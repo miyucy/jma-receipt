@@ -1178,7 +1178,7 @@
            MOVE    SPA-GMN-SYARECEKBN-MAX
                                        TO  W12-SYARECEKBN-COUNT 
       *
-           MOVE    SPA-GMN-RECEDENOUT  TO  W12-RECEDENOUT                                  
+           MOVE    SPA-GMN-RECEDENOUT  TO  W12-RECEDENOUT
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-KKHOCRKBN-MAX
@@ -1188,7 +1188,7 @@
            MOVE    SPA-GMN-KKHOCRKBN-MAX
                                        TO  W12-KKHOCRKBN-COUNT 
       *
-           MOVE    SPA-GMN-PREFPRGID   TO  W12-PREFPRGID                                  
+           MOVE    SPA-GMN-PREFPRGID   TO  W12-PREFPRGID
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-KKHPRTKBN-MAX
@@ -1198,9 +1198,9 @@
            MOVE    SPA-GMN-KKHPRTKBN-MAX
                                        TO  W12-KKHPRTKBN-COUNT 
       *
-           MOVE    SPA-GMN-SYAPRTNM    TO  W12-SYAPRTNM                                  
+           MOVE    SPA-GMN-SYAPRTNM    TO  W12-SYAPRTNM
       *
-           MOVE    SPA-GMN-KKHPRTNM    TO  W12-KKHPRTNM                                  
+           MOVE    SPA-GMN-KKHPRTNM    TO  W12-KKHPRTNM 
       *
            PERFORM 5001-MAPCUR-SEC
       *

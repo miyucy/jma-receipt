@@ -760,7 +760,7 @@
                                            TO  SYS-3001-PARAHYOJI(IDX)
                        MOVE    SPA-GMN-PARA (IDX)
                                            TO  SYS-3001-PARA     (IDX)
-                   END-PERFORM                                           
+                   END-PERFORM
                    MOVE    SYS-3001-REC         TO  SYSKANRI-REC
                WHEN    "3002"     
                    IF      FLG-SYSKANRI        =   ZERO
@@ -781,7 +781,7 @@
                                            TO  SYS-3002-PARAHYOJI(IDX)
                        MOVE    SPA-GMN-PARA1     (IDX)
                                            TO  SYS-3002-PARA     (IDX)
-                   END-PERFORM                                           
+                   END-PERFORM
                    MOVE    SYS-3002-REC         TO  SYSKANRI-REC
            END-EVALUATE       
       *     

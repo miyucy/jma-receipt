@@ -67,10 +67,10 @@
                            11  SPA-GMN-CHK.
                               13  SPA-GMN-CHKFLG   PIC X(01)
                                                    OCCURS   4.
-                   07  SPA-GMN-PRTKBN11    PIC X(01).                                                   
-                   07  SPA-GMN-PRTKBN12    PIC X(01).                                                   
-                   07  SPA-GMN-PRTKBN21    PIC X(01).                                                   
-                   07  SPA-GMN-PRTKBN22    PIC X(01).   
+                   07  SPA-GMN-PRTKBN11    PIC X(01).
+                   07  SPA-GMN-PRTKBN12    PIC X(01).
+                   07  SPA-GMN-PRTKBN21    PIC X(01).
+                   07  SPA-GMN-PRTKBN22    PIC X(01).
       *                                                             
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
