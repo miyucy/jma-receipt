@@ -339,7 +339,7 @@
       *        入外ともに同一の診療行為コードの設定があった場合は
       *        処理パラメタの入外区分を優先的に設定
                05  TSRYCD-NYUGAIKBN                    PIC X(01).
-               05  TSRYCD-SRYCD                        PIC X(01).
+               05  TSRYCD-SRYCD                        PIC X(09).
       *
       *    実日数退避ワーク（実日数チェック用）
        01  TJNISSU-AREA.
@@ -3839,7 +3839,7 @@
       *
       *    併用禁忌（算定）退避ワークに存在する場合は、後続の処理は
       *    行わない
-           IF    ( FLG-HIT         NOT =   1 )
+           IF    ( FLG-HIT         =   1 )
                GO  TO  200112-CHKMST-SRY-CHK-EXT
            END-IF
       *
@@ -4060,7 +4060,6 @@
                END-IF
       *
                STRING TNS-NAME         DELIMITED   BY  SPACE
-                      "、"             DELIMITED   BY  SIZE
                INTO   WRK-ERRMES-PLUS
                WITH    POINTER    WRK-PNT
                END-STRING
@@ -4195,7 +4194,7 @@
        200112-CHKMST-HEI-SRY-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    併用禁忌の薬剤エラーメッセージ編集処理
+      *    併用算定の薬剤エラーメッセージ編集処理
       *****************************************************************
        200112-HEI-SRY-ERRMES-HEN-SEC   SECTION.
       *
@@ -4257,7 +4256,6 @@
                END-IF
       *
                STRING TNS-NAME         DELIMITED   BY  SPACE
-                      "、"             DELIMITED   BY  SIZE
                INTO   WRK-ERRMES-PLUS
                WITH    POINTER    WRK-PNT
                END-STRING
