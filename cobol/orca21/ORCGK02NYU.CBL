@@ -1395,12 +1395,12 @@
            IF     (SPA-MOTOPG          =   "P02"  OR  "U02" )  AND
                   (SPA-PTID        NOT =   SPA-GMN-PTID )
                IF      SPA-MOTOPG          =   "P02"  OR  "U02"
-      *!           MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
-      *!           MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
-      *!           IF      SPA-SRYYMD          =   SPACE
+                   MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
+                   MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
+                   IF      SPA-SRYYMD          =   SPACE
                        MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
                        MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
-      *!           END-IF
+                   END-IF
                END-IF
       *        ½é´ü£Ó£Ð£ÁÊÔ½¸½èÍý
                INITIALIZE                  ORCSC95AREA
@@ -1414,6 +1414,12 @@
                                            SPA-AREA
                                            SPA-K01KYOUTU
                                            SPA-K02
+           ELSE
+               IF     (SPA-SRYYMD          =   SPACE        )  AND
+                      (SPA-PTID            =   SPA-GMN-PTID )
+                   MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
+                   MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
+               END-IF
            END-IF
            IF      SPA-PTID            =   ZERO
                GO      TO      3009-SAIHEN-EXT

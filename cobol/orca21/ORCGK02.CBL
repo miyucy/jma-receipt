@@ -939,6 +939,13 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+      *TEST
+           ACCEPT  WRK-SYSTIME         FROM    TIME
+           DISPLAY "K02 START:" WRK-SYSTIME (1:2) ":" 
+                                WRK-SYSTIME (3:2) ":" 
+                                WRK-SYSTIME (5:2) ":" 
+                                WRK-SYSTIME (7:2) "/" 
+      *TEST
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
@@ -993,6 +1000,13 @@
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-K02         TO  SPA-FREE
       *
+      *TEST
+           ACCEPT  WRK-SYSTIME         FROM    TIME
+           DISPLAY "K02 END  :" WRK-SYSTIME (1:2) ":" 
+                                WRK-SYSTIME (3:2) ":" 
+                                WRK-SYSTIME (5:2) ":" 
+                                WRK-SYSTIME (7:2) "/" 
+      *TEST
       *
            .
            EXIT    PROGRAM
@@ -1578,9 +1592,8 @@
                                                   OR  "K02N" )  AND
                   (SPA-PTID        NOT =   SPA-GMN-PTID )
                IF      SPA-MOTOPG          =   "P02"  OR  "U02"
-      *!           MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
-      *!           MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
-                   MOVE    SPACE               TO  SPA-SRYYMD
+                   MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
+                   MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
                END-IF
                IF      SPA-SRYYMD          =   SPACE
                    MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
@@ -1605,6 +1618,12 @@
                                            SPA-K02
                IF      SPA-MOTOPG          =   "K01"
                    MOVE    WRK-DRCD            TO  SPA-DRCD
+               END-IF
+           ELSE
+               IF     (SPA-SRYYMD          =   SPACE      ) AND
+                      (SPA-PTID            =   SPA-GMN-PTID )
+                   MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
+                   MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
                END-IF
            END-IF
            IF      SPA-PTID            =   ZERO
