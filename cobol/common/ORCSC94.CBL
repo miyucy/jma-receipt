@@ -95,7 +95,8 @@
            03  WRK-KEI-X.
                05  WRK-KEI-Z       PIC ZZZZZZZ.
       *
-           03  WRK-SURYO-H         PIC X(09).
+      *!!  03  WRK-SURYO-H         PIC X(09).
+           03  WRK-SURYO-H         PIC X(10).
            03  WRK-KAISU-H         PIC X(04).
            03  WRK-BUNGSU-H        PIC X(09).
            03  WRK-KAKERU          PIC X(01).
@@ -326,6 +327,13 @@
                                        TO  WRK-SURYO-H (IDK2:1)
                END-IF
            END-PERFORM
+      *TEST
+      *    自動発生なし
+           IF     (SPA-COM-AUTOFLG2(IDX)   =   "1"  )  AND
+                  (IDK2                    >   ZERO )
+               ADD     1                   TO  IDK2
+               MOVE    "@"                 TO  WRK-SURYO-H (IDK2:1)
+           END-IF
       *
       *    入力値再編集
       *     文字列調査の開始位置　取得

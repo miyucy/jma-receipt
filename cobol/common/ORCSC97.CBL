@@ -104,6 +104,7 @@
        01  WRK-MOJI-AREA.
            03  FLG-SP              PIC 9(02).
            03  FLG-AST             PIC 9(02).
+           03  FLG-AUTO            PIC 9(02).
            03  FLG-JKNKSN          PIC 9(01).
            03  WRK-IDX-FT          PIC 9(02).
            03  WRK-CD-MCNT         PIC 9(02).
@@ -1065,6 +1066,7 @@
            MOVE    SPACE               TO  WRK-MOJI2
            MOVE    SPACE               TO  WRK-MOJI3
            MOVE    SPACE               TO  WRK-MOJI4
+           MOVE    ZERO                TO  FLG-AUTO
       *
       *    コード以外の全角数字を半角とする
            COMPUTE IDX-D               =   WRK-CD-MCNT
@@ -1084,6 +1086,15 @@
                EVALUATE    LNK-SC97-INPUTCD(IDX:1)
                    WHEN    "*"
                        MOVE    1               TO  FLG-AST
+      *TEST
+                   WHEN    "@"
+      *                数量の直後であること
+                       IF     (FLG-SP          =   1    )  AND
+                              (FLG-AST         =   ZERO )  AND
+                              (WRK-SUR     NOT =   SPACE )
+                           MOVE    1               TO  FLG-AUTO
+                       END-IF
+      *TEST
                    WHEN    SPACE
                        ADD     1               TO  FLG-SP
       *                空白は１つとする
@@ -1187,6 +1198,13 @@
                        MOVE    ZERO            TO  LNK-SC97-SURYOFLG
                    END-IF
                END-IF
+      *TEST
+               IF      LNK-SC97-SURYO   >   ZERO
+                   IF      FLG-AUTO         =   1
+                       MOVE    "1"          TO  LNK-SC97-AUTOFLG2
+                   END-IF
+               END-IF
+      *TEST
            END-IF
       *
       *    回数（＊があるが、回数が入力されてない時、＊削除する）

@@ -254,23 +254,27 @@
            MOVE    ZERO                TO  LNK-SC90-HAIKI
       *
       *    注射で、アンプルの時、単位以下計算
-           IF    ((LNK-COM-SRYKBN (IDX)    =   "31" OR "32" OR
-                                                       "33"
+      *    IF    ((LNK-COM-SRYKBN (IDX)    =   "31" OR "32" OR
+      *                                                "33"
       *D          処置追加
       *D                                   OR  "40" 
-                                                          ) AND
-                 ((LNK-COM-TANICD (IDX)    =   "014" OR "022" OR "046")
-               OR  ((IDX                     <   200  )  AND
-                    (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))) )
+      *                                                   ) AND
+      *          ((LNK-COM-TANICD (IDX)    =   "014" OR "022" OR "046")
+      *        OR  ((IDX                     <   200  )  AND
+      *             (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))) )
       *        処置の時、次が残量廃棄
-              OR  ((LNK-COM-SRYKBN (IDX)    =   "40" )  AND
-                   (IDX                     <   200  )  AND
-                   (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))
+      *       OR  ((LNK-COM-SRYKBN (IDX)    =   "40" )  AND
+      *            (IDX                     <   200  )  AND
+      ************ (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))
+           IF     (LNK-COM-TANICD (IDX)    =   "014"
+                                           OR  "022"
+                                           OR  "046"  )  AND
+                 ((IDX                     <   200    )  AND
+                  (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))
                IF      LNK-COM-SURYO(IDX)(6:3) >   ZERO
                    COMPUTE WRK-SURYO-CHU9      =   LNK-COM-SURYO (IDX)
                                                +   0.99
                    MOVE    WRK-SURYO-CHU9      TO  WRK-SURYO-CHU
-                   MOVE    1                   TO  LNK-SC90-HAIKI
                ELSE
                    MOVE    LNK-COM-SURYO (IDX)     TO  WRK-SURYO-CHU
                END-IF

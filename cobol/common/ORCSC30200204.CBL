@@ -531,6 +531,8 @@
                        MOVE    "9020"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                    END-IF
+      *            残量廃棄
+                   PERFORM 1006-HAIKI-SYORI-SEC
       *
       *        器材
                WHEN    "7"
@@ -549,6 +551,22 @@
       *
            .
        10011-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    残量廃棄コメントの有無
+      *****************************************************************
+       1006-HAIKI-SYORI-SEC           SECTION.
+      *
+      *    アンプルの時、小数以下判定
+           IF      WRK-COM-TANICD (IDX-Z)  =   "014" OR "022" OR "046"
+               IF     (WRK-COM-SURYO(IDX-Z)(6:3) >   ZERO    )  AND
+                      (WRK-COM-AUTOFLG2 (IDX-Z)  =   SPACE   )
+                   MOVE    IDX-Z                 TO  IDX-HAI
+                   PERFORM 10011-HAIKI-ADD-SEC
+               END-IF
+           END-IF
+           .
+       1006-HAIKI-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1065,15 +1083,15 @@
                MOVE    IDX-Z               TO  IDX-SYU
            END-IF
       *    各チェック処理
-           EVALUATE    WRK-MOJI
+      **** EVALUATE    WRK-MOJI
       *        薬剤
-               WHEN    "6"
+      *        WHEN    "6"
       *            廃棄が有った時、破棄コメントを追加する
-                   IF     (LNK-SC90-HAIKI          =   1 )
-                       MOVE    IDX-Z               TO  IDX-HAI
-                       PERFORM 10011-HAIKI-ADD-SEC
-                   END-IF
-           END-EVALUATE
+      *            IF     (LNK-SC90-HAIKI          =   1 )
+      *                MOVE    IDX-Z               TO  IDX-HAI
+      *                PERFORM 10011-HAIKI-ADD-SEC
+      *            END-IF
+      **** END-EVALUATE
       *
            .
        10021-KEISAN-EXT.

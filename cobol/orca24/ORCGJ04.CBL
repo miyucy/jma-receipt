@@ -1363,6 +1363,18 @@
       *D   END-IF
       *
            MOVE    IDX2                TO  SPA-GMN-MAX
+      *
+      *    »ÄÎÌÇÑ´þ¤ÎÈ½Äê
+           PERFORM VARYING     IDX-1 FROM    1   BY  1
+                   UNTIL      (IDX-1     >   200     )  OR
+                              (IDX-1     >   SPA-GMN-MAX )
+      *        »ÄÎÌÇÑ´þ¤ÎÈ½Äê
+               IF     (SPA-COM-SRYKBN (IDX-1)(1:1)  =   "3" )  AND
+                      (SPA-COM-INPUTCD(IDX-1)(1:1)  =   "6" )
+                   PERFORM 31034-HAIKI-CHKI-SEC
+               END-IF
+           END-PERFORM
+      *
       *    ²èÁü¿ÇÃÇ¤Î¥Õ¥£¥ë¥àÈ½Äê
            PERFORM VARYING     IDX-1   FROM    1   BY 1
                    UNTIL       IDX-1   >   IDX2
@@ -1388,6 +1400,28 @@
       *
            .
        3103-SINKOU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »ÄÎÌÇÑ´þ¤ÎÈ½Äê½èÍý
+      *****************************************************************
+       31034-HAIKI-CHKI-SEC              SECTION.
+      *
+           IF      (SPA-COM-YKZKBN (IDX-1)  =   "4"  )  AND
+                   (SPA-COM-TANICD (IDX-1)  =   "014"
+                                            OR  "022"
+                                            OR  "046" )  AND
+                   (SPA-COM-SURYO(IDX-1)(6:3)  >   ZERO)
+               IF     (IDX-1               <   200  )  AND
+                      (SPA-COM-INPUTCD(IDX-1 + 1)  =   "099309901")
+                   CONTINUE
+               ELSE
+                   MOVE    "1"             TO  SPA-COM-AUTOFLG2(IDX-1)
+               END-IF
+           END-IF
+      *
+           .
+       31034-HAIKI-CHKI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2957,6 +2991,7 @@
        4101122-KOMOKU-HENSYU-SEC      SECTION.
       *
       *    ¿ôÎÌ
+           MOVE    SPACE               TO  SPA-COM-AUTOFLG2(SPA-GMN-IDX)
            IF      WRK-SUR-MCNT        =   ZERO
                MOVE    1               TO  SPA-COM-SURYO(SPA-GMN-IDX)
                MOVE    SPACE           TO  SPA-COM-SURFLG(SPA-GMN-IDX)
@@ -2966,6 +3001,9 @@
                    MOVE    1           TO  SPA-COM-SURYO(SPA-GMN-IDX)
                END-IF
                MOVE    "1"             TO  SPA-COM-SURFLG(SPA-GMN-IDX)
+               IF      LNK-SC97-AUTOFLG2   =   "1"
+                   MOVE    "1"         TO  SPA-COM-AUTOFLG2(SPA-GMN-IDX)
+               END-IF
            END-IF
            MOVE    SPA-COM-SURYO(SPA-GMN-IDX)
                                        TO  SPA-COM-SURYO2(SPA-GMN-IDX)
@@ -3427,8 +3465,12 @@
       *DDDDDDDDIF      SPA-COM-AUTOKBN (IDX)    =   "2"
       *DD          CONTINUE
       *DD      ELSE
-               IF      (SPA-COM-SRYKBN (IDX)   =   "11"  OR  "12") AND
-                       (SPA-COM-AUTOKBN(IDX)   =   "2"   )
+               IF     ((SPA-COM-SRYKBN (IDX)   =   "11"  OR  "12") AND
+                       (SPA-COM-AUTOKBN(IDX)   =   "2"   )  )  OR
+      *            Ãí¼Í¤Î»ÄÎÌÇÑ´þ¤âÂÐ¾Ý³°
+                      ((SPA-COM-SRYKBN (IDX)(1:1)  =   "3") AND
+                       (SPA-COM-AUTOKBN(IDX)   =   "2"   )  AND
+                       (SPA-COM-INPUTCD(IDX)   =   "099309901"))
                    CONTINUE
                ELSE
                    ADD     1               TO  IDX-Z

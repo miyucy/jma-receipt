@@ -233,6 +233,8 @@
       *
            03  IDX-K98             PIC 9(04).
       *
+           03  IDX-H               PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
@@ -320,6 +322,8 @@
            03  WRK-KAISU           PIC 9(04).
            03  WRK-LAST-IDX        PIC 9(04).
            03  WRK-GMN-IDX         PIC 9(04).
+      *
+           03  WRK-GMN-STR         PIC 9(04).
       *    分画数フラグ
            03  FLG-BUIKBN          PIC X(01).
       *
@@ -1413,6 +1417,11 @@
                   IF      SPA-ERRCD       NOT =   SPACE
                       MOVE    SPACE           TO  SPA-ERRCD
                    END-IF
+      *            残量廃棄の判定
+                   IF     (SPA-COM-SRYKBN (IDX)(1:1)  =   "3" )  AND
+                          (SPA-COM-INPUTCD(IDX)(1:1)  =   "6" )
+                       PERFORM 31034-HAIKI-CHKI-SEC
+                   END-IF
       *
       *            回数の入力
                    IF      SPA-COM-KAIFLG (IDX)  =   "1"
@@ -1536,6 +1545,29 @@
            .
        3103-SAIHEN-HEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    残量廃棄の判定処理
+      *****************************************************************
+       31034-HAIKI-CHKI-SEC              SECTION.
+      *
+           IF      (SPA-COM-YKZKBN (IDX)  =   "4"  )  AND
+                   (SPA-COM-TANICD (IDX)  =   "014"
+                                            OR  "022"
+                                            OR  "046" )  AND
+                   (SPA-COM-SURYO(IDX)(6:3)  >   ZERO)
+               IF     (IDX               <   200  )  AND
+                      (SPA-COM-INPUTCD(IDX + 1)  =   "099309901")
+                   CONTINUE
+               ELSE
+                   MOVE    "1"             TO  SPA-COM-AUTOFLG2(IDX)
+               END-IF
+           END-IF
+      *
+           .
+       31034-HAIKI-CHKI-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *   再表示あり　編集処理
@@ -3244,6 +3276,7 @@
        4101122-KOMOKU-HENSYU-SEC      SECTION.
       *
       *    数量
+           MOVE    SPACE              TO  SPA-COM-AUTOFLG2(SPA-GMN-IDX)
            IF      WRK-SUR-MCNT        =   ZERO
                MOVE    1               TO  SPA-COM-SURYO(SPA-GMN-IDX)
                MOVE    SPACE           TO  SPA-COM-SURFLG(SPA-GMN-IDX)
@@ -3257,6 +3290,11 @@
                    END-IF
                END-IF
                MOVE    "1"             TO  SPA-COM-SURFLG(SPA-GMN-IDX)
+      *!!
+               IF      LNK-SC97-AUTOFLG2   =   "1"
+                   MOVE    "1"         TO  SPA-COM-AUTOFLG2(SPA-GMN-IDX)
+               END-IF
+      *!!
            END-IF
            MOVE    SPA-COM-SURYO(SPA-GMN-IDX)
                                        TO  SPA-COM-SURYO2 (SPA-GMN-IDX)
@@ -3378,6 +3416,8 @@
            MOVE    ZERO                TO  FLG-YAKUSOKU
            MOVE    ZERO                TO  IDX-YAKUSOKU
            MOVE    ZERO                TO  WRK-IDX-YAKUSOKU
+           MOVE    SPA-GMN-IDX         TO  WRK-GMN-STR
+      *
            PERFORM 4101191-INPUTSET-SYORI-SEC
       *
       *    約束セットがなくなるまで以下の処理を行う
@@ -3391,6 +3431,31 @@
                MOVE    ZERO                TO  IDX-IP
                IF      SPA-GMN-INPUTCD (SPA-GMN-IDX)(1:1)  =   "S"
                    PERFORM 4101191-INPUTSET-SYORI2-SEC
+               END-IF
+           END-PERFORM
+      *
+      *    残量廃棄の有無判定
+           PERFORM VARYING     IDX-H   FROM    WRK-GMN-STR  BY 1
+                   UNTIL       IDX-H       >   SPA-GMN-IDX
+               IF     (SPA-COM-SRYKBN (IDX-H)(1:1)  =   "3" )  AND
+                      (SPA-COM-INPUTCD(IDX-H)(1:1)  =   "6" )
+      *        注射薬でアンプル、少数以下がある時、次に残量廃棄がある
+                   IF      (SPA-COM-YKZKBN (IDX-H)  =   "4"  )  AND
+                           (SPA-COM-TANICD (IDX-H)  =   "014"
+                                                    OR  "022"
+                                                    OR  "046" )  AND
+                           (SPA-COM-SURYO(IDX-H)(6:3)  >   ZERO)
+                       IF     (IDX-H               <   200  )  AND
+                              (SPA-COM-INPUTCD(IDX-H + 1)
+                                                   =   "099309901")
+                           CONTINUE
+                       ELSE
+                           MOVE    "1"         TO  SPA-COM-AUTOFLG2
+                                                            (IDX-H)
+                           MOVE    IDX-H       TO  IDX
+                           PERFORM 3101-INPUTCD-HEN-SEC
+                       END-IF
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -3970,6 +4035,13 @@
       ********                                          (SPA-GMN-IDX)
                END-IF
            END-IF
+      *    残量廃棄の為、診療区分設定
+           IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1) =   "1" ) AND
+                  (SPA-COM-DATAKBN(SPA-GMN-IDX) =   "1" ) AND
+                  (WRK-SRYKBN (1:1)    NOT =   "9"         )
+               MOVE    SPA-COM-TNSSRYKBN (SPA-GMN-IDX) TO  WRK-SRYKBN
+           END-IF
+           MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN (SPA-GMN-IDX)
       *
            .
        4101191-JIHI-HEN-EXT.

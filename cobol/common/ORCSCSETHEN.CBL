@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−多々納 05/02/01  残量廃棄判定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -61,6 +62,7 @@
            03  IDX-IP                  PIC 9(04).
            03  IDX-YAK                 PIC 9(04).
            03  IDX-YAKUSOKU            PIC 9(04).
+           03  IDX-H                   PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -73,6 +75,7 @@
            03  WRK-INPUTCD         PIC X(10).
       *
            03  WRK-GMN-IDX         PIC 9(04).
+           03  WRK-GMN-STR         PIC 9(04).
       *
            03  WRK-PATH            PIC X(64).
       *    エラーコード
@@ -210,6 +213,7 @@
       *    行オーバーの為、ＳＰＡを保存する
            MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
            MOVE    SPA-GMN-IDX         TO  WRK-GMN-IDX
+           MOVE    SPA-GMN-IDX         TO  WRK-GMN-STR
       *
            INITIALIZE                  WRK-IDX-YAKUSOKU
            MOVE    ZERO                TO  IDX-YAKUSOKU
@@ -361,6 +365,31 @@
                END-IF
            END-PERFORM
       *
+      *    残量廃棄の有無判定
+           PERFORM VARYING     IDX-H   FROM    WRK-GMN-STR BY  1
+                   UNTIL       IDX-H   >   SPA-GMN-IDX
+               IF     (SPA-COM-SRYKBN (IDX-H)(1:1)  =   "3" )  AND
+                      (SPA-COM-INPUTCD(IDX-H)(1:1)  =   "6" )
+      *        注射薬でアンプル、少数以下がある時、次に残量廃棄がある
+                   IF      (SPA-COM-YKZKBN (IDX-H)  =   "4"  )  AND
+                           (SPA-COM-TANICD (IDX-H)  =   "014"
+                                                    OR  "022"
+                                                    OR  "046" )  AND
+                           (SPA-COM-SURYO(IDX-H)(6:3)  >   ZERO)
+                       IF     (IDX-H               <   200  )  AND
+                              (SPA-COM-INPUTCD(IDX-H + 1)
+                                                   =   "099309901")
+                           CONTINUE
+                       ELSE
+                           MOVE    "1"         TO  SPA-COM-AUTOFLG2
+                                                             (IDX-H)
+      *                    入力コードの画面用再編集
+                           PERFORM 3101-INPUTCD-HEN-SEC
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
       *    数量ゼロエラー
            IF      SPA-ERRCD           =   SPACE
                IF      WRK-ERRCD2      NOT =   SPACE
@@ -381,6 +410,9 @@
       *    診療コード編集処理
       *****************************************************************
        1001-INSET-HEN-SEC          SECTION.
+      *
+      *    残量廃棄の為、診療区分設定
+           MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN (SPA-GMN-IDX)
       *
            IF      ISET-SURYO1     =   ZERO
       *        数量ゼロフラグ
@@ -523,6 +555,7 @@
       *        保険外金額判定
                PERFORM 4101191-JIHI-HEN-SEC
       *        入力コードの画面用再編集
+               MOVE    SPA-GMN-IDX         TO  IDX-H
                PERFORM 3101-INPUTCD-HEN-SEC
            END-IF
       *
@@ -558,6 +591,15 @@
       *    保険外金額判定処理
       *****************************************************************
        4101191-JIHI-HEN-SEC           SECTION.
+      *
+      *    残量廃棄の為、診療区分設定
+           IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1) =   "1" ) AND
+                  (SPA-COM-DATAKBN(SPA-GMN-IDX) =   "1" ) AND
+                  (WRK-SRYKBN (1:1)    NOT =   "9"         )
+               MOVE    SPA-COM-TNSSRYKBN (SPA-GMN-IDX) TO  WRK-SRYKBN
+               MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN
+                                                          (SPA-GMN-IDX)
+           END-IF
       *
       *    自賠責の時、対象外
            IF     (SPA-HKNKBN          =   1    )  AND
@@ -608,7 +650,7 @@
            INITIALIZE                  ORCSC94AREA
            MOVE    "1"                 TO  LNK-SC94-KBN
            MOVE    ORCSCSETHEN-PG      TO  LNK-SC94-PG
-           MOVE    SPA-GMN-IDX         TO  LNK-SC94-IDX
+           MOVE    IDX-H               TO  LNK-SC94-IDX
            CALL    "ORCSC94"           USING
                                        ORCSC94AREA
                                        SPA-SCR-REC
@@ -623,6 +665,7 @@
        1003-YAKUSOKU-SYORI-SEC          SECTION.
       *
       *    入力コードの画面用再編集
+           MOVE    SPA-GMN-IDX         TO  IDX-H
            PERFORM 3101-INPUTCD-HEN-SEC
       *    約束名称編集
            MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:6)

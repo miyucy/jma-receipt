@@ -68,7 +68,7 @@
            03  PARA-KEY.
                05  PARA-FILEMEI         PIC X(08).
                05  PARA-EDABAN          PIC 9(03).
-           03  PARA-DATA-REC            PIC X(5000).
+           03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
