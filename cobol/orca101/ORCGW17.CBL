@@ -682,10 +682,12 @@
       *    有効期間開始日
            MOVE    SPA-NAI-STYMD(IDX-LST)
                                    TO  SPA-GMN-YUKOSTYMD
+                                       SPA-NAI-YUKOSTYMD
                                        SPA-MOT-STYMD
       *    有効期間終了日
            MOVE    SPA-NAI-EDYMD(IDX-LST)
                                    TO  SPA-GMN-YUKOEDYMD
+                                       SPA-NAI-YUKOEDYMD
                                        SPA-MOT-EDYMD
       *
       *    公費コンボ
@@ -700,6 +702,10 @@
            MOVE    SPA-GMN-JKSNUMCL(IDX-LST)
                                    TO  SPA-GMN-JKSNUM-G
                                        SPA-MOT-JKSCD
+      *
+      *    公費コンボの内容を再セット
+           PERFORM 3101-HKNNUM-COMBO-SET-SEC
+      *
       *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
       *
