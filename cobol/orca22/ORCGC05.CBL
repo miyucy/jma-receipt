@@ -108,7 +108,7 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
-           03  IDX1                PIC 9(01).
+           03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(05).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -616,9 +616,11 @@
                    OR      SPA-GMN-TBYOMEICD1 (IDY)
                                    =   SPACE
                MOVE    SPACE       TO  SPA-GMN-BYOMEICD-G (IDY)
-               COMPUTE IDX1     =   IDY    +   1
-               MOVE    SPA-GMN-BYOMEICD-G (IDX1)
-                                   TO  SPA-GMN-BYOMEICD-G (IDY)
+               IF      IDY             <   21
+                   COMPUTE IDX1     =   IDY    +   1
+                   MOVE    SPA-GMN-BYOMEICD-G (IDX1)
+                                       TO  SPA-GMN-BYOMEICD-G (IDY)
+               END-IF   
            END-PERFORM
       *
            COMPUTE SPA-GMN-BYOMEICD-MAX    =   SPA-GMN-BYOMEICD-MAX
@@ -1240,7 +1242,7 @@
                    MOVE    "選択番号が有りません"  
                                        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "病名コード選択が６以上です"
+                   MOVE    "病名コード選択が２２以上です"
                                        TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "病名コード順がエラーです"
