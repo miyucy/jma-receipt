@@ -1565,7 +1565,7 @@
            INITIALIZE                     TNS-TENSU-REC
            MOVE    WRK-SRYCD              TO  TNS-SRYCD
            MOVE    TNS-TENSU-REC          TO  MCPDATA-REC
-           MOVE    SPA-SYSYMD             TO  ORC-DBYMD
+           MOVE    SPA-SRYYMD             TO  ORC-DBYMD
            MOVE    "DBSELECT"             TO  MCP-FUNC
            MOVE    "TENSU-KEY"            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"            USING
@@ -1687,7 +1687,7 @@
            INITIALIZE                      SYS-1031-REC
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
-           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    SPA-SRYYMD          TO  ORCSPRTNM-SRYYMD
            MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
            CALL    "ORCSPRTNM"         USING
                                            ORCSPRTNMAREA
@@ -1706,7 +1706,7 @@
       *****************************************************************
        800-SYSKANRI-READ-SEC           SECTION.
       *
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
