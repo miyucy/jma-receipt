@@ -694,8 +694,14 @@
                                    END-IF
       **************************   GO      TO      10011-CHK-EXT
                                END-IF
-                               MOVE    4               TO  FLG-SINDAN
-                               MOVE    IDX-Z           TO  IDX-SAT
+      *                        Æ©»ë¿ÇÃÇ¤Ï£ØÀþ¤È¤¹¤ë
+                               IF     WRK-COM-INPUTCD (IDX-Z)
+                                                       =   "170000310"
+                                   CONTINUE
+                               ELSE
+                                    MOVE    4           TO  FLG-SINDAN
+                                    MOVE    IDX-Z       TO  IDX-SAT
+                               END-IF
       *--(01.00.01)----- END  
                        END-EVALUATE
                    END-IF
