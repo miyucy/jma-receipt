@@ -30,6 +30,7 @@
       *  01.00.01    MCC-藤原     01.05.07  明治の開始年の修正
       *  01.00.02    MCC-藤原     01.05.07  日のニューメリックチェック追加
       *  01.00.03    NACL-藤原    02.10.21  漢字項目の空白を全角に修正
+      *  01.00.04    NACL-多々納  03.04.16  END-IF,END-SERACH追加
       *****************************************************************
 001400 ENVIRONMENT         DIVISION.
 001500 CONFIGURATION       SECTION.
@@ -376,37 +377,44 @@
 035100         MOVE     LNK-DAYX-AREA      TO  LNK-DAY1-AREA
 035200         PERFORM  DTCONV-RTN
 035300         MOVE     LNK-DAY1-AREA      TO  LNK-DAYX-AREA
-035400         GO  TO     MAIN-EXT.
+035400         GO  TO     MAIN-EXT
+           END-IF.
 035500     IF  LNK-DAYX-IRAI  =  "21"  OR  "22"
 035600         MOVE     LNK-DAYX-AREA      TO  LNK-DAY2-AREA
 035700         PERFORM  DTEDIT-RTN
 035800         MOVE     LNK-DAY2-AREA      TO  LNK-DAYX-AREA
-035900         GO  TO     MAIN-EXT.
+035900         GO  TO     MAIN-EXT
+           END-IF.
 036000     IF  LNK-DAYX-IRAI  =  "31"  OR  "32"
 036100         MOVE     LNK-DAYX-AREA      TO  LNK-DAY3-AREA
 036200         PERFORM  DTYOUB-RTN
 036300         MOVE     LNK-DAY3-AREA      TO  LNK-DAYX-AREA
-036400         GO  TO     MAIN-EXT.
+036400         GO  TO     MAIN-EXT
+           END-IF.
 036500     IF  LNK-DAYX-IRAI  =  "41"  OR  "42"
 036600         MOVE     LNK-DAYX-AREA      TO  LNK-DAY4-AREA
 036700         PERFORM  DTSKJT-RTN
 036800         MOVE     LNK-DAY4-AREA      TO  LNK-DAYX-AREA
-036900         GO  TO     MAIN-EXT.
+036900         GO  TO     MAIN-EXT
+           END-IF.
 037000     IF  LNK-DAYX-IRAI  =  "51"  OR  "52"
 037100         MOVE     LNK-DAYX-AREA      TO  LNK-DAY5-AREA
 037200         PERFORM  DTKIKN-RTN
 037300         MOVE     LNK-DAY5-AREA      TO  LNK-DAYX-AREA
-037400         GO  TO     MAIN-EXT.
+037400         GO  TO     MAIN-EXT
+           END-IF.
 037500     IF  LNK-DAYX-IRAI  =  "61"  OR  "62"
 037600         MOVE     LNK-DAYX-AREA      TO  LNK-DAY6-AREA
 037700         PERFORM  DTPLMN-RTN
 037800         MOVE     LNK-DAY6-AREA      TO  LNK-DAYX-AREA
-037900         GO  TO     MAIN-EXT.
+037900         GO  TO     MAIN-EXT
+           END-IF.
 038000     IF  LNK-DAYX-IRAI  =  "71"  OR  "72"
 038100         MOVE     LNK-DAYX-AREA      TO  LNK-DAY7-AREA
 038200         PERFORM  DTMEND-RTN
 038300         MOVE     LNK-DAY7-AREA      TO  LNK-DAYX-AREA
-038400         GO  TO     MAIN-EXT.
+038400         GO  TO     MAIN-EXT
+           END-IF.
 038500     MOVE     30             TO  STS-DAY-RC1.
 038600     MOVE     01             TO  STS-DAY-RC2.
 038700 MAIN-EXT.
@@ -440,12 +448,14 @@
 041500     IF    LNK-DAY1-IRAI  =  "12"  OR  "22"  OR  "32"  OR
 041600                             "42"  OR  "52"  OR  "62"  OR
 041700                             "72"
-041800           GO  TO      DTCONV-100.
+041800           GO  TO      DTCONV-100
+           END-IF.
 041900*
 042000     PERFORM  YMD-CHK-RTN.
 042100     IF  WK-ERR  =  1
 042200         MOVE    20        TO    STS-DAY-RC1
-042300         GO  TO      DTCONV-EXT.
+042300         GO  TO      DTCONV-EXT
+           END-IF.
 042400*
 042500     SET     IX1    TO     1.
 042600     SEARCH  GENGO-TBL-R2  VARYING  IX1
@@ -458,7 +468,8 @@
 043300         MOVE    GENGO-T1 (IX1)    TO    LNK-DAY1-GENGO
 043400         MOVE    GENGO-T2 (IX1)    TO    LNK-DAY1-GENKIGO
 043500         MOVE    GENMEI   (IX1)    TO    LNK-DAY1-GENMEI
-043600         GO  TO      DTCONV-200.
+043600         GO  TO      DTCONV-200
+           END-SEARCH.
 043700************
 043800 DTCONV-100.
 043900************
@@ -479,11 +490,13 @@
 044900         COMPUTE  WK-SYY  =  WK-YY  +  GENGO-YYYY-RR (IX1)  -  1
 045000         MOVE    GENGO-T1 (IX1)    TO    LNK-DAY1-GENGO
 045000         MOVE    GENGO-T2 (IX1)    TO    LNK-DAY1-GENKIGO
-045100         MOVE    GENMEI   (IX1)    TO    LNK-DAY1-GENMEI.
+045100         MOVE    GENMEI   (IX1)    TO    LNK-DAY1-GENMEI
+           END-SEARCH.
 045200     PERFORM  YMD-CHK-RTN.
 045300     IF  WK-ERR  =  1
 045400         MOVE    20          TO    STS-DAY-RC1
-045500         GO  TO      DTCONV-EXT.
+045500         GO  TO      DTCONV-EXT
+           END-IF.
 045600************
 045700 DTCONV-200.
 045800************
@@ -711,7 +724,8 @@
 067600         MOVE    ZERO              TO    LNK-DAY5-NISSU1
 067700         MOVE    ZERO              TO    LNK-DAY5-NISSU2
 067800         MOVE    20                TO    STS-DAY-RC1
-067900         GO  TO      DTKIKN-EXT.
+067900         GO  TO      DTKIKN-EXT
+           END-IF.
 068000*
 068100     MOVE    ZERO                  TO    WK-NISU.
 068200*
@@ -727,9 +741,11 @@
 069200           ELSE
 069300             COMPUTE  WK-NISU =  WK-NISU +  365
 069400         END-IF
-069500         GO  TO      DTKIKN-100.
+069500         GO  TO      DTKIKN-100
+           END-IF.
 069600     IF  WK-ST  =  WK-END
-069700         GO  TO      DTKIKN-200.
+069700         GO  TO      DTKIKN-200
+           END-IF.
 069800     MOVE    WK-ST1        TO    KISAN-YY.
 069900     MOVE    1             TO    KISAN-MM  KISAN-DD.
 070000     MOVE    WK-ST         TO    SYURYO-YMD.
@@ -869,7 +885,8 @@
 083400     IF  YSK-KYUJTS   NOT =   1
 083500         MOVE     WK-YYMMDD         TO    LNK-DAY6-KEISANZEN
 083600                                          LNK-DAY6-KEISANGO
-083700         GO  TO    DTPLMN-DAY-100.
+083700         GO  TO    DTPLMN-DAY-100
+           END-IF.
 083800*
 083900     PERFORM  DT-YUKOMNS-RTN.
 084000     MOVE     WK-YUKO               TO    LNK-DAY6-KEISANZEN.
@@ -887,7 +904,8 @@
 085200     IF  YSK-KYUJTS   NOT =   1
 085300         MOVE     WK-YYMMDD         TO    LNK-DAY6-KOYOMIZEN
 085400                                          LNK-DAY6-KOYOMIGO
-085500         GO  TO    DTPLMN-DAY-EXT.
+085500         GO  TO    DTPLMN-DAY-EXT
+           END-IF.
 085600*
 085700     PERFORM  DT-YUKOMNS-RTN.
 085800     MOVE     WK-YUKO               TO    LNK-DAY6-KOYOMIZEN.
@@ -928,7 +946,8 @@
 089300     MOVE    WK-YYMMDD           TO    WK-YUKO.
 089400     PERFORM  DT-MMLAST-RTN.
 089500     IF  WK-DD  >  WK-YUKO-DD
-089600         MOVE     WK-YUKO-DD     TO    WK-DD.
+089600         MOVE     WK-YUKO-DD     TO    WK-DD
+           END-IF.
 089700****************
 089800 DTPLMN-MON-050.
 089900****************
@@ -938,7 +957,8 @@
 090300     IF  YSK-KYUJTS   NOT =   1
 090400         MOVE     WK-YYMMDD     TO    LNK-DAY6-KEISANZEN
 090500                                      LNK-DAY6-KEISANGO
-090600         GO  TO    DTPLMN-MON-100.
+090600         GO  TO    DTPLMN-MON-100
+           END-IF.
 090700*
 090800     PERFORM  DT-YUKOMNS-RTN.
 090900     MOVE     WK-YUKO           TO    LNK-DAY6-KEISANZEN.
@@ -956,7 +976,8 @@
 092100     IF  YSK-KYUJTS   NOT =   1
 092200         MOVE     WK-YYMMDD     TO    LNK-DAY6-KOYOMIZEN
 092300                                      LNK-DAY6-KOYOMIGO
-092400         GO  TO    DTPLMN-MON-EXT.
+092400         GO  TO    DTPLMN-MON-EXT
+           END-IF.
 092500*
 092600     PERFORM  DT-YUKOMNS-RTN.
 092700     MOVE     WK-YUKO           TO    LNK-DAY6-KOYOMIZEN.
@@ -975,7 +996,8 @@
 094000     MOVE    WK-YYMMDD           TO    WK-YUKO.
 094100     PERFORM  DT-MMLAST-RTN.
 094200     IF  WK-DD  >  WK-YUKO-DD
-094300         MOVE     WK-YUKO-DD     TO    WK-DD.
+094300         MOVE     WK-YUKO-DD     TO    WK-DD
+           END-IF.
 094400****************
 094500 DTPLMN-NEN-050.
 094600****************
@@ -985,7 +1007,8 @@
 095000     IF  YSK-KYUJTS   NOT =   1
 095100         MOVE     WK-YYMMDD      TO    LNK-DAY6-KEISANZEN
 095200                                       LNK-DAY6-KEISANGO
-095300         GO  TO    DTPLMN-NEN-100.
+095300         GO  TO    DTPLMN-NEN-100
+           END-IF.
 095400*
 095500     PERFORM  DT-YUKOMNS-RTN.
 095600     MOVE     WK-YUKO            TO    LNK-DAY6-KEISANZEN.
@@ -1003,7 +1026,8 @@
 096800     IF  YSK-KYUJTS   NOT =   1
 096900         MOVE     WK-YYMMDD      TO    LNK-DAY6-KOYOMIZEN
 097000                                       LNK-DAY6-KOYOMIGO
-097100         GO  TO    DTPLMN-NEN-EXT.
+097100         GO  TO    DTPLMN-NEN-EXT
+           END-IF.
 097200*
 097300     PERFORM  DT-YUKOMNS-RTN.
 097400     MOVE     WK-YUKO            TO    LNK-DAY6-KOYOMIZEN.
@@ -1045,7 +1069,9 @@
 101000         IF  WK-MM  =  2
 101100             MOVE    29              TO    WK-DD
 101200         ELSE
-101300             MOVE    31              TO    WK-DD.
+101300             MOVE    31              TO    WK-DD
+               END-IF
+           END-IF.
 101400     PERFORM  YMD-CHK-RTN.
 101500     IF  WK-ERR  =  1
 101600         IF  WK-MM  =  2
@@ -1059,13 +1085,16 @@
                    END-IF
 102400         ELSE
 102500             MOVE    20              TO    STS-DAY-RC1
-102600             GO  TO  DTMEND-EXT.
+102600             GO  TO  DTMEND-EXT
+               END-IF
+           END-IF.
 102700*
 102800     PERFORM  YSK-KBN-RTN.
 102900     MOVE    WK-YYMMDD       TO    LNK-DAY7-KOYOMI.
 103000     IF  YSK-KYUJTS  =  1
 103100         PERFORM  DT-YUKOMNS-RTN
-103200         MOVE     WK-YUKO    TO    WK-YYMMDD.
+103200         MOVE     WK-YUKO    TO    WK-YYMMDD
+           END-IF.
 103300     MOVE    WK-YYMMDD       TO    LNK-DAY7-EIGYO.
 103400*
 103500     IF  LNK-DAY7-IRAI   =   "72"
@@ -1104,18 +1133,22 @@
 106800*
 106900     IF  WK-MM   IS  NOT  NUMERIC
 107000         MOVE    1               TO    WK-ERR
-107100         GO  TO    YMD-CHK-EXT.
+107100         GO  TO    YMD-CHK-EXT
+           END-IF.
       *---- (01.00.02) LINE ADD START ----------------------------------
 106900     IF  WK-DD   IS  NOT  NUMERIC
 107000         MOVE    1               TO    WK-ERR
-107100         GO  TO    YMD-CHK-EXT.
+107100         GO  TO    YMD-CHK-EXT
+           END-IF.
       *---- (01.00.02) LINE ADD END ------------------------------------
 107200     IF  (WK-MM  <  1)  OR  (WK-MM  >  12)
 107300         MOVE    1               TO    WK-ERR
-107400         GO  TO    YMD-CHK-EXT.
+107400         GO  TO    YMD-CHK-EXT
+           END-IF.
 107500*
 107600     IF  WK-MM  =  2
-107700         GO  TO    YMD-CHK-100.
+107700         GO  TO    YMD-CHK-100
+           END-IF.
 107800*
 107900     IF  WK-MM  =  4  OR  6  OR  9  OR  11
 108000         IF  (WK-DD  <  1)  OR  (WK-DD  >  30)
@@ -1203,7 +1236,9 @@
 115000             MOVE    WK-YOUB       TO    WK-MNS-YMD
 115100             PERFORM  DT-MINUS-RTN
 115200             MOVE    WK-MNS-YMD    TO    WK-YOUB
-115300             PERFORM  TABLE-SRH-RTN.
+115300             PERFORM  TABLE-SRH-RTN
+               END-IF
+           END-IF.
 115400     IF  YSK-YOUBI  =  ZERO
 115500         MOVE    1                 TO    YSK-KYUJTS
 115600     ELSE
@@ -1216,7 +1251,10 @@
 116300                 MOVE    ZERO      TO    YSK-KYUJTS
 116400               WHEN
 116500                 KYUJT-T2 (IX4)  =  WK-SMD
-116600                 MOVE    1         TO  YSK-KYUJTS.
+116600                 MOVE    1         TO  YSK-KYUJTS
+                   END-SEARCH
+               END-IF
+           END-IF.
 116700*
 116800*    IF  WK-SYYMMDD  >  "19830731"
 116900*        IF  YSK-YOUBI  =  6
@@ -1248,7 +1286,8 @@
 119500         MOVE    ZERO      TO    YSK-SYUKJTS
 119600       WHEN
 119700         SKJT-T1 (IX2)  =  WYOUB-MMDD
-119800         MOVE    1         TO    YSK-SYUKJTS.
+119800         MOVE    1         TO    YSK-SYUKJTS
+           END-SEARCH.
 119900       GO  TO  TABLE-SRH-200.
 120000*
 120100 TABLE-SRH-100.
@@ -1258,7 +1297,8 @@
 120500         MOVE    ZERO      TO  YSK-SYUKJTS
 120600       WHEN
 120700         SKJT-NEW(IX6)     =   WYOUB-MMDD
-120800         MOVE    1         TO  YSK-SYUKJTS.
+120800         MOVE    1         TO  YSK-SYUKJTS
+           END-SEARCH.
 120900*
 121000 TABLE-SRH-200.
 121100     IF  YSK-SYUKJTS  =  ZERO
@@ -1268,7 +1308,9 @@
 121500             MOVE   ZERO       TO    YSK-SYUKJTS
 121600           WHEN
 121700             SKJT-TBL2 (IX3)  =  WYOUB-MMDD
-121800             MOVE    1         TO    YSK-SYUKJTS.
+121800             MOVE    1         TO    YSK-SYUKJTS
+               END-SEARCH
+           END-IF.
 121900*
 122000     IF    WK-SYY  <  2000
 122100         GO  TO  TABLE-SRH-EXT
@@ -1303,7 +1345,9 @@
 125000             COMPUTE  WK-MNS-MM  =  WK-MNS-MM  -  1
 125100             MOVE    WK-MNS-YMD    TO    WK-YUKO
 125200             PERFORM  DT-MMLAST-RTN
-125300             MOVE    WK-YUKO-DD    TO    WK-MNS-DD.
+125300             MOVE    WK-YUKO-DD    TO    WK-MNS-DD
+               END-IF
+           END-IF.
 125400 DT-MINUS-EXT.
 125500     EXIT.
 125600******************************************************************
@@ -1316,7 +1360,9 @@
 126300         IF  WK-UERR  =  1
 126400             MOVE    29            TO    CAL-T (2)
 126500         ELSE
-126600             MOVE    28            TO    CAL-T (2).
+126600             MOVE    28            TO    CAL-T (2)
+               END-IF
+           END-IF.
 126700     MOVE    CAL-T (WK-YUKO-MM)    TO    WK-YUKO-DD.
 126800 DT-MMLAST-EXT.
 126900     EXIT.
@@ -1337,10 +1383,12 @@
 128400             MOVE    WK-YUKO-DD    TO    WK-DD
                END-IF
 128500     ELSE
-128600         COMPUTE  WK-DD  =  WK-DD  -  1.
+128600         COMPUTE  WK-DD  =  WK-DD  -  1
+           END-IF.
 128700     PERFORM  YSK-KBN-RTN.
 128800     IF  YSK-KYUJTS  =  1
-128900         GO  TO    DT-YUKOMNS-000.
+128900         GO  TO    DT-YUKOMNS-000
+           END-IF.
 129000     MOVE    WK-YYMMDD     TO    WK-YUKO.
 129100 DT-YUKOMNS-EXT.
 129200     EXIT.
@@ -1360,10 +1408,12 @@
 130600             MOVE    1             TO    WK-DD
                END-IF
 130700     ELSE
-130800         COMPUTE  WK-DD  =  WK-DD  +  1.
+130800         COMPUTE  WK-DD  =  WK-DD  +  1
+           END-IF.
 130900     PERFORM  YSK-KBN-RTN.
 131000     IF  YSK-KYUJTS  =  1
-131100         GO  TO    DT-YUKOPLS-000.
+131100         GO  TO    DT-YUKOPLS-000
+           END-IF.
 131200     MOVE    WK-YYMMDD     TO    WK-YUKO.
 131300 DT-YUKOPLS-EXT.
 131400     EXIT.
@@ -1377,7 +1427,9 @@
 132200         MOVE    KISAN-YMD       TO    WK-YYMMDD
 132300         PERFORM  URUDOSHI-CHK-RTN
 132400         IF  WK-UERR  =  1
-132500             COMPUTE  NISU-A  =  NISU-A  +  1.
+132500             COMPUTE  NISU-A  =  NISU-A  +  1
+               END-IF
+           END-IF.
 132600     COMPUTE  NISU-A  =  NISU-A  +  KISAN-DD.
 132700     MOVE    ZERO            TO  NISU-B.
 132800     MOVE    KISAN-YMD       TO  WK-YYMMDD.
@@ -1385,12 +1437,14 @@
 133000 NISSU-SANSYUTS-100.
 133100********************
 133200     IF  WK-SYY  =  SYURYO-YY
-133300         GO  TO    NISSU-SANSYUTS-200.
+133300         GO  TO    NISSU-SANSYUTS-200
+           END-IF.
 133400     PERFORM  URUDOSHI-CHK-RTN.
 133500     IF  WK-UERR  =  1
 133600         COMPUTE  NISU-B  =  NISU-B  +  366
 133700     ELSE
-133800         COMPUTE  NISU-B  =  NISU-B  +  365.
+133800         COMPUTE  NISU-B  =  NISU-B  +  365
+           END-IF.
 133900     COMPUTE  WK-SYY  =  WK-SYY  +  1.
 134000     GO  TO    NISSU-SANSYUTS-100.
 134100********************
@@ -1400,7 +1454,9 @@
 134500     IF  SYURYO-MM  >  2
 134600         PERFORM  URUDOSHI-CHK-RTN
 134700         IF  WK-UERR  =  1
-134800         COMPUTE  NISU-B  =  NISU-B  +  1.
+134800             COMPUTE  NISU-B  =  NISU-B  +  1
+               END-IF
+           END-IF.
 134900     COMPUTE  NISU-B  =  NISU-B  +  SYURYO-DD.
 135000     COMPUTE  WK-SANSYUTS  =  NISU-B  -  NISU-A.
 135100 NISSU-SANSYUTS-EXT.
@@ -1414,7 +1470,8 @@
 135900         COMPUTE  KIJYUN-A  =  WK-NISU  /  365
 136000         COMPUTE  KIJYUN-YY =  WK-SYY   +  KIJYUN-A  -  1
 136100     ELSE
-136200         MOVE    WK-SYY          TO    KIJYUN-YY.
+136200         MOVE    WK-SYY          TO    KIJYUN-YY
+           END-IF.
 136300     MOVE    WK-YYMMDD           TO  SYURYO-YMD.
 136400     MOVE    KIJYUN-YY           TO  KISAN-YY.
 136500     MOVE    1                   TO  KISAN-MM.
@@ -1429,15 +1486,18 @@
 137400     IF  WK-UERR  =  1
 137500         MOVE    366             TO    SYU-W
 137600     ELSE
-137700         MOVE    365             TO    SYU-W.
+137700         MOVE    365             TO    SYU-W
+           END-IF.
 137800     IF  WK-SANSYUTS  >  SYU-W
 137900         COMPUTE  WK-SANSYUTS   =  WK-SANSYUTS   -  SYU-W
 138000         COMPUTE  KIJYUN-YY     =  KIJYUN-YY  +  1
-138100         GO  TO    NISSU-KANSAN-100.
+138100         GO  TO    NISSU-KANSAN-100
+           END-IF.
 138200     IF  WK-UERR  =  1
 138300         MOVE    29              TO    CAL-T (2)
 138400     ELSE
-138500         MOVE    28              TO    CAL-T (2).
+138500         MOVE    28              TO    CAL-T (2)
+           END-IF.
 138600     MOVE    1                   TO  WK-MM.
 138700******************
 138800 NISSU-KANSAN-200.
@@ -1453,7 +1513,8 @@
 139800             GO  TO    NISSU-KANSAN-200
                END-IF
 139900     ELSE
-140000         MOVE    WK-SANSYUTS     TO  WK-DD.
+140000         MOVE    WK-SANSYUTS     TO  WK-DD
+           END-IF.
 140100 NISSU-KANSAN-EXT.
 140200     EXIT.
 140300******************************************************************
@@ -1466,7 +1527,8 @@
 141000         COMPUTE  WK-YSK-MM    =  WK-MM  +  10
 141100     ELSE
 141200         MOVE    WK-SYY          TO    WK-YSK-YYYY
-141300         COMPUTE  WK-YSK-MM    =  WK-MM  -  2.
+141300         COMPUTE  WK-YSK-MM    =  WK-MM  -  2
+           END-IF.
 141400     COMPUTE  WK-SZ       =  2.6  *  WK-YSK-MM  -  0.2.
 141500     COMPUTE  WK-SY       =  (WK-YSK-YYYY  -  1900)  *  0.25.
 141600     COMPUTE  WK-SY       =  WK-DD  +  WK-SZ  +  WK-SY  +
@@ -1491,7 +1553,8 @@
 143100     MOVE    9             TO    SKJT-M (IX3).
 143200     COMPUTE  WK-SSYB     =  WK-SSYB  +  CST3.
            IF  WK-SYY  =  2012 
-               MOVE  22  TO  WK-SSYB.
+               MOVE  22  TO  WK-SSYB
+           END-IF.
 143300     MOVE    WK-SSYB       TO    SKJT-D (IX3)
 143400                                 SKJT-KNRDD (9, 2).
 143500 SKJT-KEISAN1-EXT.
