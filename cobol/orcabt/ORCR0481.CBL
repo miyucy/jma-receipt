@@ -228,6 +228,9 @@
            03  IDX1                PIC 9(02).
            03  IDX2                PIC 9(02).
            03  IDX3                PIC 9(02).
+           03  IDX4                PIC 9(02).
+           03  IDX5                PIC 9(02).
+           03  IDX6                PIC 9(02).
            03  IDXP                PIC 9(02).
            03  IDY1                PIC 9(03).
            03  IDY2                PIC 9(03).
@@ -357,6 +360,7 @@
            03  WRK-NENREI-X        PIC ZZ9.
            03  WRK-KINGAKUZ        PIC ZZZ,ZZZ.
            03  WRK-KGK9            PIC ZZ,ZZZ,ZZ9.
+           03  WRK-KGK2            PIC ZZ.
       *
       *    改行コード
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -781,19 +785,41 @@
       *    療養開始年月日
            IF      RECE41-RYOSTYMD     <   WRK-STYMD
                MOVE    WRK-STYMDW          TO  HC21-RYOSTYMD
+               MOVE    WRK-STYMD(7:2)      TO  IDX5
            ELSE      
                MOVE    RECE41-RYOSTYMD     TO  WRK-SYMD
                PERFORM 31012-SE-WA-YMDEDIT-SEC
                MOVE    WRK-HENYMD          TO  HC21-RYOSTYMD
+               MOVE  RECE41-RYOSTYMD(7:2)  TO  IDX5
            END-IF    
       *    療養終了年月日
            IF      RECE41-RYOEDYMD     >   WRK-EDYMD
                MOVE    WRK-EDYMDW          TO  HC21-RYOEDYMD
+               MOVE    WRK-EDYMD(7:2)      TO  IDX6
            ELSE      
                MOVE    RECE41-RYOEDYMD     TO  WRK-SYMD
                PERFORM 31012-SE-WA-YMDEDIT-SEC
                MOVE    WRK-HENYMD          TO  HC21-RYOEDYMD
+               MOVE  RECE41-RYOEDYMD(7:2)  TO  IDX6
            END-IF    
+      *    療養開始年月日再セット
+           PERFORM   VARYING   IDX4   FROM   IDX5   BY  1
+                     UNTIL     IDX4    >     IDX6
+                 IF   RECE41-NYUINBITBL(IDX4)  =  SPACE
+                     MOVE    IDX4                TO  WRK-KGK2
+                     MOVE    WRK-KGK2            TO  HC21-RYOSTYMD(5:2)
+                     MOVE    IDX6                TO  IDX4
+                 END-IF
+           END-PERFORM
+      *    療養終了年月日再セット
+           PERFORM   VARYING   IDX4   FROM   IDX6   BY  -1
+                     UNTIL     IDX4    <     IDX5
+                 IF   RECE41-NYUINBITBL(IDX4)  =  SPACE
+                     MOVE    IDX4                TO  WRK-KGK2
+                     MOVE    WRK-KGK2            TO  HC21-RYOEDYMD(5:2)
+                     MOVE    IDX5                TO  IDX4
+                 END-IF
+           END-PERFORM
       *    実日数
            MOVE    RECE41-JNISSU       TO  WRK-JNISSU
            MOVE    WRK-JNISSU          TO  HC21-NISSU

@@ -584,6 +584,7 @@
                                MOVE    1      TO    FLG-SHOSAISIN
                       END-IF
                       PERFORM   RECE62-TENSOU11-SEC
+                      MOVE    10              TO    IDX1
                  END-IF
       *
               END-PERFORM
@@ -637,6 +638,7 @@
                                     PERFORM   NYUINRYO-TAIHI-SEC
                                 END-IF
                            END-IF
+                           MOVE    10              TO    IDX1
                        END-IF
                    END-PERFORM
                    MOVE     "SRYACCT-KEY7"   TO   ORC-DBPATH
@@ -729,19 +731,12 @@
                END-IF
            END-IF
       *
-           MOVE    ZERO             TO   HC-IDX
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       10
-                   OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-               IF      WRK-DAY5(IDY)  =   RECE62-HKNCOMBI (IDX1)
-                   MOVE    IDX1            TO  HC-IDX
-                   MOVE    10              TO  IDX1
-               END-IF
-           END-PERFORM
+           MOVE       IDX1           TO   HC-IDX
       *
-           MOVE       ZERO              TO   KH-IDX
+           MOVE       ZERO           TO   KH-IDX
            PERFORM    VARYING   IDX2    FROM   1   BY   1
                                 UNTIL   (IDX2      >       4)
+               MOVE   ZERO               TO        KH-IDX
                IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
       *
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
@@ -854,19 +849,12 @@
                END-IF
            END-IF
       *
-           MOVE    ZERO             TO   HC-IDX
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       10
-                   OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-               IF      ACCT-HKNCOMBI  =   RECE62-HKNCOMBI (IDX1)
-                   MOVE    IDX1            TO  HC-IDX
-                   MOVE    10              TO  IDX1
-               END-IF
-           END-PERFORM
+           MOVE       IDX1              TO   HC-IDX
       *
            MOVE       ZERO              TO   KH-IDX
            PERFORM    VARYING   IDX2    FROM   1   BY   1
                                 UNTIL   (IDX2      >       4)
+               MOVE       ZERO           TO        KH-IDX
                IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
       *
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
@@ -973,6 +961,7 @@
                               AND  NACCT-DAY(IDY)  NOT =    ZERO  
                                    PERFORM      RECE62-TENSOU21-SEC
                               END-IF
+                              MOVE    10        TO     IDX1
                          END-IF
       *
                       END-PERFORM
@@ -990,14 +979,18 @@
                             UNTIL   IDX1    >       10
                             OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
-                         IF  WRK-DAY1(IDY) NOT =  ZERO 
-                         AND WRK-DAY5(IDY)   =  RECE62-HKNCOMBI (IDX1)
+                       IF  WRK-DAY1(IDY) NOT =  ZERO 
+                         IF   WRK-DAY5(IDY)   =  RECE62-HKNCOMBI (IDX1)
                               IF   (NACCT-ZAITEN    NOT =    ZERO)  
                               AND  (NACCT-DAY(IDY)  NOT =    ZERO)  
                               AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
                                    PERFORM      RECE62-TENSOU22-SEC
                               END-IF
+                              MOVE    10   TO     IDX1
                          END-IF
+                       ELSE
+                         MOVE    10        TO     IDX1
+                       END-IF
       *
                       END-PERFORM
       *
@@ -1048,6 +1041,7 @@
                                     PERFORM      RECE62-TENSOU23-SEC
                                 END-IF
                            END-IF
+                           MOVE    10            TO    IDX1
                        END-IF
                    END-PERFORM
                    MOVE     "SRYACCT-KEY7"   TO   ORC-DBPATH
@@ -1188,20 +1182,12 @@
                       PERFORM      NYUINACCT-GET-SEC
            END-IF
       *
-           MOVE    ZERO             TO   HC-IDX
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       10
-                   OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-               IF      WRK-DAY5(IDY)  =   RECE62-HKNCOMBI (IDX1)
-                   MOVE    IDX1            TO  HC-IDX
-                   MOVE    10              TO  IDX1
-               END-IF
-           END-PERFORM
+           MOVE       IDX1              TO   HC-IDX
       *
            MOVE       ZERO              TO   KH-IDX
            PERFORM    VARYING   IDX2    FROM   1   BY   1
                                 UNTIL   (IDX2      >       4)
-               MOVE       ZERO           TO   KH-IDX
+               MOVE        ZERO          TO        KH-IDX
                IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
       *
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
@@ -1237,20 +1223,12 @@
                       PERFORM      NYUINACCT-GET2-SEC
            END-IF
       *
-           MOVE    ZERO             TO   HC-IDX
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       10
-                   OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-               IF      WRK-DAY5(IDY)  =   RECE62-HKNCOMBI (IDX1)
-                   MOVE    IDX1            TO  HC-IDX
-                   MOVE    10              TO  IDX1
-               END-IF
-           END-PERFORM
+           MOVE       IDX1              TO   HC-IDX
       *
            MOVE       ZERO              TO   KH-IDX
            PERFORM    VARYING   IDX2    FROM   1   BY   1
                                 UNTIL   (IDX2      >       4)
-               MOVE       ZERO           TO   KH-IDX
+               MOVE        ZERO          TO        KH-IDX
                IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
       *
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
@@ -1843,20 +1821,12 @@
                  END-PERFORM
            END-IF
       *
-           MOVE    ZERO             TO   HC-IDX
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       10
-                   OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-               IF      ACCT-HKNCOMBI  =   RECE62-HKNCOMBI (IDX1)
-                   MOVE    IDX1            TO  HC-IDX
-                   MOVE    10              TO  IDX1
-               END-IF
-           END-PERFORM
+           MOVE       IDX1              TO   HC-IDX
       *
            MOVE       ZERO              TO   KH-IDX
            PERFORM    VARYING   IDX2    FROM   1   BY   1
                                 UNTIL   (IDX2      >       4)
-               MOVE       ZERO           TO   KH-IDX
+               MOVE        ZERO          TO        KH-IDX
                IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
       *
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
@@ -2020,8 +1990,8 @@
                              UNTIL   IDX1    >       10
                              OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
-                         IF   WRK-DAY1(IDY) NOT =  ZERO 
-                         AND  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
+                       IF   WRK-DAY1(IDY) NOT =  ZERO 
+                         IF   WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
                               IF   (NACCT-ZAITEN    NOT =    ZERO)  
                               AND  (NACCT-DAY(IDY)  NOT =    ZERO)  
                               AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
@@ -2030,6 +2000,9 @@
                               END-IF
                               MOVE    10    TO    IDX1
                          END-IF
+                       ELSE
+                         MOVE     10        TO    IDX1
+                       END-IF
       *
                       END-PERFORM
       *
@@ -2328,14 +2301,17 @@
                              UNTIL   IDX1    >       10
                              OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
-                 IF  WRK-DAY1(IDY) NOT =  ZERO 
-                 AND WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
+               IF  WRK-DAY1(IDY) NOT =  ZERO 
+                 IF   WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
                       IF   (WRK-DAY4(IDY)   NOT =    ZERO)  
                       AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
                            PERFORM   NYUINKHN-GET4-SEC
                       END-IF
                       MOVE    10    TO    IDX1
                  END-IF
+               ELSE
+                 MOVE     10        TO    IDX1
+               END-IF
       *
               END-PERFORM
       *
@@ -2462,6 +2438,7 @@
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                PERFORM   RECE62-TENSOU9-SEC
                            END-IF
+                           MOVE   10            TO   IDX1
                        END-IF
                    END-PERFORM
                    MOVE     "SRYACCT-KEY7"   TO   ORC-DBPATH
@@ -2527,21 +2504,12 @@
                END-IF
            END-IF
       *
-           MOVE    ZERO             TO   HC-IDX
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       10
-                   OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-               IF      ACCT-HKNCOMBI   =
-                                        RECE62-HKNCOMBI (IDX1)
-                   MOVE    IDX1            TO  HC-IDX
-                   MOVE    10              TO  IDX1
-               END-IF
-           END-PERFORM          
+           MOVE       IDX1              TO   HC-IDX
       *
            MOVE       ZERO              TO   KH-IDX
            PERFORM    VARYING   IDX2    FROM   1   BY   1
              UNTIL   (IDX2      >       4)
-               MOVE       ZERO           TO   KH-IDX
+               MOVE       ZERO           TO        KH-IDX
                IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
                       MOVE    2          TO        KH-IDX

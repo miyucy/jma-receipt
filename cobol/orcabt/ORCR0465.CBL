@@ -30,6 +30,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    02.10.02  摘要出力項目変更
       *  01.00.02    NACL-門脇    02.11.21  自賠責（ポリネック等の対応）
+      *  01.00.03    NACL-門脇    03.09.29  点数マスタを読み込まないよう
+      *                                     修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -136,7 +138,7 @@
            03  FLG-RECE41          PIC 9(01).
            03  FLG-RECE44          PIC 9(01).
            03  FLG-RECE45          PIC 9(01).
-           03  FLG-TENSU           PIC 9(01).
+      **** 03  FLG-TENSU           PIC 9(01).
            03  FLG-SP              PIC 9(01).
            03  FLG-NOPRT           PIC 9(01).
            03  FLG-HENSYU          PIC 9(01).
@@ -186,8 +188,6 @@
       *     
            03  WRK-SRYKBN                      PIC X(02).
            03  WRK-Z9                          PIC ZZZ9.
-      *****03  WRK-IN                          PIC X(01).
-      *
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -282,7 +282,7 @@
            COPY    "CPJOBKANRI.INC".
       *
       *    点数
-           COPY    "CPTENSU.INC".
+      **** COPY    "CPTENSU.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -639,22 +639,24 @@
            MOVE    RECE44-ZAINUM     TO  RECE46-ZAINUM
            MOVE    WRK-LINENUM       TO  RECE46-LINENUM
       *---------適用欄並び替え用の編集（表用番号等）-----------------
-           IF      IDY               =   1
-               INITIALIZE                           TNS-TENSU-REC
-               MOVE    TBL-ZAI-SRYCD (1)    TO      TNS-SRYCD
-               MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-               MOVE    RECE44-SRYYM         TO      ORC-DBYMD(1:6)
-               MOVE    "01"                 TO      ORC-DBYMD(7:2)
-               PERFORM 900-TENSU-INV-SEC
-               IF      FLG-TENSU            =       1
-                   INITIALIZE               TNS-TENSU-REC
-               END-IF
-           END-IF
+      **** IF      IDY               =   1
+      ****     INITIALIZE                           TNS-TENSU-REC
+      ****     MOVE    TBL-ZAI-SRYCD (1)    TO      TNS-SRYCD
+      ****     MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
+      ****     MOVE    RECE44-SRYYM         TO      ORC-DBYMD(1:6)
+      ****     MOVE    "01"                 TO      ORC-DBYMD(7:2)
+      ****     PERFORM 900-TENSU-INV-SEC
+      ****     IF      FLG-TENSU            =       1
+      ****         INITIALIZE               TNS-TENSU-REC
+      ****     END-IF
+      **** END-IF
            IF ( RECE46-SRYKBN        =  "40"              ) AND         
               ( RECE46-SRYCD1(1:5)   =  "09593"           )             
               MOVE    999               TO  RECE46-GAITENTTLKBN         
            ELSE                                                         
-              MOVE    TNS-GAITENTTLKBN  TO  RECE46-GAITENTTLKBN
+      ****    MOVE    TNS-GAITENTTLKBN  TO  RECE46-GAITENTTLKBN
+              MOVE    TBL-ZAI-TENTTLKBN(1)
+                                        TO  RECE46-GAITENTTLKBN
            END-IF                                                       
       *
            WRITE   RECE46-REC
@@ -730,7 +732,6 @@
            DISPLAY "RECE41  IN  " CNT-RECE41   
            DISPLAY "RECE46  CNT " CNT-RECE46 
            DISPLAY "*** ORCR0465 END ***"
-      ***     ACCEPT  WRK-IN FROM CONSOLE 
       *
            .
        300-END-EXT.
@@ -792,43 +793,43 @@
       *****************************************************************
       *    点数マスター読込（キー）
       *****************************************************************
-       900-TENSU-INV-SEC         SECTION.
+      * 900-TENSU-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-TENSU
-                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-               ELSE
-                   INITIALIZE                  TNS-TENSU-REC
-                   MOVE    1                   TO  FLG-TENSU
-               END-IF
-           ELSE
-               INITIALIZE                  TNS-TENSU-REC
-               MOVE    1                   TO  FLG-TENSU
-           END-IF
+      *     MOVE    "DBSELECT"          TO  MCP-FUNC
+      *     MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+      *     CALL    "ORCMCPSUB"          USING
+      *                                  MCPAREA
+      *                                  ORCMCPAREA
+      *                                  MCPDATA-REC
+      *     IF      MCP-RC              =   ZERO
+      *         MOVE    "DBFETCH"           TO  MCP-FUNC
+      *         MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+      *         CALL    "ORCMCPSUB"          USING
+      *                                      MCPAREA
+      *                                      ORCMCPAREA
+      *                                      MCPDATA-REC
+      *         IF      MCP-RC              =   ZERO
+      *             MOVE    ZERO                TO  FLG-TENSU
+      *             MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+      *         ELSE
+      *             INITIALIZE                  TNS-TENSU-REC
+      *             MOVE    1                   TO  FLG-TENSU
+      *         END-IF
+      *     ELSE
+      *         INITIALIZE                  TNS-TENSU-REC
+      *         MOVE    1                   TO  FLG-TENSU
+      *     END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+      *     MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *     MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+      *     CALL    "ORCMCPSUB"          USING
+      *                                  MCPAREA
+      *                                  ORCMCPAREA
+      *                                  MCPDATA-REC
       *
-           .
-       900-TENSU-INV-EXT.
-           EXIT.
+      *     .
+      * 900-TENSU-INV-EXT.
+      *     EXIT.
       *      
       *****************************************************************
       *    ＤＢ　オープン処理

@@ -50,6 +50,10 @@
       *  01.00.16    NACL-ÌçÏÆ    03/08/27  ÆÃÄê¼À´µ²þÀµÂÐ±þ
       *  01.00.17    NACL-ÌçÏÆ    03/09/18  °ìÉôÉéÃ´¶â³ÛÊÔ½¸½¤Àµ
       *  01.00.18    NACL-ÌçÏÆ    03/09/24  ¥³¥á¥ó¥ÈÊÔ½¸½¤Àµ
+      *  01.00.19    NACL-ÌçÏÆ    03/09/29  Êñ³çÂÐ¾Ý¸¡ºº¾ðÊó¤Î¥»¥Ã¥È
+      *                                     ¸¡ººÅù¼Â»ÜÈ½ÃÇ¾ðÊó¤Î¥»¥Ã¥È
+      *                                     ³Æ¼ïÈÖ¹æÅù¾ðÊó¤Î¥»¥Ã¥È
+      *  01.00.20    NACL-ÌçÏÆ    03/10/02  ÅìµþÅÔÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -476,6 +480,8 @@
            03  CONS-RYOYO-COMMENT    PIC X(09)  VALUE  "113004310".
       *    Âà±¡»þÉþÌô»ØÆ³²Ã»»
            03  CONS-TAIIN-COMMENT    PIC X(09)  VALUE  "113006270".
+      *    Ë¬Ìä´Ç¸î»Ø¼¨ÎÁ
+           03  CONS-HOUSIJI-COMMENT  PIC X(09)  VALUE  "114008010".
       *    ¼ê½ÑÆü¥³¥á¥ó¥È
            03  CONS-SHUJUTU-COMMENT  PIC X(09)  VALUE  "840000042".
       *    Æ¬ÉôÃ±½ã£Ã£Ô»£±Æ
@@ -3391,8 +3397,25 @@
                    MOVE  TNS-TEN          TO    RECE65-TEN(IDX4)
                END-IF
                MOVE    TNS-NYUTENTTLKBN   TO    RECE65-TENTTLKBN(IDX4)
-               MOVE    TNS-YUKOKETA       TO    RECE65-YUKOKETA(IDX4)
+               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
+                  MOVE ZERO               TO    RECE65-YUKOKETA(IDX4)
+               ELSE
+                  MOVE TNS-YUKOKETA       TO    RECE65-YUKOKETA(IDX4)
+               END-IF
                MOVE    TNS-DATAKBN        TO    RECE65-DATAKBN (IDX4)
+               MOVE    TNS-HOUKNSKBN      TO    RECE65-HOUKNSKBN(IDX4)
+               MOVE    TNS-KNSJISKBN      TO    RECE65-KNSJISKBN(IDX4)
+               MOVE    TNS-CDKBN-KBN      TO    RECE65-CDKBN-KBN(IDX4)
+               MOVE    TNS-CDKBN-SYO      TO    RECE65-CDKBN-SYO(IDX4)
+               MOVE    TNS-CDKBN-BU       TO    RECE65-CDKBN-BU(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM   
+                                      TO RECE65-CDKBN-KBNNUM(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM-EDA
+                                      TO RECE65-CDKBN-KBNNUM-EDA(IDX4)
+               MOVE    TNS-CDKBN-KOUBAN
+                                      TO RECE65-CDKBN-KOUBAN(IDX4)
+               MOVE    TNS-KOUHYOJYUNNUM  
+                                      TO RECE65-KOUHYOJYUNNUM(IDX4)
                IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
                AND     SRY-INPUTNUM (IDX2)      NOT =   ZERO
                    MOVE    SRY-HOSPID           TO  PTCOM-HOSPID
@@ -3543,6 +3566,7 @@
        RECE65-TENSOU-COMCNT-HEN-SEC               SECTION.
       *
            IF      RECE64-SRYKBN      =     "80"
+      *       ¥ê¥Ï¥Ó¥ê
               IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
                                             "180022210"   OR
                                             "180706810"   OR
@@ -3571,7 +3595,8 @@
                                             "180024810"   OR
                                             "180025110"   OR
                                             "180025010"   
-                        MOVE   "1"        TO    RECE62-COMCNTFLG
+                        MOVE   "1"    TO    RECE62-COMCNTFLG
+                        MOVE   "1"    TO    RECE64-RIHABIRI-COMMENT
               END-IF
            END-IF
       *
@@ -3595,6 +3620,12 @@
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-TAIIN-COMMENT
                    MOVE   "1"   TO    RECE64-FLG-TAIIN-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE64-SRYKBN      =     "14"
+              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI-COMMENT
+                   MOVE   "1"   TO    RECE64-FLG-HOUSIJI-COMMENT
               END-IF
            END-IF
       *
@@ -3710,6 +3741,19 @@
                MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
                MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
                MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
+               MOVE    TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(IDX4)
+               MOVE    TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(IDX4)
+               MOVE    TNS-CDKBN-KBN       TO  RECE65-CDKBN-KBN(IDX4)
+               MOVE    TNS-CDKBN-SYO       TO  RECE65-CDKBN-SYO(IDX4)
+               MOVE    TNS-CDKBN-BU        TO  RECE65-CDKBN-BU(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM   
+                                      TO RECE65-CDKBN-KBNNUM(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM-EDA
+                                      TO RECE65-CDKBN-KBNNUM-EDA(IDX4)
+               MOVE    TNS-CDKBN-KOUBAN
+                                      TO RECE65-CDKBN-KOUBAN(IDX4)
+               MOVE    TNS-KOUHYOJYUNNUM  
+                                      TO RECE65-KOUHYOJYUNNUM(IDX4)
                IF      NSRY-SRYCD    (IDX2)(1:1)     =   "8"
                AND     NSRY-INPUTNUM (IDX2)      NOT =   ZERO
                    MOVE    NSRY-HOSPID           TO  PTCOM-HOSPID
@@ -3796,6 +3840,19 @@
                MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
                MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
                MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
+               MOVE    TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(IDX4)
+               MOVE    TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(IDX4)
+               MOVE    TNS-CDKBN-KBN       TO  RECE65-CDKBN-KBN(IDX4)
+               MOVE    TNS-CDKBN-SYO       TO  RECE65-CDKBN-SYO(IDX4)
+               MOVE    TNS-CDKBN-BU        TO  RECE65-CDKBN-BU(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM   
+                                      TO RECE65-CDKBN-KBNNUM(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM-EDA
+                                      TO RECE65-CDKBN-KBNNUM-EDA(IDX4)
+               MOVE    TNS-CDKBN-KOUBAN
+                                      TO RECE65-CDKBN-KOUBAN(IDX4)
+               MOVE    TNS-KOUHYOJYUNNUM  
+                                      TO RECE65-KOUHYOJYUNNUM(IDX4)
                IF      NSRY-SRYCD    (IDX2)(1:1)     =   "8"
                AND     NSRY-INPUTNUM (IDX2)      NOT =   ZERO
                    MOVE    NSRY-HOSPID           TO  PTCOM-HOSPID
@@ -3875,6 +3932,19 @@
            MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(1)
            MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(1)
            MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (1)
+           MOVE    TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(1)
+           MOVE    TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(1)
+           MOVE    TNS-CDKBN-KBN       TO  RECE65-CDKBN-KBN(1)
+           MOVE    TNS-CDKBN-SYO       TO  RECE65-CDKBN-SYO(1)
+           MOVE    TNS-CDKBN-BU        TO  RECE65-CDKBN-BU(1)
+           MOVE    TNS-CDKBN-KBNNUM   
+                                  TO RECE65-CDKBN-KBNNUM(1)
+           MOVE    TNS-CDKBN-KBNNUM-EDA
+                                  TO RECE65-CDKBN-KBNNUM-EDA(1)
+           MOVE    TNS-CDKBN-KOUBAN
+                                  TO RECE65-CDKBN-KOUBAN(1)
+           MOVE    TNS-KOUHYOJYUNNUM  
+                                  TO RECE65-KOUHYOJYUNNUM(1)
            MOVE    TNS-NAME            TO  RECE65-NAME(1)
       *
            .
@@ -3939,6 +4009,19 @@
                 MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
                 MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
                 MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
+                MOVE    TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(IDX4)
+                MOVE    TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(IDX4)
+                MOVE    TNS-CDKBN-KBN       TO  RECE65-CDKBN-KBN(IDX4)
+                MOVE    TNS-CDKBN-SYO       TO  RECE65-CDKBN-SYO(IDX4)
+                MOVE    TNS-CDKBN-BU        TO  RECE65-CDKBN-BU(IDX4)
+                MOVE    TNS-CDKBN-KBNNUM   
+                                      TO RECE65-CDKBN-KBNNUM(IDX4)
+                MOVE    TNS-CDKBN-KBNNUM-EDA
+                                      TO RECE65-CDKBN-KBNNUM-EDA(IDX4)
+                MOVE    TNS-CDKBN-KOUBAN
+                                      TO RECE65-CDKBN-KOUBAN(IDX4)
+                MOVE    TNS-KOUHYOJYUNNUM  
+                                      TO RECE65-KOUHYOJYUNNUM(IDX4)
                 MOVE    TNS-NAME            TO  RECE65-NAME(IDX4)
       *
               END-IF
@@ -4030,6 +4113,19 @@
            MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(1)
            MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(1)
            MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (1)
+           MOVE    TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(1)
+           MOVE    TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(1)
+           MOVE    TNS-CDKBN-KBN       TO  RECE65-CDKBN-KBN(1)
+           MOVE    TNS-CDKBN-SYO       TO  RECE65-CDKBN-SYO(1)
+           MOVE    TNS-CDKBN-BU        TO  RECE65-CDKBN-BU(1)
+           MOVE    TNS-CDKBN-KBNNUM   
+                                       TO  RECE65-CDKBN-KBNNUM(1)
+           MOVE    TNS-CDKBN-KBNNUM-EDA
+                                       TO  RECE65-CDKBN-KBNNUM-EDA(1)
+           MOVE    TNS-CDKBN-KOUBAN
+                                       TO  RECE65-CDKBN-KOUBAN(1)
+           MOVE    TNS-KOUHYOJYUNNUM  
+                                       TO  RECE65-KOUHYOJYUNNUM(1)
            MOVE    TNS-NAME            TO  RECE65-NAME(1)
       *
            .
@@ -4123,6 +4219,19 @@
                   MOVE  TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
                   MOVE  TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
                   MOVE  TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
+                  MOVE  TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(IDX4)
+                  MOVE  TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(IDX4)
+                  MOVE  TNS-CDKBN-KBN       TO  RECE65-CDKBN-KBN(IDX4)
+                  MOVE  TNS-CDKBN-SYO       TO  RECE65-CDKBN-SYO(IDX4)
+                  MOVE  TNS-CDKBN-BU        TO  RECE65-CDKBN-BU(IDX4)
+                  MOVE  TNS-CDKBN-KBNNUM   
+                                      TO RECE65-CDKBN-KBNNUM(IDX4)
+                  MOVE  TNS-CDKBN-KBNNUM-EDA
+                                      TO RECE65-CDKBN-KBNNUM-EDA(IDX4)
+                  MOVE  TNS-CDKBN-KOUBAN
+                                      TO RECE65-CDKBN-KOUBAN(IDX4)
+                  MOVE  TNS-KOUHYOJYUNNUM  
+                                      TO RECE65-KOUHYOJYUNNUM(IDX4)
                   MOVE  TNS-NAME            TO  RECE65-NAME(IDX4)
       *
                   MOVE  WRK-ORCSTEN-SRYCD(IDX2)  TO  WRK-SRYCD
@@ -4165,28 +4274,12 @@
            ELSE
                IF (RECE62-TOTALTEN(2)   NOT =  ZERO)              AND
                   (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(2))
-                   MOVE    ZERO             TO   HC-IDX
-                   PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL   IDX1    >       10
-                           OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-                       IF      ACCT-HKNCOMBI   =
-                                                RECE62-HKNCOMBI (IDX1)
-                           MOVE    IDX1            TO  HC-IDX
-                           MOVE    10              TO  IDX1
-                       END-IF
-                   END-PERFORM          
-                   MOVE       ZERO              TO   KH-IDX
+                   MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
-                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1))
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(1)
                            MOVE      2       TO     BUN-IDX2
                       END-IF
                    END-PERFORM
@@ -4199,28 +4292,12 @@
            ELSE
                IF (RECE62-TOTALTEN(3)   NOT =  ZERO)              AND
                   (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(3))
-                   MOVE    ZERO                TO  HC-IDX
-                   PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL   IDX1    >       10
-                           OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-                       IF      ACCT-HKNCOMBI   =
-                                                RECE62-HKNCOMBI (IDX1)
-                           MOVE    IDX1            TO  HC-IDX
-                           MOVE    10              TO  IDX1
-                       END-IF
-                   END-PERFORM          
-                   MOVE       ZERO              TO   KH-IDX
+                   MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
-                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2))
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(2)
                            MOVE      3       TO     BUN-IDX3
                       END-IF
                    END-PERFORM
@@ -4233,28 +4310,12 @@
            ELSE
                IF (RECE62-TOTALTEN(4)   NOT =  ZERO)              AND
                   (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(4))
-                   MOVE    ZERO                TO  HC-IDX
-                   PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL   IDX1    >       10
-                           OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-                       IF      ACCT-HKNCOMBI   =
-                                                RECE62-HKNCOMBI (IDX1)
-                           MOVE    IDX1            TO  HC-IDX
-                           MOVE    10              TO  IDX1
-                       END-IF
-                   END-PERFORM          
-                   MOVE       ZERO              TO   KH-IDX
+                   MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
-                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3))
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(3)
                            MOVE      4       TO     BUN-IDX4
                       END-IF
                    END-PERFORM
@@ -4336,14 +4397,8 @@
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
-                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1))
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(1)
                            MOVE      2       TO     BUN-IDX2
                       END-IF
                    END-PERFORM
@@ -4360,14 +4415,8 @@
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
-                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2))
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(2)
                            MOVE      3       TO     BUN-IDX3
                       END-IF
                    END-PERFORM
@@ -4384,14 +4433,8 @@
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
-                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3))
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(3)
                            MOVE      4       TO     BUN-IDX4
                       END-IF
                    END-PERFORM
@@ -5623,6 +5666,9 @@
                                                       OR "016")   AND
                   (RECE62-SRYYM             >=  "200304"      ))
              OR  ((RECE62-KOHNUM(KOHFTN-IDX) =  "051"         )   AND
+                  (RECE62-SRYYM             >=  "200310"      ))
+             OR  ((WRK-PREFNUM               =  "13"          )   AND
+                  (RECE62-KOHNUM(KOHFTN-IDX) =  "151" OR "451")   AND
                   (RECE62-SRYYM             >=  "200310"      ))
       *
                 COMPUTE  WRK-FTNKEI2 = RECE62-FTNMONEY(KOHFTN-IDX + 1)

@@ -40,6 +40,8 @@
       *  01.00.08    NACL-藤原    03.05.27  検査の適用欄の編集の修正
       *  01.00.09    NACL-藤原    03.06.30  薬剤・器材の剤点数が０のとき
       *                                     摘要欄に印刷しないように修正
+      *  01.00.10    NACL-門脇    03.09.29  点数マスタを読み込まないよう
+      *                                     修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -152,7 +154,7 @@
            03  FLG-RECE65          PIC 9(01).
            03  FLG-SP              PIC 9(01).
            03  FLG-NOPRT           PIC 9(01).
-           03  FLG-TENSU           PIC 9(01).
+      **** 03  FLG-TENSU           PIC 9(01).
            03  FLG-TEIGEN          PIC 9(01).
            03  FLG-COMMENT         PIC 9(01).
            03  FLG-COMMENT2        PIC 9(01).
@@ -167,8 +169,6 @@
            03  CNT-RECE64          PIC 9(06).
            03  CNT-RECE65          PIC 9(06).
            03  CNT-RECE66          PIC 9(06).
-      *
-           03  CNT-SYOSIN-KASAN    PIC 9(02).
       *
       *    添字領域
        01  IDX-AREA.
@@ -196,6 +196,8 @@
            03  WRK-RECEERR         PIC X(200).
       *
            03  WRK-LINENUM         PIC 9(05).
+      *
+           03  WRK-TENSUGOKEI      PIC 9(07).
       *
       *    剤印字行数
            03  WRK-TBLMAX          PIC 9(03).
@@ -235,7 +237,6 @@
                05  WRK-X                       PIC X(02).
                05  WRK-ZAIKAISU                PIC X(06).
       *
-           03  WRK-ZAITEN-SYOSIN               PIC 9(08).
            03  WRK-ZAITENX                     PIC ZZZZZZ9.
            03  WRK-ZAIKAISUX                   PIC ZZ9.
            03  WRK-TNSKAI-ST                   PIC 9(02).
@@ -330,6 +331,8 @@
                    07  TBL-NAME            PIC  X(200).
       *        データ区分情報
                05  TBL-DATAKBN             PIC  9(01).
+      *        包括対象検査情報
+               05  TBL-HOUKNSKBN           PIC  9(02).
       *
       *     検査の項目数用
         01  WRK-KOUMOKUSU               PIC 9(02). 
@@ -359,6 +362,16 @@
        01  TBL-ZAIW-AREA.
       *    剤の先頭の診療コード
            03  TBL-ZAIW-SRYCD1             PIC X(09).
+      *    剤の先頭の診療コードの各種番号等情報
+           03  TBL-ZAIW-CDKBN-KBN          PIC X(01).
+           03  TBL-ZAIW-CDKBN-SYO          PIC 9(01).
+           03  TBL-ZAIW-CDKBN-BU           PIC 9(02).
+           03  TBL-ZAIW-CDKBN-KBNNUM       PIC 9(03).
+           03  TBL-ZAIW-CDKBN-KBNNUM-EDA   PIC 9(02).
+           03  TBL-ZAIW-CDKBN-KOUBAN       PIC 9(02).
+           03  TBL-ZAIW-KOUHYOJYUNNUM      PIC 9(09).
+      *    剤の先頭の診療コードの検査等実施判断情報
+           03  TBL-ZAIW-KNSJISKBN          PIC 9(01).
       *     
       *    診療行為別テーブル
       *    １：ユーザーコメント、２：コメント、
@@ -389,6 +402,9 @@
       *                データ区分情報
                    07  TBL-ZAIW-DATAKBNINF.
                        09  TBL-ZAIW-DATAKBN         PIC  9(01).
+      *                包括対象検査情報
+                   07  TBL-ZAIW-HOUKNSKBNINF.
+                       09  TBL-ZAIW-HOUKNSKBN       PIC  9(02).
       *
        01  TBL-ZAI-MAX         PIC  9(03)  VALUE   100.              
       *
@@ -569,7 +585,7 @@
            COPY    "CPJOBKANRI.INC".
       *
       *    点数
-           COPY    "CPTENSU.INC".
+      **** COPY    "CPTENSU.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -930,6 +946,22 @@
                          ELSE
                            MOVE    RECE65-SRYCD (IDX)
                                                  TO  TBL-ZAIW-SRYCD1 
+                           MOVE    RECE65-CDKBN-KBN(IDX)
+                                                 TO  TBL-ZAIW-CDKBN-KBN
+                           MOVE    RECE65-CDKBN-SYO(IDX)
+                                                 TO  TBL-ZAIW-CDKBN-SYO
+                           MOVE    RECE65-CDKBN-BU(IDX)
+                                                 TO  TBL-ZAIW-CDKBN-BU
+                           MOVE    RECE65-CDKBN-KBNNUM(IDX)
+                                         TO  TBL-ZAIW-CDKBN-KBNNUM
+                           MOVE    RECE65-CDKBN-KBNNUM-EDA(IDX)
+                                         TO  TBL-ZAIW-CDKBN-KBNNUM-EDA
+                           MOVE    RECE65-CDKBN-KOUBAN(IDX)
+                                         TO  TBL-ZAIW-CDKBN-KOUBAN
+                           MOVE    RECE65-KOUHYOJYUNNUM(IDX)
+                                         TO  TBL-ZAIW-KOUHYOJYUNNUM
+                           MOVE    RECE65-KNSJISKBN(IDX)
+                                         TO  TBL-ZAIW-KNSJISKBN
                            MOVE    1             TO  WRK-RECE65
                          END-IF
                        END-IF
@@ -946,6 +978,8 @@
                                      TO  TBL-ZAIW-NAMEINF   (IDY IDZ)
                        MOVE    RECE65-DATAKBNINF(IDX)
                                      TO  TBL-ZAIW-DATAKBNINF(IDY IDZ)
+                       MOVE    RECE65-HOUKNSKBNINF(IDX)
+                                     TO  TBL-ZAIW-HOUKNSKBNINF(IDY IDZ)
                        IF      RECE65-SRYCD (IDX) (1:1)
                                                  =   "1"
                        AND     RECE64-SRYKBN     =   "70"
@@ -1033,8 +1067,7 @@
       *    剤　明細テーブルチェック
            INITIALIZE                    TBL-ZAI-AREA
            MOVE    ZERO              TO  WRK-TBLMAX
-           MOVE    ZERO              TO  CNT-SYOSIN-KASAN
-           MOVE    ZERO              TO  WRK-ZAITEN-SYOSIN
+           MOVE    ZERO              TO  WRK-TENSUGOKEI
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       1  
@@ -1051,6 +1084,9 @@
            END-PERFORM    
       *
            IF  WRK-TBLMAX           >   ZERO
+               IF  WRK-TBLMAX       NOT =   RECE64-MEISAISU
+                   PERFORM 400-TENSU-SAIKEISAN-SEC
+               END-IF
       *        点数・回数セット処理
                MOVE    WRK-TBLMAX       TO  IDY
                PERFORM 440-TNSKAI-SET-SEC
@@ -1075,34 +1111,10 @@
                MOVE    1             TO  FLG-NOPRT
            END-IF
       *
-      *    診療行為テーブルに存在した場合、印字しないこと
-           PERFORM   VARYING   IDY   FROM    1   BY  1
-                     UNTIL   ( IDY           >   TBL-NOSRYCD-MAX )
-                     OR      ( FLG-NOPRT     =    1              )
-      *
-               IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                                             =   TBL-NOSRYCD (IDY)
-                   MOVE    1                 TO  FLG-NOPRT
-      *            ＊初診の場合
-                   IF  TBL-NOSRYCD (IDY)     =   "111000110"
-                                             OR  "111003610"
-                                             OR  "111700110"
-                                             OR  "111700210"
-      *                一つの剤に他の明細も存在する場合
-                       IF  RECE64-MEISAISU       >   1
-                           MOVE    ZERO          TO  FLG-NOPRT
-                       END-IF
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
       *    初診加算の時だけ印刷＋検診
-           IF      FLG-NOPRT                 =   ZERO
-               IF    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
+           IF    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                                             =   WRK-CONS-SYOSIN-KASAN1
                                             OR  WRK-CONS-SYOSIN-KASAN2
-      ***                                   OR  WRK-CONS-SYOSIN-KASAN3
-      ***                                   OR  WRK-CONS-SYOSIN-KASAN4
                                             OR  WRK-CONS-SYOSIN-KASAN5
                                             OR  WRK-CONS-SYOSIN-KASAN6
                                             OR  WRK-CONS-SYOSIN-KASAN7
@@ -1124,52 +1136,22 @@
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
                                             OR  CONS-COMMENT8         )
-               OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  = "8")
-      *
-                   IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)             
-                                             =   WRK-CONS-SYOSIN-KASAN1 
-                                             OR  WRK-CONS-SYOSIN-KASAN2 
-      ***                                    OR  WRK-CONS-SYOSIN-KASAN3 
-      ***                                    OR  WRK-CONS-SYOSIN-KASAN4 
-                                             OR  WRK-CONS-SYOSIN-KASAN5 
-                                             OR  WRK-CONS-SYOSIN-KASAN6 
-                                             OR  WRK-CONS-SYOSIN-KASAN7 
-                                             OR  WRK-CONS-SYOSIN-KASAN8 
-                                             OR  WRK-CONS-SYOSIN-KASAN9 
-                                             OR  WRK-CONS-SYOSIN-KASAN10
-                                             OR  WRK-CONS-SYOSIN-KASAN11
-                                             OR  WRK-CONS-SYOSIN-KASAN12
-                                             OR  WRK-CONS-SYOSIN-KASAN13
-                                             OR  WRK-CONS-SYOSIN-KASAN14
-                                             OR  WRK-CONS-SYOSIN-KASAN15
-                                             OR  WRK-CONS-SYOSIN-KASAN16
-                                             OR  WRK-CONS-SYOSIN-KASAN17
-                                             OR  WRK-CONS-SYOSIN-KASAN18
-                                             OR  WRK-CONS-SYOSIN-KASAN19
-                                             OR  WRK-CONS-SYOSIN-KASAN20
-                                             OR  WRK-CONS-SYOSIN-KASAN21
-                        ADD      1           TO  CNT-SYOSIN-KASAN       
-                   END-IF                                               
-      *
-                   MOVE    TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                                             TO  TNS-SRYCD
-                   MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
-                   MOVE    RECE64-SRYYM      TO  ORC-DBYMD(1:6)
-                   MOVE    "01"              TO  ORC-DBYMD(7:2)
-                   PERFORM 900-TENSU-INV-SEC
-      *            点数・回数セット
-                   IF    TNS-TEN  NOT =  ZERO
-                     ADD     TNS-TEN           TO  WRK-ZAITEN-SYOSIN
-                     MOVE    WRK-ZAITEN-SYOSIN TO  WRK-ZAITENX
-      ***************MOVE    TNS-TEN           TO  WRK-ZAITENX
-                     MOVE    RECE64-ZAIKAISU   TO  WRK-ZAIKAISUX
-      *              必要有効桁数・開始位置・回数編集
-                     PERFORM 810-TENSUKAI-HEN-SEC
-                   END-IF
-               ELSE    
+           OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  = "8" AND    
+                  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)   
+                                                     NOT = "830000020")
+                   CONTINUE
+           ELSE
                    MOVE    1                 TO  FLG-NOPRT
+           END-IF
+      *
+      *    識別が点数の場合
+           IF  FLG-NOPRT                     =   ZERO
+               IF      TBL-ZAIW-TENSIKIBETU (WRK-WIDX1 WRK-WIDX2)
+                                             =   3
+                   ADD     TBL-ZAIW-TEN (WRK-WIDX1 WRK-WIDX2)
+                                             TO  WRK-TENSUGOKEI
                END-IF
-           END-IF                                          
+           END-IF
       *
            .
        20031-SRYKBN11-CHECK-EXT.
@@ -1224,6 +1206,7 @@
                MOVE    TBL-ZAIW-TANINAME(3 IDX)  TO  TBL-TANINAME(IDX)
                MOVE    TBL-ZAIW-SRYCD   (3 IDX)  TO  TBL-SRYCD   (IDX)
                MOVE    TBL-ZAIW-DATAKBN (3 IDX)  TO  TBL-DATAKBN (IDX)
+               MOVE    TBL-ZAIW-HOUKNSKBN(3 IDX) TO  TBL-HOUKNSKBN(IDX)
                IF      TBL-YUKOKETA (IDX)      =   ZERO
                    PERFORM VARYING IDZ FROM   200 BY  -1
                            UNTIL   IDZ <      1
@@ -1247,12 +1230,13 @@
            MOVE    1                 TO  IDX
                
            PERFORM UNTIL   IDX     >       WRK-KENSA-MAX
-               MOVE    TBL-SRYCD(IDX)       TO      TNS-SRYCD
-               MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-               MOVE    RECE64-SRYYM         TO      ORC-DBYMD(1:6)
-               MOVE    "01"                 TO      ORC-DBYMD(7:2)
-               PERFORM 900-TENSU-INV-SEC
-               IF      TNS-HOUKNSKBN        =   ZERO
+      ****     MOVE    TBL-SRYCD(IDX)       TO      TNS-SRYCD
+      ****     MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
+      ****     MOVE    RECE64-SRYYM         TO      ORC-DBYMD(1:6)
+      ****     MOVE    "01"                 TO      ORC-DBYMD(7:2)
+      ****     PERFORM 900-TENSU-INV-SEC
+      ****     IF      TNS-HOUKNSKBN        =   ZERO
+               IF      TBL-HOUKNSKBN(IDX)   =   ZERO
                    ADD     1                        TO  WRK-ZAIWMAX (3)
                    MOVE    WRK-ZAIWMAX (3)          TO  IDZ
                    MOVE    TBL-NAMEINF (IDX)   TO
@@ -1269,10 +1253,13 @@
                                     TBL-ZAIW-SRYCD   (3 IDZ)
                    MOVE    TBL-DATAKBN (IDX)   TO
                                     TBL-ZAIW-DATAKBN (3 IDZ)
+                   MOVE    TBL-HOUKNSKBN(IDX)  TO
+                                    TBL-ZAIW-HOUKNSKBN(3 IDZ)
                    ADD     1                   TO  IDX                     
                ELSE
                    IF      IDX             =   1
-                       MOVE    TNS-HOUKNSKBN    
+      ****             MOVE    TNS-HOUKNSKBN    
+                       MOVE    TBL-HOUKNSKBN(IDX)
                                            TO  WRK-TNS-HOUKNSKBN         
                    END-IF                                
                    MOVE    ZERO            TO  WRK-YUKOKETA
@@ -1485,13 +1472,14 @@
                                               OR  WRK-CONS-SAIKETSU3 
                    CONTINUE
                ELSE
-                   MOVE    TBL-ZAIW-SRYCD (3 1)
-                                             TO  TNS-SRYCD
-                   MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
-                   MOVE    RECE64-SRYYM      TO  ORC-DBYMD(1:6)
-                   MOVE    "01"              TO  ORC-DBYMD(7:2)
-                   PERFORM 900-TENSU-INV-SEC
-                   IF      TNS-KNSJISKBN     =   "2"
+      ****         MOVE    TBL-ZAIW-SRYCD (3 1)
+      ****                                   TO  TNS-SRYCD
+      ****         MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
+      ****         MOVE    RECE64-SRYYM      TO  ORC-DBYMD(1:6)
+      ****         MOVE    "01"              TO  ORC-DBYMD(7:2)
+      ****         PERFORM 900-TENSU-INV-SEC
+      ****         IF      TNS-KNSJISKBN     =   "2"
+                   IF      TBL-ZAIW-KNSJISKBN  =  "2"
                        CONTINUE
                    ELSE 
                        ADD     RECE64-ZAIKAISU   TO  WRK-KENSA-KAISU
@@ -1544,14 +1532,19 @@
                    PERFORM 2005-SRYKBNELSE-HENSYU-SEC
                ELSE    
       *        包括対象でないときまとめない         
-                   MOVE    TBL-ZAIW-SRYCD (3 1) TO      TNS-SRYCD
-                   MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-                   MOVE    RECE64-SRYYM         TO      ORC-DBYMD(1:6)
-                   MOVE    "01"                 TO      ORC-DBYMD(7:2)
-                   PERFORM 900-TENSU-INV-SEC
-                   IF      TNS-HOUKNSKBN        =   ZERO
+      ****         MOVE    TBL-ZAIW-SRYCD (3 1) TO      TNS-SRYCD
+      ****         MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
+      ****         MOVE    RECE64-SRYYM         TO      ORC-DBYMD(1:6)
+      ****         MOVE    "01"                 TO      ORC-DBYMD(7:2)
+      ****         PERFORM 900-TENSU-INV-SEC
+      ****         IF      TNS-HOUKNSKBN        =   ZERO
+      ****             PERFORM 2005-SRYKBNELSE-HENSYU-SEC
+      ****         ELSE    
+      ****             PERFORM 2006-SRYKBN60-TAIHI-SEC
+      ****         END-IF
+                   IF      TBL-ZAIW-HOUKNSKBN(3 1)  =   ZERO
                        PERFORM 2005-SRYKBNELSE-HENSYU-SEC
-                   ELSE    
+                   ELSE
                        PERFORM 2006-SRYKBN60-TAIHI-SEC
                    END-IF
                END-IF
@@ -1569,7 +1562,9 @@
            MOVE    RECE64-REC      TO  WRK-RECE64-REC (WRK-RECE64-MAX)
            MOVE    RECE64-DAY-AREA TO  WRK-RECE64-DAY-AREA
                                                       (WRK-RECE64-MAX)
-           MOVE    TNS-HOUKNSKBN   TO  WRK-RECE64-HOUKNSKBN
+      **** MOVE    TNS-HOUKNSKBN   TO  WRK-RECE64-HOUKNSKBN
+      ****                                            (WRK-RECE64-MAX)
+           MOVE    TBL-ZAIW-HOUKNSKBN(3 1) TO  WRK-RECE64-HOUKNSKBN
                                                       (WRK-RECE64-MAX)
            MOVE    RECE64-KOHBUNRI TO  WRK-RECE64-KOHBUNRI
                                                       (WRK-RECE64-MAX)
@@ -1737,6 +1732,23 @@
            END-PERFORM                        
            .
        2007-SRYKBN60-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数再計算処理
+      *****************************************************************
+       400-TENSU-SAIKEISAN-SEC    SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ZAI
+           MOVE    "＊"                TO  WRK-ZAI-MK
+      *    点数・回数セット
+           MOVE    WRK-TENSUGOKEI      TO  WRK-ZAITENX
+           MOVE    RECE64-ZAIKAISU     TO  WRK-ZAIKAISUX
+      *    必要有効桁数・開始位置・回数編集
+           PERFORM 810-TENSUKAI-HEN-SEC
+      *
+           .
+       400-TENSU-SAIKEISAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2063,7 +2075,6 @@
            ADD     1                 TO  WRK-TBLMAX
            IF  WRK-TBLMAX           >   100
                DISPLAY "*** ORCR0690 TBL-ZAI INDEX[100] OVER  ***"
-      *         ACCEPT   WRK-IN       FROM    CONSOLE
            END-IF
            MOVE    WRK-ZAI           TO  TBL-ZAI (WRK-TBLMAX)
            IF      RECE64-SRYKBN      =  "33"
@@ -2093,7 +2104,7 @@
            END-IF                                                      
            IF     (FLG-COMMENT3       =    1  )   AND                  
                   (RECE64-SRYKBN      =   "11")   AND                  
-                  (CNT-SYOSIN-KASAN   =   ZERO)                        
+                  (WRK-TENSUGOKEI     =   ZERO)
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF                                                      
            IF     (FLG-COMMENT3       =    1          )   AND
@@ -2123,7 +2134,6 @@
                ADD     1                 TO  IDY
                IF  IDY                   >   100
                    DISPLAY "*** ORCR0690 TBL-ZAI INDEX[100] OVER  ***"
-      *             ACCEPT   WRK-IN       FROM    CONSOLE
                END-IF
                MOVE    SPACE             TO  WRK-ZAI
                MOVE    WRK-TNSKAI        TO  WRK-ZAI-TNSKAI
@@ -2253,47 +2263,67 @@
       *---------適用欄並び替え用の編集（表用番号等）-----------------
                IF      IDY               =   1
       *
-                 INITIALIZE                           TNS-TENSU-REC
+      ****       INITIALIZE                           TNS-TENSU-REC
                  IF        TBL-ZAIW-SRYCD1(1:1)  =   "6"  OR  "7"
                      MOVE    ALL "9"            TO
-                                            TNS-CDKBN-KBN
-                                            TNS-CDKBN-SYO 
-                                            TNS-CDKBN-BU
-                                            TNS-CDKBN-KBNNUM
-                                            TNS-CDKBN-KBNNUM-EDA
-                                            TNS-CDKBN-KOUBAN 
-                                            TNS-KOUHYOJYUNNUM
-                 ELSE  
-                     MOVE    TBL-ZAIW-SRYCD1   TO  TNS-SRYCD
-                     MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
-                     MOVE    RECE64-SRYYM      TO  ORC-DBYMD(1:6)
-                     MOVE    "01"              TO  ORC-DBYMD(7:2)
-                     PERFORM 900-TENSU-INV-SEC
-                     IF      FLG-TENSU            =       1
-                         INITIALIZE               TNS-TENSU-REC
-                     END-IF
+      ****                                  TNS-CDKBN-KBN
+      ****                                  TNS-CDKBN-SYO 
+      ****                                  TNS-CDKBN-BU
+      ****                                  TNS-CDKBN-KBNNUM
+      ****                                  TNS-CDKBN-KBNNUM-EDA
+      ****                                  TNS-CDKBN-KOUBAN 
+      ****                                  TNS-KOUHYOJYUNNUM
+                                            TBL-ZAIW-CDKBN-KBN
+                                            TBL-ZAIW-CDKBN-SYO
+                                            TBL-ZAIW-CDKBN-BU
+                                            TBL-ZAIW-CDKBN-KBNNUM
+                                            TBL-ZAIW-CDKBN-KBNNUM-EDA
+                                            TBL-ZAIW-CDKBN-KOUBAN
+                                            TBL-ZAIW-KOUHYOJYUNNUM
+      ****       ELSE  
+      ****           MOVE    TBL-ZAIW-SRYCD1   TO  TNS-SRYCD
+      ****           MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
+      ****           MOVE    RECE64-SRYYM      TO  ORC-DBYMD(1:6)
+      ****           MOVE    "01"              TO  ORC-DBYMD(7:2)
+      ****           PERFORM 900-TENSU-INV-SEC
+      ****           IF      FLG-TENSU            =       1
+      ****               INITIALIZE               TNS-TENSU-REC
+      ****           END-IF
                  END-IF
                END-IF
-               MOVE    TNS-CDKBN-SYO       TO  RECE66-CDKBN-SYO
-               MOVE    TNS-CDKBN-BU        TO  RECE66-CDKBN-BU
-               MOVE    TNS-CDKBN-KBN       TO  RECE66-CDKBN-KBN
-               MOVE    TNS-CDKBN-KBNNUM    TO  RECE66-CDKBN-KBNNUM
-               MOVE    TNS-CDKBN-KBNNUM-EDA
+      ****     MOVE    TNS-CDKBN-SYO       TO  RECE66-CDKBN-SYO
+      ****     MOVE    TNS-CDKBN-BU        TO  RECE66-CDKBN-BU
+      ****     MOVE    TNS-CDKBN-KBN       TO  RECE66-CDKBN-KBN
+      ****     MOVE    TNS-CDKBN-KBNNUM    TO  RECE66-CDKBN-KBNNUM
+      ****     MOVE    TNS-CDKBN-KBNNUM-EDA
+      ****                                 TO  RECE66-CDKBN-KBNNUM-EDA
+      ****     MOVE    TNS-CDKBN-KOUBAN    TO  RECE66-CDKBN-KOUBAN
+               MOVE    TBL-ZAIW-CDKBN-SYO  TO  RECE66-CDKBN-SYO
+               MOVE    TBL-ZAIW-CDKBN-BU   TO  RECE66-CDKBN-BU
+               MOVE    TBL-ZAIW-CDKBN-KBN  TO  RECE66-CDKBN-KBN
+               MOVE    TBL-ZAIW-CDKBN-KBNNUM
+                                           TO  RECE66-CDKBN-KBNNUM
+               MOVE    TBL-ZAIW-CDKBN-KBNNUM-EDA
                                            TO  RECE66-CDKBN-KBNNUM-EDA
-               MOVE    TNS-CDKBN-KOUBAN    TO  RECE66-CDKBN-KOUBAN
+               MOVE    TBL-ZAIW-CDKBN-KOUBAN
+                                           TO  RECE66-CDKBN-KOUBAN
                IF      RECE64-SRYKBN           =   "21"
                AND     TBL-ZAIW-SRYCD1     NOT =   CONS-TEIGEN
                    CONTINUE
                ELSE
-                   MOVE    TNS-KOUHYOJYUNNUM
+      ****         MOVE    TNS-KOUHYOJYUNNUM
+                   MOVE    TBL-ZAIW-KOUHYOJYUNNUM
                                            TO  RECE66-KOUHYOJUNNUM
                END-IF
       *
       *--------------------------------------------------------------
                MOVE    RECE64-ZAITEN     TO  RECE66-ZAITEN
       *
-               IF      TNS-SRYKBN        =   "60"
-                       MOVE   TNS-KNSJISKBN  TO  RECE66-KNSJISKBN
+      ****     IF      TNS-SRYKBN        =   "60"
+               IF      RECE64-SRYKBN     =   "60"
+      ****             MOVE   TNS-KNSJISKBN  TO  RECE66-KNSJISKBN
+                       MOVE   TBL-ZAIW-KNSJISKBN
+                                             TO  RECE66-KNSJISKBN
                ELSE
                        MOVE   ZERO           TO  RECE66-KNSJISKBN
                END-IF
@@ -2517,43 +2547,43 @@
       *****************************************************************
       *    点数マスター読込（キー）
       *****************************************************************
-       900-TENSU-INV-SEC         SECTION.
+      * 900-TENSU-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-TENSU
-                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-               ELSE
-                   INITIALIZE                  TNS-TENSU-REC
-                   MOVE    1                   TO  FLG-TENSU
-               END-IF
-           ELSE
-               INITIALIZE                  TNS-TENSU-REC
-               MOVE    1                   TO  FLG-TENSU
-           END-IF
+      *     MOVE    "DBSELECT"          TO  MCP-FUNC
+      *     MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+      *     CALL    "ORCMCPSUB"          USING
+      *                                  MCPAREA
+      *                                  ORCMCPAREA
+      *                                  MCPDATA-REC
+      *     IF      MCP-RC              =   ZERO
+      *         MOVE    "DBFETCH"           TO  MCP-FUNC
+      *         MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+      *         CALL    "ORCMCPSUB"          USING
+      *                                      MCPAREA
+      *                                      ORCMCPAREA
+      *                                      MCPDATA-REC
+      *         IF      MCP-RC              =   ZERO
+      *             MOVE    ZERO                TO  FLG-TENSU
+      *             MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+      *         ELSE
+      *             INITIALIZE                  TNS-TENSU-REC
+      *             MOVE    1                   TO  FLG-TENSU
+      *         END-IF
+      *     ELSE
+      *         INITIALIZE                  TNS-TENSU-REC
+      *         MOVE    1                   TO  FLG-TENSU
+      *     END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+      *     MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *     MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+      *     CALL    "ORCMCPSUB"          USING
+      *                                  MCPAREA
+      *                                  ORCMCPAREA
+      *                                  MCPDATA-REC
       *
-           .
-       900-TENSU-INV-EXT.
-           EXIT.
+      *     .
+      * 900-TENSU-INV-EXT.
+      *     EXIT.
       *
       *****************************************************************
       *    カーソルクローズ処理

@@ -62,6 +62,9 @@
       *
       *  レセ電機能追加
       *  01.02.01    NACL-藤原    03/08/05  外来レセ電処理の追加
+      *  01.00.31    NACL-藤原    03/10/07  福岡県の地方公費対応（国保）
+      *                                     県外扱いの保険者
+      *                                     ２７老人＋障害者医療
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -175,6 +178,8 @@
        01  INDEX-AREA.
            03  IDX                                     PIC 9(03). 
            03  IDX1                                    PIC 9(03). 
+           03  IDX2                                    PIC 9(03). 
+           03  IDX3                                    PIC 9(03). 
            03  IDY                                     PIC 9(03). 
            03  IDZ                                     PIC 9(03).
            03  TBL-MAX                                 PIC 9(03).
@@ -194,6 +199,7 @@
       *
        01  WRK-AREA.
            03  WRK-PARA.
+               05  WRK-PARA-PREFNUM                    PIC  X(02). 
                05  WRK-PARA-SRYYM                      PIC  X(06).
                05  WRK-PARA-TERMID                     PIC  X(16).
                05  WRK-PARA-SYSYMD                     PIC  X(08).
@@ -231,7 +237,24 @@
            03  WRK-YMD.
                05  WRK-YY              PIC 9(04).
                05  WRK-MM              PIC 9(02).
-               05  WRK-DD              PIC 9(02).     
+               05  WRK-DD              PIC 9(02).
+      * 
+           03  WRK-PREFKBN             PIC X(01).
+           03  WRK-PREFNUM             PIC X(02).
+           03  WRK-SYMD.
+               05  WRK-SYY         PIC 9(04).
+               05  WRK-SMM         PIC 9(02).
+               05  WRK-SDD         PIC 9(02).
+      *
+           03  WRK-1033-TABLE.
+               05  WRK-1033-TBL    OCCURS  5.
+                   07  WRK-1033-HKNJANUM-G.
+                       09  WRK-1033-HKNJANUM
+                                   PIC X(08) OCCURS  20.
+                   07  WRK-1033-STYUKYMD
+                                   PIC X(08).
+                   07  WRK-1033-EDYUKYMD 
+                                   PIC X(08).                                       
       *
       *    公費並替え用ワーク
            03  WRK-KOHI-AREA.
@@ -319,6 +342,9 @@
            COPY    "CPSK2001.INC".
       *    レセプト作成指示（個別指示）コード
            COPY    "CPSK2002.INC".
+      *     
+      *    県内扱い保険者情報
+           COPY    "CPSK1033.INC".
       *
       *    診療会計
        01  SRYACCT-REC.
@@ -358,6 +384,9 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    公費付加情報取得サブ
+           COPY    "CPORCSKOHPLUS.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -447,6 +476,47 @@
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
+      * 
+      *    県内扱い保険者情報
+           MOVE    SPACE           TO  WRK-1033-TABLE
+      *     
+           MOVE    SPACE           TO  SYS-1033-REC
+           INITIALIZE                  SYS-1033-REC
+           MOVE    "1033"          TO  SYS-1033-KANRICD
+           MOVE    "*"             TO  SYS-1033-KBNCD
+           MOVE    SYS-1033-REC    TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY5" TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "SYSKANRI-KEY5" TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM             UNTIL   FLG-SYSKANRI   =   1
+                               OR      IDX            >=  5
+               MOVE    MCPDATA-REC         TO  SYS-1033-REC
+               ADD     1                   TO  IDX
+               MOVE    SYS-1033-STYUKYMD   TO  WRK-1033-STYUKYMD   (IDX)
+               MOVE    SYS-1033-EDYUKYMD   TO  WRK-1033-EDYUKYMD   (IDX)
+               MOVE    SYS-1033-TBL        TO  WRK-1033-HKNJANUM-G (IDX)
+               MOVE    "SYSKANRI-KEY5" TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
       *
            OPEN    OUTPUT              RECE011-FILE
            CLOSE                       RECE011-FILE
@@ -896,22 +966,27 @@
       *****IF      COMB-HKNNUM         =   SPACE
       *****    MOVE    COMB-KOHI-AREA      TO  WRK-SEIKYU-TBL (1)
       *****ELSE        
-      *    地方公費のときレセプト請求区分を取得して判別
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       4
-                       OR      COMB-KOHHKNNUM (IDX)    
-                                               =   SPACE
-                   IF      COMB-KOHHKNNUM (IDX)(1:1)
-                                               >=  "1" AND <=  "8"
-                       INITIALIZE                      HKNNUM-REC
-                       MOVE    SYS-1001-HOSPID         TO  HKN-HOSPID
-                       MOVE    COMB-KOHHKNNUM (IDX)    TO  HKN-HKNNUM
-                       MOVE    WRK-SRYYMD              TO  HKN-TEKSTYMD
-                                                           HKN-TEKEDYMD
-                       MOVE    "00"                    TO  HKN-PAYKBN   
-                       MOVE    HKNNUM-REC              TO  MCPDATA-REC
-                       PERFORM 900-HKNNUM-INV-SEC
-      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+                   OR      COMB-KOHHKNNUM (IDX)    
+                                           =   SPACE
+      *        地方公費のときレセプト請求区分を取得して判別
+               IF      COMB-KOHHKNNUM (IDX)(1:1)
+                                           >=  "1" AND <=  "8"
+                   INITIALIZE                      HKNNUM-REC
+                   MOVE    SYS-1001-HOSPID         TO  HKN-HOSPID
+                   MOVE    COMB-KOHHKNNUM (IDX)    TO  HKN-HKNNUM
+                   MOVE    WRK-SRYYMD              TO  HKN-TEKSTYMD
+                                                       HKN-TEKEDYMD
+                   MOVE    "00"                    TO  HKN-PAYKBN   
+                   MOVE    HKNNUM-REC              TO  MCPDATA-REC
+                   PERFORM 900-HKNNUM-INV-SEC
+      *            福岡県の国保のとき（４１老人以外）
+                   IF    ( COMB-HKNNUM         =   "060"   OR  "067" )
+                   AND   ( WRK-PARA-PREFNUM    =   "40"              )
+                   AND   ( HKN-HBTNUM      NOT =   "41"              )    
+                       PERFORM 20011-PREFKBN-40-CHECK-SEC
+                   ELSE
                        IF      COMB-HKNNUM         =   "060"   OR  "067" 
                            IF      HKN-RECESKYKBN      =   "1" OR  "3"
                                MOVE    2                   TO  IDX1
@@ -925,25 +1000,26 @@
                                MOVE    1                   TO  IDX1
                            END-IF
                        END-IF
-                   ELSE
-                       MOVE    1                      TO  IDX1
-                   END-IF       
+                   END-IF
+               ELSE
+                   MOVE    1                      TO  IDX1
+               END-IF       
       *
-                   IF     IDX1                =   1
-                       ADD     1                      TO  IDY    
-                       MOVE    COMB-KOHHKNNUM (IDX)   TO 
+               IF     IDX1                =   1
+                   ADD     1                      TO  IDY    
+                   MOVE    COMB-KOHHKNNUM (IDX)   TO 
                                           WRK-SEIKYU-KOHHKNNUM(IDX1 IDY)
-                       MOVE    COMB-KOHID     (IDX)   TO
+                   MOVE    COMB-KOHID     (IDX)   TO
                                           WRK-SEIKYU-KOHID    (IDX1 IDY)
-                   ELSE
-                       ADD     1                      TO  IDZ    
-                       MOVE    COMB-KOHHKNNUM (IDX)   TO 
+               ELSE
+                   ADD     1                      TO  IDZ    
+                   MOVE    COMB-KOHHKNNUM (IDX)   TO 
                                           WRK-SEIKYU-KOHHKNNUM(IDX1 IDZ)
-                       MOVE    COMB-KOHID     (IDX)   TO
+                   MOVE    COMB-KOHID     (IDX)   TO
                                           WRK-SEIKYU-KOHID    (IDX1 IDZ)
-                       MOVE    1                      TO  FLG-KOH 
-                   END-IF  
-               END-PERFORM
+                   MOVE    1                      TO  FLG-KOH 
+               END-IF  
+           END-PERFORM
       *****END-IF           
       *
       *    レセプト明細書
@@ -969,6 +1045,82 @@
            END-IF   
            .
        20011-FILE-SYORI-EXT.
+           EXIT. 
+      *            
+      *****************************************************************
+      *    福岡県公費チェック処理
+      *****************************************************************
+       20011-PREFKBN-40-CHECK-SEC      SECTION.
+      *
+           MOVE    SPACE               TO  WRK-PREFKBN
+                                           WRK-PREFNUM
+      *
+      *    県外扱いの保険者はレセプトへ記載しない
+           IF      PTHKN-HKNJANUM (1:2)    =   "67"
+               MOVE    PTHKN-HKNJANUM (3:2)
+                                       TO  WRK-PREFNUM
+           ELSE
+               MOVE    PTHKN-HKNJANUM (1:2)
+                                       TO  WRK-PREFNUM
+           END-IF
+           IF      WRK-PREFNUM         =   WRK-PARA-PREFNUM
+               MOVE    "1"                 TO  WRK-PREFKBN
+           ELSE
+               IF      WRK-PARA-SYOKBN     =   "1"
+                   MOVE    SYS-2001-SRYYM      TO  WRK-SYMD (1:6)
+               ELSE
+                   MOVE    SYS-2002-SRYYM      TO  WRK-SYMD (1:6)
+               END-IF
+               MOVE    "01"            TO  WRK-SYMD (7:2)
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL   IDX2    >       5
+                       OR      WRK-1033-STYUKYMD (IDX2) =   SPACE
+                   IF      WRK-1033-STYUKYMD   (IDX2)  <=  WRK-SYMD
+                   AND     WRK-1033-EDYUKYMD   (IDX2)  >=  WRK-SYMD      
+                       PERFORM VARYING IDX3 FROM    1   BY  1
+                               UNTIL   IDX3 >       20
+                               OR      WRK-1033-HKNJANUM (IDX2 IDX3)
+                                                   =   SPACE
+                               OR      WRK-PREFKBN =   "1"     
+                           IF      PTHKN-HKNJANUM = 
+                                           WRK-1033-HKNJANUM (IDX2 IDX3)
+                               MOVE    "1"     TO  WRK-PREFKBN
+                           END-IF
+                       END-PERFORM
+                   END-IF            
+               END-PERFORM
+           END-IF
+      *        
+      *    県内扱いの場合、公費付加情報よりレセプト請求区分を取得
+           IF      WRK-PREFKBN      =   SPACE
+               MOVE    2                   TO  IDX1
+           ELSE
+               INITIALIZE                  ORCSKOHPLUS-AREA
+               MOVE    COMB-HOSPID         TO  LNK-SKOHPLUS-HOSPID
+               MOVE    WRK-PARA-PREFNUM    TO  LNK-SKOHPLUS-PREFNUM
+               MOVE    COMB-PTID           TO  LNK-SKOHPLUS-PTID
+               MOVE    COMB-HKNCOMBINUM    TO  LNK-SKOHPLUS-HKNCOMBI
+               IF      WRK-PARA-SYOKBN     =   "1"
+                   MOVE    SYS-2001-SRYYM  TO  LNK-SKOHPLUS-SRYYMD (1:6)
+               ELSE
+                   MOVE    SYS-2002-SRYYM  TO  LNK-SKOHPLUS-SRYYMD (1:6)
+               END-IF
+               MOVE    "01"             TO  LNK-SKOHPLUS-SRYYMD (7:2)  
+               CALL    "ORCSKOHPLUS"       USING
+                                           ORCSKOHPLUS-AREA
+               IF      LNK-SKOHPLUS-RC =   ZERO
+                   IF      LNK-SKOHPLUS-RECESKYKBN =   "1" OR  "3"
+                       MOVE    2                   TO  IDX1
+                   ELSE
+                       MOVE    1                   TO  IDX1
+                   END-IF
+               ELSE
+                   MOVE    1                   TO  IDX1
+               END-IF
+           END-IF
+      *
+           .
+       20011-PREFKBN-40-CHECK-EXT.
            EXIT. 
       *            
       *****************************************************************

@@ -45,6 +45,7 @@
       *  01.00.10    NACL-藤原    03/08/05  月内で保険者が変わったときの
       *                                     件数の集計方法を変更する
       *  01.00.11    NACL-藤原    03/08/17  続紙の対応
+      *  01.00.12    NACL-藤原    03/10/07  県番号４０で国保のときは処理しない
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1338,7 +1339,8 @@
            IF      FLG-SEIKYU          =   ZERO
                MOVE    MCPDATA-REC         TO  RECE10-REC
                MOVE    RECE10-RECESYUBETU  TO  KOHSKY-RECESYUBETU
-      *****ELSE
+           ELSE
+                GO  TO  2002-KOHSKY-WRITE-EXT
       *         STRING  "レセプト種別が設定不能 PTNUM="
       *                                     DELIMITED  BY  SIZE
       *                 RECE02X-PTNUM       DELIMITED  BY  SIZE 
@@ -1346,7 +1348,6 @@
       *         END-STRING
       *         PERFORM 500-ERR-HENSYU-SEC
       *         MOVE    1                  TO  FLG-ERR
-      **********GO  TO  2002-KOHSKY-WRITE-EXT
            END-IF
       *
            PERFORM 900-KOHSKY-INV-SEC
@@ -4507,8 +4508,9 @@
                        IF      RECE02-SRYYM        <   WRK-CONS-SRYYM
                            GO  TO  990-RECE02-READ-SEC
                        ELSE
-                           IF      WRK-PARA-PREFNUM    =   "06"
-                           AND     RECE02-TEISYUTUSAKI =   "2"
+                           IF    ( WRK-PARA-PREFNUM    =   "06" OR
+                                                           "40"    )
+                           AND   ( RECE02-TEISYUTUSAKI =   "2"     )
                                GO  TO  990-RECE02-READ-SEC
                            ELSE
                                ADD     1               TO  CNT-RECE02

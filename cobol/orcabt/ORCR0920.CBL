@@ -134,7 +134,7 @@
            03  FLG-RECE82          PIC 9(01).
            03  FLG-RECE84          PIC 9(01).
            03  FLG-RECE85          PIC 9(01).
-      ***  03  FLG-TENSU           PIC 9(01).                           XXX
+      ***  03  FLG-TENSU           PIC 9(01).
            03  FLG-SP              PIC 9(01).
            03  FLG-NOPRT           PIC 9(01).
            03  FLG-HENSYU          PIC 9(01).
@@ -271,7 +271,7 @@
            COPY    "CPJOBKANRI.INC".
       *
       *    点数
-      ***  COPY    "CPTENSU.INC".                                       XXX
+      ***  COPY    "CPTENSU.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -615,24 +615,24 @@
            MOVE    RECE84-ZAINUM     TO  RECE86-ZAINUM
            MOVE    WRK-LINENUM       TO  RECE86-LINENUM
       *---------適用欄並び替え用の編集（表用番号等）-----------------
-      ***  IF      IDY               =   1                              XXX
-      ***      INITIALIZE                           TNS-TENSU-REC       XXX
-      ***      MOVE    TBL-ZAI-SRYCD (1)    TO      TNS-SRYCD           XXX
-      ***      MOVE    TNS-TENSU-REC        TO      MCPDATA-REC         XXX
-      ***      MOVE    RECE84-SRYYM         TO      ORC-DBYMD(1:6)      XXX
-      ***      MOVE    "01"                 TO      ORC-DBYMD(7:2)      XXX
-      ***      PERFORM 900-TENSU-INV-SEC                                XXX
-      ***      IF      FLG-TENSU            =       1                   XXX
-      ***          INITIALIZE               TNS-TENSU-REC               XXX
-      ***      END-IF                                                   XXX
-      ***  END-IF                                                       XXX
+      ***  IF      IDY               =   1                           
+      ***      INITIALIZE                           TNS-TENSU-REC    
+      ***      MOVE    TBL-ZAI-SRYCD (1)    TO      TNS-SRYCD        
+      ***      MOVE    TNS-TENSU-REC        TO      MCPDATA-REC      
+      ***      MOVE    RECE84-SRYYM         TO      ORC-DBYMD(1:6)   
+      ***      MOVE    "01"                 TO      ORC-DBYMD(7:2)   
+      ***      PERFORM 900-TENSU-INV-SEC                             
+      ***      IF      FLG-TENSU            =       1                
+      ***          INITIALIZE               TNS-TENSU-REC            
+      ***      END-IF                                                
+      ***  END-IF                                                    
            IF ( RECE86-SRYKBN        =  "40"              ) AND         
               ( RECE86-SRYCD1(1:5)   =  "09593"           )             
               MOVE    999               TO  RECE86-NYUTENTTLKBN         
            ELSE                                                         
-      ***     MOVE    TNS-NYUTENTTLKBN  TO  RECE86-NYUTENTTLKBN         XXX
-              MOVE    TBL-ZAI-TENTTLKBN(1)                              XXX
-                                        TO  RECE86-NYUTENTTLKBN         XXX
+      ***     MOVE    TNS-NYUTENTTLKBN  TO  RECE86-NYUTENTTLKBN      
+              MOVE    TBL-ZAI-TENTTLKBN(1)                           
+                                        TO  RECE86-NYUTENTTLKBN      
            END-IF                                                       
       *
            WRITE   RECE86-REC
@@ -767,7 +767,7 @@
       *****************************************************************
       *    点数マスター読込（キー）
       *****************************************************************
-      * 900-TENSU-INV-SEC         SECTION.                              XXX
+      * 900-TENSU-INV-SEC         SECTION.                             
       *
       *     MOVE    "DBSELECT"          TO  MCP-FUNC
       *     MOVE    "TENSU-KEY"         TO  ORC-DBPATH

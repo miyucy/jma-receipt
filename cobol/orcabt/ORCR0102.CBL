@@ -59,6 +59,7 @@
       *                                     出力内容指定の処理の追加
       *　プレビュー機能追加
       *  01.03.01    NACL-藤原    03/07/07  プレビュー機能追加
+      *  01.03.02    NACL-藤原    03/10/09  福岡レセHCRCP400.redを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -190,6 +191,7 @@
            COPY    "HCN062.INC".
            COPY    "HCM09.INC".
            COPY    "HCRCP060.INC".
+           COPY    "HCRCP400.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -562,6 +564,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCRCP060
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCRCP060-RENNUM
                        MOVE    HCRCP060            TO  RECE08-PRTDATA
+                   WHEN    "HCRCP400.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCRCP400
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCRCP400-RENNUM
+                       MOVE    HCRCP400            TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
       *             
@@ -614,6 +620,7 @@
                WHEN    "HCM06V02.red"  ALSO    ANY                
                WHEN    "HCM09.red"     ALSO    ANY             
                WHEN    "HCRCP060.red"  ALSO    ANY                
+               WHEN    "HCRCP400.red"  ALSO    ANY                
                WHEN    "HCN061.red"    ALSO    "2"              
                WHEN    "HCN062.red"    ALSO    "2"              
                    MOVE    "医科レセプト（入院外）"    TO  SPRT-TITLE

@@ -45,6 +45,7 @@
       *  01.00.12    NACL-門脇    03.07.15  乳幼児・幼児のコメント編集
       *  01.00.13    NACL-門脇    03.08.20  公費受診日のコメント編集
       *  01.00.14    NACL-門脇    03.09.24  コメント編集修正
+      *  01.00.15    NACL-門脇    03.09.29  コメント編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -244,8 +245,6 @@
                05  WRK-SRYYM         PIC 9(06).
                05  WRK-SRYDD         PIC 9(02).
       *
-           03  WRK-SRYCD             PIC X(09).
-      *
        01  WRK-RECE04-REC. 
            COPY    "CPRCF004.INC"  REPLACING   //RECE04//
                                    BY          //WRK-RECE04//.
@@ -281,6 +280,24 @@
        01  WRK-DATAKBNINF-AREA.
            03  WRK-DATAKBNINF                  OCCURS 50.         
                05  WK-RECE05-DATAKBN         PIC  9(01).
+      *
+       01  WRK-HOUKNSKBNINF-AREA.
+           03  WRK-HOUKNSKBNINF                OCCURS 50.
+               05  WK-RECE05-HOUKNSKBN       PIC  9(02).
+      *
+       01  WRK-KNSJISKBNINF-AREA.
+           03  WRK-KNSJISKBNINF                OCCURS 50.
+               05  WK-RECE05-KNSJISKBN       PIC  9(01).
+      *
+       01  WRK-CDKBNINF-AREA.
+           03  WRK-CDKBNINF                    OCCURS 50.
+               05  WK-RECE05-CDKBN-KBN        PIC  X(01).
+               05  WK-RECE05-CDKBN-SYO        PIC  9(01).
+               05  WK-RECE05-CDKBN-BU         PIC  9(02).
+               05  WK-RECE05-CDKBN-KBNNUM     PIC  9(03).
+               05  WK-RECE05-CDKBN-KBNNUM-EDA PIC  9(02).
+               05  WK-RECE05-CDKBN-KOUBAN     PIC  9(02).
+               05  WK-RECE05-KOUHYOJYUNNUM    PIC  9(09).
       *
        01  WRK-FREE-AREA.
            03  WRK-FREEINF                     OCCURS 49.         
@@ -396,47 +413,6 @@
        01  CONST-AREA.
       *    慢性とう痛疾患
            03  CONS-MANSEI          PIC X(09) VALUE "113006510".
-      *    初診料算定科：
-           03  CONS-SYOSINSANTEIKA  PIC X(09) VALUE "830000020".
-      *    再診料算定科：
-           03  CONS-SAISINSANTEIKA  PIC X(09) VALUE "830000021".
-      *
-      *
-      *   再診（４回目以降／人工腎臓）診療行為テーブル
-       01  TBL-JINSAI4-AREA.
-           03  FILLER          PIC X(09)   VALUE   "112009510".
-           03  FILLER          PIC X(09)   VALUE   "112009610".
-           03  FILLER          PIC X(09)   VALUE   "112012610".
-           03  FILLER          PIC X(09)   VALUE   "112704010".
-           03  FILLER          PIC X(09)   VALUE   "112706610".
-           03  FILLER          PIC X(09)   VALUE   "112010450".
-           03  FILLER          PIC X(09)   VALUE   "112010550".
-           03  FILLER          PIC X(09)   VALUE   "112704750".
-           03  FILLER          PIC X(09)   VALUE   "112007710".
-           03  FILLER          PIC X(09)   VALUE   "112007810".
-           03  FILLER          PIC X(09)   VALUE   "112012310".
-           03  FILLER          PIC X(09)   VALUE   "112702610".
-           03  FILLER          PIC X(09)   VALUE   "112706310".
-           03  FILLER          PIC X(09)   VALUE   "112008650".
-           03  FILLER          PIC X(09)   VALUE   "112008750".
-           03  FILLER          PIC X(09)   VALUE   "112703350".
-      *
-       01  TBL-JINSAI4-R       REDEFINES   TBL-JINSAI4-AREA.
-            03  TBL-JINSAI4    PIC X(09)   OCCURS  16.       
-      *
-       01  TBL-JINSAI4-MAX     PIC 9(02)   VALUE   16.  
-      *
-      *
-      *   人工腎臓診療行為テーブル
-       01  TBL-JINZOU-AREA.
-           03  FILLER          PIC X(09)   VALUE    "140036710".
-           03  FILLER          PIC X(09)   VALUE    "140007710".
-      *
-       01  TBL-JINZOU-R        REDEFINES   TBL-JINZOU-AREA.
-            03  TBL-JINZOU     PIC X(09)   OCCURS   2.       
-      *
-       01  TBL-JINZOU-MAX      PIC 9(02)   VALUE    2.  
-      *
       *
       *   リハビリ診療行為テーブル
        01  TBL-RIHA-AREA.
@@ -473,168 +449,6 @@
             03  TBL-RIHA       PIC X(09)   OCCURS   28.       
       *
        01  TBL-RIHA-MAX        PIC 9(02)   VALUE    28.  
-      *
-      *
-      *   電話再診対象診療行為テーブル
-       01  TBL-DENWA-AREA.
-      *    電話等再診（診療所）（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112009750".
-      *    電話等再診（診療所）（２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112009850".
-      *    電話等再診（診療所）（４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112009950".
-      *    電話等再診（診療所）（４回目以降）(１５歳未満）
-           03  FILLER          PIC X(09)   VALUE   "112010050".
-      *    電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112012750".
-      *    老：電話等再診（診療所）（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112704150".
-      *    老：電話等再診（診療所）（２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112704250".
-      *    老：電話等再診（診療所）（４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112704350".
-      *    老：電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112706750".
-      *    同日電話等再診（診療所）（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112010650".
-      *    同日電話等再診（診療所）（２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112010750".
-      *    同日電話等再診（診療所）（４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112010850".
-      *    同日電話等再診（診療所）（４回目以降）(１５歳未満）
-           03  FILLER          PIC X(09)   VALUE   "112010950".
-      *    同日電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112012850".
-      *    老：同日電話等再診（診療所）（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112704850".
-      *    老：同日電話等再診（診療所）（２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112704950".
-      *    老：同日電話等再診（診療所）（４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112705050".
-      *    老：同日電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112706850".
-      *    電話等再診（病院）(１回目）
-           03  FILLER          PIC X(09)   VALUE   "112007950".
-      *    電話等再診（病院）(２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112008050".
-      *    電話等再診（病院）(４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112008150".
-      *    電話等再診（病院）(４回目以降）（１５歳未満）
-           03  FILLER          PIC X(09)   VALUE   "112008250".
-      *    電話等再診（病院）(４回目以降）（厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112012450".
-      *    老：電話等再診（病院）(１回目）
-           03  FILLER          PIC X(09)   VALUE   "112702750".
-      *    老：電話等再診（病院）(２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112702850".
-      *    老：電話等再診（病院）(４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112702950".
-      *    老：電話等再診（病院）(４回目以降）（厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112706450".
-      *    同日電話等再診（病院）(１回目）
-           03  FILLER          PIC X(09)   VALUE   "112008850".
-      *    同日電話等再診（病院）(２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112008950".
-      *    同日電話等再診（病院）(４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112009050".
-      *    同日電話等再診（病院）(４回目以降）（１５歳未満）
-           03  FILLER          PIC X(09)   VALUE   "112009150".
-      *    同日電話等再診（病院）(４回目以降）（厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112012550".
-      *    老：同日電話等再診（病院）(１回目）
-           03  FILLER          PIC X(09)   VALUE   "112703450".
-      *    老：同日電話等再診（病院）(２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112703550".
-      *    老：同日電話等再診（病院）(４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112703650".
-      *    老：同日電話等再診（病院）(４回目以降）（厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112706550".
-      *
-       01  TBL-DENWA-R         REDEFINES   TBL-DENWA-AREA.
-            03  TBL-DENWA      PIC X(09)   OCCURS   36.       
-      *
-       01  TBL-DENWA-MAX       PIC 9(02)   VALUE    36.  
-      *
-      *
-      *   同日再診対象診療行為テーブル
-       01  TBL-DOUJITU-AREA.
-      *    同日再診（診療所）（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112010150".
-      *    同日再診（診療所）（２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112010250".
-      *    同日再診（診療所）（４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112010350".
-      *    同日再診（診療所）（４回目以降）(１５歳未満）
-           03  FILLER          PIC X(09)   VALUE   "112010450".
-      *    同日再診（診療所）（４回目以降）(厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112010550".
-      *    老：同日再診（診療所）（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112704450".
-      *    老：同日再診（診療所）（２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112704550".
-      *    老：同日再診（診療所）（４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112704650".
-      *    老：同日再診（診療所）（４回目以降）(厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112704750".
-      *    同日電話等再診（診療所）（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112010650".
-      *    同日電話等再診（診療所）（２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112010750".
-      *    同日電話等再診（診療所）（４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112010850".
-      *    同日電話等再診（診療所）（４回目以降）(１５歳未満）
-           03  FILLER          PIC X(09)   VALUE   "112010950".
-      *    同日電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112012850".
-      *    老：同日電話等再診（診療所）（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112704850".
-      *    老：同日電話等再診（診療所）（２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112704950".
-      *    老：同日電話等再診（診療所）（４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112705050".
-      *    老：同日電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112706850".
-      *    同日電話等再診（病院）(１回目）
-           03  FILLER          PIC X(09)   VALUE   "112008850".
-      *    同日電話等再診（病院）(２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112008950".
-      *    同日電話等再診（病院）(４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112009050".
-      *    同日電話等再診（病院）(４回目以降）（１５歳未満）
-           03  FILLER          PIC X(09)   VALUE   "112009150".
-      *    同日電話等再診（病院）(４回目以降）（厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112012550".
-      *    老：同日電話等再診（病院）(１回目）
-           03  FILLER          PIC X(09)   VALUE   "112703450".
-      *    老：同日電話等再診（病院）(２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112703550".
-      *    老：同日電話等再診（病院）(４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112703650".
-      *    老：同日電話等再診（病院）(４回目以降）（厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112706550".
-      *    同日再診（病院）(１回目）
-           03  FILLER          PIC X(09)   VALUE   "112008350".
-      *    同日再診（病院）(２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112008450".
-      *    同日再診（病院）(４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112008550".
-      *    同日再診（病院）(４回目以降）（１５歳未満）
-           03  FILLER          PIC X(09)   VALUE   "112008650".
-      *    同日再診（病院）(４回目以降）（厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112008750".
-      *    老：同日再診（病院）(１回目）
-           03  FILLER          PIC X(09)   VALUE   "112703050".
-      *    老：同日再診（病院）(２回目又は３回目）
-           03  FILLER          PIC X(09)   VALUE   "112703150".
-      *    老：同日再診（病院）(４回目以降）
-           03  FILLER          PIC X(09)   VALUE   "112703250".
-      *    老：同日再診（病院）(４回目以降）（厚生労働大臣が定める者）
-           03  FILLER          PIC X(09)   VALUE   "112703350".
-      *
-       01  TBL-DOUJITU-R       REDEFINES   TBL-DOUJITU-AREA.
-            03  TBL-DOUJITU    PIC X(09)   OCCURS   36.       
-      *
-       01  TBL-DOUJITU-MAX     PIC 9(02)   VALUE    36.  
       *
       *    複数診療科受診の退避テーブル
        01  TBL-JUSHIN-INF.
@@ -855,26 +669,69 @@
                EVALUATE      RECE04-SRYKBN
                    WHEN      "11"
       *            （初診料算定科：のカウント）
-                      MOVE    CONS-SYOSINSANTEIKA  TO  WRK-SRYCD
-                      PERFORM    2001-SANTEIKA-COUNT-SEC
+                      IF  RECE04-SYOSANTEIKA-COMMENT  =  "1"
+                             ADD   RECE04-ZAIKAISU   TO   CNT-SANTEIKA
+                      END-IF
                    WHEN      "12"
       *            （再診料算定科：のカウント）
-                      MOVE    CONS-SAISINSANTEIKA  TO  WRK-SRYCD
-                      PERFORM    2001-SANTEIKA-COUNT-SEC
+                      IF  RECE04-SAISANTEIKA-COMMENT  =  "1"
+                             ADD   RECE04-ZAIKAISU   TO   CNT-SANTEIKA
+                      END-IF
       *
       *            （電話再診のカウント）
-                      PERFORM    2001-DENWA-COUNT-SEC
+                      IF  RECE04-DENWASAI-COMMENT     =  "1"
+                        COMPUTE  WRK-KOHBUNRI 
+                                   =    RECE04-KOHBUNRI  +  1
+                        ADD   RECE04-ZAIKAISU  
+                                   TO   CNT-DENWA(WRK-KOHBUNRI)
+                        MOVE  RECE04-HKNCOMBI
+                                   TO   TBL-COUNT-HKNCOMBI(WRK-KOHBUNRI)
+                      END-IF
       *            （同日再診のカウント）
-                      PERFORM    2001-DOUJITU-COUNT-SEC
+                      IF  RECE04-DOUJITUSAI-COMMENT   =  "1"
+                        COMPUTE  WRK-KOHBUNRI 
+                                   =    RECE04-KOHBUNRI  +  1
+                        ADD   RECE04-ZAIKAISU  
+                                   TO   CNT-DOUJITU(WRK-KOHBUNRI)
+                        MOVE  RECE04-HKNCOMBI
+                                   TO   TBL-COUNT-HKNCOMBI(WRK-KOHBUNRI)
+                      END-IF
       *
       *            （再診４回目のカウント）
-                      PERFORM    2001-SAISHIN4-COUNT-SEC
+                      IF  RECE04-SAIJINKO-COMMENT     =  "1"
+                      AND RECE04-JINKOJIN-COMMENT     =  "1"
+                        COMPUTE  WRK-KOHBUNRI 
+                                   =    RECE04-KOHBUNRI  +  1
+                        PERFORM  VARYING   IDX1  FROM  1  BY  1
+                                 UNTIL     IDX1  >   31
+                            IF   RECE04-KAISU(1 IDX1)  NOT = ZERO
+                                MOVE  "1"  TO  
+                                      WRK-SAISHIN4(WRK-KOHBUNRI IDX1)
+                            END-IF
+                        END-PERFORM
+                      END-IF
                    WHEN      "40"
       *            （人工腎臓のカウント）
-                      PERFORM    2001-JINZOU-COUNT-SEC
+                      IF  RECE04-SAIJINKO-COMMENT     =  "1"
+                      AND RECE04-JINKOJIN-COMMENT     =  "1"
+                        MOVE    RECE04-REC    TO      WRK-RECE04-REC
+                        COMPUTE  WRK-KOHBUNRI 
+                                   =    RECE04-KOHBUNRI  +  1
+                        PERFORM  VARYING   IDX1  FROM  1  BY  1
+                                 UNTIL     IDX1  >   31
+                            IF   RECE04-KAISU(1 IDX1)  NOT = ZERO
+                                 MOVE  "1"  TO  
+                                       WRK-JINZOU(WRK-KOHBUNRI IDX1)
+                            END-IF
+                        END-PERFORM
+                        MOVE   RECE04-HKNCOMBI  TO
+                                       WRK-JINZOU-HKNCOMBI(WRK-KOHBUNRI)
+                      END-IF
                    WHEN      "80"
       *            （リハビリのカウント）
-                      PERFORM    2001-RIHA-COUNT-SEC
+                      IF  RECE04-RIHABIRI-COMMENT     =  "1"
+                        PERFORM    2001-RIHA-COUNT-SEC
+                      END-IF
                END-EVALUATE
       *
                PERFORM 990-RECE04-NEXT-SEC
@@ -1049,6 +906,9 @@
                          ADD     1          TO      CNT-RECE04
                          PERFORM    2001-RECE05-TENSOU-SEC
                       END-IF
+                   WHEN      "14"
+      *            （訪問看護指示料算定日のセット）
+                      PERFORM    2001-HOUSIJI-HANTEI-SEC
                    WHEN      "50"
       *            （手術日のセット）
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
@@ -1098,56 +958,6 @@
       *
            .
        200-MAIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    算定科：のカウント
-      *****************************************************************
-       2001-SANTEIKA-COUNT-SEC          SECTION.
-      *
-           INITIALIZE                          SRYACT-REC
-           MOVE    RECE04-HOSPID       TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN    TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID         TO      SRY-PTID
-           MOVE    RECE04-SRYYM        TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM       TO      SRY-ZAINUM
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (1)
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (2)
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (3)
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (4)
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   ADD   RECE04-ZAIKAISU  
-                                 TO   CNT-SANTEIKA
-               END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           .
-       2001-SANTEIKA-COUNT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1482,122 +1292,6 @@
            EXIT.
       *
       *****************************************************************
-      *    電話再診のカウント
-      *****************************************************************
-       2001-DENWA-COUNT-SEC          SECTION.
-      *
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX           >   TBL-DENWA-MAX )
-      *
-              INITIALIZE                        SRYACT-REC
-              MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-              MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-              MOVE    RECE04-PTID       TO      SRY-PTID
-              MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-              MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-              MOVE    TBL-DENWA(IDX)    TO      SRY-SRYCD (1)
-              MOVE    TBL-DENWA(IDX)    TO      SRY-SRYCD (2)
-              MOVE    TBL-DENWA(IDX)    TO      SRY-SRYCD (3)
-              MOVE    TBL-DENWA(IDX)    TO      SRY-SRYCD (4)
-              MOVE    TBL-DENWA(IDX)    TO      SRY-SRYCD (5)
-      *
-              MOVE    SRYACT-REC        TO      MCPDATA-REC
-              MOVE    "DBSELECT"        TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-              IF  MCP-RC                =       ZERO
-                  MOVE    "DBFETCH"     TO      MCP-FUNC
-                  MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-                  CALL    "ORCMCPSUB"           USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                  IF      MCP-RC        =       ZERO
-                      COMPUTE  WRK-KOHBUNRI 
-                                 =    RECE04-KOHBUNRI  +  1
-                      ADD   RECE04-ZAIKAISU  
-                                 TO   CNT-DENWA(WRK-KOHBUNRI)
-                      MOVE  RECE04-HKNCOMBI
-                                 TO   TBL-COUNT-HKNCOMBI(WRK-KOHBUNRI)
-                  END-IF
-              END-IF
-      *
-              INITIALIZE                        MCPAREA
-              MOVE    "DBCLOSE"         TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           END-PERFORM
-           .
-       2001-DENWA-COUNT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    同日再診のカウント
-      *****************************************************************
-       2001-DOUJITU-COUNT-SEC          SECTION.
-      *
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX           >   TBL-DOUJITU-MAX )
-      *
-              INITIALIZE                        SRYACT-REC
-              MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-              MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-              MOVE    RECE04-PTID       TO      SRY-PTID
-              MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-              MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-              MOVE    TBL-DOUJITU(IDX)  TO      SRY-SRYCD (1)
-              MOVE    TBL-DOUJITU(IDX)  TO      SRY-SRYCD (2)
-              MOVE    TBL-DOUJITU(IDX)  TO      SRY-SRYCD (3)
-              MOVE    TBL-DOUJITU(IDX)  TO      SRY-SRYCD (4)
-              MOVE    TBL-DOUJITU(IDX)  TO      SRY-SRYCD (5)
-      *
-              MOVE    SRYACT-REC        TO      MCPDATA-REC
-              MOVE    "DBSELECT"        TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-              IF  MCP-RC                =       ZERO
-                  MOVE    "DBFETCH"     TO      MCP-FUNC
-                  MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-                  CALL    "ORCMCPSUB"           USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                  IF      MCP-RC        =       ZERO
-                      COMPUTE  WRK-KOHBUNRI 
-                                 =    RECE04-KOHBUNRI  +  1
-                      ADD   RECE04-ZAIKAISU  
-                                 TO   CNT-DOUJITU(WRK-KOHBUNRI)
-                      MOVE  RECE04-HKNCOMBI
-                                 TO   TBL-COUNT-HKNCOMBI(WRK-KOHBUNRI)
-                  END-IF
-              END-IF
-      *
-              INITIALIZE                        MCPAREA
-              MOVE    "DBCLOSE"         TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           END-PERFORM
-           .
-       2001-DOUJITU-COUNT-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    電話再診・同日複数再診のコメント編集
       *****************************************************************
        2001-DENWA-DOUJITU-COMMENT-SEC          SECTION.
@@ -1797,133 +1491,6 @@
       *
            .
        2001-DOUJITU-COMMENT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    再診４回目以降のカウント
-      *****************************************************************
-       2001-SAISHIN4-COUNT-SEC          SECTION.
-      *
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX           >   TBL-JINSAI4-MAX )
-      *
-              INITIALIZE                        SRYACT-REC
-              MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-              MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-              MOVE    RECE04-PTID       TO      SRY-PTID
-              MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-              MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (1)
-              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (2)
-              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (3)
-              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (4)
-              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (5)
-      *
-              MOVE    SRYACT-REC        TO      MCPDATA-REC
-              MOVE    "DBSELECT"        TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-              IF  MCP-RC                =       ZERO
-                  MOVE    "DBFETCH"     TO      MCP-FUNC
-                  MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-                  CALL    "ORCMCPSUB"           USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                  IF      MCP-RC        =       ZERO
-                      COMPUTE  WRK-KOHBUNRI 
-                                 =    RECE04-KOHBUNRI  +  1
-                      PERFORM  VARYING   IDX1  FROM  1  BY  1
-                               UNTIL     IDX1  >   31
-                          IF   RECE04-KAISU(1 IDX1)  NOT = ZERO
-                              MOVE  "1"  TO  
-                                    WRK-SAISHIN4(WRK-KOHBUNRI IDX1)
-                          END-IF
-                      END-PERFORM
-                  END-IF 
-              END-IF
-      *
-              INITIALIZE                        MCPAREA
-              MOVE    "DBCLOSE"         TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           END-PERFORM
-      *
-           .
-       2001-SAISHIN4-COUNT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    人工腎臓のカウント
-      *****************************************************************
-       2001-JINZOU-COUNT-SEC          SECTION.
-      *
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX           >   TBL-JINZOU-MAX )
-      *
-              INITIALIZE                        SRYACT-REC
-              MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-              MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-              MOVE    RECE04-PTID       TO      SRY-PTID
-              MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-              MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (1)
-              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (2)
-              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (3)
-              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (4)
-              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (5)
-      *
-              MOVE    SRYACT-REC        TO      MCPDATA-REC
-              MOVE    "DBSELECT"        TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-              IF  MCP-RC                =       ZERO
-                  MOVE    "DBFETCH"     TO      MCP-FUNC
-                  MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-                  CALL    "ORCMCPSUB"           USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                  IF      MCP-RC        =       ZERO
-                      MOVE    RECE04-REC    TO      WRK-RECE04-REC
-                      COMPUTE  WRK-KOHBUNRI 
-                                 =    RECE04-KOHBUNRI  +  1
-                      PERFORM  VARYING   IDX1  FROM  1  BY  1
-                               UNTIL     IDX1  >   31
-                          IF   RECE04-KAISU(1 IDX1)  NOT = ZERO
-                               MOVE  "1"  TO  
-                                     WRK-JINZOU(WRK-KOHBUNRI IDX1)
-                          END-IF
-                      END-PERFORM
-                      MOVE   RECE04-HKNCOMBI  TO
-                                     WRK-JINZOU-HKNCOMBI(WRK-KOHBUNRI)
-                  END-IF
-              END-IF
-      *
-              INITIALIZE                        MCPAREA
-              MOVE    "DBCLOSE"         TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           END-PERFORM
-      *
-           .
-       2001-JINZOU-COUNT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2411,6 +1978,18 @@
            MOVE    RECE05-DATAKBNINF(2) TO  RECE051-DATAKBNINF(3)
            MOVE    RECE05-DATAKBNINF(3) TO  RECE051-DATAKBNINF(4)
            MOVE    RECE05-DATAKBNINF(4) TO  RECE051-DATAKBNINF(5)
+           MOVE    RECE05-HOUKNSKBNINF(1) TO  RECE051-HOUKNSKBNINF(1)
+           MOVE    RECE05-HOUKNSKBNINF(2) TO  RECE051-HOUKNSKBNINF(3)
+           MOVE    RECE05-HOUKNSKBNINF(3) TO  RECE051-HOUKNSKBNINF(4)
+           MOVE    RECE05-HOUKNSKBNINF(4) TO  RECE051-HOUKNSKBNINF(5)
+           MOVE    RECE05-KNSJISKBNINF(1) TO  RECE051-KNSJISKBNINF(1)
+           MOVE    RECE05-KNSJISKBNINF(2) TO  RECE051-KNSJISKBNINF(3)
+           MOVE    RECE05-KNSJISKBNINF(3) TO  RECE051-KNSJISKBNINF(4)
+           MOVE    RECE05-KNSJISKBNINF(4) TO  RECE051-KNSJISKBNINF(5)
+           MOVE    RECE05-CDKBNINF(1)   TO  RECE051-CDKBNINF(1)
+           MOVE    RECE05-CDKBNINF(2)   TO  RECE051-CDKBNINF(3)
+           MOVE    RECE05-CDKBNINF(3)   TO  RECE051-CDKBNINF(4)
+           MOVE    RECE05-CDKBNINF(4)   TO  RECE051-CDKBNINF(5)
       *
            MOVE    SPACE                TO  RECE051-SRYACTINF(2)
            INITIALIZE                       RECE051-SRYACTINF(2)
@@ -2454,6 +2033,25 @@
       *
            .
        2001-RYOYO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    訪問看護指示料があるか判定
+      *****************************************************************
+       2001-HOUSIJI-HANTEI-SEC          SECTION.
+      *
+           IF     RECE04-FLG-HOUSIJI-COMMENT   =    "1"
+               MOVE       3       TO     FLG-COMMENT
+               PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+           ELSE
+               MOVE       RECE04-REC    TO   RECE041-REC
+               WRITE      RECE041-REC
+               ADD     1          TO      CNT-RECE04
+               PERFORM    2001-RECE05-TENSOU-SEC
+           END-IF
+      *
+           .
+       2001-HOUSIJI-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2536,6 +2134,12 @@
            INITIALIZE                       WRK-NAMEINF-AREA
            MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
            INITIALIZE                       WRK-DATAKBNINF-AREA
+           MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
+           INITIALIZE                       WRK-HOUKNSKBNINF-AREA
+           MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
+           INITIALIZE                       WRK-KNSJISKBNINF-AREA
+           MOVE    SPACE                TO  WRK-CDKBNINF-AREA
+           INITIALIZE                       WRK-CDKBNINF-AREA
       *
            MOVE    SPACE               TO  COM-RECE05-REC
            INITIALIZE                      COM-RECE05-REC
@@ -2576,6 +2180,12 @@
                                            WRK-NAMEINF(IDX-RECE05)     
                   MOVE   RECE05-DATAKBNINF(IDX) TO
                                            WRK-DATAKBNINF(IDX-RECE05)
+                  MOVE   RECE05-HOUKNSKBNINF(IDX) TO
+                                           WRK-HOUKNSKBNINF(IDX-RECE05)
+                  MOVE   RECE05-KNSJISKBNINF(IDX) TO
+                                           WRK-KNSJISKBNINF(IDX-RECE05)
+                  MOVE   RECE05-CDKBNINF(IDX)     TO
+                                           WRK-CDKBNINF(IDX-RECE05)
              END-PERFORM 
       *
              PERFORM 990-RECE05-NEXT-SEC
@@ -2612,6 +2222,12 @@
                                           TO   RECE051-NAMEINF(IDX)
                          MOVE  WRK-DATAKBNINF(IDX-RECE05)
                                           TO   RECE051-DATAKBNINF(IDX)
+                         MOVE  WRK-HOUKNSKBNINF(IDX-RECE05)
+                                          TO   RECE051-HOUKNSKBNINF(IDX)
+                         MOVE  WRK-KNSJISKBNINF(IDX-RECE05)
+                                          TO   RECE051-KNSJISKBNINF(IDX)
+                         MOVE  WRK-CDKBNINF(IDX-RECE05)
+                                          TO   RECE051-CDKBNINF(IDX)
                          ADD   1          TO   WRK-CNT-MEISAI
                      END-IF  
                   END-PERFORM
@@ -2670,6 +2286,12 @@
            INITIALIZE                       WRK-NAMEINF-AREA
            MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
            INITIALIZE                       WRK-DATAKBNINF-AREA
+           MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
+           INITIALIZE                       WRK-HOUKNSKBNINF-AREA
+           MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
+           INITIALIZE                       WRK-KNSJISKBNINF-AREA
+           MOVE    SPACE                TO  WRK-CDKBNINF-AREA
+           INITIALIZE                       WRK-CDKBNINF-AREA
       *
            MOVE    RECE04-MEISAISU      TO  MAX-MEISAISU
       *
@@ -2713,6 +2335,12 @@
                                            WRK-NAMEINF(IDX-RECE05)     
                   MOVE   RECE05-DATAKBNINF(IDX) TO
                                            WRK-DATAKBNINF(IDX-RECE05)
+                  MOVE   RECE05-HOUKNSKBNINF(IDX) TO
+                                           WRK-HOUKNSKBNINF(IDX-RECE05)
+                  MOVE   RECE05-KNSJISKBNINF(IDX) TO
+                                           WRK-KNSJISKBNINF(IDX-RECE05)
+                  MOVE   RECE05-CDKBNINF(IDX)     TO
+                                           WRK-CDKBNINF(IDX-RECE05)
              END-PERFORM 
       *
              PERFORM 990-RECE05-NEXT-SEC
@@ -2749,6 +2377,12 @@
                                           TO   RECE051-NAMEINF(IDX)
                          MOVE  WRK-DATAKBNINF(IDX-RECE05)
                                           TO   RECE051-DATAKBNINF(IDX)
+                         MOVE  WRK-HOUKNSKBNINF(IDX-RECE05)
+                                        TO   RECE051-HOUKNSKBNINF(IDX)
+                         MOVE  WRK-KNSJISKBNINF(IDX-RECE05)
+                                        TO   RECE051-KNSJISKBNINF(IDX)
+                         MOVE  WRK-CDKBNINF(IDX-RECE05)
+                                        TO   RECE051-CDKBNINF(IDX)
                          ADD   1          TO   WRK-CNT-MEISAI
                      END-IF  
                   END-PERFORM
@@ -2794,18 +2428,24 @@
            ADD      1          TO    IDZ
       *
            EVALUATE   FLG-COMMENT
-              WHEN    1
+               WHEN    1
                  MOVE     4          TO    WRK-KETA
                                            WRK-KETA-TAIHI
                  MOVE     2          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
                  MOVE    "手術"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
-              WHEN    2
+               WHEN    2
                  MOVE     4          TO    WRK-KETA
                                            WRK-KETA-TAIHI
                  MOVE     2          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
                  MOVE    "実施"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
+               WHEN    3
+                 MOVE     4          TO    WRK-KETA
+                                           WRK-KETA-TAIHI
+                 MOVE     2          TO    WRK-KETA2
+                 MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
+                 MOVE    "算定"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
                WHEN    4
                  MOVE     4          TO    WRK-KETA
                                            WRK-KETA-TAIHI
@@ -3008,6 +2648,12 @@
              INITIALIZE                       WRK-NAMEINF-AREA
              MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
              INITIALIZE                       WRK-DATAKBNINF-AREA
+             MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
+             INITIALIZE                       WRK-HOUKNSKBNINF-AREA
+             MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
+             INITIALIZE                       WRK-KNSJISKBNINF-AREA
+             MOVE    SPACE                TO  WRK-CDKBNINF-AREA
+             INITIALIZE                       WRK-CDKBNINF-AREA
       *      リハビリコメントの挿入
       *      ADD     1                    TO  IDX-RECE05
              MOVE    SPACE                TO  COM-RECE05-REC
@@ -3185,6 +2831,12 @@
                                              WRK-NAMEINF(IDX-RECE05)     
                     MOVE   RECE05-DATAKBNINF(IDX) TO
                                              WRK-DATAKBNINF(IDX-RECE05)
+                    MOVE   RECE05-HOUKNSKBNINF(IDX) TO
+                                           WRK-HOUKNSKBNINF(IDX-RECE05)
+                    MOVE   RECE05-KNSJISKBNINF(IDX) TO
+                                           WRK-KNSJISKBNINF(IDX-RECE05)
+                    MOVE   RECE05-CDKBNINF(IDX)     TO
+                                           WRK-CDKBNINF(IDX-RECE05)
                END-PERFORM 
       *
                PERFORM 990-RECE05-NEXT-SEC
@@ -3220,6 +2872,12 @@
                                             TO   RECE051-NAMEINF(IDX)
                            MOVE  WRK-DATAKBNINF(IDX-RECE05)
                                             TO   RECE051-DATAKBNINF(IDX)
+                           MOVE  WRK-HOUKNSKBNINF(IDX-RECE05)
+                                        TO   RECE051-HOUKNSKBNINF(IDX)
+                           MOVE  WRK-KNSJISKBNINF(IDX-RECE05)
+                                        TO   RECE051-KNSJISKBNINF(IDX)
+                           MOVE  WRK-CDKBNINF(IDX-RECE05)
+                                        TO   RECE051-CDKBNINF(IDX)
                        END-IF  
                     END-PERFORM
                     WRITE   RECE051-REC

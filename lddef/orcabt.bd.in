@@ -5,7 +5,6 @@ textsize	400;
 
 bind	"ORCR0010"	"OpenCOBOL";
 bind	"ORCR0020"	"OpenCOBOL";
-bind	"ORCR0025"	"OpenCOBOL";
 bind	"ORCR0030"	"OpenCOBOL";
 bind	"ORCR0035"	"OpenCOBOL";
 bind	"ORCR0038"	"OpenCOBOL";
@@ -149,5 +148,6 @@ bind	"ORCBPREV1"	"OpenCOBOL";
 bind	"ORCBPRT1"	"OpenCOBOL";
 bind	"ORCBPRVPRT"	"OpenCOBOL";
 bind	"ORCBM031"	"OpenCOBOL";
+bind	"ORCRCP400"	"OpenCOBOL";
 
 #include "orcadb.inc"

@@ -40,6 +40,7 @@
       *  01.00.06    NACL-門脇    03.06.19  複数診療科受診の編集修正
       *  01.00.07    NACL-門脇    03.08.20  公費受診日のコメント編集
       *  01.00.08    NACL-門脇    03.09.24  コメント編集修正
+      *  01.00.09    NACL-門脇    03.09.29  コメント編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -274,6 +275,24 @@
        01  WRK-DATAKBNINF-AREA.
            03  WRK-DATAKBNINF                  OCCURS 50.         
                05  WK-RECE65-DATAKBN         PIC  9(01).
+      *
+       01  WRK-HOUKNSKBNINF-AREA.
+           03  WRK-HOUKNSKBNINF                OCCURS 50.
+               05  WK-RECE65-HOUKNSKBN       PIC  9(02).
+      *
+       01  WRK-KNSJISKBNINF-AREA.
+           03  WRK-KNSJISKBNINF                OCCURS 50.
+               05  WK-RECE65-KNSJISKBN       PIC  9(01).
+      *
+       01  WRK-CDKBNINF-AREA.
+           03  WRK-CDKBNINF                    OCCURS 50.
+               05  WK-RECE65-CDKBN-KBN        PIC  X(01).
+               05  WK-RECE65-CDKBN-SYO        PIC  9(01).
+               05  WK-RECE65-CDKBN-BU         PIC  9(02).
+               05  WK-RECE65-CDKBN-KBNNUM     PIC  9(03).
+               05  WK-RECE65-CDKBN-KBNNUM-EDA PIC  9(02).
+               05  WK-RECE65-CDKBN-KOUBAN     PIC  9(02).
+               05  WK-RECE65-KOUHYOJYUNNUM    PIC  9(09).
       *
        01  WRK-FREE-AREA2.                                              
            03  WRK-FREEINF2                    OCCURS 50.               
@@ -607,7 +626,9 @@
                EVALUATE      RECE64-SRYKBN
                    WHEN      "80"
       *            （リハビリのカウント）
-                      PERFORM    2001-RIHA-COUNT-SEC
+                      IF  RECE64-RIHABIRI-COMMENT     =  "1"
+                         PERFORM    2001-RIHA-COUNT-SEC
+                      END-IF
                END-EVALUATE
       *
                PERFORM 990-RECE64-NEXT-SEC
@@ -704,6 +725,9 @@
                         ADD     1          TO      CNT-RECE64
                         PERFORM    2001-RECE65-TENSOU-SEC
                       END-IF
+                   WHEN      "14"
+      *            （訪問看護指示料算定日のセット）
+                      PERFORM    2001-HOUSIJI-HANTEI-SEC
                    WHEN      "50"
       *            （手術日のセット）
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
@@ -1310,6 +1334,25 @@
            EXIT.
       *
       *****************************************************************
+      *    訪問看護指示料があるか判定
+      *****************************************************************
+       2001-HOUSIJI-HANTEI-SEC          SECTION.
+      *
+           IF     RECE64-FLG-HOUSIJI-COMMENT   =    "1"
+               MOVE       3       TO     FLG-COMMENT
+               PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+           ELSE
+               MOVE       RECE64-REC    TO   RECE641-REC
+               WRITE      RECE641-REC
+               ADD     1          TO      CNT-RECE64
+               PERFORM    2001-RECE65-TENSOU-SEC
+           END-IF
+      *
+           .
+       2001-HOUSIJI-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    手術日のコメントがあるか判定
       *****************************************************************
        2001-SHUJUTSU-HANTEI-SEC          SECTION.
@@ -1405,6 +1448,18 @@
            MOVE    RECE65-DATAKBNINF(2) TO  RECE651-DATAKBNINF(3)
            MOVE    RECE65-DATAKBNINF(3) TO  RECE651-DATAKBNINF(4)
            MOVE    RECE65-DATAKBNINF(4) TO  RECE651-DATAKBNINF(5)
+           MOVE    RECE65-HOUKNSKBNINF(1) TO  RECE651-HOUKNSKBNINF(1)
+           MOVE    RECE65-HOUKNSKBNINF(2) TO  RECE651-HOUKNSKBNINF(3)
+           MOVE    RECE65-HOUKNSKBNINF(3) TO  RECE651-HOUKNSKBNINF(4)
+           MOVE    RECE65-HOUKNSKBNINF(4) TO  RECE651-HOUKNSKBNINF(5)
+           MOVE    RECE65-KNSJISKBNINF(1) TO  RECE651-KNSJISKBNINF(1)
+           MOVE    RECE65-KNSJISKBNINF(2) TO  RECE651-KNSJISKBNINF(3)
+           MOVE    RECE65-KNSJISKBNINF(3) TO  RECE651-KNSJISKBNINF(4)
+           MOVE    RECE65-KNSJISKBNINF(4) TO  RECE651-KNSJISKBNINF(5)
+           MOVE    RECE65-CDKBNINF(1)   TO  RECE651-CDKBNINF(1)
+           MOVE    RECE65-CDKBNINF(2)   TO  RECE651-CDKBNINF(3)
+           MOVE    RECE65-CDKBNINF(3)   TO  RECE651-CDKBNINF(4)
+           MOVE    RECE65-CDKBNINF(4)   TO  RECE651-CDKBNINF(5)
       *
            MOVE    SPACE                TO  RECE651-SRYACTINF(2)
            INITIALIZE                       RECE651-SRYACTINF(2)
@@ -1467,6 +1522,12 @@
            INITIALIZE                       WRK-NAMEINF-AREA
            MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
            INITIALIZE                       WRK-DATAKBNINF-AREA
+           MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
+           INITIALIZE                       WRK-HOUKNSKBNINF-AREA
+           MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
+           INITIALIZE                       WRK-KNSJISKBNINF-AREA
+           MOVE    SPACE                TO  WRK-CDKBNINF-AREA
+           INITIALIZE                       WRK-CDKBNINF-AREA
       *
            MOVE    SPACE               TO  COM-RECE65-REC
            INITIALIZE                      COM-RECE65-REC
@@ -1508,6 +1569,12 @@
                                            WRK-NAMEINF(IDX-RECE65)     
                   MOVE   RECE65-DATAKBNINF(IDX) TO
                                            WRK-DATAKBNINF(IDX-RECE65)
+                  MOVE   RECE65-HOUKNSKBNINF(IDX) TO
+                                           WRK-HOUKNSKBNINF(IDX-RECE65)
+                  MOVE   RECE65-KNSJISKBNINF(IDX) TO
+                                           WRK-KNSJISKBNINF(IDX-RECE65)
+                  MOVE   RECE65-CDKBNINF(IDX)     TO
+                                           WRK-CDKBNINF(IDX-RECE65)
              END-PERFORM 
       *
              PERFORM 990-RECE65-NEXT-SEC
@@ -1544,6 +1611,12 @@
                                           TO   RECE651-NAMEINF(IDX)
                          MOVE  WRK-DATAKBNINF(IDX-RECE65)
                                           TO   RECE651-DATAKBNINF(IDX)
+                         MOVE  WRK-HOUKNSKBNINF(IDX-RECE65)
+                                        TO   RECE651-HOUKNSKBNINF(IDX)
+                         MOVE  WRK-KNSJISKBNINF(IDX-RECE65)
+                                        TO   RECE651-KNSJISKBNINF(IDX)
+                         MOVE  WRK-CDKBNINF(IDX-RECE65)
+                                        TO   RECE651-CDKBNINF(IDX)
                          ADD   1          TO   WRK-CNT-MEISAI
                      END-IF  
                   END-PERFORM
@@ -1603,6 +1676,12 @@
            INITIALIZE                       WRK-NAMEINF-AREA
            MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
            INITIALIZE                       WRK-DATAKBNINF-AREA
+           MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
+           INITIALIZE                       WRK-HOUKNSKBNINF-AREA
+           MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
+           INITIALIZE                       WRK-KNSJISKBNINF-AREA
+           MOVE    SPACE                TO  WRK-CDKBNINF-AREA
+           INITIALIZE                       WRK-CDKBNINF-AREA
       *
            MOVE    RECE64-MEISAISU      TO  MAX-MEISAISU
       *
@@ -1647,6 +1726,12 @@
                                            WRK-NAMEINF(IDX-RECE65)     
                   MOVE   RECE65-DATAKBNINF(IDX) TO
                                            WRK-DATAKBNINF(IDX-RECE65)
+                  MOVE   RECE65-HOUKNSKBNINF(IDX) TO
+                                           WRK-HOUKNSKBNINF(IDX-RECE65)
+                  MOVE   RECE65-KNSJISKBNINF(IDX) TO
+                                           WRK-KNSJISKBNINF(IDX-RECE65)
+                  MOVE   RECE65-CDKBNINF(IDX)     TO
+                                           WRK-CDKBNINF(IDX-RECE65)
              END-PERFORM 
       *
              PERFORM 990-RECE65-NEXT-SEC
@@ -1683,6 +1768,12 @@
                                           TO   RECE651-NAMEINF(IDX)
                          MOVE  WRK-DATAKBNINF(IDX-RECE65)
                                           TO   RECE651-DATAKBNINF(IDX)
+                         MOVE  WRK-HOUKNSKBNINF(IDX-RECE65)
+                                        TO   RECE651-HOUKNSKBNINF(IDX)
+                         MOVE  WRK-KNSJISKBNINF(IDX-RECE65)
+                                        TO   RECE651-KNSJISKBNINF(IDX)
+                         MOVE  WRK-CDKBNINF(IDX-RECE65)
+                                        TO   RECE651-CDKBNINF(IDX)
                          ADD   1          TO   WRK-CNT-MEISAI
                      END-IF  
                   END-PERFORM
@@ -2136,6 +2227,12 @@
              INITIALIZE                       WRK-NAMEINF-AREA
              MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
              INITIALIZE                       WRK-DATAKBNINF-AREA
+             MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
+             INITIALIZE                       WRK-HOUKNSKBNINF-AREA
+             MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
+             INITIALIZE                       WRK-KNSJISKBNINF-AREA
+             MOVE    SPACE                TO  WRK-CDKBNINF-AREA
+             INITIALIZE                       WRK-CDKBNINF-AREA
       *      リハビリコメントの挿入
       *      ADD     1                    TO  IDX-RECE65
              MOVE    SPACE                TO  COM-RECE65-REC
@@ -2314,6 +2411,12 @@
                                              WRK-NAMEINF(IDX-RECE65)     
                     MOVE   RECE65-DATAKBNINF(IDX) TO
                                              WRK-DATAKBNINF(IDX-RECE65)
+                    MOVE   RECE65-HOUKNSKBNINF(IDX) TO
+                                           WRK-HOUKNSKBNINF(IDX-RECE65)
+                    MOVE   RECE65-KNSJISKBNINF(IDX) TO
+                                           WRK-KNSJISKBNINF(IDX-RECE65)
+                    MOVE   RECE65-CDKBNINF(IDX)     TO
+                                           WRK-CDKBNINF(IDX-RECE65)
                END-PERFORM 
       *
                PERFORM 990-RECE65-NEXT-SEC
@@ -2349,6 +2452,12 @@
                                             TO   RECE651-NAMEINF(IDX)
                            MOVE  WRK-DATAKBNINF(IDX-RECE65)
                                             TO   RECE651-DATAKBNINF(IDX)
+                           MOVE  WRK-HOUKNSKBNINF(IDX-RECE65)
+                                        TO   RECE651-HOUKNSKBNINF(IDX)
+                           MOVE  WRK-KNSJISKBNINF(IDX-RECE65)
+                                        TO   RECE651-KNSJISKBNINF(IDX)
+                           MOVE  WRK-CDKBNINF(IDX-RECE65)
+                                        TO   RECE651-CDKBNINF(IDX)
                        END-IF  
                     END-PERFORM
                     WRITE   RECE651-REC
@@ -2397,6 +2506,12 @@
            INITIALIZE                       WRK-NAMEINF-AREA
            MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
            INITIALIZE                       WRK-DATAKBNINF-AREA
+           MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
+           INITIALIZE                       WRK-HOUKNSKBNINF-AREA
+           MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
+           INITIALIZE                       WRK-KNSJISKBNINF-AREA
+           MOVE    SPACE                TO  WRK-CDKBNINF-AREA
+           INITIALIZE                       WRK-CDKBNINF-AREA
       *
            MOVE    RECE64-MEISAISU      TO  MAX-MEISAISU
       *
@@ -2459,6 +2574,12 @@
                                            WRK-NAMEINF(IDX-RECE65)     
                   MOVE   RECE65-DATAKBNINF(IDX) TO
                                            WRK-DATAKBNINF(IDX-RECE65)
+                  MOVE   RECE65-HOUKNSKBNINF(IDX) TO
+                                           WRK-HOUKNSKBNINF(IDX-RECE65)
+                  MOVE   RECE65-KNSJISKBNINF(IDX) TO
+                                           WRK-KNSJISKBNINF(IDX-RECE65)
+                  MOVE   RECE65-CDKBNINF(IDX)     TO
+                                           WRK-CDKBNINF(IDX-RECE65)
              END-PERFORM 
       *
              PERFORM 990-RECE65-NEXT-SEC
@@ -2495,6 +2616,12 @@
                                           TO   RECE651-NAMEINF(IDX)
                          MOVE  WRK-DATAKBNINF(IDX-RECE65)
                                           TO   RECE651-DATAKBNINF(IDX)
+                         MOVE  WRK-HOUKNSKBNINF(IDX-RECE65)
+                                        TO   RECE651-HOUKNSKBNINF(IDX)
+                         MOVE  WRK-KNSJISKBNINF(IDX-RECE65)
+                                        TO   RECE651-KNSJISKBNINF(IDX)
+                         MOVE  WRK-CDKBNINF(IDX-RECE65)
+                                        TO   RECE651-CDKBNINF(IDX)
                          ADD   1          TO   WRK-CNT-MEISAI
                      END-IF  
                   END-PERFORM

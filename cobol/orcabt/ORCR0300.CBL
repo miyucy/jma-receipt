@@ -49,6 +49,8 @@
       *                                     ¤ÎÁ´³Ñ¥Á¥§¥Ã¥¯ÄÉ²Ã
       *  01.00.10    NACL-Æ£¸¶    03/09/22  ºÆ¿Ç¤Î¤È¤­¤Î»þ´Ö³°¤ÎÊÔ½¸
       *  01.00.11    NACL-Æ£¸¶    03/09/30  »ÀÁÇ¤ÎÃ±²Á¤ÎÊÔ½¸
+      *  01.00.12    NACL-Æ£¸¶    03/10/10  ¥³¥á¥ó¥È¤ÎÌ¾¾ÎÊÔ½¸¤Î½¤Àµ
+      *  01.00.13    NACL-Æ£¸¶    03/10/15  ¿ÇÎÅÇ¯·î¤ÎÊÔ½¸¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -269,10 +271,6 @@
            03  WRK-KYURATE             PIC 9(03).
       *    ¥ì¥»¥×¥ÈÈÖ¹æ
            03  WRK-RECENUM             PIC 9(06).        
-      *    ÀÁµáÇ¯·î¡ÊÏÂÎñ¡Ë
-           03  WRK-SEIYM               PIC 9(05).         
-      *    ¿ÇÎÅÇ¯·î¡ÊÏÂÎñ¡Ë
-           03  WRK-SRYYM               PIC 9(05).         
       *       
            03  WRK-RENNUM              PIC 9(04).
       *
@@ -589,8 +587,6 @@
                                    JOBKANRI-REC
       *
            PERFORM 110-SYSKANRI-HENSYU-SEC
-      *
-           PERFORM 120-SKYYM-HENSYU-SEC
       *     
            MOVE    "RECE300"           TO  RECE30PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE30PARA-TERMID
@@ -674,20 +670,6 @@
            EXIT.
       * 
       *****************************************************************
-      *    ÀÁµáÇ¯·îÊÔ½¸½èÍý      
-      *****************************************************************
-       120-SKYYM-HENSYU-SEC      SECTION.
-      *
-           MOVE    WRK-PARA-SRYYM      TO  WRK-SYMD(1:6)
-           MOVE    "01"                TO  WRK-SYMD(7:2)
-           PERFORM 5002-HIZUKE-HEN-SEC
-           MOVE    WRK-HENYMD (1:5)    TO  WRK-SRYYM 
-      *    
-           .
-       120-SKYYM-HENSYU-EXT.
-           EXIT.
-      * 
-      *****************************************************************
       *    ¼ç½èÍý
       *****************************************************************
        200-MAIN-SEC                SECTION.
@@ -768,7 +750,10 @@
            MOVE    4                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ¿ÇÎÅÇ¯·î
-           MOVE    WRK-SRYYM           TO  WRK-DATA
+           MOVE    RECE02-SRYYM       TO  WRK-SYMD(1:6)
+           MOVE    "01"                TO  WRK-SYMD(7:2)
+           PERFORM 5002-HIZUKE-HEN-SEC
+           MOVE    WRK-HENYMD (1:5)    TO  WRK-DATA
            MOVE    5                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    »áÌ¾
@@ -1729,10 +1714,22 @@
                            INITIALIZE                  TNS-TENSU-REC
                            MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
                            PERFORM 900-TENSU-READ-SEC
-                           COMPUTE IDW =   TNS-YUKOKETA    *   2   +   1
-                           MOVE    PTCOM-INPUTCOMENT (IDW:)
+                           INITIALIZE              ORCSKANACHKAREA
+                           MOVE    "2"             TO  KANACHK-SYORI 
+                           MOVE    TNS-NAME        TO  KANACHK-MAE-INPUT
+                           CALL    "ORCSKANACHK"   USING
+                                                       ORCSKANACHKAREA
+                           IF    ( KANACHK-RC      =   ZERO )
+                           AND   ( KANACHK-MAX     >   ZERO )
+                               COMPUTE IDW =   KANACHK-MAX +   1
+                               MOVE    PTCOM-INPUTCOMENT (IDW:)
                                                    TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)
+                           ELSE
+                               MOVE    PTCOM-INPUTCOMENT
+                                                   TO
+                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
+                           END-IF
                        ELSE
                            MOVE    SPACE               TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)  

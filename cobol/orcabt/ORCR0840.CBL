@@ -438,6 +438,8 @@
            03  CONS-RYOYO-COMMENT    PIC X(09)  VALUE  "113004310".
       *    Âà±¡»þÉþÌô»ØÆ³²Ã»»
            03  CONS-TAIIN-COMMENT    PIC X(09)  VALUE  "113006270".
+      *    Ë¬Ìä´Ç¸î»Ø¼¨ÎÁ
+           03  CONS-HOUSIJI-COMMENT  PIC X(09)  VALUE  "114008010".
       *    ¼ê½ÑÆü¥³¥á¥ó¥È
            03  CONS-SHUJUTU-COMMENT  PIC X(09)  VALUE  "840000042".
       *    Æ¬ÉôÃ±½ã£Ã£Ô»£±Æ
@@ -2330,7 +2332,11 @@
                  END-IF
                END-IF                                                   
                MOVE    TNS-NYUTENTTLKBN   TO    RECE85-TENTTLKBN(IDX4)
-               MOVE    TNS-YUKOKETA       TO    RECE85-YUKOKETA(IDX4)
+               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
+                  MOVE ZERO               TO    RECE85-YUKOKETA(IDX4)
+               ELSE
+                  MOVE TNS-YUKOKETA       TO    RECE85-YUKOKETA(IDX4)
+               END-IF
                MOVE    TNS-DATAKBN        TO    RECE85-DATAKBN (IDX4)
                MOVE    TNS-HOUKNSKBN      TO    RECE85-HOUKNSKBN(IDX4)
                MOVE    TNS-KNSJISKBN      TO    RECE85-KNSJISKBN(IDX4)
@@ -2431,8 +2437,12 @@
                                               CONS-ROUCOM6  OR
                                               CONS-ROUCOM7      )
                       OR  ( SRY-SRYCD(1)    = CONS-ROUSAI2      )
-                      OR (( SRY-SRYCD(1)    = CONS-ROUSAI1      ) AND
-                          ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
+                      OR (( ACCT-SRYKBN     = "11"              ) AND
+                          ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ) AND
+                          ( SRY-SRYCD(IDX2) NOT = "830000020"   ))
+      *
+      **>             OR (( SRY-SRYCD(1)    = CONS-ROUSAI1      ) AND
+      **>                 ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
       *
                          ADD    1      TO    WRK-MEISAI-CNT             
                          MOVE  "2"     TO    RECE85-SIKFLG(IDX4)
@@ -2568,6 +2578,7 @@
                    RECE84-SRYKBN         =  "80"       )
            OR     (RECE82-HKNKBN         =  "4"    AND
                    RECE84-SRYKBN         =  "40"       )
+      *       ¥ê¥Ï¥Ó¥ê
               IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
                                             "180022210"   OR
                                             "180706810"   OR
@@ -2596,7 +2607,8 @@
                                             "180024810"   OR
                                             "180025110"   OR
                                             "180025010"   
-                        MOVE   "1"        TO    RECE82-COMCNTFLG
+                        MOVE   "1"    TO    RECE82-COMCNTFLG
+                        MOVE   "1"    TO    RECE84-RIHABIRI-COMMENT
               END-IF
            END-IF
       *
@@ -2619,6 +2631,12 @@
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-TAIIN-COMMENT
                    MOVE   "1"   TO    RECE84-FLG-TAIIN-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE84-SRYKBN      =     "14"
+              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI-COMMENT
+                   MOVE   "1"   TO    RECE84-FLG-HOUSIJI-COMMENT
               END-IF
            END-IF
       *

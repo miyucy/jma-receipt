@@ -42,6 +42,7 @@
       *  01.00.09    NACL-門脇    03.05.28  受診履歴キーの変更
       *  01.00.10    NACL-門脇    03.06.19  複数診療科受診の編集修正
       *  01.00.11    NACL-門脇    03.09.24  コメント編集修正
+      *  01.00.12    NACL-門脇    03.09.29  コメント編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -190,6 +191,7 @@
            03  CNT-RIHA            PIC 9(06).
            03  CNT-JUSHIN          PIC 9(06).
            03  CNT-SANTEIKA        PIC 9(06).
+           03  CNT-DOUJITU         PIC 9(06).
            03  CNT-IN-COMMIT       PIC 9(06).
       *
       *    添字領域
@@ -228,8 +230,6 @@
            03  WRK-SRYYMDX.
                05  WRK-SRYYM         PIC 9(06).
                05  WRK-SRYDD         PIC 9(02).
-      *
-           03  WRK-SRYCD             PIC X(09).
       *
        01  WRK-RECE44-REC. 
            COPY    "CPRCF044.INC"  REPLACING   //RECE44//
@@ -270,6 +270,24 @@
        01  WRK-DATAKBNINF-AREA.
            03  WRK-DATAKBNINF                  OCCURS 50.         
                05  WK-RECE45-DATAKBN         PIC  9(01).
+      *
+       01  WRK-HOUKNSKBNINF-AREA.
+           03  WRK-HOUKNSKBNINF                OCCURS 50.
+               05  WK-RECE45-HOUKNSKBN       PIC  9(02).
+      *
+       01  WRK-KNSJISKBNINF-AREA.
+           03  WRK-KNSJISKBNINF                OCCURS 50.
+               05  WK-RECE45-KNSJISKBN       PIC  9(01).
+      *
+       01  WRK-CDKBNINF-AREA.
+           03  WRK-CDKBNINF                    OCCURS 50.
+               05  WK-RECE45-CDKBN-KBN        PIC  X(01).
+               05  WK-RECE45-CDKBN-SYO        PIC  9(01).
+               05  WK-RECE45-CDKBN-BU         PIC  9(02).
+               05  WK-RECE45-CDKBN-KBNNUM     PIC  9(03).
+               05  WK-RECE45-CDKBN-KBNNUM-EDA PIC  9(02).
+               05  WK-RECE45-CDKBN-KOUBAN     PIC  9(02).
+               05  WK-RECE45-KOUHYOJYUNNUM    PIC  9(09).
       *
        01  WRK-FREE-AREA.
            03  WRK-FREEINF                     OCCURS 49.         
@@ -369,10 +387,6 @@
        01  CONST-AREA.
       *    慢性とう痛疾患
            03  CONS-MANSEI          PIC X(09) VALUE "113006510".
-      *    初診料算定科：
-           03  CONS-SYOSINSANTEIKA  PIC X(09) VALUE "830000020".
-      *    再診料算定科：
-           03  CONS-SAISINSANTEIKA  PIC X(09) VALUE "830000021".
       *
       *   リハビリ診療行為テーブル
        01  TBL-RIHA-AREA.
@@ -573,6 +587,7 @@
        200-MAIN-SEC                SECTION.
       *
            MOVE       ZERO             TO  CNT-SANTEIKA
+                                           CNT-DOUJITU
            INITIALIZE                      WRK-RIGAKU-AREA
            INITIALIZE                      WRK-TAIHI-ZAINUM
       *
@@ -609,29 +624,45 @@
                   EVALUATE      RECE44-SRYKBN
                       WHEN      "11"
       *               （初診料算定科：のカウント）
-                         MOVE    CONS-SYOSINSANTEIKA  TO  WRK-SRYCD
-                         PERFORM    2001-SANTEIKA-COUNT-SEC
+                         IF  RECE44-SYOSANTEIKA-COMMENT  =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
+                         END-IF
                       WHEN      "12"
       *               （再診料算定科：のカウント）
-                         MOVE    CONS-SAISINSANTEIKA  TO  WRK-SRYCD
-                         PERFORM    2001-SANTEIKA-COUNT-SEC
+                         IF  RECE44-SAISANTEIKA-COMMENT  =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
+                         END-IF
+      *               （同日再診のカウント）
+                         IF  RECE44-DOUJITUSAI-COMMENT   =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-DOUJITU
+                         END-IF
                       WHEN      "80"
       *               （リハビリのカウント）
-                         PERFORM    2001-RIHA-COUNT-SEC
+                         IF  RECE44-RIHABIRI-COMMENT     =  "1"
+                            PERFORM    2001-RIHA-COUNT-SEC              
+                         END-IF
                   END-EVALUATE
                ELSE                                                     
                   EVALUATE      RECE44-SRYKBN  
                       WHEN      "11"
       *               （初診料算定科：のカウント）
-                         MOVE    CONS-SYOSINSANTEIKA  TO  WRK-SRYCD
-                         PERFORM    2001-SANTEIKA-COUNT-SEC
+                         IF  RECE44-SYOSANTEIKA-COMMENT  =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
+                         END-IF
                       WHEN      "12"
       *               （再診料算定科：のカウント）
-                         MOVE    CONS-SAISINSANTEIKA  TO  WRK-SRYCD
-                         PERFORM    2001-SANTEIKA-COUNT-SEC
+                         IF  RECE44-SAISANTEIKA-COMMENT  =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
+                         END-IF
+      *               （同日再診のカウント）
+                         IF  RECE44-DOUJITUSAI-COMMENT   =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-DOUJITU
+                         END-IF
                       WHEN      "40"                                    
       *               （リハビリのカウント）                            
-                         PERFORM    2001-RIHA-COUNT-SEC                 
+                         IF  RECE44-RIHABIRI-COMMENT     =  "1"
+                            PERFORM    2001-RIHA-COUNT-SEC              
+                         END-IF
                   END-EVALUATE                                          
                END-IF                                                   
       *
@@ -703,6 +734,12 @@
       *
            END-IF
       *
+      *    同日複数再診
+      *
+           IF     CNT-DOUJITU     >   ZERO
+                PERFORM    2001-DOUJITU-COMMENT-SEC
+           END-IF
+      *
       *    パラメータ０４ファイルより編集
            INITIALIZE                      RECE44-REC
            MOVE    RECE41-HOSPID       TO  RECE44-HOSPID
@@ -753,6 +790,9 @@
                          ADD     1          TO      CNT-RECE44
                          PERFORM    2001-RECE45-TENSOU-SEC
                       END-IF
+                   WHEN      "14"
+      *            （訪問看護指示料算定日のセット）
+                      PERFORM    2001-HOUSIJI-HANTEI-SEC
                    WHEN      "50"
       *            （手術日のセット）
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
@@ -805,6 +845,9 @@
                          ADD     1          TO      CNT-RECE44
                          PERFORM    2001-RECE45-TENSOU-SEC
                       END-IF
+                   WHEN      "14"
+      *            （訪問看護指示料算定日のセット）
+                      PERFORM    2001-HOUSIJI-HANTEI-SEC
                    WHEN      "50"                                       
       *            （手術日のセット）                                   
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC               
@@ -852,56 +895,6 @@
       *
            .
        200-MAIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    算定科：のカウント
-      *****************************************************************
-       2001-SANTEIKA-COUNT-SEC          SECTION.
-      *
-           INITIALIZE                          SRYACT-REC
-           MOVE    RECE44-HOSPID       TO      SRY-HOSPID
-           MOVE    RECE44-NYUGAIKBN    TO      SRY-NYUGAIKBN
-           MOVE    RECE44-PTID         TO      SRY-PTID
-           MOVE    RECE44-SRYYM        TO      SRY-SRYYM
-           MOVE    RECE44-ZAINUM       TO      SRY-ZAINUM
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (1)
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (2)
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (3)
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (4)
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                         ADD    RECE44-ZAIKAISU  
-                                       TO   CNT-SANTEIKA
-               END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           .
-       2001-SANTEIKA-COUNT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1261,6 +1254,56 @@
            EXIT.
       *
       *****************************************************************
+      *    同日複数再診のコメント編集
+      *****************************************************************
+       2001-DOUJITU-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE441-REC
+           MOVE    RECE41-HOSPID       TO  RECE441-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE441-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE441-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE441-PTID
+           MOVE    RECE41-RECEKA       TO  RECE441-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE441-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE441-TEKSTYMD
+           MOVE    99999991            TO  RECE441-ZAINUM
+           MOVE    "99"                TO  RECE441-SRYKBN
+           MOVE    1                   TO  RECE441-MEISAISU
+      *
+           WRITE   RECE441-REC
+           ADD     1                   TO  CNT-RECE44
+      *
+           INITIALIZE                      RECE451-REC
+           MOVE    RECE41-HOSPID       TO  RECE451-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE451-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE451-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE451-PTID
+           MOVE    RECE41-RECEKA       TO  RECE451-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE451-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE451-TEKSTYMD
+           MOVE    99999991            TO  RECE451-ZAINUM
+           MOVE    "99"                TO  RECE451-SRYKBN
+      *    同日複数再診のコメントの挿入
+           MOVE    SPACE                TO  COM-RECE45-REC
+           INITIALIZE                       COM-RECE45-REC
+           MOVE    "840000002"          TO  COM-SRYCD(1)
+           MOVE    ZERO                 TO  COM-SRYSURYO(1)
+           MOVE    11                   TO  COM-YUKOKETA(1)
+           MOVE    "同日複数再診（　　回）"  TO COM-NAME(1)
+           MOVE    CNT-DOUJITU          TO  DAY-IDX
+           MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(15:4)
+           MOVE    "1"                  TO  COM-SIKFLG(1)
+           MOVE    COM-SRYACTINF(1)     TO  RECE451-SRYACTINF(1)
+           MOVE    COM-NAMEINF(1)       TO  RECE451-NAMEINF(1)
+           MOVE    COM-SIKFLG(1)        TO  RECE451-SIKFLGINF(1)
+           WRITE   RECE451-REC
+           ADD     1                    TO  CNT-RECE45
+      *
+           .
+       2001-DOUJITU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    リハビリのカウント
       *****************************************************************
        2001-RIHA-COUNT-SEC          SECTION.
@@ -1472,6 +1515,18 @@
            MOVE    RECE45-DATAKBNINF(2) TO  RECE451-DATAKBNINF(3)
            MOVE    RECE45-DATAKBNINF(3) TO  RECE451-DATAKBNINF(4)
            MOVE    RECE45-DATAKBNINF(4) TO  RECE451-DATAKBNINF(5)
+           MOVE    RECE45-HOUKNSKBNINF(1) TO  RECE451-HOUKNSKBNINF(1)
+           MOVE    RECE45-HOUKNSKBNINF(2) TO  RECE451-HOUKNSKBNINF(3)
+           MOVE    RECE45-HOUKNSKBNINF(3) TO  RECE451-HOUKNSKBNINF(4)
+           MOVE    RECE45-HOUKNSKBNINF(4) TO  RECE451-HOUKNSKBNINF(5)
+           MOVE    RECE45-KNSJISKBNINF(1) TO  RECE451-KNSJISKBNINF(1)
+           MOVE    RECE45-KNSJISKBNINF(2) TO  RECE451-KNSJISKBNINF(3)
+           MOVE    RECE45-KNSJISKBNINF(3) TO  RECE451-KNSJISKBNINF(4)
+           MOVE    RECE45-KNSJISKBNINF(4) TO  RECE451-KNSJISKBNINF(5)
+           MOVE    RECE45-CDKBNINF(1)   TO  RECE451-CDKBNINF(1)
+           MOVE    RECE45-CDKBNINF(2)   TO  RECE451-CDKBNINF(3)
+           MOVE    RECE45-CDKBNINF(3)   TO  RECE451-CDKBNINF(4)
+           MOVE    RECE45-CDKBNINF(4)   TO  RECE451-CDKBNINF(5)
       *
            MOVE    SPACE                TO  RECE451-SRYACTINF(2)
            INITIALIZE                       RECE451-SRYACTINF(2)
@@ -1523,6 +1578,25 @@
       *
            .
        2001-RYOYO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    訪問看護指示料があるか判定
+      *****************************************************************
+       2001-HOUSIJI-HANTEI-SEC          SECTION.
+      *
+           IF     RECE44-FLG-HOUSIJI-COMMENT   =    "1"
+               MOVE       3       TO     FLG-COMMENT
+               PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+           ELSE
+               MOVE       RECE44-REC    TO   RECE441-REC
+               WRITE      RECE441-REC
+               ADD     1          TO      CNT-RECE44
+               PERFORM    2001-RECE45-TENSOU-SEC
+           END-IF
+      *
+           .
+       2001-HOUSIJI-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1604,6 +1678,12 @@
            INITIALIZE                       WRK-SIKFLGINF-AREA
            MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
            INITIALIZE                       WRK-DATAKBNINF-AREA
+           MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
+           INITIALIZE                       WRK-HOUKNSKBNINF-AREA
+           MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
+           INITIALIZE                       WRK-KNSJISKBNINF-AREA
+           MOVE    SPACE                TO  WRK-CDKBNINF-AREA
+           INITIALIZE                       WRK-CDKBNINF-AREA
       *
            MOVE    SPACE               TO  COM-RECE45-REC
            INITIALIZE                      COM-RECE45-REC
@@ -1643,6 +1723,12 @@
                                            WRK-SIKFLGINF(IDX-RECE45)     
                   MOVE   RECE45-DATAKBNINF(IDX) TO
                                            WRK-DATAKBNINF(IDX-RECE45)
+                  MOVE   RECE45-HOUKNSKBNINF(IDX) TO
+                                           WRK-HOUKNSKBNINF(IDX-RECE45)
+                  MOVE   RECE45-KNSJISKBNINF(IDX) TO
+                                           WRK-KNSJISKBNINF(IDX-RECE45)
+                  MOVE   RECE45-CDKBNINF(IDX)     TO
+                                           WRK-CDKBNINF(IDX-RECE45)
              END-PERFORM 
       *
              PERFORM 990-RECE45-NEXT-SEC
@@ -1681,6 +1767,12 @@
                                           TO   RECE451-SIKFLGINF(IDX)
                          MOVE  WRK-DATAKBNINF(IDX-RECE45)
                                           TO   RECE451-DATAKBNINF(IDX)
+                         MOVE  WRK-HOUKNSKBNINF(IDX-RECE45)
+                                          TO   RECE451-HOUKNSKBNINF(IDX)
+                         MOVE  WRK-KNSJISKBNINF(IDX-RECE45)
+                                          TO   RECE451-KNSJISKBNINF(IDX)
+                         MOVE  WRK-CDKBNINF(IDX-RECE45)
+                                          TO   RECE451-CDKBNINF(IDX)
       *
                          IF    WRK-SIKFLGINF(IDX-RECE45)  =  "1"
                               ADD    1    TO   WRK-CNT-MEISAI
@@ -1742,6 +1834,12 @@
            INITIALIZE                       WRK-SIKFLGINF-AREA
            MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
            INITIALIZE                       WRK-DATAKBNINF-AREA
+           MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
+           INITIALIZE                       WRK-HOUKNSKBNINF-AREA
+           MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
+           INITIALIZE                       WRK-KNSJISKBNINF-AREA
+           MOVE    SPACE                TO  WRK-CDKBNINF-AREA
+           INITIALIZE                       WRK-CDKBNINF-AREA
       *
            MOVE    RECE44-MEISAISU      TO  MAX-MEISAISU
       *
@@ -1785,6 +1883,12 @@
                                            WRK-SIKFLGINF(IDX-RECE45)     
                   MOVE   RECE45-DATAKBNINF(IDX) TO
                                            WRK-DATAKBNINF(IDX-RECE45)
+                  MOVE   RECE45-HOUKNSKBNINF(IDX) TO
+                                           WRK-HOUKNSKBNINF(IDX-RECE45)
+                  MOVE   RECE45-KNSJISKBNINF(IDX) TO
+                                           WRK-KNSJISKBNINF(IDX-RECE45)
+                  MOVE   RECE45-CDKBNINF(IDX)     TO
+                                           WRK-CDKBNINF(IDX-RECE45)
              END-PERFORM 
       *
              PERFORM 990-RECE45-NEXT-SEC
@@ -1823,6 +1927,12 @@
                                           TO   RECE451-SIKFLGINF(IDX)
                          MOVE  WRK-DATAKBNINF(IDX-RECE45)
                                           TO   RECE451-DATAKBNINF(IDX)
+                         MOVE  WRK-HOUKNSKBNINF(IDX-RECE45)
+                                        TO   RECE451-HOUKNSKBNINF(IDX)
+                         MOVE  WRK-KNSJISKBNINF(IDX-RECE45)
+                                        TO   RECE451-KNSJISKBNINF(IDX)
+                         MOVE  WRK-CDKBNINF(IDX-RECE45)
+                                        TO   RECE451-CDKBNINF(IDX)
       *
                          IF    WRK-SIKFLGINF(IDX-RECE45)  =  "1"
                               ADD    1    TO   WRK-CNT-MEISAI
@@ -1884,6 +1994,12 @@
                  MOVE     2          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
                  MOVE    "実施"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
+              WHEN    3
+                 MOVE     4          TO    WRK-KETA
+                                           WRK-KETA-TAIHI
+                 MOVE     2          TO    WRK-KETA2
+                 MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
+                 MOVE    "算定"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
               WHEN    4
                  MOVE     4          TO    WRK-KETA
                                            WRK-KETA-TAIHI
@@ -2079,6 +2195,12 @@
              INITIALIZE                       WRK-SIKFLGINF-AREA
              MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
              INITIALIZE                       WRK-DATAKBNINF-AREA
+             MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
+             INITIALIZE                       WRK-HOUKNSKBNINF-AREA
+             MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
+             INITIALIZE                       WRK-KNSJISKBNINF-AREA
+             MOVE    SPACE                TO  WRK-CDKBNINF-AREA
+             INITIALIZE                       WRK-CDKBNINF-AREA
       *      リハビリコメントの挿入
       *      ADD     1                    TO  IDX-RECE45
              MOVE    SPACE                TO  COM-RECE45-REC
@@ -2240,6 +2362,12 @@
                                              WRK-SIKFLGINF(IDX-RECE45)     
                     MOVE   RECE45-DATAKBNINF(IDX) TO
                                              WRK-DATAKBNINF(IDX-RECE45)
+                    MOVE   RECE45-HOUKNSKBNINF(IDX) TO
+                                           WRK-HOUKNSKBNINF(IDX-RECE45)
+                    MOVE   RECE45-KNSJISKBNINF(IDX) TO
+                                           WRK-KNSJISKBNINF(IDX-RECE45)
+                    MOVE   RECE45-CDKBNINF(IDX)     TO
+                                           WRK-CDKBNINF(IDX-RECE45)
                END-PERFORM 
       *
                PERFORM 990-RECE45-NEXT-SEC
@@ -2276,6 +2404,12 @@
                                             TO   RECE451-SIKFLGINF(IDX)
                            MOVE  WRK-DATAKBNINF(IDX-RECE45)
                                             TO   RECE451-DATAKBNINF(IDX)
+                           MOVE  WRK-HOUKNSKBNINF(IDX-RECE45)
+                                        TO   RECE451-HOUKNSKBNINF(IDX)
+                           MOVE  WRK-KNSJISKBNINF(IDX-RECE45)
+                                        TO   RECE451-KNSJISKBNINF(IDX)
+                           MOVE  WRK-CDKBNINF(IDX-RECE45)
+                                        TO   RECE451-CDKBNINF(IDX)
                        END-IF  
                     END-PERFORM
                     WRITE   RECE451-REC
