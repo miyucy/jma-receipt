@@ -3136,21 +3136,29 @@
       *
       *    減免事由が未入力
            IF      SPA-GMN-DISCOUNTKBN =   SPACE
-               GO  TO                  4101-DISCOUNTKBN-CHK-EXT
+               MOVE    ZERO            TO  SPA-GMN-DISCOUNTKBN
+      ******** GO  TO                  4101-DISCOUNTKBN-CHK-EXT
            END-IF
       *    減免事由より割引率区分を取得
            MOVE    SPACE               TO  WRK-RATEKBN
+           MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX       >   SPA-DISCOUNTKBN-MAX )
                    OR      ( SPA-GMN-DISCOUNTKBN-KBNCD (IDX)
                                              =   SPACE )
                IF      SPA-GMN-DISCOUNTKBN
                                    =   SPA-GMN-DISCOUNTKBN-KBNCD (IDX)
+                   MOVE    1               TO  FLG-CHK
                    MOVE    SPA-GMN-DISCOUNTKBN-RATEKBN (IDX)
-                                       TO  WRK-RATEKBN
+                                           TO  WRK-RATEKBN
                    MOVE    SPA-DISCOUNTKBN-MAX TO  IDX
                END-IF
            END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0019"              TO  SPA-ERRCD
+               MOVE    45                  TO  SPA-GMN-CUR
+               GO  TO                  4101-DISCOUNTKBN-CHK-EXT
+           END-IF
       *    見つからない場合、セットしない
            IF  WRK-RATEKBN             =   SPACE
                GO  TO                  4101-DISCOUNTKBN-CHK-EXT
@@ -3190,11 +3198,11 @@
       *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   SPA-DISCOUNTKBN-MAX)  OR
-                              (SPA-GMN-DISCOUNTKBN-KBNCD(IDX)
+                   UNTIL      (IDX         >   SPA-DISCOUNT-MAX)  OR
+                              (SPA-GMN-DISCOUNT-KBNCD(IDX)
                                            =   SPACE  )
-               IF      SPA-GMN-DISCOUNTKBN
-                                       =   SPA-GMN-DISCOUNTKBN-KBNCD
+               IF      SPA-GMN-DISCOUNT(1:2)
+                                       =   SPA-GMN-DISCOUNT-KBNCD
                                                               (IDX)
                    MOVE    1               TO  FLG-CHK
                END-IF
