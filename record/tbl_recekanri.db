@@ -1,10 +1,12 @@
 tbl_recekanri	{
         PRTID               char(4);
-        SRYYM               char(6);
+        SYOKBN              char(1);
         CREYMD              char(8);
         CREHMS              char(6);
         TEISYUTUSAKI        char(1);
         RECESYUBETU         char(4);
+        NYUGAIKBN           char(1);
+        SRYYM               char(6);
         PAGE                number(5);
         KENSU               number(5);
         RECEKBN             char(1);
@@ -12,7 +14,7 @@ tbl_recekanri	{
 };
 
 primary	{
-	PRTID,SRYYM,CREYMD,CREHMS,TEISYUTUSAKI,RECESYUBETU;
+	PRTID,SYOKBN,CREYMD,CREHMS,TEISYUTUSAKI,RECESYUBETU;
 };
 
 path	key		{ 	
@@ -21,12 +23,12 @@ path	key		{
 		SELECT *
 		FROM tbl_recekanri
                     WHERE   PRTID        =   :PRTID
-                    AND     SRYYM        =   :SRYYM
+                    AND     SYOKBN       =   :SYOKBN
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
                     AND     TEISYUTUSAKI =   :TEISYUTUSAKI
                     AND     RECESYUBETU  =   :RECESYUBETU
-                    ORDER BY  PRTID,SRYYM,CREYMD,CREHMS,TEISYUTUSAKI,RECESYUBETU
+                    ORDER BY  PRTID,SYOKBN,CREYMD,CREHMS,TEISYUTUSAKI,RECESYUBETU
 		;
 	};
 };
@@ -37,7 +39,7 @@ path	key2		{
 		SELECT *
 		FROM tbl_recekanri
                     WHERE   PRTID        =   :PRTID
-                    AND     SRYYM        =   :SRYYM
+                    AND     SYOKBN       =   :SYOKBN
                     ORDER BY  CREYMD DESC,CREHMS DESC,TEISYUTUSAKI,RECESYUBETU
 		;
 	};
@@ -49,7 +51,7 @@ path	key3		{
 		SELECT *
 		FROM tbl_recekanri
                     WHERE   PRTID        =   :PRTID
-                    AND     SRYYM        =   :SRYYM
+                    AND     SYOKBN       =   :SYOKBN
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
                     AND     TEISYUTUSAKI =   :TEISYUTUSAKI
@@ -58,6 +60,65 @@ path	key3		{
 	};
 };
 
+path	key4		{ 	
+	DBSELECT	{
+		DECLARE tbl_recekanri_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekanri
+                    WHERE   PRTID        =   :PRTID
+                    AND     SRYYM        =   :SRYYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                    ORDER BY  PRTID,SRYYM,CREYMD,CREHMS,TEISYUTUSAKI,RECESYUBETU
+		;
+	};
+};
+
+path	key5		{ 	
+	DBSELECT	{
+		DECLARE tbl_recekanri_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekanri
+                    WHERE   PRTID        =   :PRTID
+                    AND     SRYYM        =   :SRYYM
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                    ORDER BY  CREYMD DESC,CREHMS DESC,TEISYUTUSAKI,RECESYUBETU
+		;
+	};
+};
+
+path	key6		{ 	
+	DBSELECT	{
+		DECLARE tbl_recekanri_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekanri
+                    WHERE   PRTID        =   :PRTID
+                    AND     SRYYM        =   :SRYYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+		;
+	};
+};
+
+path	key7		{ 	
+	DBSELECT	{
+		DECLARE tbl_recekanri_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekanri
+                    WHERE   PRTID        =   :PRTID
+                    AND     SYOKBN       =   :SYOKBN
+                    AND     SRYYM        =   :SRYYM
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                    ORDER BY  CREYMD DESC,CREHMS DESC,TEISYUTUSAKI,RECESYUBETU
+		;
+	};
+};
 
 path	all	{
 	DBSELECT	{

@@ -18,6 +18,8 @@ tbl_receprt	{
         TERMID              char(32);
         PRTJYUN             number(2);
         PRTRENNUM           number(6);
+        NYUGAIKBN           char(1);
+        FORMID              char(20);
         PRTDATA             varchar(10000);
 #-----> ¸¡º÷ÍÑ¹àÌÜ
 	STKANANAME			char(100),virtual;
@@ -189,6 +191,151 @@ path	key9		{
 	};
 };
 
+path	key10		{ 	
+	DBSELECT	{
+		DECLARE tbl_receprt_key10_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     PREFKBN      =   :PREFKBN
+                    AND     KANANAME     >=  :STKANANAME
+                    AND     KANANAME     <=  :EDKANANAME 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                   ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,KANANAME,PTNUM,SRYYM,RENNUM
+		;
+	};
+};
+
+path	key11	{
+	DBSELECT	{
+		DECLARE tbl_receprt_key11_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     PREFKBN      =   :PREFKBN
+                    AND     PTNUM        >=  :STKANANAME
+                    AND     PTNUM        <=  :EDKANANAME 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                   ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,PTNUM,SRYYM,RENNUM
+		;
+	};
+};
+
+path	key12	{
+	DBSELECT	{
+		DECLARE tbl_receprt_key12_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     PRTJYUN      >   0
+                    AND     PRTRENNUM    >   0 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+                   ORDER BY  PRTJYUN,PRTRENNUM
+		;
+	};
+};
+path	key13	{
+	DBSELECT	{
+		DECLARE tbl_receprt_key13_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     PRTJYUN      >   0
+                    AND     PRTRENNUM    >   0 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+		;
+	};
+};
+
+path	key14		{ 	
+	DBSELECT	{
+		DECLARE tbl_receprt_key14_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     KANANAME     >=  :STKANANAME
+                    AND     KANANAME     <=  :EDKANANAME 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                   ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,KANANAME,PTNUM,SRYYM,RENNUM
+		;
+	};
+};
+
+path	key15	{
+	DBSELECT	{
+		DECLARE tbl_receprt_key15_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     PTNUM        >=  :STKANANAME
+                    AND     PTNUM        <=  :EDKANANAME 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                   ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,PTNUM,SRYYM,RENNUM
+		;
+	};
+};
+
+path	key16		{ 	
+	DBSELECT	{
+		DECLARE tbl_receprt_key16_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     PREFKBN      =   :PREFKBN
+                    AND     KANANAME     >=  :STKANANAME
+                    AND     KANANAME     <=  :EDKANANAME 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+                   ORDER BY  KANANAME,PTNUM,SRYYM,RENNUM
+		;
+	};
+};
+
+path	key17	{
+	DBSELECT	{
+		DECLARE tbl_receprt_key17_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     PREFKBN      =   :PREFKBN
+                    AND     PTNUM        >=  :STKANANAME
+                    AND     PTNUM        <=  :EDKANANAME 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+                   ORDER BY  PTNUM,SRYYM,RENNUM
+		;
+	};
+};
 
 path	all	{
 	DBSELECT	{
