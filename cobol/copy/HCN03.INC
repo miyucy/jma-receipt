@@ -24,3 +24,9 @@
             02  HCN03-IRYOADRS  PIC X(60).
             02  HCN03-IRYOMEI   PIC X(40).
             02  HCN03-IRYOTEL   PIC X(15).
+            02  HCN03-LBL-G-MISYU   PIC X(20).
+            02  HCN03-LBL-G-MISYU-EN    PIC X(2).
+            02  HCN03-GAI-MISYUKIN  PIC X(18).
+            02  HCN03-LBL-N-MISYU   PIC X(20).
+            02  HCN03-LBL-N-MISYU-EN    PIC X(2).
+            02  HCN03-NYU-MISYUKIN  PIC X(18).

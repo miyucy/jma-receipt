@@ -203,6 +203,7 @@ RECORD_files = \
 	W25.rec \
 	W26.rec \
 	W27.rec \
+	W28.rec \
 	W98.rec \
 	W99.rec \
 	WERR.rec \

@@ -1,0 +1,60 @@
+W28	{
+	fixed6	{
+		scrolledwindow1	{
+			BTULST	{
+				count	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(4);
+					value2	varchar(6);
+					value3	varchar(40);
+					value4	varchar(60);
+					value5	varchar(20);
+					value6	varchar(10);
+					value7	varchar(10);
+					value8	varchar(09);
+					value9	varchar(09);
+				}	[400];
+				select	bool[400];
+			};
+		};
+		STSELNUM	{
+			value	number(3);
+		};
+		EDSELNUM	{
+			value	number(3);
+		};
+		STBTUNUM	{
+			value	number(2);
+		};
+		EDBTUNUM	{
+			value	number(2);
+		};
+		KJNYMD	{
+			value	varchar(10);
+		};
+		CMB_SENTEI_FTNKBN	{
+			SENTEI_FTNKBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[10];
+		};
+		SENTEI_TANKA	{
+			value	number(4);
+		};
+		CMB_SENTEI_TAX	{
+			SENTEI_TAX	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[05];
+		};
+		LBL_SENTEI_TANKA	{
+			value	varchar(8);
+		};
+		LBL_SENTEI_EN	{
+			value	varchar(2);
+		};
+	};
+};

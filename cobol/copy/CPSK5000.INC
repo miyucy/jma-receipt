@@ -68,14 +68,33 @@
       *Âà±¡¾ÚÌÀ½ñÈ¯¹Ô¶èÊ¬
                05  SYS-5000-TAIPRTKBN
                                            PIC  X(01).
+      *Í½È÷¡Ê£³¡Ë
+               05                          PIC  X(03).
+      *ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬
+               05  SYS-5000-SKYMISYUPRTKBN
+                                           PIC  X(01).
+      *ÁªÄêÆþ±¡ÉéÃ´¶èÊ¬
+               05  SYS-5000-SENTEI-FTNKBN
+                                           PIC  X(01).
       *ÁªÄêÆþ±¡¾ÃÈñÀÇ¶èÊ¬
                05  SYS-5000-SENTEI-TAXKBN
                                            PIC  X(01).
       *ÁªÄêÆþ±¡ÅÀ¿ôÃ±²Á
-               05  SYS-5000-SENTEI-TANKA
+               05  SYS-5000-SENTEI-TANKA-X PIC  X(02).
+               05  SYS-5000-SENTEI-TANKA-R REDEFINES
+                   SYS-5000-SENTEI-TANKA-X.
+                   07  SYS-5000-SENTEI-TANKA
                                            PIC  9(02).
+      *ÁªÄêÆþ±¡ÆÃÊÌÎÁ¶â
+               05  SYS-5000-SENTEI-KINGAKU-X
+                                           PIC  X(04).
+               05  SYS-5000-SENTEI-KINGAKU-R
+                                           REDEFINES
+                   SYS-5000-SENTEI-KINGAKU-X.
+                   07  SYS-5000-SENTEI-KINGAKU
+                                           PIC  9(04).
       *Í½È÷¡Ê£²¡Ë
-               05                          PIC  X(26).
+               05                          PIC  X(17).
       *Ã¼Ëö£É£Ä
            03  SYS-5000-TERMID             PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

@@ -268,6 +268,7 @@
            COPY    "W25.INC".
            COPY    "W26.INC".
            COPY    "W27.INC".
+           COPY    "W28.INC".
            COPY    "W98.INC".
            COPY    "W99.INC".
            COPY    "WERR.INC".
@@ -459,16 +460,18 @@
                                            TO  SPA-GMN-KANRICDMEIL(29)
            MOVE    "5005"                  TO  SPA-GMN-KANRICDL (30)
            MOVE    "入院用管理マスタ設定"  TO  SPA-GMN-KANRICDMEIL(30)
-           MOVE    "5010"                  TO  SPA-GMN-KANRICDL (31)
-           MOVE    "定期請求情報"          TO  SPA-GMN-KANRICDMEIL(31)
+           MOVE    "5006"                  TO  SPA-GMN-KANRICDL (31)
+           MOVE    "病棟選定入院料情報"    TO  SPA-GMN-KANRICDMEIL(31)
+           MOVE    "5010"                  TO  SPA-GMN-KANRICDL (32)
+           MOVE    "定期請求情報"          TO  SPA-GMN-KANRICDMEIL(32)
       ***  排他 INS ST
-           MOVE    "9800"                  TO  SPA-GMN-KANRICDL (32)
-           MOVE    "排他制御情報"          TO  SPA-GMN-KANRICDMEIL(32)
+           MOVE    "9800"                  TO  SPA-GMN-KANRICDL (33)
+           MOVE    "排他制御情報"          TO  SPA-GMN-KANRICDMEIL(33)
       ***  排他 INS ED
       *
       ***  排他 UPD ST
       *    MOVE    31                      TO  SPA-GMN-KANRICD-MAX
-           MOVE    32                      TO  SPA-GMN-KANRICD-MAX
+           MOVE    33                      TO  SPA-GMN-KANRICD-MAX
       ***  排他 UPD ED
       *
            MOVE    1               TO  SPA-GMN-CUR
@@ -827,6 +830,7 @@
                WHEN    "5003"
                WHEN    "5004"
                WHEN    "5005"
+               WHEN    "5006"
                    MOVE    SPACE           TO  SPA-GMN-KBNCD
                    MOVE    12              TO  SPA-GMN-CUR
                    GO  TO  4104-KANRICD-CHK-EXT
@@ -1239,7 +1243,8 @@
              OR                            "5002" 
              OR                            "5003" 
              OR                            "5004" 
-             OR                            "5005")
+             OR                            "5005"
+             OR                            "5006")
                CONTINUE
            ELSE
       *        入力チェック
@@ -1310,6 +1315,8 @@
                    MOVE    "W27"               TO  SPA-SAKIPG
                WHEN    "5005"
                    MOVE    "W22"               TO  SPA-SAKIPG
+               WHEN    "5006"
+                   MOVE    "W28"               TO  SPA-SAKIPG
                WHEN    "5010"
                    MOVE    "W23"               TO  SPA-SAKIPG
                WHEN    "9000"

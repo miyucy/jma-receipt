@@ -124,7 +124,21 @@
                    09  SYS-5001-KSNCD          PIC X(09).
                    09  SYS-5001-KSNKBN         PIC X(01).
       *予備 ** 予備の後にも項目があるので注意すること **
-               05  SYS-5001-YOBI               PIC  X(294).
+               05  SYS-5001-YOBI               PIC  X(286).
+      *選定入院設定区分
+               05  SYS-5001-SENTEI-FTNKBN      PIC  X(01).
+      *選定入院消費税区分
+               05  SYS-5001-SENTEI-TAXKBN      PIC  X(01).
+      *選定入院点数単価
+               05  SYS-5001-SENTEI-TANKA-X     PIC  X(02).
+               05  SYS-5001-SENTEI-TANKA-R     REDEFINES
+                   SYS-5001-SENTEI-TANKA-X.
+                   07  SYS-5001-SENTEI-TANKA   PIC  9(02).
+      *選定入院特別料金
+               05  SYS-5001-SENTEI-KINGAKU-X   PIC  X(04).
+               05  SYS-5001-SENTEI-KINGAKU-R   REDEFINES
+                   SYS-5001-SENTEI-KINGAKU-X.
+                   07  SYS-5001-SENTEI-KINGAKU PIC  9(04).
       *レセプト表示区分
                05  SYS-5001-RECEDSPKBN         PIC  X(02).
       *端末ＩＤ

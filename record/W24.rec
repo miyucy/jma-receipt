@@ -278,6 +278,33 @@ W24	{
 				};
 			};
 		};
+		frame5	{
+			fixed11	{
+				CMB_SENTEI_FTNKBN	{
+					SENTEI_FTNKBN	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[10];
+				};
+				SENTEI_TANKA	{
+					value	number(4);
+				};
+				CMB_SENTEI_TAX	{
+					SENTEI_TAX	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[05];
+				};
+				LBL_SENTEI_TANKA	{
+					value	varchar(8);
+				};
+				LBL_SENTEI_EN	{
+					value	varchar(2);
+				};
+			};
+		};
 		CMB_REKI_DISPKBN	{
 			REKI_DISPKBN	{
 				value	varchar(24);
@@ -287,6 +314,13 @@ W24	{
 		};
 		CMB_SKYPRTKBN	{
 			SKYPRTKBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[05];
+		};
+		CMB_SKYMISYUPRTKBN	{
+			SKYMISYUPRTKBN	{
 				value	varchar(20);
 			};
 			count	int;

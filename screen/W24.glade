@@ -302,7 +302,7 @@
       <class>GtkFrame</class>
       <name>frame1</name>
       <x>10</x>
-      <y>85</y>
+      <y>60</y>
       <width>320</width>
       <height>120</height>
       <label>¿©»ö¾ðÊó</label>
@@ -486,8 +486,8 @@
     <widget>
       <class>GtkFrame</class>
       <name>frame2</name>
-      <x>345</x>
-      <y>85</y>
+      <x>350</x>
+      <y>60</y>
       <width>380</width>
       <height>120</height>
       <label>°åÎÅµ¡´Ø¸º»»¾ðÊó</label>
@@ -727,7 +727,7 @@
       <class>GtkFrame</class>
       <name>frame3</name>
       <x>10</x>
-      <y>240</y>
+      <y>195</y>
       <width>570</width>
       <height>380</height>
       <label>Æþ±¡²Ã»»¾ðÊó</label>
@@ -1580,7 +1580,7 @@
       <class>GtkFrame</class>
       <name>frame4</name>
       <x>595</x>
-      <y>240</y>
+      <y>195</y>
       <width>360</width>
       <height>380</height>
       <label>Æþ±¡²ñ·×É½¼¨¾ðÊó</label>
@@ -2040,10 +2040,211 @@
     </widget>
 
     <widget>
+      <class>GtkFrame</class>
+      <name>frame5</name>
+      <x>10</x>
+      <y>585</y>
+      <width>350</width>
+      <height>100</height>
+      <label>ÁªÄêÆþ±¡ÎÁ</label>
+      <label_xalign>0.01</label_xalign>
+      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+
+      <widget>
+	<class>GtkFixed</class>
+	<name>fixed11</name>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_SENTEI_FTNKBN</name>
+	  <x>75</x>
+	  <y>0</y>
+	  <width>260</width>
+	  <height>30</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>SENTEI_FTNKBN</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 04 Feb 2002 03:04:50 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 04 Feb 2002 03:05:03 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>22</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>SENTEI_TANKA</name>
+	  <x>75</x>
+	  <y>35</y>
+	  <width>50</width>
+	  <height>25</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Mon, 04 Feb 2002 03:04:50 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Mon, 04 Feb 2002 03:05:03 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>ZZZZ</format>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_SENTEI_TAX</name>
+	  <x>235</x>
+	  <y>35</y>
+	  <width>100</width>
+	  <height>25</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>SENTEI_TAX</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 04 Feb 2002 03:04:50 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 04 Feb 2002 03:05:03 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>20</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label1015</name>
+	  <x>5</x>
+	  <y>0</y>
+	  <width>56</width>
+	  <height>25</height>
+	  <label>ÉéÃ´·×»»</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label1013</name>
+	  <x>185</x>
+	  <y>35</y>
+	  <width>45</width>
+	  <height>25</height>
+	  <label>¾ÃÈñÀÇ</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>LBL_SENTEI_TANKA</name>
+	  <x>5</x>
+	  <y>35</y>
+	  <width>56</width>
+	  <height>25</height>
+	  <label></label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>LBL_SENTEI_EN</name>
+	  <x>130</x>
+	  <y>35</y>
+	  <width>14</width>
+	  <height>25</height>
+	  <label></label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1010</name>
+      <x>375</x>
+      <y>605</y>
+      <width>70</width>
+      <height>25</height>
+      <label>Æþ±¡ÎòÉ½¼¨</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_REKI_DISPKBN</name>
-      <x>140</x>
-      <y>630</y>
+      <x>455</x>
+      <y>605</y>
       <width>200</width>
       <height>25</height>
       <value_in_list>False</value_in_list>
@@ -2081,44 +2282,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label1010</name>
-      <x>15</x>
-      <y>630</y>
+      <name>label1011</name>
+      <x>680</x>
+      <y>605</y>
       <width>70</width>
       <height>25</height>
-      <label>Æþ±¡ÎòÉ½¼¨</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label1011</name>
-      <x>355</x>
-      <y>630</y>
-      <width>120</width>
-      <height>25</height>
-      <label>ÀÁµá½ñÈ¯¹Ô¥Õ¥é¥°</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label1012</name>
-      <x>360</x>
-      <y>660</y>
-      <width>140</width>
-      <height>25</height>
-      <label>Âà±¡¾ÚÌÀ½ñÈ¯¹Ô¥Õ¥é¥°</label>
+      <label>ÀÁµá½ñÈ¯¹Ô</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -2130,9 +2299,9 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_SKYPRTKBN</name>
-      <x>520</x>
-      <y>630</y>
-      <width>200</width>
+      <x>790</x>
+      <y>605</y>
+      <width>150</width>
       <height>25</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -2168,11 +2337,27 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label1016</name>
+      <x>680</x>
+      <y>635</y>
+      <width>84</width>
+      <height>25</height>
+      <label>ÀÁµá½ñÌ¤¼ý³Û</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_TAIPRTKBN</name>
-      <x>520</x>
-      <y>660</y>
-      <width>200</width>
+      <x>790</x>
+      <y>665</y>
+      <width>150</width>
       <height>25</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -2185,6 +2370,62 @@
 	<class>GtkPandaEntry</class>
 	<child_name>GtkPandaCombo:entry</child_name>
 	<name>TAIPRTKBN</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 04 Feb 2002 03:04:50 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 04 Feb 2002 03:05:03 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>20</text_max_length>
+	<text></text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1012</name>
+      <x>680</x>
+      <y>665</y>
+      <width>98</width>
+      <height>25</height>
+      <label>Âà±¡¾ÚÌÀ½ñÈ¯¹Ô</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_SKYMISYUPRTKBN</name>
+      <x>790</x>
+      <y>635</y>
+      <width>150</width>
+      <height>25</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>SKYMISYUPRTKBN</name>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>activate</name>

@@ -85,6 +85,23 @@
                                                OCCURS 10.
                   06  W24-SRYACT               PIC X(30)
                                                OCCURS 10.
+              04  W24-FRAME5.
+                05  W24-FIXED11.
+                  06  W24-CMB-SENTEI-KBN.
+                    07  W24-SENTEI-FTNKBN      PIC X(22).
+                    07  W24-SENTEI-FTNKBN-CNT  PIC S9(9)
+                                               BINARY.
+                    07  W24-SENTEI-FTNKBN-ITM  PIC X(22)
+                                               OCCURS  10 TIMES.
+                  06  W24-SENTEI-TANKA         PIC S9(4).
+                  06  W24-CMB-SENTEI-TAX.
+                    07  W24-SENTEI-TAX         PIC X(20).
+                    07  W24-SENTEI-TAX-CNT     PIC S9(9)
+                                               BINARY.
+                    07  W24-SENTEI-TAX-ITM     PIC X(20)
+                                               OCCURS  5 TIMES.
+                  06  W24-LBL-SENTEI-TANKA     PIC X(8).
+                  06  W24-LBL-SENTEI-EN        PIC X(2).
               04  W24-CMB-REKI-DISPKBN.
                 05  W24-REKI-DISPKBN           PIC X(24).
                 05  W24-REKI-DISPKBN-CNT       PIC S9(9)
@@ -96,6 +113,12 @@
                 05  W24-SKYPRTKBN-CNT          PIC S9(9)
                                                BINARY.
                 05  W24-SKYPRTKBN-ITM          PIC X(20)
+                                               OCCURS  5.
+              04  W24-CMB-SKYMISYUPRTKBN.
+                05  W24-SKYMISYUPRTKBN         PIC X(20).
+                05  W24-SKYMISYUPRTKBN-CNT     PIC S9(9)
+                                               BINARY.
+                05  W24-SKYMISYUPRTKBN-ITM     PIC X(20)
                                                OCCURS  5.
               04  W24-CMB-TAIPRTKBN.
                 05  W24-TAIPRTKBN              PIC X(20).
