@@ -409,28 +409,14 @@
            03  FILLER          PIC X(09)   VALUE   "111700110".
       *    初診（診療所）
            03  FILLER          PIC X(09)   VALUE   "111700210".
-      *    処方料（７種類以上）
-           03  FILLER          PIC X(09)   VALUE   "120002610".
-      *    処方料（その他）
-           03  FILLER          PIC X(09)   VALUE   "120001210".
-      *    処方料（麻・向・覚・毒）
-           03  FILLER          PIC X(09)   VALUE   "120001310".
       *    調基（その他）
            03  FILLER          PIC X(09)   VALUE   "120001810".
       *    調基（入院）
            03  FILLER          PIC X(09)   VALUE   "120001710".
-      *    調剤・処方料（麻・向・覚・毒）
-           03  FILLER          PIC X(09)   VALUE   "120002030".
-      *    調剤料（外用薬）
-           03  FILLER          PIC X(09)   VALUE   "120001010".
-      *    調剤料（内用薬・浸煎薬・頓服薬）
-           03  FILLER          PIC X(09)   VALUE   "120000710".
       *    調剤料（入院）
            03  FILLER          PIC X(09)   VALUE   "120001110".
       *    調剤料（麻・向・覚・毒）（入院）
            03  FILLER          PIC X(09)   VALUE   "120000410".
-      *    調剤料（麻・向・覚・毒）（入院外）
-           03  FILLER          PIC X(09)   VALUE   "120000110".
       *    実日数算定
            03  FILLER          PIC X(09)   VALUE   "099409901".
       *    初診料ダミー
@@ -438,9 +424,9 @@
       *    初診料算定科：
            03  FILLER          PIC X(09)   VALUE   "830000020".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   18.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   11.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   18.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   11.         
       *
       *    固定値
        01  CONST-AREA.
@@ -1193,24 +1179,14 @@
       *    レセプト０４ファイル  診療区分（その他）編集処理
       *****************************************************************
        2005-SRYKBNELSE-HENSYU-SEC    SECTION.
-      *    処方のとき
-           IF  RECE64-SRYKBN         =   "25"
-               IF    ( RECE62-KHNTEN  (19)     =   ZERO )  AND
-                     ( WRK-ZAIWMAX    (6)      >   1    )
-                   PERFORM 20042-SRYKBNELSE-REIGAI-SEC
-               ELSE
-                   PERFORM 20052-SRYKBNELSE-CHECK-SEC
-               END-IF
-           ELSE            
       *
-      *        検査のとき剤が一つ以上なら”、”で編集
-               IF  RECE64-SRYKBN         =   "60"
-      *********AND  WRK-ZAIWMAX (6)      >   1
-                   PERFORM 20051-SRYKBNELSE-KENSA-SEC
-               ELSE 
-                   PERFORM 20052-SRYKBNELSE-CHECK-SEC
-               END-IF
-           END-IF    
+      *    検査のとき剤が一つ以上なら”、”で編集
+           IF  RECE64-SRYKBN         =   "60"
+      *****AND  WRK-ZAIWMAX (6)      >   1
+               PERFORM 20051-SRYKBNELSE-KENSA-SEC
+           ELSE 
+               PERFORM 20052-SRYKBNELSE-CHECK-SEC
+           END-IF
       *
            IF  WRK-TBLMAX           >   ZERO
       ******** IF      RECE64-SRYKBN      >=  "33"                      
