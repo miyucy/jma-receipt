@@ -202,6 +202,7 @@ RECORD_files = \
 	W25.rec \
 	W26.rec \
 	W27.rec \
+	W98.rec \
 	W99.rec \
 	WERR.rec \
 	WID1.rec \
@@ -363,6 +364,8 @@ DB_files = \
 	tbl_wksryact.db \
 	tbl_yakujyo.db \
 	tbl_yyk.db \
+	tbl_ldmap.db \
+	tbl_lock.db \
 	view_I001.db \
 	view_Q001.db \
 	view_bd001.db \

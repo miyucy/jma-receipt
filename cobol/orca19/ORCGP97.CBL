@@ -248,6 +248,7 @@
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+           COPY    "CPORCSLOCK.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -1061,6 +1062,24 @@
                MOVE    "0002"          TO  SPA-ERRCD
            END-IF
       *
+      *    排他制御チェック
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-GMN-SELNO       TO  IDX
+           MOVE    SPA-NAI-PTID  (IDX) TO  SLOCK-PTID
+           IF  SPA-MOTOPG              =   SPACE
+               MOVE    SPA-NAI-MOTOPG      TO  SPA-MOTOPG
+               CALL "ORCSLOCK"             USING   MCPAREA
+                                           SPA-AREA
+                                           ORCSLOCKAREA
+               MOVE    SPACE               TO  SPA-MOTOPG
+           ELSE
+               CALL "ORCSLOCK"             USING   MCPAREA
+                                           SPA-AREA
+                                           ORCSLOCKAREA
+           END-IF
+           IF      SLOCK-RETURN        NOT =   ZERO
+               MOVE    "9999"          TO  SPA-ERRCD
+           END-IF
       *        ＯＫの時、ＳＰＡ確定後、元の画面へ
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2021-SPA-OKSET-SEC
@@ -1088,6 +1107,24 @@
                MOVE    "0002"          TO  SPA-ERRCD
            END-IF
       *
+      *    排他制御チェック
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-GMN-SELNO       TO  IDX
+           MOVE    SPA-NAI-PTID  (IDX) TO  SLOCK-PTID
+           IF  SPA-MOTOPG              =  SPACE
+               MOVE    SPA-NAI-MOTOPG      TO  SPA-MOTOPG
+               CALL "ORCSLOCK"             USING   MCPAREA
+                                           SPA-AREA
+                                           ORCSLOCKAREA
+               MOVE    SPACE               TO  SPA-MOTOPG
+           ELSE
+               CALL "ORCSLOCK"             USING   MCPAREA
+                                           SPA-AREA
+                                           ORCSLOCKAREA
+           END-IF
+           IF      SLOCK-RETURN      NOT =   ZERO
+               MOVE    "9999"          TO  SPA-ERRCD
+           END-IF
       *    ＯＫの時、ＳＰＡ確定後、元の画面へ
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2021-SPA-OKSET-SEC
@@ -1336,6 +1373,11 @@
                 WHEN    "0005"
                     MOVE    "入外区分のみの検索はできません。"
                                                 TO  SPA-ERRMSG
+                WHEN    "9999"
+                    MOVE    "他端末で使用中です"
+                                                TO  SPA-ERRMSG
+                    MOVE   SLOCK-MSG 
+                                                TO  SPA-ERRMSG(19:)
                 WHEN    OTHER
                     MOVE    SPACE               TO  SPA-ERRMSG
             END-EVALUATE
