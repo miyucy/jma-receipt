@@ -1301,9 +1301,9 @@
                            COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
+      *                 Ï«ºÒ¾è¿ô
+                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 4)
                      END-IF
-      *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 4)
       *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
                         MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 5)
@@ -1318,9 +1318,9 @@
                            COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
+      *                 Ï«ºÒ¾è¿ô
+                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 6)
                      END-IF
-      *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 6)
                   WHEN  2
       *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
@@ -1370,9 +1370,9 @@
                            COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
+      *                 Ï«ºÒ¾è¿ô
+                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 4)
                      END-IF
-      *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 4)
       *              ÆÃÊÌ¿©²Ã»»
                      MOVE  "197000470"    TO   WRK-SKJ-SRYCD(IDY 5)
                      MOVE  "197000470"    TO   WRK-SRYCD
@@ -1402,9 +1402,9 @@
                            COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
+      *                 Ï«ºÒ¾è¿ô
+                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 8)
                      END-IF
-      *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 8)
               WHEN  3
       *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
@@ -1436,9 +1436,9 @@
                            COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
+      *                 Ï«ºÒ¾è¿ô
+                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 4)
                      END-IF
-      *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 4)
       *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
                         MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 5)
@@ -1453,9 +1453,9 @@
                            COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
+      *                 Ï«ºÒ¾è¿ô
+                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 6)
                      END-IF
-      *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 6)
       *              Ê£¿ô¸¥Î©²Ã»»
                      MOVE  "197000670"    TO   WRK-SKJ-SRYCD(IDY 7)
                      MOVE  "197000670"    TO   WRK-SRYCD
@@ -1502,9 +1502,9 @@
                            COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
                            ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
+      *                 Ï«ºÒ¾è¿ô
+                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 4)
                      END-IF
-      *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 4)
       *              ÆÃÊÌ¿©²Ã»»
                      MOVE  "197000470"    TO   WRK-SKJ-SRYCD(IDY 5)
                      MOVE  "197000470"    TO   WRK-SRYCD
@@ -1534,9 +1534,9 @@
                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
                           ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
                         END-IF
+      *                 Ï«ºÒ¾è¿ô
+                        MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 8)
                      END-IF
-      *              Ï«ºÒ¾è¿ô
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY 8)
       *              Ê£¿ô¸¥Î©²Ã»»
                      MOVE  "197000670"    TO   WRK-SKJ-SRYCD(IDY 9)
                      MOVE  "197000670"    TO   WRK-SRYCD
