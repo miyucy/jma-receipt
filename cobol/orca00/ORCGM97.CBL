@@ -43,6 +43,13 @@
       *    画面活性非活性
            COPY    "ENUM-VALUE".
       *
+      *    マスタ更新シェル領域 
+           COPY    "CPCOMMONSHELLMST.INC".
+      *
+           COPY    "CPSHELLTBL.INC".
+      *
+           COPY    "ORCA-DBPATH".
+      *
       *    スパ領域
            COPY    "COMMON-SPA".
       *    スパ領域
@@ -98,19 +105,36 @@
        01  CNT-AREA.
            03  CNT-NAIYO           PIC 9(02).
       *
+      *    処理区分領域
+       01  SKBN-AREA.
+           03  SKBN-RUN            PIC X(03).
+      *
+       01  PARA-REC.
+           03  PARA-DBFILE         PIC X(13).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-DBPATH          PIC X(64).
-      *
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
       *
            03  WRK-HENYMDG         PIC X(09).
+           03  WRK-HENYMD.
+               05  WRK-HGO         PIC X(01).
+               05  WRK-HYY         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-HMM         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-HDD         PIC 9(02).
       *
-       01  PARA-REC.
-           03  PARA-DBFILE             PIC X(13).
+           03  WRK-ENDYMD          PIC  X(09).
+           03  WRK-ENDTIME         PIC  X(08).
+      *
+       01  WRK-JOBKANRI-AREA.
+           03  WRK-JOBKANRI-MODE   PIC X(03). 
+           03  WRK-JOBKANRI-RETURN PIC S9(03).
       *
       *****************************************************************
       *    連絡　領域
@@ -123,6 +147,10 @@
       *    ＰＧ管理
        01  PGKANRI-REC.
            COPY    "CPPGKANRI.INC".
+      *
+      *    ジョブ管理
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -174,7 +202,7 @@
                WHEN    "PUTG"          ALSO    "CLICKED"
                    PERFORM 200-GMNSENI
       *    入力
-               WHEN      OTHER
+               WHEN    OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE
       *
@@ -282,15 +310,17 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "M00"           TO  SPA-SAKIPG
-           MOVE    "M97"           TO  SPA-MOTOPG
+           PERFORM 820-JOBKANRI-READ2-SEC.
       *
-           MOVE    "CHANGE"        TO  MCP-PUTTYPE
-           MOVE    "M00"           TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1               TO  FLG-END
+           IF  SKBN-RUN   =   "RUN"
+               MOVE    SPACE               TO  MID1
+               MOVE    "0301"              TO  MID1-ID1CODE
+               MOVE    "マスタ更新中です。よろしいですか？"
+                                           TO  MID1-ID1MSG
+               PERFORM 830-GAMENN-SET5-SEC
+           ELSE
+               PERFORM 830-GAMENN-SET6-SEC
+           END-IF
       *
            .
        210-BACK-EXT.
@@ -369,26 +399,50 @@
       *****************************************************************
        400-JYOUHOU-SEC              SECTION.
       *
-      *     IF      SPA-GMN-ONKBN        =   "T"
-      *         PERFORM 
-      *     END-IF
+           IF      SPA-GMN-ONKBN        =   "T"
+               MOVE    "program_upgrade_online.sh"
+                                        TO  SHELL-SHELL
+               MOVE    "1"              TO  SHELL-ARG1
+           END-IF
       *
-      *     IF      SPA-GMN-OFFKBN       =   "T"
-      *         EVALUATE    SPA-GMN-CD
-      *             WHEN    "1"
-      *                 PERFORM 
-      *             WHEN    "2"
-      *                 PERFORM 
-      *         END-EVALUATE
-      *     END-IF
-      *     シェルを呼ぶ
+           IF      SPA-GMN-OFFKBN       =   "T"
+               MOVE    "program_upgrade_offline.sh"
+                                        TO  SHELL-SHELL
+               EVALUATE    SPA-GMN-CD
+                   WHEN    "1"
+                       MOVE    "1"              TO  SHELL-ARG1
+                       MOVE    "1"              TO  SHELL-ARG2
+                   WHEN    "2"
+                       MOVE    "1"              TO  SHELL-ARG1
+                       MOVE    "2"              TO  SHELL-ARG2
+                   WHEN    OTHER
+                       GO  TO  400-JYOUHOU-SEC-EXT
+               END-EVALUATE
+           END-IF
+      *
+      *    マスタ更新処理
+           MOVE    SPACE               TO  SHELLTBL.
+           MOVE    SHELL-NAME          TO  SHELLTBL-NAME.
+           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1.
+           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2.
+           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3.
+           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4.
+           MOVE    SHELLTBL            TO  MCPDATA-REC.
+      *
+           MOVE    "SHELL"             TO  MCP-FUNC.
+           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH.
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC.
+      *
+           PERFORM 400-JYOKYO-SET-SEC
            .
       *
        400-JYOUHOU-SEC-EXT.
            EXIT.
       *
       *****************************************************************
-      *    オフライン処理コンボ
+      *    状況更新
       *****************************************************************
        400-JYOKYO-SET-SEC                SECTION.
       *
@@ -440,9 +494,14 @@
                GO  TO  400-OFFNAIYO-CHK-EXT
            END-IF
       *
-           MOVE  M97-OFF-NAIYO      TO  SPA-GMN-OFFNAIYO
+           MOVE    M97-OFF-NAIYO      TO  SPA-GMN-OFFNAIYO
       *
-           MOVE  99                 TO  SPA-GMN-CUR
+           IF      SPA-GMN-CD       =   "1"     OR    "2"
+               MOVE    99               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    "0001"           TO  SPA-ERRCD
+               PERFORM 510-ERRSET-SEC
+           END-IF
            .
        400-OFFNAIYO-CHK-EXT.
            EXIT.
@@ -456,20 +515,22 @@
                GO  TO  410-KAKUNIN-EXT
            END-IF
       *
-           MOVE    SPACE               TO  MID1
-           MOVE    "0202"              TO  MID1-ID1CODE
-           MOVE    "ＰＧ更新を実行します。よろしいですか？"
-                                       TO  MID1-ID1MSG
+           PERFORM 820-JOBKANRI-READ2-SEC.
       *
-           MOVE    "B12"               TO  MCP-WIDGET
-           MOVE    "M97"               TO  SPA-MOTOPG
-           MOVE    "MID1"              TO  SPA-SAKIPG
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "MID1"              TO  MCP-WINDOW
+           IF  SKBN-RUN   =   "RUN"
+               MOVE    SPACE               TO  MERR
+               MOVE    "0203"              TO  MERR-ERRCODE
+               MOVE    "マスタ更新は実行中です。"
+                                           TO  MERR-ERRMSG
+               PERFORM 830-GAMENN-SET4-SEC
+           ELSE
+               MOVE    SPACE               TO  MID1
+               MOVE    "0202"              TO  MID1-ID1CODE
+               MOVE    "マスタ更新を実行します。よろしいですか？"
+                                           TO  MID1-ID1MSG
+               PERFORM 830-GAMENN-SET5-SEC
+           END-IF
       *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
            .
        410-KAKUNIN-EXT.
            EXIT.
@@ -479,33 +540,82 @@
       *****************************************************************
        420-KOUSHIN-SEC         SECTION.
       *
-           INITIALIZE                  PGKANRI-REC
-           MOVE    "PGKANRI-ALL"   TO  WRK-DBPATH
-           PERFORM 900-PGKANRI-SELECT-SEC
+           PERFORM 820-JOBKANRI-READ1-SEC.
       *
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   FLG-PGKANRI =   1
-               MOVE    "T"             TO  PGKANRI-UPDATEFLG
-               ACCEPT  SYS-TIME        FROM    TIME
-               MOVE    SYS-TIME        TO  PGKANRI-UPHMS
-               MOVE    SPA-SYSYMD      TO  PGKANRI-UPYMD
+           IF  (JOB-ENDYMD    NOT =   SPACE)  AND
+               (JOB-ENDYMD(7:2)   =   SPACE)
+               MOVE    "20"               TO  WRK-SYMD(1:2)
+               MOVE    JOB-ENDYMD(1:6)    TO  WRK-SYMD(3:6)
+           ELSE
+               MOVE    JOB-ENDYMD         TO  WRK-SYMD
+           END-IF
+           PERFORM 700-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG        TO  WRK-ENDYMD
+           IF  JOB-ENDTIME   =   SPACE
+               MOVE    JOB-ENDTIME        TO  WRK-ENDTIME
+           ELSE
+               MOVE    ":"                TO  WRK-ENDTIME(3:1)
+               MOVE    ":"                TO  WRK-ENDTIME(6:1)
+               MOVE    JOB-ENDTIME(1:2)   TO  WRK-ENDTIME(1:2)
+               MOVE    JOB-ENDTIME(3:2)   TO  WRK-ENDTIME(4:2)
+               MOVE    JOB-ENDTIME(5:2)   TO  WRK-ENDTIME(7:2)
+           END-IF
       *
-               MOVE    "DBUPDATE"      TO  MCP-FUNC
-               MOVE    PGKANRI-REC     TO  MCPDATA-REC
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC          NOT =   ZERO 
-                   MOVE    "1001"          TO  SPA-ERRCD
-                   GO  TO  420-KOUSHIN-EXT
-               END-IF
+           IF  WRK-JOBKANRI-RETURN   =   ZERO
+      *     ジョブ管理削除
+               MOVE    "DEL"               TO  WRK-JOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    1                   TO  JOB-JOBID
+               MOVE    "MSTMNT"            TO  JOB-SHELLID
+               CALL    "ORCSJOB"           USING
+                                           WRK-JOBKANRI-AREA
+                                           JOBKANRI-REC
+           END-IF.
       *
-               PERFORM 900-PGKANRI-FETCH-SEC
+      *    ジョブ管理作成
+           MOVE    "JBS"               TO  WRK-JOBKANRI-MODE.
+           INITIALIZE                  JOBKANRI-REC.
+           MOVE    1                   TO  JOB-JOBID.
+           MOVE    "MSTMNT"            TO  JOB-SHELLID.
+           CALL    "ORCSJOB"           USING
+                                       WRK-JOBKANRI-AREA
+                                       JOBKANRI-REC.
       *
-           END-PERFORM
+           IF      SPA-GMN-ONKBN        =   "T"
+               MOVE    "program_upgrade_online.sh"
+                                        TO  SHELL-SHELL
+               MOVE    "2"              TO  SHELL-ARG1
+           END-IF
       *
-           PERFORM 900-PGKANRI-CLOSE-SEC
+           IF      SPA-GMN-OFFKBN       =   "T"
+               MOVE    "program_upgrade_offline.sh"
+                                        TO  SHELL-SHELL
+               EVALUATE    SPA-GMN-CD
+                   WHEN    "1"
+                       MOVE    "2"              TO  SHELL-ARG1
+                       MOVE    "1"              TO  SHELL-ARG2
+                   WHEN    "2"
+                       MOVE    "2"              TO  SHELL-ARG1
+                       MOVE    "2"              TO  SHELL-ARG2
+                   WHEN    OTHER
+                       GO  TO  400-JYOUHOU-SEC-EXT
+               END-EVALUATE
+           END-IF
+      *
+      *    マスタ更新処理
+           MOVE    SPACE               TO  SHELLTBL.
+           MOVE    SHELL-NAME          TO  SHELLTBL-NAME.
+           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1.
+           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2.
+           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3.
+           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4.
+           MOVE    SHELLTBL            TO  MCPDATA-REC.
+      *
+           MOVE    "SHELL"             TO  MCP-FUNC.
+           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH.
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC.
       *
            PERFORM 400-JYOKYO-SET-SEC
            .
@@ -631,6 +741,9 @@
                 WHEN    "1001"
                     MOVE    "ＰＧ更新エラー"
                                                 TO  SPA-ERRMSG
+                WHEN    "1001"
+                    MOVE    "ＰＧ更新エラー"
+                                                TO  SPA-ERRMSG
                 WHEN    OTHER
                     MOVE    SPACE               TO  SPA-ERRMSG
             END-EVALUATE
@@ -653,6 +766,110 @@
            .
       *
        510-ERRSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ジョブ管理読込
+      *****************************************************************
+       820-JOBKANRI-READ1-SEC     SECTION.
+      *
+           MOVE    "CHK"           TO  WRK-JOBKANRI-MODE.
+           INITIALIZE                  JOBKANRI-REC.
+           MOVE    1               TO  JOB-JOBID.
+           MOVE    "MSTMNT"        TO  JOB-SHELLID.
+           CALL    "ORCSJOB"       USING
+                                   WRK-JOBKANRI-AREA
+                                   JOBKANRI-REC.
+      *
+       820-JOBKANRI-READ1-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ジョブ管理読込
+      *****************************************************************
+       820-JOBKANRI-READ2-SEC     SECTION.
+      *
+           MOVE    "CHK"           TO  WRK-JOBKANRI-MODE.
+           INITIALIZE                  JOBKANRI-REC.
+           MOVE    1               TO  JOB-JOBID.
+           MOVE    "MSTMNT"        TO  JOB-SHELLID.
+           CALL    "ORCSJOB"       USING
+                                   WRK-JOBKANRI-AREA
+                                   JOBKANRI-REC.
+      *
+           IF  WRK-JOBKANRI-RETURN   =   ZERO
+               IF  JOB-ERRCD(1:2)   =   "99"
+                   MOVE    SPACE           TO  SKBN-RUN
+               ELSE
+                   IF  JOB-ERRCD(1:2)   =   "01"
+                       MOVE    SPACE         TO  SKBN-RUN
+                   ELSE
+                       IF  (JOB-ENDTIME       NOT =   SPACE)  AND
+                           (JOB-ENDYMD        NOT =   SPACE)
+                           MOVE    SPACE        TO  SKBN-RUN
+                       ELSE
+                           MOVE    "RUN"        TO  SKBN-RUN
+                       END-IF
+                   END-IF
+               END-IF
+           ELSE
+               MOVE    SPACE        TO  SKBN-RUN
+           END-IF.
+      *
+       820-JOBKANRI-READ2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面ERR
+      *****************************************************************
+       830-GAMENN-SET4-SEC        SECTION.
+      *
+           MOVE    "B01"               TO  MCP-WIDGET
+           MOVE    "M97"               TO  SPA-MOTOPG
+           MOVE    "MERR"              TO  SPA-SAKIPG
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "MERR"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END.
+      *
+       830-GAMENN-SET4-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面警告
+      *****************************************************************
+       830-GAMENN-SET5-SEC        SECTION.
+      *
+           MOVE    "B12"               TO  MCP-WIDGET.
+           MOVE    "M97"               TO  SPA-MOTOPG.
+           MOVE    "MID1"              TO  SPA-SAKIPG.
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "MID1"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END.
+      *
+       830-GAMENN-SET5-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    戻る
+      *****************************************************************
+       830-GAMENN-SET6-SEC        SECTION.
+      *
+           MOVE    "M00"               TO  SPA-SAKIPG
+           MOVE    "M97"               TO  SPA-MOTOPG
+           MOVE    "M00"               TO  MCP-WINDOW
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END.
+      *
+       830-GAMENN-SET6-EXT.
            EXIT.
       *
       *****************************************************************
