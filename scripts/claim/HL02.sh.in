@@ -1,0 +1,57 @@
+#!/bin/bash
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+ORCASCRIPT=$ORCA_DIR/scripts/claim/rb
+#-------------------------------------------#
+#        $1 KBN     X(01)
+#        $2 PTID    9(10)
+#        $3 SRYKA   X(02)      
+#        $4 DATE    X(08) 
+#        $5 COMBNUM X(04) 
+#        $6 HOSPID  X(24)
+#-------------------------------------------#
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCL0020 -parameter $1,$2,$3,$4,$5,$6,END > /tmp/L0020.log 
+
+#-------------------------------------------#
+# Add Start (2001/08/27)
+#-------------------------------------------#
+# Make XML File Script Execute
+#   orca_layout_front.def - Layout Define File
+#   claim$2.txt           - Input Sequential File
+#   orca_base_front.xml   - Template XML File
+#   orca_send_front.xml   - Output XML File
+echo `date` 
+  cd $ORCASCRIPT
+     ./orca_make_xml.rb ../def/orca_layout_accounting.def /var/tmp/claim$2.txt ../template/orca_base_accounting.xml >/var/tmp/claim_send_accounting$2.xml
+echo `date`
+#-------------------------------------------#
+# Add End
+#-------------------------------------------#
+
+#-------------------------------------------#
+# Add Start (2001/10/29)
+#-------------------------------------------#
+if [ $1 = "1" ]
+  then
+    # --- to SJIS ---
+    ./clm_snd.rb localhost 8888 /var/tmp/claim_send_accounting$2.xml sjis 
+#    ./clm_snd.rb 192.168.10.7 5002 /var/tmp/claim_send_accounting$2.xml sjis 
+    # --- to UTF-8---
+#    ./clm_snd.rb 192.168.10.226 5002 /var/tmp/claim_send_accounting$2.xml u8
+elif [ $1 = "2" ]
+  then
+    # --- to UTF-8   ---
+    ./clm_snd.rb 192.168.10.226 5002 /var/tmp/claim_send_accounting$2.xml u8
+fi
+#-------------------------------------------#
+# Add End
+#-------------------------------------------#
+        exit 
