@@ -43,12 +43,16 @@
                                        VALUE   "HC04V01   " .
                05  PRTCONST-PRTID-T19  PIC  X(10)
                                        VALUE   "HC04V02   " .
+               05  PRTCONST-PRTID-T19  PIC  X(10)
+                                       VALUE   "HC04V03   " .
                05  PRTCONST-PRTID-T21  PIC  X(10)
                                        VALUE   "HC041     " .
                05  PRTCONST-PRTID-T22  PIC  X(10)
                                        VALUE   "HC041V01  " .
                05  PRTCONST-PRTID-T23  PIC  X(10)
                                        VALUE   "HC041V02  " .
+               05  PRTCONST-PRTID-T23  PIC  X(10)
+                                       VALUE   "HC041V03  " .
                05  PRTCONST-PRTID-T24  PIC  X(10)
                                        VALUE   "HCML01    " .
                05  PRTCONST-PRTID-T25  PIC  X(10)
