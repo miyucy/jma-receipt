@@ -1190,7 +1190,7 @@
                ELSE
                    MOVE  1                 TO  SHELL-SRYKBN
                    MOVE  "11"              TO  SHELL-SRYSTR
-                   MOVE  "99"              TO  SHELL-SRYEND
+                   MOVE  "97"              TO  SHELL-SRYEND
                END-IF
       *----(02.00.03)--UPD-END-----
            END-IF
