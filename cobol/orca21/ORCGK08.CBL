@@ -1471,7 +1471,8 @@
            END-IF
       *
       *    コメントの時、内容設定
-           IF     (LNK-WKSRY-SRYCD   (IDX IDZ)(1:1)  =   "8"   )  AND
+           IF    ((LNK-WKSRY-SRYCD   (IDX IDZ)(1:1)  =   "8"   ) OR
+                  (LNK-WKSRY-SRYCD   (IDX IDZ)(1:3)  =   "008" )) AND
       *DDDDDDDDDD (LNK-WKSRY-INPUTNUM(IDX IDZ)    NOT =   ZERO OR
                   (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
                MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
@@ -1546,7 +1547,8 @@
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
       *    コメントの時、内容設定
-           IF     (LNK-WKSRY-SRYCD   (IDX IDZ)(1:1)  =   "8"   )  AND
+           IF    ((LNK-WKSRY-SRYCD   (IDX IDZ)(1:1)  =   "8"   ) OR
+                  (LNK-WKSRY-SRYCD   (IDX IDZ)(1:3)  =   "008" ))  AND
                   (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
                MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
                                            TO  SPA-GMN-TMEISYO2(IDG)

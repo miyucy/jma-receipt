@@ -2144,7 +2144,8 @@
            END-IF
       *
       *    コメントの時、内容設定
-           IF     (SRY-SRYCD  (IDZ)(1:1)   =   "8"   )  AND
+           IF    ((SRY-SRYCD  (IDZ)(1:1)   =   "8"  )  OR
+                  (SRY-SRYCD  (IDZ)(1:3)   =   "008"))  AND
                   (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
                PERFORM 310122-KNJCOM-SET-SEC
            END-IF
@@ -2243,7 +2244,8 @@
            END-IF
       *
       *    コメントの時、内容設定
-           IF     (SRY-SRYCD  (IDZ)(1:1)   =   "8"   )  AND
+           IF    ((SRY-SRYCD  (IDZ)(1:1)   =   "8"   ) OR
+                  (SRY-SRYCD  (IDZ)(1:3)   =   "008" )) AND
                   (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
                PERFORM 310122-KNJCOM-SET-SEC
            END-IF

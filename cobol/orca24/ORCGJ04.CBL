@@ -2344,8 +2344,10 @@
            END-IF
       *    名称入力へのカーソル移動
            IF      WRK-IN-IDX          >   ZERO
-               IF      SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
-                                           =   "81"  OR  "83"
+               IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
+                                           =   "81"  OR  "83") OR
+                      (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
+                                           =   "0083"  )
                    MOVE    "3"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
                END-IF
            END-IF
@@ -2430,6 +2432,9 @@
                                                    =   "001" ) OR
                      ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
                                                    =   "84" ) AND
+                      (TNS-SSTKIJUNCDTBL(1)    NOT =   ZERO ))  OR
+                     ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:4)
+                                                   =   "0084") AND
                       (TNS-SSTKIJUNCDTBL(1)    NOT =   ZERO ))  OR
                      ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
                                                    =   "09500" OR
@@ -2551,20 +2556,26 @@
                                                        (SPA-GMN-IDX)
            END-IF
            IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  = "83" OR
-                                                         "84")
+                                                         "84")  OR
+                  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  = "0083" OR
+                                                         "0084")
                IF     (LNK-SC97-NYURYOKU   =   ZERO )  AND
                       (FLG-IN-ATAI         =   ZERO )  AND
-                      (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
-                                           = "83"   )
+                     ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
+                                           =   "83"   )  OR
+                      (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
+                                           =   "0083" ))
                    MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
                                                          (SPA-GMN-IDX)
                END-IF
                MOVE    "1"             TO  SPA-COM-MEIFLG
                                                        (SPA-GMN-IDX)
            END-IF
-           IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  =  "81"
+           IF    ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  =  "81"
                                                        OR "83"
-                                                       OR "84") AND
+                                                       OR "84") OR
+                  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  =  "0083"
+                                                       OR "0084")) AND
                   (SPA-GMN-MEISYO-G(SPA-GMN-IDX) NOT =   SPACE)
                CONTINUE
            ELSE
@@ -2828,6 +2839,9 @@
                                            TO  WRK-MOJI
            IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)   =   "059"
                MOVE    "7"                 TO  WRK-MOJI
+           END-IF
+           IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)   =   "008"
+               MOVE    "8"                 TO  WRK-MOJI
            END-IF
       *
            EVALUATE    WRK-MOJI
@@ -3628,7 +3642,8 @@
                                            TO  WRK-COM-SRYSYUKBN(IDX-Z)
                END-IF
       *        名称（最初の行に’＊’）
-               IF      WRK-COM-INPUTCD(IDX-Z)(1:1) =   "8"
+               IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "8" )  OR
+                      (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "008")
                    CONTINUE
                ELSE
                    IF      IDX-Z               =   1
@@ -4876,8 +4891,11 @@
                    END-IF
       *            入力コメント
                    IF      SPA-COM-MEIFLG (IDX1)    =   "1"
-                       IF      SPA-COM-INPUTCD (IDX1)(1:2)
-                                                       =   "83" OR "84"
+                       IF     (SPA-COM-INPUTCD (IDX1)(1:2)
+                                                       =   "83" OR "84")
+                         OR   (SPA-COM-INPUTCD (IDX1)(1:4)
+                                                       =   "0083"
+                                                       OR  "0084" )
                            MOVE    SPA-GMN-MEISYO   (IDX1)
                                            TO  ORCSCZAICHK-INPUTCOMENT
                                                              (IDX-ATO)
@@ -4887,16 +4905,17 @@
                                                              (IDX-ATO)
                        END-IF
                    ELSE
-                       IF     (SPA-COM-INPUTCD (IDX1)(1:1)
-                                                       =   "8" )
-      **************   AND    (SPA-COM-INPUTCHI-G(IDX1)
-      **************                               NOT =   SPACE)
+                       IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
+                                                         OR  "84")
+                          OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
+                                                         OR  "0084")
                            MOVE    SPA-GMN-MEISYO(IDX)
                                            TO  ORCSCZAICHK-INPUTCOMENT
                                                              (IDX-ATO)
                        END-IF
                    END-IF
-                   IF      SPA-COM-INPUTCD(IDX1)(1:1)  =   "8"
+                   IF     (SPA-COM-INPUTCD(IDX1)(1:1)  =   "8"   ) OR
+                          (SPA-COM-INPUTCD(IDX1)(1:4)  =   "0084")
                        MOVE    SPA-COM-INPUTCHI-G(IDX1)
                                            TO  ORCSCZAICHK-INPUTCHI-G
                                                              (IDX-ATO)
@@ -5128,7 +5147,8 @@
                 PERFORM 45022-JIKANGAI-SET-SEC
            END-IF
       *    入力コメント番号
-           IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "8"
+           IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "8" )  OR
+                  (SPA-COM-INPUTCD(IDX)(1:3)   =   "008")
                PERFORM 450111-KNJCOM-SYROI-SEC
       *******  MOVE    WRK-MEINUM          TO  SRY-INPUTNUM (IDS)
            END-IF
@@ -5223,8 +5243,10 @@
            MOVE    SRY-SRYCD   (IDS)   TO  PTCOM-SRYCD
       *入力コメント
            IF      SPA-COM-MEIFLG (IDX)    =   "1"
-               IF      SPA-COM-INPUTCD(IDX)(1:2) =   "83"
-                                                 OR  "84"
+               IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
+                                                 OR  "84" )  OR
+                      (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
+                                                 OR  "0084" )
                    MOVE    SPA-GMN-MEISYO (IDX)
                                        TO  PTCOM-INPUTCOMENT
                ELSE
@@ -5232,8 +5254,9 @@
                                        TO  PTCOM-INPUTCOMENT
                END-IF
            ELSE
-               IF     (SPA-COM-INPUTCD(IDX)(1:1)       =   "8"  )
-      ********** AND  (SPA-COM-INPUTCHI-G (IDX)    NOT =   SPACE )
+               IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "8"  ) OR
+                      (SPA-COM-INPUTCD(IDX)(1:4)   =   "0083"
+                                                   OR  "0084")
                     MOVE    SPA-GMN-MEISYO (IDX)
                                                TO  PTCOM-INPUTCOMENT
                ELSE

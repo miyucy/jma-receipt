@@ -44,6 +44,7 @@
       * 01.00.15     NACL-多々納  03/10/28  検査包括修正
       * 01.00.16     NACL-多々納  04/01/23  セット内の検査包括対象外
       * 01.00.17     NACL-多々納  04/03/17  Ｈ１６．４改正対応
+      * 01.00.18     NACL-多々納  04/04/27  ユーザーコード追加
       *****************************************************************
       *
       *
@@ -642,6 +643,25 @@
                                                            (IDX - 1)
                            ELSE
                                MOVE    "0013"          TO  SPA-ERRCD
+                           END-IF
+      *                コメント（前の剤に付属する）
+                       WHEN    "008"
+                           MOVE    SPACE         TO  SPA-COM-SRYSYUKBN
+                                                                 (IDX)
+      *                    前行に回数がない時）
+                           IF     (IDX                 =   1   )  OR
+                                  (SPA-COM-KAIFLG (IDX - 1 )   =   "1")
+                               MOVE    "99"        TO  SPA-COM-SRYKBN
+                                                                (IDX)
+                           ELSE
+                               MOVE    SPA-COM-SRYKBN (IDX - 1)
+                                                   TO  SPA-COM-SRYKBN
+                                                                (IDX)
+                               MOVE    SPA-COM-ZAIEND (IDX - 1)
+                                                   TO  SPA-COM-ZAIEND 
+                                                                (IDX)
+                               MOVE    SPACE       TO  SPA-COM-ZAIEND
+                                                              (IDX - 1)
                            END-IF
       *                フリーの時、点数マスタより、決定
                        WHEN    OTHER

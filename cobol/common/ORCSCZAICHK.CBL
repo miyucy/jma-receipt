@@ -315,7 +315,8 @@
                                                              (IDX-SIN)
                        MOVE    SRY-SRYKAISU(IDX2)  TO  TBL-MAE-SRYKAISU
                                                              (IDX-SIN)
-                       IF      SRY-SRYCD (IDX2)(1:1)   =   "8"
+                       IF     (SRY-SRYCD (IDX2)(1:1)   =   "8" ) OR
+                              (SRY-SRYCD (IDX2)(1:3)   =   "008")
                            MOVE    SRY-HOSPID          TO  PTCOM-HOSPID
                            MOVE    SRY-PTID            TO  PTCOM-PTID
                            MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM

@@ -435,7 +435,8 @@
            ELSE
                MOVE    ISET-COMMENT    TO  SPA-GMN-MEISYO
                                                           (SPA-GMN-IDX)
-               IF      ISET-INPUTCD(1:2)   =   "83" 
+               IF     (ISET-INPUTCD(1:2)   =   "83" )  OR
+                      (ISET-INPUTCD(1:4)   =   "0083")
                    MOVE    "1"         TO  SPA-COM-MEIFLG
                                                           (SPA-GMN-IDX)
                END-IF

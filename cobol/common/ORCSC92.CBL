@@ -499,6 +499,8 @@
                                            =   "8"    )  OR
                   (LNK-SC92-SRYCD  (1:3)
                                            =   "001"  )  OR
+                  (LNK-SC92-SRYCD  (1:3)
+                                           =   "008"  )  OR
                   (TNS-SSTKIJUNCD(01)      =   ZERO   )
                CONTINUE
            ELSE
@@ -1688,6 +1690,9 @@
            IF    ((SPA-COM-INPUTCD (IDX-T)   =   "810000001" )  AND
                   (SPA-GMN-MEISYO-G(IDX-T)   NOT =   SPACE   )) OR
                  ((SPA-COM-INPUTCD (IDX-T)(1:2)  =   "83"    ) AND
+                  (SPA-GMN-MEISYO  (IDX-T)   NOT =   SPACE   ))  OR
+      *         ユザーの埋め込みコメント
+                 ((SPA-COM-INPUTCD (IDX-T)(1:4)  =   "0083"  ) AND
                   (SPA-GMN-MEISYO  (IDX-T)   NOT =   SPACE   ))
                CONTINUE
            ELSE
@@ -1699,7 +1704,8 @@
                END-IF
            END-IF
       *    入力値のある時、再編集
-           IF      SPA-COM-INPUTCD (IDX-T)(1:2)    =   "84"
+           IF     (SPA-COM-INPUTCD (IDX-T)(1:2)    =   "84" )  OR
+                  (SPA-COM-INPUTCD (IDX-T)(1:4)    =   "0084")
                 PERFORM 3002-INPUT-MEISYO-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
            END-IF
@@ -2391,7 +2397,8 @@
            END-IF
       *
       *    入力値のある時、再編集
-           IF      SPA-COM-INPUTCD (IDX-T)(1:2)    =   "84"
+           IF     (SPA-COM-INPUTCD (IDX-T)(1:2)    =   "84" )  OR
+                  (SPA-COM-INPUTCD (IDX-T)(1:4)    =   "0084")
                MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
                IF      FLG-TENSU           =   ZERO

@@ -165,6 +165,9 @@
                IF      SPA-COM-INPUTCD(IDX)(1:3)   =   "059"
                    MOVE    "7"                     TO  WRK-MOJI
                END-IF
+               IF      SPA-COM-INPUTCD(IDX)(1:3)   =   "008"
+                   MOVE    "8"                     TO  WRK-MOJI
+               END-IF
            END-IF
       *
            IF      WRK-MOJI            =   "."
@@ -178,7 +181,8 @@
       *
       *    自費の時、０とする
            IF      SPA-COM-SRYKBN (IDX)    =   "95"  OR  "96"
-               IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "6" OR "7"
+               IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "6" OR "7") OR
+                      (WRK-MOJI                    =   "8" )
                    CONTINUE
                ELSE
                    MOVE    "0"                 TO  WRK-MOJI
