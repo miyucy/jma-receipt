@@ -4401,6 +4401,7 @@
                    INITIALIZE                  WRK-SCR-REC
                    MOVE    ZERO                TO  IDX3
                    MOVE    ZERO                TO  FLG-CHK-ALL
+                   MOVE    ZERO                TO  FLG-CHK
                END-IF
            END-PERFORM
       *    ∫ﬁÀË§À¬–æ›§Ú ‘Ω∏§π§Î

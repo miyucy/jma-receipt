@@ -2437,10 +2437,6 @@
                END-IF
            END-IF
       *
-      *TEST
-           DISPLAY "K03 SYU-SRYKA:" SYU-SRYKA
-                  ",WRK-DENPNUM:" WRK-DENPNUM
-      *TEST
            MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
       *    伝票番号発行日
            MOVE    SPA-SYSYMD          TO  SYU-DENPPRTYMD

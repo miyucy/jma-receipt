@@ -2682,6 +2682,24 @@
       *    MOVE    ZERO                TO  FLG-SYOSIN
       *    ¿Ç»¡ÎÁÊÔ½¸¤Ê¤·(1:¿Ç»¡ÎÁ»»ÄêºÑ¤ß¡Ë
       *****MOVE    LNK-SC10S-SINSATU   TO  FLG-SINSATU
+      *
+      *    ºÞÊ¬Î¥½èÍý¤ò¹Ô¤¦
+           INITIALIZE                  ORCSC93AREA
+           MOVE    "K02"               TO  LNK-SC93-PG
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê»»ÄêÍ­¤ê
+           MOVE    SPA-SYONIKA-ARI2    TO  LNK-SC93-SYONIKA-ARI2
+      *    ¿²¤¿¤­¤êºßÂð²Ê»»ÄêÍ­¤ê
+           IF      (SPA-NETAKIRI-ARI   NOT =   ZERO )  OR
+                   (SPA-NETAKIRI-ARI2  NOT =   ZERO )
+               MOVE    1                   TO  LNK-SC93-NETAKIRI-ARI
+           END-IF
+           CALL    "ORCSC93"           USING
+                                       MCPAREA
+                                       SPA-SCR-REC
+                                       SPA-AREA
+                                       ORCSC93AREA
+                                       MSYU-DATA-REC
+      *
       *    ¿Ç»¡ÎÁ¤Î¤ßÊÑ´¹¤¹¤ë
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            INITIALIZE                      ORCSC10SAREA
