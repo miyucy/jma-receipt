@@ -1265,24 +1265,30 @@
       *
            MOVE    13                   TO  SPA-GMN-CUR
       *
+           MOVE    "00000000"           TO  SPA-NAI-STTAIINYMD
+      *
            IF     SPA-GMN-STTAIINYMD    =   SPACE
-               MOVE    "00000000"       TO  SPA-NAI-STTAIINYMD
                GO  TO  41025-STTAIINYMD-CHK-EXT
            END-IF
       *
            IF     SPA-GMN-STTAIINYMD (1:3)  =   "000"
                MOVE    "00000000"       TO  SPA-GMN-STTAIINYMD
-           ELSE    
-      *        日付画面チェックサブ
-               INITIALIZE                      ORCSGDAYAREA
-               MOVE    SPA-GMN-STTAIINYMD  TO  SGDAY-INDAY
-               CALL    "ORCSGDAY"          USING
-                                           ORCSGDAYAREA
-               IF      SGDAY-RC            =   ZERO
-                   MOVE    SGDAY-OTDAY         TO  SPA-GMN-STTAIINYMD
-                   MOVE    SGDAY-SDAY          TO  SPA-NAI-STTAIINYMD
-               ELSE
-                   MOVE    "0011"          TO  SPA-ERRCD
+           ELSE
+               IF     SPA-GMN-STTAIINYMD (1:3)  =   "999"
+                   MOVE    "99999999"   TO  SPA-GMN-STTAIINYMD
+                   MOVE    "99999999"   TO  SPA-NAI-STTAIINYMD
+               ELSE    
+      *            日付画面チェックサブ
+                   INITIALIZE                      ORCSGDAYAREA
+                   MOVE    SPA-GMN-STTAIINYMD  TO  SGDAY-INDAY
+                   CALL    "ORCSGDAY"          USING
+                                               ORCSGDAYAREA
+                   IF      SGDAY-RC            =   ZERO
+                       MOVE    SGDAY-OTDAY     TO  SPA-GMN-STTAIINYMD
+                       MOVE    SGDAY-SDAY      TO  SPA-NAI-STTAIINYMD
+                   ELSE
+                       MOVE    "0011"          TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF    
            .
@@ -1296,8 +1302,9 @@
       *
            MOVE    14                   TO  SPA-GMN-CUR
       *
+           MOVE    "99999999"           TO  SPA-NAI-EDTAIINYMD
+      *
            IF     SPA-GMN-EDTAIINYMD    =   SPACE
-               MOVE    "99999999"       TO  SPA-NAI-EDTAIINYMD
                GO  TO  41026-EDTAIINYMD-CHK-EXT
            END-IF
       *
