@@ -115,6 +115,9 @@
       *  01.00.10    NACL-門脇    03.03.03  剤番号桁修正対応
       *  01.00.11    NACL-藤原    03.03.05  レセプトコメントＤＢに入外区分を追加
       *  01.00.12    NACL-藤原    03/03/11  種別不明のとき情報を編集
+      *
+      *  ２００３．４改正対応
+      *  01.02.01    NACL-藤原    03/04/17  出力件数をジョブ管理ＤＢへ更新
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3753,10 +3756,10 @@
                                        RECE09-FILE
                                        RECE11-FILE 
       *
-           IF      CNT-OUT            =   ZERO 
-               MOVE    "対象データがありませんでした" TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
+      *****IF      CNT-OUT            =   ZERO 
+      *         MOVE    "対象データがありませんでした" TO  WRK-RECEERR
+      *         PERFORM 500-ERR-HENSYU-SEC
+      *****END-IF
            DISPLAY "*** ORCR0100 IN  RECE02 ="  CNT-RECE02
            DISPLAY "*** ORCR0100 IN  RECE02X="  CNT-RECE02X
            DISPLAY "*** ORCR0100 OUT         "  CNT-OUT
@@ -3768,6 +3771,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    CNT-OUT         TO  JOB-UPDCNT
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
