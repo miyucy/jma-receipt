@@ -3344,7 +3344,9 @@
                PERFORM T-530-RECECHEK-READ5-SEC
                IF  MCP-RC   NOT =   ZERO
                    MOVE    1                    TO  FLG-TBL
-               ELSE
+               END-IF
+               PERFORM UNTIL   (MCP-RC            NOT =   ZERO)  OR
+                               (FLG-TENKIYMD-ER       =   2  OR  3)
                    MOVE    2                    TO  FLG-TBL
                    MOVE    MCPDATA-REC          TO  PTBYOMEI-REC
                    IF  (PTBYO-TENKIYMD   NOT  =   SPACE)      AND
@@ -3361,7 +3363,10 @@
                        (PTBYO-SRYYMD(1:6)   >   T-SINRYOU-AREA)
                        MOVE    3                    TO  FLG-TBL
                    END-IF
-               END-IF
+                   IF  FLG-TENKIYMD-ER   =   ZERO   OR   1
+                       PERFORM T-530-RECECHEK-READ5-SEC
+                   END-IF
+               END-PERFORM
            END-IF.
       *
            INITIALIZE                  MCPAREA.
