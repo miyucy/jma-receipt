@@ -730,6 +730,13 @@
       *            点数マスタ編集・基本チェック
                    PERFORM 1001-SRYCD-SYORI-SEC
       *
+      *            セットの時前に編集
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)
+                                               TO  SPA-MAE-INPUTCD
+                                                          (SPA-GMN-IDX)
+                   END-IF
+      *
                    MOVE    "INPUTSET-KEY2"     TO  ORC-DBPATH
                    PERFORM 910-INPUTSET-READ-SEC
       *

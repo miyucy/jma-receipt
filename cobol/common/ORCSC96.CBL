@@ -662,7 +662,7 @@
                WHEN    "S001"
                    MOVE    "約束セット内に使用できないコードがあります"
                                        TO  SPA-ERRMSG
-                   MOVE    "約束セットを修正して下さい。"
+                   MOVE    "。この約束セットは使用できません。"
                                        TO  SPA-ERRMSG(43:)
                WHEN    "A002"
                    MOVE    "数量ゼロは入力できません。"
