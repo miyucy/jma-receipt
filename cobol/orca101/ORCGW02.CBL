@@ -49,6 +49,7 @@
       *  01.00.18    NACL-多々納  04/05/11  減免事由の割引対象を９９件へ
       *  01.00.19    NACL-太田    04/07/05  請求書発行コンボ項目追加
       *  01.00.20    NACL-太田    04/07/07  入金方法情報タブ追加
+      *  01.00.21    NACL-太田    04/09/24  減免端数区分の初期値を変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1110,9 +1111,9 @@
                    MOVE    2               TO  IDY
                END-IF
            END-PERFORM
-      *    減免端数区分 空白の時、"1"とする
+      *    減免端数区分 空白の時、"4"とする
            IF      SYS-1001-DISCOUNT-HASU-KBN    =   SPACE
-               MOVE    "1"             TO  SYS-1001-DISCOUNT-HASU-KBN
+               MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       4
@@ -2997,7 +2998,7 @@
                    MOVE    "全角で入力して下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "0013"
-                   MOVE    "減免端数設定入力エラー"
+                   MOVE    "請求額・減免端数設定入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0014"
                    MOVE    "消費税端数設定入力エラー"
