@@ -789,18 +789,18 @@
        310-SPA-SET-SEC                 SECTION.
       *
       *    請求書発行フラグ
-           MOVE    "0:発行なし"        TO  SPA-GMN-HAKFLGLST (01)
-           MOVE    "1:発行あり"        TO  SPA-GMN-HAKFLGLST (02)
-           MOVE    "2:発行あり（請求あり）"
+           MOVE    "0 発行なし"        TO  SPA-GMN-HAKFLGLST (01)
+           MOVE    "1 発行あり"        TO  SPA-GMN-HAKFLGLST (02)
+           MOVE    "2 発行あり（請求あり）"
                                        TO  SPA-GMN-HAKFLGLST (03)
            MOVE    3                   TO  SPA-HAKFLG-MAX
            MOVE    SPA-SKYPRTFLG       TO  SPA-GMN-HAKFLG
       *
       *    院外処方せん発行フラグ
            MOVE    SPA-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG
-           MOVE    "0:発行なし"        TO  SPA-GMN-SYOHOPRTLST (01)
-           MOVE    "1:発行あり"        TO  SPA-GMN-SYOHOPRTLST (02)
-           MOVE    "2:院内処方発行"    TO  SPA-GMN-SYOHOPRTLST (03)
+           MOVE    "0 発行なし"        TO  SPA-GMN-SYOHOPRTLST (01)
+           MOVE    "1 発行あり"        TO  SPA-GMN-SYOHOPRTLST (02)
+           MOVE    "2 院内処方発行"    TO  SPA-GMN-SYOHOPRTLST (03)
            MOVE    3                   TO  SPA-SYOHOPRTFLG-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYOHOPRTFLG-MAX
@@ -813,9 +813,9 @@
       *
       *    薬剤情報発行行フラグ
            MOVE    SPA-YAKJYOPRTFLG    TO  SPA-GMN-YAKJYOFLG
-           MOVE    "0:発行なし"        TO  SPA-GMN-YAKJYOLST (01)
-           MOVE    "1:発行あり"        TO  SPA-GMN-YAKJYOLST (02)
-           MOVE    "2:院外分発行"      TO  SPA-GMN-YAKJYOLST (03)
+           MOVE    "0 発行なし"        TO  SPA-GMN-YAKJYOLST (01)
+           MOVE    "1 発行あり"        TO  SPA-GMN-YAKJYOLST (02)
+           MOVE    "2 院外分発行"      TO  SPA-GMN-YAKJYOLST (03)
            MOVE    3                   TO  SPA-YAKJYOFLG-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-YAKJYOFLG-MAX

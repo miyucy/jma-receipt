@@ -803,8 +803,8 @@
       *    前回処方
       *****MOVE    "0"                 TO  SPA-GMN-ZENKAI
       *****MOVE    "1"                 TO  SPA-GMN-ZENKAI
-           MOVE    "0:表示あり"        TO  SPA-GMN-ZENKAI-COMB (01)
-           MOVE    "1:表示なし"        TO  SPA-GMN-ZENKAI-COMB (02)
+           MOVE    "0 表示あり"        TO  SPA-GMN-ZENKAI-COMB (01)
+           MOVE    "1 表示なし"        TO  SPA-GMN-ZENKAI-COMB (02)
            MOVE    2                   TO  SPA-GMN-ZENKAI-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-ZENKAI-MAX
@@ -814,8 +814,8 @@
                END-IF
            END-PERFORM
       *    分散入力
-           MOVE    "0:会計業務"        TO  SPA-GMN-BUNSAN-COMB (01)
-           MOVE    "1:診察室入力"      TO  SPA-GMN-BUNSAN-COMB (02)
+           MOVE    "0 会計業務"        TO  SPA-GMN-BUNSAN-COMB (01)
+           MOVE    "1 診察室入力"      TO  SPA-GMN-BUNSAN-COMB (02)
            MOVE    2                   TO  SPA-GMN-BUNSAN-MAX
            MOVE    SPA-GMN-BUNSAN-COMB (01)
                                        TO  SPA-GMN-BUNSAN-G
@@ -823,8 +823,8 @@
       *    院外院内区分
            MOVE    SPA-SYOHOKBN        TO  SPA-GMN-INGAIKBN
       *
-           MOVE    "0:院内"            TO  SPA-GMN-INGAIKBN-COMB(01)
-           MOVE    "1:院外"            TO  SPA-GMN-INGAIKBN-COMB(02)
+           MOVE    "0 院内"            TO  SPA-GMN-INGAIKBN-COMB(01)
+           MOVE    "1 院外"            TO  SPA-GMN-INGAIKBN-COMB(02)
            MOVE    2                   TO  SPA-GMN-INGAI-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-INGAI-MAX
@@ -905,8 +905,8 @@
            MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
            MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMDS
       *    前回処方
-           MOVE    "0:表示あり"        TO  SPA-GMN-ZENKAI-COMB (01)
-           MOVE    "1:表示なし"        TO  SPA-GMN-ZENKAI-COMB (02)
+           MOVE    "0 表示あり"        TO  SPA-GMN-ZENKAI-COMB (01)
+           MOVE    "1 表示なし"        TO  SPA-GMN-ZENKAI-COMB (02)
            MOVE    2                   TO  SPA-GMN-ZENKAI-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-ZENKAI-MAX
@@ -916,8 +916,8 @@
                END-IF
            END-PERFORM
       *    分散入力
-           MOVE    "0:会計業務"        TO  SPA-GMN-BUNSAN-COMB (01)
-           MOVE    "1:診察室入力"      TO  SPA-GMN-BUNSAN-COMB (02)
+           MOVE    "0 会計業務"        TO  SPA-GMN-BUNSAN-COMB (01)
+           MOVE    "1 診察室入力"      TO  SPA-GMN-BUNSAN-COMB (02)
            MOVE    2                   TO  SPA-GMN-BUNSAN-MAX
            MOVE    SPA-GMN-BUNSAN-COMB (01)
                                        TO  SPA-GMN-BUNSAN-G
@@ -925,8 +925,8 @@
       *    院外院内区分
            MOVE    SPA-SYOHOKBN        TO  SPA-GMN-INGAIKBN
       *
-           MOVE    "0:院内"            TO  SPA-GMN-INGAIKBN-COMB(01)
-           MOVE    "1:院外"            TO  SPA-GMN-INGAIKBN-COMB(02)
+           MOVE    "0 院内"            TO  SPA-GMN-INGAIKBN-COMB(01)
+           MOVE    "1 院外"            TO  SPA-GMN-INGAIKBN-COMB(02)
            MOVE    2                   TO  SPA-GMN-INGAI-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-INGAI-MAX
