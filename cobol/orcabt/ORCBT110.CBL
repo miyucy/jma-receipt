@@ -643,7 +643,7 @@
       *    診療年月日
            MOVE    WRK-PARA-SRYYMD     TO  HZN-TOUKEI04-SRYYMD
       *    入外区分
-           MOVE    "2"                 TO  HZN-TOUKEI04-NYUGAIKBN
+           MOVE    2                   TO  HZN-TOUKEI04-NYUGAIKBN
       *    患者番号
            INITIALIZE                  ORCSPTIDAREA
            MOVE    JYURRK-HOSPID   TO  SPTID-HOSPID
