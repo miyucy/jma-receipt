@@ -218,6 +218,33 @@
            03  WRK-SYS5000-SKJ             OCCURS  5.
                05  WRK-SYS5000-SHOKUCD     PIC X(09) OCCURS 31.
       *
+      *    食事ワーク
+           03  WRK-SKJ-TABLE.
+               05  WRK-SKJ-TBL           OCCURS  31.
+                   07  WRK-SKJ-SRYKA-DAY       PIC X(01).
+                   07  WRK-SKJ-GRP.
+                       09  WRK-SKJ-RYOYO       PIC X(09).
+                       09  WRK-SKJ-TOKU-KANRI  PIC X(09).
+                       09  WRK-SKJ-SHOKUDOU    PIC X(09).
+                   07  WRK-SKJ-GRPR    REDEFINES  WRK-SKJ-GRP.
+                       09  WRK-SKJ-SRYCD       PIC X(09)
+                                               OCCURS  3.
+                   07  WRK-SKJ-SRYCDTOTAL      PIC 9(14).
+                   07  WRK-SKJ-KAISU           PIC 9(02).
+                   07  WRK-SKJ-MONEY           PIC 9(07).
+      *    食事ワーク２（複数献立加算）
+           03  WRK-SKJ2-TABLE.
+               05  WRK-SKJ2-TBL          OCCURS  31.
+                   07  WRK-SKJ2-SRYKA-DAY      PIC X(01).
+                   07  WRK-SKJ2-FUKUSU         PIC X(09).
+                   07  WRK-SKJ2-KAISU          PIC 9(02).
+      *    食事ワーク３（特別食加算）
+           03  WRK-SKJ3-TABLE.
+               05  WRK-SKJ3-TBL          OCCURS  31.
+                   07  WRK-SKJ3-SRYKA-DAY      PIC X(01).
+                   07  WRK-SKJ3-TOKU-SHOKU     PIC X(09).
+                   07  WRK-SKJ3-KAISU          PIC 9(02).
+      *
       *    点数マスタ退避ワーク
            03  WRK-TENSU-OCC                   OCCURS  200.
                05  WRK-TENSU-SRYCD             PIC X(09).
@@ -1153,6 +1180,144 @@
                    MOVE   WRK-SO-TEN(IDX1)   TO
                                    LNK-ORCHCN33SUB-TEN(IDX1)
                END-IF
+           END-PERFORM
+      *
+      *食事情報の取得（入院会計）
+           INITIALIZE                           NYUINACCT-REC
+           MOVE    LNK-ORCHCN33SUB-HOSPID   TO  NACCT-HOSPID
+           MOVE    LNK-ORCHCN33SUB-PTID     TO  NACCT-PTID
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM TO  NACCT-SRYYM
+           MOVE    "NYUINACCT-KEY23"        TO  ORC-DBPATH
+           PERFORM 910-NYUINACCT-SELECT-SEC
+           IF      FLG-NYUINACCT           =   ZERO
+               MOVE     "NYUINACCT-KEY23"  TO  ORC-DBPATH
+               PERFORM   910-NYUINACCT-READ-SEC
+               PERFORM   VARYING   IDX1   FROM  1   BY  1
+                         UNTIL     IDX1   >    31
+                   IF    (WRK-SRYKA-DAY(IDX1) NOT = SPACE)    AND
+                         (NACCT-DAY(IDX1)    NOT =  ZERO)     AND
+                         (WRK-NYUINKHN(IDX1) NOT =  SPACE)    AND
+                         (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
+                       MOVE   WRK-SRYKA-DAY(IDX1)
+                                       TO  WRK-SKJ-SRYKA-DAY(IDX1)
+                                           WRK-SKJ2-SRYKA-DAY(IDX1)
+                                           WRK-SKJ3-SRYKA-DAY(IDX1)
+                       EVALUATE   NACCT-DAY(IDX1)
+                           WHEN   1
+                               MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
+                                               TO  WRK-SKJ-RYOYO(IDX1)
+                               EVALUATE  WRK-SYS5000-SHOKUCD(1 IDX1)
+                                   WHEN  "197000110"
+                                      ADD  1920 TO WRK-SKJ-MONEY(IDX1)
+                                   WHEN  "197000710"
+                                      ADD  1520 TO WRK-SKJ-MONEY(IDX1)
+                               END-EVALUATE    
+                           WHEN   2
+                               MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
+                                               TO  WRK-SKJ-RYOYO(IDX1)
+                               MOVE   "197000470"
+                                         TO  WRK-SKJ3-TOKU-SHOKU(IDX1)
+                               EVALUATE  WRK-SYS5000-SHOKUCD(1 IDX1)
+                                   WHEN  "197000110"
+                                      ADD  1920 TO WRK-SKJ-MONEY(IDX1)
+                                   WHEN  "197000710"
+                                      ADD  1520 TO WRK-SKJ-MONEY(IDX1)
+                               END-EVALUATE
+                           WHEN   3
+                               MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
+                                               TO  WRK-SKJ-RYOYO(IDX1)
+                               MOVE   "197000670"
+                                          TO  WRK-SKJ2-FUKUSU(IDX1)
+                               EVALUATE  WRK-SYS5000-SHOKUCD(1 IDX1)
+                                   WHEN  "197000110"
+                                      ADD  1920 TO WRK-SKJ-MONEY(IDX1)
+                                   WHEN  "197000710"
+                                      ADD  1520 TO WRK-SKJ-MONEY(IDX1)
+                               END-EVALUATE
+                           WHEN   4
+                               MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
+                                               TO  WRK-SKJ-RYOYO(IDX1)
+                               MOVE   "197000470"
+                                         TO  WRK-SKJ3-TOKU-SHOKU(IDX1)
+                               MOVE   "197000670"
+                                          TO  WRK-SKJ2-FUKUSU(IDX1)
+                               EVALUATE  WRK-SYS5000-SHOKUCD(1 IDX1)
+                                   WHEN  "197000110"
+                                      ADD  1920 TO WRK-SKJ-MONEY(IDX1)
+                                   WHEN  "197000710"
+                                      ADD  1520 TO WRK-SKJ-MONEY(IDX1)
+                               END-EVALUATE
+                       END-EVALUATE
+      *                特別管理加算
+                       IF    WRK-SYS5000-SHOKUCD(2 IDX1)  NOT = SPACE
+                           MOVE  WRK-SYS5000-SHOKUCD(2 IDX1)
+                                          TO  WRK-SKJ-TOKU-KANRI(IDX1)
+                           ADD   200          TO  WRK-SKJ-MONEY(IDX1)
+                       END-IF
+      *                食堂加算
+                       IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
+                           MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
+                                          TO  WRK-SKJ-SHOKUDOU(IDX1)
+                           ADD    50          TO  WRK-SKJ-MONEY(IDX1)
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    食事の診療コード計
+           PERFORM    VARYING   IDX1    FROM  1  BY  1
+                      UNTIL     IDX1    >   31
+               PERFORM   VARYING  IDX2  FROM  1  BY  1
+                         UNTIL    IDX2    >   3
+                   IF   WRK-SKJ-SRYCD(IDX1 IDX2)  NOT =  SPACE
+                       MOVE    WRK-SKJ-SRYCD(IDX1 IDX2) TO WRK-SRYCD-X
+                       COMPUTE WRK-SKJ-SRYCDTOTAL(IDX1)  =
+                               WRK-SKJ-SRYCDTOTAL(IDX1)  + WRK-SRYCD-9
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *    入院会計クローズ
+           MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
+      *   結果表示
+      **     PERFORM    VARYING   IDX1   FROM  1  BY  1
+      **                UNTIL     (IDX1   >     31)
+      **          DISPLAY  "IDX1 = " IDX1
+      **          DISPLAY  "WRK-SKJ-HKNCOMBI-DAY = " 
+      **                    WRK-SKJ-HKNCOMBI-DAY(IDX1)
+      **          DISPLAY  "WRK-SKJ-SRYCD(1) = " WRK-SKJ-SRYCD(IDX1 1)
+      **          DISPLAY  "WRK-SKJ-SRYCD(2) = " WRK-SKJ-SRYCD(IDX1 2)
+      **          DISPLAY  "WRK-SKJ-SRYCD(3) = " WRK-SKJ-SRYCD(IDX1 3)
+      **          DISPLAY  "WRK-SKJ-SRYCDTOTAL = "
+      **                                      WRK-SKJ-SRYCDTOTAL(IDX1)
+      **          DISPLAY  "WRK-SKJ-MONEY    = " WRK-SKJ-MONEY(IDX1)
+      **          DISPLAY  "WRK-SKJ-KAISU    = " WRK-SKJ-KAISU(IDX1)
+      **     END-PERFORM
+      *    返却エリアへの食事セット
+           MOVE       ZERO    TO   IDX2
+           PERFORM    VARYING   IDX1   FROM  1  BY  1
+                      UNTIL     (IDX1   >     31)
+                IF    WRK-SKJ-SRYCD(IDX1 1)   NOT =  SPACE
+                    ADD  WRK-SKJ-MONEY(IDX1)  TO
+                                LNK-ORCHCN33SUB-SKJ(IDX1)
+                END-IF
+           END-PERFORM
+      *    返却エリアへの食事セット（特別食加算）
+           PERFORM    VARYING   IDX1   FROM  1  BY  1
+                      UNTIL     (IDX1   >     31)
+                IF    WRK-SKJ3-TOKU-SHOKU(IDX1)   NOT =  SPACE
+                    ADD  350  TO
+                                LNK-ORCHCN33SUB-SKJ(IDX1)
+                END-IF
+           END-PERFORM
+      *    返却エリアへの食事セット（複数献立加算）
+           PERFORM    VARYING   IDX1   FROM  1  BY  1
+                      UNTIL     (IDX1   >     31)
+                IF    WRK-SKJ2-FUKUSU(IDX1)   NOT =  SPACE
+                    ADD   50  TO
+                                LNK-ORCHCN33SUB-SKJ(IDX1)
+                END-IF
            END-PERFORM
       *
            .
