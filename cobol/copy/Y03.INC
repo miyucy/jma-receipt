@@ -24,7 +24,7 @@
               03  Y03-SCROLLEDWINDOW1.
                 04  Y03-TSLIST.
                   05  Y03-COUNT   PIC S9(9)   BINARY.
-                  05  Y03-ITEM        OCCURS  100 TIMES.
+                  05  Y03-ITEM        OCCURS  200 TIMES.
                         08  Y03-TNUM        PIC X(4).
                         08  Y03-TYYKTIME    PIC X(5).
                         08  Y03-TSRYKA      PIC X(10).
@@ -34,7 +34,7 @@
                         08  Y03-TPTNUM      PIC X(20).
                         08  Y03-TRENRAKU    PIC X(16).
                         08  Y03-TRAIIN      PIC X(4).
-                  05  Y03-SELECT  PIC X       OCCURS  100 TIMES.
+                  05  Y03-SELECT  PIC X       OCCURS  200 TIMES.
               03  Y03-SRYNAIYO-COB.
                 04  Y03-SRYNAIYO.
                   05  Y03-VALUE   PIC X(21).

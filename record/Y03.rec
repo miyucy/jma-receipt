@@ -19,8 +19,8 @@ Y03	{
 					value7	varchar(20);
 					value8	varchar(16);
 					value9	varchar(4);
-				}	[100];
-				select	bool[100];
+				}	[200];
+				select	bool[200];
 			};
 		};
 		SRYNAIYO_COB	{
