@@ -8433,9 +8433,69 @@
            IF      FLG-SYUMEI          =   1
                PERFORM 4901211-SYUMEI-OUT-SEC
            END-IF
+      *    ¼ýÇ¼¹ç·×¤ÎÀÁµá³Û¥¯¥ê¥¢
+           IF      FLG-ERR         =   1
+               IF      (SYU-GRP-DENPNUM    >   ZERO )  AND
+                       (SYU-FUKU-DENPNUM   >   ZERO )  AND
+                       (SYU-FUKU-KBN       =   "1"  )
+                   PERFORM 4901291-SYUTOTAL-ERRUPD-SEC
+               END-IF
+           END-IF
       *
            .
        4901219-SYUNOU-MEI-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ýÇ¼¹ç·×¹¹¿·½èÍý
+      *****************************************************************
+        4901291-SYUTOTAL-ERRUPD-SEC      SECTION.
+      *
+           INITIALIZE                  SYUTTL-REC
+           MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID
+           MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SYUTTL-PTID
+           MOVE    SYU-FUKU-DENPNUM    TO  SYUTTL-DENPNUM
+      *
+           MOVE    SYUTTL-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUTOTAL-KEY"        TO  ORC-DBPATH
+               PERFORM 981-SYUTTL-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYUTTL
+               INITIALIZE              SYUTTL-REC
+           END-IF
+      *
+           IF      FLG-SYUTTL          =   ZERO
+               MOVE    ZERO                TO  SYUTTL-SKYMONEY
+               MOVE    ZERO                TO  SYUTTL-NYUKIN-TOTAL
+               MOVE    1                   TO  SYUTTL-NYUKIN-KAISU
+      *
+               MOVE    SMCNDATE-YMD        TO  SYUTTL-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYUTTL-UPHMS
+      *
+               MOVE    SYUTTL-REC          TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "J02 SYUTTL UPD ERR:" SYUTTL-KEY
+                       ",MCP-RC:"  MCP-RC
+                   MOVE    "2003"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+        4901291-SYUTOTAL-ERRUPD-EXT.
            EXIT.
       *
       *****************************************************************
