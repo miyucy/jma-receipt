@@ -674,13 +674,13 @@
            MOVE    SPA-S01-DENPNUM     TO  SMEI-DENPNUM.
            MOVE    SYUMEI-REC          TO  MCPDATA-REC.
            MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "SYUMEI-KEY2"         TO  ORC-DBPATH.
+           MOVE    "SYUMEI-KEY6"         TO  ORC-DBPATH.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC.
            IF      MCP-RC              =    ZERO
-              MOVE    "SYUMEI-KEY2"         TO  ORC-DBPATH
+              MOVE    "SYUMEI-KEY6"         TO  ORC-DBPATH
               PERFORM SYUMEI-READ-SEC
           ELSE
               MOVE    1                    TO  FLG-SYUMEI
@@ -737,6 +737,7 @@
                                           SPA-GMN-NYUKINYMD-IN9(IDX)
                    MOVE    IDX              TO SPA-GMN-MISYU-MAX
       *             
+                   MOVE    "SYUMEI-KEY6"    TO  ORC-DBPATH
                    PERFORM SYUMEI-READ-SEC
                    ADD      1          TO      IDX
            END-PERFORM.
@@ -747,7 +748,7 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
            MOVE    "DBCLOSE"           TO  MCP-FUNC.
-           MOVE    "SYUMEI-KEY2"        TO  ORC-DBPATH.
+           MOVE    "SYUMEI-KEY6"       TO  ORC-DBPATH.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA

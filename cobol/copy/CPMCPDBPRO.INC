@@ -230,6 +230,7 @@
       *  01.01.59    NACL-多々納　03/04/18  JYURRK-KEY20追加
       *  01.01.60    NACL-藤原    03/04/09  SEIKYU-KEY21,JEY22追加
       *  01.01.61    NACL-太田    03/04/22  SYUNOU-KEY14追加
+      *  01.01.62    NACL-太田    03/04/28  SYUMEI-KEY6追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -640,11 +641,13 @@
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY3"
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY4"
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY5"
+               WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY6"
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY"
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY2"
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY3"
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY4"
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY5"
+               WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY6"
                    MOVE    PATH-TBL-SYUMEI-KEY
                                        TO  WRK-PATH
       *追加/*終了*01.01.45********************************************
@@ -1530,6 +1533,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUMEI-KEY5"
                    MOVE    PATH-TBL-SYUMEI-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUMEI-KEY6"
+                   MOVE    PATH-TBL-SYUMEI-KEY6
                                        TO  WRK-PATH
       *追加/*終了*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-KEY"
