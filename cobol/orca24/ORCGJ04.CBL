@@ -6178,7 +6178,9 @@
                MOVE    WRK-ZZ               TO  J04-DAY(IDX)
            END-PERFORM
       *
-           PERFORM 5001-MAPCUR-SEC
+           IF      FLG-END             =   ZERO
+               PERFORM 5001-MAPCUR-SEC
+           END-IF
            .
        500-GMNHEN-EXT.
            EXIT.
