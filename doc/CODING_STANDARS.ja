@@ -39,3 +39,17 @@ SCRIPTS
 #!/usr/bin/env ruby
 ---
 
+○画面作成(.glade)
+
+・ 1つのWindow に対して 1 file とする。
+
+・ GtkWidnow には必ず以下の3つのシグナルを付ける。
+  Signal        Handler
+  ------------------------------
+  map_event     map_event      
+  set_focus     set_focus
+  delete_event  gtk_true
+
+・ Windowがダイアログの場合は
+  1. Window の type を Dialog(GTK_WINDOW_DIALOG)にする。
+  2. WM Class(wmclass_class) を jma-receipt.dialog とする。
