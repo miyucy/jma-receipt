@@ -1362,7 +1362,7 @@
                                  WHEN   ZERO
                                      ADD    WRK-SENTEI-ZAITEN
                                                     TO  SYU-HKNTEN(11)
-      *                          ³°Çñ¡Ê£±£µ¡ó¡Ë
+      *                          ³°Çñ
                                  WHEN   1
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
@@ -1376,7 +1376,7 @@
                                             ((WRK-KHNTEN      *
                                               WRK-SENTEI-GAIHAKU-KEISU)
                                                               +  0.5)
-      *                          Â¾°åÎÅµ¡´Ø¼õ¿Ç¡Ê£±£µ¡ó¡Ë
+      *                          Â¾°åÎÅµ¡´Ø¼õ¿Ç
                                  WHEN   4
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
@@ -2409,7 +2409,7 @@
                WHEN    "95"
                    PERFORM     VARYING    IDZ    FROM    1     BY    1
                                  UNTIL   (IDZ         >   5    )   OR
-       	                                  (SRY-SRYCD(IDZ)  =   SPACE)
+                                         (SRY-SRYCD(IDZ)  =   SPACE)
                        IF    SRY-SRYCD (IDZ) (1:3)   =   "095"
                                                      OR  "096"
                            IF    SRY-SRYCD (IDZ) (4:2)    =   "00"
