@@ -131,3 +131,11 @@
                   05  W02-JIHINAME.
                     06  W02-VALUE   PIC X(20).
                 04  W02-N07-STATE   PIC S9(9)   BINARY.
+                04  W02-FIXED30.
+                  05  W02-SRYNAIYO.
+                    06  W02-VALUE   PIC X(20).
+                  05  W02-SRYNAIYODSP.
+                    06  W02-VALUE   PIC X(12).
+                04  W02-N08.
+                  05  W02-N08-STATE   PIC S9(9)   BINARY.
+
