@@ -180,9 +180,9 @@
     <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
-      <x>50</x>
+      <x>30</x>
       <y>150</y>
-      <width>600</width>
+      <width>670</width>
       <height>120</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
@@ -219,8 +219,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Fri, 07 Sep 2001 04:48:54 GMT</last_modification_time>
 	</signal>
-	<columns>7</columns>
-	<column_widths>30,53,91,56,83,89,80</column_widths>
+	<columns>8</columns>
+	<column_widths>30,53,91,56,83,89,55,80</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -295,6 +295,19 @@
 	  <child_name>CList:title</child_name>
 	  <name>label545</name>
 	  <label> ›∏±º‘»÷πÊ</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>labe2545</name>
+	  <label> ‰Ωı∂Ë ¨</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
