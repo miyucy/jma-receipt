@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL−太田   03.09.02  定期請求印刷情報に設定する
+      *                                     氏名をカナ氏名に修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1241,7 +1243,7 @@
            END-IF
            MOVE    SPTID-PTNUM             TO  TEIKIPRT-PTNUM
       *
-           MOVE    PTINF-NAME              TO  TEIKIPRT-NAME
+           MOVE    PTINF-KANANAME          TO  TEIKIPRT-NAME
            MOVE    SYU-DENPNUM             TO  TEIKIPRT-DENPNUM
       *
            MOVE    TEIKIPRT-REC            TO  WKTEIKIPRT-REC
