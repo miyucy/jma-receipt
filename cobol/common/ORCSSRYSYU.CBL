@@ -65,10 +65,8 @@
        01  FILE-NAME               PIC X(512).
       *
       *    ファイル名
-       01  DATA-FILE1.
-           03  FILLER              PIC X(15)   VALUE  "patch-lib/data/".
-           03  FILLER              PIC X(15)   VALUE   "SRYKBNNAME.TXT".
-       01  DATA-FILE2.
+       01  DATA-FILE.
+           03  FILLER              PIC X(10)   VALUE   "patch-lib/".
            03  FILLER              PIC X(05)   VALUE   "data/".
            03  FILLER              PIC X(15)   VALUE   "SRYKBNNAME.TXT".
       *
@@ -105,25 +103,15 @@
       *
       *    フィアルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
-           MOVE    DATA-FILE1          TO  MKPASS-IN-01
+           MOVE    DATA-FILE           TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
            MOVE    MKPASS-OT-01        TO  FILE-NAME
       *
       *    診療種別テーブルセット
            OPEN    INPUT               SRYKBN-FILE
            IF      STS-SRYKBN      NOT =   ZERO
-      *        DISPLAY "PATCH-LIB SRYKBN-FILE OPEN ERR :" STS-SRYKBN "."
-      *
-               INITIALIZE                  ORCSMKPASSAREA
-               MOVE    DATA-FILE2          TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01        TO  FILE-NAME
-               OPEN    INPUT               SRYKBN-FILE
-               IF      STS-SRYKBN      NOT =   ZERO
-                   DISPLAY "SRYKBN-FILE OPEN ERR :" STS-SRYKBN "."
-               END-IF
-      *
-           END-IF
+               DISPLAY "SRYKBN-FILE OPEN ERR :" STS-SRYKBN "."
+            END-IF
       *
            PERFORM 1001-SRYKBN-SET-SEC
       *
@@ -138,7 +126,6 @@
       *****************************************************************
        1001-SRYKBN-SET-SEC             SECTION.
       *
-           MOVE    SPACE               TO  MSYU-DATA-REC
            INITIALIZE                  MSYU-DATA-REC
            MOVE    ZERO                TO  FLG-SRYKBN
            MOVE    ZERO                TO  IDX
@@ -147,9 +134,9 @@
                    AT  END
                        MOVE    1           TO  FLG-SRYKBN
                    NOT AT  END
-                      ADD     1           TO  IDX
-                      IF      IDX         >   200
-                           DISPLAY "SRYSYU 200 OVER !!! TBL ERR"
+                       ADD     1           TO  IDX
+                       IF      IDX         >   100
+                           DISPLAY "SRYSYU 100 OVER !!! TBL ERR"
                            MOVE    1           TO  FLG-SRYKBN
                        ELSE
                            MOVE    SRYKBN-REC      TO  MSYU-TBL-OCC
