@@ -39,6 +39,7 @@
       *  01.01.06    NACL-多々納  02/12/02  食事追加
       *  01.01.07    NACL-多々納  02/12/20  点数識別８ 追加
       *  01.01.08    NACL-多々納  03/01/24  入院追加
+      *  01.01.09    NACL-多々納  03/03/17  指導管理料明細追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -407,13 +408,31 @@
                "在宅持続陽圧式呼吸療法指導管理料".
            03  FILLER              PIC X(02)   VALUE   "44".
            03  FILLER              PIC X(50)   VALUE
-               "老人慢性疾患外来共同指導料".
+               "慢性疾患外来共同指導料".
+      *
+           03  FILLER              PIC X(02)   VALUE   "45".
+           03  FILLER              PIC X(50)   VALUE
+               "生活習慣病指導管理料".
+           03  FILLER              PIC X(02)   VALUE   "46".
+           03  FILLER              PIC X(50)   VALUE
+               "慢性疼痛疾患管理料".
+           03  FILLER              PIC X(02)   VALUE   "47".
+           03  FILLER              PIC X(50)   VALUE
+               "小児悪性腫瘍患者指導管理料".
+           03  FILLER              PIC X(02)   VALUE   "48".
+           03  FILLER              PIC X(50)   VALUE
+               "在宅気管切開患者指導管理料".
+           03  FILLER              PIC X(02)   VALUE   "49".
+           03  FILLER              PIC X(50)   VALUE
+               "在宅肺高血圧症患者指導管理料".
       *
        01  TBL-SDOKNRYO-AREA-R     REDEFINES   TBL-SDOKNRYO-AREA.
-           03  TBL-SDOKNRYO-OCC        OCCURS  45      INDEXED  SDO-IDX.
+      *    03  TBL-SDOKNRYO-OCC        OCCURS  45      INDEXED  SDO-IDX.
+           03  TBL-SDOKNRYO-OCC        OCCURS  50      INDEXED  SDO-IDX.
                05  TBL-SDOKNRYO        PIC X(02).
                05  TBL-SDOKNRYOMEI     PIC X(50).
-       01  SDO-MAX                     PIC 9(04)   VALUE   45.
+      *01  SDO-MAX                     PIC 9(04)   VALUE   45.
+       01  SDO-MAX                     PIC 9(04)   VALUE   50.
       *
       *****************************************************************
       *    ファイルレイアウト
