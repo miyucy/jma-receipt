@@ -1817,7 +1817,7 @@ x           IF      SPA-GMN-RECEDEN-TOKKI
                    MOVE    "保険者番号入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE    "老人保険入力エラー"
+                   MOVE    "老人保健入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0008"
                    MOVE    "在総診入力エラー"
