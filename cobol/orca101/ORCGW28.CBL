@@ -1705,13 +1705,13 @@
            END-IF
       *
            IF    ( SPA-GMN-W28-CUR     =    006 )
-               IF    ( W24-SENTEI-TANKAIP-STATE =  WIDGET-INSENSITIVE )
+               IF    ( W28-SENTEI-TANKAIP-STATE =  WIDGET-INSENSITIVE )
                    MOVE    007             TO  SPA-GMN-W28-CUR
                END-IF
            END-IF
       *
            IF    ( SPA-GMN-W28-CUR     =    007 )
-               IF    ( W24-SENTEI-TANKAIP-STATE =  WIDGET-INSENSITIVE )
+               IF    ( W28-SENTEI-TANKARJ-STATE =  WIDGET-INSENSITIVE )
                    MOVE    005             TO  SPA-GMN-W28-CUR
                END-IF
            END-IF
