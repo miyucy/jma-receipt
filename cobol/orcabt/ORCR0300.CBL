@@ -882,10 +882,10 @@
                                            WRK-CONS-HKNNUM4  OR
                                            WRK-CONS-HKNNUM5  OR
                                            WRK-CONS-HKNNUM6     )
-               MOVE    RECE02-CERTNUM      TO  WRK-NUM
+               MOVE    RECE02-CERTNUM      TO  WRK-DATA
                MOVE    3                   TO  WRK-NAGASA
            END-IF    
-           PERFORM 5005-NUM-HENSYU-SEC     
+           PERFORM 5004-MOJI-HENSYU-SEC     
       *    ∞ÂŒ≈ ›∏±    
            PERFORM 5004-MOJI-HENSYU-SEC     
       *    πÒ ›∏∫Ã»∂Ë ¨                                 
