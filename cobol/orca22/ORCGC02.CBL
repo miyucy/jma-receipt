@@ -151,6 +151,8 @@
       *                                     の警告を追加
       *  01.08.15    NACL-藤原    04/11/15  主病名の確認メッセージの表示
       *                                     をシス管の設定より行う
+      *  00.00.04    NACL-藤原    04/11/01  病名入力時修飾語コードのみで
+      *                                     構成されていても病名とする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4799,19 +4801,19 @@
                GO  TO  41013-BYOMEI-CHK-EXT
            END-IF
       *
-      *    修飾語コードのみのとき
-           IF      LNK-BYO-BYOMEICD-ERR    =   1
-               MOVE    "0006"          TO  SPA-ERRCD
-               MOVE    SPACE           TO  SPA-CIDCD2
-                                           WRK-HAISIYMDH
-               MOVE    ZERO            TO  SPA-NAI-C02-BYOMEIMOJI
-               MOVE    SPACE           TO  SPA-NAI-C02-BYOMEIHENFLG
-                                           SPA-GMN-C02-BYOMEIHENFLG
-               GO  TO  41013-BYOMEI-CHK-EXT
-           END-IF
+      *****修飾語コードのみのとき
+      *****IF      LNK-BYO-BYOMEICD-ERR    =   1
+      *****    MOVE    "0006"          TO  SPA-ERRCD
+      *****    MOVE    SPACE           TO  SPA-CIDCD2
+      *****                                WRK-HAISIYMDH
+      *****    MOVE    ZERO            TO  SPA-NAI-C02-BYOMEIMOJI
+      *****    MOVE    SPACE           TO  SPA-NAI-C02-BYOMEIHENFLG
+      *****                                SPA-GMN-C02-BYOMEIHENFLG
+      *****    GO  TO  41013-BYOMEI-CHK-EXT
+      *****END-IF
       *
       *    病名コード順エラー
-           IF      LNK-BYO-BYOMEICD-ERR    =   2   OR  9
+           IF      LNK-BYO-BYOMEICD-ERR    =   1   OR  2   OR  9
                MOVE    "0103"          TO  SPA-ERRCD
                MOVE    SPACE           TO  SPA-CIDCD2
                                            WRK-HAISIYMDH

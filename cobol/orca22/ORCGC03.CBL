@@ -67,6 +67,9 @@
       *                                     分類選択時の前次頁処理の修正
       *  01.02.03    NACL-藤原    04/03/15  病名入力後の入力コード入力時の
       *                                     項目クリアをやめる
+      *  00.02.04    NACL-藤原    04/11/01  病名が修飾語コードのみで構成
+      *                                     されている場合種別を病名に変
+      *                                     更できるようにする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2342,10 +2345,11 @@
       *
       *    種別と病名コードの関連チェック
            IF    ( SPA-NAI-BYOMEICD (1)    =   WRK-CONS-BYOMEICD )
-           OR    ( SPA-NAI-BYOMEIHENFLG    =   "1"               )
+      *****OR    ( SPA-NAI-BYOMEIHENFLG    =   "1"               )
                CONTINUE
            ELSE 
                MOVE    SPACE                   TO  WRK-RECECD-TBL
+                                                   WRK-BYOMEISBT
       * 
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
@@ -2354,82 +2358,70 @@
                        EVALUATE    SPA-NAI-BYOMEICD (IDX) (1:1)
                                    ALSO    SPA-NAI-BYOMEICD (IDX)(4:1)
                            WHEN    "Z"     ALSO    "1"
-                               IF    ( WRK-RECECD (2)    NOT =   SPACE )
-                               OR    ( WRK-RECECD (3)    NOT =   SPACE )
-                                   CONTINUE
-      *****************************MOVE    "0006"    TO  SPA-ERRCD
-                               ELSE
-                                   MOVE    SPA-NAI-BYOMEICD (IDX)(4:1)
+                               MOVE    SPA-NAI-BYOMEICD (IDX)(4:1)
                                                      TO  WRK-RECECD (1)
-                               END-IF            
+                               MOVE    1          TO  WRK-BYOMEISBT
                            WHEN    "Z"     ALSO    "2"  THRU    "7"
-                               IF    ( WRK-RECECD (2)    NOT =   SPACE )
-                               OR    ( WRK-RECECD (3)    NOT =   SPACE )
-                                   CONTINUE
-      *****************************MOVE    "0006"    TO  SPA-ERRCD
-                               ELSE
-                                   MOVE    SPA-NAI-BYOMEICD (IDX)(4:1)
-                                                     TO  WRK-RECECD (1)
-                               END-IF            
+                               MOVE    SPA-NAI-BYOMEICD (IDX)(4:1)
+                                                  TO  WRK-RECECD (1)
+                               MOVE    7          TO  WRK-BYOMEISBT
                            WHEN    "Z"     ALSO    "8"  THRU    "8"
-                               IF      WRK-RECECD (2)    NOT =   SPACE
-                                   MOVE    SPA-NAI-BYOMEICD(IDX)(4:1)
-                                                     TO  WRK-RECECD (3)
-                               ELSE
-                                   IF      WRK-RECECD (1)
-                                                      NOT =   SPACE
-                                       CONTINUE
-      *****************************    MOVE    "0006"    TO  SPA-ERRCD
-                                   ELSE
-                                       MOVE
-                                           SPA-NAI-BYOMEICD(IDX)(4:1)
-                                                       TO  WRK-RECECD(3)
-                                   END-IF
-                               END-IF
+                                MOVE   SPA-NAI-BYOMEICD(IDX)(4:1)
+                                                   TO  WRK-RECECD(3)
+                               MOVE    8          TO  WRK-BYOMEISBT
                            WHEN    "Z"       ALSO    ANY
                                CONTINUE
                            WHEN    OTHER                 
-                               IF      WRK-RECECD (3)    =   "1" 
-                                   CONTINUE
-      *****************************MOVE    "0006"    TO  SPA-ERRCD
-                               ELSE
-                                   MOVE    "1"       TO  WRK-RECECD (2)
-                               END-IF
+                               MOVE    "1"       TO  WRK-RECECD (2)
                        END-EVALUATE
                    END-IF
                END-PERFORM
-      *********IF      SPA-ERRCD             NOT =   SPACE
-      *********    GO  TO  41015-BYOMEISBT-CHK-EXT
-      *********END-IF
+               IF      WRK-RECECD (2)      NOT =   SPACE
+                   MOVE    ZERO                TO  WRK-BYOMEISBT
+               END-IF
       *
                EVALUATE    SPA-GMN-BYOMEISBT
                    WHEN    ZERO
                        IF      WRK-RECECD (2)      =   SPACE
-                           MOVE    "0053"          TO  SPA-ERRCD
+                           MOVE    "1"             TO
+                                                   SPA-NAI-BYOMEIHENFLG
+                           MOVE    "病名編集"      TO
+                                                   SPA-GMN-BYOMEIHENFLG
+                           MOVE    "0103"          TO  SPA-ERRCD
                        END-IF 
                    WHEN    "1"
-                       IF      WRK-RECECD (1)      =   "1"
-                       AND     WRK-RECECD (2)      =   SPACE
-                       AND     WRK-RECECD (3)      =   SPACE
-                           CONTINUE
+                       IF      WRK-BYOMEISBT       =   1
+                           MOVE    SPACE           TO
+                                                   SPA-NAI-BYOMEIHENFLG
+                                                   SPA-GMN-BYOMEIHENFLG
                        ELSE 
                            MOVE    "0053"          TO  SPA-ERRCD
                        END-IF 
                    WHEN    "7"
-                       IF      WRK-RECECD (1)      >   "1" 
-                       AND     WRK-RECECD (2)      =   SPACE
-                       AND     WRK-RECECD (3)      =   SPACE
-                           CONTINUE
+                       IF      WRK-BYOMEISBT       =   7
+                           MOVE    SPACE           TO
+                                                   SPA-NAI-BYOMEIHENFLG
+                                                   SPA-GMN-BYOMEIHENFLG
                        ELSE 
                            MOVE    "0053"          TO  SPA-ERRCD
                        END-IF 
                    WHEN    "8"
-                       IF      WRK-RECECD (1)      =   SPACE
-                       AND     WRK-RECECD (2)      =   SPACE
-                       AND     WRK-RECECD (3)  NOT =   SPACE
-                           CONTINUE
+                       IF      WRK-BYOMEISBT       =   8
+                           IF    ( WRK-RECECD (1)        =   SPACE )
+                           AND   ( WRK-RECECD (2)        =   SPACE )
+                           AND   ( WRK-RECECD (3)    NOT =   SPACE )
+                               MOVE    SPACE           TO
+                                                   SPA-NAI-BYOMEIHENFLG
+                                                   SPA-GMN-BYOMEIHENFLG
+                           ELSE  
+                               MOVE    "1"             TO
+                                                   SPA-NAI-BYOMEIHENFLG
+                               MOVE    "病名編集"      TO
+                                                   SPA-GMN-BYOMEIHENFLG
+                               MOVE    "0103"          TO  SPA-ERRCD
+                           END-IF
                        ELSE 
-                           MOVE    "0053"        TO  SPA-ERRCD
+                           MOVE    "0053"          TO  SPA-ERRCD
                        END-IF 
                END-EVALUATE
            END-IF    
