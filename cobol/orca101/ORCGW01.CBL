@@ -62,6 +62,7 @@
       *  01.05.13    NACL-多々納  03/09/19  区分登録を桁数分編集へ
       *  01.05.14    NACL-多々納  03/10/00  診療行為自動設定へ、
       *                                     患者登録機能情報追加
+      *  01.05.16    NACL-多々納  03/11/25  期間変更修正
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -1683,6 +1684,22 @@
                    END-IF
            END-EVALUATE         
       *
+      *    期間変更不可チェック
+           EVALUATE    SPA-GMN-KANRICD
+      *        患者番号構成情報
+               WHEN    "1009"
+      *        出力先プリンタ名
+               WHEN    "1031"
+                   IF     (SPA-NAI-STYUKYMD    =   ZERO )  AND
+                          (SPA-NAI-EDYUKYMD    =   99999999)
+                       CONTINUE
+                   ELSE
+                       MOVE    3                   TO  SPA-GMN-CUR
+                       MOVE    "0021"              TO  SPA-ERRCD
+                       GO  TO  4101-KAKUTEI-CHK-EXT
+                   END-IF
+           END-EVALUATE
+      *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-MAX
                    OR      SPA-ERRCD   NOT =   SPACE
@@ -1968,6 +1985,11 @@
                WHEN    "0020"
                    MOVE    "有効開始日＜有効終了日で入力して下さい"
                                                       TO  SPA-ERRMSG
+               WHEN    "0021"
+                   MOVE    "有効期間の変更はできません。"
+                                                   TO  SPA-ERRMSG
+                   MOVE    "期間なしで登録して下さい。"
+                                                   TO  SPA-ERRMSG(29:)
            END-EVALUATE
       *
            MOVE    SPACE                TO  WERR
