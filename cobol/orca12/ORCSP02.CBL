@@ -1593,12 +1593,16 @@
            END-IF
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       FLG-UKETUKE     =  1
+             IF      UKE-UKEID           =   ZERO
+                 CONTINUE
+             ELSE
                MOVE    SPACE               TO  PARA-REC
                INITIALIZE                      PARA-REC
                MOVE    "UKETUKE"           TO  PARA-FILEMEI
                MOVE    IDX                 TO  PARA-EDANUM
                MOVE    UKETUKE-REC         TO  PARA-DATA-REC
                PERFORM 400-PARA-INSERT-SEC
+             END-IF
       ******** WRITE   PARA-REC
       *
                MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
