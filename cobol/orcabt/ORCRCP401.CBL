@@ -3023,6 +3023,8 @@
       *
            IF    RECE62-SRYYM      >=  "200504"
               MOVE   "£±£²´ï¼£"   TO   TBL-TOKKINAME(11)
+           ELSE
+              MOVE   "£±£²ºà¼£"   TO   TBL-TOKKINAME(11)
            END-IF
       *
            MOVE    ZERO                TO  IDZ
