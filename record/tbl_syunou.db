@@ -766,8 +766,8 @@ path	key31 	{
 		WHERE  HOSPID      = :HOSPID
 		AND    PTID        = :PTID
 		AND    CREATEKBN     <> 3
-		AND    SRYYMD     >= :SRYYMD
-		AND    SRYYMD     <= :SRYYMD
+		AND    SRYYMD     >= :SKYSTYMD
+		AND    SRYYMD     <= :SKYEDYMD
 		ORDER   BY    SRYYMD,NYUGAIKBN,DENPNUM;
 		;
 	};
