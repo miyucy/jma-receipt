@@ -194,6 +194,7 @@
       *  01.01.34    NACL-太田    03/01/31  TEIKIRRK-KEY2追加
       *  01.01.35    NACL-太田    03/02/03  SRYACCT-KEY15追加
       *  01.01.36    NACL-多々納  03/02/06  NYUINACCT-KEY17追加
+      *  01.01.37    NACL-太田    03/02/07  PTNYUINRRK-KEY16,KEY17追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2179,6 +2180,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY15"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY15
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY16"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY16
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY17"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY17
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTAINFUKA-KEY"
                    MOVE    PATH-TBL-PTTAINFUKA-KEY
