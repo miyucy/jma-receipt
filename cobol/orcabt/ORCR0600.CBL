@@ -114,6 +114,12 @@
            03  WRK-PARA-JOBID                          PIC 9(07).
            03  WRK-PARA-SHELLID                        PIC X(08).
       *
+      *    エラーメッセージ編集領域
+       01  ERR-EDIT-AREA.
+           03  ERR-PTNUM               PIC X(20).
+           03  ERR-ERRMSG              PIC X(80).
+           03  ERR-HEN-ERRMSG          PIC X(200).
+      *
       *    一時領域
        01  WRK-AREA.
       *
@@ -134,6 +140,11 @@
            03  WRK-SEIKYUEDYMD                         PIC 9(08).
            03  WRK-DATAKBN                             PIC X(01).
            03  WRK-SYOKBN                              PIC X(01).
+      *
+           03  WRK-STR                                 PIC X(200).
+           03  WRK-LEN                                 PIC 9(05).
+           03  WRK-SHO                                 PIC 9(05).
+           03  WRK-AMARI                               PIC 9(05).
       *
            COPY    "MCPAREA".
            COPY    "COMMON-SPA".
@@ -160,6 +171,8 @@
            COPY    "CPSK2001.INC".
       *    レセプト作成指示（個別指示）コード
            COPY    "CPSK2002.INC".
+      *    患者番号構成情報
+           COPY    "CPSK1009.INC".
       *
       *    診療会計
        01  SRYACCT-REC.
@@ -194,6 +207,8 @@
            COPY    "CPORCSLNK.INC".
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *    患者番号変換サブ
+           COPY    "CPORCSPTID.INC".
       *
       *    定期請求用収納作成サブ
        01  LNK-ORCS02-REC.
@@ -281,6 +296,31 @@
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
            ELSE
                MOVE    "医療機関情報が取得できませんでした。"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+      *    患者番号構成管理情報編集
+           INITIALIZE                  SYS-1009-REC
+           MOVE    "1009"              TO  SYS-1009-KANRICD
+           MOVE    "*"                 TO  SYS-1009-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-1009-REC        TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1009-REC
+               MOVE    SYS-1009-PTNUMKSIKBN
+                                           TO  SPA-1009-PTNUMKSIKBN
+               MOVE    SYS-1009-HJNKSIKBN  TO  SPA-1009-HJNKSIKBN
+               MOVE    SYS-1009-HJNKSINENKBN 
+                                           TO  SPA-1009-HJNKSINENKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKBN
+                                           TO  SPA-1009-HJNKSIRENNUMKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKETA
+                                           TO  SPA-1009-HJNKSIRENNUMKETA
+           ELSE
+               MOVE    "患者番号構成管理情報が取得できませんでした"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -785,8 +825,15 @@
                DISPLAY "SKYSTYMD=" WRK-SEIKYUSTYMD
                DISPLAY "SKYEDYMD=" WRK-SEIKYUEDYMD
       *
+      *        MOVE    "仮収納データの取得に失敗しました"
+      *                                TO  WRK-RECEERR
+      *
                MOVE    "仮収納データの取得に失敗しました"
-                                       TO  WRK-RECEERR
+                                       TO  ERR-ERRMSG
+               PERFORM 600-ERRMSG-EDIT-SEC
+      *
+               MOVE  ERR-HEN-ERRMSG    TO  WRK-RECEERR
+      *
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
            .
@@ -825,8 +872,15 @@
                DISPLAY "SKYSTYMD=" WRK-SEIKYUSTYMD
                DISPLAY "SKYEDYMD=" WRK-SEIKYUEDYMD
       *
+      *        MOVE    "仮収納データの更新に失敗しました"
+      *                                TO  WRK-RECEERR
+      *
                MOVE    "仮収納データの更新に失敗しました"
-                                       TO  WRK-RECEERR
+                                       TO  ERR-ERRMSG
+               PERFORM 600-ERRMSG-EDIT-SEC
+      *
+               MOVE  ERR-HEN-ERRMSG    TO  WRK-RECEERR
+      *
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
@@ -1105,6 +1159,64 @@
            MOVE    1                   TO  FLG-ERR
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ編集処理
+      *****************************************************************
+       600-ERRMSG-EDIT-SEC             SECTION.                         X
+      *
+           MOVE    SPACE               TO  ERR-HEN-ERRMSG
+	                                   ERR-PTNUM
+      *
+      *    患者番号を取得
+           INITIALIZE                      ORCSPTIDAREA
+           MOVE    SYS-1001-HOSPID     TO  SPTID-HOSPID
+           MOVE    KEY-O-PTID          TO  SPTID-PTID
+           CALL    "ORCSPTID"      USING   ORCSPTIDAREA
+                                           SPA-1009-TBL
+           IF    ( SPTID-RC            =   ZERO )
+               MOVE    SPTID-PTNUM     TO  ERR-PTNUM
+               
+           ELSE
+               STRING "?(ID:"          DELIMITED   BY  SIZE
+                      KEY-O-PTID       DELIMITED   BY  SIZE
+                      ")"              DELIMITED   BY  SIZE
+               INTO   ERR-PTNUM
+               END-STRING
+           END-IF
+      *
+           MOVE    1                   TO  WRK-LEN
+           MOVE    SPACE               TO  WRK-STR
+           STRING  ERR-PTNUM           DELIMITED   BY  SPACE
+           INTO    WRK-STR
+           WITH  POINTER WRK-LEN
+           END-STRING
+      *
+           COMPUTE WRK-LEN =   WRK-LEN -   1
+      *
+           DIVIDE  2   INTO    WRK-LEN GIVING  WRK-SHO
+           REMAINDER WRK-AMARI
+           END-DIVIDE
+      *
+           IF    ( WRK-AMARI   =   ZERO )
+              STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
+                      "［患者番号："      DELIMITED   BY  SIZE
+                      ERR-PTNUM           DELIMITED   BY  SPACE
+                      "］"                DELIMITED   BY  SIZE
+              INTO    ERR-HEN-ERRMSG
+              END-STRING
+           ELSE
+              STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
+                      "［患者番号:"       DELIMITED   BY  SIZE
+                      ERR-PTNUM           DELIMITED   BY  SPACE
+                      "］"                DELIMITED   BY  SIZE
+              INTO    ERR-HEN-ERRMSG
+              END-STRING
+           END-IF
+      *
+           .
+       600-ERRMSG-EDIT-EXT.
            EXIT.
       *
       *****************************************************************
