@@ -1448,13 +1448,24 @@
                    MOVE    "111011470"         TO  WRK-SRYCD
                    PERFORM 1100-KASAN-SET-SEC
                WHEN    "12"
-      *            再診（乳幼児）（時間加算等）
-                   MOVE    "112006970"         TO  WRK-SRYCD
-                   PERFORM 1100-KASAN-SET-SEC
-                   IF      FLG-ADD             =   ZERO
-      *                再診（幼児）（時間加算等）
-                       MOVE    "112007070"         TO  WRK-SRYCD
+                   IF      WRK-KAISU                =   3
+      *                外来診察料（乳幼児）（時間加算等）
+                       MOVE    "112007270"         TO  WRK-SRYCD
                        PERFORM 1100-KASAN-SET-SEC
+                       IF      FLG-ADD             =   ZERO
+      *                    外来診察料（幼児）（時間加算等）
+                           MOVE    "112007370"         TO  WRK-SRYCD
+                           PERFORM 1100-KASAN-SET-SEC
+                       END-IF
+                   ELSE
+      *                再診（乳幼児）（時間加算等）
+                       MOVE    "112006970"         TO  WRK-SRYCD
+                       PERFORM 1100-KASAN-SET-SEC
+                       IF      FLG-ADD             =   ZERO
+      *                    再診（幼児）（時間加算等）
+                           MOVE    "112007070"         TO  WRK-SRYCD
+                           PERFORM 1100-KASAN-SET-SEC
+                       END-IF
                    END-IF
            END-EVALUATE
       *
