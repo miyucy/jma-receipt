@@ -1600,6 +1600,9 @@
       *      
       *    病名コード未入力のときカルテ病名へ遷移     
            IF      SPA-GMN-BYOMEICD (IDZ)  =   SPACE                                    
+               IF      WRK-SEIGYO      =   "-"
+                   GO  TO  41021-BYOMEICD-HENSYU-EXT
+               END-IF
                PERFORM VARYING IDX3    FROM    IDZ   BY  1
                        UNTIL   IDX3    >       6
                    IF       SPA-GMN-BYOMEICD (IDX3)

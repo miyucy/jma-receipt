@@ -3771,6 +3771,7 @@
            END-EVALUATE    
       *
            PERFORM 41021-BYOMEICD-HENSYU-SEC
+           MOVE    SPACE           TO  WRK-SEIGYO
            .
        4102-BYOMEICD-CHK-EXT.
            EXIT.
@@ -3814,6 +3815,9 @@
            END-IF
       *    病名コード未入力のとき開始日へ遷移     
            IF      SPA-NAI-C02-BYOMEICD (IDZ)  =   SPACE
+               IF      WRK-SEIGYO      =   "-"
+                   GO  TO  41021-BYOMEICD-HENSYU-EXT
+               END-IF
                PERFORM VARYING IDX3    FROM    IDZ   BY  1
                        UNTIL   IDX3    >       6
                    IF       SPA-NAI-C02-BYOMEICD (IDX3)
