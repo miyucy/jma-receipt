@@ -113,3 +113,18 @@ path	key6 	{
 		;
 	};
 };
+
+path	key7 	{
+	DBSELECT	{
+		DECLARE tbl_yyk_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_yyk
+			WHERE   HOSPID        =   :HOSPID
+			AND		SRYNAIYO      =   :SRYNAIYO
+			AND		DRCD          =   :DRCD
+			AND 	YYKYMD        =   :YYKYMD
+			AND		KEYYYKTIME    =   :KEYYYKTIME
+			ORDER   BY        YYKID   DESC
+		;
+	};
+};
