@@ -15249,10 +15249,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O526">
       <attribute name="obj_pos">
-        <point val="1.75,3"/>
+        <point val="3.5,3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.75,2.77699;3.2044,3.07699"/>
+        <rectangle val="3.5,2.77699;4.9544,3.07699"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNJANUM#</string>
@@ -15272,7 +15272,7 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.75,3"/>
+            <point val="3.5,3"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
