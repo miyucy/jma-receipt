@@ -113,6 +113,9 @@
       *                                     レコードを出力しない
       *  01.02.04    NACL-藤原    04/08/27  一部負担金・食事療養費標準負
       *                                     担額区分の編集を追加
+      *  01.02.05    NACL-藤原    04/09/29  福岡対応
+      *                                     地方公費のとき、４１老人以外
+      *                                     はレセ電データを作成しない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4503,6 +4506,28 @@
                        OR    ( RECE02-KOHNUM (3) (1:1) =   "1" OR  "2" )
                        OR    ( RECE02-KOHNUM (4) (1:1) =   "1" OR  "2" )
                            GO  TO  900-RECE02-READ-SEC
+                       END-IF
+                   END-IF
+      *
+      *            福岡地方公費対応（国保）
+                   IF    ( SYS-1001-PREFNUM    =   "40" )
+                   AND   ( RECE02-TEISYUTUSAKI =   "2"  ) 
+                       IF    ( RECE02-KOHNUM (1) (1:1) =   "1" OR  "2" )
+                       OR    ( RECE02-KOHNUM (2) (1:1) =   "1" OR  "2" )
+                       OR    ( RECE02-KOHNUM (3) (1:1) =   "1" OR  "2" )
+                       OR    ( RECE02-KOHNUM (4) (1:1) =   "1" OR  "2" )
+                           IF    ( RECE02-KOHNUM (1)   =
+                                                       "141" OR "142" )
+                           OR    ( RECE02-KOHNUM (2)    =
+                                                       "141" OR "142" )
+                           OR    ( RECE02-KOHNUM (3)    =
+                                                       "141" OR "142" )
+                           OR    ( RECE02-KOHNUM (4)    =
+                                                       "141" OR "142" )
+                               CONTINUE 
+                           ELSE 
+                               GO  TO  900-RECE02-READ-SEC
+                           END-IF
                        END-IF
                    END-IF
       *

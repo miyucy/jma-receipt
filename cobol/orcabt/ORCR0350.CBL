@@ -4537,7 +4537,34 @@
                                    MOVE    1               TO  FLG-READ
                                END-IF
                            ELSE
+      *
+      *                      Ê¡²¬ÃÏÊý¸øÈñÂÐ±þ¡Ê¹ñÊÝ¡Ë
+                             IF    ( SYS-1001-PREFNUM    =   "40" )
+                             AND   ( RECE62-TEISYUTUSAKI =   "2"  ) 
+                               IF    ( RECE62-KOHNUM (1) (1:1)
+                                                       =   "1" OR  "2" )
+                               OR    ( RECE62-KOHNUM (2) (1:1)
+                                                       =   "1" OR  "2" )
+                               OR    ( RECE62-KOHNUM (3) (1:1)
+                                                       =   "1" OR  "2" )
+                               OR    ( RECE62-KOHNUM (4) (1:1)
+                                                       =   "1" OR  "2" )
+                                   IF    ( RECE62-KOHNUM (1)   =
+                                                       "141" OR "142" )
+                                   OR    ( RECE62-KOHNUM (2)    =
+                                                       "141" OR "142" )
+                                   OR    ( RECE62-KOHNUM (3)    =
+                                                       "141" OR "142" )
+                                   OR    ( RECE62-KOHNUM (4)    =
+                                                       "141" OR "142" )
+                                       MOVE    1           TO  FLG-READ
+                                   END-IF
+                               ELSE
+                                   MOVE    1           TO  FLG-READ
+                               END-IF
+                             ELSE
                                MOVE    1               TO  FLG-READ
+                             END-IF
                            END-IF
                        END-IF    
       *
