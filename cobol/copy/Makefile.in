@@ -610,7 +610,10 @@ COPYS = \
         CPRCF066.INC \
         CPRCF0661.INC \
         CPRCF067.INC \
-        CPRCF069.INC
+        CPRCF069.INC \
+        HCN06.INC \
+        HCN061.INC \
+        HCN062.INC
 
 DBPATH = \
 	ORCA-DBPATH
