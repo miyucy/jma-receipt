@@ -1330,7 +1330,9 @@
                    END-IF
                ELSE
       *            家族の場合、世帯主名か氏名
-                   IF      SPA-GMN-HIHKNJANAME    =   SPACE
+                   IF     (SPA-GMN-HIHKNJANAME    =   SPACE )  OR
+                          (SPA-GMN-HIHKNJANAME    =   SPA-GMN-NAME AND
+                           SPA-HZN-NAME           =   SPACE  )
       *                姓の判定
                        MOVE    ZERO                TO  IDX-S1
                        PERFORM VARYING     IDX-S2  FROM    1   BY  2
