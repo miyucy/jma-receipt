@@ -71,3 +71,5 @@
       *更新時間
            03  SMEI-UPHMS               PIC  X(06).
       *
+      *診療年月日（検索用）
+           03  SMEI-UPNYUHEN-YMD        PIC  X(08).

@@ -22,6 +22,8 @@ tbl_syumei {
 	CREYMD  			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
+#--
+	UPNYUHEN_YMD			char(8),virtual;
 };
 primary	{
 	HOSPID,NYUGAIKBN,PTID,DENPNUM,DENPEDANUM;
@@ -180,6 +182,22 @@ path	key7 	{
 			AND   PTID            =  :PTID
 			AND   DENPNUM         =  :DENPNUM
             ORDER BY	DENPEDANUM DESC
+		;
+	};
+};
+
+
+#sitekey
+path	st_key3 	{
+	DBSELECT	{
+		DECLARE tbl_syumei_st_key3_csr CURSOR FOR
+		SELECT a.* FROM tbl_syumei a,tbl_ptinf b
+		WHERE    a.HOSPID  =   :HOSPID 
+		AND   (a.NYUHEN_YMD    >= :NYUHEN_YMD
+		AND    a.NYUHEN_YMD    <= :UPNYUHEN_YMD)
+		AND   a.HOSPID  =  b.HOSPID
+		AND   a.PTID    =  b.PTID
+		AND   b.TSTPTNUMKBN <> '1'
 		;
 	};
 };
