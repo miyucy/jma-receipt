@@ -1429,7 +1429,8 @@
            END-IF
       *
       *    適応期間範囲チェック
-           IF      SPA-NAI-HTEKSTYMD   >=  SPA-NAI-HTEKEDYMD
+      *****IF      SPA-NAI-HTEKSTYMD   >=  SPA-NAI-HTEKEDYMD
+           IF      SPA-NAI-HTEKSTYMD   >   SPA-NAI-HTEKEDYMD
                MOVE    "0058"          TO  SPA-ERRCD
                MOVE    17              TO  SPA-GMN-CUR
                GO      TO      200-KANREN-CHK-EXT
