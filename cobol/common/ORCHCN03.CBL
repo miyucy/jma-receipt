@@ -33,6 +33,7 @@
       *  01.00.03    NACL-ÂÀÅÄ    03.07.01  ½ÐÎÏÀè¥×¥ê¥ó¥¿¥µ¥ÖÄÉ²Ã
       *  01.00.04    NACL-ÂÀÅÄ    03.08.26  Ï«ºÒ¼«ÇåÀÕÊÔ½¸½¤Àµ
       *  01.00.05    NACL-ÂÀÅÄ    03.10.10  ¿©»öÉéÃ´ÊÔ½¸½¤Àµ
+      *  01.00.06    NACL-ÂÀÅÄ    03.10.21  ¶â³ÛÊÔ½¸ÎÎ°è¤ò³ÈÄ¥
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -118,16 +119,12 @@
       *
            03  WRK-ZZZ             PIC ZZZ.
            03  WRK-NO              PIC Z(7).
-           03  WRK-Z7-G.
-               05  WRK-FIL             PIC X(09).
-               05  WRK-Z7              PIC Z,ZZZ,ZZZ.
-           03  WRK-Z72-G.
-               05  WRK-FIL2            PIC X(09).
-               05  WRK-Z72             PIC -,---,---.
+      *
+           03  WRK-KINGAKU-Z           PIC ----,---,---.
       *
            03  WRK-ZHENSYU-G.
-               05  WRK-ZHENSYU9        PIC X(09).
-               05  WRK-ZHENSYU18       PIC X(18).
+               05  WRK-ZHENSYU12       PIC X(12).
+               05  WRK-ZHENSYU24       PIC X(24).
       *    ¼«Èñ½¸·×
            03  WRK-JIHI-REC.
                05  WRK-JIHI            PIC S9(07)   OCCURS  5.
@@ -611,17 +608,16 @@
       *    ¼«ÈñÌ¾¾ÎÊÔ½¸
            PERFORM 3102-JIHIMSG-HEN-SEC
       *
-           MOVE    SPACE               TO  WRK-Z7-G
-           MOVE    SPACE               TO  WRK-Z72-G
+           MOVE    SPACE               TO  WRK-KINGAKU-Z
            MOVE    SPACE               TO  WRK-ZHENSYU-G
       *
       *    ÀÁµáÆâÍÆ
            PERFORM VARYING     IDX1    FROM  1   BY  1
                    UNTIL       IDX1    >     12
-               MOVE    SYU-HKNTEN(IDX1)     TO  WRK-Z7
-               MOVE    WRK-Z7              TO  WRK-ZHENSYU9
+               MOVE    SYU-HKNTEN(IDX1)    TO  WRK-KINGAKU-Z
+               MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
                PERFORM 800-HENKAN-SEC
-               MOVE    WRK-ZHENSYU18       TO  HCN03-HKNRYO(IDX1)
+               MOVE    WRK-ZHENSYU24       TO  HCN03-HKNRYO(IDX1)
            END-PERFORM
       *
       *    Ï«ºÒ¡¦¼«Çå¤Î»þ¡¢ÅÀ¿ôÉ½¼¨¤Ê¤·
@@ -634,10 +630,10 @@
            END-IF
       *
       *    ÊÝ¸±Å¬ÍÑÊ¬
-           MOVE    SYU-HKNTEKMONEY         TO  WRK-Z7
-           MOVE    WRK-Z7                  TO  WRK-ZHENSYU9
+           MOVE    SYU-HKNTEKMONEY         TO  WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z           TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU18           TO  HCN03-HOKENBUN
+           MOVE    WRK-ZHENSYU24           TO  HCN03-HOKENBUN
       *
       *    Ï«ºÒ¡¦¼«Çå¤Î»þ¡¢ÅÀ¿ôÉ½¼¨¤Ê¤·
            IF    ( COMB-HKNNUM             =    "971"
@@ -654,10 +650,10 @@
                                            +    SYU-RSISAISHIN-MONEY
                                            +    SYU-RSISDO-MONEY
                                            +    SYU-RSIETC-MONEY
-                       MOVE    WRK-GOKTEN      TO  WRK-Z7
-                       MOVE    WRK-Z7          TO  WRK-ZHENSYU9
+                       MOVE    WRK-GOKTEN      TO  WRK-KINGAKU-Z
+                       MOVE    WRK-KINGAKU-Z   TO  WRK-ZHENSYU12
                        PERFORM 800-HENKAN-SEC
-                       MOVE    WRK-ZHENSYU18   TO  HCN03-HOKENBUN
+                       MOVE    WRK-ZHENSYU24   TO  HCN03-HOKENBUN
                WHEN    OTHER
                    MOVE    SPACE           TO  HCN03-HOKENBUN
                END-EVALUATE
@@ -668,81 +664,81 @@
                =   SYU-TGMONEY (12)
                +   SYU-TGMONEY-TAX (12)
       *
-           MOVE    WRK-GOKTEN          TO  WRK-Z72
-           MOVE    WRK-Z72             TO  WRK-ZHENSYU9
+           MOVE    WRK-GOKTEN          TO  WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU18       TO  HCN03-HOKENGAI
+           MOVE    WRK-ZHENSYU24       TO  HCN03-HOKENGAI
       *    ¼«Èñ
            MOVE    ZERO                TO  WRK-JIHI-REC
            PERFORM VARYING     IDX1     FROM    1   BY  1
                    UNTIL       IDX1     >   5
                COMPUTE WRK-JIHI (IDX1)     =   SYU-JIHI-TAXNASI (IDX1)
                                            +   SYU-JIHI-TAXARI  (IDX1)
-               MOVE    WRK-JIHI (IDX1)     TO  WRK-Z72
-               MOVE    WRK-Z72             TO  WRK-ZHENSYU9
+               MOVE    WRK-JIHI (IDX1)     TO  WRK-KINGAKU-Z
+               MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
                PERFORM 800-HENKAN-SEC
-               MOVE    WRK-ZHENSYU18       TO  HCN03-JIHI(IDX1)
+               MOVE    WRK-ZHENSYU24       TO  HCN03-JIHI(IDX1)
            END-PERFORM
       *
       *    ¼«Èñ·×
            COMPUTE WRK-JIHI-TOTAL      =   SYU-JIHI-TOTAL
                                        +   SYU-JIHI-TOTAL-TAX
-           MOVE    WRK-JIHI-TOTAL      TO  WRK-Z7
-           MOVE    WRK-Z7              TO  WRK-ZHENSYU9
+           MOVE    WRK-JIHI-TOTAL      TO  WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU18       TO  HCN03-JIHI(6)
+           MOVE    WRK-ZHENSYU24       TO  HCN03-JIHI(6)
       *    ¼«Èñ¾ÃÈñÀÇ
-           MOVE    SYU-JIHI-TAX        TO  WRK-Z7
-           MOVE    WRK-Z7              TO  WRK-ZHENSYU9
+           MOVE    SYU-JIHI-TAX        TO  WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU18       TO  HCN03-JIHI(7)
+           MOVE    WRK-ZHENSYU24       TO  HCN03-JIHI(7)
       *    ¼«Èñ¹ç·×
            COMPUTE WRK-GOKTEN          =   WRK-JIHI-TOTAL
                                        +   SYU-JIHI-TAX
-           MOVE    WRK-GOKTEN          TO  WRK-Z7
-           MOVE    WRK-Z7              TO  WRK-ZHENSYU9
+           MOVE    WRK-GOKTEN          TO  WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU18       TO  HCN03-JIHI(8)
+           MOVE    WRK-ZHENSYU24       TO  HCN03-JIHI(8)
       *    ¿©»öÉéÃ´³Û
            COMPUTE WRK-SKYMONEY-SKJ
                =   SYU-SKYMONEY-SKJ-KEI
                +   SYU-SKYMONEY-SKJ-JIHI-KEI
-           MOVE    WRK-SKYMONEY-SKJ    TO  WRK-Z7
-           MOVE    WRK-Z7              TO  WRK-ZHENSYU9
+           MOVE    WRK-SKYMONEY-SKJ    TO  WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU18       TO  HCN03-SYOKUJI
+           MOVE    WRK-ZHENSYU24       TO  HCN03-SYOKUJI
       *    Ï·¿Í°ìÉôÉéÃ´¶â
-           MOVE    SYU-RJN-FTN         TO  WRK-Z7
-           MOVE    WRK-Z7              TO  WRK-ZHENSYU9
+           MOVE    SYU-RJN-FTN         TO  WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU18       TO  HCN03-ROUJIN
+           MOVE    WRK-ZHENSYU24       TO  HCN03-ROUJIN
       *    ¸øÈñ°ìÉôÉéÃ´¶â
-           MOVE    SYU-KOH-FTN         TO  WRK-Z7
-           MOVE    WRK-Z7              TO  WRK-ZHENSYU9
+           MOVE    SYU-KOH-FTN         TO  WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU18       TO  HCN03-KOUHI
+           MOVE    WRK-ZHENSYU24       TO  HCN03-KOUHI
       *    ¼¼ÎÁº¹³Û
-           MOVE    SYU-RMSAGAKU        TO  WRK-Z7
-           MOVE    WRK-Z7              TO  WRK-ZHENSYU9
+           MOVE    SYU-RMSAGAKU        TO  WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU18       TO  HCN03-RMSAGAKU
+           MOVE    WRK-ZHENSYU24       TO  HCN03-RMSAGAKU
       *    Ä´À°¶â
-           MOVE    SYU-CHOSEI          TO  WRK-Z72
-           MOVE    WRK-Z72             TO  WRK-ZHENSYU9
+           MOVE    SYU-CHOSEI          TO  WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU18       TO  HCN03-CHOSEI
+           MOVE    WRK-ZHENSYU24       TO  HCN03-CHOSEI
       *    º£²óÀÁµá³Û
            MOVE    ORCHCN03-SEIKYU (IDX-M)
-                                       TO  WRK-Z72
-           MOVE    WRK-Z72             TO  WRK-ZHENSYU9
+                                       TO  WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU18       TO  HCN03-KONSEIKYU
+           MOVE    WRK-ZHENSYU24       TO  HCN03-KONSEIKYU
       *    º£²óÆþ¶â³Û
            MOVE    ORCHCN03-NYUKIN (IDX-M)
-                                       TO  WRK-Z7
-           MOVE    WRK-Z7              TO  WRK-ZHENSYU9
+                                       TO  WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU18       TO  HCN03-KONNYUKIN
+           MOVE    WRK-ZHENSYU24       TO  HCN03-KONNYUKIN
       *
            IF    ( WRK-SKYMISYUPRTKBN  =   "1" )
       *        Ì¤¼ý³ÛÊÔ½¸½èÍý
@@ -750,18 +746,18 @@
                MOVE    "³°¡¡Íè¡¡Ì¤¡¡¼ý¡¡³Û"
                                        TO  HCN03-LBL-G-MISYU
                MOVE    "±ß"            TO  HCN03-LBL-G-MISYU-EN
-               MOVE    WRK-GAI-MISYU   TO  WRK-Z72
-               MOVE    WRK-Z72         TO  WRK-ZHENSYU9
+               MOVE    WRK-GAI-MISYU   TO  WRK-KINGAKU-Z
+               MOVE    WRK-KINGAKU-Z   TO  WRK-ZHENSYU12
                PERFORM 800-HENKAN-SEC
-               MOVE    WRK-ZHENSYU18   TO  HCN03-GAI-MISYUKIN
+               MOVE    WRK-ZHENSYU24   TO  HCN03-GAI-MISYUKIN
       *
                MOVE    "Æþ¡¡±¡¡¡Ì¤¡¡¼ý¡¡³Û"
                                        TO  HCN03-LBL-N-MISYU
                MOVE    "±ß"            TO  HCN03-LBL-N-MISYU-EN
-               MOVE    WRK-NYU-MISYU   TO  WRK-Z72
-               MOVE    WRK-Z72         TO  WRK-ZHENSYU9
+               MOVE    WRK-NYU-MISYU   TO  WRK-KINGAKU-Z
+               MOVE    WRK-KINGAKU-Z   TO  WRK-ZHENSYU12
                PERFORM 800-HENKAN-SEC
-               MOVE    WRK-ZHENSYU18   TO  HCN03-NYU-MISYUKIN
+               MOVE    WRK-ZHENSYU24   TO  HCN03-NYU-MISYUKIN
            END-IF
       *
       *    °õºþÍÑ¥Ç¡¼¥¿½ÐÎÏ
@@ -783,11 +779,11 @@
      *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"                 TO  KANACHK-SYORI
-           MOVE    WRK-ZHENSYU9        TO  KANACHK-MAE-INPUT
+           MOVE    WRK-ZHENSYU12       TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF      KANACHK-RC          =   ZERO
-               MOVE    KANACHK-OUT-INPUT(1:18)    TO  WRK-ZHENSYU18
+               MOVE    KANACHK-OUT-INPUT(1:24)    TO  WRK-ZHENSYU24
            END-IF
            .
        800-HENKAN-EXT.
