@@ -7571,6 +7571,7 @@
                MOVE    SPACE   TO   SPA-GMN-I01-TOKNYUIN-CD
                MOVE    IPN-SANTEISTYMD   TO   WRK-SANTEISTYMD
                MOVE    IPN-SANTEISTYMD   TO   SPA-NAI-I01-IDOYMD
+               MOVE    IPN-SANTEISTYMD   TO   PTNYUINRRK-TENNYUYMD
                PERFORM   4801-TENROOM-EDIT-SEC
            END-IF
       *
@@ -8125,10 +8126,10 @@
            MOVE    SYOKIKSN-IN-KHNSRYCD
                             TO   LNK-SCNYUACCT-NYUKHN-SRYCD(1)
       *退院日からの会計再作成に変更 ---------------------------------
-           MOVE    SYOKIKSN-IN-SANTEISTYMD
-                            TO   LNK-SCNYUACCT-STSRYYMD
-      **     MOVE     SPA-NAI-I01-TAIINYMD
-      **                                 TO   LNK-SCNYUACCT-STSRYYMD
+      **     MOVE    SYOKIKSN-IN-SANTEISTYMD
+      **                      TO   LNK-SCNYUACCT-STSRYYMD
+           MOVE     SPA-NAI-I01-TAIINYMD
+                                       TO   LNK-SCNYUACCT-STSRYYMD
            DISPLAY "LNK-SCNYUACCT-STSRYYMD = " LNK-SCNYUACCT-STSRYYMD
            DISPLAY "SPA-NAI-I01-TAIINYMD = " SPA-NAI-I01-TAIINYMD
       *--------------------------------------------------------------
@@ -8150,6 +8151,9 @@
                DISPLAY "SYOKIKSN-OT-YUKOEDYMD(IDX6) = "
                         SYOKIKSN-OT-YUKOEDYMD(IDX6)
            END-PERFORM
+      *
+      *    通算算定済日数
+           MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
       *    入院料加算診療コード取り込み
            PERFORM    4801-NYUKSN-GET-SEC
       *
@@ -8440,6 +8444,7 @@
                DISPLAY  "IDX6 = " IDX6
            END-PERFORM
       *    通算算定済日数
+           DISPLAY  "WRK-TSUSAN*** = " WRK-TSUSAN
            MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
       *    入院料加算診療コード取り込み
            PERFORM    4801-NYUKSN-GET-SEC
