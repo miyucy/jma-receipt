@@ -6611,6 +6611,7 @@
                                            SPA-AREA
       *            入院（食事）
                WHEN    "90"
+               WHEN    "92"
                WHEN    "97"
                    CALL    "ORCSCN97"      USING
                                            MCPAREA

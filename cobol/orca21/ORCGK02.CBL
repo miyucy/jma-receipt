@@ -7223,6 +7223,7 @@
       *************PERFORM 510212-SRYKBN-95-SEC
       *            ¿©»ö
                WHEN    "90"
+               WHEN    "92"
                WHEN    "97"
                    MOVE    "9200"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR (01)
