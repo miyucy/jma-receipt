@@ -471,9 +471,6 @@
                    GO      TO      300-SCREEN-EXT
                WHEN    "TID2"
                    PERFORM 340-TID2-SET-SEC
-      *???
-           DISPLAY "SPA-TIDCD=" SPA-TIDCD "#"
-      *???
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
@@ -939,9 +936,6 @@
       *
            MOVE    T01-DATA            TO  SPA-GMN-DATAKBN-G
       *
-      *???
-           DISPLAY "DATAKBN=" SPA-GMN-DATAKBN "#" T01-DATA "#"
-      *???
            IF      SPA-GMN-DATAKBN     =   SPACE
                MOVE    SPA-GMN-DATAKBNLST (1)
                                            TO  SPA-GMN-DATAKBN-G
@@ -956,9 +950,6 @@
                                            TO  IDX
                    END-IF
                END-PERFORM        
-      *???
-           DISPLAY "DATA=" SPA-GMN-DATAKBN "#" SPA-GMN-DATAKBNMEI "#"
-      *???
                IF      SPA-GMN-DATAKBNMEI  =   SPACE  
                    MOVE    SPA-GMN-DATAKBNLST (1)
                                                TO  SPA-GMN-DATAKBN-G
