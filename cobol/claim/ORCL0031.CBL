@@ -162,8 +162,8 @@
            03  WRK-JKSNUM          PIC X(20).
       *
            03  WRK-KOH-AREA.
-               05  WRK-KOHID           PIC 9(10)   OCCURS  3.
-               05  WRK-TANSEIDONAME    PIC X(20)   OCCURS  3.
+               05  WRK-KOHID           PIC 9(10)   OCCURS  4.
+               05  WRK-TANSEIDONAME    PIC X(20)   OCCURS  4.
       *
            03  WRK-RENNUM          PIC 9(01).
            03  WRK-ZAINUM          PIC 9(08).
@@ -1040,7 +1040,7 @@
       *
       *    滦据の给锐ＩＤを疯年する
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   3
+                   UNTIL       IDX     >   4
       *TEST
                DISPLAY "LF04-HKNKOH-FTNJANUM:" 
                              LF04-HKNKOH-FTNJANUM (1 IDX)
@@ -1111,7 +1111,7 @@
       *
       *    滦据の给锐ＩＤを疯年する
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   3
+                   UNTIL       IDX     >   4
       *        砷么荚戎规、减惦荚戎规がある箕の冉年
                IF     (LF04-HKNKOH-FTNJANUM(1 IDX) NOT =   SPACE )  OR
                       (LF04-HKNKOH-JKYSNUM (1 IDX) NOT =   SPACE )
@@ -1149,6 +1149,10 @@
                   (LF04-HKNKOH-PROVIDER(1 3)
                                        =   TBL-COMB-KOH-TANSEIDONAME
                                                         (IDH 3)))
+             AND ((LF04-HKNKOH-PROVIDER(1 4)   =   SPACE )  OR
+                  (LF04-HKNKOH-PROVIDER(1 4)
+                                       =   TBL-COMB-KOH-TANSEIDONAME
+                                                        (IDH 4)))
                CONTINUE
            ELSE
                GO      TO      200112-KOH-CHK-EXT
@@ -1156,14 +1160,15 @@
       *
            IF      (WRK-KOHID (1)      =   TBL-COMB-KOH1ID(IDH)) AND
                    (WRK-KOHID (2)      =   TBL-COMB-KOH2ID(IDH)) AND
-                   (WRK-KOHID (3)      =   TBL-COMB-KOH3ID(IDH))
+                   (WRK-KOHID (3)      =   TBL-COMB-KOH3ID(IDH)) AND
+                   (WRK-KOHID (4)      =   TBL-COMB-KOH4ID(IDH))
       *        给锐滦据
                MOVE    TBL-COMB-HKNCOMBINUM(IDH)
                                            TO  WRK-HKNCOMBI
            ELSE
                MOVE    ZERO                TO  FLG-HKN-CHK
                PERFORM VARYING     IDK1    FROM    1   BY  1
-                       UNTIL       IDK1    >   3
+                       UNTIL       IDK1    >   4
                    IF      (WRK-KOHID (IDK1)   =   ZERO )  AND
                            (WRK-TANSEIDONAME(IDK1) =   SPACE )
                        CONTINUE
