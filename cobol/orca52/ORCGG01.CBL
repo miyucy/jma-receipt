@@ -40,6 +40,7 @@
       *  01.00.10    NACL-太田    03/04/30  １桁パラメータのデフォルト
       *                                     に"0"を表示する
       *  01.00.11    NACL-藤原    03/05/12  印刷開始・終了頁の編集の修正 
+      *  01.00.12    NACL-太田    03/07/02  出力先プリンタサブ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -240,6 +241,9 @@
       *ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -957,19 +961,33 @@
       *     
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
+      *
+      *    出力先プリンタ名割り当て情報編集
+           INITIALIZE                      SYS-1031-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+           IF      ORCSPRTNM-RC    NOT =   ZERO
+               INITIALIZE                  SYS-1031-REC
+           END-IF 
       *     
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
-           ELSE    
-               INITIALIZE                  SYS-1031-REC
-           END-IF
+      *    MOVE    SPACE               TO  SYS-1031-REC
+      *    INITIALIZE                  SYS-1031-REC
+      *    MOVE    "1031"              TO  SYS-1031-KANRICD
+      *    MOVE    "*"                 TO  SYS-1031-KBNCD
+      *    MOVE    SYS-1031-REC        TO  MCPDATA-REC
+      *    PERFORM 900-SYSKANRI-INV-SEC
+      *    IF      FLG-SYSKANRI        =   ZERO
+      *        MOVE    MCPDATA-REC         TO  SYS-1031-REC
+      *    ELSE    
+      *        INITIALIZE                  SYS-1031-REC
+      *    END-IF
       *     
            MOVE    WRK-SYSYMD          TO
                                    WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
