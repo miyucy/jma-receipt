@@ -3205,6 +3205,8 @@
                                                TO  SPA-ERRMSG
                WHEN    "2509"
                    MOVE    "登録できません"    TO  SPA-ERRMSG
+               WHEN    "2530"
+                   MOVE    "全角で入力して下さい"    TO  SPA-ERRMSG
                WHEN    "2517"
                    MOVE    "変更年月日が重複しています"  TO  SPA-ERRMSG
            END-EVALUATE
