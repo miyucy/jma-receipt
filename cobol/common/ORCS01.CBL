@@ -2735,6 +2735,12 @@
                    WHEN   "1"
                    WHEN   "2"
                    WHEN   "3"
+                   WHEN   "A"
+                   WHEN   "B"
+                   WHEN   "C"
+                   WHEN   "D"
+                   WHEN   "E"
+                   WHEN   "F"
                           MOVE   ZERO      TO   HKN-HON-GAIKFTNRATE
                                                 HKN-KZK-GAIKFTNRATE
                                                 HKN-TSY-GAIKFTNRATE
@@ -3619,7 +3625,9 @@
       *                    ¡§²¼Á¥¸å£³¥ö·î°ÊÆâ
       *                    ¡§ÄÌ¶ÐºÒ³²
            IF     (COMB-HKNNUM        =     "002")   AND
-                  (COMB-HOJOKBN       =  "1"  OR  "2"  OR  "3")
+                  (COMB-HOJOKBN       =  "1"  OR  "2"  OR  "3"  OR
+                                         "A"  OR  "B"  OR  "C"  OR
+                                         "D"  OR  "E"  OR  "F"    )
                MOVE    "1"            TO      FLG-YAKFTN
            END-IF.
       *
