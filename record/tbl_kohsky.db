@@ -732,3 +732,21 @@ path	key7	{
 		;
 	};
 };
+
+path	st_key1	{
+	DBSELECT	{
+		DECLARE tbl_kohsky_st_key1_csr CURSOR FOR
+		SELECT a.* FROM tbl_kohsky a,tbl_ptinf b
+		WHERE (    a.HOSPID      =   :HOSPID     )
+		AND (   (( a.SRYYM       =   :SKYYM   )
+		AND ( a.SKYKBN      <>  '0'      )
+		AND (( a.SKYYM       =  '000000' )
+			OR ( a.SKYYM = :SKYYM )))
+			OR (( a.SKYYM       =   :SKYYM   )
+		AND ( a.SKYKBN      <>  '0'      )))
+		AND (      a.NYUGAIKBN  LIKE  :NYUGAIKBN    )
+		AND (    a.HOSPID  =  b.HOSPID )
+		AND (    a.PTID    =  b.PTID   )
+		AND (  b.TSTPTNUMKBN <> '1'    )
+	};
+};

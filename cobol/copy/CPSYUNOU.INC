@@ -506,3 +506,6 @@
       *更新時間
            03  SYU-UPHMS               PIC  X(06).
       *
+      *診療年月日（検索用）
+           03  SYU-UPSRYYMD            PIC  X(08).
+      *

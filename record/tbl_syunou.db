@@ -255,6 +255,8 @@ tbl_syunou {
 	CREYMD  			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
+#--
+	UPSRYYMD				char(8),virtual;
 };
 primary	{
 	HOSPID,NYUGAIKBN,PTID,DENPNUM;
@@ -845,3 +847,19 @@ path	key35 	{
 	};
 };
 
+#sitekey
+path	st_key1 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_st_key1_csr CURSOR FOR
+		SELECT a.* FROM tbl_syunou a,tbl_ptinf b
+		WHERE    a.HOSPID  =   :HOSPID 
+		AND   a.CREATEKBN  <> '3' 
+		AND   a.DENPJTIKBN <> '3'
+		AND   a.NYUGAIKBN  LIKE  :NYUGAIKBN
+		AND   (a.SRYYMD    >= :SRYYMD
+		AND    a.SRYYMD    <= :UPSRYYMD)
+		AND   a.HOSPID  =  b.HOSPID
+		AND   a.PTID    =  b.PTID
+		AND   b.TSTPTNUMKBN <> '1'
+	};
+};

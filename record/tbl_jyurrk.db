@@ -636,3 +636,24 @@ path	key26 	{
 		;
 	};
 };
+
+#sitekey
+path	st_key1 	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_st_key1_csr CURSOR FOR
+		SELECT a.* FROM tbl_jyurrk a,tbl_ptinf b
+		WHERE    a.HOSPID  =  :HOSPID
+		AND   a.NYUGAIKBN  =  :NYUGAIKBN
+		AND   (a.SRYYMD    >= :SRYYMD
+		AND    a.SRYYMD    <= :UPSRYYMD)
+		AND   a.HOSPID     =  b.HOSPID
+		AND   a.PTID       =  b.PTID
+		AND   b.TSTPTNUMKBN  <> '1'
+		ORDER  BY   a.PTID,
+		a.SRYYMD,
+		a.RENNUM,
+		a.DOUJI_RENNNUM,
+		a.EDANUM
+		;
+	};
+};
