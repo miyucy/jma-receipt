@@ -69,6 +69,20 @@ path	key4		{
 	};
 };
 
+path	key5		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptteikirrk_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptteikirrk
+        WHERE  HOSPID  =   :HOSPID
+        AND    PTID    =   :PTID
+        AND    HKNCOMBINUM = :HKNCOMBINUM
+		AND    SKYSTYMD   <= :SKYSTYMD
+		AND    SKYEDYMD   >= :SKYEDYMD
+		;
+	};
+};
+
 path	all		{ 	
 	DBSELECT	{
 		DECLARE tbl_ptteikirrk_all_csr CURSOR FOR
