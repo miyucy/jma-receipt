@@ -5741,6 +5741,12 @@
       *    入院会計テーブルを編集する（転科／転棟／転室時）
            IF     SPA-GMN-I01-SYORIKBN-CD =   "08"
                PERFORM 4801-TENROOM-EDIT-SEC
+               IF     IPN-NYUKAIKEI-SAKUSEI-FLG    =   "1"
+                   MOVE    SPACE   TO   SPA-GMN-I01-TOKNYUIN-CD
+                   MOVE    IPN-SANTEISTYMD   TO   WRK-SANTEISTYMD
+                   MOVE    IPN-SANTEISTYMD   TO   SPA-NAI-I01-IDOYMD
+                   PERFORM   4801-TENROOM-EDIT-SEC
+               END-IF
            END-IF
       *
       *    入院会計テーブルを編集する（異動取消時）
@@ -8312,6 +8318,9 @@
            MOVE    "NYUINACCT-KEY16"      TO  ORC-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
+           DISPLAY   "TENKA JI NO PTNYUINRRK DISPLAY "
+           DISPLAY   "RRKNUM = " PTNYUINRRK-RRKNUM
+           DISPLAY   "RRKEDANUM = " PTNYUINRRK-RRKEDANUM
       *    入院会計作成サブの呼出し
            INITIALIZE            ORCSNYUACCT-AREA
            MOVE    "8"                TO  LNK-SCNYUACCT-SYORI-KBN
@@ -8393,6 +8402,66 @@
                  END-IF
                  MOVE    "99999999"    TO LNK-SCNYUACCT-KAGEN-EDYUKYMD
                                                                (TN-IDX)
+           END-IF
+      *    特定集中治療室管理料
+           IF    SYOKIKSN-IN-KHNSRYCD   =   "190024610"
+                 MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
+                                        LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+      *          特定集中治療室管理料の算定可能日数を計算
+                 MOVE     ZERO      TO   WK-TOKUTEI-DAY
+                 COMPUTE  WK-TOKUTEI-DAY  =  14  - STUSAN-NISSU01
+                 MOVE   "190024610"  TO  LNK-SCNYUACCT-KAGEN-SRYCD(1)
+                 MOVE   SPA-NAI-I01-IDOYMD
+                                  TO  LNK-SCNYUACCT-KAGEN-STYUKYMD(1)
+                 INITIALIZE                STS-AREA-DAY
+                 INITIALIZE                LNK-DAY6-AREA
+                 MOVE    "61"              TO  LNK-DAY6-IRAI
+                 MOVE   SPA-NAI-I01-IDOYMD
+                                           TO  LNK-DAY6-KIJUN
+                 MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+      *           MOVE     6                TO  LNK-DAY6-ZOGEN
+                 IF     WK-TOKUTEI-DAY     >=   6
+                        MOVE   6            TO   LNK-DAY6-ZOGEN
+                 ELSE
+                        MOVE  WK-TOKUTEI-DAY   TO   LNK-DAY6-ZOGEN
+                 END-IF
+                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                 MOVE    LNK-DAY6-KEISAN
+                                     TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+      *
+                 IF     WK-TOKUTEI-DAY   >=   7
+                     MOVE   "190074610"  TO 
+                                           LNK-SCNYUACCT-KAGEN-SRYCD(2)
+                     INITIALIZE                STS-AREA-DAY
+                     INITIALIZE                LNK-DAY6-AREA
+                     MOVE    "61"              TO  LNK-DAY6-IRAI
+                     MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+                                               TO  LNK-DAY6-KIJUN
+                     MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                     MOVE     1                TO  LNK-DAY6-ZOGEN
+                     CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                     MOVE    LNK-DAY6-KEISAN
+                                  TO LNK-SCNYUACCT-KAGEN-STYUKYMD(2)
+                     MOVE    "99999999"
+                                  TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
+                 END-IF
+      *          一般入院料の算定開始日を算定
+                 INITIALIZE                STS-AREA-DAY
+                 INITIALIZE                LNK-DAY6-AREA
+                 MOVE    "61"              TO  LNK-DAY6-IRAI
+                 MOVE   SPA-NAI-I01-IDOYMD
+                                           TO  LNK-DAY6-KIJUN
+                 MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                 MOVE   WK-TOKUTEI-DAY     TO  LNK-DAY6-ZOGEN
+                 ADD    1                  TO  LNK-DAY6-ZOGEN
+                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                 MOVE    LNK-DAY6-KEISAN
+                                  TO       IPN-SANTEISTYMD
+      *          一般入院会計作成用のフラグ設定
+                 MOVE    "1"      TO      IPN-NYUKAIKEI-SAKUSEI-FLG
            END-IF
       *-------特定入院対応ここまで-----------------------------------
       *
