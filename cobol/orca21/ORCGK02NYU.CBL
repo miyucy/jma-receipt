@@ -2088,9 +2088,10 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX1
                IF     (SPA-NAI-RENNUM (IDX)    =   1  )  AND
-                      (SPA-NAI-RRKYMD (IDX)
+                      ((IDX                    <   100)  AND
+                       (SPA-NAI-RRKYMD (IDX)
                                            NOT =   SPA-NAI-RRKYMD
-                                                       (IDX + 1))  AND
+                                                       (IDX + 1))) AND
                       (SPA-NAI-DOUJI-RENNUM (IDX)  =   ZERO  )
                    CONTINUE
                ELSE
@@ -2416,9 +2417,10 @@
                IF     (IDXS                >   ZERO  )  OR
                       (FLG-SET             =   1     )
                    IF     (IDX                 =   LNK-WKSRYACT-MAX ) OR
-                          (LNK-WKSRY-ZAINUM (IDX + 1)
+                          ((IDX                <   200          )  AND
+                           (LNK-WKSRY-ZAINUM (IDX + 1)
                                            NOT =   LNK-WKSRY-ZAINUM
-                                                                (IDX))
+                                                              (IDX)))
       **************** ADD     1               TO  IDX2
       *                回数を編集
                        MOVE    LNK-WKSRY-ZAIKAIKEI(IDX)
@@ -4265,7 +4267,8 @@
       *
       *        セットが削除の時セット内容を削除する
                IF     (SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:1)   =   "S") OR
-                      (SPA-COM-SET  (SPA-GMN-IDX + 1)      =   "1")
+                       ((SPA-GMN-IDX           <   WRK-GYO-MAX  ) AND
+                        (SPA-COM-SET  (SPA-GMN-IDX + 1)    =   "1"))
                    PERFORM 41016-SETDEL-SEC
                END-IF
                MOVE    SPACE           TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
@@ -4347,7 +4350,8 @@
            IF     LNK-SC97-NYURYOKU    =   1
       *        セットが変更削除の時セット内容を削除する
                IF     (SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:1)   =   "S") OR
-                      (SPA-COM-SET  (SPA-GMN-IDX + 1)      =   "1")
+                     ((SPA-GMN-IDX           <   WRK-GYO-MAX  ) AND
+                      (SPA-COM-SET  (SPA-GMN-IDX + 1)      =   "1"))
                    PERFORM 41016-SETDEL-SEC
                END-IF
                MOVE    SPA-COM-TIMEFLG(SPA-GMN-IDX)    TO  WRK-TIMEFLG
@@ -7133,7 +7137,8 @@
                    UNTIL      (IDX     >   WRK-GYO-MAX )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
                MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
-               IF     (SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE) OR
+               IF    ((IDX                     <   WRK-GYO-MAX    ) AND
+                      (SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE) ) OR
                       (SPA-COM-ZAIEND(IDX)     =   "1"   )
                    MOVE    WRK-GYO-MAX             TO  IDX
                END-IF
@@ -7143,7 +7148,8 @@
                    UNTIL      (IDX     >   WRK-GYO-MAX )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
                MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
-               IF      SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE
+               IF      (IDX            <   WRK-GYO-MAX    ) AND
+                       (SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE )
                    MOVE    WRK-GYO-MAX             TO  IDX
                END-IF
            END-PERFORM
@@ -7798,10 +7804,12 @@
       *****************************************************************
        210-BACK-SYORI-SEC               SECTION.
       *
-           PERFORM 210-PARA-DEL-SEC
+           IF      SPA-GMN-PTID    NOT =   ZERO
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
+           END-IF
       *
-      *    排他制御解除処理
-           PERFORM 990-LOCK-OUT-SEC
+           PERFORM 210-PARA-DEL-SEC
       *
            INITIALIZE                  SPA-KYOTUKEY
            MOVE    WRK-SAKIPG          TO  SPA-SAKIPG
@@ -7871,6 +7879,11 @@
       *****************************************************************
        222-PTNUMCLEAR-SEC             SECTION.
       *
+           IF      SPA-GMN-PTID    NOT =   ZERO
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
+           END-IF
+      *
            INITIALIZE              SPA-K02
            INITIALIZE              SPA-KYOTUKEY
            INITIALIZE              SPA-SCR-REC
@@ -7889,9 +7902,6 @@
                                        SPA-K02
       *
            MOVE    0               TO  SPA-GMN-CUR
-      *
-      *    排他制御解除処理
-           PERFORM 990-LOCK-OUT-SEC
       *
            .
        222-PTNUMCLEAR-EXT.
@@ -11104,6 +11114,11 @@
       *
       *    患者番号が空白の時、患者番号へ
            IF      K02N-PTNUM          =  SPACE
+               MOVE    00              TO  SPA-GMN-CUR
+           END-IF
+      *
+      *    排他エラーの時、患者番号へ
+           IF      SPA-ERRCD           =   "9999"
                MOVE    00              TO  SPA-GMN-CUR
            END-IF
       *

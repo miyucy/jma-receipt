@@ -2461,9 +2461,10 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX1
                IF     (SPA-NAI-RENNUM (IDX)    =   1  )  AND
-                      (SPA-NAI-RRKYMD (IDX)
+                      ((IDX                    <   100)  AND
+                       (SPA-NAI-RRKYMD (IDX)
                                            NOT =   SPA-NAI-RRKYMD
-                                                       (IDX + 1))  AND
+                                                       (IDX + 1))) AND
                       (SPA-NAI-DOUJI-RENNUM (IDX)  =   ZERO  )
                    CONTINUE
                ELSE
@@ -2850,9 +2851,10 @@
                IF     (IDXS                >   ZERO  )  OR
                       (FLG-SET             =   1     ) 
                    IF     (IDX                 =   LNK-WKSRYACT-MAX ) OR
-                          (LNK-WKSRY-ZAINUM (IDX + 1)
+                          ((IDX                 <   200  )  AND
+                           (LNK-WKSRY-ZAINUM (IDX + 1)
                                            NOT =   LNK-WKSRY-ZAINUM
-                                                                (IDX))
+                                                                (IDX)))
                        MOVE    "1"             TO  SPA-COM-KAIFLG
                                                                (IDX2)
                        MOVE    ZERO                TO  FLG-SET
@@ -2898,7 +2900,8 @@
                    IF      SPA-COM-KAIFLG (IDX-1)  =   "1"
                        IF     (SPA-COM-KAISU(IDX-1)    >   1  )  OR
                               (SPA-COM-SRYKBN(IDX-1)(1:1)
-                                                   =   "2"    )
+                                                   =   "2"    )  OR
+                              (IDX-1               =   200   )
                            CONTINUE
                        ELSE
                            IF     (SPA-COM-INPUTCD(IDX-1 + 1)
@@ -4793,7 +4796,8 @@
       *
       *        セットが削除の時セット内容を削除する
                IF     (SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:1)   =   "S") OR
-                      (SPA-COM-SET  (SPA-GMN-IDX + 1)      =   "1")
+                     ((SPA-GMN-IDX             <   200    )  AND
+                      (SPA-COM-SET  (SPA-GMN-IDX + 1)      =   "1"))
                    PERFORM 41016-SETDEL-SEC
                END-IF
                MOVE    SPACE           TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
@@ -4886,7 +4890,8 @@
            IF     LNK-SC97-NYURYOKU    =   1
       *        セットが変更削除の時セット内容を削除する
                IF     (SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:1)   =   "S" ) OR
-                      (SPA-COM-SET  (SPA-GMN-IDX + 1)      =   "1")
+                      ((SPA-GMN-IDX            <   200   )  AND
+                       (SPA-COM-SET  (SPA-GMN-IDX + 1)     =   "1"))
                    PERFORM 41016-SETDEL-SEC
                END-IF
                MOVE    SPA-COM-TIMEFLG(SPA-GMN-IDX)    TO  WRK-TIMEFLG
@@ -7605,7 +7610,8 @@
                    UNTIL      (IDX     >   200 )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
                MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
-               IF     (SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE) OR
+               IF    ((IDX                     <   200   )  AND
+                      (SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE)) OR
                       (SPA-COM-ZAIEND(IDX)     =   "1"   )
                    MOVE    200             TO  IDX
                END-IF
@@ -7615,7 +7621,8 @@
                    UNTIL      (IDX     >   200 )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
                MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
-               IF      SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE
+               IF     (IDX                 <   200 )  AND
+                      (SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE )
                    MOVE    200             TO  IDX
                END-IF
            END-PERFORM
