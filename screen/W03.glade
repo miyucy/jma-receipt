@@ -5,13 +5,9 @@
   <name>W03</name>
   <program_name>W03</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -92,6 +88,7 @@
       <y>720</y>
       <width>80</width>
       <height>24</height>
+      <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
 	<key>GDK_F3</key>
@@ -103,7 +100,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 09 Feb 2001 02:54:52 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>ºï½ü</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
