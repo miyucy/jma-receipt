@@ -5,12 +5,9 @@
   <name>P97N</name>
   <program_name>P97N</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>True</gtkpanda_support>
-  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
@@ -545,7 +542,7 @@
       <name>scrolledwindow1</name>
       <x>16</x>
       <y>52</y>
-      <width>980</width>
+      <width>990</width>
       <height>628</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
@@ -584,8 +581,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Fri, 13 Dec 2002 02:17:53 GMT</last_modification_time>
 	</signal>
-	<columns>9</columns>
-	<column_widths>44,120,348,41,78,52,86,44,80</column_widths>
+	<columns>10</columns>
+	<column_widths>44,120,348,38,78,38,78,27,48,60</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -698,6 +695,19 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label18</name>
+	  <label>ÊÝ¸±</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label19</name>
 	  <label>ÉÂ¼¼ÈÖ¹æ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
