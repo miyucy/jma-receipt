@@ -603,23 +603,16 @@
                    ELSE
                        MOVE    "0002"          TO  SPA-ERRCD
                    END-IF 
-      *----(01.02.16)--ADD-START---
+      *----(01.02.16)--UPD-START---
       *        プログラム更新処理
-               WHEN    "02"
+               WHEN    "03"
                    IF      SYS-1010-KANRIAUTHFLG   =   "T"
                        AND     SYS-1010-GSRAUTH(3:1)    =  "1"
                        MOVE    "M97"           TO  SPA-SAKIPG
                    ELSE
                        MOVE    "0002"          TO  SPA-ERRCD
                    END-IF 
-      *----(01.02.16)--ADD-END-----
-      *        プログラム更新処理
-               WHEN    "03"
-                   IF      SYS-1010-GSRAUTH(3:1)    =  "1"
-                       MOVE    "???"           TO  SPA-SAKIPG
-                   ELSE
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   END-IF 
+      *----(01.02.16)--UPD-END-----
       *        点数改正処理
                WHEN    "04"
                    IF      SYS-1010-GSRAUTH(4:1)    =  "1"
@@ -798,30 +791,24 @@
       *
       *****MOVE    SPA-WORK            TO  SYS-1010-REC
       *
-      *----(01.02.16)--UPD-START---
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       4
-      *             UNTIL   IDX >       3
+                   UNTIL   IDX >       3
                MOVE    WIDGET-INSENSITIVE      TO  M00-STATE-O (IDX)
            END-PERFORM           
-      *----(01.02.16)--UPD-END-----
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "1"
                MOVE    WIDGET-NORMAL      TO  M00-G01-STATE
            END-IF
-           IF      SYS-1010-GSRAUTH(3:1)    =  "1"
-               MOVE    WIDGET-NORMAL      TO  M00-G03-STATE
+      *----(01.02.16)--UPD-START---
+           IF      SYS-1010-KANRIAUTHFLG   =   "T"
+               AND     SYS-1010-GSRAUTH(3:1)    =  "1"
+               MOVE    WIDGET-NORMAL       TO  M00-G03-STATE
            END-IF
+      *----(01.02.16)--UPD-END-----
            IF      SYS-1010-GSRAUTH(4:1)    =  "1"
                MOVE    WIDGET-NORMAL      TO  M00-G04-STATE
            END-IF
       *
-      *----(01.02.16)--ADD-START---
-           IF      SYS-1010-KANRIAUTHFLG   =   "T"
-               AND     SYS-1010-GSRAUTH(3:1)    =  "1"
-               MOVE    WIDGET-NORMAL       TO  M00-G02-STATE
-           END-IF
-      *----(01.02.16)--ADD-END-----
       *
       *2001.8.7 強制プロテクト（ＰＧ未作成）
       ***     MOVE    WIDGET-INSENSITIVE      TO  M00-G03-STATE
