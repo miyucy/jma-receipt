@@ -1649,9 +1649,16 @@
       *            ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
                    WHEN    3
                    WHEN    4
-                       COMPUTE WRK-SENTEI-GAIHAKU1
-                           = ( WRK-KHNTEN  *   0.15 )
-                           +   0.5
+                       IF    ( FLG-GAIHAKUDAY(IDXD)    =   3 )
+                        AND  ( HCM34S01-SANTEIYM      >=   "200404" )
+                           COMPUTE WRK-SENTEI-GAIHAKU1
+                               = ( WRK-KHNTEN  *   0.3  )
+                               +   0.5
+                       ELSE
+                           COMPUTE WRK-SENTEI-GAIHAKU1
+                               = ( WRK-KHNTEN  *   0.15 )
+                               +   0.5
+                       END-IF
                        COMPUTE WRK-SENTEI-GAIHAKU2
                            = ( WRK-KHNTEN  *   WRK-SENTEI-KEISU)
                            +   0.5
@@ -1683,9 +1690,17 @@
       *                ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
                    WHEN   3
                    WHEN   4
-                       COMPUTE WRK-SENTEI-GAIHAKU1
-                           = ( WRK-KHNTEN  *   0.15 )
-                           +   0.5
+                       IF    ( FLG-GAIHAKUDAY(IDXD)    =   3 )
+                        AND  ( HCM34S01-SANTEIYM      >=   "200404" )
+                           COMPUTE WRK-SENTEI-GAIHAKU1
+                               = ( WRK-KHNTEN  *   0.3 )
+                               +   0.5
+                       ELSE
+                           COMPUTE WRK-SENTEI-GAIHAKU1
+                               = ( WRK-KHNTEN  *   0.15 )
+                               +   0.5
+                       END-IF
+      *
                        COMPUTE WRK-SENTEI-GAIHAKU2
                            = ( WRK-KHNTEN  *   WRK-SENTEI-KEISU)
                            +   0.5
