@@ -1470,7 +1470,7 @@
                PERFORM 900-TBL-CLOSE-SEC
            END-IF
       *
-           MOVE    COMB-GAI-KFTNRATE       TO  WRK-ZZ9
+           MOVE    COMB-NYU-KFTNRATE       TO  WRK-ZZ9
            MOVE    WRK-ZZ9                 TO  WRK-FTNRATE (1 : 3)
            MOVE    "%"                     TO  WRK-FTNRATE (4 : )
            .
