@@ -828,7 +828,7 @@
       *        MOVE    "仮収納データの取得に失敗しました"
       *                                TO  WRK-RECEERR
       *
-               MOVE    "仮収納データの取得に失敗しました"
+               MOVE    "仮収納データの取得に失敗"
                                        TO  ERR-ERRMSG
                PERFORM 600-ERRMSG-EDIT-SEC
       *
@@ -875,7 +875,7 @@
       *        MOVE    "仮収納データの更新に失敗しました"
       *                                TO  WRK-RECEERR
       *
-               MOVE    "仮収納データの更新に失敗しました"
+               MOVE    "仮収納データの更新に失敗"
                                        TO  ERR-ERRMSG
                PERFORM 600-ERRMSG-EDIT-SEC
       *
@@ -1177,7 +1177,6 @@
                                            SPA-1009-TBL
            IF    ( SPTID-RC            =   ZERO )
                MOVE    SPTID-PTNUM     TO  ERR-PTNUM
-               
            ELSE
                STRING "?(ID:"          DELIMITED   BY  SIZE
                       KEY-O-PTID       DELIMITED   BY  SIZE
@@ -1186,6 +1185,8 @@
                END-STRING
            END-IF
       *
+           MOVE    ZERO                TO  WRK-SHO
+                                           WRK-AMARI
            MOVE    1                   TO  WRK-LEN
            MOVE    SPACE               TO  WRK-STR
            STRING  ERR-PTNUM           DELIMITED   BY  SPACE
