@@ -49,6 +49,7 @@
       *  01.01.15    NACL-ÂÀÅÄ    03.10.27  Æþ¶â¾å¸Â³Û¤Î¥Á¥§¥Ã¥¯¤ò½¤Àµ
       *  01.01.16    NACL-ÂÀÅÄ    03.10.29  ÍúÎò½¤Àµ½èÍý½¤Àµ
       *  01.01.17    NACL-ÂÀÅÄ    03.11.12  ¹¹¿·ÆüÉÕÊÔ½¸ÂÐ±þ
+      *  01.01.18    NACL-¿¹ÏÆ    03.12.11  ½èÍý¶èÊ¬É½¼¨½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -697,8 +698,12 @@
                             MOVE   "ÀÁµá³Û¤Ê¤·"
                                       TO    SPA-GMN-JOUTAI-T (IDX)
                        WHEN "1"
-                            IF   ( SYU-SKYMONEY
+      *----(01.01.18)--UPD-START---
+      *                      IF   ( SYU-SKYMONEY
+      *                                     >   SMEI-NYUHEN-MONEY )
+                            IF   ( SMEI-SKYMONEY
                                            >   SMEI-NYUHEN-MONEY )
+      *----(01.01.18)--UPD-END-----
                                 MOVE   "ÀÁµá¡¦Ì¤¼ý"
                                       TO    SPA-GMN-JOUTAI-T (IDX)
                             ELSE
