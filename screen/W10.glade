@@ -347,7 +347,7 @@
       <label>有効期間</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0.0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -628,10 +628,10 @@
 	  <y>230</y>
 	  <width>110</width>
 	  <height>18</height>
-	  <label>　　　　　　３</label>
+	  <label>３</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>1.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -644,10 +644,10 @@
 	  <y>190</y>
 	  <width>110</width>
 	  <height>18</height>
-	  <label>　　　　　　２</label>
+	  <label>２</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>1.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -663,7 +663,7 @@
 	  <label>帳票パラメタ１</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>1.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -676,10 +676,10 @@
 	  <y>110</y>
 	  <width>110</width>
 	  <height>18</height>
-	  <label>プログラム名　</label>
+	  <label>プログラム名</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>0.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -692,10 +692,10 @@
 	  <y>70</y>
 	  <width>110</width>
 	  <height>18</height>
-	  <label>帳票名　　　　</label>
+	  <label>帳票名</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>0.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -708,10 +708,10 @@
 	  <y>30</y>
 	  <width>110</width>
 	  <height>18</height>
-	  <label>帳票番号　　　</label>
+	  <label>帳票番号</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>0.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -992,10 +992,10 @@
 	  <y>230</y>
 	  <width>110</width>
 	  <height>18</height>
-	  <label>　　　　　　３</label>
+	  <label>３</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>1.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1008,10 +1008,10 @@
 	  <y>190</y>
 	  <width>110</width>
 	  <height>18</height>
-	  <label>　　　　　　２</label>
+	  <label>２</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>1.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1027,7 +1027,7 @@
 	  <label>帳票パラメタ１</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>1.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1040,10 +1040,10 @@
 	  <y>110</y>
 	  <width>110</width>
 	  <height>18</height>
-	  <label>プログラム名　</label>
+	  <label>プログラム名</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>0.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1056,10 +1056,10 @@
 	  <y>70</y>
 	  <width>110</width>
 	  <height>18</height>
-	  <label>帳票名　　　　</label>
+	  <label>帳票名</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>0.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1072,10 +1072,10 @@
 	  <y>30</y>
 	  <width>110</width>
 	  <height>18</height>
-	  <label>帳票番号　　　</label>
+	  <label>帳票番号</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>0.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
