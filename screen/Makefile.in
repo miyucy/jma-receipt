@@ -33,6 +33,7 @@ SCREEN_screen = \
 	FID1.glade \
 	FID2.glade \
 	G01.glade \
+	G02.glade \
 	G99.glade \
 	GERR.glade \
 	GID1.glade \
