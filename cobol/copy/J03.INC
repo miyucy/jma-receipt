@@ -55,3 +55,11 @@
               03  J03-MIDASI.
                 04  J03-MIDASI-STYLE   PIC X(20).
                 04  J03-MIDASI-VALUE   PIC X(20).
+              03  J03-TENSU.
+                04  J03-VALUE   PIC X(10).
+              03  J03-RSITENSU.
+                04  J03-VALUE   PIC X(10).
+              03  J03-JIHIKIN.
+                04  J03-VALUE   PIC X(10).
+              03  J03-SRYYM.
+                04  J03-VALUE   PIC X(6).

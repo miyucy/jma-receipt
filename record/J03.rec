@@ -54,5 +54,17 @@ J03	{
 		        style   varchar(20);
 			value	varchar(20);
 		};
+		TENSU	{
+			value	varchar(10);
+		};
+		RSITENSU	{
+			value	varchar(10);
+		};
+		JIHIKIN	{
+			value	varchar(10);
+		};
+		SRYYM	{
+			value	varchar(6);
+		};
 	};
 };
