@@ -186,6 +186,7 @@
       *  01.01.30    NACL-太田    03/01/17  TEIKIRRK-KEY,ALL追加        
       *                                     PTTEIKIRRK-KEY〜KEY3,ALL追加
       *  01.01.31    NACL-太田    03/01/20  PTTEIKIRRK-KEY4追加
+      *                                     PTTEIKIRRK-DEL1,DEL2追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1292,6 +1293,12 @@
                                        TO  WRK-PATH
                WHEN     "DBDELETE"     ALSO   "TEIKIPRT-DEL1"
                    MOVE    PATH-TBL-TEIKIPRT-DEL1
+                                       TO  WRK-PATH
+               WHEN     "DBDELETE"     ALSO   "PTTEIKIRRK-DEL1"
+                   MOVE    PATH-TBL-PTTEIKIRRK-DEL1
+                                       TO  WRK-PATH
+               WHEN     "DBDELETE"     ALSO   "PTTEIKIRRK-DEL2"
+                   MOVE    PATH-TBL-PTTEIKIRRK-DEL2
                                        TO  WRK-PATH
       *
                WHEN    ANY             ALSO   "SRYACCT-KEY"

@@ -71,3 +71,24 @@ path	all		{
 		;
 	};
 };
+
+path	del1		{ 	
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptteikirrk
+        WHERE  PTID        = :PTID
+		;
+	};
+};
+
+path	del2		{ 	
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptteikirrk
+        WHERE  PTID        = :PTID
+		AND    SKYSTYMD   >= :SKYSTYMD
+		AND    SKYEDYMD   <= :SKYEDYMD
+		;
+	};
+};
+
