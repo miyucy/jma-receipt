@@ -377,7 +377,8 @@
                               (SPA-K023-MAX    >   100 )
                MOVE    ZERO                TO  FLG-OK
                IF     (SPA-GMN-INPUTCD (IDX)(1:1)  =   "." OR "S" )  OR
-                      (SPA-COM-INPUTCD (IDX)       =   SPACE     )
+                      (SPA-COM-INPUTCD (IDX)       =   SPACE     )   OR
+                      (SPA-GMN-INPUTCD (IDX)(1:1)  =   "#" OR "$" )
                    CONTINUE
                ELSE
                    IF      FLG-SYORI           =    1
