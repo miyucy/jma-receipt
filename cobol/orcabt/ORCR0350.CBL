@@ -2005,9 +2005,6 @@
       *    症状詳記（手術歴・保険履歴）
            MOVE    WRK-FTNKBN          TO  WRK-COM-FTNKBN
            PERFORM 2008-COMMENT-HEN-01-SEC
-      *
-      *    入退院履歴編集処理
-           PERFORM 20079-HC101-NYUTAI-RIREKI-HEN-SEC
       *                                        
       *    摘要情報
            INITIALIZE                      RECE641-REC
@@ -2060,6 +2057,9 @@
                    PERFORM 990-RECE641-NEXT-SEC
                END-IF     
            END-PERFORM
+      *
+      *    入退院履歴編集処理
+           PERFORM 20079-HC101-NYUTAI-RIREKI-HEN-SEC
       *
       *    入院会計編集処理
            PERFORM 20077-NYUIN-HENSYU-SEC
@@ -2282,7 +2282,7 @@
                    END-IF    
                    PERFORM 5004-MOJI-HENSYU-SEC  
       *            負担区分
-                   MOVE    WRK-FTNKBN          TO  WRK-DATA
+                   MOVE    WRK-COM-FTNKBN      TO  WRK-DATA
                    MOVE    1                   TO  WRK-NAGASA
                    PERFORM 5004-MOJI-HENSYU-SEC  
       *            コメントコード
@@ -2326,7 +2326,7 @@
                    END-IF    
                    PERFORM 5004-MOJI-HENSYU-SEC  
       *            負担区分
-                   MOVE    WRK-FTNKBN          TO  WRK-DATA
+                   MOVE    WRK-COM-FTNKBN      TO  WRK-DATA
                    MOVE    1                   TO  WRK-NAGASA
                    PERFORM 5004-MOJI-HENSYU-SEC  
       *            コメントコード
