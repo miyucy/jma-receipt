@@ -53,6 +53,7 @@
       *                                     とき不明分として処理する
       *                                     労災のとき処理しない      
       *  01.01.09    MCC-藤原     02/06/04  保険組合せの適用日のチェックの修正
+      *  01.01.10    MCC-藤原     02/11/25  自賠責のとき処理しない      
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -264,6 +265,8 @@
        01  WRK-CONS-AREA.
       *    労災保険番号 
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
+      *    自賠責保険番号 
+           03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".       
       *     
       * 
        01  WRK-RECE01-REC. 
@@ -587,7 +590,8 @@
       *
                    IF      FLG-HKNCOMBI    =   ZERO
                        IF      COMB-HKNNUM     =
-                                               WRK-CONS-ROUSAI-HKNNUM
+                                               WRK-CONS-ROUSAI-HKNNUM OR
+                                               WRK-CONS-JIBAI-HKNNUM 
                            MOVE    "1"             TO  WRK-ROUSAIKBN
                        ELSE     
                            IF      COMB-TEKSTYMD   <=  WRK-STYMD
@@ -643,7 +647,7 @@
 070300*****************************************************************
 070400 20011-FILE-SYORI-SEC              SECTION.
       *
-      *    労災保険のとき処理しない
+      *    労災保険・自賠責のとき処理しない
            IF      WRK-ROUSAIKBN       =   "1"
                GO  TO  20011-FILE-SYORI-EXT
            END-IF
@@ -1296,7 +1300,8 @@
                                                WRK-ROUSAIKBN
       *
                IF      FLG-HKNCOMBI        =   ZERO
-                   IF      COMB-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM
+                   IF      COMB-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM OR 
+                                               WRK-CONS-JIBAI-HKNNUM 
                        MOVE    "1"             TO  WRK-ROUSAIKBN
                    ELSE                                         
                        IF      COMB-TEKSTYMD   <=  WRK-STYMD
