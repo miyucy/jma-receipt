@@ -104,6 +104,7 @@
            03  IDX-KAI4            PIC 9(04).
            03  IDX-DAY             PIC 9(02).
            03  IDX-SIN             PIC 9(04).
+           03  IDX-SIN2            PIC 9(04).
            03  IDX-ATO             PIC 9(04).
            03  IDX-1               PIC 9(02).
            03  IDX-2               PIC 9(02).
@@ -1208,28 +1209,35 @@
                MOVE    LNK-WKSRY-SRYKBN (IDX)  TO  SRY-SRYKBN
                MOVE    LNK-WKSRY-JIHIMONEYTOTAL (IDX)
                                                TO  SRY-JIHIMONEYTOTAL
+               MOVE    ZERO                    TO  IDX-SIN2
                PERFORM VARYING IDX-SIN     FROM    1   BY  1
                        UNTIL   IDX-SIN     >   5
+               IF      LNK-WKSRY-SRYCD (IDX IDX-SIN)   =   SPACE
+                   CONTINUE
+               ELSE
+                   ADD     1                   TO  IDX-SIN2
                    MOVE    LNK-WKSRY-SRYCD (IDX IDX-SIN)
-                                               TO  SRY-SRYCD (IDX-SIN)
+                                               TO  SRY-SRYCD (IDX-SIN2)
                    MOVE    LNK-WKSRY-SRYSURYO(IDX IDX-SIN)
                                                TO  SRY-SRYSURYO
-                                                            (IDX-SIN)
+                                                            (IDX-SIN2)
                    MOVE    LNK-WKSRY-SRYKAISU(IDX IDX-SIN)
                                                TO  SRY-SRYKAISU
-                                                            (IDX-SIN)
+                                                            (IDX-SIN2)
                    MOVE    LNK-WKSRY-AUTOKBN(IDX IDX-SIN)
                                                TO  SRY-AUTOKBN
-                                                            (IDX-SIN)
+                                                            (IDX-SIN2)
                    MOVE    LNK-WKSRY-JIHIMONEY (IDX IDX-SIN)
                                                TO  SRY-JIHIMONEY
-                                                            (IDX-SIN)
+                                                            (IDX-SIN2)
       *            患者コメント作成
                    IF      LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:1)  =   "8"
                        PERFORM 45011-PTCOM-SYROI-SEC
                    END-IF
+               END-IF
                END-PERFORM
       *
+               IF     IDX-SIN2             >   ZERO
       *
                MOVE    SRYACT-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1243,6 +1251,8 @@
                    DISPLAY "K03 SRYACT INS ERR:" SRY-KEY  "."
                    DISPLAY "MCP-RC:" MCP-RC ":" 
                    MOVE    "0005"          TO  SPA-ERRCD
+               END-IF
+      *
                END-IF
       *
            END-PERFORM
@@ -1296,7 +1306,7 @@
            END-IF
       *
       *    明細番号
-           MOVE    WRK-MEIBAN          TO  SRY-INPUTNUM  (IDX-SIN)
+           MOVE    WRK-MEIBAN          TO  SRY-INPUTNUM  (IDX-SIN2)
       *
            .
        45011-PTCOM-SYROI-EXT.
