@@ -1953,8 +1953,7 @@
                                    TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
       *
-           IF      ( PTNYUINRRK-JTIKBN     = "0" OR "2" OR "3" 
-                                          OR "4" OR "7" )
+           IF      ( PTNYUINRRK-JTIKBN     = "2" OR "3" OR "4" OR "7" )
             AND    ( PTNYUINRRK-TAIINYMD   = "99999999" )
                MOVE    WRK-HENYMDG TO  SPA-GMN-I01-MAEIDOYMD
            END-IF
@@ -6602,7 +6601,6 @@
       *    Å¾²Ê¡¡Å¾Åï¡¡Å¾¼¼
            WHEN    "08"
       *
-               MOVE    "0"       TO  PTNYUINRRK-JTIKBN
                EVALUATE    TRUE
       *        ²Ê¤¬ÊÑ¤ï¤Ã¤¿¾ì¹ç
                WHEN    WRK-NYUINKA-KEY NOT =   PTNYUINRRK-NYUINKA
@@ -6620,6 +6618,8 @@
                                    NOT =   PTNYUINRRK-TOKUTEI-KBN )
                  OR  ( WRK-TOKUTEI-NYUIN-KEY
                                    NOT =   PTNYUINRRK-TOKUTEI-NYUIN )
+                   MOVE    "7"   TO  PTNYUINRRK-JTIKBN
+               WHEN    OTHER
                    MOVE    "7"   TO  PTNYUINRRK-JTIKBN
                END-EVALUATE
       *
