@@ -2269,7 +2269,7 @@
                    MOVE    "SYUNOU-KEY"    TO  WRK-DBPATH
                    PERFORM 900-TBL-UPDATE-SEC
                    IF    ( FLG-DBRC    NOT =   ZERO )
-                       MOVE    "2004"      TO  SPA-ERRCD
+                       MOVE    "4001"      TO  SPA-ERRCD
                        GO  TO  4701-SYUNOU-UPD-EXT
                    END-IF
                END-IF
@@ -2368,7 +2368,7 @@
            MOVE    "SYUMEI-KEY"        TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC            =   ZERO )
-               MOVE    "2004"          TO  SPA-ERRCD
+               MOVE    "4002"          TO  SPA-ERRCD
                GO  TO  4701-SYUMEI-SAKUSEI-EXT
            END-IF
       *
@@ -2380,7 +2380,7 @@
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            PERFORM 900-TBL-INSERT-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
-               MOVE    "2004"          TO  SPA-ERRCD
+               MOVE    "4003"          TO  SPA-ERRCD
                GO  TO  4701-SYUMEI-SAKUSEI-EXT
            END-IF
       *
@@ -2439,7 +2439,7 @@
            MOVE    "PTTEIKIRRK-DEL2"   TO  WRK-DBPATH
            PERFORM 900-TBL-DELETE-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
-               MOVE    "2005"          TO  SPA-ERRCD
+               MOVE    "4004"          TO  SPA-ERRCD
                GO  TO  4701-PTTEIKIRRK-DEL-EXT
            END-IF
       *
@@ -2527,7 +2527,7 @@
                    MOVE    "TEIKIRRK-KEY"  TO  WRK-DBPATH
                    PERFORM 900-TBL-UPDATE-SEC
                    IF  (   FLG-DBRC    NOT =   ZERO )
-                       MOVE    "2005"      TO  SPA-ERRCD
+                       MOVE    "4005"      TO  SPA-ERRCD
                        GO  TO  4701-TEIKIRRK-UPD-EXT
                    END-IF
                ELSE
@@ -2536,7 +2536,7 @@
                    MOVE    "TEIKIRRK-KEY"  TO  WRK-DBPATH
                    PERFORM 900-TBL-INSERT-SEC
                    IF  (   FLG-DBRC    NOT =   ZERO )
-                       MOVE    "2005"      TO  SPA-ERRCD
+                       MOVE    "4006"      TO  SPA-ERRCD
                        GO  TO  4701-TEIKIRRK-UPD-EXT
                    END-IF
                END-IF
@@ -2594,7 +2594,7 @@
                                        TO  WKPTNYUINRRK-REC
       *
                    ELSE
-                       MOVE    "2001"  TO  SPA-ERRCD
+                       MOVE    "4007"  TO  SPA-ERRCD
                        GO  TO  4801-TAIINYMD-UPD-EXT
                    END-IF
                ELSE
@@ -2611,7 +2611,7 @@
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 900-TBL-UPDATE-SEC
                IF    ( FLG-DBRC    NOT =   ZERO )
-                   MOVE    "2001"  TO  SPA-ERRCD
+                   MOVE    "4008"  TO  SPA-ERRCD
                    GO  TO  4801-TAIINYMD-UPD-EXT
                END-IF
       *
@@ -2624,7 +2624,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( WRK-TAIINUPDCNT     =   ZERO )
-               MOVE    "2001"  TO  SPA-ERRCD
+               MOVE    "4009"  TO  SPA-ERRCD
                GO  TO  4801-TAIINYMD-UPD-EXT
            END-IF
       *
@@ -2723,7 +2723,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-SYUNOU      =   ZERO )
-               MOVE    "2002"      TO  SPA-ERRCD
+               MOVE    "4010"      TO  SPA-ERRCD
                GO  TO  4801-SYUNOU-UPD-EXT
            END-IF
       *
@@ -2732,7 +2732,7 @@
            MOVE    "SYUNOU-KEY"    TO  WRK-DBPATH
            PERFORM 900-TBL-INSERT-SEC
            IF    ( FLG-DBRC    NOT =   ZERO )
-               MOVE    "2002"      TO  SPA-ERRCD
+               MOVE    "4011"      TO  SPA-ERRCD
                GO  TO  4801-SYUNOU-UPD-EXT
            END-IF
       *
@@ -2819,7 +2819,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-SYUMEI      =   ZERO )
-               MOVE    "2003"      TO  SPA-ERRCD
+               MOVE    "4012"      TO  SPA-ERRCD
                GO  TO  4801-SYUMEI-UPD-EXT
            END-IF
       *
@@ -2828,7 +2828,7 @@
            MOVE    "SYUMEI-KEY"    TO  WRK-DBPATH
            PERFORM 900-TBL-INSERT-SEC
            IF    ( FLG-DBRC    NOT =   ZERO )
-               MOVE    "2003"      TO  SPA-ERRCD
+               MOVE    "4013"      TO  SPA-ERRCD
                GO  TO  4801-SYUMEI-UPD-EXT
            END-IF
       *
@@ -2884,11 +2884,11 @@
                MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
                PERFORM 900-TBL-UPDATE-SEC
                IF    ( FLG-DBRC    NOT =   ZERO )
-                   MOVE    "2002"              TO  SPA-ERRCD
+                   MOVE    "4014"              TO  SPA-ERRCD
                    GO  TO  4801-DENPNUM-SET-EXT
                END-IF
            ELSE
-               MOVE    "2002"              TO  SPA-ERRCD
+               MOVE    "4015"              TO  SPA-ERRCD
                GO  TO  4801-DENPNUM-SET-EXT
            END-IF
       *
@@ -2946,7 +2946,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-NYUINKA         =   ZERO )
-               MOVE    "2002"  TO  SPA-ERRCD
+               MOVE    "4016"  TO  SPA-ERRCD
                GO  TO  4801-SEILASTRRK-SET-EXT
            END-IF
       *
@@ -3010,7 +3010,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-PTINF           NOT =   ZERO )
-               MOVE    "2002"          TO  SPA-ERRCD
+               MOVE    "4017"          TO  SPA-ERRCD
                GO  TO  4801-PTINF-UPD-EXT
            END-IF
       *
@@ -3033,7 +3033,7 @@
            MOVE    "PTINF-KEY"         TO  WRK-DBPATH
            PERFORM 900-TBL-UPDATE-SEC
            IF     ( FLG-DBRC       NOT =  ZERO )
-               MOVE    "2002"          TO  SPA-ERRCD
+               MOVE    "4018"          TO  SPA-ERRCD
                GO  TO  4801-PTINF-UPD-EXT
            END-IF
       *
@@ -3190,19 +3190,7 @@
            WHEN    "0008"
                MOVE    "入金額は今回請求額以下にして下さい。"
                                        TO  SPA-ERRMSG
-           WHEN    "2001"
-               MOVE    "更新処理に失敗しました"
-                                       TO  SPA-ERRMSG
-           WHEN    "2002"
-               MOVE    "更新処理に失敗しました"
-                                       TO  SPA-ERRMSG
-           WHEN    "2003"
-               MOVE    "更新処理に失敗しました"
-                                       TO  SPA-ERRMSG
-           WHEN    "2004"
-               MOVE    "更新処理に失敗しました"
-                                       TO  SPA-ERRMSG
-           WHEN    "2005"
+           WHEN    "4001"  THRU    "4999"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            END-EVALUATE
