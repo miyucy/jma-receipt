@@ -764,6 +764,11 @@
       *
            MOVE    PTINF-NAME        TO  SPA-GMN-NAME
       *
+           IF    ( SPA-GMN-SRYYM      =   SPACE )
+               MOVE    SPA-NAI-HYO-SRYYM   TO  SPA-NAI-SRYYM
+               MOVE    SPA-NAI-HYO-SRYYMH  TO  SPA-GMN-SRYYM
+           END-IF
+      *
            MOVE    5                 TO  SPA-GMN-CUR
            .
        4103-PTNUM-CHK-EXT.
