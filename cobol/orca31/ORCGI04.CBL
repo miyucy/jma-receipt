@@ -861,14 +861,12 @@
                COMPUTE SPA-GMN-I04-TGMONEY (IDX1)
                    =   WKSYU-TGMONEY (IDX1)
                    +   WKSYU-TGMONEY-TAX(IDX1)
-      *    保険適用外
-               COMPUTE SPA-GMN-I04-HKNGAI
-                   =   SPA-GMN-I04-HKNGAI
-                   +   WKSYU-TGMONEY (IDX1)
-               COMPUTE SPA-GMN-I04-HKNGAI
-                   =   SPA-GMN-I04-HKNGAI
-                   +   WKSYU-TGMONEY-TAX (IDX1)
            END-PERFORM
+      *
+      *    保険適用外
+           COMPUTE SPA-GMN-I04-HKNGAI
+                   =   WKSYU-TGMONEY (12)
+                   +   WKSYU-TGMONEY-TAX (12)
       *
       *    保険適用金額
            MOVE    WKSYU-HKNTEKMONEY       TO  SPA-GMN-I04-HKNTEKI

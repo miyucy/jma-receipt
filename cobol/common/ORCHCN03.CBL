@@ -28,6 +28,8 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-ÂÀÅÄ    03.03.13  Æþ±¡ÀÁµá½ñÊ£¿ôËç°ì³ç°õºþÂÐ±þ
+      *  01.00.02    NACL-ÂÀÅÄ    03.04.28  ¼«ÈñÊ¬ÉéÃ´¶â³Û¤Ë¾ÃÈñÀÇ¤¬
+      *                                     Íî¤Á¤Æ¤¤¤¿¤Î¤ò½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -606,13 +608,10 @@
            END-EVALUATE
       *
       *    ÊÝ¸±Å¬ÍÑ³°Ê¬
-           MOVE    ZERO                TO  WRK-GOKTEN
-           PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL       IDX1    >   11
-               COMPUTE WRK-GOKTEN      =   WRK-GOKTEN
-                                       +  (SYU-TGMONEY (IDX1)
-                                       +   SYU-TGMONEY-TAX  (IDX1) )
-           END-PERFORM
+           COMPUTE WRK-GOKTEN
+               =   SYU-TGMONEY (12)
+               +   SYU-TGMONEY-TAX (12)
+      *
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            MOVE    WRK-Z72             TO  WRK-ZHENSYU9
            PERFORM 800-HENKAN-SEC
