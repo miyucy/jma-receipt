@@ -281,15 +281,21 @@
            MOVE    KEY-NEW         TO  KEY-OLD
            PERFORM UNTIL   FLG-END     =   1
                    OR      KEY-NEW NOT =   KEY-OLD
-      *        Ä¢É¼ÊÔ½¸<¥Ø¥Ã¥À¡¼Éô>½èÍý
-               PERFORM 210-HEAD-HEN-SEC
       *
                PERFORM 900-RECEDEN-SELECT-SEC
-               PERFORM UNTIL ( FLG-RECEDEN =   1 )
-                       OR    ( CNT-RECEDEN >   32 )
-                   MOVE   RECEDEN-RECEDATA TO  HCM37-NAIYO(CNT-RECEDEN)
-                   PERFORM 900-RECEDEN-READ-SEC
-               END-PERFORM
+               IF      FLG-RECEDEN     =   ZERO
+      *            Ä¢É¼ÊÔ½¸<¥Ø¥Ã¥À¡¼Éô>½èÍý
+                   PERFORM 210-HEAD-HEN-SEC
+                   PERFORM UNTIL ( FLG-RECEDEN =   1 )
+                           OR    ( CNT-RECEDEN >   32 )
+                       MOVE   RECEDEN-RECEDATA
+                                       TO  HCM37-NAIYO(CNT-RECEDEN)
+                       PERFORM 900-RECEDEN-READ-SEC
+                   END-PERFORM
+      *
+      *            Ä¢É¼°õºþ½èÍý
+                   PERFORM 400-PRINT-OUT-SEC
+               END-IF
       *
                MOVE    "DBCLOSE"           TO  MCP-FUNC
                MOVE    "RECEDEN-KEY2"      TO  ORC-DBPATH
@@ -297,8 +303,6 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
-      *        Ä¢É¼°õºþ½èÍý
-               PERFORM 400-PRINT-OUT-SEC
       *
                MOVE    WRK-PATH            TO  ORC-DBPATH
                PERFORM 900-SEIKYU-READ-SEC
@@ -417,7 +421,7 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE   "HCM510.red"         TO  SPRT-PRTID
+           MOVE   "HCM37.red"          TO  SPRT-PRTID
            MOVE    "¾É¾õ¾Üµ­"          TO  SPRT-TITLE
            MOVE    HCM37               TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
