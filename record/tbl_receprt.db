@@ -622,3 +622,18 @@ path	all	{
  		;
 	};
 };
+
+path	key30	{
+	DBSELECT	{
+		DECLARE tbl_receprt_key30_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+                   ORDER BY RECENUM
+		;
+	};
+};
