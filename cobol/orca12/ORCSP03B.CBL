@@ -455,6 +455,9 @@
                            WHEN    "301"
       *                        Í×ÌÖÅù
                                MOVE    "091"      TO  WRK-MAE-KOHNUM
+                           WHEN    "101"
+      *                        Í×ÌÖÅù
+                               MOVE    "091"      TO  WRK-MAE-KOHNUM
                            WHEN    OTHER
       *                        ÉéÃ´¼ÔÈÖ¹æ·Ù¹ð
                                IF      SPA-NAI-FTNCHK (IDX-K)  =   ZERO
