@@ -529,7 +529,6 @@
       <y>665</y>
       <width>305</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>50</text_max_length>

@@ -139,7 +139,10 @@
                        09  SPA-GMN-SYORI           PIC X(01).
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-SYORIMEI        PIC X(10).
-                   07  SPA-GMN-SYORI-OLD           PIC X(01).
+                   07  SPA-GMN-SYORI-OLD-G.
+                       09  SPA-GMN-SYORI-OLD       PIC X(01).
+                       09  SPA-GMN-F1              PIC X(01).
+                       09  SPA-GMN-SYORIMEI-OLD    PIC X(10).
                    07  SPA-GMN-SYORILST            OCCURS  5.
                        09  SPA-GMN-SYORIL          PIC X(01).
                        09  SPA-GMN-F1L             PIC X(01).
@@ -689,7 +692,7 @@
                        PERFORM 460-CLEAR-SEC
                    WHEN    "1005"
                        PERFORM 460-CLEAR-SEC
-                       MOVE    SPA-GMN-SYORI      TO  SPA-GMN-SYORI-OLD
+                       MOVE    SPA-GMN-SYORI-G TO  SPA-GMN-SYORI-OLD-G
                        EVALUATE    SPA-GMN-SYORI
                            WHEN    "1"
                                MOVE    4               TO  SPA-GMN-CUR
@@ -702,6 +705,21 @@
                        END-EVALUATE                
                    WHEN    OTHER
                           PERFORM 480-ZENKAI-HYOUJI-SEC
+               END-EVALUATE
+           ELSE
+               EVALUATE    SPA-RIDCD
+                   WHEN    "1005"
+                       MOVE    SPA-GMN-SYORI-OLD-G TO  SPA-GMN-SYORI-G
+                       EVALUATE    SPA-GMN-SYORI
+                           WHEN    "1"
+                               MOVE    4               TO  SPA-GMN-CUR
+                           WHEN    "2"
+                               MOVE    9               TO  SPA-GMN-CUR
+                           MOVE    "ÄûÀµÆü"            TO  SPA-GMN-LABEL
+                           WHEN    "3"
+                               MOVE    9               TO  SPA-GMN-CUR
+                           MOVE    "¼õ¿ÇÆü"            TO  SPA-GMN-LABEL
+                       END-EVALUATE                
                END-EVALUATE
            END-IF    
       *
@@ -1227,7 +1245,7 @@
            MOVE    R01-SYORI          TO  SPA-GMN-SYORI-G
       *
            IF      SPA-GMN-SYORIMEI   =   SPACE
-               MOVE    SPA-GMN-SYORILST (1)     TO  SPA-GMN-SYORI-G
+                   MOVE    "0017"              TO  SPA-ERRCD
            ELSE    
                MOVE    ZERO                 TO  WRK-HENFLG
                PERFORM VARYING IDX FROM    1   BY  1
@@ -1247,7 +1265,7 @@
                AND   ( SPA-GMN-SYORI-OLD   NOT =   SPACE         )
                    MOVE    "1005"              TO  SPA-RIDCD
                ELSE
-                   MOVE    SPA-GMN-SYORI       TO  SPA-GMN-SYORI-OLD
+                   MOVE    SPA-GMN-SYORI-G     TO  SPA-GMN-SYORI-OLD-G
                    EVALUATE    SPA-GMN-SYORI
                        WHEN    "1"
                            MOVE    4               TO  SPA-GMN-CUR
