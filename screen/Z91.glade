@@ -971,7 +971,7 @@
     </widget>
 
     <widget>
-      <class>GtkEntry</class>
+      <class>GtkPandaEntry</class>
       <name>MSTYMD</name>
       <x>248</x>
       <y>432</y>
