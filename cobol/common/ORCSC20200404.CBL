@@ -1284,6 +1284,9 @@
       *    特定疾患処方管理加算のチェック
            IF     (FLG-SYOHOSENN       =   1  )  AND
                   (LNK-ORCSC-TOKUTEI   =   1  )
+      *     長期投薬加算、特定疾患処方管理加算の入力が無い時
+            AND   (FLG-TOKUSYO1            =   ZERO)
+            AND   (FLG-CHOKIKA1            =   ZERO)
                IF      (SPA-TOKUTEIFLG         =   ZERO )  OR
                        (SPA-CHOKITOFLG         =   ZERO )
       *            算定内容チェック
@@ -1611,6 +1614,9 @@
       *    特定疾患処方管理加算のチェック
            IF     (FLG-SYOHORYO            =   1  )  AND
                   (LNK-ORCSC-TOKUTEI       =   1  )
+      *     長期投薬加算、特定疾患処方管理加算の入力が無い時
+            AND   (FLG-TOKUSYO2            =   ZERO)
+            AND   (FLG-CHOKIKA2            =   ZERO)
                IF      (SPA-TOKUTEIFLG         =   ZERO )  OR
                        (SPA-CHOKITOFLG         =   ZERO )
       *            算定内容チェック
