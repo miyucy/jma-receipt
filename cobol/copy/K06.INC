@@ -65,6 +65,7 @@
                     06  K06-TFSANTEIYMD PIC X(10).
                     06  K06-TMSANTEID   PIC X(2).
                     06  K06-TMSANTEICNT PIC X(4).
+                    06  K06-TMSANTEITEN PIC X(10).
                   05  K06-SELECT  PIC X       OCCURS  100 TIMES.
               03  K06-HKNCOMBI.
                 04  K06-VALUE   PIC S9(4).

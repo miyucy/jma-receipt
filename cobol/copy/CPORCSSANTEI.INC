@@ -24,6 +24,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  02/12/05  初診料算定日追加
+      *  01.00.02    NACL-多々納  05/03/03  当月点数・点数区分追加
       *****************************************************************
        01  ORCSSANTEIAREA.
       *
@@ -49,6 +50,11 @@
            03  SSANTEI-HKNCOMBINUM       PIC  X(04).
       *保険区分
            03  SSANTEI-HKNKBN            PIC  X(01).
+      *内分泌負荷試験用
+      *当月算定点数
+           03  SSANTEI-MSANTEITEN        PIC  9(08).
+      *当月算定点数区分
+           03  SSANTEI-MSANTEITENKBN     PIC  9(01).
       *
       *    一括更新の時（Ｊ０２）
            03  SSANTEI-IKKATU.
@@ -66,4 +72,7 @@
                05  SSANTEI-MAE-DAY-AREA.
                    07  SSANTEI-MAE-DAY     PIC  9(03)
                                            OCCURS   31.
+      *
+      *内分泌負荷試験削除フラグ
+           03  SSANTEI-MSANTEIDEL        PIC  9(01).
       *

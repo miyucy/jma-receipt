@@ -1009,6 +1009,8 @@ COPYS = \
         HC503.INC \
         KHELPSCR-SPA \
         HCPOM.INC \
+        CPORCSANFUKA.INC \
+        CPWKSRYACTPLUS.INC \
 
 DBPATH = \
 	ORCA-DBPATH

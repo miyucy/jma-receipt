@@ -210,6 +210,8 @@
                    07  SPA-IDX-KOUI              PIC 9(04).
       *            ÂÐ¾Ý¤Ê¤·
                    07  SPA-NAI-FLG               PIC 9(01).
+      *            ·Ù¹ðºÑ¤ß
+                   07  SPA-KEI-FLG               PIC 9(01).
       *
       *    £Ã£Ì£Á£É£Í²èÌÌ
            03  SPA-K03X-AREA.

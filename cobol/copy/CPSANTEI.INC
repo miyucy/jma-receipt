@@ -48,6 +48,12 @@
            03  SANTEI-DAY-AREA.
                05  SANTEI-DAY          PIC  9(03)
                                        OCCURS   31.
+      *当月算定点数対象フラグ
+           03  SANTEI-MSANTEIFLG       PIC  9(01).
+      *当月算定点数
+           03  SANTEI-MSANTEITEN       PIC  9(08).
+      *当月算定点数区分
+           03  SANTEI-MSANTEITENKBN    PIC  9(01).
       *端末ＩＤ
            03  SANTEI-TERMID           PIC  X(16).
       *オペーレータＩＤ

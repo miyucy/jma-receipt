@@ -173,6 +173,19 @@
                        09  SPA-COM-SRYKA         PIC  X(02).
       *                ドクター（空白は選択）
                        09  SPA-COM-DRCD          PIC  X(04).
+      *                剤合計点数（訂正前）
+                       09  SPA-COM-MAE-TENSU     PIC 9(08).
+      *        診療会計附加項目
+      *                労災の円
+                       09  SPA-COM-RSIKIN        PIC  9(08).
+      *                手技毎
+                       09  SPA-COM-SYUFLG        PIC  9(01).
+      *                酸素点数
+                       09  SPA-COM-SANSOTEN      PIC  9(07).
+      *                窒素点数
+                       09  SPA-COM-CHISOTEN      PIC  9(07).
+      *                フィルム点数
+                       09  SPA-COM-FIRTEN        PIC  9(07).
       *        点数マスタ項目
       *                点数マスタの診療区分
                        09  SPA-COM-TNSSRYKBN     PIC X(02).

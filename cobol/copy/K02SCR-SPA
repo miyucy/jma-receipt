@@ -65,8 +65,8 @@
                    07  SPA-GMN-INGAI             PIC X(01).
       *            処理フラグ
                    07  SPA-GMN-TEISEI            PIC X(01).
-      *            処理名
-                   07  SPA-GMN-SYORIMEI          PIC X(10).
+      *********    処理名
+      ************ 07  SPA-GMN-SYORIMEI          PIC X(10).
       *
       *            時間外名称（H16.4以降）
                    07  SPA-GMN-JIKANMSG          PIC X(20).
@@ -108,9 +108,6 @@
                    07  SPA-NAI-SYORI             PIC 9(01).
       *!           処理フラグ
                    07  SPA-NAI-CUR-2           PIC 9(02).
-      *            切替えフラグ
-                   07  SPA-NAI-B06SFLG         PIC 9(01).
-      *!
       *            ＤＯ内容（Ｋ０９と共通）
                    07  SPA-NAI-RRKTBL.
                        09  SPA-NAI-RRKTBLREC         OCCURS   150.
@@ -194,6 +191,22 @@
                    07  SPA-MAE-CHK             PIC 9(01).
                    07  SPA-MAE-SYORI           PIC 9(01).
                05  SPA-CHK-IDX                 PIC 9(04).
+      *!!
+      *        訂正時点数変更チェック
+               05  SPA-TEISEI-CHK              PIC 9(01).
+               05  SPA-TEISEI-ERR              PIC 9(01).
+      *!!
+      *        内分泌負荷試験検査情報
+               05  SPA-NAI-FUKATEN-AREA.
+      *            上限点数
+                   07  SPA-NAI-FUKATEN-MAX         PIC 9(08).
+      *            当月合計点数
+                   07  SPA-NAI-FUKATEN-ALL         PIC 9(08).
+      *            当月最終算定日
+                   07  SPA-NAI-FUKATEN-DAY         PIC 9(02).
+      *            訂正合計点数
+                   07  SPA-NAI-FUKATEN-DEL         PIC 9(08).
+      *!!
       *
       *    入院用（Ｋ０２Ｎ）
            03  SPA-K02N-AREA.
@@ -246,7 +259,7 @@
       *    Ｋ０５画面固有ＳＰＡ
            03  SPA-K05-AREA.
                05  SPA-GMN-SETCODE         PIC X(06).
-               05  SPA-GMN-SYORIMEI        PIC X(20).
+      *********05  SPA-GMN-SYORIMEI        PIC X(20).
                05  SPA-GMN-DSPNAME         PIC X(80).
                05  SPA-K05-SYORI           PIC X(01).
       *

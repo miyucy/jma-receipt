@@ -36,6 +36,8 @@
            03  ORCSCWKSRY-K09TUIKA         PIC  9(01).
       *追加開始位置
            03  ORCSCWKSRY-STRIDX           PIC  9(04).
+      *行オーバーエラー
+           03  ORCSCWKSRY-ERRCD            PIC  X(04).
       *
       *ＤＢ作成のみ設定（自動算定分）
       *    自動加算テーブル
