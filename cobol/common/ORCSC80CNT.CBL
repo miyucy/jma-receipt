@@ -466,9 +466,9 @@
                    MOVE    SRY-SRYCD(IDX2)     TO  WRK-SRYCD
                    PERFORM 20021-RIGAKU-TBL-SEC
                    IF      WRK-RIGAKU-RYO  NOT =   SPACE
-                       IF      WRK-RIGAKU-RYO-A    NOT =   SPACE
-                          PERFORM 2004-SOUKI-HENSYU-SEC
-                       END-IF
+      **               IF      WRK-RIGAKU-RYO-A    NOT =   SPACE
+      **                  PERFORM 2004-SOUKI-HENSYU-SEC
+      **               END-IF
                        MOVE    WRK-RIGAKU-RYO      TO  WRK-RIGAKU-RYO-A
                    END-IF
       *            ²Ã»»È½Äê
