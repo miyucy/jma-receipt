@@ -4,6 +4,7 @@ SRCS = ORCGK01.CBL \
        ORCGK022.CBL \
        ORCGK023.CBL \
        ORCGK03.CBL \
+       ORCGK03X.CBL \
        ORCGK04.CBL \
        ORCGK05.CBL \
        ORCGK051.CBL \
