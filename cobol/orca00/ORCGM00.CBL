@@ -888,6 +888,7 @@
                                                TO  SPA-ERRMSG (41:)
       *---- (01.00.02) LINE ADD END   --------------------------------
            END-EVALUATE
+	   .
       *
        5101-ERRSET-EXT.
            EXIT.
