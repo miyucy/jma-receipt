@@ -13,3 +13,5 @@
   (http://open-cobol.sourceforge.net/)
 
 * site-upgrade で etc をコピーしないようにする。
+
+* DBCLOSE -> DBCLOSECURSOR に変更。カーソルは必ず閉じるようにする。
