@@ -30,6 +30,8 @@
            03  ORCHCN03-STAFFCD            PIC X(05).
            03  ORCHCN03-SYSYMD             PIC X(08).
            03  ORCHCN03-TERMID             PIC X(64).
+      *    発行フラグ（０：新規、１：再発行）
+           03  ORCHCN03-HAKKOFLG           PIC 9(01).
            03  ORCHCN03-CNT                PIC 9(10).
            03  ORCHCN03-OCC                OCCURS  3000.
       *        基準日

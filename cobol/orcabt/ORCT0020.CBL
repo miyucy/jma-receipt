@@ -270,6 +270,7 @@
            MOVE    WRK-PARA-STAFFCD    TO  ORCHCN03-STAFFCD
            MOVE    WRK-PARA-SYSYMD     TO  ORCHCN03-SYSYMD
            MOVE    WRK-PARA-TERMID     TO  ORCHCN03-TERMID
+           MOVE    ZERO                TO  ORCHCN03-HAKKOFLG
       *
            PERFORM UNTIL ( FLG-TEIKIPRT    NOT =   ZERO )
       *

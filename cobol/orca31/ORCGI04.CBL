@@ -3237,6 +3237,7 @@
            MOVE    WRK-SPA-STAFFCD TO  ORCHCN03-STAFFCD
            MOVE    WRK-SPA-SYSYMD  TO  ORCHCN03-SYSYMD
            MOVE    WRK-SPA-TERMID  TO  ORCHCN03-TERMID
+           MOVE    ZERO            TO  ORCHCN03-HAKKOFLG
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1        >   SPA-I0-SYUNOU-CNT )

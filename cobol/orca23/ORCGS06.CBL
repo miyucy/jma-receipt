@@ -1883,6 +1883,7 @@
       *                MOVE    WRK-SPA-STAFFCD TO  ORCHCN03-STAFFCD
       *                MOVE    WRK-SPA-SYSYMD  TO  ORCHCN03-SYSYMD
       *                MOVE    WRK-SPA-TERMID  TO  ORCHCN03-TERMID
+      *                MOVE    1               TO  ORCHCN03-HAKKOFLG
       *                MOVE    1               TO  ORCHCN03-CNT
       *
       *                MOVE    WRK-SPA-HOSPID  TO  ORCHCN03-HOSPID (1)
