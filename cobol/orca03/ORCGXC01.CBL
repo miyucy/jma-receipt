@@ -1470,12 +1470,14 @@
                MOVE    ZERO            TO  SPA-GMN-NEXT
            END-IF
       *
-           MOVE    1                   TO  SPA-NAI-SELNUM
-           MOVE    SPA-GMN-TNO (SPA-NAI-SELNUM)
-                                       TO  SPA-GMN-SELNUM
-           MOVE    SPA-NAI-SELNUM      TO  WRK-BANGO
+           IF      SPA-NAI-SELNUM  =   ZERO    
+               MOVE    1                   TO  SPA-NAI-SELNUM
+               MOVE    SPA-GMN-TNO (SPA-NAI-SELNUM)
+                                           TO  SPA-GMN-SELNUM
+               MOVE    SPA-NAI-SELNUM      TO  WRK-BANGO
       *                                 
-           PERFORM 2011-SELECT-HENSYU-SEC
+               PERFORM 2011-SELECT-HENSYU-SEC
+           END-IF
       *
            .
        2011-PRVKANRI-HEN-EXT.
