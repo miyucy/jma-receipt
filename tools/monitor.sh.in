@@ -20,7 +20,7 @@ if test -z "$JMARECEIPT_ENV" ; then
 fi
 if ! test -f "$JMARECEIPT_ENV"; then
     echo "環境設定ファイル $JMARECEIPT_ENV が読めません"
-    exit 0
+    exit 1
 fi
 
 . $JMARECEIPT_ENV
@@ -29,9 +29,11 @@ fi
 # glserver を起動するか？
 Start_GLSERVER=true
 
+# dbredirector を起動するか？
+Start_dbredirector=false
+
 # jma-receipt の位置
-# . は jma-receipt/ 直下で起動される事を想定している
-#ORCA_DIR=.
+#ORCA_DIR=prefix
 
 # 起動する LDのリスト(引数により上書きされる)
 LD="orca01 orca02 orca11 orca12 orca13 orca14 orca18 orca19 orca21 orca22 
@@ -68,6 +70,7 @@ fi
 APS="$PANDA_SERVER_DIR"/aps
 WFC="$PANDA_SERVER_DIR"/wfc
 GLSERVER="$PANDA_SERVER_DIR"/glserver
+DBREDIRECTOR="$PANDA_SERVER_DIR"/dbredirector
 
 DIRECTORY="$ORCA_DIR"/lddef/directory
 LDDEF="$ORCA_DIR"/lddef
@@ -81,32 +84,32 @@ fi
 ####################################################################
 if ! test -d $LDDEF ; then
     echo "${LDDEF} ディレクトリがありません"
-    exit
+    exit 1
 fi
 if ! test -f $DIRECTORY; then
     echo "directory ファイルがありません"
-    exit 
+    exit 1
 fi
 if ! test -d $SCREEN ; then
     echo "${SCREEN} ディレクトリがありません"
-    exit
+    exit 1
 fi
 if ! test -f `echo ${SCREEN}/*glade|sed -e "s/ .*//g"` ; then
     echo "gladeファイルがありません"
-    exit
+    exit 1
 fi
 if ! test -d $RECORD ; then
     echo "${RECORD} ディレクトリがありません"
-    exit
+    exit 1
 fi
 if ! test -d ${ORCA_DIR}/cobol/${ALWAYS_LD}; then
     echo "LD(COBOL) ${ORCA_DIR}/cobol/${ALWAYS_LD} ディレクトリがありません"
-    exit
+    exit 1
 fi
 if ! test -f ${ORCA_DIR}/cobol/${ALWAYS_LD}/${COB_SO}; then
     echo "${ORCA_DIR}/cobol/${ALWAYS_LD}/${COB_SO} がありません"
     echo "コンパイル前？"
-    exit
+    exit 1
 fi
 
 ####################################################################
@@ -117,32 +120,53 @@ done
 export COB_LIBRARY_PATH
 export JMARECEIPT_ENV="$ORCA_DIR"/etc/jma-receipt.env
 
-if test "x"$Start_GLSERVER = "xtrue"; then
+if test "x"$Start_GLSERVER = "xtrue" || test "x"$Start_dbredirector = "xtrue";
+then
     trap "server_exit" 2
     #server end
     server_exit()
     {
-	kill $glpid
-	exit
+	if test ! -z "$glpid"; then
+	    kill $glpid
+	fi
+	if test "x"$Start_dbredirector = "xtrue"; then
+	    killall dbredirector
+	fi
+	if test ! -z "$dbrecid"; then
+	    kill $dbrecid
+	fi
+	if test -f $$dbredirector; then
+	    rm $$dbredirector
+	fi
+	exit 0
     }
-    #server start
+fi
+if test "x"$Start_GLSERVER = "xtrue"; then
     $GLSERVER -screen $SCREEN -record $RECORD &
-    glpid=`echo $!`
+    glpid=$!
 fi
 
+if test "x"$Start_dbredirector = "xtrue"; then
+    $DBREDIRECTOR -dir $DIRECTORY -lddir $LDDEF -bddir $LDDEF -record $RECORD -base $ORCA_DIR |tee $$dbredirector &
+    until [ -s $$dbredirector ]
+    do 
+	echo "wait..."
+	sleep 1
+    done
+fi
 
 for i in $ALWAYS_LD; do
     LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
     ORCA_PORT=`expr $START_PORT + $LDNUM`
-    $APS -dir $DIRECTORY -lddir $LDDEF -base $ORCA_DIR $i -port $ORCA_PORT >/dev/null&
+    $APS -dir $DIRECTORY -lddir $LDDEF -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT >/dev/null&
 done
 
 for i in $LD; do
     LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
     ORCA_PORT=`expr $START_PORT + $LDNUM`
-    $APS -dir $DIRECTORY -lddir $LDDEF -base $ORCA_DIR $i -port $ORCA_PORT &
+    $APS -dir $DIRECTORY -lddir $LDDEF -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT &
 done
 
-$WFC -dir $DIRECTORY -lddir $LDDEF -base $ORCA_DIR >/dev/null
+$WFC -dir $DIRECTORY -lddir $LDDEF -bddir $LDDEF -base $ORCA_DIR >/dev/null
 
 
