@@ -205,9 +205,10 @@
       *入院日数
                05  RECE62-NYUKHNNISSU     PIC  9(02).
       *合計金額情報
-               05  RECE62-NYUKHNKEIINF    OCCURS  5.
+               05  RECE62-NYUKHNKEIINF-AREA.
+                   07  RECE62-NYUKHNKEIINF    OCCURS  5.
       *合計金額
-                   07  RECE62-NYUKHNKEI   PIC  9(09).
+                       09  RECE62-NYUKHNKEI   PIC  9(09).
       *入院基本料情報２
            03  RECE62-NYUKHNINF2.
       *合計金額情報２
@@ -224,9 +225,10 @@
       *入院日数
                05  RECE62-NYUTOKNISSU     PIC  9(02).
       *合計金額情報
-               05  RECE62-NYUTOKKEIINF    OCCURS  5.
+               05  RECE62-NYUTOKKEIINF-AREA.
+                   07  RECE62-NYUTOKKEIINF    OCCURS  5.
       *合計金額
-                   07  RECE62-NYUTOKKEI   PIC  9(09).
+                       09  RECE62-NYUTOKKEI   PIC  9(09).
       *
       *特定入院基本料情報２
            03  RECE62-NYUTOKINF2.
@@ -379,9 +381,12 @@
       *福祉編集フラグ
            03  RECE62-FUKUSHIFLG          PIC  X(01).
       *福祉編集フラグ（食事療養）情報
-           03  RECE62-FUKUSHIFLG-SKJINF   OCCURS  4.
+           03  RECE62-FUKUSHIFLG-SKJINF-AREA.
+               05  RECE62-FUKUSHIFLG-SKJINF
+                                          OCCURS  4.
       *福祉編集フラグ（食事療養）
-               05  RECE62-FUKUSHIFLG-SKJ  PIC  X(01).
+                   07  RECE62-FUKUSHIFLG-SKJ
+                                          PIC  X(01).
       *合計点数情報（ぶん点・公費分離区分編集用）
            03  RECE62-HENTOTALTENINF-AREA.
                05  RECE62-HENTOTALTENINF  OCCURS  5.

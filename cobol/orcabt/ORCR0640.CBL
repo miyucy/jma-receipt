@@ -7479,35 +7479,54 @@
        2113-RECESKYKBN-HENSYU-SEC      SECTION.
       *
       *    初期化
-           MOVE    RECE62-REC           TO  WRK-RECE62-REC
-           INITIALIZE                       RECE62-KOHINF-AREA
-                                            RECE62-HKNCOMBIINF-AREA
-                                            RECE62-JNISSUINF-AREA
-                                            RECE62-TOTALTENINF-AREA
-                                            RECE62-FTNMONEYINF-AREA
-                                            RECE62-SHOKUJIINF-AREA
-                                            RECE62-ETC-KOH-G
-                                            RECE62-HENTOTALTENINF-AREA
+           MOVE    RECE62-REC          TO  WRK-RECE62-REC
+           INITIALIZE                      RECE62-KOHINF-AREA
+                                           RECE62-HKNCOMBIINF-AREA
+                                           RECE62-JNISSUINF-AREA
+                                           RECE62-TOTALTENINF-AREA
+                                           RECE62-FTNMONEYINF-AREA
+                                           RECE62-SHOKUJIINF-AREA
+                                           RECE62-FUKUSHIFLG-SKJINF-AREA
+                                           RECE62-ETC-KOH-G
+                                           RECE62-HENTOTALTENINF-AREA
+                                           RECE62-NYUKHNINF2
+                                           RECE62-NYUTOKINF2
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       30
                INITIALIZE              RECE62-TENSUINF-AREA (IDX)
            END-PERFORM
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       10
+               INITIALIZE              RECE62-NYUKHNKEIINF-AREA (IDX)
+                                       RECE62-NYUTOKKEIINF-AREA (IDX)
+           END-PERFORM
       *
       *    主保険情報のみ編集
-           MOVE    WRK-RECE62-JNISSU   (1)
-                                       TO  RECE62-JNISSU  (1)
-           MOVE    WRK-RECE62-TOTALTEN (1)
-                                       TO  RECE62-TOTALTEN(1)
-           MOVE    WRK-RECE62-FTNMONEY (1)
-                                       TO  RECE62-FTNMONEY(1)
-           MOVE    WRK-RECE62-HENTOTALTEN (1)
-                                       TO  RECE62-HENTOTALTEN (1)
-           MOVE    WRK-RECE62-SHOKUJIINF (1)
-                                       TO  RECE62-SHOKUJIINF  (1)
+           MOVE    WRK-RECE62-JNISSU        (1)
+                                       TO  RECE62-JNISSU        (1)
+           MOVE    WRK-RECE62-TOTALTEN      (1)
+                                       TO  RECE62-TOTALTEN      (1)
+           MOVE    WRK-RECE62-FTNMONEY      (1)
+                                       TO  RECE62-FTNMONEY      (1)
+           MOVE    WRK-RECE62-HENTOTALTEN   (1)
+                                       TO  RECE62-HENTOTALTEN   (1)
+           MOVE    WRK-RECE62-SHOKUJIINF    (1)
+                                       TO  RECE62-SHOKUJIINF    (1)
+           MOVE    WRK-RECE62-NYUKHNKEI2    (1)
+                                       TO  RECE62-NYUKHNKEI2    (1)
+           MOVE    WRK-RECE62-NYUTOKKEI2    (1)
+                                       TO  RECE62-NYUTOKKEI2    (1)
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       30
                MOVE    WRK-RECE62-TENSU (IDX 1)
                                            TO  RECE62-TENSU (IDX 1)
+           END-PERFORM
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       10
+               MOVE    WRK-RECE62-NYUKHNKEIINF (IDX 1)
+                                       TO  RECE62-NYUKHNKEIINF (IDX 1)
+               MOVE    WRK-RECE62-NYUTOKKEIINF (IDX 1)
+                                       TO  RECE62-NYUTOKKEIINF (IDX 1)
            END-PERFORM
       *
       *    レセプト請求区分による公費情報の振り分け
@@ -7516,7 +7535,6 @@
            MOVE    ZERO                TO  IDY
                                            IDXX
                                            IDZX
-           MOVE    1                   TO  IDX2  
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       4
                IF      WRK-RECE62-KOHNUM (IDX) NOT =   SPACE
@@ -7524,25 +7542,42 @@
                    EVALUATE    WRK-RECE62-RECESKYKBN (IDX)
                        WHEN    SPACE
                            ADD     1       TO  IDY
-                                               IDX2
                            MOVE    WRK-RECE62-KOHINF (IDX)
                                            TO  RECE62-KOHINF (IDY)
+                           MOVE    WRK-RECE62-FUKUSHIFLG-SKJINF (IDX)
+                                           TO  RECE62-FUKUSHIFLG-SKJINF
+                                                             (IDY)
                            COMPUTE IDYX    =   IDY +   1
-                           MOVE    WRK-RECE62-JNISSU   (IDXX)
-                                           TO  RECE62-JNISSU     (IDYX)
-                           MOVE    WRK-RECE62-TOTALTEN (IDXX)
-                                           TO  RECE62-TOTALTEN   (IDYX)
-                           MOVE    WRK-RECE62-FTNMONEY (IDXX)
-                                           TO  RECE62-FTNMONEY   (IDYX)
-                           MOVE    WRK-RECE62-SHOKUJIINF (IDXX)
-                                           TO  RECE62-SHOKUJIINF (IDYX)
+                           MOVE    WRK-RECE62-JNISSU      (IDXX)
+                                           TO  RECE62-JNISSU      (IDYX)
+                           MOVE    WRK-RECE62-TOTALTEN    (IDXX)
+                                           TO  RECE62-TOTALTEN    (IDYX)
+                           MOVE    WRK-RECE62-FTNMONEY    (IDXX)
+                                           TO  RECE62-FTNMONEY    (IDYX)
+                           MOVE    WRK-RECE62-SHOKUJIINF  (IDXX)
+                                           TO  RECE62-SHOKUJIINF  (IDYX)
+                           MOVE    WRK-RECE62-NYUKHNKEI2  (IDXX)
+                                           TO  RECE62-NYUKHNKEI2  (IDYX)
+                           MOVE    WRK-RECE62-NYUTOKKEI2  (IDXX)
+                                           TO  RECE62-NYUTOKKEI2  (IDYX)
+                           MOVE    WRK-RECE62-HENTOTALTEN (IDXX)
+                                           TO  RECE62-HENTOTALTEN (IDYX)
                            PERFORM VARYING IDX1    FROM    1   BY  1
                                    UNTIL   IDX1    >       30
                                MOVE    WRK-RECE62-TENSU (IDX1 IDXX)
-                                           TO  RECE62-TENSU (IDX1 IDX2)
+                                           TO  RECE62-TENSU (IDX1 IDYX)
                            END-PERFORM
-                           MOVE    WRK-RECE62-HENTOTALTEN (IDXX)
-                                           TO  RECE62-HENTOTALTEN (IDX2)
+                           PERFORM VARYING IDX1    FROM    1   BY  1
+                                   UNTIL   IDX1    >       10
+                               MOVE
+                                   WRK-RECE62-NYUKHNKEIINF (IDX1 IDXX)
+                                           TO  RECE62-NYUKHNKEIINF
+                                                           (IDX1 IDYX)
+                               MOVE
+                                   WRK-RECE62-NYUTOKKEIINF (IDX1 IDXX)
+                                       TO  RECE62-NYUTOKKEIINF
+                                                           (IDX1 IDYX)
+                           END-PERFORM
                        WHEN    "4"
                            ADD     1       TO  IDZX
                            MOVE    WRK-RECE62-KOHNUM (IDX)
