@@ -52,6 +52,7 @@
       *  02.00.16    NACL-多々納  03/08/27  剤明細５０へ変更
       *  02.00.17    NACL-多々納  04/01/07  更新をサブプロへ他
       *  02.00.18    NACL-多々納  04/07/XX  複数科・保険一括入力対応
+      *  02.00.19    NACL-多々納  04/10/21  CLAIMにドクター追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4605,6 +4606,12 @@
                    MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG4
                    MOVE    SYU-HKNCOMBINUM     TO  SHELLTBL-ARG5
                    MOVE    SPA-HOSPID          TO  SHELLTBL-ARG6
+      *            ドクター
+                   IF      SYU-DRCD            =   SPACE
+                       MOVE    "@@@@@"             TO  SHELLTBL-ARG9
+                   ELSE
+                       MOVE    SYU-DRCD            TO  SHELLTBL-ARG9
+                   END-IF
                    MOVE    SHELLTBL            TO  MCPDATA-REC
                    MOVE    "SHELL"             TO  MCP-FUNC
                    MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
