@@ -616,9 +616,10 @@ path	key22 	{
 		FROM tbl_syunou
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
+                        AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   CREATEKBN   <>  '3'
             AND   SKYMONEY    >  NYUKIN_TOTAL
-			ORDER   BY            SRYYMD,NYUGAIKBN,DENPNUM
+			ORDER   BY            DENPNUM
 		;
 	};
 };
@@ -630,10 +631,10 @@ path	key23 	{
 		FROM tbl_syunou
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
+                        AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   CREATEKBN   <>  '3'
             AND   SKYMONEY    >  NYUKIN_TOTAL
-			ORDER   BY            SRYYMD DESC,
-                                              NYUGAIKBN,DENPNUM
+			ORDER   BY            DENPNUM DESC
 		;
 	};
 };
