@@ -33,5 +33,12 @@ W60	{
 		CHKMTRX05	{
 			value	bool;
 		};
+		CMB_PRTSRTKBN	{
+			PRTSRTKBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[2];
+		};
 	};
 };

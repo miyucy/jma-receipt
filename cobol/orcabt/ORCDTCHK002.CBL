@@ -637,6 +637,8 @@
                                                        VALUE   2000.
            03  CONST-TTNS-MAX                          PIC 9(05)
                                                        VALUE   2000.
+           03  CONST-CHKPTN                            PIC X(05)
+                                                       VALUE   "1 111".
       *
       *    エラーメッセージ
            COPY    "CPDTCHKERRMES.INC".
@@ -4078,7 +4080,7 @@
       *
                INITIALIZE                  SDTCHK01AREA
                IF    ( SYS-1101-BYOCHKPTN-G    =   SPACE )
-                   MOVE    "1 111"     TO  SDTCHK01-CHKPTN-G
+                   MOVE    CONST-CHKPTN    TO  SDTCHK01-CHKPTN-G
                ELSE
                    MOVE    SYS-1101-BYOCHKPTN-G
                                        TO  SDTCHK01-CHKPTN-G
@@ -4273,7 +4275,7 @@
       *
                INITIALIZE                  SDTCHK01AREA
                IF    ( SYS-1101-BYOCHKPTN-G    =   SPACE )
-                   MOVE    "1 111"     TO  SDTCHK01-CHKPTN-G
+                   MOVE    CONST-CHKPTN    TO  SDTCHK01-CHKPTN-G
                ELSE
                    MOVE    SYS-1101-BYOCHKPTN-G
                                        TO  SDTCHK01-CHKPTN-G
@@ -6058,6 +6060,17 @@
            MOVE    PTINF-PTID          TO  DTCHK004-PTID
            MOVE    PTINF-NAME          TO  DTCHK004-NAME
            MOVE    PTINF-BIRTHDAY      TO  DTCHK004-BIRTHDAY
+      *
+           IF    ( SYS-1101-PRTSRTKBN  =   SPACE   OR  "1" )
+               MOVE    DTCHK004-PTNUM      TO  DTCHK004-R1-PTNUM
+               MOVE    DTCHK004-ERRCD      TO  DTCHK004-R1-ERRCD
+               MOVE    DTCHK004-ERRCD-SEQ  TO  DTCHK004-R1-ERRCD-SEQ
+           ELSE
+               MOVE    PTINF-KANANAME      TO  DTCHK004-R2-KANANAME
+               MOVE    DTCHK004-PTNUM      TO  DTCHK004-R2-PTNUM
+               MOVE    DTCHK004-ERRCD      TO  DTCHK004-R2-ERRCD
+               MOVE    DTCHK004-ERRCD-SEQ  TO  DTCHK004-R2-ERRCD-SEQ
+           END-IF
       *
            .
        2111-DTCHK004-KYOTU-HEN-EXT.

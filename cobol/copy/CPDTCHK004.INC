@@ -24,14 +24,21 @@
       ************************************************************
        01  DTCHK004-REC.
       *
-           03  DTCHK004-KEY.
-      *患者番号
-               05  DTCHK004-PTNUM     PIC X(20).
+           03  DTCHK004-KEY                PIC X(100).
+           03  DTCHK004-KEY-R1        REDEFINES    DTCHK004-KEY.
+               05  DTCHK004-R1-PTNUM       PIC X(20).
+               05  DTCHK004-R1-ERRCD       PIC X(06).
+               05  DTCHK004-R1-ERRCD-SEQ   PIC 9(05).
+               05  DTCHK004-R1-DUMMY       PIC X(69).
+           03  DTCHK004-KEY-R2        REDEFINES    DTCHK004-KEY.
+               05  DTCHK004-R2-KANANAME    PIC X(50).
+               05  DTCHK004-R2-PTNUM       PIC X(20).
+               05  DTCHK004-R2-ERRCD       PIC X(06).
+               05  DTCHK004-R2-ERRCD-SEQ   PIC 9(05).
+               05  DTCHK004-R2-DUMMY       PIC X(19).
       *
-      *エラーコード
-               05  DTCHK004-ERRCD     PIC X(06).
-      *同一エラーコード内連番
-               05  DTCHK004-ERRCD-SEQ PIC 9(05).
+      *患者番号
+           03  DTCHK004-PTNUM         PIC X(20).
       *
       *患者ＩＤ
            03  DTCHK004-PTID          PIC 9(10).
@@ -41,6 +48,12 @@
       *
       *生年月日
            03  DTCHK004-BIRTHDAY      PIC  X(08).
+      *
+      *エラーコード
+           03  DTCHK004-ERRCD         PIC X(06).
+      *
+      *同一エラーコード内連番
+           03  DTCHK004-ERRCD-SEQ     PIC 9(05).
       *
       *エラーメッセージ
            03  DTCHK004-ERRMSG        PIC X(500).

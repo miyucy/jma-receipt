@@ -41,7 +41,8 @@
                    07  SYS-1101-BYOCHKPTN-OCC  OCCURS 5.
                        09  SYS-1101-BYOCHKPTN
                                         PIC  X(1).
-               05                       PIC  X(495).
+               05  SYS-1101-PRTSRTKBN   PIC  X(1).
+               05                       PIC  X(494).
       
       *Ã¼Ëö£É£Ä
            03  SYS-1101-TERMID          PIC  X(16).
