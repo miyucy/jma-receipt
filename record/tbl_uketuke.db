@@ -97,6 +97,7 @@ path	del12 	{
 		FROM tbl_uketuke
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
+                        AND   UKEID      <>   0
 		;
 	};
 };
