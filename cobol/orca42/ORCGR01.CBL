@@ -252,7 +252,7 @@
       *
       *    自賠責保険番号 
            03  WRK-CONS-JIBAISEKI-HKNNUM
-                                   PIC X(03)   VALUE   "971". 
+                                   PIC X(03)   VALUE   "973". 
       *
            COPY    "CPSHELLTBL.INC".
       *     
@@ -495,7 +495,7 @@
                    MOVE    "医　　　保"    TO  SPA-GMN-SYOKBN
                WHEN    "3"
                    MOVE    "労　　　災"    TO  SPA-GMN-SYOKBN
-               WHEN    "7"
+               WHEN    "4"
                    MOVE    "自　賠　責"    TO  SPA-GMN-SYOKBN
            END-EVALUATE
       *             
@@ -881,7 +881,7 @@
                        IF      COMB-HKNNUM =   WRK-CONS-ROUSAI-HKNNUM
                            MOVE    "1"         TO  FLG-CHK
                        END-IF
-                   WHEN    "7"
+                   WHEN    "4"
                        IF      COMB-HKNNUM =   WRK-CONS-JIBAISEKI-HKNNUM
                            MOVE    "1"         TO  FLG-CHK
                        END-IF
@@ -1364,9 +1364,9 @@
                IF      SPA-R01-RECEKBN     =   "3"
                    MOVE    "HC21"              TO  RECE07-PRTID
                END-IF
-      *???         IF      SPA-R01-RECEKBN     =   "7"
-      *???             MOVE    "HC18"              TO  RECE07-PRTID
-      *???         END-IF
+               IF      SPA-R01-RECEKBN     =   "4"
+                   MOVE    "HC23"              TO  RECE07-PRTID
+               END-IF
            END-IF            
            IF      SPA-R01-FILEKBN         =   "1"
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
@@ -1512,7 +1512,7 @@
       *             MOVE    "recept1.sh"        TO  SHELL-SHELL
       *         WHEN    "3"
       *             MOVE    "recept6.sh"        TO  SHELL-SHELL
-      *         WHEN    "7"
+      *         WHEN    "4"
       *             MOVE    "recept8.sh"        TO  SHELL-SHELL
       *     END-EVALUATE        
       *     MOVE   SHELL-NAME          TO  SHELL-NAME
@@ -1555,7 +1555,7 @@
                    MOVE    "recept1.sh"        TO  WRK-SHELL-SHELL
                WHEN    "3"
                    MOVE    "recept6.sh"        TO  WRK-SHELL-SHELL
-               WHEN    "7"
+               WHEN    "4"
                    MOVE    "recept8.sh"        TO  WRK-SHELL-SHELL
            END-EVALUATE        
       *    ファイルデイレクトリ位置指定
