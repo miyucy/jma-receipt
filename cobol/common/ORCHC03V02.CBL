@@ -907,7 +907,6 @@
                COMPUTE   WRK-Z72   =   SYU-TGMONEY(IDX-JIHI)  +
                                        SYU-TGMONEY-TAX(IDX-JIHI)
                PERFORM   800-HENKAN-SEC
-               DISPLAY "IDX-JIHI = " IDX-JIHI
                MOVE    WRK-Z72-G           TO  HC03-JIHIBUN(IDX-JIHI)
            END-PERFORM
       *
