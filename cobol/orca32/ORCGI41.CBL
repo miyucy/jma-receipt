@@ -5880,8 +5880,9 @@
       *
            MOVE    "HKNCOMBI-KEY"      TO   WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
-      *    老人対象患者であれば入院診療コードの置き換え
-           IF    ((FLG-HKNCOMBI     =   ZERO)    AND
+      *    老人対象患者であれば入院診療コードの置き換え（労災除く）
+           IF   SPA-RSI-HKNKBN      =   SPACE
+             IF  ((FLG-HKNCOMBI     =   ZERO)    AND
                   (COMB-KOH1HKNNUM  =   "027"))      OR
                  ((WRK-NENREI      >=    70)     AND
                   (PTINF-BIRTHDAY  <=   "19320930"))
@@ -5903,6 +5904,7 @@
       *
                MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
                PERFORM 900-TBL-CLOSE-SEC
+             END-IF
            END-IF
       *
            .
