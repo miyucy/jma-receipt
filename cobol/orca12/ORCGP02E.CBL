@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
+      *  02.00.02    NACL-多々納  02/11/01  保険・公費は有効のものを対象
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -991,7 +992,10 @@
            MOVE    ZERO                TO  IDX
            PERFORM     UNTIL   FLG-PTHKNINF    =   1
                IF     (PTHKN-SAKJOKBN      =   SPACE )  AND
-                      (PTHKN-HKNNUM    NOT =   "971" )
+                      (PTHKN-HKNNUM    NOT =   "971" AND
+                                               "973" )  AND
+                      (PTHKN-TEKSTYMD      <=  SPA-SYSYMD AND
+                       PTHKN-TEKEDYMD      >=  SPA-SYSYMD )
       *            内容の変更
                    MOVE    SPA-GMN-PTID        TO  PTHKN-PTID
       *
@@ -1041,7 +1045,9 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM     UNTIL     FLG-PTKOHINF  =   1
-               IF      PTKOH-SAKJOKBN        =   SPACE
+               IF     (PTKOH-SAKJOKBN        =   SPACE    )  AND
+                      (PTKOH-TEKSTYMD      <=  SPA-SYSYMD AND
+                       PTKOH-TEKEDYMD      >=  SPA-SYSYMD )
                    ADD     1                   TO  IDX
       *            内容の変更
                    MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
