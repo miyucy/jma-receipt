@@ -2000,6 +2000,10 @@
                MOVE    ZERO                TO  SPA-P02A-FLG2
            END-IF
            MOVE    P02-P02-NAME        TO  SPA-GMN-NAME
+      *    氏名変更
+           IF      SPA-GMN-NAME    NOT =   SPA-HZN-NAME
+               MOVE    1                   TO  SPA-HEN-FLG
+           END-IF
       *
            MOVE    P02-P02-NICKNAME    TO  SPA-GMN-NICKNAME
       *
@@ -2533,7 +2537,6 @@
        4101-NAME-CHK-SEC      SECTION.
       *
            IF      SPA-GMN-NAME    NOT =   SPACE
-      *
       *        半角空白を全角空白へ
                MOVE    SPA-GMN-NAME        TO  WRK-MAE-INPUT
                PERFORM 890-HALF-ZEN-SEC
@@ -2544,6 +2547,20 @@
                    GO      TO      4101-NAME-CHK-EXT
                END-IF
            END-IF
+      *
+      *    氏名変更時、保険本人を表示中の場合
+           IF     (SPA-HEN-FLG         =   1   )    AND
+                  (SPA-GMN-HKNNUM  NOT =   SPACE )  AND
+                  (SPA-GMN-HONKZKKBN   =   "1"   )  AND
+                  (SPA-GMN-HIHKNJANAME NOT =   SPACE )
+      *        本人の場合、氏名を編集する
+               IF      (SPA-HZN-NAME       =   SPA-GMN-HIHKNJANAME) OR
+                       (SPA-MAE-NAME       =   SPA-GMN-HIHKNJANAME)
+                   MOVE    SPA-GMN-NAME    TO  SPA-GMN-HIHKNJANAME
+               END-IF
+           END-IF
+      *
+      *
            MOVE    SPA-GMN-NAME        TO  SPA-MAE-NAME
       *    見出しへ
            MOVE    SPA-GMN-NAME        TO  SPA-GMN-NAMEH

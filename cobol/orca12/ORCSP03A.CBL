@@ -65,6 +65,9 @@
            03  IDX2                PIC 9(02).
            03  IDX3                PIC 9(02).
       *
+           03  IDX-S1              PIC 9(04).
+           03  IDX-S2              PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-WYMD.
@@ -1320,14 +1323,34 @@
            IF     (SPA-GMN-HKNNUM      NOT =   SPACE        )
       *        本人の場合、氏名を編集する
                IF      SPA-GMN-HONKZKKBN       =   "1"
-                   MOVE    SPA-GMN-NAME        TO  SPA-GMN-HIHKNJANAME
+                   IF     (SPA-GMN-HIHKNJANAME =   SPACE     )  OR
+                         ((SPA-HEN-FLG         =   1         ) AND
+                          (SPA-HZN-NAME        =   SPA-GMN-HIHKNJANAME))
+                       MOVE    SPA-GMN-NAME    TO  SPA-GMN-HIHKNJANAME
+                   END-IF
                ELSE
+      *            家族の場合、世帯主名か氏名
                    IF      SPA-GMN-HIHKNJANAME    =   SPACE
-                       IF      SPA-GMN-SETAINUSI   NOT =   SPACE
+      *                姓の判定
+                       MOVE    ZERO                TO  IDX-S1
+                       PERFORM VARYING     IDX-S2  FROM    1   BY  2
+                               UNTIL       IDX-S2  >   50
+                           IF      SPA-GMN-NAME(IDX-S2:2)     =   "　"
+                               MOVE    50              TO  IDX-S2
+                           ELSE
+                               ADD     2               TO  IDX-S1
+                           END-IF
+                       END-PERFORM
+                       IF     (SPA-GMN-SETAINUSI   NOT =   SPACE)   AND
+                              (SPA-GMN-SETAINUSI   NOT =   SPA-GMN-NAME)
                            MOVE    SPA-GMN-SETAINUSI
                                                  TO  SPA-GMN-HIHKNJANAME
                        ELSE
-                           MOVE    SPA-GMN-NAME  TO  SPA-GMN-HIHKNJANAME
+                           MOVE    SPA-GMN-NAME(1:IDX-S1)
+                                                 TO  SPA-GMN-HIHKNJANAME
+      *                    世帯主名が空白で氏名と同じ時、姓だけ
+                           MOVE    SPA-GMN-NAME(1:IDX-S1)
+                                                 TO  SPA-GMN-SETAINUSI
                        END-IF
                    END-IF
                END-IF

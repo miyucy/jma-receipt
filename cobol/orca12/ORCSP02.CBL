@@ -1297,6 +1297,9 @@
       *    変更確認用氏名保存
            MOVE    SPA-GMN-KANANAME    TO  SPA-GMN-OLD-KANANAME
            MOVE    SPA-GMN-NAME        TO  SPA-GMN-OLD-NAME
+      *    氏名変更
+           MOVE    PTINF-NAME          TO  SPA-HZN-NAME
+           MOVE    ZERO                TO  SPA-HEN-FLG
       *    旧姓
            MOVE    PTINF-NAME          TO  SPA-OLD-NAME
            MOVE    PTINF-KANANAME      TO  SPA-OLD-KANANAME
