@@ -308,17 +308,18 @@
       *    公費情報
            03  WRK-GMN-KOH-AREA.
                05  WRK-GMN-KOH-TBL         OCCURS   3.
-                   07  WRK-GMN-KOHNUM-G.
-                       09  WRK-GMN-KOHNUM      PIC X(03).
-                       09  WRK-GMN-KOHKBN      PIC X(01).
-      **************** 09  WRK-GMN-H1          PIC X(01).
-                       09  WRK-GMN-KOHNUMMEI   PIC X(16).
+                   07  WRK-GMN-HOK-G.
+                       09  WRK-GMN-KOHNUM-G.
+                          11  WRK-GMN-KOHNUM      PIC X(03).
+                          11  WRK-GMN-KOHKBN      PIC X(01).
+      ****************    11  WRK-GMN-H1          PIC X(01).
+                          11  WRK-GMN-KOHNUMMEI   PIC X(16).
       *
-                   07  WRK-GMN-KTEKSTYMD        PIC X(10).
-                   07  WRK-GMN-KTEKEDYMD        PIC X(10).
-                   07  WRK-GMN-KKAKUNINYMD      PIC X(10).
-                   07  WRK-GMN-FTNJANUM         PIC X(08).
-                   07  WRK-GMN-JKYSNUM          PIC X(20).
+                       09  WRK-GMN-KTEKSTYMD        PIC X(10).
+                       09  WRK-GMN-KTEKEDYMD        PIC X(10).
+                       09  WRK-GMN-KKAKUNINYMD      PIC X(10).
+                       09  WRK-GMN-FTNJANUM         PIC X(08).
+                       09  WRK-GMN-JKYSNUM          PIC X(20).
       *
                    07  WRK-NAI-KTEKSTYMD        PIC X(08).
                    07  WRK-NAI-KTEKEDYMD        PIC X(08).
@@ -780,6 +781,7 @@
                WHEN    "0106"
                WHEN    "0107"
       *            公費重複処理
+                   MOVE    ZERO                TO  SPA-KOH-ADD
                    CALL    "ORCSP03B"          USING   SPA-AREA
                                                        SPA-P02SCRAREA
                                                        SPA-P02KYOUTU
@@ -2447,9 +2449,11 @@
                END-IF
            END-IF
       *
-      *    画面の空白行をつめ、次のデータを編集する
+      *    画面の空白行をつめる
+           PERFORM 41022-PTKOH-TBL-SET-SEC
+      *    次のデータを編集する
            IF      FLG-KOH-DEL         =   1
-               PERFORM 41022-PTKOH-TBL-SET-SEC
+               PERFORM 41023-PTKOH-SAI-SET-SEC
            END-IF
            .
       *
@@ -2515,7 +2519,7 @@
            EXIT.
       *
       ****************************************************************
-      *    公費削除編集処理
+      *    公費空白削除編集処理
       ****************************************************************
        41022-PTKOH-TBL-SET-SEC      SECTION.
       *
@@ -2524,14 +2528,26 @@
            MOVE    ZERO                TO  IDX-K
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   3
-              IF      WRK-GMN-KOHNUM (IDX) NOT =   SPACE
+              IF      WRK-GMN-HOK-G (IDX)  NOT =   SPACE
                    ADD     1               TO  IDX-K
                    MOVE    WRK-GMN-KOH-TBL (IDX)
                                            TO  SPA-GMN-KOH-TBL (IDX-K)
                END-IF
            END-PERFORM
-      *    空いた行へ次ぎのデータを編集する
+      *    最大を編集する
            MOVE    IDX-K               TO  SPA-KOH-MAX
+           .
+      *
+       41022-PTKOH-TBL-SET-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    公費削除編集処理
+      ****************************************************************
+       41023-PTKOH-SAI-SET-SEC      SECTION.
+      *
+      *    空いた行へ次ぎのデータを編集する
+           MOVE    SPA-KOH-MAX         TO  IDX-K
            IF      IDX-K               <   3
                IF     (IDX-K               >   ZERO )  AND
                       (SPA-NAI-PTKOH-EDANUM(IDX-K) NOT =   ZERO)
@@ -2544,7 +2560,8 @@
                PERFORM VARYING     IDX     FROM    IDX-K2 BY  1
                        UNTIL      (IDX     >   SPA-PTKOH-MAX )  OR
                                   (IDY     >=  3    )
-                   IF      SPA-PTKOH-SAKJOKBN (IDX)    =   SPACE
+                   IF     (SPA-PTKOH-SAKJOKBN (IDX)    =   SPACE) AND
+                          (SPA-PTKOH-KOHNUM (IDX)  NOT =   SPACE )
                        ADD     1                   TO  IDY
                        MOVE    IDY                 TO  SPA-KOH-MAX
                        PERFORM 3102-KOUHI-HEN-SEC
@@ -2554,7 +2571,7 @@
       *
            .
       *
-       41022-PTKOH-TBL-SET-EXT.
+       41023-PTKOH-SAI-SET-EXT.
            EXIT.
       *
       ****************************************************************

@@ -1834,10 +1834,11 @@
                                                    =   ZERO  ))
       *        次の開始日がある時、新規追加
                OR  (SPA-HKN2-TEKSTYMD   NOT =   SPACE  )
-               MOVE    1                   TO  SPA-KOH-ADD
+      *D       MOVE    1                   TO  SPA-KOH-ADD
                IF     (SPA-KOH-MAX         =   3 )  OR
                       (SPA-KOH-IDX1        =   3 )
                    CONTINUE
+                   MOVE    1                   TO  SPA-KOH-ADD
                ELSE
                    ADD     1               TO  SPA-KOH-MAX
                    MOVE    SPA-KOH-MAX     TO  IDX-K
@@ -1845,6 +1846,7 @@
                        ADD     1               TO  IDX-K
                    END-IF
                    PERFORM 3101-RJN-KOHADD2-SEC
+                   MOVE    ZERO                TO  SPA-KOH-ADD
                    GO      TO      310-KOHEDYMD-SYORI-EXT
                END-IF
            ELSE
