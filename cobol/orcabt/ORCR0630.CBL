@@ -102,6 +102,7 @@
            03  FLG-MIJISI-IRYO                         PIC 9(01).       
            03  FLG-MIJISI-JYOKU                        PIC 9(01).       
            03  FLG-SENTEICDCHG                         PIC 9(01).
+           03  FLG-SET                                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -125,6 +126,7 @@
            03  ID1                                     PIC 9(03).
            03  GENSAN-IDX                              PIC 9(03).
            03  TENTEK-IDX                              PIC 9(03).
+           03  SYSKAN-IDX                              PIC 9(03).
       *
       *    実日数カウント用領域
        01  TBL-JNISSU.
@@ -158,6 +160,8 @@
                05  WRK-PARA-SYSYMD                     PIC X(08).
                05  WRK-PARA-JOBID                      PIC 9(07).
                05  WRK-PARA-SHELLID                    PIC X(08).
+           03  WRK-SYS-SRYYMD                          PIC X(08).
+      *
        01  WRK-TENTEK.
            03  WRK-TENTEK-SYUTEN                       PIC 9(07).
            03  WRK-TENTEK-ZAIKAISU                     PIC 9(04).
@@ -196,6 +200,12 @@
            03  WRK-SENTEI-KEISU                        PIC 9V99.    
            03  WRK-GAIHAKU-SRYCD                       PIC X(09).
            03  WRK-GAIHAKU-KHNTEN                      PIC 9(08).
+      *
+      *    シスカン（５０００）退避用領域
+       01  TBL-SYS5000-T.
+           03  TBL-SYS5000-OCC     OCCURS  10.
+               05  TBL-SYS5000                         PIC X(610).
+      *
       *
            COPY    "MCPAREA".
       *
@@ -316,65 +326,119 @@
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
-      *    医療機関減算の取得（システム管理テーブルより）
-           MOVE     ZERO               TO  WRK-SHOKUJIRYOYO
-                                           WRK-TOKUKANRIKASAN
+           IF   WRK-PARA-SRYYM    NOT =  ZERO
       *
-           MOVE     ZERO               TO  FLG-MIJISI-INNAI             
-                                           FLG-MIJISI-IRYO              
-                                           FLG-MIJISI-JYOKU             
+      *      医療機関減算の取得（システム管理テーブルより）
+             MOVE     ZERO               TO  WRK-SHOKUJIRYOYO
+                                             WRK-TOKUKANRIKASAN
       *
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "5000"              TO  SYS-KANRICD
-           MOVE    "*"                 TO  SYS-KBNCD
-           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
-           MOVE    "01"                TO  ORC-DBYMD (7:2)
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-               PERFORM  SYSKANRI-READ-SEC
-               PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
-                        UNTIL     GENSAN-IDX   >   4
-                    IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"    
-                        EVALUATE  GENSAN-IDX
-                            WHEN  2
-                                MOVE    1     TO    FLG-MIJISI-INNAI    
-                            WHEN  3
-                                MOVE    1     TO    FLG-MIJISI-IRYO     
-                            WHEN  4
-                                MOVE    1     TO    FLG-MIJISI-JYOKU    
-                        END-EVALUATE
-                    END-IF
-               END-PERFORM
+             MOVE     ZERO               TO  FLG-MIJISI-INNAI             
+                                             FLG-MIJISI-IRYO              
+                                             FLG-MIJISI-JYOKU      
       *
-               IF  SYS-5000-SHOKUJIRYOYOCD   =  "197000110"
-                      MOVE     1         TO   WRK-SHOKUJIRYOYO
-                      IF  SYS-5000-SHOKUKBN(1) =  "1"
-                           MOVE  ZERO    TO   WRK-TOKUKANRIKASAN
-                      ELSE
-                           MOVE  1       TO   WRK-TOKUKANRIKASAN
-                      END-IF
-               ELSE
-                      MOVE     2         TO   WRK-SHOKUJIRYOYO
-               END-IF
+             INITIALIZE                      SYSKANRI-REC
+             MOVE    "5000"              TO  SYS-KANRICD
+             MOVE    "*"                 TO  SYS-KBNCD
+             MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+             MOVE    "01"                TO  ORC-DBYMD (7:2)
+             MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"             USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+                 MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+                 PERFORM  SYSKANRI-READ-SEC
       *
-           END-IF
+                 PERFORM  SYSKAN-HENSYU-SEC
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+             END-IF
+      *
+             MOVE    "DBCLOSE"               TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"             USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+      *
+          ELSE
+      *
+             MOVE     ZERO               TO  SYSKAN-IDX
+             MOVE     SPACE              TO  TBL-SYS5000-T
+             INITIALIZE                      TBL-SYS5000-T
+      *
+             INITIALIZE                      SYSKANRI-REC
+             MOVE    "5000"              TO  SYS-KANRICD
+             MOVE    "*"                 TO  SYS-KBNCD
+             MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"             USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+                 MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                 PERFORM  SYSKANRI-READ-SEC
+                 PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
+      *
+                   ADD     1            TO  SYSKAN-IDX
+                   MOVE   SYS-5000-REC  TO  TBL-SYS5000(SYSKAN-IDX)
+      *
+                   MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                   PERFORM  SYSKANRI-READ-SEC
+      *
+                 END-PERFORM
+      *
+             END-IF
+      *
+             MOVE    "DBCLOSE"               TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY8"         TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"             USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+      *
+          END-IF
       *
           .
        100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    シスカンの編集
+      *****************************************************************
+       SYSKAN-HENSYU-SEC                SECTION.
+      *
+           PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
+                    UNTIL     GENSAN-IDX   >   4
+                IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"    
+                    EVALUATE  GENSAN-IDX
+                        WHEN  2
+                            MOVE    1     TO    FLG-MIJISI-INNAI    
+                        WHEN  3
+                            MOVE    1     TO    FLG-MIJISI-IRYO     
+                        WHEN  4
+                            MOVE    1     TO    FLG-MIJISI-JYOKU    
+                    END-EVALUATE
+                END-IF
+           END-PERFORM
+      *
+           IF  SYS-5000-SHOKUJIRYOYOCD   =  "197000110"
+                  MOVE     1         TO   WRK-SHOKUJIRYOYO
+                  IF  SYS-5000-SHOKUKBN(1) =  "1"
+                       MOVE  ZERO    TO   WRK-TOKUKANRIKASAN
+                  ELSE
+                       MOVE  1       TO   WRK-TOKUKANRIKASAN
+                  END-IF
+           ELSE
+                  MOVE     2         TO   WRK-SHOKUJIRYOYO
+           END-IF
+      *
+           .
+       SYSKAN-HENSYU-EXT.
            EXIT.
       * 
       *****************************************************************
@@ -3065,6 +3129,34 @@
                    MOVE    1     TO    FLG-RECE62
                NOT  AT  END
                    ADD     1     TO    CNT-IN (IDZ)
+                   IF   WRK-PARA-SRYYM    NOT =  ZERO
+                      CONTINUE
+                   ELSE
+      *               医療機関減算の取得（システム管理テーブルより）
+                      MOVE     ZERO      TO  WRK-SHOKUJIRYOYO
+                                             WRK-TOKUKANRIKASAN
+      *
+                      MOVE     ZERO      TO  FLG-MIJISI-INNAI
+                                             FLG-MIJISI-IRYO
+                                             FLG-MIJISI-JYOKU
+      *
+                      MOVE  ZERO         TO  FLG-SET
+                      MOVE  RECE62-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+                      MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
+                      PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                           UNTIL  ( SYSKAN-IDX              >  10   )
+                            OR    ( TBL-SYS5000(SYSKAN-IDX) = SPACE )
+                            OR    ( FLG-SET                 =   1   )
+      *
+                       MOVE  TBL-SYS5000(SYSKAN-IDX)  TO  SYS-5000-REC
+                       IF   ( SYS-5000-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                       AND  ( WRK-SYS-SRYYMD     <=  SYS-5000-EDYUKYMD )
+                          MOVE     1       TO    FLG-SET
+                          PERFORM  SYSKAN-HENSYU-SEC
+                       END-IF
+      *
+                      END-PERFORM
+                   END-IF
            END-READ
            .
        RECE62-READ-EXT.
