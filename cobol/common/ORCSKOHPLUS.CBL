@@ -45,7 +45,6 @@
        01  FLG-AREA.
            03  FLG-PTINF           PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
-           03  FLG-HKN             PIC 9(01).
            03  FLG-RJNHKN          PIC 9(01).
            03  FLG-PTKOHINF        PIC 9(01).
            03  FLG-KOHPLUS         PIC 9(01).
@@ -193,11 +192,6 @@
            MOVE    "HKNCOMBI-KEY"      TO   ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
-      *主保険があるか判定
-           IF     COMB-HKNNUM          NOT =  SPACE
-                  MOVE     1           TO   FLG-HKN
-           END-IF
-      *
       *老人保健該当者かを判定
            IF     COMB-KOHHKNNUM(1)    =    "027"
                   MOVE     1           TO   FLG-RJNHKN
@@ -234,16 +228,11 @@
            MOVE    LNK-SKOHPLUS-PREFNUM   TO  KOHPLUS-PREFNUM
            MOVE    PTKOH-FTNJANUM(5:3)    TO  KOHPLUS-CITYNUM
            MOVE    COMB-KOHHKNNUM(KOH-IDX) TO KOHPLUS-KOHNUM
-           IF      FLG-HKN       =    ZERO
-               MOVE    "0"       TO   KOHPLUS-HKNKBN
-           ELSE
-               MOVE    "1"       TO   KOHPLUS-HKNKBN
-           END-IF
-           IF      FLG-RJNHKN    =    ZERO
-               MOVE    "0"       TO   KOHPLUS-RJNHKNKBN
-           ELSE
-               MOVE    "1"       TO   KOHPLUS-RJNHKNKBN
-           END-IF
+      *     IF      FLG-RJNHKN    =    ZERO
+      *         MOVE    "0"       TO   KOHPLUS-RJNHKNKBN
+      *     ELSE
+      *         MOVE    "1"       TO   KOHPLUS-RJNHKNKBN
+      *     END-IF
            MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOSTYMD
            MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOEDYMD
            MOVE    "KOHPLUS-KEY2"         TO  ORC-DBPATH

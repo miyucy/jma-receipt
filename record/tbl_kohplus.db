@@ -3,8 +3,7 @@ HOSPID		char(24);
 PREFNUM		char(2);
 CITYNUM		char(3);
 KOHNUM		char(3);
-HKNKBN		char(1);
-RJNHKNKBN	char(1);
+PTKBN		char(1);
 YUKOSTYMD	char(8);
 YUKOEDYMD	char(8);
 FTNKBN		char(1);
@@ -21,11 +20,10 @@ UPHOSPID	char(24),virtual;
 UPPREFNUM	char(2),virtual;
 UPCITYNUM	char(3),virtual;
 UPKOHNUM	char(3),virtual;
-UPHKNKBN	char(1),virtual;
-UPRJNHKNKBN	char(1),virtual;
+UPPTKBN		char(1),virtual;
 UPYUKOSTYMD	char(8),virtual;
 };
-primary{HOSPID,PREFNUM,CITYNUM,KOHNUM,HKNKBN,RJNHKNKBN,YUKOSTYMD;};
+primary{HOSPID,PREFNUM,CITYNUM,KOHNUM,PTKBN,YUKOSTYMD;};
 
 path	key		{ 	
 	DBSELECT	{
@@ -36,8 +34,7 @@ path	key		{
                   AND   PREFNUM      =   :PREFNUM
                   AND   CITYNUM      =   :CITYNUM
                   AND   KOHNUM       =   :KOHNUM
-                  AND   HKNKBN       =   :HKNKBN
-                  AND   RJNHKNKBN    =   :RJNHKNKBN
+                  AND   PTKBN        =   :PTKBN
                   AND   YUKOSTYMD    =   :YUKOSTYMD
 		;
 	};
@@ -52,8 +49,7 @@ path	key2		{
                   AND   PREFNUM      =   :PREFNUM
                   AND   CITYNUM      =   :CITYNUM
                   AND   KOHNUM       =   :KOHNUM
-                  AND   HKNKBN       =   :HKNKBN
-                  AND   RJNHKNKBN    =   :RJNHKNKBN
+                  AND   PTKBN        =   :PTKBN
                   AND   YUKOSTYMD    <=  :YUKOSTYMD
                   AND   YUKOEDYMD    >=  :YUKOEDYMD
 		;
@@ -69,8 +65,7 @@ path	key3		{
                   AND   PREFNUM      =   :PREFNUM
                   AND   CITYNUM      =   :CITYNUM
                   AND   KOHNUM       =   :KOHNUM
-                  AND   HKNKBN       =   :HKNKBN
-                  AND   RJNHKNKBN    =   :RJNHKNKBN
+                  AND   PTKBN        =   :PTKBN
 		;
 	};
 };
@@ -84,8 +79,7 @@ path	del1 	{
                   AND   PREFNUM      =   :PREFNUM
                   AND   CITYNUM      =   :CITYNUM
                   AND   KOHNUM       =   :KOHNUM
-                  AND   HKNKBN       =   :HKNKBN
-                  AND   RJNHKNKBN    =   :RJNHKNKBN
+                  AND   PTKBN        =   :PTKBN
                   AND   YUKOSTYMD     =  :YUKOSTYMD
 		ORDER BY YUKOSTYMD
 		;
@@ -99,8 +93,7 @@ path    upd1	{
 			PREFNUM 	= :PREFNUM,
 			CITYNUM 	= :CITYNUM,
 			KOHNUM 		= :KOHNUM,
-			HKNKBN 		= :HKNKBN,
-			RJNHKNKBN 	= :RJNHKNKBN,
+			PTKBN 		= :PTKBN,
 			YUKOSTYMD 	= :YUKOSTYMD,
 			YUKOEDYMD 	= :YUKOEDYMD,
 			FTNKBN 		= :FTNKBN,
@@ -116,8 +109,7 @@ path    upd1	{
 			AND PREFNUM	= :UPPREFNUM
 			AND CITYNUM	= :UPCITYNUM
 			AND KOHNUM	= :UPKOHNUM
-			AND HKNKBN	= :UPHKNKBN
-			AND RJNHKNKBN	= :UPRJNHKNKBN
+			AND PTKBN	= :UPPTKBN
 			AND YUKOSTYMD	= :UPYUKOSTYMD
 		;
 	};
@@ -129,7 +121,7 @@ path	all	{
 		SELECT *
 		FROM tbl_kohplus
 		ORDER BY HOSPID,PREFNUM,CITYNUM,KOHNUM,
-		         HKNKBN DESC,RJNHKNKBN  DESC,YUKOSTYMD
+		         PTKBN DESC,UKOSTYMD
       		;
 	};
 };
