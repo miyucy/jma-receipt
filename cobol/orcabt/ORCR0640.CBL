@@ -4956,21 +4956,23 @@
            END-IF
       *
       *
-           MOVE    ZERO                TO  HC-IDX
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       10
-                   OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-               IF      SYU-HKNCOMBINUM  =
-                                        RECE62-HKNCOMBI (IDX1)
-                   MOVE    IDX1            TO  HC-IDX
-                   MOVE    10              TO  IDX1
-               END-IF
-           END-PERFORM          
+      *     MOVE    ZERO                TO  HC-IDX
+      *     PERFORM VARYING IDX1    FROM    1   BY  1
+      *             UNTIL   IDX1    >       10
+      *             OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
+      *         IF      SYU-HKNCOMBINUM  =
+      *                                  RECE62-HKNCOMBI (IDX1)
+      *             MOVE    IDX1            TO  HC-IDX
+      *             MOVE    10              TO  IDX1
+      *         END-IF
+      *     END-PERFORM          
+      *
+           MOVE    IDX1            TO  HC-IDX
       *
            MOVE       ZERO              TO   KH-IDX
            PERFORM    VARYING   IDX2    FROM   1   BY   1
-             UNTIL   (IDX2      >       4)                    OR
-                     (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
+             UNTIL    IDX2      >       4
+              IF      RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
                       MOVE    2          TO        KH-IDX
                       EVALUATE  TRUE
@@ -5279,6 +5281,7 @@
                             MOVE     2   TO   FLG-KOH
                       END-IF 
                  END-IF
+              END-IF
            END-PERFORM
            .
        RECE62-HENSYU-EXT3.
