@@ -575,10 +575,26 @@
            03  FILLER          PIC X(09)   VALUE   "830000020".
       *    再診料算定科：
            03  FILLER          PIC X(09)   VALUE   "830000021".
+      *    再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112007410".
+      *    老人再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112702310".
+      *    電話等再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112007950".
+      *    老人電話等再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112702750".
+      *    同日電話等再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112008850".
+      *    老人同日電話等再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112703450".
+      *    同日再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112008350".
+      *    老人同日再診（病院）(１回目）
+           03  FILLER          PIC X(09)   VALUE   "112703050".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   40.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   48.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   40.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   48.         
       *
       *    固定値
        01  CONST-AREA.
@@ -1436,7 +1452,11 @@
                                   "112701110"  OR  "112701210"  OR
                                   "112010150"  OR  "112009750"  OR
                                   "112010650"  OR  "112704450"  OR
-                                  "112704150"  OR  "112704850"     )
+                                  "112704150"  OR  "112704850"  OR
+                                  "112007410"  OR  "112702310"  OR
+                                  "112007950"  OR  "112702750"  OR
+                                  "112008850"  OR  "112703450"  OR
+                                  "112008350"  OR  "112703050"     )
                        MOVE    ZERO          TO  FLG-NOPRT
                  ELSE
                        MOVE    1             TO  FLG-NOPRT
