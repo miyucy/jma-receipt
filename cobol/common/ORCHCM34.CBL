@@ -85,6 +85,7 @@
            03  FLG-PTNYUINRRK                      PIC 9(01).
            03  FLG-LINECHK                         PIC 9(01).
            03  FLG-RSIJBI-AREA-HEN                 PIC 9(01).
+           03  FLG-SRYACT-HEN5                     PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -131,6 +132,7 @@
            03  IDX17                               PIC 9(05).
            03  IDX18                               PIC 9(05).
            03  IDX19                               PIC 9(05).
+           03  IDX20                               PIC 9(05).
            03  IDXA                                PIC 9(05).
            03  IDXB                                PIC 9(05).
            03  IDXC                                PIC 9(05).
@@ -270,6 +272,9 @@
            03  WRK-RRK-TAIINYMD                    PIC X(18).
            03  WRK-ZAITEN                          PIC 9(08).
            03  WRK-ZAIKAISU                        PIC 9(07).
+           03  WRK-SRYCD                           PIC X(09).
+           03  WRK-SRYSYUKBN                       PIC X(03).
+           03  WRK-TANINAME                        PIC X(24).
       *
        01  WRK-SRYKA-TBL.
            03  WRK-SRYKA-OCC                       OCCURS  20.
@@ -343,6 +348,9 @@
                        09 SRT-SRYACCT-CDKBN-KOUBAN PIC 9(02).
                        09 SRT-SRYACCT-KOUHYOJYUNNUM
                                                    PIC 9(09).
+                       09 SRT-SRYACCT-SRYSYUKBN    PIC X(03).
+                       09 SRT-SRYACCT-ZAITEN       PIC 9(08).
+                       09 SRT-SRYACCT-ZAINUM       PIC 9(08).
       *
        01  RSIJBI-AREA.
            03  RSIJBI-STIDX                        PIC 9(05).
@@ -421,6 +429,7 @@
            03  CONST-GENZAN8               PIC X(09)   VALUE
                "190809190".
            03  CONST-SRYKAMEI-LEN          PIC 9(05)   VALUE   32.
+           03  CONST-GAZOU-TANICD          PIC X(03)   VALUE   "006".
       *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"
@@ -2024,11 +2033,14 @@
       *****************************************************************
        20011-SRYACT-SORT-SEC           SECTION.
       *
-           INITIALIZE  SRT-SRYACCT
+           INITIALIZE                      SRT-SRYACCT
       *
       *    ソート用ワークにキー項目を退避する
            PERFORM VARYING SRT-IDX1    FROM    1   BY  1
                    UNTIL ( SRT-IDX1    >   WKSRYACCT-MAX )
+      *
+               MOVE    SPACE           TO  WRK-SRYCD
+                                           WRK-SRYSYUKBN
       *
                MOVE    WKSRYACCT-OCC (SRT-IDX1)
                                        TO  SRYACCT-REC
@@ -2039,9 +2051,10 @@
                MOVE    ACCT-SRYKBN     TO  SRT-SRYACCT-SRYKBN
                                                            (SRT-IDX1)
                PERFORM 200111-SRYACT-SEL-SEC
-               IF    ( FLG-SRYACT      =   ZERO )
+               IF    ( WRK-SRYCD   NOT =   SPACE )
                    PERFORM 200111-TENSU-SEL-SEC
                    IF    ( FLG-TENSU   =   ZERO )
+      *
                        IF    ( ACCT-SRYKBN =   "60" )
                            PERFORM 200111-KNSJISKBN-HEN-SEC
                        END-IF
@@ -2050,37 +2063,59 @@
                                        TO   SRT-SRYACCT-HOUKNSKBN
                                                           (SRT-IDX1)
       *
-                       MOVE   TNS-CDKBN-SYO
+                       IF    ( WRK-SRYCD (1:1) =   "6"  OR  "7" )
+                           CONTINUE
+                       ELSE
+      *
+                           MOVE   TNS-CDKBN-SYO
                                        TO   SRT-SRYACCT-CDKBN-SYO
                                                           (SRT-IDX1)
-                       MOVE   TNS-CDKBN-BU
+                           MOVE   TNS-CDKBN-BU
                                        TO   SRT-SRYACCT-CDKBN-BU
                                                           (SRT-IDX1)
-                       MOVE   TNS-CDKBN-KBN
+                           MOVE   TNS-CDKBN-KBN
                                        TO   SRT-SRYACCT-CDKBN-KBN
                                                           (SRT-IDX1)
-                       MOVE   TNS-CDKBN-KBNNUM
+                           MOVE   TNS-CDKBN-KBNNUM
                                        TO   SRT-SRYACCT-CDKBN-KBNNUM
                                                           (SRT-IDX1)
-                       MOVE   TNS-CDKBN-KBNNUM-EDA
+                           MOVE   TNS-CDKBN-KBNNUM-EDA
                                        TO  SRT-SRYACCT-CDKBN-KBNNUM-EDA
                                                           (SRT-IDX1)
-                       MOVE   TNS-CDKBN-KOUBAN
+                           MOVE   TNS-CDKBN-KOUBAN
                                        TO  SRT-SRYACCT-CDKBN-KOUBAN
                                                           (SRT-IDX1)
-                       IF    (  ACCT-SRYKBN    =   "21" )
-                        AND  (  TNS-SRYCD      =   CONST-TEIGEN )
-                           MOVE   ALL "9"
-                                       TO  SRT-SRYACCT-KOUHYOJYUNNUM
-                                                          (SRT-IDX1)
-                       ELSE
                            MOVE   TNS-KOUHYOJYUNNUM
                                        TO  SRT-SRYACCT-KOUHYOJYUNNUM
                                                           (SRT-IDX1)
                        END-IF
+                   END-IF
       *
+               END-IF
+      *
+               IF    (  ACCT-SRYKBN    =  "21" )
+                   IF    ( WRK-SRYSYUKBN   =   SPACE )
+                       MOVE    "210"
+                                       TO  SRT-SRYACCT-SRYSYUKBN
+                                                          (SRT-IDX1)
+                   ELSE
+                       MOVE    WRK-SRYSYUKBN
+                                       TO  SRT-SRYACCT-SRYSYUKBN
+                                                          (SRT-IDX1)
                    END-IF
                END-IF
+      *
+               IF    ( ACCT-SRYKBN     =   "21" OR "60" 
+                                       OR  "70" OR "80" )
+                   CONTINUE
+               ELSE
+                   MOVE     ACCT-ZAITEN
+                                       TO  SRT-SRYACCT-ZAITEN
+                                                          (SRT-IDX1)
+               END-IF
+      *
+               MOVE     ACCT-ZAINUM    TO  SRT-SRYACCT-ZAINUM
+                                                          (SRT-IDX1)
            END-PERFORM
       *
       *    ソート用ワークについて並び替えを行う
@@ -2117,9 +2152,8 @@
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
-           MOVE    1                   TO  SRY-RENNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "SRYACT-KEY"        TO  WRK-DBPATH
+           MOVE    "SRYACT-KEY2"       TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC            NOT =   ZERO )
                MOVE    1               TO  FLG-SRYACT
@@ -2127,7 +2161,33 @@
                MOVE    MCPDATA-REC     TO  SRYACT-REC
            END-IF
       *
-           MOVE    "SRYACT-KEY"        TO  WRK-DBPATH
+           PERFORM UNTIL ( FLG-SRYACT  NOT =   ZERO )
+                      OR ( WRK-SRYCD   NOT =   SPACE )
+      *
+               IF    ( WRK-SRYSYUKBN   =   SPACE )
+                   MOVE    SRY-SRYSYUKBN   TO  WRK-SRYSYUKBN
+               END-IF
+      *
+               PERFORM VARYING IDX20   FROM    1   BY  1
+                       UNTIL ( IDX20           >   5 )
+                          OR ( WRK-SRYCD   NOT =   SPACE )
+                   IF    ( SRY-SRYCD (IDX20) (1:1) =   "0" OR "8" )
+                       CONTINUE
+                   ELSE
+                       MOVE    SRY-SRYCD (IDX20)   TO  WRK-SRYCD
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "SRYACT-KEY2"   TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+               IF    ( FLG-DBRC            NOT =   ZERO )
+                   MOVE    1           TO  FLG-SRYACT
+               ELSE
+                   MOVE    MCPDATA-REC TO  SRYACT-REC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "SRYACT-KEY2"       TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
            .
@@ -2140,7 +2200,7 @@
       *
            MOVE    ZERO                TO  FLG-TENSU
            INITIALIZE                      TNS-TENSU-REC
-           MOVE    SRY-SRYCD (1)       TO  TNS-SRYCD
+           MOVE    WRK-SRYCD           TO  TNS-SRYCD
            MOVE    ZERO                TO  TNS-YUKOSTYMD
            MOVE    ALL "9"             TO  TNS-YUKOEDYMD
            MOVE    ACCT-SRYYM          TO  WRK-SRYYMD(1:6)
@@ -2213,6 +2273,7 @@
            END-IF
       *
            MOVE    ZERO                TO  CNT-HOUSRYACT
+           MOVE    ZERO                TO  FLG-SRYACT-HEN5
            MOVE    ZERO                TO  FLG-MINUS
            MOVE    ZERO                TO  FLG-RSIJBI-AREA-HEN
       *
@@ -2334,7 +2395,9 @@
                    CONTINUE
                ELSE
                    IF    ( WRK-TNS-HOUKNSKBN   NOT =   ZERO )
-                       PERFORM 210-WRK-SRYACT-TBL-HEN5-SEC
+                       IF    ( FLG-SRYACT-HEN5 NOT =   ZERO )
+                           PERFORM 210-WRK-SRYACT-TBL-HEN5-SEC
+                       END-IF
                        IF    ( CNT-HOUSRYACT   >   1   )
       *                    検査数編集処理
                            PERFORM 200111-KENSASU-HEN-SEC
@@ -2602,6 +2665,15 @@
       *    数量（薬剤、器材のとき）
            IF    ( SRY-SRYCD  (IDX9)(1:1)  =   "6"  OR  "7" )
             AND  ( TNS-TANINAME        NOT =   SPACE )
+               MOVE    TNS-TANINAME        TO  WRK-TANINAME
+               PERFORM 2001111-SURYO-HEN-SEC
+           END-IF
+      *
+      *    画像診断
+           IF    ( SRY-SRYCD  (IDX9)(1:1)  =   "1" )
+             AND ( SRY-SRYKBN              =   "70" )
+             AND ( TNS-TANICD              =   CONST-GAZOU-TANICD )
+               MOVE    "回"                TO  WRK-TANINAME
                PERFORM 2001111-SURYO-HEN-SEC
            END-IF
       *
@@ -2615,14 +2687,23 @@
            IF    ( WRK-TNS-HOUKNSKBN       =   ZERO )
                PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
            ELSE
-               MOVE    SPACE               TO  WRK-STR
-               STRING  WRK-SRYACT-STR      DELIMITED   BY  SPACE
-                       "，"                DELIMITED   BY  SIZE
-               INTO    WRK-STR
-               END-STRING
-               MOVE    WRK-STR             TO  WRK-SRYACT-STR
-               PERFORM 210-WRK-SRYACT-TBL-HEN4-SEC
-               COMPUTE CNT-HOUSRYACT   =   CNT-HOUSRYACT   +   1
+               IF    ( SRY-SRYCD  (IDX9)(1:1)  =   "0" OR "8"  )
+                   IF    ( FLG-SRYACT-HEN5 NOT =   ZERO )
+                       PERFORM 210-WRK-SRYACT-TBL-HEN5-SEC
+                   END-IF
+                   PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
+                   MOVE    ZERO        TO  FLG-SRYACT-HEN5
+               ELSE
+                   MOVE    SPACE               TO  WRK-STR
+                   STRING  WRK-SRYACT-STR      DELIMITED   BY  SPACE
+                           "，"                DELIMITED   BY  SIZE
+                   INTO    WRK-STR
+                   END-STRING
+                   MOVE    WRK-STR             TO  WRK-SRYACT-STR
+                   PERFORM 210-WRK-SRYACT-TBL-HEN4-SEC
+                   COMPUTE CNT-HOUSRYACT   =   CNT-HOUSRYACT   +   1
+                   MOVE    1           TO  FLG-SRYACT-HEN5
+               END-IF
            END-IF
       *
            .
@@ -2806,51 +2887,6 @@
        200111-KENSASU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *   点数回数  編集処理
-      *****************************************************************
-       200111-TENSUKAISU-HEN-SEC           SECTION.
-      *
-           IF    ( ACCT-ZAITEN     NOT =   ZERO )
-            AND  ( ACCT-ZAIKAISU   NOT =   ZERO )
-               CONTINUE
-           ELSE
-               GO  TO  200111-TENSUKAISU-HEN-EXT
-           END-IF
-      *
-           MOVE    1               TO  WRK-PNT
-           MOVE    SPACE           TO  WRK-TENSUKAISU
-           MOVE    ACCT-ZAITEN     TO  WRK-STR-LEFT-ZX99
-      *
-           IF    ( FLG-MINUS       NOT =   ZERO )
-               STRING  "▲"            DELIMITED   BY  SIZE
-               INTO    WRK-TENSUKAISU
-               WITH    POINTER WRK-PNT
-               END-STRING
-           END-IF
-      *
-           PERFORM 800-STR-HIDARIZUME-HEN-SEC
-           STRING  WRK-STR-LEFT        DELIMITED   BY  SPACE
-           INTO    WRK-TENSUKAISU
-           WITH    POINTER WRK-PNT
-           END-STRING
-      *
-           MOVE    ACCT-ZAIKAISU   TO  WRK-ZZ9
-           STRING  "×"                DELIMITED   BY  SIZE
-                   WRK-ZZ9             DELIMITED   BY  SIZE
-           INTO    WRK-TENSUKAISU
-           WITH    POINTER WRK-PNT
-           END-STRING
-      *
-           MOVE    WRK-TENSUKAISU  TO  WRK-MAE-INPUT
-           PERFORM 800-ZENKAKU-HEN-SEC
-           MOVE    WRK-OUT-INPUT   TO  WRK-SRYACT-STR
-           PERFORM 210-WRK-SRYACT-TBL-HEN3-SEC
-      *
-           .
-       200111-TENSUKAISU-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    患者コメントから編集する 
       *****************************************************************
        2001111-PTCOM-SET-SEC               SECTION.
@@ -2926,7 +2962,7 @@
                STRING  WRK-SRYACT-STR      DELIMITED   BY  SPACE
                    "　"                    DELIMITED   BY  SIZE
                    WRK-OUT-INPUT           DELIMITED   BY  SPACE
-                   TNS-TANINAME            DELIMITED   BY  SPACE
+                   WRK-TANINAME            DELIMITED   BY  SPACE
                INTO    WRK-STR
                END-STRING
                MOVE    WRK-STR         TO  WRK-SRYACT-STR
