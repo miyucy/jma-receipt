@@ -91,3 +91,4 @@
                     PIC X(2)    OCCURS  22 TIMES.
             02  HCN21V03-TEKIYO2
                     PIC X(52)   OCCURS  22 TIMES.
+            02  HCN21V03-KAI    PIC X(3).

@@ -80,3 +80,4 @@
             02  HCM23V03-BYOSYOSU   PIC X(4).
             02  HCM23V03-KANANAME   PIC X(50).
             02  HCM23V03-RENNUM PIC X(7).
+            02  HCM23V03-HOKENNAME  PIC X(60).

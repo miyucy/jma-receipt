@@ -57,3 +57,4 @@
               03  HCM21V03-GOKEI-S
                       PIC X(1)    OCCURS  7 TIMES.
             02  HCM21V03-RENNUM PIC X(7).
+            02  HCM21V03-KAI    PIC X(3).

@@ -114,3 +114,4 @@
             02  HCN23V03-ISYA   PIC X(40).
             02  HCN23V03-TEL    PIC X(15).
             02  HCN23V03-BYOSYOSU   PIC X(4).
+            02  HCN23V03-HOKENNAME  PIC X(60).

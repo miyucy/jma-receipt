@@ -68,3 +68,4 @@
               03  HCM22V03-KOFUNUM-S
                       PIC X(1)    OCCURS  14 TIMES.
             02  HCM22V03-RENNUM PIC X(7).
+            02  HCM22V03-KAI    PIC X(3).
