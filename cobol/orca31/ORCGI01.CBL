@@ -38,6 +38,8 @@
       *  01.00.07    NACL-太田    03.03.06  通算日数を関数より取得する
       *                                     よう修正
       *  01.00.08    NACL-太田    03.03.07  排他制御対応
+      *  01.00.09    NACL-太田    03.03.12  選定療養費１８０日越えの
+      *                                     日数算定方法修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -7748,7 +7750,7 @@
            DISPLAY "STUSAN-NISSU02 =   "  STUSAN-NISSU02
            DISPLAY "STUSAN-NISSU03 =   "  STUSAN-NISSU03
            DISPLAY "STUSAN-NISSU04 =   "  STUSAN-NISSU04
-           COMPUTE WRK-ZOGEN       =   180 - ( STUSAN-NISSU02  -   1 )
+           COMPUTE WRK-ZOGEN       =   180 - ( STUSAN-NISSU04  -   1 )
            PERFORM 5002-CALENDAR-SEC
            MOVE    WRK-KEISANYMD   TO  WRK-SENTEI-STYMD
       *

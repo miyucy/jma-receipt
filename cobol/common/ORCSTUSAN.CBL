@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.10    NACL-太田    03.03.12  日付４の計算方法修正
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -45,11 +46,13 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-ERR                     PIC 9(01).
+           03  FLG-HIT                     PIC 9(01).
            03  FLG-DBRC                    PIC 9(01).
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
            03  FLG-TOKUTEI                 PIC 9(01).
+           03  FLG-SENTEICDCHG             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -100,6 +103,10 @@
       *
       *    点数
            COPY    "CPTENSU.INC".
+      *
+      *    選定療養費
+       01  SENTEICDCHG-REC.
+           COPY    "CPSENTEICDCHG.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -234,20 +241,10 @@
                MOVE    STUSAN-KJNYMD       TO  WRK-EDYMD
                PERFORM 2120-NYUINKIKAN-SEL-SEC
            ELSE
-               MOVE    PTNYUINRRK-NYUINYMD TO  WRK-STYMD
-               MOVE    PTNYUINRRK-TAIINYMD TO  WRK-EDYMD
-               PERFORM 800-KIKAN-CALC-SEC
+               PERFORM 2110-TUSAN-SYUKEI-SEC
                IF    ( STUSAN-RC       NOT  =   ZERO )
                    GO  TO  2100-KONKAI-NYUIN-TUSAN-EXT
                END-IF
-      *
-               COMPUTE STUSAN-NISSU02
-                   =   STUSAN-NISSU02      +   WRK-NISSU2
-               COMPUTE STUSAN-NISSU03
-                   =   STUSAN-NISSU03      +   WRK-NISSU2
-               MOVE    PTNYUINRRK-NYUINYMD TO  WRK-STYMD
-               MOVE    PTNYUINRRK-TAIINYMD TO  WRK-EDYMD
-               PERFORM 2120-NYUINKIKAN-SEL-SEC
            END-IF
       *
       *
@@ -286,6 +283,43 @@
       *
            .
        2110-NYUINRRK-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    通算日数集計処理
+      *****************************************************************
+       2110-TUSAN-SYUKEI-SEC                SECTION.
+      *
+           EVALUATE    PTNYUINRRK-JTIKBN
+           WHEN    "5"
+               COMPUTE STUSAN-NISSU02
+                   =   STUSAN-NISSU02  +   PTNYUINRRK-TAISYONISSU
+               COMPUTE STUSAN-NISSU04
+                   =   STUSAN-NISSU04  +   PTNYUINRRK-TAISYONISSU
+           WHEN    "6"
+               COMPUTE STUSAN-NISSU02
+                   =   STUSAN-NISSU02  +   PTNYUINRRK-TAISYONISSU
+               COMPUTE STUSAN-NISSU03
+                   =   STUSAN-NISSU03  +   PTNYUINRRK-TAISYONISSU
+               COMPUTE STUSAN-NISSU04
+                   =   STUSAN-NISSU04  +   PTNYUINRRK-TAISYONISSU
+           WHEN    OTHER
+               MOVE    PTNYUINRRK-NYUINYMD TO  WRK-STYMD
+               MOVE    PTNYUINRRK-TAIINYMD TO  WRK-EDYMD
+               PERFORM 800-KIKAN-CALC-SEC
+               IF    ( STUSAN-RC       NOT =   ZERO )
+                   GO  TO  2110-TUSAN-SYUKEI-EXT
+               END-IF
+               COMPUTE STUSAN-NISSU02
+                   =   STUSAN-NISSU02  +   WRK-NISSU2
+               COMPUTE STUSAN-NISSU03
+                   =   STUSAN-NISSU03  +   WRK-NISSU2
+               MOVE    PTNYUINRRK-NYUINYMD TO  WRK-STYMD
+               MOVE    PTNYUINRRK-TAIINYMD TO  WRK-EDYMD
+               PERFORM 2120-NYUINKIKAN-SEL-SEC
+           END-EVALUATE
+           .
+      *
+       2110-TUSAN-SYUKEI-EXT.
            EXIT.
       *****************************************************************
       *    入院期間検索処理
@@ -344,6 +378,7 @@
                    END-IF
       *
                    IF    ( FLG-TOKUTEI     =   ZERO )
+                     AND ( FLG-SENTEICDCHG =   ZERO )
                        PERFORM 2121-NYUINACT-TUSAN-SEC
                    END-IF
                END-IF
@@ -390,10 +425,13 @@
       *
            IF    ( FLG-NYUINACT    NOT =   ZERO )
                MOVE    "99"            TO  STUSAN-RC
+               GO  TO  2121-NYUINACT-SEL-EXT
            END-IF
       *
+           MOVE    ZERO                TO  FLG-HIT
            PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >       5 )
+               UNTIL     ( IDX1        >   5 )
+                OR       ( FLG-HIT NOT =   ZERO )
                 OR       ( NSRY-SRYCD (IDX1)   =   SPACE )
       *
                INITIALIZE                  TNS-TENSU-REC
@@ -406,10 +444,12 @@
                IF    ( FLG-DBRC            =   ZERO )
                    MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
                    IF    ( TNS-DATAKBN     =   1 )
+                       MOVE    1           TO  FLG-HIT
                        IF  ( TNS-NYUTENTTLKBN  =   920 )
                            MOVE    1       TO  FLG-TOKUTEI
+                       ELSE
+                           PERFORM 2121-SENTEICDCHG-CHK-SEC
                        END-IF
-                       MOVE    5           TO  IDX1
                    END-IF
                END-IF
       *
@@ -417,6 +457,11 @@
                PERFORM 900-TBL-CLOSE-SEC
       *
            END-PERFORM
+      *
+           IF    ( FLG-HIT             =   ZERO )
+               MOVE    "99"            TO  STUSAN-RC
+               GO  TO  2121-NYUINACT-SEL-EXT
+           END-IF
       *
            .
        2121-NYUINACT-SEL-EXT.
@@ -450,6 +495,32 @@
        2121-NYUINACT-TUSAN-EXT.
            EXIT.
       *****************************************************************
+      *    選定療養費置換可能チェック処理
+      *****************************************************************
+       2121-SENTEICDCHG-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SENTEICDCHG
+      *
+           INITIALIZE  SENTEICDCHG-REC
+           MOVE    TNS-SRYCD       TO  SENCHG-IPNSRYCD
+           MOVE    SENTEICDCHG-REC TO  MCPDATA-REC
+           MOVE    "SENTEICDCHG-KEY2"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO  )
+               CONTINUE
+           ELSE
+               MOVE    1           TO  FLG-SENTEICDCHG
+           END-IF
+      *
+           MOVE    "SENTEICDCHG-KEY2"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+       2121-SENTEICDCHG-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    過去入院分通算処理
       *****************************************************************
        2100-KAKO-NYUIN-TUSAN-SEC           SECTION.
@@ -475,36 +546,10 @@
       *
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
       *
-               EVALUATE    PTNYUINRRK-JTIKBN
-               WHEN    "5"
-                       COMPUTE STUSAN-NISSU02
-                           =   STUSAN-NISSU02
-                           +   PTNYUINRRK-TAISYONISSU
-               WHEN    "6"
-                       COMPUTE STUSAN-NISSU02
-                           =   STUSAN-NISSU02
-                           +   PTNYUINRRK-TAISYONISSU
-                       COMPUTE STUSAN-NISSU03
-                           =   STUSAN-NISSU03
-                           +   PTNYUINRRK-TAISYONISSU
-                       COMPUTE STUSAN-NISSU04
-                           =   STUSAN-NISSU04
-                           +   PTNYUINRRK-TAISYONISSU
-               WHEN    OTHER
-                   MOVE    PTNYUINRRK-NYUINYMD TO  WRK-STYMD
-                   MOVE    PTNYUINRRK-TAIINYMD TO  WRK-EDYMD
-                   PERFORM 800-KIKAN-CALC-SEC
-                   IF    ( STUSAN-RC       NOT =   ZERO )
-                       GO  TO  2100-KAKO-NYUIN-TUSAN-EXT
-                   END-IF
-                   COMPUTE STUSAN-NISSU02
-                       =   STUSAN-NISSU02      +   WRK-NISSU2
-                   COMPUTE STUSAN-NISSU03
-                       =   STUSAN-NISSU03      +   WRK-NISSU2
-                   MOVE    PTNYUINRRK-NYUINYMD TO  WRK-STYMD
-                   MOVE    PTNYUINRRK-TAIINYMD TO  WRK-EDYMD
-                   PERFORM 2120-NYUINKIKAN-SEL-SEC
-               END-EVALUATE
+               PERFORM 2110-TUSAN-SYUKEI-SEC
+               IF    ( STUSAN-RC       NOT =   ZERO )
+                   GO  TO  2100-KAKO-NYUIN-TUSAN-EXT
+               END-IF
       *
                MOVE    "PTNYUINRRK-KEY16"  TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
