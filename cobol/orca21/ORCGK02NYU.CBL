@@ -282,6 +282,8 @@
            03  IDX-SET             PIC 9(04).
            03  IDX-TEI             PIC 9(04).
       *
+           03  IDX-NUM             PIC 9(06).
+      *
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -2068,7 +2070,14 @@
       *
                IF      PARA-FILEMEI        =   "K02SPA"
                    IF      FLG-PARASET     =   ZERO  OR  2
-                       MOVE    PARA-DATA-REC   TO  SPA-K02
+                       IF      PARA-EDANUM     =   1
+                           MOVE    PARA-DATA-REC   TO  SPA-K02
+                       ELSE
+                           COMPUTE IDX-NUM     =  (PARA-EDANUM  -  1)
+                                               *   60000
+                                               +   1
+                           MOVE    PARA-DATA-REC   TO  SPA-K02(IDX-NUM:)
+                       END-IF
                    END-IF
                END-IF
       *
@@ -7387,13 +7396,19 @@
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G
+                                                       (SPA-GMN-IDX)
+                                                            (IDX-STR:)
+               END-IF
                MOVE    "0080"          TO  SPA-ERRCD
                MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
                MOVE    2               TO  SPA-GMN-CUR
-               GO      TO      401131-MEISYO-HENKAN-EXT
-           END-IF
-           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G(SPA-GMN-IDX)
+           ELSE
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G
+                                                       (SPA-GMN-IDX)
                                                             (IDX-STR:)
+           END-IF
       *
            .
        401131-MEISYO-HENKAN-EXT.
@@ -9685,8 +9700,13 @@
            MOVE    SPACE               TO  PARA-REC
            MOVE    "K02SPA"            TO  PARA-FILEMEI
            MOVE    1                   TO  PARA-EDANUM
-      *****MOVE    SPA-K02-AREA        TO  PARA-DATA-REC
            MOVE    SPA-K02             TO  PARA-DATA-REC
+           WRITE                       PARA-REC
+      *
+           MOVE    SPACE               TO  PARA-REC
+           MOVE    "K02SPA"            TO  PARA-FILEMEI
+           MOVE    2                   TO  PARA-EDANUM
+           MOVE    SPA-K02(60001:)     TO  PARA-DATA-REC
            WRITE                       PARA-REC
       *
            .
