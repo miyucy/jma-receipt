@@ -1364,6 +1364,10 @@
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   31
                IF      TBL-AUTO-SRYCD (IDY)    NOT =   SPACE
+      *TEST
+             DISPLAY "IDY:" IDY 
+                     ",TBL-AUTO-SRYCD:" TBL-AUTO-SRYCD (IDY)
+      *TEST
                    IF     (WRK-TEN-SRYCD           =   SPACE )  OR
                           (TBL-AUTO-SRYCD (IDY)    =   WRK-TEN-SRYCD)
                        MOVE    TBL-AUTO-SRYCD (IDY)    TO  WRK-TEN-SRYCD
@@ -1374,6 +1378,10 @@
                            MOVE    "33"            TO  WRK-SRYKBN
                            PERFORM 3002-AUTO-HENSYU-SEC
                            INITIALIZE               WRK-NISUU-HEN-AREA
+      *
+                           MOVE    TBL-AUTO-SRYCD (IDY)
+                                                   TO  WRK-TEN-SRYCD
+                           MOVE    1               TO  WRK-NIDAY (IDY)
                        END-IF
                    END-IF
                END-IF
@@ -1999,6 +2007,10 @@
                   (LNK-ORCSC-NYUINYMD  NUMERIC )
       *        入院歴より決定
                PERFORM 30051-NYUINREKI-SEC
+      *TEST
+           DISPLAY "WRK-NYMD:" WRK-NYMD
+                   ",SPA-SRYYMD:" SPA-SRYYMD
+      *TEST
       *******  MOVE    LNK-ORCSC-NYUINYMD  TO  WRK-NYMD
       *        COMPUTE WRK-NYY             =   WRK-NYY
       *******                              +   1
@@ -2035,7 +2047,7 @@
                        MOVE    "130700410"         TO  WRK-SRYCD
                    END-IF
                    IF      SPA-SRYYMD(1:6)    =   WRK-NYMD(1:6)
-                       IF      WRK-NDD         <   IDY
+                       IF      WRK-NDD        >   IDY
       *                １年以内
                            MOVE    "130700310"         TO  WRK-SRYCD
                        ELSE
