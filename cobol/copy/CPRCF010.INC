@@ -28,6 +28,9 @@
       *  01.01.01    NACL-藤原    02/09/17  県内県外区分・県番号・
       *                                     年齢・給付割合の追加
       *  01.01.02    NACL-藤原    02/10/07  在総診区分の追加
+      *  01.01.03    NACL-藤原    03/03/06  補助区分の追加
+      *                                     点数のタイプ変更
+      *                                     レセプト記載外公費情報追加
       ************************************************************
        01  RECE10-REC.
       *ＫＥＹ
@@ -48,6 +51,8 @@
                05  RECE10-RECESYUBETU      PIC  X(04).
       *保険者番号
                05  RECE10-HKNJANUM         PIC  X(08).
+      *補助区分（船員保険のときのみ）
+               05  RECE10-HOJOKBN-KEY      PIC  X(01).
       *適用開始年月日
                05  RECE10-TEKSTYMD         PIC  X(08).
       *患者番号
@@ -101,7 +106,7 @@
       *明細点数情報
                05  RECE10-TENSUINF        OCCURS  5.
       *明細点数
-                   07  RECE10-TENSU       PIC  9(08).
+                   07  RECE10-TENSU       PIC  S9(08).
       *合計点数情報
            03  RECE10-TOTALTENINF         OCCURS  5.
       *合計点数
@@ -122,6 +127,32 @@
            03  RECE10-YKZFTNINF           OCCURS  5.
       *薬剤一部負担金
                05  RECE10-YKZFTN          PIC  9(05).
+      *レセプト記載外公費情報
+           03  RECE10-ETC-KOH-G.
+      *記載外公費−保険番号
+               05  RECE10-ETC-KOHINF.
+                   07  RECE10-ETC-KOHNUM   PIC  X(03)   OCCURS  4.
+      *記載外公費−実日数
+               05  RECE10-ETC-JNISSUINF.
+                   07  RECE10-ETC-JNISSU   PIC  9(02)   OCCURS  4.
+      *記載外公費−合計点数
+               05  RECE10-ETC-TOTALTENINF.
+                   07  RECE10-ETC-TOTALTEN PIC  9(08)   OCCURS  4.
+      *記載外公費−負担金額
+               05  RECE10-ETC-FTNMONEYINF.
+                   07  RECE10-ETC-FTNMONEY PIC  9(09)   OCCURS  4.
+      *記載外公費−薬剤一部負担金情報
+               05  RECE10-ETC-YKZFTNINF.
+                   07  RECE10-ETC-YKZFTN   PIC  9(05)   OCCURS  4.
+      *記載外公費−食事療養費情報
+               05  RECE10-ETC-SHOKUJIINF       OCCURS  4.
+      *食事日数
+                   07  RECE10-ETC-SHOKUJINISSU PIC  9(02).
+      *食事療養費
+                   07  RECE10-ETC-SHOKUJIRYOYOHI
+                                               PIC  9(09).
+      *標準負担額
+                   07  RECE10-ETC-SHOKUJIFTN   PIC  9(09).
       *(総括表用)
       *主保険−保険番号
            03  RECE10-HKNNUM-S            PIC  X(03).
