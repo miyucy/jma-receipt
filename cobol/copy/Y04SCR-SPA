@@ -11,7 +11,7 @@
       *     Everyone is granted permission to use, copy, modify and
       * redistribute this program, but only under the conditions described
       * in the JMA Open Source License. You should have received a copy of
-      * this license along with this program. If not, stop using this
+      * this licence along with this program. If not, stop using this
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
@@ -35,12 +35,14 @@
                        09  SPA-GMN-SK1         PIC X(01).
                        09  SPA-GMN-SINRYOMEI   PIC X(10).
                    07  SPA-GMN-SINRYOLST       PIC X(14)   OCCURS  10.
+                   07  SPA-SINRYO-MAX          PIC 9(04).
       *
                    07  SPA-GMN-DRNAME.
                        09  SPA-GMN-DRNCD       PIC X(04).
                        09  SPA-GMN-D1          PIC X(01).
-                       09  SPA-GMN-DRNAMEMEI   PIC X(20).
-                   07  SPA-GMN-DRNAMELST       PIC X(26)   OCCURS  10.
+                       09  SPA-GMN-DRNAMEMEI   PIC X(24).
+                   07  SPA-GMN-DRNAMELST       PIC X(29)   OCCURS  50.
+                   07  SPA-DRCD-MAX            PIC 9(04).
       *
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-TBLO    OCCURS  6.

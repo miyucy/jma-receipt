@@ -31,9 +31,9 @@
                 04  Y04-VALUE   PIC X(20).
               03  Y04-DRNAME-COMBO.
                 04  Y04-DRNAME.
-                  05  Y04-VALUE   PIC X(27).
+                  05  Y04-VALUE   PIC X(29).
                 04  Y04-S1-COUNT     PIC S9(9)   BINARY.
-                04  Y04-DRNAMELST    PIC X(27)   OCCURS  10 TIMES.
+                04  Y04-DRNAMELST    PIC X(29)   OCCURS  50 TIMES.
               03  Y04-SRYNAIYO-COMBO.
                 04  Y04-SRYNAIYO.
                   05  Y04-VALUE   PIC X(21).

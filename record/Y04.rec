@@ -20,10 +20,10 @@ Y04	{
 		};
 		DRNAME_COMBO	{
 			DRNAME	{
-				value	varchar(27);
+				value	varchar(29);
 			};
 			count	int;
-			item	varchar(27)[10];
+			item	varchar(29)[50];
 		};
 		SRYNAIYO_COMBO	{
 			SRYNAIYO	{
