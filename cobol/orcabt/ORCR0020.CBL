@@ -834,7 +834,8 @@
       *
       *    特記事項のセット
       *    老保の編集
-           IF      RECE02-HKNHBTNUM     =   SPACE
+      ***> IF      RECE02-HKNHBTNUM     =   SPACE
+           IF      RECE02-HKNNUM        =   SPACE
       ***> AND     RECE02-KOHHBTNUM (1) =   "12"
            AND     RECE02-KOHHBTNUM (1)   NOT =  SPACE
            AND     RECE02-KOHHBTNUM (2) =   SPACE
