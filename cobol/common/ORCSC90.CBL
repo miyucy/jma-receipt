@@ -85,8 +85,8 @@
            03  WRK-GMN-INPUTCD     PIC X(22).
       *
            03  WRK-SYOKEIS         PIC 9(08)V99.
-           03  WRK-SYOKEIS2        PIC 9(08)V999.
-           03  WRK-SYOKEIS3        PIC 9(08)V999.
+           03  WRK-SYOKEIS2        PIC 9(08)V9999.
+           03  WRK-SYOKEIS3        PIC 9(08)V9999.
            03  WRK-SYOKEI          PIC 9(08).
       *
       *    注射液計算用
@@ -259,7 +259,7 @@
                  ((LNK-COM-TANICD (IDX)    =   "014" OR "022" OR "046")
                OR  ((IDX                     <   200  )  AND
                     (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))) )
-      *        処置の時、次ぎが残量廃棄
+      *        処置の時、次が残量廃棄
               OR  ((LNK-COM-SRYKBN (IDX)    =   "40" )  AND
                    (IDX                     <   200  )  AND
                    (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))
@@ -464,7 +464,7 @@
                                            +   1
            END-IF
       *
-           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.999
+           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.9999
       *
            .
        2001-KEIZAITENU-EXT.
@@ -505,7 +505,7 @@
            END-IF
       *
       *****COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS2   + 0.99
-           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.999
+           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.9999
       *
            .
        2001-ZAITENU-EXT.
@@ -542,7 +542,7 @@
            END-IF
       *
       *****COMPUTE LNK-SC90-GAITEN     =   WRK-SYOKEIS2   + 0.99
-           COMPUTE LNK-SC90-GAITEN     =   WRK-SYOKEIS3   + 0.999
+           COMPUTE LNK-SC90-GAITEN     =   WRK-SYOKEIS3   + 0.9999
       *
            .
        2002-GAITENU-SET-EXT.
