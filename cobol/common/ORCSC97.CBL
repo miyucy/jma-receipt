@@ -393,6 +393,9 @@
       *    数量以下の変換
            MOVE    LNK-SC97-GMN-IDX    TO  GMN-IDX
            PERFORM 300-SURYOU-SYORI-SEC
+           IF      LNK-SC97-INPUTCD(1:1)   =   " "
+               GO      TO      1003-SURYOU-CHK-EXT
+           END-IF
       *
       *    入力コード文字列調査処理
            PERFORM 2020-INPUTCD-CHOSA-SEC
@@ -1103,7 +1106,16 @@
       *           数量にゼロ入力した時、行削除とする
                    IF     (WRK-SUR-MCNT        >   ZERO  )  AND
                           (LNK-SC97-SURYO      =   ZERO  )
-                       MOVE    " "             TO  LNK-SC97-INPUTCD
+                       MOVE    "  "            TO  LNK-SC97-INPUTCD
+                       MOVE    ZERO            TO  LNK-SC97-SURYOCNT
+                       MOVE    ZERO            TO  LNK-SC97-SURYO
+                       MOVE    ZERO            TO  LNK-SC97-SURYOFLG
+                   END-IF
+               ELSE
+      *            ’０’以外の時、行削除とする
+                   IF     (WRK-SUR-MCNT        >   1     )  AND
+                          (LNK-SC97-SURYO      =   ZERO  )
+                       MOVE    "  "            TO  LNK-SC97-INPUTCD
                        MOVE    ZERO            TO  LNK-SC97-SURYOCNT
                        MOVE    ZERO            TO  LNK-SC97-SURYO
                        MOVE    ZERO            TO  LNK-SC97-SURYOFLG
