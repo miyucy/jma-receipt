@@ -75,6 +75,7 @@
       *                                     æÏπÁ°¢£±£∞£∞£∞£∞±ﬂæÂ∏¬§»§π§Î
       *  01.00.35    NACL-ÃÁœ∆    04/11/25  ¬Á∫Â…‹£¥£±œ∑øÕæÂ∏¬≥€ ‘Ω∏
       *  01.00.36    NACL-ÃÁœ∆    04/11/25   °≈Á∏©∆˝Õƒª˘∆√ºÏ∑◊ªª¬–±˛
+      *  01.00.37    NACL-ÃÁœ∆    05/01/14  ≤¨ª≥∏©∆˝Õƒª˘∆√ºÏ∑◊ªª¬–±˛
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -231,6 +232,7 @@
            03  WK-TOKUSYU-COMPFTN2     PIC 9(07).
            03  WK-TOKUSYU-ENTANI       PIC 9(07)V9(01).
            03  WK-TOKUSYU              PIC 9(07).
+           03  WK-TOKUSYU2             PIC 9(07).
       *
       *    ∏¯»Ò§Œ¥µº‘…È√¥æÂ∏¬∂‚≥€§Œ¬‡»ÚÕ—•®•Í•¢
        01  HOKEN-MAX-AREA.
@@ -3336,6 +3338,59 @@
                       END-IF
                  END-IF
       *
+                 IF  (WK-1001-PREFNUM         =  33      ) AND
+                     (LNK-SYU-KOH1HKNNUM      = "285"    ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200110" )
+                      IF    LNK-SYU-KOH1HKNNUM  =  SYU-KOH1HKNNUM
+                         COMPUTE  SYU-KOH1HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH1HKNFTNMONEY
+                         COMPUTE  SYU-KOH1COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH1COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH1COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH1COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                      IF    LNK-SYU-KOH1HKNNUM  =  SYU-KOH2HKNNUM
+                         COMPUTE  SYU-KOH2HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH2HKNFTNMONEY
+                         COMPUTE  SYU-KOH2COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH2COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH2COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH2COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                      IF    LNK-SYU-KOH1HKNNUM  =  SYU-KOH3HKNNUM
+                         COMPUTE  SYU-KOH3HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH3HKNFTNMONEY
+                         COMPUTE  SYU-KOH3COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH3COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH3COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH3COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                      IF    LNK-SYU-KOH1HKNNUM  =  SYU-KOH4HKNNUM
+                         COMPUTE  SYU-KOH4HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH4HKNFTNMONEY
+                         COMPUTE  SYU-KOH4COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH4COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH4COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH4COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                 END-IF
+      *
                  IF       MAX-KIN-KOHI1-D       NOT = ZERO
                  AND      MAX-KIN-KOHI1-M           = ZERO
                    PERFORM   VARYING  IDX2  FROM  1  BY  1
@@ -3558,6 +3613,59 @@
                          MOVE   SYU-SHOKUJI5  TO  SYU-KOH4HKNFTNMONEY
                          MOVE   SYU-SHOKUJI6  TO  SYU-KOH4COMPFTN
                          MOVE   SYU-SHOKUJI7  TO  SYU-KOH4COMPFTN-ENTANI
+                      END-IF
+                 END-IF
+      *
+                 IF  (WK-1001-PREFNUM         =  33      ) AND
+                     (LNK-SYU-KOH2HKNNUM      = "285"    ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200110" )
+                      IF    LNK-SYU-KOH2HKNNUM  =  SYU-KOH1HKNNUM
+                         COMPUTE  SYU-KOH1HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH1HKNFTNMONEY
+                         COMPUTE  SYU-KOH1COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH1COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH1COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH1COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                      IF    LNK-SYU-KOH2HKNNUM  =  SYU-KOH2HKNNUM
+                         COMPUTE  SYU-KOH2HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH2HKNFTNMONEY
+                         COMPUTE  SYU-KOH2COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH2COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH2COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH2COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                      IF    LNK-SYU-KOH2HKNNUM  =  SYU-KOH3HKNNUM
+                         COMPUTE  SYU-KOH3HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH3HKNFTNMONEY
+                         COMPUTE  SYU-KOH3COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH3COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH3COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH3COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                      IF    LNK-SYU-KOH2HKNNUM  =  SYU-KOH4HKNNUM
+                         COMPUTE  SYU-KOH4HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH4HKNFTNMONEY
+                         COMPUTE  SYU-KOH4COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH4COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH4COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH4COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
                       END-IF
                  END-IF
       *
@@ -3786,6 +3894,59 @@
                       END-IF
                  END-IF
       *
+                 IF  (WK-1001-PREFNUM         =  33      ) AND
+                     (LNK-SYU-KOH3HKNNUM      = "285"    ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200110" )
+                      IF    LNK-SYU-KOH3HKNNUM  =  SYU-KOH1HKNNUM
+                         COMPUTE  SYU-KOH1HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH1HKNFTNMONEY
+                         COMPUTE  SYU-KOH1COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH1COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH1COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH1COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                      IF    LNK-SYU-KOH3HKNNUM  =  SYU-KOH2HKNNUM
+                         COMPUTE  SYU-KOH2HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH2HKNFTNMONEY
+                         COMPUTE  SYU-KOH2COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH2COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH2COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH2COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                      IF    LNK-SYU-KOH3HKNNUM  =  SYU-KOH3HKNNUM
+                         COMPUTE  SYU-KOH3HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH3HKNFTNMONEY
+                         COMPUTE  SYU-KOH3COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH3COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH3COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH3COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                      IF    LNK-SYU-KOH3HKNNUM  =  SYU-KOH4HKNNUM
+                         COMPUTE  SYU-KOH4HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH4HKNFTNMONEY
+                         COMPUTE  SYU-KOH4COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH4COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH4COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH4COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                 END-IF
+      *
                  IF       MAX-KIN-KOHI3-D       NOT = ZERO
                  AND      MAX-KIN-KOHI3-M           = ZERO
                    PERFORM   VARYING  IDX2  FROM  1  BY  1
@@ -4008,6 +4169,59 @@
                          MOVE   SYU-SHOKUJI5  TO  SYU-KOH4HKNFTNMONEY
                          MOVE   SYU-SHOKUJI6  TO  SYU-KOH4COMPFTN
                          MOVE   SYU-SHOKUJI7  TO  SYU-KOH4COMPFTN-ENTANI
+                      END-IF
+                 END-IF
+      *
+                 IF  (WK-1001-PREFNUM         =  33      ) AND
+                     (LNK-SYU-KOH4HKNNUM      = "285"    ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200110" )
+                      IF    LNK-SYU-KOH4HKNNUM  =  SYU-KOH1HKNNUM
+                         COMPUTE  SYU-KOH1HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH1HKNFTNMONEY
+                         COMPUTE  SYU-KOH1COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH1COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH1COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH1COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                      IF    LNK-SYU-KOH4HKNNUM  =  SYU-KOH2HKNNUM
+                         COMPUTE  SYU-KOH2HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH2HKNFTNMONEY
+                         COMPUTE  SYU-KOH2COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH2COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH2COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH2COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                      IF    LNK-SYU-KOH4HKNNUM  =  SYU-KOH3HKNNUM
+                         COMPUTE  SYU-KOH3HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH3HKNFTNMONEY
+                         COMPUTE  SYU-KOH3COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH3COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH3COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH3COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
+                      END-IF
+                      IF    LNK-SYU-KOH4HKNNUM  =  SYU-KOH4HKNNUM
+                         COMPUTE  SYU-KOH4HKNFTNMONEY =
+                                  SYU-SHOKUJI5 - SYU-KOH4HKNFTNMONEY
+                         COMPUTE  SYU-KOH4COMPFTN     =
+                                  SYU-SHOKUJI6 - SYU-KOH4COMPFTN
+                         COMPUTE  WK-TOKUSYU   = SYU-SHOKUJI7
+                                               + 0.9
+                         COMPUTE  WK-TOKUSYU2  = SYU-KOH4COMPFTN-ENTANI
+                                               + 0.9
+                         COMPUTE  SYU-KOH4COMPFTN-ENTANI =
+                                  WK-TOKUSYU   - WK-TOKUSYU2
                       END-IF
                  END-IF
       *
@@ -6478,10 +6692,19 @@
                END-IF                    
       *
       *        ∆√ºÏ∑◊ªª° ∏¬≈Ÿ§Úƒ∂§®§øæÏπÁ°¢¥µº‘…È√¥»Ø¿∏° ¡¥≥€°À°À
+      *********°  °≈Á∏©°À
                IF  (WK-1001-PREFNUM             =  07      ) AND
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX) = "245"    ) AND
                    (LNK-SYU-SRYYMD(1:6)        >= "200412" )
                   PERFORM   23076-TOKUSYU-SANTEI-SEC
+                  GO    TO  2307-KOH-KEISAN-EXT
+               END-IF
+      *        ∆√ºÏ∑◊ªª° ∏¬≈Ÿ§Úƒ∂§®§øæÏπÁ°¢¥µº‘…È√¥»Ø¿∏° ƒ∂§®§ø≥€°À°À
+      *********° ≤¨ª≥∏©°À
+               IF  (WK-1001-PREFNUM             =  33      ) AND
+                   (LNK-SYU-KOH-HKNNUM(KOH-IDX) = "285"    ) AND
+                   (LNK-SYU-SRYYMD(1:6)        >= "200110" )
+                  PERFORM   23077-TOKUSYU-SANTEI2-SEC
                   GO    TO  2307-KOH-KEISAN-EXT
                END-IF
       **
@@ -8014,6 +8237,291 @@
            EXIT.                                                        
       *
       ******************************************************************
+      *        ∆√ºÏ∑◊ªª° ∏¬≈Ÿ§Úƒ∂§®§øæÏπÁ°¢¥µº‘…È√¥»Ø¿∏° ƒ∂§®§ø≥€°À°À
+      ******************************************************************
+       23077-TOKUSYU-SANTEI2-SEC           SECTION.
+      *
+           IF    LNK-SYU-SYUCOMPFTN-ENTANI   NOT =    ZERO
+                   MOVE   LNK-SYU-SYUCOMPFTN-ENTANI  TO
+                                     LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                   PERFORM    23075-KOHHI-HIKAKU4-SEC
+                   IF    LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                                             >   ZAN-KOHI-T3(KOH-IDX)
+                       COMPUTE  LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =
+                                LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  -
+                                ZAN-KOHI-T3(KOH-IDX)
+                   ELSE
+                       MOVE   ZERO  TO
+                                     LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                   END-IF
+                   MOVE   LNK-SYU-SYUCOMPFTN-ENTANI  TO
+                                                 WK-TOKUSYU-ENTANI
+           ELSE
+               IF    LNK-SYU-KOH-COMPFTN-ENTANI(1)   NOT =    ZERO
+                   MOVE   LNK-SYU-KOH-COMPFTN-ENTANI(1)  TO
+                                     LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                   PERFORM    23075-KOHHI-HIKAKU4-SEC
+                   IF    LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                                             >   ZAN-KOHI-T3(KOH-IDX)
+                       COMPUTE  LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =
+                                LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  -
+                                ZAN-KOHI-T3(KOH-IDX)
+                   ELSE
+                       MOVE   ZERO  TO
+                                     LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                   END-IF
+                   MOVE   LNK-SYU-KOH-COMPFTN-ENTANI(1)  TO
+                                                 WK-TOKUSYU-ENTANI
+               ELSE
+                   MOVE   WK-ZENGAKU  TO
+                                     LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                   PERFORM    23075-KOHHI-HIKAKU4-SEC
+                   IF    LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                                             >   ZAN-KOHI-T3(KOH-IDX)
+                       COMPUTE  LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =
+                                LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  -
+                                ZAN-KOHI-T3(KOH-IDX)
+                   ELSE
+                       MOVE   ZERO  TO
+                                     LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                   END-IF
+                   MOVE   WK-ZENGAKU   TO   WK-TOKUSYU-ENTANI
+               END-IF
+           END-IF
+      **
+           IF    HKN-RECEFTNDSPKBN      =  "2"
+              IF    LNK-SYU-SYUCOMPFTN   NOT =    ZERO
+                   MOVE  LNK-SYU-SYUCOMPFTN  TO  WK-KOH-COMPFTN(KOH-IDX)
+                   PERFORM    23073-KOHHI-HIKAKU2-SEC
+                   IF    WK-KOH-COMPFTN(KOH-IDX) >  ZAN-KOHI-T2(KOH-IDX)
+                       COMPUTE  WK-KOH-COMPFTN(KOH-IDX)  =
+                                WK-KOH-COMPFTN(KOH-IDX)  -
+                                ZAN-KOHI-T2(KOH-IDX)
+                   ELSE
+                       MOVE   ZERO    TO   WK-KOH-COMPFTN(KOH-IDX)
+                   END-IF
+                   MOVE   LNK-SYU-SYUCOMPFTN  TO  WK-TOKUSYU-COMPFTN2
+              ELSE
+                IF  LNK-SYU-KOH-COMPFTN(1)   NOT =    ZERO
+                   MOVE  LNK-SYU-KOH-COMPFTN(1) TO
+                                            WK-KOH-COMPFTN(KOH-IDX)
+                   PERFORM    23073-KOHHI-HIKAKU2-SEC
+                   IF    WK-KOH-COMPFTN(KOH-IDX) >  ZAN-KOHI-T2(KOH-IDX)
+                       COMPUTE  WK-KOH-COMPFTN(KOH-IDX)  =
+                                WK-KOH-COMPFTN(KOH-IDX)  -
+                                ZAN-KOHI-T2(KOH-IDX)
+                   ELSE
+                       MOVE   ZERO    TO   WK-KOH-COMPFTN(KOH-IDX)
+                   END-IF
+                   MOVE   LNK-SYU-KOH-COMPFTN(1)  TO
+                                           WK-TOKUSYU-COMPFTN2
+                ELSE
+                   MOVE  WK-ZENGAKU  TO    WK-KOH-COMPFTN(KOH-IDX)
+                   PERFORM    23073-KOHHI-HIKAKU2-SEC
+                   IF    WK-KOH-COMPFTN(KOH-IDX) >  ZAN-KOHI-T2(KOH-IDX)
+                       COMPUTE  WK-KOH-COMPFTN(KOH-IDX)  =
+                                WK-KOH-COMPFTN(KOH-IDX)  -
+                                ZAN-KOHI-T2(KOH-IDX)
+                   ELSE
+                       MOVE   ZERO    TO   WK-KOH-COMPFTN(KOH-IDX)
+                   END-IF
+                   MOVE   WK-ZENGAKU  TO   WK-TOKUSYU-COMPFTN2
+                END-IF
+              END-IF
+           END-IF
+      **
+           IF    LNK-SYU-SYUCOMPFTN   NOT =    ZERO
+                  COMPUTE  WK-TOKUSYU =  LNK-SYU-SYUCOMPFTN  +   5
+                  COMPUTE  WK-TOKUSYU =  WK-TOKUSYU          /  10
+                  COMPUTE  WK-TOKUSYU =  WK-TOKUSYU          *  10
+      *
+                  MOVE  WK-TOKUSYU  TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                  PERFORM    23072-KOHHI-HIKAKU-SEC
+                  IF    LNK-SYU-KOH-COMPFTN(KOH-IDX)  >
+                                            ZAN-KOHI-T(KOH-IDX)
+                      COMPUTE  LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
+                               LNK-SYU-KOH-COMPFTN(KOH-IDX)  -
+                               ZAN-KOHI-T(KOH-IDX)
+                  ELSE
+                      MOVE   ZERO    TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                  END-IF
+                  MOVE   LNK-SYU-SYUCOMPFTN  TO  WK-TOKUSYU-COMPFTN
+           ELSE
+              IF  LNK-SYU-KOH-COMPFTN(1)   NOT =    ZERO
+                  COMPUTE  WK-TOKUSYU =  LNK-SYU-KOH-COMPFTN(1)  +   5
+                  COMPUTE  WK-TOKUSYU =  WK-TOKUSYU              /  10
+                  COMPUTE  WK-TOKUSYU =  WK-TOKUSYU              *  10
+      *
+                  MOVE  WK-TOKUSYU  TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                  PERFORM    23072-KOHHI-HIKAKU-SEC
+                  IF    LNK-SYU-KOH-COMPFTN(KOH-IDX)  >
+                                            ZAN-KOHI-T(KOH-IDX)
+                      COMPUTE  LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
+                               LNK-SYU-KOH-COMPFTN(KOH-IDX)  -
+                               ZAN-KOHI-T(KOH-IDX)
+                  ELSE
+                      MOVE   ZERO    TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                  END-IF
+                  MOVE   LNK-SYU-KOH-COMPFTN(1)  TO  WK-TOKUSYU-COMPFTN
+              ELSE
+                  COMPUTE  WK-TOKUSYU =  WK-ZENGAKU  +   5
+                  COMPUTE  WK-TOKUSYU =  WK-TOKUSYU  /  10
+                  COMPUTE  WK-TOKUSYU =  WK-TOKUSYU  *  10
+      *
+                  MOVE  WK-TOKUSYU  TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                  PERFORM    23072-KOHHI-HIKAKU-SEC
+                  IF    LNK-SYU-KOH-COMPFTN(KOH-IDX)  >
+                                            ZAN-KOHI-T(KOH-IDX)
+                      COMPUTE  LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
+                               LNK-SYU-KOH-COMPFTN(KOH-IDX)  -
+                               ZAN-KOHI-T(KOH-IDX)
+                  ELSE
+                      MOVE   ZERO    TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                  END-IF
+                  MOVE   WK-ZENGAKU  TO   WK-TOKUSYU-COMPFTN
+              END-IF
+           END-IF
+      **
+           COMPUTE   LNK-SYU-KOH-COMPTOTAL(KOH-IDX)   =
+                     LNK-SYU-KOH-COMPFTN(KOH-IDX)
+      *
+           MOVE  WK-NYUSKJRYYKBN    TO LNK-SYU-SKJ-FTNKBN(KOH-IDX)
+           MOVE  WK-SHOKUJI-NISSU   TO LNK-SYU-SKJ-NISSU(KOH-IDX)
+           MOVE  WK-SHOKUJI-RYOYOHI TO LNK-SYU-SKJ-RYOYOHI(KOH-IDX)
+      *
+           EVALUATE   WK-NYUSKJRYYKBN
+                WHEN   "1"
+                WHEN   "2"
+                WHEN   "4"
+                       MOVE  WK-SHOKUJI-FTN
+                                      TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                           LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                       IF   WK-NYUSKJJYOGAK  NOT =  ZERO
+                          COMPUTE   WK-NYUSKJJYOGAK2  =
+                                    WK-NYUSKJJYOGAK * WK-SHOKUJI-NISSU
+                          IF   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                              >   WK-NYUSKJJYOGAK2
+                             COMPUTE   LNK-SYU-SKJ-FTN(KOH-IDX) =
+                                       LNK-SYU-SKJ-FTN(KOH-IDX) -
+                                       WK-NYUSKJJYOGAK2
+                          ELSE
+                             MOVE   ZERO   TO  
+                                      LNK-SYU-SKJ-FTN(KOH-IDX) 
+                          END-IF
+                       END-IF
+      ****             IF   LNK-SYU-SKJ-FTNKBN(KOH-IDX)  =  "2"
+      ****               IF    LNK-SYU-SKJ-FTN(KOH-IDX)   >
+      ****                                    ZAN-KOHI-T(KOH-IDX)
+      ****                  MOVE   ZAN-KOHI-T(KOH-IDX)   TO
+      ****                              LNK-SYU-SKJ-FTN(KOH-IDX)
+      ****                  MOVE   ZERO      TO  ZAN-KOHI-T(KOH-IDX)
+      ****               ELSE
+      ****                  COMPUTE  ZAN-KOHI-T(KOH-IDX)    =
+      ****                           ZAN-KOHI-T(KOH-IDX)    -
+      ****                           LNK-SYU-SKJ-FTN(KOH-IDX)
+      ****               END-IF
+      ****             END-IF
+                WHEN   "3"
+                       MOVE  WK-SHOKUJI-FTN
+                                      TO   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+           END-EVALUATE
+      *
+      *    ∏¯»Ò√±∞Ã§«∑◊ªª§∑§ø¥µº‘…È√¥∂‚§Ú»Ê≥”
+      *
+           EVALUATE    KOH-IDX
+               WHEN    2
+                   IF  LNK-SYU-KOH-COMPFTN(1) < WK-TOKUSYU-COMPFTN
+                   AND LNK-SYU-KOH1HKNNUM   NOT =  SPACE
+                       MOVE  LNK-SYU-KOH-COMPFTN(1)
+                                            TO  WK-TOKUSYU-COMPFTN
+                   END-IF
+               WHEN    3
+                   IF  LNK-SYU-KOH-COMPFTN(2) < WK-TOKUSYU-COMPFTN
+                       MOVE  LNK-SYU-KOH-COMPFTN(2)
+                                            TO  WK-TOKUSYU-COMPFTN
+                   END-IF
+               WHEN    4
+                   IF  LNK-SYU-KOH-COMPFTN(3) < WK-TOKUSYU-COMPFTN
+                       MOVE  LNK-SYU-KOH-COMPFTN(3)
+                                            TO  WK-TOKUSYU-COMPFTN
+                   END-IF
+           END-EVALUATE
+      *
+      *    ∏¯»Ò√±∞Ã§«∑◊ªª§∑§ø¥µº‘…È√¥∂‚§Ú»Ê≥”
+      *    ° •Ï•ªµ≠∫‹∂‚≥€¬‡»ÚÕ—•®•Í•¢Õ—°À
+      *
+           EVALUATE    KOH-IDX
+               WHEN    2
+                 IF  WK-KOH-COMPFTN(1)  =  ALL"9"
+                   IF  LNK-SYU-KOH-COMPFTN(1) < WK-TOKUSYU-COMPFTN2
+                   AND LNK-SYU-KOH1HKNNUM   NOT =  SPACE
+                       MOVE  LNK-SYU-KOH-COMPFTN(1)
+                                            TO  WK-TOKUSYU-COMPFTN2
+                   END-IF
+                 ELSE
+                   IF  WK-KOH-COMPFTN(1)      < WK-TOKUSYU-COMPFTN2
+                   AND LNK-SYU-KOH1HKNNUM   NOT =  SPACE
+                       MOVE  WK-KOH-COMPFTN(1)
+                                            TO  WK-TOKUSYU-COMPFTN2
+                   END-IF
+                 END-IF
+               WHEN    3
+                 IF  WK-KOH-COMPFTN(2)  =  ALL"9"
+                   IF  LNK-SYU-KOH-COMPFTN(2) < WK-TOKUSYU-COMPFTN2
+                       MOVE  LNK-SYU-KOH-COMPFTN(2)
+                                            TO  WK-TOKUSYU-COMPFTN2
+                   END-IF
+                 ELSE
+                   IF  WK-KOH-COMPFTN(2)      < WK-TOKUSYU-COMPFTN2
+                       MOVE  WK-KOH-COMPFTN(2)
+                                            TO  WK-TOKUSYU-COMPFTN2
+                   END-IF
+                 END-IF
+               WHEN    4
+                 IF  WK-KOH-COMPFTN(3)  =  ALL"9"
+                   IF  LNK-SYU-KOH-COMPFTN(3) < WK-TOKUSYU-COMPFTN2
+                       MOVE  LNK-SYU-KOH-COMPFTN(3)
+                                            TO  WK-TOKUSYU-COMPFTN2
+                   END-IF
+                 ELSE
+                   IF  WK-KOH-COMPFTN(3)      < WK-TOKUSYU-COMPFTN2
+                       MOVE  WK-KOH-COMPFTN(3)
+                                            TO  WK-TOKUSYU-COMPFTN2
+                   END-IF
+                 END-IF
+           END-EVALUATE
+      *
+      *    ∏¯»Ò√±∞Ã§«∑◊ªª§∑§ø¥µº‘…È√¥∂‚§Ú»Ê≥”
+      *    ° ±ﬂ√±∞Ã°À
+      *
+           EVALUATE    KOH-IDX
+               WHEN    2
+                   IF  LNK-SYU-KOH-COMPFTN-ENTANI(1) 
+                                   <     WK-TOKUSYU-ENTANI
+                   AND LNK-SYU-KOH1HKNNUM   NOT =  SPACE
+                       MOVE  LNK-SYU-KOH-COMPFTN-ENTANI(1)
+                                     TO  WK-TOKUSYU-ENTANI
+                   END-IF
+               WHEN    3
+                   IF  LNK-SYU-KOH-COMPFTN-ENTANI(2) 
+                                   <     WK-TOKUSYU-ENTANI
+                       MOVE  LNK-SYU-KOH-COMPFTN-ENTANI(2)
+                                     TO  WK-TOKUSYU-ENTANI
+                   END-IF
+               WHEN    4
+                   IF  LNK-SYU-KOH-COMPFTN-ENTANI(3) 
+                                   <     WK-TOKUSYU-ENTANI
+                       MOVE  LNK-SYU-KOH-COMPFTN-ENTANI(3) 
+                                     TO  WK-TOKUSYU-ENTANI
+                   END-IF
+           END-EVALUATE
+      *
+           .
+      *
+       23077-TOKUSYU-SANTEI2-EXT.
+           EXIT.                                                        
+      *
+      ******************************************************************
       *        ∑ßÀ‹∏©√œ ˝∏¯»Ò° £±°ø£≥°À∑◊ªª
       ******************************************************************
        23081-KUMAMOTO-KOHI-SEC           SECTION.
@@ -9081,6 +9589,47 @@
                        OR ((LNK-SYU-KOH3HKNNUM        = "245") AND
                            (WK-TAIHI-RECEFTNDSPKBN(3) = SPACE))
                        OR ((LNK-SYU-KOH4HKNNUM        = "245") AND
+                           (WK-TAIHI-RECEFTNDSPKBN(4) = SPACE))
+                           COMPUTE  LNK-SYU-SHOKUJI6  =
+                                    LNK-SYU-SHOKUJI6       +    5
+                           COMPUTE  LNK-SYU-SHOKUJI6  =
+                                    LNK-SYU-SHOKUJI6       /   10
+                           COMPUTE  LNK-SYU-SHOKUJI6  =
+                                    LNK-SYU-SHOKUJI6       *   10
+                       END-IF
+                    ELSE
+                       MOVE  WK-TOKUSYU-COMPFTN2  TO   LNK-SYU-SHOKUJI6
+                    END-IF
+      *
+      *****         MOVE     WK-TOKUSYU-ENTANI    TO   LNK-SYU-SHOKUJI7
+                    COMPUTE  LNK-SYU-SHOKUJI7  =
+                                            WK-TOKUSYU-ENTANI  + 0.9
+      *
+           END-IF
+      *
+           IF  (WK-1001-PREFNUM             =  33      )
+           AND (LNK-SYU-SRYYMD(1:6)        >= "200110" )
+           AND ((LNK-SYU-KOH1HKNNUM         = "285"   ) OR
+                (LNK-SYU-KOH2HKNNUM         = "285"   ) OR
+                (LNK-SYU-KOH3HKNNUM         = "285"   ) OR
+                (LNK-SYU-KOH4HKNNUM         = "285"   ))
+      *
+                    COMPUTE  LNK-SYU-SHOKUJI5  =
+                                    WK-TOKUSYU-COMPFTN     +    5
+                    COMPUTE  LNK-SYU-SHOKUJI5  =
+                                    LNK-SYU-SHOKUJI5       /   10
+                    COMPUTE  LNK-SYU-SHOKUJI5  =
+                                    LNK-SYU-SHOKUJI5       *   10
+      *
+                    MOVE  WK-TOKUSYU-COMPFTN   TO   LNK-SYU-SHOKUJI6
+                    IF    WK-TOKUSYU-COMPFTN2  =  9999999
+                       IF ((LNK-SYU-KOH1HKNNUM        = "285") AND
+                           (WK-TAIHI-RECEFTNDSPKBN(1) = SPACE))
+                       OR ((LNK-SYU-KOH2HKNNUM        = "285") AND
+                           (WK-TAIHI-RECEFTNDSPKBN(2) = SPACE))
+                       OR ((LNK-SYU-KOH3HKNNUM        = "285") AND
+                           (WK-TAIHI-RECEFTNDSPKBN(3) = SPACE))
+                       OR ((LNK-SYU-KOH4HKNNUM        = "285") AND
                            (WK-TAIHI-RECEFTNDSPKBN(4) = SPACE))
                            COMPUTE  LNK-SYU-SHOKUJI6  =
                                     LNK-SYU-SHOKUJI6       +    5
