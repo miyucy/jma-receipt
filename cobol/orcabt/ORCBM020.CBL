@@ -31,6 +31,7 @@
       *  01.00.02    MCC-藤原     02/05/22  テスト患者は処理しない     
       *
       *  01.01.01    NACL-藤原    02.09.17  印刷サブの追加
+      *  01.01.02    NACL-藤原    03.07.01  入院・入院外による集計
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -42,7 +43,7 @@
            SELECT  PRT-FILE        ASSIGN  HC01PARA
                                    FILE    STATUS  IS  STS-PARA.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
 
@@ -54,7 +55,7 @@
        FD  PRT-FILE.
            COPY    "HC26.INC".
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -105,8 +106,6 @@
                05  WRK-PARA-SYSYMD PIC X(08).
                05  WRK-PARA-TERMID64
                                    PIC  X(64).
-      *          
-      *****03  WRK-IN              PIC X(01).
       *
            03  WRK-SRYYMWH         PIC X(16).
            03  WRK-SRYYMD          PIC X(08).
@@ -170,9 +169,6 @@
       *
       *    医療機関情報情報
            COPY    "CPSK1001.INC".
-      *
-      *    医療機関情報−所在地、連絡先 
-           COPY    "CPSK1002.INC".
       *
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
@@ -289,6 +285,14 @@
            MOVE    ZERO                    TO  IDX-AREA
                                                FLG-UPD
       *
+      *    入外区分
+           EVALUATE    RECE10-NYUGAIKBN
+               WHEN    1
+                   MOVE    1                   TO  IDX3
+               WHEN    2
+                   MOVE    2                   TO  IDX3
+           END-EVALUATE
+      *
       *    老人保健欄
            IF      RECE10-RJNHKNNUM    NOT =   SPACE
                MOVE    1                   TO  IDX 
@@ -369,6 +373,7 @@
        210-HKN-SYUKEI-SEC          SECTION.
       *
            IF      IDX             =   ZERO
+           OR      IDX3            =   ZERO
                GO  TO  210-HKN-SYUKEI-EXT
            END-IF
       *
@@ -387,22 +392,22 @@
        2101-HKN-SYUKEI-01-SEC      SECTION.
       *    
       *    件数
-           ADD     1                       TO  SUM-KENSU (IDX2 2)
+           ADD     1                   TO  SUM-KENSU (IDX2 IDX3)
            IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
-               ADD     1                   TO  SUM-SHOKUJIKENSU(IDX2 2)
+               ADD     1               TO  SUM-SHOKUJIKENSU(IDX2 IDX3)
            END-IF
       *
       *    診療実日数〜一部負担金 
            ADD     RECE10-TOTALTEN       (IDX1)
-                                         TO  SUM-TOTALTEN      (IDX2 2)
+                                     TO  SUM-TOTALTEN      (IDX2 IDX3)
            ADD     RECE10-YKZFTN         (IDX1)
-                                         TO  SUM-YKZFTN        (IDX2 2)
+                                     TO  SUM-YKZFTN        (IDX2 IDX3)
            ADD     RECE10-FTNMONEY       (IDX1)
-                                         TO  SUM-FTNMONEY      (IDX2 2)
+                                     TO  SUM-FTNMONEY      (IDX2 IDX3)
            ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
-                                         TO  SUM-SHOKUJIRYOYOHI(IDX2 2)
+                                     TO  SUM-SHOKUJIRYOYOHI(IDX2 IDX3)
            ADD     RECE10-SHOKUJIFTN     (IDX1)
-                                         TO  SUM-SHOKUJIFTN    (IDX2 2)
+                                     TO  SUM-SHOKUJIFTN    (IDX2 IDX3)
       *
            MOVE    1               TO  FLG-UPD 
            .
@@ -541,15 +546,17 @@
                    MOVE    SUM-FTNMONEY    (IDX IDY)
                                            TO  WRK-ZZ9
                    MOVE    WRK-ZZ9         TO  HC26-ITBFTN   (IDX IDY)
-                   MOVE    SUM-SHOKUJIKENSU(IDX IDY)
+                   IF      IDY             =   1
+                       MOVE    SUM-SHOKUJIKENSU(IDX IDY)
                                            TO  WRK-Z9
-                   MOVE    WRK-Z9          TO  HC26-SYOKENSU (IDX)
-                   MOVE    SUM-SHOKUJIRYOYOHI(IDX IDY)
+                       MOVE    WRK-Z9      TO  HC26-SYOKENSU (IDX)
+                       MOVE    SUM-SHOKUJIRYOYOHI(IDX IDY)
                                            TO  WRK-ZZ9
-                   MOVE    WRK-ZZ9         TO  HC26-SYOKINGAK(IDX)
-                   MOVE    SUM-SHOKUJIFTN   (IDX IDY)
-                                           TO  WRK-Z9
-                   MOVE    WRK-ZZ9         TO  HC26-SYOFTNGAK(IDX)
+                       MOVE    WRK-ZZ9     TO  HC26-SYOKINGAK(IDX)
+                       MOVE    SUM-SHOKUJIFTN   (IDX IDY)
+                                           TO  WRK-ZZ9
+                       MOVE    WRK-ZZ9     TO  HC26-SYOFTNGAK(IDX)
+                   END-IF
                END-PERFORM    
            END-PERFORM
       *     
