@@ -50,7 +50,7 @@
                05  ORCSCGAIRAI-SYUNOU-AREA.
                    07  ORCSCGAIRAI-SYUNOU-MAX  PIC 9(04).
                    07  ORCSCGAIRAI-SYUNOU-TBL  OCCURS  15.
-                       09  ORCSCGAIRAI-SYUNOU-REC  PIC X(1600).
-      *               ºıø«Õ˙ŒÚ»÷πÊ
+                       09  ORCSCGAIRAI-SYUNOU-REC  PIC X(2000).
+      *                ºıø«Õ˙ŒÚ»÷πÊ
                        09  ORCSCGAIRAI-JYURRK-RENNUM   PIC 9(01).
       *
