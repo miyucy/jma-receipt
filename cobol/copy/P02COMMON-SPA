@@ -52,6 +52,14 @@
       *    入力個所
            03  SPA-MCP-WIDGET             PIC X(64).
       *
+      *    システム管理より
+      *    人名辞書使用チェック
+           03  SPA-NAI-JINMEI-USE         PIC X(01).
+      *    患者登録のカルテ発行
+           03  SPA-NAI-KARUTE-HAKKO       PIC X(01).
+      *    自費保険の補助区分
+           03  SPA-NAI-JIHIHKN-TAX        PIC X(01).
+      *
       *    更新時警告あり
            03  SPA-KEI-FLG                PIC 9(01).
            03  SPA-KEI-ERRCD              PIC X(04).
