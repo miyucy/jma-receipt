@@ -434,10 +434,12 @@
            03  FILLER          PIC X(09)   VALUE   "101120080".
       *    実日数算定
            03  FILLER          PIC X(09)   VALUE   "099409901".
+      *    労災（加算なし）
+           03  FILLER          PIC X(09)   VALUE   "099509901".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   14.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   15.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   14.
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   15.
       *
       *    固定値
        01  CONST-AREA.
