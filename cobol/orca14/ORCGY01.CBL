@@ -2947,14 +2947,44 @@
       *****************************************************************
        4901-TOROKU-CHK-SEC             SECTION.
       *
+      *    診療内容チェック
+           MOVE    ZERO               TO  FLG-HENFLG
+           PERFORM VARYING IDY     FROM   1   BY  1
+                   UNTIL  (IDY     >      SPA-SRYNAIYO-MAX  )  OR
+                          (FLG-HENFLG     =   1  )
+               IF      SPA-GMN-SRYNAIYOCD =   SPA-GMN-SRYNAIYOLST(IDY)
+                                                                  (1:2)
+                   MOVE    1               TO  FLG-HENFLG
+               END-IF
+           END-PERFORM
+           IF      FLG-HENFLG          =   ZERO
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    01                  TO  SPA-GMN-CUR
+           END-IF
+      *   ドクター入力
+           MOVE    ZERO               TO  FLG-HENFLG
+           PERFORM VARYING IDY     FROM   1   BY  1
+                   UNTIL  (IDY     >      SPA-DRCD-MAX  )  OR
+                          (SPA-ERRCD  NOT =   SPACE     )  OR
+                          (FLG-HENFLG     =   1         )
+               IF      SPA-GMN-DRCD       =   SPA-GMN-DRCDLST(IDY)(1:4)
+                   MOVE    1               TO  FLG-HENFLG
+               END-IF
+           END-PERFORM
+           IF     (FLG-HENFLG          =   ZERO ) AND
+                  (SPA-ERRCD           =   SPACE)
+               MOVE    "0002"              TO  SPA-ERRCD
+               MOVE    02                  TO  SPA-GMN-CUR
+           END-IF
       *    入力チェック処理
-           MOVE    2                   TO  FLG-TOUROKU
-           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    2                   TO  FLG-TOUROKU
+               PERFORM 410-INPUT-CHK-SEC
+           END-IF
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4901-TOROKU-CHK-EXT
            END-IF
       *
-           MOVE    SPACE               TO  SPA-ERRCD
            IF     (SPA-GMN-PTNUM       =   SPACE  )  AND
                   (SPA-GMN-YYKNAME     =   SPACE  )
                MOVE    "0013"              TO  SPA-ERRCD
@@ -2972,7 +3002,6 @@
                   (SPA-NAI-YYKYMD      <   SPA-SYSYMD)
                MOVE    "K001"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-Y01-KEIKOKU
-               GO      TO      4901-TOROKU-CHK-EXT
            END-IF
           .
        4901-TOROKU-CHK-EXT.
