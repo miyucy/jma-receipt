@@ -35,7 +35,8 @@
       *  01.00.03    NACL-門脇    03/02/12  医療機関名の長さ変更のため
       *                                     帳票ＩＤ変更
       *  01.00.04    NACL-門脇    03.03.03  剤番号桁修正対応
-      *  01.00.03    NACL-藤原    03.03.05  レセプトコメントＤＢに入外区分を追加
+      *  01.00.05    NACL-藤原    03.03.05  レセプトコメントＤＢに入外区分を追加
+      *  01.00.06    NACL-藤原    03/04/17  出力件数をジョブ管理ＤＢへ更新
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1836,7 +1837,6 @@
            DISPLAY "*** ORCR0481 IN   "  CNT-RECE41
            DISPLAY "*** ORCR0481 OUT  "  CNT-OUT
            DISPLAY "*** ORCR0481 END ***"
-      ***     ACCEPT  WRK-IN
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -1844,6 +1844,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    CNT-OUT         TO  JOB-UPDCNT
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC

@@ -39,6 +39,7 @@
       *                                     のを止める
       *  01.00.09    NACL-藤原    03/04/09  続紙区分（入院）の追加
       *  01.00.10    NACL-藤原    03/04/15  診療区分の表示の修正
+      *  01.00.11    NACL-藤原    03/04/17  出力件数をジョブ管理ＤＢへ更新
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4422,7 +4423,6 @@
                                              =   SPACE
                    MOVE    RECE62-NYUTOKRYO  (IDY)
                                          TO  RECE10-KHNTEN (IDX)
-               END-IF
                MOVE    RECE62-NYUTOKNISSU(IDY)
                                          TO  RECE10-KAISU  (IDX)
                PERFORM   VARYING   IDY1  FROM    1   BY  1
@@ -4588,15 +4588,14 @@
            CLOSE                       RECE68-FILE
            CLOSE                       RECE69-FILE 
       *
-           IF      CNT-OUT            =   ZERO 
-               MOVE    "対象データがありませんでした" TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
+      *****IF      CNT-OUT            =   ZERO 
+      *****    MOVE    "対象データがありませんでした" TO  WRK-RECEERR
+      *****    PERFORM 500-ERR-HENSYU-SEC
+      *****END-IF
            DISPLAY "*** ORCR0710 IN  RECE62 ="  CNT-RECE62
            DISPLAY "*** ORCR0103 IN  RECE62X="  CNT-RECE62X
            DISPLAY "*** ORCR0710 OUT  "  CNT-OUT
            DISPLAY "*** ORCR0710 END ***"
-      ***     ACCEPT  WRK-IN
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -4604,6 +4603,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    CNT-OUT         TO  JOB-UPDCNT
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC

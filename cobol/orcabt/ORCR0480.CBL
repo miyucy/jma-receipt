@@ -38,6 +38,7 @@
       *                                     帳票ＩＤ変更
       *  01.00.05    NACL-門脇    03.03.03  剤番号桁修正対応
       *  01.00.06    NACL-藤原    03.03.05  レセプトコメントＤＢに入外区分を追加
+      *  01.00.07    NACL-藤原    03/04/17  出力件数をジョブ管理ＤＢへ更新
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1857,6 +1858,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    CNT-OUT         TO  JOB-UPDCNT
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
