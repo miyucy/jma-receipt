@@ -147,6 +147,8 @@
       *                                     警告を表示
       *                                     まとめ入力時の番号の整数以外
       *                                     のチェックを追加
+      *  01.08.14    NACL-藤原    04/10/20  自院コード入力時の廃止年月日
+      *                                     の警告を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3768,7 +3770,14 @@
                            END-IF
                            MOVE    21                  TO  IDX3
                        END-IF    
-                   END-PERFORM        
+                   END-PERFORM
+                   IF      SPA-NAI-C02-HAISIYMD (IDZ)  NOT =   ZERO
+                       MOVE    SPA-NAI-C02-HAISIYMD (IDZ)
+                                               TO  WRK-SYMD
+                       PERFORM 5002-HIZUKE-HEN-SEC
+                       MOVE    LNK-DAY2-EDTYMD3
+                                               TO  WRK-HAISIYMDH
+                   END-IF
                  END-IF                      
                END-IF
            END-EVALUATE    
