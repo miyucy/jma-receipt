@@ -2508,12 +2508,8 @@
       *   入力病名コード数カウント
            PERFORM 410111-BYOMEICDSU-HENSYU-SEC
       *
-      *    編集病名のときは病名へ遷移以外は病名コードへ
-      *****IF      SPA-NAI-C02-BYOMEIHENFLG  =   "1" 
-               MOVE    8                   TO  SPA-GMN-C02-CUR
-      *****ELSE    
-      *****    MOVE    2                   TO  SPA-GMN-C02-CUR 
-      *****END-IF    
+      *    開始日へ遷移
+           MOVE    9                   TO  SPA-GMN-C02-CUR
       *
            .
        4101111-BYOMEI-SELECT-HENSYU-EXT.
@@ -3432,7 +3428,7 @@
            MOVE    SPACE                   TO  WRK-RECECD-TBL
       * 
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       6
+                   UNTIL   IDX >       21
       *
                IF      SPA-NAI-C02-BYOMEITOP(IDX)    =   "1"
       *            接頭語のみのとき     
@@ -3440,7 +3436,7 @@
                            WRK-RECECD (2)        =   SPACE   AND
                            WRK-RECECD (3)        =   SPACE 
                        MOVE    "0006"        TO  SPA-ERRCD
-                       MOVE    6             TO  IDX
+                       MOVE    21             TO  IDX
                    ELSE
                      MOVE    SPACE               TO  WRK-RECECD-TBL
                    END-IF
@@ -3457,21 +3453,21 @@
                                IF    ( WRK-RECECD (2)    NOT =   SPACE )
                                OR    ( WRK-RECECD (3)    NOT =   SPACE )
                                    MOVE    "0006"    TO  SPA-ERRCD
-                                   MOVE    6         TO  IDX
+                                   MOVE    21         TO  IDX
                                ELSE
                                    MOVE    "1"       TO  WRK-RECECD (1)
                                END-IF            
                            WHEN    "ZZZ"       ALSO    "8"  
                                IF      WRK-RECECD (2)    =   SPACE 
                                    MOVE    "0006"    TO  SPA-ERRCD
-                                   MOVE    6         TO  IDX
+                                   MOVE    21         TO  IDX
                                ELSE
                                    MOVE    "1"       TO  WRK-RECECD (3)
                                END-IF
                            WHEN    OTHER                 
                                IF      WRK-RECECD (3)    NOT =   SPACE 
                                    MOVE    "0006"    TO  SPA-ERRCD
-                                   MOVE    6         TO  IDX
+                                   MOVE    21         TO  IDX
                                ELSE
                                    MOVE    "1"       TO  WRK-RECECD (2)
                                END-IF    
@@ -3496,21 +3492,21 @@
                                IF    ( WRK-RECECD (2)    NOT =   SPACE )
                                OR    ( WRK-RECECD (3)    NOT =   SPACE )
                                    MOVE    "0006"    TO  SPA-ERRCD
-                                   MOVE    6         TO  IDX
+                                   MOVE    21         TO  IDX
                                ELSE
                                    MOVE    "1"       TO  WRK-RECECD (1)
                                END-IF            
                            WHEN    "8"  
                                IF      WRK-RECECD (2)    =   SPACE 
                                    MOVE    "0006"    TO  SPA-ERRCD
-                                   MOVE    6         TO  IDX
+                                   MOVE    21         TO  IDX
                                ELSE
                                    MOVE    "1"       TO  WRK-RECECD (3)
                                END-IF
                            WHEN    ZERO
                                IF      WRK-RECECD (3)    NOT =   SPACE 
                                    MOVE    "0006"    TO  SPA-ERRCD
-                                   MOVE    6         TO  IDX
+                                   MOVE    21         TO  IDX
                                ELSE
                                    MOVE    "1"       TO  WRK-RECECD (2)
                                END-IF    
@@ -3529,7 +3525,7 @@
            MOVE    SPA-NAI-C02-BYOMEI(1)
                                        TO  WRK-BYOMEI
            PERFORM VARYING IDX FROM    2   BY  1
-                   UNTIL   IDX  >      6  
+                   UNTIL   IDX  >      21  
                IF      SPA-NAI-C02-BYOMEITOP   (IDX)   =   "1"   
                AND     WRK-BYOMEI                  NOT =   SPACE
                    INITIALIZE                      ORCSKANACHKAREA
