@@ -4373,6 +4373,7 @@
                   (SPA-K081GMN-SYOHOU  =   "1"    )
                INITIALIZE              ORCHC501AREA
                MOVE    SPA-PTNUM           TO  ORCHC501-PTNUM
+               MOVE    SPA-SRYYMD          TO  ORCHC501-SRYYMD
                MOVE    SPA-SYSYMD          TO  ORCHC501-SYSYMD
                MOVE    SPA-SRYKA           TO  ORCHC501-SRYKA
                MOVE    SPA-HKNCOMBINUM     TO  ORCHC501-HKNCOMBI
@@ -4396,6 +4397,7 @@
                   (SPA-K081GMN-CHUSYA  =   "1"    )
                INITIALIZE                  ORCHC502AREA
                MOVE    SPA-PTNUM           TO  ORCHC502-PTNUM
+               MOVE    SPA-SRYYMD          TO  ORCHC502-SRYYMD
                MOVE    SPA-SYSYMD          TO  ORCHC502-SYSYMD
                MOVE    SPA-SRYKA           TO  ORCHC502-SRYKA
                MOVE    SPA-HKNCOMBINUM     TO  ORCHC502-HKNCOMBI
@@ -4419,6 +4421,7 @@
                   (SPA-K081GMN-SIJISEN =   "1"    )
                INITIALIZE              ORCHC503AREA
                MOVE    SPA-PTNUM           TO  ORCHC503-PTNUM
+               MOVE    SPA-SRYYMD          TO  ORCHC503-SRYYMD
                MOVE    SPA-SYSYMD          TO  ORCHC503-SYSYMD
                MOVE    SPA-SRYKA           TO  ORCHC503-SRYKA
                MOVE    SPA-HKNCOMBINUM     TO  ORCHC503-HKNCOMBI

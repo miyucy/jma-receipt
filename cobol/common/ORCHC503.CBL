@@ -451,8 +451,8 @@
            MOVE    SPACE               TO  SYS-5007-REC
            INITIALIZE                      SYS-5007-REC
            MOVE    "5007"              TO  SYS-5007-KANRICD
-           MOVE    ORCHC503-SYSYMD     TO  SYS-5007-STYUKYMD
-           MOVE    ORCHC503-SYSYMD     TO  SYS-5007-EDYUKYMD
+           MOVE    ORCHC503-SRYYMD     TO  SYS-5007-STYUKYMD
+           MOVE    ORCHC503-SRYYMD     TO  SYS-5007-EDYUKYMD
       *
            MOVE    SYS-5007-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY2
@@ -652,7 +652,7 @@
                PERFORM 220-NAIYOU-HENSYU-SEC
            END-IF
       *    帳票印刷
-           MOVE    ORCHC503-SYSYMD     TO  WRK-SRYYMD
+           MOVE    ORCHC503-SRYYMD     TO  WRK-SRYYMD
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL       IDX2    >   31
                IF      WRK-PAGE-MAX (IDX2) >   ZERO
@@ -670,7 +670,7 @@
        220-NAIYOU-HENSYU-SEC                   SECTION.
       *
       *    最初の日で点数マスタを検索する
-           MOVE    ORCHC503-SYSYMD     TO  WRK-SRYYMD
+           MOVE    ORCHC503-SRYYMD     TO  WRK-SRYYMD
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL       IDX2    >   31
                IF      LNK-ORDERPRT-DAY (1 IDX2)  >   ZERO
@@ -1166,8 +1166,8 @@
                MOVE    "%"             TO  SYS-KBNCD(IDXS:1)
            END-IF
       *
-           MOVE    ORCHC503-SYSYMD     TO  SYS-STYUKYMD
-           MOVE    ORCHC503-SYSYMD     TO  SYS-EDYUKYMD
+           MOVE    ORCHC503-SRYYMD     TO  SYS-STYUKYMD
+           MOVE    ORCHC503-SRYYMD     TO  SYS-EDYUKYMD
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY

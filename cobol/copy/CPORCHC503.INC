@@ -35,6 +35,8 @@
                05  ORCHC503-SRYKA         PIC  X(02).
       *  保険組合せ
                05  ORCHC503-HKNCOMBI      PIC  X(04).
+      *  診療日付
+               05  ORCHC503-SRYYMD        PIC  X(08).
       *  システム日付
                05  ORCHC503-SYSYMD        PIC  X(08).
       *  発行日

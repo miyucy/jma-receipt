@@ -1083,6 +1083,7 @@
            INITIALIZE              ORCHC501AREA
            MOVE    1                   TO  ORCHC501-SYORIKBN
            MOVE    SPA-PTNUM           TO  ORCHC501-PTNUM
+           MOVE    SPA-SRYYMD          TO  ORCHC501-SRYYMD
            MOVE    SPA-SYSYMD          TO  ORCHC501-SYSYMD
            MOVE    SPA-SRYKA           TO  ORCHC501-SRYKA
            IF      SPA-K081GMN-DRCD    NOT =   SPACE
@@ -1109,6 +1110,7 @@
            INITIALIZE              ORCHC502AREA
            MOVE    1                   TO  ORCHC502-SYORIKBN
            MOVE    SPA-PTNUM           TO  ORCHC502-PTNUM
+           MOVE    SPA-SRYYMD          TO  ORCHC502-SRYYMD
            MOVE    SPA-SYSYMD          TO  ORCHC502-SYSYMD
            MOVE    SPA-SRYKA           TO  ORCHC502-SRYKA
            IF      SPA-K081GMN-DRCD    NOT =   SPACE
@@ -1135,6 +1137,7 @@
            INITIALIZE              ORCHC503AREA
            MOVE    1                   TO  ORCHC503-SYORIKBN
            MOVE    SPA-PTNUM           TO  ORCHC503-PTNUM
+           MOVE    SPA-SRYYMD          TO  ORCHC503-SRYYMD
            MOVE    SPA-SYSYMD          TO  ORCHC503-SYSYMD
            MOVE    SPA-SRYKA           TO  ORCHC503-SRYKA
            IF      SPA-K081GMN-DRCD    NOT =   SPACE

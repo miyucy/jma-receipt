@@ -56,6 +56,8 @@
            03  ORDERPRT-SRYKBN            PIC X(02).
       *  ø«Œ≈ºÔ Ã
            03  ORDERPRT-SRYSYUKBN         PIC X(03).
+      *  ø«Œ≈∆¸…’
+           03  ORDERPRT-SRYYMD            PIC X(08).
       *  ≤ÛøÙ
            03  ORDERPRT-DAY-G.
                05  ORDERPRT-DAY           PIC 9(03)

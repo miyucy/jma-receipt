@@ -14,6 +14,7 @@ tbl_orderprt {
 	DRCD    			char(5);
 	SRYKBN    			char(2);
 	SRYSYUKBN    			char(3);
+	SRYYMD 				char(8);
 	DAY1     			number(3,0);
 	DAY2     			number(3,0);
 	DAY3     			number(3,0);

@@ -652,6 +652,7 @@
                                        TO  ORDERPRT-SRYKBN
            MOVE    LNK-WKSRY-SRYSYUKBN(IDX)
                                        TO  ORDERPRT-SRYSYUKBN
+           MOVE    SPA-SRYYMD          TO  ORDERPRT-SRYYMD
            IF      WRK-RENNUM          =   1
       *        ²ó¿ô
                MOVE    TBL-ORDER-DAY-G     TO  ORDERPRT-DAY-G
