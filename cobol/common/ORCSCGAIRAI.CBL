@@ -3220,6 +3220,8 @@
                                        TO  SYUTTL-SKYMONEY-TAX-SAI
       *ÀÁµá¶â³Û
            MOVE    SYU-SKYMONEY        TO  SYUTTL-SKYMONEY
+           COMPUTE SYUTTL-SKYMONEY     =   SYUTTL-SKYMONEY
+                                       +   SYUTTL-CHOSEI
            MOVE    SYU-NYUKIN-TOTAL    TO  SYUTTL-NYUKIN-TOTAL
            MOVE    SYU-NYUKIN-KAISU    TO  SYUTTL-NYUKIN-KAISU
       *Ì¤¼ýÍýÍ³

@@ -1044,8 +1044,10 @@
                END-IF
       *
                MOVE    SYU-DENPNUM         TO  WRK-DENPNUM
-               MOVE    SYU-SKYMONEY        TO  WRK-SKYMONEY
-               MOVE    SYU-NYUKIN-TOTAL    TO  WRK-NYUKIN
+               MOVE    ORCHC03SUB-SKYMONEY (IDX-SYU)
+                                           TO  WRK-SKYMONEY
+               MOVE    ORCHC03SUB-NYUKIN-TOTAL(IDX-SYU)
+                                           TO  WRK-NYUKIN
       *
       *        Ä¢É¼°õºþ³«»Ï½èÍý
                PERFORM 400-SYOKI-PRINT-SEC

@@ -126,6 +126,7 @@
            03  WRK-MISYUMONEY      PIC S9(11).
            03  WRK-MISYU           PIC S9(11).
            03  WRK-GOKTEN          PIC S9(11).
+           03  WRK-SKYMONEY-TAX-SAI    PIC S9(11).
       *
            03  WRK-DENPNUM             PIC 9(07).
            03  WRK-SRYKA               PIC X(02).
@@ -416,6 +417,7 @@
            MOVE    ORCHC03-DENPNUM     TO  WRK-DENPNUM
            MOVE    ORCHC03-SEIKYU      TO  WRK-SKYMONEY
            MOVE    ORCHC03-NYUKIN      TO  WRK-NYUKIN
+           MOVE    ORCHC03-SEIKYU-TAX-SAI  TO  WRK-SKYMONEY-TAX-SAI
       *
       *    Ä¢É¼°õºþ³«»Ï½èÍý
            PERFORM 400-SYOKI-PRINT-SEC
@@ -466,7 +468,6 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
-      *
       *
       *    °åÎÅµ¡´Ø¾ðÊó¡Ý½êºßÃÏ¡¢Ï¢ÍíÀè
            MOVE    SPACE               TO  SYS-1002-REC
@@ -969,6 +970,11 @@
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-KONSEIKYU
       *
+      *    º£²óÀÁµá³Û¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+           MOVE    WRK-SKYMONEY-TAX-SAI    TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-SEIKYUZEI
+      *
       *    º£²óÆþ¶â³Û
            MOVE    WRK-NYUKIN          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
@@ -1032,8 +1038,12 @@
                END-IF
       *
                MOVE    SYU-DENPNUM         TO  WRK-DENPNUM
-               MOVE    SYU-SKYMONEY        TO  WRK-SKYMONEY
-               MOVE    SYU-NYUKIN-TOTAL    TO  WRK-NYUKIN
+               MOVE    ORCHC03SUB-SKYMONEY (IDX-SYU)
+                                           TO  WRK-SKYMONEY
+               MOVE    ORCHC03SUB-NYUKIN-TOTAL (IDX-SYU)
+                                           TO  WRK-NYUKIN
+               MOVE    ORCHC03SUB-SKYMONEY-TAX-SAI (IDX-SYU)
+                                           TO  WRK-SKYMONEY-TAX-SAI
       *
       *        Ä¢É¼°õºþ³«»Ï½èÍý
                PERFORM 400-SYOKI-PRINT-SEC

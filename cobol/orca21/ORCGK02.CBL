@@ -5153,13 +5153,6 @@
                MOVE    1               TO  SPA-GMN-CUR
                GO      TO      41012-HKNCOMBI-SYORI-EXT
            END-IF
-      *!
-           IF      SPA-NAI-CUR-2   NOT =   ZERO
-               MOVE    K02-HKNCOMBI(1:4)   TO  WRK-HKNCOMBI
-               PERFORM 410129-INS-HKNCOMBI-SEC
-               GO      TO      41012-HKNCOMBI-SYORI-EXT
-           END-IF
-      *!
       *
            IF      SPA-SYORIFLG        =   1
       *        訂正で、継続確定の時、変更不可
@@ -5377,55 +5370,6 @@
            .
        4101213-RRKHKNCHK-EXT.
            EXIT.
-      *!
-      *****************************************************************
-      *    保険組合せ行を最終行へ編集処理
-      *****************************************************************
-       410129-INS-HKNCOMBI-SEC         SECTION.
-      *
-           IF     (SPA-CONTKBN         =   SPACE )  AND
-                  (SPA-FUKU-SYORI      =   SPACE )
-               CONTINUE
-           ELSE
-               MOVE    "1057"          TO  SPA-ERRCD
-               GO      TO     410129-INS-HKNCOMBI-EXT
-           END-IF
-      *
-           MOVE    ZERO                TO  FLG-CHK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-HKN-MAX )  OR
-                              (FLG-CHK     =    1   ) 
-               IF      WRK-HKNCOMBI        =   SPA-GMN-THKNCOMBINUM
-                                                             (IDX)
-                   MOVE    IDX                 TO  IDY
-                   MOVE    1                   TO  FLG-CHK
-               END-IF
-           END-PERFORM
-      *
-           IF       FLG-CHK            =   ZERO
-               MOVE    "1051"          TO  SPA-ERRCD
-               GO      TO     410129-INS-HKNCOMBI-EXT
-           END-IF
-      *
-           IF      SPA-GMN-MAX         >=  199
-               MOVE    "7001"          TO  SPA-ERRCD
-               GO      TO     410129-INS-HKNCOMBI-EXT
-           END-IF
-           MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
-           ADD     1                   TO  SPA-GMN-IDX
-           MOVE    "#"                 TO  LNK-SC97-INPUTCD
-           MOVE    WRK-HKNCOMBI        TO  LNK-SC97-INPUTCD(2:4)
-           MOVE    LNK-SC97-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
-           MOVE    SPACE               TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
-           PERFORM 410113-GMN-HKNCOMBI-SEC
-      *
-           MOVE    ZERO                TO  SPA-NAI-CUR-2
-           MOVE    ZERO                TO  SPA-NAI-B06SFLG
-           MOVE    01                  TO  SPA-GMN-CUR
-      *
-           .
-       410129-INS-HKNCOMBI-EXT.
-           EXIT.
       *****************************************************************
       *    診察料再編集処理
       *****************************************************************
@@ -5545,13 +5489,6 @@
                MOVE    1               TO  SPA-GMN-CUR
                GO      TO      41013-SRYKAI-SYORI-EXT
            END-IF
-      *!
-           IF      SPA-NAI-CUR-2   NOT =   ZERO
-               MOVE    K02-SRYKA(1:2)      TO  WRK-SRYKA
-               PERFORM 410139-INS-SRYKA-SEC
-               GO      TO      41013-SRYKAI-SYORI-EXT
-           END-IF
-      *!
       *    訂正の時、エラー
            IF      SPA-SYORIFLG        =   1
       *********MOVE    "1008"              TO  SPA-ERRCD
@@ -5747,39 +5684,6 @@
            .
        41013-SRYKA-CHANGE-EXT.
            EXIT.
-      *!
-      *****************************************************************
-      *    診療科複数編集処理
-      *****************************************************************
-       410139-INS-SRYKA-SEC               SECTION.
-      *
-           IF     (SPA-CONTKBN         =   SPACE )  AND
-                  (SPA-FUKU-SYORI      =   SPACE )
-               CONTINUE
-           ELSE
-               MOVE    "1057"          TO  SPA-ERRCD
-               GO      TO     410139-INS-SRYKA-EXT
-           END-IF
-      *
-           IF      SPA-GMN-MAX         >=  199
-               MOVE    "7001"          TO  SPA-ERRCD
-               GO      TO     410139-INS-SRYKA-EXT
-           END-IF
-           MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
-           ADD     1                   TO  SPA-GMN-IDX
-           MOVE    "$"                 TO  LNK-SC97-INPUTCD
-           MOVE    WRK-SRYKA           TO  LNK-SC97-INPUTCD(2:2)
-           MOVE    LNK-SC97-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
-           MOVE    SPACE               TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
-           PERFORM 410114-GMN-SRYKA-SEC
-      *
-           MOVE    ZERO                TO  SPA-NAI-CUR-2
-           MOVE    ZERO                TO  SPA-NAI-B06SFLG
-           MOVE    01                  TO  SPA-GMN-CUR
-           .
-       410139-INS-SRYKA-EXT.
-           EXIT.
-      *!
       *****************************************************************
       *    診療行為検索処理
       *****************************************************************
@@ -6453,6 +6357,12 @@
       *****************************************************************
        4101131-K97-SYORI-SEC       SECTION.
       *
+      *TEST
+           DISPLAY "K02 K97 SPA-GMN-IDX:" SPA-GMN-IDX
+           IF      SPA-GMN-IDX         >=  200
+               MOVE    ZERO            TO  SPA-GMN-IDX
+           END-IF
+      *TEST
            INITIALIZE                  SPA-K97-AREA
            IF     (SPA-GMN-IDX         >   ZERO  )  AND
                   (SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)   =   "$")

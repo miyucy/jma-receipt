@@ -65,6 +65,11 @@
            03  WRK-HKNCOMBI        PIC X(04).
            03  WRK-SRYKA           PIC X(02).
            03  WRK-GRP-DENPNUM     PIC 9(07).
+      *    請求額等
+           03  WRK-SKYMONE-AREA.
+               05  WRK-SKYMONEY           PIC S9(07).
+               05  WRK-SKYMONEY-TAX       PIC S9(07).
+               05  WRK-NYUKIN-TOTAL       PIC S9(07).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -94,6 +99,12 @@
                                           OCCURS  10.
                05  TBL-DOUJI-HKNCOMBI     PIC  X(04)
                                           OCCURS  10.
+      *    請求額等
+       01  TBL-SEIKYU-AREA.
+           03  TBL-SEIKYU-TBL       OCCURS   15.
+               05  TBL-SKYMONEY           PIC S9(07).
+               05  TBL-SKYMONEY-TAX       PIC S9(07).
+               05  TBL-NYUKIN-TOTAL       PIC S9(07).
       *
       *    保存用収納ワーク２
        01  LNK-SYUNOU-AREA.
@@ -109,6 +120,12 @@
                05  LNK-DOUJI-HKNCOMBI-G.
                    07  LNK-DOUJI-HKNCOMBI     PIC  X(04)
                                           OCCURS  10.
+      *    請求額等
+       01  LNK-SEIKYU-AREA.
+           03  LNK-SEIKYU-TBL       OCCURS   15.
+               05  LNK-SKYMONEY           PIC S9(07).
+               05  LNK-SKYMONEY-TAX       PIC S9(07).
+               05  LNK-NYUKIN-TOTAL       PIC S9(07).
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -149,6 +166,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  LNK-SYUNOU-AREA
            INITIALIZE                  LNK-DOUJI-AREA
+           INITIALIZE                  LNK-SEIKYU-AREA
            INITIALIZE                  ORCHC03SUBAREA
       *
            PERFORM 100-SYUNOU-KEN-SEC
@@ -212,6 +230,12 @@
       *
            ADD     1               TO  IDX-SYU
            MOVE    SYUNOU-REC      TO  ORCHC03SUB-SYUNOU-REC(IDX-SYU)
+           MOVE    WRK-SKYMONEY    TO  ORCHC03SUB-SKYMONEY  (IDX-SYU)
+           MOVE    WRK-SKYMONEY-TAX
+                                   TO  ORCHC03SUB-SKYMONEY-TAX-SAI
+                                                            (IDX-SYU)
+           MOVE    WRK-NYUKIN-TOTAL
+                                   TO  ORCHC03SUB-NYUKIN-TOTAL(IDX-SYU)
            MOVE    IDX-SYU         TO  ORCHC03SUB-MAX
            .
        200-ONLY-SYUNOU-HEN-EXT.
@@ -222,22 +246,25 @@
       *****************************************************************
        2001-TEISEI-SYORI-SEC             SECTION.
       *
+           MOVE    SYU-SKYMONEY            TO  WRK-SKYMONEY
+           MOVE    SYU-SKYMONEY-TAX-SAI    TO  WRK-SKYMONEY-TAX
+           MOVE    SYU-NYUKIN-TOTAL        TO  WRK-NYUKIN-TOTAL
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY     >   15  )   OR
                               (ORCHC03-OLD-DENPNUM(IDY)    =   ZERO)
                IF     (ORCHC03-OLD-DENPNUM(IDY)    =   SYU-DENPNUM)
                   AND (SYU-SRYKA               NOT =   ZERO  )
       *            訂正時の請求額差額
-                   COMPUTE SYU-SKYMONEY    =   SYU-SKYMONEY
+                   COMPUTE WRK-SKYMONEY    =   WRK-SKYMONEY
                                            -   ORCHC03-OLD-SKYMONEY
                                                              (IDY)
-                   COMPUTE SYU-SKYMONEY-TAX-SAI
-                                           =   SYU-SKYMONEY-TAX-SAI
+                   COMPUTE WRK-SKYMONEY-TAX
+                                           =   WRK-SKYMONEY-TAX
                                            -   ORCHC03-OLD-SKYMONEY-SAI
                                                              (IDY)
-      *             今回入金額
+      *            今回入金額
                    MOVE    ORCHC03-OLD-NYUKIN-TOTAL (IDY)
-                                           TO  SYU-NYUKIN-TOTAL
+                                           TO  WRK-NYUKIN-TOTAL
                    MOVE    15              TO  IDY
                END-IF
            END-PERFORM
@@ -281,6 +308,11 @@
       *        収納編集
                ADD     1                   TO  IDX-TBL
                MOVE    SYUNOU-REC          TO  TBL-SYUNOU-REC(IDX-TBL)
+               MOVE    WRK-SKYMONEY        TO  TBL-SKYMONEY  (IDX-TBL)
+               MOVE    WRK-SKYMONEY-TAX
+                                           TO  TBL-SKYMONEY-TAX
+                                                            (IDX-TBL)
+               MOVE    WRK-NYUKIN-TOTAL    TO  TBL-NYUKIN-TOTAL(IDX-TBL)
       *
                MOVE    "SYUNOU-KEY27"      TO  ORC-DBPATH
                PERFORM 980-SYUNOU-READ-SEC
@@ -319,10 +351,18 @@
            MOVE    ZERO                TO  IDX-SYU
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   IDX-TBL
-              ADD     1                    TO  IDX-SYU
-              MOVE    TBL-SYUNOU-REC(IDX)  TO  ORCHC03SUB-SYUNOU-REC
+               ADD     1                   TO  IDX-SYU
+               MOVE    TBL-SYUNOU-REC(IDX) TO  ORCHC03SUB-SYUNOU-REC
                                                            (IDX-SYU)
-              MOVE    IDX-SYU              TO  ORCHC03SUB-MAX
+               MOVE    TBL-SKYMONEY (IDX)  TO  ORCHC03SUB-SKYMONEY
+                                                           (IDX-SYU)
+               MOVE    TBL-SKYMONEY-TAX (IDX)
+                                       TO  ORCHC03SUB-SKYMONEY-TAX-SAI
+                                                           (IDX-SYU)
+               MOVE    TBL-NYUKIN-TOTAL (IDX)
+                                           TO  ORCHC03SUB-NYUKIN-TOTAL
+                                                           (IDX-SYU)
+               MOVE    IDX-SYU             TO  ORCHC03SUB-MAX
            END-PERFORM
            .
        3001-SYORI-01-EXT.
@@ -336,10 +376,14 @@
            MOVE    ZERO                TO  IDX-SYU
            INITIALIZE                  LNK-SYUNOU-AREA
            INITIALIZE                  LNK-DOUJI-AREA
+           INITIALIZE                  LNK-SEIKYU-AREA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   IDX-TBL
                MOVE    TBL-SYUNOU-REC (IDX)    TO  WRK-SYUNOU-REC
+               MOVE    TBL-SKYMONEY   (IDX)    TO  WRK-SKYMONEY
+               MOVE    TBL-SKYMONEY-TAX (IDX)  TO  WRK-SKYMONEY-TAX
+               MOVE    TBL-NYUKIN-TOTAL (IDX)  TO  WRK-NYUKIN-TOTAL
                MOVE    ZERO                TO  FLG-OK
                PERFORM VARYING  IDX-SYU    FROM    1   BY  1
                        UNTIL   (IDX-SYU    >   15  )  OR
@@ -348,6 +392,15 @@
                        IF      WRK-SYU-FUKU-DENPNUM    =   ZERO
                            MOVE    TBL-SYUNOU-REC(IDX)
                                                    TO  LNK-SYUNOU-REC
+                                                       (IDX-SYU)
+                           MOVE    TBL-SKYMONEY   (IDX)
+                                                   TO  LNK-SKYMONEY
+                                                       (IDX-SYU)
+                           MOVE    TBL-SKYMONEY-TAX(IDX)
+                                                   TO  LNK-SKYMONEY-TAX
+                                                       (IDX-SYU)
+                           MOVE    TBL-NYUKIN-TOTAL   (IDX)
+                                                   TO  LNK-NYUKIN-TOTAL
                                                        (IDX-SYU)
                        ELSE
                            PERFORM 30022-SYUTOTAL-CHK-SEC
@@ -389,6 +442,14 @@
                    ADD     1                   TO  IDX-SYU
                    MOVE    LNK-SYUNOU-REC(IDX) TO  ORCHC03SUB-SYUNOU-REC
                                                            (IDX-SYU)
+                   MOVE    LNK-SKYMONEY  (IDX) TO  ORCHC03SUB-SKYMONEY
+                                                           (IDX-SYU)
+                   MOVE    LNK-SKYMONEY-TAX  (IDX)
+                                       TO  ORCHC03SUB-SKYMONEY-TAX-SAI
+                                                           (IDX-SYU)
+                   MOVE    LNK-NYUKIN-TOTAL  (IDX)
+                                       TO  ORCHC03SUB-NYUKIN-TOTAL
+                                                           (IDX-SYU)
                    MOVE    LNK-DOUJI-SRYKA-G(IDX)
                                        TO  ORCHC03SUB-DOUJI-SRYKA-G
                                                            (IDX-SYU)
@@ -396,15 +457,6 @@
                                        TO  ORCHC03SUB-DOUJI-HKNCOMBI-G
                                                            (IDX-SYU)
                    MOVE    IDX-SYU             TO  ORCHC03SUB-MAX
-      *TEST
-                DISPLAY "H03SUB IDX-SYU:" IDX-SYU
-                     ",SRYKA:" LNK-SYU-SRYKA(IDX)
-                     ",HKNCOMBI:" LNK-SYU-HKNCOMBINUM(IDX)
-                DISPLAY "H03SUB DOUJI-SRYKA:" ORCHC03SUB-DOUJI-SRYKA-G
-                                                           (IDX-SYU)
-                     ",DOUJIHKNCOMBI:" ORCHC03SUB-DOUJI-HKNCOMBI-G
-                                                           (IDX-SYU)
-      *TEST
                END-IF
            END-PERFORM
       *
@@ -508,27 +560,33 @@
                                                        (IDX-SYU IDH2)
            END-PERFORM
       *    訂正時の請求額差額
+           MOVE    SYUTTL-SKYMONEY         TO  WRK-SKYMONEY
+           MOVE    SYUTTL-SKYMONEY-TAX-SAI TO  WRK-SKYMONEY-TAX
+           MOVE    SYUTTL-NYUKIN-TOTAL     TO  WRK-NYUKIN-TOTAL
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY     >   15  )   OR
                               (ORCHC03-OLD-DENPNUM(IDY)    =   ZERO)
                IF     (ORCHC03-OLD-SRYKA (IDY)     =   SYU-SRYKA  )
                  AND  (ORCHC03-OLD-HKNCOMBI(IDY)   =   SYU-HKNCOMBINUM)
       *            訂正時の請求額差額
-                   COMPUTE SYU-SKYMONEY    =   SYU-SKYMONEY
+                   COMPUTE WRK-SKYMONEY    =   WRK-SKYMONEY
                                            -   ORCHC03-OLD-SKYMONEY
                                                              (IDY)
-                   COMPUTE SYU-SKYMONEY-TAX-SAI
-                                           =   SYU-SKYMONEY-TAX-SAI
+                   COMPUTE WRK-SKYMONEY-TAX
+                                           =   WRK-SKYMONEY-TAX
                                            -   ORCHC03-OLD-SKYMONEY-SAI
                                                              (IDY)
                    MOVE    ORCHC03-OLD-NYUKIN-TOTAL (IDY)
-                                           TO  SYU-NYUKIN-TOTAL
+                                           TO  WRK-NYUKIN-TOTAL
                    MOVE    15              TO  IDY
                END-IF
            END-PERFORM
       *
            MOVE    SYUNOU-REC          TO  LNK-SYUNOU-REC
                                                        (IDX-SYU)
+           MOVE    WRK-SKYMONEY        TO  LNK-SKYMONEY (IDX-SYU)
+           MOVE    WRK-SKYMONEY-TAX    TO  LNK-SKYMONEY-TAX (IDX-SYU)
+           MOVE    WRK-NYUKIN-TOTAL    TO  LNK-NYUKIN-TOTAL (IDX-SYU)
       *
            .
        30022-SYUTOTAL-CHK-EXT.
@@ -591,6 +649,9 @@
       *
            MOVE    SYUNOU-REC          TO  LNK-SYUNOU-REC(IDX-SYU)
       *
+           ADD     WRK-SKYMONEY        TO  LNK-SKYMONEY (IDX-SYU)
+           ADD     WRK-SKYMONEY-TAX    TO  LNK-SKYMONEY-TAX (IDX-SYU)
+           ADD     WRK-NYUKIN-TOTAL    TO  LNK-NYUKIN-TOTAL (IDX-SYU)
            .
        30021-SYUNOU-ADD-EXT.
            EXIT.
@@ -602,10 +663,15 @@
       *
            MOVE    ZERO                TO  IDX-SYU
            INITIALIZE                  LNK-SYUNOU-AREA
+           INITIALIZE                  LNK-SEIKYU-AREA
+           INITIALIZE                  LNK-DOUJI-AREA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   IDX-TBL
                MOVE    TBL-SYUNOU-REC (IDX)    TO  WRK-SYUNOU-REC
+               MOVE    TBL-SKYMONEY   (IDX)    TO  WRK-SKYMONEY
+               MOVE    TBL-SKYMONEY-TAX (IDX)  TO  WRK-SKYMONEY-TAX
+               MOVE    TBL-NYUKIN-TOTAL (IDX)  TO  WRK-NYUKIN-TOTAL
                MOVE    ZERO                TO  FLG-OK
                PERFORM VARYING  IDX-SYU    FROM    1   BY  1
                        UNTIL   (IDX-SYU    >   15  )  OR
@@ -613,6 +679,15 @@
                    IF      LNK-SYU-SRYKA(IDX-SYU)    =   SPACE
                        MOVE    TBL-SYUNOU-REC(IDX)
                                                TO  LNK-SYUNOU-REC
+                                                       (IDX-SYU)
+                       MOVE    TBL-SKYMONEY   (IDX)
+                                                   TO  LNK-SKYMONEY
+                                                       (IDX-SYU)
+                       MOVE    TBL-SKYMONEY-TAX(IDX)
+                                                   TO  LNK-SKYMONEY-TAX
+                                                       (IDX-SYU)
+                       MOVE    TBL-NYUKIN-TOTAL   (IDX)
+                                                   TO  LNK-NYUKIN-TOTAL
                                                        (IDX-SYU)
                        MOVE    1               TO  FLG-OK
                    ELSE
@@ -670,16 +745,30 @@
       *    合計する
            INITIALIZE                      TBL-SYUNOU-AREA
            MOVE    LNK-SYUNOU-AREA     TO  TBL-SYUNOU-AREA
+           MOVE    LNK-SEIKYU-AREA     TO  TBL-SEIKYU-AREA
            MOVE    ZERO                TO  IDX-SYU
            INITIALIZE                  LNK-SYUNOU-AREA
+           INITIALIZE                  LNK-SEIKYU-AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   15   )  OR
                               (IDX     >   ORCHC03SUB-MAX)
                MOVE    TBL-SYUNOU-REC (IDX)    TO  WRK-SYUNOU-REC
+               MOVE    TBL-SKYMONEY   (IDX)    TO  WRK-SKYMONEY
+               MOVE    TBL-SKYMONEY-TAX (IDX)  TO  WRK-SKYMONEY-TAX
+               MOVE    TBL-NYUKIN-TOTAL (IDX)  TO  WRK-NYUKIN-TOTAL
                MOVE    1                   TO  IDX-SYU
                IF      IDX                 =   1
                    MOVE    TBL-SYUNOU-REC(IDX)
                                            TO  LNK-SYUNOU-REC
+                                                       (IDX-SYU)
+                   MOVE    TBL-SKYMONEY   (IDX)
+                                           TO  LNK-SKYMONEY
+                                                       (IDX-SYU)
+                   MOVE    TBL-SKYMONEY-TAX(IDX)
+                                           TO  LNK-SKYMONEY-TAX
+                                                       (IDX-SYU)
+                   MOVE    TBL-NYUKIN-TOTAL (IDX)
+                                           TO  LNK-NYUKIN-TOTAL
                                                        (IDX-SYU)
                    IF      ORCHC03SUB-MAX      >  1
       *                複数保険

@@ -31,6 +31,10 @@
            03  ORCHC03SUB-SYUNOU-TBL       OCCURS  15.
       *        ¼ýÇ¼¥Þ¥¹¥¿
                05  ORCHC03SUB-SYUNOU-REC       PIC X(2000).
+      *        ÀÁµá³ÛÅù
+               05  ORCHC03SUB-SKYMONEY         PIC S9(07).
+               05  ORCHC03SUB-SKYMONEY-TAX-SAI PIC S9(07).
+               05  ORCHC03SUB-NYUKIN-TOTAL     PIC S9(07).
       *        Æ±»þ¿ÇÎÅ²Ê
                05  ORCHC03SUB-DOUJI-SRYKA-G.
                    07  ORCHC03SUB-DOUJI-SRYKA  PIC  X(02)
