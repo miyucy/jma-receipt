@@ -307,6 +307,7 @@
       *  01.01.125   NACL-藤原    04/02/24  PTBYOMEI-KEY20追加
       *  01.01.126   NACL-多々納　04/02/24  TENSYU-KEY90,KEY91,KEY92追加
       *  01.01.127   NACL-小豆沢  04/02/24  SYSKANRI-KEY11追加
+      *  01.01.128   NACL-藤原    04/02/25  PTBYOMEI-KEY21,KEY22,KEY23追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1464,6 +1465,15 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTBYOMEI-KEY20"
                    MOVE    PATH-TBL-PTBYOMEI-KEY20
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY21"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY21
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY22"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY22
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY23"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY23
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTBYOMEI-ALL"
                    MOVE    PATH-TBL-PTBYOMEI-ALL
