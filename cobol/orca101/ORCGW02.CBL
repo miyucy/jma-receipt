@@ -41,6 +41,7 @@
       *  01.00.11    NACL-多々納  03/01/10  病床数（一般）追加
       *  01.00.12    NACL-太田    03/05/21  減免端数区分追加
       *  01.00.13    NACL-多々納  03/05/27  診療内容追加（１０１２）
+      *  01.00.14    NACL-太田    03/06/06  消費税端数区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -123,6 +124,13 @@
                            11  SPA-GMN-F11L           PIC X(01).
                            11  SPA-GMN-DISCOUNT-HASU-KBNMEIL
                                                       PIC X(30).
+                       09  SPA-GMN-TAX-HASU-KBNLST
+                                                      OCCURS  4.
+                           11  SPA-GMN-TAX-HASU-KBNL
+                                                      PIC X(01).
+                           11  SPA-GMN-F12L           PIC X(01).
+                           11  SPA-GMN-TAX-HASU-KBNMEIL
+                                                      PIC X(30).
                        09  SPA-GMN-KOUMOKU.
                            11  SPA-GMN-PREFNUM-G.
                                13  SPA-GMN-PREFNUM    PIC X(02).
@@ -194,6 +202,12 @@
                                                       PIC X(01).
                                13  SPA-GMN-F11        PIC X(01).
                                13  SPA-GMN-DISCOUNT-HASU-KBNMEI
+                                                      PIC X(30).
+                           11  SPA-GMN-TAX-HASU-KBN-G.
+                               13  SPA-GMN-TAX-HASU-KBN
+                                                      PIC X(01).
+                               13  SPA-GMN-F12        PIC X(01).
+                               13  SPA-GMN-TAX-HASU-KBNMEI
                                                       PIC X(30).
       *----(01.00.09) LINE ADD END   ----------------------------------
                    07  SPA-GMN-1002-AREA.
@@ -647,6 +661,14 @@
                                TO  SPA-GMN-DISCOUNT-HASU-KBNMEIL (4)
            MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (1)
                                TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+           MOVE    "1"         TO  SPA-GMN-TAX-HASU-KBNL    (1)
+           MOVE    "１円未満四捨五入"  
+                               TO  SPA-GMN-TAX-HASU-KBNMEIL (1)
+           MOVE    "2"         TO  SPA-GMN-TAX-HASU-KBNL    (2)
+           MOVE    "１円未満切り捨て" 
+                               TO  SPA-GMN-TAX-HASU-KBNMEIL (2)
+           MOVE    SPA-GMN-TAX-HASU-KBNLST (2)
+                               TO  SPA-GMN-TAX-HASU-KBN-G
       * 
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                      SYS-1001-REC
@@ -811,6 +833,19 @@
                               MOVE    4                TO  IDY
                            END-IF
                        END-PERFORM
+      *                空白の時、"2"とする
+                       IF      SYS-1001-TAX-HASU-KBN    =   SPACE
+                           MOVE    2   TO  SYS-1001-TAX-HASU-KBN
+                       END-IF
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       2
+                           IF      SYS-1001-TAX-HASU-KBN
+                                   =   SPA-GMN-TAX-HASU-KBNL (IDY)
+                              MOVE    SPA-GMN-TAX-HASU-KBNLST (IDY)
+                                       TO  SPA-GMN-TAX-HASU-KBN-G
+                              MOVE    2                TO  IDY
+                           END-IF
+                       END-PERFORM
       *----(01.00.09) LINE ADD END   ----------------------------------
       *            医療機関情報ー所在地、連絡先情報
                    WHEN    "1002"
@@ -972,6 +1007,7 @@
            MOVE    W02-ZENSYOHOFLG     TO  SPA-GMN-ZENSYOHOFLG-G
            MOVE    W02-YAKUJYOFLG      TO  SPA-GMN-YAKUJYOFLG-G
            MOVE    W02-DISCOUNTHASU    TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+           MOVE    W02-TAXHASU         TO  SPA-GMN-TAX-HASU-KBN-G
       *
       *    連絡先情報タグ
            MOVE    W02-POST            TO  SPA-GMN-POST
@@ -1128,7 +1164,12 @@
                GO      TO      41021-KIHON-1001-EXT
            END-IF
       *
-           PERFORM 4129-DISCOUNT-HASU-KBN-CHK-SEC
+           PERFORM 4130-DISCOUNT-HASU-KBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4131-TAX-HASU-KBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41021-KIHON-1001-EXT
            END-IF
@@ -1562,7 +1603,7 @@
       *****************************************************************
       *    減免端数設定
       *****************************************************************
-       4129-DISCOUNT-HASU-KBN-CHK-SEC        SECTION.
+       4130-DISCOUNT-HASU-KBN-CHK-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
@@ -1581,7 +1622,31 @@
            END-IF
       *
            .
-       4129-DISCOUNT-HASU-KBN-CHK-EXT.
+       4130-DISCOUNT-HASU-KBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    消費税端数設定
+      *****************************************************************
+       4131-TAX-HASU-KBN-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SPA-GMN-TAX-HASU-KBN
+                                       =   SPA-GMN-TAX-HASU-KBNL
+                                                              (IDY)
+                   MOVE    SPA-GMN-TAX-HASU-KBNLST (IDY)
+                                       TO  SPA-GMN-TAX-HASU-KBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0014"          TO  SPA-ERRCD
+               MOVE    39              TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4131-TAX-HASU-KBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    郵便番号チェック処理
@@ -1824,6 +1889,8 @@
       *----(01.00.09) LINE ADD END   ----------------------------------
                    MOVE    SPA-GMN-DISCOUNT-HASU-KBN
                                        TO  SYS-1001-DISCOUNT-HASU-KBN
+                   MOVE    SPA-GMN-TAX-HASU-KBN
+                                       TO  SYS-1001-TAX-HASU-KBN
                    MOVE    SYS-1001-REC    TO  SYSKANRI-REC
       * 
       *    医療機関情報ー所在地、連絡先情報
@@ -2126,6 +2193,8 @@
       *----(01.00.09) LINE ADD END   ----------------------------------
            MOVE    SPA-GMN-DISCOUNT-HASU-KBN-G
                                        TO  W02-DISCOUNTHASU
+           MOVE    SPA-GMN-TAX-HASU-KBN-G
+                                       TO  W02-TAXHASU
       *     
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       47
@@ -2194,6 +2263,12 @@
                                        TO  W02-DISCOUNTHASULST (IDX)
            END-PERFORM    
            MOVE    4                   TO  W02-DISCOUNTHASU-COUNT     
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       2
+               MOVE    SPA-GMN-TAX-HASU-KBNLST(IDX)
+                                       TO  W02-TAXHASULST (IDX)
+           END-PERFORM    
+           MOVE    2                   TO  W02-TAXHASU-COUNT     
       *----(01.00.09) LINE ADD END   ----------------------------------
       *
       *    医療機関情報ー所在地、連絡先情報
@@ -2326,6 +2401,9 @@
                WHEN    "0013"
                    MOVE    "減免端数設定入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "消費税端数設定入力エラー"
+                                               TO  SPA-ERRMSG
       *----(01.00.09) LINE ADD END   ----------------------------------
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
@@ -2453,6 +2531,9 @@
                 WHEN    38
                     MOVE  "DISCOUNTHASU"
                                            TO   MCP-WIDGET
+                WHEN    39
+                    MOVE  "TAXHASU"
+                                           TO   MCP-WIDGET
                 WHEN    40
                     MOVE  "TEIRITU"        TO   MCP-WIDGET
                 WHEN    41
@@ -2544,6 +2625,8 @@
               WHEN    "HOSPCDN"
                   MOVE    38               TO  SPA-GMN-CUR
               WHEN    "DISCOUNTHASU"
+                  MOVE    39               TO  SPA-GMN-CUR
+              WHEN    "TAXHASU"
                   MOVE    01               TO  SPA-GMN-CUR
       *       連絡先情報
               WHEN    "POST"

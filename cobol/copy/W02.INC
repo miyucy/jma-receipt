@@ -90,6 +90,12 @@
                                              PIC S9(9)   BINARY.
                     06  W02-DISCOUNTHASULST  PIC X(32)
                                                       OCCURS  4.
+                  05  W02-TAXHASU-COMBO.
+                    06  W02-TAXHASU          PIC X(32).
+                    06  W02-TAXHASU-COUNT
+                                             PIC S9(9)   BINARY.
+                    06  W02-TAXHASULST       PIC X(32)
+                                                      OCCURS  2.
                 04  W02-N01-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED24.
                   05  W02-POST.

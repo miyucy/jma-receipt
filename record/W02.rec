@@ -113,6 +113,13 @@ W02	{
 					count	int;
 					item	varchar(32)[4];
 				};
+				TAXHASU_COMBO	{
+					TAXHASU	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[2];
+				};
 			};
 	            N01	{
 	            	state	int;
