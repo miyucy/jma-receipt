@@ -43,6 +43,8 @@
       *  01.00.10    NACL-門脇    03.06.19  複数診療科受診の編集修正
       *  01.00.11    NACL-門脇    03.09.24  コメント編集修正
       *  01.00.12    NACL-門脇    03.09.29  コメント編集修正
+      *  ２００４年４月改正対応
+      *  01.01.01    NACL-門脇    04.04.01  リハ言語聴覚療法（３）追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -317,9 +319,11 @@
            03  WRK-GENGO1-KO-ZAINUM          PIC  9(08).   
            03  WRK-GENGO2-SHU-ZAINUM         PIC  9(08).   
            03  WRK-GENGO2-KO-ZAINUM          PIC  9(08).   
+           03  WRK-GENGO3-SHU-ZAINUM         PIC  9(08).   
+           03  WRK-GENGO3-KO-ZAINUM          PIC  9(08).   
       *
        01  WRK-TAIHI-ZAINUM-R     REDEFINES   WRK-TAIHI-ZAINUM.
-            03  WRK-RIHA-ZAINUM   PIC 9(08)   OCCURS   16.       
+            03  WRK-RIHA-ZAINUM   PIC 9(08)   OCCURS   18.              
       *
       *理学療法実施カレンダー
        01  WRK-RIGAKU-AREA.
@@ -339,9 +343,11 @@
            03  WRK-GENGO1-KO                 PIC  X(01)  OCCURS 31.   
            03  WRK-GENGO2-SHU                PIC  X(01)  OCCURS 31.   
            03  WRK-GENGO2-KO                 PIC  X(01)  OCCURS 31.   
+           03  WRK-GENGO3-SHU                PIC  X(01)  OCCURS 31.   
+           03  WRK-GENGO3-KO                 PIC  X(01)  OCCURS 31.   
       *
        01  WRK-RIGAKU-R        REDEFINES     WRK-RIGAKU-AREA.
-           02  WRK-RIGAKU-OCC                OCCURS   16.
+           02  WRK-RIGAKU-OCC                OCCURS   18.               
              03  WRK-RIGAKU-OCC2             OCCURS   31.
                04  WRK-RIGAKU                PIC  X(01).
       *
@@ -418,11 +424,13 @@
            03  FILLER          PIC X(09)   VALUE    "180024810".
            03  FILLER          PIC X(09)   VALUE    "180025110".
            03  FILLER          PIC X(09)   VALUE    "180025010".
+           03  FILLER          PIC X(09)   VALUE    "180025510".
+           03  FILLER          PIC X(09)   VALUE    "180025410".
       *
        01  TBL-RIHA-R          REDEFINES   TBL-RIHA-AREA.
-            03  TBL-RIHA       PIC X(09)   OCCURS   28.       
+            03  TBL-RIHA       PIC X(09)   OCCURS   30.                 
       *
-       01  TBL-RIHA-MAX        PIC 9(02)   VALUE    28.  
+       01  TBL-RIHA-MAX        PIC 9(02)   VALUE    30.                 
       *
       *    複数診療科受診の退避テーブル
        01  TBL-JUSHIN-INF.
@@ -803,7 +811,7 @@
       *            （リハビリのセット）
                       MOVE    ZERO     TO    FLG-ARI
                       PERFORM   VARYING   IDX    FROM   1   BY   1
-                            UNTIL   (IDX             >      16)
+                            UNTIL   (IDX             >      18)         
                              OR     (FLG-ARI         =       1)
                           IF  RECE44-ZAINUM  =  WRK-RIHA-ZAINUM(IDX)
                               MOVE    1    TO   FLG-ARI 
@@ -858,7 +866,7 @@
       *            （リハビリのセット）
                       MOVE    ZERO     TO    FLG-ARI
                       PERFORM   VARYING   IDX    FROM   1   BY   1
-                            UNTIL   (IDX             >      16)
+                            UNTIL   (IDX             >      18)         
                              OR     (FLG-ARI         =       1)
                           IF  RECE44-ZAINUM  =  WRK-RIHA-ZAINUM(IDX)
                               MOVE    1    TO   FLG-ARI 
@@ -1384,6 +1392,10 @@
                            MOVE   15    TO    IDX2
                         WHEN  28
                            MOVE   16    TO    IDX2   
+                        WHEN  29                                        
+                           MOVE   17    TO    IDX2                      
+                        WHEN  30                                        
+                           MOVE   18    TO    IDX2                      
                      END-EVALUATE
                      IF  RECE44-ZAINUM  >  WRK-RIHA-ZAINUM(IDX2)
                             MOVE  RECE44-ZAINUM  
@@ -2310,6 +2322,13 @@
                                  ADD      1     TO  CNT-RIHA
                             END-IF
                         END-PERFORM
+                 WHEN   WRK-GENGO3-SHU-ZAINUM                           
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-GENGO3-SHU(IDX) NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
                  WHEN   WRK-GENGO1-KO-ZAINUM
                         PERFORM  VARYING  IDX   FROM  1  BY  1
                                  UNTIL    IDX   >   31
@@ -2321,6 +2340,13 @@
                         PERFORM  VARYING  IDX   FROM  1  BY  1
                                  UNTIL    IDX   >   31
                             IF   WRK-GENGO2-KO(IDX) NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-GENGO3-KO-ZAINUM                            
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-GENGO3-KO(IDX) NOT = SPACE
                                  ADD      1     TO  CNT-RIHA
                             END-IF
                         END-PERFORM

@@ -59,6 +59,10 @@
       *                                     修正
       *  01.00.22    NACL-門脇    04.01.21  労災の特定器材(09593)対応
       *  01.00.23    NACL-門脇    04.02.05  診療コード＊数量の累計編集
+      *  ２００４年４月改正対応
+      *  01.01.01    NACL-門脇    04.04.01  長期投薬加算（処方料、処方せん
+      *                                     料）追加対応
+      *  01.01.02    NACL-門脇    04.04.01  リハ言語聴覚療法（３）追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -358,6 +362,10 @@
            03  WRK-NYUYOUJI-SHOKAN                     PIC 9(03).
       *    処方料（麻・向・毒・覚）
            03  WRK-MADOKU-SHOHO                        PIC 9(03).
+      *    長期投薬加算（処方料）
+           03  WRK-CYOKI-SKAN                          PIC 9(03).
+      *    長期投薬加算（処方せん料）
+           03  WRK-CYOKI-SKAN2                         PIC 9(03).
       *---------------------------------------------------------------
       *
       *    固定値
@@ -376,6 +384,8 @@
       *    処方せん（乳幼児）加算
            03  CONS-SHOHOKSN1  PIC X(09)     VALUE "120002470".
            03  CONS-SHOHOKSN2  PIC X(09)     VALUE "120002570".
+      *    長期投薬加算（処方せん料）
+           03  CONS-SHOHOKSN3  PIC X(09)     VALUE "120003270".
       *    薬剤料逓減（９０／１００）（内服薬）
            03  CONS-YAKTEIGEN  PIC X(09)     VALUE "630010002".
       *    粉砕（コメント）
@@ -1256,7 +1266,8 @@
                                                     CONS-SHOHOSEN3 OR   
                                                     CONS-SHOHOSEN4 OR   
                                                     CONS-SHOHOKSN1 OR   
-                                                    CONS-SHOHOKSN2      
+                                                    CONS-SHOHOKSN2 OR   
+                                                    CONS-SHOHOKSN3
                               CONTINUE                                  
                        ELSE                                             
                               IF    TNS-GAITENTTLKBN   =  130           
@@ -1671,7 +1682,9 @@
                                             "180024910"   OR
                                             "180024810"   OR
                                             "180025110"   OR
-                                            "180025010"   
+                                            "180025010"   OR
+                                            "180025510"   OR
+                                            "180025410"     
                         MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-RIHABIRI-COMMENT
               END-IF
@@ -1753,6 +1766,9 @@
            MOVE   ZERO              TO   WRK-NYUYOUJI-SHOKAN
       *    処方料（麻・向・毒・覚）の算定回数減算用領域の初期化
            MOVE   ZERO              TO   WRK-MADOKU-SHOHO
+      *    長期投薬加算の算定回数減算用領域の初期化
+           MOVE   ZERO              TO   WRK-CYOKI-SKAN
+           MOVE   ZERO              TO   WRK-CYOKI-SKAN2
       *
            PERFORM   VARYING  IDX3   FROM   1   BY   1
                      UNTIL    (IDX3         >     5)        OR
@@ -1901,6 +1917,10 @@
                 COMPUTE    RECE41-KAISU(19)   =    RECE41-KAISU(19)  -
                                                    WRK-NYUYOUJI-SKAN           
       *
+      *         処方の算定回数から長期投薬加算（処方料)の減算
+                COMPUTE    RECE41-KAISU(19)   =    RECE41-KAISU(19)  -  
+                                                   WRK-CYOKI-SKAN       
+      *
       *         処方の算定回数から特定疾患処方管理加算(処方料)の減算
                 COMPUTE    RECE41-KAISU(33)   =    RECE41-KAISU(33)  -
                                                    WRK-TOKUTEI-SKAN2           
@@ -1908,6 +1928,10 @@
       *         処方せんの算定回数から処方せん(乳幼児)加算の減算
                 COMPUTE    RECE41-KAISU(33)   =    RECE41-KAISU(33)  -
                                                    WRK-NYUYOUJI-SHOKAN      
+      *
+      *         処方せんの算定回数から長期投薬加算(処方せん料)の減算
+                COMPUTE    RECE41-KAISU(33)   =    RECE41-KAISU(33)  -  
+                                                   WRK-CYOKI-SKAN2      
       *
       *         麻毒の算定回数から処方料（麻・向・毒・覚）の減算
                 COMPUTE    RECE41-KAISU(20)   =    RECE41-KAISU(20)  -
@@ -1923,6 +1947,10 @@
                 COMPUTE    RECE41-KAISU(14)   =    RECE41-KAISU(14)  -  
                                                    WRK-NYUYOUJI-SKAN     
       *
+      *         処方の算定回数から長期投薬加算（処方料)の減算
+                COMPUTE    RECE41-KAISU(14)   =    RECE41-KAISU(14)  -  
+                                                   WRK-CYOKI-SKAN       
+      *
       *         処方の算定回数から特定疾患処方管理加算(処方料)の減算
                 COMPUTE    RECE41-KAISU(33)   =    RECE41-KAISU(33)  -  
                                                    WRK-TOKUTEI-SKAN2    
@@ -1930,6 +1958,10 @@
       *         処方せんの算定回数から処方せん(乳幼児)加算の減算
                 COMPUTE    RECE41-KAISU(33)   =    RECE41-KAISU(33)  -  
                                                    WRK-NYUYOUJI-SHOKAN  
+      *
+      *         処方せんの算定回数から長期投薬加算(処方せん料)の減算
+                COMPUTE    RECE41-KAISU(33)   =    RECE41-KAISU(33)  -  
+                                                   WRK-CYOKI-SKAN2      
       *
       *         麻毒の算定回数から処方料（麻・向・毒・覚）の減算
                 COMPUTE    RECE41-KAISU(15)   =    RECE41-KAISU(15)  -  
@@ -1947,6 +1979,10 @@
                 COMPUTE    RECE41-KAISU(12)   =    RECE41-KAISU(12)  -
                                                    WRK-NYUYOUJI-SKAN           
       *
+      *         処方の算定回数から長期投薬加算（処方料)の減算
+                COMPUTE    RECE41-KAISU(12)   =    RECE41-KAISU(12)  -  
+                                                   WRK-CYOKI-SKAN       
+      *
       *         処方の算定回数から特定疾患処方管理加算(処方料)の減算
                 COMPUTE    RECE41-KAISU(30)   =    RECE41-KAISU(30)  -
                                                    WRK-TOKUTEI-SKAN2           
@@ -1954,6 +1990,10 @@
       *         処方せんの算定回数から処方せん(乳幼児)加算の減算
                 COMPUTE    RECE41-KAISU(30)   =    RECE41-KAISU(30)  -
                                                    WRK-NYUYOUJI-SHOKAN      
+      *
+      *         処方せんの算定回数から長期投薬加算(処方せん料)の減算
+                COMPUTE    RECE41-KAISU(30)   =    RECE41-KAISU(30)  -  
+                                                   WRK-CYOKI-SKAN2      
       *
       *         麻毒の算定回数から処方料（麻・向・毒・覚）の減算
                 COMPUTE    RECE41-KAISU(13)   =    RECE41-KAISU(13)  -
@@ -2245,6 +2285,10 @@
                       COMPUTE  WRK-NYUYOUJI-SKAN = WRK-NYUYOUJI-SKAN +
                                                    WK-ZAIKAISU 
                    END-IF
+                   IF SRY-SRYCD(IDX3)   =    "120003170"                
+                      COMPUTE  WRK-CYOKI-SKAN  =  WRK-CYOKI-SKAN +      
+                                                  WK-ZAIKAISU           
+                   END-IF                                               
                    IF    RECE41-KHNTEN(19)   =   ZERO
                       MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(19)
                    ELSE
@@ -2365,12 +2409,17 @@
                      COMPUTE WRK-NYUYOUJI-SHOKAN = WRK-NYUYOUJI-SHOKAN +
                                                   WK-ZAIKAISU 
                     END-IF
+                    IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN3         
+                     COMPUTE  WRK-CYOKI-SKAN2  =   WRK-CYOKI-SKAN2   +  
+                                                   WK-ZAIKAISU          
+                    END-IF                                              
                     IF   SRY-SRYCD(IDX3)   =  CONS-SHOHOSEN1 OR
                                               CONS-SHOHOSEN2 OR
                                               CONS-SHOHOSEN3 OR
                                               CONS-SHOHOSEN4 OR
                                               CONS-SHOHOKSN1 OR
-                                              CONS-SHOHOKSN2
+                                              CONS-SHOHOKSN2 OR
+                                              CONS-SHOHOKSN3            
                          ADD    WK-ZAIKAISU  TO  RECE41-KAISU(33)
                          COMPUTE   RECE41-TENSU(33)  =
                                    RECE41-TENSU(33)  +
@@ -2570,6 +2619,10 @@
                       COMPUTE  WRK-NYUYOUJI-SKAN = WRK-NYUYOUJI-SKAN +
                                                    WK-ZAIKAISU 
                    END-IF
+                   IF SRY-SRYCD(IDX3)   =    "120003170"                
+                      COMPUTE  WRK-CYOKI-SKAN  =  WRK-CYOKI-SKAN +      
+                                                  WK-ZAIKAISU           
+                   END-IF                                               
                    ADD    WK-ZAIKAISU     TO    RECE41-KAISU(12)
                    COMPUTE   RECE41-TENSU(12)  =
                              RECE41-TENSU(12)  +
@@ -2676,7 +2729,8 @@
                                                   CONS-SHOHOSEN3 OR
                                                   CONS-SHOHOSEN4 OR
                                                   CONS-SHOHOKSN1 OR
-                                                  CONS-SHOHOKSN2
+                                                  CONS-SHOHOKSN2 OR
+                                                  CONS-SHOHOKSN3        
                          COMPUTE   RECE41-TENSU(30)  =
                                    RECE41-TENSU(30)  +
                                   (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
@@ -2935,6 +2989,10 @@
                       COMPUTE  WRK-NYUYOUJI-SKAN = WRK-NYUYOUJI-SKAN +
                                                    WK-ZAIKAISU 
                    END-IF
+                   IF SRY-SRYCD(IDX3)   =    "120003170"                
+                      COMPUTE  WRK-CYOKI-SKAN  =  WRK-CYOKI-SKAN +      
+                                                  WK-ZAIKAISU           
+                   END-IF                                               
                    IF    RECE41-KHNTEN(14)   =   ZERO
                       MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(14)
                    ELSE
@@ -3076,12 +3134,17 @@
                                                     WRK-NYUYOUJI-SHOKAN
                                                   + WK-ZAIKAISU 
                       END-IF
+                      IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN3       
+                       COMPUTE  WRK-CYOKI-SKAN2  =  WRK-CYOKI-SKAN2     
+                                                 +  WK-ZAIKAISU         
+                      END-IF                                            
                       IF   SRY-SRYCD(IDX3)    =    CONS-SHOHOSEN1 OR
                                                    CONS-SHOHOSEN2 OR
                                                    CONS-SHOHOSEN3 OR
                                                    CONS-SHOHOSEN4 OR
                                                    CONS-SHOHOKSN1 OR
-                                                   CONS-SHOHOKSN2
+                                                   CONS-SHOHOKSN2 OR
+                                                   CONS-SHOHOKSN3       
                           ADD    WK-ZAIKAISU  TO  RECE41-KAISU(33)
                           COMPUTE   RECE41-TENSU(33)  =
                                     RECE41-TENSU(33)  +

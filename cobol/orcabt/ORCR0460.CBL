@@ -53,6 +53,9 @@
       *  01.00.17    NACL-門脇    03.09.29  点数マスタを読み込まないよう
       *                                     修正
       *  01.00.18    NACL-藤原    04.02.05  薬剤・器材の編集順を逆にする
+      *  ２００４年４月改正対応
+      *  01.01.01    NACL-門脇    04.04.01  初診（乳幼児）（夜間・休日・
+      *                                     深夜）加算の摘要欄記載
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -570,6 +573,16 @@
            03  CONS-SYOSIN-KASAN20 PIC X(09) VALUE "111702570".
       *    ＜老＞紹介患者加算６（病院）
            03  CONS-SYOSIN-KASAN21 PIC X(09) VALUE "111702670".
+      *    初診（乳幼児）（夜間）加算
+           03  CONS-SYOSIN-KASAN22 PIC X(09) VALUE "111011570".
+      *    初診（乳幼児）（休日）加算
+           03  CONS-SYOSIN-KASAN23 PIC X(09) VALUE "111011670".
+      *    初診（乳幼児）（深夜）加算
+           03  CONS-SYOSIN-KASAN24 PIC X(09) VALUE "111011770".
+      *    初診（時間外特例）加算
+           03  CONS-SYOSIN-KASAN25 PIC X(09) VALUE "111000870".
+      *    ＜老＞初診（時間外特例）加算
+           03  CONS-SYOSIN-KASAN26 PIC X(09) VALUE "111700870".
       *
       *    検査の回数に集計しない診療行為
       *    採血（Ｂ−Ａ）
@@ -1146,6 +1159,11 @@
                                                 CONS-SYOSIN-KASAN19 OR
                                                 CONS-SYOSIN-KASAN20 OR
                                                 CONS-SYOSIN-KASAN21 OR
+                                                CONS-SYOSIN-KASAN22 OR
+                                                CONS-SYOSIN-KASAN23 OR
+                                                CONS-SYOSIN-KASAN24 OR
+                                                CONS-SYOSIN-KASAN25 OR
+                                                CONS-SYOSIN-KASAN26 OR
                                                 CONS-COMMENT5       OR
                                                 CONS-COMMENT6       OR
                                                 CONS-COMMENT7       OR

@@ -48,6 +48,8 @@
       *  01.00.15    NACL-ÌçÏÆ    03.09.29  ¥³¥á¥ó¥ÈÊÔ½¸½¤Àµ
       *  01.00.16    NACL-ÌçÏÆ    03.12.15  ¼«Æ°ÊÔ½¸¥³¥á¥ó¥È¤Î¸øÈñÊ¬Î¥¶èÊ¬
       *                                     ¥»¥Ã¥È
+      *  £²£°£°£´Ç¯£´·î²þÀµÂÐ±þ
+      *  01.01.01    NACL-ÌçÏÆ    04.04.01  ¥ê¥Ï¸À¸ìÄ°³ÐÎÅË¡¡Ê£³¡ËÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -331,10 +333,12 @@
                05  WRK-GENGO1-KO-ZAINUM      PIC  9(08).   
                05  WRK-GENGO2-SHU-ZAINUM     PIC  9(08).   
                05  WRK-GENGO2-KO-ZAINUM      PIC  9(08).   
+               05  WRK-GENGO3-SHU-ZAINUM     PIC  9(08).   
+               05  WRK-GENGO3-KO-ZAINUM      PIC  9(08).   
       *
        01  WRK-TAIHI-ZAINUM-R     REDEFINES   WRK-TAIHI-ZAINUM.
            03  WRK-RIHA-ZAINUM-T               OCCURS  5.
-               05  WRK-RIHA-ZAINUM   PIC 9(08)   OCCURS   16.       
+               05  WRK-RIHA-ZAINUM   PIC 9(08)   OCCURS   18.           
       *
       *
       *¿Í¹©¿ÕÂ¡¼Â»Ü¥«¥ì¥ó¥À¡¼
@@ -367,10 +371,12 @@
              05  WRK-GENGO1-KO                 PIC  X(01)  OCCURS 31.   
              05  WRK-GENGO2-SHU                PIC  X(01)  OCCURS 31.   
              05  WRK-GENGO2-KO                 PIC  X(01)  OCCURS 31.   
+             05  WRK-GENGO3-SHU                PIC  X(01)  OCCURS 31.   
+             05  WRK-GENGO3-KO                 PIC  X(01)  OCCURS 31.   
       *
        01  WRK-RIGAKU-R        REDEFINES     WRK-RIGAKU-AREA.
            02  WRK-RIGAKU-OCC                  OCCURS    5.
-             03  WRK-RIGAKU-OCC2               OCCURS   16.
+             03  WRK-RIGAKU-OCC2               OCCURS   18.             
                04  WRK-RIGAKU-OCC3             OCCURS   31.
                  05  WRK-RIGAKU                PIC  X(01).
       *
@@ -447,11 +453,13 @@
            03  FILLER          PIC X(09)   VALUE    "180024810".
            03  FILLER          PIC X(09)   VALUE    "180025110".
            03  FILLER          PIC X(09)   VALUE    "180025010".
+           03  FILLER          PIC X(09)   VALUE    "180025510".        
+           03  FILLER          PIC X(09)   VALUE    "180025410".        
       *
        01  TBL-RIHA-R          REDEFINES   TBL-RIHA-AREA.
-            03  TBL-RIHA       PIC X(09)   OCCURS   28.       
+            03  TBL-RIHA       PIC X(09)   OCCURS   30.                 
       *
-       01  TBL-RIHA-MAX        PIC 9(02)   VALUE    28.  
+       01  TBL-RIHA-MAX        PIC 9(02)   VALUE    30.                 
       *
       *    Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤ÎÂàÈò¥Æ¡¼¥Ö¥ë
        01  TBL-JUSHIN-INF.
@@ -926,7 +934,7 @@
                                  =    RECE04-KOHBUNRI  +  1
                       MOVE    ZERO     TO    FLG-ARI
                       PERFORM   VARYING   IDX    FROM   1   BY   1
-                            UNTIL   (IDX             >      16)
+                            UNTIL   (IDX             >      18)         
                              OR     (FLG-ARI         =       1)
                           IF  RECE04-ZAINUM  =  
                                    WRK-RIHA-ZAINUM(WRK-KOHBUNRI IDX)
@@ -1586,6 +1594,10 @@
                            MOVE   15    TO    IDX2
                         WHEN  28
                            MOVE   16    TO    IDX2   
+                        WHEN  29                                        
+                           MOVE   17    TO    IDX2                      
+                        WHEN  30                                        
+                           MOVE   18    TO    IDX2                      
                      END-EVALUATE
                      COMPUTE  WRK-KOHBUNRI 
                                  =    RECE04-KOHBUNRI  +  1
@@ -2794,6 +2806,14 @@
                                  ADD      1     TO  CNT-RIHA
                             END-IF
                         END-PERFORM
+                 WHEN   WRK-GENGO3-SHU-ZAINUM(WRK-KOHBUNRI)             
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-GENGO3-SHU(WRK-KOHBUNRI IDX) 
+                                                       NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
                  WHEN   WRK-GENGO1-KO-ZAINUM(WRK-KOHBUNRI)
                         PERFORM  VARYING  IDX   FROM  1  BY  1
                                  UNTIL    IDX   >   31
@@ -2806,6 +2826,14 @@
                         PERFORM  VARYING  IDX   FROM  1  BY  1
                                  UNTIL    IDX   >   31
                             IF   WRK-GENGO2-KO(WRK-KOHBUNRI IDX) 
+                                                      NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-GENGO3-KO-ZAINUM(WRK-KOHBUNRI)              
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-GENGO3-KO(WRK-KOHBUNRI IDX) 
                                                       NOT = SPACE
                                  ADD      1     TO  CNT-RIHA
                             END-IF

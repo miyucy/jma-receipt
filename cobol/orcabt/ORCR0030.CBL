@@ -147,6 +147,12 @@
       *  01.02.41   NACL-門脇     04/02/10  生保の一部負担金額記載修正
       *  01.02.42   NACL-藤原     04/02/18  社保のＯＣＲ印刷をシス管より決定
       *  01.02.43   NACL-門脇     04/03/17  愛媛県地方公費：福祉レセ対応
+      *  ２００４年４月改正対応
+      *  01.03.01   NACL-門脇     04/04/01  上限あり公費併用時の一部負担額
+      *                                     編集修正
+      *  01.03.02   NACL-門脇     04/04/01  長期投薬加算（処方料、処方せん
+      *                                     料）追加対応
+      *  01.03.03   NACL-門脇     04/04/01  リハ言語聴覚療法（３）追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -254,7 +260,7 @@
            03  FLG-RECE05                              PIC 9(01).
            03  FLG-REWRITE                             PIC 9(01).
            03  FLG-CHIHOU                              PIC 9(01).
-           03  FLG-SHOSAISIN                           PIC 9(01).       XXX
+           03  FLG-SHOSAISIN                           PIC 9(01).       
            03  FLG-SET                                 PIC 9(01).
            03  FLG-HOUSIJI-COM                         PIC 9(01).
            03  FLG-FUKUSHI                             PIC 9(01).
@@ -308,9 +314,9 @@
            03  BUN-IDX2                                PIC 9(03).
            03  BUN-IDX3                                PIC 9(03).
            03  BUN-IDX4                                PIC 9(03).
-           03  BUN-IDX5                                PIC 9(03).       XXX
-           03  ACCT-IDX                                PIC 9(02).       XXX
-           03  HKN-IDX                                 PIC 9(02).       XXX
+           03  BUN-IDX5                                PIC 9(03).       
+           03  ACCT-IDX                                PIC 9(02).       
+           03  HKN-IDX                                 PIC 9(02).       
            03  KOHFTN-IDX                              PIC 9(03).
            03  SYSKAN-IDX                              PIC 9(03).
       *     
@@ -428,7 +434,7 @@
                05  WRK-TNS-KNSJISKBN                   PIC 9(01).
                05  WRK-TNS-SRYCD                       PIC X(09).
       *
-      *    実日数カウント用領域                                         XXX
+      *    実日数カウント用領域                                         
        01  TBL-JNISSU.
            03  TBL-JNISSU-HKN                          OCCURS   5.
                05  TBL-JNISSU-DAY                      PIC X(01)
@@ -510,6 +516,10 @@
            03  WRK-NYUYOUJI-SHOKAN                     PIC 9(03).
       *    処方料（麻・向・毒・覚）
            03  WRK-MADOKU-SHOHO                        PIC 9(03).
+      *    長期投薬加算（処方料）
+           03  WRK-CYOKI-SKAN                          PIC 9(03).
+      *    長期投薬加算（処方せん料）
+           03  WRK-CYOKI-SKAN2                         PIC 9(03).
       *---------------------------------------------------------------
       *
       *    固定値
@@ -527,6 +537,8 @@
       *    処方せん（乳幼児）加算
            03  CONS-SHOHOKSN1  PIC X(09)   VALUE   "120002470".
            03  CONS-SHOHOKSN2  PIC X(09)   VALUE   "120002570".
+      *    長期投薬加算（処方せん料）
+           03  CONS-SHOHOKSN3  PIC X(09)   VALUE   "120003270".
       *    薬剤料逓減（９０／１００）（内服薬）
            03  CONS-YAKTEIGEN  PIC X(09)   VALUE   "630010002".
       *    粉砕（コメント）
@@ -974,7 +986,7 @@
            END-IF
       *
            INITIALIZE                   WRK-AREA-SAIKEI
-           INITIALIZE                   TBL-JNISSU                      XXX
+           INITIALIZE                   TBL-JNISSU                      
       *
            INITIALIZE                   FLG-KHNTEN-AREA
            INITIALIZE                   FLG-SAISIN-AREA
@@ -988,9 +1000,9 @@
                PERFORM    RECE04-HENSYU-SEC
                PERFORM    YKZFTN-SET-SEC
            END-PERFORM
-           PERFORM     JNISSU-SET-SEC                                   XXX
+           PERFORM     JNISSU-SET-SEC                                   
            PERFORM     KHNTEN-CLEAR-SEC
-           PERFORM     BUNTENSU-CLEAR-SEC                               XXX
+           PERFORM     BUNTENSU-CLEAR-SEC                               
            PERFORM     SAIKEI-KEISAN-SEC
            PERFORM     NYUYOJI-COMENTFLG-SET-SEC
       *
@@ -1092,7 +1104,7 @@
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
       *
-                               MOVE  ZERO  TO   FLG-SHOSAISIN           XXX
+                               MOVE  ZERO  TO   FLG-SHOSAISIN           
                                MOVE  ZERO  TO   WRK-SRYSURYO
                                MOVE  ZERO  TO   WRK-SRYSURYO2
                                MOVE  ZERO  TO   WRK-SRYSURYO3
@@ -1101,7 +1113,7 @@
                                MOVE  SPACE TO   WRK-TANINAME
                                MOVE  ZERO  TO   FLG-HOUSIJI-COM
       *
-                               PERFORM   RECE02-TOTALTEN-HENSYU-SEC     XXX
+                               PERFORM   RECE02-TOTALTEN-HENSYU-SEC     
                                PERFORM   RECE04-TENSOU-SEC
                                PERFORM   RECE05-HENSYU-SEC
                                PERFORM   RECE04-WRITE-SEC
@@ -1123,7 +1135,7 @@
                                       PERFORM   TOKKI-HENSYU-SEC
                                  ELSE
       *
-                                      MOVE  ZERO  TO   FLG-SHOSAISIN    XXX
+                                      MOVE  ZERO  TO   FLG-SHOSAISIN    
                                       MOVE  ZERO  TO   WRK-SRYSURYO
                                       MOVE  ZERO  TO   WRK-SRYSURYO2
                                       MOVE  ZERO  TO   WRK-SRYSURYO3
@@ -1237,7 +1249,7 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送２（Ｆ００２）:トータル点編集
       *****************************************************************
-       RECE02-TOTALTEN-HENSYU-SEC                SECTION.               XXX
+       RECE02-TOTALTEN-HENSYU-SEC                SECTION.               
       *
            IF    (RECE02-HKNNUM          NOT =   SPACE)   OR
                  (RECE02-RJNHKNNUM       NOT =   SPACE)
@@ -1572,23 +1584,23 @@
                END-IF
       *
       **診療実日数のカウントを行える剤であるかの判定
-               IF  ((ACCT-ZAITEN    NOT =    ZERO)    AND               XXX
-                    (ACCT-ZAIKAISU  NOT =    ZERO)    AND               XXX
-                    (ACCT-SRYKBN        =  "11"  OR  "12"  OR           XXX
-                                           "13"  OR  "14"     ))        XXX
-               OR  ((ACCT-ZAITEN        =    ZERO)    AND               XXX
-                    (ACCT-ZAIKAISU  NOT =    ZERO)    AND               XXX
-                    (ACCT-SRYKBN        =  "11"  OR  "12"  OR           XXX
-                                           "99"               ))        XXX
+               IF  ((ACCT-ZAITEN    NOT =    ZERO)    AND               
+                    (ACCT-ZAIKAISU  NOT =    ZERO)    AND               
+                    (ACCT-SRYKBN        =  "11"  OR  "12"  OR           
+                                           "13"  OR  "14"     ))        
+               OR  ((ACCT-ZAITEN        =    ZERO)    AND               
+                    (ACCT-ZAIKAISU  NOT =    ZERO)    AND               
+                    (ACCT-SRYKBN        =  "11"  OR  "12"  OR           
+                                           "99"               ))        
       *
-                       IF ( (TNS-JITUDAY    =     2          ) AND      XXX
-                            (TNS-DAYCNT     =     1   OR   2 )    )     XXX
-                       OR (  SRY-SRYCD(IDX2)  =  "112700850"            XXX
-                                              OR "112003350"            XXX
-                                              OR "099409901"            XXX
-                                              OR "099999902"            XXX
-                                              OR "099110001"            XXX
-                                              OR "099120001"            XXX
+                       IF ( (TNS-JITUDAY    =     2          ) AND      
+                            (TNS-DAYCNT     =     1   OR   2 )    )     
+                       OR (  SRY-SRYCD(IDX2)  =  "112700850"            
+                                              OR "112003350"            
+                                              OR "099409901"            
+                                              OR "099999902"            
+                                              OR "099110001"            
+                                              OR "099120001"            
       *                              同日再診
                                               OR "112010150"
                                               OR "112010250"
@@ -1636,11 +1648,11 @@
                                               OR "112705950"
                                               OR "112706050"      )
       *
-                             MOVE    1      TO    FLG-SHOSAISIN         XXX
+                             MOVE    1      TO    FLG-SHOSAISIN         
       *
-                       END-IF                                           XXX
+                       END-IF                                           
       *
-               END-IF                                                   XXX
+               END-IF                                                   
       *
                IF      TNS-SRYKBN         =     "80"
                    IF  TNS-GAITENTTLKBN   =     130
@@ -2034,7 +2046,9 @@
                                             "180024910"   OR
                                             "180024810"   OR
                                             "180025110"   OR
-                                            "180025010"     
+                                            "180025010"   OR
+                                            "180025510"   OR
+                                            "180025410"     
                         MOVE   "1"    TO    RECE02-COMCNTFLG
                         MOVE   "1"    TO    RECE04-RIHABIRI-COMMENT
               END-IF
@@ -2116,6 +2130,9 @@
            MOVE   ZERO              TO   WRK-NYUYOUJI-SHOKAN
       *    処方料（麻・向・毒・覚）の算定回数減算用領域の初期化
            MOVE   ZERO              TO   WRK-MADOKU-SHOHO
+      *    長期投薬加算の算定回数減算用領域の初期化
+           MOVE   ZERO              TO   WRK-CYOKI-SKAN
+           MOVE   ZERO              TO   WRK-CYOKI-SKAN2
       *
       *
       *    公費の分離表示用インデックスの確定
@@ -2123,15 +2140,15 @@
            IF    (RECE02-HKNNUM          NOT =   SPACE)   OR
                  (RECE02-RJNHKNNUM       NOT =   SPACE)
                MOVE      1          TO     BUN-IDX
-               IF   FLG-SHOSAISIN        =       1                      XXX
-                    PERFORM    VARYING   ACCT-IDX   FROM   1    BY   1  XXX
-                               UNTIL    ACCT-IDX   >      31            XXX
-                      IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO          XXX
-                          MOVE    "1"       TO                          XXX
-                                        TBL-JNISSU-DAY(1 ACCT-IDX)      XXX
-                      END-IF                                            XXX
-                    END-PERFORM                                         XXX
-               END-IF                                                   XXX
+               IF   FLG-SHOSAISIN        =       1                      
+                    PERFORM    VARYING   ACCT-IDX   FROM   1    BY   1  
+                               UNTIL    ACCT-IDX   >      31            
+                      IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO          
+                          MOVE    "1"       TO                          
+                                        TBL-JNISSU-DAY(1 ACCT-IDX)      
+                      END-IF                                            
+                    END-PERFORM                                         
+               END-IF                                                   
            END-IF
       *    インデックス２
            MOVE          ZERO       TO     BUN-IDX2
@@ -2142,10 +2159,10 @@
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(1)
                            MOVE      2       TO     BUN-IDX2
-                           IF   FLG-SHOSAISIN      =    1               XXX
-                               PERFORM VARYING ACCT-IDX FROM 1 BY 1     XXX
-                                    UNTIL    ACCT-IDX   >   31          XXX
-                                 IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   XXX
+                           IF   FLG-SHOSAISIN      =    1               
+                               PERFORM VARYING ACCT-IDX FROM 1 BY 1     
+                                    UNTIL    ACCT-IDX   >   31          
+                                 IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   
                                     IF     FLG-FUKUSHI  =   1
                                     AND    RECE02-KOHNUM(1)(1:1)
                                              >=  "1" AND <=  "8"
@@ -2154,9 +2171,9 @@
                                        MOVE  "1"  TO
                                             TBL-JNISSU-DAY(2 ACCT-IDX)
                                     END-IF
-                                 END-IF                                 XXX
-                               END-PERFORM                              XXX
-                           END-IF                                       XXX
+                                 END-IF                                 
+                               END-PERFORM                              
+                           END-IF                                       
                       END-IF
                      END-IF
            END-PERFORM
@@ -2169,10 +2186,10 @@
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(2)
                            MOVE      3       TO     BUN-IDX3
-                           IF   FLG-SHOSAISIN      =    1               XXX
-                               PERFORM VARYING ACCT-IDX FROM 1 BY 1     XXX
-                                    UNTIL    ACCT-IDX   >   31          XXX
-                                 IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   XXX
+                           IF   FLG-SHOSAISIN      =    1               
+                               PERFORM VARYING ACCT-IDX FROM 1 BY 1     
+                                    UNTIL    ACCT-IDX   >   31          
+                                 IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   
                                     IF     FLG-FUKUSHI  =   1
                                     AND    RECE02-KOHNUM(2)(1:1)
                                              >=  "1" AND <=  "8"
@@ -2181,9 +2198,9 @@
                                        MOVE  "1"  TO
                                             TBL-JNISSU-DAY(3 ACCT-IDX)
                                     END-IF
-                                 END-IF                                 XXX
-                               END-PERFORM                              XXX
-                           END-IF                                       XXX
+                                 END-IF                                 
+                               END-PERFORM                              
+                           END-IF                                       
                       END-IF
                      END-IF
            END-PERFORM
@@ -2196,10 +2213,10 @@
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(3)
                            MOVE      4       TO     BUN-IDX4
-                           IF   FLG-SHOSAISIN      =    1               XXX
-                               PERFORM VARYING ACCT-IDX FROM 1 BY 1     XXX
-                                    UNTIL    ACCT-IDX   >   31          XXX
-                                 IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   XXX
+                           IF   FLG-SHOSAISIN      =    1               
+                               PERFORM VARYING ACCT-IDX FROM 1 BY 1     
+                                    UNTIL    ACCT-IDX   >   31          
+                                 IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   
                                     IF     FLG-FUKUSHI  =   1
                                     AND    RECE02-KOHNUM(3)(1:1)
                                              >=  "1" AND <=  "8"
@@ -2208,9 +2225,9 @@
                                        MOVE  "1"  TO
                                             TBL-JNISSU-DAY(4 ACCT-IDX)
                                     END-IF
-                                 END-IF                                 XXX
-                               END-PERFORM                              XXX
-                           END-IF                                       XXX
+                                 END-IF                                 
+                               END-PERFORM                              
+                           END-IF                                       
                       END-IF
                      END-IF
            END-PERFORM
@@ -2223,10 +2240,10 @@
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(4)
                            MOVE      5       TO     BUN-IDX5
-                           IF   FLG-SHOSAISIN      =    1               XXX
-                               PERFORM VARYING ACCT-IDX FROM 1 BY 1     XXX
-                                    UNTIL    ACCT-IDX   >   31          XXX
-                                 IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   XXX
+                           IF   FLG-SHOSAISIN      =    1               
+                               PERFORM VARYING ACCT-IDX FROM 1 BY 1     
+                                    UNTIL    ACCT-IDX   >   31          
+                                 IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   
                                     IF     FLG-FUKUSHI  =   1
                                     AND    RECE02-KOHNUM(4)(1:1)
                                              >=  "1" AND <=  "8"
@@ -2235,9 +2252,9 @@
                                        MOVE  "1"  TO
                                             TBL-JNISSU-DAY(5 ACCT-IDX)
                                     END-IF
-                                 END-IF                                 XXX
-                               END-PERFORM                              XXX
-                           END-IF                                       XXX
+                                 END-IF                                 
+                               END-PERFORM                              
+                           END-IF                                       
                       END-IF
                      END-IF
            END-PERFORM
@@ -2322,6 +2339,10 @@
            COMPUTE    RECE02-KAISU(19)   =    RECE02-KAISU(19)  -
                                               WRK-NYUYOUJI-SKAN           
       *
+      *    処方の算定回数から長期投薬加算（処方料)の減算
+           COMPUTE    RECE02-KAISU(19)   =    RECE02-KAISU(19)  -
+                                              WRK-CYOKI-SKAN     
+      *
       *    処方の算定回数から特定疾患処方管理加算(処方料)の減算
            COMPUTE    RECE02-KAISU(33)   =    RECE02-KAISU(33)  -
                                               WRK-TOKUTEI-SKAN2           
@@ -2329,6 +2350,10 @@
       *    処方せんの算定回数から処方せん(乳幼児)加算の減算
            COMPUTE    RECE02-KAISU(33)   =    RECE02-KAISU(33)  -
                                               WRK-NYUYOUJI-SHOKAN           
+      *
+      *    処方せんの算定回数から長期投薬加算(処方せん料)の減算
+           COMPUTE    RECE02-KAISU(33)   =    RECE02-KAISU(33)  -
+                                              WRK-CYOKI-SKAN2    
       *
       *    麻毒の算定回数から処方料（麻・向・毒・覚）の減算
            COMPUTE    RECE02-KAISU(20)   =    RECE02-KAISU(20)  -
@@ -3092,6 +3117,10 @@
                       COMPUTE  WRK-NYUYOUJI-SKAN  =  WRK-NYUYOUJI-SKAN +
                                                     WK-ZAIKAISU 
                    END-IF
+                   IF SRY-SRYCD(IDX3)      =    "120003170"             
+                      COMPUTE  WRK-CYOKI-SKAN  =  WRK-CYOKI-SKAN +      
+                                                  WK-ZAIKAISU           
+                   END-IF                                               
                    IF    RECE02-KHNTEN(19)   =   ZERO
                       MOVE  WRK-TNS-TEN(IDX3) TO  RECE02-KHNTEN(19)
                    ELSE
@@ -3444,12 +3473,17 @@
                     COMPUTE WRK-NYUYOUJI-SHOKAN = WRK-NYUYOUJI-SHOKAN +
                                                   WK-ZAIKAISU 
                    END-IF
+                   IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN3          
+                      COMPUTE  WRK-CYOKI-SKAN2  =   WRK-CYOKI-SKAN2   + 
+                                                    WK-ZAIKAISU         
+                   END-IF                                               
                    IF SRY-SRYCD(IDX3)      =    CONS-SHOHOSEN1 OR
                                                 CONS-SHOHOSEN2 OR
                                                 CONS-SHOHOSEN3 OR
                                                 CONS-SHOHOSEN4 OR
                                                 CONS-SHOHOKSN1 OR
-                                                CONS-SHOHOKSN2
+                                                CONS-SHOHOKSN2 OR
+                                                CONS-SHOHOKSN3          
                            ADD    WK-ZAIKAISU  TO  RECE02-KAISU(33)
                    END-IF
                    IF    BUN-IDX        =   1
@@ -3458,7 +3492,8 @@
                                                  CONS-SHOHOSEN3 OR
                                                  CONS-SHOHOSEN4 OR
                                                  CONS-SHOHOKSN1 OR
-                                                 CONS-SHOHOKSN2
+                                                 CONS-SHOHOKSN2 OR
+                                                 CONS-SHOHOKSN3         
                            COMPUTE   RECE02-TENSU(33 BUN-IDX)  =
                                      RECE02-TENSU(33 BUN-IDX)  +
                            (WRK-TNS-TEN(IDX3)   *   ACCT-ZAIKAISU)
@@ -3482,7 +3517,8 @@
                                                  CONS-SHOHOSEN3 OR
                                                  CONS-SHOHOSEN4 OR
                                                  CONS-SHOHOKSN1 OR
-                                                 CONS-SHOHOKSN2
+                                                 CONS-SHOHOKSN2 OR
+                                                 CONS-SHOHOKSN3         
                            COMPUTE   RECE02-TENSU(33 BUN-IDX2)  =
                                      RECE02-TENSU(33 BUN-IDX2)  +
                            (WRK-TNS-TEN(IDX3)   *   ACCT-ZAIKAISU)
@@ -3506,7 +3542,8 @@
                                                  CONS-SHOHOSEN3 OR
                                                  CONS-SHOHOSEN4 OR
                                                  CONS-SHOHOKSN1 OR
-                                                 CONS-SHOHOKSN2
+                                                 CONS-SHOHOKSN2 OR
+                                                 CONS-SHOHOKSN3         
                            COMPUTE   RECE02-TENSU(33 BUN-IDX3)  =
                                      RECE02-TENSU(33 BUN-IDX3)  +
                            (WRK-TNS-TEN(IDX3)   *   ACCT-ZAIKAISU)
@@ -3530,7 +3567,8 @@
                                                  CONS-SHOHOSEN3 OR
                                                  CONS-SHOHOSEN4 OR
                                                  CONS-SHOHOKSN1 OR
-                                                 CONS-SHOHOKSN2
+                                                 CONS-SHOHOKSN2 OR
+                                                 CONS-SHOHOKSN3         
                            COMPUTE   RECE02-TENSU(33 BUN-IDX4)  =
                                      RECE02-TENSU(33 BUN-IDX4)  +
                            (WRK-TNS-TEN(IDX3)   *   ACCT-ZAIKAISU)
@@ -4150,7 +4188,7 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送２（Ｆ００２）:実日数編集
       *****************************************************************
-       JNISSU-SET-SEC                    SECTION.                       XXX
+       JNISSU-SET-SEC                    SECTION.                       
       *実日数編集
            PERFORM    VARYING    HKN-IDX    FROM   1   BY   1
                       UNTIL      HKN-IDX    >      5
@@ -4224,7 +4262,7 @@
       *****************************************************************
       *    レセプト中間ファイルのぶん点数部分のクリア処理（Ｆ００２）
       *****************************************************************
-       BUNTENSU-CLEAR-SEC               SECTION.                        XXX
+       BUNTENSU-CLEAR-SEC               SECTION.                        
       *
       *    インデックス２
            IF (RECE02-HENTOTALTEN(2)   NOT =  ZERO)           AND

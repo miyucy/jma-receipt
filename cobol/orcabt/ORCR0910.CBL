@@ -31,6 +31,9 @@
       *  01.00.01    NACL-ÌçÏÆ    04.01.28  ¿ÇÎÅ¶èÊ¬£¹£²¤Î¥³¥á¥ó¥È
       *                                     ¤Î¤ß¤ÎºÞ¤â¥ì¥»µ­ºÜ¤¹¤ë
       *  01.00.02    NACL-Æ£¸¶    04.02.05  ÌôºÞ¡¦´ïºà¤ÎÊÔ½¸½ç¤òµÕ¤Ë¤¹¤ë
+      *  £²£°£°£´Ç¯£´·î²þÀµÂÐ±þ
+      *  01.01.01    NACL-ÌçÏÆ    04.04.01  ½é¿Ç¡ÊÆýÍÄ»ù¡Ë¡ÊÌë´Ö¡¦µÙÆü¡¦
+      *                                     ¿¼Ìë¡Ë²Ã»»¤ÎÅ¦Í×Íóµ­ºÜ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -510,6 +513,21 @@
       *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£¶¡ÊÉÂ±¡¡Ë
            03  WRK-CONS-SYOSIN-KASAN21 PIC X(09)   VALUE 
                                                    "111702670".
+      *    ½é¿Ç¡ÊÆýÍÄ»ù¡Ë¡ÊÌë´Ö¡Ë²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN22 PIC X(09)   VALUE 
+                                                   "111011570".
+      *    ½é¿Ç¡ÊÆýÍÄ»ù¡Ë¡ÊµÙÆü¡Ë²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN23 PIC X(09)   VALUE 
+                                                   "111011670".
+      *    ½é¿Ç¡ÊÆýÍÄ»ù¡Ë¡Ê¿¼Ìë¡Ë²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN24 PIC X(09)   VALUE 
+                                                   "111011770".
+      *    ½é¿Ç¡Ê»þ´Ö³°ÆÃÎã¡Ë²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN25 PIC X(09)   VALUE 
+                                                   "111000870".
+      *    ¡ãÏ·¡ä½é¿Ç¡Ê»þ´Ö³°ÆÃÎã¡Ë²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN26 PIC X(09)   VALUE 
+                                                   "111700870".
       *
       *    Ì¤¼Â»Ü¸º»»
            03  CONS-GENZAN1            PIC X(09)   VALUE   "190080470".
@@ -1115,6 +1133,11 @@
                                             OR  WRK-CONS-SYOSIN-KASAN19
                                             OR  WRK-CONS-SYOSIN-KASAN20
                                             OR  WRK-CONS-SYOSIN-KASAN21
+                                            OR  WRK-CONS-SYOSIN-KASAN22
+                                            OR  WRK-CONS-SYOSIN-KASAN23
+                                            OR  WRK-CONS-SYOSIN-KASAN24
+                                            OR  WRK-CONS-SYOSIN-KASAN25
+                                            OR  WRK-CONS-SYOSIN-KASAN26
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         

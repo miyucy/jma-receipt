@@ -30,6 +30,8 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-ÌçÏÆ    04/01/14  ¿ÇÎÅ¹Ô°Ù¤ÎÊñ³çÊ¬¤Ï½ü¤¯
       *                                     SRYACCT5¢ª31
+      *  £²£°£°£´Ç¯£´·î²þÀµÂÐ±þ
+      *  01.01.01    NACL-ÌçÏÆ    04.04.01  ¥ê¥Ï¸À¸ìÄ°³ÐÎÅË¡¡Ê£³¡ËÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -300,9 +302,11 @@
            03  WRK-GENGO1-KO-ZAINUM          PIC  9(08).   
            03  WRK-GENGO2-SHU-ZAINUM         PIC  9(08).   
            03  WRK-GENGO2-KO-ZAINUM          PIC  9(08).   
+           03  WRK-GENGO3-SHU-ZAINUM         PIC  9(08).   
+           03  WRK-GENGO3-KO-ZAINUM          PIC  9(08).   
       *
        01  WRK-TAIHI-ZAINUM-R     REDEFINES   WRK-TAIHI-ZAINUM.
-            03  WRK-RIHA-ZAINUM   PIC 9(08)   OCCURS   16.       
+            03  WRK-RIHA-ZAINUM   PIC 9(08)   OCCURS   18.              
       *
       *Íý³ØÎÅË¡¼Â»Ü¥«¥ì¥ó¥À¡¼
        01  WRK-RIGAKU-AREA.
@@ -322,9 +326,11 @@
            03  WRK-GENGO1-KO                 PIC  X(01)  OCCURS 31.   
            03  WRK-GENGO2-SHU                PIC  X(01)  OCCURS 31.   
            03  WRK-GENGO2-KO                 PIC  X(01)  OCCURS 31.   
+           03  WRK-GENGO3-SHU                PIC  X(01)  OCCURS 31.   
+           03  WRK-GENGO3-KO                 PIC  X(01)  OCCURS 31.   
       *
        01  WRK-RIGAKU-R        REDEFINES     WRK-RIGAKU-AREA.
-           02  WRK-RIGAKU-OCC                OCCURS   16.
+           02  WRK-RIGAKU-OCC                OCCURS   18.               
              03  WRK-RIGAKU-OCC2             OCCURS   31.
                04  WRK-RIGAKU                PIC  X(01).
       *
@@ -404,11 +410,13 @@
            03  FILLER          PIC X(09)   VALUE    "180024810".
            03  FILLER          PIC X(09)   VALUE    "180025110".
            03  FILLER          PIC X(09)   VALUE    "180025010".
+           03  FILLER          PIC X(09)   VALUE    "180025510".
+           03  FILLER          PIC X(09)   VALUE    "180025410".
       *
        01  TBL-RIHA-R          REDEFINES   TBL-RIHA-AREA.
-            03  TBL-RIHA       PIC X(09)   OCCURS   28.       
+            03  TBL-RIHA       PIC X(09)   OCCURS   30.                 
       *
-       01  TBL-RIHA-MAX        PIC 9(02)   VALUE    28.  
+       01  TBL-RIHA-MAX        PIC 9(02)   VALUE    30.                 
       *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
        01  WRK-PATH                        PIC X(64).
@@ -698,7 +706,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         MOVE    ZERO     TO    FLG-ARI
                         PERFORM   VARYING   IDX    FROM   1   BY   1
-                            UNTIL   (IDX             >      16)
+                            UNTIL   (IDX             >      18)         
                              OR     (FLG-ARI         =       1)
                           IF  RECE84-ZAINUM  =  WRK-RIHA-ZAINUM(IDX)
                               MOVE    1    TO   FLG-ARI 
@@ -780,7 +788,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         MOVE    ZERO     TO    FLG-ARI
                         PERFORM   VARYING   IDX    FROM   1   BY   1
-                            UNTIL   (IDX             >      16)
+                            UNTIL   (IDX             >      18)         
                              OR     (FLG-ARI         =       1)
                           IF  RECE84-ZAINUM  =  WRK-RIHA-ZAINUM(IDX)
                               MOVE    1    TO   FLG-ARI 
@@ -909,6 +917,10 @@
                           MOVE   15    TO    IDX2
                       WHEN  28
                           MOVE   16    TO    IDX2   
+                      WHEN  29                                          
+                          MOVE   17    TO    IDX2                       
+                      WHEN  30                                          
+                          MOVE   18    TO    IDX2                       
                  END-EVALUATE
                  IF  RECE84-ZAINUM  >  WRK-RIHA-ZAINUM(IDX2)
                      MOVE  RECE84-ZAINUM  TO  WRK-RIHA-ZAINUM(IDX2)
@@ -2044,6 +2056,13 @@
                                  ADD      1     TO  CNT-RIHA
                             END-IF
                         END-PERFORM
+                 WHEN   WRK-GENGO3-SHU-ZAINUM                           
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-GENGO3-SHU(IDX) NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
                  WHEN   WRK-GENGO1-KO-ZAINUM
                         PERFORM  VARYING  IDX   FROM  1  BY  1
                                  UNTIL    IDX   >   31
@@ -2055,6 +2074,13 @@
                         PERFORM  VARYING  IDX   FROM  1  BY  1
                                  UNTIL    IDX   >   31
                             IF   WRK-GENGO2-KO(IDX) NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-GENGO3-KO-ZAINUM                            
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-GENGO3-KO(IDX) NOT = SPACE
                                  ADD      1     TO  CNT-RIHA
                             END-IF
                         END-PERFORM
