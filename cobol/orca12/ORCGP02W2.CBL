@@ -298,6 +298,8 @@
       *
        01  WRK-HIYATOI-AREA.
            03  WRK-HIYATOI-FLG             PIC 9(01).
+           03  WRK-HIYATOI-TEKSTYMD        PIC X(08).
+           03  WRK-HIYATOI-TEKEDYMD        PIC X(08).
       *
        01  WRK-EDIT-AREA.
            03  WRK-KEI1            PIC X(06)   VALUE  "° ∑—°À".
@@ -794,7 +796,7 @@
       *
            INITIALIZE                      WRK-LCOMB-AREA
            MOVE    ZERO                TO  WRK-LCOMB-MAX
-           MOVE    ZERO                TO  WRK-HIYATOI-FLG
+           INITIALIZE                      WRK-HIYATOI-AREA
       *
            PERFORM     VARYING   IDX   FROM    1   BY  1
                        UNTIL   ( IDX   >       100 )
@@ -804,6 +806,10 @@
                
                IF   WRK-HKN-HKNNUM (IDX)       =   "003"  OR "004"
                    MOVE    1           TO   WRK-HIYATOI-FLG
+                   MOVE    WRK-HKN-TEKSTYMD (IDX)
+                                       TO   WRK-HIYATOI-TEKSTYMD
+                   MOVE    WRK-HKN-TEKEDYMD (IDX)
+                                       TO   WRK-HIYATOI-TEKEDYMD
                END-IF
       *        == £±¡»Ã‹ ==
                INITIALIZE                  WRK-COMB-AREA
@@ -2918,6 +2924,12 @@
                                         TO  WRK-LCOMB-TEKSTYMD   (IDX2)
                MOVE    WRK-KOH-TEKEDYMD(IDX)
                                         TO  WRK-LCOMB-TEKEDYMD   (IDX2)
+               IF      WRK-KOH-HKNNUM   (IDX)  =   "019"
+                   MOVE   WRK-HIYATOI-TEKSTYMD
+                                        TO  WRK-LCOMB-TEKSTYMD   (IDX2)
+                   MOVE   WRK-HIYATOI-TEKEDYMD
+                                        TO  WRK-LCOMB-TEKEDYMD   (IDX2)
+               END-IF
                MOVE    WRK-KOH-SEIDO  (IDX)
                                   TO  WRK-LCOMB-KOH1-TANSEIDONAME(IDX2)
       *        ------------------------------------
