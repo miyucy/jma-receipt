@@ -1445,7 +1445,7 @@
                    MOVE    5               TO  WRK-KAISU
                ELSE
       *        以外はすべて１回目とする
-                   MOVE    ZERO            TO  WRK-KAISU
+                   MOVE    1               TO  WRK-KAISU
                END-IF
            END-IF
       *
