@@ -31,6 +31,7 @@
       * 01.00.01     MCC-多々納   02/06/12  時間外特例追加
       * 01.00.02     NACL-多々納  02/12/09  労災加算追加
       * 01.00.03     NACL-多々納  03/02/12  年齢加算・時間外加算計算修正
+      * 01.00.04     NACL-多々納  03/07/30  通則加算区分追加
       *****************************************************************
       *
       *
@@ -98,14 +99,22 @@
            03  WRK-TENSUKEI-9      PIC 9(08).
            03  WRK-TENSUKEI-G      PIC 9(08).
            03  WRK-TENSUKEI-K      PIC 9(08).
+      *    通則対象外
+           03  WRK-TENGAKEI-G          PIC S9(10).
+           03  WRK-TENGAKEI-K          PIC S9(10).
+      *    手技料合計
+           03  WRK-GOK-TENSUKEI        PIC S9(10).
+           03  WRK-GOK-TENGAKEI        PIC S9(10).
+      *    点数計
+           03  WRK-SUM-TENSUKEI        PIC 9(08)V99.
+      *    点数計（通則加算対象外計）
+           03  WRK-SUM-TENGAKEI        PIC 9(08)V99.
+      *
       *
            03  WRK-SANSO           PIC 9(08).
            03  WRK-SANSOKIN        PIC 9(08)V99.
            03  WRK-SANKEI          PIC 9(08).
            03  WRK-SANTEN          PIC 9(08).
-      *
-      *    手技料合計
-           03  WRK-GOK-TENSUKEI    PIC 9(09).
       *
            03  WRK-SYOKEIS         PIC 9(08)V9999.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
@@ -416,6 +425,15 @@
            ELSE
                MOVE    1               TO  WRK-COM-SANFLG(IDX-Z)
                MOVE    1               TO  FLG-MIJYU
+      *        通則年齢区分がある場合のみ
+               IF     (IDX-ZS          >   ZERO )  AND
+                      (WRK-COM-TSUSOKUAGE (IDX-ZS) =   "1" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0041"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
+                   MOVE    ZERO            TO  WRK-COM-SANFLG(IDX-Z)
+               END-IF
            END-IF
       *
            .
@@ -454,6 +472,13 @@
       *    乳幼児加算料追加処理
       *****************************************************************
        10011-YOUJIKASAN-SET-SEC        SECTION.
+      *
+      *    通則年齢区分がある場合のみ
+           IF      WRK-COM-TSUSOKUAGE (IDX-ZS) =   "1"
+               CONTINUE
+           ELSE
+               GO      TO      10011-YOUJIKASAN-SET-EXT
+           END-IF
       *
            MOVE    SPACE               TO  WRK-SRYCD
       *
@@ -814,7 +839,7 @@
                COMPUTE IDX-Z           =   IDX-MAX    +  1
                MOVE    2               TO  FLG-SYUGI
                PERFORM 100212-TENSUKEI-SEC
-            END-IF
+           END-IF
            COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
                                        +   LNK-SC90-TENGAKEI
       *****COMPUTE WRK-GOK-TENSUKEI    =   WRK-GOK-TENSUKEI
@@ -869,6 +894,11 @@
                                        ORCSC90AREA
                                        WRK-SCR-REC
       *
+      *    手技料集計
+           IF       WRK-MOJI                   =   "1"
+               PERFORM 100212-SYUGI-KEI-SEC
+           END-IF
+      *
       *    酸素計算
            IF      WRK-COM-SANSOKBN (IDX-Z)    =   1
                PERFORM 100211-SANSO-KEI-SEC
@@ -876,6 +906,27 @@
       *
            .
        10021-KEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    手技料計算処理
+      *****************************************************************
+       100212-SYUGI-KEI-SEC            SECTION.
+      *    点数
+      *        ％加算・減算は集計しない
+           IF      WRK-COM-TENSIKIBETU (IDX-Z)   =   5
+                                                 OR  6
+               GO      TO      100212-SYUGI-KEI-EXT
+           END-IF
+      *    通則加算対象外区分判定
+           IF      WRK-COM-TUSOKUGAIKBN (IDX-Z)    =   "1"
+               ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-SUM-TENGAKEI
+           ELSE
+               ADD     WRK-COM-KISOTEN(IDX-Z)  TO  WRK-SUM-TENSUKEI
+           END-IF
+      *
+           .
+       100212-SYUGI-KEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -925,6 +976,10 @@
       *****************************************************************
        100212-TENSUKEI-SEC             SECTION.
       *
+      *    集計済点数編集
+           MOVE    WRK-SUM-TENGAKEI    TO  LNK-SC90-TENGAKEI
+           MOVE    WRK-SUM-TENSUKEI    TO  LNK-SC90-TENSUKEI
+      *
            MOVE    IDX-Z               TO  HZN-IDX
            PERFORM 1006-KASAN-SET-SEC
       *
@@ -942,7 +997,12 @@
            END-IF
       *
            ADD     LNK-SC90-TENSUKEI   TO  WRK-GOK-TENSUKEI
+           ADD     LNK-SC90-TENGAKEI   TO  WRK-GOK-TENGAKEI
+      *
            MOVE    ZERO                TO  LNK-SC90-TENSUKEI
+           MOVE    ZERO                TO  LNK-SC90-TENGAKEI
+           MOVE    ZERO                TO  WRK-SUM-TENSUKEI
+           MOVE    ZERO                TO  WRK-SUM-TENGAKEI
       *
       *    最後の手技料時に、以下の計算を行う
            IF      FLG-SYUGI           =   2
@@ -984,7 +1044,13 @@
                                                /   100
                                                +   0.5
                    MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-K
+      *
+      *            通則加算対象外区分判定
+                   IF      WRK-COM-TUSOKUGAIKBN (IDX-ZS)  =   "1"
+                       ADD     WRK-TENSUKEI-9  TO  WRK-TENGAKEI-K
+                   ELSE
+                       ADD     WRK-TENSUKEI-9  TO  WRK-TENSUKEI-K
+                   END-IF
                END-IF
       *        ％減算
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
@@ -996,13 +1062,22 @@
                                                *   WRK-COM-KISOTEN(IDX)
                                                /   100
                    MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
+      *
+      *            通則加算対象外区分判定
+                   IF      WRK-COM-TUSOKUGAIKBN (IDX-ZS)  =   "1"
+                       ADD     WRK-TENSUKEI-9  TO  WRK-TENGAKEI-G
+                   ELSE
+                       ADD     WRK-TENSUKEI-9  TO  WRK-TENSUKEI-G
+                   END-IF
                END-IF
            END-PERFORM
       *
            COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
                                        +   WRK-TENSUKEI-K
                                        -   WRK-TENSUKEI-G
+           COMPUTE LNK-SC90-TENGAKEI   =   LNK-SC90-TENGAKEI
+                                       +   WRK-TENGAKEI-K
+                                       -   WRK-TENGAKEI-G
       *
       *
            .
@@ -1015,6 +1090,8 @@
        1007-KASAN-SET-ALL-SEC              SECTION.
       *
            MOVE    WRK-GOK-TENSUKEI    TO  LNK-SC90-TENSUKEI
+           MOVE    WRK-GOK-TENGAKEI    TO  LNK-SC90-TENGAKEI
+      *
       *
       *    自動加算の加算（時間外、年齢）
            MOVE    ZERO                TO  WRK-TENSUKEI-K
