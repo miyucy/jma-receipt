@@ -416,6 +416,7 @@
       *    外来全患者
            WHEN        "2"         ALSO SPACE
                PERFORM 210-GAI-ALL-HEN-SEC
+               PERFORM 2101-BG00701-DEL-SEC
                IF    ( FLG-END     NOT =   ZERO )
                    GO  TO  200-MAIN-EXT
                END-IF
@@ -446,10 +447,6 @@
       *
       *    会計カード編集処理
            PERFORM 2101-KAIKEI-HEN-SEC
-      *
-      *    処理対象患者ファイル削除処理
-           PERFORM 2101-BG00701-DEL-SEC
-      *
            IF    ( FLG-END     NOT =   ZERO )
                GO  TO  210-GAI-ALL-HEN-EXT
            END-IF
