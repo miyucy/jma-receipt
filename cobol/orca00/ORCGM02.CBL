@@ -35,6 +35,7 @@
       *  01.02.04    NACL-森脇    02/07/30  107 薬剤情報マスタの追加
       *  01.02.05    NACL-伊藤    04/02/05  M97の追加
       *  01.02.06    NACL-森脇    04/08/04  108 住所マスタの追加
+      *  01.02.07    NACL-多々納  05/01/21  109 ヘルプマスタ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -289,6 +290,9 @@
                                            SYS-1010-GSRAUTH(47:1)
       *2001.9.27 強制プロテクト（ＰＧ未作成）END
       *
+      *TEST ヘルプを追加するまで
+           MOVE    "1"                  TO SYS-1010-GSRAUTH(69:1)
+      *TEST ヘルプを追加するまで
       *****MOVE    SYS-1010-REC         TO  SPA-WORK   
            .
        320-SYS-1010-SPASET-EXT.
@@ -425,6 +429,13 @@
                        MOVE    "N31"           TO  SPA-SAKIPG
                    END-IF
       *----(01.02.06)----END-------------------
+      * ヘルプマスタ
+               WHEN    "109"
+                   IF      SYS-1010-GSRAUTH(69:1)    =  "0"
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "N41"           TO  SPA-SAKIPG
+                   END-IF
               WHEN    OTHER
                    MOVE    "0001"          TO  SPA-ERRCD
            END-EVALUATE.
@@ -522,7 +533,7 @@
       *
       *----(01.02.06)----START-----------------
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       8
+                   UNTIL   IDX >       9
                MOVE    WIDGET-INSENSITIVE      TO  M02-STATE-O (IDX)
            END-PERFORM           
       *----(01.02.06)----END-------------------
@@ -558,6 +569,9 @@
                    MOVE    WIDGET-NORMAL      TO  M02-G108-STATE
                END-IF
       *----(01.02.06)----END-------------------
+               IF      SYS-1010-GSRAUTH(69:1)   =  "1"
+                   MOVE    WIDGET-NORMAL      TO  M02-G109-STATE
+               END-IF
            END-IF
            .
        51O-GSRAUTH-EXT.
