@@ -1052,6 +1052,8 @@
                       MOVE  "ÀÁµá¼è¾Ã¤·"  TO  SPA-GMN-TJYOTAI (IDX)
                WHEN   "7"
                       MOVE  "·ÑÂ³"        TO  SPA-GMN-TJYOTAI (IDX)
+               WHEN   "A"
+                      MOVE  "Äê´üÀÁµá"    TO  SPA-GMN-TJYOTAI (IDX)
            END-EVALUATE
       *
            .
