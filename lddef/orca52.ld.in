@@ -1,0 +1,29 @@
+name	orca52;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGG01";
+bind	"G01"		"OpenCOBOL"	"ORCGG01";
+bind	"G02"		"OpenCOBOL"	"ORCGG02";
+bind	"G99"		"OpenCOBOL"	"ORCGG99";
+bind	"GERR"		"OpenCOBOL"	"ORCGGERR";
+bind	"GID1"		"OpenCOBOL"	"ORCGGID1";
+bind	"GID2"		"OpenCOBOL"	"ORCGGID2";
+
+multiplex_group	orca52;
+
+
+data	{
+	spa	orcaspa;
+	window	{
+		G01;
+		G02;
+		G99;
+		GERR;
+		GID1;
+		GID2;
+	};
+};
+
+#include "orcadb.inc"
