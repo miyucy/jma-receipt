@@ -5118,14 +5118,10 @@
       *
       *        実日数算定元の剤が存在しない場合で、
       *        診療行為の算定回数が設定されている場合はエラーとする
-               DISPLAY "FLG-JNISSU-HIT = " FLG-JNISSU-HIT
                IF    ( FLG-JNISSU-HIT  =   ZERO )
                    PERFORM VARYING IDX19   FROM    1   BY  1
                            UNTIL ( IDX19   >   TKAISU-SRYCD-MAX (IDX12))
                             OR   ( FLG-CHKEND (12) =   1 )
-      *
-                       DISPLAY "TKAISU-SRYCD-CNT (" IDX12  " "IDX19 ")="
-                                TKAISU-SRYCD-CNT (IDX12 IDX19)
       *
                        IF    ( TKAISU-SRYCD-CNT (IDX12 IDX19)
                                                >   ZERO )
@@ -5154,11 +5150,6 @@
            PERFORM VARYING IDX14   FROM    1   BY  1
                    UNTIL ( IDX14   >   TKAISU-SRYCD-MAX (IDX12))
                     OR   ( FLG-CHKEND (12) =   1 )
-      *
-               DISPLAY "TJNISSU-DAY-CNT (" IDX13 ")="
-                        TJNISSU-DAY-CNT (IDX13)
-               DISPLAY "TKAISU-SRYCD-CNT (" IDX12 " " IDX14 ")="
-                        TKAISU-SRYCD-CNT (IDX12 IDX14)
       *
                IF    ( TJNISSU-DAY-CNT (IDX13)
                                    <   TKAISU-SRYCD-CNT (IDX12 IDX14))
