@@ -23,6 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-太田     02/06/27  患者照会追加
       *  01.00.02    MCC-太田     02/12/19  定期請求追加
+      *  01.00.03    NACL-太田    03/10/14  入院患者照会追加
       *****************************************************************
        01  MNAME-DATA-REC.
            03  FILLER               PIC X(08)   VALUE   "RECEPT1".
@@ -70,11 +71,14 @@
            03  FILLER               PIC X(08)   VALUE   "TEIKI2".
            03  FILLER               PIC X(40)   VALUE
                                     "定期請求−請求書印刷".
+           03  FILLER               PIC X(08)   VALUE   "ORCBI201".
+           03  FILLER               PIC X(40)   VALUE
+                                    "入院患者照会".
       *
        01  MNAME-DATA-REC-R         REDEFINES   MNAME-DATA-REC.
-           03  MNAME-TBL-OCC        OCCURS      14  INDEXED TBL-IDX.
+           03  MNAME-TBL-OCC        OCCURS      15  INDEXED TBL-IDX.
                05  MNAME-SHELLID    PIC X(08).
                05  MNAME-JOBNAME    PIC X(40).
       *
-       01  MNAME-MAX                PIC 9(04)   VALUE   14.
+       01  MNAME-MAX                PIC 9(04)   VALUE   15.
       *
