@@ -140,6 +140,12 @@
                     06  W07-HAKHOUFLG-COUNT   PIC S9(9)   BINARY.
                     06  W07-HAKHOUFLG-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
+                  05  W07-KAGRPFLG-COMB.
+                    06  W07-KAGRPFLG.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-KAGRPFLG-COUNT   PIC S9(9)   BINARY.
+                    06  W07-KAGRPFLG-ITEM
+                            PIC X(40)   OCCURS  2 TIMES.
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.

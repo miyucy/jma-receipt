@@ -2487,22 +2487,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label265</name>
-	  <x>56</x>
-	  <y>136</y>
-	  <width>136</width>
-	  <height>24</height>
-	  <label>£²¡¥ÀÁµá½ñÈ¯¹ÔÊýË¡</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>SRYNYKNKNRKBN_COMBO</name>
 	  <x>205</x>
@@ -2545,6 +2529,78 @@
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>HAKHOUFLG_COMB</name>
+	  <x>208</x>
+	  <y>180</y>
+	  <width>300</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>HAKHOUFLG</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Wed, 09 Oct 2002 23:38:29 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Wed, 09 Oct 2002 23:38:41 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>40</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label265</name>
+	  <x>56</x>
+	  <y>136</y>
+	  <width>148</width>
+	  <height>24</height>
+	  <label>£²¡¥Ê£¿ô²Ê¤Þ¤È¤á½¸·×</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label266</name>
+	  <x>56</x>
+	  <y>180</y>
+	  <width>136</width>
+	  <height>24</height>
+	  <label>£³¡¥ÀÁµá½ñÈ¯¹ÔÊýË¡</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>KAGRPFLG_COMB</name>
 	  <x>204</x>
 	  <y>136</y>
 	  <width>300</width>
@@ -2559,7 +2615,7 @@
 	  <widget>
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>HAKHOUFLG</name>
+	    <name>KAGRPFLG</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>activate</name>

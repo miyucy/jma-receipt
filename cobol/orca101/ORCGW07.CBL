@@ -50,7 +50,7 @@
       *  02.01.10    NACL-多々納  04/03/10  時間外加算乳幼児チェック追加
       *  02.01.11    NACL-藤原    04/03/08  生保受給者番号の機能停止
       *  02.01.12    NACL-多々納  04/07/05  最終受診日から初診の期間追加
-      *                                     請求書発行方法追加
+      *                                     請求書発行方法他追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -233,6 +233,18 @@
                                13                          PIC X(01).
                                13  SPA-GMN-SRYNYKNKNRKBNMEIL
                                                            PIC X(38).
+      *                複数科まとめ集計
+                       09  SPA-GMN-KAGRPFLG-G.
+                           11  SPA-GMN-KAGRPFLG       PIC X(01).
+                           11  SPA-GMN-KAGRPFLG-F1    PIC X(01).
+                           11  SPA-GMN-KAGRPFLG-MEI   PIC X(38).
+                       09  SPA-GMN-KAGRPFLGLST-G.
+                           11  SPA-GMN-KAGRPFLG-MAX   PIC 9(03).
+                           11  SPA-GMN-KAGRPFLG-LST    OCCURS  5.
+                               13  SPA-GMN-KAGRPFLGL  PIC X(01).
+                               13                      PIC X(01).
+                               13  SPA-GMN-KAGRPFLGMEIL
+                                                       PIC X(38).
       *                請求書発行方法
                        09  SPA-GMN-HAKHOUFLG-G.
                            11  SPA-GMN-HAKHOUFLG       PIC X(01).
@@ -658,6 +670,13 @@
            MOVE    "5 伝票の新しい未収順に入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(5)
            MOVE    5                   TO  SPA-GMN-SRYNYKNKNRKBN-MAX
+      *
+           MOVE    "0 複数科まとめ集計をする"
+                                       TO  SPA-GMN-KAGRPFLG-LST(1)
+           MOVE    "1 複数科まとめ集計をしない"
+                                       TO  SPA-GMN-KAGRPFLG-LST(2)
+           MOVE    2                   TO  SPA-GMN-KAGRPFLG-MAX
+      *
       *
            MOVE    "1 診療科・保険組合せ別に発行"
                                        TO  SPA-GMN-HAKHOUFLG-LST(1)
@@ -1113,6 +1132,7 @@
            END-IF
       *
            MOVE    SYS-1038-NYKNKNRKBN TO  SPA-GMN-SRYNYKNKNRKBN
+           MOVE    SYS-1038-KAGRPFLG   TO  SPA-GMN-KAGRPFLG
            MOVE    SYS-1038-HAKHOUFLG  TO  SPA-GMN-HAKHOUFLG
       *
       *    入金管理区分
@@ -1131,6 +1151,23 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-SRYNYKNKNRKBNLST (1)
                                        TO  SPA-GMN-SRYNYKNKNRKBN-G
+           END-IF
+      *    複数科まとめ集計
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-KAGRPFLG-MAX
+               IF      SPA-GMN-KAGRPFLG
+                                       =   SPA-GMN-KAGRPFLGL (IDY)
+                   MOVE    SPA-GMN-KAGRPFLG-LST (IDY)
+                                       TO  SPA-GMN-KAGRPFLG-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-KAGRPFLG-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-KAGRPFLG-LST (1)
+                                       TO  SPA-GMN-KAGRPFLG-G
            END-IF
       *    請求書発行方法
            MOVE    ZERO                TO  FLG-OK
@@ -1325,6 +1362,7 @@
       *
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
+           MOVE    W07-KAGRPFLG        TO  SPA-GMN-KAGRPFLG-G
            MOVE    W07-HAKHOUFLG       TO  SPA-GMN-HAKHOUFLG-G
       *
       *    収納機能情報
@@ -1436,6 +1474,11 @@
                WHEN    "1038"
       *            入金管理区分チェック
                    PERFORM 4108-SRYNYKNKNRKBN-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+      *            複数科まとめチェック
+                   PERFORM 4108-KAGRPFLG-CHK-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
@@ -2195,6 +2238,31 @@
       *****************************************************************
       *    請求書発行方法チェック処理（診療行為機能情報）
       *****************************************************************
+       4108-KAGRPFLG-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KAGRPFLG-MAX
+               IF      SPA-GMN-KAGRPFLG
+                                       =   SPA-GMN-KAGRPFLGL (IDX)
+                   MOVE    SPA-GMN-KAGRPFLG-LST(IDX)
+                                          TO  SPA-GMN-KAGRPFLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    31              TO  SPA-GMN-CUR
+               MOVE    "0036"          TO  SPA-ERRCD
+               GO      TO      4108-KAGRPFLG-CHK-EXT
+           END-IF
+      *
+           .
+       4108-KAGRPFLG-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    請求書発行方法チェック処理（診療行為機能情報）
+      *****************************************************************
        4108-HAKHOUFLG-CHK-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
@@ -2208,7 +2276,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    31              TO  SPA-GMN-CUR
+               MOVE    32              TO  SPA-GMN-CUR
                MOVE    "0035"          TO  SPA-ERRCD
                GO      TO      4108-HAKHOUFLG-CHK-EXT
            END-IF
@@ -2797,6 +2865,7 @@
            MOVE    SPA-W01-STYUKYMD        TO  SYS-1038-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-1038-EDYUKYMD
            MOVE    SPA-GMN-SRYNYKNKNRKBN   TO  SYS-1038-NYKNKNRKBN
+           MOVE    SPA-GMN-KAGRPFLG        TO  SYS-1038-KAGRPFLG
            MOVE    SPA-GMN-HAKHOUFLG       TO  SYS-1038-HAKHOUFLG
       *
            MOVE    SYS-1038-REC            TO  SYSKANRI-REC
@@ -3195,6 +3264,16 @@
            MOVE    SPA-GMN-HAKHOUFLG-MAX
                                        TO  W07-HAKHOUFLG-COUNT
       *
+      *    複数科まとめ（診療行為機能情報）
+           MOVE    SPA-GMN-KAGRPFLG-G  TO  W07-KAGRPFLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KAGRPFLG-MAX
+               MOVE    SPA-GMN-KAGRPFLG-LST (IDX)
+                                       TO  W07-KAGRPFLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-KAGRPFLG-MAX
+                                       TO  W07-KAGRPFLG-COUNT
+      *
       *    入金管理区分（収納機能情報）
            MOVE    SPA-GMN-SYUNYKNKNRKBN-G TO  W07-SYUNYKNKNRKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3397,6 +3476,9 @@
                WHEN    "0035"
                    MOVE    "請求書発行方法区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "0036"
+                   MOVE    "複数科まとめ集計区分がありません。"
+                                                       TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"    TO  SPA-ERRMSG
                WHEN    "1001"
@@ -3577,6 +3659,8 @@
                WHEN    30
                    MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
                WHEN    31
+                   MOVE  "KAGRPFLG"        TO   MCP-WIDGET
+               WHEN    32
                    MOVE  "HAKHOUFLG"       TO   MCP-WIDGET
       *
                WHEN    40
@@ -3706,6 +3790,8 @@
       *
                WHEN    "SRYNYKNKNRKBN"
                    MOVE    31              TO  SPA-GMN-CUR
+               WHEN    "KAGRPFLG"
+                   MOVE    32              TO  SPA-GMN-CUR
                WHEN    "HAKHOUFLG"
                    MOVE    99              TO  SPA-GMN-CUR
       *

@@ -260,6 +260,13 @@ W07	{
 					count	int;
 					item	varchar(40)[5];
 				};
+				KAGRPFLG_COMB	{
+					KAGRPFLG	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[2];
+				};
 			};
 			TAGNAME3    {
 			  	state   int;
