@@ -3162,13 +3162,13 @@
       ***  MOVE    RECE62-SRYKA(IDX)    TO      SYU-SRYKA
            MOVE    SYUNOU-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SYUNOU-KEY2"        TO      ORC-DBPATH
+           MOVE    "SYUNOU-KEY10"       TO      ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SYUNOU-KEY2"    TO      ORC-DBPATH
+               MOVE    "SYUNOU-KEY10"   TO      ORC-DBPATH
                PERFORM  SYUNOU-READ-SEC
                PERFORM  UNTIL
                   (FLG-SYUNOU             =    1)
@@ -3184,14 +3184,14 @@
                            MOVE    10              TO  IDX1
                        END-IF
                    END-PERFORM          
-                   MOVE     "SYUNOU-KEY2"   TO   ORC-DBPATH
+                   MOVE     "SYUNOU-KEY10"  TO   ORC-DBPATH
                    PERFORM   SYUNOU-READ-SEC
                END-PERFORM
            ELSE
                DISPLAY   "SYUNOU SELECT ERR" 
            END-IF
       *
-           MOVE   "SYUNOU-KEY2"      TO  WK-PATH
+           MOVE   "SYUNOU-KEY10"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
            .
