@@ -41,7 +41,7 @@
       *保険者番号        
                05  RECE62-HKNJANUM-KEY    PIC  X(08).
       *補助区分
-               05  RECE62-HOJOKBN         PIC  X(01).
+               05  RECE62-HOJOKBN-KEY     PIC  X(01).
       *適用開始年月日
                05  RECE62-TEKSTYMD        PIC  X(08). 
       *患者番号
