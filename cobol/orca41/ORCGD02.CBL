@@ -3385,6 +3385,7 @@
                            (CHK-CD (IDY2)       =   ZERO)  OR
                            (FLG-TBL             =   2)
                            MOVE    1                    TO  FLG-END
+                           MOVE    20                   TO  IDY2
                        END-IF
                    END-PERFORM
                    IF  FLG-END   =   ZERO
@@ -3478,7 +3479,7 @@
                                                      TO  FLG-TBL
                                    MOVE    W-SRYCD-92-Y (IDY1)
                                                      TO  FLG-TENKIYMD-ER
-                                   MOVE    2000               TO  IDY1
+                                   MOVE    2000      TO  IDY1
                                END-IF
                            END-IF
                        END-PERFORM
@@ -3486,6 +3487,7 @@
                            (CHK-CD (IDY2)       =   ZERO)  OR
                            (FLG-TBL             =   2)
                            MOVE    1                    TO  FLG-END
+                           MOVE    20                   TO  IDY2
                        END-IF
                    END-PERFORM
                    IF  FLG-END   =   ZERO
