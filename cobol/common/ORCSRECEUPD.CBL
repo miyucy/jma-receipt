@@ -115,9 +115,6 @@
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
-      *???
-           DISPLAY "DATE=" SMCNDATE-YMD "#"
-      *???
       *
            MOVE    SMCNDATE-YMD        TO  WRK-SYSYMD
            IF      WRK-SYSDD           <=   10
