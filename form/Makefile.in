@@ -106,7 +106,9 @@ FORM_files = \
               HCM2A.red \
               HCM2B.red \
               HCM07.red \
+              HCM07V01.red \
               HCM08.red \
+              HCM08V01.red \
               HCN01.red \
               HCN011.red \
               HCM06V02.red \

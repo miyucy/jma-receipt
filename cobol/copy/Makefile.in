@@ -676,7 +676,9 @@ COPYS = \
         HCM2A.INC \
         HCM2B.INC \
         HCM07.INC \
+        HCM07V01.INC \
         HCM08.INC \
+        HCM08V01.INC \
         CPSENTEICDCHG.INC \
         CPORCSFDEL.INC \
         CPLDMAP.INC \
