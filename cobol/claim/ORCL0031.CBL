@@ -34,6 +34,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-多々納   02/04/30  改正に伴う修正
+      *  01.00.02    NACL-多々納  03/05/07  投薬を院内へ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -745,6 +746,16 @@
       *            院内とする
                    MOVE    "211"           TO  TBL-WKSRY-SRYSYUKBN
                                                             (TBL-MAX)
+               END-IF
+           END-IF
+      *    院内分は剤点数を設定する
+           IF     (WRK-SYOHOKBN        =   "0"         )  AND
+                  (WRK-SRYKBN          =   "21"  OR  "22"  OR  "23")
+               IF      TBL-WKSRY-SRYSYUKBN (TBL-MAX)   =   "212"
+                   CONTINUE
+               ELSE
+                   MOVE    1000                TO  TBL-WKSRY-ZAITENKEI
+                                                              (TBL-MAX)
                END-IF
            END-IF
       *
