@@ -992,6 +992,8 @@ path	key22           {
 	                SRYSYUKBN,
                         NAME,
 	                TEN,
+	                JITUDAY,
+	                DAYCNT,
 	                JGNCNT,
 	                JGNCNT1D,
 	                JGNCNT1W,
