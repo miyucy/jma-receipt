@@ -49,6 +49,7 @@
       *  03.00.03    NACL−多々納 02/09/24  検索修正
       *  03.00.04    NACL−多々納 02/10/08  処方せんに在宅薬剤院外追加
       *                                     フリーコメントの修正など
+      *  03.00.05    NACL−多々納 02/10/10  外来管理加算チェックの有無
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6046,14 +6047,17 @@
                MOVE    "2"                 TO  LNK-ORCSC-KBN
                PERFORM 520-ALL-CHEK-SEC
       *        更新前に確認画面を表示する
-      *        IF      FLG-TOROKU      =   SPACE
-      *            IF      SPA-KIDCD       =   "0102"
-      *                MOVE    SPACE       TO  SPA-KIDCD
-      *            END-IF
-      *        END-IF
+               IF      FLG-TOROKU      =   SPACE
+                   IF      SPA-KIDCD       =   "0102"
+                       MOVE    SPACE       TO  SPA-KIDCD
+                   END-IF
+               END-IF
       *
       *        診療行為の追加、修正時、再編集へ
                IF      FLG-TUIKA           =   1
+      *
+      *            空白行をなくす
+                   PERFORM 420-SYOKYO-SEC
       *            診療行為画面テーブル再編集
                    PERFORM 5101-TBLSAIHEN-SEC
       *
@@ -7426,11 +7430,24 @@
       *        労災用 外来管理点数
                MOVE    LNK-ORCSC-GAIRAI-TEN    TO  SPA-GAIRAI-TEN
       *
-               IF     (LNK-ORCSC-KIDCD     =   "0102" )  AND
-                      (LNK-ORCSC-KBN       =   "2"    )  AND
-                      (FLG-TOROKU          =   SPACE  )
-                   MOVE    SPACE           TO  LNK-ORCSC-KIDCD
+      *        外来管理加算削除のチェック
+               IF      SPA-GAIKANRIKBN-CHK     =   "1"
+                   IF     (LNK-ORCSC-KIDCD     =   "0102" )  AND
+                          (LNK-ORCSC-KBN       =   "2"    )  AND
+                          (FLG-TOROKU          =   SPACE  )
+                       MOVE    SPACE           TO  LNK-ORCSC-KIDCD
+                   END-IF
+               ELSE
+                   IF      LNK-ORCSC-KIDCD     =   "0102"
+                       MOVE    SPACE           TO  SPA-COM-INPUTCD
+                                                    (LNK-ORCSC-CHK-IDX)
+                       MOVE    SPACE           TO  SPA-GMN-INPUTCD
+                                                    (LNK-ORCSC-CHK-IDX)
+                       MOVE    SPACE           TO  LNK-ORCSC-KIDCD
+                       MOVE    1               TO  FLG-TUIKA
+                   END-IF
                END-IF
+      *
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
            END-IF
            IF     (SPA-ERRCD       NOT =   SPACE )  OR

@@ -38,6 +38,7 @@
       * 02.00.04     NACL-多々納  02/08/09  労災チェック追加
       * 02.00.05     NACL-多々納  02/10/02  注加算チェックの追加
       *                                     （すべての診区のチェック）
+      * 02.00.06     NACL−多々納 02/10/10  外来管理加算チェックの有無
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3231,6 +3232,18 @@
                    IF      FLG-ADD         =   1
                        MOVE    "1"             TO  WRK-COM-RSIFLG2
                                                                (IDX-S)
+                   END-IF
+               ELSE
+      *            外来管理加算が算定できる時
+                   IF     (FLG-GAIKAN          =   ZERO )  AND
+                          (IDX-GAIKAN          =   ZERO )
+                       MOVE    IDX-SYU         TO  IDX-Z
+                       PERFORM
+                           UNTIL  WRK-COM-DATAKBN (IDX-Z + 1) NOT =  "2"
+                           ADD     1               TO  IDX-Z
+                       END-PERFORM
+      *                外来管理加算コード追加処理
+                       PERFORM 2001-GAIKASAN-SEC
                    END-IF
                END-IF
            END-IF

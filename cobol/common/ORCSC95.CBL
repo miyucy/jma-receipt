@@ -30,6 +30,7 @@
       *  01.00.01    MCC-多々納   02/04/10  労災追加
       *  01.00.02    NACL-多々納  02/08/06  アフターケア用追加
       *  01.00.03    NACL-多々納  02/09/11  自賠責追加
+      *  01.00.04    NACL−多々納 02/10/10  外来管理加算チェックの有無
       *****************************************************************
       *
       *
@@ -433,6 +434,14 @@
       *
       *        相互作用チェック期間
                MOVE    SYS-1008-INTERACT-KIKAN TO  SPA-INTERACT-KIKAN
+      *
+      *        外来管理加算チェック
+               MOVE    SYS-1008-GAIKANRIKBN-CHK
+                                           TO  SPA-GAIKANRIKBN-CHK
+      *        初期は、チェックありとする
+               IF      SYS-1008-GAIKANRIKBN-CHK    =   SPACE
+                   MOVE    "1"             TO  SPA-GAIKANRIKBN-CHK
+               END-IF
            ELSE
                MOVE    ZERO                    TO  SPA-INTERACT-KIKAN
            END-IF
