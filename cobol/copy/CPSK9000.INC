@@ -49,8 +49,12 @@
       *診療行為ポップアップ表示
                05  SYS-9000-SYNBUTTON-G.
                  07 SYS-9000-SYNBUTTON  PIC  X(01) OCCURS 2.
+      *患者登録送信フラグ
+           03  SYS-9000-PT-FLG          PIC  X(01).
+      *レセ電変換フラグ
+           03  SYS-9000-RECEDEN-FLG     PIC  X(01).
       *予備
-           03                           PIC  X(492).
+           03                           PIC  X(490).
       *端末ＩＤ
            03  SYS-9000-TERMID          PIC  X(16).
       *オペーレータＩＤ
