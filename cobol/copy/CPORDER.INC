@@ -52,6 +52,7 @@
            03  ORDER-ERRCD-ITEM        PIC X(04).
            03  ORDER-CREKBN            PIC X(01).
            03  ORDER-KARTE-KEY-STS     PIC X(01).
+           03  ORDER-REMARKS           PIC X(80).
            03  ORDER-TERMID            PIC X(16).
            03  ORDER-OPID              PIC X(16).
            03  ORDER-CREYMD            PIC X(08).

@@ -74,7 +74,9 @@
            03  WRK-ORDERNUM            PIC 9(05).
            03  WRK-RENNUM              PIC 9(05).
            03  WRK-SRYSKBKBN           PIC X(05).
+           03  WRK-ALSNAME             PIC X(80).
            03  WRK-KANACHK-MAE-INPUT   PIC X(500).
+           03  WRK-KANACHK-OUT-INPUT   PIC X(500).
            03  WRK-PGNAME              PIC X(20).
            03  WRK-SRYSYUBETSUTBL      PIC X(20).
            03  WRK-IJICD               PIC X(10).
@@ -465,6 +467,8 @@
       *
                MOVE    "02"            TO  SODR-IDOKBN
       *
+               PERFORM 20011-ORCSODR02-ITM-CHK-SEC
+      *
                MOVE    "ORCSODR02"     TO  WRK-PGNAME
       *
            END-EVALUATE
@@ -500,6 +504,8 @@
       *
                        MOVE    LF04-IJICD (IDXA IDXB)
                                        TO  WRK-IJICD
+                       MOVE    LF04-ALSNAME (IDXA IDXB)
+                                       TO  WRK-ALSNAME
       *
                        MOVE    "0"     TO  WRK-CREKBN
                        PERFORM 20011-LNK-ORDER-HEN-SEC
@@ -578,6 +584,17 @@
                MOVE    "1"         TO  LNK-ORDER-KARTE-KEY-STS (IDX1)
            END-IF
       *
+           IF    ( WRK-SRYSKBKBN       =   NCLAIMID-TAIINCDID )
+               MOVE    WRK-ALSNAME TO  WRK-KANACHK-MAE-INPUT
+               PERFORM 800-ZENKAKU-CHK-SEC
+               IF    ( FLG-ENTRYCHK        =   ZERO )
+                   MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  LNK-ORDER-REMARKS       (IDX1)
+               ELSE
+                   MOVE    SPACE   TO  LNK-ORDER-REMARKS       (IDX1)
+               END-IF
+           END-IF
+      *
            .
        20011-LNK-ORDER-HEN-EXT.
            EXIT.
@@ -612,6 +629,8 @@
       *****************************************************************
        20011-ORCSODR02-ITM-CHK-SEC     SECTION.
       *
+      *    退院事由チェック
+           PERFORM 20011-TAIINCD-CHK-SEC
       *
            .
        20011-ORCSODR02-ITM-CHK-EXT.
@@ -732,6 +751,21 @@
       *
            .
        20011-DR-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院事由チェック
+      *****************************************************************
+       20011-TAIINCD-CHK-SEC                SECTION.
+      *
+      *    退院事由チェック
+           MOVE    NCLAIMID-TAIINCDNM  TO  WRK-SRYSYUBETSUTBL
+           PERFORM 20011-ITEM-CNT-CHK-SEC
+           IF    ( CNT-SRYSYUBETSUTBL  >   1     )
+               MOVE    1               TO  SODR-TAIINCD-FLG
+           END-IF
+      *
+           .
+       20011-TAIINCD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    項目出現回数チェック処理
@@ -912,14 +946,52 @@
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
            IF      ( KANACHK-RC    =   ZERO )
                IF      ( KANACHK-SYUBETU   NOT =   1 )
+                   DISPLAY "HANKAKU CHK ERR : " WRK-KANACHK-MAE-INPUT
                    MOVE    1       TO  FLG-ENTRYCHK
                END-IF
            ELSE
+                   DISPLAY "HANKAKU CHK ERR : " WRK-KANACHK-MAE-INPUT
                    MOVE    1       TO  FLG-ENTRYCHK
            END-IF
       *
            .
        800-HANKAKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    全角文字チェック
+      *****************************************************************
+       800-ZENKAKU-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO            TO  FLG-ENTRYCHK
+           MOVE    SPACE           TO  WRK-KANACHK-OUT-INPUT
+      *
+           IF  ( WRK-KANACHK-MAE-INPUT
+                                   =   SPACE )
+               GO  TO  800-ZENKAKU-CHK-EXT
+           END-IF
+      *
+           MOVE    SPACE           TO  ORCSKANACHKAREA
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"             TO  KANACHK-SYORI
+           MOVE    WRK-KANACHK-MAE-INPUT
+                                   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF      ( KANACHK-RC    =   ZERO )
+               MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+               IF      ( KANACHK-SYUBETU   NOT =   2 )
+                   DISPLAY "ZENKAKU CHK ERR : " WRK-KANACHK-MAE-INPUT
+                   MOVE    1       TO  FLG-ENTRYCHK
+               END-IF
+           ELSE
+                   DISPLAY "ZENKAKU CHK ERR : " WRK-KANACHK-MAE-INPUT
+                   MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+                   MOVE    1       TO  FLG-ENTRYCHK
+           END-IF
+      *
+           .
+       800-ZENKAKU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    マシン日付取得サブ
@@ -1022,10 +1094,10 @@
       *****************************************************************
        910-DBCLOSE-SEC                 SECTION.
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    CALL    "MCPSUB"            USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
       *
            .
       *

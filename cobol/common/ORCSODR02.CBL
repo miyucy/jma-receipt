@@ -61,6 +61,7 @@
            03  FLG-ORCSDAY             PIC 9(01).
            03  FLG-PTTEIKIRRK          PIC 9(01).
            03  FLG-SYUDAY              PIC 9(01).
+           03  FLG-HIT                 PIC 9(01).
       *
       *    カウント領域
       *01  CNT-AREA.
@@ -107,8 +108,10 @@
            03  WRK-DRCD                PIC X(04).
            03  WRK-DENPEDANUM          PIC 9(03).
            03  WRK-SKYMONEY            PIC  S9(07).
+           03  WRK-TAIINCD             PIC X(02).
       *
-      *01  ITEM-AREA.
+       01  ITEM-AREA.
+           03  ITEM-TAIINCD            PIC X(02).
       *
        01  ERRCD-AREA.
            03  ERRCD-ERRCD             PIC X(04).
@@ -150,10 +153,7 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK0042.INC".
-           COPY    "CPSK1010.INC".
-           COPY    "CPSK5001.INC".
-           COPY    "CPSK5002.INC".
-           COPY    "CPSK5113.INC".
+           COPY    "CPSK5013.INC".
       *
       *    患者入院履歴
        01  PTNYUINRRK-REC.
@@ -287,7 +287,7 @@
       *    INITIALIZE                  CNT-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  ERRCD-AREA
-      *     INITIALIZE                  ITEM-AREA
+           INITIALIZE                  ITEM-AREA
       *
            INITIALIZE                  TRRK-REC
            INITIALIZE                  SPA-AREA
@@ -373,9 +373,78 @@
       *****************************************************************
        2001-INPUT-CHK-SEC              SECTION.
       *
+           PERFORM 20011-TAIINCD-CHK-SEC
       *
            .
        2001-INPUT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院事由チェック処理
+      *****************************************************************
+       20011-TAIINCD-CHK-SEC           SECTION.
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   LNK-ORDER-MAX )
+      *
+               IF    ( LNK-ORDER-SRYSKBKBN (IDXA)
+                                   =   NCLAIMID-TAIINCDID )
+      *
+                   MOVE    "5013"      TO  WRK-SYS-KANRICD
+                   MOVE    LNK-ORDER-SRYCD (IDXA)
+                                       TO  WRK-SYS-KBNCD
+                   PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+                   IF    ( FLG-SYSKANRI    =   ZERO )
+                       MOVE    MCPDATA-REC TO  SYS-5013-REC
+                   END-IF
+      *
+                   MOVE    ZERO        TO  FLG-HIT
+                   MOVE    SPACE       TO  WRK-TAIINCD
+                   PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+                             OR  ( FLG-HIT             =   1    )
+      *
+                       IF    ( LNK-ORDER-REMARKS (IDXA)
+                                           =   SYS-5013-NAME )
+                           MOVE    SYS-5013-KBNCD
+                                           TO  WRK-TAIINCD
+                           MOVE    1       TO  FLG-HIT
+                       END-IF
+      *
+                       MOVE    PATH-TBL-SYSKANRI-KEY2
+                                       TO   MCP-PATH
+                       PERFORM 910-DBFETCH-SEC
+                       IF    ( MCP-RC          =   ZERO )
+                           MOVE    MCPDATA-REC TO  SYS-5013-REC
+                       ELSE
+                           MOVE    1           TO  FLG-SYSKANRI
+                           INITIALIZE          SYS-5013-REC
+                       END-IF
+      *
+                   END-PERFORM
+      *
+                   MOVE    PATH-TBL-SYSKANRI-KEY2
+                                       TO   MCP-PATH
+                   PERFORM 910-DBCLOSE-SEC
+      *
+                   IF    ( FLG-HIT                 =   1 )
+                       IF    ( SODR-TAIINCD-FLG    =   ZERO )
+                           MOVE    WRK-TAIINCD TO  ITEM-TAIINCD
+                       ELSE
+      *
+                          MOVE    "1216"  TO   ERRCD-ERRCD
+                          PERFORM 2100-ITEM-WRN-SET-SEC
+                       END-IF
+                   ELSE
+      *
+                       MOVE    "1217"  TO   ERRCD-ERRCD
+                       PERFORM 2100-ITEM-WRN-SET-SEC
+                   END-IF
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       20011-TAIINCD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    項目チェックエラー設定処理
@@ -392,6 +461,18 @@
       *
            .
        2100-ITEM-ERR-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    項目チェック警告エラー設定処理
+      *****************************************************************
+       2100-ITEM-WRN-SET-SEC           SECTION.
+      *
+           IF    ( LNK-ORDER-ERRCD-ITEM (IDXA) =   SPACE )
+               MOVE    ERRCD-ERRCD TO  LNK-ORDER-ERRCD-ITEM (IDXA)
+           END-IF
+      *
+           .
+       2100-ITEM-WRN-SET-EXT.
            EXIT.
       *****************************************************************
       *    関連チェック処理
@@ -894,6 +975,8 @@
            MOVE    SODR-SRYYMD     TO  PTNYUINRRK-TAIINYMD
                                        PTNYUINRRK-TENSTUYMD
       *
+           MOVE    ITEM-TAIINCD    TO  PTNYUINRRK-TAIINCD
+      *
            MOVE    "CLAIM"         TO  PTNYUINRRK-TERMID
            MOVE    SODR-UKEYMD     TO  PTNYUINRRK-UPYMD
            MOVE    SODR-UKEHMS     TO  PTNYUINRRK-UPHMS
@@ -1355,7 +1438,8 @@
            MOVE    ERRCD-ZAI           TO  ORDER-ERRCD-ZAI
       *
            IF    ( LNK-ORDER-SRYSKBKBN (IDXA)
-                                       =   NCLAIMID-ORDERID )
+                                       =   NCLAIMID-ORDERID
+                                       OR  NCLAIMID-TAIINCDID )
                CONTINUE
            ELSE
                MOVE    "9002"          TO  ORDER-ERRCD-ITEM
@@ -1898,6 +1982,30 @@
        800-GETUMATU-EXT.
             EXIT.
       *****************************************************************
+      *    システム管理検索処理(KEY2)
+      *****************************************************************
+       900-SYSKANRI-KEY2-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           INITIALIZE                      SYSKANRI-REC
+      *
+           MOVE    WRK-SYS-KANRICD     TO  SYS-KANRICD
+           MOVE    SODR-SRYYMD         TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-SYSKANRI-KEY2
+                                       TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
       *    システム管理検索処理(KEY10)
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC      SECTION.
@@ -2066,10 +2174,10 @@
       *****************************************************************
        910-DBCLOSE-SEC                 SECTION.
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    CALL    "MCPSUB"            USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
       *
            .
       *

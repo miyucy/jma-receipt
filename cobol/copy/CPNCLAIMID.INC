@@ -48,7 +48,7 @@
                07  NCLAIMID-DRNM       PIC X(20)   VALUE   "Claim017".
                07  NCLAIMID-DRID       PIC X(05)   VALUE   "10017".
              05  NCLAIMID-TAIINCD-G.
-               07  NCLAIMID-TAIINCD    PIC X(20)   VALUE   "MML0016".
+               07  NCLAIMID-TAIINCDNM  PIC X(20)   VALUE   "MML0016".
                07  NCLAIMID-TAIINCDID  PIC X(05)   VALUE   "20016".
            03  NCLAIMID-CHAILD-R       REDEFINES   NCLAIMID-CHAILD-VAL.
              05  NCLAIMID-CHAILD-OCC   OCCURS  8.

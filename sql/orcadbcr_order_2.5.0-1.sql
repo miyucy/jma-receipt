@@ -36,6 +36,7 @@ create table TBL_ORDER (
 	ERRCD_ITEM			char(4),
 	CREKBN				char(1),
 	KARTE_KEY_STS		char(1),
+	REMARKS				varchar(80),
 	TERMID   			varchar(16),
 	OPID     			varchar(16),
 	CREYMD   			char(8),
