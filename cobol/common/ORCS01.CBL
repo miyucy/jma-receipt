@@ -2838,8 +2838,6 @@
                END-IF
            END-IF.
       *
-      *----(2002/03/13  ŽÍŽÝŽºŽ³)---------------------------------------
-      *
            MOVE     ZERO     TO     WK-TOKUTEI-COMPFTN3.
       *
            PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
@@ -4260,7 +4258,6 @@
       *
       *        ¿ÇÎÅ¶èÊ¬¡¦¿ÇÎÅ¥³¡¼¥É¤ÇÊÂ¤ÓÂØ¤¨
       *
-      *   (2001/03/07  ŽÂŽ²Ž¶)
            MOVE   YAKFTN-TABLE      TO    YAKFTN-TABLE2.
            PERFORM VARYING     Y-IDX   FROM    1   BY  1
                    UNTIL      (YAKFTN-SRYKBN2(Y-IDX)    =   SPACE)  OR
@@ -4280,7 +4277,7 @@
                END-PERFORM
            END-PERFORM.       
            MOVE   YAKFTN-TABLE2     TO    YAKFTN-TABLE.
-      *   (2001/03/07  ŽÂŽ²Ž¶ ŽµŽÜŽØ)
+      *
       *//     PERFORM VARYING     Y-IDX   FROM    1   BY  1
       *//             UNTIL      (YAKFTN-SRYKBN(Y-IDX)    =   SPACE)  OR
       *//                        (Y-IDX                   >   39   )
@@ -4299,7 +4296,7 @@
       *//         END-PERFORM
       *//     END-PERFORM.       
       *
-      *     DISPLAY  "*****  ŽºŽ°ŽÄŽÞŽÅŽ×ŽËŽÞŽ¶Ž´ŽºŽÞ *******".
+      *
       *     PERFORM   VARYING  DSP-IDX   FROM   1   BY   1
       *                UNTIL  DSP-IDX   >   10
       *         DISPLAY  "YAKFTN-SRYCD(DSP-IDX)  = "
@@ -4357,7 +4354,7 @@
       *
            END-PERFORM.       
       *
-      *     DISPLAY  "*****  ŽÌŽ¸ŽÖŽ³Ž·Ž¶ŽÝŽÍŽÝŽ¼ŽÕŽ³ŽºŽÞ *******".
+      *
       *     PERFORM   VARYING  DSP-IDX   FROM   1   BY   1
       *                UNTIL  DSP-IDX   >   10
       *         DISPLAY  "YAKFTN-SRYCD(DSP-IDX)  = "
@@ -4402,7 +4399,7 @@
            END-PERFORM.       
       *
       *
-      *     DISPLAY  "*****  Ž»ŽÞŽ²ŽÊŽÞŽÝŽºŽÞŽ³ŽÅŽ×ŽËŽÞŽ¶Ž´ŽºŽÞ*******".
+      *
       *     PERFORM   VARYING  DSP-IDX   FROM   1   BY   1
       *                UNTIL  DSP-IDX   >   10
       *         DISPLAY  "YAKFTN-SRYCD(DSP-IDX)  = "

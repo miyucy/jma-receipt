@@ -1497,9 +1497,9 @@
       **             MOVE    SPACE           TO  HC06-HKNJANUM(IDX)
       **         END-IF
       **     END-PERFORM
-      *-----------   2000/04/20  ｼｭｳｾｲ ----------------------------
+      *
              MOVE   WRK-HKNJANUM    TO    HC06-HKNJANUM
-      *-----------   2000/04/20  ｼｭｳｾｲ ｵﾜﾘ------------------------
+      *
       *
       *    <記号・番号>
            IF  WRK-3SYU-KBN           =   ALL "1" AND 
