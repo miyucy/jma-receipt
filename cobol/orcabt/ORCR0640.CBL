@@ -2109,14 +2109,28 @@
       *
       *++++
       *
-      **>  IF      SYU-SYUSKJ-NISSU  NOT =  ZERO
+           IF      SYU-SYUSKJ-RYOYOHI  NOT =  ZERO
                    ADD   SYU-SYUSKJ-NISSU     TO  
                                        RECE62-SHOKUJINISSU(1)
                    ADD   SYU-SYUSKJ-RYOYOHI   TO
                                        RECE62-SHOKUJIRYOYOHI(1)
                    ADD   SYU-SYUSKJ-FTN       TO
                                        RECE62-SHOKUJIFTN(1)
-      **>  END-IF
+           END-IF
+           IF      RECE62-RJNHKNNUM    NOT =  SPACE
+             IF      SYU-SKJ-RYOYOHI(1)  NOT =  ZERO
+                   ADD   SYU-SKJ-NISSU(1)     TO  
+                                       RECE62-SHOKUJINISSU(1)
+                   ADD   SYU-SKJ-RYOYOHI(1)   TO
+                                       RECE62-SHOKUJIRYOYOHI(1)
+                   ADD   SYU-SKJ-FTN(1)       TO
+                                       RECE62-SHOKUJIFTN(1)
+                   ADD   SYU-SKJ-FTN(1)       TO
+                                       RECE62-RJNNYUFTN
+             END-IF
+           END-IF
+      *
+      *++++
       *
            IF      RECE62-SRYYM      >=  "200210"
              IF    RECE62-KOUREI  NOT =    SPACE
