@@ -90,8 +90,8 @@
                                    PIC X(14)   VALUE   SPACE.
       *    ジョブ管理ＤＢのキー値  
            03  WRK-CONS-JOB-SHELLID
-                                   PIC X(08)   VALUE   "DAILY".
-           03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
+                                   PIC X(08)   VALUE   "DAILY1".
+           03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
       *
       *****************************************************************
       *    ファイルレイアウト
