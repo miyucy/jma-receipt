@@ -1349,13 +1349,13 @@
       *            逓減対象外分を引く
       *            当月の算定回数
                    MOVE    ZERO                TO  WRK-TUKI-CNT
-                   IF      LNK-ORCSC-KYUSEI-90(1:6)
-                                               =   WRK-SRYYMD(1:6)
-                       MOVE    LNK-ORCSC-KYUSEI-90(7:2)
-                                               TO  IDX-STR
-                   ELSE
+      *!           IF      LNK-ORCSC-KYUSEI-90(1:6)
+      *!                                       =   WRK-SRYYMD(1:6)
+      *!               MOVE    LNK-ORCSC-KYUSEI-90(7:2)
+      *!                                       TO  IDX-STR
+      *!           ELSE
                        MOVE    1               TO  IDX-STR
-                   END-IF
+      *!           END-IF
                    PERFORM VARYING     IDY     FROM    IDX-STR  BY  1
                            UNTIL       IDY     >   IDD
                        IF     (WRK-GCNT (IDY)      =   ZERO    )  AND
@@ -1779,15 +1779,15 @@
                        GO      TO      20012-NTUKIMAX-CHK-EXT
                    END-IF
       *            逓減対象外分を引く
-      *            当月の算定回数
-                   MOVE    ZERO                TO  WRK-TUKI-CNT
-                   IF      LNK-ORCSC-KYUSEI-90(1:6)
-                                               =   WRK-SRYYMD(1:6)
-                       MOVE    LNK-ORCSC-KYUSEI-90(7:2)
-                                               TO  IDX-STR
-                   ELSE
+      *!           当月の算定回数
+      *            MOVE    ZERO                TO  WRK-TUKI-CNT
+      *            IF      LNK-ORCSC-KYUSEI-90(1:6)
+      *                                        =   WRK-SRYYMD(1:6)
+      *                MOVE    LNK-ORCSC-KYUSEI-90(7:2)
+      *                                        TO  IDX-STR
+      *!           ELSE
                        MOVE    1               TO  IDX-STR
-                   END-IF
+      *!           END-IF
                    PERFORM VARYING     IDY     FROM    IDX-STR   BY  1
                            UNTIL       IDY     >   IDD
                        IF     (WRK-GCNT (IDY)      =   ZERO) AND
