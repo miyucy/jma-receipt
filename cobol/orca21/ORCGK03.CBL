@@ -1807,6 +1807,11 @@
       *
            CLOSE                        PARA-FILE
       *
+      *    訂正時、受診履歴等の削除
+           IF      SPA-SYORIFLG         =   1
+               PERFORM 450011-TEISEI-SYORI-SEC
+           END-IF
+      *
       *    収納マスタを更新する
            PERFORM 4501-SYUNOU-OUT-SEC
            IF      SPA-ERRCD       NOT =   SPACE
