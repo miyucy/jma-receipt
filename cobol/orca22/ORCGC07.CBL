@@ -721,6 +721,7 @@
       *
                IF      SPA-C07-NYUGAIKBN   =   SPACE
                    MOVE    "2"             TO   SPA-C07-NYUGAIKBN
+               END-IF
            END-IF
       *
            .
