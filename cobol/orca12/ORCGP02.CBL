@@ -46,6 +46,7 @@
       *  02.00.03    NACL-多々納  02/11/07  入院基本画面遷移追加
       *  02.00.04    NACL-多々納  02/11/20  ＣＬＡＩＭ処理追加
       *  02.00.05    NACL-多々納  02/11/21  共済下船３月追加
+      *  02.00.06    NACL-多々納  03/01/28  一括削除に患者定期請求追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -324,6 +325,10 @@
       *    入院診療会計マスタ−
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
+      *
+      *    患者定期請求履歴
+       01  PTTEIKIRRK-REC.
+           COPY    "CPPTTEIKIRRK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -2053,6 +2058,18 @@
            MOVE    PTTAINFUKA-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "PTTAINFUKA-DEL2"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    患者定期請求履歴
+           INITIALIZE                      PTTEIKIRRK-REC
+           MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTTEIKIRRK-PTID
+           MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "PTTEIKIRRK-DEL1"   TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
