@@ -68,7 +68,7 @@
            03  IDX                 PIC 9(04).
       *
        01  WRK-AREA.
-           03  WRK-PAGE            PIC ZZZZZZZZZ9.
+           03  WRK-PAGE            PIC ZZZZ9.
       *
            03  WRK-PATH            PIC X(64).      
       *     
@@ -81,10 +81,14 @@
                05  WRK-SS          PIC X(02).
       *
        01  WRK-CONS-AREA.
-      *    ジョブ管理ＤＢのキー値  
+      *    ジョブ管理ＤＢのキー値（作成処理）  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "RECEPT1".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
+      *    ジョブ管理ＤＢのキー値（印刷処理）  
+           03  WRK-CONS-JOB-SHELLID1
+                                   PIC X(08)   VALUE   "RECEPT2".
+           03  WRK-CONS-JOB-JOBID1 PIC 9(07)   VALUE   1.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -222,10 +226,17 @@
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  JOB-JOBID
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  JOB-SHELLID
+           IF      SPA-R01-GMNKBN  =   "R02"  OR  "R04"
+               MOVE    WRK-CONS-JOB-JOBID1
+                                       TO  JOB-JOBID
+               MOVE    WRK-CONS-JOB-SHELLID1
+                                       TO  JOB-SHELLID
+           ELSE
+               MOVE    WRK-CONS-JOB-JOBID
+                                       TO  JOB-JOBID
+               MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  JOB-SHELLID
+           END-IF
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC 
@@ -249,25 +260,36 @@
                                        TO  WRK-SS
                MOVE    WRK-HENTIME     TO  R99-ENDTIME  (IDX)
                MOVE    JOB-YOBI        TO  R99-ERRMSG   (IDX)
-               COMPUTE R99-PROGRESSBAR-VALUE  =
+               IF      SPA-R01-GMNKBN  =   "R02"  OR  "R04"
+                   COMPUTE R99-PROGRESSBAR-VALUE  =
+                           JOB-STEPCNT  /   2      *   100
+               ELSE
+                   COMPUTE R99-PROGRESSBAR-VALUE  =
                            JOB-STEPCNT  /   13     *   100
+               END-IF
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "処理中です"    TO  R99-MSG
                ELSE
                    IF      JOB-ERRCD       =   SPACE
-                       PERFORM 4501-REPRINT-CHK-SEC
-                       IF      SPA-RECE07-PRTID    =   SPACE
-                           MOVE    "対象のレセプトが作成されていません"
-                                           TO  R99-MSG
-                       ELSE                    
-                           MOVE    SPA-RECE07-KEY
-                                          TO  SPA-R01-RECE07-KEY
-                           MOVE    SPA-RECE07-RECEKBN
-                                          TO  SPA-R01-RECE07-RECEKBN
-                           MOVE    SPA-RECE07-SRYYM
-                                          TO  SPA-R01-RECE07-SRYYM
-                           MOVE    SPA-RECE07-NYUGAIKBN
-                                          TO  SPA-R01-RECE07-NYUGAIKBN
+                       IF      SPA-R01-GMNKBN  =   "R02"   OR  "R04"
+                           CONTINUE
+                       ELSE    
+                           PERFORM 4501-REPRINT-CHK-SEC
+                           IF      SPA-RECE07-PRTID    =   SPACE
+                               MOVE    
+                                   "対象のレセプトが作成されていません"
+                                               TO  R99-MSG
+                           ELSE                    
+                               MOVE    SPA-RECE07-KEY
+                                              TO  SPA-R01-RECE07-KEY
+                               MOVE    SPA-RECE07-RECEKBN
+                                              TO  SPA-R01-RECE07-RECEKBN
+                               MOVE    SPA-RECE07-SRYYM
+                                              TO  SPA-R01-RECE07-SRYYM
+                               MOVE    SPA-RECE07-NYUGAIKBN
+                                              TO
+                                              SPA-R01-RECE07-NYUGAIKBN
+                           END-IF   
                        END-IF
                    ELSE
                        STRING  JOB-YOBI    DELIMITED  BY  SPACE
@@ -283,12 +305,32 @@
            MOVE    WIDGET-INSENSITIVE   TO  R99-B12-STATE
            IF      R99-MSG              =   SPACE
                IF      R99-COUNT            >   ZERO    
-                   MOVE    WIDGET-NORMAL        TO  R99-B12-STATE
-                   MOVE    "B12"                TO  MCP-WIDGET
-                   MOVE    "処理は正常に終了しました"
+                   IF      SPA-R01-GMNKBN  =   "R02"   OR  "R04"
+                       IF      JOB-UPDCNT           =   ZERO
+                           MOVE    "該当のレセプトはありませんでした"
                                                 TO  R99-MSG
+                       ELSE
+                           MOVE    JOB-UPDCNT           TO  WRK-PAGE
+                           STRING
+                               "処理は正常に終了しました　処理枚数は"
+                                                    DELIMITED  BY  SIZE
+                                   WRK-PAGE         DELIMITED  BY  SIZE
+                                   "枚です"         DELIMITED  BY  SIZE
+                                                    INTO  R99-MSG
+                           END-STRING
+                       END-IF
+                   ELSE
+                       MOVE    "処理は正常に終了しました"
+                                                    TO  R99-MSG
+                   END-IF
                    MOVE   100                   TO
                                             R99-PROGRESSBAR-VALUE                             
+                   IF      SPA-R01-GMNKBN  =   "R02"   OR  "R04"
+                       MOVE    "B01"                TO  MCP-WIDGET
+                   ELSE
+                       MOVE    WIDGET-NORMAL        TO  R99-B12-STATE
+                       MOVE    "B12"                TO  MCP-WIDGET
+                   END-IF 
                ELSE
                    MOVE    "B01"                TO  MCP-WIDGET
                    MOVE    "該当する処理はありません"

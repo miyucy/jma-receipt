@@ -1558,7 +1558,9 @@
                MOVE    ZERO                TO  SPA-R01-SRYYM
            END-IF
       *
-           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-R01-NYUGAIKBN     
+           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-R01-NYUGAIKBN
+      *
+           MOVE    SPACE               TO  SPA-R01-GMNKBN
       *
            MOVE    SPA-R01KYOUTU       TO  SPA-WORK       
       *

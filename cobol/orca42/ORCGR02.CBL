@@ -57,6 +57,7 @@
       *　入院機能追加　
       *  01.04.01    NACL-藤原    02/12/11  入外区分追加 
       *  01.04.02    NACL-藤原    03/01/08  通し番号のためのパラメタ追加 
+      *  01.04.03    NACL-藤原    03/01/15  確定のとき自動的に情報確認画面を表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -221,6 +222,7 @@
            03  WRK-PREFKBN         PIC X(01).
            03  WRK-TEISYUTUSAKI    PIC X(01).
            03  WRK-HENFLG          PIC 9(01).
+           03  WRK-PAGE            PIC ZZZZ9.
       *     
            03  WRK-SHELL-ARG1.
              05  WRK-SHELL-SRYYM   PIC  X(06).
@@ -239,6 +241,12 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
+           03  WRK-HENTIME.
+               05  WRK-HH          PIC X(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-MM          PIC X(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-SS          PIC X(02).
       *                             
        01  WRK-SHELL-NAME.
            05  FILLER             PIC X(16) VALUE
@@ -428,6 +436,9 @@
       *    作表処理
                WHEN    "RID1"
                    PERFORM 330-RID1-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+               WHEN    "R99"
+                   PERFORM 340-R99-SET-SEC
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
@@ -929,6 +940,19 @@
            MOVE    SPACE           TO  SPA-RIDCD      
            .
        330-RID1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理表示画面戻り処理
+      *****************************************************************
+       340-R99-SET-SEC            SECTION.
+      *
+           MOVE    SPACE           TO  SPA-RID1-FLG
+                                       SPA-R99-FLG
+           MOVE    SPACE           TO  SPA-RIDCD
+           MOVE    SPACE           TO  SPA-RIDCD2      
+           .
+       340-R99-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1642,7 +1666,10 @@
                                    TO  MCP-PATH
            CALL    "MCPSUB"        USING
                                    MCPAREA
-                                   MCPDATA-REC                         
+                                   MCPDATA-REC
+      *                         
+      *    情報確認画面を表示                                                   
+           PERFORM 490-KAKUNIN-SEC
            .
        450-PRINT-EXT.
            EXIT.
@@ -1794,17 +1821,17 @@
                                            MCPAREA
                                            MCPDATA-REC                         
       *
-           OPEN    INPUT   RECEERR-FILE
-           IF      STS-RECEERR         =   ZERO
-               READ    RECEERR-FILE
-                   AT  END
-                       MOVE    SPACE       TO  SPA-ERRCD
-                   NOT AT  END
-                       MOVE    RECEERR-REC TO  WRK-RECEERR
-                       MOVE    "9999"      TO  SPA-ERRCD
-               END-READ
-               CLOSE   RECEERR-FILE
-           END-IF            
+      *****OPEN    INPUT   RECEERR-FILE
+      *     IF      STS-RECEERR         =   ZERO
+      *         READ    RECEERR-FILE
+      *             AT  END
+      *                 MOVE    SPACE       TO  SPA-ERRCD
+      *             NOT AT  END
+      *                 MOVE    RECEERR-REC TO  WRK-RECEERR
+      *                 MOVE    "9999"      TO  SPA-ERRCD
+      *         END-READ
+      *         CLOSE   RECEERR-FILE
+      *****END-IF            
            .
        45011-RECEPRT-HENSYU-EXT.
            EXIT.
@@ -1847,11 +1874,13 @@
        470-ATOGMN-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    レセ電前処理
       *****************************************************************
        490-RECEDEN-CHK-SEC                SECTION.
+      *                                      
+      *    画面移行用のパラメタ
+           PERFORM 4901-PARA-HENSYU-SEC
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
@@ -1977,10 +2006,18 @@
        490-RECEDEN-EXT.
            EXIT.
       *
+      *
       *****************************************************************
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
+      *                                      
+      *    画面移行用のパラメタ
+           PERFORM 4901-PARA-HENSYU-SEC
+      *
+           MOVE    SPACE               TO  R99
+           MOVE    ZERO                TO  R99-COUNT
+                                           R99-PROGRESSBAR-VALUE
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
@@ -1990,33 +2027,98 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
            CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
+                                   ORCSJOBKANRIAREA 
                                    JOBKANRI-REC 
            IF      SJOBKANRI-RETURN
                                    =   ZERO
+               MOVE    1               TO  IDX                     
+               MOVE    JOB-JOBID       TO  R99-RENNUM   (IDX)
+               MOVE    JOB-SHELLMSG    TO  R99-SHORINM  (IDX)
+               MOVE    JOB-STARTTIME(1:2)
+                                       TO  WRK-HH
+               MOVE    JOB-STARTTIME(3:2)
+                                       TO  WRK-MM
+               MOVE    JOB-STARTTIME(5:2)
+                                       TO  WRK-SS
+               MOVE    WRK-HENTIME     TO  R99-STARTTIME(IDX)
+               MOVE    JOB-ENDTIME(1:2)
+                                       TO  WRK-HH
+               MOVE    JOB-ENDTIME(3:2)
+                                       TO  WRK-MM
+               MOVE    JOB-ENDTIME(5:2)
+                                       TO  WRK-SS
+               MOVE    WRK-HENTIME     TO  R99-ENDTIME  (IDX)
+               MOVE    JOB-YOBI        TO  R99-ERRMSG   (IDX)
                IF      JOB-ENDYMD      =   SPACE
-                   MOVE    "7777"          TO  SPA-ERRCD
-                   MOVE    "レセプト印刷中です"
-                                           TO  WRK-RECEERR
+                   MOVE    "処理中です"    TO  R99-MSG
                ELSE
-      *************IF     JOB-TERMID       =   SPA-TERMID     
-                       IF      JOB-ERRCD       =   SPACE
-                           MOVE    "8888"          TO  SPA-RIDCD
-                       ELSE     
-                           MOVE    SPACE           TO  WRK-RECEERR
-                           STRING  JOB-YOBI        DELIMITED  BY  SPACE
-                                   "（"            DELIMITED  BY  SIZE
-                                   JOB-PGID        DELIMITED  BY  SPACE
-                                   "）"            DELIMITED  BY  SIZE      
-                                                   INTO  WRK-RECEERR
-                           END-STRING                      
-                           MOVE    "9999"          TO  SPA-ERRCD 
-                       END-IF
-      *************END-IF    
-               END-IF
+                   IF      JOB-ERRCD       =   SPACE
+                       CONTINUE
+                   ELSE
+                       STRING  JOB-YOBI    DELIMITED  BY  SPACE
+                               "【"        DELIMITED  BY  SIZE
+                              JOB-SHELLMSG DELIMITED  BY  SPACE
+                              "】"         DELIMITED  BY  SIZE      
+                                           INTO  R99-MSG
+                       END-STRING
+                   END-IF                          
+               END-IF    
+               MOVE    IDX                     TO  R99-COUNT    
            END-IF
+      *
+           MOVE    WIDGET-INSENSITIVE   TO  R99-B12-STATE
+           IF      R99-MSG              =   SPACE
+               MOVE    "B01"                TO  MCP-WIDGET
+               IF      R99-COUNT            >   ZERO    
+                   IF      JOB-UPDCNT           =   ZERO
+                       MOVE    "該当のレセプトはありませんでした"
+                                                TO  R99-MSG
+                   ELSE
+                       MOVE    JOB-UPDCNT           TO  WRK-PAGE
+                       STRING  "処理は正常に終了しました　処理枚数は"
+                                                DELIMITED  BY  SIZE
+                               WRK-PAGE         DELIMITED  BY  SIZE
+                               "枚です"         DELIMITED  BY  SIZE
+                                                INTO  R99-MSG
+                       END-STRING
+                   END-IF
+                   MOVE   100                   TO
+                                            R99-PROGRESSBAR-VALUE                             
+               ELSE
+                   MOVE    "該当する処理はありません"
+                                                TO  R99-MSG
+               END-IF                                 
+           ELSE                                        
+               MOVE    "B11"                TO  MCP-WIDGET
+           END-IF
+      *
+           MOVE    "R02"                TO  SPA-MOTOPG
+           MOVE    "R99"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "R99"                TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
            .
        490-KAKUNIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面移行用のパラメタ変更処理
+      *****************************************************************
+       4901-PARA-HENSYU-SEC            SECTION.       
+      *    
+      *****MOVE    SPACE               TO  SPA-R01KYOUTU
+      *****INITIALIZE    SPA-R01KYOUTU
+      *
+           MOVE    "R02"               TO  SPA-R01-GMNKBN
+      *
+           MOVE    SPA-R01KYOUTU       TO  SPA-WORK       
+      *
+           .
+       4901-PARA-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
