@@ -2080,12 +2080,15 @@
            ELSE
                MOVE    1               TO  FLG-HKNCOMBI
            END-IF.
-           PERFORM VARYING     IDX-H   FROM    1   BY  1
-                   UNTIL      (IDX-H           >   40)   OR
-                              (FLG-HKNCOMBI    =   1)
-             IF      COMB-DELKBN           =   "1"
-               CONTINUE
-             ELSE
+      *
+           MOVE    ZERO                TO  SPA-I41-MAX-41
+      *
+           PERFORM UNTIL      (SPA-I41-MAX-41  >   40)   
+                          OR  (FLG-HKNCOMBI    =   1)
+             IF    ( COMB-DELKBN    NOT   =    "1" )
+               AND ((COMB-TEKSTYMD (1:6) <=    SPA-NAI-SRYYM-41)
+               AND  (COMB-TEKEDYMD (1:6) >=    SPA-NAI-SRYYM-41))
+      *
                ADD     1                   TO  SPA-I41-MAX-41
                MOVE    COMB-HKNCOMBINUM    TO  SPA-I41-THKNCOMBI-41
                                                     (SPA-I41-MAX-41)
@@ -2119,6 +2122,8 @@
                MOVE    "HKNCOMBI-KEY2"      TO  ORC-DBPATH
                PERFORM 940-HKNCOMBI-NEXT-SEC
            END-PERFORM.
+      *
+           .
       *
        3105-HKNCOMBI-HEN-EXT.
            EXIT.
@@ -2168,10 +2173,6 @@
            MOVE    SPACE               TO  WRK-CHK-DSP.
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-I41-MAX-41
-               IF  (SPA-I41-TTEKSTYMD-41 (IDX)(1:6)
-                                                <= SPA-NAI-SRYYM-41) AND
-                   (SPA-I41-TTEKEDYMD-41 (IDX)(1:6)
-                                                >= SPA-NAI-SRYYM-41)
                    ADD     1                  TO  I41-KUMILIST-COUNT
                    MOVE    SPA-I41-THKNCOMBI-41 (IDX)
                                   TO  I41-KUMINO (I41-KUMILIST-COUNT)
@@ -2185,7 +2186,6 @@
                                   TO  WRK-KUMISTYMD (I41-KUMILIST-COUNT)
                    MOVE    SPA-I41-TTEKEDYMD-41 (IDX)
                                   TO  WRK-KUMIEDYMD (I41-KUMILIST-COUNT)
-               END-IF
            END-PERFORM.
            IF  IDW   NOT =   ZERO
                PERFORM   VARYING   IDY     FROM    1   BY  1
@@ -4388,6 +4388,9 @@
                END-IF
            END-PERFORM.
       *
+      *    保険組合一覧編集
+           PERFORM 3105-HKNCOMBI-HEN-SEC
+      *
            IF      SPA-ERRCD              =   "0031"
                GO      TO       41018-ZENGETU-SYORI-EXT
            END-IF.
@@ -4399,6 +4402,10 @@
                MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM-41
                MOVE    SPA-SAG-SRYYM-41    TO  SPA-I40-SRYYMD
                MOVE    SPA-SAG-SRYYM-41    TO  SPA-NAI-SRYYM-41
+      *
+      *        保険組合一覧編集
+               PERFORM 3105-HKNCOMBI-HEN-SEC
+      *
                MOVE    "0027"              TO  SPA-ERRCD
                IF      SPA-GMN-MAX-41     =   ZERO
                    MOVE    07                  TO  SPA-GMN-CUR-41
@@ -4777,6 +4784,9 @@
       *     DISPLAY "JIGETSU-SAKUSEI WRK-TAIHI-SRYYM-41 = "
       *                 WRK-TAIHI-SRYYM-41
       *
+      *    保険組合一覧編集
+           PERFORM 3105-HKNCOMBI-HEN-SEC
+      *
            IF    ((SPA-ERRCD          NOT =   SPACE)   OR
                  ((SPA-ERRCD          =       SPACE)  AND
                   (FLG-NYUINKHNRYO    =       ZERO))) AND
@@ -4797,6 +4807,10 @@
                  MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM-41
                  MOVE    SPA-SAG-SRYYM-41    TO  SPA-I40-SRYYMD
                  MOVE    SPA-SAG-SRYYM-41    TO  SPA-NAI-SRYYM-41
+      *
+      *          保険組合一覧編集
+                 PERFORM 3105-HKNCOMBI-HEN-SEC
+      *
                  MOVE    "0028"              TO  SPA-ERRCD
                  IF      SPA-GMN-MAX-41     =   ZERO
                      MOVE    07                  TO  SPA-GMN-CUR-41
