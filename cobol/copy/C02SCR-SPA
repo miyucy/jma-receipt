@@ -182,19 +182,19 @@
                            11  SPA-GMN-C02-BSRYKAMEIL      PIC X(20).
                        09  SPA-GMN-C02-BSRYKA-MAX          PIC 9(02).    
       *                         
-                       09  SPA-GMN-C02-UTAGAIFLGLST        OCCURS  5.
+                       09  SPA-GMN-C02-UTAGAIFLGLST        OCCURS  3.
                            11  SPA-GMN-C02-UTAGAIFLGL      PIC X(01).
                            11  SPA-GMN-F1L                 PIC X(01).
                            11  SPA-GMN-C02-UTAGAIFLGMEIL   PIC X(12).
                        09  SPA-GMN-C02-UTAGAIFLG-MAX       PIC 9(02).
       *                         
-                       09  SPA-GMN-C02-SYUBYOFLGLST        OCCURS  5.
+                       09  SPA-GMN-C02-SYUBYOFLGLST        OCCURS  2.
                            11  SPA-GMN-C02-SYUBYOFLGL      PIC X(01).
                            11  SPA-GMN-F1L                 PIC X(01).
                            11  SPA-GMN-C02-SYUBYOFLGMEIL   PIC X(12).    
                        09  SPA-GMN-C02-SYUBYOFLG-MAX       PIC 9(02).
       *                         
-                       09  SPA-GMN-C02-MANSEIKBNLST        OCCURS  5.
+                       09  SPA-GMN-C02-MANSEIKBNLST        OCCURS  3.
                            11  SPA-GMN-C02-MANSEIKBNL      PIC X(02).
                            11  SPA-GMN-F1L                 PIC X(01).
                            11  SPA-GMN-C02-MANSEIKBNMEIL   PIC X(42).    
@@ -202,7 +202,7 @@
                            11  SPA-GMN-C02-MANSEIKBNTANL   PIC X(10).    
                        09  SPA-GMN-C02-MANSEIKBN-MAX       PIC 9(02).
       *                         
-                       09  SPA-GMN-C02-NYUGAIKBNLST        OCCURS  5.
+                       09  SPA-GMN-C02-NYUGAIKBNLST        OCCURS  2.
                            11  SPA-GMN-C02-NYUGAIKBNL      PIC X(01).
                            11  SPA-GMN-F1L                 PIC X(01).
                            11  SPA-GMN-C02-NYUGAIKBNMEIL   PIC X(06).    
@@ -216,19 +216,19 @@
                                                            PIC X(40).    
                        09  SPA-GMN-C02-HKNCOMBI-MAX        PIC 9(02).
       *                         
-                       09  SPA-GMN-C02-REZEFLGLST          OCCURS  5.
+                       09  SPA-GMN-C02-REZEFLGLST          OCCURS  2.
                            11  SPA-GMN-C02-REZEFLGL        PIC X(01).
                            11  SPA-GMN-F1L                 PIC X(01).
                            11  SPA-GMN-C02-REZEFLGMEIL     PIC X(10).    
                        09  SPA-GMN-C02-REZEFLG-MAX         PIC 9(02).
       *                         
-                       09  SPA-GMN-C02-TENKIKBNLST         OCCURS  5.
+                       09  SPA-GMN-C02-TENKIKBNLST         OCCURS  4.
                            11  SPA-GMN-C02-TENKIKBNL       PIC X(01).
                            11  SPA-GMN-F1L                 PIC X(01).
                            11  SPA-GMN-C02-TENKIKBNMEIL    PIC X(04).    
                        09  SPA-GMN-C02-TENKIKBN-MAX       PIC 9(02).
       *                         
-                       09  SPA-GMN-C02-HKNBYOMEIFLGLST     OCCURS  5.
+                       09  SPA-GMN-C02-HKNBYOMEIFLGLST     OCCURS  2.
                            11  SPA-GMN-C02-HKNBYOMEIFLGL   PIC X(01).
                            11  SPA-GMN-F1L                 PIC X(01).
                            11  SPA-GMN-C02-HKNBYOMEIFLGMEIL
@@ -273,6 +273,8 @@
                                                            PIC X(01).
                                        17  SPA-NAI-C02-BYOMEISBT
                                                            PIC X(01).
+                                       17  SPA-NAI-C02-HAISIYMD
+                                                           PIC 9(08).
                                        17  SPA-NAI-C02-BYOMEICD-O
                                                            PIC X(07)
                                                            OCCURS  21.
