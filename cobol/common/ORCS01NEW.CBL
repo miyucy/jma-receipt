@@ -3258,7 +3258,10 @@
                               WK-GAIKFTNRATE  /  100
                COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
                          WK-ZENGAKU   *  WK-FUTANWARI
-               IF    LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "051"       
+      **       IF    LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "051"       
+               IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
+                   (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
+                   (LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051")
                    CONTINUE
                ELSE
                    COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX) =
