@@ -82,6 +82,7 @@
                05  WRK-DD                  PIC 9(02).
       *
            03  WRK-CNT                     PIC 9(03).
+           03  WRK-MEISAISU                PIC 9(03).
       *
       *    労災入院会計ワーク
            03  WRK-ROUSAI-TABLE.
@@ -400,52 +401,53 @@
       *    取得した労災入院情報から日単位の入院会計情報を再構築
            PERFORM      VARYING    IDX   FROM   1  BY  1
                         UNTIL      IDX   >   31
+               MOVE     ZERO                TO  WRK-MEISAISU
       *        入院基本料
-               ADD      1                   TO  LNK-SROUNYUIN-MEISAISU
+               ADD      1                   TO  WRK-MEISAISU
                MOVE     WRK-NYUINKHN(IDX)   TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX LNK-SROUNYUIN-MEISAISU)
+                                           (IDX WRK-MEISAISU)
       *        外泊
+               ADD      1                   TO  WRK-MEISAISU
                IF         WRK-GAIHAKU(IDX)   NOT =        SPACE
-                   ADD    1                 TO  LNK-SROUNYUIN-MEISAISU
                    MOVE   WRK-GAIHAKU(IDX)  TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX LNK-SROUNYUIN-MEISAISU)
+                                           (IDX WRK-MEISAISU)
                END-IF
       *        減算情報（システム管理）
                IF      (LNK-SROUNYUIN-GAIHAKU(IDX)   =   ZERO)    AND
                        (WRK-GENSAN2         NOT =    SPACE)
-                   ADD    1                 TO  LNK-SROUNYUIN-MEISAISU
+                   ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN2       TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX LNK-SROUNYUIN-MEISAISU)
+                                           (IDX WRK-MEISAISU)
                END-IF
                IF      (LNK-SROUNYUIN-GAIHAKU(IDX)   =   ZERO)    AND
                        (WRK-GENSAN3         NOT =    SPACE)
-                   ADD    1                 TO  LNK-SROUNYUIN-MEISAISU
+                   ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN3       TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX LNK-SROUNYUIN-MEISAISU)
+                                           (IDX WRK-MEISAISU)
                END-IF
                IF      (LNK-SROUNYUIN-GAIHAKU(IDX)   =   ZERO)    AND
                        (WRK-GENSAN4         NOT =    SPACE)
-                   ADD    1                 TO  LNK-SROUNYUIN-MEISAISU
+                   ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN4       TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX LNK-SROUNYUIN-MEISAISU)
+                                           (IDX WRK-MEISAISU)
                END-IF
       *        労災乗数
                EVALUATE  LNK-SROUNYUIN-JOUSU-KBN(IDX)
                    WHEN  "1"
-                       ADD    1             TO  LNK-SROUNYUIN-MEISAISU
+                       ADD      1           TO  WRK-MEISAISU
                        MOVE   "101900010"   TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX LNK-SROUNYUIN-MEISAISU)
+                                           (IDX WRK-MEISAISU)
                    WHEN  "2"
-                       ADD    1             TO  LNK-SROUNYUIN-MEISAISU
+                       ADD      1           TO  WRK-MEISAISU
                        MOVE   "101900020"   TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX LNK-SROUNYUIN-MEISAISU)
+                                           (IDX WRK-MEISAISU)
                END-EVALUATE
       *        初期加算（長期減算）
                IF      (LNK-SROUNYUIN-GAIHAKU(IDX)   =   ZERO)    AND
                        (WRK-SHOKIKSN(IDX)   NOT =        SPACE)
-                   ADD    1                 TO  LNK-SROUNYUIN-MEISAISU
+                   ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-SHOKIKSN(IDX) TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX LNK-SROUNYUIN-MEISAISU)
+                                           (IDX WRK-MEISAISU)
                END-IF
            END-PERFORM
       *
@@ -627,10 +629,33 @@
            MOVE    TNS-SRYCD          TO  WRK-SRYCD-X
            COMPUTE LNK-SROUNYUIN-SRYCDTOTAL(IDX)  =
                    LNK-SROUNYUIN-SRYCDTOTAL(IDX)  +   WRK-SRYCD-9
+           ADD      1          TO  LNK-SROUNYUIN-MEISAISU(IDX)
       *
       *
            .
        210-TENSU-KEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスター読込
+      *****************************************************************
+       SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-5000-REC
+               MOVE    ZERO                TO  FLG-SYSKANRI
+           ELSE
+               INITIALIZE                      SYS-5000-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       SUSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -716,6 +741,49 @@
            EXIT.
       *
       *****************************************************************
+      *    入院診療行為マスター検索
+      *****************************************************************
+       910-NYUINACT-SELECT-SEC        SECTION.
+      *
+           MOVE    NYUINACT-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-NYUINACT
+           ELSE
+               MOVE    1                  TO  FLG-NYUINACT
+           END-IF
+      *
+           .
+       910-NYUINACT-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院診療行為マスター読込
+      *****************************************************************
+       910-NYUINACT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  NYUINACT-REC
+               MOVE    ZERO                TO  FLG-NYUINACT
+           ELSE
+               INITIALIZE                      NYUINACT-REC
+               MOVE    1                   TO  FLG-NYUINACT
+           END-IF
+      *
+           .
+       910-NYUINACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
@@ -760,10 +828,32 @@
            .
        910-TENSU-READ-EXT.
            EXIT.
+      *
       *****************************************************************
-      *    診療行為マスター読込
+      *    保険組合せマスター検索
       *****************************************************************
-       920-NYUINACT-READ-SEC         SECTION.
+       910-HKNCOMBI-SELECT-SEC        SECTION.
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-HKNCOMBI
+           ELSE
+               MOVE    1                  TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       910-HKNCOMBI-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せマスター読込
+      *****************************************************************
+       910-HKNCOMBI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -771,38 +861,16 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  NYUINACT-REC
-               MOVE    ZERO                TO  FLG-NYUINACT
+               MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
+               MOVE    ZERO                TO  FLG-HKNCOMBI
            ELSE
-               INITIALIZE                      NYUINACT-REC
-               MOVE    1                   TO  FLG-NYUINACT
+               INITIALIZE                      HKNCOMBI-REC
+               MOVE    1                   TO  FLG-HKNCOMBI
            END-IF
       *
            .
-       920-NYUINACT-READ-EXT.
+       910-HKNCOMBI-READ-EXT.
            EXIT.
-      *****************************************************************
-      *    診療会計マスター読込
-      *****************************************************************
-       930-NYUINACCT-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  NYUINACCT-REC
-               MOVE    ZERO                TO  FLG-NYUINACCT
-           ELSE
-               INITIALIZE                      NYUINACCT-REC
-               MOVE    1                   TO  FLG-NYUINACCT
-           END-IF
-      *
-           .
-       930-NYUINACCT-READ-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    点数マスター読込（主キー）
       *****************************************************************
