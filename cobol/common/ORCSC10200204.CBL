@@ -47,6 +47,7 @@
       * 02.00.11     NACL−多々納 02/12/06  初診の時労災の置換えをしない
       * 02.00.12     NACL-多々納  02/12/17  在宅指導料の追加（143)
       * 02.00.13     NACL-多々納  03/03/14  特定薬剤治療管理算定有無追加
+      * 02.00.13     NACL-多々納  03/04/04  在宅加算料の算定チェック修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1302,6 +1303,15 @@
                   (LNK-ORCSC-NETAKIRI-ARI2 NOT =   ZERO  )
                IF      WRK-COM-SRYSYUKBN (IDX-Z)   =   "143"
                    MOVE    1                   TO  FLG-ARI
+               END-IF
+           END-IF
+      *
+      *    在宅加算料
+           IF      WRK-COM-SRYSYUKBN (IDX-Z)  =   "143"
+      *        在宅で、往診区分がないものは単独ＯＫとする
+               IF     (WRK-COM-TNSSRYSYUKBN (IDX-Z)  =   "140" ) AND
+                      (WRK-COM-OSINKBN (IDX-Z)       =   ZERO  )
+                   MOVE    1                    TO  FLG-ARI
                END-IF
            END-IF
       *

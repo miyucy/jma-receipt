@@ -1179,7 +1179,7 @@
                    END-EVALUATE
                END-IF
       *        在宅指導料の時、点数加算はＯＫ
-               IF      LNK-SC93-NETAKIRI-ARI   =   1
+      ******** IF      LNK-SC93-NETAKIRI-ARI   =   1
                    IF     (WRK-SRYSYUKBN           =   "143" )  AND
                           (SPA-COM-SRYKBN (IDX)    =   "14"  )
                        IF      SPA-COM-TENSIKIBETU (IDX)   =   "1"  OR
@@ -1187,7 +1187,7 @@
                            MOVE    1               TO  FLG-ARI
                        END-IF
                    END-IF
-               END-IF
+      *********END-IF
       *        入院点滴で診療種別が入力されていること
                IF      SPA-NYUGAIKBN           =   "1"
                    IF      (SPA-COM-TNSSRYSYUKBN (IDX) =   "300" OR
