@@ -27,6 +27,8 @@
       *
       *入院会計作成区分
            03  LNK-SCNYUACCT-SYORI-KBN               PIC  X(01).
+      *特定入院料区分（０：一般入院料　１：特定入院料）
+           03  LNK-SCNYUACCT-TOKUTEINYUIN-KBN        PIC  X(01).
       *入院会計作成期間（開始）
            03  LNK-SCNYUACCT-STSRYYMD                PIC  X(08).
       *入院会計作成期間（終了）
