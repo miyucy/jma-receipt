@@ -1,5 +1,8 @@
 R03	{
 	fixed6	{
+		B23	{
+			state	int;
+		};
 		SRYYM	{
 			value	varchar(8);
 		};

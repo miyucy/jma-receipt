@@ -569,10 +569,14 @@
            MOVE    SYS-2005-AUTODSPKBN 
                                    TO  SPA-NAI-2005-AUTODSPKBN           
       *
-           IF      SPA-GMN-IKKATU          =   "T" 
-               MOVE    7               TO  SPA-GMN-CUR
-           ELSE 
-               MOVE    2               TO  SPA-GMN-CUR
+           IF      SPA-BEDSU           >   ZERO
+               MOVE    3                   TO  SPA-GMN-CUR
+           ELSE
+               IF      SPA-GMN-IKKATU          =   "T" 
+                   MOVE    2               TO  SPA-GMN-CUR
+               ELSE 
+                   MOVE    7               TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
            .
@@ -726,9 +730,9 @@
            MOVE    SPA-R01-AUTODSPKBN  TO  SPA-NAI-2005-AUTODSPKBN
       *
            IF      SPA-GMN-IKKATU          =   "T" 
-               MOVE    7               TO  SPA-GMN-CUR
-           ELSE 
                MOVE    2               TO  SPA-GMN-CUR
+           ELSE 
+               MOVE    7               TO  SPA-GMN-CUR
            END-IF
            .
        350-R02SPASET-EXT.
@@ -764,6 +768,9 @@
                     PERFORM 470-SYOKBN-SEC
                WHEN    "CLICKED"       ALSO    "SYOKBN"
                    PERFORM 410-SYOKBN-CHK-SEC
+      *    入外区分表示切替え処理
+               WHEN    "CLICKED"       ALSO    "B23"
+                   PERFORM 430-HNYUGAIKBN-CHANGE-SEC
       *     作成区分
                WHEN    "CLICKED"       ALSO    "B08"
                    MOVE    "F"                 TO  SPA-DATAKBN1-VALUE
@@ -783,11 +790,15 @@
                        MOVE    "F"             TO  SPA-GMN-KOBETU
                        MOVE    "T"             TO  SPA-DATAKBN1-VALUE 
                    END-IF
-                   IF      SPA-GMN-IKKATU      =   "T"
-                       MOVE    2                   TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    7                   TO  SPA-GMN-CUR    
-                   END-IF            
+                   IF      SPA-BEDSU           >   ZERO
+                       MOVE    3                   TO  SPA-GMN-CUR
+                   ELSE 
+                       IF      SPA-GMN-IKKATU      =   "T"
+                           MOVE    2                   TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    7                   TO  SPA-GMN-CUR    
+                       END-IF
+                   END-IF             
       *    帳票区分１
                WHEN    "CLICKED"       ALSO    "DATAKBN1"
                    PERFORM 400-DATAKBN1-SEC
@@ -1222,6 +1233,39 @@
            MOVE    2               TO  SPA-GMN-CUR
            .
        470-SYOKBN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入外区分表示切替処理
+      *****************************************************************
+       430-HNYUGAIKBN-CHANGE-SEC          SECTION.
+      *
+           EVALUATE    SPA-GMN-NYUGAIKBN
+               WHEN    "1"
+                   MOVE    "2"         TO  SPA-GMN-NYUGAIKBN
+               WHEN    "2"
+                   MOVE    "1"         TO  SPA-GMN-NYUGAIKBN
+           END-EVALUATE
+      *
+           MOVE    ZERO               TO  WRK-HENFLG
+           PERFORM VARYING IDY FROM   1   BY  1
+                   UNTIL   IDY >      SPA-GMN-NYUGAIKBN-MAX
+                   OR      WRK-HENFLG =   1
+               IF      SPA-GMN-NYUGAIKBN 
+                               =   SPA-GMN-NYUGAIKBNL (IDY)
+                   MOVE    SPA-GMN-NYUGAIKBNLST (IDY)
+                                      TO  SPA-GMN-NYUGAIKBN-G
+                   MOVE    1          TO  WRK-HENFLG
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-GMN-IKKATU          =   "T" 
+               MOVE    2               TO  SPA-GMN-CUR
+           ELSE 
+               MOVE    7               TO  SPA-GMN-CUR
+           END-IF
+           .
+       430-HNYUGAIKBN-CHANGE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2090,6 +2134,12 @@
                                            TO  R03-NYUGAIKBN-ITEM (IDX)
            END-PERFORM
            MOVE    SPA-GMN-NYUGAIKBN-MAX   TO  R03-NYUGAIKBN-COUNT
+      *
+           IF      SPA-BEDSU           =   ZERO
+               MOVE    WIDGET-INSENSITIVE  TO  R03-B23-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  R03-B23-STATE
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
