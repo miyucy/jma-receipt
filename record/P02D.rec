@@ -99,5 +99,12 @@ P02D	{
 		SINSATUEND	{
 			value	varchar(10);
 		};
+		JIBAISEIKBNCOB	{
+			JIBAISEIKBN	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[2];
+		};
 	};
 };
