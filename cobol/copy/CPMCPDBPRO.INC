@@ -226,6 +226,7 @@
       *  01.01.55    NACL-藤原    03/04/09  SEIKYU-KEY19追加
       *  01.01.56    NACL-藤原    03/04/14  SEIKYU-KEY20追加
       *  01.01.57    NACL-多々納　03/04/17  SYUNOU-KEY13追加
+      *  01.01.58    ひさなが     03/04/17  NYUINACCT-KEY18の追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -914,6 +915,7 @@
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY15"
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY16"
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY17"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY18"
                    MOVE    PATH-TBL-NYUINACCT-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "NYUINACCT-DEL1"
@@ -2392,6 +2394,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINACCT-KEY17"
                    MOVE    PATH-TBL-NYUINACCT-KEY17
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY18"
+                   MOVE    PATH-TBL-NYUINACCT-KEY18
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINACCT-ALL"
                    MOVE    PATH-TBL-NYUINACCT-ALL
