@@ -241,7 +241,6 @@
            03  WRK-ZOGEN           PIC S9(05).
            03  WRK-KEISANYMD       PIC X(08).
            03  WRK-TAIHI-SRYYM-41  PIC X(06).
-           03  WRK-TAIHI-HKN       PIC 9(03).
       *    医療機関設定の入院料加算チェック用
            03  WRK-NYUKHNKSN-SRYCD PIC X(09)  OCCURS 20.
            03  WRK-NYUKSNKBN       PIC X(03).
@@ -4089,6 +4088,7 @@
       *    入院会計マスターより編集　処理
       *****************************************************************
        410181-NYUINACCT-HEN-SEC           SECTION.
+           DISPLAY "410181-NYUINACCT-HEN-SEC".
       *
            MOVE    ZERO                TO  FLG-NYUINKHNRYO.
            MOVE    SPA-NAI-SRYYM-41    TO  WRK-SYMD(1:6).
@@ -4160,8 +4160,9 @@
                        MOVE   1                TO   FLG-NYUINKHNRYO
                    END-IF
       *            最終日の保険組合せを退避（次月会計の作成用）
-                   MOVE    ZERO                TO  WRK-TAIHI-HKN
+                   DISPLAY  "HKN-TAIHI"
                    IF      NACCT-ZAISKBKBN     =   "5"
+                       MOVE    ZERO            TO  WRK-TAIHI-HKN
                        PERFORM VARYING     IDX-HKN   FROM   1   BY  1
                          UNTIL       IDX-HKN  >   31
                           IF      NACCT-DAY (IDX-HKN)  NOT =   ZERO
@@ -4170,6 +4171,7 @@
                           END-IF
                        END-PERFORM
                    END-IF
+                   DISPLAY "WRK-TAIHI-HKN = " WRK-TAIHI-HKN
       *
                    MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH
                    PERFORM 900-NYUINACCT-READ-SEC
@@ -4716,11 +4718,11 @@
            MOVE   1             TO  LNK-SCNYUACCT-SHOKUJIKBN
       *    保険組合せ
            MOVE   "099999914"   TO  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
-           MOVE   PTNYUINRRK-HKNCOMBINUM
-                                TO  WRK-HKNCOMBINUM
-           MOVE   WRK-HKNCOMBINUM9 
-                                TO  LNK-SCNYUACCT-HKNCOMBINUM
-      *     MOVE   WRK-TAIHI-HKN  TO  LNK-SCNYUACCT-HKNCOMBINUM
+      *     MOVE   PTNYUINRRK-HKNCOMBINUM
+      *                          TO  WRK-HKNCOMBINUM
+      *     MOVE   WRK-HKNCOMBINUM9 
+      *                          TO  LNK-SCNYUACCT-HKNCOMBINUM
+           MOVE   WRK-TAIHI-HKN  TO  LNK-SCNYUACCT-HKNCOMBINUM
            DISPLAY   "LNK-SCNYUACCT-HKNCOMBINUM = "
                                     LNK-SCNYUACCT-HKNCOMBINUM
       *    転科元入院科
@@ -6102,6 +6104,7 @@
       *
       *    保険組合せ
            MOVE    SPA-NAI-HKNCOMBI-41 (IDX) TO  NACCT-HKNCOMBI.
+           MOVE    SPA-NAI-HKNCOMBI-41 (IDX) TO  WRK-TAIHI-HKN.
       *    剤回数
            MOVE    SPA-NAI-ZAIKAISU-41 (IDX) TO  NACCT-ZAIKAISU.
       *    回数テーブル（１日から３１日）
