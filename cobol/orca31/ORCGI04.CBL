@@ -2690,13 +2690,6 @@
       *
            MOVE    WRK-DENPNUM     TO  SYU-DENPNUM
       *
-           IF    ( SPA-NAI-I04-SEIKYU (IDX-SYU)
-                               >   SPA-NAI-I04-NYUKIN (IDX-SYU) )
-               MOVE    "2"         TO  SYU-DENPJTIKBN
-           ELSE
-               MOVE    "1"         TO  SYU-DENPJTIKBN
-           END-IF
-      *
       *    ÀÁµá»þºÇ½ªÍúÎò¼èÆÀ½èÍý
            PERFORM 4801-SEILASTRRK-SET-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -2716,6 +2709,16 @@
                                    TO  SYU-NYUKIN-TOTAL
            IF    ( SYU-NYUKIN-TOTAL    >   ZERO )
                MOVE    1           TO  SYU-NYUKIN-KAISU
+           END-IF
+      *
+           IF    ( SYU-SKYMONEY        =   ZERO )
+               MOVE    SPACE       TO  SYU-DENPJTIKBN
+           ELSE
+               IF    ( SYU-SKYMONEY   <=  SYU-NYUKIN-TOTAL )
+                   MOVE    "1"     TO  SYU-DENPJTIKBN
+               ELSE
+                   MOVE    "2"     TO  SYU-DENPJTIKBN
+               END-IF
            END-IF
       *
            MOVE    SYUNOU-REC      TO  WKSYUNOU-REC

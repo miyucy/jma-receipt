@@ -784,6 +784,11 @@
            MOVE    WRK-BTUNUM          TO  SYU-BYOTONUM
            MOVE    WRK-DRCD            TO  SYU-DRCD
       *
+           IF    ( SYU-SKYMONEY        =   ZERO )
+               MOVE    SPACE           TO  SYU-DENPJTIKBN
+           ELSE
+               MOVE    "2"             TO  SYU-DENPJTIKBN
+           END-IF
       *
            MOVE    WRK-PARA-TERMID     TO  SYU-TERMID
            MOVE    SYS-YMD             TO  SYU-CREYMD
