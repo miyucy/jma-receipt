@@ -33,10 +33,8 @@
                05 KOHPLUS-CITYNUM       PIC  X(03).
       *公費番号
                05 KOHPLUS-KOHNUM        PIC  X(03).
-      *主保険区分
-               05 KOHPLUS-HKNKBN        PIC  X(01).
-      *老人保健区分
-               05 KOHPLUS-RJNHKNKBN     PIC  X(01).
+      *患者区分
+               05 KOHPLUS-PTKBN         PIC  X(01).
       *有効開始年月日
                05 KOHPLUS-YUKOSTYMD     PIC  X(08).
       *有効終了年月日
@@ -69,9 +67,7 @@
                05 KOHPLUSUP-CITYNUM     PIC  X(03).
       *公費番号
                05 KOHPLUSUP-KOHNUM      PIC  X(03).
-      *主保険区分
-               05 KOHPLUSUP-HKNKBN      PIC  X(01).
-      *老人保健区分
-               05 KOHPLUSUP-RJNHKNKBN   PIC  X(01).
+      *患者区分
+               05 KOHPLUSUP-PTKBN       PIC  X(01).
       *有効開始年月日
                05 KOHPLUSUP-YUKOSTYMD   PIC  X(08).
