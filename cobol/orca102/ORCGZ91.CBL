@@ -1178,21 +1178,21 @@
                        MOVE  SPA-Z91-SRYENDL   TO  SHELL-SRYSTR
                        MOVE  SPA-Z91-SRYSTRL   TO  SHELL-SRYEND
                    END-IF
-      *----(02.01.03)--ADD-START---
+      *----(02.00.03)--UPD-START---
                    EVALUATE    SHELL-SRYEND
                      WHEN      "20"
-                       MOVE    29          TO  SHELL-SRYEND
+                       MOVE    "29"        TO  SHELL-SRYEND
                      WHEN      "30"
-                       MOVE    34          TO  SHELL-SRYEND
+                       MOVE    "34"        TO  SHELL-SRYEND
                      WHEN      "90"
-                       MOVE    97          TO  SHELL-SRYEND
+                       MOVE    "97"        TO  SHELL-SRYEND
                    END-EVALUATE
-      *----(02.01.03)--ADD-END-----
                ELSE
                    MOVE  1                 TO  SHELL-SRYKBN
-                   MOVE  ZERO              TO  SHELL-SRYSTR
-                   MOVE  99                TO  SHELL-SRYEND
+                   MOVE  "11"              TO  SHELL-SRYSTR
+                   MOVE  "99"              TO  SHELL-SRYEND
                END-IF
+      *----(02.00.03)--UPD-END-----
            END-IF
       *     
       *    医薬品チェックセット
