@@ -30,6 +30,7 @@
       * 01.00.01     NACL-多々納  02/09/09  平成１４年１０月改正対応
       * 01.00.02     NACL-多々納  02/10/03  負担者番号からの公費種類設定修正
       * 01.00.03     NACL-多々納  02/10/29  負担者番号の全角対応
+      * 01.00.04     NACL-多々納  03/02/14  法別番号チェック区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -615,11 +616,13 @@
                       (SPA-GMN-KOHKBN(IDX-K)
                                       =    SPA-GMN-KOHKBNL (IDX))
       *            法別番号が同じこと
-                   IF      SPA-GMN-FTNJANUM(IDX-K) NOT =   SPACE
-                     AND   SPA-GMN-FTNJANUM(IDX-K) (1:2)   NUMERIC
-                       IF      SPA-GMN-FTNJANUM(IDX-K) (1:2)
+                   IF     (SPA-GMN-FTNJANUM(IDX-K) NOT =   SPACE )
+                     AND  (SPA-GMN-FTNJANUM(IDX-K) (1:2)   NUMERIC)
+      *                法別番号チェック区分
+                       IF     (SPA-NAI-KOHHBTNUMKBN (IDX)  =   "1" ) AND
+                              (SPA-GMN-FTNJANUM(IDX-K) (1:2)
                                            NOT =  SPA-NAI-HBTNUM
-                                                              (IDX)
+                                                              (IDX) )
                            MOVE    "0092"              TO  SPA-ERRCD
                        END-IF
                    END-IF

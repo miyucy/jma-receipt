@@ -34,6 +34,7 @@
       *  01.00.05    MCC-藤原     02/03/22  保険番号マスタの読込みの修正
       *  01.00.06    NACL-多々納  02/12/24  負担区分の初期値の編集
       *  01.00.07    NACL-太田    03/01/08  レセプト負担金額コンボ追加
+      *  01.00.08    NACL-太田    03/02/14  法別番号チェック区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -172,6 +173,14 @@
                        09  SPA-GMN-F1             PIC X(01).
                        09  SPA-GMN-RECEFTNDSPKBNMEI
                                                   PIC X(28).
+      *            法別番号チェック
+                   07  SPA-GMN-HBTNUMCHKKBN-G.
+                       09  SPA-GMN-HBTNUMCHKKBN   PIC X(01).
+                       09  SPA-GMN-HBT1           PIC X(01).
+                       09  SPA-GMN-HBTNUMCHKKBNMEI
+                                                  PIC X(14).
+                   07  SPA-GMN-HBTNUMCHKKBN-LST   PIC X(16)
+                                                  OCCURS   2.
       *
                    07  SPA-GMN-HKN-AREA-G     OCCURS  4.
                        09  SPA-GMN-GAIFTNKBN-G.
@@ -549,6 +558,16 @@
                                        TO  SPA-GMN-NYUSKJRYYKBNMEIL (5)
            MOVE    5                   TO  SPA-GMN-NYUSKJRYYKBN-MAX
       *
+      *    法別番号チェック区分
+           MOVE    "0"                 TO  SPA-GMN-HBTNUMCHKKBN-LST(1)
+                                                               (1:1)
+           MOVE    "チェックしない"    TO  SPA-GMN-HBTNUMCHKKBN-LST(1)
+                                                               (3:)
+           MOVE    "1"                 TO  SPA-GMN-HBTNUMCHKKBN-LST(2)
+                                                               (1:1)
+           MOVE    "チェックする"      TO  SPA-GMN-HBTNUMCHKKBN-LST(2)
+                                                               (3:)
+      *
       *    保険番号マスタより編集  
            INITIALIZE                      HKNNUM-REC
            MOVE    SPA-HOSPID              TO  HKN-HOSPID
@@ -637,6 +656,18 @@
                                           TO  SPA-GMN-RECEFTNDSPKBNMEI
                        MOVE    SPA-GMN-RECEFTNDSPKBN-MAX
                                           TO  IDY
+                   END-IF
+               END-PERFORM
+      *        法別番号チェック区分
+               MOVE    HKN-HBTNUMCHKKBN  TO  SPA-GMN-HBTNUMCHKKBN
+               PERFORM VARYING IDY FROM   1   BY  1
+                       UNTIL   IDY >      2
+                   IF      SPA-GMN-HBTNUMCHKKBN
+                                      =   SPA-GMN-HBTNUMCHKKBN-LST(IDY)
+                                                           (1:1)
+                       MOVE    SPA-GMN-HBTNUMCHKKBN-LST (IDY)
+                                          TO  SPA-GMN-HBTNUMCHKKBN-G
+                       MOVE    2          TO  IDY
                    END-IF
                END-PERFORM
       *
@@ -796,6 +827,9 @@
                    PERFORM 4102-TANSEIDONAME-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "HKNKOHSBTKBN"
                    PERFORM 4103-HKNKOHSBTKBN-CHK-SEC
+      *        法別番号チェック
+               WHEN    "ACTIVATE"      ALSO    "HBTNUMCHKKBN"
+                   PERFORM 4103-HBTNUMCHKKBN-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "KENSNUMCHKKBN"
                    PERFORM 4104-KENSNUMCHKKBN-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "JKYSKENSNUMCHKKBN"
@@ -971,10 +1005,27 @@
            IF      SPA-GMN-HKNKOHSBTKBNMEI    =   SPACE
               MOVE    "0001"           TO  SPA-ERRCD
            ELSE       
-               ADD     1               TO  SPA-GMN-CUR
+               MOVE    16              TO  SPA-GMN-CUR
            END-IF    
            .
        4103-HKNKOHSBTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険公費種別区分チェック
+      *****************************************************************
+       4103-HBTNUMCHKKBN-CHK-SEC     SECTION.
+      *
+           MOVE    16                  TO  SPA-GMN-CUR
+      *
+           MOVE    V02-HBTNUMCHKKBN    TO  SPA-GMN-HBTNUMCHKKBN-G
+      *
+           IF      SPA-GMN-HBTNUMCHKKBN    =   "0"  OR  "1"
+               MOVE    5               TO  SPA-GMN-CUR
+           ELSE
+              MOVE    "0001"           TO  SPA-ERRCD
+           END-IF 
+           .
+       4103-HBTNUMCHKKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1796,6 +1847,7 @@
            MOVE    SPA-GMN-SEIDONAME       TO  HKN-SEIDONAME 
            MOVE    SPA-GMN-TANSEIDONAME    TO  HKN-TANSEIDONAME 
            MOVE    SPA-GMN-HKNKOHSBTKBN    TO  HKN-HKNKOHSBTKBN 
+           MOVE    SPA-GMN-HBTNUMCHKKBN    TO  HKN-HBTNUMCHKKBN
            MOVE    SPA-GMN-KENSNUMCHKKBN   TO  HKN-KENSNUMCHKKBN 
            MOVE    SPA-GMN-JKYSKENSNUMCHKKBN
                                            TO  HKN-JKYSKENSNUMCHKKBN 
@@ -2000,7 +2052,7 @@
            MOVE    SPA-GMN-EDYUKYMD     TO  V02-EDYUKYMD
            MOVE    SPA-GMN-HKNNUM       TO  V02-HKNNUM
            MOVE    SPA-GMN-PAYKBN       TO  V02-PAYKBN
-      * 
+      *
            MOVE    SPA-GMN-HBTNUM       TO  V02-HBTNUM
            MOVE    SPA-GMN-SEIDONAME    TO  V02-SEIDONAME
            MOVE    SPA-GMN-TANSEIDONAME TO  V02-TANSEIDONAME
@@ -2106,7 +2158,16 @@
            END-PERFORM
            MOVE    SPA-GMN-RECEFTNDSPKBN-MAX
                                        TO  V02-RECEFTNDSPKBN-COUNT
-                                                    
+      *
+      *    法別番号チェック区分
+           MOVE    SPA-GMN-HBTNUMCHKKBN-G  TO  V02-HBTNUMCHKKBN
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX     >   2
+               MOVE    SPA-GMN-HBTNUMCHKKBN-LST (IDX)
+                                       TO  V02-HBTNUMCHKKBNLST (IDX)
+           END-PERFORM
+           MOVE    2                   TO  V02-HBTNUMCHKKBN-COUNT
+     *
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       4
                PERFORM VARYING IDX FROM    1   BY  1
@@ -2220,7 +2281,7 @@
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                    TO  FLG-END              
+           MOVE    1                    TO  FLG-END
       *
            .
        510-ERRSET-EXT.
@@ -2298,6 +2359,8 @@
                     MOVE  "RECESKYKBN"      TO   MCP-WIDGET
                 WHEN    15
                     MOVE  "RECEFTNDSPKBN"   TO   MCP-WIDGET
+                WHEN    16
+                    MOVE  "HBTNUMCHKKBN"    TO   MCP-WIDGET
       * 
                 WHEN    20
                     MOVE  "GAIFTNKBN1"      TO   MCP-WIDGET

@@ -31,6 +31,7 @@
       * 01.00.02     NACL-多々納  02/10/18  任継の自動発生を２年チェックを５年に変更
       * 01.00.03     NACL-多々納  02/10/31  船員保険補助区分追加
       * 01.00.04     NACL-多々納  02/11/21  共済下船３月追加
+      * 01.00.05     NACL-多々納  03/02/14  法別番号チェック区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -604,9 +605,11 @@
                                                            "060" )
                            CONTINUE
                        ELSE
-                           IF      SPA-GMN-HKNJANUM(1:2)
+      *                    法別番号チェック区分
+                           IF     (SPA-NAI-HKNHBTNUMKBN(IDX)  =  "1" )
+                              AND (SPA-GMN-HKNJANUM(1:2)
                                                NOT =  SPA-NAI-HKNHBTNUM
-                                                              (IDX)
+                                                              (IDX) )
                                MOVE    "0067"              TO  SPA-ERRCD
                            END-IF
                        END-IF
@@ -897,6 +900,7 @@
        1001-HOJOKBN-CHK-SEC     SECTION.
       *
            IF      SPA-GMN-HOJOKBN     =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-HOJOKBN-G
                GO      TO      1001-HOJOKBN-CHK-EXT
            END-IF
       *
@@ -992,6 +996,7 @@
        1001-CONTKBN-CHK-SEC     SECTION.
       *
            IF      SPA-GMN-CONTKBN     =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-CONTKBN-G
                GO      TO      1001-CONTKBN-CHK-EXT
            END-IF
       *

@@ -934,6 +934,9 @@
       *    保険法別番号
            MOVE    HKN-HBTNUM          TO  SPA-NAI-HKNHBTNUM
                                                     (SPA-GMN-HKNMAX)
+      *    保険法別番号チェック区分
+           MOVE    HKN-HBTNUMCHKKBN    TO  SPA-NAI-HKNHBTNUMKBN
+                                                    (SPA-GMN-HKNMAX)
       *    支払区分
            MOVE    HKN-PAYKBN          TO  SPA-NAI-HKNPAYKBN
                                                     (SPA-GMN-HKNMAX)
@@ -982,6 +985,9 @@
                                                     (SPA-GMN-KOHMAX)
       *    保険法別番号
            MOVE    HKN-HBTNUM          TO  SPA-NAI-HBTNUM
+                                                    (SPA-GMN-KOHMAX)
+      *    保険法別番号チェック区分
+           MOVE    HKN-HBTNUMCHKKBN    TO  SPA-NAI-KOHHBTNUMKBN
                                                     (SPA-GMN-KOHMAX)
       *    支払区分
       *    老人で負担割合別の時、１，２を編集する
