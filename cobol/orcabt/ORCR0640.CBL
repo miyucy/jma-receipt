@@ -83,6 +83,7 @@
       *  01.01.03    NACL-ÌçÏÆ    04/04/05  ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ¤Î
       *                                     ¥³¥á¥ó¥ÈÂÐ±þ
       *  01.01.04    NACL-ÌçÏÆ    04/04/26  ¥æ¡¼¥¶¡¼¥³¥á¥ó¥ÈÄÉ²ÃÂÐ±þ
+      *  01.01.05    NACL-ÌçÏÆ    04/05/11  Ï·¿ÍÆþ±¡ÎÁÅ¦Í×ÍóÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4120,6 +4121,23 @@
                    MOVE    PTCOM-INPUTCOMENT     TO  RECE65-NAME(IDX4)
                ELSE
                    MOVE    TNS-NAME              TO  RECE65-NAME(IDX4)
+      *
+                   IF   RECE64-ZAISKBKBN = "1"
+                   AND  RECE64-SRYKBN    = "90"
+                   AND  TNS-DATAKBN      =  1
+                   AND  TNS-ROUTEKKBN    =  2
+      *
+                      IF   RECE65-NAME(IDX4)(1:4) = "Ï·¿Í"
+                         CONTINUE
+                      ELSE
+                         MOVE  "Ï·¿Í"    TO   RECE65-NAME(IDX4)(1:4)
+                         MOVE  TNS-NAME  TO   RECE65-NAME(IDX4)(5:) 
+                         COMPUTE  RECE65-YUKOKETA(IDX4) =
+                                  RECE65-YUKOKETA(IDX4) + 2
+                      END-IF
+      *
+                   END-IF
+      *
                END-IF
       *
              END-IF  
@@ -4220,6 +4238,26 @@
                    MOVE    PTCOM-INPUTCOMENT     TO  RECE65-NAME(IDX4)
                ELSE
                    MOVE    TNS-NAME              TO  RECE65-NAME(IDX4)
+      *
+                   IF   RECE64-ZAISKBKBN = "1"
+                   AND  RECE64-SRYKBN    = "90"
+                   AND  TNS-DATAKBN      =  1
+                   AND  TNS-ROUTEKKBN    =  2
+      *
+                      IF   RECE65-NAME(IDX4)(7:4) = "Ï·¿Í"
+                         CONTINUE
+                      ELSE
+                         MOVE  TNS-NAME(1:6)
+                                         TO   RECE65-NAME(IDX4)(1:6)
+                         MOVE  "Ï·¿Í"    TO   RECE65-NAME(IDX4)(7:4)
+                         MOVE  TNS-NAME(7:)
+                                         TO   RECE65-NAME(IDX4)(11:)
+                         COMPUTE  RECE65-YUKOKETA(IDX4) =
+                                  RECE65-YUKOKETA(IDX4) + 2
+                      END-IF
+      *
+                   END-IF
+      *
                END-IF
       *
              END-IF  
