@@ -60,6 +60,13 @@ W12	{
 		KKHPRTNM	{
 			value	varchar(16);
 		};
+		RENNUMHENKBN_COMBO	{
+			RENNUMHENKBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[3];
+		};
 		KKHPRTKBN_COMBO	{
 			KKHPRTKBN	{
 				value	varchar(20);
