@@ -180,6 +180,7 @@
       *                                     SYUMEI-DEL2追加
       *                                     SYUNOU-DEL6追加
       *  01.01.26    NACL-太田    02/12/20  BD002-KEY3追加
+      *  01.01.27    NACL-藤原    02/12/24  NYUINACCT-KEY13,KEY14追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -829,6 +830,8 @@
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY10"
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY11"
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY12"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY13"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY14"
                    MOVE    PATH-TBL-NYUINACCT-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "NYUINACCT-DEL1"
@@ -2179,6 +2182,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINACCT-KEY12"
                    MOVE    PATH-TBL-NYUINACCT-KEY12
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY13"
+                   MOVE    PATH-TBL-NYUINACCT-KEY13
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY14"
+                   MOVE    PATH-TBL-NYUINACCT-KEY14
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINACCT-ALL"
                    MOVE    PATH-TBL-NYUINACCT-ALL
