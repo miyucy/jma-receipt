@@ -11,17 +11,19 @@
             02  HCN06-TOTALTEN  PIC X(7)        OCCURS  3 TIMES.
             02  HCN06-FTNMONEY  PIC X(8)        OCCURS  3 TIMES.
             02  HCN06-RJNFTNJANUM   PIC X(8).
-            02  HCN06-KOHFTNJANUM1  PIC X(8).
-            02  HCN06-KOHFTNJANUM2  PIC X(8).
-            02  HCN06-KOHFTNJANUM1N PIC X(20).
-            02  HCN06-KOHFTNJANUM2N PIC X(20).
+            02  HCN06-KOH-TBL1.
+              03  HCN06-KOHFTNJANUM1  PIC X(8).
+              03  HCN06-KOHFTNJANUM1N PIC X(20).
+              03  HCN06-KOHJKYSNUM1   PIC X(7).
+              03  HCN06-KOHJKYSNUM1N  PIC X(20).
+            02  HCN06-KOH-TBL2.
+              03  HCN06-KOHFTNJANUM2  PIC X(8).
+              03  HCN06-KOHFTNJANUM2N PIC X(20).
+              03  HCN06-KOHJKYSNUM2   PIC X(7).
+              03  HCN06-KOHJKYSNUM2N  PIC X(20).
             02  HCN06-HKNJANUM  PIC X(8).
             02  HCN06-KYURATE   PIC X(8).
             02  HCN06-RJNJKYSNUM    PIC X(7).
-            02  HCN06-KOHJKYSNUM1   PIC X(7).
-            02  HCN06-KOHJKYSNUM2   PIC X(7).
-            02  HCN06-KOHJKYSNUM1N  PIC X(20).
-            02  HCN06-KOHJKYSNUM2N  PIC X(20).
             02  HCN06-HKNSBT1   PIC X(6).
             02  HCN06-HKNSBT2   PIC X(6).
             02  HCN06-HONKZK    PIC X(10).
@@ -46,7 +48,7 @@
             02  HCN06-KAISU PIC X(3)    OCCURS  22 TIMES.
             02  HCN06-NYUKHNTEN PIC X(7)        OCCURS  10 TIMES.
             02  HCN06-HOSPNAME  PIC X(80).
-            02  HCN06-HOSPADRS  PIC X(50).
+            02  HCN06-HOSPADRS  PIC X(100).
             02  HCN06-NAME  PIC X(50).
             02  HCN06-HEAD1-G.
               03  HCN06-HEAD1 PIC X(46)   OCCURS  2 TIMES.

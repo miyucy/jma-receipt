@@ -48,6 +48,8 @@
       *  01.00.13    NACL-藤原    03.03.05  レセプトコメントＤＢに入外区分を追加
       *  01.01.14    NACL-藤原    03.03.07  診療科数１０から２０へ変更
       *  01.01.15    NACL-藤原    03/03/11  種別不明のとき情報を編集
+      *  01.01.16    NACL-藤原    03/03/14  住所を５０文字に変更のため
+      *                                     帳票ＩＤを変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -170,7 +172,8 @@
       *
       *     
       *****COPY    "HCM06.INC"     REPLACING  //HCM06//
-           COPY    "HCM06V01.INC"  REPLACING  //HCM06V01//
+      *****COPY    "HCM06V01.INC"  REPLACING  //HCM06V01//
+           COPY    "HCM06V02.INC"  REPLACING  //HCM06V02//
                                    BY         //HC06//.
       *
       *    スパ領域
@@ -3123,7 +3126,8 @@
                MOVE    RECE02-KANANAME     TO  RECE08-KANANAME
                MOVE    "2"                 TO  RECE08-NYUGAIKBN
       *********MOVE    "HCM06.red"         TO  RECE08-FORMID
-               MOVE    "HCM06V01.red"      TO  RECE08-FORMID
+      *********MOVE    "HCM06V01.red"      TO  RECE08-FORMID
+               MOVE    "HCM06V02.red"      TO  RECE08-FORMID
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM

@@ -22,7 +22,7 @@
       *  サブシステム名    : レセプト（入院）
       *  コンポーネント名  : レセプト印刷用ファイル作成
       *  管理者            : 
-      *  作成日付    作業者        記述
+      *  作成日付    作業者        記述 
       *  02/12/10    NACL−藤原　  新規作成
       *****************************************************************
       *  プログラム修正履歴
@@ -1964,6 +1964,8 @@
                MOVE    3               TO  IDX3
            END-IF
       *    公負１
+      *
+      *    県単用項目
            IF      RECE62-KOHFTNJANUM(IDA)
                                    NOT =   SPACE
                INITIALIZE              ORCSKANACHKAREA
@@ -2054,6 +2056,9 @@
                    MOVE    WRK-JINISSU     TO  HC06-JINISSU2
                END-IF
            END-IF
+      *
+      *    県単用項目
+      ***     IF      FLG-RECE67           =   ZERO
       *
            .
        3110-KANREN-NUM-SET-EXT.

@@ -61,25 +61,49 @@
         <embed object="string" length="8"/>
       </appinfo>
     </element>
-    <element name="KOHFTNJANUM1" occurs="1">
-      <appinfo>
-        <embed object="string" length="8"/>
-      </appinfo>
+    <element name="KOH-TBL1" occurs="1">
+      <element name="KOHFTNJANUM1" occurs="1">
+        <appinfo>
+          <embed object="string" length="8"/>
+        </appinfo>
+      </element>
+      <element name="KOHFTNJANUM1N" occurs="1">
+        <appinfo>
+          <embed object="string" length="20"/>
+        </appinfo>
+      </element>
+      <element name="KOHJKYSNUM1" occurs="1">
+        <appinfo>
+          <embed object="string" length="7"/>
+        </appinfo>
+      </element>
+      <element name="KOHJKYSNUM1N" occurs="1">
+        <appinfo>
+          <embed object="string" length="20"/>
+        </appinfo>
+      </element>
     </element>
-    <element name="KOHFTNJANUM2" occurs="1">
-      <appinfo>
-        <embed object="string" length="8"/>
-      </appinfo>
-    </element>
-    <element name="KOHFTNJANUM1N" occurs="1">
-      <appinfo>
-        <embed object="string" length="20"/>
-      </appinfo>
-    </element>
-    <element name="KOHFTNJANUM2N" occurs="1">
-      <appinfo>
-        <embed object="string" length="20"/>
-      </appinfo>
+    <element name="KOH-TBL2" occurs="1">
+      <element name="KOHFTNJANUM2" occurs="1">
+        <appinfo>
+          <embed object="string" length="8"/>
+        </appinfo>
+      </element>
+      <element name="KOHFTNJANUM2N" occurs="1">
+        <appinfo>
+          <embed object="string" length="20"/>
+        </appinfo>
+      </element>
+      <element name="KOHJKYSNUM2" occurs="1">
+        <appinfo>
+          <embed object="string" length="7"/>
+        </appinfo>
+      </element>
+      <element name="KOHJKYSNUM2N" occurs="1">
+        <appinfo>
+          <embed object="string" length="20"/>
+        </appinfo>
+      </element>
     </element>
     <element name="HKNJANUM" occurs="1">
       <appinfo>
@@ -94,26 +118,6 @@
     <element name="RJNJKYSNUM" occurs="1">
       <appinfo>
         <embed object="string" length="7"/>
-      </appinfo>
-    </element>
-    <element name="KOHJKYSNUM1" occurs="1">
-      <appinfo>
-        <embed object="string" length="7"/>
-      </appinfo>
-    </element>
-    <element name="KOHJKYSNUM2" occurs="1">
-      <appinfo>
-        <embed object="string" length="7"/>
-      </appinfo>
-    </element>
-    <element name="KOHJKYSNUM1N" occurs="1">
-      <appinfo>
-        <embed object="string" length="20"/>
-      </appinfo>
-    </element>
-    <element name="KOHJKYSNUM2N" occurs="1">
-      <appinfo>
-        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="HKNSBT1" occurs="1">
@@ -238,7 +242,7 @@
     </element>
     <element name="HOSPADRS" occurs="1">
       <appinfo>
-        <embed object="string" length="50"/>
+        <embed object="string" length="100"/>
       </appinfo>
     </element>
     <element name="NAME" occurs="1">
@@ -8435,7 +8439,7 @@
         <rectangle val="2.025,3.25531;5.9034,4.05531"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM1#</string>
+        <string>#KOH-TBL1.KOHFTNJANUM1#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -8477,7 +8481,7 @@
         <rectangle val="2.025,4.05531;5.9034,4.85531"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM2#</string>
+        <string>#KOH-TBL2.KOHFTNJANUM2#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -8645,7 +8649,7 @@
         <rectangle val="7.125,3.25531;10.5186,4.05531"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM1#</string>
+        <string>#KOH-TBL1.KOHJKYSNUM1#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -8687,7 +8691,7 @@
         <rectangle val="7.125,4.05531;10.5186,4.85531"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM2#</string>
+        <string>#KOH-TBL2.KOHJKYSNUM2#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -9143,10 +9147,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O282">
       <attribute name="obj_pos">
-        <point val="11.825,6.825"/>
+        <point val="11.8,6.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.825,6.56482;15.0065,6.91482"/>
+        <rectangle val="11.8,6.63982;14.9815,6.98982"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOSPTEL#</string>
@@ -9166,7 +9170,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.825,6.825"/>
+            <point val="11.8,6.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9395,10 +9399,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O288">
       <attribute name="obj_pos">
-        <point val="11.8351,6.05"/>
+        <point val="11.8,6.25"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.8351,5.75265;19.9151,6.55265"/>
+        <rectangle val="11.8,5.96752;19.476,6.72752"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOSPNAME#</string>
@@ -9419,10 +9423,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.4"/>
+            <real val="0.38"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.8351,6.05"/>
+            <point val="11.8,6.25"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9431,23 +9435,26 @@
             <enum val="0"/>
           </attribute>
           <attribute name="single">
-            <real val="0.2424"/>
+            <real val="0.23028"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.202"/>
+            <real val="0.1919"/>
           </attribute>
         </composite>
       </attribute>
     </object>
     <object type="Embed - Text" version="0" id="O289">
       <attribute name="obj_pos">
-        <point val="11.8351,5.6036"/>
+        <point val="11.8,5.55"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.8351,5.34342;20.6726,5.69342"/>
+        <rectangle val="11.8,5.29726;20.385,5.97726"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOSPADRS#</string>
+      </attribute>
+      <attribute name="embed_text_column">
+        <int val="50"/>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -9455,16 +9462,17 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
+            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;
+&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.35"/>
+            <real val="0.34"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.8351,5.6036"/>
+            <point val="11.8,5.55"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9473,10 +9481,10 @@
             <enum val="0"/>
           </attribute>
           <attribute name="single">
-            <real val="0.2121"/>
+            <real val="0.20604"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.17675"/>
+            <real val="0.1717"/>
           </attribute>
         </composite>
       </attribute>
@@ -21175,7 +21183,7 @@
         <rectangle val="7,3.43982;10.535,3.78982"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM1N#</string>
+        <string>#KOH-TBL1.KOHJKYSNUM1N#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -21217,7 +21225,7 @@
         <rectangle val="7,4.23982;10.535,4.58982"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM2N#</string>
+        <string>#KOH-TBL2.KOHJKYSNUM2N#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -21259,7 +21267,7 @@
         <rectangle val="1.9,3.43982;5.435,3.78982"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM1N#</string>
+        <string>#KOH-TBL1.KOHFTNJANUM1N#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -21301,7 +21309,7 @@
         <rectangle val="1.9,4.23982;5.435,4.58982"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM2N#</string>
+        <string>#KOH-TBL2.KOHFTNJANUM2N#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>

@@ -47,6 +47,8 @@
       *  01.01.04    NACL-藤原    03/02/07  頁数のジョブ管理ＤＢへの更新
       *  01.01.05    NACL-藤原    03/02/24  プリンタ名をオンラインより渡す
       *  01.01.06    NACL-藤原    03/03/03  再印刷機能のためにパラメタを追加
+      *  01.01.07    NACL-藤原    03/03/14  住所を５０文字に変更のため
+      *                                     HCM06V02.redを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -158,6 +160,7 @@
       *
            COPY    "HCM06.INC".
            COPY    "HCM06V01.INC".
+           COPY    "HCM06V02.INC".
            COPY    "HCN06.INC".
            COPY    "HCN061.INC".
            COPY    "HCN062.INC".
@@ -293,7 +296,7 @@
            EXIT.
       *
       *****************************************************************
-      *    出力先プリンタ名割り当て情報処理
+      *    レセプト印刷情報処理
       *****************************************************************
        110-SYSKANRI-HENSYU-SEC                   SECTION.
       *
@@ -458,6 +461,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM06V01
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM06V01-RENNUM
                        MOVE    HCM06V01            TO  RECE08-PRTDATA
+                   WHEN    "HCM06V02.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM06V02
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM06V02-RENNUM
+                       MOVE    HCM06V02            TO  RECE08-PRTDATA
                    WHEN    "HCN06.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN06
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN06-RENNUM
