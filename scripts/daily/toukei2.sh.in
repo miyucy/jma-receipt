@@ -10,7 +10,7 @@ fi
 . $JMARECEIPT_ENV
 
 #-------------------------------------------#
-#    月次統計データ作成
+#    日次統計データ作成
 #        $1  TERMID 
 #        $2  HOSPID
 #        $3  HPSPCD   
@@ -36,14 +36,14 @@ fi
             rm  ${15}
         fi
         
-        rm  /var/tmp/TOKEI0*
+        rm  /var/tmp/TOKEI1*
         
-	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT010 -parameter $1,$2,$4,$5,$6,$9,${10},${13},${14},${15} > /home/orca/toukei1.log
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT110 -parameter $1,$2,$4,$5,$6,$9,${10},${13},${14},${15} > /home/orca/toukei2.log
         
         if  [ -e ${15} ]; then
             exit 
         else
-	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT020 -parameter $3,$5,$1,$9,${11},${13},${14},${15} >> /home/orca/toukei1.log
+	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT130 -parameter $3,$5,$1,$9,${11},${13},${14},${15} >> /home/orca/toukei2.log
 	fi
 
         if  [ -e ${15} ]; then
@@ -54,17 +54,17 @@ fi
 
         if  [ ${12} -eq '2' ]; then
             if   [ ${9} != '2' ]; then
-                nkf -s /var/tmp/toukei01.dat > /tmp/$7
+                nkf -s /var/tmp/toukei11.dat > /tmp/$7
             fi 
             if   [ ${9} != '1' ]; then
-                nkf -s /var/tmp/toukei02.dat > /tmp/$8
+                nkf -s /var/tmp/toukei12.dat > /tmp/$8
             fi 
         else
             if   [ ${9} != '2' ]; then
-                cp  /var/tmp/toukei01.dat /tmp/$7
+                cp  /var/tmp/toukei11.dat /tmp/$7
             fi 
             if   [ ${9} != '1' ]; then
-                cp  /var/tmp/toukei02.dat /tmp/$8
+                cp  /var/tmp/toukei12.dat /tmp/$8
             fi
         fi
 #
@@ -88,7 +88,7 @@ fi
              esac
 	     if  [ $RC -ne '0' ]; then
 		ERRCD='0000'$RC
-        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4} >> /home/orca/toukei1.log
+        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4} >> /home/orca/toukei2.log
 		exit
 	     fi
         fi         
@@ -112,11 +112,11 @@ fi
              esac
 	     if  [ $RC -ne '0' ]; then
 		ERRCD='0000'$RC
-        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4} >> /home/orca/toukei1.log
+        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4} >> /home/orca/toukei2.log
 		exit
 	     fi
         fi         
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14} >> /home/orca/toukei1.log
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14} >> /home/orca/toukei2.log
 
         exit 

@@ -48,6 +48,7 @@ shell_sources = \
 	monthly/teiki1.sh.in \
 	monthly/teiki2.sh.in \
 	monthly/toukei1.sh.in \
+	monthly/toukei2.sh.in \
 	monthly/receden_sokatu.sh.in \
 	claim/HL01.sh.in \
 	claim/HL02.sh.in \
@@ -167,6 +168,7 @@ filecheck:
 	-name "teiki2.sh" -o \
 	-name "tensu.sh" -o \
 	-name "toukei1.sh" -o \
+	-name "toukei2.sh" -o \
 	-name "orcbi201.sh" -o \
 	-name "program_upgrade_online.sh" -o \
 	-name "program_upgrade_copy.sh" -o \
