@@ -906,14 +906,6 @@
        000-PROC-SEC                SECTION.
       *
       *
-      *TEST
-           ACCEPT  WRK-SYSTIME         FROM    TIME
-           DISPLAY "K02 START:" WRK-SYSTIME (1:2) ":" 
-                                WRK-SYSTIME (3:2) ":" 
-                                WRK-SYSTIME (5:2) ":" 
-                                WRK-SYSTIME (7:2) "/" 
-      *TEST
-      *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
@@ -966,13 +958,6 @@
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-K02         TO  SPA-FREE
       *
-      *TEST
-           ACCEPT  WRK-SYSTIME         FROM    TIME
-           DISPLAY "K02 END  :" WRK-SYSTIME (1:2) ":" 
-                                WRK-SYSTIME (3:2) ":" 
-                                WRK-SYSTIME (5:2) ":" 
-                                WRK-SYSTIME (7:2) "/" 
-      *TEST
       *
            .
            EXIT    PROGRAM
@@ -1576,8 +1561,12 @@
                   (SPA-PTID            =   SPA-GMN-PTID )
                MOVE    "K01"               TO  LNK-SC95-PG
            ELSE
-               MOVE    "K02"               TO  LNK-SC95-PG
-               MOVE    SPACE               TO  SPA-SRYKA
+               IF      SPA-MOTOPG          =   "U02"
+                   MOVE    "U02"               TO  LNK-SC95-PG
+               ELSE
+                   MOVE    "K02"               TO  LNK-SC95-PG
+                   MOVE    SPACE               TO  SPA-SRYKA
+               END-IF
            END-IF
            CALL    "ORCSC95"           USING
                                        MCPAREA
@@ -1707,6 +1696,10 @@
                IF      WRK-SPA-PTNUM       NOT =   SPACE
       *            初期表示へ
                    MOVE    WRK-SPA-PTNUM   TO  K02-PTNUM
+      *            受付一覧からの時、診療科を編集する
+                   IF      WRK-MOTOPG          =   "U01"
+                       MOVE    WRK-SPA-SRYKA   TO  SPA-SRYKA
+                   END-IF
                    PERFORM 41010-PTNUM-SYORI-SEC
                    MOVE    SPACE           TO  SPA-ERRCD
                    MOVE    ZERO            TO  SPA-NAI-ROUSTR
@@ -4163,7 +4156,6 @@
            INITIALIZE                  SPA-LAST-PTNUM
            INITIALIZE                  SPA-K02
            INITIALIZE                  SPA-SCR-REC
-           INITIALIZE                  SPA-SRYKA
       *    診療日に変更があったらＳＰＡを指定する
            IF      SPA-SRYYMD      NOT =   SPA-SYSYMD
       *
@@ -4180,6 +4172,12 @@
       *
            MOVE    "2"                 TO  LNK-SC95-KBN
            MOVE    "K02"               TO  LNK-SC95-PG
+      *    受付選択
+           IF      WRK-MOTOPG          =   "U01"
+               MOVE    "U01"               TO  LNK-SC95-PG
+           ELSE
+               INITIALIZE                  SPA-SRYKA
+           END-IF
            CALL    "ORCSC95"           USING
                                        MCPAREA
                                        ORCSC95AREA
