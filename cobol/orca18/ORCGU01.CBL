@@ -868,8 +868,9 @@
       *****************************************************************
        800-PRINT-SYORI-SEC              SECTION.
       *
-           CALL    "ORCHCM16"      USING
-                                   SPA-AREA
+           CALL    "ORCHCM16"          USING
+                                       SPA-AREA
+      *
            .
        800-PRINT-SYORI-EXT.
            EXIT.
