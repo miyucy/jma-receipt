@@ -140,6 +140,7 @@
       *                                     Ω§¿µ
       *  01.02.37   NACL-ÃÁœ∆     04/01/14  ø«Œ≈π‘∞Ÿ§Œ Ò≥Á ¨§œΩ¸§Ø
       *                                     SRYACCT2¢™32
+      *  01.02.38   NACL-ÃÁœ∆     04/01/19  …¬æ≤øÙ ‘Ω∏•’•È•∞§Œ ‘Ω∏
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -567,6 +568,14 @@
            03  CONS-TOKKI10        PIC X(14) VALUE "00000099990110".
            03  CONS-TOKKI11        PIC X(14) VALUE "00000099990111".
            03  CONS-TOKKI12        PIC X(14) VALUE "00000099990112".
+      *
+      *    …¬æ≤øÙ ‘Ω∏•’•È•∞ ‘Ω∏§Œ∞Ÿ§Œ•≥°º•…° ∆√ƒÍº¿¥µŒ≈Õ‹ªÿ∆≥Œ¡≈˘°À
+           03  CONS-SIDORYO1       PIC X(09) VALUE "113001810".
+           03  CONS-SIDORYO2       PIC X(09) VALUE "113001910".
+           03  CONS-SIDORYO3       PIC X(09) VALUE "113002010".
+           03  CONS-SIDORYO4       PIC X(09) VALUE "113700610".
+           03  CONS-SIDORYO5       PIC X(09) VALUE "113700710".
+           03  CONS-SIDORYO6       PIC X(09) VALUE "113700810".
       *
       *    ∫∆ø«° ∆˝Õƒª˘°À≤√ªª
            03  CONS-NYUYOJI        PIC X(09) VALUE "112000970".
@@ -1431,6 +1440,17 @@
                                                 CONS-GAIRAIKSN6    OR
                                                 CONS-GAIRAIKSN7
                         MOVE   "1"        TO    RECE02-GAIRAIKSN-PRTKBN
+                   END-IF
+               END-IF
+      *
+               IF      SRY-SRYKBN         =     "13"
+                   IF   SRY-SRYCD(IDX2)   =     CONS-SIDORYO1    OR
+                                                CONS-SIDORYO2    OR
+                                                CONS-SIDORYO3    OR
+                                                CONS-SIDORYO4    OR
+                                                CONS-SIDORYO5    OR
+                                                CONS-SIDORYO6
+                        MOVE   "1"        TO    RECE02-BEDSUFLG
                    END-IF
                END-IF
       *
