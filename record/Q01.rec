@@ -43,6 +43,13 @@ Q01	{
 				EDPTNUM	{
 					value	varchar(20);
 				};
+				CMB_SRYKA	{
+					SRYKA	{
+						value	varchar(23);
+					};
+					count	int;
+					item	varchar(23)[50];
+				};
 				CHKTSTPT	{
 					value	bool;
 				};

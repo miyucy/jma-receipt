@@ -2,6 +2,7 @@ view_Q001 {
 	HOSPID					char(24);
 	PTID						number(10,0);
 	HKNCOMBINUM			number(4,0);
+	SRYKA				char(2);
 	SRYYMD					char(8);
 	HKNID						number(10);
 	HKNNUM					char(3);

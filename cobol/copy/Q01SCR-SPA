@@ -88,6 +88,12 @@
       *                    ¥µº‘»÷πÊ»œ∞œªÿƒÍΩ™Œª
                            11  SPA-GMN-Q01-EDPTNUM
                                                        PIC X(20).
+      *                    ø«Œ≈≤ 
+                           11  SPA-GMN-Q01-SRYKA-G.
+                               13  SPA-GMN-Q01-SRYKA   PIC X(02).
+                               13                      PIC X(01).
+                               13  SPA-GMN-Q01-SRYKAMEI
+                                                       PIC X(20).
       *                    •∆•π•»¥µº‘•¡•ß•√•Ø•‹•ø•Û
                            11  SPA-GMN-Q01-CHKTSTPT    PIC X.
       *                    Õπ ÿ»÷πÊ
@@ -317,6 +323,12 @@
                                13  SPA-GMN-Q01-SEXL        PIC X(01).
                                13                          PIC X(01).
                                13  SPA-GMN-Q01-SEXMEIL     PIC X(08).
+                       09  SPA-GMN-Q01-SRYKALST-G.
+                           11  SPA-GMN-Q01-SRYKALST-MAX    PIC 9(05).
+                           11  SPA-GMN-Q01-SRYKALST        OCCURS  50.
+                               13  SPA-GMN-Q01-SRYKAL      PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-Q01-SRYKAMEIL   PIC X(20).
                        09  SPA-GMN-Q01-CONDITION1LST-G.
                            11  SPA-GMN-Q01-CONDITION1LST-MAX
                                                            PIC 9(05).
@@ -593,6 +605,7 @@
                        09  SPA-Q01-SEX                 PIC X(01).
                        09  SPA-Q01-STLASTYMD           PIC X(08).
                        09  SPA-Q01-EDLASTYMD           PIC X(08).
+                       09  SPA-Q01-SRYKA               PIC X(2).
                        09  SPA-Q01-STPTNUM             PIC X(20).
                        09  SPA-Q01-EDPTNUM             PIC X(20).
                        09  SPA-Q01-CHKTSTPT            PIC X.

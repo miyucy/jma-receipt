@@ -580,15 +580,24 @@
            MOVE    "b"             TO  WRK-SQL-TBL-NAME
            PERFORM 900-SQL-JYOKEN-EDIT1-SEC
       *
-           STRING  "((b.lastymd >= '"          DELIMITED   BY  SIZE
+           IF    ( SPA-Q01-SRYKA   NOT =   SPACE )
+               PERFORM 10011-SRYKA-SQL-EDIT-SEC
+           END-IF
+      *
+           MOVE    1               TO  CNT-JYOKEN
+           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+           STRING  "(b.lastymd >= '"           DELIMITED   BY  SIZE
                    WRK-STLASTYMD               DELIMITED   BY  SIZE
                    "') and "                   DELIMITED   BY  SIZE
                    "(b.lastymd <= '"           DELIMITED   BY  SIZE
                    WRK-EDLASTYMD               DELIMITED   BY  SIZE
-                   "'))"                       DELIMITED   BY  SIZE
+                   "')"                        DELIMITED   BY  SIZE
            INTO    WRK-SQL
            WITH    POINTER     WRK-SQL-PNT
            END-STRING
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
       *
            PERFORM 900-SQL-JYOKEN-EDIT4-SEC
       *
@@ -617,6 +626,10 @@
            INTO        WRK-SQL
            WITH POINTER WRK-SQL-PNT
            END-STRING
+      *
+           IF    ( SPA-Q01-SRYKA   NOT =   SPACE )
+               PERFORM 10011-SRYKA-SQL-EDIT-SEC
+           END-IF
       *
            MOVE    ZERO    TO      CNT-JYOKEN
            PERFORM VARYING IDX1    FROM    1   BY  1
@@ -701,6 +714,10 @@
                    WITH POINTER WRK-SQL-PNT
                    END-STRING
       *
+                   IF    ( SPA-Q01-SRYKA   NOT =   SPACE )
+                       PERFORM 10011-SRYKA-SQL-EDIT-SEC
+                   END-IF
+      *
                    MOVE    1               TO  CNT-JYOKEN
       *
                    PERFORM 900-SQL-JYOKEN-EDIT2-SEC
@@ -775,6 +792,10 @@
                    INTO        WRK-SQL
                    WITH POINTER WRK-SQL-PNT
                    END-STRING
+      *
+                   IF    ( SPA-Q01-SRYKA   NOT =   SPACE )
+                       PERFORM 10011-SRYKA-SQL-EDIT-SEC
+                   END-IF
       *
                    IF   ( SPA-Q01-GTBL (6)  =   "1" )
       *                ´µ¼Ô¸øÈñ¾ðÊó£Ó£Ñ£ÌÊÔ½¸½èÍý
@@ -876,6 +897,10 @@
            INTO        WRK-SQL
            WITH POINTER WRK-SQL-PNT
            END-STRING
+      *
+           IF    ( SPA-Q01-SRYKA   NOT =   SPACE )
+               PERFORM 10011-SRYKA-SQL-EDIT-SEC
+           END-IF
       *
            IF   ( SPA-Q01-GTBL (5)  =   "1" )
       *        ´µ¼ÔÊÝ¸±¾ðÊó£Ó£Ñ£ÌÊÔ½¸½èÍý
@@ -1392,6 +1417,13 @@
            MOVE    "f"             TO  WRK-SQL-TBL-NAME
            PERFORM 900-SQL-JYOKEN-EDIT1-SEC
       *
+           IF    ( SPA-Q01-SRYKA   NOT =   SPACE )
+               PERFORM 10011-SRYKA-SQL-EDIT-SEC
+           END-IF
+      *
+           MOVE    1                   TO  CNT-JYOKEN
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
       *
       *    ºÇ½ª¼õ¿ÇÆü¸¡º÷¾ò·ïÊÔ½¸
            STRING  "(f.sryymd >= '"            DELIMITED   BY  SIZE
@@ -1402,6 +1434,8 @@
            INTO    WRK-SQL
            WITH    POINTER     WRK-SQL-PNT
            END-STRING
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
       *
            PERFORM 900-SQL-JYOKEN-EDIT4-SEC
       *
@@ -1436,6 +1470,10 @@
                INTO        WRK-SQL
                WITH POINTER WRK-SQL-PNT
                END-STRING
+           END-IF
+      *
+           IF    ( SPA-Q01-SRYKA   NOT =   SPACE )
+               PERFORM 10011-SRYKA-SQL-EDIT-SEC
            END-IF
       *
            MOVE    ZERO    TO      CNT-JYOKEN
@@ -1520,6 +1558,10 @@
                        INTO   WRK-SQL
                        WITH POINTER WRK-SQL-PNT
                        END-STRING
+                   END-IF
+      *
+                   IF    ( SPA-Q01-SRYKA   NOT =   SPACE )
+                       PERFORM 10011-SRYKA-SQL-EDIT-SEC
                    END-IF
       *
                    MOVE    1               TO      CNT-JYOKEN
@@ -1950,6 +1992,28 @@
       *
            .
        10011-COMMENT-SELECT-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿ÇÎÅ²ÊÊÔ½¸½èÍý
+      *****************************************************************
+       10011-SRYKA-SQL-EDIT-SEC            SECTION.
+      *
+           MOVE    1                   TO  CNT-JYOKEN
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+           STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                   ".sryka ='"         DELIMITED BY SIZE
+                   SPA-Q01-SRYKA       DELIMITED BY SIZE
+                   "'"                 DELIMITED BY SIZE
+           INTO    WRK-SQL
+           WITH    POINTER WRK-SQL-PNT
+           END-STRING
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           .
+       10011-SRYKA-SQL-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    ÊÂ¤ÙÂØ¤¨½çÊÔ½¸½èÍý

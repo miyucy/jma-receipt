@@ -29,12 +29,16 @@
                   06  Q01-KJYNYMD              PIC X(10).
                   06  Q01-CMB-SEX.
                     07  Q01-SEX                PIC X(10).
-                    07  Q01-SEX-COUNT          PIC S9(9)   BINARY.
-                    07  Q01-SEX-ITEM           PIC X(10)   OCCURS  3.
+                    07  Q01-CMB-SEX-COUNT      PIC S9(9)   BINARY.
+                    07  Q01-CMB-SEX-ITEM       PIC X(10)   OCCURS  3.
                   06  Q01-STLASTYMD            PIC X(10).
                   06  Q01-EDLASTYMD            PIC X(10).
                   06  Q01-STPTNUM              PIC X(20).
                   06  Q01-EDPTNUM              PIC X(20).
+                  06  Q01-CMB-SRYKA.
+                    07  Q01-SRYKA              PIC X(23).
+                    07  Q01-CMB-SRYKA-COUNT    PIC S9(9)   BINARY.
+                    07  Q01-CMB-SRYKA-ITEM     PIC X(23)   OCCURS  50.
                   06  Q01-CHKTSTPT             PIC X.
                   06  Q01-POST-TBL.
                     07  Q01-POST               PIC X(07)   OCCURS 5.
