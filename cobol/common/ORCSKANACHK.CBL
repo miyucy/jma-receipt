@@ -84,6 +84,8 @@
       *
            03  WRK-ERRCD               PIC X(02).
       *
+           03  WRK-MAX-CNT             PIC 9(04).
+      *
       *    変換テーブル
        01  TBL-HENKAN-AREA.
            03  FILLER              PIC X(01)   VALUE   "0".
@@ -395,11 +397,18 @@
       *
            MOVE    2                   TO  KANACHK-SYUBETU
       *
+           IF      KANACHK-MAX-CNT     >   ZERO
+               MOVE    KANACHK-MAX-CNT     TO  WRK-MAX-CNT
+           ELSE
+               MOVE    1000                TO  WRK-MAX-CNT
+           END-IF
+      *
            MOVE    SPACE               TO  WRK-MEISYO
            MOVE    1                   TO  IDY
            MOVE    1                   TO  IDX
            PERFORM
-                   UNTIL       IDX     >   IDX-MAX
+                   UNTIL      (IDX     >   IDX-MAX     )
+                         OR   (IDY     >=  WRK-MAX-CNT )
                EVALUATE    KANACHK-MAE-INPUT (IDX:1)
       *            半角空白を全角のへ
                    WHEN    SPACE
@@ -432,10 +441,6 @@
       *****************************************************************
        200-ZENKAKU-HENKAN-SEC           SECTION.
       *
-      *TEST
-      *    DISPLAY "KANAHCK IDX-MAX:" IDX-MAX
-      *            ",KANACHK-MAE-INPUT:" KANACHK-MAE-INPUT
-      *TEST
            MOVE    2                   TO  KANACHK-SYUBETU
       *
            MOVE    SPACE               TO  WRK-MEISYO
