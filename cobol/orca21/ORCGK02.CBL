@@ -11245,9 +11245,11 @@
            MOVE    1                   TO  WRK-ZAINUM
            ADD     1                   TO  IDX-Y
       *
+      *    １診療行為で投薬の薬剤は４０以上ある時、無視する
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-MAX
-      *         診療内容編集（薬剤と服用方法)
+                   UNTIL      (IDX     >   SPA-GMN-MAX)
+                       OR     (IDY     >=  40         )
+      *        診療内容編集（薬剤と服用方法)
                IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "6"   )  OR
                       (SPA-COM-INPUTCD(IDX)(1:3)   =   "001" )
       *        院内薬剤のみとする

@@ -2419,6 +2419,9 @@
                                                        "230"  OR
                                                        "290" ))
                    ADD     1                   TO  IDY
+                   IF      IDY                 >   40
+                       GO      TO      45051-ORCS01-SET-EXT
+                   END-IF
                    MOVE    LNK-WKSRY-SRYKBN(IDX)
                                                    TO  LNK-S01-SRYKBN
                                                           (IDX-Y IDY)
@@ -2658,6 +2661,7 @@
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2        >   5   )  OR
                                   (SRY-SRYCD(IDX2)     =   SPACE )
+                             OR   (IDY         >=  40   )
       *            ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚Õ—
                    IF     (ACCT-SRYKBN             =   "21"  OR
                                                        "22"  OR

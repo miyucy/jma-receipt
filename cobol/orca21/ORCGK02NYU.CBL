@@ -4065,7 +4065,8 @@
            MOVE    ZERO                TO  WRK-STR
            MOVE    ZERO                TO  FLG-KUHAKU
            PERFORM VARYING     WRK-IDX2    FROM    1   BY  1
-                   UNTIL       WRK-IDX2    >   24
+                   UNTIL      (WRK-IDX2    >   24   )   OR
+                              (SPA-GMN-IDX     >=  WRK-GYO-MAX)
       *        ＳＰＡ内の行決定
                PERFORM 41011-GYOU-SET-SEC
                IF     (K02N-INPUTCD (WRK-IDX2)  NOT =
