@@ -56,6 +56,8 @@
       *                                     ックするよう追加
       *  02.01.07    NACL-藤原    03/08/27  病名から検索したコードがエラー
       *                                     のときの確認画面を表示
+      *  02.01.08    NACL-藤原    03/08/28  病名から検索したコードが廃止病名
+      *                                     のときの処理を修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -183,6 +185,8 @@
            03  WRK-DBPATH          PIC X(64).
       *     
            03  WRK-HAISIYMDH       PIC X(22).
+      *
+           03  WRK-BYOMEI-OLD      PIC X(480).
       *
            03  WRK-SORT-TBL.
                05  WRK-SORT-BYOMEICD-G.
@@ -490,54 +494,12 @@
                    ELSE
                        MOVE    1                   TO  SPA-GMN-CUR
                    END-IF
-      *
-               WHEN    "0103"
-                   IF      SPA-CID1-FLG        =   "OK"
-                       PERFORM 3301-BYOMEIHENFLG-SET-SEC
-                   ELSE
-                       MOVE    1               TO  SPA-GMN-CUR
-                   END-IF
       * 
            END-EVALUATE
       *     
            MOVE    SPACE           TO  SPA-CIDCD
            .
        330-CID1-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    コードでエラーとなった病名を未コード化傷病名とする
-      *****************************************************************
-       3301-BYOMEIHENFLG-SET-SEC             SECTION.
-      *
-           INITIALIZE                   SPA-GMN-BYOMEICD-G
-                                        SPA-NAI-BYOMEI-TBL
-           MOVE    ZERO             TO  SPA-NAI-BYOMEICD-MAX
-      *         
-           MOVE    ZERO                TO  WRK-MOJISU
-           PERFORM VARYING     IDX     FROM    80  BY  -1
-                   UNTIL       IDX     <       1
-               IF      SPA-GMN-BYOMEI(IDX:1)   NOT =   SPACE
-                   MOVE    IDX                 TO  WRK-MOJISU 
-                   MOVE    1                   TO  IDX
-               END-IF  
-           END-PERFORM
-           COMPUTE WRK-MOJISU   =   WRK-MOJISU  /   2        
-           MOVE    WRK-MOJISU           TO  SPA-NAI-BYOMEIMOJI
-      *
-           MOVE    "1"              TO  SPA-NAI-BYOMEIHENFLG
-           MOVE    " 病名編集"      TO  SPA-GMN-BYOMEIHENFLG
-      *
-           MOVE    WRK-CONS-BYOMEICD    TO  SPA-GMN-BYOMEICD(1)
-           MOVE    SPA-GMN-BYOMEICD (1)
-                                        TO  BYO-BYOMEICD
-           MOVE    1                    TO  IDZ
-           PERFORM 410111-BYOMEI-HENSYU-SEC
-           MOVE    1                    TO  SPA-NAI-BYOMEICD-MAX
-      *
-           MOVE    12                   TO  SPA-GMN-CUR
-           .
-       3301-BYOMEIHENFLG-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1324,7 +1286,7 @@
       *****MOVE    WRK-BYOMEI          TO  SPA-GMN-BYOMEI
       *
       *    疑いフラグ編集
-           IF      WRK-BYOMEI      NOT =   SPA-GMN-BYOMEI
+           IF      WRK-BYOMEI          NOT =   SPA-GMN-BYOMEI
              MOVE    SPACE               TO  SPA-GMN-UTAGAIFLG-G 
              PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
@@ -1814,6 +1776,8 @@
                GO  TO  41013-BYOMEI-CHK-EXT
            END-IF
       *
+           MOVE    SPA-GMN-BYOMEI       TO  WRK-BYOMEI-OLD
+      *
            MOVE    C03-BYOMEI           TO  SPA-GMN-BYOMEI
       *     
            MOVE    ZERO                 TO  SPA-NAI-BYOMEIMOJI
@@ -1905,11 +1869,17 @@
                                    END-IF  
                                  END-IF
                                END-IF      
-                           END-PERFORM    
+                           END-PERFORM
+                           IF       SPA-GMN-BYOMEI  NOT = 
+                                                   WRK-BYOMEI-OLD
+                               MOVE    SPACE       TO  SPA-GMN-BYOMEI
+                           END-IF
                            PERFORM 41021-BYOMEI-HENSYU-SEC
                            IF      SPA-ERRCD       =    "0006"
-                               MOVE    "0103"           TO  SPA-CIDCD
-                               MOVE    SPACE            TO  SPA-ERRCD
+                               PERFORM 410132-BYOMEIHENFLG-SET-SEC 
+                               MOVE    "0103"           TO  SPA-ERRCD
+                                                            SPA-CIDCD2
+                                                            WRK-HAISIYMDH
                                GO  TO  41013-BYOMEI-CHK-EXT
                            END-IF
                            MOVE    12              TO  SPA-GMN-CUR
@@ -2194,6 +2164,47 @@
        410131-BYOKEN-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    コードでエラーとなった病名を未コード化傷病名とする
+      *****************************************************************
+       410132-BYOMEIHENFLG-SET-SEC             SECTION.
+      *
+           MOVE    SPA-NAI-BYOMEI(1)
+                                       TO  WRK-BYOMEI
+           PERFORM VARYING IDX FROM    2   BY  1
+                   UNTIL   IDX >       6
+               STRING  WRK-BYOMEI              DELIMITED  BY  SPACE
+                       SPA-NAI-BYOMEI(IDX)     DELIMITED  BY  SPACE
+                                  INTO          WRK-BYOMEI
+               END-STRING
+           END-PERFORM
+           MOVE    WRK-BYOMEI          TO  SPA-GMN-BYOMEI
+      *
+           INITIALIZE                   SPA-GMN-BYOMEICD-G
+                                        SPA-NAI-BYOMEI-TBL
+           MOVE    ZERO             TO  SPA-NAI-BYOMEICD-MAX
+      *         
+           MOVE    ZERO                TO  WRK-MOJISU
+           PERFORM VARYING     IDX     FROM    80  BY  -1
+                   UNTIL       IDX     <       1
+               IF      SPA-GMN-BYOMEI(IDX:1)   NOT =   SPACE
+                   MOVE    IDX                 TO  WRK-MOJISU 
+                   MOVE    1                   TO  IDX
+               END-IF  
+           END-PERFORM
+           COMPUTE WRK-MOJISU   =   WRK-MOJISU  /   2        
+           MOVE    WRK-MOJISU           TO  SPA-NAI-BYOMEIMOJI
+      *
+           MOVE    "1"              TO  SPA-NAI-BYOMEIHENFLG
+           MOVE    " 病名編集"      TO  SPA-GMN-BYOMEIHENFLG
+      *
+           MOVE    WRK-CONS-BYOMEICD    TO  SPA-GMN-BYOMEICD(1)
+           MOVE    1                    TO  SPA-NAI-BYOMEICD-MAX
+      *
+           MOVE    12                   TO  SPA-GMN-CUR
+           .
+       410132-BYOMEIHENFLG-SET-EXT.
+           EXIT.
       *
       *****************************************************************
       *    カルテ病名  入力処理
@@ -3437,6 +3448,11 @@
                    MOVE
                    "病名コードが６個以上になります。"
                                        TO  SPA-ERRMSG
+               WHEN    "0103"
+                   MOVE    "病名コードでの組み立てができませんでした。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "編集病名としますか？"
+                                       TO  SPA-ERRMSG (43:)
                WHEN    "1000"
                    MOVE    "病名コードが有りません"    TO  SPA-ERRMSG
                WHEN    "1001"
@@ -3489,11 +3505,6 @@
                WHEN    "0102"
                    MOVE    "自院病名一覧を出力します。"
                                        TO  WRK-CIDMSG
-               WHEN    "0103"
-                   MOVE    "病名コードでの組み立てができませんでした。"
-                                       TO  WRK-CIDMSG
-                   MOVE    "編集病名としますか？"
-                                       TO  WRK-CIDMSG (43:)
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  WRK-CIDMSG
