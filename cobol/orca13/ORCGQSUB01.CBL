@@ -68,6 +68,12 @@
            03  IDX2                PIC 9(04).
       *
       *****************************************************************
+      *    サブプロ用　領域
+      *****************************************************************
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
+      *****************************************************************
       *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
@@ -85,6 +91,11 @@
       *
            IF  ( QSUB01-KBN        =   "I" )
                PERFORM 100-SPA-INPUT-SEC
+      *        ファイル削除
+               MOVE    ZERO        TO  IF-RESULT
+               MOVE    FILE-NAME1  TO  IF-FILENAME
+               CALL    "orcfiledel"    USING
+                                       ORCSFDELAREA
            ELSE
                PERFORM 200-SPA-OUTPUT-SEC
            END-IF
