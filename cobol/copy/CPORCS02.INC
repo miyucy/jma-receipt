@@ -44,8 +44,6 @@
            03  LNK-S02-SKYSTYMD            PIC  X(08).
       *ÀÁµá½ªÎ»Æü
            03  LNK-S02-SKYEDYMD            PIC  X(08).
-      *¼ýÇ¼ºîÀ®¶èÊ¬
-           03  LNK-S02-CREATEKBN           PIC  X(01).
       *Éüµ¢¥³¡¼¥É
            03  LNK-S02-RC                  PIC S9(9)   BINARY.
       *
