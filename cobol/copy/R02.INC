@@ -28,14 +28,17 @@
                 05  R02-TEDDATA.
                   06  R02-VALUE   PIC X(101).
               04  R02-TPAGE-G      OCCURS  36.
+                05  R02-TPAGE-STYLE   PIC X(20).
                 05  R02-TPAGE.
                   06  R02-VALUE   PIC 9(4).
               04  R02-TKENSU-G      OCCURS  36.
+                05  R02-TKENSU-STYLE   PIC X(20).
                 05  R02-TKENSU.
                   06  R02-VALUE   PIC 9(4).
               04  R02-TCHK-G       OCCURS  36.
                 05  R02-TCHK.
                   06  R02-TCHK-STATE   PIC S9(09) BINARY.
+                  06  R02-TCHK-STYLE   PIC X(20).
                   06  R02-TCHK-VALUE   PIC X.
                   06  R02-TCHK-LABEL   PIC X(41).
               04  R02-FILEKBN.
