@@ -20,7 +20,7 @@
                 04  C10-HKNCOMBI.
                   05  C10-VALUE   PIC X(40).
                 04  C10-HKNCOMBI-COUNT   PIC S9(9)   BINARY.
-                04  C10-HKNCOMBI-ITEM    PIC X(40)   OCCURS  20 TIMES.
+                04  C10-HKNCOMBI-ITEM    PIC X(40)   OCCURS  21 TIMES.
               03  C10-NYUGAIKBNCOMBO.
                 04  C10-NYUGAIKBN.
                   05  C10-VALUE   PIC X(8).
