@@ -1062,8 +1062,31 @@
            IF      FLG-HKNCOMBI        =   1
                INITIALIZE                      HKNCOMBI-REC
            END-IF
+      *    ¼çÊÝ¸±¾ðÊóÆÉ¤ß½Ð¤·
+           INITIALIZE                      PTHKNINF-REC
+           INITIALIZE                      PTRSIINF-REC
+           IF      COMB-HKNID      NOT =   ZERO
+               IF      COMB-HKNNUM         =   WRK-CONS-ROUSAI-HKNNUM
+                                           OR  WRK-CONS-JIBAI-HKNNUM
+      *            Ï«ºÒ¡¦¼«ÇåÀÕ
+                   INITIALIZE                  PTRSIINF-REC
+                   MOVE    COMB-HOSPID         TO  PTRSI-HOSPID
+                   MOVE    COMB-HKNID          TO  PTRSI-HKNID
+                   MOVE    COMB-PTID           TO  PTRSI-PTID
+                   MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+                   PERFORM 900-PTRSIINF-INV-SEC
+               ELSE
+                   INITIALIZE                  PTHKNINF-REC
+                   MOVE    COMB-HOSPID         TO  PTHKN-HOSPID
+                   MOVE    COMB-PTID           TO  PTHKN-PTID
+                   MOVE    COMB-HKNID          TO  PTHKN-HKNID
+                   MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+                   MOVE    COMB-TEKSTYMD       TO  ORC-DBYMD
+                   PERFORM 910-PTHKNINF-INV-SEC
+               END-IF
+           END-IF
+      *    ÊÝ¸±¼ÔÌ¾
            MOVE    PTHKN-HKNJANUM      TO  TOUKEI04-HKNJANUM
-           MOVE    PTHKN-HONKZKKBN     TO  TOUKEI04-HONKZKKBN 
       *    ¼çÊÝ¸±
            MOVE    COMB-HKNNUM         TO  TOUKEI04-HKNNUM
            MOVE    COMB-HKNID          TO  TOUKEI04-HKNID
@@ -1089,12 +1112,6 @@
       *    Ï«ºÒ¡¦¼«ÇåÀÕ
            IF      COMB-HKNNUM         =   WRK-CONS-ROUSAI-HKNNUM
                                        OR  WRK-CONS-JIBAI-HKNNUM
-               INITIALIZE                  PTRSIINF-REC
-               MOVE    COMB-HOSPID         TO  PTRSI-HOSPID
-               MOVE    COMB-HKNID          TO  PTRSI-HKNID
-               MOVE    COMB-PTID           TO  PTRSI-PTID
-               MOVE    PTRSIINF-REC        TO  MCPDATA-REC
-               PERFORM 900-PTRSIINF-INV-SEC
       *        Ï«ºÒ¡ÝÏ«ºÒÊÝ¸±¶èÊ¬
                MOVE    PTRSI-HKNKBN        TO  TOUKEI04-RSIHKNKBN
       *        Ï«ºÒ¡Ý¼«ÇåÀÕÀÁµá¶èÊ¬
@@ -2399,6 +2416,43 @@
       *
            .
        900-PTRSIINF-INV-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´µ¼ÔÊÝ¸±¾ðÊó¥Þ¥¹¥¿ÆÉ¹þ
+      *****************************************************************
+       910-PTHKNINF-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY3"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTHKNINF-KEY3"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-PTHKNINF
+                   MOVE    MCPDATA-REC         TO  PTHKNINF-REC
+                   IF      PTHKN-SAKJOKBN      =   "1"
+                       MOVE    1                   TO  FLG-PTHKNINF
+                   END-IF
+               ELSE
+                   MOVE    1                   TO  FLG-PTHKNINF
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTHKNINF
+           END-IF
+      *
+           MOVE    "PTHKNINF-KEY3"     TO  ORC-DBPATH
+           PERFORM 900-DBCLOSE-SEC
+      *
+           .
+       910-PTHKNINF-INV-EXT.
            EXIT.
       *
       *****************************************************************
