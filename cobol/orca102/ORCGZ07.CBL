@@ -1299,6 +1299,12 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      412-TOUROKU-EXT
            END-IF
+      *    診療コード変更
+           IF      SPA-GMN-SRYCD       =   SPACE
+               MOVE    "0014"          TO  SPA-ERRCD
+               MOVE    3               TO  SPA-GMN-CUR
+               GO      TO      412-TOUROKU-EXT
+           END-IF
       *
            PERFORM 4121-KOUSIN-SYORI-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -1652,6 +1658,9 @@
                                                  TO  SPA-ERRMSG
                WHEN    "0101"
                    MOVE    "別の診療コードで使われています。"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "新診療行為コードを入力して下さい"
                                                  TO  SPA-ERRMSG
            END-EVALUATE
       *
