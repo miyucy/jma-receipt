@@ -60,6 +60,7 @@
       *  02.00.10    NACL-多々納  03/09/26  業務権限判定追加
       *                                     処方せんにドクターなし追加
       *  02.00.11    NACL-多々納  03/10/15  ２００明細へ
+      *  02.00.12    NACL-多々納  03/11/07  受付更新修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2855,8 +2856,10 @@
            END-IF
            MOVE    SPA-GMN-NAME             TO  UKE-NAME
            MOVE    SPA-GMN-SRYKA            TO  UKE-SRYKA
-           MOVE    "1"                      TO  UKE-DRCD
-           MOVE    SPA-GMN-DRCD             TO  UKE-DRCD(2:4)
+           IF      SPA-GMN-DRCD        NOT =   SPACE
+               MOVE    "1"                      TO  UKE-DRCD
+               MOVE    SPA-GMN-DRCD             TO  UKE-DRCD(2:4)
+           END-IF
            MOVE    SPA-GMN-SRYNAIYOCD       TO  UKE-SRYNAIYO
            MOVE    UKE-UKEYMD               TO  UKE-CREYMD
                                                 UKE-UPYMD
@@ -2903,12 +2906,22 @@
            MOVE    SPA-HOSPID                TO  UKE-HOSPID
            MOVE    SPA-SYSYMD                TO  UKE-UKEYMD
            MOVE    SPA-GMN-TUKEID  (IDX)     TO  UKE-UKEID
-           ACCEPT  UKE-UKETIME               FROM   TIME
+      *
+           PERFORM  900-UKETUKE-READ-SEC
+           IF      FLG-UKETUKE         NOT =   ZERO
+               MOVE    "1003"              TO  SPA-ERRCD
+               DISPLAY "U02 UKETUKE UPD ERR KEY:" UKE-KEY
+               GO      TO      4902-UKEUPD-EXT
+           END-IF
+      *
+      *****ACCEPT  UKE-UKETIME               FROM   TIME
            MOVE    SPA-GMN-PTID              TO  UKE-PTID
            MOVE    SPA-GMN-NAME              TO  UKE-NAME
            MOVE    SPA-GMN-SRYKA             TO  UKE-SRYKA
-           MOVE    "1"                       TO  UKE-DRCD
-           MOVE    SPA-GMN-DRCD              TO  UKE-DRCD(2:4)
+           IF      SPA-GMN-DRCD        NOT =   SPACE
+               MOVE    "1"                       TO  UKE-DRCD
+               MOVE    SPA-GMN-DRCD              TO  UKE-DRCD(2:4)
+           END-IF
            MOVE    SPA-GMN-SRYNAIYOCD        TO  UKE-SRYNAIYO
            IF      SPA-GMN-TYYKTIME(IDX)     NOT =  SPACE
                MOVE    SPA-GMN-TYYKTIME (IDX)    TO  UKE-YYKTIME
@@ -2918,12 +2931,12 @@
            MOVE    UKE-UKEYMD                TO  UKE-CREYMD
                                                  UKE-UPYMD
       *
-           PERFORM  900-UKETUKE-READ-SEC
-           IF      FLG-UKETUKE         NOT =   ZERO
-               MOVE    "1003"              TO  SPA-ERRCD
-               DISPLAY "U02 UKETUKE UPD ERR KEY:" UKE-KEY
-               GO      TO      4902-UKEUPD-EXT
-           END-IF
+      **** PERFORM  900-UKETUKE-READ-SEC
+      *    IF      FLG-UKETUKE         NOT =   ZERO
+      *        MOVE    "1003"              TO  SPA-ERRCD
+      *        DISPLAY "U02 UKETUKE UPD ERR KEY:" UKE-KEY
+      *        GO      TO      4902-UKEUPD-EXT
+      *****END-IF
       *
            MOVE    UKETUKE-REC               TO  MCPDATA-REC
            MOVE    "DBUPDATE"                TO  MCP-FUNC
