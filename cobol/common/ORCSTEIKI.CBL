@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-太田    03/01/14  システム日付をパラメータより
       *                                     取得するよう修正
+      *  00.00.02    NACL-小豆沢  03/02/10  入院調剤料の一括更新を処理追加
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -193,6 +194,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    入院調剤料更新サブ
+           COPY    "CPORCSCHOZAI.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -201,6 +205,7 @@
       ***
        LINKAGE             SECTION.
            COPY  "MCPAREA". 
+           COPY  "COMMON-SPA".
        01  LNK-ORCS02-REC.
            COPY  "CPORCS02.INC".
        01  LNK-SYUNOU-REC-T.
@@ -209,6 +214,7 @@
       /
        PROCEDURE           DIVISION  USING
                                      MCPAREA
+                                     SPA-AREA
                                      LNK-ORCS02-REC
                                      LNK-SYUNOU-REC-T.
       ******************************************************************
@@ -237,6 +243,9 @@
                          WRK-HANBETU-TABLE
                          WRK-HANBETU2-TABLE
                          FLG-AREA.
+      *
+      *    調剤料一括変更処理
+           PERFORM       NYUIN-CHOZAI-SEC.
       *
            PERFORM       NYUIN-HANBETU-SEC.
       *
@@ -298,6 +307,24 @@
        MAIN-EXT.
            EXIT PROGRAM
            STOP RUN.
+      *
+      *****************************************************************
+      *    調剤料一括変更処理
+      *****************************************************************
+       NYUIN-CHOZAI-SEC           SECTION.
+      *
+           INITIALIZE             ORCSCHOZAIAREA
+           MOVE       "1"         TO    ORCSCHO-KBN
+           MOVE       LNK-S02-PTID TO   ORCSCHO-PTID
+           MOVE       LNK-S02-SKYSTYMD(1:6)
+                                  TO    ORCSCHO-SRYYM
+           CALL  "ORCSCHOZAI"     USING   SPA-AREA
+                                          ORCSCHOZAIAREA
+      *
+           .
+      *
+       NYUIN-CHOZAI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    月別保険別判別処理
