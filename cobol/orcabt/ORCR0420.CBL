@@ -208,6 +208,7 @@
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
+           03  CNT-IN-COMMIT                           PIC 9(06).
            03  CNT-OUT1                                PIC 9(06).
            03  CNT-OUT2                                PIC 9(06).
            03  CNT-OUT3                                PIC 9(06).
@@ -567,6 +568,11 @@
            PERFORM     210-HENSYU-SEC
       *      
            PERFORM     RECE41-READ-SEC 
+      	   IF      CNT-IN-COMMIT   =   300
+      	       MOVE  ZERO          TO      CNT-IN-COMMIT
+               PERFORM 900-DBCOMMIT-SEC
+               PERFORM 900-DBSTART-SEC
+           END-IF
       *
            .
        200-MAIN-EXT.
@@ -3001,6 +3007,35 @@
            EXIT.
       *
       *****************************************************************
+      *    £Ä£Â¡¡£Ã£Ï£Í£Í£É£Ô½èÍý
+      *****************************************************************
+       900-DBCOMMIT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "MCPSUB"          USING
+                                        MCPAREA
+                                        MCPDATA-REC.
+      *
+           .
+       900-DBCOMMIT-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    £Ä£Â¡¡£Ó£Ô£Á£Ò£Ô½èÍý
+      *****************************************************************
+       900-DBSTART-SEC                SECTION.
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       900-DBSTART-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    Ãæ´Ö¥Õ¥¡¥¤¥ë£Ò£Å£Á£Ä½èÍý
       *****************************************************************
        RECE41-READ-SEC            SECTION.
@@ -3010,6 +3045,7 @@
                    MOVE    1     TO    FLG-END
                NOT  AT  END
                    ADD     1     TO    CNT-IN
+                   ADD     1     TO    CNT-IN-COMMIT
            END-READ
            .
        RECE41-READ-EXT.
