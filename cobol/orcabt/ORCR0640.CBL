@@ -3280,7 +3280,7 @@
                MOVE    WK-TAIHI-DAY       TO    WK-TAIHI-SRYD
                PERFORM    TENSU-TBL-SEC
                IF      TNS-SRYKBN         =     "80"
-                   IF  TNS-GAITENTTLKBN   =     130
+                   IF  TNS-NYUTENTTLKBN   =     130
                        MOVE   "13"        TO    RECE64-SRYKBN
                                                 RECE65-SRYKBN
                    END-IF
@@ -3318,11 +3318,7 @@
                    MOVE  TNS-TENSIKIBETU  TO   RECE65-TENSIKIBETU(IDX4)
                    MOVE  TNS-TEN          TO    RECE65-TEN(IDX4)
                END-IF
-               IF      RECE62-NYUGAIKBN   =     "1"
-                   MOVE  TNS-NYUTENTTLKBN TO    RECE65-TENTTLKBN(IDX4)
-               ELSE
-                   MOVE  TNS-GAITENTTLKBN TO    RECE65-TENTTLKBN(IDX4)
-               END-IF
+               MOVE    TNS-NYUTENTTLKBN   TO    RECE65-TENTTLKBN(IDX4)
                MOVE    TNS-YUKOKETA       TO    RECE65-YUKOKETA(IDX4)
                MOVE    TNS-DATAKBN        TO    RECE65-DATAKBN (IDX4)
                IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
@@ -3570,13 +3566,9 @@
                    MOVE  TNS-TENSIKIBETU   TO  RECE65-TENSIKIBETU(IDX4)
                    MOVE  TNS-TEN           TO  RECE65-TEN(IDX4)
                END-IF
-               IF      RECE62-NYUGAIKBN   =     "1"
-                   MOVE  TNS-NYUTENTTLKBN TO    RECE65-TENTTLKBN(IDX4)
-               ELSE
-                   MOVE  TNS-GAITENTTLKBN TO    RECE65-TENTTLKBN(IDX4)
-               END-IF
-               MOVE    TNS-YUKOKETA       TO    RECE65-YUKOKETA(IDX4)
-               MOVE    TNS-DATAKBN        TO    RECE65-DATAKBN (IDX4)
+               MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
+               MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
+               MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
                IF      NSRY-SRYCD    (IDX2)(1:1)     =   "8"
                AND     NSRY-INPUTNUM (IDX2)      NOT =   ZERO
                    MOVE    NSRY-HOSPID           TO  PTCOM-HOSPID
@@ -3660,13 +3652,9 @@
                    MOVE  TNS-TENSIKIBETU   TO  RECE65-TENSIKIBETU(IDX4)
                    MOVE  TNS-TEN           TO  RECE65-TEN(IDX4)
                END-IF
-               IF      RECE62-NYUGAIKBN   =     "1"
-                   MOVE  TNS-NYUTENTTLKBN TO    RECE65-TENTTLKBN(IDX4)
-               ELSE
-                   MOVE  TNS-GAITENTTLKBN TO    RECE65-TENTTLKBN(IDX4)
-               END-IF
-               MOVE    TNS-YUKOKETA       TO    RECE65-YUKOKETA(IDX4)
-               MOVE    TNS-DATAKBN        TO    RECE65-DATAKBN (IDX4)
+               MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
+               MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
+               MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
                IF      NSRY-SRYCD    (IDX2)(1:1)     =   "8"
                AND     NSRY-INPUTNUM (IDX2)      NOT =   ZERO
                    MOVE    NSRY-HOSPID           TO  PTCOM-HOSPID
@@ -3743,11 +3731,7 @@
                MOVE  TNS-TENSIKIBETU   TO  RECE65-TENSIKIBETU(1)
                MOVE  TNS-TEN           TO  RECE65-TEN(1)
            END-IF
-           IF      RECE62-NYUGAIKBN   =     "1"
-               MOVE  TNS-NYUTENTTLKBN  TO  RECE65-TENTTLKBN(1)
-           ELSE
-               MOVE  TNS-GAITENTTLKBN  TO  RECE65-TENTTLKBN(1)
-           END-IF
+           MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(1)
            MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(1)
            MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (1)
            MOVE    TNS-NAME            TO  RECE65-NAME(1)
@@ -3811,11 +3795,7 @@
                     MOVE  TNS-TENSIKIBETU   TO  RECE65-TENSIKIBETU(IDX4)
                     MOVE  TNS-TEN           TO  RECE65-TEN(IDX4)
                 END-IF
-                IF      RECE62-NYUGAIKBN   =     "1"
-                    MOVE  TNS-NYUTENTTLKBN  TO  RECE65-TENTTLKBN(IDX4)
-                ELSE
-                    MOVE  TNS-GAITENTTLKBN  TO  RECE65-TENTTLKBN(IDX4)
-                END-IF
+                MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
                 MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
                 MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
                 MOVE    TNS-NAME            TO  RECE65-NAME(IDX4)
@@ -3906,11 +3886,7 @@
                MOVE  TNS-TENSIKIBETU   TO  RECE65-TENSIKIBETU(1)
                MOVE  TNS-TEN           TO  RECE65-TEN(1)
            END-IF
-           IF      RECE62-NYUGAIKBN   =     "1"
-               MOVE  TNS-NYUTENTTLKBN  TO  RECE65-TENTTLKBN(1)
-           ELSE
-               MOVE  TNS-GAITENTTLKBN  TO  RECE65-TENTTLKBN(1)
-           END-IF
+           MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(1)
            MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(1)
            MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (1)
            MOVE    TNS-NAME            TO  RECE65-NAME(1)
@@ -4003,11 +3979,7 @@
                     MOVE  TNS-TENSIKIBETU   TO  RECE65-TENSIKIBETU(IDX4)
                     MOVE  TNS-TEN           TO  RECE65-TEN(IDX4)
                   END-IF
-                  IF    RECE62-NYUGAIKBN   =    "1"
-                    MOVE  TNS-NYUTENTTLKBN  TO  RECE65-TENTTLKBN(IDX4)
-                  ELSE
-                    MOVE  TNS-GAITENTTLKBN  TO  RECE65-TENTTLKBN(IDX4)
-                  END-IF
+                  MOVE  TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
                   MOVE  TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
                   MOVE  TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
                   MOVE  TNS-NAME            TO  RECE65-NAME(IDX4)
@@ -4889,7 +4861,7 @@
       *    その他のレセ点数欄の編集
                WHEN    "80"
                    IF    BUN-IDX        =   1
-                         IF    TNS-GAITENTTLKBN   =    130
+                         IF    TNS-NYUTENTTLKBN   =    130
                            COMPUTE   RECE62-TENSU(2 BUN-IDX)  =
                                      RECE62-TENSU(2 BUN-IDX)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
@@ -4900,7 +4872,7 @@
                          END-IF
                    END-IF
                    IF    BUN-IDX2       =   2
-                         IF    TNS-GAITENTTLKBN   =    130
+                         IF    TNS-NYUTENTTLKBN   =    130
                            COMPUTE   RECE62-TENSU(2 BUN-IDX2)  =
                                      RECE62-TENSU(2 BUN-IDX2)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
@@ -4911,7 +4883,7 @@
                          END-IF
                    END-IF
                    IF    BUN-IDX3       =   3
-                         IF    TNS-GAITENTTLKBN   =    130
+                         IF    TNS-NYUTENTTLKBN   =    130
                            COMPUTE   RECE62-TENSU(2 BUN-IDX3)  =
                                      RECE62-TENSU(2 BUN-IDX3)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
@@ -4922,7 +4894,7 @@
                          END-IF
                    END-IF
                    IF    BUN-IDX4       =   4
-                         IF    TNS-GAITENTTLKBN   =    130
+                         IF    TNS-NYUTENTTLKBN   =    130
                            COMPUTE   RECE62-TENSU(2 BUN-IDX4)  =
                                      RECE62-TENSU(2 BUN-IDX4)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
