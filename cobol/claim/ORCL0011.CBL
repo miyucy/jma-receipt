@@ -37,6 +37,7 @@
       * 01.00.02     NACL-Â¿¡¹Ç¼  03/07/01  ³°Íè¿ÇÎÅÎÁÄÉ²Ã
       * 01.00.03     NACL-Â¿¡¹Ç¼  04/02/17  ¿ÇÎÅ²Ê¡Ç£Ø£Ø¡ÇÄÉ²Ã
       * 01.00.04     NACL-Â¿¡¹Ç¼  04/10/29  ÊÝ¸±ÁÈ¹ç¤»¤ÎÁªÂòÊ¬¤òºÇ½é¤Ø
+      * 01.00.05     NACL-ÃÝÅÄ    05/03/02  ¸øÈñ½ÐÎÏ½çÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -211,9 +212,9 @@
                05                      PIC X(03)   VALUE   "052".  
                05                      PIC X(03)   VALUE   "053".  
                05                      PIC X(03)   VALUE   "012".
-               05                      PIC X(03)   VALUE   "972".
+      *        05                      PIC X(03)   VALUE   "972".
            03  WRK-SRT-TABLE-R         REDEFINES   WRK-SRT-TABLE.      
-               05  WRK-SRT-KOHHKNNUM   PIC X(03)   OCCURS  22.
+               05  WRK-SRT-KOHHKNNUM   PIC X(03)   OCCURS  21.
       *  
        01  WRK-HENYMD.
            03  WRK-HENYY           PIC X(04).
