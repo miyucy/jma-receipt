@@ -37,6 +37,7 @@
       * 01.01.02     NACL-森脇     02/12/12  検索文字引数クリア
       * 01.01.03     NACL-森脇     03/01/08  画面入力文字数変更
       * 01.01.04     NACL-森脇     03/05/30  初期値変更
+      * 02.01.01     NACL-森脇     03/06/13  一括更新
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -344,10 +345,10 @@
                    PERFORM 4110-KENCD-SEC
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 4111-SELNUM-SEC
-               WHEN    "ACTIVATE"      ALSO    "PHOTO"
-                   PERFORM 4112-PHOTO-SEC
                WHEN    ANY             ALSO    "KEKKALST"
                    PERFORM 4113-KEKKALST-SEC
+               WHEN    OTHER
+                   PERFORM 430-TEXTCHK-SEC
            END-EVALUATE
            .
       *
@@ -501,63 +502,6 @@
            .
       *
        4111-SELNUM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    画像ファイル名処理
-      *****************************************************************
-       4112-PHOTO-SEC          SECTION.
-      *
-           MOVE    N21-PHOTO   TO  SPA-GMN-PHOTO
-      *
-      *    テキストチェック
-           PERFORM 430-TEXTCHK-SEC
-      *
-           IF          SPA-ERRCD    NOT     =   SPACE
-               GO  TO  4112-PHOTO-EXT
-           END-IF
-      *
-           IF          SPA-GMN-PHOTO       =   SPACE
-               MOVE    99          TO  SPA-GMN-CUR
-               GO  TO  4112-PHOTO-EXT
-           END-IF
-      *
-      *    半角文字混在チェック
-           INITIALIZE              ORCSKANACHKAREA
-           MOVE    1               TO  KANACHK-SYORI
-           MOVE    SPA-GMN-PHOTO   TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-      *
-           IF          KANACHK-SYUBETU     NOT     =   1
-               MOVE    "0003"      TO  SPA-ERRCD
-           ELSE
-               IF          KANACHK-RC2     =   8
-                   MOVE    "0013"      TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *
-           IF          SPA-ERRCD   NOT     =   SPACE
-                 MOVE    10          TO  SPA-GMN-CUR
-                 GO  TO  4112-PHOTO-EXT
-           END-IF
-      *
-      *    ファイル存在チェック
-           INITIALIZE              ORCSFILECHKAREA
-           MOVE    SPA-GMN-PHOTO   TO  FILECHK-NAME
-           CALL    "ORCSFILECHK"       USING
-                                       ORCSFILECHKAREA
-      *
-           DISPLAY "FILECHK-RC=" FILECHK-RC
-           IF          FILECHK-RC      NOT     =   0
-               MOVE    "0014"      TO  SPA-ERRCD
-               MOVE    10          TO  SPA-GMN-CUR
-           ELSE
-               MOVE    99          TO  SPA-GMN-CUR
-           END-IF
-           .
-      *
-       4112-PHOTO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -796,6 +740,7 @@
            MOVE    N21-SHAPE       TO  SPA-GMN-SHAPE
            MOVE    N21-MARK        TO  SPA-GMN-MARK
            MOVE    N21-CAUTION     TO  SPA-GMN-CAUTION
+           MOVE    N21-PHOTO       TO  SPA-GMN-PHOTO
       *
       *    名前半角文字混在チェック
            IF          SPA-GMN-NAME    NOT     =   SPACE
@@ -903,7 +848,40 @@
                    MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-CAUTION
                END-IF
            END-IF
-            .
+      *
+      *    画像半角文字混在チェック
+           IF          SPA-GMN-PHOTO   NOT =   SPACE
+               INITIALIZE              ORCSKANACHKAREA
+               MOVE    1               TO  KANACHK-SYORI
+               MOVE    SPA-GMN-PHOTO   TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+      *
+               IF          KANACHK-SYUBETU     NOT     =   1
+                   MOVE    "0003"      TO  SPA-ERRCD
+               ELSE
+                   IF          KANACHK-RC2     =   8
+                       MOVE    "0013"      TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *
+               IF          SPA-ERRCD   NOT     =   SPACE
+                   MOVE    10          TO  SPA-GMN-CUR
+                   GO  TO  430-TEXTCHK-EXT
+               END-IF
+      *
+      *        ファイル存在チェック
+               INITIALIZE              ORCSFILECHKAREA
+               MOVE    SPA-GMN-PHOTO   TO  FILECHK-NAME
+               CALL    "ORCSFILECHK"       USING
+                                           ORCSFILECHKAREA
+               IF          FILECHK-RC      NOT     =   0
+                   MOVE    "0014"      TO  SPA-ERRCD
+                   MOVE    10          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
       *
        430-TEXTCHK-EXT.
            EXIT.
@@ -1038,7 +1016,7 @@
                GO  TO  480-TOUROKU-EXT
            END-IF
       *
-           PERFORM 4112-PHOTO-SEC
+           PERFORM 430-TEXTCHK-SEC
       *
            IF          SPA-ERRCD    NOT    =   SPACE
                GO  TO  480-TOUROKU-EXT
