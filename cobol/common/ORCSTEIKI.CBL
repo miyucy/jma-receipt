@@ -32,6 +32,7 @@
       *                                     ¼èÆÀ¤¹¤ë¤è¤¦½¤Àµ
       *  00.00.02    NACL-¾®Æ¦Âô  03/02/10  Æþ±¡Ä´ºÞÎÁ¤Î°ì³ç¹¹¿·¤ò½èÍýÄÉ²Ã
       *  00.00.03    NACL-ÌçÏÆ    03/02/17  ¸øÈñÍ¥Àè¤Ç¤ÎÉéÃ´·×»»
+      *  00.00.04    NACL-¾®Æ¦Âô  03/03/06  ÅÀÅ©ÌôºÞ¤Î¤Þ¤È¤á·×»»
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -132,6 +133,7 @@
            03  IDX                         PIC 9(02).
            03  IDY                         PIC 9(02).
            03  IDZ                         PIC 9(02).
+           03  IDX1                        PIC 9(02).
            03  SYU-IDX                     PIC 9(02).
            03  NYUINACT-IDX                PIC 9(02).
            03  RMSAGAKU-IDX                PIC 9(02).
@@ -211,6 +213,9 @@
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+      *    Æþ±¡ÅÀÅ©°ì³ç¹¹¿·¥µ¥Ö
+           COPY    "CPORCSTENTEK.INC".
       *
       /
       ***
@@ -1238,6 +1243,9 @@
            MOVE   "SRYACCT-KEY9"       TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
+      *    ÅÀÅ©ÌôºÞ¡Ê´ïºà¡ËÅÀ¿ô¤Þ¤È¤á½èÍý
+           PERFORM   TENTEK-MATOME-SEC
+      *
       *    ÊÝ¸±ÅÀ¿ô½¸·×
            PERFORM     VARYING   IDZ    FROM   1    BY    1
                          UNTIL   IDZ    >      10
@@ -1293,9 +1301,24 @@
       *            Ãí¼Í
                    WHEN    "31"
                    WHEN    "32"
-                   WHEN    "33"
                     COMPUTE SYU-HKNTEN (05) =  SYU-HKNTEN (05)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+      *            ÅÀÅ©Ãí¼ÍËô¤ÏÃæ¿´ÀÅÌ®Ãí¼Í
+                   WHEN    "33"
+                       PERFORM   TENTEK-GET-SEC
+                       IF   FLG-SRYACT   =    ZERO
+                           EVALUATE  SRY-SRYSYUKBN
+                               WHEN  "330"
+                               WHEN  "331"
+                                  COMPUTE SYU-HKNTEN (05) = 
+                                          SYU-HKNTEN (05)  +
+                                         (ACCT-SYUTEN1 * SINRYO-COUNT)
+                               WHEN  "340"
+                                  COMPUTE SYU-HKNTEN (05) = 
+                                          SYU-HKNTEN (05)  +
+                                         (ACCT-ZAITEN * SINRYO-COUNT)
+                           END-EVALUATE
+                       END-IF
       *            ½èÃÖ
                    WHEN    "40"
                     COMPUTE SYU-HKNTEN (06)   =  SYU-HKNTEN (06)  +
@@ -1793,6 +1816,72 @@
            END-PERFORM
            .
        HKNTEKGAI-SET-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ÅÀÅ©ÌôºÞÅÀ¿ô¤Þ¤È¤áÍÑ¤Ë¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ë¤ÎÆÉ¤ß¹þ¤ß            *
+      ******************************************************************
+       TENTEK-GET-SEC                 SECTION.
+      *
+      *¿ÇÎÅ¹Ô°Ù¾ðÊó¤Î¼èÆÀ
+           MOVE    ZERO               TO   FLG-SRYACT
+           INITIALIZE                      SRYACT-REC
+           MOVE    ACCT-HOSPID        TO   SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN     TO   SRY-NYUGAIKBN
+           MOVE    ACCT-PTID          TO   SRY-PTID
+           MOVE    ACCT-SRYKA         TO   SRY-SRYKA
+           MOVE    ACCT-SRYYM         TO   SRY-SRYYM
+           MOVE    ACCT-ZAINUM        TO   SRY-ZAINUM
+           MOVE    SRYACT-REC         TO   MCPDATA-REC
+           MOVE    "DBSELECT"         TO   MCP-FUNC
+           MOVE    "SRYACT-KEY2"      TO   ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+          IF      MCP-RC             =    ZERO
+                MOVE    "SRYACT-KEY2"    TO   ORC-DBPATH
+                PERFORM  SRYACT-READ-SEC
+          ELSE
+                MOVE    1                TO   FLG-SRYACT
+          END-IF
+      *
+           .
+      *
+       TENTEK-GET-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ÅÀÅ©ÌôºÞ¡Ê´ïºà¡ËÅÀ¿ô¤Þ¤È¤á½èÍý                              *
+      ******************************************************************
+       TENTEK-MATOME-SEC                 SECTION.
+      *
+           INITIALIZE                  ORCSTENTEKAREA
+           MOVE    "2"                 TO  ORCSTEN-KBN
+           MOVE    SYU-PTID            TO  ORCSTEN-PTID
+           MOVE    SYU-SRYYMD(1:6)     TO  ORCSTEN-SRYYM
+           MOVE    SYU-HKNCOMBINUM     TO  ORCSTEN-HKNCOMBI
+           CALL    "ORCSTENTEK"        USING
+                                       SPA-AREA
+                                       ORCSTENTEKAREA
+      *
+      *    ÌôºÞÅÀ¿ô¤È´ïºàÅÀ¿ô
+           PERFORM  VARYING  IDX1    FROM    1   BY  1
+                      UNTIL  IDX1     >       31
+      *
+                    IF  ORCSTEN-ZAITEN(IDX1)  NOT =  ZERO
+                        ADD    ORCSTEN-ZAITEN(IDX1)
+                                      TO   SYU-HKNTEN (05)
+                    END-IF
+                    IF  ORCSTEN-KIZ-ZAITEN(IDX1)  NOT =  ZERO
+                        ADD    ORCSTEN-KIZ-ZAITEN(IDX1)
+                                      TO   SYU-HKNTEN (05)
+                    END-IF
+           END-PERFORM
+      *
+           .
+      *
+       TENTEK-MATOME-EXT.
            EXIT.
       *
       *****************************************************************
