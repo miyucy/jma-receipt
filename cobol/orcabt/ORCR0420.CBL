@@ -1350,10 +1350,8 @@
                     MOVE  1               TO  RECE45-TENSIKIBETU(IDX4)  
                     MOVE  WRK-RYOYOTEATE2 TO  RECE45-TEN(IDX4)
                  ELSE
-                  IF      TNS-TENSIKIBETU    =     1   OR   3
                     MOVE  TNS-TENSIKIBETU TO  RECE45-TENSIKIBETU(IDX4)
                     MOVE  TNS-TEN         TO  RECE45-TEN(IDX4)
-                  END-IF
                  END-IF
                END-IF                                                   
                IF      RECE41-NYUGAIKBN   =     "1"

@@ -2577,10 +2577,8 @@
                     MOVE  1               TO  RECE85-TENSIKIBETU(IDX4)  
                     MOVE  WRK-RYOYOTEATE2 TO  RECE85-TEN(IDX4)
                  ELSE
-                  IF      TNS-TENSIKIBETU    =     1   OR   3   OR  8
                     MOVE  TNS-TENSIKIBETU TO  RECE85-TENSIKIBETU(IDX4)
                     MOVE  TNS-TEN         TO  RECE85-TEN(IDX4)
-                  END-IF
                  END-IF
                END-IF                                                   
                MOVE    TNS-NYUTENTTLKBN   TO    RECE85-TENTTLKBN(IDX4)
@@ -3088,10 +3086,8 @@
                MOVE    TNS-TANICD          TO  RECE85-TANICD(IDX4)
                MOVE    TNS-TANIMOJISU      TO  RECE85-TANIMOJISU(IDX4)
                MOVE    TNS-TANINAME        TO  RECE85-TANINAME(IDX4)
-               IF      TNS-TENSIKIBETU    =     1   OR   3  OR  8
-                   MOVE  TNS-TENSIKIBETU   TO  RECE85-TENSIKIBETU(IDX4)
-                   MOVE  TNS-TEN           TO  RECE85-TEN(IDX4)
-               END-IF
+               MOVE    TNS-TENSIKIBETU     TO  RECE85-TENSIKIBETU(IDX4)
+               MOVE    TNS-TEN             TO  RECE85-TEN(IDX4)
                MOVE    TNS-NYUTENTTLKBN   TO    RECE85-TENTTLKBN(IDX4)
                MOVE    TNS-YUKOKETA       TO    RECE85-YUKOKETA(IDX4)
                MOVE    TNS-DATAKBN        TO    RECE85-DATAKBN (IDX4)
@@ -3175,10 +3171,8 @@
                 MOVE    TNS-TANICD          TO  RECE85-TANICD(IDX4)
                 MOVE    TNS-TANIMOJISU      TO  RECE85-TANIMOJISU(IDX4)
                 MOVE    TNS-TANINAME        TO  RECE85-TANINAME(IDX4)
-                IF      TNS-TENSIKIBETU    =     1   OR   3  OR  8
-                    MOVE  TNS-TENSIKIBETU   TO  RECE85-TENSIKIBETU(IDX4)
-                    MOVE  TNS-TEN           TO  RECE85-TEN(IDX4)
-                END-IF
+                MOVE    TNS-TENSIKIBETU     TO  RECE85-TENSIKIBETU(IDX4)
+                MOVE    TNS-TEN             TO  RECE85-TEN(IDX4)
                 MOVE    TNS-NYUTENTTLKBN    TO  RECE85-TENTTLKBN(IDX4)
                 MOVE    TNS-YUKOKETA        TO  RECE85-YUKOKETA(IDX4)
                 MOVE    TNS-DATAKBN         TO  RECE85-DATAKBN (IDX4)
@@ -3279,10 +3273,8 @@
                       MOVE  TNS-TANINAME    TO  RECE85-TANINAME(IDX4)
                                                 WRK-TANINAME
                   END-IF
-                  IF    TNS-TENSIKIBETU    =    1   OR   3   OR  8
-                    MOVE  TNS-TENSIKIBETU   TO  RECE85-TENSIKIBETU(IDX4)
-                    MOVE  TNS-TEN           TO  RECE85-TEN(IDX4)
-                  END-IF
+                  MOVE  TNS-TENSIKIBETU     TO  RECE85-TENSIKIBETU(IDX4)
+                  MOVE  TNS-TEN             TO  RECE85-TEN(IDX4)
                   MOVE  TNS-NYUTENTTLKBN    TO  RECE85-TENTTLKBN(IDX4)
                   MOVE  TNS-YUKOKETA        TO  RECE85-YUKOKETA(IDX4)
                   MOVE  TNS-DATAKBN         TO  RECE85-DATAKBN (IDX4)
@@ -3405,10 +3397,8 @@
                MOVE    TNS-TANICD          TO  RECE85-TANICD(IDX4)
                MOVE    TNS-TANIMOJISU      TO  RECE85-TANIMOJISU(IDX4)
                MOVE    TNS-TANINAME        TO  RECE85-TANINAME(IDX4)
-               IF      TNS-TENSIKIBETU    =     1   OR   3  OR  8
-                   MOVE  TNS-TENSIKIBETU   TO  RECE85-TENSIKIBETU(IDX4)
-                   MOVE  TNS-TEN           TO  RECE85-TEN(IDX4)
-               END-IF
+               MOVE    TNS-TENSIKIBETU     TO  RECE85-TENSIKIBETU(IDX4)
+               MOVE    TNS-TEN             TO  RECE85-TEN(IDX4)
                MOVE    TNS-NYUTENTTLKBN   TO    RECE85-TENTTLKBN(IDX4)
                MOVE    TNS-YUKOKETA       TO    RECE85-YUKOKETA(IDX4)
                MOVE    TNS-DATAKBN        TO    RECE85-DATAKBN (IDX4)
