@@ -3040,7 +3040,6 @@
                    MOVE    2                    TO  FLG-TBL
                    MOVE    2                    TO  FLG-TENKIYMD-ER
                    MOVE    20                   TO  IDY2
-                   MOVE    "+"                  TO  T-ERR-09
                    MOVE    MCPDATA-REC          TO  PTBYOMEI-REC
                    IF  (PTBYO-TENKIYMD   NOT  =   SPACE)      AND
                        (PTBYO-TENKIYMD   NOT  =   ZERO)       AND
@@ -3137,7 +3136,7 @@
                        END-PERFORM
                        IF  (CHK-CD (IDY2)       =   SPACE) OR
                            (CHK-CD (IDY2)       =   ZERO)  OR
-                           (IDY2                =   20)
+                           (FLG-TBL             =   2)
                            MOVE    1                    TO  FLG-END
                        END-IF
                    END-PERFORM
@@ -3220,7 +3219,7 @@
                        END-PERFORM
                        IF  (CHK-CD (IDY2)       =   SPACE) OR
                            (CHK-CD (IDY2)       =   ZERO)  OR
-                           (IDY2                =   20)
+                           (FLG-TBL             =   2)
                            MOVE    1                    TO  FLG-END
                        END-IF
                    END-PERFORM
