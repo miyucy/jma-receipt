@@ -1178,6 +1178,7 @@
        40022-ZAINUM-SET-SEC          SECTION.
       *
       *    患者マスターより、最終剤番号を再番し、患者マスターを更新する
+           MOVE    SPACE               TO  SPA-ERRCD
            INITIALIZE                      PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-PTID            TO  PTINF-PTID
