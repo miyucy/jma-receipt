@@ -106,8 +106,8 @@
            03  WRK-HENYMDG             PIC X(22).
       *
            03  WRK-KOUSEI              PIC X(94).
-           03  WRK-KETA                PIC 9(03).
-           03  WRK-KETA2               PIC 9(03).
+           03  WRK-KETA                PIC 9(02).
+           03  WRK-KETA2               PIC 9(02).
       *
            03  WRK-KETAHEN             PIC X(04).
       *
