@@ -27,7 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *
+      *  01.00.01    NACL-小豆沢  03.06.24  診療所老人医療管理料（３０日
+      *                                     以内再入院）の考慮を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5310,6 +5311,8 @@
                        MOVE   "190076810"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "22"
                        MOVE   "190799410"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "23"
+                       MOVE   "190808910"   TO  SYOKIKSN-IN-KHNSRYCD
              END-EVALUATE
            END-IF
       *
