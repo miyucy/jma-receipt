@@ -4,6 +4,8 @@ ORCABT="$ORCADIR"/lib
 DBSTUB=/usr/local/panda/bin/dbstub
 #-------------------------------------------#
 #    医療請求書用ファイル作成
+#        ２００２年１０月改正対応
+#
 #        CPCOMMONSHELL1.INC  
 #        $1 SRYYM TERID SYSYMD
 #        $2 SYOKBN
@@ -14,6 +16,7 @@ DBSTUB=/usr/local/panda/bin/dbstub
 #        $5 JOBID 
 #        $6 SHELLID
 #        $7 県単用項目編集プログラム名
+#        $8 処理年月
 #-------------------------------------------#
 ##      エラーファイル削除
 	echo $#
@@ -26,71 +29,62 @@ DBSTUB=/usr/local/panda/bin/dbstub
         
      cd  $ORCABT
 
-#        fcu  -P$1$2$3 ORCR0010
 	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0010 -parameter $1$2$3$5$6
 	
         if  [ -e $4 ]; then
             exit  
         else 
-#           fcu  -P$1 ORCR0020
 	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0020 -parameter $1$5$6
         fi 
+
         if  [ -e $4 ]; then
             exit 
         else 
-#            fcu  -P$1 ORCR0025
 	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0025 -parameter $1$5$6
         fi
  
         if  [ -e $4 ]; then
             exit 
         else 
-#            fcu  -P$1 ORCR0030
 	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0030 -parameter $1$5$6
         fi
  
         if  [ -e $4 ]; then
             exit 
         else 
-#            fcu  -P$1 ORCR0035
 	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0035 -parameter $1$5$6
         fi
  
         if  [ -e $4 ]; then
             exit 
         else 
-#            fcu  -P$1 ORCR0040
 	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0040 -parameter $1$5$6
         fi
  
         if  [ -e $4 ]; then
             exit 
         else 
-#            fcu  -P$1 ORCR0050
 	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0050 -parameter $1$5$6
         fi
 
         if  [ -e $4 ]; then
            exit 
         else 
-#            fcu  -P$1 ORCR0055
 	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0055 -parameter $1$5$6
         fi
  
         if  [ -e $4 ]; then
             exit 
         else 
-#            fcu  -P$1 ORCR0090
 	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0090 -parameter $1$5$6
         fi
  
         if  [ -e $4 ]; then
             exit 
         else 
-#            fcu  -P$1 ORCR0091
 	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0091 -parameter $1$5$6
         fi
-
+ 
         if  [ -e $4 ]; then
             exit 
         else 
@@ -103,8 +97,11 @@ DBSTUB=/usr/local/panda/bin/dbstub
         if  [ -e $4 ]; then
             exit 
         else 
-#            fcu  -P$1$3 ORCR0100
-	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0100 -parameter $1$3$5$6
+            if  [ $8 -lt '200210' ]; then
+	        $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0100 -parameter $1$3$8$5$6
+            else 
+	        $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0103 -parameter $1$3$8$5$6
+	    fi    
         fi
         
         if  [ -e $4 ]; then

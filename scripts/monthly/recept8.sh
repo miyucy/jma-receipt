@@ -13,6 +13,8 @@ DBSTUB=/usr/local/panda/bin/dbstub
 #        $4 エラーファイル名 
 #        $5 JOBID 
 #        $6 SHELLID
+#        $7 県単用項目編集プログラム名（医保用）
+#        $8 処理年月
 #-------------------------------------------#
 ##      エラーファイル削除
 	echo $#
@@ -93,7 +95,7 @@ DBSTUB=/usr/local/panda/bin/dbstub
         if  [ -e $4 ]; then
             exit 
         else 
-           $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0485 -parameter $1$3$5$6
+           $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0485 -parameter $1$3$8$5$6
         fi
         
         if  [ -e $4 ]; then
