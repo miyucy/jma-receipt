@@ -1274,6 +1274,15 @@
                PERFORM 5002-CALENDAR-SEC
                MOVE    WRK-KEISANYMD
                                    TO  WRK-NOW-SKYSTYMD
+               IF    ( PTNYUINRRK-TEIKI-SEIKYUKBN  =   "2" )
+                   IF   ( PTNYUINRRK-NYUINYMD  (1 : 6)
+                       <  WRK-NOW-SKYSTYMD     (1 : 6) )
+                       MOVE    "01"    TO  WRK-NOW-SKYSTYMD (7 : 2)
+                   ELSE
+                       MOVE    PTNYUINRRK-NYUINYMD
+                                       TO  WRK-NOW-SKYSTYMD
+                   END-IF
+               END-IF
            ELSE
                MOVE    PTNYUINRRK-NYUINYMD
                                    TO  WRK-NOW-SKYSTYMD
