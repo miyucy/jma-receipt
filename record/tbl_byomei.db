@@ -45,7 +45,7 @@ path	key2	{
 		FROM tbl_byomei
 			WHERE  (BYOMEI       LIKE :BYOMEI
 			OR      BYOMEIKANA   LIKE :BYOMEI)
-			ORDER BY             BYOMEI
+			ORDER BY             BYOMEIKANA
 		;
 	};
 };
