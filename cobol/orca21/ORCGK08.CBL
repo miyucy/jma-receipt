@@ -2562,6 +2562,12 @@
                            ADD     TNS-TEN         TO  LNK-S01-MEISAI
                        END-IF
                    END-IF
+      *            療養担当手当の点数をゼロとする
+                   IF     (LNK-WKSRY-SRYKBN(IDX)       =   "80")  AND
+                          (LNK-WKSRY-SRYCD (IDX IDS)   =   "199000610")
+                       ADD     TNS-TEN         TO  WRK-SYUTEN1
+                   END-IF
+      *
                END-PERFORM
            END-IF
       *
