@@ -73,6 +73,8 @@
       *  01.01.07    NACL-ÌçÏÆ    04.06.11  Èé²¼¶ÚÆùÃí¼Í¤Ç¡¢ÌôºÞÅÀ¡¦´ïºàÅÀ
       *                                     ¤¬Ìµ¤¤¤Î¾ì¹ç¤ÎÅ¦Í×Íóµ­ºÜÂÐ±þ
       *  01.01.08    NACL-ÌçÏÆ    04.07.28  ÅêÌôÎÁ¤Î´ïºàÅÀ¤Î½¸·×½¤Àµ
+      *  01.01.09    NACL-ÌçÏÆ    04.07.28  µÙ¶È¾ÚÌÀ¥Õ¥é¥°¡¢µÙ¶È´ü´Ö½ªÎ»Ç¯
+      *                                     ·î¤ÎÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -330,6 +332,8 @@
            03  WRK-YOUBUKASAN                          PIC 9(07).
            03  WRK-RYOYOTEATE                          PIC 9(07).
            03  WRK-RYOYOTEATE2                         PIC 9(07).
+      *
+           03  WRK-KYUGYOFLG                           PIC X(01).
       *
            03  WRK-DAY                                 PIC 9(02).
       *
@@ -860,6 +864,8 @@
                                MOVE    ZERO    TO      FLG-HOUSIJI-COM
                                                        FLG-HOUTEN-COM
       *
+                               MOVE    SPACE   TO      WRK-KYUGYOFLG
+      *
                                PERFORM   RECE44-TENSOU-SEC
                                PERFORM   RECE45-HENSYU-SEC
                                PERFORM   RECE44-WRITE-SEC
@@ -895,6 +901,8 @@
                                       MOVE  SPACE TO  WRK-TANINAME
                                       MOVE  ZERO  TO  FLG-HOUSIJI-COM
                                                       FLG-HOUTEN-COM
+      *
+                                      MOVE  SPACE TO  WRK-KYUGYOFLG
       *
                                       PERFORM   RECE44-TENSOU-SEC
                                       PERFORM   RECE45-HENSYU-SEC
@@ -968,6 +976,8 @@
                                MOVE    ZERO    TO    FLG-HOUSIJI-COM
                                                      FLG-HOUTEN-COM
       *
+                               MOVE    SPACE   TO    WRK-KYUGYOFLG
+      *
                                PERFORM   RECE44-TENSOU-SEC
                                PERFORM   RECE45-HENSYU-SEC
                                PERFORM   RECE44-WRITE-SEC
@@ -1005,6 +1015,8 @@
                                       MOVE  SPACE TO  WRK-TANINAME
                                       MOVE  ZERO  TO  FLG-HOUSIJI-COM
                                                       FLG-HOUTEN-COM
+      *
+                                      MOVE  SPACE TO  WRK-KYUGYOFLG
       *
                                       PERFORM   RECE44-TENSOU-SEC
                                       PERFORM   RECE45-HENSYU-SEC
@@ -1205,6 +1217,11 @@
                ADD     1                  TO    IDX4
                MOVE    SRY-SRYCD(IDX2)    TO    RECE45-SRYCD(IDX4)
       *
+               IF      SRY-SRYCD(IDX2)    =     CONS-ROUSAI10
+                        MOVE   "1"        TO    RECE41-KYUGYOFLG
+                                                WRK-KYUGYOFLG
+               END-IF
+      *
                IF      SRY-SRYKBN         =     "12"
                    IF   SRY-SRYCD(IDX2)   =     CONS-KEIZOKU1    OR
                                                 CONS-KEIZOKU2
@@ -1399,6 +1416,15 @@
                    MOVE    PTCOM-INPUTCOMENT   TO    RECE45-NAME(IDX4)
       *
                    MOVE   "1"                  TO    RECE44-COMCDFLG
+      *
+                   IF      WRK-KYUGYOFLG   =   "1"
+                   AND     SRY-SRYCD(IDX2) = CONS-ROUCOM1
+                        MOVE   PTCOM-INPUTCHI3(1:2)
+                                            TO  RECE41-KYUGYO-END(1:2)
+                        MOVE   PTCOM-INPUTCHI4(1:2)
+                                            TO  RECE41-KYUGYO-END(3:2)
+                        MOVE   SPACE        TO  WRK-KYUGYOFLG
+                   END-IF
       *
                ELSE
                    MOVE    TNS-NAME            TO    RECE45-NAME(IDX4)

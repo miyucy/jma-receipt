@@ -39,6 +39,7 @@
       *  01.00.06    NACL-藤原    03/04/17  出力件数をジョブ管理ＤＢへ更新
       *  01.00.07    NACL-門脇    04/01/26  カナ氏名の長さ等修正
       *  01.00.08    NACL-藤原    04/03/26  手術歴の記載
+      *  01.00.09    NACL-門脇    04/07/28  休業証明のみの療養期間対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -301,6 +302,11 @@
            03  WRK-EDYMD           PIC X(08).
            03  WRK-STYMDW          PIC X(06).
            03  WRK-EDYMDW          PIC X(06).
+      *
+           03  WRK-SINRYO-MM.
+               05  WRK-SINRYO-MM2  PIC 9(02).
+           03  WRK-KYUGYO-MM.
+               05  WRK-KYUGYO-MM2  PIC 9(02).
       *
            03  WRK-OPECOM-PATH     PIC X(64).
       *
@@ -903,6 +909,7 @@
            END-PERFORM
       *
            IF      RECE41-JNISSU  =  999
+              IF   RECE41-KYUGYOFLG   =   SPACE
                 MOVE    RECE41-RYOSTYMD     TO  WRK-SYMD
                 PERFORM 31012-SE-WA-YMDEDIT-SEC
                 MOVE    WRK-HENYY           TO  HC23-STRYY
@@ -911,6 +918,49 @@
                                                 HC23-ENDMM
                 MOVE    WRK-HENDD           TO  HC23-STRDD
                                                 HC23-ENDDD
+              ELSE
+                MOVE    RECE41-RYOSTYMD     TO  WRK-SYMD
+                PERFORM 31012-SE-WA-YMDEDIT-SEC
+                MOVE    WRK-HENYY           TO  HC23-STRYY
+                MOVE    WRK-HENMM           TO  HC23-STRMM
+                MOVE    WRK-HENDD           TO  HC23-STRDD
+      *
+                IF      RECE41-KYUGYO-END   NOT   NUMERIC
+                OR      RECE41-KYUGYO-END   =  "0000"
+                  MOVE    SPACE             TO  HC23-ENDYY
+                  MOVE    SPACE             TO  HC23-ENDMM
+                  MOVE    SPACE             TO  HC23-ENDDD
+                ELSE
+                  MOVE  RECE41-SRYYM(5:2)   TO  WRK-SINRYO-MM
+                  MOVE  RECE41-KYUGYO-END(1:2)
+                                            TO  WRK-KYUGYO-MM
+                  IF    WRK-KYUGYO-MM2    <=    WRK-SINRYO-MM2
+                      MOVE   RECE41-SRYYM(1:4)  TO  WRK-SYMD(1:4)
+                      MOVE   RECE41-KYUGYO-END  TO  WRK-SYMD(5:4)
+                      PERFORM 31012-SE-WA-YMDEDIT-SEC
+                      MOVE    WRK-HENYY         TO  HC23-ENDYY
+                      MOVE    WRK-HENMM         TO  HC23-ENDMM
+                      MOVE    WRK-HENDD         TO  HC23-ENDDD
+                  ELSE
+                      INITIALIZE                    STS-AREA-DAY
+                      INITIALIZE                    LNK-DAY6-AREA
+                      MOVE    "61"              TO  LNK-DAY6-IRAI
+                      MOVE    RECE41-SRYYM      TO  LNK-DAY6-KIJUN(1:6)
+                      MOVE    "01"              TO  LNK-DAY6-KIJUN(7:2)
+                      MOVE    "2"               TO  LNK-DAY6-ZOGENPTN
+                      MOVE    -12               TO  LNK-DAY6-ZOGEN
+                      CALL    "ORCSDAY"         USING   STS-AREA-DAY
+                                                        LNK-DAY6-AREA
+                      MOVE    LNK-DAY6-KEISAN(1:4)
+                                                TO  WRK-SYMD(1:4)
+                      MOVE    RECE41-KYUGYO-END TO  WRK-SYMD(5:4)
+                      PERFORM 31012-SE-WA-YMDEDIT-SEC
+                      MOVE    WRK-HENYY         TO  HC23-ENDYY
+                      MOVE    WRK-HENMM         TO  HC23-ENDMM
+                      MOVE    WRK-HENDD         TO  HC23-ENDDD
+                  END-IF
+                END-IF
+              END-IF
            END-IF
       *
       *    実日数
