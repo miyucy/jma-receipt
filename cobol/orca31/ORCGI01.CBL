@@ -6273,6 +6273,8 @@
            MOVE    IDX13               TO  SMEI-DENPEDANUM
       *Æþ¶âÏ¢ÈÖ
            MOVE    ZERO                TO  SMEI-NYUKINRENNUM
+      *¿ÇÎÅ²Ê
+           MOVE    SYU-SRYKA           TO  SMEI-SRYKA
       *ÅÁÉ¼¾õÂÖ¶èÊ¬
            MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
       *ÀÁµáÈ¯¹ÔÆü¡ÊÈ¯¹ÔÆü¤ÎÀ¾Îñ¡Ë
@@ -6887,8 +6889,9 @@
       *
       *        ÉÂÅïÆþ±¡ÎÁ²Ã»»
                PERFORM   VARYING   IDX7   FROM   1  BY  1
-                 UNTIL  (SYS-5001-KSNCD(IDX7)    =   SPACE)  OR
-                        (IDX7                    >   12)
+                 UNTIL  (IDX7                    >   12)
+                   OR   (SYS-5001-KSNCD(IDX7)    =   SPACE)
+                        
                     IF   IDX7          =       6
       *                 »ùÆ¸»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»¡Ê£²£°ºÍÌ¤Ëþ¡Ë
                         IF   SYS-5001-KSNKBN(IDX7)   =   "2"

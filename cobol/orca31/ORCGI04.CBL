@@ -2303,6 +2303,8 @@
            MOVE    IDX6                TO  SMEI-DENPEDANUM
       *入金連番
            MOVE    ZERO                TO  SMEI-NYUKINRENNUM
+      *診療科
+           MOVE    SYU-SRYKA           TO  SMEI-SRYKA
       *伝票状態区分
            MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
       *請求発行日（発行日の西暦）
@@ -2727,6 +2729,8 @@
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
       *    伝票番号枝番
            MOVE    01                  TO  SMEI-DENPEDANUM
+      *    診療科
+           MOVE    SYU-SRYKA           TO  SMEI-SRYKA
       *    伝票状態区分
            MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
       *    請求発行日（発行日の西暦）
