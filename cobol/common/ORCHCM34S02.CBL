@@ -28,6 +28,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−太田   04/02/02  室料差額・食事の算定を
+      *                                     暫定的に修正
       *****************************************************************
       *
       *
@@ -1131,6 +1133,9 @@
                    UNTIL ( IDXD    >   31 )
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
+      * 040202 ST
+                AND  ( FLG-NYUINRYODAY (IDXD)  =   1 )
+      * 040202 ED
       *            室料差額基本情報設定処理
                    PERFORM 20011-BRMSAGAKU-KHNINF-SET-SEC
                    IF    ( IDXB        >   ZERO )
@@ -1412,6 +1417,9 @@
                    UNTIL ( IDXD    >   31 )
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
+      * 040202 ST
+                AND  ( FLG-NYUINRYODAY (IDXD)  =   1 )
+      * 040202 ED
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
       *
       *            食事診療行為コード取得処理
