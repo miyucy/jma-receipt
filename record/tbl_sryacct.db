@@ -328,6 +328,9 @@ path	key10 	{
 			AND   SRYYM       =   :SRYYM
 			AND   ZAIKAISU    >   0
 			AND  (YKZTEN      >   0    OR
+		 	      SRYKBN      =   '21' OR
+		 	      SRYKBN      =   '22' OR
+		 	      SRYKBN      =   '23' OR
 		 	      SRYKBN      =   '95' OR
 		 	      SRYKBN      =   '96' )
 			ORDER  BY  SRYKA,
