@@ -1697,7 +1697,9 @@
                                                          (02 IDXS)
                    ELSE
       *                ÉÂ±¡¤Ç³°Íè¤Ç»»ÄêºÑ¤ß¤«¤ÎÈ½ÃÇ
-                       IF      WRK-SRYCD       =   "120001710" 
+                       IF     (WRK-SRYCD           =   "120001710") AND
+                              (SPA-CHOKICHK-FLG    =   "1"     )   AND
+                              (SPA-CHOKI-ARI       =   SPACE   )
                            PERFORM 300211-CHOZAI-CHK-SEC
                        END-IF
                    END-IF

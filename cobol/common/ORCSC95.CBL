@@ -504,6 +504,13 @@
                    MOVE    SYS-1008-SURYOZERO-FLG
                                            TO  SPA-SURYOZERO-FLG
                END-IF
+      *        入院調剤技術基本料チェック
+               IF      SYS-1008-CHOKICHK-FLG   =   SPACE
+                   MOVE    ZERO            TO  SPA-CHOKICHK-FLG
+               ELSE
+                   MOVE    SYS-1008-CHOKICHK-FLG
+                                           TO  SPA-CHOKICHK-FLG
+               END-IF
       *
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
@@ -514,6 +521,7 @@
                MOVE    ZERO                TO  SPA-GAI-CURSOR-SET
                MOVE    ZERO                TO  SPA-NYU-SYOSIN
                MOVE    ZERO                TO  SPA-SURYOZERO-FLG
+               MOVE    ZERO                TO  SPA-CHOKICHK-FLG
            END-IF
       *
       *    診療科
@@ -769,7 +777,13 @@
                    MOVE    SYS-1008-SURYOZERO-FLG
                                            TO  SPA-SURYOZERO-FLG
                END-IF
-      *
+      *        入院調剤技術基本料チェック
+               IF      SYS-1008-CHOKICHK-FLG   =   SPACE
+                   MOVE    ZERO            TO  SPA-CHOKICHK-FLG
+               ELSE
+                   MOVE    SYS-1008-CHOKICHK-FLG
+                                           TO  SPA-CHOKICHK-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
       *
@@ -778,6 +792,7 @@
                MOVE    ZERO                TO  SPA-GAI-CURSOR-SET
                MOVE    ZERO                TO  SPA-NYU-SYOSIN
                MOVE    ZERO                TO  SPA-SURYOZERO-FLG
+               MOVE    ZERO                TO  SPA-CHOKICHK-FLG
            END-IF
       *
       *    診療科
@@ -1903,8 +1918,11 @@
            IF      ORCSHKN-IDX         =   ZERO
                MOVE    1               TO  ORCSHKN-IDX
            END-IF
-           MOVE    SPA-GMN-THKNCOMBINUM (ORCSHKN-IDX)
+      *
+           IF      SPA-HKNCOMBINUM     =   SPACE
+               MOVE    SPA-GMN-THKNCOMBINUM (ORCSHKN-IDX)
                                        TO  SPA-HKNCOMBINUM
+           END-IF
       *
       *    保険組合せが使用できるかのチェック
            PERFORM 100131-HKNCOMBI-CHK-SEC
@@ -1953,6 +1971,13 @@
            END-PERFORM
       *    前回の保険組合せが使用できない時、１件目
            IF      FLG-HKNCOMBICHK     =   ZERO
+      *        Ｋ１０からの時は、そのまま
+               IF      LNK-SC95-PG         =   "K10"
+                   MOVE    SPACE               TO  SPA-GMN-HKNCOMBI-G
+                   MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
+                   GO      TO      100131-HKNCOMBI-CHK-EXT
+               END-IF
+      *
       *        省略時の保険組合せ決定
                PERFORM 1001311-HKNCOMBI-SET-SEC
            END-IF

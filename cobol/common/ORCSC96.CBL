@@ -956,6 +956,9 @@
                WHEN    "1033"
                    MOVE    "訂正で包括分入力の変更はできません。"
                                        TO  SPA-ERRMSG
+               WHEN    "1034"
+                   MOVE    "保険組合せがありません。選択し直して下さい"
+                                       TO  SPA-ERRMSG
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
                                        TO  SPA-ERRMSG
