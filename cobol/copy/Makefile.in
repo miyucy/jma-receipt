@@ -780,13 +780,12 @@ COPYS = \
         CPORCSKOHPLUS.INC \
         CPKOHPLUS.INC \
 	CPPREVIEW.INC \
-	CPPRVANRI.INC \
+	CPPRVKANRI.INC \
 	CPXC01LNK.INC \
         HCM2Q.INC \
         HCM2R.INC \
         CPPREVIEW.INC \
-        CPPRVKANRI.INC \
-        CPXC01lnk.INC \
+        CPXC01LNK.INC \
         XC01.INC \
         XC01COMMON-SPA \
         XC99.INC \
