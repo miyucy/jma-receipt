@@ -317,7 +317,8 @@ path	key10 	{
 		        	AND   PTID        =   :PTID
 		        	AND   HKNCOMBINUM <>  '9999'
                                 AND   SRYYMD      <=  :SRYYMD )
-			ORDER   BY        RENNUM,
+			ORDER   BY        DENPNUM,
+		                          RENNUM,
 			                  DOUJI_RENNUM,
 			                  EDANUM
 		;
