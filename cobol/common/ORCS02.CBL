@@ -59,6 +59,7 @@
       *
        WORKING-STORAGE SECTION.
       *
+       01  WK-RYOYO                    PIC 9(07).
        01  WK-KSNRATE9                 PIC 9(03).
        01  WK-KSNRATE                  PIC 9V99.
        01  WK-TAXKBN                   PIC X(01).
@@ -1024,8 +1025,10 @@
                COMPUTE  LNK-SYU-HKNTEN (12)  =  LNK-SYU-HKNTEN (12)
                                              -  LNK-S02-RYOYO
       *
+               COMPUTE  WK-RYOYO  =  LNK-S02-RYOYO  /   10
+      *
                COMPUTE  LNK-SYU-RSIETC-MONEY =  LNK-SYU-RSIETC-MONEY
-                                             +  120
+                                             +  ( 120 *  WK-RYOYO )
            END-IF.
       *
       *    ¥µº‘…È√¥∂‚ªªΩ–¡∞§Œ£±£∞£∞°Û…È√¥≥€ªªΩ–
