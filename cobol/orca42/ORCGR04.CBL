@@ -41,6 +41,7 @@
       *  01.04.01    NACL-藤原    03/06/05  労災・自賠責の入院処理追加
       *  01.04.02    NACL-藤原    03/08/05  ヴで始まるカナ氏名のレセプト
       *                                     を対象とするように修正
+      *  01.05.03    NACL-藤原    04/07/12  指定印刷時の選択項目の色指定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1782,6 +1783,16 @@
                MOVE    SPA-GMN-TPAGE     (IDX) TO  R04-TPAGE     (IDX)
                MOVE    SPA-GMN-TCHK-VALUE(IDX) TO  R04-TCHK-VALUE(IDX) 
                MOVE    SPA-GMN-TSYURUINAME(IDX) TO  R04-TCHK-LABEL(IDX)
+               IF      SPA-GMN-TCHK-VALUE  (IDX)
+                                           =   "T" 
+                   MOVE    "blue-bar"      TO  R04-TCHK-STYLE   (IDX)
+                   MOVE    "blue-rev"      TO  R04-TPAGE-STYLE  (IDX)
+                                               R04-TKENSU-STYLE (IDX)
+               ELSE
+                   MOVE    "black"         TO  R04-TCHK-STYLE   (IDX)
+                                               R04-TPAGE-STYLE  (IDX)
+                                               R04-TKENSU-STYLE (IDX)
+               END-IF
            END-PERFORM
       *
            PERFORM 5001-MAPCUR-SEC
