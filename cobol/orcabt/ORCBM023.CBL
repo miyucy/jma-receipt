@@ -32,6 +32,9 @@
       *  01.00.01    NACL-藤原    03/03/19  所在地の変更による帳票ＩＤ変更
       *  01.00.02    NACL-藤原    03/04/10  ２００３．４改正対応
       *  01.00.03    NACL-藤原    03/07/21  公費欄の特定疾患の名称の変更
+      *  01.00.04    NACL-藤原    04/01/19  老人再掲集計エリアを追加
+      *                                     公費欄の保険番号の表示を法別番号
+      *                                     に修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -238,6 +241,17 @@
                        09  SUM-KOH-SHOKUJIKENSU   PIC  9(06).
                        09  SUM-KOH-SHOKUJIRYOYOHI PIC  9(10).
                        09  SUM-KOH-SHOKUJIFTN     PIC  9(10).
+      *        老人保健（再掲）      
+               05  SUM-ROU-KOH-TABLE           OCCURS  10. 
+                   07  SUM-ROU-KOH-TBL.
+                       09  SUM-ROU-KOH-KENSU          PIC  9(06).
+                       09  SUM-ROU-KOH-NISSU          PIC  9(06).
+                       09  SUM-ROU-KOH-YKZFTN         PIC  9(08).
+                       09  SUM-ROU-KOH-FTNMONEY       PIC  9(09).
+                       09  SUM-ROU-KOH-SHOKUJIKENSU   PIC  9(06).
+                       09  SUM-ROU-KOH-SHOKUJINISSU   PIC  9(06).
+                       09  SUM-ROU-KOH-SHOKUJIRYOYOHI PIC  9(10).
+                       09  SUM-ROU-KOH-SHOKUJIFTN     PIC  9(10).
       *        合計         
                05  SUM-GOK-TBL         OCCURS  4.
                    07  SUM-GOK-KENSU      PIC 9(06).    
@@ -690,46 +704,31 @@
       *
            MOVE    SPACE               TO  WRK-KOHKBN
       *
-           MOVE    SUM-KOH-KOHNUM (IDX1 IDX IDX2)
-                                       TO  WRK-Z9
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"                 TO  KANACHK-SYORI 
-           MOVE    WRK-Z9 (4:2)        TO  KANACHK-MAE-INPUT 
-           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
-           IF      KANACHK-RC          =   ZERO
-           AND     KANACHK-MAX         >   ZERO
-               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                           TO  WRK-KOHNUM
-           END-IF    
-      *    特定疾患のとき 
-           IF      SUM-KOH-KOHNUM (IDX1 IDX IDX2)
-                                       =   "051"
-               MOVE    "（特定疾患）"      TO   WRK-HKNNAME
+      *    保険番号読込み  
+           INITIALIZE                      HKNNUM-REC
+           MOVE   SYS-1001-HOSPID      TO    HKN-HOSPID
+           MOVE   SUM-KOH-KOHNUM (IDX1 IDX IDX2)
+                                       TO    HKN-HKNNUM
+           MOVE   HKNNUM-REC           TO    MCPDATA-REC
+           MOVE   "DBSELECT"           TO    MCP-FUNC
+           MOVE   "HKNNUM-KEY2"        TO    ORC-DBPATH
+           CALL   "ORCMCPSUB"          USING MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-HKNNUM-READ-SEC
            ELSE
-      *        保険番号読込み  
-               INITIALIZE                      HKNNUM-REC
-               MOVE   SYS-1001-HOSPID      TO    HKN-HOSPID
-               MOVE   SUM-KOH-KOHNUM (IDX1 IDX IDX2)
-                                           TO    HKN-HKNNUM
-               MOVE   HKNNUM-REC           TO    MCPDATA-REC
-               MOVE   "DBSELECT"           TO    MCP-FUNC
-               MOVE   "HKNNUM-KEY2"        TO    ORC-DBPATH
-               CALL   "ORCMCPSUB"           USING MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
-                   PERFORM 900-HKNNUM-READ-SEC
-               ELSE
-                   MOVE    1                  TO  FLG-HKNNUM
-               END-IF
+               MOVE    1                  TO  FLG-HKNNUM
+           END-IF
       *
-               PERFORM UNTIL       FLG-HKNNUM      =   1
-                   IF      HKN-TEKSTYMD            <=  WRK-SRYYMD
-                   AND     HKN-TEKEDYMD            >=  WRK-SRYYMD
-                     IF     SUM-KOH-KOHNUM (IDX1 IDX IDX2)    =   "027"
-                       IF      SYS-1001-HOSPSBT    =   HKN-PAYKBN (1:1)
-                       AND     SYS-1001-ROUPAYKBN  =   HKN-PAYKBN (2:1)
+           PERFORM UNTIL       FLG-HKNNUM      =   1
+               IF    ( HKN-TEKSTYMD            <=  WRK-SRYYMD )
+               AND   ( HKN-TEKEDYMD            >=  WRK-SRYYMD )
+                   IF     SUM-KOH-KOHNUM (IDX1 IDX IDX2)    =   "027"
+      *                老人保険のとき 
+                       IF    ( SYS-1001-HOSPSBT    =   HKN-PAYKBN(1:1) )
+                       AND   ( SYS-1001-ROUPAYKBN  =   HKN-PAYKBN(2:1) )
                            STRING  "（"            DELIMITED  BY  SIZE
                                    HKN-TANSEIDONAME
                                                    DELIMITED  BY  SPACE
@@ -738,29 +737,47 @@
                            END-STRING
                            MOVE    1                   TO  FLG-HKNNUM
                        END-IF
-                     ELSE
-                       STRING  "（"                DELIMITED  BY  SIZE
-                               HKN-TANSEIDONAME    DELIMITED  BY  SPACE
-                               "）"                DELIMITED  BY  SIZE
+                   ELSE
+      *                特定疾患のとき 
+                       IF      SUM-KOH-KOHNUM (IDX1 IDX IDX2)
+                                                   =   "051"
+                           MOVE    "（特定疾患）"      TO   WRK-HKNNAME
+                       ELSE
+      *                その他の保険のとき 
+                           STRING  "（"            DELIMITED  BY  SIZE
+                                   HKN-TANSEIDONAME
+                                                   DELIMITED  BY  SPACE
+                                   "）"            DELIMITED  BY  SIZE
                                                    INTO   WRK-HKNNAME
-                       END-STRING
+                           END-STRING
+                       END-IF
                        MOVE    1                   TO  FLG-HKNNUM 
-                     END-IF     
-                   END-IF
+                   END-IF     
+               END-IF
       *
-                   IF      FLG-HKNNUM           =   ZERO
-                       MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
-                       PERFORM 900-HKNNUM-READ-SEC
-                   END-IF 
-115900         END-PERFORM
-      *        カーソルクロース
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
-               MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-           END-IF
+               IF      FLG-HKNNUM           =   ZERO
+                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                   PERFORM 900-HKNNUM-READ-SEC
+               ELSE
+                   MOVE    HKN-HBTNUM      TO  WRK-Z9
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "2"                 TO  KANACHK-SYORI 
+                   MOVE    WRK-Z9 (4:2)    TO  KANACHK-MAE-INPUT 
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF    ( KANACHK-RC      =   ZERO )
+                   AND   ( KANACHK-MAX     >   ZERO )
+                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                                   TO  WRK-KOHNUM
+                   END-IF    
+               END-IF 
+           END-PERFORM
+      *    
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            MOVE    WRK-KOHKBN          TO  HCM2D-KOHKBN (IDX IDY)
            .
