@@ -123,6 +123,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
+           03  FLG-SYORI           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -395,6 +396,7 @@
            IF      SPA-MOTOPG          =   "KID1"
                IF      SPA-KID1-FLG        =   "OK"
                    MOVE    SPACE               TO  SPA-UPDFLG
+                   MOVE    1                   TO  FLG-SYORI
                    PERFORM 210-BACK
                    GO      TO      300-SCREEN-EXT
                ELSE
@@ -655,6 +657,7 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *     Ìá¤ë
                WHEN    "CLICKED"       ALSO    "B01"
+                   MOVE    ZERO                TO  FLG-SYORI
                    PERFORM 210-BACK
       *     ÄÉ²Ã
                WHEN    "CLICKED"       ALSO    "B02"
@@ -1217,8 +1220,11 @@
            MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
            MOVE    "K06"               TO  SPA-MOTOPG
       *
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE
-      **** MOVE    "JOIN"              TO  MCP-PUTTYPE.
+           IF      FLG-SYORI           =   ZERO
+               MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           ELSE
+               MOVE    "JOIN"              TO  MCP-PUTTYPE
+           END-IF
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
@@ -1652,7 +1658,7 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-      *
+               MOVE    ZERO                TO  FLG-SYORI
                PERFORM 210-BACK
            END-IF
            .
