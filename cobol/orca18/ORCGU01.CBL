@@ -78,7 +78,7 @@
                            13  SPA-GMN-YYKTIME     PIC X(04).
                            13  SPA-GMN-UKEID       PIC 9(05).
                    09  SPA-GMN-SELNUM          PIC 9(04) OCCURS  2.
-                   09  SPA-GMN-MAX             PIC 9(02) OCCURS  2.
+                   09  SPA-GMN-MAX             PIC 9(03) OCCURS  2.
       *
            03  SPA-NAI-SELNO               PIC 9(04)     OCCURS  2.
       *
