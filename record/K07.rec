@@ -20,8 +20,8 @@ K07	{
 					value11	varchar(4);
 					value12	varchar(4);
 					value13	varchar(4);
-				}	[100];
-				select	bool[100];
+				}	[150];
+				select	bool[150];
 			};
 		};
 	};

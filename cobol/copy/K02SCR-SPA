@@ -250,7 +250,7 @@
                05  SPA-GMN-K07-CUR         PIC 9(02).
       *
                05  SPA-GMN-K07-AREA.
-                   07  SPA-GMN-K07-TBL            OCCURS   100.
+                   07  SPA-GMN-K07-TBL            OCCURS   150.
                        09  SPA-GMN-K07-NO              PIC 9(04).
       *****************09  SPA-GMN-K07-SRYYMD          PIC X(09).
                        09  SPA-GMN-K07-SINSATSU        PIC X(04).
