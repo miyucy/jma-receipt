@@ -1123,10 +1123,12 @@
       *
       *    労災の外来管理加算読み替え処理
            IF      SPA-HKNKBN          =   1
-      *        回数を掛けた点数で判定する
-      *          （２単位以上の時、読み替えはないはず）
-               COMPUTE WRK-SYOKEI      =   WRK-COM-SYUTEN2 (IDX-SYU)
-                                       *   LNK-ORCSC-KAISU
+      *!       回数を掛けた点数で判定する
+      *!         （２単位以上の時、読み替えはないはず）
+      *!       COMPUTE WRK-SYOKEI      =   WRK-COM-SYUTEN2 (IDX-SYU)
+      *!                               *   LNK-ORCSC-KAISU
+               MOVE    WRK-COM-SYUTEN2 (IDX-SYU)
+                                       TO  WRK-SYOKEI
                IF     (WRK-COM-RSIGIRI (IDX-SYU)
                                            =   1  )  AND
                       (WRK-SYOKEI          <   LNK-ORCSC-GAIRAI-TEN)
