@@ -1052,3 +1052,48 @@ path	key23k 	{
 	};
 };
 
+path	key90	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key90_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE YUKOSTYMD    <=  :YUKOSTYMD
+			AND   YUKOEDYMD    >=  :YUKOEDYMD
+			AND   CDKBN_KBN     =  :CDKBN_KBN
+			ORDER   BY          CDKBN_KBNNUM,
+					    CDKBN_KBNNUM_EDA,
+					    SRYCD
+			;
+	};
+};
+
+path	key91	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key91_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE YUKOSTYMD    <=  :YUKOSTYMD
+			AND   YUKOEDYMD    >=  :YUKOEDYMD
+			AND   CDKBN_KBN     =  :CDKBN_KBN
+			AND   CDKBN_KBNNUM  =  :CDKBN_KBNNUM
+			ORDER   BY          CDKBN_KBNNUM,
+					    CDKBN_KBNNUM_EDA,
+					    SRYCD
+			;
+	};
+};
+
+path	key92	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key92_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE YUKOSTYMD    <=  :YUKOSTYMD
+			AND   YUKOEDYMD    >=  :YUKOEDYMD
+			AND   CDKBN_KBN     =  '-'
+			AND   SRYCD         LIKE '1%'
+			ORDER   BY          SRYKBN,
+					    SRYCD
+			;
+	};
+};
