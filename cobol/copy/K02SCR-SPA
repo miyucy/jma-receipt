@@ -102,8 +102,11 @@
                            11  SPA-NAI-DOUJI-RENNUM  PIC  9(01).
                            11  SPA-NAI-RRK-HKNKBN    PIC  X(01).
                            11  SPA-NAI-RRK-HKNCOMBI  PIC  X(04).
+                           11  SPA-NAI-RRK-DENPNUM   PIC  9(07).
                            11  SPA-NAI-RRK-SRYKA     PIC  X(02).
                            11  SPA-NAI-RRK-FUKU-KBN  PIC  X(01).
+                           11  SPA-NAI-RRK-SINSATU   PIC  X(01).
+                           11  SPA-NAI-RRK-DRCD      PIC  X(05).
                    07  SPA-NAI-DOSELNUM              PIC  9(03).
       *
                    07  SPA-NAI-TESELNUM              PIC  9(03).

@@ -256,6 +256,8 @@
       *  01.01.81    NACL-多々納　03/07/10  PTINF-KEY10 追加
       *  01.01.82    NACL-多々納　03/07/15  YYK-KEY7   追加 
       *  01.01.83    NACL-多々納　03/07/17  PTBYOMEI-KEY9,KEY10 追加 
+      *  01.01.84    NACL-多々納　03/07/25  SANTEI-KEY7,KEY8追加
+      *                                     TENSU-KEY22追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1684,6 +1686,10 @@
                    MOVE    PATH-TBL-TENSU-KEY
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY22"
+                   MOVE    PATH-TBL-TENSU-KEY22
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
                WHEN    ANY             ALSO   "TENSU-KEY2"
                    MOVE    PATH-TBL-TENSU-KEY2
                                        TO  WRK-PATH
@@ -1997,6 +2003,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SANTEI-KEY6"
                    MOVE    PATH-TBL-SANTEI-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SANTEI-KEY7"
+                   MOVE    PATH-TBL-SANTEI-KEY7
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SANTEI-KEY8"
+                   MOVE    PATH-TBL-SANTEI-KEY8
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SANTEI-ALL"
                    MOVE    PATH-TBL-SANTEI-ALL
