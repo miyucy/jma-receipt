@@ -30,6 +30,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/10/03  入外区分・処理区分の追加
+      *  01.00.02    NACL-藤原    02/11/26  日付ファイルのクローズ追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1405,15 +1406,17 @@
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-           MOVE    WRK-RECENUM         TO  RECEYMD-RECENUM
+           OPEN    OUTPUT              RECEYMD-FILE 
+           MOVE    WRK-RECENUM         TO  WRK-RECEYMD-RECENUM
+           MOVE    WRK-RECEYMD-REC     TO  RECEYMD-REC
            WRITE   RECEYMD-REC
+           CLOSE   RECEYMD-FILE
       *          
       *    ファイルＣＬＯＳＥ処理
            CLOSE                       RECE41-FILE
            CLOSE                       RECE43-FILE
            CLOSE                       RECE47-FILE
            CLOSE                       RECE46-FILE
-           CLOSE                       RECEYMD-FILE 
       *
       *****IF      CNT-OUT            =   ZERO 
       *****    MOVE    "対象データがありませんでした" TO  WRK-RECEERR
