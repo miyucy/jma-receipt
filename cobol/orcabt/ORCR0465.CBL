@@ -28,6 +28,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-ÌçÏÆ    02.10.02  Å¦Í×½ÐÎÏ¹àÌÜÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -261,9 +262,8 @@
            03  CONS-SAISHIN-G.
                05  FILLER      PIC X(09)   VALUE   "101120040".
                05  FILLER      PIC X(09)   VALUE   "101120050".
-               05  FILLER      PIC X(09)   VALUE   "101120060".
            03  CONS-SAISHIN-R              REDEFINES   CONS-SAISHIN-G.
-               05  CONS-SAISHIN            PIC X(09)   OCCURS  3. 
+               05  CONS-SAISHIN            PIC X(09)   OCCURS  2. 
       *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
        01  WRK-PATH                        PIC X(64).
@@ -552,7 +552,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÌÀºÙ°õ»ú¥Á¥§¥Ã¥¯ ¿ÇÎÅ¶èÊ¬¡Ê£±£±¡Ë ½èÍý
+      *    ÌÀºÙ°õ»ú¥Á¥§¥Ã¥¯ ¿ÇÎÅ¶èÊ¬¡Ê£±£±¡Ë¡Ê£±£²¡Ë ½èÍý
       *****************************************************************
        20031-SRYKBN-CHECK-SEC        SECTION.
       * 
@@ -565,16 +565,17 @@
                        MOVE    1                 TO  FLG-NOPRT
                    END-IF
                WHEN    "12"
-                   IF      RECE41-SAISHIN-PRTKBN =   "1"    
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY         >   3
+                   PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY         >   2
                                OR      FLG-NOPRT   =   1  
-                           IF  TBL-ZAIW-SRYCD (WRK-WIDX1)
-                                             =   CONS-SAISHIN (IDY)
-                               MOVE    1           TO  FLG-NOPRT
-                           END-IF
-                       END-PERFORM
-                   END-IF
+                       IF  TBL-ZAIW-SRYCD (WRK-WIDX1)
+                                         =   CONS-SAISHIN (IDY)
+                           MOVE    1           TO  FLG-NOPRT
+                       END-IF
+                       IF      RECE41-SAISHIN-PRTKBN2  =   "1"  
+                           MOVE    ZERO        TO  FLG-NOPRT
+                       END-IF
+                   END-PERFORM
            END-EVALUATE            
       *
            .
