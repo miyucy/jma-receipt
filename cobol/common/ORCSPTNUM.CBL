@@ -120,6 +120,10 @@
                MOVE    99              TO  SPTNUM-RC
                GO      TO      000-PROC-EXT
            END-IF
+      *    最大桁数が２０以上の時、２０とする
+           IF      KANACHK-MAX         >   20
+               MOVE    20                  TO  KANACHK-MAX
+           END-IF
       *
            EVALUATE    KANACHK-SYUBETU
                WHEN    1
