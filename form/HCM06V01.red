@@ -3,345 +3,345 @@
   <dictionarydata>
     <element name="TEISYUTUSAKI" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="6"/>
+        <embed object="string" length="6"/>
       </appinfo>
     </element>
     <element name="PTNUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="SRYY" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="SRYM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="PREFNUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="HOSPCDN" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="KHNTEN2" occurs="2">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="KHNTEN1" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="SRYKBN" occurs="35">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="TEKIYO" occurs="35">
       <appinfo>
-        <embed object="string" type="X" length="52"/>
+        <embed object="string" length="52"/>
       </appinfo>
     </element>
     <element name="KOUTEN" occurs="35">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="TOTALTEN" occurs="3">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="YKZFTN" occurs="3">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="FTNMONEY" occurs="3">
       <appinfo>
-        <embed object="string" type="X" length="8"/>
+        <embed object="string" length="8"/>
       </appinfo>
     </element>
     <element name="OCR1" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="67"/>
+        <embed object="string" length="67"/>
       </appinfo>
     </element>
     <element name="OCR2" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="67"/>
+        <embed object="string" length="67"/>
       </appinfo>
     </element>
     <element name="OCR3" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="67"/>
+        <embed object="string" length="67"/>
       </appinfo>
     </element>
     <element name="RJNFTNJANUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="8"/>
+        <embed object="string" length="8"/>
       </appinfo>
     </element>
     <element name="KOHFTNJANUM1" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="8"/>
+        <embed object="string" length="8"/>
       </appinfo>
     </element>
     <element name="KOHFTNJANUM2" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="8"/>
+        <embed object="string" length="8"/>
       </appinfo>
     </element>
     <element name="KOHFTNJANUM1N" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="KOHFTNJANUM2N" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="HKNJANUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="8"/>
+        <embed object="string" length="8"/>
       </appinfo>
     </element>
     <element name="KYURATE" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="8"/>
+        <embed object="string" length="8"/>
       </appinfo>
     </element>
     <element name="RJNJKYSNUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="KOHJKYSNUM1" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="KOHJKYSNUM2" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="KOHJKYSNUM1N" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="KOHJKYSNUM2N" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="HKNSBT1" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="6"/>
+        <embed object="string" length="6"/>
       </appinfo>
     </element>
     <element name="HKNSBT2" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="6"/>
+        <embed object="string" length="6"/>
       </appinfo>
     </element>
     <element name="HONKZK" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="10"/>
+        <embed object="string" length="10"/>
       </appinfo>
     </element>
     <element name="KIGO" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="34"/>
+        <embed object="string" length="34"/>
       </appinfo>
     </element>
     <element name="NUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="34"/>
+        <embed object="string" length="34"/>
       </appinfo>
     </element>
     <element name="KANANAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="30"/>
+        <embed object="string" length="30"/>
       </appinfo>
     </element>
     <element name="SEXNUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="BIRTHDAY" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="22"/>
+        <embed object="string" length="22"/>
       </appinfo>
     </element>
     <element name="JIYU" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="SEXN" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="TOKKI" occurs="4">
       <appinfo>
-        <embed object="string" type="X" length="12"/>
+        <embed object="string" length="12"/>
       </appinfo>
     </element>
     <element name="HOSPTEL" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="15"/>
+        <embed object="string" length="15"/>
       </appinfo>
     </element>
     <element name="SRYKA" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="30"/>
+        <embed object="string" length="30"/>
       </appinfo>
     </element>
     <element name="BEDSU" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="3"/>
+        <embed object="string" length="3"/>
       </appinfo>
     </element>
     <element name="BYOMEI" occurs="5">
       <appinfo>
-        <embed object="string" type="X" length="54"/>
+        <embed object="string" length="54"/>
       </appinfo>
     </element>
     <element name="SRYYMD" occurs="5">
       <appinfo>
-        <embed object="string" type="X" length="24"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="TENKI" occurs="5">
       <appinfo>
-        <embed object="string" type="X" length="10"/>
+        <embed object="string" length="10"/>
       </appinfo>
     </element>
     <element name="JINISSU" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="JINISSU1" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="JINISSU2" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="TENSU" occurs="35">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="KAISU" occurs="35">
       <appinfo>
-        <embed object="string" type="X" length="3"/>
+        <embed object="string" length="3"/>
       </appinfo>
     </element>
     <element name="KHNTEN" occurs="5">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="HOSPNAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="80"/>
+        <embed object="string" length="80"/>
       </appinfo>
     </element>
     <element name="HOSPADRS" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="50"/>
+        <embed object="string" length="50"/>
       </appinfo>
     </element>
     <element name="NAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="50"/>
+        <embed object="string" length="50"/>
       </appinfo>
     </element>
     <element name="HEAD1-G" occurs="1">
       <element name="HEAD1" occurs="2">
         <appinfo>
-          <embed object="string" type="X" length="46"/>
+          <embed object="string" length="46"/>
         </appinfo>
       </element>
     </element>
     <element name="HEAD2-G" occurs="1">
       <element name="HEAD2" occurs="7">
         <appinfo>
-          <embed object="string" type="X" length="2"/>
+          <embed object="string" length="2"/>
         </appinfo>
       </element>
     </element>
     <element name="HEAD3-G" occurs="1">
       <element name="HEAD3" occurs="2">
         <appinfo>
-          <embed object="string" type="X" length="50"/>
+          <embed object="string" length="50"/>
         </appinfo>
       </element>
     </element>
     <element name="BODY" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="52"/>
+        <embed object="string" length="52"/>
       </appinfo>
     </element>
     <element name="FOOT-G" occurs="1">
       <element name="FOOT" occurs="4">
         <appinfo>
-          <embed object="string" type="X" length="46"/>
+          <embed object="string" length="46"/>
         </appinfo>
       </element>
     </element>
     <element name="SHOSHINTIME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="10"/>
+        <embed object="string" length="10"/>
       </appinfo>
     </element>
     <element name="TENKIYMD" occurs="5">
       <appinfo>
-        <embed object="string" type="X" length="6"/>
+        <embed object="string" length="6"/>
       </appinfo>
     </element>
     <element name="FTNMONEYSAI" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="11"/>
+        <embed object="string" length="11"/>
       </appinfo>
     </element>
     <element name="RENNUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="SRYKA2" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="60"/>
+        <embed object="string" length="60"/>
       </appinfo>
     </element>
     <element name="KHNTEN3" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
     <element name="SONOTA" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="10"/>
+        <embed object="string" length="10"/>
       </appinfo>
     </element>
   </dictionarydata>
@@ -353,6 +353,12 @@
       <composite type="paper">
         <attribute name="name">
           <string>#A4#</string>
+        </attribute>
+        <attribute name="pswidth">
+          <real val="21"/>
+        </attribute>
+        <attribute name="psheight">
+          <real val="29.7"/>
         </attribute>
         <attribute name="tmargin">
           <real val="0"/>
@@ -6372,7 +6378,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#161;&#161; &#198;&#220;&#201;&#254;&#204;&#244;&#186;&#222;#</string>
+            <string>#&#161;&#161; &#198;&#214;&#201;&#254;&#204;&#244;&#186;&#222;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>

@@ -2920,7 +2920,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#22 &#198;&#220;&#201;&#254;&#204;&#244;&#186;&#222;#</string>
+            <string>#22 &#198;&#214;&#201;&#254;&#204;&#244;&#186;&#222;#</string>
           </attribute>
           <attribute name="font">
             <font name="Times-Roman"/>
