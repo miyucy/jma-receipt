@@ -31,6 +31,7 @@
       * 01.00.01     MCC-多々納   02/04/16  労災用追加
       * 01.00.02     MCC-多々納   02/06/12  時間外特例追加
       * 01.00.04     MCC-多々納   02/07/09  労災加算の入力を可能とする
+      * 01.00.05     NACL-多々納  02/10/03  労災加算なしの追加
       *****************************************************************
       *
       *
@@ -269,6 +270,10 @@
                        MOVE    "7"                     TO  WRK-MOJI
                    END-IF
                END-IF
+      *        労災加算振替え
+               IF      WRK-COM-INPUTCD(IDX-Z)  =   "099509901"
+                   MOVE    "1"                 TO  WRK-MOJI
+               END-IF
       *
                EVALUATE    WRK-MOJI
                    WHEN    "0"
@@ -501,8 +506,6 @@
        100113-RSIHKN-SYORI-SEC        SECTION.
       *
            IF      WRK-COM-INPUTCD (IDX-ZS)(1:3)   =   "101"
-      *        労災コードの算定回数チェック
-               PERFORM 1001131-RSI-SANTEICHK-SEC
       *        労災のコードは加算なし
                GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
@@ -538,7 +541,8 @@
                               (FLG-ROU-ARI             =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   "101500010"  OR
-                                                   "101500020"
+                                                   "101500020"  OR
+                                                   "099509901"
                    IF      WRK-COM-AUTOKBN (IDX1)  =   SPACE
                         MOVE    1                  TO  FLG-ROU-ARI
                    END-IF
@@ -598,23 +602,6 @@
            END-IF
            .
        100113-RSIHKN-SYORI-EXT.
-           EXIT.
-      *****************************************************************
-      *    労災コードの算定回数チェック処理
-      *****************************************************************
-       1001131-RSI-SANTEICHK-SEC        SECTION.
-      *
-      *    手指の創傷に係る機能回復始動加算
-           IF      WRK-COM-INPUTCD (IDX-ZS)    =   "101500080"
-      *        同一保険で１回に限り算定できる
-               IF      LNK-ORCSC-RSI-KAIFUKU   =   1
-                   MOVE    "8019"          TO  SPA-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR (IDX-ZS)
-               END-IF
-           END-IF
-      *
-           .
-       1000-SANTEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************

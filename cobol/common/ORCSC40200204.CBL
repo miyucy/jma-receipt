@@ -33,6 +33,7 @@
       * 01.00.03     MCC-多々納   02/06/12  時間外特例追加
       * 01.00.04     MCC-多々納   02/07/09  労災加算の入力を可能とする
       * 01.00.05     NACL-多々納  02/08/20  労災チェック追加
+      * 01.00.06     NACL-多々納  02/10/03  労災加算なしの追加
       *****************************************************************
       *
       *
@@ -283,6 +284,10 @@
                    IF      WRK-COM-INPUTCD(IDX-Z)(1:3) =   "059"
                        MOVE    "7"                     TO  WRK-MOJI
                    END-IF
+               END-IF
+      *        労災加算振替え
+               IF      WRK-COM-INPUTCD(IDX-Z)  =   "099509901"
+                   MOVE    "1"                 TO  WRK-MOJI
                END-IF
       *
                EVALUATE    WRK-MOJI
@@ -784,7 +789,8 @@
                               (FLG-ROU-ARI             =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   "101400020"  OR
-                                                   "101400010"
+                                                   "101400010"  OR
+                                                   "099509901"
                    IF      WRK-COM-AUTOKBN (IDX1)  =   SPACE
                         MOVE    1                  TO  FLG-ROU-ARI
                    END-IF

@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     MCC-多々納   02/04/16  労災用追加
+      * 01.00.02     NACL-多々納  02/10/03  労災加算なしの追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -376,6 +377,10 @@
                        MOVE    "7"                     TO  WRK-MOJI
                    END-IF
                END-IF
+      *        労災加算振替え
+               IF      WRK-COM-INPUTCD(IDX-Z)  =   "099509901"
+                   MOVE    "1"                 TO  WRK-MOJI
+               END-IF
       *
                EVALUATE    WRK-MOJI
                    WHEN    "0"
@@ -440,12 +445,16 @@
                        IF      WRK-COM-DATAKBN (IDX-Z) =   "1"
       *                    理学療法の逓減チェック
                            MOVE    SPACE               TO  WRK-GEN-SRYCD
-                           PERFORM 100112-RIGAKU-CHK-SEC
+                           IF      LNK-ORCSC-PG        =   "K02"
+                               PERFORM 100112-RIGAKU-CHK-SEC
+                           END-IF
                        END-IF
                    END-IF
       *
       *            精神通院の逓減チェック
-                   PERFORM 100113-SEISIN-CHK-SEC
+                   IF      LNK-ORCSC-PG        =   "K02"
+                       PERFORM 100113-SEISIN-CHK-SEC
+                   END-IF
       *
       *            加算チェック
                    IF      WRK-COM-DATAKBN (IDX-Z) =   "2"
@@ -582,7 +591,6 @@
       *    理学療法の逓減チェック処理
       *****************************************************************
        100112-RIGAKU-CHK-SEC            SECTION.
-      *
       *
            SET     TBL-SAN             TO  1
            SEARCH      TBL-SANTEI-OCC  VARYING   TBL-SAN
@@ -848,8 +856,10 @@
       *        減額診療コード（労災）
                MOVE    "101800030"         TO  WRK-GEN-SRYCD
       *        理学療法の逓減チェック
-               PERFORM 100112-RIGAKU-CHK-SEC
-               MOVE    HZN-IDX             TO  IDX-Z
+               IF      LNK-ORCSC-PG        =   "K02"
+                   PERFORM 100112-RIGAKU-CHK-SEC
+                   MOVE    HZN-IDX             TO  IDX-Z
+               END-IF
            END-IF
       *
       *    早期リハビリ加算は対象外
@@ -891,7 +901,8 @@
                    UNTIL      (IDX1        >   200     )   OR
                               (FLG-ROU-ARI             =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
-               IF       WRK-COM-INPUTCD (IDX1) =   "101800010"
+               IF       WRK-COM-INPUTCD (IDX1) =   "101800010"  OR
+                                                   "099509901"
                    IF      WRK-COM-AUTOKBN (IDX1)  =   SPACE
                         MOVE    1                  TO  FLG-ROU-ARI
                    END-IF
@@ -905,8 +916,8 @@
                IF      FLG-ROUSAI          =   ZERO
                    MOVE    "8004"          TO  WRK-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR (IDX1 - 1)
-                   GO      TO      100113-RSIHKN-SYORI-EXT
                END-IF
+               GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
            IF      WRK-SRYCD           =   SPACE
                GO      TO      100113-RSIHKN-SYORI-EXT
@@ -1376,6 +1387,13 @@
       *    全診療行為チェック処理
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
+      *
+      *    チェックは診療行為入力のみとする
+           IF      LNK-ORCSC-PG        =   "K02"
+               CONTINUE
+           ELSE
+               GO      TO      200-ALL-SYORI-EXT
+           END-IF
       *
            INITIALIZE                  WRK-AREA
       *

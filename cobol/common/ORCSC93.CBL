@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/08/23  注射に外用薬を入力可能とする
       * 01.00.02     NACL-多々納  02/09/12  自賠責の追加（09591〜09592)
+      * 01.00.03     NACL-多々納  02/10/03  労災加算なしの追加
       *****************************************************************
       *
       *
@@ -556,6 +557,21 @@
                              WHEN    "099303301"
                                MOVE    "33"          TO  SPA-COM-SRYKBN
                                                                   (IDX)
+      *                      労災・自賠責の加算置換え
+                             WHEN    "099509901"
+                               IF     (IDX           >   1   )  AND
+                                      (SPA-COM-SRYKBN(IDX - 1)
+                                                     =   "40" OR
+                                                         "50" OR
+                                                         "80"  )
+                                   MOVE    SPA-COM-SRYKBN(IDX - 1)
+                                                     TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                                   MOVE    SPACE     TO  SPA-COM-ZAIEND
+                                                             (IDX - 1)
+                               ELSE
+                                   MOVE    "8020"          TO  SPA-ERRCD
+                               END-IF
                              WHEN    OTHER
                                MOVE    "99"          TO  SPA-COM-SRYKBN
                                                                   (IDX)
