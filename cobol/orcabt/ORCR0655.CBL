@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    03.03.12  剤点数をキーに追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -330,6 +331,7 @@
                    MOVE    RECE64-TEKSTYMD     TO  RECE642-TEKSTYMD
                    MOVE    RECE64-KOHBUNRI     TO  RECE642-KOHBUNRI
                    MOVE    RECE64-SRYKBN       TO  RECE642-SRYKBN
+                   MOVE    RECE64-ZAITEN       TO  RECE642-ZAITEN
                    MOVE    RECE64-SRYCDTOTAL   TO  RECE642-SRYCDTOTAL
                    MOVE    RECE64-SURYOUTOTAL  TO  RECE642-SURYOUTOTAL
                    MOVE    RECE64-MEISAISU     TO  RECE642-MEISAISU 
@@ -366,6 +368,7 @@
                    MOVE    RECE64-TEKSTYMD     TO  RECE642-TEKSTYMD
                    MOVE    RECE64-KOHBUNRI     TO  RECE642-KOHBUNRI
                    MOVE    RECE64-SRYKBN       TO  RECE642-SRYKBN
+                   MOVE    RECE64-ZAITEN       TO  RECE642-ZAITEN
                    MOVE    RECE64-SRYCDTOTAL   TO  RECE642-SRYCDTOTAL
                    MOVE    RECE64-SURYOUTOTAL  TO  RECE642-SURYOUTOTAL
                    MOVE    RECE64-MEISAISU     TO  RECE642-MEISAISU 

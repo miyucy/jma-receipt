@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    03.03.07  未実施減算の略称追加
       *  01.00.02    NACL-門脇    03.03.10  食事区分”４”の対応追加
+      *  01.00.03    NACL-門脇    03.03.12  選定入院料対応
       *****************************************************************
       *
       *
@@ -92,6 +93,7 @@
            03  FLG-MIJISI-INNAI                        PIC 9(01).       
            03  FLG-MIJISI-IRYO                         PIC 9(01).       
            03  FLG-MIJISI-JYOKU                        PIC 9(01).       
+           03  FLG-SENTEICDCHG                         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -130,6 +132,7 @@
            03  WRK-DAY-T                               OCCURS   31.
                05  WRK-DAY1                            PIC 9(04).
                05  WRK-DAY1-NYUTENTTLKBN               PIC 9(03).
+               05  WRK-DAY1-SENTEI                     PIC 9(04).
                05  WRK-DAY2                            PIC 9(04).
                05  WRK-DAY4                            PIC 9(04).
                05  WRK-DAY41                           PIC 9(04).
@@ -169,6 +172,8 @@
       *    入院点数算定用ワークエリア
        01  WRK-NYUIN-TENSU-AREA.
            03  WRK-KHNTEN                              PIC 9(08). 
+           03  WRK-SENTEI-KHNTEN                       PIC 9(08).
+           03  WRK-SENTEI-ZAITEN                       PIC 9(08).
            03  WRK-KSNTEN                              PIC S9(08).
            03  WRK-NYUTENTTLKBN                        PIC 9(03).
            03  WRK-NYUKHNRYO                           PIC 9(09).
@@ -220,6 +225,10 @@
       *    入院略称
        01  NYURYAKUSHO-REC.
            COPY    "CPNYUINRYAKUSHO.INC".
+      *
+      *    選定入院料
+       01  SENTEICDCHG-REC.
+           COPY    "CPSENTEICDCHG.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -583,12 +592,16 @@
              IF       NACCT-DAY(IDY)   NOT =  ZERO 
       *
                IF     NACCT-ZAISKBKBN    =    "1"  
+                  IF     NACCT-SRYCDTOTAL    =    099999916
+                    MOVE   NACCT-DAY(IDY)   TO  WRK-DAY1-SENTEI(IDY)
+                  ELSE
                     MOVE   NACCT-DAY(IDY)   TO  WRK-DAY1(IDY) 
                     IF  NACCT-SRYKBN  =  "90"                           
                        MOVE   903  TO  WRK-DAY1-NYUTENTTLKBN(IDY)       
                     ELSE                                                
                        MOVE   920  TO  WRK-DAY1-NYUTENTTLKBN(IDY)       
-                    END-IF                                              
+                    END-IF
+                  END-IF
                END-IF 
       *
                IF     NACCT-ZAISKBKBN    =    "2"  
@@ -856,7 +869,8 @@
                PERFORM  NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
-                 IF     NACCT-ZAISKBKBN    =    "1"  
+                 IF     NACCT-ZAISKBKBN          =    "1"  
+                 AND    NACCT-SRYCDTOTAL   NOT   =    099999916
       *
       *            入院基本料と加減算点数の取得
                    PERFORM   NYUINKHN-GET-SEC
@@ -1070,27 +1084,51 @@
            EVALUATE   WRK-NYUTENTTLKBN
                WHEN   903
                   MOVE      ZERO   TO  WRK-NYUKHNRYO
-                  EVALUATE   WRK-DAY2(IDY)
-                     WHEN   ZERO
+                  IF    WRK-DAY1-SENTEI(IDY)   NOT  =  ZERO
+                    EVALUATE   WRK-DAY2(IDY)
+                       WHEN   ZERO
+                         MOVE     WRK-SENTEI-ZAITEN  TO  
+                                       WRK-NYUKHNRYO
+                       WHEN   1
+                         COMPUTE  WRK-NYUKHNRYO =
+                                 (WRK-SENTEI-KHNTEN  *  0.15)
+                                                     +  0.5
+                       WHEN   2
+                         COMPUTE  WRK-NYUKHNRYO =
+                                 (WRK-SENTEI-KHNTEN  *  0.3)
+                                                     +  0.5
+                       WHEN   3
+                         COMPUTE  WRK-NYUKHNRYO =
+                                 (WRK-SENTEI-KHNTEN  *  0.1)
+                                                     +  0.5
+                       WHEN   4
+                         COMPUTE  WRK-NYUKHNRYO =
+                                 (WRK-SENTEI-KHNTEN  *  0.15)
+                                                     +  0.5
+                    END-EVALUATE
+                  ELSE
+                    EVALUATE   WRK-DAY2(IDY)
+                       WHEN   ZERO
                          MOVE     NACCT-ZAITEN   TO  
                                        WRK-NYUKHNRYO
-                     WHEN   1
+                       WHEN   1
                          COMPUTE  WRK-NYUKHNRYO =
                                  (WRK-KHNTEN    *  0.15)
                                                 +  0.5
-                     WHEN   2
+                       WHEN   2
                          COMPUTE  WRK-NYUKHNRYO =
                                  (WRK-KHNTEN    *  0.3)
                                                 +  0.5
-                     WHEN   3
+                       WHEN   3
                          COMPUTE  WRK-NYUKHNRYO =
                                  (WRK-KHNTEN    *  0.1)
                                                 +  0.5
-                     WHEN   4
+                       WHEN   4
                          COMPUTE  WRK-NYUKHNRYO =
                                  (WRK-KHNTEN    *  0.15)
                                                 +  0.5
-                  END-EVALUATE
+                    END-EVALUATE
+                  END-IF
                   EVALUATE   WRK-DAY2(IDY)
                      WHEN   ZERO
                          COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
@@ -1251,6 +1289,9 @@
            MOVE    ZERO               TO   WRK-KHNTEN
            MOVE    SPACE              TO   WRK-RYAKUSHO
            MOVE    ZERO               TO   NYUINACT-IDX2
+           MOVE    ZERO               TO   WRK-KSNTEN
+           MOVE    ZERO               TO   WRK-SENTEI-KHNTEN
+           MOVE    ZERO               TO   WRK-SENTEI-ZAITEN
       *
            INITIALIZE                      NYUINACT-REC
            MOVE    NACCT-HOSPID       TO   NSRY-HOSPID
@@ -1272,7 +1313,9 @@
            ELSE
                MOVE    1              TO   FLG-NYUINACT
            END-IF
+      *
            IF      FLG-NYUINACT        =   ZERO
+      *
                MOVE      ZERO          TO  FLG-NYUKHN  
                PERFORM   VARYING  NYUINACT-IDX  FROM 1  BY  1
                  UNTIL  (FLG-NYUKHN         =   1)    OR
@@ -1287,6 +1330,9 @@
                      IF       FLG-TENSU      =    ZERO
                          IF   TNS-DATAKBN    =    1
                               MOVE   TNS-TEN   TO   WRK-KHNTEN
+      *                       初期加算（及び長期減算）の点数取得
+                              COMPUTE   WRK-KSNTEN  =  NACCT-ZAITEN
+                                                    -  WRK-KHNTEN
                               MOVE   NYUINACT-IDX
                                                TO   NYUINACT-IDX2
                               MOVE   1         TO   FLG-NYUKHN
@@ -1300,37 +1346,84 @@
                                                      MCPDATA-REC
                END-PERFORM
       *
-               IF  WRK-NYUTENTTLKBN  =  920  
+               IF    WRK-NYUTENTTLKBN     =   920  
+               AND   NYUINACT-IDX2    NOT =   ZERO
       *
-                 IF   NYUINACT-IDX2  NOT =  ZERO
-                     MOVE    SPACE         TO   NYURYAKUSHO-REC
-                     INITIALIZE                 NYURYAKUSHO-REC
-                     MOVE    NSRY-SRYCD(NYUINACT-IDX2) 
-                                         TO   NYURYAKUSHO-SRYCD
-                     MOVE    NACCT-SRYYM        TO  ORC-DBYMD(1:6)
-                     MOVE    "01"               TO  ORC-DBYMD(7:2)
-                     PERFORM  NYURYAKUSHO-READ-SEC
-                     IF       FLG-NYURYAKUSHO    =    ZERO
-                       MOVE     NYURYAKUSHO-RYAKUSHO
-                                                TO  WRK-RYAKUSHO
-                     END-IF                  
-                     MOVE    "DBCLOSE"               TO  MCP-FUNC
-                     MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
-                     CALL    "ORCMCPSUB"             USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                 END-IF
+                 MOVE    SPACE         TO   NYURYAKUSHO-REC
+                 INITIALIZE                 NYURYAKUSHO-REC
+                 MOVE    NSRY-SRYCD(NYUINACT-IDX2) 
+                                       TO   NYURYAKUSHO-SRYCD
+                 MOVE    NACCT-SRYYM   TO   ORC-DBYMD(1:6)
+                 MOVE    "01"          TO   ORC-DBYMD(7:2)
+                 PERFORM  NYURYAKUSHO-READ-SEC
+                 IF       FLG-NYURYAKUSHO    =    ZERO
+                   MOVE     NYURYAKUSHO-RYAKUSHO
+                                       TO  WRK-RYAKUSHO
+                 END-IF                  
+                 MOVE    "DBCLOSE"               TO  MCP-FUNC
+                 MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"             USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
       *
                END-IF 
       *
+      *        選定入院料の算定
+      *
+               IF    NYUINACT-IDX2          NOT   =   ZERO
+      *
+                 MOVE    SPACE                TO  SENTEICDCHG-REC
+                 INITIALIZE                       SENTEICDCHG-REC
+                 MOVE    NSRY-SRYCD(NYUINACT-IDX2)
+                                              TO  SENCHG-IPNSRYCD
+                 MOVE    SENTEICDCHG-REC      TO  MCPDATA-REC
+                 MOVE    "DBSELECT"           TO  MCP-FUNC
+                 MOVE    "SENTEICDCHG-KEY2"   TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"         USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+                 IF      MCP-RC             =    ZERO
+                     MOVE  "SENTEICDCHG-KEY2" TO  ORC-DBPATH
+                     PERFORM  SENTEICDCHG-READ-SEC
+                 ELSE
+                     MOVE    1                TO  FLG-SENTEICDCHG
+                 END-IF
+      *
+                 IF  FLG-SENTEICDCHG   =   ZERO
+      *
+                    MOVE    SPACE               TO    TNS-TENSU-REC
+                    INITIALIZE                        TNS-TENSU-REC
+                    MOVE    SENCHG-SENTEISRYCD  TO    TNS-SRYCD
+                    MOVE    NACCT-SRYYM         TO    ORC-DBYMD(1:6)
+                    MOVE    "01"                TO    ORC-DBYMD(7:2)
+                    PERFORM  TENSU-READ-SEC
+                    IF       FLG-TENSU      =    ZERO
+                       MOVE     TNS-TEN         TO    WRK-SENTEI-KHNTEN
+                       COMPUTE  WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
+                                                   +  WRK-KSNTEN
+                    END-IF  
+      *
+                 END-IF
+      *
+                 MOVE    "DBCLOSE"               TO  MCP-FUNC
+                 MOVE    "TENSU-KEY"             TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"             USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+      *
+                 MOVE    "DBCLOSE"               TO  MCP-FUNC
+                 MOVE    "SENTEICDCHG-KEY2"      TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"             USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+      *
+               END-IF
+      *
            END-IF
-      *
-      *    初期加算（及び長期減算）の点数取得
-           MOVE      ZERO              TO  WRK-KSNTEN
-      *
-           COMPUTE   WRK-KSNTEN        =   NACCT-ZAITEN   -
-                                           WRK-KHNTEN
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
            MOVE    "NYUINACT-KEY9"         TO  ORC-DBPATH
@@ -1464,7 +1557,8 @@
                PERFORM  NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
-                 IF     NACCT-ZAISKBKBN    =    "1"  
+                 IF     NACCT-ZAISKBKBN          =    "1"  
+                 AND    NACCT-SRYCDTOTAL   NOT   =    099999916
       *
                    PERFORM  VARYING  IDY    FROM    1   BY  1
                                   UNTIL   IDY     >       31
@@ -2489,6 +2583,28 @@
       *
            .
        NYURYAKUSHO-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    選定療養マスター読込
+      *****************************************************************
+       SENTEICDCHG-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SENTEICDCHG-REC
+               MOVE    ZERO            TO  FLG-SENTEICDCHG
+           ELSE
+               INITIALIZE                  SENTEICDCHG-REC
+               MOVE    1               TO  FLG-SENTEICDCHG
+           END-IF
+      *
+           .
+       SENTEICDCHG-READ-EXT.
            EXIT.
       *
       **************************************************************

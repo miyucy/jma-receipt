@@ -47,6 +47,8 @@
                05  RECE642-KOHBUNRI        PIC  9(01).
       *¿ÇÎÅ¶èÊ¬
                05  RECE642-SRYKBN          PIC  X(02).
+      *ºÞÅÀ¿ô
+               05  RECE642-ZAITEN          PIC  9(08).
       *¿ÇÎÅ¥³¡¼¥É·×
                05  RECE642-SRYCDTOTAL      PIC  9(14).
       *¿ôÎÌ·×
