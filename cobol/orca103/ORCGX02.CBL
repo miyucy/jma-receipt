@@ -374,6 +374,7 @@
                        WHEN    "5"  
       *                点数マスタ読み込み
                            PERFORM 3101-TENNAME-SEC
+                   END-EVALUATE
                END-PERFORM
       *
                MOVE    "CHK-KEY2"              TO  ORC-DBPATH
