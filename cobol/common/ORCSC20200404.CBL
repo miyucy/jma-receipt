@@ -1116,7 +1116,12 @@
                    (WRK-COM-KAISU (IDX)       >=  28   )
                MOVE    1                   TO  FLG-CHOUKI
            END-IF
-      *
+      *    外用の場合
+           IF      (WRK-COM-INPUTCD(IDX)(1:1) =   "6"  )  AND
+                   (WRK-CHK-SRYSYUKBN (1:2)   =   "23" )  AND
+                   (WRK-COM-KAISU2(IDX)       >=  28   )
+               MOVE    1                   TO  FLG-CHOUKI
+           END-IF
       *
            .
        3000-SYOHOU-CHK-EXT.
@@ -2262,12 +2267,6 @@
                                        ORCSC92AREA
                                        HOZ-SCR-REC
                                        SPA-AREA
-      *TEST
-           DISPLAY "C20 SRYCD:" WRK-SRYCD
-                  ",SPA-ERRCD:" SPA-ERRCD
-                  ",LNK-SC92-ERRAREA:" LNK-SC92-ERRAREA
-                  ",LNK-SC92-KBN:" LNK-SC92-KBN
-      *TEST
       *
       *    エラーの時、追加なし
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
