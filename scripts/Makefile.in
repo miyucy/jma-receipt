@@ -23,19 +23,19 @@ shell_sources = \
 	allways/orhcml09.sh.in \
 	allways/print.sh.in \
 	allways/tensu.sh.in \
-	daily/HCALL.sh \
-	daily/execoprg.sh \
-	daily/HC01.sh \
-	daily/HCALL2.sh \
-	monthly/recept1.sh \
-	monthly/recept2.sh \
-	monthly/recept3.sh \
-	monthly/recept4.sh \
-	monthly/recept5.sh \
-	monthly/recept6.sh \
-	monthly/recept7.sh \
-	monthly/recept8.sh \
-	monthly/sokatsu.sh 
+	daily/HCALL.sh.in \
+	daily/execoprg.sh.in \
+	daily/HC01.sh.in \
+	daily/HCALL2.sh.in \
+	monthly/recept1.sh.in \
+	monthly/recept2.sh.in \
+	monthly/recept3.sh.in \
+	monthly/recept4.sh.in \
+	monthly/recept5.sh.in \
+	monthly/recept6.sh.in \
+	monthly/recept7.sh.in \
+	monthly/recept8.sh.in \
+	monthly/sokatsu.sh.in 
 
 ruby_sources = \
 	daily/print-data.rb.in \
