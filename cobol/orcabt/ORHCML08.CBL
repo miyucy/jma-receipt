@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     02/04/24  印刷管理・印刷ＤＢの追加
       *  01.00.02    MCC-藤原     02/05/10  頁数のジョブ管理ＤＢへの更新
+      *
+      *  01.01.01    NACL-藤原    02/10/10  サイト区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -384,6 +386,7 @@
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
+           MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
            IF      SPRT-RETURN         =   ZERO
