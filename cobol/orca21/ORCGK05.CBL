@@ -1035,6 +1035,8 @@
       *
            CLOSE                       PARA-FILE
       *
+           MOVE    SPACE           TO  SPA-KIDCD
+      *
       *    画面用スパ編集処理
            MOVE    "1"             TO  SPA-K05-SYORI
            PERFORM                 310-SPA-SET-SEC
