@@ -78,7 +78,7 @@
            03  FLG-BYOMEI              PIC 9(01).
            03  FLG-OK                  PIC 9(01).
            03  FLG-R3                  PIC 9(01).
-           03  FLG-PAGE-FEED           PIC 9(01).
+           03  FLG-LINE-FEED           PIC 9(01).
            03  FLG-TOTUGO-G.
                05  FLG-KANZEN          PIC 9(01).
                05  FLG-ZENPO           PIC 9(01).
@@ -86,6 +86,7 @@
            03  FLG-TOTUGO-R    REDEFINES   FLG-TOTUGO-G.
                05  FLG-TOTUGO          PIC 9(01)
                                        OCCURS  3.
+           03  FLG-TEKCD               PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -110,6 +111,7 @@
                05  WRK-KEY-CD-OCC      OCCURS  21.
                    07  WRK-KEY-CD      PIC X(07).
                    07  WRK-KEY-CDSEP   PIC X(01).
+           03  WRK-MEISAISTR           PIC X(500).
            03  WRK-SRYNAME             PIC X(50).
            03  WRK-PNT                 PIC 9(05).
            03  WRK-TGPNT               PIC 9(05).
@@ -121,9 +123,6 @@
                05  WRK-BYOMEI-SP       PIC X(01).
                05  WRK-BYOMEI          PIC X(80).
            03  WRK-MSIBYO-G.
-               05  WRK-MSIBYO-SEP1     PIC X(01).
-               05  WRK-MSIBYO-CD       PIC X(07).
-               05  WRK-MSIBYO-SEP2     PIC X(01).
                05  WRK-MSIBYO-MEI      PIC X(80).
            03  WRK-CMB-CD              PIC X(10).
            03  WRK-CMB-ITM-G.
@@ -169,14 +168,14 @@
                05  FILLER              PIC X(01).
                05  B01-BYOMEI          PIC X(82).
            03  B01-TEKIYO-R3           REDEFINES   B01-TEKIYO.
-               05  FILLER              PIC X(07).
-               05  B01-MEISAI          PIC X(83).
+               05  FILLER              PIC X(08).
+               05  B01-MEISAI          PIC X(82).
       *
        01  CONST-AREA.
            03  CONST-HCM44-MAX         PIC 9(05)   VALUE   55.
            03  CONST-MEISAI-ST         PIC 9(05)   VALUE   4.
            03  CONST-TEKIYO-MAX        PIC 9(05)   VALUE   90.
-           03  CONST-TEKIYO-R3-MAX     PIC 9(05)   VALUE   83.
+           03  CONST-TEKIYO-R3-MAX     PIC 9(05)   VALUE   82.
            03  CONST-MKCD-MAX          PIC 9(05)   VALUE   21.
            03  CONST-CHK-MAX           PIC 9(05)   VALUE   10.
            03  CONST-TOTUGO-MES-MAX    PIC 9(05)   VALUE   3.
@@ -623,61 +622,7 @@
                MOVE    WRK-KEY-CD (1)  TO  B01-BYOMEICD
                MOVE    CHKSND-BYOMEI   TO  B01-BYOMEI
            ELSE
-      *
-               MOVE    ZERO        TO  FLG-R3
-      *
-               PERFORM VARYING IDX1    FROM    1   BY  1
-                       UNTIL ( IDX1    >   CONST-MKCD-MAX )
-                        OR   ( WRK-KEY-CD (IDX1)   =   SPACE )
-      *
-                   IF    ( WRK-KEY-CDSEP  (IDX1)   =   "-" )
-                       MOVE    "," TO  WRK-KEY-CDSEP  (IDX1)
-                   END-IF
-      *
-                   MOVE    WRK-KEY-CD-OCC (IDX1)   TO  WRK-STR
-                   PERFORM 2001-MEISAI-CHKSND-SYORI-SEC
-      *
-               END-PERFORM
-      *
-               MOVE    SPACE           TO  WRK-BYOMEI-G
-               MOVE    CHKSND-BYOMEI   TO  WRK-BYOMEI
-               MOVE    WRK-BYOMEI-G    TO  WRK-STR
                PERFORM 2001-MEISAI-CHKSND-SYORI-SEC
-      *
-               INSPECT B01-NAME1   REPLACING   ALL "  "  BY  "　"
-      *
-               MOVE    BODY-01         TO  HCM44-MOJI (IDX-LINE)
-               PERFORM 2200-PAGE-FEED-CHK-SEC
-      *
-               INITIALIZE                  BODY-01
-               MOVE    1               TO  WRK-PNT
-               MOVE    1               TO  FLG-R3
-      *
-               PERFORM VARYING IDX1    FROM    1   BY  1
-                       UNTIL ( IDX1    >   CONST-MKCD-MAX )
-                        OR   ( WRK-KEY-CD (IDX1)   =   SPACE )
-      *
-                   INITIALIZE          WRK-MSIBYO-G
-      *
-                   MOVE        " "     TO  WRK-MSIBYO-SEP1
-      *
-                   MOVE        ":"     TO  WRK-MSIBYO-SEP2
-      *
-                   MOVE    WRK-KEY-CD (IDX1)   TO  WRK-MSIBYO-CD
-      *
-                   MOVE    WRK-KEY-CD (IDX1)   TO  WRK-CMB-CD
-                   PERFORM 2100-YYKBYOCD-CHK-SEC
-                   IF    ( WRK-CMB-ITM NOT =   SPACE )
-                       MOVE    WRK-CMB-ITM         TO  WRK-MSIBYO-MEI
-                   ELSE
-                       MOVE    WRK-KEY-CD (IDX1)   TO  WRK-BYOMEICD
-                       PERFORM 900-BYOMEI-KEY-SEL-SEC
-                       MOVE    BYO-BYOMEI          TO  WRK-MSIBYO-MEI
-                   END-IF
-                   MOVE    WRK-MSIBYO-G        TO  WRK-STR
-                   PERFORM 2001-MEISAI-CHKSND-SYORI-SEC
-      *
-               END-PERFORM
            END-IF
       *
            INSPECT B01-NAME1   REPLACING   ALL "  "  BY  "　"
@@ -695,23 +640,118 @@
       *****************************************************************
        2001-MEISAI-CHKSND-SYORI-SEC    SECTION.
       *
+           MOVE    ZERO        TO  FLG-R3
+           MOVE    ZERO        TO  FLG-TEKCD
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   CONST-MKCD-MAX )
+                    OR   ( WRK-KEY-CD (IDX1)   =   SPACE )
+      *
+               IF    ( WRK-KEY-CDSEP  (IDX1)   =   "-" )
+                   MOVE    "," TO  WRK-KEY-CDSEP  (IDX1)
+               END-IF
+      *
+               MOVE    WRK-KEY-CD-OCC (IDX1)   TO  WRK-MEISAISTR
+               PERFORM 20011-MEISAI-CHKSND-SYORI-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    CHKSND-BYOMEI   TO  WRK-MEISAISTR
+           PERFORM 20011-LINE-FEED-CHK-SEC
+           IF    ( FLG-LINE-FEED   =   ZERO )
+               MOVE    SPACE           TO  WRK-BYOMEI-G
+               MOVE    CHKSND-BYOMEI   TO  WRK-BYOMEI
+               MOVE    WRK-BYOMEI-G    TO  WRK-MEISAISTR
+               PERFORM 20011-MEISAI-CHKSND-SYORI-SEC
+           ELSE
+               MOVE    CHKSND-BYOMEI   TO  WRK-MEISAISTR
+               PERFORM 20011-MEISAI-CHKSND-SYORI-SEC
+           END-IF
+      *
+      *    INSPECT B01-NAME1   REPLACING   ALL "  "  BY  "　"
+      *
+      *    MOVE    BODY-01         TO  HCM44-MOJI (IDX-LINE)
+      *    PERFORM 2200-PAGE-FEED-CHK-SEC
+      *
+      *    INITIALIZE                  BODY-01
+      *    MOVE    1               TO  WRK-PNT
+      *    MOVE    1               TO  FLG-R3
+      *
+           MOVE    "【"            TO  WRK-MEISAISTR
+           PERFORM 20011-MEISAI-CHKSND-SYORI-SEC
+      *
+           MOVE    1               TO  FLG-TEKCD
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   CONST-MKCD-MAX )
+                    OR   ( WRK-KEY-CD (IDX1)   =   SPACE )
+      *
+               INITIALIZE          WRK-MSIBYO-G
+      *
+               MOVE    WRK-KEY-CD (IDX1)   TO  WRK-CMB-CD
+               PERFORM 2100-YYKBYOCD-CHK-SEC
+               IF    ( WRK-CMB-ITM NOT =   SPACE )
+                   MOVE    WRK-CMB-ITM TO  WRK-MSIBYO-MEI
+               ELSE
+                   MOVE    WRK-KEY-CD (IDX1)   TO  WRK-BYOMEICD
+                   PERFORM 900-BYOMEI-KEY-SEL-SEC
+                   MOVE    BYO-BYOMEI  TO  WRK-MSIBYO-MEI
+               END-IF
+               IF    ( IDX1    >=  CONST-MKCD-MAX )
+                OR   ( WRK-KEY-CD (IDX1 + 1 )  =   SPACE )
+                   MOVE    WRK-MSIBYO-G    TO  WRK-MEISAISTR
+                   PERFORM 20011-MEISAI-CHKSND-SYORI-SEC
+               ELSE
+                   INITIALIZE  WRK-MEISAISTR
+                   STRING  WRK-MSIBYO-MEI  DELIMITED   BY  SPACE
+                           ","             DELIMITED   BY  SIZE
+                   INTO    WRK-MEISAISTR
+                   END-STRING
+                   PERFORM 20011-MEISAI-CHKSND-SYORI-SEC
+               END-IF
+      *
+      *
+           END-PERFORM
+      *
+           MOVE    "】"            TO  WRK-MEISAISTR
+           PERFORM 20011-MEISAI-CHKSND-SYORI-SEC
+      *
+           .
+       2001-MEISAI-CHKSND-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    改行チェック処理
+      *****************************************************************
+       20011-LINE-FEED-CHK-SEC         SECTION.
+      *
+           MOVE    WRK-MEISAISTR   TO  WRK-STR
            PERFORM 800-STRLEN-CHK-SEC
       *
            COMPUTE WRK-TEKIYOLEN   =   WRK-STRLEN  +   WRK-PNT -   1
       *
-           MOVE    ZERO            TO  FLG-PAGE-FEED
+           MOVE    ZERO            TO  FLG-LINE-FEED
       *
-           IF    (      FLG-R3         =   1 )
-               IF    (  WRK-TEKIYOLEN  >   CONST-TEKIYO-R3-MAX )
-                   MOVE    1       TO  FLG-PAGE-FEED
+           IF    (      FLG-R3         =   ZERO )
+               IF    (  WRK-TEKIYOLEN  >   CONST-TEKIYO-MAX )
+                   MOVE    1       TO  FLG-LINE-FEED
                END-IF
            ELSE
-               IF    (  WRK-TEKIYOLEN  >   CONST-TEKIYO-MAX )
-                   MOVE    1       TO  FLG-PAGE-FEED
+               IF    (  WRK-TEKIYOLEN  >   CONST-TEKIYO-R3-MAX )
+                   MOVE    1       TO  FLG-LINE-FEED
                END-IF
            END-IF
       *
-           IF  ( FLG-PAGE-FEED         =   1 )
+           .
+       20011-LINE-FEED-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    明細編集処理（チェックマスタ２より）
+      *****************************************************************
+       20011-MEISAI-CHKSND-SYORI-SEC   SECTION.
+      *
+           PERFORM 20011-LINE-FEED-CHK-SEC
+      *
+           IF  ( FLG-LINE-FEED         =   1 )
       *
                INSPECT B01-NAME1   REPLACING   ALL "  "  BY  "　"
       *
@@ -728,14 +768,22 @@
                WITH    POINTER     WRK-PNT
                END-STRING
            ELSE
-               STRING  WRK-STR (1:WRK-STRLEN)  DELIMITED   BY  SIZE
-               INTO    B01-MEISAI
-               WITH    POINTER     WRK-PNT
-               END-STRING
+               IF    ( FLG-TEKCD   =   ZERO )
+                   STRING  WRK-STR (1:WRK-STRLEN)  DELIMITED   BY  SIZE
+                   INTO    B01-MEISAI
+                   WITH    POINTER     WRK-PNT
+                   END-STRING
+               ELSE
+                   STRING  WRK-STR (1:WRK-STRLEN)  DELIMITED   BY  SIZE
+                           " "                     DELIMITED   BY  SIZE
+                   INTO    B01-MEISAI
+                   WITH    POINTER     WRK-PNT
+                   END-STRING
+               END-IF
            END-IF
       *
            .
-       2001-MEISAI-CHKSND-SYORI-EXT.
+       20011-MEISAI-CHKSND-SYORI-EXT.
            EXIT.
       *****************************************************************
       *   診療コード処理
