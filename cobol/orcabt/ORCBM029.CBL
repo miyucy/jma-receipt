@@ -32,7 +32,9 @@
       *  01.00.01    NACL-藤原    03/05/19  対象保険者番号の追加
       *  01.00.02    NACL-藤原    03/07/10  特定疾患有り・無しの集計を
       *                                     同じ欄に編集する
-      *  01.01.03    NACL-藤原    03/07/21  公費欄の特定疾患の名称の変更
+      *  01.00.03    NACL-藤原    03/07/21  公費欄の特定疾患の名称の変更
+      *返戻分対応  
+      *  01.01.01    NACL-藤原    05/03/03  返戻分対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -76,8 +78,12 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-           COPY    "HCM2M.INC".
-           COPY    "HCM2N.INC".
+      *****COPY    "HCM2M.INC".
+           COPY    "HCM2MV01.INC"  REPLACING  //HCM2MV01//
+                                   BY         //HCM2M//.
+      *****COPY    "HCM2N.INC".
+           COPY    "HCM2NV01.INC"  REPLACING  //HCM2NV01//
+                                   BY         //HCM2N//.
       *
       *    スパ領域
        01  STS-AREA.
@@ -119,6 +125,7 @@
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-HKNJANUM   PIC X(08).
+           03  WRK-PARA-SYOKBN     PIC X(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -132,9 +139,15 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK-HENYMDG         PIC X(22).
       *
-           03  WRK-RECEERR           PIC X(200). 
-           03  WRK-PATH            PIC X(64).
+           03  WRK-RECEERR         PIC X(200). 
+      *
+           03  WRK-PATH.
+               05  FILLER          PIC S9(09)  BINARY.
+               05  FILLER          PIC S9(09)  BINARY.
+               05  FILLER          PIC S9(09)  BINARY.
+      *
            03  WRK-INDEX           PIC 9(02).
+           03  WRK-SYOKBN          PIC X(01).
       *
       *    数字項目編集
            03  WRK-KOHNUM9         PIC ZZ9.
@@ -318,6 +331,8 @@
                                                WRK-PARA-SHELLID
                                                WRK-PARA-NYUGAIKBN
                                                WRK-PARA-HKNJANUM
+                                               WRK-PARA-SYOKBN
+           END-UNSTRING  
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -405,50 +420,80 @@
            EXIT.
       *
       *****************************************************************
-      *    主処理
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
+      *
+           EVALUATE    WRK-PARA-SYOKBN
+               WHEN    ZERO
+               WHEN    "2"
+                   MOVE    "2"         TO  WRK-SYOKBN
+                   PERFORM 2001-SYOKBN-SYUKEI-SEC
+           END-EVALUATE
+           EVALUATE    WRK-PARA-SYOKBN
+               WHEN    ZERO
+               WHEN    "1"
+                   MOVE    "1"         TO  WRK-SYOKBN
+                   PERFORM 2001-SYOKBN-SYUKEI-SEC
+           END-EVALUATE
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    集計処理
+      *****************************************************************
+       2001-SYOKBN-SYUKEI-SEC         SECTION.
+      *
       *
       *    入院外（その他のレセ）・入院集計
       *    
            MOVE    LOW-VALUE           TO  KEY-AREA
            MOVE    1                   TO  WRK-INDEX
       *     
-           MOVE    "SEIKYU-KEY21"      TO  WRK-PATH
+           EVALUATE    WRK-SYOKBN
+               WHEN    "1"
+                   MOVE    PATH-TBL-SEIKYU-KEY34    TO  WRK-PATH
+               WHEN    "2"
+                   MOVE    PATH-TBL-SEIKYU-KEY33    TO  WRK-PATH
+           END-EVALUATE  
            PERFORM 900-SEIKYU-SELECT-SEC
       *
            PERFORM 200-HENSYU-SEC      UNTIL   FLG-RECE10   =   1 
                                        OR      FLG-ERR      =   1
       *
+           MOVE    WRK-PATH            TO  MCP-PATH
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
       *    入院外集計（在総診または在医総を算定したレセ）
            IF      FLG-ERR             =   ZERO
                MOVE    LOW-VALUE           TO  KEY-AREA
                MOVE    2                   TO  WRK-INDEX
       *         
-               MOVE    "SEIKYU-KEY22"      TO  WRK-PATH
+               EVALUATE    WRK-SYOKBN
+                   WHEN    "1"
+                       MOVE    PATH-TBL-SEIKYU-KEY36    TO  WRK-PATH
+                   WHEN    "2"
+                       MOVE    PATH-TBL-SEIKYU-KEY35    TO  WRK-PATH
+               END-EVALUATE  
                PERFORM 900-SEIKYU-SELECT-SEC
       *
                PERFORM 200-HENSYU-SEC      UNTIL   FLG-RECE10   =   1 
                                            OR      FLG-ERR      =   1
       *
+               MOVE    WRK-PATH            TO  MCP-PATH
                MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               CALL    "MCPSUB"            USING
+                                               MCPAREA
+                                               MCPDATA-REC
            END-IF
       *     
            MOVE    1                   TO  FLG-END
            .
-       200-MAIN-EXT.
+       2001-SYOKBN-SYUKEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -545,7 +590,7 @@
            IF      FLG-UPD             =   1
                PERFORM 20013-UPD-FILE-HENSYU-SEC
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  MCP-PATH
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                MOVE    SPACE               TO  WRK-RECEERR
@@ -749,6 +794,11 @@
                                                TO  HCM2M-TITLE     
            END-EVALUATE           
       *
+           EVALUATE    WRK-SYOKBN
+               WHEN    "2"
+                   MOVE    "（返戻分）"  TO  HCM2M-TITLE1
+           END-EVALUATE           
+      *
            .
        20021-HEAD-HEN-01-EXT.
            EXIT.
@@ -769,6 +819,11 @@
                    MOVE    "在総診または在医総を算定したレセ"
                                                TO  HCM2N-TITLE     
            END-EVALUATE   
+      *
+           EVALUATE    WRK-SYOKBN
+               WHEN    "2"
+                   MOVE    "（返戻分）"  TO  HCM2N-TITLE1
+           END-EVALUATE           
       *        
            MOVE    KEY-O-HKNJANUM      TO  HCM2N-HKNJANUM
       *
@@ -1018,18 +1073,26 @@
            EVALUATE    FLG-PRTKBN
                WHEN    ZERO 
                    MOVE    WRK-PAGE            TO  HCM2M-PAGE
-                   MOVE    "HCM2M.red"         TO  SPRT-PRTID
+      *************MOVE    "HCM2M.red"         TO  SPRT-PRTID
+                   MOVE    "HCM2MV01.red"      TO  SPRT-PRTID
                    MOVE    HCM2M               TO  SPRT-PRTDATA
                WHEN    1                            
                    MOVE    WRK-PAGE            TO  HCM2N-PAGE
-                   MOVE   "HCM2N.red"          TO  SPRT-PRTID
+      *************MOVE    "HCM2N.red"          TO  SPRT-PRTID
+                   MOVE    "HCM2NV01.red"      TO  SPRT-PRTID
                    MOVE    HCM2N               TO  SPRT-PRTDATA
            END-EVALUATE        
-           EVALUATE    WRK-INDEX
-               WHEN    1                            
+           EVALUATE    WRK-INDEX    ALSO    WRK-SYOKBN
+               WHEN    1            ALSO    "1"
                    MOVE    "国保総括表"        TO  SPRT-TITLE
-               WHEN    2                            
+               WHEN    2            ALSO    "1"
                    MOVE    "国保総括表（在総診等）"
+                                               TO  SPRT-TITLE
+               WHEN    1            ALSO    "2"
+                   MOVE    "国保総括表［返戻分］" 
+                                               TO  SPRT-TITLE
+               WHEN    2            ALSO    "2"
+                   MOVE    "国保総括表（在総診等）［返戻分］"
                                                TO  SPRT-TITLE
            END-EVALUATE        
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -1209,16 +1272,21 @@
            IF      WRK-PARA-HKNJANUM   NOT =   ZERO
                MOVE    WRK-PARA-HKNJANUM   TO  RECE10-XXSTHKNJANUM
                                                RECE10-XXEDHKNJANUM
+           ELSE
+               MOVE    SPACE               TO  RECE10-XXSTHKNJANUM
+               MOVE    "99999999"          TO  RECE10-XXEDHKNJANUM
            END-IF 
+      *
+           DISPLAY "SYOKBN=" WRK-SYOKBN
+      *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-PATH            TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  MCP-PATH
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-RECE10
@@ -1233,12 +1301,11 @@
       *****************************************************************
        900-SEIKYU-READ-SEC           SECTION.
       *
-           MOVE    WRK-PATH            TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  MCP-PATH
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-RECE10
                MOVE    MCPDATA-REC         TO  RECE10-REC
@@ -1257,6 +1324,9 @@
       *         
                MOVE    RECE10-HKNJANUM-S   TO  KEY-N-HKNJANUM
                ADD     1                   TO  CNT-RECE10   
+      *         
+               DISPLAY "PTNUM=" RECE10-PTNUM 
+      *         
            ELSE
                MOVE    HIGH-VALUE      TO  KEY-NEW
                MOVE    1               TO  FLG-RECE10
