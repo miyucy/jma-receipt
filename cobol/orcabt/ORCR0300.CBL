@@ -98,6 +98,7 @@
       *  01.01.09    NACL-藤原    03/05/21  指導料・在宅料のとき
       *                                     加算点数で告示区分１が７の
       *                                     ときの点数・回数の編集
+      *  01.01.10    NACL-太田    03/05/21  処理高速化対応（保険組合せ）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -265,6 +266,7 @@
            03  FLG-KENSA-TEIGEN        PIC 9(01).
            03  FLG-SET                 PIC 9(01).
            03  FLG-OPECOM-CHK          PIC 9(01).
+           03  FLG-HIT                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -286,6 +288,7 @@
            03  IDXY                    PIC 9(03).
            03  IDW1                    PIC 9(03).
            03  SYSKAN-IDX              PIC 9(03).
+           03  IDX0                    PIC 9(03).
       *
        01  KEY-AREA                                VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -662,6 +665,13 @@
       *    改行コード
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
       *
+      *    保険組み合わせ退避ワーク
+       01  THKNCOMBI-AREA.
+           02      TCOMB-MAX        PIC 9(05).
+           02      TCOMB-OCC        OCCURS     30.
+           COPY    "CPHKNCOMBI.INC" REPLACING   //COMB-//
+                                    BY          //TCOMB-//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -944,6 +954,9 @@
       *
                INITIALIZE                     WRK-RECE041-SRYKBN
                                               TBL-KOUI-SRYKBN12-AREA
+      *
+      *        患者保険組み合わせ取得処理
+               PERFORM     2001-HKNCOMBI-GET-SEC
       *
       *        保険履歴情報編集処理
                PERFORM     2001-RIREKI-HEN-SEC 
@@ -1775,17 +1788,33 @@
       *   
            INITIALIZE                 WRK-FTNKBN-AREA
       *
-      *    保険組合せ読込み
-           INITIALIZE                 HKNCOMBI-REC
-           MOVE    RECE041-HOSPID  TO  COMB-HOSPID
-           MOVE    RECE041-PTID    TO  COMB-PTID
-           MOVE    RECE041-HKNCOMBI
-                                  TO  COMB-HKNCOMBINUM 
-           MOVE    HKNCOMBI-REC   TO  MCPDATA-REC
-           PERFORM 910-HKNCOMBI-INV-SEC
-           IF      FLG-HKNCOMBI   =   1
-               DISPLAY "HKNCONBI INV"
-               GO  TO  20070-FTNKBN-HENSYU-EXT
+           MOVE    ZERO               TO  FLG-HIT
+           PERFORM VARYING IDX0    FROM    1  BY 1
+                   UNTIL ( IDX0    >  TCOMB-MAX )
+                    OR   ( FLG-HIT =  1 )
+               IF    ( RECE041-HOSPID      =   TCOMB-HOSPID (IDX0))
+                AND  ( RECE041-PTID        =   TCOMB-PTID   (IDX0))
+                AND  ( RECE041-HKNCOMBI    =   TCOMB-HKNCOMBINUM
+                                                            (IDX0))
+                    MOVE   TCOMB-OCC (IDX0)
+                                       TO  HKNCOMBI-REC
+                    MOVE   1           TO  FLG-HIT
+               END-IF
+           END-PERFORM
+      * 
+           IF    ( FLG-HIT         =  ZERO )
+      *        保険組合せ読込み
+               INITIALIZE                 HKNCOMBI-REC
+               MOVE    RECE041-HOSPID  TO  COMB-HOSPID
+               MOVE    RECE041-PTID    TO  COMB-PTID
+               MOVE    RECE041-HKNCOMBI
+                                      TO  COMB-HKNCOMBINUM 
+               MOVE    HKNCOMBI-REC   TO  MCPDATA-REC
+               PERFORM 910-HKNCOMBI-INV-SEC
+               IF      FLG-HKNCOMBI   =   1
+                   DISPLAY "HKNCONBI INV"
+                   GO  TO  20070-FTNKBN-HENSYU-EXT
+               END-IF
            END-IF
       *                                                      
       *    主保険のみ      
@@ -3112,6 +3141,43 @@
            EXIT.
       *
       *****************************************************************
+      *    保険組合せ取得処理
+      *****************************************************************
+       2001-HKNCOMBI-GET-SEC    SECTION.
+      *
+           INITIALIZE                 THKNCOMBI-AREA
+      *
+           MOVE    ZERO            TO FLG-HKNCOMBI
+           INITIALIZE                 HKNCOMBI-REC
+           MOVE    RECE02-HOSPID   TO  COMB-HOSPID
+           MOVE    RECE02-PTID     TO  COMB-PTID
+           MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
+           PERFORM 910-HKNCOMBI-KEY2-SEL-SEC
+           IF    ( FLG-HKNCOMBI    =   ZERO )
+               PERFORM 910-HKNCOMBI-KEY2-FETCH-SEC
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-HKNCOMBI    =   1 )
+                    OR   ( TCOMB-MAX      >=   30 )
+      *
+               COMPUTE TCOMB-MAX   =   TCOMB-MAX   +   1
+               MOVE    HKNCOMBI-REC    TO  TCOMB-OCC (TCOMB-MAX)
+      *
+               PERFORM 910-HKNCOMBI-KEY2-FETCH-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *    
+           .
+       2001-HKNCOMBI-GET-EXT.
+           EXIT. 
+      *****************************************************************
       *    患者番号別保険履歴情報編集処理
       *****************************************************************
        2001-RIREKI-HEN-SEC      SECTION.
@@ -4018,6 +4084,48 @@
        910-HKNCOMBI-INV-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    保険組合せマスタ検索処理(KEY2)
+      *****************************************************************
+       910-HKNCOMBI-KEY2-SEL-SEC         SECTION.
+      *
+           MOVE    "HKNCOMBI-KEY2" TO  ORC-DBPATH
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    ZERO         TO FLG-HKNCOMBI
+           ELSE
+               MOVE    1            TO FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       910-HKNCOMBI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せマスタ読込処理(KEY2)
+      *****************************************************************
+       910-HKNCOMBI-KEY2-FETCH-SEC     SECTION.
+      *
+           MOVE    "HKNCOMBI-KEY2" TO  ORC-DBPATH
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    ZERO        TO  FLG-HKNCOMBI
+               MOVE    MCPDATA-REC TO  HKNCOMBI-REC
+           ELSE
+               MOVE    1           TO  FLG-HKNCOMBI
+               INITIALIZE              HKNCOMBI-REC
+           END-IF
+      *
+           .
+       910-HKNCOMBI-KEY2-FETCH-EXT.
+           EXIT.
       *****************************************************************
       *    システム管理マスタ読込
       *****************************************************************
