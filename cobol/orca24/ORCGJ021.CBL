@@ -1289,7 +1289,7 @@
                        IF     (SPA-NAI-TEKSTYMD (IDX)(7:2)
                                                    <=  SPA-J021-DAY1)
                           AND (SPA-NAI-TEKSTYMD (IDX)(7:2)
-                                                   >=  SPA-J021-DAY1)
+                                                   >=  SPA-J021-DAY2)
                            CONTINUE
                        ELSE
                            MOVE    "0017"              TO  SPA-ERRCD
@@ -1299,7 +1299,7 @@
                    IF      SPA-NAI-TEKEDYMD (IDX)(1:6)
                                             =  SPA-NAI-SRYYM
                        IF     (SPA-NAI-TEKEDYMD (IDX)(7:2)
-                                                   <=  SPA-J021-DAY2)
+                                                   <=  SPA-J021-DAY1)
                           AND (SPA-NAI-TEKEDYMD (IDX)(7:2)
                                                    >=  SPA-J021-DAY2)
                            CONTINUE
