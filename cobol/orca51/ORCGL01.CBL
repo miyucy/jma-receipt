@@ -550,11 +550,19 @@
       *****************************************************************
        350-L03-SET-SEC              SECTION.
       *
-           MOVE    SPA-L01-CUR     TO  SPA-GMN-L01-CUR
-      *
            IF    ( SPA-NAI-L03-STATUS  =   ZERO )
+      *
+               MOVE    SPA-L01-CUR     TO  SPA-GMN-L01-CUR
+      *
                GO  TO  350-L03-SET-EXT
            ELSE
+      *
+               COMPUTE SPA-GMN-L01-CUR
+                   =   SPA-GMN-L01-CUR +   WRK-CONS-PARA-MAX   +   1
+      *
+               IF    ( SPA-L01-IDX    >=   WRK-CONS-SCR-MAX )
+                   MOVE    99      TO  SPA-GMN-L01-CUR
+               END-IF
       *
                MOVE    SPA-L01-SEL TO  IDX0
       *
@@ -1610,6 +1618,8 @@
            COMPUTE SPA-L01-SEL     =   IDX
                                    + ( SPA-GMN-L01-PAGE    -   1 )
                                    * WRK-CONS-SCR-MAX
+      *
+           MOVE    IDX             TO  SPA-L01-IDX
       *
            COMPUTE SPA-L01-CUR     = ( IDX    -   1 )
                                    * ( WRK-CONS-PARA-MAX + 1 )

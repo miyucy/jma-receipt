@@ -26,6 +26,7 @@
        01  SPA-L01KYOUTU.
       *
            03  SPA-L01-SEL                 PIC  9(05).
+           03  SPA-L01-IDX                 PIC  9(05).
            03  SPA-L01-CUR                 PIC  9(05).
       *
       *警告メッセージ
