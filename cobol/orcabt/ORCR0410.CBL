@@ -933,15 +933,17 @@
                        PERFORM   TENSU-TBL-SEC
                        IF  (( TNS-JITUDAY    =     2          ) AND       
                             ( TNS-DAYCNT     =     1   OR   2 ))
-                       OR  (  SRY-SRYCD(IDY) =  "099409901"    )    
+                       OR  (  SRY-SRYCD(IDY) =  "099409901"   
+                                             OR "099999902"    )    
       *
                           MOVE       1      TO    FLG-SHOSAISIN
       *
-                          IF  SRY-SRYCD(IDY) =  "099409901"             
-                             CONTINUE                                   
-                          ELSE                                          
+      **>                 IF  SRY-SRYCD(IDY) =  "099409901"
+      **>                                    OR "099999902"             
+      **>                    CONTINUE                                   
+      **>                 ELSE                                          
                              MOVE    1      TO    FLG-SHOSAISIN2         
-                          END-IF                                        
+      **>                 END-IF                                        
       *
                        END-IF
                    END-PERFORM
