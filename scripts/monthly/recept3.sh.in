@@ -65,9 +65,9 @@ RENNUM=0
             if  [ $5 -ge '200210' ]; then
                RENNUM=$(expr $RENNUM + 1) 
                if  [ ${15} = 1 ]; then
-                   $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM026 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17}
+                   $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM026 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20}
                else
-                 $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM025 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17}
+                 $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM025 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20}
                fi	
                if  [ -e ${18} ]; then
                    exit
