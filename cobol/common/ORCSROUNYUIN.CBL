@@ -391,6 +391,7 @@
            IF      MCP-RC              =   ZERO
                MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
                PERFORM  SYSKANRI-READ-SEC
+               DISPLAY   "FLG-SYSKANRI = " FLG-SYSKANRI
                PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
                         UNTIL     GENSAN-IDX   >   4
                     IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"
@@ -420,6 +421,9 @@
                     END-IF
                END-PERFORM
            END-IF
+           DISPLAY "WRK-GENSAN2 = " WRK-GENSAN2
+           DISPLAY "WRK-GENSAN3 = " WRK-GENSAN3
+           DISPLAY "WRK-GENSAN4 = " WRK-GENSAN4
       *
       *Ï«ºÒÆþ±¡»þ¤ÎÆþ±¡ÎÁ²Ã»»¼èÆÀ¡ÊÆþ±¡²ñ·×¤è¤ê¡Ë
            MOVE    ZERO                    TO  KSN-IDX
@@ -488,6 +492,10 @@
                                            (IDX WRK-MEISAISU)
                END-IF
       *        Ï«ºÒ¾è¿ô¡ÊÆÃÄêÆþ±¡ÎÁ¤Î¾ì¹ç¤ÏÏ«ºÒ¾è¿ô¤Ê¤·¡Ë
+               DISPLAY  "LNK-SROUNYUIN-SRYKBN(IDX) = "
+                                       LNK-SROUNYUIN-SRYKBN(IDX)
+               DISPLAY  "LNK-SROUNYUIN-JOUSU-KBN(IDX) = "
+                                       LNK-SROUNYUIN-JOUSU-KBN(IDX)
                IF       LNK-SROUNYUIN-SRYKBN(IDX)    =    "90"
                    EVALUATE  LNK-SROUNYUIN-JOUSU-KBN(IDX)
                        WHEN  "1"
