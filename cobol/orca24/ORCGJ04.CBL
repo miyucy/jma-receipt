@@ -4970,6 +4970,9 @@
            END-IF
       *
       *    最大剤番号
+           IF      PTINF-MAXZAINUM     =   ALL "9"
+               MOVE    ZERO                TO  PTINF-MAXZAINUM
+           END-IF
            ADD     1                   TO  PTINF-MAXZAINUM
            MOVE    PTINF-MAXZAINUM     TO  WRK-ZAINUM
       *
