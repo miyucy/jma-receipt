@@ -35,6 +35,8 @@
       *                                     ＋初診時　対応
       *  01.00.05    NACL-門脇    03/05/07  地方老人の負担額の四捨五入の設定
       *                                     を保険番号マスタの設定で行う。
+      *  01.00.06    NACL-門脇    03/05/08  船員保険（職務上）の食事負担無し
+      *                                     に修正
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2687,7 +2689,6 @@
       *    保険組合せテーブルの補助区分から患者の負担割合を保険番号
       *    テーブルに再セット（船員保険時）
            IF    COMB-HKNNUM           =    "002"
-           AND   LNK-S02-SENINFLG  NOT =    "1"                         
                EVALUATE   COMB-HOJOKBN
                    WHEN   "1"
                    WHEN   "2"
@@ -2698,10 +2699,17 @@
                    WHEN   "D"
                    WHEN   "E"
                    WHEN   "F"
+                       IF   LNK-S02-SENINFLG  NOT =    "1"
                           MOVE   ZERO      TO   HKN-HON-NYUKFTNRATE
                                                 HKN-KZK-NYUKFTNRATE
                                                 HKN-TSY-NYUKFTNRATE
                                                 HKN-TNK-NYUKFTNRATE
+                       END-IF
+      *
+                       MOVE      "3"       TO   HKN-HON-NYUSKJRYYKBN
+                                                HKN-KZK-NYUSKJRYYKBN
+                                                HKN-TSY-NYUSKJRYYKBN
+                                                HKN-TNK-NYUSKJRYYKBN
                END-EVALUATE
            END-IF.
       *    保険組合せテーブルの補助区分から患者の負担割合を保険番号
@@ -2711,10 +2719,15 @@
                    WHEN   "2"
                    WHEN   "B"
                    WHEN   "E"
-                          MOVE   ZERO      TO   HKN-HON-GAIKFTNRATE
-                                                HKN-KZK-GAIKFTNRATE
-                                                HKN-TSY-GAIKFTNRATE
-                                                HKN-TNK-GAIKFTNRATE
+                          MOVE   ZERO      TO   HKN-HON-NYUKFTNRATE
+                                                HKN-KZK-NYUKFTNRATE
+                                                HKN-TSY-NYUKFTNRATE
+                                                HKN-TNK-NYUKFTNRATE
+      *
+                          MOVE   "3"       TO   HKN-HON-NYUSKJRYYKBN
+                                                HKN-KZK-NYUSKJRYYKBN
+                                                HKN-TSY-NYUSKJRYYKBN
+                                                HKN-TNK-NYUSKJRYYKBN
                END-EVALUATE
            END-IF.
       *
