@@ -1832,6 +1832,8 @@
                    MOVE    "F"             TO  W01-SELECT (IDX)
                END-IF
            END-PERFORM   
+           MOVE    SPA-GMN-MAX         TO  W01-COUNT
+      *
            MOVE    SPA-GMN-SELNUM      TO  W01-SELNUM
            MOVE    SPA-GMN-STYUKYMD    TO  W01-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD    TO  W01-EDYUKYMD
