@@ -235,6 +235,7 @@
            03  IDX5                PIC 9(04).
       *
            03  IDXX                PIC 9(04).
+           03  IDXY                PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -4209,6 +4210,17 @@
                        MOVE    SPA-NAI-C02-HAISIYMD (IDXX)
                                                TO  WRK-HAISIYMD-CHK
                    END-IF
+                   PERFORM VARYING IDXY    FROM    1   BY  1
+                           UNTIL   IDXY    >       WRK-CONS-BYOMEICD-MAX
+                           OR      SPA-NAI-C02-BYOMEICD-O (IDXX IDXY)
+                                               =   SPACE
+                       ADD     1           TO  WRK-PTBYO-CHK-BYOMEICDSU
+                       IF      WRK-PTBYO-CHK-BYOMEICDSU <   22
+                           MOVE    SPA-NAI-C02-BYOMEICD-O (IDXX IDXY)
+                                           TO  WRK-PTBYO-CHK-BYOMEICD 
+                                              (WRK-PTBYO-CHK-BYOMEICDSU)
+                       END-IF
+                   END-PERFORM
                END-PERFORM
            END-IF
            MOVE    SPA-NAI-C02-BYOMEIHENFLG
