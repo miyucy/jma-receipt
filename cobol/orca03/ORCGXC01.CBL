@@ -23,10 +23,11 @@
       *  コンポーネント名  : 印刷プレビュー指定（ＸＣ０１）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  03/01/20    NACL−藤原    新規作成
+      *  03/07/20    NACL−藤原    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03/09/01    NACL−藤原   メモ欄の全角チェック追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -306,6 +307,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    半角チェックサブ
+           COPY    "CPORCSKANACHK.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -629,10 +633,24 @@
       *
            MOVE    2                   TO  SPA-GMN-CUR
       *
-           MOVE   SPA-GMN-SELNUM       TO  IDX
+           MOVE   SPA-NAI-SELNUM       TO  IDX
       *
            MOVE    XC01-MEMO           TO  SPA-GMN-MEMO
-                                           SPA-NAI-MEMO(IDX)
+      *
+      *    半角チェック
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI 
+           MOVE    SPA-GMN-MEMO        TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           IF      KANACHK-RC          =   ZERO
+           AND     KANACHK-SYUBETU     =   "2"
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEMO
+           ELSE
+               MOVE    "0007"              TO  SPA-ERRCD
+               GO  TO  202-MEMO-EXT
+           END-IF
+      *
+           MOVE    SPA-GMN-MEMO        TO  SPA-NAI-MEMO(IDX)
       *
            INITIALIZE                  PRVKANRI-REC
            MOVE    SPA-NAI-TBL-KEY (IDX)
@@ -2239,6 +2257,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0006"
                    MOVE    "該当の帳票はありません" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0007"
+                   MOVE    "全角入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "帳票管理ＤＢが削除できませんでした"
