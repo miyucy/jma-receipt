@@ -44,6 +44,8 @@
       * 02.00.04     NACL-多々納  03/08/12  画面変更に伴う修正
       * 02.00.05     NACL-小豆沢  03/09/10  データチェックリストを（１１）
       *                                     に追加
+      * 02.00.06     NACL-太田    04/01/29  標準提供請求書をコンボで選択
+      *                                     可能とする
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -130,7 +132,13 @@
                                                    PIC X(20).
                                13  SPA-GMN-TCSTPGCHK
                                                    PIC X(01).
-                           11  SPA-GPGNM-MAX      PIC 9(04).
+                           11  SPA-GPGNM-MAX       PIC 9(04).
+      *
+                       09  SPA-GMN-ORGPGNM03LST-G.
+                           11  SPA-GMN-ORGPGNM03MEIL  PIC X(20)
+                                                   OCCURS  2.
+                           11  SPA-GMN-ORGPGNM03-MAX
+                                                   PIC 9(04).
       *----(02.00.03)--UPD-END-----
       *----(01.00.05) LINE UPD END   --------------------------
       *----(01.00.03) LINE UPD END   --------------------------
@@ -150,6 +158,12 @@
                                13  SPA-GMN-TCSTPGCHK-N
                                                        PIC X(01).
                            11  SPA-NPGNM-MAX           PIC 9(04).
+      *
+                       09  SPA-GMN-ORGPGNM03NLST-G.
+                           11  SPA-GMN-ORGPGNM03NMEIL PIC X(20)
+                                                   OCCURS  2.
+                           11  SPA-GMN-ORGPGNM03N-MAX
+                                                   PIC 9(04).
       *
       *            帳票編集区分情報
                    07  SPA-GMN-1030-AREA.
@@ -223,6 +237,7 @@
            03  IDX3                              PIC 9(03).
       *----(02.00.03)--ADD-END-----
            03  IDX2                              PIC 9(02).
+           03  IDX4                              PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -586,6 +601,16 @@
            MOVE    SPA-GMN-YUKOKBNL(1) TO  SPA-GMN-YUKOKBN
            MOVE    SPA-GMN-YUKOKBNMEIL(1)
                                        TO  SPA-GMN-YUKOKBNMEI
+      *
+      *    請求書兼領収書コンボ（外来）
+           MOVE    "ORCHC03"           TO  SPA-GMN-ORGPGNM03MEIL(1)
+           MOVE    "ORCHC03V02"        TO  SPA-GMN-ORGPGNM03MEIL(2)
+           MOVE    2                   TO  SPA-GMN-ORGPGNM03-MAX
+      *
+      *    請求書兼領収書コンボ（入院）
+           MOVE    "ORCHCN03"          TO  SPA-GMN-ORGPGNM03NMEIL(1)
+           MOVE    "ORCHCN03V02"       TO  SPA-GMN-ORGPGNM03NMEIL(2)
+           MOVE    2                   TO  SPA-GMN-ORGPGNM03N-MAX
       *
            INITIALIZE                      SPA-GMN-USERLSTSCROLLE
            INITIALIZE                      SPA-NAI-TBL
@@ -1302,6 +1327,9 @@
                                            TO  SPA-GMN-TCSTPGNM-N (IDX)
            END-PERFORM
       *
+           MOVE    W11-ORCAORGNM03     TO  SPA-GMN-TORGPGNM (03)
+           MOVE    W11-ORCAORGNM-N03   TO  SPA-GMN-TORGPGNM-N (03)
+      *
       *    帳票編集区分
            MOVE    W11-SYOHOGEPRTFLG   TO  SPA-GMN-SYOHOGEPRTFLG-G
            MOVE    W11-SYOHODSPNAME    TO  SPA-GMN-SYOHODSPNAME
@@ -1327,11 +1355,19 @@
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
+                   PERFORM 4101-ORGPGNM-SET-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
                    PERFORM 4101-CSTPGNM-SET-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
                    PERFORM 4101-NYU-PRTNM-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+                   PERFORM 4101-NYU-ORGPGNM-SET-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
@@ -1644,6 +1680,28 @@
            EXIT.
       *
       *****************************************************************
+      *  　標準プログラム名設定処理
+      *****************************************************************
+       4101-ORGPGNM-SET-SEC            SECTION.
+      *
+      *    請求書兼領収書（外来）
+           PERFORM VARYING IDX4    FROM    1   BY  1
+                   UNTIL ( IDX4    >   SPA-GMN-ORGPGNM03-MAX )
+                    OR   ( SPA-GMN-ORGPGNM03MEIL (IDX4)
+                                   =   SPA-GMN-TORGPGNM (3) )
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDX4    >   SPA-GMN-ORGPGNM03-MAX )
+               MOVE    SPA-GMN-ORGPGNM03MEIL (1)
+                                   TO  SPA-GMN-TORGPGNM (3)
+           END-IF
+      *
+           .
+      *
+       4101-ORGPGNM-SET-EXT.
+           EXIT.
+      *****************************************************************
       *  　カスタマイズプログラム名設定処理
       *****************************************************************
        4101-CSTPGNM-SET-SEC            SECTION.
@@ -1679,6 +1737,28 @@
        4101-NYU-PRTNM-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *  　標準プログラム名設定処理
+      *****************************************************************
+       4101-NYU-ORGPGNM-SET-SEC        SECTION.
+      *
+      *    請求書兼領収書（入院）
+           PERFORM VARYING IDX4    FROM    1   BY  1
+                   UNTIL ( IDX4    >   SPA-GMN-ORGPGNM03N-MAX )
+                    OR   ( SPA-GMN-ORGPGNM03NMEIL (IDX4)
+                                   =   SPA-GMN-TORGPGNM-N (3) )
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDX4    >   SPA-GMN-ORGPGNM03N-MAX )
+               MOVE    SPA-GMN-ORGPGNM03NMEIL (1)
+                                   TO  SPA-GMN-TORGPGNM-N (3)
+           END-IF
+      *
+           .
+      *
+       4101-NYU-ORGPGNM-SET-EXT.
+           EXIT.
       *****************************************************************
       *  　カスタマイズプログラム名設定処理
       *****************************************************************
@@ -2699,10 +2779,29 @@
            END-PERFORM
       *
       *----(02.00.03)--UPD-START---
+      *
+           MOVE    SPA-GMN-TORGPGNM  (1)
+                                        TO  W11-ORCAORGNM01
+           MOVE    SPA-GMN-TORGPGNM  (2)
+                                        TO  W11-ORCAORGNM02
+           MOVE    SPA-GMN-TORGPGNM  (3)
+                                        TO  W11-ORCAORGNM03
+           MOVE    SPA-GMN-TORGPGNM  (4)
+                                        TO  W11-ORCAORGNM04
+           MOVE    SPA-GMN-TORGPGNM  (5)
+                                        TO  W11-ORCAORGNM05
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL   IDX2    >       SPA-GMN-ORGPGNM03-MAX
+               MOVE    SPA-GMN-ORGPGNM03MEIL (IDX2)
+                                       TO  W11-ORCAORGNM03LST (IDX2)
+           END-PERFORM
+           MOVE    SPA-GMN-ORGPGNM03-MAX
+                                       TO  W11-ORCAORGNM03-COUNT
+      *
+      *
            PERFORM VARYING     IDZ2     FROM    1   BY  1
                    UNTIL       IDZ2     >       SPA-GPGNM-MAX
-               MOVE    SPA-GMN-TORGPGNM  (IDZ2)
-                                        TO  W11-ORCAORGNM  (IDZ2)
                MOVE    SPA-GMN-TCSTPGNM  (IDZ2)
                                         TO  W11-ORCACSTNM  (IDZ2)
       *
@@ -2720,10 +2819,23 @@
                MOVE    SPA-GMN-TNAME-N   (IDX) TO  W11-DSPNAME-N(IDX)
            END-PERFORM
       *
+           MOVE    SPA-GMN-TORGPGNM-N  (1)
+                                        TO  W11-ORCAORGNM-N01
+           MOVE    SPA-GMN-TORGPGNM-N  (2)
+                                        TO  W11-ORCAORGNM-N02
+           MOVE    SPA-GMN-TORGPGNM-N  (3)
+                                        TO  W11-ORCAORGNM-N03
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL   IDX2    >       SPA-GMN-ORGPGNM03N-MAX
+               MOVE    SPA-GMN-ORGPGNM03NMEIL (IDX2)
+                                       TO  W11-ORCAORGNM-N03LST (IDX2)
+           END-PERFORM
+           MOVE    SPA-GMN-ORGPGNM03N-MAX
+                                       TO  W11-ORCAORGNM-N03-COUNT
+      *
            PERFORM VARYING     IDZ2     FROM    1   BY  1
                    UNTIL       IDZ2     >       SPA-NPGNM-MAX
-               MOVE    SPA-GMN-TORGPGNM-N  (IDZ2)
-                                        TO  W11-ORCAORGNM-N  (IDZ2)
                MOVE    SPA-GMN-TCSTPGNM-N  (IDZ2)
                                         TO  W11-ORCACSTNM-N  (IDZ2)
       *
@@ -2898,6 +3010,8 @@
                    MOVE    20          TO  SPA-GMN-CUR
                WHEN    "PRTNM20"
                    MOVE    21          TO  SPA-GMN-CUR
+               WHEN    "ORCAORGNM03"
+                   MOVE    23           TO  SPA-GMN-CUR
                WHEN    "ORCACSTNM01"
                    MOVE    22          TO  SPA-GMN-CUR
                WHEN    "ORCACSTNM02"
@@ -2957,6 +3071,8 @@
                    MOVE    70           TO  SPA-GMN-CUR
                WHEN    "PRTNM20N"
                    MOVE    71           TO  SPA-GMN-CUR
+               WHEN    "ORCAORGNM03N"
+                   MOVE    73           TO  SPA-GMN-CUR
                WHEN    "ORCACSTNM01N"
                    MOVE    72           TO  SPA-GMN-CUR
                WHEN    "ORCACSTNM02N"

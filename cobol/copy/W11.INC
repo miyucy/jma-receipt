@@ -53,8 +53,16 @@
                         08  W11-DSPNAME        PIC X(30).
                       07  W11-PRTNM-G          OCCURS  20.
                         08  W11-PRTNM          PIC X(16).
-                      07  W11-ORCAORGNM-G      OCCURS   5.
-                        08  W11-ORCAORGNM      PIC X(20).
+                      07  W11-ORCAORGNM01      PIC X(20).
+                      07  W11-ORCAORGNM02      PIC X(20).
+                      07  W11-ORCAORGNM03COMBO.
+                        08  W11-ORCAORGNM03    PIC X(20).
+                        08  W11-ORCAORGNM03-COUNT
+                                               PIC S9(9)   BINARY.
+                        08  W11-ORCAORGNM03LST PIC X(20)
+                                               OCCURS  2 TIMES.
+                      07  W11-ORCAORGNM04      PIC X(20).
+                      07  W11-ORCAORGNM05      PIC X(20).
                       07  W11-ORCAORGCHK-G     OCCURS   5.
                         08  W11-ORCAORGCHK     PIC X.
                       07  W11-ORCACSTNM-G      OCCURS   5.
@@ -67,8 +75,13 @@
                         08  W11-DSPNAME-N      PIC X(30).
                       07  W11-PRTNM-N-G        OCCURS  20.
                         08  W11-PRTNM-N        PIC X(16).
-                      07  W11-ORCAORGNM-N-G    OCCURS   3.
-                        08  W11-ORCAORGNM-N    PIC X(20).
+                      07  W11-ORCAORGNM-N01    PIC X(20).
+                      07  W11-ORCAORGNM-N02    PIC X(20).
+                      07  W11-ORCAORGNM-N03COMBO.
+                        08  W11-ORCAORGNM-N03  PIC X(20).
+                        08  W11-ORCAORGNM-N03-COUNT  PIC S9(9)   BINARY.
+                        08  W11-ORCAORGNM-N03LST PIC X(20)
+                                               OCCURS  2 TIMES.
                       07  W11-ORCAORGCHK-N-G   OCCURS   3.
                         08  W11-ORCAORGCHK-N   PIC X.
                       07  W11-ORCACSTNM-N-G    OCCURS   3.
