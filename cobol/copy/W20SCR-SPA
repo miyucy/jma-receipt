@@ -287,9 +287,9 @@
                                                            OCCURS  50.
       *                    入院基本点数
                            11  SPA-GMN-W20-BTU-KHNTEN-TBL.
-                               13  SPA-GMN-W20-BTU-KHNTEN  PIC Z(05)9.
+                               13  SPA-GMN-W20-BTU-KHNTEN  PIC 99999.
                                13  SPA-GMN-W20-BTU-KHNTEN-ITM
-                                                           PIC Z(05)9
+                                                           PIC 99999
                                                            OCCURS  50.
       *                    選択番号
                            11  SPA-GMN-W20-SELNUM          PIC S9(2).
