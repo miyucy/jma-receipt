@@ -274,6 +274,7 @@
                                                SYUNOU-REC
                                                WRK-SYUNOU-REC-T
       *
+                MOVE     "1"                  TO  SYU-CREATEKBN
                 MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
                 MOVE     WRK-ORCS02-REC       TO  LNK-ORCS02-REC 
       *
