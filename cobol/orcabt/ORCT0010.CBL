@@ -437,7 +437,7 @@
                INITIALIZE              PTNYUINRRK-REC
                MOVE    SYS-1001-HOSPID     TO  PTNYUINRRK-HOSPID
                MOVE    WRK-TEIKIEDYMD      TO  PTNYUINRRK-NYUINYMD
-               MOVE    WRK-PARA-SYSYMD     TO  PTNYUINRRK-TAIINYMD
+               MOVE    WRK-TEIKIEDYMD      TO  PTNYUINRRK-TAIINYMD
                MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "PTNYUINRRK-KEY14"  TO  ORC-DBPATH
@@ -501,6 +501,12 @@
            MOVE    ZERO            TO  FLG-TAISYO
            MOVE    SPACE           TO  WRK-SAKKBN
            MOVE    ZERO            TO  FLG-GETUMATUSITEI
+      *
+      *    既に退院している患者は対象外とする
+           IF    ( PTNYUINRRK-TAIINYMD
+                               NOT =   "99999999" )
+               GO  TO  20011-TAISYO-CHK-EXT
+           END-IF
       *
       *    患者定期請求履歴読み込み処理
            PERFORM 900-PTTEIKIRRK-READ-SEC
