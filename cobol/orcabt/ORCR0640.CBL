@@ -1131,7 +1131,8 @@
                                   END-IF                                
                                  END-IF
                               ELSE
-                                 IF  WRK-DAY2(IDY) =  ZERO  OR  4
+                                 IF  (WRK-DAY1(IDY)   NOT  =  ZERO)
+                                 AND (WRK-DAY2(IDY) =  ZERO  OR  4)
                                     MOVE   NACCT-DAY(IDY)  
                                                TO   WRK-DAY21(IDY) 
                                     ADD    1     TO   CNT-DAY21
@@ -1140,9 +1141,10 @@
                               END-IF
                             END-IF
       *                     *³°Çñ
-                            IF   NACCT-ZAITEN        =  ZERO
-                            AND  NACCT-ZAISKBKBN     =  "2"
-                            AND  NACCT-DAY(IDY)  NOT =  ZERO
+                            IF  (WRK-DAY1(IDY)   NOT  =  ZERO)
+                            AND (NACCT-ZAITEN         =  ZERO)
+                            AND (NACCT-ZAISKBKBN      =  "2" )
+                            AND (NACCT-DAY(IDY)  NOT  =  ZERO)
                                MOVE   NACCT-DAY(IDY)  
                                             TO   WRK-DAY22(IDY) 
                                MOVE   WRK-DAY1-NYUTENTTLKBN(IDY)
@@ -1154,9 +1156,10 @@
                                MOVE   1     TO   FLG-DAY22
                             END-IF
       *                     *¿©»ö
-                            IF   NACCT-ZAITEN        =  ZERO
-                            AND  NACCT-ZAISKBKBN     =  "4"
-                            AND  NACCT-DAY(IDY)  NOT =  ZERO
+                            IF  (WRK-DAY1(IDY)   NOT  =  ZERO)
+                            AND (NACCT-ZAITEN         =  ZERO)
+                            AND (NACCT-ZAISKBKBN      =  "4" )
+                            AND (NACCT-DAY(IDY)  NOT  =  ZERO)
                                IF  WRK-DAY2(IDY) =  ZERO  OR  4
                                   MOVE   NACCT-DAY(IDY)  
                                             TO   WRK-DAY24(IDY) 

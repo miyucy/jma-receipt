@@ -2328,7 +2328,8 @@
                              UNTIL   IDX1    >       10
                              OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
-                 IF  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
+                 IF  WRK-DAY1(IDY) NOT =  ZERO 
+                 AND WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
                       IF   (WRK-DAY4(IDY)   NOT =    ZERO)  
                       AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
                            PERFORM   NYUINKHN-GET4-SEC

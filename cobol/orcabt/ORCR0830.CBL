@@ -1058,7 +1058,8 @@
            PERFORM  VARYING  IDY    FROM    1   BY  1
                           UNTIL   IDY     >       31
       *
-                 IF  WRK-DAY5(IDY)  =  RECE82-HKNCOMBI
+                 IF  WRK-DAY1(IDY) NOT =  ZERO 
+                 AND WRK-DAY5(IDY)  =  RECE82-HKNCOMBI
                       IF   (WRK-DAY4(IDY)   NOT =    ZERO)  
                       AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
                            PERFORM   2501-NYUINKHN-GET4-SEC

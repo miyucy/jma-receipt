@@ -252,6 +252,7 @@
       *
        01  WRK-DAY-TABLE.
            03  WRK-DAY-T                               OCCURS   31.
+               05  WRK-DAY1                            PIC 9(04).
                05  WRK-DAY2                            PIC 9(04).
                05  WRK-DAY4                            PIC 9(04).
                05  WRK-DAY5                            PIC 9(04).
@@ -906,6 +907,19 @@
                PERFORM  NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
+                 IF     NACCT-ZAISKBKBN    =    "1"  
+                   IF     NACCT-SRYCDTOTAL    =    099999916
+                       CONTINUE
+                   ELSE
+                     PERFORM    VARYING   IDY   FROM   1   BY   1
+                                      UNTIL    IDY    >    31
+                       IF   NACCT-DAY(IDY)   NOT =  ZERO 
+                             MOVE   NACCT-DAY(IDY)  TO   WRK-DAY1(IDY) 
+                       END-IF
+                     END-PERFORM
+                   END-IF
+                 END-IF
+      *
                  IF     NACCT-ZAISKBKBN    =    "2"  
                    PERFORM    VARYING   IDY   FROM   1   BY   1
                                     UNTIL    IDY    >    31
@@ -975,9 +989,10 @@
                                   UNTIL   IDY     >       31
       *
                          IF  RECE82-HKNCOMBI     =  WRK-DAY5(IDY)
-                            IF   NACCT-ZAITEN    NOT =  ZERO
-                            AND  NACCT-ZAISKBKBN NOT =  "4" 
-                            AND  NACCT-DAY(IDY)  NOT =  ZERO
+                            IF  (WRK-DAY1(IDY)   NOT  =  ZERO)
+                            AND (NACCT-ZAITEN    NOT  =  ZERO)
+                            AND (NACCT-ZAISKBKBN NOT  =  "4" )
+                            AND (NACCT-DAY(IDY)  NOT  =  ZERO)
                                IF  WRK-DAY2(IDY) =  ZERO  OR  4
                                     MOVE   NACCT-DAY(IDY)  
                                            TO   WRK-DAY21(IDY) 
@@ -986,9 +1001,10 @@
                                END-IF
                             END-IF
       *                     *¿©»ö
-                            IF   NACCT-ZAITEN        =  ZERO
-                            AND  NACCT-ZAISKBKBN     =  "4"
-                            AND  NACCT-DAY(IDY)  NOT =  ZERO
+                            IF  (WRK-DAY1(IDY)   NOT  =  ZERO)
+                            AND (NACCT-ZAITEN         =  ZERO)
+                            AND (NACCT-ZAISKBKBN      =  "4" )
+                            AND (NACCT-DAY(IDY)  NOT  =  ZERO)
                                IF  WRK-DAY2(IDY) =  ZERO  OR  4
                                   MOVE   NACCT-DAY(IDY)  
                                             TO   WRK-DAY24(IDY) 
