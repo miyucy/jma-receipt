@@ -1797,11 +1797,23 @@
                                                  TO   SYU-RMSAGAKU
                            END-IF
                          WHEN  "2"
-                           IF  (SYU-DAY(SYU-IDX)   NOT =  SPACE)   AND
-                               (NACCT-DAY(SYU-IDX) NOT =  ZERO)
-                             MOVE  NACCT-DAY(SYU-IDX)  TO  RMSAGAKU-IDX
-                             ADD   TBL-RMSAGAKU (RMSAGAKU-IDX)
-                                                 TO   SYU-RMSAGAKU
+                           IF  SYU-SRYYMD(1:6)   =  WRK-SKYYM(1)
+                             IF  (SYU-HKNCOMBINUM =
+                                              WRK-DAY5(1 SYU-IDX))  AND
+                                 (NACCT-DAY(SYU-IDX) NOT =  ZERO)
+                               MOVE  NACCT-DAY(SYU-IDX) TO RMSAGAKU-IDX
+                               ADD   TBL-RMSAGAKU (RMSAGAKU-IDX)
+                                                   TO   SYU-RMSAGAKU
+                             END-IF
+                           ELSE
+                             IF  (SYU-SRYYMD(1:6)  =  WRK-SKYYM(2)) AND
+                                 (SYU-HKNCOMBINUM  =
+                                              WRK-DAY5(2 SYU-IDX))  AND
+                                 (NACCT-DAY(SYU-IDX) NOT =  ZERO)
+                               MOVE  NACCT-DAY(SYU-IDX) TO RMSAGAKU-IDX
+                               ADD   TBL-RMSAGAKU (RMSAGAKU-IDX)
+                                                   TO   SYU-RMSAGAKU
+                             END-IF
                            END-IF
                        END-EVALUATE
                    END-PERFORM
