@@ -1014,6 +1014,11 @@
       *
                IF      FLG-HKNNUM      =   ZERO
                    MOVE    HKN-SEIDONAME           TO  SPA-GMN-SEIDONAME
+                   IF      HKN-HKNKOHSBTKBN    =   "5" OR  "6" OR  "7"
+                       CONTINUE
+                   ELSE
+                       MOVE    "0015"                  TO  SPA-ERRCD
+                   END-IF
                ELSE
                    MOVE    "0004"                  TO  SPA-ERRCD
                END-IF
@@ -1835,6 +1840,9 @@ x           IF      SPA-GMN-RECEDEN-TOKKI
                WHEN    "0014"
                    MOVE
                        "保険番号が未入力のときは入力できない項目です"
+                                           TO  SPA-ERRMSG
+               WHEN    "0015"
+                   MOVE    "入力できない種類の保険番号です"
                                            TO  SPA-ERRMSG
       *
                WHEN    "0101"
