@@ -1292,15 +1292,8 @@
                END-SEARCH
            END-IF.
       *
-           IF      (NSRY-SRYSYUKBN         =   SPACE)   OR
-                   (NSRY-SRYSYUKBN         =   "900")
-               MOVE    SPACE           TO  SPA-GMN-TMEISYO-41 (IDG)
-               MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO-41 (IDG)(7:)
-           ELSE
-               MOVE    "."             TO  SPA-GMN-TMEISYO-41 (IDG)(1:1)
-               MOVE    NSRY-SRYSYUKBN  TO  SPA-GMN-TMEISYO-41 (IDG)(2:3)
-               MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO-41 (IDG)(7:)
-           END-IF.
+           MOVE    SPACE           TO  SPA-GMN-TMEISYO-41 (IDG).
+           MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO-41 (IDG)(7:).
       *
       *回数
            PERFORM VARYING    IDK      FROM    1   BY  1
@@ -1308,10 +1301,8 @@
                MOVE    NACCT-DAY  (IDK)    TO  WRK-ZZ
                MOVE    WRK-ZZ-X            TO  SPA-GMN-TDAY-41 (IDG IDK)
            END-PERFORM.
-      *入院時、行を変える
-           IF      NSRY-SRYSYUKBN         =   "900"
-               COMPUTE IDG             =   IDG   -   1
-           END-IF.
+      *
+           COMPUTE IDG   =   IDG   -   1.
       *
        31011-GYO1-HEN-EXT.
            EXIT.
