@@ -300,7 +300,7 @@ path	key14 	{
 
 path	key15 	{
 	DBSELECT	{
-		DECLARE tbl_nyuinacct_key11_csr CURSOR FOR
+		DECLARE tbl_nyuinacct_key15_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
 			WHERE   HOSPID    =   :HOSPID
@@ -315,7 +315,7 @@ path	key15 	{
 
 path	key16 	{
 	DBSELECT	{
-		DECLARE tbl_nyuinacct_key12_csr CURSOR FOR
+		DECLARE tbl_nyuinacct_key16_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
 			WHERE   HOSPID    =   :HOSPID
