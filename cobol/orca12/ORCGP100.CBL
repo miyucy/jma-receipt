@@ -582,6 +582,11 @@
       *****************************************************************
        490-JINMEIDB-EDIT-SEC        SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   2 )
                IF    (SPA-GMN-P100-SELNUM-STATE (IDX1)
