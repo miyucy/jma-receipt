@@ -30,6 +30,9 @@
       *  01.00.01    NACL-藤原    03/07/18  主病名編集フラグによって
       *                                     主傷病名コードを変更する
       *  01.00.02    NACL-藤原    03/08/01  コメントの編集の訂正
+      *  01.00.03    NACL-藤原    03/08/06  用法は出力しないようにする
+      *                                     証明書番号の省略値の変更
+      *                                     画像診断の点数の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -282,6 +285,8 @@
       *            点数識別区分/点数
                    07  TBL-ZAIW-TENSIKIBETU     PIC  9(01).
                    07  TBL-ZAIW-TEN             PIC  9(09)V9(02).
+      *            データ区分情報
+                   07  TBL-ZAIW-DATAKBN         PIC  9(01).
       *
       *    コメントデータ用テーブル
        01  TBL-COMMENT-AREA.
@@ -1488,7 +1493,7 @@
                                            FLG-TEIGEN
                                            FLG-YKZ20
       *                                     
-           MOVE    RECE041-SRYKBN      TO  WRK-SRYKBN                                
+           MOVE    RECE041-SRYKBN      TO  WRK-SRYKBN
       *
            INITIALIZE                      RECE05-REC
            MOVE    RECE041-HOSPID       TO  RECE05-HOSPID
@@ -1529,7 +1534,7 @@
                PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX               >   5     )
                          OR      ( RECE05-SRYCD(IDX) =   SPACE )
-                         OR      ( FLG-END           =   1     ) 
+                         OR      ( FLG-END           =   1     )
       *
                    EVALUATE    RECE05-SRYCD (IDX) (1:1)
                        WHEN    "0"
@@ -1673,7 +1678,8 @@
       *    摘要データ（薬剤）退避処理
       *****************************************************************
        200711-YKZ-TAIHI-SEC          SECTION.
-               PERFORM 200711-ELSE-TAIHI-SEC    
+      *
+           PERFORM 200711-ELSE-TAIHI-SEC    
            .
        200711-YKZ-TAIHI-EXT.
            EXIT.
@@ -1698,16 +1704,18 @@
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1                   TO  FLG-END
            ELSE
-                   MOVE    RECE05-SRYCD      (IDX) TO
+               MOVE    RECE05-SRYCD      (IDX) TO
                                    TBL-ZAIW-SRYCD      (WRK-ZAIWMAX)
-                   MOVE    RECE05-SRYSURYO   (IDX) TO
+               MOVE    RECE05-SRYSURYO   (IDX) TO
                                    TBL-ZAIW-SRYSURYO   (WRK-ZAIWMAX)
-                   MOVE    RECE05-TANICD     (IDX) TO
+               MOVE    RECE05-TANICD     (IDX) TO
                                    TBL-ZAIW-TANICD     (WRK-ZAIWMAX)
-                   MOVE    RECE05-TENSIKIBETU(IDX) TO
+               MOVE    RECE05-TENSIKIBETU(IDX) TO
                                    TBL-ZAIW-TENSIKIBETU(WRK-ZAIWMAX)
-                   MOVE    RECE05-TEN        (IDX) TO
+               MOVE    RECE05-TEN        (IDX) TO
                                    TBL-ZAIW-TEN        (WRK-ZAIWMAX)
+               MOVE    RECE05-DATAKBN    (IDX) TO
+                                   TBL-ZAIW-DATAKBN    (WRK-ZAIWMAX)
            END-IF
       *
            EVALUATE    TBL-ZAIW-SRYCD (WRK-ZAIWMAX) (1:1)
@@ -1833,7 +1841,12 @@
       *        点数 
                IF      IDX               =   WRK-TBLMAX1
                    IF      RECE041-SYUTEN1       >   ZERO
-                       MOVE    RECE041-SYUTEN1   TO  WRK-TENSU
+                       IF      RECE041-SRYKBN    =   "70"
+                           COMPUTE WRK-TENSU =   RECE041-SYUTEN1   - 
+                                                 RECE041-SYUTEN2
+                       ELSE
+                           MOVE    RECE041-SYUTEN1   TO  WRK-TENSU
+                       END-IF
                        MOVE    WRK-TENSU         TO  WRK-NUM
                        MOVE    7                 TO  WRK-NAGASA
                    END-IF
@@ -1963,10 +1976,18 @@
            PERFORM 5005-NUM-HENSYU-SEC  
       *    点数 
            IF      IDX                     =   WRK-TBLMAX7
-               IF      RECE041-KIZAITEN    >   ZERO
-                   MOVE    RECE041-KIZAITEN    TO  WRK-TENSU
+               IF     ( RECE041-SRYKBN    =   "70" )
+               AND    ( TBL-ZAIW-DATAKBN (IDX)
+                                          =   "3"  )
+                   MOVE    RECE041-SYUTEN2     TO  WRK-TENSU
                    MOVE    WRK-TENSU           TO  WRK-NUM
                    MOVE    7                   TO  WRK-NAGASA
+               ELSE
+                   IF      RECE041-KIZAITEN    >   ZERO
+                       MOVE    RECE041-KIZAITEN    TO  WRK-TENSU
+                       MOVE    WRK-TENSU           TO  WRK-NUM
+                       MOVE    7                   TO  WRK-NAGASA
+                   END-IF
                END-IF
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  

@@ -28,6 +28,7 @@
       *****************************************************************
       *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  01.00.01    NACL-∆£∏∂    03/08/06  ø«Œ≈∂Ë ¨£π£π§œ£±£±§À —ππ
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -235,7 +236,11 @@
            MOVE    RECE04-TEKSTYMD     TO  RECE041-TEKSTYMD
            MOVE    RECE04-ZAINUM       TO  RECE041-ZAINUM
            MOVE    RECE04-KOHBUNRI     TO  RECE041-KOHBUNRI
-           MOVE    RECE04-SRYKBN       TO  RECE041-SRYKBN
+           IF      RECE04-SRYKBN   =   "99"
+               MOVE    "11"                TO  RECE041-SRYKBN
+           ELSE
+               MOVE    RECE04-SRYKBN       TO  RECE041-SRYKBN
+           END-IF
            MOVE    RECE04-PTNUM        TO  RECE041-PTNUM
            MOVE    RECE04-SRYKA        TO  RECE041-SRYKA
            MOVE    RECE04-HKNCOMBI     TO  RECE041-HKNCOMBI
