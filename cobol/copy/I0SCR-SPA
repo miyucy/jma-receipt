@@ -240,6 +240,12 @@
       *                ITM2には同一病室名の病棟別の室料差額を退避する
                        15  SPA-GMN-I01-BTUNAME-ITM2
                                                    PIC X(02).
+      *                ITM3には同一病室名の病棟の診療科を退避する
+                       15  SPA-GMN-I01-BTUNAME-ITM3
+                                                   PIC X(02).
+      *                ITM4には同一病室名の病室の診療科を退避する
+                       15  SPA-GMN-I01-BTUNAME-ITM4
+                                                   PIC X(02).
                    13  SPA-GMN-I01-BTUNAME-ITM-STT
                                                    PIC S9(9)   BINARY.
       *          室料差額コンボ
