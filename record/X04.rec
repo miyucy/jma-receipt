@@ -1,5 +1,8 @@
 X04	{
 	fixed2	{
+		B03	{
+			state	int;
+		};
 		B06	{
 			state	int;
 		};

@@ -2713,6 +2713,12 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-NAI-INPUT-MODE  NOT =   ZERO )
+                   MOVE    "0109"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
                IF    ( SPA-GMN-BYOLST-MAX  <=  ZERO )
                    MOVE    "0108"      TO  SPA-ERRCD
                END-IF
@@ -3067,9 +3073,17 @@
       *
            END-PERFORM
       *
-           MOVE    WIDGET-NORMAL       TO  X04-B06-STATE
+           MOVE    WIDGET-NORMAL       TO  X04-B03-STATE
+                                           X04-B06-STATE
                                            X04-B09-STATE
                                            X04-B10-STATE
+      *
+           IF    ( SPA-X01-SELNUM         <=  ZERO )
+            OR   ( SPA-GMN-BYOMEI      NOT =   SPACE )
+            OR   ( SPA-NAI-INPUT-MODE  NOT =   ZERO )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  X04-B03-STATE
+           END-IF
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   CONST-BYOCD-MAX )
@@ -3278,6 +3292,7 @@
                MOVE    "一致条件を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "0107"
+           WHEN    "0109"
                MOVE    "病名が入力途中です"
                                        TO  SPA-ERRMSG
            WHEN    "0108"
