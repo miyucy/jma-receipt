@@ -1025,31 +1025,48 @@
       *
            IF      FLG-PTNYUINRRK      =   ZERO
                IF      PTNYUINRRK-NYUINYMD NOT =   SPACE
-                   INITIALIZE                      STS-AREA-DAY
-                   INITIALIZE                      LNK-DAY6-AREA
-                   MOVE    "61"                TO  LNK-DAY6-IRAI
-                   MOVE    PTNYUINRRK-NYUINYMD TO  LNK-DAY6-KIJUN
-                   MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-                   MOVE    91                  TO  LNK-DAY6-ZOGEN
-                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                       LNK-DAY6-AREA
-                   MOVE    LNK-DAY6-KOYOMI     TO  SPA-GMN-IJYOU91
-                   MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYMD
-                   PERFORM 41012-SEIWA-HEN-SEC
-                   MOVE    WRK-HENYMDG         TO  SPA-GMN-IJYOU91
+                   INITIALIZE                  ORCSTUSANAREA
+                   MOVE    SPA-HOSPID      TO  STUSAN-HOSPID
+                   MOVE    PTNYUINRRK-PTID TO  STUSAN-PTID
+                   MOVE    PTNYUINRRK-NYUINYMD
+                                           TO  STUSAN-KJNYMD
+                   CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
       *
                    INITIALIZE                      STS-AREA-DAY
                    INITIALIZE                      LNK-DAY6-AREA
                    MOVE    "61"                TO  LNK-DAY6-IRAI
                    MOVE    PTNYUINRRK-NYUINYMD TO  LNK-DAY6-KIJUN
                    MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-                   MOVE    180                 TO  LNK-DAY6-ZOGEN
+                   COMPUTE LNK-DAY6-ZOGEN
+                       =   91    -     STUSAN-NISSU05  +   1
                    CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                        LNK-DAY6-AREA
-                   MOVE    LNK-DAY6-KOYOMI     TO  SPA-GMN-IJYOU180
-                   MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYMD
-                   PERFORM 41012-SEIWA-HEN-SEC
-                   MOVE    WRK-HENYMDG         TO  SPA-GMN-IJYOU180
+                   IF    ( LNK-DAY6-KOYOMI    >=   PTNYUINRRK-NYUINYMD )
+                       MOVE    LNK-DAY6-KOYOMI     TO  SPA-GMN-IJYOU91
+                       MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYMD
+                       PERFORM 41012-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG         TO  SPA-GMN-IJYOU91
+                   ELSE
+                       MOVE    "********"          TO  SPA-GMN-IJYOU91
+                   END-IF
+      *
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY6-AREA
+                   MOVE    "61"                TO  LNK-DAY6-IRAI
+                   MOVE    PTNYUINRRK-NYUINYMD TO  LNK-DAY6-KIJUN
+                   MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+                   COMPUTE LNK-DAY6-ZOGEN
+                       =   180   -     STUSAN-NISSU04  +   1
+                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                   IF    ( LNK-DAY6-KOYOMI    >=   PTNYUINRRK-NYUINYMD )
+                       MOVE    LNK-DAY6-KOYOMI     TO  SPA-GMN-IJYOU180
+                       MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYMD
+                       PERFORM 41012-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG         TO  SPA-GMN-IJYOU180
+                   ELSE
+                       MOVE    "********"          TO  SPA-GMN-IJYOU180
+                   END-IF
       *
                    MOVE    PTNYUINRRK-NYUINYMD TO  SPA-GMN-NYUINBI-41
                    MOVE    PTNYUINRRK-NYUINYMD TO  WRK-SYMD
