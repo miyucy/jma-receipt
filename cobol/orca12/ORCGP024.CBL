@@ -168,7 +168,6 @@
                             REPLACING  //TSYRRK-// BY //LNK-TSY-//.
       *
       *   年金履歴
-      *
        01  LNK-TNK-AREA.
            02  LNK-TNK-REC           OCCURS  10.
            COPY    "CPTNKRRK.INC"
@@ -1400,7 +1399,11 @@
                END-IF
            END-PERFORM
            IF      WRK-FTN1-IDX        =   ZERO
-               MOVE    "2430"              TO  SPA-ERRCD
+               IF      SPA-GMN24-FTNSELNUM     =   ZERO
+                   MOVE    SPA-GMN24-FTNSELNUM TO  SPA-MAE24-FTNSELNUM
+               ELSE
+                   MOVE    "2430"              TO  SPA-ERRCD
+               END-IF
                MOVE    30                  TO  SPA-GMN24-CUR
                GO      TO                  41013-FTNSELNUM-EXT
            END-IF
@@ -1531,7 +1534,8 @@
            MOVE    ZERO                TO  WRK-KOHID
            MOVE    ZERO                TO  WRK-IDX
            PERFORM
-               UNTIL   FLG-PARA            =   1
+               UNTIL  (FLG-PARA            =   1  )  OR
+                      (SPA-ERRCD       NOT =   SPACE )
                MOVE    PARA-DATA-REC           TO  PTKOHFTN-REC
       *        公費ＩＤがテーブルにあること（ないものは削除とする）
                MOVE    ZERO            TO  FLG-OK
@@ -1552,8 +1556,9 @@
       *        公費ＩＤ毎にテーブル保存
                IF      PTKOHFTN-KOHID  NOT =   WRK-KOHID
                    ADD     1                   TO  IDP-1
-                   IF      IDP-1               >   10
-                       MOVE    10              TO  IDP-1
+                   IF      IDP-1               >   50
+                       MOVE    50              TO  IDP-1
+                       MOVE    "2499"          TO  SPA-ERRCD
                    END-IF
                    MOVE    PTKOHFTN-KOHID      TO  WRK-KOHID
                    MOVE    ZERO                TO  IDP-2
@@ -1590,14 +1595,14 @@
       *
            ADD     1                   TO  IDP-1
            MOVE    ZERO                TO  IDP-2
-           IF      IDP-1               >   10
-               DISPLAY "GP024 KOHFTN PARA 10 OVER"
-               MOVE    "9900"          TO  SPA-ERRCD
-               GO      TO      410131-KOHFTN-PARA-EXT
+           IF      IDP-1               >   50
+               DISPLAY "GP024 KOHFTN PARA 50 OVER"
+               MOVE    "2499"          TO  SPA-ERRCD
            END-IF
       *
            PERFORM VARYING IDX         FROM    1   BY  1
-                   UNTIL   IDX         >   SPA-FTN2-MAX
+                   UNTIL  (IDX         >   SPA-FTN2-MAX )  OR
+                          (SPA-ERRCD   NOT =   SPACE    )
       *
                IF      SPA-NAI24-FTNDELKBN2 (IDX)  =   SPACE
                    PERFORM 410131-KOHFTN-TBL-INS-SEC
@@ -1720,11 +1725,13 @@
       *****************************************************************
        41014-FTNSELNUM2-SEC           SECTION.
       *
-           MOVE    P02-P024-FTNSELNUM2     TO  SPA-GMN24-FTNSELNUM2
-      *
-           IF      SPA-GMN24-FTNSELNUM2    =   ZERO
-               GO     TO      41014-FTNSELNUM2-EXT
+           IF      P02-P024-FTNSELNUM2     =   SPA-GMN24-FTNSELNUM2
+               IF      SPA-GMN24-FTNSELNUM2    =   ZERO
+                   GO     TO      41014-FTNSELNUM2-EXT
+               END-IF
            END-IF
+      *
+           MOVE    P02-P024-FTNSELNUM2     TO  SPA-GMN24-FTNSELNUM2
       *
            MOVE    ZERO                TO  WRK-FTN1-IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1737,10 +1744,13 @@
                END-IF
            END-PERFORM
            IF      WRK-FTN1-IDX        =   ZERO
-               MOVE    "2431"              TO  SPA-ERRCD
+               IF      SPA-GMN24-FTNSELNUM2    NOT =   ZERO
+                   MOVE    "2431"              TO  SPA-ERRCD
+               END-IF
                MOVE    31                  TO  SPA-GMN24-CUR
-               GO      TO                  41014-FTNSELNUM2-EXT
-           END-IF
+               INITIALIZE                  SPA-GMN24-FTN-AREA2
+               MOVE    P02-P024-FTNSELNUM2     TO  SPA-GMN24-FTNSELNUM2
+           ELSE
       *
       *    対象のデータを編集する
            MOVE    WRK-FTN1-IDX        TO  IDX
@@ -1757,6 +1767,8 @@
            MOVE    WRK-Z7                      TO  SPA-GMN24-NYUJGNGAK
       *
            MOVE    32                  TO  SPA-GMN24-CUR
+      *
+           END-IF
            .
        41014-FTNSELNUM2-EXT.
            EXIT.
@@ -1814,7 +1826,7 @@
            MOVE    P02-P024-TNKEDYMD   TO  SPA-GMN24-TNKEDYMDW
       *
       *    公費負担金　選択番号
-           MOVE    P02-P024-FTNSELNUM2 TO  SPA-GMN24-FTNSELNUM2
+      *****MOVE    P02-P024-FTNSELNUM2 TO  SPA-GMN24-FTNSELNUM2
            MOVE    P02-P024-FTNTEKSTYMD    TO  SPA-GMN24-FTNSTYMD
            MOVE    P02-P024-FTNTEKEDYMD    TO  SPA-GMN24-FTNEDYMD
            MOVE    P02-P024-GAIJGNGAK  TO  SPA-GMN24-GAIJGNGAK

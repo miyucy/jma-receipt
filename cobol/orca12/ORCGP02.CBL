@@ -3713,6 +3713,9 @@
                WHEN    "2438"
                    MOVE    "公費負担適用開始日＜終了日で入力して下さい"
                                                TO  SPA-ERRMSG
+               WHEN    "2499"
+                   MOVE    "公費負担額対象公費が５０件以上です。"
+                                               TO  SPA-ERRMSG
       *        入力履歴
                WHEN    "2502"
                    MOVE    "選択番号入力エラー"    TO  SPA-ERRMSG
