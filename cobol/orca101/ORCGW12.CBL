@@ -46,6 +46,7 @@
       *                                     ¡¦Â³»æ½ÐÎÏÀè¤ÎÄÉ²Ã
       *  02.00.09    NACL-ÂÀÅÄ    03/11/18  Ï·¿Í¤È¸¶Çú¶èÊ¬¤ÎÄÉ²Ã
       *  02.00.10    NACL-ÂÀÅÄ    04/01/15  ¼«Èñ¥ì¥»¥×¥ÈÅ¦Í×Íóµ­ºÜ¶èÊ¬ÄÉ²Ã
+      *  01.00.11    NACL-Æ£¸¶    02/02/18  ¼ÒÊÝ£Ï£Ã£Ò¶èÊ¬¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -113,6 +114,12 @@
                            11  SPA-GMN-SYARECEKBNMEI
                                               PIC X(18).
                        09  SPA-GMN-RECEDENOUT PIC X(30).              
+                       09  SPA-GMN-SYAOCRKBN-G.
+                           11  SPA-GMN-SYAOCRKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-SYAOCRKBNMEI
+                                              PIC X(18).
                        09  SPA-GMN-KKHOCRKBN-G.
                            11  SPA-GMN-KKHOCRKBN
                                               PIC X(01).
@@ -222,6 +229,13 @@
                        09  SPA-GMN-KKHOCRKBNMEIL
                                               PIC X(18).
                    07  SPA-GMN-KKHOCRKBN-MAX  PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-SYAOCRKBNLST           OCCURS  2.
+                       09  SPA-GMN-SYAOCRKBNL PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-SYAOCRKBNMEIL
+                                              PIC X(18).
+                   07  SPA-GMN-SYAOCRKBN-MAX  PIC 9(02).    
       *                                        
                    07  SPA-GMN-KKHPRTKBNLST           OCCURS  2.
                        09  SPA-GMN-KKHPRTKBNL PIC X(01).
@@ -570,6 +584,12 @@
            MOVE    "£Ï£Ã£Ò¤¢¤ê"        TO  SPA-GMN-KKHOCRKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-KKHOCRKBN-MAX 
       *     
+           MOVE    "0"                 TO  SPA-GMN-SYAOCRKBNL    (1)
+           MOVE    "£Ï£Ã£Ò¤¢¤ê"        TO  SPA-GMN-SYAOCRKBNMEIL (1)
+           MOVE    "1"                 TO  SPA-GMN-SYAOCRKBNL    (2)
+           MOVE    "£Ï£Ã£Ò¤Ê¤·"        TO  SPA-GMN-SYAOCRKBNMEIL (2)
+           MOVE    2                   TO  SPA-GMN-SYAOCRKBN-MAX 
+      *     
            MOVE    "0"                 TO  SPA-GMN-KKHPRTKBNL    (1)
            MOVE    "µëÉÕ³ä¹ç¤Ê¤·¤ÎÍÍ¼°"
                                        TO  SPA-GMN-KKHPRTKBNMEIL (1)
@@ -721,6 +741,18 @@
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
+      *         
+               MOVE    SYS-2005-SYAOCRKBN  TO  SPA-GMN-SYAOCRKBN
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-SYAOCRKBN-MAX
+                   IF      SPA-GMN-SYAOCRKBN 
+                                   =   SPA-GMN-SYAOCRKBNL (IDY)
+                       MOVE    SPA-GMN-SYAOCRKBNLST (IDY)
+                                           TO  SPA-GMN-SYAOCRKBN-G
+                       MOVE    SPA-GMN-SYAOCRKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
       *
                MOVE    SYS-2005-PREFPRGID (1)
                                            TO  SPA-GMN-PREFPRGID
@@ -854,6 +886,14 @@
                MOVE    SPA-GMN-JIHITEKKSIKBNLST (1)
                                            TO  SPA-GMN-JIHITEKKSIKBN-G
            END-IF                                              
+           IF     SPA-GMN-SYAOCRKBN-G  =   SPACE
+               MOVE    SPA-GMN-SYAOCRKBNLST (1)
+                                           TO  SPA-GMN-SYAOCRKBN-G
+           END-IF                                              
+           IF     SPA-GMN-KKHOCRKBN-G  =   SPACE
+               MOVE    SPA-GMN-KKHOCRKBNLST (1)
+                                           TO  SPA-GMN-KKHOCRKBN-G
+           END-IF                                              
       *
            MOVE    1                   TO  SPA-GMN-CUR
            . 
@@ -918,6 +958,7 @@
            MOVE    W12-KKHRECEKBN      TO  SPA-GMN-KKHRECEKBN-G 
            MOVE    W12-SYARECEKBN      TO  SPA-GMN-SYARECEKBN-G 
            MOVE    W12-RECEDENOUT      TO  SPA-GMN-RECEDENOUT 
+           MOVE    W12-SYAOCRKBN       TO  SPA-GMN-SYAOCRKBN-G 
            MOVE    W12-KKHOCRKBN       TO  SPA-GMN-KKHOCRKBN-G 
            MOVE    W12-PREFPRGID       TO  SPA-GMN-PREFPRGID
            MOVE    W12-PREFPRGID1      TO  SPA-GMN-PREFPRGID1
@@ -975,6 +1016,11 @@
            END-IF
       *
            PERFORM 4103-RECEDENOUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4119-SYAOCRKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1518,6 +1564,34 @@
            .
        4118-JIHITEKKSIKBN-CHK-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ¼ÒÊÝ£Ï£Ã£Ò°õºþ¶èÊ¬¥§¥Ã¥¯
+      *****************************************************************
+       4119-SYAOCRKBN-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-SYAOCRKBN   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-SYAOCRKBN-MAX
+                   IF      SPA-GMN-SYAOCRKBN
+                                   =   SPA-GMN-SYAOCRKBNL (IDY)
+                       MOVE    SPA-GMN-SYAOCRKBNLST (IDY)
+                                           TO  SPA-GMN-SYAOCRKBN-G
+                       MOVE    SPA-GMN-SYAOCRKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-SYAOCRKBNMEI    =   SPACE
+                   MOVE    7                  TO  SPA-GMN-CUR
+                   MOVE    "0004"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4119-SYAOCRKBN-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    Ìá¤ë¡¡½èÍý
       *****************************************************************
@@ -1587,6 +1661,7 @@
            MOVE    SPA-GMN-KKHRECEKBN      TO  SYS-2005-KKHRECEKBN
            MOVE    SPA-GMN-SYARECEKBN      TO  SYS-2005-SYARECEKBN
            MOVE    SPA-GMN-RECEDENOUT      TO  SYS-2005-RECEDENOUT
+           MOVE    SPA-GMN-SYAOCRKBN       TO  SYS-2005-SYAOCRKBN
            MOVE    SPA-GMN-KKHOCRKBN       TO  SYS-2005-KKHOCRKBN
            MOVE    SPA-GMN-KKHPRTKBN       TO  SYS-2005-KKHPRTKBN
            MOVE    SPA-GMN-PREFPRGID       TO  SYS-2005-PREFPRGID (1)
@@ -1719,6 +1794,7 @@
            MOVE    SPA-GMN-TENKIHENKBN-G    TO  W12-TENKIHENKBN
            MOVE    SPA-GMN-KKHRECEKBN-G     TO  W12-KKHRECEKBN
            MOVE    SPA-GMN-SYARECEKBN-G     TO  W12-SYARECEKBN
+           MOVE    SPA-GMN-SYAOCRKBN-G      TO  W12-SYAOCRKBN
            MOVE    SPA-GMN-KKHOCRKBN-G      TO  W12-KKHOCRKBN
            MOVE    SPA-GMN-KKHPRTKBN-G      TO  W12-KKHPRTKBN
            MOVE    SPA-GMN-RENNUMHENKBN-G   TO  W12-RENNUMHENKBN
@@ -1776,6 +1852,14 @@
                                        TO  W12-SYARECEKBN-COUNT 
       *
            MOVE    SPA-GMN-RECEDENOUT  TO  W12-RECEDENOUT
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-SYAOCRKBN-MAX
+               MOVE    SPA-GMN-SYAOCRKBNLST (IDY)
+                                       TO  W12-SYAOCRKBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-SYAOCRKBN-MAX
+                                       TO  W12-SYAOCRKBN-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-KKHOCRKBN-MAX
@@ -2017,7 +2101,9 @@
                 WHEN    19
                     MOVE  "RJNGNBKKBN"       TO   MCP-WIDGET
                 WHEN    20
-                    MOVE  "JIHITEKKSIKBN"       TO   MCP-WIDGET
+                    MOVE  "JIHITEKKSIKBN"    TO   MCP-WIDGET
+                WHEN    21
+                    MOVE  "SYAOCRKBN"        TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -2044,6 +2130,8 @@
                WHEN    "KKHRECEKBN"
                    MOVE    6           TO  SPA-GMN-CUR
                WHEN    "RECEDENOUT"
+                   MOVE    21          TO  SPA-GMN-CUR
+               WHEN    "SYAOCRKBN"
                    MOVE    7           TO  SPA-GMN-CUR
                WHEN    "KKHOCRKBN"
                    MOVE    8           TO  SPA-GMN-CUR

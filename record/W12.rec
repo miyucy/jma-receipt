@@ -51,6 +51,13 @@ W12	{
 		RECEDENOUT	{
 			value	varchar(30);
 		};
+		SYAOCRKBN_COMBO	{
+			SYAOCRKBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
 		KKHOCRKBN_COMBO	{
 			KKHOCRKBN	{
 				value	varchar(20);

@@ -53,6 +53,7 @@
       *  01.00.16    NACL-藤原    04/01/19  病床数の記載の修正
       *  01.00.17    NACL-門脇    04/01/20  自費レセ摘要欄編集修正
       *  01.00.18    NACL-門脇    04/01/26  カナ氏名の長さ等修正
+      *  01.00.19    NACL-藤原    02/02/18  社保ＯＣＲ区分の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1584,9 +1585,10 @@
            IF      FLG-RECE11          =   ZERO
                MOVE    RECE11-PRTDATA      TO  RECE11-HC06
       *        カスタマイズ項目があるときＯＣＲに反映させる 
-               IF   RECE02-TEISYUTUSAKI     =     1
-               OR  (RECE02-TEISYUTUSAKI     =     2   AND
-                    SYS-2005-KKHOCRKBN      =     "1"     )
+               IF ( RECE02-TEISYUTUSAKI     =     1   AND
+                    SYS-2005-SYAOCRKBN      =     ZERO    )   
+               OR ( RECE02-TEISYUTUSAKI     =     2   AND
+                    SYS-2005-KKHOCRKBN      =     "1"     )   
                    MOVE    RECE02-OCR1            TO  OCR1-AREA
                    MOVE    RECE02-OCR2            TO  OCR2-AREA
                    MOVE    RECE02-OCR3            TO  OCR3-AREA
@@ -1761,9 +1763,10 @@
            IF  CNT-PAGE                =   1
       *        カスタマイズ項目があるときＯＣＲに反映させる 
                IF      FLG-RECE11          =   ZERO
-                   IF   RECE02-TEISYUTUSAKI     =     1
-                   OR  (RECE02-TEISYUTUSAKI     =     2   AND
-                        SYS-2005-KKHOCRKBN      =     "1"     )
+                   IF ( RECE02-TEISYUTUSAKI     =     1   AND
+                        SYS-2005-SYAOCRKBN      =     ZERO    )   
+                   OR ( RECE02-TEISYUTUSAKI     =     2   AND
+                        SYS-2005-KKHOCRKBN      =     "1"     )   
                        MOVE    RECE02-OCR1            TO  OCR1-AREA
                        MOVE    RECE02-OCR2            TO  OCR2-AREA
                        MOVE    RECE02-OCR3            TO  OCR3-AREA

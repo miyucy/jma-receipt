@@ -145,6 +145,7 @@
       *                                     •’•È•∞§Œ ‘Ω∏
       *  01.02.40   NACL-ÃÁœ∆     04/02/05  ø«Œ≈•≥°º•…°ˆøÙŒÃ§ŒŒﬂ∑◊ ‘Ω∏
       *  01.02.41   NACL-ÃÁœ∆     04/02/10  ¿∏ ›§Œ∞Ï…Ù…È√¥∂‚≥€µ≠∫‹Ω§¿µ
+      *  01.02.42   NACL-∆£∏∂     04/02/18  º“ ›§Œ£œ£√£“∞ı∫˛§Ú•∑•π¥…§Ë§Í∑ËƒÍ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -872,6 +873,9 @@
            IF      SYS-2005-JIHITEKKSIKBN     =   SPACE
                MOVE    ZERO             TO  SYS-2005-JIHITEKKSIKBN
            END-IF
+           IF      SYS-2005-SYAOCRKBN   =   SPACE
+               MOVE    ZERO             TO  SYS-2005-SYAOCRKBN
+           END-IF
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
@@ -986,8 +990,9 @@
            PERFORM     NYUYOJI-COMENTFLG-SET-SEC
       *
            IF      IDZ                  =   1
-               IF   RECE02-TEISYUTUSAKI     =     1
-               OR  (RECE02-TEISYUTUSAKI     =     2   AND
+               IF ( RECE02-TEISYUTUSAKI     =     1   AND
+                    SYS-2005-SYAOCRKBN      =     ZERO    )   
+               OR ( RECE02-TEISYUTUSAKI     =     2   AND
                     SYS-2005-KKHOCRKBN      =     "1"     )   
       *
       *            ∞ÂŒ≈ ›∏±°¶∏¯»Ò§Œ•’•È•∞

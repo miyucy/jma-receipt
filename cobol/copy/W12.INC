@@ -47,6 +47,10 @@
                 04  W12-SYARECEKBNLST      PIC X(20)   OCCURS  2 TIMES.
               03  W12-RECEDENOUT.
                 04  W12-VALUE   PIC X(30).
+              03  W12-SYAOCRKBN-COMBO.
+                04  W12-SYAOCRKBN       PIC X(20).
+                04  W12-SYAOCRKBN-COUNT PIC S9(9)   BINARY.
+                04  W12-SYAOCRKBNLST    PIC X(20)   OCCURS  2 TIMES.
               03  W12-KKHOCRKBN-COMBO.
                 04  W12-KKHOCRKBN       PIC X(20).
                 04  W12-KKHOCRKBN-COUNT PIC S9(9)   BINARY.
