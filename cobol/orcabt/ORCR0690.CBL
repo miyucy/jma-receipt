@@ -1535,17 +1535,21 @@
            IF      FLG-SRYCD1          =   1
                PERFORM 2005-SRYKBNELSE-HENSYU-SEC
            ELSE
-      *
-      *        包括対象でないときまとめない         
-               MOVE    TBL-ZAIW-SRYCD (3 1) TO      TNS-SRYCD
-               MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-               MOVE    RECE64-SRYYM         TO      ORC-DBYMD(1:6)
-               MOVE    "01"                 TO      ORC-DBYMD(7:2)
-               PERFORM 900-TENSU-INV-SEC
-               IF      TNS-HOUKNSKBN        =   ZERO
+      *        剤の明細数が２以上のときはまとめない
+               IF      RECE64-MEISAISU     >   1
                    PERFORM 2005-SRYKBNELSE-HENSYU-SEC
                ELSE    
-                   PERFORM 2006-SRYKBN60-TAIHI-SEC
+      *        包括対象でないときまとめない         
+                   MOVE    TBL-ZAIW-SRYCD (3 1) TO      TNS-SRYCD
+                   MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
+                   MOVE    RECE64-SRYYM         TO      ORC-DBYMD(1:6)
+                   MOVE    "01"                 TO      ORC-DBYMD(7:2)
+                   PERFORM 900-TENSU-INV-SEC
+                   IF      TNS-HOUKNSKBN        =   ZERO
+                       PERFORM 2005-SRYKBNELSE-HENSYU-SEC
+                   ELSE    
+                       PERFORM 2006-SRYKBN60-TAIHI-SEC
+                   END-IF
                END-IF
            END-IF        
            .
