@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03/11/19  患者入院履歴よりデータを取得
       *                                     するよう修正
+      *  01.00.02    NACL-太田    03/12/03  通算日数チェックに失敗時
+      *                                     処理がループする不具合を修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -367,6 +369,7 @@
            END-IF
       *
            PERFORM UNTIL ( FLG-PTNYUINRRK  =   1 )
+                   OR    ( FLG-END     NOT =   ZERO )
       *
                MOVE    SPACE       TO  HCMG003
       *
@@ -376,9 +379,13 @@
                MOVE    ZERO        TO  CNT-LINE
                PERFORM UNTIL ( FLG-PTNYUINRRK  =   1 )
                        OR    ( CNT-LINE       >=   CONST-LINE-MAX )
+                       OR    ( FLG-END     NOT =   ZERO )
       *
       *            明細編集処理
                    PERFORM 210-BODY-EDIT-SEC
+                   IF    ( FLG-END     NOT =   ZERO )
+                       GO  TO  200-MAIN-EXT
+                   END-IF
       *
                END-PERFORM
       *
