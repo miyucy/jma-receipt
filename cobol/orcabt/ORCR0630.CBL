@@ -1886,18 +1886,19 @@
       *
            IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
-               IF        ACCT-SRYKBN   =    "95"  OR  "96"  OR  "97"
+               IF        ACCT-SRYKBN   =    "90" OR "92" OR "95"  
+                                                 OR "96" OR "97"
                    CONTINUE
                ELSE
                  IF        ACCT-SRYCDTOTAL    =    630010002
-                                              OR   190080470
-                                              OR   190799670
-                                              OR   190080570
-                                              OR   190799770
-                                              OR   190111690
-                                              OR   190809090
-                                              OR   190111790
-                                              OR   190809190
+      *                                       OR   190080470
+      *                                       OR   190799670
+      *                                       OR   190080570
+      *                                       OR   190799770
+      *                                       OR   190111690
+      *                                       OR   190809090
+      *                                       OR   190111790
+      *                                       OR   190809190
                    COMPUTE   TBL-TOTALTEN-ACCT(1) =  
                              TBL-TOTALTEN-ACCT(1) -
                              (ACCT-ZAITEN  *  
@@ -1940,18 +1941,19 @@
                  END-IF
       *
                  IF   KH-IDX             NOT =    ZERO
-                   IF        ACCT-SRYKBN   =   "95"  OR  "96"  OR  "97"
+                   IF        ACCT-SRYKBN   =    "90" OR "92" OR "95"  
+                                                     OR "96" OR "97"
                        CONTINUE
                    ELSE
                      IF        ACCT-SRYCDTOTAL    =    630010002
-                                                  OR   190080470
-                                                  OR   190799670
-                                                  OR   190080570
-                                                  OR   190799770
-                                                  OR   190111690
-                                                  OR   190809090
-                                                  OR   190111790
-                                                  OR   190809190
+      *                                           OR   190080470
+      *                                           OR   190799670
+      *                                           OR   190080570
+      *                                           OR   190799770
+      *                                           OR   190111690
+      *                                           OR   190809090
+      *                                           OR   190111790
+      *                                           OR   190809190
                        COMPUTE  TBL-TOTALTEN-ACCT(KH-IDX) =
                                 TBL-TOTALTEN-ACCT(KH-IDX) -
                                 (ACCT-ZAITEN * 
@@ -1967,6 +1969,7 @@
       *
                END-IF  
            END-PERFORM
+      *
            .
        RECE62-TENSOU9-EXT.
            EXIT.
