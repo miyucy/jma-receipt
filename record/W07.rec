@@ -68,6 +68,13 @@ W07	{
 				SRYKAMEI	{
 					value	varchar(20);
 				};
+				NYUSYOSIN_COMB	{
+					NYUSYOSIN	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
 				KIKAN	{
 					value	number(2);
 				};
