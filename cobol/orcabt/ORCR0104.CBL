@@ -58,6 +58,7 @@
       *  01.00.21    NACL-藤原    04/03/05  主病名のみのときシス管の設定
       *                                     により区切り線を出力する
       *  01.00.22    NACL-門脇    04/03/17  愛媛県地方公費：福祉レセ対応
+      *  01.00.23    NACL-藤原    04/03/26  手術歴の記載
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -217,12 +218,14 @@
            03  FLG-RECECOM         PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
+           03  FLG-OPECOM          PIC 9(01).
       *
            03  FLG-KOHSKY          PIC 9(01).
            03  FLG-RECE02X         PIC 9(01).
            03  FLG-TENKI           PIC 9(01).     
            03  FLG-SRYKBNPRT       PIC 9(01).
            03  FLG-SET             PIC 9(01).
+           03  FLG-OPECOM-CHK      PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -316,6 +319,7 @@
       *
            03  WRK-RECEERR         PIC X(200).
            03  WRK-PATH            PIC X(64).
+           03  WRK-OPECOM-PATH     PIC X(64).
       *
            03  WRK-RECENUM          PIC 9(06). 
       *
@@ -466,6 +470,10 @@
            03  WRK-COL                         PIC 9(03). 
            03  WRK-RECECOM         PIC 9(01).
            03  WRK-RECEHEN         PIC 9(01).
+      *
+      *    手術歴編集
+           03  WRK-OPECOM          PIC 9(01).
+           03  WRK-OPECOM-HEN      PIC X(50).
       *
        01  WRK-BYOMEI-AREA.     
       *    傷病名最大文字数（傷病名欄）
@@ -732,6 +740,10 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    手術歴レセプトコメントマスター
+       01  OPECOM-REC.
+           COPY    "CPOPECOM.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1387,6 +1399,9 @@
       *
       *    帳票編集<傷病名>処理
            PERFORM 320-HC101-BYOMEI-HEN-SEC
+      *
+      *    帳票編集<手術歴>処理
+           PERFORM 380-HC101-OPECOM-HEN-SEC 
       *
       *    帳票編集<剤>処理
            PERFORM 340-HC101-ZAI-HEN-SEC
@@ -2668,24 +2683,10 @@
                ELSE
                    IF      WRK-LINETEK >=   WRK-TEKIYOU-LINE
                        PERFORM 34120-PAGE-SEC
-                   END-IF    
-                   ADD     1           TO  WRK-LINETEK
-                   IF      CNT-PAGE        =   1
-                       MOVE    WRK-KUGIRI1 TO
-                                           HC06-TEKIYO (WRK-LINETEK)
-                   ELSE
-                       EVALUATE    SYS-2005-NEXTPRTKBN-G
-                           WHEN    "0"
-                               MOVE    WRK-KUGIRI1     TO
-                                           HC06-TEKIYO (WRK-LINETEK)
-                           WHEN    "1"    
-                               MOVE    WRK-KUGIRI1     TO
-                                           HC061-TEKIYO (WRK-LINETEK)
-                           WHEN    "2"
-                               MOVE    WRK-KUGIRI1     TO
-                                           HC062-TEKIYO (WRK-LINETEK)
-                       END-EVALUATE
-                   END-IF    
+                   END-IF 
+                   MOVE    1           TO  FLG-KUGIRI
+                   PERFORM 34110-KUGIRI-LINE-SEC
+                   MOVE    ZERO        TO  FLG-KUGIRI   
                END-IF
            END-IF
            .
@@ -2864,23 +2865,9 @@
                            IF      WRK-LINETEK >=   WRK-TEKIYOU-LINE
                                PERFORM 34120-PAGE-SEC
                            END-IF    
-                           ADD     1           TO  WRK-LINETEK
-                           IF      CNT-PAGE        =   1
-                               MOVE    WRK-KUGIRI1 TO
-                                           HC06-TEKIYO (WRK-LINETEK)
-                           ELSE
-                               EVALUATE    SYS-2005-NEXTPRTKBN-G
-                                   WHEN    "0"
-                                       MOVE    WRK-KUGIRI1     TO
-                                           HC06-TEKIYO (WRK-LINETEK)
-                                   WHEN    "1"    
-                                       MOVE    WRK-KUGIRI1     TO
-                                           HC061-TEKIYO (WRK-LINETEK)
-                                   WHEN    "2"
-                                       MOVE    WRK-KUGIRI1     TO
-                                           HC062-TEKIYO (WRK-LINETEK)
-                               END-EVALUATE
-                           END-IF    
+                           MOVE    1           TO  FLG-KUGIRI
+                           PERFORM 34110-KUGIRI-LINE-SEC
+                           MOVE    ZERO        TO  FLG-KUGIRI   
                        END-IF
                    END-IF
                END-IF
@@ -3610,26 +3597,13 @@
                IF  WRK-LINETEK          >=   WRK-TEKIYOU-LINE
                    PERFORM 34120-PAGE-SEC
                END-IF    
-               ADD     1               TO  WRK-LINETEK
-               IF      CNT-PAGE        =   1   
-                   MOVE    WRK-KUGIRI1 TO  HC06-TEKIYO  (WRK-LINETEK)
-               ELSE
-                   EVALUATE    SYS-2005-NEXTPRTKBN-G
-                       WHEN    "0"   
-                           MOVE    WRK-KUGIRI1
-                                       TO  HC06-TEKIYO (WRK-LINETEK)
-                       WHEN    "1"   
-                           MOVE    WRK-KUGIRI1
-                                       TO  HC061-TEKIYO(WRK-LINETEK)
-                       WHEN    "2"   
-                           MOVE    WRK-KUGIRI1
-                                       TO  HC062-TEKIYO(WRK-LINETEK)
-                   END-EVALUATE
-               END-IF    
+               MOVE    1           TO  FLG-KUGIRI
+               PERFORM 34110-KUGIRI-LINE-SEC
+               MOVE    ZERO        TO  FLG-KUGIRI   
            END-IF
       *
-           IF      RECE02-TEISYOTOKU   =   SPACE
-           OR      RECE02-ZAITAKU      =   SPACE
+           IF    ( RECE02-TEISYOTOKU   =   SPACE )
+           OR    ( RECE02-ZAITAKU      =   SPACE )
                CONTINUE
            ELSE
                IF  WRK-LINETEK           >   WRK-TEKIYOU-LINE
@@ -4079,23 +4053,9 @@
                            IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
                                PERFORM 34120-PAGE-SEC
                            ELSE
-                               ADD     1           TO  WRK-LINETEK
-                               IF      CNT-PAGE        =   1   
-                                   MOVE    WRK-KUGIRI1     TO 
-                                               HC06-TEKIYO (WRK-LINETEK)
-                               ELSE                 
-                                   EVALUATE    SYS-2005-NEXTPRTKBN-G
-                                     WHEN    "0"
-                                       MOVE    WRK-KUGIRI1     TO 
-                                               HC06-TEKIYO (WRK-LINETEK)
-                                     WHEN    "1"
-                                       MOVE    WRK-KUGIRI1     TO 
-                                               HC061-TEKIYO(WRK-LINETEK)
-                                     WHEN    "2"
-                                       MOVE    WRK-KUGIRI1     TO 
-                                               HC062-TEKIYO(WRK-LINETEK)
-                                   END-EVALUATE
-                               END-IF                
+                               MOVE    1           TO  FLG-KUGIRI
+                               PERFORM 34110-KUGIRI-LINE-SEC
+                               MOVE    ZERO        TO  FLG-KUGIRI   
                            END-IF
                        END-IF
                      END-IF
@@ -4147,23 +4107,9 @@
                        IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
                            PERFORM 34120-PAGE-SEC
                        ELSE
-                           ADD     1               TO  WRK-LINETEK
-                           IF      CNT-PAGE        =   1   
-                               MOVE    WRK-KUGIRI1     TO 
-                                               HC06-TEKIYO (WRK-LINETEK)
-                           ELSE                    
-                               EVALUATE    SYS-2005-NEXTPRTKBN-G
-                                   WHEN    "0"   
-                                       MOVE    WRK-KUGIRI1     TO 
-                                               HC06-TEKIYO (WRK-LINETEK)
-                                   WHEN    "1"   
-                                       MOVE    WRK-KUGIRI1     TO 
-                                               HC061-TEKIYO(WRK-LINETEK)
-                                   WHEN    "2"   
-                                       MOVE    WRK-KUGIRI1     TO 
-                                               HC062-TEKIYO(WRK-LINETEK)
-                               END-EVALUATE
-                           END-IF                    
+                           MOVE    1               TO  FLG-KUGIRI
+                           PERFORM 34110-KUGIRI-LINE-SEC
+                           MOVE    ZERO            TO  FLG-KUGIRI
                        END-IF
                    END-IF
                END-IF
@@ -4195,6 +4141,176 @@
       *
            .
        370-HC101-HKN-RIREKI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票編集<手術歴>処理
+      *****************************************************************
+       380-HC101-OPECOM-HEN-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  WRK-OPECOM
+                                           WRK-OPECOM-HEN
+      *
+      *    手術歴編集
+           INITIALIZE                      OPECOM-REC
+           MOVE    RECE02-HOSPID       TO  OPECOM-HOSPID
+           MOVE    RECE02-PTID         TO  OPECOM-PTID
+           MOVE    RECE02-SRYYM        TO  OPECOM-TEKSTYM
+                                           OPECOM-TEKEDYM
+           MOVE    RECE02-NYUGAIKBN    TO  OPECOM-NYUGAIKBN
+           MOVE    "OPECOM-KEY4"       TO  WRK-OPECOM-PATH
+           PERFORM 900-OPECOM-READ-SEC
+      *
+           PERFORM             UNTIL   FLG-OPECOM   =   1
+               MOVE    ZERO                TO  FLG-OPECOM-CHK
+               IF      OPECOM-HKNNUM   NOT =   SPACE
+                   IF    ( OPECOM-HKNNUM       =   RECE02-HKNNUM )
+                   AND   ( OPECOM-HKNID        =   RECE02-HKNID  )
+                       MOVE    1                   TO  FLG-OPECOM-CHK
+                   ELSE
+                       IF    ( OPECOM-HKNNUM   =   RECE02-RJNHKNNUM )
+                       AND   ( OPECOM-HKNID    =   RECE02-RJNHKNID  )
+                           MOVE    1               TO  FLG-OPECOM-CHK
+                       ELSE
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >       4
+                                   OR      RECE02-KOHNUM (IDY) =   SPACE
+                               IF    ( OPECOM-HKNNUM   
+                                               =   RECE02-KOHNUM (IDY) )
+                               AND   ( OPECOM-HKNID   
+                                               =   RECE02-KOHID  (IDY) )
+                                   MOVE    1       TO  FLG-OPECOM-CHK
+                                   MOVE    4       TO  IDY
+                               END-IF
+                           END-PERFORM
+                       END-IF
+                   END-IF    
+               ELSE
+                   MOVE    1                   TO  FLG-OPECOM-CHK
+               END-IF
+               IF      FLG-OPECOM-CHK          =   1
+                   MOVE    OPECOM-SRYYMD       TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD3    TO  WRK-OPECOM-HEN
+                   PERFORM 3801-OPECOM-HENSYU-SEC                 
+                   MOVE    OPECOM-OPENAME      TO  WRK-OPECOM-HEN
+                   PERFORM 3801-OPECOM-HENSYU-SEC
+                   IF      OPECOM-OPECOMMENT   NOT =   SPACE                
+                       MOVE    OPECOM-OPECOMMENT   TO  WRK-OPECOM-HEN
+                       PERFORM 3801-OPECOM-HENSYU-SEC
+                   END-IF                 
+               END-IF               
+      *                 
+               MOVE    WRK-OPECOM-PATH TO  ORC-DBPATH
+               PERFORM 900-OPECOM-READ-N-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-OPECOM-PATH     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+      *    コメント編集
+           INITIALIZE                      OPECOM-REC
+           MOVE    RECE02-HOSPID       TO  OPECOM-HOSPID
+           MOVE    RECE02-PTID         TO  OPECOM-PTID
+           MOVE    RECE02-SRYYM        TO  OPECOM-TEKSTYM
+                                           OPECOM-TEKEDYM
+           MOVE    RECE02-NYUGAIKBN    TO  OPECOM-NYUGAIKBN
+           MOVE    "OPECOM-KEY5"       TO  WRK-OPECOM-PATH
+           PERFORM 900-OPECOM-READ-SEC
+      *
+           PERFORM             UNTIL   FLG-OPECOM   =   1
+               MOVE    ZERO                TO  FLG-OPECOM-CHK
+               IF      OPECOM-HKNNUM   NOT =   SPACE
+                   IF    ( OPECOM-HKNNUM       =   RECE02-HKNNUM )
+                   AND   ( OPECOM-HKNID        =   RECE02-HKNID  )
+                       MOVE    1                   TO  FLG-OPECOM-CHK
+                   ELSE
+                       IF    ( OPECOM-HKNNUM   =   RECE02-RJNHKNNUM )
+                       AND   ( OPECOM-HKNID    =   RECE02-RJNHKNID  )
+                           MOVE    1               TO  FLG-OPECOM-CHK
+                       ELSE
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >       4
+                                   OR      RECE02-KOHNUM (IDY) =   SPACE
+                               IF    ( OPECOM-HKNNUM   
+                                               =   RECE02-KOHNUM (IDY) )
+                               AND   ( OPECOM-HKNID   
+                                               =   RECE02-KOHID  (IDY) )
+                                   MOVE    1       TO  FLG-OPECOM-CHK
+                                   MOVE    4       TO  IDY
+                               END-IF
+                           END-PERFORM
+                       END-IF
+                   END-IF    
+               ELSE
+                   MOVE    1                   TO  FLG-OPECOM-CHK
+               END-IF
+               IF      FLG-OPECOM-CHK          =   1
+                   MOVE    OPECOM-OPENAME      TO  WRK-OPECOM-HEN
+                   PERFORM 3801-OPECOM-HENSYU-SEC
+               END-IF               
+      *                 
+               MOVE    WRK-OPECOM-PATH TO  ORC-DBPATH
+               PERFORM 900-OPECOM-READ-N-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-OPECOM-PATH     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       380-HC101-OPECOM-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    コメントの改行コード削除処理
+      *****************************************************************
+       3801-OPECOM-HENSYU-SEC    SECTION.
+      *
+      *    摘要欄に１行あける
+           IF      WRK-OPECOM          =   ZERO
+               MOVE    1               TO  WRK-OPECOM
+               IF      WRK-LINETEK         >   ZERO
+                   IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   ELSE
+                       MOVE    1               TO  FLG-KUGIRI
+                       PERFORM 34110-KUGIRI-LINE-SEC
+                       MOVE    ZERO            TO  FLG-KUGIRI
+                   END-IF
+               END-IF
+           END-IF
+      *                 
+           IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+               PERFORM 34120-PAGE-SEC
+           END-IF
+           ADD     1                   TO  WRK-LINETEK
+           IF      CNT-PAGE            =   1   
+               MOVE    WRK-OPECOM-HEN  TO  HC06-TEKIYO (WRK-LINETEK)
+           ELSE                
+               EVALUATE    SYS-2005-NEXTPRTKBN-G
+                   WHEN    "0"
+                       MOVE    WRK-OPECOM-HEN
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                   WHEN    "1"
+                       MOVE    WRK-OPECOM-HEN
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                   WHEN    "2"
+                       MOVE    WRK-OPECOM-HEN
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+               END-EVALUATE
+           END-IF                
+      *
+           MOVE    SPACE               TO  WRK-OPECOM-HEN
+           .
+       3801-OPECOM-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5262,6 +5378,52 @@
       *
            .
        900-PTINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    手術歴マスター読込
+      *****************************************************************
+       900-OPECOM-READ-SEC           SECTION.
+      *
+           MOVE    OPECOM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-OPECOM-PATH          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-OPECOM-PATH          TO  ORC-DBPATH
+               PERFORM 900-OPECOM-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-OPECOM
+               INITIALIZE                      OPECOM-REC
+           END-IF
+      *
+           .
+       900-OPECOM-READ-EXT.
+           EXIT.
+      *
+     *****************************************************************
+      *    手術歴マスター読込
+      *****************************************************************
+       900-OPECOM-READ-N-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  OPECOM-REC
+               MOVE    ZERO                TO  FLG-OPECOM
+           ELSE
+               INITIALIZE                      OPECOM-REC
+               MOVE    1                   TO  FLG-OPECOM
+           END-IF
+      *
+           .
+       900-OPECOM-READ-N-EXT.
            EXIT.
       *      
       *****************************************************************
