@@ -28,7 +28,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Mon, 25 Dec 2000 10:33:33 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -1476,7 +1476,7 @@
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
       <text></text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -1798,7 +1798,7 @@
       <text_visible>True</text_visible>
       <text_max_length>2</text_max_length>
       <text></text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -1816,7 +1816,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 05:54:42 GMT</last_modification_time>
       </signal>
-      <label>小字  +</label>
+      <label>小字 +</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 

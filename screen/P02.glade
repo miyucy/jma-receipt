@@ -5361,22 +5361,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label1839</name>
-	  <x>28</x>
-	  <y>516</y>
-	  <width>44</width>
-	  <height>24</height>
-	  <label>ÄÌ    ¾ï</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label1841</name>
 	  <x>28</x>
 	  <y>540</y>
@@ -5511,6 +5495,22 @@
 	  <width>48</width>
 	  <height>24</height>
 	  <label>¸øÈñ£´</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label1839</name>
+	  <x>28</x>
+	  <y>516</y>
+	  <width>44</width>
+	  <height>24</height>
+	  <label>ÄÌ  ¾ï</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>

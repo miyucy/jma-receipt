@@ -29,7 +29,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 04 Jan 2001 03:26:09 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -176,7 +176,6 @@
       <y>720</y>
       <width>80</width>
       <height>24</height>
-      <sensitive>False</sensitive>
       <accelerator>
 	<modifiers>0</modifiers>
 	<key>GDK_F4</key>
@@ -267,7 +266,6 @@
       <y>720</y>
       <width>80</width>
       <height>24</height>
-      <sensitive>False</sensitive>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
