@@ -805,6 +805,7 @@
                        MOVE    ZERO            TO  FLG-SIJISEN
                    END-IF
       *            入院更新処理
+                   MOVE    1               TO  FLG-KAKU-FLG
                    PERFORM 4502-NYUKOUSIN-SYORI-SEC
                WHEN    2
       *        発行のみ
