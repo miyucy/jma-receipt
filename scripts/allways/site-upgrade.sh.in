@@ -43,7 +43,7 @@ echo "done"
 
 #copy etc files
 echo -n "Copying etc files..."
-for f in `ls ${SITEDIR}/etc`; do 
-  cp "${SITEDIR}/etc/${f}" "${SYSCONFDIR}/"
+for f in `ls ${SITESRCDIR}/etc`; do 
+  cp "${SITESRCDIR}/etc/${f}" "${SYSCONFDIR}/"
 done
 echo "done"
