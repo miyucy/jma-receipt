@@ -903,10 +903,10 @@
                                    ADD     RECE10-FTNMONEY-FTN  (IDX1)
                                            TO  SUM-ROU-KOH-ITBFTN
                                                            (IDY3 IDY1)
+                               END-IF
                                    ADD     RECE10-FTNMONEY      (IDX1)
                                            TO  SUM-ROU-KOH-FTNMONEY
                                                            (IDY3 IDY1)
-                               END-IF
                        END-EVALUATE
       *                           
                        IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
@@ -955,10 +955,10 @@
                                    ADD     RECE10-ETC-FTNMONEY-FTN(IDW)
                                            TO  SUM-ROU-KOH-ITBFTN
                                                            (IDY3 IDY1)
+                               END-IF
                                    ADD     RECE10-ETC-FTNMONEY    (IDW)
                                            TO  SUM-ROU-KOH-FTNMONEY
                                                            (IDY3 IDY1)
-                               END-IF
                        END-EVALUATE
       *                           
                        IF      RECE10-ETC-SHOKUJINISSU (IDW)
