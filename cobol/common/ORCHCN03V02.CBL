@@ -28,8 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-小豆沢  04/01/29  保険適用外の記載と消費税対応
-      *  01.00.02    NACL-太田    04/04/13  今回請求額消費税（再掲）を
-      *                                     パラメータ渡しに変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -789,7 +787,7 @@
       *    発行区分
            EVALUATE    ORCHCN03-HAKKOFLG (IDX-M)
       *        WHEN    1
-      *            MOVE    "（再）"        TO  HC03-MIDASHI
+      *            MOVE    "（再）"        TO  HCN03-MIDASHI
                WHEN    2
                    MOVE    "（訂正）"      TO  HCN03-MIDASHI
            END-EVALUATE

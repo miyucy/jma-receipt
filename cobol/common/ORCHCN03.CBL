@@ -763,7 +763,7 @@
       *    発行区分
            EVALUATE    ORCHCN03-HAKKOFLG  (IDX-M)
       *        WHEN    1
-      *            MOVE    "（再）"        TO  HC03-MIDASHI
+      *            MOVE    "（再）"        TO  HCN03-MIDASHI
                WHEN    2
                    MOVE    "（訂正）"      TO  HCN03-MIDASHI
            END-EVALUATE
