@@ -1097,6 +1097,29 @@
                                          TBL-ZAIW-TANINAME  (IDY IDZ) 
                        END-IF                     
       *
+                       IF      RECE05-SRYCD (IDX) (1:1)  =  "7"
+                          IF    ( RECE04-SRYKBN     =   "70" )
+                          AND   ( RECE05-DATAKBN (IDX)
+                                                    =   "3"  )
+                            IF  TBL-ZAIW-TANINAME  (IDY IDZ)  
+                                                    =   SPACE
+                                  MOVE    "¡ö"  TO 
+                                         TBL-ZAIW-TANINAME  (IDY IDZ) 
+                            END-IF
+                          ELSE
+                            IF      RECE05-SRYCD (IDX)    =
+                                     WRK-CONS-FILM-YOUJI-KASAN
+                               CONTINUE
+                            ELSE
+                               IF  TBL-ZAIW-TANINAME  (IDY IDZ)  
+                                                    =   SPACE
+                                  MOVE    "¡ö"  TO 
+                                         TBL-ZAIW-TANINAME  (IDY IDZ) 
+                               END-IF
+                            END-IF
+                          END-IF
+                       END-IF
+      *
       *---- (01.00.05) LINE ADD START --------------------------------
                        IF      RECE05-SRYCD(IDX) =   CONS-COMMENT1   OR
                                                      CONS-COMMENT2   OR
@@ -2314,6 +2337,12 @@
                COMPUTE WRK-WCLM  =
                        TBL-ZAIW-YUKOKETA (WRK-WIDX1 WRK-WIDX2) *  2
            ELSE
+      *
+               IF   TBL-ZAIW-TANINAME (WRK-WIDX1 WRK-WIDX2)(1:2)
+                                            =  "¡ö"
+                   MOVE    SPACE   TO  
+                              TBL-ZAIW-TANINAME (WRK-WIDX1 WRK-WIDX2)
+               END-IF
       *        Ì¾¾Î¤ÎÄ¹¤µ
                COMPUTE   WRK-NAMEKETA  =
                          TBL-ZAIW-YUKOKETA (WRK-WIDX1 WRK-WIDX2)

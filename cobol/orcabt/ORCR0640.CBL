@@ -413,6 +413,9 @@
            03  CONS-TOKKI10        PIC X(14) VALUE "00000099990110".
            03  CONS-TOKKI11        PIC X(14) VALUE "00000099990111".
            03  CONS-TOKKI12        PIC X(14) VALUE "00000099990112".
+      *    フィルム料（乳幼児）加算
+           03  CONS-FILM-YOUJI-KASAN  
+                                   PIC X(09) VALUE "799990070".
       *
       *****酸素 
       *****COPY    "CMSANSOTBL.INC".
@@ -3065,8 +3068,10 @@
       *
       *        特定器材（画像診断のフィルム以外）のとき単価を編集
                IF      SRY-SRYCD (IDX2) (1:1)  =   "7"
-                   IF    ( SRY-SRYKBN               =   "70" )
-                   AND   ( TNS-DATAKBN              =   "3"  )
+                   IF   (( SRY-SRYKBN               =   "70" )  AND
+                         ( TNS-DATAKBN              =   "3"  ))
+                   OR   (  SRY-SRYCD (IDX2)         =
+                                    CONS-FILM-YOUJI-KASAN     )
                        CONTINUE
                    ELSE
       *********        SET     TBL-SANSO           TO  1
