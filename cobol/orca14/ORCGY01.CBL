@@ -1820,7 +1820,7 @@
       *                ʬ
                        ADD     1               TO  IDX-T2
                        IF      IDX-T2          >   2
-                           MOVE    "1008"          TO  SPA-ERRCD
+                           MOVE    "0008"          TO  SPA-ERRCD
                        ELSE
                            MOVE    SPA-GMN-YYKTIME(IDX:1)
                                                TO  WRK-TSSX(IDX-T2:1)
