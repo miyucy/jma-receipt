@@ -13,5 +13,6 @@
             02  HCM38-SRYKA PIC X(8)    OCCURS  30 TIMES.
             02  HCM38-HOME-TEL1 PIC X(15)       OCCURS  30 TIMES.
             02  HCM38-BIKO  PIC X(26)   OCCURS  30 TIMES.
+            02  HCM38-MARK  PIC X(1)    OCCURS  30 TIMES.
             02  HCM38-TITLE2    PIC X(10).
             02  HCM38-GMISYU    PIC X(11).
