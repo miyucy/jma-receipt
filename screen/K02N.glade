@@ -2316,7 +2316,7 @@
       <name>SURYO01</name>
       <x>530</x>
       <y>92</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2331,7 +2331,7 @@
       <name>SURYO02</name>
       <x>530</x>
       <y>116</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2346,7 +2346,7 @@
       <name>SURYO03</name>
       <x>530</x>
       <y>140</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2361,7 +2361,7 @@
       <name>SURYO04</name>
       <x>530</x>
       <y>164</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2376,7 +2376,7 @@
       <name>SURYO05</name>
       <x>530</x>
       <y>188</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2391,7 +2391,7 @@
       <name>SURYO06</name>
       <x>530</x>
       <y>212</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2406,7 +2406,7 @@
       <name>SURYO07</name>
       <x>530</x>
       <y>236</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2421,7 +2421,7 @@
       <name>SURYO08</name>
       <x>530</x>
       <y>260</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2436,7 +2436,7 @@
       <name>SURYO09</name>
       <x>530</x>
       <y>284</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2451,7 +2451,7 @@
       <name>SURYO10</name>
       <x>530</x>
       <y>308</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2466,7 +2466,7 @@
       <name>SURYO11</name>
       <x>530</x>
       <y>332</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2481,7 +2481,7 @@
       <name>SURYO12</name>
       <x>530</x>
       <y>356</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2496,7 +2496,7 @@
       <name>SURYO13</name>
       <x>530</x>
       <y>380</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2511,7 +2511,7 @@
       <name>SURYO14</name>
       <x>530</x>
       <y>404</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2526,7 +2526,7 @@
       <name>SURYO15</name>
       <x>530</x>
       <y>428</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2541,7 +2541,7 @@
       <name>SURYO16</name>
       <x>530</x>
       <y>452</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2556,7 +2556,7 @@
       <name>SURYO17</name>
       <x>530</x>
       <y>476</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2571,7 +2571,7 @@
       <name>SURYO18</name>
       <x>530</x>
       <y>500</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2586,7 +2586,7 @@
       <name>SURYO19</name>
       <x>530</x>
       <y>524</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2601,7 +2601,7 @@
       <name>SURYO20</name>
       <x>530</x>
       <y>548</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2616,7 +2616,7 @@
       <name>SURYO21</name>
       <x>530</x>
       <y>572</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2631,7 +2631,7 @@
       <name>SURYO22</name>
       <x>530</x>
       <y>596</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2646,7 +2646,7 @@
       <name>SURYO23</name>
       <x>530</x>
       <y>620</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2661,7 +2661,7 @@
       <name>SURYO24</name>
       <x>530</x>
       <y>644</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -3438,11 +3438,11 @@
     <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
-      <x>824</x>
+      <x>810</x>
       <y>116</y>
-      <width>188</width>
+      <width>210</width>
       <height>492</height>
-      <hscrollbar_policy>GTK_POLICY_ALWAYS</hscrollbar_policy>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
       <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -3471,7 +3471,7 @@
 	  <last_modification_time>Fri, 31 Aug 2001 02:23:14 GMT</last_modification_time>
 	</signal>
 	<columns>4</columns>
-	<column_widths>23,86,20,34</column_widths>
+	<column_widths>23,88,13,34</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>

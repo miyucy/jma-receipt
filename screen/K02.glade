@@ -2053,7 +2053,7 @@
       <name>SURYO01</name>
       <x>530</x>
       <y>108</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2068,7 +2068,7 @@
       <name>SURYO02</name>
       <x>530</x>
       <y>132</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2083,7 +2083,7 @@
       <name>SURYO03</name>
       <x>530</x>
       <y>156</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2098,7 +2098,7 @@
       <name>SURYO04</name>
       <x>530</x>
       <y>180</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2113,7 +2113,7 @@
       <name>SURYO05</name>
       <x>530</x>
       <y>204</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2128,7 +2128,7 @@
       <name>SURYO06</name>
       <x>530</x>
       <y>228</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2143,7 +2143,7 @@
       <name>SURYO07</name>
       <x>530</x>
       <y>252</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2158,7 +2158,7 @@
       <name>SURYO08</name>
       <x>530</x>
       <y>276</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2173,7 +2173,7 @@
       <name>SURYO09</name>
       <x>530</x>
       <y>300</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2188,7 +2188,7 @@
       <name>SURYO10</name>
       <x>530</x>
       <y>324</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2203,7 +2203,7 @@
       <name>SURYO11</name>
       <x>530</x>
       <y>348</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2218,7 +2218,7 @@
       <name>SURYO12</name>
       <x>530</x>
       <y>372</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2233,7 +2233,7 @@
       <name>SURYO13</name>
       <x>530</x>
       <y>396</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2248,7 +2248,7 @@
       <name>SURYO14</name>
       <x>530</x>
       <y>420</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2263,7 +2263,7 @@
       <name>SURYO15</name>
       <x>530</x>
       <y>444</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2278,7 +2278,7 @@
       <name>SURYO16</name>
       <x>530</x>
       <y>468</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2293,7 +2293,7 @@
       <name>SURYO17</name>
       <x>530</x>
       <y>492</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2308,7 +2308,7 @@
       <name>SURYO18</name>
       <x>530</x>
       <y>516</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2323,7 +2323,7 @@
       <name>SURYO19</name>
       <x>530</x>
       <y>540</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2338,7 +2338,7 @@
       <name>SURYO20</name>
       <x>530</x>
       <y>564</y>
-      <width>284</width>
+      <width>278</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2532,22 +2532,6 @@
       <width>144</width>
       <height>20</height>
       <label>入力コード</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label154</name>
-      <x>190</x>
-      <y>88</y>
-      <width>340</width>
-      <height>20</height>
-      <label>名        称</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -3214,11 +3198,11 @@
     <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
-      <x>824</x>
+      <x>809</x>
       <y>104</y>
-      <width>190</width>
+      <width>210</width>
       <height>484</height>
-      <hscrollbar_policy>GTK_POLICY_ALWAYS</hscrollbar_policy>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
       <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -3247,7 +3231,7 @@
 	  <last_modification_time>Fri, 31 Aug 2001 02:23:14 GMT</last_modification_time>
 	</signal>
 	<columns>4</columns>
-	<column_widths>23,90,20,34</column_widths>
+	<column_widths>23,88,13,34</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -3304,6 +3288,22 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label154</name>
+      <x>190</x>
+      <y>88</y>
+      <width>340</width>
+      <height>20</height>
+      <label>名        称</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
