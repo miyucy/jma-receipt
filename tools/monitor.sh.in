@@ -19,6 +19,7 @@ if test -z "$JMARECEIPT_ENV" ; then
     JMARECEIPT_ENV="@jma-receipt-env@"
 fi
 if ! test -f "$JMARECEIPT_ENV"; then
+    echo "環境設定ファイル $JMARECEIPT_ENV が読めません"
     exit 0
 fi
 
@@ -47,6 +48,10 @@ ALWAYS_LD="orca00"
 # で起動される。
 START_PORT=9100
 
+# soチェック
+# 起動する時にコンパイル済かチェックする *soファイル
+COB_SO=ORCGM00.so
+
 COB_LIBRARY_PATH=/usr/lib:"$ORCA_DIR"/cobol/common:"$ORCA_DIR"/cobol/orcabt:"$ORCA_DIR"/cobol/claim
 
 # site-libの取り込み
@@ -69,11 +74,42 @@ LDDEF="$ORCA_DIR"/lddef
 SCREEN="$ORCA_DIR"/screen
 RECORD="$ORCA_DIR"/record
 
-####################################################################
-
 if test "x"$1 != "x"; then
     LD=$@
 fi
+
+####################################################################
+if ! test -d $LDDEF ; then
+    echo "${LDDEF} ディレクトリがありません"
+    exit
+fi
+if ! test -f $DIRECTORY; then
+    echo "directory ファイルがありません"
+    exit 
+fi
+if ! test -d $SCREEN ; then
+    echo "${SCREEN} ディレクトリがありません"
+    exit
+fi
+if ! test -f `echo ${SCREEN}/*glade|sed -e "s/ .*//g"` ; then
+    echo "gladeファイルがありません"
+    exit
+fi
+if ! test -d $RECORD ; then
+    echo "${RECORD} ディレクトリがありません"
+    exit
+fi
+if ! test -d ${ORCA_DIR}/cobol/${ALWAYS_LD}; then
+    echo "LD(COBOL) ${ORCA_DIR}/cobol/${ALWAYS_LD} ディレクトリがありません"
+    exit
+fi
+if ! test -f ${ORCA_DIR}/cobol/${ALWAYS_LD}/${COB_SO}; then
+    echo "${ORCA_DIR}/cobol/${ALWAYS_LD}/${COB_SO} がありません"
+    echo "コンパイル前？"
+    exit
+fi
+
+####################################################################
 
 for i in $ALWAYS_LD $LD; do
     COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$ORCA_DIR"/cobol/"$i"
