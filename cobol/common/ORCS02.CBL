@@ -983,10 +983,10 @@
                            ELSE
                              IF  FLG-SANSHOU3     =   "1"
                                MOVE   15000   TO   MAX-KIN-KOHI1-M
-                               MOVE   1       TO   FLG-SKJ
+      *                        MOVE   1       TO   FLG-SKJ
                              ELSE
                                MOVE   24600   TO   MAX-KIN-KOHI1-M
-                               MOVE   2       TO   FLG-SKJ
+      *                        MOVE   2       TO   FLG-SKJ
                              END-IF
                            END-IF
                        WHEN   "02"
@@ -1008,10 +1008,10 @@
                            ELSE
                              IF  FLG-SANSHOU3     =   "1"
                                MOVE   15000   TO   MAX-KIN-SYU-M
-                               MOVE   1       TO   FLG-SKJ
+      *                        MOVE   1       TO   FLG-SKJ
                              ELSE
                                MOVE   24600   TO   MAX-KIN-SYU-M
-                               MOVE   2       TO   FLG-SKJ
+      *                        MOVE   2       TO   FLG-SKJ
                              END-IF
                            END-IF
                        WHEN   "2"
@@ -1026,6 +1026,16 @@
                            END-IF
                    END-EVALUATE
                END-IF
+           END-IF.
+      *
+           IF  FLG-SANSHOU3      =   SPACE              
+                 CONTINUE
+           ELSE
+                 IF  FLG-SANSHOU3     =   "1"
+                      MOVE   1       TO   FLG-SKJ
+                 ELSE
+                      MOVE   2       TO   FLG-SKJ
+                 END-IF
            END-IF.
       *
        210-HOKEN-KAISU-EXT.
