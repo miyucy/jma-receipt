@@ -739,6 +739,7 @@ path	key34 	{
 		SELECT *
 		FROM tbl_sryacct
 			WHERE   HOSPID    =   :HOSPID
+                        AND   NYUGAIKBN   >   '0'
 			AND   PTID        =   :PTID
 			AND   SRYYM       >=  :STSRYYM
 			AND   SRYYM       <=  :EDSRYYM
@@ -756,6 +757,7 @@ path	key35 	{
 		SELECT *
 		FROM tbl_sryacct
 			WHERE   HOSPID    =   :HOSPID
+                        AND   NYUGAIKBN   >   '0'
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYM       >=  :STSRYYM
