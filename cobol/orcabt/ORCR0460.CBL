@@ -426,8 +426,6 @@
            03  FILLER          PIC X(09)   VALUE   "120000410".
       *    調剤料（麻・向・覚・毒）（入院外）
            03  FILLER          PIC X(09)   VALUE   "120000110".
-      *    電話等再診（１回目）
-      **>  03  FILLER          PIC X(09)   VALUE   "112009750".
       *    外来管理加算（３月以内）
            03  FILLER          PIC X(09)   VALUE   "101120070".
       *    外来管理加算（３月超）（５回以内）
@@ -468,6 +466,8 @@
            03  CONS-HIKAKIN    PIC X(09)   VALUE   "130000510".
       *    初診（診療所）紹介患者加算
            03  CONS-SYOSIN-KASAN1  PIC X(09) VALUE "111003770".
+      *    老人初診（診療所）紹介患者加算
+           03  CONS-SYOSIN-KASAN2  PIC X(09) VALUE "111700470".
       *
       *    パス名領域
        01  WRK-PATH                        PIC X(64).
@@ -912,7 +912,8 @@
            END-IF
       *    紹介患者加算服用方法でないこと
            IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)  
-                                             =   CONS-SYOSIN-KASAN1
+                                             =   CONS-SYOSIN-KASAN1 OR
+                                                 CONS-SYOSIN-KASAN2
                CONTINUE
            ELSE
                MOVE    1             TO  FLG-NOPRT
@@ -1016,23 +1017,6 @@
                IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) 
                                          =   TBL-NOSRYCD (IDY)
                    MOVE    1                 TO  FLG-NOPRT
-      *            ＊再診の場合
-      **>          IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-      **>                                =   "112009210"  OR   
-      **>                                    "112010150"  OR   
-      **>                                    "112009750"  OR
-      **>                                    "112010650"  OR   
-      **>                                    "112703710"  OR   
-      **>                                    "112704450"  OR   
-      **>                                    "112704150"  OR   
-      **>                                    "112704850"       
-      *
-      ***>          IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-      ***>                                =   "112009750"  
-      ***>            IF  RECE41-SAISHIN-PRTKBN   =   "1"
-      ***>                MOVE    ZERO          TO  FLG-NOPRT
-      ***>            END-IF
-      ***>          END-IF
       *            ＊外来管理加算の場合
                    IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                                          =   "101120070"  OR
