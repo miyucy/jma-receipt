@@ -28,8 +28,10 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 01.00.01     NACL-藤原    02/08/29  レセプトが選択されていないとき
+      *  01.00.01    NACL-藤原    02/08/29  レセプトが選択されていないとき
       *                                     エラーとする
+     * 
+      *  01.01.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -51,8 +53,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *     レセプト明細ファイル シェル領域 
-           COPY    "CPCOMMONSHELL1.INC".
+      *****レセプト明細ファイル シェル領域 
+      *****COPY    "CPCOMMONSHELL1.INC".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -140,6 +142,9 @@
                                13  SPA-NAI-SYUBETU PIC X(04)
                                                    OCCURS 10.
       *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
+      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -188,6 +193,11 @@
            03  WRK-RECE08-PRTJYUN  PIC 9(02).
       *
            03  WRK-PRTKBN          PIC 9(01).             
+      *     
+           03  WRK-SHELL-ARG1.
+             05  WRK-SHELL-SRYYM   PIC  X(06).
+             05  WRK-SHELL-TERMID  PIC  X(16).
+             05  WRK-SHELL-SYSYMD  PIC  X(08).  
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG1        PIC X(09).
@@ -199,6 +209,11 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
+      *                             
+       01  WRK-SHELL-NAME.
+           05  FILLER             PIC X(16) VALUE
+                                             "scripts/monthly/".
+           05  WRK-SHELL-SHELL    PIC X(20).         
       *
        01  WRK-CONS-AREA.
       *    ジョブ管理ＤＢのキー値  
@@ -1180,28 +1195,38 @@
       *
       *    印刷処理
       *
-           MOVE    "recept7.sh"        TO  SHELL-SHELL
-      *     
-           MOVE    SPA-TERMID          TO  SHELL-TERMID
-           MOVE    SPA-R01-RECE07-SRYYM
-                                       TO  SHELL-SRYYM    
-           MOVE    SPA-SYSYMD          TO  SHELL-SYSYMD
-           MOVE    "1"                 TO  SHELL-SYOKBN
-           MOVE    "0"                 TO  SHELL-RECEKBN 
+      *****MOVE    "recept7.sh"        TO  SHELL-SHELL
+      *    MOVE    SHELL-NAME          TO  SHELL-NAME
+      *    MOVE    SPA-TERMID          TO  SHELL-TERMID
+      *    MOVE    SPA-R01-RECE07-SRYYM
+      *                                TO  SHELL-SRYYM    
+      *    MOVE    SPA-SYSYMD          TO  SHELL-SYSYMD
+      *    MOVE    "1"                 TO  SHELL-SYOKBN
+      *****MOVE    "0"                 TO  SHELL-RECEKBN 
       *     
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
-           MOVE    RECEERR             TO  SHELL-ERRFILE
+      *****MOVE    RECEERR             TO  SHELL-ERRFILE
       *
            MOVE    SPACE           TO  SHELLTBL
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
+           MOVE    "recept7.sh"        TO  WRK-SHELL-SHELL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *     
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG1
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG2
-           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG3 
+           MOVE    SPA-TERMID          TO  WRK-SHELL-TERMID
+           MOVE    SPA-R01-RECE07-SRYYM
+                                       TO  WRK-SHELL-SRYYM    
+           MOVE    SPA-SYSYMD          TO  WRK-SHELL-SYSYMD
+           MOVE    WRK-SHELL-ARG1      TO  SHELLTBL-ARG3 
            MOVE    "1"                 TO  SHELLTBL-ARG4
-           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG5
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG6
+           MOVE    "1"                 TO  SHELLTBL-ARG5
+           MOVE    RECEERR             TO  SHELLTBL-ARG6
            MOVE    WRK-RECE09-KEY      TO  SHELLTBL-ARG7 
            MOVE    SPA-TERMID          TO  SHELLTBL-ARG8
       *     
@@ -1295,16 +1320,17 @@
            END-IF
       *
       *　　（ＯＲＣＲ０１０１）　
-           MOVE    "recept7.sh"        TO  SHELL-SHELL
-           MOVE    SPA-TERMID          TO  SHELL-TERMID
-           MOVE    SPA-R01-RECE07-SRYYM
-                                       TO  SHELL-SRYYM    
-           MOVE    SPA-SYSYMD          TO  SHELL-SYSYMD
-           MOVE    "1"                 TO  SHELL-SYOKBN
-           MOVE    "0"                 TO  SHELL-RECEKBN
+      *****MOVE    "recept7.sh"        TO  SHELL-SHELL
+      *    MOVE    WRK-SHELL-NAME      TO  SHELL-NAME
+      *    MOVE    SPA-TERMID          TO  SHELL-TERMID
+      *    MOVE    SPA-R01-RECE07-SRYYM
+      *                                TO  SHELL-SRYYM    
+      *    MOVE    SPA-SYSYMD          TO  SHELL-SYSYMD
+      *    MOVE    "1"                 TO  SHELL-SYOKBN
+      *****MOVE    "0"                 TO  SHELL-RECEKBN
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
-           MOVE    RECEERR             TO  SHELL-ERRFILE
+      *****MOVE    RECEERR             TO  SHELL-ERRFILE
       *
            OPEN    OUTPUT   RECEERR-FILE
            CLOSE   RECEERR-FILE
@@ -1312,14 +1338,24 @@
            ADD     1               TO  WRK-RECE08-PRTJYUN                 
       *
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
+           MOVE    "recept7.sh"        TO  WRK-SHELL-SHELL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *     
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG1
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG2
-           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG3 
+           MOVE    SPA-TERMID          TO  WRK-SHELL-TERMID
+           MOVE    SPA-R01-RECE07-SRYYM
+                                       TO  WRK-SHELL-SRYYM    
+           MOVE    SPA-SYSYMD          TO  WRK-SHELL-SYSYMD
+           MOVE    WRK-SHELL-ARG1      TO  SHELLTBL-ARG3 
            MOVE    "0"                 TO  SHELLTBL-ARG4
-           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG5
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG6
+           MOVE    "0"                 TO  SHELLTBL-ARG5
+           MOVE    RECEERR             TO  SHELLTBL-ARG6
            MOVE    WRK-RECE09-KEY      TO  SHELLTBL-ARG7 
            MOVE    WRK-RECE09-STDATA   TO  SHELLTBL-ARG8
            MOVE    WRK-RECE09-EDDATA   TO  SHELLTBL-ARG9

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    02.08.30  タイマー機能の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -171,6 +172,7 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
       *    処理状態
+               WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
       *    印刷画面へ
@@ -208,6 +210,7 @@
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  R99
+                         
            MOVE    ZERO                TO  R99-COUNT
       *
       *    ジョブ管理チェック処理
@@ -240,6 +243,8 @@
                                        TO  WRK-SS
                MOVE    WRK-HENTIME     TO  R99-ENDTIME  (IDX)
                MOVE    JOB-YOBI        TO  R99-ERRMSG   (IDX)
+               COMPUTE R99-PROGRESSBAR-VALUE  =
+                           JOB-STEPCNT  /   13     *   100
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "処理中です"    TO  R99-MSG
                ELSE
@@ -272,6 +277,8 @@
                    MOVE    "B12"                TO  MCP-WIDGET
                    MOVE    "処理は正常に終了しました"
                                                 TO  R99-MSG
+                   MOVE   100                   TO
+                                            R99-PROGRESSBAR-VALUE                             
                ELSE
                    MOVE    "B01"                TO  MCP-WIDGET
                    MOVE    "該当する処理はありません"
@@ -279,7 +286,7 @@
                END-IF                                 
            ELSE                                        
                MOVE    "B11"                TO  MCP-WIDGET
-           END-IF                                 
+           END-IF
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
            MOVE    "R99    "           TO  MCP-WINDOW

@@ -45,6 +45,9 @@
       *  01.03.03    MCC-藤原     02/06/13  労災・自賠責の項目を追加
       *  01.03.04    MCC-藤原     02/07/09  生活保護まとめ入力画面追加
       *  01.03.05    NACL-藤原    02/07/18  確定のとき自動的に情報確認画面を表示
+      *  01.03.06    NACL-藤原    02.08.30  タイマー機能の追加
+      *
+      *  01.04.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -66,7 +69,7 @@
        WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル シェル領域 
-           COPY    "CPCOMMONSHELL1.INC".
+      *****COPY    "CPCOMMONSHELL1.INC".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -117,6 +120,9 @@
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
                                    BY         //SPA-RECE07//.
       *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
+      *
       *    フラグ領域
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
@@ -154,6 +160,11 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+      *     
+           03  WRK-SHELL-ARG1.
+             05  WRK-SHELL-SRYYM   PIC  X(06).
+             05  WRK-SHELL-TERMID  PIC  X(16).
+             05  WRK-SHELL-SYSYMD  PIC  X(08).  
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -171,6 +182,11 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
+      *                             
+       01  WRK-SHELL-NAME.
+           05  FILLER             PIC X(16) VALUE
+                                             "scripts/monthly/".
+           05  WRK-SHELL-SHELL    PIC X(20).         
       *              
       *
        01  WRK-CONS-AREA.
@@ -1221,24 +1237,26 @@
                                           JOBKANRI-REC
       *
       *            印刷用スクリプト処理
-                   EVALUATE    SPA-R01-RECEKBN
-                       WHEN    "0"
-                       WHEN    "1"
-                       WHEN    "2"
-                           MOVE    "recept1.sh"        TO  SHELL-SHELL
-                       WHEN    "3"
-                       WHEN    "4"
-                       WHEN    "5"
-                       WHEN    "6"
-                           MOVE    "recept6.sh"        TO  SHELL-SHELL
-                       WHEN    "7"
-                           MOVE    "recept8.sh"        TO  SHELL-SHELL
-                   END-EVALUATE        
-                   MOVE    SPA-NAI-SRYYM       TO  SHELL-SRYYM
-                   MOVE    SPA-TERMID          TO  SHELL-TERMID
-                   MOVE    SPA-SYSYMD          TO  SHELL-SYSYMD
-                   MOVE    "1"                 TO  SHELL-SYOKBN
-                   MOVE    SPA-R01-RECEKBN     TO  SHELL-RECEKBN
+      *************EVALUATE    SPA-R01-RECEKBN
+      *                WHEN    "0"
+      *                WHEN    "1"
+      *                WHEN    "2"
+      *                    MOVE    "recept1.sh"    TO  SHELL-SHELL
+      *                WHEN    "3"
+      *                WHEN    "4"
+      *                WHEN    "5"
+      *                WHEN    "6"
+      *                    MOVE    "recept6.sh"    TO  SHELL-SHELL
+      *                WHEN    "7"
+      *                    MOVE    "recept8.sh"    TO  SHELL-SHELL
+      *            END-EVALUATE        
+      *            MOVE    SHELL-NAME          TO  SHELL-NAME
+      *            
+      *            MOVE    SPA-NAI-SRYYM       TO  SHELL-SRYYM
+      *            MOVE    SPA-TERMID          TO  SHELL-TERMID
+      *            MOVE    SPA-SYSYMD          TO  SHELL-SYSYMD
+      *            MOVE    "1"                 TO  SHELL-SYOKBN
+      *************MOVE    SPA-R01-RECEKBN     TO  SHELL-RECEKBN
       *****        IF      SPA-DATAKBN1-VALUE  =   "T"
       *                 MOVE    "0"                 TO  SHELL-RECEKBN
       *             ELSE
@@ -1250,7 +1268,7 @@
       *****        END-IF
                    MOVE    "RECEERR"           TO  RECEERR-FILE-ID
                    MOVE    SPA-TERMID          TO  RECEERR-TERMID
-                   MOVE    RECEERR             TO  SHELL-ERRFILE
+      *************MOVE    RECEERR             TO  SHELL-ERRFILE
       *
                    OPEN    OUTPUT   RECEERR-FILE
                    CLOSE   RECEERR-FILE
@@ -1272,11 +1290,33 @@
                    END-IF
       *
       *★★        ETC-EXEC SHELL SHELL-AREA 10
-                   MOVE    SHELL-NAME      TO  SHELLTBL-NAME
-                   MOVE    SHELL-ARG1      TO  SHELLTBL-ARG1
-                   MOVE    SHELL-ARG2      TO  SHELLTBL-ARG2
-                   MOVE    SHELL-ARG3      TO  SHELLTBL-ARG3
-                   MOVE    SHELL-ARG4      TO  SHELLTBL-ARG4
+                   MOVE    SPACE           TO  SHELLTBL
+                   EVALUATE    SPA-R01-RECEKBN
+                       WHEN    "0"
+                       WHEN    "1"
+                       WHEN    "2"
+                           MOVE    "recept1.sh"    TO  WRK-SHELL-SHELL
+                       WHEN    "3"
+                       WHEN    "4"
+                       WHEN    "5"
+                       WHEN    "6"
+                           MOVE    "recept6.sh"    TO  WRK-SHELL-SHELL
+                       WHEN    "7"
+                           MOVE    "recept8.sh"    TO  WRK-SHELL-SHELL
+                   END-EVALUATE        
+      *            ファイルデイレクトリ位置指定
+                   INITIALIZE              ORCSMKPASSAREA
+                   MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
+                   CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+                   MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *             
+                   MOVE    SPA-NAI-SRYYM   TO  WRK-SHELL-SRYYM
+                   MOVE    SPA-TERMID      TO  WRK-SHELL-TERMID
+                   MOVE    SPA-SYSYMD      TO  WRK-SHELL-SYSYMD
+                   MOVE    WRK-SHELL-ARG1  TO  SHELLTBL-ARG1
+                   MOVE    "1"             TO  SHELLTBL-ARG2
+                   MOVE    SPA-R01-RECEKBN TO  SHELLTBL-ARG3
+                   MOVE    RECEERR         TO  SHELLTBL-ARG4
                    MOVE    WRK-CONS-JOB-JOBID
                                            TO  SHELLTBL-ARG5
                    MOVE    WRK-CONS-JOB-SHELLID
@@ -1397,6 +1437,7 @@
       *
            MOVE    SPACE               TO  R99
            MOVE    ZERO                TO  R99-COUNT
+                                           R99-PROGRESSBAR-VALUE
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE

@@ -1438,7 +1438,7 @@
       *****************************************************************
        50011-INPUT-CUR-SEC          SECTION.
       *
-           EVALUATE    SPA-MCP-WIDGET
+           EVALUATE    	TRUE
       *        ¥µº‘»÷πÊ
                WHEN    SPA-MCP-WIDGET (1:5)    =   "PTNUM"
                    MOVE    SPA-MCP-WIDGET (6:2)    TO  WRK-CUR-IDX
