@@ -3154,13 +3154,13 @@
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+           MOVE    "PTNYUINRRK-KEY34"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+               MOVE    "PTNYUINRRK-KEY34"  TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            ELSE
                MOVE    1               TO  FLG-PTNYUINRRK
@@ -3218,21 +3218,16 @@
                        ELSE
                            MOVE    1                   TO  WRK-STDD
                        END-IF
-      *                他院の時、入院中としない
-                       IF      PTNYUINRRK-JTIKBN   =   "5"
-                                                   OR  "6"
-                           CONTINUE
-                       ELSE
-                           PERFORM VARYING IDX-D   FROM  WRK-STDD BY  1
-                                   UNTIL   IDX-D   >   WRK-EDDD
-                               MOVE    1           TO  SPA-NAI-NYUIN
-                                                         (IDX-D)
-                           END-PERFORM
-                       END-IF
+      *                入院中としない
+                       PERFORM VARYING IDX-D   FROM    WRK-STDD BY  1
+                               UNTIL   IDX-D   >   WRK-EDDD
+                           MOVE    1               TO  SPA-NAI-NYUIN
+                                                             (IDX-D)
+                       END-PERFORM
                    END-IF
                END-IF
       *
-               MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+               MOVE    "PTNYUINRRK-KEY34"   TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            END-PERFORM
       *
