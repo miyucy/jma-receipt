@@ -257,6 +257,7 @@ RECORD_files = \
         S04.rec \
         U1ID1.rec \
         Z07.rec
+        S05.rec \
 
 DEF_files = \
 	HC01.def \

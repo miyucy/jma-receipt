@@ -91,6 +91,7 @@
       *                                     ¡ÊÏ«ºÒÂÐ±þ¡Ë
       *  01.00.32    NACL-¾®Æ¦Âô  03.09.17  Ê¡²¬¸©¤ÎÂÐ±þÄÉ²Ã¡ÊºÆ·×»»»þ¤ËµëÉÕ
       *                                     ÂÐ¾Ý³°ÅÀ¿ô¤ò¼è¤ê¹þ¤ß¡Ë
+      *  01.00.33    NACL-ÂÀÅÄ    03.10.01  Ì¤¼ý¶â´ÉÍýµ¡Ç½¶¯²½ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -162,6 +163,7 @@
                            11  SPA-GMN-TSEIKYU     PIC 9(10).
                            11  SPA-GMN-TMISYU      PIC S9(10).
                            11  SPA-GMN-TJYOTAI     PIC X(16).
+                       09  SPA-GMN-TBL-SEL         PIC 9(05).
       *
                    07  SPA-GMN-INPUT.
                        09  SPA-GMN-SELBAN          PIC 9(04).
@@ -247,6 +249,7 @@
            03  IDX9                PIC 9(05).
            03  IDX10               PIC 9(05).
            03  IDX11               PIC 9(05).
+           03  IDX12               PIC 9(05).
            03  SAI-IDX             PIC 9(05).
       *
       *    °ì»þÎÎ°è
@@ -526,6 +529,7 @@
            COPY    "S03.INC".
            COPY    "S03N.INC".
            COPY    "S04.INC".
+           COPY    "S05.INC".
            COPY    "SERR.INC".
            COPY    "SID1.INC".
       *----(01.01.19)--ADD-END-----
@@ -655,6 +659,9 @@
                WHEN    "S03N"
                WHEN    "S04"
                    PERFORM 320-S03SPASET-SEC
+                   GO  TO  300-SCREEN-EXT
+               WHEN    "S05"
+                   PERFORM 320-S05SPASET-SEC
                    GO  TO  300-SCREEN-EXT
                WHEN    "SID1"
                    PERFORM 330-SID1-SET-SEC
@@ -886,6 +893,11 @@
                MOVE    SPA-PTNUM       TO  WRK-PTNUM
                PERFORM 320-PTINF-EDIT-SEC
                IF    ( SPA-ERRCD       NOT =   SPACE )
+                   IF    ( SPA-ERRCD   =   "9999" )
+      *
+      *                Ì¤¼ý³Û¤òÊÔ½¸
+                       PERFORM 3101-MISYU-EDIT-SEC
+                   END-IF
                    GO  TO  320-SENIJI-SYOGMN-EDIT-EXT
                END-IF
                PERFORM 320-HKNCOMBI-EDIT-SEC
@@ -1078,6 +1090,9 @@
       *
            PERFORM 300-SYUNOU-HENSYU-SEC
       *
+           MOVE    SPA-S01-SYULISTSEL  TO  SPA-GMN-TBL-SEL
+                                           SPA-GMN-SELBAN
+      *
            IF    ( SPA-MOTOPG2         =   "K02" OR "K02N" )
            AND   ( SPA-PTNUM       NOT =   SPACE )
                MOVE    2                   TO  SPA-GMN-CUR
@@ -1091,6 +1106,84 @@
       *----(01.01.19)--ADD-END-----
            .
        320-S03SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ì¤¼ý¸¡º÷Ìá¤ê²èÌÌÊÔ½¸½èÍý
+      *****************************************************************
+       320-S05SPASET-SEC          SECTION.
+      *
+           INITIALIZE                  SPA-S02
+      *
+           MOVE    SPA-S01-PTNUM       TO  SPA-GMN-PTNUM
+           MOVE    SPA-S01-PTID        TO  SPA-GMN-PTID
+           MOVE    SPA-S01-KANANAME    TO  SPA-GMN-KANANAME
+           MOVE    SPA-S01-SEX         TO  SPA-GMN-SEX
+           MOVE    SPA-S01-SRYYMW      TO  SPA-GMN-SRYYM
+           MOVE    SPA-S01-SRYYM       TO  SPA-NAI-SRYYM
+           MOVE    SPA-S01-NAME        TO  SPA-GMN-NAME
+           MOVE    SPA-S01-LOCK        TO  SPA-NAI-LOCK
+           MOVE    SPA-S01-BIRTHDAYW   TO  SPA-GMN-BIRTHDAY
+           MOVE    SPA-S01-BIRTHDAY    TO  SPA-NAI-BIRTHDAY
+      *
+      *
+           PERFORM 320-HKNCOMBI-EDIT-SEC
+      *
+           PERFORM 3101-SRYKA-SPA-SEC
+      *
+           PERFORM 3102-NYUGAIKBN-SPA-SEC
+      *
+           IF    ( SPA-S01-DENPNUM     NOT =   ZERO )
+               MOVE    SPA-GMN-SRYKALST (1)
+                                       TO  SPA-GMN-SRYKA-G
+      *        Æþ³°¶èÊ¬
+               IF    ( SPA-BEDSU       >   ZERO )
+                   MOVE    SPA-GMN-NYUGAIKBNLST (1)
+                                       TO  SPA-GMN-NYUGAIKBN-G
+               ELSE
+                   IF    ( SPA-GMN-NYUGAIKBN   =   SPACE )
+                       MOVE    SPA-GMN-NYUGAIKBNLST (3)
+                                       TO  SPA-GMN-NYUGAIKBN-G
+                   END-IF
+               END-IF
+           ELSE
+               MOVE    SPA-S01-HSRYKA  TO  SPA-GMN-SRYKA
+               MOVE    SPA-S01-HNYUGAIKBN
+                                       TO  SPA-GMN-NYUGAIKBN 
+           END-IF
+      *
+           PERFORM 3101-COMBO-SYOKI-SET-SEC
+      *
+           PERFORM 3101-MISYU-EDIT-SEC
+      *
+           PERFORM 300-SYUNOU-HENSYU-SEC
+      *
+           MOVE    ZERO                TO  SPA-GMN-SELBAN
+                                           SPA-GMN-TBL-SEL
+           IF    ( SPA-S01-DENPNUM     NOT =   ZERO )
+               PERFORM VARYING IDX12   FROM    1   BY  1
+                       UNTIL ( IDX12   >   SPA-GMN-MAX )
+                   IF    ( SPA-GMN-TDENPNUM (IDX12)
+                                       =   SPA-S01-DENPNUM )
+                       MOVE    IDX12   TO  SPA-GMN-SELBAN
+                                           SPA-GMN-TBL-SEL
+                       MOVE    SPA-GMN-MAX
+                                       TO  IDX12
+                   END-IF
+               END-PERFORM
+           ELSE
+               MOVE    SPA-S01-SYULISTSEL
+                                       TO  SPA-GMN-SELBAN
+                                           SPA-GMN-TBL-SEL
+           END-IF
+      *
+           IF    ( SPA-S01-DENPNUM     NOT =   ZERO )
+               MOVE    1               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    3               TO  SPA-GMN-CUR
+           END-IF
+           .
+       320-S05SPASET-EXT.
            EXIT.
       *
       **************************************************************
@@ -1489,7 +1582,7 @@
                MOVE    WRK-TMISYU-W            TO  S02-TMISYUMONEY(IDX1)
                MOVE    SPA-GMN-TJYOTAI (IDX1)  TO  S02-TDENPJTI   (IDX1)
       *
-               IF      IDX1             =   SPA-GMN-SELBAN
+               IF      IDX1             =   SPA-GMN-TBL-SEL
                    MOVE    "T"             TO  S02-SYULIST-SELECT (IDX1)
       *        »ÃÄê ST
                    IF  SPA-NAI-TNYUGAIKBN(IDX1) =   "1"
@@ -1594,6 +1687,9 @@
       *****WHEN    "CLICKED"       ALSO    "B15"
            WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 490-JIGETU-SEC
+      *    Ì¤¼ý¸¡º÷¡Ê£Ó£°£µ¡Ë
+           WHEN    "CLICKED"       ALSO    "B09S"
+                   PERFORM 470-MISYUKEN-SEC
       *    »áÌ¾¸¡º÷¡Ê£Ð£¹£·¡Ë
            WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 470-SIMEIKEN-SEC
@@ -1649,6 +1745,8 @@
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
+           MOVE    ZERO                TO  SPA-GMN-TBL-SEL
+      *
            MOVE    S02-SELNUM          TO  SPA-GMN-SELBAN
       *
            IF    ( SPA-GMN-SELBAN      =  ZERO )
@@ -1659,6 +1757,8 @@
                MOVE    "0001"              TO  SPA-ERRCD
                GO  TO                  4101-SELNUM-CHK-EXT
            END-IF
+      *
+           MOVE    SPA-GMN-SELBAN      TO  SPA-GMN-TBL-SEL
       *
            .
        4101-SELNUM-CHK-EXT.
@@ -1722,6 +1822,10 @@
       *
            PERFORM 320-PTINF-SET-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
+               IF    ( SPA-ERRCD   =   "9999" )
+      *            Ì¤¼ý³Û¤òÊÔ½¸
+                   PERFORM 3101-MISYU-EDIT-SEC
+               END-IF
                GO      TO      4102-PTNUM-CHK-EXT
            END-IF
       *
@@ -1862,12 +1966,14 @@
       *
       *    ¹ÔÁªÂò
            MOVE    ZERO                TO  SPA-GMN-SELBAN
+                                           SPA-GMN-TBL-SEL
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   SPA-GMN-MAX )
       *
                IF    ( S02-SYULIST-SELECT (IDX1)   =   "T" )
                    MOVE    IDX1        TO  SPA-GMN-SELBAN
+                                           SPA-GMN-TBL-SEL
                    MOVE    200         TO  IDX1
                END-IF
       *
@@ -4449,6 +4555,9 @@
            MOVE    SPA-NAI-SRYYM       TO  SPA-S01-SRYYM
            MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-S01-HNYUGAIKBN
            MOVE    SPA-GMN-SRYKA       TO  SPA-S01-HSRYKA
+           MOVE    SPA-GMN-TBL-SEL     TO  SPA-S01-SYULISTSEL
+           MOVE    SPA-GMN-GAI-MISYU   TO  SPA-S01-GAI-MISYU
+           MOVE    SPA-GMN-NYU-MISYU   TO  SPA-S01-NYU-MISYU
       *
            MOVE    SPA-S01KYOUTU       TO  SPA-WORK
           .
@@ -4658,6 +4767,37 @@
       *
            .
        430-MAEKPTNUM-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ì¤¼ý¸¡º÷²èÌÌ¤Ø
+      *****************************************************************
+       470-MISYUKEN-SEC                SECTION.
+      *
+           IF    ( SPA-GMN-PTID        =   ZERO )
+               MOVE    "1003"          TO  SPA-ERRCD
+               GO  TO  470-MISYUKEN-EXT
+           END-IF
+      *
+           INITIALIZE                  SPA-S01KYOUTU
+      *
+           PERFORM 4901-SPAKYOTUKEY-SET-SEC
+      *
+           MOVE    SPA-S01KYOUTU       TO  SPA-WORK
+      *
+      *     MOVE    "B01"                TO  MCP-WIDGET
+      *
+           MOVE    "S02"               TO  SPA-MOTOPG
+           MOVE    "S05"               TO  SPA-SAKIPG
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE.
+           MOVE    "S05    "           TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       470-MISYUKEN-EXT.
            EXIT.
       *****************************************************************
       *    »áÌ¾¸¡º÷¤Ø
