@@ -279,9 +279,6 @@ select * from TBL_SYUNOU;
 
 drop table TBL_SYUNOU;
 
--- index ºï½ü
-drop index idx_syunou_ptid;
-
 -- TBL_SYUNOU ºîÀ®               --
 
 create table TBL_SYUNOU (
