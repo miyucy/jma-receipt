@@ -1,7 +1,7 @@
 #! /bin/sh
 #/bin/sh -F
 	if	[ $1 = 'red2ps' ]	;then
-		if	[ $# -eq 5 ]	;then
+		if	[ $5 != '' ]	;then
 			$1 $2 $4 -p $5
 		else
 			$1 $2 $4 -p lp1
