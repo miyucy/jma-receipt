@@ -29,8 +29,10 @@ for d in scripts/daily  scripts/kaisei scripts/monthly  \
   if test -d "${SITESRCDIR}/${d}"; then
     mkdir -p "${SITEDIR}/${d}"
     for f in `ls ${SITESRCDIR}/${d}`; do 
-      sed -e 's,\@jma-receipt-env\@,@jma-receipt-env@,g' \
-      < "${SITESRCDIR}/${d}/${f}" > "${SITEDIR}/${d}/${f}"
+      if test -f "${SITESRCDIR}/${d}/${f}"; then
+	sed -e 's,\@jma-receipt-env\@,./etc/jma-receipt.env,g' \
+        < "${SITESRCDIR}/${d}/${f}" > "${SITEDIR}/${d}/${f}"
+      fi
     done
   fi
 done
@@ -40,7 +42,9 @@ echo "done"
 echo -n "Copying lddef files..."
 mkdir -p "${SITEDIR}/lddef"
 for f in `ls ${SITESRCDIR}/lddef`; do 
+  if test -f "${SITESRCDIR}/lddef/${f}"; then
     $CPP -I"${LDDEFDIR}" -x c "${SITESRCDIR}/lddef/${f}" > "${SITEDIR}/lddef/${f}"
+  fi
 done
 echo "done"
 
@@ -51,7 +55,9 @@ for d in data doc form init record screen ; do
     mkdir -p "${SITEDIR}/${d}"
     chown orca.orca "${SITEDIR}/${d}"
     for f in `ls ${SITESRCDIR}/${d}`; do 
-      cp "${SITESRCDIR}/${d}/${f}" "${SITEDIR}/${d}"
+      if test -f "${SITESRCDIR}/${d}/${f}"; then
+        cp "${SITESRCDIR}/${d}/${f}" "${SITEDIR}/${d}"
+      fi
     done
   fi
 done
@@ -60,6 +66,8 @@ echo "done"
 #copy etc files
 echo -n "Copying etc files..."
 for f in `ls ${SITESRCDIR}/etc`; do 
-  cp "${SITESRCDIR}/etc/${f}" "${SYSCONFDIR}/"
+  if test -f "${SITESRCDIR}/etc/${f}"; then
+    cp "${SITESRCDIR}/etc/${f}" "${SYSCONFDIR}/"
+  fi
 done
 echo "done"
