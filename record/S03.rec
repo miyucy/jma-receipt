@@ -229,8 +229,8 @@ S03	{
 					value2	varchar(12);
 					value3	varchar(11);
 					value4	varchar(12);
-				}	[10];
-				select	bool[10];
+				}	[50];
+				select	bool[50];
 			};
 		};
 	};

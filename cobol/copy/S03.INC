@@ -65,7 +65,7 @@
                                 PIC S9(10).
               03  S03-HKNTEKGAI PIC S9(10).
               03  S03-JIHIMSG-G OCCURS  5.
-                04  S03-JIHIMSG PIC X(08).
+                04  S03-JIHIMSG PIC X(8).
               03  S03-JIHI1     PIC S9(10).
               03  S03-JIHI2     PIC S9(10).
               03  S03-JIHI3     PIC S9(10).
@@ -106,10 +106,10 @@
               03  S03-SCROLLEDWINDOW1.
                 04  S03-CLIST1.
                   05  S03-CLIST1-COUNT   PIC S9(9)   BINARY.
-                  05  S03-ITEM        OCCURS  10 TIMES.
+                  05  S03-ITEM        OCCURS  50 TIMES.
                   06  S03-TRENNUM PIC X(4).
                   06  S03-TSKYMONY    PIC X(12).
                   06  S03-TNYUKINMONEY    PIC X(12).
                   06  S03-TSYORIYMD   PIC X(11).
                   06  S03-TJTI    PIC X(12).
-                  05  S03-SELECT  PIC X       OCCURS  10 TIMES.
+                  05  S03-SELECT  PIC X       OCCURS  50 TIMES.

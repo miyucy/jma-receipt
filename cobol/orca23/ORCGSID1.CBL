@@ -26,7 +26,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-太田    07/05/20  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -74,7 +73,13 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA23SCRAREA.INC".
+           COPY    "S02.INC".
+           COPY    "S03.INC".
+           COPY    "S03N.INC".
+           COPY    "S04.INC".
+           COPY    "S05.INC".
+           COPY    "SERR.INC".
+           COPY    "SID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -158,10 +163,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING
+           CALL    "ORCMCPSUB"          USING
                                        MCPAREA
+                                       ORCMCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
