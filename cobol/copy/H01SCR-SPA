@@ -23,6 +23,8 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     01/10/01  請求区分、訂正区分の修正      
+      *
+      *  01.01.01    NACL-藤原    02/10/07  年齢・給付割合の追加
       *****************************************************************
        01  SPA-H01FREE.
       *
@@ -56,6 +58,8 @@
                            11  SPA-H01GMN-F1          PIC X(01).
                            11  SPA-H01GMN-SKYKBNMEI   PIC X(10).
                        09  SPA-H01GMN-TEISEIKBNNM     PIC X(14).
+                       09  SPA-H01GMN-AGE             PIC 9(03).
+                       09  SPA-H01GMN-KYURATE         PIC 9(03).
       *                 
                    07  SPA-H01GMN-SKYKBNLST          OCCURS  3.
                        09  SPA-H01GMN-SKYKBNL        PIC X(01).

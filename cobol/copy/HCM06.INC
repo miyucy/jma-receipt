@@ -64,3 +64,5 @@
             02  HCM06-FTNMONEYSAI   PIC X(11).
             02  HCM06-RENNUM    PIC X(7).
             02  HCM06-SRYKA2    PIC X(60).
+            02  HCM06-KHNTEN3   PIC X(7).
+            02  HCM06-SONOTA    PIC X(10).

@@ -135,6 +135,7 @@
       *                                     SANTEI-KEY6
       *  01.00.89    NACL-Æ£¸¶    02/09/30  RECEKANRI-KEY4¡ÁKEY7
       *                                     RECEPRT-KEY10¡ÁKEY17
+      *  01.00.90    NACL-Æ£¸¶    02/10/09  SEIKYU-KEY8¡ÁKEY13
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1640,6 +1641,24 @@
                                        TO  WRK-PATH
                 WHEN    ANY             ALSO   "SEIKYU-KEY7"
                    MOVE    PATH-TBL-SEIKYU-KEY7
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY8"
+                   MOVE    PATH-TBL-SEIKYU-KEY8
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY9"
+                   MOVE    PATH-TBL-SEIKYU-KEY9
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY10"
+                   MOVE    PATH-TBL-SEIKYU-KEY10
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY11"
+                   MOVE    PATH-TBL-SEIKYU-KEY11
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY12"
+                   MOVE    PATH-TBL-SEIKYU-KEY12
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY13"
+                   MOVE    PATH-TBL-SEIKYU-KEY13
                                        TO  WRK-PATH
       *ÄÉ²Ã/*³«»Ï*01.09.15********************************************
                WHEN    ANY             ALSO   "SEIKYU-ALL"

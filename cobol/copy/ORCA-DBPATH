@@ -1167,26 +1167,50 @@
               03  FILLER      PIC S9(9)   BINARY  VALUE 3.
               03  FILLER      PIC S9(9)   BINARY  VALUE 34.
               03  FILLER      PIC S9(9)   BINARY  VALUE 6.
-            02  PATH-TBL-SEIKYU-ALL.
+            02  PATH-TBL-SEIKYU-KEY8.
               03  FILLER      PIC S9(9)   BINARY  VALUE 3.
               03  FILLER      PIC S9(9)   BINARY  VALUE 34.
               03  FILLER      PIC S9(9)   BINARY  VALUE 7.
-            02  PATH-TBL-SEIKYU-DEL1.
+            02  PATH-TBL-SEIKYU-KEY9.
               03  FILLER      PIC S9(9)   BINARY  VALUE 3.
               03  FILLER      PIC S9(9)   BINARY  VALUE 34.
               03  FILLER      PIC S9(9)   BINARY  VALUE 8.
-            02  PATH-TBL-SEIKYU-DEL2.
+            02  PATH-TBL-SEIKYU-KEY10.
               03  FILLER      PIC S9(9)   BINARY  VALUE 3.
               03  FILLER      PIC S9(9)   BINARY  VALUE 34.
               03  FILLER      PIC S9(9)   BINARY  VALUE 9.
-            02  PATH-TBL-SEIKYU-DEL3.
+            02  PATH-TBL-SEIKYU-KEY11.
               03  FILLER      PIC S9(9)   BINARY  VALUE 3.
               03  FILLER      PIC S9(9)   BINARY  VALUE 34.
               03  FILLER      PIC S9(9)   BINARY  VALUE 10.
-            02  PATH-TBL-SEIKYU-DEL4.
+            02  PATH-TBL-SEIKYU-KEY12.
               03  FILLER      PIC S9(9)   BINARY  VALUE 3.
               03  FILLER      PIC S9(9)   BINARY  VALUE 34.
               03  FILLER      PIC S9(9)   BINARY  VALUE 11.
+            02  PATH-TBL-SEIKYU-KEY13.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 3.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 34.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 12.
+            02  PATH-TBL-SEIKYU-ALL.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 3.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 34.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 13.
+            02  PATH-TBL-SEIKYU-DEL1.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 3.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 34.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 14.
+            02  PATH-TBL-SEIKYU-DEL2.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 3.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 34.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 15.
+            02  PATH-TBL-SEIKYU-DEL3.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 3.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 34.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 16.
+            02  PATH-TBL-SEIKYU-DEL4.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 3.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 34.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 17.
             02  PATH-VIEW-BD001-KEY.
               03  FILLER      PIC S9(9)   BINARY  VALUE 1.
               03  FILLER      PIC S9(9)   BINARY  VALUE 35.

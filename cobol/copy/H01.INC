@@ -97,3 +97,7 @@
               03  H01-HKIGO.
                 04  H01-HKIGO-STYLE   PIC X(20).
                 04  H01-HKIGO-VALUE   PIC X(20).
+              03  H01-AGE.
+                04  H01-VALUE   PIC 9(3).
+              03  H01-KYURATE.
+                04  H01-VALUE   PIC 9(3).
