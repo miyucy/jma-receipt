@@ -1275,7 +1275,7 @@
                    MOVE    ZERO                TO  FLG-CHK
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       SPA-GMN-PRTKBN-MAX
-                       IF      SPA-GMN-PRTKBN (1)  NOT =   SPACE
+                       IF      SPA-GMN-PRTKBN (IDX)    NOT =   SPACE
                            MOVE    1                   TO  FLG-CHK
                            MOVE    SPA-GMN-PRTKBN-MAX  TO  IDX
                        END-IF
