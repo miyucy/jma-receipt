@@ -1967,8 +1967,8 @@
                                    TO  TSRYCD-NYUGAIKBN (IDX0)
                END-IF
       *
-               COMPUTE TSRYCD-KAISU (TSRYCD-MAX)
-                   =   TSRYCD-KAISU (TSRYCD-MAX)
+               COMPUTE TSRYCD-KAISU (IDX0)
+                   =   TSRYCD-KAISU (IDX0)
                    +   ACCT-ZAIKAISU
       *
            END-IF
