@@ -2853,7 +2853,7 @@
                                (ACCT-ZAINUM   NOT = SRY-ZAINUM)
       *                        保険適用外金額セット
                                PERFORM    HKNTEKGAI-TBL-SEC
-                               MOVE      "SRYACT-KEY2"  TO  MCP-FUNC
+                               MOVE      "SRYACT-KEY2"  TO  ORC-DBPATH
                                PERFORM    SRYACT-READ-SEC
                            END-PERFORM
                        END-IF
