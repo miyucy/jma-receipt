@@ -178,6 +178,7 @@
                                NOT =   SPACE )
                DISPLAY "STUSAN-TOKUTEI-SRYCD (" IDX1 ")= "
                         STUSAN-TOKUTEI-SRYCD (IDX1)
+               END-IF
            END-PERFORM
            DISPLAY "-"
       *
