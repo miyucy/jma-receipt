@@ -661,6 +661,7 @@
                    09  SPA-NAI-I04-HKNCOMBILST.
                        11  SPA-NAI-I04-HKNCOMBILST-ITM  OCCURS   15.
                            13  SPA-NAI-I04-TTTLDAT-FLG   PIC 9(01).
+                           13  SPA-NAI-I04-TSYUNOUIDX    PIC 9(02).
                            13  SPA-NAI-I04-THKNCOMBI-DAT.
                                15  SPA-NAI-I04-TSELNUM   PIC Z9.
       *            画面コンボデータ領域
@@ -698,4 +699,8 @@
              07  SPA-I0-SYUNOU-YM-S                  PIC X(06).
              07  SPA-I0-SYUNOU-YM-W                  PIC X(06).
              07  SPA-I0-SYUNOU-HKNCOMBI              PIC X(50).
+      *      月別保険組合せ数（月別合計データのみ設定）
+             07  SPA-I0-SYUNOU-HKNCOMBI-SU           PIC 9(02).
+      *      対象月数（合計データのみ設定）
+             07  SPA-I0-SYUNOU-TUKI-SU               PIC 9(02).
              07  SPA-I0-SYUNOU-DAT                   PIC X(3000).

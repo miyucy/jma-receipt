@@ -100,6 +100,10 @@
            03  IDX12                       PIC 9(05).
            03  IDX13                       PIC 9(05).
       *
+      *    ¥«¥¦¥ó¥ÈÎÎ°è
+       01  CNT-AREA.
+           03  CNT-TUKISU          PIC 9(05).
+      *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
            03  SYS-YMD     PIC X(08).
@@ -451,6 +455,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  CNT-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-I0FREE.
@@ -7718,6 +7723,7 @@
                                        TTLSYUNOU-REC
            INITIALIZE                  SUMSYUNOU-REC
                                        TTLSYUNOU-REC
+                                       CNT-TUKISU
       *
            PERFORM VARYING IDX11   FROM    1   BY  1
                    UNTIL ( IDX11           >   10 )
@@ -7744,6 +7750,12 @@
                            TO SPA-I0-SYUNOU-YM-W (WRK-SYU-SUM-IDX)
                    MOVE    WRK-SYMD    (1 : 6)
                            TO SPA-I0-SYUNOU-YM-S (WRK-SYU-SUM-IDX)
+      *
+                   MOVE    ZERO    TO    SPA-I0-SYUNOU-HKNCOMBI-SU
+                                                 (WRK-SYU-SUM-IDX)
+      *
+                   COMPUTE CNT-TUKISU  =   CNT-TUKISU  +   1
+      *
                END-IF
       *
                IF    ( SUMSYUNOU-CNT <   13 )
@@ -7787,6 +7799,10 @@
                                            TO  SPA-I0-SYUNOU-HKNCOMBI
                                                         (SUMSYUNOU-CNT)
                    END-IF
+      *
+                   COMPUTE SPA-I0-SYUNOU-HKNCOMBI-SU (WRK-SYU-SUM-IDX)
+                       =   SPA-I0-SYUNOU-HKNCOMBI-SU (WRK-SYU-SUM-IDX)
+                       +   1
       *
                    MOVE    LNK-SYUNOU-REC (IDX11)
                                        TO  SUMSYUNOU-OCC (SUMSYUNOU-CNT)
@@ -8077,6 +8093,8 @@
            MOVE    "999999"        TO  SPA-I0-SYUNOU-YM-S
                                                    (SUMSYUNOU-CNT)
            MOVE    "999999"        TO  SPA-I0-SYUNOU-YM-W
+                                                   (SUMSYUNOU-CNT)
+           MOVE    CNT-TUKISU      TO  SPA-I0-SYUNOU-TUKI-SU
                                                    (SUMSYUNOU-CNT)
            MOVE    TTLSYUNOU-REC   TO  SUMSYUNOU-OCC (SUMSYUNOU-CNT)
       *

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    NACL-太田    02.12.16  前回患者ボタン追加
       *  01.01.02    NACL-太田    03.01.23  食事の集計方法修正
+      *  01.01.03    NACL-太田    03.01.24  保険組合せリストの表示を修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -97,6 +98,11 @@
            03  IDX5                PIC 9(05).
            03  IDX11               PIC 9(05).
            03  IDX12               PIC 9(05).
+           03  IDX-LST             PIC 9(05).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-TUKISU          PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -158,6 +164,8 @@
            03  WRK-SKYEDYMD                PIC X(08).
            03  WRK-NOW-SKYSTYMD            PIC X(08).
            03  WRK-MAE-SKYEDYMD            PIC X(08).
+           03  WRK-STIDX                   PIC 9(05).
+           03  WRK-EDIDX                   PIC 9(05).
       *
       *
       *    スパ領域 ワーク
@@ -317,6 +325,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  CNT-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-I5FREE
@@ -920,8 +929,9 @@
                    MOVE    IDX1        TO  SPA-GMN-I51-HKNCOMBILST-SEL
                    MOVE    SPA-GMN-I51-TSELNUM (IDX1)
                                        TO  SPA-GMN-I51-SELNUM
-                                           WRK-LST-IDX
       *
+                   MOVE    SPA-NAI-I51-TSYUNOUIDX (SPA-GMN-I51-SELNUM)
+                                       TO  WRK-LST-IDX
                    PERFORM 3100-SEIKYU-DAT-EDIT-SEC
       *
                    MOVE    SPA-GMN-I51-HKNCOMBILST-CNT
@@ -1460,7 +1470,9 @@
            END-IF
       *
            MOVE    SPA-GMN-I51-SELNUM  TO  SPA-GMN-I51-HKNCOMBILST-SEL
-                                           WRK-LST-IDX
+      *
+           MOVE    SPA-NAI-I51-TSYUNOUIDX (SPA-GMN-I51-SELNUM)
+                                       TO  WRK-LST-IDX
            PERFORM 3100-SEIKYU-DAT-EDIT-SEC
       *
            MOVE    101                 TO  SPA-GMN-I51-CUR
@@ -1667,14 +1679,14 @@
       *    未収データ取得処理
            PERFORM 3100-MISYU-DAT-EDIT-SEC
       *
-      *    収納合計データをデフォルトで表示
-           MOVE    SPA-I5-SYUNOU-CNT   TO  WRK-LST-IDX
+      *    保険組み合わせリスト編集処理
+           PERFORM 3100-HKNCOMBILST-EDIT-SEC
+      *
+           MOVE    SPA-NAI-I51-TSYUNOUIDX(1)
+                                   TO  WRK-LST-IDX
       *
       *    請求データ編集処理
            PERFORM 3100-SEIKYU-DAT-EDIT-SEC
-      *
-      *    保険組み合わせリスト編集処理
-           PERFORM 3100-HKNCOMBILST-EDIT-SEC
       *
            .
        451-KARIKEISAN-SYORI-EXT.
@@ -1749,6 +1761,7 @@
                                        TTLSYUNOU-REC
            INITIALIZE                  SUMSYUNOU-REC
                                        TTLSYUNOU-REC
+                                       CNT-TUKISU
       *
            PERFORM VARYING IDX11   FROM    1   BY  1
                    UNTIL ( IDX11           >   10 )
@@ -1775,6 +1788,12 @@
                            TO SPA-I5-SYUNOU-YM-W (WRK-SYU-SUM-IDX)
                    MOVE    WRK-SYMD    (1 : 6)
                            TO SPA-I5-SYUNOU-YM-S (WRK-SYU-SUM-IDX)
+      *
+                   MOVE    ZERO    TO    SPA-I5-SYUNOU-HKNCOMBI-SU
+                                                 (WRK-SYU-SUM-IDX)
+      *
+                   COMPUTE CNT-TUKISU  =   CNT-TUKISU  +   1
+      *
                END-IF
       *
                IF    ( SUMSYUNOU-CNT <   13 )
@@ -1818,6 +1837,10 @@
                                            TO  SPA-I5-SYUNOU-HKNCOMBI
                                                         (SUMSYUNOU-CNT)
                    END-IF
+      *
+                   COMPUTE SPA-I5-SYUNOU-HKNCOMBI-SU (WRK-SYU-SUM-IDX)
+                       =   SPA-I5-SYUNOU-HKNCOMBI-SU (WRK-SYU-SUM-IDX)
+                       +   1
       *
                    MOVE    LNK-SYUNOU-REC (IDX11)
                                        TO  SUMSYUNOU-OCC (SUMSYUNOU-CNT)
@@ -2110,6 +2133,8 @@
                                                    (SUMSYUNOU-CNT)
            MOVE    "999999"        TO  SPA-I5-SYUNOU-YM-W
                                                    (SUMSYUNOU-CNT)
+           MOVE    CNT-TUKISU      TO  SPA-I5-SYUNOU-TUKI-SU
+                                                   (SUMSYUNOU-CNT)
            MOVE    TTLSYUNOU-REC   TO  SUMSYUNOU-OCC (SUMSYUNOU-CNT)
       *
            PERFORM VARYING IDX11   FROM    1   BY  1
@@ -2353,29 +2378,66 @@
            INITIALIZE                  SPA-GMN-I51-HKNCOMBILST
                                        SPA-NAI-I51-HKNCOMBILST
       *
+           MOVE    ZERO            TO  IDX-LST
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   SPA-I5-SYUNOU-CNT )
-               MOVE    IDX1        TO  SPA-GMN-I51-HKNCOMBILST-CNT
-                                       SPA-GMN-I51-TSELNUM (IDX1)
-                                       SPA-NAI-I51-TSELNUM (IDX1)
-               EVALUATE SPA-I5-SYUNOU-TTLDAT-FLG (IDX1)
-               WHEN    0
-                   MOVE    "　"    TO  SPA-GMN-I51-THKNCOMBI
-                                                 (IDX1)  (1 : 2)
-                   MOVE    SPA-I5-SYUNOU-HKNCOMBI (IDX1) (1 : 44 )
-                                   TO  SPA-GMN-I51-THKNCOMBI
-                                                 (IDX1) (3 : 44)
-               WHEN    1
-                   MOVE    SPA-I5-SYUNOU-YM-W (IDX1)
-                                   TO  SPA-GMN-I51-THKNCOMBI (IDX1)
-               WHEN    2
-                   MOVE    "合計"  TO  SPA-GMN-I51-THKNCOMBI (IDX1)
-               END-EVALUATE
+               IF    ( SPA-I5-SYUNOU-TTLDAT-FLG (IDX1) =   1 )
+                   IF    ( SPA-I5-SYUNOU-HKNCOMBI-SU (IDX1)    =   1 )
+                       COMPUTE IDX2    =   IDX1    +   1
+                       COMPUTE IDX-LST =   IDX-LST     +   1
+                       MOVE  IDX2  TO  SPA-NAI-I51-TSYUNOUIDX  (IDX-LST)
+                       STRING  SPA-I5-SYUNOU-YM-W (IDX2)
+                               "　"
+                               SPA-I5-SYUNOU-HKNCOMBI (IDX2) (1 : 44 )
+                               DELIMITED BY  SIZE
+                       INTO    SPA-GMN-I51-THKNCOMBI (IDX-LST)
+                       END-STRING
+                   ELSE
+                       COMPUTE IDX-LST =   IDX-LST     +   1
+                       MOVE  IDX1  TO  SPA-NAI-I51-TSYUNOUIDX  (IDX-LST)
+      *
+                       MOVE  SPA-I5-SYUNOU-YM-W (IDX1)
+                                   TO  SPA-GMN-I51-THKNCOMBI (IDX-LST)
+      *
+                       COMPUTE WRK-STIDX   =   IDX1    +   1
+                       COMPUTE WRK-EDIDX
+                           =   IDX1
+                           +   SPA-I5-SYUNOU-HKNCOMBI-SU (IDX1)
+                       PERFORM VARYING IDX2    FROM WRK-STIDX  BY  1
+                               UNTIL ( IDX2    >    WRK-EDIDX )
+                           COMPUTE IDX-LST =   IDX-LST     +   1
+                           MOVE    IDX2
+                                   TO  SPA-NAI-I51-TSYUNOUIDX (IDX-LST)
+                           STRING  "　"
+                                   SPA-I5-SYUNOU-HKNCOMBI (IDX2)
+                                                          (1 : 44 )
+                                   DELIMITED BY  SIZE
+                           INTO    SPA-GMN-I51-THKNCOMBI (IDX-LST)
+                           END-STRING
+                       END-PERFORM
+                   END-IF
+               END-IF
       *
            END-PERFORM
       *
-           MOVE    SPA-I5-SYUNOU-CNT
-                                   TO  SPA-GMN-I51-HKNCOMBILST-SEL
+           IF    ( SPA-I5-SYUNOU-TUKI-SU (SPA-I5-SYUNOU-CNT)
+                                       >   1 )
+               COMPUTE IDX-LST =   IDX-LST     +   1
+               MOVE    "合計"          TO  SPA-GMN-I51-THKNCOMBI
+                                                               (IDX-LST)
+               MOVE    SPA-I5-SYUNOU-CNT
+                                       TO  SPA-NAI-I51-TSYUNOUIDX
+                                                               (IDX-LST)
+           END-IF
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >    IDX-LST )
+               MOVE    IDX1        TO  SPA-GMN-I51-HKNCOMBILST-CNT
+                                       SPA-GMN-I51-TSELNUM (IDX1)
+                                       SPA-NAI-I51-TSELNUM (IDX1)
+           END-PERFORM
+      *
+           MOVE    1               TO  SPA-GMN-I51-HKNCOMBILST-SEL
                                        SPA-GMN-I51-SELNUM
       *
             .

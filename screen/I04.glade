@@ -111,7 +111,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 09:25:01 GMT</last_modification_time>
       </signal>
-      <label>保険組合せ</label>
+      <label>請求確認</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -2146,7 +2146,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label500</name>
-	  <label>保険組合せ</label>
+	  <label>請求確認一覧</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>

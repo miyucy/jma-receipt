@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    02.12.10  収納明細作成処理追加
       *  01.01.02    NACL-太田    03.01.23  食事の計算方法修正
+      *  01.01.03    NACL-太田    03.01.24  保険組合せリストの表示を修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -100,6 +101,7 @@
            03  IDX-SYU             PIC 9(05).
            03  IDXY                PIC 9(05).
            03  IDXZ                PIC 9(05).
+           03  IDX-LST             PIC 9(05).
       *
       *    システム領域
        01  SYS-AREA.
@@ -157,6 +159,8 @@
            03  WRK-BTUNUM                  PIC X(02).
            03  WRK-BRMNUM                  PIC X(08).
            03  WRK-DRCD                    PIC X(04).
+           03  WRK-STIDX                   PIC 9(05).
+           03  WRK-EDIDX                   PIC 9(05).
       *
       *
       *    スパ領域 ワーク
@@ -536,13 +540,13 @@
       *    未収データ取得処理
            PERFORM 3100-MISYU-DAT-EDIT-SEC
       *
-      *    収納合計データをデフォルトで表示
-           MOVE    SPA-I0-SYUNOU-CNT   TO  WRK-LST-IDX
-      *    請求データ編集処理
-           PERFORM 3100-SEIKYU-DAT-EDIT-SEC
-      *
       *    保険組み合わせリスト編集処理
            PERFORM 3100-HKNCOMBILST-EDIT-SEC
+      *
+           MOVE    SPA-NAI-I04-TSYUNOUIDX(1)
+                                   TO  WRK-LST-IDX
+      *    請求データ編集処理
+           PERFORM 3100-SEIKYU-DAT-EDIT-SEC
       *
             .
        310-SPA-SET-EXT.
@@ -941,29 +945,66 @@
            INITIALIZE                  SPA-GMN-I04-HKNCOMBILST
                                        SPA-NAI-I04-HKNCOMBILST
       *
+           MOVE    ZERO            TO  IDX-LST
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   SPA-I0-SYUNOU-CNT )
-               MOVE    IDX1        TO  SPA-GMN-I04-HKNCOMBILST-CNT
-                                       SPA-GMN-I04-TSELNUM (IDX1)
-                                       SPA-NAI-I04-TSELNUM (IDX1)
-               EVALUATE SPA-I0-SYUNOU-TTLDAT-FLG (IDX1)
-               WHEN    0
-                   MOVE    "　"    TO  SPA-GMN-I04-THKNCOMBI
-                                                 (IDX1)  (1 : 2)
-                   MOVE    SPA-I0-SYUNOU-HKNCOMBI (IDX1) (1 : 44 )
-                                   TO  SPA-GMN-I04-THKNCOMBI
-                                                 (IDX1) (3 : 44)
-               WHEN    1
-                   MOVE    SPA-I0-SYUNOU-YM-W (IDX1)
-                                   TO  SPA-GMN-I04-THKNCOMBI (IDX1)
-               WHEN    2
-                   MOVE    "合計"  TO  SPA-GMN-I04-THKNCOMBI (IDX1)
-               END-EVALUATE
+               IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX1) =   1 )
+                   IF    ( SPA-I0-SYUNOU-HKNCOMBI-SU (IDX1)    =   1 )
+                       COMPUTE IDX2    =   IDX1    +   1
+                       COMPUTE IDX-LST =   IDX-LST     +   1
+                       MOVE  IDX2  TO  SPA-NAI-I04-TSYUNOUIDX  (IDX-LST)
+                       STRING  SPA-I0-SYUNOU-YM-W (IDX2)
+                               "　"
+                               SPA-I0-SYUNOU-HKNCOMBI (IDX2) (1 : 44 )
+                               DELIMITED BY  SIZE
+                       INTO    SPA-GMN-I04-THKNCOMBI (IDX-LST)
+                       END-STRING
+                   ELSE
+                       COMPUTE IDX-LST =   IDX-LST     +   1
+                       MOVE  IDX1  TO  SPA-NAI-I04-TSYUNOUIDX  (IDX-LST)
+      *
+                       MOVE  SPA-I0-SYUNOU-YM-W (IDX1)
+                                   TO  SPA-GMN-I04-THKNCOMBI (IDX-LST)
+      *
+                       COMPUTE WRK-STIDX   =   IDX1    +   1
+                       COMPUTE WRK-EDIDX
+                           =   IDX1
+                           +   SPA-I0-SYUNOU-HKNCOMBI-SU (IDX1)
+                       PERFORM VARYING IDX2    FROM WRK-STIDX  BY  1
+                               UNTIL ( IDX2    >    WRK-EDIDX )
+                           COMPUTE IDX-LST =   IDX-LST     +   1
+                           MOVE    IDX2
+                                   TO  SPA-NAI-I04-TSYUNOUIDX (IDX-LST)
+                           STRING  "　"
+                                   SPA-I0-SYUNOU-HKNCOMBI (IDX2)
+                                                          (1 : 44 )
+                                   DELIMITED BY  SIZE
+                           INTO    SPA-GMN-I04-THKNCOMBI (IDX-LST)
+                           END-STRING
+                       END-PERFORM
+                   END-IF
+               END-IF
       *
            END-PERFORM
       *
-           MOVE    SPA-I0-SYUNOU-CNT
-                                   TO  SPA-GMN-I04-HKNCOMBILST-SEL
+           IF    ( SPA-I0-SYUNOU-TUKI-SU (SPA-I0-SYUNOU-CNT)
+                                       >   1 )
+               COMPUTE IDX-LST =   IDX-LST     +   1
+               MOVE    "合計"          TO  SPA-GMN-I04-THKNCOMBI
+                                                               (IDX-LST)
+               MOVE    SPA-I0-SYUNOU-CNT
+                                       TO  SPA-NAI-I04-TSYUNOUIDX
+                                                               (IDX-LST)
+           END-IF
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >    IDX-LST )
+               MOVE    IDX1        TO  SPA-GMN-I04-HKNCOMBILST-CNT
+                                       SPA-GMN-I04-TSELNUM (IDX1)
+                                       SPA-NAI-I04-TSELNUM (IDX1)
+           END-PERFORM
+      *
+           MOVE    1               TO  SPA-GMN-I04-HKNCOMBILST-SEL
                                        SPA-GMN-I04-SELNUM
       *
             .
@@ -1462,8 +1503,9 @@
                    MOVE    IDX1        TO  SPA-GMN-I04-HKNCOMBILST-SEL
                    MOVE    SPA-GMN-I04-TSELNUM (IDX1)
                                        TO  SPA-GMN-I04-SELNUM
-                                           WRK-LST-IDX
       *
+                   MOVE    SPA-NAI-I04-TSYUNOUIDX (SPA-GMN-I04-SELNUM)
+                                       TO  WRK-LST-IDX
                    PERFORM 3100-SEIKYU-DAT-EDIT-SEC
       *
       *            調整金
@@ -1579,7 +1621,8 @@
                GO  TO  4100-CHOSEI-CHK-EXT
            END-IF
       *
-           MOVE    SPA-GMN-I04-HKNCOMBILST-SEL
+           MOVE    SPA-NAI-I04-TSYUNOUIDX
+                                   (SPA-GMN-I04-HKNCOMBILST-SEL)
                                        TO  IDXZ
            IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDXZ)
                                    NOT =   ZERO )
@@ -1649,7 +1692,8 @@
                GO  TO  4100-NYUKIN-CHK-EXT
            END-IF
       *
-           MOVE    SPA-GMN-I04-HKNCOMBILST-SEL
+           MOVE    SPA-NAI-I04-TSYUNOUIDX
+                                  (SPA-GMN-I04-HKNCOMBILST-SEL)
                                        TO  IDXZ
            IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDXZ)
                                    NOT =   ZERO )
@@ -1895,7 +1939,9 @@
            END-IF
       *
            MOVE    SPA-GMN-I04-SELNUM  TO  SPA-GMN-I04-HKNCOMBILST-SEL
-                                           WRK-LST-IDX
+      *
+           MOVE    SPA-NAI-I04-TSYUNOUIDX (SPA-GMN-I04-SELNUM)
+                                       TO  WRK-LST-IDX
            PERFORM 3100-SEIKYU-DAT-EDIT-SEC
       *
            MOVE    1                   TO  SPA-GMN-I04-CUR

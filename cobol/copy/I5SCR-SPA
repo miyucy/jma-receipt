@@ -46,9 +46,9 @@
                        11  SPA-GMN-I51-NYUINKA       PIC X(10).
                    09  SPA-GMN-I51-INPUT-AREA.
       *                算定開始日
-                       11  SPA-GMN-I51-SANTEISTYMD   PIC X(09).
+                       11  SPA-GMN-I51-SANTEISTYMD   PIC X(10).
       *                算定終了日
-                       11  SPA-GMN-I51-SANTEIEDYMD   PIC X(09).
+                       11  SPA-GMN-I51-SANTEIEDYMD   PIC X(10).
       *                診療料
                        11  SPA-GMN-I51-HKNRYO        PIC 9(07)
                                                      OCCURS  12.
@@ -158,6 +158,7 @@
                    09  SPA-NAI-I51-HKNCOMBILST.
                        11  SPA-NAI-I51-HKNCOMBILST-ITM  OCCURS   15.
                            13  SPA-NAI-I51-TTTLDAT-FLG   PIC 9(01).
+                           13  SPA-NAI-I51-TSYUNOUIDX    PIC 9(02).
                            13  SPA-NAI-I51-THKNCOMBI-DAT.
                                15  SPA-NAI-I51-TSELNUM   PIC Z9.
       *  収納データ
@@ -171,4 +172,8 @@
              07  SPA-I5-SYUNOU-YM-S                  PIC X(06).
              07  SPA-I5-SYUNOU-YM-W                  PIC X(06).
              07  SPA-I5-SYUNOU-HKNCOMBI              PIC X(50).
+      *      月別保険組合せ数（月別合計データのみ設定）
+             07  SPA-I5-SYUNOU-HKNCOMBI-SU           PIC 9(02).
+      *      対象月数（合計データのみ設定）
+             07  SPA-I5-SYUNOU-TUKI-SU               PIC 9(02).
              07  SPA-I5-SYUNOU-DAT                   PIC X(3000).
