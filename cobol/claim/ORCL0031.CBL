@@ -1580,6 +1580,14 @@
                ELSE
                    MOVE    SNUM-OUTNUM         TO  WRK-KAISU
                END-IF
+      *        ÁíÎÌ¤ØÊÑ¹¹
+               IF      TBL-WKSRY-SRYSURYO (TBL-MAX IDX-S)  >   ZERO
+                   COMPUTE WRK-SURYO       =   TBL-WKSRY-SRYSURYO
+                                                     (TBL-MAX IDX-S)
+                                           *   WRK-KAISU
+                   MOVE    WRK-SURYO       TO  TBL-WKSRY-SRYSURYO
+                                                     (TBL-MAX IDX-S)
+               END-IF
                MOVE    WRK-KAISU       TO  TBL-WKSRY-SRYKAISU
                                                        (TBL-MAX IDX-S)
             END-IF
