@@ -158,8 +158,6 @@
            03  FLG-PTBYO-LEN-ERR                       PIC 9(01).
            03  FLG-UTAGAI                              PIC 9(01).
            03  FLG-KYUSEI                              PIC 9(01).
-      *    0:適応病名なし/1:適応病名あり
-           03  FLG-CHKMST-BYOMEI                       PIC 9(01).
            03  FLG-BYOMEI-ERR                          PIC 9(01).
            03  FLG-CHKMST-SRY                          PIC 9(01).
            03  FLG-HIT                                 PIC 9(01).
@@ -4046,8 +4044,6 @@
       *****************************************************************
        200112-CHKMST-YKZ-BYO-CHK-SEC   SECTION.
       *
-           MOVE    ZERO                TO  FLG-CHKMST-BYOMEI
-      *
            MOVE    ZERO                TO  FLG-CHKMST
       *
            INITIALIZE                      CHKSND-REC
@@ -4243,8 +4239,6 @@
       *****************************************************************
        200112-CHKMST-SRY-BYO-CHK-SEC   SECTION.
       *
-           MOVE    ZERO                TO  FLG-CHKMST-BYOMEI
-      *
            MOVE    ZERO                TO  FLG-CHKMST
       *
            INITIALIZE                      CHKSND-REC
@@ -4254,17 +4248,27 @@
                                        TO  CHKSND-SRYCD
            MOVE    WRK-KJNYMD          TO  CHKSND-YUKOSTYMD
                                            CHKSND-YUKOEDYMD
-           MOVE    CHKSND-REC          TO  CHKSND-REC
-           MOVE    PATH-TBL-CHKSND-KEY3
+           MOVE    CHKSND-REC          TO  MCPDATA-REC
+           MOVE    PATH-TBL-CHKSND-KEY13
                                        TO  MCP-PATH
-           PERFORM 920-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-      *
                MOVE    MCPDATA-REC     TO  CHKSND-REC
+               IF    ( CHKSND-NYUGAIKBN    =   SPACE )
+                OR   ( CHKSND-NYUGAIKBN    =   ORCBSD01-NYUGAIKBN )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-CHKMST
+               END-IF
+           ELSE
+                   MOVE    1           TO  FLG-CHKMST
+                   INITIALIZE              CHKSND-REC
+           END-IF
       *
-               MOVE    PATH-TBL-CHKSND-KEY3
+           MOVE    PATH-TBL-CHKSND-KEY13
                                        TO  MCP-PATH
-               PERFORM 920-DBCLOSE-SEC
+           PERFORM 920-DBCLOSE-SEC
+      *
+           IF    ( FLG-CHKMST          =   ZERO )
       *
                INITIALIZE                  SDTCHK01AREA
                IF    ( SYS-1101-BYOCHKPTN-G    =   SPACE )
@@ -4292,7 +4296,6 @@
                END-IF
            ELSE
                MOVE    1               TO  FLG-CHKMST
-               MOVE    2               TO  FLG-CHKMST-BYOMEI
                IF    ( CONST-TCHK-MAX  >   TCHK-SRY-BYO-MAX )
                    COMPUTE TCHK-SRY-BYO-MAX
                        =   TCHK-SRY-BYO-MAX    +   1
