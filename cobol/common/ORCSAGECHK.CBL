@@ -378,7 +378,7 @@
                    MOVE    COMB-KOH1PAYKBN     TO  WRK-PAYKBN
                    PERFORM 3001-HKNNUM-CHK-SEC
                    IF      FLG-HKNNUM          =   ZERO
-                       IF      HKN-HKNKOHSBTKBN    =   "3"
+                       IF      HKN-HKNKOHSBTKBN    =   "3" OR "6"
                            PERFORM 2001-KOH-CHK-SEC
                        END-IF
                    END-IF
@@ -389,7 +389,7 @@
                    MOVE    COMB-KOH2PAYKBN     TO  WRK-PAYKBN
                    PERFORM 3001-HKNNUM-CHK-SEC
                    IF      FLG-HKNNUM          =   ZERO
-                       IF      HKN-HKNKOHSBTKBN    =   "3"
+                       IF      HKN-HKNKOHSBTKBN    =   "3" OR "6"
                            PERFORM 2001-KOH-CHK-SEC
                        END-IF
                    END-IF
@@ -400,7 +400,7 @@
                    MOVE    COMB-KOH3PAYKBN     TO  WRK-PAYKBN
                    PERFORM 3001-HKNNUM-CHK-SEC
                    IF      FLG-HKNNUM          =   ZERO
-                       IF      HKN-HKNKOHSBTKBN    =   "3"
+                       IF      HKN-HKNKOHSBTKBN    =   "3" OR "6"
                            PERFORM 2001-KOH-CHK-SEC
                        END-IF
                    END-IF
@@ -411,20 +411,12 @@
                    MOVE    COMB-KOH4PAYKBN     TO  WRK-PAYKBN
                    PERFORM 3001-HKNNUM-CHK-SEC
                    IF      FLG-HKNNUM          =   ZERO
-                       IF      HKN-HKNKOHSBTKBN    =   "3"
+                       IF      HKN-HKNKOHSBTKBN    =   "3" OR "6"
                            PERFORM 2001-KOH-CHK-SEC
                        END-IF
                    END-IF
                END-IF
       *
-           END-IF
-      *    原爆のみの時
-           IF     (COMB-HKNNUM         =   SPACE )  AND
-                 ((COMB-KOH1HKNNUM     =   "012" )  OR
-                  (COMB-KOH2HKNNUM     =   "012" )  OR
-                  (COMB-KOH3HKNNUM     =   "012" )  OR
-                  (COMB-KOH4HKNNUM     =   "012" ))
-               MOVE    1               TO  FLG-OK2
            END-IF
       *
            IF      FLG-OK              =   ZERO   AND
