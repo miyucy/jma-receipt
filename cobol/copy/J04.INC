@@ -22,7 +22,7 @@
               03  J04-INPUTCD   OCCURS  20.
                 04  J04-VALUE   PIC X(22).
               03  J04-MEISYO    OCCURS  20.
-                04  J04-VALUE   PIC X(62).
+                04  J04-VALUE   PIC X(80).
               03  J04-SURYO-G   OCCURS  20.
                 04  J04-SURYO-STYLE   PIC X(20).
                 04  J04-SURYO   PIC X(40).

@@ -44,7 +44,7 @@
               03  K02-INPUTCD   OCCURS 20.
                 04  K02-VALUE   PIC X(22).
               03  K02-MEISYO    OCCURS  20.
-                04  K02-VALUE   PIC X(62).
+                04  K02-VALUE   PIC X(80).
               03  K02-SURYO-R     OCCURS  20.
                 04  K02-SURYO-STYLE   PIC X(20).
                 04  K02-SURYO   PIC X(60).

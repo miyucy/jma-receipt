@@ -145,73 +145,73 @@ K05	{
 			value	varchar(22);
 		};
 		MEISYO01	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO02	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO03	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO04	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO05	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO06	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO07	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO08	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO09	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO10	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO11	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO12	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO13	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO14	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO15	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO16	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO17	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO18	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO19	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO20	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO21	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO22	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		MEISYO23	{
-			value	varchar(62);
+			value	varchar(80);
 		};
 		SURYO01	{
  		    style   varchar(20);
