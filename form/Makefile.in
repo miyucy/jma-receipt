@@ -84,6 +84,13 @@ FORM_files = \
               HCM2H.red \
               HCM31.red \
               HCM32.red \
+              HCM18.red \
+              HCM20.red \
+              HCM21.red \
+              HCM22.red \
+              HCM23.red \
+              HCM24.red \
+              HCM29.red \
 
 all:   
 
