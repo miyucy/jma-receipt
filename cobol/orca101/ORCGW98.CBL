@@ -371,10 +371,10 @@
       *****************************************************************
        330-WID1-SET-SEC            SECTION.
       *
-           EVALUATE    SPA-WID1-FLG
-               WHEN    "OK"
+           EVALUATE    SPA-WIDCD
+               WHEN    "3001"
                PERFORM 490-KOUSHIN-SEC
-               WHEN    "DL"
+               WHEN    "3002"
                PERFORM 470-LOCK-DEL-SEC
            END-EVALUATE.
       *
@@ -488,7 +488,7 @@
       *    情報削除
                WHEN    "CLICKED"       ALSO    "B11"
                    MOVE   ZERO         TO  SPA-NAI-KAIJYO-CNT
-                   MOVE  "0002"        TO  SPA-WIDCD
+                   MOVE  "3002"        TO  SPA-WIDCD
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    MOVE   ZERO         TO  SPA-NAI-KAIJYO-CNT
@@ -675,7 +675,7 @@
       *
            PERFORM 4900-KANRENCHK-SEC
            IF      SPA-ERRCD        =   SPACE
-              MOVE    "1001"           TO  SPA-WIDCD
+              MOVE    "3001"           TO  SPA-WIDCD
            END-IF
            .
        490-TOUROKU-EXT.
@@ -1041,12 +1041,12 @@
            MOVE    SPACE               TO  WRK-WIDMSG
       *
            EVALUATE    SPA-WIDCD
-               WHEN    "0002"
+               WHEN    "3001"
+                   MOVE    "排他制御情報を登録します"
+                                                TO  WRK-WIDMSG
+               WHEN    "3002"
                    MOVE
                "全ての排他管理情報を削除します、よろしいですか"
-                                                TO  WRK-WIDMSG
-               WHEN    "1001"
-                   MOVE    "排他制御情報を登録します"
                                                 TO  WRK-WIDMSG
            END-EVALUATE
       *
