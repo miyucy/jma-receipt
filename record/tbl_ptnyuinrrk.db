@@ -238,7 +238,8 @@ path	key15		{
 		DECLARE tbl_ptnyuinrrk_key15_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPID      =   :HOSPID
+			AND		BRMNUM      =   :BRMNUM
 			AND		NYUINYMD	<=	:NYUINYMD
 			AND		TAIINYMD	>=	:TAIINYMD
 			AND		JTIKBN		<>	'5'

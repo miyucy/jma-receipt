@@ -1617,6 +1617,8 @@
            MOVE    ZERO            TO  FLG-PTNYUINRRK
            INITIALIZE              PTNYUINRRK-REC
            MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-NAI-W21-5002-KBNCD
+                                   TO  PTNYUINRRK-BRMNUM
            MOVE    SPA-NAI-W21-YUKOEDYMD-OLD
                                    TO  PTNYUINRRK-NYUINYMD
            MOVE    SPA-NAI-W21-YUKOSTYMD-OLD
