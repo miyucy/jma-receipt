@@ -31,6 +31,7 @@
       *  01.00.02    NACL-太田    03.04.28  自費分負担金額に消費税が
       *                                     落ちていたのを修正
       *  01.00.03    NACL-太田    03.07.01  出力先プリンタサブ追加
+      *  01.00.04    NACL-太田    03.08.26  労災自賠責編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -77,6 +78,7 @@
            03  FLG-SYUNOU2         PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-PTRSIINF        PIC 9(01).
       *
            03  FLG-SP              PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -188,6 +190,9 @@
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1034.INC".
       *
+      *    労災医療機関情報
+           COPY    "CPSK4001.INC".
+      *
       *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
@@ -222,6 +227,10 @@
       *
       *    入院請求書
            COPY "HCN03.INC".
+      *
+      *    患者労災保険情報
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -378,6 +387,36 @@
            MOVE    SYS-1034-PRTNM(3)
                                        TO  WRK-PRTNM
       *
+      *    労災医療機関情報編集
+           MOVE    SPACE               TO  SYS-4001-REC
+           INITIALIZE                  SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    ORCHCN03-SYSYMD     TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-4001-REC
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-4001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
       *    医療機関基本情報
            MOVE    SPACE               TO  SYS-5000-REC
            INITIALIZE                  SYS-5000-REC
@@ -521,6 +560,20 @@
       *    保険組合せ名称編集処理
            PERFORM 3102-HKNCOMBI-HEN-SEC
       *
+           IF    ( COMB-HKNNUM         =   "971" OR "973" )
+      *
+      *        患者労災保険情報検索
+               INITIALIZE                      PTRSIINF-REC
+               MOVE    ORCHCN03-HOSPID(IDX-M)
+                                           TO  PTRSI-HOSPID
+               MOVE    ORCHCN03-PTID  (IDX-M)
+                                           TO  PTRSI-PTID
+               MOVE    COMB-HKNID          TO  PTRSI-HKNID
+               PERFORM 910-PTRSIINF-READ-SEC
+           ELSE
+               INITIALIZE                      PTRSIINF-REC
+           END-IF
+      *
       *    保険種別
            MOVE    WRK-HKNCOMBI        TO  HCN03-HOKEN
       *    負担割合
@@ -582,17 +635,22 @@
       *    （労災・自賠の時、点数表示なし）
            EVALUATE    COMB-HKNNUM
            WHEN    "971"
-               MOVE    SPACE           TO  HCN03-HOKENBUN
            WHEN    "973"
-               COMPUTE WRK-GOKTEN      =    SYU-HKNTEKMONEY
-                                       +    SYU-RSISHOSHIN-MONEY
-                                       +    SYU-RSISAISHIN-MONEY
-                                       +    SYU-RSISDO-MONEY
-                                       +    SYU-RSIETC-MONEY
-               MOVE    WRK-GOKTEN          TO  WRK-Z7
-               MOVE    WRK-Z7              TO  WRK-ZHENSYU9
-               PERFORM 800-HENKAN-SEC
-               MOVE    WRK-ZHENSYU18       TO  HCN03-HOKENBUN
+               IF    ((PTRSI-HKNKBN        =    "4" )
+                 AND  (SYU-PTFTNRATE     NOT =   ZERO  ))
+                  OR(SYS-4001-RSIIRYOKBN NOT =   "1")
+                   COMPUTE WRK-GOKTEN      =    SYU-HKNTEKMONEY
+                                           +    SYU-RSISHOSHIN-MONEY
+                                           +    SYU-RSISAISHIN-MONEY
+                                           +    SYU-RSISDO-MONEY
+                                           +    SYU-RSIETC-MONEY
+                   MOVE    WRK-GOKTEN      TO  WRK-Z7
+                   MOVE    WRK-Z7          TO  WRK-ZHENSYU9
+                   PERFORM 800-HENKAN-SEC
+                   MOVE    WRK-ZHENSYU18   TO  HCN03-HOKENBUN
+               ELSE
+                   MOVE    SPACE           TO  HCN03-HOKENBUN
+               END-IF
            WHEN    OTHER
                MOVE    SYU-HKNTEKMONEY     TO  WRK-Z7
                MOVE    WRK-Z7              TO  WRK-ZHENSYU9
@@ -1284,3 +1342,42 @@
        910-HKNCOMBI-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    患者労災保険情報読み込み
+      *****************************************************************
+       910-PTRSIINF-READ-SEC         SECTION.
+      *
+           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTRSIINF-REC
+                   MOVE    ZERO            TO  FLG-PTRSIINF
+               ELSE
+                   MOVE    1               TO  FLG-PTRSIINF
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTRSIINF
+           END-IF
+     *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       910-PTRSIINF-READ-EXT.
+           EXIT.
