@@ -202,7 +202,7 @@
       *
            EVALUATE    WRK-PARA-PGTYPE
            WHEN    "HC31"
-               STRING  "»Ù¾ÚÆüÊÌ¡§"        DELIMITED   BY  SIZE
+               STRING  "»ÙÊ§ÆüÊÌ¡§"        DELIMITED   BY  SIZE
                        PTINF-NAME          DELIMITED   BY  SPACE
                INTO    WRK-PRTTITLE
                END-STRING
@@ -211,7 +211,7 @@
                                    TO  WRK-JOBTITLE
       *
            WHEN    "HC32"
-               STRING  "»Ù¾Ú·îÊÌ¡§"        DELIMITED   BY  SIZE
+               STRING  "»ÙÊ§·îÊÌ¡§"        DELIMITED   BY  SIZE
                        PTINF-NAME          DELIMITED   BY  SPACE
                INTO    WRK-PRTTITLE
                END-STRING

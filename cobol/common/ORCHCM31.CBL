@@ -625,12 +625,17 @@
       *****************************************************************
        240-GOKEI-HEN-SEC               SECTION.
       *
-      *    合計保険点数
-           MOVE    WRK-GHKNTEN     TO  WRK-Z7
-           MOVE    WRK-Z7          TO  HCM31-GHKNTEN
-      *    合計自費診療
-           MOVE    WRK-GJIHIMONEY  TO  WRK-Z9
-           MOVE    WRK-Z9          TO  HCM31-GJIHIMONEY
+           IF    ( ORCHCM31-KIKANKBN   =   "1"   )
+            AND  ( ORCHCM31-DSPKBN     =   "1"   )
+      *
+      *        合計保険点数
+               MOVE    WRK-GHKNTEN     TO  WRK-Z7
+               MOVE    WRK-Z7          TO  HCM31-GHKNTEN
+      *        合計自費診療
+               MOVE    WRK-GJIHIMONEY  TO  WRK-Z9
+               MOVE    WRK-Z9          TO  HCM31-GJIHIMONEY
+           END-IF
+      *
       *    合計入返金額
            MOVE    WRK-GSKYMONEY   TO  WRK-Z9
            MOVE    WRK-Z9          TO  HCM31-GSKYMONEY
