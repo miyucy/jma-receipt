@@ -28,7 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-多々納   01.05.25  投薬点数計算の中間桁数の変更
-      *  01.00.02    NACL-多々納  04.11.18  フィルム料計算変更
       *****************************************************************
       *
       *
@@ -58,17 +57,17 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-SURYO           PIC 9(05)V9(05).
+           03  WRK-SURYO           PIC 9(05)V9(03).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(05).
+               05  WRK-SURYO-S2    PIC 9(03).
       *
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZ.
                05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
                                    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZZZ.
+               05  WRK-SURYO-Z3    PIC ZZZ.
            03  WRK-TENSU-X.
                05  WRK-TENSU-Z     PIC ZZZZZZZZ.
            03  WRK-TENSUS-X.
@@ -85,23 +84,19 @@
                05  WRK-GOKEI-Z     PIC ZZZZZZZZ.
            03  WRK-GMN-INPUTCD     PIC X(22).
       *
-           03  WRK-SYOKEIS         PIC 9(08)V9(8).
-           03  WRK-SYOKEIS2        PIC 9(08)V9(8).
-           03  WRK-SYOKEIS3        PIC 9(08)V9(8).
+           03  WRK-SYOKEIS         PIC 9(08)V99.
+           03  WRK-SYOKEIS2        PIC 9(08)V999.
+           03  WRK-SYOKEIS3        PIC 9(08)V999.
            03  WRK-SYOKEI          PIC 9(08).
-           03  WRK-TENSUKEIS       PIC 9(08)V9(6).
-           03  WRK-FIRTEN          PIC 9(08).
       *
       *    注射液計算用
            03  WRK-SURYO-CHU9      PIC 9(05).
-           03  WRK-SURYO-CHU       PIC 9(05)V9(05).
+           03  WRK-SURYO-CHU       PIC 9(05)V9(03).
       *
            03  WRK-MOJI            PIC X(01).
       *
            03  WRK-MAISU           PIC 9(05).
       *
-      *診療行為処理最大行
-       01  MAX-LINE                PIC 9(03)   VALUE   400.
       *
       *****************************************************************
       *    連絡　領域
@@ -129,7 +124,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
       *
-           IF      LNK-SC90-IDX        <   1  OR  >  MAX-LINE
+           IF      LNK-SC90-IDX        <   1  OR  >  200
                GO      TO      000-PROC-EXT
            END-IF
       *
@@ -256,28 +251,23 @@
            MOVE    ZERO                TO  LNK-SC90-HAIKI
       *
       *    注射で、アンプルの時、単位以下計算
-      *    IF    ((LNK-COM-SRYKBN (IDX)    =   "31" OR "32" OR
-      *                                                "33"
+           IF    ((LNK-COM-SRYKBN (IDX)    =   "31" OR "32" OR
+                                                       "33"
       *D          処置追加
       *D                                   OR  "40" 
-      *                                                   ) AND
-      *          ((LNK-COM-TANICD (IDX)    =   "014" OR "022" OR "046")
-      *        OR  ((IDX                     <   MAX-LINE  )  AND
-      *             (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))) )
-      *        処置の時、次が残量廃棄
-      *       OR  ((LNK-COM-SRYKBN (IDX)    =   "40" )  AND
-      *            (IDX                     <   MAX-LINE  )  AND
-      ************ (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))
-      *    IF     (LNK-COM-TANICD (IDX)    =   "014"
-      *                                    OR  "022"
-      ***                                  OR  "046"  )  AND
-      *    残量廃棄のあるすべての注射薬を対象とする
-           IF     (IDX                     <   MAX-LINE )  AND
-                  (LNK-COM-INPUTCD(IDX + 1)  =   "099309901")
-               IF      LNK-COM-SURYO(IDX)(6:5) >   ZERO
+                                                          ) AND
+                 ((LNK-COM-TANICD (IDX)    =   "014" OR "022" OR "046")
+               OR  ((IDX                     <   200  )  AND
+                    (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))) )
+      *        処置の時、次ぎが残量廃棄
+              OR  ((LNK-COM-SRYKBN (IDX)    =   "40" )  AND
+                   (IDX                     <   200  )  AND
+                   (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))
+               IF      LNK-COM-SURYO(IDX)(6:3) >   ZERO
                    COMPUTE WRK-SURYO-CHU9      =   LNK-COM-SURYO (IDX)
-                                               +   0.99999
+                                               +   0.99
                    MOVE    WRK-SURYO-CHU9      TO  WRK-SURYO-CHU
+                   MOVE    1                   TO  LNK-SC90-HAIKI
                ELSE
                    MOVE    LNK-COM-SURYO (IDX)     TO  WRK-SURYO-CHU
                END-IF
@@ -393,45 +383,14 @@
                                        *   LNK-COM-SURYO   (IDX)
            MOVE    WRK-SYOKEIS         TO  WRK-SYOKEI
       *
-      *    画像診断以外の計算
-           IF      LNK-COM-SRYKBN (IDX)    =   "70"
-      *        フィルム点数加算
-               MOVE    WRK-SYOKEI          TO  LNK-SC90-FIRTEN
-           ELSE
-               PERFORM 10051-FIRUMU-ETC-SEC
-           END-IF
+      *    フィルム点数加算
+           MOVE    WRK-SYOKEI          TO  LNK-SC90-FIRTEN
       *
       *    回数
            MOVE    LNK-SC90-KAISU      TO  LNK-COM-KAISU (IDX)
       *
            .
        1005-FIRUMU-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    画像診断以外の計算処理
-      *****************************************************************
-       10051-FIRUMU-ETC-SEC           SECTION.
-      *    上限点数判定
-           IF      LNK-COM-JGNTEN (IDX) =   ZERO
-      *        フィルム点数加算
-               ADD     WRK-SYOKEI          TO  LNK-SC90-FIRTEN
-           ELSE
-               COMPUTE WRK-TENSUKEIS       =   WRK-SYOKEI
-                                           /   10
-                                           +   0.5
-               MOVE    WRK-TENSUKEIS       TO  WRK-FIRTEN
-               IF      WRK-FIRTEN          >   LNK-COM-JGNTEN (IDX)
-                   MOVE    LNK-COM-JGNTEN(IDX) TO  WRK-FIRTEN
-      *            器材点数に上限点数を集計
-                   ADD     WRK-FIRTEN          TO  LNK-SC90-KIZTEN
-               ELSE
-                   ADD     WRK-SYOKEI          TO  LNK-SC90-FIRTEN
-               END-IF
-           END-IF
-      *
-           .
-       10051-FIRUMU-ETC-EXT.
            EXIT.
       *
       *****************************************************************
@@ -456,11 +415,11 @@
            PERFORM 2001-KEIZAITENU-SET-SEC
       *
       *    器材点数計算処理
-      *    IF      LNK-SC90-KIZKEI     =   ZERO
-      *        MOVE      ZERO              TO  LNK-SC90-KIZTEN
-      *    ELSE
+           IF      LNK-SC90-KIZKEI     =   ZERO
+               MOVE      ZERO              TO  LNK-SC90-KIZTEN
+           ELSE
                PERFORM 2003-KIZTEN-SET-SEC
-      *****END-IF
+           END-IF
       *
       *    器材（窒素）点数計算処理
            IF      LNK-SC90-CHIKEI     =   ZERO
@@ -505,7 +464,7 @@
                                            +   1
            END-IF
       *
-           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.999999
+           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.999
       *
            .
        2001-KEIZAITENU-EXT.
@@ -546,7 +505,7 @@
            END-IF
       *
       *****COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS2   + 0.99
-           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.999999
+           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.999
       *
            .
        2001-ZAITENU-EXT.
@@ -583,7 +542,7 @@
            END-IF
       *
       *****COMPUTE LNK-SC90-GAITEN     =   WRK-SYOKEIS2   + 0.99
-           COMPUTE LNK-SC90-GAITEN     =   WRK-SYOKEIS3   + 0.999999
+           COMPUTE LNK-SC90-GAITEN     =   WRK-SYOKEIS3   + 0.999
       *
            .
        2002-GAITENU-SET-EXT.
@@ -594,33 +553,11 @@
       *****************************************************************
        2003-KIZTEN-SET-SEC             SECTION.
       *
-      *?   画像診断以外のフィルム計算
-      *    IF      LNK-COM-SRYKBN (01) =   "70"
-      *        MOVE    LNK-SC90-KIZKEI     TO  WRK-SYOKEIS3
-      *    ELSE
-      *        COMPUTE WRK-SYOKEIS3    =   LNK-SC90-KIZKEI
-      *                                +   LNK-SC90-FIRTEN
-      *?   END-IF
-      *    画像診断以外のフィルム計算
-           IF      LNK-COM-SRYKBN (01) NOT =   "70"
-               MOVE    LNK-SC90-FIRTEN     TO  WRK-SYOKEIS3
-               IF      WRK-SYOKEIS3        >   ZERO
-      *        金額計÷１０　四捨五入
-                   COMPUTE WRK-SYOKEIS2        =  (WRK-SYOKEIS3
-                                               /   10  )
-                                               +   0.5
-                   ADD     WRK-SYOKEIS2        TO  LNK-SC90-KIZTEN
-               END-IF
-           END-IF
-      *    器材
-           MOVE    LNK-SC90-KIZKEI     TO  WRK-SYOKEIS3
-           IF      WRK-SYOKEIS3        >   ZERO
       *    金額計÷１０　四捨五入
-               COMPUTE WRK-SYOKEIS2        =  (WRK-SYOKEIS3
-                                           /   10  )
-                                           +   0.5
-               ADD     WRK-SYOKEIS2        TO  LNK-SC90-KIZTEN
-           END-IF
+           COMPUTE WRK-SYOKEIS2        =  (LNK-SC90-KIZKEI
+                                       /   10  )
+                                       +   0.5
+           MOVE    WRK-SYOKEIS2        TO  LNK-SC90-KIZTEN
       *
            .
        2003-KIZTEN-SET-EXT.
