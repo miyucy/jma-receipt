@@ -171,6 +171,11 @@
       *
            03  WRK-JYURRK-REC      PIC X(5000).
       *
+      *    表示用保険
+           03  WRK-IDXH                PIC 9(04).
+           03  WRK-CNT-HKN             PIC 9(04).
+           03  WRK-CNT-HKN2            PIC 9(04).
+      *
       *他科受診科有り
        01  WRK-TAKA-SRYKA-AREA.
            03  WRK-TAKA-SRYKA          PIC  X(02)
@@ -1429,23 +1434,8 @@
            END-PERFORM
       *    前回の保険組合せが使用できない時、１件目
            IF      FLG-HKNCOMBICHK     =   ZERO
-               MOVE    SPA-GMN-THKNCOMBINUM (01)
-                                           TO  SPA-HKNCOMBINUM
-      *
-               MOVE    SPA-GMN-HKN-LIST (01)
-                                           TO  SPA-GMN-HKNCOMBI-G
-               MOVE    SPA-GMN-TFTNRATEMEI (01)
-                                           TO  SPA-GMN-FTNRATEMEI
-      *        労災判定
-               IF      SPA-NAI-HKNNUM (01)     =   "971"
-                                               OR  "973"
-                   MOVE    1                   TO  SPA-HKNKBN
-               ELSE
-                   MOVE    ZERO                TO  SPA-HKNKBN
-               END-IF
-               MOVE    SPA-NAI-HKNID (01)  TO  SPA-HKNID
-               MOVE    SPA-NAI-RSI-HKNKBN (01)
-                                           TO  SPA-RSI-HKNKBN
+      *        省略時の保険組合せ決定
+               PERFORM 1001311-HKNCOMBI-SET-SEC
            END-IF
       *
       *    保険算定年齢チェック等
@@ -1479,6 +1469,73 @@
       *
            .
        100131-HKNCOMBI-CHK-EXT.
+      *
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ決定処理
+      *****************************************************************
+       1001311-HKNCOMBI-SET-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  WRK-CNT-HKN
+           MOVE    ZERO                TO  WRK-CNT-HKN2
+           MOVE    ZERO                TO  WRK-IDXH
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-HKN-MAX
+               MOVE    ZERO                TO  WRK-CNT-HKN2
+               IF      SPA-NAI-HKNNUM (IDX)    NOT =   SPACE
+                   ADD     1                   TO  WRK-CNT-HKN2
+               END-IF
+               IF      SPA-NAI-KOH1HKNNUM (IDX)    NOT =   SPACE
+                   ADD     1                   TO  WRK-CNT-HKN2
+               END-IF
+               IF      SPA-NAI-KOH2HKNNUM (IDX)    NOT =   SPACE
+                   ADD     1                   TO  WRK-CNT-HKN2
+               END-IF
+               IF      SPA-NAI-KOH3HKNNUM (IDX)    NOT =   SPACE
+                   ADD     1                   TO  WRK-CNT-HKN2
+               END-IF
+               IF      SPA-NAI-KOH4HKNNUM (IDX)    NOT =   SPACE
+                   ADD     1                   TO  WRK-CNT-HKN2
+               END-IF
+               IF      WRK-CNT-HKN         <   WRK-CNT-HKN2
+                   MOVE    IDX                 TO  WRK-IDXH
+                   MOVE    WRK-CNT-HKN2        TO  WRK-CNT-HKN
+               END-IF
+      *        労災・自賠責があれば対象とする
+               IF      SPA-NAI-HKNNUM (IDX)    =   "971"
+                                               OR  "973"
+                   MOVE    IDX                 TO  WRK-IDXH
+                   MOVE    SPA-HKN-MAX         TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-IDXH            =   ZERO
+               MOVE    1               TO  WRK-IDXH
+           END-IF
+     *
+           MOVE    SPA-GMN-THKNCOMBINUM (WRK-IDXH)
+                                       TO  SPA-HKNCOMBINUM
+      *
+           MOVE    SPA-GMN-HKN-LIST (WRK-IDXH)
+                                       TO  SPA-GMN-HKNCOMBI-G
+           MOVE    SPA-GMN-TFTNRATEMEI (WRK-IDXH)
+                                       TO  SPA-GMN-FTNRATEMEI
+      *    労災判定
+           IF      SPA-NAI-HKNNUM (WRK-IDXH)   =   "971"
+                                               OR  "973"
+               MOVE    1                   TO  SPA-HKNKBN
+           ELSE
+               MOVE    ZERO                TO  SPA-HKNKBN
+           END-IF
+           MOVE    SPA-NAI-HKNID (WRK-IDXH)
+                                       TO  SPA-HKNID
+           MOVE    SPA-NAI-RSI-HKNKBN (WRK-IDXH)
+                                       TO  SPA-RSI-HKNKBN
+      *
+           .
+       1001311-HKNCOMBI-SET-EXT.
       *
            EXIT.
       *
@@ -2207,6 +2264,13 @@
       *
            MOVE    SPACE               TO  SPA-HKNCOMBIMEI
            MOVE    SPACE               TO  SPA-FTNRATEMEI
+      *
+           IF     (SPA-GMN-SRYKA       =   SPACE      ) AND
+                  (SPA-SYSYMD          =   SPA-SRYYMD ) AND
+                  (SPA-SYORIFLG        =   ZERO       )
+      *        受付マスタより、診療科、ドクターの決定
+               PERFORM 10014-UKETUKE-CHK-SEC
+           END-IF
       *
       *    診療科、ドクター名称編集
            PERFORM 10012-SYSKAN-SEC

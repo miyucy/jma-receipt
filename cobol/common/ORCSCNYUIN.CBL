@@ -80,6 +80,7 @@
            03  FLG-SRYKARRK        PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-UKETUKE         PIC 9(01).
       *
            03  FLG-SINKI           PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
@@ -163,6 +164,12 @@
       *    末日
            03  WRK-MATU                    PIC 9(02).
            03  WRK-NEXT-SRYYMD             PIC X(08).
+      *
+      *    受診時間
+           03  WRK-TIME1.
+               05  WRK-TIME11      PIC 9(08).
+           03  WRK-TIME2.
+               05  WRK-TIME22      PIC 9(04).
       *
       *    診療行為内容比較用テーブル
        01  TBL-AREA.
@@ -255,6 +262,10 @@
       *    診療科履歴
        01  SRYKARRK-REC.
            COPY    "CPSRYKARRK.INC".
+      *
+      *    受診内容
+       01  UKETUKE-REC.
+           COPY    "CPUKETUKE.INC".
       *
       *    点数マスタ−
       *01  TENSU-REC.
@@ -439,6 +450,8 @@
       *    ワーク診療行為マスタ−が存在した時、削除する
            PERFORM 400-WKSRYACT-DEL-SEC
       *
+      *    受付が有った時、受診済とする
+           PERFORM 410-UKETUKE-SYORI-SEC
       *
            .
        100-SAKUSEI-SYORI-EXT.
@@ -2290,6 +2303,64 @@
            .
        400-WKSRYACT-DEL-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    受付更新処理
+      *****************************************************************
+        410-UKETUKE-SYORI-SEC              SECTION.
+      *
+           ACCEPT  WRK-TIME11          FROM  TIME
+           MOVE    WRK-TIME1(1:4)      TO  WRK-TIME2(1:4)
+      *    受診内容ファイルを特定する
+           INITIALIZE                      UKETUKE-REC
+           MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
+           MOVE    SPA-PTID            TO  UKE-PTID
+           MOVE    UKETUKE-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+               PERFORM 976-UKETUKE-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-UKETUKE
+           END-IF
+           PERFORM
+                   UNTIL       FLG-UKETUKE     =    1
+               IF       SPA-SRYKA          =   UKE-SRYKA
+                   IF      UKE-KAIKEITIME      =   ZERO
+                       MOVE    WRK-TIME22          TO  UKE-KAIKEITIME
+                       MOVE    UKETUKE-REC         TO  MCPDATA-REC
+                       MOVE    "DBUPDATE"          TO  MCP-FUNC
+                       MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"          USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+                       MOVE    1                   TO  FLG-UKETUKE
+                   END-IF
+               END-IF
+      *
+               IF      FLG-UKETUKE         =   ZERO
+                   MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+                   PERFORM 976-UKETUKE-NEXT-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+        410-UKETUKE-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    退院処理（診療会計削除）処理
       *****************************************************************
@@ -2656,6 +2727,28 @@
       *    .
       *920-SANTEI-READ-EXT.
       *    EXIT.
+      *
+      *****************************************************************
+      *    受診内容データ読み込み
+      *****************************************************************
+       976-UKETUKE-NEXT-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  UKETUKE-REC 
+               MOVE    ZERO                TO  FLG-UKETUKE
+           ELSE
+               MOVE    1                   TO  FLG-UKETUKE
+           END-IF
+      *
+           .
+       976-UKETUKE-NEXT-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    パラメタデータ順読み
       *****************************************************************
