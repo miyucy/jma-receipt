@@ -1276,16 +1276,18 @@
                MOVE    MCPDATA-REC         TO  SYS-1005-REC
            ELSE
                INITIALIZE                      SYS-1005-REC
-           END-IF        
+           END-IF
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"                 TO  KANACHK-SYORI 
-           MOVE    RECE62-LASTSRYKA    TO  KANACHK-MAE-INPUT
+           MOVE    SYS-1005-RECESRYKA  TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
            IF      KANACHK-RC      =   ZERO
-               STRING  KANACHK-OUT-INPUT(1:KANACHK-MAX)    
+               STRING  "¡Ê"            DELIMITED   BY  SIZE
+                       KANACHK-OUT-INPUT(1:KANACHK-MAX)    
                                        DELIMITED   BY  SIZE
                        SYS-1005-SRYKANAME
                                        DELIMITED   BY  SPACE 
+                       "¡Ë"            DELIMITED   BY  SIZE
                                        INTO  HC06-SRYKA
                END-STRING                        
            END-IF    
