@@ -2692,11 +2692,17 @@
       *    労災保険のチェック
            IF      SPA-HKNKBN          =   1
       *        労災保険の時、電話再診以外はエラーとする
-               IF     (WRK-KAISU       =   ZERO    )  OR
-                      (WRK-KBN         =   "T" OR  "S" )
+               IF     (WRK-KAISU       =   ZERO    )  AND
+                      (WRK-KBN         =   SPACE   )  AND
+                      (WRK-KBN2        =   SPACE   )
                    CONTINUE
                ELSE
-                   MOVE    "8001"          TO  WRK-ERRCD
+      *            電話再診もエラー
+                   IF      WRK-KBN         =   "T" OR  "S"
+                       MOVE    "8021"          TO  WRK-ERRCD
+                   ELSE
+                       MOVE    "8001"          TO  WRK-ERRCD
+                   END-IF
                    MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                END-IF
            END-IF
