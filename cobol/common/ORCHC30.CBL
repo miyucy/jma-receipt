@@ -39,6 +39,7 @@
       *  01.01.02    NACL-伊藤    03.03.03  画像パス名サイズ変更
       *  01.01.03    NACL-伊藤    03.03.28  印刷用データサイズ変更
       *  01.01.04    NACL-森脇    03/07/14  出力先プリンタサブ追加
+      *  02.01.01    NACL-森脇    03/11/19  患者氏名２追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -165,7 +166,9 @@
            03  WRK-YKJ-SYURUI        PIC  X(12).
            03  WRK-YKJ-PTNUM         PIC  X(20).
            03  WRK-YKJ-KANANAME      PIC  X(44).
-           03  WRK-YKJ-NAME          PIC  X(30).
+      *----(02.01.01)--UPD-STTART---
+           03  WRK-YKJ-NAME          PIC  X(50).
+      *----(02.01.01)--UPD-STTART---
            03  WRK-YKJ-JYUSYO        PIC  X(56).
            03  WRK-YKJ-HSPNAME       PIC  X(56).
            03  WRK-YKJ-TEL           PIC  X(15).
@@ -981,7 +984,13 @@
            MOVE    WRK-YKJ-SYURUI           TO  HCM301-SYURUI
            MOVE    WRK-YKJ-PTNUM            TO  HCM301-ID
            MOVE    WRK-YKJ-KANANAME         TO  HCM301-KANANAME
-           MOVE    WRK-YKJ-NAME             TO  HCM301-NAME
+      *----(02.01.01)--UPD-STTART---
+           IF      WRK-YKJ-NAME(31:)    =   SPACE
+               MOVE    WRK-YKJ-NAME             TO  HCM301-NAME
+           ELSE
+               MOVE    WRK-YKJ-NAME             TO  HCM301-NAME2
+           END-IF
+      *----(02.01.01)--UPD-END------
            MOVE    WRK-YKJ-JYUSYO           TO  HCM301-JYUSYO
            MOVE    WRK-YKJ-HSPNAME          TO  HCM301-HSPNAME
            MOVE    WRK-YKJ-TEL              TO  HCM301-TEL
@@ -989,7 +998,7 @@
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HCM301-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)  TO  HCM301-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
@@ -1053,7 +1062,13 @@
            MOVE    WRK-YKJ-SYURUI           TO  HCM302-SYURUI
            MOVE    WRK-YKJ-PTNUM            TO  HCM302-ID
            MOVE    WRK-YKJ-KANANAME         TO  HCM302-KANANAME
-           MOVE    WRK-YKJ-NAME             TO  HCM302-NAME
+      *----(02.01.01)--UPD-STTART---
+           IF      WRK-YKJ-NAME(31:)    =   SPACE
+               MOVE    WRK-YKJ-NAME             TO  HCM302-NAME
+           ELSE
+               MOVE    WRK-YKJ-NAME             TO  HCM302-NAME2
+           END-IF
+      *----(02.01.01)--UPD-END------
            MOVE    WRK-YKJ-JYUSYO           TO  HCM302-JYUSYO
            MOVE    WRK-YKJ-HSPNAME          TO  HCM302-HSPNAME
            MOVE    WRK-YKJ-TEL              TO  HCM302-TEL
@@ -1061,7 +1076,7 @@
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HCM302-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)  TO  HCM302-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
@@ -1125,7 +1140,13 @@
            MOVE    WRK-YKJ-SYURUI           TO  HCM303-SYURUI
            MOVE    WRK-YKJ-PTNUM            TO  HCM303-ID
            MOVE    WRK-YKJ-KANANAME         TO  HCM303-KANANAME
-           MOVE    WRK-YKJ-NAME             TO  HCM303-NAME
+      *----(02.01.01)--UPD-STTART---
+           IF      WRK-YKJ-NAME(31:)    =   SPACE
+               MOVE    WRK-YKJ-NAME             TO  HCM303-NAME
+           ELSE
+               MOVE    WRK-YKJ-NAME             TO  HCM303-NAME2
+           END-IF
+      *----(02.01.01)--UPD-END------
            MOVE    WRK-YKJ-JYUSYO           TO  HCM303-JYUSYO
            MOVE    WRK-YKJ-HSPNAME          TO  HCM303-HSPNAME
            MOVE    WRK-YKJ-TEL              TO  HCM303-TEL
@@ -1197,7 +1218,13 @@
            MOVE    WRK-YKJ-SYURUI           TO  HCM304-SYURUI
            MOVE    WRK-YKJ-PTNUM            TO  HCM304-ID
            MOVE    WRK-YKJ-KANANAME         TO  HCM304-KANANAME
-           MOVE    WRK-YKJ-NAME             TO  HCM304-NAME
+      *----(02.01.01)--UPD-STTART---
+           IF      WRK-YKJ-NAME(31:)    =   SPACE
+               MOVE    WRK-YKJ-NAME             TO  HCM304-NAME
+           ELSE
+               MOVE    WRK-YKJ-NAME             TO  HCM304-NAME2
+           END-IF
+      *----(02.01.01)--UPD-END------
            MOVE    WRK-YKJ-JYUSYO           TO  HCM304-JYUSYO
            MOVE    WRK-YKJ-HSPNAME          TO  HCM304-HSPNAME
            MOVE    WRK-YKJ-TEL              TO  HCM304-TEL
@@ -1269,7 +1296,13 @@
            MOVE    WRK-YKJ-SYURUI           TO  HCM305-SYURUI
            MOVE    WRK-YKJ-PTNUM            TO  HCM305-ID
            MOVE    WRK-YKJ-KANANAME         TO  HCM305-KANANAME
-           MOVE    WRK-YKJ-NAME             TO  HCM305-NAME
+      *----(02.01.01)--UPD-STTART---
+           IF      WRK-YKJ-NAME(31:)    =   SPACE
+               MOVE    WRK-YKJ-NAME             TO  HCM305-NAME
+           ELSE
+               MOVE    WRK-YKJ-NAME             TO  HCM305-NAME2
+           END-IF
+      *----(02.01.01)--UPD-END------
            MOVE    WRK-YKJ-JYUSYO           TO  HCM305-JYUSYO
            MOVE    WRK-YKJ-HSPNAME          TO  HCM305-HSPNAME
            MOVE    WRK-YKJ-TEL              TO  HCM305-TEL
@@ -1341,7 +1374,13 @@
            MOVE    WRK-YKJ-SYURUI           TO  HCM306-SYURUI
            MOVE    WRK-YKJ-PTNUM            TO  HCM306-ID
            MOVE    WRK-YKJ-KANANAME         TO  HCM306-KANANAME
-           MOVE    WRK-YKJ-NAME             TO  HCM306-NAME
+      *----(02.01.01)--UPD-STTART---
+           IF      WRK-YKJ-NAME(31:)    =   SPACE
+               MOVE    WRK-YKJ-NAME             TO  HCM306-NAME
+           ELSE
+               MOVE    WRK-YKJ-NAME             TO  HCM306-NAME2
+           END-IF
+      *----(02.01.01)--UPD-END------
            MOVE    WRK-YKJ-JYUSYO           TO  HCM306-JYUSYO
            MOVE    WRK-YKJ-HSPNAME          TO  HCM306-HSPNAME
            MOVE    WRK-YKJ-TEL              TO  HCM306-TEL

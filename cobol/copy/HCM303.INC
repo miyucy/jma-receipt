@@ -5,6 +5,7 @@
             02  HCM303-ID   PIC X(20).
             02  HCM303-KANANAME PIC X(44).
             02  HCM303-NAME PIC X(30).
+            02  HCM303-NAME2    PIC X(50).
             02  HCM303-JYUSYO   PIC X(56).
             02  HCM303-HSPNAME  PIC X(56).
             02  HCM303-TEL  PIC X(15).
