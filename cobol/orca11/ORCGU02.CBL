@@ -995,7 +995,8 @@
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 493-CLEAR-SEC
       *---- (01.00.05) LINE ADD END ----------------------------------
-      *TEST    受付一覧更新
+      *    受付一覧更新
+               WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11S"
                    PERFORM 4931-UKELIST-SEC
       *
