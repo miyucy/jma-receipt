@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if test -z "@jma-receipt-env@" ; then
+if test -z "$JMARECEIPT_ENV"; then
     JMARECEIPT_ENV="@jma-receipt-env@"
 fi
 if ! test -f "$JMARECEIPT_ENV"; then
