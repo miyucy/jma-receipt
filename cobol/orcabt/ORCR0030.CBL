@@ -95,6 +95,7 @@
       *                                     一部負担金再掲のセットを行う
       *  01.02.09   MCC-小豆沢    02.10.16  特定器材点数の集計先を修正
       *  01.02.10   MCC-小豆沢    02.11.06  約束処方時の点数欄表示修正
+      *  01.02.11   NACL-門脇     02.11.26  検診コードを編集できるよう修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -716,7 +717,8 @@
                                PERFORM   RECE05-HENSYU-SEC
                                PERFORM   RECE04-WRITE-SEC
                            ELSE
-                               IF   ACCT-SRYKBN   =    "99"
+                               IF   ACCT-SRYKBN  =  "11"  OR  "12" 
+                                                          OR  "99" 
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1 OR
                                                        CONS-TOKKI2 OR
                                                        CONS-TOKKI3 OR
@@ -1251,7 +1253,10 @@
                      MOVE    ZERO     TO    WK-YKZTEN
                      MOVE    ZERO     TO    FLG-OSINKBN
                END-IF
-               PERFORM   RECE-LEFT-SET-SEC
+               IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                    (ACCT-ZAIKAISU  NOT =    ZERO)
+                     PERFORM   RECE-LEFT-SET-SEC
+               END-IF
                IF    SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
                                       "31"   OR   "32"   OR   "33"   OR
                                       "40"   OR   "50"   OR   "60"   OR
