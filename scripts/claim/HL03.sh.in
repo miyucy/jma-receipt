@@ -9,7 +9,7 @@ fi
 
 . $JMARECEIPT_ENV
 
-ORCASCRIPT=$ORCA_DIR/scripts/claim/rb
+ORCASCRIPT=$ORCA_DIR/scripts/claim/rb2
 #-------------------------------------------#
 #  $1 - InputXMLFile
 #  $2 - Output SequencialFile
@@ -19,7 +19,7 @@ ORCASCRIPT=$ORCA_DIR/scripts/claim/rb
 # 
 #-------------------------------------------#
   cd $ORCASCRIPT
-     ./decode_xml.rb -e $1 ../def/orca_layout_decode.def ../link/link_decode.def $2
+     ./claim2_decode.rb ../def/orca_decode.hir $1 $2
 #-------------------------------------------#
 #        $2 SequencialFile
 #-------------------------------------------#
