@@ -50,6 +50,8 @@
       *  01.01.04    NACL-藤原    03/06/03  未コード化傷病名コードのとき
       *                                     病名よりコード検索をする
       *                                     病名からのコード検索方法の修正
+      *  01.01.05    NACL-藤原    03/06/25  確認画面からの戻りのとき画面が
+      *                                     残らないように修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -470,6 +472,7 @@
                    IF      SPA-CID1-FLG        =   "OK"
                        MOVE    1                   TO  SPA-GMN-CUR
                        MOVE    SPACE               TO  SPA-C03-UPDFLG
+                       MOVE    "JOIN"              TO  MCP-PUTTYPE
                        PERFORM 210-BACK
                    ELSE
                        MOVE    1                   TO  SPA-GMN-CUR
@@ -2292,7 +2295,6 @@
            MOVE    SPACE               TO  SPA-C01KYOUTU
            MOVE    SPA-C01KYOUTU       TO  SPA-WORK
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
