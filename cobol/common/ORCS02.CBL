@@ -5305,6 +5305,8 @@
                    MOVE    HKN-HON-NYUKFTNRATE  TO   WK-NYUKFTNRATE
                    MOVE    HKN-HON-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
                    MOVE    HKN-HON-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
+      *
+                   MOVE    "1"                  TO   HKN-RECEFTNDSPKBN
            END-IF.
       *
        2302-KOH-HKNREAD-EXT.
