@@ -490,6 +490,9 @@
                                            +   BD002-JIHI-TOTAL-TAX  
                                            +   BD002-JIHI-TAX
                    END-IF
+                   IF    IDX  =  8  OR  9
+                       MOVE  BD002-RSIJIBAI-SKYMONEY TO BD002-SKYMONEY
+                   END-IF
                    COMPUTE WRK-MONEY       =   BD002-SKYMONEY
                                            -   WRK-JIHI                  
       *              
