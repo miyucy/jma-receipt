@@ -167,6 +167,11 @@
            05 PIC  X(30)   VALUE   "存在しません                  ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "060002".
+           05 PIC  X(30)   VALUE   "初診算定日以前より継続中の病名".
+           05 PIC  X(30)   VALUE   "が存在します                  ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
       *    ** 070xxx 疑い病名
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "070001".
@@ -296,7 +301,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  47.
+           05 ERRMES-OCC   OCCURS  48.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   47.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   48.

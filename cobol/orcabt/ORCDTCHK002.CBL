@@ -149,6 +149,7 @@
                05  FLG-PTBYO-DAY                       PIC 9(01)
                                                        OCCURS  31.
            03  FLG-PTBYO-TAISYO                        PIC 9(01).
+           03  FLG-PTBYO-ERR                           PIC 9(01).
            03  FLG-PTBYO-MOJI                          PIC 9(01).
            03  FLG-CHK-END                             PIC 9(01).
            03  FLG-MICODSYOBYO                         PIC 9(01).
@@ -166,6 +167,7 @@
            03  FLG-SEIHO                               PIC 9(01).
            03  FLG-RJN                                 PIC 9(01).
            03  FLG-PROC                                PIC 9(01).
+           03  FLG-PTBYO-HKN                           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -215,6 +217,8 @@
            03  IDX21                                   PIC 9(05). 
            03  IDX22                                   PIC 9(05). 
            03  IDX23                                   PIC 9(05). 
+           03  IDX24                                   PIC 9(05). 
+           03  IDX25                                   PIC 9(05). 
            03  IDXA                                    PIC 9(05). 
            03  IDXE                                    PIC 9(05). 
            03  IDX-TSRYKA                              PIC 9(05).
@@ -323,6 +327,10 @@
                05  WRK-NISSU-PTR                       PIC 9(03).
            03  WRK-ORCSHKN-HKNCOMBI                    PIC X(04).
            03  WRK-ORCSHKN-HKNCOMBIMEI                 PIC X(200).
+           03  WRK-SYOSIN-CHK-YMD.
+               05  WRK-SYOSIN-CHK-YY                   PIC 9(04).
+               05  WRK-SYOSIN-CHK-MM                   PIC 9(02).
+               05  WRK-SYOSIN-CHK-DD                   PIC 9(02).
       *
       *    保険ＩＤ退避ワーク
        01  THKNID-AREA.
@@ -361,7 +369,6 @@
                05  TNACCT-HKNCOMBI-EDYMD               PIC X(08).
                05  TNACCT-HKNCOMBI-HKNCOMBI-DAY        PIC 9(03)
                                                        OCCURS 31.
-
       *
       *    診療科退避ワーク
        01  TSRYKA-AREA.
@@ -370,6 +377,14 @@
                05  TSRYKA-SRYKA                        PIC X(02).
                05  TSRYKA-SHOSIN-DAY                   PIC 9(01)
                                                        OCCURS 31.
+               05  TSRYKA-SHOSIN-HKN-YMD-G.
+                   07  TSRYKA-SHOSIN-IHO-YMD           PIC X(08).
+                   07  TSRYKA-SHOSIN-RSI-YMD           PIC X(08).
+                   07  TSRYKA-SHOSIN-JBI-YMD           PIC X(08).
+               05  TSRYKA-SHOSIN-HKN-YMD-R
+                                   REDEFINES   TSRYKA-SHOSIN-HKN-YMD-G.
+                   07  TSRYKA-SHOSIN-HKN-YMD           PIC X(08)
+                                                       OCCURS  3.
                05  TSRYKA-SRYCD-MAX                    PIC 9(05).
                05  TSRYKA-SRYCD                        PIC X(09)
                                                        OCCURS 2000.
@@ -1871,8 +1886,28 @@
                        UNTIL ( IDX2    >   31 )
       *
                    IF    ( ACCT-DAY (1 IDX2)   >   ZERO )
+      *
                        MOVE    1   TO  TSRYKA-SHOSIN-DAY
                                                  (IDX-TSRYKA IDX2)
+      *
+                       MOVE    ACCT-SRYYM  TO  WRK-SYOSIN-CHK-YMD
+                       MOVE    IDX2        TO  WRK-SYOSIN-CHK-DD
+      *
+                       EVALUATE    COMB-HKNNUM
+                       WHEN    "971"
+                           MOVE    WRK-SYOSIN-CHK-YMD
+                                           TO  TSRYKA-SHOSIN-RSI-YMD
+                                                        (IDX-TSRYKA)
+                       WHEN    "973"
+                           MOVE    WRK-SYOSIN-CHK-YMD
+                                           TO  TSRYKA-SHOSIN-JBI-YMD
+                                                        (IDX-TSRYKA)
+                       WHEN    OTHER
+                           MOVE    WRK-SYOSIN-CHK-YMD
+                                           TO  TSRYKA-SHOSIN-IHO-YMD
+                                                        (IDX-TSRYKA)
+                       END-EVALUATE
+      *
                    END-IF
       *
                END-PERFORM
@@ -3128,7 +3163,8 @@
       *        患者病名情報チェック処理
                PERFORM 200112-PTBYOMEI-CHK-SEC
       *
-      *        診療開始日チェック処理
+      *        診療開始日チェック（２）処理
+                
                IF    ( FLG-CHKEND (6)      =   ZERO )
                    PERFORM 200112-PTBYO-SRYYMD-CHK-SEC
                END-IF
@@ -3241,6 +3277,15 @@
                    IF    ( FLG-CHKEND (5)  =   ZERO )
                        PERFORM 2001121-PTBYO-CHK-SEC
                    END-IF
+      *
+      *            診療開始日チェック（１）
+                   PERFORM VARYING IDX24   FROM    1   BY  1
+                           UNTIL ( IDX24   >   3 )
+                            OR   ( FLG-CHKEND (6)  NOT =   ZERO )
+      *
+                       PERFORM 2001121-PTBYO-SRYYMD-CHK-SEC
+      *
+                   END-PERFORM
       *
       *            疑い病名チェック
                    IF    ( FLG-CHKEND (7)  =   ZERO )
@@ -3609,6 +3654,86 @@
        2001121-PTBYO-BYOMEI-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    診療開始日チェック（１）処理
+      *****************************************************************
+       2001121-PTBYO-SRYYMD-CHK-SEC    SECTION.
+      *
+      *    労災自賠をチェック
+           IF    ( IDX24               =   2 OR 3 )
+               PERFORM 2001121-PTBYO-RSI-JBI-CHK-SEC
+               IF    ( FLG-PTBYO-HKN   NOT =   IDX24 )
+                   GO  TO  2001121-PTBYO-SRYYMD-CHK-EXT
+               END-IF
+           END-IF
+      *
+           MOVE    TSRYKA-SHOSIN-HKN-YMD (IDX4 IDX24)
+                                       TO  WRK-SYOSIN-CHK-YMD
+      *
+           IF    ( WRK-SYOSIN-CHK-YMD  =   SPACE )
+               GO  TO  2001121-PTBYO-SRYYMD-CHK-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-PTBYO-ERR
+           IF    ( PTBYO-SRYYMD        <   WRK-SYOSIN-CHK-YMD )
+               IF    ( PTBYO-TENKIKBN      =   SPACE )
+                   IF    ( PTBYO-NYUGAIKBN =   SPACE )
+                    OR   ( PTBYO-NYUGAIKBN =   ORCBSD01-NYUGAIKBN )
+                           MOVE    1   TO  FLG-PTBYO-ERR
+                   END-IF
+               ELSE
+                   IF    ( PTBYO-TENKIYMD  >=  WRK-SYOSIN-CHK-YMD )
+                       IF    ( PTBYO-NYUGAIKBN =   SPACE )
+                        OR   ( PTBYO-NYUGAIKBN =   ORCBSD01-NYUGAIKBN )
+                           MOVE    1   TO  FLG-PTBYO-ERR
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-PTBYO-ERR   NOT =   ZERO )
+               MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
+               MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
+               MOVE    "060002"            TO  WRK-ERRCD
+               PERFORM 213-ERRMES-HEN-SEC
+      *
+               IF    ( ORCBSD01-CHKKBN (6) =   "1" )
+                   MOVE    1           TO  FLG-CHKEND (6)
+               END-IF
+           END-IF
+      *
+           .
+       2001121-PTBYO-SRYYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    病名労災自賠責チェック処理
+      *****************************************************************
+       2001121-PTBYO-RSI-JBI-CHK-SEC   SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTBYO-HKN
+      *
+           IF    ( PTBYO-HKNCOMBI      NOT =   ZERO )
+               PERFORM VARYING IDX25   FROM    1   BY  1
+                       UNTIL ( IDX25           >   ORCSHKN-HKN-MAX )
+                        OR   ( FLG-PTBYO-HKN
+                                           NOT =   ZERO )
+                   IF    ( PTBYO-HKNCOMBI  =   ORCSHKN-GMN-HKNCOMBINUM
+                                                                (IDX25))
+                       EVALUATE    ORCSHKN-NAI-HKNNUM (IDX25)
+                       WHEN    "971"
+                           MOVE    2   TO  FLG-PTBYO-HKN
+                       WHEN    "973"
+                           MOVE    3   TO  FLG-PTBYO-HKN
+                       WHEN    OTHER
+                           MOVE    1   TO  FLG-PTBYO-HKN
+                       END-EVALUATE
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       2001121-PTBYO-RSI-JBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    疑い病名チェック処理
       *****************************************************************
        2001121-PTBYO-UTAGAI-CHK-SEC    SECTION.
@@ -3665,7 +3790,7 @@
        2001121-PTBYO-TOUROKU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    診療開始日チェック処理
+      *    診療開始日チェック（２）処理
       *****************************************************************
        200112-PTBYO-SRYYMD-CHK-SEC     SECTION.
       *
