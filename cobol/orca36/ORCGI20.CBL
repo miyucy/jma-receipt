@@ -31,6 +31,7 @@
       *  01.00.02    NACL-太田    02/01/14  COPY句の重複定義を修正
       *  01.00.03    NACL-太田    03/10/14  CSV出力、印刷機能追加
       *  01.00.04    NACL-太田    04/01/14  退院日入力機能追加
+      *  01.00.05    NACL-太田    04/01/30  状態に当月在院を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -145,6 +146,8 @@
                05  WRK-MOJISU2     PIC 9(03).
            03  WRK-SELNUMST        PIC 9(05).
            03  WRK-SELNUMED        PIC 9(05).
+           03  WRK-STYMD           PIC X(08).
+           03  WRK-EDYMD           PIC X(08).
       *
        01  WRK-HEN-AREA.
            03  WRK-LENGTH          PIC 9(02).
@@ -670,9 +673,11 @@
       *    状態
            MOVE    "1"                 TO  SPA-GMN-JOTAIL (1)
            MOVE    "2"                 TO  SPA-GMN-JOTAIL (2)
+           MOVE    "3"                 TO  SPA-GMN-JOTAIL (3)
            MOVE    "入院中"            TO  SPA-GMN-JOTAIMEIL (1)
            MOVE    "退院済"            TO  SPA-GMN-JOTAIMEIL (2)
-           MOVE    2                   TO  SPA-GMN-JOTAI-MAX
+           MOVE    "当月在院"          TO  SPA-GMN-JOTAIMEIL (3)
+           MOVE    3                   TO  SPA-GMN-JOTAI-MAX
       *
            PERFORM 420-CLEAR-SEC
       *
@@ -2345,6 +2350,23 @@
                    INTO    WRK-SQL
                    WITH    POINTER WRK-SQL-PNT
                    END-STRING
+               WHEN    "3"
+      *
+                   MOVE    SPA-SYSYMD  TO  WRK-STYMD
+                   MOVE    "01"        TO  WRK-STYMD (7:)
+      *
+                   MOVE    SPA-SYSYMD  TO  WRK-SYMD
+                   PERFORM 5002-GETUMATU-HEN-SEC
+                   MOVE    WRK-SYMD    TO  WRK-EDYMD
+      *
+                   STRING  "(taiinymd >= '"        DELIMITED  BY  SIZE
+                           WRK-STYMD               DELIMITED  BY  SIZE
+                           "' and nyuinymd <= '"   DELIMITED  BY  SIZE
+                           WRK-EDYMD               DELIMITED  BY  SIZE
+                           "')"                    DELIMITED  BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
                END-EVALUATE
       *
                MOVE    1                   TO  FLG-JYOKEN
@@ -2701,6 +2723,23 @@
       *
            .
        5002-HIZUKE-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    月末日編集処理
+      *****************************************************************
+       5002-GETUMATU-HEN-SEC           SECTION.
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY1-AREA
+           MOVE    "71"                TO   LNK-DAY7-IRAI
+           MOVE    WRK-SYMD (1 : 6)    TO   LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                       LNK-DAY7-AREA
+           MOVE    LNK-DAY7-KOYOMI     TO  WRK-SYMD
+      *
+           .
+       5002-GETUMATU-HEN-EXT.
            EXIT.
       *
       *****************************************************************
