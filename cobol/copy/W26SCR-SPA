@@ -177,7 +177,7 @@
                    13  SPA-GMN-W27-BTU-NAME-CNT        PIC S9(9)
                                                        BINARY.
                    13  SPA-GMN-W27-BTU-NAME-ITM-OCC    OCCURS  50 TIMES
-                                               INDEXED BY  CMB-IDX01.
+                                          INDEXED BY  CMB-W27-IDX01.
                      15  SPA-GMN-W27-BTU-NAME-ITM      PIC X(23).
       *                ITM2には病棟種別をセット
                      15  SPA-GMN-W27-BTU-NAME-ITM2     PIC X(20).
