@@ -7816,22 +7816,26 @@
       *
                MOVE    MCPDATA-REC     TO  SRYACCT-REC
       *
-               IF    ( WRK-TAIINYM     =   ACCT-SRYYM )
-                   MOVE    WRK-TAIINDD TO  IDX14
+               IF    ( ACCT-SRYCDTOTAL =   120001110 )
+                   CONTINUE
                ELSE
-                   MOVE    ZERO        TO  IDX14
-               END-IF
-      *
-               PERFORM UNTIL ( IDX14               >   31 )
-                       OR    ( SPA-I0IDCD      NOT =   SPACE )
-      *
-                   COMPUTE IDX14       =   IDX14   +   1
-      *
-                   IF    ( ACCT-DAY (1 IDX14)      >   ZERO )
-                       MOVE    "3004"          TO  SPA-I0IDCD
+                   IF    ( WRK-TAIINYM     =   ACCT-SRYYM )
+                       MOVE    WRK-TAIINDD TO  IDX14
+                   ELSE
+                       MOVE    ZERO        TO  IDX14
                    END-IF
       *
-               END-PERFORM
+                   PERFORM UNTIL ( IDX14               >   31 )
+                           OR    ( SPA-I0IDCD      NOT =   SPACE )
+      *
+                       COMPUTE IDX14       =   IDX14   +   1
+      *
+                       IF    ( ACCT-DAY (1 IDX14)      >   ZERO )
+                           MOVE    "3004"          TO  SPA-I0IDCD
+                       END-IF
+      *
+                   END-PERFORM
+               END-IF
       *
                IF    ( SPA-I0IDCD      =   SPACE )
                    MOVE    "SRYACCT-KEY15"     TO  WRK-DBPATH
