@@ -55,6 +55,32 @@ path	key3		{
 	};
 };
 
+path	key4		{ 	
+	DBSELECT	{
+		DECLARE tbl_prtkanri_key4_csr CURSOR FOR
+		SELECT distinct tbl_key,tbl_group,priority,sryym
+		FROM tbl_prtkanri
+                    WHERE   TBL_KEY      =   'RECEPT2'
+                    AND     SRYYM        <>  '000000'
+                    AND     TBL_GROUP    <>  :TBL_GROUP
+                    AND     PRIORITY     =   :PRIORITY
+		;
+	};
+};
+
+path	key5		{ 	
+	DBSELECT	{
+		DECLARE tbl_prtkanri_key5_csr CURSOR FOR
+		SELECT distinct tbl_key,tbl_group,priority,sryym
+		FROM tbl_prtkanri
+                    WHERE   TBL_KEY      =   'RECEPT2'
+                    AND     SRYYM        =  '000000'
+                    AND     TBL_GROUP    <>  :TBL_GROUP
+                    AND     PRIORITY     =   :PRIORITY
+		;
+	};
+};
+
 path	del11	{
 	DBDELETE	{
 		DELETE
