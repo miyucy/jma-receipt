@@ -2604,6 +2604,10 @@
                    ELSE
                        MOVE    "1"             TO  SYU-DENPJTIKBN
                    END-IF
+      *            ÀÁµá³Û¤¬¥¼¥í¤Î»þ¶õÇò
+                   IF      SYU-SKYMONEY        =   ZERO
+                       MOVE    SPACE               TO  SYU-DENPJTIKBN
+                   END-IF
                END-IF
                IF      FLG-SYUNOU          =   ZERO
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
