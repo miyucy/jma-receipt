@@ -62,6 +62,7 @@
                    07  SPA-GMN-CHOSEI-X          PIC  X(10).
                    07  SPA-GMN-SEIKYU            PIC S9(07).
                    07  SPA-GMN-ZENMISYU          PIC S9(07).
+                   07  SPA-GMN-CHOKAKIN          PIC S9(07).
                    07  SPA-GMN-SEIGOK            PIC S9(07).
                    07  SPA-GMN-NYUKIN            PIC S9(07).
                    07  SPA-GMN-NYUKIN-X          PIC  X(10).
@@ -108,6 +109,16 @@
                            11  SPA-GMN-DRCDMEIL    PIC X(24).
                    07  SPA-DRCD-MAX            PIC 9(04).
       *
+      *            Æþ±¡¤Î¼è°·¤¤
+                   07  SPA-GMN-NYUKINKBN-G.
+                       09  SPA-GMN-NYUKINKBN       PIC X(01).
+                       09  SPA-GMN-NYUKINKBNF1     PIC X(01).
+                       09  SPA-GMN-NYUKINKBN-MEI   PIC X(38).
+                   07  SPA-GMN-NYUKINKBN-LIST.
+                       09  SPA-GMN-NYUKINKBN-LST   PIC X(40)
+                                                   OCCURS  9.
+                   07  SPA-NYUKINKBN-MAX           PIC 9(04).
+      *
       *            Ê£¿ô²Ê½èÍý
                    07  SPA-GMN-FUKUSAGAKU        PIC S9(10).
                    07  SPA-GMN-FUKUMDS           PIC X(20).
@@ -124,6 +135,10 @@
                    07  SPA-NAI-SEIKYU            PIC S9(07).
                    07  SPA-KON-SKYMONEY          PIC S9(07).
                    07  SPA-NAI-CHOSEI            PIC X(01).
+      *
+                   07  SPA-MAE-NYUKINKBN         PIC X(01).
+                   07  SPA-MAE-CHOSEI            PIC S9(07).
+                   07  SPA-MAE-NYUKIN            PIC S9(07).
       *
       *    £Ã£Ì£Á£É£Í²èÌÌ
            03  SPA-K03X-AREA.

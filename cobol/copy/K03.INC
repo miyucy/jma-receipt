@@ -181,3 +181,10 @@
                 04  K03-VALUE   PIC X(30).
               03  K03-FUKUMDS.
                 04  K03-VALUE   PIC X(20).
+              03  K03-NYUKINKBN-COMB.
+                04  K03-NYUKINKBN.
+                  05  K03-VALUE   PIC X(40).
+                04  K03-NYUKINKBN-COUNT   PIC S9(9)   BINARY.
+                04  K03-NYUKINKBN-ITEM    PIC X(40)   OCCURS  9.
+              03  K03-CHOUKAKIN.
+                04  K03-VALUE   PIC X(10).
