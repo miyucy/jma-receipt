@@ -43,7 +43,7 @@
       *  02.00.08    NACL-多々納  02/12/11  ドクターエラーカーソル位置修正
       *  02.00.09    NACL-多々納  02/12/16  ドクター未入力ＯＫ追加
       *  02.00.10    NACL-多々納  02/12/17  診療種別の判定追加
-      *  02.00.11    NACL-多々納  02/12/18  継続の時入金額を今回請求額へ
+      *  02.00.11    NACL-多々納  02/12/18  継続の時今回請求額を編集する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1216,15 +1216,15 @@
            MOVE    SPA-GMN-CHOSEI-X    TO  K03-CHOSEI
       *    今回請求額
       *    継続の時今回請求額をゼロする
-           IF      SPA-CONTKBN         =   "1"
-               MOVE    SPACE               TO  K03-SKYMONEY
-               MOVE    SPACE               TO  K03-NYUKIN
-           ELSE
+      *    IF      SPA-CONTKBN         =   "1"
+      *        MOVE    SPACE               TO  K03-SKYMONEY
+      *        MOVE    SPACE               TO  K03-NYUKIN
+      *****ELSE
                MOVE    SPA-GMN-SEIKYU      TO  WRK-Z99
                MOVE    WRK-Z99             TO  K03-SKYMONEY
                MOVE    SPA-GMN-NYUKIN      TO  WRK-Z99
                MOVE    WRK-Z99             TO  K03-NYUKIN
-           END-IF
+      *****END-IF
       *
       *    前回未収
            MOVE    SPA-GMN-ZENMISYU    TO  WRK-Z92
@@ -2008,8 +2008,8 @@
                    IF      SPA-DOUJI-DENPNUM   =   ZERO
                        MOVE    SYU-DENPNUM     TO  SPA-DOUJI-DENPNUM
                    END-IF
-      *            入金額を今回請求額とする
-                   MOVE    SYU-SKYMONEY        TO  SYU-NYUKIN-TOTAL
+      ********     入金額を今回請求額とする
+      *********    MOVE    SYU-SKYMONEY        TO  SYU-NYUKIN-TOTAL
                END-IF
       *        継続区分
                MOVE    SPA-CONTKBN         TO  SYU-CONTKBN

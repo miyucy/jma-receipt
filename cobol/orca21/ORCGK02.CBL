@@ -223,6 +223,8 @@
       *    Æþ±¡Ãæ
            03  FLG-NYUIN           PIC 9(01).
       *
+           03  FLG-SYUBETU         PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -1090,6 +1092,8 @@
                        PERFORM 3011-K98-SET-SEC
                        MOVE    1                   TO  FLG-GMN
                    ELSE
+                       MOVE    "1"                 TO  SPA-COM-CUR
+                                                         (SPA-GMN-IDX)
                        MOVE    2                   TO  FLG-GMN
                    END-IF
                WHEN    "K04"
@@ -2947,13 +2951,27 @@
       *    ¿ÇÎÅ¼ïÊÌ¥»¥Ã¥È
            IF     (IDXS                    =   ZERO)  AND
                   (LNK-WKSRY-RENNUM (IDX)  =   1   )
+               MOVE    ZERO                TO  FLG-SYUBETU
+      *        ¿Ç»¡ÎÁ°Ê³°
                IF    ((LNK-WKSRY-SRYSYUKBN (IDX)   NOT =   SPACE )  AND
                       (LNK-WKSRY-SRYSYUKBN (IDX)(1:2)
                                                    NOT =   "11" AND
                                                            "12" AND
-                                                           "13"  )) OR
-      *                ÄûÀµ¤Î»þ¡¢ºÆ¿ÇÎÁ»»Äê²Ê¤òºÆ¿Ç¤È¤¹¤ë
-                      (LNK-WKSRY-SRYKBN    (IDX)       =   "12" AND
+                                                           "13"  ))
+                   MOVE    1               TO  FLG-SYUBETU
+               END-IF
+      *        ¿Ç»¡ÎÁ¤ÇÁ°¤ÎºÞ¤¬¼«Èñ¤Î»þ
+               IF     (LNK-WKSRY-SRYSYUKBN(IDX)(1:2)
+                                           =   "11" OR
+                                               "12" OR
+                                               "13"  )   AND
+                     ((IDX2                >   ZERO  ) AND
+                      (SPA-COM-SRYSYUKBN  (IDX2)(1:2)
+                                           =   "96"  OR  "95"))
+                   MOVE    1               TO  FLG-SYUBETU
+               END-IF
+      *        ÄûÀµ¤Î»þ¡¢ºÆ¿ÇÎÁ»»Äê²Ê¤òºÆ¿Ç¤È¤¹¤ë
+               IF     (LNK-WKSRY-SRYKBN    (IDX)       =   "12" AND
                        LNK-WKSRY-SRYCD (IDX IDY)       =   "830000021")
                    OR (LNK-WKSRY-SRYKBN    (IDX)       =   "11" AND
                        LNK-WKSRY-SRYCD (IDX IDY)       =   "830000020")
@@ -2970,6 +2988,10 @@
                                                        OR  "820000004"
                                                        OR  "820000005"
                                                        OR  "820000006"))
+                   MOVE    1                   TO  FLG-SYUBETU
+               END-IF
+      *
+               IF      FLG-SYUBETU         =   1
                    ADD     1                   TO  IDX2
                    MOVE    "."                 TO  SPA-GMN-INPUTCD
                                                             (IDX2)(1:1)

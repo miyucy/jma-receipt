@@ -935,6 +935,8 @@
                    ELSE
                        MOVE    2                   TO  FLG-GMN
                        MOVE    3                   TO  SPA-GMN5-CUR
+                       MOVE    "1"                 TO  SPA-COM-CUR
+                                                         (SPA-GMN-IDX)
                    END-IF
                WHEN    "KID1"
                    IF      SPA-KID1-FLG        =   "OK"
