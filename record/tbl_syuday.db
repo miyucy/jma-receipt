@@ -701,3 +701,29 @@ path	del2 	{
 		;
 	};
 };
+
+path	del3 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syuday
+			WHERE   HOSPID       =   :HOSPID
+			AND     NYUGAIKBN    =   :NYUGAIKBN
+			AND     PTID         =   :PTID
+			AND     SKYYM        =   :SKYYM
+			AND     CREATEKBN    =   :CREATEKBN
+		;
+	};
+};
+
+path	del4 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syuday
+			WHERE   HOSPID       =   :HOSPID
+			AND     NYUGAIKBN    =   '1'
+			AND     DENPNUM      >=   9000000
+			AND     DENPNUM      <    9100000
+			AND     CREATEKBN    =   '3'
+		;
+	};
+};

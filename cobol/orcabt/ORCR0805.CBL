@@ -37,6 +37,7 @@
       *                                     グループ化に変更
       *                                     SRYACCT-KEY29 -> SRYACCT-KEY36
       *                                     SRYACCT-KEY30 -> SRYACCT-KEY37
+      *  01.01.02    NACL-門脇    05/01/28  ダミー収納削除処理の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -396,12 +397,11 @@
       *
       *    一括ダミー収納削除処理
       *
-           INITIALIZE                  SYUNOU-REC
+      ***  伝票番号９００００００〜９０９９９９９削除
+           INITIALIZE                      SYUNOU-REC
            MOVE    SYS-1001-HOSPID     TO  SYU-HOSPID
-           MOVE    "1"                 TO  SYU-NYUGAIKBN
-           MOVE    "3"                 TO  SYU-CREATEKBN
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "SYUNOU-DEL2"       TO  ORC-DBPATH
+           MOVE    "SYUNOU-DEL5"       TO  ORC-DBPATH
            MOVE    "DBDELETE"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -418,12 +418,11 @@
            IF   FLG-ERR         =   1
               CONTINUE
            ELSE
-              INITIALIZE                  SYUDAY-REC
+      ***     伝票番号９００００００〜９０９９９９９削除
+              INITIALIZE                      SYUDAY-REC
               MOVE    SYS-1001-HOSPID     TO  SDAY-HOSPID
-              MOVE    "1"                 TO  SDAY-NYUGAIKBN
-              MOVE    "3"                 TO  SDAY-CREATEKBN
               MOVE    SYUDAY-REC          TO  MCPDATA-REC
-              MOVE    "SYUDAY-DEL1"       TO  ORC-DBPATH
+              MOVE    "SYUDAY-DEL4"       TO  ORC-DBPATH
               MOVE    "DBDELETE"          TO  MCP-FUNC
               CALL    "ORCMCPSUB"             USING
                                               MCPAREA
@@ -449,9 +448,6 @@
            PERFORM 500-CANCEL-HENSYU-SEC
       *
            IF      FLG-ERR             =   ZERO
-      *        伝票番号の初期値セット
-               MOVE    9000000             TO  WRK-DENPNUM
-      *
                EVALUATE    WRK-PARA-SYOKBN
                    WHEN    "1"
                        PERFORM 2001-IKKATU-SYORI-SEC
@@ -482,10 +478,10 @@
                MOVE    "71"                TO  LNK-DAY7-IRAI
                MOVE    WRK-PARA-SRYYM      TO  LNK-DAY7-YM
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY7-AREA
+                                                   LNK-DAY7-AREA
                MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD 
       *
-      *       診療会計読み込み（患者ＩＤ、保険組合せ、診療科順）
+      *        診療会計読み込み（患者ＩＤ、保険組合せ、診療科順）
       *
                INITIALIZE                  SRYACCT-REC
                MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
@@ -494,10 +490,10 @@
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
+               CALL    "ORCMCPSUB"         USING
                                            MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
                    PERFORM 900-SRYACCT-READ-SEC
@@ -544,7 +540,7 @@
                END-IF
       *
                PERFORM UNTIL       FLG-NYUINACCT   =   1
-                         OR        FLG-ERR         =   1
+                       OR          FLG-ERR         =   1
                    PERFORM 20012-IKKATU-NYUINACCT-HENSYU-SEC
                END-PERFORM
       *        カーソルクロース
@@ -681,7 +677,7 @@
                GO  TO  20012-IKKATU-NYUINACCT-HENSYU-EXT
            END-IF
       *
-           MOVE    SPACE                   TO  WRK-DATAKBN
+      ***  MOVE    SPACE                   TO  WRK-DATAKBN
       *
       *    テスト患者のときは読み飛ばす
            MOVE    SYS-1001-HOSPID         TO  PTINF-HOSPID
@@ -699,12 +695,13 @@
            ELSE
       *
       *      既に仮収納があれば作成しない
-             INITIALIZE                      SYUNOU-REC
-             MOVE    SYS-1001-HOSPID         TO  SYU-HOSPID
-             MOVE    "1"                     TO  SYU-NYUGAIKBN
-             MOVE    KEY-N-PTID              TO  SYU-PTID
-             PERFORM 900-SYUNOU-INV-SEC
-             IF      FLG-SYUNOU          =   ZERO
+             IF      WRK-DATAKBN        =   "1"
+      ***    INITIALIZE                      SYUNOU-REC
+      ***    MOVE    SYS-1001-HOSPID         TO  SYU-HOSPID
+      ***    MOVE    "1"                     TO  SYU-NYUGAIKBN
+      ***    MOVE    KEY-N-PTID              TO  SYU-PTID
+      ***    PERFORM 900-SYUNOU-INV-SEC
+      ***    IF      FLG-SYUNOU          =   ZERO
                  MOVE    KEY-NEW             TO  KEY-OLD
                  PERFORM         UNTIL   FLG-NYUINACCT   =   1 
                                  OR      FLG-ERR         =   1 
@@ -811,29 +808,119 @@
       *****************************************************************
        20011-HENSYU-SEC                SECTION.
       *
-           MOVE    ZERO                TO  WRK-SEIKYUSTYMD
-                                           WRK-SEIKYUEDYMD
-      *    診療月内の入退院情報
-           INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SYS-1001-HOSPID     TO  PTNYUINRRK-HOSPID
-           MOVE    KEY-O-PTID          TO  PTNYUINRRK-PTID
-           MOVE    WRK-STYMD (1:6)     TO  PTNYUINRRK-NYUINYMD (1:6)
-           MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
-           MOVE    WRK-STYMD (1:6)     TO  PTNYUINRRK-TAIINYMD (1:6)
-           MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING   MCPAREA
+      *    ダミー収納削除処理
+      *
+           INITIALIZE                      SYUNOU-REC
+           MOVE    SYS-1001-HOSPID     TO  SYU-HOSPID
+           MOVE    "1"                 TO  SYU-NYUGAIKBN
+           MOVE    KEY-O-PTID          TO  SYU-PTID
+           MOVE    WRK-STYMD (1:6)     TO  SYU-SRYYMD(1:6)
+           MOVE    "__"                TO  SYU-SRYYMD(7:2)
+           MOVE    "3"                 TO  SYU-CREATEKBN
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "SYUNOU-DEL4"       TO  ORC-DBPATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               MOVE  "仮収納データ削除処理に失敗しました"
+                               TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+      *    ダミー日別収納削除処理
+      *
+           IF   FLG-ERR         =   1
+              CONTINUE
+           ELSE
+              INITIALIZE                      SYUDAY-REC
+              MOVE    SYS-1001-HOSPID     TO  SDAY-HOSPID
+              MOVE    "1"                 TO  SDAY-NYUGAIKBN
+              MOVE    KEY-O-PTID          TO  SDAY-PTID
+              MOVE    WRK-STYMD (1:6)     TO  SDAY-SKYYM
+              MOVE    "3"                 TO  SDAY-CREATEKBN
+              MOVE    SYUDAY-REC          TO  MCPDATA-REC
+              MOVE    "SYUDAY-DEL3"       TO  ORC-DBPATH
+              MOVE    "DBDELETE"          TO  MCP-FUNC
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC          NOT =   ZERO
+                  MOVE  "仮日別収納データ削除処理に失敗しました"
+                                  TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+              END-IF
+           END-IF
+      *
+           IF   FLG-ERR         =   ZERO
+      *
+      *       伝票番号セット
+      *
+              INITIALIZE                       SYUNOU-REC
+              MOVE    SYS-1001-HOSPID      TO  SYU-HOSPID
+              MOVE    "1"                  TO  SYU-NYUGAIKBN
+              MOVE    KEY-O-PTID           TO  SYU-PTID
+              MOVE    "3"                  TO  SYU-CREATEKBN
+              MOVE    SYUNOU-REC           TO  MCPDATA-REC
+              MOVE    "DBSELECT"           TO  MCP-FUNC
+              MOVE    "SYUNOU-KEY39"       TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+              IF      MCP-RC               =       ZERO
+                  MOVE    "SYUNOU-KEY39"   TO  ORC-DBPATH
+      *
+                  MOVE    "DBFETCH"        TO  MCP-FUNC
+                  CALL    "ORCMCPSUB"          USING
+                                               MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
-               PERFORM 900-PTNYUINRRK-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTNYUINRRK    
-           END-IF
-           PERFORM     UNTIL   FLG-PTNYUINRRK    =   1
+                  IF      MCP-RC              =   ZERO
+                     MOVE    MCPDATA-REC     TO  SYUNOU-REC
+                     MOVE    SYU-DENPNUM     TO  WRK-DENPNUM
+                  ELSE
+                     MOVE    9100000         TO  WRK-DENPNUM
+                  END-IF
+              ELSE
+                  DISPLAY  "SYUNOU SELECT ERR"
+                  MOVE       9100000         TO  WRK-DENPNUM
+              END-IF
+      *
+              MOVE    "SYUNOU-KEY39"  TO  ORC-DBPATH
+              MOVE    "DBCLOSE"       TO  MCP-FUNC
+              CALL    "ORCMCPSUB"     USING   MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+      *
+      ********
+      *
+              MOVE    ZERO                TO  WRK-SEIKYUSTYMD
+                                              WRK-SEIKYUEDYMD
+      *       診療月内の入退院情報
+              INITIALIZE                      PTNYUINRRK-REC
+              MOVE    SYS-1001-HOSPID     TO  PTNYUINRRK-HOSPID
+              MOVE    KEY-O-PTID          TO  PTNYUINRRK-PTID
+              MOVE    WRK-STYMD (1:6)     TO  PTNYUINRRK-NYUINYMD (1:6)
+              MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
+              MOVE    WRK-STYMD (1:6)     TO  PTNYUINRRK-TAIINYMD (1:6)
+              MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
+              MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+              MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
+                  PERFORM 900-PTNYUINRRK-READ-SEC
+              ELSE
+                  MOVE    1                   TO  FLG-PTNYUINRRK    
+              END-IF
+              PERFORM     UNTIL   FLG-PTNYUINRRK    =   1
                    IF    ( WRK-SEIKYUSTYMD =   ZERO                )   
                    OR    ( WRK-SEIKYUSTYMD >   PTNYUINRRK-NYUINYMD )
                        IF  WRK-SEIKYUSTYMD =   WRK-STYMD
@@ -852,75 +939,75 @@
                    END-IF             
                    MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
                    PERFORM 900-PTNYUINRRK-READ-SEC
-           END-PERFORM        
+              END-PERFORM        
       *                 
-           MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING   MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+              MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
+              MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+              CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
       *
-           IF      WRK-SEIKYUSTYMD     =   ZERO
-               MOVE    WRK-STYMD           TO  WRK-SEIKYUSTYMD
-           END-IF 
-           IF    ( WRK-SEIKYUEDYMD     =   ZERO    OR   99999999 )
-           OR    ( WRK-SEIKYUEDYMD     >   WRK-EDYMD             )
-               MOVE    WRK-EDYMD           TO  WRK-SEIKYUEDYMD
-           END-IF 
+              IF      WRK-SEIKYUSTYMD     =   ZERO
+                  MOVE    WRK-STYMD           TO  WRK-SEIKYUSTYMD
+              END-IF 
+              IF    ( WRK-SEIKYUEDYMD     =   ZERO    OR   99999999 )
+              OR    ( WRK-SEIKYUEDYMD     >   WRK-EDYMD             )
+                  MOVE    WRK-EDYMD           TO  WRK-SEIKYUEDYMD
+              END-IF 
       *
-      *    収納データ取得処理
-           MOVE    SPACE           TO  LNK-ORCS02-REC
-                                       LNK-SYUNOU-REC-T
-                                       LNK-SYUDAY-REC-T
+      *       収納データ取得処理
+              MOVE    SPACE           TO  LNK-ORCS02-REC
+                                          LNK-SYUNOU-REC-T
+                                          LNK-SYUDAY-REC-T
       *
-           INITIALIZE                  LNK-ORCS02-REC
-                                       LNK-SYUNOU-REC-T
-                                       LNK-SYUDAY-REC-T
+              INITIALIZE                  LNK-ORCS02-REC
+                                          LNK-SYUNOU-REC-T
+                                          LNK-SYUDAY-REC-T
       *
-           MOVE    SYS-1001-HOSPID TO  LNK-S02-HOSPID
-           MOVE    "1"             TO  LNK-S02-NYUGAIKBN
-           MOVE    KEY-O-PTID      TO  LNK-S02-PTID
-           MOVE    WRK-SEIKYUSTYMD TO  LNK-S02-SKYSTYMD
-           MOVE    WRK-SEIKYUEDYMD TO  LNK-S02-SKYEDYMD
-           MOVE    "X"             TO  LNK-S02-TEIKI-KBN
-           MOVE    WRK-PARA-SYSYMD TO  LNK-S02-SYSYMD
-           MOVE    "2"             TO  LNK-S02-SYORI-KBN
+              MOVE    SYS-1001-HOSPID TO  LNK-S02-HOSPID
+              MOVE    "1"             TO  LNK-S02-NYUGAIKBN
+              MOVE    KEY-O-PTID      TO  LNK-S02-PTID
+              MOVE    WRK-SEIKYUSTYMD TO  LNK-S02-SKYSTYMD
+              MOVE    WRK-SEIKYUEDYMD TO  LNK-S02-SKYEDYMD
+              MOVE    "X"             TO  LNK-S02-TEIKI-KBN
+              MOVE    WRK-PARA-SYSYMD TO  LNK-S02-SYSYMD
+              MOVE    "2"             TO  LNK-S02-SYORI-KBN
       *
-           CALL    "ORCSNYUFTN"    USING
-                                   SPA-AREA
-                                   LNK-ORCS02-REC
-                                   LNK-SYUNOU-REC-T
-                                   LNK-SYUDAY-REC-T
+              CALL    "ORCSNYUFTN"    USING
+                                      SPA-AREA
+                                      LNK-ORCS02-REC
+                                      LNK-SYUNOU-REC-T
+                                      LNK-SYUDAY-REC-T
       *
-      *    仮収納出力処理
-           IF      LNK-S02-RC      =   ZERO
-               PERFORM VARYING IDX1   FROM    1   BY  1
-                       UNTIL ( IDX1                    >     10  )
-                         OR  ( LNK-SYU-SKYSTYMD (IDX1) =   SPACE )
-                         OR  ( FLG-ERR                 =      1  )
-                 IF  LNK-SYU-SYUHKNNUM(IDX1)  =
-                                              WRK-CONS-JIBAI-HKNNUM
-                    PERFORM   20011-KARITEIKI-OUTPUT-SEC
-                 END-IF
-               END-PERFORM
-           ELSE
-               DISPLAY "PTID=" KEY-O-PTID
-               DISPLAY "SKYSTYMD=" WRK-SEIKYUSTYMD
-               DISPLAY "SKYEDYMD=" WRK-SEIKYUEDYMD
+      *       仮収納出力処理
+              IF      LNK-S02-RC      =   ZERO
+                  PERFORM VARYING IDX1   FROM    1   BY  1
+                          UNTIL ( IDX1                    >     10  )
+                            OR  ( LNK-SYU-SKYSTYMD (IDX1) =   SPACE )
+                            OR  ( FLG-ERR                 =      1  )
+      ****          IF  LNK-SYU-SYUHKNNUM(IDX1)  =
+      ****                                       WRK-CONS-JIBAI-HKNNUM
+                       PERFORM   20011-KARITEIKI-OUTPUT-SEC
+      ****          END-IF
+                  END-PERFORM
+              ELSE
+                  DISPLAY "PTID=" KEY-O-PTID
+                  DISPLAY "SKYSTYMD=" WRK-SEIKYUSTYMD
+                  DISPLAY "SKYEDYMD=" WRK-SEIKYUEDYMD
       *
-      *        MOVE    "仮収納データの取得に失敗しました"
-      *                                TO  WRK-RECEERR
+                  MOVE    "仮収納データの取得に失敗"
+                                          TO  ERR-ERRMSG
+                  PERFORM 600-ERRMSG-EDIT-SEC
       *
-               MOVE    "仮収納データの取得に失敗"
-                                       TO  ERR-ERRMSG
-               PERFORM 600-ERRMSG-EDIT-SEC
+                  MOVE  ERR-HEN-ERRMSG    TO  WRK-RECEERR
       *
-               MOVE  ERR-HEN-ERRMSG    TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+              END-IF
       *
-               PERFORM 500-ERR-HENSYU-SEC
            END-IF
+      *
            .
-       20011-SYUNOU-GET-EXT.
+       20011-HENSYU-EXT.
            EXIT. 
       *****************************************************************
       *    仮収納出力処理
@@ -1132,8 +1219,8 @@
                                         MCPDATA-REC
       *
       *    診療会計より仮収納を作成しなかったときのみ処理
-           IF      WRK-DATAKBN         =   SPACE
-           AND     FLG-ERR             =   ZERO
+           IF    ( WRK-DATAKBN         =   SPACE )
+           AND   ( FLG-ERR             =   ZERO  )
       *
                MOVE    LOW-VALUE           TO  KEY-AREA
       *        入院会計読み込み
@@ -1213,6 +1300,7 @@
       *            同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
                    MOVE    KEY-NEW             TO  KEY-OLD
                    PERFORM     UNTIL   FLG-SRYACCT     =   1 
+                               OR      FLG-ERR         =   1
                                OR      KEY-NEW     NOT =   KEY-OLD
                        MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                        PERFORM 900-SRYACCT-READ-SEC
@@ -1233,7 +1321,7 @@
            INITIALIZE                      WRK-DAY-AREA
       *
            PERFORM         UNTIL   FLG-NYUINACCT   =   1 
-                           OR        FLG-ERR       =   1
+                           OR      FLG-ERR         =   1 
       *        剤識別区分別テーブル編集
                EVALUATE    NACCT-ZAISKBKBN
                    WHEN    "1"
@@ -1361,7 +1449,7 @@
        600-ERRMSG-EDIT-SEC             SECTION.                        
       *
            MOVE    SPACE               TO  ERR-HEN-ERRMSG
-	                                   ERR-PTNUM
+                                           ERR-PTNUM
       *
       *    患者番号を取得
            INITIALIZE                      ORCSPTIDAREA

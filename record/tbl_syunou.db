@@ -914,3 +914,42 @@ path	key38 	{
 	};
 };
 
+path	key39 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key39_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   CREATEKBN   =   '3'
+			ORDER   BY          DENPNUM DESC
+		;
+	};
+};
+
+path	del4 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syunou
+			WHERE   HOSPID       =   :HOSPID
+			AND     NYUGAIKBN    =   :NYUGAIKBN
+			AND     PTID         =   :PTID
+			AND     SRYYMD      LIKE :SRYYMD
+			AND     CREATEKBN    =   :CREATEKBN
+		;
+	};
+};
+
+path	del5 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syunou
+			WHERE   HOSPID       =   :HOSPID
+			AND     NYUGAIKBN    =   '1'
+			AND     DENPNUM      >=   9000000
+			AND     DENPNUM      <    9100000
+			AND     CREATEKBN    =   '3'
+		;
+	};
+};

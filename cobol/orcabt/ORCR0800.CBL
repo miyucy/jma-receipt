@@ -37,6 +37,7 @@
       *                                     ¥°¥ë¡¼¥×²½¤ËÊÑ¹¹
       *                                     SRYACCT-KEY29 -> SRYACCT-KEY36
       *                                     SRYACCT-KEY30 -> SRYACCT-KEY37
+      *  01.01.02    NACL-ÌçÏÆ    05/01/28  ¥À¥ß¡¼¼ýÇ¼ºï½ü½èÍý¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -396,12 +397,11 @@
       *
       *    °ì³ç¥À¥ß¡¼¼ýÇ¼ºï½ü½èÍý
       *
-           INITIALIZE                  SYUNOU-REC
+      ***  ÅÁÉ¼ÈÖ¹æ£¹£°£°£°£°£°£°¡Á£¹£°£¹£¹£¹£¹£¹ºï½ü
+           INITIALIZE                      SYUNOU-REC
            MOVE    SYS-1001-HOSPID     TO  SYU-HOSPID
-           MOVE    "1"                 TO  SYU-NYUGAIKBN
-           MOVE    "3"                 TO  SYU-CREATEKBN
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "SYUNOU-DEL2"       TO  ORC-DBPATH
+           MOVE    "SYUNOU-DEL5"       TO  ORC-DBPATH
            MOVE    "DBDELETE"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -418,12 +418,11 @@
            IF   FLG-ERR         =   1
               CONTINUE
            ELSE
-              INITIALIZE                  SYUDAY-REC
+      ***     ÅÁÉ¼ÈÖ¹æ£¹£°£°£°£°£°£°¡Á£¹£°£¹£¹£¹£¹£¹ºï½ü
+              INITIALIZE                      SYUDAY-REC
               MOVE    SYS-1001-HOSPID     TO  SDAY-HOSPID
-              MOVE    "1"                 TO  SDAY-NYUGAIKBN
-              MOVE    "3"                 TO  SDAY-CREATEKBN
               MOVE    SYUDAY-REC          TO  MCPDATA-REC
-              MOVE    "SYUDAY-DEL1"       TO  ORC-DBPATH
+              MOVE    "SYUDAY-DEL4"       TO  ORC-DBPATH
               MOVE    "DBDELETE"          TO  MCP-FUNC
               CALL    "ORCMCPSUB"             USING
                                               MCPAREA
@@ -449,9 +448,6 @@
            PERFORM 500-CANCEL-HENSYU-SEC
       *
            IF      FLG-ERR             =   ZERO
-      *        ÅÁÉ¼ÈÖ¹æ¤Î½é´üÃÍ¥»¥Ã¥È
-               MOVE    9000000             TO  WRK-DENPNUM
-      *
                EVALUATE    WRK-PARA-SYOKBN
                    WHEN    "1"
                        PERFORM 2001-IKKATU-SYORI-SEC
@@ -681,7 +677,7 @@
                GO  TO  20012-IKKATU-NYUINACCT-HENSYU-EXT
            END-IF
       *
-           MOVE    SPACE                   TO  WRK-DATAKBN
+      ***  MOVE    SPACE                   TO  WRK-DATAKBN
       *
       *    ¥Æ¥¹¥È´µ¼Ô¤Î¤È¤­¤ÏÆÉ¤ßÈô¤Ð¤¹
            MOVE    SYS-1001-HOSPID         TO  PTINF-HOSPID
@@ -699,12 +695,13 @@
            ELSE
       *
       *      ´û¤Ë²¾¼ýÇ¼¤¬¤¢¤ì¤ÐºîÀ®¤·¤Ê¤¤
-             INITIALIZE                      SYUNOU-REC
-             MOVE    SYS-1001-HOSPID         TO  SYU-HOSPID
-             MOVE    "1"                     TO  SYU-NYUGAIKBN
-             MOVE    KEY-N-PTID              TO  SYU-PTID
-             PERFORM 900-SYUNOU-INV-SEC
-             IF      FLG-SYUNOU          =   ZERO
+             IF      WRK-DATAKBN        =   "1"
+      ***    INITIALIZE                      SYUNOU-REC
+      ***    MOVE    SYS-1001-HOSPID         TO  SYU-HOSPID
+      ***    MOVE    "1"                     TO  SYU-NYUGAIKBN
+      ***    MOVE    KEY-N-PTID              TO  SYU-PTID
+      ***    PERFORM 900-SYUNOU-INV-SEC
+      ***    IF      FLG-SYUNOU          =   ZERO
                  MOVE    KEY-NEW             TO  KEY-OLD
                  PERFORM         UNTIL   FLG-NYUINACCT   =   1 
                                  OR      FLG-ERR         =   1 
@@ -811,29 +808,119 @@
       *****************************************************************
        20011-HENSYU-SEC                SECTION.
       *
-           MOVE    ZERO                TO  WRK-SEIKYUSTYMD
-                                           WRK-SEIKYUEDYMD
-      *    ¿ÇÎÅ·îÆâ¤ÎÆþÂà±¡¾ðÊó
-           INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SYS-1001-HOSPID     TO  PTNYUINRRK-HOSPID
-           MOVE    KEY-O-PTID          TO  PTNYUINRRK-PTID
-           MOVE    WRK-STYMD (1:6)     TO  PTNYUINRRK-NYUINYMD (1:6)
-           MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
-           MOVE    WRK-STYMD (1:6)     TO  PTNYUINRRK-TAIINYMD (1:6)
-           MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING   MCPAREA
+      *    ¥À¥ß¡¼¼ýÇ¼ºï½ü½èÍý
+      *
+           INITIALIZE                      SYUNOU-REC
+           MOVE    SYS-1001-HOSPID     TO  SYU-HOSPID
+           MOVE    "1"                 TO  SYU-NYUGAIKBN
+           MOVE    KEY-O-PTID          TO  SYU-PTID
+           MOVE    WRK-STYMD (1:6)     TO  SYU-SRYYMD(1:6)
+           MOVE    "__"                TO  SYU-SRYYMD(7:2)
+           MOVE    "3"                 TO  SYU-CREATEKBN
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "SYUNOU-DEL4"       TO  ORC-DBPATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               MOVE  "²¾¼ýÇ¼¥Ç¡¼¥¿ºï½ü½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
+                               TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+      *    ¥À¥ß¡¼ÆüÊÌ¼ýÇ¼ºï½ü½èÍý
+      *
+           IF   FLG-ERR         =   1
+              CONTINUE
+           ELSE
+              INITIALIZE                      SYUDAY-REC
+              MOVE    SYS-1001-HOSPID     TO  SDAY-HOSPID
+              MOVE    "1"                 TO  SDAY-NYUGAIKBN
+              MOVE    KEY-O-PTID          TO  SDAY-PTID
+              MOVE    WRK-STYMD (1:6)     TO  SDAY-SKYYM
+              MOVE    "3"                 TO  SDAY-CREATEKBN
+              MOVE    SYUDAY-REC          TO  MCPDATA-REC
+              MOVE    "SYUDAY-DEL3"       TO  ORC-DBPATH
+              MOVE    "DBDELETE"          TO  MCP-FUNC
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC          NOT =   ZERO
+                  MOVE  "²¾ÆüÊÌ¼ýÇ¼¥Ç¡¼¥¿ºï½ü½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
+                                  TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+              END-IF
+           END-IF
+      *
+           IF   FLG-ERR         =   ZERO
+      *
+      *       ÅÁÉ¼ÈÖ¹æ¥»¥Ã¥È
+      *
+              INITIALIZE                       SYUNOU-REC
+              MOVE    SYS-1001-HOSPID      TO  SYU-HOSPID
+              MOVE    "1"                  TO  SYU-NYUGAIKBN
+              MOVE    KEY-O-PTID           TO  SYU-PTID
+              MOVE    "3"                  TO  SYU-CREATEKBN
+              MOVE    SYUNOU-REC           TO  MCPDATA-REC
+              MOVE    "DBSELECT"           TO  MCP-FUNC
+              MOVE    "SYUNOU-KEY39"       TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+              IF      MCP-RC               =       ZERO
+                  MOVE    "SYUNOU-KEY39"   TO  ORC-DBPATH
+      *
+                  MOVE    "DBFETCH"        TO  MCP-FUNC
+                  CALL    "ORCMCPSUB"          USING
+                                               MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
-               PERFORM 900-PTNYUINRRK-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTNYUINRRK    
-           END-IF
-           PERFORM     UNTIL   FLG-PTNYUINRRK    =   1
+                  IF      MCP-RC              =   ZERO
+                     MOVE    MCPDATA-REC     TO  SYUNOU-REC
+                     MOVE    SYU-DENPNUM     TO  WRK-DENPNUM
+                  ELSE
+                     MOVE    9100000         TO  WRK-DENPNUM
+                  END-IF
+              ELSE
+                  DISPLAY  "SYUNOU SELECT ERR"
+                  MOVE       9100000         TO  WRK-DENPNUM
+              END-IF
+      *
+              MOVE    "SYUNOU-KEY39"  TO  ORC-DBPATH
+              MOVE    "DBCLOSE"       TO  MCP-FUNC
+              CALL    "ORCMCPSUB"     USING   MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+      *
+      ********
+      *
+              MOVE    ZERO                TO  WRK-SEIKYUSTYMD
+                                              WRK-SEIKYUEDYMD
+      *       ¿ÇÎÅ·îÆâ¤ÎÆþÂà±¡¾ðÊó
+              INITIALIZE                      PTNYUINRRK-REC
+              MOVE    SYS-1001-HOSPID     TO  PTNYUINRRK-HOSPID
+              MOVE    KEY-O-PTID          TO  PTNYUINRRK-PTID
+              MOVE    WRK-STYMD (1:6)     TO  PTNYUINRRK-NYUINYMD (1:6)
+              MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
+              MOVE    WRK-STYMD (1:6)     TO  PTNYUINRRK-TAIINYMD (1:6)
+              MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
+              MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+              MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
+                  PERFORM 900-PTNYUINRRK-READ-SEC
+              ELSE
+                  MOVE    1                   TO  FLG-PTNYUINRRK    
+              END-IF
+              PERFORM     UNTIL   FLG-PTNYUINRRK    =   1
                    IF    ( WRK-SEIKYUSTYMD =   ZERO                )   
                    OR    ( WRK-SEIKYUSTYMD >   PTNYUINRRK-NYUINYMD )
                        IF  WRK-SEIKYUSTYMD =   WRK-STYMD
@@ -852,75 +939,75 @@
                    END-IF             
                    MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
                    PERFORM 900-PTNYUINRRK-READ-SEC
-           END-PERFORM        
+              END-PERFORM        
       *                 
-           MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING   MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+              MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
+              MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+              CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
       *
-           IF      WRK-SEIKYUSTYMD     =   ZERO
-               MOVE    WRK-STYMD           TO  WRK-SEIKYUSTYMD
-           END-IF 
-           IF    ( WRK-SEIKYUEDYMD     =   ZERO    OR   99999999 )
-           OR    ( WRK-SEIKYUEDYMD     >   WRK-EDYMD             )
-               MOVE    WRK-EDYMD           TO  WRK-SEIKYUEDYMD
-           END-IF 
+              IF      WRK-SEIKYUSTYMD     =   ZERO
+                  MOVE    WRK-STYMD           TO  WRK-SEIKYUSTYMD
+              END-IF 
+              IF    ( WRK-SEIKYUEDYMD     =   ZERO    OR   99999999 )
+              OR    ( WRK-SEIKYUEDYMD     >   WRK-EDYMD             )
+                  MOVE    WRK-EDYMD           TO  WRK-SEIKYUEDYMD
+              END-IF 
       *
-      *    ¼ýÇ¼¥Ç¡¼¥¿¼èÆÀ½èÍý
-           MOVE    SPACE           TO  LNK-ORCS02-REC
-                                       LNK-SYUNOU-REC-T
-                                       LNK-SYUDAY-REC-T
+      *       ¼ýÇ¼¥Ç¡¼¥¿¼èÆÀ½èÍý
+              MOVE    SPACE           TO  LNK-ORCS02-REC
+                                          LNK-SYUNOU-REC-T
+                                          LNK-SYUDAY-REC-T
       *
-           INITIALIZE                  LNK-ORCS02-REC
-                                       LNK-SYUNOU-REC-T
-                                       LNK-SYUDAY-REC-T
+              INITIALIZE                  LNK-ORCS02-REC
+                                          LNK-SYUNOU-REC-T
+                                          LNK-SYUDAY-REC-T
       *
-           MOVE    SYS-1001-HOSPID TO  LNK-S02-HOSPID
-           MOVE    "1"             TO  LNK-S02-NYUGAIKBN
-           MOVE    KEY-O-PTID      TO  LNK-S02-PTID
-           MOVE    WRK-SEIKYUSTYMD TO  LNK-S02-SKYSTYMD
-           MOVE    WRK-SEIKYUEDYMD TO  LNK-S02-SKYEDYMD
-           MOVE    "X"             TO  LNK-S02-TEIKI-KBN
-           MOVE    WRK-PARA-SYSYMD TO  LNK-S02-SYSYMD
-           MOVE    "2"             TO  LNK-S02-SYORI-KBN
+              MOVE    SYS-1001-HOSPID TO  LNK-S02-HOSPID
+              MOVE    "1"             TO  LNK-S02-NYUGAIKBN
+              MOVE    KEY-O-PTID      TO  LNK-S02-PTID
+              MOVE    WRK-SEIKYUSTYMD TO  LNK-S02-SKYSTYMD
+              MOVE    WRK-SEIKYUEDYMD TO  LNK-S02-SKYEDYMD
+              MOVE    "X"             TO  LNK-S02-TEIKI-KBN
+              MOVE    WRK-PARA-SYSYMD TO  LNK-S02-SYSYMD
+              MOVE    "2"             TO  LNK-S02-SYORI-KBN
       *
-           CALL    "ORCSNYUFTN"    USING
-                                   SPA-AREA
-                                   LNK-ORCS02-REC
-                                   LNK-SYUNOU-REC-T
-                                   LNK-SYUDAY-REC-T
+              CALL    "ORCSNYUFTN"    USING
+                                      SPA-AREA
+                                      LNK-ORCS02-REC
+                                      LNK-SYUNOU-REC-T
+                                      LNK-SYUDAY-REC-T
       *
-      *    ²¾¼ýÇ¼½ÐÎÏ½èÍý
-           IF      LNK-S02-RC      =   ZERO
-               PERFORM VARYING IDX1   FROM    1   BY  1
-                       UNTIL ( IDX1                    >     10  )
-                         OR  ( LNK-SYU-SKYSTYMD (IDX1) =   SPACE )
-                         OR  ( FLG-ERR                 =      1  )
-                 IF  LNK-SYU-SYUHKNNUM(IDX1)  =
-                                              WRK-CONS-ROUSAI-HKNNUM
-                    PERFORM   20011-KARITEIKI-OUTPUT-SEC
-                 END-IF
-               END-PERFORM
-           ELSE
-               DISPLAY "PTID=" KEY-O-PTID
-               DISPLAY "SKYSTYMD=" WRK-SEIKYUSTYMD
-               DISPLAY "SKYEDYMD=" WRK-SEIKYUEDYMD
+      *       ²¾¼ýÇ¼½ÐÎÏ½èÍý
+              IF      LNK-S02-RC      =   ZERO
+                  PERFORM VARYING IDX1   FROM    1   BY  1
+                          UNTIL ( IDX1                    >     10  )
+                            OR  ( LNK-SYU-SKYSTYMD (IDX1) =   SPACE )
+                            OR  ( FLG-ERR                 =      1  )
+      ****          IF  LNK-SYU-SYUHKNNUM(IDX1)  =
+      ****                                       WRK-CONS-ROUSAI-HKNNUM
+                       PERFORM   20011-KARITEIKI-OUTPUT-SEC
+      ****          END-IF
+                  END-PERFORM
+              ELSE
+                  DISPLAY "PTID=" KEY-O-PTID
+                  DISPLAY "SKYSTYMD=" WRK-SEIKYUSTYMD
+                  DISPLAY "SKYEDYMD=" WRK-SEIKYUEDYMD
       *
-      *        MOVE    "²¾¼ýÇ¼¥Ç¡¼¥¿¤Î¼èÆÀ¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
-      *                                TO  WRK-RECEERR
+                  MOVE    "²¾¼ýÇ¼¥Ç¡¼¥¿¤Î¼èÆÀ¤Ë¼ºÇÔ"
+                                          TO  ERR-ERRMSG
+                  PERFORM 600-ERRMSG-EDIT-SEC
       *
-               MOVE    "²¾¼ýÇ¼¥Ç¡¼¥¿¤Î¼èÆÀ¤Ë¼ºÇÔ"
-                                       TO  ERR-ERRMSG
-               PERFORM 600-ERRMSG-EDIT-SEC
+                  MOVE  ERR-HEN-ERRMSG    TO  WRK-RECEERR
       *
-               MOVE  ERR-HEN-ERRMSG    TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+              END-IF
       *
-               PERFORM 500-ERR-HENSYU-SEC
            END-IF
+      *
            .
-       20011-SYUNOU-GET-EXT.
+       20011-HENSYU-EXT.
            EXIT. 
       *****************************************************************
       *    ²¾¼ýÇ¼½ÐÎÏ½èÍý

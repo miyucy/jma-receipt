@@ -351,6 +351,9 @@
       *  01.01.161   NACL-多々納  05/01/26  PTBYOMEI-KEY25追加
       *                                     HELP  追加
       *  01.01.162   NACL-森脇    05/01/28  SRYACT-KEY11追加
+      *  01.01.163   NACL-門脇    05/01/29  SYUNOU-DEL4,5追加
+      *                                     SYUNOU-KEY39追加
+      *                                     SYUDAY-DEL3,4追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -777,12 +780,12 @@
                WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL3"
                    MOVE    PATH-TBL-SYUNOU-DEL3
                                        TO  WRK-PATH
-      *        WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL4"
-      *            MOVE    PATH-TBL-SYUNOU-DEL4
-      *                                TO  WRK-PATH
-      *        WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL5"
-      *            MOVE    PATH-TBL-SYUNOU-DEL5
-      *                                TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL4"
+                   MOVE    PATH-TBL-SYUNOU-DEL4
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL5"
+                   MOVE    PATH-TBL-SYUNOU-DEL5
+                                       TO  WRK-PATH
       *        WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL6"
       *            MOVE    PATH-TBL-SYUNOU-DEL6
       *                                TO  WRK-PATH
@@ -1169,6 +1172,12 @@
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SYUDAY-DEL2"
                    MOVE    PATH-TBL-SYUDAY-DEL2
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUDAY-DEL3"
+                   MOVE    PATH-TBL-SYUDAY-DEL3
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUDAY-DEL4"
+                   MOVE    PATH-TBL-SYUDAY-DEL4
                                        TO  WRK-PATH
       *
                WHEN    "DBUPDATE"      ALSO   "OPECOM-KEY"
@@ -2066,6 +2075,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY35"
                    MOVE    PATH-TBL-SYUNOU-KEY35
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY39"
+                   MOVE    PATH-TBL-SYUNOU-KEY39
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"
