@@ -47,7 +47,7 @@
       *公費分離区分
                05  RECE66-KOHBUNRI        PIC  9(01).
       *剤番号
-               05  RECE66-ZAINUM          PIC  9(05).
+               05  RECE66-ZAINUM          PIC  9(08).
       *連番号
                05  RECE66-LINENUM         PIC  9(05).
       *剤明細数
@@ -61,7 +61,7 @@
       *剤識別区分
            03  RECE66-ZAISKBKBN           PIC  X(01).
       *剤識別内番号
-           03  RECE66-ZAISKBBAN           PIC  9(05).
+           03  RECE66-ZAISKBBAN           PIC  9(08).
       *適要欄情報
            03  RECE66-TEKIYO-INF.
       *剤区切（＊）

@@ -46,7 +46,7 @@
       *適用開始年月日
                05  RECE65-TEKSTYMD        PIC  X(08).
       *剤番号
-               05  RECE65-ZAINUM          PIC  9(05).
+               05  RECE65-ZAINUM          PIC  9(08).
       *剤連番
                05  RECE65-ZAIREN          PIC  9(02).
       *連番号

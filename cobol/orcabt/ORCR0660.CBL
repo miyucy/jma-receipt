@@ -212,7 +212,6 @@
            03  WRK-KETA-TAIHI      PIC 9(04).
            03  WRK-KETA2           PIC 9(04).
            03  WRK-KOHBUNRI        PIC 9(01).
-           03  WRK-ZAINUM          PIC 9(05).
            03  WRK-RECEERR         PIC X(200).
       *
            03  TBL-SHUJUTSU-DAY.
@@ -274,26 +273,26 @@
       *Íý³ØÎÅË¡ºÞÈÖ¹æÂàÈòÎÎ°è
        01  WRK-TAIHI-ZAINUM.
            03  WRK-TAIHI-ZAINUM-T              OCCURS  5.
-               05  WRK-RIGA1-SHU-ZAINUM      PIC  9(05).   
-               05  WRK-RIGA1-KO-ZAINUM       PIC  9(05).   
-               05  WRK-RIGA2-SHU-ZAINUM      PIC  9(05).   
-               05  WRK-RIGA2-KO-ZAINUM       PIC  9(05).   
-               05  WRK-RIGA3-SHU-ZAINUM      PIC  9(05).   
-               05  WRK-RIGA3-KO-ZAINUM       PIC  9(05).   
-               05  WRK-RIGA4-SHU-ZAINUM      PIC  9(05).   
-               05  WRK-RIGA4-KO-ZAINUM       PIC  9(05).   
-               05  WRK-SAGYO1-SHU-ZAINUM     PIC  9(05).   
-               05  WRK-SAGYO2-SHU-ZAINUM     PIC  9(05).   
-               05  WRK-SAGYO1-KO-ZAINUM      PIC  9(05).   
-               05  WRK-SAGYO2-KO-ZAINUM      PIC  9(05).   
-               05  WRK-GENGO1-SHU-ZAINUM     PIC  9(05).   
-               05  WRK-GENGO1-KO-ZAINUM      PIC  9(05).   
-               05  WRK-GENGO2-SHU-ZAINUM     PIC  9(05).   
-               05  WRK-GENGO2-KO-ZAINUM      PIC  9(05).   
+               05  WRK-RIGA1-SHU-ZAINUM      PIC  9(08).   
+               05  WRK-RIGA1-KO-ZAINUM       PIC  9(08).   
+               05  WRK-RIGA2-SHU-ZAINUM      PIC  9(08).   
+               05  WRK-RIGA2-KO-ZAINUM       PIC  9(08).   
+               05  WRK-RIGA3-SHU-ZAINUM      PIC  9(08).   
+               05  WRK-RIGA3-KO-ZAINUM       PIC  9(08).   
+               05  WRK-RIGA4-SHU-ZAINUM      PIC  9(08).   
+               05  WRK-RIGA4-KO-ZAINUM       PIC  9(08).   
+               05  WRK-SAGYO1-SHU-ZAINUM     PIC  9(08).   
+               05  WRK-SAGYO2-SHU-ZAINUM     PIC  9(08).   
+               05  WRK-SAGYO1-KO-ZAINUM      PIC  9(08).   
+               05  WRK-SAGYO2-KO-ZAINUM      PIC  9(08).   
+               05  WRK-GENGO1-SHU-ZAINUM     PIC  9(08).   
+               05  WRK-GENGO1-KO-ZAINUM      PIC  9(08).   
+               05  WRK-GENGO2-SHU-ZAINUM     PIC  9(08).   
+               05  WRK-GENGO2-KO-ZAINUM      PIC  9(08).   
       *
        01  WRK-TAIHI-ZAINUM-R     REDEFINES   WRK-TAIHI-ZAINUM.
            03  WRK-RIHA-ZAINUM-T               OCCURS  5.
-               05  WRK-RIHA-ZAINUM   PIC 9(05)   OCCURS   16.       
+               05  WRK-RIHA-ZAINUM   PIC 9(08)   OCCURS   16.       
       *
       *Íý³ØÎÅË¡¼Â»Ü¥«¥ì¥ó¥À¡¼
        01  WRK-RIGAKU-AREA.
@@ -1117,7 +1116,7 @@
                 MOVE    RECE62-HOJOKBN-KEY   TO  RECE651-HOJOKBN
                 MOVE    RECE62-TEKSTYMD      TO  RECE651-TEKSTYMD
       *         MOVE    ZERO                 TO  RECE651-ZAINUM
-                MOVE    99999                TO  RECE651-ZAINUM
+                MOVE    99999999             TO  RECE651-ZAINUM
                 MOVE    "99"                 TO  RECE651-SRYKBN
                 ADD     1                    TO  WRK-RENNUM
                 MOVE    WRK-RENNUM           TO  RECE651-RENNUM
@@ -1152,7 +1151,7 @@
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE641-HOJOKBN 
            MOVE    RECE62-TEKSTYMD     TO  RECE641-TEKSTYMD
       *    MOVE    ZERO                TO  RECE641-ZAINUM
-           MOVE    99999               TO  RECE641-ZAINUM
+           MOVE    99999999            TO  RECE641-ZAINUM
       *    MOVE    WRK-RECE64-KOHBUNRI TO  RECE641-KOHBUNRI
            MOVE    "99"                TO  RECE641-SRYKBN
       *

@@ -51,7 +51,7 @@
       *剤識別区分
                05  RECE661-ZAISKBKBN       PIC  X(01).
       *剤識別内番号
-               05  RECE661-ZAISKBBAN       PIC  9(05).
+               05  RECE661-ZAISKBBAN       PIC  9(08).
       *検査実施区分
                05  RECE661-KNSJISKBN       PIC  9(01).
       *表用番号
@@ -65,7 +65,7 @@
       *剤点数
                05  RECE661-ZAITEN          PIC  9(08).
       *剤番号
-               05  RECE661-ZAINUM          PIC  9(05).
+               05  RECE661-ZAINUM          PIC  9(08).
       *連番号
                05  RECE661-LINENUM         PIC  9(05).
       *剤明細数

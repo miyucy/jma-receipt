@@ -294,7 +294,7 @@
            03  WRK-STIDX                               PIC 9(02).
            03  WRK-EDIDX                               PIC 9(02).
            03  WRK-SRYCD                               PIC 9(09).
-           03  WRK-ZAINUM                              PIC 9(05).
+           03  WRK-ZAINUM                              PIC 9(08).
       *
            03  WRK-RECEERR                             PIC X(200).
       *
@@ -1610,7 +1610,7 @@
               MOVE    "92"              TO      RECE64-SRYKBN
            END-IF 
            MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
-           COMPUTE WRK-ZAINUM    =  99900  +  SYUKEI-IDX3
+           COMPUTE WRK-ZAINUM    =  99999900  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO      RECE64-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE64-ZAIREN
            MOVE    RECE62-PTNUM         TO      RECE64-PTNUM
@@ -1672,7 +1672,7 @@
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
            MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
-           COMPUTE WRK-ZAINUM    =  99930  +  SYUKEI-IDX3
+           COMPUTE WRK-ZAINUM    =  99999930  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO      RECE64-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE64-ZAIREN
            MOVE    RECE62-PTNUM         TO      RECE64-PTNUM
@@ -1740,9 +1740,9 @@
            END-IF 
            MOVE    "6"                  TO      RECE64-ZAISKBKBN
            IF      FLG-MIJISI2   =   1
-             COMPUTE WRK-ZAINUM    =  99960  +  SYUKEI-IDX3
+             COMPUTE WRK-ZAINUM    =  99999960  +  SYUKEI-IDX3
            ELSE
-             COMPUTE WRK-ZAINUM    =  99970  +  SYUKEI-IDX3
+             COMPUTE WRK-ZAINUM    =  99999970  +  SYUKEI-IDX3
            END-IF
            MOVE    WRK-ZAINUM           TO      RECE64-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE64-ZAIREN
@@ -2317,7 +2317,7 @@
            MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
            MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
-           COMPUTE WRK-ZAINUM    =  99900  +  SYUKEI-IDX3
+           COMPUTE WRK-ZAINUM    =  99999900  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE65-ZAIREN
            MOVE    NSRY-RENNUM          TO      RECE65-RENNUM
@@ -2384,7 +2384,7 @@
            MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
            MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
-           COMPUTE WRK-ZAINUM    =  99930  +  SYUKEI-IDX3
+           COMPUTE WRK-ZAINUM    =  99999930  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE65-ZAIREN
            MOVE    NSRY-RENNUM          TO      RECE65-RENNUM
@@ -2455,9 +2455,9 @@
            MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
            IF      FLG-MIJISI2   =   1
-             COMPUTE WRK-ZAINUM    =  99960  +  SYUKEI-IDX3
+             COMPUTE WRK-ZAINUM    =  99999960  +  SYUKEI-IDX3
            ELSE
-             COMPUTE WRK-ZAINUM    =  99970  +  SYUKEI-IDX3
+             COMPUTE WRK-ZAINUM    =  99999970  +  SYUKEI-IDX3
            END-IF
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE65-ZAIREN

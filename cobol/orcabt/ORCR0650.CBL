@@ -120,7 +120,7 @@
            03  BUN-IDX                                 PIC 9(03).
       *
       *    ºÞÈÖ¹æ¤ÎÂàÈò
-       01  WK-ZAINUM                                   PIC 9(05).
+       01  WK-ZAINUM                                   PIC 9(08).
       *
       *    ºÞÏ¢ÈÖ¤ÎÂàÈò
        01  WK-ZAIREN                                   PIC 9(02).
