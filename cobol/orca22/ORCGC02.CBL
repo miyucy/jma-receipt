@@ -4151,6 +4151,15 @@
                END-IF
            END-IF
       *
+      *    修飾語コードのみのとき
+           IF      LNK-BYO-BYOMEICD-ERR    =   1
+               MOVE    "0006"          TO  SPA-ERRCD
+               MOVE    SPACE           TO  SPA-CIDCD2
+                                           WRK-HAISIYMDH
+               MOVE    ZERO            TO  SPA-NAI-C02-BYOMEIMOJI 
+               GO  TO  41013-BYOMEI-CHK-EXT
+           END-IF
+      *
       *    病名コード最大個数オーバー
            IF      LNK-BYO-BYOMEICD-MAX-ERR =   1
                MOVE    "0077"          TO  SPA-ERRCD
@@ -4160,7 +4169,7 @@
            END-IF
       *
       *    病名コード順エラー
-           IF      LNK-BYO-BYOMEICD-ERR    >   ZERO
+           IF      LNK-BYO-BYOMEICD-ERR    =   2   OR  9
                MOVE    "0103"          TO  SPA-ERRCD
                MOVE    SPACE           TO  SPA-CIDCD2
                                            WRK-HAISIYMDH
@@ -4780,68 +4789,39 @@
                GO      TO      450-TOUROKU-EXT
            END-IF
       *
-      *    最後の病名コードが接頭語のとき
-           IF    ( SPA-GMN-C02-BYOMEIHENFLG    =   SPACE )
-           AND   ( SPA-GMN-C02-BYOMEICD-G  NOT =   SPACE )    
-               PERFORM VARYING IDZ FROM    21   BY  -1
-                       UNTIL   IDZ <       1
-                   IF      SPA-NAI-C02-BYOMEICD(IDZ)   NOT =   SPACE
-                       IF      SPA-NAI-C02-USERBYOMEIFLG (IDZ) =   "1"
-                           IF      SPA-NAI-C02-BYOMEISBT     (IDZ)
-                                                           NOT =   ZERO
-                                                               AND "8"  
-                               MOVE    "0067"              TO  SPA-ERRCD
-                               GO      TO      450-TOUROKU-EXT
-                           END-IF
-                       ELSE
-                           IF      SPA-NAI-C02-BYOMEICD (IDZ)(1:1) 
-                                                               =   "Z"
-                           AND     SPA-NAI-C02-BYOMEICD (IDZ)(4:1) 
-                                                           NOT =   "8" 
-                               MOVE    "0067"              TO  SPA-ERRCD
-                               GO      TO      450-TOUROKU-EXT
-                           END-IF
-                       END-IF
-                       MOVE    1               TO  IDZ     
+      *    単独使用禁止の病名のとき
+           INITIALIZE                  WRK-TANDOKU-AREA
+           PERFORM VARYING IDZ FROM    1   BY  1
+                   UNTIL   IDZ >       21
+               IF    ( SPA-NAI-C02-BYOMEITOP (IDZ)
+                                           =   "1" )
+               AND   ( IDZ                 >   1   )
+                   IF      WRK-TANDOKUKBN      =   ZERO
+                       MOVE    "0076"              TO  SPA-ERRCD  
+                       GO  TO  450-TOUROKU-EXT
                    END-IF
-               END-PERFORM
-           END-IF           
-      *
-      *    単独使用禁止の病名があるとき
-           IF      SPA-NAI-C02-BYOMEIHENFLG    =   SPACE
-               INITIALIZE                  WRK-TANDOKU-AREA
-               PERFORM VARYING IDZ FROM    1   BY  1
-                       UNTIL   IDZ >       21
-                   IF    ( SPA-NAI-C02-BYOMEITOP (IDZ)
-                                               =   "1" )
-                   AND   ( IDZ                 >   1   )
-                       IF      WRK-TANDOKUKBN      =   ZERO
-                           MOVE    "0076"              TO  SPA-ERRCD  
-                           GO  TO  450-TOUROKU-EXT
-                       END-IF
-                       INITIALIZE                  WRK-TANDOKU-AREA
-                   END-IF
-                   PERFORM VARYING IDX1    FROM    1   BY  1
+                   INITIALIZE                  WRK-TANDOKU-AREA
+               END-IF
+               PERFORM VARYING IDX1    FROM    1   BY  1
                            UNTIL   IDX1    >       21
                            OR      SPA-NAI-C02-BYOMEICD-O  (IDZ IDX1)
                                            =   SPACE
-                       IF      SPA-NAI-C02-TANDOKUKBN-O  (IDZ IDX1) 
-                                               =   ZERO
-                           MOVE    1       TO  WRK-TANDOKUKBN
-                       ELSE
-                           MOVE    SPA-NAI-C02-BYOMEICD-O (IDZ IDX1)
-                                           TO  WRK-TANDOKUKBN-BYOMEICD  
-                           MOVE    SPA-NAI-C02-BYOMEI-O   (IDZ IDX1)
-                                           TO  WRK-TANDOKUKBN-BYOMEI  
-                       END-IF
-                   END-PERFORM
+                   IF      SPA-NAI-C02-TANDOKUKBN-O  (IDZ IDX1) 
+                                           =   ZERO
+                       MOVE    1       TO  WRK-TANDOKUKBN
+                   ELSE
+                       MOVE    SPA-NAI-C02-BYOMEICD-O (IDZ IDX1)
+                                       TO  WRK-TANDOKUKBN-BYOMEICD  
+                       MOVE    SPA-NAI-C02-BYOMEI-O   (IDZ IDX1)
+                                       TO  WRK-TANDOKUKBN-BYOMEI  
+                   END-IF
                END-PERFORM
+           END-PERFORM
       *
-               IF      WRK-TANDOKUKBN      =   ZERO
-                   MOVE    "0076"              TO  SPA-ERRCD  
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
-           END-IF    
+           IF      WRK-TANDOKUKBN      =   ZERO
+               MOVE    "0076"              TO  SPA-ERRCD  
+               GO  TO  450-TOUROKU-EXT
+           END-IF
       *???
            DISPLAY "450 MAX=" SPA-NAI-C02-BYOMEICD-MAX "#"
       *???
@@ -5179,6 +5159,27 @@
            DISPLAY "BYOMEI=" IDXX "#" WRK-PTBYO-BYOMEI (IDXX) "#"
       *???
       *
+      *    修飾語コードのみの病名のとき
+           IF      WRK-PTBYO-BYOMEIHENFLG (IDXX)
+                                       =   SPACE
+               INITIALIZE                  WRK-BYOMEICD
+               PERFORM VARYING IDZ FROM    1   BY  1
+                       UNTIL   IDZ >       21
+                       OR      WRK-PTBYO-BYOMEICD  (IDXX IDZ)
+                                           =   SPACE
+                   IF      WRK-PTBYO-BYOMEICD  (IDXX IDZ)(1:1)
+                                           NOT =   "Z"
+                       MOVE    WRK-PTBYO-BYOMEICD  (IDXX IDZ)
+                                               TO  WRK-BYOMEICD
+                   END-IF
+               END-PERFORM
+      *
+               IF      WRK-BYOMEICD        =   SPACE
+                   MOVE    "0067"              TO  SPA-ERRCD  
+                   GO  TO  4502-DABURI-CHK-EXT
+               END-IF
+           END-IF    
+      *
       *    入力病名との重複チェック（複数病名のとき）
            IF      SPA-NAI-C02-BYOMEICD-MAX    >   1
                PERFORM VARYING IDY    FROM    IDXX    BY  1
@@ -5240,7 +5241,8 @@
                                END-IF
                            END-IF
                    END-EVALUATE
-                   IF      SPA-ERRCD               =   "0038"
+                   IF      SPA-ERRCD               =   "0038"  OR 
+                                                       "0002"
                        MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
                        PERFORM 5002-HIZUKE-HEN-SEC
                        MOVE    LNK-DAY2-EDTYMD3    TO  WRK-ERR-SRYYMD
@@ -6508,8 +6510,13 @@
                WHEN    "0001"
                    MOVE    "入力エラーです"            TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "既に同一開始日、病名が存在します" 
-                                                       TO  SPA-ERRMSG
+                   STRING
+                       WRK-ERR-BYOMEI          DELIMITED   BY  SPACE
+                       "は"                    DELIMITED   BY  SIZE 
+                       WRK-ERR-SRYYMD          DELIMITED   BY  SPACE
+                       "に登録してあります。"  DELIMITED   BY  SIZE 
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0003"
                    MOVE    "警告メッセージ"            TO  SPA-ERRMSG
                WHEN    "0004"
@@ -6656,8 +6663,11 @@
                    MOVE    "複数の病名が入力してあります"
                                                        TO  SPA-ERRMSG
                WHEN    "0067"
-                   MOVE    "接頭語で病名が終わっています"
-                                                       TO  SPA-ERRMSG
+                   STRING   WRK-ERR-BYOMEI     DELIMITED   BY  SPACE
+                            "は接頭語で病名が終わっています"
+                                               DELIMITED   BY  SIZE 
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0068"
                    MOVE    "既にこのコードは登録されています"
                                                        TO  SPA-ERRMSG
