@@ -6458,6 +6458,11 @@
                GO      TO      4100-HKNHEN-EXT
            END-IF
       *
+           IF      SPA-J01-SRYKA       =   ZERO
+               MOVE    "0022"          TO  SPA-ERRCD
+               GO      TO      4100-HKNHEN-EXT
+           END-IF
+      *
            MOVE    "0109"              TO  SPA-JIDCD
       *
            .
@@ -6978,6 +6983,11 @@
                                        TO  WRK-ERRMSG
                    MOVE    "。剤変更はできません。"
                                        TO  WRK-ERRMSG(43:)
+               WHEN    "0022"
+                   MOVE    "保険の一括変更は科毎に行って下さい。"
+                                       TO  WRK-ERRMSG
+                   MOVE    "全科では変更できません。"
+                                       TO  WRK-ERRMSG(37:)
                WHEN    "0030"
                    MOVE    "入外区分がありません。"
                                        TO  WRK-ERRMSG

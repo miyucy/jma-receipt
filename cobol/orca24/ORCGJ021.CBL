@@ -903,7 +903,14 @@
                                            <=  SPA-NAI-SRYYM  )  AND
                           (SPA-NAI-TEKEDYMD (IDX)(1:6)
                                            >=  SPA-NAI-SRYYM  )
-                       CONTINUE
+      *                保険開始日が診療日より前であること
+                       IF     (SPA-NAI-TEKSTYMD (IDX)(1:6)
+                                           =   SPA-NAI-SRYYM )  AND
+                              (SPA-NAI-TEKSTYMD (IDX)
+                                           >   SPA-RRK-RRKYMD
+                                                     (SPA-RRK-MAX))
+                           MOVE    "0009"              TO  SPA-ERRCD
+                       END-IF
                    ELSE
                        MOVE    "0008"              TO  SPA-ERRCD
                    END-IF
@@ -1416,6 +1423,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "変更して下さい"
                                        TO  SPA-ERRMSG(33:)
+               WHEN    "0009"
+                   MOVE    "変更後の保険組合せは受診日に対象では"
+                                       TO  SPA-ERRMSG
+                   MOVE    "ありません。変更して下さい"
+                                       TO  SPA-ERRMSG(37:)
                WHEN    "0010"
                    MOVE    "保険組合せの変更が終了しました。"
                                        TO  SPA-ERRMSG
