@@ -59,7 +59,7 @@ J03	{
 				value	varchar(55);
 			};
 			count	int;
-			item	varchar(55)[17];
+			item	varchar(55)[20];
 		};
 		MIDASI	{
 		        style   varchar(20);
