@@ -458,6 +458,8 @@
                05  WRK-NENREI-YY         PIC 9(03).
                05  WRK-NENREI-MM         PIC 9(02).
                05  WRK-NENREI-DD         PIC 9(02).
+      *    老人フラグ
+           03  WRK-ROUJIN              PIC 9(01).
       *
       *    入力時表示用
            03  IDX-INCNT               PIC 9(04).
@@ -4637,8 +4639,15 @@
       *****************************************************************
        410131-SINSATUHEN-SEC         SECTION.
       *
+           MOVE    SPA-NAI-ROUJIN      TO  WRK-ROUJIN
+      *
       *    スパ共通編集処理
            PERFORM                     310-SPA-SET-SEC
+      *
+      *    老人区分が変更された時、チェックフラグをクリアする
+           IF      SPA-NAI-ROUJIN  NOT =   WRK-ROUJIN
+               PERFORM 4101311-ROUJINCHK-SEC
+           END-IF
       *    他保険受診がある時、診察料はないものとする
            IF      SPA-TAHOKEN-FLG     =   1
                GO      TO      410131-SINSATUHEN-EXT
@@ -4678,6 +4687,21 @@
       *
            .
        410131-SINSATUHEN-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    初期画面編集処理
+      *****************************************************************
+       4101311-ROUJINCHK-SEC         SECTION.
+      *
+      *    老人区分が変更された時、チェックフラグをクリアする
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   200
+               MOVE    SPACE               TO  SPA-COM-CHKFLG (IDX)
+           END-PERFORM
+           .
+       4101311-ROUJINCHK-EXT.
            EXIT.
       *
       *****************************************************************

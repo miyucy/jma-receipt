@@ -424,6 +424,8 @@
                05  WRK-NENREI-YY         PIC 9(03).
                05  WRK-NENREI-MM         PIC 9(02).
                05  WRK-NENREI-DD         PIC 9(02).
+      *    老人フラグ
+           03  WRK-ROUJIN              PIC 9(01).
       *
       *    入力時表示用
            03  IDX-INCNT               PIC 9(04).
@@ -2161,8 +2163,6 @@
                                        TO  SPA-KOH3HKNNUM
            MOVE    SPA-NAI-KOH4HKNNUM  (IDX)
                                        TO  SPA-KOH4HKNNUM
-      *    老人判定
-           PERFORM 3102-ROUJIN-SET-SEC
       *
       *    労災 四肢区分
            MOVE    SPA-NAI-RSI-SISIKBN (IDX)
@@ -2179,6 +2179,9 @@
            ELSE
                MOVE    ZERO            TO  SPA-HKNKBN
           END-IF
+      *
+      *    老人判定
+           PERFORM 3102-ROUJIN-SET-SEC
       *
       *    保険算定年齢チェック等
            INITIALIZE                  ORCSAGECHKAREA
@@ -3956,10 +3959,17 @@
       *****************************************************************
        41012-HKNCOMBI-CHANGE-SEC         SECTION.
       *
+           MOVE    SPA-NAI-ROUJIN      TO  WRK-ROUJIN
+      *
       *    保険組合
            PERFORM 3101-HKNCOMBI-HEN-SEC
            IF      SPA-ERRCD           NOT =   SPACE
                GO      TO      41012-HKNCOMBI-CHANGE-EXT
+           END-IF
+      *
+      *    老人区分が変更された時、チェックフラグをクリアする
+           IF      SPA-NAI-ROUJIN  NOT =   WRK-ROUJIN
+               PERFORM 410121-ROUJINCHK-SEC
            END-IF
       *
       *    保険区分が変更された時、ワーク診療行為を判定する
@@ -3971,6 +3981,20 @@
            .
        41012-HKNCOMBI-CHANGE-EXT.
            EXIT.
+      *****************************************************************
+      *    チェックフラグクリア処理
+      *****************************************************************
+       410121-ROUJINCHK-SEC         SECTION.
+      *
+      *    老人区分が変更された時、チェックフラグをクリアする
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   200
+               MOVE    SPACE               TO  SPA-COM-CHKFLG (IDX)
+           END-PERFORM
+           .
+       410121-ROUJINCHK-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    保険区分変換処理
       *****************************************************************
@@ -6465,7 +6489,8 @@
                                                =   "201"
                                                OR  "202"
                                                OR  "203"  )  AND
-                   (SPA-COM-KAISU (IDX)        =   1      )
+                   (SPA-COM-KAISU (IDX)        =   1      )  AND
+                   (SPA-COM-NYU-KAI (IDX)      <=  1      )
                GO      TO      51019-NYUIN-SANCHK-EXT
            END-IF
       *
