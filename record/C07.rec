@@ -19,6 +19,13 @@ C07	{
 			count	int;
 			item	varchar(20)[41];
 		};
+		NYUGAIKBNCOMB	{
+			NYUGAIKBN	{
+				value	varchar(9);
+			};
+			count	int;
+			item	varchar(8)[2];
+		};
 		MIDASI	{
 		    style   varchar(20);
 			value	varchar(20);

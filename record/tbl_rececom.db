@@ -1,6 +1,7 @@
 tbl_rececom {
 	HOSPID				char(24);
 	PTID				number(10);
+	NYUGAIKBN			char(1);
 	SRYKA				char(2);
 	SRYYM				char(6);
 	HKNCOMBI       		number(4);
@@ -23,6 +24,7 @@ path	key		{
 		FROM tbl_rececom
 			WHERE   HOSPID    =   :HOSPID
 			AND     PTID      =   :PTID
+			AND     NYUGAIKBN =   :NYUGAIKBN
 			AND     SRYKA     =   :SRYKA
 			AND     SRYYM     =   :SRYYM
 			AND     HKNCOMBI  =   :HKNCOMBI
@@ -39,6 +41,7 @@ path	key1		{
 			WHERE   HOSPID    =   :HOSPID
 			AND     PTID      =   :PTID
 			AND     SRYYM     =   :SRYYM
+			AND     NYUGAIKBN =   :NYUGAIKBN
 			ORDER BY HKNCOMBI,SRYDD
 		;
 	};
@@ -59,6 +62,7 @@ path	key2		{
 		FROM tbl_rececom
 			WHERE   HOSPID    =   :HOSPID
 			AND     PTID      =   :PTID
+			AND     NYUGAIKBN =   :NYUGAIKBN
 			ORDER   BY        SRYYM  DESC
 		;
 	};
@@ -72,6 +76,7 @@ path	key3		{
 			WHERE   HOSPID    =   :HOSPID
 			AND     PTID      =   :PTID
 			AND     SRYYM     =   :SRYYM
+			AND     NYUGAIKBN =   :NYUGAIKBN
                     AND     SRYDD     =   :SRYDD
 		;
 	};
