@@ -137,6 +137,12 @@
       *¿ÇÎÅÇ¯·îÆüËöÆü
                05  SPA-SRYLST-DD           PIC 9(02).
       *
+      *Æþ±¡ÍÑ¡Ê£Ë£°£²£Î¡Ë
+      *        Æþ±¡Æü
+               05  SPA-K02N-NYUINYMD           PIC X(08).
+      *        Âà±¡Æü
+               05  SPA-K02N-TAIINYMD           PIC X(08).
+      *
            03  SPA-K02SET-AREA.
       *¾®»ù²Ê³°Íè¿ÇÎÅ²Ê
                05  SPA-SYONIKA             PIC  9(01).
@@ -204,12 +210,6 @@
                05  SPA-TAHOKEN-FLG         PIC  9(01).
       *¿Ç»¡ÎÁÊÑ¹¹¤¢¤ê
                05  SPA-SINSATU-SAI         PIC  9(01).
-      *
-      *Æþ±¡ÍÑ¡Ê£Ë£°£²£Î¡Ë
-      *        Æþ±¡Æü
-               05  SPA-K02N-NYUINYMD           PIC X(08).
-      *        Âà±¡Æü
-               05  SPA-K02N-TAIINYMD           PIC X(08).
       *
            03  SPA-SONOTA-AREA.
       *³ÎÇ§¥á¥Ã¥»¡¼¥¸
