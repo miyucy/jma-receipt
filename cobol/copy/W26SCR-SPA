@@ -36,19 +36,21 @@
                    13  SPA-GMN-W26-BTU-NAME-CD         PIC X(02).
                    13                                  PIC X(01).
                    13  SPA-GMN-W26-BTU-NAME-NM         PIC X(20).
-                 11  SPA-GMN-W26-BTU-NAME-ERR          PIC X(04).
       *          病棟種別
                  11  SPA-GMN-W26-BTU-SBT               PIC X(20).
       *          入院基本料
                  11  SPA-GMN-W26-BTU-KHNRYO            PIC X(60).
+      *        入力項目領域
+               09  SPA-GMN-W26-INPUT-AREA.
+      *          入力領域状態
+                 11  SPA-GMN-W26-STATE                 PIC S9(9)
+                                                       BINARY.
       *          有効開始日
                  11  SPA-GMN-W26-STYUKYMD              PIC X(10).
                  11  SPA-GMN-W26-STYUKYMD-S            PIC X(08).
       *          有効終了日
                  11  SPA-GMN-W26-EDYUKYMD              PIC X(10).
                  11  SPA-GMN-W26-EDYUKYMD-S            PIC X(08).
-      *        入力項目領域
-               09  SPA-GMN-W26-INPUT-AREA.
       *          難病患者等特別入院診療加算
                  11  SPA-GMN-W26-CHK-NANBYO            PIC X.
       *          特殊疾患入院施設管理加算
@@ -63,6 +65,18 @@
       *          看護配置加算
                  11  SPA-GMN-W26-CHK-KANGO             PIC X
                                                        OCCURS 5.
+      *          選択番号
+                 11  SPA-GMN-W26-SELNUM                PIC 9(03).
+      *        有効期間リスト
+               09  SPA-GMN-W26-YUKOYMDLST.
+                 11 SPA-GMN-W26-YUKOYMDLST-CNT         PIC 9(05).
+                 11 SPA-GMN-W26-YUKOYMDLST-ITM         OCCURS  100.
+                    13  SPA-GMN-W26-TSELNUM            PIC 9(3).
+                    13  SPA-GMN-W26-TSTYUKYMD          PIC X(9).
+                    13  SPA-GMN-W26-TSTYUKYMD-S        PIC X(8).
+                    13  SPA-GMN-W26-TEDYUKYMD          PIC X(9).
+                    13  SPA-GMN-W26-TEDYUKYMD-S        PIC X(8).
+                 11 SPA-GMN-W26-YUKOYMDLST-SEL         PIC 9(05).
       *
       *        コンボ項目領域
                09  SPA-GMN-W26-CMB-DAT-AREA.
@@ -92,7 +106,6 @@
                    13  SPA-GMN-W27-BTU-NAME-CD         PIC X(02).
                    13                                  PIC X(01).
                    13  SPA-GMN-W27-BTU-NAME-NM         PIC X(20).
-                 11  SPA-GMN-W27-BTU-NAME-ERR          PIC X(04).
       *          病棟種別
                  11  SPA-GMN-W27-BTU-SBT               PIC X(20).
       *          入院基本料
@@ -101,7 +114,6 @@
                09  SPA-GMN-W27-INPUT-AREA.
       *              開始選択番号
                  11  SPA-GMN-W27-STSELNUM              PIC S9(3).
-                 11  SPA-GMN-W27-STSELNUM-ERR          PIC X(04).
       *              終了選択番号
                  11  SPA-GMN-W27-EDSELNUM              PIC S9(3).
       *              開始病室番号
@@ -117,6 +129,10 @@
                  11  SPA-GMN-W27-CHK-HOSYASEN          PIC X.
       *              療養環境加算
                  11  SPA-GMN-W27-CHK-RYOYO             PIC X.
+      *        基準日
+               09    SPA-GMN-W27-KJNYMD-AREA.
+                 11  SPA-GMN-W27-KJNYMD                PIC X(09).
+                 11  SPA-GMN-W27-KJNYMD-S              PIC X(08).
       *        病室情報リスト領域
                09  SPA-GMN-W27-BRMLST-AREA.
                  11  SPA-GMN-W27-BRMLST-CNT            PIC S9(9).

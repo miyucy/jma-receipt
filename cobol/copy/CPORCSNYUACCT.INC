@@ -1,0 +1,66 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      ************************************************************
+      *    入院会計作成用パラメタ　　　COPY (CPORCSNYUACCT.INC)
+      *                                使用プログラム (ORCGI01)
+      ************************************************************
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      ************************************************************
+       01  ORCSNYUACCT-AREA.
+      *
+      *入院会計作成区分
+           03  LNK-SCNYUACCT-SYORI-KBN               PIC  X(01).
+      *入院会計作成期間（開始）
+           03  LNK-SCNYUACCT-STSRYYMD                PIC  X(08).
+      *入院会計作成期間（終了）
+           03  LNK-SCNYUACCT-EDSRYYMD                PIC  X(08).
+      *入院基本料エリア
+           03  LNK-SCNYUACCT-NYUKHN.
+               05  LNK-SCNYUACCT-NYUKHN-SRYCD        PIC  X(09)
+                                                     OCCURS  6.
+           03  LNK-SCNYUACCT-KAGENCD.
+               05  LNK-SCNYUACCT-KAGENCD-TBL         OCCURS  7.
+                   07  LNK-SCNYUACCT-KAGEN-SRYCD     PIC  X(09).
+                   07  LNK-SCNYUACCT-KAGEN-STYUKYMD  PIC  X(08).
+                   07  LNK-SCNYUACCT-KAGEN-EDYUKYMD  PIC  X(08).
+      *通算算定済日数（入院料加算算定用）
+           03  LNK-SCNYUACCT-NYUKHN-NISUU            PIC  9(04).
+      *入院料加算診療コード
+           03  LNK-SCNYUACCT-NYUKHNKSN-SRYCD         PIC  X(09)
+                                                     OCCURS  20.
+      *外泊診療コード
+           03  LNK-SCNYUACCT-GAIHAKU-SRYCD           PIC  X(09).
+      *室料差額診療コード
+           03  LNK-SCNYUACCT-SAGAKU-SRYCD            PIC  X(09).
+      *室料差額区分
+           03  LNK-SCNYUACCT-SAGAKU-KBN              PIC  9(02).
+      *食事診療コード
+           03  LNK-SCNYUACCT-SHOKUJI-SRYCD           PIC  X(09).
+      *食事区分
+           03  LNK-SCNYUACCT-SHOKUJIKBN              PIC  9(01).
+      *保険組合コード
+           03  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD       PIC  X(09).
+      *保険組合せ
+           03  LNK-SCNYUACCT-HKNCOMBINUM             PIC  9(04).
+      *転科時元入院科
+           03  LNK-SCNYUACCT-MOTO-NYUINKA            PIC  X(02).
+      *復帰コード
+           03  LNK-SCNYUACCT-RC                      PIC S9(9) BINARY.
+      *

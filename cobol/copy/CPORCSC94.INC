@@ -32,4 +32,6 @@
            03  LNK-SC94-PG             PIC X(03).
       *    対象行（必須入力）
            03  LNK-SC94-IDX            PIC 9(04).
+      *    訂正フラグ（入院の回数のみ使用）
+           03  LNK-SC94-SYORIFLG       PIC 9(01).
       *

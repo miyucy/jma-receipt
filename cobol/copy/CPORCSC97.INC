@@ -26,6 +26,8 @@
       ************************************************************
       *
        01  ORCSC97AREA.
+      *    £Ð£ÇÌ¾
+           03  LNK-SC97-PG             PIC X(06).
       *    ÆþÎÏ½ÐÎÏÎÎ°è
            03  LNK-SC97-INPUTCD        PIC X(22).
       *    £Ó£Ð£Á¥é¥¤¥ó
@@ -77,4 +79,8 @@
                05  LNK-SC97-MCNT4          PIC 9(02).
       *        ¸¡º÷²èÌÌ¤Ø
                05  LNK-SC97-KENSAKU        PIC X(01).
+      *        Æþ±¡²ó¿ô
+               05  LNK-SC97-NYUIN-KAISU.
+                   07  LNK-SC97-NYU-DAY    PIC 9(02)
+                                           OCCURS   31.
       *

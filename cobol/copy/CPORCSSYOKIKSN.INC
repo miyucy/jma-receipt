@@ -16,21 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    剤セット、チェック　   COPY (CPORCSC93.INC)
-      *                              (ORCSC93 で使用）
+      *    初期加算算定サブパラメタ　  COPY (CPORCSSYOKIKSN.INC)
       *----------------------------------------------------------*
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
-       01  ORCSC93AREA.
-      *
-      *    処理画面
-           03  LNK-SC93-PG            PIC X(04).
-      *
-      *    セット入力（Ｋ０５）のセットコード
-           03  LNK-SC93-SETCODE       PIC X(06).
-      *    小児科外来診療科算定有り
-           03  LNK-SC93-SYONIKA-ARI2  PIC  9(01).
-      *
+       01  ORCSSYOKIKSNAREA.
+      *    入力項目
+           03  SYOKIKSN-IN-AREA.
+      *        自院算定済み通算日数
+               05  SYOKIKSN-IN-TUSANNISSU      PIC 9(05).
+      *        基本点数診療コード
+               05  SYOKIKSN-IN-KHNSRYCD        PIC X(09).
+      *        算定開始日
+               05  SYOKIKSN-IN-SANTEISTYMD     PIC X(08).
+      *    出力項目
+           03  SYOKIKSN-OT-AREA.
+               05  SYOKIKSN-OT-OCC             OCCURS  7.
+      *            加減算診療コード
+                   07  SYOKIKSN-OT-KGNSRYCD    PIC X(09).
+      *            有効開始日
+                   07  SYOKIKSN-OT-YUKOSTYMD   PIC X(08).
+      *            有効終了日
+                   07  SYOKIKSN-OT-YUKOEDYMD   PIC X(08).
+      *        リターンコード
+               05  SYOKIKSN-OT-RC              PIC 9(01).
