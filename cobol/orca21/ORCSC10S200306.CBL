@@ -4545,10 +4545,13 @@
            MOVE    ZERO                TO  FLG-SINSATU-ARI
            MOVE    SPACE               TO  WRK-KBN3
       *    時間外なし
-           MOVE    1                   TO  FLG-JIKANKBN
+           MOVE    ZERO                TO  FLG-JIKANKBN
       *    訂正の時、初診料を算定中かの判定
            IF     (SPA-SYORIFLG        =   1    )  OR
                   (LNK-SC10S-SYORI     =   "W"  )
+      *        時間外なし
+               MOVE    1                   TO  FLG-JIKANKBN
+      *
                PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200    )  OR
                               (SPA-COM-INPUTCD(IDX) =   SPACE  AND
