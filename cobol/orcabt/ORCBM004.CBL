@@ -914,7 +914,8 @@
                                        TO  SPRT-PRIORITY
       *****MOVE   "HC04"               TO  SPRT-PRTID
       *****MOVE   "HC04V01"            TO  SPRT-PRTID
-           MOVE   "HC04V02"            TO  SPRT-PRTID
+      *****MOVE   "HC04V02"            TO  SPRT-PRTID
+           MOVE   "HC04V03"            TO  SPRT-PRTID
            MOVE    "πÒ ›¡Ì≥Á…Ω"        TO  SPRT-TITLE
            MOVE    HC04                TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
