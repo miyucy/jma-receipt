@@ -3,6 +3,8 @@
               03  J025-SCROLLEDWINDOW1.
                 04  J025-SYUNOULIST.
                   05  J025-SYUNOULIST-COUNT  PIC S9(9)   BINARY.
+                  05  J025-SYUNOULIST-ROW    PIC S9(9)   BINARY.
+                  05  J025-SYUNOULIST-ROWATTR    PIC S9(9)   BINARY.
                   05  J025-ITEM       OCCURS  100 TIMES.
                     06  J025-DENPNUM PIC X(7).
                     06  J025-SRYKA   PIC X(6).

@@ -3,6 +3,8 @@ J025	{
 		scrolledwindow1	{
 			SYUNOULIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(7);
 					value1	varchar(6);
