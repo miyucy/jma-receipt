@@ -1102,10 +1102,11 @@
            MOVE    "X98"               TO  SPA-SAKIPG
            MOVE    "X01"               TO  SPA-X98-MOTOPG
       *
+      *
            IF      SPA-X98-GMN-MAX     =   ZERO
                MOVE    "INPUT"             TO  MCP-WIDGET
            ELSE
-               MOVE    "SELNUM"            TO  MCP-WIDGET
+               MOVE    "SELNUM1"           TO  MCP-WIDGET
            END-IF
       *
            MOVE   "NEW"                TO  MCP-PUTTYPE

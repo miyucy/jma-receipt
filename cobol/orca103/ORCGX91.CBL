@@ -980,7 +980,7 @@
            IF    ( SPA-X98-GMN-MAX     =   ZERO )
                MOVE    "INPUT"         TO  MCP-WIDGET
            ELSE
-               MOVE    "SELNUM"        TO  MCP-WIDGET
+               MOVE    "SELNUM1"       TO  MCP-WIDGET
            END-IF
       *
            MOVE   "NEW"                TO  MCP-PUTTYPE
