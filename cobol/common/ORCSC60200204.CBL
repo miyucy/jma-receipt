@@ -1487,7 +1487,7 @@
                    UNTIL      (IDX         >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
                IF      (WRK-COM-INPUTCD(IDX)(1:1)      =   "1" )  AND
-      **************** (WRK-COM-INPUTCD(IDX)(1:3)  NOT =   "101") AND
+                       (WRK-COM-INPUTCD(IDX)(1:3)  NOT =   "101") AND
                        (WRK-COM-GAIKANRIKBN (IDX)      =   1   )
       *            手技料の合計を編集する
                    MOVE    LNK-SC90-TENSUKEI   TO  WRK-COM-SYUTEN2
@@ -2418,7 +2418,6 @@
            .
        3009-NYUINKAISU-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    算定履歴チェック処理
