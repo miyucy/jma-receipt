@@ -39,6 +39,7 @@
       *                                    ¡ÊÄ¢É¼£É£Ä¤ò£È£Ã£±£·£Ö£°£±¤ØÊÑ¹¹¡Ë
       *  01.01.01    NACL-Æ£¸¶    02/10/10  ¥µ¥¤¥È¶èÊ¬ÄÉ²Ã
       *  01.01.02    NACL-Æ£¸¶    02/10/17  ¼«Èñ¤Î½¸·×ÊýË¡½¤Àµ
+      *  02.00.01    NACL-¿¹ÏÆ    04/01/06  ¥Þ¥¤¥Ê¥¹¤ò¹ÍÎ¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -66,7 +67,11 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-           COPY    "HC17.INC".
+      *----(02.00.01)--UPD-START---
+      *     COPY    "HC17.INC".
+           COPY    "HCM17.INC"     REPLACING  //HCM17//
+                                   BY         //HC17//.
+      *----(02.00.01)--UPD-END-----
       *
       *    ¥¹¥ÑÎÎ°è
        01  STS-AREA.
@@ -130,19 +135,29 @@
       *
       *****03  WRK-IN                PIC X(01).
       *
-           03  WRK-MONEY             PIC 9(08).
-           03  WRK-JIHI              PIC 9(08).
+      *----(02.00.01)--UPD-START---
+      *     03  WRK-MONEY             PIC 9(08).
+      *     03  WRK-JIHI              PIC 9(08).
+           03  WRK-MONEY             PIC S9(08).
+           03  WRK-JIHI              PIC S9(08).
+      *----(02.00.01)--UPD-END-----
       *
            03  WRK-RENNUM-X          PIC ZZ9.
            03  WRK-PAGE              PIC ZZ9.
-           03  WRK-Z9                PIC ZZZZZZZ9.
-           03  WRK-ZZ                PIC ZZZZZZZZ.
+      *----(02.00.01)--UPD-START---
+           03  WRK-Z8                PIC ZZZZZZZ9.
+           03  WRK-Z9                PIC ZZZZZZZZ9.
+           03  WRK-Z99               PIC --------9.
+      *----(02.00.01)--UPD-END-----
       *
        01  SUM-AREA                             VALUE   ZERO.
            03  SUM-OCC               OCCURS  10.
                05  SUM-KENSU         PIC 9(05).
                05  SUM-HKNTEN        PIC 9(08).
-               05  SUM-MONEY         PIC 9(08).
+      *----(02.00.01)--UPD-START---
+      *         05  SUM-MONEY         PIC 9(08).
+               05  SUM-MONEY         PIC S9(08).
+      *----(02.00.01)--UPD-END-----
       *
        01  WRK-CONS-AREA.
       *    ¼«ÈñÊÝ¸±ÈÖ¹æ 
@@ -421,9 +436,11 @@
                            ADD     BD002-HKNTEN (IDZ)
                                                TO  BD002-TOTAL-HKNTEN
                        END-PERFORM
+      *----(02.00.01)--UPD-START---
                        MOVE    BD002-TOTAL-HKNTEN
-                                           TO  WRK-Z9
-                       MOVE    WRK-Z9      TO  HC17-HKNTEN (CNT-LINE)
+                                           TO  WRK-Z8
+                       MOVE    WRK-Z8      TO  HC17-HKNTEN (CNT-LINE)
+      *----(02.00.01)--UPD-END-----
                END-EVALUATE        
       *    ÊÝ¸±ÊÌ¶â³Û¡Ê¼ÒÊÝËÜ¿Í¡Á¼«ÇåÀÕ¡Ë
                MOVE    ZERO                TO  IDX 
@@ -476,16 +493,25 @@
                    COMPUTE WRK-MONEY       =   BD002-SKYMONEY
                                            -   WRK-JIHI                  
       *              
-                   MOVE    WRK-MONEY       TO  WRK-Z9
-                   MOVE    WRK-Z9          TO  HC17-MONEY (IDX CNT-LINE)
+      *----(02.00.01)--UPD-START---
+                   IF      WRK-MONEY       <   0
+                       MOVE    WRK-MONEY   TO  WRK-Z99
+                       MOVE    WRK-Z99     TO  HC17-MONEY (IDX CNT-LINE)
+                   ELSE
+                       MOVE    WRK-MONEY   TO  WRK-Z9
+                       MOVE    WRK-Z9      TO  HC17-MONEY (IDX CNT-LINE)
+                   END-IF
+      *----(02.00.01)--UPD-END-----
                    IF      IDX             =   7
                        CONTINUE
                    ELSE
                        IF      WRK-JIHI    >   ZERO      
+      *----(02.00.01)--UPD-START---
                            MOVE    WRK-JIHI
-                                           TO  WRK-ZZ
-                           MOVE    "*"     TO  WRK-ZZ (1:1)
-                           MOVE    WRK-ZZ  TO  HC17-MONEY (7   CNT-LINE)
+                                           TO  WRK-Z9
+                           MOVE    "*"     TO  WRK-Z9 (2:1)
+                           MOVE    WRK-Z9  TO  HC17-MONEY (7   CNT-LINE)
+      *----(02.00.01)--UPD-END-----
                        END-IF
                    END-IF        
                END-IF
@@ -540,18 +566,24 @@
       *    
        330-TERM-HEN-SEC         SECTION.
       *
-      *
+      *----(02.00.01)--UPD-START---
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
                IF      IDX                <   9    
-                   MOVE    SUM-HKNTEN (IDX)   TO  WRK-Z9
-                   MOVE    WRK-Z9             TO  HC17-GHKNTEN (IDX)
+                   MOVE    SUM-HKNTEN (IDX)   TO  WRK-Z8
+                   MOVE    WRK-Z8             TO  HC17-GHKNTEN (IDX)
                END-IF    
-               MOVE    SUM-MONEY (IDX)    TO  WRK-Z9 
-               MOVE    WRK-Z9             TO  HC17-GMONEY  (IDX) 
-               MOVE    SUM-KENSU (IDX)    TO  WRK-Z9
-               MOVE    WRK-Z9             TO  HC17-GKENSU  (IDX)
+               IF      SUM-MONEY (IDX)    <   0
+                   MOVE    SUM-MONEY (IDX)    TO  WRK-Z99 
+                   MOVE    WRK-Z99            TO  HC17-GMONEY  (IDX) 
+               ELSE
+                   MOVE    SUM-MONEY (IDX)    TO  WRK-Z9 
+                   MOVE    WRK-Z9             TO  HC17-GMONEY  (IDX) 
+               END-IF
+               MOVE    SUM-KENSU (IDX)    TO  WRK-Z8
+               MOVE    WRK-Z8             TO  HC17-GKENSU  (IDX)
            END-PERFORM
+      *----(02.00.01)--UPD-END-----
       *
            .
        331-TOTAL-HENSYU-EXT.
@@ -578,7 +610,10 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
       *****MOVE   "HC17"               TO  SPRT-PRTID
-           MOVE   "HC17V01"            TO  SPRT-PRTID
+      *----(02.00.01)--UPD-START---
+      *     MOVE   "HC17V01"            TO  SPRT-PRTID
+           MOVE   "HCM17.red"          TO  SPRT-PRTID
+      *----(02.00.01)--UPD-END-----
            MOVE    "Æü·×É½¡ÊÅÁÉ¼È¯¹ÔÆü¡Ë"
                                        TO  SPRT-TITLE
            MOVE    HC17                TO  SPRT-PRTDATA
