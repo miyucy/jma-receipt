@@ -2649,15 +2649,15 @@
       *****************************************************************
        2001-P027-SET-SEC         SECTION.
       *
-           MOVE    " ÉéÃ´¶èÊ¬"   TO  P02-P027-TITLE1
-           MOVE    "²ó¡Ý³ä¹ç"    TO  P02-P027-TITLE2
-           MOVE    "²ó¡Ý¸ÇÄê³Û"  TO  P02-P027-TITLE3
-           MOVE    "²ó¡Ý¾å¸Â³Û"  TO  P02-P027-TITLE4
-           MOVE    "Æü¡Ý¾å¸Â³Û"  TO  P02-P027-TITLE5
-           MOVE    "Æü¡Ý¾å²ó¿ô"  TO  P02-P027-TITLE6
-           MOVE    "·î¡Ý¾å¸Â³Û"  TO  P02-P027-TITLE7
-           MOVE    "·î¡Ý¾å²ó¿ô"  TO  P02-P027-TITLE8
-           MOVE    "   ÌôºÞÉéÃ´" TO  P02-P027-TITLE9
+           MOVE    "ÉéÃ´¶èÊ¬"      TO  P02-P027-TITLE1
+           MOVE    "²ó¡Ý³ä¹ç"      TO  P02-P027-TITLE2
+           MOVE    "²ó¡Ý¸ÇÄê³Û"    TO  P02-P027-TITLE3
+           MOVE    "²ó¡Ý¾å¸Â³Û"    TO  P02-P027-TITLE4
+           MOVE    "Æü¡Ý¾å¸Â³Û"    TO  P02-P027-TITLE5
+           MOVE    "Æü¡Ý¾å²ó¿ô"    TO  P02-P027-TITLE6
+           MOVE    "·î¡Ý¾å¸Â³Û"    TO  P02-P027-TITLE7
+           MOVE    "·î¡Ý¾å²ó¿ô"    TO  P02-P027-TITLE8
+           MOVE    "  ÌôºÞÉéÃ´"    TO  P02-P027-TITLE9
       *
            PERFORM   VARYING     IDX     FROM   1   BY  1
                      UNTIL       IDX     >   SPA-GMN27-MAX
