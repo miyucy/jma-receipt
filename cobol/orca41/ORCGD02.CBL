@@ -301,6 +301,7 @@
            03  W-TABLE-S4.
                05  W-SRYCD-S4-TABLE    OCCURS  1000.
                    07  W-SRYCD-91      PIC X(09).
+                   07  W-SRYCD-92      PIC X(09).
            03  W-CHK-KUBUN.
                05  W-CHK-ST1-KBN       PIC X(01).
                05  W-CHK-ST2-KBN       PIC X(01).
@@ -3029,7 +3030,6 @@
                                        ORCMCPAREA
                                        MCPDATA-REC.
       *
-           MOVE    CHK-CD (IDY2)       TO  W-SRYCD-91 (IDY5).
            IF  MCP-RC   NOT =   ZERO
                MOVE    1                    TO  FLG-TBL
            ELSE
@@ -3123,6 +3123,8 @@
                        PERFORM VARYING IDY1  FROM  1  BY 1
                                UNTIL   IDY1  >  1000
                            IF  W-SRYCD-91 (IDY1)   =   SPACE
+                               MOVE    CHK-CD (IDY2)      TO  W-SRYCD-91
+                                                                  (IDY1)
                                MOVE    2000               TO  IDY1
                                IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
                                    (CHK-CD (IDY2)   NOT =   ZERO)
@@ -3205,14 +3207,16 @@
                            UNTIL   IDY2  >    10
                        PERFORM VARYING IDY1  FROM  1  BY 1
                                UNTIL   IDY1  >  1000
-                           IF  W-SRYCD-91 (IDY1)   =   SPACE
+                           IF  W-SRYCD-92 (IDY1)   =   SPACE
+                               MOVE    CHK-CD (IDY2)      TO  W-SRYCD-92
+                                                                  (IDY1)
                                MOVE    2000               TO  IDY1
                                IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
                                    (CHK-CD (IDY2)   NOT =   ZERO)
                                    PERFORM T-530-RECECHEK-CHK5-SEC
                                END-IF
                            ELSE
-                               IF  W-SRYCD-91 (IDY1)  =  CHK-CD (IDY2)
+                               IF  W-SRYCD-92 (IDY1)  =  CHK-CD (IDY2)
                                    MOVE    2000               TO  IDY1
                                END-IF
                            END-IF
