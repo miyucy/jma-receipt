@@ -53,6 +53,8 @@
            03  FLG-END             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
       *
+           03  FLG-UKETUKE         PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -79,6 +81,9 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    受診内容
+       01  UKETUKE-REC.
+           COPY    "CPUKETUKE.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -379,10 +384,13 @@
            IF      SPA-K97-CUR        =   ZERO
                EVALUATE    WRK-WIDGET
                    WHEN    "SELNUM1"
+                   WHEN    "HKNCOMBILST"
                        MOVE    2                   TO  SPA-K97-CUR
                    WHEN    "SELNUM2"
+                   WHEN    "SRYKALIST"
                        MOVE    3                   TO  SPA-K97-CUR
                    WHEN    "SELNUM3"
+                   WHEN    "DRCDLIST"
                        MOVE    4                   TO  SPA-K97-CUR
                END-EVALUATE
            END-IF
@@ -658,6 +666,7 @@
                       (SPA-K97-SELNUM2 NOT =   SPA-K97-SRYKA)
                    MOVE    SPA-K97-SELNUM2     TO  SPA-K97-SRYKA
                    PERFORM 310-SPA-SET-SEC
+                   PERFORM 22031-UKETUKE-CHK-SEC
                END-IF
                IF      SPA-K97-SELNUM2     =   ZERO
                    MOVE    SPACE               TO  SPA-K97-SRYKA
@@ -669,6 +678,81 @@
       *
            .
        2203-SELNUM2-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    受付ドクターチェック処理
+      *****************************************************************
+       22031-UKETUKE-CHK-SEC                SECTION.
+      *
+      *    受診内容ファイルを特定する
+           INITIALIZE                      UKETUKE-REC
+           MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
+           MOVE    SPA-PTID            TO  UKE-PTID
+      *
+           MOVE    UKETUKE-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+               PERFORM 900-UKETUKE-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-UKETUKE
+           END-IF
+           MOVE    SPACE               TO  WRK-DRCD
+           PERFORM
+                   UNTIL       FLG-UKETUKE     =    1
+               IF      (UKE-SRYKA          =   SPA-K97-SRYKA  ) AND
+                       (UKE-UKEID      NOT =   ZERO     )
+                   IF      UKE-KAIKEITIME      =   ZERO
+                       MOVE    UKE-DRCD(2:4)       TO  WRK-DRCD
+                       MOVE    1                   TO  FLG-UKETUKE
+                   END-IF
+               END-IF
+      *
+               IF      FLG-UKETUKE         =   ZERO
+                   MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+                   PERFORM 900-UKETUKE-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE               TO  SPA-K97-SELNUM3
+           IF      WRK-DRCD            =   SPACE
+               MOVE    ZERO                TO  FLG-CHK
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX         >   SPA-GMN-MAX1)  OR
+                                  (FLG-CHK     =   1           )
+                   IF      SPA-NAI-RRK-SRYKA(IDX)  =   SPA-K97-SRYKA
+                       MOVE    SPA-NAI-RRK-DRCD (IDX)(2:4)
+                                               TO  WRK-DRCD
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+               END-PERFORM
+           END-IF
+           IF      WRK-DRCD        NOT =   SPACE
+               MOVE    ZERO                TO  FLG-CHK
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX         >   SPA-DRCD-MAX)  OR
+                                  (FLG-CHK     =   1           )
+                   IF      WRK-DRCD            =   SPA-GMN-DRCDL(IDX)
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+               END-PERFORM
+               IF      FLG-CHK             =   1
+                   MOVE    WRK-DRCD            TO  SPA-K97-SELNUM3
+               ELSE
+                   MOVE    WRK-DRCD            TO  SPA-K97-SELNUM3
+                   PERFORM 22041-DRCD-CHK-SEC
+               END-IF
+           END-IF
+      *
+           .
+       22031-UKETUKE-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -877,6 +961,27 @@
            EXIT.
       *
       *****************************************************************
+      *    受診内容データ読み込み
+      *****************************************************************
+       900-UKETUKE-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  UKETUKE-REC 
+               MOVE    ZERO                TO  FLG-UKETUKE
+           ELSE
+               MOVE    1                   TO  FLG-UKETUKE
+           END-IF
+      *
+           .
+       900-UKETUKE-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
@@ -890,5 +995,4 @@
            .
        900-PUT-WINDOW-EXT.
            EXIT.
-      *
       *
