@@ -135,7 +135,7 @@
                    07  SPA-GMN-RIREKIIN9         PIC 9(02).
                    07  SPA-GMN-NYUKINYMD-IN99    PIC 9(08).
       *
-                   07  SPA-GMN-JIHIMSG           PIC X(20)
+                   07  SPA-GMN-JIHIMSG           PIC X(12)
                                                  OCCURS   5.
                    07  SPA-GMN-RSISHOSHIN        PIC 9(10).
                    07  SPA-GMN-RSISAISHIN        PIC 9(10).

@@ -118,19 +118,19 @@ S03N	{
 			value	number(10);
 		};
 		JIHIMSG1	{
-			value	varchar(20);
+			value	varchar(12);
 		};
 		JIHIMSG2	{
-			value	varchar(20);
+			value	varchar(12);
 		};
 		JIHIMSG3	{
-			value	varchar(20);
+			value	varchar(12);
 		};
 		JIHIMSG4	{
-			value	varchar(20);
+			value	varchar(12);
 		};
 		JIHIMSG5	{
-			value	varchar(20);
+			value	varchar(12);
 		};
 		JIHI1	{
 			value	number(10);
