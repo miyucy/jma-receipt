@@ -50,6 +50,8 @@
       *                                     Ê¿À®£±£¶Ç¯£´·î¤è¤ê£³£°¡ó
       *  01.00.15    NACL-ÌçÏÆ    04/04/23  ÁªÄêÆþ±¡»þ¤ÎÂ¾°åÎÅµ¡´Ø¼õ¿Ç¤Î
       *                                     »»Äê½¤Àµ
+      *  01.00.16    NACL-ÌçÏÆ    04/07/01  ÅÁÉ¼ºîÀ®¶èÊ¬¡¢ÅÁÉ¼¾õÂÖ¶èÊ¬¤Î
+      *                                     ÊÔ½¸½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -473,8 +475,21 @@
                                                SYUDAY-REC              
                                                WRK-SYUDAY-REC-T        
       *
-                MOVE     "1"                  TO  SYU-CREATEKBN
-                                                  SDAY-CREATEKBN       
+                EVALUATE    WRK-S02-SYORI-KBN
+                   WHEN    "1"
+                      MOVE     "1"            TO  SYU-CREATEKBN
+                                                  SDAY-CREATEKBN
+                   WHEN    "2"
+      *               MOVE     "2"            TO  SYU-DENPJTIKBN
+                      IF       WRK-S02-TEIKI-KBN    =   "X"
+                          MOVE     "3"        TO  SYU-CREATEKBN
+                                                  SDAY-CREATEKBN
+                      ELSE
+                          MOVE     "2"        TO  SYU-CREATEKBN
+                                                  SDAY-CREATEKBN
+                      END-IF
+                END-EVALUATE
+      *
                 MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
                 MOVE     SYUDAY-REC           TO  LNK-SYUDAY-REC(IDX)  
                 MOVE     WRK-ORCS02-REC       TO  LNK-ORCS02-REC 
@@ -1120,7 +1135,13 @@
                                       TO LNK-SYU-SRYYMD(IDX)(1:6)
               MOVE WRK-HANBETU-KAISHI(IDX)
                                       TO LNK-SYU-SRYYMD(IDX)(7:2)
-      ***>    MOVE "2"                TO LNK-SYU-DENPJTIKBN(IDX)
+              EVALUATE    LNK-S02-SYORI-KBN
+                   WHEN    "1"
+      ************>    MOVE "2"       TO LNK-SYU-DENPJTIKBN(IDX)
+                       CONTINUE
+                   WHEN    "2"
+                       MOVE "2"       TO LNK-SYU-DENPJTIKBN(IDX)
+              END-EVALUATE
       *       MOVE WRK-SYSYMD         TO LNK-SYU-DENPPRTYMD(IDX)
               MOVE LNK-S02-SYSYMD     TO LNK-SYU-DENPPRTYMD(IDX)
               MOVE WRK-HANBETU-SKYYM(IDX)
@@ -3607,6 +3628,7 @@
            MOVE    SYU-PTID            TO  ORCSTEN-PTID
            MOVE    SYU-SRYYMD(1:6)     TO  ORCSTEN-SRYYM
            MOVE    SYU-HKNCOMBINUM     TO  ORCSTEN-HKNCOMBI
+           MOVE    SYU-HOSPID          TO  SPA-HOSPID
            CALL    "ORCSTENTEK"        USING
                                        SPA-AREA
                                        ORCSTENTEKAREA

@@ -11491,6 +11491,7 @@
            MOVE    WRK-FTN-TAIINYMD
                                    TO  LNK-S02-SKYEDYMD
            MOVE    SPA-SYSYMD      TO  LNK-S02-SYSYMD
+           MOVE    "1"             TO  LNK-S02-SYORI-KBN
            CALL    "ORCSNYUFTN"    USING
                                    SPA-AREA
                                    LNK-ORCS02-REC

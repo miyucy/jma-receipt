@@ -892,6 +892,7 @@
            MOVE    WRK-SEIKYUEDYMD TO  LNK-S02-SKYEDYMD
            MOVE    "X"             TO  LNK-S02-TEIKI-KBN
            MOVE    WRK-PARA-SYSYMD TO  LNK-S02-SYSYMD
+           MOVE    "2"             TO  LNK-S02-SYORI-KBN
       *
            CALL    "ORCSTEIKI"     USING
                                    SPA-AREA

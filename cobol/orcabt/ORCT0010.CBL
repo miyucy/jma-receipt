@@ -647,6 +647,7 @@
                                    TO  LNK-S02-SKYEDYMD
            MOVE    "A"             TO  LNK-S02-TEIKI-KBN
            MOVE    TEIKI1P-SYSYMD TO  LNK-S02-SYSYMD
+           MOVE    "2"             TO  LNK-S02-SYORI-KBN
            CALL    "ORCSTEIKI"     USING
                                    SPA-AREA
                                    LNK-ORCS02-REC

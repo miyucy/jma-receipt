@@ -30,22 +30,22 @@
            03  LNK-S02-NYUGAIKBN           PIC  X(01).
       *患者ＩＤ
            03  LNK-S02-PTID                PIC  9(10).
-      *再計算処理区分
-           03  LNK-S02-SAIKEISAN-KBN       PIC  X(01).
-      *再計算対象伝票番号
-           03  LNK-S02-SAIKEISAN-DENPYO    PIC  9(07).
-      *自賠責手技点合計
-           03  LNK-S02-SYUTEN              PIC  9(07).
-      *高齢者算定患者区分
-           03  LNK-S02-KOUREI-NYUIN-KBN    PIC  X(01).
-      *入院通算日数
-           03  LNK-S02-NYUIN-TSUSAN-NISSU  PIC  9(04).
+      *処理区分（１：退院時　２：定期請求、入院レセプト）
+           03  LNK-S02-SYORI-KBN           PIC  X(01).
+      *定期請求区分
+           03  LNK-S02-TEIKI-KBN           PIC  X(01).
       *請求開始日
            03  LNK-S02-SKYSTYMD            PIC  X(08).
       *請求終了日
            03  LNK-S02-SKYEDYMD            PIC  X(08).
-      *定期請求区分
-           03  LNK-S02-TEIKI-KBN           PIC  X(01).
+      *再計算処理区分
+           03  LNK-S02-SAIKEISAN-KBN       PIC  X(01).
+      *再計算対象伝票番号
+           03  LNK-S02-SAIKEISAN-DENPYO    PIC  9(07).
+      *高齢者算定患者区分
+           03  LNK-S02-KOUREI-NYUIN-KBN    PIC  X(01).
+      *入院通算日数
+           03  LNK-S02-NYUIN-TSUSAN-NISSU  PIC  9(04).
       *システム日付
            03  LNK-S02-SYSYMD              PIC  X(08).
       *公費（更正）の請求年月・入院日数
@@ -60,6 +60,8 @@
                 07  LNK-S02-IKUSEI-NISUU   PIC  9(02).
       *船員保険（被保険者）＋通勤災害＋初診時
            03  LNK-S02-SENINFLG            PIC  X(01).
+      *自賠責手技点合計
+           03  LNK-S02-SYUTEN              PIC  9(07).
       *自賠責診断書料金額
            03  LNK-S02-SINDAN              PIC  9(07).
       *自賠責明細書料金額
