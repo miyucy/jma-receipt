@@ -54,6 +54,7 @@
       *  01.05.06    NACL-藤原    02/11/28  2004 レセプト種別情報を表示しない
       *  01.05.07    NACL-太田    03/03/05  9800 排他制御情報追加
       *  01.05.08    NACL-多々納  03/05/27  診療内容追加（１０１２）
+      *  01.05.09    NACL-多々納  03/06/10  無床診療所に排他制御追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -243,12 +244,14 @@
        01  TBL-KANRICD-G-AREA.
            03  FILLER              PIC X(35)   VALUE
                "9000 ＣＬＡＩＭ接続情報".
+           03  FILLER              PIC X(35)   VALUE
+               "9800 排他制御情報".
        01  TBL-KANRICD-G-AREAR         REDEFINES   TBL-KANRICD-G-AREA.
-           03  TBL-KANRICD-G-TBL           OCCURS   1.
+           03  TBL-KANRICD-G-TBL           OCCURS   2.
                05  TBL-KANRICD-G           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-G        PIC X(30).
-       01  TBL-KANRICDG-MAX                 PIC 9(04)   VALUE   1.
+       01  TBL-KANRICDG-MAX                 PIC 9(04)   VALUE   2.
       *
       *入院のみ
        01  TBL-KANRICD-N-AREA.
