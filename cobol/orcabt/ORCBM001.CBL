@@ -160,8 +160,7 @@
       *
       *    ½¸·×ÎÎ°è
        01  SUM-AREA.
-      *****03  SUM-TBL             OCCURS  23.
-           03  SUM-TBL             OCCURS  24.
+           03  SUM-TBL             OCCURS  23.
                05  SUM-KENSU          PIC  9(06).
                05  SUM-NISSU          PIC  9(06).
                05  SUM-TOTALTEN       PIC  9(10).
