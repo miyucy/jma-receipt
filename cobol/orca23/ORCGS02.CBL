@@ -1053,19 +1053,45 @@
            END-IF
       *
       *    伝票状態区分
-           EVALUATE   SYU-DENPJTIKBN
-               WHEN   SPACE
+           EVALUATE   SYU-DENPJTIKBN      ALSO   SYU-CREATEKBN
+               WHEN   SPACE               ALSO   SPACE
                       MOVE  "請求額なし"  TO  SPA-GMN-TJYOTAI (IDX)
-               WHEN   "1"
+               WHEN   "1"                 ALSO   SPACE
                       MOVE  "入金済"      TO  SPA-GMN-TJYOTAI (IDX)
-               WHEN   "2"
+               WHEN   "2"                 ALSO   SPACE
                       MOVE  "未入金"      TO  SPA-GMN-TJYOTAI (IDX)
-               WHEN   "3"
+               WHEN   "3"                 ALSO   SPACE
                       MOVE  "請求取消し"  TO  SPA-GMN-TJYOTAI (IDX)
-               WHEN   "7"
+               WHEN   "7"                 ALSO   SPACE
                       MOVE  "継続"        TO  SPA-GMN-TJYOTAI (IDX)
-               WHEN   "A"
-                      MOVE  "定期請求"    TO  SPA-GMN-TJYOTAI (IDX)
+               WHEN   SPACE               ALSO   "1"
+                      MOVE  "請求額なし（退）"
+                                          TO  SPA-GMN-TJYOTAI (IDX)
+               WHEN   "1"                 ALSO   "1"
+                      MOVE  "入金済（退）"
+                                          TO  SPA-GMN-TJYOTAI (IDX)
+               WHEN   "2"                 ALSO   "1"
+                      MOVE  "未入金（退）"
+                                          TO  SPA-GMN-TJYOTAI (IDX)
+               WHEN   "3"                 ALSO   "1"
+                      MOVE  "請求取消し（退）"
+                                          TO  SPA-GMN-TJYOTAI (IDX)
+               WHEN   "7"                 ALSO   "1"
+                      MOVE  "継続（退）"  TO  SPA-GMN-TJYOTAI (IDX)
+               WHEN   SPACE               ALSO   "2"
+                      MOVE  "請求額なし（定）"
+                                          TO  SPA-GMN-TJYOTAI (IDX)
+               WHEN   "1"                 ALSO   "2"
+                      MOVE  "入金済（定）"
+                                          TO  SPA-GMN-TJYOTAI (IDX)
+               WHEN   "2"                 ALSO   "2"
+                      MOVE  "未入金（定）"
+                                          TO  SPA-GMN-TJYOTAI (IDX)
+               WHEN   "3"                 ALSO   "2"
+                      MOVE  "請求取消し（定）"
+                                          TO  SPA-GMN-TJYOTAI (IDX)
+               WHEN   "7"                 ALSO   "2"
+                      MOVE  "継続（定）"  TO  SPA-GMN-TJYOTAI (IDX)
            END-EVALUATE
       *
            .
@@ -3236,7 +3262,7 @@
            IF      FLG-SYUNOU          =   1
                    CONTINUE
            ELSE
-             IF (SYU-DENPJTIKBN =  SPACE  OR "3" OR "A")   OR
+             IF (SYU-DENPJTIKBN =  SPACE  OR "3"   )   OR
                 (SYU-NYUKIN-TOTAL  =       ZERO    )
                   MOVE    "0002"     TO    SPA-ERRCD
              ELSE
