@@ -144,6 +144,8 @@
            03  WRK-KAISU-X.
                05  WRK-KAISU-Z     PIC ZZZZ.
       *
+           03  WRK-INPUTCD         PIC X(22).
+      *
       *    保存用
        01  HOZ-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
@@ -946,6 +948,18 @@
       *
            MOVE    IDX-ZS2             TO  IDX-S
       *
+      *    外来で診察料の無い場合の時間加算
+           IF      (SPA-NYUGAIKBN          =   "2"  )  AND
+                   (LNK-ORCSC-PG           =   "K02")  AND
+                   (LNK-ORCSC-SYORIFLG     =   ZERO )  AND
+                   (SPA-SRYYMD             =   SPA-SYSYMD) AND
+                   (SPA-HKNCOMBINUM    NOT =   "9999") AND
+                   (LNK-ORCSC-SINSATU-ARI  =   ZERO )  AND
+                   (SPA-GAI-JIKANKBN   NOT =   ZERO )  AND
+                   (WRK-COM-TIMEKSNKBN(IDX-ZS)
+                                       NOT =   ZERO )
+               PERFORM 10019-JIKANKASAN-CHK-SEC
+           END-IF
       *    時間加算
            IF      (LNK-ORCSC-TIMEFLG          NOT =   ZERO   OR
                     WRK-COM-TIMEFLG (IDX-ZS)   NOT =   ZERO )  AND
@@ -965,6 +979,33 @@
            PERFORM 10013-NENREI-SET-SEC
            .
        1002-JIDO-KASAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来で診察料の無い場合の時間加算処理
+      *****************************************************************
+       10019-JIKANKASAN-CHK-SEC        SECTION.
+      *
+      *    時間外の有無
+           IF     (WRK-GMN-INPUTCD (IDX-ZS)(1:1)       NUMERIC  ) AND
+                  (WRK-GMN-INPUTCD (IDX-ZS)(2:1)       =   SPACE) AND
+                  (WRK-GMN-INPUTCD (IDX-ZS)(3:)    NOT =   SPACE)
+               CONTINUE
+           ELSE
+      *        時間外設定
+               MOVE    WRK-GMN-INPUTCD (IDX-ZS)    TO  WRK-INPUTCD
+               MOVE    SPACE                       TO  WRK-GMN-INPUTCD
+                                                         (IDX-ZS)
+               MOVE    SPA-GAI-JIKANKBN            TO  WRK-GMN-INPUTCD
+                                                         (IDX-ZS)(1:1)
+               MOVE    WRK-INPUTCD                 TO  WRK-GMN-INPUTCD
+                                                         (IDX-ZS)(3:)
+               MOVE    SPA-GAI-JIKANKBN            TO  WRK-COM-TIMEFLG
+                                                         (IDX-ZS)(1:1)
+           END-IF
+      *
+           .
+       10019-JIKANKASAN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    時間加算加算料追加処理

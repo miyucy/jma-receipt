@@ -680,6 +680,17 @@
       *---     時間加算
                MOVE    WRK-INPUTCD(1:1)
                                        TO  LNK-SC97-JIKAN
+      *
+               IF      LNK-SC97-JIKAN      =   1
+                                           OR  2
+                                           OR  3
+                                           OR  4
+                                           OR  0
+                   CONTINUE
+               ELSE
+                   MOVE    "9002"          TO  SPA-ERRCD
+                   GO      TO      2020-INPUTCD-CHOSA-EXT
+               END-IF
       *---     時間特例チェック
                IF      LNK-SC97-JIKAN      =   4
                    IF      LNK-SC97-JIKANTOKU  =   1

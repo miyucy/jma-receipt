@@ -1057,6 +1057,10 @@
                    GO      TO      10013-RSI-SINSATU-CHK-EXT
                END-IF
            END-IF
+      *    œ´∫“§Œª˛°¢œ´∫“•≥°º•…§«»ΩƒÍ§π§Î
+           IF      WRK-KAISU           =   ZERO
+               PERFORM 20012-RSISINSATU-CHK-SEC
+           END-IF
       *
            .
        10013-RSI-SINSATU-CHK-EXT.
@@ -3116,6 +3120,11 @@
                    END-IF
                END-IF
            END-IF
+      *    ø«ª°Œ¡§¢§Í
+           IF      WRK-KAISU           >   ZERO
+               MOVE    1               TO  LNK-ORCSC-SINSATU-ARI
+           END-IF
+      *
            .
        2001-SINSATU-CHK-EXT.
            EXIT.
@@ -3137,6 +3146,9 @@
            END-SEARCH
       *
            IF      WRK-KBN             =   "F"  OR  "S"
+      *        ø«ª°Œ¡§¢§Í
+               MOVE    1               TO  LNK-ORCSC-SINSATU-ARI
+      *
                MOVE    WRK-KBN         TO  WRK-SINSATU-KBN
                MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
                MOVE    IDX-Z           TO  IDX-SINSATU

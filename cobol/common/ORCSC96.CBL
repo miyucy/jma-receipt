@@ -202,6 +202,11 @@
                WHEN    "0030"
                    MOVE    "時間加算はできません。"
                                        TO  SPA-ERRMSG
+               WHEN    "0089"
+                   MOVE    "既に違う時間外区分があります。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "入力できません。"
+                                       TO  SPA-ERRMSG(31:)
                WHEN    "0031"
                    MOVE    "乳幼児加算はできません。"
                                        TO  SPA-ERRMSG
