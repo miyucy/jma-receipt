@@ -158,6 +158,11 @@
                 04  I04-VALUE   PIC X(10).
               03  I04-NYUKIN-STT
                                 PIC S9(9)   BINARY.
+              03  I04-CMB-NYKNHOHO.
+                04  I04-NYKNHOHO.
+                  05  I04-VALUE        PIC X(33).
+                04  I04-NYKNHOHO-CNT   PIC S9(9)   BINARY.
+                04  I04-NYKNHOHO-ITM   PIC X(33)   OCCURS  50 TIMES.
               03  I04-HKNTEKMONEY.
                 04  I04-VALUE   PIC X(10).
               03  I04-HKNTEKGAI.

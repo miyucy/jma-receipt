@@ -197,6 +197,14 @@ I04	{
 			value	varchar(10);
 			state	int;
 		};
+                CMB_NYKNHOHO    {
+                        NYKNHOHO        {
+                                value   varchar(33);
+                        };
+                        count   int;
+                        item    varchar(33)[50];
+
+                };
 		HKNTEKMONEY	{
 			value	varchar(10);
 		};

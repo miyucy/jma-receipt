@@ -632,6 +632,13 @@
                        11  SPA-GMN-I04-ZENMISYU-NYU  PIC S9(07).
       *                ÁªÂòÈÖ¹æ
                        11  SPA-GMN-I04-SELNUM        PIC 9(02).
+      *                Æþ¶âÊýË¡
+                       11  SPA-GMN-I04-NYKNHOHO.
+                           13   SPA-GMN-I04-NYKNHOHO-CD
+                                                     PIC X(02).
+                           13                        PIC X(01).
+                           13   SPA-GMN-I04-NYKNHOHO-NM
+                                                     PIC X(30).
       *                ÀÁµá½ñ·óÎÎ¼ý½ñÈ¯¹Ô
                        11  SPA-GMN-I04-SKYPRTOUT.
                            13   SPA-GMN-I04-SKYPRTOUT-CD
@@ -709,6 +716,13 @@
                                15  SPA-NAI-I04-TSELNUM   PIC Z9.
       *            ²èÌÌ¥³¥ó¥Ü¥Ç¡¼¥¿ÎÎ°è
                    09  SPA-GMN-I04-CMB-DAT-AREA.
+      *                    ÀÁµá½ñ·óÎÎ¼ý½ñ
+                       11  SPA-GMN-I04-CMB-NYKNHOHO.
+                           13  SPA-GMN-I04-NYKNHOHO-CNT
+                                                     PIC 9(5).
+                           13  SPA-GMN-I04-NYKNHOHO-ITM
+                                                     PIC X(33)
+                                                     OCCURS  50.
       *                    ÀÁµá½ñ·óÎÎ¼ý½ñ
                        11  SPA-GMN-I04-CMB-SKYPRTOUT.
                            13  SPA-GMN-I04-SKYPRTOUT-CNT
