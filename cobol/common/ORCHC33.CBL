@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      * 01.00.01     NACL-Â¿¡¹Ç¼  04/12/15  ÄÉµ­°õºþ¡¦Æü½¸·×ÄÉ²ÃÂ¾
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -52,6 +53,9 @@
       *    ¥«¥ë¥Æ£³¹æÍÍ¼°
            COPY    "HCM33.INC".
       *
+      *    ¥«¥ë¥Æ£³¹æÍÍ¼°¡ÊÂ³¤­¡Ë
+           COPY    "HCM331.INC".
+      *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
@@ -70,9 +74,15 @@
            03  FLG-SYORI           PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-ARI             PIC 9(01).
+           03  FLG-ARI-RSI         PIC 9(01).
            03  FLG-HKNKBN              PIC 9(01).
       *
            03  FLG-GENTEN              PIC 9(01).
+           03  FLG-HC331               PIC 9(01).
+           03  FLG-HC331-END           PIC 9(01).
+           03  FLG-TUKI-END            PIC 9(01).
+      *
+           03  FLG-NEXT-YY             PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -93,6 +103,7 @@
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDX-T               PIC 9(04).
            03  IDX-T1              PIC 9(04).
@@ -101,6 +112,8 @@
            03  IDXH                PIC 9(04).
            03  IDX-H               PIC 9(04).
            03  IDX-MAX             PIC 9(04).
+           03  IDX-STR             PIC 9(04).
+           03  IDX-RSI             PIC 9(04).
       *
            03  IDZ                 PIC 9(04).
            03  IDX-D               PIC 9(02).
@@ -131,25 +144,30 @@
       *
            03  WRK-ZZ9                 PIC ZZ9.
            03  WRK-Z9                  PIC Z9.
-           03  WRK-Z59-X.
-               05  WRK-Z59                 PIC ZZZZ9.
-               05  WRK-Z59-R               REDEFINES   WRK-Z59
-                                           PIC ----9.
-           03  WRK-Z89                 PIC ZZZZZZZ9.
-           03  WRK-Z79S                PIC -------9.
+           03  WRK-Z88-X.
+               05  WRK-Z59-FILLER              PIC X(03).
+               05  WRK-Z59-X.
+                   07  WRK-Z59                 PIC ZZZZZ.
+                   07  WRK-Z59-R               REDEFINES   WRK-Z59
+                                               PIC ----Z.
+           03  WRK-Z89-X.
+               05  WRK-Z89                 PIC ZZZZZZZZ.
+               05  WRK-Z79S                REDEFINES   WRK-Z89
+                                           PIC -------Z.
       *
            03  WRK-SRYYM-N             PIC X(40).
            03  WRK-SRYYM-N1            PIC X(40).
            03  WRK-SRYYM-N2            PIC X(40).
       *
-           03  WRK-HKNCOMBIMEI         PIC X(120).
-           03  WRK-HEN-HKNCOMBIMEI     PIC X(120).
-           03  WRK-MEI-1               PIC X(02).
-           03  WRK-MEI-2               PIC X(02).
-           03  WRK-MEI-3               PIC X(02).
-           03  WRK-MEI-4               PIC X(02).
-           03  WRK-MEI-5               PIC X(02).
-           03  WRK-HONKZKKBN           PIC X(06).
+           03  WRK-HKNCOMBI-AREA.
+               05  WRK-HKNCOMBIMEI         PIC X(120).
+               05  WRK-HEN-HKNCOMBIMEI     PIC X(120).
+               05  WRK-MEI-1               PIC X(02).
+               05  WRK-MEI-2               PIC X(02).
+               05  WRK-MEI-3               PIC X(02).
+               05  WRK-MEI-4               PIC X(02).
+               05  WRK-MEI-5               PIC X(02).
+               05  WRK-HONKZKKBN           PIC X(06).
       *
            03  WRK-ORC-DBPATH          PIC X(64).
            03  WRK-SRYKA-MEI           PIC X(20).
@@ -164,6 +182,8 @@
            03  WRK-GOK-JIHIKEI         PIC 9(07).
            03  WRK-JIHIKEI             PIC 9(07).
            03  WRK-SKYMONEY            PIC S9(07).
+           03  WRK-GOK-SKYMONEY        PIC S9(07).
+           03  WRK-GOK-RSI-MONEY       PIC S9(07).
       *
            03  WRK-SUM-TEN             PIC 9(07).
            03  WRK-ZAITEN              PIC S9(07).
@@ -171,6 +191,7 @@
       *
            03  WRK-TUK-ZAITEN          PIC 9(07).
            03  WRK-TUK-SKYMONEY        PIC S9(07).
+           03  WRK-TUK-JIHIKEI         PIC S9(07).
            03  WRK-TUK-RSI-MONEY       PIC 9(07).
       *
            03  WRK-PAGE                PIC 9(03).
@@ -180,10 +201,19 @@
        01  TBL-AREA.
            03  TBL-OCC-1               OCCURS   10.
       *        ºÞÅÀ¿ô
-               05  TBL-OCC-2           OCCURS   200.
+               05  TBL-OCC-2           OCCURS   400.
                    07  TBL-ZAITEN          PIC S9(05).
                    07  TBL-OCC-3           OCCURS   31.
                        09  TBL-DAY         PIC 9(03).
+      *    ½¸·×¥Æ¡¼¥Ö¥ë¡ÊÏ«ºÒ±ß¡Ë
+       01  TBL-RSI-AREA.
+           03  TBL-RSI-OCC-1               OCCURS   11.
+      *        ºÞÅÀ¿ô
+               05  TBL-RSI-OCC-2               OCCURS   400.
+                   07  TBL-RSI-ZAITEN          PIC S9(09).
+                   07  TBL-RSI-OCC-3           OCCURS   31.
+                       09  TBL-RSI-DAY         PIC 9(03).
+      *
       *
       *    ÊÝ¸±¥Æ¡¼¥Ö¥ë
        01  TBL-HKNCOMBI-AREA.
@@ -193,11 +223,20 @@
                05  TBL-HONKZKKBN           PIC X(04).
                05  TBL-HKNKBN              PIC 9(01).
       *
+      *    ÆüËè½¸·×¥Æ¡¼¥Ö¥ë
+       01  TBL-DAY-AREA.
+           03  TBL-DAY-OCC               OCCURS   10.
+      *        ºÞÅÀ¿ô
+               05  TBL-DAY-ZAITEN          PIC S9(09).
+      *        Ï«ºÒ±ß
+               05  TBL-DAY-RSI-ZAITEN      PIC S9(09).
+      *
       *    Ä¢É¼ÊÔ½¸¥Æ¡¼¥Ö¥ë
        01  TBL-HEN-AREA.
-           03  TBL-HEN-OCC            OCCURS   200.
-               05  TBL-HEN-OCC2            OCCURS   9.
-                   07  TBL-NAIYO           PIC X(08).
+           03  TBL-HEN-OCC            OCCURS   400.
+               05  TBL-HEN-OCC2-G.
+                   07  TBL-HEN-OCC2            OCCURS   10.
+                       09  TBL-NAIYO           PIC X(08).
                05  TBL-MEISYO              PIC X(12).
       *
        01  WRK-HENSYU-AREA.
@@ -309,12 +348,11 @@
       *
       *    ½é´ü¡¡½èÍý
            PERFORM 100-INIT-SEC
-           IF      FLG-END             =   1
-               GO      TO      000-PROC-EXT
-           END-IF
       *
       *    ¥á¥¤¥ó½èÍý
-           PERFORM 200-MAIN-SEC
+           IF      FLG-END             =   ZERO
+               PERFORM 200-MAIN-SEC
+           END-IF
       *
            .
        000-PROC-EXT.
@@ -329,14 +367,23 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  CNT-AREA
+           INITIALIZE                  TBL-AREA
+           INITIALIZE                  TBL-HKNCOMBI-AREA
+           INITIALIZE                  TBL-HEN-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME
            MOVE    ZERO                TO  WRK-PAGE
       *
            EVALUATE    ORCHC33-KBN
                WHEN    "1"
+      *            ¥ª¥ó¥é¥¤¥ó
       *            ½ÐÎÏÀè¥×¥ê¥ó¥¿Ì¾ÊÔ½¸½èÍý
                    PERFORM 110-SYS1031-HENSYU-SEC
+               WHEN    "2"
+      *            ¥Ð¥Ã¥Á
+                   MOVE    1               TO  ORCHC33-STRDD
+                   MOVE    ZERO            TO  ORCHC33-ENDPAGE
+                   MOVE    ZERO            TO  ORCHC33-ENDLINE
            END-EVALUATE
       *
       *    ¥Ñ¥é¥á¥¿ÊÔ½¸½èÍý
@@ -378,7 +425,6 @@
            IF      ORCHC33-PTID        =   ZERO
                MOVE    9               TO  ORCHC33-RC
                MOVE    1               TO  FLG-END
-               GO      TO      120-PARA-HENSYU-EXT
            END-IF
       *
       *    ´µ¼ÔÈÖ¹æ
@@ -393,7 +439,6 @@
                ELSE
                    MOVE    9               TO  ORCHC33-RC
                    MOVE    1               TO  FLG-END
-                   GO      TO      120-PARA-HENSYU-EXT
                END-IF
            END-IF
       *
@@ -415,7 +460,6 @@
                    MOVE    SPACE               TO  WRK-SRYKA-MEI
                END-IF
            END-IF
-      *
       *
       *    ¿ÇÎÅÆü
            MOVE    SPACE               TO  WRK-SRYYM-N
@@ -461,7 +505,8 @@
            END-IF
            IF      WRK-SRYYM-N2        =   SPACE
                STRING      WRK-SRYYM-N1    DELIMITED  BY  SPACE
-                           "Ê¬"            DELIMITED  BY  SIZE
+      *************        "Ê¬"            DELIMITED  BY  SIZE
+                           "¡Á"            DELIMITED  BY  SIZE
                                        INTO    WRK-SRYYM-N
                END-STRING
            ELSE
@@ -516,10 +561,62 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
+      *    ºÇ½ª°õºþÊÇ
+           MOVE    ORCHC33-ENDPAGE     TO  ORCHC33-PAGE
+      *    ºÇ½ª°õ¹Ô
+           IF      ORCHC33-ENDLINE     =   ZERO
+               MOVE    ZERO            TO  FLG-HC331
+           ELSE
+               MOVE    1               TO  FLG-HC331
+           END-IF
+      *
+           EVALUATE    ORCHC33-PRINT-FLG
+              WHEN     1
+      *           Æ¬½ñ¤­
+                  PERFORM 2001-HEAD-PRINT-SEC
+              WHEN     OTHER
+      *           ÌÀºÙ°õºþ
+                  PERFORM 2000-ALL-PRINT-SEC
+           END-EVALUATE
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æ¬½ñ¤­°õºþ½èÍý
+      *****************************************************************
+       2001-HEAD-PRINT-SEC            SECTION.
+      *
+      *    ¸«½Ð¤·ÊÔ½¸
+           PERFORM 20031-HEAD-HEN-SEC
+      *    Ç¯ÅÙ¡¢¥Ú¡¼¥¸¥¯¥ê¥¢
+           MOVE    SPACE               TO  HCM33-PAGE
+           MOVE    SPACE               TO  HCM33-SRYYM
+      *    °õºþ½èÍý
+           PERFORM 2003-HC33-PRINT-SEC
+           .
+       2001-HEAD-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥á¥¤¥ó°õºþ½èÍý
+      *****************************************************************
+       2000-ALL-PRINT-SEC            SECTION.
+      *
            MOVE    ZERO                TO  IDX-T
            MOVE    ZERO                TO  CNT-PAGE
            MOVE    ZERO                TO  CNT-MEI
            MOVE    SPACE               TO  HCM33
+      *
+      *    ÄÉ²Ã°õºþ½é´ü½èÍý
+           IF      FLG-HC331           =   1
+               MOVE    SPACE               TO  HCM331
+               INITIALIZE                      HCM331
+      *        ºÇ½ª°õºþ¹Ô
+               MOVE    ORCHC33-ENDLINE     TO  CNT-MEI
+           ELSE
+               MOVE    ZERO                TO  CNT-MEI
+           END-IF
       *
            MOVE    ORCHC33-SRYYM       TO  WRK-SRYYM
            IF      ORCHC33-SRYYM-END   =   SPACE
@@ -547,7 +644,7 @@
            END-IF
       *
            .
-       200-MAIN-EXT.
+       2000-ALL-PRINT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -558,7 +655,10 @@
            MOVE    ZERO                TO  FLG-SYORI
       *    ½¸·×¥Æ¡¼¥Ö¥ë
            INITIALIZE                  TBL-AREA
-           INITIALIZE                  TBL-HKNCOMBI-AREA
+           INITIALIZE                  TBL-RSI-AREA
+           MOVE    ZERO                TO  WRK-TUK-ZAITEN
+           MOVE    ZERO                TO  WRK-TUK-SKYMONEY
+           MOVE    ZERO                TO  WRK-TUK-RSI-MONEY
       *
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤òÊÔ½¸
            INITIALIZE                      SRYACCT-REC 
@@ -593,31 +693,27 @@
                IF      ACCT-HKNCOMBI       =   "9999"
                    CONTINUE
                ELSE
-      *
-      *        ÊÝ¸±ÊÔ½¸
-               PERFORM 20013-HKNCOMBI-HEN-SEC
-      *
-               IF      ACCT-ZAITEN         >   ZERO
-                   MOVE    1                   TO  FLG-SYORI
-                   PERFORM 20011-SRYACCT-HEN-SEC
-               END-IF
-      *
+      *            ÊÝ¸±ÊÔ½¸
+                   PERFORM 20013-HKNCOMBI-HEN-SEC
+                   IF      ACCT-ZAITEN         >   ZERO
+                       MOVE    1                   TO  FLG-SYORI
+                       PERFORM 20011-SRYACCT-HEN-SEC
+                   END-IF
                END-IF
       *
                MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 900-SRYACCT-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            .
        2001-SYUKEI-SYORI-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    ½¸·×½èÍý
@@ -649,21 +745,37 @@
                    MOVE    7               TO  IDX1
       *        ¤½¤ÎÂ¾
                WHEN    OTHER
-                   GO      TO      20011-SRYACCT-HEN-EXT
+                   MOVE    ZERO            TO  IDX1
            END-EVALUATE
       *
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL      (IDX     >   400 )  OR
+                              (IDX1    =   ZERO)
                IF      TBL-ZAITEN (IDX1 IDX)   =   ZERO
                    MOVE    IDX             TO  IDX2
-                   MOVE    200             TO  IDX
+                   MOVE    400             TO  IDX
                END-IF
            END-PERFORM
-           IF      IDX2                =   ZERO
-               DISPLAY "** ORCHC33 ZAI TBL 200 OVER **"
-               GO      TO      20011-SRYACCT-HEN-EXT
+           IF     (IDX2                =   ZERO ) AND
+                  (IDX1                >   ZERO )
+               DISPLAY "** ORCHC33 ZAI TBL 400 OVER **"
            END-IF
+      *
+           IF     (IDX2                =   ZERO ) OR
+                  (IDX1                =   ZERO )
+               CONTINUE
+           ELSE
+               PERFORM 200110-SRYACCT-HENSYU-SEC
+           END-IF
+           .
+       20011-SRYACCT-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ½¸·×½èÍý
+      *****************************************************************
+       200110-SRYACCT-HENSYU-SEC                SECTION.
       *
       *    Ï«ºÒ¡¦¼«ÇåÀÕ¤Î»þ¡¢±ßÊ¬¤ò¸º»»¤¹¤ë
            IF     (FLG-HKNKBN          =   1  )  AND
@@ -687,20 +799,19 @@
                END-IF
            END-IF
       *
-           IF      WRK-ZAITEN          =   ZERO
-               GO      TO      20011-SRYACCT-HEN-EXT
+           IF      WRK-ZAITEN      NOT =   ZERO
+      *        ÅÀ¿ôÊÔ½¸
+               MOVE    WRK-ZAITEN          TO  TBL-ZAITEN (IDX1 IDX2)
+      *        ²ó¿ôÊÔ½¸
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   31
+                   MOVE    ACCT-DAY(1  IDX)    TO  TBL-DAY
+                                                       (IDX1 IDX2 IDX)
+               END-PERFORM
            END-IF
       *
-      *    ÅÀ¿ôÊÔ½¸
-           MOVE    WRK-ZAITEN          TO  TBL-ZAITEN (IDX1 IDX2)
-      *    ²ó¿ôÊÔ½¸
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   31
-               MOVE    ACCT-DAY(1  IDX)    TO  TBL-DAY (IDX1 IDX2 IDX)
-           END-PERFORM
-      *
            .
-       20011-SRYACCT-HEN-EXT.
+       200110-SRYACCT-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -709,6 +820,7 @@
        200111-RSI-ZAITEN-SEC                SECTION.
       *
            MOVE    ZERO                TO  WRK-SUM-TEN
+           MOVE    ZERO                TO  WRK-RSI-MONEY
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPID         TO  SRY-HOSPID
@@ -762,6 +874,8 @@
                            COMPUTE WRK-SUM-TEN     =   WRK-SUM-TEN
                                                    +  (TNS-TEN
                                                    /   10  )
+                           COMPUTE WRK-RSI-MONEY   =   WRK-RSI-MONEY
+                                                   +   TNS-TEN
                        END-IF
                    END-IF
                END-PERFORM
@@ -769,6 +883,12 @@
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 930-SRYACT-RAED-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      ACCT-ZAITEN         >=  WRK-SUM-TEN
                COMPUTE WRK-ZAITEN          =   ACCT-ZAITEN
@@ -776,9 +896,40 @@
            ELSE
                MOVE    ZERO                TO  WRK-ZAITEN
            END-IF
+      *    Ï«ºÒ±ßÊ¬
+           IF      WRK-RSI-MONEY       >   ZERO
+               PERFORM 2001111-RSI-TBLHENSYU-SEC
+           END-IF
       *
            .
        200111-RSI-ZAITEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ï«ºÒ±ßÊ¬½¸·×½èÍý
+      *****************************************************************
+       2001111-RSI-TBLHENSYU-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  IDX3
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   400
+               IF      TBL-RSI-ZAITEN (IDX1 IDX) =   ZERO
+                   MOVE    IDX             TO  IDX3
+                   MOVE    400             TO  IDX
+               END-IF
+           END-PERFORM
+           IF      IDX3                >   ZERO
+      *        ÅÀ¿ôÊÔ½¸
+               ADD     WRK-RSI-MONEY       TO  TBL-RSI-ZAITEN(IDX1 IDX3)
+      *        ²ó¿ôÊÔ½¸
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   31
+                   ADD     ACCT-DAY(1  IDX)    TO  TBL-RSI-DAY
+                                                       (IDX1 IDX3  IDX)
+               END-PERFORM
+           END-IF
+      *
+           .
+       2001111-RSI-TBLHENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -819,17 +970,20 @@
                INITIALIZE                  SRYACT-REC
                MOVE    1               TO  FLG-SRYACT
            END-IF
-           PERFORM UNTIL       FLG-SRYACT      =   1
+      *    ¸º»»Ê¬¤Ï£±ºÞ£±ÌÀºÙ¤È¤¹¤ë
+           IF      FLG-SRYACT          =   ZERO
       *        ÌôºÞÎÁÄþ¸º¡¡¤ò¸º»»
                IF     (ACCT-SRYKBN         =   "21" )  AND
                       (SRY-SRYCD (01)      =   "630010002")
                    MOVE    1               TO  FLG-GENTEN
-                   MOVE    1               TO  FLG-SRYACT
-               ELSE
-                   MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-                   PERFORM 930-SRYACT-RAED-SEC
                END-IF
-           END-PERFORM
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        200112-GEN-TENSU-EXT.
@@ -884,7 +1038,14 @@
                MOVE    1               TO  FLG-HKNCOMBI
                INITIALIZE                  HKNCOMBI-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
+           INITIALIZE                  WRK-HKNCOMBI-AREA
            MOVE    SPACE               TO  WRK-HKNCOMBIMEI
            IF      COMB-SYU-TANSEIDONAME   NOT =   SPACE
                MOVE    "¡¦"                TO  WRK-MEI-1
@@ -902,13 +1063,13 @@
                MOVE    "¡¦"                TO  WRK-MEI-5
            END-IF
            STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                   WRK-MEI-1               DELIMITED  BY  SIZE
+                   WRK-MEI-1               DELIMITED  BY  SPACE
                    COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                   WRK-MEI-2               DELIMITED  BY  SIZE
+                   WRK-MEI-2               DELIMITED  BY  SPACE
                    COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
-                   WRK-MEI-3               DELIMITED  BY  SIZE
+                   WRK-MEI-3               DELIMITED  BY  SPACE
                    COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                   WRK-MEI-5               DELIMITED  BY  SIZE
+                   WRK-MEI-5               DELIMITED  BY  SPACE
                    COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBIMEI
            END-STRING
@@ -946,36 +1107,98 @@
            MOVE    ZERO                TO  WRK-TUK-ZAITEN
            MOVE    ZERO                TO  WRK-TUK-SKYMONEY
            MOVE    ZERO                TO  WRK-TUK-RSI-MONEY
+           MOVE    ZERO                TO  WRK-TUK-JIHIKEI
+           MOVE    ZERO                TO  FLG-HC331-END
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
+      *    °õºþ³«»ÏÆü¤«¤éÂÐ¾Ý¤È¤¹¤ë
+           IF      ORCHC33-STRDD       =   ZERO
+               MOVE    1               TO  ORCHC33-STRDD
+           END-IF
+      *
+      **** ÄÉ²Ã°õºþ½é´ü½èÍý
+      *    IF      FLG-HC331           =   1
+      *        MOVE    SPACE               TO  HCM331
+      *        INITIALIZE                      HCM331
+      *        ºÇ½ª°õºþ¹Ô
+      *        MOVE    ORCHC33-ENDLINE     TO  CNT-MEI
+      *    ELSE
+      *        MOVE    ZERO                TO  CNT-MEI
+      *****END-IF
+      *
+           PERFORM VARYING     IDX     FROM    ORCHC33-STRDD  BY  1
                    UNTIL       IDX     >   31
                MOVE    ZERO                TO  FLG-ARI
+               MOVE    ZERO                TO  FLG-ARI-RSI
                MOVE    ZERO                TO  WRK-GOK-ZAITEN
+               MOVE    ZERO                TO  WRK-GOK-RSI-MONEY
+               INITIALIZE                  TBL-DAY-AREA
       *        ÅÀ¿ô
                PERFORM VARYING     IDX1    FROM    1   BY  1
                        UNTIL       IDX1    >   10
                    PERFORM VARYING     IDX2    FROM    1   BY  1
-                           UNTIL       IDX2    >   200
+                           UNTIL       IDX2    >   400
                        IF      TBL-DAY (IDX1 IDX2 IDX) >   ZERO
-                           PERFORM 20021-TBL-HENSYU-SEC
+      *                    °õºþ·ÁÂÖ
+                           IF      ORCHC33-KARUTE3KBN  =   "1"
+      *                        ÆüËè
+                               PERFORM 20022-TBLDAY-ADD-SEC
+                           ELSE
+      *                        ºÞËè
+                               PERFORM 20021-TBL-HENSYU-SEC
+                           END-IF
                        END-IF
                    END-PERFORM
                END-PERFORM
-      *        Æü¤´¤È¤ËÊÔ½¸¤¹¤ë
+      *        Ï«ºÒ±ß
+               PERFORM VARYING     IDX1    FROM    1   BY  1
+                       UNTIL       IDX1    >   10
+                   PERFORM VARYING     IDX2    FROM    1   BY  1
+                           UNTIL       IDX2    >   400
+                       IF      TBL-RSI-DAY (IDX1 IDX2 IDX) >   ZERO
+      *                    Ï«ºÒ±ß °õºþ·ÁÂÖ
+                           IF      ORCHC33-KARUTE3KBN  =   "1"
+      *                        ÆüËè
+                               PERFORM 20024-RSI-TBLDAY-ADD-SEC
+                           ELSE
+      *                        ºÞËè
+                               PERFORM 20023-RSI-TBL-HENSYU-SEC
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
                IF      FLG-ARI             =   1
+                   IF      ORCHC33-KARUTE3KBN  =   "1"
+      *                ÆüËè¤Î¥Æ¡¼¥Ö¥ëÊÔ½¸
+                       PERFORM 20023-TBL-HENSYU2-SEC
+                   ELSE
+      *                ¼ýÇ¼¤è¤êÉéÃ´¶âÊÔ½¸
+                       MOVE    IDX                 TO  WRK-DAY
+                       PERFORM 200231-SYUNOU-HEN-SEC
+                   END-IF
+      *            Æü¤´¤È¤ËÊÔ½¸¤¹¤ë
                    PERFORM 20023-HC33-DAYHEN-SEC
                END-IF
            END-PERFORM
       *
       *    ·î·×°õºþ
-           PERFORM 20024-TUKIKEI-SEC
+           IF     (FLG-HC331           =   1   )  AND
+                  (FLG-HC331-END       =   ZERO)
+      *        ·î¹ç·×°õºþ¡Ê£È£Ã£³£³£±¡Ë
+               PERFORM 20042-HC331-TUKIKEI-SEC
+               MOVE    1                   TO  FLG-TUKI-END
+               MOVE    ZERO                TO  CNT-MEI
+           END-IF
+      *    ·î·×°õºþ¡Ê£È£Ã£³£³¡Ë
+           IF      FLG-TUKI-END        =   ZERO
+               PERFORM 20024-TUKIKEI-SEC
+           END-IF
       *
            .
        2002-PRINT-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    Ä¢É¼ÊÔ½¸¥Æ¡¼¥Ö¥ëÊÔ½¸½èÍý
+      *    Ä¢É¼ÊÔ½¸¥Æ¡¼¥Ö¥ëÊÔ½¸½èÍý¡ÊºÞËè¡Ë
       *****************************************************************
        20021-TBL-HENSYU-SEC                SECTION.
       *
@@ -987,13 +1210,14 @@
            MOVE    1                   TO  FLG-ARI
       *    ºÇ½ª¹Ô¤òµá¤á¤ë
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >   200
+                   UNTIL       IDY     >   400
                IF      TBL-NAIYO (IDY IDX1)    =   SPACE
                    MOVE    IDY             TO  IDX-T1
-                   MOVE    200             TO  IDY
+                   MOVE    400             TO  IDY
                END-IF
            END-PERFORM
       *
+           MOVE    SPACE               TO  WRK-Z88-X
            IF      TBL-ZAITEN (IDX1 IDX2)  >   ZERO
                MOVE    TBL-ZAITEN (IDX1 IDX2)  TO  WRK-Z59
            ELSE
@@ -1012,7 +1236,7 @@
                MOVE    WRK-Z9          TO  TBL-NAIYO(IDX-T1 IDX1)(7:2)
            ELSE
       *        ÅÀ¿ô¤Î¤ß
-               MOVE    WRK-Z59-X       TO  TBL-NAIYO(IDX-T1 IDX1)
+               MOVE    WRK-Z88-X       TO  TBL-NAIYO(IDX-T1 IDX1)
            END-IF
       *    ºÇÂç¹ÔÊÔ½¸
            IF      IDX-T1              >   IDX-MAX
@@ -1022,14 +1246,164 @@
            .
        20021-TBL-HENSYU-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ÆüËè½¸·×½èÍý
+      *****************************************************************
+       20022-TBLDAY-ADD-SEC                SECTION.
+      *
+           MOVE    1                   TO  FLG-ARI
+      *    ÆüËè½¸·×
+           COMPUTE WRK-GOK-ZAITEN      =  (TBL-ZAITEN (IDX1 IDX2)
+                                       *   TBL-DAY (IDX1 IDX2 IDX) )
+           ADD     WRK-GOK-ZAITEN      TO  TBL-DAY-ZAITEN(IDX1)
+      *
+           .
+       20022-TBLDAY-ADD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ï«ºÒ±ßÄ¢É¼ÊÔ½¸¥Æ¡¼¥Ö¥ëÊÔ½¸½èÍý¡ÊºÞËè¡Ë
+      *****************************************************************
+       20023-RSI-TBL-HENSYU-SEC                SECTION.
+      *
+           IF      FLG-ARI             =   ZERO
+               INITIALIZE                  TBL-HEN-AREA
+               MOVE    ZERO                TO  IDX-T1
+               MOVE    ZERO                TO  IDX-MAX
+           END-IF
+           MOVE    1                   TO  FLG-ARI
+      *    Ï«ºÒÊ¬³«»Ï°ÌÃÖ
+           IF      FLG-ARI-RSI         =   ZERO
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL       IDY     >   400
+                   IF      TBL-HEN-OCC2-G (IDY)    =   SPACE
+                       MOVE    IDY             TO  IDX-T1
+                       MOVE    400             TO  IDY
+                   END-IF
+               END-PERFORM
+               MOVE    IDX-T1              TO  IDX-RSI
+               MOVE    1                   TO  FLG-ARI-RSI
+           ELSE
+      *    ºÇ½ª¹Ô¤òµá¤á¤ë
+               PERFORM VARYING     IDY     FROM    IDX-RSI  BY  1
+                       UNTIL       IDY     >   400
+                   IF      TBL-NAIYO (IDY IDX1)    =   SPACE
+                       MOVE    IDY             TO  IDX-T1
+                       MOVE    400             TO  IDY
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-Z88-X
+           IF      TBL-RSI-ZAITEN (IDX1 IDX2)  >   ZERO
+               MOVE    TBL-RSI-ZAITEN (IDX1 IDX2)  TO  WRK-Z59
+           ELSE
+               MOVE    TBL-RSI-ZAITEN (IDX1 IDX2)  TO  WRK-Z59-R
+           END-IF
+           COMPUTE WRK-GOK-RSI-MONEY   =   WRK-GOK-RSI-MONEY
+                                       +  (TBL-RSI-ZAITEN (IDX1 IDX2)
+                                       *   TBL-RSI-DAY (IDX1 IDX2 IDX))
+      *
+           IF     (IDX1                =   2  OR  3 )  OR
+                  (TBL-RSI-DAY (IDX1 IDX2 IDX) >  1     )
+      *        ²ó¿ô¤¢¤ê
+               MOVE    TBL-RSI-DAY (IDX1 IDX2 IDX) TO  WRK-Z9
+               MOVE    WRK-Z59-X       TO  TBL-NAIYO(IDX-T1 IDX1)(1:5)
+               MOVE    "x"             TO  TBL-NAIYO(IDX-T1 IDX1)(6:1)
+               MOVE    WRK-Z9          TO  TBL-NAIYO(IDX-T1 IDX1)(7:2)
+           ELSE
+      *        ÅÀ¿ô¤Î¤ß
+               MOVE    WRK-Z88-X       TO  TBL-NAIYO(IDX-T1 IDX1)
+           END-IF
+           IF      TBL-NAIYO(IDX-T1 IDX1)(1:1) =   SPACE
+               MOVE    "*"             TO  TBL-NAIYO(IDX-T1 IDX1)(1:1)
+           END-IF
+      *    ºÇÂç¹ÔÊÔ½¸
+           IF      IDX-T1              >   IDX-MAX
+               MOVE    IDX-T1          TO  IDX-MAX
+           END-IF
+      *
+           .
+       20023-RSI-TBL-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ï«ºÒ±ß ÆüËè½¸·×½èÍý
+      *****************************************************************
+       20024-RSI-TBLDAY-ADD-SEC                SECTION.
+      *
+           MOVE    1                   TO  FLG-ARI
+      *    ÆüËè½¸·×
+           COMPUTE WRK-GOK-ZAITEN      =  (TBL-RSI-ZAITEN (IDX1 IDX2)
+                                       *   TBL-RSI-DAY (IDX1 IDX2 IDX) )
+           ADD     WRK-GOK-ZAITEN      TO  TBL-DAY-RSI-ZAITEN(IDX1)
+      *
+           .
+       20024-RSI-TBLDAY-ADD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ä¢É¼ÊÔ½¸¥Æ¡¼¥Ö¥ëÊÔ½¸½èÍý¡ÊÆüËè¡Ë
+      *****************************************************************
+       20023-TBL-HENSYU2-SEC                SECTION.
+      *
+           INITIALIZE                  TBL-HEN-AREA
+           MOVE    1                   TO  IDX-T1
+           MOVE    1                   TO  IDX-MAX
+           MOVE    ZERO                TO  WRK-GOK-ZAITEN
+           MOVE    ZERO                TO  WRK-GOK-RSI-MONEY
+      *
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL       IDX1    >   9
+               IF      TBL-DAY-ZAITEN(IDX1)    >   ZERO
+                   MOVE    TBL-DAY-ZAITEN(IDX1)    TO  WRK-Z89
+               ELSE
+                   MOVE    TBL-DAY-ZAITEN(IDX1)    TO  WRK-Z79S
+               END-IF
+      *
+               COMPUTE WRK-GOK-ZAITEN      =   WRK-GOK-ZAITEN
+                                           +   TBL-DAY-ZAITEN(IDX1)
+      *        ÅÀ¿ô¤Î¤ß
+               IF      TBL-DAY-ZAITEN(IDX1)    NOT =   ZERO
+                   MOVE    WRK-Z89-X       TO  TBL-NAIYO(IDX-T1 IDX1)
+               END-IF
+           END-PERFORM
+      *
+      *    Ï«ºÒ±ß½¸·×
+           MOVE    ZERO                TO  FLG-ARI-RSI
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL       IDX1    >   9
+               IF      TBL-DAY-RSI-ZAITEN(IDX1)    NOT =   ZERO
+                   IF      FLG-ARI-RSI         =   ZERO
+                       ADD     1                   TO  IDX-T1
+                       MOVE    IDX-T1              TO  IDX-RSI
+                   END-IF
+                   MOVE    1                   TO  FLG-ARI-RSI
+                   MOVE    TBL-DAY-RSI-ZAITEN(IDX1)    TO  WRK-Z89
+                   MOVE    WRK-Z89-X       TO  TBL-NAIYO(IDX-T1 IDX1)
+                   MOVE    "*"             TO  TBL-NAIYO(IDX-T1 IDX1)
+                                                                (1:1)
+                   COMPUTE WRK-GOK-RSI-MONEY
+                                           =   WRK-GOK-RSI-MONEY
+                                           +   TBL-DAY-RSI-ZAITEN(IDX1)
+               END-IF
+           END-PERFORM
+      *    ºÇÂç¹ÔÊÔ½¸
+           IF      IDX-T1              >   IDX-MAX
+               MOVE    IDX-T1          TO  IDX-MAX
+           END-IF
+      *    ¼ýÇ¼¤è¤êÉéÃ´¶âÊÔ½¸
+           MOVE    IDX                 TO  WRK-DAY
+           PERFORM 200232-SYUNOU-DAYHEN-SEC
+      *
+           .
+       20023-TBL-HENSYU2-EXT.
+           EXIT.
       *****************************************************************
       *    Æü¤´¤È¤ËÊÔ½¸½èÍý
       *****************************************************************
        20023-HC33-DAYHEN-SEC           SECTION.
-      *
-      *    ¼ýÇ¼¤è¤êÉéÃ´¶âÊÔ½¸
-           MOVE    IDX                 TO  WRK-DAY
-           PERFORM 200231-SYUNOU-HEN-SEC
       *
       *    ¿ÇÎÅÆü
            MOVE    WRK-SRYMM           TO  WRK-H-MM
@@ -1044,11 +1418,27 @@
                MOVE    WRK-GOK-ZAITEN      TO  WRK-Z79S
                MOVE    WRK-Z79S            TO  TBL-NAIYO(01 08)
            END-IF
+      *    Ï«ºÒ±ß¹ç·×
+           IF      WRK-GOK-RSI-MONEY   >   ZERO
+               MOVE    WRK-GOK-RSI-MONEY   TO  WRK-Z89
+               MOVE    WRK-Z89             TO  TBL-NAIYO(IDX-RSI 08)
+               MOVE    "*"                 TO  TBL-NAIYO(IDX-RSI 08)
+                                                                 (1:1)
+           END-IF
       *
       *    ·îÅÀ¿ô¹ç·×
            ADD     WRK-GOK-ZAITEN      TO  WRK-TUK-ZAITEN
+           ADD     WRK-GOK-RSI-MONEY   TO  WRK-TUK-RSI-MONEY
       *
-           PERFORM VARYING     IDX1    FROM    1   BY  1
+      *    ÄÉ²Ã°õºþ
+           IF     (FLG-HC331           =   1   )  AND
+                  (FLG-HC331-END       =   ZERO)
+               PERFORM 2004-HC331-HENSYU-SEC
+           ELSE
+               MOVE    1               TO  IDX-STR
+           END-IF
+      *
+           PERFORM VARYING     IDX1    FROM    IDX-STR  BY  1
                    UNTIL       IDX1    >   IDX-MAX
                ADD     1                   TO  CNT-MEI
                IF      CNT-MEI             >   40
@@ -1059,13 +1449,16 @@
                IF      CNT-MEI             =   1
                    PERFORM 20031-HEAD-HEN-SEC
                END-IF
-      *
+      *        Ï¢ÈÖ
+               MOVE    CNT-MEI             TO  WRK-Z9
+               MOVE    WRK-Z9              TO  HCM33-NUM (CNT-MEI)
       *        ÆüÉÕ
-               IF      IDX1                =   1
+               IF     (IDX1                =   1 )  OR
+                      (CNT-MEI             =   1 )
                    MOVE    WRK-HEN-DAY     TO  HCM33-SRYMD (CNT-MEI)
                END-IF
                PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL       IDX2    >   9
+                       UNTIL       IDX2    >   10
                    MOVE    TBL-NAIYO (IDX1 IDX2)   TO  HCM33-NAIYO
                                                           (CNT-MEI IDX2)
                END-PERFORM
@@ -1121,6 +1514,7 @@
                                            +   SYU-TOTAL-TGMONEY
                                            +   SYU-TOTAL-TGMONEY-TAX
                    ADD     WRK-JIHIKEI         TO  WRK-GOK-JIHIKEI
+                   ADD     WRK-JIHIKEI         TO  WRK-TUK-JIHIKEI
       *            ÀÁµá¶â³Û¡Ý¼«Èñ·×
                    COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY
                                            -   WRK-JIHIKEI
@@ -1130,33 +1524,17 @@
                    MOVE    WRK-Z79S            TO  TBL-NAIYO (IDX-T1 9)
       *            ·î·×ÉéÃ´³Û
                    ADD     WRK-SKYMONEY        TO  WRK-TUK-SKYMONEY
-      *            Ï«ºÒ¡¦¼«ÇåÀÕ¶â³Û
-                   COMPUTE WRK-RSI-MONEY       =   SYU-RSISHOSHIN-MONEY
-                                               +   SYU-RSISAISHIN-MONEY
-                                               +   SYU-RSISDO-MONEY
-                                               +   SYU-RSIETC-MONEY
-                  IF      WRK-RSI-MONEY       >   ZERO
-                       ADD     1                   TO  IDX-T1
-                       MOVE    WRK-RSI-MONEY       TO  WRK-Z89
-                       MOVE    WRK-Z89             TO  TBL-NAIYO
-                                                           (IDX-T1 9)
-                       MOVE    "*"                 TO  TBL-NAIYO
-                                                           (IDX-T1 9)
-                                                                (1:1)
-                       MOVE    "¡ÊÏ«¡¦¼«¡Ë"        TO  TBL-MEISYO
-                                                            (IDX-T1)
-                       ADD     WRK-RSI-MONEY       TO  WRK-TUK-RSI-MONEY
-                   END-IF
                END-IF
       *
                MOVE    "SYUNOU-KEY14"     TO  ORC-DBPATH
                PERFORM 980-SYUNOU-READ-SEC
            END-PERFORM
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    ºÇÂç¹ÔÊÔ½¸
            IF      IDX-T1              >   IDX-MAX
@@ -1166,18 +1544,97 @@
       *    ¼«Èñ
            IF      WRK-GOK-JIHIKEI     NOT =   ZERO
                MOVE    WRK-GOK-JIHIKEI     TO  WRK-Z89
-      *        ºÇ½ª¹Ô¤Ø
-               IF     (TBL-NAIYO (IDX-MAX 8)   NOT =   SPACE )  OR
-                      (TBL-NAIYO (IDX-MAX 9)   NOT =   SPACE )
-                   ADD     1                   TO  IDX-MAX
-               END-IF
-               MOVE    WRK-Z89             TO  TBL-NAIYO (IDX-MAX 9)
-               MOVE    "ÊÝ¸±³°"            TO  TBL-MEISYO (IDX-MAX)
+      *        £±¹ÔÌÜ¤Ø
+               MOVE    WRK-Z89             TO  TBL-NAIYO  (1  10)
            END-IF
-      *
       *
            .
        200231-SYUNOU-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼ýÇ¼ÊÔ½¸½èÍý
+      *****************************************************************
+       200232-SYUNOU-DAYHEN-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  IDX-T1
+           MOVE    ZERO                TO  WRK-GOK-JIHIKEI
+           MOVE    ZERO                TO  WRK-GOK-SKYMONEY
+      *
+      *    ¼ýÇ¼¥Æ¡¼¥Ö¥ëÆÉ¤ß¹þ¤ß
+           MOVE    SPACE               TO  SYUNOU-REC
+           INITIALIZE                  SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    ORCHC33-NYUGAIKBN   TO  SYU-NYUGAIKBN
+           MOVE    ORCHC33-PTID        TO  SYU-PTID
+           MOVE    WRK-SRYYM           TO  SYU-SRYYMD(1:6)
+           MOVE    WRK-DAY             TO  SYU-SRYYMD(7:2)
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY14"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUNOU-KEY14"     TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYUNOU-REC
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+           PERFORM UNTIL    FLG-SYUNOU     =   1
+      *
+               IF      (ORCHC33-SRYKA  NOT =   ZERO  AND  SPACE) AND
+                       (ORCHC33-SRYKA  NOT =   SYU-SRYKA)
+                   CONTINUE
+               ELSE
+      *            ¼«Èñ·×
+                   COMPUTE WRK-JIHIKEI     =   SYU-JIHI-TOTAL
+                                           +   SYU-JIHI-TOTAL-TAX
+                                           +   SYU-JIHI-TAX
+                                           +   SYU-TOTAL-TGMONEY
+                                           +   SYU-TOTAL-TGMONEY-TAX
+                   ADD     WRK-JIHIKEI         TO  WRK-GOK-JIHIKEI
+                   ADD     WRK-JIHIKEI         TO  WRK-TUK-JIHIKEI
+      *            ÀÁµá¶â³Û¡Ý¼«Èñ·×
+                   COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY
+                                           -   WRK-JIHIKEI
+      *            ÉéÃ´³Û
+                   ADD     WRK-SKYMONEY        TO  WRK-GOK-SKYMONEY
+      *            ·î·×ÉéÃ´³Û
+                   ADD     WRK-SKYMONEY        TO  WRK-TUK-SKYMONEY
+               END-IF
+               MOVE    "SYUNOU-KEY14"     TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    ¥Æ¡¼¥Ö¥ëÊÔ½¸
+           ADD     1                   TO  IDX-T1
+           MOVE    WRK-GOK-SKYMONEY    TO  WRK-Z79S
+           MOVE    WRK-Z79S            TO  TBL-NAIYO (IDX-T1 9)
+      *
+      *    ºÇÂç¹ÔÊÔ½¸
+           IF      IDX-T1              >   IDX-MAX
+               MOVE    IDX-T1          TO  IDX-MAX
+           END-IF
+      *
+      *    ¼«Èñ
+           IF      WRK-GOK-JIHIKEI     NOT =   ZERO
+               MOVE    WRK-GOK-JIHIKEI     TO  WRK-Z89
+      *        £±¹ÔÌÜ¤Ø
+               MOVE    WRK-Z89             TO  TBL-NAIYO  (1  10)
+           END-IF
+      *
+           .
+       200232-SYUNOU-DAYHEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1194,15 +1651,32 @@
            IF      CNT-MEI             =   1
                PERFORM 20031-HEAD-HEN-SEC
            END-IF
-           MOVE    "·î¹ç·×"            TO  HCM33-BIKOU (CNT-MEI)
+      *    Ï¢ÈÖ
+           MOVE    CNT-MEI             TO  WRK-Z9
+           MOVE    WRK-Z9              TO  HCM33-NUM (CNT-MEI)
+      *
+           MOVE    "¹ç·×"              TO  HCM33-BIKOU (CNT-MEI)
            MOVE    WRK-TUK-ZAITEN      TO  WRK-Z89
            MOVE    WRK-Z89             TO  HCM33-NAIYO (CNT-MEI 8)
            MOVE    WRK-TUK-SKYMONEY    TO  WRK-Z89
            MOVE    WRK-Z89             TO  HCM33-NAIYO (CNT-MEI 9)
+           MOVE    WRK-TUK-JIHIKEI     TO  WRK-Z89
+           MOVE    WRK-Z89             TO  HCM33-NAIYO (CNT-MEI 10)
       *
            IF      WRK-TUK-RSI-MONEY   =   ZERO
-               GO      TO      20024-TUKIKEI-EXT
+               CONTINUE
+           ELSE
+      *        Ï«ºÒ¡¦¼«ÇåÀÕ¶â³Û·×½èÍý
+               PERFORM 200241-TUKIKEI-ROUSEI-SEC
            END-IF
+           .
+       20024-TUKIKEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ·î·×°õºþ½èÍý¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¡Ë
+      *****************************************************************
+       200241-TUKIKEI-ROUSEI-SEC                SECTION.
       *
       *    Ï«ºÒ¡¦¼«ÇåÀÕ¶â³Û·×½èÍý
            ADD     1                   TO  CNT-MEI
@@ -1213,13 +1687,17 @@
            IF      CNT-MEI             =   1
                PERFORM 20031-HEAD-HEN-SEC
            END-IF
-           MOVE    "¡ÊÏ«¡¦¼«¡Ë"        TO  HCM33-BIKOU (CNT-MEI)
+      *    Ï¢ÈÖ
+           MOVE    CNT-MEI             TO  WRK-Z9
+           MOVE    WRK-Z9              TO  HCM33-NUM (CNT-MEI)
+      *
+           MOVE    "¢¨Ï«¡¦¼«"          TO  HCM33-BIKOU (CNT-MEI)
            MOVE    WRK-TUK-RSI-MONEY   TO  WRK-Z89
-           MOVE    WRK-Z89             TO  HCM33-NAIYO (CNT-MEI 9)
-           MOVE    "*"                 TO  HCM33-NAIYO (CNT-MEI 9)(1:1)
+           MOVE    WRK-Z89             TO  HCM33-NAIYO (CNT-MEI 8)
+           MOVE    "*"                 TO  HCM33-NAIYO (CNT-MEI 8)(1:1)
       *
            .
-       20024-TUKIKEI-EXT.
+       200241-TUKIKEI-ROUSEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1249,22 +1727,23 @@
            END-EVALUATE
       *
            MOVE    WRK-BIRTHDAY        TO  HCM33-TANJYOBI
-      *¡¡¡¡Ç¯Îð
-           IF      WRK-NENREI-YY       >   ZERO
-               MOVE    WRK-NENREI-YY       TO  WRK-ZZ9
-               MOVE    WRK-ZZ9             TO  HCM33-NENREI
-               MOVE    "ºÍ"                TO  HCM33-NENREIMEI
-           ELSE
-               MOVE    WRK-NENREI-MM       TO  WRK-ZZ9
-               MOVE    WRK-ZZ9             TO  HCM33-NENREI
-               MOVE    "¥ö·î"              TO  HCM33-NENREIMEI
-           END-IF
+      **** Ç¯Îð
+      *    IF      WRK-NENREI-YY       >   ZERO
+      *        MOVE    WRK-NENREI-YY       TO  WRK-ZZ9
+      *        MOVE    WRK-ZZ9             TO  HCM33-NENREI
+      *        MOVE    "ºÍ"                TO  HCM33-NENREIMEI
+      *    ELSE
+      *        MOVE    WRK-NENREI-MM       TO  WRK-ZZ9
+      *        MOVE    WRK-ZZ9             TO  HCM33-NENREI
+      *        MOVE    "¥ö·î"              TO  HCM33-NENREIMEI
+      **** END-IF
       *    ¿ÇÎÅ²Ê
            MOVE    WRK-SRYKA-MEI       TO  HCM33-SRYKA
       *    ´ü´Ö
            MOVE    WRK-SRYYM-N         TO  HCM33-SRYYM
       *
       *    ÊÝ¸±Ì¾¾Î
+           MOVE    SPACE               TO  WRK-HEN-HKNCOMBIMEI
            PERFORM VARYING     IDX-H   FROM    1   BY  1
                    UNTIL      (IDX-H   >   20  )  OR
                               (TBL-HKNCOMBI (IDX-H)  =   SPACE )
@@ -1287,6 +1766,7 @@
                                            INTO    WRK-HEN-HKNCOMBIMEI
                END-STRING
            END-PERFORM
+      *
            MOVE    WRK-HEN-HKNCOMBIMEI     TO  HCM33-HKNSYUBETU
            .
        20031-HEAD-HEN-EXT.
@@ -1360,6 +1840,147 @@
       *
            .
        20032-HC33-BAT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÄÉ²Ã°õºþ½èÍý
+      *****************************************************************
+       2004-HC331-HENSYU-SEC           SECTION.
+      *
+           PERFORM VARYING     IDX1    FROM    1    BY  1
+                   UNTIL      (IDX1        >   IDX-MAX )  OR
+                              (CNT-MEI     >=  40      )
+               ADD     1                   TO  CNT-MEI
+      *        Ï¢ÈÖ
+               MOVE    CNT-MEI             TO  WRK-Z9
+               MOVE    WRK-Z9              TO  HCM331-NUM (CNT-MEI)
+      *        ÆüÉÕ
+               IF      IDX1                =   1
+                   MOVE    WRK-HEN-DAY     TO  HCM331-SRYMD (CNT-MEI)
+               END-IF
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL       IDX2    >   10
+                   MOVE    TBL-NAIYO (IDX1 IDX2)   TO  HCM331-NAIYO
+                                                          (CNT-MEI IDX2)
+               END-PERFORM
+               MOVE    TBL-MEISYO (IDX1)   TO  HCM331-BIKOU (CNT-MEI)
+               MOVE    IDX1                TO  IDX-STR
+           END-PERFORM
+      *
+           IF      CNT-MEI             >=  40
+      *        °õºþ½èÍý
+               PERFORM 2004-HC331-PRINT-SEC
+               MOVE    ZERO                TO  CNT-MEI
+               MOVE    1                   TO  FLG-HC331-END
+           END-IF
+           ADD     1                   TO  IDX-STR
+      *
+           .
+       2004-HC331-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÄÉ²Ã¥«¥ë¥Æ°õºþ½èÍý
+      *****************************************************************
+       20042-HC331-TUKIKEI-SEC                SECTION.
+      *
+           ADD     1                   TO  CNT-MEI
+      *    Ï¢ÈÖ
+           MOVE    CNT-MEI             TO  WRK-Z9
+           MOVE    WRK-Z9              TO  HCM331-NUM (CNT-MEI)
+      *
+           MOVE    "¹ç·×"              TO  HCM331-BIKOU (CNT-MEI)
+           MOVE    WRK-TUK-ZAITEN      TO  WRK-Z89
+           MOVE    WRK-Z89             TO  HCM331-NAIYO (CNT-MEI 8)
+           MOVE    WRK-TUK-SKYMONEY    TO  WRK-Z89
+           MOVE    WRK-Z89             TO  HCM331-NAIYO (CNT-MEI 9)
+           MOVE    WRK-TUK-JIHIKEI    TO  WRK-Z89
+           MOVE    WRK-Z89             TO  HCM331-NAIYO (CNT-MEI 10)
+      *
+           IF      WRK-TUK-RSI-MONEY   =   ZERO
+      *        °õºþ½èÍý
+               PERFORM 2004-HC331-PRINT-SEC
+           ELSE
+      *        Ï«ºÒ¡¦¼«ÇåÀÕ¶â³Û·×½èÍý
+               PERFORM 200421-HC331-ROUSAI-SEC
+           END-IF
+           .
+       20042-HC331-TUKIKEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÄÉ²Ã¥«¥ë¥Æ°õºþ½èÍý¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¡Ë
+      *****************************************************************
+       200421-HC331-ROUSAI-SEC                SECTION.
+      *
+      *    Ï«ºÒ¡¦¼«ÇåÀÕ¶â³Û·×½èÍý
+           ADD     1                   TO  CNT-MEI
+           IF      CNT-MEI             >   40
+               PERFORM 2004-HC331-PRINT-SEC
+               MOVE    1                   TO  CNT-MEI
+      *        £È£Ã£³£³¤Î°õºþ
+               PERFORM 20031-HEAD-HEN-SEC
+      *        Ï¢ÈÖ
+               MOVE    CNT-MEI             TO  WRK-Z9
+               MOVE    WRK-Z9              TO  HCM33-NUM (CNT-MEI)
+      *
+               MOVE    "¢¨Ï«¡¦¼«"          TO  HCM33-BIKOU (CNT-MEI)
+               MOVE    WRK-TUK-RSI-MONEY   TO  WRK-Z89
+               MOVE    WRK-Z89             TO  HCM33-NAIYO (CNT-MEI 8)
+               MOVE    "*"                 TO  HCM33-NAIYO (CNT-MEI 8)
+                                                                (1:1)
+      *        °õºþ½èÍý
+               PERFORM 2003-HC33-PRINT-SEC
+           ELSE
+      *        Ï¢ÈÖ
+               MOVE    CNT-MEI             TO  WRK-Z9
+               MOVE    WRK-Z9              TO  HCM331-NUM (CNT-MEI)
+      *
+               MOVE    "¢¨Ï«¡¦¼«"          TO  HCM331-BIKOU (CNT-MEI)
+               MOVE    WRK-TUK-RSI-MONEY   TO  WRK-Z89
+               MOVE    WRK-Z89             TO  HCM331-NAIYO (CNT-MEI 8)
+               MOVE    "*"                 TO  HCM331-NAIYO (CNT-MEI 8)
+                                                                (1:1)
+      *        °õºþ½èÍý
+               PERFORM 2004-HC331-PRINT-SEC
+           END-IF
+      *
+           .
+       200421-HC331-ROUSAI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÄÉ²Ã¥«¥ë¥Æ°õºþ½èÍý
+      *****************************************************************
+       2004-HC331-PRINT-SEC                SECTION.
+      *
+      *    ¥ª¥ó¥é¥¤¥ó¤Î¤ß
+      *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î
+           MOVE    "HC01"              TO  HC01PARA-FORM-ID
+           MOVE    SPA-TERMID          TO  HC01PARA-TERMID
+           MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
+           ADD     1                   TO  WRK-PAGE
+           MOVE    WRK-PAGE            TO  HC01PARA-CNT
+           OPEN    OUTPUT              PRT-FILE
+      *    °õºþÍÑ¥Ç¡¼¥¿½ÐÎÏ
+           MOVE    HCM331              TO  PRT-REC
+           WRITE   PRT-REC
+      *
+           CLOSE                       PRT-FILE
+      *
+           INITIALIZE                  ORCSMKPRTAREA
+           MOVE   "HC01.sh"            TO  MKPRT-ID
+           MOVE   "HCM331.red"         TO  MKPRT-DIA
+           MOVE   SPACE                TO  MKPRT-DEF
+           MOVE   HC01PARA             TO  MKPRT-DAT
+           MOVE   SYS-1031-PRTNM(13)   TO  MKPRT-PRTNM
+           IF     SYS-1031-PRTNM(13)   =   SPACE
+                MOVE   SYS-1031-PRTNM(10)  TO  MKPRT-PRTNM
+           END-IF
+           CALL   "ORCSMKPRT"          USING
+                                       ORCSMKPRTAREA
+      *
+           .
+       2004-HC331-PRINT-EXT.
            EXIT.
       *****************************************************************
       *    ´µ¼Ô¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
@@ -1601,12 +2222,12 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        910-TENSU-READ-EXT.
