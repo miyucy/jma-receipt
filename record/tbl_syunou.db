@@ -275,6 +275,19 @@ path	key5 	{
 	};
 };
 
+path	key6 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYYMD      LIKE :SRYYMD
+			ORDER   BY        SRYYMD DESC
+		;
+	};
+};
+
 path	all 	{
 	DBSELECT	{
 		DECLARE tbl_syunou_all_csr CURSOR FOR

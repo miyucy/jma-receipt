@@ -163,7 +163,8 @@
       *                                     SYUMEI-KEY3追加
       *                                     PTNYUINRRK-KEY10追加
       *  01.01.18    NACL-藤原    02/12/10  SEIKYU-DEL5,DEL6追加
-      *  01.01.18    NACL-太田    02/12/13  PTNYUINRRK-KEY11追加
+      *  01.01.19    NACL-太田    02/12/13  PTNYUINRRK-KEY11追加
+      *  01.01.20    NACL-太田    02/12/13  SYUNOU-KEY6追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -512,11 +513,13 @@
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY3"
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY4"
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY5"
+               WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY6"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY2"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY3"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY4"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY5"
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY6"
                    MOVE    PATH-TBL-SYUNOU-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL1"
@@ -1319,6 +1322,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY5"
                    MOVE    PATH-TBL-SYUNOU-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY6"
+                   MOVE    PATH-TBL-SYUNOU-KEY6
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"
