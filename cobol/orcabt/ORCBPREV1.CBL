@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    04/11/29  引数にエラーファイル名を追加
+      *  01.00.02    NACL-藤原    04/12/01  印刷中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -113,6 +114,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN              PIC 9(05).
+           03  CNT-IN-CANCEL       PIC 9(06).
            03  CNT-OUT             PIC 9(10).
            03  CNT-KETA            PIC 9(05).
            03  WRK-MOJISU          PIC 9(05).
@@ -262,28 +264,33 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
-      *    印刷管理ＤＢ読み込み処理
-           PERFORM 900-PRTKANRI-SELECT-SEC
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
-      *    プレビュー用前処理
-           MOVE    ZERO            TO  WRK-MOJISU
-           IF      WRK-PARA-PRTFLG     =   "2"  OR "3"
-             IF    LNK-PRTKANRI-TBL-KEY    NOT =   SPACE
-               PERFORM VARYING     IDX     FROM    8   BY  -1
-                       UNTIL       IDX     <       1
-                   IF      LNK-PRTKANRI-TBL-KEY(IDX:1)
-                                           NOT =   SPACE
-                       MOVE    IDX     TO  WRK-MOJISU
-                       MOVE    1       TO  IDX
-                   END-IF
-               END-PERFORM
-               DISPLAY "delete cancel"
-      *        PERFORM 900-PRVKANRI-DELETE-SEC
-             END-IF
+           IF      FLG-END         =   ZERO
+      *        印刷管理ＤＢ読み込み処理
+               PERFORM 900-PRTKANRI-SELECT-SEC
+      *
+      *        プレビュー用前処理
+               MOVE    ZERO            TO  WRK-MOJISU
+               IF      WRK-PARA-PRTFLG     =   "2"  OR "3"
+                 IF    LNK-PRTKANRI-TBL-KEY    NOT =   SPACE
+                   PERFORM VARYING     IDX     FROM    8   BY  -1
+                           UNTIL       IDX     <       1
+                       IF      LNK-PRTKANRI-TBL-KEY(IDX:1)
+                                               NOT =   SPACE
+                           MOVE    IDX     TO  WRK-MOJISU
+                           MOVE    1       TO  IDX
+                       END-IF
+                   END-PERFORM
+                   DISPLAY "delete cancel"
+      *            PERFORM 900-PRVKANRI-DELETE-SEC
+                 END-IF
+               END-IF
+      *
+      *        プレビューDB履歴更新処理
+               PERFORM 120-PRVKANRI-RRKUPD-SEC
            END-IF
-      *
-      *    プレビューDB履歴更新処理
-           PERFORM 120-PRVKANRI-RRKUPD-SEC
            .
        100-INIT-EXT.
            EXIT.
@@ -336,6 +343,12 @@
       *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
+      *
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
+           IF      FLG-END         =   1
+               GO  TO  200-MAIN-EXT
+           END-IF  
       *
       *    印刷用ファイル作成  
            MOVE    "HC99"          TO  HC01PARA-FORM-ID
@@ -473,9 +486,16 @@
            END-IF
       *  01.01.02  END
       *
-           ADD     1                   TO  CNT-OUT     
+           ADD     1                   TO  CNT-OUT
+                                           CNT-IN-CANCEL     
       *
            PERFORM 2002-PRTDATA-UPD-SEC
+      *
+      *    処理中止設定処理
+           IF      CNT-IN-CANCEL       =   50
+               MOVE    ZERO                TO  CNT-IN-CANCEL
+               PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
            .
        2001-PRTDATA-PRINT-EXT.
            EXIT.
@@ -673,12 +693,61 @@
            EXIT.
       *
       *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     >   ZERO )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+                   IF      JOB-STOPFLG     =   1
+      *                ジョブ管理終了処理
+                       MOVE    "CAN"           TO  SJOBKANRI-MODE
+                       INITIALIZE                  JOBKANRI-REC
+                       MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                       MOVE    WRK-PARA-SHELLID
+                                               TO  JOB-SHELLID
+                       MOVE    WRK-RECEERR     TO  JOB-YOBI
+                       MOVE    "8888"          TO  JOB-ERRCD
+                       MOVE    2               TO  JOB-STOPFLG
+                       CALL    "ORCSJOB"       USING
+                                               ORCSJOBKANRIAREA  
+                                               JOBKANRI-REC
+                   END-IF
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *     
-      *  10        20        30        40        50        60
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -694,8 +763,6 @@
       *
            DISPLAY "*** ORCBPREV1 IN  "  CNT-IN
            DISPLAY "*** ORCBPREV1 OUT "  CNT-OUT
-      **** DISPLAY "*** ORCBPREV1 END ***"
-      *****ACCEPT WRK-IN
            .
        300-END-EXT.
            EXIT.

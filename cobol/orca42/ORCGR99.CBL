@@ -40,6 +40,7 @@
       *                                     カーソルとボタンの設定
       *  中止処理追加
       *  01.04.01    NACL-藤原    04/09/28 中止ボタンを追加
+      *  01.04.02    NACL-藤原    04/09/28 印刷中止機能を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -64,6 +65,9 @@
       *
       *    レセプト作成指示共通パラメタ
            COPY    "R01COMMON-SPA".
+      *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -96,6 +100,10 @@
            03  WRK-CONS-JOB-SHELLID1
                                    PIC X(08)   VALUE   "RECEPT2".
            03  WRK-CONS-JOB-JOBID1 PIC 9(07)   VALUE   1.
+      *
+           COPY    "CPSHELLTBL.INC".
+      *     
+           COPY    "ORCA-DBPATH".         
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -230,6 +238,8 @@
       *****************************************************************
        490-CANCEL-SEC            SECTION.
       *
+           MOVE    "CAN"           TO  SPA-R99-CANCEL
+      *
       *    中止フラグのセット
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -286,6 +296,30 @@
                CALL    "ORCSJOB"       USING
                                        ORCSJOBKANRIAREA  
                                        JOBKANRI-REC
+      *
+      *        
+               IF      SPA-R01-GMNKBN  =   "R02"  OR  "R04"
+                   MOVE    SPACE           TO  SHELLTBL
+      *            ファイルデイレクトリ位置指定
+                   INITIALIZE              ORCSMKPASSAREA
+                   MOVE    "scripts/allways/print_stop.sh"
+                                           TO  MKPASS-IN-01
+                   CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+                   MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *     
+                   MOVE    WRK-CONS-JOB-SHELLID1
+                                           TO  SHELLTBL-ARG1
+                   MOVE    SPA-R01-PRTKANRI-TBL-GROUP
+                                           TO  SHELLTBL-ARG2
+      *     
+                   MOVE    SHELLTBL        TO  MCPDATA-REC
+                   MOVE    "SHELL"         TO  MCP-FUNC
+                   MOVE    PATH-SHELL-SHELL
+                                           TO  MCP-PATH
+                   CALL    "MCPSUB"        USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               END-IF
            END-IF
       *
            MOVE    WIDGET-INSENSITIVE  TO  R99-B12-STATE
@@ -411,14 +445,19 @@
                            MOVE    "該当のレセプトはありませんでした"
                                                 TO  R99-MSG
                        ELSE
-                           MOVE    JOB-UPDCNT           TO  WRK-PAGE
-                           STRING
+                           IF      JOB-STOPFLG      NOT =   ZERO
+                               MOVE    "印刷処理が中止されました"
+                                                        TO  R99-MSG
+                           ELSE
+                               MOVE    JOB-UPDCNT           TO  WRK-PAGE
+                               STRING
                                "処理は正常に終了しました　処理枚数は"
                                                     DELIMITED  BY  SIZE
                                    WRK-PAGE         DELIMITED  BY  SIZE
                                    "枚です"         DELIMITED  BY  SIZE
                                                     INTO  R99-MSG
-                           END-STRING
+                               END-STRING
+                           END-IF
                        END-IF
                    ELSE
                        MOVE    "処理は正常に終了しました"
@@ -429,6 +468,7 @@
                    IF      SPA-R01-GMNKBN  =   "R02"   OR  "R04"
                        IF    ( SPA-RID1-FLG    =   "PV" )
                        AND   ( JOB-UPDCNT      >   ZERO )
+                       AND   ( JOB-STOPFLG     =   ZERO )
                            MOVE    WIDGET-NORMAL   TO  R99-B12-STATE
                            MOVE    "B12"           TO  MCP-WIDGET
                            IF      SPA-R01-AUTODSPKBN   =   "1"
@@ -454,12 +494,8 @@
                                                 TO  R99-MSG
                END-IF                                 
            ELSE
-               IF      SPA-R01-GMNKBN  =   "R02"   OR  "R04"
-                   CONTINUE
-               ELSE
-                   IF      JOB-STOPFLG          =   ZERO
-                       MOVE    WIDGET-NORMAL        TO  R99-B21-STATE
-                   END-IF
+               IF      JOB-STOPFLG          =   ZERO
+                   MOVE    WIDGET-NORMAL        TO  R99-B21-STATE
                END-IF
                MOVE    "B11"                TO  MCP-WIDGET
            END-IF

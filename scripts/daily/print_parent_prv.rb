@@ -13,6 +13,7 @@
 # プレビュー対応
 # (2003/01/20 ) 引渡しファイルのレイアウト変更
 # postscript出力対応 (2003/03/03)
+# (2004/12/05 ) 印刷出力停止機能追加
 #
 
 # ※複数のプロセスの実行はできない
@@ -254,12 +255,36 @@ word2 = word1.split(/\n/)
 
 # -----------------------------------
 
+# 印刷停止制御用ファイル生成
+stop_file = ''
+stop_file_1 = ''
+stop_file_2 = ''
+
 
 li_cnt1 = 0
 
 # 実行処理
 	puts '[start ' + `date` + ']'
 word2.each do |d2|
+# 印刷処理実行可能判定
+stop_file_1 = d2[217, 8].strip		# key情報の取得
+stop_file_2 = d2[229, 14].strip		# group情報の取得
+puts stop_file_1
+puts stop_file_2
+stop_file = '/tmp/' + stop_file_1 + stop_file_2 + '.tmp'
+#stop_file = '/tmp/take.stop'
+puts '[' + stop_file + ']'
+if FileTest::exists?(stop_file)
+        puts '印刷処理停止'
+        File.delete(stop_file)
+        if FileTest::exists?(temp_file)
+           puts 'tempファイルを削除します'
+           File.delete(temp_file)
+        end
+	exit 3
+else
+   puts 'no file'
+end
 # デバッグ用コード
 #	puts '[' + d2 + ']'
 	li_cnt1 = li_cnt1 + 1

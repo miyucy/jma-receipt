@@ -49,6 +49,9 @@
       *  01.02.01    NACL-藤原    02/09/27  パラメタに入外区分の追加
       *  01.02.02    NACL-藤原    03/08/28  出力内容指定の処理の追加
       *  01.02.03    NACL-藤原    04/06/20  印刷順の追加（個別作成時のみ）
+      *
+      *  中止処理追加
+      *  01.03.01    NACL-藤原    04/12/01  印刷中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -93,6 +96,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN              PIC 9(06).
+           03  CNT-IN-CANCEL       PIC 9(06).
            03  CNT-OUT             PIC 9(03).
       *
       *    添字領域
@@ -216,6 +220,9 @@
                                              WRK-PARA-PRTJYUN
            END-UNSTRING                                  
       *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
@@ -230,14 +237,8 @@
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
-      *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
-      *
-           MOVE    ZERO                TO  WRK-RECE08-PRTRENNUM     
-      *
-      *    帳票印刷開始処理
-           PERFORM 130-SYOKI-PRINT-SEC
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
            .
        100-INIT-EXT.
            EXIT.
@@ -270,28 +271,43 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           ADD     1                    TO  WRK-RECE08-PRTRENNUM
+           MOVE    ZERO                TO  WRK-RECE08-PRTRENNUM     
       *
-           MOVE    WRK-PARA-PRTJYUN     TO  RECE08-PRTJYUN
-           MOVE    WRK-RECE08-PRTRENNUM TO  RECE08-PRTRENNUM      
+      *    帳票印刷開始処理
+           PERFORM 130-SYOKI-PRINT-SEC
       *
-           MOVE    RECE08-REC           TO  MCPDATA-REC
-           MOVE    "RECEPRT-KEY"        TO  ORC-DBPATH
-           MOVE    "DBUPDATE"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM              UNTIL   FLG-END =   1        
+               ADD     1                    TO  WRK-RECE08-PRTRENNUM
       *
-      *    エラーチェック
-           IF      MCP-RC             =   ZERO
-               ADD     1                  TO  CNT-OUT
-               PERFORM 900-RECEPRT-FET-SEC
-           ELSE
-               MOVE    "帳票ＤＢの更新でエラーになりました"
-                                          TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF    
+               MOVE    WRK-PARA-PRTJYUN     TO  RECE08-PRTJYUN
+               MOVE    WRK-RECE08-PRTRENNUM TO  RECE08-PRTRENNUM      
+      *
+               MOVE    RECE08-REC           TO  MCPDATA-REC
+               MOVE    "RECEPRT-KEY"        TO  ORC-DBPATH
+               MOVE    "DBUPDATE"           TO  MCP-FUNC
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+      *
+      *        エラーチェック
+               IF      MCP-RC             =   ZERO
+                   ADD     1                  TO  CNT-OUT
+                   PERFORM 900-RECEPRT-FET-SEC
+      *
+      *            処理中止設定処理
+                   IF      CNT-IN-CANCEL       =   50
+                       MOVE    ZERO                TO  CNT-IN-CANCEL
+                       PERFORM 500-CANCEL-HENSYU-SEC
+                   END-IF
+               ELSE
+                   MOVE    "帳票ＤＢの更新でエラーになりました"
+                                              TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+               END-IF
+           END-PERFORM    
+      *
+           PERFORM 900-RECEPRT-CLS-SEC 
       *
            .
        200-MAIN-EXT.
@@ -332,11 +348,60 @@
            EXIT.
       *
       *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     >   ZERO )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+                   IF      JOB-STOPFLG     =   1
+      *                ジョブ管理終了処理
+                       MOVE    "CAN"           TO  SJOBKANRI-MODE
+                       INITIALIZE                  JOBKANRI-REC
+                       MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                       MOVE    WRK-PARA-SHELLID
+                                               TO  JOB-SHELLID
+                       MOVE    WRK-RECEERR     TO  JOB-YOBI
+                       MOVE    "8888"          TO  JOB-ERRCD
+                       MOVE    2               TO  JOB-STOPFLG
+                       CALL    "ORCSJOB"       USING
+                                               ORCSJOBKANRIAREA  
+                                               JOBKANRI-REC
+                   END-IF
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
-      *
-           PERFORM 900-RECEPRT-CLS-SEC 
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -485,6 +550,8 @@
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  RECE08-REC    
                MOVE    ZERO            TO  FLG-END
+               ADD     1               TO  CNT-IN-CANCEL
+                                           CNT-IN
            ELSE
                MOVE    1               TO  FLG-END
            END-IF

@@ -80,6 +80,9 @@
       *  01.04.02    NACL-藤原    04/09/13  HCN06V03.red
       *                                     ＯＣＲエリアの追加
       *  01.04.03    NACL-藤原    04/10/30  福岡レセHCRCP401.redを追加
+      *
+      *  中止処理追加
+      *  01.05.01    NACL-藤原    04/12/01  印刷中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -151,6 +154,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN              PIC 9(04).
+           03  CNT-IN-CANCEL       PIC 9(06).
            03  CNT-OUT             PIC 9(04).
       *
        01  INDEX-AREA.
@@ -343,6 +347,9 @@
                                              WRK-PARA-PRTKBN
            END-UNSTRING                                  
       *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
@@ -357,14 +364,18 @@
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
-      *    レセプト通し番号情報処理
-           PERFORM 110-SYSKANRI-HENSYU-SEC
+           IF      FLG-END             =   ZERO
+      *        レセプト通し番号情報処理
+               PERFORM 110-SYSKANRI-HENSYU-SEC
       *     
-           MOVE    "HC06"              TO  HC01PARA-FORM-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  HC01PARA-TERMID
-           MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
-           MOVE    1                   TO  HC01PARA-CNT
+               MOVE    "HC06"              TO  HC01PARA-FORM-ID
+               MOVE    LNK-PRTKANRI-TERMID TO  HC01PARA-TERMID
+               MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
+               MOVE    1                   TO  HC01PARA-CNT
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -435,6 +446,12 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
+           IF      FLG-END             =   1
+               GO  TO  200-MAIN-EXT
+           END-IF
+      *
       *    通し番号初期値設定
            MOVE    ZERO                TO  WRK-RENNUM 
       *
@@ -453,6 +470,7 @@
       *
            PERFORM 2001-RECEPRT-PRINT-SEC
                                        UNTIL   FLG-RECEPRT  =   1
+                                       OR      FLG-END      =   1
       *
       *****MOVE    "RECEPRT-KEY3"      TO  WRK-PATH
            MOVE    "RECEPRT-KEY12"     TO  WRK-PATH
@@ -471,6 +489,17 @@
       *****MOVE    "RECEPRT-KEY4"      TO  WRK-PATH
            MOVE    "RECEPRT-KEY13"     TO  WRK-PATH
            PERFORM 900-RECEPRT-CLS-SEC
+      *
+      *    処理中止設定処理
+           IF      FLG-END             =   1
+               GO  TO  200-MAIN-EXT
+           END-IF
+      *
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
+           IF      FLG-END             =   1
+               GO  TO  200-MAIN-EXT
+           END-IF
       *     
            IF      CNT-OUT             >   ZERO 
                MOVE    SPACE           TO  SHELLTBL
@@ -490,6 +519,9 @@
                CALL    "MCPSUB"        USING
                                            MCPAREA
                                            MCPDATA-REC
+      *
+      *        処理中止設定処理
+               PERFORM 500-CANCEL-HENSYU-SEC
       *
       *        最新以外の帳票ＤＢを削除
                PERFORM 2003-PRTDATA-DEL-SEC
@@ -665,10 +697,17 @@
            WRITE   PRT-REC
       *
            ADD     1                   TO  CNT-OUT
+                                           CNT-IN-CANCEL
       *
            PERFORM 390-PRINT-OUT-SEC
       *
            PERFORM 900-RECEPRT-FET-SEC
+      *
+      *    処理中止設定処理
+           IF      CNT-IN-CANCEL      =   50
+               MOVE    ZERO               TO  CNT-IN-CANCEL 
+               PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
       *
            .
        2001-RECEPRT-PRINT-EXT.
@@ -900,6 +939,57 @@
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     >   ZERO )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+                   IF      JOB-STOPFLG     =   1
+      *                ジョブ管理終了処理
+                       MOVE    "CAN"           TO  SJOBKANRI-MODE
+                       INITIALIZE                  JOBKANRI-REC
+                       MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                       MOVE    WRK-PARA-SHELLID
+                                               TO  JOB-SHELLID
+                       MOVE    WRK-RECEERR     TO  JOB-YOBI
+                       MOVE    "8888"          TO  JOB-ERRCD
+                       MOVE    2               TO  JOB-STOPFLG
+                       CALL    "ORCSJOB"       USING
+                                               ORCSJOBKANRIAREA  
+                                               JOBKANRI-REC
+                   END-IF
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

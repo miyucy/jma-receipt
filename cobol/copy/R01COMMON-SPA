@@ -76,6 +76,9 @@
       *¼«Æ°Á«°Ü¶èÊ¬
            05  SPA-R01-AUTODSPKBN          PIC  X(01).
       *
+      *°õºþ´ÉÍý£Ä£Â¤Î¥­¡¼ÃÍ
+           05  SPA-R01-PRTKANRI-TBL-GROUP  PIC  X(14). 
+      *
       *·Ù¹ð¥á¥Ã¥»¡¼¥¸
            05  SPA-RIDCD                   PIC  X(04).
            05  SPA-RIDCD2                  PIC  X(04).
@@ -84,4 +87,5 @@
            05  SPA-RID1-AREA. 
                07  SPA-RID1-FLG            PIC  X(02).
                07  SPA-R99-FLG             PIC  X(02).
+               07  SPA-R99-CANCEL          PIC  X(03).
       *

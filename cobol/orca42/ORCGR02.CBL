@@ -1169,8 +1169,49 @@
                PERFORM 4501-NEXT-GMN-SEC
            END-IF    
       *
+      *    印刷済フラグの設定
+           IF      SPA-R99-CANCEL  =   SPACE
+               IF    ( SPA-GMN-SYOKBN  =   "F"  )
+               AND   ( SPA-GMN-PRTKBN  =   "1"  )
+               AND   ( SPA-GMN-PREFKBN =   "1"  )
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       WRK-CONS-LINE-MAX
+                       IF      SPA-NAI-PRTJYUNI(1 IDX)   =   SPACE
+                           CONTINUE
+                       ELSE
+                           IF    ( SPA-GMN-TCHK-VALUE  (1 IDX)
+                                                           =   "T"   )
+                           AND   ( SPA-GMN-TSTDATA (1 IDX) =   SPACE )
+                           AND   ( SPA-GMN-TEDDATA (1 IDX) =   SPACE )
+                               MOVE    "1"     TO
+                                               SPA-GMN-TPRTFLG (1 IDX)
+                           END-IF
+                       END-IF 
+                   END-PERFORM
+                   IF      SPA-GMN-PRTJYUN     =   "01"    OR  "02"
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >       WRK-CONS-LINE-MAX
+                           IF      SPA-NAI-PRTJYUNI(2 IDX)   =   SPACE
+                               CONTINUE
+                           ELSE
+                               IF    ( SPA-GMN-TCHK-VALUE  (2 IDX)
+                                                           =   "T"   )
+                               AND   ( SPA-GMN-TSTDATA (2 IDX)
+                                                           =   SPACE )
+                               AND   ( SPA-GMN-TEDDATA (2 IDX)
+                                                           =   SPACE )
+                                   MOVE    "1"     TO
+                                               SPA-GMN-TPRTFLG (2 IDX)
+                               END-IF
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-IF
+           END-IF     
+      *
            MOVE    SPACE           TO  SPA-RID1-FLG
                                        SPA-R99-FLG
+                                       SPA-R99-CANCEL
            MOVE    SPACE           TO  SPA-RIDCD
            MOVE    SPACE           TO  SPA-RIDCD2      
            MOVE    SPACE           TO  SPA-RIDCD3
@@ -1908,6 +1949,20 @@
       *    出力処理
       *****************************************************************
        450-PRINT-SEC                SECTION.
+      *    
+      *    印刷ＤＢのＫＥＹ用     
+           ACCEPT  SYS-YMD         FROM    DATE
+           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
+           MOVE    SYS-MM              TO  WRK-SYSMM
+           MOVE    SYS-DD              TO  WRK-SYSDD
+           ACCEPT  SYS-TIME            FROM    TIME
+           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
+           MOVE    WRK-SYSYMD          TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
+           MOVE    SYS-TIME            TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (9:)
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                       TO  SPA-R01-PRTKANRI-TBL-GROUP
       *
       *    ジョブ開始セット
            MOVE    "DEL"           TO  SJOBKANRI-MODE
@@ -1944,7 +1999,7 @@
                PERFORM 4501-PRTJYUN-PRINT-SEC
       *
       *        国保（県内分）出力
-               IF      SPA-ERRCD        =   SPACE
+               IF    ( SPA-ERRCD        =   SPACE )
                    IF      SPA-GMN-PREFKBN  =   "1" OR  "2"
                        IF      SPA-GMN-PRTJYUN     =   "01"    OR  "02"
                            MOVE    2                TO  IDW
@@ -1958,7 +2013,7 @@
                END-IF
       *
       *        国保（県外分）出力
-               IF      SPA-ERRCD        =   SPACE
+               IF    ( SPA-ERRCD        =   SPACE )
                    IF      SPA-GMN-PREFKBN  =   "1" OR  "3"
                        IF      SPA-GMN-PRTJYUN     =   "01"    OR  "02"
                            MOVE    2                TO  IDW
@@ -1972,7 +2027,7 @@
                END-IF
       *
       *        自費レセプト出力
-               IF      SPA-ERRCD        =   SPACE
+               IF    ( SPA-ERRCD        =   SPACE )
                    IF      SPA-GMN-TCHK-VALUE  (1 35)   =   "T"
                    AND     SPA-GMN-TPAGE       (1 35)   >   ZERO
                        MOVE    1               TO  IDW
@@ -1985,7 +2040,7 @@
                END-IF
       *
       *        レセプト不明分出力
-               IF      SPA-ERRCD        =   SPACE
+               IF    ( SPA-ERRCD        =   SPACE )
                    IF      SPA-GMN-TCHK-VALUE  (1 36)   =   "T"
                    AND     SPA-GMN-TPAGE       (1 36)   >   ZERO
                        MOVE    1               TO  IDW
@@ -1998,21 +2053,8 @@
                END-IF    
            END-IF
       *
-      *    印刷ＤＢのＫＥＹ用     
-           ACCEPT  SYS-YMD         FROM    DATE
-           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
-           MOVE    SYS-MM              TO  WRK-SYSMM
-           MOVE    SYS-DD              TO  WRK-SYSDD
-           ACCEPT  SYS-TIME            FROM    TIME
-           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
-           MOVE    WRK-SYSYMD          TO
-                                   WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
-           MOVE    SYS-TIME            TO
-                                   WRK-CONS-PRTKANRI-TBL-GROUP (9:)
-      *
       *    印刷処理開始（ＯＲＣＲ０１０２）
       *
-      *     
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
       *
@@ -2054,7 +2096,7 @@
                    MOVE    SPA-NAI-2005-KKHPRTNM
                                    TO  SHELLTBL-ARG12
            END-EVALUATE
-      *                                 
+      *                                     
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
            INITIALIZE                  LNK-PRTKANRI-AREA
            MOVE    1               TO  LNK-PRTKANRI-RENNUM
@@ -2074,10 +2116,10 @@
            ELSE
                MOVE    2               TO  LNK-PRTKANRI-PRIORITY
            END-IF
-           MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
+          MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
            MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
       *****MOVE    SYS-1031-PRTNM (5)
-      *****                        TO  LNK-PRTKANRI-PRTNM
+      *****                            TO  LNK-PRTKANRI-PRTNM
            MOVE    LNK-PRTKANRI-RENNUM
                                    TO  SHELLTBL-ARG13       
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -2134,40 +2176,6 @@
       *                         
       *    情報確認画面を表示                                                   
            PERFORM 490-KAKUNIN-SEC
-      *
-      *    印刷済フラグの設定
-           IF    ( SPA-GMN-SYOKBN  =   "F" )
-           AND   ( SPA-GMN-PRTKBN  =   "1" )
-           AND   ( SPA-GMN-PREFKBN =   "1" )
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       WRK-CONS-LINE-MAX
-                   IF      SPA-NAI-PRTJYUNI(1 IDX)   =   SPACE
-                       CONTINUE
-                   ELSE
-                       IF    ( SPA-GMN-TCHK-VALUE  (1 IDX)
-                                                       =   "T"   )
-                       AND   ( SPA-GMN-TSTDATA (1 IDX) =   SPACE )
-                       AND   ( SPA-GMN-TEDDATA (1 IDX) =   SPACE )
-                           MOVE    "1"     TO  SPA-GMN-TPRTFLG (1 IDX)
-                       END-IF
-                   END-IF 
-               END-PERFORM
-               IF      SPA-GMN-PRTJYUN     =   "01"    OR  "02"
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       WRK-CONS-LINE-MAX
-                       IF      SPA-NAI-PRTJYUNI(2 IDX)   =   SPACE
-                           CONTINUE
-                       ELSE
-                           IF    ( SPA-GMN-TCHK-VALUE  (2 IDX)
-                                                           =   "T"   )
-                           AND   ( SPA-GMN-TSTDATA (2 IDX) =   SPACE )
-                           AND   ( SPA-GMN-TEDDATA (2 IDX) =   SPACE )
-                               MOVE    "1" TO  SPA-GMN-TPRTFLG (2 IDX)
-                           END-IF
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-IF     
            .
        450-PRINT-EXT.
            EXIT.
@@ -2519,17 +2527,24 @@
                        MOVE    "該当のレセプトはありませんでした"
                                                 TO  R99-MSG
                    ELSE
-                       MOVE    JOB-UPDCNT           TO  WRK-PAGE
-                       STRING  "処理は正常に終了しました　処理枚数は"
+                       IF      JOB-STOPFLG      NOT =   ZERO
+                           MOVE    "印刷処理が中止されました"
+                                                        TO  R99-MSG
+                       ELSE
+                           MOVE    JOB-UPDCNT           TO  WRK-PAGE
+                           STRING
+                               "処理は正常に終了しました　処理枚数は"
                                                 DELIMITED  BY  SIZE
                                WRK-PAGE         DELIMITED  BY  SIZE
                                "枚です"         DELIMITED  BY  SIZE
                                                 INTO  R99-MSG
-                       END-STRING
+                           END-STRING
+                       END-IF
                    END-IF
-                   MOVE   100                   TO
-                                            R99-PROGRESSBAR-VALUE                             
-                   IF      SPA-RID1-FLG    =   "PV"
+                   MOVE   100               TO  R99-PROGRESSBAR-VALUE
+                   IF    ( SPA-RID1-FLG    =   "PV" )
+                   AND   ( JOB-UPDCNT      >   ZERO )
+                   AND   ( JOB-STOPFLG     =   ZERO )
                        MOVE    WIDGET-NORMAL    TO  R99-B12-STATE
                        MOVE    "B12"            TO  MCP-WIDGET
                    END-IF
@@ -2538,9 +2553,9 @@
                                                 TO  R99-MSG
                END-IF                                 
            ELSE                                        
-      *********IF      JOB-STOPFLG          =   ZERO
-      *********    MOVE    WIDGET-NORMAL        TO  R99-B21-STATE
-      *********END-IF
+               IF      JOB-STOPFLG          =   ZERO
+                   MOVE    WIDGET-NORMAL        TO  R99-B21-STATE
+               END-IF
                MOVE    "B11"                TO  MCP-WIDGET
            END-IF
       *

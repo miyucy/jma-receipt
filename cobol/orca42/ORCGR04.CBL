@@ -737,6 +737,7 @@
       *
            MOVE    SPACE           TO  SPA-RID1-FLG
                                        SPA-R99-FLG
+                                       SPA-R99-CANCEL
            MOVE    SPACE           TO  SPA-RIDCD
            MOVE    SPACE           TO  SPA-RIDCD2      
            MOVE    ZERO            TO  SPA-R01-JOBCNT       
@@ -1251,6 +1252,20 @@
       *****************************************************************
        450-PRINT-SEC                SECTION.
       *
+      *    印刷ＤＢのＫＥＹ用     
+           ACCEPT  SYS-YMD         FROM    DATE
+           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
+           MOVE    SYS-MM              TO  WRK-SYSMM
+           MOVE    SYS-DD              TO  WRK-SYSDD
+           ACCEPT  SYS-TIME            FROM    TIME
+           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
+           MOVE    WRK-SYSYMD          TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
+           MOVE    SYS-TIME            TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (9:)
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                       TO  SPA-R01-PRTKANRI-TBL-GROUP
+      *
       *    ジョブ開始セット
            MOVE    "DEL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -1301,18 +1316,6 @@
                    PERFORM 45011-RECEPRT-HENSYU-SEC
                END-IF
            END-IF
-      *
-      *    印刷ＤＢのＫＥＹ用     
-           ACCEPT  SYS-YMD         FROM    DATE
-           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
-           MOVE    SYS-MM              TO  WRK-SYSMM
-           MOVE    SYS-DD              TO  WRK-SYSDD
-           ACCEPT  SYS-TIME            FROM    TIME
-           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
-           MOVE    WRK-SYSYMD          TO
-                                   WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
-           MOVE    SYS-TIME            TO
-                                   WRK-CONS-PRTKANRI-TBL-GROUP (9:)
       *
       *    印刷処理
       *
@@ -1636,13 +1639,19 @@
                        MOVE    "該当のレセプトはありませんでした"
                                                 TO  R99-MSG
                    ELSE
-                       MOVE    JOB-UPDCNT           TO  WRK-PAGE
-                       STRING  "処理は正常に終了しました　処理枚数は"
+                       IF      JOB-STOPFLG      NOT =   ZERO
+                           MOVE    "印刷処理が中止されました"
+                                                        TO  R99-MSG
+                       ELSE
+                           MOVE    JOB-UPDCNT           TO  WRK-PAGE
+                           STRING
+                               "処理は正常に終了しました　処理枚数は"
                                                 DELIMITED  BY  SIZE
                                WRK-PAGE         DELIMITED  BY  SIZE
                                "枚です"         DELIMITED  BY  SIZE
                                                 INTO  R99-MSG
-                       END-STRING
+                           END-STRING
+                       END-IF
                    END-IF
                    MOVE   100                   TO
                                             R99-PROGRESSBAR-VALUE                             
@@ -1651,9 +1660,9 @@
                                                 TO  R99-MSG
                END-IF                                 
            ELSE                                        
-      *********IF      JOB-STOPFLG          =   ZERO
-      *********    MOVE    WIDGET-NORMAL        TO  R99-B21-STATE
-      *********END-IF
+               IF      JOB-STOPFLG          =   ZERO
+                   MOVE    WIDGET-NORMAL        TO  R99-B21-STATE
+               END-IF
                MOVE    "B11"                TO  MCP-WIDGET
            END-IF
       *
