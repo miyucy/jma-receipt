@@ -26,11 +26,12 @@
       *         0:
       *      $4 エラーファイル名
       *      $5 作業用ターミナルＩＤ
-      * 
+      *
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    ひさなが     02/09/13  ディレクトリをサブプロへ
+      *  01.00.02    ひさなが     03/03/11  ターミナルＩＤ変更
       *
       *****************************************************************
        01  SHELL-AREA.
@@ -43,7 +44,8 @@
                05  FILLER             PIC  X(57) VALUE SPACE.
            03  SHELL-ARG1.
                05  SHELL-SRYYM        PIC  X(06).
-               05  SHELL-TERMID       PIC  X(32).
+     *          05  SHELL-TERMID       PIC  X(32).
+               05  SHELL-TERMID       PIC  X(64).
                05  SHELL-SYSYMD       PIC  X(08). 
                05  SHELL-OPID         PIC  X(16).
                05  FILLER             PIC  X(38) VALUE SPACE.
@@ -57,5 +59,6 @@
                05  SHELL-ERRFILE      PIC  X(50) VALUE SPACE.
                05  FILLER             PIC  X(50) VALUE SPACE.
            03  SHELL-ARG5.
-               05  SHELL-WK-TERMID    PIC  X(32) VALUE SPACE.
+      *         05  SHELL-WK-TERMID    PIC  X(32) VALUE SPACE.
+               05  SHELL-WK-TERMID    PIC  X(64) VALUE SPACE.
                05  FILLER             PIC  X(68) VALUE SPACE.
