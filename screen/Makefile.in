@@ -176,6 +176,7 @@ SCREEN_screen = \
 	U2ERR.glade \
 	V01.glade \
 	V02.glade \
+	V03.glade \
 	VERR.glade \
         VID1.glade \
         W01.glade \

@@ -182,6 +182,7 @@ RECORD_files = \
 	U2ERR.rec \
 	V01.rec \
 	V02.rec \
+	V03.rec \
 	VERR.rec \
 	VID1.rec \
 	W01.rec \

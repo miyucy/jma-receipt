@@ -172,6 +172,7 @@
        01  SCRAREA.
            COPY    "V01.INC".
            COPY    "V02.INC".
+           COPY    "V03.INC".
            COPY    "VERR.INC".
            COPY    "VID1.INC".
       *
@@ -320,6 +321,11 @@
       *        クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM  290-CLREA-SEC
+      *        公費付加情報遷移
+               WHEN    "CLICKED"       ALSO    "B05"
+                   IF    ( SPA-PREFNUM =   40 )
+                       PERFORM  450-V03-SENI-SEC
+                   END-IF
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM  410-KAKUTEI-SEC
@@ -841,6 +847,28 @@
            EXIT.
       *
       *****************************************************************
+      *    公費付加情報設定処理へ
+      *****************************************************************
+       450-V03-SENI-SEC                SECTION.
+      *
+           MOVE    "V03"               TO  SPA-SAKIPG
+           MOVE    "V01"               TO  SPA-MOTOPG
+      *
+           MOVE    SPA-V01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       450-V03-SENI-EXT.
+           EXIT.
+      *****************************************************************
       *    日付チェック・編集処理
       *****************************************************************
        5002-HIZUKE-CHK-SEC         SECTION.
@@ -959,7 +987,12 @@
            ELSE         
                MOVE    WIDGET-INSENSITIVE TO  V01-PAYKBN-STATE
            END-IF
-      *      
+      *
+           IF    ( SPA-PREFNUM        =   40 )
+               MOVE    "公費付加"      TO V01-B05
+           ELSE
+               MOVE    SPACE           TO V01-B05
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *

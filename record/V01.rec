@@ -1,5 +1,8 @@
 V01	{
 	fixed1	{
+		B05	{
+			label	varchar(8);
+		};
 		STYUKYMD	{
 			value	varchar(11);
 		};

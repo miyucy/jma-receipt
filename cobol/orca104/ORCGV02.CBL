@@ -315,6 +315,7 @@
        01  SCRAREA.
            COPY    "V01.INC".
            COPY    "V02.INC".
+           COPY    "V03.INC".
            COPY    "VERR.INC".
            COPY    "VID1.INC".
       *
