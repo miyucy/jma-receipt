@@ -836,11 +836,13 @@
                           MOVE    "HKNNUM-KEY5"       TO  WRK-PATH
                           PERFORM 900-HKNNUM-INV-SEC
                           IF      FLG-HKNNUM          =   ZERO
-                              IF      HKN-HBTNUM      NOT =
-                                              SPA-GMN-HKNJANUM (1:2)
+      *                        法別番号チェックありの時、チェック
+                               IF      (HKN-HBTNUMCHKKBN   =  "1" )  AND
+                                       (HKN-HBTNUM     NOT =
+                                              SPA-GMN-HKNJANUM (1:2))
                                   MOVE    "0005"         TO  SPA-ERRCD
                               END-IF
-                           ELSE    
+                           ELSE 
                                MOVE    "0005"         TO  SPA-ERRCD
                            END-IF      
                        END-IF                     
@@ -1134,13 +1136,12 @@
        490-KOUSHIN-SEC           SECTION.
       *
       *
-      ***  IF      SPA-NAI-UPDFLG      =   1
-               MOVE    SPACE               TO  HKNJAINF-REC
-               INITIALIZE                      HKNJAINF-REC
-               MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
-               MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
-               MOVE    HKNJAINF-REC        TO  MCPDATA-REC
-               PERFORM 900-HKNJAINF-INV-SEC
+           MOVE    SPACE               TO  HKNJAINF-REC
+           INITIALIZE                      HKNJAINF-REC
+           MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+           MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
+           MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+           PERFORM 900-HKNJAINF-INV-SEC
       *
            IF      FLG-HKNJAINF        =   ZERO
                CONTINUE
@@ -1170,7 +1171,6 @@
       *
            MOVE    HKNJAINF-REC            TO  MCPDATA-REC
            MOVE    "HKNJAINF-KEY"          TO  ORC-DBPATH
-      *****IF      SPA-NAI-UPDFLG      =   1
            IF      FLG-HKNJAINF        =   ZERO
                MOVE    "DBUPDATE"              TO  MCP-FUNC
            ELSE
