@@ -58,3 +58,17 @@ path	del1 	{
 		;
 	};
 };
+
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_srykarrk_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_srykarrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   LASTYMD     <>  :LASTYMD
+			ORDER   BY        LASTYMD DESC
+		;
+	};
+};

@@ -332,6 +332,7 @@
       *  01.01.145   NACL-小豆沢  04/07/23  NYUINACCT-KEY22追加
       *  01.01.146   NACL-小豆沢  04/07/26  NYUINACCT-KEY23追加
       *  01.01.147   NACL-小豆沢  04/08/05  HKNCOMBI-KEY4追加
+      *  01.01.148   NACL-太田    04/08/05  SRYKARRK-KEY3追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -545,8 +546,10 @@
       *
                WHEN    "DBUPDATE"      ALSO   "SRYKARRK-KEY"
                WHEN    "DBUPDATE"      ALSO   "SRYKARRK-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "SRYKARRK-KEY3"
                WHEN    "DBDELETE"      ALSO   "SRYKARRK-KEY"
                WHEN    "DBDELETE"      ALSO   "SRYKARRK-KEY2"
+               WHEN    "DBDELETE"      ALSO   "SRYKARRK-KEY3"
                    MOVE    PATH-TBL-SRYKARRK-KEY 
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SRYKARRK-DEL1"
@@ -1472,6 +1475,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYKARRK-KEY2"
                    MOVE    PATH-TBL-SRYKARRK-KEY2 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYKARRK-KEY3"
+                   MOVE    PATH-TBL-SRYKARRK-KEY3 
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SRYKARRK-ALL"
