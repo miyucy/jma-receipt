@@ -11742,7 +11742,7 @@
            MOVE    WRK-KEI-Z           TO  WRK-H-KEI
       *
            MOVE    WRK-SURYO-HENSYU    TO  K02-SURYO (IDX)
-           MOVE    "user-font"         TO  K02-SURYO-STYLE(IDX)
+      *****MOVE    "user-font"         TO  K02-SURYO-STYLE(IDX)
       *
            .
        5002-SURYO-HEN-EXT.
