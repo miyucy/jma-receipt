@@ -48,10 +48,8 @@
                    07  SYS-5010-SEIKYU-DAY-OCC   OCCURS  3.
                        09  SYS-5010-SEIKYU-DAY
                                             PIC  9(02).
-      *再請求区分（１：赤伝処理　２：訂正更新）
-               05  SYS-5010-RESEIKYUKBN PIC  X(01).
       *予備
-           03                           PIC  X(493).
+           03                           PIC  X(494).
       *端末ＩＤ
            03  SYS-5010-TERMID          PIC  X(16).
       *オペーレータＩＤ

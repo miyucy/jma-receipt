@@ -31,6 +31,7 @@
       *  01.00.01    NACL-太田    02/11/04  暫定的に定期請求を月末のみ
       *                                     選択可とする
       *  01.00.02    NACL-太田    03/02/12  期別の指定を可能にする
+      *                           03/02/25  再請求区分を削除
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -70,7 +71,6 @@
                        SPA-GMN-SEIKYU-VAL.
                        09  SPA-GMN-SEIKYU-OCC OCCURS  3.
                            11  SPA-GMN-SEIKYU PIC   X(03).
-                   07  SPA-GMN-RESEIKYUKBN    PIC X(01).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SEIKYU-VAL.
                        09  SPA-NAI-SEIKYU01   PIC 9(02).
@@ -315,11 +315,8 @@
                        MOVE    SPACE   TO  SPA-GMN-SEIKYU (IDX1)
                    END-IF
                END-PERFORM
-               MOVE    SYS-5010-RESEIKYUKBN    TO  SPA-GMN-RESEIKYUKBN
       *
            END-IF.
-      *    暫定対応
-           MOVE    "2"                         TO  SPA-GMN-RESEIKYUKBN
            .
       *
        310-SPASET-EXT.
@@ -383,7 +380,6 @@
            MOVE    W23-SEIKYU01    TO  SPA-GMN-SEIKYU01
            MOVE    W23-SEIKYU02    TO  SPA-GMN-SEIKYU02
            MOVE    W23-SEIKYU03    TO  SPA-GMN-SEIKYU03
-           MOVE    W23-RESEIKYUKBN TO  SPA-GMN-RESEIKYUKBN
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -408,12 +404,6 @@
       *
       *    請求日確認処理（３）
            PERFORM T-000-YMDCHEK3-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
-      *
-      *    再請求区分確認処理
-           PERFORM T-000-RESEIKYUKBN-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -471,7 +461,6 @@
            MOVE    SPA-NAI-SEIKYU01        TO  SYS-5010-SEIKYU-DAY1
            MOVE    SPA-NAI-SEIKYU02        TO  SYS-5010-SEIKYU-DAY2
            MOVE    SPA-NAI-SEIKYU03        TO  SYS-5010-SEIKYU-DAY3
-           MOVE    SPA-GMN-RESEIKYUKBN     TO  SYS-5010-RESEIKYUKBN
            MOVE    SPA-TERMID              TO  SYS-5010-TERMID
            MOVE    SPA-OPID                TO  SYS-5010-OPID
            MOVE    SYS-5010-REC            TO  SYSKANRI-REC
@@ -542,12 +531,7 @@
            MOVE    SPA-GMN-SEIKYU01        TO  W23-SEIKYU01
            MOVE    SPA-GMN-SEIKYU02        TO  W23-SEIKYU02
            MOVE    SPA-GMN-SEIKYU03        TO  W23-SEIKYU03
-           MOVE    SPA-GMN-RESEIKYUKBN     TO  W23-RESEIKYUKBN.
       *
-           MOVE    WIDGET-NORMAL           TO  W23-SEIKYU01-STATE
-                                               W23-SEIKYU02-STATE
-                                               W23-SEIKYU03-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  W23-RESEIKYUKBN-STATE
            PERFORM 5001-MAPCUR-SEC.
       *
        500-GMNHEN-EXT.
@@ -648,8 +632,6 @@
                    MOVE    "SEIKYU02"      TO  MCP-WIDGET
            WHEN    03
                    MOVE    "SEIKYU03"      TO  MCP-WIDGET
-           WHEN    04
-                   MOVE    "RESEIKYUKBN"   TO  MCP-WIDGET
            WHEN    101
                    MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE.
@@ -669,13 +651,10 @@
                    MOVE    2           TO  SPA-GMN-CUR
            WHEN    "SEIKYU03"
                    MOVE    3           TO  SPA-GMN-CUR
-           WHEN    "RESEIKYUKBN"
-                   MOVE    4           TO  SPA-GMN-CUR
            END-EVALUATE
       *
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "SEIKYU03"
-           WHEN    "RESEIKYUKBN"
                MOVE    101             TO  SPA-GMN-CUR
            WHEN    OTHER
                COMPUTE SPA-GMN-CUR =   SPA-GMN-CUR +   1
@@ -919,20 +898,5 @@
            .
       *
        T-000-YMDCHEK3-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    再請求区分 確認処理
-      *****************************************************************
-       T-000-RESEIKYUKBN-SEC             SECTION.
-      *
-           IF    ( SPA-GMN-RESEIKYUKBN NOT =   "1"  AND  "2" )
-               MOVE    "0001"          TO  SPA-ERRCD
-               MOVE    4               TO  SPA-GMN-CUR
-               GO  TO  T-000-RESEIKYUKBN-EXT
-           END-IF.
-      *
-      *
-       T-000-RESEIKYUKBN-EXT.
            EXIT.
       *

@@ -3763,7 +3763,9 @@
            SET     IDX-NAME    TO  1
            SEARCH  WRK-KANJINAME-OCC   VARYING  IDX-NAME
            AT  END
+           DISPLAY "*** BF *** CNT-JINMEI = " CNT-JINMEI
                COMPUTE CNT-JINMEI  =   CNT-JINMEI  +   1
+           DISPLAY "*** AF *** CNT-JINMEI = " CNT-JINMEI
                MOVE    WRK-NAME-KANA (IDX1)
                                    TO  WRK-KANJINAME-T (CNT-JINMEI)
            WHEN    WRK-KANJINAME-T (IDX-NAME)

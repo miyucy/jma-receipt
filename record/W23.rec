@@ -2,19 +2,12 @@ W23	{
 	fixed6	{
 		SEIKYU01	{
 			value	varchar(3);
-           	state	int;
 		};
 		SEIKYU02	{
 			value	varchar(3);
-           	state	int;
 		};
 		SEIKYU03	{
 			value	varchar(3);
-           	state	int;
-		};
-		RESEIKYUKBN	{
-			value	varchar(1);
-           	state	int;
 		};
 	};
 };
