@@ -468,9 +468,12 @@
                GO  TO  4100-POST-CHK-EXT
            END-IF
       *
-           MOVE    ZERO            TO  SPA-NAI-NEXT
-                                       SPA-NAI-BACK
-                                       SPA-GMN-SELNUM
+           IF    ( SPA-GMN-POST    NOT =   SPA-NAI-POST )
+               MOVE    SPA-NAI-NEXT2   TO  SPA-NAI-NEXT
+               MOVE    SPA-NAI-BACK2   TO  SPA-NAI-BACK
+           END-IF
+      * 
+           MOVE    ZERO            TO  SPA-GMN-SELNUM
            MOVE    SPACE           TO  SPA-GMN-CITYKANA
                                        SPA-GMN-TOWNKANA
                                        SPA-GMN-CITYNAME
@@ -526,8 +529,11 @@
            IF    ( SPA-GMN-CYOIKI-MAX      =   100  )  AND
                  ( FLG-ADRS                =   ZERO )
                MOVE    SPA-NAI-NEXT    TO  SPA-NAI-BACK
+                                           SPA-NAI-NEXT2
+                                           SPA-NAI-BACK2
                MOVE    IDX2            TO  SPA-NAI-NEXT
            ELSE
+               MOVE    SPA-NAI-NEXT    TO  SPA-NAI-NEXT2
                MOVE    ZERO            TO  SPA-NAI-NEXT
            END-IF
       *
@@ -1017,6 +1023,8 @@
            MOVE    SPA-NAI-POST    TO  SPA-GMN-POST
            MOVE    SPACE           TO  SPA-NAI-POST
            PERFORM 4100-POST-CHK-SEC
+           MOVE    ZERO            TO  SPA-NAI-NEXT2
+                                       SPA-NAI-BACK2
            .
        490-KOUSHIN-EXT.
            EXIT.

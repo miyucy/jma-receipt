@@ -69,7 +69,7 @@
       *        ∆‚…ÙŒŒ∞Ë
                05  SPA-NAI-AREA.
                    07  SPA-NAI-POST            PIC X(07).
-                   07  SPA-NAI-SELNUM          PIC 9(03).
-                   07  SPA-NAI-PREFCD          PIC X(02).
                    07  SPA-NAI-BACK            PIC 9(05).
                    07  SPA-NAI-NEXT            PIC 9(05).
+                   07  SPA-NAI-BACK2           PIC 9(05).
+                   07  SPA-NAI-NEXT2           PIC 9(05).
