@@ -7189,7 +7189,7 @@
                  MOVE   SPA-NAI-I01-NYUINYMD
                                            TO  LNK-DAY6-KIJUN
                  MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
-                 MOVE    14                TO  LNK-DAY6-ZOGEN
+                 MOVE    13                TO  LNK-DAY6-ZOGEN
                  CALL  "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                  MOVE    LNK-DAY6-KEISAN
