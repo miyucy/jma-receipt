@@ -96,7 +96,7 @@
       *  01.00.10    NACL-門脇    03.03.06  初再診のコメント編集対応
       *  01.00.11    NACL-門脇    03.03.12  先頭の診療行為コードの判定修正
       *  01.00.12    NACL-門脇    03.05.08  先頭の診療行為コードの判定修正
-      *  01.00.13    NACL-藤原    03.05.27  検査のまとめの修正
+      *  01.00.13    NACL-藤原    03.05.27  検査の適用欄の編集の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2006,8 +2006,8 @@
       **     END-IF
       *     
       *    検査のまとめ処理
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       31
+           MOVE    1                    TO  IDXX 
+           PERFORM              UNTIL   IDXX >       31
                INITIALIZE                  WRK-RECE04-FLG-TABLE
                                            WRK-KAISU-G
                                            WRK-HOUKNSKBN
@@ -2044,6 +2044,9 @@
                                                    =   WRK-KOHBUNRI
                                MOVE    ZERO        TO
                                            WRK-RECE04-KAISU (IDY 1 IDXX)
+                                           WRK-RECE04-KAISU (IDY 2 IDXX)
+                                           WRK-RECE04-KAISU (IDY 3 IDXX)
+                                           WRK-RECE04-KAISU (IDY 4 IDXX)
                                COMPUTE WRK-SUM-KAISU (IDXX) 
                                                =
                                                WRK-SUM-KAISU (IDXX) -
@@ -2061,6 +2064,7 @@
                    COMPUTE IDX1    =   IDXX    +   1
                    PERFORM VARYING IDZ FROM    IDX1    BY  1
                            UNTIL   IDZ >       31
+                     IF      WRK-SUM-KAISU (IDZ)   >   ZERO
                        MOVE    ZERO                TO  FLG-OK                            
                        PERFORM VARYING IDW FROM    1   BY  1
                                UNTIL   IDW >       WRK-RECE04-MAX
@@ -2085,6 +2089,12 @@
                                IF      WRK-RECE04-FLG   (IDW)  =   "1"
                                    MOVE    ZERO    TO  WRK-RECE04-KAISU
                                                       (IDW 1 IDZ)
+                                                       WRK-RECE04-KAISU
+                                                      (IDW 2 IDXX)
+                                                       WRK-RECE04-KAISU
+                                                      (IDW 3 IDXX)
+                                                       WRK-RECE04-KAISU
+                                                      (IDW 4 IDXX)
                                    COMPUTE WRK-SUM-KAISU (IDZ) 
                                                    =
                                                    WRK-SUM-KAISU (IDZ) - 
@@ -2093,6 +2103,7 @@
                            END-PERFORM
                            ADD     1              TO  WRK-KAISU1                                                               
                        END-IF  
+                     END-IF  
                    END-PERFORM
       *
       *            同じ検査をまとめて出力する
@@ -2138,6 +2149,10 @@
       *                剤・診療行為テーブル出力処理
                        PERFORM 450-RECE06-OUT-SEC
                    END-IF    
+               END-IF
+      *
+               IF      WRK-SUM-KAISU (IDXX)   =   ZERO
+                   ADD     1                  TO  IDXX
                END-IF
            END-PERFORM                        
            .

@@ -37,6 +37,7 @@
       *  01.00.05    NACL-門脇    03.03.06  初再診のコメント編集対応
       *  01.00.06    NACL-門脇    03.03.10  初診時の摘要対象コード変更等
       *  01.00.07    NACL-門脇    03.05.08  先頭の診療行為コードの判定修正
+      *  01.00.08    NACL-藤原    03.05.27  検査の適用欄の編集の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1623,13 +1624,12 @@
        2007-SRYKBN60-HENSYU-SEC         SECTION.
       *     
       *    検査のまとめ処理
-           PERFORM VARYING IDXX FROM    1   BY  1
-                   UNTIL   IDXX >       31
+           MOVE    1                    TO  IDXX 
+           PERFORM              UNTIL   IDXX >       31
                INITIALIZE                  WRK-RECE64-FLG-TABLE
                                            WRK-KAISU-G
                                            WRK-HOUKNSKBN
                                            WRK-KOHBUNRI
-               DISPLAY "IDXX = " IDXX
       *
                IF      WRK-SUM-KAISU (IDXX)   >   ZERO
                    PERFORM VARYING IDY FROM    1   BY  1
@@ -1662,6 +1662,9 @@
                                                    =   WRK-KOHBUNRI
                                MOVE    ZERO        TO
                                        WRK-RECE64-KAISU (IDY 1 IDXX)
+                                       WRK-RECE64-KAISU (IDY 2 IDXX)
+                                       WRK-RECE64-KAISU (IDY 3 IDXX)
+                                       WRK-RECE64-KAISU (IDY 4 IDXX)
                                COMPUTE WRK-SUM-KAISU (IDXX) 
                                                    =
                                                WRK-SUM-KAISU (IDXX) - 
@@ -1679,6 +1682,7 @@
                    COMPUTE IDX1    =   IDXX     +   1
                    PERFORM VARYING IDZ FROM    IDX1    BY  1
                            UNTIL   IDZ >       31
+                     IF      WRK-SUM-KAISU (IDZ)   >   ZERO
                        MOVE    ZERO                TO  FLG-OK                            
                        PERFORM VARYING IDW FROM    1   BY  1
                                UNTIL   IDW >       WRK-RECE64-MAX
@@ -1703,6 +1707,12 @@
                                IF      WRK-RECE64-FLG   (IDW)  =   "1"
                                    MOVE    ZERO    TO  WRK-RECE64-KAISU
                                                       (IDW 1 IDZ)
+                                                       WRK-RECE64-KAISU
+                                                      (IDW 2 IDXX)
+                                                       WRK-RECE64-KAISU
+                                                      (IDW 3 IDXX)
+                                                       WRK-RECE64-KAISU
+                                                      (IDW 4 IDXX)
                                    COMPUTE WRK-SUM-KAISU (IDZ) 
                                                    =
                                                    WRK-SUM-KAISU (IDZ) - 
@@ -1710,7 +1720,8 @@
                                END-IF
                            END-PERFORM
                            ADD     1              TO  WRK-KAISU1                                                               
-                       END-IF  
+                       END-IF
+                     END-IF  
                    END-PERFORM
       *
       *            同じ検査をまとめて出力する
@@ -1742,7 +1753,6 @@
                            PERFORM 2002-TBLZAIW-TAIHI-SEC
                        END-IF
                    END-PERFORM    
-               DISPLAY "2002 IDXX = " IDXX
                    COMPUTE RECE64-ZAIKAISU     =
                                WRK-KAISU (1)   *   WRK-KAISU1                
                    MOVE    WRK-RECE64-ZAITEN       TO  RECE64-SYUTEN1
@@ -1750,15 +1760,16 @@
       *
       *            レセプト０４剤編集前処理
                    PERFORM 2001-RECE64-ZAIHEN-MAE-SEC
-               DISPLAY "2001 IDXX = " IDXX
       *
                    IF      SPA-STS          =   ZERO
                        PERFORM 20051-SRYKBNELSE-KENSA-SEC
-               DISPLAY "20051 IDXX = " IDXX
       *                剤・診療行為テーブル出力処理
                        PERFORM 450-RECE66-OUT-SEC
                    END-IF    
-               DISPLAY "450 IDXX = " IDXX
+               END-IF
+      *
+               IF      WRK-SUM-KAISU (IDXX)   =   ZERO
+                   ADD     1                  TO  IDXX
                END-IF
            END-PERFORM                        
            .
