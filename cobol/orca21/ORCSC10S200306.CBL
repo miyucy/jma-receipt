@@ -2727,6 +2727,11 @@
       *****************************************************************
        2009-RSIHKN-SET-SEC         SECTION.
       *
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¤Ï»»Äê¤Ê¤·¤È¤¹¤ë
+           MOVE    ZERO                TO  SPA-SYONIKA-ARI
+           MOVE    ZERO                TO  SPA-SYONIKA-ARI2
+           MOVE    ZERO                TO  SPA-SYONIKA-ARI3
+      *
       *    ½é¿ÇÎÁ»»Äê
            IF      SPA-SYOSIN          =   1
                MOVE    ZERO                TO  WRK-KAISU
