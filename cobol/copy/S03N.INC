@@ -17,6 +17,7 @@
       ********************************************************************
         02  S03N.
               03  S03N-B12-STATE PIC S9(9)   BINARY.
+              03  S03N-B12S-STATE PIC S9(9)  BINARY.
               03  S03N-PTNUM     PIC X(20).
               03  S03N-SRYYMD    PIC X(9).
               03  S03N-KANANAME  PIC X(50).
@@ -29,8 +30,10 @@
               03  S03N-NYUGAIKBN PIC X(6).
               03  S03N-NAIYO-COMBO.
                 04  S03N-NAIYO PIC X(12).
+                04  S03N-NAIYO-STATE   PIC S9(9)   BINARY.
                 04  S03N-NAIYO-COUNT   PIC S9(9)   BINARY.
                 04  S03N-NAIYOLST      PIC X(12) OCCURS 5 TIMES.
+                04  S03N-NAIYOLST-STATE   PIC S9(9)   BINARY.
               03  S03N-DENPNUM   PIC X(10).
               03  S03N-DENPJTI   PIC X(10).
               03  S03N-HAKYMD    PIC X(9).
@@ -123,8 +126,10 @@
                                  PIC S9(9)   BINARY.
               03  S03N-SKYPRT-COMBO.
                 04  S03N-SKYPRT PIC X(24).
+                04  S03N-SKYPRT-STATE   PIC S9(9)   BINARY.
                 04  S03N-SKYPRT-COUNT   PIC S9(9)   BINARY.
                 04  S03N-SKYPRTLST      PIC X(24) OCCURS 5 TIMES.
+                04  S03N-SKYPRTLST-STATE   PIC S9(9)   BINARY.
               03  S03N-RIREKIIN PIC S9(2).
               03  S03N-SCROLLEDWINDOW1.
                 04  S03N-CLIST1.

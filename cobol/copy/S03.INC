@@ -16,7 +16,8 @@
       * 113-8621, Japan.
       ********************************************************************
         02  S03.
-              03  S03-B12-STATE PIC S9(9)   BINARY.
+              03  S03-B12-STATE    PIC S9(9)   BINARY.
+              03  S03-B12S-STATE   PIC S9(9)   BINARY.
               03  S03-PTNUM     PIC X(20).
               03  S03-SRYYMD    PIC X(9).
               03  S03-KANANAME  PIC X(50).
@@ -29,8 +30,10 @@
               03  S03-NYUGAIKBN PIC X(6).
               03  S03-NAIYO-COMBO.
                 04  S03-NAIYO PIC X(12).
+                04  S03-NAIYO-STATE PIC S9(9)   BINARY.
                 04  S03-NAIYO-COUNT   PIC S9(9)   BINARY.
                 04  S03-NAIYOLST      PIC X(12) OCCURS 5 TIMES.
+                04  S03-NAIYOLST-STATE PIC S9(9)   BINARY.
               03  S03-DENPNUM   PIC X(10).
               03  S03-DENPJTI   PIC X(10).
               03  S03-HAKYMD    PIC X(9).
@@ -116,8 +119,10 @@
                                 PIC S9(9)   BINARY.
               03  S03-SKYPRT-COMBO.
                 04  S03-SKYPRT PIC X(24).
+                04  S03-SKYPRT-STATE PIC S9(9)   BINARY.
                 04  S03-SKYPRT-COUNT   PIC S9(9)   BINARY.
                 04  S03-SKYPRTLST      PIC X(24) OCCURS 5 TIMES.
+                04  S03-SKYPRTLST-STATE PIC S9(9)   BINARY.
               03  S03-RIREKIIN PIC S9(2).
               03  S03-SCROLLEDWINDOW1.
                 04  S03-CLIST1.

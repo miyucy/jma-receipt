@@ -173,7 +173,9 @@
                        09  SPA-GMN-TNYKN-HOHO      PIC X(10).
       *
                05  SPA-NAI-AREA.
-                   07  SPA-NAI-SRYKA               PIC X(02).
+                   07  SPA-NAI-HEAD-AREA.
+                       09  SPA-NAI-HEAD-DENPJTIKBN PIC X(01).
+                       09  SPA-NAI-SRYKA           PIC X(02).
                    07  SPA-NAI-INPUT-AREA.
                        09  SPA-NAI-NYUKINYMD       PIC X(08).
                        09  SPA-NAI-NYUKIN-MOTO     PIC S9(10).
@@ -524,6 +526,10 @@
                                        TO  SPA-GMN-SKYPRT-G
            END-IF
       *
+           IF    ( SPA-NAI-HEAD-DENPJTIKBN =    "3" )
+               MOVE    SPACE           TO  SPA-GMN-SKYPRT-G
+           END-IF
+      *
            EVALUATE   SPA-S01-SYORINO
            WHEN   CONST-PROC-NYUKIN
                MOVE    2               TO  SPA-GMN-CUR
@@ -719,6 +725,8 @@
            WHEN   "7"
                MOVE  "·ÑÂ³"            TO  SPA-GMN-JOUTAI
            END-EVALUATE
+      *
+           MOVE    SYU-DENPJTIKBN      TO  SPA-NAI-HEAD-DENPJTIKBN
       *
       *    ÊÝ¸±ÎÁ
            MOVE    ZERO                TO  SPA-GMN-HKNRYO (11)
@@ -1260,6 +1268,20 @@
                                                S03-B12-STATE
            END-IF
       *
+           IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
+               MOVE    WIDGET-INSENSITIVE  TO  S03-NAIYO-STATE
+                                               S03-NAIYOLST-STATE
+                                               S03-SKYPRT-STATE
+                                               S03-SKYPRTLST-STATE
+                                               S03-B12S-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  S03-NAIYO-STATE
+                                               S03-NAIYOLST-STATE
+                                               S03-SKYPRT-STATE
+                                               S03-SKYPRTLST-STATE
+                                               S03-B12S-STATE
+           END-IF
+      *
            EVALUATE    FLG-SMEILIST1-ROW
            WHEN    1
                MOVE    ZERO               TO  S03-CLIST1-ROW
@@ -1338,6 +1360,12 @@
       *****************************************************************
        50012-CUR-SKIP-SEC              SECTION.
       *
+           IF    ( SPA-GMN-CUR             =   6 )
+               IF   ( S03-NAIYO-STATE  =   WIDGET-INSENSITIVE )
+                   MOVE    2           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
            IF    ( SPA-GMN-CUR             =   2 )
                IF   ( S03-NYUKINGK2-STATE  =   WIDGET-INSENSITIVE )
                    MOVE    3           TO  SPA-GMN-CUR
@@ -1354,6 +1382,13 @@
                IF   ( S03-NYUKINHOUHOU-STATE
                                            =   WIDGET-INSENSITIVE )
                    MOVE    5           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR             =   5 )
+               IF   ( S03-SKYPRT-STATE
+                                           =   WIDGET-INSENSITIVE )
+                   MOVE    112         TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
@@ -1861,6 +1896,10 @@
                ELSE
                    MOVE    WRK-CMB-ITM TO  SPA-GMN-SKYPRT-G
                END-IF
+           END-IF
+      *
+           IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
+               MOVE    SPACE           TO  SPA-GMN-SKYPRT-G
            END-IF
       *
            .
