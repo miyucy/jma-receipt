@@ -1264,8 +1264,9 @@
                                   WRK-MIJISI
                          MOVE     1      TO    FLG-MIJISI-GENSAN        
                   END-EVALUATE
-                  MOVE     ZERO     TO    FLG-ARI
-                  PERFORM  VARYING  ID1    FROM    1   BY  1
+                  IF  WRK-NYUKHNRYO  NOT =  ZERO
+                    MOVE     ZERO     TO    FLG-ARI
+                    PERFORM  VARYING  ID1    FROM    1   BY  1
                                 UNTIL   ID1                   > 10
                                   OR    RECE62-NYUKHNRYO(ID1) = ZERO
                                   OR    FLG-ARI               = 1
@@ -1278,12 +1279,13 @@
                                       TO   RECE62-NYUKHNKEI(ID1 KH-IDX)
                             MOVE  1   TO   FLG-ARI
                       END-IF
-                  END-PERFORM  
-                  IF  FLG-ARI  =  ZERO  
+                    END-PERFORM  
+                    IF  FLG-ARI  =  ZERO  
                       ADD        1           TO  RECE62-NYUKHNNISSU(ID1)
                       MOVE   WRK-NYUKHNRYO   TO  RECE62-NYUKHNRYO(ID1)
                       ADD    WRK-NYUKHNRYO   
                                        TO  RECE62-NYUKHNKEI(ID1 KH-IDX)
+                    END-IF
                   END-IF
                WHEN   920
                   MOVE      ZERO   TO  WRK-NYUTOKRYO
@@ -1349,7 +1351,8 @@
                       COMPUTE  WRK-NYUTOKRYO = WRK-NYUTOKRYO
                                              + WRK-ACCT90(IDY)
                   END-IF
-                  IF     FLG-GAIHAKU  =  ZERO
+                  IF  WRK-NYUTOKRYO  NOT =  ZERO
+                   IF     FLG-GAIHAKU  =  ZERO
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
                         UNTIL ( ID1                          > 10    )  
@@ -1376,7 +1379,7 @@
                       ADD    WRK-NYUTOKRYO   
                                        TO  RECE62-NYUTOKKEI(ID1 KH-IDX)
                     END-IF
-                  ELSE
+                   ELSE
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
                         UNTIL ( ID1                          > 10    )  
@@ -1404,6 +1407,7 @@
                       ADD    WRK-NYUTOKRYO   
                                        TO  RECE62-NYUTOKKEI(ID1 KH-IDX)
                     END-IF
+                   END-IF
                   END-IF
            END-EVALUATE
       *
