@@ -23,4 +23,9 @@ distclean:
 
 install: all
 	$(INSTALL) -d $(docdir)
-	$(INSTALL_DATA) $(EXTRA_DIST) $(docdir)
+	$(INSTALL) -d $(docdir)/examples/
+	for file in $(EXTRA_DIST); do \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  $(INSTALL_DATA) $$file $(docdir)/$$dir; \
+	done
+
