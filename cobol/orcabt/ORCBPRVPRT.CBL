@@ -69,6 +69,7 @@
            03  FLG-PTNUM               PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-SRYKARRK            PIC 9(01).
+           03  FLG-PTINF               PIC 9(01).
       *
            03  FLG-CHK                 PIC 9(01).
            03  FLG-ERR                 PIC 9(01).
@@ -189,6 +190,9 @@
            03  FILLER                  PIC X(20)   VALUE
                "患者番号".
            03  FILLER                  PIC X(01)   VALUE   SPACE.
+           03  FILLER                  PIC X(20)   VALUE
+               "氏　　名".
+           03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  FILLER                  PIC X(08)   VALUE
                "診療年月".
            03  FILLER                  PIC X(02)   VALUE   SPACE.
@@ -201,9 +205,11 @@
        01  MEISAI-BODY1.
            03  MEISAI-PTNUM            PIC X(20).
            03  FILLER                  PIC X(01)   VALUE   SPACE.
+           03  MEISAI-NAME             PIC X(20).
+           03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  MEISAI-SRYYM            PIC X(08).
            03  FILLER                  PIC X(01)   VALUE   SPACE.
-           03  MEISAI-MSG              PIC X(80).
+           03  MEISAI-MSG              PIC X(60).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -223,6 +229,10 @@
       *    患者番号変換マスタ
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
+      *
+      *    患者情報
+       01  PTINF-REC.
+           COPY    "CPPTINF.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -416,6 +426,15 @@
                CALL    "ORCSPTID"          USING   ORCSPTIDAREA
                                                    SPA-1009-TBL
                MOVE    SPTID-PTNUM         TO  MEISAI-PTNUM
+      * 
+               INITIALIZE                          PTINF-REC
+               MOVE    SPA-HOSPID          TO      PTINF-HOSPID
+               MOVE    PRVKANRI-PTID       TO      PTINF-PTID
+               MOVE    PTINF-REC           TO      MCPDATA-REC
+               PERFORM 900-PTINF-READ-SEC
+               IF      FLG-PTINF           =   ZERO
+                   MOVE   PTINF-NAME       TO  MEISAI-NAME
+               END-IF 
       *
                MOVE    PRVKANRI-SRYYM      TO  MEISAI-SRYYM
                MOVE    PRVKANRI-MEMO       TO  MEISAI-MSG  
@@ -612,6 +631,43 @@
            END-IF 
            .
        900-PRVKANRI-FETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者情報読込
+      *****************************************************************
+       900-PTINF-READ-SEC           SECTION.
+      *       
+           MOVE    "DBSELECT"          TO      MCP-FUNC
+           MOVE    "PTINF-KEY"         TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING   MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+           IF      MCP-RC              =       ZERO
+               MOVE    "PTINF-KEY"     TO      ORC-DBPATH
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTINF-REC
+                   MOVE    ZERO            TO  FLG-PTINF
+               ELSE
+                   MOVE    1               TO  FLG-PTINF
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       900-PTINF-READ-EXT.
            EXIT.
       *      
       *****************************************************************
