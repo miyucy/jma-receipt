@@ -249,6 +249,7 @@
       *                                     に初期値を編集
       *  01.01.76    NACL-小豆沢　03/05/28  JYURRK-KEY24追加
       *  01.01.77    NACL-太田    03/06/05  PTNYUINRRK-KEY20追加
+      *  01.01.76    NACL-多々納　03/06/16  TENSU-KEY20追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -344,7 +345,7 @@
                WHEN    "DBUPDATE"      ALSO   "INPUTCD-KEY4"
                    MOVE    PATH-TBL-INPUTCD-KEY
                                        TO  WRK-PATH
-                   PERFORM 2001-SEL-INPUTCD-SEC
+      **********   PERFORM 2001-SEL-INPUTCD-SEC
                WHEN    "DBDELETE"      ALSO   "INPUTCD-KEY"
                    MOVE    PATH-TBL-INPUTCD-DEL11
                                        TO  WRK-PATH
@@ -1825,11 +1826,14 @@
                WHEN    ANY             ALSO   "TENSU-KEY15"
                    MOVE    PATH-TBL-TENSU-KEY15
                                        TO  WRK-PATH
+               WHEN    ANY             ALSO   "TENSU-KEY20"
+                   MOVE    PATH-TBL-TENSU-KEY20
+                                       TO  WRK-PATH
                    PERFORM 2001-SEL-TENSU-REC
                WHEN    ANY             ALSO   "TENSU-UPD1"
                    MOVE    PATH-TBL-TENSU-KEY
                                        TO  WRK-PATH
-                   PERFORM 2001-SEL-TENSU-REC
+      ************ PERFORM 2001-SEL-TENSU-REC
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "TENSU-ALL"
                    MOVE    PATH-TBL-TENSU-ALL
@@ -3238,9 +3242,13 @@
            IF      TNS-NAME(1:2)       =   "＊"
                MOVE    1                   TO  WRK-ICHI1
            END-IF
-           COMPUTE WRK-MOJISU2         =   WRK-MOJISU      -   1
-           IF      TNS-NAME(WRK-MOJISU2:2)     =   "＊"
-               MOVE    1                   TO  WRK-ICHI2
+           IF      WRK-MOJISU          =   1
+               CONTINUE
+           ELSE
+               COMPUTE WRK-MOJISU2         =   WRK-MOJISU      -   1
+               IF      TNS-NAME(WRK-MOJISU2:2)     =   "＊"
+                   MOVE    1                   TO  WRK-ICHI2
+               END-IF
            END-IF
       *
            EVALUATE    TRUE
