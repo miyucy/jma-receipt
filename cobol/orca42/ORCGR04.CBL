@@ -735,13 +735,14 @@
       *****************************************************************
        340-R99-SET-SEC            SECTION.
       *
-           MOVE    SPACE           TO  SPA-RID1-FLG
-                                       SPA-R99-FLG
-                                       SPA-R99-CANCEL
+           MOVE    SPACE           TO  SPA-R99-FLG
            MOVE    SPACE           TO  SPA-RIDCD
            MOVE    SPACE           TO  SPA-RIDCD2      
-           MOVE    ZERO            TO  SPA-R01-JOBCNT
-                                       SPA-R01-STOPFLG    
+           MOVE    SPACE           TO  SPA-RIDCD3
+      *****MOVE    ZERO            TO  SPA-R01-JOBCNT       
+      *****                            SPA-R01-STOPFLG    
+      *****MOVE    SPACE           TO  SPA-RID1-FLG
+      *****                            SPA-R99-CANCEL
            .
        340-R99-SET-EXT.
            EXIT.
