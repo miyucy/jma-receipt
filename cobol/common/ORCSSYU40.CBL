@@ -561,8 +561,8 @@
                MOVE    JYURRK-SRYYMD       TO  WRK-SRYYMD
       *        当月最初の初診料算定日を判定する
                PERFORM 3000-SYOSIN-ALLCHK-SEC
-           ELSE
-               MOVE    1               TO  FLG-JYURRK
+      *****ELSE
+      *********MOVE    1               TO  FLG-JYURRK
            END-IF
       *
            PERFORM
