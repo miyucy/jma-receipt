@@ -33,6 +33,8 @@
       * 01.00.04     NACL-藤原    03/10/27  入退院歴より入外区分を編集
       * 01.00.05     NACL-藤原    04/04/26  更新日編集
       * 01.00.06     NACL-藤原    04/05/06  アフターケア日の表示修正
+      * 01.00.07     NACL-藤原    04/10/03  他画面より遷移したとき
+      *                                     入外区分をあわせて初期表示する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -355,6 +357,11 @@
       *
            INITIALIZE                  SPA-C07-AREA
       *
+           MOVE    SPA-NAI-C02-SYSYMD (1:6)
+                                       TO  SPA-C07-SRYYMS
+           MOVE    SPA-GMN-C02-SYSYMD (1:6)
+                                       TO  SPA-C07-SRYYM
+      *
            IF      SPA-BEDSU       >   ZERO
                MOVE    "1"             TO  SPA-C07-NYUGAIKBNL       (1)
                MOVE    "入院"          TO  SPA-C07-NYUGAIKBNMEIL    (1)
@@ -366,6 +373,7 @@
                MOVE    "入院外"        TO  SPA-C07-NYUGAIKBNMEIL    (1)
                MOVE    1               TO  SPA-C07-NYUGAIKBNMAX
            END-IF
+      *
            PERFORM 3104-NYUGAIKBN-HEN-SEC
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL      IDX      >   SPA-C07-NYUGAIKBNMAX
@@ -376,11 +384,6 @@
                                                TO  IDX
                END-IF
            END-PERFORM
-      *
-           MOVE    SPA-NAI-C02-SYSYMD (1:6)
-                                       TO  SPA-C07-SRYYMS
-           MOVE    SPA-GMN-C02-SYSYMD (1:6)
-                                       TO  SPA-C07-SRYYM
            IF      SPA-NAI-C02-PTID    =   ZERO
                MOVE    2               TO  SPA-C07-SYORI
                GO      TO      310-SPA-SET-EXT
@@ -654,66 +657,70 @@
       *****************************************************************
        3104-NYUGAIKBN-HEN-SEC          SECTION.
       *
-           MOVE    ZERO                TO  WRK-TAIINYMD
-                                           WRK-NYUINYMD
-      *    入院履歴判定
-           MOVE    SPACE               TO  PTNYUINRRK-REC
-           INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
-           MOVE    SPA-NAI-C02-PTID    TO  PTNYUINRRK-PTID
-      *
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
-               PERFORM 910-PTNYUINRRK-READ-SEC
+           IF      SPA-NYUGAIKBN   NOT =   SPACE
+               MOVE    SPA-NYUGAIKBN       TO  SPA-C07-NYUGAIKBN 
            ELSE
-               MOVE    1               TO  FLG-PTNYUINRRK
+               MOVE    ZERO                TO  WRK-TAIINYMD
+                                           WRK-NYUINYMD
+      *        入院履歴判定
+               MOVE    SPACE               TO  PTNYUINRRK-REC
                INITIALIZE                  PTNYUINRRK-REC
-           END-IF
+               MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+               MOVE    SPA-NAI-C02-PTID    TO  PTNYUINRRK-PTID
       *
-      *    入院が１件もないとき、外来とする
-           IF      FLG-PTNYUINRRK      =   1
-               MOVE    "2"             TO   SPA-C07-NYUGAIKBN
-               GO      TO     3104-NYUGAIKBN-HEN-EXT
-           END-IF
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM
+               MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+                   PERFORM 910-PTNYUINRRK-READ-SEC
+               ELSE
+                   MOVE    1               TO  FLG-PTNYUINRRK
+                   INITIALIZE                  PTNYUINRRK-REC
+               END-IF
+      *
+      *        入院が１件もないとき、外来とする
+               IF      FLG-PTNYUINRRK      =   1
+                   MOVE    "2"             TO   SPA-C07-NYUGAIKBN
+                   GO      TO     3104-NYUGAIKBN-HEN-EXT
+               END-IF
+               MOVE    ZERO                TO  FLG-OK
+               PERFORM
                    UNTIL      (FLG-PTNYUINRRK      =   1 )
       ******************* OR  (FLG-OK              =   1 )
-      *        転入日
-               IF      PTNYUINRRK-TENNYUYMD(1:6)   <=  SPA-C07-SRYYMS
-      *            転出日
-                   IF     ( PTNYUINRRK-TENSTUYMD   =   SPACE )  OR
-                          ((PTNYUINRRK-TENSTUYMD   NOT =   SPACE ) AND
-                           (PTNYUINRRK-TENSTUYMD(1:6)  >=
+      *            転入日
+                   IF      PTNYUINRRK-TENNYUYMD(1:6)
+                                                   <=  SPA-C07-SRYYMS
+      *                転出日
+                       IF     ( PTNYUINRRK-TENSTUYMD   =   SPACE )  OR
+                              ((PTNYUINRRK-TENSTUYMD   NOT =
+                                                           SPACE ) AND
+                               (PTNYUINRRK-TENSTUYMD(1:6)  >=
                                                        SPA-C07-SRYYMS))
-                       MOVE    PTNYUINRRK-NYUINYMD TO  WRK-NYUINYMD
-                       MOVE    PTNYUINRRK-TAIINYMD TO  WRK-TAIINYMD
-                       MOVE    1                   TO  FLG-OK
+                           MOVE    PTNYUINRRK-NYUINYMD TO  WRK-NYUINYMD
+                           MOVE    PTNYUINRRK-TAIINYMD TO  WRK-TAIINYMD
+                           MOVE    1                   TO  FLG-OK
+                       END-IF
+                   END-IF
+      *
+                   MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+                   PERFORM 910-PTNYUINRRK-READ-SEC
+               END-PERFORM
+      *
+               IF      FLG-OK              =   1
+      *            入院中の場合入院とする
+                   IF      (WRK-NYUINYMD       <   SPA-C07-SRYYMS )  AND
+                           (WRK-TAIINYMD       >   SPA-C07-SRYYMS )
+                       MOVE    "1"             TO  SPA-C07-NYUGAIKBN
                    END-IF
                END-IF
       *
-               MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
-               PERFORM 910-PTNYUINRRK-READ-SEC
-           END-PERFORM
-      *
-           IF      FLG-OK              =   1
-      *        入院中の場合入院とする
-               IF      (WRK-NYUINYMD       <   SPA-C07-SRYYMS )  AND
-                       (WRK-TAIINYMD       >   SPA-C07-SRYYMS )
-                   MOVE    "1"             TO  SPA-C07-NYUGAIKBN
-               END-IF
-           END-IF
-      *
-           IF      SPA-C07-NYUGAIKBN   =   SPACE
-               MOVE    SPA-C07-NYUGAIKBNL (1)
-                                           TO  SPA-C07-NYUGAIKBN
+               IF      SPA-C07-NYUGAIKBN   =   SPACE
+                   MOVE    "2"             TO   SPA-C07-NYUGAIKBN
            END-IF
       *
            .
