@@ -35,6 +35,7 @@
       *  01.00.04    NACL-ÌçÏÆ    02.11.06  ÌóÂ«½èÊý»þ¤ÎÅÀ¿ôÍóÉ½¼¨½¤Àµ
       *  01.00.05    NACL-ÌçÏÆ    02.11.21  ¼«ÇåÀÕ¡Ê¥Ý¥ê¥Í¥Ã¥¯Åù¤ÎÂÐ±þ¡Ë
       *  01.00.06    NACL-ÌçÏÆ    02.11.26  ¸¡¿Ç¥³¡¼¥É¤òÊÔ½¸¤Ç¤­¤ë¤è¤¦½¤Àµ
+      *  01.02.15   NACL-Æ£¸¶     02.12.02  »ÀÁÇ¤Î»þÃ±²Á¤òÉ½¼¨¤¹¤ë¤è¤¦¤ËÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -185,6 +186,7 @@
            03  FLG-PTCOM                               PIC 9(01).
            03  FLG-SYSKANRI                            PIC 9(01).
            03  FLG-DAY                                 PIC 9(01).
+           03  FLG-SP                                  PIC 9(01). 
       *
       *    ´ðËÜÅÀ¿ô¤ÎÈóÉ½¼¨È½ÄêÍÑ¥Õ¥é¥°
        01  FLG-KHNTEN-AREA.
@@ -219,6 +221,9 @@
            03  IDX3                                    PIC 9(03).
            03  IDX4                                    PIC 9(03).
            03  ID1                                     PIC 9(03). 
+           03  IDY                                     PIC 9(03).
+           03  IDW                                     PIC 9(03).
+           03  NUM-IDX                                 PIC 9(01).
       *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
        01  WK-PATH                                     PIC X(20).
@@ -259,6 +264,24 @@
            03  WRK-DAY                                 PIC 9(02).
       *
            03  WRK-ZAIKAISU-XXX                        PIC 9(03).
+      *
+      *    ¿ô»úÈ¾³ÑÁ´³ÑÊÑ´¹ÍÑ     
+           03  WRK-CHAR-IDX                    PIC 9(02).
+           03  WRK-CHAR-HENKAN-AREA.
+               05  WRK-CHAR-X                  PIC X(20).
+               05  WRK-CHAR-N                  PIC X(40).
+               05  WRK-CHAR-CNT                PIC 9(02).
+               05  WRK-CHAR-N-CNT              PIC 9(02).
+      *     
+      *    Ã±²ÁÊÔ½¸ÍÑ     
+           03  WRK-TANKA-9                     PIC 9(09)V9(02).
+           03  WRK-TANKA-R  REDEFINES  WRK-TANKA-9.
+               05  WRK-TANKA-S1                PIC 9(09).
+               05  WRK-TANKA-S2                PIC 9(02).
+           03  WRK-TANKA-X.
+               05  WRK-TANKA-Z1                PIC ZZZZZZZZ9.
+               05  WRK-TANKA-Z2                PIC X(01).
+               05  WRK-TANKA-Z3                PIC ZZ.
       *
       *---------------------------------------------------------------
       *  ²ó¿ô¸º»»ÍÑÂàÈòÎÎ°è
@@ -352,6 +375,16 @@
       *
            03  CONS-ROUCOM1    PIC X(09)   VALUE   "840800001".
            03  CONS-ROUCOM2    PIC X(09)   VALUE   "840800002". 
+      *
+      *    »ÀÁÇ 
+           COPY    "CMSANSOTBL.INC".
+      *
+      *   ÆüËÜ¸ì¿ô»ú
+       01  TBL-SUJI-AREA.
+           03  FILLER          PIC X(20)   VALUE
+              "£±£²£³£´£µ£¶£·£¸£¹£°".
+       01  TBL-SUJI-R          REDEFINES   TBL-SUJI-AREA.
+           03  TBL-SUJI        PIC X(02)   OCCURS   10.
       *
       *
            COPY    "MCPAREA".
@@ -1005,6 +1038,31 @@
                       END-IF
       *
                END-IF
+      *
+      *        »ÀÁÇ¤Î¤È¤­Ã±²Á¤òÊÔ½¸
+               IF      SRY-SRYCD (IDX2) (1:1)  =   "7"
+                   SET     TBL-SANSO           TO  1
+                   SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
+                       AT  END
+                           MOVE    ZERO            TO  FLG-SANSO-OK
+                       WHEN    SRY-SRYCD (IDX2)    =   TBL-SANSO-SRYCD
+                                                            (TBL-SANSO)
+                           MOVE    1               TO  FLG-SANSO-OK
+                   END-SEARCH
+                   IF      FLG-SANSO-OK        =   "1"
+                       PERFORM RECE45-TENSOU-TANKA-HEN-SEC
+                       COMPUTE IDW =   RECE45-YUKOKETA(IDX4)  *  2 
+                                                   +   3                    
+                       MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
+                                                   TO
+                                               RECE45-NAME(IDX4)(IDW:)   
+                       COMPUTE RECE45-YUKOKETA(IDX4)
+                                               =   RECE45-YUKOKETA(IDX4)
+                                                   +   1   
+                                                   +
+                                                  (WRK-CHAR-N-CNT  /  2)
+                   END-IF
+               END-IF        
       *       
       *----------------------------------------------------------------
       *        ºßÂðÉôÊ¬¤Î¥ì¥»¥×¥ÈÊÔ½¸ÍÑ¤Ë±ý¿Ç¡ÊÆÃÊÌ±ý¿Ç¡Ë¡¦Ìë´Ö¡¦
@@ -1036,6 +1094,76 @@
       *
            .
        RECE45-TENSOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »ÀÁÇ¤ÎÃ±²ÁÊÔ½¸½èÍý
+      *****************************************************************
+       RECE45-TENSOU-TANKA-HEN-SEC     SECTION.
+      *
+           IF      TNS-TEN         =   ZERO
+               GO  TO  RECE45-TENSOU-TANKA-HEN-EXT  
+           END-IF
+      *
+           MOVE    SPACE           TO  WRK-TANKA-X
+      * 
+      *    ¿ô»úÉ½¼¨ÍÑÊÔ½¸¡ÊÈ¾³Ñ¡Ë
+           MOVE    TNS-TEN         TO  WRK-TANKA-9
+           MOVE    WRK-TANKA-S1    TO  WRK-TANKA-Z1
+           MOVE    ZERO            TO  FLG-SP
+           PERFORM   VARYING   IDY   FROM    2   BY  -1
+                     UNTIL     IDY           =   ZERO
+             IF  WRK-TANKA-S2(IDY:1) NOT =   ZERO
+                 MOVE    1               TO  FLG-SP
+             END-IF
+             IF  FLG-SP                  =   1
+                 MOVE    WRK-TANKA-S2(IDY:1)
+                                         TO  WRK-TANKA-Z3(IDY:1)
+             END-IF
+           END-PERFORM
+           IF  WRK-TANKA-Z3          NOT =   SPACE
+               MOVE    "."               TO  WRK-TANKA-Z2
+           END-IF
+      *        
+           INITIALIZE                      WRK-CHAR-HENKAN-AREA
+           MOVE    WRK-TANKA-X         TO  WRK-CHAR-X
+           MOVE    12                  TO  WRK-CHAR-CNT
+           MOVE    1                   TO  WRK-CHAR-IDX
+           MOVE    ZERO                TO  WRK-CHAR-N-CNT
+      *     
+           PERFORM VARYING     IDW     FROM    1   BY  1
+                   UNTIL       IDW     >   WRK-CHAR-CNT
+               IF      WRK-CHAR-X (IDW:1)  =   SPACE
+                   CONTINUE
+               ELSE        
+                   IF    WRK-CHAR-X (IDW:1)  IS  NUMERIC
+                       IF      WRK-CHAR-X (IDW:1)  =   "0"
+                           MOVE    TBL-SUJI (10)
+                                       TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                       ELSE
+                           MOVE    WRK-CHAR-X (IDW:1)  TO  NUM-IDX
+                           MOVE    TBL-SUJI (NUM-IDX)
+                                       TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                       END-IF                    
+                   ELSE
+                       IF    WRK-CHAR-X (IDW:1)  =   "."
+                           MOVE    "¡¥"   TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                       ELSE    
+                           MOVE    "  "   TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                       END-IF
+                   END-IF    
+                   ADD     2           TO  WRK-CHAR-IDX
+                                           WRK-CHAR-N-CNT
+               END-IF    
+           END-PERFORM
+      *
+           IF      WRK-CHAR-N-CNT      >   ZERO
+                   MOVE    "±ß"        TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                   ADD     2           TO  WRK-CHAR-N-CNT
+           END-IF                             
+      *
+           .
+       RECE45-TENSOU-TANKA-HEN-EXT.
            EXIT.
       *
       *****************************************************************

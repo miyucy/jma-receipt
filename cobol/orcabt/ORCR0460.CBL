@@ -38,6 +38,7 @@
       *  01.00.06    NACL-門脇    02.11.26  診療実日数算定用の
       *                                     コードを印刷しないよう追加 
       *                                     検診コードを印刷するよう追加
+      *  01.00.07    NACL-藤原    02.12.02  酸素の時単価を表示するように追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1935,9 +1936,12 @@
       *
                        IF  WRK-YOHAKU        >=  WRK-WKETA
       *                    < 名称 + 空白 + 数量 + 単位 + 空白 + 分画数>
-                           STRING  TBL-ZAIW-NAME (WRK-WIDX1 WRK-WIDX2)
-                                                  DELIMITED  BY  " "
-                                   "  "           DELIMITED  BY  SIZE
+      ********************STRING  TBL-ZAIW-NAME (WRK-WIDX1 WRK-WIDX2)
+      ********************                        DELIMITED  BY  " "
+      ********************         "  "           DELIMITED  BY  SIZE
+                          STRING  TBL-ZAIW-NAME (WRK-WIDX1 WRK-WIDX2)
+                                                (1:WRK-NAMEKETA)
+                                                  DELIMITED  BY  SIZE
                                    WRK-SRYSURYOW  DELIMITED  BY  " "
                                    TBL-ZAIW-TANINAME
                                                  (WRK-WIDX1 WRK-WIDX2)
