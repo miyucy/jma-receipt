@@ -1553,6 +1553,53 @@
            END-IF.   
       *----(01.00.23) LINE ADD END   --------------------------
       *
+      *    労災・自賠責の再計算時の負担割合を求める
+      *
+           IF   WK-HKNKBN              =   "1"
+           AND  LNK-S01-SAIKEISAN-KBN  =   "1"
+      *
+               INITIALIZE                           PTINF-REC
+               MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
+               MOVE    LNK-SYU-PTID         TO      PTINF-PTID
+               MOVE    PTINF-REC            TO      MCPDATA-REC
+               MOVE    "DBSELECT"           TO      MCP-FUNC
+               MOVE    "PTINF-KEY"          TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING   MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+               IF      MCP-RC               =       ZERO
+                   MOVE    "PTINF-KEY"      TO      ORC-DBPATH
+                   PERFORM  PTINF-READ-SEC
+               ELSE
+                   DISPLAY   "PTINF SELECT ERR"
+      *
+                   INITIALIZE                   PTINF-REC
+               END-IF
+      *
+               MOVE    "DBCLOSE"            TO  MCP-FUNC
+               MOVE    "PTINF-KEY"          TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+      *
+               INITIALIZE                  ORCSAGECHKAREA
+               MOVE    LNK-SYU-HOSPID  TO  AGECHK-HOSPID
+               MOVE    LNK-SYU-PTID    TO  AGECHK-PTID
+               MOVE    LNK-SYU-SRYYMD  TO  AGECHK-SRYYMD
+               MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
+               MOVE    LNK-SYU-HKNCOMBINUM 
+                                       TO  AGECHK-HKNCOMBINUM
+               CALL    "ORCSAGECHK"        USING
+                                           ORCSAGECHKAREA
+               IF      AGECHK-RC       =   ZERO
+                   MOVE   AGECHK-FTNRATE  TO  LNK-SYU-PTFTNRATE
+               ELSE
+                   DISPLAY  "PTINF AGE-CHK ERR " LNK-SYU-PTID
+               END-IF
+      *
+           END-IF.
+      *
       *    保険番号テーブルから公費の負担上限回数と上限金額の取得
            PERFORM         210-HOKEN-KAISU-SEC.
       *
