@@ -3129,7 +3129,7 @@
                     GO      TO      41018-SRYYMD-SYORI-EXT
                END-IF
       *        誕生日以前の時、エラー
-               IF      SGDAY-SDAY          <   SPA-GMN-BIRTHDAY
+               IF      SGDAY-SDAY(1:6)     <   SPA-GMN-BIRTHDAY(1:6)
                     MOVE    "0015"              TO  SPA-ERRCD
                     GO      TO      41018-SRYYMD-SYORI-EXT
                END-IF
