@@ -143,6 +143,8 @@
       *
            03  WRK-COMRENNUM           PIC 9(05).
       *
+           03  WRK-KOHBUNRI-MIN        PIC 9(01).
+      *
            03  WRK-RECEERR             PIC X(200). 
       *
        01  WRK-RECE042-REC.
@@ -245,9 +247,9 @@
        200-MAIN-SEC                SECTION.
       *
       *    同一剤のまとめ処理
-           OPEN    INPUT               RECE02-FILE
-                                       RECE04-FILE
-           OPEN    I-O                 RECE042-FILE
+           OPEN    INPUT               RECE04-FILE
+           OPEN    I-O                 RECE02-FILE
+                                       RECE042-FILE
            PERFORM 900-RECE02-READ-SEC
       *
            PERFORM 210-RECE042-WRITE-SEC
@@ -276,6 +278,8 @@
       *    同一剤のまとめ処理
       *****************************************************************
        210-RECE042-WRITE-SEC                SECTION.
+      *
+           MOVE       9                TO  WRK-KOHBUNRI-MIN
       *
            MOVE    ZERO                TO  WRK-COMRENNUM
       *
@@ -397,8 +401,16 @@
                    END-IF
                END-IF
       *
+               IF   WRK-KOHBUNRI-MIN  >  RECE04-KOHBUNRI
+                   MOVE   RECE04-KOHBUNRI  TO  WRK-KOHBUNRI-MIN
+               END-IF
+      *
                PERFORM     900-RECE04-READ-SEC
            END-PERFORM
+      *
+           MOVE      WRK-KOHBUNRI-MIN   TO   RECE02-KOHBUNRI-MIN
+           REWRITE   RECE02-REC
+      *
       *
            PERFORM 900-RECE02-READ-SEC
            .

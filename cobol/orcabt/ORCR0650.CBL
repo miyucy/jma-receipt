@@ -381,8 +381,10 @@
                   (WK-ZAINUM            NOT =  RECE65-ZAINUM)    OR
                   (WK-ZAIREN            NOT =  RECE65-ZAIREN)    OR
                   (FLG-RECE65           =      1)
-                   MOVE   KH-IDX        TO     RECE65-KOHBUNRI
-                   PERFORM      RECE65-REWRITE-SEC
+                   IF    RECE65-KOHBUNRI     =      ZERO
+                      MOVE   KH-IDX        TO     RECE65-KOHBUNRI
+                      PERFORM      RECE65-REWRITE-SEC
+                   END-IF
                    PERFORM      RECE65-NEXT-SEC
            END-PERFORM
       *

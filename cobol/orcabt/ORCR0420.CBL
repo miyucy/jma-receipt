@@ -209,6 +209,7 @@
            03  FLG-ZANHAIKI                            PIC 9(01).
            03  FLG-RECE45                              PIC 9(01).
            03  FLG-REWRITE                             PIC 9(01).
+           03  FLG-HOUSIJI-COM                         PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -452,6 +453,8 @@
            03  CONS-RYOYO-COMMENT    PIC X(09)  VALUE  "113004310".
       *    訪問看護指示料
            03  CONS-HOUSIJI-COMMENT  PIC X(09)  VALUE  "114008010".
+      *    訪問看護指示料算定日
+           03  CONS-HOUSIJI2-COMMENT PIC X(09)  VALUE  "840000073".
       *    手術日コメント
            03  CONS-SHUJUTU-COMMENT  PIC X(09)  VALUE  "840000042".
       *    頭部単純ＣＴ撮影
@@ -768,6 +771,7 @@
                                                        WRK-TANICD
                                                        WRK-TANIMOJISU
                                MOVE    SPACE   TO      WRK-TANINAME
+                               MOVE    ZERO    TO      FLG-HOUSIJI-COM
       *
                                PERFORM   RECE44-TENSOU-SEC
                                PERFORM   RECE45-HENSYU-SEC
@@ -802,6 +806,7 @@
                                                       WRK-TANICD
                                                       WRK-TANIMOJISU
                                       MOVE  SPACE TO  WRK-TANINAME
+                                      MOVE  ZERO  TO  FLG-HOUSIJI-COM
       *
                                       PERFORM   RECE44-TENSOU-SEC
                                       PERFORM   RECE45-HENSYU-SEC
@@ -872,6 +877,7 @@
                                                      WRK-TANICD
                                                      WRK-TANIMOJISU
                                MOVE    SPACE   TO    WRK-TANINAME
+                               MOVE    ZERO    TO    FLG-HOUSIJI-COM
       *
                                PERFORM   RECE44-TENSOU-SEC
                                PERFORM   RECE45-HENSYU-SEC
@@ -908,6 +914,7 @@
                                                       WRK-TANICD
                                                       WRK-TANIMOJISU
                                       MOVE  SPACE TO  WRK-TANINAME
+                                      MOVE  ZERO  TO  FLG-HOUSIJI-COM
       *
                                       PERFORM   RECE44-TENSOU-SEC
                                       PERFORM   RECE45-HENSYU-SEC
@@ -1075,25 +1082,38 @@
            PERFORM     VARYING   IDX2   FROM    1    BY   1
                        UNTIL    (IDX2      >    5)    OR
                                 (SRY-SRYCD(IDX2)  =   SPACE)
-      ***>   IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR  
-      ***>                                        "6" OR  "7" OR
-      ***>                                        "8"
       *
-               ADD     1                  TO    IDX4                                  *
-               MOVE    SRY-SRYCD(IDX2)    TO    RECE45-SRYCD(IDX4)
       *
-               IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
-               OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
+             PERFORM    TENSU-TBL-SEC
+      **     点数マスタ情報退避
+             MOVE    TNS-DATAKBN        TO  WRK-TNS-DATAKBN(IDX2)
+             MOVE    TNS-TIMEKSNKBN     TO  WRK-TNS-TIMEKSNKBN(IDX2)
+             MOVE    TNS-TEN            TO  WRK-TNS-TEN(IDX2)
+             MOVE    TNS-GAITENTTLKBN   TO  WRK-TNS-GAITENTTLKBN(IDX2)
+             MOVE    TNS-OSINKBN        TO  WRK-TNS-OSINKBN(IDX2)
+             MOVE    TNS-KNSJISKBN      TO  WRK-TNS-KNSJISKBN(IDX2)
+             MOVE    TNS-SRYCD          TO  WRK-TNS-SRYCD(IDX2)
+      *
+             IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
+             OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
                   COMPUTE   RECE44-MEISAISU  =  RECE44-MEISAISU
                                              -  1
-               END-IF
-               IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
+             END-IF
+             IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
                   MOVE    SRY-SRYCD(IDX2)   TO    WRK-SRYCD
                   COMPUTE   RECE44-SRYCDTOTAL  =  RECE44-SRYCDTOTAL
                                                -  WRK-SRYCD
                   COMPUTE   RECE44-SURYOUTOTAL =  RECE44-SURYOUTOTAL
                                                -  1
-               END-IF
+             END-IF
+      *
+      *
+             IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR
+                                                  "6" OR  "7" OR
+                                                  "8"
+      *
+               ADD     1                  TO    IDX4                                  *
+               MOVE    SRY-SRYCD(IDX2)    TO    RECE45-SRYCD(IDX4)
       *
                IF      SRY-SRYKBN         =     "12"
                    IF   SRY-SRYCD(IDX2)   =     CONS-KEIZOKU1    OR
@@ -1128,15 +1148,6 @@
                MOVE    SRY-MEISKYFLG(IDX2) TO   RECE45-MEISKYFLG(IDX4)
                MOVE    SRY-AUTOKBN(IDX2)  TO    RECE45-AUTOKBN(IDX4)
                MOVE    SRY-INPUTNUM(IDX2) TO    RECE45-INPUTNUM(IDX4)
-               PERFORM    TENSU-TBL-SEC
-      **点数マスタ情報退避
-               MOVE    TNS-DATAKBN       TO  WRK-TNS-DATAKBN(IDX4)
-               MOVE    TNS-TIMEKSNKBN    TO  WRK-TNS-TIMEKSNKBN(IDX4)
-               MOVE    TNS-TEN           TO  WRK-TNS-TEN(IDX4)
-               MOVE    TNS-GAITENTTLKBN  TO  WRK-TNS-GAITENTTLKBN(IDX4)
-               MOVE    TNS-OSINKBN       TO  WRK-TNS-OSINKBN(IDX4)
-               MOVE    TNS-KNSJISKBN     TO  WRK-TNS-KNSJISKBN(IDX4)
-               MOVE    TNS-SRYCD         TO  WRK-TNS-SRYCD(IDX4)
       **
                IF   RECE41-HKNKBN    NOT  =  "4"                        
                   IF      TNS-SRYKBN         =     "80"
@@ -1458,7 +1469,7 @@
                        MOVE     3         TO    FLG-OSINKBN
                  END-EVALUATE
                END-IF
-      ***>   END-IF  
+             END-IF  
            END-PERFORM
       *
            .
@@ -1615,7 +1626,12 @@
       *
            IF      RECE44-SRYKBN      =     "14"
               IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI-COMMENT
+              AND  FLG-HOUSIJI-COM    =     ZERO
                    MOVE   "1"   TO    RECE44-FLG-HOUSIJI-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI2-COMMENT
+                   MOVE  SPACE  TO    RECE44-FLG-HOUSIJI-COMMENT
+                   MOVE    1    TO    FLG-HOUSIJI-COM
               END-IF
            END-IF
       *
@@ -2086,7 +2102,8 @@
                              (WK-YKZTEN   *   WK-ZAIKAISU)
       *    投薬のレセ点数欄の編集
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)  =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001"            )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(14)  =
                                  RECE41-TENSU(14)  -
@@ -2124,7 +2141,8 @@
                              RECE41-TENSU(16)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)  =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001"            )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(17)
                        COMPUTE   RECE41-TENSU(17)  =
                                  RECE41-TENSU(17)  +
@@ -2418,7 +2436,8 @@
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
       *    投薬のレセ点数欄の編集
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)  =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001"            )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(7)  =
                                  RECE41-TENSU(7)  -
@@ -2448,7 +2467,8 @@
                              RECE41-TENSU(9)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(10)
                        COMPUTE   RECE41-TENSU(10)  =
                                  RECE41-TENSU(10)  +
@@ -2760,7 +2780,8 @@
                              (WK-YKZTEN   *   WK-ZAIKAISU)
       *    投薬のレセ点数欄の編集
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU-YAK(9)  =
                                  RECE41-TENSU-YAK(9)  -
@@ -2798,7 +2819,8 @@
                              RECE41-TENSU-YAK(11)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(12)
                        COMPUTE   RECE41-TENSU-YAK(12)  =
                                  RECE41-TENSU-YAK(12)  +

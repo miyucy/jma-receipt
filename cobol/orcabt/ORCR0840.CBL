@@ -194,6 +194,7 @@
            03  FLG-KHN                                 PIC 9(01).
            03  FLG-NYUINRYO                            PIC 9(01).
            03  FLG-HKNCOMBI                            PIC 9(01).
+           03  FLG-HOUSIJI-COM                         PIC 9(01).
       *
       *    •´•¶•Û•»ŒŒ∞Ë
        01  CNT-AREA.
@@ -442,6 +443,8 @@
            03  CONS-TAIIN-COMMENT    PIC X(09)  VALUE  "113006270".
       *    À¨Ã‰¥«∏Óªÿº®Œ¡
            03  CONS-HOUSIJI-COMMENT  PIC X(09)  VALUE  "114008010".
+      *    À¨Ã‰¥«∏Óªÿº®Œ¡ªªƒÍ∆¸
+           03  CONS-HOUSIJI2-COMMENT PIC X(09)  VALUE  "840000073".
       *    ºÍΩ—∆¸•≥•·•Û•»
            03  CONS-SHUJUTU-COMMENT  PIC X(09)  VALUE  "840000042".
       *    ∆¨…Ù√±Ω„£√£‘ª£±∆
@@ -845,6 +848,7 @@
                        MOVE   ZERO   TO   WRK-TANICD
                        MOVE   ZERO   TO   WRK-TANIMOJISU
                        MOVE   SPACE  TO   WRK-TANINAME
+                       MOVE   ZERO   TO   FLG-HOUSIJI-COM
       *
                        MOVE   ZERO   TO   FLG-WRITE85
                        PERFORM   2201-RECE84-TENSOU-SEC
@@ -870,6 +874,7 @@
                                  MOVE   ZERO   TO   WRK-TANICD
                                  MOVE   ZERO   TO   WRK-TANIMOJISU
                                  MOVE   SPACE  TO   WRK-TANINAME
+                                 MOVE   ZERO   TO   FLG-HOUSIJI-COM
       *
                                  MOVE   ZERO   TO   FLG-WRITE85
                                  PERFORM   2201-RECE84-TENSOU-SEC
@@ -2205,9 +2210,24 @@
                 END-EVALUATE
              END-IF
       *
-      ***>   IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR  
-      ***>                                        "6" OR  "7" OR
-      ***>                                        "8"
+      *
+             IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
+             OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
+                  COMPUTE   RECE84-MEISAISU  =  RECE84-MEISAISU
+                                             -  1
+             END-IF
+             IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
+                  MOVE    SRY-SRYCD(IDX2)   TO    WRK-SRYCD
+                  COMPUTE   RECE84-SRYCDTOTAL  =  RECE84-SRYCDTOTAL
+                                               -  WRK-SRYCD
+                  COMPUTE   RECE84-SURYOUTOTAL =  RECE84-SURYOUTOTAL
+                                               -  1
+             END-IF
+      *
+      *
+             IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR
+                                                  "6" OR  "7" OR
+                                                  "8"
       *
               IF  (  SRY-SRYSYUKBN            = "330" OR "331"      
                                                       OR "350"     )
@@ -2223,19 +2243,6 @@
                ADD     1                  TO    IDX4    
       *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE85-SRYCD(IDX4)
-      *
-               IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
-               OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
-                  COMPUTE   RECE84-MEISAISU  =  RECE84-MEISAISU
-                                             -  1
-               END-IF
-               IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
-                  MOVE    SRY-SRYCD(IDX2)   TO    WRK-SRYCD
-                  COMPUTE   RECE84-SRYCDTOTAL  =  RECE84-SRYCDTOTAL
-                                               -  WRK-SRYCD
-                  COMPUTE   RECE84-SURYOUTOTAL =  RECE84-SURYOUTOTAL
-                                               -  1
-               END-IF
       *
                IF      SRY-SRYCD(IDX2)    =     CONS-BYOITAIYO
                   EVALUATE  RECE82-HOSPSBT
@@ -2516,7 +2523,7 @@
                    END-IF
                END-IF
               END-IF
-      ***>   END-IF  
+             END-IF  
            END-PERFORM
       *
            IF    IDX4   =   ZERO
@@ -2660,7 +2667,12 @@
       *
            IF      RECE84-SRYKBN      =     "14"
               IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI-COMMENT
+              AND  FLG-HOUSIJI-COM    =     ZERO
                    MOVE   "1"   TO    RECE84-FLG-HOUSIJI-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI2-COMMENT
+                   MOVE  SPACE  TO    RECE84-FLG-HOUSIJI-COMMENT
+                   MOVE    1    TO    FLG-HOUSIJI-COM
               END-IF
            END-IF
       *
@@ -3356,7 +3368,8 @@
                              (WK-ZAITEN   *   WK-ZAIKAISU)
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                            COMPUTE   RECE82-TENSU(4)  =
                                      RECE82-TENSU(4)  -
@@ -3373,7 +3386,7 @@
                             COMPUTE   RECE82-TENSU(4)  =
                                       RECE82-TENSU(4)  +
                                      (WK-ZAITEN   *   WK-ZAIKAISU)
-                     END-IF
+                     END-IF   
                    END-IF
                WHEN    "22"
                    ADD    WK-ZAIKAISU    TO   RECE82-KAISU(5)
@@ -3611,7 +3624,8 @@
                              (WK-YKZTEN     *   WK-ZAIKAISU)
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                            COMPUTE   RECE82-TENSU-YAK(4)  =
                                      RECE82-TENSU-YAK(4)  -

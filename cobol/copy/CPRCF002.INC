@@ -269,4 +269,10 @@
       *公費実日数テーブル
                05  RECE02-KOHJNISSUTBL    PIC  X(01)
                                           OCCURS 31.
+      *県番号
+           03  RECE02-PREFNUM             PIC  9(02).
+      *公費分離区分最小値
+           03  RECE02-KOHBUNRI-MIN        PIC  9(01).
+      *病床数編集フラグ（特定疾患療養指導料等）
+           03  RECE02-BEDSUFLG            PIC  X(01).
       *

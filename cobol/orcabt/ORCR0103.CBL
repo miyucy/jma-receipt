@@ -325,7 +325,7 @@
            03  WRK-HKNJANUM        PIC X(08).
            03  WRK-KYURATE-9       PIC 9(03).
            03  WRK-KYURATE         PIC Z9.
-           03  WRK-BEDSU           PIC ZZ9.
+           03  WRK-BEDSU           PIC ZZZ.
       *
            03  WRK-ERRMSG          PIC X(40).
       *
@@ -1564,8 +1564,18 @@
       *     END-IF
       *
       *    ÉÂ¾²¿ô
-           MOVE    SYS-1001-BEDSU      TO  WRK-BEDSU
-           MOVE    WRK-BEDSU           TO  HC06-BEDSU
+           IF    ( SYS-1001-BEDSU      >   ZERO )
+           AND   ( SYS-1001-HOSPSBT    =   "1"  ) 
+               IF      RECE02-BEDSUFLG     =   "1" 
+                   MOVE    SYS-1001-BEDSU      TO  WRK-BEDSU
+                   MOVE    WRK-BEDSU           TO  HC06-BEDSU
+               ELSE
+                   IF      SYS-1001-BEDSUIPN   >=  200
+                       MOVE    SYS-1001-BEDSUIPN   TO  WRK-BEDSU
+                       MOVE    WRK-BEDSU           TO  HC06-BEDSU
+                   END-IF
+               END-IF
+           END-IF
       *
       *    £Ï£Ã£Ò
            IF  CNT-PAGE                =   1
@@ -3368,7 +3378,17 @@
                                                 MCPDATA-REC
       *
                IF      MCP-RC     =   ZERO
-                   ADD     1                 TO  CNT-OUT 
+                   IF      RECE02-RECESYUBETU  =   8888
+                   AND     RECE02-TOTALTEN (1) =   ZERO
+                   AND     RECE02-TOTALTEN (2) =   ZERO
+                   AND     RECE02-TOTALTEN (3) =   ZERO
+                   AND     RECE02-TOTALTEN (4) =   ZERO
+                   AND     RECE02-TOTALTEN (5) =   ZERO
+                   AND     CNT-RECE061         =   ZERO
+                       CONTINUE
+                   ELSE
+                       ADD     1                 TO  CNT-OUT
+                   END-IF
                ELSE 
                    DISPLAY "ORCR0103 RECE08=" MCP-RC " " RECE08-KEY 
                    STRING
@@ -3754,6 +3774,7 @@
                    AND     RECE02-TOTALTEN (3) =   ZERO 
                    AND     RECE02-TOTALTEN (4) =   ZERO
                    AND     RECE02-TOTALTEN (5) =   ZERO
+                   AND     RECE02-RECESYUBETU  NOT =  8888
                        GO  TO  990-RECE02-READ-SEC
                    ELSE
                        IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM
