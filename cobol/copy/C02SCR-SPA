@@ -248,6 +248,7 @@
                            11  SPA-NAI-C02-BYOMEIMOJI      PIC 9(02).
                            11  SPA-NAI-C02-BYOMEIHENFLG    PIC X(01).
                            11  SPA-NAI-C02-CHARTBYOMEIMOJI PIC 9(02).
+                           11  SPA-NAI-C02-RECEDENFLG      PIC X(01).
                            11  SPA-NAI-C02-BYOMEI-TBL.
                                13  SPA-NAI-C02-BYOMEI-OCC  OCCURS  21.
                                    15  SPA-NAI-C02-BYOMEICD

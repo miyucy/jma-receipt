@@ -99,7 +99,8 @@
                 04  C02-HKNCOMBI-COUNT   PIC S9(9)   BINARY.
                 04  C02-HKNCOMBI-ITEM    PIC X(40)   OCCURS  20 TIMES.
               03  C02-BYOMEIHENFLG.
-                04  C02-VALUE   PIC X(10).
+                04  C02-BYOMEIHENFLG-STYLE   PIC X(20).
+                04  C02-BYOMEIHENFLG-VALUE   PIC X(10).
               03  C02-TENKICOMBO.
                 04  C02-TENKIKBN.
                   05  C02-VALUE   PIC X(8).
