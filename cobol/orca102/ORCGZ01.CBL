@@ -38,6 +38,8 @@
       *  01.02.02    MCC-多々納   02/04/04  診療行為一覧へのパラメタ修正
       *  01.02.03    MCC-多々納   02/05/02  全角チェックサブ追加
       *  01.02.04    MCC-多々納   02/07/18  服用方法画面追加
+      *  01.02.05    NACL-多々納  03/05/14  更新前チェック追加
+      *                                     選択番号未選択時修正
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -706,8 +708,15 @@
        412-KAKUTEI-SEC                           SECTION.
       *
            IF  SPA-Z01GMN-SRYCD                     =  SPACE
-               MOVE    "0003"                    TO  SPA-ERRCD
-               GO                                TO  412-KAKUTEI-EXT
+               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE  "SRYCD"               TO  SPA-Z01GMN-CUR
+               GO                          TO  412-KAKUTEI-EXT
+           END-IF
+      *    すべて数字であること
+           IF      SPA-Z01GMN-SRYCD    NOT NUMERIC
+               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE    "SRYCD"             TO  SPA-Z01GMN-CUR
+               GO                          TO  412-KAKUTEI-EXT
            END-IF
       *
            IF  ( SPA-Z01GMN-YUKOSTYMD             =  SPACE  OR
@@ -895,6 +904,7 @@
               WHEN   "8"
                   MOVE   "Z02"                   TO  SPA-SAKIPG
               WHEN  OTHER
+                   MOVE    "0003"                    TO  SPA-ERRCD
                    GO                            TO  412-KAKUTEI-EXT
            END-EVALUATE
       *
@@ -1115,7 +1125,7 @@
                WHEN    ZERO
                    MOVE    "YUKOSTYMD"         TO  SPA-Z01GMN-CUR
                WHEN    1
-                   MOVE    1                   TO  SPA-Z01GMN-SELNUM
+                   MOVE    "  1"               TO  SPA-Z01GMN-SELNUM
                    MOVE    1                   TO  SPA-Z01NAI-SELNUM
                                                    SPA-NAI-SELNO
                    MOVE  SPA-Z01GMN-TYUKOSTYMD(1)
@@ -1200,7 +1210,15 @@
                                            SPA-Z01NAI-KOUMOKU
       *
            MOVE    Z01-SELNUM          TO  SPA-Z01GMN-SELNUM
-           IF      Z01-SELNUM          =   SPACE
+           IF      SPA-Z01GMN-SELNUM   =   SPACE
+      *        未入力で新規以外の場合、最終番号とする
+               IF       SPA-Z01NAI-COUNT   >   ZERO
+                    MOVE    SPA-Z01NAI-COUNT   TO  SPA-NAI-SELNO
+                    MOVE    SPA-NAI-SELNO      TO  SPA-Z01GMN-SELNUM
+                END-IF
+           END-IF
+      *
+           IF      SPA-Z01GMN-SELNUM       =   SPACE
                MOVE    "YUKOSTYMD"         TO  SPA-Z01GMN-CUR
                GO      TO      502-SELNUM-CHK-EXT
            END-IF

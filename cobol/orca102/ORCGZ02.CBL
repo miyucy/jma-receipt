@@ -932,6 +932,7 @@
       *
       *    点数マスタ付加情報検索
       *****IF      SPA-Z01-SYORIKBN    =   2  OR  3
+           IF      SPA-Z01-SELNUM      >   ZERO
                MOVE    SPACE               TO  TENSUPLUS-REC
                MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
                MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
@@ -958,7 +959,10 @@
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
-      *****END-IF
+           ELSE
+      *        新規
+               MOVE    1                   TO  FLG-TENSUPLUS
+           END-IF
       *
       *    有効期限更新
            IF      FLG-TENSUPLUS       =   ZERO
