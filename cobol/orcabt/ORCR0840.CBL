@@ -48,6 +48,8 @@
       *                                     摘要欄記載順修正
       *  01.01.07    NACL-門脇    04/07/28  投薬料の器材点の集計修正
       *  01.01.08    NACL-門脇    04/10/04  点滴の診療コード＊数量の累計編集
+      *  中止処理追加
+      *  01.02.01    NACL-藤原    04/10/13  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -221,6 +223,7 @@
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
            03  CNT-IN-COMMIT                           PIC 9(06).
+           03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-OUT1                                PIC 9(06).
            03  CNT-OUT2                                PIC 9(06).
            03  CNT-OUT3                                PIC 9(06).
@@ -639,10 +642,24 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
                                        WRK-AREA
-      *
-           MOVE    ZERO                TO  FLG-END
+                                       FLG-AREA
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
+      *
+           MOVE    "RECE820"           TO  RECE82PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE82PARA-TERMID
+           MOVE    "RECE840"           TO  RECE84PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE84PARA-TERMID
+           MOVE    "RECE850"           TO  RECE85PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE85PARA-TERMID
+      *
+           MOVE    "RECE841"           TO  RECE8APARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE8APARA-TERMID
+           MOVE    "RECE851"           TO  RECE8BPARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE8BPARA-TERMID
+      *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -659,6 +676,8 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
       *      食事・未実施減算情報（システム管理テーブルより）
@@ -818,21 +837,6 @@
            END-IF
       *
       *
-           MOVE    "RECE820"           TO  RECE82PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE82PARA-TERMID
-           MOVE    "RECE840"           TO  RECE84PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE84PARA-TERMID
-           MOVE    "RECE850"           TO  RECE85PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE85PARA-TERMID
-      *
-           MOVE    "RECE841"           TO  RECE8APARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE8APARA-TERMID
-           MOVE    "RECE851"           TO  RECE8BPARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE8BPARA-TERMID
-      *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
-      *
            OPEN    OUTPUT              RECE844-FILE
            CLOSE                       RECE844-FILE
       *
@@ -891,6 +895,12 @@
                MOVE  ZERO          TO      CNT-IN-COMMIT
                PERFORM 900-DBCOMMIT-SEC
                PERFORM 900-DBSTART-SEC
+           END-IF
+      *
+      *    処理中止設定処理
+           IF      CNT-IN-CANCEL       =   50
+               MOVE    ZERO                TO  CNT-IN-CANCEL
+               PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
            .
        200-MAIN-EXT.
@@ -4349,6 +4359,55 @@
            EXIT.
       *
       *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
@@ -4409,6 +4468,7 @@
                NOT  AT  END
                    ADD     1     TO    CNT-IN
                    ADD     1     TO    CNT-IN-COMMIT
+                                       CNT-IN-CANCEL
       *
                    DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
       *

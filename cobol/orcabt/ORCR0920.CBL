@@ -28,6 +28,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  中止処理追加
+      *  01.00.01    NACL-藤原    04/10/13  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -145,6 +147,7 @@
            03  CNT-RECE84          PIC 9(06).
            03  CNT-RECE85          PIC 9(06).
            03  CNT-RECE86          PIC 9(06).
+           03  CNT-IN-CANCEL       PIC 9(06).
       *
       *    添字領域
        01  IDX-AREA.
@@ -345,7 +348,12 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
-           PERFORM 990-RECE82-READ-SEC
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
+      *
+           IF      SPA-STS         =   ZERO
+               PERFORM 990-RECE82-READ-SEC
+           END-IF 
            .
        100-INIT-EXT.
            EXIT.
@@ -433,6 +441,12 @@
                    ADD     1               TO  CNT-RECE84
       *
                    PERFORM 990-RECE84-NEXT-SEC
+      *
+      *           処理中止設定処理
+                   IF      CNT-IN-CANCEL   =   50
+                       MOVE    ZERO            TO  CNT-IN-CANCEL
+                       PERFORM 500-CANCEL-HENSYU-SEC
+                   END-IF
                END-IF     
            END-PERFORM
       *
@@ -506,6 +520,12 @@
                ADD     1                 TO  CNT-RECE85
       *
                PERFORM 990-RECE85-NEXT-SEC
+      *
+      *       処理中止設定処理
+               IF      CNT-IN-CANCEL   =   50
+                   MOVE    ZERO            TO  CNT-IN-CANCEL
+                   PERFORM 500-CANCEL-HENSYU-SEC
+               END-IF
            END-PERFORM
       *
            .
@@ -687,9 +707,60 @@
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
+           MOVE    2                   TO  SPA-STS
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+               MOVE    2                   TO  SPA-STS
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -755,6 +826,7 @@
                    IF      RECE84-MEISAISU    =   ZERO
                        GO  TO  990-RECE84-NEXT-SEC
                    END-IF       
+                   ADD     1         TO  CNT-IN-CANCEL 
            END-READ
       *
            .
@@ -771,52 +843,12 @@
                    MOVE    1         TO  FLG-RECE85
                NOT AT  END
                    MOVE    ZERO      TO  FLG-RECE85
+                   ADD     1         TO  CNT-IN-CANCEL 
            END-READ
       *
            .
        990-RECE85-NEXT-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    点数マスター読込（キー）
-      *****************************************************************
-      * 900-TENSU-INV-SEC         SECTION.                             
-      *
-      *     MOVE    "DBSELECT"          TO  MCP-FUNC
-      *     MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *     CALL    "ORCMCPSUB"          USING
-      *                                  MCPAREA
-      *                                  ORCMCPAREA
-      *                                  MCPDATA-REC
-      *     IF      MCP-RC              =   ZERO
-      *         MOVE    "DBFETCH"           TO  MCP-FUNC
-      *         MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *         CALL    "ORCMCPSUB"          USING
-      *                                      MCPAREA
-      *                                      ORCMCPAREA
-      *                                      MCPDATA-REC
-      *         IF      MCP-RC              =   ZERO
-      *             MOVE    ZERO                TO  FLG-TENSU
-      *             MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-      *         ELSE
-      *             INITIALIZE                  TNS-TENSU-REC
-      *             MOVE    1                   TO  FLG-TENSU
-      *         END-IF
-      *     ELSE
-      *         INITIALIZE                  TNS-TENSU-REC
-      *         MOVE    1                   TO  FLG-TENSU
-      *     END-IF
-      *
-      *     MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *     MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *     CALL    "ORCMCPSUB"          USING
-      *                                  MCPAREA
-      *                                  ORCMCPAREA
-      *                                  MCPDATA-REC
-      *
-      *     .
-      * 900-TENSU-INV-EXT.
-      *     EXIT.
       *      
       *****************************************************************
       *    ＤＢ　オープン処理

@@ -398,37 +398,39 @@
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD 
       *
-      *    診療会計読み込み（患者ＩＤ、保険組合せ、診療科順）
-           INITIALIZE                  SRYACCT-REC
-           MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
-           MOVE    SYS-2001-SRYYM      TO  ACCT-SRYYM
-           MOVE    "2"                 TO  ACCT-NYUGAIKBN
-           MOVE    SRYACCT-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
-               PERFORM 900-SRYACCT-READ-SEC
-           ELSE
+           IF      FLG-END             =   ZERO 
+      *        診療会計読み込み（患者ＩＤ、保険組合せ、診療科順）
                INITIALIZE                  SRYACCT-REC
-               MOVE    1                   TO  FLG-SRYACCT
-           END-IF
+               MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
+               MOVE    SYS-2001-SRYYM      TO  ACCT-SRYYM
+               MOVE    "2"                 TO  ACCT-NYUGAIKBN
+               MOVE    SRYACCT-REC         TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
+                   PERFORM 900-SRYACCT-READ-SEC
+               ELSE
+                   INITIALIZE                  SRYACCT-REC
+                   MOVE    1                   TO  FLG-SRYACCT
+               END-IF
       *
-           PERFORM UNTIL       FLG-SRYACCT     =   1
-                   OR          FLG-END         =   1 
-               PERFORM 20011-IKKATU-HENSYU-SEC
-           END-PERFORM
-      *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+               PERFORM UNTIL       FLG-SRYACCT     =   1
+                       OR          FLG-END         =   1 
+                   PERFORM 20011-IKKATU-HENSYU-SEC
+               END-PERFORM
+      *        カーソルクロース
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           END-IF
            .
        2001-IKKATU-SYORI-EXT.
            EXIT. 
@@ -490,7 +492,7 @@
       *             
                    MOVE    KEY-NEW             TO  KEY-OLD
                    PERFORM         UNTIL   FLG-SRYACCT     =   1 
-                                   OR          FLG-END     =   1 
+                                   OR      FLG-END         =   1 
                                    OR      KEY-NEW     NOT =   KEY-OLD
                        IF      WRK-ROUSAIKBN           =   SPACE            
                            PERFORM 20011-FILE-SYORI-SEC 

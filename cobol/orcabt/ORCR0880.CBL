@@ -28,7 +28,9 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.01.01    NACL-門脇    04/06/07  コピー句０８５変更に伴う修正
+      *  01.00.01    NACL-門脇    04/06/07  コピー句０８５変更に伴う修正
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -170,6 +172,7 @@
            03  CNT-RECE82          PIC 9(06).
            03  CNT-RECE84          PIC 9(06).
            03  CNT-RECE85          PIC 9(06).
+           03  CNT-IN-CANCEL       PIC 9(06).
       *
       *    添字領域
        01  IDX-AREA.
@@ -324,6 +327,9 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
+      *
            PERFORM 990-RECE82-READ-SEC
            .
        100-INIT-EXT.
@@ -395,7 +401,8 @@
                    PERFORM 990-RECE84-NEXT-SEC
            END-START
            PERFORM
-               UNTIL  ( FLG-RECE84           =   1                   )
+               UNTIL  ( FLG-END              =   1                   )
+               OR     ( FLG-RECE84           =   1                   )
                OR     ( RECE82-HOSPID    NOT =   RECE84-HOSPID       )
                OR     ( RECE82-SRYYM     NOT =   RECE84-SRYYM        )
                OR     ( RECE82-NYUGAIKBN NOT =   RECE84-NYUGAIKBN    )
@@ -423,6 +430,12 @@
                END-EVALUATE
       *
                PERFORM 990-RECE84-NEXT-SEC
+      *
+      *        処理中止設定処理
+               IF      CNT-IN-CANCEL       =   50
+                   MOVE    ZERO                TO  CNT-IN-CANCEL
+                   PERFORM 500-CANCEL-HENSYU-SEC
+               END-IF
       *
            END-PERFORM
       *
@@ -567,6 +580,55 @@
            EXIT.
       *
       *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
@@ -623,7 +685,6 @@
                    MOVE    1           TO  FLG-END
                NOT AT  END
                    ADD     1           TO  CNT-RECE82
-                   MOVE    ZERO        TO  FLG-END
       *
                    DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
       *
@@ -643,6 +704,7 @@
                    MOVE    1         TO  FLG-RECE84
                NOT AT  END
                    MOVE    ZERO      TO  FLG-RECE84
+                   ADD     1         TO  CNT-IN-CANCEL
            END-READ
       *
            .

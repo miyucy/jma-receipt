@@ -338,12 +338,14 @@
            MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH 
            PERFORM 900-DBCLOSE-SEC
       *
-           PERFORM 900-RECE02-READ-SEC      
+           IF      FLG-END             =   ZERO
+               PERFORM 900-RECE02-READ-SEC      
       *
-      *    処理中止設定処理
-           IF      CNT-IN-CANCEL   =   50
-               MOVE    ZERO            TO  CNT-IN-CANCEL
-               PERFORM 500-CANCEL-HENSYU-SEC
+      *        処理中止設定処理
+               IF      CNT-IN-CANCEL   =   50
+                   MOVE    ZERO            TO  CNT-IN-CANCEL
+                   PERFORM 500-CANCEL-HENSYU-SEC
+               END-IF
            END-IF
            .
        200-MAIN-EXT.

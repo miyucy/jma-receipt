@@ -29,6 +29,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    04.07.12  ファイルクリア追加
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -109,6 +111,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
+           03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-OUT                                 PIC 9(06).
       *
       *    一時領域
@@ -176,10 +179,18 @@
       *
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
-      *
-           MOVE    ZERO                TO  FLG-END
+                                       FLG-AREA
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
+      *
+           MOVE    "RECE830"           TO  RECE83PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE83PARA-TERMID
+      *
+           MOVE    "RECE831"           TO  RECE831PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE831PARA-TERMID
+      *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -196,14 +207,8 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
-           MOVE    "RECE830"           TO  RECE83PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE83PARA-TERMID
-      *
-           MOVE    "RECE831"           TO  RECE831PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE831PARA-TERMID
-      *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
            OPEN    OUTPUT              RECE831W-FILE
            CLOSE                       RECE831W-FILE
@@ -250,6 +255,12 @@
            ADD     1                   TO  CNT-OUT
       *
            PERFORM 900-RECE83-READ-SEC      
+      *
+      *    処理中止設定処理
+           IF      CNT-IN-CANCEL       =   50
+               MOVE    ZERO                TO  CNT-IN-CANCEL
+               PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
            .
        200-MAIN-EXT.
            EXIT. 
@@ -289,6 +300,55 @@
            EXIT.
       *
       *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
@@ -325,7 +385,7 @@
                    MOVE    1           TO  FLG-END
                NOT AT  END
                    ADD     1           TO  CNT-IN
-                   MOVE    ZERO        TO  FLG-END
+                                           CNT-IN-CANCEL
       *
                    DISPLAY "RECE83  PTID=" RECE83-PTID
       *
