@@ -18,7 +18,9 @@
         02  M97.
             03  M97-FIXED1.
               04  M97-ONKBN             PIC X.
-              04  M97-OFFKBN            PIC X.
+              04  M97-OFFKBN.
+                05  M97-OFFKBN-STATE    PIC S9(9)   BINARY.
+                05  M97-OFFKBN-NAIYO    PIC X(1).
               04  M97-OFFCOMBO.
                 05  M97-OFF-NAIYO       PIC X(14).
                 05  M97-OFF-STATE       PIC S9(9)   BINARY.

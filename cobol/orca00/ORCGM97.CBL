@@ -259,14 +259,14 @@
       *        オンライン・オフライン
                WHEN    "CLICKED"   ALSO    "ONKBN"
                    MOVE    M97-ONKBN       TO  SPA-GMN-ONKBN
-                   MOVE    2               TO  SPA-GMN-CUR
-               WHEN    "CLICKED"   ALSO    "OFFKBN"
-                   MOVE    M97-OFFKBN      TO  SPA-GMN-OFFKBN
-                   IF      SPA-GMN-OFFKBN      =   "T"
-                       MOVE  3                 TO  SPA-GMN-CUR
-                   ELSE
+      *             MOVE    2               TO  SPA-GMN-CUR
+      *         WHEN    "CLICKED"   ALSO    "OFFKBN"
+      *             MOVE    M97-OFFKBN-NAIYO    TO  SPA-GMN-OFFKBN
+      *             IF      SPA-GMN-OFFKBN      =   "T"
+      *                 MOVE  3                 TO  SPA-GMN-CUR
+      *             ELSE
                        MOVE  99                TO  SPA-GMN-CUR
-                   END-IF
+      *             END-IF
            END-EVALUATE
            .
       *
@@ -398,19 +398,19 @@
                MOVE    "1"             TO  SHELLTBL-ARG1
            END-IF
       *    オフライン
-           IF      SPA-GMN-OFFKBN  =   "T"
-               MOVE    SHELL-NAME2     TO  MKPASS-IN-01
-               EVALUATE    SPA-GMN-CD
-                   WHEN    "1"
-                       MOVE    "1"             TO  SHELLTBL-ARG1
-                       MOVE    "1"             TO  SHELLTBL-ARG2
-                   WHEN    "2"
-                       MOVE    "1"             TO  SHELLTBL-ARG1
-                       MOVE    "2"             TO  SHELLTBL-ARG2
-                   WHEN    OTHER
-                       GO  TO  400-JYOUHOU-SEC-EXT
-               END-EVALUATE
-           END-IF
+      *     IF      SPA-GMN-OFFKBN  =   "T"
+      *         MOVE    SHELL-NAME2     TO  MKPASS-IN-01
+      *         EVALUATE    SPA-GMN-CD
+      *             WHEN    "1"
+      *                 MOVE    "1"             TO  SHELLTBL-ARG1
+      *                 MOVE    "1"             TO  SHELLTBL-ARG2
+      *             WHEN    "2"
+      *                 MOVE    "1"             TO  SHELLTBL-ARG1
+      *                 MOVE    "2"             TO  SHELLTBL-ARG2
+      *             WHEN    OTHER
+      *                 GO  TO  400-JYOUHOU-SEC-EXT
+      *         END-EVALUATE
+      *     END-IF
       *
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
@@ -575,19 +575,19 @@
            END-IF
       *
       *    オフライン
-           IF      SPA-GMN-OFFKBN      =   "T"
-               MOVE    SHELL-NAME2     TO  MKPASS-IN-01
-               EVALUATE    SPA-GMN-CD
-                   WHEN    "1"
-                       MOVE    "2"         TO  SHELLTBL-ARG1
-                       MOVE    "1"         TO  SHELLTBL-ARG2
-                   WHEN    "2"
-                       MOVE    "2"         TO  SHELLTBL-ARG1
-                       MOVE    "2"         TO  SHELLTBL-ARG2
-                   WHEN    OTHER
-                       GO  TO  420-KOUSHIN-EXT
-               END-EVALUATE
-           END-IF
+      *     IF      SPA-GMN-OFFKBN      =   "T"
+      *         MOVE    SHELL-NAME2     TO  MKPASS-IN-01
+      *         EVALUATE    SPA-GMN-CD
+      *             WHEN    "1"
+      *                 MOVE    "2"         TO  SHELLTBL-ARG1
+      *                 MOVE    "1"         TO  SHELLTBL-ARG2
+      *             WHEN    "2"
+      *                 MOVE    "2"         TO  SHELLTBL-ARG1
+      *                 MOVE    "2"         TO  SHELLTBL-ARG2
+      *             WHEN    OTHER
+      *                 GO  TO  420-KOUSHIN-EXT
+      *         END-EVALUATE
+      *     END-IF
       *
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
@@ -654,21 +654,22 @@
       *
       *    オンライン・オフライン
            MOVE    SPA-GMN-ONKBN   TO  M97-ONKBN
-           MOVE    SPA-GMN-OFFKBN  TO  M97-OFFKBN
+           MOVE    SPA-GMN-OFFKBN  TO  M97-OFFKBN-NAIYO
       *
       *    オフラインコンボ
-           IF      SPA-GMN-OFFKBN  =   "T"
-               MOVE    SPA-GMN-OFFNAIYO    TO  M97-OFF-NAIYO
-               PERFORM VARYING IDX FROM    1       BY  1
-                       UNTIL   IDX >       SPA-GMN-OFFLIST-MAX
-                   MOVE    SPA-GMN-OFFLIST(IDX)
-                                           TO  M97-OFF-LIST(IDX)
-               END-PERFORM
-               MOVE    SPA-GMN-OFFLIST-MAX TO  M97-OFF-COUNT
-               MOVE    WIDGET-NORMAL       TO  M97-OFF-STATE
-           ELSE
+      *     IF      SPA-GMN-OFFKBN  =   "T"
+      *         MOVE    SPA-GMN-OFFNAIYO    TO  M97-OFF-NAIYO
+      *         PERFORM VARYING IDX FROM    1       BY  1
+      *                 UNTIL   IDX >       SPA-GMN-OFFLIST-MAX
+      *             MOVE    SPA-GMN-OFFLIST(IDX)
+      *                                     TO  M97-OFF-LIST(IDX)
+      *         END-PERFORM
+      *         MOVE    SPA-GMN-OFFLIST-MAX TO  M97-OFF-COUNT
+      *         MOVE    WIDGET-NORMAL       TO  M97-OFF-STATE
+      *     ELSE
                MOVE    WIDGET-INSENSITIVE  TO  M97-OFF-STATE
-           END-IF
+               MOVE    WIDGET-INSENSITIVE  TO  M97-OFFKBN-STATE
+      *     END-IF
       *
       *    コラムリスト
            PERFORM VARYING IDX FROM    1       BY  1

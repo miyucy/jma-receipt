@@ -4,6 +4,7 @@ M97	{
 			value	bool;
 		};
 		OFFKBN	{
+			state	int;
 			value	bool;
 		};
 		OFFCOMBO	{
