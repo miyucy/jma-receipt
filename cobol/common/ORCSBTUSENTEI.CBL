@@ -295,16 +295,24 @@
                    MOVE    SYS-5001-SENTEI-TAXKBN
                                            TO  SRH-5001-TAXKBN (IDX1)
                    IF   (SYS-5001-SENTEI-KINGAKU-X NOT = SPACE) AND
-                        (SYS-5001-SENTEI-KINGAKU NOT = ZERO)
+                        (SYS-5001-SENTEI-KINGAKU-X NOT = "0000")
                        MOVE    SYS-5001-SENTEI-KINGAKU
                                            TO  SRH-5001-KINGAKU(IDX1)
                    ELSE
                        IF   AGECHK-ROUJIN2    =   0
-                           MOVE    SYS-5001-SENTEI-IPN-KINGAKU
+                           IF  SYS-5001-SENTEI-IPN-KINGAKU-X  =  SPACE
+                               MOVE   ZERO TO  SRH-5001-KINGAKU(IDX1)
+                           ELSE
+                               MOVE    SYS-5001-SENTEI-IPN-KINGAKU
                                            TO  SRH-5001-KINGAKU(IDX1)
+                           END-IF
                        ELSE
-                           MOVE    SYS-5001-SENTEI-RJN-KINGAKU
+                           IF  SYS-5001-SENTEI-RJN-KINGAKU-X  =  SPACE
+                               MOVE   ZERO TO  SRH-5001-KINGAKU(IDX1)
+                           ELSE
+                               MOVE    SYS-5001-SENTEI-RJN-KINGAKU
                                            TO  SRH-5001-KINGAKU(IDX1)
+                           END-IF
                        END-IF
                    END-IF
                WHEN    OTHER
