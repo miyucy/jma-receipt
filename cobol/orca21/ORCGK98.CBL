@@ -307,6 +307,9 @@
       *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
            COPY    "CPORCSKANACHK.INC".
       *
+      *    ¿ÇÎÅ¼ïÊÌÌ¾¥Æ¡¼¥Ö¥ë
+           COPY    "CPORCSSRYSYU.INC".
+      *
       *    £Ä£Â¸¡º÷
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -483,6 +486,16 @@
            MOVE    ZERO                TO  SPA-K98-GMN-MAX
            MOVE    ZERO                TO  FLG-MAX
       **** MOVE    SPACE               TO  SPA-K98-SRYKBN
+      *TEST
+      *    ¿ÇÎÅ¼ïÊÌ
+           IF      SPA-K98-GMN-INPUT(1:1)  =   "."
+               PERFORM 31009-SRYSYUKBN-SET-SEC
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    ZERO                TO  SPA-K98-NEXT
+               GO      TO      310-SPA-SET-EXT
+           END-IF
+      *TEST
+      *
       *
            IF       SPA-K98-TYPE         =   "1"
                PERFORM 3101-INPUTCD-SET-SEC
@@ -514,6 +527,49 @@
            .
        310-SPA-SET-EXT.
            EXIT.
+      *
+      *TEST
+      *****************************************************************
+      *    ¿ÇÎÅ¼ïÊÌÊÔ½¸
+      *****************************************************************
+       31009-SRYSYUKBN-SET-SEC            SECTION.
+      * 
+      *    ¿ÇÎÅ¼ïÊÌ¥Æ¡¼¥Ö¥ë¥»¥Ã¥È
+           CALL    "ORCSSRYSYU"        USING
+                                       MSYU-DATA-REC
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   100
+               SET     MSYU-IDX                TO  IDX
+               IF      MSYU-SRYKBN (MSYU-IDX)  =   SPACE
+                   MOVE    100                 TO  IDX
+               ELSE
+                   MOVE    IDX                 TO  SPA-K98-GMN-MAX
+                   MOVE    IDX                 TO  SPA-K98-GMN-NO
+                                                                (IDX)
+                   MOVE    "."                 TO  SPA-K98-GMN-INPUTCD
+                                                                (IDX)
+                   MOVE    MSYU-SRYSYUKBN (MSYU-IDX)
+                                               TO  SPA-K98-GMN-INPUTCD
+                                                        (IDX)(2:3)
+                   MOVE    "."                 TO  SPA-K98-GMN-SRYCD
+                                                                (IDX)
+                   MOVE    MSYU-SRYSYUKBN (MSYU-IDX)
+                                               TO  SPA-K98-GMN-SRYCD
+                                                        (IDX)(2:3)
+                   MOVE    MSYU-SRYSYUKBN (MSYU-IDX)
+                                               TO  SPA-K98-GMN-NAME
+                                                                (IDX)
+                   MOVE    MSYU-SRYMEI (MSYU-IDX)
+                                               TO  SPA-K98-GMN-NAME
+                                                         (IDX)(5:)
+               END-IF
+           END-PERFORM
+      *
+           .
+       31009-SRYSYUKBN-SET-EXT.
+           EXIT.
+      *TEST
       *
       *****************************************************************
       *     ÆþÎÏ¥³¡¼¥É¥Þ¥¹¥¿¡Ý¤è¤êÊÔ½¸
@@ -1902,6 +1958,9 @@
                IF      SPA-ERRCD           =  SPACE
                    IF     (IDX-1           =   5   )  OR
                           (IDX-1           =   SPA-K98-GMN-MAX)
+      *TEST
+                      OR  (SPA-K98-GMN-INPUT(1:1) =   "." )
+      *TEST
                        MOVE    1               TO  FLG-SYURYOU
                    ELSE
                        COMPUTE SPA-GMN-CUR     =   IDX-1   +   1
@@ -2365,7 +2424,7 @@
                GO      TO      290-MAE-EXT
            END-IF
       *
-           INSPECT SPA-K98-GMN-INPUT   REPLACING  ALL "¡ö"  BY  SPACE
+           INSPECT SPA-K98-GMN-INPUT   REPLACING  ALL "¡ö"  BY  "  "
            MOVE    SPACE               TO  WRK-INPUTCD
            MOVE    ZERO                TO  ID2
            PERFORM VARYING     ID1     FROM    1   BY  1
@@ -2401,7 +2460,7 @@
                GO      TO      291-BUB-EXT
            END-IF
       *
-           INSPECT SPA-K98-GMN-INPUT   REPLACING  ALL "¡ö"  BY  SPACE
+           INSPECT SPA-K98-GMN-INPUT   REPLACING  ALL "¡ö"  BY  "  "
            MOVE    SPACE               TO  WRK-INPUTCD
            MOVE    ZERO                TO  ID2
            PERFORM VARYING     ID1     FROM    1   BY  1
@@ -2441,7 +2500,7 @@
                GO      TO      292-ATO-EXT
            END-IF
       *
-           INSPECT SPA-K98-GMN-INPUT   REPLACING  ALL "¡ö"  BY  SPACE
+           INSPECT SPA-K98-GMN-INPUT   REPLACING  ALL "¡ö"  BY  "  "
            MOVE    SPACE               TO  WRK-INPUTCD
            MOVE    ZERO                TO  ID2
            PERFORM VARYING     ID1     FROM    1   BY  1
