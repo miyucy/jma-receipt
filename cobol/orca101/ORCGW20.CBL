@@ -1852,7 +1852,7 @@
            PERFORM 4101-BTU-NUM-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                PERFORM 420-CLEAR-SEC
-               GO  TO  4102-KIHON-CHK-EXT
+               GO  TO  420-SAKUJO-EXT
            END-IF
       *
       *   リストに該当番号の病棟が存在するかチェック
