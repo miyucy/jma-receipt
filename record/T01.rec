@@ -3,6 +3,12 @@ T01	{
 		SKYYM	{
 			value	varchar(7);
 		};
+		B06	{
+                    state   int;
+		};
+		B07	{
+                    state   int;
+		};
 		DATAKBN1	{
                     state   int;
 			value	bool;

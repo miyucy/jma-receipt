@@ -220,7 +220,6 @@
                    07  WRK-PARA-SRYYM  PIC X(06).
                    07  WRK-PARA-TERMID PIC X(16).
                    07  WRK-PARA-SYSYMD PIC X(08).
-               05  WRK-PARA-SKYYM      PIC X(06).
                05  WRK-PARA-TEISYUTUSAKI
                                        PIC X(01).
                05  WRK-PARA-JOBID      PIC 9(07).
@@ -606,11 +605,6 @@
       *****************************************************************
        120-SKYYM-HENSYU-SEC      SECTION.
       *
-           MOVE    WRK-PARA-SKYYM      TO  WRK-SYMD(1:6)
-           MOVE    "01"                TO  WRK-SYMD(7:2)
-           PERFORM 5002-HIZUKE-HEN-SEC
-           MOVE    WRK-HENYMD (1:5)    TO  WRK-SEIYM 
-      *
            MOVE    WRK-PARA-SRYYM      TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 5002-HIZUKE-HEN-SEC
@@ -628,9 +622,6 @@
            MOVE    ZERO            TO  WRK-VOLNUM
                                        WRK-RECENUM
                                        SUM-AREA
-      *     
-      *    医療機関情報レコード
-      *****PERFORM     2001-HENSYU-SEC
       *
       *    審査支払機関・診療科別処理              
            MOVE    KEY-NEW         TO  KEY-OLD
@@ -716,65 +707,9 @@
       *
                PERFORM     900-RECE02-READ-SEC
            END-PERFORM
-      *
-      *        合計書レコード
-      *****PERFORM     2008-HENSYU-SEC
            .
        200-MAIN-EXT.
            EXIT.             
-      * 
-      *****************************************************************
-      *    医療機関情報レコード編集処理
-      *****************************************************************
-       2001-HENSYU-SEC              SECTION.
-      *
-           MOVE    SPACE               TO  WRK-REC
-           MOVE    ZERO                TO  WRK-REC-LENGTH
-      *          
-           MOVE    "IR,"               TO  WRK-REC
-           MOVE    3                   TO  WRK-REC-LENGTH
-      *     
-           MOVE    RECE02-TEISYUTUSAKI TO  WRK-DATA
-           MOVE    1                   TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC
-      *     
-           MOVE    SYS-1001-PREFNUM    TO  WRK-DATA
-           MOVE    2                   TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC
-      *     
-           MOVE    SYS-1001-TENHYOKBN  TO  WRK-DATA
-           MOVE    1                   TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC
-      *     
-           MOVE    SYS-1001-HOSPCD     TO  WRK-DATA
-           MOVE    7                   TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC
-      *     
-           IF      RECE02-RECEKA       =   ZERO
-              MOVE    SPACE                TO  WRK-DATA
-           ELSE    
-               MOVE    RECE02-RECEKA       TO  WRK-DATA
-           END-IF
-           MOVE    2                   TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC
-      *            
-           MOVE    SYS-1001-HOSPNAME   TO  WRK-DATA
-           MOVE    40                  TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC
-      *            
-           MOVE    WRK-SEIYM           TO  WRK-DATA
-           MOVE    5                   TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC
-      *            
-           MOVE    WRK-VOLNUM          TO  WRK-DATA
-           MOVE    2                   TO  WRK-NAGASA
-           MOVE    1                   TO  WRK-END 
-           PERFORM 5004-MOJI-HENSYU-SEC
-      *
-           PERFORM 5001-FILE-WRITE-SEC
-           .
-       2001-HENSYU-EXT.
-           EXIT. 
       * 
       *****************************************************************
       *    レセプト共通レコード編集処理
@@ -2112,35 +2047,6 @@
            .
        200723-KIZAI-HENSYU-EXT.
            EXIT.
-      * 
-      *****************************************************************
-      *    合計レコード編集処理
-      *****************************************************************
-       2008-HENSYU-SEC              SECTION.
-      *
-           MOVE    SPACE               TO  WRK-REC
-           MOVE    ZERO                TO  WRK-REC-LENGTH
-      *          
-           MOVE    "GO,"               TO  WRK-REC
-           MOVE    3                   TO  WRK-REC-LENGTH
-      *
-           MOVE    SUM-TOTALKENSU      TO  WRK-NUM
-           MOVE    6                   TO  WRK-NAGASA
-           PERFORM 5005-NUM-HENSYU-SEC
-      *
-           MOVE    SUM-TOTALTEN        TO  WRK-NUM
-           MOVE    10                  TO  WRK-NAGASA
-           PERFORM 5005-NUM-HENSYU-SEC
-      *
-           MOVE    99                  TO  WRK-DATA
-           MOVE    2                   TO  WRK-NAGASA
-           MOVE    1                   TO  WRK-END 
-           PERFORM 5004-MOJI-HENSYU-SEC
-      *
-           PERFORM 5001-FILE-WRITE-SEC
-           .
-       2008-HENSYU-EXT.
-           EXIT. 
       *
       *****************************************************************
       *    患者番号別保険履歴情報編集処理
@@ -2342,7 +2248,7 @@
                                            TO  RECEDEN-RECEDATA
       *
       *???
-                  DISPLAY "KEY=" WRK-RENNUM "#" RECEDEN-KEY "#"
+                  DISPLAY "KEY="  RECEDEN-KEY "#"
       *???
                MOVE    RECEDEN-REC         TO  MCPDATA-REC
                MOVE    "RECEDEN-KEY"       TO  ORC-DBPATH
@@ -2476,6 +2382,9 @@
                        MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                        MOVE    WRK-COMMENT (IDW)   TO  RECEDEN-RECEDATA
       *
+      *???
+                  DISPLAY "KEY="  RECEDEN-KEY "#"
+      *???
                        MOVE    RECEDEN-REC         TO  MCPDATA-REC
                        MOVE    "RECEDEN-KEY"       TO  ORC-DBPATH
                        MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -2632,6 +2541,9 @@
            MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
            MOVE    WRK-REC             TO  RECEDEN-RECEDATA
       *
+      *???
+                  DISPLAY "KEY="  RECEDEN-KEY "#"
+      *???
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
            MOVE    "RECEDEN-KEY"       TO  ORC-DBPATH
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -3030,8 +2942,6 @@
                            GO  TO  900-RECE02-READ-SEC
                    END-IF                       
                    ADD     1           TO  CNT-IN
-      *************MOVE    RECE02-TEISYUTUSAKI
-      *************                    TO  KEY-N-TEISYUTUSAKI
                    MOVE    RECE02-RECEKA 
                                        TO  KEY-N-SRYKA
            END-READ

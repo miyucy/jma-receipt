@@ -196,7 +196,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 08:26:05 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>社保レセ電</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -219,7 +219,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 08:26:32 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>国保レセ電</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
