@@ -24,6 +24,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/08/20  病名コード移行用項目の追加
+      *  01.00.02    NACL-藤原    03/05/16  コラムリストの分類名を３０に変更
       *****************************************************************
       *
       *01  SPA-SCR-REC.
@@ -39,13 +40,15 @@
                        09  SPA-GMN-BUNRUICD-TBL.
                            11  SPA-GMN-BUNRUICD-TBLO   OCCURS   100.
                                13  SPA-GMN-BBUNRUICD   PIC 9(03).
-                               13  SPA-GMN-BBUNRUIMEI  PIC X(20).
+      *************************13  SPA-GMN-BBUNRUIMEI  PIC X(20).
+                               13  SPA-GMN-BBUNRUIMEI  PIC X(30).
                            11  SPA-GMN-BUNRUI-MAX      PIC 9(04).
       *
                        09  SPA-GMN-BYOMEI-TBL.
                            11  SPA-GMN-TBLO            OCCURS   700.
                                13  SPA-GMN-TBANGO      PIC 9(03).
-                               13  SPA-GMN-TBUNRUIMEI  PIC X(16).
+      *************************13  SPA-GMN-TBUNRUIMEI  PIC X(16).
+                               13  SPA-GMN-TBUNRUIMEI  PIC X(30).
                                13  SPA-GMN-TBYOMEIINPUTCD
                                                        PIC X(10).
                                13  SPA-GMN-TBYOMEI     PIC X(81).

@@ -31,7 +31,7 @@
                   05  C03-BUNRUI-COUNT   PIC S9(9)   BINARY.
                   05  C03-ITEM        OCCURS  100 TIMES.
                     06  C03-BBUNRUICD    PIC X(4).
-                    06  C03-BBUNRUIMEI   PIC X(20).
+                    06  C03-BBUNRUIMEI   PIC X(30).
                   05  C03-BUNRUI-SELECT  PIC X       OCCURS  100 TIMES.
               03  C03-BUNRUICD.
                 04  C03-VALUE   PIC S9(3).
