@@ -3531,6 +3531,17 @@
                WHEN    "9000"
                    MOVE    "ＤＢ更新エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "9001"
+                   MOVE    "受付ＩＤが９９９９９を超えます。"
+                                                TO  SPA-ERRMSG
+                   MOVE    "これ以上受付はできません。"
+                                                TO  SPA-ERRMSG(33:)
+               WHEN    "9002"
+                   MOVE    "受付更新エラー"
+                                                TO  SPA-ERRMSG
+               WHEN    "9003"
+                   MOVE    "保険組合更新エラー"
+                                                TO  SPA-ERRMSG
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
