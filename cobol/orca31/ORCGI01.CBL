@@ -71,6 +71,10 @@
       *                                     変更
       *  01.00.31    NACL-小豆沢  03.07.11  診療録管理体制加算の特別チェック削除
       *  01.00.32    NACL-小豆沢  03.09.24  特別入院基本料算定時の乳幼児加算対応
+      *  01.00.33    NACL-太田    03.09.24  小児入院医療管理料での入院時に年齢
+      *                                     をチェックし１５才以上であれば特定入
+      *                                     院料コンボに表示をしない
+      *  01.00.34    NACL-小豆沢  03.09.24  小児入院医療管理料３の算定対応追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -130,6 +134,7 @@
            03  FLG-WKPTTEIKIRRK            PIC 9(01).
            03  FLG-HKNCOMBIGET             PIC 9(01).
            03  FLG-RRKCHK                  PIC 9(01).
+           03  FLG-CMB-EDIT                PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -3813,6 +3818,7 @@
       *
            INITIALIZE  SPA-GMN-I01-CMB-TOKNYUIN
       *
+           MOVE    ZERO            TO  FLG-CMB-EDIT
       *    病棟情報からコンボ項目を設定
            MOVE    "5001"          TO  WRK-KANRICD
            MOVE    SPA-GMN-I01-BTUNAME-CD
@@ -3823,18 +3829,30 @@
                IF    ( SYS-5001-BTU-TOKTEI-NYUIN
                                NOT =   SPACE )
                    MOVE    "5110"      TO  WRK-KANRICD
-                   MOVE    SYS-5001-BTU-TOKTEI-NYUIN
+                   IF    ( SYS-5001-BTU-TOKTEI-NYUIN
+                                       =   "01" OR "02" OR "14" )
+                       PERFORM 41011-PT-AGE-SEC
+                       IF    ( WRK-NENREI  <   15 )
+                           MOVE    1   TO  FLG-CMB-EDIT
+                       END-IF
+                   ELSE
+                       MOVE        1   TO  FLG-CMB-EDIT
+                   END-IF
+      *
+                   IF    ( FLG-CMB-EDIT    =   1 )
+                       MOVE    SYS-5001-BTU-TOKTEI-NYUIN
                                        TO  WRK-KBNCD
-                   PERFORM 4102-SYSKANRI-SEL-SEC
-                   IF    ( FLG-SYSKANRI    =   ZERO )
-                       MOVE    MCPDATA-REC
+                       PERFORM 4102-SYSKANRI-SEL-SEC
+                       IF    ( FLG-SYSKANRI    =   ZERO )
+                           MOVE    MCPDATA-REC
                                        TO  SYS-5110-REC
-                       MOVE    SYS-5110-BTU-TOKUTEINYUIN-NM
+                           MOVE    SYS-5110-BTU-TOKUTEINYUIN-NM
                                        TO  WRK-TOKNYUIN-NM
-                       MOVE    "2"     TO  WRK-TOKNYUIN-KBN
-                       MOVE    SYS-5110-KBNCD
+                           MOVE    "2"     TO  WRK-TOKNYUIN-KBN
+                           MOVE    SYS-5110-KBNCD
                                        TO  WRK-TOKNYUIN-CD
-                       PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
+                           PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -3925,6 +3943,25 @@
       *
            .
        4101-CMB-TOKNYUIN-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    特定入院料コンボ設定処理
+      *****************************************************************
+       41011-PT-AGE-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  WRK-NENREI
+      *
+           MOVE    SPA-NAI-I01-BIRTHDAY
+                                       TO  WRK-YMDS1
+           MOVE    WRK-KJNYMD          TO  WRK-YMDS2
+           COMPUTE WRK-NENREI      =   WRK-YYS2
+                                   -   WRK-YYS1
+           IF    ( WRK-YMDS1(5:4)     >   WRK-YMDS2(5:4) )
+                COMPUTE WRK-NENREI =   WRK-NENREI  -   1
+           END-IF
+      *
+           .
+       41011-PT-AGE-EXT.
            EXIT.
       *****************************************************************
       *    システム管理マスタ検索処理
@@ -9624,6 +9661,8 @@
                        MOVE   "190067010"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "13"
                        MOVE   "190075910"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "14"
+                       MOVE   "190075810"   TO  SYOKIKSN-IN-KHNSRYCD
              END-EVALUATE
            END-IF
       *    病室
