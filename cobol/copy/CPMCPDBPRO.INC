@@ -297,6 +297,7 @@
       *  01.01.116   NACL-門脇  　04/01/06  SYUDAY-KEY,DEL1追加
       *  01.01.117   NACL-小豆沢  04/01/14  SYUNOU-KEY22追加
       *                                     SYUNOU-KEY23追加
+      *  01.01.118   NACL-門脇  　04/01/14  SRYACCT-KEY29,30,31,32,33追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1675,6 +1676,21 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-KEY28"
                    MOVE    PATH-TBL-SRYACCT-KEY28
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY29"
+                   MOVE    PATH-TBL-SRYACCT-KEY29
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY30"
+                   MOVE    PATH-TBL-SRYACCT-KEY30
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY31"
+                   MOVE    PATH-TBL-SRYACCT-KEY31
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY32"
+                   MOVE    PATH-TBL-SRYACCT-KEY32
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY33"
+                   MOVE    PATH-TBL-SRYACCT-KEY33
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-ALL"
                    MOVE    PATH-TBL-SRYACCT-ALL
