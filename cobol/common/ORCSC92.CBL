@@ -1803,6 +1803,8 @@
       *    ´ðÁÃÅÀ¿ô
            MOVE    TNS-TEN             TO  SPA-COM-TEN      (IDX-T)
            MOVE    TNS-TEN             TO  SPA-COM-KISOTEN  (IDX-T)
+      *    Ì¾¾Î
+           MOVE    TNS-NAME            TO  SPA-COM-NAME     (IDX-T)
       *
            IF      SPA-HKNKBN          =   1
       *        Ï«ºÒ¡¦¼«ÇåÀÕ ÊÔ½¸

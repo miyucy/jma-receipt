@@ -1135,6 +1135,11 @@
       *                編集チェックへ
                        PERFORM 10021-KEISAN-SEC
                END-EVALUATE
+      *        包括検査名称を元へ
+               IF      WRK-MOJI            =   "1"
+                   MOVE    WRK-COM-NAME(IDX-Z)  TO  WRK-GMN-MEISYO
+                                                            (IDX-Z)
+               END-IF
            END-PERFORM
       *
       *    最終行
@@ -1440,15 +1445,16 @@
                ADD     TNS-TEN             TO  WRK-TENSUKEI
            END-IF
       *
+      *    検査の最終行判定
            MOVE    ZERO                TO  WRK-IDX
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   IDX-MAX
                IF      WRK-COM-INPUTCD(IDY)(1:1)   =   "1"
-                   MOVE    WRK-COM-INPUTCD(IDY)    TO  TNS-SRYCD
-                   PERFORM 910-TENSU-READ-SEC
-                   IF      FLG-TENSU           =   ZERO
-                       MOVE    TNS-NAME        TO  WRK-GMN-MEISYO (IDY)
-                   END-IF
+      ************ MOVE    WRK-COM-INPUTCD(IDY)    TO  TNS-SRYCD
+      *            PERFORM 910-TENSU-READ-SEC
+      *            IF      FLG-TENSU           =   ZERO
+      *                MOVE    TNS-NAME        TO  WRK-GMN-MEISYO (IDY)
+      ************ END-IF
                    MOVE    IDY                 TO  WRK-IDX
                END-IF
            END-PERFORM
@@ -1783,7 +1789,7 @@
       *
       *        時間外加算チェック（診察、加算、時間加算のもの）
                IF     (WRK-COM-SRYKBN  (IDX-Z)     =   "11"  OR
-                                                       "12"     ) 
+                                                       "12"     )
                    IF     (WRK-COM-DATAKBN   (IDX-Z)   =   "2"  ) AND
                           (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO)
                        MOVE    1               TO  FLG-JIKASAN
