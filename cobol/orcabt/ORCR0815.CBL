@@ -37,6 +37,8 @@
       *                                     グル〖プ步に恃构
       *                                     SRYACCT-KEY29 -> SRYACCT-KEY36
       *                                     SRYACCT-KEY30 -> SRYACCT-KEY37
+      *  01.01.02    NACL-嚏掀    05/01/07  极清勒么碰板コ〖ド、极清勒瘦
+      *                                     副柴家叹の试礁
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1107,6 +1109,9 @@
                MOVE    WRK-ERR-TEKSTYMD   TO  WRK-RECE82-ERR-TEKSTYMD
                MOVE    WRK-ERR-TEKEDYMD   TO  WRK-RECE82-ERR-TEKEDYMD
            END-IF 
+      *
+           MOVE   PTRSI-DRCD           TO  WRK-RECE82-DRCD
+           MOVE   PTRSI-HOKENNAME      TO  WRK-RECE82-HOKENNAME
       *
            MOVE    WRK-RECE82-REC      TO  RECE82-REC
            WRITE   RECE82-REC

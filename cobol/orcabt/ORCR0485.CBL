@@ -43,6 +43,7 @@
       *  01.00.10    NACL-藤原    04/09/13  帳票別指定編集情報からの編集
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.01.02    NACL-門脇    05/01/07  医師名、保険会社名の編集
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -407,6 +408,7 @@
       *    医療機関情報
            COPY    "CPSK1001.INC".
            COPY    "CPSK1002.INC".
+           COPY    "CPSK1010.INC".
       *
       *    医療機関編集情報
            COPY    "CPSK1900.INC".
@@ -1118,13 +1120,39 @@
                MOVE    SYS-1001-HOSPNAME   TO  HC23-HOSPNAME
            END-IF
       *    管理者
-           MOVE    SYS-1001-KANRINAME  TO  HC23-ISYA
+           IF   RECE41-DRCD  =  SPACE
+               MOVE    SYS-1001-KANRINAME  TO  HC23-ISYA
+           ELSE
+      *        職員情報
+               INITIALIZE                   SYSKANRI-REC
+               MOVE    "1010"           TO  SYS-KANRICD
+               MOVE    RECE41-DRCD      TO  SYS-KBNCD
+               MOVE    RECE41-SRYYM     TO  ORC-DBYMD (1:6)
+               MOVE    "01"             TO  ORC-DBYMD (7:2)
+               PERFORM 960-KANRIMST-READ-SEC
+               IF      FLG-SYSKANRI     =   ZERO
+                   MOVE  MCPDATA-REC    TO  SYS-1010-REC
+                   MOVE  SYS-1010-NAME  TO  HC23-ISYA
+               END-IF
+           END-IF
       *    電話番号
-           MOVE    SYS-1002-TEL        TO  HC23-TEL
+           IF      FLG-SYS-1902        =   1
+               MOVE    SYS-1902-TEL        TO  HC23-TEL
+           ELSE
+               MOVE    SYS-1002-TEL        TO  HC23-TEL
+           END-IF
       *    病床数
            MOVE    SYS-1001-BEDSU      TO  WRK-ZZZ9
            MOVE    WRK-ZZZ9            TO  HC23-BYOSYOSU
-      *    
+      *    保険会社名
+           IF   RECE41-HOKENNAME(31:) = SPACE
+               MOVE    RECE41-HOKENNAME(1:30)
+                                       TO  HC23-HOKENNAME(31:30)
+           ELSE
+               MOVE    RECE41-HOKENNAME
+                                       TO  HC23-HOKENNAME
+           END-IF
+      *
            .
        310-HC101-HEAD-HEN-EXT.
            EXIT.

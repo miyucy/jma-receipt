@@ -47,6 +47,8 @@
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
       *  01.01.02    NACL-門脇    04/12/17  胸部固定帯加算、創外固定器
       *                                     使用加算を薬剤等へ
+      *  01.01.03    NACL-門脇    05.01.07  自賠責担当医コード、自賠責保
+      *                                     険会社名の編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -725,6 +727,9 @@
                         MOVE   PTRSI-COMMENT    TO  RECE41-COMMENT
                         MOVE   PTRSI-SAIGAIKBN  TO  RECE41-SAIGAIKBN 
                         MOVE   PTRSI-RYOSTYMD   TO  RECE41-SHOSHINYMD
+      *
+                        MOVE   PTRSI-DRCD       TO  RECE41-DRCD
+                        MOVE   PTRSI-HOKENNAME  TO  RECE41-HOKENNAME
                    END-IF
                END-IF
       *    END-IF
