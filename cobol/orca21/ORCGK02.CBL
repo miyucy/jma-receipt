@@ -2668,6 +2668,13 @@
            MOVE    SPACE           TO  FLG-TOROKU
            PERFORM 510-TBLHEN-SEC
            MOVE    SPACE           TO  FLG-TOROKU
+      *    警告フラグクリア
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   (IDX        >   200 )  OR
+                          ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
+                           (SPA-COM-INPUTCD(IDX)   =   SPACE ))
+               MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
+           END-PERFORM
       *
            MOVE    SPACE               TO  SPA-ERRCD
            MOVE    SPACE               TO  SPA-KIDCD
