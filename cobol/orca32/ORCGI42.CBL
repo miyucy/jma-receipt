@@ -228,6 +228,7 @@
            03  WRK-GOK-RSITENSU    PIC 9(08).
            03  WRK-GOK-TENSU       PIC S9(07).
            03  WRK-GOK-NYUTEN      PIC S9(07).
+           03  WRK-GOK-NYUTEN2     PIC S9(07).
       *
            03  WRK-ZZZ              PIC ZZZ.
            03  WRK-Z8               PIC ZZ,ZZZ,ZZZ.
@@ -1613,6 +1614,7 @@
            MOVE    ZERO                TO  WRK-GOK-TENSU
            MOVE    ZERO                TO  WRK-GOK-RSITENSU
            MOVE    ZERO                TO  WRK-GOK-JIHIKIN
+           MOVE    ZERO                TO  WRK-GOK-NYUTEN2
       *    診療会計マスターから編集
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPID          TO  ACCT-HOSPID
@@ -1663,18 +1665,36 @@
                        PERFORM 31092-SRYACCT-HEN-SEC
                    ELSE
                        MOVE    ZERO                TO  FLG-GENZAN
+      *!診療会計に減額フラグを追加するまで
       *                内服の逓減かどうかを判定する
                        IF      ACCT-SRYKBN         =   "21"
+                                                   OR  "90"
+                                                   OR  "92"
+                                                   OR  "97"
                            PERFORM 31092-SRYACCT-HEN-SEC
                        END-IF
                        COMPUTE WRK-TENSU       =   ACCT-ZAITEN
                                                *   ACCT-ZAIKAISU
-                       IF      FLG-GENZAN          =   ZERO
-                           COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
-                                                   +   WRK-TENSU
+                       IF      ACCT-SRYKBN         =   "90"
+                                                   OR  "92"
+                                                   OR  "97"
+                           IF      FLG-GENZAN          =   ZERO
+                               COMPUTE WRK-GOK-NYUTEN2 =
+                                                       WRK-GOK-NYUTEN2
+                                                       +   WRK-TENSU
+                           ELSE
+                               COMPUTE WRK-GOK-NYUTEN2 =
+                                                       WRK-GOK-NYUTEN2
+                                                       -   WRK-TENSU
+                           END-IF
                        ELSE
-                           COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
-                                                   -   WRK-TENSU
+                           IF      FLG-GENZAN          =   ZERO
+                               COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
+                                                       +   WRK-TENSU
+                           ELSE
+                               COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
+                                                       -   WRK-TENSU
+                           END-IF
                        END-IF
                    END-IF
                END-IF
@@ -1697,6 +1717,7 @@
       *    入院の時、入院料の点数合計
            IF      SPA-GMN-NYUGAIKBN   =   "1"
                PERFORM 31091-NYUACCT-TENSU-SEC
+               ADD     WRK-GOK-NYUTEN2     TO  SPA-GMN-NYUTENSU
            END-IF
       *
            .
@@ -1883,6 +1904,7 @@
       *
            MOVE    ZERO                TO  FLG-GENZAN
            PERFORM UNTIL       FLG-SRYACT      =   1
+      *!診療会計に減額フラグを追加するまで
       *        薬剤料逓減　を減算
                IF     (ACCT-SRYKBN         =   "21" )  AND
                       (SRY-SRYCD (01)      =   "630010002")
@@ -1901,6 +1923,20 @@
                            UNTIL      (IDZ         >   5   )  OR
                                       (SRY-SRYCD (IDZ) =   SPACE )  OR
                                       (FLG-SRYACT      =   1     )
+      *!診療会計に減額フラグを追加するまで
+      *                入院の減額
+                       IF      ACCT-SRYKBN         =   "90" OR  "92"
+                                                   OR  "97"
+                           MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
+                           PERFORM 910-TENSU-READ-SEC
+                           IF      TNS-TENSIKIBETU     =   7
+                                                       OR  8
+                               IF      TNS-TEN         =   ACCT-ZAITEN
+                                    MOVE    1          TO  FLG-GENZAN
+                                    MOVE    1          TO  FLG-SRYACT
+                               END-IF
+                           END-IF
+                       END-IF
       *
       *                労災コードの時、点数取得
                        IF      (SRY-SRYCD (IDZ)(1:3)   =   "101"  )  OR
@@ -1938,20 +1974,23 @@
       *    自費の時、自費合計を集計
            IF      ACCT-SRYKBN         =   "96"  OR  "95"
                                        OR  "21"
-               GO      TO      31092-SRYACCT-HEN-EXT
-           END-IF
+                                       OR  "90"  OR  "92"
+                                       OR  "97"
+               CONTINE
+           ELSE
       *
-      *    労災の点数集計
-           IF      WRK-SUM-TEN         <=  ACCT-ZAITEN
-               COMPUTE WRK-TENSU       =  (ACCT-ZAITEN
-                                       -   WRK-SUM-TEN )
-                                       *   ACCT-ZAIKAISU
-               COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
-                                       +   WRK-TENSU
+      *        労災の点数集計
+               IF      WRK-SUM-TEN         <=  ACCT-ZAITEN
+                   COMPUTE WRK-TENSU       =  (ACCT-ZAITEN
+                                           -   WRK-SUM-TEN )
+                                           *   ACCT-ZAIKAISU
+                   COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
+                                           +   WRK-TENSU
+               END-IF
+               COMPUTE WRK-GOK-RSITENSU    =   WRK-GOK-RSITENSU
+                                           +  (WRK-RSI-TEN
+                                           *   ACCT-ZAIKAISU )
            END-IF
-           COMPUTE WRK-GOK-RSITENSU    =   WRK-GOK-RSITENSU
-                                       +  (WRK-RSI-TEN
-                                       *   ACCT-ZAIKAISU )
       *
            .
        31092-SRYACCT-HEN-EXT.
