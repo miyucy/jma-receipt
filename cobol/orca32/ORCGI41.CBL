@@ -4224,7 +4224,7 @@
                        MOVE   1                TO   FLG-NYUINKHNRYO
                    END-IF
       *            最終日の食事を退避（次月会計の作成用）
-                   IF      WRK-TAIHI-SHOKUJI   =    ZERO
+      *             IF      WRK-TAIHI-SHOKUJI   =    ZERO
                      IF      NACCT-ZAISKBKBN     =   "4"
                        MOVE    ZERO            TO  WRK-TAIHI-SHOKUJI
                        PERFORM VARYING     IDX-HKN   FROM   1   BY  1
@@ -4235,9 +4235,9 @@
                           END-IF
                        END-PERFORM
                      END-IF
-                   END-IF
+      *             END-IF
       *            最終日の保険組合せを退避（次月会計の作成用）
-                   IF      WRK-TAIHI-HKN   =    ZERO
+      *             IF      WRK-TAIHI-HKN   =    ZERO
                      IF      NACCT-ZAISKBKBN     =   "5"
                        MOVE    ZERO            TO  WRK-TAIHI-HKN
                        PERFORM VARYING     IDX-HKN   FROM   1   BY  1
@@ -4248,7 +4248,7 @@
                           END-IF
                        END-PERFORM
                      END-IF
-                   END-IF
+      *             END-IF
       *
                    MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH
                    PERFORM 900-NYUINACCT-READ-SEC
