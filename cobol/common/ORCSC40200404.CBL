@@ -713,18 +713,22 @@
            END-IF
            PERFORM
                UNTIL       FLG-SANTEI      =   1
-               COMPUTE WRK-DAY-CNT         =   WRK-DAY-CNT
-                                           +   SANTEI-DAY (IDX-Y2)
-               PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL       IDX2    >   31
-                   COMPUTE WRK-DAY (IDX2)  =   WRK-DAY (IDX2)
-                                           +   SANTEI-DAY (IDX2)
-               END-PERFORM
+      *        保険毎の判定とする
+               IF     (SPA-HKNKBN          =   ZERO)  OR
+                     ((SPA-HKNKBN      NOT =   ZERO)  AND
+                      (SPA-HKNCOMBINUM     =   SANTEI-HKNCOMBINUM))
+                   COMPUTE WRK-DAY-CNT         =   WRK-DAY-CNT
+                                               +   SANTEI-DAY (IDX-Y2)
+                   PERFORM VARYING     IDX2    FROM    1   BY  1
+                           UNTIL       IDX2    >   31
+                       COMPUTE WRK-DAY (IDX2)  =   WRK-DAY (IDX2)
+                                               +   SANTEI-DAY (IDX2)
+                   END-PERFORM
+               END-IF
       *
                MOVE    "SANTEI-KEY5"       TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
-      *
       *    訂正の時、訂正分はカウントしない
            MOVE    ZERO                TO  WRK-TEI-CNT
            PERFORM VARYING     IDX     FROM    1   BY  1
