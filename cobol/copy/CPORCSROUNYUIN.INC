@@ -38,8 +38,6 @@
            03  LNK-SROUNYUIN-SANTEIYM                PIC  X(06).
       *保険組合せ
            03  LNK-SROUNYUIN-HKNCOMBI                PIC  9(04).
-      *初回番号
-           03  LNK-SROUNYUIN-SHONUM                  PIC  9(03).
       *略称編集区分（空白：しない　１：する）
            03  LNK-SROUNYUIN-RYAKUKBN                PIC  X(01).
       *労災乗数区分（１：２週間以内　２：２週間越え）
