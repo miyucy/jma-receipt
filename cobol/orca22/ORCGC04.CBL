@@ -104,6 +104,10 @@
       *
        01  WRK-TBL-MAX             PIC 9(03)   VALUE   100.
       *
+      *    患者病名マスタ−（ワーク）
+       01  WRK-BYOMEI-AREA.
+           03  WRK-BYOMEI-O        PIC X(100)  OCCURS  6.
+      *
        01  WRK-HEN-AREA.
            03  WRK-NENGO           PIC X(04).
            03  WRK-HENYMDG         PIC X(09).
@@ -332,26 +336,44 @@
                END-IF
            END-PERFORM
       *
-      *    病名編集 
+      *    病名編集
+           MOVE    SPACE                   TO  WRK-BYOMEI-AREA
+           MOVE    ZERO                    TO  IDY
+      *
            MOVE    SPA-NAI-C04-BYOMEI (1)  TO  WRK-BYOMEI
       *     
            PERFORM VARYING IDX FROM    2   BY  1
                    UNTIL   IDX >       6
-               IF      SPA-GMN-C04-INPUTCD (IDX)   NOT =   SPACE
-                 IF      SPA-NAI-C04-BYOMEITOP (IDX) =   "1"
-                   STRING  WRK-BYOMEI              DELIMITED  BY  SPACE
-                           "／"                    DELIMITED  BY  SIZE
-                           SPA-NAI-C04-BYOMEI(IDX) DELIMITED  BY  SPACE
-                                  INTO             WRK-BYOMEI
+               IF      SPA-GMN-C04-INPUTCD (IDX)
+                                   NOT =   SPACE
+                   IF      SPA-NAI-C04-BYOMEITOP (IDX) =   "1"
+                       IF      WRK-BYOMEI  NOT =   SPACE
+                           ADD     1           TO  IDY
+                           MOVE    WRK-BYOMEI  TO  WRK-BYOMEI-O (IDY)
+                       END-IF
+                       MOVE    SPACE           TO  WRK-BYOMEI
+                   END-IF
+                   STRING  WRK-BYOMEI              DELIMITED   BY  SPACE
+                           SPA-NAI-C04-BYOMEI(IDX) DELIMITED   BY  SPACE
+                                                   INTO    WRK-BYOMEI
                    END-STRING
-                 ELSE
-                   STRING  WRK-BYOMEI              DELIMITED  BY  SPACE
-                           SPA-NAI-C04-BYOMEI(IDX) DELIMITED  BY  SPACE
-                                  INTO             WRK-BYOMEI
-                   END-STRING
-                 END-IF
                END-IF    
            END-PERFORM    
+           IF      WRK-BYOMEI      NOT =   SPACE
+               ADD     1               TO  IDY
+               MOVE    WRK-BYOMEI      TO  WRK-BYOMEI-O (IDY)
+           END-IF
+      *
+           MOVE   WRK-BYOMEI-O (1)     TO  WRK-BYOMEI
+           PERFORM VARYING IDX FROM    2   BY  1
+                   UNTIL   IDX >       6
+                   OR      WRK-BYOMEI-O (IDX)  =   SPACE     
+               STRING  WRK-BYOMEI      DELIMITED  BY  SPACE
+                   "／"                DELIMITED  BY  SIZE
+                   WRK-BYOMEI-O (IDX)  DELIMITED  BY  SPACE
+                                 INTO             WRK-BYOMEI
+               END-STRING
+           END-PERFORM
            MOVE    WRK-BYOMEI          TO  SPA-GMN-C04-BYOMEI
            .
        3100-BYOMEI-HENSYU-EXT.
@@ -653,14 +675,6 @@
                GO  TO  41002-SELNUM2-CHK-EXT
            END-IF
       *
-           IF      SPA-NAI-C04-BYOMEISU-MAX
-                                       =   1
-           AND     SPA-GMN-C02-BANGO   >   ZERO               
-               MOVE    99                  TO  SPA-GMN-C04-CUR
-               MOVE    "0003"              TO  SPA-ERRCD
-               GO  TO  41002-SELNUM2-CHK-EXT
-           END-IF
-      *
            MOVE    C04-SELNUM2         TO  SPA-GMN-C04-SELNUM
       *
            IF      SPA-GMN-C04-SELNUM  >   ZERO
@@ -729,6 +743,14 @@
            END-PERFORM
       *                                     
            PERFORM 3100-BYOMEI-HENSYU-SEC
+      *
+      *    変更処理のときの複数病名入力
+           IF    ( SPA-NAI-C04-BYOMEISU-MAX
+                                       =   1    )
+           AND   ( SPA-GMN-C02-BANGO   >   ZERO )               
+               MOVE    99                  TO  SPA-GMN-C04-CUR
+               MOVE    "0003"              TO  SPA-ERRCD
+           END-IF
       *
            IF      SPA-ERRCD           =   SPACE
                IF      WRK-HAISIYMDH       =   SPACE
@@ -1054,6 +1076,32 @@
       *    確定　処理
       *****************************************************************
        450-KAKUTEI-SEC             SECTION.
+      *
+      *    変更処理のときの複数病名入力
+           IF    ( SPA-NAI-C04-BYOMEISU-MAX
+                                       =   1    )
+           AND   ( SPA-GMN-C02-BANGO   >   ZERO )               
+               MOVE    99                  TO  SPA-GMN-C04-CUR
+               MOVE    "0003"              TO  SPA-ERRCD
+               GO  TO  450-KAKUTEI-EXT
+           END-IF
+      *
+      *    病名重複チェック
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       6
+                   OR      WRK-BYOMEI-O (IDX)  =   SPACE
+               PERFORM VARYING IDY FROM    IDX  BY  1
+                       UNTIL   IDY >       6
+                       OR      WRK-BYOMEI-O (IDY)  =   SPACE
+                   IF      IDY             >   IDX
+                       IF      WRK-BYOMEI-O (IDX)  =
+                                               WRK-BYOMEI-O (IDY)
+                           MOVE    "0002"              TO  SPA-ERRCD
+                           GO  TO  450-KAKUTEI-EXT
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-PERFORM        
       *
            MOVE    ZERO            TO  IDY
       *     
