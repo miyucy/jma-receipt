@@ -98,6 +98,8 @@ FORM_files = \
               HCM24V01.red \
               HCM29.red \
               HCMG001.red \
+              HCM2A.red \
+              HCM2B.red \
 
 all:   
 
