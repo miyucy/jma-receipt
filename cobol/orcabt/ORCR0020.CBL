@@ -76,6 +76,7 @@
       *                                     診療科数１０から２０へ変更
       *  01.00.25    NACL-門脇    03/03/07  在総診フラグセット
       *  01.00.26    NACL-藤原    03/03/11  種別不明の情報を編集
+      *  01.00.27    NACL-門脇    03/03/18  在総診フラグセットの修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2178,9 +2179,9 @@
                  IF  RECE02-RECESYUBETU   =   "8888"
                      MOVE  SPACE       TO  RECE02-ZAITAKU
                  END-IF
-                 IF  RECE02-HKNNUM        =   SPACE 
-                     MOVE  SPACE       TO  RECE02-ZAITAKU
-                 END-IF
+      ***        IF  RECE02-HKNNUM        =   SPACE 
+      ***            MOVE  SPACE       TO  RECE02-ZAITAKU
+      ***        END-IF
       *
                END-IF
              END-IF

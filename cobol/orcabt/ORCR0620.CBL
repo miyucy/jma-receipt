@@ -1046,9 +1046,9 @@
                IF  RECE62-RECESYUBETU   =   "8888"
                    MOVE  SPACE       TO  RECE62-KOUREI
                END-IF
-               IF  RECE62-HKNNUM        =   SPACE 
-                   MOVE  SPACE       TO  RECE62-KOUREI
-               END-IF
+      ***      IF  RECE62-HKNNUM        =   SPACE 
+      ***          MOVE  SPACE       TO  RECE62-KOUREI
+      ***      END-IF
       *
            END-IF
       *

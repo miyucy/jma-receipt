@@ -237,7 +237,7 @@
            MOVE    RECE66-TEKSTYMD      TO      RECE661-TEKSTYMD
            MOVE    RECE66-KOHBUNRI      TO      RECE661-KOHBUNRI
            MOVE    RECE66-ZAINUM        TO      RECE661-ZAINUM
-           IF      RECE66-ZAINUM(1:7)  =  9999998
+           IF      RECE66-ZAINUM(1:7)  =  "9999998"
                  MOVE     ZERO          TO      RECE661-ZAINUM
            END-IF
            IF      RECE66-ZAINUM       =  99999999
