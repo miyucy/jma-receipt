@@ -40,6 +40,8 @@
            03  LNK-NYURECEDEN-HKNKBN                 PIC  X(01).
       *返却項目
            03  LNK-NYURECEDEN-HENKYAKU-AREA.
+      *入院返却テーブル
+             04  LNK-NYURECEDEN-HENKYAKU-TABLE       OCCURS  2.
       *入院料返却テーブル
                05  LNK-NYURECEDEN-HENKYAKU-TBL       OCCURS  31.
       *保険組合せ
@@ -60,24 +62,6 @@
                        09  LNK-NYURECEDEN-KAISU      PIC  9(02).
       *コメント記録データ
                        09  LNK-NYURECEDEN-COMMENT    PIC  X(76).
-      *食事返却テーブル
-               05  LNK-NYURECEDEN-SKJ-HENKYAKU-TBL   OCCURS  31.
-      *保険組合せ
-                   07  LNK-NYURECEDEN-SKJ-HKNCOMBI   PIC  9(04).
-      *明細数
-                   07  LNK-NYURECEDEN-SKJ-MEISAISU   PIC  9(03).
-      *レセ電記録エリア（食事）
-                   07  LNK-NYURECEDEN-SKJ-NYUIN      OCCURS 20.
-      *レコード識別
-                       09  LNK-NYURECEDEN-SKJ-RECSKB PIC  X(02).
-      *診療識別
-                       09  LNK-NYURECEDEN-SKJ-SRYSKB PIC  X(02).
-      *診療行為コード
-                       09  LNK-NYURECEDEN-SKJ-SRYCD  PIC  X(09).
-      *点数
-                       09  LNK-NYURECEDEN-SKJ-TEN    PIC  9(07).
-      *回数
-                       09  LNK-NYURECEDEN-SKJ-KAISU  PIC  9(02).
       *
       *復帰コード（１：算定年月エラー　２：患者検索エラー　３：保険区分エラー
       *            ４：入院会計なし　　５：保険組合せ取得エラー）
