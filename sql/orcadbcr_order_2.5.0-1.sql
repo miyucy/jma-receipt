@@ -44,3 +44,5 @@ create table TBL_ORDER (
 	UPHMS				char(6),
 constraint TBL_ORDER_primary_key primary key (HOSPID,KARTE_KEY,NYUGAIKBN,PTNUM,PTID,SRYKA,SRYYMD,HKNCOMBI,
 ORDERNUM,RENNUM,UKEYMD,UKEHMS));
+
+create index idx_order_ukeymd ON tbl_order USING btree (ukeymd);
