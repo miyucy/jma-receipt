@@ -6,6 +6,7 @@
       * Maj/Min/Rev  饯赖荚       泣烧      柒推
       *  01.00.01    MCC-疲付     02.02.27  箭羌ＤＢの恃构により饯赖
       *  01.00.02    NACL-井痞卖  04.01.21  箭羌ＤＢの恃构により饯赖
+      *  01.00.03    NACL-吕拍    04.03.17  箭羌ＤＢの恃构により饯赖
       ************************************************************
       *01  BD002-REC.
            03  BD002-KEY.
@@ -46,7 +47,7 @@
       *肩瘦副≥纷换砷么垛
            03  BD002-SYUCOMPFTN          PIC  9(07).
       *肩瘦副≥纷换砷么垛∈边帽疤淡峡脱∷
-           03  BD002-SYUCOMPFTN-ENTANI   PIC  9(07).
+           03  BD002-SYUCOMPFTN-ENTANI   PIC  9(07)V9(01).
       *肩瘦副≥纷换挑恨办婶砷么垛
            03  BD002-SYUCOMPYKZFTN       PIC  9(07).
       *肩瘦副≥纷换砷么垛纷
@@ -62,7 +63,7 @@
       *给锐１≥纷换砷么垛
                05  BD002-KOH1COMPFTN         PIC  9(07).
       *给锐１≥纷换砷么垛∈边帽疤淡峡脱∷
-               05  BD002-KOH1COMPFTN-ENTANI  PIC  9(07).
+               05  BD002-KOH1COMPFTN-ENTANI  PIC  9(07)V9(01).
       *给锐１≥纷换挑恨办婶砷么垛
                05  BD002-KOH1COMPYKZFTN      PIC  9(07).
       *给锐１≥纷换砷么垛纷
@@ -76,7 +77,7 @@
       *给锐２≥纷换砷么垛
                05  BD002-KOH2COMPFTN         PIC  9(07).
       *给锐２≥纷换砷么垛∈边帽疤淡峡脱∷
-               05  BD002-KOH2COMPFTN-ENTANI  PIC  9(07).
+               05  BD002-KOH2COMPFTN-ENTANI  PIC  9(07)V9(01).
       *给锐２≥纷换挑恨办婶砷么垛
                05  BD002-KOH2COMPYKZFTN      PIC  9(07).
       *给锐２≥纷换砷么垛纷
@@ -90,7 +91,7 @@
       *给锐３≥纷换砷么垛
                05  BD002-KOH3COMPFTN         PIC  9(07).
       *给锐３≥纷换砷么垛∈边帽疤淡峡脱∷
-               05  BD002-KOH3COMPFTN-ENTANI  PIC  9(07).
+               05  BD002-KOH3COMPFTN-ENTANI  PIC  9(07)V9(01).
       *给锐３≥纷换挑恨办婶砷么垛
                05  BD002-KOH3COMPYKZFTN      PIC  9(07).
       *给锐３≥纷换砷么垛纷
@@ -104,7 +105,7 @@
       *给锐４≥纷换砷么垛
                05  BD002-KOH4COMPFTN         PIC  9(07).
       *给锐４≥纷换砷么垛∈边帽疤淡峡脱∷
-               05  BD002-KOH4COMPFTN-ENTANI  PIC  9(07).
+               05  BD002-KOH4COMPFTN-ENTANI  PIC  9(07)V9(01).
       *给锐４≥纷换挑恨办婶砷么垛
                05  BD002-KOH4COMPYKZFTN      PIC  9(07).
       *给锐４≥纷换砷么垛纷
@@ -121,7 +122,7 @@
       *给锐≥纷换砷么垛
                  07  BD002-KOH-COMPFTN         PIC  9(07).
       *给锐≥纷换砷么垛∈边帽疤淡峡脱∷
-                 07  BD002-KOH-COMPFTN-ENTANI  PIC  9(07).
+                 07  BD002-KOH-COMPFTN-ENTANI  PIC  9(07)V9(01).
       *给锐≥纷换挑恨办婶砷么垛
                  07  BD002-KOH-COMPYKZFTN      PIC  9(07).
       *给锐≥纷换砷么垛纷
@@ -255,6 +256,8 @@
            03  BD002-RJN-FTN             PIC  9(07).
       *给锐办婶砷么垛
            03  BD002-KOH-FTN             PIC  9(07).
+      *给锐办婶砷么垛∈边帽疤∷
+           03  BD002-KOH-FTN-ENTANI      PIC  9(07)V9(01).
       *挑恨办婶砷么垛
            03  BD002-YKZ-FTN             PIC  9(07).
       *レセプト叫蜗脱挑恨办婶砷么垛
@@ -464,6 +467,10 @@
               05  BD002-KYUFUGAI-GOKEI-TEN      PIC  9(07).
       *泣侍箭羌フラグ
            03  BD002-DAYINFFLG           PIC  X(01).
+      *掐薄旺悟戎规
+           03  BD002-NYUIN-RRKNUM        PIC  9(03).
+      *柴纷恃构惰尸
+           03  BD002-ACCT-UPDKBN         PIC  X(01).
       *眉琐ＩＤ
            03  BD002-TERMID              PIC  X(16).
       *オペ〖レ〖タＩＤ
@@ -474,6 +481,6 @@
            03  BD002-UPYMD               PIC  X(08).
       *构糠箕粗
            03  BD002-UPHMS               PIC  X(06).
-      *      *
+      *
       *吹荚戎规
            03  BD002-PTNUM               PIC  X(20).
