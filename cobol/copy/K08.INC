@@ -85,3 +85,6 @@
               03  K08-MSGDATA.
                 04  K08-MSGDATA-STYLE   PIC X(20).
                 04  K08-MSGDATA-VALUE   PIC X(60).
+              03  K08-B10.
+                04  K08-B10-STATE   PIC S9(9)   BINARY.
+                04  K08-B10-LABEL   PIC X(10).

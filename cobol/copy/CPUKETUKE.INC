@@ -44,6 +44,8 @@
            03  UKE-DRCD                PIC X(05).
       *診療内容
            03  UKE-SRYNAIYO            PIC X(02).
+      *保険組合せ
+           03  UKE-HKNCOMBI            PIC 9(04).
       *会計時間
            03  UKE-KAIKEITIME          PIC 9(04).
       *キー予約時間

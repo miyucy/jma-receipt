@@ -996,6 +996,17 @@ COPYS = \
         HCM2NV01.INC \
         HCM2OV01.INC \
         HCM2PV01.INC \
+        K081.INC \
+        K081SCR-SPA \
+        CPORCSORDERPRT.INC \
+        CPORDERPRT.INC \
+        CPORCSCWKSRY.INC \
+        CPORCHC501.INC \
+        CPORCHC502.INC \
+        CPORCHC503.INC \
+        HC501.INC \
+        HC502.INC \
+        HC503.INC \
 
 DBPATH = \
 	ORCA-DBPATH
