@@ -1798,7 +1798,7 @@
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
-               MOVE    "0093"              TO  SPA-ERRCD
+               MOVE    "1093"              TO  SPA-ERRCD
                DISPLAY "K02 WKSRYACT INS ERR:"  MCP-RC
            END-IF
       *

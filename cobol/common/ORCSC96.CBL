@@ -456,7 +456,7 @@
                                        TO  SPA-ERRMSG
                    MOVE    "算定できません"
                                        TO  SPA-ERRMSG(43:)
-               WHEN    "0093"
+               WHEN    "1093"
                    MOVE    "中途終了登録エラー。"
                                        TO  SPA-ERRMSG
                WHEN    "K092"
