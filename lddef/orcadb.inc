@@ -65,6 +65,7 @@ db	{
 	tbl_teikiprt;
 	tbl_teikirrk;
 	tbl_ptteikirrk;
+        tbl_kohsky;
 };
 db	"shell"	{
 	shell;
