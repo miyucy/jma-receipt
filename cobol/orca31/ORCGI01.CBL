@@ -7855,7 +7855,8 @@
        4801-IDOKAIKEI-CANCEL-SEC       SECTION.
       *
            DISPLAY "4801-IDOKAIKEI-CANCEL-SEC"
-      *    入院会計作成サブの呼出し
+      *
+      *    入院会計作成サブの呼出し（異動分の会計削除）
            INITIALIZE            ORCSNYUACCT-AREA
            MOVE     "2"     TO   LNK-SCNYUACCT-SYORI-KBN
            MOVE     "1"                TO  SPA-NYUGAIKBN
@@ -7880,6 +7881,131 @@
                             LNK-SCNYUACCT-RC
            END-IF
       *
+      *    入院会計作成サブの呼出し（異動前の会計作成）
+           INITIALIZE                  PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "PTNYUINRRK-KEY9"   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO  )
+               MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+           ELSE
+               INITIALIZE              PTNYUINRRK-REC
+           END-IF
+      *
+           MOVE    "PTNYUINRRK-KEY9"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+      *
+           INITIALIZE      ORCSSYOKIKSNAREA
+      *
+      *    通算日数、算定開始日を求める
+           PERFORM 4801-TSUSAN-SANTEI-GET-SEC
+           IF    ( SPA-ERRCD    NOT =  SPACE )
+               GO  TO  4801-NYUKAIKEI-EDIT-EXT
+           END-IF
+      *
+           MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
+           MOVE    WRK-SANTEISTYMD
+                                   TO  SYOKIKSN-IN-SANTEISTYMD
+      *-     IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
+      *-         PERFORM 4801-NYUTSUSAN-SANTEI-GET-SEC
+      *-     ELSE
+      *-         PERFORM 4801-IDOTSUSAN-SANTEI-GET-SEC
+      *-     END-IF
+      *
+      *
+           IF      SPA-GMN-I01-TOKNYUIN-CD    NOT =   SPACE
+               PERFORM   4801-TOKTEI-NYUIN-SET-SEC
+           ELSE
+               IF  SYS-5001-BTU-KHNSRYCD      NOT =   SPACE
+                   MOVE    SYS-5001-BTU-KHNSRYCD
+                                       TO  SYOKIKSN-IN-KHNSRYCD
+                   PERFORM   4801-RJNCD-CHG-SEC
+                   CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
+                   IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
+                       MOVE    "2006"      TO  SPA-ERRCD
+                       GO  TO  4801-NYUKAIKEI-EDIT-EXT
+                   END-IF
+               ELSE
+                   MOVE    "2006"      TO  SPA-ERRCD
+                   GO  TO  4801-NYUKAIKEI-EDIT-EXT
+               END-IF
+           END-IF
+      *
+      *    入院会計作成サブの呼出し
+           INITIALIZE            ORCSNYUACCT-AREA
+           MOVE     "1"     TO   LNK-SCNYUACCT-SYORI-KBN
+           MOVE     "1"                TO  SPA-NYUGAIKBN
+           MOVE     PTNYUINRRK-PTID    TO  SPA-PTID
+           MOVE     PTNYUINRRK-NYUINKA TO  SPA-SRYKA
+           MOVE    SYOKIKSN-IN-KHNSRYCD
+                            TO   LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+           MOVE    SYOKIKSN-IN-SANTEISTYMD
+                            TO   LNK-SCNYUACCT-STSRYYMD
+           PERFORM   VARYING   IDX6   FROM   1   BY   1
+               UNTIL (SYOKIKSN-OT-KGNSRYCD(IDX6)  =  SPACE) OR
+                     (IDX6   >     7)
+               MOVE   SYOKIKSN-OT-KGNSRYCD(IDX6)
+                         TO  LNK-SCNYUACCT-KAGEN-SRYCD(IDX6)
+               MOVE   SYOKIKSN-OT-YUKOSTYMD(IDX6)
+                         TO  LNK-SCNYUACCT-KAGEN-STYUKYMD(IDX6)
+               MOVE   SYOKIKSN-OT-YUKOEDYMD(IDX6)
+                         TO  LNK-SCNYUACCT-KAGEN-EDYUKYMD(IDX6)
+           END-PERFORM
+      *    通算算定済日数
+           MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
+      *    入院料加算診療コード取り込み
+           PERFORM    4801-NYUKSN-GET-SEC
+      *    特定入院料区分のセット
+           IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
+               MOVE     "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
+           ELSE
+               MOVE     "1"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
+           END-IF
+      *    外泊
+           MOVE   "099999911"   TO  LNK-SCNYUACCT-GAIHAKU-SRYCD
+      *    室料差額
+           MOVE   "099999912"   TO  LNK-SCNYUACCT-SAGAKU-SRYCD
+           IF     PTNYUINRRK-RM-SAGAKU   =   SPACE
+               MOVE    ZERO     TO  LNK-SCNYUACCT-SAGAKU-KBN
+           ELSE
+               MOVE   PTNYUINRRK-RM-SAGAKU 
+                                TO  WRK-SAGAKU-KBN
+               MOVE   WRK-SAGAKU-KBN9
+                                TO  LNK-SCNYUACCT-SAGAKU-KBN
+           END-IF
+      *    食事区分
+           MOVE   "099999913"   TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
+           MOVE   1             TO  LNK-SCNYUACCT-SHOKUJIKBN
+      *    食堂加算
+           PERFORM     4801-BTUSEL-SEC
+           IF   FLG-SYSKANRI           =    ZERO
+               IF   SYS-5001-BTU-SYOKUDOKBN       =    "2"
+                    MOVE     "197000570"    TO
+                                LNK-SCNYUACCT-SHOKUDO-SRYCD
+                    MOVE    1   TO   LNK-SCNYUACCT-SHOKUDO-KBN
+               END-IF
+           END-IF
+      *    保険組合せ
+           MOVE   "099999914"   TO  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
+           MOVE   PTNYUINRRK-HKNCOMBINUM
+                                TO  WRK-HKNCOMBINUM
+           MOVE   WRK-HKNCOMBINUM9 
+                                TO  LNK-SCNYUACCT-HKNCOMBINUM
+           MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
+           MOVE   "00"          TO  SPA-SRYKA
+           PERFORM 4801-SENTEI-SET-SEC
+           CALL   "ORCSNYUACCT"  USING   SPA-AREA
+                                         ORCSNYUACCT-AREA
+           MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
+           IF     LNK-SCNYUACCT-RC   NOT =  ZERO
+               DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
+                         LNK-SCNYUACCT-RC
+           END-IF
+
            .
        4801-IDOKAIKEI-CANCEL-EXT.
            EXIT.
