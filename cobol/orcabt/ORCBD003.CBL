@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/10/10  サイト区分追加
+      *  01.01.02    NACL-藤原    02/10/17  自費の集計方法修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -119,9 +120,13 @@
       *
       *****03  WRK-IN                PIC X(01).
       *
+           03  WRK-MONEY             PIC 9(08).
+           03  WRK-JIHI              PIC 9(08).
+      *
            03  WRK-RENNUM-X          PIC ZZ9.
            03  WRK-PAGE              PIC ZZ9.
            03  WRK-Z9                PIC ZZZZZZZ9.
+           03  WRK-ZZ                PIC ZZZZZZZZ.
       *
        01  SUM-AREA                             VALUE   ZERO.
            03  SUM-OCC               OCCURS  10.
@@ -441,9 +446,33 @@
                        END-IF
                END-EVALUATE
       *
-               IF      IDX                 >   ZERO          
-                   MOVE    BD002-SKYMONEY  TO  WRK-Z9
+               IF      IDX                 >   ZERO     
+      *
+      *            自費以外のとき自費分だけ集計
+                   IF      IDX             =   7
+                       MOVE    ZERO            TO  WRK-JIHI
+                   ELSE
+                       COMPUTE WRK-JIHI    =   BD002-TOTAL-TGMONEY  
+                                           +   BD002-TOTAL-TGMONEY-TAX  
+                                           +   BD002-JIHI-TOTAL
+                                           +   BD002-JIHI-TOTAL-TAX  
+                                           +   BD002-JIHI-TAX
+                   END-IF
+                   COMPUTE WRK-MONEY       =   BD002-SKYMONEY
+                                           -   WRK-JIHI                  
+      *              
+                   MOVE    WRK-MONEY       TO  WRK-Z9
                    MOVE    WRK-Z9          TO  HC17-MONEY (IDX CNT-LINE)
+                   IF      IDX             =   7
+                       CONTINUE
+                   ELSE
+                       IF      WRK-JIHI    >   ZERO      
+                           MOVE    WRK-JIHI
+                                           TO  WRK-ZZ
+                           MOVE    "*"     TO  WRK-ZZ (1:1)
+                           MOVE    WRK-ZZ  TO  HC17-MONEY (7   CNT-LINE)
+                       END-IF
+                   END-IF        
                END-IF
       *
                ADD     BD002-TOTAL-HKNTEN  TO  SUM-HKNTEN (1)
@@ -454,8 +483,9 @@
                    IF      IDX                 <   8 
                        ADD     BD002-TOTAL-HKNTEN  TO  SUM-HKNTEN (IDY)
                    END-IF    
-                   ADD     BD002-SKYMONEY          TO  SUM-MONEY  (IDY)
+                   ADD     WRK-MONEY               TO  SUM-MONEY  (IDY)
                    ADD     1                       TO  SUM-KENSU  (IDY)
+                   ADD     WRK-JIHI                TO  SUM-MONEY  (8)
                END-IF
       *
                PERFORM 900-DBFETCH-SEC
