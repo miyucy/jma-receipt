@@ -4080,7 +4080,7 @@
                    WHEN    SPACE
                        CONTINUE
                    WHEN    OTHER
-                       MOVE    "0022"              TO  SPA-ERRCD
+                       MOVE    "0061"              TO  SPA-ERRCD
                END-EVALUATE
            END-PERFORM
       *
@@ -9915,7 +9915,7 @@
                    MOVE    "全科表示にしてから変更して下さい。"
                                        TO  WRK-ERRMSG(27:)
                WHEN    "0061"
-                   MOVE    "一括回数変更にエラーがあります。"
+                   MOVE    "一括回数変更内容にエラーがあります。"
                                        TO  WRK-ERRMSG
                WHEN    "0062"
                    MOVE    "月末日以降の日があります。"
