@@ -1295,6 +1295,7 @@
                    MOVE    6                   TO  WRK-DAY-ZOGEN
                    MOVE    "2"                 TO  WRK-DAY-PTN
                END-IF
+               MOVE    SPA-NAI-HTEKSTYMD   TO  WRK-DAY-YMD
                PERFORM 41010-DAY-ZOGEN-GET-SEC
                IF     (WRK-SYMD        NOT =   SPACE  )  AND
                       (SPA-NAI-HTEKEDYMD   >=  WRK-SYMD)
@@ -1807,13 +1808,18 @@
       *
            INITIALIZE                      WRK-DAY-AREA
            MOVE    SPA-NAI-HTEKSTYMD   TO  WRK-DAY-YMD
-           IF      SPA-GMN-CONTKBN     =   "1"
-               MOVE    5               TO  WRK-DAY-ZOGEN
-           ELSE
-               MOVE    2               TO  WRK-DAY-ZOGEN
-      ******** MOVE    5               TO  WRK-DAY-ZOGEN
-           END-IF
-           MOVE    "3"                 TO  WRK-DAY-PTN
+           EVALUATE    SPA-GMN-CONTKBN
+               WHEN    "1"
+                   MOVE    5               TO  WRK-DAY-ZOGEN
+                   MOVE    "3"             TO  WRK-DAY-PTN
+               WHEN    "2"
+                   MOVE    2               TO  WRK-DAY-ZOGEN
+      ************ MOVE    5               TO  WRK-DAY-ZOGEN
+                   MOVE    "3"             TO  WRK-DAY-PTN
+               WHEN    "3"
+                   MOVE    6               TO  WRK-DAY-ZOGEN
+                   MOVE    "2"             TO  WRK-DAY-PTN
+           END-EVALUATE
            PERFORM 41010-DAY-ZOGEN-GET-SEC
            IF      WRK-SYMD            =   SPACE
                MOVE    16              TO  SPA-GMN-CUR
