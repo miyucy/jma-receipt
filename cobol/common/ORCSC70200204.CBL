@@ -1308,7 +1308,7 @@
            MOVE    ZERO                    TO  WRK-KEI-TEN2
       *    きざみ点数を算定点数の１／２とする
            IF      WRK-SATU-TEN        =   ZERO
-               MOVE    ZERO                TO  WRK-KZMTEN
+               MOVE    TNS-KZMTEN          TO  WRK-KZMTEN
            ELSE
                COMPUTE WRK-KZMTEN          =   WRK-SATU-TEN   /  2
            END-IF
@@ -1329,13 +1329,9 @@
                                            +   0.999
                    MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
       *            点数がゼロの時、この点数とする
-                   IF      WRK-SATU-TEN        =   ZERO
-                       MOVE    WRK-KEI-TEN2    TO  WRK-KEI-TEN
-                   ELSE
-                       COMPUTE WRK-KEI-TEN     =   WRK-SATU-TEN
+                   COMPUTE WRK-KEI-TEN     =   WRK-SATU-TEN
                                                + ( WRK-KEI-TEN2
                                                *   WRK-KZMTEN )
-                   END-IF
                    COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
       *
       *            上限値＜データ
@@ -1350,14 +1346,9 @@
                                                /   TNS-KZM
                                                +   0.999
                        MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
-      *                点数がゼロの時、この点数とする
-                       IF      WRK-SATU-TEN        =   ZERO
-                           MOVE    WRK-KEI-TEN2    TO  WRK-KEI-TEN
-                       ELSE
-                           COMPUTE WRK-KEI-TEN     =   WRK-SATU-TEN
+                       COMPUTE WRK-KEI-TEN     =   WRK-SATU-TEN
                                                    + ( WRK-KEI-TEN2
                                                    *   WRK-KZMTEN )
-                       END-IF
                        COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN  +  0.5
                    END-IF
            END-EVALUATE
