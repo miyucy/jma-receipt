@@ -762,54 +762,54 @@
               IF  WRK-HANBETU-KOH1HKNNUM(IDX) = SPACE OR "027"
                   CONTINUE
               ELSE
-                  IF  WRK-HANBETU-KOH1HKNNUM(IDX)  =  "051"
-                     MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
-                  ELSE
+      **          IF  WRK-HANBETU-KOH1HKNNUM(IDX)  =  "051"
+      **             MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
+      **          ELSE
                      MOVE  WRK-HANBETU-KOH1HKNNUM(IDX)
                                 TO  WRK-HANBETU-YUSENBAN(IDX)
-                  END-IF
+      **          END-IF
               END-IF
       *
               IF  WRK-HANBETU-KOH2HKNNUM(IDX) = SPACE 
                   CONTINUE
               ELSE
-                  IF  WRK-HANBETU-KOH2HKNNUM(IDX)  =  "051"
-                     MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
-                  ELSE
+      **          IF  WRK-HANBETU-KOH2HKNNUM(IDX)  =  "051"
+      **             MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
+      **          ELSE
                     IF  WRK-HANBETU-YUSENBAN(IDX) 
                                        > WRK-HANBETU-KOH2HKNNUM(IDX)
                      MOVE  WRK-HANBETU-KOH2HKNNUM(IDX)
                                       TO WRK-HANBETU-YUSENBAN(IDX)
                     END-IF
-                  END-IF
+      **          END-IF
               END-IF
       *
               IF  WRK-HANBETU-KOH3HKNNUM(IDX) = SPACE 
                   CONTINUE
               ELSE
-                  IF  WRK-HANBETU-KOH3HKNNUM(IDX)  =  "051"
-                     MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
-                  ELSE
+      **          IF  WRK-HANBETU-KOH3HKNNUM(IDX)  =  "051"
+      **             MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
+      **          ELSE
                     IF  WRK-HANBETU-YUSENBAN(IDX) 
                                        > WRK-HANBETU-KOH3HKNNUM(IDX)
                      MOVE  WRK-HANBETU-KOH3HKNNUM(IDX)
                                       TO WRK-HANBETU-YUSENBAN(IDX)
                     END-IF
-                  END-IF
+      **          END-IF
               END-IF
       *
               IF  WRK-HANBETU-KOH4HKNNUM(IDX) = SPACE 
                   CONTINUE
               ELSE
-                  IF  WRK-HANBETU-KOH4HKNNUM(IDX)  =  "051"
-                     MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
-                  ELSE
+      **          IF  WRK-HANBETU-KOH4HKNNUM(IDX)  =  "051"
+      **             MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
+      **          ELSE
                     IF  WRK-HANBETU-YUSENBAN(IDX) 
                                        > WRK-HANBETU-KOH4HKNNUM(IDX)
                      MOVE  WRK-HANBETU-KOH4HKNNUM(IDX)
                                       TO WRK-HANBETU-YUSENBAN(IDX)
                     END-IF
-                  END-IF
+      **          END-IF
               END-IF
       *
               IF  WRK-HANBETU-YUSENBAN(IDX)  =   ZERO
