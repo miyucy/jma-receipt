@@ -136,6 +136,8 @@
                05  WRK-SYSMM               PIC 9(02).
                05  WRK-SYSDD               PIC 9(02).
       *
+           COPY  "COMMON-SPA".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -202,7 +204,6 @@
       ***
        LINKAGE             SECTION.
            COPY  "MCPAREA". 
-           COPY  "COMMON-SPA".
        01  LNK-ORCS02-REC.
            COPY  "CPORCS02.INC".
        01  LNK-SYUNOU-REC-T.
@@ -211,7 +212,6 @@
       /
        PROCEDURE           DIVISION  USING
                                      MCPAREA
-                                     SPA-AREA
                                      LNK-ORCS02-REC
                                      LNK-SYUNOU-REC-T.
       ******************************************************************
@@ -304,7 +304,9 @@
        NYUIN-CHOZAI-SEC           SECTION.
       *
            INITIALIZE             ORCSCHOZAIAREA
-           MOVE       "1"         TO    ORCSCHO-KBN
+           MOVE       LNK-S02-HOSPID
+                                   TO   SPA-HOSPID
+           MOVE       "1"          TO   ORCSCHO-KBN
            MOVE       LNK-S02-PTID TO   ORCSCHO-PTID
            MOVE       LNK-S02-SKYSTYMD(1:6)
                                   TO    ORCSCHO-SRYYM
