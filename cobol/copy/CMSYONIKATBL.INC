@@ -49,11 +49,9 @@
            03  FILLER              PIC X(11)   VALUE   "4 113005470".
            03  FILLER              PIC X(11)   VALUE   "4 113005570".
       *    開放型病院共同指導料（１）
-           03  FILLER              PIC X(11)   VALUE   "9 180010510".
-      *    退院時共同指導加算
-           03  FILLER              PIC X(11)   VALUE   "9 180015870".
+           03  FILLER              PIC X(11)   VALUE   "  180010510".
       *    地域連携小児夜間・休日診療料
-           03  FILLER              PIC X(11)   VALUE   "9 113006710".
+           03  FILLER              PIC X(11)   VALUE   "  113006710".
       *    Ｈ１６．４から追加
            03  FILLER              PIC X(11)   VALUE   "3 113007070".
            03  FILLER              PIC X(11)   VALUE   "3 113007170".
@@ -64,23 +62,10 @@
            03  FILLER              PIC X(11)   VALUE   "4 113007670".
            03  FILLER              PIC X(11)   VALUE   "4 113007770".
            03  FILLER              PIC X(11)   VALUE   "4 113007870".
-      *    時間外加算
-           03  FILLER              PIC X(11)   VALUE   "3 113009670".
-           03  FILLER              PIC X(11)   VALUE   "4 113009770".
-           03  FILLER              PIC X(11)   VALUE   "4 113009870".
-      *    療養担当手当（入院外）
-           03  FILLER              PIC X(11)   VALUE   "9 199000610".
-      *    診療情報提供料２（Ｈ１８／４から）
-           03  FILLER              PIC X(11)   VALUE   "9 113009510".
-      *    地域連携小児夜間・休日診療料２
-           03  FILLER              PIC X(11)   VALUE   "9 113008210".
-      *    院内トリアージ加算
-           03  FILLER              PIC X(11)   VALUE   "9 113011570".
       *
        01  TBL-SYONIKA-AREA-R      REDEFINES   TBL-SYONIKA-AREA.
-           03  TBL-SYONIKA-OCC     OCCURS  42  INDEXED   TBL-SYO.
+           03  TBL-SYONIKA-OCC     OCCURS  34  INDEXED   TBL-SYO.
       *        1:初診、2:再診、3:初診時間外、4:再診時間外
-      *        9:小児科外来診察料以外でも算定可能
                05  TBL-SYONIKA-KBN         PIC X(01).
                05  TBL-YOBI1               PIC X(01).
                05  TBL-SYONIKA-SRYCD       PIC X(09).
