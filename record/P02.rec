@@ -622,6 +622,10 @@ P02	{
 						select	bool[50];
 					};
 				};
+				P027_NYUGAIKBN	{
+					value	bool;
+					label	varchar(20);
+				};
 			};
 			FIXPAGE4	{
 				P021_FAX	{
@@ -777,6 +781,49 @@ P02	{
 						}	[10];
 						select	bool[10];
 					};
+				};
+				P024_FTNTEKSTYMD	{
+					value	varchar(10);
+				};
+				P024_FTNTEKEDYMD	{
+					value	varchar(10);
+				};
+				P024_GAIJGNGAK	{
+					value	varchar(9);
+				};
+				P024_NYUJGNGAK	{
+					value	varchar(9);
+				};
+				P024_PTKOHFTNLST	{
+					P024_PTKOHFTN	{
+						count	int;
+						item	{
+							value0	varchar(3);
+							value1	varchar(20);
+							value2	varchar(9);
+							value3	varchar(9);
+						}	[10];
+						select	bool[10];
+					};
+				};
+				P024_PTKOHFTNLST2	{
+					P024_PTKOHFTN2	{
+						count	int;
+						item	{
+							value0	varchar(3);
+							value1	varchar(9);
+							value2	varchar(9);
+							value3	varchar(9);
+							value4	varchar(9);
+						}	[50];
+						select	bool[50];
+					};
+				};
+				P024_FTNSELNUM	{
+					value	number(3);
+				};
+				P024_FTNSELNUM2	{
+					value	number(3);
 				};
 			};
 			FIXPAGE8	{
