@@ -21,4 +21,4 @@ distclean:
 
 install: all
 	$(INSTALL) -d $(recorddir)
-	$(INSTALL) *def *rec *db $(recorddir)
+	$(INSTALL_DATA) *def *rec *db $(recorddir)

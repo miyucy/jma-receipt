@@ -211,4 +211,4 @@ filecheck:
 
 install: all
 	$(INSTALL) -d $(screendir)
-	$(INSTALL) $(EXTRA_DIST) $(screendir)
+	$(INSTALL_DATA) $(EXTRA_DIST) $(screendir)

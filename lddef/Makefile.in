@@ -87,4 +87,4 @@ distclean: clean
 
 install: all
 	$(INSTALL) -d $(lddefdir)
-	$(INSTALL) $(INSTALL_LDFILE) $(lddefdir)
+	$(INSTALL_DATA) $(INSTALL_LDFILE) $(lddefdir)
