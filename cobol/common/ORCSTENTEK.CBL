@@ -114,7 +114,7 @@
            03  WRK-SYOKEIS2        PIC 9(08)V9(04).
            03  WRK-TENSU-GOK       PIC 9(08)V9(03).
       *
-           03  WRK-SRYCD               PIC X(08).
+           03  WRK-SRYCD               PIC X(09).
            03  WRK-MAX-RYOU            PIC 9(07).
       *
            03  WRK-SRYKA               PIC X(02).

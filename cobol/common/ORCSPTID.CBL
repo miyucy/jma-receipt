@@ -130,7 +130,7 @@
       *
            MOVE    ZERO                TO  SPTID-RC
            IF      SPTID-HOSPID         =   ZERO
-               MOVE    1               TO  SPTID-HOSPID
+               MOVE    "1"              TO  SPTID-HOSPID
            END-IF
       *
            IF     (SPTID-PTNUM      NOT =   SPACE )  AND

@@ -1081,7 +1081,7 @@
 102000                 MOVE    20          TO    STS-DAY-RC1
 102100                 GO  TO  DTMEND-EXT
 102200             ELSE
-102300                 NEXT    SENTENCE
+102300                 CONTINUE
                    END-IF
 102400         ELSE
 102500             MOVE    20              TO    STS-DAY-RC1

@@ -133,7 +133,8 @@
            03  WRK-SRYKAISUKEI     PIC 9(03).
            03  WRK-SRYSURYOKEI     PIC 9(07)V9(03).
            03  WRK-MEISAISU        PIC 9(07).
-           03  WRK-SRYCD           PIC 9(09).
+           03  WRK-SRYCD           PIC X(09).
+           03  WRK-SRYCD9          PIC 9(09).
            03  WRK-SRYCDKEI        PIC 9(14).
            03  WRK-SRYYMD.
                05  WRK-SRYYY           PIC 9(04).
@@ -2033,8 +2034,8 @@
                                   (LNK-WKSRY-SRYCD (IDX IDY) =   SPACE)
                    IF      LNK-WKSRY-SRYCD (IDX IDY)     NUMERIC
                        MOVE    LNK-WKSRY-SRYCD (IDX IDY)
-                                               TO  WRK-SRYCD
-                       ADD     WRK-SRYCD       TO  WRK-SRYCDKEI
+                                               TO  WRK-SRYCD9
+                       ADD     WRK-SRYCD9      TO  WRK-SRYCDKEI
                        ADD     LNK-WKSRY-SRYSURYO (IDX IDY)
                                                TO  WRK-SRYSURYOKEI
                        ADD     1               TO  WRK-MEISAISU

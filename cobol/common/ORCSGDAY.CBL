@@ -276,7 +276,7 @@
                        END-IF
                        IF      WRK-KETA          =   5
                            MOVE    SGDAY-INDAY(1:5)  TO  WRK-WYMD(1:5)
-                           MOVE    "01"              TO  WRK-WDD
+                           MOVE    01                TO  WRK-WDD
                        END-IF
                        MOVE    1                 TO  FLG-SEKI
       *                下务
@@ -312,7 +312,7 @@
                        END-IF
                        IF      WRK-KETA          =   6
                            MOVE    SGDAY-INDAY(1:6)  TO  WRK-SYMD(1:6)
-                           MOVE    "01"              TO  WRK-SDD
+                           MOVE    01                TO  WRK-SDD
                        END-IF
       *                谰务の钳３０００笆布であること
                        IF      WRK-SYMD(1:2)       >=  "30"

@@ -80,14 +80,7 @@
            03  FLG-SP              PIC 9(01).
       *
            03  FLG-KYUJITU         PIC 9(01).
-           03  FLG-KANJI           PIC X(01).
-           03  FLG-TOROKU          PIC X(01).
-           03  FLG-SYORI           PIC X(01).
-      *
-           03  FLG-NAIYAK          PIC X(01).
-           03  FLG-TONPUK          PIC X(01).
-           03  FLG-GAIYAK          PIC X(01).
-           03  FLG-GAIKAN          PIC X(01).
+           03  FLG-GAIKAN          PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *    電話再診有無
            03  FLG-TELSAI          PIC 9(01).
