@@ -25,7 +25,7 @@ RENNUM=0
 
 ##          讫湍基板闻懒滇今
             RENNUM=$(expr $RENNUM + 1) 
-       	    $DBSTUB -dir $LDDERDIR/directory -bd shimane SEIKYU001 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14}
+       	    $DBSTUB -dir $LDDEFDIR/directory -bd shimane SEIKYU001 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14}
             if  [ -e ${15} ]; then
                 exit
             fi
@@ -41,7 +41,7 @@ RENNUM=0
  
 ##          省汇戏客板闻懒滇今
             RENNUM=$(expr $RENNUM + 1) 
-       	    $DBSTUB -dir $LDDERDIR/directory -bd shimane SEIKYU005 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14}
+       	    $DBSTUB -dir $LDDEFDIR/directory -bd shimane SEIKYU005 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14}
             if  [ -e ${15} ]; then
                 exit
             fi
