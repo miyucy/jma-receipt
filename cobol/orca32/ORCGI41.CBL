@@ -2667,6 +2667,7 @@
            END-IF.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "1")   AND
                  (I41-DAY (IDX)              NOT = SPACE)  AND
+                 (SPA-GMN-DAY-41 (IDX)       NOT = ZERO)   AND
                  (SPA-GMN-DAY-41 (IDX)       NOT =   1)
                MOVE    "0024"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
@@ -2675,6 +2676,7 @@
            IF    SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "2"
                IF    (SPA-WRK-CHK-KBN (IDX)        =  "2")   AND
                      (I41-DAY (IDX)            NOT = SPACE)  AND
+                     (SPA-GMN-DAY-41 (IDX)     NOT = ZERO)   AND
                      (SPA-GMN-DAY-41 (IDX)     NOT =   1)    AND
                      (SPA-GMN-DAY-41 (IDX)     NOT =   2)    AND
                      (SPA-GMN-DAY-41 (IDX)     NOT =   3)    AND
@@ -2685,6 +2687,7 @@
                END-IF
                IF    (SPA-WRK-CHK-KBN (IDX)        =  "3")   AND
                      (I41-DAY (IDX)            NOT = SPACE)  AND
+                     (SPA-GMN-DAY-41 (IDX)     NOT = ZERO)   AND
                      (SPA-GMN-DAY-41 (IDX)     NOT =   3)    AND
                      (SPA-GMN-DAY-41 (IDX)     NOT =   4)
                    MOVE    "0024"          TO  SPA-ERRCD
@@ -2702,7 +2705,8 @@
                        MOVE    99              TO  IDY
                    END-IF
                END-PERFORM
-               IF    I41-DAY (IDX)   =  SPACE
+               IF    (I41-DAY (IDX)          =  SPACE)  OR
+                     (SPA-GMN-DAY-41 (IDX)   =  ZERO)
                    MOVE    SPACE           TO  SPA-ERRCD
                END-IF
                IF    SPA-ERRCD    NOT = SPACE
@@ -2744,6 +2748,7 @@
            END-IF.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "6")   AND
                  (I41-DAY (IDX)              NOT = SPACE)  AND
+                 (SPA-GMN-DAY-41 (IDX)       NOT = ZERO)   AND
                  (SPA-GMN-DAY-41 (IDX)       NOT =   1)
                MOVE    "0024"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
