@@ -82,6 +82,20 @@ path	key4 	{
 	};
 };
 
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_pthkninf_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pthkninf
+			WHERE   HOSPID    =   :HOSPID
+			AND   TEKSTYMD    <=  :TEKSTYMD
+			AND   TEKEDYMD    >=  :TEKEDYMD
+			ORDER   BY      PTID,
+                                        HKNID
+		;
+	};
+};
+
 path	all 	{
 	DBSELECT	{
 		DECLARE tbl_pthkninf_all_csr CURSOR FOR
