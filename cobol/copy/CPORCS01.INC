@@ -35,6 +35,8 @@
            03  LNK-S01-KOUREI-ZAITAKU-KBN  PIC  X(01).
       *複数科まとめ集計フラグ（０：まとめ計算する　１：しない）
            03  LNK-S01-KAGRPFLG            PIC  X(01).
+      *初診料算定フラグ（地方公費用）
+           03  LNK-S01-SYOSINFLG           PIC  X(01).
       *
            03  LNK-S01-SINKOUI.
       *診療行為内容 
@@ -65,8 +67,6 @@
              04  LNK-S01-RYOYO             PIC  9(07).
       *船員保険（被保険者）＋通勤災害＋初診時
              04  LNK-S01-SENINFLG          PIC  X(01).
-      *初診料算定フラグ（地方公費用）
-             04  LNK-S01-SYOSINFLG         PIC  X(01).
       *
       *使用インデックス
            03  LNK-S01-IDX                 PIC  9(02).
