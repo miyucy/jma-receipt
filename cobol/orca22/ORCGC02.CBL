@@ -93,6 +93,7 @@
       *                                     病名の長さチェックの修正
       *  01.07.06    NACL-藤原    02/11/25  ＳＰＡパラメタファイルの
       *                                     端末ＩＤ変更
+      *  01.07.07    NACL-藤原    02/12/113 病名文字数のチェック修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2680,12 +2681,18 @@
            PERFORM VARYING IDX FROM    2   BY  1
                    UNTIL   IDX  >      6  
                IF      SPA-NAI-C02-BYOMEITOP   (IDX)   =   "1"   
-               AND     WRK-BYOMEI                  NOT =   SPACE     
-                   PERFORM VARYING     IDY     FROM    99 BY  -2
-                           UNTIL       IDY     =       1 
+               AND     WRK-BYOMEI                  NOT =   SPACE
+                   MOVE    99                  TO  IDY     
+                   PERFORM UNTIL       IDY     =       ZERO 
                        IF      WRK-BYOMEI(IDY:2)   NOT =   SPACE
                            COMPUTE WRK-MOJISU  =   IDY     +   1 
-                           MOVE    1                   TO  IDY
+                           MOVE    ZERO                    TO  IDY
+                       ELSE
+                           IF      IDY         =   1
+                               MOVE    ZERO        TO  IDY
+                           ELSE
+                               COMPUTE IDY =   IDY     -   2
+                           END-IF            
                        END-IF  
                    END-PERFORM
                    IF      WRK-MOJISU              >   80
@@ -2700,11 +2707,17 @@
                END-STRING
            END-PERFORM    
            IF     WRK-BYOMEI                  NOT =   SPACE     
-               PERFORM VARYING     IDY     FROM    99 BY  -2
-                       UNTIL       IDY     =       1 
+               MOVE    99                  TO  IDY     
+               PERFORM UNTIL       IDY     =       ZERO 
                    IF      WRK-BYOMEI(IDY:2)   NOT =   SPACE
                        COMPUTE WRK-MOJISU  =   IDY     +   1 
-                       MOVE    1                   TO  IDY
+                       MOVE    ZERO                    TO  IDY
+                   ELSE
+                       IF      IDY         =   1
+                           MOVE    ZERO        TO  IDY
+                       ELSE
+                           COMPUTE IDY =   IDY     -   2
+                       END-IF            
                    END-IF  
                END-PERFORM
                IF      WRK-MOJISU              >   80
