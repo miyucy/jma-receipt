@@ -112,7 +112,9 @@
               03  S03N-RIREKIIN PIC S9(2).
               03  S03N-SCROLLEDWINDOW1.
                 04  S03N-CLIST1.
-                  05  S03N-CLIST1-COUNT   PIC S9(9)   BINARY.
+                  05  S03N-CLIST1-COUNT       PIC S9(9)   BINARY.
+                  05  S03N-CLIST1-ROW         PIC S9(9)   BINARY.
+                  05  S03N-CLIST1-ROWATTR     PIC S9(9)   BINARY.
                   05  S03N-ITEM        OCCURS  50 TIMES.
                   06  S03N-TRENNUM PIC X(4).
                   06  S03N-TSKYMONY    PIC X(12).

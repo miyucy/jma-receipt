@@ -33,6 +33,8 @@
               03  S05-SCROLLEDWINDOW1.
                 04  S05-SYULIST.
                   05  S05-SYULIST-COUNT PIC S9(9)   BINARY.
+                  05  S05-SYULIST-ROW       PIC S9(9)   BINARY.
+                  05  S05-SYULIST-ROWATTR   PIC S9(9)   BINARY.
                   05  S05-SYULIST-ITEM  OCCURS  200 TIMES.
                     06  S05-TNUM        PIC X(5).
                     06  S05-TDENPNUM    PIC X(9).

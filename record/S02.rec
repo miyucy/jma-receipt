@@ -37,6 +37,8 @@ S02	{
 		scrolledwindow1	{
 			SYULIST	{
 				count	int;
+				row int;
+				rowattr int;
 				item	{
 					value0	varchar(5);
 					value1	varchar(9);

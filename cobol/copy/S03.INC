@@ -105,7 +105,9 @@
               03  S03-RIREKIIN PIC S9(2).
               03  S03-SCROLLEDWINDOW1.
                 04  S03-CLIST1.
-                  05  S03-CLIST1-COUNT   PIC S9(9)   BINARY.
+                  05  S03-CLIST1-COUNT       PIC S9(9)   BINARY.
+                  05  S03-CLIST1-ROW         PIC S9(9)   BINARY.
+                  05  S03-CLIST1-ROWATTR     PIC S9(9)   BINARY.
                   05  S03-ITEM        OCCURS  50 TIMES.
                   06  S03-TRENNUM PIC X(4).
                   06  S03-TSKYMONY    PIC X(12).

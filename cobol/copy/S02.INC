@@ -39,6 +39,8 @@
               03  S02-SCROLLEDWINDOW1.
                 04  S02-SYULIST.
                   05  S02-SYULIST-COUNT    PIC S9(9)   BINARY.
+                  05  S02-SYULIST-ROW      PIC S9(9)   BINARY.
+                  05  S02-SYULIST-ROWATTR  PIC S9(9)   BINARY.
                   05  S02-SYULIST-ITEM     OCCURS  200 TIMES.
                     06  S02-TNUM        PIC X(5).
                     06  S02-TDENPNUM    PIC X(9).
