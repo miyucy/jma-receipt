@@ -48,6 +48,7 @@
       *
       *  中止処理追加
       *  01.03.01    NACL-藤原    04/10/07  中止処理の追加
+      *  01.03.02    NACL-藤原    04/10/30  福岡県の地方公費対応（国保）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -156,6 +157,7 @@
            03  FLG-CONTKBN                             PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-LASTHKNID                           PIC 9(01). 
+           03  FLG-KOHRECEDSP                          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -238,6 +240,23 @@
                05  WRK-YY              PIC 9(04).
                05  WRK-MM              PIC 9(02).
                05  WRK-DD              PIC 9(02).
+      * 
+           03  WRK-PREFKBN             PIC X(01).
+           03  WRK-PREFNUM             PIC X(02).
+           03  WRK-SYMD.
+               05  WRK-SYY         PIC 9(04).
+               05  WRK-SMM         PIC 9(02).
+               05  WRK-SDD         PIC 9(02).
+      *
+           03  WRK-1033-TABLE.
+               05  WRK-1033-TBL    OCCURS  5.
+                   07  WRK-1033-HKNJANUM-G.
+                       09  WRK-1033-HKNJANUM
+                                   PIC X(08) OCCURS  20.
+                   07  WRK-1033-STYUKYMD
+                                   PIC X(08).
+                   07  WRK-1033-EDYUKYMD 
+                                   PIC X(08).
       *              
       *    診療回数テーブル（入院会計用　１：基本　２：組合せ）
            03  WRK-DAY-AREA.
@@ -337,6 +356,9 @@
            COPY    "CPSK2002.INC".
       *     
            COPY    "CPSK2005.INC".
+      *     
+      *    県内扱い保険者情報
+           COPY    "CPSK1033.INC".
       *
       *    診療会計
        01  SRYACCT-REC.
@@ -366,6 +388,9 @@
       *    サブプロ用領域
       *****************************************************************
       *
+      *    公費付加情報取得サブ
+           COPY    "CPORCSKOHPLUS.INC".
+      *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -375,10 +400,16 @@
            COPY    "CPORCSPTID.INC".
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *   保険算定用年齢・割合計算サブ
+           COPY    "CPORCSAGECHK.INC".
+      *    患者自己負担金レセプト記載判定
+           COPY    "CPORCSFTNJGNCHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+           COPY    "COMMON-SPA".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -498,6 +529,49 @@
                                                ORCMCPAREA
                                                MCPDATA-REC
                END-IF
+      * 
+      *        県内扱い保険者情報
+               MOVE    SPACE           TO  WRK-1033-TABLE
+      *     
+               MOVE    SPACE           TO  SYS-1033-REC
+               INITIALIZE                  SYS-1033-REC
+               MOVE    "1033"          TO  SYS-1033-KANRICD
+               MOVE    "*"             TO  SYS-1033-KBNCD
+               MOVE    SYS-1033-REC    TO  MCPDATA-REC
+               MOVE    "DBSELECT"      TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY5" TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE    "SYSKANRI-KEY5" TO  ORC-DBPATH
+                   PERFORM 900-SYSKANRI-READ-SEC
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+      *
+               MOVE    ZERO                TO  IDX
+               PERFORM             UNTIL   FLG-SYSKANRI   =   1
+                                   OR      IDX            >=  5
+                   MOVE    MCPDATA-REC         TO  SYS-1033-REC
+                   ADD     1                   TO  IDX
+                   MOVE    SYS-1033-STYUKYMD   TO  
+                                               WRK-1033-STYUKYMD   (IDX)
+                   MOVE    SYS-1033-EDYUKYMD   TO
+                                               WRK-1033-EDYUKYMD   (IDX)
+                   MOVE    SYS-1033-TBL        TO
+                                               WRK-1033-HKNJANUM-G (IDX)
+                   MOVE    "SYSKANRI-KEY5" TO  ORC-DBPATH
+                   PERFORM 900-SYSKANRI-READ-SEC
+               END-PERFORM
+      *
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
       *     
       *        レセプト編集区分情報
                INITIALIZE                  SYS-2005-REC
@@ -850,62 +924,111 @@
       *
            INITIALIZE                  WRK-SEIKYUKBN-KOHI-AREA
                                        FLG-KOH
+                                       FLG-KOHRECEDSP
            MOVE    ZERO                TO  IDY
                                            IDZ    
       *
-      *        公費単独のとき全てレセプトに出力
-      *****IF      COMB-HKNNUM         =   SPACE
-      *****     MOVE    COMB-KOHI-AREA      TO  WRK-SEIKYU-TBL (1)
-      *****ELSE        
       *    地方公費のときレセプト請求区分を取得して判別
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       4
-                       OR      COMB-KOHHKNNUM (IDX)    
-                                               =   SPACE
-                   IF      COMB-KOHHKNNUM (IDX)(1:1)
-                                               >=  "1" AND <=  "8"
-                       INITIALIZE                      HKNNUM-REC
-                       MOVE    SYS-1001-HOSPID         TO  HKN-HOSPID
-                       MOVE    COMB-KOHHKNNUM (IDX)    TO  HKN-HKNNUM
-                       MOVE    WRK-SRYYMD              TO  HKN-TEKSTYMD
-                                                           HKN-TEKEDYMD
-                       MOVE    "00"                    TO  HKN-PAYKBN   
-                       MOVE    HKNNUM-REC              TO  MCPDATA-REC
-                       PERFORM 900-HKNNUM-INV-SEC
-      *
-                       IF      COMB-HKNNUM         =   "060"   OR  "067" 
-                           IF      HKN-RECESKYKBN      =   "1" OR  "3"
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+                   OR      COMB-KOHHKNNUM (IDX)    
+                                           =   SPACE
+               IF      COMB-KOHHKNNUM (IDX)(1:1)
+                                           >=  "1" AND <=  "8"
+                   INITIALIZE                      HKNNUM-REC
+                   MOVE    SYS-1001-HOSPID         TO  HKN-HOSPID
+                   MOVE    COMB-KOHHKNNUM (IDX)    TO  HKN-HKNNUM
+                   MOVE    WRK-SRYYMD              TO  HKN-TEKSTYMD
+                                                       HKN-TEKEDYMD
+                   MOVE    "00"                    TO  HKN-PAYKBN   
+                   MOVE    HKNNUM-REC              TO  MCPDATA-REC
+                   PERFORM 900-HKNNUM-INV-SEC
+      *            福岡県の国保のとき（４１老人以外）
+                   IF    ( COMB-HKNNUM         =   "060"   OR  "067" )
+                   AND   ( SYS-1001-PREFNUM    =   "40"              )
+                   AND   ( HKN-HBTNUM      NOT =   "41"              )    
+                       PERFORM 20011-PREFKBN-40-CHECK-SEC
+                   ELSE
+      *                福岡県の社保のとき（４１老人）
+                       IF    ( COMB-HKNNUM     NOT =   "060" AND "067" )
+                       AND   ( SYS-1001-PREFNUM    =   "40"            )
+                       AND   ( HKN-HBTNUM          =   "41"            )    
+                           IF      COMB-HONKZKKBN      =   "1" 
                                MOVE    2                   TO  IDX1
                            ELSE
                                MOVE    1                   TO  IDX1
                            END-IF
-                       ELSE                
-                           IF      HKN-RECESKYKBN      =   "2" OR  "3"
-                               MOVE    2                   TO  IDX1
-                           ELSE
-                               MOVE    1                   TO  IDX1
+                       ELSE
+                           IF      COMB-HKNNUM     =   "060"   OR  "067" 
+                               IF      HKN-RECESKYKBN  =   "1" OR  "3"
+                                   MOVE    2               TO  IDX1
+                               ELSE
+                                   MOVE    1               TO  IDX1
+                               END-IF
+                           ELSE                
+                               IF      HKN-RECESKYKBN  =   "2" OR  "3"
+                                   MOVE    2               TO  IDX1
+                               ELSE
+                                   MOVE    1               TO  IDX1
+                               END-IF
                            END-IF
                        END-IF
-                   ELSE
-                       MOVE    1                      TO  IDX1
-                   END-IF       
+                   END-IF
+                   IF     IDX1          =        1
+      *                地方公費レセ記載判定
+                       MOVE    ZERO        TO  FLG-KOHRECEDSP
+                       INITIALIZE          ORCSFTNJGNCHKAREA
+                       MOVE    COMB-HOSPID TO  LNK-FTNJGNCHK-HOSPID
+                       MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
+                       MOVE    "1"         TO  LNK-FTNJGNCHK-NYUGAIKBN
+      *                診療年月
+                       MOVE    WRK-SRYYMD(1:6) TO  LNK-FTNJGNCHK-SRYYM
+      *                公費番号
+                       MOVE    COMB-KOHHKNNUM (IDX)
+                                               TO  LNK-FTNJGNCHK-KOHNUM
+      *                公費ＩＤ
+                       MOVE    COMB-KOHID (IDX)
+                                               TO  LNK-FTNJGNCHK-KOHID
       *
-                   IF     IDX1                =   1
+                       CALL    "ORCSFTNJGNCHK"     USING
+                                                   ORCSFTNJGNCHKAREA
+                       IF     LNK-FTNJGNCHK-RC   =   1
+                           MOVE       1        TO    FLG-KOHRECEDSP
+                       END-IF
+                   END-IF
+               ELSE
+                   MOVE    1                      TO  IDX1
+               END-IF       
+      *
+               IF     IDX1                =   1
+                   IF      FLG-KOHRECEDSP  NOT =  1
                        ADD     1                      TO  IDY    
                        MOVE    COMB-KOHHKNNUM (IDX)   TO 
                                           WRK-SEIKYU-KOHHKNNUM(IDX1 IDY)
                        MOVE    COMB-KOHID     (IDX)   TO
                                           WRK-SEIKYU-KOHID    (IDX1 IDY)
-                   ELSE
-                       ADD     1                      TO  IDZ    
-                       MOVE    COMB-KOHHKNNUM (IDX)   TO 
-                                          WRK-SEIKYU-KOHHKNNUM(IDX1 IDZ)
-                       MOVE    COMB-KOHID     (IDX)   TO
-                                          WRK-SEIKYU-KOHID    (IDX1 IDZ)
-                       MOVE    1                      TO  FLG-KOH 
-                   END-IF  
-               END-PERFORM
-      ****END-IF           
+      *                福岡県の国保のとき（４１老人以外）
+                       IF    ( COMB-HKNNUM     =   "060"   OR  "067" )
+                       AND   ( SYS-1001-PREFNUM
+                                               =   "40"              )
+                       AND   ( HKN-HBTNUM  NOT =   "41"              )    
+                           ADD     1                      TO  IDZ    
+                           MOVE    COMB-KOHHKNNUM (IDX)   TO 
+                                          WRK-SEIKYU-KOHHKNNUM(2 IDZ)
+                           MOVE    COMB-KOHID     (IDX)   TO
+                                          WRK-SEIKYU-KOHID    (2 IDZ)
+                           MOVE    1                      TO  FLG-KOH 
+                       END-IF
+                   END-IF    
+               ELSE
+                   ADD     1                      TO  IDZ    
+                   MOVE    COMB-KOHHKNNUM (IDX)   TO 
+                                      WRK-SEIKYU-KOHHKNNUM(IDX1 IDZ)
+                   MOVE    COMB-KOHID     (IDX)   TO
+                                      WRK-SEIKYU-KOHID    (IDX1 IDZ)
+                   MOVE    1                      TO  FLG-KOH 
+               END-IF  
+          END-PERFORM
       *
       *    レセプト明細書
            MOVE    "1"                 TO  WRK-SYOKBN
@@ -1133,6 +1256,7 @@
       *
            INITIALIZE                  WRK-SEIKYUKBN-KOHI-AREA
                                        FLG-KOH
+                                       FLG-KOHRECEDSP
            MOVE    ZERO                TO  IDY
                                            IDZ    
       *
@@ -1141,54 +1265,106 @@
       *****    MOVE    COMB-KOHI-AREA      TO  WRK-SEIKYU-TBL (1)
       *****ELSE        
       *    地方公費のときレセプト請求区分を取得して判別
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       4
-                       OR      COMB-KOHHKNNUM (IDX)    
-                                               =   SPACE
-                   IF      COMB-KOHHKNNUM (IDX)(1:1)
-                                               >=  "1" AND <=  "8"
-                       INITIALIZE                      HKNNUM-REC
-                       MOVE    SYS-1001-HOSPID         TO  HKN-HOSPID
-                       MOVE    COMB-KOHHKNNUM (IDX)    TO  HKN-HKNNUM
-                       MOVE    WRK-SRYYMD              TO  HKN-TEKSTYMD
-                                                           HKN-TEKEDYMD
-                       MOVE    "00"                    TO  HKN-PAYKBN   
-                       MOVE    HKNNUM-REC              TO  MCPDATA-REC
-                       PERFORM 900-HKNNUM-INV-SEC
-      *
-                       IF      COMB-HKNNUM         =   "060"   OR  "067" 
-                           IF      HKN-RECESKYKBN      =   "1" OR  "3"
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+                   OR      COMB-KOHHKNNUM (IDX)    
+                                           =   SPACE
+               IF      COMB-KOHHKNNUM (IDX)(1:1)
+                                           >=  "1" AND <=  "8"
+                   INITIALIZE                      HKNNUM-REC
+                   MOVE    SYS-1001-HOSPID         TO  HKN-HOSPID
+                   MOVE    COMB-KOHHKNNUM (IDX)    TO  HKN-HKNNUM
+                   MOVE    WRK-SRYYMD              TO  HKN-TEKSTYMD
+                                                       HKN-TEKEDYMD
+                   MOVE    "00"                    TO  HKN-PAYKBN   
+                   MOVE    HKNNUM-REC              TO  MCPDATA-REC
+                   PERFORM 900-HKNNUM-INV-SEC
+      *            福岡県の国保のとき（４１老人以外）
+                   IF    ( COMB-HKNNUM         =   "060"   OR  "067" )
+                   AND   ( SYS-1001-PREFNUM    =   "40"              )
+                   AND   ( HKN-HBTNUM      NOT =   "41"              )    
+                       PERFORM 20011-PREFKBN-40-CHECK-SEC
+                   ELSE
+      *                福岡県の社保のとき（４１老人）
+                       IF    ( COMB-HKNNUM     NOT =   "060" AND "067" )
+                       AND   ( SYS-1001-PREFNUM    =   "40"            )
+                       AND   ( HKN-HBTNUM          =   "41"            )    
+                           IF      COMB-HONKZKKBN      =   "1" 
                                MOVE    2                   TO  IDX1
                            ELSE
                                MOVE    1                   TO  IDX1
                            END-IF
-                       ELSE                
-                           IF      HKN-RECESKYKBN      =   "2" OR  "3"
-                               MOVE    2                   TO  IDX1
-                           ELSE
-                               MOVE    1                   TO  IDX1
+                       ELSE
+                           IF      COMB-HKNNUM     =   "060"   OR  "067" 
+                               IF      HKN-RECESKYKBN  =   "1" OR  "3"
+                                   MOVE    2               TO  IDX1
+                               ELSE
+                                   MOVE    1               TO  IDX1
+                               END-IF
+                           ELSE                
+                               IF      HKN-RECESKYKBN  =   "2" OR  "3"
+                                   MOVE    2               TO  IDX1
+                               ELSE
+                                   MOVE    1               TO  IDX1
+                               END-IF
                            END-IF
                        END-IF
-                   ELSE
-                       MOVE    1                      TO  IDX1
-                   END-IF       
+                   END-IF
+                   IF     IDX1          =        1
+      *                地方公費レセ記載判定
+                       MOVE    ZERO        TO  FLG-KOHRECEDSP
+                       INITIALIZE          ORCSFTNJGNCHKAREA
+                       MOVE    COMB-HOSPID TO  LNK-FTNJGNCHK-HOSPID
+                       MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
+                       MOVE    "1"         TO  LNK-FTNJGNCHK-NYUGAIKBN
+      *                診療年月
+                       MOVE    WRK-SRYYMD(1:6) TO  LNK-FTNJGNCHK-SRYYM
+      *                公費番号
+                       MOVE    COMB-KOHHKNNUM (IDX)
+                                               TO  LNK-FTNJGNCHK-KOHNUM
+      *                公費ＩＤ
+                       MOVE    COMB-KOHID (IDX)
+                                               TO  LNK-FTNJGNCHK-KOHID
       *
-                   IF     IDX1                =   1
+                       CALL    "ORCSFTNJGNCHK"     USING
+                                                   ORCSFTNJGNCHKAREA
+                       IF     LNK-FTNJGNCHK-RC   =   1
+                           MOVE       1        TO    FLG-KOHRECEDSP
+                       END-IF
+                   END-IF
+               ELSE
+                   MOVE    1                      TO  IDX1
+               END-IF       
+      *
+               IF     IDX1                =   1
+                   IF      FLG-KOHRECEDSP  NOT =  1
                        ADD     1                      TO  IDY    
                        MOVE    COMB-KOHHKNNUM (IDX)   TO 
                                           WRK-SEIKYU-KOHHKNNUM(IDX1 IDY)
                        MOVE    COMB-KOHID     (IDX)   TO
                                           WRK-SEIKYU-KOHID    (IDX1 IDY)
-                   ELSE
-                       ADD     1                      TO  IDZ    
-                       MOVE    COMB-KOHHKNNUM (IDX)   TO 
+      *                福岡県の国保のとき（４１老人以外）
+                       IF    ( COMB-HKNNUM     =   "060"   OR  "067" )
+                       AND   ( SYS-1001-PREFNUM
+                                               =   "40"              )
+                       AND   ( HKN-HBTNUM  NOT =   "41"              )    
+                           ADD     1                      TO  IDZ    
+                           MOVE    COMB-KOHHKNNUM (IDX)   TO 
+                                          WRK-SEIKYU-KOHHKNNUM(2 IDZ)
+                           MOVE    COMB-KOHID     (IDX)   TO
+                                          WRK-SEIKYU-KOHID    (2 IDZ)
+                           MOVE    1                      TO  FLG-KOH 
+                       END-IF
+                   END-IF    
+               ELSE
+                   ADD     1                      TO  IDZ    
+                   MOVE    COMB-KOHHKNNUM (IDX)   TO 
                                           WRK-SEIKYU-KOHHKNNUM(IDX1 IDZ)
-                       MOVE    COMB-KOHID     (IDX)   TO
+                   MOVE    COMB-KOHID     (IDX)   TO
                                           WRK-SEIKYU-KOHID    (IDX1 IDZ)
-                       MOVE    1                      TO  FLG-KOH 
-                   END-IF  
-               END-PERFORM
-      ****END-IF           
+                   MOVE    1                      TO  FLG-KOH 
+               END-IF  
+           END-PERFORM
       *
       *    レセプト明細書
            MOVE    "1"                 TO  WRK-SYOKBN
@@ -1215,6 +1391,83 @@
        200122-NYUINACCT-HENSYU-EXT.
            EXIT. 
            .
+      *            
+      *****************************************************************
+      *    福岡県公費チェック処理
+      *****************************************************************
+       20011-PREFKBN-40-CHECK-SEC      SECTION.
+      *
+           MOVE    SPACE               TO  WRK-PREFKBN
+                                           WRK-PREFNUM
+      *
+      *    県外扱いの保険者はレセプトへ記載しない
+           IF      PTHKN-HKNJANUM (1:2)    =   "67"
+               MOVE    PTHKN-HKNJANUM (3:2)
+                                       TO  WRK-PREFNUM
+           ELSE
+               MOVE    PTHKN-HKNJANUM (1:2)
+                                       TO  WRK-PREFNUM
+           END-IF
+           IF      WRK-PREFNUM         =   SYS-1001-PREFNUM
+               MOVE    "1"                 TO  WRK-PREFKBN
+           ELSE
+               IF      WRK-PARA-SYOKBN     =   "1"
+                   MOVE    SYS-2001-SRYYM      TO  WRK-SYMD (1:6)
+               ELSE
+                   MOVE    SYS-2002-SRYYM      TO  WRK-SYMD (1:6)
+               END-IF
+               MOVE    "01"            TO  WRK-SYMD (7:2)
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL   IDX2    >       5
+                       OR      WRK-1033-STYUKYMD (IDX2) =   SPACE
+                   IF      WRK-1033-STYUKYMD   (IDX2)  <=  WRK-SYMD
+                   AND     WRK-1033-EDYUKYMD   (IDX2)  >=  WRK-SYMD      
+                       PERFORM VARYING IDX3 FROM    1   BY  1
+                               UNTIL   IDX3 >       20
+                               OR      WRK-1033-HKNJANUM (IDX2 IDX3)
+                                                   =   SPACE
+                               OR      WRK-PREFKBN =   "1"     
+                           IF      PTHKN-HKNJANUM = 
+                                           WRK-1033-HKNJANUM (IDX2 IDX3)
+                               MOVE    "1"     TO  WRK-PREFKBN
+                           END-IF
+                       END-PERFORM
+                   END-IF            
+               END-PERFORM
+           END-IF
+      *        
+      *    県内扱いの場合、公費付加情報よりレセプト請求区分を取得
+           IF      WRK-PREFKBN      =   SPACE
+               MOVE    2                   TO  IDX1
+           ELSE
+               INITIALIZE                  ORCSKOHPLUS-AREA
+               MOVE    COMB-HOSPID         TO  LNK-SKOHPLUS-HOSPID
+               MOVE    SYS-1001-PREFNUM    TO  LNK-SKOHPLUS-PREFNUM
+               MOVE    COMB-PTID           TO  LNK-SKOHPLUS-PTID
+               MOVE    COMB-HKNCOMBINUM    TO  LNK-SKOHPLUS-HKNCOMBI
+               IF      WRK-PARA-SYOKBN     =   "1"
+                   MOVE    SYS-2001-SRYYM  TO  LNK-SKOHPLUS-SRYYMD (1:6)
+               ELSE
+                   MOVE    SYS-2002-SRYYM  TO  LNK-SKOHPLUS-SRYYMD (1:6)
+               END-IF
+               MOVE    "01"             TO  LNK-SKOHPLUS-SRYYMD (7:2)  
+               CALL    "ORCSKOHPLUS"       USING
+                                           ORCSKOHPLUS-AREA
+               IF      LNK-SKOHPLUS-RC =   ZERO
+                   IF      LNK-SKOHPLUS-RECESKYKBN =   "1" OR  "3"
+                       MOVE    2                   TO  IDX1
+                   ELSE
+                       MOVE    1                   TO  IDX1
+                   END-IF
+               ELSE
+                   MOVE    1                   TO  IDX1
+               END-IF
+           END-IF
+      *
+           .
+       20011-PREFKBN-40-CHECK-EXT.
+           EXIT. 
+      *            
       *****************************************************************
       *    社保（継続）編集処理   （生保のときのみ）
       *****************************************************************
@@ -1326,6 +1579,8 @@
                    GO  TO  20011-FILE-HENSYU-EXT
                END-IF
            END-IF 
+      *    県番号
+           MOVE    SYS-1001-PREFNUM    TO  WRK-RECE61-PREFNUM
       *    印刷順
            IF    ( WRK-PARA-SYOKBN     =   "2" )
            AND   ( WRK-SYOKBN          =   "1" )
@@ -1445,16 +1700,23 @@
            MOVE    1                       TO  FLG-LASTHKNID
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
-               IF      WRK-RECE61-TEKSTYMDX (IDX)  =   SPACE
-                   MOVE    PTHKN-TEKSTYMD  TO
-                                           WRK-RECE61-TEKSTYMDX (IDX)
-                   MOVE    PTHKN-TEKEDYMD  TO
-                                           WRK-RECE61-TEKEDYMDX (IDX)
+               IF    ( WRK-RECE61-TEKSTYMDX (IDX)
+                                       =   PTHKN-TEKSTYMD )
+               AND   ( WRK-RECE61-TEKEDYMDX (IDX)
+                                       =   PTHKN-TEKEDYMD )
                    MOVE    10              TO  IDX
                ELSE
-                   IF      WRK-RECE61-TEKSTYMDX(IDX)
-                                               >=  PTHKN-TEKSTYMD
-                       MOVE    ZERO                TO  FLG-LASTHKNID
+                   IF      WRK-RECE61-TEKSTYMDX (IDX)  =   SPACE
+                       MOVE    PTHKN-TEKSTYMD  TO
+                                           WRK-RECE61-TEKSTYMDX (IDX)
+                       MOVE    PTHKN-TEKEDYMD  TO
+                                           WRK-RECE61-TEKEDYMDX (IDX)
+                       MOVE    10              TO  IDX
+                   ELSE
+                       IF      WRK-RECE61-TEKSTYMDX(IDX)
+                                                   >=  PTHKN-TEKSTYMD
+                           MOVE    ZERO                TO  FLG-LASTHKNID
+                       END-IF
                    END-IF
                END-IF        
            END-PERFORM

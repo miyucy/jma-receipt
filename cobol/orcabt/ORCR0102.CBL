@@ -79,6 +79,7 @@
       *                                     カスタマイズ項目の追加
       *  01.04.02    NACL-藤原    04/09/13  HCN06V03.red
       *                                     ＯＣＲエリアの追加
+      *  01.04.03    NACL-藤原    04/10/30  福岡レセHCRCP401.redを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -223,6 +224,7 @@
            COPY    "HCRCP400.INC".
            COPY    "HCRCP400V01.INC".
            COPY    "HCRCP400V02.INC".
+           COPY    "HCRCP401.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -652,6 +654,10 @@
                        MOVE    WRK-HEN-RENNUM-AREA 
                                                 TO  HCRCP400V02-RENNUM
                        MOVE    HCRCP400V02         TO  RECE08-PRTDATA
+                   WHEN    "HCRCP401.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCRCP401
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCRCP401-RENNUM
+                       MOVE    HCRCP401            TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
       *             
@@ -730,6 +736,7 @@
                WHEN    "HCN062.red"    ALSO    "1"              
                WHEN    "HCN062V01.red" ALSO    "1"              
                WHEN    "HCN063.red"    ALSO    "1"              
+               WHEN    "HCRCP401.red"  ALSO    ANY                
                    MOVE    "医科レセプト（入院）"      TO  SPRT-TITLE
                END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID

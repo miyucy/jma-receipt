@@ -67,6 +67,9 @@
       *                                     み不明分とする
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/07  中止処理の追加
+      *  01.01.02    NACL-藤原    04/10/30  福岡県の地方公費は主保険が
+      *                                     国保の場合は公費カウントしない
+      *                                     （法別番号４１以外のとき）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -813,6 +816,8 @@
                MOVE    KYUSEI-KANANAME      TO  RECE62-KANANAME
            END-IF         
                 
+      *    県番号
+           MOVE    RECE61-PREFNUM      TO  RECE62-PREFNUM
       *    患者保険情報テーブルから主保険情報の取得
            IF  RECE61-HKNID             NOT =   ZERO
                INITIALIZE                           PTHKNINF-REC
@@ -1349,6 +1354,28 @@
                        (RECE62-KOHNUM(4)   NOT = SPACE)
                    MOVE    3               TO    WK-KOHI-CNT
            END-EVALUATE
+      *
+      *    福岡地方公費対応
+           IF      RECE62-PREFNUM      =   "40"
+               IF  WK-KOKUHO               =   "1" OR  "2"
+                   IF   (RECE62-KOHNUM   (1)(1:1)  =   "1" OR  "2")
+                   AND  (RECE62-KOHHBTNUM(1)   NOT =   "41"       )     
+                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
+                   END-IF
+                   IF   (RECE62-KOHNUM   (2)(1:1)  =   "1" OR  "2")
+                   AND  (RECE62-KOHHBTNUM(2)   NOT =   "41"       )     
+                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
+                   END-IF
+                   IF   (RECE62-KOHNUM   (3)(1:1)  =   "1" OR  "2")
+                   AND  (RECE62-KOHHBTNUM(3)   NOT =   "41"       )     
+                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
+                   END-IF
+                   IF   (RECE62-KOHNUM   (4)(1:1)  =   "1" OR  "2")
+                   AND  (RECE62-KOHHBTNUM(4)   NOT =   "41"       )     
+                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
+                   END-IF
+               END-IF
+           END-IF
       *
       *    ３歳未満の場合、ＷＫ−ＨＯＮＫＺＫＫＢＮに"３"をセット
            IF      RECE61-HKNID            NOT =   ZERO

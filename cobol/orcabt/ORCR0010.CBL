@@ -1422,9 +1422,14 @@
                END-IF    
            END-PERFORM
            MOVE    1                       TO  FLG-LASTHKNID
-      *****IF      COMB-HKNID          NOT =   ZERO
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       10
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       10
+               IF    ( WRK-RECE01-TEKSTYMDX (IDX)
+                                       =   PTHKN-TEKSTYMD )
+               AND   ( WRK-RECE01-TEKEDYMDX (IDX)
+                                       =   PTHKN-TEKEDYMD )
+                   MOVE    10              TO  IDX
+               ELSE
                    IF      WRK-RECE01-TEKSTYMDX (IDX)  =   SPACE
                        MOVE    PTHKN-TEKSTYMD TO
                                           WRK-RECE01-TEKSTYMDX (IDX)
@@ -1436,12 +1441,12 @@
                                                    >=  PTHKN-TEKSTYMD
                            MOVE    ZERO                TO  FLG-LASTHKNID
                        END-IF    
-                   END-IF    
-               END-PERFORM
-               IF      FLG-LASTHKNID       =   1
-                   MOVE    PTHKN-HKNID     TO  WRK-RECE01-HKNID
-               END-IF
-      *****END-IF
+                   END-IF
+               END-IF    
+           END-PERFORM
+           IF      FLG-LASTHKNID       =   1
+               MOVE    PTHKN-HKNID     TO  WRK-RECE01-HKNID
+           END-IF
       *
            IF      WRK-TEISEIKBN           =   "1"
                IF      WRK-RECE01-TEISEIKBN    =   SPACE
