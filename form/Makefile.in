@@ -60,7 +60,11 @@ EXTRA_DIST = \
               HCPO.dia \
               HCM06.red \
               HCM19.red \
-              HC29.dia
+              HC29.dia \
+              HCM2C.red \
+              HCM2D.red \
+              HCM2E.red \
+              HCM2F.red 
 
 all:   
 	touch build-stamp
