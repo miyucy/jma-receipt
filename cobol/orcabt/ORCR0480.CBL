@@ -585,18 +585,16 @@
                PERFORM 5001-DB-DELETE-SEC
            END-IF
       *
-           IF      SPA-STS             =   ZERO
-      *        ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î½èÍý
-               OPEN    INPUT               RECE41-FILE
-               OPEN    INPUT               RECE43-FILE
-               OPEN    INPUT               RECE47-FILE
-               OPEN    INPUT               RECE471-FILE
-               OPEN    OUTPUT              RECEYMD-FILE     
+      *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î½èÍý
+           OPEN    INPUT               RECE41-FILE
+           OPEN    INPUT               RECE43-FILE
+           OPEN    INPUT               RECE47-FILE
+           OPEN    INPUT               RECE471-FILE
+           OPEN    OUTPUT              RECEYMD-FILE     
       *
-               MOVE    ZERO                TO  WRK-RECENUM
+           MOVE    ZERO                TO  WRK-RECENUM
       *
-               PERFORM 990-RECE41-READ-SEC
-           END-IF
+           PERFORM 990-RECE41-READ-SEC
            .
        100-INIT-EXT.
            EXIT.
