@@ -49,17 +49,17 @@
       </element>
       <element name="SEIKYU" occurs="1">
         <appinfo>
-          <embed object="string" length="9"/>
+          <embed object="string" length="11"/>
         </appinfo>
       </element>
       <element name="RYOSYU" occurs="1">
         <appinfo>
-          <embed object="string" length="9"/>
+          <embed object="string" length="11"/>
         </appinfo>
       </element>
       <element name="MISYU" occurs="1">
         <appinfo>
-          <embed object="string" length="9"/>
+          <embed object="string" length="11"/>
         </appinfo>
       </element>
       <element name="JYOTAI" occurs="1">
@@ -76,17 +76,17 @@
       </element>
       <element name="SEIKYUTTL" occurs="1">
         <appinfo>
-          <embed object="string" length="9"/>
+          <embed object="string" length="11"/>
         </appinfo>
       </element>
       <element name="RYOSYUTTL" occurs="1">
         <appinfo>
-          <embed object="string" length="9"/>
+          <embed object="string" length="11"/>
         </appinfo>
       </element>
       <element name="MISYUTTL" occurs="1">
         <appinfo>
-          <embed object="string" length="9"/>
+          <embed object="string" length="11"/>
         </appinfo>
       </element>
     </element>
@@ -1035,7 +1035,7 @@
         <point val="3.2,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.96275,2.13982;4.43725,2.48982"/>
+        <rectangle val="1.96275,2.12636;4.43725,2.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1071,7 +1071,7 @@
         <point val="8.5,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.26275,2.13982;9.73725,2.48982"/>
+        <rectangle val="7.26275,2.12636;9.73725,2.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1107,7 +1107,7 @@
         <point val="12.3,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9465,2.13982;12.6535,2.48982"/>
+        <rectangle val="11.9465,2.12636;12.6535,2.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1143,7 +1143,7 @@
         <point val="14.7,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.4627,2.13982;15.9372,2.48982"/>
+        <rectangle val="13.4627,2.12636;15.9372,2.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1179,7 +1179,7 @@
         <point val="21.7,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.993,2.13982;22.407,2.48982"/>
+        <rectangle val="20.993,2.12636;22.407,2.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1215,7 +1215,7 @@
         <point val="23.7,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.993,2.13982;24.407,2.48982"/>
+        <rectangle val="22.993,2.12636;24.407,2.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1251,7 +1251,7 @@
         <point val="17.6,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.893,2.13982;18.307,2.48982"/>
+        <rectangle val="16.893,2.12636;18.307,2.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1287,7 +1287,7 @@
         <point val="25.7,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="25.1698,2.13982;26.2303,2.48982"/>
+        <rectangle val="25.1698,2.12636;26.2303,2.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1323,7 +1323,7 @@
         <point val="27.7,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.993,2.13982;28.407,2.48982"/>
+        <rectangle val="26.993,2.12636;28.407,2.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1359,7 +1359,7 @@
         <point val="1,1.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1,1.53982;2.414,1.88982"/>
+        <rectangle val="1,1.52636;2.414,1.87636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1395,7 +1395,7 @@
         <point val="14.8,1.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.9115,1.03982;18.6885,1.38982"/>
+        <rectangle val="10.9115,1.02636;18.6885,1.37636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1431,7 +1431,7 @@
         <point val="28.7,1.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="28.3465,1.03982;28.7,1.38982"/>
+        <rectangle val="28.3465,1.02636;28.7,1.37636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1467,7 +1467,7 @@
         <point val="19.6,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.893,2.13982;20.307,2.48982"/>
+        <rectangle val="18.893,2.12636;20.307,2.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1505,7 +1505,7 @@
         <point val="2.4,1.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.4,1.53982;9.47,1.88982"/>
+        <rectangle val="2.4,1.52636;9.47,1.87636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SRYKA#</string>
@@ -1547,7 +1547,7 @@
         <point val="28.7,1.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.458,1.53982;28.7,1.88982"/>
+        <rectangle val="24.458,1.52636;28.7,1.87636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYORIYMD#</string>
@@ -1589,7 +1589,7 @@
         <point val="28.3,1.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="27.6637,1.03982;28.3,1.38982"/>
+        <rectangle val="27.6637,1.02636;28.3,1.37636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#PAGE#</string>
@@ -1631,7 +1631,7 @@
         <point val="5.5,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,2.63982;11.863,2.98982"/>
+        <rectangle val="5.5,2.62636;11.863,2.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[0].NAME#</string>
@@ -1673,7 +1673,7 @@
         <point val="12.3,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,2.63982;12.4768,2.98982"/>
+        <rectangle val="12.1233,2.62636;12.4768,2.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[0].SEX#</string>
@@ -1715,7 +1715,7 @@
         <point val="16.8,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,2.63982;18.2847,2.98982"/>
+        <rectangle val="16.8,2.62636;18.2847,2.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[0].DENPNUM#</string>
@@ -1757,7 +1757,7 @@
         <point val="22.6,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,2.63982;22.6,2.98982"/>
+        <rectangle val="20.6911,2.62636;22.6,2.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[0].SEIKYU#</string>
@@ -1799,7 +1799,7 @@
         <point val="24.6,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,2.63982;24.6,2.98982"/>
+        <rectangle val="22.6911,2.62636;24.6,2.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[0].RYOSYU#</string>
@@ -1841,7 +1841,7 @@
         <point val="26.6,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,2.63982;26.6,2.98982"/>
+        <rectangle val="24.6911,2.62636;26.6,2.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[0].MISYU#</string>
@@ -1883,7 +1883,7 @@
         <point val="26.8,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,2.63982;28.5675,2.98982"/>
+        <rectangle val="26.8,2.62636;28.5675,2.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[0].JYOTAI#</string>
@@ -1925,7 +1925,7 @@
         <point val="5.5,3.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,3.13982;11.863,3.48982"/>
+        <rectangle val="5.5,3.12636;11.863,3.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[1].NAME#</string>
@@ -1967,7 +1967,7 @@
         <point val="12.3,3.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,3.13982;12.4768,3.48982"/>
+        <rectangle val="12.1233,3.12636;12.4768,3.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[1].SEX#</string>
@@ -2009,7 +2009,7 @@
         <point val="16.8,3.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,3.13982;18.2847,3.48982"/>
+        <rectangle val="16.8,3.12636;18.2847,3.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[1].DENPNUM#</string>
@@ -2051,7 +2051,7 @@
         <point val="22.6,3.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,3.13982;22.6,3.48982"/>
+        <rectangle val="20.6911,3.12636;22.6,3.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[1].SEIKYU#</string>
@@ -2093,7 +2093,7 @@
         <point val="24.6,3.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,3.13982;24.6,3.48982"/>
+        <rectangle val="22.6911,3.12636;24.6,3.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[1].RYOSYU#</string>
@@ -2135,7 +2135,7 @@
         <point val="26.6,3.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,3.13982;26.6,3.48982"/>
+        <rectangle val="24.6911,3.12636;26.6,3.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[1].MISYU#</string>
@@ -2177,7 +2177,7 @@
         <point val="26.8,3.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,3.13982;28.5675,3.48982"/>
+        <rectangle val="26.8,3.12636;28.5675,3.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[1].JYOTAI#</string>
@@ -2219,7 +2219,7 @@
         <point val="5.5,3.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,3.63982;11.863,3.98982"/>
+        <rectangle val="5.5,3.62636;11.863,3.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[2].NAME#</string>
@@ -2261,7 +2261,7 @@
         <point val="12.3,3.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,3.63982;12.4768,3.98982"/>
+        <rectangle val="12.1233,3.62636;12.4768,3.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[2].SEX#</string>
@@ -2303,7 +2303,7 @@
         <point val="16.8,3.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,3.63982;18.2847,3.98982"/>
+        <rectangle val="16.8,3.62636;18.2847,3.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[2].DENPNUM#</string>
@@ -2345,7 +2345,7 @@
         <point val="22.6,3.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,3.63982;22.6,3.98982"/>
+        <rectangle val="20.6911,3.62636;22.6,3.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[2].SEIKYU#</string>
@@ -2387,7 +2387,7 @@
         <point val="24.6,3.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,3.63982;24.6,3.98982"/>
+        <rectangle val="22.6911,3.62636;24.6,3.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[2].RYOSYU#</string>
@@ -2429,7 +2429,7 @@
         <point val="26.6,3.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,3.63982;26.6,3.98982"/>
+        <rectangle val="24.6911,3.62636;26.6,3.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[2].MISYU#</string>
@@ -2471,7 +2471,7 @@
         <point val="26.8,3.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,3.63982;28.5675,3.98982"/>
+        <rectangle val="26.8,3.62636;28.5675,3.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[2].JYOTAI#</string>
@@ -2513,7 +2513,7 @@
         <point val="5.5,4.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,4.13982;11.863,4.48982"/>
+        <rectangle val="5.5,4.12636;11.863,4.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[3].NAME#</string>
@@ -2555,7 +2555,7 @@
         <point val="12.3,4.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,4.13982;12.4768,4.48982"/>
+        <rectangle val="12.1233,4.12636;12.4768,4.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[3].SEX#</string>
@@ -2597,7 +2597,7 @@
         <point val="16.8,4.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,4.13982;18.2847,4.48982"/>
+        <rectangle val="16.8,4.12636;18.2847,4.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[3].DENPNUM#</string>
@@ -2639,7 +2639,7 @@
         <point val="22.6,4.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,4.13982;22.6,4.48982"/>
+        <rectangle val="20.6911,4.12636;22.6,4.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[3].SEIKYU#</string>
@@ -2681,7 +2681,7 @@
         <point val="24.6,4.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,4.13982;24.6,4.48982"/>
+        <rectangle val="22.6911,4.12636;24.6,4.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[3].RYOSYU#</string>
@@ -2723,7 +2723,7 @@
         <point val="26.6,4.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,4.13982;26.6,4.48982"/>
+        <rectangle val="24.6911,4.12636;26.6,4.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[3].MISYU#</string>
@@ -2765,7 +2765,7 @@
         <point val="26.8,4.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,4.13982;28.5675,4.48982"/>
+        <rectangle val="26.8,4.12636;28.5675,4.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[3].JYOTAI#</string>
@@ -2807,7 +2807,7 @@
         <point val="5.5,4.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,4.63982;11.863,4.98982"/>
+        <rectangle val="5.5,4.62636;11.863,4.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[4].NAME#</string>
@@ -2849,7 +2849,7 @@
         <point val="12.3,4.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,4.63982;12.4768,4.98982"/>
+        <rectangle val="12.1233,4.62636;12.4768,4.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[4].SEX#</string>
@@ -2891,7 +2891,7 @@
         <point val="16.8,4.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,4.63982;18.2847,4.98982"/>
+        <rectangle val="16.8,4.62636;18.2847,4.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[4].DENPNUM#</string>
@@ -2933,7 +2933,7 @@
         <point val="22.6,4.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,4.63982;22.6,4.98982"/>
+        <rectangle val="20.6911,4.62636;22.6,4.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[4].SEIKYU#</string>
@@ -2975,7 +2975,7 @@
         <point val="24.6,4.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,4.63982;24.6,4.98982"/>
+        <rectangle val="22.6911,4.62636;24.6,4.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[4].RYOSYU#</string>
@@ -3017,7 +3017,7 @@
         <point val="26.6,4.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,4.63982;26.6,4.98982"/>
+        <rectangle val="24.6911,4.62636;26.6,4.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[4].MISYU#</string>
@@ -3059,7 +3059,7 @@
         <point val="26.8,4.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,4.63982;28.5675,4.98982"/>
+        <rectangle val="26.8,4.62636;28.5675,4.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[4].JYOTAI#</string>
@@ -3101,7 +3101,7 @@
         <point val="5.5,5.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,5.13982;11.863,5.48982"/>
+        <rectangle val="5.5,5.12636;11.863,5.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[5].NAME#</string>
@@ -3143,7 +3143,7 @@
         <point val="12.3,5.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,5.13982;12.4768,5.48982"/>
+        <rectangle val="12.1233,5.12636;12.4768,5.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[5].SEX#</string>
@@ -3185,7 +3185,7 @@
         <point val="16.8,5.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,5.13982;18.2847,5.48982"/>
+        <rectangle val="16.8,5.12636;18.2847,5.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[5].DENPNUM#</string>
@@ -3227,7 +3227,7 @@
         <point val="22.6,5.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,5.13982;22.6,5.48982"/>
+        <rectangle val="20.6911,5.12636;22.6,5.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[5].SEIKYU#</string>
@@ -3269,7 +3269,7 @@
         <point val="24.6,5.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,5.13982;24.6,5.48982"/>
+        <rectangle val="22.6911,5.12636;24.6,5.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[5].RYOSYU#</string>
@@ -3311,7 +3311,7 @@
         <point val="26.6,5.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,5.13982;26.6,5.48982"/>
+        <rectangle val="24.6911,5.12636;26.6,5.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[5].MISYU#</string>
@@ -3353,7 +3353,7 @@
         <point val="26.8,5.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,5.13982;28.5675,5.48982"/>
+        <rectangle val="26.8,5.12636;28.5675,5.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[5].JYOTAI#</string>
@@ -3395,7 +3395,7 @@
         <point val="5.5,5.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,5.63982;11.863,5.98982"/>
+        <rectangle val="5.5,5.62636;11.863,5.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[6].NAME#</string>
@@ -3437,7 +3437,7 @@
         <point val="12.3,5.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,5.63982;12.4768,5.98982"/>
+        <rectangle val="12.1233,5.62636;12.4768,5.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[6].SEX#</string>
@@ -3479,7 +3479,7 @@
         <point val="16.8,5.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,5.63982;18.2847,5.98982"/>
+        <rectangle val="16.8,5.62636;18.2847,5.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[6].DENPNUM#</string>
@@ -3521,7 +3521,7 @@
         <point val="22.6,5.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,5.63982;22.6,5.98982"/>
+        <rectangle val="20.6911,5.62636;22.6,5.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[6].SEIKYU#</string>
@@ -3563,7 +3563,7 @@
         <point val="24.6,5.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,5.63982;24.6,5.98982"/>
+        <rectangle val="22.6911,5.62636;24.6,5.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[6].RYOSYU#</string>
@@ -3605,7 +3605,7 @@
         <point val="26.6,5.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,5.63982;26.6,5.98982"/>
+        <rectangle val="24.6911,5.62636;26.6,5.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[6].MISYU#</string>
@@ -3647,7 +3647,7 @@
         <point val="26.8,5.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,5.63982;28.5675,5.98982"/>
+        <rectangle val="26.8,5.62636;28.5675,5.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[6].JYOTAI#</string>
@@ -3689,7 +3689,7 @@
         <point val="5.5,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,6.13982;11.863,6.48982"/>
+        <rectangle val="5.5,6.12636;11.863,6.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[7].NAME#</string>
@@ -3731,7 +3731,7 @@
         <point val="12.3,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,6.13982;12.4768,6.48982"/>
+        <rectangle val="12.1233,6.12636;12.4768,6.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[7].SEX#</string>
@@ -3773,7 +3773,7 @@
         <point val="16.8,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,6.13982;18.2847,6.48982"/>
+        <rectangle val="16.8,6.12636;18.2847,6.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[7].DENPNUM#</string>
@@ -3815,7 +3815,7 @@
         <point val="22.6,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,6.13982;22.6,6.48982"/>
+        <rectangle val="20.6911,6.12636;22.6,6.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[7].SEIKYU#</string>
@@ -3857,7 +3857,7 @@
         <point val="24.6,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,6.13982;24.6,6.48982"/>
+        <rectangle val="22.6911,6.12636;24.6,6.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[7].RYOSYU#</string>
@@ -3899,7 +3899,7 @@
         <point val="26.6,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,6.13982;26.6,6.48982"/>
+        <rectangle val="24.6911,6.12636;26.6,6.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[7].MISYU#</string>
@@ -3941,7 +3941,7 @@
         <point val="26.8,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,6.13982;28.5675,6.48982"/>
+        <rectangle val="26.8,6.12636;28.5675,6.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[7].JYOTAI#</string>
@@ -3983,7 +3983,7 @@
         <point val="5.5,6.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,6.63982;11.863,6.98982"/>
+        <rectangle val="5.5,6.62636;11.863,6.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[8].NAME#</string>
@@ -4025,7 +4025,7 @@
         <point val="12.3,6.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,6.63982;12.4768,6.98982"/>
+        <rectangle val="12.1233,6.62636;12.4768,6.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[8].SEX#</string>
@@ -4067,7 +4067,7 @@
         <point val="16.8,6.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,6.63982;18.2847,6.98982"/>
+        <rectangle val="16.8,6.62636;18.2847,6.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[8].DENPNUM#</string>
@@ -4109,7 +4109,7 @@
         <point val="22.6,6.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,6.63982;22.6,6.98982"/>
+        <rectangle val="20.6911,6.62636;22.6,6.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[8].SEIKYU#</string>
@@ -4151,7 +4151,7 @@
         <point val="24.6,6.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,6.63982;24.6,6.98982"/>
+        <rectangle val="22.6911,6.62636;24.6,6.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[8].RYOSYU#</string>
@@ -4193,7 +4193,7 @@
         <point val="26.6,6.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,6.63982;26.6,6.98982"/>
+        <rectangle val="24.6911,6.62636;26.6,6.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[8].MISYU#</string>
@@ -4235,7 +4235,7 @@
         <point val="26.8,6.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,6.63982;28.5675,6.98982"/>
+        <rectangle val="26.8,6.62636;28.5675,6.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[8].JYOTAI#</string>
@@ -4277,7 +4277,7 @@
         <point val="5.5,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,7.13982;11.863,7.48982"/>
+        <rectangle val="5.5,7.12636;11.863,7.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[9].NAME#</string>
@@ -4319,7 +4319,7 @@
         <point val="12.3,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,7.13982;12.4768,7.48982"/>
+        <rectangle val="12.1233,7.12636;12.4768,7.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[9].SEX#</string>
@@ -4361,7 +4361,7 @@
         <point val="16.8,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,7.13982;18.2847,7.48982"/>
+        <rectangle val="16.8,7.12636;18.2847,7.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[9].DENPNUM#</string>
@@ -4403,7 +4403,7 @@
         <point val="22.6,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,7.13982;22.6,7.48982"/>
+        <rectangle val="20.6911,7.12636;22.6,7.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[9].SEIKYU#</string>
@@ -4445,7 +4445,7 @@
         <point val="24.6,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,7.13982;24.6,7.48982"/>
+        <rectangle val="22.6911,7.12636;24.6,7.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[9].RYOSYU#</string>
@@ -4487,7 +4487,7 @@
         <point val="26.6,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,7.13982;26.6,7.48982"/>
+        <rectangle val="24.6911,7.12636;26.6,7.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[9].MISYU#</string>
@@ -4529,7 +4529,7 @@
         <point val="26.8,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,7.13982;28.5675,7.48982"/>
+        <rectangle val="26.8,7.12636;28.5675,7.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[9].JYOTAI#</string>
@@ -4571,7 +4571,7 @@
         <point val="5.5,7.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,7.63982;11.863,7.98982"/>
+        <rectangle val="5.5,7.62636;11.863,7.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[10].NAME#</string>
@@ -4613,7 +4613,7 @@
         <point val="12.3,7.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,7.63982;12.4768,7.98982"/>
+        <rectangle val="12.1233,7.62636;12.4768,7.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[10].SEX#</string>
@@ -4655,7 +4655,7 @@
         <point val="16.8,7.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,7.63982;18.2847,7.98982"/>
+        <rectangle val="16.8,7.62636;18.2847,7.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[10].DENPNUM#</string>
@@ -4697,7 +4697,7 @@
         <point val="22.6,7.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,7.63982;22.6,7.98982"/>
+        <rectangle val="20.6911,7.62636;22.6,7.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[10].SEIKYU#</string>
@@ -4739,7 +4739,7 @@
         <point val="24.6,7.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,7.63982;24.6,7.98982"/>
+        <rectangle val="22.6911,7.62636;24.6,7.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[10].RYOSYU#</string>
@@ -4781,7 +4781,7 @@
         <point val="26.6,7.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,7.63982;26.6,7.98982"/>
+        <rectangle val="24.6911,7.62636;26.6,7.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[10].MISYU#</string>
@@ -4823,7 +4823,7 @@
         <point val="26.8,7.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,7.63982;28.5675,7.98982"/>
+        <rectangle val="26.8,7.62636;28.5675,7.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[10].JYOTAI#</string>
@@ -4865,7 +4865,7 @@
         <point val="5.5,8.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,8.13982;11.863,8.48982"/>
+        <rectangle val="5.5,8.12636;11.863,8.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[11].NAME#</string>
@@ -4907,7 +4907,7 @@
         <point val="12.3,8.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,8.13982;12.4768,8.48982"/>
+        <rectangle val="12.1233,8.12636;12.4768,8.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[11].SEX#</string>
@@ -4949,7 +4949,7 @@
         <point val="16.8,8.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,8.13982;18.2847,8.48982"/>
+        <rectangle val="16.8,8.12636;18.2847,8.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[11].DENPNUM#</string>
@@ -4991,7 +4991,7 @@
         <point val="22.6,8.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,8.13982;22.6,8.48982"/>
+        <rectangle val="20.6911,8.12636;22.6,8.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[11].SEIKYU#</string>
@@ -5033,7 +5033,7 @@
         <point val="24.6,8.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,8.13982;24.6,8.48982"/>
+        <rectangle val="22.6911,8.12636;24.6,8.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[11].RYOSYU#</string>
@@ -5075,7 +5075,7 @@
         <point val="26.6,8.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,8.13982;26.6,8.48982"/>
+        <rectangle val="24.6911,8.12636;26.6,8.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[11].MISYU#</string>
@@ -5117,7 +5117,7 @@
         <point val="26.8,8.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,8.13982;28.5675,8.48982"/>
+        <rectangle val="26.8,8.12636;28.5675,8.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[11].JYOTAI#</string>
@@ -5159,7 +5159,7 @@
         <point val="5.5,8.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,8.63982;11.863,8.98982"/>
+        <rectangle val="5.5,8.62636;11.863,8.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[12].NAME#</string>
@@ -5201,7 +5201,7 @@
         <point val="12.3,8.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,8.63982;12.4768,8.98982"/>
+        <rectangle val="12.1233,8.62636;12.4768,8.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[12].SEX#</string>
@@ -5243,7 +5243,7 @@
         <point val="16.8,8.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,8.63982;18.2847,8.98982"/>
+        <rectangle val="16.8,8.62636;18.2847,8.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[12].DENPNUM#</string>
@@ -5285,7 +5285,7 @@
         <point val="22.6,8.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,8.63982;22.6,8.98982"/>
+        <rectangle val="20.6911,8.62636;22.6,8.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[12].SEIKYU#</string>
@@ -5327,7 +5327,7 @@
         <point val="24.6,8.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,8.63982;24.6,8.98982"/>
+        <rectangle val="22.6911,8.62636;24.6,8.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[12].RYOSYU#</string>
@@ -5369,7 +5369,7 @@
         <point val="26.6,8.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,8.63982;26.6,8.98982"/>
+        <rectangle val="24.6911,8.62636;26.6,8.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[12].MISYU#</string>
@@ -5411,7 +5411,7 @@
         <point val="26.8,8.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,8.63982;28.5675,8.98982"/>
+        <rectangle val="26.8,8.62636;28.5675,8.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[12].JYOTAI#</string>
@@ -5453,7 +5453,7 @@
         <point val="5.5,9.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,9.13982;11.863,9.48982"/>
+        <rectangle val="5.5,9.12636;11.863,9.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[13].NAME#</string>
@@ -5495,7 +5495,7 @@
         <point val="12.3,9.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,9.13982;12.4768,9.48982"/>
+        <rectangle val="12.1233,9.12636;12.4768,9.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[13].SEX#</string>
@@ -5537,7 +5537,7 @@
         <point val="16.8,9.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,9.13982;18.2847,9.48982"/>
+        <rectangle val="16.8,9.12636;18.2847,9.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[13].DENPNUM#</string>
@@ -5579,7 +5579,7 @@
         <point val="22.6,9.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,9.13982;22.6,9.48982"/>
+        <rectangle val="20.6911,9.12636;22.6,9.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[13].SEIKYU#</string>
@@ -5621,7 +5621,7 @@
         <point val="24.6,9.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,9.13982;24.6,9.48982"/>
+        <rectangle val="22.6911,9.12636;24.6,9.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[13].RYOSYU#</string>
@@ -5663,7 +5663,7 @@
         <point val="26.6,9.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,9.13982;26.6,9.48982"/>
+        <rectangle val="24.6911,9.12636;26.6,9.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[13].MISYU#</string>
@@ -5705,7 +5705,7 @@
         <point val="26.8,9.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,9.13982;28.5675,9.48982"/>
+        <rectangle val="26.8,9.12636;28.5675,9.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[13].JYOTAI#</string>
@@ -5747,7 +5747,7 @@
         <point val="5.5,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,9.63982;11.863,9.98982"/>
+        <rectangle val="5.5,9.62636;11.863,9.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[14].NAME#</string>
@@ -5789,7 +5789,7 @@
         <point val="12.3,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,9.63982;12.4768,9.98982"/>
+        <rectangle val="12.1233,9.62636;12.4768,9.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[14].SEX#</string>
@@ -5831,7 +5831,7 @@
         <point val="16.8,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,9.63982;18.2847,9.98982"/>
+        <rectangle val="16.8,9.62636;18.2847,9.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[14].DENPNUM#</string>
@@ -5873,7 +5873,7 @@
         <point val="22.6,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,9.63982;22.6,9.98982"/>
+        <rectangle val="20.6911,9.62636;22.6,9.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[14].SEIKYU#</string>
@@ -5915,7 +5915,7 @@
         <point val="24.6,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,9.63982;24.6,9.98982"/>
+        <rectangle val="22.6911,9.62636;24.6,9.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[14].RYOSYU#</string>
@@ -5957,7 +5957,7 @@
         <point val="26.6,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,9.63982;26.6,9.98982"/>
+        <rectangle val="24.6911,9.62636;26.6,9.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[14].MISYU#</string>
@@ -5999,7 +5999,7 @@
         <point val="26.8,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,9.63982;28.5675,9.98982"/>
+        <rectangle val="26.8,9.62636;28.5675,9.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[14].JYOTAI#</string>
@@ -6041,7 +6041,7 @@
         <point val="5.5,10.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,10.1398;11.863,10.4898"/>
+        <rectangle val="5.5,10.1264;11.863,10.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[15].NAME#</string>
@@ -6083,7 +6083,7 @@
         <point val="12.3,10.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,10.1398;12.4768,10.4898"/>
+        <rectangle val="12.1233,10.1264;12.4768,10.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[15].SEX#</string>
@@ -6125,7 +6125,7 @@
         <point val="16.8,10.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,10.1398;18.2847,10.4898"/>
+        <rectangle val="16.8,10.1264;18.2847,10.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[15].DENPNUM#</string>
@@ -6167,7 +6167,7 @@
         <point val="22.6,10.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,10.1398;22.6,10.4898"/>
+        <rectangle val="20.6911,10.1264;22.6,10.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[15].SEIKYU#</string>
@@ -6209,7 +6209,7 @@
         <point val="24.6,10.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,10.1398;24.6,10.4898"/>
+        <rectangle val="22.6911,10.1264;24.6,10.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[15].RYOSYU#</string>
@@ -6251,7 +6251,7 @@
         <point val="26.6,10.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,10.1398;26.6,10.4898"/>
+        <rectangle val="24.6911,10.1264;26.6,10.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[15].MISYU#</string>
@@ -6293,7 +6293,7 @@
         <point val="26.8,10.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,10.1398;28.5675,10.4898"/>
+        <rectangle val="26.8,10.1264;28.5675,10.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[15].JYOTAI#</string>
@@ -6335,7 +6335,7 @@
         <point val="5.5,10.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,10.6398;11.863,10.9898"/>
+        <rectangle val="5.5,10.6264;11.863,10.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[16].NAME#</string>
@@ -6377,7 +6377,7 @@
         <point val="12.3,10.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,10.6398;12.4768,10.9898"/>
+        <rectangle val="12.1233,10.6264;12.4768,10.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[16].SEX#</string>
@@ -6419,7 +6419,7 @@
         <point val="16.8,10.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,10.6398;18.2847,10.9898"/>
+        <rectangle val="16.8,10.6264;18.2847,10.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[16].DENPNUM#</string>
@@ -6461,7 +6461,7 @@
         <point val="22.6,10.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,10.6398;22.6,10.9898"/>
+        <rectangle val="20.6911,10.6264;22.6,10.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[16].SEIKYU#</string>
@@ -6503,7 +6503,7 @@
         <point val="24.6,10.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,10.6398;24.6,10.9898"/>
+        <rectangle val="22.6911,10.6264;24.6,10.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[16].RYOSYU#</string>
@@ -6545,7 +6545,7 @@
         <point val="26.6,10.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,10.6398;26.6,10.9898"/>
+        <rectangle val="24.6911,10.6264;26.6,10.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[16].MISYU#</string>
@@ -6587,7 +6587,7 @@
         <point val="26.8,10.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,10.6398;28.5675,10.9898"/>
+        <rectangle val="26.8,10.6264;28.5675,10.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[16].JYOTAI#</string>
@@ -6629,7 +6629,7 @@
         <point val="5.5,11.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,11.1398;11.863,11.4898"/>
+        <rectangle val="5.5,11.1264;11.863,11.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[17].NAME#</string>
@@ -6671,7 +6671,7 @@
         <point val="12.3,11.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,11.1398;12.4768,11.4898"/>
+        <rectangle val="12.1233,11.1264;12.4768,11.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[17].SEX#</string>
@@ -6713,7 +6713,7 @@
         <point val="16.8,11.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,11.1398;18.2847,11.4898"/>
+        <rectangle val="16.8,11.1264;18.2847,11.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[17].DENPNUM#</string>
@@ -6755,7 +6755,7 @@
         <point val="22.6,11.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,11.1398;22.6,11.4898"/>
+        <rectangle val="20.6911,11.1264;22.6,11.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[17].SEIKYU#</string>
@@ -6797,7 +6797,7 @@
         <point val="24.6,11.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,11.1398;24.6,11.4898"/>
+        <rectangle val="22.6911,11.1264;24.6,11.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[17].RYOSYU#</string>
@@ -6839,7 +6839,7 @@
         <point val="26.6,11.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,11.1398;26.6,11.4898"/>
+        <rectangle val="24.6911,11.1264;26.6,11.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[17].MISYU#</string>
@@ -6881,7 +6881,7 @@
         <point val="26.8,11.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,11.1398;28.5675,11.4898"/>
+        <rectangle val="26.8,11.1264;28.5675,11.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[17].JYOTAI#</string>
@@ -6923,7 +6923,7 @@
         <point val="5.5,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,11.6398;11.863,11.9898"/>
+        <rectangle val="5.5,11.6264;11.863,11.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[18].NAME#</string>
@@ -6965,7 +6965,7 @@
         <point val="12.3,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,11.6398;12.4768,11.9898"/>
+        <rectangle val="12.1233,11.6264;12.4768,11.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[18].SEX#</string>
@@ -7007,7 +7007,7 @@
         <point val="16.8,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,11.6398;18.2847,11.9898"/>
+        <rectangle val="16.8,11.6264;18.2847,11.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[18].DENPNUM#</string>
@@ -7049,7 +7049,7 @@
         <point val="22.6,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,11.6398;22.6,11.9898"/>
+        <rectangle val="20.6911,11.6264;22.6,11.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[18].SEIKYU#</string>
@@ -7091,7 +7091,7 @@
         <point val="24.6,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,11.6398;24.6,11.9898"/>
+        <rectangle val="22.6911,11.6264;24.6,11.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[18].RYOSYU#</string>
@@ -7133,7 +7133,7 @@
         <point val="26.6,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,11.6398;26.6,11.9898"/>
+        <rectangle val="24.6911,11.6264;26.6,11.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[18].MISYU#</string>
@@ -7175,7 +7175,7 @@
         <point val="26.8,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,11.6398;28.5675,11.9898"/>
+        <rectangle val="26.8,11.6264;28.5675,11.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[18].JYOTAI#</string>
@@ -7217,7 +7217,7 @@
         <point val="5.5,12.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,12.1398;11.863,12.4898"/>
+        <rectangle val="5.5,12.1264;11.863,12.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[19].NAME#</string>
@@ -7259,7 +7259,7 @@
         <point val="12.3,12.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,12.1398;12.4768,12.4898"/>
+        <rectangle val="12.1233,12.1264;12.4768,12.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[19].SEX#</string>
@@ -7301,7 +7301,7 @@
         <point val="16.8,12.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,12.1398;18.2847,12.4898"/>
+        <rectangle val="16.8,12.1264;18.2847,12.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[19].DENPNUM#</string>
@@ -7343,7 +7343,7 @@
         <point val="22.6,12.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,12.1398;22.6,12.4898"/>
+        <rectangle val="20.6911,12.1264;22.6,12.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[19].SEIKYU#</string>
@@ -7385,7 +7385,7 @@
         <point val="24.6,12.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,12.1398;24.6,12.4898"/>
+        <rectangle val="22.6911,12.1264;24.6,12.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[19].RYOSYU#</string>
@@ -7427,7 +7427,7 @@
         <point val="26.6,12.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,12.1398;26.6,12.4898"/>
+        <rectangle val="24.6911,12.1264;26.6,12.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[19].MISYU#</string>
@@ -7469,7 +7469,7 @@
         <point val="26.8,12.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,12.1398;28.5675,12.4898"/>
+        <rectangle val="26.8,12.1264;28.5675,12.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[19].JYOTAI#</string>
@@ -7511,7 +7511,7 @@
         <point val="5.5,12.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,12.6398;11.863,12.9898"/>
+        <rectangle val="5.5,12.6264;11.863,12.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[20].NAME#</string>
@@ -7553,7 +7553,7 @@
         <point val="12.3,12.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,12.6398;12.4768,12.9898"/>
+        <rectangle val="12.1233,12.6264;12.4768,12.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[20].SEX#</string>
@@ -7595,7 +7595,7 @@
         <point val="16.8,12.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,12.6398;18.2847,12.9898"/>
+        <rectangle val="16.8,12.6264;18.2847,12.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[20].DENPNUM#</string>
@@ -7637,7 +7637,7 @@
         <point val="22.6,12.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,12.6398;22.6,12.9898"/>
+        <rectangle val="20.6911,12.6264;22.6,12.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[20].SEIKYU#</string>
@@ -7679,7 +7679,7 @@
         <point val="24.6,12.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,12.6398;24.6,12.9898"/>
+        <rectangle val="22.6911,12.6264;24.6,12.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[20].RYOSYU#</string>
@@ -7721,7 +7721,7 @@
         <point val="26.6,12.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,12.6398;26.6,12.9898"/>
+        <rectangle val="24.6911,12.6264;26.6,12.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[20].MISYU#</string>
@@ -7763,7 +7763,7 @@
         <point val="26.8,12.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,12.6398;28.5675,12.9898"/>
+        <rectangle val="26.8,12.6264;28.5675,12.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[20].JYOTAI#</string>
@@ -7805,7 +7805,7 @@
         <point val="5.5,13.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,13.1398;11.863,13.4898"/>
+        <rectangle val="5.5,13.1264;11.863,13.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[21].NAME#</string>
@@ -7847,7 +7847,7 @@
         <point val="12.3,13.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,13.1398;12.4768,13.4898"/>
+        <rectangle val="12.1233,13.1264;12.4768,13.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[21].SEX#</string>
@@ -7889,7 +7889,7 @@
         <point val="16.8,13.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,13.1398;18.2847,13.4898"/>
+        <rectangle val="16.8,13.1264;18.2847,13.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[21].DENPNUM#</string>
@@ -7931,7 +7931,7 @@
         <point val="22.6,13.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,13.1398;22.6,13.4898"/>
+        <rectangle val="20.6911,13.1264;22.6,13.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[21].SEIKYU#</string>
@@ -7973,7 +7973,7 @@
         <point val="24.6,13.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,13.1398;24.6,13.4898"/>
+        <rectangle val="22.6911,13.1264;24.6,13.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[21].RYOSYU#</string>
@@ -8015,7 +8015,7 @@
         <point val="26.6,13.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,13.1398;26.6,13.4898"/>
+        <rectangle val="24.6911,13.1264;26.6,13.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[21].MISYU#</string>
@@ -8057,7 +8057,7 @@
         <point val="26.8,13.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,13.1398;28.5675,13.4898"/>
+        <rectangle val="26.8,13.1264;28.5675,13.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[21].JYOTAI#</string>
@@ -8099,7 +8099,7 @@
         <point val="5.5,13.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,13.6398;11.863,13.9898"/>
+        <rectangle val="5.5,13.6264;11.863,13.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[22].NAME#</string>
@@ -8141,7 +8141,7 @@
         <point val="12.3,13.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,13.6398;12.4768,13.9898"/>
+        <rectangle val="12.1233,13.6264;12.4768,13.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[22].SEX#</string>
@@ -8183,7 +8183,7 @@
         <point val="16.8,13.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,13.6398;18.2847,13.9898"/>
+        <rectangle val="16.8,13.6264;18.2847,13.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[22].DENPNUM#</string>
@@ -8225,7 +8225,7 @@
         <point val="22.6,13.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,13.6398;22.6,13.9898"/>
+        <rectangle val="20.6911,13.6264;22.6,13.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[22].SEIKYU#</string>
@@ -8267,7 +8267,7 @@
         <point val="24.6,13.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,13.6398;24.6,13.9898"/>
+        <rectangle val="22.6911,13.6264;24.6,13.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[22].RYOSYU#</string>
@@ -8309,7 +8309,7 @@
         <point val="26.6,13.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,13.6398;26.6,13.9898"/>
+        <rectangle val="24.6911,13.6264;26.6,13.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[22].MISYU#</string>
@@ -8351,7 +8351,7 @@
         <point val="26.8,13.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,13.6398;28.5675,13.9898"/>
+        <rectangle val="26.8,13.6264;28.5675,13.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[22].JYOTAI#</string>
@@ -8393,7 +8393,7 @@
         <point val="5.5,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,14.1398;11.863,14.4898"/>
+        <rectangle val="5.5,14.1264;11.863,14.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[23].NAME#</string>
@@ -8435,7 +8435,7 @@
         <point val="12.3,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,14.1398;12.4768,14.4898"/>
+        <rectangle val="12.1233,14.1264;12.4768,14.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[23].SEX#</string>
@@ -8477,7 +8477,7 @@
         <point val="16.8,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,14.1398;18.2847,14.4898"/>
+        <rectangle val="16.8,14.1264;18.2847,14.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[23].DENPNUM#</string>
@@ -8519,7 +8519,7 @@
         <point val="22.6,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,14.1398;22.6,14.4898"/>
+        <rectangle val="20.6911,14.1264;22.6,14.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[23].SEIKYU#</string>
@@ -8561,7 +8561,7 @@
         <point val="24.6,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,14.1398;24.6,14.4898"/>
+        <rectangle val="22.6911,14.1264;24.6,14.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[23].RYOSYU#</string>
@@ -8603,7 +8603,7 @@
         <point val="26.6,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,14.1398;26.6,14.4898"/>
+        <rectangle val="24.6911,14.1264;26.6,14.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[23].MISYU#</string>
@@ -8645,7 +8645,7 @@
         <point val="26.8,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,14.1398;28.5675,14.4898"/>
+        <rectangle val="26.8,14.1264;28.5675,14.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[23].JYOTAI#</string>
@@ -8687,7 +8687,7 @@
         <point val="5.5,14.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,14.6398;11.863,14.9898"/>
+        <rectangle val="5.5,14.6264;11.863,14.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[24].NAME#</string>
@@ -8729,7 +8729,7 @@
         <point val="12.3,14.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,14.6398;12.4768,14.9898"/>
+        <rectangle val="12.1233,14.6264;12.4768,14.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[24].SEX#</string>
@@ -8771,7 +8771,7 @@
         <point val="16.8,14.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,14.6398;18.2847,14.9898"/>
+        <rectangle val="16.8,14.6264;18.2847,14.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[24].DENPNUM#</string>
@@ -8813,7 +8813,7 @@
         <point val="22.6,14.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,14.6398;22.6,14.9898"/>
+        <rectangle val="20.6911,14.6264;22.6,14.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[24].SEIKYU#</string>
@@ -8855,7 +8855,7 @@
         <point val="24.6,14.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,14.6398;24.6,14.9898"/>
+        <rectangle val="22.6911,14.6264;24.6,14.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[24].RYOSYU#</string>
@@ -8897,7 +8897,7 @@
         <point val="26.6,14.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,14.6398;26.6,14.9898"/>
+        <rectangle val="24.6911,14.6264;26.6,14.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[24].MISYU#</string>
@@ -8939,7 +8939,7 @@
         <point val="26.8,14.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,14.6398;28.5675,14.9898"/>
+        <rectangle val="26.8,14.6264;28.5675,14.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[24].JYOTAI#</string>
@@ -8981,7 +8981,7 @@
         <point val="5.5,15.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,15.1398;11.863,15.4898"/>
+        <rectangle val="5.5,15.1264;11.863,15.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[25].NAME#</string>
@@ -9023,7 +9023,7 @@
         <point val="12.3,15.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,15.1398;12.4768,15.4898"/>
+        <rectangle val="12.1233,15.1264;12.4768,15.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[25].SEX#</string>
@@ -9065,7 +9065,7 @@
         <point val="16.8,15.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,15.1398;18.2847,15.4898"/>
+        <rectangle val="16.8,15.1264;18.2847,15.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[25].DENPNUM#</string>
@@ -9107,7 +9107,7 @@
         <point val="22.6,15.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,15.1398;22.6,15.4898"/>
+        <rectangle val="20.6911,15.1264;22.6,15.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[25].SEIKYU#</string>
@@ -9149,7 +9149,7 @@
         <point val="24.6,15.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,15.1398;24.6,15.4898"/>
+        <rectangle val="22.6911,15.1264;24.6,15.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[25].RYOSYU#</string>
@@ -9191,7 +9191,7 @@
         <point val="26.6,15.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,15.1398;26.6,15.4898"/>
+        <rectangle val="24.6911,15.1264;26.6,15.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[25].MISYU#</string>
@@ -9233,7 +9233,7 @@
         <point val="26.8,15.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,15.1398;28.5675,15.4898"/>
+        <rectangle val="26.8,15.1264;28.5675,15.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[25].JYOTAI#</string>
@@ -9275,7 +9275,7 @@
         <point val="5.5,15.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,15.6398;11.863,15.9898"/>
+        <rectangle val="5.5,15.6264;11.863,15.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[26].NAME#</string>
@@ -9317,7 +9317,7 @@
         <point val="12.3,15.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,15.6398;12.4768,15.9898"/>
+        <rectangle val="12.1233,15.6264;12.4768,15.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[26].SEX#</string>
@@ -9359,7 +9359,7 @@
         <point val="16.8,15.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,15.6398;18.2847,15.9898"/>
+        <rectangle val="16.8,15.6264;18.2847,15.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[26].DENPNUM#</string>
@@ -9401,7 +9401,7 @@
         <point val="22.6,15.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,15.6398;22.6,15.9898"/>
+        <rectangle val="20.6911,15.6264;22.6,15.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[26].SEIKYU#</string>
@@ -9443,7 +9443,7 @@
         <point val="24.6,15.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,15.6398;24.6,15.9898"/>
+        <rectangle val="22.6911,15.6264;24.6,15.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[26].RYOSYU#</string>
@@ -9485,7 +9485,7 @@
         <point val="26.6,15.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,15.6398;26.6,15.9898"/>
+        <rectangle val="24.6911,15.6264;26.6,15.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[26].MISYU#</string>
@@ -9527,7 +9527,7 @@
         <point val="26.8,15.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,15.6398;28.5675,15.9898"/>
+        <rectangle val="26.8,15.6264;28.5675,15.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[26].JYOTAI#</string>
@@ -9569,7 +9569,7 @@
         <point val="5.5,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,16.1398;11.863,16.4898"/>
+        <rectangle val="5.5,16.1264;11.863,16.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[27].NAME#</string>
@@ -9611,7 +9611,7 @@
         <point val="12.3,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,16.1398;12.4768,16.4898"/>
+        <rectangle val="12.1233,16.1264;12.4768,16.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[27].SEX#</string>
@@ -9653,7 +9653,7 @@
         <point val="16.8,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,16.1398;18.2847,16.4898"/>
+        <rectangle val="16.8,16.1264;18.2847,16.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[27].DENPNUM#</string>
@@ -9695,7 +9695,7 @@
         <point val="22.6,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,16.1398;22.6,16.4898"/>
+        <rectangle val="20.6911,16.1264;22.6,16.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[27].SEIKYU#</string>
@@ -9737,7 +9737,7 @@
         <point val="24.6,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,16.1398;24.6,16.4898"/>
+        <rectangle val="22.6911,16.1264;24.6,16.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[27].RYOSYU#</string>
@@ -9779,7 +9779,7 @@
         <point val="26.6,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,16.1398;26.6,16.4898"/>
+        <rectangle val="24.6911,16.1264;26.6,16.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[27].MISYU#</string>
@@ -9821,7 +9821,7 @@
         <point val="26.8,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,16.1398;28.5675,16.4898"/>
+        <rectangle val="26.8,16.1264;28.5675,16.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[27].JYOTAI#</string>
@@ -9863,7 +9863,7 @@
         <point val="5.5,16.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,16.6398;11.863,16.9898"/>
+        <rectangle val="5.5,16.6264;11.863,16.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[28].NAME#</string>
@@ -9905,7 +9905,7 @@
         <point val="12.3,16.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,16.6398;12.4768,16.9898"/>
+        <rectangle val="12.1233,16.6264;12.4768,16.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[28].SEX#</string>
@@ -9947,7 +9947,7 @@
         <point val="16.8,16.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,16.6398;18.2847,16.9898"/>
+        <rectangle val="16.8,16.6264;18.2847,16.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[28].DENPNUM#</string>
@@ -9989,7 +9989,7 @@
         <point val="22.6,16.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,16.6398;22.6,16.9898"/>
+        <rectangle val="20.6911,16.6264;22.6,16.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[28].SEIKYU#</string>
@@ -10031,7 +10031,7 @@
         <point val="24.6,16.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,16.6398;24.6,16.9898"/>
+        <rectangle val="22.6911,16.6264;24.6,16.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[28].RYOSYU#</string>
@@ -10073,7 +10073,7 @@
         <point val="26.6,16.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,16.6398;26.6,16.9898"/>
+        <rectangle val="24.6911,16.6264;26.6,16.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[28].MISYU#</string>
@@ -10115,7 +10115,7 @@
         <point val="26.8,16.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,16.6398;28.5675,16.9898"/>
+        <rectangle val="26.8,16.6264;28.5675,16.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[28].JYOTAI#</string>
@@ -10157,7 +10157,7 @@
         <point val="5.5,17.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,17.1398;11.863,17.4898"/>
+        <rectangle val="5.5,17.1264;11.863,17.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[29].NAME#</string>
@@ -10199,7 +10199,7 @@
         <point val="12.3,17.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.1233,17.1398;12.4768,17.4898"/>
+        <rectangle val="12.1233,17.1264;12.4768,17.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[29].SEX#</string>
@@ -10241,7 +10241,7 @@
         <point val="16.8,17.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,17.1398;18.2847,17.4898"/>
+        <rectangle val="16.8,17.1264;18.2847,17.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[29].DENPNUM#</string>
@@ -10283,7 +10283,7 @@
         <point val="22.6,17.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,17.1398;22.6,17.4898"/>
+        <rectangle val="20.6911,17.1264;22.6,17.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[29].SEIKYU#</string>
@@ -10325,7 +10325,7 @@
         <point val="24.6,17.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,17.1398;24.6,17.4898"/>
+        <rectangle val="22.6911,17.1264;24.6,17.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[29].RYOSYU#</string>
@@ -10367,7 +10367,7 @@
         <point val="26.6,17.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,17.1398;26.6,17.4898"/>
+        <rectangle val="24.6911,17.1264;26.6,17.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[29].MISYU#</string>
@@ -10409,7 +10409,7 @@
         <point val="26.8,17.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.8,17.1398;28.5675,17.4898"/>
+        <rectangle val="26.8,17.1264;28.5675,17.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[29].JYOTAI#</string>
@@ -10451,7 +10451,7 @@
         <point val="18.6,18.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.6,18.1398;20.3675,18.4898"/>
+        <rectangle val="18.6,18.1264;20.3675,18.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TTL-TBL[0].TTLMSG#</string>
@@ -10493,7 +10493,7 @@
         <point val="22.6,18.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,18.1398;22.6,18.4898"/>
+        <rectangle val="20.6911,18.1264;22.6,18.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TTL-TBL[0].SEIKYUTTL#</string>
@@ -10535,7 +10535,7 @@
         <point val="24.6,18.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,18.1398;24.6,18.4898"/>
+        <rectangle val="22.6911,18.1264;24.6,18.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TTL-TBL[0].RYOSYUTTL#</string>
@@ -10577,7 +10577,7 @@
         <point val="26.6,18.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,18.1398;26.6,18.4898"/>
+        <rectangle val="24.6911,18.1264;26.6,18.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TTL-TBL[0].MISYUTTL#</string>
@@ -10619,7 +10619,7 @@
         <point val="18.6,19.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.6,19.1398;20.3675,19.4898"/>
+        <rectangle val="18.6,19.1264;20.3675,19.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TTL-TBL[1].TTLMSG#</string>
@@ -10661,7 +10661,7 @@
         <point val="22.6,19.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,19.1398;22.6,19.4898"/>
+        <rectangle val="20.6911,19.1264;22.6,19.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TTL-TBL[1].SEIKYUTTL#</string>
@@ -10703,7 +10703,7 @@
         <point val="24.6,19.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,19.1398;24.6,19.4898"/>
+        <rectangle val="22.6911,19.1264;24.6,19.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TTL-TBL[1].RYOSYUTTL#</string>
@@ -10745,7 +10745,7 @@
         <point val="26.6,19.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,19.1398;26.6,19.4898"/>
+        <rectangle val="24.6911,19.1264;26.6,19.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TTL-TBL[1].MISYUTTL#</string>
@@ -10787,7 +10787,7 @@
         <point val="18.6,19.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.6,19.6398;20.3675,19.9898"/>
+        <rectangle val="18.6,19.6264;20.3675,19.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TTL-TBL[2].TTLMSG#</string>
@@ -10829,7 +10829,7 @@
         <point val="22.6,19.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.6911,19.6398;22.6,19.9898"/>
+        <rectangle val="20.6911,19.6264;22.6,19.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TTL-TBL[2].SEIKYUTTL#</string>
@@ -10871,7 +10871,7 @@
         <point val="24.6,19.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.6911,19.6398;24.6,19.9898"/>
+        <rectangle val="22.6911,19.6264;24.6,19.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TTL-TBL[2].RYOSYUTTL#</string>
@@ -10913,7 +10913,7 @@
         <point val="26.6,19.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.6911,19.6398;26.6,19.9898"/>
+        <rectangle val="24.6911,19.6264;26.6,19.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TTL-TBL[2].MISYUTTL#</string>
@@ -10955,7 +10955,7 @@
         <point val="21.6,19"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.7163,18.7398;22.4838,19.0898"/>
+        <rectangle val="20.7163,18.7264;22.4838,19.0764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SEIKYUTTLMSG#</string>
@@ -10997,7 +10997,7 @@
         <point val="23.6,19"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.7163,18.7398;24.4838,19.0898"/>
+        <rectangle val="22.7163,18.7264;24.4838,19.0764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#RYOSYUTTLMSG#</string>
@@ -11039,7 +11039,7 @@
         <point val="25.6,19"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.7163,18.7398;26.4838,19.0898"/>
+        <rectangle val="24.7163,18.7264;26.4838,19.0764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#MISYUTTLMSG#</string>
@@ -11081,7 +11081,7 @@
         <point val="1.1,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,2.63982;5.342,2.98982"/>
+        <rectangle val="1.1,2.62636;5.342,2.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[0].PTNUM#</string>
@@ -11123,7 +11123,7 @@
         <point val="1.1,3.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,3.13982;5.342,3.48982"/>
+        <rectangle val="1.1,3.12636;5.342,3.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[1].PTNUM#</string>
@@ -11165,7 +11165,7 @@
         <point val="1.1,3.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,3.63982;5.342,3.98982"/>
+        <rectangle val="1.1,3.62636;5.342,3.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[2].PTNUM#</string>
@@ -11207,7 +11207,7 @@
         <point val="1.1,4.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,4.13982;5.342,4.48982"/>
+        <rectangle val="1.1,4.12636;5.342,4.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[3].PTNUM#</string>
@@ -11249,7 +11249,7 @@
         <point val="1.1,4.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,4.63982;5.342,4.98982"/>
+        <rectangle val="1.1,4.62636;5.342,4.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[4].PTNUM#</string>
@@ -11291,7 +11291,7 @@
         <point val="1.1,5.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,5.13982;5.342,5.48982"/>
+        <rectangle val="1.1,5.12636;5.342,5.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[5].PTNUM#</string>
@@ -11333,7 +11333,7 @@
         <point val="1.1,5.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,5.63982;5.342,5.98982"/>
+        <rectangle val="1.1,5.62636;5.342,5.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[6].PTNUM#</string>
@@ -11375,7 +11375,7 @@
         <point val="1.1,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,6.13982;5.342,6.48982"/>
+        <rectangle val="1.1,6.12636;5.342,6.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[7].PTNUM#</string>
@@ -11417,7 +11417,7 @@
         <point val="1.1,6.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,6.63982;5.342,6.98982"/>
+        <rectangle val="1.1,6.62636;5.342,6.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[8].PTNUM#</string>
@@ -11459,7 +11459,7 @@
         <point val="1.1,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,7.13982;5.342,7.48982"/>
+        <rectangle val="1.1,7.12636;5.342,7.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[9].PTNUM#</string>
@@ -11501,7 +11501,7 @@
         <point val="1.075,7.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.075,7.63982;5.317,7.98982"/>
+        <rectangle val="1.075,7.62636;5.317,7.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[10].PTNUM#</string>
@@ -11543,7 +11543,7 @@
         <point val="1.1,8.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,8.13982;5.342,8.48982"/>
+        <rectangle val="1.1,8.12636;5.342,8.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[11].PTNUM#</string>
@@ -11585,7 +11585,7 @@
         <point val="1.1,8.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,8.63982;5.342,8.98982"/>
+        <rectangle val="1.1,8.62636;5.342,8.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[12].PTNUM#</string>
@@ -11627,7 +11627,7 @@
         <point val="1.1,9.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,9.13982;5.342,9.48982"/>
+        <rectangle val="1.1,9.12636;5.342,9.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[13].PTNUM#</string>
@@ -11669,7 +11669,7 @@
         <point val="1.1,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,9.63982;5.342,9.98982"/>
+        <rectangle val="1.1,9.62636;5.342,9.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[14].PTNUM#</string>
@@ -11711,7 +11711,7 @@
         <point val="1.1,10.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,10.1398;5.342,10.4898"/>
+        <rectangle val="1.1,10.1264;5.342,10.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[15].PTNUM#</string>
@@ -11753,7 +11753,7 @@
         <point val="1.1,10.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,10.6398;5.342,10.9898"/>
+        <rectangle val="1.1,10.6264;5.342,10.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[16].PTNUM#</string>
@@ -11795,7 +11795,7 @@
         <point val="1.1,11.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,11.1398;5.342,11.4898"/>
+        <rectangle val="1.1,11.1264;5.342,11.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[17].PTNUM#</string>
@@ -11837,7 +11837,7 @@
         <point val="1.1,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,11.6398;5.342,11.9898"/>
+        <rectangle val="1.1,11.6264;5.342,11.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[18].PTNUM#</string>
@@ -11879,7 +11879,7 @@
         <point val="1.1,12.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,12.1398;5.342,12.4898"/>
+        <rectangle val="1.1,12.1264;5.342,12.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[19].PTNUM#</string>
@@ -11921,7 +11921,7 @@
         <point val="1.1,12.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,12.6398;5.342,12.9898"/>
+        <rectangle val="1.1,12.6264;5.342,12.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[20].PTNUM#</string>
@@ -11963,7 +11963,7 @@
         <point val="1.1,13.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,13.1398;5.342,13.4898"/>
+        <rectangle val="1.1,13.1264;5.342,13.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[21].PTNUM#</string>
@@ -12005,7 +12005,7 @@
         <point val="1.1,13.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,13.6398;5.342,13.9898"/>
+        <rectangle val="1.1,13.6264;5.342,13.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[22].PTNUM#</string>
@@ -12047,7 +12047,7 @@
         <point val="1.1,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,14.1398;5.342,14.4898"/>
+        <rectangle val="1.1,14.1264;5.342,14.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[23].PTNUM#</string>
@@ -12089,7 +12089,7 @@
         <point val="1.1,14.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,14.6398;5.342,14.9898"/>
+        <rectangle val="1.1,14.6264;5.342,14.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[24].PTNUM#</string>
@@ -12131,7 +12131,7 @@
         <point val="1.1,15.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,15.1398;5.342,15.4898"/>
+        <rectangle val="1.1,15.1264;5.342,15.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[25].PTNUM#</string>
@@ -12173,7 +12173,7 @@
         <point val="1.1,15.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,15.6398;5.342,15.9898"/>
+        <rectangle val="1.1,15.6264;5.342,15.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[26].PTNUM#</string>
@@ -12215,7 +12215,7 @@
         <point val="1.1,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,16.1398;5.342,16.4898"/>
+        <rectangle val="1.1,16.1264;5.342,16.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[27].PTNUM#</string>
@@ -12257,7 +12257,7 @@
         <point val="1.1,16.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,16.6398;5.342,16.9898"/>
+        <rectangle val="1.1,16.6264;5.342,16.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[28].PTNUM#</string>
@@ -12299,7 +12299,7 @@
         <point val="1.1,17.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,17.1398;5.342,17.4898"/>
+        <rectangle val="1.1,17.1264;5.342,17.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[29].PTNUM#</string>
@@ -12341,7 +12341,7 @@
         <point val="19.6,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,2.63982;20.6605,2.98982"/>
+        <rectangle val="18.5395,2.62636;20.6605,2.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[0].SRYMD#</string>
@@ -12383,7 +12383,7 @@
         <point val="19.6,3.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,3.13982;20.6605,3.48982"/>
+        <rectangle val="18.5395,3.12636;20.6605,3.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[1].SRYMD#</string>
@@ -12425,7 +12425,7 @@
         <point val="19.6,3.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,3.63982;20.6605,3.98982"/>
+        <rectangle val="18.5395,3.62636;20.6605,3.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[2].SRYMD#</string>
@@ -12467,7 +12467,7 @@
         <point val="19.6,4.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,4.13982;20.6605,4.48982"/>
+        <rectangle val="18.5395,4.12636;20.6605,4.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[3].SRYMD#</string>
@@ -12509,7 +12509,7 @@
         <point val="19.6,4.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,4.63982;20.6605,4.98982"/>
+        <rectangle val="18.5395,4.62636;20.6605,4.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[4].SRYMD#</string>
@@ -12551,7 +12551,7 @@
         <point val="19.6,5.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,5.13982;20.6605,5.48982"/>
+        <rectangle val="18.5395,5.12636;20.6605,5.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[5].SRYMD#</string>
@@ -12593,7 +12593,7 @@
         <point val="19.6,5.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,5.63982;20.6605,5.98982"/>
+        <rectangle val="18.5395,5.62636;20.6605,5.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[6].SRYMD#</string>
@@ -12635,7 +12635,7 @@
         <point val="19.6,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,6.13982;20.6605,6.48982"/>
+        <rectangle val="18.5395,6.12636;20.6605,6.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[7].SRYMD#</string>
@@ -12677,7 +12677,7 @@
         <point val="19.6,6.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,6.63982;20.6605,6.98982"/>
+        <rectangle val="18.5395,6.62636;20.6605,6.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[8].SRYMD#</string>
@@ -12719,7 +12719,7 @@
         <point val="19.6,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,7.13982;20.6605,7.48982"/>
+        <rectangle val="18.5395,7.12636;20.6605,7.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[9].SRYMD#</string>
@@ -12761,7 +12761,7 @@
         <point val="19.6,7.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,7.63982;20.6605,7.98982"/>
+        <rectangle val="18.5395,7.62636;20.6605,7.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[10].SRYMD#</string>
@@ -12803,7 +12803,7 @@
         <point val="19.6,8.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,8.13982;20.6605,8.48982"/>
+        <rectangle val="18.5395,8.12636;20.6605,8.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[11].SRYMD#</string>
@@ -12845,7 +12845,7 @@
         <point val="19.6,8.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,8.63982;20.6605,8.98982"/>
+        <rectangle val="18.5395,8.62636;20.6605,8.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[12].SRYMD#</string>
@@ -12887,7 +12887,7 @@
         <point val="19.6,9.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,9.13982;20.6605,9.48982"/>
+        <rectangle val="18.5395,9.12636;20.6605,9.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[13].SRYMD#</string>
@@ -12929,7 +12929,7 @@
         <point val="19.6,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,9.63982;20.6605,9.98982"/>
+        <rectangle val="18.5395,9.62636;20.6605,9.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[14].SRYMD#</string>
@@ -12971,7 +12971,7 @@
         <point val="19.6,10.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,10.1398;20.6605,10.4898"/>
+        <rectangle val="18.5395,10.1264;20.6605,10.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[15].SRYMD#</string>
@@ -13013,7 +13013,7 @@
         <point val="19.6,10.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,10.6398;20.6605,10.9898"/>
+        <rectangle val="18.5395,10.6264;20.6605,10.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[16].SRYMD#</string>
@@ -13055,7 +13055,7 @@
         <point val="19.6,11.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,11.1398;20.6605,11.4898"/>
+        <rectangle val="18.5395,11.1264;20.6605,11.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[17].SRYMD#</string>
@@ -13097,7 +13097,7 @@
         <point val="19.6,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,11.6398;20.6605,11.9898"/>
+        <rectangle val="18.5395,11.6264;20.6605,11.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[18].SRYMD#</string>
@@ -13139,7 +13139,7 @@
         <point val="19.6,12.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,12.1398;20.6605,12.4898"/>
+        <rectangle val="18.5395,12.1264;20.6605,12.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[19].SRYMD#</string>
@@ -13181,7 +13181,7 @@
         <point val="19.6,12.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,12.6398;20.6605,12.9898"/>
+        <rectangle val="18.5395,12.6264;20.6605,12.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[20].SRYMD#</string>
@@ -13223,7 +13223,7 @@
         <point val="19.6,13.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,13.1398;20.6605,13.4898"/>
+        <rectangle val="18.5395,13.1264;20.6605,13.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[21].SRYMD#</string>
@@ -13265,7 +13265,7 @@
         <point val="19.6,13.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,13.6398;20.6605,13.9898"/>
+        <rectangle val="18.5395,13.6264;20.6605,13.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[22].SRYMD#</string>
@@ -13307,7 +13307,7 @@
         <point val="19.6,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,14.1398;20.6605,14.4898"/>
+        <rectangle val="18.5395,14.1264;20.6605,14.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[23].SRYMD#</string>
@@ -13349,7 +13349,7 @@
         <point val="19.6,14.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,14.6398;20.6605,14.9898"/>
+        <rectangle val="18.5395,14.6264;20.6605,14.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[24].SRYMD#</string>
@@ -13391,7 +13391,7 @@
         <point val="19.6,15.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,15.1398;20.6605,15.4898"/>
+        <rectangle val="18.5395,15.1264;20.6605,15.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[25].SRYMD#</string>
@@ -13433,7 +13433,7 @@
         <point val="19.6,15.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,15.6398;20.6605,15.9898"/>
+        <rectangle val="18.5395,15.6264;20.6605,15.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[26].SRYMD#</string>
@@ -13475,7 +13475,7 @@
         <point val="19.6,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,16.1398;20.6605,16.4898"/>
+        <rectangle val="18.5395,16.1264;20.6605,16.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[27].SRYMD#</string>
@@ -13517,7 +13517,7 @@
         <point val="19.6,16.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,16.6398;20.6605,16.9898"/>
+        <rectangle val="18.5395,16.6264;20.6605,16.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[28].SRYMD#</string>
@@ -13559,7 +13559,7 @@
         <point val="19.6,17.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5395,17.1398;20.6605,17.4898"/>
+        <rectangle val="18.5395,17.1264;20.6605,17.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[29].SRYMD#</string>
@@ -13601,7 +13601,7 @@
         <point val="14.7,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,2.63982;16.6442,2.98982"/>
+        <rectangle val="12.7557,2.62636;16.6442,2.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[0].BIRTHDAY#</string>
@@ -13643,7 +13643,7 @@
         <point val="14.7,3.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,3.13982;16.6442,3.48982"/>
+        <rectangle val="12.7557,3.12636;16.6442,3.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[1].BIRTHDAY#</string>
@@ -13685,7 +13685,7 @@
         <point val="14.7,3.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,3.63982;16.6442,3.98982"/>
+        <rectangle val="12.7557,3.62636;16.6442,3.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[2].BIRTHDAY#</string>
@@ -13727,7 +13727,7 @@
         <point val="14.7,4.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,4.13982;16.6442,4.48982"/>
+        <rectangle val="12.7557,4.12636;16.6442,4.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[3].BIRTHDAY#</string>
@@ -13769,7 +13769,7 @@
         <point val="14.7,4.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,4.63982;16.6442,4.98982"/>
+        <rectangle val="12.7557,4.62636;16.6442,4.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[4].BIRTHDAY#</string>
@@ -13811,7 +13811,7 @@
         <point val="14.7,5.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,5.13982;16.6442,5.48982"/>
+        <rectangle val="12.7557,5.12636;16.6442,5.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[5].BIRTHDAY#</string>
@@ -13853,7 +13853,7 @@
         <point val="14.7,5.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,5.63982;16.6442,5.98982"/>
+        <rectangle val="12.7557,5.62636;16.6442,5.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[6].BIRTHDAY#</string>
@@ -13895,7 +13895,7 @@
         <point val="14.7,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,6.13982;16.6442,6.48982"/>
+        <rectangle val="12.7557,6.12636;16.6442,6.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[7].BIRTHDAY#</string>
@@ -13937,7 +13937,7 @@
         <point val="14.7,6.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,6.63982;16.6442,6.98982"/>
+        <rectangle val="12.7557,6.62636;16.6442,6.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[8].BIRTHDAY#</string>
@@ -13979,7 +13979,7 @@
         <point val="14.7,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,7.13982;16.6442,7.48982"/>
+        <rectangle val="12.7557,7.12636;16.6442,7.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[9].BIRTHDAY#</string>
@@ -14021,7 +14021,7 @@
         <point val="14.7,7.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,7.63982;16.6442,7.98982"/>
+        <rectangle val="12.7557,7.62636;16.6442,7.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[10].BIRTHDAY#</string>
@@ -14063,7 +14063,7 @@
         <point val="14.7,8.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,8.13982;16.6442,8.48982"/>
+        <rectangle val="12.7557,8.12636;16.6442,8.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[11].BIRTHDAY#</string>
@@ -14105,7 +14105,7 @@
         <point val="14.7,8.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,8.63982;16.6442,8.98982"/>
+        <rectangle val="12.7557,8.62636;16.6442,8.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[12].BIRTHDAY#</string>
@@ -14147,7 +14147,7 @@
         <point val="14.7,9.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,9.13982;16.6442,9.48982"/>
+        <rectangle val="12.7557,9.12636;16.6442,9.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[13].BIRTHDAY#</string>
@@ -14189,7 +14189,7 @@
         <point val="14.7,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,9.63982;16.6442,9.98982"/>
+        <rectangle val="12.7557,9.62636;16.6442,9.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[14].BIRTHDAY#</string>
@@ -14231,7 +14231,7 @@
         <point val="14.7,10.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,10.1398;16.6442,10.4898"/>
+        <rectangle val="12.7557,10.1264;16.6442,10.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[15].BIRTHDAY#</string>
@@ -14273,7 +14273,7 @@
         <point val="14.7,10.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,10.6398;16.6442,10.9898"/>
+        <rectangle val="12.7557,10.6264;16.6442,10.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[16].BIRTHDAY#</string>
@@ -14315,7 +14315,7 @@
         <point val="14.7,11.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,11.1398;16.6442,11.4898"/>
+        <rectangle val="12.7557,11.1264;16.6442,11.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[17].BIRTHDAY#</string>
@@ -14357,7 +14357,7 @@
         <point val="14.7,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,11.6398;16.6442,11.9898"/>
+        <rectangle val="12.7557,11.6264;16.6442,11.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[18].BIRTHDAY#</string>
@@ -14399,7 +14399,7 @@
         <point val="14.7,12.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,12.1398;16.6442,12.4898"/>
+        <rectangle val="12.7557,12.1264;16.6442,12.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[19].BIRTHDAY#</string>
@@ -14441,7 +14441,7 @@
         <point val="14.7,12.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,12.6398;16.6442,12.9898"/>
+        <rectangle val="12.7557,12.6264;16.6442,12.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[20].BIRTHDAY#</string>
@@ -14483,7 +14483,7 @@
         <point val="14.7,13.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,13.1398;16.6442,13.4898"/>
+        <rectangle val="12.7557,13.1264;16.6442,13.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[21].BIRTHDAY#</string>
@@ -14525,7 +14525,7 @@
         <point val="14.7,13.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,13.6398;16.6442,13.9898"/>
+        <rectangle val="12.7557,13.6264;16.6442,13.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[22].BIRTHDAY#</string>
@@ -14567,7 +14567,7 @@
         <point val="14.7,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,14.1398;16.6442,14.4898"/>
+        <rectangle val="12.7557,14.1264;16.6442,14.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[23].BIRTHDAY#</string>
@@ -14609,7 +14609,7 @@
         <point val="14.7,14.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,14.6398;16.6442,14.9898"/>
+        <rectangle val="12.7557,14.6264;16.6442,14.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[24].BIRTHDAY#</string>
@@ -14651,7 +14651,7 @@
         <point val="14.7,15.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,15.1398;16.6442,15.4898"/>
+        <rectangle val="12.7557,15.1264;16.6442,15.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[25].BIRTHDAY#</string>
@@ -14693,7 +14693,7 @@
         <point val="14.7,15.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,15.6398;16.6442,15.9898"/>
+        <rectangle val="12.7557,15.6264;16.6442,15.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[26].BIRTHDAY#</string>
@@ -14735,7 +14735,7 @@
         <point val="14.7,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,16.1398;16.6442,16.4898"/>
+        <rectangle val="12.7557,16.1264;16.6442,16.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[27].BIRTHDAY#</string>
@@ -14777,7 +14777,7 @@
         <point val="14.7,16.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,16.6398;16.6442,16.9898"/>
+        <rectangle val="12.7557,16.6264;16.6442,16.9764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[28].BIRTHDAY#</string>
@@ -14819,7 +14819,7 @@
         <point val="14.7,17.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7557,17.1398;16.6442,17.4898"/>
+        <rectangle val="12.7557,17.1264;16.6442,17.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[29].BIRTHDAY#</string>
