@@ -280,7 +280,8 @@
            03  IDY2                PIC 9(03).
            03  IDY3                PIC 9(03).
            03  IDY4                PIC 9(03).                           
-           03  IDY5                PIC 9(03).                           
+           03  IDY5                PIC 9(03).
+           03  IDXX                PIC 9(03).                           
       *     
            03  SEIHIDX             PIC 9(02).
            03  KAKKIDX             PIC 9(02).
@@ -3903,10 +3904,10 @@
       *****************************************************************
        370-HC101-HKN-RIREKI-HEN-SEC      SECTION.
       *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-RIREKI-MAX  
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       WRK-RIREKI-MAX  
       *        摘要欄に１行あける
-               IF      IDX                 =   1
+               IF      IDXX                =   1
                    IF  WRK-LINETEK             >   ZERO
                        IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
                            PERFORM 34120-PAGE-SEC
@@ -3933,17 +3934,17 @@
                    PERFORM 34120-PAGE-SEC
                END-IF
                ADD     1               TO  WRK-LINETEK
-               INSPECT WRK-HKN-RIREKI-TBL (IDX)    REPLACING   ALL "  "
+               INSPECT WRK-HKN-RIREKI-TBL (IDXX)   REPLACING   ALL "  "
                                                                BY  "　"
                IF      CNT-PAGE        =   1   
-                   MOVE    WRK-HKN-RIREKI-TBL (IDX)
+                   MOVE    WRK-HKN-RIREKI-TBL (IDXX)
                                        TO  HC06-TEKIYO (WRK-LINETEK)
                ELSE                        
                    IF      SYS-2005-NEXTPRTKBN =   "0"   
-                       MOVE    WRK-HKN-RIREKI-TBL (IDX)
+                       MOVE    WRK-HKN-RIREKI-TBL (IDXX)
                                        TO  HC061-TEKIYO(WRK-LINETEK)
                    ELSE
-                       MOVE    WRK-HKN-RIREKI-TBL (IDX)
+                       MOVE    WRK-HKN-RIREKI-TBL (IDXX)
                                        TO  HC062-TEKIYO(WRK-LINETEK)
                    END-IF
                END-IF                        
@@ -4090,26 +4091,29 @@
       *
       *       <入院基本料種別>
            IF      RECE62-NYUSYUBETU (12)  NOT =   SPACE
-               PERFORM VARYING IDX FROM    12   BY  1
-                       UNTIL   IDX >       20
-                       OR      RECE62-NYUSYUBETU (IDX) =   SPACE
-                   IF  WRK-LINETEK         >   WRK-TEKIYOU-LINE
+               PERFORM VARYING IDXX    FROM    12   BY  1
+                       UNTIL   IDXX    >       20
+                       OR      RECE62-NYUSYUBETU (IDXX)    =   SPACE
+                   IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
                        PERFORM 34120-PAGE-SEC
                    END-IF    
                    ADD     1                   TO  WRK-LINETEK
                    IF      CNT-PAGE        =   1   
-                       MOVE    RECE62-NYUSYUBETU (IDX)
+                       MOVE    RECE62-NYUSYUBETU (IDXX)
                                        TO  HC06-TEKIYO (WRK-LINETEK)
                    ELSE                    
                        IF      SYS-2005-NEXTPRTKBN =   "0"   
-                           MOVE    RECE62-NYUSYUBETU (IDX)
+                           MOVE    RECE62-NYUSYUBETU (IDXX)
                                        TO  HC061-TEKIYO(WRK-LINETEK)
                        ELSE
-                           MOVE    RECE62-NYUSYUBETU (IDX)
+                           MOVE    RECE62-NYUSYUBETU (IDXX)
                                        TO  HC062-TEKIYO(WRK-LINETEK)
                        END-IF
                    END-IF                    
                END-PERFORM
+               IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                   PERFORM 34120-PAGE-SEC
+               END-IF    
                ADD     1               TO  WRK-LINETEK     
            END-IF    
       *
