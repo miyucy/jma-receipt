@@ -955,7 +955,7 @@
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT           TO  HC301-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HC301-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
@@ -1027,7 +1027,7 @@
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT           TO  HC302-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HC302-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
@@ -1099,7 +1099,7 @@
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT           TO  HC303-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HC303-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
@@ -1171,7 +1171,7 @@
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT           TO  HC304-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HC304-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
@@ -1243,7 +1243,7 @@
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT           TO  HC305-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HC305-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
@@ -1315,7 +1315,7 @@
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT           TO  HC306-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HC306-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
