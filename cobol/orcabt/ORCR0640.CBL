@@ -131,6 +131,7 @@
            03  FLG-PTCOM                               PIC 9(01).
            03  FLG-NYUINACCT                           PIC 9(01).
            03  FLG-NYUINACT                            PIC 9(01).
+           03  FLG-ARI                                 PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -154,6 +155,7 @@
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
            03  ID1                                     PIC 9(03).
+           03  ID2                                     PIC 9(03).
            03  NUM-IDX                                 PIC 9(01).
            03  HC-IDX                                  PIC 9(03).
            03  KH-IDX                                  PIC 9(03).
@@ -2066,17 +2068,46 @@
       *****************************************************************
        RECE62-HENSYU-SEC3               SECTION.
       *
-           PERFORM  VARYING  ID1  FROM   1  BY   1
+           PERFORM  VARYING  ID1    FROM    1   BY  1
+                         UNTIL   ID1   >   2
+      *
+            IF  SYU-SHOKUJI(ID1)   =   ZERO
+              CONTINUE
+            ELSE 
+              MOVE     ZERO     TO    FLG-ARI
+              PERFORM  VARYING  ID2    FROM    1   BY  1
+                         UNTIL   ID2                       > 2
+                           OR    RECE62-SHOKUJIKHNRYO(ID2) = ZERO
+                           OR    FLG-ARI                   = 1
+                  IF  SYU-SHOKUJI(ID1)   =   RECE62-SHOKUJIKHNRYO(ID2)
+                        ADD   SYU-SHOKUJI-NISSU(ID1)  TO  
+                                       RECE62-SHOKUJIKHNNISSU(ID2)
+                        MOVE  1   TO   FLG-ARI
+                  END-IF
+              END-PERFORM  
+              IF  FLG-ARI  =  ZERO  
+                  ADD   SYU-SHOKUJI-NISSU(ID1)  TO  
+                                       RECE62-SHOKUJIKHNNISSU(ID2)
+                  MOVE  SYU-SHOKUJI(ID1)        TO  
+                                       RECE62-SHOKUJIKHNRYO(ID2)
+              END-IF
+            END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM  VARYING  ID1  FROM   3  BY   1
                       UNTIL  ID1  >   4
       *
-      **>     IF      SYU-SHOKUJI-NISSU(ID1)  NOT =  ZERO
+              IF      SYU-SHOKUJI(ID1)  NOT =  ZERO
                    ADD   SYU-SHOKUJI-NISSU(ID1)  TO  
                                        RECE62-SHOKUJIKHNNISSU(ID1)
                    MOVE  SYU-SHOKUJI(ID1)        TO  
                                        RECE62-SHOKUJIKHNRYO(ID1)
-      **>     END-IF
+              END-IF
       *
            END-PERFORM
+      *
+      *++++
       *
       **>  IF      SYU-SYUSKJ-NISSU  NOT =  ZERO
                    ADD   SYU-SYUSKJ-NISSU     TO  
