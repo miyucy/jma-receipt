@@ -51,10 +51,8 @@
       *
        01  WRK-AREA.
            03  WRK-SYSYMD.
-               05  WRK-SYSYY       PIC 9(02).
-               05  WRK-SYSYMD1.
-                   07  FILLER      PIC X(04). 
-                   07  WRK-SYSDD   PIC 9(02). 
+               05  WRK-SYSYM       PIC X(06).
+               05  WRK-SYSDD       PIC X(02).
       *
            03  WRK-DBPATH.
                05  FILLER          PIC S9(09)  BINARY.
@@ -113,8 +111,12 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
-           ACCEPT  WRK-SYSYMD1         FROM    DATE
-           MOVE    20                  TO  WRK-SYSYY
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           MOVE    SMCNDATE-YMD        TO  WRK-SYSYMD
            IF      WRK-SYSDD           <=   10
                INITIALIZE                   STS-AREA-DAY
                INITIALIZE                   LNK-DAY6-AREA
@@ -126,11 +128,6 @@
                                                     LNK-DAY6-AREA
                MOVE    LNK-DAY6-KEISAN      TO  WRK-SYSYMD 
            END-IF
-      *
-      *    更新日取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
       *
            MOVE    ZERO                TO  LNK-UPD-RC
       *
