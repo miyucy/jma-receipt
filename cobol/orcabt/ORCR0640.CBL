@@ -180,6 +180,8 @@
            03  FLG-CHIHOU                              PIC 9(01).
            03  FLG-OKIKAE                              PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
+           03  FLG-NYUINRYO                            PIC 9(01).
+           03  FLG-HKNCOMBI                            PIC 9(01).
       *
       *
       *    カウント領域
@@ -600,6 +602,10 @@
       *    患者公費負担
        01  PTKOHFTN-REC.
            COPY    "CPPTKOHFTN.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -5161,6 +5167,8 @@
       *****************************************************************
        FTN-SET-SEC                SECTION.
       *
+           MOVE    ZERO                 TO      FLG-NYUINRYO
+      *
            INITIALIZE                           WRK-SKJ-FTN-T
       *
            INITIALIZE                           SYUNOU-REC
@@ -5215,6 +5223,12 @@
       *    レセプト中間ファイルの項目転送−負担金（Ｆ００２）
       *****************************************************************
        RECE62-HENSYU-SEC3               SECTION.
+      *
+           IF   RECE62-NYUINRYOFLG       =   "1"
+           AND  FLG-NYUINRYO             =   ZERO
+               PERFORM         NYUINRYOFLG-SET-SEC
+           END-IF
+      *
       *
            MOVE     ZERO     TO    FLG-CHIHOU
            MOVE     SPACE    TO    WRK-CHIHOU-NUM
@@ -5481,6 +5495,69 @@
            END-PERFORM
            .
        RECE62-HENSYU-EXT3.
+           EXIT.
+      *
+      *****************************************************************
+      *    他保険にて入院料を算定している場合の保険決定
+      *****************************************************************
+       NYUINRYOFLG-SET-SEC               SECTION.
+      *
+      *    入院基本料無し、又は、組み合わせ＝自費・・・１
+      *    組み合わせ＝労災                      ・・・２
+      *    組み合わせ＝自賠責                    ・・・３
+      *    以外＝他保険                          ・・・６
+      *
+           PERFORM  VARYING  IDY    FROM    1   BY  1
+                            UNTIL   IDY     >       31
+      *
+             IF      SYU-DAY(IDY)    =    "2"
+      *
+                IF         WRK-DAY5(IDY)      NOT =  ZERO
+                AND        WRK-DAY1(IDY)      NOT =  ZERO
+                   INITIALIZE                  HKNCOMBI-REC
+                   MOVE    RECE62-HOSPID   TO  COMB-HOSPID
+                   MOVE    RECE62-PTID     TO  COMB-PTID
+                   MOVE    WRK-DAY5(IDY)   TO  COMB-HKNCOMBINUM
+                   MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
+                   PERFORM HKNCOMBI-INV-SEC
+                   IF      FLG-HKNCOMBI    =   ZERO
+                     IF   COMB-HKNNUM(1:2)  =  "98"
+                     OR   COMB-HKNNUM       =  "971"
+                     OR   COMB-HKNNUM       =  "973"
+                       IF   COMB-HKNNUM(1:2)  =  "98"
+                          MOVE    "1"   TO   RECE62-NYUINRYOFLG
+                       END-IF
+                       IF   COMB-HKNNUM       =  "971"
+                          MOVE    "2"   TO   RECE62-NYUINRYOFLG
+                       END-IF
+                       IF   COMB-HKNNUM       =  "973"
+                          MOVE    "3"   TO   RECE62-NYUINRYOFLG
+                       END-IF
+                     ELSE
+                          MOVE    "6"   TO   RECE62-NYUINRYOFLG
+                     END-IF
+                   END-IF
+                   MOVE    "DBCLOSE"           TO  MCP-FUNC
+                   MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                ELSE
+                   IF      WRK-DAY5(IDY)      NOT =  ZERO
+                          MOVE    "1"   TO   RECE62-NYUINRYOFLG
+                   END-IF
+                END-IF
+      *
+                MOVE      1       TO     FLG-NYUINRYO
+                MOVE     31       TO     IDY
+      *
+             END-IF
+      *
+           END-PERFORM
+      *
+           .
+       NYUINRYOFLG-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6309,6 +6386,43 @@
       *
            .
        PTKOHFTN-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せマスタ読込
+      *****************************************************************
+       HKNCOMBI-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-HKNCOMBI
+                   MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
+                   IF      COMB-DELKBN         =   "1"
+                       MOVE    1               TO  FLG-HKNCOMBI
+                   END-IF
+               ELSE
+                   MOVE    1                   TO  FLG-HKNCOMBI
+                   INITIALIZE                      HKNCOMBI-REC
+               END-IF
+           ELSE
+               MOVE    1                       TO  FLG-HKNCOMBI
+               INITIALIZE                          HKNCOMBI-REC
+           END-IF
+      *
+           .
+       HKNCOMBI-INV-EXT.
            EXIT.
       *
       *****************************************************************

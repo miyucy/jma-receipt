@@ -960,9 +960,28 @@
            INITIALIZE                      COM-RECE85-REC
            MOVE    "810000001"         TO  COM-SRYCD(1)
            MOVE     ZERO               TO  COM-SRYSURYO(1)
-           MOVE     11                 TO  COM-YUKOKETA(1)
-           MOVE    "Â¾ÊÝ¸±¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ" 
+           EVALUATE   RECE82-NYUINRYOFLG
+             WHEN     "1"
+               MOVE     10             TO  COM-YUKOKETA(1)
+               MOVE    "¼«Èñ¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ" 
                                        TO  COM-NAME(1)
+             WHEN     "2"
+               MOVE     10             TO  COM-YUKOKETA(1)
+               MOVE    "Ï«ºÒ¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ" 
+                                       TO  COM-NAME(1)
+             WHEN     "3"
+               MOVE     11             TO  COM-YUKOKETA(1)
+               MOVE    "¼«ÇåÀÕ¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ" 
+                                       TO  COM-NAME(1)
+             WHEN     "4"
+               MOVE     10             TO  COM-YUKOKETA(1)
+               MOVE    "¹ñÊÝ¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ" 
+                                       TO  COM-NAME(1)
+             WHEN     "5"
+               MOVE     10             TO  COM-YUKOKETA(1)
+               MOVE    "¼ÒÊÝ¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ" 
+                                       TO  COM-NAME(1)
+           END-EVALUATE
       *
            MOVE    COM-SRYACTINF(1)    TO  RECE851-SRYACTINF(1)
            MOVE    COM-NAMEINF(1)      TO  RECE851-NAMEINF(1)
