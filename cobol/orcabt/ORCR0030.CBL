@@ -159,6 +159,7 @@
       *                                     算定時の点滴注射のコメント対応
       *  01.03.06   NACL-門脇     04/04/26  ユーザーコメント追加対応
       *  01.03.07   NACL-太田     04/05/06  点数マスタ検索ロジック修正
+      *  01.03.08   NACL-小豆沢   04/05/06  在総診の判定を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -488,6 +489,7 @@
            03  WRK-RENNUM                              PIC 9(02).
       *
            03  WRK-SRYCD                               PIC 9(09).
+           03  WRK-ZAITAKU                             PIC X(01).
       *
       *    1桁目:生保 2桁目:結核 3桁目:精神
            03  WRK-3SYU-KBN.
@@ -1008,10 +1010,25 @@
       *
            MOVE      ZERO       TO      FLG-FUKUSHI
       *
+           MOVE      SPACE      TO      WRK-ZAITAKU
+      *
            PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL     (IDX      >   20)  OR
                                 (RECE02-SRYKA(IDX)   =   SPACE)
                PERFORM    RECE04-HENSYU-SEC
+           END-PERFORM
+      *
+      *在総診フラグのセット
+           IF     (RECE02-ZAITAKU   =   "9")   AND
+                  (WRK-ZAITAKU      =   "1")
+               MOVE   "1"           TO  RECE02-ZAITAKU
+           ELSE
+               MOVE   SPACE         TO  RECE02-ZAITAKU
+           END-IF
+      *
+           PERFORM    VARYING    IDX    FROM   1   BY   1
+                      UNTIL     (IDX      >   20)  OR
+                                (RECE02-SRYKA(IDX)   =   SPACE)
                PERFORM    YKZFTN-SET-SEC
            END-PERFORM
            PERFORM     JNISSU-SET-SEC                                   
@@ -1839,6 +1856,18 @@
                    WHEN    "114002070"
                        MOVE     3         TO    FLG-OSINKBN
                  END-EVALUATE
+               END-IF
+      *----------------------------------------------------------------
+      *        在総診の判定
+      *----------------------------------------------------------------
+               IF    SRY-SRYKBN     =  "14"
+                   EVALUATE  SRY-SRYCD(IDX2)
+                       WHEN  CONS-ZAITAKU1
+                       WHEN  CONS-ZAITAKU2
+                       WHEN  CONS-ZAITAKU3
+                       WHEN  CONS-ZAITAKU4
+                          MOVE   "1"       TO   WRK-ZAITAKU
+                   END-EVALUATE
                END-IF
              END-IF  
            END-PERFORM

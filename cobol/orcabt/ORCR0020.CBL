@@ -97,6 +97,7 @@
       *  01.00.37    NACL-藤原    04/03/08  シス管による生保受給者番号の編集
       *  01.00.38    NACL-門脇    04/04/06  公費単独７０歳未満で老人保険入力
       *                                     のある方の在総診フラグ編集修正
+      *  01.00.39    NACL-小豆沢  04/04/30  在総診の判定をORCR0030へ移動
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1043,7 +1044,8 @@
            END-IF
       *
       *    在総診フラグセット
-           PERFORM    ZAITAKU-SET-SEC
+      *     PERFORM    ZAITAKU-SET-SEC
+           PERFORM    ZAITAKU-SET-SEC2
       *
       *    レセプト種別不明エラー情報
            IF      RECE01-TEISEIKBN      =   "1"
@@ -2288,6 +2290,32 @@
            END-IF
            .
        ZAITAKU-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    在総診フラグセット（仮セット）
+      *****************************************************************
+       ZAITAKU-SET-SEC2               SECTION.
+      *
+           IF   RECE01-SRYYM    >=  "200210"
+      *
+             MOVE      SPACE     TO    RECE02-ZAITAKU
+      *
+             IF  ( RECE02-AGE          >=  70      )   OR
+                 ( RECE02-AGE          >=  65  AND                    
+                   RECE01-KOHID    NOT  =   ZERO   )   OR
+                 ( RECE02-AGE          >=  65  AND                    
+                   FLG-ROUJINHOKEN      =   1      )
+               MOVE    "9"           TO  RECE02-ZAITAKU
+      *
+               IF  RECE02-RECESYUBETU   =   "8888"
+                   MOVE  SPACE       TO  RECE02-ZAITAKU
+               END-IF
+             END-IF
+      *
+           END-IF
+           .
+       ZAITAKU-SET-EXT2.
            EXIT.
       * 
       *****************************************************************
