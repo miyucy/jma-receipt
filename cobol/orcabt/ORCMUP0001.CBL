@@ -206,8 +206,8 @@
       *    点数マスタ−保存
            COPY    "CPTENSU.INC"       REPLACING
                                        //TNS-// BY //WRK-TNS-//
-                                       //TNSUP-// BY //WRK-TNSUP-//
-                                       //TNSXX-// BY //WRK-TNSXX-//.
+                                       //TNSUP-// BY //WK-TNSUP-//
+                                       //TNSXX-// BY //WK-TNSXX-//.
       *
       *    点数マスタ付加コード
         01 TENSUPLUS-REC.
