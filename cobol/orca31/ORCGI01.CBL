@@ -76,6 +76,8 @@
       *                                     院料コンボに表示をしない
       *  01.00.34    NACL-小豆沢  03.09.24  小児入院医療管理料３の算定対応追加
       *  01.00.35    NACL-多々納  03.09.30  業務権限判定追加
+      *  01.00.36    NACL-小豆沢  03.10.03  一類感染症患者入院医療管理の算定対応
+      *                                     追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -7708,6 +7710,10 @@
                WHEN   "190110510"
                    MOVE    "190110510"  TO  WRK-TOKUTEI-SRYCD1
                    MOVE    "190110910"  TO  WRK-TOKUTEI-SRYCD2
+      *    一類感染症患者入院医療管理料
+               WHEN   "190075510"
+                   MOVE    "190075510"  TO  WRK-TOKUTEI-SRYCD1
+                   MOVE    "190075610"  TO  WRK-TOKUTEI-SRYCD2
            END-EVALUATE
            .
       *
@@ -8168,10 +8174,11 @@
       *    特定集中治療室管理料算定時に退院日をＳＰＡ−異動日と転入日にセット
       *    以下の特定入院料も同様
       *      救命救急入院料
+      *      一類感染症患者入院医療管理料
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
                IF   PTNYUINRRK-TOKUTEI-NYUIN  = "03" OR "04" OR "05" OR
                                                 "06" OR "07" OR "08" OR
-                                                "09"  OR  "16"
+                                                "09" OR "14" OR "16"
                     MOVE   SPA-NAI-I01-TAIINYMD
                                        TO   PTNYUINRRK-TENNYUYMD
                                             SPA-NAI-I01-IDOYMD
@@ -8215,11 +8222,13 @@
            DISPLAY   "ﾄｸﾃｲﾆﾕｳｲﾝ ﾂｳｻﾝﾋﾞ = " STUSAN-NISSU06
       *    特定集中治療室管理料算定時に特定入院での算定日が１４日を
       *    経過していた場合は一般の入院料算定とする
-      *    救命救急入院料も同じ
+      *    以下の特定入院料も同様
+      *    救命救急入院料
+      *    一類感染症患者入院医療管理料
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
                IF   PTNYUINRRK-TOKUTEI-NYUIN   = "03" OR "04" OR "05" OR
                                                  "06" OR "07" OR "08" OR
-                                                 "09" OR "16"
+                                                 "09" OR "14" OR "16"
                    IF   STUSAN-NISSU06   >=   14
                        MOVE    SPACE   TO   SPA-GMN-I01-TOKNYUIN-CD
                    END-IF
@@ -8537,11 +8546,13 @@
            DISPLAY   "ﾄｸﾃｲﾆﾕｳｲﾝ ﾂｳｻﾝﾋﾞ = " STUSAN-NISSU06
       *    特定集中治療室管理料算定時に特定入院での算定日が１４日を
       *    経過していた場合は一般の入院料算定とする
-      *    救命救急入院料も同じ
+      *    以下の特定入院料も同様
+      *    救命救急入院料
+      *    一類感染症患者入院医療管理料
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
                IF   PTNYUINRRK-TOKUTEI-NYUIN   = "03" OR "04" OR "05" OR
                                                  "06" OR "07" OR "08" OR
-                                                 "09" OR "16"
+                                                 "09" OR "14" OR "16"
                    IF   STUSAN-NISSU06   >=   14
                        MOVE    SPACE   TO   SPA-GMN-I01-TOKNYUIN-CD
                    END-IF
@@ -8947,11 +8958,12 @@
       *
       *    特定集中治療室管理料算定時に退院日をＳＰＡ−異動日と転入日にセット
       *    以下の特定入院料も同様
-      *      救命救急入院料
+      *    救命救急入院料
+      *    一類感染症患者入院医療管理料
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
                IF   PTNYUINRRK-TOKUTEI-NYUIN  = "03" OR "04" OR "05" OR
                                                 "06" OR "07" OR "08" OR
-                                                "09"  OR  "16"
+                                                "09" OR "14" OR "16"
                     MOVE   SPA-NAI-I01-MAEIDOYMD
                                        TO   PTNYUINRRK-TENNYUYMD
                                             SPA-NAI-I01-IDOYMD
@@ -9284,6 +9296,8 @@
                                    TO  STUSAN-KJNYMD
       *    特定入院での算定済日数を取得用
       *    特定集中治療室管理料
+      *    救命救急入院料
+      *    一類感染症患者入院医療管理料
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
                EVALUATE   PTNYUINRRK-TOKUTEI-NYUIN
                    WHEN   "03"
@@ -9310,6 +9324,9 @@
                        MOVE   "190074610"  TO  STUSAN-TOKUTEI-SRYCD(2)
                        MOVE   "190116310"  TO  STUSAN-TOKUTEI-SRYCD(3)
                        MOVE   "190116410"  TO  STUSAN-TOKUTEI-SRYCD(4)
+                   WHEN   "14"
+                       MOVE   "190075510"  TO  STUSAN-TOKUTEI-SRYCD(1)
+                       MOVE   "190075610"  TO  STUSAN-TOKUTEI-SRYCD(2)
                END-EVALUATE
            END-IF
            CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
