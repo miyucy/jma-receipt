@@ -38,6 +38,8 @@
       *
       *        ∏°∫˜•≠°º£≤
                05  W20SUB01-I-KEY2.
+      *            ∞Âª’øÙ∂Ë ¨
+                   07  W20SUB01-I-ISISUKBN     PIC X(01).
       *            ¥«∏Óª’øÙ∂Ë ¨
                    07  W20SUB01-I-KNGSISUKBN   PIC X(01).
       *            …¬≈ÔºÔ Ã

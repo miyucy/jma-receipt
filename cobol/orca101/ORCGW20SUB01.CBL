@@ -57,6 +57,7 @@
        01  WRK-AREA.
            03  WRK-TNS-NAME                        PIC X(200).
            03  WRK-DBPATH                          PIC X(20).
+           03  WRK-CHG-SRYCD                       PIC X(09).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -131,25 +132,8 @@
       *
            PERFORM 800-NYUKHN-SEL-SEC
            IF    ( FLG-NYUKHN      =   ZERO )
-      *        看護配置・平均在日数等で検索の場合、
-      *        有床診療所１群入院基本料１で、入力パラメータの
-      *        看護師数区分が空白の場合、看護配置適合に置き換える
-               IF    ( W20SUB01-I-KBN          =   "2" )
-                 AND ( NYUKHN-KHNSRYCD         =   "190097010" )
-                 AND ( W20SUB01-I-KNGSISUKBN   =   "1" )
-                   INITIALIZE  NYUINKHN-REC
-                   MOVE    "190109670"     TO  NYUKHN-KHNSRYCD
-                   MOVE    W20SUB01-I-KJNYMD
-                                           TO  NYUKHN-YUKOSTYMD
-                                               NYUKHN-YUKOEDYMD
-                   MOVE    "NYUINKHN-KEY"  TO  WRK-DBPATH
-                   PERFORM 800-NYUKHN-SEL-SEC
-                   IF    ( FLG-NYUKHN      =   ZERO )
-                       PERFORM 1001-W20SUB01-0-HEN-SEC
-                   ELSE
-                       MOVE    1       TO  W20SUB01-O-RC
-                   END-IF
-               END-IF
+      *
+               PERFORM 1001-NYUINRYO-CHG-CHK-SEC
       *
                PERFORM 1001-W20SUB01-0-HEN-SEC
            ELSE
@@ -158,6 +142,50 @@
       *
            .
        100-EDIT-EXT.
+          EXIT.
+      *****************************************************************
+      *    入院料置換処理
+      *****************************************************************
+       1001-NYUINRYO-CHG-CHK-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  WRK-CHG-SRYCD
+      *
+           EVALUATE TRUE
+      *    看護配置・平均在日数等で検索の場合、
+      *    有床診療所１群入院基本料１で、入力パラメータの
+      *    医師数区分が１の場合、医師配置適合に置き換える
+      *    （基準日が２００４年４月１日以降の場合）
+           WHEN  ( W20SUB01-I-KJNYMD       >=  "20040401"  )
+             AND ( W20SUB01-I-KBN          =   "2" )
+             AND ( NYUKHN-KHNSRYCD         =   "190097010" )
+             AND ( W20SUB01-I-ISISUKBN     =   "1" )
+               MOVE    "190117070"     TO  WRK-CHG-SRYCD
+      *    看護配置・平均在日数等で検索の場合、
+      *    有床診療所１群入院基本料１で、入力パラメータの
+      *    看護師数区分が１の場合、看護配置適合に置き換える
+           WHEN  ( W20SUB01-I-KBN          =   "2" )
+             AND ( NYUKHN-KHNSRYCD         =   "190097010" )
+             AND ( W20SUB01-I-KNGSISUKBN   =   "1" )
+               MOVE    "190109670"     TO  WRK-CHG-SRYCD
+           END-EVALUATE
+      *
+           IF    ( WRK-CHG-SRYCD   NOT =   SPACE )
+               INITIALIZE  NYUINKHN-REC
+               MOVE    WRK-CHG-SRYCD   TO  NYUKHN-KHNSRYCD
+               MOVE    W20SUB01-I-KJNYMD
+                                       TO  NYUKHN-YUKOSTYMD
+                                           NYUKHN-YUKOEDYMD
+               MOVE    "NYUINKHN-KEY"  TO  WRK-DBPATH
+               PERFORM 800-NYUKHN-SEL-SEC
+               IF    ( FLG-NYUKHN      =   ZERO )
+                   PERFORM 1001-W20SUB01-0-HEN-SEC
+               ELSE
+                   MOVE    1       TO  W20SUB01-O-RC
+               END-IF
+           END-IF
+      *
+           .
+       1001-NYUINRYO-CHG-CHK-EXT.
           EXIT.
       *****************************************************************
       *    入院基本料算出サブ返却値編集処理

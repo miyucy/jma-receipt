@@ -136,6 +136,11 @@
       *                    ¿©Æ²²Ã»»¶èÊ¬
                            11  SPA-GMN-W20-CHK-BTU-SYOKUDOKBN
                                                            PIC X.
+      *                    °å»Õ¿Í¿ô¶èÊ¬
+                           11  SPA-GMN-W20-CHK-BTU-ISISU
+                                                           PIC X.
+                           11  SPA-GMN-W20-CHK-BTU-ISISU-STT
+                                           PIC S9(9)       BINARY.
       *                    ´Ç¸î»Õ¿Í¿ô¶èÊ¬
                            11  SPA-GMN-W20-CHK-BTU-KNGSIS
                                                            PIC X.
@@ -347,6 +352,9 @@
       *                        ¿©Æ²²Ã»»¶èÊ¬
                                13  SPA-GMN-W20-TBTU-SYOKUDOKBN
                                                            PIC X(01).
+      *                        °å»Õ¿Í¿ô¶èÊ¬
+                               13  SPA-GMN-W20-TBTU-ISISUKBN
+                                                           PIC X(01).
       *                        ´Ç¸î»Õ¿Í¿ô¶èÊ¬
                                13  SPA-GMN-W20-TBTU-KNGSISUKBN
                                                            PIC X(01).
@@ -380,6 +388,8 @@
                            11  SPA-NAI-W20-HOSPSBT         PIC  9(01).
       *                ÆþÎÏÎÎ°èÆâÉôÎÎ°è
                        09  SPA-NAI-W20-INPUT-AREA.
+                           11  SPA-NAI-W20-CHK-BTU-ISISU-MOT
+                                                            PIC X(01).
                            11  SPA-NAI-W20-CHK-BTU-KNGSIS-MOT
                                                             PIC X(01).
                            11  SPA-NAI-W20-BTU-SBT-MOT      PIC X(02).

@@ -118,6 +118,10 @@ W20	{
 			value	bool;
 			state	int;
 		};
+		CHK_BTU_ISISUKBN	{
+			value	bool;
+			state	int;
+		};
 		CHK_BTU_KNGSISUKBN	{
 			value	bool;
 			state	int;
@@ -191,8 +195,9 @@ W20	{
 					value14	varchar(06);
 					value15	varchar(08);
 					value16	varchar(08);
-					value17	varchar(09);
+					value17	varchar(08);
 					value18	varchar(09);
+					value19	varchar(09);
 				}	[50];
 				select	bool[50];
 			};

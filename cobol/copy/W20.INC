@@ -137,6 +137,10 @@
               04  W20-CHK-BTU-SYOKUDOKBN-STT
                                            PIC S9(9)   BINARY.
       *
+              04  W20-CHK-BTU-ISISUKBN     PIC X.
+              04  W20-CHK-BTU-ISISUKBN-STT
+                                           PIC S9(9)   BINARY.
+      *
               04  W20-CHK-BTU-KNGSISUKBN   PIC X.
               04  W20-CHK-BTU-KNGSISUKBN-STT
                                            PIC S9(9)   BINARY.
@@ -220,6 +224,8 @@
                                            PIC X(20).
                     07  W20-TBTU-SYOKUDOKBN
                                            PIC X(06).
+                    07  W20-TBTU-ISISUKBN
+                                           PIC X(08).
                     07  W20-TBTU-KNGSISUKBN
                                            PIC X(08).
                     07  W20-TBTU-HIKSISUKBN

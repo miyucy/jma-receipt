@@ -124,7 +124,9 @@
                    09  SYS-5001-KSNCD          PIC X(09).
                    09  SYS-5001-KSNKBN         PIC X(01).
       *予備 ** 予備の後にも項目があるので注意すること **
-               05  SYS-5001-YOBI               PIC  X(286).
+               05  SYS-5001-YOBI               PIC  X(285).
+      *選定入院設定区分
+               05  SYS-5001-BTU-ISISUKBN       PIC  X(01).
       *選定入院設定区分
                05  SYS-5001-SENTEI-FTNKBN      PIC  X(01).
       *選定入院消費税区分

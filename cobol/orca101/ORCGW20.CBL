@@ -943,6 +943,10 @@
       *****************************************************************
        3101-SYS-5001-GET-SEC       SECTION.
       *
+      *    ¥·¥¹¥Æ¥àÆüÉÕ¤ÎÆâÍÆ¤Ç¥³¥ó¥Ü¤òºÆÊÔ½¸
+           MOVE    SPA-SYSYMD      TO  WRK-KJN-YUKSTYMD
+           PERFORM 3101-CMB-SYOKI-SEC
+      *
            INITIALIZE  SPA-GMN-W20-BTULST-TBL
       *
       *
@@ -1180,6 +1184,13 @@
                MOVE    "F" TO  SPA-GMN-W20-TBTU-SYOKUDOKBN (IDX1)
            END-IF
       *
+      *    °å»Õ¿Í¿ô¶èÊ¬
+           IF    ( SYS-5001-BTU-ISISUKBN =   "2" )
+               MOVE    "T" TO  SPA-GMN-W20-TBTU-ISISUKBN (IDX1)
+           ELSE
+               MOVE    "F" TO  SPA-GMN-W20-TBTU-ISISUKBN (IDX1)
+           END-IF
+      *
       *    ´Ç¸î»Õ¿Í¿ô¶èÊ¬
            IF    ( SYS-5001-BTU-KNGSISUKBN =   "2" )
                MOVE    "T" TO  SPA-GMN-W20-TBTU-KNGSISUKBN (IDX1)
@@ -1312,9 +1323,11 @@
                        PERFORM 420-BYOSITU-KANRI-SEC
                    END-IF
       *        ¿©Æ²²Ã»»¶èÊ¬
+      *        °å»Õ¿ô¶èÊ¬
       *        ´Ç¸î»Õ¿ô¶èÊ¬
       *        ÊÝ°é»Î¿ô¶èÊ¬
                WHEN    "CLICKED"       ALSO    "CHK_BTU_SYOKUDOKBN"
+               WHEN    "CLICKED"       ALSO    "CHK_BTU_ISISUKBN"
                WHEN    "CLICKED"       ALSO    "CHK_BTU_KNGSISUKBN"
                WHEN    "CLICKED"       ALSO    "CHK_BTU_HIKSISUKBN"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -1450,6 +1463,10 @@
            MOVE    W20-CHK-BTU-SYOKUDOKBN
                                    TO  SPA-GMN-W20-CHK-BTU-SYOKUDOKBN
       *
+      *    °å»Õ¿Í¿ô
+           MOVE    W20-CHK-BTU-ISISUKBN
+                                   TO  SPA-GMN-W20-CHK-BTU-ISISU
+      *
       *    ´Ç¸î»Õ¿Í¿ô
            MOVE    W20-CHK-BTU-KNGSISUKBN
                                    TO  SPA-GMN-W20-CHK-BTU-KNGSIS
@@ -1567,6 +1584,12 @@
       *
       *    ¿©Æ²²Ã»»¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
            PERFORM 4100-BTU-SYOKUDOKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    °å»Õ¿Í¿ô¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 4100-BTU-ISISUKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2359,6 +2382,13 @@
                MOVE    "1"     TO  SYS-5001-BTU-SYOKUDOKBN
            END-IF
       *
+      *    °å»Õ¿Í¿ô¶èÊ¬
+           IF    ( SPA-GMN-W20-CHK-BTU-ISISU  =   "T" )
+               MOVE    "2"     TO  SYS-5001-BTU-ISISUKBN
+           ELSE
+               MOVE    "1"     TO  SYS-5001-BTU-ISISUKBN
+           END-IF
+      *
       *    ´Ç¸î»Õ¿Í¿ô¶èÊ¬
            IF    ( SPA-GMN-W20-CHK-BTU-KNGSIS  =   "T" )
                MOVE    "2"     TO  SYS-5001-BTU-KNGSISUKBN
@@ -2675,10 +2705,13 @@
                                    =   "08" )
                MOVE    WIDGET-NORMAL
                                    TO  SPA-GMN-W20-CHK-BTU-KNGSIS-STT
+                                       SPA-GMN-W20-CHK-BTU-ISISU-STT
            ELSE
                MOVE    WIDGET-INSENSITIVE
                                    TO  SPA-GMN-W20-CHK-BTU-KNGSIS-STT
+                                       SPA-GMN-W20-CHK-BTU-ISISU-STT
                MOVE    "F"         TO  SPA-GMN-W20-CHK-BTU-KNGSIS
+                                       SPA-GMN-W20-CHK-BTU-ISISU
            END-IF
       *
            IF  ( SPA-GMN-W20-BTU-SBT-CD
@@ -3103,6 +3136,16 @@
        4100-BTU-SYOKUDOKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    °å»Õ¿Í¿ô
+      *****************************************************************
+       4100-BTU-ISISUKBN-CHK-SEC       SECTION.
+      *
+      *
+           .
+      *
+       4100-BTU-ISISUKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ´Ç¸î»Õ¿Í¿ô
       *****************************************************************
        4100-BTU-KNGSISUKBN-CHK-SEC     SECTION.
@@ -3449,6 +3492,14 @@
                    MOVE    "F"     TO  SPA-GMN-W20-CHK-BTU-KNGSIS
            END-IF
       *
+      *    °å»Õ£³¿Í°Ê¾å
+           IF    ( SPA-GMN-W20-BTU-SBT-CD  =   "08" )
+            AND  ( W20SUB01-O-SSTKIJUNKBN  =   "4" )
+                   MOVE    "T"     TO  SPA-GMN-W20-CHK-BTU-ISISU
+           ELSE
+                   MOVE    "F"     TO  SPA-GMN-W20-CHK-BTU-ISISU
+           END-IF
+      *
            .
       *
        4100-BTU-ITEM-REPLACE-EXT.
@@ -3460,6 +3511,8 @@
       *
            IF    ( SPA-NAI-W20-YUKOSTYMD
                                    =   SPA-NAI-W20-YUKOSTYMD-MOT )
+            AND  ( SPA-GMN-W20-CHK-BTU-ISISU
+                                   =   SPA-NAI-W20-CHK-BTU-ISISU-MOT )
             AND  ( SPA-GMN-W20-CHK-BTU-KNGSIS
                                    =   SPA-NAI-W20-CHK-BTU-KNGSIS-MOT )
             AND  ( SPA-GMN-W20-BTU-SBT-CD
@@ -3482,6 +3535,12 @@
            MOVE    "2"             TO  W20SUB01-I-KBN
            MOVE    SPA-NAI-W20-YUKOSTYMD
                                    TO  W20SUB01-I-KJNYMD
+      *
+           IF    ( SPA-GMN-W20-CHK-BTU-ISISU  =   "T" )
+               MOVE    "1"             TO  W20SUB01-I-ISISUKBN
+           ELSE
+               MOVE    SPACE           TO  W20SUB01-I-ISISUKBN
+           END-IF
       *
            IF    ( SPA-GMN-W20-CHK-BTU-KNGSIS  =   "T" )
                MOVE    "1"             TO  W20SUB01-I-KNGSISUKBN
@@ -3526,6 +3585,8 @@
       *
            MOVE    SPA-NAI-W20-YUKOSTYMD
                                    TO  SPA-NAI-W20-YUKOSTYMD-MOT
+           MOVE    SPA-GMN-W20-CHK-BTU-ISISU
+                                   TO  SPA-NAI-W20-CHK-BTU-ISISU-MOT
            MOVE    SPA-GMN-W20-CHK-BTU-KNGSIS
                                    TO  SPA-NAI-W20-CHK-BTU-KNGSIS-MOT
            MOVE    SPA-GMN-W20-BTU-SBT-CD
@@ -3801,6 +3862,13 @@
                MOVE    "F" TO  SPA-GMN-W20-CHK-BTU-SYOKUDOKBN
            END-IF
       *
+      *    °å»Õ¿Í¿ô¶èÊ¬
+           IF    ( SYS-5001-BTU-ISISUKBN       =   "2" )
+               MOVE    "T" TO  SPA-GMN-W20-CHK-BTU-ISISU
+           ELSE
+               MOVE    "F" TO  SPA-GMN-W20-CHK-BTU-ISISU
+           END-IF
+      *
       *    ´Ç¸î»Õ¿Í¿ô¶èÊ¬
            IF    ( SYS-5001-BTU-KNGSISUKBN     =   "2" )
                MOVE    "T" TO  SPA-GMN-W20-CHK-BTU-KNGSIS
@@ -3811,9 +3879,11 @@
            IF    ( SPA-GMN-W20-BTU-SBT-CD  =   "08" )
                MOVE    WIDGET-NORMAL
                                    TO  SPA-GMN-W20-CHK-BTU-KNGSIS-STT
+                                       SPA-GMN-W20-CHK-BTU-ISISU-STT
            ELSE
                MOVE    WIDGET-INSENSITIVE
                                    TO  SPA-GMN-W20-CHK-BTU-KNGSIS-STT
+                                       SPA-GMN-W20-CHK-BTU-ISISU-STT
            END-IF
       *
       *    ÊÝ°é»Î¿Í¿ô¶èÊ¬
@@ -4003,6 +4073,7 @@
       *
            MOVE    WIDGET-INSENSITIVE
                                    TO  SPA-GMN-W20-CHK-BTU-KNGSIS-STT
+                                       SPA-GMN-W20-CHK-BTU-ISISU-STT
                                        SPA-GMN-W20-CHK-BTU-HIKSIS-STT
       *
       *    Í­¸ú´ü´Ö¤Î³«»ÏÆü¤È½ªÎ»Æü¤òÀßÄê
@@ -4643,6 +4714,10 @@
            MOVE    SPA-GMN-W20-CHK-BTU-SYOKUDOKBN
                                        TO  W20-CHK-BTU-SYOKUDOKBN
       *
+      *    °å»Õ¿Í¿ô
+           MOVE    SPA-GMN-W20-CHK-BTU-ISISU
+                                       TO  W20-CHK-BTU-ISISUKBN
+      *
       *    ´Ç¸î»Õ¿Í¿ô
            MOVE    SPA-GMN-W20-CHK-BTU-KNGSIS
                                        TO  W20-CHK-BTU-KNGSISUKBN
@@ -4766,6 +4841,12 @@
                    MOVE    "¡¡¡¡¡û"    TO  W20-TBTU-SYOKUDOKBN (IDX1)
                END-IF
       *
+      *        °å»Õ¿ô¶èÊ¬
+               IF    ( SPA-GMN-W20-TBTU-ISISUKBN (IDX1)
+                                       =   "T" )
+                   MOVE    "¡¡¡¡¡¡¡û"  TO  W20-TBTU-ISISUKBN (IDX1)
+               END-IF
+      *
       *        ´Ç¸î»Õ¿ô¶èÊ¬
                IF    ( SPA-GMN-W20-TBTU-KNGSISUKBN (IDX1)
                                        =   "T" )
@@ -4869,6 +4950,10 @@
            MOVE    SPA-GMN-W20-BTU-KNGHJOKSN-ITM-STT
                                        TO  W20-BTU-KNGHJOKSN-ITM-STT
       *
+      *    °å»Õ¿ô¶èÊ¬
+           MOVE    SPA-GMN-W20-CHK-BTU-ISISU-STT
+                                       TO  W20-CHK-BTU-ISISUKBN-STT
+      *
       *    ´Ç¸î»Õ¿ô¶èÊ¬
            MOVE    SPA-GMN-W20-CHK-BTU-KNGSIS-STT
                                        TO  W20-CHK-BTU-KNGSISUKBN-STT
@@ -4914,6 +4999,7 @@
                                            W20-BTU-KNGHJOKSN-STT
                                            W20-BTU-KNGHJOKSN-ITM-STT
                                            W20-CHK-BTU-KNGSISUKBN-STT
+                                           W20-CHK-BTU-ISISUKBN-STT
                                            W20-CHK-BTU-HIKSISUKBN-STT
            END-IF
       *
@@ -4948,7 +5034,7 @@
                    MOVE  "BTU_NAME"        TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    3           TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -4959,7 +5045,7 @@
                    MOVE  "BTU_TANNAME"     TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    4           TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -4971,7 +5057,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    5           TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -4983,7 +5069,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    6           TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -4995,7 +5081,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    7           TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5007,7 +5093,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    8           TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5019,7 +5105,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    9           TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5031,7 +5117,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    10          TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5043,7 +5129,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    11          TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5055,7 +5141,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    12          TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5067,7 +5153,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    13          TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5079,7 +5165,19 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    21          TO  SPA-GMN-W20-CUR
+               END-IF
+           END-IF
+      *
+      *    °å»Õ¿Í¿ô
+           IF    ( SPA-GMN-W20-CUR     =   21 )
+               IF    ( W20-CHK-BTU-ISISUKBN-STT
+                                       =   WIDGET-NORMAL )
+                   MOVE  "CHK_BTU_ISISUKBN"
+                                           TO  MCP-WIDGET
+                   GO  TO  5001-MAPCUR-EXT
+               ELSE
+                   MOVE    14          TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5091,7 +5189,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    15          TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5103,7 +5201,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    16          TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5115,7 +5213,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    17          TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5127,7 +5225,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    18          TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5139,7 +5237,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    19          TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5151,7 +5249,7 @@
                                            TO  MCP-WIDGET
                    GO  TO  5001-MAPCUR-EXT
                ELSE
-                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+                   MOVE    20          TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -5189,58 +5287,49 @@
       *
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "BTU_NUM"
-               MOVE    001             TO  SPA-GMN-W20-CUR
+               MOVE    002             TO  SPA-GMN-W20-CUR
            WHEN    "BTU_NAME"
-               MOVE    002             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_TANNAME"
                MOVE    003             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_TOKUTEINYUIN"
+           WHEN    "BTU_TANNAME"
                MOVE    004             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_KA"
+           WHEN    "BTU_TOKUTEINYUIN"
                MOVE    005             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_SBT"
+           WHEN    "BTU_KA"
                MOVE    006             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_HEIKINZAIKBN"
+           WHEN    "BTU_SBT"
                MOVE    007             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_KNGHAICHIKBN"
+           WHEN    "BTU_HEIKINZAIKBN"
                MOVE    008             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_KNGHIRITUKBN"
+           WHEN    "BTU_KNGHAICHIKBN"
                MOVE    009             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_KNGHJOHAI"
+           WHEN    "BTU_KNGHIRITUKBN"
                MOVE    010             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_KNGHJOKSN"
+           WHEN    "BTU_KNGHJOHAI"
                MOVE    011             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_YAKANKNGKSN"
+           WHEN    "BTU_KNGHJOKSN"
                MOVE    012             TO  SPA-GMN-W20-CUR
-           WHEN    "CHK_BTU_SYOKUDOKBN"
+           WHEN    "BTU_YAKANKNGKSN"
                MOVE    013             TO  SPA-GMN-W20-CUR
+           WHEN    "CHK_BTU_SYOKUDOKBN"
+               MOVE    021             TO  SPA-GMN-W20-CUR
            WHEN    "CHK_BTU_KNGSISUKBN"
-               MOVE    014             TO  SPA-GMN-W20-CUR
-           WHEN    "CHK_BTU_HIKSISUKBN"
                MOVE    015             TO  SPA-GMN-W20-CUR
-           WHEN    "RECEDSPKBN"
+           WHEN    "CHK_BTU_HIKSISUKBN"
                MOVE    016             TO  SPA-GMN-W20-CUR
-           WHEN    "YUKOSTYMD"
+           WHEN    "RECEDSPKBN"
                MOVE    017             TO  SPA-GMN-W20-CUR
-           WHEN    "YUKOEDYMD"
+           WHEN    "YUKOSTYMD"
                MOVE    018             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_EDKBN"
+           WHEN    "YUKOEDYMD"
                MOVE    019             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_KHNRYO"
+           WHEN    "BTU_EDKBN"
                MOVE    020             TO  SPA-GMN-W20-CUR
-           WHEN    "SELNUM"
-               MOVE    100             TO  SPA-GMN-W20-CUR
-           END-EVALUATE
-      *
-      *    ¼¡¥«¡¼¥½¥ë°ÌÃÖ¤òÀßÄê
-           EVALUATE    WRK-MCP-WIDGET
-           WHEN    "SELNUM"
-               MOVE    002             TO  SPA-GMN-W20-CUR
+           WHEN    "CHK_BTU_ISISUKBN"
+               MOVE    014             TO  SPA-GMN-W20-CUR
            WHEN    "BTU_KHNRYO"
                MOVE    206             TO  SPA-GMN-W20-CUR
-           WHEN    OTHER
-               COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR
-                                           +   1
+           WHEN    "SELNUM"
+               MOVE    002             TO  SPA-GMN-W20-CUR
            END-EVALUATE
       *
            .
