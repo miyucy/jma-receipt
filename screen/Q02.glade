@@ -29,7 +29,12 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 22 Dec 2000 05:08:28 GMT</last_modification_time>
   </signal>
-  <title>(Q02)患者照会 - 検索結果</title>
+  <signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title>>(Q02)患者照会 - 検索結果</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -455,7 +460,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label412</name>
 	  <label>番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -468,7 +478,12 @@
         </widget>
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label22</name>
 	  <label>患者番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -481,7 +496,12 @@
         </widget>
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label413</name>
 	  <label>氏名</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -494,7 +514,12 @@
         </widget>
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label414</name>
 	  <label>性別</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -507,7 +532,12 @@
         </widget>
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label415</name>
 	  <label>生年月日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -520,7 +550,12 @@
         </widget>
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label419</name>
 	  <label>年齢</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -533,7 +568,12 @@
         </widget>
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label416</name>
 	  <label>住所</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>

@@ -29,7 +29,12 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 05 Jan 2001 11:20:35 GMT</last_modification_time>
   </signal>
-  <title>(O02)¥µº‘¿¡µ· - ∏ƒ Ã∫Ó¿Æ</title>
+  <signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title>>(O02)¥µº‘¿¡µ· - ∏ƒ Ã∫Ó¿Æ</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -390,7 +395,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>LABEL01</name>
 	  <label>¥µº‘»÷πÊ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -403,7 +413,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>LABEL02</name>
 	  <label>¥µº‘ª·Ãæ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -416,7 +431,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>LABEL03</name>
 	  <label>¿¡µ·«Ø∑Ó</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -429,7 +449,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>LABEL04</name>
 	  <label>∫Ó¿Æ∂Ë ¨</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>

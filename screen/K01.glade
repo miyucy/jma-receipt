@@ -29,7 +29,12 @@
     <handler>set_focus</handler>
     <last_modification_time>Mon, 25 Dec 2000 01:57:44 GMT</last_modification_time>
   </signal>
-  <title>(K01)診療行為入力−患者番号入力</title>
+  <signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title>>(K01)診療行為入力−患者番号入力</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -463,7 +468,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>tkumino</name>
 	  <label>番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -476,7 +486,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>thknkumi</name>
 	  <label>組み合わせの内容</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -489,7 +504,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>ttekstymd</name>
 	  <label>適用開始日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -502,7 +522,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>ttekedymd</name>
 	  <label>適用終了日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -515,7 +540,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>tftnwari</name>
 	  <label>負担割合</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>

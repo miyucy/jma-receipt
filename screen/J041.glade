@@ -27,7 +27,12 @@
     <handler>set_focus</handler>
     <last_modification_time>Mon, 25 Dec 2000 05:44:46 GMT</last_modification_time>
   </signal>
-  <title>(J041)会計照会−禁忌薬剤一覧</title>
+  <signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title>>(J041)会計照会−禁忌薬剤一覧</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -121,7 +126,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label1</name>
 	  <label>当日投薬等薬品名</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -134,7 +144,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label2</name>
 	  <label>禁忌対象薬品名</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -147,7 +162,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label3</name>
 	  <label>投薬年月</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>

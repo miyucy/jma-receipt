@@ -28,7 +28,12 @@
     <handler>set_focus</handler>
     <last_modification_time>Sat, 03 Feb 2001 02:48:40 GMT</last_modification_time>
   </signal>
-  <title>(Z01)点数マスタ設定</title>
+  <signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title>>(Z01)点数マスタ設定</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -160,7 +165,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label2</name>
 	  <label>番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -173,7 +183,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label3</name>
 	  <label>有効開始年月日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -186,7 +201,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label4</name>
 	  <label>有効終了年月日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>

@@ -28,7 +28,12 @@
     <handler>set_focus</handler>
     <last_modification_time>Sat, 03 Feb 2001 05:40:10 GMT</last_modification_time>
   </signal>
-  <title>(W08)システム管理情報−レセプト種別情報設定</title>
+  <signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title>>(W08)システム管理情報−レセプト種別情報設定</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>

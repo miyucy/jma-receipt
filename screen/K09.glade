@@ -30,7 +30,12 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 04 Jan 2001 03:26:09 GMT</last_modification_time>
   </signal>
-  <title>(K09)壳闻乖百掐蜗≥壳闻乖百联买</title>
+  <signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title>>(K09)壳闻乖百掐蜗≥壳闻乖百联买</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -226,7 +231,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label9</name>
 	  <label>戎规</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -239,7 +249,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label10</name>
 	  <label>壳闻泣</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -302,7 +317,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label15</name>
 	  <label>戎规</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -315,7 +335,12 @@
 
 	<widget>
 	  <class>GtkFixed</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>fixed2</name>
 
 	  <widget>

@@ -30,7 +30,12 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 04 Jan 2001 03:26:09 GMT</last_modification_time>
   </signal>
-  <title>(K10)壳闻乖百掐蜗≥面庞姜位办枉</title>
+  <signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title>>(K10)壳闻乖百掐蜗≥面庞姜位办枉</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -143,7 +148,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label6</name>
 	  <label>戎规</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -156,7 +166,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label7</name>
 	  <label>吹荚会叹</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -169,7 +184,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label8</name>
 	  <label>减壳泣</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -182,7 +202,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label9</name>
 	  <label>壳闻彩</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -195,7 +220,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
+	  <child_name>CList:signal>    
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title></child_name>
 	  <name>label10</name>
 	  <label>瘦副寥圭せ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
