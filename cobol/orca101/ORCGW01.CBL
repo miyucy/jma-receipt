@@ -67,6 +67,7 @@
       *  01.05.18    NACL-太田    04/01/23  収納機能情報追加
       *  01.05.19    NACL-藤原    04/09/03  医療機関編集情報を追加
       *  01.05.20    NACL-藤原    04/11/15  病名機能情報を追加
+      *  01.05.21    NACL-多々納  05/02/08  入院指示せん設定を追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -311,6 +312,8 @@
            03  FILLER              PIC X(35)   VALUE
                "5006 病棟選定入院料情報".
            03  FILLER              PIC X(35)   VALUE
+               "5007 入院指示せん設定情報".
+           03  FILLER              PIC X(35)   VALUE
                "5010 定期請求情報".
            03  FILLER              PIC X(35)   VALUE
                "5013 退院事由情報".
@@ -320,11 +323,11 @@
                "9800 排他制御情報".
       *
        01  TBL-KANRICD-N-AREAR         REDEFINES   TBL-KANRICD-N-AREA.
-           03  TBL-KANRICD-N-TBL           OCCURS   11.
+           03  TBL-KANRICD-N-TBL           OCCURS   12.
                05  TBL-KANRICD-N           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-N        PIC X(30).
-       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   11.
+       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   12.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -428,6 +431,7 @@
            COPY    "W27.INC".
            COPY    "W28.INC".
            COPY    "W29.INC".
+           COPY    "W30.INC".
            COPY    "W98.INC".
            COPY    "W99.INC".
            COPY    "WERR.INC".
@@ -1053,6 +1057,10 @@
                    PERFORM 41041-1031-HEN-SEC
                    MOVE    12                      TO  SPA-GMN-CUR
                    GO  TO  4104-KANRICD-CHK-EXT
+      *        入院指示せん設定
+               WHEN    "5007"
+                   PERFORM 41049-1043-HEN-SEC
+                   GO  TO  4104-KANRICD-CHK-EXT
                WHEN    OTHER
                    MOVE    SPACE           TO  SPA-GMN-KBNCD 
            END-EVALUATE         
@@ -1208,6 +1216,75 @@
            END-EVALUATE           
            .
        41041-1031-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院指示せん設定編集処理
+      *****************************************************************
+       41049-1043-HEN-SEC              SECTION.
+      *
+      *    システム管理読み込み
+           MOVE    SPACE               TO  SYS-KEY
+           MOVE    SPA-GMN-KANRICD     TO  SYS-KANRICD
+           MOVE    "01"                TO  SYS-KBNCD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM             UNTIL   FLG-SYSKANRI   =   1
+                               OR      IDX            >=  100
+               MOVE    MCPDATA-REC        TO  SYSKANRI-REC
+               ADD     1                  TO  IDX
+               MOVE    IDX                TO  SPA-GMN-TBANGO    (IDX)  
+               MOVE    SYS-STYUKYMD       TO  SPA-NAI-TSTYUKYMD (IDX)
+               MOVE    SYS-STYUKYMD       TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG        TO  SPA-GMN-TSTYUKYMD (IDX)
+               MOVE    SYS-EDYUKYMD       TO  SPA-NAI-TEDYUKYMD (IDX)
+               MOVE    SYS-EDYUKYMD       TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  SPA-GMN-TEDYUKYMD (IDX)
+               MOVE    IDX                 TO  SPA-GMN-MAX
+      *
+               MOVE    "SYSKANRI-KEY4"       TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           EVALUATE    SPA-GMN-MAX
+               WHEN    ZERO
+                   MOVE    3                       TO  SPA-GMN-CUR
+               WHEN    1
+                   MOVE    SPA-GMN-TSTYUKYMD (1)   TO  SPA-GMN-STYUKYMD
+                   MOVE    SPA-NAI-TSTYUKYMD (1)   TO  SPA-NAI-STYUKYMD
+                   MOVE    SPA-GMN-TEDYUKYMD (1)   TO  SPA-GMN-EDYUKYMD
+                   MOVE    SPA-NAI-TEDYUKYMD (1)   TO  SPA-NAI-EDYUKYMD
+                   MOVE    1                       TO  SPA-GMN-SELNUM
+                                                       SPA-NAI-SELNO
+                   MOVE    12                      TO  SPA-GMN-CUR
+               WHEN    OTHER
+                   MOVE    2                       TO  SPA-GMN-CUR
+           END-EVALUATE           
+           .
+       41049-1043-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1679,6 +1756,10 @@
                    MOVE    "W22"               TO  SPA-SAKIPG
                WHEN    "5006"
                    MOVE    "W28"               TO  SPA-SAKIPG
+      *        入院指示せん設定
+               WHEN    "5007"
+                   MOVE    "W30"               TO  SPA-SAKIPG
+      *
                WHEN    "5010"
                    MOVE    "W23"               TO  SPA-SAKIPG
                WHEN    "5013" 
