@@ -147,6 +147,54 @@ path	key8		{
 	};
 };
 
+path	key9		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYYMD      <   :SRYYMD
+			AND  (TENKIKBN    =   :TENKIKBN )
+                          OR (TENKIYMD    =
+                           (SELECT MAX(TENKIYMD)
+                                   FROM tbl_ptbyomei 
+                               	WHERE   HOSPID    =   :HOSPID
+		        	AND   PTID        =   :PTID
+                                AND   SRYYMD      <   :SRYYMD
+                                AND   TENKIKBN    =   '1'
+                                AND   TENKIYMD    <   :TENKIYMD ))
+                          OR (TENKIYMD    =
+                           (SELECT MAX(TENKIYMD)
+                                   FROM tbl_ptbyomei 
+                               	WHERE   HOSPID    =   :HOSPID
+		        	AND   PTID        =   :PTID
+                                AND   SRYYMD      <   :SRYYMD
+                                AND   TENKIKBN    =   '3'
+                                AND   TENKIYMD    <   :TENKIYMD )) 
+			ORDER  BY  TENKIKBN DESC,
+                                   SRYYMD
+		;
+	};
+};
+
+path	key10	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key10_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYMD      <=  :SRYYMD
+                        AND   MANSEIKBN  <>   :MANSEIKBN
+			AND  (TENKIKBN    =   :TENKIKBN  OR
+                              TENKIYMD    >   :SRYYMD)
+			ORDER BY SRYYMD,RENNUM 
+		;
+	};
+};
+
 path	del11	{ 	
 	DBDELETE	{
 		DELETE
