@@ -1,2 +1,0 @@
-        shimane;
-        recept;
