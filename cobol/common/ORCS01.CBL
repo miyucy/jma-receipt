@@ -126,6 +126,7 @@
       *  01.00.48    NACL-æÆ∆¶¬Ù  04/02/19   °≤¨¥µº‘§ŒµÎ…’≥∞•®•Í•¢ΩÈ¥¸≤Ω
       *  01.00.49    NACL-ÃÁœ∆    04/03/12  ∏¯»Ò…È√¥±ﬂ√±∞Ã ‘Ω∏
       *  01.00.50    NACL-ÃÁœ∆    04/04/06  ∫ﬂ¡Ìø«•’•È•∞ ‘Ω∏Ω§¿µ
+      *  01.00.51    NACL-ÃÁœ∆    04/07/27  πÒ ›…È√¥≥‰πÁ ‘Ω∏Ω§¿µ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -5840,16 +5841,19 @@
                                                 HKN-TSY-GAIKFTNRATE
                                                 HKN-TNK-GAIKFTNRATE
                    WHEN   "1"
+                   WHEN   "4"
                           MOVE   10        TO   HKN-HON-GAIKFTNRATE
                                                 HKN-KZK-GAIKFTNRATE
                                                 HKN-TSY-GAIKFTNRATE
                                                 HKN-TNK-GAIKFTNRATE
                    WHEN   "2"
+                   WHEN   "5"
                           MOVE   20        TO   HKN-HON-GAIKFTNRATE
                                                 HKN-KZK-GAIKFTNRATE
                                                 HKN-TSY-GAIKFTNRATE
                                                 HKN-TNK-GAIKFTNRATE
                    WHEN   "3"
+                   WHEN   "6"
                           MOVE   30        TO   HKN-HON-GAIKFTNRATE
                                                 HKN-KZK-GAIKFTNRATE
                                                 HKN-TSY-GAIKFTNRATE
@@ -5924,6 +5928,7 @@
                IF      WRK-NENREI         <     3
                    IF   COMB-HKNNUM       =     "060"
                        IF   COMB-HOJOKBN  =     "0"  OR  "1"
+                                                     OR  "4"
                            CONTINUE
                        ELSE
                            MOVE   20      TO   HKN-HON-GAIKFTNRATE
@@ -8545,16 +8550,19 @@
                                                 HKN-TSY-GAIKFTNRATE
                                                 HKN-TNK-GAIKFTNRATE
                    WHEN   "1"
+                   WHEN   "4"
                           MOVE   90        TO   HKN-HON-GAIKFTNRATE
                                                 HKN-KZK-GAIKFTNRATE
                                                 HKN-TSY-GAIKFTNRATE
                                                 HKN-TNK-GAIKFTNRATE
                    WHEN   "2"
+                   WHEN   "5"
                           MOVE   80        TO   HKN-HON-GAIKFTNRATE
                                                 HKN-KZK-GAIKFTNRATE
                                                 HKN-TSY-GAIKFTNRATE
                                                 HKN-TNK-GAIKFTNRATE
                    WHEN   "3"
+                   WHEN   "6"
                           MOVE   70        TO   HKN-HON-GAIKFTNRATE
                                                 HKN-KZK-GAIKFTNRATE
                                                 HKN-TSY-GAIKFTNRATE

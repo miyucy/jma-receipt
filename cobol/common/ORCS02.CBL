@@ -58,6 +58,7 @@
       *  01.00.19    NACL-ÃÁœ∆    04/02/10  ¿∏ ›§Œ∏¯»Ò…È√¥∏¬≈Ÿ≥€¿ﬂƒÍ
       *  01.00.20    NACL-ÃÁœ∆    04/03/12  ∏¯»Ò…È√¥±ﬂ√±∞Ã ‘Ω∏
       *  01.00.21    NACL-ÃÁœ∆    04/04/06  π‚Œº‘•’•È•∞ ‘Ω∏Ω§¿µ
+      *  01.00.22    NACL-ÃÁœ∆    04/07/27  πÒ ›…È√¥≥‰πÁ ‘Ω∏Ω§¿µ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -4701,16 +4702,19 @@
            IF    COMB-HKNNUM           =    "060"
                EVALUATE   COMB-HOJOKBN
                    WHEN   "0"
+                   WHEN   "4"
                           MOVE   ZERO      TO   HKN-HON-NYUKFTNRATE
                                                 HKN-KZK-NYUKFTNRATE
                                                 HKN-TSY-NYUKFTNRATE
                                                 HKN-TNK-NYUKFTNRATE
                    WHEN   "1"
+                   WHEN   "5"
                           MOVE   10        TO   HKN-HON-NYUKFTNRATE
                                                 HKN-KZK-NYUKFTNRATE
                                                 HKN-TSY-NYUKFTNRATE
                                                 HKN-TNK-NYUKFTNRATE
                    WHEN   "2"
+                   WHEN   "6"
                           MOVE   20        TO   HKN-HON-NYUKFTNRATE
                                                 HKN-KZK-NYUKFTNRATE
                                                 HKN-TSY-NYUKFTNRATE
@@ -4786,6 +4790,7 @@
            IF      WRK-NENREI         <     3
                IF   COMB-HKNNUM       =     "060"
                    IF   COMB-HOJOKBN  =     "0"  OR  "1"
+                                       OR   "4"  OR  "5"
                        CONTINUE
                    ELSE
                        MOVE   20      TO   HKN-HON-NYUKFTNRATE
