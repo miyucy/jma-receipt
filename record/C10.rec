@@ -1,0 +1,49 @@
+C10	{
+	fixed6	{
+		TENKIYMD	{
+			value	varchar(10);
+		};
+		TENKICOMBO	{
+			TENKIKBN	{
+				value	varchar(8);
+			};
+			count	int;
+			item	varchar(8)[5];
+		};
+		UTAGAIFLGCOMBO	{
+			UTAGAIFLG	{
+				value	varchar(14);
+			};
+			count	int;
+			item	varchar(14)[4];
+		};
+		MANSEIFLGCOMBO	{
+			MANSEIFLG	{
+				value	varchar(46);
+			};
+			count	int;
+			item	varchar(46)[4];
+		};
+		HKNCOMBICOMBO	{
+			HKNCOMBI	{
+				value	varchar(40);
+			};
+			count	int;
+			item	varchar(40)[20];
+		};
+		NYUGAIKBNCOMBO	{
+			NYUGAIKBN	{
+				value	varchar(8);
+			};
+			count	int;
+			item	varchar(8)[3];
+		};
+		SYUBYOFLGCOMBO	{
+			SYUBYOFLG	{
+				value	varchar(14);
+			};
+			count	int;
+			item	varchar(14)[2];
+		};
+	};
+};
