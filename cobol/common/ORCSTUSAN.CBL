@@ -175,6 +175,8 @@
            DISPLAY "STUSAN-NISSU03 = " STUSAN-NISSU03
            DISPLAY "STUSAN-NISSU04 = " STUSAN-NISSU04
            DISPLAY "STUSAN-NISSU05 = " STUSAN-NISSU05
+           DISPLAY "STUSAN-NISSU06 = " STUSAN-NISSU06
+           DISPLAY "STUSAN-NISSU07 = " STUSAN-NISSU07
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   STUSAN-RRK-CNT )
@@ -533,8 +535,8 @@
       *
                        COMPUTE WRK-ACCT-NISSU
                            =   WRK-ACCT-NISSU +    1
-                       MOVE    IDX1        TO  WRK-DAY-9
       *
+                       MOVE    IDX1        TO  WRK-DAY-9
                        IF    ( STUSAN-KJNYMD (1:6) =   NACCT-SRYYM )
                         AND  ( STUSAN-KJNYMD (7:2) =   WRK-DAY-X   )
                            MOVE    1       TO  STUSAN-KJNYMD-CHK-FLG
@@ -543,6 +545,7 @@
                    END-IF
       *
                    IF    ( FLG-TOKUTEI     =   1 )
+                       MOVE    IDX1        TO  WRK-DAY-9
                        IF    ( STUSAN-KJNYMD (1:6) =   NACCT-SRYYM )
                         AND  ( STUSAN-KJNYMD (7:2) =   WRK-DAY-X   )
                            CONTINUE
@@ -552,6 +555,7 @@
                        END-IF
       *
                        IF    ( FLG-TOKUTEI-SITEI   =   1 )
+                           MOVE    IDX1    TO  WRK-DAY-9
                            IF    ( STUSAN-KJNYMD (1:6) =   NACCT-SRYYM )
                             AND  ( STUSAN-KJNYMD (7:2) =   WRK-DAY-X   )
                                CONTINUE
