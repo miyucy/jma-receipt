@@ -126,7 +126,7 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-SYSYMD.
-	       05  WRK-SYSYY       PIC 9(04).
+               05  WRK-SYSYY       PIC 9(04).
                05  WRK-SYSMM       PIC 9(02).
                05  WRK-SYSDD       PIC 9(02).
            03  WRK-SYMD.
@@ -547,7 +547,8 @@
            ELSE
                PERFORM UNTIL      (FLG-SRYACT     =   1)  OR
                                   (IDX5           =   50)
-                   IF     SPA-I40-SRYKA      =   "00"
+                   IF    (SPA-I40-SRYKA      =   "00")      OR
+                         (SPA-I40-SRYKA      =   SRY-SRYKA)
                        ADD     1               TO  IDX5
                        MOVE    SRY-NYUGAIKBN   TO
                                            WRK-SRY-NYUGAIKBN (IDX5)
@@ -557,18 +558,6 @@
                                            WRK-SRY-ZAINUM (IDX5)
                        MOVE    SRY-SRYKBN      TO
                                            WRK-SRY-SRYKBN (IDX5)
-                   ELSE
-                       IF     SPA-I40-SRYKA      =   SRY-SRYKA
-                           ADD     1               TO  IDX5
-                           MOVE    SRY-NYUGAIKBN   TO
-                                               WRK-SRY-NYUGAIKBN (IDX5)
-                           MOVE    SRY-SRYKA       TO
-                                               WRK-SRY-SRYKA (IDX5)
-                           MOVE    SRY-ZAINUM      TO
-                                               WRK-SRY-ZAINUM (IDX5)
-                           MOVE    SRY-SRYKBN      TO
-                                               WRK-SRY-SRYKBN (IDX5)
-                       END-IF
                    END-IF
                    PERFORM 930-SRYACT-RAED-SEC
                END-PERFORM
@@ -827,7 +816,7 @@
                MOVE    1                   TO  FLG-SRYACT
            END-IF.
       *
-           PERFORM UNTIL       FLG-SRYACT      =   1       
+           PERFORM UNTIL       FLG-SRYACT      =   1
       *        ºÞÌÀºÙÊÔ½¸
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5   )  OR
@@ -1096,6 +1085,8 @@
                    WHEN    WRK-TBL-KNO   (IDX TBL-IDX1)    =   SPACE
                        MOVE    SRY-SRYCD (IDZ)     TO  WRK-TBL-SRYCD
                                                        (IDX TBL-IDX1)
+                       MOVE    ACCT-SRYKBN         TO  WRK-TBL-SRYKBN
+                                                       (IDX TBL-IDX1)
                        MOVE    ACCT-SRYYM          TO  WRK-TBL-SRYYYMM
                                                        (IDX TBL-IDX1)
                        MOVE    TNS-CDKBN-KBN       TO  WRK-TBL-KNOKBN
@@ -1110,13 +1101,13 @@
       *
                        MOVE    TBL-IDX1            TO  TBL-IDX2
                        MOVE    200                 TO  TBL-IDX1
-                   WHEN    (TNS-CDKBN-KBN     
+                   WHEN    (TNS-CDKBN-KBN
                                   =   WRK-TBL-KNOKBN(IDX TBL-IDX1))
-                       AND (TNS-CDKBN-KBNNUM   
+                       AND (TNS-CDKBN-KBNNUM
                                   =   WRK-TBL-KNONO(IDX TBL-IDX1))
-                       AND (TNS-CDKBN-KBNNUM-EDA   
+                       AND (TNS-CDKBN-KBNNUM-EDA
                                   =   WRK-TBL-KNONO2(IDX TBL-IDX1))
-                       AND (ACCT-SRYYM         
+                       AND (ACCT-SRYYM
                                   =   WRK-TBL-SRYYYMM(IDX TBL-IDX1))
                        MOVE    TBL-IDX1            TO  TBL-IDX2
                        MOVE    200                 TO  TBL-IDX1
@@ -1133,10 +1124,8 @@
                    UNTIL       TBL-IDX3    >   31
       *
                IF      ACCT-DAY(1 TBL-IDX3)   NOT =   ZERO
-                   IF      WRK-CHK-KBN (TBL-IDX3)   NOT =   ALL SPACE
-                       ADD     1              TO  WRK-TBL-KAISU
+                   ADD     1              TO  WRK-TBL-KAISU
                                              (IDX TBL-IDX2 TBL-IDX3)
-                   END-IF
                END-IF
            END-PERFORM.
       *
@@ -1151,12 +1140,12 @@
            SET     MKNO-IDX            TO  1.
            SEARCH      MKNO-TBL-OCC    VARYING   MKNO-IDX
                    AT   END
-                       MOVE    WRK-TBL-KNO   (IDX TBL-IDX1)
-                               TO  WRK-TBL-MEISYO(IDX TBL-IDX1)
+                       MOVE    WRK-TBL-KNO   (IDX TBL-IDX1)  TO
+                                   WRK-TBL-MEISYO(IDX TBL-IDX1)
                    WHEN    WRK-TBL-KNO   (IDX TBL-IDX1)
                                      =   MKNO-KNO    (MKNO-IDX)
-                       MOVE    MKNO-KNOMEI (MKNO-IDX)
-                               TO  WRK-TBL-MEISYO(IDX TBL-IDX1)
+                       MOVE    MKNO-KNOMEI (MKNO-IDX)  TO
+                                   WRK-TBL-MEISYO(IDX TBL-IDX1)
            END-SEARCH. 
       *
        3101121-KNO-MEI-EXT.
@@ -1538,7 +1527,7 @@
            IF      SPA-GMN-SYORI       =   ZERO
                MOVE   1                TO  SPA-GMN-SYORI
            END-IF.
-           MOVE    SPA-GMN-SYORI       TO  IDX,
+           MOVE    SPA-GMN-SYORI       TO  IDX.
            PERFORM   VARYING   IDY     FROM    1   BY  1
                      UNTIL     IDY         >   100
                IF     (IDY             =   1   )   OR
@@ -1560,7 +1549,7 @@
                       (SPA-GMN-TSRYYYMM (IDX IDY)
                                    NOT =   SPA-GMN-TSRYYYMM
                                                    (IDX IDY - 1))
-                   MOVE    SPA-GMN-TSRYYYMM(IDX IDY)   
+                   MOVE    SPA-GMN-TSRYYYMM(IDX IDY)
                                        TO  I42-SRYACTCNT-YM(IDY)
                END-IF
                MOVE    SPA-GMN-TNAIYOU2(IDX IDY)
@@ -1570,7 +1559,7 @@
                MOVE    WRK-ZZZ         TO  I42-SRYACTCNT-CNT (IDY)
                IF      SPA-GMN-TNAIYOU2(IDX IDY) NOT =  SPACE
                    MOVE    IDY         TO  I42-SRYACTCNT-COUNT
-               END-IF   
+               END-IF
            END-PERFORM.
       *
            PERFORM 5001-MAPCUR-SEC.

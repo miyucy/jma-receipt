@@ -513,7 +513,8 @@
            END-IF.
            MOVE    ZERO                TO  IDX.
            PERFORM UNTIL       FLG-RECECOM        =   1
-               IF      SPA-I43-SRYKA      =   "00"
+               IF     (SPA-I43-SRYKA      =   "00")          OR
+                      (SPA-I43-SRYKA      =   RECECOM-SRYKA)
                    ADD     1                 TO  IDX
                    MOVE    IDX               TO  SPA-I43-RECE-MAX
                    MOVE    IDX               TO  SPA-I43-TRENNUM (IDX)
@@ -539,45 +540,6 @@
                        MOVE    SPACE           TO  SPA-I43-TSRYDD (IDX)
                    ELSE
                        MOVE    RECECOM-SRYDD   TO  SPA-I43-TSRYDD (IDX)
-                   END-IF
-               ELSE
-                   IF      SPA-I43-SRYKA      =   RECECOM-SRYKA
-                       ADD     1                 TO  IDX
-                       MOVE    IDX               TO  SPA-I43-RECE-MAX
-                       MOVE    IDX               TO
-                                                 SPA-I43-TRENNUM (IDX)
-                       MOVE    RECECOM-SRYKA     TO
-                                                 SPA-I43-NSRYKA  (IDX)
-                       MOVE    RECECOM-SRYYM     TO
-                                                 SPA-I43-NSRYYM  (IDX)
-                       MOVE    RECECOM-HKNCOMBI  TO
-                                                 SPA-I43-NHKNCOMBI(IDX)
-                       MOVE    RECECOM-COMMENT   TO
-                                                 SPA-I43-TCOMMENT(IDX)
-      *                入院年月
-                       MOVE    RECECOM-SRYYM     TO  WRK-SYMD(1:6)
-                       MOVE    "01"              TO  WRK-SYMD(7:2)
-                       PERFORM 800-SEIWA-HEN-SEC
-                       MOVE    WRK-HENYMDG (1:6) TO
-                                                 SPA-I43-TSRYYM (IDX)
-      *                入院科
-                       MOVE    RECECOM-SRYKA     TO  WRK-NSRYKA
-                       PERFORM 810-NSRYKA-SET-SEC
-                       MOVE    WRK-NSRYKAMEI     TO
-                                                 SPA-I43-TSRYKA (IDX)
-      *                保険組合せ番号
-                       MOVE    RECECOM-HKNCOMBI  TO  WRK-HKNCOMBI
-                       PERFORM 820-HKNCOMBI-SET-SEC
-                       MOVE    WRK-HKNCOMBIMEI   TO
-                                                 SPA-I43-THKNCOMBI(IDX)
-      *                入院日
-                       IF      RECECOM-SRYDD       =   ZERO
-                           MOVE    SPACE           TO
-                                                   SPA-I43-TSRYDD (IDX)
-                       ELSE
-                           MOVE    RECECOM-SRYDD   TO
-                                                   SPA-I43-TSRYDD (IDX)
-                       END-IF
                    END-IF
                END-IF
       *
