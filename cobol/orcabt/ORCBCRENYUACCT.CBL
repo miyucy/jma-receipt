@@ -217,6 +217,8 @@
                05                      PIC X(02)   VALUE   " ".
                05                      PIC X(20)   VALUE   "¥µº‘»÷πÊ".
                05                      PIC X(02)   VALUE   " ".
+               05                      PIC X(18)   VALUE   "…¬≈Ô".
+               05                      PIC X(02)   VALUE   " ".
                05                      PIC X(26)   VALUE   "ª·Ãæ".
                05                      PIC X(01)   VALUE   " ".
                05                      PIC X(08)   VALUE   "¬–æ›«Ø∑Ó".
@@ -229,10 +231,12 @@
                    07  LST-FIL1        PIC X(01).
                    07  LST-PTNUM       PIC X(20).
                    07  LST-FIL2        PIC X(01).
-                   07  LST-NAME        PIC X(30).
+                   07  LST-BYOTO       PIC X(20).
                    07  LST-FIL3        PIC X(01).
-                   07  LST-SRYYM       PIC X(08).
+                   07  LST-NAME        PIC X(30).
                    07  LST-FIL4        PIC X(01).
+                   07  LST-SRYYM       PIC X(08).
+                   07  LST-FIL5        PIC X(01).
                    07  LST-NAIYO       PIC X(52).
       *
        01  CONST-AREA.
@@ -687,6 +691,27 @@
                MOVE    PTINF-NAME      TO  LST-NAME  (CNT-LINE)
            END-IF
       *
+      *    …¬≈ÔÃæ ‘Ω∏
+           INITIALIZE                      SYS-5001-REC
+           MOVE    "5001"              TO  SYS-5001-KANRICD
+           MOVE    PTNYUINRRK-BTUNUM   TO  SYS-5001-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-5001-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 910-SYSKANRI-SELECT-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE   "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM     910-SYSKANRI-READ-SEC
+                   IF    FLG-SYSKANRI  =   ZERO
+                         MOVE    SYS-5001-BTU-NAME
+                                       TO  LST-BYOTO (CNT-LINE)
+                   END-IF
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
            MOVE    WRK-PARA-SRYYM      TO  WRK-SRYYM
            MOVE    WRK-SRYYM           TO  LST-SRYYM (CNT-LINE)
            IF      FLG-NYUINACCT-MAE-CHK   =   ZERO
@@ -1024,10 +1049,12 @@
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
                                                SYS-5000-REC
+                                               SYS-5001-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
            ELSE
                INITIALIZE                      SYS-1001-REC
                                                SYS-5000-REC
+                                               SYS-5001-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
