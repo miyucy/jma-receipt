@@ -90,6 +90,9 @@
       *  01.01.04    NACL-藤原    04/04/27  ユーザーコメントの追加
       *  01.01.05    NACL-藤原    04/05/11  診療識別が画像診断（７０）の
       *                                     ときコメントは先頭に記載する
+      *  01.01.06    NACL-藤原    03/08/13  指導料・在宅料摘要欄編集
+      *                                     加算点数でも告示区分１により
+      *                                     剤回数を編集する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2703,7 +2706,7 @@
                        AND   ( FLG-KOKUJISKBKBN1   =   ZERO           )
                        AND   ( RECE041-ZAIKAISU    >   ZERO           )
                        AND   ( IDX                 <   WRK-SRYCD1-MAX )
-                           MOVE    1                   TO  WRK-KAISU
+                           MOVE    RECE041-ZAIKAISU    TO  WRK-KAISU
                            MOVE    WRK-KAISU           TO  WRK-NUM
                            MOVE    3                   TO  WRK-NAGASA
                        END-IF
