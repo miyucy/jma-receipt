@@ -54,6 +54,8 @@
       *  01.00.14   NACL-小豆沢   02.09.27  （平成１４年１０月改正対応）
       *                                     老人保険の場合も給付割合のセットを
       *                                     を行う
+      *  01.00.15   NACL-門脇     02.10.07  （平成１４年１０月改正対応）
+      *                                     低所得フラグのセットを行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -174,6 +176,8 @@
            03  FLG-KYUSEIRRK                           PIC 9(01).
            03  FLG-CHK                                 PIC 9(01).
            03  FLG-MONTHLYNUM                          PIC 9(01).
+           03  FLG-TSYRRK                              PIC 9(01).
+           03  FLG-TNKRRK                              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -292,6 +296,15 @@
       *    月代わり受給者番号
        01  MONTHLYNUM-REC.
            COPY    "CPMONTHLYNUM.INC".
+      *
+      *    低所得
+       01  TSYRRK-REC.
+           COPY    "CPTSYRRK.INC".
+      *
+      *    年金
+       01  TNKRRK-REC.
+           COPY    "CPTNKRRK.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用領域
@@ -741,9 +754,8 @@
       *
       *    長期高額療養費の編集
            PERFORM   VARYING   IDX   FROM    1   BY   1
-                     UNTIL    (IDX     >   4)    OR
-                              (RECE01-KOHHKNNUM-O(IDX)  =   SPACE) OR
-                              (FLG-HKNNUM          =   1)
+                     UNTIL    (IDX     >   4)    
+                     OR       (RECE01-KOHHKNNUM-O(IDX)  =   SPACE)
                IF    RECE01-KOHHKNNUM-O(IDX)     =    "027"
                    CONTINUE
                ELSE
@@ -772,6 +784,7 @@
                            MOVE    RECE01-KOHHKNNUM-O(IDX)  TO
                                                     WRK-CHOKI 
                            MOVE    1            TO  FLG-HKNNUM
+                           MOVE    4            TO  IDX  
                        END-IF     
                    END-IF
                  END-IF
@@ -846,6 +859,74 @@
                    END-PERFORM
                END-IF
            END-IF              
+      *
+           IF   RECE01-SRYYM    >=  "200210"
+      *
+      *      年金履歴より
+             INITIALIZE                      TNKRRK-REC
+             MOVE    RECE01-HOSPID       TO  TNKRRK-HOSPID
+             MOVE    RECE01-PTID         TO  TNKRRK-PTID
+             MOVE    TNKRRK-REC          TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "TNKRRK-KEY3"       TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"          USING     MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+                 MOVE    "TNKRRK-KEY3"      TO  ORC-DBPATH
+                 PERFORM TNKRRK-READ-SEC
+                 PERFORM  UNTIL  
+                       ( FLG-TNKRRK          =   1                ) OR
+                      (( TNKRRK-STYMD(1:6)  <=  RECE01-SRYYM   AND
+                         RECE01-SRYYM       <=  TNKRRK-EDYMD(1:6) ))  
+      *
+                        MOVE    "TNKRRK-KEY3"      TO  ORC-DBPATH
+                        PERFORM TNKRRK-READ-SEC
+      *
+                 END-PERFORM
+             END-IF
+      *
+             MOVE   "TNKRRK-KEY3"       TO  WK-PATH
+             PERFORM   CSR-CLOSE-SEC
+      *
+      *      低所得より
+             INITIALIZE                      TSYRRK-REC
+             MOVE    RECE01-HOSPID       TO  TSYRRK-HOSPID
+             MOVE    RECE01-PTID         TO  TSYRRK-PTID
+             MOVE    TSYRRK-REC          TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "TSYRRK-KEY3"       TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"          USING     MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+                 MOVE    "TSYRRK-KEY3"      TO  ORC-DBPATH
+                 PERFORM TSYRRK-READ-SEC
+                 PERFORM  UNTIL  
+                     ( FLG-TSYRRK          =   1                ) OR
+                    (( TSYRRK-NINSTYMD(1:6) <= RECE01-SRYYM   AND
+                       RECE01-SRYYM         <= TSYRRK-NINEDYMD(1:6) ))  
+      *
+                        MOVE    "TSYRRK-KEY3"      TO  ORC-DBPATH
+                        PERFORM TSYRRK-READ-SEC
+      *
+                 END-PERFORM
+             END-IF
+      *
+             MOVE   "TSYRRK-KEY3"       TO  WK-PATH
+             PERFORM   CSR-CLOSE-SEC
+      *
+             EVALUATE    FLG-TSYRRK    ALSO     FLG-TNKRRK
+                 WHEN    1             ALSO     1
+                       MOVE     SPACE   TO       RECE02-TEISYOTOKU
+                 WHEN    0             ALSO     1
+                       MOVE     "2"     TO       RECE02-TEISYOTOKU
+                 WHEN    0             ALSO     0
+                 WHEN    1             ALSO     0
+                       MOVE     "1"     TO       RECE02-TEISYOTOKU
+             END-EVALUATE
+      *
+           END-IF
       *
            .
        210-HENSYU-EXT.
@@ -1424,24 +1505,24 @@
                    MOVE    1130            TO    RECE02-RECESYUBETU
       *公費単独
                WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
+                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
                    MOVE    1211            TO    RECE02-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
+                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
                    MOVE    1212            TO    RECE02-RECESYUBETU
       *２種の公費併用
                WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
+                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
                    MOVE    1221            TO    RECE02-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
+                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
                    MOVE    1222            TO    RECE02-RECESYUBETU
       *３種の公費併用
                WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   3
+                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
                    MOVE    1231            TO    RECE02-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   3
+                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
                    MOVE    1232            TO    RECE02-RECESYUBETU
       *老人単独
                WHEN    ANY   ALSO   "1"    ALSO
@@ -1708,61 +1789,70 @@
       *平成１４年１０月以降有効
       *    保険組合せテーブルの補助区分から患者の負担割合を再セット
            IF      RECE02-SRYYM     >=      "200210"
-              IF    RECE01-HKNNUM           =    "060"   OR   "067"
-                 IF   WRK-NENREI           <     3
-                     IF    COMB-HOJOKBN    =    "0"  OR   "1"
-                         EVALUATE   COMB-HOJOKBN
-                             WHEN   "0"
-                                    MOVE   ZERO    TO   RECE02-KYURATE
-                             WHEN   "1"
-                                    MOVE   10      TO   RECE02-KYURATE
-                         END-EVALUATE
-                     ELSE
-                         MOVE  20      TO    RECE02-KYURATE
-                     END-IF
-                 ELSE
-                     EVALUATE   COMB-HOJOKBN
-                         WHEN   "0"
-                                MOVE   ZERO      TO   RECE02-KYURATE
-                         WHEN   "1"
-                                MOVE   10        TO   RECE02-KYURATE
-                         WHEN   "2"
-                                MOVE   20        TO   RECE02-KYURATE
-                         WHEN   "3"
-                                MOVE   30        TO   RECE02-KYURATE
-                         WHEN   "8"
-                                MOVE   20        TO   RECE02-KYURATE
-                         WHEN   "9"
-                                MOVE   10        TO   RECE02-KYURATE
-                     END-EVALUATE
-                 END-IF
-              ELSE
-                 IF   WRK-NENREI           <     3
-                      MOVE  20      TO    RECE02-KYURATE
-                 ELSE
-                   IF  COMB-HOJOKBN        =     SPACE
-                       IF  COMB-HONKZKKBN      =     "1"
-                           MOVE HKN-HON-GAIKFTNRATE  TO  RECE02-KYURATE
-                       ELSE
-                           MOVE HKN-KZK-GAIKFTNRATE  TO  RECE02-KYURATE
-                       END-IF
-                   ELSE
-                       EVALUATE   COMB-HOJOKBN
-                           WHEN   "8"
-                                  MOVE   20        TO   RECE02-KYURATE
-                           WHEN   "9"
+              EVALUATE    RECE01-HKNNUM       
+                  WHEN    "060"
+                      IF       WRK-NENREI           <     3
+                          IF    COMB-HOJOKBN    =    "0"  OR   "1"
+                              EVALUATE   COMB-HOJOKBN
+                                  WHEN   "0"
+                                      MOVE   ZERO    TO   RECE02-KYURATE
+                                  WHEN   "1"
+                                      MOVE   10      TO   RECE02-KYURATE
+                              END-EVALUATE
+                          ELSE
+                              MOVE  20      TO    RECE02-KYURATE
+                          END-IF
+                      ELSE
+                          EVALUATE   COMB-HOJOKBN
+                              WHEN   "0"
+                                  MOVE   ZERO      TO   RECE02-KYURATE
+                              WHEN   "1"
                                   MOVE   10        TO   RECE02-KYURATE
-                       END-EVALUATE
-                   END-IF
-                 END-IF
-              END-IF
+                              WHEN   "2"
+                                  MOVE   20        TO   RECE02-KYURATE
+                              WHEN   "3"
+                                  MOVE   30        TO   RECE02-KYURATE
+                              WHEN   "8"
+                                  MOVE   20        TO   RECE02-KYURATE
+                              WHEN   "9"
+                                  MOVE   10        TO   RECE02-KYURATE
+                          END-EVALUATE
+                      END-IF
+                  WHEN    "067"
+                      IF      COMB-HONKZKKBN        =    "1"
+                          MOVE   HKN-HON-GAIKFTNRATE  TO  RECE02-KYURATE
+                      ELSE
+                          MOVE   HKN-KZK-GAIKFTNRATE  TO  RECE02-KYURATE
+                      END-IF
+                  WHEN    OTHER
+                      IF   WRK-NENREI           <     3
+                          MOVE  20      TO    RECE02-KYURATE
+                      ELSE
+                          IF  COMB-HOJOKBN        =     SPACE
+                              IF  COMB-HONKZKKBN      =     "1"
+                                  MOVE HKN-HON-GAIKFTNRATE
+                                                  TO  RECE02-KYURATE
+                              ELSE
+                                  MOVE HKN-KZK-GAIKFTNRATE
+                                                  TO  RECE02-KYURATE
+                              END-IF
+                          ELSE
+                              EVALUATE   COMB-HOJOKBN
+                                  WHEN   "8"
+                                      MOVE   20   TO  RECE02-KYURATE
+                                  WHEN   "9"
+                                      MOVE   10   TO  RECE02-KYURATE
+                              END-EVALUATE
+                         END-IF
+                     END-IF
+              END-EVALUATE
       *
               IF  RJN-RATE-KBN      NOT =    SPACE
                   EVALUATE   RJN-RATE-KBN
                       WHEN   "1"
-                             MOVE   10        TO   RECE02-KYURATE
+                             MOVE   10        TO  RECE02-KYURATE
                       WHEN   "2"
-                             MOVE   20        TO   RECE02-KYURATE
+                             MOVE   20        TO  RECE02-KYURATE
                   END-EVALUATE
               END-IF
            END-IF
@@ -2161,6 +2251,50 @@
       *
            .
        HKNCOMBI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    低所得マスタ読み込み
+      *****************************************************************
+       TSYRRK-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  TSYRRK-REC
+               MOVE    ZERO            TO  FLG-TSYRRK
+           ELSE
+               INITIALIZE                  TSYRRK-REC
+               MOVE    1               TO  FLG-TSYRRK
+           END-IF
+      *
+           .
+       TSYRRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    年金マスタ読み込み
+      *****************************************************************
+       TNKRRK-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  TNKRRK-REC
+               MOVE    ZERO            TO  FLG-TNKRRK
+           ELSE
+               INITIALIZE                  TNKRRK-REC
+               MOVE    1               TO  FLG-TNKRRK
+           END-IF
+      *
+           .
+       TNKRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************

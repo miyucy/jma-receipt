@@ -3052,6 +3052,8 @@
                                                RECE10-HKNNUM-S
                MOVE    RECE02-RJNHKNNUM    TO  RECE10-RJNHKNNUM
                MOVE    RECE02-HONKZKKBN    TO  RECE10-HONKZKKBN
+               MOVE    RECE02-HOJOKBN      TO  RECE10-HOJOKBN
+               MOVE    RECE02-CONTKBN      TO  RECE10-CONTKBN
                MOVE    RECE02-KIGO         TO  RECE10-KIGO
                MOVE    RECE02-NUM          TO  RECE10-NUM
                MOVE    ZERO                TO  RECE10-SKYYM

@@ -88,9 +88,12 @@
       *  01.02.04   MCC-¾®Æ¦Âô    02.04.23  ¥ì¥»¥×¥ÈÆÃµ­»ö¹à¤ÎÊÔ½¸¤òÄÉ²Ã
       *  01.02.05   MCC-¾®Æ¦Âô    02.04.28  ºßÂð¤Î¿ÇÎÅ»þ´Ö²Ã»»¤òÆþÎÏ»þ¤ÎÅÀ¿ô
       *                                     Íó¤Î½¸·×¤ò½¤Àµ
-      *  01.02.06   MCC-¾®Æ¦Âô    02.05.30  ºÎ·ìÎÁ¤ÈÈ½ÃÇÎÁ¤Î²ó¿ô¸º»»¤ò½¤Àµ      
-      *  01.02.07   NACL-Æ£¸¶     02.09.06  ¸¡ºº¤ÎÊÔ½¸¤Î¤¿¤á¤Ë²ó¿ô¤òÁ´¤ÆÊÔ½¸¤¹¤ë
-      ********************************************************
+      *  01.02.06   MCC-¾®Æ¦Âô    02.05.30  ºÎ·ìÎÁ¤ÈÈ½ÃÇÎÁ¤Î²ó¿ô¸º»»¤ò½¤Àµ
+      *  01.02.07   NACL-Æ£¸¶     02.09.06  ¸¡ºº¤ÎÊÔ½¸¤Î¤¿¤á¤Ë²ó¿ô¤ò
+      *                                     Á´¤ÆÊÔ½¸¤¹¤ë
+      *  01.02.08   NACL-ÌçÏÆ     02.10.07  ºßÂðÁí¹ç¡¦Ëö´ü¥Õ¥é¥°¤Î¥»¥Ã¥È¤ò¹Ô¤¦
+      *                                     °ìÉôÉéÃ´¶âºÆ·Ç¤Î¥»¥Ã¥È¤ò¹Ô¤¦
+      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION           SECTION.
@@ -310,6 +313,11 @@
                05  WK-TAIHI-SRYYM                      PIC 9(06).
                05  WK-TAIHI-SRYD                       PIC 9(02).
       *
+       01  WRK-AREA-SAIKEI.
+           03  WRK-KOH51-FTN                           PIC 9(09).
+           03  WRK-FTNKEI                              PIC 9(09).
+           03  WRK-GENDO                               PIC 9(09).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-IN                                  PIC X(01).
@@ -330,6 +338,7 @@
       *
            03  WRK-TOKKI                               PIC X(02).
            03  TOKKI-IDX                               PIC 9(02). 
+      *
       *---------------------------------------------------------------
       *  ²ó¿ô¸º»»ÍÑÂàÈòÎÎ°è
       *
@@ -385,6 +394,11 @@
            03  CONS-GAIRAIKSN3     PIC X(09) VALUE "112012910".
            03  CONS-GAIRAIKSN4     PIC X(09) VALUE "112705410".
            03  CONS-GAIRAIKSN5     PIC X(09) VALUE "112707010".
+      *    ºßÂðÁí¹ç¡¦ºßÂðËö´ü
+           03  CONS-ZAITAKU1       PIC X(09) VALUE "114701210".
+           03  CONS-ZAITAKU2       PIC X(09) VALUE "114701710".
+           03  CONS-ZAITAKU3       PIC X(09) VALUE "114007610".
+           03  CONS-ZAITAKU4       PIC X(09) VALUE "114007710".
       *    ÆÃµ­»ö¹à
            03  CONS-TOKKI1         PIC X(14) VALUE "00000099990101".
            03  CONS-TOKKI2         PIC X(14) VALUE "00000099990102".
@@ -629,6 +643,8 @@
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
+           INITIALIZE          WRK-AREA-SAIKEI
+      *
            INITIALIZE                   FLG-KHNTEN-AREA
            PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL     (IDX      >   10)  OR
@@ -637,6 +653,7 @@
                PERFORM    YKZFTN-SET-SEC
            END-PERFORM
            PERFORM     KHNTEN-CLEAR-SEC
+           PERFORM     SAIKEI-KEISAN-SEC
       *
            IF   RECE02-TEISYUTUSAKI     =     1
            OR  (RECE02-TEISYUTUSAKI     =     2   AND
@@ -920,6 +937,22 @@
                                                 CONS-GAIRAIKSN5
                         MOVE   "1"        TO    RECE02-GAIRAIKSN-PRTKBN
                    END-IF
+               END-IF
+               IF      RECE02-SRYYM      >=  "200210" 
+                 IF  ( RECE02-AGE        >=  70 )    OR
+                    (( RECE02-AGE        >=  65  AND     
+                       RECE02-RJNHKNNUM   = "027"))   
+      *   
+                   IF   SRY-SRYKBN           =     "14"  
+                      IF   SRY-SRYCD(IDX2)   =     CONS-ZAITAKU1    OR
+                                                   CONS-ZAITAKU2    OR
+                                                   CONS-ZAITAKU3    OR
+                                                   CONS-ZAITAKU4
+                        MOVE   "1"        TO    RECE02-ZAITAKU
+                      END-IF
+                   END-IF
+      *
+                 END-IF
                END-IF
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE05-SRYSURYO(IDX4)
                MOVE    SRY-SRYKAISU(IDX2) TO    RECE05-SRYKAISU(IDX4)
@@ -2503,9 +2536,50 @@
       *
            COMPUTE   RECE02-YKZFTN(1)   =    RECE02-YKZFTN(1)   +
                                              SYU-SYUCOMPYKZFTN
-           IF   RECE02-RJNHKNNUM    NOT =    SPACE
+           IF      RECE02-SRYYM      >=  "200210"
+             IF    RECE02-ZAITAKU      NOT =    SPACE
+                IF    RECE02-RJNHKNNUM    NOT =    SPACE 
+                  ADD    SYU-KOH1COMPFTN  TO   RECE02-FTNMONEY(1)
+                  ADD    SYU-KOH1COMPFTN  TO   RECE02-RJNGAIFTN
+                ELSE
+                  IF  SYU-KOH1COMPFTN         =    ZERO
+                    ADD    SYU-SYUCOMPFTN   TO   RECE02-FTNMONEY(1)
+                    ADD    SYU-SYUCOMPFTN   TO   RECE02-RJNGAIFTN
+                  ELSE
+                    COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
+                                        * 10
+                                        * SYU-PTFTNRATE
+                                        / 100
+                    COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
+                    COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
+                    COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
+                    IF  RECE02-TEISYOTOKU = SPACE
+                        IF  SYU-PTFTNRATE = 10
+                           MOVE  12000   TO  WRK-GENDO
+                        ELSE
+                           MOVE  40200   TO  WRK-GENDO
+                        END-IF
+                    ELSE
+                           MOVE   8000   TO  WRK-GENDO
+                    END-IF 
+                    IF  RECE02-FTNMONEY(1)  >= WRK-GENDO
+                        CONTINUE
+                    ELSE
+                        ADD  WRK-FTNKEI  TO  RECE02-FTNMONEY(1)
+                        ADD  WRK-FTNKEI  TO  RECE02-RJNGAIFTN
+                    END-IF
+                    IF  RECE02-FTNMONEY(1) > WRK-GENDO
+                        MOVE  WRK-GENDO  TO  RECE02-FTNMONEY(1)
+                        MOVE  WRK-GENDO  TO  RECE02-RJNGAIFTN
+                    END-IF
+                  END-IF
+                END-IF
+             END-IF
+           ELSE
+             IF    RECE02-RJNHKNNUM    NOT =    SPACE
                 ADD    SYU-KOH1COMPFTN  TO   RECE02-FTNMONEY(1)
                 ADD    SYU-KOH1COMPFTN  TO   RECE02-RJNGAIFTN
+             END-IF
            END-IF
       *****EVALUATE  TRUE
       *        WHEN  (SYU-HKNCOMBINUM   =    RECE02-HKNCOMBI(1))
@@ -2552,6 +2626,11 @@
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
+      *
+      **                      IF  SYU-KOH-HKNNUM(IDX3)  =  "051"
+                               ADD SYU-KOH-FTN  TO  WRK-KOH51-FTN
+      **                      END-IF
+      *
       *               END-IF
                  END-IF
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(2)
@@ -2573,6 +2652,11 @@
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
+      *
+      **                      IF  SYU-KOH-HKNNUM(IDX3)  =  "051"
+                               ADD SYU-KOH-FTN  TO  WRK-KOH51-FTN
+      **                      END-IF
+      *
       *               END-IF
                  END-IF
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(3)
@@ -2594,6 +2678,11 @@
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
+      *
+      **                      IF  SYU-KOH-HKNNUM(IDX3)  =  "051"
+                               ADD SYU-KOH-FTN  TO  WRK-KOH51-FTN
+      **                      END-IF
+      *
       *               END-IF
                  END-IF
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(4)
@@ -2615,6 +2704,11 @@
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
+      *
+      **                      IF  SYU-KOH-HKNNUM(IDX3)  =  "051"
+                               ADD SYU-KOH-FTN  TO  WRK-KOH51-FTN
+      **                      END-IF
+      *
       *               END-IF
                  END-IF
            END-PERFORM
@@ -2653,6 +2747,29 @@
            END-IF
            .
        KHNTEN-CLEAR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ºßÂðÁí¹ç¡¦ºßÂðËö´ü°ìÉôÉéÃ´¶âºÆ·Ç¤Î·×»»½èÍý
+      *****************************************************************
+       SAIKEI-KEISAN-SEC               SECTION.
+      *
+      **   DISPLAY  "FTNMONEY = " RECE02-FTNMONEY(1)
+      **   DISPLAY  "KOH      = " WRK-KOH51-FTN
+           IF   RECE02-ZAITAKU  =  SPACE
+                  MOVE     ZERO      TO     RECE02-ZAITAKU-SAIKEI
+           ELSE
+              IF  WRK-KOH51-FTN    =   ZERO
+                  MOVE     ZERO      TO     RECE02-ZAITAKU-SAIKEI
+              ELSE 
+                  COMPUTE   RECE02-ZAITAKU-SAIKEI  =  
+                       RECE02-FTNMONEY(1)  -  WRK-KOH51-FTN
+              END-IF
+           END-IF
+           DISPLAY  "SAIKEI = " RECE02-ZAITAKU-SAIKEI
+      *
+           .
+       SAIKEI-KEISAN-EXT.
            EXIT.
       *
       *****************************************************************

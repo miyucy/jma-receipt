@@ -1992,6 +1992,12 @@
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(1)
                END-IF
            END-IF
+           IF      RECE02-ZAITAKU-SAIKEI  >   ZERO
+               MOVE    "("                    TO  HC06-FTNMONEYSAI(1:1)
+               MOVE   RECE02-ZAITAKU-SAIKEI   TO  WRK-KGK7
+               MOVE   WRK-KGK7                TO  HC06-FTNMONEYSAI(3:8)
+               MOVE    ")"                    TO  HC06-FTNMONEYSAI(11:1)
+           END-IF    
       *    ¸øÈñ£±
            IF    ( RECE02-TOTALTEN (IDX2) >   ZERO                     )
            AND   ((RECE02-TOTALTEN (IDX2)
@@ -2058,6 +2064,24 @@
                MOVE    WRK-KUGIRI1 TO  HC06-TEKIYO (WRK-LINETEK)
            END-IF
       *
+           IF      RECE02-TEISYOTOKU   =   SPACE
+           OR      RECE02-ZAITAKU      =   SPACE
+               CONTINUE
+           ELSE
+               IF  WRK-WLINETEK          >   WRK-TEKIYOU-LINE
+                   PERFORM 34120-PAGE-SEC
+               END-IF    
+               ADD     1               TO  WRK-LINETEK
+               EVALUATE    RECE02-TEISYOTOKU
+                   WHEN    "1"
+                       MOVE    "Äã½êÆÀ£±"
+                                       TO  HC06-TEKIYO(WRK-LINETEK)
+                   WHEN    "2"
+                       MOVE    "Äã½êÆÀ£²"
+                                       TO  HC06-TEKIYO(WRK-LINETEK)
+               END-EVALUATE        
+           END-IF
+      *         
            MOVE    ZERO                TO  WRK-R061-ZAINUM-O
            MOVE    SPACE               TO  WRK-R061-SRYKBN-O
            MOVE    ZERO                TO  WRK-R061-KOHBUNRI-O
@@ -2689,6 +2713,8 @@
                                                RECE10-HKNNUM-S
                MOVE    RECE02-RJNHKNNUM    TO  RECE10-RJNHKNNUM
                MOVE    RECE02-HONKZKKBN    TO  RECE10-HONKZKKBN
+               MOVE    RECE02-HOJOKBN      TO  RECE10-HOJOKBN
+               MOVE    RECE02-CONTKBN      TO  RECE10-CONTKBN
                MOVE    RECE02-KIGO         TO  RECE10-KIGO
                MOVE    RECE02-NUM          TO  RECE10-NUM
                MOVE    ZERO                TO  RECE10-SKYYM
@@ -2737,12 +2763,17 @@
                                        RECE10-SRYKBNINF (IDX)
            END-PERFORM
       *    µëÉÕ³ä¹ç
-           COMPUTE WRK-KYURATE-9   =
-                          (100     -   RECE02-KYURATE)
-                                           / 10 
-           MOVE    WRK-KYURATE-9   TO  RECE10-KYURATE
+           IF      RECE02-KYURATE  >   ZERO
+               COMPUTE WRK-KYURATE-9   =
+                              (100     -   RECE02-KYURATE)
+                                               / 10 
+               MOVE    WRK-KYURATE-9   TO  RECE10-KYURATE
+           ELSE
+               MOVE    ZERO            TO  RECE10-KYURATE
+           END-IF             
       *     
            MOVE    RECE02-AGE          TO  RECE10-AGE  
+           MOVE    RECE02-ZAITAKU      TO  RECE10-ZAITAKU    
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
