@@ -911,6 +911,14 @@
                                                      (SPA-RRK-MAX))
                            MOVE    "0009"              TO  SPA-ERRCD
                        END-IF
+      *                保険終了日が診療日より後であること
+                       IF     (SPA-NAI-TEKEDYMD (IDX)(1:6)
+                                           =   SPA-NAI-SRYYM )  AND
+                              (SPA-NAI-TEKEDYMD (IDX)
+                                           <   SPA-RRK-RRKYMD
+                                                         (01))
+                           MOVE    "0009"              TO  SPA-ERRCD
+                       END-IF
                    ELSE
                        MOVE    "0008"              TO  SPA-ERRCD
                    END-IF
