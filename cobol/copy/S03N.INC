@@ -62,6 +62,8 @@
                                 PIC S9(10).
               03  S03N-ETCTGMONEY
                                 PIC S9(10).
+              03  S03N-NYUTGMONEY
+                                PIC S9(10).
               03  S03N-HKNTEKMONEY
                                 PIC S9(10).
               03  S03N-HKNTEKGAI PIC S9(10).

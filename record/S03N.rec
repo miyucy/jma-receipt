@@ -108,6 +108,9 @@ S03N	{
 		ETCTGMONEY	{
 			value	number(10);
 		};
+		NYUTGMONEY	{
+			value	number(10);
+		};
 		HKNTEKMONEY	{
 			value	number(10);
 		};

@@ -888,6 +888,17 @@
 
     <widget>
       <class>GtkNumberEntry</class>
+      <name>NYUTGMONEY</name>
+      <x>280</x>
+      <y>456</y>
+      <width>88</width>
+      <height>24</height>
+      <editable>False</editable>
+      <format>ZZ,ZZZ,ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
       <name>HKNTEKMONEY</name>
       <x>152</x>
       <y>532</y>

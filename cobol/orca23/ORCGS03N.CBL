@@ -31,6 +31,7 @@
       *                                     カンマ編集するよう修正
       *  01.01.02    NACL-森脇    03.01.06  S04の追加
       *  01.01.03    NACL-太田    03.01.23  食事の計算方法修正
+      *  01.01.04    NACL-太田    03.03.25  入院の保険適用外金額欄追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1042,6 +1043,7 @@
            MOVE    SPA-GMN-TGMONEY (08) TO  S03N-KNSTGMONEY
            MOVE    SPA-GMN-TGMONEY (09) TO  S03N-GZUTGMONEY
            MOVE    SPA-GMN-TGMONEY (10) TO  S03N-ETCTGMONEY
+           MOVE    SPA-GMN-TGMONEY (11) TO  S03N-NYUTGMONEY
            MOVE    SPA-GMN-HKNGAI      TO  S03N-HKNTEKGAI
            MOVE    SPA-GMN-ICHIFTN     TO  S03N-FTNTOTAL
            MOVE    SPA-GMN-YAKFTN      TO  S03N-YKZFTN 
