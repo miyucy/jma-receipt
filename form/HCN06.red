@@ -9130,7 +9130,7 @@
         <point val="11.825,6.825"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.825,6.56482;16.067,6.91482"/>
+        <rectangle val="11.825,6.56482;15.0065,6.91482"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOSPTEL#</string>
@@ -9141,7 +9141,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#176;&#163;&#177;&#163;&#178;&#163;&#176;&#161;&#221;&#163;&#185;&#163;&#185;&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#999999999999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -9172,7 +9172,7 @@
         <point val="12.9,7.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.9,6.97699;13.506,7.27699"/>
+        <rectangle val="12.9,6.97699;17.445,7.27699"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SRYKA#</string>
@@ -9183,7 +9183,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#179;&#176;&#178;&#202;#</string>
+            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -15729,10 +15729,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O439">
       <attribute name="obj_pos">
-        <point val="9.075,1.45"/>
+        <point val="20.2,6.85"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.1661,1.11549;9.075,1.56549"/>
+        <rectangle val="18.7153,6.58982;20.2,6.93982"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#RENNUM#</string>
@@ -15749,10 +15749,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.45"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="9.075,1.45"/>
+            <point val="20.2,6.85"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -15761,10 +15761,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.2727"/>
+            <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.22725"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>

@@ -4023,10 +4023,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O117">
       <attribute name="obj_pos">
-        <point val="9.075,1.45"/>
+        <point val="20.2,3.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.1661,1.11549;9.075,1.56549"/>
+        <rectangle val="18.7153,3.23982;20.2,3.58982"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#RENNUM#</string>
@@ -4043,10 +4043,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.45"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="9.075,1.45"/>
+            <point val="20.2,3.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4055,10 +4055,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.2727"/>
+            <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.22725"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>

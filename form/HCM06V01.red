@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="euc-jp"?>
+<?xml version="1.0"?>
 <diagram xmlns:dia="http://www.lysator.liu.se/~alla/dia/">
   <dictionarydata>
     <element name="TEISYUTUSAKI" occurs="1">
@@ -8917,7 +8917,7 @@
         <point val="11.35,6.825"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.35,6.56482;15.592,6.91482"/>
+        <rectangle val="11.35,6.56482;14.5315,6.91482"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOSPTEL#</string>
@@ -8928,7 +8928,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#176;&#163;&#177;&#163;&#178;&#163;&#176;&#161;&#221;&#163;&#185;&#163;&#185;&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#999999999999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -8959,7 +8959,7 @@
         <point val="12.4,7.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.4,6.97699;13.006,7.27699"/>
+        <rectangle val="12.4,6.97699;16.945,7.27699"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SRYKA#</string>
@@ -8970,7 +8970,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#179;&#176;&#178;&#202;#</string>
+            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -19088,10 +19088,10 @@
     </group>
     <object type="Embed - Text" version="0" id="O514">
       <attribute name="obj_pos">
-        <point val="9.075,1.45"/>
+        <point val="20.1,6.85"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.1661,1.11549;9.075,1.56549"/>
+        <rectangle val="18.6153,6.58982;20.1,6.93982"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#RENNUM#</string>
@@ -19108,10 +19108,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.45"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="9.075,1.45"/>
+            <point val="20.1,6.85"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -19120,10 +19120,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.2727"/>
+            <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.22725"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
