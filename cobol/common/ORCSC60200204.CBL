@@ -198,6 +198,13 @@
            03  FLG-BA-ARI              PIC 9(01).
            03  FLG-BC-ARI              PIC 9(01).
            03  FLG-BV-ARI              PIC 9(01).
+      *    Æþ±¡Äþ¸ºÍÑ
+       01  TBL-TEIGEN-AREA.
+           03  TBL-TEIGEN-OCC          OCCURS   20.
+               05  TBL-TEI-SRYCD       PIC X(09).
+               05  TBL-TEI-HOU         PIC X(02).
+               05  TBL-TEI-CNT         PIC 9(03).
+       01  IDX-TEI                     PIC 9(04).
       *
       *    ÊÝÂ¸ÍÑ£Ó£Ð£Á
        01  HZN-SCR-REC.
@@ -797,7 +804,7 @@
                                                            (KEN-IDX)
                        MOVE    TBL-KEN-HOU  (KEN-IDX)
                                                 TO  WRK-KEN-HOU
-           END-SEARCH 
+           END-SEARCH
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   KEN-IDX-MAX)  OR
@@ -1501,11 +1508,13 @@
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *
-      *    Æ±°ì¸¡ºº¤ò¥¨¥é¡¼¤È¤¹¤ë
            IF      SPA-NYUGAIKBN       =   "1"
-               CONTINUE
-           ELSE
+      *        Æþ±¡»þ¤Î¥Á¥§¥Ã¥¯
+               PERFORM 210-NYUIN-SYORI-SEC
+               GO      TO      200-ALL-SYORI-EXT
+           END-IF
       *
+      *    Æ±°ì¸¡ºº¤ò¥¨¥é¡¼¤È¤¹¤ë
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
@@ -1528,8 +1537,6 @@
                    END-PERFORM
                END-IF
            END-PERFORM
-      *
-           END-IF
       *
            MOVE    ZERO                TO  FLG-JIKASAN
            MOVE    ZERO                TO  IDX-JIKAN
@@ -1644,13 +1651,13 @@
            END-PERFORM
       *
       *    Æþ±¡¤Î»þ¡¢Ê£¿ôÆü¤ÇÄþ¸º¤Ê¤·¤Î»þ¥¨¥é¡¼
-           IF     (SPA-NYUGAIKBN       =   "1"  )  AND
-                  (WRK-SANTEI-CNT      >=  WRK-COM-NYU-KAI (IDX-Z) )
-               IF      WRK-COM-NYU-KAI (IDX-Z)     >   1
-                   MOVE    "9021"              TO  SPA-ERRCD
-                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
-               END-IF
-           END-IF
+      *    IF     (SPA-NYUGAIKBN       =   "1"  )  AND
+      *           (WRK-SANTEI-CNT      >=  WRK-COM-NYU-KAI (IDX-Z) )
+      *        IF      WRK-COM-NYU-KAI (IDX-Z)     >   1
+      *            MOVE    "9021"              TO  SPA-ERRCD
+      *            MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+      *        END-IF
+      *    END-IF
       *
       *    Äþ¸º²Ã»»¼«Æ°ÄÉ²Ã
            IF      WRK-SANTEI-CNT      >   ZERO
@@ -1671,8 +1678,7 @@
            MOVE    "160000190"         TO  WRK-SRYCD
            MOVE    IDX-TEIGEN2         TO  IDX-S
            PERFORM 2001-JIDOTUIKA-SEC
-           MOVE    "2"                 TO  WRK-COM-AUTOKBN
-                                                           (IDX-T)
+           MOVE    "2"                 TO  WRK-COM-AUTOKBN(IDX-T)
       *
            .
        2009-TEIGEN-TUIKA-EXT.
@@ -1824,7 +1830,10 @@
                                                    =   SPACE  AND
                                        WRK-GMN-INPUTCD (IDX2)
                                                    =   SPACE  )
-                       IF      WRK-COM-INPUTCD (IDX2)  =   WRK-SRYCD
+                       IF     (WRK-COM-INPUTCD(IDX-Z)
+                                               NOT =   WRK-COM-INPUTCD
+                                                             (IDX2)) AND
+                              (WRK-COM-INPUTCD (IDX2)  =   WRK-SRYCD)
                            ADD     1               TO  WRK-JYU-CNT
                            MOVE    IDX2            TO  WRK-JYU-IDX
                        END-IF
@@ -1923,6 +1932,148 @@
       *
            .
        2001-JIDOTUIKA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Á´¿ÇÎÅ¹Ô°ÙÆþ±¡»þ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       210-NYUIN-SYORI-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  IDX-JIKAN
+           MOVE    ZERO                TO  IDX-TEIGEN
+           MOVE    ZERO                TO  IDX-TEIGEN2
+           INITIALIZE                      TBL-TEIGEN-AREA
+      *
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   200     )   OR
+                              (SPA-ERRCD           NOT =   SPACE )  OR
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+      *        »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»
+               IF      WRK-COM-INPUTCD(IDX-Z)  =   "160000210"
+                   MOVE    IDX-Z           TO  IDX-JIKAN
+               END-IF
+      *
+      *        ÉÂÍý¿ÇÃÇÎÁ¥Á¥§¥Ã¥¯
+               IF      WRK-COM-INPUTCD (IDX-Z) =   "160155110"
+                   PERFORM 1006-SINDAN-CHK-SEC
+               END-IF
+      *
+      *        ÉÂÍý³ØÅª¸¡ºº¿ÇÃÇÎÁ¥Á¥§¥Ã¥¯
+               IF      WRK-COM-INPUTCD (IDX-Z) =   "160062310"
+                   PERFORM 1007-KENSA-CHK-SEC
+               END-IF
+      *        Äþ¸º²Ã»»»»Äê¥Á¥§¥Ã¥¯
+               IF     (WRK-COM-SRYKBN    (IDX-Z)   =   "60" )  AND
+                      (WRK-COM-TEIGENKBN (IDX-Z)   =   1    )  AND
+                      (WRK-COM-DATAKBN   (IDX-Z)   =  "1"   )
+                   PERFORM 20018-TEIGEN-INSYORI-SEC
+               END-IF
+           END-PERFORM
+      *
+      *    »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»Í­¤ê
+           IF      IDX-JIKAN           >   ZERO
+      *        »þ´ÖÆþÎÏÄÉ²Ã
+               MOVE    "840000044"         TO  WRK-SRYCD
+               IF      WRK-COM-INPUTCD(IDX-JIKAN + 1)  =   WRK-SRYCD
+                   CONTINUE
+               ELSE
+                   MOVE    IDX-JIKAN       TO  IDX-S
+                   PERFORM 2001-JIDOTUIKA-SEC
+               END-IF
+           END-IF
+      *
+           .
+       210-NYUIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡»þ£²²óÌÜ°Ê¹ß¤ÎÄþ¸º½èÍý
+      *****************************************************************
+       20018-TEIGEN-INSYORI-SEC                SECTION.
+      *
+      *    Æ±°ì¸¡ºº»»ÄêÍ­Ìµ¤ÎÈ½Äê
+           SET     KEN-IDX             TO  1
+           SEARCH      TBL-KENSA-HOU-OCC   VARYING   KEN-IDX
+                   AT  END
+                       MOVE    SPACE           TO  WRK-KEN-HOU
+                   WHEN    WRK-COM-INPUTCD (IDX-Z)
+                                               =   TBL-KEN-SRYCD
+                                                           (KEN-IDX)
+                       MOVE    TBL-KEN-HOU  (KEN-IDX)
+                                                TO  WRK-KEN-HOU
+           END-SEARCH
+      *
+           MOVE    ZERO                TO  WRK-SANTEI-CNT
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   KEN-IDX-MAX)  OR
+                              (WRK-KEN-HOU     =   SPACE  )  OR
+                              (SPA-ERRCD   NOT =   SPACE  )  OR
+                              (WRK-SANTEI-CNT  >   ZERO   )
+               SET     KEN-IDX             TO  IDX
+               IF     (TBL-KEN-HOU  (KEN-IDX)  =   WRK-KEN-HOU ) AND
+                      (TBL-KEN-SRYCD(KEN-IDX)
+                                           NOT =   WRK-COM-INPUTCD
+                                                         (IDX-Z))
+                   MOVE    TBL-KEN-SRYCD (KEN-IDX) TO  WRK-SRYCD
+                   PERFORM 20081-SANTEI-TBLCHK-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    ZERO            TO  IDX-TEI
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   20  )  OR
+                              (IDX-TEI     >   ZERO)
+               IF      WRK-KEN-HOU         =   SPACE
+                   IF     (TBL-TEI-SRYCD(IDX)  =   SPACE )  AND
+                          (TBL-TEI-HOU  (IDX)  =   SPACE )
+                       MOVE    WRK-COM-INPUTCD (IDX-Z)
+                                               TO  TBL-TEI-SRYCD(IDX)
+                   END-IF
+                   IF      TBL-TEI-SRYCD(IDX)  =
+                                               WRK-COM-INPUTCD (IDX-Z)
+                       MOVE    IDX             TO  IDX-TEI
+                   END-IF
+               ELSE
+                   IF     (TBL-TEI-SRYCD(IDX)  =   SPACE )  AND
+                          (TBL-TEI-HOU  (IDX)  =   SPACE )
+                       MOVE    WRK-KEN-HOU     TO  TBL-TEI-HOU (IDX)
+                   END-IF
+                   IF      TBL-TEI-HOU(IDX)    =   WRK-KEN-HOU
+                       MOVE    IDX             TO  IDX-TEI
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      IDX-TEI             >   ZERO
+               COMPUTE WRK-SANTEI-CNT      =   WRK-SANTEI-CNT
+                                           +   TBL-TEI-CNT (IDX-TEI)
+           END-IF
+      *    Äþ¸º¤Î¤Ê¤¤»þ
+           IF      WRK-COM-TEIGEN-FLG(IDX-Z)   =   ZERO
+      *        Äþ¸º²Ã»»¼«Æ°ÄÉ²Ã
+               IF      WRK-SANTEI-CNT      >   ZERO
+                   MOVE    IDX-Z               TO  IDX-TEIGEN
+                   MOVE    IDX-Z               TO  IDX-TEIGEN2
+                   PERFORM 2009-TEIGEN-TUIKA-SEC
+                   IF      FLG-ARI             =   1
+                       ADD     1               TO  IDX-Z
+                   END-IF
+               ELSE
+                   IF      WRK-COM-NYU-KAI (IDX-Z) >   1
+                       MOVE    "9021"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   END-IF
+      *            Äþ¸ººÑ¤ß
+                   ADD     WRK-COM-NYU-KAI (IDX-Z)
+                                               TO  TBL-TEI-CNT (IDX-TEI)
+               END-IF
+           ELSE
+      *        Äþ¸ººÑ¤ß
+               ADD     WRK-COM-NYU-KAI (IDX-Z) TO  TBL-TEI-CNT (IDX-TEI)
+           END-IF
+           .
+      *
+       20018-TEIGEN-INSYORI-EXT.
            EXIT.
       *
       *****************************************************************
