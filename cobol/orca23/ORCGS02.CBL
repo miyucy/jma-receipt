@@ -82,6 +82,8 @@
       *  01.01.25    NACL-門脇    03.04.16  船員保険（被保険者）＋通勤災害
       *                                     ＋初診時　対応
       *  01.01.26    NACL-太田    03.05.01  収納一覧リスト表示修正
+      *  01.01.27    NACL-太田    03.05.13  患者が特定された時点で
+      *                                     支払証明書が出力できるよう修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1004,7 +1006,7 @@
       *    請求確認戻り画面編集処理
       *****************************************************************
        320-S03SPASET-SEC          SECTION.
-      * 
+      *
            INITIALIZE                  SPA-S02
       *
            MOVE    SPA-S01-PTNUM       TO  SPA-GMN-PTNUM
@@ -4660,17 +4662,26 @@
       *****************************************************************
        500-SHIHARAI-SEC            SECTION.
       *
-           IF      SPA-GMN-SELBAN      =   ZERO
-               GO      TO      500-SHIHARAI-EXT
-           END-IF
-      *
-           INITIALIZE                  SPA-S01KYOUTU
-           PERFORM 4901-SPAKYOTUKEY-SET-SEC
-      *
-           IF       SPA-S01-PTNUM  =   SPACE
+           IF       SPA-GMN-PTID   =   ZERO
                MOVE    "1003"      TO  SPA-ERRCD
                GO  TO  500-SHIHARAI-EXT
            END-IF
+      *
+           INITIALIZE                  SPA-S01KYOUTU
+      *
+           MOVE    SPA-GMN-PTNUM       TO  SPA-S01-PTNUM
+           MOVE    SPA-GMN-PTID        TO  SPA-S01-PTID
+           MOVE    SPA-GMN-KANANAME    TO  SPA-S01-KANANAME
+           MOVE    SPA-GMN-NAME        TO  SPA-S01-NAME
+           MOVE    SPA-GMN-SEX         TO  SPA-S01-SEX
+           MOVE    SPA-GMN-BIRTHDAY    TO  SPA-S01-BIRTHDAYW
+           MOVE    SPA-NAI-BIRTHDAY    TO  SPA-S01-BIRTHDAY
+           MOVE    SPA-GMN-SRYYM       TO  SPA-S01-SRYYMW
+           MOVE    SPA-NAI-SRYYM       TO  SPA-S01-SRYYM
+           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-S01-HNYUGAIKBN
+           MOVE    SPA-GMN-SRYKA       TO  SPA-S01-HSRYKA
+      *
+           MOVE    SPA-S01KYOUTU       TO  SPA-WORK
       *
            PERFORM  41011-S04-SET-SEC
       *
