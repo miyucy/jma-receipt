@@ -59,7 +59,7 @@ EXTRA_DIST = \
               HCP7LA.dia \
               HCPO.dia \
               HCM19.red \
-              HC29
+              HC29.dia
 
 all:   
 	touch build-stamp
