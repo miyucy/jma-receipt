@@ -314,7 +314,9 @@
                05  WK-TAIHI-SRYD                       PIC 9(02).
       *
        01  WRK-AREA-SAIKEI.
-           03  WRK-KOH51-FTN                           PIC 9(09).
+           03  WRK-KOH-FTN                             PIC 9(09).
+           03  WRK-KOH-GAI                             PIC 9(09).
+           03  FLG-KOH                                 PIC 9(01).
            03  WRK-FTNKEI                              PIC 9(09).
            03  WRK-GENDO                               PIC 9(09).
       *
@@ -2538,42 +2540,44 @@
                                              SYU-SYUCOMPYKZFTN
            IF      RECE02-SRYYM      >=  "200210"
              IF    RECE02-ZAITAKU      NOT =    SPACE
-                IF    RECE02-RJNHKNNUM    NOT =    SPACE 
-                  ADD    SYU-KOH1COMPFTN  TO   RECE02-FTNMONEY(1)
-                  ADD    SYU-KOH1COMPFTN  TO   RECE02-RJNGAIFTN
+                COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
+                                    * 10
+                                    * RECE02-KYURATE
+                                    / 100
+                COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
+                COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
+                COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
+                IF  RECE02-TEISYOTOKU = SPACE
+                    IF  RECE02-KYURATE = 10
+                       MOVE  12000   TO  WRK-GENDO
+                    ELSE
+                       MOVE  40200   TO  WRK-GENDO
+                    END-IF
                 ELSE
-                  IF  SYU-KOH1COMPFTN         =    ZERO
-                    ADD    SYU-SYUCOMPFTN   TO   RECE02-FTNMONEY(1)
-                    ADD    SYU-SYUCOMPFTN   TO   RECE02-RJNGAIFTN
+                       MOVE   8000   TO  WRK-GENDO
+                END-IF 
+                IF  RECE02-FTNMONEY(1)  >= WRK-GENDO
+                    CONTINUE
+                ELSE
+                    ADD  WRK-FTNKEI  TO  RECE02-FTNMONEY(1)
+                    ADD  WRK-FTNKEI  TO  RECE02-RJNGAIFTN
+                END-IF
+                IF  RECE02-FTNMONEY(1) > WRK-GENDO
+                    MOVE  WRK-GENDO  TO  RECE02-FTNMONEY(1)
+                    MOVE  WRK-GENDO  TO  RECE02-RJNGAIFTN
+                END-IF
+                IF   ( SYU-KOH-FTN         =   ZERO   )
+                AND  ( SYU-KOH-HKNNUM(1)   =   SPACE OR "027"  ) 
+                AND  ( SYU-KOH-HKNNUM(2)   =   SPACE  )
+                AND  ( SYU-KOH-HKNNUM(3)   =   SPACE  )
+                AND  ( SYU-KOH-HKNNUM(4)   =   SPACE  )           
+                  IF    RECE02-RJNHKNNUM    NOT =    SPACE 
+                    ADD    SYU-KOH1COMPFTN  TO   WRK-KOH-GAI
                   ELSE
-                    COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
-                                        * 10
-                                        * SYU-PTFTNRATE
-                                        / 100
-                    COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
-                    COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
-                    COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
-                    IF  RECE02-TEISYOTOKU = SPACE
-                        IF  SYU-PTFTNRATE = 10
-                           MOVE  12000   TO  WRK-GENDO
-                        ELSE
-                           MOVE  40200   TO  WRK-GENDO
-                        END-IF
-                    ELSE
-                           MOVE   8000   TO  WRK-GENDO
-                    END-IF 
-                    IF  RECE02-FTNMONEY(1)  >= WRK-GENDO
-                        CONTINUE
-                    ELSE
-                        ADD  WRK-FTNKEI  TO  RECE02-FTNMONEY(1)
-                        ADD  WRK-FTNKEI  TO  RECE02-RJNGAIFTN
-                    END-IF
-                    IF  RECE02-FTNMONEY(1) > WRK-GENDO
-                        MOVE  WRK-GENDO  TO  RECE02-FTNMONEY(1)
-                        MOVE  WRK-GENDO  TO  RECE02-RJNGAIFTN
-                    END-IF
+                    ADD    SYU-SYUCOMPFTN   TO   WRK-KOH-GAI
                   END-IF
                 END-IF
+                ADD   SYU-KOH-FTN   TO   WRK-KOH-FTN
              END-IF
            ELSE
              IF    RECE02-RJNHKNNUM    NOT =    SPACE
@@ -2622,16 +2626,14 @@
                                           RECE02-YKZFTN(KH-IDX) +
                                           SYU-KOH-COMPYKZFTN(IDX3)
                       ADD      1          TO   RECE02-KOHKENSU(1)
-                      
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
-      *
-      **                      IF  SYU-KOH-HKNNUM(IDX3)  =  "051"
-                               ADD SYU-KOH-FTN  TO  WRK-KOH51-FTN
-      **                      END-IF
-      *
       *               END-IF
+      **>             IF   RECE02-KOHNUM(1) = "010" OR  "021" OR "051"
+                      IF   RECE02-KOHNUM(1) = "010" OR  "021" 
+                            MOVE    "1"  TO   FLG-KOH
+                      END-IF
                  END-IF
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(2)
                       MOVE    3          TO        KH-IDX
@@ -2652,12 +2654,11 @@
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
-      *
-      **                      IF  SYU-KOH-HKNNUM(IDX3)  =  "051"
-                               ADD SYU-KOH-FTN  TO  WRK-KOH51-FTN
-      **                      END-IF
-      *
       *               END-IF
+      **>             IF   RECE02-KOHNUM(2) = "010" OR  "021" OR "051"
+                      IF   RECE02-KOHNUM(2) = "010" OR  "021" 
+                            MOVE    "1"  TO   FLG-KOH
+                      END-IF 
                  END-IF
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(3)
                       MOVE    4          TO        KH-IDX
@@ -2678,12 +2679,11 @@
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
-      *
-      **                      IF  SYU-KOH-HKNNUM(IDX3)  =  "051"
-                               ADD SYU-KOH-FTN  TO  WRK-KOH51-FTN
-      **                      END-IF
-      *
       *               END-IF
+      **>             IF   RECE02-KOHNUM(3) = "010" OR  "021" OR "051"
+                      IF   RECE02-KOHNUM(3) = "010" OR  "021" 
+                            MOVE    "1"  TO   FLG-KOH
+                      END-IF
                  END-IF
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(4)
                       MOVE    5          TO        KH-IDX
@@ -2704,12 +2704,11 @@
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE02-FTNMONEY(KH-IDX)
-      *
-      **                      IF  SYU-KOH-HKNNUM(IDX3)  =  "051"
-                               ADD SYU-KOH-FTN  TO  WRK-KOH51-FTN
-      **                      END-IF
-      *
       *               END-IF
+      **>             IF   RECE02-KOHNUM(4) = "010" OR  "021" OR "051"
+                      IF   RECE02-KOHNUM(4) = "010" OR  "021" 
+                            MOVE    "1"  TO   FLG-KOH
+                      END-IF
                  END-IF
            END-PERFORM
            .
@@ -2754,19 +2753,20 @@
       *****************************************************************
        SAIKEI-KEISAN-SEC               SECTION.
       *
-      **   DISPLAY  "FTNMONEY = " RECE02-FTNMONEY(1)
-      **   DISPLAY  "KOH      = " WRK-KOH51-FTN
            IF   RECE02-ZAITAKU  =  SPACE
                   MOVE     ZERO      TO     RECE02-ZAITAKU-SAIKEI
            ELSE
-              IF  WRK-KOH51-FTN    =   ZERO
+              IF  WRK-KOH-FTN    =   ZERO
                   MOVE     ZERO      TO     RECE02-ZAITAKU-SAIKEI
               ELSE 
+                  IF  FLG-KOH  =  "1"
+                      ADD   WRK-KOH-GAI   TO  WRK-KOH-FTN
+                                              RECE02-FTNMONEY(2)
+                  END-IF
                   COMPUTE   RECE02-ZAITAKU-SAIKEI  =  
-                       RECE02-FTNMONEY(1)  -  WRK-KOH51-FTN
+                       RECE02-FTNMONEY(1)  -  WRK-KOH-FTN
               END-IF
            END-IF
-           DISPLAY  "SAIKEI = " RECE02-ZAITAKU-SAIKEI
       *
            .
        SAIKEI-KEISAN-EXT.
