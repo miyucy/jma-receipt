@@ -21,7 +21,6 @@
       *    設定項目
       *      医療機関ＩＤ
       *      県番号
-      *      市町村番号
       *      患者ＩＤ
       *      保険組合せ
       *      診療年月日
@@ -49,6 +48,8 @@
                05  LNK-SKOHPLUS-FTNKBN              PIC  X(01).
       *入院−食事療養区分
                05  LNK-SKOHPLUS-NYUSKJRYYKBN        PIC  X(01).
+      *レセプト請求区分
+               05  LNK-SKOHPLUS-RECESKYKBN          PIC  X(01).
       *
       *復帰コード
            03  LNK-SKOHPLUS-RC                      PIC S9(9) BINARY.

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−小豆沢 03/10/07  引数にレセプト請求区分の追加
       *****************************************************************
       *
       *
@@ -242,6 +243,8 @@
                    MOVE   KOHPLUS-FTNKBN  TO LNK-SKOHPLUS-FTNKBN
                    MOVE   KOHPLUS-NYUSKJRYYKBN
                                           TO  LNK-SKOHPLUS-NYUSKJRYYKBN
+                   MOVE   KOHPLUS-RECESKYKBN
+                                          TO  LNK-SKOHPLUS-RECESKYKBN
                ELSE
                    INITIALIZE                         KOHPLUS-REC
                    MOVE    LNK-SKOHPLUS-HOSPID    TO  KOHPLUS-HOSPID
@@ -266,6 +269,8 @@
                            MOVE   KOHPLUS-FTNKBN TO LNK-SKOHPLUS-FTNKBN
                            MOVE   KOHPLUS-NYUSKJRYYKBN
                                           TO  LNK-SKOHPLUS-NYUSKJRYYKBN
+                           MOVE   KOHPLUS-RECESKYKBN
+                                          TO  LNK-SKOHPLUS-RECESKYKBN
                        ELSE
                            DISPLAY "KOHPLUS FETCH ERR "
                            MOVE    3              TO  LNK-SKOHPLUS-RC
