@@ -351,7 +351,7 @@
                        OR      RECE62-SRYKA(IDX)   =   SPACE
                    IF      PTBYO-SRYKA          =   RECE62-SRYKA (IDX)
                        MOVE    1                    TO  FLG-CHK
-                       MOVE    10                   TO  IDX
+                       MOVE    20                   TO  IDX
                    END-IF
                END-PERFORM
                IF      FLG-CHK              =   ZERO
