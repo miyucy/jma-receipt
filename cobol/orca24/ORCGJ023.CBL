@@ -199,6 +199,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  WRK-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-J02
            MOVE    SPA-WORK        TO  SPA-J01KYOUTU
@@ -234,12 +238,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
-      *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
-      *    INITIALIZE                  CNT-AREA
-      *    INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "JERR"
@@ -404,6 +402,7 @@
            END-IF
            PERFORM
                    UNTIL      (FLG-HKNCOMBI        =   1      )
+                         OR   (SPA-J023-HKNMAX     >=  10     )
       *
       *        対象の保険組合せのみ編集
                MOVE    ZERO                TO  FLG-HKNCOMBICHK
@@ -595,7 +594,8 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM
-                   UNTIL       FLG-RECECOM        =   1
+                   UNTIL      (FLG-RECECOM        =   1  )
+                           OR (IDX                >=  100)
                ADD     1                   TO  IDX
                MOVE    IDX                 TO  SPA-J023-RECE-MAX
                MOVE    IDX                 TO  SPA-J023-TRENNUM (IDX)
@@ -1659,7 +1659,10 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "J023 RECECOM UPD ERR:" MCP-RC "."
+                   DISPLAY "J023 RECECOM UPD ERR:" MCP-RC
+                           ",KEY:"   RECECOM-KEY    "."
+                   MOVE    "0020"              TO  SPA-ERRCD
+                   GO      TO      2121-TOUROKU-SYORI-EXT
                END-IF
            ELSE
       *        追加
@@ -1693,7 +1696,10 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "J023 RECECOM INS ERR:" MCP-RC "."
+                   DISPLAY "J023 RECECOM INS ERR:" MCP-RC
+                           ",KEY:"   RECECOM-KEY    "."
+                   MOVE    "0020"              TO  SPA-ERRCD
+                   GO      TO      2121-TOUROKU-SYORI-EXT
                END-IF
            END-IF
       *
@@ -1763,6 +1769,8 @@
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
+      *    出力桁数（全角の最大桁数の指定（省略可））
+           MOVE    400                 TO  KANACHK-MAX-CNT
            MOVE    SPA-J023-COMMENT    TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
@@ -1898,7 +1906,8 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "J023 EXAMPLE UPD ERR:" MCP-RC "."
+                   DISPLAY "J023 EXAMPLE UPD ERR:" MCP-RC
+                           ",KEY:"   EXAMPLE-KEY    "."
                END-IF
            ELSE
       *        追加
@@ -1922,7 +1931,8 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "J023 EXAMPLE INS ERR:" MCP-RC "."
+                   DISPLAY "J023 EXAMPLE INS ERR:" MCP-RC
+                           ",KEY:"   EXAMPLE-KEY    "."
                END-IF
            END-IF
       *
@@ -1988,7 +1998,8 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "J023 RECECOM DEL ERR:" MCP-RC "."
+               DISPLAY "J023 RECECOM DEL ERR:" MCP-RC 
+                           ",KEY:"   RECECOM-KEY    "."
            END-IF
       *
       *    再表示
@@ -2207,6 +2218,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0015"
                    MOVE    "アフターケア診療日選択番号がありません"
+                                       TO  SPA-ERRMSG
+               WHEN    "0020"
+                   MOVE    "更新エラーです。"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
