@@ -33,6 +33,7 @@
       *                                     全て編集する
       *  01.00.03    NACL-門脇    02.10.02  摘要出力項目変更の為の編集
       *  01.00.04    NACL-門脇    02.11.06  約束処方時の点数欄表示修正
+      *  01.00.05    NACL-門脇    02.11.21  自賠責（ポリネック等の対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -902,33 +903,45 @@
                                 MOVE   "95"   TO    RECE44-SRYKBN       
                                                     RECE45-SRYKBN       
                   ELSE
-                   IF      TNS-SRYKBN         =     "80"                
-                     IF   SRY-SRYCD(IDX2)   =       CONS-SHOHOSEN1 OR   
+                   IF ( ACCT-SRYKBN          =  "80"              ) AND 
+                      ( SRY-SRYCD(IDX2)(1:5) =  "09593"           )     
+                                MOVE   "40"   TO    RECE44-SRYKBN       
+                                                    RECE45-SRYKBN       
+                   ELSE                                                 
+                     IF      TNS-SRYKBN         =   "80"                
+                       IF   SRY-SRYCD(IDX2)   =     CONS-SHOHOSEN1 OR   
                                                     CONS-SHOHOSEN2 OR   
                                                     CONS-SHOHOSEN3 OR   
                                                     CONS-SHOHOSEN4 OR   
                                                     CONS-SHOHOKSN1 OR   
                                                     CONS-SHOHOKSN2      
-                            CONTINUE                                    
-                     ELSE                                               
-                            IF    TNS-GAITENTTLKBN   =    130           
-                                MOVE   "13"   TO    RECE44-SRYKBN       
+                              CONTINUE                                  
+                       ELSE                                             
+                              IF    TNS-GAITENTTLKBN   =  130           
+                                  MOVE   "13"   TO  RECE44-SRYKBN       
                                                     RECE45-SRYKBN       
-                            ELSE                                        
-                                MOVE   "40"   TO    RECE44-SRYKBN       
+                              ELSE                                      
+                                  MOVE   "40"   TO  RECE44-SRYKBN       
                                                     RECE45-SRYKBN       
-                            END-IF                                      
-                     END-IF                                             
+                              END-IF                                    
+                       END-IF                                           
+                     END-IF
                    END-IF                                               
                   END-IF                                                
                END-IF                                                   
                MOVE    TNS-TANICD         TO  RECE45-TANICD(IDX4)
                MOVE    TNS-TANIMOJISU     TO  RECE45-TANIMOJISU(IDX4)
                MOVE    TNS-TANINAME       TO  RECE45-TANINAME(IDX4)
-               IF      TNS-TENSIKIBETU    =     1   OR   3
-                  MOVE  TNS-TENSIKIBETU   TO  RECE45-TENSIKIBETU(IDX4)
-                  MOVE  TNS-TEN           TO  RECE45-TEN(IDX4)
-               END-IF
+               IF ( ACCT-SRYKBN          =  "80"              ) AND     
+                  ( SRY-SRYCD(IDX2)(1:5) =  "09593"           )         
+                    MOVE  1               TO  RECE45-TENSIKIBETU(IDX4)  
+                    MOVE  TNS-TEN         TO  RECE45-TEN(IDX4)          
+               ELSE                                                     
+                 IF      TNS-TENSIKIBETU    =     1   OR   3
+                    MOVE  TNS-TENSIKIBETU TO  RECE45-TENSIKIBETU(IDX4)
+                    MOVE  TNS-TEN         TO  RECE45-TEN(IDX4)
+                 END-IF
+               END-IF                                                   
                IF      RECE41-NYUGAIKBN   =     "1"
                    MOVE  TNS-NYUTENTTLKBN TO    RECE45-TENTTLKBN(IDX4)
                ELSE
@@ -948,23 +961,25 @@
                    MOVE    TNS-NAME            TO    RECE45-NAME(IDX4)
                END-IF
       *
-               IF   SRY-SRYCD(IDX2) = CONS-ROUSAI1  OR
-                                      CONS-ROUSAI2  OR
-                                      CONS-ROUSAI3  OR
-                                      CONS-ROUSAI4  OR
-                                      CONS-ROUSAI5  OR
-                                      CONS-ROUSAI6  OR
-                                      CONS-ROUSAI7  OR
-                                      CONS-ROUSAI8  OR
-                                      CONS-ROUSAI9  OR
-                                      CONS-ROUSAI10 OR
-                                      CONS-ROUSAI11 OR
-                                      CONS-ROUSAI12 OR
-                                      CONS-ROUSAI13 OR
-                                      CONS-ROUSAI14 OR
-                                      CONS-ROUSAI15 OR
-                                      CONS-ROUSAI16 OR
-                                      CONS-ROUSAI17   
+               IF (  SRY-SRYCD(IDX2) = CONS-ROUSAI1  OR
+                                       CONS-ROUSAI2  OR
+                                       CONS-ROUSAI3  OR
+                                       CONS-ROUSAI4  OR
+                                       CONS-ROUSAI5  OR
+                                       CONS-ROUSAI6  OR
+                                       CONS-ROUSAI7  OR
+                                       CONS-ROUSAI8  OR
+                                       CONS-ROUSAI9  OR
+                                       CONS-ROUSAI10 OR
+                                       CONS-ROUSAI11 OR
+                                       CONS-ROUSAI12 OR
+                                       CONS-ROUSAI13 OR
+                                       CONS-ROUSAI14 OR
+                                       CONS-ROUSAI15 OR
+                                       CONS-ROUSAI16 OR
+                                       CONS-ROUSAI17   )   
+               OR (( ACCT-SRYKBN          =  "80"     )   AND           
+                   ( SRY-SRYCD(IDX2)(1:5) =  "09593"  ))                
       *
       *           IF     TNS-TENSIKIBETU   =   1
                      ADD      1          TO  WRK-MEISAI-CNT
@@ -980,6 +995,7 @@
                                               CONS-ROUCOM2      )
                       OR  ( SRY-SRYCD(1)    = CONS-ROUSAI2  OR
                                               CONS-ROUSAI3      )
+                         ADD    1      TO    WRK-MEISAI-CNT             
                          MOVE  "2"     TO    RECE45-SIKFLG(IDX4)
                       ELSE
                          MOVE  "1"     TO    RECE45-SIKFLG(IDX4)
@@ -1074,15 +1090,23 @@
                                                       "09592" )
                                CONTINUE
                          ELSE
-                           IF    SRY-SRYKBN   =  "30"  OR  "31"  OR     
-                                                 "32"  OR  "33"  OR     
-                                                 "40"  OR  "50"  OR     
-                                                 "54"  OR  "60"  OR     
-                                                 "70"  OR  "80"         
+                           IF ( ACCT-SRYKBN          =  "80"    ) AND   
+                              ( SRY-SRYCD(IDX3)(1:5) =  "09593" )       
                                   MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN  
                                   COMPUTE   WK-YKZTEN =                 
                                                       ACCT-KIZAITEN  +  
                                                       ACCT-YKZTEN       
+                           ELSE                                         
+                             IF    SRY-SRYKBN   =  "30"  OR  "31"  OR     
+                                                   "32"  OR  "33"  OR     
+                                                   "40"  OR  "50"  OR     
+                                                   "54"  OR  "60"  OR     
+                                                   "70"  OR  "80"         
+                                  MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN  
+                                  COMPUTE   WK-YKZTEN =                 
+                                                      ACCT-KIZAITEN  +  
+                                                      ACCT-YKZTEN       
+                             END-IF
                            END-IF                                       
                          END-IF
                        END-IF                                           
@@ -2291,26 +2315,32 @@
                                                 "09592" )
                         CONTINUE
                    ELSE
-                    IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN2
-                      COMPUTE  WRK-TOKUTEI-SKAN2 =  WRK-TOKUTEI-SKAN2 +
-                                                    WK-ZAIKAISU 
-                    END-IF
-                    IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN1
-                     COMPUTE WRK-NYUYOUJI-SHOKAN = WRK-NYUYOUJI-SHOKAN +
-                                                   WK-ZAIKAISU 
-                    END-IF
-                    IF   SRY-SRYCD(IDX3)    =    CONS-SHOHOSEN1 OR
-                                                 CONS-SHOHOSEN2 OR
-                                                 CONS-SHOHOSEN3 OR
-                                                 CONS-SHOHOSEN4 OR
-                                                 CONS-SHOHOKSN1 OR
-                                                 CONS-SHOHOKSN2
+                    IF ( ACCT-SRYKBN          =  "80"    )  AND         
+                       ( SRY-SRYCD(IDX3)(1:5) =  "09593" )              
+                       COMPUTE    RECE41-KINGAKU2(6)  =                 
+                                  RECE41-KINGAKU2(6)  +                 
+                                 (TNS-TEN   *   ACCT-ZAIKAISU)          
+                    ELSE                                                
+                     IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN2
+                       COMPUTE  WRK-TOKUTEI-SKAN2 =  WRK-TOKUTEI-SKAN2
+                                                  +  WK-ZAIKAISU 
+                     END-IF
+                     IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN1
+                      COMPUTE WRK-NYUYOUJI-SHOKAN = WRK-NYUYOUJI-SHOKAN
+                                                  + WK-ZAIKAISU 
+                     END-IF
+                     IF   SRY-SRYCD(IDX3)    =    CONS-SHOHOSEN1 OR
+                                                  CONS-SHOHOSEN2 OR
+                                                  CONS-SHOHOSEN3 OR
+                                                  CONS-SHOHOSEN4 OR
+                                                  CONS-SHOHOKSN1 OR
+                                                  CONS-SHOHOKSN2
                           ADD    WK-ZAIKAISU  TO  RECE41-KAISU(33)
                           COMPUTE   RECE41-TENSU(33)  =
                                     RECE41-TENSU(33)  +
                                    (TNS-TEN   *   ACCT-ZAIKAISU)
                           COMPUTE   WK-SYUTEN  =  WK-SYUTEN  -  TNS-TEN
-                    ELSE
+                     ELSE
                           IF    TNS-GAITENTTLKBN   =    130
                             COMPUTE   RECE41-TENSU(6)  =
                                       RECE41-TENSU(6)  +
@@ -2323,10 +2353,11 @@
                                       RECE41-TENSU(25)  +
                                      (WK-SYUTEN   *   ACCT-ZAIKAISU)
                           END-IF
-                    END-IF
-                    COMPUTE   RECE41-TENSU-YAK(26)  =
-                              RECE41-TENSU-YAK(26)  +
-                             (WK-YKZTEN   *   WK-ZAIKAISU)
+                     END-IF
+                     COMPUTE   RECE41-TENSU-YAK(26)  =
+                               RECE41-TENSU-YAK(26)  +
+                              (WK-YKZTEN   *   WK-ZAIKAISU)
+                    END-IF                                              
                    END-IF
            END-EVALUATE
       *
