@@ -295,13 +295,15 @@
       *    収納マスターがなくなるまで繰り返す
            PERFORM UNTIL   FLG-SYUNOU      =   1
       *
-               IF    ( ORCHCM31-KIKANKBN   =   "1" )
-                AND  ( SYU-DENPJTIKBN  NOT =   "3" )
-                   PERFORM 2101-SRYKIKAN-HEN-SEC
-               END-IF
+               IF    ( SYU-DENPJTIKBN  NOT =   "3" )
       *
-               IF    ( ORCHCM31-KIKANKBN   =   "2" )
-                   PERFORM 2101-SIHKIKAN-HEN-SEC
+                   IF    ( ORCHCM31-KIKANKBN   =   "1" )
+                       PERFORM 2101-SRYKIKAN-HEN-SEC
+                   END-IF
+      *
+                   IF    ( ORCHCM31-KIKANKBN   =   "2" )
+                       PERFORM 2101-SIHKIKAN-HEN-SEC
+                   END-IF
                END-IF
       *
       *        収納マスターFETCH
