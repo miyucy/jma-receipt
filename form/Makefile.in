@@ -143,6 +143,7 @@ FORM_files = \
               HCRCP060.red \
               HCMG005.red \
               HCM16.red \
+              HCMZ001.red \
 
 all:   
 
