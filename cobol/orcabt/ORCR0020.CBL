@@ -58,6 +58,8 @@
       *                                     低所得フラグのセットを行う
       *  01.00.16   NACL-小豆沢   02.10.16  （平成１４年１０月改正対応）
       *                                     国保退職者の給付割合セット
+      *  01.00.17   NACL-藤原     02.11.06  主保険が自費のとき保険履歴を作成
+      *                                     しないようにする 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -252,6 +254,10 @@
       *    生活保護保険番号 
            03  WRK-CONS-SEIHO-HKNNUM
                                    PIC X(03)   VALUE   "012". 
+      *    
+      *    自費保険番号 
+           03  WRK-CONS-JIHI-HKNNUM
+                                   PIC X(03)   VALUE   "980". 
       *    
       *    固定端末ＩＤ
            03  WRK-CONS-TERMID     PIC X(32)   VALUE
@@ -2004,6 +2010,7 @@
        230-RECE09-HENSYU-SEC                   SECTION.
       *
            IF      RECE01-HKNID             NOT =   ZERO
+           AND     RECE01-HKNNUM            NOT =   WRK-CONS-JIHI-HKNNUM
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       10
                        OR      RECE01-TEKSTYMDX (IDX)  =   SPACE
