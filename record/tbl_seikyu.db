@@ -1260,3 +1260,147 @@ path	key32	{
 		;
 	};
 };
+
+path	key33	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key33_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    =  '060'                   
+                        OR   HKNNUM_S    =  '067'        ) 
+                  AND (      RECESYUBETU <>  '0000'      ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
+                  AND (      ZAITAKU     <>  '1'         )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
+                  AND (      HENREIYM    <>  '000000'       )
+                ORDER  BY  HKNJANUM_S   
+		;
+	};
+};
+
+path	key34	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key34_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    =  '060'                   
+                        OR   HKNNUM_S    =  '067'        ) 
+                  AND (      RECESYUBETU <>  '0000'      ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
+                  AND (      ZAITAKU     <>  '1'         )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
+                  AND (      HENREIYM    =   '000000'       )
+                ORDER  BY  HKNJANUM_S   
+		;
+	};
+};
+
+path	key35	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key35_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    =  '060'                   
+                        OR   HKNNUM_S    =  '067'        ) 
+                  AND (      RECESYUBETU <>  '0000'      ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
+                  AND (      ZAITAKU     =   '1'         )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
+                  AND (      HENREIYM    <>  '000000'       )
+                ORDER  BY  HKNJANUM_S   
+		;
+	};
+};
+
+path	key36	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key36_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    =  '060'                   
+                        OR   HKNNUM_S    =  '067'        ) 
+                  AND (      RECESYUBETU <>  '0000'      ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
+                  AND (      ZAITAKU     =   '1'         )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
+                  AND (      HENREIYM    =   '000000'       )
+                  ORDER  BY  HKNJANUM_S   
+		;
+	};
+};
+
+path	key37	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key37_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    =  '060'                   
+                        OR   HKNNUM_S    =  '067'        ) 
+                  AND (      RECESYUBETU <>  '0000'      ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )) )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
+                  AND (      HENREIYM    <>  '000000'       )
+                ORDER  BY  HKNJANUM_S   
+		;
+	};
+};
+
+path	key38	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key38_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    =  '060'                   
+                        OR   HKNNUM_S    =  '067'        ) 
+                  AND (      RECESYUBETU <>  '0000'      ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )) )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
+                  AND (      HENREIYM    =   '000000'       )
+                ORDER  BY  HKNJANUM_S   
+		;
+	};
+};
