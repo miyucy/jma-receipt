@@ -282,6 +282,7 @@
       *  01.01.103   NACL-門脇    03/09/24  SRYACCT-KEY24追加
       *                                     SRYACCT-KEY25追加
       *  01.01.104   NACL-太田    03/09/30  SYUNOU-KEY20追加
+      *  01.01.105   NACL-藤原    03/10/03  PTBYOMEI-KEY13追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1394,6 +1395,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTBYOMEI-KEY12"
                    MOVE    PATH-TBL-PTBYOMEI-KEY12 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY13"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY13 
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTBYOMEI-ALL"
                    MOVE    PATH-TBL-PTBYOMEI-ALL
