@@ -2715,6 +2715,8 @@
                EVALUATE    WRK-COM-OSINKBN (IDX-Z)
                    WHEN    1
                    WHEN    2
+      *            ∆√ Ã±˝ø«Œ¡
+                   WHEN    5
                    WHEN    6
                        ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-TENSU-O1
                    WHEN    OTHER
