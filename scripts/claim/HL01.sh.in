@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if test -z "$JMARECEIPT_ENV" ; then
     JMARECEIPT_ENV="@jma-receipt-env@"

@@ -1,4 +1,4 @@
-#!/usr/local/bin/ruby
+#!/usr/bin/env ruby
 
 # XMLfile j-code convert scirpt
 #     args 0:in_file
