@@ -47,6 +47,8 @@
                05  RECE042-KOHBUNRI        PIC  9(01).
       *¿ÇÎÅ¶èÊ¬
                05  RECE042-SRYKBN          PIC  X(02).
+      *ºÞÅÀ¿ô
+               05  RECE042-ZAITEN          PIC  9(08).
       *¿ÇÎÅ¥³¡¼¥É·×
                05  RECE042-SRYCDTOTAL      PIC  9(14).
       *¿ôÎÌ·×

@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03.03.12  補助区分の追加
+      *  01.00.02    NACL-門脇    03.03.13  剤点数をキーに追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -330,6 +331,7 @@
                    MOVE    RECE04-TEKSTYMD     TO  RECE042-TEKSTYMD
                    MOVE    RECE04-KOHBUNRI     TO  RECE042-KOHBUNRI
                    MOVE    RECE04-SRYKBN       TO  RECE042-SRYKBN
+                   MOVE    RECE04-ZAITEN       TO  RECE042-ZAITEN
                    MOVE    RECE04-SRYCDTOTAL   TO  RECE042-SRYCDTOTAL
                    MOVE    RECE04-SURYOUTOTAL  TO  RECE042-SURYOUTOTAL
                    MOVE    RECE04-MEISAISU     TO  RECE042-MEISAISU 
@@ -366,6 +368,7 @@
                    MOVE    RECE04-TEKSTYMD     TO  RECE042-TEKSTYMD
                    MOVE    RECE04-KOHBUNRI     TO  RECE042-KOHBUNRI
                    MOVE    RECE04-SRYKBN       TO  RECE042-SRYKBN
+                   MOVE    RECE04-ZAITEN       TO  RECE042-ZAITEN
                    MOVE    RECE04-SRYCDTOTAL   TO  RECE042-SRYCDTOTAL
                    MOVE    RECE04-SURYOUTOTAL  TO  RECE042-SURYOUTOTAL
                    MOVE    RECE04-MEISAISU     TO  RECE042-MEISAISU 

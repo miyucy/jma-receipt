@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    03.03.13  剤点数をキーに追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -317,6 +318,7 @@
                    MOVE    RECE44-HKNID        TO  RECE442-HKNID
                    MOVE    RECE44-TEKSTYMD     TO  RECE442-TEKSTYMD
                    MOVE    RECE44-SRYKBN       TO  RECE442-SRYKBN
+                   MOVE    RECE44-ZAITEN       TO  RECE442-ZAITEN
                    MOVE    RECE44-SRYCDTOTAL   TO  RECE442-SRYCDTOTAL
                    MOVE    RECE44-SURYOUTOTAL  TO  RECE442-SURYOUTOTAL
                    MOVE    RECE44-MEISAISU     TO  RECE442-MEISAISU 
@@ -349,6 +351,7 @@
                    MOVE    RECE44-HKNID        TO  RECE442-HKNID
                    MOVE    RECE44-TEKSTYMD     TO  RECE442-TEKSTYMD
                    MOVE    RECE44-SRYKBN       TO  RECE442-SRYKBN
+                   MOVE    RECE44-ZAITEN       TO  RECE442-ZAITEN
                    MOVE    RECE44-SRYCDTOTAL   TO  RECE442-SRYCDTOTAL
                    MOVE    RECE44-SURYOUTOTAL  TO  RECE442-SURYOUTOTAL
                    MOVE    RECE44-MEISAISU     TO  RECE442-MEISAISU 
