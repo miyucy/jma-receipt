@@ -376,11 +376,7 @@
       *        ∏©»÷πÊ
                MOVE    SYS-1001-PREFNUM    TO  SPA-PREFNUM
       *
-
-      *The number of beds is set to 0 with the clinic version start.
-      *         MOVE    ZERO                TO  SPA-BEDSU
-      *         MOVE    ZERO                TO  SPA-BEDSUIPN
-      *The number of beds is set to 0 with the clinic version end.
+@CLINIC_BED_SET_TO_ZERO@
            ELSE
                MOVE    "1002"              TO  SPA-ERRCD
                GO  TO  310-SPASET-EXT
