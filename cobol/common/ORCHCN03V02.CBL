@@ -697,9 +697,9 @@
            COMPUTE WRK-JIHI-TOTAL      =   SYU-JIHI-TOTAL
                                        +   SYU-JIHI-TOTAL-TAX
            MOVE    WRK-JIHI-TOTAL      TO  WRK-KINGAKU-Z
-           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
-           PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU24       TO  HCN03-JIHI(6)
+      **     MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
+      **     PERFORM 800-HENKAN-SEC
+      **     MOVE    WRK-ZHENSYU24       TO  HCN03-JIHI(6)
       *    ¼«Èñ¾ÃÈñÀÇ
            MOVE    SYU-JIHI-TAX        TO  WRK-KINGAKU-Z
            MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
@@ -711,7 +711,7 @@
            MOVE    WRK-GOKTEN          TO  WRK-KINGAKU-Z
            MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU24       TO  HCN03-JIHI(8)
+           MOVE    WRK-ZHENSYU24       TO  HCN03-JIHI(6)
       *    ¿©»öÉéÃ´³Û
            COMPUTE WRK-SKYMONEY-SKJ
                =   SYU-SKYMONEY-SKJ-KEI

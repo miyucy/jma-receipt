@@ -17,7 +17,7 @@
             02  HCN03V02-HOKENGAI   PIC X(18).
             02  HCN03V02-HOKENZEI   PIC X(18).
             02  HCN03V02-JIHI
-                    PIC X(18)   OCCURS  8 TIMES.
+                    PIC X(18)   OCCURS  7 TIMES.
             02  HCN03V02-JIHIMSG
                     PIC X(20)   OCCURS  5 TIMES.
             02  HCN03V02-SYOKUJI    PIC X(18).
@@ -27,6 +27,7 @@
             02  HCN03V02-RMZEI  PIC X(18).
             02  HCN03V02-CHOSEI PIC X(18).
             02  HCN03V02-KONSEIKYU  PIC X(18).
+            02  HCN03V02-KONZEI PIC X(18).
             02  HCN03V02-KONNYUKIN  PIC X(18).
             02  HCN03V02-IRYOADRS   PIC X(60).
             02  HCN03V02-IRYOMEI    PIC X(40).
