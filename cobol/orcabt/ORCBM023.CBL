@@ -350,6 +350,8 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+           MOVE    ZERO                TO  FLG-MF01-END 
+      *     
            PERFORM VARYING IDX1    FROM   1   BY  1
                    UNTIL   IDX1    >   2
                IF      SUM-GOK-KENSU (IDX1 4)     >   ZERO 
@@ -397,10 +399,10 @@
       *
            EVALUATE    IDX1
                WHEN    1
+                   MOVE    "その他のレセ"      TO  HCM2C-TITLE  
+               WHEN    2
                    MOVE    "在総診または在医総を算定したレセ"
                                                TO  HCM2C-TITLE     
-               WHEN    2
-                   MOVE    "その他のレセ"      TO  HCM2C-TITLE  
            END-EVALUATE           
       *
            .
@@ -417,10 +419,10 @@
            MOVE    SYS-1001-HOSPCDN    TO  HCM2D-HOSPCD 
       *
            EVALUATE    IDX1
-               WHEN    1
+               WHEN    2
                    MOVE    "在総診または在医総を算定したレセ"
                                                TO  HCM2D-TITLE     
-               WHEN    2
+               WHEN    1
                    MOVE    "その他のレセ"      TO  HCM2D-TITLE  
            END-EVALUATE           
       *
@@ -555,9 +557,6 @@
                    MOVE    SUM-ROU-KENSU    (IDX1 IDX IDY) 
                                            TO  WRK-KENSUZ
                    MOVE    WRK-KENSUZ      TO  HCM2D-ROU-KENSU (IDX IDY) 
-                   MOVE    SUM-ROU-FTNMONEY (IDX1 IDX IDY)
-                                           TO  WRK-FTNMONEYZ
-                   MOVE    WRK-FTNMONEYZ   TO  HCM2D-ROU-ITBFTN(IDX IDY) 
                    IF      IDY                 <   3
                        MOVE    SUM-ROU-NISSU    (IDX1 IDX IDY)
                                            TO  WRK-NISSUZ 
@@ -585,7 +584,8 @@
            MOVE    1                   TO  FLG-PRTKBN
       *
       *    公費負担分編集処理
-           INITIALIZE                      WRK-IDX-AREA
+           MOVE    ZERO                TO  FLG-MF01-END
+           MOVE    1                   TO  IDX2
       * 
            PERFORM 3201-KOH-HENSYU-SEC
                                    UNTIL   FLG-MF01-END   =   1
@@ -598,19 +598,19 @@
       *****************************************************************
       *    
        3201-KOH-HENSYU-SEC         SECTION.
-      *     
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       3
-               IF      WRK-IDX (IDX)       =   999
-                   CONTINUE
+      *
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       6         
+                   OR      FLG-MF01-END    =   1  
+               IF      SUM-KOH-KOHNUM (IDX1 1 IDX2)    =   SPACE
+               AND     SUM-KOH-KOHNUM (IDX1 2 IDX2)    =   SPACE
+               AND     SUM-KOH-KOHNUM (IDX1 3 IDX2)    =   SPACE
+                   MOVE    1                   TO  FLG-MF01-END
                ELSE    
-                   PERFORM VARYING IDY     FROM    1   BY  1
-                                   UNTIL   IDY     >   6         
-                       ADD     1                   TO  WRK-IDX (IDX)    
-                       MOVE    WRK-IDX (IDX)       TO  IDX2    
+                   PERFORM VARYING IDX     FROM    1   BY  1
+                           UNTIL   IDX     >       3
                        IF      SUM-KOH-KOHNUM (IDX1 IDX IDX2)  =   SPACE
-                           MOVE    6               TO  IDY
-                           MOVE    999             TO  WRK-IDX (IDX)
+                           CONTINUE
                        ELSE    
                            PERFORM 3202-HKNNUM-HENSYU-SEC     
                            MOVE    SUM-KOH-KENSU (IDX1 IDX IDX2)
@@ -632,13 +632,14 @@
                            MOVE    WRK-FTNMONEYZ
                                            TO  HCM2D-KOH-ITBFTN(IDX IDY)
                        END-IF
-                   END-PERFORM   
+                   END-PERFORM
+                   ADD     1                   TO  IDX2   
                END-IF        
            END-PERFORM
       *
-           IF      WRK-IDX (1)            =   999
-           AND     WRK-IDX (2)            =   999
-           AND     WRK-IDX (3)            =   999
+           IF      SUM-KOH-KOHNUM (IDX1 1 IDX2)    =   SPACE
+           AND     SUM-KOH-KOHNUM (IDX1 2 IDX2)    =   SPACE
+           AND     SUM-KOH-KOHNUM (IDX1 3 IDX2)    =   SPACE
                MOVE    1                      TO  FLG-MF01-END
            ELSE
       *        帳票印刷処理（２頁以降）
