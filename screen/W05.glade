@@ -5,12 +5,9 @@
   <name>W05</name>
   <program_name>W05</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
@@ -28,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Sat, 03 Feb 2001 05:40:10 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -75,12 +72,11 @@
       <y>8</y>
       <width>120</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>9</text_max_length>
       <text></text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -91,12 +87,11 @@
       <y>8</y>
       <width>120</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>9</text_max_length>
       <text></text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -337,7 +332,7 @@
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
       <text></text>
-      <use_xim>True</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
 
@@ -365,7 +360,7 @@
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
       <text></text>
-      <use_xim>True</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
 
@@ -376,7 +371,6 @@
       <y>120</y>
       <width>50</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -393,7 +387,7 @@
       <text_visible>True</text_visible>
       <text_max_length>2</text_max_length>
       <text></text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -469,7 +463,7 @@
       <text_visible>True</text_visible>
       <text_max_length>6</text_max_length>
       <text></text>
-      <use_xim>True</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
 
@@ -497,7 +491,7 @@
       <text_visible>True</text_visible>
       <text_max_length>2</text_max_length>
       <text></text>
-      <use_xim>True</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
 
@@ -573,7 +567,7 @@
       <text_visible>True</text_visible>
       <text_max_length>2</text_max_length>
       <text></text>
-      <use_xim>False</use_xim>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
