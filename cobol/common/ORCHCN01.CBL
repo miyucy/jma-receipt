@@ -1,0 +1,1364 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCHCN01.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 入院登録
+      *  コンポーネント名  : 入院カルテ（診療録）印刷
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/03/13    NACL−多々納  新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+      *
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION               SECTION.
+       INPUT-OUTPUT                SECTION.
+       FILE-CONTROL.
+      *
+      *    印刷用データ
+           SELECT  PRT-FILE       ASSIGN  HC01PARA
+                                   FILE    STATUS  IS  STS-PARA.
+      *
+       DATA                    DIVISION.
+       FILE                        SECTION.
+      *
+      *    印刷用データ
+       FD  PRT-FILE.
+       01  PRT-REC                 PIC X(10000).
+      *
+       WORKING-STORAGE             SECTION.
+      *
+      *     印刷用データ 名称領域 
+           COPY    "CPCOMMONPRT.INC".
+      *    カルテ
+           COPY    "HCN01.INC".
+      *    続紙
+           COPY    "HCN011.INC".
+      *
+      *    フラグ領域
+       01  STS-AREA.
+           03  STS-PARA            PIC X(02).
+      *
+      *    フラグ領域
+       01  FLG-AREA.
+           03  FLG-END             PIC 9(01).
+           03  FLG-PARA            PIC 9(01).
+           03  FLG-PTINF           PIC 9(01).
+           03  FLG-PTHKNINF        PIC 9(01).
+           03  FLG-PTKOHINF        PIC 9(01).
+           03  FLG-HKNNUM          PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-PTBYOMEI        PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-HKNJAINF        PIC 9(01).
+           03  FLG-PTRSIINF        PIC 9(01).
+      *
+           03  FLG-OK              PIC 9(01).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-MEI             PIC 9(06).
+      *
+      *    システム領域
+       01  SYS-AREA.
+           03  SYS-YMD.
+               05  SYS-YY          PIC 9(02).
+               05  SYS-MM          PIC 9(02).
+               05  SYS-DD          PIC 9(02).
+      *
+           03  SYS-TIME            PIC 9(08).
+      *
+      *    添字領域
+       01  IDX-AREA.
+           03  IDX                 PIC 9(04).
+           03  IDY                 PIC 9(04).
+      *
+      *    一時領域
+       01  WRK-AREA.
+           03  WRK-WSYSYMD.
+               05  WRK-WGO             PIC X(01).
+               05  WRK-WYY             PIC 9(02).
+               05  WRK-WMM             PIC 9(02).
+               05  WRK-WDD             PIC 9(02).
+           03  WRK-SYMD.
+               05  WRK-SYY             PIC 9(04).
+               05  WRK-SMM             PIC 9(02).
+               05  WRK-SDD             PIC 9(02).
+           03  WRK-SYSYMD.
+               05  WRK-SYSYY           PIC 9(04).
+               05  WRK-SYSMM           PIC 9(02).
+               05  WRK-SYSDD           PIC 9(02).
+      *
+           03  WRK-PAGE                PIC 9(03).
+           03  WRK-PRT-CNT             PIC 9(03).
+      *
+           03  WRK-SRYKA-MEI           PIC X(20).
+           03  WRK-DRCD-G.
+               05  WRK-DRCD-MEI        PIC X(50)  OCCURS  3.
+      *
+           03  WRK-ADRS                PIC X(200).
+           03  WRK-NENREI-X.
+               05  WRK-NENREI          PIC 9(03).
+      *
+      *    保険情報
+           03  WRK-HKN-AREA.
+               05  WRK-HKNJA           PIC X(08).
+               05  WRK-KIGONUM         PIC X(80).
+               05  WRK-NUM             PIC X(80).
+               05  WRK-HPTNUM          PIC X(08). 
+               05  WRK-FTNSNO          PIC X(20).
+               05  WRK-JKYSNO          PIC X(20).
+      *
+               05  WRK-HKNJA-G         PIC X(16).
+               05  WRK-HEN-KIGONUM     PIC X(80).
+      *
+           03  WRK-MOJI                PIC X(10).
+           03  WRK-MAE-INPUT           PIC X(200).
+           03  WRK-OUT-INPUT           PIC X(200).
+      *
+           03  WRK-Z9                  PIC Z9.
+           03  WRK-Z3                  PIC ZZ9.
+      *
+           03  WRK-TEKSTYMD        PIC X(22).
+           03  WRK-TEKEDYMD        PIC X(22).
+      *
+           03  WRK-STRYMD.
+               05  WRK-STRGO       PIC X(04).
+               05  WRK-STRYY       PIC X(04).
+               05  WRK-STR1        PIC X(02).
+               05  WRK-STRMM       PIC X(04).
+               05  WRK-STR2        PIC X(02).
+               05  WRK-STRDD       PIC X(04).
+               05  WRK-STR3        PIC X(02).
+           03  WRK-ENDYMD.
+               05  WRK-ENDGO       PIC X(04).
+               05  WRK-ENDYY       PIC X(04).
+               05  WRK-END1        PIC X(02).
+               05  WRK-ENDMM       PIC X(04).
+               05  WRK-END2        PIC X(02).
+               05  WRK-ENDDD       PIC X(04).
+               05  WRK-END3        PIC X(02).
+      *
+           03  WRK-STRYMDW.
+               05  WRK-STRGOW      PIC X(01).
+               05  WRK-STRYYW      PIC X(02).
+               05  WRK-STR1W       PIC X(01).
+               05  WRK-STRMMW      PIC X(02).
+               05  WRK-STR2W       PIC X(01).
+               05  WRK-STRDDW      PIC X(02).
+           03  WRK-ENDYMDW.
+               05  WRK-ENDGOW      PIC X(01).
+               05  WRK-ENDYYW      PIC X(02).
+               05  WRK-END1W       PIC X(01).
+               05  WRK-ENDMMW      PIC X(02).
+               05  WRK-END2W       PIC X(01).
+               05  WRK-ENDDDW      PIC X(02).
+      *
+           03  WRK-ERRMSG          PIC X(40).
+      *
+       01  WRK-HENSYU-AREA.
+           03  WRK-HENYMDG         PIC X(22).
+           03  WRK-HENYMD.
+               05  WRK-HGO         PIC X(01).
+               05  WRK-HYY         PIC X(02).
+               05  FILLER          PIC X(01)   VALUE  ".".
+               05  WRK-HMM         PIC X(02).
+               05  FILLER          PIC X(01)   VALUE  ".".
+               05  WRK-HDD         PIC X(02).
+      *
+           03  WRK-HENTIME.
+               05  WRK-THH         PIC 99.
+               05  FILLER          PIC X(01)   VALUE  ":".
+               05  WRK-TMM         PIC 99.
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    患者マスタ
+       01  PTINF-REC.
+           COPY    "CPPTINF.INC".
+      *
+      *    保険マスタ
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
+      *
+      *    公費マスタ
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
+      *
+      *    保険組合せ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *
+      *    保険マスタ
+       01  HKNNUM-REC.
+           COPY    "CPHKNNUM.INC".
+      *    患者病名マスタ−
+       01  PTBYOMEI-REC.
+           COPY    "CPPTBYOMEI.INC".
+      *    患者労災保険情報
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
+      *
+      *    保険者号マスタ
+       01  HKNJAINF-REC.
+           COPY    "CPHKNJAINF.INC".
+      *
+      *    出力先プリンタ名割り当て情報
+           COPY  "CPSK1031.INC".
+      *    ドクター
+           COPY  "CPSK1010.INC".
+      *    診療科
+           COPY  "CPSK1005.INC".
+      *
+      *    印刷パラメタ
+           COPY    "CPORCSMKPRT.INC".
+      *
+      *****************************************************************
+      *    サブプロ用　領域
+      *****************************************************************
+      *
+      *    日付サブルーチン領域
+      *
+           COPY  "CPORCSDAY.INC".
+      *
+           COPY  "CPORCSLNK.INC".
+      *
+      *    数字変換領域
+           COPY  "CPORCSNUM.INC".
+      *   患者番号変換サブ
+           COPY  "CPORCSPTID.INC".
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
+      *    ＤＢ検索
+           COPY    "MCPAREA".
+      *
+      *01  MCPDATA-REC                 PIC X(5000).
+           COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
+      *
+      *****************************************************************
+      *    連絡　領域
+      *****************************************************************
+        LINKAGE                     SECTION.
+      *
+           COPY    "COMMON-SPA".
+      *    入院カルテ出力パラメタ
+           COPY    "CPORCHCN01.INC".
+      *
+       PROCEDURE                   DIVISION    USING
+           SPA-AREA
+           ORCHCN01AREA
+           .
+      *
+      *****************************************************************
+      *    主　　処理
+      *****************************************************************
+       000-PROC-SEC                SECTION.
+      *
+      *    初期　処理
+           PERFORM 100-INIT-SEC
+      *
+           EVALUATE    ORCHCN01-SYORIKBN
+      *        頭書のみ
+               WHEN    "1"
+                   PERFORM 200-HEAD-PRT-SEC
+      *        すべて
+               WHEN    "2"
+                   PERFORM 300-ALL-PRT-SEC
+           END-EVALUATE
+      *
+           .
+           EXIT    PROGRAM
+           .
+      *****************************************************************
+      *    初期　処理
+      *****************************************************************
+       100-INIT-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
+           INITIALIZE                  CNT-AREA
+      *
+           ACCEPT  SYS-TIME            FROM    TIME
+           MOVE    ZERO                TO  WRK-PAGE
+      *
+      *    パラメタ編集処理
+           PERFORM 110-PARA-HENSYU-SEC
+      *
+           .
+       100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    出力先プリンタ名編集処理
+      *****************************************************************
+       110-PARA-HENSYU-SEC                   SECTION.
+      *
+      *    出力先プリンタ名割り当て情報編集
+           MOVE    SPACE               TO  SYS-1031-REC
+           INITIALIZE                  SYS-1031-REC
+           MOVE    "1031"              TO  SYS-1031-KANRICD
+           MOVE    "*"                 TO  SYS-1031-KBNCD
+           MOVE    SYS-1031-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1031-REC
+           ELSE
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       110-PARA-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    頭書のみ印刷処理
+      *****************************************************************
+       200-HEAD-PRT-SEC                SECTION.
+      *
+      *　   共通印刷項目編集
+            PERFORM 2001-HEAD-HENSYU-SEC
+      *     カルテ印刷
+            IF      ORCHCN01-PRTKBN    =   "1"  OR  "3"
+                 PERFORM 2002-HCN01-HENSYU-SEC
+                 PERFORM 2003-HCN01-PRINT-SEC
+            END-IF
+      *
+      *     続紙印刷
+            IF      ORCHCN01-PRTKBN    =   "2"  OR  "3"
+                 PERFORM 2004-HCN011-HENSYU-SEC
+                 PERFORM 2005-HCN011-PRINT-SEC
+            END-IF
+      *
+           .
+       200-HEAD-PRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    共通印刷項目編集処理
+      *****************************************************************
+       2001-HEAD-HENSYU-SEC                SECTION.
+      *
+      *    患者マスター検索
+           INITIALIZE                      PTINF-REC
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-PTID            TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
+           IF      FLG-PTINF           =   1
+               DISPLAY "*** PTINF  INVALIE:"   PTINF-KEY
+               GO      TO      2001-HEAD-HENSYU-EXT
+           END-IF
+      *
+      *    診療科
+           IF      SPA-SRYKA           =   SPACE
+               MOVE    SPACE               TO  WRK-SRYKA-MEI
+           ELSE
+               MOVE    SPACE               TO  SYS-1005-REC
+               INITIALIZE                  SYS-1005-REC
+               MOVE    "1005"              TO  SYS-1005-KANRICD
+               MOVE    SPA-SRYKA           TO  SYS-1005-KBNCD
+               MOVE    SYS-1005-REC        TO  MCPDATA-REC
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1005-REC
+                   MOVE    SYS-1005-SRYKANAME2
+                                               TO  WRK-SRYKA-MEI
+               ELSE
+                   MOVE    SPACE               TO  WRK-SRYKA-MEI
+               END-IF
+           END-IF
+      *
+      *    ドクター
+           INITIALIZE                  WRK-DRCD-G
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   3
+               IF      ORCHCN01-DR (IDX)   NOT =   SPACE
+                   MOVE    SPACE               TO  SYS-1010-REC
+                   INITIALIZE                  SYS-1010-REC
+                   MOVE    "1010"              TO  SYS-1010-KANRICD
+                   MOVE    ORCHCN01-DR (IDX)   TO  SYS-1010-KBNCD
+                   MOVE    SYS-1010-REC        TO  MCPDATA-REC
+                   PERFORM 900-SYSKANRI-READ-SEC
+                   IF      FLG-SYSKANRI        =   ZERO
+                       MOVE    MCPDATA-REC         TO  SYS-1010-REC
+                       MOVE    SYS-1010-NAME       TO  WRK-DRCD-MEI
+                                                                (IDX)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       2001-HEAD-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    カルテ編集処理
+      *****************************************************************
+       2002-HCN01-HENSYU-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  HCN01
+           INITIALIZE                      HCN01
+      *
+           MOVE    SPA-PTNUM           TO  HCN01-PTNUM
+      *    患者マスターより
+      *    患者氏名
+           MOVE    PTINF-KANANAME      TO  HCN01-KANANAME
+           IF      PTINF-NAME(31:)     =   SPACE
+               MOVE    PTINF-NAME          TO  HCN01-NAME
+           ELSE
+               MOVE    PTINF-NAME          TO  HCN01-NAME2
+           END-IF
+      *    性別
+           EVALUATE    PTINF-SEX
+               WHEN    "1"
+                   MOVE    "○"                TO  HCN01-SEX (1)
+               WHEN    "2"
+                   MOVE    "○"                TO  HCN01-SEX (2)
+           END-EVALUATE
+      *    生年月日
+           MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG(1:4)    TO  HCN01-BIRTHGG
+           MOVE    WRK-HYY             TO  HCN01-BIRTHYY
+           MOVE    WRK-HMM             TO  HCN01-BIRTHMM
+           MOVE    WRK-HDD             TO  HCN01-BIRTHDD
+      *　　年齢
+           MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
+           COMPUTE WRK-NENREI          =   WRK-SYSYY
+                                       -   WRK-SYY
+           IF      SPA-SYSYMD(5:4)     <   WRK-SYMD(5:4)
+               COMPUTE WRK-NENREI      =   WRK-NENREI   -   1
+           END-IF
+           MOVE    WRK-NENREI          TO  WRK-Z3
+           MOVE    WRK-Z3              TO  HCN01-NENREI
+      *
+      *    診療科
+           MOVE    WRK-SRYKA-MEI       TO  HCN01-SINRYOKA
+      *    ドクター
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   3
+               MOVE    WRK-DRCD-MEI (IDX)  TO  HCN01-DR  (IDX)
+           END-PERFORM
+      *
+      *    自宅−住所
+           MOVE    SPACE               TO  WRK-ADRS
+           STRING  PTINF-HOME-ADRS     DELIMITED   BY  SPACE
+                   PTINF-HOME-BANTI    DELIMITED   BY  SPACE
+                   INTO                    WRK-ADRS
+           END-STRING
+           MOVE    WRK-ADRS            TO  HCN01-ADRS
+      *    自宅−昼電話番号
+           MOVE    PTINF-HOME-TEL1     TO  HCN01-TEL
+      *
+      *    連絡先
+           MOVE    PTINF-RENRAKU-NAME  TO  HCN01-RENNAME
+           MOVE    SPACE               TO  WRK-ADRS
+           STRING  PTINF-RENRAKU-ADRS  DELIMITED   BY  SPACE
+                   PTINF-RENRAKU-BANTI DELIMITED   BY  SPACE
+                   INTO                    WRK-ADRS
+           END-STRING
+           MOVE    WRK-ADRS            TO  HCN01-RENADRS
+           MOVE    PTINF-RENRAKU-TEL1  TO  HCN01-HIRUTEL
+           MOVE    PTINF-RENRAKU-TEL2  TO  HCN01-YORUTEL
+      *
+      *    勤務先
+           MOVE    PTINF-OFFICE-NAME   TO  HCN01-KINNAME
+           MOVE    SPACE               TO  WRK-ADRS
+           STRING  PTINF-OFFICE-ADRS   DELIMITED   BY  SPACE
+                   PTINF-OFFICE-BANTI  DELIMITED   BY  SPACE
+                   INTO                    WRK-ADRS
+           END-STRING
+           MOVE    WRK-ADRS            TO  HCN01-KINADRS
+           MOVE    PTINF-OFFICE-TEL    TO  HCN01-KINTEL
+      *
+      *    入院日
+           IF      ORCHCN01-NYUINYMD   NOT =   SPACE
+               MOVE    ORCHCN01-NYUINYMD       TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG(1:4)    TO  HCN01-NYUINGG
+               MOVE    WRK-HYY             TO  HCN01-NYUINYY
+               MOVE    WRK-HMM             TO  HCN01-NYUINMM
+               MOVE    WRK-HDD             TO  HCN01-NYUINDD
+           END-IF
+      *
+           .
+       2002-HCN01-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カルテ印刷処理
+      *****************************************************************
+       2003-HCN01-PRINT-SEC                SECTION.
+      *
+      *    ファイルＯＰＥＮ
+           MOVE    "HC01"              TO  HC01PARA-FORM-ID
+           MOVE    SPA-TERMID          TO  HC01PARA-TERMID
+           MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
+           ADD     1                   TO  WRK-PAGE
+           MOVE    WRK-PAGE            TO  HC01PARA-CNT
+           OPEN    OUTPUT              PRT-FILE
+      *    印刷用データ出力
+           MOVE    HCN01               TO  PRT-REC
+           WRITE   PRT-REC
+      *
+           CLOSE                       PRT-FILE
+      *
+            INITIALIZE                 ORCSMKPRTAREA
+            MOVE   "HC01.sh"           TO  MKPRT-ID
+            MOVE   "HCN01.red"         TO  MKPRT-DIA
+            MOVE   SPACE               TO  MKPRT-DEF
+            MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
+            CALL   "ORCSMKPRT"         USING
+                                       ORCSMKPRTAREA
+      *
+           .
+       2003-HCN01-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    続紙編集処理
+      *****************************************************************
+       2004-HCN011-HENSYU-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  HCN011
+           INITIALIZE                      HCN011
+      *
+           MOVE    SPA-PTNUM           TO  HCN011-PTNUM
+      *    患者マスターより
+      *    患者氏名
+           IF      PTINF-NAME(31:)     =   SPACE
+               MOVE    PTINF-NAME          TO  HCN011-NAME
+           ELSE
+               MOVE    PTINF-NAME          TO  HCN011-NAME2
+           END-IF
+      *
+           .
+       2004-HCN011-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    続紙印刷処理
+      *****************************************************************
+       2005-HCN011-PRINT-SEC                SECTION.
+      *
+      *    ファイルＯＰＥＮ
+           MOVE    "HC01"              TO  HC01PARA-FORM-ID
+           MOVE    SPA-TERMID          TO  HC01PARA-TERMID
+           MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
+           ADD     1                   TO  WRK-PAGE
+           MOVE    WRK-PAGE            TO  HC01PARA-CNT
+           OPEN    OUTPUT              PRT-FILE
+      *    印刷用データ出力
+           MOVE    HCN011              TO  PRT-REC
+           WRITE   PRT-REC
+      *
+           CLOSE                       PRT-FILE
+      *
+            INITIALIZE                 ORCSMKPRTAREA
+            MOVE   "HC01.sh"           TO  MKPRT-ID
+            MOVE   "HCN011.red"        TO  MKPRT-DIA
+            MOVE   SPACE               TO  MKPRT-DEF
+            MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
+            CALL   "ORCSMKPRT"         USING
+                                       ORCSMKPRTAREA
+      *
+           .
+       2005-HCN011-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    すべての印刷処理
+      *****************************************************************
+       300-ALL-PRT-SEC                SECTION.
+      *
+      *　  共通印刷項目編集
+           PERFORM 2001-HEAD-HENSYU-SEC
+           PERFORM 2002-HCN01-HENSYU-SEC
+      *    保険項目編集
+           PERFORM 3001-HCN01-ALLHENSYU-SEC
+      *
+           IF      SPA-SRYKA      NOT =   SPACE
+      *        病名を印刷する
+               PERFORM 3002-BYOMEI-PRT-SEC
+           ELSE
+      *        カルテ印刷
+               PERFORM 2003-HCN01-PRINT-SEC
+           END-IF
+      *
+           .
+       300-ALL-PRT-EXT.
+           EXIT.
+      *****************************************************************
+      *    カルテ保険情報編集処理
+      *****************************************************************
+       3001-HCN01-ALLHENSYU-SEC        SECTION.
+      *
+      *    保険情報検索
+           PERFORM 30011-HKNCOMBI-HEN-SEC
+      *
+      *    続柄
+           MOVE    PTINF-ZOKUGARA      TO  HCN01-ZOKUGARA
+      *    保険者番号
+           MOVE    WRK-HKNJA-G         TO  HCN01-HPTNUM
+      *    記号番号
+           MOVE    WRK-HEN-KIGONUM     TO  HCN01-KIGONUM
+      *    被保険者名
+           MOVE    PTHKN-HIHKNJANAME   TO  HCN01-HIHKNNAME
+      *    資格取得年月日
+           IF      PTHKN-SKKGETYMD     =   SPACE
+               CONTINUE
+           ELSE
+               MOVE    PTHKN-SKKGETYMD     TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG(1:4)    TO  HCN01-SYUTOKGG
+               MOVE    WRK-HYY             TO  HCN01-SYUTOKYY
+               MOVE    WRK-HMM             TO  HCN01-SYUTOKMM
+               MOVE    WRK-HDD             TO  HCN01-SYUTOKDD
+           END-IF
+      *    有効期限（適用終了年月日）
+           IF      PTHKN-TEKEDYMD      =   SPACE  OR  ALL "9"
+               CONTINUE
+           ELSE
+               MOVE    PTHKN-TEKEDYMD      TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG(1:4)    TO  HCN01-YUKOGG
+               MOVE    WRK-HYY             TO  HCN01-YUKOYY
+               MOVE    WRK-HMM             TO  HCN01-YUKOMM
+               MOVE    WRK-HDD             TO  HCN01-YUKODD
+           END-IF
+      *
+      *    事業所名
+           MOVE    HKNJA-HKNJANAME     TO  HCN01-JIGYONAME
+      *    事業所住所
+           STRING  HKNJA-ADRS          DELIMITED  BY  SPACE
+                   HKNJA-BANTI         DELIMITED  BY  SPACE
+                   INTO                    HCN01-JIGYOADRS
+           END-STRING
+      *
+      *    公費情報
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   2
+               IF      COMB-KOHID (IDY)    NOT =   SPACE
+                   INITIALIZE                  PTKOHINF-REC
+                   MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
+                   MOVE    SPA-PTID            TO  PTKOH-PTID
+                   MOVE    COMB-KOHID (IDY)    TO  PTKOH-KOHID
+                   PERFORM 940-PTKOHINF-READ-SEC
+                   IF      FLG-PTKOHINF          =   ZERO
+                       PERFORM 30012-PTKOHINF-HEN-SEC
+                       IF      WRK-FTNSNO(17:)     =   SPACE
+                           MOVE    WRK-FTNSNO      TO  HCN01-FTNSNO
+                                                                (IDY)
+                       ELSE
+                           MOVE    WRK-FTNSNO      TO  HCN01-FTNSNON
+                                                                (IDY)
+                       END-IF
+                       IF      WRK-JKYSNO(15:)     =   SPACE
+                           MOVE    WRK-JKYSNO      TO  HCN01-JKYSNO
+                                                                (IDY)
+                       ELSE
+                           MOVE    WRK-JKYSNO      TO  HCN01-JKYSNON
+                                                                (IDY)
+                       END-IF
+                   END-IF
+      *            終了年月日
+                   IF      PTKOH-TEKEDYMD      =   SPACE  OR  ALL "9"
+                       CONTINUE
+                   ELSE
+                       MOVE    PTKOH-TEKEDYMD      TO  WRK-SYMD
+                       PERFORM 31012-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG(1:4)    TO  HCN01-KOHENDGG
+                                                                (IDY)
+                       MOVE    WRK-HYY             TO  HCN01-KOHENDYY
+                                                                (IDY)
+                       MOVE    WRK-HMM             TO  HCN01-KOHENDMM
+                                                                (IDY)
+                       MOVE    WRK-HDD             TO  HCN01-KOHENDDD
+                                                                (IDY)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+      *    労災の時、保険者番号・記号の変更
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
+      *        患者保険情報検索
+               INITIALIZE                      PTRSIINF-REC
+               MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+               MOVE    SPA-PTID            TO  PTRSI-PTID
+               MOVE    COMB-HKNID          TO  PTRSI-HKNID
+               MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "PTRSIINF-KEY"     TO  ORC-DBPATH
+                   PERFORM 993-PTRSIINF-NEXT-SEC
+               ELSE
+                   INITIALIZE                      PTRSIINF-REC
+                   MOVE    1                   TO  FLG-PTRSIINF
+               END-IF
+               IF      FLG-PTRSIINF        =   ZERO
+      *            保険者番号へ記号（労災区分名）
+                   MOVE    WRK-HEN-KIGONUM     TO  HCN01-HPTNUM
+      *            記号へ患者交付番号
+                   MOVE    PTRSI-KOFUNUM       TO  WRK-MAE-INPUT
+                   PERFORM 2009-HENKAN-SEC
+                   MOVE    WRK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  HCN01-KIGONUM
+      *
+               END-IF
+           END-IF
+           .
+       3001-HCN01-ALLHENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険情報編集処理
+      *****************************************************************
+       30011-HKNCOMBI-HEN-SEC          SECTION.
+      *
+           INITIALIZE                      WRK-HKN-AREA
+      *
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-PTID            TO  COMB-PTID
+           MOVE    SPA-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
+           PERFORM 910-HKNCOMBI-READ-SEC
+           IF      FLG-HKNCOMBI        =   1
+               INITIALIZE                  HKNCOMBI-REC
+           END-IF
+      *
+      *    患者保険情報検索
+      *    主保険−ＩＤ
+           INITIALIZE                      PTHKNINF-REC
+           MOVE    SPA-HOSPID          TO  PTHKN-HOSPID
+           MOVE    SPA-PTID            TO  PTHKN-PTID
+           MOVE    COMB-HKNID          TO  PTHKN-HKNID
+           PERFORM 920-PTHKNINF-READ-SEC
+           IF      FLG-PTHKNINF      NOT =   ZERO
+               INITIALIZE              PTHKNINF-REC
+           END-IF
+      *
+      *    保険者番号変換処理（右づめ）
+           MOVE    SPACE               TO  WRK-HKNJA
+           MOVE    9                   TO  IDY
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    8   BY  -1
+                   UNTIL       IDX     <   1
+               IF      PTHKN-HKNJANUM(IDX:1)   NOT =   SPACE
+                   MOVE    1               TO  FLG-OK
+               END-IF
+               IF      FLG-OK              =   1
+                   COMPUTE IDY             =   IDY     -   1
+                   MOVE    PTHKN-HKNJANUM(IDX:1)   TO  WRK-HKNJA (IDY:1)
+               END-IF
+           END-PERFORM
+           MOVE    WRK-HKNJA           TO  WRK-MAE-INPUT
+           PERFORM 2009-HENKAN-SEC
+           MOVE    WRK-OUT-INPUT(1:16) TO  WRK-HKNJA-G
+      *
+      *    記号・番号
+      *    全角変換
+           IF      PTHKN-KIGO          =   SPACE
+               MOVE    SPACE               TO  WRK-KIGONUM
+           ELSE
+               MOVE    PTHKN-KIGO          TO  WRK-MAE-INPUT
+               PERFORM 2009-HENKAN-SEC
+               MOVE    WRK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-KIGONUM
+           END-IF
+           IF      PTHKN-NUM           =   SPACE
+               MOVE    SPACE               TO  WRK-NUM
+           ELSE
+               MOVE    PTHKN-NUM           TO  WRK-MAE-INPUT
+               PERFORM 2009-HENKAN-SEC
+               MOVE    WRK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-NUM
+           END-IF
+           IF      (WRK-KIGONUM        =   SPACE )  AND
+                   (WRK-NUM            =   SPACE )
+               MOVE    SPACE               TO  WRK-HEN-KIGONUM
+           ELSE
+               STRING  WRK-KIGONUM         DELIMITED   BY  SPACE
+                       "・"                DELIMITED   BY  SIZE
+                       WRK-NUM             DELIMITED   BY  SPACE
+                   INTO                    WRK-HEN-KIGONUM
+               END-STRING
+           END-IF
+      *
+      *    保険番号マスター検索
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    COMB-HKNNUM         TO  HKN-HKNNUM
+           MOVE    COMB-TEKSTYMD       TO  HKN-TEKSTYMD
+           PERFORM 930-HKNNUM-READ-SEC
+           IF      FLG-HKNNUM      NOT =   ZERO
+               INITIALIZE              HKNNUM-REC
+           END-IF
+      *
+      *    保険者番号　検索チェック
+           INITIALIZE                  HKNJAINF-REC
+           MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+           MOVE    PTHKN-HKNJA-G       TO  HKNJA-HKNJANUM
+           MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+               PERFORM 900-HKNJAINF-READ-SEC
+           ELSE
+               INITIALIZE                  HKNJAINF-REC
+               MOVE    1               TO  FLG-HKNJAINF
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       30011-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者公費変換処理
+      *****************************************************************
+       30012-PTKOHINF-HEN-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-FTNSNO
+           MOVE    SPACE               TO  WRK-JKYSNO
+      *    負担者番号
+           IF      PTKOH-FTNJANUM      =   SPACE
+               MOVE    SPACE               TO  WRK-FTNSNO
+           ELSE
+               MOVE    PTKOH-FTNJANUM      TO  WRK-MAE-INPUT
+               PERFORM 2009-HENKAN-SEC
+               MOVE    WRK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-FTNSNO
+           END-IF
+      *    受給者番号１
+           IF      PTKOH-JKYSNUM       =   SPACE
+               MOVE    SPACE               TO  WRK-JKYSNO
+           ELSE
+               MOVE    PTKOH-JKYSNUM       TO  WRK-MAE-INPUT
+               PERFORM 2009-HENKAN-SEC
+               MOVE    WRK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-JKYSNO
+           END-IF
+      *
+           .
+       30012-PTKOHINF-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    病名印刷編集処理
+      *****************************************************************
+       3002-BYOMEI-PRT-SEC        SECTION.
+      *
+      *    患者病名マスタより編集
+           MOVE    ZERO                TO  IDX
+           MOVE    1                   TO  WRK-PRT-CNT
+      *
+           INITIALIZE                      PTBYOMEI-REC
+           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-PTID            TO  PTBYO-PTID
+           MOVE    SPA-SRYKA           TO  PTBYO-SRYKA
+      *
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTBYOMEI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTBYOMEI-KEY2"     TO  ORC-DBPATH
+               PERFORM 950-PTBYOMEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTBYOMEI
+           END-IF
+           PERFORM 
+                   UNTIL   FLG-PTBYOMEI    NOT =   ZERO
+               ADD     1               TO  IDX
+               IF      WRK-PRT-CNT     =   1
+                   IF      IDX             >   10
+      *                カルテ印刷
+                       PERFORM 2003-HCN01-PRINT-SEC
+      *                続紙初期編集
+                       PERFORM 2004-HCN011-HENSYU-SEC
+                       ADD     1               TO  WRK-PRT-CNT
+                       MOVE    1               TO  IDX
+                   END-IF
+               ELSE
+      *            続紙印刷
+                   IF      IDX             >   22
+      *                続紙印刷
+                       PERFORM 2005-HCN011-PRINT-SEC
+      *                続紙初期編集
+                       PERFORM 2004-HCN011-HENSYU-SEC
+                       ADD     1               TO  WRK-PRT-CNT
+                       MOVE    1               TO  IDX
+                   END-IF
+               END-IF
+      *
+               IF      WRK-PRT-CNT         =   1
+      *            カルテ病名編集処理
+                   PERFORM 3103-HCN01-BYOMEI-SET-SEC
+               ELSE
+      *            続紙病名編集処理
+                   PERFORM 3104-HCN011-BYOMEI-SET-SEC
+               END-IF
+      *
+               MOVE    "PTBYOMEI-KEY2"     TO  ORC-DBPATH
+               PERFORM 950-PTBYOMEI-READ-SEC
+           END-PERFORM
+      *
+           IF      IDX             >   ZERO
+               IF      WRK-PRT-CNT     =   1
+      *            カルテ印刷
+                   PERFORM 2003-HCN01-PRINT-SEC
+               ELSE
+      *            続紙印刷
+                   PERFORM 2005-HCN011-PRINT-SEC
+               END-IF
+           END-IF
+      *
+           .
+       3002-BYOMEI-PRT-EXT.
+           EXIT.
+      *****************************************************************
+      *    カルテ病名編集処理
+      *****************************************************************
+       3103-HCN01-BYOMEI-SET-SEC          SECTION.
+      *
+      *    カルテ病名がある時はカルテ病名
+           IF      PTBYO-CHARTBYOMEI   =   SPACE
+               MOVE    PTBYO-BYOMEI        TO  HCN01-BYOMEI (IDX)
+           ELSE
+               MOVE    PTBYO-CHARTBYOMEI   TO  HCN01-BYOMEI (IDX)
+           END-IF
+      *    開始年月日（診療年月日）
+           MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           MOVE    WRK-HYY             TO  HCN01-STRYY  (IDX)
+           MOVE    WRK-HMM             TO  HCN01-STRMM  (IDX)
+           MOVE    WRK-HDD             TO  HCN01-STRDD  (IDX)
+      *
+      *    終了年月日（転帰年月日）
+           IF      PTBYO-TENKIYMD  NOT =   SPACE
+               MOVE    PTBYO-TENKIYMD      TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HYY             TO  HCN01-ENDYY  (IDX)
+               MOVE    WRK-HMM             TO  HCN01-ENDMM  (IDX)
+               MOVE    WRK-HDD             TO  HCN01-ENDDD  (IDX)
+           END-IF
+      *
+           .
+       3103-HCN01-BYOMEI-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    続紙病名編集処理
+      *****************************************************************
+       3104-HCN011-BYOMEI-SET-SEC          SECTION.
+      *
+           ADD     1                   TO  CNT-MEI
+           MOVE    CNT-MEI             TO  WRK-Z9
+           MOVE    WRK-Z9              TO  HCN011-CD (IDX)
+      *
+      *    カルテ病名がある時はカルテ病名
+           IF      PTBYO-CHARTBYOMEI   =   SPACE
+               MOVE    PTBYO-BYOMEI        TO  HCN011-BYOMEI (IDX)
+           ELSE
+               MOVE    PTBYO-CHARTBYOMEI   TO  HCN011-BYOMEI (IDX)
+           END-IF
+      *    開始年月日（診療年月日）
+           MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           MOVE    WRK-HYY             TO  HCN011-STRYY  (IDX)
+           MOVE    WRK-HMM             TO  HCN011-STRMM  (IDX)
+           MOVE    WRK-HDD             TO  HCN011-STRDD  (IDX)
+      *
+      *    終了年月日（転帰年月日）
+           IF      PTBYO-TENKIYMD  NOT =   SPACE
+               MOVE    PTBYO-TENKIYMD      TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HYY             TO  HCN011-ENDYY  (IDX)
+               MOVE    WRK-HMM             TO  HCN011-ENDMM  (IDX)
+               MOVE    WRK-HDD             TO  HCN011-ENDDD  (IDX)
+           END-IF
+      *
+           .
+       3104-HCN011-BYOMEI-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    西暦日本語変換処理
+      *****************************************************************
+       31012-SEIWA-HEN-SEC        SECTION.
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING
+                                           STS-AREA-DAY
+                                           LNK-DAY2-AREA
+           MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
+           MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMD
+      *
+           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "　"
+           .
+       31012-SEIWA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全角変換処理
+      *****************************************************************
+       2009-HENKAN-SEC                 SECTION.
+     *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC          =   ZERO )  AND
+                  (KANACHK-MAX         >   ZERO )
+               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-OUT-INPUT
+           ELSE
+               MOVE    WRK-MAE-INPUT       TO  WRK-OUT-INPUT
+           END-IF
+      *
+           .
+       2009-HENKAN-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者マスター読み込み
+      *****************************************************************
+       900-PTINF-READ-SEC         SECTION.
+      *
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTINF-REC
+                   MOVE    ZERO            TO  FLG-PTINF
+               ELSE
+                   MOVE    1               TO  FLG-PTINF
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       900-PTINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せマスター読み込み
+      *****************************************************************
+       910-HKNCOMBI-READ-SEC         SECTION.
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+                   MOVE    ZERO            TO  FLG-HKNCOMBI
+               ELSE
+                   MOVE    1               TO  FLG-HKNCOMBI
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+     *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       910-HKNCOMBI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険マスター読み込み
+      *****************************************************************
+       920-PTHKNINF-READ-SEC         SECTION.
+      *
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTHKNINF-REC
+                   MOVE    ZERO            TO  FLG-PTHKNINF
+               ELSE
+                   MOVE    1               TO  FLG-PTHKNINF
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTHKNINF
+           END-IF
+     *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       920-PTHKNINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険番号マスター読み込み
+      *****************************************************************
+       930-HKNNUM-READ-SEC         SECTION.
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  HKNNUM-REC
+                   MOVE    ZERO            TO  FLG-HKNNUM
+               ELSE
+                   MOVE    1               TO  FLG-HKNNUM
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+     *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       930-HKNNUM-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費マスター読み込み
+      *****************************************************************
+       940-PTKOHINF-READ-SEC         SECTION.
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+                   MOVE    ZERO            TO  FLG-PTKOHINF
+               ELSE
+                   MOVE    1               TO  FLG-PTKOHINF
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+     *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       940-PTKOHINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者病名マスター読み込み
+      *****************************************************************
+       950-PTBYOMEI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
+               MOVE    ZERO            TO  FLG-PTBYOMEI
+           ELSE
+               MOVE    1               TO  FLG-PTBYOMEI
+           END-IF
+      *
+           .
+       950-PTBYOMEI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主キー管理マスタ読み込み
+      *****************************************************************
+       900-SYSKANRI-READ-SEC           SECTION.
+      *
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険者番号マスタ次検索処理
+      *****************************************************************
+       900-HKNJAINF-READ-SEC              SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  HKNJAINF-REC
+               MOVE    ZERO            TO  FLG-HKNJAINF
+           ELSE
+               INITIALIZE              HKNJAINF-REC
+               MOVE    1               TO  FLG-HKNJAINF
+           END-IF
+           .
+       900-HKNJAINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者労災保険情報読み込み
+      *****************************************************************
+       993-PTRSIINF-NEXT-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTRSIINF-REC
+               MOVE    ZERO            TO  FLG-PTRSIINF
+           ELSE
+               INITIALIZE                  PTRSIINF-REC
+               MOVE    1               TO  FLG-PTRSIINF
+           END-IF
+      *
+           .
+       993-PTRSIINF-NEXT-EXT.
+           EXIT.
+      *
