@@ -348,6 +348,8 @@
       *  01.01.158   NACL-小豆沢  04/12/10  NYUINACCT-KEY26追加
       *  01.01.159   NACL-多々納  04/12/20  TENSU-KEY93追加
       *  01.01.160   NACL-門脇    04/12/22  SYUNOU-KEY35追加
+      *  01.01.161   NACL-多々納  05/01/26  PTBYOMEI-KEY25追加
+      *                                     HELP  追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1192,6 +1194,22 @@
                    MOVE    PATH-TBL-SYUTOTAL-DEL1
                                        TO  WRK-PATH
       *
+      *---- (HELP) LINE ADD START    ------------------------------
+      *
+               WHEN    "DBUPDATE"      ALSO   "HELP-KEY"
+                   MOVE    PATH-TBL-HELP-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "HELP-KEY"
+                   MOVE    PATH-TBL-HELP-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "HELP-DEL1"
+                   MOVE    PATH-TBL-HELP-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "HELP-DEL2"
+                   MOVE    PATH-TBL-HELP-DEL2
+                                       TO  WRK-PATH
+      *---- (HELP) LINE ADD END      ------------------------------
+      *
                WHEN    ANY             ALSO   "SYSKANRI-KEY"
                    MOVE    PATH-TBL-SYSKANRI-KEY
                                        TO  WRK-PATH
@@ -1605,6 +1623,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTBYOMEI-KEY24"
                    MOVE    PATH-TBL-PTBYOMEI-KEY24
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY25"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY25
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTBYOMEI-ALL"
                    MOVE    PATH-TBL-PTBYOMEI-ALL
@@ -3352,6 +3373,31 @@
                WHEN    ANY             ALSO   "SYUTOTAL-ALL"
                    MOVE    PATH-TBL-SYUTOTAL-ALL
                                        TO  WRK-PATH
+      *---- (HELP) LINE ADD START    ------------------------------
+      *
+               WHEN    ANY             ALSO   "HELP-KEY"
+                   MOVE    PATH-TBL-HELP-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HELP-KEY1"
+                   MOVE    PATH-TBL-HELP-KEY1
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HELP-KEY2"
+                   MOVE    PATH-TBL-HELP-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HELP-KEY3"
+                   MOVE    PATH-TBL-HELP-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HELP-KEY4"
+                   MOVE    PATH-TBL-HELP-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HELP-KEY5"
+                   MOVE    PATH-TBL-HELP-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HELP-ALL"
+                   MOVE    PATH-TBL-HELP-ALL
+                                       TO  WRK-PATH
+      *---- (HELP) LINE ADD END      ------------------------------
+      *
       *
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC
