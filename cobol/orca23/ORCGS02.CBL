@@ -159,6 +159,7 @@
                        09  SPA-GMN-TBLREC  OCCURS   200.
                            11  SPA-GMN-TBANGO      PIC 9(03).
                            11  SPA-GMN-TDENPNUM    PIC 9(07).
+                           11  SPA-GMN-DENPGRP     PIC X(01).
                            11  SPA-GMN-TNYUGAIKBN  PIC X(04).
                            11  SPA-GMN-TSRYKA      PIC X(06).
                            11  SPA-GMN-THKNCOMBI   PIC X(50).
@@ -1235,6 +1236,10 @@
       *
            MOVE    SYU-DENPNUM         TO  SPA-GMN-TDENPNUM (IDX1)
       *
+           IF      SYU-GRP-DENPNUM     NOT =  ZERO
+               MOVE   "M"              TO  SPA-GMN-DENPGRP (IDX1)
+           END-IF
+      *
       *    Æþ³°¶èÊ¬
            MOVE    SYU-NYUGAIKBN       TO  SPA-NAI-TNYUGAIKBN  (IDX1)
            EVALUATE    SYU-NYUGAIKBN
@@ -1459,6 +1464,8 @@
                MOVE    SPA-GMN-TBANGO (IDX1)   TO  WRK-TBANGO-W
                MOVE    WRK-TBANGO-W            TO  S02-TNUM       (IDX1)
                MOVE    SPA-GMN-TDENPNUM(IDX1)  TO  S02-TDENPNUM   (IDX1)
+               MOVE    SPA-GMN-DENPGRP(IDX1)   TO  S02-TDENPNUM   (IDX1)
+                                                                  (9:1)
                MOVE    SPA-GMN-TNYUGAIKBN(IDX1)
                                                TO  S02-TNYUGAI    (IDX1)
                MOVE    SPA-GMN-TSRYKA(IDX1)    TO  S02-TSRYKA    (IDX1)
