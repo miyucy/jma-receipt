@@ -4502,10 +4502,10 @@
                        MOVE    1               TO  FLG-ARI
                    END-IF
                END-PERFORM
-      *        労災の時、削除
-               IF      SPA-HKNKBN      NOT =   ZERO
-                   MOVE    1               TO  FLG-ARI
-               END-IF
+      *********労災の時、削除
+      *        IF      SPA-HKNKBN      NOT =   ZERO
+      *            MOVE    1               TO  FLG-ARI
+      *********END-IF
            END-IF
       *    その他同じコードがある時
            PERFORM VARYING     IDXS    FROM    1   BY  1
