@@ -2572,7 +2572,8 @@
       *
            MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
       *
-           MOVE    "1"                 TO  SHELLTBL-ARG1
+      **** MOVE    "1"                 TO  SHELLTBL-ARG1
+           MOVE    SPA-GMN-SCODE       TO  SHELLTBL-ARG1
            MOVE    SPA-GMN-PTID        TO  WRK-PTID
            MOVE    WRK-PTID            TO  SHELLTBL-ARG2
            MOVE    SPA-GMN-SRYKA       TO  SHELLTBL-ARG3
