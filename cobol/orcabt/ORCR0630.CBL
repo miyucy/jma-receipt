@@ -131,6 +131,11 @@
                05  WRK-PARA-JOBID                      PIC 9(07).
                05  WRK-PARA-SHELLID                    PIC X(08).
       *
+       01  WRK-CONS-AREA.
+      *    固定端末ＩＤ
+           03  WRK-CONS-TERMID     PIC X(32)   VALUE
+                                   "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
+      *
            03  WRK-RECEERR                             PIC X(200). 
       *
       *    入院点数算定用ワークエリア
@@ -326,11 +331,12 @@
                IF      IDZ             =   1               
       *    レセプト処理
                    MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
+                   MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
                ELSE
       *    請求書処理
                    MOVE    "RECE62X"           TO  RECE62PARA-FILE-ID
+                   MOVE    WRK-CONS-TERMID     TO  RECE62PARA-TERMID
                END-IF
-               MOVE    WRK-PARA-TERMID         TO  RECE62PARA-TERMID
       *
                PERFORM 200-HENSYU-SEC
            END-PERFORM 
