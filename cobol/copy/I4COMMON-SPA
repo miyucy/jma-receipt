@@ -140,3 +140,28 @@
                05  SPA-MAP-IDX4                PIC 9(02).
                05  SPA-GMN-CUR4                PIC 9(02).
       *
+      *    入力可能日計算用
+           03  SPA-WRK-YMDS3.
+               05  SPA-WRK-YYS3                PIC 9(04).
+               05  SPA-WRK-MMS3                PIC 9(02).
+               05  SPA-WRK-DDS3                PIC 9(02).
+           03  SPA-WRK-YMDS4.
+               05  SPA-WRK-YYS4                PIC 9(04).
+               05  SPA-WRK-MMS4                PIC 9(02).
+               05  SPA-WRK-DDS4                PIC 9(02).
+           03  SPA-WRK-YMDS5.
+               05  SPA-WRK-YYS5                PIC 9(04).
+               05  SPA-WRK-MMS5                PIC 9(02).
+               05  SPA-WRK-DDS5                PIC 9(02).
+      *    一括修正作業
+           03  SPA-WRK-KOMENTO-S               PIC 9(02).
+           03  SPA-WRK-KOMENTO-E               PIC 9(02).
+           03  SPA-WRK-KOMENTO-D               PIC 9(02).
+           03  SPA-WRK-KOMENTO-SRYCD           PIC X(09).
+           03  SPA-WRK-KOMENTO-SRYYM.
+               05  SPA-WRK-KOMENTO-SRYY        PIC 9(04).
+               05  SPA-WRK-KOMENTO-SRYM        PIC 9(02).
+           03  SPA-WRK-CHK-KBN-TBL.
+               05  SPA-WRK-CHK-KBN             PIC X(01)  OCCURS  31.
+           03  WRK-SRYYM-SML                   PIC X(06).
+           03  WRK-SRYYM-BIG                   PIC X(06).
