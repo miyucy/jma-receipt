@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    04/02/01  病名コード２１に変更
+      *  01.00.02    NACL-藤原    04/02/06  包括の対象に保険組合せ９９９９
+      *                                     を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2476,8 +2478,10 @@
            IF      FLG-END             =   ZERO
       *        包括を含まないとき
                IF    ( WRK-PARA-HOUKATUKBN =   "1"  )
-               AND   ( ACCT-ZAITEN         =   ZERO )
-                   GO  TO  900-SRYACCT-READ-SEC
+                   IF    ( ACCT-ZAITEN         =   ZERO   )
+                   OR    ( ACCT-HKNCOMBI       =   "9999" )
+                       GO  TO  900-SRYACCT-READ-SEC
+                   END-IF
                END-IF
       *
                MOVE    ACCT-PTID           TO  KEY-N-PTID 
