@@ -1,6 +1,15 @@
 #!/bin/sh
+if test -n "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="$JMARECEIPT_ENV"
+elif test -n "@jma-receipt-env@" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
 
-. @jma-receipt-env@
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
 
 # compile COBOL programs
 for f in `ls ${SITESRCDIR}/cobol`; do

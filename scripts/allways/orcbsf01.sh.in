@@ -1,4 +1,15 @@
-#!/bin/bash
+#!/bin/sh
+if test -n "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="$JMARECEIPT_ENV"
+elif test -n "@jma-receipt-env@" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
 #-------------------------------------------#
 #    バックアップ処理
 #        $1   TABLE-NAME
@@ -13,9 +24,9 @@
             if  [ -e $4$5 ]; then
                 rm  $4$5
             fi
-            pg_dump -R -t $1 orca > $4$5
+            pg_dump -R -t $1 $DBNAME > $4$5
         else
-            pg_dump -R -t $1 orca > /tmp/$2.out
+            pg_dump -R -t $1 $DBNAME > /tmp/$2.out
             cat  /tmp/$2.out  /tmp/$3.out  >  $4$5
             rm   /tmp/$2.out
         fi

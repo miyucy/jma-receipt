@@ -1,6 +1,16 @@
-#!/bin/bash
-ORCABT=/usr/local/orca/lib
-DBSTUB=/usr/local/panda/bin/dbstub
+#!/bin/sh
+if test -n "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="$JMARECEIPT_ENV"
+elif test -n "@jma-receipt-env@" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
 RENNUM=0
 #-------------------------------------------#
 #    点数マスタ一覧作成
@@ -20,11 +30,9 @@ RENNUM=0
         fi
         
         RENNUM=$(expr $RENNUM + 1) 
-        $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ${14} -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${15}
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ${14} -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${15}
         if  [ -e ${16} ]; then
             exit
         fi
-#
-        $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE${12}${13}
-
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${12}${13}
         exit 

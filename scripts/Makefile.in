@@ -12,7 +12,17 @@ noinst_shell_sources = \
 		sample.sh.in \
 
 shell_sources = \
-		allways/site-upgrade.sh.in 
+		allways/site-upgrade.sh.in \
+		allways/ORCBQ01.sh.in \
+		allways/master_upgrade.sh.in \
+		allways/orcbsd01.sh.in \
+		allways/orcbse01.sh.in \
+		allways/orcbsf01.sh.in \
+		allways/orcbsf02.sh.in \
+		allways/orcbsf03.sh.in \
+		allways/orhcml09.sh.in \
+		allways/print.sh.in \
+		allways/tensu.sh.in
 
 ruby_sources = \
 		daily/print-data.rb.in \
@@ -22,16 +32,6 @@ ruby_sources = \
 shell_scripts = $(shell_sources:.sh.in=.sh) 
 
 inst_scripts =  $(shell_sources:.sh.in=.sh) \
-		allways/ORCBQ01.sh \
-		allways/master_upgrade.sh \
-		allways/orcbsd01.sh \
-		allways/orcbse01.sh \
-		allways/orcbsf01.sh \
-		allways/orcbsf02.sh \
-		allways/orcbsf03.sh \
-		allways/orhcml09.sh \
-		allways/print.sh \
-		allways/tensu.sh \
 		daily/HCALL.sh \
 		daily/execoprg.sh \
 		daily/HC01.sh \

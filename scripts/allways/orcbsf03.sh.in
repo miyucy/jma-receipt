@@ -1,6 +1,15 @@
-#!/bin/bash
-ORCABT=/usr/local/orca/lib
-DBSTUB=/usr/local/panda/bin/dbstub
+#!/bin/sh
+if test -n "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="$JMARECEIPT_ENV"
+elif test -n "@jma-receipt-env@" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
 #-------------------------------------------#
 #    バックアップ処理
 #        $1   TABLE-NAME
@@ -15,6 +24,6 @@ DBSTUB=/usr/local/panda/bin/dbstub
             rm   /tmp/$3.out
         fi
 
-	$DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001ORCBSF1
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001ORCBSF1
 
         exit

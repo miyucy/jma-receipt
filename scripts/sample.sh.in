@@ -1,6 +1,18 @@
 #! /bin/sh
 
-. @jma-receipt-env@
+if test -n "$1"; then
+    JMARECEIPT_ENV="$1"
+elif test -n "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="$JMARECEIPT_ENV"
+elif test -n "@jma-receipt-env@" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
 
 echo DATADIR = $DATADIR
 echo FORMDIR = $FORMDIR
@@ -10,19 +22,21 @@ echo RECORDDIR = $RECORDDIR
 echo SCREENDIR = $SCREENDIR
 echo SCRIPTSDIR = $SCRIPTSDIR
 echo LIBDIR  = $LIBDIR
-echo SITEDIR=$SITEDIR
-echo SITESRCDIR=$SITESRCDIR
-echo SITELIBDIR=$SITELIBDIR
+echo SITEDIR = $SITEDIR
+echo SITESRCDIR = $SITESRCDIR
+echo SITELIBDIR = $SITELIBDIR
 
-echo SITERECORDDIR=$SITERECORDDIR
-echo SITELDDEFDIR=$SITELDDEFDIR
+echo SITERECORDDIR = $SITERECORDDIR
+echo SITELDDEFDIR = $SITELDDEFDIR
 
 echo DBSTUB = $DBSTUB
 
+echo DataBaseName = $DBNAME
+
 # example
-echo $DBSTUB -dir $LDDEFDIR/directory -bd orcabt ORCBQ01 -parameter
+echo $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBQ01 -parameter
 
 # CHIHOUKOUHI example
-echo $DBSTUB -dir $LDDEFDIR/directory -bd shimane ORCBS321 -parameter $1
+echo $DBSTUB -dir "$LDDEFDIR"/directory -bd shimane ORCBS321 -parameter $1
 
 exit 0

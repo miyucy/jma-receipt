@@ -1,4 +1,15 @@
-#!/bin/bash
+#!/bin/sh
+if test -n "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="$JMARECEIPT_ENV"
+elif test -n "@jma-receipt-env@" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
 #-------------------------------------------#
 #    患者一覧出力
 #        $1 処理区分
@@ -11,9 +22,7 @@
 #        $8 シェルＩＤ
 #
 #-------------------------------------------#
-DBSTUB=/usr/local/panda/bin/dbstub
-#-------------------------------------------# 
-        $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca -bd orcabt ORCBQ01 -parameter $3,$4,$5,$6
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBQ01 -parameter $3,$4,$5,$6
 
 ##      ＣＳＶファイル作成
         if  [ $1 -eq "0" ]; then
@@ -39,6 +48,6 @@ DBSTUB=/usr/local/panda/bin/dbstub
             rm  $3
         fi
 
-       $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE$7$8
+       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$7$8
 
         exit

@@ -1,6 +1,15 @@
-#!/bin/bash
-ORCABT=/usr/local/orca/lib
-DBSTUB=/usr/local/panda/bin/dbstub
+#!/bin/sh
+if test -n "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="$JMARECEIPT_ENV"
+elif test -n "@jma-receipt-env@" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
 #-------------------------------------------#
 #    °õºþ£Ä£Â¤«¤é¤Î°õºþ½èÍý
 #        $1-${11} °õºþ£Ä£ÂÍÑ¸ÇÄê°ú¿ô
@@ -20,11 +29,11 @@ DBSTUB=/usr/local/panda/bin/dbstub
         
         cd  $ORCABT
 
-        $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBPRT -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${13},${14},${15},${16}
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBPRT -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${13},${14},${15},${16}
         if  [ -e ${12} ]; then
             exit
         else
-	    $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE${13}${14}
+	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${13}${14}
 	fi
 
         exit 
