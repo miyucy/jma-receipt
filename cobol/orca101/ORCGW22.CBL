@@ -1355,6 +1355,7 @@
                        MOVE    1                TO  FLG-ARI
                        MOVE    SYS-STYUKYMD     TO  SPA-W22-STYUKYMD-OLD
                        MOVE    SYS-EDYUKYMD     TO  SPA-W22-EDYUKYMD-OLD
+                   END-IF
                    PERFORM SYS-KANRI-CLOSE-SEC
                END-IF
       *
