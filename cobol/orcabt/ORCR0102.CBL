@@ -49,6 +49,10 @@
       *  01.01.06    NACL-藤原    03/03/03  再印刷機能のためにパラメタを追加
       *  01.01.07    NACL-藤原    03/03/14  住所を５０文字に変更のため
       *                                     HCM06V02.redを追加
+      *
+      *  ２００３．４改正対応
+      *  01.02.01    NACL-藤原    03/04/17  改正対応の外来レセ
+      *                                     HCM09.redを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -164,6 +168,7 @@
            COPY    "HCN06.INC".
            COPY    "HCN061.INC".
            COPY    "HCN062.INC".
+           COPY    "HCM09.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -477,6 +482,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN062
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN062-RENNUM
                        MOVE    HCN062              TO  RECE08-PRTDATA
+                   WHEN    "HCM09.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM09
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM09-RENNUM
+                       MOVE    HCM09               TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
       *             
@@ -524,6 +533,7 @@
                WHEN    "HCM06.red"                  
                WHEN    "HCM06V01.red"                  
                WHEN    "HCM06V02.red"                  
+               WHEN    "HCM09.red"                  
                    MOVE    "医科レセプト（入院外）"    TO  SPRT-TITLE
                WHEN    "HCN06.red"                  
                WHEN    "HCN061.red"                  

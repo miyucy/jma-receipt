@@ -57,6 +57,9 @@
       *  01.05.02    NACL-藤原    03/02/27  入院用県単用項目編集プログラ
       *                                     ム名の追加
       *  01.05.03    NACL-藤原     03/03/03  再印刷ボタン追加
+      *
+      *  ２００３．４改正対応
+      *  01.03.01    NACL-藤原    03/04/17  対象がないときエラーを表示する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -161,6 +164,21 @@
            03  IDZ                 PIC 9(04).
            03  IDX2                PIC 9(04).
       *
+      *    システム領域
+       01  SYS-AREA.
+           03  SYS-TIME.
+               05  SYS-THH         PIC 9(02).
+               05  SYS-TMM         PIC 9(02).
+               05  SYS-TSS         PIC 9(02).
+               05  SYS-TDD         PIC 9(02).
+           03  SYS-YMD.
+               05  SYS-YY          PIC 9(02).
+               05  SYS-MM          PIC 9(02).
+               05  SYS-DD          PIC 9(02).
+           03  WRK-SYSYMD.
+               05  WRK-SYSYY       PIC 9(04).
+               05  WRK-SYSMM       PIC 9(02).
+               05  WRK-SYSDD       PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -1417,6 +1435,7 @@
                    OPEN    OUTPUT   RECEERR-FILE
                    CLOSE   RECEERR-FILE
       *
+      *            県単ＰＧの設定
                    INITIALIZE                  SYS-2005-REC
                    MOVE    "2005"          TO  SYS-2005-KANRICD
                    MOVE    "*"             TO  SYS-2005-KBNCD
@@ -1436,6 +1455,13 @@
                                            NOT =  "S"
                            MOVE  "NOPG"    TO  SYS-2005-PREFPRGID (2)
                    END-IF
+      *
+      *            作成日・時間の設定
+                   ACCEPT  SYS-YMD         FROM    DATE
+                   COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
+                   MOVE    SYS-MM              TO  WRK-SYSMM
+                   MOVE    SYS-DD              TO  WRK-SYSDD
+                   ACCEPT  SYS-TIME            FROM    TIME
       *
       *★★        ETC-EXEC SHELL SHELL-AREA 10
                    MOVE    SPACE           TO  SHELLTBL
@@ -1480,6 +1506,8 @@
                                                TO  SHELLTBL-ARG7
                    END-IF
                    MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG8
+                   MOVE    WRK-SYSYMD      TO  SHELLTBL-ARG9
+                   MOVE    SYS-TIME        TO  SHELLTBL-ARG10
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    PATH-SHELL-SHELL
@@ -1662,6 +1690,10 @@
                    MOVE    "処理中です"    TO  R99-MSG
                ELSE
                    IF      JOB-ERRCD       =   SPACE
+                     IF      JOB-UPDCNT      =   ZERO    
+                         MOVE    "対象データがありませんでした"
+                                                       TO  R99-MSG
+                     ELSE
                        PERFORM 4501-REPRINT-CHK-SEC
                        IF      SPA-RECE07-PRTID    =   SPACE
                            MOVE    "対象のレセプトが作成されていません"
@@ -1676,6 +1708,7 @@
                            MOVE    SPA-RECE07-NYUGAIKBN
                                           TO  SPA-R01-RECE07-NYUGAIKBN
                        END-IF
+                     END-IF 
                    ELSE
                        STRING  JOB-YOBI    DELIMITED  BY  SPACE
                                "【"        DELIMITED  BY  SIZE

@@ -17,45 +17,18 @@
       ********************************************************************
       *
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCR0103.
+       PROGRAM-ID.                 ORCR0104.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト
       *  コンポーネント名  : レセプト印刷用ファイル作成（医保）
-      *                      ２００２年１０月改正以降
+      *                      ２００３年４月改正以降
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  02/09/26    NACL-藤原     新規作成
+      *  03/04/17    NACL-藤原     新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-藤原    02.10.21  病名編集時に半角空白を全角へ変換
-      *  01.00.02    NACL-藤原    02/10/24  保険内自費のみのとき出力しないように
-      *                                     修正
-      *  01.00.03    NACL-藤原    02/10/30  受給者番号が全角のときの印刷の対応
-      *  01.00.04    NACL-藤原    02/11/06  保険履歴の半角空白を全角に変換する
-      *  01.00.05    NACL-藤原    02/11/07  医療機関ＩＤ・診療年月を追加
-      *                                     船員保険の職務上の事由の修正 
-      *  01.00.06    NACL-藤原    02.11.08  国保の特定の保険者番号のとき
-      *                                     県内分とするように修正
-      *  01.00.07    NACL-藤原    02/11/26  共済組合の下船３ヶ月の表示の追加 
-      *  01.00.08    NACL-藤原    02/11/27  国保の県内扱い保険者番号をシス管より
-      *                                     編集するように修正
-      *  01.00.09    NACL-藤原    03/01/07  給付割合の編集修正 
-      *  01.00.10    NACL-藤原    03/01/27  公費請求書ＤＢを追加
-      *  01.00.11    NACL-藤原    03.03.12  補助区分の追加
-      *  01.00.12    NACL-門脇    03.03.03  剤番号桁修正対応
-      *  01.00.13    NACL-藤原    03.03.05  レセプトコメントＤＢに入外区分を追加
-      *  01.01.14    NACL-藤原    03.03.07  診療科数１０から２０へ変更
-      *  01.01.15    NACL-藤原    03/03/11  種別不明のとき情報を編集
-      *  01.01.16    NACL-藤原    03/03/14  住所を５０文字に変更のため
-      *                                     帳票ＩＤを変更
-      *  01.01.17    NACL-藤原    03/03/25  カスタマイズ項目の追加
-      *
-      *  ２００３．４改正対応
-      *  01.02.01    NACL-藤原    03/04/17  ２００３．３以前のデータのみ
-      *                                     対象とする
-      *                                     出力件数をジョブ管理ＤＢへ更新
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -177,9 +150,7 @@
            03                      PIC X(04)   VALUE   ".dat".
       *
       *     
-      *****COPY    "HCM06.INC"     REPLACING  //HCM06//
-      *****COPY    "HCM06V01.INC"  REPLACING  //HCM06V01//
-           COPY    "HCM06V02.INC"  REPLACING  //HCM06V02//
+           COPY    "HCM09.INC"     REPLACING  //HCM09//
                                    BY         //HC06//.
       *
       *    スパ領域
@@ -229,22 +200,6 @@
            03  CNT-ZAIMEISAISU     PIC 9(03).
            03  CNT-PAGE            PIC 9(03).
            03  CNT-KENSU           PIC 9(03). 
-      *
-      *    システム領域
-      *01  SYS-AREA.
-      *     03  SYS-TIME.
-      *        05  SYS-THH         PIC 9(02).
-      *         05  SYS-TMM         PIC 9(02).
-      *         05  SYS-TSS         PIC 9(02).
-      *         05  SYS-TDD         PIC 9(02).
-      *     03  SYS-YMD.
-      *         05  SYS-YY          PIC 9(02).
-      *         05  SYS-MM          PIC 9(02).
-      *         05  SYS-DD          PIC 9(02).
-      *     03  WRK-SYSYMD.
-      *         05  WRK-SYSYY       PIC 9(04).
-      *         05  WRK-SYSMM       PIC 9(02).
-      *         05  WRK-SYSDD       PIC 9(02).
       *
       *    添字領域
        01  IDX-AREA.
@@ -316,6 +271,8 @@
            03  WRK-BEDSU           PIC ZZ9.
       *
            03  WRK-ERRMSG          PIC X(40).
+      *
+           03  WRK-UPDCNT          PIC 9(08).
       *
            03  WRK-1033-TABLE.
                05  WRK-1033-TBL    OCCURS  5.
@@ -705,7 +662,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "ORCR0103"      TO  JOB-PGID
+           MOVE    "ORCR0104"      TO  JOB-PGID
            MOVE    "印刷データ編集"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
@@ -755,37 +712,37 @@
       *
            OPEN    INPUT               RECE02-FILE
            IF  STS-RECE            NOT =   ZERO
-               DISPLAY "*** ORCR0103 RECE02 OPEN ERR  ***"
+               DISPLAY "*** ORCR0104 RECE02 OPEN ERR  ***"
                MOVE    2               TO  SPA-STS
            END-IF
       *
            OPEN    INPUT               RECE02X-FILE
            IF  STS-RECE02X         NOT =   ZERO
-               DISPLAY "*** ORCR0103 RECE02X OPEN ERR  ***"
+               DISPLAY "*** ORCR0104 RECE02X OPEN ERR  ***"
                MOVE    2               TO  SPA-STS
            END-IF
       *
            OPEN    INPUT               RECE031-FILE
            IF  STS-RECE            NOT =   ZERO
-               DISPLAY "*** ORCR0103 RECE031 OPEN ERR  ***"
+               DISPLAY "*** ORCR0104 RECE031 OPEN ERR  ***"
                MOVE    2               TO  SPA-STS
            END-IF
       *
            OPEN    INPUT               RECE061-FILE
            IF  STS-RECE            NOT =   ZERO
-               DISPLAY "*** ORCR0103 RECE061 OPEN ERR  ***"
+               DISPLAY "*** ORCR0104 RECE061 OPEN ERR  ***"
                MOVE    2               TO  SPA-STS
            END-IF
       *
            OPEN    INPUT               RECE09-FILE
            IF  STS-RECE09            NOT =   ZERO
-               DISPLAY "*** ORCR0103 RECE09 OPEN ERR  ***" STS-RECE09
+               DISPLAY "*** ORCR0104 RECE09 OPEN ERR  ***" STS-RECE09
                MOVE    2               TO  SPA-STS
            END-IF
       *
            OPEN    INPUT               RECE11-FILE
            IF  STS-RECE11            NOT =   ZERO
-               DISPLAY "*** ORCR0103 RECE11 OPEN ERR  ***" STS-RECE11
+               DISPLAY "*** ORCR0104 RECE11 OPEN ERR  ***" STS-RECE11
                MOVE    2               TO  SPA-STS
            END-IF
            .
@@ -796,12 +753,6 @@
       *    医療機関情報検索
       *****************************************************************
        120-HOSPINF-GET-SEC            SECTION.
-      *
-      *****ACCEPT  SYS-YMD         FROM    DATE
-      *****COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
-      *****MOVE    SYS-MM              TO  WRK-SYSMM
-      *****MOVE    SYS-DD              TO  WRK-SYSDD
-      *****ACCEPT  SYS-TIME            FROM    TIME
       *
       *    医療機関情報
            MOVE    SPACE            TO  SYSKANRI-REC
@@ -1330,7 +1281,7 @@
                IF      MCP-RC     =   ZERO
                    PERFORM 990-RECE02X-READ-SEC
                ELSE
-                   DISPLAY "ORCR0103 KOHSKY MCP-RC= "  MCP-RC   
+                   DISPLAY "ORCR0104 KOHSKY MCP-RC= "  MCP-RC   
                    IF      FLG-KOHSKY          =   1    
                        MOVE    "公費請求ＤＢに追加できませんでした"
                                                TO  WRK-RECEERR
@@ -2619,7 +2570,7 @@
                END-IF
            END-PERFORM
       *
-      *        <請求点・薬剤一部負担金・一部負担金>
+      *        <請求点・一部負担金>
       *
            IF  WRK-3SYU-KBN           =   ALL "1" AND 
                RECE02-HKNNUM          =   SPACE            
@@ -2642,10 +2593,6 @@
            IF      RECE02-TOTALTEN (IDX1)     >   ZERO
                MOVE    RECE02-TOTALTEN (IDX1) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(1)
-               IF      RECE02-YKZFTN   (IDX1) >   ZERO
-                   MOVE    RECE02-YKZFTN   (IDX1) TO  WRK-KGK6
-                   MOVE    WRK-KGK6               TO  HC06-YKZFTN  (1)
-               END-IF    
                IF      RECE02-FTNMONEY (IDX1) >   ZERO
                    MOVE    RECE02-FTNMONEY (IDX1) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(1)
@@ -2674,12 +2621,6 @@
                MOVE    RECE02-TOTALTEN (IDX2) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(2)
            END-IF
-           IF      RECE02-YKZFTN   (IDX2) >   ZERO
-           AND     RECE02-YKZFTN   (IDX2) 
-                                      NOT =   RECE02-YKZFTN (IDX1)
-               MOVE    RECE02-YKZFTN   (IDX2) TO  WRK-KGK6
-               MOVE    WRK-KGK6               TO  HC06-YKZFTN  (2)
-           END-IF    
       *    公費２
            IF    (RECE02-TOTALTEN (IDX3) >   ZERO                      )
            AND   ((RECE02-TOTALTEN (IDX3)
@@ -2694,9 +2635,7 @@
                    MOVE    RECE02-FTNMONEY (IDX3) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
                END-IF
-      *
              END-IF
-      * 
            END-IF
            IF      RECE02-TOTALTEN (IDX3) >   ZERO                      
            AND     RECE02-TOTALTEN (IDX3)
@@ -2704,12 +2643,6 @@
                MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
            END-IF
-           IF      RECE02-YKZFTN   (IDX3) >   ZERO
-           AND     RECE02-YKZFTN   (IDX3) 
-                                      NOT =   RECE02-YKZFTN (IDX1)
-               MOVE    RECE02-YKZFTN   (IDX3) TO  WRK-KGK6
-               MOVE    WRK-KGK6               TO  HC06-YKZFTN  (3)
-           END-IF    
       *
       *    県単用項目
            IF      FLG-RECE11          =   ZERO
@@ -3188,8 +3121,6 @@
            INITIALIZE                  RECE08-REC
            MOVE    "HC06"              TO  RECE08-PRTID
            MOVE    WRK-PARA-SRYYM      TO  RECE08-RECEYM
-      *****MOVE    WRK-SYSYMD          TO  RECE08-CREYMD
-      *****MOVE    SYS-TIME (1:6)      TO  RECE08-CREHMS
            MOVE    WRK-PARA-CREYMD     TO  RECE08-CREYMD
            MOVE    WRK-PARA-CREHMS (1:6)
                                        TO  RECE08-CREHMS
@@ -3253,7 +3184,7 @@
            MOVE    RECE08-REC          TO  MCPDATA-REC
            PERFORM 900-RECE08-READ-SEC
            IF      FLG-RECE08          =   ZERO
-               DISPLAY "ORCR0103 MCP-RC=" MCP-RC " " RECE08-KEY 
+               DISPLAY "ORCR0104 MCP-RC=" MCP-RC " " RECE08-KEY 
                STRING   "レセプト明細に更新できません　患者番号＝"
                                                DELIMITED  BY  SIZE
                         RECE02-PTNUM           DELIMITED  BY  SIZE  
@@ -3284,9 +3215,7 @@
                END-IF                      
                MOVE    RECE02-KANANAME     TO  RECE08-KANANAME
                MOVE    "2"                 TO  RECE08-NYUGAIKBN
-      *********MOVE    "HCM06.red"         TO  RECE08-FORMID
-      *********MOVE    "HCM06V01.red"      TO  RECE08-FORMID
-               MOVE    "HCM06V02.red"      TO  RECE08-FORMID
+               MOVE    "HCM09.red"         TO  RECE08-FORMID
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
@@ -3302,7 +3231,7 @@
                IF      MCP-RC     =   ZERO
                    ADD     1                 TO  CNT-OUT 
                ELSE 
-                   DISPLAY "ORCR0103 RECE08=" MCP-RC " " RECE08-KEY 
+                   DISPLAY "ORCR0104 RECE08=" MCP-RC " " RECE08-KEY 
                    STRING
                         "レセプト明細に更新できませんでした　患者番号＝"
                                                DELIMITED  BY  SIZE
@@ -3377,7 +3306,7 @@
            IF      MCP-RC     =   ZERO
                CONTINUE
            ELSE
-               DISPLAY "ORCR0103 RECEKANRI MCP-RC= "  MCP-RC   
+               DISPLAY "ORCR0104 RECEKANRI MCP-RC= "  MCP-RC   
                IF      FLG-RECE07          =   1    
                MOVE    "レセプト管理ＤＢに追加できませんでした"
                                                TO  WRK-RECEERR
@@ -3396,7 +3325,7 @@
       *    請求管理ＤＢ更新
       *****************************************************************
        3904-RECE10-HENSYU-SEC        SECTION.
-      *
+      * 
       *    テスト患者のとき更新しない
            IF      WRK-PTINF-TSTPTNUMKBN   =   "1"
                GO  TO  3904-RECE10-HENSYU-EXT
@@ -3490,10 +3419,6 @@
                                        RECE10-TOTALTENINF (IDX)
                MOVE    RECE02-FTNMONEYINF(IDX) TO
                                        RECE10-FTNMONEYINF (IDX)
-               MOVE    RECE02-YKZFTNINF  (IDX) TO
-                                       RECE10-YKZFTNINF   (IDX)
-      *********MOVE    RECE02-SHOKUJIINF (IDX) TO
-      *********                        RECE10-SHOKUJIINF (IDX)
            END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       45
@@ -3539,7 +3464,7 @@
            IF      MCP-RC     =   ZERO
                CONTINUE
            ELSE
-               DISPLAY "ORCR0103 SEIKYU MCP-RC= "  MCP-RC   
+               DISPLAY "ORCR0104 SEIKYU MCP-RC= "  MCP-RC   
                IF      FLG-SEIKYU          =   1    
                MOVE    "請求管理ＤＢに追加できませんでした"
                                                TO  WRK-RECEERR
@@ -3637,15 +3562,10 @@
                                        RECE09-FILE
                                        RECE11-FILE
       *
-      *****IF      CNT-OUT            =   ZERO
-      *****    MOVE    "対象データがありませんでした" TO  WRK-RECEERR
-      *****    PERFORM 500-ERR-HENSYU-SEC
-      *****END-IF
-     *
-           DISPLAY "*** ORCR0103 IN  RECE02 ="  CNT-RECE02
-           DISPLAY "*** ORCR0103 IN  RECE02X="  CNT-RECE02X
-           DISPLAY "*** ORCR0103 OUT  "  CNT-OUT
-           DISPLAY "*** ORCR0103 END ***"
+           DISPLAY "*** ORCR0104 IN  RECE02 ="  CNT-RECE02
+           DISPLAY "*** ORCR0104 IN  RECE02X="  CNT-RECE02X
+           DISPLAY "*** ORCR0104 OUT  "  CNT-OUT
+           DISPLAY "*** ORCR0104 END ***"
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -3681,8 +3601,8 @@
                    AND     RECE02-TOTALTEN (4) =   ZERO
                    AND     RECE02-TOTALTEN (5) =   ZERO
                        GO  TO  990-RECE02-READ-SEC
-                   ELSE
-                       IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM
+                   ELSE    
+                       IF      RECE02-SRYYM        <   WRK-CONS-SRYYM
                            GO  TO  990-RECE02-READ-SEC
                        ELSE
                            ADD     1               TO  CNT-RECE02
@@ -3714,8 +3634,8 @@
                AT  END
                    MOVE    1                   TO  FLG-RECE02X
                NOT AT  END
-      *           ２００３年４月以降のとき読み飛ばす
-                   IF      RECE02X-SRYYM       >=  WRK-CONS-SRYYM
+      *           ２００３年３月以前のとき読み飛ばす
+                   IF      RECE02-SRYYM        <   WRK-CONS-SRYYM
                        GO  TO  990-RECE02X-READ-SEC
                    END-IF
       *            テスト患者・レセプト種別不明のとき読み飛ばす

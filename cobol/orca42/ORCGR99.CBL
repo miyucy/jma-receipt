@@ -32,6 +32,9 @@
       *  01.01.01    NACL-藤原    02/09/24  ２００２．１０改正対応
       *　入院機能追加　
       *  01.02.01    NACL-藤原    02/12/13  入外区分追加 
+      *
+      *  ２００３．４改正対応
+      *  01.03.01    NACL-藤原    03/04/17  対象がないときエラーを表示する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -273,22 +276,26 @@
                    IF      JOB-ERRCD       =   SPACE
                        IF      SPA-R01-GMNKBN  =   "R02"   OR  "R04"
                            CONTINUE
-                       ELSE    
-                           PERFORM 4501-REPRINT-CHK-SEC
-                           IF      SPA-RECE07-PRTID    =   SPACE
-                               MOVE    
+                       ELSE
+                           IF      JOB-UPDCNT      =   ZERO    
+                               MOVE    "対象データがありませんでした"
+                                                       TO  R99-MSG
+                           ELSE
+                               PERFORM 4501-REPRINT-CHK-SEC
+                               IF      SPA-RECE07-PRTID    =   SPACE
+                                   MOVE    
                                    "対象のレセプトが作成されていません"
                                                TO  R99-MSG
-                           ELSE                    
-                               MOVE    SPA-RECE07-KEY
-                                              TO  SPA-R01-RECE07-KEY
-                               MOVE    SPA-RECE07-RECEKBN
-                                              TO  SPA-R01-RECE07-RECEKBN
-                               MOVE    SPA-RECE07-SRYYM
-                                              TO  SPA-R01-RECE07-SRYYM
-                               MOVE    SPA-RECE07-NYUGAIKBN
-                                              TO
-                                              SPA-R01-RECE07-NYUGAIKBN
+                               ELSE                    
+                                   MOVE    SPA-RECE07-KEY
+                                           TO  SPA-R01-RECE07-KEY
+                                   MOVE    SPA-RECE07-RECEKBN
+                                           TO  SPA-R01-RECE07-RECEKBN
+                                   MOVE    SPA-RECE07-SRYYM
+                                           TO  SPA-R01-RECE07-SRYYM
+                                   MOVE    SPA-RECE07-NYUGAIKBN
+                                           TO  SPA-R01-RECE07-NYUGAIKBN
+                               END-IF
                            END-IF   
                        END-IF
                    ELSE
