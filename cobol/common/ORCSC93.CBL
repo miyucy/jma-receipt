@@ -743,6 +743,8 @@
                    IF      WRK-SRYSYUKBN       =   "230" OR
                                                    "231" OR
                                                    "232"
+                                               OR  "233"
+                                               OR  "234"
                        MOVE    "23"            TO  WRK-SRYKBN
                    END-IF
       *            内服の時、前の行為が薬剤に付属できるか判定
