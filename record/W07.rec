@@ -160,6 +160,13 @@ W07	{
 					count	int;
 					item	varchar(28)[2];
 				};
+				SEIHO_JKYSNUM_COMBO	{
+					SEIHO_JKYSNUM	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[2];
+				};
 			};
 			TAGNAME2    {
 			    state   int;

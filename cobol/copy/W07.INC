@@ -87,6 +87,11 @@
                       07  W07-VALUE   PIC X(28).
                     06  W07-HOJYOKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-HOJYOKBN-ITEM    PIC X(28)   OCCURS  2.
+                  05  W07-SEIHO-JKYSNUM-COMBO.
+                    06  W07-SEIHO-JKYSNUM.
+                      07  W07-VALUE   PIC X(28).
+                    06  W07-SEIHO-JKYSNUM-COUNT   PIC S9(9)   BINARY.
+                    06  W07-SEIHO-JKYSNUM-ITEM    PIC X(28)   OCCURS  2.
                 04  W07-TAGNAME2.
                   05  W07-TAGNAME2-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG3.
