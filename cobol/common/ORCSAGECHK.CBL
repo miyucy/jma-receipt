@@ -426,7 +426,7 @@
            END-IF
       *    £·£µºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í¸øÈñ¤¬¤¢¤ë¤³¤È
            IF     (AGECHK-NENREI       >=  75 )  AND
-                  (FLG-OK          NOT =   2   ) AND
+      ************(FLG-OK          NOT =   2   ) AND
                   (FLG-OK2             =   ZERO)
                MOVE    2               TO  AGECHK-RJNCHK
            END-IF
