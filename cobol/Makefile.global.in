@@ -24,8 +24,8 @@ MKDIR = mkdir -p
 
 COBCOPYS = -I$(srcdir)/../../cobol/copy
 
-COBOLFLAGS =  -m -dynamic $(COBCOPYS)
-EXEC_COBOLFLAGS = -dynamic $(COBCOPYS)
+COBOLFLAGS =  -m -dynamic 
+EXEC_COBOLFLAGS = -dynamic 
 DEPDIR = .deps
 
 OBJS = ${SRCS:.CBL=.so}
@@ -37,11 +37,11 @@ endef
 
 %.so: %.CBL
 	$(postprocess-depend)
-	$(COBOL) $(COBOLFLAGS) -MT $@ -MF $(DEPDIR)/${@:.so=.Po} $< 
+	$(COBOL) $(COBOLFLAGS)  $(COBCOPYS)  -MT $@ -MF $(DEPDIR)/${@:.so=.Po} $< 
 	
 %: %.CBL
 	$(postprocess-depend)
-	$(COBOL) $(EXEC_COBOLFLAGS) -MT $@ -MF $(DEPDIR)/${@:=.Po} $<
+	$(COBOL) $(EXEC_COBOLFLAGS) $(COBCOPYS) -MT $@ -MF $(DEPDIR)/${@:=.Po} $<
 
 all: $(OBJS) $(EXEC)
 
