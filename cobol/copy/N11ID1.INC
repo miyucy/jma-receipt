@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * “úˆã•W€ƒŒƒZƒvƒgƒ\ƒtƒgiJMA standard receipt softwarej
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,10 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ƒRƒs[‹åC³—š—ğ
+      * Maj/Min/Rev  C³Ò       “ú•t      “à—e
       *****************************************************************
-        02  N11ID1.
-              03  N11ID1-ID1CODE.
-                04  N11ID1-VALUE  PIC X(11).
-              03  N11ID1-ID1MSG.
-                04  N11ID1-VALUE  PIC X(71).
+            02  N11ID1.
+                03  N11ID1-FIXED1.
+                  04  N11ID1-ID1CODE    PIC X(10).
+                  04  N11ID1-ID1MSG     PIC X(70).

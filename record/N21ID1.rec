@@ -1,10 +1,10 @@
 N21ID1	{
 	fixed1	{
 		ID1CODE	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		ID1MSG	{
-			value	varchar(71);
+			value	varchar(70);
 		};
 	};
 };

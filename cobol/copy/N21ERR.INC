@@ -19,7 +19,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
-         02  N21ERR.
-            03  N21ERR-FIXED1.
-              04  N21ERR-ERRCODE  PIC X(11).
-              04  N21ERR-ERRMSG   PIC X(61).
+            02  N21ERR.
+                03  N21ERR-FIXED1.
+                  04  N21ERR-ERRCODE  PIC X(10).
+                  04  N21ERR-ERRMSG   PIC X(60).

@@ -19,7 +19,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
-        02  N21ID1.
-            03  N21ID1-FIXED1.
-              04  N21ID1-ID1CODE  PIC X(11).
-              04  N21ID1-ID1MSG   PIC X(71).
+            02  N21ID1.
+                03  N21ID1-FIXED1.
+                  04  N21ID1-ID1CODE  PIC X(10).
+                  04  N21ID1-ID1MSG   PIC X(70).
