@@ -22,6 +22,9 @@ R99	{
 	       	state	int;
 			label	varchar(14);
 		};
+		B21	{
+	       	state	int;
+		};
 		PROGRESSBAR	{
 	           	value	int;
 		};

@@ -15,4 +15,5 @@
                   05  R99-SELECT  PIC X       OCCURS  2 TIMES.
               03  R99-B12-STATE   PIC S9(9)   BINARY.
               03  R99-B12-LABEL   PIC X(14).
+              03  R99-B21-STATE   PIC S9(9)   BINARY.
               03  R99-PROGRESSBAR-VALUE       PIC S9(9)   BINARY.
