@@ -131,13 +131,7 @@
 	<key>GDK_F12</key>
 	<signal>clicked</signal>
       </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label>епо©</label>
+      <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
