@@ -653,3 +653,21 @@ path	key24 	{
 		;
 	};
 };
+
+path	key25 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key25_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYMD      LIKE :SRYYMD
+			AND   CREATEKBN   <>  '3'
+                        AND ((KOH1HKNNUM  =   :KOH1HKNNUM)
+                         OR  (KOH2HKNNUM  =   :KOH2HKNNUM)
+                         OR  (KOH3HKNNUM  =   :KOH3HKNNUM)
+                         OR  (KOH4HKNNUM  =   :KOH4HKNNUM))
+		;
+	};
+};
