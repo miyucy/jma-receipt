@@ -197,6 +197,10 @@
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
       *
+      *    点数マスタ−（ワーク）
+           COPY    "CPTENSU.INC"       REPLACING
+                                       //TNS-// BY //HZN-TNS-//.
+      *
       *    システム管理マスタ
            COPY    "CPSK1006.INC".
       *    システム管理マスタ
@@ -700,6 +704,7 @@
       *****************************************************************
        2001-SANTEI-CHK-SEC             SECTION.
       *
+           MOVE    TNS-TENSU-REC       TO  HZN-TNS-TENSU-REC
       *    算定履歴チェック処理
            INITIALIZE                  ORCSC91AREA
            MOVE    LNK-SC92-SYORIFLG   TO  LNK-SC91-SYORIFLG
@@ -718,6 +723,8 @@
                                                 TNS-TENSU-REC
            MOVE    LNK-SC91-ERRCD      TO  LNK-SC92-ERRCD3
            MOVE    LNK-SC91-ERRMSG     TO  LNK-SC92-ERRMSG
+      *
+           MOVE    HZN-TNS-TENSU-REC   TO  TNS-TENSU-REC
       *
            .
        2001-SANTEI-CHK-EXT.
