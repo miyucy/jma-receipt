@@ -6225,12 +6225,12 @@
            INITIALIZE                      ORCSRECEUPDAREA
            MOVE    "1"                 TO  LNK-UPD-SYORI
            MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
-           MOVE    SPA-NAI-C02-PTID     TO  LNK-UPD-PTID
+           MOVE    SPA-NAI-C02-PTID    TO  LNK-UPD-PTID
            MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
            MOVE    SPA-OPID            TO  LNK-UPD-OPID
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
            IF      LNK-UPD-RC      NOT =   ZERO
-               MOVE    "????"              TO  SPA-ERRCD
+               MOVE    "1006"              TO  SPA-ERRCD
                DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC
            END-IF
       *
@@ -7849,6 +7849,10 @@
                                                        TO  SPA-ERRMSG
                WHEN    "1005"
                    MOVE    "自院病名の更新処理でエラーになりました"
+                                                       TO  SPA-ERRMSG
+               WHEN    "1006"
+                   MOVE
+                  "レセプト作成管理マスタの更新処理でエラーになりました"
                                                        TO  SPA-ERRMSG
       *
                WHEN    "9999"

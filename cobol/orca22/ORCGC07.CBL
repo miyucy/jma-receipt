@@ -35,6 +35,7 @@
       * 01.00.06     NACL-藤原    04/05/06  アフターケア日の表示修正
       * 01.00.07     NACL-藤原    04/10/03  他画面より遷移したとき
       *                                     入外区分をあわせて初期表示する
+      * 01.00.08     NACL-藤原    05/02/14  訂正日指定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -170,6 +171,9 @@
       *
       *    保険組合せセット領域
            COPY    "CPORCSHKNSET.INC".
+      *
+      *    レセプト作成管理マスタ更新サブ
+           COPY    "CPORCSRECEUPD.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -1837,7 +1841,14 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
+                   MOVE    "1006"              TO  SPA-ERRCD
                    DISPLAY "C07 RECECOM UPD ERR:" MCP-RC "."
+                   GO  TO  2121-TOUROKU-SYORI-EXT
+               ELSE
+                   PERFORM 21211-RECEUPD-UPDATE-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE    
+                       GO  TO  2121-TOUROKU-SYORI-EXT
+                   END-IF
                END-IF
            ELSE
       *        追加
@@ -1869,7 +1880,14 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
+                   MOVE    "1006"              TO  SPA-ERRCD
                    DISPLAY "C07 RECECOM INS ERR:" MCP-RC "."
+                   GO  TO  2121-TOUROKU-SYORI-EXT
+               ELSE
+                   PERFORM 21211-RECEUPD-UPDATE-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE    
+                       GO  TO  2121-TOUROKU-SYORI-EXT
+                   END-IF
                END-IF
            END-IF
       *
@@ -1889,6 +1907,27 @@
       *
            .
        2121-TOUROKU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト作成管理マスタ更新処理
+      *****************************************************************
+       21211-RECEUPD-UPDATE-SEC           SECTION.
+      *
+           INITIALIZE                      ORCSRECEUPDAREA
+           MOVE    "1"                 TO  LNK-UPD-SYORI
+           MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
+           MOVE    SPA-NAI-C02-PTID    TO  LNK-UPD-PTID
+           MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
+           MOVE    SPA-OPID            TO  LNK-UPD-OPID
+           CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
+           IF      LNK-UPD-RC      NOT =   ZERO
+               MOVE    "1006"              TO  SPA-ERRCD
+               DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC
+           END-IF
+      *
+           .
+       21211-RECEUPD-UPDATE-RECEUPD-UPDATE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2093,8 +2132,8 @@
                INITIALIZE                  EXAMPLE-REC
                MOVE    SPA-HOSPID          TO  EXAMPLE-HOSPID
                MOVE    "1"                 TO  EXAMPLE-KUBUN
-               MOVE    SPA-C07-BUNNUM     TO  EXAMPLE-RENNUM
-               MOVE    SPA-C07-COMMENT    TO  EXAMPLE-COMMENT
+               MOVE    SPA-C07-BUNNUM      TO  EXAMPLE-RENNUM
+               MOVE    SPA-C07-COMMENT     TO  EXAMPLE-COMMENT
       *
                MOVE    SMCNDATE-YMD        TO  EXAMPLE-CREYMD
                MOVE    SMCNDATE-YMD        TO  EXAMPLE-UPYMD
@@ -2479,6 +2518,14 @@
                WHEN    "0015"
                    MOVE    "アフターケア診療日選択番号がありません"
                                        TO  SPA-ERRMSG
+               WHEN    "1006"
+                   MOVE
+                  "レセプト作成管理マスタの更新処理でエラーになりました"
+                                                       TO  SPA-ERRMSG
+               WHEN    "1007"
+                   MOVE
+                  "レセプトコメントの更新処理でエラーになりました"
+                                                       TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  CERR
