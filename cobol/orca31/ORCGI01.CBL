@@ -851,6 +851,8 @@
       *
       *    入院患者照会画面
            WHEN    "I20"
+      *    診療行為画面
+           WHEN    "K02N"
       *
                PERFORM 310-SPASET-SEC
                MOVE    SPA-MOTOPG      TO  SPA-I0-MOTOPG
@@ -5285,6 +5287,7 @@
       *
            EVALUATE    SPA-I0-MOTOPG
            WHEN    "I20"
+           WHEN    "K02N"
                MOVE    SPA-I0-MOTOPG   TO  SPA-SAKIPG
            WHEN    OTHER
                MOVE    "M01"           TO  SPA-SAKIPG
