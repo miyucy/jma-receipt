@@ -1,40 +1,188 @@
-? scripts/daily/HCALL.sh
-Index: orca-hospid-set.sh
+Index: cobol/copy/CPCOMMONSHELL.INC
 ===================================================================
-RCS file: /var/lib/cvs/jma-receipt/orca-hospid-set.sh,v
+RCS file: /var/lib/cvs/jma-receipt/cobol/copy/Attic/CPCOMMONSHELL.INC,v
 retrieving revision 1.1.1.1
-diff -u -r1.1.1.1 orca-hospid-set.sh
---- orca-hospid-set.sh	4 Sep 2002 07:00:24 -0000	1.1.1.1
-+++ orca-hospid-set.sh	31 Oct 2002 09:54:39 -0000
-@@ -39,7 +39,7 @@
- #
- echo
- echo "ＯＲＣＡＤＢテーブルの医療機関ＩＤをセットします"
--for f in `echo "SELECT pg_class.relname FROM pg_class, pg_attribute WHERE  pg_class.relkind = 'r'  and pg_attribute.attnum > 0 and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = 'hospid';" | psql  orca | grep 'tbl'` ; do
-+for f in `echo "SELECT pg_class.relname FROM pg_class, pg_attribute WHERE  pg_class.relkind = 'r'  and pg_attribute.attnum > 0 and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = 'hospid';" | psql orca | grep 'tbl'` ; do
- 	echo "$f ------------"
- 	echo "update $f set hospid = '$LASTHOSPID';" | psql orca
- 	echo "---------------------"
+diff -u -r1.1.1.1 CPCOMMONSHELL.INC
+--- cobol/copy/CPCOMMONSHELL.INC	4 Sep 2002 07:00:25 -0000	1.1.1.1
++++ cobol/copy/CPCOMMONSHELL.INC	19 Nov 2002 10:50:42 -0000
+@@ -29,22 +29,22 @@
+            03  SHELL-NAME.
+       *      05  FILLER             PIC  X(20) VALUE
+       *                                      "../../scripts/daily/".
+-             05  FILLER             PIC  X(30) VALUE
+-                    "/usr/local/orca/scripts/daily/".
++             05  FILLER             PIC  X(35) VALUE
++                    "/usr/lib/jma-receipt/scripts/daily/".
+              05  SHELL-ID           PIC  X(10).
+            03  SHELL-ARG1.
+-             05  FILLER             PIC  X(43) VALUE 
+-                    "/usr/local/orca/scripts/daily/print-data.rb".
++             05  FILLER             PIC  X(48) VALUE 
++                    "/usr/lib/jma-receipt/scripts/daily/print-data.rb".
+              05  FILLER             PIC  X(01) VALUE SPACE.
+            03  SHELL-ARG2.
+-             05  FILLER             PIC  X(21) VALUE 
+-                    "/usr/local/orca/form/".
++             05  FILLER             PIC  X(26) VALUE 
++                    "/usr/lib/jma-receipt/form/".
+       *******05  SHELL-DIA          PIC  X(10).
+              05  SHELL-DIA          PIC  X(50).
+              05  FILLER             PIC  X(01) VALUE SPACE.
+            03  SHELL-ARG3.
+-             05  FILLER             PIC  X(23) VALUE 
+-                    "/usr/local/orca/record/".
++             05  FILLER             PIC  X(28) VALUE 
++                    "/usr/lib/jma-receipt/record/".
+       *******05  SHELL-DEF          PIC  X(10).
+              05  SHELL-DEF          PIC  X(50).
+              05  FILLER             PIC  X(01) VALUE SPACE.
+Index: cobol/copy/CPCOMMONSHELL1.INC
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/cobol/copy/Attic/CPCOMMONSHELL1.INC,v
+retrieving revision 1.2
+diff -u -r1.2 CPCOMMONSHELL1.INC
+--- cobol/copy/CPCOMMONSHELL1.INC	25 Sep 2002 11:14:28 -0000	1.2
++++ cobol/copy/CPCOMMONSHELL1.INC	19 Nov 2002 10:50:42 -0000
+@@ -36,8 +36,8 @@
+        01  SHELL-AREA.
+       *★    03  FILLER             PIC  X(03) VALUE "sh ".
+            03  SHELL-NAME.
+-             05  FILLER             PIC  X(32) VALUE
+-                     "/usr/local/orca/scripts/monthly/".
++             05  FILLER             PIC  X(37) VALUE
++                     "/usr/lib/jma-receipt/scripts/monthly/".
+              05  SHELL-SHELL        PIC  X(30).
+            03  SHELL-ARG1.
+              05  SHELL-SRYYM        PIC  X(06).
+Index: cobol/copy/CPCOMMONSHELL4.INC
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/cobol/copy/Attic/CPCOMMONSHELL4.INC,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 CPCOMMONSHELL4.INC
+--- cobol/copy/CPCOMMONSHELL4.INC	4 Sep 2002 07:00:29 -0000	1.1.1.1
++++ cobol/copy/CPCOMMONSHELL4.INC	19 Nov 2002 10:50:42 -0000
+@@ -25,22 +25,22 @@
+       *****************************************************************
+        01  SHELL-AREA.
+            03  SHELL-NAME.
+-               05  FILLER             PIC  X(30) VALUE
+-                       "/usr/local/orca/scripts/daily/".
++               05  FILLER             PIC  X(35) VALUE
++                       "/usr/lib/jma-receipt/scripts/daily/".
+                05  SHELL-ID           PIC  X(10).
+                05  FILLER             PIC  X(60) VALUE SPACE.
+            03  SHELL-ARG1.
+-               05  FILLER             PIC  X(43) VALUE 
+-                       "/usr/local/orca/scripts/daily/print-data.rb".
++               05  FILLER             PIC  X(48) VALUE 
++                       "/usr/lib/jma-receipt/scripts/daily/print-data.rb".
+                05  FILLER             PIC  X(57) VALUE SPACE.
+            03  SHELL-ARG2.
+-               05  FILLER             PIC  X(21) VALUE
+-                       "/usr/local/orca/form/".
++               05  FILLER             PIC  X(26) VALUE
++                       "/usr/lib/jma-receipt/form/".
+                05  SHELL-DIA          PIC  X(50).
+                05  FILLER             PIC  X(29) VALUE SPACE.
+            03  SHELL-ARG3.
+-               05  FILLER             PIC  X(23) VALUE
+-                       "/usr/local/orca/record/".
++               05  FILLER             PIC  X(28) VALUE
++                       "/usr/lib/jma-receipt/record/".
+                05  SHELL-DEF          PIC  X(50).
+                05  FILLER             PIC  X(27) VALUE SPACE.
+            03  SHELL-ARG4.
+Index: cobol/copy/CPCOMMONSHELLMST.INC
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/cobol/copy/Attic/CPCOMMONSHELLMST.INC,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 CPCOMMONSHELLMST.INC
+--- cobol/copy/CPCOMMONSHELLMST.INC	4 Sep 2002 07:00:29 -0000	1.1.1.1
++++ cobol/copy/CPCOMMONSHELLMST.INC	19 Nov 2002 10:50:42 -0000
+@@ -31,8 +31,8 @@
+       *****************************************************************
+        01  SHELL-AREA.
+            03  SHELL-NAME.
+-               05  FILLER             PIC  X(32) VALUE
+-                         "/usr/local/orca/scripts/allways/".
++               05  FILLER             PIC  X(37) VALUE
++                         "/usr/lib/jma-receipt/scripts/allways/".
+                05  SHELL-SHELL        PIC  X(17).
+                05  FILLER             PIC  X(51) VALUE SPACE.
+            03  SHELL-ARG1.
+Index: cobol/copy/CPHOMEDIR.INC
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/cobol/copy/Attic/CPHOMEDIR.INC,v
+retrieving revision 1.2
+diff -u -r1.2 CPHOMEDIR.INC
+--- cobol/copy/CPHOMEDIR.INC	2 Oct 2002 09:09:31 -0000	1.2
++++ cobol/copy/CPHOMEDIR.INC	19 Nov 2002 10:50:42 -0000
+@@ -25,8 +25,8 @@
+       ************************************************************
+        01  HOMEDIR-AREA.
+            03  HOMEDIR-NAME             PIC X(100)   VALUE
+-               "/usr/local/orca/".
++               "/usr/lib/jma-receipt/".
+       *    サイトホーム
+            03  HOMEDIR-SITE-NAME        PIC X(100)   VALUE
+-               "/usr/local/orca/".
++               "/usr/lib/jma-receipt/site-lib/".
+       *
+Index: cobol/copy/K02.INC
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/cobol/copy/K02.INC,v
+retrieving revision 1.2
+diff -u -r1.2 K02.INC
+--- cobol/copy/K02.INC	16 Oct 2002 06:05:22 -0000	1.2
++++ cobol/copy/K02.INC	19 Nov 2002 10:50:42 -0000
+@@ -45,8 +45,9 @@
+                 04  K02-VALUE   PIC X(22).
+               03  K02-MEISYO    OCCURS  20.
+                 04  K02-VALUE   PIC X(62).
+-              03  K02-SURYO     OCCURS  20.
+-                04  K02-VALUE   PIC X(60).
++              03  K02-SURYO-R     OCCURS  20.
++                04  K02-SURYO-STYLE   PIC X(20).
++                04  K02-SURYO   PIC X(60).
+               03  K02-NENREI.
+                 04  K02-VALUE   PIC X(6).
+               03  K02-ZAITENTOTAL.
 Index: cobol/copy/K08.INC
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/cobol/copy/K08.INC,v
-retrieving revision 1.3
-diff -u -r1.3 K08.INC
---- cobol/copy/K08.INC	29 Oct 2002 06:45:50 -0000	1.3
-+++ cobol/copy/K08.INC	31 Oct 2002 09:54:39 -0000
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 K08.INC
+--- cobol/copy/K08.INC	4 Sep 2002 07:00:28 -0000	1.1.1.1
++++ cobol/copy/K08.INC	19 Nov 2002 10:50:42 -0000
 @@ -79,3 +79,4 @@
-                     06  K08-DELFLG  PIC X(2).
-                     06  K08-MEISAI  PIC X(150).
+                     06  K08-DELFLG    PIC X(4).
+                     06  K08-MEISAI    PIC X(150).
                    05  K08-SELECT  PIC X       OCCURS  300 TIMES.
 +                  05  K08-MEI-STYLE   PIC X(20).
+Index: cobol/orca21/ORCGK02.CBL
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/cobol/orca21/ORCGK02.CBL,v
+retrieving revision 1.12.4.2
+diff -u -r1.12.4.2 ORCGK02.CBL
+--- cobol/orca21/ORCGK02.CBL	13 Nov 2002 11:01:05 -0000	1.12.4.2
++++ cobol/orca21/ORCGK02.CBL	19 Nov 2002 10:50:43 -0000
+@@ -11754,7 +11754,7 @@
+            MOVE    WRK-KEI-Z           TO  WRK-H-KEI
+       *
+            MOVE    WRK-SURYO-HENSYU    TO  K02-SURYO (IDX)
+-      *****MOVE    "user-font"         TO  K02-SURYO-STYLE(IDX)
++           MOVE    "user-font"         TO  K02-SURYO-STYLE(IDX)
+       *
+            .
+        5002-SURYO-HEN-EXT.
 Index: cobol/orca21/ORCGK08.CBL
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/cobol/orca21/ORCGK08.CBL,v
-retrieving revision 1.5
-diff -u -r1.5 ORCGK08.CBL
---- cobol/orca21/ORCGK08.CBL	29 Oct 2002 02:57:23 -0000	1.5
-+++ cobol/orca21/ORCGK08.CBL	31 Oct 2002 09:54:39 -0000
-@@ -2454,6 +2454,7 @@
+retrieving revision 1.4
+diff -u -r1.4 ORCGK08.CBL
+--- cobol/orca21/ORCGK08.CBL	26 Sep 2002 06:12:01 -0000	1.4
++++ cobol/orca21/ORCGK08.CBL	19 Nov 2002 10:50:44 -0000
+@@ -2453,6 +2453,7 @@
        **** END-IF
        *
        *
@@ -45,10 +193,10 @@ diff -u -r1.5 ORCGK08.CBL
 Index: cobol/orcabt/ORCR0030.CBL
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/cobol/orcabt/ORCR0030.CBL,v
-retrieving revision 1.8
-diff -u -r1.8 ORCR0030.CBL
---- cobol/orcabt/ORCR0030.CBL	17 Oct 2002 09:23:47 -0000	1.8
-+++ cobol/orcabt/ORCR0030.CBL	31 Oct 2002 09:54:39 -0000
+retrieving revision 1.8.4.1
+diff -u -r1.8.4.1 ORCR0030.CBL
+--- cobol/orcabt/ORCR0030.CBL	13 Nov 2002 11:01:05 -0000	1.8.4.1
++++ cobol/orcabt/ORCR0030.CBL	19 Nov 2002 10:51:03 -0000
 @@ -628,6 +628,11 @@
                 PERFORM     210-HENSYU-SEC
        *
@@ -103,7 +251,7 @@ RCS file: /var/lib/cvs/jma-receipt/cobol/orcabt/ORCR0100.CBL,v
 retrieving revision 1.10
 diff -u -r1.10 ORCR0100.CBL
 --- cobol/orcabt/ORCR0100.CBL	24 Oct 2002 02:05:18 -0000	1.10
-+++ cobol/orcabt/ORCR0100.CBL	31 Oct 2002 09:54:39 -0000
++++ cobol/orcabt/ORCR0100.CBL	19 Nov 2002 10:51:03 -0000
 @@ -843,6 +843,11 @@
                         PERFORM 2001-SYORI-SEC
        *
@@ -148,13 +296,28 @@ diff -u -r1.10 ORCR0100.CBL
 +       900-DBSTART-EXT.
 +           EXIT.
 +      *      
+Index: doc/orcarc
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/doc/orcarc,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orcarc
+--- doc/orcarc	4 Sep 2002 07:01:43 -0000	1.1.1.1
++++ doc/orcarc	19 Nov 2002 10:51:03 -0000
+@@ -62,3 +62,7 @@
+ 	fontset = "-misc-fixed-medium-r-normal-*-14-*-*-*-*-*-*-*"
+ 	fg[NORMAL] = { 6.0, 8.0, 8.0}
+ }
++style	"user-font"	{
++ 	fontset = "-misc-fixed-medium-r-normal-*-14-*-*-*-c-*-*-*"
++ 	fg[NORMAL] = { 0.0, 0.0, 0.0}
++}
 Index: etc/dbgroup.inc
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/etc/dbgroup.inc,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 dbgroup.inc
 --- etc/dbgroup.inc	4 Sep 2002 07:01:43 -0000	1.1.1.1
-+++ etc/dbgroup.inc	31 Oct 2002 09:54:39 -0000
++++ etc/dbgroup.inc	19 Nov 2002 10:51:03 -0000
 @@ -10,8 +10,8 @@
   priority 100;
   type "PostgreSQL";
@@ -169,25 +332,23 @@ diff -u -r1.1.1.1 dbgroup.inc
 Index: etc/jma-receipt.env.in
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/etc/jma-receipt.env.in,v
-retrieving revision 1.7
-diff -u -r1.7 jma-receipt.env.in
---- etc/jma-receipt.env.in	29 Oct 2002 12:54:11 -0000	1.7
-+++ etc/jma-receipt.env.in	31 Oct 2002 09:54:39 -0000
-@@ -26,6 +26,6 @@
+retrieving revision 1.6
+diff -u -r1.6 jma-receipt.env.in
+--- etc/jma-receipt.env.in	4 Oct 2002 11:29:00 -0000	1.6
++++ etc/jma-receipt.env.in	19 Nov 2002 10:51:03 -0000
+@@ -26,4 +26,4 @@
  SITESCREENDIR=${SITEDIR}/screen
  SITESCRIPTSDIR=${SITEDIR}/scripts
  
 -DBSTUB=/usr/local/panda/bin/dbstub
 +DBSTUB=/usr/lib/panda/sbin/dbstub
- 
- DBNAME=orca
 Index: init/orca-db-create.sh
 ===================================================================
-RCS file: /var/lib/cvs/jma-receipt/init/orca-db-create.sh,v
+RCS file: /var/lib/cvs/jma-receipt/init/Attic/orca-db-create.sh,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 orca-db-create.sh
 --- init/orca-db-create.sh	4 Sep 2002 07:02:57 -0000	1.1.1.1
-+++ init/orca-db-create.sh	31 Oct 2002 09:54:39 -0000
++++ init/orca-db-create.sh	19 Nov 2002 10:51:03 -0000
 @@ -1,6 +1,6 @@
  #! /bin/sh
  
@@ -198,11 +359,11 @@ diff -u -r1.1.1.1 orca-db-create.sh
  if su - postgres -c 'psql template1 -l|grep orca'
 Index: init/orca-db-install.sh
 ===================================================================
-RCS file: /var/lib/cvs/jma-receipt/init/orca-db-install.sh,v
+RCS file: /var/lib/cvs/jma-receipt/init/Attic/orca-db-install.sh,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 orca-db-install.sh
 --- init/orca-db-install.sh	4 Sep 2002 07:02:57 -0000	1.1.1.1
-+++ init/orca-db-install.sh	31 Oct 2002 09:54:39 -0000
++++ init/orca-db-install.sh	19 Nov 2002 10:51:03 -0000
 @@ -1,9 +1,10 @@
  #!/bin/bash
 -ORCADIR=/usr/local/orca
@@ -234,15 +395,587 @@ diff -u -r1.1.1.1 orca-db-install.sh
  FTP=ftp.orca.med.or.jp/pub/orca_data/
  #FTP=beta:inisalo@ftp.orca.med.or.jp/pub/orca_data/
  
+Index: lddef/directory
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/directory,v
+retrieving revision 1.3
+diff -u -r1.3 directory
+--- lddef/directory	18 Oct 2002 07:43:09 -0000	1.3
++++ lddef/directory	19 Nov 2002 10:51:03 -0000
+@@ -2,11 +2,11 @@
+ 
+ #linksize	64512;
+ 
+-base	"/usr/local/orca";
++base	"/usr/lib/jma-receipt";
+ 
+-lddir	"=/lddef";
+-bddir	"=/lddef";
+-record	"=/record";
++lddir	"=/lddef:=/site-lib/lddef";
++bddir	"=/lddef:=/site-lib/lddef";
++record	"=/record:=/site-lib/record";
+ 
+ multiplex_level	id;
+ 
+@@ -45,7 +45,7 @@
+ bd	{
+         orcabt;
+         recept;
+-#include	<../etc/kentan.inc>
++#include	<./kentan.inc>
+ };
+ 
+-#include	<../etc/dbgroup.inc>
++#include	<./dbgroup.inc>
+Index: lddef/orca00.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca00.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca00.ld
+--- lddef/orca00.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca00.ld	19 Nov 2002 10:51:03 -0000
+@@ -15,7 +15,7 @@
+ 
+ multiplex_group	orca00;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca01.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca01.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca01.ld
+--- lddef/orca01.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca01.ld	19 Nov 2002 10:51:03 -0000
+@@ -11,7 +11,7 @@
+ 
+ multiplex_group	orca01;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca02.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca02.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca02.ld
+--- lddef/orca02.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca02.ld	19 Nov 2002 10:51:03 -0000
+@@ -10,7 +10,7 @@
+ 
+ multiplex_group	orca02;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca101.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca101.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca101.ld
+--- lddef/orca101.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca101.ld	19 Nov 2002 10:51:03 -0000
+@@ -22,7 +22,7 @@
+ 
+ multiplex_group	orca101;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca102.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca102.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca102.ld
+--- lddef/orca102.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca102.ld	19 Nov 2002 10:51:03 -0000
+@@ -21,7 +21,7 @@
+ 
+ multiplex_group	orca102;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca103.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca103.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca103.ld
+--- lddef/orca103.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca103.ld	19 Nov 2002 10:51:03 -0000
+@@ -12,7 +12,7 @@
+ 
+ multiplex_group	orca103;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca104.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca104.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca104.ld
+--- lddef/orca104.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca104.ld	19 Nov 2002 10:51:03 -0000
+@@ -11,7 +11,7 @@
+ 
+ multiplex_group	orca104;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca105.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca105.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca105.ld
+--- lddef/orca105.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca105.ld	19 Nov 2002 10:51:03 -0000
+@@ -10,7 +10,7 @@
+ 
+ multiplex_group	orca105;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca106.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca106.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca106.ld
+--- lddef/orca106.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca106.ld	19 Nov 2002 10:51:03 -0000
+@@ -10,7 +10,7 @@
+ 
+ multiplex_group	orca106;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca107.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca107.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca107.ld
+--- lddef/orca107.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca107.ld	19 Nov 2002 10:51:03 -0000
+@@ -10,7 +10,7 @@
+ 
+ multiplex_group	orca107;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca11.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca11.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca11.ld
+--- lddef/orca11.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca11.ld	19 Nov 2002 10:51:03 -0000
+@@ -9,7 +9,7 @@
+ 
+ multiplex_group	orca11;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca12.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca12.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca12.ld
+--- lddef/orca12.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca12.ld	19 Nov 2002 10:51:03 -0000
+@@ -21,7 +21,7 @@
+ 
+ multiplex_group	orca12;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca13.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca13.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca13.ld
+--- lddef/orca13.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca13.ld	19 Nov 2002 10:51:03 -0000
+@@ -15,7 +15,7 @@
+ 
+ multiplex_group	orca13;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca14.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca14.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca14.ld
+--- lddef/orca14.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca14.ld	19 Nov 2002 10:51:03 -0000
+@@ -11,7 +11,7 @@
+ 
+ multiplex_group	orca14;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca18.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca18.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca18.ld
+--- lddef/orca18.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca18.ld	19 Nov 2002 10:51:03 -0000
+@@ -9,7 +9,7 @@
+ 
+ multiplex_group	orca18;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca19.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca19.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca19.ld
+--- lddef/orca19.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca19.ld	19 Nov 2002 10:51:03 -0000
+@@ -9,7 +9,7 @@
+ 
+ multiplex_group	orca19;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca21.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca21.ld,v
+retrieving revision 1.1.1.2
+diff -u -r1.1.1.2 orca21.ld
+--- lddef/orca21.ld	4 Sep 2002 07:13:39 -0000	1.1.1.2
++++ lddef/orca21.ld	19 Nov 2002 10:51:03 -0000
+@@ -28,7 +28,7 @@
+ 
+ multiplex_group	orca21;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca22.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca22.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca22.ld
+--- lddef/orca22.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca22.ld	19 Nov 2002 10:51:03 -0000
+@@ -17,7 +17,7 @@
+ 
+ multiplex_group	orca22;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca23.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca23.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca23.ld
+--- lddef/orca23.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca23.ld	19 Nov 2002 10:51:03 -0000
+@@ -10,7 +10,7 @@
+ 
+ multiplex_group	orca23;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ 
+ data	{
+Index: lddef/orca24.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca24.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca24.ld
+--- lddef/orca24.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca24.ld	19 Nov 2002 10:51:03 -0000
+@@ -20,7 +20,7 @@
+ 
+ multiplex_group	orca24;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ 
+ data	{
+Index: lddef/orca41.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca41.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca41.ld
+--- lddef/orca41.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca41.ld	19 Nov 2002 10:51:03 -0000
+@@ -12,7 +12,7 @@
+ 
+ multiplex_group	orca41;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ 
+ data	{
+Index: lddef/orca42.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca42.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca42.ld
+--- lddef/orca42.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca42.ld	19 Nov 2002 10:51:03 -0000
+@@ -16,7 +16,7 @@
+ 
+ multiplex_group	orca42;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca43.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca43.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca43.ld
+--- lddef/orca43.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca43.ld	19 Nov 2002 10:51:03 -0000
+@@ -11,7 +11,7 @@
+ 
+ multiplex_group	orca43;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca44.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca44.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca44.ld
+--- lddef/orca44.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca44.ld	19 Nov 2002 10:51:03 -0000
+@@ -11,7 +11,7 @@
+ 
+ multiplex_group	orca44;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca51.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca51.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca51.ld
+--- lddef/orca51.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca51.ld	19 Nov 2002 10:51:03 -0000
+@@ -11,7 +11,7 @@
+ 
+ multiplex_group	orca51;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca52.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca52.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca52.ld
+--- lddef/orca52.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca52.ld	19 Nov 2002 10:51:03 -0000
+@@ -11,7 +11,7 @@
+ 
+ multiplex_group	orca52;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ data	{
+ 	spa	orcaspa;
+Index: lddef/orca71.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca71.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca71.ld
+--- lddef/orca71.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca71.ld	19 Nov 2002 10:51:03 -0000
+@@ -12,7 +12,7 @@
+ 
+ multiplex_group	orca71;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ 
+ data	{
+Index: lddef/orca82.ld
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/lddef/Attic/orca82.ld,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orca82.ld
+--- lddef/orca82.ld	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ lddef/orca82.ld	19 Nov 2002 10:51:03 -0000
+@@ -11,7 +11,7 @@
+ 
+ multiplex_group	orca82;
+ 
+-home	"/usr/local/orca/lib";
++home	"/usr/lib/jma-receipt";
+ 
+ 
+ data	{
+Index: record/K02.rec
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/record/K02.rec,v
+retrieving revision 1.2
+diff -u -r1.2 K02.rec
+--- record/K02.rec	16 Oct 2002 06:04:16 -0000	1.2
++++ record/K02.rec	19 Nov 2002 10:51:04 -0000
+@@ -214,63 +214,83 @@
+ 			value	varchar(62);
+ 		};
+ 		SURYO01	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO02	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO03	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO04	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO05	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO06	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO07	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO08	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO09	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO10	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO11	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO12	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO13	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO14	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO15	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO16	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO17	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO18	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO19	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		SURYO20	{
++ 		    style   varchar(20);
+ 			value	varchar(60);
+ 		};
+ 		NENREI	{
 Index: record/K08.rec
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/record/K08.rec,v
-retrieving revision 1.3
-diff -u -r1.3 K08.rec
---- record/K08.rec	29 Oct 2002 06:45:01 -0000	1.3
-+++ record/K08.rec	31 Oct 2002 09:54:39 -0000
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 K08.rec
+--- record/K08.rec	4 Sep 2002 07:02:57 -0000	1.1.1.1
++++ record/K08.rec	19 Nov 2002 10:51:04 -0000
 @@ -118,6 +118,7 @@
- 					value2	varchar(150);
+ 					value3	varchar(150);
  				}	[300];
  				select	bool[300];
 +		    style   varchar(20);
@@ -255,7 +988,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/H99.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 H99.glade
 --- screen/H99.glade	4 Sep 2002 07:03:03 -0000	1.1.1.1
-+++ screen/H99.glade	31 Oct 2002 09:54:39 -0000
++++ screen/H99.glade	19 Nov 2002 10:51:04 -0000
 @@ -407,7 +407,7 @@
        <y>100</y>
        <width>60</width>
@@ -271,7 +1004,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/J04.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 J04.glade
 --- screen/J04.glade	4 Sep 2002 07:03:01 -0000	1.1.1.1
-+++ screen/J04.glade	31 Oct 2002 09:54:39 -0000
++++ screen/J04.glade	19 Nov 2002 10:51:04 -0000
 @@ -2045,7 +2045,7 @@
        <y>80</y>
        <width>405</width>
@@ -287,7 +1020,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/K02.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 K02.glade
 --- screen/K02.glade	4 Sep 2002 07:03:01 -0000	1.1.1.1
-+++ screen/K02.glade	31 Oct 2002 09:54:39 -0000
++++ screen/K02.glade	19 Nov 2002 10:51:04 -0000
 @@ -2546,7 +2546,7 @@
        <y>88</y>
        <width>340</width>
@@ -303,7 +1036,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/K021.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 K021.glade
 --- screen/K021.glade	4 Sep 2002 07:03:01 -0000	1.1.1.1
-+++ screen/K021.glade	31 Oct 2002 09:54:39 -0000
++++ screen/K021.glade	19 Nov 2002 10:51:04 -0000
 @@ -214,7 +214,7 @@
        <y>344</y>
        <width>56</width>
@@ -319,7 +1052,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/K023.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 K023.glade
 --- screen/K023.glade	4 Sep 2002 07:02:59 -0000	1.1.1.1
-+++ screen/K023.glade	31 Oct 2002 09:54:39 -0000
++++ screen/K023.glade	19 Nov 2002 10:51:04 -0000
 @@ -1939,7 +1939,7 @@
        <y>36</y>
        <width>268</width>
@@ -335,7 +1068,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/K05.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 K05.glade
 --- screen/K05.glade	4 Sep 2002 07:03:02 -0000	1.1.1.1
-+++ screen/K05.glade	31 Oct 2002 09:54:39 -0000
++++ screen/K05.glade	19 Nov 2002 10:51:04 -0000
 @@ -2444,7 +2444,7 @@
        <y>80</y>
        <width>405</width>
@@ -351,7 +1084,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/N01.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 N01.glade
 --- screen/N01.glade	4 Sep 2002 07:03:06 -0000	1.1.1.1
-+++ screen/N01.glade	31 Oct 2002 09:54:39 -0000
++++ screen/N01.glade	19 Nov 2002 10:51:04 -0000
 @@ -604,7 +604,7 @@
        <y>40</y>
        <width>80</width>
@@ -427,10 +1160,10 @@ diff -u -r1.1.1.1 N01.glade
 Index: screen/P02.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/P02.glade,v
-retrieving revision 1.7
-diff -u -r1.7 P02.glade
---- screen/P02.glade	31 Oct 2002 07:35:26 -0000	1.7
-+++ screen/P02.glade	31 Oct 2002 09:54:39 -0000
+retrieving revision 1.6
+diff -u -r1.6 P02.glade
+--- screen/P02.glade	17 Oct 2002 04:15:27 -0000	1.6
++++ screen/P02.glade	19 Nov 2002 10:51:04 -0000
 @@ -5364,7 +5364,7 @@
  	  <y>516</y>
  	  <width>44</width>
@@ -455,7 +1188,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/P02D.glade,v
 retrieving revision 1.2
 diff -u -r1.2 P02D.glade
 --- screen/P02D.glade	25 Sep 2002 11:21:21 -0000	1.2
-+++ screen/P02D.glade	31 Oct 2002 09:54:39 -0000
++++ screen/P02D.glade	19 Nov 2002 10:51:05 -0000
 @@ -447,7 +447,7 @@
        <y>116</y>
        <width>120</width>
@@ -579,7 +1312,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/P02E.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 P02E.glade
 --- screen/P02E.glade	4 Sep 2002 07:03:10 -0000	1.1.1.1
-+++ screen/P02E.glade	31 Oct 2002 09:54:39 -0000
++++ screen/P02E.glade	19 Nov 2002 10:51:05 -0000
 @@ -359,7 +359,7 @@
        <y>120</y>
        <width>52</width>
@@ -604,7 +1337,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/R98.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 R98.glade
 --- screen/R98.glade	4 Sep 2002 07:03:10 -0000	1.1.1.1
-+++ screen/R98.glade	31 Oct 2002 09:54:39 -0000
++++ screen/R98.glade	19 Nov 2002 10:51:05 -0000
 @@ -2449,7 +2449,7 @@
        <y>50</y>
        <width>100</width>
@@ -620,7 +1353,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/V02.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 V02.glade
 --- screen/V02.glade	4 Sep 2002 07:03:07 -0000	1.1.1.1
-+++ screen/V02.glade	31 Oct 2002 09:54:39 -0000
++++ screen/V02.glade	19 Nov 2002 10:51:05 -0000
 @@ -3718,7 +3718,7 @@
        <height>16</height>
        <label>〜</label>
@@ -789,7 +1522,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/W03.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 W03.glade
 --- screen/W03.glade	4 Sep 2002 07:03:06 -0000	1.1.1.1
-+++ screen/W03.glade	31 Oct 2002 09:54:39 -0000
++++ screen/W03.glade	19 Nov 2002 10:51:05 -0000
 @@ -1729,7 +1729,7 @@
        <y>10</y>
        <width>100</width>
@@ -805,7 +1538,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/W04.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 W04.glade
 --- screen/W04.glade	4 Sep 2002 07:03:06 -0000	1.1.1.1
-+++ screen/W04.glade	31 Oct 2002 09:54:39 -0000
++++ screen/W04.glade	19 Nov 2002 10:51:05 -0000
 @@ -397,7 +397,7 @@
        <y>10</y>
        <width>100</width>
@@ -902,7 +1635,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/W06.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 W06.glade
 --- screen/W06.glade	4 Sep 2002 07:03:07 -0000	1.1.1.1
-+++ screen/W06.glade	31 Oct 2002 09:54:39 -0000
++++ screen/W06.glade	19 Nov 2002 10:51:05 -0000
 @@ -111,7 +111,7 @@
        <y>156</y>
        <width>100</width>
@@ -1042,7 +1775,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/W07.glade,v
 retrieving revision 1.2
 diff -u -r1.2 W07.glade
 --- screen/W07.glade	10 Oct 2002 02:46:39 -0000	1.2
-+++ screen/W07.glade	31 Oct 2002 09:54:39 -0000
++++ screen/W07.glade	19 Nov 2002 10:51:05 -0000
 @@ -351,9 +351,9 @@
  	  <y>128</y>
  	  <width>300</width>
@@ -1097,7 +1830,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/W10.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 W10.glade
 --- screen/W10.glade	4 Sep 2002 07:02:59 -0000	1.1.1.1
-+++ screen/W10.glade	31 Oct 2002 09:54:39 -0000
++++ screen/W10.glade	19 Nov 2002 10:51:05 -0000
 @@ -297,7 +297,7 @@
        <height>16</height>
        <label>〜</label>
@@ -1122,7 +1855,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/W11.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 W11.glade
 --- screen/W11.glade	4 Sep 2002 07:03:08 -0000	1.1.1.1
-+++ screen/W11.glade	31 Oct 2002 09:54:39 -0000
++++ screen/W11.glade	19 Nov 2002 10:51:05 -0000
 @@ -1482,7 +1482,7 @@
        <y>10</y>
        <width>100</width>
@@ -1138,7 +1871,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/W12.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 W12.glade
 --- screen/W12.glade	4 Sep 2002 07:03:08 -0000	1.1.1.1
-+++ screen/W12.glade	31 Oct 2002 09:54:39 -0000
++++ screen/W12.glade	19 Nov 2002 10:51:05 -0000
 @@ -411,7 +411,7 @@
        <y>100</y>
        <width>150</width>
@@ -1177,7 +1910,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/X01.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 X01.glade
 --- screen/X01.glade	4 Sep 2002 07:03:06 -0000	1.1.1.1
-+++ screen/X01.glade	31 Oct 2002 09:54:39 -0000
++++ screen/X01.glade	19 Nov 2002 10:51:05 -0000
 @@ -461,7 +461,7 @@
        <y>90</y>
        <width>100</width>
@@ -1202,7 +1935,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/X02.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 X02.glade
 --- screen/X02.glade	4 Sep 2002 07:03:06 -0000	1.1.1.1
-+++ screen/X02.glade	31 Oct 2002 09:54:39 -0000
++++ screen/X02.glade	19 Nov 2002 10:51:06 -0000
 @@ -1467,7 +1467,7 @@
        <y>56</y>
        <width>100</width>
@@ -1236,7 +1969,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/Z02.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 Z02.glade
 --- screen/Z02.glade	4 Sep 2002 07:03:05 -0000	1.1.1.1
-+++ screen/Z02.glade	31 Oct 2002 09:54:39 -0000
++++ screen/Z02.glade	19 Nov 2002 10:51:06 -0000
 @@ -989,7 +989,7 @@
        <height>18</height>
        <label>レセプト編集情報</label>
@@ -1297,7 +2030,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/Z03.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 Z03.glade
 --- screen/Z03.glade	4 Sep 2002 07:03:05 -0000	1.1.1.1
-+++ screen/Z03.glade	31 Oct 2002 09:54:39 -0000
++++ screen/Z03.glade	19 Nov 2002 10:51:06 -0000
 @@ -567,7 +567,7 @@
  	  <y>536</y>
  	  <width>64</width>
@@ -1322,7 +2055,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/Z05.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 Z05.glade
 --- screen/Z05.glade	4 Sep 2002 07:03:05 -0000	1.1.1.1
-+++ screen/Z05.glade	31 Oct 2002 09:54:39 -0000
++++ screen/Z05.glade	19 Nov 2002 10:51:06 -0000
 @@ -1235,7 +1235,7 @@
        <y>364</y>
        <width>96</width>
@@ -1338,7 +2071,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/Z06.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 Z06.glade
 --- screen/Z06.glade	4 Sep 2002 07:03:10 -0000	1.1.1.1
-+++ screen/Z06.glade	31 Oct 2002 09:54:39 -0000
++++ screen/Z06.glade	19 Nov 2002 10:51:06 -0000
 @@ -601,7 +601,7 @@
        <y>200</y>
        <width>80</width>
@@ -1354,7 +2087,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/Z90.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 Z90.glade
 --- screen/Z90.glade	4 Sep 2002 07:03:08 -0000	1.1.1.1
-+++ screen/Z90.glade	31 Oct 2002 09:54:39 -0000
++++ screen/Z90.glade	19 Nov 2002 10:51:06 -0000
 @@ -459,7 +459,7 @@
        <y>72</y>
        <width>344</width>
@@ -1370,7 +2103,7 @@ RCS file: /var/lib/cvs/jma-receipt/screen/Z91.glade,v
 retrieving revision 1.1.1.1
 diff -u -r1.1.1.1 Z91.glade
 --- screen/Z91.glade	4 Sep 2002 07:03:08 -0000	1.1.1.1
-+++ screen/Z91.glade	31 Oct 2002 09:54:39 -0000
++++ screen/Z91.glade	19 Nov 2002 10:51:06 -0000
 @@ -303,7 +303,7 @@
        <y>96</y>
        <width>64</width>
@@ -1380,44 +2113,449 @@ diff -u -r1.1.1.1 Z91.glade
        <justify>GTK_JUSTIFY_CENTER</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-Index: scripts/daily/HCALL.sh.in
+Index: scripts/allways/ORCBQ01.sh
 ===================================================================
-RCS file: /var/lib/cvs/jma-receipt/scripts/daily/HCALL.sh.in,v
-retrieving revision 1.1
-diff -u -r1.1 HCALL.sh.in
---- scripts/daily/HCALL.sh.in	29 Oct 2002 16:37:51 -0000	1.1
-+++ scripts/daily/HCALL.sh.in	31 Oct 2002 09:54:39 -0000
-@@ -18,6 +18,6 @@
- echo	$4
- echo	$5
+RCS file: /var/lib/cvs/jma-receipt/scripts/allways/Attic/ORCBQ01.sh,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 ORCBQ01.sh
+--- scripts/allways/ORCBQ01.sh	4 Sep 2002 07:03:11 -0000	1.1.1.1
++++ scripts/allways/ORCBQ01.sh	19 Nov 2002 10:51:06 -0000
+@@ -11,9 +11,10 @@
+ #        $8 シェルＩＤ
+ #
+ #-------------------------------------------#
+-DBSTUB=/usr/local/panda/bin/dbstub
++DBSTUB=/usr/lib/panda/sbin/dbstub
++ORCADIR=/usr/lib/jma-receipt
+ #-------------------------------------------# 
+-        $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca -bd orcabt ORCBQ01 -parameter $3,$4,$5,$6
++        $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca -bd orcabt ORCBQ01 -parameter $3,$4,$5,$6
  
--ruby $SCRIPTSDIR/daily/print_parent.rb "temp.tmp" "ruby /usr/local/orca/scripts/daily/print-data.rb " $1 $2 $3 $4 $5
-+ruby $SCRIPTSDIR/daily/print_parent.rb "temp.tmp" "ruby /usr/lib/jma-receipt/scripts/daily/print-data.rb " $1 $2 $3 $4 $5
+ ##      ＣＳＶファイル作成
+         if  [ $1 -eq "0" ]; then
+@@ -39,6 +40,6 @@
+             rm  $3
+         fi
  
- echo	`date`
-Index: scripts/daily/HCALL2.sh.in
+-       $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE$7$8
++       $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE$7$8
+ 
+         exit
+Index: scripts/allways/master_upgrade.sh
 ===================================================================
-RCS file: /var/lib/cvs/jma-receipt/scripts/daily/HCALL2.sh.in,v
-retrieving revision 1.1
-diff -u -r1.1 HCALL2.sh.in
---- scripts/daily/HCALL2.sh.in	29 Oct 2002 16:37:51 -0000	1.1
-+++ scripts/daily/HCALL2.sh.in	31 Oct 2002 09:54:39 -0000
-@@ -18,7 +18,7 @@
+RCS file: /var/lib/cvs/jma-receipt/scripts/allways/Attic/master_upgrade.sh,v
+retrieving revision 1.2
+diff -u -r1.2 master_upgrade.sh
+--- scripts/allways/master_upgrade.sh	25 Sep 2002 11:22:51 -0000	1.2
++++ scripts/allways/master_upgrade.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,5 +1,6 @@
+ #!/bin/bash
+-ORCADIR=/usr/local/orca
++PANDADIR=/usr/lib/panda
++ORCADIR=/usr/lib/jma-receipt
+ HOME=/home/orca
+ MSTDIR=orca-$(date +%Y%m%d)
+ 
+@@ -8,16 +9,16 @@
+ #DBSTUB=/home/orca/panda-0.9./aps/dbstub
+ #FTP=orca:orca@localhost/pub/orca_data/
+ DBHOST=localhost
+-UPDFILE=/home/orca/$MSTDIR/ORCADBR.OUT
++UPDFILE="$HOME"/$MSTDIR/ORCADBR.OUT
+ LEN=100
+ #本番用
+-APSCOBOL=/usr/local/panda/bin/aps
+-DBSTUB=/usr/local/panda/bin/dbstub
++APSCOBOL="$PANDADIR"/sbin/aps
++DBSTUB="$PANDADIR"/sbin/dbstub
+ FTP=ftp.orca.med.or.jp/pub/orca_data/
+ #FTP=beta:inisalo@ftp.orca.med.or.jp/pub/orca_data/
+ #UPDFILE=/home/orca/$MSTDIR/ORCADBR.OUT
+ 
+-COBOLDIR=$ORCADIR/lib
++COBOLDIR=$ORCADIR/
+ function orcawget () {
+ #受信ファイル削除
+ 	if [	-e	$1	]
+@@ -92,15 +93,15 @@
+ 	echo "センタからのDBレコード管理情報のダウンロードが終了しました"
+ else
+ 	echo "センタからのDBレコード管理情報のダウンロードに失敗しました"
+-	$DBSTUB  -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
++	$DBSTUB  -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
+         exit 99
+ fi
+ 
+ #ダウンロードファイル生成
+-	$DBSTUB   -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCXRMST1 -parameter $MSTDIR
++	$DBSTUB   -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCXRMST1 -parameter $MSTDIR
+ 	if [ $? -ne 0 ]	;	then 
+ 		echo "ダウンロードファイル生成に失敗しました"
+-		$DBSTUB  -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
++		$DBSTUB  -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
+ 		exit 99
+ 	fi
+ #更新用ダウンロードファイル受信
+@@ -110,7 +111,7 @@
+ 		echo "更新用ダウンロードファイルの作成が終了しました"
+ 	else
+ 		echo "更新用ダウンロードファイルの作成に失敗しました"
+-		$DBSTUB  -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT01
++		$DBSTUB  -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT01
+ 		exit 99
+ 	fi
+ 
+@@ -123,7 +124,7 @@
+ 		echo ${UPD:31:$LEN} "ダウンロードが終了しました"
+ 	else
+ 		echo ${UPD:31:$LEN} "ダウンロードに失敗しました"
+-		$DBSTUB  -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
++		$DBSTUB  -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
+ 	        exit 99
+ 	fi
+ done
+@@ -134,7 +135,7 @@
+ 	if	orcatar $UPD ;	then
+ 		echo $UPD "解凍処理が終了しました"
+ 	else
+-		$DBSTUB  -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
++		$DBSTUB  -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
+ 		echo $UPD "解凍処理に失敗しました"
+ 	        exit 99
+ 	fi
+@@ -145,11 +146,11 @@
+ 	UPD1=`echo $UPD | awk '{gsub(/.tar.gz/,".dat"); print} ' `
+ 	echo $UPD1 "DB更新"
+ #ダウンロードファイル生成
+-	$DBSTUB   -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCXRMST2 -parameter $MSTDIR$UPD1*****************************************************
++	$DBSTUB   -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCXRMST2 -parameter $MSTDIR$UPD1*****************************************************
+ 	echo $?
+ 	if [ $? -ne 0 ]	;	then 
+ 		echo $UDP1 "更新処理に失敗しました"
+-		$DBSTUB  -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
++		$DBSTUB  -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
+ 		exit 99
+ 	fi
+ 	echo "vacuum ANALYZE tbl_tensu;" | psql orca
+@@ -159,7 +160,7 @@
+ 
+ echo  "全ての処理が完了しました"
+ rm -r $HOME/$MSTDIR
+-	$DBSTUB  -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT00
++	$DBSTUB  -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT00
+ 
+ 
+ #wait
+Index: scripts/allways/orcbsd01.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/allways/Attic/orcbsd01.sh,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orcbsd01.sh
+--- scripts/allways/orcbsd01.sh	4 Sep 2002 07:03:11 -0000	1.1.1.1
++++ scripts/allways/orcbsd01.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,6 +1,7 @@
+ #!/bin/bash
+-ORCABT=/usr/local/orca/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ #-------------------------------------------#
+ #    データチェク処理
+ #        CPCOMMONSHELL5.INC
+@@ -14,17 +15,17 @@
+             rm  $4
+         fi
+ 
+-	$DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCGD02 -parameter $1$2$3
++	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCGD02 -parameter $1$2$3
+ 
+         if  [ -e ERFIL ]; then
+             exit  
+         else
+-	   $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCGD03 -parameter $1$2$3
++	   $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCGD03 -parameter $1$2$3
+         fi
+ 
+-	$DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCGD04 -parameter $1$2$3
++	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCGD04 -parameter $1$2$3
+ 
+-	$DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001ORCBSD1
++	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001ORCBSD1
+ 
+ ##      作業ファイル削除
+         if  [ -e /tmp/ORCGD1.$5.dat ]; then
+@@ -63,4 +64,4 @@
+              rm  /tmp/ORCGD9.$5.dat
+         fi
+ 
+-        exit
+\ No newline at end of file
++        exit
+Index: scripts/allways/orcbse01.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/allways/Attic/orcbse01.sh,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orcbse01.sh
+--- scripts/allways/orcbse01.sh	4 Sep 2002 07:03:11 -0000	1.1.1.1
++++ scripts/allways/orcbse01.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,6 +1,7 @@
+ #!/bin/bash
+-ORCABT=/usr/local/orca/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ #-------------------------------------------#
+ #    データチェク処理
+ #        CPCOMMONSHELL5.INC
+@@ -11,8 +12,8 @@
+ #-------------------------------------------#
+ ##
+ 
+-	$DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCGE03 -parameter $1$2$3
++	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCGE03 -parameter $1$2$3
+ 	
+-	$DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001ORCBSE1
++	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001ORCBSE1
+ 	
+         exit
+Index: scripts/allways/orcbsf02.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/allways/Attic/orcbsf02.sh,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orcbsf02.sh
+--- scripts/allways/orcbsf02.sh	4 Sep 2002 07:03:11 -0000	1.1.1.1
++++ scripts/allways/orcbsf02.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,6 +1,7 @@
+ #!/bin/bash
+-ORCABT=/usr/local/orca/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ #-------------------------------------------#
+ #    バックアップ処理
+ #        $1   TABLE-NAME
+@@ -17,6 +18,6 @@
+ 
+         pg_dump -R orca > $4$5
+ 
+-	$DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001ORCBSF1
++	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001ORCBSF1
+ 
+-        exit
+\ No newline at end of file
++        exit
+Index: scripts/allways/orcbsf03.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/allways/Attic/orcbsf03.sh,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orcbsf03.sh
+--- scripts/allways/orcbsf03.sh	4 Sep 2002 07:03:11 -0000	1.1.1.1
++++ scripts/allways/orcbsf03.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,6 +1,7 @@
+ #!/bin/bash
+-ORCABT=/usr/local/orca/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ #-------------------------------------------#
+ #    バックアップ処理
+ #        $1   TABLE-NAME
+@@ -15,6 +16,6 @@
+             rm   /tmp/$3.out
+         fi
+ 
+-	$DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001ORCBSF1
++	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001ORCBSF1
+ 
+-        exit
+\ No newline at end of file
++        exit
+Index: scripts/allways/orhcml09.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/allways/Attic/orhcml09.sh,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 orhcml09.sh
+--- scripts/allways/orhcml09.sh	4 Sep 2002 07:03:11 -0000	1.1.1.1
++++ scripts/allways/orhcml09.sh	19 Nov 2002 10:51:06 -0000
+@@ -5,6 +5,7 @@
+ #        $2 SYSYMD     X(8)
+ #        $3 HOSPID     X(24)
+ #-------------------------------------------#
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ #-------------------------------------------# 
+-            $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca -bd orcabt ORHCML09 -parameter $1,$2,$3
+\ No newline at end of file
++            $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca -bd orcabt ORHCML09 -parameter $1,$2,$3
+Index: scripts/allways/print.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/allways/Attic/print.sh,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 print.sh
+--- scripts/allways/print.sh	4 Sep 2002 07:03:11 -0000	1.1.1.1
++++ scripts/allways/print.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,6 +1,7 @@
+ #!/bin/bash
+-ORCABT=/usr/local/orca/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ #-------------------------------------------#
+ #    印刷ＤＢからの印刷処理
+ #        $1-${11} 印刷ＤＢ用固定引数
+@@ -20,11 +21,11 @@
+         
+         cd  $ORCABT
+ 
+-        $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBPRT -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${13},${14},${15},${16}
++        $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBPRT -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${13},${14},${15},${16}
+         if  [ -e ${12} ]; then
+             exit
+         else
+-	    $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE${13}${14}
++	    $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE${13}${14}
+ 	fi
+ 
+         exit 
+Index: scripts/allways/tensu.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/allways/Attic/tensu.sh,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 tensu.sh
+--- scripts/allways/tensu.sh	4 Sep 2002 07:03:11 -0000	1.1.1.1
++++ scripts/allways/tensu.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,6 +1,7 @@
+ #!/bin/bash
+-ORCABT=/usr/local/orca/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ RENNUM=0
+ #-------------------------------------------#
+ #    点数マスタ一覧作成
+@@ -20,11 +21,11 @@
+         fi
+         
+         RENNUM=$(expr $RENNUM + 1) 
+-        $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ${14} -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${15}
++        $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ${14} -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${15}
+         if  [ -e ${16} ]; then
+             exit
+         fi
+ #
+-        $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE${12}${13}
++        $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE${12}${13}
+ 
+         exit 
+Index: scripts/daily/HC01.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/daily/Attic/HC01.sh,v
+retrieving revision 1.3
+diff -u -r1.3 HC01.sh
+--- scripts/daily/HC01.sh	27 Sep 2002 08:16:56 -0000	1.3
++++ scripts/daily/HC01.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,5 +1,6 @@
+ #! /bin/sh
+ #/bin/sh -F
++export HOME=/home/orca
+ 	if	[ $1 = 'red2ps' ]	;then
+ 		if	[ $5 != '' ]	;then
+ 			$1 $2 $4 -p $5
+Index: scripts/daily/HCALL.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/daily/Attic/HCALL.sh,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 HCALL.sh
+--- scripts/daily/HCALL.sh	4 Sep 2002 07:03:10 -0000	1.1.1.1
++++ scripts/daily/HCALL.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,5 +1,6 @@
+-#!/usr/bin/env sh
+-
++#!/bin/sh
++ORCADIR=/usr/lib/jma-receipt
++export HOME=/home/orca
+ 	echo	`date`
+ 	echo	$1
+ 	echo	$2
+@@ -7,6 +8,6 @@
+ 	echo	$4
+ 	echo	$5
+ 
+-ruby /usr/local/orca/scripts/daily/print_parent.rb "temp.tmp" "ruby /usr/local/orca/scripts/daily/print-data.rb " $1 $2 $3 $4 $5
++ruby "$ORCADIR"/scripts/daily/print_parent.rb "/var/tmp/temp.tmp" "ruby '$ORCADIR'/scripts/daily/print-data.rb " $1 $2 $3 $4 $5
+ 
+ 	echo	`date`
+Index: scripts/daily/HCALL2.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/daily/Attic/HCALL2.sh,v
+retrieving revision 1.2
+diff -u -r1.2 HCALL2.sh
+--- scripts/daily/HCALL2.sh	7 Oct 2002 02:44:17 -0000	1.2
++++ scripts/daily/HCALL2.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,13 +1,15 @@
+-#!/usr/bin/env sh
++#!/bin/sh
+ #----------------------------------------------------------------------#
+ #       引数	
+ #       1:DATAファイル名称
+ #----------------------------------------------------------------------#
++ORCADIR=/usr/lib/jma-receipt
++export HOME=/home/orca
+ 
  	echo	`date`
  	echo	$1
  
--ruby "$SCRIPTSDIR"/daily/print_parent2.rb "/var/tmp/temp.tmp" "ruby /usr/local/orca/scripts/daily/print-data.rb " $1 
-+ruby "$SCRIPTSDIR"/daily/print_parent2.rb "/var/tmp/temp.tmp" "ruby /usr/lib/jma-receipt/scripts/daily/print-data.rb " $1 
+-ruby /usr/local/orca/scripts/daily/print_parent2.rb "/var/tmp/temp.tmp" "ruby /usr/local/orca/scripts/daily/print-data.rb " $1 
++ruby "$ORCADIR"/scripts/daily/print_parent2.rb "/var/tmp/temp.tmp" "ruby '$ORCADIR'/scripts/daily/print-data.rb " $1 
  
  	rm -f $1
  	echo	`date`
+Index: scripts/daily/execoprg.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/daily/Attic/execoprg.sh,v
+retrieving revision 1.1.1.1
+diff -u -r1.1.1.1 execoprg.sh
+--- scripts/daily/execoprg.sh	4 Sep 2002 07:03:10 -0000	1.1.1.1
++++ scripts/daily/execoprg.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,6 +1,7 @@
+ #!/bin/bash
+-ORCABT=/usr/local/orca/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ RENNUM=0
+ #-------------------------------------------#
+ #    日次統計出力処理
+@@ -24,12 +25,12 @@
+         fi
+ ##
+         RENNUM=$(expr $RENNUM + 1) 
+-	$DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ${15} -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${16},${17},${18}
++	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ${15} -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${16},${17},${18}
+ 
+         if  [ -e ${19} ]; then
+             exit
+         fi
+        
+-       $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE${12}${13}
++       $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE${12}${13}
+ 
+         exit 
 Index: scripts/daily/print_parent2.rb
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/scripts/daily/print_parent2.rb,v
 retrieving revision 1.3
 diff -u -r1.3 print_parent2.rb
 --- scripts/daily/print_parent2.rb	21 Oct 2002 02:37:54 -0000	1.3
-+++ scripts/daily/print_parent2.rb	31 Oct 2002 09:54:39 -0000
++++ scripts/daily/print_parent2.rb	19 Nov 2002 10:51:06 -0000
 @@ -64,8 +64,8 @@
  
  # 定数の指定(最後に、かならず「/」を付けた形にしてください)
@@ -1425,7 +2563,204 @@ diff -u -r1.3 print_parent2.rb
 -BASE_DIR1 = '/usr/local/orca/'		# ORCA標準
 -BASE_DIR2 = '/usr/local/orca/'		# site-lib
 +BASE_DIR1 = '/usr/lib/jma-receipt/'		# ORCA標準
-+BASE_DIR2 = '/usr/lib/jma-receipt/site-lib/'	# site-lib
++BASE_DIR2 = '/usr/lib/jma-receipt/site-lib/'		# site-lib
  
  DIA_DIR = 'form/'
  DEF_DIR = 'record/'
+Index: scripts/monthly/recept1.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/monthly/Attic/recept1.sh,v
+retrieving revision 1.3
+diff -u -r1.3 recept1.sh
+--- scripts/monthly/recept1.sh	8 Oct 2002 04:22:50 -0000	1.3
++++ scripts/monthly/recept1.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,7 +1,7 @@
+ #!/bin/bash
+-ORCADIR=/usr/local/orca
+-ORCABT="$ORCADIR"/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ #-------------------------------------------#
+ #    医療請求書用ファイル作成
+ #        ２００２年１０月改正対応
+Index: scripts/monthly/recept2.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/monthly/Attic/recept2.sh,v
+retrieving revision 1.2
+diff -u -r1.2 recept2.sh
+--- scripts/monthly/recept2.sh	30 Sep 2002 01:48:07 -0000	1.2
++++ scripts/monthly/recept2.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,7 +1,7 @@
+ #!/bin/bash
+-ORCADIR=/usr/local/orca
+-ORCABT="$ORCADIR"/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ #-------------------------------------------#
+ #    医療請求書出力処理
+ #        CPCOMMONSHELL1.INC($3-$6)  
+@@ -31,7 +31,6 @@
+         
+ 
+         if [ $4 =  0 ]; then
+-#          fcu  -P$1 ORCR0101
+ 	   $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0101 -parameter $1,$2,$3,$7,$8,$9,${10},
+         else 
+ 	   $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0102 -parameter $1,$2,$3,$7,$8
+Index: scripts/monthly/recept3.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/monthly/Attic/recept3.sh,v
+retrieving revision 1.5
+diff -u -r1.5 recept3.sh
+--- scripts/monthly/recept3.sh	17 Oct 2002 02:20:51 -0000	1.5
++++ scripts/monthly/recept3.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,7 +1,7 @@
+ #!/bin/bash
+-ORCADIR=/usr/local/orca
+-ORCABT="$ORCADIR"/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt/
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ RENNUM=0
+ -------------------------------------------#
+ #    総括表用ファイル作成
+@@ -41,15 +41,14 @@
+                    exit
+                fi
+            fi    
+-        fi
+-         
++        fi 
+ ##      総括表（国保）
+         if  [ ${13} -ne 1 ]; then
+             RENNUM=$(expr $RENNUM + 1) 
+             if  [ ${15} = 1 ]; then
+-                 $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM012 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17}
++                 $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM012 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${14},${16},${17}
+             else
+-                 $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM004 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17}
++                 $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM004 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${14},${16},${17}
+             fi	
+             if  [ -e ${18} ]; then
+                 exit
+@@ -63,7 +62,6 @@
+                fi
+            fi    
+        fi
+-       
+        $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE${16}${17}
+ 
+         exit 
+Index: scripts/monthly/recept4.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/monthly/Attic/recept4.sh,v
+retrieving revision 1.2
+diff -u -r1.2 recept4.sh
+--- scripts/monthly/recept4.sh	30 Sep 2002 01:48:07 -0000	1.2
++++ scripts/monthly/recept4.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,7 +1,7 @@
+ #!/bin/bash
+-ORCADIR=/usr/local/orca
+-ORCABT="$ORCADIR"/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ #-------------------------------------------#
+ #    レセ電ファイル作成処理
+ #        CPCOMMONSHELL1.INC  
+Index: scripts/monthly/recept5.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/monthly/Attic/recept5.sh,v
+retrieving revision 1.2
+diff -u -r1.2 recept5.sh
+--- scripts/monthly/recept5.sh	30 Sep 2002 01:48:07 -0000	1.2
++++ scripts/monthly/recept5.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,7 +1,7 @@
+ #!/bin/bash
+-ORCADIR=/usr/local/orca
+-ORCABT="$ORCADIR"/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ -------------------------------------------#
+ #    未請求一覧作成
+ #        CPCOMMONSHELL1.INC  
+Index: scripts/monthly/recept6.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/monthly/Attic/recept6.sh,v
+retrieving revision 1.4
+diff -u -r1.4 recept6.sh
+--- scripts/monthly/recept6.sh	8 Oct 2002 04:22:50 -0000	1.4
++++ scripts/monthly/recept6.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,7 +1,7 @@
+ #!/bin/bash
+-ORCADIR=/usr/local/orca
+-ORCABT="$ORCADIR"/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ #-------------------------------------------#
+ #    労災請求書用ファイル作成
+ #        CPCOMMONSHELL1.INC  
+Index: scripts/monthly/recept7.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/monthly/Attic/recept7.sh,v
+retrieving revision 1.2
+diff -u -r1.2 recept7.sh
+--- scripts/monthly/recept7.sh	30 Sep 2002 01:48:07 -0000	1.2
++++ scripts/monthly/recept7.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,7 +1,7 @@
+ #!/bin/bash
+-ORCADIR=/usr/local/orca
+-ORCABT="$ORCADIR"/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ #-------------------------------------------#
+ #    労災医療請求書出力処理
+ #        CPCOMMONSHELL1.INC($3-$6)  
+Index: scripts/monthly/recept8.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/monthly/Attic/recept8.sh,v
+retrieving revision 1.3
+diff -u -r1.3 recept8.sh
+--- scripts/monthly/recept8.sh	8 Oct 2002 04:22:50 -0000	1.3
++++ scripts/monthly/recept8.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,7 +1,7 @@
+ #!/bin/bash
+-ORCADIR=/usr/local/orca
+-ORCABT="$ORCADIR"/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ #-------------------------------------------#
+ #    自賠責請求書用ファイル作成
+ #        CPCOMMONSHELL1.INC  
+Index: scripts/monthly/sokatsu.sh
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/scripts/monthly/Attic/sokatsu.sh,v
+retrieving revision 1.2
+diff -u -r1.2 sokatsu.sh
+--- scripts/monthly/sokatsu.sh	30 Sep 2002 01:48:07 -0000	1.2
++++ scripts/monthly/sokatsu.sh	19 Nov 2002 10:51:06 -0000
+@@ -1,7 +1,7 @@
+ #!/bin/bash
+-ORCADIR=/usr/local/orca
+-ORCABT="$ORCADIR"/lib
+-DBSTUB=/usr/local/panda/bin/dbstub
++ORCADIR=/usr/lib/jma-receipt
++ORCABT="$ORCADIR"
++DBSTUB=/usr/lib/panda/sbin/dbstub
+ -------------------------------------------#
+ #    決定通知書作成
+ #        CPCOMMONSHELL1.INC  
