@@ -36,6 +36,7 @@
       * 01.00.05     NACL-多々納  03/03/06  ３歳未満判定に自費・地験をはずす
       * 01.00.06     NACL-多々納  03/04/14  労災の割合変更追加
       * 01.00.07     NACL-多々納  03/05/12  自賠責割合変更追加
+      * 01.00.08     NACL-多々納  03/09/03  公費期限チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -303,6 +304,11 @@
       *    Ｈ１５．４改正後以下のチェックを行う
            IF      AGECHK-SRYYMD       >=  "20030401"
                PERFORM 400-PTHKNCHK-SEC
+               IF      AGECHK-HKNCHK   NOT =   ZERO
+                   GO      TO      200-FTNRATE-EXT
+               END-IF
+      *        公費の期限切れチェック
+               PERFORM 410-PTKOHCHK-SEC
                IF      AGECHK-HKNCHK   NOT =   ZERO
                    GO      TO      200-FTNRATE-EXT
                END-IF
@@ -615,10 +621,79 @@
                GO      TO      400-PTHKNCHK-EXT
            END-IF
       *
+           MOVE    COMB-HKNNUM         TO  WRK-HKNNUM
+           MOVE    ZERO                TO  WRK-PAYKBN
+           PERFORM 4101-KIKANCHK-CHK-SEC
+           IF      FLG-HKNNUM-OK       =   ZERO
+               MOVE    1               TO  AGECHK-HKNCHK
+           END-IF
+      *
+           .
+       400-PTHKNCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費の切り替えチェック処理
+      *****************************************************************
+       410-PTKOHCHK-SEC         SECTION.
+      *
+           IF      COMB-KOH1HKNNUM     NOT =   SPACE
+      *        公費の期限切れチェック
+               MOVE    COMB-KOH1HKNNUM     TO  WRK-HKNNUM
+               MOVE    COMB-KOH1PAYKBN     TO  WRK-PAYKBN
+               PERFORM 4101-KIKANCHK-CHK-SEC
+               IF      FLG-HKNNUM-OK       =   ZERO
+                   MOVE    2               TO  AGECHK-HKNCHK
+                   GO      TO      410-PTKOHCHK-EXT
+               END-IF
+           END-IF
+      *
+           IF      COMB-KOH2HKNNUM     NOT =   SPACE
+      *        公費の期限切れチェック
+               MOVE    COMB-KOH2HKNNUM     TO  WRK-HKNNUM
+               MOVE    COMB-KOH2PAYKBN     TO  WRK-PAYKBN
+               PERFORM 4101-KIKANCHK-CHK-SEC
+               IF      FLG-HKNNUM-OK       =   ZERO
+                   MOVE    2               TO  AGECHK-HKNCHK
+                   GO      TO      410-PTKOHCHK-EXT
+               END-IF
+           END-IF
+      *
+           IF      COMB-KOH3HKNNUM     NOT =   SPACE
+      *        公費の期限切れチェック
+               MOVE    COMB-KOH3HKNNUM     TO  WRK-HKNNUM
+               MOVE    COMB-KOH3PAYKBN     TO  WRK-PAYKBN
+               PERFORM 4101-KIKANCHK-CHK-SEC
+               IF      FLG-HKNNUM-OK       =   ZERO
+                   MOVE    2               TO  AGECHK-HKNCHK
+                   GO      TO      410-PTKOHCHK-EXT
+               END-IF
+           END-IF
+      *
+           IF      COMB-KOH4HKNNUM     NOT =   SPACE
+      *        公費の期限切れチェック
+               MOVE    COMB-KOH4HKNNUM     TO  WRK-HKNNUM
+               MOVE    COMB-KOH4PAYKBN     TO  WRK-PAYKBN
+               PERFORM 4101-KIKANCHK-CHK-SEC
+               IF      FLG-HKNNUM-OK       =   ZERO
+                   MOVE    2               TO  AGECHK-HKNCHK
+                   GO      TO      410-PTKOHCHK-EXT
+               END-IF
+           END-IF
+      *
+           .
+       410-PTKOHCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険の切り替えチェック処理
+      *****************************************************************
+       4101-KIKANCHK-CHK-SEC         SECTION.
+      *
            INITIALIZE                  HKNNUM-REC
            MOVE    AGECHK-HOSPID       TO  HKN-HOSPID
-           MOVE    COMB-HKNNUM         TO  HKN-HKNNUM
-           MOVE    ZERO                TO  HKN-PAYKBN
+           MOVE    WRK-HKNNUM          TO  HKN-HKNNUM
+           MOVE    WRK-PAYKBN          TO  HKN-PAYKBN
       *
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    AGECHK-SRYYMD       TO  ORC-DBYMD
@@ -646,15 +721,19 @@
                    MOVE    1                   TO  FLG-HKNNUM-OK
                END-IF
       *
+               IF     (HKN-TEKSTYMD        <=  COMB-TEKSTYMD ) AND
+                      (HKN-TEKEDYMD        <   COMB-TEKEDYMD ) AND
+                      (HKN-TEKEDYMD        >=  AGECHK-SRYYMD )
+      *            診療日に保険期間対象あり
+                   MOVE    1                   TO  FLG-HKNNUM-OK
+               END-IF
+      *
                MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
                PERFORM 921-HKNNUM-NEXT-SEC
            END-PERFORM
-           IF      FLG-HKNNUM-OK       =   ZERO
-               MOVE    1               TO  AGECHK-HKNCHK
-           END-IF
       *
            .
-       400-PTHKNCHK-EXT.
+       4101-HKNNUM-KIKANCHK-EXT.
            EXIT.
       *
       *****************************************************************

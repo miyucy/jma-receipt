@@ -878,6 +878,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "システム管理を確認して下さい。"
                                        TO  SPA-ERRMSG(35:)
+               WHEN    "1032"
+                   MOVE    "公費の期間に矛盾があります。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "患者登録で保険組合せを登録し直して下さい。"
+                                       TO  SPA-ERRMSG(29:)
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
                                        TO  SPA-ERRMSG
