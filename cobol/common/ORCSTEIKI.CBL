@@ -1384,6 +1384,12 @@
            MOVE     "SYSKANRI-KEY"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
+      *    Æþ±¡ÊÝ¸±Å¬ÍÑ³°
+           ADD    NYUIN-TGMONEY        TO  SYU-TGMONEY(11)
+           ADD    NYUIN-TGMONEY-TAX    TO  SYU-TGMONEY-TAX(11)
+           ADD    NYUIN-TGMONEY        TO  SYU-TGMONEY(12)
+           ADD    NYUIN-TGMONEY-TAX    TO  SYU-TGMONEY-TAX(12)
+      *
            MOVE    SYUNOU-REC          TO  LNK-SYUNOU-REC(IDX)
            MOVE    SYUDAY-REC          TO  LNK-SYUDAY-REC(IDX)          YYY
       *
@@ -3519,17 +3525,17 @@
       *  ÊÝ¸±Å¬ÍÑ³°
            PERFORM     VARYING   IDZ    FROM   1    BY    1
                          UNTIL   IDZ    >      11
-                  MOVE   TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(IDZ)
-                  MOVE   TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(IDZ)
+                  ADD    TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(IDZ)
+                  ADD    TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(IDZ)
                   ADD    TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(12)
                   ADD    TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(12)
            END-PERFORM
       *
       *  Æþ±¡ÊÝ¸±Å¬ÍÑ³°
-           ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(11)
-           ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(11)
-           ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(12)
-           ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(12)
+      *    ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(11)
+      *    ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(11)
+      *    ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(12)
+      *    ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(12)
       *
       *  ¼«Èñ£±¤«¤é£µ
            PERFORM     VARYING   IDZ    FROM    1    BY    1
