@@ -15,7 +15,7 @@
   <name>KHELP</name>
   <x>400</x>
   <y>50</y>
-  <width>600</width>
+  <width>610</width>
   <height>690</height>
   <signal>
     <name>map_event</name>
@@ -168,7 +168,7 @@
     <widget>
       <class>GtkPandaText</class>
       <name>HELP</name>
-      <x>232</x>
+      <x>240</x>
       <y>8</y>
       <width>364</width>
       <height>648</height>
@@ -278,11 +278,43 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label457</name>
+      <x>4</x>
+      <y>628</y>
+      <width>64</width>
+      <height>24</height>
+      <label>選択番号</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HEAD</name>
+      <x>8</x>
+      <y>4</y>
+      <width>100</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow26</name>
       <x>4</x>
       <y>60</y>
-      <width>224</width>
+      <width>232</width>
       <height>564</height>
       <hscrollbar_policy>GTK_POLICY_ALWAYS</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
@@ -315,7 +347,7 @@
 	  <last_modification_time>Mon, 24 Jan 2005 01:08:31 GMT</last_modification_time>
 	</signal>
 	<columns>2</columns>
-	<column_widths>38,220</column_widths>
+	<column_widths>42,220</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -346,38 +378,6 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label457</name>
-      <x>4</x>
-      <y>628</y>
-      <width>64</width>
-      <height>24</height>
-      <label>選択番号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>HEAD</name>
-      <x>8</x>
-      <y>4</y>
-      <width>100</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
