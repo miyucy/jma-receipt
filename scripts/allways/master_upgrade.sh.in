@@ -110,6 +110,7 @@ fi
 	else
 		echo "更新用ダウンロードファイルの作成に失敗しました"
 		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT01
+		rm -r $HOME/$MSTDIR
 		exit 99
 	fi
 
