@@ -4045,7 +4045,11 @@
            IF      SPA-SYORIFLG        =   1
                MOVE    "0123"              TO  SPA-KIDCD
            ELSE
-               MOVE    "0107"              TO  SPA-KIDCD
+               IF      SPA-GMN-MAX         >   ZERO
+                   MOVE    "0107"              TO  SPA-KIDCD
+               ELSE
+                   PERFORM 41013-SRYKA-CHANGE-SEC
+               END-IF
            END-IF
       *********PERFORM 41013-SRYKA-CHANGE-SEC
       *****END-IF
