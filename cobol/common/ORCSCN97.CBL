@@ -442,7 +442,8 @@
            IF      (WRK-COM-TNSSRYSYUKBN (IDX-Z) =   "900")  AND
                    (IDX-Z                  >   1 )  AND
                    (WRK-GMN-INPUTCD(IDX-Z - 1)(1:4)
-                                               =   ".900")
+                                               =   ".900"
+                                               OR  ".920" )
                MOVE    1                   TO  FLG-ARI
            END-IF
       *
