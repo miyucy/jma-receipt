@@ -28,7 +28,8 @@
       *  プログラム修正履歴
       *  Maj/Min/Rev  修正者       日付      内容
       *  01.01.01     NACL-森脇    03/10/10  公費情報読み込み修正
-      *  01.01.01     NACL-森脇    04/06/10  月代わり受給者番号
+      *  01.01.02     NACL-森脇    04/06/10  月代わり受給者番号
+      *  01.01.03     NACL-森脇    04/08/05  修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -452,9 +453,13 @@
                        IF      FLG-MONTHLYNUM  =   ZERO
                            MOVE    MONTHLYNUM-JKYSNUM
                                                    TO  HCM37-KOHJKYSNUM
+      *----(01.01.03)--ADD-START---
+                       ELSE
+                           MOVE    PTKOH-JKYSNUM   TO  HCM37-KOHJKYSNUM
+      *----(01.01.03)--ADD-END-----
                        END-IF
                    ELSE
-                       MOVE   PTKOH-JKYSNUM    TO  HCM37-KOHJKYSNUM
+                       MOVE    PTKOH-JKYSNUM   TO  HCM37-KOHJKYSNUM
                    END-IF    
                    MOVE    PTKOH-FTNJANUM  TO  HCM37-KOHFTNJANUM
       *            MOVE    4               TO  IDX
@@ -889,8 +894,10 @@
            MOVE    RECE10-HOSPID   TO  MONTHLYNUM-HOSPID
            MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
            MOVE    "012"           TO  MONTHLYNUM-KOHNUM
-           MOVE    PTKOH-TEKSTYMD(1:6)
+      *----(01.01.03)--UPD-START---
+           MOVE    LNK-PRTKANRI-SRYYM
                                    TO  MONTHLYNUM-SRYYM
+      *----(01.01.03)--UPD-END-----
            MOVE    RECE10-NYUGAIKBN TO  MONTHLYNUM-NYUGAIKBN
            MOVE    MONTHLYNUM-REC   TO  MCPDATA-REC
       *
