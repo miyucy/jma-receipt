@@ -963,6 +963,15 @@
       *
            MOVE    6                   TO  SPA-GMN-CUR
       *
+      *    更新処理
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-RENNUM  =   ZERO
+                   PERFORM 420-TUIKA-SEC
+               ELSE
+                   PERFORM 430-HENKOU-SEC
+               END-IF
+           END-IF
+      *
            .
        4104-SRYYM-CHK-EXT.
            EXIT.
@@ -1479,9 +1488,9 @@
            MOVE    SPA-GMN-CUR          TO  WRK-GMN-CUR
       * 
            PERFORM 4103-PTNUM-CHK-SEC
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4104-SRYYM-CHK-SEC
-           END-IF
+      **** IF      SPA-ERRCD            =   SPACE
+      ****     PERFORM 4104-SRYYM-CHK-SEC
+      **** END-IF
       *
            IF      SPA-ERRCD            =   SPACE
                MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
