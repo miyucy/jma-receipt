@@ -37,6 +37,7 @@
       *  01.01.05    NACL-Â¿¡¹Ç¼  02/10/09  ¿ÇÎÅ¼ïÊÌ¤ÎºÇÂç¿ô¤ò£±£°£°¤Ø
       *                                     È¾³Ñ¶õÇò¢ªÁ´³Ñ¶õÇòÄÉ²Ã
       *  01.01.06    NACL-Â¿¡¹Ç¼  02/12/02  ¿©»öÄÉ²Ã
+      *  01.01.07    NACL-Â¿¡¹Ç¼  02/12/20  ÅÀ¿ô¼±ÊÌ£¸ ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -997,13 +998,16 @@
            MOVE    "5 ¡ó²Ã»»"          TO  SPA-GMN-TENSIKIBETUCOB (5)
            MOVE    "6 ¡ó¸º»»"          TO  SPA-GMN-TENSIKIBETUCOB (6)
            MOVE    "7 ¸ºÅÀ¿ÇÎÅ¹Ô°Ù"    TO  SPA-GMN-TENSIKIBETUCOB (7)
+           MOVE    "8 ÅÀ¿ô¡Ê¥Þ¥¤¥Ê¥¹¡Ë"
+                                       TO  SPA-GMN-TENSIKIBETUCOB (8)
+           MOVE    8                   TO  SPA-TENSIKI-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   7 
+                   UNTIL       IDX     >   SPA-TENSIKI-MAX
                IF      SPA-GMN-TENSIKIBETU =   SPA-GMN-TENSIKIBETUCOB
                                                          (IDX)(1:1)
                    MOVE    SPA-GMN-TENSIKIBETUCOB (IDX)
-                                           TO  SPA-GMN-TENSIKIBETU-G
-                   MOVE    7               TO  IDX
+                                               TO  SPA-GMN-TENSIKIBETU-G
+                   MOVE    SPA-TENSIKI-MAX     TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1016,13 +1020,17 @@
            MOVE    "5 ¡ó²Ã»»"          TO  SPA-GMN-OLDTENSKBCOB (5)
            MOVE    "6 ¡ó¸º»»"          TO  SPA-GMN-OLDTENSKBCOB (6)
            MOVE    "7 ¸ºÅÀ¿ÇÎÅ¹Ô°Ù"    TO  SPA-GMN-OLDTENSKBCOB (7)
+           MOVE    "8 ÅÀ¿ô¡Ê¥Þ¥¤¥Ê¥¹¡Ë"
+                                       TO  SPA-GMN-OLDTENSKBCOB (8)
+           MOVE    8                   TO  SPA-OLDTENSIKI-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   7 
+                   UNTIL       IDX     >   SPA-OLDTENSIKI-MAX
                IF      SPA-GMN-OLDTENSKB =   SPA-GMN-OLDTENSKBCOB
                                                          (IDX)(1:1)
                    MOVE    SPA-GMN-OLDTENSKBCOB (IDX)
                                            TO  SPA-GMN-OLDTENSKB-G
-                   MOVE    7               TO  IDX
+                   MOVE    SPA-OLDTENSIKI-MAX
+                                           TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1458,6 +1466,7 @@
            END-PERFORM
       *    ¥Ç¡¼¥¿µ¬³Ê
            MOVE    ZERO                TO  IDX-1
+           MOVE    IDX-1               TO  Z03-TANICD-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   90
                IF      SPA-GMN-TANICDCOB (IDX) NOT =   SPACE
@@ -1469,17 +1478,18 @@
            END-PERFORM
       *    ÅÀ¿ô¼±ÊÌ
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   7
+                   UNTIL       IDX     >   SPA-TENSIKI-MAX
                MOVE    SPA-GMN-TENSIKIBETUCOB (IDX)
                                        TO  Z03-TENSIKIBETU-ITEM (IDX)
-               MOVE    IDX             TO  Z03-TENSIKIBETU-COUNT
            END-PERFORM
-      *     µìÅÀ¿ô¼±ÊÌ
+           MOVE    SPA-TENSIKI-MAX     TO  Z03-TENSIKIBETU-COUNT
+      *    µìÅÀ¿ô¼±ÊÌ
+           MOVE    ZERO                TO  Z03-OLDTENSKB-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   7
+                   UNTIL       IDX     >   SPA-OLDTENSIKI-MAX
                MOVE    SPA-GMN-OLDTENSKBCOB (IDX)
                                            TO  Z03-OLDTENSKB-ITEM (IDX)
-               MOVE    IDX                 TO  Z03-OLDTENSKB-COUNT
+               MOVE    SPA-OLDTENSIKI-MAX  TO  Z03-OLDTENSKB-COUNT
            END-PERFORM
       *
       *    ÊÝ¸±Å¬ÍÑ

@@ -83,7 +83,8 @@
                        09  SPA-GMN-TENSIKIBETUMEI  PIC X(24).
                    07  SPA-GMN-TENSIKIBETUCOB-G.
                        09  SPA-GMN-TENSIKIBETUCOB  PIC X(26)
-                                                   OCCURS  7.
+                                                   OCCURS  10.
+                   07  SPA-TENSIKI-MAX             PIC 9(04).
       *
                    07  SPA-GMN-OLDTEN          PIC 9(8)V9(2).
       *
@@ -93,7 +94,8 @@
                        09  SPA-GMN-OLDTENSKBMEI    PIC X(24).
                    07  SPA-GMN-OLDTENSKBCOB-G.
                        09  SPA-GMN-OLDTENSKBCOB    PIC X(26)
-                                                   OCCURS  7.
+                                                   OCCURS  10.
+                   07  SPA-OLDTENSIKI-MAX          PIC 9(04).
       *
                    07  SPA-GMN-TANICD-G.
                        09  SPA-GMN-TANICD          PIC X(3).

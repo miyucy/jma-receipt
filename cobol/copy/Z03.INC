@@ -63,12 +63,12 @@
                     06  Z03-TENSIKIBETU.
                       07  Z03-VALUE   PIC X(30).
                     06  Z03-TENSIKIBETU-COUNT   PIC S9(9)   BINARY.
-                    06  Z03-TENSIKIBETU-ITEM    PIC X(30)   OCCURS  7.
+                    06  Z03-TENSIKIBETU-ITEM    PIC X(30)   OCCURS  10.
                   05  Z03-OLDTENSKBCOB.
                     06  Z03-OLDTENSKB.
                       07  Z03-VALUE   PIC X(30).
                     06  Z03-OLDTENSKB-COUNT   PIC S9(9)   BINARY.
-                    06  Z03-OLDTENSKB-ITEM    PIC X(30)   OCCURS  7.
+                    06  Z03-OLDTENSKB-ITEM    PIC X(30)   OCCURS  10.
                   05  Z03-SRYSYUKBNCOB.
                     06  Z03-SRYSYUKBN.
                       07  Z03-VALUE   PIC X(74).
