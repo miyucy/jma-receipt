@@ -499,10 +499,10 @@
       *    ÆþÎÏÌ¾¾Î
            03  WRK-MEISYO-G.
                05  WRK-MEIH                PIC X(02).
-               05  WRK-MEISYO              PIC X(60).
+               05  WRK-MEISYO              PIC X(78).
            03  WRK-MEISYO-GHZN.
                05  WRK-MEIHHZN             PIC X(02).
-               05  WRK-MEISYOHZN           PIC X(60).
+               05  WRK-MEISYOHZN           PIC X(78).
            03  IDX-MEI                 PIC 9(04).
       *    ¶Ø´÷´ü´Ö
            03  WRK-KIKAN               PIC 9(02).
@@ -668,7 +668,7 @@
        01  WRK-HOZ-AREA.
            03  WRK-HGMN-TBL            OCCURS   200.
                05  WRK-HGMN-TBLREC.
-                   07  WRK-HGMN-DATA   PIC X(130).
+                   07  WRK-HGMN-DATA   PIC X(150).
                05  WRK-HCOM-TBLREC.
                    07  WRK-HCOM-DATA   PIC X(800).
            03  WRK-HOZ-IDX             PIC 9(04).

@@ -415,7 +415,7 @@
       *    入力名称
            03  WRK-MEISYO-G.
                05  WRK-MEIH                PIC X(02).
-               05  WRK-MEISYO              PIC X(60).
+               05  WRK-MEISYO              PIC X(78).
            03  IDX-MEI                 PIC 9(04).
       *
       *    入力位置
@@ -559,7 +559,7 @@
        01  WRK-HOZ-AREA.
            03  WRK-HGMN-TBL            OCCURS   200.
                05  WRK-HGMN-TBLREC.
-                   07  WRK-HGMN-DATA   PIC X(130).
+                   07  WRK-HGMN-DATA   PIC X(150).
                05  WRK-HCOM-TBLREC.
                    07  WRK-HCOM-DATA   PIC X(800).
            03  WRK-HOZ-IDX             PIC 9(04).
