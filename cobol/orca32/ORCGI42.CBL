@@ -503,7 +503,7 @@
       *    診療行為マスターチェック
            INITIALIZE                       SRYACT-REC.
            MOVE    SPA-HOSPID               TO  SRY-HOSPID.
-           MOVE    2                        TO  SRY-NYUGAIKBN.
+           MOVE    1                        TO  SRY-NYUGAIKBN.
            MOVE    SPA-GMN-PTID             TO  SRY-PTID.
            MOVE    WRK-SRYYM                TO  SRY-SRYYM.
            MOVE    SPA-5000-DSPCD-41 (IDX4) TO  SRY-SRYCD (1).
