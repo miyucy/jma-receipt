@@ -346,6 +346,7 @@
       *  01.01.156   NACL-多々納  04/11/19  PTBYOMEI-KEY24追加
       *  01.01.157   NACL-門脇    04/11/30  SYUNOU-KEY33追加
       *  01.01.158   NACL-小豆沢  04/12/10  NYUINACCT-KEY26追加
+      *  01.01.159   NACL-多々納  04/12/20  TENSU-KEY93追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2270,6 +2271,10 @@
                    PERFORM 2001-SEL-TENSU-REC
                WHEN    ANY             ALSO   "TENSU-KEY92"
                    MOVE    PATH-TBL-TENSU-KEY92
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY93"
+                   MOVE    PATH-TBL-TENSU-KEY93
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-TENSU-REC
       *----(01.01.94)--ADD-END-----

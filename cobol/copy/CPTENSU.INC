@@ -25,6 +25,7 @@
       * 01.00.01     MCC-多々納   02/03/15  後発医薬品区分、
       *                                     基準不適合逓減区分
       *                                     基準不適合逓減施設 追加
+      * 01.00.02     NACL-多々納  04/12/20  検索点数キー追加
       ************************************************************
        01  TNS-TENSU-REC.
       *(1)
@@ -174,3 +175,5 @@
            03  TNSXX-EDSRYKBN          PIC X(02).
            03  TNSXX-TK-CDKBN-KBNNUM   PIC  9(03).
            03  TNSXX-TK-CDKBN-KOUBAN   PIC  9(02).
+           03  TNSXX-TK-TEN            PIC 9(09).
+           03  TNSXX-TK-EDTEN          PIC 9(09).
