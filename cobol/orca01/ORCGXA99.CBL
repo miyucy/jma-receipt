@@ -264,8 +264,6 @@
                MOVE    "B11"                TO  MCP-WIDGET
            END-IF                                 
       *
-           MOVE    SPACE               TO  LINKAREA
-      *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
            MOVE    "XA99    "           TO  MCP-WINDOW
       *
