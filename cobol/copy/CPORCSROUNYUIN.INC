@@ -40,6 +40,8 @@
            03  LNK-SROUNYUIN-HKNCOMBI                PIC  9(04).
       *返却項目
            03  LNK-SROUNYUIN-HENKYAKU-AREA           OCCURS  31.
+      *労災入院フラグ（空白：労災入院なし　１：労災入院中）
+               05  LNK-SROUNYUIN-NYUIN-FLG           PIC  X(01).      
       *剤点数
                05  LNK-SROUNYUIN-ZAITEN              PIC  9(08).
       *診療コード計
