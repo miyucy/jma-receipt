@@ -227,6 +227,7 @@
       *  01.01.56    NACL-藤原    03/04/14  SEIKYU-KEY20追加
       *  01.01.57    NACL-多々納　03/04/17  SYUNOU-KEY13追加
       *  01.01.58    ひさなが     03/04/17  NYUINACCT-KEY18の追加
+      *  01.01.59    NACL-多々納　03/04/18  JYURRK-KEY20追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -407,6 +408,7 @@
                WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY17"
                WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY18"
                WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY19"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY20"
                WHEN    "DBDELETE"      ALSO   "JYURRK-KEY"
                WHEN    "DBDELETE"      ALSO   "JYURRK-KEY2"
                WHEN    "DBDELETE"      ALSO   "JYURRK-KEY3"
@@ -424,6 +426,7 @@
                WHEN    "DBDELETE"      ALSO   "JYURRK-KEY17"
                WHEN    "DBDELETE"      ALSO   "JYURRK-KEY18"
                WHEN    "DBDELETE"      ALSO   "JYURRK-KEY19"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY20"
                    MOVE    PATH-TBL-JYURRK-KEY
                                        TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO   "JYURRK-UPD1"
@@ -1221,6 +1224,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "JYURRK-KEY19"
                    MOVE    PATH-TBL-JYURRK-KEY19
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY20"
+                   MOVE    PATH-TBL-JYURRK-KEY20
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "JYURRK-ALL"

@@ -494,3 +494,36 @@ path	key19	{
 		;
 	};
 };
+path	key20	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key20_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   SRYKA       =   :SRYKA
+			AND   HKNCOMBINUM =   :HKNCOMBINUM
+			AND   LASTKBN     =   '1'
+                        AND ((ZAINUM1     =   :ZAINUM1 )
+                        OR   (ZAINUM2     =   :ZAINUM2 )
+                        OR   (ZAINUM3     =   :ZAINUM3 )
+                        OR   (ZAINUM4     =   :ZAINUM4 )
+                        OR   (ZAINUM5     =   :ZAINUM5 )
+                        OR   (ZAINUM6     =   :ZAINUM6 )
+                        OR   (ZAINUM7     =   :ZAINUM7 )
+                        OR   (ZAINUM8     =   :ZAINUM8 )
+                        OR   (ZAINUM9     =   :ZAINUM9 )
+                        OR   (ZAINUM10    =   :ZAINUM10)
+                        OR   (ZAINUM11    =   :ZAINUM11)
+                        OR   (ZAINUM12    =   :ZAINUM12)
+                        OR   (ZAINUM13    =   :ZAINUM13)
+                        OR   (ZAINUM14    =   :ZAINUM14)
+                        OR   (ZAINUM15    =   :ZAINUM15))
+			ORDER   BY        SRYYMD,
+                                          RENNUM,
+                                          DOUJI_RENNUM,
+			                  EDANUM
+		;
+	};
+};
