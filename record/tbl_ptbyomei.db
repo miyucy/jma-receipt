@@ -299,3 +299,37 @@ path	key15	{
 		;
 	};
 };
+
+
+path	key16	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key16_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			ORDER BY SRYYMD DESC,RENNUM 
+		;
+	};
+};
+
+
+path	key17	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key17_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND ((BYOMEICD_1  =   :BYOMEICD_1)
+			 OR  (BYOMEICD_2  =   :BYOMEICD_2)
+			 OR  (BYOMEICD_3  =   :BYOMEICD_3)
+			 OR  (BYOMEICD_4  =   :BYOMEICD_4)
+			 OR  (BYOMEICD_5  =   :BYOMEICD_5)
+			 OR  (BYOMEICD_6  =   :BYOMEICD_6))
+			ORDER BY SRYYMD DESC,RENNUM 
+		;
+	};
+};
