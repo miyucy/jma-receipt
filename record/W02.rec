@@ -106,6 +106,13 @@ W02	{
 					count	int;
 					item	varchar(14)[2];
 				};
+				DISCOUNTHASU_COMBO	{
+					DISCOUNTHASU	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[4];
+				};
 			};
 	            N01	{
 	            	state	int;

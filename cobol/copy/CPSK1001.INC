@@ -79,9 +79,12 @@
                05  SYS-1001-YAKUJYOPRTFLG    PIC  X(01).
       *ÉÂ¾²¿ô¡Ê°ìÈÌ¡Ë
                05  SYS-1001-BEDSUIPN    PIC  9(04).
+      *¸ºÌÈÃ¼¿ôÀßÄê
+               05  SYS-1001-DISCOUNT-HASU-KBN
+                                        PIC  X(01).
       *Í½È÷
       ***  03                           PIC  X(94).
-           03                           PIC  X(90).
+           03                           PIC  X(89).
       *----(01.00.02) LINE ADD END   ----------------------------------
       *Ã¼Ëö£É£Ä
            03  SYS-1001-TERMID          PIC  X(16).

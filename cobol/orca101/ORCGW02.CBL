@@ -39,6 +39,7 @@
       *  01.00.09    NACL-森脇    02.08.16  薬剤情報発行フラグ追加
       *  01.00.10    NACL-多々納  02/11/12  一括入力、全角チェック追加
       *  01.00.11    NACL-多々納  03/01/10  病床数（一般）追加
+      *  01.00.12    NACL-太田    03/05/21  減免端数区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -114,6 +115,13 @@
                            11  SPA-GMN-YAKUJYOFLGMEIL
                                                       PIC X(12).
       *----(01.00.09) LINE ADD END   ----------------------------------
+                       09  SPA-GMN-DISCOUNT-HASU-KBNLST
+                                                      OCCURS  4.
+                           11  SPA-GMN-DISCOUNT-HASU-KBNL
+                                                      PIC X(01).
+                           11  SPA-GMN-F11L           PIC X(01).
+                           11  SPA-GMN-DISCOUNT-HASU-KBNMEIL
+                                                      PIC X(30).
                        09  SPA-GMN-KOUMOKU.
                            11  SPA-GMN-PREFNUM-G.
                                13  SPA-GMN-PREFNUM    PIC X(02).
@@ -180,6 +188,12 @@
                                13  SPA-GMN-F10        PIC X(01).
                                13  SPA-GMN-YAKUJYOFLGMEI
                                                       PIC X(12).
+                           11  SPA-GMN-DISCOUNT-HASU-KBN-G.
+                               13  SPA-GMN-DISCOUNT-HASU-KBN
+                                                      PIC X(01).
+                               13  SPA-GMN-F11        PIC X(01).
+                               13  SPA-GMN-DISCOUNT-HASU-KBNMEI
+                                                      PIC X(30).
       *----(01.00.09) LINE ADD END   ----------------------------------
                    07  SPA-GMN-1002-AREA.
                        09  SPA-GMN-POST           PIC X(07).
@@ -611,6 +625,20 @@
            MOVE    "1"                TO  SPA-GMN-YAKUJYOFLGL    (2)
            MOVE    "発行する"         TO  SPA-GMN-YAKUJYOFLGMEIL (2)
       *----(01.00.09) LINE ADD END   ----------------------------------
+           MOVE    "1"         TO  SPA-GMN-DISCOUNT-HASU-KBNL    (1)
+           MOVE    "１０円未満四捨五入"  
+                               TO  SPA-GMN-DISCOUNT-HASU-KBNMEIL (1)
+           MOVE    "2"         TO  SPA-GMN-DISCOUNT-HASU-KBNL    (2)
+           MOVE    "１０円未満切り捨て" 
+                               TO  SPA-GMN-DISCOUNT-HASU-KBNMEIL (2)
+           MOVE    "3"         TO  SPA-GMN-DISCOUNT-HASU-KBNL    (3)
+           MOVE    "１０円未満切り上げ"   
+                               TO  SPA-GMN-DISCOUNT-HASU-KBNMEIL (3)
+           MOVE    "4"         TO  SPA-GMN-DISCOUNT-HASU-KBNL    (4)
+           MOVE    "１０円未満端数処理なし"
+                               TO  SPA-GMN-DISCOUNT-HASU-KBNMEIL (4)
+           MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (1)
+                               TO  SPA-GMN-DISCOUNT-HASU-KBN-G
       * 
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                      SYS-1001-REC
@@ -759,6 +787,19 @@
                               MOVE    SPA-GMN-YAKUJYOFLGLST (IDY)
                                           TO  SPA-GMN-YAKUJYOFLG-G
                               MOVE    2                TO  IDY
+                           END-IF
+                       END-PERFORM
+      *                空白の時、"1"とする
+                       IF      SYS-1001-DISCOUNT-HASU-KBN    =   SPACE
+                           MOVE    1   TO  SYS-1001-DISCOUNT-HASU-KBN
+                       END-IF
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       4
+                           IF      SYS-1001-DISCOUNT-HASU-KBN
+                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
+                              MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                              MOVE    4                TO  IDY
                            END-IF
                        END-PERFORM
       *----(01.00.09) LINE ADD END   ----------------------------------
@@ -913,6 +954,7 @@
            MOVE    W02-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
            MOVE    W02-ZENSYOHOFLG     TO  SPA-GMN-ZENSYOHOFLG-G
            MOVE    W02-YAKUJYOFLG      TO  SPA-GMN-YAKUJYOFLG-G
+           MOVE    W02-DISCOUNTHASU    TO  SPA-GMN-DISCOUNT-HASU-KBN-G
       *
       *    連絡先情報タグ
            MOVE    W02-POST            TO  SPA-GMN-POST
@@ -1058,6 +1100,11 @@
            END-IF
       *
            PERFORM 4129-YAKUJYOFLG-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4129-DISCOUNT-HASU-KBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41021-KIHON-1001-EXT
            END-IF
@@ -1479,6 +1526,30 @@
       *
       *----(01.00.09) LINE ADD END   ----------------------------------
       *****************************************************************
+      *    減免端数設定
+      *****************************************************************
+       4129-DISCOUNT-HASU-KBN-CHK-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       4
+               IF      SPA-GMN-DISCOUNT-HASU-KBN
+                                       =   SPA-GMN-DISCOUNT-HASU-KBNL
+                                                              (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0013"          TO  SPA-ERRCD
+               MOVE    38              TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4129-DISCOUNT-HASU-KBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    郵便番号チェック処理
       *****************************************************************
        4112-POST-CHK-SEC           SECTION.
@@ -1713,9 +1784,11 @@
                    MOVE    SPA-GMN-ZENSYOHOFLG TO  SYS-1001-ZENSYOHOFLG
       *----(01.00.09) LINE ADD START ----------------------------------
                    MOVE    SPA-GMN-YAKUJYOFLG
-                                           TO  SYS-1001-YAKUJYOPRTFLG
+                                       TO  SYS-1001-YAKUJYOPRTFLG
       *----(01.00.09) LINE ADD END   ----------------------------------
-                   MOVE    SYS-1001-REC        TO  SYSKANRI-REC
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN
+                                       TO  SYS-1001-DISCOUNT-HASU-KBN
+                   MOVE    SYS-1001-REC    TO  SYSKANRI-REC
       * 
       *    医療機関情報ー所在地、連絡先情報
                WHEN    "1002"    
@@ -1998,6 +2071,8 @@
            MOVE    SPA-GMN-YAKUJYOFLG-G
                                        TO  W02-YAKUJYOFLG
       *----(01.00.09) LINE ADD END   ----------------------------------
+           MOVE    SPA-GMN-DISCOUNT-HASU-KBN-G
+                                       TO  W02-DISCOUNTHASU
       *     
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       47
@@ -2060,6 +2135,12 @@
                                        TO  W02-YAKUJYOFLGLST  (IDX)
            END-PERFORM    
            MOVE    2                   TO  W02-YAKUJYOFLG-COUNT     
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+               MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST(IDX)
+                                       TO  W02-DISCOUNTHASULST (IDX)
+           END-PERFORM    
+           MOVE    4                   TO  W02-DISCOUNTHASU-COUNT     
       *----(01.00.09) LINE ADD END   ----------------------------------
       *
       *    医療機関情報ー所在地、連絡先情報
@@ -2181,6 +2262,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE    "全角で入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0013"
+                   MOVE    "減免端数設定入力エラー"
                                                TO  SPA-ERRMSG
       *----(01.00.09) LINE ADD END   ----------------------------------
                WHEN    "0099"
@@ -2306,6 +2390,9 @@
                 WHEN    36
                     MOVE  "YAKUJYOFLG"     TO   MCP-WIDGET
       *----(01.00.09) LINE ADD END   ----------------------------------
+                WHEN    38
+                    MOVE  "DISCOUNTHASU"
+                                           TO   MCP-WIDGET
                 WHEN    40
                     MOVE  "TEIRITU"        TO   MCP-WIDGET
                 WHEN    41
@@ -2327,7 +2414,7 @@
             EVALUATE    SPA-GMN-CUR
                 WHEN    1   THRU    19
       *----(01.00.09) LINE ADD START ----------------------------------
-                WHEN    32  THRU    36
+                WHEN    32  THRU    38
       *          WHEN    32  THRU    33
                     MOVE    0                TO  W02-PAGENO
       *----(01.00.09) LINE ADD END   ----------------------------------
@@ -2389,6 +2476,8 @@
               WHEN    "YAKUJYOFLG"
                   MOVE    12               TO  SPA-GMN-CUR
               WHEN    "HOSPCDN"
+                  MOVE    38               TO  SPA-GMN-CUR
+              WHEN    "DISCOUNTHASU"
                   MOVE    01               TO  SPA-GMN-CUR
       *       連絡先情報
               WHEN    "POST"

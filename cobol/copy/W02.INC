@@ -84,6 +84,12 @@
                     06  W02-YAKUJYOFLG-COUNT
                                              PIC S9(9)   BINARY.
                     06  W02-YAKUJYOFLGLST PIC X(14)   OCCURS  2.
+                  05  W02-DISCOUNTHASU-COMBO.
+                    06  W02-DISCOUNTHASU     PIC X(32).
+                    06  W02-DISCOUNTHASU-COUNT
+                                             PIC S9(9)   BINARY.
+                    06  W02-DISCOUNTHASULST  PIC X(32)
+                                                      OCCURS  4.
                 04  W02-N01-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED24.
                   05  W02-POST.
