@@ -3518,12 +3518,12 @@
                PERFORM 5002-HIZUKE-CHK-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-TAIINYMD
                MOVE    WRK-SYMD        TO  SPA-NAI-I01-TAIINYMD
-               PERFORM 4101-WIDGET-TAIIN-STT-SEC
-      *
       *        コンボボックス初期処理
                MOVE    SPA-NAI-I01-TAIINYMD
                                        TO  WRK-KJNYMD
                PERFORM 310-CMB-SYOKI-SEC
+      *
+               PERFORM 4101-WIDGET-TAIIN-STT-SEC
       *
       *
       *    変更
