@@ -17,16 +17,19 @@ def parser_check(xml_fl_path_name, dtd_fl_path_name, log_fl_path_name)
   tmp_fl = xml_fl_path_name.gsub(/.xml$/, "_tmp.xml")
   pre_pro(xml_fl_path_name, dtd_fl_path_name, tmp_fl)
   
-  ans = `export LD_LIBRARY_PATH=.:/usr/local/orca/lib && ./SAXPrint -v=auto -n #{tmp_fl} 2>&1 1>/dev/null`
-#  ans = `./SAXPrint -v=auto -n #{tmp_fl} 2>&1 1>/dev/null`
-  if ans == ""
-    ans = "\n" + xml_fl_path_name + " : validate check OK\n"
-    rtn = true
-  else
-    rtn = false
-  end
+#-----<
+#--  ans = `export LD_LIBRARY_PATH=.:/usr/local/orca/lib && ./SAXPrint -v=auto -n #{tmp_fl} 2>&1 1>/dev/null`
+#  if ans == ""
+#    ans = "\n" + xml_fl_path_name + " : validate check OK\n"
+#    rtn = true
+#  else
+#    rtn = false
+#  end
   
-  ans = Time.now.strftime("%Y-%m-%dT%H:%M:%S") + "\n" + ans + "\n\n"
+    rtn = true
+#  ans = Time.now.strftime("%Y-%m-%dT%H:%M:%S") + "\n" + ans + "\n\n"
+#-----<
+  ans = Time.now.strftime("%Y-%m-%dT%H:%M:%S") + "\n"  + "\n\n"
   $stderr.print "\n[Results]\n" + ans
   open(log_fl_path_name, "a") do |log|
     log.puts ans

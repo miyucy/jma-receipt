@@ -12,7 +12,7 @@
 require 'socket'
 $server, $port, $file_path_name, $out_code = ARGV
 
-$logfl = "../log/claim_snd.log"
+$logfl = "/tmp/claim_snd.log"
 
 #----- Define Classes ----------------------------------------
 

@@ -17,7 +17,7 @@ $port, $file_path = ARGV
 $file_path.chomp!('/')
 
 $dtdfl = "/usr/local/orca/scripts/claim/dtd/MML1014_euc.dtd"
-$logfl = "../log/claim_rcv.log"
+$logfl = "/tmp/claim_rcv.log"
 
 $sh_path_name = "../../../scripts/claim/HL03.sh"
 # 2002/11/12 add start (hiki)
