@@ -248,6 +248,9 @@
       *        戻る
                WHEN    "CLICKED"   ALSO    "B01"
                    PERFORM 210-BACK
+      *        情報削除
+               WHEN    "CLICKED"   ALSO    "B02"
+                   PERFORM 410-JOBDEL-SEC
       *        情報
                WHEN    "CLICKED"   ALSO    "B09"
                    PERFORM 400-JYOUHOU-SEC
@@ -319,7 +322,6 @@
       *    確認画面ＯＫ処理
            EVALUATE    SPA-MOTOPG
                WHEN    "MID1"
-                   DISPLAY "300-SCREEN-SEC"
                    PERFORM 320-MID1-SET-SEC
                    GO  TO  300-SCREEN-EXT
            END-EVALUATE
@@ -353,10 +355,12 @@
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
-           MOVE    SPACE           TO  SPA-GMN-MSG
-           MOVE    SPACE           TO  SPA-GMN-MSG-STYLE
-      *
            PERFORM 400-JYOKYO-SET-SEC
+      *
+           IF      SPA-GMN-NAIYOLIST-MAX   =  ZERO
+               MOVE    SPACE           TO  SPA-GMN-MSG
+               MOVE    SPACE           TO  SPA-GMN-MSG-STYLE
+           END-IF
       *
            .
        310-SPASET-EXT.
@@ -372,6 +376,11 @@
                    IF      SPA-MID1-FLG    =   "OK"
       *            更新処理
                        PERFORM 420-KOUSHIN-SEC
+                   END-IF
+               WHEN    "0204"
+                   IF      SPA-MID1-FLG    =   "OK"
+      *                削除処理
+                       PERFORM 820-JOBKANRI-DEL-SEC
                    END-IF
                WHEN    "0301"
                    IF      SPA-MID1-FLG    =   "OK"
@@ -393,9 +402,6 @@
       *    情報入手
       *****************************************************************
        400-JYOUHOU-SEC             SECTION.
-      *
-      *    ジョブ管理削除
-           PERFORM 820-JOBKANRI-DEL-SEC
       *
       *    プログラム更新処理
            MOVE    SPACE           TO  SHELLTBL
@@ -469,6 +475,14 @@
       *
            PERFORM 900-PGKANRI-CLOSE-SEC
       *
+           IF      SPA-GMN-NAIYOLIST-MAX   =  ZERO
+               MOVE    SPACE         TO  SKBN-RUN
+               MOVE    "更新データはありません。"
+                                     TO  SPA-GMN-MSG
+               MOVE    "blue"        TO  SPA-GMN-MSG-STYLE
+               GO  TO  400-JYOKYO-SET-EXT
+           END-IF
+      *
       *    メッセージ編集
            PERFORM 820-JOBKANRI-READ1-SEC
       *
@@ -500,6 +514,7 @@
                END-IF
            ELSE
                MOVE    SPACE           TO  SPA-GMN-MSG
+               MOVE    SPACE           TO  SPA-GMN-MSG-STYLE
            END-IF
            .
        400-JYOKYO-SET-EXT.
@@ -534,6 +549,29 @@
            EXIT.
       *
       *****************************************************************
+      *       削除処理
+      *****************************************************************
+       410-JOBDEL-SEC              SECTION.
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  410-JOBDEL-EXT
+           END-IF
+      *
+           PERFORM 820-JOBKANRI-READ2-SEC
+      *
+           IF      SKBN-RUN        =   "RUN"
+               MOVE    "0203"          TO  SPA-ERRCD
+               PERFORM 510-ERRSET-SEC
+           ELSE
+               MOVE    "0204"          TO  SPA-MIDCD
+               PERFORM 520-MIDSET-SEC
+           END-IF
+           .
+      *
+       410-JOBDEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *       登録処理
       *****************************************************************
        410-KAKUNIN-SEC             SECTION.
@@ -561,7 +599,6 @@
       *****************************************************************
        420-KOUSHIN-SEC             SECTION.
       *
-           DISPLAY "420-KOUSHIN-STR"
       *    ジョブ管理削除
            PERFORM 820-JOBKANRI-DEL-SEC
       *
@@ -762,6 +799,9 @@
            EVALUATE    SPA-MIDCD
                WHEN    "0202"
                MOVE    "プログラム更新を実行します。よろしいですか？"
+                                           TO  WRK-MIDMSG
+               WHEN    "0204"
+                   MOVE    "ジョブ管理を削除します。よろしいですか？"
                                            TO  WRK-MIDMSG
                WHEN    "0301"
                    MOVE    "プログラム更新中です。よろしいですか？"
