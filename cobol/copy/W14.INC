@@ -34,6 +34,15 @@
                   05  W14-CHK.
                     06  W14-CHKG     OCCURS 4.
                       07  W14-CHKBTN   PIC X.
+                04  W14-PRTNM-G   OCCURS 25.
+                  05  W14-PRTNM.
+                    06  W14-VALUE   PIC X(16).
+                04  W14-PARAKBN-COMBO-G   OCCURS 25.
+                  05  W14-PARAKBN-COMBO.
+                    06  W14-PARAKBN.
+                      07  W14-VALUE   PIC X(14).
+                    06  W14-PARAKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W14-PARAKBN-ITEM    PIC X(14)   OCCURS  3 TIMES.
                 04  W14-PRTKBN11     PIC X.
                 04  W14-PRTKBN12     PIC X.
                 04  W14-PRTKBN21     PIC X.

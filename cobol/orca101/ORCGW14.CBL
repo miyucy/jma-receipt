@@ -27,8 +27,10 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-藤原    02.08.30  印刷指示項目の追加
+      *  01.00.01    NACL-藤原    02/08/30  印刷指示項目の追加
       *  02.00.01    NACL-多々納  02/11/14  一括入力 
+      *  01.00.01    NACL-藤原    04/08/31  パラメタ種別、プリンタ名
+      *                                     の追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -67,6 +69,17 @@
                            11  SPA-GMN-CHK.
                               13  SPA-GMN-CHKFLG   PIC X(01)
                                                    OCCURS   4.
+                           11  SPA-GMN-PRTNM       PIC X(16).
+                           11  SPA-GMN-PARAKBN-G.
+                               13  SPA-GMN-PARAKBN PIC X(01).
+                               13  SPA-GMN-F1      PIC X(01).
+                               13  SPA-GMN-PARAKBNMEI
+                                                   PIC X(12).
+                   07  SPA-GMN-PARAKBNLST          OCCURS  3.
+                       09  SPA-GMN-PARAKBNL        PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-PARAKBNMEIL     PIC X(12).
+                   07  SPA-GMN-PARAKBN-MAX         PIC 9(02).
                    07  SPA-GMN-PRTKBN11    PIC X(01).
                    07  SPA-GMN-PRTKBN12    PIC X(01).
                    07  SPA-GMN-PRTKBN21    PIC X(01).
@@ -76,6 +89,8 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+      *
+           03  FLG-TOUROKU         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -94,6 +109,7 @@
                05  WRK-WIDGET1     PIC X(07).
                05  WRK-WIDGET2     PIC 9(02).
                05                  PIC X(03). 
+           03  WRK-HENFLG          PIC 9(01).
            03  WRK-YMD             PIC X(09). 
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -129,7 +145,7 @@
       *    県単独事業情報コード
            COPY    "CPSK3003.INC".
       *    県単独名
-           COPY  "CPSK3004.INC".
+           COPY    "CPSK3004.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -303,6 +319,14 @@
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD
       *
+           MOVE    "1"                 TO  SPA-GMN-PARAKBNL    (1)
+           MOVE    "保険者番号"        TO  SPA-GMN-PARAKBNMEIL (1)  
+           MOVE    "2"                 TO  SPA-GMN-PARAKBNL    (2)
+           MOVE    "患者番号"          TO  SPA-GMN-PARAKBNMEIL (2)
+           MOVE    "3"                 TO  SPA-GMN-PARAKBNL    (3)
+           MOVE    "患者・保険者"      TO  SPA-GMN-PARAKBNMEIL (3)
+           MOVE    3                   TO  SPA-GMN-PARAKBN-MAX  
+      *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-CONS-LINE-MAX
                MOVE    IDX             TO  SPA-GMN-TCD (IDX)
@@ -366,6 +390,18 @@
                MOVE    SYS-3004-SHELLID    TO  SPA-GMN-SHELLID (IDX)
                MOVE    SYS-3004-SHORIMSG   TO  SPA-GMN-SHORIMSG(IDX)
                MOVE    SYS-3004-CHK        TO  SPA-GMN-CHK     (IDX)
+               MOVE    SYS-3004-PRTNM      TO  SPA-GMN-PRTNM   (IDX)
+               MOVE    SYS-3004-PARAKBN    TO  SPA-GMN-PARAKBN (IDX)
+               PERFORM VARYING IDZ FROM    1   BY  1
+                       UNTIL   IDZ >       SPA-GMN-PARAKBN-MAX
+                   IF      SPA-GMN-PARAKBN (IDX)
+                                       =   SPA-GMN-PARAKBNL (IDZ)
+                       MOVE    SPA-GMN-PARAKBNLST (IDZ)
+                                           TO  SPA-GMN-PARAKBN-G (IDX)
+                       MOVE    SPA-GMN-PARAKBN-MAX 
+                                           TO  IDZ
+                   END-IF
+               END-PERFORM     
       *
                MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
@@ -436,7 +472,7 @@
       *        処理対象
                WHEN    OTHER
                    EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET(1:6)
-                       WHEN    "CLICKED"       ALSO    "CHKBTN"
+                       WHEN    "CLICKED"   ALSO    "CHKBTN"
                            MOVE    MCP-WIDGET          TO  WRK-WIDGET
                            MOVE    WRK-WIDGET2         TO  IDX 
                            PERFORM 420-CHKFLG-CHK-SEC
@@ -451,13 +487,55 @@
       *****************************************************************
        200-ENTRY                             SECTION.
       *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        管理コード
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN01"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN02"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN03"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN04"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN05"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN06"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN07"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN08"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN09"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN10"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN11"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN12"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN13"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN14"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN15"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN16"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN17"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN18"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN19"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN20"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN21"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN22"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN23"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN24"
+               WHEN    "ACTIVATE"      ALSO    "PARAKBN25"
+                   PERFORM  4100-PARAKBN-CHK-SEC
+      *        一括分
+               WHEN    "ACTIVATE"       ALSO    ANY
+                   PERFORM 400-ENTRY-SYORI-SEC
+           END-EVALUATE
+           .
+      *
+       200-ENTRY-EXT.
+           EXIT.
+      *****************************************************************
+      *    一括分入力処理
+      *****************************************************************
+       400-ENTRY-SYORI-SEC             SECTION.
+      *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
       *    入力チェック処理
+           MOVE    ZERO                TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
            .
-       200-ENTRY-EXT.
+       400-ENTRY-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -490,7 +568,12 @@
       *    処理名
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   25
-               MOVE    W14-SHORIMSG(IDX)  TO  SPA-GMN-SHORIMSG (IDX)
+               MOVE    W14-SHORIMSG(IDX)   TO  SPA-GMN-SHORIMSG (IDX)
+           END-PERFORM
+      *    プリンタ名
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   25
+               MOVE    W14-PRTNM   (IDX)   TO  SPA-GMN-PRTNM    (IDX)
            END-PERFORM
       *
            .
@@ -511,6 +594,13 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
+      *
+           PERFORM  4103-PRTNM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM  4104-PARAKBN-CHK-SEC
       *
            .
        4102-KIHON-CHK-EXT.
@@ -560,14 +650,13 @@
            END-PERFORM
       *
            .
-       4101-SELNUM-CHK-EXT.
+       4101-SHELLID-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    処理名入力処理
       *****************************************************************
        4102-SHORIMSG-CHK-SEC       SECTION.
-      *
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   25  )   OR
@@ -596,6 +685,90 @@
            EXIT.
       *
       *****************************************************************
+      *    プリンタ名入力処理
+      *****************************************************************
+       4103-PRTNM-CHK-SEC       SECTION.
+      *
+      *
+           .
+       4103-PRTNM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ種別入力処理
+      *****************************************************************
+       4104-PARAKBN-CHK-SEC       SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   25  )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-GMN-PARAKBN (IDX)
+                                           NOT =   SPACE
+                   MOVE    ZERO               TO  WRK-HENFLG
+                   PERFORM VARYING IDY FROM    1   BY  1
+                           UNTIL   IDY >       SPA-GMN-PARAKBN-MAX
+                           OR      WRK-HENFLG  =   1
+                       IF      SPA-GMN-PARAKBN (IDX)
+                                           =   SPA-GMN-PARAKBNL (IDY)
+                           MOVE    SPA-GMN-PARAKBNLST (IDY)
+                                           TO  SPA-GMN-PARAKBN-G (IDX)
+                           MOVE    1       TO  WRK-HENFLG
+                       END-IF
+                   END-PERFORM
+      *
+                   IF      WRK-HENFLG          =   ZERO 
+                       MOVE    "0003"          TO  SPA-ERRCD
+                   ELSE
+                       IF    ( SPA-GMN-PARAKBN (IDX)
+                                                   NOT =   SPACE )
+                       AND   ( SPA-GMN-CHKFLG  (IDX 3) =   "F"   )
+                           MOVE    "0050"          TO  SPA-ERRCD
+                       END-IF 
+                   END-IF
+      *
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       COMPUTE SPA-GMN-CUR     =   IDX    *   2
+                                                          +   200
+                   END-IF
+               END-IF
+           END-PERFORM        
+      *
+           .
+       4104-PARAKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ種別入力処理
+      *****************************************************************
+       4100-PARAKBN-CHK-SEC       SECTION.
+      *
+           MOVE    MCP-WIDGET (8:2)    TO  WRK-IDX2
+           MOVE    WRK-IDX2            TO  IDX
+      * 
+           COMPUTE WRK-GMN-CUR     =   IDX   *   2   +   200
+      *
+           MOVE    W14-PARAKBN (IDX)   TO  SPA-GMN-PARAKBN-G (IDX)
+      *
+      *    入力チェック処理
+           MOVE    ZERO                TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+      *
+           IF      SPA-ERRCD       =   SPACE
+      *        次のカーソル位置指定
+               MOVE    WRK-IDX2            TO  IDX
+               MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
+               IF      IDX                 =   WRK-CONS-LINE-MAX
+                   MOVE    300                 TO  SPA-GMN-CUR
+               ELSE    
+                   COMPUTE SPA-GMN-CUR     =   IDX     *   6   +   1
+               END-IF
+           END-IF
+      *
+           .
+       4100-PARAKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    処理対象チェック処理
       *****************************************************************
        420-CHKFLG-CHK-SEC       SECTION.
@@ -611,6 +784,7 @@
            MOVE    W14-CHKBTN(IDX IDY)    TO  SPA-GMN-CHKFLG (IDX IDY)
       *
       *    入力チェック処理
+           MOVE    ZERO                TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      420-CHKFLG-CHK-EXT
@@ -618,13 +792,16 @@
       *
       *    次のカーソル位置指定
            MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
+           COMPUTE IDX     =   (WRK-IDX3  +   3)  /   4
+           COMPUTE IDY     =    WRK-IDX3  -   (IDX    -   1)  *   4   
+      *
            IF      IDY                 <   3
                ADD     1                  TO  SPA-GMN-CUR
            ELSE
                IF      IDX                =   WRK-CONS-LINE-MAX
                    MOVE    1                  TO  SPA-GMN-CUR
                ELSE    
-                   ADD     2                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR    =   IDX   *   2   +   199
                END-IF    
            END-IF
            .
@@ -681,6 +858,7 @@
            MOVE    W14-PRTKBN11    TO  SPA-GMN-PRTKBN11
       *
       *    入力チェック処理
+           MOVE    ZERO                TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
       *
            .
@@ -695,6 +873,7 @@
            MOVE    W14-PRTKBN12    TO  SPA-GMN-PRTKBN12
       *
       *    入力チェック処理
+           MOVE    ZERO                TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
            .
        450-PRTKBN12-EXT.
@@ -708,6 +887,7 @@
            MOVE    W14-PRTKBN21    TO  SPA-GMN-PRTKBN21
       *
       *    入力チェック処理
+           MOVE    ZERO                TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
            .
        450-PRTKBN21-EXT.
@@ -721,6 +901,7 @@
            MOVE    W14-PRTKBN22    TO  SPA-GMN-PRTKBN22
       *
       *    入力チェック処理
+           MOVE    ZERO                TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
            .
        450-PRTKBN22-EXT.
@@ -731,6 +912,7 @@
       *****************************************************************
        410-KAKUTEI-SEC           SECTION.
       *
+      *    入力チェック処理
            PERFORM 4901-KANRENCHK-SEC
            IF      SPA-ERRCD        =   SPACE
                MOVE    "1001"           TO  SPA-WIDCD
@@ -818,7 +1000,9 @@
                    MOVE    SPA-W01-EDYUKYMD        TO  SYS-3004-EDYUKYMD
                    MOVE    SPA-GMN-SHORIMSG (IDX)  TO  SYS-3004-SHORIMSG
                    MOVE    SPA-GMN-SHELLID  (IDX)  TO  SYS-3004-SHELLID
-                   MOVE    SPA-GMN-CHK (IDX)       TO  SYS-3004-CHK
+                   MOVE    SPA-GMN-CHK      (IDX)  TO  SYS-3004-CHK
+                   MOVE    SPA-GMN-PRTNM    (IDX)  TO  SYS-3004-PRTNM
+                   MOVE    SPA-GMN-PARAKBN  (IDX)  TO  SYS-3004-PARAKBN
       *
                    MOVE    SYS-3004-REC            TO  MCPDATA-REC
                    MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
@@ -844,6 +1028,7 @@
       *****************************************************************
        4901-KANRENCHK-SEC           SECTION.
       *
+           MOVE    1                    TO  FLG-TOUROKU
            MOVE    SPACE                TO  SPA-ERRCD
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
@@ -960,6 +1145,16 @@
                MOVE    SPA-GMN-SHORIMSG   (IDX) TO  W14-SHORIMSG (IDX)
                MOVE    SPA-GMN-SHELLID    (IDX) TO  W14-SHELLID  (IDX)
                MOVE    SPA-GMN-CHK        (IDX) TO  W14-CHK      (IDX)
+               MOVE    SPA-GMN-PRTNM      (IDX) TO  W14-PRTNM    (IDX)
+               MOVE    SPA-GMN-PARAKBN-G  (IDX) TO  W14-PARAKBN  (IDX)
+      *
+               PERFORM VARYING IDY FROM    1       BY  1
+                       UNTIL   IDY >       SPA-GMN-PARAKBN-MAX
+                   MOVE    SPA-GMN-PARAKBNLST (IDY)
+                                       TO  W14-PARAKBN-ITEM (IDX IDY)
+               END-PERFORM
+               MOVE    SPA-GMN-PARAKBN-MAX
+                                       TO  W14-PARAKBN-COUNT (IDX)
            END-PERFORM   
       *
            MOVE    SPA-GMN-STYUKYMD     TO  W14-STYUKYMD
@@ -1285,7 +1480,107 @@
                     MOVE  "CHKBTN099"    TO  MCP-WIDGET
                 WHEN   150
                     MOVE  "CHKBTN100"    TO  MCP-WIDGET
-                 WHEN   200
+                WHEN   201
+                    MOVE  "PRTNM01"    TO  MCP-WIDGET
+                WHEN   203
+                    MOVE  "PRTNM02"    TO  MCP-WIDGET
+                WHEN   205
+                    MOVE  "PRTNM03"    TO  MCP-WIDGET
+                WHEN   207
+                    MOVE  "PRTNM04"    TO  MCP-WIDGET
+                WHEN   209
+                    MOVE  "PRTNM05"    TO  MCP-WIDGET
+                WHEN   211
+                    MOVE  "PRTNM06"    TO  MCP-WIDGET
+                WHEN   213
+                    MOVE  "PRTNM07"    TO  MCP-WIDGET
+                WHEN   215
+                    MOVE  "PRTNM08"    TO  MCP-WIDGET
+                WHEN   217
+                    MOVE  "PRTNM09"    TO  MCP-WIDGET
+                WHEN   219
+                    MOVE  "PRTNM10"    TO  MCP-WIDGET
+                WHEN   221
+                    MOVE  "PRTNM11"    TO  MCP-WIDGET
+                WHEN   223
+                    MOVE  "PRTNM12"    TO  MCP-WIDGET
+                WHEN   225
+                    MOVE  "PRTNM13"    TO  MCP-WIDGET
+                WHEN   227
+                    MOVE  "PRTNM14"    TO  MCP-WIDGET
+                WHEN   229
+                    MOVE  "PRTNM15"    TO  MCP-WIDGET
+                WHEN   231
+                    MOVE  "PRTNM16"    TO  MCP-WIDGET
+                WHEN   233
+                    MOVE  "PRTNM17"    TO  MCP-WIDGET
+                WHEN   235
+                    MOVE  "PRTNM18"    TO  MCP-WIDGET
+                WHEN   237
+                    MOVE  "PRTNM19"    TO  MCP-WIDGET
+                WHEN   239
+                    MOVE  "PRTNM20"    TO  MCP-WIDGET
+                WHEN   241
+                    MOVE  "PRTNM21"    TO  MCP-WIDGET
+                WHEN   243
+                    MOVE  "PRTNM22"    TO  MCP-WIDGET
+                WHEN   245
+                    MOVE  "PRTNM23"    TO  MCP-WIDGET
+                WHEN   247
+                    MOVE  "PRTNM24"    TO  MCP-WIDGET
+                WHEN   249
+                    MOVE  "PRTNM25"    TO  MCP-WIDGET
+                WHEN   202
+                    MOVE  "PARAKBN01"  TO  MCP-WIDGET
+                WHEN   204
+                    MOVE  "PARAKBN02"  TO  MCP-WIDGET
+                WHEN   206
+                    MOVE  "PARAKBN03"  TO  MCP-WIDGET
+                WHEN   208
+                    MOVE  "PARAKBN04"  TO  MCP-WIDGET
+                WHEN   210
+                    MOVE  "PARAKBN05"  TO  MCP-WIDGET
+                WHEN   212
+                    MOVE  "PARAKBN06"  TO  MCP-WIDGET
+                WHEN   214
+                    MOVE  "PARAKBN07"  TO  MCP-WIDGET
+                WHEN   216
+                    MOVE  "PARAKBN08"  TO  MCP-WIDGET
+                WHEN   218
+                    MOVE  "PARAKBN09"  TO  MCP-WIDGET
+                WHEN   220
+                    MOVE  "PARAKBN10"  TO  MCP-WIDGET
+                WHEN   222
+                    MOVE  "PARAKBN11"  TO  MCP-WIDGET
+                WHEN   224
+                    MOVE  "PARAKBN12"  TO  MCP-WIDGET
+                WHEN   226
+                    MOVE  "PARAKBN13"  TO  MCP-WIDGET
+                WHEN   228
+                    MOVE  "PARAKBN14"  TO  MCP-WIDGET
+                WHEN   230
+                    MOVE  "PARAKBN15"  TO  MCP-WIDGET
+                WHEN   232
+                    MOVE  "PARAKBN16"  TO  MCP-WIDGET
+                WHEN   234
+                    MOVE  "PARAKBN17"  TO  MCP-WIDGET
+                WHEN   236
+                    MOVE  "PARAKBN18"  TO  MCP-WIDGET
+                WHEN   238
+                    MOVE  "PARAKBN19"  TO  MCP-WIDGET
+                WHEN   240
+                    MOVE  "PARAKBN20"  TO  MCP-WIDGET
+                WHEN   242
+                    MOVE  "PARAKBN21"  TO  MCP-WIDGET
+                WHEN   244
+                    MOVE  "PARAKBN22"  TO  MCP-WIDGET
+                WHEN   246
+                    MOVE  "PARAKBN23"  TO  MCP-WIDGET
+                WHEN   248
+                    MOVE  "PARAKBN24"  TO  MCP-WIDGET
+                WHEN   250
+                    MOVE  "PARAKBN25"  TO  MCP-WIDGET
+                 WHEN   300
                     MOVE  "B12"        TO  MCP-WIDGET
            END-EVALUATE
       *
@@ -1311,13 +1606,20 @@
                ADD     1                   TO  SPA-GMN-CUR
            END-IF
       *
+           IF      WRK-MCP-WIDGET(1:5) =   "PRTNM"
+               MOVE    WRK-MCP-WIDGET(6:2) TO  WRK-IDX2
+               COMPUTE SPA-GMN-CUR         =  (WRK-IDX2   -   1)  *   2
+                                           +   201
+               ADD     1                   TO  SPA-GMN-CUR
+           END-IF
+      *
            .
        50011-CUR-SET-EXT.
            EXIT.
       *
       *
       *****************************************************************
-      *    エラーメッセージ表示理
+      *    エラーメッセージ表示処理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -1331,11 +1633,15 @@
                    MOVE    "処理名は全角で入力して下さい"
                                                       TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "項目に入力がありません"   TO  SPA-ERRMSG
+                   MOVE    "パラメタ種別が違います"   TO  SPA-ERRMSG
                WHEN    "0006"
                    MOVE    "前頁はありません"         TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "次頁はありません"         TO  SPA-ERRMSG
+               WHEN    "0050"
+                   MOVE
+                "処理対象が公費請求書のときパラメタ種別の選択ができます"
+                                                      TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "更新ができませんでした"
                                                       TO  SPA-ERRMSG
