@@ -1,0 +1,18 @@
+#! /bin/sh
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+PATH=$PATH:/usr/lib/postgresql/bin
+
+if su - postgres -c "psql template1 -l|grep ${DBNAME}"
+then
+    echo "delete from tbl_pgkanri ;" | su - orca -c "psql orca"
+fi
+echo "Done."
