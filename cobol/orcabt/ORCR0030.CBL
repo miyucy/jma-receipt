@@ -2712,21 +2712,61 @@
                       ADD    SYU-SYUCOMPFTN   TO   RECE02-FTNMONEY(1)   
                                                    WRK-KOH-GAI          
                     END-IF                                              
-                ELSE                                                    
-                    COMPUTE  FTN-KOH-YYY  =  12000  -  FTN-KOH-XXX      
-                    IF  WRK-FTNKEI  >  FTN-KOH-YYY                      
-                      ADD    FTN-KOH-YYY  TO  RECE02-FTNMONEY(1)        
-                                              FTN-KOH-XXX               
-                      IF    RECE02-RJNHKNNUM    NOT =    SPACE          
-                        ADD  FTN-KOH-YYY  TO  RECE02-RJNGAIFTN          
-                      END-IF                                            
-                    ELSE                                                
-                      ADD    WRK-FTNKEI   TO  RECE02-FTNMONEY(1)        
-                                              FTN-KOH-XXX               
-                      IF    RECE02-RJNHKNNUM    NOT =    SPACE          
-                        ADD  WRK-FTNKEI   TO  RECE02-RJNGAIFTN          
-                      END-IF                                            
-                    END-IF                                              
+                ELSE
+                  IF   ( SYU-KOH-HKNNUM(1)   =   "012" )                
+                  OR   ( SYU-KOH-HKNNUM(2)   =   "012" )                
+                  OR   ( SYU-KOH-HKNNUM(3)   =   "012" )                
+                  OR   ( SYU-KOH-HKNNUM(4)   =   "012" )                
+                      COMPUTE  FTN-KOH-YYY  =   8000  -  FTN-KOH-XXX      
+                      IF  WRK-FTNKEI  >  FTN-KOH-YYY                      
+                        ADD    FTN-KOH-YYY  TO  RECE02-FTNMONEY(1)        
+                                                FTN-KOH-XXX               
+                        IF    RECE02-RJNHKNNUM    NOT =    SPACE          
+                          ADD  FTN-KOH-YYY  TO  RECE02-RJNGAIFTN          
+                        END-IF                                            
+                      ELSE                                                
+                        ADD    WRK-FTNKEI   TO  RECE02-FTNMONEY(1)        
+                                                FTN-KOH-XXX               
+                        IF    RECE02-RJNHKNNUM    NOT =    SPACE          
+                          ADD  WRK-FTNKEI   TO  RECE02-RJNGAIFTN          
+                        END-IF                                            
+                      END-IF
+                  ELSE
+                    IF   ( SYU-KOH-HKNNUM(1)   =   "972" )                
+                    OR   ( SYU-KOH-HKNNUM(2)   =   "972" )                
+                    OR   ( SYU-KOH-HKNNUM(3)   =   "972" )                
+                    OR   ( SYU-KOH-HKNNUM(4)   =   "972" )                
+                      COMPUTE  FTN-KOH-YYY  =  10000  -  FTN-KOH-XXX      
+                      IF  WRK-FTNKEI  >  FTN-KOH-YYY                      
+                        ADD    FTN-KOH-YYY  TO  RECE02-FTNMONEY(1)        
+                                                FTN-KOH-XXX               
+                        IF    RECE02-RJNHKNNUM    NOT =    SPACE          
+                          ADD  FTN-KOH-YYY  TO  RECE02-RJNGAIFTN          
+                        END-IF                                            
+                      ELSE                                                
+                        ADD    WRK-FTNKEI   TO  RECE02-FTNMONEY(1)        
+                                                FTN-KOH-XXX               
+                        IF    RECE02-RJNHKNNUM    NOT =    SPACE          
+                          ADD  WRK-FTNKEI   TO  RECE02-RJNGAIFTN          
+                        END-IF                                            
+                      END-IF
+                    ELSE
+                      COMPUTE  FTN-KOH-YYY  =  12000  -  FTN-KOH-XXX      
+                      IF  WRK-FTNKEI  >  FTN-KOH-YYY                      
+                        ADD    FTN-KOH-YYY  TO  RECE02-FTNMONEY(1)        
+                                                FTN-KOH-XXX               
+                        IF    RECE02-RJNHKNNUM    NOT =    SPACE          
+                          ADD  FTN-KOH-YYY  TO  RECE02-RJNGAIFTN          
+                        END-IF                                            
+                      ELSE                                                
+                        ADD    WRK-FTNKEI   TO  RECE02-FTNMONEY(1)        
+                                                FTN-KOH-XXX               
+                        IF    RECE02-RJNHKNNUM    NOT =    SPACE          
+                          ADD  WRK-FTNKEI   TO  RECE02-RJNGAIFTN          
+                        END-IF                                            
+                      END-IF
+                    END-IF
+                  END-IF                                              
                 END-IF                                                  
       *
                 ADD   SYU-KOH-FTN   TO   WRK-KOH-FTN
@@ -2925,23 +2965,27 @@
            IF   RECE02-ZAITAKU  =  SPACE
                   MOVE     ZERO      TO     RECE02-ZAITAKU-SAIKEI
            ELSE
-              IF  FTN-KOH-XXX   =   ZERO
+              IF   FTN-KOH-XXX   =   ZERO        
                   MOVE     ZERO      TO     RECE02-ZAITAKU-SAIKEI
               ELSE 
                   IF  FLG-KOH     =   ZERO
-                        COMPUTE   RECE02-ZAITAKU-SAIKEI  =  
-                                  FTN-KOH-XXX
-      *                           FTN-KOH-XXX  -  WRK-KOH-FTN
+                     COMPUTE   RECE02-ZAITAKU-SAIKEI  =  
+                               FTN-KOH-XXX
+                     IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
+                           MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
+                     END-IF
                   ELSE
                      IF  FLG-KOH  =   1
                         COMPUTE   RECE02-ZAITAKU-SAIKEI  =  
                                   FTN-KOH-XXX
-      *                           FTN-KOH-XXX  -  WRK-KOH-FTN
                      END-IF
                      IF  FLG-KOH  =   2
                         ADD   WRK-KOH-GAI   TO  RECE02-FTNMONEY(2)
                         COMPUTE   RECE02-ZAITAKU-SAIKEI  =  
                                   FTN-KOH-XXX
+                     END-IF
+                     IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
+                           MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
                      END-IF
                   END-IF
               END-IF
@@ -3855,4 +3899,3 @@
        900-DBSTART-EXT.
            EXIT.
       *
-      
