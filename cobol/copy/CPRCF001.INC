@@ -32,6 +32,7 @@
       *  01.01.06    MCC-藤原     02.05.24  保険変更時の未訂正フラグの追加
       *  01.01.07    NACL-藤原    03.02.12  補助区分の追加
       *  01.01.08    NACL-藤原    03.03.03  診療科数１０から２０へ変更
+      *  01.01.09    NACL-藤原    03.03.11  レセプト種別不明情報の追加
       ************************************************************
       *01  RECE01-REC.
            03  RECE01-KEY.
@@ -88,5 +89,12 @@
            03  RECE01-ETC-HKNNUM          PIC  X(03).
       *未訂正区分
            03  RECE01-TEISEIKBN           PIC  X(01).
+      *レセプト種別不明エラー情報
+           03  RECE01-ERR-AREA.
+               05  RECE01-ERR-ERRKBN      PIC 9(01).
+               05  RECE01-ERR-DAY         PIC 9(02).
+               05  RECE01-ERR-HKNCOMBINUM PIC 9(04).
+               05  RECE01-ERR-TEKSTYMD    PIC 9(08).
+               05  RECE01-ERR-TEKEDYMD    PIC 9(08).
       *予備
            03  FILLER                     PIC  X(20).

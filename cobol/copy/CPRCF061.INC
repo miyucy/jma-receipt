@@ -20,6 +20,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03.03.03  診療科数１０から２０へ変更
+      *  01.00.02    NACL-藤原    03.03.11  レセプト種別不明情報の追加
       ********************************************************************
       *01  RECE61-REC.
            03  RECE61-KEY.
@@ -76,6 +77,13 @@
            03  RECE61-ETC-HKNNUM          PIC  X(03).
       *未訂正区分
            03  RECE61-TEISEIKBN           PIC  X(01).
+      *レセプト種別不明エラー情報
+           03  RECE61-ERR-AREA.
+               05  RECE61-ERR-ERRKBN      PIC 9(01).
+               05  RECE61-ERR-DAY         PIC 9(02).
+               05  RECE61-ERR-HKNCOMBINUM PIC 9(04).
+               05  RECE61-ERR-TEKSTYMD    PIC 9(08).
+               05  RECE61-ERR-TEKEDYMD    PIC 9(08).
       *予備
            03  FILLER                      PIC  X(20).
       

@@ -25,6 +25,7 @@
       *  01.00.02    NACL-藤原    03.02.12  テスト患者番号区分の追加
       *  01.00.03    NACL-藤原    03.03.03  診療科数１０から２０へ変更
       *  01.00.04    NACL-藤原    03/03/07  レセプト記載外公費情報追加
+      *  01.00.05    NACL-藤原    03.03.11  レセプト種別不明情報の追加
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -281,6 +282,13 @@
            03  RECE62-COMCNTFLG           PIC  X(01).
       *テスト患者番号区分
            03  RECE62-TSTPTNUMKBN         PIC  X(01).
+      *レセプト種別不明エラー情報
+           03  RECE62-ERR-AREA.
+               05  RECE62-ERR-ERRKBN      PIC 9(01).
+               05  RECE62-ERR-DAY         PIC 9(02).
+               05  RECE62-ERR-HKNCOMBINUM PIC 9(04).
+               05  RECE62-ERR-TEKSTYMD    PIC 9(08).
+               05  RECE62-ERR-TEKEDYMD    PIC 9(08).
       *予備
            03  RECE62-FILLER              PIC  X(32).
       *
