@@ -1,11 +1,61 @@
 INSTALL = @INSTALL@
-CP = cp
+INSTALL_DATA = @INSTALL@ -m 644
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
-orcadir = ${exec_prefix}/orca
-formdir = ${orcadir}/form
-install_ignore := Makefile.in Makefile build-stamp
+formdir = ${exec_prefix}/form
+
+EXTRA_DIST = \
+              HC01.dia \
+              HC02.dia \
+              HC03.dia \
+              HC04.dia \
+              HC04V01.dia \
+              HC05.dia \
+              HC06.dia \
+              HC07.dia \
+              HC08.dia \
+              HC08V01.dia \
+              HC09.dia \
+              HC10.dia \
+              HC11.dia \
+              HC011.dia \
+              HC12.dia \
+              HC13.dia \
+              HC14.dia \
+              HC15.dia \
+              HC15x.dia \
+              HC17.dia \
+              HC17V01.dia \
+              HC18.dia \
+              HC19.dia \
+              HC20.dia \
+              HC21.dia \
+              HC22.dia \
+              HC23.dia \
+              HC24.dia \
+              HC25.dia \
+              HC26.dia \
+              HC27.dia \
+              HC28.dia \
+              HC301.dia \
+              HC302.dia \
+              HC303.dia \
+              HC304.dia \
+              HC305.dia \
+              HC306.dia \
+              HC041.dia \
+              HC041V01.dia \
+              HC401.dia \
+              HCML01.dia \
+              HCML02.dia \
+              HCML03.dia \
+              HCML04.dia \
+              HCML05.dia \
+              HCML06.dia \
+              HCML09.dia \
+              HCP7LA.dia \
+              HCPO.dia
 
 all:   
 	touch build-stamp
@@ -18,5 +68,4 @@ distclean:
 
 install: all
 	$(INSTALL) -d $(formdir)
-	$(CP) * $(formdir)/; \
-	for i in $(install_ignore) ;do rm -f $(formdir)/$$i; done
+	$(INSTALL_DATA) $(EXTRA_DIST) $(formdir)

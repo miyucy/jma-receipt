@@ -1,11 +1,43 @@
 INSTALL = @INSTALL@
-CP = cp
+INSTALL_DATA = @INSTALL_DATA@
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
-orcadir = ${exec_prefix}/orca
-lddefdir = ${orcadir}/lddef
-install_ignore := Makefile.in Makefile build-stamp
+lddefdir = ${exec_prefix}/lddef
+
+EXTRA_DIST = \
+             directory \
+             orca00.ld \
+             orca01.ld \
+             orca02.ld \
+             orca11.ld \
+             orca12.ld \
+             orca13.ld \
+             orca14.ld \
+             orca18.ld \
+             orca19.ld \
+             orca21.ld \
+             orca22.ld \
+             orca23.ld \
+             orca24.ld \
+             orca41.ld \
+             orca42.ld \
+             orca43.ld \
+             orca44.ld \
+             orca51.ld \
+             orca52.ld \
+             orca71.ld \
+             orca82.ld \
+             orca101.ld \
+             orca102.ld \
+             orca103.ld \
+             orca104.ld \
+             orca105.ld \
+             orca106.ld \
+             orca107.ld \
+             orcabt.bd \
+             orcadb.inc \
+             recept.bd 
 
 all:   
 	touch build-stamp
@@ -18,5 +50,4 @@ distclean:
 
 install: all
 	$(INSTALL) -d $(lddefdir)
-	$(CP) * $(lddefdir)/ ;\
-	for i in $(install_ignore) ;do rm -f $(lddefdir)/$$i; done
+	$(INSTALL) $(EXTRA_DIST) $(lddefdir)

@@ -1,10 +1,10 @@
 INSTALL = @INSTALL@
-CP = cp
+INSTALL_DATA = @INSTALL_DATA@
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
-orcadir = ${exec_prefix}/orca
-recorddir = ${orcadir}/record
+recorddir = ${exec_prefix}/record
+
 install_ignore := Makefile.in Makefile build-stamp
 
 all:   
@@ -18,5 +18,4 @@ distclean:
 
 install: all
 	$(INSTALL) -d $(recorddir)
-	$(CP) * $(recorddir)/ ;\
-	for i in $(install_ignore) ;do rm -f $(recorddir)/$$i; done
+	$(INSTALL) *def *rec *db $(recorddir)

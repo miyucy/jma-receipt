@@ -1,12 +1,11 @@
 INSTALL = @INSTALL@
-CP = cp
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_DATA = @INSTALL_DATA@
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
-orcadir = ${exec_prefix}/orca
-libdir = ${orcadir}/lib
-scriptsdir = ${orcadir}/scripts
-install_ignore := Makefile.in Makefile build-stamp
+scriptsdir = ${exec_prefix}/scripts
 
 all:   
 	touch build-stamp
@@ -19,5 +18,10 @@ distclean:
 
 install: all
 	$(INSTALL) -d $(scriptsdir)
-	$(CP) -R * $(scriptsdir)/ ;\
-	for i in $(install_ignore) ;do rm -f $(scriptsdir)/$$i; done
+	$(INSTALL) -d $(scriptsdir)/allways
+	$(INSTALL) -d $(scriptsdir)/daily
+	$(INSTALL) -d $(scriptsdir)/monthly
+
+	for file in allways/*sh ;do $(INSTALL) $$file $(scriptsdir)/allways; done
+	for file in daily/*sh ;do $(INSTALL) $$file $(scriptsdir)/daily; done
+	for file in monthly/*sh ;do $(INSTALL) $$file $(scriptsdir)/monthly; done

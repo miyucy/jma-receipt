@@ -1,10 +1,11 @@
 INSTALL = @INSTALL@
-CP = cp
+INSTALL_DATA = @INSTALL@ -m 644
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
 sysconfdir = @sysconfdir@
-install_ignore := Makefile.in Makefile build-stamp
+
+EXTRA_DIST = dbgroup.inc kentan.inc
 
 all:   
 	touch build-stamp
@@ -16,6 +17,5 @@ distclean:
 	-rm -f Makefile
 
 install: all
-	$(INSTALL) -d $(etcdir)
-	$(CP) -R * $(etcdir)/; \
-	for i in $(install_ignore) ;do rm -f $(etcdir)/$$i; done
+	$(INSTALL) -d $(sysconfdir)
+	$(INSTALL_DATA) $(EXTRA_DIST) $(sysconfdir)
