@@ -3804,7 +3804,7 @@
                    MOVE    "予約氏名は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "1000"
-                   MOVE    "予約件数がオーバーしてます"
+                   MOVE    "警告！予約件数がオーバーしてます"
                                                TO  SPA-ERRMSG
                WHEN    "1010"
                    MOVE    "予約キーデータ更新エラー"
