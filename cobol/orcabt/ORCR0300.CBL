@@ -56,6 +56,7 @@
       *  01.00.16    NACL-藤原    03/11/12  時間加算の追加
       *  01.00.17    NACL-藤原    03/11/17  傷病名データファイル名の変更
       *  01.00.18    NACL-藤原    03/11/19  老人外来金額の項目変更
+      *  01.00.19    NACL-藤原    03/11/20  給付割合の編集の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -895,13 +896,14 @@
       *
       *    給付割合（国保OR退職者のみ）
            IF    ( RECE02-TEISYUTUSAKI =   "2"     AND
-                   RECE02-RJNHKNNUM    =   SPACE                ) OR
-                 ( RECE02-HKNNUM       =   WRK-CONS-HKNNUM1  OR
-                                           WRK-CONS-HKNNUM2  OR
-                                           WRK-CONS-HKNNUM3  OR
-                                           WRK-CONS-HKNNUM4  OR
-                                           WRK-CONS-HKNNUM5  OR
-                                           WRK-CONS-HKNNUM6     )
+                   RECE02-RJNHKNNUM    =   SPACE                )
+      ***********  RECE02-RJNHKNNUM    =   SPACE                ) OR
+      *           ( RECE02-HKNNUM       =   WRK-CONS-HKNNUM1  OR
+      *                                     WRK-CONS-HKNNUM2  OR
+      *                                     WRK-CONS-HKNNUM3  OR
+      *                                     WRK-CONS-HKNNUM4  OR
+      *                                     WRK-CONS-HKNNUM5  OR
+      ***********                           WRK-CONS-HKNNUM6     )
                COMPUTE WRK-KYURATE =  (100 -   RECE02-KYURATE) 
                MOVE   WRK-KYURATE          TO  WRK-NUM
                MOVE    3                   TO  WRK-NAGASA
