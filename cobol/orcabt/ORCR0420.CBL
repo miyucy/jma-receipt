@@ -823,6 +823,14 @@
            MOVE    ACCT-SYUTEN2         TO      RECE44-SYUTEN2
            MOVE    ACCT-YKZTEN          TO      RECE44-YKZTEN
            MOVE    ACCT-KIZAITEN        TO      RECE44-KIZAITEN
+           IF   RECE41-HKNKBN     =  "4"
+              IF  ACCT-SRYKBN     =  "70"
+                  COMPUTE  RECE44-SYUTEN1   =  RECE44-SYUTEN1
+                                            -  RECE44-SYUTEN2
+                  COMPUTE  RECE44-KIZAITEN  =  RECE44-KIZAITEN
+                                            +  RECE44-SYUTEN2
+              END-IF
+           END-IF
            MOVE    ACCT-DRCD            TO      RECE44-DRCD
            MOVE    ACCT-ZAIREQFLG       TO      RECE44-ZAIREQFLG
            MOVE    ACCT-TEIGENRATE      TO      RECE44-TEIGENRATE

@@ -857,6 +857,7 @@
                    ELSE                          
                        EVALUATE    RECE45-SRYCD (IDX) (1:1)
                            WHEN    "0"
+                             IF   RECE41-HKNKBN    NOT  =  "4" 
                                IF      RECE45-SRYCD (IDX) (1:3) = "059"
                                    IF      RECE45-DATAKBN (IDX)
                                                               =   "3"
@@ -869,6 +870,15 @@
                                        MOVE    1             TO  IDY
                                    END-IF
                                END-IF    
+                             ELSE
+                               IF      RECE45-SRYCD (IDX) (1:3) = "059"
+                                       MOVE    4             TO  IDY
+                               ELSE
+                                   IF      IDY           =   ZERO
+                                       MOVE    1             TO  IDY
+                                   END-IF
+                               END-IF    
+                             END-IF
                            WHEN    "8"
                                IF      IDY           =   ZERO
                                    MOVE    2             TO  IDY
@@ -878,6 +888,7 @@
                            WHEN    "6"
                                MOVE    5             TO  IDY
                            WHEN    "7"
+                             IF   RECE41-HKNKBN    NOT  =  "4" 
                                IF    ( RECE44-SRYKBN     =   "70" )
                                AND   ( RECE45-DATAKBN (IDX)
                                                          =   "3"  )
@@ -890,6 +901,9 @@
                                        MOVE    4             TO  IDY
                                    END-IF
                                END-IF
+                             ELSE
+                                       MOVE    4             TO  IDY
+                             END-IF
                            WHEN    OTHER
                                DISPLAY "ORCR0460 SRYCD="
                                                  RECE45-SRYCD (IDX) 
