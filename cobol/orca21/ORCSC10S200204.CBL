@@ -37,6 +37,7 @@
       * 01.00.06     NACL-多々納  02/11/28  中途終了再表示修正
       * 01.00.07     NACL-多々納  02/12/02  生活習慣病のコードエラー修正
       * 01.00.08     NACL-多々納  02/12/06  慢性疼痛の算定チェック修正
+      * 01.00.09     NACL-多々納  03/02/19  療養担当手当追加
       *****************************************************************
       *
       *
@@ -1619,6 +1620,9 @@
            IF      SPA-HKNKBN          =   1
                PERFORM 2009-RSIHKN-SET-SEC
                IF      SPA-GMN-IDX         >   ZERO
+      *            療養担当手当発生
+                   PERFORM 330123-RYOYOU-TEATE-SEC
+      *
                    MOVE    SPA-GMN-IDX         TO  SPA-FRST-LINE
                    MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
                                                TO  SPA-FRST-SRYCD
@@ -2604,6 +2608,9 @@
                PERFORM 330122-HIFUKA-SIDOU-SEC
            END-IF
       *
+      *    療養担当手当（北海道）
+           PERFORM 330123-RYOYOU-TEATE-SEC
+      *
            .
        33012-SIDOU-SYORI-EXT.
            EXIT.
@@ -2755,6 +2762,57 @@
       *
            .
        330122-HIFUKA-SIDOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    療養担当手当（北海道）処理
+      *****************************************************************
+       330123-RYOYOU-TEATE-SEC         SECTION.
+      *
+           IF    ( SPA-RYOYOU-FLG      =   "1"     )  AND
+                 ((SPA-SRYYMD(5:4)     >=  "1101"  AND
+                                       <=  "1231")  OR
+                  (SPA-SRYYMD(5:4)     >=  "0101"  AND
+                                       <=  "0430") )
+               CONTINUE
+           ELSE
+               GO      TO      330123-RYOYOU-TEATE-EXT
+           END-IF
+      *
+           MOVE    "199000610"         TO  WRK-SRYCD
+      *
+      *    点数マスタ編集・基本チェック
+           COMPUTE SPA-GMN-IDX         =   SPA-GMN-IDX   +   1
+           INITIALIZE                  ORCSC92AREA
+           MOVE    "1"                 TO  LNK-SC92-KBN
+           MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
+           MOVE    "K02"               TO  LNK-SC92-PG
+           MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
+           MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
+           MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
+           MOVE    SPA-15MIMAN-ARI     TO  LNK-SC92-15MIMAN-ARI
+           MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
+           MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
+           MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
+           MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
+           CALL    "ORCSC92"           USING
+                                       MCPAREA
+                                       ORCSC92AREA
+                                       SPA-SCR-REC
+                                       SPA-AREA
+      *    エラー時、追加しない
+           IF     (SPA-ERRCD           NOT =   SPACE )  OR
+                  (LNK-SC92-ERRAREA    NOT =   SPACE )
+               MOVE    SPACE           TO  SPA-ERRCD
+               INITIALIZE              SPA-GMN-TBLREC (SPA-GMN-IDX)
+               INITIALIZE              SPA-COM-TBLREC (SPA-GMN-IDX)
+               COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX
+                                       -   1
+           END-IF
+           MOVE    SPA-GMN-IDX         TO  IDX2
+      *
+           .
+       330123-RYOYOU-TEATE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4123,9 +4181,11 @@
                               (HZN-COM-INPUTCD (IDX)   =   SPACE   AND
                                HZN-GMN-INPUTCD (IDX)   =   SPACE )
                MOVE    ZERO                    TO  FLG-ARI
-               IF     (HZN-COM-SRYKBN(IDX)     =   "11"  OR  "12"
+               IF    ((HZN-COM-SRYKBN(IDX)     =   "11"  OR  "12"
                                                OR  "13"  OR  "14" ) AND
-                      (HZN-COM-INPUTCD(IDX)(1:1)   =   "1"   )
+                      (HZN-COM-INPUTCD(IDX)(1:1)   =   "1"   ))  OR
+      *                療養担当手当
+                     ( HZN-COM-INPUTCD(IDX)     =   "199000610" )
                    MOVE    HZN-COM-INPUTCD(IDX) TO  WRK-SRYCD
                    PERFORM 10101-SINSATU-CHK-SEC
                    IF      FLG-ARI             =   1
@@ -4244,6 +4304,15 @@
                    MOVE    1               TO  FLG-ARI
                END-IF
            END-IF
+      *    その他同じコードがある時
+           PERFORM VARYING     IDXS    FROM    1   BY  1
+                   UNTIL      (IDXS    >   SPA-GMN-IDX )  OR
+                              (FLG-ARI =   1           )
+               IF      WRK-SRYCD       =   SPA-COM-INPUTCD (IDXS)
+                   MOVE    1               TO  FLG-ARI
+               END-IF
+           END-PERFORM
+      *
            .
        10101-SINSATU-CHK-EXT.
            EXIT.

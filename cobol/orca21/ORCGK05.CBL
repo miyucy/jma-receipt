@@ -1200,7 +1200,7 @@
                MOVE    50                  TO  SPA-NENREI-YY
            END-IF
       *
-           MOVE    "2"                 TO  FLG-TOROKU
+      *****MOVE    "2"                 TO  FLG-TOROKU
       *
       *    画面編集処理
            PERFORM 3103-SAIHEN-HEN-SEC
@@ -1362,11 +1362,11 @@
       *            入力コードの画面用再編集
                    PERFORM 3101-INPUTCD-HEN-SEC
                    MOVE    IDX-1               TO  SPA-GMN-IDX
-      *            約束名称編集
-                   MOVE    6                   TO  WRK-CD-MCNT
-                   MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:6)
-                                                   TO  WRK-INPUTCD
-                   PERFORM 41011921-INPSET-MEI-SEC
+      **********   約束名称編集
+      *            MOVE    6                   TO  WRK-CD-MCNT
+      *            MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:6)
+      *                                            TO  WRK-INPUTCD
+      ************ PERFORM 41011921-INPSET-MEI-SEC
       *
                    MOVE    SPACE               TO  SPA-COM-INPUTCD
                                                              (IDX-1)
@@ -1378,6 +1378,22 @@
       *
                    MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:6)
                                                TO  WRK-SETCD
+                   INITIALIZE                      WRK-MOJI-AREA
+      *
+                   INITIALIZE                  ORCSC97AREA
+                   MOVE    SPA-GMN-IDX         TO  LNK-SC97-GMN-IDX
+                   MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
+                                               TO  LNK-SC97-INPUTCD
+                   CALL    "ORCSC97"           USING
+                                               SPA-AREA
+                                               ORCSC97AREA
+                                               SPA-SCR-REC
+      *
+                   MOVE    LNK-SC97-INCD       TO  WRK-CD
+                   MOVE    LNK-SC97-INCDCNT    TO  WRK-CD-MCNT
+      *            変換文字列編集
+                   PERFORM 4101121-MOJI-SET-SEC
+      *
                    PERFORM 4101191-INPUTSET-SYORI-SEC
                END-IF
            END-PERFORM

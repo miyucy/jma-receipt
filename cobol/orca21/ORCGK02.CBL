@@ -57,6 +57,7 @@
       *  03.00.09    NACL-多々納  02/11/20  自賠責器材追加
       *  03.00.10    NACL-多々納  02/11/28  中途終了再表示修正
       *  03.00.11    NACL-多々納  02/12/26  前回処方のドクター変更
+      *  03.00.12    NACL-多々納  03/02/19  約束セット名称編集修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -450,6 +451,7 @@
            03  WRK-IN-SURYO        PIC 9(02).
            03  WRK-IN-IDX          PIC 9(04).
            03  WRK-IN-IDX2         PIC 9(04).
+           03  WRK-MAX-IDX         PIC 9(04).
       *
            03  WRK-WKSRY-HKNCOMBI      PIC 9(04).
       *
@@ -2641,7 +2643,7 @@
                END-IF
            END-IF
       *
-           MOVE    "2"                 TO  FLG-TOROKU
+      *****MOVE    "2"                 TO  FLG-TOROKU
       *
       *    再表示編集処理
            IF      LNK-WKSRYACT-MAX    >   ZERO
@@ -2923,12 +2925,6 @@
                    PERFORM 3101-INPUTCD-HEN-SEC
                    MOVE    SPACE               TO  SPA-MAE-INPUTCD (IDX)
                    MOVE    IDX-1               TO  SPA-GMN-IDX
-      *            約束名称編集
-                   MOVE    6                   TO  WRK-CD-MCNT
-                   MOVE    SPA-GMN-INPUTCD(IDX-1)(1:6)
-                                               TO  WRK-INPUTCD
-                   MOVE    "6"                 TO  LNK-SC97-CDSYU
-                   PERFORM 41011921-INPSET-MEI-SEC
       *
                    MOVE    SPACE               TO  SPA-COM-INPUTCD
                                                              (IDX-1)
@@ -2937,6 +2933,21 @@
       *
                    MOVE    ZERO                TO  WRK-IDX-YAKUSOKU
                    MOVE    ZERO                TO  IDX-YAKUSOKU
+                   INITIALIZE                      WRK-MOJI-AREA
+      *
+                   INITIALIZE                  ORCSC97AREA
+                   MOVE    SPA-GMN-IDX         TO  LNK-SC97-GMN-IDX
+                   MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
+                                               TO  LNK-SC97-INPUTCD
+                   CALL    "ORCSC97"           USING
+                                               SPA-AREA
+                                               ORCSC97AREA
+                                               SPA-SCR-REC
+      *
+                   MOVE    LNK-SC97-INCD       TO  WRK-CD
+                   MOVE    LNK-SC97-INCDCNT    TO  WRK-CD-MCNT
+      *            変換文字列編集
+                   PERFORM 4101121-MOJI-SET-SEC
                    PERFORM 4101191-INPUTSET-SYORI-SEC
                END-IF
            END-PERFORM
@@ -5094,6 +5105,7 @@
       *
            MOVE    ZERO                TO  WRK-IN-IDX
            MOVE    ZERO                TO  WRK-IN-IDX2
+           MOVE    ZERO                TO  WRK-MAX-IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   200
                IF      SPA-COM-IN  (IDX)   =   "1"
@@ -5102,17 +5114,21 @@
                IF      SPA-COM-IN  (IDX)   =   "3"
                    MOVE    IDX                 TO  WRK-IN-IDX2
                END-IF
+               IF     (SPA-COM-SET (IDX)   =   SPACE )  AND
+                      (SPA-GMN-INPUTCD(IDX)    NOT =   SPACE )
+                   MOVE    IDX             TO  WRK-MAX-IDX
+               END-IF
            END-PERFORM
       *
            IF      WRK-IN-IDX          =   ZERO
                MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
+               MOVE    WRK-MAX-IDX         TO  SPA-GMN-IDX
            ELSE
                MOVE    WRK-IN-IDX          TO  SPA-GMN-IDX
            END-IF
            IF      SPA-GMN-IDX         =   ZERO
                GO      TO      410119-SAIINPUT-EXT
            END-IF
-      *
       *    数量・回数入力なし
            IF     (SPA-COM-SURFLG (SPA-GMN-IDX)  =   SPACE ) AND
                   (SPA-COM-IN2    (SPA-GMN-IDX)  =   "2"   ) AND
@@ -5175,9 +5191,13 @@
                    IF     (FLG-ARI                 =   ZERO )  AND
                           (WRK-IN-IDX2             <   22   )
                        ADD     1                   TO  WRK-IN-IDX2
-                       IF     (SPA-COM-IN3 (SPA-GMN-IDX)  =   "1" ) AND
+                       IF    ((SPA-COM-IN3 (SPA-GMN-IDX)  =   "1" ) AND
                               (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)
-                                                      NOT =   "001")
+                                                      NOT =   "001"))
+                         OR  ((SPA-GMN-INPUTCD (SPA-GMN-IDX)(1:1)
+                                                       =   "S" ) AND
+                              (SPA-COM-SURFLG (SPA-GMN-IDX)
+                                                       =   SPACE ))
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)
                                                      (WRK-IN-IDX2:)
@@ -6355,6 +6375,7 @@
       *
            MOVE    SPACE               TO  INPUTCD-REC
            MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    "6"                 TO  LNK-SC97-CDSYU
            MOVE    LNK-SC97-CDSYU      TO  ICD-CDSYU
       *
            MOVE    WRK-INPUTCD             TO  ICD-INPUTCD

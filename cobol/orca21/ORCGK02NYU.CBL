@@ -30,6 +30,7 @@
       * 01.00.01     NACL-Â¿¡¹Ç¼  02/11/20  ¼«ÇåÀÕ´ïºàÄÉ²Ã
       * 01.00.02     NACL-Â¿¡¹Ç¼  02/12/02  ¿©»öÄÉ²Ã
       * 01.00.03     NACL-Â¿¡¹Ç¼  02/12/17  »»Äê¥Á¥§¥Ã¥¯½¤Àµ
+      * 01.00.04     NACL-Â¿¡¹Ç¼  03/02/19  ÌóÂ«¥»¥Ã¥ÈÌ¾¾ÎÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -422,6 +423,7 @@
            03  WRK-IN-SURYO        PIC 9(02).
            03  WRK-IN-IDX          PIC 9(04).
            03  WRK-IN-IDX2         PIC 9(04).
+           03  WRK-MAX-IDX         PIC 9(04).
       *
            03  WRK-WKSRY-HKNCOMBI      PIC 9(04).
       *
@@ -2233,7 +2235,7 @@
                GO      TO      310-SPA-GMNSET-EXT
            END-IF
       *
-           MOVE    "2"                 TO  FLG-TOROKU
+      *****MOVE    "2"                 TO  FLG-TOROKU
            MOVE    ZERO                TO  SPA-NAI-TIMEFLG
            MOVE    SPACE               TO  WRK-ERRCD1
       *
@@ -2485,11 +2487,11 @@
                    MOVE    SPACE               TO  SPA-MAE-INPUTCD (IDX)
                    MOVE    IDX-1               TO  SPA-GMN-IDX
       *            ÌóÂ«Ì¾¾ÎÊÔ½¸
-                   MOVE    6                   TO  WRK-CD-MCNT
-                   MOVE    SPA-GMN-INPUTCD(IDX-1)(1:6)
-                                               TO  WRK-INPUTCD
-                   MOVE    "6"                 TO  LNK-SC97-CDSYU
-                   PERFORM 41011921-INPSET-MEI-SEC
+      *            MOVE    6                   TO  WRK-CD-MCNT
+      *            MOVE    SPA-GMN-INPUTCD(IDX-1)(1:6)
+      *                                        TO  WRK-INPUTCD
+      *            MOVE    "6"                 TO  LNK-SC97-CDSYU
+      *            PERFORM 41011921-INPSET-MEI-SEC
       *
                    MOVE    SPACE               TO  SPA-COM-INPUTCD
                                                              (IDX-1)
@@ -2498,6 +2500,22 @@
       *
                    MOVE    ZERO                TO  WRK-IDX-YAKUSOKU
                    MOVE    ZERO                TO  IDX-YAKUSOKU
+                   INITIALIZE                      WRK-MOJI-AREA
+      *
+                   INITIALIZE                  ORCSC97AREA
+                   MOVE    SPA-GMN-IDX         TO  LNK-SC97-GMN-IDX
+                   MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
+                                               TO  LNK-SC97-INPUTCD
+                   CALL    "ORCSC97"           USING
+                                               SPA-AREA
+                                               ORCSC97AREA
+                                               SPA-SCR-REC
+      *
+                   MOVE    LNK-SC97-INCD       TO  WRK-CD
+                   MOVE    LNK-SC97-INCDCNT    TO  WRK-CD-MCNT
+      *            ÊÑ´¹Ê¸»úÎóÊÔ½¸
+                   PERFORM 4101121-MOJI-SET-SEC
+      *
                    PERFORM 4101191-INPUTSET-SYORI-SEC
                END-IF
            END-PERFORM
@@ -4541,6 +4559,7 @@
       *
            MOVE    ZERO                TO  WRK-IN-IDX
            MOVE    ZERO                TO  WRK-IN-IDX2
+           MOVE    ZERO                TO  WRK-MAX-IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   WRK-GYO-MAX
                IF      SPA-COM-IN  (IDX)   =   "1"
@@ -4549,10 +4568,15 @@
                IF      SPA-COM-IN  (IDX)   =   "3"
                    MOVE    IDX                 TO  WRK-IN-IDX2
                END-IF
+               IF     (SPA-COM-SET (IDX)   =   SPACE )  AND
+                      (SPA-GMN-INPUTCD(IDX)    NOT =   SPACE )
+                   MOVE    IDX             TO  WRK-MAX-IDX
+               END-IF
            END-PERFORM
       *
            IF      WRK-IN-IDX          =   ZERO
-               MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
+      *******  MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
+               MOVE    WRK-MAX-IDX         TO  SPA-GMN-IDX
            ELSE
                MOVE    WRK-IN-IDX          TO  SPA-GMN-IDX
            END-IF
@@ -4620,9 +4644,13 @@
                    IF     (FLG-ARI                 =   ZERO )  AND
                           (WRK-IN-IDX2             <   22   )
                        ADD     1                   TO  WRK-IN-IDX2
-                       IF     (SPA-COM-IN3 (SPA-GMN-IDX)  =   "1" ) AND
+                       IF    ((SPA-COM-IN3 (SPA-GMN-IDX)  =   "1" ) AND
                               (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)
-                                                      NOT =   "001")
+                                                      NOT =   "001"))
+                         OR  ((SPA-GMN-INPUTCD (SPA-GMN-IDX)(1:1)
+                                                       =   "S" ) AND
+                              (SPA-COM-SURFLG (SPA-GMN-IDX)
+                                                       =   SPACE ))
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)
                                                      (WRK-IN-IDX2:)
