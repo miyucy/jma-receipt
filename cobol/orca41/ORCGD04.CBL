@@ -36,6 +36,7 @@
       *  01.00.02    ひさなが     02/05/10  ジョブ管理検索追加
       *  01.00.02    ひさなが     02/06/26  印刷管理・印刷ＤＢ追加
       *  01.00.05    ひさなが     02/09/13  ディレクトリをサブプロへ
+      *  01.00.06    ひさなが     03/03/03  出力範囲の桁誤り変更
       *
       *****************************************************************
       *
@@ -702,7 +703,10 @@
            MOVE    1                   TO  SPRT-RENNUM.
            MOVE    "ORCBSD1"           TO  SPRT-TBL-KEY.
            MOVE    WRK-PARA-SYSYMD     TO  SPRT-TBL-GROUP(1:8).
-           MOVE    SYS-TIME            TO  SPRT-TBL-GROUP(9:8).
+      *修正/*開始*03.03.03**********************************************
+      *     MOVE    SYS-TIME            TO  SPRT-TBL-GROUP(9:8).
+           MOVE    SYS-TIME(1:6)       TO  SPRT-TBL-GROUP(9:6).
+      *修正/*終了*03.03.03**********************************************
            MOVE    WRK-PARA-SRYYM      TO  SPRT-SRYYM.
            MOVE    WRK-PARA-SYSYMD     TO  SPRT-SKYYMD.
            MOVE    "orcbsd01.sh"       TO  SPRT-SHELLID.
@@ -778,15 +782,11 @@
                                        JOBKANRI-REC.
       *
            MOVE    SPACE               TO  SHELLTBL.
-      *修正/*開始*02.09.13*********************************************
-      *     MOVE    "/usr/local/orca/scripts/allways/print.sh"
-      *                                 TO  SHELLTBL-NAME.
            INITIALIZE                  ORCSMKPASSAREA.
            MOVE    "scripts/allways/print.sh"
                                        TO  MKPASS-IN-01.
            CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA.
            MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME.
-      *修正/*終了*02.09.13*********************************************
            MOVE    1                   TO  SHELLTBL-ARG1.
            MOVE    "ORCBSD1"           TO  SHELLTBL-ARG2.
            MOVE    WRK-PARA-SYSYMD     TO  SHELLTBL-ARG3(1:8).
