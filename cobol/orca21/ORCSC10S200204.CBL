@@ -664,6 +664,8 @@
       *****************************************************************
        1011-SYOSIN-CHK-SEC                  SECTION.
       *
+           MOVE    ZERO               TO  SPA-SYOSIN
+      *
       *    ÄûÀµ¤Î»þ¡¢½é¿ÇÎÁ¤ò»»ÄêÃæ¤«¤ÎÈ½Äê
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200    )  OR
@@ -720,6 +722,9 @@
                   (SPA-NYUGAIKBN       =   "2" )
                PERFORM 1003-ROUMANSEI-CHK-SEC
            END-IF
+      *
+      *    ºßÂðËö´ü°åÎÅÁí¹ç¿Ç»¡ÎÁ¥Á¥§¥Ã¥¯
+           PERFORM 1008-ZAIMATU-CHK-SEC
       *
       *    À¸³è½¬´·ÉÂ»ØÆ³´ÉÍýÎÁ»»Äê¥Á¥§¥Ã¥¯
            PERFORM 1007-SEIKATU-CHK-SEC
@@ -1212,6 +1217,33 @@
            .
        1003-ROUMANSEI-CHK-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ºßÂðËö´ü°åÎÅÁí¹ç¿Ç»¡ÎÁ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       1008-ZAIMATU-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  SPA-ZAIMATU-ARI
+           MOVE    ZERO                TO  SPA-ZAIMATU-ARI2
+      *
+      *    ºßÂðËö´ü°åÎÅÁí¹ç¿Ç»¡ÎÁ¡Ê±¡³°½èÊý¡Ë
+           MOVE    "114007610"         TO  WRK-SRYCD
+           PERFORM 33051-JYURRK-MAECHK-SEC
+      *    Åö·î»»Äê¤¢¤ê
+           IF      FLG-TOUG-SANTEI     >   ZERO
+               MOVE    1                   TO  SPA-ZAIMATU-ARI2
+           END-IF
+      *    ºßÂðËö´ü°åÎÅÁí¹ç¿Ç»¡ÎÁ¡Ê±¡Æâ½èÊý¡Ë
+           MOVE    "114007710"         TO  WRK-SRYCD
+           PERFORM 33051-JYURRK-MAECHK-SEC
+      *    Åö·î»»Äê¤¢¤ê
+           IF      FLG-TOUG-SANTEI     >   ZERO
+               MOVE    1                   TO  SPA-ZAIMATU-ARI2
+           END-IF
+           .
+       1008-ZAIMATU-CHK-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    À¸³è½¬´·ÉÂ»ØÆ³´ÉÍýÎÁ»»Äê¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
@@ -3061,6 +3093,7 @@
            MOVE    ZERO                TO  SPA-SYONIKA-ARI
            MOVE    ZERO                TO  SPA-TELSAI-ARI
            MOVE    ZERO                TO  SPA-FUKU-SRYKA
+           MOVE    ZERO                TO  SPA-ZAIMATU-ARI
       *
            MOVE    ZERO                TO  SPA-SEIKATU-ARI
       *
@@ -3099,6 +3132,7 @@
                    WHEN    "114007610"
                    WHEN    "114007710"
                        MOVE    1               TO  SPA-HOUMON-ARI
+                       MOVE    1               TO  SPA-ZAIMATU-ARI
       *
       *            À¸³è½¬´·ÉÂ»ØÆ³´ÉÍýÎÁ
                    WHEN    "113003910"
