@@ -7516,6 +7516,8 @@
       *          一般入院会計作成用のフラグ設定
                  MOVE    "1"      TO      IPN-NYUKAIKEI-SAKUSEI-FLG
            END-IF
+      *-------特定入院対応ここまで-----------------------------------
+      *
       *    特定入院料区分のセット
            IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
                MOVE     "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
@@ -8167,6 +8169,8 @@
                  MOVE    "99999999"
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
            END-IF
+      *-------特定入院対応ここまで-----------------------------------
+      *
       *    特定入院料区分のセット
            IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
                MOVE     "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
@@ -8232,6 +8236,8 @@
       *    転科／転棟／転室時　会計テーブル編集処理
       *****************************************************************
        4801-TENROOM-EDIT-SEC         SECTION.
+      *
+           MOVE      SPACE        TO    IPN-NYUKAIKEI-SAKUSEI-FLG
       *
            INITIALIZE      ORCSSYOKIKSNAREA
       *
@@ -8339,13 +8345,13 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     WRK-TSUSAN      <  14
+                 IF     STUSAN-NISSU01      <=  14
                      ADD    1           TO  TN-IDX
                      MOVE   "190774110" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              診療所老人医療管理料の１４日以内の終日を再計算
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  13  - WRK-TSUSAN
+                     COMPUTE  WK-TOKUTEI-DAY  =  14  - STUSAN-NISSU01
                      MOVE   SPA-NAI-I01-IDOYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
@@ -8388,6 +8394,8 @@
                  MOVE    "99999999"    TO LNK-SCNYUACCT-KAGEN-EDYUKYMD
                                                                (TN-IDX)
            END-IF
+      *-------特定入院対応ここまで-----------------------------------
+      *
       *    特定入院料区分のセット
            IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
                MOVE     "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
@@ -8643,13 +8651,13 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     WRK-TSUSAN      <  14
+                 IF     STUSAN-NISSU01      <=  14
                      ADD    1           TO  TN-IDX
                      MOVE   "190774110" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              診療所老人医療管理料の１４日以内の終日を再計算
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  13  - WRK-TSUSAN
+                     COMPUTE  WK-TOKUTEI-DAY  =  14  - STUSAN-NISSU01
                      MOVE   SPA-NAI-I01-MAEIDOYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
@@ -8692,6 +8700,8 @@
                  MOVE    "99999999"    TO LNK-SCNYUACCT-KAGEN-EDYUKYMD
                                                                (TN-IDX)
            END-IF
+      *-------特定入院対応ここまで-----------------------------------
+      *
       *    特定入院料区分のセット
            IF      PTNYUINRRK-TOKUTEI-NYUIN    =   SPACE
                MOVE     "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
