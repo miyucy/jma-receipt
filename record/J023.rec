@@ -14,10 +14,10 @@ J023	{
 		};
 		SRYKACOMB	{
 			SRYKA	{
-				value	varchar(21);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(21)[41];
+			item	varchar(20)[41];
 		};
 		MIDASI	{
 		    style   varchar(20);
@@ -25,10 +25,10 @@ J023	{
 		};
 		HKNCOMBICOMB	{
 			HKNCOMBI	{
-				value	varchar(41);
+				value	varchar(55);
 			};
 			count	int;
-			item	varchar(41)[10];
+			item	varchar(55)[10];
 		};
 		scrolledwindow1	{
 			RECELIST	{
@@ -39,7 +39,7 @@ J023	{
 					value1	varchar(3);
 					value2	varchar(6);
 					value3	varchar(10);
-					value4	varchar(20);
+					value4	varchar(50);
 					value5	varchar(3);
 					value6	varchar(50);
 				}	[100];

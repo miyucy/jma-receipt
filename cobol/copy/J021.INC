@@ -20,11 +20,11 @@
               03  J021-MAE-HKNCOMBI.
                 04  J021-VALUE  PIC X(4).
               03  J021-MAE-HKNCOMBIMEI.
-                04  J021-VALUE  PIC X(40).
+                04  J021-VALUE  PIC X(60).
               03  J021-ATO-HKNCOMBI.
                 04  J021-VALUE  PIC X(4).
               03  J021-ATO-HKNCOMBIMEI.
-                04  J021-VALUE  PIC X(40).
+                04  J021-VALUE  PIC X(60).
               03  J021-MAE-FTNRATE.
                 04  J021-VALUE  PIC X(8).
               03  J021-ATO-FTNRATE.
@@ -36,7 +36,7 @@
                   05  J021-HKNLIST-ROWATTR   PIC S9(9)   BINARY.
                   05  J021-ITEM       OCCURS  40 TIMES.
                     06  J021-NUM PIC X(4).
-                    06  J021-HKNKUMI PIC X(40).
+                    06  J021-HKNKUMI PIC X(60).
                     06  J021-TEKSTYMD PIC X(10).
                     06  J021-TEKEDYMD PIC X(10).
                     06  J021-FTNRATE  PIC X(8).

@@ -897,13 +897,13 @@
       *
            PERFORM 31011-HKNCOMBI-HEN-SEC
            MOVE    WRK-HKNCOMBIMEI     TO  SPA-J021-MAE-HKNCOMBIMEI
-           IF      COMB-DELKBN         =   "1"
-               MOVE    SPACE               TO  SPA-J021-MAE-HKNCOMBIMEI
-               STRING  "（削除）"          DELIMITED  BY  SIZE
-                       WRK-HKNCOMBIMEI     DELIMITED  BY  SIZE
-                                       INTO    SPA-J021-MAE-HKNCOMBIMEI
-               END-STRING
-           END-IF
+      ***  IF      COMB-DELKBN         =   "1"
+      *        MOVE    SPACE               TO  SPA-J021-MAE-HKNCOMBIMEI
+      *        STRING  "（削除）"          DELIMITED  BY  SIZE
+      *                WRK-HKNCOMBIMEI     DELIMITED  BY  SIZE
+      *                                INTO     SPA-J021-MAE-HKNCOMBIMEI
+      *        END-STRING
+      *****END-IF
       *
       *    収納から負担割合を編集する
            INITIALIZE                  SYUNOU-REC

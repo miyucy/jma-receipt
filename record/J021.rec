@@ -4,13 +4,13 @@ J021	{
 			value	varchar(4);
 		};
 		MAE_HKNCOMBIMEI	{
-			value	varchar(40);
+			value	varchar(60);
 		};
 		ATO_HKNCOMBI	{
 			value	varchar(4);
 		};
 		ATO_HKNCOMBIMEI	{
-			value	varchar(40);
+			value	varchar(60);
 		};
 		MAE_FTNRATE	{
 			value	varchar(8);
@@ -25,7 +25,7 @@ J021	{
 				rowattr	int;
 				item	{
 					value1	varchar(4);
-					value2	varchar(40);
+					value2	varchar(60);
 					value3	varchar(10);
 					value4	varchar(10);
 					value5	varchar(8);

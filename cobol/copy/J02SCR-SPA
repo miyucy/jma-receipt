@@ -196,7 +196,7 @@
                05  SPA-J021-TBL.
                    07  SPA-J021-TBLREC         OCCURS   40.
                        09  SPA-J021-THKNCOMBI      PIC 9(04).
-                       09  SPA-J021-THKNCOMBIMEI   PIC X(40).
+                       09  SPA-J021-THKNCOMBIMEI   PIC X(60).
                        09  SPA-J021-TTEKSTYMD      PIC X(09).
                        09  SPA-J021-TTEKEDYMD      PIC X(09).
                        09  SPA-J021-TFTNRATE       PIC X(08).
@@ -212,10 +212,10 @@
       *
                05  SPA-J021-INPUT-AREA.
                    07  SPA-J021-MAE-HKNCOMBI         PIC X(04).
-                   07  SPA-J021-MAE-HKNCOMBIMEI      PIC X(40).
+                   07  SPA-J021-MAE-HKNCOMBIMEI      PIC X(60).
                    07  SPA-J021-MAE-FTNRATE          PIC X(08).
                    07  SPA-J021-ATO-HKNCOMBI         PIC X(04).
-                   07  SPA-J021-ATO-HKNCOMBIMEI      PIC X(40).
+                   07  SPA-J021-ATO-HKNCOMBIMEI      PIC X(60).
                    07  SPA-J021-ATO-FTNRATE          PIC X(08).
       *
       *
@@ -246,12 +246,12 @@
                05  SPA-J023-HKNCOMBI-G.
                    07  SPA-J023-HKNCOMBINUM     PIC X(04).
                    07  SPA-J023-HKNCOMBY1       PIC X(01).
-                   07  SPA-J023-HKNCOMBIMEI     PIC X(35).
+                   07  SPA-J023-HKNCOMBIMEI     PIC X(50).
                05  SPA-J023-HKNCOMB-COMB.
                    07  SPA-J023-HKN-LIST    OCCURS  10.
                        09  SPA-J023-THKNCOMBINUM    PIC X(04).
                        09  SPA-J023-THKNCOMBY1      PIC X(01).
-                       09  SPA-J023-THKNCOMBIMEI    PIC X(35).
+                       09  SPA-J023-THKNCOMBIMEI    PIC X(50).
                    07  SPA-J023-HKNMAX              PIC 9(04).
       *            Ï«ºÒÊÝ¸±¶èÊ¬
                    07  SPA-J023-RSI-THKNKBN-OCC  OCCURS  10.
@@ -283,7 +283,7 @@
                        09  SPA-J023-TRENNUM       PIC 9(03).
                        09  SPA-J023-TSRYYM        PIC X(06).
                        09  SPA-J023-TSRYKA        PIC X(06).
-                       09  SPA-J023-THKNCOMBI     PIC X(20).
+                       09  SPA-J023-THKNCOMBI     PIC X(50).
                        09  SPA-J023-TSRYDD        PIC X(02).
                        09  SPA-J023-TCOMMENT      PIC X(400).
       *
