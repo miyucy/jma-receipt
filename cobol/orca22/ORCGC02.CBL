@@ -97,33 +97,34 @@
       *  01.07.08    NACL-藤原    03/02/14  入力ＣＤ検索から戻ったときの
       *                                     カルテ病名の編集を追加
       *  01.07.09    NACL-藤原    03/02/28  診療科４０に変更
-      *  02.07.10    NACL-藤原    03/03/05  排他制御処理追加
-      *  02.07.11    NACL-多々納  03/03/14  ファイル削除追加
-      *  02.07.12    NACL-藤原    03/03/14  同一開始日の病名の表示順の修正
-      *  02.07.13    NACL-藤原    03/03/26  選択番号がエラーのときクリアする
-      *  02.07.14    NACL-藤原    03/04/15  診療科から病名を編集しておく
-      *  02.07.15    NACL-藤原    03/05/28  変更・削除処理後の選択の解除
-      *  02.07.16    NACL-藤原    03/06/03  未コード化傷病名コードのとき
+      *  01.07.10    NACL-藤原    03/03/05  排他制御処理追加
+      *  01.07.11    NACL-多々納  03/03/14  ファイル削除追加
+      *  01.07.12    NACL-藤原    03/03/14  同一開始日の病名の表示順の修正
+      *  01.07.13    NACL-藤原    03/03/26  選択番号がエラーのときクリアする
+      *  01.07.14    NACL-藤原    03/04/15  診療科から病名を編集しておく
+      *  01.07.15    NACL-藤原    03/05/28  変更・削除処理後の選択の解除
+      *  01.07.16    NACL-藤原    03/06/03  未コード化傷病名コードのとき
       *                                     病名よりコード検索をする
       *                                     病名からのコード検索方法の修正
-      *  02.07.17    NACL-藤原    03/07/03  主病名編集フラグにより主病名
+      *  01.07.17    NACL-藤原    03/07/03  主病名編集フラグにより主病名
       *                                     のチェックを行う
-      *  02.07.18    NACL-藤原    03/07/07  病名コード入力時、病名が変更
+      *  01.07.18    NACL-藤原    03/07/07  病名コード入力時、病名が変更
       *                                     なければ疑い・慢性区分の変更
       *                                     をしないように修正
-      *  02.07.19    NACL-藤原    03/07/15  更新時の入力コードのチェック
+      *  01.07.19    NACL-藤原    03/07/15  更新時の入力コードのチェック
       *                                     チェックを追加
-      *  02.07.20    NACL-藤原    03/07/20  接頭語＋入力コードの入力時の
+      *  01.07.20    NACL-藤原    03/07/20  接頭語＋入力コードの入力時の
       *                                     表示の修正
-      *  02.07.21    NACL-藤原    03/08/27  病名から検索したコードがエラー
+      *  01.07.21    NACL-藤原    03/08/27  病名から検索したコードがエラー
       *                                     のときの確認画面を表示
-      *  02.07.22    NACL-藤原    03/08/28  病名から検索したコードが廃止病名
+      *  01.07.22    NACL-藤原    03/08/28  病名から検索したコードが廃止病名
       *                                     のときの処理を修正
-      *  02.07.23    NACL-藤原    03/09/24  転帰日が入力されている病名の
+      *  01.07.23    NACL-藤原    03/09/24  転帰日が入力されている病名の
       *                                     同一病名チェックの修正
       *
       *  新患者病名マスタ対応
-      *  01.02.01    NACL-藤原    03/08/28  登録数の制限をなくす
+      *  01.08.01    NACL-藤原    03/08/28  登録数の制限をなくす
+      *  01.08.02    NACL-藤原    04/02/24  入外区分の表示切替の機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -932,6 +933,17 @@
       *
            MOVE    SPA-GMN-C02-SYOKBNLST (1)
                                        TO  SPA-GMN-C02-SYOKBN-G
+      *
+           MOVE    "0"             TO  SPA-GMN-C02-HNYUGAIKBNL     (1)
+           MOVE    "全体"          TO  SPA-GMN-C02-HNYUGAIKBNMEIL  (1)
+           MOVE    "1"             TO  SPA-GMN-C02-HNYUGAIKBNL     (2)
+           MOVE    "入院"          TO  SPA-GMN-C02-HNYUGAIKBNMEIL  (2)
+           MOVE    "2"             TO  SPA-GMN-C02-HNYUGAIKBNL     (3)
+           MOVE    "入院外"        TO  SPA-GMN-C02-HNYUGAIKBNMEIL  (3)
+           MOVE    3               TO  SPA-GMN-C02-HNYUGAIKBN-MAX
+      *
+           MOVE    SPA-GMN-C02-HNYUGAIKBNLST (1)
+                                   TO  SPA-GMN-C02-HNYUGAIKBN-G
       *         
       *    主病名編集フラグ情報
            MOVE    SPACE            TO  SYSKANRI-REC
@@ -1111,7 +1123,7 @@
                                            IDX2
                                            SPA-GMN-C02-MAX
       *
-      *    全科目指定のときｋｅｙを変更
+      *    全科目指定のとき
            IF      SPA-GMN-C02-SRYKA   =   ZERO
                EVALUATE    WRK-DBPATH
                    WHEN    "PTBYOMEI-KEY16"
@@ -1119,17 +1131,37 @@
                END-EVALUATE
            END-IF
       *
+      *    月による表示切替えとき
            EVALUATE    SPA-GMN-C02-SYOKBN
                WHEN    ZERO
-                   MOVE    SPA-NAI-C02-SYSYMD TO  PTBYO-SRYYMD
-                   MOVE    "31"               TO  PTBYO-SRYYMD (7:2)
+                   MOVE    SPA-NAI-C02-SYSYMD  TO  PTBYO-SRYYMD
+                   MOVE    "31"                TO  PTBYO-SRYYMD (7:2)
                WHEN    "1"
                    MOVE    SPA-NAI-C02-SYSYMD-BACK
-                                              TO  PTBYO-SRYYMD
-                   MOVE    "31"               TO  PTBYO-SRYYMD (7:2)
+                                               TO  PTBYO-SRYYMD
+                   MOVE    "31"                TO  PTBYO-SRYYMD (7:2)
                WHEN    "2"
-                   MOVE    ALL "9"            TO  PTBYO-SRYYMD
+                   MOVE    ALL "9"             TO  PTBYO-SRYYMD
            END-EVALUATE
+      *
+      *    入外区分による表示切替えとき
+           IF      SPA-GMN-C02-HNYUGAIKBN  =   ZERO
+               MOVE    SPACE                   TO  PTBYO-NYUGAIKBN
+           ELSE
+               EVALUATE    SPA-GMN-C02-HNYUGAIKBN
+                   WHEN    "1"
+                       MOVE    "1"             TO  PTBYO-NYUGAIKBN
+                   WHEN    "2"
+                       MOVE    "2"             TO  PTBYO-NYUGAIKBN
+               END-EVALUATE
+      *
+               EVALUATE    WRK-DBPATH
+                   WHEN    "PTBYOMEI-KEY16"
+                       MOVE    "PTBYOMEI-KEY22"   TO  WRK-DBPATH
+                   WHEN    "PTBYOMEI-KEY17"
+                       MOVE    "PTBYOMEI-KEY23"   TO  WRK-DBPATH
+               END-EVALUATE
+           END-IF
       *
            MOVE    PTBYO-SRYYMD        TO  WRK-SYSYMD
       *
@@ -1266,7 +1298,8 @@
            PERFORM 5001-MANSEIKBN-HENSYU-SEC
            MOVE    WRK-KBNMEITAN       TO  SPA-GMN-C02-TMANSEIKBN (IDX)
       *
-           MOVE    PTBYO-NYUGAIKBN     TO  WRK-KBN 
+           MOVE    PTBYO-NYUGAIKBN     TO  SPA-NAI-C02-TNYUGAIKBN (IDX)
+                                           WRK-KBN 
            PERFORM 5001-NYUGAIKBN-HENSYU-SEC
            MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-TNYUGAIKBN (IDX)
       * 
@@ -1763,6 +1796,9 @@
       *    コメント処理
                WHEN    "CLICKED"       ALSO    "B17"
                    PERFORM 430-FREEMSG-SEC
+      *    入外区分表示切替え処理
+               WHEN    "CLICKED"       ALSO    "B20"
+                   PERFORM 430-HNYUGAIKBN-CHANGE-SEC
       *    表示切替え処理
                WHEN    "CLICKED"       ALSO    "B21"
                    PERFORM 430-SYOKBN-CHANGE-SEC
@@ -1829,6 +1865,8 @@
                    PERFORM 41019-BSRYKA-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "SYOKBN"
                    PERFORM 41022-SYOKBN-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "HNYUGAIKBN"
+                   PERFORM 41023-HNYUGAIKBN-CHK-SEC
       *        病名行選択
                WHEN    ANY             ALSO    "BYOMEILST"
                    PERFORM 41020-BYOMEISEL-SEC
@@ -1870,6 +1908,8 @@
            MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
            MOVE    SPA-GMN-C02-SYOKBNLST (1)
                                        TO  SPA-GMN-C02-SYOKBN-G
+           MOVE    SPA-GMN-C02-HNYUGAIKBNLST (1)
+                                       TO  SPA-GMN-C02-HNYUGAIKBN-G
       *
            IF      SPA-GMN-C02-SRYKA-MAX   >   1
                INITIALIZE              SPA-GMN-C02-SRYKA-G
@@ -2554,15 +2594,41 @@
            END-IF
       *
       *    マスタとのチェック
-           INITIALIZE                  PTBYO-KEY
+           INITIALIZE                      PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
            MOVE    SPA-NAI-C02-TSRYKA  (IDX)
                                        TO  PTBYO-SRYKA
            MOVE    SPA-GMN-C02-TBYOMEI (IDX)
                                        TO  PTBYO-BYOMEI
-           MOVE    "PTBYOMEI-KEY13"    TO  WRK-DBPATH
-           PERFORM 900-PTBYO-INV-SEC
+           MOVE    SPA-NAI-C02-TNYUGAIKBN (IDX)
+                                       TO  PTBYO-NYUGAIKBN
+           IF      WRK-HENSYU-DATA-O (6)   NOT =   SPACE 
+               IF      WRK-HENSYU-DATA-O (6)   =   "-"
+                   MOVE    SPACE                   TO  PTBYO-NYUGAIKBN
+               ELSE
+                   MOVE    WRK-HENSYU-DATA-O (6)   TO  PTBYO-NYUGAIKBN
+               END-IF
+           END-IF     
+           IF      PTBYO-NYUGAIKBN     =   SPACE 
+               MOVE    "PTBYOMEI-KEY13"    TO  WRK-DBPATH
+           ELSE
+               MOVE    "PTBYOMEI-KEY21"    TO  WRK-DBPATH
+           END-IF    
+      *
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               PERFORM 900-PTBYO-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTBYOMEI
+           END-IF
       *
            PERFORM                 UNTIL   FLG-PTBYOMEI    =   1
                                    OR      SPA-ERRCD   NOT =   SPACE
@@ -2586,11 +2652,12 @@
                    END-IF    
                END-IF
       *
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
                PERFORM 900-PTBYO-READ-SEC
            END-PERFORM
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY13"    TO  ORC-DBPATH
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -4838,6 +4905,38 @@
            EXIT.
       *
       *****************************************************************
+      *    入外区分表示切替入力処理
+      *****************************************************************
+       41023-HNYUGAIKBN-CHK-SEC         SECTION.
+      *   
+           MOVE    33                   TO  SPA-GMN-C02-CUR
+      *
+           MOVE    C02-HNYUGAIKBN       TO  SPA-GMN-C02-HNYUGAIKBN-G
+      *
+           MOVE    SPA-GMN-C02-HNYUGAIKBN
+                                       TO  WRK-KBN
+           PERFORM 5001-HNYUGAIKBN-HENSYU-SEC
+           MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-HNYUGAIKBNMEI
+           IF      SPA-GMN-C02-HNYUGAIKBNMEI  =   SPACE    
+               MOVE    "0022"                 TO  SPA-ERRCD
+               GO  TO  41023-HNYUGAIKBN-CHK-EXT
+           END-IF
+      *
+      *    病名一覧
+           MOVE    1                   TO  SPA-GMN-C02-PAGE
+      *
+           MOVE    "PTBYOMEI-KEY16"     TO  WRK-DBPATH
+           INITIALIZE                  PTBYOMEI-REC
+           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+           MOVE    SPA-GMN-C02-SRYKA   TO  PTBYO-SRYKA
+           PERFORM 310-SPASET-PTBYO-HENSYU-SEC 
+           MOVE    1                   TO  SPA-GMN-C02-CUR
+           .
+       41023-HNYUGAIKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    行選択処理
       *****************************************************************
        41020-BYOMEISEL-SEC       SECTION.
@@ -5012,6 +5111,8 @@
                                            SPA-PTBYOMEI-REC
                MOVE    SPA-GMN-C02-SYOKBNLST (1)
                                        TO  SPA-GMN-C02-SYOKBN-G   
+               MOVE    SPA-GMN-C02-HNYUGAIKBNLST (1)
+                                       TO  SPA-GMN-C02-HNYUGAIKBN-G   
       *
       ******** IF      SPA-C02-MOTOPG      =   "K02"   OR  "U02"   OR
       *                                         "K02N"
@@ -5743,14 +5844,33 @@
            END-IF                   
       *
       *    マスタとの重複チェック
-           INITIALIZE                  PTBYO-KEY
+           INITIALIZE                      PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
            MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
            MOVE    WRK-PTBYO-BYOMEI (IDXX)
                                        TO  PTBYO-BYOMEI
-           MOVE    "PTBYOMEI-KEY13"    TO  WRK-DBPATH
-           PERFORM 900-PTBYO-INV-SEC
+           MOVE    WRK-PTBYO-NYUGAIKBN (IDXX)
+                                       TO  PTBYO-NYUGAIKBN
+           IF      PTBYO-NYUGAIKBN     =   SPACE
+               MOVE    "PTBYOMEI-KEY13"    TO  WRK-DBPATH
+           ELSE
+               MOVE    "PTBYOMEI-KEY21"    TO  WRK-DBPATH
+           END-IF
+      *
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               PERFORM 900-PTBYO-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTBYOMEI
+           END-IF
       *
            PERFORM                 UNTIL   FLG-PTBYOMEI    =   1
                                    OR      SPA-ERRCD   NOT =   SPACE
@@ -5764,9 +5884,7 @@
                            MOVE    "0002"              TO  SPA-ERRCD
                        WHEN    SPA-NAI-C02-SRYYMD  <   PTBYO-SRYYMD
                            IF      SPA-NAI-C02-TENKIYMD    =   SPACE
-                               IF      PTBYO-TENKIYMD  NOT =   SPACE
-                                   MOVE    "0038"          TO  SPA-ERRCD
-                               END-IF
+                               MOVE    "0038"          TO  SPA-ERRCD
                            ELSE
                                IF     SPA-NAI-C02-TENKIYMD
                                                    >   PTBYO-TENKIYMD
@@ -5793,11 +5911,12 @@
                    END-IF
                END-IF
       *
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
                PERFORM 900-PTBYO-READ-SEC
            END-PERFORM
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY13"    TO  ORC-DBPATH
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -6194,6 +6313,42 @@
       *
            .
        430-SYOKBN-CHANGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入外区分表示切替処理
+      *****************************************************************
+       430-HNYUGAIKBN-CHANGE-SEC          SECTION.
+      *
+           EVALUATE    SPA-GMN-C02-HNYUGAIKBN
+               WHEN    ZERO
+                   MOVE    "1"         TO  SPA-GMN-C02-HNYUGAIKBN
+               WHEN    "1"
+                   MOVE    "2"         TO  SPA-GMN-C02-HNYUGAIKBN
+               WHEN    "2"
+                   MOVE    ZERO        TO  SPA-GMN-C02-HNYUGAIKBN
+           END-EVALUATE
+           MOVE    SPA-GMN-C02-HNYUGAIKBN  TO  WRK-KBN
+           PERFORM 5001-HNYUGAIKBN-HENSYU-SEC
+           MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-HNYUGAIKBNMEI
+           IF      WRK-KBNMEI          =   SPACE  
+               MOVE    SPA-GMN-C02-HNYUGAIKBNLST (1)
+                                           TO  SPA-GMN-C02-HNYUGAIKBN-G
+           END-IF
+      *
+      *    病名一覧
+           MOVE    1                   TO  SPA-GMN-C02-PAGE
+      *
+           MOVE    "PTBYOMEI-KEY16"    TO  WRK-DBPATH
+           INITIALIZE                  PTBYOMEI-REC
+           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+           MOVE    SPA-GMN-C02-SRYKA   TO  PTBYO-SRYKA
+           PERFORM 310-SPASET-PTBYO-HENSYU-SEC 
+           MOVE    1                   TO  SPA-GMN-C02-CUR
+      *
+           .
+       430-HNYUGAIKBN-CHANGE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6628,6 +6783,32 @@
            EXIT.
       *
       *****************************************************************
+      *    入外区分表示切替編集処理
+      *****************************************************************
+       5001-HNYUGAIKBN-HENSYU-SEC       SECTION.
+      * 
+           MOVE    SPACE              TO  WRK-KBNMEI
+      *     
+           IF      WRK-KBN            =   SPACE   
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM   1   BY  1
+                       UNTIL   IDY >      SPA-GMN-C02-HNYUGAIKBN-MAX
+                       OR      SPA-GMN-C02-HNYUGAIKBNL (IDY) =   SPACE
+                   IF      WRK-KBN    =   SPA-GMN-C02-HNYUGAIKBNL (IDY)
+                       MOVE    SPA-GMN-C02-HNYUGAIKBNMEIL (IDY)
+                                          TO  WRK-KBNMEI
+                       MOVE    SPA-GMN-C02-HNYUGAIKBN-MAX
+                                          TO  IDY
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       5001-HNYUGAIKBN-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    保険組合せ編集処理
       *****************************************************************
        5001-HKNCOMBI-HENSYU-SEC       SECTION.
@@ -7007,6 +7188,16 @@
                MOVE    IDX                 TO  C02-NYUGAIKBN-COUNT
            END-PERFORM
       *
+           MOVE    SPA-GMN-C02-HNYUGAIKBN-G
+                                       TO  C02-HNYUGAIKBN
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-C02-HNYUGAIKBN-MAX
+               MOVE    SPA-GMN-C02-HNYUGAIKBNLST (IDX)
+                                           TO  C02-HNYUGAIKBNLST (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-C02-HNYUGAIKBN-MAX
+                                       TO  C02-HNYUGAIKBN-COUNT
+      *
            MOVE    SPA-GMN-C02-HKNCOMBI-G TO  C02-HKNCOMBI
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL       IDX         >   SPA-GMN-C02-HKNCOMBI-MAX
@@ -7054,6 +7245,15 @@
                    MOVE    "前月"          TO  C02-B21-LABEL
                WHEN    "2"
                    MOVE    "全体"          TO  C02-B21-LABEL
+           END-EVALUATE
+      *
+           EVALUATE    SPA-GMN-C02-HNYUGAIKBN
+               WHEN    ZERO
+                   MOVE    "全  体"        TO  C02-B20-LABEL
+               WHEN    "1"
+                   MOVE    "入  院"        TO  C02-B20-LABEL
+               WHEN    "2"
+                   MOVE    "入院外"        TO  C02-B20-LABEL
            END-EVALUATE
       *               
            PERFORM 5001-MAPCUR-SEC
@@ -7122,6 +7322,9 @@
                     MOVE  "BSRYKA"   TO  MCP-WIDGET
              WHEN   32
                     MOVE  "SYOKBN"   TO  MCP-WIDGET
+             WHEN   33
+                    MOVE  "HNYUGAIKBN"
+                                     TO  MCP-WIDGET
            END-EVALUATE
       *
            .
