@@ -59,7 +59,11 @@ SRCS = ORCHC01.CBL \
        ORCSKANACNV.CBL \
        ORCHC30.CBL \
        ORCSCH30.CBL \
-       ORCSFILECHK.CBL
+       ORCSFILECHK.CBL \
+       ORCHCM19.CBL \
+       ORCSAGECHK.CBL \
+       ORCSMKPASS.CBL \
+       ORCSMKPRT.CBL
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global
