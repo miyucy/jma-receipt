@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     02/05/15  DELALLの追加  
+      *  01.00.02    NACL-藤原    02/08/30  ステップ件数の追加
+      *  01.00.03    NACL-藤原    03/02/24  頁数のチェック
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -269,8 +271,13 @@
       *    レコード更新
            ACCEPT  WRK-JOB-STEPENDTIME
                                        FROM TIME
+           IF      JOB-UPDCNT          NOT NUMERIC
+               MOVE    ZERO                TO   JOB-UPDCNT
+           END-IF
            COMPUTE WRK-JOB-UPDCNT      =   WRK-JOB-UPDCNT  +
                                            JOB-UPDCNT                            
+           COMPUTE WRK-JOB-STEPCNT     =   WRK-JOB-STEPCNT +
+                                           1                            
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    PATH-TBL-JOBKANRI-UPD1
