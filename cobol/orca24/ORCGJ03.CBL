@@ -15,33 +15,34 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-000200 IDENTIFICATION              DIVISION.
-000300 PROGRAM-ID.                 ORCGJ03.
-000400*****************************************************************
-000500*  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : 会計照会
-000700*  コンポーネント名  : チェック（Ｊ０３）
-000800*  管理者            : 
+       IDENTIFICATION              DIVISION.
+       PROGRAM-ID.                 ORCGJ03.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 会計照会
+      *  コンポーネント名  : チェック（Ｊ０３）
+      *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−多々納   新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.00    NACL-多々納  02/09/12  ディレクトリをサブプロへ
       *****************************************************************
       *
-001300 ENVIRONMENT                 DIVISION.
-001400 CONFIGURATION               SECTION.
-001500 INPUT-OUTPUT                SECTION.
-001600 FILE-CONTROL.
+       ENVIRONMENT                 DIVISION.
+       CONFIGURATION               SECTION.
+       INPUT-OUTPUT                SECTION.
+       FILE-CONTROL.
       *
       *    診療行為コード表名称
       *****SELECT  TENSUKBN-FILE   ASSIGN  "TENSUKBNNAME.TXT"
            SELECT  TENSUKBN-FILE   ASSIGN  FILE-NAME
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TENSUKBN.
-001700*
-002500 DATA                        DIVISION.
-002600 FILE                        SECTION.
+      *
+       DATA                        DIVISION.
+       FILE                        SECTION.
       *
       *    診療行為コード表名称
        FD  TENSUKBN-FILE.
@@ -52,26 +53,32 @@
                    07  TENSU-KNONO      PIC 9(03).
                    07  TENSU-KNONO2     PIC 9(02).
                05  TENSU-KNOMEI         PIC X(50).
-003500*
-003600 WORKING-STORAGE             SECTION.
+      *
+       WORKING-STORAGE             SECTION.
       *
       *    診療種別ファイル名
-       01  FILE-NAME.
-           03  FILLER          PIC X(16)   VALUE   "/usr/local/orca/".
+      *01  FILE-NAME.
+      *    03  FILLER          PIC X(16)   VALUE   "/usr/local/orca/".
+      *    03  FILLER          PIC X(05)   VALUE   "data/".
+      **** 03  FILLER          PIC X(16)   VALUE   "TENSUKBNNAME.TXT".
+       01  FILE-NAME               PIC X(512).
+      *
+      *    ファイル名
+       01  DATA-FILE.
            03  FILLER          PIC X(05)   VALUE   "data/".
            03  FILLER          PIC X(16)   VALUE   "TENSUKBNNAME.TXT".
       *
-003700*    スパ領域
-003800     COPY    "COMMON-SPA".
-003900*
-004000*    会計カード共通パラメタ
-004100     COPY    "J01COMMON-SPA".
-004200*
-004300*    画面用ＳＰＡ
-004400 01  SPA-J03.
-004500     03  SPA-J03-AREA.
-005000         05  SPA-GMN-PAGE                  PIC 9(02).
-005100*        05  SPA-MAX-PAGE                  PIC 9(02).
+      *    スパ領域
+           COPY    "COMMON-SPA".
+      *
+      *    会計カード共通パラメタ
+           COPY    "J01COMMON-SPA".
+      *
+      *    画面用ＳＰＡ
+       01  SPA-J03.
+           03  SPA-J03-AREA.
+               05  SPA-GMN-PAGE                  PIC 9(02).
+      *        05  SPA-MAX-PAGE                  PIC 9(02).
 005200         05  SPA-GMN-MAX                   PIC 9(04).
 005300*        05  SPA-GMN-IDX                   PIC 9(04).
 005400         05  SPA-GMN-CUR                   PIC 9(02).
@@ -277,21 +284,24 @@
 025800 01  PTCOM-REC.
 025900     COPY    "CPPTCOM.INC".
 026000*
-026100*****************************************************************
-026200*    サブプロ用連絡領域
-026300*****************************************************************
-026400*
-026500*   日付変換サブ
-026600     COPY    "CPORCSDAY.INC".
-026700     COPY    "CPORCSLNK.INC".
-026800*
-026900*   数字変換領域
-027000     COPY    "CPORCSNUM.INC".
-027100*
-027200*   患者番号変換サブ
-027300     COPY    "CPORCSPTID.INC".
-027400*
-027500*   ＤＢ検索
+      *****************************************************************
+      *    サブプロ用連絡領域
+      *****************************************************************
+      *
+      *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *
+      *   数字変換領域
+           COPY    "CPORCSNUM.INC".
+      *
+      *   患者番号変換サブ
+           COPY    "CPORCSPTID.INC".
+      *
+      *    フィアルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
+      *
+      *   ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -404,6 +414,12 @@
       *    診療行為コード表名称セット
       **************************************************************
        1001-TENSUKBN-SET-SEC          SECTION.
+      *
+      *    フィアルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    DATA-FILE           TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  FILE-NAME
       *
       *    診療行為コード表名称セット
            INITIALIZE                  MKNO-DATA-REC

@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/08/06  アフターケア対応追加
+      * 01.00.02     NACL-多々納  02/08/18  自賠責追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -448,9 +449,22 @@
                    COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBIMEI
            END-STRING
+      *    主保険がない時
+           IF      COMB-SYU-TANSEIDONAME   =   SPACE
+               MOVE    SPACE               TO  WRK-HKNCOMBIMEI
+               STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                         INTO              WRK-HKNCOMBIMEI
+               END-STRING
+           END-IF
       *
       *    労災の時、コメントの追加
-           IF      COMB-HKNNUM         =   "971"
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
                MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
@@ -1898,6 +1912,9 @@
                                        TO  RECECOM-HKNCOMBI
            MOVE    SPA-J023-TSRYDD (IDX)
                                        TO  RECECOM-SRYDD
+           IF      SPA-J023-TSRYDD (IDX)   =   SPACE
+               MOVE    ZERO                TO  RECECOM-SRYDD
+           END-IF
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC

@@ -32,6 +32,7 @@
       *  01.00.03    MCC-Â¿¡¹Ç¼   02/04/25  Ï«ºÒÄÉ²Ã
       *  01.00.04    MCC-Â¿¡¹Ç¼   02/06/05  ´µ¼Ô»áÌ¾¤Ç¤Î¸¡º÷¤òÄÉ²Ã
       *  01.00.05    NACL-Â¿¡¹Ç¼  02/07/29  ¥Ñ¥é¥á¥¿¥Õ¥¡¥¤¥ë¤ò£Ä£Â¤Ø
+      *  01.00.06    NACL-Â¿¡¹Ç¼  02/09/11  ¼«ÇåÀÕÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1380,6 +1381,10 @@
                END-IF
                IF      SPA-RRK-HKNKBN  (IDX)   =   "1"
                    MOVE    "(Ï«)"              TO  SPA-GMN-RRKYMD (IDX)
+                                                              (13:)
+               END-IF
+               IF      SPA-RRK-HKNKBN  (IDX)   =   "2"
+                   MOVE    "(¼«)"              TO  SPA-GMN-RRKYMD (IDX)
                                                               (13:)
                END-IF
            END-PERFORM
@@ -3250,6 +3255,10 @@
                        MOVE    "(Ï«)"          TO  SPA-GMN-RRKYMD (IDX)
                                                               (13:)
                    END-IF
+                   IF      SPA-RRK-HKNKBN  (IDX)   =   "2"
+                       MOVE    "(¼«)"          TO  SPA-GMN-RRKYMD (IDX)
+                                                              (13:)
+                   END-IF
       *
       *            Æü¤ÎÅº¤¨»ú
                    MOVE    WRK-RRKYMD      (7:2)   TO  IDX-D1
@@ -3752,6 +3761,8 @@
       *    Ï«ºÒ
            MOVE    SPA-NAI-HKNKBN      TO  SPA-HKNKBN
            MOVE    SPA-NAI-SISIKBN     TO  SPA-RSI-SISIKBN
+      *    Ï«ºÒ¶èÊ¬
+           MOVE    SPA-NAI-RSI-HKNKBN  TO  SPA-RSI-HKNKBN
       *
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¹¹¿·
            PERFORM 4901-SRYACCT-UPD-SEC
@@ -5276,11 +5287,26 @@
                    COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBIMEI
            END-STRING
+      *    ¼çÊÝ¸±¤¬¤Ê¤¤»þ
+           IF      COMB-SYU-TANSEIDONAME   =   SPACE
+               MOVE    SPACE               TO  WRK-HKNCOMBIMEI
+               STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                         INTO              WRK-HKNCOMBIMEI
+               END-STRING
+           END-IF
            MOVE    ZERO                TO  SPA-NAI-SISIKBN
       *    ÊÝ¸±¶èÊ¬ÊÔ½¸
            EVALUATE    COMB-HKNNUM
+      *        Ï«ºÒ
                WHEN    "971"
-      *            Ï«ºÒ
+      *        ¼«ÇåÀÕ
+               WHEN    "973"
                    MOVE    1                   TO  SPA-NAI-HKNKBN
                WHEN    OTHER
       *        ·òÊÝ
@@ -5288,7 +5314,7 @@
            END-EVALUATE
       *
       *    Ï«ºÒ¤Î»þ¡¢¥³¥á¥ó¥È¤ÎÄÉ²Ã
-           IF      COMB-HKNNUM         =   "971"
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        ´µ¼ÔÊÝ¸±¾ðÊó¸¡º÷
                INITIALIZE                      PTRSIINF-REC
                MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
@@ -5341,7 +5367,7 @@
       *        Ï«ºÒ¶èÊ¬
                MOVE    PTRSI-HKNKBN        TO  SPA-NAI-RSI-HKNKBN
       *        ½ýÉÂÇ¯·îÆü
-               IF      PTRSI-HKNKBN        =   "1"  OR  "2"
+               IF      PTRSI-HKNKBN        =   "1"  OR  "2"  OR  "4"
                    MOVE    PTRSI-SHOBYOYMD     TO  SPA-RSI-SHOBYOYMD
                ELSE
                    MOVE    PTRSI-SINSATUYMD    TO  SPA-RSI-SHOBYOYMD
