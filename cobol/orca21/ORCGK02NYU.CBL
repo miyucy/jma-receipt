@@ -1086,6 +1086,8 @@
                END-IF
            END-IF
       *
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
+      *
       *    内部画面より
            EVALUATE    SPA-MOTOPG
                WHEN    "K99"
