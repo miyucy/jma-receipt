@@ -35,6 +35,7 @@
       * 01.00.06     NACL-多々納  03/03/19  Ｈ１５年４月改正対応追加
       * 01.00.07     NACL-多々納  03/07/08  保険者異動日チェック追加
       * 01.00.08     NACL-多々納  03/09/30  国保家族の被保険者編集修正
+      * 01.00.09     NACL-多々納  03/11/26  任継の５５歳以上判定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1310,6 +1311,11 @@
                IF      SPA-GMN-CONTKBN    =   "2"
                    MOVE    2                   TO  WRK-DAY-ZOGEN
                    MOVE    "3"                 TO  WRK-DAY-PTN
+      *            任意継続で改正前に５５歳以上の場合、５年後とする
+                   IF     (SPA-NAI-BIRTHDAY    <   "19480401" )  AND
+                          (SPA-NAI-HTEKSTYMD   =   "20030401" )
+                       MOVE    5                   TO  WRK-DAY-ZOGEN
+                   END-IF
                ELSE
                    MOVE    6                   TO  WRK-DAY-ZOGEN
                    MOVE    "2"                 TO  WRK-DAY-PTN
