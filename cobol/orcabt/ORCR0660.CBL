@@ -587,12 +587,7 @@
            INITIALIZE                      WRK-RIGAKU-AREA
            INITIALIZE                      WRK-TAIHI-ZAINUM
       *
-           IF   RECE62-TOTALTEN(1)       =      ZERO
-           AND  RECE62-TOTALTEN(2)   NOT =      ZERO
-                MOVE       1           TO  WRK-KOHBUNRI-JIDO
-           ELSE
-                MOVE     ZERO          TO  WRK-KOHBUNRI-JIDO
-           END-IF
+           MOVE  RECE62-KOHBUNRI-MIN   TO  WRK-KOHBUNRI-JIDO
       *
            IF   RECE62-COMCNTFLG   =   "1"
       *

@@ -393,8 +393,10 @@
                   (RECE02-TEKSTYMD      NOT =  RECE05-TEKSTYMD)  OR
                   (WK-ZAINUM            NOT =  RECE05-ZAINUM)    OR
                   (FLG-RECE05           =      1)
-                   MOVE   KH-IDX        TO     RECE05-KOHBUNRI
-                   PERFORM      RECE05-REWRITE-SEC
+                   IF    RECE05-KOHBUNRI     =      ZERO
+                     MOVE   KH-IDX        TO     RECE05-KOHBUNRI
+                     PERFORM      RECE05-REWRITE-SEC
+                   END-IF
                    PERFORM      RECE05-NEXT-SEC
            END-PERFORM
       *
