@@ -35,6 +35,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       * 01.00.01     NACL-Â¿¡¹Ç¼  03/05/23  £È£±£µÇ¯£¶·î²þÀµÂÐ±þ
       * 01.00.02     NACL-Â¿¡¹Ç¼  03/07/01  ³°Íè¿ÇÎÅÎÁÄÉ²Ã
+      * 01.00.03     NACL-Â¿¡¹Ç¼  04/02/17  ¿ÇÎÅ²Ê¡Ç£Ø£Ø¡ÇÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -100,6 +101,8 @@
            03  WRK-SYOYMD          PIC X(08).
            03  WRK-SYOSIN          PIC 9(01).
            03  WRK-SYOSINKBN       PIC X(08).
+      *
+           03  WRK-SRYKA           PIC X(02).
       *
            03 TBL-MAX              PIC 9(01).
       *
@@ -719,8 +722,16 @@
            ELSE
                MOVE    "false"         TO  WRK-LF01-DEATHKBN
            END-IF
-      *   
+      *
            MOVE    "regist"        TO  WRK-LF01-UKEYMD-KREPCODE
+      *    ¼õÉÕ¤«¤é
+           IF      LNK-SRYKA       =   "XX"
+               MOVE    "info"          TO  WRK-LF01-UKEYMD-KREPCODE
+      *        ¿ÇÎÅ²ÊÀßÄê
+               PERFORM 2009-SRYKA-SET-SEC
+           ELSE
+               MOVE    LNK-SRYKA       TO  WRK-SRYKA
+           END-IF
       *
            MOVE    "false"         TO  WRK-LF01-NYUGAIKBN
       *
@@ -730,7 +741,7 @@
            MOVE    SPACE               TO  SYS-1005-REC
            INITIALIZE                      SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    LNK-SRYKA           TO  SYS-1005-KBNCD
+           MOVE    WRK-SRYKA           TO  SYS-1005-KBNCD
            MOVE    LNK-SYSYMD          TO  ORC-DBYMD
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
@@ -739,7 +750,7 @@
                MOVE    SYS-1005-SRYKANAME  TO  WRK-LF01-SRYNAME
                                            WRK-LF01-CRE001-DPERTNAME
                                            WRK-LF01-CRE301-DPERTNAME
-               MOVE    LNK-SRYKA           TO  WRK-LF01-CRE001-DPERTID
+               MOVE    WRK-SRYKA           TO  WRK-LF01-CRE001-DPERTID
                                            WRK-LF01-CRE301-DPERTID
                MOVE    "I"                 TO  WRK-LF01-SRYREP
            END-IF
@@ -1108,7 +1119,7 @@
                              TO  WRK-LF01-CRE201-FACILITYID(IDX)
                        MOVE  SYS-1005-SRYKANAME  
                              TO  WRK-LF01-CRE201-DPERTNAME(IDX)
-                       MOVE  LNK-SRYKA           
+                       MOVE  WRK-SRYKA           
                              TO  WRK-LF01-CRE201-DPERTID(IDX)
                        MOVE  SYS-1002-POST(1:3) 
                                             TO  WRK-LF01-CRE201-ZIP(IDX)
@@ -1147,6 +1158,43 @@
       *
            .
        200-MAIN-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    ¿ÇÎÅ²ÊÀßÄê½èÍý
+      *****************************************************************
+       2009-SRYKA-SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SRYKA
+      *
+           MOVE    SPACE               TO  SYS-1005-REC
+           INITIALIZE                      SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC         TO  SYS-1005-REC
+                   MOVE    SYS-1005-KBNCD      TO  WRK-SRYKA
+               END-IF
+           END-IF
+      *
+           .
+       2009-SRYKA-SET-EXT.
            EXIT.
       * 
       *****************************************************************

@@ -90,12 +90,23 @@
            03  FLG-PTBYOMEI        PIC 9(01).
            03  FLG-BYOMEI          PIC 9(01).
            03  FLG-PTBYOMEI-UMU    PIC 9(01).
+           03  FLG-PTHKNINF        PIC 9(01).
+           03  FLG-PTKOHINF        PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
       *
            03  FLG-ZAIEND          PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *    0:正常 1:エラー 2:単独病名エラー
            03  FLG-BYOMEI-CHK      PIC 9(01). 
+      *
+           03  FLG-ERR             PIC 9(01).
+           03  FLG-OK1             PIC 9(01).
+           03  FLG-OK2             PIC 9(01).
+           03  FLG-KOHARI          PIC 9(01).
+      *    点滴・中心静脈
+           03  FLG-TENTEKI         PIC 9(01). 
+           03  FLG-CHUSIN          PIC 9(01). 
       *
       *    添字領域
        01  IDX-AREA.
@@ -109,6 +120,13 @@
            03  IDX-T               PIC 9(04).
            03  IDX-Y               PIC 9(04).
       *
+           03  IDK                 PIC 9(04).
+           03  IDK2                PIC 9(04).
+           03  IDK-MAX             PIC 9(04).
+           03  IDH                 PIC 9(04).
+           03  IDH1                PIC 9(04).
+           03  IDH-MAX             PIC 9(04).
+      *
            03  TBL-MAX             PIC 9(04).
       *
       *    一時領域
@@ -118,6 +136,13 @@
            03  WRK-SYOHOKBN        PIC  X(01).
            03  WRK-HKNCOMBI        PIC  9(04).
            03  WRK-SRYYMD          PIC  X(08).
+      *
+           03  WRK-HKNNUM          PIC X(03).
+           03  WRK-FTNJANUM        PIC X(08).
+           03  WRK-JKSNUM          PIC X(20).
+      *
+           03  WRK-KOH-AREA.
+               05  WRK-KOHID           PIC 9(10)   OCCURS  3.
       *
            03  WRK-RENNUM          PIC 9(01).
            03  WRK-ZAINUM          PIC 9(08).
@@ -132,9 +157,11 @@
       *
            03  WRK-PTID            PIC 9(10).
            03  WRK-SRYKA           PIC X(02).
+           03  WRK-NYUGAIKBN       PIC X(01).
       *
            03  WRK-KASAN           PIC 9(04).
            03  WRK-SYUGI           PIC 9(04).
+           03  WRK-YAKUZAI         PIC 9(04).
       *
            03  WRK-SURYO           PIC 9(05)V99.
       *
@@ -225,7 +252,7 @@
            COPY    "CPCLAIM006.INC".
       *
       *    未コード化傷病名コード
-       01  WRK-CONS-BYOMEICD       PIC X(07)   VALUE   "0000999".                                     
+       01  WRK-CONS-BYOMEICD       PIC X(07)   VALUE   "0000999".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -254,6 +281,30 @@
       *    患者病名マスタ−
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *
+      *    保険マスタ
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
+      *
+      *    公費マスタ
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
+      *
+      *    公費マスタ（テーブル）
+       01  TBL-PTKOHINF-AREA.
+         02  TBL-PTKOHINF-REC           OCCURS  40.
+           COPY    "CPPTKOHINF.INC"     REPLACING
+                                        //PTKOH-// BY //TBL-PTKOH-//.
+      *
+      *    保険組み合わせ
+       01  TBL-HKNCOMBI-AREA.
+         02  TBL-HKNCOMBI-REC           OCCURS  40.
+           COPY    "CPHKNCOMBI.INC"     REPLACING
+                                        //COMB-// BY //TBL-COMB-//.
       *
       *
       *****************************************************************
@@ -462,6 +513,11 @@
            MOVE    LF04-JIKANNGAIKBN   TO  WRK-JIKAN
       *    剤毎の処理
            MOVE    ZERO                TO  WRK-ZAINUM
+      *    入院の時、同じワーク診療行為の判定
+           IF      WRK-NYUGAIKBN       =   "1"
+               PERFORM 2009-WKSRYACT-CHK-SEC
+           END-IF
+      *
            INITIALIZE                  TBL-WKSRYACT-AREA
            MOVE    ZERO                TO  TBL-MAX
            DISPLAY "LF04-SRYCD (1) = " LF04-SRYCD (1) 
@@ -537,6 +593,14 @@
                                            TO  WRK-SRYKA
                END-IF
            END-IF
+      *
+      *    入院外来区分 (true OR false) (claim:admitFlag)
+           IF      LF04-NYUGAIKBN      =   "true"
+               MOVE   "1"              TO  WRK-NYUGAIKBN
+           ELSE
+               MOVE   "2"              TO  WRK-NYUGAIKBN
+           END-IF
+      *
            .
        2000-SYOKI-SET-EXT.
            EXIT.
@@ -572,7 +636,8 @@
                END-IF
            END-PERFORM
            IF      WRK-HKNCOMBI        =   ZERO
-               MOVE    "0001"              TO  WRK-HKNCOMBI
+      *        保険情報から保険の決定
+               PERFORM 20011-HKNSYORI-SEC
            END-IF
       *
            CLOSE                       LF03-FILE
@@ -582,15 +647,342 @@
            EXIT.
       *
       *****************************************************************
+      *    保険情報から保険の決定処理
+      *****************************************************************
+       20011-HKNSYORI-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-HKNNUM
+           MOVE    SPACE               TO  WRK-FTNJANUM
+           MOVE    SPACE               TO  WRK-JKSNUM
+      *    主保険
+      *    健康保険種別判定
+           EVALUATE    LF04-HKN-HKNSBTCODE (1)
+               WHEN    SPACE
+                   MOVE    SPACE               TO  WRK-HKNNUM
+               WHEN    "00"
+      *            国保
+                   MOVE    "060"               TO  WRK-HKNNUM
+               WHEN    "97"
+      *            労災
+                   MOVE    "971"               TO  WRK-HKNNUM
+               WHEN    "98"
+      *            自賠責
+                   MOVE    "973"               TO  WRK-HKNNUM
+               WHEN    "99"
+      *            包括入力
+                   MOVE    "999"               TO  WRK-HKNCOMBI
+                   GO      TO      20011-HKNSYORI-EXT
+               WHEN    OTHER
+      *            保険
+                   MOVE    ZERO                    TO  WRK-HKNNUM
+                   MOVE    LF04-HKN-HKNSBTCODE(1)  TO  WRK-HKNNUM(2:2)
+           END-EVALUATE
+      *
+      *    保険組合せ検索
+           INITIALIZE                  TBL-HKNCOMBI-AREA
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    WRK-HOSPID          TO  COMB-HOSPID
+           MOVE    WRK-PTID            TO  COMB-PTID
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+               PERFORM 940-HKNCOMB-READ-SEC
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+           MOVE    ZERO                TO  IDH-MAX
+           PERFORM UNTIL   (FLG-HKNCOMBI   =   1   )  OR
+                           (IDH-MAX        >   20  )
+               IF     (WRK-SRYYMD            >=  COMB-TEKSTYMD ) AND
+                      (WRK-SRYYMD            <=  COMB-TEKEDYMD ) AND
+                      (COMB-DELKBN           =   SPACE         )
+                   ADD     1                 TO  IDH-MAX
+                   MOVE    HKNCOMBI-REC      TO  TBL-HKNCOMBI-REC
+                                                         (IDH-MAX)
+               END-IF
+      *
+               MOVE    "HKNCOMBI-KEY2"       TO  ORC-DBPATH
+               PERFORM 940-HKNCOMB-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *TEST
+            DISPLAY "LF04-HKNKOH-PROVIDER1:" LF04-HKNKOH-PROVIDER(1 1)
+            DISPLAY "LF04-HKNKOH-PROVIDER2:" LF04-HKNKOH-PROVIDER(1 2)
+            DISPLAY "LF04-HKNKOH-PROVIDER3:" LF04-HKNKOH-PROVIDER(1 3)
+      *TEST
+      *    公費
+           INITIALIZE                  WRK-KOH-AREA
+      *    公費負担名称がある場合、公費をテーブルへ
+           IF    ( WRK-HKNNUM                  =   "971"  OR
+                                                   "973" )
+               MOVE    ZERO                TO  FLG-KOHARI
+               MOVE    ZERO                TO  IDK-MAX
+           ELSE
+               MOVE    ZERO                TO  FLG-KOHARI
+               PERFORM 200111-KOH-HENSYU-SEC
+           END-IF
+      *TEST
+               DISPLAY "FLG-KOHARI:" FLG-KOHARI
+      *TEST
+      *
+      *    保険組合せ決定
+           PERFORM VARYING     IDH     FROM    1   BY  1
+                   UNTIL       IDH     >   IDH-MAX
+               IF      TBL-COMB-HKNNUM (IDH)   =   WRK-HKNNUM
+                   IF      FLG-KOHARI          =   ZERO
+                       MOVE    TBL-COMB-HKNCOMBINUM(IDH)
+                                               TO  WRK-HKNCOMBI
+                       MOVE    IDH-MAX         TO  IDH
+                   ELSE
+                       PERFORM 200112-KOH-CHK-SEC
+                   END-IF
+               ELSE
+      *            公費単独の時
+                   IF      FLG-KOHARI          =   1
+                       PERFORM 200112-KOH-CHK-SEC
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+      *
+           .
+       20011-HKNSYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費編集処理
+      *****************************************************************
+       200111-KOH-HENSYU-SEC                SECTION.
+      *
+      *    対象の公費ＩＤを決定する
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   3
+      *TEST
+               DISPLAY "LF04-HKNKOH-FTNJANUM:" 
+                             LF04-HKNKOH-FTNJANUM (1 IDX)
+               DISPLAY "LF04-HKNKOH-JKYSNUM:" 
+                             LF04-HKNKOH-JKYSNUM (1 IDX)
+      *TEST
+      *        未設定を空白へ
+               IF      LF04-HKNKOH-FTNJANUM (1 IDX)(1:7) =   "mikinyu"
+                   MOVE    SPACE       TO  LF04-HKNKOH-FTNJANUM(1 IDX)
+               END-IF
+               IF      LF04-HKNKOH-JKYSNUM (1 IDX)(1:7)  =   "mikinyu"
+                   MOVE    SPACE       TO  LF04-HKNKOH-JKYSNUM (1 IDX)
+               END-IF
+      *        公費の有無
+               IF     (LF04-HKNKOH-PROVIDER(1 IDX) =   SPACE ) AND
+                      (LF04-HKNKOH-FTNJANUM(1 IDX) =   SPACE ) AND
+                      (LF04-HKNKOH-JKYSNUM (1 IDX) =   SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    1                   TO  FLG-KOHARI
+               END-IF
+           END-PERFORM
+      *    公費なし
+           IF      FLG-KOHARI          =   ZERO
+               GO      TO      200111-KOH-HENSYU-EXT
+           END-IF
+      *
+      *    公費編集
+           INITIALIZE                  TBL-PTKOHINF-AREA
+           INITIALIZE                  PTKOHINF-REC
+           MOVE    WRK-HOSPID          TO  PTKOH-HOSPID
+           MOVE    WRK-PTID            TO  PTKOH-PTID
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTKOHINF-KEY2"     TO  ORC-DBPATH
+               PERFORM 920-PTKOHINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+           MOVE    ZERO                TO  IDK-MAX 
+           PERFORM     UNTIL   ( FLG-PTKOHINF  =   1 )  OR
+                               ( IDK-MAX       >=  40)
+      *        当日有効であること
+               IF     (PTKOH-SAKJOKBN        =   SPACE )  AND
+                      (PTKOH-TEKSTYMD        <=  WRK-SRYYMD )  AND
+                      (PTKOH-TEKEDYMD        >=  WRK-SRYYMD )
+                   ADD     1                   TO  IDK-MAX 
+                   MOVE    PTKOHINF-REC        TO  TBL-PTKOHINF-REC
+                                                            (IDK-MAX)
+               END-IF
+      *
+               MOVE    "PTKOHINF-KEY2"   TO  ORC-DBPATH
+               PERFORM 920-PTKOHINF-READ-SEC
+           END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    対象の公費ＩＤを決定する
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   3
+      *        負担者番号、受給者番号がある時の判定
+               IF     (LF04-HKNKOH-FTNJANUM(1 IDX) NOT =   SPACE )  OR
+                      (LF04-HKNKOH-JKYSNUM (1 IDX) NOT =   SPACE )
+                   MOVE    LF04-HKNKOH-FTNJANUM(1 IDX) TO  WRK-FTNJANUM
+                   MOVE    LF04-HKNKOH-JKYSNUM (1 IDX) TO  WRK-JKSNUM
+                   PERFORM 2001112-KOH-SET-SEC
+               END-IF
+           END-PERFORM
+      *
+           .
+       200111-KOH-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費から保険組合せ決定処理
+      *****************************************************************
+       200112-KOH-CHK-SEC                SECTION.
+      *
+      *    名称がある時、名称の判定
+           IF    ((LF04-HKNKOH-PROVIDER(1 1)   =   SPACE )  OR
+                  (LF04-HKNKOH-PROVIDER(1 1)
+                                       =   TBL-COMB-KOH-TANSEIDONAME
+                                                      (IDH 1)))
+             AND ((LF04-HKNKOH-PROVIDER(1 2)   =   SPACE )  OR
+                  (LF04-HKNKOH-PROVIDER(1 2)
+                                       =   TBL-COMB-KOH-TANSEIDONAME
+                                                       (IDH 2)))
+             AND ((LF04-HKNKOH-PROVIDER(1 3)   =   SPACE )  OR
+                  (LF04-HKNKOH-PROVIDER(1 3)
+                                       =   TBL-COMB-KOH-TANSEIDONAME
+                                                        (IDH 3)))
+               CONTINUE
+           ELSE
+               GO      TO      200112-KOH-CHK-EXT
+           END-IF
+      *
+           IF     ((WRK-KOHID (1)      =   ZERO     )  OR
+                   (WRK-KOHID (1)      =   TBL-COMB-KOH1ID(IDH))) AND
+                  ((WRK-KOHID (2)      =   ZERO     )  OR
+                   (WRK-KOHID (2)      =   TBL-COMB-KOH2ID(IDH))) AND
+                  ((WRK-KOHID (3)      =   ZERO     )  OR
+                   (WRK-KOHID (3)      =   TBL-COMB-KOH3ID(IDH)))
+      *        公費対象
+               MOVE    TBL-COMB-HKNCOMBINUM(IDH)
+                                           TO  WRK-HKNCOMBI
+               MOVE    IDH-MAX             TO  IDH
+           END-IF
+      *
+      *
+           .
+       200112-KOH-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費のチェック処理
+      *****************************************************************
+       2001112-KOH-SET-SEC                SECTION.
+      *
+      *TEST
+           DISPLAY "WRK-FTNJANUM:" WRK-FTNJANUM
+                  ",WRK-JKSNUM:" WRK-JKSNUM
+      *TEST
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING      IDK    FROM    1   BY  1
+                   UNTIL       (IDK    >   IDK-MAX )  OR
+                               (FLG-CHK    =   1   )
+               MOVE    ZERO                TO  FLG-OK1
+               MOVE    ZERO                TO  FLG-OK2
+      *        負担者番号
+               IF      (WRK-FTNJANUM   NOT =   SPACE   )   AND
+                       (WRK-FTNJANUM       =   TBL-PTKOH-FTNJANUM (IDK))
+                   MOVE    1               TO  FLG-OK1
+               END-IF
+      *        受給者番号
+               IF      (WRK-JKSNUM     NOT =   SPACE   )   AND
+                       (WRK-JKSNUM         =   TBL-PTKOH-JKYSNUM (IDK))
+                   MOVE    1               TO  FLG-OK2
+               END-IF
+               IF     (WRK-FTNJANUM        =   SPACE )  AND
+                      (FLG-OK2             =   1     )
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+               IF     (WRK-JKSNUM          =   SPACE )  AND
+                      (FLG-OK1             =   1     )
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+               IF     (WRK-FTNJANUM    NOT =   SPACE )  AND
+                      (WRK-JKSNUM      NOT =   SPACE )  AND
+                      (FLG-OK1             =   1     )  AND
+                      (FLG-OK2             =   1     )
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+      *
+               IF      FLG-CHK             =   1
+                   MOVE     TBL-PTKOH-KOHID (IDK)  TO  WRK-KOHID(IDX)
+               END-IF
+      *
+           END-PERFORM
+      *TEST
+           DISPLAY "IDX:" IDX
+                   ",WRK-KOHID:" WRK-KOHID(IDX)
+      *TEST
+      *
+           .
+       2001112-KOH-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    剤内容のチェック処理
       *****************************************************************
        2002-ZAICHK-SEC                SECTION.
       *
+      *    診療種別検索
+           SET     MSYU-IDX            TO  1
+           SEARCH      MSYU-TBL-OCC    VARYING   MSYU-IDX
+                   AT   END
+                       MOVE    SPACE           TO  WRK-SRYKBN
+                       MOVE    SPACE           TO  WRK-SRYSYUKBN
+                   WHEN    LF04-SRYCD (IDX1)   =   MSYU-SRYSYUKBN 
+                                                           (MSYU-IDX)
+                       MOVE    MSYU-SRYKBN  (MSYU-IDX)
+                                                TO  WRK-SRYKBN
+                       MOVE    MSYU-SRYSYUKBN (MSYU-IDX)
+                                                TO  WRK-SRYSYUKBN
+           END-SEARCH 
+      *
+           IF      WRK-SRYSYUKBN       =   SPACE
+               MOVE    LF04-SRYCD (IDX1)(1:2)  TO  WRK-SRYKBN
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-ZAIEND
+           MOVE    ZERO                TO  FLG-TENTEKI
            MOVE    ZERO                TO  WRK-KASAN
            MOVE    ZERO                TO  WRK-SYUGI
+           MOVE    ZERO                TO  WRK-YAKUZAI
       *    明細が１件で、加算のものは前の剤に付ける
            MOVE    ZERO                TO  WRK-CNT
+      *    入院の点滴用
+           MOVE    ZERO                TO  FLG-TENTEKI
+           MOVE    ZERO                TO  FLG-CHUSIN
+      *
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL       IDX2    >   20
       *        対象外のコードをはずす
@@ -634,11 +1026,19 @@
                    IF      FLG-TENSU           =   1
                        DISPLAY "L0031 TENSUU INV KEY:" "[" WRK-SRYCD "]"
                    END-IF
-                   IF      TNS-DATAKBN     =   "2"
-                       ADD     1           TO  WRK-KASAN
-                   ELSE
-                       ADD     1           TO  WRK-SYUGI
-                   END-IF
+                   EVALUATE    WRK-SRYCD(1:1)
+                       WHEN    "1"
+                           IF      TNS-DATAKBN     =   "2"
+                               ADD     1           TO  WRK-KASAN
+                           ELSE
+                               ADD     1           TO  WRK-SYUGI
+                           END-IF
+                       WHEN    "6"
+                           ADD     1           TO  WRK-YAKUZAI
+                           ADD     1           TO  WRK-SYUGI
+                       WHEN    OTHER
+                           ADD     1           TO  WRK-SYUGI
+                   END-EVALUATE
       *            時間外の判定
                    IF     (LF04-SRYCD (IDX1)(1:2)  =   "11"
                                                    OR  "12") AND
@@ -662,7 +1062,15 @@
                IF      WRK-KASAN       >   ZERO
       *            加算のみ１件の時、前の剤に付ける（剤終了としない）
                    MOVE    ZERO            TO  FLG-ZAIEND
-                END-IF
+      *            入院で点滴加算・入院料・食事は加算のみの剤
+                   IF    (WRK-NYUGAIKBN        =   "1" )  AND
+                         (WRK-SRYKBN           =   "90"  OR
+                                                   "92"  OR
+                                                   "97"  OR
+                                                   "33" )
+                       MOVE    1                   TO  FLG-ZAIEND
+                   END-IF
+               END-IF
            END-IF
            .
        2002-ZAICHK-EXT.
@@ -674,6 +1082,12 @@
        20021-SRYCD-CHK-SEC                SECTION.
       *
            MOVE    ZERO                TO  FLG-CHK
+      *
+      *    包括入力時、全部対象
+           IF      WRK-HKNCOMBI        =   "9999"
+               GO      TO      20021-SRYCD-CHK-EXT
+           END-IF
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   JIDO-MAX
                IF      WRK-SRYCD       =   JIDOTBL-CODE (IDX)
@@ -681,6 +1095,22 @@
                    MOVE    JIDO-MAX        TO  IDX
                END-IF
            END-PERFORM
+      *
+      *    入院で点滴手技料は自動発生とする
+           IF     (WRK-NYUGAIKBN       =   "1" )  AND
+                  (WRK-SRYKBN          =   "33")
+               IF      WRK-SRYCD       =   "130003810"
+                                       OR  "130003710"
+                                       OR  "130700310"
+                                       OR  "130700410"
+                                       OR  "130003710"
+                   MOVE    1               TO  FLG-TENTEKI
+               END-IF
+      *        中心静脈注射
+               IF      WRK-SRYCD       =   "130004410"
+                   MOVE    1               TO  FLG-CHUSIN
+               END-IF
+           END-IF
       *
            .
        20021-SRYCD-CHK-EXT.
@@ -690,6 +1120,24 @@
       *    ＴＢＬセット処理
       *****************************************************************
        2003-TBLSET-SEC                SECTION.
+      *
+      *    入院の点滴は手技料と薬剤は別剤とする
+           IF     (WRK-NYUGAIKBN       =   "1" )  AND
+                  (WRK-SRYKBN          =   "33")  AND
+                  (WRK-YAKUZAI         >   ZERO)  AND
+                 ((FLG-TENTEKI         =   1   ) OR
+                  (FLG-CHUSIN          =   1   ) OR
+                  (WRK-KASAN           >   ZERO))
+               PERFORM 2004-TBL-BUNKATU-SEC
+           END-IF
+      *
+      *    入院の時、１明細１剤とする
+           IF     (WRK-NYUGAIKBN       =   "1" )  AND
+                  (WRK-SRYKBN          =   "90"
+                                       OR  "92" )
+               PERFORM 2005-NYUIN-BUNKATU-SEC
+               GO      TO      2003-TBLSET-EXT
+           END-IF
       *
            INITIALIZE                  TBL-WKSRYACT-AREA
            MOVE    ZERO                TO  TBL-MAX
@@ -713,6 +1161,77 @@
            EXIT.
       *
       *****************************************************************
+      *    手技と薬剤の別剤処理
+      *****************************************************************
+       2004-TBL-BUNKATU-SEC                SECTION.
+      *
+           INITIALIZE                  TBL-WKSRYACT-AREA
+           MOVE    ZERO                TO  TBL-MAX
+           MOVE    ZERO                TO  IDX-S
+           MOVE    ZERO                TO  WRK-RENNUM
+      *
+      *    診察コードのみの剤
+           PERFORM VARYING     IDX2     FROM    1   BY  1
+                   UNTIL       IDX2     >   20
+               IF      LF04-IJICD(IDX1 IDX2)(1:1)   =   "1"
+                   IF      TBL-MAX         =   ZERO
+      *                ワーク診療行為初期編集
+                       PERFORM 20031-WKSRYACT-HEN-SEC
+                   END-IF
+      *            ワーク診療行為内部編集
+                   PERFORM 20032-ZAITBLSET-SEC
+      *
+                   MOVE    SPACE           TO  LF04-IJICD(IDX1 IDX2)
+               END-IF
+           END-PERFORM
+           IF      TBL-MAX         >   ZERO
+                PERFORM 2004-WKSRYACT-OUT-SEC
+           END-IF
+      *
+      *    中心静脈の場合、薬剤のみの剤は診療種別を変更する
+           IF     (FLG-CHUSIN          =   1   )   AND
+                  (WRK-SRYSYUKBN   NOT =   "350")
+               MOVE    "350"           TO  WRK-SRYSYUKBN
+           END-IF
+      *
+           .
+       2004-TBL-BUNKATU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院料を１剤１明細編集処理
+      *****************************************************************
+       2005-NYUIN-BUNKATU-SEC                SECTION.
+      *
+           PERFORM VARYING     IDX2     FROM    1   BY  1
+                   UNTIL       IDX2     >   20
+      *
+               INITIALIZE                  TBL-WKSRYACT-AREA
+               MOVE    ZERO                TO  TBL-MAX
+               MOVE    ZERO                TO  IDX-S
+               MOVE    ZERO                TO  WRK-RENNUM
+               IF      LF04-IJICD(IDX1 IDX2)   NOT =   SPACE
+      *            ワーク診療行為初期編集
+                   PERFORM 20031-WKSRYACT-HEN-SEC
+      *            ワーク診療行為内部編集
+                   PERFORM 20032-ZAITBLSET-SEC
+      *            ワーク診療行為出力
+                   PERFORM 2004-WKSRYACT-OUT-SEC
+      *
+                   MOVE    SPACE           TO  LF04-IJICD(IDX1 IDX2)
+               END-IF
+           END-PERFORM
+      *
+           INITIALIZE                  TBL-WKSRYACT-AREA
+           MOVE    ZERO                TO  TBL-MAX
+           MOVE    ZERO                TO  IDX-S
+           MOVE    ZERO                TO  WRK-RENNUM
+      *
+           .
+       2005-NYUIN-BUNKATU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ワーク診療行為初期編集処理
       *****************************************************************
        20031-WKSRYACT-HEN-SEC                SECTION.
@@ -724,7 +1243,8 @@
       *    医療機関ＩＤ
            MOVE    WRK-HOSPID          TO  TBL-WKSRY-HOSPID (TBL-MAX)
       *    入外区分
-           MOVE    "2"                 TO  TBL-WKSRY-NYUGAIKBN (TBL-MAX)
+      *****MOVE    "2"                 TO  TBL-WKSRY-NYUGAIKBN (TBL-MAX)
+           MOVE    WRK-NYUGAIKBN       TO  TBL-WKSRY-NYUGAIKBN (TBL-MAX)
       *    患者ＩＤ
            MOVE    WRK-PTID            TO  TBL-WKSRY-PTID (TBL-MAX)
       *    診療科
@@ -738,31 +1258,15 @@
            MOVE    WRK-ZAINUM          TO  TBL-WKSRY-ZAINUM(TBL-MAX)
       *    連番号
            MOVE    WRK-RENNUM          TO  TBL-WKSRY-RENNUM(TBL-MAX)
-      *
-      *    診療種別検索
-           SET     MSYU-IDX            TO  1
-           SEARCH      MSYU-TBL-OCC    VARYING   MSYU-IDX
-                   AT   END
-                       MOVE    SPACE           TO  WRK-SRYKBN
-                       MOVE    SPACE           TO  WRK-SRYSYUKBN
-                   WHEN    LF04-SRYCD (IDX1)   =   MSYU-SRYSYUKBN 
-                                                           (MSYU-IDX)
-                       MOVE    MSYU-SRYKBN  (MSYU-IDX)
-                                                TO  WRK-SRYKBN
-                       MOVE    MSYU-SRYSYUKBN (MSYU-IDX)
-                                                TO  WRK-SRYSYUKBN
-           END-SEARCH 
-      *
-           IF      WRK-SRYSYUKBN       =   SPACE
-               MOVE    LF04-SRYCD (IDX1)(1:2)  TO  WRK-SRYKBN
-           END-IF
       *    診療種別
            MOVE    WRK-SRYSYUKBN       TO  TBL-WKSRY-SRYSYUKBN(TBL-MAX)
       *    診療区分
            MOVE    WRK-SRYKBN          TO  TBL-WKSRY-SRYKBN   (TBL-MAX)
       *    投薬で院外の時、院外へ
            DISPLAY "LF04-MEMO (IDX1) = " "[" LF04-MEMO (IDX1) "]"
-           IF      WRK-SRYKBN          =   "21"
+      *
+           IF     (WRK-NYUGAIKBN       =   "2"  )  AND
+                  (WRK-SRYKBN          =   "21" )
                IF     (LF04-MEMO (IDX1)    =    "院外処方"  )  AND
                       (WRK-SYOHOKBN        =    "0"         )
       *            院外とする
@@ -777,7 +1281,8 @@
                END-IF
            END-IF
       *    院内分は剤点数を設定する
-           IF     (WRK-SYOHOKBN        =   "0"         )  AND
+           IF    ((WRK-NYUGAIKBN       =   "1"  )  OR
+                  (WRK-SYOHOKBN        =   "0"       ))  AND
                   (WRK-SRYKBN          =   "21"  OR  "22"  OR  "23")
                IF      TBL-WKSRY-SRYSYUKBN (TBL-MAX)   =   "212"
                    CONTINUE
@@ -862,6 +1367,24 @@
            END-IF
            MOVE    WRK-SURYO           TO  TBL-WKSRY-SRYSURYO
                                                      (TBL-MAX IDX-S)
+      *    フリーコメントの内容
+           IF      (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)
+                                       =   "810000001")  AND
+                   (LF04-ALSNAME (IDX1 IDX2)
+                                   NOT =   SPACE )
+      *        コメント
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI
+               MOVE    LF04-ALSNAME (IDX1 IDX2)
+                                       TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF      KANACHK-RC          =   ZERO
+                   MOVE    KANACHK-OUT-INPUT
+                                       TO  TBL-WKSRY-INPUTCOMENT
+                                                       (TBL-MAX IDX-S)
+               END-IF
+           END-IF
       *
            .
        20032-ZAITBLSET-EXT.
@@ -996,7 +1519,8 @@
       *
            ADD      1                  TO  IDX-S
            MOVE     WRK-SRYCD          TO  TBL-WKSRY-SRYCD
-                                           (TBL-MAX IDX-S).
+                                           (TBL-MAX IDX-S)
+           .
       *
        20041-YOUHOU-SET-EXT.
            EXIT.
@@ -1027,6 +1551,48 @@
       *
            .
        20042-WKSRYCD-INS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ワーク診療行為から剤番号検索処理
+      *****************************************************************
+       2009-WKSRYACT-CHK-SEC                 SECTION.
+      *
+           INITIALIZE                  WKSRYACT-REC
+           MOVE    WRK-HOSPID          TO  WKSRY-HOSPID
+           MOVE    WRK-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+           MOVE    WRK-PTID            TO  WKSRY-PTID
+           MOVE    WRK-SRYKA           TO  WKSRY-SRYKA
+           MOVE    WRK-SRYYMD          TO  WKSRY-SRYYMD
+           MOVE    WRK-HKNCOMBI        TO  WKSRY-HKNCOMBI
+      *
+           MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "WKSRYACT-KEY2"   TO  ORC-DBPATH
+               PERFORM 940-WKSRYACT-READ-SEC
+           ELSE
+               INITIALIZE                  WKSRYACT-REC
+               MOVE    1               TO  FLG-WKSRYACT
+           END-IF
+           MOVE    ZERO                TO  WRK-ZAINUM
+           PERFORM
+               UNTIL   FLG-WKSRYACT   =   1
+               IF      WKSRY-ZAINUM        >   WRK-ZAINUM
+                   MOVE    WKSRY-ZAINUM        TO  WRK-ZAINUM
+               END-IF
+      *
+               MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
+               PERFORM 940-WKSRYACT-READ-SEC
+           END-PERFORM
+      *
+           .
+       2009-WKSRYACT-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1435,6 +2001,7 @@
       *
            PERFORM VARYING     IDX-T   FROM    1   BY  1
                    UNTIL       IDX-T   >   14
+      *        転帰が空白の時、治癒
                IF      LF04-SND-TENKI (IDX)    =   MML0016-TENKI (IDX-T)
                    MOVE    MML0016-ORCA-TENKI (IDX-T)
                                                TO  WRK-TENKI
@@ -1674,7 +2241,72 @@
            .
        900-PTBYO-READ-EXT.
            EXIT.
-     *
+      *
+      *****************************************************************
+      *    公費履歴読み込み
+      *****************************************************************
+       920-PTKOHINF-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+               MOVE    ZERO            TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       920-PTKOHINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険マスター読み込み
+      *****************************************************************
+       940-HKNCOMB-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       940-HKNCOMB-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ワーク診療行為データ読込
+      *****************************************************************
+       940-WKSRYACT-READ-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  WKSRYACT-REC
+               MOVE    ZERO            TO  FLG-WKSRYACT
+           ELSE
+               INITIALIZE                  WKSRYACT-REC
+               MOVE    1               TO  FLG-WKSRYACT
+           END-IF
+      *
+           .
+       940-WKSRYACT-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    レセプト明細書読込
       *****************************************************************
