@@ -37,6 +37,10 @@
       *  01.00.06    NACL-藤原    04/04/06  編集病名のとき疑いフラグからの
       *                                     病名コード追加をやめる
       *  01.00.07    NACL-藤原    04/04/27  ユーザーコメントの追加
+      *  01.00.08    NACL-藤原    04/08/17  特例退職者＋老人のとき不明分
+      *                                     とする
+      *                                     補助区分の追加に伴うレセプト
+      *                                     種別の編集を変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1469,8 +1473,10 @@
                                (TOUKEI01-AGE  <=   74)
                                EVALUATE   COMB-HOJOKBN
                                    WHEN   "1"
+                                   WHEN   "4"
                                        MOVE   "9"   TO   WK-HONKZKKBN
                                    WHEN   "2"
+                                   WHEN   "5"
                                        MOVE   "8"   TO   WK-HONKZKKBN
                                END-EVALUATE
                            END-IF     
@@ -1492,6 +1498,14 @@
                    END-IF
                END-IF
            END-IF
+      *
+           IF      WK-RJN      NOT =   SPACE     
+               IF      TOUKEI01-HKNNUM =   "063"   OR  "072"   OR
+                                           "073"   OR  "074"   OR
+                                           "075"
+                   MOVE    "2"          TO  WK-IHO
+               END-IF
+           END-IF    
       *
       *      DISPLAY "HONKZKKBN : " WK-HONKZKKBN 
       *      DISPLAY "NYUGAIKBN : " TOUKEI01-NYUGAIKBN 
