@@ -301,12 +301,6 @@
                05  RECE62-ERR-HKNCOMBINUM PIC 9(04).
                05  RECE62-ERR-TEKSTYMD    PIC 9(08).
                05  RECE62-ERR-TEKEDYMD    PIC 9(08).
-      *
-      *実日数テーブル情報
-           03  RECE62-JNISSUTBLINF        OCCURS 31.
-      *実日数テーブル
-               05  RECE62-JNISSUTBL       PIC  X(01).
-      *
       *予備
            03  RECE62-FILLER              PIC  X(32).
       *
