@@ -879,3 +879,33 @@ path	key37 	{
 	};
 };
 
+path	key38	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key38_csr CURSOR FOR
+		SELECT  A.PTID
+		FROM tbl_ptnum B 
+		JOIN tbl_sryacct A ON A.HOSPID=B.HOSPID AND A.PTID=B.PTID  
+			WHERE  A.HOSPID	    =  :HOSPID
+			AND    A.NYUGAIKBN  =  :NYUGAIKBN
+			AND    A.SRYYM      =  :SRYYM
+			AND    A.ZAIKAISU   > 0
+			AND (( A.ZAITEN     > 0 )
+			 OR  ( A.ZAITEN     = 0 
+			  AND  EXISTS 
+			     ( SELECT * FROM TBL_SRYACT
+			       WHERE HOSPID =  A.HOSPID
+			        AND  NYUGAIKBN = A.NYUGAIKBN
+			        AND  PTID   =  A.PTID
+			        AND  SRYKA  =  A.SRYKA
+			        AND  SRYYM  =  A.SRYYM
+			        AND  ZAINUM =  A.ZAINUM
+			        AND  SRYKBN =  A.SRYKBN
+			        AND((SRYCD1 LIKE '6%' )
+			         OR (SRYCD2 LIKE '6%' )
+			         OR (SRYCD3 LIKE '6%' )
+			         OR (SRYCD4 LIKE '6%' )
+			         OR (SRYCD5 LIKE '6%')))))
+			GROUP BY A.PTID,B.PTNUM
+			ORDER BY B.PTNUM;
+	};
+};
