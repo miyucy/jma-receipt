@@ -51,6 +51,7 @@
       *                                     ¥³¥á¥ó¥ÈÂÐ±þ
       *  01.01.03    NACL-ÌçÏÆ    04.04.15  Ç¾·ì´É¼À´µµÞÀ­È¯¾ÉÆü¤Î¥³¥á¥ó¥È
       *                                     ÂÐ±þ
+      *  01.01.04    NACL-ÌçÏÆ    04.05.21  DBOPEN,DBDISCONNECTºï½ü
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3429,12 +3430,6 @@
       *****************************************************************
        120-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -3455,11 +3450,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
            EXIT.

@@ -48,6 +48,7 @@
       *  ２００２年１０月改正対応
       *  01.02.01    NACL-藤原    02/09/27  パラメタに入外区分の追加
       *  01.02.02    NACL-藤原    03/08/28  出力内容指定の処理の追加
+      *  01.02.03    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -506,12 +507,6 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -532,11 +527,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
            EXIT.

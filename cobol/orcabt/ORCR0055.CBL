@@ -35,6 +35,7 @@
       *                                     病名・転帰区分・転帰日のとき
       *                                     ひとつだけ出力する
       *  01.00.04    NACL-藤原    03.03.12  補助区分の追加
+      *  01.00.05    NACL-門脇    04.05.21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -471,12 +472,6 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -497,11 +492,6 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
            EXIT.
