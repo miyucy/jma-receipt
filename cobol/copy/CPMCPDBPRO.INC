@@ -244,6 +244,9 @@
       *  01.01.72    NACL-太田    03/05/17  NYUINACCT-KEY19追加
       *  01.01.73    ひさなが     03/05/19  NYUKSNCHK-ALLの追加
       *  01.01.74    ひさなが     03/05/21  ALL2の追加
+      *  01.01.75    NACL-藤原    03/05/21  SEIKYU-KEY4,KEY11,KEY12,KEY13,
+      *                                     KEY14,KEY21,KEY22のとき保険者番号
+      *                                     に初期値を編集
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2050,6 +2053,7 @@
                 WHEN    ANY             ALSO   "SEIKYU-KEY4"
                    MOVE    PATH-TBL-SEIKYU-KEY4
                                        TO  WRK-PATH
+                   PERFORM 2001-SEL-SEIKYU-SEC
                 WHEN    ANY             ALSO   "SEIKYU-KEY5"
                    MOVE    PATH-TBL-SEIKYU-KEY5
                                        TO  WRK-PATH
@@ -2071,15 +2075,19 @@
                 WHEN    ANY             ALSO   "SEIKYU-KEY11"
                    MOVE    PATH-TBL-SEIKYU-KEY11
                                        TO  WRK-PATH
+                   PERFORM 2001-SEL-SEIKYU-SEC
                 WHEN    ANY             ALSO   "SEIKYU-KEY12"
                    MOVE    PATH-TBL-SEIKYU-KEY12
                                        TO  WRK-PATH
+                   PERFORM 2001-SEL-SEIKYU-SEC
                 WHEN    ANY             ALSO   "SEIKYU-KEY13"
                    MOVE    PATH-TBL-SEIKYU-KEY13
                                        TO  WRK-PATH
+                   PERFORM 2001-SEL-SEIKYU-SEC
                 WHEN    ANY             ALSO   "SEIKYU-KEY14"
                    MOVE    PATH-TBL-SEIKYU-KEY14
                                        TO  WRK-PATH
+                   PERFORM 2001-SEL-SEIKYU-SEC
                 WHEN    ANY             ALSO   "SEIKYU-KEY15"
                    MOVE    PATH-TBL-SEIKYU-KEY15
                                        TO  WRK-PATH
@@ -2101,9 +2109,12 @@
                 WHEN    ANY             ALSO   "SEIKYU-KEY21"
                    MOVE    PATH-TBL-SEIKYU-KEY21
                                        TO  WRK-PATH
+                   PERFORM 2001-SEL-SEIKYU-SEC
                 WHEN    ANY             ALSO   "SEIKYU-KEY22"
                    MOVE    PATH-TBL-SEIKYU-KEY22
                                        TO  WRK-PATH
+                   PERFORM 2001-SEL-SEIKYU-SEC
+      *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SEIKYU-ALL"
                    MOVE    PATH-TBL-SEIKYU-ALL
                                        TO  WRK-PATH
@@ -3332,4 +3343,25 @@
       *
            .
        2001-SEL-USERBYOMEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     請求管理マスタの保険者番号が初期値のときの編集処理
+      *****************************************************************
+       2001-SEL-SEIKYU-SEC             SECTION.
+      *
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-SEIKYU-EXT
+           END-IF
+      *
+           MOVE    MCPDATA-REC         TO  RECE10-REC
+           IF      RECE10-XXEDHKNJANUM =   SPACE
+               MOVE    ALL "9"             TO  RECE10-XXEDHKNJANUM
+           END-IF
+      *
+           MOVE    RECE10-REC          TO  MCPDATA-REC
+      *
+           .
+       2001-SEL-SEIKYU-EXT.
            EXIT.

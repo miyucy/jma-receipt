@@ -44,3 +44,7 @@
               03  T01-PRTKBN2.
                 04  T01-PRTKBN2-STYLE   PIC X(20).
                 04  T01-PRTKBN2-VALUE   PIC X(4).
+              03  T01-HKNJANUM.
+                04  T01-VALUE   PIC X(8).
+              03  T01-HKNJAMEI.
+                04  T01-VALUE   PIC X(40).

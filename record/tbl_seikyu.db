@@ -421,6 +421,8 @@ UPHKNJANUM			char(10),virtual;
 #-----> ¸¡º÷ÍÑ¹àÌÜ
 XXPREFNUM 			char(2),virtual;
 XXSRYYM 			number(6),virtual;
+XXSTHKNJANUM			char(8),virtual;
+XXEDHKNJANUM			char(8),virtual;
 };
 
 primary	{
@@ -490,7 +492,9 @@ path	key4	{
                        AND ( SKYKBN      <>  '0'      )
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
                        OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
+                       AND ( SKYKBN      <>  '0'      )) )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
                 ORDER  BY  HKNJANUM_S   
 		;
 	};
@@ -631,6 +635,8 @@ path	key11 {
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )))
                   AND (      SRYYM       <   :SRYYM      )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
                 ORDER  BY  HKNJANUM_S   
 		;
 	};
@@ -652,6 +658,8 @@ path	key12	{
                        AND ( SKYKBN      <>  '0'      )))
                   AND (      SRYYM       >=  :SRYYM      )
                   AND (      ZAITAKU     <>  '1'         )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
                 ORDER  BY  HKNJANUM_S   
 		;
 	};
@@ -673,6 +681,8 @@ path	key13	{
                        AND ( SKYKBN      <>  '0'      )))
                   AND (      SRYYM       >=  :SRYYM      )
                   AND (      ZAITAKU     =   '1'         )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
                 ORDER  BY  HKNJANUM_S   
 		;
 	};
@@ -692,7 +702,9 @@ path	key14	{
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )))
-                  AND (      ZAITAKU     <>   '1'        )
+                  AND (      ZAITAKU     <>  '1'        )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
                 ORDER  BY  HKNJANUM_S   
 		;
 	};
@@ -833,6 +845,8 @@ path	key21	{
                   AND (      SRYYM       >=  :SRYYM      )
                   AND (      SRYYM       <   :XXSRYYM    )
                   AND (      ZAITAKU     <>  '1'         )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
                 ORDER  BY  HKNJANUM_S   
 		;
 	};
@@ -855,6 +869,8 @@ path	key22	{
                   AND (      SRYYM       >=  :SRYYM      )
                   AND (      SRYYM       <   :XXSRYYM    )
                   AND (      ZAITAKU     =   '1'         )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
                 ORDER  BY  HKNJANUM_S   
 		;
 	};
