@@ -1031,7 +1031,7 @@
            MOVE    LNK-BYO-BYOMEI      TO  SPA-GMN-HENBYO
       *
       *    接尾語・接頭語チェック
-           IF      LNK-BYO-BYOMEICD-ERR    =   1   OR  2   OR  3
+           IF      LNK-BYO-BYOMEICD-ERR    =   2   OR  3
                MOVE    "0003"          TO  SPA-ERRCD
            END-IF
       *

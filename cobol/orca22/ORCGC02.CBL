@@ -435,6 +435,9 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *     
@@ -2254,6 +2257,11 @@
                END-PERFORM
            END-IF
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
       *    更新処理
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       5
@@ -2315,6 +2323,9 @@
                                    MOVE    WRK-HENSYU-DATA-O (6)
                                                    TO  PTBYO-NYUGAIKBN
                            END-EVALUATE      
+      *
+                           MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
+                           MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
       *???
            DISPLAY "PTBYO=" PTBYO-KEY "#" MCP-FUNC "#"
       *???                
@@ -2341,6 +2352,7 @@
                                            SPA-NAI-C02-KOUMOKU
                                            SPA-NAI-C02-SELNO
            MOVE    1                   TO  SPA-GMN-C02-CUR
+           MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
       *
            INITIALIZE                  SPA-GMN-C02-TBL
                                        SPA-NAI-C02-TBL
@@ -2950,8 +2962,8 @@
                        MOVE    2               TO  IDX
                    END-IF 
                END-PERFORM
-           ELSE
-               MOVE    "-"                     TO  WRK-SEIGYO
+      *****ELSE
+      *****    MOVE    "-"                     TO  WRK-SEIGYO
            END-IF
       *       
            EVALUATE    WRK-SEIGYO
@@ -2992,20 +3004,20 @@
            END-EVALUATE                               
       *
       *    半角チェック
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI 
-           MOVE    C02-BYOMEICD (IDZ)  TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
-           IF      KANACHK-RC          =   ZERO
-           AND     KANACHK-RC2         =   ZERO
-               MOVE    KANACHK-OUT-INPUT   TO  C02-BYOMEICD (IDZ)
-           ELSE
-               MOVE    "0072"              TO  SPA-ERRCD
-               GO  TO  4102-BYOMEICD-CHK-EXT
-           END-IF
+           IF      C02-BYOMEICD (IDZ)  NOT =   SPACE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI 
+               MOVE    C02-BYOMEICD (IDZ)  TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF      KANACHK-RC          =   ZERO
+               AND     KANACHK-RC2         =   ZERO
+                   MOVE    KANACHK-OUT-INPUT   TO  C02-BYOMEICD (IDZ)
+               ELSE
+                   MOVE    "0072"              TO  SPA-ERRCD
+                   GO  TO  4102-BYOMEICD-CHK-EXT
+               END-IF
       *             
       *    未コード化傷病名入力のチェック
-           IF      SPA-ERRCD       =   SPACE
                IF      C02-BYOMEICD (IDZ)
                                        =   WRK-CONS-BYOMEICD
                    PERFORM VARYING IDX FROM    1   BY  1
@@ -3030,22 +3042,8 @@
            END-IF
       *    
            IF      SPA-ERRCD       NOT =   SPACE
-      *********MOVE    SPA-NAI-C02-BYOMEICD(IDZ)
-      *********                        TO  C02-BYOMEICD (IDZ)
                GO  TO  4102-BYOMEICD-CHK-EXT
            END-IF
-      *
-      *????コードが変更されてないときは処理しない
-      *????IF      C02-BYOMEICD (IDZ)     =   SPA-GMN-C02-BYOMEICD (IDZ)
-      *????AND     SPA-GMN-C02-BYOMEICD (IDZ)
-      *????                           NOT =   SPACE
-      *????    IF      IDZ                =   6
-      *????        MOVE    9                  TO   SPA-GMN-C02-CUR
-      *????    ELSE   
-      *????        COMPUTE SPA-GMN-C02-CUR     =   2   +   IDZ
-      *????    END-IF
-      *????    GO  TO  4102-BYOMEICD-CHK-EXT
-      *????END-IF
       *
       *    病名欄入力後コード入力した時の処理
            IF  ( ( SPA-NAI-C02-BYOMEICD (1)
@@ -3134,6 +3132,20 @@
       *
       *    ７桁入力のときは病名マスタ、以外は自院病名マスタを読み込む
            EVALUATE    WRK-LENGTH
+             WHEN    ZERO
+               PERFORM VARYING IDX FROM    IDZ BY  1
+                       UNTIL   IDX >       6
+                   IF      IDX             =   6
+                       INITIALIZE  SPA-NAI-C02-BYOMEI-OCC(IDX)
+                                   SPA-GMN-C02-BYOMEICD  (IDX)
+                   ELSE
+                       COMPUTE IDW     =   IDX     +   1
+                       MOVE    SPA-NAI-C02-BYOMEI-OCC (IDW)
+                                       TO  SPA-NAI-C02-BYOMEI-OCC (IDX)
+                       MOVE    SPA-GMN-C02-BYOMEICD   (IDW)
+                                       TO  SPA-GMN-C02-BYOMEICD  (IDX)
+                   END-IF                     
+               END-PERFORM                           
              WHEN    7   
       *        病名マスタ読み込み
                MOVE    SPA-NAI-C02-BYOMEICD (IDZ) TO  BYO-BYOMEICD
@@ -4674,6 +4686,9 @@
            INITIALIZE                  SPA-GMN-C02-KOUMOKU
                                        SPA-NAI-C02-KOUMOKU
                                        SPA-NAI-C02-SELNO
+           IF      SPA-GMN-C02-SRYKA   NOT =   ZERO
+               MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
+           END-IF
            MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
       *
           .
@@ -5248,6 +5263,11 @@
                                SPA-NAI-C02-BYOMEICD-MAX "#"
       *???
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       6
                    OR      WRK-PTBYO-BYOMEI (IDXX) =   SPACE
@@ -5267,6 +5287,9 @@
                IF      FLG-PTINF               =   ZERO
                    MOVE    MCPDATA-REC         TO  PTINF-REC
                    MOVE    "1"                 TO  PTINF-DEATHKBN 
+      *
+                   MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
                    MOVE    PTINF-REC           TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "PTINF-KEY"         TO  ORC-DBPATH
@@ -5288,6 +5311,7 @@
                                            SPA-NAI-C02-KOUMOKU
                                            SPA-NAI-C02-SELNO
            MOVE    1                   TO  SPA-GMN-C02-CUR
+           MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
       *
            INITIALIZE                  SPA-GMN-C02-TBL
                                        SPA-NAI-C02-TBL
@@ -5340,6 +5364,11 @@
                    MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
                    MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
                    MOVE    WRK-RENNUM          TO  PTBYO-RENNUM
+      *
+                   MOVE    SMCNDATE-YMD        TO  PTBYO-CREYMD
+                   MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
+      *
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                WHEN    OTHER
                    IF    ( SPA-GMN-C02-BSRYKA  NOT =
@@ -5386,6 +5415,11 @@
                        MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
                        MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
                        MOVE    WRK-RENNUM          TO  PTBYO-RENNUM
+      *
+                       MOVE    SMCNDATE-YMD        TO  PTBYO-CREYMD
+                       MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
+                       MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
+      *
                        MOVE    "DBINSERT"          TO  MCP-FUNC
                    ELSE
       *                患者病名マスター更新（診療科変更なし）
@@ -5406,7 +5440,11 @@
                                                    WRK-PTBYO-KEY (IDXX)
                            MOVE    WRK-PTBYOMEI-REC (IDXX)
                                                    TO  PTBYOMEI-REC
-                           MOVE    "DBUPDATE"          TO  MCP-FUNC
+      *
+                           MOVE    SMCNDATE-YMD    TO  PTBYO-UPYMD
+                           MOVE    SMCNDATE-HMS    TO  PTBYO-UPHMS
+      *
+                           MOVE    "DBUPDATE"      TO  MCP-FUNC
                        END-IF
                    END-IF
            END-EVALUATE

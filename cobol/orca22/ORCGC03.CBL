@@ -253,6 +253,9 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".  
@@ -2305,6 +2308,11 @@
                END-IF
            END-IF    
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
       *    自院病名マスター（分類名登録）
       *
            IF      SPA-GMN-BUNRUICD    NOT =   ZERO
@@ -2321,6 +2329,11 @@
                                            TO  USBYO-BYOMEIINPUTCD
                    MOVE    SPA-GMN-BUNRUIMEI
                                            TO  USBYO-BYOMEI
+      *
+                   MOVE    SMCNDATE-YMD    TO  USBYO-CREYMD
+                   MOVE    SMCNDATE-YMD    TO  USBYO-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  USBYO-UPHMS
+      *
                    MOVE    "DBINSERT"      TO  MCP-FUNC
                    MOVE    USERBYOMEI-REC  TO  MCPDATA-REC
                    MOVE    "USERBYOMEI-KEY"
@@ -2339,6 +2352,10 @@
                                            NOT =   USBYO-BYOMEI
                        MOVE    SPA-GMN-BUNRUIMEI
                                                TO  USBYO-BYOMEI
+      *
+                       MOVE    SMCNDATE-YMD    TO  USBYO-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  USBYO-UPHMS
+      *
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
                        MOVE    "USERBYOMEI-KEY"    TO  ORC-DBPATH
@@ -2409,12 +2426,17 @@
                MOVE    SPA-GMN-HKNBYOMEIFLG
                                            TO  USBYO-HKNBYOMEIFLG
                MOVE    SPA-GMN-BYOMEISBT   TO  USBYO-BYOMEISBT
-      *
-               MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
                IF      FLG-USERBYOMEI      =   1
+                   MOVE    SMCNDATE-YMD        TO  USBYO-CREYMD
+                   MOVE    SMCNDATE-YMD        TO  USBYO-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  USBYO-UPHMS
+                   MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    2                   TO  WRK-SYOKBN
                ELSE
+                   MOVE    SMCNDATE-YMD        TO  USBYO-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  USBYO-UPHMS
+                   MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    1                   TO  WRK-SYOKBN
                END-IF
