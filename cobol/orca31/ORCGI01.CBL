@@ -90,6 +90,8 @@
       *                                     ∞Ï»Ã∆˛±°Œ¡ªªƒÍ§œ•≥•·•Û•»§»§π§Î°À
       *  01.00.44    NACL-¬¿≈ƒ    04.01.28  …¬ºº —ππª˛§ÀººŒ¡∫π≥€…Ωº®§¨
       *                                      —§Ô§È§ §§…‘∂ÒπÁ§ÚΩ§¿µ
+      *  01.00.45    NACL-æÆ∆¶¬Ù  04.03.10  œ∑øÕ¿≠√‘ Úº¿¥µº£Œ≈…¬≈Ô∆˛±°Œ¡£≤§Œ
+      *                                     ªªƒÍ¬–±˛ƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -8564,6 +8566,41 @@
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
            END-IF
       *
+      *    œ∑øÕ¿≠√‘ Úº¿¥µº£Œ≈…¬≈Ô∆˛±°Œ¡£≤
+           IF    SYOKIKSN-IN-KHNSRYCD   =   "190813410"
+                 MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
+                                         LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                 MOVE   "190813410"  TO  LNK-SCNYUACCT-KAGEN-SRYCD(1)
+                 MOVE   SPA-NAI-I01-NYUINYMD
+                                  TO  LNK-SCNYUACCT-KAGEN-STYUKYMD(1)
+                 INITIALIZE                STS-AREA-DAY
+                 INITIALIZE                LNK-DAY6-AREA
+                 MOVE    "61"              TO  LNK-DAY6-IRAI
+                 MOVE   SPA-NAI-I01-NYUINYMD
+                                           TO  LNK-DAY6-KIJUN
+                 MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                 MOVE    88                TO  LNK-DAY6-ZOGEN
+                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                 MOVE    LNK-DAY6-KEISAN
+                                  TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+      *
+                 MOVE   "190813510"  TO  LNK-SCNYUACCT-KAGEN-SRYCD(2)
+                 INITIALIZE                STS-AREA-DAY
+                 INITIALIZE                LNK-DAY6-AREA
+                 MOVE    "61"              TO  LNK-DAY6-IRAI
+                 MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+                                           TO  LNK-DAY6-KIJUN
+                 MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                 MOVE     1                TO  LNK-DAY6-ZOGEN
+                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                 MOVE    LNK-DAY6-KEISAN
+                                  TO LNK-SCNYUACCT-KAGEN-STYUKYMD(2)
+                 MOVE    "99999999"
+                                  TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
+           END-IF
+      *
       *    ∆√ƒÍ∆˛±°Œ¡§«£∑∆¸§ﬁ§«°¢£±£¥∆¸§ﬁ§«°¢§Ω§Ï∞ πﬂ§œ∞Ï»Ã∆˛±°Œ¡§ÚªªƒÍ§π§Î
       *    æÏπÁ§Œø«Œ≈•≥°º•…§ÚºË∆¿
            PERFORM    4801-TOKUTEI-NYUIN-7-14-SEC
@@ -8990,6 +9027,61 @@
                  ADD    1   TO    TN-IDX
       *
                  MOVE   "190740010"  TO  LNK-SCNYUACCT-KAGEN-SRYCD
+                                                               (TN-IDX)
+                 INITIALIZE                STS-AREA-DAY
+                 INITIALIZE                LNK-DAY6-AREA
+                 MOVE    "61"              TO  LNK-DAY6-IRAI
+                 IF      TN-IDX      =     2
+                     MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+                                           TO  LNK-DAY6-KIJUN
+                     MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                     MOVE     1                TO  LNK-DAY6-ZOGEN
+                     CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                     MOVE    LNK-DAY6-KEISAN
+                                       TO LNK-SCNYUACCT-KAGEN-STYUKYMD
+                                                               (TN-IDX)
+                 ELSE
+                     MOVE    SPA-NAI-I01-IDOYMD
+                                       TO LNK-SCNYUACCT-KAGEN-STYUKYMD
+                                                               (TN-IDX)
+                 END-IF
+                 MOVE    "99999999"    TO LNK-SCNYUACCT-KAGEN-EDYUKYMD
+                                                               (TN-IDX)
+           END-IF
+      *
+      *    œ∑øÕ¿≠√‘ Úº¿¥µº£Œ≈…¬≈Ô∆˛±°Œ¡£≤
+           IF    SYOKIKSN-IN-KHNSRYCD   =   "190813410"
+                 MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
+                                         LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                 MOVE   ZERO            TO  TN-IDX
+                 IF     STUSAN-NISSU01      <=  90
+                     ADD    1           TO  TN-IDX
+                     MOVE   "190813410" TO   LNK-SCNYUACCT-KAGEN-SRYCD
+                                                               (TN-IDX)
+      *              œ∑øÕ¿≠√‘ Úº¿¥µº£Œ≈…¬≈Ô∆˛±°Œ¡§Œ£π£∞∆¸∞ ∆‚§ŒΩ™∆¸§Ú∫∆∑◊ªª
+                     MOVE     ZERO      TO   WK-TOKUTEI-DAY
+                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU01
+                     MOVE   SPA-NAI-I01-IDOYMD
+                                       TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
+                                                               (TN-IDX)
+                     INITIALIZE                STS-AREA-DAY
+                     INITIALIZE                LNK-DAY6-AREA
+                     MOVE    "61"              TO  LNK-DAY6-IRAI
+                     MOVE   SPA-NAI-I01-IDOYMD
+                                               TO  LNK-DAY6-KIJUN
+                     MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                     MOVE    WK-TOKUTEI-DAY    TO  LNK-DAY6-ZOGEN
+                     CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                     MOVE    LNK-DAY6-KEISAN
+                                        TO LNK-SCNYUACCT-KAGEN-EDYUKYMD
+                                                               (TN-IDX)
+                 END-IF
+      *
+                 ADD    1   TO    TN-IDX
+      *
+                 MOVE   "190813510"  TO  LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
                  INITIALIZE                STS-AREA-DAY
                  INITIALIZE                LNK-DAY6-AREA
@@ -9509,6 +9601,61 @@
                  ADD    1   TO    TN-IDX
       *
                  MOVE   "190740010"  TO  LNK-SCNYUACCT-KAGEN-SRYCD
+                                                               (TN-IDX)
+                 INITIALIZE                STS-AREA-DAY
+                 INITIALIZE                LNK-DAY6-AREA
+                 MOVE    "61"              TO  LNK-DAY6-IRAI
+                 IF      TN-IDX      =     2
+                     MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+                                           TO  LNK-DAY6-KIJUN
+                     MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                     MOVE     1                TO  LNK-DAY6-ZOGEN
+                     CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                     MOVE    LNK-DAY6-KEISAN
+                                       TO LNK-SCNYUACCT-KAGEN-STYUKYMD
+                                                               (TN-IDX)
+                 ELSE
+                     MOVE    SPA-NAI-I01-MAEIDOYMD
+                                       TO LNK-SCNYUACCT-KAGEN-STYUKYMD
+                                                               (TN-IDX)
+                 END-IF
+                 MOVE    "99999999"    TO LNK-SCNYUACCT-KAGEN-EDYUKYMD
+                                                               (TN-IDX)
+           END-IF
+      *
+      *    œ∑øÕ¿≠√‘ Úº¿¥µº£Œ≈…¬≈Ô∆˛±°Œ¡£≤
+           IF    SYOKIKSN-IN-KHNSRYCD   =   "190813410"
+                 MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
+                                         LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                 MOVE   ZERO            TO  TN-IDX
+                 IF     STUSAN-NISSU01      <=  90
+                     ADD    1           TO  TN-IDX
+                     MOVE   "190813410" TO   LNK-SCNYUACCT-KAGEN-SRYCD
+                                                               (TN-IDX)
+      *              œ∑øÕ¿≠√‘ Úº¿¥µº£Œ≈…¬≈Ô∆˛±°Œ¡§Œ£π£∞∆¸∞ ∆‚§ŒΩ™∆¸§Ú∫∆∑◊ªª
+                     MOVE     ZERO      TO   WK-TOKUTEI-DAY
+                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU01
+                     MOVE   SPA-NAI-I01-MAEIDOYMD
+                                       TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
+                                                               (TN-IDX)
+                     INITIALIZE                STS-AREA-DAY
+                     INITIALIZE                LNK-DAY6-AREA
+                     MOVE    "61"              TO  LNK-DAY6-IRAI
+                     MOVE   SPA-NAI-I01-MAEIDOYMD
+                                               TO  LNK-DAY6-KIJUN
+                     MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                     MOVE    WK-TOKUTEI-DAY    TO  LNK-DAY6-ZOGEN
+                     CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                     MOVE    LNK-DAY6-KEISAN
+                                        TO LNK-SCNYUACCT-KAGEN-EDYUKYMD
+                                                               (TN-IDX)
+                 END-IF
+      *
+                 ADD    1   TO    TN-IDX
+      *
+                 MOVE   "190813510"  TO  LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
                  INITIALIZE                STS-AREA-DAY
                  INITIALIZE                LNK-DAY6-AREA
@@ -10233,6 +10380,8 @@
                        MOVE   "190075910"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "14"
                        MOVE   "190075810"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "15"
+                       MOVE   "190813410"   TO  SYOKIKSN-IN-KHNSRYCD
              END-EVALUATE
            END-IF
       *    …¬ºº
