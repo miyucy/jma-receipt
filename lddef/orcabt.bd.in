@@ -66,6 +66,7 @@ bind	"ORCBM025"	"OpenCOBOL";
 bind	"ORCBM026"	"OpenCOBOL";
 bind	"ORCBM029"	"OpenCOBOL";
 bind	"ORCBM030"	"OpenCOBOL";
+bind	"ORCBM500"	"OpenCOBOL";
 bind	"ORCBJOB"	"OpenCOBOL";
 bind	"ORCGD02"	"OpenCOBOL";
 bind	"ORCGD03"	"OpenCOBOL";
