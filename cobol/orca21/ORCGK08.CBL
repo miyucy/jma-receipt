@@ -414,6 +414,9 @@
       *    Á´³ÑÊÑ´¹¥µ¥Ö
            COPY    "CPORCSKANACHK.INC".
       *
+      *    ÊÝ¸±Ç¯Îð¡¦ÉéÃ´³ä¹ç»»Äê¥µ¥Ö
+           COPY    "CPORCSAGECHK.INC".
+      *
       *    £Ä£Â¸¡º÷
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -804,12 +807,6 @@
                                                              (IDX-NAI)
                END-IF
            END-IF
-      *
-      *TEST
-            DISPLAY "K08 WRK-MEISAISU:" WRK-MEISAISU
-                    ",WRK-JIHIMONEY:" WRK-JIHIMONEY
-                    ",IDG:" IDG
-      *TEST
       *
       *    ºÞÅÀ¿ô¤¬¥¼¥í¤Î»þ¡¢¼«Èñ¤òÅÀ¿ô¤Ø
       *    IF      WRK-ZAITEN          =   ZERO
@@ -2000,21 +1997,42 @@
                    END-IF
                    MOVE    WRK-S01-TENSU       TO  LNK-S01-TENSUU
                                                        (IDX-Y IDY)
-      *TEST
-      **** DISPLAY "K08  LNK-S01-SRYCD:"    LNK-S01-SRYCD (IDX-Y IDY)
-      *TEST
       *
                END-IF
            END-PERFORM
-      *TEST
-      **** DISPLAY "K08 LNK-S01-SYUTEN:"   LNK-S01-SYUTEN
-      *TEST
       *
       *    ÌôºÞ°ìÉôÉéÃ´¶â·×»»½èÍý
            IF      SPA-SYORIFLG        =   1
                MOVE    "1"             TO  LNK-S01-SAIKEISAN-KBN
                MOVE    SPA-DENPNUM     TO  LNK-S01-SAIKEISAN-DENPYO
            END-IF
+      *£È£±£´¡¥£±£°°Ê¹ß
+      *    ¹âÎð¼Ô¡ÊºßÂðÁí¹ç¡¦ºßÂðËö´ü¡Ë»»Äê´µ¼Ô¶èÊ¬
+           IF     ( SPA-SRYYMD         <   "20021001")  OR
+                  ((SPA-NETAKIRI-ARI   =   ZERO )  AND
+                   (SPA-NETAKIRI-ARI2  =   ZERO )  AND
+                   (SPA-ZAIMATU-ARI    =   ZERO )  AND
+                   (SPA-ZAIMATU-ARI2   =   ZERO )  )
+               CONTINUE
+           ELSE
+      *        ÊÝ¸±»»ÄêÇ¯Îð¤¬£·£°ºÐ°Ê¾å¤«¡¢Ï·¿ÍÊÝ¸±¤Î»þ
+               INITIALIZE                  ORCSAGECHKAREA
+               MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+               MOVE    SPA-PTID            TO  AGECHK-PTID
+               MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
+               MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+               CALL    "ORCSAGECHK"        USING
+                                           ORCSAGECHKAREA
+               IF     (AGECHK-NENREI       >=   70  )  OR
+                      (SPA-NAI-ROUJIN      =    1   )
+                   MOVE    1               TO
+                                           LNK-S01-KOUREI-ZAITAKU-KBN
+               END-IF
+           END-IF
+      *TEST
+           DISPLAY "K08 LNK-S01-SYUTEN:"   LNK-S01-SYUTEN
+                   ",ZAUTAKU:" LNK-S01-KOUREI-ZAITAKU-KBN
+      *TEST
       *
            CALL    "ORCS01NEW"         USING   MCPAREA
                                                LNK-ORCS01-REC
@@ -2128,6 +2146,12 @@
                    END-IF
                END-PERFORM
            END-IF
+      *
+      *    ÌôºÞÎÁÄþ¸º¤ÏÂÐ¾Ý³°
+           IF      LNK-WKSRY-SRYCD (01 01)     =   "630010002"
+               GO      TO      450511-JIBAI-SYORI-EXT
+           END-IF
+      *
       *    ¼«ÇåÀÕ¼êµ»ÅÀ¹ç·×
            COMPUTE LNK-S01-SYUTEN      =   LNK-S01-SYUTEN
                                        +  (LNK-WKSRY-SYUTEN1 (IDX)
