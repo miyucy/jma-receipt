@@ -528,8 +528,9 @@
                                        TO  SPA-GMN-Q01-SEXLST (IDX5)
       *
            END-PERFORM
+	   .
       *
-       3101-SEX-CMB-SYOKI--EXT.
+       3101-SEX-CMB-SYOKI-EXT.
            EXIT.
       *
       *****************************************************************

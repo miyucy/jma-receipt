@@ -244,6 +244,7 @@
            ELSE
                MOVE    ZERO                TO  ORCSCZAICHK-ZAINUM
            END-IF
+	   .
       *
       *
        100-CHK-SYORI-EXT.
