@@ -253,7 +253,7 @@
     </element>
     <element name="NAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="32"/>
+        <embed object="string" type="X" length="50"/>
       </appinfo>
     </element>
     <element name="HEAD1-G" occurs="1">
@@ -9229,13 +9229,16 @@
     </object>
     <object type="Embed - Text" version="0" id="O280">
       <attribute name="obj_pos">
-        <point val="1.74585,6.07211"/>
+        <point val="1.74585,5.99711"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.74585,5.77476;3.76585,6.17476"/>
+        <rectangle val="1.74585,5.69976;3.76585,6.49976"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAME#</string>
+      </attribute>
+      <attribute name="embed_text_column">
+        <int val="32"/>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -9243,7 +9246,8 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#198;&#252;&#176;&#229;&#161;&#161;&#194;&#192;&#207;&#186;#</string>
+            <string>#&#198;&#252;&#176;&#229;&#161;&#161;&#194;&#192;&#207;&#186;
+&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -9252,7 +9256,7 @@
             <real val="0.4"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.74585,6.07211"/>
+            <point val="1.74585,5.99711"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
