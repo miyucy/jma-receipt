@@ -102,6 +102,7 @@
            03  IDX5                PIC 9(05).
            03  IDX11               PIC 9(05).
            03  IDX12               PIC 9(05).
+           03  IDX15               PIC 9(05).
            03  IDX-LST             PIC 9(05).
       *
       *    カウント領域
@@ -148,6 +149,7 @@
                05  WRK-AGE-M-Z             PIC Z9.
                05  WRK-AGE-M-MEI           PIC X(04).
            03  WRK-BIRTHDAY                PIC X(08).
+           03  WRK-ORCSHKN-HKNCOMBINUM     PIC X(04).
            03  WRK-HKNCOMBI                PIC X(100).
            03  WRK-FTNRATE                 PIC X(05).
            03  WRK-HKNKBN-MEI              PIC X(02).
@@ -296,6 +298,9 @@
        01  LNK-SYUNOU-REC-T.
          02 LNK-SYUNOU-REC     OCCURS 10.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
+      *
+      *    保険組合せ編集サブ
+           COPY    "CPORCSHKNSET.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -1148,6 +1153,7 @@
            MOVE    PTINF-BIRTHDAY  TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
            MOVE    WRK-HENYMDG     TO  SPA-GMN-I51-BIRTHDAY
+           MOVE    WRK-SYMD        TO  SPA-NAI-I51-BIRTHDAY
       *    患者年齢
            MOVE    PTINF-BIRTHDAY  TO  WRK-BIRTHDAY
            PERFORM 4101-AGE-CALC-SEC
@@ -1245,30 +1251,25 @@
            MOVE    WRK-SYMD        TO  SPA-NAI-I51-SANTEIEDYMD
       *
       *    保険組合せ
-           MOVE    ZERO                TO  FLG-HKNCOMBI
+           INITIALIZE                  SPA-KYOTUKEY
+                                       SPA-KYOTU-SET
+                                       ORCSHKNSETAREA
       *
-           MOVE    SPACE               TO  HKNCOMBI-REC
-           INITIALIZE                  HKNCOMBI-REC
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID
-           MOVE    PTNYUINRRK-PTID     TO  COMB-PTID
-           MOVE    PTNYUINRRK-HKNCOMBINUM
-                                       TO  COMB-HKNCOMBINUM
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "HKNCOMBI-KEY"      TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC    NOT =   ZERO )
-               MOVE    1           TO  FLG-HKNCOMBI
-           ELSE
-               MOVE    MCPDATA-REC
-                                   TO  HKNCOMBI-REC
-           END-IF
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                       TO  SPA-SRYYMD
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
+           MOVE    PTNYUINRRK-PTID     TO  SPA-PTID
+           MOVE    SPA-NAI-I51-BIRTHDAY
+                                       TO  SPA-BIRTHDAY
+           MOVE    "2"                 TO  ORCSHKN-KBN
       *
-           MOVE    "HKNCOMBI-KEY"      TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
-           IF    ( FLG-HKNCOMBI        =   ZERO )
+           CALL    "ORCSHKNSET"        USING   SPA-AREA
+                                               ORCSHKNSETAREA
+           IF    ( ORCSHKN-ERRCD       =   ZERO )
       *        保険組み合わせ情報設定処理
-               PERFORM 4101-HKNCOMBI-SET-SEC
+               MOVE    PTNYUINRRK-HKNCOMBINUM
+                                       TO  WRK-ORCSHKN-HKNCOMBINUM
+               PERFORM 490-HKNCOMBI-EDIT-SEC
                MOVE    WRK-HKNCOMBI    TO  SPA-GMN-I51-HKNCOMBI
                MOVE    WRK-FTNRATE     TO  SPA-GMN-I51-FTNRATE
            END-IF
@@ -1407,96 +1408,6 @@
            .
       *
        4101-AGE-CALC-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険組み合わせ情報設定処理
-      *****************************************************************
-       4101-HKNCOMBI-SET-SEC           SECTION.
-      *
-           MOVE    SPACE               TO  WRK-HKNCOMBI
-                                           WRK-FTNRATE
-      *
-           STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                   " "                     DELIMITED  BY  SIZE
-                   COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                   " "                     DELIMITED  BY  SIZE
-                   COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
-                   " "                     DELIMITED  BY  SIZE
-                   COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                   " "                     DELIMITED  BY  SIZE
-                   COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
-                         INTO              WRK-HKNCOMBI
-           END-STRING
-      *
-      *    主保険がない時
-           IF      COMB-SYU-TANSEIDONAME   =   SPACE
-               MOVE    SPACE               TO  WRK-HKNCOMBI
-               STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                       " "                     DELIMITED  BY  SIZE
-                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
-                       " "                     DELIMITED  BY  SIZE
-                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                       " "                     DELIMITED  BY  SIZE
-                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
-                         INTO              WRK-HKNCOMBI
-               END-STRING
-           END-IF
-      *
-      *    労災の時、コメントの追加
-           IF    ( COMB-HKNNUM         =   "971" OR "973")
-               INITIALIZE                      PTRSIINF-REC
-               MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
-               MOVE    COMB-PTID           TO  PTRSI-PTID
-               MOVE    COMB-HKNID          TO  PTRSI-HKNID
-               MOVE    PTRSIINF-REC        TO  MCPDATA-REC
-               MOVE    "PTRSIINF-KEY"      TO  WRK-DBPATH
-               PERFORM 900-TBL-SELECT-SEC
-               IF    ( FLG-DBRC            =   ZERO )
-      *
-                   MOVE    MCPDATA-REC     TO  PTRSIINF-REC
-      *
-                   MOVE    SPACE               TO  WRK-HKNCOMBI
-                   MOVE    SPACE               TO  WRK-HKNKBN-MEI
-                   EVALUATE    PTRSI-HKNKBN
-                   WHEN    "1"
-                        MOVE    "短"        TO  WRK-HKNKBN-MEI
-                   WHEN    "2"
-                        MOVE    "傷"        TO  WRK-HKNKBN-MEI
-                   WHEN    "3"
-                        MOVE    "ア"        TO  WRK-HKNKBN-MEI
-                   END-EVALUATE
-                   IF    ( PTRSI-COMMENT   =   SPACE )
-                       MOVE    SPACE       TO  WRK-HKNCOMBI
-                       STRING COMB-SYU-TANSEIDONAME
-                                               DELIMITED   BY  SPACE
-                              " "              DELIMITED   BY  SIZE
-                              WRK-HKNKBN-MEI   DELIMITED   BY  SPACE
-                              INTO              WRK-HKNCOMBI
-                       END-STRING
-      *
-                   ELSE
-                       STRING  COMB-SYU-TANSEIDONAME
-                                               DELIMITED   BY  SPACE
-                           " "                 DELIMITED   BY  SIZE
-                           WRK-HKNKBN-MEI      DELIMITED   BY  SPACE
-                           "（"                DELIMITED   BY  SIZE
-                           PTRSI-COMMENT       DELIMITED   BY  SPACE
-                           "）"                DELIMITED   BY  SIZE
-                           INTO                WRK-HKNCOMBI
-                       END-STRING
-                   END-IF
-               END-IF
-      *        患者保険情報クローズ
-               MOVE    "PTRSIINF-KEY"      TO  WRK-DBPATH
-               PERFORM 900-TBL-CLOSE-SEC
-           END-IF
-      *
-           MOVE    COMB-NYU-KFTNRATE       TO  WRK-ZZ9
-           MOVE    WRK-ZZ9                 TO  WRK-FTNRATE (1 : 3)
-           MOVE    "%"                     TO  WRK-FTNRATE (4 : )
-           .
-      *
-       4101-HKNCOMBI-SET-EXT.
            EXIT.
       *****************************************************************
       *    選択番号チェック処理
@@ -1834,6 +1745,9 @@
       *****************************************************************
        490-SYUNOU-TAIHI-SEC            SECTION.
       *
+      *    保険組合せ取得
+           PERFORM 490-HKNCOMBI-GET-SEC
+      *
            MOVE    LOW-VALUE       TO  WRK-SKYSTYM
            MOVE    SPACE           TO  SUMSYUNOU-REC
                                        TTLSYUNOU-REC
@@ -1888,33 +1802,11 @@
                                                  (SUMSYUNOU-CNT)
       *
       *            保険組み合わせ名称取得
-                   INITIALIZE              HKNCOMBI-REC
-                   MOVE    ZERO            TO   FLG-HKNCOMBI
-      *
-                   MOVE    SPA-HOSPID      TO   COMB-HOSPID
-                   MOVE    SPA-NAI-I51-PTID
-                                           TO   COMB-PTID
                    MOVE    LNK-SYU-HKNCOMBINUM (IDX11)
-                                           TO   COMB-HKNCOMBINUM
-                   MOVE    HKNCOMBI-REC    TO   MCPDATA-REC
-                   MOVE    "HKNCOMBI-KEY"  TO   WRK-DBPATH
-                   PERFORM 900-TBL-SELECT-SEC 
-                   IF    ( FLG-DBRC    =   ZERO )
-                       MOVE    MCPDATA-REC
-                                           TO   HKNCOMBI-REC
-                   ELSE
-                       MOVE    1           TO   FLG-HKNCOMBI
-                   END-IF
-      *
-                   MOVE    "HKNCOMBI-KEY"  TO   WRK-DBPATH
-                   PERFORM 900-TBL-CLOSE-SEC
-      *
-                   IF    ( FLG-HKNCOMBI    =    ZERO )
-                       PERFORM 4101-HKNCOMBI-SET-SEC
-                       MOVE    WRK-HKNCOMBI
-                                           TO  SPA-I5-SYUNOU-HKNCOMBI
+                                           TO   WRK-ORCSHKN-HKNCOMBINUM
+                   PERFORM 490-HKNCOMBI-EDIT-SEC
+                   MOVE    WRK-HKNCOMBI    TO  SPA-I5-SYUNOU-HKNCOMBI
                                                         (SUMSYUNOU-CNT)
-                   END-IF
       *
                    COMPUTE SPA-I5-SYUNOU-HKNCOMBI-SU (WRK-SYU-SUM-IDX)
                        =   SPA-I5-SYUNOU-HKNCOMBI-SU (WRK-SYU-SUM-IDX)
@@ -2225,6 +2117,57 @@
       *
            .
        490-SYUNOU-TAIHI-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ取得処理
+      *****************************************************************
+       490-HKNCOMBI-GET-SEC            SECTION.
+      *
+           INITIALIZE                  SPA-KYOTUKEY
+                                       SPA-KYOTU-SET
+                                       ORCSHKNSETAREA
+      *
+           MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
+           MOVE    SPA-NAI-I51-PTID    TO  SPA-PTID
+           MOVE    SPA-NAI-I51-BIRTHDAY
+                                       TO  SPA-BIRTHDAY
+           MOVE    "2"                 TO  ORCSHKN-KBN
+      *
+           CALL    "ORCSHKNSET"        USING   SPA-AREA
+                                               ORCSHKNSETAREA
+           IF    ( ORCSHKN-ERRCD   NOT =   ZERO )
+               INITIALIZE              ORCSHKNSETAREA
+               GO  TO  490-HKNCOMBI-GET-EXT
+           END-IF
+      *
+           .
+       490-HKNCOMBI-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ編集処理
+      *****************************************************************
+       490-HKNCOMBI-EDIT-SEC           SECTION.
+      *
+           MOVE    SPACE                   TO  WRK-HKNCOMBI
+                                               WRK-FTNRATE
+           PERFORM VARYING IDX15   FROM 1  BY  1
+                   UNTIL ( IDX15   >   ORCSHKN-HKN-MAX )
+                     OR  ( IDX15   >   100 )
+      *
+               IF    ( ORCSHKN-GMN-HKNCOMBINUM (IDX15)
+                                   =   WRK-ORCSHKN-HKNCOMBINUM )
+                   MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX15)
+                                           TO  WRK-HKNCOMBI
+                   MOVE    ORCSHKN-GMN-FTNRATEMEI  (IDX15)
+                                           TO  WRK-FTNRATE
+                   MOVE    ORCSHKN-HKN-MAX TO  IDX15
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       490-HKNCOMBI-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    未収データ取得処理

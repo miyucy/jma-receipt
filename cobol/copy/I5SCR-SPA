@@ -138,6 +138,8 @@
                        11  SPA-NAI-I51-PTNUM-ERR     PIC X(04).
       *                患者ＩＤ
                        11  SPA-NAI-I51-PTID          PIC 9(10).
+      *                患者誕生日
+                       11  SPA-NAI-I51-BIRTHDAY      PIC X(08).
       *                入力データ入院履歴番号
                        11  SPA-NAI-I51-PTRRKNUM      PIC 9(03).
       *                入力データ入院履歴枝番号
