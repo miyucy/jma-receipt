@@ -168,6 +168,7 @@
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SRYYM               PIC X(06).
                    07  SPA-NAI-HEAD.
+                       09  SPA-NAI-LOCK            PIC 9(01).
                        09  SPA-NAI-BIRTHDAY        PIC X(08).
                        09  SPA-NAI-HKNCOMBI-G.
                            11  SPA-NAI-HKNCOMBI-MAX        PIC 9(05).
@@ -863,6 +864,9 @@
       *        患者情報を編集
                MOVE    SPA-PTNUM       TO  WRK-PTNUM
                PERFORM 320-PTINF-EDIT-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO  TO  320-SENIJI-SYOGMN-EDIT-EXT
+               END-IF
                PERFORM 320-HKNCOMBI-EDIT-SEC
            END-IF
       *
@@ -921,6 +925,9 @@
            MOVE    SPTNUM-PTNUM         TO  SPA-GMN-PTNUM
       *
            PERFORM 320-PTINF-SET-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  320-PTINF-EDIT-EXT
+           END-IF
       *
            .
        320-PTINF-EDIT-EXT.
@@ -942,16 +949,11 @@
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC    NOT     =   ZERO )
                MOVE    1               TO  FLG-PTINF
+               MOVE    "0031"          TO  SPA-ERRCD
                GO  TO  320-PTINF-SET-EXT
            END-IF
       *
            MOVE    MCPDATA-REC         TO  PTINF-REC
-      *
-      *    排他制御処理
-           PERFORM 990-LOCK-IN-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO      4102-PTNUM-CHK-EXT
-           END-IF
       *
            MOVE    PTINF-NAME          TO  SPA-GMN-NAME
            MOVE    PTINF-KANANAME      TO  SPA-GMN-KANANAME
@@ -965,6 +967,14 @@
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            PERFORM 31011-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAY
+      *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               MOVE    1               TO  SPA-NAI-LOCK
+               GO  TO  320-PTINF-SET-EXT
+           END-IF
+      *
       *    前回患者
            MOVE    SPA-GMN-PTID        TO  SPA-LAST-PTID
            MOVE    SPA-GMN-PTNUM       TO  SPA-LAST-PTNUM
@@ -1025,6 +1035,7 @@
            MOVE    SPA-S01-SRYYMW      TO  SPA-GMN-SRYYM
            MOVE    SPA-S01-SRYYM       TO  SPA-NAI-SRYYM
            MOVE    SPA-S01-NAME        TO  SPA-GMN-NAME
+           MOVE    SPA-S01-LOCK        TO  SPA-NAI-LOCK
            MOVE    SPA-S01-BIRTHDAYW   TO  SPA-GMN-BIRTHDAY
            MOVE    SPA-S01-BIRTHDAY    TO  SPA-NAI-BIRTHDAY
            MOVE    SPA-S01-HSRYKA      TO  SPA-GMN-SRYKA
@@ -1061,6 +1072,11 @@
       *    収納マスタ編集処理
       **************************************************************
        300-SYUNOU-HENSYU-SEC                  SECTION.
+      *
+           IF    ( SPA-NAI-LOCK        NOT =  ZERO )
+               GO  TO  300-SYUNOU-HENSYU-EXT
+           END-IF
+      *
       *
            MOVE    ZERO                TO  SPA-GMN-MAX
            INITIALIZE                      SPA-GMN-TBL
@@ -1678,9 +1694,7 @@
            MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
       *
            PERFORM 320-PTINF-SET-SEC
-           IF    ( FLG-DBRC        NOT =   ZERO )
-               MOVE    SPACE           TO  SPA-GMN-NAME
-               MOVE    "0031"          TO  SPA-ERRCD
+           IF    ( SPA-ERRCD       NOT =   SPACE )
                GO      TO      4102-PTNUM-CHK-EXT
            END-IF
       *
@@ -4341,23 +4355,27 @@
            MOVE    SPA-GMN-NAME        TO  SPA-S01-NAME
            MOVE    SPA-GMN-SEX         TO  SPA-S01-SEX
            MOVE    SPA-GMN-BIRTHDAY    TO  SPA-S01-BIRTHDAYW
+           MOVE    SPA-NAI-LOCK        TO  SPA-S01-LOCK
            MOVE    SPA-NAI-BIRTHDAY    TO  SPA-S01-BIRTHDAY
-           MOVE    SPA-NAI-TSRYKA    (SPA-GMN-SELBAN)
+           IF    ( SPA-GMN-SELBAN      >   ZERO )
+               MOVE    SPA-NAI-TSRYKA     (SPA-GMN-SELBAN)
                                        TO  SPA-S01-SRYKA
-           MOVE    SPA-NAI-TSRYKAMEI (SPA-GMN-SELBAN)
+               MOVE    SPA-NAI-TSRYKAMEI  (SPA-GMN-SELBAN)
                                        TO  SPA-S01-SRYKAMEI
+               MOVE    SPA-GMN-THKNCOMBI  (SPA-GMN-SELBAN)
+                                       TO  SPA-S01-HKNCOMBIMEI
+               MOVE    SPA-GMN-TFTNRATE   (SPA-GMN-SELBAN)
+                                       TO  SPA-S01-FTNRATEMEI
+               MOVE    SPA-GMN-TDENPNUM   (SPA-GMN-SELBAN)
+                                       TO  SPA-S01-DENPNUM
+               MOVE    SPA-NAI-THAKYMD    (SPA-GMN-SELBAN)
+                                       TO  SPA-S01-DENPPRTYMD
+               MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
+                                       TO  SPA-S01-NYUGAIKBN
+           END-IF
+      *
            MOVE    SPA-GMN-SRYYM       TO  SPA-S01-SRYYMW
            MOVE    SPA-NAI-SRYYM       TO  SPA-S01-SRYYM
-           MOVE    SPA-GMN-THKNCOMBI(SPA-GMN-SELBAN)
-                                       TO  SPA-S01-HKNCOMBIMEI
-           MOVE    SPA-GMN-TFTNRATE (SPA-GMN-SELBAN)
-                                       TO  SPA-S01-FTNRATEMEI
-           MOVE    SPA-GMN-TDENPNUM (SPA-GMN-SELBAN)
-                                       TO  SPA-S01-DENPNUM
-           MOVE    SPA-NAI-THAKYMD   (SPA-GMN-SELBAN)
-                                       TO  SPA-S01-DENPPRTYMD
-           MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
-                                       TO  SPA-S01-NYUGAIKBN
            MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-S01-HNYUGAIKBN
            MOVE    SPA-GMN-SRYKA       TO  SPA-S01-HSRYKA
       *
@@ -4660,17 +4678,7 @@
       *
            INITIALIZE                  SPA-S01KYOUTU
       *
-           MOVE    SPA-GMN-PTNUM       TO  SPA-S01-PTNUM
-           MOVE    SPA-GMN-PTID        TO  SPA-S01-PTID
-           MOVE    SPA-GMN-KANANAME    TO  SPA-S01-KANANAME
-           MOVE    SPA-GMN-NAME        TO  SPA-S01-NAME
-           MOVE    SPA-GMN-SEX         TO  SPA-S01-SEX
-           MOVE    SPA-GMN-BIRTHDAY    TO  SPA-S01-BIRTHDAYW
-           MOVE    SPA-NAI-BIRTHDAY    TO  SPA-S01-BIRTHDAY
-           MOVE    SPA-GMN-SRYYM       TO  SPA-S01-SRYYMW
-           MOVE    SPA-NAI-SRYYM       TO  SPA-S01-SRYYM
-           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-S01-HNYUGAIKBN
-           MOVE    SPA-GMN-SRYKA       TO  SPA-S01-HSRYKA
+           PERFORM 4901-SPAKYOTUKEY-SET-SEC
       *
            MOVE    SPA-S01KYOUTU       TO  SPA-WORK
       *
