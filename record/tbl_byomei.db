@@ -102,3 +102,18 @@ path	all	{
 		;
 	};
 };
+
+path	key7	{ 	
+	DBSELECT	{
+		DECLARE tbl_byomei_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_byomei
+			WHERE  (BYOMEI       LIKE :BYOMEI
+			OR      BYOMEIKANA   LIKE :BYOMEI)
+			AND     BYOMEICD     >=   :BYOMEICD
+			AND     BYOMEICD     <=   :IKOSAKICD
+			ORDER BY             BYOMEIKANA
+		;
+	};
+};
+
