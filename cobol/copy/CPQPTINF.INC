@@ -44,6 +44,8 @@
            03  QUERY-PTINF-HOME-ADRS           PIC  X(200).
       *自宅−番地方書
            03  QUERY-PTINF-HOME-BANTI          PIC  X(200).
+      *自宅−電話番号
+           03  QUERY-PTINF-HOME-TEL1           PIC  X(15).
       *患者番号
            03  QUERY-PTINF-PTNUM               PIC  X(20).
       *

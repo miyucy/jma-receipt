@@ -8,6 +8,7 @@ query_ptinf {
 	HOME_POST			varchar(7);
 	HOME_ADRS			varchar(200);
 	HOME_BANTI 			varchar(200);
+	HOME_TEL1 			varchar(15);
 	PTNUM		 				char(20);
   SQL		          dbcode(15000),virtual;
 };
@@ -27,6 +28,7 @@ path	key		{
 										a.home_post,
 										a.home_adrs,
 										a.home_banti,
+										a.home_tel1,
 										h.ptnum
 					 FROM tbl_ptinf a,tbl_ptnum h :SQL
 		;
