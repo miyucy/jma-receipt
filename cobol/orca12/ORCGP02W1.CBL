@@ -201,6 +201,9 @@
       *
            03  IDT                 PIC 9(04).
       *
+           03  IDX-R               PIC 9(04).
+           03  IDX-R2              PIC 9(04).
+      *
            03  IDX-K               PIC 9(04).
            03  IDX-K2              PIC 9(04).
            03  IDX-KOH             PIC 9(04).
@@ -883,7 +886,7 @@
       *
       *
            .
-       31O-SPASET-EXT.
+       310-SPASET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1194,7 +1197,6 @@
                MOVE    SPACE               TO  SPA-HKNJA-IDOYMD
                MOVE    SPACE               TO  SPA-HKNJA-KEIFLG
            END-IF
-      *
       *
       *    保険情報
            MOVE    SPA-GMN-HKNNUM      TO  WRK-HKNNUM
@@ -5236,9 +5238,13 @@
                                            SPACE
                CONTINUE
            ELSE
-               MOVE    "0022"        TO  SPA-ERRCD
-               MOVE    8             TO  SPA-GMN-CUR
-               GO      TO            481-ROUSAI-EXT
+      *        最初の労災・自賠責とする
+               PERFORM 4811-RSIHKN-SET-SEC
+      *?       MOVE    "0022"        TO  SPA-ERRCD
+      *?       MOVE    8             TO  SPA-GMN-CUR
+               IF      SPA-ERRCD     NOT =   SPACE
+                    GO      TO            481-ROUSAI-EXT
+               END-IF
            END-IF
       *
       *    保険　遷移パラメータセット
@@ -5273,9 +5279,61 @@
       *
            MOVE    1                     TO  SPA-FLG-END
       *
-      *
            .
        481-ROUSAI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労災保険初期画面セット処理
+      *****************************************************************
+       4811-RSIHKN-SET-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           MOVE    ZERO                TO  IDX-R2
+           PERFORM VARYING IDX-R       FROM    1   BY  1
+                   UNTIL   IDX-R       >   SPA-PTHKN-MAX
+              IF      (SPA-PTHKN-HKNNUM (IDX-R)    =   "971"  OR
+                                                       "973" )  AND
+                      (SPA-PTHKN-SAKJOKBN(IDX-R)   =   SPACE )
+                   IF      SPA-PTHKN-TEKEDYMD(IDX-R)
+                                                   =    "99999999"
+                       IF      FLG-CHK             =   ZERO
+                           MOVE    IDX-R           TO  IDX-R2
+                           MOVE    1               TO  FLG-CHK
+                       ELSE
+                           MOVE    ZERO            TO  IDX-R2
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *    有効な労災・自賠責が１件の時、対象とする
+           IF     (FLG-CHK             =   1  )  AND
+                  (IDX-R2              >   ZERO)
+               MOVE    IDX-R2          TO  SPA-NAI-HKNSTR
+               MOVE    IDX-R2          TO  IDX
+               PERFORM 3101-HOKEN-HEN-SEC
+      *        本人家族
+               MOVE    SPACE           TO  SPA-GMN-HONKZKKBN-G
+      *        補助区分
+               MOVE    SPACE           TO  SPA-GMN-HOJOKBN-G
+               MOVE    SPACE           TO  SPA-GMN-HOJOKBN-LIST
+               MOVE    ZERO            TO  SPA-GMN-HOJO-MAX
+      *
+               MOVE    SPACE           TO  SPA-GMN-CONTKBN-G
+               MOVE    SPACE           TO  SPA-GMN-CONTKBN-LIST
+               MOVE    ZERO            TO  SPA-GMN-CONT-MAX
+           ELSE
+      *        有効な労災・自賠責がない時、新規追加
+               IF      FLG-CHK             =   ZERO
+                   INITIALIZE                  SPA-GMN-HKN-AREA
+                   MOVE    ZERO                TO  SPA-NAI-HKNSTR
+               ELSE
+                   MOVE    "0022"        TO  SPA-ERRCD
+                   MOVE    8             TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+           .
+       4811-RSIHKN-SET-EXT.
            EXIT.
       *
       *****************************************************************
