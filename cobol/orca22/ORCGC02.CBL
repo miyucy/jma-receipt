@@ -285,9 +285,7 @@
                                    PIC X(07).
                05  WRK-TANDOKUKBN-BYOMEI
                                    PIC X(80).                    
-               05  WRK-TANDOKUKBN-G.
-                   07  WRK-TANDOKUKBN 
-                                   PIC 9(02)    OCCURS  6.
+               05  WRK-TANDOKUKBN  PIC 9(01).
       *     
            03  WRK-BYOMEICD-KENSAKU-AREA.
                05  WRK-KEN-BYOMEI  PIC X(80).
@@ -2009,6 +2007,12 @@
                                        SPA-NAI-C02-BYOMEICD-O (IDZ 1)
                                        BYO-BYOMEICD
                PERFORM 410111-BYOMEI-HENSYU-SEC
+               IF      SPA-NAI-C02-BYOMEICD-O (IDZ 1)
+                                   =   WRK-CONS-BYOMEICD
+                   MOVE    PTBYO-BYOMEI
+                                   TO  SPA-NAI-C02-BYOMEI-O (IDZ 1)
+                                       SPA-NAI-C02-BYOMEI   (IDZ)
+               END-IF
            END-PERFORM
       *
            PERFORM 4101111-BYOMEI-SELECT-HENSYU-SEC              
@@ -2171,7 +2175,7 @@
                            MOVE    SPACE TO  SPA-NAI-C02-BYOMEI (IDZ)
                        ELSE                           
                            MOVE    BYO-BYOMEI
-                                         TO  SPA-NAI-C02-BYOMEI (IDZ)
+                                         TO  SPA-NAI-C02-BYOMEI  (IDZ)
                        END-IF    
                        MOVE    BYO-UTAGAIFLG
                                          TO  SPA-NAI-C02-UTAGAIFLG(IDZ)
@@ -2179,13 +2183,16 @@
                            MOVE    "1"   TO  SPA-NAI-C02-UTAGAIFLG(IDZ)
                        END-IF    
                        MOVE    BYO-TOKSKNCD
-                                         TO  SPA-NAI-C02-TOKSKNCD (IDZ)
+                                         TO  SPA-NAI-C02-TOKSKNCD  (IDZ)
                        MOVE    BYO-BYOMEICD
                                          TO
                                          SPA-NAI-C02-BYOMEICD-O (IDZ 1)
                        MOVE    SPA-NAI-C02-BYOMEI (IDZ)
                                          TO
                                          SPA-NAI-C02-BYOMEI-O   (IDZ 1)
+                       MOVE    BYO-TANDOKUKBN
+                                         TO
+                                         SPA-NAI-C02-TANDOKUKBN-O(IDZ 1)
                    END-IF
                END-IF
       *
@@ -2378,7 +2385,10 @@
                            IF      FLG-BYOMEI        =   ZERO
                                MOVE    BYO-BYOMEI
                                            TO
-                                       SPA-NAI-C02-BYOMEI-O (IDZ IDXX)
+                                   SPA-NAI-C02-BYOMEI-O    (IDZ IDXX)
+                               MOVE    BYO-TANDOKUKBN
+                                           TO
+                                   SPA-NAI-C02-TANDOKUKBN-O(IDZ IDXX)
                            END-IF 
                        END-IF    
                    END-PERFORM
@@ -2452,11 +2462,11 @@
       *
       *    新規のときエラーがなかったら登録処理へ     
            IF      SPA-ERRCD           =   SPACE
-               IF      SPA-GMN-C02-BANGO   =   ZERO
-                   MOVE    1                   TO  FLG-UPDKBN
-               ELSE
+      *********IF      SPA-GMN-C02-BANGO   =   ZERO
+      *********    MOVE    1                   TO  FLG-UPDKBN
+      *********ELSE
                    MOVE    17                  TO  SPA-GMN-C02-CUR
-               END-IF 
+      *********END-IF 
            END-IF     
            .
        41012-SRYYMD-CHK-EXT.
@@ -3707,8 +3717,11 @@
                                        TO  SPA-NAI-C02-UTAGAIFLG(IDZ)
                        MOVE    LNK-BYO-TTOKSKNCD (IDX)
                                        TO  SPA-NAI-C02-TOKSKNCD (IDZ)
-                       IF      LNK-BYO-TTANDOKUKBN (IDX)
-                                       NOT =   ZERO
+                       MOVE    LNK-BYO-TTANDOKUKBN (IDX)
+                                       TO
+                                       SPA-NAI-C02-TANDOKUKBN-O (IDZ 1)
+                       IF      SPA-NAI-C02-TANDOKUKBN-O (IDZ 1)
+                                   NOT =   ZERO
                            MOVE    LNK-BYO-TBYOMEI (IDX)
                                                TO  WRK-TANDOKUKBN-BYOMEI
                        END-IF  
@@ -4290,7 +4303,8 @@
       *
            INITIALIZE                  SPA-GMN-C02-KOUMOKU
                                        SPA-NAI-C02-KOUMOKU
-                                        SPA-NAI-C02-SELNO 
+                                       SPA-NAI-C02-SELNO
+           MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
       *
           .
        440-SAKUJYO-EXT.
@@ -4414,15 +4428,51 @@
                    END-IF
                END-PERFORM
            END-IF           
-      *  
+      *
+      *    単独使用禁止の病名があるとき
+           IF      SPA-NAI-C02-BYOMEIHENFLG    =   SPACE
+               INITIALIZE                  WRK-TANDOKU-AREA
+               PERFORM VARYING IDZ FROM    1   BY  1
+                       UNTIL   IDZ >       21
+                   IF    ( SPA-NAI-C02-BYOMEITOP (IDZ)
+                                               =   "1" )
+                   AND   ( IDZ                 >   1   )
+                       IF      WRK-TANDOKUKBN      =   ZERO
+                           MOVE    "0076"              TO  SPA-ERRCD  
+                           GO  TO  450-TOUROKU-EXT
+                       END-IF
+                       INITIALIZE                  WRK-TANDOKU-AREA
+                   END-IF
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL   IDX1    >       21
+                           OR      SPA-NAI-C02-BYOMEICD-O  (IDZ IDX1)
+                                           =   SPACE
+                       IF      SPA-NAI-C02-TANDOKUKBN-O  (IDZ IDX1) 
+                                               =   ZERO
+                           MOVE    1       TO  WRK-TANDOKUKBN
+                       ELSE
+                           MOVE    SPA-NAI-C02-BYOMEICD-O (IDZ IDX1)
+                                           TO  WRK-TANDOKUKBN-BYOMEICD  
+                           MOVE    SPA-NAI-C02-BYOMEI-O   (IDZ IDX1)
+                                           TO  WRK-TANDOKUKBN-BYOMEI  
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
+      *
+               IF      WRK-TANDOKUKBN      =   ZERO
+                   MOVE    "0076"              TO  SPA-ERRCD  
+                   GO  TO  450-TOUROKU-EXT
+               END-IF
+           END-IF    
+      *???
+           DISPLAY "450 MAX=" SPA-NAI-C02-BYOMEICD-MAX "#"
+      *???
+      *
+      *    病名編集
            IF      SPA-NAI-C02-SRYYMD   =   SPACE
                MOVE    SPA-NAI-C02-SYSYMD   TO  SPA-NAI-C02-SRYYMD
            END-IF
       *
-      *???
-           DISPLAY "450 MAX=" SPA-NAI-C02-BYOMEICD-MAX "#"
-      *???
-      *    
            MOVE    SPACE           TO  WRK-PTBYOMEI-AREA
            INITIALIZE                  WRK-PTBYOMEI-AREA
            MOVE    ZERO            TO  IDXX
@@ -4485,45 +4535,6 @@
       *
       *    登録処理
            PERFORM 4502-TOUROKU-SYORI-SEC
-      *???         
-           GO  TO  450-TOUROKU-EXT
-      *
-      *    単独使用禁止の病名があるとき
-           IF      SPA-NAI-C02-BYOMEIHENFLG    =   SPACE
-               MOVE    ZERO                TO  IDX
-               INITIALIZE                  WRK-TANDOKUKBN-BYOMEICD
-                                           WRK-TANDOKUKBN-BYOMEI
-               PERFORM VARYING IDZ FROM    1   BY  1
-                       UNTIL   IDZ >       6
-                 IF      SPA-NAI-C02-BYOMEICD (IDZ)  
-                                   NOT =   SPACE
-                   IF      SPA-NAI-C02-BYOMEITOP (IDZ) =   "1"
-                   AND     IDZ                         >   1
-                       IF      IDX                 =   ZERO
-                       AND     WRK-TANDOKUKBN-BYOMEICD
-                                               NOT =   SPACE
-                           MOVE    "0076"              TO  SPA-ERRCD  
-                           GO  TO  450-TOUROKU-EXT
-                       END-IF
-                       MOVE    ZERO            TO  IDX
-                       INITIALIZE              WRK-TANDOKUKBN-BYOMEICD
-                                               WRK-TANDOKUKBN-BYOMEI
-                   END-IF
-                   IF      WRK-TANDOKUKBN (IDZ)    =   ZERO   
-                       MOVE    1                   TO  IDX
-                   ELSE
-                       MOVE    SPA-NAI-C02-BYOMEICD (IDZ)
-                                           TO  WRK-TANDOKUKBN-BYOMEICD  
-                       MOVE    SPA-NAI-C02-BYOMEI   (IDZ)
-                                           TO  WRK-TANDOKUKBN-BYOMEI  
-                   END-IF
-                 END-IF     
-               END-PERFORM
-               IF      IDX                 =   ZERO
-                   MOVE    "0076"              TO  SPA-ERRCD  
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
-           END-IF    
            .
        450-TOUROKU-EXT.
            EXIT.
@@ -4567,11 +4578,6 @@
                            MOVE    SPA-NAI-C02-BYOMEICD-O (IDX IDZ)
                                         TO  WRK-PTBYO-BYOMEICD 
                                                         (IDXX IDX1)
-      *???
-               DISPLAY "CD=" WRK-PTBYO-BYOMEICDSU (IDXX) "#"
-                    IDX "#" IDY "#" SPA-NAI-C02-BYOMEICD-O (IDX IDZ) "#"
-                    IDXX "#" IDX1 "#" WRK-PTBYO-BYOMEICD  (IDXX IDX1)
-      *??? 
                        END-IF
                    END-IF
       *

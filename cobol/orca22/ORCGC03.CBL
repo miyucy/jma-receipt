@@ -613,6 +613,7 @@
       *
            IF      SPA-CIDCD3          =   "0101"
                EVALUATE    SPA-CID3-FLG
+      *            分類名の削除
                    WHEN    "OK "
                        INITIALIZE                  USBYO-KEY
                        MOVE    SPA-HOSPID          TO  USBYO-HOSPID
@@ -630,6 +631,7 @@
                            DISPLAY "USERBYOMEI-KEY =>" USBYO-KEY 
                            GO  TO  350-CID3-SET-EXT
                        END-IF
+      *            分類名と分類の属する病名全ての削除
                    WHEN    "ALL"
                        INITIALIZE                  USBYO-KEY
                        MOVE    SPA-HOSPID          TO  USBYO-HOSPID
