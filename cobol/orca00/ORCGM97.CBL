@@ -43,11 +43,6 @@
       *    画面活性非活性
            COPY    "ENUM-VALUE".
       *
-      *    マスタ更新シェル領域 
-           COPY    "CPCOMMONSHELLMST.INC".
-      *
-           COPY    "CPSHELLTBL.INC".
-      *
            COPY    "ORCA-DBPATH".
       *
       *    スパ領域
@@ -135,6 +130,16 @@
        01  WRK-JOBKANRI-AREA.
            03  WRK-JOBKANRI-MODE   PIC X(03). 
            03  WRK-JOBKANRI-RETURN PIC S9(03).
+      *
+           COPY    "CPSHELLTBL.INC".
+      *
+           COPY    "CPMKPASS.INC".
+      *
+       01  SHELL-AREA.
+           03  SHELL-NAME1         PIC X(41)  VALUE
+               "scripts/allways/program_upgrade_online.sh".
+           03  SHELL-NAME2         PIC X(42)  VALUE
+               "scripts/allways/program_upgrade_offline.sh".
       *
       *****************************************************************
       *    連絡　領域
@@ -399,41 +404,37 @@
       *****************************************************************
        400-JYOUHOU-SEC              SECTION.
       *
+      *    プログラム更新処理
+           MOVE    SPACE                TO  SHELLTBL
+           INITIALIZE                   ORCSMKPASSAREA
            IF      SPA-GMN-ONKBN        =   "T"
-               MOVE    "program_upgrade_online.sh"
-                                        TO  SHELL-SHELL
-               MOVE    "1"              TO  SHELL-ARG1
+               MOVE    SHELL-NAME1      TO  MKPASS-IN-01
+               MOVE    "1"              TO  SHELLTBL-ARG1
            END-IF
       *
            IF      SPA-GMN-OFFKBN       =   "T"
-               MOVE    "program_upgrade_offline.sh"
-                                        TO  SHELL-SHELL
+               MOVE    SHELL-NAME2      TO  MKPASS-IN-01
                EVALUATE    SPA-GMN-CD
                    WHEN    "1"
-                       MOVE    "1"              TO  SHELL-ARG1
-                       MOVE    "1"              TO  SHELL-ARG2
+                       MOVE    "1"      TO  SHELLTBL-ARG1
+                       MOVE    "1"      TO  SHELLTBL-ARG2
                    WHEN    "2"
-                       MOVE    "1"              TO  SHELL-ARG1
-                       MOVE    "2"              TO  SHELL-ARG2
+                       MOVE    "1"      TO  SHELLTBL-ARG1
+                       MOVE    "2"      TO  SHELLTBL-ARG2
                    WHEN    OTHER
                        GO  TO  400-JYOUHOU-SEC-EXT
                END-EVALUATE
            END-IF
       *
-      *    マスタ更新処理
-           MOVE    SPACE               TO  SHELLTBL.
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME.
-           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1.
-           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2.
-           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3.
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4.
-           MOVE    SHELLTBL            TO  MCPDATA-REC.
+           CALL    "ORCSMKPASS"         USING  ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01         TO  SHELLTBL-NAME
+           MOVE    SHELLTBL             TO  MCPDATA-REC
       *
-           MOVE    "SHELL"             TO  MCP-FUNC.
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH.
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+           MOVE    "SHELL"              TO  MCP-FUNC
+           MOVE    PATH-SHELL-SHELL     TO  MCP-PATH
+           CALL    "MCPSUB"             USING
+                                        MCPAREA
+                                        MCPDATA-REC
       *
            PERFORM 400-JYOKYO-SET-SEC
            .
@@ -566,56 +567,52 @@
                MOVE    "DEL"               TO  WRK-JOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    1                   TO  JOB-JOBID
-               MOVE    "MSTMNT"            TO  JOB-SHELLID
+               MOVE    "PRGMNT"            TO  JOB-SHELLID
                CALL    "ORCSJOB"           USING
                                            WRK-JOBKANRI-AREA
                                            JOBKANRI-REC
            END-IF.
       *
       *    ジョブ管理作成
-           MOVE    "JBS"               TO  WRK-JOBKANRI-MODE.
-           INITIALIZE                  JOBKANRI-REC.
-           MOVE    1                   TO  JOB-JOBID.
-           MOVE    "MSTMNT"            TO  JOB-SHELLID.
+           MOVE    "JBS"               TO  WRK-JOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    1                   TO  JOB-JOBID
+           MOVE    "PRGMNT"            TO  JOB-SHELLID
            CALL    "ORCSJOB"           USING
                                        WRK-JOBKANRI-AREA
-                                       JOBKANRI-REC.
+                                       JOBKANRI-REC
       *
+      *    プログラム更新処理
+           MOVE    SPACE                TO  SHELLTBL
+           INITIALIZE                   ORCSMKPASSAREA
            IF      SPA-GMN-ONKBN        =   "T"
-               MOVE    "program_upgrade_online.sh"
-                                        TO  SHELL-SHELL
-               MOVE    "2"              TO  SHELL-ARG1
+               MOVE    SHELL-NAME1      TO  MKPASS-IN-01
+               MOVE    "2"              TO  SHELLTBL-ARG1
            END-IF
       *
            IF      SPA-GMN-OFFKBN       =   "T"
-               MOVE    "program_upgrade_offline.sh"
-                                        TO  SHELL-SHELL
+               MOVE    SHELL-NAME2      TO  MKPASS-IN-01
                EVALUATE    SPA-GMN-CD
                    WHEN    "1"
-                       MOVE    "2"              TO  SHELL-ARG1
-                       MOVE    "1"              TO  SHELL-ARG2
+                       MOVE    "2"      TO  SHELLTBL-ARG1
+                       MOVE    "1"      TO  SHELLTBL-ARG2
                    WHEN    "2"
-                       MOVE    "2"              TO  SHELL-ARG1
-                       MOVE    "2"              TO  SHELL-ARG2
+                       MOVE    "2"      TO  SHELLTBL-ARG1
+                       MOVE    "2"      TO  SHELLTBL-ARG2
                    WHEN    OTHER
-                       GO  TO  400-JYOUHOU-SEC-EXT
+                       GO  TO  420-KOUSHIN-EXT
                END-EVALUATE
            END-IF
       *
-      *    マスタ更新処理
-           MOVE    SPACE               TO  SHELLTBL.
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME.
-           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1.
-           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2.
-           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3.
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4.
-           MOVE    SHELLTBL            TO  MCPDATA-REC.
+           CALL    "ORCSMKPASS"         USING  ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01         TO  SHELLTBL-NAME
+           MOVE    SHELLTBL             TO  MCPDATA-REC
       *
-           MOVE    "SHELL"             TO  MCP-FUNC.
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH.
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+           MOVE    "SHELL"              TO  MCP-FUNC
+           MOVE    PATH-SHELL-SHELL     TO  MCP-PATH
+           CALL    "MCPSUB"             USING
+                                        MCPAREA
+                                        MCPDATA-REC
       *
            PERFORM 400-JYOKYO-SET-SEC
            .
@@ -773,14 +770,15 @@
       *****************************************************************
        820-JOBKANRI-READ1-SEC     SECTION.
       *
-           MOVE    "CHK"           TO  WRK-JOBKANRI-MODE.
-           INITIALIZE                  JOBKANRI-REC.
-           MOVE    1               TO  JOB-JOBID.
-           MOVE    "MSTMNT"        TO  JOB-SHELLID.
+           MOVE    "CHK"           TO  WRK-JOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    1               TO  JOB-JOBID
+           MOVE    "PRGMNT"        TO  JOB-SHELLID
            CALL    "ORCSJOB"       USING
                                    WRK-JOBKANRI-AREA
-                                   JOBKANRI-REC.
+                                   JOBKANRI-REC
       *
+           .
        820-JOBKANRI-READ1-EXT.
            EXIT.
       *
@@ -789,13 +787,13 @@
       *****************************************************************
        820-JOBKANRI-READ2-SEC     SECTION.
       *
-           MOVE    "CHK"           TO  WRK-JOBKANRI-MODE.
-           INITIALIZE                  JOBKANRI-REC.
-           MOVE    1               TO  JOB-JOBID.
-           MOVE    "MSTMNT"        TO  JOB-SHELLID.
+           MOVE    "CHK"           TO  WRK-JOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    1               TO  JOB-JOBID
+           MOVE    "PRGMNT"        TO  JOB-SHELLID
            CALL    "ORCSJOB"       USING
                                    WRK-JOBKANRI-AREA
-                                   JOBKANRI-REC.
+                                   JOBKANRI-REC
       *
            IF  WRK-JOBKANRI-RETURN   =   ZERO
                IF  JOB-ERRCD(1:2)   =   "99"
@@ -814,8 +812,9 @@
                END-IF
            ELSE
                MOVE    SPACE        TO  SKBN-RUN
-           END-IF.
+           END-IF
       *
+           .
        820-JOBKANRI-READ2-EXT.
            EXIT.
       *
@@ -832,8 +831,9 @@
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END.
+           MOVE    1                   TO  FLG-END
       *
+           .
        830-GAMENN-SET4-EXT.
            EXIT.
       *
@@ -842,16 +842,17 @@
       *****************************************************************
        830-GAMENN-SET5-SEC        SECTION.
       *
-           MOVE    "B12"               TO  MCP-WIDGET.
-           MOVE    "M97"               TO  SPA-MOTOPG.
-           MOVE    "MID1"              TO  SPA-SAKIPG.
-           MOVE    "NEW"               TO  MCP-PUTTYPE.
-           MOVE    "MID1"              TO  MCP-WINDOW.
+           MOVE    "B12"               TO  MCP-WIDGET
+           MOVE    "M97"               TO  SPA-MOTOPG
+           MOVE    "MID1"              TO  SPA-SAKIPG
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "MID1"              TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END.
+           MOVE    1                   TO  FLG-END
       *
+           .
        830-GAMENN-SET5-EXT.
            EXIT.
       *
