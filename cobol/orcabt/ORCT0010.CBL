@@ -713,7 +713,6 @@
            MOVE    WRK-PARA-SYSYMD TO  LNK-S02-SYSYMD
            CALL    "ORCSTEIKI"     USING
                                    MCPAREA
-                                   SPA-AREA
                                    LNK-ORCS02-REC
                                    LNK-SYUNOU-REC-T
            IF    ( LNK-S02-RC      NOT = ZERO )
