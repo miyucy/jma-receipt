@@ -102,17 +102,17 @@
       *決定診数１
                05  NYUKHN-KETTEITEN1   PIC  9(06).
       *決定点数２
-               05  NYUKHN-KETTEITEN1   PIC  9(06).
+               05  NYUKHN-KETTEITEN2   PIC  9(06).
       *決定点数３
-               05  NYUKHN-KETTEITEN1   PIC  9(06).
+               05  NYUKHN-KETTEITEN3   PIC  9(06).
       *決定点数４
-               05  NYUKHN-KETTEITEN1   PIC  9(06).
+               05  NYUKHN-KETTEITEN4   PIC  9(06).
       *決定点数５
-               05  NYUKHN-KETTEITEN1   PIC  9(06).
+               05  NYUKHN-KETTEITEN5   PIC  9(06).
       *決定点数６
-               05  NYUKHN-KETTEITEN1   PIC  9(06).
+               05  NYUKHN-KETTEITEN6   PIC  9(06).
       *決定点数７
-               05  NYUKHN-KETTEITEN1   PIC  9(06).
+               05  NYUKHN-KETTEITEN7   PIC  9(06).
       *決定点数情報再定義
            03  NYUKHN-KETTEITEN-R   REDEFINES  NYUKHN-KETTEITENINF.
                05  NYUKHN-KETTEITEN-T       OCCURS   7.
