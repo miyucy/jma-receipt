@@ -2785,6 +2785,8 @@
                IF     (SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)   =   "$") AND
                       (SPA-GMN-INPUTCD(SPA-GMN-IDX)(2:2)   NUMERIC)
                    MOVE    SPA-GMN-IDX         TO  IDX-HKN2
+                   MOVE    SPACE               TO  SPA-GMN-INPUTCD
+                                                    (IDX-HKN2)(4:1)
                    ADD     1                   TO  SPA-GMN-IDX
                    PERFORM 41014-GYOINSN-SEC
                END-IF
