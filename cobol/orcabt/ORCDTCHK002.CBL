@@ -295,6 +295,7 @@
            03  WRK-DATE                                PIC X(08).
            03  WRK-TIME                                PIC X(08).
       *    TEST
+           03  WRK-KIGONUM-STR                         PIC X(50).
       *
       *    保険ＩＤ退避ワーク
        01  THKNID-AREA.
@@ -2449,6 +2450,28 @@
       *
                    MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                    MOVE    "020003"        TO  WRK-ERRCD
+                   PERFORM 211-ERRMES-HEN-SEC
+      *
+                   IF    ( ORCBSD01-CHKKBN (2) =   "1" )
+                       MOVE    1       TO  FLG-CHKEND (2)
+                       GO  TO  200111-KIGONUM-CHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    レセ電の場合、文字列長チェック
+           IF    ( SYS-2005-KKHRECEKBN =   "1" )
+            OR   ( SYS-2005-SYARECEKBN =   "1" )
+      *
+               MOVE    SPACE               TO  WRK-KIGONUM-STR
+               STRING  PTHKN-KIGO              DELIMITED   BY  SPACE
+                       PTHKN-NUM               DELIMITED   BY  SPACE
+               INTO    WRK-KIGONUM-STR
+               END-STRING
+      *
+               IF    ( WRK-KIGONUM-STR (39:)   NOT =   SPACE )
+                   MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
+                   MOVE    "020004"        TO  WRK-ERRCD
                    PERFORM 211-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (2) =   "1" )

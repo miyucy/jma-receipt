@@ -57,6 +57,11 @@
            05 PIC  X(30)   VALUE   "保険情報の番号に全角文字以外が".
            05 PIC  X(30)   VALUE   "入力されています              ".
            05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "020004".
+           05 PIC  X(30)   VALUE   "レセ電算データの場合、保険情報".
+           05 PIC  X(30)   VALUE   "の記号・番号の文字数の和が１９".
+           05 PIC  X(30)   VALUE   "文字を超えています            ".
       *
       *    ** 030xxx 公費負担者番号・受給者番号抜け
       *                            +---------+---------+---------+.
@@ -274,7 +279,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  43.
+           05 ERRMES-OCC   OCCURS  44.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   43.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   44.
