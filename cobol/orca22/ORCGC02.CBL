@@ -3272,10 +3272,40 @@
       *********MOVE    SPA-SYSYMD          TO  SPA-NAI-C02-SRYYMD
                MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
                MOVE    SPACE               TO  SPA-GMN-C02-SRYYMD
-           ELSE    
+           ELSE
       *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
-               MOVE    SPA-GMN-C02-SRYYMD  TO  SGDAY-INDAY
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-GMN-C02-SRYYMD      TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF      SNUM-RC             >   ZERO
+                   MOVE    SPA-GMN-C02-SRYYMD      TO  SGDAY-INDAY
+               ELSE
+                   EVALUATE    SNUM-SEISUU
+                       WHEN    1
+                       WHEN    2
+                           MOVE    SPA-NAI-C02-SYSYMD  TO  WRK-YMD-9
+                           MOVE    SNUM-OUTNUM         TO  WRK-DD
+                       WHEN    3
+                           MOVE    SPA-NAI-C02-SYSYMD  TO  WRK-YMD-9
+                           MOVE    SNUM-OUTNUM         TO  WRK-MD
+                       WHEN    4
+                           MOVE    SNUM-OUTNUM         TO  WRK-MD
+                           IF    ( WRK-MM              =   12   )
+                           AND   ( SPA-NAI-C02-SYSYMD (5:2)
+                                                       =   "01" )
+                               MOVE    SPA-NAI-C02-SYSYMD-BACK (1:4)
+                                                       TO  WRK-YY
+                           ELSE
+                               MOVE    SPA-NAI-C02-SYSYMD (1:4)
+                                                       TO  WRK-YY
+                           END-IF
+                       WHEN    OTHER
+                           MOVE    SPA-GMN-C02-SRYYMD  TO  WRK-YMD-9
+                   END-EVALUATE
+                   MOVE    WRK-YMD-9       TO  SGDAY-INDAY
+               END-IF
                CALL    "ORCSGDAY"          USING
                                            ORCSGDAYAREA
                IF      SGDAY-RC            =   ZERO
