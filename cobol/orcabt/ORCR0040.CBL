@@ -2405,7 +2405,7 @@
       *      ADD     1                    TO  IDX-RECE05
              MOVE    SPACE                TO  COM-RECE05-REC
              INITIALIZE                       COM-RECE05-REC
-             MOVE    "840000096"          TO  COM-SRYCD(1)
+             MOVE    "810000001"          TO  COM-SRYCD(1)
              MOVE    ZERO                 TO  COM-SRYSURYO(1)
              MOVE    7                    TO  COM-YUKOKETA(1)
              MOVE    "実施日数　　日"     TO  COM-NAME(1)

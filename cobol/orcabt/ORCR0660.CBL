@@ -169,7 +169,9 @@
            03  FLG-RECE64          PIC 9(01).
            03  FLG-RECE65          PIC 9(01).
            03  FLG-SHUJUTU-COMMENT PIC 9(01).
+           03  FLG-CTMRI-COMMENT   PIC 9(01).
            03  FLG-KAKURI-COMMENT  PIC 9(01).
+           03  FLG-COMMENT         PIC 9(01).
            03  FLG-WRKRECE65       PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
@@ -215,7 +217,7 @@
            03  WRK-RECEERR         PIC X(200).
       *
            03  TBL-SHUJUTSU-DAY.
-               05  TB-SHUJUTSU-DAY PIC 9(02)   OCCURS  10.
+               05  TB-SHUJUTSU-DAY PIC 9(02)   OCCURS  31.
       *
            03  TBL-NYU-DAY.
                05  TBL-NYU-DAY-OCC             OCCURS  31.
@@ -264,6 +266,10 @@
            03  WRK-NAMEINF                     OCCURS 50.         
                05  WK-RECE65-YUKOKETA        PIC  9(02).
                05  WK-RECE65-NAME            PIC  X(200).
+      *
+       01  WRK-DATAKBNINF-AREA.
+           03  WRK-DATAKBNINF                  OCCURS 50.         
+               05  WK-RECE65-DATAKBN         PIC  9(01).
       *
        01  WRK-FREE-AREA.
            03  WRK-FREEINF                     OCCURS 49.         
@@ -407,6 +413,48 @@
             03  TBL-RIHA       PIC X(09)   OCCURS   28.       
       *
        01  TBL-RIHA-MAX        PIC 9(02)   VALUE    28.  
+      *
+      *   £Ã£Ô¡¦£Í£Ò£ÉÂÐ¾Ý¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ë
+       01  TBL-CTMRI-AREA.
+      *    Æ¬ÉôÃ±½ã£Ã£Ô»£±Æ
+           03  FILLER          PIC X(09)   VALUE   "170011710".
+      *    ¶í´´Ã±½ã£Ã£Ô»£±Æ
+           03  FILLER          PIC X(09)   VALUE   "170011810".
+      *    »Í»èÃ±½ã£Ã£Ô»£±Æ
+           03  FILLER          PIC X(09)   VALUE   "170011910".
+      *    Ç¾Áå£Ã£ÔÂ¤±Æ
+           03  FILLER          PIC X(09)   VALUE   "170012110".
+      *    ðôÉôÃ±½ã£Ã£Ô»£±Æ
+           03  FILLER          PIC X(09)   VALUE   "170015550".
+      *    Æ¬ÉôÃ±½ã£Í£Ò£É»£±Æ
+           03  FILLER          PIC X(09)   VALUE   "170015210".
+      *    ¶í´´Ã±½ã£Í£Ò£É»£±Æ
+           03  FILLER          PIC X(09)   VALUE   "170020110".
+      *    »Í»èÃ±½ã£Í£Ò£É»£±Æ
+           03  FILLER          PIC X(09)   VALUE   "170022110".
+      *    £Ã£Ô¡¢£Í£Ò£É¡ÊÆ¬Éô¡Ë¡Ê£²²óÌÜ°Ê¹ß¡Ë
+           03  FILLER          PIC X(09)   VALUE   "170022290".
+      *    £Ã£Ô¡¢£Í£Ò£É¡Ê¶í´´¡Ë¡Ê£²²óÌÜ°Ê¹ß¡Ë
+           03  FILLER          PIC X(09)   VALUE   "170022390".
+      *    £Ã£Ô¡¢£Í£Ò£É¡Ê»Í»è¡Ë¡Ê£²²óÌÜ°Ê¹ß¡Ë
+           03  FILLER          PIC X(09)   VALUE   "170022490".
+      *    Æ¬ÉôÆÃ¼ì£Ã£Ô»£±Æ
+           03  FILLER          PIC X(09)   VALUE   "170023010".
+      *    ¶í´´ÆÃ¼ì£Ã£Ô»£±Æ
+           03  FILLER          PIC X(09)   VALUE   "170023110".
+      *    »Í»èÆÃ¼ì£Ã£Ô»£±Æ
+           03  FILLER          PIC X(09)   VALUE   "170023210".
+      *    Æ¬ÉôÆÃ¼ì£Í£Ò£É»£±Æ
+           03  FILLER          PIC X(09)   VALUE   "170023310".
+      *    ¶í´´ÆÃ¼ì£Í£Ò£É»£±Æ
+           03  FILLER          PIC X(09)   VALUE   "170023410".
+      *    »Í»èÆÃ¼ì£Í£Ò£É»£±Æ
+           03  FILLER          PIC X(09)   VALUE   "170023510".
+      *
+       01  TBL-CTMRI-R         REDEFINES   TBL-CTMRI-AREA.
+            03  TBL-CTMRI      PIC X(09)   OCCURS   17.       
+      *
+       01  TBL-CTMRI-MAX       PIC 9(02)   VALUE    17.  
       *
       *
       *    Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤ÎÂàÈò¥Æ¡¼¥Ö¥ë
@@ -731,6 +779,9 @@
                    WHEN      "50"
       *            ¡Ê¼ê½ÑÆü¤Î¥»¥Ã¥È¡Ë
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
+                   WHEN      "70"
+      *            ¡Ê£Ã£Ô¡¦£Í£Ò£É¼Â»ÜÆü¤Î¥»¥Ã¥È¡Ë
+                      PERFORM    2001-CTMRI-HANTEI-SEC
                    WHEN      "80"
       *            ¡Ê¥ê¥Ï¥Ó¥ê¤Î¥»¥Ã¥È¡Ë
                       COMPUTE  WRK-KOHBUNRI 
@@ -1333,6 +1384,7 @@
       *
            IF     (FLG-SHUJUTU-COMMENT   =      1)  AND
                   (RECE64-SYUTEN1    NOT =   ZERO)
+                MOVE       1       TO     FLG-COMMENT
                 PERFORM    2001-SHUJUTSU-COMMENT-SEC
            ELSE
                 MOVE       RECE64-REC    TO   RECE641-REC
@@ -1380,23 +1432,39 @@
            INITIALIZE                       WRK-SRYACTINF-AREA
            MOVE    SPACE                TO  WRK-NAMEINF-AREA
            INITIALIZE                       WRK-NAMEINF-AREA
+           MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
+           INITIALIZE                       WRK-DATAKBNINF-AREA
       *    ¼ê½ÑÆü¥³¥á¥ó¥È¤ÎÁÞÆþ
            PERFORM  VARYING      IDX    FROM  1   BY   1
-                    UNTIL       (IDX    >     10)      OR
+                    UNTIL       (IDX    >     31)      OR
                                 (TB-SHUJUTSU-DAY(IDX)  =  ZERO)
                ADD     1                    TO  IDX-RECE65
                MOVE    SPACE                TO  COM-RECE65-REC
                INITIALIZE                       COM-RECE65-REC
-               MOVE    CONS-SHUJUTU-COMMENT TO  COM-SRYCD(1)
-               MOVE    ZERO                 TO  COM-SRYSURYO(1)
-               MOVE    6                    TO  COM-YUKOKETA(1)
-               MOVE    "¼ê½Ñ¡¡¡¡¡¡Æü"       TO  COM-NAME(1)
-               MOVE    TB-SHUJUTSU-DAY(IDX) TO  DAY-IDX
-               MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
-               MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
+               EVALUATE   FLG-COMMENT
+                  WHEN    1
+                    MOVE    CONS-SHUJUTU-COMMENT TO  COM-SRYCD(1)
+                    MOVE    ZERO                 TO  COM-SRYSURYO(1)
+                    MOVE    6                    TO  COM-YUKOKETA(1)
+                    MOVE    "¼ê½Ñ¡¡¡¡¡¡Æü"       TO  COM-NAME(1)
+                    MOVE    TB-SHUJUTSU-DAY(IDX) TO  DAY-IDX
+                    MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
+                    MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
                                                      (IDX-RECE65)
-               MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
+                    MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
                                                      (IDX-RECE65)
+                  WHEN    2
+                    MOVE    "810000001"          TO  COM-SRYCD(1)
+                    MOVE    ZERO                 TO  COM-SRYSURYO(1)
+                    MOVE    6                    TO  COM-YUKOKETA(1)
+                    MOVE    "¼Â»Ü¡¡¡¡¡¡Æü"       TO  COM-NAME(1)
+                    MOVE    TB-SHUJUTSU-DAY(IDX) TO  DAY-IDX
+                    MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
+                    MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
+                                                     (IDX-RECE65)
+                    MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
+                                                     (IDX-RECE65)
+               END-EVALUATE
            END-PERFORM
       *
            PERFORM
@@ -1424,6 +1492,8 @@
                                            WRK-SRYACTINF(IDX-RECE65)
                   MOVE   RECE65-NAMEINF(IDX)   TO
                                            WRK-NAMEINF(IDX-RECE65)     
+                  MOVE   RECE65-DATAKBNINF(IDX) TO
+                                           WRK-DATAKBNINF(IDX-RECE65)
              END-PERFORM 
       *
              PERFORM 990-RECE65-NEXT-SEC
@@ -1458,6 +1528,8 @@
                                           TO   RECE651-SRYACTINF(IDX)  
                          MOVE  WRK-NAMEINF(IDX-RECE65)
                                           TO   RECE651-NAMEINF(IDX)
+                         MOVE  WRK-DATAKBNINF(IDX-RECE65)
+                                          TO   RECE651-DATAKBNINF(IDX)
                          ADD   1          TO   WRK-CNT-MEISAI
                      END-IF  
                   END-PERFORM
@@ -1484,7 +1556,7 @@
            MOVE    ZERO          TO  DAY-IDX
            PERFORM    VARYING    IDX  FROM   1   BY   1
                       UNTIL     (IDX      >   31)  OR
-                                (DAY-IDX  >   10)
+                                (DAY-IDX  >   31)
                 IF    RECE64-KAISU(1 IDX)  NOT =  ZERO
                       ADD   1     TO   DAY-IDX
                       MOVE  IDX   TO  TB-SHUJUTSU-DAY(DAY-IDX)
@@ -1493,6 +1565,75 @@
       *
            .
        2001-SHUJUTSU-DAY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ã£Ô¡¦£Í£Ò£É¤Î¥³¥á¥ó¥È¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-CTMRI-HANTEI-SEC          SECTION.
+      *
+           MOVE      ZERO              TO      FLG-CTMRI-COMMENT
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL   ( IDX           >   TBL-CTMRI-MAX )
+                      OR     ( FLG-CTMRI-COMMENT  =   1        )
+      *
+             INITIALIZE                        SRYACT-REC
+             MOVE    RECE64-HOSPID     TO      SRY-HOSPID
+             MOVE    RECE64-NYUGAIKBN  TO      SRY-NYUGAIKBN
+             MOVE    RECE64-PTID       TO      SRY-PTID
+             MOVE    RECE64-SRYYM      TO      SRY-SRYYM
+             MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
+             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (1)
+             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (2)
+             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (3)
+             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (4)
+             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (5)
+      *
+             MOVE    SRYACT-REC        TO      MCPDATA-REC
+             MOVE    "DBSELECT"        TO      MCP-FUNC
+             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+             CALL    "ORCMCPSUB"       USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+             IF  MCP-RC                NOT  =  ZERO
+                 CONTINUE
+             ELSE
+                 MOVE    "DBFETCH"     TO      MCP-FUNC
+                 MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+                 CALL    "ORCMCPSUB"           USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+                 IF      MCP-RC        =       ZERO
+                     MOVE    1         TO      FLG-CTMRI-COMMENT
+                 END-IF
+             END-IF
+      *
+             INITIALIZE                        MCPAREA
+             MOVE    "DBCLOSE"         TO      MCP-FUNC
+             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+             CALL    "ORCMCPSUB"       USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           END-PERFORM
+      *
+           IF      FLG-CTMRI-COMMENT   =      1
+                MOVE       2       TO     FLG-COMMENT
+                PERFORM    2001-SHUJUTSU-COMMENT-SEC
+           ELSE
+                MOVE       RECE64-REC    TO   RECE641-REC
+                WRITE      RECE641-REC
+                ADD     1          TO      CNT-RECE64
+                PERFORM    2002-RECE65-TENSOU-SEC
+           END-IF
+      *
+           .
+       2001-CTMRI-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1538,7 +1679,7 @@
       *      ADD     1                    TO  IDX-RECE65
              MOVE    SPACE                TO  COM-RECE65-REC
              INITIALIZE                       COM-RECE65-REC
-             MOVE    "840000096"          TO  COM-SRYCD(1)
+             MOVE    "810000001"          TO  COM-SRYCD(1)
              MOVE    ZERO                 TO  COM-SRYSURYO(1)
              MOVE    7                    TO  COM-YUKOKETA(1)
              MOVE    "¼Â»ÜÆü¿ô¡¡¡¡Æü"     TO  COM-NAME(1)

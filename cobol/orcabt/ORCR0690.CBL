@@ -201,7 +201,8 @@
            03  WRK-YUKOKETA        PIC  9(02).
            03  WRK-NAME            PIC  X(200).
       *
-           03  WRK-RECE65          PIC 9(01).     
+           03  WRK-RECE65          PIC 9(01).
+           03  WRK-RECE65-TENTEKI  PIC 9(01).
       *
       *    øÙª˙»æ≥—¡¥≥— —¥πÕ—     
            03  WRK-NUM                         PIC 9(01).
@@ -744,6 +745,7 @@
                                                FLG-COMMENT3
                                                FLG-HIKAKIN 
                MOVE    ZERO                TO  WRK-RECE65
+                                               WRK-RECE65-TENTEKI
                                                IDY                           
                MOVE    SPACE               TO  WRK-SRYSYUKBN
       *         
@@ -923,11 +925,18 @@
                    ELSE
       *                ¿Ë∆¨§Œø«Œ≈π‘∞Ÿ•≥°º•… ‘Ω∏              
                        IF      WRK-RECE65        =   ZERO
+                         IF  RECE65-SRYCD(IDX)(1:1)  =  "8"
+                           CONTINUE
+                         ELSE
                            MOVE    RECE65-SRYCD (IDX)
                                                  TO  TBL-ZAIW-SRYCD1 
+                           MOVE    1             TO  WRK-RECE65
+                         END-IF
+                       END-IF
+                       IF      WRK-RECE65-TENTEKI  =   ZERO
                            MOVE    RECE65-SRYSYUKBN
                                                  TO  WRK-SRYSYUKBN
-                           MOVE    1             TO  WRK-RECE65
+                           MOVE    1             TO  WRK-RECE65-TENTEKI
                        END-IF
       *                                                         
                        MOVE    WRK-ZAIWMAX (IDY) TO  IDZ
@@ -1671,6 +1680,7 @@
                                                    FLG-COMMENT3
                                                    FLG-HIKAKIN 
                    MOVE    ZERO                TO  WRK-RECE65
+                                                   WRK-RECE65-TENTEKI
                                                    IDY
                    MOVE    SPACE               TO  WRK-SRYSYUKBN
       *                                             
@@ -2176,7 +2186,6 @@
                      PERFORM 900-TENSU-INV-SEC
                      IF      FLG-TENSU            =       1
                          INITIALIZE               TNS-TENSU-REC
-                         DISPLAY   "TENSU FETCH ERR" 
                      END-IF
                  END-IF
                END-IF
