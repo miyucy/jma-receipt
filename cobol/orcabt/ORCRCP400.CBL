@@ -3679,7 +3679,7 @@
                END-EVALUATE
            END-IF
       *
-           IF    ( FLG-KUGIRI        =   1 )
+           IF    ( FLG-KUGIRI        =   1   OR  2 )
            OR    ( WRK-LINETEK       =   1 )
            OR    ( CNT-RECE061       =   1 )
            OR    ( FLG-SRYKBNPRT     =   1 ) 

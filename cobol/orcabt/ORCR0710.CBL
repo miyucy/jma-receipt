@@ -3600,17 +3600,17 @@
                END-IF
            END-IF
       *
-           IF    ( FLG-KUGIRI        =   1 )
+           IF    ( FLG-KUGIRI        =   1 OR 2)
            OR    ( WRK-LINETEK       =   1 )
            OR    ( CNT-RECE661       =   1 )
            OR    ( FLG-SRYKBNPRT     =   1 ) 
-                    IF      SYS-2005-NEXTPRTKBN =   "0"   
-                       MOVE    RECE661-SRYKBN  TO  HC061-SRYKBN
-                                                       (WRK-LINETEK)
-                   ELSE
-                       MOVE    RECE661-SRYKBN  TO  HC062-SRYKBN
-                                                       (WRK-LINETEK)
-                   END-IF
+      ***             IF      SYS-2005-NEXTPRTKBN =   "0"   
+      ***                 MOVE    RECE661-SRYKBN  TO  HC061-SRYKBN
+      ***                                                 (WRK-LINETEK)
+      ***             ELSE
+      ***                 MOVE    RECE661-SRYKBN  TO  HC062-SRYKBN
+      ***                                                 (WRK-LINETEK)
+      ***             END-IF
                      
                IF      CNT-PAGE        =   1   
                    MOVE    RECE661-SRYKBN  TO  HC06-SRYKBN
