@@ -2093,6 +2093,16 @@
                       (SPA-COM-IN2 (SPA-GMN-IDX)   =   "1"  )
                    PERFORM 41011-KOUI-HEN2-SEC
                END-IF
+      *
+      *        フリーコメントの名称の全角チェックはすべて行う
+               IF     (SPA-ERRCD           =   SPACE )  AND
+                      (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
+                                           =   "81" OR "83" OR "84") AND
+                      (SPA-GMN-MEISYO-G(SPA-GMN-IDX) 
+                                       NOT =   SPACE  )
+                   PERFORM 401131-MEISYO-HENKAN-SEC
+               END-IF
+      *
                IF     (SPA-ERRCD       =   SPACE )  AND
                       (FLG-END         =   ZERO  )
                    ADD     1                   TO  SPA-GMN-IDX
@@ -2325,6 +2335,7 @@
                MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)
                                        TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
            ELSE
+               MOVE    SPACE           TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
                MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
            END-IF
       *
@@ -2460,6 +2471,8 @@
                MOVE    LNK-SC97-INCD   TO  SPA-COM-INPUTCD(SPA-GMN-IDX)
            END-IF
            PERFORM 4101113-INPUTCD-CHK-SEC
+      *    名称チェック
+           PERFORM 40113-MEISYOU-CHK-SEC
       *
            .
        410112-INPUTCD-HENKAN-EXT.
@@ -4089,10 +4102,10 @@
       *****************************************************************
        40113-MEISYOU-CHK-SEC        SECTION.
       *
-           IF      SPA-GMN-MEISYO-G (SPA-GMN-IDX)
-                                       =   SPACE
-               GO      TO      40113-MEISYOU-CHK-EXT
-           END-IF
+      *****IF      SPA-GMN-MEISYO-G (SPA-GMN-IDX)
+      *                                =   SPACE
+      *        GO      TO      40113-MEISYOU-CHK-EXT
+      *****END-IF
       *
            IF      SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  =  "81"
                MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
@@ -4112,45 +4125,17 @@
            END-IF
       *
       *    半角の空白を全角に置きかえる
-      *    フリーコメントは１桁目から
-           IF      SPA-COM-INPUTCD(SPA-GMN-IDX)   =   "810000001"
-               MOVE    1                   TO  IDX-STR
-           ELSE
-               MOVE    3                   TO  IDX-STR
-           END-IF
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    SPA-GMN-MEISYO-G (SPA-GMN-IDX)(IDX-STR:)
-                                       TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                  (KANACHK-SYUBETU     =   1     )
-               MOVE    "0080"          TO  SPA-ERRCD
-               MOVE    "3"             TO  SPA-COM-CUR (SPA-GMN-IDX)
-               GO      TO      40113-MEISYOU-CHK-EXT
-           END-IF
-           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G(SPA-GMN-IDX)
-                                                            (IDX-STR:)
+           PERFORM 401131-MEISYO-HENKAN-SEC
       *
            .
        40113-MEISYOU-CHK-EXT.
            EXIT.
       *
-      *
       *****************************************************************
-      *    診療行為名入力処理
+      *    名称チェック・全角置換処理
       *****************************************************************
-       41012-MEISYO-HEN-SEC        SECTION.
+       401131-MEISYO-HENKAN-SEC        SECTION.
       *
-           MOVE    K05-MEISYO (WRK-IDX2)
-                                       TO  SPA-GMN-MEISYO-G
-                                                       (SPA-GMN-IDX)
-      *
-           MOVE    4                   TO  SPA-GMN5-CUR
-      *
-      *
-      *    半角の空白を全角に置きかえる
       *    フリーコメントは１桁目から
            IF      SPA-COM-INPUTCD(SPA-GMN-IDX)   =   "810000001"
                MOVE    1                   TO  IDX-STR
@@ -4167,21 +4152,60 @@
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0080"          TO  SPA-ERRCD
                MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
-               GO      TO      41012-MEISYO-HEN-EXT
+               MOVE    4               TO  SPA-GMN5-CUR
+               GO      TO      401131-MEISYO-HENKAN-EXT
            END-IF
            MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G(SPA-GMN-IDX)
                                                             (IDX-STR:)
       *
-           MOVE    "1"                 TO  SPA-COM-MEIFLG
-                                                       (SPA-GMN-IDX)
-      *
-           PERFORM 510-TBLHEN-SEC
-      *
-           MOVE    3                   TO  SPA-GMN5-CUR
-      *
            .
-       41012-MEISYO-HEN-EXT.
+       401131-MEISYO-HENKAN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    診療行為名入力処理
+      *****************************************************************
+      *41012-MEISYO-HEN-SEC        SECTION.
+      *
+      *    MOVE    K05-MEISYO (WRK-IDX2)
+      *                                TO  SPA-GMN-MEISYO-G
+      *                                                (SPA-GMN-IDX)
+      *
+      *    MOVE    4                   TO  SPA-GMN5-CUR
+      *
+      *
+      *    半角の空白を全角に置きかえる
+      *    フリーコメントは１桁目から
+      *    IF      SPA-COM-INPUTCD(SPA-GMN-IDX)   =   "810000001"
+      *        MOVE    1                   TO  IDX-STR
+      *    ELSE
+      *        MOVE    3                   TO  IDX-STR
+      *    END-IF
+      *    INITIALIZE                  ORCSKANACHKAREA
+      *    MOVE    "1"                 TO  KANACHK-SYORI
+      *    MOVE    SPA-GMN-MEISYO-G (SPA-GMN-IDX)(IDX-STR:)
+      *                                TO  KANACHK-MAE-INPUT
+      *    CALL    "ORCSKANACHK"       USING
+      *                                ORCSKANACHKAREA
+      *    IF     (KANACHK-RC      NOT =   ZERO  )  OR
+      *           (KANACHK-SYUBETU     =   1     )
+      *        MOVE    "0080"          TO  SPA-ERRCD
+      *        MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
+      *        GO      TO      41012-MEISYO-HEN-EXT
+      *    END-IF
+      *    MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G(SPA-GMN-IDX)
+      *                                                     (IDX-STR:)
+      *
+      *    MOVE    "1"                 TO  SPA-COM-MEIFLG
+      *                                                (SPA-GMN-IDX)
+      *
+      *    PERFORM 510-TBLHEN-SEC
+      *
+      *    MOVE    3                   TO  SPA-GMN5-CUR
+      *
+      *    .
+      *41012-MEISYO-HEN-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    行挿入処理
@@ -5611,7 +5635,9 @@
            END-IF
       *
            IF      SPA-MAP-IDX     NOT =   ZERO
-               MOVE    3               TO  SPA-GMN5-CUR
+               IF      SPA-GMN5-CUR    =   ZERO
+                   MOVE    3               TO  SPA-GMN5-CUR
+               END-IF
                GO      TO      5002-GMNSPA-HEN-EXT
            END-IF
       *    名称入力へ

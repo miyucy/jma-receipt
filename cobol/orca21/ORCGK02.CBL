@@ -47,6 +47,8 @@
       *                                     剤削除の入力をどこでもＯＫとした
       *  03.00.02    NACL-多々納  02/09/11  自賠責追加
       *  03.00.03    NACL−多々納 02/09/24  検索修正
+      *  03.00.04    NACL−多々納 02/10/08  処方せんに在宅薬剤院外追加
+      *                                     フリーコメントの修正など
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1304,6 +1306,7 @@
       *
       *    患者番号変更、Ｋ０１、Ｐ０２よりの時　初画面を編集
            INITIALIZE                  SPA-SCR-REC
+           MOVE    ZERO            TO  SPA-NAI-ROUSTR
       *
       *    初期ＳＰＡ編集処理
            IF     (SPA-MOTOPG          =   "P02"  OR  "U02"  )  AND
@@ -2136,8 +2139,8 @@
            MOVE    WRK-NENREI-G        TO  SPA-NENREI-HEN
       *
       *
-           MOVE    ZERO                TO  SPA-NAI-ROUSTR
-           MOVE    ZERO                TO  SPA-NAI-ROUFLG
+      **** MOVE    ZERO                TO  SPA-NAI-ROUSTR
+      *****MOVE    ZERO                TO  SPA-NAI-ROUFLG
            MOVE    ZERO                TO  SPA-NAI-ROUJIN
       *    老人判定
            IF     (SPA-KOH1HKNNUM       =   "027"   )  OR
@@ -2176,16 +2179,16 @@
                IF      WRK-NENREI-YY       >=  WRK-ROU-NEN
                    MOVE    1               TO  SPA-NAI-ROUJIN
                END-IF
-      *        ７０歳到達月の最初の診療判定（老人保険がない時警告）
-               MOVE    SPA-BIRTHDAY        TO  WRK-YMDS1
+      ******** ７０歳到達月の最初の診療判定（老人保険がない時警告）
+      *        MOVE    SPA-BIRTHDAY        TO  WRK-YMDS1
       ******** COMPUTE WRK-YYS1            =   WRK-YYS1   +  70
-               COMPUTE WRK-YYS1            =   WRK-YYS1   +  WRK-ROU-NEN
+      *        COMPUTE WRK-YYS1            =   WRK-YYS1   +  WRK-ROU-NEN
       *******  IF     (WRK-NENREI-YY       >=  70 )  AND
-               IF     (WRK-NENREI-YY       >=  WRK-ROU-NEN )  AND
-                      (SPA-LSTYMD          <=  WRK-YMDS1)
-                   MOVE    1               TO  SPA-NAI-ROUFLG
-               END-IF
-               MOVE    ZERO                TO  SPA-NAI-ROUSTR
+      *        IF     (WRK-NENREI-YY       >=  WRK-ROU-NEN )  AND
+      *               (SPA-LSTYMD          <=  WRK-YMDS1)
+      *            MOVE    1               TO  SPA-NAI-ROUFLG
+      *        END-IF
+      ******** MOVE    ZERO                TO  SPA-NAI-ROUSTR
            END-IF
       *
       *    ＤＯ診療日付編集
@@ -2397,9 +2400,15 @@
            MOVE    ZERO                TO  SPA-RJN-ERR
       *
       *    老人でＨ１４．１０の保険変更がない時
-           IF      AGECHK-RJNCHK   NOT =   ZERO
+           IF      AGECHK-RJNCHK       =   1
                MOVE    "1027"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-RJN-ERR
+           END-IF
+           IF      AGECHK-RJNCHK       =   2
+      ****     IF      SPA-NAI-ROUSTR      =   ZERO
+      *            MOVE    "K008"              TO  SPA-ERRCD
+      *****    END-IF
+               MOVE    1                   TO  SPA-NAI-ROUFLG
            END-IF
       *
            .
@@ -3700,6 +3709,7 @@
        41017-SRYYMD-SYORI-SEC         SECTION.
       *
            MOVE    7                   TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  SPA-NAI-ROUSTR
       *
       *    訂正の時、入力エラー
            IF      SPA-SYORIFLG        =   1
@@ -3787,6 +3797,9 @@
       *
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410171-SRYYMD-OK-EXT
+           END-IF
       *
       *    チェック用月内診療行為セット
            PERFORM                 320-SPA-CHKSET-SEC
@@ -4296,6 +4309,14 @@
                       (SPA-COM-IN2 (SPA-GMN-IDX)   =   "1"  )
                    PERFORM 41011-KOUI-HEN2-SEC
                END-IF
+      *        フリーコメントの名称の全角チェックはすべて行う
+               IF     (SPA-ERRCD           =   SPACE )  AND
+                      (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
+                                           =   "81" OR "83" OR "84") AND
+                      (SPA-GMN-MEISYO-G(SPA-GMN-IDX) 
+                                       NOT =   SPACE  )
+                   PERFORM 401131-MEISYO-HENKAN-SEC
+               END-IF
                IF     (SPA-ERRCD       =   SPACE )  AND
                       (FLG-END         =   ZERO  )
                    ADD     1                   TO  SPA-GMN-IDX
@@ -4516,6 +4537,7 @@
                MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)
                                        TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
            ELSE
+               MOVE    SPACE           TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
                MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
            END-IF
       *
@@ -4831,6 +4853,7 @@
                MOVE    LNK-SC97-INCD   TO  SPA-COM-INPUTCD(SPA-GMN-IDX)
            END-IF
            PERFORM 4101113-INPUTCD-CHK-SEC
+      *
       *    名称チェック
            PERFORM 40113-MEISYOU-CHK-SEC
       *
@@ -6074,7 +6097,6 @@
                IF      SPA-NAI-ROUFLG      =   1
                    IF      SPA-NAI-ROUSTR      =   ZERO
                        MOVE    "K008"          TO  SPA-ERRCD
-                       MOVE    1               TO  SPA-NAI-ROUSTR
                    END-IF
                END-IF
            END-IF
@@ -6955,6 +6977,17 @@
            END-IF
       *
       *    半角の空白を全角に置きかえる
+           PERFORM 401131-MEISYO-HENKAN-SEC
+      *
+           .
+       40113-MEISYOU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    名称チェック・全角置換処理
+      *****************************************************************
+       401131-MEISYO-HENKAN-SEC        SECTION.
+      *
       *    フリーコメントは１桁目から
            IF      SPA-COM-INPUTCD(SPA-GMN-IDX)   =   "810000001"
                MOVE    1                   TO  IDX-STR
@@ -6970,17 +7003,16 @@
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0080"          TO  SPA-ERRCD
-               MOVE    "3"             TO  SPA-COM-CUR (SPA-GMN-IDX)
+               MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
                MOVE    2               TO  SPA-GMN-CUR
-               GO      TO      40113-MEISYOU-CHK-EXT
+               GO      TO      401131-MEISYO-HENKAN-EXT
            END-IF
            MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G(SPA-GMN-IDX)
                                                             (IDX-STR:)
       *
            .
-       40113-MEISYOU-CHK-EXT.
+       401131-MEISYO-HENKAN-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    診療行為名入力処理
@@ -9749,16 +9781,27 @@
                IF    ((SPA-COM-SRYKBN(IDX)     =   "21"  OR  "22"  OR
                                                    "23"   )  AND
                       (SPA-COM-ZAIEND(IDX)     =   "1"    )  AND
-                      (SPA-COM-TENSU (IDX)     =   ZERO   ))  OR
-                     ((SPA-COM-SRYKBN(IDX)     =   "14"   )  AND
-                      (SPA-COM-YKZTEN(IDX)     >   ZERO   ))
-                   MOVE    1                   TO  FLG-SYOHOU-ARI
+                      (SPA-COM-TENSU (IDX)     =   ZERO   ))
+      ************** ((SPA-COM-SRYKBN(IDX)     =   "14"   )  AND
+      *************   (SPA-COM-YKZTEN(IDX)     >   ZERO   ))
+      *            薬剤のみの時、院内分とする
+                   IF      SPA-COM-SRYSYUKBN(IDX)  =  "213"  OR
+                                                      "223"  OR
+                                                      "233"
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  FLG-SYOHOU-ARI
+                   END-IF
                END-IF
-      *        薬剤のみの時、院内分とする
-               IF      SPA-COM-SRYSYUKBN(IDX)  =  "213"  OR
-                                                  "223"  OR
-                                                  "233"
-                   MOVE    ZERO            TO  FLG-SYOHOU-ARI
+      *        在宅注射院外処方
+               IF     (SPA-COM-SRYKBN(IDX)     =   "14"   )  AND
+                      (SPA-COM-YKZTEN(IDX)     >   ZERO   OR
+                       SPA-COM-KIZAITEN(IDX)   >   ZERO   )
+                   IF      SPA-COM-SRYSYUKBN(IDX)  =   "148"  OR
+                                                       "149"
+      *                院外分
+                       MOVE    1                   TO  FLG-SYOHOU-ARI
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -9767,8 +9810,10 @@
       *        処方せん発行
                WHEN    "P1"
                    IF      FLG-SYOHOU-ARI      =   1
+      *                院外
                        MOVE    3                   TO  FLG-SYOHOU
                     ELSE
+      *                院内
                        MOVE    4                   TO  FLG-SYOHOU
                    END-IF
                    PERFORM 4124-SYOHOU-SYORI-SEC
@@ -11669,6 +11714,10 @@
            MOVE    "K02"               TO  LNK-SC96-PG
            CALL    "ORCSC96"           USING    SPA-AREA
                                                 ORCSC96AREA
+           IF      SPA-ERRCD           =  "K008"
+               MOVE    1               TO  SPA-NAI-ROUSTR
+           END-IF
+      *
       *
            IF      SPA-ERRMSG2     NOT =   SPACE
       *        エラー画面２
