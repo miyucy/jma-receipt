@@ -796,8 +796,8 @@
 	<widget>
 	  <class>GtkNumberEntry</class>
 	  <name>NYUMJGNCNT1</name>
-	  <x>570</x>
-	  <y>250</y>
+	  <x>572</x>
+	  <y>220</y>
 	  <width>30</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -1083,38 +1083,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label607</name>
-	  <x>445</x>
-	  <y>250</y>
-	  <width>120</width>
-	  <height>18</height>
-	  <label>月−上限回数　　</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label608</name>
-	  <x>445</x>
-	  <y>280</y>
-	  <width>120</width>
-	  <height>18</height>
-	  <label>食事療養費　　　</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label570</name>
 	  <x>22</x>
 	  <y>10</y>
@@ -1153,6 +1121,78 @@
 	  <width>120</width>
 	  <height>18</height>
 	  <label>回−負担割合　　</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>NYUSKJJYOGAK1</name>
+	  <x>572</x>
+	  <y>248</y>
+	  <width>80</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Mar 2001 02:30:10 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Mar 2001 02:30:25 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>ZZZZZ9</format>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label607</name>
+	  <x>444</x>
+	  <y>224</y>
+	  <width>120</width>
+	  <height>18</height>
+	  <label>月−上限回数　　</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label879</name>
+	  <x>444</x>
+	  <y>252</y>
+	  <width>120</width>
+	  <height>18</height>
+	  <label>日−食事助成額　　</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label608</name>
+	  <x>445</x>
+	  <y>280</y>
+	  <width>120</width>
+	  <height>18</height>
+	  <label>食事療養費　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1640,8 +1680,8 @@
 	<widget>
 	  <class>GtkNumberEntry</class>
 	  <name>NYUMJGNCNT2</name>
-	  <x>570</x>
-	  <y>250</y>
+	  <x>572</x>
+	  <y>220</y>
 	  <width>30</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -1911,54 +1951,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label605</name>
-	  <x>445</x>
-	  <y>160</y>
-	  <width>120</width>
-	  <height>18</height>
-	  <label>日−上限回数　　</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label606</name>
-	  <x>445</x>
-	  <y>190</y>
-	  <width>120</width>
-	  <height>18</height>
-	  <label>月−上限額　　　</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label607</name>
-	  <x>445</x>
-	  <y>250</y>
-	  <width>120</width>
-	  <height>18</height>
-	  <label>月−上限回数　　</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label608</name>
 	  <x>445</x>
 	  <y>280</y>
@@ -1997,6 +1989,94 @@
 	  <width>120</width>
 	  <height>18</height>
 	  <label>回−負担割合　　</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>NYUSKJJYOGAK2</name>
+	  <x>572</x>
+	  <y>248</y>
+	  <width>80</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Mar 2001 02:30:10 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Mar 2001 02:30:25 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>ZZZZZ9</format>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label607</name>
+	  <x>444</x>
+	  <y>224</y>
+	  <width>120</width>
+	  <height>18</height>
+	  <label>月−上限回数　　</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label606</name>
+	  <x>445</x>
+	  <y>190</y>
+	  <width>120</width>
+	  <height>18</height>
+	  <label>月−上限額　　　</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label605</name>
+	  <x>445</x>
+	  <y>160</y>
+	  <width>120</width>
+	  <height>18</height>
+	  <label>日−上限回数　　</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label880</name>
+	  <x>444</x>
+	  <y>252</y>
+	  <width>120</width>
+	  <height>18</height>
+	  <label>日−食事助成額　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2484,8 +2564,8 @@
 	<widget>
 	  <class>GtkNumberEntry</class>
 	  <name>NYUMJGNCNT3</name>
-	  <x>570</x>
-	  <y>250</y>
+	  <x>572</x>
+	  <y>220</y>
 	  <width>30</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -2787,22 +2867,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label705</name>
-	  <x>445</x>
-	  <y>160</y>
-	  <width>120</width>
-	  <height>18</height>
-	  <label>日−上限回数　　</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label706</name>
 	  <x>445</x>
 	  <y>190</y>
@@ -2819,9 +2883,49 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label707</name>
+	  <name>label708</name>
 	  <x>445</x>
-	  <y>250</y>
+	  <y>280</y>
+	  <width>120</width>
+	  <height>18</height>
+	  <label>食事療養費　　　</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>NYUSKJJYOGAK3</name>
+	  <x>572</x>
+	  <y>248</y>
+	  <width>80</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Mar 2001 02:30:10 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Mar 2001 02:30:25 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>ZZZZZ9</format>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label707</name>
+	  <x>444</x>
+	  <y>220</y>
 	  <width>120</width>
 	  <height>18</height>
 	  <label>月−上限回数　　</label>
@@ -2835,12 +2939,28 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label708</name>
+	  <name>label705</name>
 	  <x>445</x>
-	  <y>280</y>
+	  <y>160</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>食事療養費　　　</label>
+	  <label>日−上限回数　　</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label881</name>
+	  <x>444</x>
+	  <y>248</y>
+	  <width>120</width>
+	  <height>18</height>
+	  <label>日−食事助成額　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3328,8 +3448,8 @@
 	<widget>
 	  <class>GtkNumberEntry</class>
 	  <name>NYUMJGNCNT4</name>
-	  <x>570</x>
-	  <y>250</y>
+	  <x>572</x>
+	  <y>220</y>
 	  <width>30</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -3631,22 +3751,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label805</name>
-	  <x>445</x>
-	  <y>160</y>
-	  <width>120</width>
-	  <height>18</height>
-	  <label>日−上限回数　　</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label806</name>
 	  <x>445</x>
 	  <y>190</y>
@@ -3663,9 +3767,25 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label807</name>
+	  <name>label808</name>
 	  <x>445</x>
-	  <y>250</y>
+	  <y>280</y>
+	  <width>120</width>
+	  <height>18</height>
+	  <label>食事療養費　　　</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label807</name>
+	  <x>444</x>
+	  <y>220</y>
 	  <width>120</width>
 	  <height>18</height>
 	  <label>月−上限回数　　</label>
@@ -3678,13 +3798,53 @@
 	</widget>
 
 	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>NYUSKJJYOGAK4</name>
+	  <x>572</x>
+	  <y>248</y>
+	  <width>80</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Mar 2001 02:30:10 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Mar 2001 02:30:25 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>ZZZZZ9</format>
+	</widget>
+
+	<widget>
 	  <class>GtkLabel</class>
-	  <name>label808</name>
+	  <name>label805</name>
 	  <x>445</x>
-	  <y>280</y>
+	  <y>160</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>食事療養費　　　</label>
+	  <label>日−上限回数　　</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label882</name>
+	  <x>444</x>
+	  <y>248</y>
+	  <width>120</width>
+	  <height>18</height>
+	  <label>日−食事助成額　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>

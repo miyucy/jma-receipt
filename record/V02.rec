@@ -85,6 +85,9 @@ V02	{
 					count	int;
 					item	varchar(28)[5];
 				};
+				NYUSKJJYOGAK1	{
+					value	number(6);
+				};
 			};
 			fixed31	{
 				GAIYKZFTNKBN2_CMB	{
@@ -159,6 +162,9 @@ V02	{
 					};
 					count	int;
 					item	varchar(28)[5];
+				};
+				NYUSKJJYOGAK2	{
+					value	number(6);
 				};
 			};
 			fixed30	{
@@ -235,6 +241,9 @@ V02	{
 					count	int;
 					item	varchar(28)[5];
 				};
+				NYUSKJJYOGAK3	{
+					value	number(6);
+				};
 			};
 			fixed29	{
 				GAIYKZFTNKBN4_CMB	{
@@ -309,6 +318,9 @@ V02	{
 					};
 					count	int;
 					item	varchar(28)[5];
+				};
+				NYUSKJJYOGAK4	{
+					value	number(6);
 				};
 			};
 		};

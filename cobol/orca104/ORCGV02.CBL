@@ -36,6 +36,7 @@
       *  01.00.07    NACL-太田    03/01/08  レセプト負担金額コンボ追加
       *  01.00.08    NACL-多々納  03/02/14  法別番号チェック区分追加
       *                                     一括入力へ変更
+      *  01.00.09    NACL-多々納  04/02/10  入院食事助成額追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -230,6 +231,8 @@
                            11  SPA-GMN-F1         PIC X(01).
                            11  SPA-GMN-NYUSKJRYYKBNMEI
                                                   PIC X(26).
+      *                食事助成額
+                       09  SPA-GMN-NYUSKJJYOGAK   PIC 9(06).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
@@ -789,6 +792,9 @@
                                        TO  SPA-GMN-NYUMJGNCNT    (IDX)
                    MOVE    HKN-NYUSKJRYYKBN    (IDX)
                                        TO  SPA-GMN-NYUSKJRYYKBN  (IDX)
+      *            食事助成額
+                   MOVE    HKN-NYUSKJJYOGAK    (IDX)
+                                       TO  SPA-GMN-NYUSKJJYOGAK    (IDX)
                    PERFORM VARYING IDY FROM   1   BY  1
                            UNTIL   IDY >      SPA-GMN-NYUSKJRYYKBN-MAX
                        IF      SPA-GMN-NYUSKJRYYKBN (IDX)
@@ -966,6 +972,9 @@
            MOVE    V02-NYUMJGNCNT(IDX) TO  SPA-GMN-NYUMJGNCNT (IDX)
            MOVE    V02-NYUSKJRYYKBN(IDX)
                                        TO  SPA-GMN-NYUSKJRYYKBN-G (IDX)
+      *    食事助成額
+           MOVE    V02-NYUSKJJYOGAK (IDX)
+                                       TO  SPA-GMN-NYUSKJJYOGAK (IDX)
       *
            .
        41011-GMN-SPA-TAU-EXT.
@@ -2027,6 +2036,9 @@
                                        TO  HKN-NYUMJGNCNT    (IDX)    
                MOVE    SPA-GMN-NYUSKJRYYKBN    (IDX)
                                        TO  HKN-NYUSKJRYYKBN  (IDX)   
+      *    食事助成額
+               MOVE    SPA-GMN-NYUSKJJYOGAK    (IDX)
+                                       TO  HKN-NYUSKJJYOGAK  (IDX)    
            END-PERFORM 
       *
            IF      FLG-HKNNUM              =   ZERO
@@ -2183,6 +2195,9 @@
                                         TO  V02-NYUMJGNCNT    (IDX)
                MOVE    SPA-GMN-NYUSKJRYYKBN-G  (IDX)
                                         TO  V02-NYUSKJRYYKBN  (IDX)
+      *    食事助成額
+               MOVE    SPA-GMN-NYUSKJJYOGAK     (IDX)
+                                        TO  V02-NYUSKJJYOGAK   (IDX)
            END-PERFORM
       *     
            PERFORM VARYING IDX FROM    1   BY  1
@@ -2494,6 +2509,8 @@
                 WHEN    37
                     MOVE  "NYUMJGNCNT1"     TO   MCP-WIDGET
                 WHEN    38
+                    MOVE  "NYUSKJJYOGAK1"   TO   MCP-WIDGET
+                WHEN    39
                     MOVE  "NYUSKJRYYKBN1"   TO   MCP-WIDGET
       * 
                 WHEN    50
@@ -2533,6 +2550,8 @@
                 WHEN    67
                     MOVE  "NYUMJGNCNT2"     TO   MCP-WIDGET
                 WHEN    68
+                    MOVE  "NYUSKJJYOGAK2"   TO   MCP-WIDGET
+                WHEN    69
                     MOVE  "NYUSKJRYYKBN2"   TO   MCP-WIDGET
       * 
                 WHEN    80
@@ -2572,6 +2591,8 @@
                 WHEN    97
                     MOVE  "NYUMJGNCNT3"     TO   MCP-WIDGET
                 WHEN    98
+                    MOVE  "NYUSKJJYOGAK3"   TO   MCP-WIDGET
+                WHEN    99
                     MOVE  "NYUSKJRYYKBN3"   TO   MCP-WIDGET
       * 
                 WHEN    110
@@ -2611,6 +2632,8 @@
                 WHEN    127
                     MOVE  "NYUMJGNCNT4"     TO   MCP-WIDGET
                 WHEN    128
+                    MOVE  "NYUSKJJYOGAK4"   TO   MCP-WIDGET
+                WHEN    129
                     MOVE  "NYUSKJRYYKBN4"   TO   MCP-WIDGET
             END-EVALUATE
       *
@@ -2708,6 +2731,8 @@
                    MOVE    37              TO  SPA-GMN-CUR
                WHEN    "NYUMJGNCNT1"
                    MOVE    38              TO  SPA-GMN-CUR
+               WHEN    "NYUSKJJYOGAK1"
+                   MOVE    39              TO  SPA-GMN-CUR
                WHEN    "NYUSKJRYYKBN1"
                    MOVE    20              TO  SPA-GMN-CUR
       *
@@ -2749,6 +2774,8 @@
                    MOVE    67              TO  SPA-GMN-CUR
                WHEN    "NYUMJGNCNT2"
                    MOVE    68              TO  SPA-GMN-CUR
+               WHEN    "NYUSKJJYOGAK2"
+                   MOVE    69              TO  SPA-GMN-CUR
                WHEN    "NYUSKJRYYKBN2"
                    MOVE    50              TO  SPA-GMN-CUR
       *
@@ -2791,6 +2818,8 @@
                    MOVE    97              TO  SPA-GMN-CUR
                WHEN    "NYUMJGNCNT3"
                    MOVE    98              TO  SPA-GMN-CUR
+               WHEN    "NYUSKJJYOGAK3"
+                   MOVE    99              TO  SPA-GMN-CUR
                WHEN    "NYUSKJRYYKBN3"
                    MOVE    80              TO  SPA-GMN-CUR
       *
@@ -2832,6 +2861,8 @@
                    MOVE    127             TO  SPA-GMN-CUR
                WHEN    "NYUMJGNCNT4"
                    MOVE    128             TO  SPA-GMN-CUR
+               WHEN    "NYUSKJJYOGAK4"
+                   MOVE    129             TO  SPA-GMN-CUR
                WHEN    "NYUSKJRYYKBN4"
                    MOVE    110             TO  SPA-GMN-CUR
       *
