@@ -84,6 +84,8 @@
            03  FLG-TOKUSYO2         PIC 9(01).
            03  FLG-SYOHORYO         PIC 9(01).
            03  FLG-SYOHOSENN        PIC 9(01).
+           03  FLG-SYOHO-CHK        PIC 9(01).
+           03  FLG-SYOHO-CHK2       PIC 9(01).
       *
            03  FLG-KOUHATU          PIC 9(01).
       *    内服
@@ -106,6 +108,8 @@
            03  FLG-ALL                  PIC 9(01).
            03  FLG-YAKUJYO              PIC 9(01).
            03  FLG-CHOKI                PIC 9(01).
+      *
+           03  FLG-SYOHOU-ERR           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -134,6 +138,8 @@
       *
            03  IDX-SYOHOU          PIC 9(04).
            03  IDX-KA              PIC 9(04).
+           03  IDX-CHOKI           PIC 9(04).
+           03  IDT                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -161,6 +167,8 @@
            03  WRK-KEIMAI          PIC 9(08).
            03  WRK-TENSUKEI        PIC 9(08).
            03  WRK-KAISU           PIC 9(04).
+      *
+           03  WRK-TEI-CNT         PIC 9(04).
       *
            03  WRK-IDX             PIC 9(04).
       *
@@ -770,12 +778,38 @@
        10023-SETHEN-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    全診療行為チェック処理
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *
+      *    包括まとめ入力は以下対象外
+           IF     (SPA-HKNCOMBINUM     =   "9999" )  OR
+                  (LNK-ORCSC-PG    NOT =   "K02"  )
+               CONTINUE
+           ELSE
+               MOVE    ZERO                TO  IDX-CHOKI
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX     >   200  )  OR
+                                 ((WRK-GMN-INPUTCD(IDX) =   SPACE) AND
+                                  (WRK-COM-INPUTCD(IDX) =   SPACE))
+      *            調基の判定
+                   IF     (WRK-COM-SRYKBN (IDX)    =   "27"  )  AND
+                          (WRK-COM-INPUTCD(IDX)    =   "120001810" OR
+                                                       "120001710")
+                       MOVE    IDX                 TO  IDX-CHOKI
+                   END-IF
+               END-PERFORM
+      *        調基が算定時の処方せん料とのチェック
+               IF      IDX-CHOKI           >   ZERO
+      *            処方せん料の算定チェック
+                   PERFORM 30024-SYOHOUSEN-CHK-SEC
+                   IF      FLG-SYOHOU-ERR  NOT =   ZERO
+                       MOVE    "1039"      TO  SPA-ERRCD
+                       MOVE    "1"         TO  WRK-COM-CUR (IDX-CHOKI)
+                   END-IF
+               END-IF
+           END-IF
       *
            .
        200-ALL-SYORI-EXT.
@@ -876,6 +910,7 @@
            MOVE    ZERO                TO  FLG-CHOKIKA2
       *
            MOVE    ZERO                TO  FLG-ZAIEND
+           MOVE    ZERO                TO  IDX-CHOKI
       *
            INITIALIZE                  WRK-ZAIKEI-AREA
            INITIALIZE                  TBL-NYUINDAY-AREA
@@ -1022,6 +1057,11 @@
                                                    "12"  )
                    MOVE    1                   TO  FLG-SINSATU
                END-IF
+      *        調基の判定
+               IF     (WRK-COM-INPUTCD(IDX)    =   "120001810" OR
+                                                   "120001710"  )
+                   MOVE    IDX                 TO  IDX-CHOKI
+               END-IF
       *
             END-IF
            END-PERFORM
@@ -1031,10 +1071,26 @@
       *    院内分
            PERFORM 3002-INNAI-SYORI-SEC
       *
-           IF      LNK-ORCSC-KIDCD     NOT =   SPACE
+           IF     (LNK-ORCSC-KIDCD     NOT =   SPACE )  OR
+                  (SPA-ERRCD           NOT =   SPACE )
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-               GO      TO      300-AUTO-SYORI-EXT
+           ELSE
+               PERFORM 3003-CHEK-SYORI-SEC
            END-IF
+      *
+           IF      LNK-ORCSC-PG        =   "K02"
+               MOVE    WRK-HENSYU-MEISYO   TO  SPA-SYOHO-MEI
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           END-IF
+      *
+           .
+       3000-JIDOU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   入力内容のチェック処理
+      *****************************************************************
+       3003-CHEK-SYORI-SEC              SECTION.
       *
       *    特定疾患処方管理加算処方箋料がある時、処方箋料があること
            IF      FLG-TOKUSYO1        =   1
@@ -1094,13 +1150,23 @@
                END-IF
            END-IF
       *
+      *    調基が算定時の処方せん料とのチェック
+           IF      IDX-CHOKI           >   ZERO
+      *        処方せん料の算定チェック
+               PERFORM 30024-SYOHOUSEN-CHK-SEC
+               IF      FLG-SYOHOU-ERR  NOT =   ZERO
+                   MOVE    "1039"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-CHOKI)
+               END-IF
+           END-IF
+      *
            IF      LNK-ORCSC-PG        =   "K02"
                MOVE    WRK-HENSYU-MEISYO   TO  SPA-SYOHO-MEI
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            END-IF
       *
            .
-       300-AUTO-SYORI-EXT.
+       3003-CHEK-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1323,6 +1389,8 @@
        3001-INGAI-SYORI-SEC              SECTION.
       *
            MOVE    ZERO                TO  FLG-SYOHOSENN
+           MOVE    ZERO                TO  FLG-SYOHO-CHK
+           MOVE    ZERO                TO  FLG-SYOHO-CHK2
       *
       *    処方箋を交付する診察料を算定している場合、算定なし
            IF      (LNK-ORCSC-ROUMANSEI-ARI    =   1  )  OR
@@ -1332,74 +1400,54 @@
                    (LNK-ORCSC-SYONIKA-ARI  NOT =   ZERO) OR
                    (LNK-ORCSC-SEIKATU-ARI2     >   ZERO) OR
                    (LNK-ORCSC-SEIKATU-ARI      >   ZERO)
-               GO      TO      3001-INGAI-SYORI-EXT
-           END-IF
-      *
-      *    ７種類以上確認後、しない場合は回数を変更する
-           IF      SPA-NAIFUKU-CHK     =   1
-               IF      SPA-NAIFUKU-OK      =   ZERO
-                   MOVE    6               TO  WRK-ZAICNT2
-               END-IF
-           END-IF
-      *
-      *    処方箋料
-           IF      FLG-KOUHATU         =   ZERO
-      *        後発医薬品を含まない
-               IF      WRK-ZAICNT2         >=  7
-                   MOVE    "120002810"         TO  WRK-SRYCD
-                   MOVE    "120003010"         TO  WRK-SRYCD2
-               ELSE
-                   MOVE    "120003010"         TO  WRK-SRYCD
-                   MOVE    "120002810"         TO  WRK-SRYCD2
-               END-IF
+               CONTINUE
            ELSE
-      *        後発医薬品を含む
-               IF      WRK-ZAICNT2         >=  7
-                   MOVE    "120002710"         TO  WRK-SRYCD
-                   MOVE    "120002910"         TO  WRK-SRYCD2
-               ELSE
-                   MOVE    "120002910"         TO  WRK-SRYCD
-                   MOVE    "120002710"         TO  WRK-SRYCD2
-               END-IF
+               MOVE    1                   TO  FLG-SYOHO-CHK
            END-IF
-      *
            IF    ((FLG-NAIYAK2         =   1    )  OR
                   (FLG-TONPUK2         =   1    )  OR
                   (FLG-GAIYAK2         =   1    ))   AND
                   (IDX-SYOHOU          =   ZERO )
-               IF      SPA-NAIFUKU-CHK     =   ZERO
+               MOVE    1                   TO  FLG-SYOHO-CHK2
+           END-IF
+      *    処方せん料算定あり
+           IF     (FLG-SYOHO-CHK       =   1   )  AND
+                  (FLG-SYOHO-CHK2      =   1   )
+               IF     (LNK-ORCSC-KIDCD     =   SPACE )  AND
+                      (SPA-CHOZAI-CHK      =   ZERO  )
+      *            調基算定チェック
+                   PERFORM 30019-CHOUKI-CHK-SEC
+               END-IF
+               IF     (SPA-NAIFUKU-CHK     =   ZERO  )  AND
+                      (SPA-ERRCD           =   SPACE )
       *            ７種類以上の場合、確認
                    IF      WRK-ZAICNT2         >=  7
       *            内服の薬剤逓減有りチェック
                        MOVE    1               TO  SPA-NAIFUKU-CHK
                        MOVE    "2002"          TO  LNK-ORCSC-KIDCD
-                       GO      TO      3001-INGAI-SYORI-EXT
                    END-IF
                END-IF
-      *
-               PERFORM 3002-KASAN-SYORI-SEC
-               IF      FLG-ERR             =   ZERO
-                   MOVE    "820"           TO  LNK-ORCSC-SRYSYUKBN
-                                                         (02 IDXS)
-                   MOVE    "80"            TO  LNK-ORCSC-SRYKBN
-                                                     (02 IDXS)
-                   MOVE    1               TO  FLG-SYOHOSENN
+               IF     (LNK-ORCSC-KIDCD     =   SPACE )  AND
+                      (SPA-ERRCD           =   SPACE )
+      *            処方せん料編集
+                   PERFORM 30011-SYOHOUSEN-SYORI-SEC
+               ELSE
+                   GO      TO      3001-INGAI-SYORI-EXT
                END-IF
            ELSE
       *        処方箋料を算定しない場合の処方箋料の有無
                IF      IDX-SYOHOU      NOT =   ZERO
                    MOVE    1               TO  FLG-SYOHOSENN
                END-IF
-               MOVE    SPACE               TO  WRK-SRYCD
            END-IF
       *
       *    主科の時のみ行う
-           IF      IDX-KA          NOT =   1
-               GO      TO      3001-INGAI-SYORI-EXT
-           END-IF
-      *
+           IF     (IDX-KA          NOT =   1  )  OR
       *    新規の時のみ行う
-           IF      LNK-ORCSC-SYORIFLG  =   1
+                  (LNK-ORCSC-SYORIFLG  =   1  )  OR
+      *    処方せん料算定時の時のみ行う
+                  (FLG-SYOHO-CHK       =   ZERO) OR
+                  (FLG-SYOHOSENN       =   ZERO)
                GO      TO      3001-INGAI-SYORI-EXT
            END-IF
       *
@@ -1461,6 +1509,80 @@
        3001-INGAI-SYORI-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    処方せん料編集処理
+      *****************************************************************
+       30011-SYOHOUSEN-SYORI-SEC            SECTION.
+      *
+      *    ７種類以上確認後、しない場合は回数を変更する
+           IF      SPA-NAIFUKU-CHK     =   1
+               IF      SPA-NAIFUKU-OK      =   ZERO
+                   MOVE    6               TO  WRK-ZAICNT2
+               END-IF
+           END-IF
+      *
+      *    処方箋料
+           IF      FLG-KOUHATU         =   ZERO
+      *        後発医薬品を含まない
+               IF      WRK-ZAICNT2         >=  7
+                   MOVE    "120002810"         TO  WRK-SRYCD
+                   MOVE    "120003010"         TO  WRK-SRYCD2
+               ELSE
+                   MOVE    "120003010"         TO  WRK-SRYCD
+                   MOVE    "120002810"         TO  WRK-SRYCD2
+               END-IF
+           ELSE
+      *        後発医薬品を含む
+               IF      WRK-ZAICNT2         >=  7
+                   MOVE    "120002710"         TO  WRK-SRYCD
+                   MOVE    "120002910"         TO  WRK-SRYCD2
+               ELSE
+                   MOVE    "120002910"         TO  WRK-SRYCD
+                   MOVE    "120002710"         TO  WRK-SRYCD2
+               END-IF
+           END-IF
+      *
+           PERFORM 3002-KASAN-SYORI-SEC
+           IF      FLG-ERR             =   ZERO
+               MOVE    "820"           TO  LNK-ORCSC-SRYSYUKBN
+                                                         (02 IDXS)
+               MOVE    "80"            TO  LNK-ORCSC-SRYKBN
+                                                         (02 IDXS)
+               MOVE    1               TO  FLG-SYOHOSENN
+           END-IF
+      *
+           .
+       30011-SYOHOUSEN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    調基算定チェック処理
+      *****************************************************************
+       30019-CHOUKI-CHK-SEC            SECTION.
+      *
+           MOVE    "120001810"         TO  WRK-SRYCD
+           PERFORM 3001-SANTEI-CHK-SEC
+           IF      FLG-ERR             =   1
+               IF      SPA-CHOZAI-CHK      =   ZERO
+                   MOVE    1               TO  SPA-CHOZAI-CHK
+                   MOVE    "K024"          TO  SPA-ERRCD
+               END-IF
+           ELSE
+               MOVE    "120001710"         TO  WRK-SRYCD
+               PERFORM 3001-SANTEI-CHK-SEC
+               IF      FLG-ERR             =   1
+                   IF      SPA-CHOZAI-CHK      =   ZERO
+                       MOVE    1               TO  SPA-CHOZAI-CHK
+                       MOVE    "K024"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+           MOVE    1                   TO  SPA-CHOZAI-CHK
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+           .
+       30019-CHOUKI-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    院外特定疾患加算チェック処理
       *****************************************************************
@@ -1665,11 +1787,19 @@
                MOVE    1                   TO  FLG-ALL
                PERFORM 3002-KASAN-SYORI-SEC
                IF      FLG-ERR             =   ZERO
-                   MOVE    "270"           TO  LNK-ORCSC-SRYSYUKBN
+      *            処方せん料の算定チェック
+                   PERFORM 30024-SYOHOUSEN-CHK-SEC
+                   IF      FLG-SYOHOU-ERR      =   ZERO
+                       MOVE    "270"           TO  LNK-ORCSC-SRYSYUKBN
                                                          (02 IDXS)
-                   MOVE    "27"            TO  LNK-ORCSC-SRYKBN
+                       MOVE    "27"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
-                   MOVE    1               TO  FLG-CHOKI
+                       MOVE    1               TO  FLG-CHOKI
+                   ELSE
+                       INITIALIZE             LNK-ORCSC-KASN-TBL2
+                                                         (02 IDXS)
+                       COMPUTE IDXS            =   IDXS   -   1
+                   END-IF
                END-IF
              END-IF
            END-IF
@@ -1765,6 +1895,141 @@
            END-IF
            .
        3002-INNAI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処方せん料の算定チェック処理
+      *****************************************************************
+       30024-SYOHOUSEN-CHK-SEC     SECTION.
+      *
+           IF      SPA-SYOHOU-CHK      =   1
+               MOVE    1                   TO  FLG-SYOHOU-ERR
+           ELSE
+               MOVE    ZERO                TO  FLG-SYOHOU-ERR
+           END-IF
+           MOVE    "120003010"         TO  WRK-SRYCD
+           PERFORM 300241-SRYACT-CHK-SEC
+      *
+           IF      FLG-SYOHOU-ERR      =   ZERO
+               MOVE    "120002810"         TO  WRK-SRYCD
+               PERFORM 300241-SRYACT-CHK-SEC
+           END-IF
+      *
+           IF      FLG-SYOHOU-ERR      =   ZERO
+               MOVE    "120002710"         TO  WRK-SRYCD
+               PERFORM 300241-SRYACT-CHK-SEC
+           END-IF
+      *
+           IF      FLG-SYOHOU-ERR      =   ZERO
+               MOVE    "120002910"         TO  WRK-SRYCD
+               PERFORM 300241-SRYACT-CHK-SEC
+           END-IF
+      *
+           IF      FLG-SYOHOU-ERR  NOT =   ZERO
+               IF      SPA-SYOHOU-CHK      =   ZERO
+                   MOVE    1               TO  SPA-SYOHOU-CHK
+      *??          MOVE    "K023"          TO  SPA-ERRCD
+               END-IF
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           END-IF
+           .
+       30024-SYOHOUSEN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    院内薬剤情報提供料処理
+      *****************************************************************
+       300241-SRYACT-CHK-SEC     SECTION.
+      *
+           MOVE    SPA-SRYYMD(7:2)     TO  IDN1
+      *
+           MOVE    ZERO                TO  WRK-TEI-CNT
+           PERFORM VARYING     IDT     FROM    1   BY  1
+                   UNTIL      (IDT     >   100 )  OR
+                              (LNK-ORCSC-TEI-SRYCD(IDT)
+                                           =   SPACE )
+               IF      WRK-SRYCD       =   LNK-ORCSC-TEI-SRYCD(IDT)
+                   ADD     LNK-ORCSC-TEI-KAISU(IDT)
+                                           TO  WRK-TEI-CNT
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE               TO  SRYACT-REC
+           INITIALIZE                      SRYACT-REC
+           MOVE    SPA-HOSPID          TO  SRY-HOSPID
+           MOVE    "2"                 TO  SRY-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SRY-PTID
+           MOVE    SPA-SRYYMD(1:6)     TO  SRY-SRYYM
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(1)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(2)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(3)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(4)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(5)
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY7"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACT-KEY7"       TO  ORC-DBPATH
+               PERFORM 900-SRYACT-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF
+           PERFORM UNTIL     (FLG-SRYACT   =   1 )  OR
+                             (FLG-SYOHOU-ERR   =   1   )
+      *        診療会計マスタ読み込み
+               MOVE    SPACE               TO  SRYACCT-REC
+               INITIALIZE                      SRYACCT-REC
+               MOVE    SRY-HOSPID          TO  ACCT-HOSPID
+               MOVE    SRY-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+               MOVE    SRY-PTID            TO  ACCT-PTID
+               MOVE    SRY-SRYKA           TO  ACCT-SRYKA
+               MOVE    SRY-SRYYM           TO  ACCT-SRYYM
+               MOVE    SRY-SRYKBN          TO  ACCT-SRYKBN
+               MOVE    SRY-ZAINUM          TO  ACCT-ZAINUM
+      *
+               MOVE    SRYACCT-REC         TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+                   PERFORM 940-SINACCT-READ-SEC
+               ELSE
+                   MOVE    1                   TO  FLG-SRYACCT
+                   INITIALIZE                      SRYACCT-REC
+               END-IF
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL      (IDX2        >   IDN1  )  OR
+                                  (FLG-SYOHOU-ERR  =   1 )
+      *            当日以前に算定
+                   IF      IDN1            =   IDX2
+                       IF      WRK-TEI-CNT     <=   ACCT-DAY (1 IDX2)
+                           COMPUTE ACCT-DAY (1 IDX2)
+                                                   =   ACCT-DAY (1 IDX2)
+                                                   -   WRK-TEI-CNT
+                       ELSE
+                           MOVE    ZERO            TO  ACCT-DAY (1 IDX2)
+                       END-IF
+                   END-IF
+                   IF      ACCT-DAY (1 IDX2)   >   ZERO
+                       MOVE    1               TO  FLG-SYOHOU-ERR
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "SRYACT-KEY7"       TO  ORC-DBPATH
+               PERFORM 900-SRYACT-NEXT-SEC
+           END-PERFORM
+      *
+           .
+       300241-SRYACT-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2080,7 +2345,7 @@
            IF     (FLG-NAIYAK          =   1    )  OR
                   (FLG-TONPUK          =   1    )  OR
                   (FLG-GAIYAK          =   1    )
-      *           調基が１であること
+      *        調基が１であること
                IF      LNK-ORCSC-CHOKI-FLG   =   1
       **********   IF      SPA-HOSPSBT         =   1
       *                病院
@@ -2093,12 +2358,19 @@
                    MOVE    1                   TO  FLG-ALL
                    PERFORM 3002-KASAN-SYORI-SEC
                    IF      FLG-ERR             =   ZERO
-                       MOVE    3               TO  FLG-DAY
-                       PERFORM 300212-NISUU-SET-SEC
-                       MOVE    "270"           TO  LNK-ORCSC-SRYSYUKBN
+                       PERFORM 30024-SYOHOUSEN-CHK-SEC
+                       IF      FLG-SYOHOU-ERR      =   ZERO
+                           MOVE    3               TO  FLG-DAY
+                           PERFORM 300212-NISUU-SET-SEC
+                           MOVE    "270"       TO  LNK-ORCSC-SRYSYUKBN
                                                          (02 IDXS)
-                       MOVE    "27"            TO  LNK-ORCSC-SRYKBN
+                           MOVE    "27"        TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
+                       ELSE
+                           INITIALIZE             LNK-ORCSC-KASN-TBL2
+                                                         (02 IDXS)
+                           COMPUTE IDXS            =   IDXS   -   1
+                       END-IF
                    ELSE
       *                病院で外来で算定済みかの判断
                        IF     (WRK-SRYCD           =   "120001710") AND

@@ -4012,18 +4012,18 @@
                END-IF
       *
       *        訂正の時、診療コードと回数をセット
-               IF     (LNK-SC95-KBN        =   "4" )  OR
+               IF     (LNK-SC95-KBN        =   "4" )  AND
                       (SRY-SRYCD (IDX)(1:1)    =   "1" )
-                   MOVE    SPACE               TO  TNS-TENSU-REC
-                   MOVE    SRY-SRYCD (IDX)     TO  TNS-SRYCD
-                   PERFORM 910-TENSU-READ-SEC
-                   IF      TNS-SANTEIRRKKBN    NOT=   ZERO
+      *!           MOVE    SPACE               TO  TNS-TENSU-REC
+      *            MOVE    SRY-SRYCD (IDX)     TO  TNS-SRYCD
+      *            PERFORM 910-TENSU-READ-SEC
+      *!           IF      TNS-SANTEIRRKKBN    NOT=   ZERO
                        ADD     1               TO  IDX-TEI
                        MOVE    SRY-SRYCD (IDX) TO  SPA-K02-TEI-SRYCD
                                                              (IDX-TEI)
                        MOVE    WRK-ZAIKAISU    TO  SPA-K02-TEI-KAISU
                                                              (IDX-TEI)
-                   END-IF
+      *!           END-IF
       *            ＣＴ・ＭＲＩの時、コード変更
                    IF      TNS-SRYSYUKBN   =   "723"  OR  "724"
                                            OR  "713"  OR  "714"

@@ -189,7 +189,7 @@
       *    自費の時、０とする
            IF      SPA-COM-SRYKBN (IDX)    =   "95"  OR  "96"
                IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "6" OR "7") OR
-                      (WRK-MOJI                    =   "8" )
+                      (WRK-MOJI                    =   "8" OR "7" )
                    CONTINUE
                ELSE
                    MOVE    "0"                 TO  WRK-MOJI

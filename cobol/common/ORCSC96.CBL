@@ -1025,6 +1025,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "長期投薬加算（処方せん料）は算定できません"
                                        TO  SPA-ERRMSG(29:)
+               WHEN    "1039"
+                   MOVE    "既に処方せん料が算定済みです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "調剤技術基本料は算定できません。"
+                                       TO  SPA-ERRMSG(31:)
       *!
                WHEN    "1050"
                    MOVE    "労災・自賠責、包括分入力の"
@@ -1140,6 +1145,16 @@
                    MOVE    "警告！既に外来で調剤技術基本料が算定済み"
                                        TO  SPA-ERRMSG
                    MOVE    "です。自動算定しません。"
+                                       TO  SPA-ERRMSG(41:)
+               WHEN    "K023"
+                   MOVE    "警告！既に処方せん料が算定済みです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "調基の自動算定はしません。"
+                                       TO  SPA-ERRMSG(37:)
+               WHEN    "K024"
+                   MOVE    "警告！既に調剤技術基本料が算定済みです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "処方せん料を算定しますので削除して下さい。"
                                        TO  SPA-ERRMSG(41:)
                WHEN    "K019"
                    MOVE    "警告！既に特処加算を算定済みです。"
