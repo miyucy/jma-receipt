@@ -3,7 +3,7 @@ N01	{
 		HKNJANUM	{
 			value	varchar(8);
 		};
-		BANTI	{
+		HKNJANAME	{
 			value	varchar(100);
 		};
 		HKNJANAMETAN1	{
@@ -15,13 +15,36 @@ N01	{
 		HKNJANAMETAN3	{
 			value	varchar(20);
 		};
+		HKNNUMCOMBO	{
+			HKNNUM	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[100];
+		};
+		KYURATE1COMBO	{
+			KYURATE1	{
+				value	varchar(30);
+			};
+			state   int;
+			count	int;
+			item	varchar(30)[3];
+		};
+		KYURATE2COMBO	{
+			KYURATE2	{
+				value	varchar(30);
+			};
+			state   int;
+			count	int;
+			item	varchar(30)[3];
+		};
 		POST	{
 			value	varchar(7);
 		};
 		ADRS	{
 			value	varchar(100);
 		};
-		HKNJANAME	{
+		BANTI	{
 			value	varchar(100);
 		};
 		TEL	{
@@ -30,22 +53,15 @@ N01	{
 		KIGO	{
 			value	varchar(40);
 		};
-		IDOYMD	{
-			value	varchar(10);
-		};
-		HKNNUMCOMBO	{
-			HKNNUM	{
-				value	varchar(30);
-			};
-			count	int;
-			item	varchar(30)[100];
-		};
 		IDOKBNCOBO	{
 			IDOKBN	{
 				value	varchar(30);
 			};
 			count	int;
 			item	varchar(30)[10];
+		};
+		IDOYMD	{
+			value	varchar(10);
 		};
 	};
 };

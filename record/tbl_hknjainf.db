@@ -6,6 +6,8 @@ tbl_hknjainf {
 	HKNJANAME_TAN2		varchar(40);
 	HKNJANAME_TAN3		varchar(40);
 	HKNNUM  			char(3);
+	KYURATE1  			number(3);
+	KYURATE2  			number(3);
 	POST        		varchar(7);
 	ADRS			    varchar(200);
 	BANTI 		    	varchar(200);

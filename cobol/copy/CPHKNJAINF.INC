@@ -37,6 +37,10 @@
            03  HKNJA-HKNJANAME-TAN3          PIC  X(40).
       * ›∏±»÷πÊ
            03  HKNJA-HKNNUM                  PIC  X(03).
+      *µÎ…’≥‰πÁ£±
+           03  HKNJA-KYURATE1                PIC  9(03).
+      *µÎ…’≥‰πÁ£≤
+           03  HKNJA-KYURATE2                PIC  9(03).
       *Õπ ÿ»÷πÊ
            03  HKNJA-POST                    PIC  X(07).
       *ΩªΩÍ

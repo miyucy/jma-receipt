@@ -33,6 +33,7 @@
       *                                     １００に変更
       *  02.00.00    NACL-多々納  03/07/07  異動情報追加
       *                                     一括入力へ変更
+      *  02.01.01    NACL-森脇    04/07/07  給付割合を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -94,6 +95,28 @@
                    07  SPA-GMN-IDOMAX         PIC 9(03).
       *            異動年月日
                    07  SPA-GMN-IDOYMD         PIC X(10).
+      *----(02.01.01)--ADD-START---
+      *            給付割合１
+                   07  SPA-GMN-KYURATE1-G.
+                       09  SPA-GMN-KYURATE1       PIC X(01).
+                       09  FILLER                 PIC X(01).
+                       09  SPA-GMN-KYURATE1MEI    PIC X(20).
+                   07  SPA-GMN-KYURATE1LST    OCCURS  3.
+                       09  SPA-GMN-KYURATE1L      PIC X(01).
+                       09  FILLER                 PIC X(01).
+                       09  SPA-GMN-KYURATE1MEIL   PIC X(20).
+                   07  SPA-GMN-KYURATE1MAX        PIC 9(03).
+      *            給付割合２
+                   07  SPA-GMN-KYURATE2-G.
+                       09  SPA-GMN-KYURATE2       PIC X(01).
+                       09  FILLER                 PIC X(01).
+                       09  SPA-GMN-KYURATE2MEI    PIC X(20).
+                   07  SPA-GMN-KYURATE2LST    OCCURS  3.
+                       09  SPA-GMN-KYURATE2L      PIC X(01).
+                       09  FILLER                 PIC X(01).
+                       09  SPA-GMN-KYURATE2MEIL   PIC X(20).
+                   07  SPA-GMN-KYURATE2MAX        PIC 9(03).
+      *----(02.01.01)--ADD-END-----
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-UPDFLG     PIC 9(01).
@@ -392,6 +415,17 @@
            MOVE    "3:解散"            TO  SPA-GMN-IDOKBNLST (3)
            MOVE    "4:合併後消滅"      TO  SPA-GMN-IDOKBNLST (4)
            MOVE    4                   TO  SPA-GMN-IDOMAX
+      *----(02.01.01)--ADD-START---
+      *    給付割合１、２
+           MOVE    "1:８割"            TO  SPA-GMN-KYURATE1LST (1)
+                                           SPA-GMN-KYURATE2LST (1)
+           MOVE    "2:９割"            TO  SPA-GMN-KYURATE1LST (2)
+                                           SPA-GMN-KYURATE2LST (2)
+           MOVE    "3:１０割"          TO  SPA-GMN-KYURATE1LST (3)
+                                           SPA-GMN-KYURATE2LST (3)
+           MOVE    3                   TO  SPA-GMN-KYURATE1MAX
+                                           SPA-GMN-KYURATE2MAX
+      *----(02.01.01)--ADD-END-----
       *
            MOVE    1                   TO  SPA-GMN-CUR
            . 
@@ -523,6 +557,7 @@
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
            PERFORM 900-HKNJAINF-INV-SEC
            IF      FLG-HKNJAINF        =   ZERO
+               DISPLAY "HKNJAINF-REC=[" HKNJAINF-REC "]"
                MOVE    1                   TO  SPA-NAI-UPDFLG 
                MOVE    HKNJA-HKNJANAME     TO  SPA-GMN-HKNJANAME
                MOVE    HKNJA-HKNJANAME-TAN1
@@ -543,6 +578,28 @@
                MOVE    SPA-NAI-IDOYMD      TO  WRK-SYMD
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG         TO  SPA-GMN-IDOYMD
+      *----(02.01.01)--ADD-START---
+               IF      HKNJA-HKNNUM    =   "060"
+      *            給付割合１
+                   EVALUATE    HKNJA-KYURATE1
+                   WHEN    080
+                       MOVE    "1"         TO  SPA-GMN-KYURATE1
+                   WHEN    090
+                       MOVE    "2"         TO  SPA-GMN-KYURATE1
+                   WHEN    100
+                       MOVE    "3"         TO  SPA-GMN-KYURATE1
+                   END-EVALUATE
+      *            給付割合２
+                   EVALUATE    HKNJA-KYURATE2
+                   WHEN    080
+                       MOVE    "1"         TO  SPA-GMN-KYURATE2
+                   WHEN    090
+                       MOVE    "2"         TO  SPA-GMN-KYURATE2
+                   WHEN    100
+                       MOVE    "3"         TO  SPA-GMN-KYURATE2
+                   END-EVALUATE
+               END-IF
+      *----(02.01.019--ADD-END-----
            ELSE
                MOVE    ZERO                TO  SPA-NAI-UPDFLG
                MOVE    SPACE               TO  SPA-GMN-KOUMOKU
@@ -599,6 +656,36 @@
                    END-IF
                END-PERFORM
            END-IF       
+      *----(02.01.01)--ADD-START---
+      *    給付割合１
+           IF      SPA-GMN-KYURATE1    =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-KYURATE1-G
+           ELSE
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       SPA-GMN-KYURATE1MAX
+                   IF      SPA-GMN-KYURATE1    =   SPA-GMN-KYURATE1L
+                                                               (IDX)
+                       MOVE    SPA-GMN-KYURATE1LST (IDX)
+                                               TO  SPA-GMN-KYURATE1-G
+                       MOVE    SPA-GMN-KYURATE1MAX  TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF       
+      *    給付割合２
+           IF      SPA-GMN-KYURATE2    =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-KYURATE2-G
+           ELSE
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       SPA-GMN-KYURATE2MAX
+                   IF      SPA-GMN-KYURATE2    =   SPA-GMN-KYURATE2L
+                                                               (IDX)
+                       MOVE    SPA-GMN-KYURATE2LST (IDX)
+                                               TO  SPA-GMN-KYURATE2-G
+                       MOVE    SPA-GMN-KYURATE2MAX  TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF       
+      *----(02.01.01)--ADD-END-----
       *
            MOVE    2                  TO  SPA-GMN-CUR
            .
@@ -621,8 +708,13 @@
            MOVE    N01-TEL             TO  SPA-GMN-TEL
            MOVE    N01-KIGO            TO  SPA-GMN-KIGO
       *
-           MOVE    N01-IDOKBN        TO  SPA-GMN-IDOKBN-G
+           MOVE    N01-IDOKBN          TO  SPA-GMN-IDOKBN-G
            MOVE    N01-IDOYMD          TO  SPA-GMN-IDOYMD
+      *
+      *----(02.01.01)--ADD-START---
+           MOVE    N01-KYURATE1        TO  SPA-GMN-KYURATE1-G
+           MOVE    N01-KYURATE2        TO  SPA-GMN-KYURATE2-G
+      *----(02.01.01)--ADD-END-----
       *
            .
       *
@@ -689,6 +781,18 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
+      *----(02.01.01)--ADD-START---
+      *    給付割合１
+           PERFORM 4112-KYURATE1-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    給付割合２
+           PERFORM 4112-KYURATE2-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *----(02.01.01)--ADD-END-----
            .
       *
        4102-KIHON-CHK-EXT.
@@ -850,8 +954,9 @@
            END-IF        
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    6                   TO  SPA-GMN-CUR
-           END-IF    
+               MOVE    6           TO  SPA-GMN-CUR
+           END-IF
+      *
            .
        4105-HKNNUM-CHK-EXT.
            EXIT.
@@ -989,6 +1094,68 @@
        4111-IDOYMD-CHK-EXT.
            EXIT.
       *
+      *----(02.01.01)--ADD-START---
+      *****************************************************************
+      *    給付割合１チェック
+      *****************************************************************
+       4112-KYURATE1-CHK-SEC            SECTION.
+      *
+           IF      SPA-GMN-KYURATE1    =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-KYURATE1-G
+           ELSE
+               MOVE    ZERO            TO  FLG-OK
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       SPA-GMN-KYURATE1MAX
+                   IF      SPA-GMN-KYURATE1    =   SPA-GMN-KYURATE1L
+                                                               (IDX)
+                       MOVE    SPA-GMN-KYURATE1LST (IDX)
+                                               TO  SPA-GMN-KYURATE1-G
+                       MOVE    1               TO  FLG-OK
+                       MOVE    SPA-GMN-KYURATE1MAX  TO  IDX
+                   END-IF
+               END-PERFORM
+      *
+               IF      FLG-OK              =   ZERO
+                   MOVE    "0009"          TO  SPA-ERRCD
+                   MOVE    14              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4112-KYURATE1-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    給付割合２チェック
+      *****************************************************************
+       4112-KYURATE2-CHK-SEC            SECTION.
+      *
+           IF      SPA-GMN-KYURATE2    =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-KYURATE2-G
+           ELSE
+               MOVE    ZERO            TO  FLG-OK
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       SPA-GMN-KYURATE2MAX
+                   IF      SPA-GMN-KYURATE2    =   SPA-GMN-KYURATE2L
+                                                               (IDX)
+                       MOVE    SPA-GMN-KYURATE2LST (IDX)
+                                               TO  SPA-GMN-KYURATE2-G
+                       MOVE    1               TO  FLG-OK
+                       MOVE    SPA-GMN-KYURATE2MAX  TO  IDX
+                   END-IF
+               END-PERFORM
+      *
+               IF      FLG-OK              =   ZERO
+                   MOVE    "0009"          TO  SPA-ERRCD
+                   MOVE    15              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4112-KYURATE2-CHK-EXT.
+           EXIT.
+      *
+      *----(02.01.01)--ADD-END-----
       *****************************************************************
       *    必須入力チェック処理
       *****************************************************************
@@ -1159,7 +1326,31 @@
                                        TO  HKNJA-HKNJANAME-TAN2 
            MOVE    SPA-GMN-HKNJANAMETAN3
                                        TO  HKNJA-HKNJANAME-TAN3 
-           MOVE    SPA-GMN-HKNNUM      TO  HKNJA-HKNNUM 
+           MOVE    SPA-GMN-HKNNUM      TO  HKNJA-HKNNUM
+      *----(02.01.01)--ADD-START---
+      *    給付割合１
+           EVALUATE    SPA-GMN-KYURATE1
+           WHEN    "1"
+               MOVE    80              TO  HKNJA-KYURATE1
+           WHEN    "2"
+               MOVE    90              TO  HKNJA-KYURATE1
+           WHEN    "3"
+               MOVE    100             TO  HKNJA-KYURATE1
+           WHEN    OTHER
+               MOVE    ZERO            TO  HKNJA-KYURATE1
+           END-EVALUATE
+      *    給付割合２
+           EVALUATE    SPA-GMN-KYURATE2
+           WHEN    "1"
+               MOVE    80              TO  HKNJA-KYURATE2
+           WHEN    "2"
+               MOVE    90              TO  HKNJA-KYURATE2
+           WHEN    "3"
+               MOVE    100             TO  HKNJA-KYURATE2
+           WHEN    OTHER
+               MOVE    ZERO            TO  HKNJA-KYURATE2
+           END-EVALUATE
+      *----(02.01.01)--ADD-END-----
            MOVE    SPA-GMN-POST        TO  HKNJA-POST 
            MOVE    SPA-GMN-ADRS        TO  HKNJA-ADRS 
            MOVE    SPA-GMN-BANTI       TO  HKNJA-BANTI 
@@ -1254,6 +1445,35 @@
            END-PERFORM
            MOVE    SPA-GMN-IDOMAX      TO  N01-IDOKBN-COUNT
       *
+      *----(02.01.01)--ADD-START---
+           PERFORM VARYING     IDX     FROM    1       BY  1
+                   UNTIL       IDX     >   SPA-GMN-KYURATE1MAX
+               MOVE    SPA-GMN-KYURATE1LST (IDX)
+                                           TO  N01-KYURATE1-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-KYURATE1MAX     TO  N01-KYURATE1-COUNT
+           PERFORM VARYING     IDX     FROM    1       BY  1
+                   UNTIL       IDX     >   SPA-GMN-KYURATE2MAX
+               MOVE    SPA-GMN-KYURATE2LST (IDX)
+                                           TO  N01-KYURATE2-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-KYURATE2MAX     TO  N01-KYURATE2-COUNT
+      *
+           IF      SPA-GMN-HKNNUM      =   "060"
+               MOVE    SPA-GMN-KYURATE1-G  TO  N01-KYURATE1
+               MOVE    SPA-GMN-KYURATE2-G  TO  N01-KYURATE2
+               MOVE    WIDGET-NORMAL       TO  N01-KYURATE1-STATE
+               MOVE    WIDGET-NORMAL       TO  N01-KYURATE2-STATE 
+           ELSE
+               MOVE    SPACE       TO  N01-KYURATE1
+               MOVE    SPACE       TO  N01-KYURATE2
+               MOVE    SPACE       TO  SPA-GMN-KYURATE1
+               MOVE    SPACE       TO  SPA-GMN-KYURATE2
+               MOVE    WIDGET-INSENSITIVE  TO  N01-KYURATE1-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  N01-KYURATE2-STATE 
+           END-IF
+      *----(02.01.01)--ADD-END-----
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -1292,6 +1512,11 @@
                WHEN    "0008"
                    MOVE    "保険者番号を入力して下さい"
                                                TO  SPA-ERRMSG
+      *----(02.01.01)--ADD-START---
+               WHEN    "0009"
+                   MOVE    "給付割合がありません。"
+                                               TO  SPA-ERRMSG
+      *----(02.01.01)--ADD-END-----
                WHEN    "0010"
                    MOVE    "未登録のデータなので削除できません"
                                                TO  SPA-ERRMSG
@@ -1391,9 +1616,15 @@
                 WHEN    11
                     MOVE    "KIGO"              TO   MCP-WIDGET
                 WHEN    12
-                    MOVE    "IDOKBN"          TO   MCP-WIDGET
+                    MOVE    "IDOKBN"            TO   MCP-WIDGET
                 WHEN    13
                     MOVE    "IDOYMD"            TO   MCP-WIDGET
+      *----(02.01.01)--ADD-START---
+                WHEN    14
+                    MOVE    "KYURATE1"          TO   MCP-WIDGET
+                WHEN    15
+                    MOVE    "KYURATE2"          TO   MCP-WIDGET
+      *----(02.01.01)--ADD-END-----
                 WHEN    99
                     MOVE    "B12"               TO   MCP-WIDGET
             END-EVALUATE
@@ -1419,7 +1650,17 @@
                WHEN    "HKNJANAMETAN3"
                    MOVE    6               TO  SPA-GMN-CUR
                WHEN    "HKNNUM"
+      *----(02.01.01)--UPD-START---
+                   IF      SPA-GMN-HKNNUM  =   "060"
+                        MOVE    14             TO  SPA-GMN-CUR
+                   ELSE
+                        MOVE    7              TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "KYURATE1"
+                   MOVE    15              TO  SPA-GMN-CUR
+               WHEN    "KYURATE2"
                    MOVE    7               TO  SPA-GMN-CUR
+      *----(02.01.01)--UPD-END-----
                WHEN    "POST"
                    MOVE    8               TO  SPA-GMN-CUR
                WHEN    "ADRS"
