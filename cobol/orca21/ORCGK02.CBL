@@ -6467,6 +6467,11 @@
            MOVE    "K02"               TO  LNK-SC93-PG
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê»»ÄêÍ­¤ê
            MOVE    SPA-SYONIKA-ARI2    TO  LNK-SC93-SYONIKA-ARI2
+      *    ¿²¤¿¤­¤êºßÂð²Ê»»ÄêÍ­¤ê
+           IF      (SPA-NETAKIRI-ARI   NOT =   ZERO )  OR
+                   (SPA-NETAKIRI-ARI2  NOT =   ZERO )
+               MOVE    1                   TO  LNK-SC93-NETAKIRI-ARI
+           END-IF
            CALL    "ORCSC93"           USING
                                        MCPAREA
                                        SPA-SCR-REC

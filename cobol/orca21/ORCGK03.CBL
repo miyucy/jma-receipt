@@ -3591,10 +3591,11 @@
            MOVE    LNK-WKSRY-SRYKBN (01)   TO  ACCT-SRYKBN
       *    診療種別により判定を追加する
            IF     (LNK-WKSRY-SRYSYUKBN (01) =  SPACE )  OR
-                  (LNK-WKSRY-SRYSYUKBN (01)(3:1)   =   "0" )
+                  (LNK-WKSRY-SRYSYUKBN (01) =   "210"  OR
+                                                "230" )
                MOVE    SPACE                   TO  WRK-SRYSYUKBN
            ELSE
-               MOVE    LNK-WKSRY-SRYSYUKBN (01)    TO  WRK-SRYSYUKBN
+               MOVE    LNK-WKSRY-SRYSYUKBN(01) TO  WRK-SRYSYUKBN
            END-IF
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
@@ -3760,7 +3761,8 @@
            PERFORM UNTIL     (FLG-SRYACT       =   1  )
       *        診療種別により判定を追加する
                IF     (SRY-SRYSYUKBN       =  SPACE )  OR
-                      (SRY-SRYSYUKBN(3:1)  =   "0"  )
+                      (SRY-SRYSYUKBN       =  "210"  OR
+                                              "230" )
                    MOVE    SPACE           TO  WRK-MAE-SRYSYUKBN
                ELSE
                    MOVE    SRY-SRYSYUKBN   TO  WRK-MAE-SRYSYUKBN

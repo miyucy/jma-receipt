@@ -5562,13 +5562,13 @@
            EVALUATE    SPA-K05-SYORI
                WHEN    "1"
                    MOVE    "black"         TO  K05-SYORINAME-STYLE
-                   MOVE    "［　追加　］"  TO  K05-SYORINAME-VALUE
+                   MOVE    "［  追加  ］"  TO  K05-SYORINAME-VALUE
                WHEN    "2"
                    MOVE    "blue"          TO  K05-SYORINAME-STYLE
-                   MOVE    "［　修正　］"  TO  K05-SYORINAME-VALUE
+                   MOVE    "［  修正  ］"  TO  K05-SYORINAME-VALUE
                WHEN    "3"
                    MOVE    "red"           TO  K05-SYORINAME-STYLE
-                   MOVE    "［　削除　］"  TO  K05-SYORINAME-VALUE
+                   MOVE    "［  削除  ］"  TO  K05-SYORINAME-VALUE
            END-EVALUATE
       *
            IF      FLG-END             =   ZERO

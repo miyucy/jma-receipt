@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/11/20  自賠責器材追加
       * 01.00.02     NACL-多々納  02/12/02  食事追加
+      * 01.00.03     NACL-多々納  02/12/17  算定チェック修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -471,6 +472,13 @@
            03  WRK-STDD                PIC 9(02).
            03  WRK-EDDD                PIC 9(02).
            03  WRK-SRYDD               PIC 9(02).
+      *   入院回数・日数
+           03  WRK-NYUIN-AREA.
+               05  WRK-NYU-KAI        PIC 9(03).
+               05  WRK-NYUINDAY       PIC 9(01)    OCCURS  31.
+           03  WRK-NYUIN-CHK-AREA.
+               05  WRK-NYUIN-KAI       PIC 9(03).
+           03  IDX-N2                  PIC 9(02).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -4058,7 +4066,6 @@
                END-IF
            END-PERFORM
       *
-      *
            IF      SPA-ERRCD           =   "0021"
       *        診療コード入力
                PERFORM 410119-SAIINPUT-SEC
@@ -4688,6 +4695,14 @@
                                        ORCSC92AREA
                                        SPA-SCR-REC
                                        SPA-AREA
+      *
+      *    剤内に入院回数がある時、併用算定と算定チェックをしない
+      **** IF      SPA-COM-NYU-KAI  (SPA-GMN-IDX)
+      ***                          NOT =   ZERO
+           IF      SPA-SYORIFLG        =   ZERO
+               MOVE    SPACE           TO  LNK-SC92-ERRCD(3)
+               MOVE    SPACE           TO  LNK-SC92-ERRCD(6)
+           END-IF
       *
            PERFORM VARYING     IDX-ERR FROM    1  BY  1
                    UNTIL      (IDX-ERR     >   10     )  OR
@@ -5805,6 +5820,11 @@
            MOVE    "K02N"              TO  LNK-SC93-PG
       *    小児科外来診療科算定有り
            MOVE    SPA-SYONIKA-ARI2    TO  LNK-SC93-SYONIKA-ARI2
+      *    寝たきり在宅科算定有り
+           IF      (SPA-NETAKIRI-ARI   NOT =   ZERO  )  OR
+                   (SPA-NETAKIRI-ARI2  NOT =   ZERO  )
+               MOVE    1                   TO  LNK-SC93-NETAKIRI-ARI
+           END-IF
            CALL    "ORCSC93"           USING
                                        MCPAREA
                                        SPA-SCR-REC
@@ -5842,6 +5862,7 @@
                           (SPA-COM-ZAIEND (IDX)    =   "1"    )  OR
                           (SPA-GMN-INPUTCD(IDX)(1:1)   =   "*")
                        MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
+                       INITIALIZE                      WRK-NYUIN-AREA
       *
       *                外用薬の時、入力回数を
                        IF     (SPA-COM-KAISU2(IDX) >   ZERO ) AND
@@ -5852,9 +5873,37 @@
                            MOVE    1              TO  WRK-KAISU
                        END-IF
                    END-IF
+      *            入院回数・日数
+                   IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "*"
+                       MOVE    SPA-COM-NYUIN-AREA (IDX)
+                                               TO  WRK-NYUIN-AREA
+                   END-IF
+                   IF     (WRK-NYU-KAI         =   ZERO )  AND
+                          (SPA-SYORIFLG        =   ZERO )
+                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-N2
+                       MOVE    1                   TO  WRK-NYUINDAY
+                                                           (IDX-N2)
+                       MOVE    WRK-KAISU           TO  WRK-NYU-KAI
+                   END-IF
+      *
                    MOVE    WRK-KAISU           TO  SPA-COM-KAISU (IDX)
+                   MOVE    WRK-NYUIN-AREA      TO  SPA-COM-NYUIN-AREA
+                                                                 (IDX)
+           END-PERFORM
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   WRK-GYO-MAX
+      *        入院日数がある時回数のチェック
+               IF     (SPA-COM-SANTEIRRKKBN (IDX)
+                                           NOT =   ZERO  )  AND
+                      (SPA-COM-NYU-KAI (IDX)   >   ZERO  )
+                   PERFORM 51019-NYUIN-SANCHK-SEC
                END-IF
            END-PERFORM
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      5101-TBLSAIHEN-EXT
+           END-IF
       *
       *    剤ごとの処理
       *    診療種別件数クリア
@@ -6020,6 +6069,78 @@
       *
            .
        51011-KAISU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院日数がある時回数のチェック処理
+      *****************************************************************
+       51019-NYUIN-SANCHK-SEC             SECTION.
+      *
+           MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
+           MOVE    SPA-SRYYMD          TO  WRK-SPA-SRYYMD
+      *
+           PERFORM VARYING IDX-N2      FROM    1   BY  1
+                   UNTIL  (IDX-N2      >   31  )   OR
+                          (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-COM-NYUINDAY(IDX IDX-N2)    >   ZERO
+      *
+                   MOVE    IDX-N2              TO  SPA-SRYYMD(7:2)
+      *            算定履歴チェック処理
+                   INITIALIZE                  ORCSC91AREA
+                   MOVE    SPA-SYORIFLG        TO  LNK-SC91-SYORIFLG
+                   MOVE    SPA-COM-INPUTCD (IDX)
+                                               TO  LNK-SC91-SRYCD
+                   MOVE    "3"                 TO  LNK-SC91-KBN
+                   MOVE    IDX                 TO  LNK-SC91-GMN-IDX
+                   MOVE    WRK-KAISU           TO  LNK-SC91-KAISU
+                   MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC91-TEISEI-AREA
+      *
+                   CALL    "ORCSC91"           USING    MCPAREA
+                                               ORCSC91AREA
+                                               SPA-SCR-REC
+                                               SPA-AREA
+                                               TNS-TENSU-REC
+                   MOVE    LNK-SC91-ERRCD      TO  SPA-ERRCD
+                   MOVE    LNK-SC91-ERRMSG     TO  SPA-ERRMSG2
+      *
+                   IF      SPA-ERRCD           =   SPACE
+      *                併用算定チェック
+      *                点数マスタ編集・基本チェック
+                       INITIALIZE                  ORCSC92AREA
+                       MOVE    "4"                 TO  LNK-SC92-KBN
+                       MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
+                       MOVE    "K02"               TO  LNK-SC92-PG
+                       MOVE    IDX                 TO  LNK-SC92-GMN-IDX
+                       MOVE    SPA-COM-INPUTCD (IDX)
+                                                   TO  LNK-SC92-SRYCD
+                       MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
+                       MOVE    SPA-15MIMAN-ARI     TO
+                                                   LNK-SC92-15MIMAN-ARI
+                       MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
+                       MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
+                       MOVE    SPA-LSTSRYKAMEI     TO
+                                                   LNK-SC92-LSTSRYKAMEI
+                       MOVE    SPA-K02-TEISEI-AREA TO
+                                                   LNK-SC92-TEISEI-AREA
+                       CALL    "ORCSC92"           USING
+                                                   MCPAREA
+                                                   ORCSC92AREA
+                                                   SPA-SCR-REC
+                                                   SPA-AREA
+                       IF       LNK-SC92-ERRCD(6)  NOT =   SPACE
+                           MOVE    LNK-SC92-ERRCD(6)   TO  SPA-ERRCD
+                           MOVE    LNK-SC92-ERRMSG     TO  SPA-ERRMSG2
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    "1"                 TO  SPA-COM-CUR (IDX)
+           END-IF
+      *
+           MOVE    WRK-SPA-SRYYMD      TO  SPA-SRYYMD
+           .
+       51019-NYUIN-SANCHK-EXT.
            EXIT.
       *****************************************************************
       *    剤ごとの処理
