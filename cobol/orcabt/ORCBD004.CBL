@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 00.00.01     NACL-森脇    03/04/25  NYUGAIKBNキーに追加
+      *                                     使用するHOSPIDの変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -407,50 +409,65 @@
                    OR    ( KEY-N-SRYKA NOT =   KEY-O-SRYKA )
                    OR    ( CNT-LINE        =   30 )
       *
-               MOVE    KEY-N-PTID      TO  KEY-O-PTID
-      *
-      *        患者情報読み込み
-               INITIALIZE                  PTINF-REC
-               MOVE    SMEI-HOSPID     TO  PTINF-HOSPID
-               MOVE    KEY-N-PTID      TO  PTINF-PTID
-               PERFORM 900-PTINF-READ-SEC
-      *
-      *        患者番号変換情報読み込み
-               INITIALIZE                  PTNUM-REC
-               MOVE    SMEI-HOSPID     TO  PTNUM-HOSPID
-               MOVE    KEY-N-PTID      TO  PTNUM-PTID
-               PERFORM 900-PTNUM-READ-SEC
-      *
-      *        患者番号
-               MOVE    PTNUM-PTNUM     TO  WRK-PTNUM(1)
-      *
-      *        氏名
-               MOVE    PTINF-NAME      TO  WRK-NAME(1)
-      *
-      *        性別
-               EVALUATE    PTINF-SEX
-                   WHEN    "1"
-                       MOVE    "男"    TO  WRK-SEX(1)
-                   WHEN    "2"
-                       MOVE    "女"    TO  WRK-SEX(1)
-               END-EVALUATE
-      *
-      *        生年月日
-               MOVE    PTINF-BIRTHDAY  TO  WRK-SYMD
-               PERFORM 31012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG     TO  WRK-BIRTHDAY(1)
+               IF        ( KEY-N-SRYKA NOT =   KEY-O-SRYKA )
+                   OR    ( KEY-N-PTID  NOT =   KEY-O-PTID )
+                   OR    ( CNT-LINE        =   ZERO )
+                   PERFORM 3201-BODY-PTINF-HEN-SEC
+               END-IF
       *
                PERFORM UNTIL ( FLG-END         =   1 )
                        OR    ( KEY-N-SRYKA NOT =   KEY-O-SRYKA )
                        OR    ( KEY-N-PTID  NOT =   KEY-O-PTID )
                        OR    ( CNT-LINE        =   30 )
-                    PERFORM 3201-BODY-NAIYO-HEN-SEC
+                   PERFORM 3201-BODY-NAIYO-HEN-SEC
                END-PERFORM
       *
            END-PERFORM
       *
            .
        320-BODY-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票編集患者処理
+      *****************************************************************
+       3201-BODY-PTINF-HEN-SEC     SECTION.
+      *
+      *    患者情報読み込み
+           INITIALIZE                  PTINF-REC
+           MOVE    WRK-PARA-HOSPID TO  PTINF-HOSPID
+           MOVE    KEY-N-PTID      TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
+      *
+      *    患者番号変換情報読み込み
+           INITIALIZE                  PTNUM-REC
+           MOVE    WRK-PARA-HOSPID TO  PTNUM-HOSPID
+           MOVE    KEY-N-PTID      TO  PTNUM-PTID
+           PERFORM 900-PTNUM-READ-SEC
+      *
+      *    患者番号
+           MOVE    PTNUM-PTNUM     TO  WRK-PTNUM(1)
+      *
+      *    氏名
+           MOVE    PTINF-NAME      TO  WRK-NAME(1)
+      *
+      *    性別
+           EVALUATE    PTINF-SEX
+               WHEN    "1"
+                   MOVE    "男"    TO  WRK-SEX(1)
+               WHEN    "2"
+                   MOVE    "女"    TO  WRK-SEX(1)
+           END-EVALUATE
+      *
+      *    生年月日
+           MOVE    PTINF-BIRTHDAY  TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG     TO  WRK-BIRTHDAY(1)
+      *
+           MOVE    KEY-N-PTID      TO  KEY-O-PTID
+      *
+           .
+       3201-BODY-PTINF-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -468,8 +485,8 @@
       *
       *        収納読み込み
                INITIALIZE                  SYU-REC
-               MOVE    SMEI-HOSPID     TO  SYU-HOSPID
-               MOVE    SMEI-NYUGAIKBN  TO  SYU-NYUGAIKBN
+               MOVE    WRK-PARA-HOSPID TO  SYU-HOSPID
+               MOVE    "2"             TO  SYU-NYUGAIKBN
                MOVE    KEY-N-PTID      TO  SYU-PTID
                MOVE    KEY-N-DENPNUM   TO  SYU-DENPNUM
                PERFORM 900-SYU-READ-SEC
@@ -530,24 +547,16 @@
                            MOVE    "診療訂正"  TO  WRK-JYOTAI(CNT-DENP)
                    END-EVALUATE
       *
-                   ADD     SMEI-SKYMONEY       TO  WRK-GSEIKYU(1)
-                                                   WRK-GSEIKYU(2)
-                                                   WRK-GSEIKYU(3)
-                                                   WRK-GSEIKYU(4)
+                   ADD     SMEI-SKYMONEY       TO  WRK-GSEIKYU(4)
       *
-                   ADD     SMEI-NYUHEN-MONEY   TO  WRK-GRYOSYU(1)
-                                                   WRK-GRYOSYU(2)
-                                                   WRK-GRYOSYU(3)
-                                                   WRK-GRYOSYU(4)
+                   ADD     SMEI-NYUHEN-MONEY   TO  WRK-GRYOSYU(4)
       *
                    COMPUTE WRK-GMISYU(4)       =   WRK-GSEIKYU(4)
                                                -   WRK-GRYOSYU(4)
       *            請求金額
                    MOVE    SMEI-SKYMONEY       TO  WRK-SEIKYU(CNT-DENP)
-      *
       *            領収金額
                    MOVE    SMEI-NYUHEN-MONEY   TO  WRK-RYOSYU(CNT-DENP)
-      *
       *            未収金額
                    MOVE    WRK-GMISYU(4)       TO  WRK-MISYU(CNT-DENP)
       *
@@ -590,11 +599,27 @@
                MOVE    WRK-MISYU(IDZ)      TO  WRK-Z9
                MOVE    WRK-Z9              TO  HCM07-MISYU(CNT-LINE)
                MOVE    WRK-JYOTAI(IDZ)     TO  HCM07-JYOTAI(CNT-LINE)
+      *
+               COMPUTE WRK-GSEIKYU (1)
+                   =   WRK-GSEIKYU (1)     +   WRK-SEIKYU(IDZ)
+               COMPUTE WRK-GSEIKYU (2)
+                   =   WRK-GSEIKYU (2)     +   WRK-SEIKYU(IDZ)
+               COMPUTE WRK-GSEIKYU (3)
+                   =   WRK-GSEIKYU (3)     +   WRK-SEIKYU(IDZ)
+               COMPUTE WRK-GRYOSYU (1)
+                   =   WRK-GRYOSYU (1)     +   WRK-RYOSYU(IDZ)
+               COMPUTE WRK-GRYOSYU (2)
+                   =   WRK-GRYOSYU (2)     +   WRK-RYOSYU(IDZ)
+               COMPUTE WRK-GRYOSYU (3)
+                   =   WRK-GRYOSYU (3)     +   WRK-RYOSYU(IDZ)
            END-PERFORM
       *
-           ADD     WRK-GMISYU(4)   TO  WRK-GMISYU(1)
-                                       WRK-GMISYU(2)
-                                       WRK-GMISYU(3)
+           COMPUTE WRK-GMISYU (1)
+               =   WRK-GMISYU (1)      +   WRK-GMISYU(4)
+           COMPUTE WRK-GMISYU (2)
+               =   WRK-GMISYU (2)      +   WRK-GMISYU(4)
+           COMPUTE WRK-GMISYU (3)
+               =   WRK-GMISYU (3)      +   WRK-GMISYU(4)
       *
            MOVE    SMEI-SRYKA      TO  KEY-N-SRYKA
            MOVE    SMEI-PTID       TO  KEY-N-PTID
@@ -846,9 +871,10 @@
        900-SMEI2-SELECT-SEC        SECTION.
       *
            INITIALIZE                  SMEI2-REC
-           MOVE    SMEI-HOSPID     TO  SMEI2-HOSPID
+           MOVE    WRK-PARA-HOSPID TO  SMEI2-HOSPID
            MOVE    SMEI-DENPNUM    TO  SMEI2-DENPNUM
            MOVE    SMEI-DENPEDANUM TO  SMEI2-DENPEDANUM
+           MOVE    "2"             TO  SMEI2-NYUGAIKBN
            MOVE    SMEI2-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "SYUMEI-KEY5"   TO  ORC-DBPATH
