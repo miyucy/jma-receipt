@@ -32,6 +32,8 @@
       *  01.01.02    MCC-藤原     02.02.13  保険組合せを３から１０に変更
       *  01.00.03    NACL-藤原    03.03.12  補助区分の追加
       *  01.00.04    NACL-門脇    03.03.03  剤番号桁修正対応
+      *  01.00.05    NACL-門脇    04.03.17  合計点数情報（ぶん点・公費分離
+      *                                     区分編集用）を使用するよう修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -247,21 +249,22 @@
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
-           IF (RECE02-TOTALTEN(2)       =      ZERO)    AND
-              (RECE02-TOTALTEN(3)       =      ZERO)
+           IF (RECE02-HENTOTALTEN(2)       =      ZERO)    AND
+              (RECE02-HENTOTALTEN(3)       =      ZERO)
                CONTINUE
            ELSE
-               IF (RECE02-TOTALTEN(2)   NOT =  ZERO)              AND
-                  (RECE02-TOTALTEN(1)   NOT =  RECE02-TOTALTEN(2))
+               IF (RECE02-HENTOTALTEN(2)   NOT =  ZERO)              AND
+                  (RECE02-HENTOTALTEN(1)   NOT =  RECE02-HENTOTALTEN(2))
                    MOVE      1          TO     BUN-IDX
                    PERFORM   RECE04-HENSYU-SEC
                END-IF
-               IF (RECE02-TOTALTEN(3)   NOT =  ZERO)              AND
-                  (RECE02-TOTALTEN(1)   NOT =  RECE02-TOTALTEN(3))
+               IF (RECE02-HENTOTALTEN(3)   NOT =  ZERO)              AND
+                  (RECE02-HENTOTALTEN(1)   NOT =  RECE02-HENTOTALTEN(3))
                    MOVE      2          TO     BUN-IDX
                    PERFORM   RECE04-HENSYU-SEC
                END-IF
            END-IF
+      *
            .
        210-HENSYU-EXT.
            EXIT.

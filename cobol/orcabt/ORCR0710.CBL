@@ -61,6 +61,7 @@
       *  01.00.24    NACL-ÌçÏÆ    04/01/20  ¼«Èñ¥ì¥»Å¦Í×ÍóÊÔ½¸½¤Àµ
       *  01.00.25    NACL-ÌçÏÆ    04/01/26  ¥«¥Ê»áÌ¾¤ÎÄ¹¤µÅù½¤Àµ
       *  01.00.26    NACL-Æ£¸¶    04/03/05  ÊÝ¸±ÍúÎò¤ËÊÝ¸±¼ÔÈÖ¹æ¤òÄÉ²Ã
+      *  01.00.27    NACL-ÌçÏÆ    04/03/17  Ê¡»ã¥ì¥»ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -631,6 +632,8 @@
                05  WRK-TENSUZ      PIC  ZZZZZZZ.
            03  WRK-JINISSU.
                05  WRK-JINISSUZ    PIC  ZZ.
+           03  WRK-JINISSU2.
+               05  WRK-JINISSU2Z   PIC  Z9.
       *
        01  WRK-CNT                 PIC  9(5).
       *
@@ -2497,9 +2500,15 @@
                END-IF
                IF  RECE62-JNISSU (IDX1)
                                    NOT =   RECE62-JNISSU (IDX3)
+                 IF  RECE62-FUKUSHIFLG  =  "1"
+                   MOVE    RECE62-JNISSU (IDX3)
+                                           TO  WRK-JINISSU2Z
+                   MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
+                 ELSE
                    MOVE    RECE62-JNISSU (IDX3)
                                            TO  WRK-JINISSUZ
                    MOVE    WRK-JINISSU     TO  HC06-JINISSU2
+                 END-IF
                END-IF
       *        ¸©Ã±ÍÑ¹àÌÜ
                IF      FLG-RECE67           =   ZERO
@@ -3553,6 +3562,18 @@
                                            TO  WRK-KGK7
                    MOVE    WRK-KGK7        TO  HC06-SYOFTNMONEY(2)
                END-IF
+           ELSE
+               IF      RECE62-FUKUSHIFLG-SKJ(1)   =    "1"
+                 MOVE    RECE62-SHOKUJINISSU (IDX2)
+                                             TO  WRK-KGK2 
+                 MOVE    WRK-KGK2            TO  HC06-SYONISSU(2)
+                 MOVE    RECE62-SHOKUJIRYOYOHI (IDX2)
+                                             TO  WRK-KGK6
+                 MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN(2)
+                 MOVE    RECE62-SHOKUJIFTN (IDX2)
+                                             TO  WRK-KGK7
+                 MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY(2)
+               END-IF
            END-IF
       *     
       *    ¸øÈñ£²
@@ -3577,6 +3598,12 @@
                                       NOT =   RECE62-TOTALTEN (IDX1)
                MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
+           ELSE
+             IF      RECE62-FUKUSHIFLG      =   "1"
+             AND     RECE62-TOTALTEN (IDX3) =   ZERO
+               MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK6
+               MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
+             END-IF
            END-IF
       *         
            IF    ( RECE62-SHOKUJINISSU (IDX3) >   ZERO                 )
@@ -3599,6 +3626,18 @@
                    MOVE    RECE62-SHOKUJIFTN (IDX3)
                                                TO  WRK-KGK7
                    MOVE    WRK-KGK7        TO  HC06-SYOFTNMONEY(3)
+               END-IF
+           ELSE
+               IF      RECE62-FUKUSHIFLG-SKJ(2)   =    "1"
+                 MOVE    RECE62-SHOKUJINISSU (IDX3)
+                                             TO  WRK-KGK2 
+                 MOVE    WRK-KGK2            TO  HC06-SYONISSU(3)
+                 MOVE    RECE62-SHOKUJIRYOYOHI (IDX3)
+                                             TO  WRK-KGK6
+                 MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN(3)
+                 MOVE    RECE62-SHOKUJIFTN (IDX3)
+                                             TO  WRK-KGK7
+                 MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY(3)
                END-IF
            END-IF
       *

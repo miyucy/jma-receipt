@@ -57,6 +57,7 @@
       *  01.00.20    NACL-藤原    04/03/05  保険履歴に保険者番号を追加
       *  01.00.21    NACL-藤原    04/03/05  主病名のみのときシス管の設定
       *                                     により区切り線を出力する
+      *  01.00.22    NACL-門脇    04/03/17  福祉レセ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -573,6 +574,8 @@
                05  WRK-TENSUZ      PIC  ZZZZZZZ.
            03  WRK-JINISSU.
                05  WRK-JINISSUZ    PIC  ZZ.
+           03  WRK-JINISSU2.
+               05  WRK-JINISSU2Z   PIC  Z9.
       *
        01  WRK-CNT                 PIC  9(5).
       *
@@ -2450,9 +2453,15 @@
                END-IF
                IF  RECE02-JNISSU (IDX1)
                                    NOT =   RECE02-JNISSU (IDX3)
+                 IF  RECE02-FUKUSHIFLG  =  "1"
+                   MOVE    RECE02-JNISSU (IDX3)
+                                           TO  WRK-JINISSU2Z
+                   MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
+                 ELSE
                    MOVE    RECE02-JNISSU (IDX3)
                                            TO  WRK-JINISSUZ
                    MOVE    WRK-JINISSU     TO  HC06-JINISSU2
+                 END-IF
                END-IF
       *        県単用項目
                IF      FLG-RECE11           =   ZERO
@@ -3245,6 +3254,12 @@
                                       NOT =   RECE02-TOTALTEN (IDX1)
                MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
+           ELSE
+             IF      RECE02-FUKUSHIFLG      =   "1"
+             AND     RECE02-TOTALTEN (IDX3) =   ZERO
+               MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
+               MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
+             END-IF
            END-IF
       *
       *    県単用項目

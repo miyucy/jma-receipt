@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    04.03.17  合計点数情報（ぶん点・公費分離
+      *                                     区分編集用）を使用するよう修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -246,17 +248,17 @@
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
-           IF (RECE62-TOTALTEN(2)       =      ZERO)    AND
-              (RECE62-TOTALTEN(3)       =      ZERO)
+           IF (RECE62-HENTOTALTEN(2)       =      ZERO)    AND
+              (RECE62-HENTOTALTEN(3)       =      ZERO)
                CONTINUE
            ELSE
-               IF (RECE62-TOTALTEN(2)   NOT =  ZERO)              AND
-                  (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(2))
+               IF (RECE62-HENTOTALTEN(2)   NOT =  ZERO)              AND
+                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(2))
                    MOVE      1          TO     BUN-IDX
                    PERFORM   RECE64-HENSYU-SEC
                END-IF
-               IF (RECE62-TOTALTEN(3)   NOT =  ZERO)              AND
-                  (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(3))
+               IF (RECE62-HENTOTALTEN(3)   NOT =  ZERO)              AND
+                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(3))
                    MOVE      2          TO     BUN-IDX
                    PERFORM   RECE64-HENSYU-SEC
                END-IF

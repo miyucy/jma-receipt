@@ -146,6 +146,7 @@
       *  01.02.40   NACL-門脇     04/02/05  診療コード＊数量の累計編集
       *  01.02.41   NACL-門脇     04/02/10  生保の一部負担金額記載修正
       *  01.02.42   NACL-藤原     04/02/18  社保のＯＣＲ印刷をシス管より決定
+      *  01.02.43   NACL-門脇     04/03/17  福祉レセ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -256,6 +257,7 @@
            03  FLG-SHOSAISIN                           PIC 9(01).       XXX
            03  FLG-SET                                 PIC 9(01).
            03  FLG-HOUSIJI-COM                         PIC 9(01).
+           03  FLG-FUKUSHI                             PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -977,6 +979,9 @@
            INITIALIZE                   FLG-KHNTEN-AREA
            INITIALIZE                   FLG-SAISIN-AREA
            INITIALIZE                   CNT-SAISIN-AREA
+      *
+           MOVE      ZERO       TO      FLG-FUKUSHI
+      *
            PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL     (IDX      >   20)  OR
                                 (RECE02-SRYKA(IDX)   =   SPACE)
@@ -1081,6 +1086,9 @@
                            OR      RECE02-HKNCOMBI (IDX1)  =   ZERO 
                        IF      ACCT-HKNCOMBI   =
                                                RECE02-HKNCOMBI (IDX1)
+      *
+                           PERFORM    KUMIAWASE-HANBETU-SEC
+      *
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
       *
@@ -1150,6 +1158,35 @@
            EXIT.
       *
       *****************************************************************
+      *    組み合わせ判別（福祉用）主保険＋全国公費＋地方公費
+      *****************************************************************
+       KUMIAWASE-HANBETU-SEC               SECTION.
+      *
+           MOVE     ZERO      TO      FLG-FUKUSHI
+      *
+           IF      IDZ             =   1 
+             EVALUATE   SYS-1001-PREFNUM
+      *
+               WHEN    "38"
+      *
+                 IF ( RECE02-KOHNUMHC(IDX1 1)(1:1)  =   "0"     )  AND
+                    ( RECE02-KOHNUMHC(IDX1 2)(1:1)
+                                             >=  "1" AND <=  "8")
+      *
+                      MOVE     1       TO      FLG-FUKUSHI
+      *
+                      MOVE    "1"      TO      RECE02-FUKUSHIFLG
+      *
+                 END-IF
+      *
+             END-EVALUATE
+           END-IF
+      *
+           .
+       KUMIAWASE-HANBETU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    特記事項の編集
       *****************************************************************
        TOKKI-HENSYU-SEC                 SECTION.
@@ -1211,8 +1248,16 @@
                    COMPUTE  RECE02-TOTALTEN(1) =  RECE02-TOTALTEN(1) -
                                                  (ACCT-ZAITEN  *  
                                                   ACCT-ZAIKAISU)
+                   COMPUTE  RECE02-HENTOTALTEN(1) 
+                                            =  RECE02-HENTOTALTEN(1) -
+                                                 (ACCT-ZAITEN  *  
+                                                  ACCT-ZAIKAISU)
                  ELSE
                    COMPUTE  RECE02-TOTALTEN(1) =  RECE02-TOTALTEN(1) +
+                                                 (ACCT-ZAITEN  *  
+                                                  ACCT-ZAIKAISU)
+                   COMPUTE  RECE02-HENTOTALTEN(1) 
+                                            =  RECE02-HENTOTALTEN(1) +
                                                  (ACCT-ZAITEN  *  
                                                   ACCT-ZAIKAISU)
                  END-IF
@@ -1243,17 +1288,34 @@
                   IF        ACCT-SRYKBN        =    "95"   OR  "96"
                      CONTINUE
                   ELSE
-                    IF        ACCT-SRYCDTOTAL    =    630010002
-                      COMPUTE  RECE02-TOTALTEN(KH-IDX) =
+                     IF        ACCT-SRYCDTOTAL    =    630010002
+                         COMPUTE  RECE02-HENTOTALTEN(KH-IDX) =
+                                        RECE02-HENTOTALTEN(KH-IDX) -
+                                             (ACCT-ZAITEN * 
+                                              ACCT-ZAIKAISU)
+                     ELSE
+                         COMPUTE  RECE02-HENTOTALTEN(KH-IDX) =
+                                        RECE02-HENTOTALTEN(KH-IDX) +
+                                             (ACCT-ZAITEN * 
+                                              ACCT-ZAIKAISU)
+                     END-IF
+                     IF     FLG-FUKUSHI  =   1
+                     AND    RECE02-KOHNUM(KH-IDX - 1)(1:1)
+                                             >=  "1" AND <=  "8"
+                         CONTINUE
+                     ELSE
+                       IF        ACCT-SRYCDTOTAL    =    630010002
+                         COMPUTE  RECE02-TOTALTEN(KH-IDX) =
                                               RECE02-TOTALTEN(KH-IDX) -
                                              (ACCT-ZAITEN * 
                                               ACCT-ZAIKAISU)
-                    ELSE
-                      COMPUTE  RECE02-TOTALTEN(KH-IDX) =
+                       ELSE
+                         COMPUTE  RECE02-TOTALTEN(KH-IDX) =
                                               RECE02-TOTALTEN(KH-IDX) +
                                              (ACCT-ZAITEN * 
                                               ACCT-ZAIKAISU)
-                    END-IF
+                       END-IF
+                     END-IF
                   END-IF
                  END-IF
                END-IF  
@@ -2073,14 +2135,9 @@
            END-IF
       *    インデックス２
            MOVE          ZERO       TO     BUN-IDX2
-      **>  IF  RECE02-TOTALTEN(2)       =      ZERO                     XXX
-      **>      CONTINUE
-      **>  ELSE
-      **>      IF (RECE02-TOTALTEN(2)   NOT =  ZERO)              AND
-      **>         (RECE02-TOTALTEN(1)   NOT =  RECE02-TOTALTEN(2))
-                   MOVE       IDX1              TO   HC-IDX
-                   PERFORM    VARYING   IDX2    FROM   1   BY   1
-                      UNTIL   (IDX2      >       4)
+           MOVE          IDX1       TO     HC-IDX
+           PERFORM    VARYING   IDX2    FROM   1   BY   1
+              UNTIL   (IDX2      >       4)
                      IF    RECE02-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(1)
@@ -2089,26 +2146,25 @@
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     XXX
                                     UNTIL    ACCT-IDX   >   31          XXX
                                  IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   XXX
-                                     MOVE  "1"  TO                      XXX
-                                        TBL-JNISSU-DAY(2 ACCT-IDX)      XXX
+                                    IF     FLG-FUKUSHI  =   1
+                                    AND    RECE02-KOHNUM(1)(1:1)
+                                             >=  "1" AND <=  "8"
+                                       CONTINUE
+                                    ELSE
+                                       MOVE  "1"  TO
+                                            TBL-JNISSU-DAY(2 ACCT-IDX)
+                                    END-IF
                                  END-IF                                 XXX
                                END-PERFORM                              XXX
                            END-IF                                       XXX
                       END-IF
                      END-IF
-                   END-PERFORM
-      **>      END-IF
-      **>  END-IF
+           END-PERFORM
       *    インデックス３
            MOVE          ZERO       TO     BUN-IDX3
-      **>  IF  RECE02-TOTALTEN(3)       =      ZERO                     XXX
-      **>      CONTINUE
-      **>  ELSE
-      **>      IF (RECE02-TOTALTEN(3)   NOT =  ZERO)              AND
-      **>         (RECE02-TOTALTEN(1)   NOT =  RECE02-TOTALTEN(3))
-                   MOVE       IDX1              TO   HC-IDX
-                   PERFORM    VARYING   IDX2    FROM   1   BY   1
-                      UNTIL   (IDX2      >       4)
+           MOVE          IDX1       TO     HC-IDX
+           PERFORM    VARYING   IDX2    FROM   1   BY   1
+              UNTIL   (IDX2      >       4)
                      IF    RECE02-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(2)
@@ -2117,26 +2173,25 @@
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     XXX
                                     UNTIL    ACCT-IDX   >   31          XXX
                                  IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   XXX
-                                     MOVE  "1"  TO                      XXX
-                                        TBL-JNISSU-DAY(3 ACCT-IDX)      XXX
+                                    IF     FLG-FUKUSHI  =   1
+                                    AND    RECE02-KOHNUM(2)(1:1)
+                                             >=  "1" AND <=  "8"
+                                       CONTINUE
+                                    ELSE
+                                       MOVE  "1"  TO
+                                            TBL-JNISSU-DAY(3 ACCT-IDX)
+                                    END-IF
                                  END-IF                                 XXX
                                END-PERFORM                              XXX
                            END-IF                                       XXX
                       END-IF
                      END-IF
-                   END-PERFORM
-      **>      END-IF
-      **>  END-IF
+           END-PERFORM
       *    インデックス４
            MOVE          ZERO       TO     BUN-IDX4
-      **>  IF  RECE02-TOTALTEN(4)       =      ZERO                     XXX
-      **>      CONTINUE
-      **>  ELSE
-      **>      IF (RECE02-TOTALTEN(4)   NOT =  ZERO)              AND
-      **>         (RECE02-TOTALTEN(1)   NOT =  RECE02-TOTALTEN(4))
-                   MOVE       IDX1              TO   HC-IDX
-                   PERFORM    VARYING   IDX2    FROM   1   BY   1
-                      UNTIL   (IDX2      >       4)
+           MOVE          IDX1       TO     HC-IDX
+           PERFORM    VARYING   IDX2    FROM   1   BY   1
+              UNTIL   (IDX2      >       4)
                      IF    RECE02-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(3)
@@ -2145,26 +2200,25 @@
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     XXX
                                     UNTIL    ACCT-IDX   >   31          XXX
                                  IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   XXX
-                                     MOVE  "1"  TO                      XXX
-                                        TBL-JNISSU-DAY(4 ACCT-IDX)      XXX
+                                    IF     FLG-FUKUSHI  =   1
+                                    AND    RECE02-KOHNUM(3)(1:1)
+                                             >=  "1" AND <=  "8"
+                                       CONTINUE
+                                    ELSE
+                                       MOVE  "1"  TO
+                                            TBL-JNISSU-DAY(4 ACCT-IDX)
+                                    END-IF
                                  END-IF                                 XXX
                                END-PERFORM                              XXX
                            END-IF                                       XXX
                       END-IF
                      END-IF
-                   END-PERFORM
-      **>      END-IF
-      **>  END-IF
+           END-PERFORM
       *    インデックス５
            MOVE          ZERO       TO     BUN-IDX5
-      **>  IF  RECE02-TOTALTEN(5)       =      ZERO                     XXX
-      **>      CONTINUE
-      **>  ELSE
-      **>      IF (RECE02-TOTALTEN(5)   NOT =  ZERO)              AND
-      **>         (RECE02-TOTALTEN(1)   NOT =  RECE02-TOTALTEN(5))
-                   MOVE       IDX1              TO   HC-IDX
-                   PERFORM    VARYING   IDX2    FROM   1   BY   1
-                      UNTIL   (IDX2      >       4)
+           MOVE          IDX1       TO     HC-IDX
+           PERFORM    VARYING   IDX2    FROM   1   BY   1
+              UNTIL   (IDX2      >       4)
                      IF    RECE02-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(4)
@@ -2173,16 +2227,20 @@
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     XXX
                                     UNTIL    ACCT-IDX   >   31          XXX
                                  IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   XXX
-                                     MOVE  "1"  TO                      XXX
-                                        TBL-JNISSU-DAY(5 ACCT-IDX)      XXX
+                                    IF     FLG-FUKUSHI  =   1
+                                    AND    RECE02-KOHNUM(4)(1:1)
+                                             >=  "1" AND <=  "8"
+                                       CONTINUE
+                                    ELSE
+                                       MOVE  "1"  TO
+                                            TBL-JNISSU-DAY(5 ACCT-IDX)
+                                    END-IF
                                  END-IF                                 XXX
                                END-PERFORM                              XXX
                            END-IF                                       XXX
                       END-IF
                      END-IF
-                   END-PERFORM
-      **>      END-IF
-      **>  END-IF
+           END-PERFORM
       *
            PERFORM   VARYING  IDX3   FROM   1   BY   1
                      UNTIL    (IDX3         >     5)        OR
@@ -3898,9 +3956,7 @@
                                                 "4" OR "5" OR "6" OR
                                                 "7" OR "8"
                     MOVE   SYU-SRYYMD(7:2)  TO   IDX8
-      ***>          IF    RECE02-JNISSUTBL(IDX8)  =  "1"                XXX
-                       MOVE   "1"   TO   RECE02-KOHJNISSUTBL(IDX8)
-      ***>          END-IF
+                    MOVE     "1"     TO   RECE02-KOHJNISSUTBL(IDX8)
                END-IF
       *
            END-EVALUATE
@@ -4139,8 +4195,8 @@
        BUNTENSU-CLEAR-SEC               SECTION.                        XXX
       *
       *    インデックス２
-           IF (RECE02-TOTALTEN(2)   NOT =  ZERO)              AND
-              (RECE02-TOTALTEN(1)   NOT =  RECE02-TOTALTEN(2))
+           IF (RECE02-HENTOTALTEN(2)   NOT =  ZERO)           AND
+              (RECE02-HENTOTALTEN(1)   NOT =  RECE02-HENTOTALTEN(2))
                CONTINUE
            ELSE
                PERFORM    VARYING    HKN-IDX    FROM   1   BY   1
@@ -4149,8 +4205,8 @@
                END-PERFORM
            END-IF
       *    インデックス３
-           IF (RECE02-TOTALTEN(3)   NOT =  ZERO)              AND
-              (RECE02-TOTALTEN(1)   NOT =  RECE02-TOTALTEN(3))
+           IF (RECE02-HENTOTALTEN(3)   NOT =  ZERO)           AND
+              (RECE02-HENTOTALTEN(1)   NOT =  RECE02-HENTOTALTEN(3))
                CONTINUE
            ELSE
                PERFORM    VARYING    HKN-IDX    FROM   1   BY   1
@@ -4159,8 +4215,8 @@
                END-PERFORM
            END-IF
       *    インデックス４
-           IF (RECE02-TOTALTEN(4)   NOT =  ZERO)              AND
-              (RECE02-TOTALTEN(1)   NOT =  RECE02-TOTALTEN(4))
+           IF (RECE02-HENTOTALTEN(4)   NOT =  ZERO)           AND
+              (RECE02-HENTOTALTEN(1)   NOT =  RECE02-HENTOTALTEN(4))
                CONTINUE
            ELSE
                PERFORM    VARYING    HKN-IDX    FROM   1   BY   1

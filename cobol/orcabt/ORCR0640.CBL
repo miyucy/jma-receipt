@@ -67,7 +67,10 @@
       *                                     のみの剤もレセ記載の対象にする
       *  01.00.27    NACL-門脇    04/02/05  診療コード＊数量の累計編集
       *  01.00.28    NACL-門脇    04/02/10  生保の一部負担金額記載修正
-      *  01.00.29    NACL-門脇    04/02/27  未実施減算月途中変更対応
+      *  01.00.29    NACL-門脇    04/02/20  合計点数情報（ぶん点・公費分離
+      *                                     区分編集用）を使用するよう修正
+      *  01.00.30    NACL-門脇    04/02/27  未実施減算月途中変更対応
+      *  01.00.31    NACL-門脇    04/03/17  食事療養福祉レセ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -195,6 +198,7 @@
            03  FLG-NYUINRYO                            PIC 9(01).
            03  FLG-HKNCOMBI                            PIC 9(01).
            03  FLG-HOUSIJI-COM                         PIC 9(01).
+           03  FLG-FUKUSHI-SKJ                         PIC 9(01).
       *
       *
       *    カウント領域
@@ -1124,6 +1128,8 @@
       *
            INITIALIZE          WRK-DAY-TABLE
                                WRK-MIJ-TABLE
+      *
+           MOVE    ZERO   TO   FLG-FUKUSHI-SKJ
       *
       ***  PERFORM    VARYING    IDX    FROM   1   BY   1
       ***             UNTIL     (IDX      >   10)  OR
@@ -4563,11 +4569,11 @@
            END-IF
       *    インデックス２
            MOVE          ZERO       TO     BUN-IDX2
-           IF  RECE62-TOTALTEN(2)       =      ZERO
+           IF  RECE62-HENTOTALTEN(2)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-TOTALTEN(2)   NOT =  ZERO)              AND
-                  (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(2))
+               IF (RECE62-HENTOTALTEN(2)   NOT =  ZERO)              AND
+                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(2))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
@@ -4581,11 +4587,11 @@
            END-IF
       *    インデックス３
            MOVE          ZERO       TO     BUN-IDX3
-           IF  RECE62-TOTALTEN(3)       =      ZERO
+           IF  RECE62-HENTOTALTEN(3)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-TOTALTEN(3)   NOT =  ZERO)              AND
-                  (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(3))
+               IF (RECE62-HENTOTALTEN(3)   NOT =  ZERO)              AND
+                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(3))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
@@ -4599,11 +4605,11 @@
            END-IF
       *    インデックス４
            MOVE          ZERO       TO     BUN-IDX4
-           IF  RECE62-TOTALTEN(4)       =      ZERO
+           IF  RECE62-HENTOTALTEN(4)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-TOTALTEN(4)   NOT =  ZERO)              AND
-                  (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(4))
+               IF (RECE62-HENTOTALTEN(4)   NOT =  ZERO)              AND
+                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(4))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
@@ -4682,11 +4688,11 @@
            END-IF
       *    インデックス２
            MOVE          ZERO       TO     BUN-IDX2
-           IF  RECE62-TOTALTEN(2)       =      ZERO
+           IF  RECE62-HENTOTALTEN(2)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-TOTALTEN(2)   NOT =  ZERO)              AND
-                  (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(2))
+               IF (RECE62-HENTOTALTEN(2)   NOT =  ZERO)              AND
+                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(2))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
@@ -4700,11 +4706,11 @@
            END-IF
       *    インデックス３
            MOVE          ZERO       TO     BUN-IDX3
-           IF  RECE62-TOTALTEN(3)       =      ZERO
+           IF  RECE62-HENTOTALTEN(3)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-TOTALTEN(3)   NOT =  ZERO)              AND
-                  (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(3))
+               IF (RECE62-HENTOTALTEN(3)   NOT =  ZERO)              AND
+                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(3))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
@@ -4718,11 +4724,11 @@
            END-IF
       *    インデックス４
            MOVE          ZERO       TO     BUN-IDX4
-           IF  RECE62-TOTALTEN(4)       =      ZERO
+           IF  RECE62-HENTOTALTEN(4)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-TOTALTEN(4)   NOT =  ZERO)              AND
-                  (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(4))
+               IF (RECE62-HENTOTALTEN(4)   NOT =  ZERO)              AND
+                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(4))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
@@ -5455,6 +5461,7 @@
                        IF      SYU-HKNCOMBINUM   =
                                                 RECE62-HKNCOMBI (IDX1)
                            IF  SYU-DENPJTIKBN    NOT =  "3"
+                               PERFORM   KUMIAWASE-HANBETU-SEC
                                PERFORM   RECE62-HENSYU-SEC3
                            END-IF
                            MOVE    10              TO  IDX1
@@ -5476,6 +5483,38 @@
       *
            .
        FTN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    組み合わせ判別（福祉用）地方公費を持つ場合
+      *****************************************************************
+       KUMIAWASE-HANBETU-SEC               SECTION.
+      *
+           MOVE     ZERO      TO      FLG-FUKUSHI-SKJ
+      *
+           IF      IDZ             =   1 
+             EVALUATE   WRK-PREFNUM
+      *
+               WHEN    "38"
+      *
+                 IF ( RECE62-KOHNUMHC(IDX1 1)(1:1)  
+                                             >=  "1" AND <=  "8")  OR
+                    ( RECE62-KOHNUMHC(IDX1 2)(1:1)
+                                             >=  "1" AND <=  "8")  OR
+                    ( RECE62-KOHNUMHC(IDX1 3)(1:1)
+                                             >=  "1" AND <=  "8")  OR
+                    ( RECE62-KOHNUMHC(IDX1 4)(1:1)
+                                             >=  "1" AND <=  "8")    
+      *
+                      MOVE     1       TO      FLG-FUKUSHI-SKJ
+      *
+                 END-IF
+      *
+             END-EVALUATE
+           END-IF
+      *
+           .
+       KUMIAWASE-HANBETU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5611,22 +5650,31 @@
                                          WRK-SKJ-FTN(KH-IDX)
                       END-IF
       *
-                      IF     SYU-SYUHKNNUM           =   SPACE
-                      AND    SYU-KOH1HKNNUM          =   "012"
-                      AND    SYU-KOH2HKNNUM          =   SPACE
-                      AND    SYU-KOH3HKNNUM          =   SPACE
-                      AND    SYU-KOH4HKNNUM          =   SPACE
-                         ADD   SYU-SKJ-NISSU(IDX3)    TO
-                                         RECE62-SHOKUJINISSU(KH-IDX)
-                         ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
-                                         RECE62-SHOKUJIRYOYOHI(KH-IDX)
+                      IF     FLG-FUKUSHI-SKJ  =   1
+                      AND    RECE62-KOHNUM(1)(1:1)
+                                             >=  "1" AND <=  "8"
+                         IF  SYU-SKJ-NISSU(IDX3)  NOT =  ZERO
+                             MOVE    "1"      TO  
+                                         RECE62-FUKUSHIFLG-SKJ(1)
+                         END-IF
                       ELSE
-                         ADD   SYU-SKJ-NISSU(IDX3)    TO
+                        IF     SYU-SYUHKNNUM           =   SPACE
+                        AND    SYU-KOH1HKNNUM          =   "012"
+                        AND    SYU-KOH2HKNNUM          =   SPACE
+                        AND    SYU-KOH3HKNNUM          =   SPACE
+                        AND    SYU-KOH4HKNNUM          =   SPACE
+                           ADD   SYU-SKJ-NISSU(IDX3)    TO
                                          RECE62-SHOKUJINISSU(KH-IDX)
-                         ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                           ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
                                          RECE62-SHOKUJIRYOYOHI(KH-IDX)
-                         ADD   SYU-SKJ-FTN-RECE(IDX3) TO
+                        ELSE
+                           ADD   SYU-SKJ-NISSU(IDX3)    TO
+                                         RECE62-SHOKUJINISSU(KH-IDX)
+                           ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                         RECE62-SHOKUJIRYOYOHI(KH-IDX)
+                           ADD   SYU-SKJ-FTN-RECE(IDX3) TO
                                          RECE62-SHOKUJIFTN(KH-IDX)
+                        END-IF
                       END-IF
       *
                       IF   RECE62-KOHNUM(1) =  "051"
@@ -5663,22 +5711,31 @@
                                          WRK-SKJ-FTN(KH-IDX)
                       END-IF
       *
-                      IF     SYU-SYUHKNNUM           =   SPACE
-                      AND    SYU-KOH1HKNNUM          =   "012"
-                      AND    SYU-KOH2HKNNUM          =   SPACE
-                      AND    SYU-KOH3HKNNUM          =   SPACE
-                      AND    SYU-KOH4HKNNUM          =   SPACE
-                         ADD   SYU-SKJ-NISSU(IDX3)    TO
-                                         RECE62-SHOKUJINISSU(KH-IDX)
-                         ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
-                                         RECE62-SHOKUJIRYOYOHI(KH-IDX)
+                      IF     FLG-FUKUSHI-SKJ  =   1
+                      AND    RECE62-KOHNUM(2)(1:1)
+                                             >=  "1" AND <=  "8"
+                         IF  SYU-SKJ-NISSU(IDX3)  NOT =  ZERO
+                             MOVE    "1"      TO  
+                                         RECE62-FUKUSHIFLG-SKJ(2)
+                         END-IF
                       ELSE
-                         ADD   SYU-SKJ-NISSU(IDX3)    TO
+                        IF     SYU-SYUHKNNUM           =   SPACE
+                        AND    SYU-KOH1HKNNUM          =   "012"
+                        AND    SYU-KOH2HKNNUM          =   SPACE
+                        AND    SYU-KOH3HKNNUM          =   SPACE
+                        AND    SYU-KOH4HKNNUM          =   SPACE
+                           ADD   SYU-SKJ-NISSU(IDX3)    TO
                                          RECE62-SHOKUJINISSU(KH-IDX)
-                         ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                           ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
                                          RECE62-SHOKUJIRYOYOHI(KH-IDX)
-                         ADD   SYU-SKJ-FTN-RECE(IDX3) TO
+                        ELSE
+                           ADD   SYU-SKJ-NISSU(IDX3)    TO
+                                         RECE62-SHOKUJINISSU(KH-IDX)
+                           ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                         RECE62-SHOKUJIRYOYOHI(KH-IDX)
+                           ADD   SYU-SKJ-FTN-RECE(IDX3) TO
                                          RECE62-SHOKUJIFTN(KH-IDX)
+                        END-IF
                       END-IF
       *
                       IF   RECE62-KOHNUM(2) =  "051"
@@ -5715,22 +5772,31 @@
                                          WRK-SKJ-FTN(KH-IDX)
                       END-IF
       *
-                      IF     SYU-SYUHKNNUM           =   SPACE
-                      AND    SYU-KOH1HKNNUM          =   "012"
-                      AND    SYU-KOH2HKNNUM          =   SPACE
-                      AND    SYU-KOH3HKNNUM          =   SPACE
-                      AND    SYU-KOH4HKNNUM          =   SPACE
-                         ADD   SYU-SKJ-NISSU(IDX3)    TO
-                                         RECE62-SHOKUJINISSU(KH-IDX)
-                         ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
-                                         RECE62-SHOKUJIRYOYOHI(KH-IDX)
+                      IF     FLG-FUKUSHI-SKJ  =   1
+                      AND    RECE62-KOHNUM(3)(1:1)
+                                             >=  "1" AND <=  "8"
+                         IF  SYU-SKJ-NISSU(IDX3)  NOT =  ZERO
+                             MOVE    "1"      TO  
+                                         RECE62-FUKUSHIFLG-SKJ(3)
+                         END-IF
                       ELSE
-                         ADD   SYU-SKJ-NISSU(IDX3)    TO
+                        IF     SYU-SYUHKNNUM           =   SPACE
+                        AND    SYU-KOH1HKNNUM          =   "012"
+                        AND    SYU-KOH2HKNNUM          =   SPACE
+                        AND    SYU-KOH3HKNNUM          =   SPACE
+                        AND    SYU-KOH4HKNNUM          =   SPACE
+                           ADD   SYU-SKJ-NISSU(IDX3)    TO
                                          RECE62-SHOKUJINISSU(KH-IDX)
-                         ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                           ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
                                          RECE62-SHOKUJIRYOYOHI(KH-IDX)
-                         ADD   SYU-SKJ-FTN-RECE(IDX3) TO
+                        ELSE
+                           ADD   SYU-SKJ-NISSU(IDX3)    TO
+                                         RECE62-SHOKUJINISSU(KH-IDX)
+                           ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                         RECE62-SHOKUJIRYOYOHI(KH-IDX)
+                           ADD   SYU-SKJ-FTN-RECE(IDX3) TO
                                          RECE62-SHOKUJIFTN(KH-IDX)
+                        END-IF
                       END-IF
       *
                       IF   RECE62-KOHNUM(3) =  "051"
@@ -5767,22 +5833,31 @@
                                          WRK-SKJ-FTN(KH-IDX)
                       END-IF
       *
-                      IF     SYU-SYUHKNNUM           =   SPACE
-                      AND    SYU-KOH1HKNNUM          =   "012"
-                      AND    SYU-KOH2HKNNUM          =   SPACE
-                      AND    SYU-KOH3HKNNUM          =   SPACE
-                      AND    SYU-KOH4HKNNUM          =   SPACE
-                         ADD   SYU-SKJ-NISSU(IDX3)    TO
-                                         RECE62-SHOKUJINISSU(KH-IDX)
-                         ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
-                                         RECE62-SHOKUJIRYOYOHI(KH-IDX)
+                      IF     FLG-FUKUSHI-SKJ  =   1
+                      AND    RECE62-KOHNUM(4)(1:1)
+                                             >=  "1" AND <=  "8"
+                         IF  SYU-SKJ-NISSU(IDX3)  NOT =  ZERO
+                             MOVE    "1"      TO  
+                                         RECE62-FUKUSHIFLG-SKJ(4)
+                         END-IF
                       ELSE
-                         ADD   SYU-SKJ-NISSU(IDX3)    TO
+                        IF     SYU-SYUHKNNUM           =   SPACE
+                        AND    SYU-KOH1HKNNUM          =   "012"
+                        AND    SYU-KOH2HKNNUM          =   SPACE
+                        AND    SYU-KOH3HKNNUM          =   SPACE
+                        AND    SYU-KOH4HKNNUM          =   SPACE
+                           ADD   SYU-SKJ-NISSU(IDX3)    TO
                                          RECE62-SHOKUJINISSU(KH-IDX)
-                         ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                           ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
                                          RECE62-SHOKUJIRYOYOHI(KH-IDX)
-                         ADD   SYU-SKJ-FTN-RECE(IDX3) TO
+                        ELSE
+                           ADD   SYU-SKJ-NISSU(IDX3)    TO
+                                         RECE62-SHOKUJINISSU(KH-IDX)
+                           ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                         RECE62-SHOKUJIRYOYOHI(KH-IDX)
+                           ADD   SYU-SKJ-FTN-RECE(IDX3) TO
                                          RECE62-SHOKUJIFTN(KH-IDX)
+                        END-IF
                       END-IF
       *
                       IF   RECE62-KOHNUM(4) =  "051"
