@@ -28,6 +28,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô        ÆüÉÕ      ÆâÍÆ
       * 01.00.01     NACL-¿¹ÏÆ     03/01/06  ºÇ½ª¼õ¿ÇÆü¥»¥Ã¥È½¤Àµ
+      * 01.00.02     NACL-¿¹ÏÆ     04/02/02  Âà±¡Æü¥é¥Ù¥ëÉ½¼¨¡¢¿ÇÎÅ²Ê
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -114,6 +115,9 @@
            03  CNT-PAGE                PIC 9(06).
            03  CNT-TOKEI               PIC 9(04).
            03  CNT-KENSU               PIC 9(05).
+      *----(01.00.02)--ADD-START---
+           03  CNT-TAIIN               PIC 9(05).
+      *----(01.00.02)--ADD-START---
       *
       *    ¥Ñ¥é¥á¥¿ÎÎ°è
        01  PARA-AREA.
@@ -161,6 +165,9 @@
            03  WRK-KIKAN               PIC X(40).
            03  WRK-MES                 PIC X(50).
            03  WRK-BIKOU               PIC X(30).
+      *----(01.00.02)--ADD-START---
+           03  WRK-SRYKA               PIC X(02).
+      *----(01.00.02)--ADD-END-----
       *
        01  ERR-EDIT-AREA.
            03  ERR-PTID                PIC 9(10).
@@ -699,6 +706,10 @@
            MOVE    ZERO            TO  CNT-LINE
            ADD     1               TO  CNT-PAGE
       *
+      *----(01.00.02)--ADD-START---
+           MOVE    ZERO            TO  CNT-TAIIN
+      *----(01.00.02)--ADD-START---
+      *
       *    ÊÇ¥»¥Ã¥È
            MOVE    CNT-PAGE        TO  WRK-Z6
            MOVE    WRK-Z6          TO  HCM38-PAGE
@@ -755,6 +766,13 @@
                PERFORM 900-TOKEI-NEXT-SEC
       *
            END-PERFORM
+      *
+      *----(01.00.02)--ADD-START---
+           IF          CNT-TAIIN      >   ZERO
+               DISPLAY "CNT-TAIIN=" CNT-TAIIN
+               MOVE    "*Âà±¡Æü"      TO  HCM38-TAIIN
+           END-IF
+      *----(01.00.02)--ADD-END-----
       *
            IF          FLG-TOKEI      =   1
                MOVE    "¹ç·×"         TO  HCM38-TITLE2
@@ -943,8 +961,14 @@
                    MOVE    JYURRK-SRYYMD   TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    WRK-HENYMD      TO  HCM38-LASTYMD(CNT-LINE)
+      *----(01.00.02)--ADD-START---
+                   MOVE    JYURRK-SRYKA    TO  WRK-SRYKA
+      *----(01.00.02)--ADD-END-----
                ELSE
                    MOVE    SPACE       TO  HCM38-LASTYMD(CNT-LINE)
+      *----(01.00.02)--ADD-START---
+                   MOVE    SPACE       TO  WRK-SRYKA
+      *----(01.00.02)--ADD-END-----
                END-IF
                GO  TO  3201-BODY-LASTYMD-HEN-EXT
            END-IF
@@ -957,6 +981,9 @@
       *            È÷¹ÍÊÔ½¸
                    PERFORM 3201-BODY-BIKOU-HEN-SEC
                    MOVE    SPACE       TO  HCM38-LASTYMD(CNT-LINE)
+      *----(01.00.02)--ADD-START---
+                   MOVE    PTNYUINRRK-NYUINKA  TO  WRK-SRYKA
+      *----(01.00.02)--ADD-END-----
                ELSE
       *            ¼õ¿ÇÍúÎòÆÉ¤ß¹þ¤ß
                    PERFORM 900-JYURRK-READ-SEC
@@ -967,13 +994,20 @@
                            PERFORM 31012-SEIWA-HEN-SEC
                            MOVE    WRK-HENYMD
                                TO  HCM38-LASTYMD(CNT-LINE)
+      *----(01.00.02)--ADD-START---
+                           MOVE    JYURRK-SRYKA    TO  WRK-SRYKA
+      *----(01.00.02)--ADD-END-----
                        ELSE
       *                    Âà±¡Æü¥»¥Ã¥È
                            MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SYMD
                            PERFORM 31012-SEIWA-HEN-SEC
                            MOVE    WRK-HENYMD
-                               TO  HCM38-LASTYMD(CNT-LINE)
+                                           TO  HCM38-LASTYMD(CNT-LINE)
                            MOVE    "*"         TO  HCM38-MARK(CNT-LINE)
+      *----(01.00.02)--ADD-START---
+                           MOVE    PTNYUINRRK-NYUINKA  TO  WRK-SRYKA
+                           COMPUTE CNT-TAIIN   =   CNT-TAIIN   +   1
+      *----(01.00.02)--ADD-END-----
                        END-IF
                    ELSE
       *                Âà±¡Æü¥»¥Ã¥È
@@ -981,6 +1015,10 @@
                        PERFORM 31012-SEIWA-HEN-SEC
                        MOVE    WRK-HENYMD  TO  HCM38-LASTYMD(CNT-LINE)
                        MOVE    "*"         TO  HCM38-MARK(CNT-LINE)
+      *----(01.00.02)--ADD-START---
+                       MOVE    PTNYUINRRK-NYUINKA  TO  WRK-SRYKA
+                       COMPUTE CNT-TAIIN   =   CNT-TAIIN   +   1
+      *----(01.00.02)--ADD-END-----
                    END-IF
                END-IF
            ELSE
@@ -991,8 +1029,14 @@
                    MOVE    JYURRK-SRYYMD   TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    WRK-HENYMD      TO  HCM38-LASTYMD(CNT-LINE)
+      *----(01.00.02)--ADD-START---
+                   MOVE    JYURRK-SRYKA    TO  WRK-SRYKA
+      *----(01.00.02)--ADD-END-----
                ELSE
                    MOVE    SPACE       TO  HCM38-LASTYMD(CNT-LINE)
+      *----(01.00.02)--ADD-START---
+                   MOVE    SPACE       TO  WRK-SRYKA
+      *----(01.00.02)--ADD-END-----
                END-IF
             END-IF
       *
@@ -1009,7 +1053,7 @@
       *    ¿ÇÎÅ²ÊÆÉ¤ß¹þ¤ß
            INITIALIZE                  SYS-1005-REC
            MOVE    "1005"          TO  SYS-1005-KANRICD
-           MOVE    JYURRK-SRYKA    TO  SYS-1005-KBNCD
+           MOVE    WRK-SRYKA       TO  SYS-1005-KBNCD
            MOVE    SYS-1005-REC    TO  MCPDATA-REC
       *
       *    ¥·¥¹¥Æ¥à´ÉÍýÆÉ¤ß¹þ¤ß
