@@ -345,7 +345,7 @@
                PERFORM 900-SYSKANRI-READ-SEC
                IF      FLG-SYSKANRI        =   ZERO
                    MOVE    MCPDATA-REC         TO  SYS-1005-REC
-                   MOVE    SYS-1005-SRYKANAME2
+                   MOVE    SYS-1005-SRYKANAME1
                                                TO  WRK-SRYKA-MEI
                ELSE
                    MOVE    SPACE               TO  WRK-SRYKA-MEI
@@ -491,7 +491,7 @@
             MOVE   "HCN01.red"         TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
-            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
+            MOVE   SYS-1031-PRTNM(9)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
       *
@@ -542,7 +542,7 @@
             MOVE   "HCN011.red"        TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
-            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
+            MOVE   SYS-1031-PRTNM(9)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
       *
