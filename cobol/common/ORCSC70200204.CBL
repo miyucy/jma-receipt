@@ -1807,10 +1807,12 @@
       *            ÆÃ¼ì»£±Æ¤Î¼Ì¿¿¿ÇÃÇ
                    IF      WRK-CNT-SATUEI      =   1
                        MOVE    "170000610"         TO  WRK-SRYCD
+                       MOVE    "170000730"         TO  WRK-SRYCD-2
                    ELSE
                        MOVE    "170000730"         TO  WRK-SRYCD
+                       MOVE    "170000610"         TO  WRK-SRYCD-2
                    END-IF
-                   MOVE    SPACE               TO  WRK-SRYCD-2
+      ************ MOVE    SPACE               TO  WRK-SRYCD-2
                    IF     (IDX-DOJI1           >   ZERO )  AND
                           (WRK-COM-INPUTCD (IDX-DOJI1)
                                                =   "170000730")
@@ -1821,10 +1823,12 @@
       *            Â¤±ÆºÞ»ÈÍÑ¤Î¿ÇÃÇÎÁ
                    IF      WRK-CNT-SATUEI      =   1
                        MOVE    "170000810"         TO  WRK-SRYCD
+                       MOVE    "170022930"         TO  WRK-SRYCD-2
                    ELSE
                        MOVE    "170022930"         TO  WRK-SRYCD
+                       MOVE    "170000810"         TO  WRK-SRYCD-2
                    END-IF
-                   MOVE    SPACE               TO  WRK-SRYCD-2
+      **********   MOVE    SPACE               TO  WRK-SRYCD-2
                    IF     (IDX-DOJI1           >   ZERO )  AND
                           (WRK-COM-INPUTCD (IDX-DOJI1)
                                                =   "170022930")
@@ -2010,6 +2014,10 @@
                MOVE    IDX-SYU             TO  IDXS1
            ELSE
                MOVE    1                   TO  IDXS1
+      *        ¿ÇÃÇÎÁ¤Î»þ¡¢»£±ÆÎÁ°Ê²¼
+               IF      FLG-SATU            =   1
+                   MOVE    IDX-SAT             TO  IDXS1
+               END-IF
            END-IF
            PERFORM VARYING     IDX1    FROM    IDXS1  BY  1
                    UNTIL      (IDX1        >   200     )   OR
