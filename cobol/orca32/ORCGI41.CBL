@@ -181,6 +181,7 @@
            03  WRK-ZOGENPTN        PIC X(01).
            03  WRK-ZOGEN           PIC S9(05).
            03  WRK-KEISANYMD       PIC X(08).
+           03  WRK-TAIHI-SRYYM-41  PIC X(06).
       *    医療機関設定の入院料加算チェック用
            03  WRK-NYUKHNKSN-SRYCD PIC X(09)  OCCURS 20.
            03  WRK-NYUKSNKBN       PIC X(03).
@@ -4270,6 +4271,11 @@
                GO      TO       41019-JIGETU-SYORI-EXT
            END-IF.
       *
+           MOVE  SPA-NAI-SRYYM-41  TO  WRK-TAIHI-SRYYM-41.
+           DISPLAY "JIGETSU-SAKUSEI SPA-NAI-SRYYM-41 = "
+                       SPA-NAI-SRYYM-41
+           DISPLAY "JIGETSU-SAKUSEI WRK-TAIHI-SRYYM-41 = "
+                       WRK-TAIHI-SRYYM-41
            MOVE    ZERO               TO  FLG-SET.
            PERFORM 41019-JIGETU-COMPUTE-SEC.
       *
@@ -4287,14 +4293,18 @@
                    MOVE    1                   TO  FLG-SET
                END-IF
            END-PERFORM.
+           DISPLAY "JIGETSU-SAKUSEI WRK-TAIHI-SRYYM-41 = "
+                       WRK-TAIHI-SRYYM-41
       *
-           IF     (SPA-ERRCD          NOT =   SPACE)   OR
+           IF    ((SPA-ERRCD          NOT =   SPACE)   OR
                  ((SPA-ERRCD          =       SPACE)  AND
-                  (FLG-NYUINKHNRYO    =       ZERO))
+                  (FLG-NYUINKHNRYO    =       ZERO))) AND
+                  (WRK-SRYYM-BIG      =       WRK-TAIHI-SRYYM-41)
                MOVE    ZERO           TO      FLG-KAIKEI-SAKUSEI
                MOVE    SPACE          TO      SPA-ERRCD
                PERFORM   410191-KAIKEI-SAKUSEI-SEC
                IF      FLG-KAIKEI-SAKUSEI    =    1
+                    MOVE  SPA-NAI-SRYYM-41  TO  WRK-SRYYM-BIG
                     MOVE    SPACE     TO      SPA-ERRCD
                     PERFORM 41019-NEXT-DISP-SEC
                ELSE
