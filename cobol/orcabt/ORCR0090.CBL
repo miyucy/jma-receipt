@@ -82,6 +82,7 @@
       *  01.02.09    NACL-藤原    02.09.06  初診加算のとき編集する
       *  01.02.10    NACL-藤原    02.09.26  皮下筋肉注射以外で手技がないとき
       *                                     ＊を印刷する
+      *  01.02.11    NACL-藤原    02.09.30  初診加算のとき編集を修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -598,20 +599,11 @@
       *皮下筋肉注射
            03  CONS-HIKAKIN    PIC X(09)   VALUE   "130000510".
       *初診加算     
-      *    初診（乳幼児）加算
-           03  WRK-CONS-SYOSIN-KASAN1  PIC X(09)   VALUE 
-                                                   "111000370".                     
-      *    初診（育児栄養指導）加算
-           03  WRK-CONS-SYOSIN-KASAN2  PIC X(09)   VALUE 
-                                                   "111000470".                     
       *    初診（診療所）紹介患者加算
-           03  WRK-CONS-SYOSIN-KASAN3  PIC X(09)   VALUE 
+           03  WRK-CONS-SYOSIN-KASAN1  PIC X(09)   VALUE 
                                                    "111003770".                     
-      *    初診（乳幼児）（時間外等）加算
-           03  WRK-CONS-SYOSIN-KASAN4  PIC X(09)   VALUE 
-                                                   "111011470".                     
       *    老人初診（診療所）紹介患者加算
-           03  WRK-CONS-SYOSIN-KASAN5  PIC X(09)   VALUE 
+           03  WRK-CONS-SYOSIN-KASAN2  PIC X(09)   VALUE 
                                                    "111700470".                     
       *
       *    パス名領域
@@ -1024,10 +1016,10 @@
            END-PERFORM    
       *
            IF  WRK-TBLMAX           >   ZERO
-      *        剤明細数と印字対象明細数が異なる場合
-               IF  WRK-ZAIWMAX(1)   NOT =   RECE04-MEISAISU
-                   PERFORM 400-TENSU-SAIKEISAN-SEC
-               END-IF
+      *********剤明細数と印字対象明細数が異なる場合
+      *********IF  WRK-ZAIWMAX(1)   NOT =   RECE04-MEISAISU
+      *********    PERFORM 400-TENSU-SAIKEISAN-SEC
+      *********END-IF
       *        点数・回数セット処理
                MOVE    WRK-TBLMAX       TO  IDY
                PERFORM 440-TNSKAI-SET-SEC
@@ -1079,11 +1071,18 @@
                IF      TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                                              =   WRK-CONS-SYOSIN-KASAN1
                                              OR  WRK-CONS-SYOSIN-KASAN2
-                                             OR  WRK-CONS-SYOSIN-KASAN3
-                                             OR  WRK-CONS-SYOSIN-KASAN4
-                                             OR  WRK-CONS-SYOSIN-KASAN5
-                   CONTINUE
-               ELSE
+                   MOVE    TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
+                                             TO  TNS-SRYCD
+                   MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
+                   MOVE    RECE05-SRYYM      TO  ORC-DBYMD(1:6)
+                   MOVE    "01"              TO  ORC-DBYMD(7:2)
+                   PERFORM 900-TENSU-INV-SEC
+      *            点数・回数セット
+                   MOVE    TNS-TEN           TO  WRK-ZAITENX
+                   MOVE    RECE04-ZAIKAISU   TO  WRK-ZAIKAISUX
+      *            必要有効桁数・開始位置・回数編集
+                   PERFORM 810-TENSUKAI-HEN-SEC
+               ELSE    
                    MOVE    1                 TO  FLG-NOPRT
                END-IF
            END-IF                                          
