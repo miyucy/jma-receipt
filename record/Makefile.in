@@ -398,7 +398,8 @@ DB_files = \
 	view_Q002.db \
 	view_bd001.db \
 	view_bd002.db \
-	view_bd003.db
+	view_bd003.db \
+        tbl_syuday.db
 
 all:   
 
