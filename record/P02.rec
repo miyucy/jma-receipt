@@ -66,7 +66,7 @@ P02	{
 						value	varchar(21);
 					};
 					count	int;
-					item	varchar(21)[10];
+					item	varchar(21)[30];
 				};
 				P020_KARUTE_COB	{
 					P020_KARUTE	{

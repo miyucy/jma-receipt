@@ -683,7 +683,7 @@ Y01	{
 				value	varchar(21);
 			};
 			count	int;
-			item	varchar(21)[10];
+			item	varchar(21)[30];
 		};
 		scrolledwindow3	{
 			PTLIST	{
