@@ -57,7 +57,17 @@
                                                OCCURS   31.
       *        複数算定日
                05  ORCSTEN-FUKUDAY-AREA.
-                   07  ORCSTEN-FUKU-DAY        PIC 9(01)
+      *            点滴
+                   07  ORCSTEN-FUKU-AREA.
+                       09  ORCSTEN-FUKU-DAY        PIC 9(01)
+                                               OCCURS   31.
+      *            動脈
+                   07  ORCSTEN-DOU-AREA.
+                       09  ORCSTEN-DOU-DAY         PIC 9(01)
+                                               OCCURS   31.
+      *            中心静脈
+                   07  ORCSTEN-CHU-AREA.
+                       09  ORCSTEN-CHU-DAY         PIC 9(01)
                                                OCCURS   31.
       *エラーコード（１：会計照会更新エラー
       *              ２：受診履歴更新エラー）

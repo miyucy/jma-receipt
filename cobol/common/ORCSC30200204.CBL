@@ -76,6 +76,8 @@
            03  FLG-ZAIARI          PIC 9(01).
            03  FLG-CHK             PIC 9(01).
       *
+           03  FLG-GAZO-ARI        PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -178,6 +180,9 @@
       *        手術有無
                05  TBL-SYU-DAY         PIC 9(01).
                05  TBL-SYU-IDX         PIC 9(04).
+      *        画像診断点滴有無
+               05  TBL-GAZ-DAY         PIC 9(01).
+               05  TBL-GAZ-IDX         PIC 9(04).
       *        生物学的製剤
                05  TBL-SEIBUTU         PIC 9(01).
                05  TBL-SEIBUTU-IDX     PIC 9(04).
@@ -1083,8 +1088,9 @@
                    UNTIL      (IDX     >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
-      *        点滴は１回のみとする
-               IF     (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
+      *        点滴は１回のみとする（外来のみ）
+               IF     (SPA-NYUGAIKBN               =   "2"   )  AND
+                      (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
                                                        "960") AND
                       (WRK-COM-INPUTCD  (IDX)      =   "130009310" OR
                                                        "130003710" OR
@@ -1096,7 +1102,8 @@
                    MOVE    1               TO  FLG-TENTEKI
                END-IF
       *        動脈注射は１回のみとする
-               IF     (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
+               IF     (SPA-NYUGAIKBN               =   "2"   )  AND
+                      (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
                                                        "960") AND
                       (WRK-COM-INPUTCD  (IDX)      =   "130006110" OR
                                                        "130006210")
@@ -1154,7 +1161,7 @@
                        IF      WRK-COM-NYUINDAY (IDX IDY)  >   ZERO
                            MOVE    WRK-COM-NYUINDAY(IDX IDY)
                                                    TO  TBL-DAY(IDY)
-      *                  液量集計
+      *                    液量集計
                            IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
                                COMPUTE TBL-CHUSYA (IDY)
                                                = (WRK-COM-CSYYOURYO(IDX)
@@ -1217,6 +1224,20 @@
                        END-IF
                    END-PERFORM
                END-IF
+      *        画像診断の点滴
+               IF     (WRK-COM-SRYSYUKBN(IDX)  =   "731" )  AND
+                      (WRK-COM-TNSSRYSYUKBN(IDX)   =   "330" )  AND
+                      (WRK-COM-DATAKBN  (IDX)  =   "1"   )
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   31
+                       IF      WRK-COM-NYUINDAY (IDX IDY)  >   ZERO
+                           MOVE    WRK-COM-NYUINDAY(IDX IDY)
+                                                   TO  TBL-GAZ-DAY(IDY)
+                           MOVE    IDX             TO  TBL-GAZ-IDX(IDY)
+                           MOVE    1                   TO  FLG-OK
+                       END-IF
+                   END-PERFORM
+               END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
                GO      TO      300-AUTO-SYORI-EXT
@@ -1225,6 +1246,8 @@
            PERFORM 3001-EKIRYO-SYUKEI-SEC
       *    当日のすべての手術の有無を判定
            PERFORM 3003-SYUJYU-CHK-SEC
+      *    当日のすべての画像点滴手技の有無を判定
+           PERFORM 3003-GAZOU-CHK-SEC
       *
       *    点滴注射
       *    ６歳到達日
@@ -1284,8 +1307,15 @@
                IF      TBL-CHUSYA (IDY)    >=  WRK-MAX-RYOU
                    IF     (TBL-TEN-SRYCD(IDY)  =   SPACE )  AND
                           (TBL-SYU-DAY (IDY)   =   ZERO  )
+      *                すでに、画像診断の点滴が算定されているとき
+                       IF      (TBL-GAZ-DAY (IDY)  >   ZERO  )  AND
+                               (TBL-GAZ-IDX (IDY)  =   ZERO  )
+                           CONTINUE
+                       ELSE
       *                手技料自動算定
-                       MOVE    WRK-SRYCD       TO  TBL-AUTO-SRYCD(IDY)
+                           MOVE    WRK-SRYCD       TO  TBL-AUTO-SRYCD
+                                                                (IDY)
+                       END-IF
                    END-IF
                ELSE
                    IF     (TBL-TEN-IDX  (IDY)  >   ZERO ) AND
@@ -1349,6 +1379,39 @@
                                                           (IDX-KBN)
                            END-IF
                        END-IF
+                   END-IF
+               END-IF
+      *        画像診断の点滴手技が存在する時
+               IF      TBL-GAZ-DAY (IDY)   >   ZERO
+                   IF     (TBL-TEN-SRYCD (IDY) NOT =   SPACE) OR
+                          (TBL-TEN-SRYCD2(IDY) NOT =   SPACE)
+                       MOVE    "9022"              TO  SPA-ERRCD
+                   ELSE
+                       IF     (TBL-GAZ-IDX (IDY)   >   ZERO  )  AND
+                              (TBL-CHUSYA (IDY)    >=  WRK-MAX-RYOU)
+                           MOVE    "9023"              TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+                   IF      SPA-ERRCD       NOT =   SPACE
+                   IF      TBL-GAZ-IDX (IDY)   >   ZERO
+      *                手技料エラー
+                       MOVE    "9022"              TO  SPA-ERRCD
+                       MOVE    TBL-GAZ-IDX (IDY)   TO  IDX-K
+                       MOVE    "1"                 TO  WRK-COM-CUR
+                                                              (IDX-K)
+                   ELSE
+      *                手技料エラー（警告）
+                       MOVE    SPACE               TO  SPA-ERRCD
+                       IF      TBL-TEN-IDX (IDY)   >   ZERO
+                           MOVE    TBL-TEN-IDX (IDY)   TO  IDX-KBN
+                           IF      WRK-COM-KZMFLG (IDX-KBN)
+                                                       =   SPACE
+                              MOVE    "K013"       TO  WRK-ERRCD
+                              MOVE    "1"          TO  WRK-COM-CUR
+                                                          (IDX-KBN)
+                           END-IF
+                       END-IF
+                   END-IF
                    END-IF
                END-IF
            END-PERFORM
@@ -1465,7 +1528,8 @@
                        UNTIL       IDY     >   31
                    IF      ACCT-DAY (1 IDY)    >   ZERO
                        IF     (TBL-DAY (IDY)   >   ZERO )  OR
-                              (TBL-SYU-DAY(IDY)    >   ZERO )
+                              (TBL-SYU-DAY(IDY)    >   ZERO )  OR
+                              (TBL-GAZ-DAY(IDY)    >   ZERO )
                            MOVE    1           TO  FLG-ZAIARI
                        END-IF
                    END-IF
@@ -1690,6 +1754,133 @@
       *                                MCPDATA-REC
            .
        3003-SYUJYU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     当日のすべての手術の有無を判定処理
+      *****************************************************************
+       3003-GAZOU-CHK-SEC         SECTION.
+      *
+      *    診療年月の診療会計マスタ読み込み
+           MOVE    SPACE               TO  SRYACCT-REC
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  ACCT-PTID
+           MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
+           MOVE    "70"                TO  ACCT-SRYKBN
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 940-SRYACCT-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+           PERFORM UNTIL       (FLG-SRYACCT         =   1       )
+               MOVE    1                   TO  FLG-ZAIARI
+      *        訂正の時、集計なし
+               IF     (LNK-ORCSC-SYORIFLG  =   "1"    )  AND
+                      (ACCT-HKNCOMBI       =   SPA-HKNCOMBINUM)
+                   MOVE    ZERO                TO  FLG-ZAIARI
+               END-IF
+      *        手技料点数がないものは対象外
+               IF      ACCT-SYUTEN1       =   ZERO
+                   MOVE    ZERO               TO  FLG-ZAIARI
+               END-IF
+               IF      FLG-ZAIARI         =   1
+      *            診療行為より液量集計
+                   PERFORM 30031-SRYACT-HEN-SEC
+      *
+      *        回数編集
+                   IF      FLG-GAZO-ARI        =   1
+                       PERFORM VARYING IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   31
+                           IF      ACCT-DAY (1 IDY)    >   ZERO
+                               MOVE    ACCT-DAY (1 IDY)
+                                               TO  TBL-GAZ-DAY(IDY)
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-IF
+      *
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 940-SRYACCT-READ-SEC
+           END-PERFORM
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+           .
+       3003-GAZOU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療行為マスター編集処理（画像診断）
+      *****************************************************************
+       30031-SRYACT-HEN-SEC            SECTION.
+      *
+      *    診療会計マスターから診療行為マスターを検索する
+           MOVE    SPACE               TO  SRYACT-REC
+           INITIALIZE                      SRYACT-REC
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-SRYACT-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF
+           MOVE    ZERO                TO  FLG-GAZO-ARI
+           PERFORM UNTIL     (FLG-SRYACT   =   1   )  OR
+                             (FLG-GAZO-ARI =   1   )
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL      (IDX2        >   5   )  OR
+                                  (SRY-SRYCD(IDX2)     =   SPACE )
+                   IF     (SRY-SRYCD (IDX2)(1:2)   =   "13")  AND
+                          (SRY-SRYSYUKBN           =   "731")
+      *                点数マスタより
+                       MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
+                       PERFORM 910-TENSU-READ-SEC
+                       IF     (TNS-SRYSYUKBN   =   "330" )  AND
+                              (TNS-DATAKBN     =   "1"   )
+                           MOVE    1               TO  FLG-GAZO-ARI
+                           MOVE    5               TO  IDX2
+                       END-IF
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-SRYACT-NEXT-SEC
+           END-PERFORM
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+           .
+       30031-SRYACT-HEN-EXT.
            EXIT.
       *
       *****************************************************************

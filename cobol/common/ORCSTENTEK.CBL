@@ -145,8 +145,11 @@
            03  TBL-SYU-ARI         PIC 9(01)
                                        OCCURS   31.
       *    中心静脈有無
-           03  TBL-CHU-ARI         PIC 9(01)
-                                       OCCURS   31.
+           03  TBL-CHU-TBL             OCCURS   31.
+               05  TBL-CHU-ARI         PIC 9(01).
+      *    動脈有無
+           03  TBL-DOU-TBL             OCCURS   31.
+               05  TBL-DOU-ARI         PIC 9(01).
       *
       *    当日分
        01  TBL-SYUKEI-AREA.
@@ -315,7 +318,7 @@
       *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
       *    MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
+      *    CALL    "ORCMCPSUB"         USING
       *                                MCPAREA
       *                                MCPDATA-REC
            .
@@ -368,6 +371,11 @@
                    IF      SRY-SRYCD (IDX2)        =   "130004410"
                        PERFORM 10014-CHU-HENSYU-SEC
                    END-IF
+      *            手技料（動脈）
+                   IF      SRY-SRYCD (IDX2)        =   "130006110" OR
+                                                       "130006120"
+                       PERFORM 10015-DOU-HENSYU-SEC
+                   END-IF
                END-PERFORM
       *
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
@@ -376,7 +384,7 @@
       *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
       *    MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
+      *    CALL    "ORCMCPSUB"         USING
       *                                MCPAREA
       *                                MCPDATA-REC
       *                                MCPDATA-REC
@@ -456,15 +464,6 @@
                    MOVE    ACCT-HKNCOMBI       TO  TBL-HKNCOMBI
                                                       (IDX-T IDX-D)
                END-IF
-      *TEST
-               IF    ACCT-DAY (1 IDX-D) >  ZERO
-                   DISPLAY "TBL-SRYCD:" TBL-SRYCD (IDX-T)
-                        ",CSYYOURYO:" TBL-CSYYOURYO (IDX-T)
-                        ",CHUSYARYO:" TBL-CHUSYARYO  (IDX-T IDX-D)
-                       ",IDX-D:" IDX-D
-                       ",ACCT-ZAINUM:" ACCT-ZAINUM
-               END-IF
-      *TEST
            END-PERFORM
       *
            .
@@ -480,12 +479,37 @@
            PERFORM VARYING     IDX-D   FROM    1   BY  1
                    UNTIL       IDX-D   >   31
                IF      ACCT-DAY (1 IDX-D)  >   ZERO
-                   MOVE    1               TO  TBL-CHU-ARI (IDX-D)
+                   ADD     ACCT-DAY (1 IDX-D)  TO  TBL-CHU-ARI (IDX-D)
+                   IF      TBL-CHU-ARI (IDX-D)     >   1
+                       MOVE    1               TO  ORCSTEN-CHU-DAY
+                                                              (IDX-D)
+                   END-IF
                END-IF
            END-PERFORM
       *
            .
        10014-CHU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    手技料（動脈）チェック処理
+      *****************************************************************
+       10015-DOU-HENSYU-SEC            SECTION.
+      *
+      *
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+               IF      ACCT-DAY (1 IDX-D)  >   ZERO
+                   ADD     ACCT-DAY (1 IDX-D)  TO  TBL-DOU-ARI (IDX-D)
+                   IF      TBL-DOU-ARI (IDX-D)     >   1
+                       MOVE    1               TO  ORCSTEN-DOU-DAY
+                                                              (IDX-D)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       10015-DOU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -721,11 +745,12 @@
                PERFORM 930-SRYACCT-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        3001-SYUJYU-HEN-EXT.
@@ -1007,9 +1032,6 @@
                INITIALIZE                  JYURRK-REC
                MOVE    1               TO  FLG-JYURRK
            END-IF
-      *TEST
-           DISPLAY "FLG-JYURRK:" FLG-JYURRK
-      *TEST
       *
            INITIALIZE                  TBL-JYURRK-AREA
            MOVE    ZERO                TO  IDX-H
@@ -1017,11 +1039,6 @@
                           (IDX-H              >   15 )
                ADD     1                   TO  IDX-H
                MOVE    JYURRK-REC          TO  TBL-JYURRK-REC (IDX-H)
-      *TEST
-              DISPLAY "JYURRK-SRYKA:" JYURRK-SRYKA
-                      ",RENNUM" JYURRK-RENNUM
-                      ",DOUJI:"  JYURRK-DOUJI-RENNUM
-      *TEST
       *
                MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC

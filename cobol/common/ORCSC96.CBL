@@ -632,6 +632,16 @@
                                        TO  SPA-ERRMSG
                    MOVE    "入力して下さい。"
                                        TO  SPA-ERRMSG(33:)
+               WHEN    "9022"
+                   MOVE    "既に点滴手技が算定済みです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "造影剤注入の点滴は算定できません。"
+                                       TO  SPA-ERRMSG(29:)
+               WHEN    "9023"
+                   MOVE    "点滴手技料が算定ができます。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "造影剤注入の点滴手技は算定できません。"
+                                       TO  SPA-ERRMSG(29:)
                WHEN    "9100"
                    MOVE    "診療内容が２００行を超えます。"
                                        TO  SPA-ERRMSG
@@ -814,6 +824,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "液量ではありません。"
                                        TO  SPA-ERRMSG(29:)
+               WHEN    "K013"
+                   MOVE    "警告！既に造影剤注入点滴手技料が"
+                                       TO  SPA-ERRMSG
+                   MOVE    "算定済です。"
+                                       TO  SPA-ERRMSG(33:)
                WHEN    "K020"
                    MOVE    "警告！再診料の受診回数が違います。"
                                        TO  SPA-ERRMSG

@@ -42,6 +42,8 @@
                05  SPA-J02-SYORI                 PIC 9(01).
       *        月変更フラグ
                05  SPA-J02-SEL                   PIC 9(01).
+      *        点滴エラーあり
+               05  SPA-J02-TENTEKI               PIC 9(01).
       *
                05  SPA-GMN-AREA.
                    07  SPA-GMN-SRYYM             PIC X(06).

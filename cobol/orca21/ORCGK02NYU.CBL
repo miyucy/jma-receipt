@@ -7385,6 +7385,9 @@
       *            入院で手術の時も点滴チェックを行う
              OR  ((SPA-SRYKBN-CNT (05) >   ZERO  )  AND
                   (SPA-NYUGAIKBN       =   1     ))
+      *            入院で画像診断の時も点滴チェックを行う
+             OR  ((SPA-SRYKBN-CNT (08) >   ZERO  )  AND
+                  (SPA-NYUGAIKBN       =   1     ))
                CALL    "ORCSC30"       USING
                                        MCPAREA
                                        ORCSC00AREA

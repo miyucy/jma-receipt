@@ -2083,7 +2083,9 @@
                    PERFORM 2001-CTMRI-CHK-SEC
                END-IF
       *        点滴は１回のみとする
-               IF     (WRK-COM-SRYSYUKBN(IDX-Z) NOT =  "950"  AND
+      *        外来の時のみ（入院は点滴でチェック）
+               IF     (SPA-NYUGAIKBN               =   "2"   )  AND
+                      (WRK-COM-SRYSYUKBN(IDX-Z) NOT =  "950"  AND
                                                        "960") AND
                       (WRK-COM-INPUTCD  (IDX-Z)    =   "130009310" OR
                                                        "130003710" OR
