@@ -82,7 +82,7 @@
        01  SPA-XC01.
            03  SPA-XC01-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
-               05  SPA-GMN-MAX         PIC 9(03).
+               05  SPA-GMN-MAX         PIC 9(05).
                05  SPA-GMN-CUR         PIC 9(02).
                05  SPA-GMN-NEXT        PIC 9(01).
       *
@@ -94,7 +94,7 @@
                    07  SPA-GMN-FILENAME            PIC X(200).
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-OCC             OCCURS  100.
-                           11  SPA-GMN-TNO         PIC 9(03).
+                           11  SPA-GMN-TNO         PIC 9(05).
                            11  SPA-GMN-TTBL-GROUP  PIC X(14).
                            11  SPA-GMN-TRENNUM     PIC 9(04).
                            11  SPA-GMN-TSHORI-RENNUM
@@ -109,7 +109,7 @@
                            11  SPA-GMN-TPRFLG      PIC X(01).
                            11  SPA-GMN-TUPDFLG     PIC X(02).
                    07  SPA-GMN-BODY.        
-                       09  SPA-GMN-SELNUM          PIC 9(03).
+                       09  SPA-GMN-SELNUM          PIC 9(05).
                        09  SPA-GMN-MEMO            PIC X(100).      
                        09  SPA-GMN-BODY1.
                            11  SPA-GMN-TBL-GROUP   PIC X(14).
@@ -123,7 +123,7 @@
                    07  SPA-NAI-ENV-FLG             PIC 9(01).      
                    07  SPA-NAI-ENV                 PIC X(200).
                    07  SPA-NAI-BODY.      
-                       09  SPA-NAI-SELNUM          PIC 9(03).      
+                       09  SPA-NAI-SELNUM          PIC 9(05).      
                        09  SPA-NAI-MEMO-FLG        PIC 9(01).      
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-OCC             OCCURS  100.
@@ -206,14 +206,15 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-PAGE            PIC ZZZZZZZZZ9.   
            03  WRK-MOTOPG          PIC X(08).
-           03  WRK-SELNUM          PIC 9(03). 
+           03  WRK-SELNUM          PIC 9(05). 
+           03  WRK-BANGO           PIC 9(05).
            03  WRK-STR             PIC 9(05).
            03  WRK-MCP-PATH.
                04  WRK-MCP-BLOCKS  PIC S9(9)   BINARY.
                04  WRK-MCP-RNAME   PIC S9(9)   BINARY.
                04  WRK-MCP-PNAME   PIC S9(9)   BINARY.
       *
-           03  WRK-ZZ              PIC ZZ9.
+           03  WRK-ZZ              PIC ZZZZ9.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -550,6 +551,9 @@
       *     前行
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 480-BEFORELINE-SEC
+      *     前頁
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 440-MAEGMN-SEC
       *     次頁
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 440-ATOGMN-SEC
@@ -603,10 +607,14 @@
            IF      SPA-GMN-SELNUM      =   ZERO
                CONTINUE
            ELSE
-               IF      SPA-GMN-SELNUM  >   SPA-GMN-MAX
+               COMPUTE WRK-BANGO       =   SPA-GMN-SELNUM
+                                       - ( SPA-GMN-PAGE    -   1 )
+                                       *   WRK-CONS-LINE-MAX
+      *
+               IF      WRK-BANGO       >   SPA-GMN-MAX
                    MOVE    "0001"          TO  SPA-ERRCD
                ELSE
-                   MOVE    SPA-GMN-SELNUM  TO  SPA-NAI-SELNUM     
+                   MOVE    WRK-BANGO       TO  SPA-NAI-SELNUM     
                    PERFORM 2011-SELECT-HENSYU-SEC
                END-IF    
            END-IF
@@ -622,6 +630,8 @@
       *    メモ入力処理
       *****************************************************************
        202-MEMO-SEC                   SECTION.
+      *
+           MOVE    2                   TO  SPA-GMN-CUR
       *
            MOVE   SPA-GMN-SELNUM       TO  IDX
       *
@@ -645,7 +655,8 @@
            MOVE    SPA-NAI-MEMO(IDX)   TO  PRVKANRI-MEMO
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            PERFORM 4401-PRVKANRI-UPD-SEC
-           MOVE    3                   TO  SPA-GMN-CUR
+      *
+           MOVE    2                   TO  SPA-GMN-CUR
            .
        202-MEMO-EXT.
            EXIT.
@@ -655,11 +666,41 @@
       *****************************************************************
        2011-SELECT-HENSYU-SEC        SECTION.
       *
-           MOVE    SPA-NAI-SELNUM      TO  IDY
+           MOVE    WRK-BANGO                TO  IDY
       *     
            MOVE    SPA-NAI-FILENAME (IDY)   TO  SPA-GMN-FILENAME 
       **** MOVE    SPA-GMN-TSHORI-RENNUM (IDY) TO
       ****                                     SPA-NAI-SHORI-RENNUM
+      *                                 
+           MOVE    SPACE               TO  SPA-GMN-ERRMSG
+           MOVE    SPACE               TO  PREVIEW
+           MOVE    SPA-NAI-FILENAME (IDY)
+                                       TO  WRK-PSFILE-AREA
+           STRING  SPA-NAI-ENV         DELIMITED  BY  SPACE
+                   WRK-PSFILE-TBL-KEY  DELIMITED  BY  SPACE
+                   WRK-PSFILE-RENNUM   DELIMITED  BY  SPACE
+                   WRK-PSFILE-GROUP    DELIMITED  BY  SPACE
+                   WRK-PSFILE-SRENNUM  DELIMITED  BY  SPACE
+                   WRK-PSFILE-PAGE     DELIMITED  BY  SPACE
+                                       INTO   PREVIEW
+           END-STRING
+      *                                 
+           PERFORM 460-FILE-HENSYU-SEC
+           MOVE    SPA-NAI-SELNUM      TO  IDX
+           PERFORM 2013-PREVIEW-CHECK-SEC
+           MOVE    SPA-NAI-FILENAME (IDY)
+                                       TO  SPA-GMN-FILENAME
+      *
+           IF      SPA-NAI-UPDFLG(IDY)      =   "1"
+               MOVE    SPA-NAI-MEMO (IDY)
+                                        TO  SPA-GMN-MEMO
+               MOVE    1                TO  SPA-NAI-MEMO-FLG
+               MOVE    2                TO  SPA-GMN-CUR 
+           ELSE
+               MOVE    SPACE            TO  SPA-GMN-MEMO         
+               MOVE    ZERO             TO  SPA-NAI-MEMO-FLG
+               MOVE    1                TO  SPA-GMN-CUR 
+           END-IF
            .
        2011-SELECT-HENSYU-EXT.
            EXIT.
@@ -692,34 +733,11 @@
       *
            INITIALIZE                  SPA-GMN-BODY
       *
-           MOVE    SPA-NAI-SELNUM      TO  SPA-GMN-SELNUM
+           MOVE    SPA-GMN-TNO (SPA-NAI-SELNUM)
+                                       TO  SPA-GMN-SELNUM
+           MOVE    SPA-NAI-SELNUM      TO  WRK-BANGO
       *                                 
            PERFORM 2011-SELECT-HENSYU-SEC
-      *                                 
-           MOVE    SPACE               TO  SPA-GMN-ERRMSG
-           MOVE    SPACE               TO  PREVIEW
-           MOVE    SPA-NAI-FILENAME (SPA-GMN-SELNUM)
-                                       TO  WRK-PSFILE-AREA
-           STRING  SPA-NAI-ENV         DELIMITED  BY  SPACE
-                   WRK-PSFILE-TBL-KEY  DELIMITED  BY  SPACE
-                   WRK-PSFILE-RENNUM   DELIMITED  BY  SPACE
-                   WRK-PSFILE-GROUP    DELIMITED  BY  SPACE
-                   WRK-PSFILE-SRENNUM  DELIMITED  BY  SPACE
-                   WRK-PSFILE-PAGE     DELIMITED  BY  SPACE
-                                       INTO   PREVIEW
-           END-STRING
-      *                                 
-           PERFORM 460-FILE-HENSYU-SEC
-           MOVE    SPA-NAI-SELNUM      TO  IDX
-           PERFORM 2013-PREVIEW-CHECK-SEC
-           MOVE    SPA-NAI-FILENAME (IDX)   TO  SPA-GMN-FILENAME
-      *
-           IF      SPA-NAI-UPDFLG(IDX)      =   1
-                   MOVE    SPA-NAI-MEMO (IDY)
-                                            TO  SPA-GMN-MEMO
-                   MOVE    1                TO  SPA-NAI-MEMO-FLG
-                   MOVE    2                TO  SPA-GMN-CUR         
-           END-IF
       *
            .
        203-SELECT-EXT.
@@ -730,28 +748,42 @@
       *    戻る　処理
       *****************************************************************
        440-MAKE-UPD-SEC            SECTION.
-           IF      XC01-SELECT (SPA-GMN-SELNUM)   =   "T"
-              IF   SPA-GMN-TUPDFLG (SPA-GMN-SELNUM)   =   "○"
+      *
+           IF      SPA-NAI-SELNUM      =  ZERO
+               GO  TO  440-MAKE-UPD-EXT
+           END-IF
+      *
+           MOVE    SPA-NAI-SELNUM      TO  WRK-BANGO
+           PERFORM 2011-SELECT-HENSYU-SEC
+           IF      SPA-ERRCD       NOT =  SPACE
+               MOVE    1               TO  SPA-GMN-CUR
+               GO  TO  440-MAKE-UPD-EXT
+           END-IF
+           
+      *
+           IF      XC01-SELECT (SPA-NAI-SELNUM)   =   "T"
+              IF   SPA-GMN-TUPDFLG (SPA-NAI-SELNUM)   =   "○"
                    MOVE SPACE          TO
-                                       SPA-GMN-TUPDFLG(SPA-GMN-SELNUM)
+                                       SPA-GMN-TUPDFLG(SPA-NAI-SELNUM)
                    MOVE SPACE          TO
-                                       SPA-NAI-UPDFLG(SPA-GMN-SELNUM)
+                                       SPA-NAI-UPDFLG(SPA-NAI-SELNUM)
                    MOVE ZERO           TO
                                        SPA-NAI-MEMO-FLG
                    MOVE SPACE          TO
-                                       SPA-NAI-MEMO(SPA-GMN-SELNUM)
+                                       SPA-NAI-MEMO(SPA-NAI-SELNUM)
                                        SPA-GMN-MEMO
+                   MOVE    1           TO  SPA-GMN-CUR
               ELSE
                    MOVE "○"           TO
-                                       SPA-GMN-TUPDFLG(SPA-GMN-SELNUM)
+                                       SPA-GMN-TUPDFLG(SPA-NAI-SELNUM)
                    MOVE "1"            TO
-                                       SPA-NAI-UPDFLG(SPA-GMN-SELNUM)
+                                       SPA-NAI-UPDFLG(SPA-NAI-SELNUM)
                    MOVE 1              TO
                                        SPA-NAI-MEMO-FLG
                    MOVE 2              TO  SPA-GMN-CUR
               END-IF
            END-IF
-           MOVE   SPA-GMN-SELNUM       TO  IDX
+           MOVE   SPA-NAI-SELNUM       TO  IDX
            INITIALIZE                  PRVKANRI-REC
            MOVE    SPA-NAI-TBL-KEY (IDX)
                                        TO  PRVKANRI-TBL-KEY
@@ -798,8 +830,8 @@
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
-      *            PERFORM 2013-PREVIEW-CHECK-SEC
-                   PERFORM 2014-PRV-HENSYU-SEC
+      ******** PERFORM 2013-PREVIEW-CHECK-SEC
+               PERFORM 2014-PRV-HENSYU-SEC
       *        
            END-PERFORM
            .
@@ -966,7 +998,32 @@
            EXIT.
       *
       *****************************************************************
-      *    次頁　処理
+      *    前頁処理
+      *****************************************************************
+       440-MAEGMN-SEC             SECTION.
+      *
+           IF      SPA-GMN-PAGE        =   1
+               GO      TO      440-MAEGMN-EXT
+           END-IF
+      *
+           COMPUTE SPA-GMN-PAGE    =   SPA-GMN-PAGE    -   1
+      *
+           INITIALIZE                  SPA-GMN-TBL
+                                       SPA-GMN-BODY
+                                       SPA-GMN-FILENAME
+           INITIALIZE                  SPA-NAI-BODY
+                                       SPA-NAI-TBL
+           MOVE    ZERO                TO  SPA-GMN-MAX
+           MOVE    ZERO                TO  IDX
+      *    検索処理
+           PERFORM 2011-PRVKANRI-HEN-SEC
+      *
+           .
+       440-MAEGMN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    次頁処理
       *****************************************************************
        440-ATOGMN-SEC             SECTION.
       *
@@ -1294,7 +1351,7 @@
            IF     (SPA-GMN-NEXT        =   1  )  AND
                   (SPA-GMN-PAGE        >   1  )
                COMPUTE WRK-STR         =   (SPA-GMN-PAGE  -  1)
-                                       *   100
+                                       *   WRK-CONS-LINE-MAX
                                        +   1
            ELSE
                MOVE    1               TO  WRK-STR
@@ -1302,7 +1359,7 @@
       *
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDX2
-           PERFORM UNTIL   (IDX        >   100       ) OR
+           PERFORM UNTIL   (IDX        >   WRK-CONS-LINE-MAX ) OR
                            (FLG-PREVIEW  =   1         )
       *
                ADD     1               TO  IDX2
@@ -1322,12 +1379,12 @@
       *                                MCPDATA-REC
       * end ラージオブジェクト対応までコメント★
       *
-      *    IF     (IDX             >   100  )  AND
+      *    IF     (IDX             >   WRK-CONS-LINE-MAX  )  AND
       *           (FLG-PREVIEW     =   ZERO )
       *        MOVE    "0003"          TO  SPA-ERRCD
       *    END-IF
       *
-           IF     (IDX             >   100  )  AND
+           IF     (IDX             >   WRK-CONS-LINE-MAX  )  AND
                   (FLG-PREVIEW       =   ZERO )
                MOVE    1               TO  SPA-GMN-NEXT
            ELSE
@@ -1377,19 +1434,15 @@
                MOVE    1                   TO  FLG-PRVKANRI
            END-IF
       *
-           IF     (SPA-GMN-NEXT        =   1  )  AND
-                  (SPA-GMN-PAGE        >   1  )
-               COMPUTE WRK-STR         =   (SPA-GMN-PAGE  -  1)
-                                       *   100
-                                       +   1
-           ELSE
-               MOVE    1               TO  WRK-STR
-           END-IF
+      *
+           COMPUTE WRK-STR         = ( SPA-GMN-PAGE  -  1 )
+                                   *   WRK-CONS-LINE-MAX
+                                   +   1
       *
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDX2
-           PERFORM UNTIL ( IDX             >   100 ) OR
-                         ( FLG-PRVKANRI    =   1   )
+           PERFORM UNTIL ( IDX             >=  WRK-CONS-LINE-MAX ) OR
+                         ( FLG-PRVKANRI    =   1                 )
       *
                ADD     1               TO  IDX2
                IF      IDX2            >=  WRK-STR
@@ -1405,22 +1458,24 @@
                                        MCPAREA
                                        MCPDATA-REC
       *
-      *    IF     (IDX             >   100  )  AND
-      *           (FLG-PREVIEW     =   ZERO )
+      *    IF     (IDX             >   WRK-CONS-LINE-MAX  )  AND
+      *           (FLG-PREVIEW     =   ZERO               )
       *        MOVE    "0003"          TO  SPA-ERRCD
       *    END-IF
       *
-           IF     (IDX             >   100  )  AND
-                  (FLG-PRVKANRI     =   ZERO )
+           IF     (IDX             >=  WRK-CONS-LINE-MAX  )  AND
+                  (FLG-PRVKANRI     =   ZERO              )
                MOVE    1               TO  SPA-GMN-NEXT
            ELSE
                MOVE    ZERO            TO  SPA-GMN-NEXT
            END-IF
       *
-           MOVE    SPA-NAI-FILENAME (1)
-                                       TO  SPA-GMN-FILENAME
-           MOVE    1                   TO  SPA-GMN-SELNUM
-                                           SPA-NAI-SELNUM
+           MOVE    1                   TO  SPA-NAI-SELNUM
+           MOVE    SPA-GMN-TNO (SPA-NAI-SELNUM)
+                                       TO  SPA-GMN-SELNUM
+           MOVE    SPA-NAI-SELNUM      TO  WRK-BANGO
+      *                                 
+           PERFORM 2011-SELECT-HENSYU-SEC
       *
            .
        2011-PRVKANRI-HEN-EXT.
@@ -1454,8 +1509,8 @@
       *    ＳＰＡに追加
            IF      FLG-CHK             =   ZERO
                COMPUTE IDX     =   SPA-GMN-MAX     +   1
-               IF      IDX                 <=  100
-                   MOVE    IDX                 TO  SPA-GMN-TNO(IDX)
+               IF      IDX                 <=  WRK-CONS-LINE-MAX
+                   MOVE    IDX2                TO  SPA-GMN-TNO(IDX)
       *
                    MOVE    PRVKANRI-TBL-KEY    TO
                                            SPA-NAI-TBL-KEY   (IDX)
@@ -1534,7 +1589,7 @@
            END-IF
       *
       *    未処理のときプレビューＤＢより編集
-           IF      IDX                 <=  100
+           IF      IDX                 <=  WRK-CONS-LINE-MAX
              IF      SPA-NAI-MAKEOK-FLG (IDX)    =   ZERO
                PERFORM   20121-PREVIEW-EXIST-SEC
                IF    FLG-PREVIEW           =   1  
@@ -2067,6 +2122,8 @@
                WHEN    "RECEPT2"
                    MOVE    WIDGET-NORMAL
                                        TO  XC01-B05-STATE
+                   MOVE    WIDGET-INSENSITIVE
+                                       TO  XC01-MEMO-STATE
                WHEN    OTHER
                    MOVE    WIDGET-INSENSITIVE
                                        TO  XC01-B05-STATE
@@ -2094,11 +2151,10 @@
            IF     (SPA-NAI-MEMO-FLG    =   1)
            AND    (SPA-PRTKANRI-TBL-KEY
                                        =   "RECEPT2")
-                   MOVE  WIDGET-NORMAL 
-                                       TO  XC01-MEMO-STATE
-                   MOVE  SPA-GMN-MEMO  TO  XC01-MEMO
+               MOVE  WIDGET-NORMAL     TO  XC01-MEMO-STATE
+               MOVE  SPA-GMN-MEMO      TO  XC01-MEMO
            ELSE
-                   MOVE    WIDGET-INSENSITIVE
+               MOVE    WIDGET-INSENSITIVE
                                        TO  XC01-MEMO-STATE
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1

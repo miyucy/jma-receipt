@@ -333,7 +333,7 @@
 	<last_modification_time>Thu, 08 Mar 2001 05:01:58 GMT</last_modification_time>
       </signal>
       <editable>True</editable>
-      <format>ZZZ</format>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
@@ -421,7 +421,7 @@
 	  <last_modification_time>Wed, 22 Jan 2003 05:15:06 GMT</last_modification_time>
 	</signal>
 	<columns>6</columns>
-	<column_widths>25,80,92,70,23,25</column_widths>
+	<column_widths>35,80,90,70,20,20</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
