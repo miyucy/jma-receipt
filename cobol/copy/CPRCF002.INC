@@ -277,5 +277,5 @@
       *公費分離区分最小値
            03  RECE02-KOHBUNRI-MIN        PIC  9(01).
       *病床数編集フラグ（特定疾患療養指導料等）
-           03  RECE02-BEDSUFLG            PIC  9(01).
+           03  RECE02-BEDSUFLG            PIC  X(01).
       *
