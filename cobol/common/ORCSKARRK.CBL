@@ -48,6 +48,8 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
+           03  FLG-JYURRK-ARI      PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -234,7 +236,7 @@
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
-           MOVE    SKARRK-SRYYM        TO  SANTEI-SRYYM
+      *****MOVE    SKARRK-SRYYM        TO  SANTEI-SRYYM
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            EVALUATE    TNS-SANTEIRRKKBN
                WHEN    1
@@ -331,6 +333,7 @@
            ELSE
                MOVE    1                   TO  FLG-JYURRK
            END-IF
+           MOVE    ZERO                TO  FLG-JYURRK-ARI
            PERFORM
                UNTIL      (FLG-JYURRK      =   1   )  OR
                           (WRK-LST-SRYYMD  NOT =   SPACE  AND
@@ -347,6 +350,8 @@
                        END-IF
                    END-IF
                END-IF
+               MOVE    1                   TO  FLG-JYURRK-ARI
+      *
                MOVE    "JYURRK-KEY8"       TO  ORC-DBPATH
                PERFORM 970-JYURRK-NEXT-SEC
            END-PERFORM
@@ -382,6 +387,13 @@
       *        MOVE    KARRK-SYOSINYMD2    TO  KARRK-LASTYMD
       *    END-IF
       *
+      *    ¤¹¤Ù¤Æ¤ÎÍúÎò¤¬¤Ê¤¤»þ¡¢Â¾¤Î¿ÇÎÅ²ÊÍúÎò¤âºï½ü¤¹¤ë
+           IF     (FLG-JYURRK-ARI      =   ZERO  )  AND
+                  (WRK-SYOSINYMD1      =   SPACE )  AND
+                  (WRK-SYOSINYMD2      =   SPACE )
+               PERFORM 3009-SRYKARRK-DEL-SEC
+               GO      TO      300-SRYKARRK-HEN-EXT
+           END-IF
       *
       *    ¤¹¤Ù¤Æ¤ÎÆüÉÕ¤¬¶õÇò¤Î»þ¡¢ºï½ü¤¹¤ë
            IF     (KARRK-SYOSINYMD1        =   SPACE )  AND
@@ -439,9 +451,32 @@
                    MOVE    "3000"          TO  SPA-ERRCD
                END-IF
            END-IF
-           .
       *
+           .
        300-SRYKARRK-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ²ÊÍúÎòºï½ü½èÍý
+      *****************************************************************
+       3009-SRYKARRK-DEL-SEC         SECTION.
+      *
+      *    ¿ÇÎÅ²ÊÍúÎò
+           INITIALIZE                      SRYKARRK-REC
+           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-PTID            TO  KARRK-PTID
+      *
+           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SRYKARRK-DEL1"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *
+           .
+       3009-SRYKARRK-DEL-EXT.
            EXIT.
       *
       *****************************************************************
