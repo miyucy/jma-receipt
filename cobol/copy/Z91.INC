@@ -30,7 +30,7 @@
                         06  Z91-SRYEND-COUNT   PIC S9(9)   BINARY.
                         06  Z91-SRYEND-ITEM    PIC X(17)   OCCURS  13.
                     05  Z91-IYKCHKALL          PIC X.
-                    05  Z91-IYKCHK             PIC X       OCCURS  6.
+                    05  Z91-IYKCHK             PIC X       OCCURS  7.
                     05  Z91-TOKCHK             PIC X.
                     05  Z91-JIHCHK             PIC X.
                     05  Z91-COMCHKALL          PIC X.

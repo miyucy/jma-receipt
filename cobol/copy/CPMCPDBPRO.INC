@@ -270,6 +270,7 @@
       *  01.01.91    NACL-多々納　03/08/11  CHK-KEY7追加 
       *  01.01.92    NACL-太田  　03/08/12  SRYACCT-KEY23追加 
       *  01.01.93    NACL-藤原    03/08/18  SEIKYU-KEY23,KEY24追加
+      *  01.01.94    NACL-森脇    03/08/25  TENSU-KEY23S,KEY23M,KEY23K
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1913,9 +1914,25 @@
                WHEN    ANY             ALSO   "TENSU-KEY21"
                    MOVE    PATH-TBL-TENSU-KEY21
                                        TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
                WHEN    ANY             ALSO   "TENSU-UPD1"
                    MOVE    PATH-TBL-TENSU-KEY
                                        TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+      *----(01.01.94)--ADD-START---
+               WHEN    ANY             ALSO   "TENSU-KEY23S"
+                   MOVE    PATH-TBL-TENSU-KEY23S
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY23M"
+                   MOVE    PATH-TBL-TENSU-KEY23M
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY23K"
+                   MOVE    PATH-TBL-TENSU-KEY23K
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+      *----(01.01.94)--ADD-END-----
       ************ PERFORM 2001-SEL-TENSU-REC
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "TENSU-ALL"

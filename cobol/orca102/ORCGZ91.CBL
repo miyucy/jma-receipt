@@ -37,6 +37,7 @@
       *  01.01.03    NACL-太田    03/07/02  出力先プリンタサブ追加
       *                                     印刷する・しないのボタン追加
       *  01.01.04    NACL-太田    03/07/11  自費追加
+      *  01.01.05    NACL-森脇    03/08/22  分類区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -83,7 +84,9 @@
       *----(01.01.01)--ADD-START----
                        09  SPA-GMN-IYKCHKALL         PIC X.
       *----(01.01.01)--ADD-END------
-                       09  SPA-GMN-IYKCHK  PIC X     OCCURS  6.
+      *----(01.01.05)--UPD-START---
+                       09  SPA-GMN-IYKCHK  PIC X     OCCURS  7.
+      *----(01.01.05)--UPD-END-----
                    07  SPA-GMN-TOKCHK      PIC X.
                    07  SPA-GMN-JIHCHK      PIC X.
       *----(01.01.01)--ADD-START----
@@ -422,6 +425,9 @@
            MOVE  "F"     TO  SPA-GMN-IYKCHK(4)
            MOVE  "F"     TO  SPA-GMN-IYKCHK(5)
            MOVE  "F"     TO  SPA-GMN-IYKCHK(6)
+      *----(01.01.05)--ADD-START---
+           MOVE  "F"     TO  SPA-GMN-IYKCHK(7)
+      *----(01.01.05)--ADD-END-----
       *
            MOVE  "F"     TO  SPA-GMN-TOKCHK
            MOVE  "F"     TO  SPA-GMN-JIHCHK
@@ -572,18 +578,20 @@
       *        医薬品チェック
       *----(01.01.01)--ADD-START---
                WHEN    "CLICKED"       ALSO    "IYKCHKALL"
+      *----(01.01.05)--UPD-START---
                    EVALUATE    SPA-GMN-IYKCHKALL
                        WHEN    "T"
                            PERFORM VARYING IDX FROM    1   BY  1
-                                   UNTIL   IDX         >   6
+                                   UNTIL   IDX         >   7
                                MOVE    "F"  TO  SPA-GMN-IYKCHK(IDX)
                            END-PERFORM
                        WHEN    "F"
                            PERFORM VARYING IDX FROM    1   BY  1
-                                   UNTIL   IDX         >   6
+                                   UNTIL   IDX         >   7
                                MOVE    "T"  TO  SPA-GMN-IYKCHK(IDX)
                            END-PERFORM
                    END-EVALUATE
+      *----(01.01.05)--UPD-END-----
                    MOVE  6              TO  SPA-GMN-CUR
       *----(01.01.01)--ADD-END-----
       *----(01.01.01)--UPD-START---
@@ -635,6 +643,16 @@
                            MOVE    "T"  TO  SPA-GMN-IYKCHK(6)
                    END-EVALUATE
                    MOVE  12             TO  SPA-GMN-CUR
+      *----(01.01.05)--ADD-START---
+               WHEN    "CLICKED"       ALSO    "IYKCHK7"
+                   EVALUATE    SPA-GMN-IYKCHK(7)
+                       WHEN    "T"
+                           MOVE    "F"  TO  SPA-GMN-IYKCHK(7)
+                       WHEN    "F"
+                           MOVE    "T"  TO  SPA-GMN-IYKCHK(7)
+                   END-EVALUATE
+                   MOVE  30             TO  SPA-GMN-CUR
+      *----(01.01.05)--ADD-END-----
       *        特定器材チェック
                WHEN    "CLICKED"       ALSO    "TOKCHK" 
                    EVALUATE    SPA-GMN-TOKCHK
@@ -722,6 +740,9 @@
                AND     SPA-GMN-IYKCHK(4)   =   "F"
                AND     SPA-GMN-IYKCHK(5)   =   "F"
                AND     SPA-GMN-IYKCHK(6)   =   "F"
+      *----(01.01.05)--ADD-START---
+               AND     SPA-GMN-IYKCHK(7)   =   "F"
+      *----(01.01.05)--ADD-END-----
                MOVE    "F"  TO  SPA-GMN-IYKCHKALL
            ELSE
                MOVE    "T"  TO  SPA-GMN-IYKCHKALL
@@ -1125,8 +1146,10 @@
            END-IF
       *     
       *    医薬品チェックセット
+      *----(01.01.05)--UPD-START---
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX         >   6
+                   UNTIL   IDX         >   7
+      *----(01.01.05)--UPD-END-----
                IF      SPA-GMN-IYKCHK(IDX)     =  "T"
                    EVALUATE    IDX
                        WHEN    1
@@ -1141,9 +1164,14 @@
                            MOVE    "9"         TO  SHELL-IYKCHK (IDX)
                        WHEN    6
                            MOVE    "3"         TO  SHELL-IYKCHK (IDX)
+      *----(01.01.05)--ADD-START---
+                       WHEN    7
+                           MOVE    "1"         TO  SHELL-IYKCHK (IDX)
+      *----(01.01.05)--ADD-END-----
                    END-EVALUATE        
                END-IF
-           END-PERFORM        
+           END-PERFORM
+
       *
       *    特定器材チェックセット
            IF      SPA-GMN-TOKCHK      =   "T"
@@ -1215,12 +1243,25 @@
                        PERFORM 4901-PRINT-SYORI-SEC
                END-IF
       *
+      *----(01.01.05)--UPD-START---
                IF      SHELL-IYKCHK-G      =   ALL "0"
                    CONTINUE
                ELSE         
-                   MOVE    "ORHCML01"        TO  WRK-PGID
-                   PERFORM 4901-PRINT-SYORI-SEC
+                   IF      SHELL-IYKCHK(7)   >   ZERO
+                       MOVE    "ORHCML12"        TO  WRK-PGID
+                       PERFORM 4901-PRINT-SYORI-SEC
+                   END-IF
+                   IF     (SHELL-IYKCHK(1)   >   ZERO)
+                       OR (SHELL-IYKCHK(2)   >   ZERO)
+                       OR (SHELL-IYKCHK(3)   >   ZERO)
+                       OR (SHELL-IYKCHK(4)   >   ZERO)
+                       OR (SHELL-IYKCHK(5)   >   ZERO)
+                       OR (SHELL-IYKCHK(6)   >   ZERO)
+                       MOVE    "ORHCML01"        TO  WRK-PGID
+                       PERFORM 4901-PRINT-SYORI-SEC
+                   END-IF
                END-IF
+      *----(01.01.05)--UPD-END-----
       *
                IF      SHELL-TOKCHK        =   1    
                    MOVE    "ORHCML02"        TO  WRK-PGID
@@ -1248,10 +1289,22 @@
       *
                IF      SHELL-IYKCHK-G      =   ALL "0"
                    CONTINUE
-               ELSE        
-                   MOVE    "ORHCML06"        TO  WRK-PGID
-                   PERFORM 4901-PRINT-SYORI-SEC
+               ELSE         
+                   IF      SHELL-IYKCHK(7)   >   ZERO
+                       MOVE    "ORHCML12"        TO  WRK-PGID
+                       PERFORM 4901-PRINT-SYORI-SEC
+                   END-IF
+                   IF     (SHELL-IYKCHK(1)   >   ZERO)
+                       OR (SHELL-IYKCHK(2)   >   ZERO)
+                       OR (SHELL-IYKCHK(3)   >   ZERO)
+                       OR (SHELL-IYKCHK(4)   >   ZERO)
+                       OR (SHELL-IYKCHK(5)   >   ZERO)
+                       OR (SHELL-IYKCHK(6)   >   ZERO)
+                       MOVE    "ORHCML06"        TO  WRK-PGID
+                       PERFORM 4901-PRINT-SYORI-SEC
+                   END-IF
                END-IF
+      *----(01.01.05)--UPD-END-----
       *
                IF      SHELL-TOKCHK        =   1    
                    MOVE    "ORHCML07"        TO  WRK-PGID
@@ -1658,6 +1711,9 @@
            MOVE  SPA-GMN-IYKCHK(4)     TO  Z91-IYKCHK(4)
            MOVE  SPA-GMN-IYKCHK(5)     TO  Z91-IYKCHK(5)
            MOVE  SPA-GMN-IYKCHK(6)     TO  Z91-IYKCHK(6)
+      *----(01.01.05)--ADD-START---
+           MOVE  SPA-GMN-IYKCHK(7)     TO  Z91-IYKCHK(7)
+      *----(01.01.05)--ADD-END-----
       *----(01.01.01)--ADD-START---
            MOVE  SPA-GMN-COMCHK(1)     TO  Z91-COMCHK(1)
            MOVE  SPA-GMN-COMCHK(2)     TO  Z91-COMCHK(2)
@@ -1774,6 +1830,10 @@
                    MOVE    "SYU2"              TO  MCP-WIDGET
                WHEN    26
                    MOVE    "SYU3"              TO  MCP-WIDGET
+      *----(01.01.05)--ADD-START---
+               WHEN    30
+                   MOVE    "IYKCHK7"           TO  MCP-WIDGET
+      *----(01.01.05)--ADD-END-----
       *----(01.01.01)--UPD-END-----
                WHEN    99
                    MOVE    "B12"               TO  MCP-WIDGET

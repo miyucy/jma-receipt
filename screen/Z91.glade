@@ -287,6 +287,253 @@
     </widget>
 
     <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator33</name>
+      <x>88</x>
+      <y>416</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label164</name>
+      <x>104</x>
+      <y>432</y>
+      <width>136</width>
+      <height>24</height>
+      <label>マスター日付指定</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator28</name>
+      <x>88</x>
+      <y>456</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label169</name>
+      <x>104</x>
+      <y>472</y>
+      <width>136</width>
+      <height>24</height>
+      <label>出力形式指定</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator29</name>
+      <x>88</x>
+      <y>520</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label168</name>
+      <x>104</x>
+      <y>536</y>
+      <width>128</width>
+      <height>24</height>
+      <label>抽出データ指定</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator30</name>
+      <x>88</x>
+      <y>584</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator32</name>
+      <x>88</x>
+      <y>672</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label163</name>
+      <x>104</x>
+      <y>600</y>
+      <width>104</width>
+      <height>24</height>
+      <label>出力順指定</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator17</name>
+      <x>80</x>
+      <y>424</y>
+      <width>16</width>
+      <height>256</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator18</name>
+      <x>912</x>
+      <y>424</y>
+      <width>16</width>
+      <height>256</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator31</name>
+      <x>88</x>
+      <y>16</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label165</name>
+      <x>424</x>
+      <y>56</y>
+      <width>40</width>
+      <height>24</height>
+      <label>開始</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label166</name>
+      <x>656</x>
+      <y>56</y>
+      <width>56</width>
+      <height>24</height>
+      <label>〜</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label170</name>
+      <x>680</x>
+      <y>56</y>
+      <width>40</width>
+      <height>24</height>
+      <label>終了</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator21</name>
+      <x>88</x>
+      <y>80</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator25</name>
+      <x>88</x>
+      <y>240</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator27</name>
+      <x>88</x>
+      <y>368</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator26</name>
+      <x>88</x>
+      <y>280</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator16</name>
+      <x>912</x>
+      <y>24</y>
+      <width>16</width>
+      <height>392</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator15</name>
+      <x>80</x>
+      <y>24</y>
+      <width>16</width>
+      <height>392</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator34</name>
+      <x>88</x>
+      <y>408</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
       <class>GtkCheckButton</class>
       <name>SRYCHK</name>
       <x>104</x>
@@ -610,6 +857,30 @@
 
     <widget>
       <class>GtkCheckButton</class>
+      <name>IYKCHK7</name>
+      <x>408</x>
+      <y>96</y>
+      <width>184</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Fri, 11 Jan 2002 02:36:00 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 11 Jan 2002 02:36:31 GMT</last_modification_time>
+      </signal>
+      <label>レセプト添付資料用薬剤</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
       <name>TOKCHK</name>
       <x>104</x>
       <y>256</y>
@@ -628,30 +899,6 @@
 	<last_modification_time>Fri, 11 Jan 2002 02:38:37 GMT</last_modification_time>
       </signal>
       <label>特定器材</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>JIHCHK</name>
-      <x>104</x>
-      <y>384</y>
-      <width>109</width>
-      <height>26</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Thu, 05 Dec 2002 08:49:02 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 05 Dec 2002 08:49:26 GMT</last_modification_time>
-      </signal>
-      <label>自費</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -748,6 +995,30 @@
 	<last_modification_time>Thu, 05 Dec 2002 08:40:55 GMT</last_modification_time>
       </signal>
       <label>その他</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>JIHCHK</name>
+      <x>104</x>
+      <y>384</y>
+      <width>109</width>
+      <height>26</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Thu, 05 Dec 2002 08:49:02 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 05 Dec 2002 08:49:26 GMT</last_modification_time>
+      </signal>
+      <label>自費</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -953,253 +1224,6 @@
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>SYUJUN</group>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator33</name>
-      <x>88</x>
-      <y>416</y>
-      <width>832</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label164</name>
-      <x>104</x>
-      <y>432</y>
-      <width>136</width>
-      <height>24</height>
-      <label>マスター日付指定</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator28</name>
-      <x>88</x>
-      <y>456</y>
-      <width>832</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label169</name>
-      <x>104</x>
-      <y>472</y>
-      <width>136</width>
-      <height>24</height>
-      <label>出力形式指定</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator29</name>
-      <x>88</x>
-      <y>520</y>
-      <width>832</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label168</name>
-      <x>104</x>
-      <y>536</y>
-      <width>128</width>
-      <height>24</height>
-      <label>抽出データ指定</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator30</name>
-      <x>88</x>
-      <y>584</y>
-      <width>832</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator32</name>
-      <x>88</x>
-      <y>672</y>
-      <width>832</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label163</name>
-      <x>104</x>
-      <y>600</y>
-      <width>104</width>
-      <height>24</height>
-      <label>出力順指定</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator17</name>
-      <x>80</x>
-      <y>424</y>
-      <width>16</width>
-      <height>256</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator18</name>
-      <x>912</x>
-      <y>424</y>
-      <width>16</width>
-      <height>256</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator31</name>
-      <x>88</x>
-      <y>16</y>
-      <width>832</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label165</name>
-      <x>424</x>
-      <y>56</y>
-      <width>40</width>
-      <height>24</height>
-      <label>開始</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label166</name>
-      <x>656</x>
-      <y>56</y>
-      <width>56</width>
-      <height>24</height>
-      <label>〜</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label170</name>
-      <x>680</x>
-      <y>56</y>
-      <width>40</width>
-      <height>24</height>
-      <label>終了</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator21</name>
-      <x>88</x>
-      <y>80</y>
-      <width>832</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator25</name>
-      <x>88</x>
-      <y>240</y>
-      <width>832</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator27</name>
-      <x>88</x>
-      <y>368</y>
-      <width>832</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator26</name>
-      <x>88</x>
-      <y>280</y>
-      <width>832</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator34</name>
-      <x>88</x>
-      <y>408</y>
-      <width>832</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator15</name>
-      <x>80</x>
-      <y>32</y>
-      <width>16</width>
-      <height>384</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator16</name>
-      <x>912</x>
-      <y>24</y>
-      <width>16</width>
-      <height>392</height>
     </widget>
   </widget>
 </widget>

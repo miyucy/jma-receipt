@@ -46,6 +46,9 @@ Z91	{
 		IYKCHK6	{
 			value	bool;
 		};
+		IYKCHK7	{
+			value	bool;
+		};
 		TOKCHK	{
 			value	bool;
 		};

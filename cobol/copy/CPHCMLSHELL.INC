@@ -26,8 +26,10 @@
           03  SHELL-COMCHK-G.
               05  SHELL-COMCHK    PIC 9(01)  OCCURS  3.
       *----(01.01.01)--ADD-END-----
+      *----(01.01.05)--UPD-START---
           03  SHELL-IYKCHK-G.
-              05  SHELL-IYKCHK    PIC 9(01)  OCCURS  6.
+              05  SHELL-IYKCHK    PIC 9(01)  OCCURS  7.
+      *----(01.01.05)--UPD-END-----
           03  SHELL-MSTYMD        PIC X(08).
           03  SHELL-CYUKBN        PIC 9(01).
           03  SHELL-SYUKBN        PIC 9(01).

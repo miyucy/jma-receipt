@@ -1003,3 +1003,52 @@ path	key22           {
 	};
 };
 
+path	key23s 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key23s_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_tensu a,tbl_tensuplus b
+			WHERE a.SRYCD    =   b.SRYCD
+			AND   a.YUKOSTYMD  <=  :YUKOSTYMD
+			AND   a.YUKOEDYMD  >=  :YUKOEDYMD
+			AND   a.SRYCD    >=  :SRYCD
+			AND   a.SRYCD    <=  :UPSRYCD
+			AND   b.TENPUYAKKBN  <>  ''
+			ORDER  BY  a.SRYCD
+		;
+	};
+};
+
+path	key23m	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key23m_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_tensu a,tbl_tensuplus b
+			WHERE a.SRYCD    =   b.SRYCD
+			AND   a.YUKOSTYMD  <=  :YUKOSTYMD
+			AND   a.YUKOEDYMD  >=  :YUKOEDYMD
+			AND   a.SRYCD    >=  :SRYCD
+			AND   a.SRYCD    <=  :UPSRYCD
+			AND   b.TENPUYAKKBN  <>  ''
+			ORDER  BY  a.KANANAME
+		;
+	};
+};
+
+path	key23k 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key23k_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_tensu a,tbl_tensuplus b
+			WHERE a.SRYCD    =   b.SRYCD
+			AND   a.YUKOSTYMD  <=  :YUKOSTYMD
+			AND   a.YUKOEDYMD  >=  :YUKOEDYMD
+			AND   a.SRYCD    >=  :SRYCD
+			AND   a.SRYCD    <=  :UPSRYCD
+			AND   b.TENPUYAKKBN  <>  ''
+			ORDER  BY   a.CDKBN_KBN,a.CDKBN_KBNNUM,a.CDKBN_KBNNUM_EDA,
+                        a.CDKBN_KOUBAN
+		;
+	};
+};
+
