@@ -2528,12 +2528,12 @@
                WHEN    "1010"
                    MOVE    "社保分のレセプト電算データを作成します"
                                        TO  WRK-TIDMSG
-                   MOVE    "（症状表記の印刷を指定）"
+                   MOVE    "（症状詳記の印刷を指定）"
                                        TO  WRK-TIDMSG (39:)
                WHEN    "1011"
                    MOVE    "国保分のレセプト電算データを作成します"
                                        TO  WRK-TIDMSG
-                   MOVE    "（症状表記の印刷を指定）"
+                   MOVE    "（症状詳記の印刷を指定）"
                                        TO  WRK-TIDMSG (39:)
            END-EVALUATE
       *
