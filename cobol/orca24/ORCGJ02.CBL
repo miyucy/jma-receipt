@@ -5212,6 +5212,8 @@
        420-CLEA-SEC        SECTION.
       *
            IF      SPA-GMN-BANGO       =   ZERO
+      *        排他制御解除処理 
+               PERFORM 990-LOCK-OUT-SEC
       *        クリア
                MOVE    ZERO                TO  SPA-GMN-CUR
                INITIALIZE                  SPA-J02-AREA
@@ -5232,8 +5234,6 @@
       *
                MOVE    1                   TO  SPA-GMN-CUR
       *
-      *        排他制御解除処理
-               PERFORM 990-LOCK-OUT-SEC
            END-IF
       *
            .
@@ -6752,6 +6752,9 @@
       *
       *    患者が選択されてきた時は、元の画面へ
            IF      SPA-J02-MOTOFLG     =   "0"
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
+      *
                MOVE    ZERO            TO  SPA-GMN-CUR
                INITIALIZE                  SPA-J02-AREA
                INITIALIZE                  SPA-SCR-REC
@@ -6760,9 +6763,6 @@
                MOVE    SPA-J02-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
                MOVE    SPA-J02-SRYYMD (1:6)    TO  SPA-NAI-SRYYM
                MOVE    SPACE               TO  SPA-GMN-SRYKA-G
-      *
-      *        排他制御解除処理
-               PERFORM 990-LOCK-OUT-SEC
            ELSE
       *        更新後、戻るへ
                PERFORM 210-BACK
@@ -8273,6 +8273,9 @@
       *            登録
       *            患者が選択されてきた時は、元の画面へ
                    IF      SPA-J02-MOTOFLG     =   "0"
+      *                排他制御解除処理
+                       PERFORM 990-LOCK-OUT-SEC
+      *
                        MOVE    ZERO            TO  SPA-GMN-CUR
                        INITIALIZE                  SPA-J02-AREA
                        INITIALIZE                  SPA-SCR-REC
@@ -8281,8 +8284,6 @@
                        MOVE    SPA-J02-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
                        MOVE    SPA-J02-SRYYMD (1:6)    TO  SPA-NAI-SRYYM
                        MOVE    SPACE               TO  SPA-GMN-SRYKA-G
-      *               排他制御解除処理
-                       PERFORM 990-LOCK-OUT-SEC
                    ELSE
       *               更新後、戻るへ
                        PERFORM 210-BACK-SYORI-SEC
