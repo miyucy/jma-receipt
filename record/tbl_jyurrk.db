@@ -669,3 +669,18 @@ path	key27 	{
 		;
 	};
 };
+
+path	key28 	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key28_csr CURSOR FOR
+		SELECT distinct hospid,ptid,nyugaikbn,sryka,substring(sryymd,1,6) as sryymd,hknkbn
+		FROM tbl_jyurrk
+			WHERE HOSPID      =    :HOSPID
+			AND   PTID        =    :PTID
+			AND   NYUGAIKBN   =    :NYUGAIKBN
+			AND   HKNKBN      =    :HKNKBN
+			AND   SRYKA       =    :SRYKA
+			AND   SRYYMD      LIKE :SRYYMD
+		;
+	};
+};
