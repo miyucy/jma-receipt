@@ -1,32 +1,38 @@
 O02	{
 	fixed6	{
+		RENNUM	{
+			value	number(3);
+		};
+		SEIYM	{
+			value	varchar(7);
+		};
 		PTNUM	{
 			value	varchar(20);
 		};
-		NAME	{
-			value	varchar(68);
-		};
-		SEIYM	{
-			value	varchar(6);
-		};
-		scrolledwindow1	{
-			LIST01	{
-				count	int;
-				item	{
-					value0	varchar(20);
-					value1	varchar(68);
-					value2	varchar(6);
-					value3	varchar(10);
-				}	[50];
-				select	bool[50];
-			};
-		};
-		SAKKBNCOMBO	{
+		SAKKBN_COMBO	{
 			SAKKBN	{
-				value	varchar(12);
+				value	varchar(16);
+	           	state	int;
 			};
 			count	int;
-			item	varchar(12)[10];
+			item	varchar(16)[10];
+	          	state	int;
+		};
+		NAME	{
+			value	varchar(50);
+		};
+		scrolledwindow1	{
+			TEIKILST	{
+				count	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(20);
+					value2	varchar(50);
+					value3	varchar(7);
+					value4	varchar(14);
+				}	[100];
+				select	bool[100];
+			};
 		};
 	};
 };
