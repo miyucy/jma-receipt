@@ -29,8 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    02.09.12  自賠責対応　　　　
-      *  01.00.02   NACL-藤原     02.09.20  検査の編集のために回数を全て編集する
-      *****************************************************************
+      *  01.00.02    NACL-藤原    02.09.20  検査の編集のために回数を全て編集する      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION           SECTION.
@@ -307,7 +306,16 @@
            03  CONS-TOKKI12        PIC X(14) VALUE "00000099990112".
       *    乳幼児加算
            03  CONS-NYUKSN1        PIC X(09) VALUE "111000370".         
-           03  CONS-NYUKSN2        PIC X(09) VALUE "111011470".         
+           03  CONS-NYUKSN2        PIC X(09) VALUE "111011470".
+      *    電話等再診（２回目以降のコード）
+      **>  03  CONS-SAISHIN-A1     PIC X(09) VALUE "112009850".
+      **>  03  CONS-SAISHIN-A2     PIC X(09) VALUE "112009950".
+      **>  03  CONS-SAISHIN-A3     PIC X(09) VALUE "112010050".
+      **>  03  CONS-SAISHIN-A4     PIC X(09) VALUE "112012750".
+      *    再診（３月超）（５回超）
+           03  CONS-SAISHIN-B1     PIC X(09) VALUE "101120060".
+      *    外来管理加算（３月超）（５回超）
+           03  CONS-GAIRAI         PIC X(09) VALUE "101120090".
       *    労災自賠責関係
            03  CONS-ROUSAI1    PIC X(09)   VALUE   "101110010".
            03  CONS-ROUSAI2    PIC X(09)   VALUE   "101110020".
@@ -842,6 +850,18 @@
                    IF   SRY-SRYCD(IDX2)   =     CONS-KEIZOKU1    OR
                                                 CONS-KEIZOKU2
                         MOVE   "1"      TO    RECE41-KEIZOKU-PRTKBN
+                   END-IF
+      **>          IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN-A1  OR
+      **>                                       CONS-SAISHIN-A2  OR
+      **>                                       CONS-SAISHIN-A3  OR
+      **>                                       CONS-SAISHIN-A4  
+      **>               MOVE   "1"      TO    RECE41-SAISHIN-PRTKBN
+      **>          END-IF
+                   IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN-B1  
+                        MOVE   "1"      TO    RECE41-SAISHIN-PRTKBN2
+                   END-IF
+                   IF   SRY-SRYCD(IDX2)   =     CONS-GAIRAI 
+                        MOVE   "1"      TO    RECE41-GAIRAIKSN-PRTKBN
                    END-IF
                END-IF
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE45-SRYSURYO(IDX4)
