@@ -1198,7 +1198,8 @@
                    WHEN    "3"         ALSO    ANY     ALSO    ANY
                        MOVE    7021        TO    TOUKEI04-RECESYUBETU
                    WHEN    "4"         ALSO    ANY     ALSO    ANY
-                       MOVE    7001        TO    TOUKEI04-RECESYUBETU                    END-EVALUATE
+                       MOVE    7001        TO    TOUKEI04-RECESYUBETU
+               END-EVALUATE
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
       *
