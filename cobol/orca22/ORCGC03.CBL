@@ -2070,6 +2070,9 @@
                                            SPA-NAI-BYOMEI-TBL
                                            SPA-NAI-BYOMEIHENFLG
                                            SPA-GMN-BYOMEIHENFLG
+                                           SPA-GMN-UTAGAIFLG-G
+                                           SPA-GMN-MANSEIKBN-G
+                                           SPA-GMN-BYOMEISBT-G
            MOVE    ZERO                TO  SPA-NAI-BYOMEIMOJI
       *
            IF      SPA-GMN-BYOMEI      =   SPACE
