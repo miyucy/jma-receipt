@@ -179,6 +179,10 @@
                05  WRK-KEI         PIC Z(07).
       *
            03  WRK-MEISYO          PIC X(40).
+      *    入院履歴退避用ワーク
+       01  WK-PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC"     REPLACING
+                                //PTNYUINRRK-// BY //WK-PTNYUINRRK-//.
       *    数量表示用
            03  WRK-SURYO           PIC 9(05)V9(03).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
@@ -4134,6 +4138,8 @@
                                        TO  WRK-SANTEISTYMD
                MOVE    PTNYUINRRK-TOKUTEI-NYUIN
                                        TO  WRK-TOKUTEI-NYUIN
+               MOVE    PTNYUINRRK-REC  TO  WK-PTNYUINRRK-REC
+               DISPLAY  "PTNYUINRRK-RRKNUM = " PTNYUINRRK-RRKNUM
            ELSE
                INITIALIZE                  PTNYUINRRK-REC
                MOVE    1               TO  FLG-PTNYUINRRK
@@ -4173,6 +4179,8 @@
                PERFORM  970-PTNYUINRRK-READ-SEC
            END-PERFORM
            DISPLAY   "410191-NYUACCT-SAKUSEI-SEC3"
+      *
+           MOVE    WK-PTNYUINRRK-REC   TO  PTNYUINRRK-REC
       *
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
            MOVE    SPA-NAI-SRYYM-41
@@ -4762,6 +4770,7 @@
       *    病棟情報検索処理
       *****************************************************************
        4801-BTUSEL-SEC             SECTION.
+           DISPLAY  "4801-BTUSEL-SEC"
       *
            INITIALIZE              SYSKANRI-REC
            MOVE    ZERO            TO  FLG-SYSKANRI
@@ -4770,10 +4779,14 @@
            MOVE    PTNYUINRRK-BTUNUM
                                    TO  SYS-KBNCD
            MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           DISPLAY "4801-BTUSEL-SEC PTNYUINRRK-BTUNUM = " 
+                                        PTNYUINRRK-BTUNUM
+           DISPLAY "4801-BTUSEL-SEC SPA-SYSYMD = " SPA-SYSYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
+           DISPLAY "4801-BTUSEL-SEC FLG-DBRC = " FLG-DBRC
            IF    ( FLG-DBRC    =   ZERO )
                MOVE    MCPDATA-REC
                                   TO  SYS-5001-REC
