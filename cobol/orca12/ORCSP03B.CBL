@@ -361,6 +361,11 @@
                                        TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+      *    全角の時、すべてのチェックをはずす
+           IF     (KANACHK-RC          =   ZERO  )  AND
+                  (KANACHK-SYUBETU     =   2     )
+               GO      TO      1001-FTNJANUM-CHK-EXT
+           END-IF
       *    半角で間に空白がないこと
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-RC2     NOT =   ZERO  )  OR
@@ -607,6 +612,7 @@
                                       =    SPA-GMN-KOHKBNL (IDX))
       *            法別番号が同じこと
                    IF      SPA-GMN-FTNJANUM(IDX-K) NOT =   SPACE
+                     AND   SPA-GMN-FTNJANUM(IDX-K) (1:2)   NUMERIC
                        IF      SPA-GMN-FTNJANUM(IDX-K) (1:2)
                                            NOT =  SPA-NAI-HBTNUM
                                                               (IDX)
