@@ -306,8 +306,7 @@
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
       *    医療機関減算の取得（システム管理テーブルより）
-           MOVE     ZERO               TO  WRK-MIJISI
-                                           WRK-SHOKUJIRYOYO
+           MOVE     ZERO               TO  WRK-SHOKUJIRYOYO
                                            WRK-TOKUKANRIKASAN
       *
            MOVE     ZERO               TO  FLG-MIJISI-INNAI             
@@ -334,16 +333,10 @@
                     IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"    
                         EVALUATE  GENSAN-IDX
                             WHEN  2
-                                COMPUTE WRK-MIJISI = WRK-MIJISI
-                                                   + 5
                                 MOVE    1     TO    FLG-MIJISI-INNAI    
                             WHEN  3
-                                COMPUTE WRK-MIJISI = WRK-MIJISI
-                                                   + 10
                                 MOVE    1     TO    FLG-MIJISI-IRYO     
                             WHEN  4
-                                COMPUTE WRK-MIJISI = WRK-MIJISI
-                                                   + 5
                                 MOVE    1     TO    FLG-MIJISI-JYOKU    
                         END-EVALUATE
                     END-IF
@@ -738,6 +731,12 @@
                              MOVE    1      TO    FLG-SHOSAISIN
                          END-IF
                        END-IF
+                       MOVE    "DBCLOSE"          TO  MCP-FUNC
+                       MOVE    "TENSU-KEY"        TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"        USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
                    END-PERFORM
                    MOVE     "SRYACT-KEY9"    TO   ORC-DBPATH
                    PERFORM   SRYACT-READ-SEC
@@ -850,6 +849,8 @@
       *    レセプト中間ファイルの編集（Ｆ００２）
       *****************************************************************
        RECE62-HENSYU2-SEC                SECTION.
+      *
+           PERFORM      MIJISI-GET-SEC
       *
            INITIALIZE                            NYUINACCT-REC
            MOVE    RECE62-HOSPID         TO      NACCT-HOSPID
@@ -976,6 +977,92 @@
       *
            .
        RECE62-HENSYU2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    未実施減算額取得
+      *****************************************************************
+       MIJISI-GET-SEC                 SECTION.
+      *
+           MOVE     ZERO               TO  WRK-MIJISI
+      *
+           IF   FLG-MIJISI-INNAI  =   1
+      *
+               MOVE    SPACE         TO   TNS-TENSU-REC
+               INITIALIZE                 TNS-TENSU-REC
+               IF    RECE62-RJNHKNNUM    =    SPACE
+                    MOVE    "190080570"   TO   TNS-SRYCD
+               ELSE
+                    MOVE    "190799770"   TO   TNS-SRYCD
+               END-IF
+               MOVE    RECE62-SRYYM       TO  ORC-DBYMD(1:6)
+               MOVE    "01"               TO  ORC-DBYMD(7:2)
+               PERFORM  TENSU-READ-SEC
+               IF       FLG-TENSU      =    ZERO
+                  COMPUTE   WRK-MIJISI   =   WRK-MIJISI
+                                         +   TNS-TEN
+               END-IF
+               MOVE    "DBCLOSE"          TO  MCP-FUNC
+               MOVE    "TENSU-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"        USING
+                                          MCPAREA
+                                          ORCMCPAREA
+                                          MCPDATA-REC
+      *
+           END-IF
+      *
+           IF   FLG-MIJISI-IRYO   =   1
+      *
+               MOVE    SPACE         TO   TNS-TENSU-REC
+               INITIALIZE                 TNS-TENSU-REC
+               IF    RECE62-RJNHKNNUM    =    SPACE
+                    MOVE    "190111690"   TO   TNS-SRYCD
+               ELSE
+                    MOVE    "190809090"   TO   TNS-SRYCD
+               END-IF
+               MOVE    RECE62-SRYYM       TO  ORC-DBYMD(1:6)
+               MOVE    "01"               TO  ORC-DBYMD(7:2)
+               PERFORM  TENSU-READ-SEC
+               IF       FLG-TENSU      =    ZERO
+                  COMPUTE   WRK-MIJISI   =   WRK-MIJISI
+                                         +   TNS-TEN
+               END-IF
+               MOVE    "DBCLOSE"          TO  MCP-FUNC
+               MOVE    "TENSU-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"        USING
+                                          MCPAREA
+                                          ORCMCPAREA
+                                          MCPDATA-REC
+      *
+           END-IF
+      *
+           IF   FLG-MIJISI-JYOKU  =   1
+      *
+               MOVE    SPACE         TO   TNS-TENSU-REC
+               INITIALIZE                 TNS-TENSU-REC
+               IF    RECE62-RJNHKNNUM    =    SPACE
+                    MOVE    "190111790"   TO   TNS-SRYCD
+               ELSE
+                    MOVE    "190809190"   TO   TNS-SRYCD
+               END-IF
+               MOVE    RECE62-SRYYM       TO  ORC-DBYMD(1:6)
+               MOVE    "01"               TO  ORC-DBYMD(7:2)
+               PERFORM  TENSU-READ-SEC
+               IF       FLG-TENSU      =    ZERO
+                  COMPUTE   WRK-MIJISI   =   WRK-MIJISI
+                                         +   TNS-TEN
+               END-IF
+               MOVE    "DBCLOSE"          TO  MCP-FUNC
+               MOVE    "TENSU-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"        USING
+                                          MCPAREA
+                                          ORCMCPAREA
+                                          MCPDATA-REC
+      *
+           END-IF
+      *
+           .
+       MIJISI-GET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1338,12 +1425,12 @@
                               MOVE   1         TO   FLG-NYUKHN
                          END-IF
                      END-IF                  
-                     MOVE    "DBCLOSE"               TO  MCP-FUNC
-                     MOVE    "TENSU-KEY"             TO  ORC-DBPATH
-                     CALL    "ORCMCPSUB"             USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
+                     MOVE    "DBCLOSE"          TO  MCP-FUNC
+                     MOVE    "TENSU-KEY"        TO  ORC-DBPATH
+                     CALL    "ORCMCPSUB"        USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
                END-PERFORM
       *
                IF    WRK-NYUTENTTLKBN     =   920  
@@ -1404,15 +1491,14 @@
                        COMPUTE  WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
                                                    +  WRK-KSNTEN
                     END-IF  
-      *
-                 END-IF
-      *
-                 MOVE    "DBCLOSE"               TO  MCP-FUNC
-                 MOVE    "TENSU-KEY"             TO  ORC-DBPATH
-                 CALL    "ORCMCPSUB"             USING
+                    MOVE    "DBCLOSE"            TO  MCP-FUNC
+                    MOVE    "TENSU-KEY"          TO  ORC-DBPATH
+                    CALL    "ORCMCPSUB"          USING
                                                  MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
+      *
+                 END-IF
       *
                  MOVE    "DBCLOSE"               TO  MCP-FUNC
                  MOVE    "SENTEICDCHG-KEY2"      TO  ORC-DBPATH

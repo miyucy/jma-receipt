@@ -348,6 +348,7 @@
            03  WRK-SYS-MIJISI-T.
              04  WRK-SYS-MIJISI-OCC                    OCCURS  4.
                05  WRK-SYS-MIJISI                      PIC 9(01).
+               05  WRK-SYS-MIJISI-ZAITEN               PIC 9(08).
       *
       *    ¿ô»úÈ¾³ÑÁ´³ÑÊÑ´¹ÍÑ     
            03  WRK-CHAR-IDX                    PIC 9(02).
@@ -1129,6 +1130,8 @@
            END-PERFORM
       *
       *
+           PERFORM      MIJISI-GET-SEC
+      *
            MOVE     ZERO       TO    CNT-ZAIREN
       *
            PERFORM  VARYING  IDX1  FROM  1  BY  1
@@ -1373,7 +1376,9 @@
                         (IDX2               >      5)    OR
                         (NSRY-SRYCD(IDX2)   =  SPACE)
                      MOVE    NSRY-SRYCD(IDX2)    TO  WRK-SRYCD
-                     PERFORM    TENSU-TBL2-SEC
+                     MOVE    NACCT-SRYYM         TO  WK-TAIHI-SRYYM
+                     MOVE    "01"                TO  WK-TAIHI-SRYD
+                     PERFORM    TENSU-TBL-SEC
                      IF   FLG-TENSU      =    ZERO
                        IF   TNS-DATAKBN    =    1
                           MOVE   TNS-TEN   TO   WRK-KHNTEN
@@ -1413,7 +1418,9 @@
                  IF  FLG-SENTEICDCHG   =   ZERO
       *
                     MOVE     SENCHG-SENTEISRYCD  TO   WRK-SRYCD
-                    PERFORM  TENSU-TBL2-SEC
+                    MOVE     NACCT-SRYYM         TO   WK-TAIHI-SRYYM
+                    MOVE     "01"                TO   WK-TAIHI-SRYD
+                    PERFORM  TENSU-TBL-SEC
                     IF       FLG-TENSU      =    ZERO
                        MOVE     TNS-TEN          TO   WRK-SENTEI-KHNTEN
                        COMPUTE  WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
@@ -1804,6 +1811,70 @@
            EXIT.
       *
       *****************************************************************
+      *    Ì¤¼Â»Ü¸º»»³Û¼èÆÀ
+      *****************************************************************
+       MIJISI-GET-SEC                 SECTION.
+      *
+           PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
+                        UNTIL     GENSAN-IDX   >   4
+      *
+              IF    WRK-SYS-MIJISI(GENSAN-IDX)  =   1    
+                 EVALUATE    GENSAN-IDX
+                   WHEN   2
+      *
+                     IF    RECE62-RJNHKNNUM    =    SPACE
+                       MOVE    "190080570"   TO   WRK-SRYCD
+                     ELSE
+                       MOVE    "190799770"   TO   WRK-SRYCD
+                     END-IF
+                     MOVE    RECE62-SRYYM    TO   WK-TAIHI-SRYYM
+                     MOVE    "01"            TO   WK-TAIHI-SRYD
+                     PERFORM    TENSU-TBL-SEC
+                     IF       FLG-TENSU      =    ZERO
+                        MOVE    TNS-TEN   TO   WRK-SYS-MIJISI-ZAITEN
+                                                      (GENSAN-IDX)
+                     END-IF
+      *
+                   WHEN   3
+      *
+                     IF    RECE62-RJNHKNNUM    =    SPACE
+                       MOVE    "190111690"   TO   WRK-SRYCD
+                     ELSE
+                       MOVE    "190809090"   TO   WRK-SRYCD
+                     END-IF
+                     MOVE    RECE62-SRYYM    TO   WK-TAIHI-SRYYM
+                     MOVE    "01"            TO   WK-TAIHI-SRYD
+                     PERFORM    TENSU-TBL-SEC
+                     IF       FLG-TENSU      =    ZERO
+                        MOVE    TNS-TEN   TO   WRK-SYS-MIJISI-ZAITEN
+                                                      (GENSAN-IDX)
+                     END-IF
+      *
+                   WHEN   4
+      *
+                     IF    RECE62-RJNHKNNUM    =    SPACE
+                       MOVE    "190111790"   TO   WRK-SRYCD
+                     ELSE
+                       MOVE    "190809190"   TO   WRK-SRYCD
+                     END-IF
+                     MOVE    RECE62-SRYYM    TO   WK-TAIHI-SRYYM
+                     MOVE    "01"            TO   WK-TAIHI-SRYD
+                     PERFORM    TENSU-TBL-SEC
+                     IF       FLG-TENSU      =    ZERO
+                        MOVE    TNS-TEN   TO   WRK-SYS-MIJISI-ZAITEN
+                                                      (GENSAN-IDX)
+                     END-IF
+      *
+                 END-EVALUATE
+              END-IF
+      *
+           END-PERFORM
+      *
+           .
+       MIJISI-GET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ¥ì¥»¥×¥ÈÃæ´Ö¥Õ¥¡¥¤¥ë¤Î¹àÌÜÅ¾Á÷¡Ê£Æ£°£°£´¡Ë
       *****************************************************************
        RECE64-TENSOU-SEC                SECTION.
@@ -2175,7 +2246,8 @@
            MOVE    SPACE                TO      RECE64-JIHOKBN
            EVALUATE   SYUKEI-IDX3
                WHEN  2
-                 MOVE    5              TO      RECE64-ZAITEN
+                 MOVE    WRK-SYS-MIJISI-ZAITEN(SYUKEI-IDX3)
+                                        TO      RECE64-ZAITEN
                  MOVE    1              TO      RECE64-MEISAISU
                  IF      FLG-MIJISI2   =   1
                     MOVE    WRK-MIJ-CNT90(IDX1 2)
@@ -2184,14 +2256,16 @@
                     MOVE    WRK-MIJ-CNT92(IDX1 2)
                                         TO      RECE64-ZAIKAISU
                  END-IF
-                 MOVE    5              TO      RECE64-SYUTEN1
+                 MOVE    WRK-SYS-MIJISI-ZAITEN(SYUKEI-IDX3)
+                                        TO      RECE64-SYUTEN1
                  IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190080570   TO      RECE64-SRYCDTOTAL
                  ELSE
                     MOVE    190799770   TO      RECE64-SRYCDTOTAL
                  END-IF
                WHEN  3
-                 MOVE    10             TO      RECE64-ZAITEN
+                 MOVE    WRK-SYS-MIJISI-ZAITEN(SYUKEI-IDX3)
+                                        TO      RECE64-ZAITEN
                  MOVE    1              TO      RECE64-MEISAISU
                  IF      FLG-MIJISI2   =   1
                     MOVE    WRK-MIJ-CNT90(IDX1 3)
@@ -2200,14 +2274,16 @@
                     MOVE    WRK-MIJ-CNT92(IDX1 3)
                                         TO      RECE64-ZAIKAISU
                  END-IF
-                 MOVE    10             TO      RECE64-SYUTEN1
+                 MOVE    WRK-SYS-MIJISI-ZAITEN(SYUKEI-IDX3)
+                                        TO      RECE64-SYUTEN1
                  IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190111690   TO      RECE64-SRYCDTOTAL
                  ELSE
                     MOVE    190809090   TO      RECE64-SRYCDTOTAL
                  END-IF
                WHEN  4
-                 MOVE    5              TO      RECE64-ZAITEN
+                 MOVE    WRK-SYS-MIJISI-ZAITEN(SYUKEI-IDX3)
+                                        TO      RECE64-ZAITEN
                  MOVE    1              TO      RECE64-MEISAISU
                  IF      FLG-MIJISI2   =   1
                     MOVE    WRK-MIJ-CNT90(IDX1 4)
@@ -2216,7 +2292,8 @@
                     MOVE    WRK-MIJ-CNT92(IDX1 4)
                                         TO      RECE64-ZAIKAISU
                  END-IF
-                 MOVE    5              TO      RECE64-SYUTEN1
+                 MOVE    WRK-SYS-MIJISI-ZAITEN(SYUKEI-IDX3)
+                                        TO      RECE64-SYUTEN1
                  IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190111790   TO      RECE64-SRYCDTOTAL
                  ELSE
@@ -2593,6 +2670,8 @@
                MOVE    SRY-AUTOKBN(IDX2)  TO    RECE65-AUTOKBN(IDX4)
                MOVE    SRY-INPUTNUM(IDX2) TO    RECE65-INPUTNUM(IDX4)
                MOVE    SRY-SRYCD(IDX2)    TO    WRK-SRYCD
+               MOVE    RECE65-SRYYM       TO    WK-TAIHI-SRYYM
+               MOVE    WK-TAIHI-DAY       TO    WK-TAIHI-SRYD
                PERFORM    TENSU-TBL-SEC
                IF      TNS-SRYKBN         =     "80"
                    IF  TNS-GAITENTTLKBN   =     130
@@ -2831,6 +2910,8 @@
                MOVE    NSRY-AUTOKBN(IDX2)  TO  RECE65-AUTOKBN(IDX4)
                MOVE    NSRY-INPUTNUM(IDX2) TO  RECE65-INPUTNUM(IDX4)
                MOVE    NSRY-SRYCD(IDX2)    TO  WRK-SRYCD
+               MOVE    RECE65-SRYYM        TO  WK-TAIHI-SRYYM
+               MOVE    WK-TAIHI-DAY        TO  WK-TAIHI-SRYD
                PERFORM    TENSU-TBL-SEC
                MOVE    TNS-TANICD          TO  RECE65-TANICD(IDX4)
                MOVE    TNS-TANIMOJISU      TO  RECE65-TANIMOJISU(IDX4)
@@ -2919,6 +3000,8 @@
                ELSE
                  MOVE    NSRY-SRYCD(IDX2)  TO  WRK-SRYCD
                END-IF
+               MOVE    RECE65-SRYYM        TO  WK-TAIHI-SRYYM
+               MOVE    WK-TAIHI-DAY        TO  WK-TAIHI-SRYD
                PERFORM    TENSU-TBL-SEC
                MOVE    TNS-TANICD          TO  RECE65-TANICD(IDX4)
                MOVE    TNS-TANIMOJISU      TO  RECE65-TANIMOJISU(IDX4)
@@ -3000,6 +3083,8 @@
            MOVE    ZERO                 TO  RECE65-INPUTNUM(1)
            MOVE    WRK-GAI2-SRYCD(SYUKEI-IDX3)
                                         TO  WRK-SRYCD
+           MOVE    RECE65-SRYYM         TO  WK-TAIHI-SRYYM
+           MOVE    WK-TAIHI-DAY         TO  WK-TAIHI-SRYD
            PERFORM    TENSU-TBL-SEC
            MOVE    TNS-TANICD          TO  RECE65-TANICD(1)
            MOVE    TNS-TANIMOJISU      TO  RECE65-TANIMOJISU(1)
@@ -3066,6 +3151,8 @@
                 MOVE    ZERO                 TO  RECE65-INPUTNUM(IDX4)
                 MOVE    WRK-SKJ2-SRYCD(SYUKEI-IDX3 IDX2)
                                              TO  WRK-SRYCD
+                MOVE    RECE65-SRYYM         TO  WK-TAIHI-SRYYM
+                MOVE    WK-TAIHI-DAY         TO  WK-TAIHI-SRYD
                 PERFORM    TENSU-TBL-SEC
                 MOVE    TNS-TANICD          TO  RECE65-TANICD(IDX4)
                 MOVE    TNS-TANIMOJISU      TO  RECE65-TANIMOJISU(IDX4)
@@ -3159,6 +3246,8 @@
            MOVE    SPACE                TO  RECE65-AUTOKBN(1)
            MOVE    ZERO                 TO  RECE65-INPUTNUM(1)
            MOVE    RECE65-SRYCD(1)      TO  WRK-SRYCD
+           MOVE    RECE65-SRYYM         TO  WK-TAIHI-SRYYM
+           MOVE    WK-TAIHI-DAY         TO  WK-TAIHI-SRYD
            PERFORM    TENSU-TBL-SEC
            MOVE    TNS-TANICD          TO  RECE65-TANICD(1)
            MOVE    TNS-TANIMOJISU      TO  RECE65-TANIMOJISU(1)
@@ -3245,6 +3334,8 @@
                   MOVE  ZERO                TO  RECE65-INPUTNUM(IDX4)
                   MOVE  WRK-ORCSTEN-SRYCD(IDX2) 
                                             TO  WRK-SRYCD
+                  MOVE  RECE65-SRYYM        TO  WK-TAIHI-SRYYM
+                  MOVE  WK-TAIHI-DAY        TO  WK-TAIHI-SRYD
                   PERFORM    TENSU-TBL-SEC
                   IF  WRK-ORCSTEN-SRYCD(IDX2)  =  "099309901"
                       MOVE   WRK-TANICD     TO  RECE65-TANICD(IDX4)
@@ -3587,6 +3678,8 @@
        RECE-LEFT-SET-SEC               SECTION.
       *
            MOVE        SRY-SRYCD(IDX3)     TO   WRK-SRYCD
+           MOVE        RECE65-SRYYM        TO   WK-TAIHI-SRYYM
+           MOVE        WK-TAIHI-DAY        TO   WK-TAIHI-SRYD
            PERFORM     TENSU-TBL-SEC
            EVALUATE    SRY-SRYKBN
       *    ½é¿Ç¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
@@ -4219,11 +4312,8 @@
        TENSU-TBL-SEC               SECTION.
       *
            INITIALIZE                           TNS-TENSU-REC
-      *    MOVE    SRY-SRYCD(IDX2)      TO      TNS-SRYCD
            MOVE    WRK-SRYCD            TO      TNS-SRYCD
            MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-           MOVE    RECE65-SRYYM         TO      WK-TAIHI-SRYYM
-           MOVE    WK-TAIHI-DAY         TO      WK-TAIHI-SRYD
            MOVE    WK-TAIHI-SRYYMD      TO      ORC-DBYMD
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    "TENSU-KEY"          TO      ORC-DBPATH
@@ -4231,39 +4321,6 @@
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
-           IF      MCP-RC               =       ZERO
-               MOVE    "TENSU-KEY"      TO      ORC-DBPATH
-               PERFORM  TENSU-READ-SEC
-               IF       FLG-TENSU       =       1
-                   DISPLAY   "TENSU FETCH ERR"  
-               END-IF
-           ELSE
-               DISPLAY   "TENSU SELECT ERR" 
-           END-IF
-      *
-           MOVE   "TENSU-KEY"      TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
-      *
-           .
-       TENSU-TBL-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÅÀ¿ô¥Æ¡¼¥Ö¥ë¤Î¸¡º÷£²
-      *****************************************************************
-       TENSU-TBL2-SEC               SECTION.
-      *
-           INITIALIZE                           TNS-TENSU-REC
-           MOVE    WRK-SRYCD            TO      TNS-SRYCD
-           MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-           MOVE    NACCT-SRYYM          TO      ORC-DBYMD(1:6)
-           MOVE    "01"                 TO      ORC-DBYMD(7:2)
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "TENSU-KEY"          TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "TENSU-KEY"      TO      ORC-DBPATH
                PERFORM  TENSU-READ-SEC
@@ -4279,7 +4336,7 @@
            PERFORM   CSR-CLOSE-SEC
       *
            .
-       TENSU-TBL2-EXT.
+       TENSU-TBL-EXT.
            EXIT.
       *
       *****************************************************************
