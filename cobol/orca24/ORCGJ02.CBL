@@ -497,6 +497,9 @@
       *    入院点滴一括更新サブ
            COPY    "CPORCSTENTEK.INC".
       *
+      *    入院調剤料更新サブ
+           COPY    "CPORCSCHOZAI.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -2339,6 +2342,13 @@
                                                    TO  J02-TDAY
                                                              (IDX IDY)
                    END-PERFORM
+      *            入院で調剤料の時、＊表示をする
+                   IF     (SPA-NAI-SRYYM       >=  SPA-SYSYMD(1:6)) AND
+                          (SPA-GMN-NYUGAIKBN   =   "1" )  AND
+                          (SPA-GMN-TMEISYO (IDX)(2:3)
+                                               =   "240" OR "260")
+                       MOVE    ALL "*"         TO  J02-TDAY-G (IDX)
+                   END-IF
                END-IF
       *
                IF     (SPA-GMN-TMEISYO (IDX)   NOT =   ALL "-" )  AND
@@ -2516,6 +2526,9 @@
       *     保険一括変更
                WHEN    "CLICKED"       ALSO    "B10S"
                    PERFORM 4100-HKNHEN-SEC
+      *     入院調剤料変更
+               WHEN    "CLICKED"       ALSO    "B11S"
+                   PERFORM 4110-CHOZAI-SEC
            END-EVALUATE
       *
            .
@@ -6621,6 +6634,46 @@
            .
        420011-KASAN-ERR-EXT.
            EXIT.
+      *****************************************************************
+      *    入院調剤料変更処理
+      *****************************************************************
+       4110-CHOZAI-SEC            SECTION.
+      *
+      *    点滴エラー後、変更のない時、エラーとしない
+           IF      SPA-GMN-NYUGAIKBN   =   "2"
+               GO      TO      4110-CHOZAI-EXT
+           END-IF
+      *
+      *    入院の時、点滴液量の再計算
+           INITIALIZE                  ORCSCHOZAIAREA
+           MOVE    "1"                 TO  ORCSCHO-KBN
+           MOVE    SPA-GMN-PTID        TO  ORCSCHO-PTID
+           MOVE    SPA-NAI-SRYYM       TO  ORCSCHO-SRYYM
+           CALL    "ORCSCHOZAI"        USING
+                                       SPA-AREA
+                                       ORCSCHOZAIAREA
+      *
+           IF      ORCSCHO-ERRCD   NOT =   ZERO
+               MOVE    "3333"              TO  SPA-ERRCD
+               GO      TO      4110-CHOZAI-EXT
+           END-IF
+      *
+      *    受診履歴編集
+           PERFORM 3103-JYURRK-HEN-SEC
+      *
+           MOVE    ZERO                TO  SPA-GMN-MAX
+      *
+      *    保存用パラメタ作成
+           PERFORM 4201-SRYACCT-PARA-SEC
+      *
+      *    診療会計マスターより編集をする
+           PERFORM 410181-SRYACCT-HEN-SEC
+      *
+           MOVE    1                   TO  SPA-GMN-CUR
+           .
+       4110-CHOZAI-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    自画面編集処理
       *****************************************************************
