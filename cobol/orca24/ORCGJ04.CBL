@@ -2381,7 +2381,9 @@
            IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  = "83" OR
                                                          "84")
                IF     (LNK-SC97-NYURYOKU   =   ZERO )  AND
-                      (FLG-IN-ATAI         =   ZERO )
+                      (FLG-IN-ATAI         =   ZERO )  AND
+                      (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
+                                           = "83"   )
                    MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
                                                          (SPA-GMN-IDX)
                END-IF
