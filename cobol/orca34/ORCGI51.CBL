@@ -167,6 +167,8 @@
            03  WRK-MAE-SKYEDYMD            PIC X(08).
            03  WRK-STIDX                   PIC 9(05).
            03  WRK-EDIDX                   PIC 9(05).
+           03  WRK-SANTEISTYMD             PIC X(08).
+           03  WRK-SANTEIEDYMD             PIC X(08).
       *
       *
       *    スパ領域 ワーク
@@ -804,6 +806,8 @@
            WHEN    001
                MOVE    "PTNUM"         TO  MCP-WIDGET
            WHEN    002
+               MOVE    "SANTEISTYMD"   TO  MCP-WIDGET
+           WHEN    003
                MOVE    "SANTEIEDYMD"   TO  MCP-WIDGET
            WHEN    101
                MOVE    "SELNUM"        TO  MCP-WIDGET
@@ -823,8 +827,10 @@
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "PTNUM"
                MOVE    001             TO  SPA-GMN-I51-CUR
-           WHEN    "SANTEIEDYMD"
+           WHEN    "SANTEISTYMD"
                MOVE    002             TO  SPA-GMN-I51-CUR
+           WHEN    "SANTEIEDYMD"
+               MOVE    003             TO  SPA-GMN-I51-CUR
            WHEN    "SELNUM"
                MOVE    101             TO  SPA-GMN-I51-CUR
            END-EVALUATE
@@ -977,6 +983,7 @@
        4101-GMN-SPA-SET-SEC          SECTION.
       *
       *    計算日
+           MOVE    I51-SANTEISTYMD   TO  SPA-GMN-I51-SANTEISTYMD
            MOVE    I51-SANTEIEDYMD   TO  SPA-GMN-I51-SANTEIEDYMD
            .
       *
@@ -998,6 +1005,12 @@
                                NOT =   SPACE )
                MOVE    SPA-NAI-I51-PTNUM-ERR
                                    TO  SPA-ERRCD
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    算定開始日チェック処理
+           PERFORM 4100-SANTEISTYMD-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
@@ -1099,7 +1112,7 @@
                GO  TO  4100-PTNUM-CHK-EXT
            END-IF
       *
-           MOVE    2               TO  SPA-GMN-I51-CUR
+           MOVE    3               TO  SPA-GMN-I51-CUR
       *
            .
        4100-PTNUM-CHK-EXT.
@@ -1513,16 +1526,57 @@
            EXIT.
       *
       *****************************************************************
+      *    算定開始日チェック処理
+      *****************************************************************
+       4100-SANTEISTYMD-CHK-SEC        SECTION.
+      *
+           MOVE    SPA-NAI-I51-SANTEISTYMD
+                                   TO  WRK-SANTEISTYMD
+           MOVE    SPACE           TO  SPA-NAI-I51-SANTEISTYMD
+      *
+           IF    ( SPA-GMN-I51-SANTEISTYMD
+                                   =   SPACE )
+               MOVE    WRK-SANTEISTYMD TO  WRK-YMD
+               PERFORM 5002-HIZUKE-CHK-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-I51-SANTEISTYMD
+               MOVE    WRK-SYMD        TO  SPA-NAI-I51-SANTEISTYMD
+               GO  TO  4100-SANTEISTYMD-CHK-EXT
+           END-IF
+      *
+           MOVE    SPA-GMN-I51-SANTEISTYMD
+                                   TO  WRK-YMD
+           PERFORM 5002-HIZUKE-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               MOVE    WRK-SANTEISTYMD TO  WRK-YMD
+               PERFORM 5002-HIZUKE-CHK-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-I51-SANTEISTYMD
+               MOVE    WRK-SYMD        TO  SPA-NAI-I51-SANTEISTYMD
+               MOVE    2               TO  SPA-GMN-I51-CUR
+               GO  TO  4100-SANTEISTYMD-CHK-EXT
+           END-IF
+      *
+           MOVE    WRK-HENYMDG     TO  SPA-GMN-I51-SANTEISTYMD
+           MOVE    WRK-SYMD        TO  SPA-NAI-I51-SANTEISTYMD
+      *
+           .
+       4100-SANTEISTYMD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    算定終了日チェック処理
       *****************************************************************
        4100-SANTEIEDYMD-CHK-SEC        SECTION.
       *
+           MOVE    SPA-NAI-I51-SANTEIEDYMD
+                                   TO  WRK-SANTEIEDYMD
            MOVE    SPACE           TO  SPA-NAI-I51-SANTEIEDYMD
       *
            IF    ( SPA-GMN-I51-SANTEIEDYMD
                                    =   SPACE )
-               MOVE    "0004"      TO  SPA-ERRCD
-               MOVE    2           TO  SPA-GMN-I51-CUR
+               MOVE    WRK-SANTEIEDYMD TO  WRK-YMD
+               PERFORM 5002-HIZUKE-CHK-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-I51-SANTEIEDYMD
+               MOVE    WRK-SYMD        TO  SPA-NAI-I51-SANTEIEDYMD
                GO  TO  4100-SANTEIEDYMD-CHK-EXT
            END-IF
       *
@@ -1530,7 +1584,11 @@
                                    TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
-               MOVE    2           TO  SPA-GMN-I51-CUR
+               MOVE    WRK-SANTEIEDYMD TO  WRK-YMD
+               PERFORM 5002-HIZUKE-CHK-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-I51-SANTEIEDYMD
+               MOVE    WRK-SYMD        TO  SPA-NAI-I51-SANTEIEDYMD
+               MOVE    3           TO  SPA-GMN-I51-CUR
                GO  TO  4100-SANTEIEDYMD-CHK-EXT
            END-IF
       *
@@ -1542,7 +1600,7 @@
                CONTINUE
            ELSE
                MOVE    "0005"      TO  SPA-ERRCD
-               MOVE    2           TO  SPA-GMN-I51-CUR
+               MOVE    3           TO  SPA-GMN-I51-CUR
                GO  TO  4100-SANTEIEDYMD-CHK-EXT
            END-IF
       *
@@ -1558,7 +1616,7 @@
                CONTINUE
            ELSE
                MOVE    "0006"      TO  SPA-ERRCD
-               MOVE    2           TO  SPA-GMN-I51-CUR
+               MOVE    3           TO  SPA-GMN-I51-CUR
                GO  TO  4100-SANTEIEDYMD-CHK-EXT
            END-IF
       *
