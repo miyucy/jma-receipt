@@ -360,6 +360,12 @@
       *    領域
            03  IPN-NYUKAIKEI-SAKUSEI-FLG   PIC X(01).
            03  IPN-SANTEISTYMD             PIC X(08).
+           03  WRK-IPN-HANTEI-YMD1.
+               05  WRK-IPN-HANTEI-YM1.
+                   07  WRK-IPN-HANTEI-Y1   PIC 9(04).
+                   07  WRK-IPN-HANTEI-M1   PIC 9(02).
+               05  WRK-IPN-HANTEI-D1       PIC 9(02).
+           03  WRK-IPN-HANTEI-YMD2         PIC X(08).
       *    特定入院料の会計作成用に診療コードを退避する領域
            03  WRK-TOKUTEI-SRYCD1          PIC X(09).
            03  WRK-TOKUTEI-SRYCD2          PIC X(09).
@@ -7686,8 +7692,32 @@
                                                    LNK-DAY6-AREA
                  MOVE    LNK-DAY6-KEISAN
                                   TO       IPN-SANTEISTYMD
+      *          特定入院期間（６０日経過）した際の一般入院料作成の
+      *          可否を判定
+                 MOVE    SPA-NAI-I01-NYUINYMD
+                                  TO      WRK-IPN-HANTEI-YMD1
+                 IF      WRK-IPN-HANTEI-M1   =   12
+                     ADD    1     TO      WRK-IPN-HANTEI-Y1
+                     MOVE   1     TO      WRK-IPN-HANTEI-M1
+                 ELSE
+                     ADD    1     TO      WRK-IPN-HANTEI-M1
+                 END-IF
+      *          月末日を算定
+                 INITIALIZE                STS-AREA-DAY
+                 INITIALIZE                LNK-DAY7-AREA
+                 MOVE    "71"              TO  LNK-DAY7-IRAI
+                 MOVE   WRK-IPN-HANTEI-YM1 TO  LNK-DAY7-YM
+                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY7-AREA
+                 MOVE    LNK-DAY7-KOYOMI   TO      WRK-IPN-HANTEI-YMD1
+                 MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+                                  TO      WRK-IPN-HANTEI-YMD2
       *          一般入院会計作成用のフラグ設定
-                 MOVE    "1"      TO      IPN-NYUKAIKEI-SAKUSEI-FLG
+                 DISPLAY "WRK-IPN-HANTEI-YMD1 = " WRK-IPN-HANTEI-YMD1
+                 DISPLAY "WRK-IPN-HANTEI-YMD2 = " WRK-IPN-HANTEI-YMD2
+                 IF      WRK-IPN-HANTEI-YMD1 > WRK-IPN-HANTEI-YMD2
+                     MOVE    "1"   TO     IPN-NYUKAIKEI-SAKUSEI-FLG
+                 END-IF
            END-IF
       *
       *-------特定入院対応ここまで-----------------------------------
@@ -8602,7 +8632,7 @@
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190024810"
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                         LNK-SCNYUACCT-NYUKHN-SRYCD(1)
-      *          特定集中治療室管理料の算定可能日数を計算
+      *          広範囲熱傷特定集中治療室管理料の算定可能日数を計算
                  MOVE     ZERO      TO   WK-TOKUTEI-DAY
                                          WK-TOKUTEI-DAY2
                  COMPUTE  WK-TOKUTEI-DAY  =  60  - STUSAN-NISSU06
