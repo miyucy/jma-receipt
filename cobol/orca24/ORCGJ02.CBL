@@ -4113,7 +4113,13 @@
            PERFORM VARYING     IDX-D   FROM    1   BY  1
                    UNTIL       IDX-D   >   31
                IF      WRK-DAY(IDX-D)      >   ZERO
-                   MOVE    WRK-DAY(IDX-D)      TO  SPA-GMN-DAY  (IDX-D)
+      *            誕生日以前はエラー
+                   IF     (SPA-BIRTHDAY(1:6)   =   SPA-NAI-SRYYM ) AND
+                          (IDX-D               <   SPA-BIRTHDAY(7:2))
+                       MOVE    "0015"              TO  SPA-ERRCD
+                   ELSE
+                       MOVE    WRK-DAY(IDX-D)  TO  SPA-GMN-DAY  (IDX-D)
+                   END-IF
                ELSE
                    IF      WRK-DAYDEL(IDX-D)   =   1
                        MOVE    ZERO            TO  SPA-GMN-DAY (IDX-D)
