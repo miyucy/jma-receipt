@@ -140,7 +140,7 @@
     <widget>
       <class>GtkPandaCList</class>
       <name>LIST1</name>
-      <x>36</x>
+      <x>40</x>
       <y>44</y>
       <width>588</width>
       <height>72</height>
@@ -207,8 +207,8 @@
     <widget>
       <class>GtkPandaCList</class>
       <name>LIST2</name>
-      <x>44</x>
-      <y>444</y>
+      <x>40</x>
+      <y>448</y>
       <width>460</width>
       <height>70</height>
       <can_focus>True</can_focus>
@@ -299,84 +299,14 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label66</name>
-      <x>20</x>
-      <y>20</y>
-      <width>90</width>
+      <name>MSG1</name>
+      <x>156</x>
+      <y>540</y>
+      <width>500</width>
       <height>20</height>
-      <label>ＤＢ管理情報</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCList</class>
-      <name>LIST3</name>
-      <x>36</x>
-      <y>148</y>
-      <width>600</width>
-      <height>260</height>
-      <can_focus>True</can_focus>
-      <columns>3</columns>
-      <column_widths>223,161,185</column_widths>
-      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-      <show_titles>True</show_titles>
-      <shadow_type>GTK_SHADOW_IN</shadow_type>
-
-      <widget>
-	<class>GtkLabel</class>
-	<child_name>CList:title</child_name>
-	<name>label123</name>
-	<label>マスタ</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-      </widget>
-
-      <widget>
-	<class>GtkLabel</class>
-	<child_name>CList:title</child_name>
-	<name>label124</name>
-	<label>レコードver(自)</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-      </widget>
-
-      <widget>
-	<class>GtkLabel</class>
-	<child_name>CList:title</child_name>
-	<name>label125</name>
-	<label>レコードver(ORCA)</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label127</name>
-      <x>16</x>
-      <y>128</y>
-      <width>138</width>
-      <height>20</height>
-      <label>マスタ更新管理情報</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
+      <label></label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -386,7 +316,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label67</name>
-      <x>36</x>
+      <x>28</x>
       <y>424</y>
       <width>170</width>
       <height>20</height>
@@ -401,12 +331,28 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label122</name>
-      <x>8</x>
-      <y>492</y>
-      <width>30</width>
+      <name>label127</name>
+      <x>24</x>
+      <y>128</y>
+      <width>138</width>
       <height>20</height>
-      <label>最新</label>
+      <label>マスタ更新管理情報</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label66</name>
+      <x>24</x>
+      <y>20</y>
+      <width>90</width>
+      <height>20</height>
+      <label>ＤＢ管理情報</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -433,18 +379,83 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>MSG1</name>
-      <x>156</x>
-      <y>540</y>
-      <width>500</width>
+      <name>label122</name>
+      <x>8</x>
+      <y>496</y>
+      <width>30</width>
       <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>True</wrap>
+      <label>最新</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow1</name>
+      <x>40</x>
+      <y>148</y>
+      <width>584</width>
+      <height>260</height>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+      <widget>
+	<class>GtkPandaCList</class>
+	<name>LIST3</name>
+	<width>580</width>
+	<height>260</height>
+	<can_focus>True</can_focus>
+	<columns>3</columns>
+	<column_widths>196,167,170</column_widths>
+	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+	<show_titles>True</show_titles>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label123</name>
+	  <label>マスタ</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label124</name>
+	  <label>レコードver(自)</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label125</name>
+	  <label>レコードver(ORCA)</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+      </widget>
     </widget>
   </widget>
 </widget>
