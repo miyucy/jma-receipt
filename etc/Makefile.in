@@ -5,9 +5,10 @@ INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 
 ETC_files = \
-	dbgroup.inc \
 	kentan.inc \
 	jma-receipt.env
+
+DBGROUP_files = dbgroup.inc 
 
 all:   
 
@@ -22,3 +23,4 @@ distclean:
 install: all
 	$(INSTALL) -d $(sysconfdir)
 	$(INSTALL_DATA) $(ETC_files) $(sysconfdir)
+	$(INSTALL) -m 600 $(DBGROUP_files) $(sysconfdir)
