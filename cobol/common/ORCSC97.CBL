@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−多々納 02/10/18  入院追加
+      *  01.00.02    NACL−多々納 03/01/12  半角記号入力可能追加
       *****************************************************************
       *
       *
@@ -651,7 +652,9 @@
                           (WRK-INPUTCD (IDX:1)
                                           IS  NUMERIC    )  OR
                           (WRK-INPUTCD (IDX:1)
-                                          =   "."  OR  "/" )
+                                          =   "."  OR  "/" ) OR
+                          (WRK-INPUTCD (IDX:1)
+                                          >   SPACE  AND  <= "z")
                        MOVE    1              TO  FLG-SUJI
                    ELSE
                        MOVE    1              TO  FLG-KANA
