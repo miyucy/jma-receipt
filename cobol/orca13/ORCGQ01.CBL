@@ -60,6 +60,7 @@
       *                                    |・病名・診療行為について、
       *                                    |複数入力があった場合は
       *                                    |条件AND,ORの選択を可とする
+      * 01.00.07     NACL-太田    03/09/10 +状態を追加
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -91,6 +92,7 @@
            03  FLG-INPUTCD                         PIC 9(01).
            03  FLG-USERBYOMEI                      PIC 9(01).
            03  FLG-HKNNUM                          PIC 9(01).
+           03  FLG-SYSKANRI                        PIC 9(01).
            03  FLG-KANJI                           PIC 9(01).
       *
            03  FLG-OK                              PIC 9(01).
@@ -235,6 +237,9 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *    患者状態コメント
+           COPY    "CPSK1018.INC".
       *
       *    住所マスター
        01  ADRS-REC.
@@ -529,6 +534,15 @@
            MOVE    SPA-GMN-Q01-SEXLST (1)
                                        TO  SPA-GMN-Q01-SEX-G
       *
+      *    状態１コンボ初期処理
+           PERFORM 3101-CONDITION1-CMB-SYOKI-SEC
+      *
+      *    状態２コンボ初期処理
+           PERFORM 3101-CONDITION2-CMB-SYOKI-SEC
+      *
+      *    状態３コンボ初期処理
+           PERFORM 3101-CONDITION3-CMB-SYOKI-SEC
+      *
       *    本人家族コンボ初期処理
            PERFORM 3101-HONKZKKBN-CMB-SYOKI-SEC
       *
@@ -584,6 +598,174 @@
        3101-SEX-CMB-SYOKI-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    状態１コンボ初期処理
+      *****************************************************************
+       3101-CONDITION1-CMB-SYOKI-SEC   SECTION.
+      *
+           INITIALIZE                      SPA-GMN-Q01-CONDITION1LST-G
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYS-1018-REC
+           MOVE    "1018"              TO  SYS-1018-KANRICD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1018-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DB-SELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           ELSE
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 910-DB-READ-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    MCPDATA-REC TO  SYS-1018-REC
+               END-IF
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+                    OR   ( SPA-GMN-Q01-CONDITION1LST-MAX   >   10 )
+      *
+               COMPUTE SPA-GMN-Q01-CONDITION1LST-MAX
+                   =   SPA-GMN-Q01-CONDITION1LST-MAX   +   1
+      *
+               MOVE    SPA-GMN-Q01-CONDITION1LST-MAX
+                                       TO  IDX5
+      *
+               MOVE    SYS-1018-KBNCD (1:2)
+                                   TO  SPA-GMN-Q01-CONDITION1L (IDX5)
+               MOVE    SYS-1018-CONDITION-BODY
+                                   TO  SPA-GMN-Q01-CONDITION1MEIL (IDX5)
+      *
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 910-DB-READ-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    MCPDATA-REC TO  SYS-1018-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC
+      *
+           .
+       3101-CONDITION1-CMB-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    状態２コンボ初期処理
+      *****************************************************************
+       3101-CONDITION2-CMB-SYOKI-SEC   SECTION.
+      *
+           INITIALIZE                      SPA-GMN-Q01-CONDITION2LST-G
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYS-1018-REC
+           MOVE    "1019"              TO  SYS-1018-KANRICD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1018-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DB-SELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           ELSE
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 910-DB-READ-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    MCPDATA-REC TO  SYS-1018-REC
+               END-IF
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+                    OR   ( SPA-GMN-Q01-CONDITION2LST-MAX   >   10 )
+      *
+               COMPUTE SPA-GMN-Q01-CONDITION2LST-MAX
+                   =   SPA-GMN-Q01-CONDITION2LST-MAX   +   1
+      *
+               MOVE    SPA-GMN-Q01-CONDITION2LST-MAX
+                                       TO  IDX5
+      *
+               MOVE    SYS-1018-KBNCD (1:2)
+                                   TO  SPA-GMN-Q01-CONDITION2L (IDX5)
+               MOVE    SYS-1018-CONDITION-BODY
+                                   TO  SPA-GMN-Q01-CONDITION2MEIL (IDX5)
+      *
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 910-DB-READ-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    MCPDATA-REC TO  SYS-1018-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC
+      *
+           .
+       3101-CONDITION2-CMB-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    状態３コンボ初期処理
+      *****************************************************************
+       3101-CONDITION3-CMB-SYOKI-SEC   SECTION.
+      *
+           INITIALIZE                      SPA-GMN-Q01-CONDITION3LST-G
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYS-1018-REC
+           MOVE    "1020"              TO  SYS-1018-KANRICD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1018-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DB-SELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           ELSE
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 910-DB-READ-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    MCPDATA-REC TO  SYS-1018-REC
+               END-IF
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+                    OR   ( SPA-GMN-Q01-CONDITION3LST-MAX   >   10 )
+      *
+               COMPUTE SPA-GMN-Q01-CONDITION3LST-MAX
+                   =   SPA-GMN-Q01-CONDITION3LST-MAX   +   1
+      *
+               MOVE    SPA-GMN-Q01-CONDITION3LST-MAX
+                                       TO  IDX5
+      *
+               MOVE    SYS-1018-KBNCD (1:2)
+                                   TO  SPA-GMN-Q01-CONDITION3L (IDX5)
+               MOVE    SYS-1018-CONDITION-BODY
+                                   TO  SPA-GMN-Q01-CONDITION3MEIL (IDX5)
+      *
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 910-DB-READ-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    MCPDATA-REC TO  SYS-1018-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC
+      *
+           .
+       3101-CONDITION3-CMB-SYOKI-EXT.
+           EXIT.
       *****************************************************************
       *    本人家族コンボ初期処理
       *****************************************************************
@@ -1240,6 +1422,18 @@
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL   IDXB    >       3
       *
+      *        状態１
+               MOVE    Q01-CONDITION1 (IDXB)
+                                       TO  SPA-GMN-Q01-CONDITION1-G
+                                                               (IDXB)
+      *        状態２
+               MOVE    Q01-CONDITION2 (IDXB)
+                                       TO  SPA-GMN-Q01-CONDITION2-G
+                                                               (IDXB)
+      *        状態３
+               MOVE    Q01-CONDITION3 (IDXB)
+                                       TO  SPA-GMN-Q01-CONDITION3-G
+                                                               (IDXB)
       *        コメント
                MOVE    Q01-COMMENT (IDXB)
                                        TO  SPA-GMN-Q01-COMMENT  (IDXB)
@@ -1412,6 +1606,39 @@
                    UNTIL ( IDXA    >   5 )
       *
                PERFORM 4112-NAME-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4101-KHN-INPUT-CHK-EXT
+               END-IF
+      *
+           END-PERFORM
+      *
+      *    状態１チェック
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   3 )
+      *
+               PERFORM 4114-CONDITION1-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4101-KHN-INPUT-CHK-EXT
+               END-IF
+      *
+           END-PERFORM
+      *
+      *    状態２チェック
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   3 )
+      *
+               PERFORM 4115-CONDITION2-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4101-KHN-INPUT-CHK-EXT
+               END-IF
+      *
+           END-PERFORM
+      *
+      *    状態３チェック
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   3 )
+      *
+               PERFORM 4116-CONDITION3-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
                    GO  TO  4101-KHN-INPUT-CHK-EXT
                END-IF
@@ -2216,6 +2443,105 @@
        4112-NAME-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    状態１チェック処理
+      *****************************************************************
+       4114-CONDITION1-CHK-SEC         SECTION.
+      *
+           COMPUTE WRK-ERR-CUR         =   130     +   IDXA
+      *
+           IF    ( SPA-GMN-Q01-CONDITION1-G (IDXA) =   SPACE )
+               GO  TO  4114-CONDITION1-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   SPA-GMN-Q01-CONDITION1LST-MAX )
+                      OR ( SPA-GMN-Q01-CONDITION1 (IDXA)
+                                   =   SPA-GMN-Q01-CONDITION1L (IDX2))
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX2            <=  SPA-GMN-Q01-CONDITION1LST-MAX )
+               MOVE    SPA-GMN-Q01-CONDITION1LST (IDX2)
+                                       TO  SPA-GMN-Q01-CONDITION1-G
+                                                               (IDXA)
+           ELSE
+               MOVE    "0114"          TO  SPA-ERRCD
+               MOVE    WRK-ERR-CUR     TO  SPA-GMN-Q01-CUR
+               GO TO   4114-CONDITION1-CHK-EXT
+           END-IF
+      *
+           .
+       4114-CONDITION1-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    状態２チェック処理
+      *****************************************************************
+       4115-CONDITION2-CHK-SEC         SECTION.
+      *
+           COMPUTE WRK-ERR-CUR         =   133     +   IDXA
+      *
+           IF    ( SPA-GMN-Q01-CONDITION2-G (IDXA) =   SPACE )
+               GO  TO  4115-CONDITION2-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   SPA-GMN-Q01-CONDITION2LST-MAX )
+                      OR ( SPA-GMN-Q01-CONDITION2 (IDXA)
+                                   =   SPA-GMN-Q01-CONDITION2L (IDX2))
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX2            <=  SPA-GMN-Q01-CONDITION2LST-MAX )
+               MOVE    SPA-GMN-Q01-CONDITION2LST (IDX2)
+                                       TO  SPA-GMN-Q01-CONDITION2-G
+                                                               (IDXA)
+           ELSE
+               MOVE    "0115"          TO  SPA-ERRCD
+               MOVE    WRK-ERR-CUR     TO  SPA-GMN-Q01-CUR
+               GO TO   4115-CONDITION2-CHK-EXT
+           END-IF
+      *
+           .
+       4115-CONDITION2-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    状態３チェック処理
+      *****************************************************************
+       4116-CONDITION3-CHK-SEC         SECTION.
+      *
+           COMPUTE WRK-ERR-CUR         =   136     +   IDXA
+      *
+           IF    ( SPA-GMN-Q01-CONDITION3-G (IDXA) =   SPACE )
+               GO  TO  4116-CONDITION3-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   SPA-GMN-Q01-CONDITION3LST-MAX )
+                      OR ( SPA-GMN-Q01-CONDITION3 (IDXA)
+                                   =   SPA-GMN-Q01-CONDITION3L (IDX2))
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX2            <=  SPA-GMN-Q01-CONDITION3LST-MAX )
+               MOVE    SPA-GMN-Q01-CONDITION3LST (IDX2)
+                                       TO  SPA-GMN-Q01-CONDITION3-G
+                                                               (IDXA)
+           ELSE
+               MOVE    "0116"          TO  SPA-ERRCD
+               MOVE    WRK-ERR-CUR     TO  SPA-GMN-Q01-CUR
+               GO TO   4116-CONDITION3-CHK-EXT
+           END-IF
+      *
+           .
+       4116-CONDITION3-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    コメントチェック処理
       *****************************************************************
@@ -4032,6 +4358,15 @@
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL ( IDXC    >   3 )
       *
+               MOVE    SPA-GMN-Q01-CONDITION1 (IDXC)
+                                           TO  SPA-Q01-CONDITION1 (IDXC)
+      *
+               MOVE    SPA-GMN-Q01-CONDITION2 (IDXC)
+                                           TO  SPA-Q01-CONDITION2 (IDXC)
+      *
+               MOVE    SPA-GMN-Q01-CONDITION3 (IDXC)
+                                           TO  SPA-Q01-CONDITION3 (IDXC)
+      *
                MOVE    SPA-GMN-Q01-COMMENT (IDXC)
                                            TO  SPA-Q01-COMMENT (IDXC)
            END-PERFORM
@@ -4228,6 +4563,30 @@
                PERFORM VARYING IDX7    FROM    WRK-STIDX   BY  1
                        UNTIL ( IDX7    >   3 )
       *
+      *            状態１
+                   IF    ( SPA-Q01-CONDITION1 (IDX6)   NOT =   SPACE )
+                       IF    ( SPA-Q01-CONDITION1 (IDX6)
+                                       =   SPA-Q01-CONDITION1 (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-CONDITION1 (IDX7)
+                       END-IF
+                   END-IF
+      *
+      *            状態２
+                   IF    ( SPA-Q01-CONDITION2 (IDX6)   NOT =   SPACE )
+                       IF    ( SPA-Q01-CONDITION2 (IDX6)
+                                       =   SPA-Q01-CONDITION2 (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-CONDITION2 (IDX7)
+                       END-IF
+                   END-IF
+      *
+      *            状態３
+                   IF    ( SPA-Q01-CONDITION3 (IDX6)   NOT =   SPACE )
+                       IF    ( SPA-Q01-CONDITION3 (IDX6)
+                                       =   SPA-Q01-CONDITION3 (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-CONDITION3 (IDX7)
+                       END-IF
+                   END-IF
+      *
       *            コメント
                    IF    ( SPA-Q01-COMMENT (IDX6)  NOT =   SPACE )
                        IF    ( SPA-Q01-COMMENT (IDX6)
@@ -4299,6 +4658,9 @@
       *
       *    該当（７）
            IF  ( SPA-Q01-JYUSHO-G          NOT =   SPACE )
+            OR ( SPA-Q01-CONDITION1-G      NOT =   SPACE )
+            OR ( SPA-Q01-CONDITION2-G      NOT =   SPACE )
+            OR ( SPA-Q01-CONDITION3-G      NOT =   SPACE )
             OR ( SPA-Q01-COMMENT-G         NOT =   SPACE )
             OR ( SPA-Q01-STBIRTHDAY        NOT =   SPACE )
             OR ( SPA-Q01-EDBIRTHDAY        NOT =   SPACE )
@@ -4483,6 +4845,53 @@
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       3
+      *        状態１
+               MOVE    SPA-GMN-Q01-CONDITION1-G (IDX1)
+                                           TO  Q01-CONDITION1 (IDX1)
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL     ( IDX2
+                                   >   SPA-GMN-Q01-CONDITION1LST-MAX )
+      *
+                   MOVE    SPA-GMN-Q01-CONDITION1LST (IDX2)
+                               TO  Q01-CMB-CONDITION1-ITEM (IDX1 IDX2)
+      *
+               END-PERFORM
+      *
+               MOVE    SPA-GMN-Q01-CONDITION1LST-MAX
+                                           TO  Q01-CMB-CONDITION1-COUNT
+                                                              (IDX1)
+      *
+      *        状態２
+               MOVE    SPA-GMN-Q01-CONDITION2-G (IDX1)
+                                           TO  Q01-CONDITION2 (IDX1)
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL     ( IDX2
+                                   >   SPA-GMN-Q01-CONDITION2LST-MAX )
+      *
+                   MOVE    SPA-GMN-Q01-CONDITION2LST (IDX2)
+                               TO  Q01-CMB-CONDITION2-ITEM (IDX1 IDX2)
+      *
+               END-PERFORM
+      *
+               MOVE    SPA-GMN-Q01-CONDITION2LST-MAX
+                                           TO  Q01-CMB-CONDITION2-COUNT
+                                                              (IDX1)
+      *        状態３
+               MOVE    SPA-GMN-Q01-CONDITION3-G (IDX1)
+                                           TO  Q01-CONDITION3 (IDX1)
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL     ( IDX2
+                                   >   SPA-GMN-Q01-CONDITION3LST-MAX )
+      *
+                   MOVE    SPA-GMN-Q01-CONDITION3LST (IDX2)
+                               TO  Q01-CMB-CONDITION3-ITEM (IDX1 IDX2)
+      *
+               END-PERFORM
+      *
+               MOVE    SPA-GMN-Q01-CONDITION3LST-MAX
+                                           TO  Q01-CMB-CONDITION3-COUNT
+                                                              (IDX1)
+      *
       *        コメント
                MOVE    SPA-GMN-Q01-COMMENT (IDX1)
                                            TO  Q01-COMMENT (IDX1)
@@ -4749,10 +5158,28 @@
            WHEN   130
                MOVE  "NAME5"       TO  MCP-WIDGET
            WHEN   131
-               MOVE  "COMMENT1"    TO  MCP-WIDGET
+               MOVE  "CONDITION11" TO  MCP-WIDGET
            WHEN   132
-               MOVE  "COMMENT2"    TO  MCP-WIDGET
+               MOVE  "CONDITION12" TO  MCP-WIDGET
            WHEN   133
+               MOVE  "CONDITION13" TO  MCP-WIDGET
+           WHEN   134
+               MOVE  "CONDITION21" TO  MCP-WIDGET
+           WHEN   135
+               MOVE  "CONDITION22" TO  MCP-WIDGET
+           WHEN   136
+               MOVE  "CONDITION23" TO  MCP-WIDGET
+           WHEN   137
+               MOVE  "CONDITION31" TO  MCP-WIDGET
+           WHEN   138
+               MOVE  "CONDITION32" TO  MCP-WIDGET
+           WHEN   139
+               MOVE  "CONDITION33" TO  MCP-WIDGET
+           WHEN   140
+               MOVE  "COMMENT1"    TO  MCP-WIDGET
+           WHEN   141
+               MOVE  "COMMENT2"    TO  MCP-WIDGET
+           WHEN   142
                MOVE  "COMMENT3"    TO  MCP-WIDGET
       *
       *    保険・公費タブ
@@ -4944,12 +5371,30 @@
                MOVE  129           TO  SPA-GMN-Q01-CUR
            WHEN   "NAME5"
                MOVE  130           TO  SPA-GMN-Q01-CUR
-           WHEN   "COMMENT1"
+           WHEN   "CONDITION11"
                MOVE  131           TO  SPA-GMN-Q01-CUR
-           WHEN   "COMMENT2"
+           WHEN   "CONDITION12"
                MOVE  132           TO  SPA-GMN-Q01-CUR
-           WHEN   "COMMENT3"
+           WHEN   "CONDITION13"
                MOVE  133           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION21"
+               MOVE  134           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION22"
+               MOVE  135           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION23"
+               MOVE  136           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION31"
+               MOVE  137           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION32"
+               MOVE  138           TO  SPA-GMN-Q01-CUR
+           WHEN   "CONDITION33"
+               MOVE  139           TO  SPA-GMN-Q01-CUR
+           WHEN   "COMMENT1"
+               MOVE  140           TO  SPA-GMN-Q01-CUR
+           WHEN   "COMMENT2"
+               MOVE  141           TO  SPA-GMN-Q01-CUR
+           WHEN   "COMMENT3"
+               MOVE  142           TO  SPA-GMN-Q01-CUR
       *
       *    保険・公費タブ
            WHEN   "HONKZKKBN"
@@ -5189,6 +5634,15 @@
                                        TO  SPA-ERRMSG
            WHEN    "0113"
                MOVE    "本人家族入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0114"
+               MOVE    "状態１入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0115"
+               MOVE    "状態２入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0116"
+               MOVE    "状態３入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "開始診療年月日＞終了診療年月日となっています"

@@ -32,6 +32,7 @@
       *  01.00.03    NACL-太田    02/09/13  ディレクトリをサブプロへ
       *  01.00.04    NACL-太田    02/10/21  印刷用ファイルにサイト区分を追加
       *  01.00.05    NACL-太田    03/07/01  出力先プリンタサブ追加
+      *  01.00.06    NACL-太田    03/09/11  郵便番号を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -129,7 +130,8 @@
            03  WRK-STR-PNT             PIC 9(05).
            03  WRK-PTINF-ADR-LEN       PIC 9(05).
            03  WRK-PTINF-BANTI-LEN     PIC 9(05).
-           03  WRK-ADRS                PIC X(100).
+           03  WRK-ADRS                PIC X(400).
+           03  WRK-ADRS-LEN            PIC 9(05).
            03  WRK-PARA.
                05  WRK-PARA-PAFNAME
                                        PIC X(100).
@@ -142,7 +144,8 @@
            03  WRK-ZZZZ9               PIC ZZZZ9.
            03  WRK-ZZZZ9C              PIC ZZ,ZZ9.
            03  WRK-SYMD                PIC 9(08).
-           03  WRK-HENYMDG             PIC X(22).
+           03  WRK-HENYMDG1            PIC X(09).
+           03  WRK-HENYMDG3            PIC X(22).
            03  WRK-PRTNM               PIC X(20).
       *----(01.00.02) LINE ADD START ----------------------------------
            03  WRK-CALC-YMD1.
@@ -176,6 +179,8 @@
            03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-AGETANI             PIC X(04).
            03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-POST                PIC X(07).
+           03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-JYUSYO              PIC X(400).
       * 
        01  CONST-AREA.
@@ -202,7 +207,9 @@
            COPY    "CPQPTINF.INC".
       *
       *    患者一覧
-           COPY "HC28.INC".
+           COPY "HCM28.INC"
+                                   REPLACING  //HCM28//
+                                   BY         //HC28//.
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -484,6 +491,9 @@
            MOVE    WRK-AGE-MEI     TO  CSV-AGETANI
       *----(01.00.02) LINE ADD END   ----------------------------------
       *
+           MOVE    QUERY-PTINF-HOME-POST
+                                   TO  CSV-POST
+      *
            PERFORM 900-ADRS-EDIT-SEC
       *
            MOVE    WRK-ADRS        TO  CSV-JYUSYO
@@ -537,16 +547,8 @@
       *
            PERFORM 800-SEIWA-HEN-SEC
       *
-           STRING  WRK-HENYMDG (1 : 2)
-                   WRK-HENYMDG (5 : 4)
-                   "．"
-                   WRK-HENYMDG (11 : 4)
-                   "．"
-                   WRK-HENYMDG (17 : 4)
-                   DELIMITED   BY  SIZE
-                   INTO                HC28-TANJYOBI
+           MOVE    WRK-HENYMDG1    TO  HC28-TANJYOBI
                                                    (CNT-LINE)
-           END-STRING
       *
       *----(01.00.02) LINE ADD START ----------------------------------
            PERFORM 900-AGE-EDIT-SEC
@@ -554,9 +556,23 @@
            MOVE    WRK-AGE-MEI     TO  HC28-AGETANI(CNT-LINE)
       *----(01.00.02) LINE ADD END   ----------------------------------
       *
+           IF    ( QUERY-PTINF-HOME-POST   NOT =   SPACE )
+               MOVE    QUERY-PTINF-HOME-POST (1:3)
+                                       TO  HC28-POST (CNT-LINE) (1:3)
+               MOVE    "-"             TO  HC28-POST (CNT-LINE) (4:1)
+               MOVE    QUERY-PTINF-HOME-POST (4:4)
+                                       TO  HC28-POST (CNT-LINE) (5:4)
+           ELSE
+               MOVE    SPACE           TO  HC28-POST (CNT-LINE)
+           END-IF
+      *
            PERFORM 900-ADRS-EDIT-SEC
       *
-           MOVE    WRK-ADRS        TO  HC28-JYUSYO (CNT-LINE)
+           IF    ( WRK-ADRS-LEN   <=   70 )
+               MOVE    WRK-ADRS        TO  HC28-JYUSYO (CNT-LINE)
+           ELSE
+               MOVE    WRK-ADRS        TO  HC28-JYUSYO2 (CNT-LINE)
+           END-IF
       *
            IF  ( CNT-LINE         >=   CONST-LINE )
       *
@@ -588,14 +604,14 @@
       *
            MOVE    WRK-PARA-SYSYMD TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  HC28-SAKUSEIBI
+           MOVE    WRK-HENYMDG3    TO  HC28-SAKUSEIBI
       *
            MOVE    CNT-PAGE        TO  WRK-ZZZZ9C
            MOVE    WRK-ZZZZ9C      TO  HC28-PAGE
       *
       *
            MOVE    SPACE           TO  PRT-REC
-           MOVE    "HC28"          TO  PRT-PRTID
+           MOVE    "HCM28.red"     TO  PRT-PRTID
            MOVE    WRK-PRTNM       TO  PRT-PRTNM
            MOVE    "1"             TO  PRT-SITEKBN
            MOVE    HC28            TO  PRT-PRTDATA
@@ -615,8 +631,9 @@
            MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY2-AREA
-           MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "　"
+           MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG1
+           MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG3
+           INSPECT WRK-HENYMDG3   REPLACING  ALL "  "  BY  "　"
            .
        800-SEIWA-HEN-EXT.
            EXIT.
@@ -685,6 +702,7 @@
        900-ADRS-EDIT-SEC                   SECTION.
       *
            MOVE    SPACE           TO  WRK-ADRS
+           MOVE    ZERO            TO  WRK-ADRS-LEN
       *
       *    住所の項目長を求める
            MOVE    1               TO  WRK-STR-LEN
@@ -732,6 +750,10 @@
                INTO    WRK-ADRS
                WITH    POINTER WRK-STR-PNT
                END-STRING
+           END-IF
+      *
+           IF    ( WRK-STR-PNT         >   0 )
+               COMPUTE WRK-ADRS-LEN    =   WRK-ADRS-LEN    -   1 
            END-IF
       *
            .

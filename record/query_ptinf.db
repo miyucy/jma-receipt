@@ -5,7 +5,8 @@ query_ptinf {
 	NAME 						varchar(100);
 	SEX        			char(1);
 	BIRTHDAY 				char(8);
-	HOME_ADRS				varchar(200);
+	HOME_POST			varchar(7);
+	HOME_ADRS			varchar(200);
 	HOME_BANTI 			varchar(200);
 	PTNUM		 				char(20);
   SQL		          dbcode(15000),virtual;
@@ -23,6 +24,7 @@ path	key		{
 										a.name,
 										a.sex,
 										a.birthday,
+										a.home_post,
 										a.home_adrs,
 										a.home_banti,
 										h.ptnum

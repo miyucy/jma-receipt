@@ -317,7 +317,7 @@
                END-IF
            END-IF
       *
-      *    À¸Ç¯·îÆü¡¦À­ÊÌ¡¦½»½ê¡¦¥³¥á¥ó¥È
+      *    À¸Ç¯·îÆü¡¦À­ÊÌ¡¦½»½ê¡¦¾õÂÖ£±¡¦¾õÂÖ£²¡¦¾õÂÖ£³¡¦¥³¥á¥ó¥È
            IF   ( SPA-Q01-GTBL (7)  =   "1" )
                MOVE    FLG-JYOKEN      TO  FLG-JYOKEN-AND
                PERFORM     1001-PTINF-SQL-EDIT3-SEC
@@ -538,6 +538,15 @@
       *
       *    ½»½ê¸¡º÷¾ò·ïÊÔ½¸½èÍý
            PERFORM 10011-HOME-ADRS-SELECT-EDIT-SEC
+      *
+      *    ¾õÂÖ£±¸¡º÷¾ò·ïÊÔ½¸½èÍý
+           PERFORM 10011-CONDITION1-SEL-EDIT-SEC
+      *
+      *    ¾õÂÖ£²¸¡º÷¾ò·ïÊÔ½¸½èÍý
+           PERFORM 10011-CONDITION2-SEL-EDIT-SEC
+      *
+      *    ¾õÂÖ£³¸¡º÷¾ò·ïÊÔ½¸½èÍý
+           PERFORM 10011-CONDITION3-SEL-EDIT-SEC
       *
       *    ¥³¥á¥ó¥È¸¡º÷¾ò·ïÊÔ½¸½èÍý
            PERFORM 10011-COMMENT-SELECT-EDIT-SEC
@@ -1784,6 +1793,117 @@
        10011-HOME-ADRS-SELECT-EDIT-EXT.
            EXIT.
       *****************************************************************
+      *    ¾õÂÖ£±¸¡º÷¾ò·ïÊÔ½¸½èÍý
+      *****************************************************************
+       10011-CONDITION1-SEL-EDIT-SEC        SECTION.
+      *
+           MOVE    ZERO    TO      CNT-JYOKEN
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL   (   IDX1    >   3 )
+               IF  ( SPA-Q01-CONDITION1 (IDX1) NOT =   SPACE)
+      *
+                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
+      *
+                   PERFORM 900-SQL-JYOKEN-EDIT7-SEC
+      *
+                   IF    ( CNT-JYOKEN  =   1 )
+                       STRING  "condition_1 in ("   DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
+      *
+                   STRING  "'"                  DELIMITED   BY  SIZE
+                       SPA-Q01-CONDITION1 (IDX1)
+                                                DELIMITED   BY  SIZE
+                       "'"                      DELIMITED   BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+      *
+                END-IF
+           END-PERFORM
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           .
+       10011-CONDITION1-SEL-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¾õÂÖ£²¸¡º÷¾ò·ïÊÔ½¸½èÍý
+      *****************************************************************
+       10011-CONDITION2-SEL-EDIT-SEC        SECTION.
+      *
+           MOVE    ZERO    TO      CNT-JYOKEN
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL   (   IDX1    >   3 )
+               IF  ( SPA-Q01-CONDITION2 (IDX1) NOT =   SPACE)
+      *
+                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
+      *
+                   PERFORM 900-SQL-JYOKEN-EDIT7-SEC
+      *
+                   IF    ( CNT-JYOKEN  =   1 )
+                       STRING  "condition_2 in ("   DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
+      *
+                   STRING  "'"                  DELIMITED   BY  SIZE
+                       SPA-Q01-CONDITION2 (IDX1)
+                                                DELIMITED   BY  SIZE
+                       "'"                      DELIMITED   BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+      *
+                END-IF
+           END-PERFORM
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           .
+       10011-CONDITION2-SEL-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¾õÂÖ£³¸¡º÷¾ò·ïÊÔ½¸½èÍý
+      *****************************************************************
+       10011-CONDITION3-SEL-EDIT-SEC        SECTION.
+      *
+           MOVE    ZERO    TO      CNT-JYOKEN
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL   (   IDX1    >   3 )
+               IF  ( SPA-Q01-CONDITION3 (IDX1) NOT =   SPACE)
+      *
+                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
+      *
+                   PERFORM 900-SQL-JYOKEN-EDIT7-SEC
+      *
+                   IF    ( CNT-JYOKEN  =   1 )
+                       STRING  "condition_3 in ("   DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
+      *
+                   STRING  "'"                  DELIMITED   BY  SIZE
+                       SPA-Q01-CONDITION3 (IDX1)
+                                                DELIMITED   BY  SIZE
+                       "'"                      DELIMITED   BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+      *
+                END-IF
+           END-PERFORM
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           .
+       10011-CONDITION3-SEL-EDIT-EXT.
+           EXIT.
+      *****************************************************************
       *    ¥³¥á¥ó¥È¸¡º÷¾ò·ïÊÔ½¸½èÍý
       *****************************************************************
        10011-COMMENT-SELECT-EDIT-SEC        SECTION.
@@ -1886,7 +2006,7 @@
                    "')and("                    DELIMITED   BY  SIZE
                    WRK-SQL-TBL-NAME            DELIMITED   BY  SPACE
                    ".ptid=a.ptid) "            DELIMITED   BY  SIZE
-                   "and"                       DELIMITED   BY  SIZE
+                   "and "                      DELIMITED   BY  SIZE
            INTO    WRK-SQL
            WITH    POINTER     WRK-SQL-PNT
            END-STRING
@@ -1991,6 +2111,28 @@
       *
            .
        900-SQL-JYOKEN-EDIT6-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ó£Ñ£Ì¾ò·ïÊÔ½¸½èÍý£·
+      *****************************************************************
+       900-SQL-JYOKEN-EDIT7-SEC            SECTION.
+      *
+           IF  ( CNT-JYOKEN    =   1 )
+               IF  (   FLG-JYOKEN-AND  =   "1" )
+                   STRING  " and "         DELIMITED   BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               END-IF
+           ELSE
+               STRING  ","                 DELIMITED   BY  SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           END-IF
+      *
+           .
+       900-SQL-JYOKEN-EDIT7-EXT.
            EXIT.
       *****************************************************************
       *    Ê¸»úÎóÄ¹¼èÆÀ½èÍý

@@ -56,6 +56,7 @@
       * 01.00.03     MCC-太田     02/09/12+パスをサブプロから取得
       * 01.00.04     NACL-太田    03/05/26+老人一割、２割を追加
       * 01.00.05     NACL-太田    03/06/10+一括入力対応
+      * 01.00.06     NACL-太田    03/09/11+コラムリストに郵便番号を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -719,6 +720,18 @@
                MOVE    WRK-AGE-G           TO  SPA-GMN-Q02-KEKKALST-AGE
                                                                (IDX-GMN)
       *
+      *        郵便番号
+               IF    ( QUERY-PTINF-HOME-POST   NOT =   SPACE )
+                   MOVE    QUERY-PTINF-HOME-POST (1:3)
+                                           TO  SPA-GMN-Q02-KEKKALST-POST
+                                                          (IDX-GMN)(1:3)
+                   MOVE    "-"             TO  SPA-GMN-Q02-KEKKALST-POST
+                                                          (IDX-GMN)(4:1)
+                   MOVE    QUERY-PTINF-HOME-POST (4:4)
+                                           TO  SPA-GMN-Q02-KEKKALST-POST
+                                                          (IDX-GMN)(5:4)
+                   
+               END-IF
       *
       *        診療内容（住所を表示）
                MOVE    QUERY-PTINF-HOME-ADRS
@@ -1717,6 +1730,9 @@
       *        年齢
                MOVE    SPA-GMN-Q02-KEKKALST-AGE (IDX1)
                                    TO  Q02-KEKKALST-AGE (IDX1)
+      *        郵便番号
+               MOVE    SPA-GMN-Q02-KEKKALST-POST (IDX1)
+                                   TO  Q02-KEKKALST-POST (IDX1)
       *        診療内容
                MOVE    SPA-GMN-Q02-KEKKALST-SRYACT (IDX1)
                                    TO  Q02-KEKKALST-SRYACTNAIYO (IDX1)

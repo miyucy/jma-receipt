@@ -108,6 +108,31 @@
                            11  SPA-GMN-Q01-NAMETBL.
                                13  SPA-GMN-Q01-NAME    PIC X(50)
                                                        OCCURS  5.
+      *                    状態
+                           11  SPA-GMN-Q01-CONDITION1TBL.
+                               13  SPA-GMN-Q01-CONDITION1-G
+                                                       OCCURS 3.
+                                   15  SPA-GMN-Q01-CONDITION1
+                                                       PIC X(03).
+                                   15                  PIC X(01).
+                                   15  SPA-GMN-Q01-CONDITION1MEI
+                                                       PIC X(20).
+                           11  SPA-GMN-Q01-CONDITION2TBL.
+                               13  SPA-GMN-Q01-CONDITION2-G
+                                                       OCCURS 3.
+                                   15  SPA-GMN-Q01-CONDITION2
+                                                       PIC X(03).
+                                   15                  PIC X(01).
+                                   15  SPA-GMN-Q01-CONDITION2MEI
+                                                       PIC X(20).
+                           11  SPA-GMN-Q01-CONDITION3TBL.
+                               13  SPA-GMN-Q01-CONDITION3-G
+                                                       OCCURS 3.
+                                   15  SPA-GMN-Q01-CONDITION3
+                                                       PIC X(03).
+                                   15                  PIC X(01).
+                                   15  SPA-GMN-Q01-CONDITION3MEI
+                                                       PIC X(20).
       *                    コメント
                            11  SPA-GMN-Q01-COMMENTTBL.
                                13  SPA-GMN-Q01-COMMENT PIC X(50)
@@ -292,6 +317,30 @@
                                13  SPA-GMN-Q01-SEXL        PIC X(01).
                                13                          PIC X(01).
                                13  SPA-GMN-Q01-SEXMEIL     PIC X(08).
+                       09  SPA-GMN-Q01-CONDITION1LST-G.
+                           11  SPA-GMN-Q01-CONDITION1LST-MAX
+                                                           PIC 9(05).
+                           11  SPA-GMN-Q01-CONDITION1LST   OCCURS  10.
+                               13  SPA-GMN-Q01-CONDITION1L PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-Q01-CONDITION1MEIL
+                                                           PIC X(20).
+                       09  SPA-GMN-Q01-CONDITION2LST-G.
+                           11  SPA-GMN-Q01-CONDITION2LST-MAX
+                                                           PIC 9(05).
+                           11  SPA-GMN-Q01-CONDITION2LST   OCCURS  10.
+                               13  SPA-GMN-Q01-CONDITION2L PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-Q01-CONDITION2MEIL
+                                                           PIC X(20).
+                       09  SPA-GMN-Q01-CONDITION3LST-G.
+                           11  SPA-GMN-Q01-CONDITION3LST-MAX
+                                                           PIC 9(05).
+                           11  SPA-GMN-Q01-CONDITION3LST   OCCURS  10.
+                               13  SPA-GMN-Q01-CONDITION3L PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-Q01-CONDITION3MEIL
+                                                           PIC X(20).
                        09  SPA-GMN-Q01-HONKZKKBNLST-G.
                            11  SPA-GMN-Q01-HONKZKKBNLST-MAX
                                                             PIC 9(05).
@@ -371,9 +420,13 @@
                                13  SPA-GMN-Q02-KEKKALST-AGE
                                                        PIC X(08).
       *
+      *                        郵便番号
+                               13  SPA-GMN-Q02-KEKKALST-POST
+                                                       PIC X(8).
+      *
       *                        診療内容
                                13  SPA-GMN-Q02-KEKKALST-SRYACT
-                                                       PIC X(80).
+                                                       PIC X(200).
       *
                            11  SPA-GMN-Q02-KEKKA-MAX   PIC 9(05).
                            11  SPA-GMN-Q02-KEKKA-SEL   PIC 9(05).
@@ -552,6 +605,15 @@
                        09  SPA-Q01-NAME-G.
                            11  SPA-Q01-NAME            PIC X(50)
                                                        OCCURS  5.
+                       09  SPA-Q01-CONDITION1-G.
+                           11  SPA-Q01-CONDITION1      PIC X(02)
+                                                       OCCURS  3.
+                       09  SPA-Q01-CONDITION2-G.
+                           11  SPA-Q01-CONDITION2      PIC X(02)
+                                                       OCCURS  3.
+                       09  SPA-Q01-CONDITION3-G.
+                           11  SPA-Q01-CONDITION3      PIC X(02)
+                                                       OCCURS  3.
                        09  SPA-Q01-COMMENT-G.
                            11  SPA-Q01-COMMENT         PIC X(50)
                                                        OCCURS  5.

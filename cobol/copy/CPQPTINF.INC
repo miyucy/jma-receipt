@@ -38,6 +38,8 @@
            03  QUERY-PTINF-SEX                 PIC  X(01).
       *栏钳奉泣
            03  QUERY-PTINF-BIRTHDAY            PIC  X(08).
+      *极吗≥凸守戎规
+           03  QUERY-PTINF-HOME-POST           PIC  X(07).
       *极吗≥交疥
            03  QUERY-PTINF-HOME-ADRS           PIC  X(200).
       *极吗≥戎孟数今
