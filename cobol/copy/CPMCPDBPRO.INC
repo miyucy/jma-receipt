@@ -182,6 +182,7 @@
       *  01.01.26    NACL-太田    02/12/20  BD002-KEY3追加
       *  01.01.27    NACL-藤原    02/12/24  NYUINACCT-KEY13,KEY14追加
       *  01.01.28    NACL-森脇    03/01/06  SYUNOU-KEY9追加
+      *  01.01.29    NACL-多々納  03/01/08  SRYACCT-KEY14 追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1328,6 +1329,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-KEY13"
                    MOVE    PATH-TBL-SRYACCT-KEY13
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY14"
+                   MOVE    PATH-TBL-SRYACCT-KEY14
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SRYACCT-ALL"
