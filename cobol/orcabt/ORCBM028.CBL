@@ -758,8 +758,8 @@
                        MOVE    WRK-NISSUZ  TO  HCM2J-BKO-NISSU (IDX) 
                        MOVE    SUM-ROU-KOH-FTNMONEY (IDX1 IDX)
                                            TO  WRK-ZZ9
-                       MOVE    WRK-ZZ9 (2:)
-                                           TO  HCM2J-BKO-ITBFTN(IDX)
+      *                 MOVE    WRK-ZZ9 (2:)
+      *                                     TO  HCM2J-BKO-ITBFTN(IDX)
       *************END-IF                        
                END-IF
            END-PERFORM    
