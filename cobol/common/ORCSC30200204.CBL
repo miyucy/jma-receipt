@@ -300,7 +300,12 @@
       *    種別のみの時、手技料の自動発生
            IF     (FLG-SYUGI           =   ZERO  )  AND
                   (WRK-ERRCD           =   SPACE )
-               PERFORM 1003-SYUGIJIDOU-SEC
+      *        薬剤のみの時対象外
+               IF      WRK-COM-SRYSYUKBN(01)(3:1)  =   "1"
+                   CONTINUE
+               ELSE
+                   PERFORM 1003-SYUGIJIDOU-SEC
+               END-IF
            END-IF
       *
            IF      IDX-SYU             >   ZERO
