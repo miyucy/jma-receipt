@@ -31,6 +31,7 @@
       *  01.00.02    NACL-藤原    03/03/07  レセプト記載外公費情報追加
       *  01.00.03    NACL-藤原    03/03/11  種別不明の情報を編集
       *  01.00.04    NACL-藤原    03/03/15  入院履歴から診療科の編集を行う
+      *  01.00.05    NACL-藤原    03/04/14  不明分の保険履歴情報は作成しない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2072,6 +2073,7 @@
       *
            IF      RECE61-HKNID             NOT =   ZERO
            AND     RECE61-HKNNUM            NOT =   WRK-CONS-JIHI-HKNNUM
+           AND     RECE61-TEISEIKBN             =   SPACE
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       10
                        OR      RECE61-TEKSTYMDX (IDX)  =   SPACE

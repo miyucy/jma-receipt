@@ -2211,6 +2211,7 @@
       *
            IF      RECE01-HKNID             NOT =   ZERO
            AND     RECE01-HKNNUM            NOT =   WRK-CONS-JIHI-HKNNUM
+           AND     RECE01-TEISEIKBN             =   SPACE
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       10
                        OR      RECE01-TEKSTYMDX (IDX)  =   SPACE

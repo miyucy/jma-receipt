@@ -2898,7 +2898,7 @@
                OR     ( RECE02-HKNJANUM-KEY
                                          NOT =   RECE061-HKNJANUM    )
                OR     ( RECE02-HOJOKBN-KEY
-                                         NOT =   RECE061-HKNJANUM    )
+                                         NOT =   RECE061-HOJOKBN     )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE061-TEKSTYMD    )
       *
                MOVE    ZERO                  TO  FLG-KUGIRI
