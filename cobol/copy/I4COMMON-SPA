@@ -163,5 +163,6 @@
                05  SPA-WRK-KOMENTO-SRYM        PIC 9(02).
            03  SPA-WRK-CHK-KBN-TBL.
                05  SPA-WRK-CHK-KBN             PIC X(01)  OCCURS  31.
+               05  SPA-WRK-CHK-SIKIBETU        PIC X(01)  OCCURS  31.
            03  WRK-SRYYM-SML                   PIC X(06).
            03  WRK-SRYYM-BIG                   PIC X(06).
