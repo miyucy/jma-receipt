@@ -32,7 +32,7 @@ I01	{
 			item	varchar(23)[10];
 		};
 		IDOYMD	{
-			value	varchar(9);
+			value	varchar(10);
 			state	int;
 		};
 		MAEIDOYMD	{
@@ -61,7 +61,7 @@ I01	{
 			state	int;
 		};
 		NYUINYMD	{
-			value	varchar(9);
+			value	varchar(10);
 			state	int;
 		};
 		CMB_NYUINKA	{
@@ -90,7 +90,7 @@ I01	{
 			value	varchar(16);
 		};
 		TAIINYMD	{
-			value	varchar(9);
+			value	varchar(10);
 			state	int;
 		};
 		CMB_DR1	{

@@ -20,10 +20,10 @@ I03	{
 			value	varchar(20);
 		};
 		NYUINYMD	{
-			value	varchar(9);
+			value	varchar(10);
 		};
 		TAIINYMD	{
-			value	varchar(9);
+			value	varchar(10);
 		};
 		TAISYONISSU	{
 			value	number(4);

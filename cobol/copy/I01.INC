@@ -30,7 +30,7 @@
                 05  I01-SYORIKBN-CNT               PIC S9(9)   BINARY.
                 05  I01-SYORIKBN-ITM               PIC X(23)
                                                    OCCURS  10.
-              04  I01-IDOYMD                       PIC X(9).
+              04  I01-IDOYMD                       PIC X(10).
               04  I01-IDOYMD-STT                   PIC S9(9)   BINARY.
               04  I01-MAEIDOYMD                    PIC X(9).
               04  I01-BRMNUM                       PIC X(6).
@@ -49,7 +49,7 @@
                 05  I01-SAGAKU-ITM                 PIC X(23)
                                                    OCCURS  20.
                 05  I01-SAGAKU-ITM-STT             PIC S9(9)   BINARY.
-              04  I01-NYUINYMD                     PIC X(9).
+              04  I01-NYUINYMD                     PIC X(10).
               04  I01-NYUINYMD-STT                 PIC S9(9)   BINARY.
               04  I01-CMB-NYUINKA.
                 05  I01-NYUINKA                    PIC X(27).
@@ -68,7 +68,7 @@
               04  I01-SHONUM                       PIC S9(2).
               04  I01-SHONUM-STT                   PIC S9(9)   BINARY.
               04  I01-LBL-SHONYUINYMD              PIC X(16).
-              04  I01-TAIINYMD                     PIC X(9).
+              04  I01-TAIINYMD                     PIC X(10).
               04  I01-TAIINYMD-STT                 PIC S9(9)   BINARY.
               04  I01-CMB-DR-TBL.
                 05 I01-CMB-DR-OCC                  OCCURS 3.

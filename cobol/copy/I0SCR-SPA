@@ -49,7 +49,7 @@
                    13                              PIC X(01).
                    13  SPA-GMN-I01-SYORIKBN-NM     PIC X(20).
       *          異動日
-                 11  SPA-GMN-I01-IDOYMD            PIC X(09).
+                 11  SPA-GMN-I01-IDOYMD            PIC X(10).
                  11  SPA-GMN-I01-IDOYMD-STT        PIC S9(9)   BINARY.
       *          前回異動日
                  11  SPA-GMN-I01-MAEIDOYMD         PIC X(09).
@@ -79,7 +79,7 @@
                    13  SPA-GMN-I01-SAGAKU-NM       PIC X(20).
                  11  SPA-GMN-I01-SAGAKU-STT        PIC S9(9)   BINARY.
       *          入院日
-                 11  SPA-GMN-I01-NYUINYMD          PIC X(09).
+                 11  SPA-GMN-I01-NYUINYMD          PIC X(10).
                  11  SPA-GMN-I01-NYUINYMD-STT      PIC S9(9)   BINARY.
       *          入院科
                  11  SPA-GMN-I01-NYUINKA.
@@ -99,7 +99,7 @@
       *          初回入院日
                  11  SPA-GMN-I01-LBL-SHONYUINYMD   PIC X(16).
       *          退院日
-                 11  SPA-GMN-I01-TAIINYMD          PIC X(09).
+                 11  SPA-GMN-I01-TAIINYMD          PIC X(10).
                  11  SPA-GMN-I01-TAIINYMD-STT      PIC S9(9)   BINARY.
       *          担当医
                  11  SPA-GMN-I01-DR-TBL.
@@ -435,9 +435,9 @@
       *          コメント
                  11  SPA-GMN-I03-COMMENT           PIC X(20).
       *          入院日
-                 11  SPA-GMN-I03-NYUINYMD          PIC X(09).
+                 11  SPA-GMN-I03-NYUINYMD          PIC X(10).
       *          退院日
-                 11  SPA-GMN-I03-TAIINYMD          PIC X(09).
+                 11  SPA-GMN-I03-TAIINYMD          PIC X(10).
       *          通算対象日数
                  11  SPA-GMN-I03-TAISYONISSU       PIC S9(4).
       *          病名
