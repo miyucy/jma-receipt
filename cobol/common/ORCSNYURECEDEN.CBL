@@ -1162,6 +1162,7 @@
                          UNTIL     IDX1   >    31
                    IF    (WRK-HKNCOMBI-DAY(IDX1) NOT = ZERO)  AND
                          (NACCT-DAY(IDX1)    NOT =  ZERO)     AND
+                         (WRK-NYUINKHN(IDX1) NOT =  SPACE)    AND
                          (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                        TO  WRK-SKJ-HKNCOMBI-DAY(IDX1)
