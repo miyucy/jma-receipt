@@ -142,11 +142,12 @@ then
 	if test -f $$dbredirector; then
 	    rm $$dbredirector
 	fi
+    	    killall wfc
 	exit 0
     }
 fi
 if test "x"$Start_GLSERVER = "xtrue"; then
-    $GLSERVER -screen $SCREEN -record $RECORD -cache /tmp &
+    $GLSERVER -screen $SCREEN -record $RECORD -cache /tmp/cache/ &
     glpid=$!
 fi
 

@@ -10,7 +10,7 @@ multiplex_level	aps;
 linkage	orcalink;
 
 blob {
-    space   "=/blob";
+    space   "/tmp/blob";
     port    "/tmp/blog.blob";
     auth    "/etc/jma-receipt/passwd";
 };
