@@ -35,6 +35,7 @@
       *  02.00.03    NACL-ÂÀÅÄ    04.02.09  ¼«ÇåÀÕ¿©»öÎÅÍÜÈñÄÉ²Ã
       *  02.00.04    NACL-ÂÀÅÄ    04.09.15  ºï½ü¥Ü¥¿¥óÄÉ²Ã
       *  02.00.05    NACL-ÂÀÅÄ    04.10.07  ÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ±þ
+      *  01.00.06    NACL-Æ£¸¶    05.01.25  ¸ÇÄêÂÓ²Ã»»Åù¼è°·ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -95,6 +96,12 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-KIZAITAXKBNMEI
                                               PIC X(08).
+                       09  SPA-GMN-KOTEIKBN-G.
+                           11  SPA-GMN-KOTEIKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-KOTEIKBNMEI
+                                              PIC X(08).
                        09  SPA-GMN-LBLKIZAILST
                                               PIC X(60).
                    07  SPA-GMN-KOUMOKU1.
@@ -141,6 +148,13 @@
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-KIZAITAXKBNMEIL PIC X(08).
                    07  SPA-GMN-KIZAITAXKBN-MAX     PIC 9(02).
+      *                                        
+                   07  SPA-GMN-KOTEIKBNLST OCCURS  2.
+                       09  SPA-GMN-KOTEIKBNL   PIC X(01).
+                       09  SPA-GMN-F1L         PIC X(01).
+                       09  SPA-GMN-KOTEIKBNMEIL
+                                               PIC X(08).
+                   07  SPA-GMN-KOTEIKBN-MAX    PIC 9(02).
       *
                    07  SPA-GMN-KIZAITBL.
                        09  SPA-GMN-KIZAITBL-NEXT   PIC 9(01).
@@ -601,6 +615,11 @@
                                             TO  SPA-GMN-KIZAITAXKBN-G
            END-IF
       *
+           IF    ( SPA-GMN-KOTEIKBN-G   =   SPACE )
+               MOVE    SPA-GMN-KOTEIKBNLST(2)
+                                            TO  SPA-GMN-KOTEIKBN-G
+           END-IF
+      *
            MOVE    ZERO                TO  SPA-NAI-KIZAITBL-FLG
       *
            MOVE    1                   TO  SPA-GMN-CUR
@@ -640,6 +659,10 @@
            MOVE    SYS-4001-TAXKBN-KZI TO  WRK-CMB-CD
            PERFORM 4200-KIZAITAXKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-KIZAITAXKBN-G
+      *
+           MOVE    SYS-4001-KOTEIKBN   TO  WRK-CMB-CD
+           PERFORM 4200-KOTEIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-KOTEIKBN-G
       *
            .
        3001-RSIKHN-HEN-EXT.
@@ -932,6 +955,12 @@
            MOVE    "2"                 TO  SPA-GMN-KIZAITAXKBNL      (2)
            MOVE    "Í­¤ê"              TO  SPA-GMN-KIZAITAXKBNMEIL   (2)
            MOVE    2                   TO  SPA-GMN-KIZAITAXKBN-MAX 
+      *     
+           MOVE    "1"                 TO  SPA-GMN-KOTEIKBNL      (1)
+           MOVE    "µ»½ÑÅÀ"            TO  SPA-GMN-KOTEIKBNMEIL   (1)
+           MOVE    "2"                 TO  SPA-GMN-KOTEIKBNL      (2)
+           MOVE    "ÌôºÞÅùÅÀ"          TO  SPA-GMN-KOTEIKBNMEIL   (2)
+           MOVE    2                   TO  SPA-GMN-KOTEIKBN-MAX 
       *
            . 
        3101-COMBO-SET-EXT.
@@ -1022,6 +1051,7 @@
            MOVE    W13-TAXKBN          TO  SPA-GMN-TAXKBN-G
            MOVE    W13-SKJKBN          TO  SPA-GMN-SKJKBN-G
            MOVE    W13-KIZAITAXKBN     TO  SPA-GMN-KIZAITAXKBN-G
+           MOVE    W13-KOTEIKBN        TO  SPA-GMN-KOTEIKBN-G
       *    Â»½ý¶èÊ¬
            MOVE    W13-SONSHOUKBN1     TO  SPA-GMN-SONSHOUKBN1
            MOVE    W13-SONSHOUKBN2     TO  SPA-GMN-SONSHOUKBN2
@@ -1067,6 +1097,11 @@
            END-IF
       *
            PERFORM 4101-KIZAITAXKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-KOTEIKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1244,6 +1279,29 @@
       *
            .
        4101-KIZAITAXKBN-CHK-EXT.
+           EXIT.
+      *     
+      *****************************************************************
+      *    ¸ÇÄêÂÓ²Ã»»Åù¼è°·¥Á¥§¥Ã¥¯
+      *****************************************************************
+       4101-KOTEIKBN-CHK-SEC        SECTION.
+      *
+           IF    ( SPA-GMN-KOTEIKBN     =   SPACE )
+               MOVE    SPA-GMN-KOTEIKBNLST (2)
+                                       TO  SPA-GMN-KOTEIKBN-G
+           ELSE
+               MOVE    SPA-GMN-KOTEIKBN    TO  WRK-CMB-CD
+               PERFORM 4200-KOTEIKBNLST-CHK-SEC
+               IF    ( WRK-CMB-ITM         =   SPACE )
+                   MOVE    SPA-GMN-KOTEIKBNLST (2)
+                                       TO  SPA-GMN-KOTEIKBN-G
+               ELSE
+                   MOVE    WRK-CMB-ITM TO  SPA-GMN-KOTEIKBN-G
+               END-IF
+           END-IF
+      *
+           .
+       4101-KOTEIKBN-CHK-EXT.
            EXIT.
       *     
       *****************************************************************
@@ -1538,6 +1596,27 @@
        4200-KIZAITAXKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ¸ÇÄêÂÓ²Ã»»Åù¼è°·¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-KOTEIKBNLST-CHK-SEC         SECTION.
+      *
+           INITIALIZE                      WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL ( IDY >       SPA-GMN-KOTEIKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( WRK-CMB-CD      =   SPA-GMN-KOTEIKBNL (IDY) )
+                   MOVE    SPA-GMN-KOTEIKBNLST (IDY)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-KOTEIKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ¹ÔÁªÂò½èÍý
       *****************************************************************
        41015-LIST1SEL-SEC       SECTION.
@@ -1829,6 +1908,7 @@
            MOVE    SPA-GMN-TAXKBN          TO  SYS-4001-TAXKBN
            MOVE    SPA-GMN-SKJKBN          TO  SYS-4001-SKJKBN
            MOVE    SPA-GMN-KIZAITAXKBN     TO  SYS-4001-TAXKBN-KZI
+           MOVE    SPA-GMN-KOTEIKBN        TO  SYS-4001-KOTEIKBN
            MOVE    SYS-4001-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
@@ -2135,6 +2215,7 @@
            MOVE    SPA-GMN-TAXKBN-G         TO  W13-TAXKBN
            MOVE    SPA-GMN-SKJKBN-G         TO  W13-SKJKBN
            MOVE    SPA-GMN-KIZAITAXKBN-G    TO  W13-KIZAITAXKBN
+           MOVE    SPA-GMN-KOTEIKBN-G       TO  W13-KOTEIKBN
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-RSIIRYOKBN-MAX
@@ -2174,6 +2255,14 @@
            END-PERFORM
            MOVE    SPA-GMN-KIZAITAXKBN-MAX
                                        TO  W13-KIZAITAXKBN-COUNT
+      *
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-KOTEIKBN-MAX
+               MOVE    SPA-GMN-KOTEIKBNLST (IDY)
+                                       TO  W13-KOTEIKBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-KOTEIKBN-MAX
+                                       TO  W13-KOTEIKBN-COUNT
       *
            MOVE    SPA-GMN-SONSHOUKBN1   TO  W13-SONSHOUKBN1
       *
@@ -2403,6 +2492,8 @@
                     MOVE  "SKJKBN"         TO   MCP-WIDGET
                 WHEN    12
                     MOVE  "KIZAITAXKBN"    TO   MCP-WIDGET
+                WHEN    13
+                    MOVE  "KOTEIKBN"       TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
             END-EVALUATE
@@ -2429,6 +2520,8 @@
                WHEN    "SKJKBN"
                    MOVE    12              TO  SPA-GMN-CUR
                WHEN    "KIZAITAXKBN"
+                   MOVE    13              TO  SPA-GMN-CUR
+               WHEN    "KOTEIKBN"
                    MOVE    5               TO  SPA-GMN-CUR
                WHEN    "SONSHOUKBN1"
                    IF      SPA-GMN-SONSHOUKBN1     =   SPACE

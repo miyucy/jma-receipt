@@ -67,7 +67,11 @@
                 04  W13-KIZAITAXKBN        PIC X(10).
                 04  W13-KIZAITAXKBN-COUNT  PIC S9(9)   BINARY.
                 04  W13-KIZAITAXKBNLST     PIC X(10)   OCCURS  2 TIMES.
-              03  W13-LBLKIZAILST         PIC X(60).
+              03  W13-KOTEIKBN-COMBO.
+                04  W13-KOTEIKBN         PIC X(10).
+                04  W13-KOTEIKBN-COUNT   PIC S9(9)   BINARY.
+                04  W13-KOTEIKBNLST      PIC X(10)   OCCURS  2 TIMES.
+              03  W13-LBLKIZAILST          PIC X(60).
               03  W13-SCROLLEDWINDOW7.
                 04  W13-KIZAILST.
                   05  W13-KIZAILST-COUNT   PIC S9(9)   BINARY.
