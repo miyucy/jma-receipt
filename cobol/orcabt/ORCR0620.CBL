@@ -59,6 +59,8 @@
       *  01.00.42    NACL-藤原    04/07/12  生保の受給者番号を月代わり受給者DBに
       *                                     無い場合は公費DBより編集する
       *                                     保険組合せの公費ＩＤを追加
+      *  01.00.43    NACL-藤原    04/07/20  特例退職者＋老人のとき不明分
+      *                                     とする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1479,6 +1481,14 @@
                    MOVE   "HKNCOMBI-KEY"        TO   WK-PATH
                    PERFORM   CSR-CLOSE-SEC
            END-IF
+      *
+           IF      WK-RJN      NOT =   SPACE     
+               IF      RECE62-HKNNUM   =   "063"   OR  "072"   OR
+                                           "073"   OR  "074"   OR
+                                           "075"
+                   MOVE    "2"          TO  WK-IHO
+               END-IF
+           END-IF    
       *          
       *
       *    DISPLAY "WK-HONKZKKBN: " WK-HONKZKKBN 
