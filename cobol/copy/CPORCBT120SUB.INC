@@ -75,7 +75,7 @@
       *≈¡…ºæı¬÷∂Ë ¨
                    07  LNK-ORCBT120SUB-DENPJTIKBN      PIC  X(01).
       *≈¡…º∫Ó¿Æ∂Ë ¨
-                   07  LNK-ORCBT120SUB-CREATEKBN       PIC  9(07).
+                   07  LNK-ORCBT120SUB-CREATEKBN       PIC  X(01).
       * ›∏±≈¿øÙ
                    07  LNK-ORCBT120SUB-HKNTEN          PIC  9(07).
       * ›∏±…È√¥∂‚≥€
