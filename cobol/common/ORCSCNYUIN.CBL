@@ -337,6 +337,7 @@
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
       *
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -2378,51 +2379,43 @@
            MOVE    SPA-HOSPID          TO  UKE-HOSPID
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    SPA-PTID            TO  UKE-PTID
+           MOVE    SPA-SRYKA           TO  UKE-SRYKA
+      *
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
+           MOVE    PATH-TBL-UKETUKE-KEY5   TO  MCP-PATH
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+               MOVE    PATH-TBL-UKETUKE-KEY5   TO  MCP-PATH
                PERFORM 976-UKETUKE-NEXT-SEC
            ELSE
                MOVE    1                   TO  FLG-UKETUKE
            END-IF
            PERFORM
                    UNTIL       FLG-UKETUKE     =    1
-               IF       SPA-SRYKA          =   UKE-SRYKA
-                   IF      UKE-KAIKEITIME      =   ZERO
-                       MOVE    WRK-TIME22          TO  UKE-KAIKEITIME
+               IF      UKE-KAIKEITIME      =   ZERO
+                   MOVE    WRK-TIME22          TO  UKE-KAIKEITIME
       *
-                       MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
-                       MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
+                   MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
-                       MOVE    UKETUKE-REC         TO  MCPDATA-REC
-                       MOVE    "DBUPDATE"          TO  MCP-FUNC
-                       MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
-                       MOVE    1                   TO  FLG-UKETUKE
-                   END-IF
+                   MOVE    UKETUKE-REC         TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
                END-IF
       *
-               IF      FLG-UKETUKE         =   ZERO
-                   MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
-                   PERFORM 976-UKETUKE-NEXT-SEC
-               END-IF
+               MOVE    PATH-TBL-UKETUKE-KEY5   TO  MCP-PATH
+               PERFORM 976-UKETUKE-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    PATH-TBL-UKETUKE-KEY5   TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
       *
            .
         410-UKETUKE-SYORI-EXT.
@@ -2800,10 +2793,9 @@
        976-UKETUKE-NEXT-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  UKETUKE-REC 
                MOVE    ZERO                TO  FLG-UKETUKE
@@ -2835,6 +2827,20 @@
       *
            .
        940-WKSRYACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *****************************************************************
+       990-DBCLOSE-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************

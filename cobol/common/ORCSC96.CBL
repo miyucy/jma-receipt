@@ -1095,6 +1095,12 @@
                                        TO  SPA-ERRMSG
                    MOVE    "訂正での複数科・保険入力はできません。"
                                        TO  SPA-ERRMSG(43:)
+               WHEN    "1200"
+                   MOVE    "入院帳票オーダマスタ更新エラー。"
+                                       TO  SPA-ERRMSG
+               WHEN    "1201"
+                   MOVE    "入院帳票が印刷エラーです。"
+                                       TO  SPA-ERRMSG
       *!
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"

@@ -441,6 +441,11 @@
                    PERFORM 200-WKSRYACT-SYORI-SEC
       *        診療科変更時
                WHEN    "K"
+      *           受付マスタより、診療科、ドクターの決定
+                   IF     (SPA-SYSYMD          =   SPA-SRYYMD ) AND
+                          (SPA-SYORIFLG        =   ZERO       )
+                       PERFORM 10014-UKETUKE-CHK-SEC
+                   END-IF
       *            受診履歴情報セット
                    PERFORM 1001-SPA-JYUSIN-SEC
       *            特定疾患の有無検索
@@ -1183,7 +1188,8 @@
            END-IF
       *
       *    受付マスタより、診療科、ドクターの決定
-           IF     (SPA-GMN-SRYKA       =   SPACE      ) AND
+           IF    ((SPA-GMN-SRYKA       =   SPACE    ) OR
+                  (SPA-P02-UKEID   NOT =   ZERO     )) AND
                   (SPA-SYSYMD          =   SPA-SRYYMD ) AND
                   (SPA-SYORIFLG        =   ZERO       )
                PERFORM 10014-UKETUKE-CHK-SEC
@@ -1532,19 +1538,41 @@
            PERFORM UNTIL  (FLG-UKETUKE     =   1  )
       **********   OR     (SPA-DRCD    NOT =   SPACE )
       *        会計のまだの最初の受付を対象とする
-               IF     (UKE-KAIKEITIME      =   ZERO )  AND
-                      (UKE-UKEID       NOT =   ZERO )
+               IF      SPA-P02-UKEID   NOT =   ZERO
+                   IF     SPA-P02-UKEID        =   UKE-UKEID
+                       MOVE    1               TO  FLG-UKETUKE-ARI
+                   END-IF
+               ELSE
+                   IF     (UKE-KAIKEITIME      =   ZERO )  AND
+                          (UKE-UKEID       NOT =   ZERO )
+                       MOVE    1               TO  FLG-UKETUKE-ARI
+                   END-IF
+               END-IF
+               IF      FLG-UKETUKE-ARI     =   1
+      ******** IF     (UKE-KAIKEITIME      =   ZERO )  AND
+      ****************(UKE-UKEID       NOT =   ZERO )
                    IF     (SPA-GMN-SRYKA   NOT =   SPACE  )  AND
                           (SPA-GMN-SRYKA       =   UKE-SRYKA )
                        MOVE    UKE-SRYKA           TO  SPA-SRYKA
                        MOVE    UKE-DRCD            TO  SPA-DRCD
+      *                保険組合せ追加
+                       IF      UKE-HKNCOMBI        =   ZERO
+                           MOVE    SPACE           TO  SPA-HKNCOMBINUM
+                       ELSE
+                           MOVE    UKE-HKNCOMBI    TO  SPA-HKNCOMBINUM
+                       END-IF
                        MOVE    1                   TO  FLG-UKETUKE
                    ELSE
                        MOVE    UKE-SRYKA           TO  SPA-SRYKA
                        MOVE    UKE-DRCD            TO  SPA-DRCD
+      *                保険組合せ追加
+                       IF      UKE-HKNCOMBI        =   ZERO
+                           MOVE    SPACE           TO  SPA-HKNCOMBINUM
+                       ELSE
+                           MOVE    UKE-HKNCOMBI    TO  SPA-HKNCOMBINUM
+                       END-IF
                        MOVE    1                   TO  FLG-UKETUKE
                    END-IF
-                   MOVE    1               TO  FLG-UKETUKE-ARI
                END-IF
                IF      FLG-UKETUKE         =   ZERO
                    MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
@@ -2326,6 +2354,10 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-HKN-MAX
+      *      自費は対象外とする
+             IF      SPA-NAI-HKNNUM (IDX)(1:2)   =   "98"
+                 CONTINUE
+             ELSE
                MOVE    ZERO                TO  WRK-CNT-HKN2
                IF      SPA-NAI-HKNNUM (IDX)    NOT =   SPACE
                    ADD     1                   TO  WRK-CNT-HKN2
@@ -2352,6 +2384,7 @@
                    MOVE    IDX                 TO  WRK-IDXH
                    MOVE    SPA-HKN-MAX         TO  IDX
                END-IF
+             END-IF
            END-PERFORM
       *
            IF      WRK-IDXH            =   ZERO
