@@ -29,6 +29,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.01.01    NACL-¿¹ÏÆ    04/10/07  ÌôºÞÉéÃ´¶âÍó¤òºï½ü
+      *                           04/10/12  ¸©ÊÌ¤Ë½¸·×
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -571,7 +572,7 @@
        2002-PRINT-HENSYU-SEC       SECTION.
       *
       *    Ä¢É¼ÊÔ½¸<¸«½Ð¤·>½èÍý
-           IF          CNT-LINE    =   ZERO
+           IF      CNT-LINE    =   ZERO
                PERFORM 20021-HEAD-HEN-SEC
            END-IF
       *
@@ -579,7 +580,7 @@
            PERFORM 20022-BODY-HEN-SEC
       *
       *    Ä¢É¼°õºþ½èÍý
-           IF          CNT-LINE       =   23
+           IF      CNT-LINE            =   23
                PERFORM 20024-PRINT-OUT-SEC
                MOVE    ZERO                TO  CNT-LINE
            END-IF
@@ -590,6 +591,19 @@
                END-IF
                PERFORM 20023-GOKEI-HEN-SEC
                PERFORM 20024-PRINT-OUT-SEC
+      *----(01.01.01)--ADD-START---
+           ELSE
+               IF   (( FLG-RECE10          =   ZERO) AND
+                     ( KEY-O-HKNJANUM(1:2) NOT =   KEY-N-HKNJANUM(1:2)))
+                   IF          CNT-LINE   =   ZERO
+                       PERFORM 20021-HEAD-HEN-SEC
+                   END-IF
+                   PERFORM 20023-GOKEI-HEN-SEC
+                   PERFORM 20024-PRINT-OUT-SEC
+                   MOVE    ZERO                TO  GSUM-AREA
+                   MOVE    ZERO                TO  CNT-LINE
+               END-IF
+      *----(01.01.01)--ADD-END-----
            END-IF
       *
            .
@@ -1094,6 +1108,7 @@
                MOVE    HIGH-VALUE      TO  KEY-NEW
                MOVE    1               TO  FLG-RECE10
            END-IF
+           DISPLAY "RECE10-HKNJANUM-S=[" RECE10-HKNJANUM-S "]"
       *
            .
        900-SEIKYU-READ-EXT.
