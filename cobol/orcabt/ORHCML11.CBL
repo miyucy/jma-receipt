@@ -539,7 +539,7 @@
       *
            INITIALIZE                  TNS-TENSU-REC
            MOVE    "095000000"         TO  TNS-SRYCD
-           MOVE    "095999999"         TO  TNSUP-SRYCD 
+           MOVE    "096999999"         TO  TNSUP-SRYCD 
       *
            EVALUATE    WRK-PARA-CYUKBN ALSO    WRK-PARA-SYUKBN
                WHEN    1               ALSO    1
