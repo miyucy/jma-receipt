@@ -467,7 +467,13 @@ COPYS = \
 	Z99.INC \
 	ZERR.INC \
 	ZID1.INC \
-	ZID2.INC 
+	ZID2.INC \
+	HCM06.INC \
+	HCM2C.INC \
+	HCM2D.INC \
+	HCM2E.INC \
+	JCM2F.INC \
+	CPPRTCONST.INC 
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global
