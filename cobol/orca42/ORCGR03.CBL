@@ -64,6 +64,7 @@
       *
       *  労災・自賠責入院機能追加
       *  01.04.01    NACL-藤原    03/06/05  労災・自賠責の入院処理追加
+      *  01.04.02    NACL-藤原    03/08/05  外来レセ電処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1455,7 +1456,7 @@
                        MOVE   SPACE        TO  SYS-1001-REC
                    END-IF
       *
-      *            県単ＰＧの設定
+      *            カスタマイズＰＧ・レセ電情報の設定
                    INITIALIZE                  SYS-2005-REC
                    MOVE    "2005"          TO  SYS-2005-KANRICD
                    MOVE    "*"             TO  SYS-2005-KBNCD
@@ -1474,6 +1475,12 @@
                    IF      SYS-2005-PREFPRGID (2) (1:1)
                                            NOT =  "S"
                            MOVE  "NOPG"    TO  SYS-2005-PREFPRGID (2)
+                   END-IF
+                   IF      SYS-2005-KKHRECEKBN =   SPACE
+                       MOVE    ZERO            TO  SYS-2005-KKHRECEKBN      
+                   END-IF
+                   IF      SYS-2005-SYARECEKBN =   SPACE
+                       MOVE    ZERO            TO  SYS-2005-SYARECEKBN      
                    END-IF
       *
       *            作成日・時間の設定
@@ -1542,6 +1549,18 @@
                    MOVE    SYS-TIME        TO  SHELLTBL-ARG10
                    MOVE    SYS-1001-PREFNUM
                                            TO  SHELLTBL-ARG11
+                   IF      SYS-2005-SYARECEKBN
+                                           =   ZERO
+                       MOVE    "0"             TO  SHELLTBL-ARG12
+                   ELSE
+                       MOVE    "1"             TO  SHELLTBL-ARG12
+                   END-IF
+                   IF      SYS-2005-KKHRECEKBN
+                                           =   ZERO
+                       MOVE    "0"             TO  SHELLTBL-ARG13
+                   ELSE
+                       MOVE    "1"             TO  SHELLTBL-ARG13
+                   END-IF
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    PATH-SHELL-SHELL

@@ -120,11 +120,14 @@
 024200 01  WRK-AREA.
       *****03  WRK-IN                  PIC X(01).
            03  WRK-PARA.
-               05  WRK-PARA-SRYYM      PIC  X(06).
-               05  WRK-PARA-TERMID     PIC  X(16).
-               05  WRK-PARA-SYSYMD     PIC  X(08).
-               05  WRK-PARA-JOBID      PIC  9(07).
-               05  WRK-PARA-SHELLID    PIC  X(08).
+               05  WRK-PARA1.
+                   07  WRK-PARA-SRYYM  PIC X(06).
+                   07  WRK-PARA-TERMID PIC X(16).
+                   07  WRK-PARA-SYSYMD PIC X(08).
+               05  WRK-PARA-JOBID      PIC 9(07).
+               05  WRK-PARA-SHELLID    PIC X(08).
+               05  WRK-PARA-TEISYUTUSAKI
+                                       PIC X(01).
       *
            03  WRK-RECEERR             PIC X(200). 
       *
@@ -181,7 +184,12 @@
       *
            MOVE    ZERO                TO  FLG-END
       *
-           MOVE    COMMAND-PARAM       TO  WRK-PARA
+           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
+                                       INTO    WRK-PARA1
+                                               WRK-PARA-TEISYUTUSAKI
+                                               WRK-PARA-JOBID
+                                               WRK-PARA-SHELLID
+           END-UNSTRING                                  
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -337,6 +345,12 @@
                AT  END
                    MOVE    1           TO  FLG-END
                NOT AT  END
+                   IF    ( RECE04-TEISYUTUSAKI
+                                       NOT =   WRK-PARA-TEISYUTUSAKI )
+                   OR    ( RECE04-RECESYUBETU
+                                           =   ZERO    OR    8888    )
+                           GO  TO  900-RECE04-READ-SEC
+                   END-IF                       
                    ADD     1           TO  CNT-IN
                    MOVE    ZERO        TO  FLG-END
            END-READ
