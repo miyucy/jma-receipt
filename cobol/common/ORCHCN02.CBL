@@ -65,14 +65,11 @@
       *
       *    •∑•π•∆•‡ŒŒ∞Ë
        01  SYS-AREA.
+           03  SYS-TIME            PIC 9(08).
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
-      *
-      *    •∑•π•∆•‡ŒŒ∞Ë
-       01  SYS-AREA.
-           03  SYS-TIME            PIC 9(08).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
