@@ -770,7 +770,8 @@
            INITIALIZE                      SYS-5013-REC
            MOVE    "5013"              TO  SYS-5013-KANRICD
            MOVE    SPA-I01-I04-TAIINCD TO  SYS-5013-KBNCD
-           MOVE    SPA-I01-I04-KJNYMD  TO  ORC-DBYMD
+           MOVE    SPA-I01-I04-TAIINYMD
+                                       TO  ORC-DBYMD
            MOVE    SYS-5013-REC        TO  MCPDATA-REC
       *
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH

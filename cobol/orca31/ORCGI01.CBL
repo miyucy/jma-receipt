@@ -1830,6 +1830,12 @@
                                    TO  WRK-KIHON-KJNYMD
            END-EVALUATE
       *
+      *    退院日チェック処理
+           PERFORM 4101-TAIINYMD-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
       *    病室番号チェック処理
            IF    ( SPA-GMN-I01-BRMNUM  NOT =   SPA-NAI-I01-BRMNUM-MAE )
             OR   ( SPA-GMN-I01-BTUNAME-CNT =   ZERO )
@@ -1895,12 +1901,6 @@
       *
       *    初回番号チェック処理
            PERFORM 4101-SHONUM-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
-      *
-      *    退院日チェック処理
-           PERFORM 4101-TAIINYMD-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2113,9 +2113,15 @@
       *****************************************************************
        4101-INPUT-AREA-EDIT-SEC        SECTION.
       *
-           MOVE    PTNYUINRRK-TENNYUYMD
+           IF    ( PTNYUINRRK-TAIINYMD =   "99999999" )
+               MOVE    PTNYUINRRK-TENNYUYMD
                                    TO  WRK-KJNYMD
-           PERFORM 310-CMB-SYOKI-SEC
+               PERFORM 310-CMB-SYOKI-SEC
+           ELSE
+               MOVE    PTNYUINRRK-TAIINYMD
+                                   TO  WRK-KJNYMD
+               PERFORM 310-CMB-SYOKI-SEC
+           END-IF
       *
       *    入力領域初期化
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
@@ -3893,6 +3899,12 @@
       *
            MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-TAIINYMD
            MOVE    WRK-SYMD        TO  SPA-NAI-I01-TAIINYMD
+      *
+           IF    ( WRK-MCP-WIDGET  =   "TAIINYMD" )
+               MOVE    SPA-NAI-I01-TAIINYMD
+                                   TO  WRK-KJNYMD
+               PERFORM 310-CMB-SYOKI-SEC
+           END-IF
       *
            .
       *

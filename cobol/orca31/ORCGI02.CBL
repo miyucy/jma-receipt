@@ -612,8 +612,13 @@
            MOVE    "1"             TO  SYS-KBNCD (1 : 1)
            MOVE    PTNYUINRRK-DRCD1 ( 2 : 4 )
                                    TO  SYS-KBNCD (2 : )
-           MOVE    PTNYUINRRK-TENNYUYMD
+           IF    ( PTNYUINRRK-TAIINYMD    =    "99999999" )
+               MOVE    PTNYUINRRK-TENNYUYMD
                                    TO  ORC-DBYMD
+           ELSE
+               MOVE    PTNYUINRRK-TAIINYMD
+                                   TO  ORC-DBYMD
+           END-IF
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタ検索処理
@@ -643,7 +648,8 @@
            INITIALIZE  SYSKANRI-REC
            MOVE    "5013"          TO  SYS-KANRICD
            MOVE    WRK-KBNCD       TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    PTNYUINRRK-TAIINYMD
+                                   TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
