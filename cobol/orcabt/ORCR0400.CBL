@@ -62,7 +62,7 @@
       *
        FD  RECE401-FILE.
        01  RECE401-REC. 
-           COPY    "CPRCF040.INC"  REPLACING  //RECE01//
+           COPY    "CPRCF040.INC"  REPLACING  //RECE40//
                                    BY         //RECE401//.
 006900*    エラーファイル
        FD  RECEERR-FILE.

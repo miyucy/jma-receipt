@@ -965,7 +965,7 @@
                PERFORM    TENSU-TBL-SEC
                IF      TNS-SRYKBN         =     "80"
                    IF  TNS-GAITENTTLKBN   =     130
-                       MOVE   '13'        TO    RECE04-SRYKBN
+                       MOVE   "13"        TO    RECE04-SRYKBN
                                                 RECE05-SRYKBN
                    END-IF
                END-IF
