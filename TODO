@@ -8,5 +8,7 @@
   CPHOMEDIR.INC に(もしくは新しいCOPY句を作成して) SCRIPTS, SCREEN, 
   FORM, RECORD....を追加し、そこから取得するように変更する。
 
-* OpenCOBOL 0.11 対応
+* OpenCOBOL 0.12 対応
   (http://open-cobol.sourceforge.net/)
+
+* site-upgrade で etc をコピーしないようにする。
