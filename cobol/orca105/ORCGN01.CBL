@@ -543,7 +543,6 @@
            MOVE    1                TO  SPA-GMN-CUR
       *
            MOVE    N01-HKNJANUM     TO  SPA-GMN-HKNJANUM
-      * 
       *
            MOVE    ZERO             TO  SPA-HKNJANUM-LEN
            PERFORM    VARYING   IDX   FROM    1   BY  1
@@ -551,18 +550,122 @@
                       OR       (SPA-GMN-HKNJANUM(IDX:1)  =   SPACE)
                ADD     1                 TO  SPA-HKNJANUM-LEN
            END-PERFORM
+      *    存在チェック
+           MOVE    SPACE               TO  HKNJAINF-REC
+           INITIALIZE                      HKNJAINF-REC
+           MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+           MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
+           MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+           PERFORM 900-HKNJAINF-INV-SEC
+           IF      FLG-HKNJAINF        =   ZERO
+               PERFORM 41001-HKNJA-HEN-SEC
+           ELSE
+               PERFORM 41002-HKNJA-ADD-SEC
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41003-HKNJANUM-INIT-SEC
+               MOVE    2                   TO  SPA-GMN-CUR
+           END-IF
+           .
+      *
+       4100-HKNJANUM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険者番号更新編集処理
+      *****************************************************************
+       41001-HKNJA-HEN-SEC       SECTION.
+      *
+           MOVE    1                   TO  SPA-NAI-UPDFLG 
+           MOVE    HKNJA-HKNJANAME     TO  SPA-GMN-HKNJANAME
+           MOVE    HKNJA-HKNJANAME-TAN1
+                                           TO  SPA-GMN-HKNJANAMETAN1
+           MOVE    HKNJA-HKNJANAME-TAN2
+                                           TO  SPA-GMN-HKNJANAMETAN2
+           MOVE    HKNJA-HKNJANAME-TAN3
+                                           TO  SPA-GMN-HKNJANAMETAN3
+           MOVE    HKNJA-HKNNUM        TO  SPA-GMN-HKNNUM
+           MOVE    HKNJA-POST          TO  SPA-GMN-POST
+           MOVE    HKNJA-ADRS          TO  SPA-GMN-ADRS
+           MOVE    HKNJA-BANTI         TO  SPA-GMN-BANTI
+           MOVE    HKNJA-TEL           TO  SPA-GMN-TEL
+           MOVE    HKNJA-KIGO          TO  SPA-GMN-KIGO
+           MOVE    HKNJA-IDOKBN        TO  SPA-GMN-IDOKBN
+      *
+           MOVE    HKNJA-IDOYMD        TO  SPA-NAI-IDOYMD
+           MOVE    SPA-NAI-IDOYMD      TO  WRK-SYMD
+           PERFORM 5002-HIZUKE-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-IDOYMD
+      *----(02.01.01)--ADD-START---
+           IF        ( HKNJA-HKNNUM    =   "060" )
+               AND   ( SPA-HKNJANUM-LEN    =   6 )
+               AND   ( SPA-GMN-HKNJANUM(3:1)   =   "3" )
+      *        本人外来給付割合
+               EVALUATE    HKNJA-HON-GAIKYURATE
+                   WHEN    080
+                       MOVE    "1"         TO  SPA-GMN-HGKYURATE
+                   WHEN    090
+                       MOVE    "2"         TO  SPA-GMN-HGKYURATE
+                   WHEN    100
+                       MOVE    "3"         TO  SPA-GMN-HGKYURATE
+                   WHEN    OTHER
+                       MOVE    "0"         TO  SPA-GMN-HGKYURATE
+               END-EVALUATE
+      *        本人入院給付割合
+               EVALUATE    HKNJA-HON-NYUKYURATE
+                   WHEN    080
+                       MOVE    "1"         TO  SPA-GMN-HNKYURATE
+                   WHEN    090
+                       MOVE    "2"         TO  SPA-GMN-HNKYURATE
+                   WHEN    100
+                       MOVE    "3"         TO  SPA-GMN-HNKYURATE
+                   WHEN    OTHER
+                       MOVE    "0"         TO  SPA-GMN-HNKYURATE
+               END-EVALUATE
+      *        家族外来給付割合
+               EVALUATE    HKNJA-KZK-GAIKYURATE
+                   WHEN    080
+                       MOVE    "1"         TO  SPA-GMN-KGKYURATE
+                   WHEN    090
+                       MOVE    "2"         TO  SPA-GMN-KGKYURATE
+                   WHEN    100
+                       MOVE    "3"         TO  SPA-GMN-KGKYURATE
+                   WHEN    OTHER
+                       MOVE    "0"         TO  SPA-GMN-KGKYURATE
+               END-EVALUATE
+      *        家族入院給付割合
+               EVALUATE    HKNJA-KZK-NYUKYURATE
+                   WHEN    080
+                       MOVE    "1"         TO  SPA-GMN-KNKYURATE
+                   WHEN    090
+                       MOVE    "2"         TO  SPA-GMN-KNKYURATE
+                   WHEN    100
+                       MOVE    "3"         TO  SPA-GMN-KNKYURATE
+                   WHEN    OTHER
+                       MOVE    "0"         TO  SPA-GMN-KNKYURATE
+               END-EVALUATE
+           END-IF
+      *----(02.01.019--ADD-END-----
+           .
+      *
+       41001-HKNJA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険者番号新規チェック処理
+      *****************************************************************
+       41002-HKNJA-ADD-SEC       SECTION.
       *
            IF      SPA-HKNJANUM-LEN =   4   OR  6  OR  8
                CONTINUE
            ELSE         
                MOVE    "0001"          TO  SPA-ERRCD
-               GO  TO               4100-HKNJANUM-CHK-EXT
+               GO  TO               41002-HKNJA-ADD-EXT
            END-IF
       *
            IF  SPA-GMN-HKNJANUM (1:SPA-HKNJANUM-LEN)
                                       IS  NOT NUMERIC
                MOVE    "0001"         TO  SPA-ERRCD
-               GO  TO                 4100-HKNJANUM-CHK-EXT
+               GO  TO                 41002-HKNJA-ADD-EXT
            END-IF
       *
       *    入力された保険者番号をセットすれば、サブプロ内で
@@ -576,90 +679,12 @@
                CALL    "ORCSCHKDGT"       USING   LNK-CHKDGT-AREA
                IF      LNK-O-ERRCD      NOT =   ZERO
                    MOVE    "0002"       TO  SPA-ERRCD
-                   GO  TO               4100-HKNJANUM-CHK-EXT
                END-IF
            END-IF
       *
-           MOVE    SPACE               TO  HKNJAINF-REC
-           INITIALIZE                      HKNJAINF-REC
-           MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
-           MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
-           MOVE    HKNJAINF-REC        TO  MCPDATA-REC
-           PERFORM 900-HKNJAINF-INV-SEC
-           IF      FLG-HKNJAINF        =   ZERO
-               MOVE    1                   TO  SPA-NAI-UPDFLG 
-               MOVE    HKNJA-HKNJANAME     TO  SPA-GMN-HKNJANAME
-               MOVE    HKNJA-HKNJANAME-TAN1
-                                           TO  SPA-GMN-HKNJANAMETAN1
-               MOVE    HKNJA-HKNJANAME-TAN2
-                                           TO  SPA-GMN-HKNJANAMETAN2
-               MOVE    HKNJA-HKNJANAME-TAN3
-                                           TO  SPA-GMN-HKNJANAMETAN3
-               MOVE    HKNJA-HKNNUM        TO  SPA-GMN-HKNNUM
-               MOVE    HKNJA-POST          TO  SPA-GMN-POST
-               MOVE    HKNJA-ADRS          TO  SPA-GMN-ADRS
-               MOVE    HKNJA-BANTI         TO  SPA-GMN-BANTI
-               MOVE    HKNJA-TEL           TO  SPA-GMN-TEL
-               MOVE    HKNJA-KIGO          TO  SPA-GMN-KIGO
-               MOVE    HKNJA-IDOKBN        TO  SPA-GMN-IDOKBN
-      *
-               MOVE    HKNJA-IDOYMD        TO  SPA-NAI-IDOYMD
-               MOVE    SPA-NAI-IDOYMD      TO  WRK-SYMD
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYMDG         TO  SPA-GMN-IDOYMD
-      *----(02.01.01)--ADD-START---
-               IF        ( HKNJA-HKNNUM    =   "060" )
-                   AND   ( SPA-HKNJANUM-LEN    =   6 )
-                   AND   ( SPA-GMN-HKNJANUM(3:1)   =   "3" )
-      *            本人外来給付割合
-                   EVALUATE    HKNJA-HON-GAIKYURATE
-                   WHEN    080
-                       MOVE    "1"         TO  SPA-GMN-HGKYURATE
-                   WHEN    090
-                       MOVE    "2"         TO  SPA-GMN-HGKYURATE
-                   WHEN    100
-                       MOVE    "3"         TO  SPA-GMN-HGKYURATE
-                   WHEN    OTHER
-                       MOVE    "0"         TO  SPA-GMN-HGKYURATE
-                   END-EVALUATE
-      *            本人入院給付割合
-                   EVALUATE    HKNJA-HON-NYUKYURATE
-                   WHEN    080
-                       MOVE    "1"         TO  SPA-GMN-HNKYURATE
-                   WHEN    090
-                       MOVE    "2"         TO  SPA-GMN-HNKYURATE
-                   WHEN    100
-                       MOVE    "3"         TO  SPA-GMN-HNKYURATE
-                   WHEN    OTHER
-                       MOVE    "0"         TO  SPA-GMN-HNKYURATE
-                   END-EVALUATE
-      *            家族外来給付割合
-                   EVALUATE    HKNJA-KZK-GAIKYURATE
-                   WHEN    080
-                       MOVE    "1"         TO  SPA-GMN-KGKYURATE
-                   WHEN    090
-                       MOVE    "2"         TO  SPA-GMN-KGKYURATE
-                   WHEN    100
-                       MOVE    "3"         TO  SPA-GMN-KGKYURATE
-                   WHEN    OTHER
-                       MOVE    "0"         TO  SPA-GMN-KGKYURATE
-                   END-EVALUATE
-      *            家族入院給付割合
-                   EVALUATE    HKNJA-KZK-NYUKYURATE
-                   WHEN    080
-                       MOVE    "1"         TO  SPA-GMN-KNKYURATE
-                   WHEN    090
-                       MOVE    "2"         TO  SPA-GMN-KNKYURATE
-                   WHEN    100
-                       MOVE    "3"         TO  SPA-GMN-KNKYURATE
-                   WHEN    OTHER
-                       MOVE    "0"         TO  SPA-GMN-KNKYURATE
-                   END-EVALUATE
-               END-IF
-      *----(02.01.019--ADD-END-----
-           ELSE
-               MOVE    ZERO                TO  SPA-NAI-UPDFLG
-               MOVE    SPACE               TO  SPA-GMN-KOUMOKU
+           MOVE    ZERO                TO  SPA-NAI-UPDFLG
+           MOVE    SPACE               TO  SPA-GMN-KOUMOKU
+           IF      SPA-ERRCD           =   SPACE
                EVALUATE    SPA-HKNJANUM-LEN
                    WHEN    4
                        MOVE    "001"           TO  SPA-GMN-HKNNUM
@@ -677,7 +702,7 @@
                            MOVE    "027"           TO  SPA-GMN-HKNNUM
                            MOVE    "老人保健"      TO  SPA-GMN-HKNNUMNM
                            MOVE    2               TO  SPA-GMN-CUR
-                           GO  TO  4100-HKNJANUM-CHK-EXT
+      ******************** GO  TO  4100-HKNJANUM-CHK-EXT
                        ELSE
                           INITIALIZE                  HKNNUM-REC
                           MOVE    SPA-HOSPID          TO  HKN-HOSPID
@@ -692,10 +717,18 @@
                               MOVE    HKN-HKNNUM      TO  SPA-GMN-HKNNUM
                           END-IF      
                        END-IF       
-               END-EVALUATE                
+               END-EVALUATE
            END-IF
+           .
+       41002-HKNJA-ADD-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険者番号共通編集処理
+      *****************************************************************
+       41003-HKNJANUM-INIT-SEC       SECTION.
+      *
       *    保険番号
-           IF      SPA-GMN-HKNNUM      NOT =   SPACE        
+           IF      SPA-GMN-HKNNUM      NOT =   SPACE
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       SPA-GMN-HKNIDX
                    IF      SPA-GMN-HKNNUM      =   SPA-GMN-HKNNUML (IDX)
@@ -781,9 +814,9 @@
            END-IF       
       *----(02.01.01)--ADD-END-----
       *
-           MOVE    2                  TO  SPA-GMN-CUR
            .
-       4100-HKNJANUM-CHK-EXT.
+      *
+       41003-HKNJANUM-INIT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1614,10 +1647,11 @@
                        ","   HKNJA-HKNJANUM
       *
                MOVE    "1001"                  TO  SPA-ERRCD
-               GO  TO  490-KOUSHIN-EXT
            END-IF
       *
-           PERFORM 310-SPASET-SEC 
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 310-SPASET-SEC 
+           END-IF
            .
        490-KOUSHIN-EXT.
            EXIT.
