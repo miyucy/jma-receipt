@@ -1,5 +1,8 @@
 I20	{
 	fixed6	{
+		B04	{
+			state	int;
+		};
 		PTNUM	{
 			value	varchar(20);
 		};

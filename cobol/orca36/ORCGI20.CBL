@@ -139,7 +139,7 @@
       *
                05  SPA-NAI-TBL.
                    07  SPA-NAI-TBLO            OCCURS   200.
-                       09  SPA-NAI-TPTID       PIC X(10).
+                       09  SPA-NAI-TPTID       PIC 9(10).
                        09  SPA-NAI-TBIRTHDAY   PIC 9(08).
                        09  SPA-NAI-TNYUINYMD   PIC X(08).
                        09  SPA-NAI-TTAIINYMD   PIC X(08).
@@ -174,6 +174,7 @@
            03  IDX1                PIC 9(04). 
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
+           03  IDX4                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -292,6 +293,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    入院患者照会サブ
+           COPY    "CPI2SUB01.INC".
       *
       *   保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
@@ -424,12 +428,27 @@
            END-IF
       *
            EVALUATE    SPA-MOTOPG
-               WHEN    "I2ID1"
+           WHEN    "I2ID1"
                    PERFORM 330-I2ID1-SET-SEC
                    GO  TO  300-SCREEN-EXT
-               WHEN    "I21"
+           WHEN    "I21"
                    MOVE    ZERO            TO  SPA-GMN-SELNUM
                    GO  TO  300-SCREEN-EXT
+      *
+      *    入院会計照会画面
+           WHEN    "I01"
+      *
+      *        退避しておいたＳＰＡの内容を元に戻す
+               INITIALIZE                  I2SUB01-LNK
+               MOVE    SPA-TERMID      TO  I2SUB01-TERMID
+               MOVE    "I"             TO  I2SUB01-KBN
+               CALL    "ORCGI2SUB01"   USING   I2SUB01-LNK
+      *
+               MOVE    I2SUB01-SCRSPA-AREA
+                                       TO  SPA-I20-AREA
+               MOVE    I2SUB01-COMMON  TO  SPA-I2KYOUTU
+      *
+               GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
@@ -637,6 +656,9 @@
       *    詳細画面
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 440-SYOSAI-SEC
+      *    詳細画面
+               WHEN    "CLICKED"       ALSO    "B05"
+                   PERFORM 440-I01-SENI-SEC
       *    予約登録へ
       ****     WHEN    "CLICKED"       ALSO    "B10"
       ****         PERFORM 480-YOYAKU-SEC
@@ -802,7 +824,6 @@
            MOVE    I20-BTUNUM          TO  SPA-GMN-BTUNUM-G
            MOVE    I20-JOTAI           TO  SPA-GMN-JOTAI-G
            MOVE    I20-CHKTESTPT       TO  SPA-GMN-CHKTESTPT
-           DISPLAY "I20-CHKTESTPT = " I20-CHKTESTPT
       *
       *****MOVE    I20-SELNUM          TO  SPA-GMN-SELNUM
            .
@@ -1453,6 +1474,15 @@
       *****************************************************************
        440-SYOSAI-SEC                   SECTION.
       *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+      *    選択番号チェック
+           PERFORM 400-SELNUM-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  440-SYOSAI-EXT
+           END-IF
+      *
       *    選択されていないとき
            IF      SPA-GMN-SELNUM      =   ZERO
                MOVE    "0201"              TO  SPA-ERRCD
@@ -1527,11 +1557,71 @@
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                    TO  FLG-END              
+           MOVE    1                   TO  FLG-END              
            .
        440-SYOSAI-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入退院登録画面へ
+      *****************************************************************
+       440-I01-SENI-SEC                SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+      *    選択番号チェック
+           PERFORM 400-SELNUM-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  440-I01-SENI-EXT
+           END-IF
+      *
+      *    選択されていないとき
+           IF      SPA-GMN-SELNUM      =   ZERO
+               MOVE    "0201"              TO  SPA-ERRCD
+               MOVE    12                  TO  SPA-GMN-CUR
+               GO  TO  440-I01-SENI-EXT
+           END-IF
+      *
+           MOVE    SPA-GMN-SELNUM          TO  IDX4
+      *
+           INITIALIZE                      SPA-KYOTUKEY
+                                           SPA-KYOTU-SET
+      *
+           MOVE    SPA-GMN-TPTNUM  (IDX4)
+                                           TO  SPA-PTNUM
+           MOVE    SPA-NAI-TPTID   (IDX4)
+                                           TO  SPA-PTID
+      *
+      *    ＳＰＡの内容を退避
+           INITIALIZE                  I2SUB01-LNK
+           MOVE    SPA-TERMID          TO  I2SUB01-TERMID
+           MOVE    "O"                 TO  I2SUB01-KBN
+           MOVE    SPA-I20-AREA        TO  I2SUB01-SCRSPA-AREA
+           MOVE    SPA-I2KYOUTU        TO  I2SUB01-COMMON
+      *
+           CALL    "ORCGI2SUB01"       USING   I2SUB01-LNK
+      *
+      *    入退院登録画面へ遷移する
+           MOVE    "I20"               TO  SPA-MOTOPG
+           MOVE    "I01"               TO  SPA-SAKIPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-I2KYOUTU        TO  SPA-WORK
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-I20-AREA        TO  LNK-SCRSPA
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
+           MOVE   "I01"                TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       440-I01-SENI-EXT.
+           EXIT.
       *****************************************************************
       *    検索前処理
       *****************************************************************
@@ -1842,6 +1932,7 @@
            MOVE    IDX             TO  SPA-GMN-MAX
       *
            MOVE    IDX             TO  SPA-GMN-TRENNUM (IDX) 
+           MOVE    I001-PTID       TO  SPA-NAI-TPTID   (IDX) 
            INITIALIZE                  ORCSPTIDAREA
            MOVE    SPA-HOSPID      TO  SPTID-HOSPID
            MOVE    I001-PTID       TO  SPTID-PTID
@@ -2097,6 +2188,9 @@
                END-PERFORM
                MOVE    SPA-GMN-MAX         TO  I20-COUNT   
            END-IF                  
+      *
+      *    暫定定期に詳細ボタンを非活性にする
+           MOVE    WIDGET-INSENSITIVE      TO  I20-B04-STATE
       *         
            PERFORM 5001-MAPCUR-SEC
       *

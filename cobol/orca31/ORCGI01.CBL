@@ -654,6 +654,36 @@
                PERFORM 330-P02-SET-SEC
       *
                GO  TO  300-SCREEN-EXT
+      *
+      *    入院患者照会画面
+           WHEN    "I20"
+      *
+               PERFORM 310-SPASET-SEC
+               MOVE    SPA-MOTOPG      TO  SPA-I0-MOTOPG
+      *
+               MOVE    SPA-PTID        TO  SPA-NAI-I01-PTID
+               MOVE    SPA-PTNUM       TO  SPA-GMN-I01-PTNUM
+               PERFORM 4101-PTINF-SELECT-SEC
+               IF    ( SPA-ERRCD   =   SPACE )
+      *            照会として表示
+                   MOVE    SPA-GMN-I01-B07-STT
+                                   TO  WRK-WIDGET-B07-STT
+                   MOVE    SPA-GMN-I01-B08-STT
+                                   TO  WRK-WIDGET-B08-STT
+                   MOVE    "04"        TO  WRK-CMB-CD
+                   PERFORM 4103-CMB-SYORIKBN-SRH-SEC
+                   MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SYORIKBN
+                   PERFORM 4201-WIDGET-INSENSITIVE-SEC
+                   MOVE    WRK-WIDGET-B07-STT
+                                   TO  SPA-GMN-I01-B07-STT
+                   MOVE    WRK-WIDGET-B08-STT
+                                   TO  SPA-GMN-I01-B08-STT
+               END-IF
+      *
+               INITIALIZE                  SPA-ERRCD
+                                           SPA-I0IDCD
+                                           SPA-I0IDCD2
+               GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
@@ -4715,7 +4745,13 @@
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
-           MOVE    "M01"               TO  SPA-SAKIPG
+           EVALUATE    SPA-I0-MOTOPG
+           WHEN    "I20"
+               MOVE    SPA-I0-MOTOPG   TO  SPA-SAKIPG
+           WHEN    OTHER
+               MOVE    "M01"           TO  SPA-SAKIPG
+           END-EVALUATE
+      *
            MOVE    "I01"               TO  SPA-MOTOPG
       *
            MOVE    SPACE               TO  LINKAREA
