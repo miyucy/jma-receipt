@@ -32,6 +32,7 @@
       * 01.00.03     NACL-藤原    03/02/28  診療科４０に変更
       * 01.00.04     NACL-藤原    03/10/27  入退院歴より入外区分を編集
       * 01.00.05     NACL-藤原    04/04/26  更新日編集
+      * 01.00.06     NACL-藤原    04/05/06  アフターケア日の表示修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -74,6 +75,7 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDH                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -163,6 +165,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    保険組合せセット領域
+           COPY    "CPORCSHKNSET.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -410,59 +415,36 @@
            MOVE    ZERO                TO  SPA-C07-HKNMAX
            MOVE    ZERO                TO  FLG-HKNCOMBICHK
       *
-      *    保険組合マスター編集
-           MOVE    SPACE               TO  HKNCOMBI-REC
-           INITIALIZE                  HKNCOMBI-REC
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID
-           MOVE    SPA-NAI-C02-PTID    TO  COMB-PTID
+           MOVE    SPA-C07-SRYYMS      TO  SPA-SRYYMD(1:6)
+           MOVE    "00"                TO  SPA-SRYYMD(7:2)
+           MOVE    SPA-NAI-C02-PTID    TO  SPA-PTID
       *
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-               PERFORM 910-HKNCOMBI-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-HKNCOMBI
-               INITIALIZE                  HKNCOMBI-REC
-           END-IF
-           PERFORM
-                   UNTIL      (FLG-HKNCOMBI        =   1      )
+           INITIALIZE                  ORCSHKNSETAREA
+           MOVE    "1"                 TO  ORCSHKN-KBN
+           MOVE    SPACE               TO  ORCSHKN-KBN2
+           CALL    "ORCSHKNSET"        USING
+                                       SPA-AREA
+                                       ORCSHKNSETAREA
       *
-      *        対象の保険組合せのみ編集
-               MOVE    ZERO                TO  FLG-HKNCOMBICHK
-               IF      COMB-DELKBN         =   "1"
-                   CONTINUE
-               ELSE
-                   IF      (SPA-C07-SRYYMS >=  COMB-TEKSTYMD(1:6)) AND
-                           (SPA-C07-SRYYMS <=  COMB-TEKEDYMD(1:6))
-                       MOVE    1                   TO  FLG-HKNCOMBICHK
-                   END-IF
-               END-IF
+           MOVE    ORCSHKN-HKN-MAX     TO  SPA-C07-HKNMAX
       *
-               IF      FLG-HKNCOMBICHK    =    1
-                   ADD     1                   TO  SPA-C07-HKNMAX
-                   MOVE    COMB-HKNCOMBINUM    TO  SPA-C07-THKNCOMBINUM
-                                                  (SPA-C07-HKNMAX)
-                   PERFORM 31011-HKNCOMBI-HEN-SEC
-                   MOVE    WRK-HKNCOMBIMEI     TO  SPA-C07-THKNCOMBIMEI
-                                                  (SPA-C07-HKNMAX)
-               END-IF
+           MOVE    ZERO                TO  IDH
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL      (IDX     >   ORCSHKN-HKN-MAX )  OR
+                              (IDH     >=  10              )
+               ADD     1                   TO  IDH
+               MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
+                                           TO  SPA-C07-THKNCOMBINUM
+                                                                (IDH)
+               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
+                                           TO  SPA-C07-THKNCOMBIMEI
+                                                               (IDH)
+               MOVE    ORCSHKN-NAI-RSI-HKNKBN  (IDX)
+                                           TO  SPA-C07-RSI-THKNKBN
+                                                               (IDH)
       *
-               MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-               PERFORM 910-HKNCOMBI-READ-SEC
+               MOVE    IDH             TO  SPA-C07-HKNMAX
            END-PERFORM
-      *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
       *
            .
        3101-HKNCOMBI-HEN-EXT.
@@ -550,8 +532,8 @@
                    END-STRING
                END-IF
       *
-               MOVE    PTRSI-HKNKBN        TO  SPA-C07-RSI-THKNKBN
-                                                      (SPA-C07-HKNMAX)
+      *********MOVE    PTRSI-HKNKBN        TO  SPA-C07-RSI-THKNKBN
+      *********                                       (SPA-C07-HKNMAX)
            END-IF
       *
            .
@@ -741,6 +723,10 @@
       *****************************************************************
        314-SYOKI-SEC             SECTION.
       *
+           INITIALIZE                  SPA-C07-JYURRK-LIST
+           MOVE    ZERO                TO  SPA-C07-RRKMAX
+           MOVE    ZERO                TO  SPA-C07-JYURRKNUM
+      *
       *    保険組合せの再編集
            INITIALIZE                  WRK-C07-HKNCOMB-COMB
            MOVE    ZERO                TO  WRK-C07-HKNMAX
@@ -854,6 +840,7 @@
                                        TO  JYURRK-HKNCOMBINUM
       *****MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN                            
            MOVE    SPA-C07-NYUGAIKBN   TO  JYURRK-NYUGAIKBN                            
+           MOVE    SPA-C07-SRYKA       TO  JYURRK-SRYKA
            IF      SPA-C07-SRYKA      =   "00"
                MOVE    "JYURRK-KEY17"      TO  WRK-DBPATH
            ELSE
@@ -1373,7 +1360,20 @@
            IF      FLG-OK              =   ZERO
                MOVE    "0001"              TO  SPA-ERRCD
            ELSE
-               MOVE    3                   TO  SPA-C07-CUR
+      *        労災保険区分がアフターケアの時、履歴日を表示する
+               IF      SPA-C07-RSI-HKNKBN =   "3"
+                   PERFORM 31401-AFTER-JYURRK-SEC
+                   IF      SPA-C07-RRKMAX     =   ZERO
+                       MOVE    "0012"              TO  SPA-ERRCD
+                       GO      TO      400-SRYKA-EXT
+                   END-IF
+                   MOVE    9                   TO  SPA-C07-CUR
+               ELSE
+                   INITIALIZE                  SPA-C07-JYURRK-LIST
+                   MOVE    ZERO                TO  SPA-C07-RRKMAX
+                   MOVE    ZERO                TO  SPA-C07-JYURRKNUM
+                   MOVE    3                   TO  SPA-C07-CUR
+               END-IF
            END-IF
       *
            .
@@ -1389,6 +1389,7 @@
            MOVE    C07-HKNCOMBI       TO  SPA-C07-HKNCOMBI-G
       *
            MOVE    ZERO                TO  FLG-OK
+           MOVE    SPACE               TO  SPA-C07-RSI-HKNKBN
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL      IDX      >   SPA-C07-HKNMAX
                IF      SPA-C07-HKNCOMBINUM    =
