@@ -821,6 +821,12 @@
                MOVE    "0005"          TO  SPA-ERRCD
            ELSE
                MOVE    KANACHK-MAX     TO  WRK-CNT
+      *        間に空白がある時、エラー
+               IF      KANACHK-RC2     NOT =   ZERO
+                   MOVE    "0010"          TO  SPA-ERRCD
+                   GO      TO      41020-INPUTCD-CHK-EXT
+               END-IF
+      *
       *        全角
                IF      KANACHK-SYUBETU     =   2
                    MOVE    1               TO  FLG-KANJI
@@ -844,62 +850,6 @@
                END-IF
            END-IF
       *
-      ***  PERFORM VARYING     IDY     FROM    1   BY  1
-      *            UNTIL       IDY         >   20
-      *        IF      WRK-INPUTCD (IDY:1)     =   SPACE
-      *            CONTINUE
-      *        ELSE
-      *            ADD     1                   TO  WRK-CNT
-      *
-      *            漢字チェック
-      *            IF      WRK-INPUTCD (IDY:1)     >=  X"A1"
-      *                MOVE    1               TO  FLG-KANJI
-      *            ELSE
-      *            数字チェック
-      *                IF     (WRK-INPUTCD (IDY:1)
-      *                                       IS  ALPHABETIC  )  OR
-      *                       (WRK-INPUTCD (IDY:1)
-      *                                       IS  NUMERIC     )
-      *                    MOVE    1          TO  FLG-SUJI
-      *                ELSE
-      *                    MOVE    1          TO  FLG-KANA
-      *                END-IF
-      *            END-IF
-      *        END-IF
-      *    END-PERFORM
-      *
-      *    漢字入力
-      *    IF      FLG-KANJI           =   1
-      *        IF    ( FLG-KANA        =   ZERO  )  AND
-      *              ( FLG-SUJI        =   ZERO  )  AND
-      *              ( WRK-CNT         <=   10   )
-      *            CONTINUE
-      *        ELSE
-      *            MOVE    "0004"              TO  SPA-ERRCD
-      *        END-IF
-      *    END-IF
-      *
-      *    数字入力
-      *    IF      FLG-SUJI            =   1
-      *        IF      FLG-KANJI       =   ZERO
-      *            IF      WRK-CNT         <   4   OR   >   6
-      *                IF      WRK-INPUTCD (1:1)
-      *                                        IS  ALPHABETIC
-      *                    IF      WRK-INPUTCD (1:1)
-      *                                            =   "S"   OR  "P"
-      *                        MOVE    "0007"      TO  SPA-ERRCD
-      *                    END-IF
-      *                ELSE
-      *                    MOVE    "0006"              TO  SPA-ERRCD
-      *                END-IF
-      *            END-IF
-      *        ELSE
-      *            MOVE    "0005"              TO  SPA-ERRCD
-      *        END-IF
-      *    END-IF
-      *    IF      WRK-INPUTCD (1:1)   =   "S"   OR  "P"
-      *        MOVE    "0007"      TO  SPA-ERRCD
-      *****END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41020-INPUTCD-CHK-EXT
@@ -1263,6 +1213,14 @@
                        MOVE    IDX                 TO  SPA-K023-MAP
                    END-IF
                END-IF
+      *        画面表示コードが１０文字以上をエラーとする
+               IF     (SPA-K023-INPUTCD (IDX 1)  NOT =   SPACE)  AND
+                      (SPA-K023-INPUTCD (IDX 1)(11:)
+                                                 NOT =   SPACE )
+                   MOVE    "0011"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-K023-CUR
+                   MOVE    IDX                 TO  SPA-K023-MAP
+               END-IF
            END-PERFORM
            .
        230-INPUT-ALL-EXT.
@@ -1496,6 +1454,14 @@
                    MOVE
                    "表示入力コードに全角１文字の数字は使用できません"
                                                  TO  SPA-ERRMSG
+               WHEN    "0010"
+                   MOVE    "文字の間に空白は入力できません。"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0011"
+                   MOVE    "表示入力コードは半角１０文字、"
+                                                 TO  SPA-ERRMSG
+                   MOVE    "全角５文字までにして下さい。"
+                                                 TO  SPA-ERRMSG(31:)
            END-EVALUATE
       *
       *

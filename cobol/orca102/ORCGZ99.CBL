@@ -393,6 +393,14 @@
                    MOVE    01              TO  SPA-Z99GMN-IDX
                END-IF
            END-IF
+      *    画面表示コードが１０文字以上をエラーとする
+           IF     (SPA-Z99GMN-INPUTCD(1)   NOT =   SPACE )  AND
+                  (SPA-Z99GMN-INPUTCD(1)(11:)
+                                           NOT =   SPACE )
+               MOVE    "0013"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-Z99GMN-CUR
+               MOVE    01                  TO  SPA-Z99GMN-IDX
+           END-IF
       *
            .
       *
@@ -485,6 +493,12 @@
                MOVE    "0007"          TO  SPA-ERRCD
            ELSE
                MOVE    KANACHK-MAX     TO  CNT-STRING
+      *        間に空白がある時、エラー
+               IF      KANACHK-RC2     NOT =   ZERO
+                   MOVE    "0012"          TO  SPA-ERRCD
+                   GO      TO      410111-INPUTCD-CHK-EXT
+               END-IF
+      *
       *        全角
                IF      KANACHK-SYUBETU     =   2
                    MOVE    1               TO  FLG-KANJI
@@ -985,6 +999,14 @@
                    MOVE
                    "表示入力コードに全角１文字の数字は使用できません"
                                                  TO  SPA-ERRMSG
+               WHEN    "0012"
+                   MOVE    "文字の間に空白は入力できません。"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0013"
+                   MOVE    "表示入力コードは半角１０文字、"
+                                                 TO  SPA-ERRMSG
+                   MOVE    "全角５文字までにして下さい。"
+                                                 TO  SPA-ERRMSG(31:)
            END-EVALUATE.
       *
            MOVE    SPACE               TO  ZERR
