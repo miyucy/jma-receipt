@@ -242,6 +242,8 @@
            03  FLG-GAITENTTLKBN        PIC 9(03).
            03  FLG-TBLMAX              PIC 9(01).
            03  FLG-SRYSYUKBN721        PIC 9(01).
+           03  FLG-SRYSYUKBN700        PIC 9(01).
+           03  FLG-SRYKBN70-TEIGEN     PIC 9(01).
            03  FLG-KENSA-KASAN         PIC 9(01).
            03  FLG-KENSA-TEIGEN        PIC 9(01).
            03  FLG-SET                 PIC 9(01).
@@ -481,6 +483,12 @@
        01  WRK-721-RECE05-REC.
            COPY    "CPRCF005.INC"  REPLACING  //RECE05//
                                    BY         //WRK-721-RECE05//.
+       01  WRK-700-RECE05-REC.
+           COPY    "CPRCF005.INC"  REPLACING  //RECE05//
+                                   BY         //WRK-700-RECE05//.
+       01  WRK-SRYKBN70-RECE05-REC.
+           COPY    "CPRCF005.INC"  REPLACING  //RECE05//
+                                   BY         //WRK-SRYKBN70-RECE05//.
       *    À¸ÂÎ¸¡ºº¡¦²Ã»»ÍÑÂàÈò¥¨¥ê¥¢
        01  WRK-KASAN-RECE05-REC.
            COPY    "CPRCF005.INC"  REPLACING  //RECE05//
@@ -589,6 +597,9 @@
       *
       *    ¸¡ººÄþ¸º
            03  WRK-CONS-KENSA-TEIGEN  PIC X(09)   VALUE   "160000190".
+      *    ´ÖÀÜ»£±Æ¤Î£µ£°¡óÄþ¸º
+           03  WRK-CONS-SRYKBN70-TEIGEN
+                                      PIC X(09)   VALUE   "170020570".
       *
       *    ²þ¹Ô¥³¡¼¥É
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -1821,6 +1832,9 @@
            INITIALIZE                      WRK-RECE05-REC
                                            WRK-KASAN-RECE05-REC
                                            WRK-TEIGEN-RECE05-REC
+                                           WRK-700-RECE05-REC
+                                           WRK-721-RECE05-REC
+                                           WRK-SRYKBN70-RECE05-REC
       *
            MOVE    ZERO                TO  WRK-ZAIWMAX
            MOVE    ZERO                TO  WRK-TBLMAX1
@@ -1832,6 +1846,8 @@
                                            FLG-KOKUJISKBKBN1
                                            FLG-GAITENTTLKBN
                                            FLG-SRYSYUKBN721
+                                           FLG-SRYSYUKBN700
+                                           FLG-SRYKBN70-TEIGEN
                                            FLG-KENSA-KASAN
                                            FLG-KENSA-TEIGEN
                                            WRK-SRYCD1-MAX
@@ -1906,10 +1922,25 @@
            END-PERFORM
       *
       *    ²èÁü¿ÇÃÇ¤Î¤È¤­½çÈÖ¤òÊÑ¤¨¤ë
+      *
            IF      FLG-SRYSYUKBN721    >   ZERO
                MOVE     FLG-SRYSYUKBN721   TO  IDX 
                MOVE    WRK-721-RECE05-REC  TO  RECE05-REC
                PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+      *
+               IF      FLG-SRYKBN70-TEIGEN >   ZERO
+                   MOVE     FLG-SRYKBN70-TEIGEN
+                                               TO  IDX 
+                   MOVE    WRK-SRYKBN70-RECE05-REC
+                                               TO  RECE05-REC
+                   PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+               END-IF
+      *
+               IF      FLG-SRYSYUKBN700    >   ZERO
+                   MOVE     FLG-SRYSYUKBN700   TO  IDX 
+                   MOVE    WRK-700-RECE05-REC  TO  RECE05-REC
+                   PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+               END-IF
            END-IF
       *
       *    À¸ÂÎ¸¡ºº¤È¤­½çÈÖ¤òÊÑ¤¨¤ë
@@ -2131,36 +2162,68 @@
            MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
            PERFORM 900-TENSU-READ-SEC
       *
-           IF      FLG-SRYSYUKBN721    >   ZERO
-               IF      TNS-SRYSYUKBN       =   "711"
-                   PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
-               END-IF
+           IF      TNS-SRYSYUKBN       =   "721"
                MOVE    RECE05-REC          TO  WRK-RECE05-REC
-               MOVE    IDX                 TO  IDW1
-               MOVE     FLG-SRYSYUKBN721   TO  IDX 
-               MOVE    WRK-721-RECE05-REC  TO  RECE05-REC
-               PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
-               MOVE    ZERO                TO  FLG-SRYSYUKBN721
-               INITIALIZE                  WRK-721-RECE05-REC
+               MOVE    IDX                 TO  IDW1 
+      *
+               IF      FLG-SRYSYUKBN721    >   ZERO
+                   MOVE     FLG-SRYSYUKBN721   TO  IDX 
+                   MOVE    WRK-721-RECE05-REC  TO  RECE05-REC
+                   PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+                   MOVE    ZERO                TO  FLG-SRYSYUKBN721
+                   INITIALIZE                  WRK-721-RECE05-REC
+      *
+                   IF      FLG-SRYKBN70-TEIGEN >   ZERO
+                       MOVE     FLG-SRYKBN70-TEIGEN
+                                               TO  IDX 
+                       MOVE    WRK-SRYKBN70-RECE05-REC
+                                               TO  RECE05-REC
+                       PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+                       MOVE    ZERO            TO  FLG-SRYKBN70-TEIGEN
+                       INITIALIZE              WRK-SRYKBN70-RECE05-REC
+                   END-IF
+      *
+                   IF      FLG-SRYSYUKBN700    >   ZERO
+                       MOVE     FLG-SRYSYUKBN700   TO  IDX 
+                       MOVE    WRK-700-RECE05-REC  TO  RECE05-REC
+                       PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+                       MOVE    ZERO                TO  FLG-SRYSYUKBN700
+                       INITIALIZE                  WRK-700-RECE05-REC
+                   END-IF
+               END-IF
+      *
                MOVE    WRK-RECE05-REC      TO  RECE05-REC
                MOVE    IDW1                TO  IDX
+      *
+               MOVE    IDX                 TO  FLG-SRYSYUKBN721
+               MOVE    RECE05-REC          TO WRK-721-RECE05-REC
            ELSE
-               IF      TNS-SRYSYUKBN       =   "721"
-                   MOVE    IDX             TO  FLG-SRYSYUKBN721
-                   MOVE    RECE05-REC      TO WRK-721-RECE05-REC
+               IF      TNS-SRYCD       =   WRK-CONS-SRYKBN70-TEIGEN
+                   MOVE    IDX         TO  FLG-SRYKBN70-TEIGEN
+                   MOVE    RECE05-REC  TO  WRK-SRYKBN70-RECE05-REC
+                   PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
                ELSE
-                   IF      RECE05-SRYCD (IDX)  =   WRK-CONS-KENSA-KASAN1
-                                               OR  WRK-CONS-KENSA-KASAN2
-                       MOVE    IDX             TO  FLG-KENSA-KASAN
-                       MOVE    RECE05-REC      TO  WRK-KASAN-RECE05-REC
+                   IF    ( TNS-SRYSYUKBN       =   "700" )
+                   AND   ( TNS-DATAKBN         =   "2"   )
+                       MOVE    IDX             TO  FLG-SRYSYUKBN700
+                       MOVE    RECE05-REC      TO WRK-700-RECE05-REC
                    ELSE
-                       IF      RECE05-SRYCD (IDX)  =
-                                               WRK-CONS-KENSA-TEIGEN
-                       MOVE    IDX             TO  FLG-KENSA-TEIGEN
-                       MOVE    RECE05-REC      TO  WRK-TEIGEN-RECE05-REC
-                   ELSE
-                       PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
-                   END-IF
+                       IF    ( RECE05-SRYCD (IDX)
+                                           =   WRK-CONS-KENSA-KASAN1
+                                           OR  WRK-CONS-KENSA-KASAN2 )
+                           MOVE    IDX         TO  FLG-KENSA-KASAN
+                           MOVE    RECE05-REC  TO  WRK-KASAN-RECE05-REC
+                       ELSE
+                           IF      RECE05-SRYCD (IDX)
+                                               =   WRK-CONS-KENSA-TEIGEN
+                               MOVE    IDX         TO  FLG-KENSA-TEIGEN
+                               MOVE    RECE05-REC  TO
+                                                   WRK-TEIGEN-RECE05-REC
+                           ELSE
+                               PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+                           END-IF
+                       END-IF
+                   END-IF    
                END-IF     
            END-IF
            .
