@@ -1,0 +1,25 @@
+KHELP	{
+	fixed32	{
+		INPUT	{
+			value	varchar(30);
+		};
+		HELP	{
+			value	varchar(2000);
+		};
+		SELNUM	{
+			value	number(4);
+		};
+		scrolledwindow26	{
+			MENULIST	{
+				count	int;
+				row 	int;
+				rowattr	int;
+				item	{
+					value0	varchar(5);
+					value1	varchar(30);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};
