@@ -284,9 +284,9 @@
       *
            IF      WRK-PARA-TEISYUTUSAKI   
                                        =   "1" 
-               MOVE    "SEIKYU-KEY3"       TO  WRK-PATH
+               MOVE    "SEIKYU-KEY23"      TO  WRK-PATH
            ELSE  
-               MOVE    "SEIKYU-KEY4"       TO  WRK-PATH
+               MOVE    "SEIKYU-KEY24"      TO  WRK-PATH
            END-IF
            PERFORM 900-SEIKYU-SELECT-SEC
            .
