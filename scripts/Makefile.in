@@ -62,6 +62,7 @@ filecheck:
 	find . \
 	-name "." -o \
 	-name "CVS" -prune -o \
+	-name "claim" -prune -o \
 	-name "Makefile*" -o \
 	-name ".cvsignore" -o \
 	-name "*.bak" -o \
