@@ -28,6 +28,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       * 00.00.01     NACL-¿¹ÏÆ    03/04/25  ½ÐÎÏ¾ò·ï½¤Àµ¡¢²ÊÌ¾¥»¥Ã¥ÈÊÑ¹¹
+      * 00.00.02     NACL-¿¹ÏÆ    03/09/29  ·«¤êÊÖ¤·½èÍý¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -448,6 +449,10 @@
       *        ¿ÇÎÅ²ÊÌÜÊÔ½¸
                PERFORM 900-SYS1005-DBFETCH-SEC
            END-PERFORM
+      *****(00.00.02)******ADD-START************
+      *    ¿ÇÎÅ²ÊÌÜÊÔ½¸
+           PERFORM 900-SYS1005-DBCLOSE-SEC
+      *****(00.00.02)******ADD-END**************
       *
            EVALUATE    CNT-SRYKA
                WHEN    1   THRU    6
@@ -465,6 +470,10 @@
                WHEN    42  THRU    48
                    MOVE    49          TO  CNT-MAX
            END-EVALUATE
+      *
+      *****(00.00.02)******ADD-START************
+           MOVE    "¹ç·×"      TO  WRK-TAI-NAIYO(CNT-MAX)
+      *****(00.00.02)******ADD-END**************
       *
            .
        210-MAIN-SRYKA-EXT.
@@ -500,9 +509,9 @@
                MOVE    ZERO                TO  WRK-DD
                PERFORM VARYING     IDX-D   FROM    1   BY   1
                        UNTIL       IDX-D   >   31
-                   IF      ACCT-DAY (1 IDX-D)  >   ZERO
-                       MOVE    IDX-D           TO  WRK-DD
-                       MOVE    31              TO  IDX-D
+                   IF          ACCT-DAY(1 IDX-D)   >   ZERO
+                       MOVE    IDX-D               TO  WRK-DD
+                       MOVE    31                  TO  IDX-D
                    END-IF
                END-PERFORM
       *        »»Äê¤¬¤¢¤ë»þÂÐ¾Ý
@@ -567,7 +576,7 @@
       *            ÅÀ¿ô¤¬¤¢¤ë»þ
                    PERFORM 240-MAIN-HEN-SEC
                ELSE
-      *            ±¡Æâ½èÊýÊ¬¡¢¼«Èñ¤ÏÂÐ¾Ý¤È¤¹¤ë
+      *            ½èÊý¤Î¤ß¡¢¼«Èñ¤ÏÂÐ¾Ý¤È¤¹¤ë
                    IF     (SRY-SRYSYUKBN       =   "213"  OR
                                                    "223"  OR
                                                    "233"  OR
@@ -874,24 +883,27 @@
                                        TO  HCMG001-TANI(CNT-LINE)
            END-PERFORM
       *
+      *****(00.00.02)******UPD-START************
       *    ¿ÇÎÅ²ÊÊÌÊÔ½¸
            PERFORM VARYING IDX         FROM    1   BY  1
                    UNTIL ( IDX         >   7 )
                    OR    ( IDZ         =   CNT-MAX )
                COMPUTE IDZ                 =   IDZ +   1
-      *        ²ÊÌ¾ÊÔ½¸
-               MOVE    WRK-TAI-NAIYO(IDZ)
-                                           TO  HCMG001-TAI-NAIYO(IDX)
-               IF      (IDZ            =   CNT-MAX )
-                   MOVE    "¹ç·×"          TO  HCMG001-TAI-NAIYO(IDX)
-               END-IF
-      *        ¿ôÎÌÊÔ½¸
-               PERFORM VARYING CNT-LINE    FROM    1   BY   1
-                       UNTIL ( CNT-LINE    >   35 )
-                   MOVE    WRK-NAI-NAIYO(CNT-LINE IDZ)
+      *
+               IF        ( IDZ         =   CNT-MAX )
+                   OR    ( IDZ         <=  CNT-SRYKA )
+      *            ²ÊÌ¾ÊÔ½¸
+                   MOVE    WRK-TAI-NAIYO(IDZ)
+                                       TO  HCMG001-TAI-NAIYO(IDX)
+      *            ¿ôÎÌÊÔ½¸
+                   PERFORM VARYING CNT-LINE    FROM    1   BY   1
+                           UNTIL ( CNT-LINE    >   35 )
+                       MOVE    WRK-NAI-NAIYO(CNT-LINE IDZ)
                                        TO  HCMG001-NAIYO(CNT-LINE IDX)
-               END-PERFORM
-          END-PERFORM
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *****(00.00.02)******UPD-END**************
       *
            .
        290-PRT-BODY-SET-EXT.
