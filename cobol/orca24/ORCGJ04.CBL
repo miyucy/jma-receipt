@@ -131,6 +131,7 @@
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
+           03  FLG-SYUNOU          PIC 9(01).
       *
            03  FLG-GMN             PIC 9(01).
            03  FLG-KANA            PIC 9(01).
@@ -171,6 +172,7 @@
            03  FLG-CHK-OK          PIC 9(01).
       *
            03  FLG-FIRUMU          PIC 9(01).
+           03  FLG-SYUNOU-ERR      PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -648,6 +650,9 @@
       *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
+      *    収納マスタ
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
       *
       *     パラメタテーブル
        01  PARA-REC.
@@ -2344,8 +2349,10 @@
            END-IF
       *    名称入力へのカーソル移動
            IF      WRK-IN-IDX          >   ZERO
-               IF      SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
-                                           =   "81"  OR  "83"
+               IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
+                                           =   "81"  OR  "83") OR
+                      (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
+                                           =   "0083"  )
                    MOVE    "3"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
                END-IF
            END-IF
@@ -2430,6 +2437,9 @@
                                                    =   "001" ) OR
                      ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
                                                    =   "84" ) AND
+                      (TNS-SSTKIJUNCDTBL(1)    NOT =   ZERO ))  OR
+                     ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:4)
+                                                   =   "0084") AND
                       (TNS-SSTKIJUNCDTBL(1)    NOT =   ZERO ))  OR
                      ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
                                                    =   "09500" OR
@@ -2551,20 +2561,26 @@
                                                        (SPA-GMN-IDX)
            END-IF
            IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  = "83" OR
-                                                         "84")
+                                                         "84")  OR
+                  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  = "0083" OR
+                                                         "0084")
                IF     (LNK-SC97-NYURYOKU   =   ZERO )  AND
                       (FLG-IN-ATAI         =   ZERO )  AND
-                      (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
-                                           = "83"   )
+                     ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
+                                           =   "83"   )  OR
+                      (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
+                                           =   "0083" ))
                    MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
                                                          (SPA-GMN-IDX)
                END-IF
                MOVE    "1"             TO  SPA-COM-MEIFLG
                                                        (SPA-GMN-IDX)
            END-IF
-           IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  =  "81"
+           IF    ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  =  "81"
                                                        OR "83"
-                                                       OR "84") AND
+                                                       OR "84") OR
+                  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  =  "0083"
+                                                       OR "0084")) AND
                   (SPA-GMN-MEISYO-G(SPA-GMN-IDX) NOT =   SPACE)
                CONTINUE
            ELSE
@@ -2828,6 +2844,9 @@
                                            TO  WRK-MOJI
            IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)   =   "059"
                MOVE    "7"                 TO  WRK-MOJI
+           END-IF
+           IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)   =   "008"
+               MOVE    "8"                 TO  WRK-MOJI
            END-IF
       *
            EVALUATE    WRK-MOJI
@@ -3338,13 +3357,18 @@
            END-IF
       *    寝たきり在宅科算定有りとする
            MOVE    1                   TO  LNK-SC93-NETAKIRI-ARI
-      *
            CALL    "ORCSC93"           USING
                                        MCPAREA
                                        SPA-SCR-REC
                                        SPA-AREA
                                        ORCSC93AREA
                                        MSYU-DATA-REC
+           IF      SPA-SRYKBN      NOT =   SPA-COM-SRYKBN(01)
+               MOVE    "1020"          TO  SPA-ERRCD
+               MOVE    "1"             TO  SPA-COM-CUR  (01)
+               MOVE    SPACE           TO  SPA-MAE-INPUTCD (01)
+               GO      TO      510-TBLHEN-EXT
+           END-IF
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      510-TBLHEN-EXT
            END-IF
@@ -3628,7 +3652,8 @@
                                            TO  WRK-COM-SRYSYUKBN(IDX-Z)
                END-IF
       *        名称（最初の行に’＊’）
-               IF      WRK-COM-INPUTCD(IDX-Z)(1:1) =   "8"
+               IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "8" )  OR
+                      (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "008")
                    CONTINUE
                ELSE
                    IF      IDX-Z               =   1
@@ -4876,8 +4901,11 @@
                    END-IF
       *            入力コメント
                    IF      SPA-COM-MEIFLG (IDX1)    =   "1"
-                       IF      SPA-COM-INPUTCD (IDX1)(1:2)
-                                                       =   "83" OR "84"
+                       IF     (SPA-COM-INPUTCD (IDX1)(1:2)
+                                                       =   "83" OR "84")
+                         OR   (SPA-COM-INPUTCD (IDX1)(1:4)
+                                                       =   "0083"
+                                                       OR  "0084" )
                            MOVE    SPA-GMN-MEISYO   (IDX1)
                                            TO  ORCSCZAICHK-INPUTCOMENT
                                                              (IDX-ATO)
@@ -4887,16 +4915,17 @@
                                                              (IDX-ATO)
                        END-IF
                    ELSE
-                       IF     (SPA-COM-INPUTCD (IDX1)(1:1)
-                                                       =   "8" )
-      **************   AND    (SPA-COM-INPUTCHI-G(IDX1)
-      **************                               NOT =   SPACE)
+                       IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
+                                                         OR  "84")
+                          OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
+                                                         OR  "0084")
                            MOVE    SPA-GMN-MEISYO(IDX)
                                            TO  ORCSCZAICHK-INPUTCOMENT
                                                              (IDX-ATO)
                        END-IF
                    END-IF
-                   IF      SPA-COM-INPUTCD(IDX1)(1:1)  =   "8"
+                   IF     (SPA-COM-INPUTCD(IDX1)(1:1)  =   "8"   ) OR
+                          (SPA-COM-INPUTCD(IDX1)(1:4)  =   "0084")
                        MOVE    SPA-COM-INPUTCHI-G(IDX1)
                                            TO  ORCSCZAICHK-INPUTCHI-G
                                                              (IDX-ATO)
@@ -5128,7 +5157,8 @@
                 PERFORM 45022-JIKANGAI-SET-SEC
            END-IF
       *    入力コメント番号
-           IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "8"
+           IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "8" )  OR
+                  (SPA-COM-INPUTCD(IDX)(1:3)   =   "008")
                PERFORM 450111-KNJCOM-SYROI-SEC
       *******  MOVE    WRK-MEINUM          TO  SRY-INPUTNUM (IDS)
            END-IF
@@ -5223,8 +5253,10 @@
            MOVE    SRY-SRYCD   (IDS)   TO  PTCOM-SRYCD
       *入力コメント
            IF      SPA-COM-MEIFLG (IDX)    =   "1"
-               IF      SPA-COM-INPUTCD(IDX)(1:2) =   "83"
-                                                 OR  "84"
+               IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
+                                                 OR  "84" )  OR
+                      (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
+                                                 OR  "0084" )
                    MOVE    SPA-GMN-MEISYO (IDX)
                                        TO  PTCOM-INPUTCOMENT
                ELSE
@@ -5232,8 +5264,9 @@
                                        TO  PTCOM-INPUTCOMENT
                END-IF
            ELSE
-               IF     (SPA-COM-INPUTCD(IDX)(1:1)       =   "8"  )
-      ********** AND  (SPA-COM-INPUTCHI-G (IDX)    NOT =   SPACE )
+               IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "8"  ) OR
+                      (SPA-COM-INPUTCD(IDX)(1:4)   =   "0083"
+                                                   OR  "0084")
                     MOVE    SPA-GMN-MEISYO (IDX)
                                                TO  PTCOM-INPUTCOMENT
                ELSE
@@ -5352,6 +5385,11 @@
                MOVE    "1027"              TO  SPA-ERRCD
                GO      TO      4502-SINKAI-KOU-EXT
            END-IF
+           IF      WRK-ZAITEN          =   ACCT-ZAITEN
+               MOVE    ZERO            TO  FLG-SYUNOU-ERR
+           ELSE
+               MOVE    1               TO  FLG-SYUNOU-ERR
+           END-IF
       *
       *    剤点数
            MOVE    WRK-ZAITEN          TO  ACCT-ZAITEN
@@ -5387,17 +5425,26 @@
       *
       *    算定履歴追加
            PERFORM 450422-SANTEI-UPD-SEC
+      *    収納変更処理
+           IF     (SPA-NYUGAIKBN       =   "2" )  AND
+                  (FLG-SYUNOU-ERR      =   1   )
+               PERFORM 450423-SYUNOU-UPD1-SEC
+           END-IF
            .
       *
        4502-SINKAI-KOU-EXT.
            EXIT.
-      *
       *****************************************************************
       *   算定履歴追加処理
       *****************************************************************
        450422-SANTEI-UPD-SEC          SECTION.
       *
            IF     ACCT-HKNCOMBI        =   "9999"
+               GO      TO      450422-SANTEI-UPD-EXT
+           END-IF
+      *
+      *    自費の時対象外
+           IF      ACCT-SRYKBN         =   "95"  OR  "96"
                GO      TO      450422-SANTEI-UPD-EXT
            END-IF
       *
@@ -5479,6 +5526,64 @@
            .
        450123-SANTEI-UPD-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *   更新時の収納更新処理
+      *****************************************************************
+       450423-SYUNOU-UPD1-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  JYURRK-REC
+           INITIALIZE                      JYURRK-REC
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-J01-SRYKA       TO  JYURRK-SRYKA
+           MOVE    SPA-J01-SRYKA       TO  JYURRK-SRYKA
+           MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
+           PERFORM VARYING     IDZ     FROM    1   BY  1
+                   UNTIL       IDZ     >   15
+               MOVE    SPA-ZAINUM          TO  JYURRK-ZAINUM (IDZ)
+           END-PERFORM
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "JYURRK-KEY20"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "JYURRK-KEY20"      TO  ORC-DBPATH
+               PERFORM 970-JYURRK-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-JYURRK
+           END-IF
+           MOVE    ZERO                TO  FLG-UPD
+           PERFORM
+                   UNTIL       FLG-JYURRK      =   1
+               IF      JYURRK-SRYYMD(1:6)  =   SPA-J02-SRYYMD(1:6)
+      *            収納の会計変更区分変更
+                   IF      SPA-NYUGAIKBN       =   "2"
+                       PERFORM 450431-SYUNOU-UPD-SEC
+                   END-IF
+               END-IF
+      *
+               MOVE    "JYURRK-KEY20"          TO  ORC-DBPATH
+               PERFORM 970-JYURRK-NEXT-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "JYURRK-KEY20"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       450423-SYUNOU-UPD1-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *   診療会計マスタ追加、受診履歴変更処理
@@ -5680,6 +5785,10 @@
                END-IF
       *
                IF      FLG-UPD             =   1
+      *            収納の会計変更区分変更
+                   IF      SPA-NYUGAIKBN       =   "2"
+                       PERFORM 450431-SYUNOU-UPD-SEC
+                   END-IF
       *
                    MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                    MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
@@ -5708,6 +5817,50 @@
        45043-JYURRK-UPD-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    収納更新処理
+      *****************************************************************
+       450431-SYUNOU-UPD-SEC          SECTION.
+      *
+           INITIALIZE                  SYUNOU-REC
+           MOVE    JYURRK-HOSPID       TO  SYU-HOSPID
+           MOVE    JYURRK-PTID         TO  SYU-PTID
+           MOVE    JYURRK-NYUGAIKBN    TO  SYU-NYUGAIKBN
+           MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYUNOU-REC
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           IF      FLG-SYUNOU          =   ZERO
+               MOVE    "1"                 TO  SYU-ACCT-UPDKBN
+               MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
+               MOVE    SYUNOU-REC          TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           END-IF
+      *
+           .
+       450431-SYUNOU-UPD-EXT.
+           EXIT.
       *
       *****************************************************************
       *   診療会計パラメタ更新処理
@@ -6155,7 +6308,9 @@
                MOVE    WRK-ZZ               TO  J04-DAY(IDX)
            END-PERFORM
       *
-           PERFORM 5001-MAPCUR-SEC
+           IF      FLG-END             =   ZERO
+               PERFORM 5001-MAPCUR-SEC
+           END-IF
            .
        500-GMNHEN-EXT.
            EXIT.
@@ -6769,6 +6924,27 @@
       *
            .
        970-JYURRK-NEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納マスター読込
+      *****************************************************************
+       980-SYUNOU-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+               MOVE    ZERO            TO  FLG-SYUNOU
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       980-SYUNOU-READ-EXT.
            EXIT.
       *
       *****************************************************************
