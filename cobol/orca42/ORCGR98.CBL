@@ -138,7 +138,8 @@
        01  WRK-AREA.
            03  WRK-PATH            PIC X(64).
            03  WRK-KOH-IDX         PIC 9(01).
-           03  WRK-CUR-IDX         PIC 9(02).
+           03  WRK-CUR-IDX-X.
+               05  WRK-CUR-IDX     PIC 9(02).
            03  WRK-GMN-CUR         PIC 9(02).
            03  WRK-RIDMSG          PIC X(70).
            03  WRK-YM              PIC X(07). 
@@ -881,8 +882,6 @@
       *    患者番号チェック処理
       *****************************************************************
        41021-PTNUM-CHK-SEC            SECTION.
-      *         
-           COMPUTE SPA-GMN-CUR         =   IDX *   2   -   1
       *
            MOVE    SPACE               TO  SPA-GMN-TNAME (IDX1 IDX)
            MOVE    ZERO                TO  SPA-NAI-TPTID (IDX1 IDX)
@@ -901,7 +900,8 @@
                CALL    "ORCSPTID"          USING   ORCSPTIDAREA
                                                    SPA-1009-TBL
                IF      SPTID-RC        NOT =   ZERO
-                   MOVE    "0003"          TO  SPA-ERRCD
+                   MOVE    "0003"              TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR     =   IDX *   2   -   1
                ELSE
                    MOVE    SPTID-PTNUM     TO  SPA-GMN-TPTNUM (IDX1 IDX)
                    MOVE    SPTID-PTID      TO  SPA-NAI-TPTID  (IDX1 IDX)
@@ -912,7 +912,8 @@
                                            TO  PTINF-PTID
                    PERFORM 900-PTINF-READ-SEC
                    IF      FLG-PTINF   NOT =   ZERO
-                       MOVE    "0001"      TO  SPA-ERRCD
+                       MOVE    "0001"          TO  SPA-ERRCD
+                       COMPUTE SPA-GMN-CUR     =   IDX *   2   -   1
                    ELSE
                        MOVE    PTINF-NAME  TO  SPA-GMN-TNAME (IDX1 IDX)
                    END-IF
@@ -927,50 +928,50 @@
       *****************************************************************
        41023-JKYSNUM-CHK-SEC                SECTION.
       *
-           COMPUTE SPA-GMN-CUR         =   IDX *   2
-      *
            IF      SPA-GMN-TJKYSNUM (IDX1 IDX) =   SPACE
-               GO      TO      41023-JKYSNUM-CHK-EXT
-           END-IF
+               CONTINUE
+           ELSE
+               IF      SPA-NAI-TPTID (IDX1 IDX)    =   ZERO
+                   MOVE    "0009"                  TO  SPA-ERRCD
+               ELSE
+      *            半角・全角のチェックと桁数判定
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "1"                 TO  KANACHK-SYORI
+                   MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
+                                               TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+      *            半角・全角混在エラー
+                   IF      KANACHK-RC      NOT =   ZERO
+                       MOVE    "0007"              TO  SPA-ERRCD
+                   ELSE
+      *                入力文字エラー
+                       IF      KANACHK-RC2     NOT =   ZERO
+                           MOVE    "0008"              TO  SPA-ERRCD
+                       END-IF
+                       IF      KANACHK-MAX         <=  1
+                           MOVE    "0008"              TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               END-IF    
       *
-           IF      SPA-NAI-TPTID (IDX1 IDX)    =   ZERO
-               MOVE    "0009"                  TO  SPA-ERRCD
-               GO      TO      41023-JKYSNUM-CHK-EXT
-           END-IF
-      *
-      *    半角・全角のチェックと桁数判定
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
-                                       TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           IF      KANACHK-RC      NOT =   ZERO
-      *        半角・全角混在エラー
-               MOVE    "0007"              TO  SPA-ERRCD
-               GO      TO          41023-JKYSNUM-CHK-EXT
-           END-IF
-           IF      KANACHK-RC2     NOT =   ZERO
-      *        入力文字エラー
-               MOVE    "0008"         TO  SPA-ERRCD
-               GO  TO                 41023-JKYSNUM-CHK-EXT
-           END-IF
-           IF      KANACHK-MAX         <=  1
-               MOVE    "0008"              TO  SPA-ERRCD
-           END-IF
-      *
-      *    受給者検証番号チェック区分よりチェック
-           IF      SPA-NAI-JKYSKENSNUMCHKKBN
+      *        受給者検証番号チェック区分よりチェック
+               IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-NAI-JKYSKENSNUMCHKKBN )
                                        =   "1"
-               INITIALIZE                      LNK-CHKDGT-AREA
-               MOVE    2                   TO  LNK-I-SYORIKBN
-               MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
-                                           TO  LNK-I-CODE
-               CALL    "ORCSCHKDGT"    USING   LNK-CHKDGT-AREA
-               IF      LNK-O-ERRCD     NOT =   ZERO
-                   MOVE    "0005"          TO  SPA-ERRCD
-                   GO  TO               41023-JKYSNUM-CHK-EXT
+                   INITIALIZE                      LNK-CHKDGT-AREA
+                   MOVE    2                   TO  LNK-I-SYORIKBN
+                   MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
+                                               TO  LNK-I-CODE
+                   CALL    "ORCSCHKDGT"    USING   LNK-CHKDGT-AREA
+                   IF      LNK-O-ERRCD     NOT =   ZERO
+                       MOVE    "0005"          TO  SPA-ERRCD
+                   END-IF
                END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               COMPUTE SPA-GMN-CUR         =   IDX *   2
            END-IF
            .
        41023-JKYSNUM-CHK-EXT.
@@ -1555,7 +1556,7 @@
                     COMPUTE WRK-CUR-IDX     = ( SPA-GMN-CUR +   1 )
                                             /   2
                     MOVE  "PTNUM"           TO  MCP-WIDGET 
-                    MOVE    WRK-CUR-IDX     TO  MCP-WIDGET (6:2) 
+                    MOVE    WRK-CUR-IDX-X   TO  MCP-WIDGET (6:2) 
                WHEN    2
                WHEN    4
                WHEN    6
@@ -1583,7 +1584,7 @@
                WHEN    50
                     COMPUTE WRK-CUR-IDX     =   SPA-GMN-CUR   /   2
                     MOVE    "JKYSNUM"       TO  MCP-WIDGET 
-                    MOVE    WRK-CUR-IDX     TO  MCP-WIDGET (8:2) 
+                    MOVE    WRK-CUR-IDX-X   TO  MCP-WIDGET (8:2) 
       *            
                WHEN    98
                     MOVE  "B01"        TO  MCP-WIDGET   
@@ -1600,14 +1601,14 @@
       *****************************************************************
        50011-INPUT-CUR-SEC          SECTION.
       *
-           EVALUATE    	TRUE
+           EVALUATE    TRUE
       *        患者番号
                WHEN    SPA-MCP-WIDGET (1:5)    =   "PTNUM"
-                   MOVE    SPA-MCP-WIDGET (6:2)    TO  WRK-CUR-IDX
+                   MOVE    SPA-MCP-WIDGET (6:2)    TO  WRK-CUR-IDX-X
                    COMPUTE SPA-GMN-CUR =   WRK-CUR-IDX    *   2   -   1        
       *        受給者番号
                WHEN    SPA-MCP-WIDGET (1:7)    =   "JKYSNUM"
-                   MOVE    SPA-MCP-WIDGET (8:2)    TO  WRK-CUR-IDX
+                   MOVE    SPA-MCP-WIDGET (8:2)    TO  WRK-CUR-IDX-X
                    COMPUTE SPA-GMN-CUR =   WRK-CUR-IDX    *   2        
            END-EVALUATE
            .
