@@ -409,11 +409,7 @@
                END-IF
       *
                PERFORM 2011-KNJKEN-HEN-SEC
-               IF      SPA-GMN-MAX     >   ZERO
-                   MOVE    4           TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    1           TO  SPA-GMN-CUR
-               END-IF
+               MOVE    1               TO  SPA-GMN-PAGE
            ELSE
                MOVE    1               TO  SPA-GMN-PAGE
            END-IF
