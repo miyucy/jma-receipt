@@ -480,6 +480,14 @@
       *
       **** MOVE    SPACE               TO  SPA-W25-SRYKBN
       *
+      *TEST
+      *    ＊で始まる時、区分番号とする
+           IF      SPA-W25-GMN-INPUT(1:1) =   "*"
+               PERFORM 310010-KUBUNNUM-SET-SEC
+               GO      TO      310-SPA-SET-EXT
+           END-IF
+      *TEST
+      *
            IF       SPA-W25-TYPE         =   "1"
                PERFORM 3101-INPUTCD-SET-SEC
            END-IF
@@ -510,6 +518,96 @@
            .
        310-SPA-SET-EXT.
            EXIT.
+      *TEST
+      *****************************************************************
+      *    区分番号編集
+      *****************************************************************
+       310010-KUBUNNUM-SET-SEC            SECTION.
+      *
+           IF      SPA-W25-GMN-INPUT(2:1)  =   SPACE
+               MOVE    6                   TO  SPA-W25-GMN-CUR
+               MOVE    "0004"              TO  SPA-ERRCD
+               GO      TO      310010-KUBUNNUM-SET-EXT
+           END-IF
+      *
+      *
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    SPA-W25-GMN-INPUT(2:1)  TO  TNS-CDKBN-KBN
+           IF      SPA-W25-GMN-INPUT(3:3)  NUMERIC
+               MOVE    SPA-W25-GMN-INPUT(3:3)   TO  TNS-CDKBN-KBNNUM
+               MOVE    "TENSU-KEY91"        TO  WRK-PATH
+           ELSE
+               MOVE    SPACE                TO  SPA-W25-GMN-INPUT(3:)
+               MOVE    "TENSU-KEY90"        TO  WRK-PATH
+           END-IF
+      *    老人
+           IF      SPA-W25-GMN-INPUT(2:1)  =   "R"
+               MOVE    "TENSU-KEY92"            TO  WRK-PATH
+           END-IF
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-PATH            TO  ORC-DBPATH
+               PERFORM                     910-TENSU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  IDX
+           PERFORM
+               UNTIL      (IDX         >    200 )   OR
+                          (FLG-TENSU   =   1   )
+      *        点数マスタチェック
+               PERFORM 31021-TENSU-CHK-SEC
+               IF      FLG-CHK             =   ZERO
+                   ADD     1               TO  IDX2
+      *            次ページの時、表示分は読み飛ばし
+                   IF      IDX2            >=  SPA-W25-NEXT
+                       PERFORM 31021-TENSU-HEN-SEC
+                   END-IF
+               END-IF
+      *
+               MOVE    WRK-PATH            TO  ORC-DBPATH
+               PERFORM                     910-TENSU-READ-SEC
+           END-PERFORM
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    WRK-PATH            TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      *
+           MOVE    WRK-CNT-ENT         TO  SPA-W25-GMN-MAX
+      *
+      *    点数マスタで対象が有った時、タイプを変更する
+           IF      SPA-W25-GMN-MAX     >   ZERO
+               MOVE    "2"             TO  SPA-W25-TYPE
+           END-IF
+      *
+           IF      SPA-W25-GMN-MAX     =   ZERO
+               MOVE    6                   TO  SPA-W25-GMN-CUR
+               MOVE    "0004"              TO  SPA-ERRCD
+           ELSE
+               MOVE    1                   TO  SPA-W25-GMN-CUR
+               IF      FLG-MAX         NOT =   ZERO
+                   MOVE    "0005"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    ZERO                TO  SPA-W25-NEXT
+               END-IF
+           END-IF
+      *
+           .
+       310010-KUBUNNUM-SET-EXT.
+           EXIT.
+      *TEST
       *
       *****************************************************************
       *     入力コードマスタ−より編集
@@ -1290,6 +1388,11 @@
                WHEN    OTHER
                    MOVE    "入力コード全体（自院）"
                                               TO  W25-SENTAKU
+      *TEST
+                   IF      SPA-W25-GMN-INPUT(1:1) =   "*"
+                       PERFORM 5001-SENTAKU-MEI-SEC
+                   END-IF
+      *TEST
            END-EVALUATE
       *
       *    漢字入力で、入力コードで検索
@@ -1394,6 +1497,48 @@
            .
        500-GMNHEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    検査グループ名称編集処理
+      *****************************************************************
+       5001-SENTAKU-MEI-SEC            SECTION.
+      *
+           EVALUATE    SPA-W25-GMN-INPUT(2:1)
+               WHEN    "A"
+                   MOVE    "初診料・再診料・入院料"    TO  W25-SENTAKU
+               WHEN    "B"
+                   MOVE    "指導管理等"                TO  W25-SENTAKU
+               WHEN    "C"
+                   MOVE    "在宅医療"                  TO  W25-SENTAKU
+               WHEN    "D"
+                   MOVE    "検査"                      TO  W25-SENTAKU
+               WHEN    "E"
+                   MOVE    "画像診断"                  TO  W25-SENTAKU
+               WHEN    "F"
+                   MOVE    "投薬"                      TO  W25-SENTAKU
+               WHEN    "G"
+                   MOVE    "注射"                      TO  W25-SENTAKU
+               WHEN    "H"
+                   MOVE    "リハビリテーション"        TO  W25-SENTAKU
+               WHEN    "I"
+                   MOVE    "精神料専門療法"            TO  W25-SENTAKU
+               WHEN    "J"
+                   MOVE    "処置"                      TO  W25-SENTAKU
+               WHEN    "K"
+                   MOVE    "手術"                      TO  W25-SENTAKU
+               WHEN    "L"
+                   MOVE    "麻酔"                      TO  W25-SENTAKU
+               WHEN    "M"
+                   MOVE    "放射線治療"                TO  W25-SENTAKU
+               WHEN    "R"
+                   MOVE    "老人、その他"              TO  W25-SENTAKU
+               WHEN    OTHER
+                   MOVE    SPACE                       TO  W25-SENTAKU
+            END-EVALUATE
+           .
+       5001-SENTAKU-MEI-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    検査グループ名称編集処理
