@@ -29,6 +29,8 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-ÌçÏÆ    02.09.18  ¼«ÇåÀÕÂÐ±þ¡¡¡¡¡¡¡¡¡¡¡¡
+      *  01.00.02    NACL-ÌçÏÆ    02.11.29  Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤Î
+      *                                     ¥³¥á¥ó¥Èº¹¹þ¤ß
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -166,6 +168,9 @@
            03  FLG-SHIDOU-COMMENT  PIC 9(01).
            03  FLG-ARI             PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-JYURRK          PIC 9(01).
+           03  FLG-FIRST           PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -190,10 +195,15 @@
            03  CNT-GENGO2-KO       PIC 9(06).
            03  CNT-GENGO1-SHU      PIC 9(06).
            03  CNT-GENGO2-SHU      PIC 9(06).
+           03  CNT-JUSHIN          PIC 9(06).
+           03  CNT-SANTEIKA        PIC 9(06).
+           03  CNT-IN-COMMIT       PIC 9(06).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
+           03  IDY                 PIC 9(04).
+           03  IDZ                 PIC 9(04).
            03  DAY-IDX             PIC 9(04).
            03  IDX-RECE45          PIC 9(04).
       *     
@@ -208,12 +218,23 @@
       *
            03  WRK-RENNUM          PIC 9(02).
            03  WRK-CNT-MEISAI      PIC 9(04).
+           03  WRK-KETA            PIC 9(04).
+           03  WRK-KETA-TAIHI      PIC 9(04).
+           03  WRK-KETA2           PIC 9(04).
            03  WRK-RECEERR         PIC X(200).
       *
            03  WRK-DAY             PIC 9(02).
       *
            03  TBL-SHUJUTSU-DAY.
                05  TB-SHUJUTSU-DAY PIC 9(02)   OCCURS  10.
+      *
+           03  WRK-HKNCOMBINUMX      PIC X(04).
+           03  WRK-HKNCOMBINUM9      REDEFINES  WRK-HKNCOMBINUMX
+                                     PIC 9(04).
+      *
+           03  WRK-SRYYMDX.
+               05  WRK-SRYYM         PIC 9(06).
+               05  WRK-SRYDD         PIC 9(02).
       *
        01  WRK-RECE44-REC. 
            COPY    "CPRCF044.INC"  REPLACING   //RECE44//
@@ -251,6 +272,11 @@
            03  WRK-SIKFLGINF                   OCCURS 50.         
                05  WK-RECE45-SIKFLG          PIC  X(01).
       *
+       01  WRK-FREE-AREA.
+           03  WRK-FREEINF                     OCCURS 49.         
+               05  WK-FREE-YUKOKETA          PIC  9(02).
+               05  WK-FREE-NAME              PIC  X(200).
+      *
       *Íý³ØÎÅË¡ºÞÈÖ¹æÂàÈòÎÎ°è
        01  WRK-TAIHI-ZAINUM.
            03  WRK-RIGA1-SHU-ZAINUM          PIC  9(08).   
@@ -277,6 +303,10 @@
       *ºÆ¿Ç£´²óÌÜ°Ê¹ß¼Â»Ü¥«¥ì¥ó¥À¡¼
        01  WRK-SAISHIN4-AREA.
            03  WRK-SAISHIN4                  PIC  X(01)  OCCURS 31.   
+      *
+      *»»Äê²Ê¼Â»Ü¥«¥ì¥ó¥À¡¼
+       01  WRK-SANTEIKA-AREA.
+           03  WRK-SANTEIKA                  PIC  X(01)  OCCURS 31.
       *
       *Íý³ØÎÅË¡¼Â»Ü¥«¥ì¥ó¥À¡¼
        01  WRK-RIGAKU-AREA.
@@ -379,7 +409,19 @@
            03  CONS-GENGO1-KO       PIC X(09) VALUE "180024810".
            03  CONS-GENGO2-SHU      PIC X(09) VALUE "180025110".
            03  CONS-GENGO2-KO       PIC X(09) VALUE "180025010".
+      *    ½é¿ÇÎÁ»»Äê²Ê¡§
+           03  CONS-SYOSINSANTEIKA  PIC X(09) VALUE "830000020".
+      *    ºÆ¿ÇÎÁ»»Äê²Ê¡§
+           03  CONS-SAISINSANTEIKA  PIC X(09) VALUE "830000021".
       *     
+      *    Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤ÎÂàÈò¥Æ¡¼¥Ö¥ë
+       01  TBL-JUSHIN-INF.
+           03  TBL-JUSHIN-INF2      OCCURS    10.
+               05  TBL-JUSHIN-SRYKA       PIC X(02).
+               05  TBL-JUSHIN-SRYKANAME   PIC X(80).
+               05  TBL-JUSHIN-ARI         PIC X(01).
+               05  TBL-JUSHIN-DAY         PIC X(01)   OCCURS  31.
+      *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
        01  WRK-PATH                        PIC X(64).
       *
@@ -395,6 +437,12 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+           COPY    "CPSYSKANRI.INC".
+      *
+      *    ¿ÇÎÅ²ÊÌÜ¾ðÊó
+           COPY    "CPSK1005.INC".
+      *
       *    ¿ÇÎÅ²ñ·×
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
@@ -407,6 +455,10 @@
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
+      *    ¼õ¿ÇÍúÎò
+       01  JYURRK-REC.
+           COPY    "CPJYURRK.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
       *****************************************************************
@@ -415,6 +467,9 @@
       *     
       *    ¿ôÃÍÊÑ´¹¥µ¥Ö
            COPY    "CPORCSNUM.INC".
+      *
+      *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
+           COPY    "CPORCSKANACHK.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -524,6 +579,109 @@
       *    ¼ç½èÍý
       *****************************************************************
        200-MAIN-SEC                SECTION.
+      *
+      *    Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç
+           MOVE       ZERO             TO  CNT-SANTEIKA
+           INITIALIZE                      WRK-SANTEIKA-AREA
+      *    »»Äê²Ê¤Î¼èÆÀ
+           INITIALIZE                      RECE44-REC
+           MOVE    RECE41-HOSPID       TO  RECE44-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE44-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE44-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE44-PTID
+           MOVE    RECE41-RECEKA       TO  RECE44-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE44-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE44-TEKSTYMD
+           MOVE    ZERO                TO  RECE44-ZAINUM
+      *
+           START   RECE44-FILE
+               KEY IS    >=   RECE44-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE44
+               NOT INVALID
+                   PERFORM 990-RECE44-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE44           =   1                   )
+               OR     ( RECE41-HOSPID    NOT =   RECE44-HOSPID       )
+               OR     ( RECE41-SRYYM     NOT =   RECE44-SRYYM        )
+               OR     ( RECE41-NYUGAIKBN NOT =   RECE44-NYUGAIKBN    )
+               OR     ( RECE41-PTID      NOT =   RECE44-PTID         )
+               OR     ( RECE41-RECEKA    NOT =   RECE44-RECEKA       )
+               OR     ( RECE41-HKNID     NOT =   RECE44-HKNID        )
+               OR     ( RECE41-TEKSTYMD  NOT =   RECE44-TEKSTYMD     )
+      *
+               EVALUATE      RECE44-SRYKBN
+                   WHEN      "11"
+      *            ¡Ê½é¿ÇÎÁ»»Äê²Ê¡§¤Î¥«¥¦¥ó¥È¡Ë
+                      PERFORM    2001-SYOSINSANTEIKA-COUNT-SEC
+                   WHEN      "12"
+      *            ¡ÊºÆ¿ÇÎÁ»»Äê²Ê¡§¤Î¥«¥¦¥ó¥È¡Ë
+                      PERFORM    2001-SAISINSANTEIKA-COUNT-SEC
+               END-EVALUATE
+      *
+               PERFORM 990-RECE44-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           PERFORM    VARYING    IDX   FROM   1   BY   1
+                                    UNTIL      IDX   >    31
+                   IF    WRK-SANTEIKA(IDX)  =   "1"  
+                       ADD     1           TO   CNT-SANTEIKA
+                   END-IF
+           END-PERFORM 
+      *
+           IF   CNT-SANTEIKA   >  ZERO
+      *
+             MOVE       ZERO             TO  CNT-JUSHIN
+             INITIALIZE                      TBL-JUSHIN-INF
+      *      ¿ÇÎÅ²Ê¤Î¼èÆÀ
+             INITIALIZE                      SYS-1005-REC
+             MOVE    "1005"              TO  SYS-1005-KANRICD
+             MOVE    ZERO                TO  SYS-1005-STYUKYMD
+             MOVE    ALL "9"             TO  SYS-1005-EDYUKYMD
+             MOVE    SYS-1005-REC        TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+             MOVE    RECE41-SRYYM        TO  ORC-DBYMD(1:6)
+             MOVE    "01"                TO  ORC-DBYMD(7:2)
+             CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2"  TO  ORC-DBPATH 
+               PERFORM   SYSKANRI-READ-SEC
+               PERFORM   VARYING   IDX    FROM   1   BY   1
+                          UNTIL   (IDX             >      10)
+                            OR    (FLG-SYSKANRI    =       1)
+                   MOVE    SYS-1005-KBNCD  TO TBL-JUSHIN-SRYKA(IDX)
+                   MOVE    SYS-1005-SRYKANAME   
+                                           TO TBL-JUSHIN-SRYKANAME(IDX)
+      *            ¼õ¿ÇÍúÎò¥Æ¡¼¥Ö¥ë¤«¤é¿ÇÎÅ²ÊËè¤Î¼õ¿ÇÆü¤ò¸¡º÷¥»¥Ã¥È
+                   PERFORM   2001-JUSHIN-KENSAKU-SEC
+      *
+                   MOVE    "SYSKANRI-KEY2"  TO  ORC-DBPATH 
+                   PERFORM   SYSKANRI-READ-SEC
+               END-PERFORM
+             END-IF
+      *
+      *      Ê£¿ô¤Î¿ÇÎÅ²Ê¼õ¿Ç¤¬¤¢¤ë¤«È½Äê
+             MOVE       ZERO       TO   IDZ  
+             INITIALIZE            WRK-FREE-AREA
+      *
+             PERFORM   VARYING   IDX    FROM   1   BY   1
+                            UNTIL   (IDX             >      10)
+               IF   TBL-JUSHIN-ARI (IDX)  =  "1"
+                   ADD       1     TO   CNT-JUSHIN
+                   PERFORM  2002-FREE-COMMENT-SEC
+               END-IF
+             END-PERFORM
+      *      Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤Î¥³¥á¥ó¥ÈÊÔ½¸
+             IF    CNT-JUSHIN  >   1
+                    PERFORM   2002-JUSHIN-COMMENT-SEC
+             END-IF
+      *
+           END-IF
       *
       *    ¿Í¹©¿ÕÂ¡¤ÎÈ½Äê
            INITIALIZE                      RECE44-REC
@@ -744,10 +902,541 @@
       *
            PERFORM 990-RECE41-READ-SEC
       *
+           IF  CNT-IN-COMMIT   =    300
+                 MOVE  ZERO          TO      CNT-IN-COMMIT
+                 PERFORM 900-DBCOMMIT-SEC
+                 PERFORM 900-DBSTART-SEC
+           END-IF
+      *
            .
        200-MAIN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ½é¿ÇÎÁ»»Äê²Ê¡§¤Î¥«¥¦¥ó¥È
+      *****************************************************************
+       2001-SYOSINSANTEIKA-COUNT-SEC          SECTION.
+      *
+           INITIALIZE                          SRYACT-REC
+           MOVE    RECE44-HOSPID       TO      SRY-HOSPID
+           MOVE    RECE44-NYUGAIKBN    TO      SRY-NYUGAIKBN
+           MOVE    RECE44-PTID         TO      SRY-PTID
+           MOVE    RECE44-SRYYM        TO      SRY-SRYYM
+           MOVE    RECE44-ZAINUM       TO      SRY-ZAINUM
+           MOVE    CONS-SYOSINSANTEIKA TO      SRY-SRYCD (1)
+           MOVE    CONS-SYOSINSANTEIKA TO      SRY-SRYCD (2)
+           MOVE    CONS-SYOSINSANTEIKA TO      SRY-SRYCD (3)
+           MOVE    CONS-SYOSINSANTEIKA TO      SRY-SRYCD (4)
+           MOVE    CONS-SYOSINSANTEIKA TO      SRY-SRYCD (5)
+      *
+           MOVE    SRYACT-REC        TO      MCPDATA-REC
+           MOVE    "DBSELECT"        TO      MCP-FUNC
+           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"       USING
+                                     MCPAREA
+                                     ORCMCPAREA
+                                     MCPDATA-REC
+      *
+           IF  MCP-RC                =       ZERO
+               MOVE    "DBFETCH"     TO      MCP-FUNC
+               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+               IF      MCP-RC        =       ZERO
+                   MOVE    RECE44-REC        TO      WRK-RECE44-REC
+                   MOVE    MCPDATA-REC       TO      SRYACT-REC
+                   INITIALIZE                        SRYACCT-REC
+                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
+                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
+                   MOVE    SRY-PTID          TO      ACCT-PTID
+                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
+                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
+                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
+                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
+                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
+                   MOVE    "DBSELECT"        TO      MCP-FUNC
+                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
+                   CALL    "ORCMCPSUB"       USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+                   IF      MCP-RC    =       ZERO
+                       MOVE    "DBFETCH"     TO      MCP-FUNC
+                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
+                       CALL    "ORCMCPSUB"           USING
+                                                     MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                       IF      MCP-RC        =       ZERO
+                            MOVE  MCPDATA-REC    TO   SRYACCT-REC
+                            IF      RECE41-HKNKBN   NOT  =   "3"
+                               PERFORM  VARYING   IDX  FROM  1  BY  1
+                                        UNTIL     IDX  >   31
+                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
+                                     MOVE  "1"  TO  WRK-SANTEIKA(IDX)
+                                   END-IF
+                               END-PERFORM
+                            ELSE
+                               MOVE   RECE41-TEKSTYMD(7:2)  TO  WRK-DAY
+                               IF   ACCT-DAY(1 WRK-DAY)  NOT = ZERO
+                                   MOVE  "1"  TO  WRK-SANTEIKA(WRK-DAY)
+                               END-IF
+                            END-IF
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+           INITIALIZE                        MCPAREA
+           MOVE    "DBCLOSE"         TO      MCP-FUNC
+           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"       USING
+                                     MCPAREA
+                                     ORCMCPAREA
+                                     MCPDATA-REC
+      *
+           INITIALIZE                        MCPAREA
+           MOVE    "DBCLOSE"         TO      MCP-FUNC
+           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"       USING
+                                     MCPAREA
+                                     ORCMCPAREA
+                                     MCPDATA-REC
+      *
+           .
+       2001-SYOSINSANTEIKA-COUNT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ºÆ¿ÇÎÁ»»Äê²Ê¡§¤Î¥«¥¦¥ó¥È
+      *****************************************************************
+       2001-SAISINSANTEIKA-COUNT-SEC          SECTION.
+      *
+           INITIALIZE                          SRYACT-REC
+           MOVE    RECE44-HOSPID       TO      SRY-HOSPID
+           MOVE    RECE44-NYUGAIKBN    TO      SRY-NYUGAIKBN
+           MOVE    RECE44-PTID         TO      SRY-PTID
+           MOVE    RECE44-SRYYM        TO      SRY-SRYYM
+           MOVE    RECE44-ZAINUM       TO      SRY-ZAINUM
+           MOVE    CONS-SAISINSANTEIKA TO      SRY-SRYCD (1)
+           MOVE    CONS-SAISINSANTEIKA TO      SRY-SRYCD (2)
+           MOVE    CONS-SAISINSANTEIKA TO      SRY-SRYCD (3)
+           MOVE    CONS-SAISINSANTEIKA TO      SRY-SRYCD (4)
+           MOVE    CONS-SAISINSANTEIKA TO      SRY-SRYCD (5)
+      *
+           MOVE    SRYACT-REC        TO      MCPDATA-REC
+           MOVE    "DBSELECT"        TO      MCP-FUNC
+           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"       USING
+                                     MCPAREA
+                                     ORCMCPAREA
+                                     MCPDATA-REC
+      *
+           IF  MCP-RC                =       ZERO
+               MOVE    "DBFETCH"     TO      MCP-FUNC
+               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+               IF      MCP-RC        =       ZERO
+                   MOVE    RECE44-REC        TO      WRK-RECE44-REC
+                   MOVE    MCPDATA-REC       TO      SRYACT-REC
+                   INITIALIZE                        SRYACCT-REC
+                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
+                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
+                   MOVE    SRY-PTID          TO      ACCT-PTID
+                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
+                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
+                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
+                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
+                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
+                   MOVE    "DBSELECT"        TO      MCP-FUNC
+                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
+                   CALL    "ORCMCPSUB"       USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+                   IF      MCP-RC    =       ZERO
+                       MOVE    "DBFETCH"     TO      MCP-FUNC
+                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
+                       CALL    "ORCMCPSUB"           USING
+                                                     MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                       IF      MCP-RC        =       ZERO
+                            MOVE  MCPDATA-REC    TO   SRYACCT-REC
+                            IF      RECE41-HKNKBN   NOT  =   "3"
+                               PERFORM  VARYING   IDX  FROM  1  BY  1
+                                        UNTIL     IDX  >   31
+                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
+                                     MOVE  "1"  TO  WRK-SANTEIKA(IDX)
+                                   END-IF
+                               END-PERFORM
+                            ELSE
+                               MOVE   RECE41-TEKSTYMD(7:2)  TO  WRK-DAY
+                               IF   ACCT-DAY(1 WRK-DAY)  NOT = ZERO
+                                   MOVE  "1"  TO  WRK-SANTEIKA(WRK-DAY)
+                               END-IF
+                            END-IF
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+           INITIALIZE                        MCPAREA
+           MOVE    "DBCLOSE"         TO      MCP-FUNC
+           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"       USING
+                                     MCPAREA
+                                     ORCMCPAREA
+                                     MCPDATA-REC
+      *
+           INITIALIZE                        MCPAREA
+           MOVE    "DBCLOSE"         TO      MCP-FUNC
+           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"       USING
+                                     MCPAREA
+                                     ORCMCPAREA
+                                     MCPDATA-REC
+      *
+           .
+       2001-SAISINSANTEIKA-COUNT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼õ¿ÇÍúÎò¥Æ¡¼¥Ö¥ë¤«¤é¿ÇÎÅ²ÊËè¤Î¼õ¿ÇÆü¤ò¸¡º÷¥»¥Ã¥È
+      *****************************************************************
+       2001-JUSHIN-KENSAKU-SEC             SECTION.
+      *
+      *    ¼õ¿ÇÎò¤Î¸¡º÷
+           INITIALIZE                      JYURRK-REC
+           MOVE    RECE41-HOSPID       TO  JYURRK-HOSPID
+           MOVE    RECE41-PTID         TO  JYURRK-PTID
+           MOVE    RECE41-NYUGAIKBN    TO  JYURRK-NYUGAIKBN
+           MOVE    TBL-JUSHIN-SRYKA(IDX)
+                                       TO  JYURRK-SRYKA
+           MOVE    RECE41-SRYYM        TO  JYURRK-SRYYMD(1:6)
+           MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
+           MOVE    RECE41-SRYYM        TO  JYURRK-UPSRYYMD(1:6)
+           MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "JYURRK-KEY12"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING   MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "JYURRK-KEY12"  TO  ORC-DBPATH 
+               PERFORM   JYURRK-READ-SEC
+               PERFORM   UNTIL   FLG-JYURRK   =    1
+                  IF   RECE41-HKNKBN    NOT  =  "4" 
+                   IF    JYURRK-HKNKBN    =       "1"
+                      MOVE   JYURRK-HKNCOMBINUM
+                                       TO  WRK-HKNCOMBINUMX
+                      IF  WRK-HKNCOMBINUM9  =  RECE41-HKNCOMBI
+                          IF  RECE41-HKNKBN   NOT =  "3"
+                               MOVE   JYURRK-SRYYMD   TO   WRK-SRYYMDX
+                               MOVE   "1"     TO    
+                                        TBL-JUSHIN-ARI (IDX)
+                               MOVE   "1"     TO    
+                                        TBL-JUSHIN-DAY (IDX WRK-SRYDD)
+                          ELSE
+                            IF  JYURRK-SRYYMD  =  RECE41-TEKSTYMD
+                               MOVE   JYURRK-SRYYMD   TO   WRK-SRYYMDX
+                               MOVE   "1"     TO    
+                                        TBL-JUSHIN-ARI (IDX)
+                               MOVE   "1"     TO    
+                                        TBL-JUSHIN-DAY (IDX WRK-SRYDD)
+                            END-IF
+                          END-IF
+                      END-IF      
+                   END-IF
+                  ELSE
+                   IF    JYURRK-HKNKBN    =       "2"
+                      MOVE   JYURRK-HKNCOMBINUM
+                                       TO  WRK-HKNCOMBINUMX
+                      IF  WRK-HKNCOMBINUM9  =  RECE41-HKNCOMBI
+                            MOVE   JYURRK-SRYYMD   TO   WRK-SRYYMDX
+                            MOVE   "1"     TO    
+                                        TBL-JUSHIN-ARI (IDX)
+                            MOVE   "1"     TO    
+                                        TBL-JUSHIN-DAY (IDX WRK-SRYDD)
+                      END-IF      
+                   END-IF
+                  END-IF
+      *
+                  MOVE    "JYURRK-KEY12"  TO  ORC-DBPATH 
+                  PERFORM   JYURRK-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           .
+       2001-JUSHIN-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤Î²Ê¡¦ÆüÉÕ¤ÎÊÔ½¸
+      *****************************************************************
+       2002-FREE-COMMENT-SEC          SECTION.
+      *
+           ADD      1                      TO  IDZ
+           MOVE     ZERO                   TO  WRK-KETA
+                                               WRK-KETA-TAIHI
+                                               WRK-KETA2
+      *
+           INITIALIZE                      ORCSKANACHKAREA
+           MOVE    "2"                     TO  KANACHK-SYORI 
+           MOVE  TBL-JUSHIN-SRYKANAME(IDX) TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF      KANACHK-RC      =   ZERO
+               COMPUTE WRK-KETA          =   KANACHK-MAX
+               COMPUTE WRK-KETA-TAIHI    =   KANACHK-MAX
+               COMPUTE WRK-KETA2         =   KANACHK-MAX  /  2
+               MOVE    WRK-KETA2   TO  WK-FREE-YUKOKETA(IDZ)
+               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                   TO  WK-FREE-NAME(IDZ)(1:KANACHK-MAX)
+           END-IF
+      *
+           MOVE      ZERO          TO  FLG-FIRST
+      *
+           PERFORM   VARYING   IDY    FROM   1   BY   1
+                          UNTIL   (IDY             >      31)
+      *
+             IF  TBL-JUSHIN-DAY(IDX IDY) =  "1"
+                 IF  FLG-FIRST  =  ZERO
+                    IF  IDY     <  10 
+                       ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                       COMPUTE  WRK-KETA   =  WRK-KETA   +  1
+                       MOVE    "¡¡"
+                           TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
+      *
+                       ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                       COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                       MOVE    TBL-DAY(IDY)(3:2)     
+                           TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
+      *
+                       ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                       COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                       MOVE    "Æü"
+                           TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
+                    ELSE
+                       ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                       COMPUTE  WRK-KETA   =  WRK-KETA   +  1
+                       MOVE    "¡¡"
+                           TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
+      *
+                       ADD   2  TO  WK-FREE-YUKOKETA(IDZ)
+                       COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                       MOVE    TBL-DAY(IDY)     
+                           TO  WK-FREE-NAME(IDZ)(WRK-KETA:4)
+      *
+                       ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                       COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                       MOVE    "Æü"
+                           TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
+                    END-IF
+                    MOVE      1              TO  FLG-FIRST
+                 ELSE
+                    IF  IDY     <  10 
+                       IF    WK-FREE-YUKOKETA(IDZ)  =  25
+                          PERFORM  2002-FREE-COMMENT-KAIGYO-SEC
+                          ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  1
+                          MOVE    "¡¢"
+                                    TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
+                       ELSE
+                          ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    "¡¢"
+                                    TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
+      *
+                       END-IF
+      *
+                       IF    WK-FREE-YUKOKETA(IDZ)  =  24 OR 25
+                          PERFORM  2002-FREE-COMMENT-KAIGYO-SEC
+                          ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  1
+                          MOVE    TBL-DAY(IDY)(3:2)     
+                                    TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
+      *
+                          ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    "Æü"
+                                   TO  WK-FREE-NAME(IDZ)(WRK-KETA:2) 
+                       ELSE
+                          ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    TBL-DAY(IDY)(3:2)     
+                                    TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
+      *
+                          ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    "Æü"
+                                   TO  WK-FREE-NAME(IDZ)(WRK-KETA:2) 
+                       END-IF
+                    ELSE
+                       IF    WK-FREE-YUKOKETA(IDZ)  =  25
+                          PERFORM  2002-FREE-COMMENT-KAIGYO-SEC
+                          ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  1
+                          MOVE    "¡¢"
+                                   TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
+                       ELSE
+                          ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    "¡¢"
+                                   TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
+                       END-IF
+      *
+                       IF    WK-FREE-YUKOKETA(IDZ)  =  23 OR 24 OR 25
+                          PERFORM  2002-FREE-COMMENT-KAIGYO-SEC
+                          ADD   2  TO  WK-FREE-YUKOKETA(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  1
+                          MOVE    TBL-DAY(IDY)     
+                                   TO  WK-FREE-NAME(IDZ)(WRK-KETA:4)
+      *
+                          ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                          MOVE    "Æü"
+                                   TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
+                       ELSE
+                          ADD   2  TO  WK-FREE-YUKOKETA(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    TBL-DAY(IDY)     
+                                   TO  WK-FREE-NAME(IDZ)(WRK-KETA:4)
+      *
+                          ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                          MOVE    "Æü"
+                                   TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
+                       END-IF
+                    END-IF
+                 END-IF
+             END-IF
+      *
+           END-PERFORM
+           .
+       2002-FREE-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤Î²Ê¡¦ÆüÉÕ¤ÎÊÔ½¸¡Ê²þ¹Ô¡Ë
+      *****************************************************************
+       2002-FREE-COMMENT-KAIGYO-SEC          SECTION.
+      *
+           ADD      1              TO  IDZ
+      *
+           MOVE    WRK-KETA-TAIHI  TO  WRK-KETA
+           MOVE    WRK-KETA2       TO  WK-FREE-YUKOKETA(IDZ)
+           MOVE    ALL "¡¡"        TO  WK-FREE-NAME(IDZ)(1:WRK-KETA)
+      *
+           .
+       2002-FREE-COMMENT-KAIGYO-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2002-JUSHIN-COMMENT-SEC          SECTION.
+      *
+      *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+           MOVE    ZERO                TO  IDX-RECE45
+           MOVE    SPACE               TO  WRK-SRYACTINF-AREA
+           INITIALIZE                      WRK-SRYACTINF-AREA
+           MOVE    SPACE               TO  WRK-NAMEINF-AREA
+           INITIALIZE                      WRK-NAMEINF-AREA
+           MOVE    SPACE               TO  WRK-SIKFLGINF-AREA
+           INITIALIZE                      WRK-SIKFLGINF-AREA
+      *
+           ADD     1                   TO  IDX-RECE45
+           MOVE    SPACE               TO  COM-RECE45-REC
+           INITIALIZE                      COM-RECE45-REC
+           MOVE    "099999901"         TO  COM-SRYCD(1)
+           MOVE    ZERO                TO  COM-SRYSURYO(1)
+           MOVE    7                   TO  COM-YUKOKETA(1)
+           MOVE    "Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç"    TO  COM-NAME(1)
+           MOVE    "1"                 TO  COM-SIKFLG(1)
+           MOVE    COM-SRYACTINF(1)    TO  WRK-SRYACTINF
+                                               (IDX-RECE45)
+           MOVE    COM-NAMEINF(1)      TO  WRK-NAMEINF
+                                               (IDX-RECE45)
+           MOVE    COM-SIKFLGINF(1)    TO  WRK-SIKFLGINF
+                                               (IDX-RECE45)
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX               >   49    )
+                         OR      ( WK-FREE-NAME(IDX) =   SPACE )
+                ADD    1                  TO  IDX-RECE45
+                MOVE   "810000002"        TO  COM-SRYCD(2)
+                MOVE   ZERO               TO  COM-SRYSURYO(2)
+                MOVE   "1"                TO  COM-SIKFLG(2)
+                MOVE   COM-SRYACTINF(2)   TO  WRK-SRYACTINF(IDX-RECE45)
+                MOVE   WRK-FREEINF(IDX)   TO  WRK-NAMEINF(IDX-RECE45)
+                MOVE   COM-SIKFLGINF(2)   TO  WRK-SIKFLGINF(IDX-RECE45)  
+           END-PERFORM 
+      *
+      *    ²Ê¡¦ÆüÉÕ¤ÎÊÔ½¸¤ò´Þ¤ó¤ÀÆâÍÆ¤ÇÃæ´Ö¥Õ¥¡¥¤¥ë¤ÎºÆºîÀ®
+           MOVE       ZERO             TO      FLG-WRKRECE45
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE45
+           MOVE       ZERO             TO      WRK-RENNUM
+           MOVE       ZERO             TO      WRK-CNT-MEISAI
+           PERFORM    UNTIL     FLG-WRKRECE45  =    1
+                INITIALIZE                      RECE451-REC
+                MOVE    RECE41-HOSPID       TO  RECE451-HOSPID
+                MOVE    RECE41-SRYYM        TO  RECE451-SRYYM
+                MOVE    RECE41-NYUGAIKBN    TO  RECE451-NYUGAIKBN
+                MOVE    RECE41-PTID         TO  RECE451-PTID
+                MOVE    RECE41-RECEKA       TO  RECE451-RECEKA
+                MOVE    RECE41-HKNID        TO  RECE451-HKNID
+                MOVE    RECE41-TEKSTYMD     TO  RECE451-TEKSTYMD
+                MOVE    ZERO                TO  RECE451-ZAINUM
+                MOVE    "99"                TO  RECE451-SRYKBN
+                ADD     1                   TO  WRK-RENNUM
+                MOVE    WRK-RENNUM          TO  RECE451-RENNUM
+                PERFORM  VARYING   IDX   FROM   1   BY   1
+                         UNTIL   (IDX       >    5)   OR
+                                 (FLG-WRKRECE45   =   1)
+                   ADD         1             TO    IDX-RECE45
+                   IF  WK-RECE45-SRYCD(IDX-RECE45) = SPACE
+                       MOVE    1             TO    FLG-WRKRECE45
+                   ELSE
+                       MOVE  WRK-SRYACTINF(IDX-RECE45)
+                                        TO   RECE451-SRYACTINF(IDX)  
+                       MOVE  WRK-NAMEINF(IDX-RECE45)
+                                        TO   RECE451-NAMEINF(IDX)
+                       MOVE  WRK-SIKFLGINF(IDX-RECE45)
+                                        TO   RECE451-SIKFLGINF(IDX)
+                       ADD   1          TO   WRK-CNT-MEISAI
+                   END-IF  
+                END-PERFORM
+                WRITE   RECE451-REC
+                ADD     1                    TO  CNT-RECE45
+           END-PERFORM     
+      *
+      *
+           INITIALIZE                      RECE441-REC
+           MOVE    RECE41-HOSPID       TO  RECE441-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE441-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE441-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE441-PTID
+           MOVE    RECE41-RECEKA       TO  RECE441-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE441-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE441-TEKSTYMD
+           MOVE    ZERO                TO  RECE441-ZAINUM
+           MOVE    "99"                TO  RECE441-SRYKBN
+      *
+           MOVE    WRK-CNT-MEISAI      TO  RECE441-MEISAISU
+      *
+           WRITE   RECE441-REC
+           ADD     1                   TO  CNT-RECE44
+      *
+           .
+       2002-JUSHIN-COMMENT-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ºÆ¿Ç£´²óÌÜ°Ê¹ß¤Î¥«¥¦¥ó¥È
@@ -2272,6 +2961,7 @@
                    MOVE    1           TO  FLG-END
                NOT AT  END
                    ADD     1           TO  CNT-RECE41
+                   ADD     1           TO  CNT-IN-COMMIT
                    MOVE    ZERO        TO  FLG-END
            END-READ
       *
@@ -2334,6 +3024,50 @@
            EXIT.
       *
       *****************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1005-REC
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               INITIALIZE                  SYS-1005-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼õ¿ÇÍúÎòÆÉ¹þ
+      *****************************************************************
+       JYURRK-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  JYURRK-REC
+               MOVE    ZERO            TO  FLG-JYURRK
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           .
+       JYURRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥º½èÍý
       *****************************************************************
        CSR-CLOSE-SEC            SECTION.
@@ -2387,6 +3121,34 @@
                                         MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¡¡£Ã£Ï£Í£Í£É£Ô½èÍý
+      *****************************************************************
+       900-DBCOMMIT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "MCPSUB"          USING
+                                        MCPAREA
+                                        MCPDATA-REC.
+      *
+           .
+       900-DBCOMMIT-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    £Ä£Â¡¡£Ó£Ô£Á£Ò£Ô½èÍý
+      *****************************************************************
+       900-DBSTART-SEC                SECTION.
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       900-DBSTART-EXT.
            EXIT.
       *
       *****************************************************************
