@@ -214,6 +214,7 @@
       *                                     INTERACT-UPD1,DEL1追加 
       *  01.01.48    NACL-藤原    03/03/14  PTBYO-KEY7追加
       *  01.01.49    NACL-藤原    03/03/16  KOHSKY-KEY5,KEY6追加
+      *                                     SEIKYU-KEY16,KEY17,KEY18追加   
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1983,6 +1984,15 @@
                                        TO  WRK-PATH
                 WHEN    ANY             ALSO   "SEIKYU-KEY15"
                    MOVE    PATH-TBL-SEIKYU-KEY15
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY16"
+                   MOVE    PATH-TBL-SEIKYU-KEY16
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY17"
+                   MOVE    PATH-TBL-SEIKYU-KEY17
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY18"
+                   MOVE    PATH-TBL-SEIKYU-KEY18
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SEIKYU-ALL"

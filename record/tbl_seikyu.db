@@ -713,6 +713,70 @@ path	key15		{
 };
 
 
+path	key16	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key16_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    =  '060'                   
+                        OR   HKNNUM_S    =  '067'        ) 
+                  AND (      RECESYUBETU <>  '0000'      ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM   )
+                  AND (   (  NYUGAIKBN   =   '1'      )
+                       OR (( NYUGAIKBN   =   '2'      ) AND (  ZAITAKU     <>  '1' )))
+                ORDER  BY  HKNJANUM_S   
+		;
+	};
+};
+
+path	key17	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key17_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    =  '060'                   
+                        OR   HKNNUM_S    =  '067'        ) 
+                  AND (      RECESYUBETU <>  '0000'      ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      ZAITAKU     =   '1'         )
+                  AND (      NYUGAIKBN   =   '2'         )
+                ORDER  BY  HKNJANUM_S   
+		;
+	};
+};
+
+path	key18	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key18_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    <>  '060'       )
+                  AND (      HKNNUM_S    <>  '067'       ) 
+                  AND (      RECESYUBETU <>  '0000'      )
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      NYUGAIKBN   =   '1'         )
+		;
+	};
+};
+
 path	all	{
 	DBSELECT	{
 		DECLARE tbl_seikyu_all_csr CURSOR FOR
