@@ -567,18 +567,18 @@
            ELSE
                INITIALIZE                   SYS-2005-REC
            END-IF
-           IF      SYS-2005-SYARECEKBN =   "1"
+           IF      SYS-2005-SYARECEKBN =   "1" OR  "2" OR  "3"
                MOVE    WIDGET-NORMAL      TO  SPA-B06-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE TO  SPA-B06-STATE
            END-IF
-           IF      SYS-2005-KKHRECEKBN =   "1"
+           IF      SYS-2005-KKHRECEKBN =   "1" OR  "2" OR  "3"
                MOVE    WIDGET-NORMAL      TO  SPA-B07-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE TO  SPA-B07-STATE
            END-IF
-           IF    ( SYS-2005-SYARECEKBN =   "1" )
-           OR    ( SYS-2005-KKHRECEKBN =   "1" )
+           IF    ( SYS-2005-SYARECEKBN =   "1" OR  "2" OR  "3" )
+           OR    ( SYS-2005-KKHRECEKBN =   "1" OR  "2" OR  "3" )
                MOVE    WIDGET-NORMAL      TO  SPA-DATA-STATE
                                               SPA-NYUGAIKBN-STATE
            ELSE
