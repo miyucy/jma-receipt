@@ -996,3 +996,23 @@
                        09  SPA-GMN2F-PTID          PIC 9(10).
                    07  SPA-GMN2F-MAX           PIC 9(04).
       *
+      *    £Ã£Ì£Á£É£Í²èÌÌ¡Ê£Ð£°£²£Ø¡Ë
+           03  SPA-P02X-AREA.
+               05  SPA-P02X-FLG                        PIC X(02).
+               05  SPA-P02X-CODE                       PIC X(01).
+               05  SPA-P02X-CUR                        PIC 9(02).
+      *
+               05  SPA-P02X-GMN-SEL                    PIC 9(03).
+               05  SPA-P02X-GMN-ADRLST.
+                   07  SPA-P02X-GMN-ADR-TBL        OCCURS  10.
+                       09  SPA-P02X-GMN-SELNOL     PIC 9(03).
+                       09  SPA-P02X-GMN-ADRL       PIC X(22).
+                       09  SPA-P02X-GMN-PORTL      PIC X(22).
+                       09  SPA-P02X-GMN-MEMOL      PIC X(22).
+                   07  SPA-P02X-GMN-MAX            PIC 9(04).
+               05  SPA-GMN-SCODE-G.
+                   07  SPA-GMN-SCODE           PIC X(01).
+                   07  SPA-GMN-F1              PIC X(01).
+                   07  SPA-GMN-SCODEMEI        PIC X(18).
+      *
+      *
