@@ -36,6 +36,7 @@
       *  01.00.07    NACL-多々納  02/10/25  入院追加
       *  01.00.08    NACL-多々納  02/12/09  剤削除修正
       *  01.00.09    NACL-多々納  03/03/05  排他制御処理追加
+      *  01.00.10    NACL-多々納  03/04/04  中心静脈自動算定追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4529,10 +4530,10 @@
            MOVE    SPA-GMN-PTID        TO  ACCT-PTID
            MOVE    SPA-NAI-SRYYM       TO  ACCT-SRYYM
            IF      SPA-J01-SRYKA       =   ZERO
-               MOVE    "SRYACCT-KEY7"      TO  WRK-ORC-DBPATH
+               MOVE    "SRYACCT-KEY19"     TO  WRK-ORC-DBPATH
            ELSE
                MOVE    SPA-J01-SRYKA       TO  ACCT-SRYKA
-               MOVE    "SRYACCT-KEY2"      TO  WRK-ORC-DBPATH
+               MOVE    "SRYACCT-KEY18"     TO  WRK-ORC-DBPATH
            END-IF
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
