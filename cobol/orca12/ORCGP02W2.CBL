@@ -361,7 +361,8 @@
            PERFORM 5701-COMB-HEN-SEC
       *
            .
-       000-PROC-EXT.
+       000-PROC-EXT
+           .
            EXIT    PROGRAM
            .
       *****************************************************************
@@ -461,10 +462,6 @@
                UNTIL  (FLG-PARA    NOT =   ZERO      )
       *
                MOVE    PARA-DATA-REC       TO  PTKOHINF-REC
-      *TEST
-                DISPLAY "P02W2 HOKNUM:" PTKOH-KOHNUM
-                       "," PTKOH-PAYKBN
-      *TEST
                IF      PTKOH-SAKJOKBN      =   SPACE
                    ADD     1               TO  CNT-KOH
                    IF  CNT-KOH             >   100
