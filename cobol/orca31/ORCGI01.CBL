@@ -7113,8 +7113,6 @@
       *        …¬≈Ô∆˛±°Œ¡≤√ªª
                PERFORM   VARYING   IDX7   FROM   1  BY  1
                  UNTIL  (IDX7                    >   12)
-                   OR   (SYS-5001-KSNCD(IDX7)    =   SPACE)
-                        
                     IF   IDX7          =       6
       *                 ª˘∆∏ª◊Ω’¥¸¿∫ø¿≤ ∆˛±°∞ÂŒ≈¥…Õ˝≤√ªª° £≤£∞∫ÕÃ§À˛°À
                         IF   SYS-5001-KSNKBN(IDX7)   =   "2"
@@ -7126,10 +7124,14 @@
                              END-IF
                         END-IF
                     ELSE
-                        IF   SYS-5001-KSNKBN(IDX7)   =   "2"
-                             ADD    1                TO  IDX8
-                             MOVE   SYS-5001-KSNCD(IDX7)  TO
-                                           WRK-NYUKHNKSN-SRYCD(IDX8)
+                        IF   IDX7  =  3  OR  4  OR  5
+                             CONTINUE
+                        ELSE
+                            IF   SYS-5001-KSNKBN(IDX7)   =   "2"
+                                 ADD    1                TO  IDX8
+                                 MOVE   SYS-5001-KSNCD(IDX7)  TO
+                                            WRK-NYUKHNKSN-SRYCD(IDX8)
+                            END-IF
                         END-IF
                     END-IF
                END-PERFORM
@@ -7167,6 +7169,24 @@
                IF   SYS-5002-RYOYO-KBN     =   "2"
                     ADD     1       TO     IDX8
                     MOVE   SYS-5002-RYOYO-CD  TO
+                                   WRK-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *        Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª£±
+               IF   SYS-5002-BTU-RYOYO-KBN(1)     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   "190106070"  TO
+                                   WRK-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *        Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª£≤
+               IF   SYS-5002-BTU-RYOYO-KBN(2)     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   "190106170"  TO
+                                   WRK-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *        Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª£≥
+               IF   SYS-5002-BTU-RYOYO-KBN(3)     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   "190106270"  TO
                                    WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
            END-IF
