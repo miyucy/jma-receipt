@@ -4179,30 +4179,37 @@
       *    エラーがない時は、元へもどす
            MOVE    ZERO                TO  FLG-CHK
            MOVE    SPA-NAI-HKNSTR      TO  WRK-NAI-HKNSTR
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   SPA-PTHKN-MAX )  OR
+           IF      SPA-PTHKN-MAX       >   ZERO
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX         >   SPA-PTHKN-MAX )  OR
                               (SPA-ERRCD   NOT =   SPACE )
-               INITIALIZE                  SPA-GMN-HKN-AREA
-               IF      SPA-PTHKN-SAKJOKBN (IDX)    =   SPACE
-                   MOVE    IDX             TO  SPA-NAI-HKNSTR
-                   PERFORM 3101-HOKEN-HEN-SEC
-      *            保険情報チェックサブ
-                   CALL    "ORCSP03A"          USING   SPA-AREA
-                                                       SPA-P02SCRAREA
-                                                       SPA-P02KYOUTU
+                   INITIALIZE                  SPA-GMN-HKN-AREA
+                   IF      SPA-PTHKN-SAKJOKBN (IDX)    =   SPACE
+                       MOVE    IDX             TO  SPA-NAI-HKNSTR
+                       PERFORM 3101-HOKEN-HEN-SEC
+      *                保険情報チェックサブ
+                       CALL    "ORCSP03A"          USING   SPA-AREA
+                                                   SPA-P02SCRAREA
+                                                   SPA-P02KYOUTU
+                   END-IF
+               END-PERFORM
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      4501-ALLHKN-CHK-EXT
                END-IF
-           END-PERFORM
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4501-ALLHKN-CHK-EXT
+               MOVE    WRK-NAI-HKNSTR      TO  SPA-NAI-HKNSTR
+               MOVE    SPA-NAI-HKNSTR      TO  IDX
+               PERFORM 3101-HOKEN-HEN-SEC
            END-IF
-           MOVE    WRK-NAI-HKNSTR      TO  SPA-NAI-HKNSTR
-           MOVE    SPA-NAI-HKNSTR      TO  IDX
-           PERFORM 3101-HOKEN-HEN-SEC
       *
       *    公費は３件以上の時行う
+           IF     (SPA-PTKOH-MAX       =   ZERO )  OR
+                  (SPA-NAI-KOHEND      =   SPA-PTKOH-MAX )
+               GO      TO      4501-ALLHKN-CHK-EXT
+           END-IF
       *
            MOVE    SPA-NAI-KOHSTR      TO  WRK-NAI-KOHSTR
            MOVE    ZERO                TO  IDY
+      *
            PERFORM VARYING     IDX     FROM    WRK-NAI-KOHSTR BY  1
                    UNTIL      (IDX         >   SPA-PTKOH-MAX )  OR
                               (SPA-ERRCD   NOT =   SPACE )
@@ -4236,6 +4243,28 @@
                                                SPA-P02SCRAREA
                                                SPA-P02KYOUTU
            END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4501-ALLHKN-CHK-EXT
+           END-IF
+      *    元へ戻す
+           INITIALIZE                  SPA-GMN-KOH-AREA
+           MOVE    ZERO                TO  SPA-NAI-KOHEND
+           MOVE    ZERO                TO  IDY
+           MOVE    WRK-NAI-KOHSTR      TO  SPA-NAI-KOHSTR
+           PERFORM VARYING     IDX     FROM    WRK-NAI-KOHSTR BY  1
+                   UNTIL      (IDX         >   SPA-PTKOH-MAX )  OR
+                              (IDY         >=  3         )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-PTKOH-SAKJOKBN (IDX)    =   SPACE
+                   IF      IDY             =   ZERO
+                       MOVE    IDX             TO  SPA-NAI-KOHSTR
+                   END-IF
+                   MOVE    IDX                 TO  SPA-NAI-KOHEND
+                   ADD     1                   TO  IDY
+                   MOVE    1                   TO  FLG-CHK
+                   PERFORM 3102-KOUHI-HEN-SEC
+               END-IF
+           END-PERFORM
            .
        4501-ALLHKN-CHK-EXT.
            EXIT.
