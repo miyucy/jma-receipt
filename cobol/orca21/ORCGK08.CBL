@@ -3104,7 +3104,7 @@
                                            NOT =   ZERO  )
                            IF     (SYU-GRP-SGKMONEY    >   ZERO ) OR
                                   (LNK-SYU2-SKYMONEY(IDS2)
-                                               >   WRK-GRP-SGKMONEY)
+                                               >=  WRK-GRP-SGKMONEY)
                                MOVE    IDS2        TO  IDS3
                            END-IF
                        END-IF
