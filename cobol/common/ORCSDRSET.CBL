@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−多々納 04/06/25  診療所で２０名以上を科別へ
       *****************************************************************
       *
       *
@@ -50,14 +51,24 @@
            03  FLG-CHK             PIC 9(01).
            03  FLG-CHK2            PIC 9(01).
            03  FLG-OK              PIC 9(01).
+           03  FLG-OVER            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
       *
       *    一時領域
-      *01  WRK-AREA.
+       01  WRK-AREA.
+           03  WRK-DRCD-TBL-G.
+               05  WRK-DRCD-TBL        OCCURS   20.
+      *            ドクターコード
+                   07  WRK-DRCD             PIC  X(04).
+                   07  WRK-DRCD-H           PIC  X(01).
+                   07  WRK-DRCDMEI          PIC  X(24).
+               05  WRK-DRCD-IDX             PIC  9(04).
+      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -110,7 +121,7 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
-      *****INITIALIZE                  WRK-AREA
+           INITIALIZE                  WRK-AREA
            INITIALIZE                  ORCSDR-ERRCD
       *
            EVALUATE    ORCSDR-KBN
@@ -134,6 +145,8 @@
        100-DR-HENSYU-SEC            SECTION.
       *
            INITIALIZE                  ORCSDR-OUT-AREA
+           INITIALIZE                  WRK-DRCD-TBL-G
+           MOVE    ZERO                TO  IDX3
       *
       *    職員情報（ドクター）
            MOVE    SPACE               TO  SYS-1010-REC
@@ -157,9 +170,9 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  FLG-OVER
            PERFORM
-                   UNTIL       (IDX            >=   20  )  OR
-                               (FLG-SYSKANRI   =   1    )
+                   UNTIL       (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC             TO  SYS-1010-REC
                IF      SYS-1010-KBNCD(1:1)     =   "1"
                    MOVE    ZERO                TO  FLG-CHK
@@ -170,17 +183,26 @@
                    ELSE
                        IF      ORCSDR-SRYKA    NOT =   SPACE
                            PERFORM 1001-SEMONKACD-CHK-SEC
+                           IF      FLG-CHK         =   1
+                               PERFORM 1002-DRCD-TBL-SEC
+                           END-IF
                        END-IF
                        MOVE    1               TO  FLG-CHK
                    END-IF
                    IF      FLG-CHK             =   1
-                       ADD     1                   TO  IDX
-                       MOVE    SYS-1010-KBNCD(2:4)
-                                               TO  ORCSDR-DRCD   (IDX)
-                       MOVE    SYS-1010-NAME   TO  ORCSDR-DRCDMEI(IDX)
-                       IF     (FLG-CHK2        =   1  )  AND
-                              (ORCSDR-DRCD-IDX =   ZERO )
-                           MOVE    IDX             TO  ORCSDR-DRCD-IDX
+                       IF      IDX                 >=  20
+                           MOVE    1               TO  FLG-OVER
+                       ELSE
+                           ADD     1                   TO  IDX
+                           MOVE    SYS-1010-KBNCD(2:4)
+                                                   TO  ORCSDR-DRCD
+                                                                (IDX)
+                           MOVE    SYS-1010-NAME   TO  ORCSDR-DRCDMEI
+                                                                (IDX)
+                           IF     (FLG-CHK2        =   1  )  AND
+                                  (ORCSDR-DRCD-IDX =   ZERO )
+                               MOVE    IDX         TO  ORCSDR-DRCD-IDX
+                           END-IF
                        END-IF
                    END-IF
                END-IF
@@ -191,6 +213,13 @@
       *
            MOVE    IDX                 TO  ORCSDR-DRCD-MAX
       *
+           IF     (FLG-OVER            =   1  )  AND
+                  (IDX3                >   ZERO)
+               MOVE    WRK-DRCD-TBL-G      TO  ORCSDR-DRCD-TBL-G
+               MOVE    IDX3                TO  ORCSDR-DRCD-MAX
+               MOVE    WRK-DRCD-IDX        TO  ORCSDR-DRCD-IDX
+           END-IF
+      *
       *    ドクターコードがある時、ドクター編集
            IF      ORCSDR-IN-DRCD  NOT =   SPACE
       *        ドクターチェック
@@ -199,6 +228,25 @@
       *
            .
        100-HENSYU-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    科別の編集（診療所）処理
+      *****************************************************************
+       1002-DRCD-TBL-SEC            SECTION.
+      *
+           IF      IDX3                >=  20
+               GO      TO      1002-DRCD-TBL-EXT
+           END-IF
+           ADD     1                   TO  IDX3
+           MOVE    SYS-1010-KBNCD(2:4) TO  WRK-DRCD    (IDX3)
+           MOVE    SYS-1010-NAME       TO  WRK-DRCDMEI (IDX3)
+           IF     (FLG-CHK2            =   1  )  AND
+                  (WRK-DRCD-IDX        =   ZERO )
+               MOVE    IDX3            TO  WRK-DRCD-IDX
+           END-IF
+      *
+           .
+       1002-DRCD-TBL-EXT.
            EXIT.
       *****************************************************************
       *    科別の専門家チェック処理
