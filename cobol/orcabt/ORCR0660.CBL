@@ -41,6 +41,8 @@
       *  01.00.07    NACL-門脇    03.08.20  公費受診日のコメント編集
       *  01.00.08    NACL-門脇    03.09.24  コメント編集修正
       *  01.00.09    NACL-門脇    03.09.29  コメント編集修正
+      *  01.00.10    NACL-門脇    03.12.15  自動編集コメントの公費分離区分
+      *                                     セット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -224,6 +226,7 @@
            03  WRK-KETA-TAIHI      PIC 9(04).
            03  WRK-KETA2           PIC 9(04).
            03  WRK-KOHBUNRI        PIC 9(01).
+           03  WRK-KOHBUNRI-JIDO   PIC 9(01).
            03  WRK-RECEERR         PIC X(200).
       *
            03  TBL-SANTEI-DAY.
@@ -584,6 +587,13 @@
            INITIALIZE                      WRK-RIGAKU-AREA
            INITIALIZE                      WRK-TAIHI-ZAINUM
       *
+           IF   RECE62-TOTALTEN(1)       =      ZERO
+           AND  RECE62-TOTALTEN(2)   NOT =      ZERO
+                MOVE       1           TO  WRK-KOHBUNRI-JIDO
+           ELSE
+                MOVE     ZERO          TO  WRK-KOHBUNRI-JIDO
+           END-IF
+      *
            IF   RECE62-COMCNTFLG   =   "1"
       *
              INITIALIZE                      RECE64-REC
@@ -935,6 +945,7 @@
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE641-HOJOKBN
            MOVE    RECE62-TEKSTYMD     TO  RECE641-TEKSTYMD
            MOVE    99999999            TO  RECE641-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE641-KOHBUNRI
            MOVE    "90"                TO  RECE641-SRYKBN
       *
            MOVE    1                   TO  RECE641-MEISAISU
@@ -954,6 +965,7 @@
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE651-HOJOKBN
            MOVE    RECE62-TEKSTYMD     TO  RECE651-TEKSTYMD
            MOVE    99999999            TO  RECE651-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE651-KOHBUNRI
            MOVE    "90"                TO  RECE651-SRYKBN
       *    コメントの挿入
            MOVE    SPACE               TO  COM-RECE65-REC
@@ -1072,6 +1084,7 @@
                 MOVE    RECE62-HOJOKBN-KEY   TO  RECE651-HOJOKBN
                 MOVE    RECE62-TEKSTYMD      TO  RECE651-TEKSTYMD
                 MOVE    99999980             TO  RECE651-ZAINUM
+                MOVE    WRK-KOHBUNRI-JIDO    TO  RECE651-KOHBUNRI
                 MOVE    "99"                 TO  RECE651-SRYKBN
                 ADD     1                    TO  WRK-RENNUM
                 MOVE    WRK-RENNUM           TO  RECE651-RENNUM
@@ -1106,6 +1119,7 @@
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE641-HOJOKBN
            MOVE    RECE62-TEKSTYMD     TO  RECE641-TEKSTYMD
            MOVE    99999980            TO  RECE641-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE641-KOHBUNRI
            MOVE    "99"                TO  RECE641-SRYKBN
       *
            MOVE    WRK-CNT-MEISAI      TO  RECE641-MEISAISU
