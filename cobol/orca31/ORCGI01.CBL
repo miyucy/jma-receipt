@@ -265,6 +265,8 @@
            COPY    "CPSK5001.INC".
       *    （病室情報）
            COPY    "CPSK5002.INC".
+      *    （病棟入院料加算情報）
+           COPY    "CPSK5003.INC".
       *    （室料差額）
            COPY    "CPSK5113.INC".
       *    （特定入院料−病棟）
@@ -6040,6 +6042,7 @@
       *****************************************************************
        4801-NYUKSN-GET-SEC         SECTION.
       *
+      *医療機關情報
            INITIALIZE              SYSKANRI-REC
       *
            MOVE    "5000"          TO  SYS-KANRICD
@@ -6073,16 +6076,73 @@
                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
                END-IF
            END-IF
-           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(1) = "
-                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(1)
-           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(2) = "
-                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(2)
-           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(3) = "
-                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(3)
-           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(4) = "
-                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(4)
-           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(5) = "
-                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(5)
+      *
+      *    システム管理マスタクローズ
+           MOVE    "SYSKANRI-KEY2" TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+      *病棟加算情報
+           INITIALIZE              SYSKANRI-REC
+      *
+           MOVE    "5003"          TO  SYS-KANRICD
+           MOVE    PTNYUINRRK-BTUNUM
+                                   TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+      *
+      *    システム管理マスタの病棟加算情報より取得
+           MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+      *
+           IF   FLG-DBRC           =    ZERO
+               MOVE    MCPDATA-REC TO   SYS-5003-REC
+      *        入院料加算
+               PERFORM   VARYING   IDX7   FROM   1  BY  1
+                 UNTIL  (SYS-5003-KSNCD(IDX7)    =   SPACE)  OR
+                        (IDX7                    >   12)
+                    IF   SYS-5003-KSNKBN(IDX7)   =   "2"
+                         ADD    1                TO  IDX8
+                         MOVE   SYS-5003-KSNCD(IDX7)  TO
+                                LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                    END-IF
+               END-PERFORM
+           END-IF
+      *
+      *病室情報
+           PERFORM     4801-BRMSEL-SEC
+      *
+           IF   FLG-SYSKANRI       =    ZERO
+      *        新生児入院医療管理加算
+               IF   SYS-5002-SINSEIJI-KBN     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   SYS-5002-SINSEIJI-CD  TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *        診療所療養病床療養環境加算（１）
+               IF   SYS-5002-SNR-RYOYO-KBN(1)     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   SYS-5002-SNR-RYOYO-CD(1)  TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *        診療所療養病床療養環境加算（２）
+               IF   SYS-5002-SNR-RYOYO-KBN(2)     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   SYS-5002-SNR-RYOYO-CD(2)  TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *        放射線治療病室管理加算
+               IF   SYS-5002-HOSYASEN-KBN     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   SYS-5002-HOSYASEN-CD  TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *        療養環境加算
+               IF   SYS-5002-RYOYO-KBN     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   SYS-5002-RYOYO-CD  TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+           END-IF
       *
       *    システム管理マスタクローズ
            MOVE    "SYSKANRI-KEY2" TO  WRK-DBPATH
