@@ -21,6 +21,8 @@
               03  XB01-SCROLLEDWINDOW2.
                 04  XB01-LIST.
                   05  XB01-COUNT           PIC S9(9)   BINARY.
+                  05  XB01-ROW             PIC S9(9)   BINARY.
+                  05  XB01-ROWATTR         PIC S9(9)   BINARY.
                   05  XB01-ITEM            OCCURS  100 TIMES.
                     07  XB01-NO            PIC X(4).
                     07  XB01-JOBNAME       PIC X(40).
