@@ -5005,7 +5005,6 @@
            IF      SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)
                                        =   "*"
                PERFORM 4101129-KAISUU-CHK-SEC
-               MOVE    SPACE           TO  SPA-COM-INPUTCD(SPA-GMN-IDX)
                GO      TO      410112-INPUTCD-HENKAN-EXT
            END-IF
       *    回数入力があった時エラーとする
@@ -5447,6 +5446,33 @@
       *    回数入力チェック処理
       *****************************************************************
        4101129-KAISUU-CHK-SEC           SECTION.
+      *
+      *    回数に変更があった時、剤内の警告はクリアする
+      *TEST
+           DISPLAY "LNK-SC97-NYURYOKU :" LNK-SC97-NYURYOKU 
+      *TEST
+           IF     SPA-GMN-INPUTCD(SPA-GMN-IDX)
+                                   NOT =   SPA-MAE-INPUTCD(SPA-GMN-IDX)
+      *****IF     LNK-SC97-NYURYOKU    =   1
+               COMPUTE IDX-K           =   SPA-GMN-IDX   -   1
+               PERFORM VARYING     IDX-K2  FROM    IDX-K  BY  -1
+                       UNTIL       IDX-K2  <   1
+                  IF      SPA-COM-ZAIEND (IDX-K2)  =   "1"
+                      MOVE    1                TO  IDX-K2
+                  ELSE
+                      IF      SPA-COM-SRYKBN (IDX-K2)  =  "80"
+                           MOVE    SPACE           TO  SPA-COM-KZMFLG
+                                                            (IDX-K2)
+                           MOVE    SPACE           TO  SPA-COM-KZMFLG2
+                                                            (IDX-K2)
+                      END-IF
+                  END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    クリア
+           MOVE    SPACE           TO  SPA-COM-INPUTCD(SPA-GMN-IDX)
+           INITIALIZE                  SPA-COM-TBLREC (SPA-GMN-IDX)
       *
       *    回数（未入力時、１回）
            IF      WRK-ACCT-MCNT       =   ZERO
@@ -6517,6 +6543,14 @@
                                            TO  WRK-COM-TBLREC(IDX-Z)
                    MOVE    SPA-GMN-TBLREC (IDX)
                                            TO  WRK-GMN-TBLREC(IDX-Z)
+      *            自費以外の計をクリアする
+                   IF      WRK-COM-SRYKBN (IDX-Z)   =   "95"  OR "96"
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO            TO  WRK-COM-KEI(IDX-Z)
+                       MOVE    ZERO            TO  WRK-COM-JIHIMONEY
+                                                               (IDX-Z)
+                    END-IF
                END-IF
       *        回数編集
                IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "."

@@ -5098,6 +5098,7 @@
       *
            MOVE    ZERO                TO  WRK-STR
            MOVE    ZERO                TO  FLG-KUHAKU
+           MOVE    ZERO                TO  SPA-GMN-IDX
            PERFORM VARYING     WRK-IDX2    FROM    1   BY  1
                    UNTIL       WRK-IDX2    >   20
       *        ＳＰＡ内の行決定
@@ -7348,6 +7349,16 @@
                                            TO  WRK-COM-TBLREC(IDX-Z)
                    MOVE    SPA-GMN-TBLREC (IDX)
                                            TO  WRK-GMN-TBLREC(IDX-Z)
+      *
+      *            自費以外の計をクリアする
+                   IF      WRK-COM-SRYKBN (IDX-Z)   =   "95"  OR "96"
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO            TO  WRK-COM-KEI(IDX-Z)
+                       MOVE    ZERO            TO  WRK-COM-JIHIMONEY
+                                                               (IDX-Z)
+                    END-IF
+      *
                END-IF
       *        回数編集
                IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "."
@@ -7779,6 +7790,7 @@
                IF      LNK-ORCSC-KAISU NOT =   WRK-COM-KAISU (IDX-Z)
                    MOVE    LNK-ORCSC-KAISU     TO  WRK-COM-KAISU(IDX-Z)
                END-IF
+      *
       *        最終行に回数入力（＊）が有った時、最終行を回数入力
                IF      FLG-KAISU           NOT =   ZERO
                    IF      WRK-COM-ZAIEND (IDX-Z)  =   SPACE
@@ -7804,6 +7816,7 @@
                       (WRK-COM-SRYKBN (IDX-Z)  NOT =   "95"  AND "96")
                    ADD     WRK-COM-KEI    (IDX-Z)  TO  WRK-GOKEI-9
                END-IF
+      *
       *        約束セット行の編集
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1) =   "S"
                    MOVE    LNK-ORCSC-ZAITEN        TO  WRK-COM-TENSU
