@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 日次帳票
-      *  コンポーネント名  : 収納一覧表（ＨＣＭ０７）
+      *  コンポーネント名  : 収納一覧表（ＨＣＭ０７）外来
       *  管理者            : 
       *  作成日付    作業者        記述
       *  03/02/27    NACL-森脇     新規作成
@@ -780,6 +780,7 @@
       *
            INITIALIZE                  SMEI-REC
            MOVE    WRK-PARA-HOSPID TO  SMEI-HOSPID
+           MOVE    "2"             TO  SMEI-NYUGAIKBN
            MOVE    WRK-PARA-DENPPRTYMD
                                    TO  SMEI-NYUHEN-YMD
            MOVE    SMEI-REC        TO  MCPDATA-REC
@@ -793,7 +794,10 @@
                PERFORM 900-DBFETCH-SEC
            ELSE
                MOVE    1               TO  FLG-SMEI
-                                           FLG-END
+           END-IF
+      *
+           IF      FLG-SMEI            =   1
+               MOVE    1               TO  FLG-END
            END-IF
            .
        900-DBSELECT-EXT.

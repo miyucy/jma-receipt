@@ -103,6 +103,7 @@ path	key4 	{
 		SELECT *
 		FROM tbl_syumei
 			WHERE   HOSPID        =  :HOSPID
+                        AND     NYUGAIKBN     =  :NYUGAIKBN
 			AND     NYUHEN_YMD    =  :NYUHEN_YMD
 			ORDER   BY	SRYKA,PTID,DENPNUM,DENPEDANUM
 		;
