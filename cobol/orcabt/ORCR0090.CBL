@@ -423,7 +423,7 @@
            03  WRK-RECE04-TBL              OCCURS  100.
                05  WRK-RECE04-HOUKNSKBN           PIC 9(01).
                05  WRK-RECE04-KOHBUNRI            PIC 9(01).
-               05  WRK-RECE04-REC                 PIC X(500).
+               05  WRK-RECE04-REC                 PIC X(600).
                05  WRK-RECE04-DAY-AREA.
                    07  WRK-RECE04-DAY-TBL         OCCURS  4.
                        09  WRK-RECE04-KAISUINF    OCCURS  31.

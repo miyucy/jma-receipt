@@ -331,7 +331,7 @@
            03  WRK-RECE64-TBL              OCCURS  100.
                05  WRK-RECE64-HOUKNSKBN           PIC 9(01).
                05  WRK-RECE64-KOHBUNRI            PIC 9(01).
-               05  WRK-RECE64-REC                 PIC X(500).
+               05  WRK-RECE64-REC                 PIC X(600).
                05  WRK-RECE64-DAY-AREA.
                    07  WRK-RECE64-DAY-TBL         OCCURS  4.
                        09  WRK-RECE64-KAISUINF    OCCURS  31.

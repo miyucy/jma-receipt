@@ -301,7 +301,7 @@
        01  WRK-RECE84-TABLE.
            03  WRK-RECE84-TBL              OCCURS  100.
                05  WRK-RECE84-HOUKNSKBN           PIC 9(01).
-               05  WRK-RECE84-REC                 PIC X(500).
+               05  WRK-RECE84-REC                 PIC X(600).
                05  WRK-RECE84-DAY-AREA.
                    07  WRK-RECE84-DAY-TBL         OCCURS  4.
                        09  WRK-RECE84-KAISUINF    OCCURS  31.
