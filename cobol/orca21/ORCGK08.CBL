@@ -1426,11 +1426,12 @@
            END-IF
       *    自賠責で証明料等の時、点数をゼロとする
            IF     (SPA-HKNKBN          =   1    )  AND
-                  (SPA-RSI-HKNKBN      =   "4"  )  AND
+      *********** (SPA-RSI-HKNKBN      =   "4"  )  AND
                   (LNK-WKSRY-SRYKBN(IDX)   =   "80" )  AND
                   (LNK-WKSRY-SRYCD (IDX IDZ)(1:5)  =   "09591" OR
                                                        "09592" OR
-                                                       "09593" )
+                                                       "09593" OR
+                                                       "09594" )
                MOVE    1                   TO  FLG-RSIFLG
            END-IF
       *
@@ -2641,7 +2642,8 @@
                           (LNK-WKSRY-SRYCD (IDX IDS)(1:5)
                                                        =   "09591" OR
                                                            "09592" OR
-                                                           "09593" )
+                                                           "09593" OR
+                                                           "09594" )
                        MOVE    1                   TO  FLG-RSIFLG
                    END-IF
                    IF      FLG-RSIFLG          =   1

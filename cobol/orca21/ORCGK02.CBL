@@ -567,6 +567,7 @@
       *
       *    コラムリスト位置
            03  WRK-K02-ROW             PIC S9(09).
+           03  WRK-K02-ROWATTR         PIC S9(09).
            03  FLG-GMN-INIT            PIC  9(01).
       *
       *   年齢表示
@@ -1863,6 +1864,7 @@
       *    受付、患者検索より
            IF      WRK-SPA-PTNUM       =   SPA-PTNUM
                CONTINUE
+               MOVE    1                   TO  SPA-GMN-CUR
            ELSE
                IF      WRK-SPA-PTNUM       NOT =   SPACE
       *            初期表示へ
@@ -1893,15 +1895,18 @@
                    IF      LNK-WKSRYACT-MAX        >   ZERO
                        MOVE    01              TO  SPA-GMN-CUR
                    END-IF
-                   GO      TO      3101-P97SPASET-EXT
+      *            入院中の時、カーソルを患者番号へ
+                   IF      SPA-KIDCD           =   "0121"
+                        MOVE    ZERO           TO  SPA-GMN-CUR
+                    END-IF
                END-IF
            END-IF
       *
            IF     (SPA-PTID            =   ZERO  )  OR
                   (SPA-ERRCD       NOT =   SPACE )
                MOVE    ZERO                TO  SPA-GMN-CUR
-           ELSE
-               MOVE    1                   TO  SPA-GMN-CUR
+      **** ELSE
+      *****    MOVE    1                   TO  SPA-GMN-CUR
            END-IF
            .
        3101-P97SPASET-EXT.
@@ -3646,13 +3651,14 @@
            IF      SPA-COM-INPUTCD(IDX2)(1:3)  =   "095"  OR  "096"
       *        自賠責の時、対象外
                IF     (SPA-HKNKBN          =   1    )  AND
-                      (SPA-RSI-HKNKBN      =   "4"  )  AND
+      *************** (SPA-RSI-HKNKBN      =   "4"  )  AND
                       (SPA-COM-SRYKBN (IDX2)
                                            =   "80" )  AND
                       (SPA-COM-INPUTCD(IDX2)(1:5)
                                            =   "09591"  OR
                                                "09592"  OR
-                                               "09593"  )
+                                               "09593"  OR
+                                               "09594"  )
                    MOVE    ZERO                TO  FLG-OK2
                ELSE
                    MOVE    1                   TO  FLG-OK2
@@ -7320,13 +7326,14 @@
       *
       *    自賠責の時、対象外
            IF     (SPA-HKNKBN          =   1    )  AND
-                  (SPA-RSI-HKNKBN      =   "4"  )  AND
+     *************(SPA-RSI-HKNKBN      =   "4"  )  AND
                   (SPA-COM-SRYKBN (SPA-GMN-IDX)
                                        =   "80"  )  AND
                   (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
                                        =   "09591"  OR
                                            "09592"  OR
-                                           "09593"  )
+                                           "09593"  OR
+                                           "09594"  )
                GO     TO      4101191-JIHI-HEN-EXT
            END-IF
       *
@@ -12121,7 +12128,8 @@
                                                   "09600" )  OR
                 ((SPA-COM-INPUTCD(IDX)(1:5)   =   "09591"  OR
                                                   "09592"  OR
-                                                  "09593" )  AND
+                                                  "09593"  OR
+                                                  "09594" )  AND
                  (SPA-COM-SRYKBN (IDX)    NOT =   "80"   ))
                PERFORM 45010-JIHI-SET-SEC
                GO      TO      4501-SEIKYU-KEI-EXT
@@ -12241,12 +12249,13 @@
       *
       *    自賠責の時、診断料・明細料はその他の編集する
            IF     (SPA-HKNKBN          =   1   )  AND
-                  (SPA-RSI-HKNKBN      =   "4" )  AND
+      *********** (SPA-RSI-HKNKBN      =   "4" )  AND
                   (SPA-COM-SRYKBN (IDX)
                                        =   "80"  )  AND
                   (SPA-COM-INPUTCD(IDX)(1:5)   =   "09591"
                                                OR  "09592"
-                                               OR  "09593")
+                                               OR  "09593"
+                                               OR  "09594")
                PERFORM 450112-JIBAISEKI-SET-SEC
                GO      TO      45011-TGMONEY-SET-EXT
            END-IF
@@ -13324,11 +13333,22 @@
            IF     (FLG-GMN-INIT        =   1   )  OR
                   (SPA-GMN-MAX1        =   ZERO )
                MOVE    ZERO                TO  WRK-K02-ROW
+               MOVE    ZERO                TO  WRK-K02-ROWATTR
            ELSE
                MOVE    K02-ROW             TO  WRK-K02-ROW
+               MOVE    K02-ROWATTR         TO  WRK-K02-ROWATTR
            END-IF
+      *
            MOVE    SPACE               TO  K02
            INITIALIZE                      K02
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  K02-ROW
+           MOVE    ZERO                TO  K02-ROWATTR
+           IF      WRK-K02-ROW     NOT =   ZERO
+               MOVE    WRK-K02-ROW         TO  K02-ROW
+               MOVE    WRK-K02-ROWATTR     TO  K02-ROWATTR
+           END-IF
       *
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  WRK-PAGE
@@ -13443,6 +13463,11 @@
                                                TO  K02-RRKHKNCOMBI(IDX)
                IF      SPA-GMN-NO (IDX)    =   SPA-NAI-TESELNUM
                    MOVE    "T"             TO  K02-SELECT  (IDX)
+      *            訂正の時
+                   IF      SPA-SYORIFLG        =   1
+                       MOVE    IDX             TO  K02-ROW
+                       MOVE    2               TO  K02-ROWATTR
+                   END-IF
                ELSE
                    MOVE    "F"             TO  K02-SELECT  (IDX)
                END-IF
@@ -13527,14 +13552,6 @@
                                                              (IDX)
            END-PERFORM
            MOVE    SPA-TABOO-MAX       TO  K02-TABOO-COUNT
-      *
-      *    コラムリストの位置指定
-           MOVE    ZERO                TO  K02-ROW
-           MOVE    ZERO                TO  K02-ROWATTR
-           IF      WRK-K02-ROW     NOT =   ZERO
-               MOVE    WRK-K02-ROW         TO  K02-ROW
-               MOVE    ZERO                TO  K02-ROWATTR
-           END-IF
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC

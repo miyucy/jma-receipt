@@ -2899,13 +2899,14 @@
            IF      SPA-COM-INPUTCD(IDX2)(1:3)  =   "095"  OR  "096"
       *        自賠責の時、対象外
                IF     (SPA-HKNKBN          =   1    )  AND
-                      (SPA-RSI-HKNKBN      =   "4"  )  AND
+      ****************(SPA-RSI-HKNKBN      =   "4"  )  AND
                       (SPA-COM-SRYKBN (IDX2)
                                            =   "80" )  AND
                       (SPA-COM-INPUTCD(IDX2)(1:5)
                                            =   "09591"  OR
                                                "09592"  OR
-                                               "09593"  )
+                                               "09593"  OR
+                                               "09594"  )
                    MOVE    ZERO                TO  FLG-OK2
                ELSE
                    MOVE    1                   TO  FLG-OK2
@@ -4279,6 +4280,20 @@
            END-IF
            MOVE    WRK-WKSRY-HKNCOMBI  TO  SPA-WKSRY-HKNCOMBI
       *
+      *    保険区分が変更された時、再編集を行う
+           IF     (SPA-HKNKBN          =   SPA-MAE-HKNKBN  )  AND
+                  (SPA-HKNKBN          =   ZERO            )
+             AND  (SPA-MAE-HKNCOMBINUM NOT =   "9999"  )
+             AND  (SPA-NAI-ROUJIN      =   WRK-ROUJIN  )
+               CONTINUE
+           ELSE
+      *        診療行為、計計算処理、編集
+               MOVE    "2"             TO  FLG-TOROKU
+               MOVE    SPACE           TO  FLG-TOROKU
+               PERFORM 510-TBLHEN-SEC
+               MOVE    SPACE           TO  FLG-TOROKU
+           END-IF
+     *
            .
        410121-HKNCOMBI-SAI-EXT.
            EXIT.
@@ -6377,13 +6392,14 @@
       *
       *    自賠責の時、対象外
            IF     (SPA-HKNKBN          =   1    )  AND
-                  (SPA-RSI-HKNKBN      =   "4"  )  AND
+      ************(SPA-RSI-HKNKBN      =   "4"  )  AND
                   (SPA-COM-SRYKBN (SPA-GMN-IDX)
                                        =   "80"  )  AND
                   (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
                                        =   "09591"  OR
                                            "09592"  OR
-                                           "09593"  )
+                                           "09593"  OR
+                                           "09594"  )
                GO     TO      4101191-JIHI-HEN-EXT
            END-IF
       *
@@ -10320,7 +10336,8 @@
                                                   "09600" )  OR
                 ((SPA-COM-INPUTCD(IDX)(1:5)   =   "09591"  OR
                                                   "09592"  OR
-                                                  "09593" )  AND
+                                                  "09593"  OR
+                                                  "09594" )  AND
                  (SPA-COM-SRYKBN (IDX)    NOT =   "80"   ))
                PERFORM 45010-JIHI-SET-SEC
                GO      TO      4501-SEIKYU-KEI-EXT
@@ -10443,12 +10460,13 @@
       *
       *    自賠責の時、診断料・明細料はその他の編集する
            IF     (SPA-HKNKBN          =   1   )  AND
-                  (SPA-RSI-HKNKBN      =   "4" )  AND
+      **********  (SPA-RSI-HKNKBN      =   "4" )  AND
                   (SPA-COM-SRYKBN (IDX)
                                        =   "80"  )  AND
                   (SPA-COM-INPUTCD(IDX)(1:5)   =   "09591"
                                                OR  "09592"
-                                               OR  "09593")
+                                               OR  "09593" 
+                                               OR  "09594")
                PERFORM 450112-JIBAISEKI-SET-SEC
                GO      TO      45011-TGMONEY-SET-EXT
            END-IF
@@ -11886,6 +11904,13 @@
            MOVE    SPACE               TO  K02N
            INITIALIZE                      K02N
       *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  K02N-ROW
+           MOVE    ZERO                TO  K02N-ROWATTR
+           IF      WRK-K02-ROW     NOT =   ZERO
+               MOVE    WRK-K02-ROW         TO  K02N-ROW
+           END-IF
+      *
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  WRK-PAGE
       *
@@ -12046,14 +12071,6 @@
                                                              (IDX)
            END-PERFORM
            MOVE    SPA-TABOO-MAX       TO  K02N-TABOO-COUNT
-      *
-      *    コラムリストの位置指定
-           MOVE    ZERO                TO  K02N-ROW
-           MOVE    ZERO                TO  K02N-ROWATTR
-           IF      WRK-K02-ROW     NOT =   ZERO
-               MOVE    WRK-K02-ROW         TO  K02N-ROW
-               MOVE    ZERO                TO  K02N-ROWATTR
-           END-IF
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
