@@ -1136,22 +1136,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label251</name>
-      <x>100</x>
-      <y>88</y>
-      <width>220</width>
-      <height>20</height>
-      <label>°没袋惦烧    烬陕钳垛  极清勒′</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label247</name>
       <x>24</x>
       <y>24</y>
@@ -1255,6 +1239,22 @@
       <width>100</width>
       <height>24</height>
       <label>极清勒懒滇惰尸</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label251</name>
+      <x>100</x>
+      <y>88</y>
+      <width>220</width>
+      <height>20</height>
+      <label>°没袋惦烧  烬陕钳垛  极清勒′</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
