@@ -209,6 +209,7 @@
       *  01.01.43    NACL-多々納　03/03/04  SYUNOU-KEY11,KEY12追加
       *  01.01.44    ひさなが     03/03/05  PTNYUINRRK-KEY19の追加
       *  01.01.45    NACL-森脇    03/03/05  SYUMEI-KEY4,KEY5の追加
+      *  01.01.46    NACL-太田    03/03/10  SENTEICDCHG-KEY,2,3,ALL追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2453,6 +2454,18 @@
                    MOVE    PATH-TBL-KENSASORT-ALL
                                        TO  WRK-PATH
       *---- (01.01.42) LINE ADD END   --------------------------------
+               WHEN    ANY             ALSO   "SENTEICDCHG-KEY"
+                   MOVE    PATH-TBL-SENTEICDCHG-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SENTEICDCHG-KEY2"
+                   MOVE    PATH-TBL-SENTEICDCHG-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SENTEICDCHG-KEY3"
+                   MOVE    PATH-TBL-SENTEICDCHG-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SENTEICDCHG-ALL"
+                   MOVE    PATH-TBL-SENTEICDCHG-ALL
+                                       TO  WRK-PATH
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC
            END-EVALUATE

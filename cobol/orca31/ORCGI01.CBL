@@ -224,6 +224,7 @@
            03  WRK-TSUSAN                      PIC 9(05).
            03  WRK-NYUINNISSU                  PIC 9(05).
            03  WRK-SANTEISTYMD                 PIC X(08).
+           03  WRK-SENTEI-STYMD                PIC X(08).
            03  WRK-REKI-ZIIN-TBL.
                05  WRK-REKI-ZIIN-CNT           PIC 9(05).
                05  WRK-REKI-ZIIN-OCC           OCCURS  50.
@@ -398,6 +399,10 @@
       *    診療会計
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
+      *
+      *    選定療養費
+       01  SENTEICDCHG-REC.
+           COPY    "CPSENTEICDCHG.INC".
       *
       *
       *****************************************************************
@@ -6960,6 +6965,7 @@
                                 TO  LNK-SCNYUACCT-HKNCOMBINUM
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
            MOVE   "00"          TO  SPA-SRYKA
+           PERFORM 4801-SENTEI-SET-SEC
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
@@ -7471,6 +7477,7 @@
                                 TO  LNK-SCNYUACCT-HKNCOMBINUM
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
            MOVE   "00"          TO  SPA-SRYKA
+           PERFORM 4801-SENTEI-SET-SEC
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
@@ -7592,6 +7599,7 @@
       **                          TO  LNK-SCNYUACCT-MOTO-NYUINKA
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
            MOVE   "00"          TO  SPA-SRYKA
+           PERFORM 4801-SENTEI-SET-SEC
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
@@ -7604,6 +7612,47 @@
        4801-TENROOM-EDIT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *     選定療養費診療行為コード取得処理
+      *****************************************************************
+       4801-SENTEI-SET-SEC         SECTION.
+      *
+           IF    ( LNK-SCNYUACCT-TOKUTEINYUIN-KBN
+                                       =   "1" )
+               GO  TO  4801-SENTEI-SET-EXT
+           END-IF
+      *
+           INITIALIZE  SENTEICDCHG-REC
+           MOVE    LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                                   TO  SENCHG-IPNSRYCD
+           DISPLAY "SENCHG-IPNSRYCD = " SENCHG-IPNSRYCD
+           MOVE    SENTEICDCHG-REC TO  MCPDATA-REC
+           MOVE    "SENTEICDCHG-KEY2"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO  )
+               MOVE    MCPDATA-REC TO  SENTEICDCHG-REC
+           ELSE
+               INITIALIZE              SENTEICDCHG-REC
+           END-IF
+      *
+           MOVE    "SENTEICDCHG-KEY2"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           MOVE    SENCHG-SENTEISRYCD
+                                   TO  LNK-SCNYUACCT-SENTEI-SRYCD
+           MOVE    WRK-SENTEI-STYMD
+                                   TO  LNK-SCNYUACCT-SENTEI-STYMD
+      *
+      *
+           DISPLAY "LNK-SCNYUACCT-SENTEI-SRYCD = "
+                    LNK-SCNYUACCT-SENTEI-SRYCD
+           DISPLAY "LNK-SCNYUACCT-SENTEI-STYMD = "
+                    LNK-SCNYUACCT-SENTEI-STYMD
+           .
+       4801-SENTEI-SET-EXT.
+           EXIT.
       *****************************************************************
       *    異動取消時会計テーブル編集処理
       *****************************************************************
@@ -7636,10 +7685,22 @@
            MOVE    PTNYUINRRK-TENNYUYMD
                                    TO  WRK-SANTEISTYMD
       *
+           MOVE    WRK-SANTEISTYMD
+                                   TO  WRK-YMD
+           MOVE    "1"             TO  WRK-ZOGENPTN
+           DISPLAY "STUSAN-NISSU01 =   "  STUSAN-NISSU01
+           DISPLAY "STUSAN-NISSU02 =   "  STUSAN-NISSU02
+           DISPLAY "STUSAN-NISSU03 =   "  STUSAN-NISSU03
+           DISPLAY "STUSAN-NISSU04 =   "  STUSAN-NISSU04
+           COMPUTE WRK-ZOGEN       =   180 - ( STUSAN-NISSU02  -   1 )
+           PERFORM 5002-CALENDAR-SEC
+           MOVE    WRK-KEISANYMD   TO  WRK-SENTEI-STYMD
+      *
            DISPLAY "************************"
            DISPLAY "** TSUSAN-SANTEI      **"
-           DISPLAY "WRK-TSUSAN      = " WRK-TSUSAN
-           DISPLAY "WRK-SANTEISTYMD = " WRK-SANTEISTYMD
+           DISPLAY "WRK-TSUSAN       = " WRK-TSUSAN
+           DISPLAY "WRK-SANTEISTYMD  = " WRK-SANTEISTYMD
+           DISPLAY "WRK-SENTEI-STYMD = " WRK-SENTEI-STYMD
            DISPLAY "************************"
       *
            .

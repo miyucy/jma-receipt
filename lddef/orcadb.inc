@@ -69,6 +69,7 @@ db	{
 	tbl_ldmap;
 	tbl_lock;
         tbl_kensasort;
+        tbl_senteicdchg;
 };
 db	"shell"	{
 	shell;

@@ -67,6 +67,10 @@
            03  LNK-SCNYUACCT-HKNCOMBINUM             PIC  9(04).
       *啪彩箕傅掐薄彩
            03  LNK-SCNYUACCT-MOTO-NYUINKA            PIC  X(02).
+      *联年闻蛙锐壳闻乖百コ〖ド
+           03  LNK-SCNYUACCT-SENTEI-SRYCD            PIC  X(09).
+      *联年闻蛙锐倡幌泣
+           03  LNK-SCNYUACCT-SENTEI-STYMD            PIC  X(08).
       *牲耽コ〖ド
            03  LNK-SCNYUACCT-RC                      PIC S9(9) BINARY.
       *
