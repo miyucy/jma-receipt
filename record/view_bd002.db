@@ -123,6 +123,9 @@ view_bd002 {
 	RESE_YKZ_FTN        number(7,0);
 	KOHTAIYKZKBN		char(1);
 	CHOSEI  			number(7,0);
+	GRP_DENPNUM			number(7,0);
+	GRP_RENNUM			number(2,0);
+	GRP_SGKMONEY			number(7,0);
 	SECMONEY			number(7,0);
 	HKNTEKMONEY			number(7,0);
 	DISCOUNT_KBN			char(2);
@@ -142,7 +145,7 @@ view_bd002 {
 	NYUKIN_TOTAL   			number(7,0);
 	NYUKIN_KAISU   			number(7,0);
 	MISYURIYU    			char(2);
-	DRCD    			char(4);
+	DRCD    			char(5);
 	NYNSHOKAISU  			number(2,0);
 	YKZKENNUM  			number(5,0);
         RMSAGAKU  			number(7,0);

@@ -10,7 +10,6 @@
       ************************************************************
       *01  BD002-REC.
            03  BD002-KEY.
-      *
       *医療機関ＩＤ
                05  BD002-HOSPID          PIC  X(24).
       *入外区分
@@ -242,7 +241,7 @@
                05  BD002-JIHI-4-TAX          PIC  9(07). 
                05  BD002-JIHI-5              PIC  9(07). 
                05  BD002-JIHI-5-TAX          PIC  9(07). 
-           03  BD002-JIHI-NAIYOU-R       REDEFINES  BD002-JIHI-NAIYOU.
+           03  BD002-JIHI-NAIYOU-R     REDEFINES  BD002-JIHI-NAIYOU.
                05  BD002-JIHI-TBL            OCCURS   5.
                  07  BD002-JIHI-TAXNASI        PIC  9(07).
                  07  BD002-JIHI-TAXARI         PIC  9(07).
@@ -266,6 +265,12 @@
            03  BD002-KOHTAIYKZKBN        PIC  X(01).
       *調整金
            03  BD002-CHOSEI              PIC S9(07).
+      *まとめ入力伝票番号
+           03  BD002-GRP-DENPNUM         PIC 9(07).
+      *まとめ入力連番
+           03  BD002-GRP-RENNUM          PIC 9(02).
+      *まとめ入力差額
+           03  BD002-GRP-SGKMONEY        PIC S9(07).
       *保証金額
            03  BD002-SECMONEY            PIC  9(07).
       *保険適用金額
@@ -305,7 +310,9 @@
       *未収理由
            03  BD002-MISYURIYU           PIC  X(02).
       *ドクター
-           03  BD002-DRCD                PIC  X(04).
+           03  BD002-DRCD-G.
+               05  BD002-DRCD-SIK            PIC  X(01).
+               05  BD002-DRCD                PIC  X(04).
       *入院初診回数
            03  BD002-NYNSHOKAISU         PIC  9(02).
       *薬剤発券番号
@@ -330,7 +337,7 @@
                05  BD002-SHOKUJI6        PIC  9(07).
                05  BD002-SHOKUJI7-NISSU  PIC  9(02).
                05  BD002-SHOKUJI7        PIC  9(07).
-           03  BD002-SYOKUJI-NAIYOUR REDEFINES   BD002-SHOKUJI-NAIYOU.
+           03  BD002-SYOKUJI-NAIYOUR  REDEFINES   BD002-SHOKUJI-NAIYOU.
                05  BD002-SYOKUJI-TBL     OCCURS   7.
                  07  BD002-SHOKUJI-NISSU   PIC  9(02).
                  07  BD002-SHOKUJI         PIC  9(07).
