@@ -109,7 +109,7 @@
       *    空白入力
            03  FLG-KUHAKU          PIC 9(01).
            03  FLG-INS             PIC 9(01).
-           03  FLG-DEL             PIC 9(01).
+           03  FLG-MEI             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -615,6 +615,8 @@
                            PERFORM 510-ERRSET-SEC
                            GO      TO      300-SCREEN-EXT
                        END-IF
+                       MOVE    ALL SPACE       TO  SPA-COM-CUR
+                                                          (SPA-GMN-IDX4)
                        MOVE    1               TO  FLG-GMN
                    ELSE
                        MOVE    SPA-I44GMN-AREA TO  SPA-SCR-REC
@@ -947,6 +949,7 @@
                    END-IF
                END-PERFORM
            END-IF.
+           MOVE    SPA-GMN-INPUTCD (IDX2)  TO  SPA-MAE-INPUTCD (IDX2).
       *
            IF      SPA-COM-INPUTCD(IDX2)(1:3)  =   "095"  OR  "096"
                IF      SPA-COM-KISOTEN (IDX2)      =   ZERO
@@ -2021,7 +2024,11 @@
            MOVE    WRK-STR             TO  SPA-GMN-IDX4.
            MOVE    ZERO                TO  WRK-IDX2.
            MOVE    ZERO                TO  FLG-INS.
-           MOVE    ZERO                TO  FLG-DEL.
+           IF     SPA-MOTOPG      =    "I48"
+               MOVE    "1"                 TO  FLG-MEI
+           ELSE
+               MOVE    ZERO                TO  FLG-MEI
+           END-IF.
            PERFORM VARYING SPA-GMN-IDX4    FROM    WRK-STR  BY  1
                    UNTIL   SPA-GMN-IDX4    >   200
                IF     (SPA-MAE-INPUTCD (SPA-GMN-IDX4)  NOT =
@@ -2055,8 +2062,8 @@
                                            ORCSKANACHKAREA
                IF     (KANACHK-RC      NOT =   ZERO)  OR
                       (KANACHK-SYUBETU     =   1)
-                   MOVE    "0080"          TO  SPA-ERRCD
-                   MOVE    "1"             TO  SPA-COM-CUR (IDX-T)
+                   MOVE    "0080"              TO  SPA-ERRCD
+                   MOVE    "1"                 TO  SPA-COM-CUR (IDX-T)
                END-IF
       *
                IF     (SPA-ERRCD       =   SPACE)  AND
@@ -2149,7 +2156,7 @@
                END-IF
                MOVE    SPACE           TO  SPA-GMN-INPUTCD(SPA-GMN-IDX4)
                MOVE    1               TO  FLG-INS
-               MOVE    1               TO  FLG-DEL
+               MOVE    1               TO  FLG-MEI
                GO  TO                  41011-KOUI-HENDEL-EXT
            END-IF.
       *
@@ -2297,7 +2304,7 @@
                MOVE    WRK-IN-IDX4         TO  SPA-GMN-IDX4
            END-IF.
       *
-           IF     FLG-DEL   NOT =   1
+           IF     FLG-MEI   NOT =   1
                IF     (SPA-COM-SURFLG (SPA-GMN-IDX4)  =   SPACE) AND
                       (SPA-COM-IN2    (SPA-GMN-IDX4)  =   "2"  ) AND
                       (SPA-COM-KAIFLG (SPA-GMN-IDX4)  =   SPACE) AND
@@ -5116,8 +5123,8 @@
                IF      SPA-COM-SET    (WRK-IDX)  =   SPACE
                    ADD     1                 TO  IDX
                    IF      IDX               >   20
-                       ADD     1             TO  WRK-PAGE
-                       MOVE    1             TO  IDX
+                       ADD     1               TO  WRK-PAGE
+                       MOVE    1               TO  IDX
                    END-IF
                    IF     (SPA-GMN-INPUTCD(WRK-IDX)  NOT =   SPACE) OR
                           (SPA-COM-CUR (WRK-IDX)     NOT =   SPACE)
@@ -5149,7 +5156,7 @@
                    MOVE    IDX             TO  SPA-COM-GYOU(WRK-IDX)
       *
                    IF      SPA-ERRCD       =   SPACE
-                       MOVE    SPACE       TO  SPA-COM-CUR (WRK-IDX)
+                       MOVE    SPACE           TO  SPA-COM-CUR(WRK-IDX)
                    END-IF
                END-IF
       *
@@ -5188,14 +5195,12 @@
       *    後画面へ
            IF      SPA-GMN-CUR4        =   88  OR  99
                IF      WRK-MAP-MAXPAGE     =   SPA-GMN-PAGE4
-                   COMPUTE SPA-MAP-IDX4        =   WRK-MAP-MAX
-                                               +   1
+                   COMPUTE SPA-MAP-IDX4        =   WRK-MAP-MAX   +   1
                ELSE
                    MOVE    1                   TO  SPA-MAP-IDX4
                END-IF
            ELSE
-               COMPUTE SPA-MAP-IDX4        =   WRK-MAP-MAX
-                                           +   1
+               COMPUTE SPA-MAP-IDX4        =   WRK-MAP-MAX   +   1
                IF      SPA-MAP-IDX4        >   20
                    OR  SPA-GMN-PAGE4       <   WRK-MAP-MAXPAGE
                    MOVE    99                  TO  SPA-MAP-IDX4

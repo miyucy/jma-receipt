@@ -3164,10 +3164,10 @@
                PERFORM 970-PTNYUINRRK-READ-SEC
            ELSE
                INITIALIZE                  PTNYUINRRK-REC
-               MOVE    ALL SPACE       TO  SPA-WRK-CHK-KBN-TBL
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF.
       *
+           MOVE    ALL SPACE           TO  SPA-WRK-CHK-KBN-TBL.
            IF      FLG-PTNYUINRRK             =   1
                MOVE    "0031"              TO  SPA-ERRCD
                PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3183,12 +3183,9 @@
                END-PERFORM
                GO      TO       41013-DAY-CHK4-EXT
            ELSE
-               MOVE    ALL SPACE       TO  SPA-WRK-CHK-KBN-TBL
                PERFORM UNTIL      FLG-PTNYUINRRK    =   1
-                   IF     SPA-NAI-SRYYM-41     NOT =
+                   IF     SPA-NAI-SRYYM-41   =
                                              PTNYUINRRK-TENNYUYMD(1:6)
-                       MOVE    1               TO  IDW8
-                   ELSE
                        MOVE    PTNYUINRRK-TENNYUYMD(7:2)  TO  SNUM-INX
                        CALL    "ORCSNUM"           USING
                                                    ORCSNUMAREA
@@ -3200,12 +3197,12 @@
                        ELSE
                            MOVE    SNUM-OUTNUM     TO  IDW8
                        END-IF
+                   ELSE
+                       MOVE    1               TO  IDW8
                    END-IF
       *
-                   IF     SPA-NAI-SRYYM-41     NOT =
+                   IF     SPA-NAI-SRYYM-41   =
                                              PTNYUINRRK-TENSTUYMD(1:6)
-                       MOVE    99              TO  IDW9
-                   ELSE
                        MOVE    PTNYUINRRK-TENSTUYMD(7:2)  TO  SNUM-INX
                        CALL    "ORCSNUM"           USING
                                                    ORCSNUMAREA
@@ -3215,8 +3212,15 @@
                            MOVE    "0031"          TO  SPA-ERRCD
                            GO      TO      41013-DAY-CHK4-EXT
                        ELSE
-                           MOVE    SNUM-OUTNUM     TO  IDW9
+                           IF     PTNYUINRRK-TAIINYMD   =
+                                                 PTNYUINRRK-TENSTUYMD
+                               MOVE    SNUM-OUTNUM     TO  IDW9
+                           ELSE
+                               COMPUTE   IDW9   =   SNUM-OUTNUM   -   1
+                           END-IF
                        END-IF
+                   ELSE
+                       MOVE    99              TO  IDW9
                    END-IF
       *
                    IF     IDW9     =     99
@@ -6335,6 +6339,7 @@
       *
        950-KNJCOM-READ-EXT.
            EXIT.
+      *
       *****************************************************************
       *    患者入院履歴マスター読込
       *****************************************************************
@@ -6409,6 +6414,7 @@
       *
        993-PTRSIINF-NEXT-EXT.
            EXIT.
+      *
       *****************************************************************
       *    収納マスター読込
       *****************************************************************

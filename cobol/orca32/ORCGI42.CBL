@@ -89,6 +89,7 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-TENSUKBN        PIC 9(01).
            03  FLG-KNJCOM          PIC 9(01).
+           03  FLG-PTNYUINRRK      PIC 9(01).
       *
            03  FLG-NAIYAK          PIC X(01).
            03  FLG-TONPUK          PIC X(01).
@@ -108,6 +109,7 @@
       *
       *    添字領域
        01  IDX-AREA.
+           03  IDK                 PIC 9(04).
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -118,6 +120,8 @@
            03  IDX5                PIC 9(04).
            03  IDX-D               PIC 9(04).
            03  IDX-MAX             PIC 9(04).
+           03  IDW8                PIC 9(04).
+           03  IDW9                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -227,6 +231,11 @@
                    07  MKNO-KNONO2     PIC 9(02).
                05  MKNO-KNOMEI         PIC X(50).
       *
+      *   科別入院区分テーブル
+       01  WRK-CHK-KBN-TBL.
+           03  WRK-CHK-KBN             PIC X(01)  OCCURS  31.
+           03  WRK-CHK-SIKIBETU        PIC X(01)  OCCURS  31.
+      *
       **************************************************************
       *    ファイルレイアウト
       **************************************************************
@@ -262,6 +271,10 @@
       *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
+      *
+      *    患者入院履歴
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
       *
       *****************************************************************
       *    サブプロ用連絡領域
@@ -380,7 +393,7 @@
       **************************************************************
        1001-TENSUKBN-SET-SEC          SECTION.
       *
-      *    フィアルデイレクトリ位置指定
+      *    ファイルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA.
            MOVE    DATA-FILE           TO  MKPASS-IN-01.
            CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA.
@@ -447,6 +460,7 @@
       *
       *    当月分
            MOVE    SPA-I40-SRYYMD(1:6) TO  WRK-SRYYM.
+           MOVE    SPA-WRK-CHK-KBN-TBL TO  WRK-CHK-KBN-TBL
            PERFORM 3101-NACCT-SYORI-SEC.
            INITIALIZE                      WRK-SRY-TBL.
            MOVE    ZERO                TO  IDX5.
@@ -468,6 +482,7 @@
                MOVE    12                  TO  WRK-SRYMM
                COMPUTE WRK-SRYYY           =   WRK-SRYYY      -   1
            END-IF.
+           PERFORM 3120-DAY-CHK-SEC.
            PERFORM 3101-NACCT-SYORI-SEC.
            INITIALIZE                      WRK-SRY-TBL.
            MOVE    ZERO                TO  IDX5.
@@ -532,15 +547,29 @@
            ELSE
                PERFORM UNTIL      (FLG-SRYACT     =   1)  OR
                                   (IDX5           =   50)
-                   ADD     1               TO  IDX5
-                   MOVE    SRY-NYUGAIKBN   TO
+                   IF     SPA-I40-SRYKA      =   "00"
+                       ADD     1               TO  IDX5
+                       MOVE    SRY-NYUGAIKBN   TO
                                            WRK-SRY-NYUGAIKBN (IDX5)
-                   MOVE    SRY-SRYKA       TO
+                       MOVE    SRY-SRYKA       TO
                                            WRK-SRY-SRYKA (IDX5)
-                   MOVE    SRY-ZAINUM      TO
+                       MOVE    SRY-ZAINUM      TO
                                            WRK-SRY-ZAINUM (IDX5)
-                   MOVE    SRY-SRYKBN      TO
+                       MOVE    SRY-SRYKBN      TO
                                            WRK-SRY-SRYKBN (IDX5)
+                   ELSE
+                       IF     SPA-I40-SRYKA      =   SRY-SRYKA
+                           ADD     1               TO  IDX5
+                           MOVE    SRY-NYUGAIKBN   TO
+                                               WRK-SRY-NYUGAIKBN (IDX5)
+                           MOVE    SRY-SRYKA       TO
+                                               WRK-SRY-SRYKA (IDX5)
+                           MOVE    SRY-ZAINUM      TO
+                                               WRK-SRY-ZAINUM (IDX5)
+                           MOVE    SRY-SRYKBN      TO
+                                               WRK-SRY-SRYKBN (IDX5)
+                       END-IF
+                   END-IF
                    PERFORM 930-SRYACT-RAED-SEC
                END-PERFORM
            END-IF.
@@ -565,7 +594,7 @@
            MOVE    SPA-HOSPID          TO  NACCT-HOSPID.
            MOVE    "1"                 TO  NACCT-NYUGAIKBN.
            MOVE    SPA-GMN-PTID        TO  NACCT-PTID.
-           MOVE    SPA-I40-SRYKA       TO  NACCT-SRYKA.
+           MOVE    "00"                TO  NACCT-SRYKA.
            MOVE    WRK-SRYYM           TO  NACCT-SRYYM.
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
@@ -581,21 +610,11 @@
            ELSE
                MOVE    1               TO  FLG-NYUINACCT
            END-IF.
-           MOVE    ZERO                TO  IDX.
            PERFORM UNTIL       FLG-NYUINACCT       =   1
-      *        診療区分により、処理を決定する
-               MOVE    ZERO                TO  IDX
-               EVALUATE    NACCT-SRYKBN
-      *        診療、入院
-                   WHEN    "11"
-                   WHEN    "12"
-                   WHEN    "90"
-                       MOVE    1               TO  IDX
-               END-EVALUATE
       *        当月、前月のみ対象とする
                IF      NACCT-SRYYM          =   WRK-SRYYM   OR
                                                SPA-I40-SRYYMD(1:6)
-                   CONTINUE
+                   MOVE    1                   TO  IDX
                ELSE
                    MOVE    ZERO                TO  IDX
                END-IF
@@ -922,8 +941,10 @@
                    UNTIL       TBL-IDX3    >   31
       *
                IF      NACCT-DAY(TBL-IDX3)   NOT =   ZERO
-                   ADD     1              TO  WRK-TBL-KAISU
-                                         (IDX TBL-IDX2 TBL-IDX3)
+                   IF      WRK-CHK-KBN (TBL-IDX3)   NOT =   ALL SPACE
+                       ADD     1              TO  WRK-TBL-KAISU
+                                             (IDX TBL-IDX2 TBL-IDX3)
+                   END-IF
                END-IF
            END-PERFORM.
       *
@@ -976,8 +997,10 @@
                    UNTIL       TBL-IDX3    >   31
       *
                IF      ACCT-DAY(1 TBL-IDX3)   NOT =   ZERO
-                   ADD     1              TO  WRK-TBL-KAISU
-                                         (IDX TBL-IDX2 TBL-IDX3)
+                   IF      WRK-CHK-KBN (TBL-IDX3)   NOT =   ALL SPACE
+                       ADD     1              TO  WRK-TBL-KAISU
+                                             (IDX TBL-IDX2 TBL-IDX3)
+                   END-IF
                END-IF
            END-PERFORM.
       *
@@ -1042,8 +1065,10 @@
                    UNTIL       TBL-IDX3    >   31
       *
                IF      NACCT-DAY(TBL-IDX3)   NOT =   ZERO
-                   ADD     1              TO  WRK-TBL-KAISU
-                                         (IDX TBL-IDX2 TBL-IDX3)
+                   IF      WRK-CHK-KBN (TBL-IDX3)   NOT =   ALL SPACE
+                       ADD     1              TO  WRK-TBL-KAISU
+                                             (IDX TBL-IDX2 TBL-IDX3)
+                   END-IF
                END-IF
            END-PERFORM.
       *
@@ -1108,8 +1133,10 @@
                    UNTIL       TBL-IDX3    >   31
       *
                IF      ACCT-DAY(1 TBL-IDX3)   NOT =   ZERO
-                   ADD     1              TO  WRK-TBL-KAISU
-                                         (IDX TBL-IDX2 TBL-IDX3)
+                   IF      WRK-CHK-KBN (TBL-IDX3)   NOT =   ALL SPACE
+                       ADD     1              TO  WRK-TBL-KAISU
+                                             (IDX TBL-IDX2 TBL-IDX3)
+                   END-IF
                END-IF
            END-PERFORM.
       *
@@ -1145,11 +1172,11 @@
            INITIALIZE                  SPA-I42NAI-AREA.
       *
            PERFORM VARYING     TBL-IDX2    FROM    1   BY  1
-                   UNTIL      (TBL-IDX2       >    200     )   OR
-                              (IDX1           =    100     )   OR
-                              (IDX2           =    100     )   OR
+                   UNTIL      (TBL-IDX2       >    200 )   OR
+                              (IDX1           =    100 )   OR
+                              (IDX2           =    100 )   OR
                               (WRK-TBL-SRYCD (IDX TBL-IDX2)
-                                              =   SPACE )
+                                              =   SPACE)
                ADD     1               TO  IDX1
                MOVE    WRK-TBL-SRYYYMM (IDX TBL-IDX2)
                                        TO  SPA-NAI-SRYYYMM (IDX IDX1)
@@ -1165,12 +1192,15 @@
                MOVE    WRK-TBL-MEISYO  (IDX TBL-IDX2)
                                       TO  SPA-GMN-TNAIYOU2(IDX IDX1)
                PERFORM VARYING     TBL-IDX3    FROM    1   BY  1
-                       UNTIL      (TBL-IDX3       >    31      )  OR
-                                  (IDX2           =    200     )
+                       UNTIL      (TBL-IDX3       >    31 )  OR
+                                  (IDX2           =    200)
                    IF      WRK-TBL-KAISU (IDX TBL-IDX2 TBL-IDX3)
                                                   >    ZERO
                        IF      WRK-TBL-SRYKBN (IDX TBL-IDX2)
-                                                  NOT =   "90"
+                                                  NOT =   "90"   AND
+                                                          "92"   AND
+                                                          "97"   AND
+                                                          "99"
                            ADD     1                TO  IDX2
                            MOVE    SPA-NAI-SRYYYMM (IDX IDX1)
                                                     TO  SPA-NAI-SRYYMD
@@ -1243,9 +1273,9 @@
                    ELSE
                        IF      WRK-STBL-SRYYYMM(IDX IDX2)
                                                    >   WRK-SRYYYMM
-                            MOVE    WRK-STBL-SRYCD  (IDX IDX2)  
+                            MOVE    WRK-STBL-SRYCD  (IDX IDX2)
                                                      TO  WRK-SRYCD
-                            MOVE    WRK-STBL-SRYYYMM(IDX IDX2)  
+                            MOVE    WRK-STBL-SRYYYMM(IDX IDX2)
                                                      TO  WRK-SRYYYMM
                             MOVE    IDX2             TO  IDX3
                       ELSE
@@ -1309,9 +1339,9 @@
                                                        TO  WRK-SRYYMD
                            MOVE    IDX2                TO  IDX3
       *
-                       WHEN   (WRK-NAI-SRYYMD (IDX2)   
-                                                =   WRK-SRYYMD )  AND
-                              (WRK-NAI-SRYCD  (IDX2)   <   WRK-SRYCD  )
+                       WHEN   (WRK-NAI-SRYYMD (IDX2)
+                                                =   WRK-SRYYMD)  AND
+                              (WRK-NAI-SRYCD  (IDX2)   <   WRK-SRYCD)
                            MOVE    WRK-NAI-SRYCD  (IDX2)   
                                                 TO  WRK-SRYCD
                            MOVE    WRK-NAI-SRYYMD (IDX2)   
@@ -1319,9 +1349,9 @@
                            MOVE    IDX2         TO  IDX3
       *                同日に同じ行為の時、削除とする
                        WHEN   (WRK-NAI-SRYYMD (IDX2)   
-                                              =   WRK-SRYYMD )  AND
+                                              =   WRK-SRYYMD)  AND
                               (WRK-NAI-SRYCD  (IDX2)   
-                                              =   WRK-SRYCD  )
+                                              =   WRK-SRYCD )
                            MOVE    SPACE  TO  WRK-GMN-TBLREC1 (IDX2)
                            MOVE    SPACE  TO  WRK-NAI-TBLREC1 (IDX2)
                    END-EVALUATE
@@ -1338,6 +1368,134 @@
            END-PERFORM.
       *
        310122-SORT-02-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    剤変更入力可能区分セット
+      *****************************************************************
+       3120-DAY-CHK-SEC                SECTION.
+      *
+           IF     SPA-I40-SRYKA      =   "00"
+               MOVE    ALL "1"         TO  WRK-CHK-KBN-TBL
+           ELSE
+               PERFORM 3120-DAY-CHK4-SEC
+           END-IF.
+      *
+       3120-DAY-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    剤変更入力可能区分セット、患者入院履歴の参照
+      *****************************************************************
+       3120-DAY-CHK4-SEC               SECTION.
+      *
+      *    入院科別表示の場合患者入院履歴の転入日、転出日を参照
+      *    患者入院履歴を検索する  医療機関、患者ＩＤ
+           INITIALIZE                  PTNYUINRRK-REC.
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID.
+           MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID.
+           MOVE    SPA-I40-SRYKA       TO  PTNYUINRRK-NYUINKA.
+           MOVE    WRK-SRYYM           TO  PTNYUINRRK-TENNYUYMD(1:6).
+           MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD(7:2).
+           MOVE    WRK-SRYYM           TO  PTNYUINRRK-TENSTUYMD(1:6).
+           MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD(7:2).
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "PTNYUINRRK-KEY18"  TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTNYUINRRK-KEY18"   TO  ORC-DBPATH
+               PERFORM 970-PTNYUINRRK-READ-SEC
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF.
+      *
+           MOVE    ALL SPACE           TO  WRK-CHK-KBN-TBL.
+           IF      FLG-PTNYUINRRK             =   1
+               GO      TO       3120-DAY-CHK4-EXT
+           ELSE
+               PERFORM UNTIL      FLG-PTNYUINRRK    =   1
+                   IF     WRK-SRYYM     =    PTNYUINRRK-TENNYUYMD(1:6)
+                       MOVE    PTNYUINRRK-TENNYUYMD(7:2)  TO  SNUM-INX
+                       CALL    "ORCSNUM"           USING
+                                                   ORCSNUMAREA
+                       IF     (SNUM-RC         NOT =   ZERO)    OR
+                              (SNUM-MINKBN     NOT =   SPACE)   OR
+                              (SNUM-SYOKBN     NOT =   SPACE)
+                           GO      TO       3120-DAY-CHK4-EXT
+                       ELSE
+                           MOVE    SNUM-OUTNUM     TO  IDW8
+                       END-IF
+                   ELSE
+                       MOVE    1               TO  IDW8
+                   END-IF
+      *
+                   IF     WRK-SRYYM     =    PTNYUINRRK-TENSTUYMD(1:6)
+                       MOVE    PTNYUINRRK-TENSTUYMD(7:2)  TO  SNUM-INX
+                       CALL    "ORCSNUM"           USING
+                                                   ORCSNUMAREA
+                       IF     (SNUM-RC         NOT =   ZERO)    OR
+                              (SNUM-MINKBN     NOT =   SPACE)   OR
+                              (SNUM-SYOKBN     NOT =   SPACE)
+                           GO      TO       3120-DAY-CHK4-EXT
+                       ELSE
+                           IF     PTNYUINRRK-TAIINYMD   =
+                                                 PTNYUINRRK-TENSTUYMD
+                               MOVE    SNUM-OUTNUM     TO  IDW9
+                           ELSE
+                               COMPUTE   IDW9   =   SNUM-OUTNUM   -   1
+                           END-IF
+                       END-IF
+                   ELSE
+                       MOVE    99              TO  IDW9
+                   END-IF
+      *
+                   IF     IDW9     =     99
+                       PERFORM VARYING    IDK     FROM    IDW8   BY  1
+                               UNTIL      IDK     >   31
+                           MOVE    "1"       TO   WRK-CHK-KBN (IDK)
+                           MOVE    "1"       TO   WRK-CHK-SIKIBETU (IDK)
+                       END-PERFORM
+                   ELSE
+                       PERFORM VARYING    IDK     FROM    IDW8   BY  1
+                               UNTIL      IDK     >   IDW9
+                           MOVE    "1"       TO   WRK-CHK-KBN (IDK)
+                           MOVE    "1"       TO   WRK-CHK-SIKIBETU (IDK)
+                       END-PERFORM
+                   END-IF
+      *
+                   MOVE    "PTNYUINRRK-KEY18"   TO  ORC-DBPATH
+                   PERFORM 970-PTNYUINRRK-READ-SEC
+               END-PERFORM
+           END-IF.
+      *
+           INITIALIZE                        STS-AREA-DAY.
+           INITIALIZE                        LNK-DAY7-AREA.
+           MOVE    "71"                  TO  LNK-DAY7-IRAI.
+           MOVE    SPA-NAI-SRYYM-41      TO  LNK-DAY7-YM.
+           CALL    "ORCSDAY"             USING   STS-AREA-DAY
+                                                 LNK-DAY7-AREA.
+           MOVE    LNK-DAY7-KOYOMI(7:2)  TO  SNUM-INX.
+           CALL    "ORCSNUM"             USING
+                                         ORCSNUMAREA.
+           IF     (SNUM-RC         NOT =   ZERO)    OR
+                  (SNUM-MINKBN     NOT =   SPACE)   OR
+                  (SNUM-SYOKBN     NOT =   SPACE)
+               GO      TO      3120-DAY-CHK4-EXT
+           ELSE
+               COMPUTE   IDW9   =   SNUM-OUTNUM   +   1
+           END-IF.
+           PERFORM VARYING    IDW8     FROM    IDW9   BY  1
+                   UNTIL      IDW8     >   31
+               MOVE    ALL SPACE       TO  WRK-CHK-KBN (IDW8)
+           END-PERFORM.
+      *
+       3120-DAY-CHK4-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1386,7 +1544,7 @@
                IF     (IDY             =   1   )   OR
                       (SPA-GMN-TSRYYMD (IDX IDY)
                             NOT =   SPA-GMN-TSRYYMD (IDX IDY - 1))
-                   MOVE    SPA-GMN-TSRYYMD (IDX IDY)   
+                   MOVE    SPA-GMN-TSRYYMD (IDX IDY)
                                        TO  I42-SRYACTYMD-YMD (IDY)
                END-IF
                MOVE    SPA-GMN-TNAIYOU1(IDX IDY)
@@ -1405,7 +1563,7 @@
                    MOVE    SPA-GMN-TSRYYYMM(IDX IDY)   
                                        TO  I42-SRYACTCNT-YM(IDY)
                END-IF
-               MOVE    SPA-GMN-TNAIYOU2(IDX IDY)   
+               MOVE    SPA-GMN-TNAIYOU2(IDX IDY)
                                        TO  I42-SRYACTCNT-NAME(IDY)
                MOVE    SPA-GMN-TKAISU2 (IDX IDY)
                                        TO  WRK-ZZZ
@@ -1557,38 +1715,6 @@
            EXIT.
       *
       *****************************************************************
-      *    エラーメッセージ表示理
-      *****************************************************************
-       510-ERRSET-SEC              SECTION.
-      *
-           EVALUATE    SPA-ERRCD
-               WHEN    "0001"
-                   MOVE    "入力エラー"
-                                       TO  SPA-ERRMSG
-               WHEN    OTHER
-                   MOVE    SPA-ERRCD
-                                       TO  SPA-ERRMSG
-           END-EVALUATE.
-      *
-           MOVE    SPACE               TO  I4ERR.
-           MOVE    SPA-ERRCD           TO  I4ERR-ERRCODE.
-           MOVE    SPA-ERRMSG          TO  I4ERR-ERRMSG.
-           MOVE    "B01"               TO  MCP-WIDGET.
-      *
-           MOVE    "I42"               TO  SPA-MOTOPG.
-           MOVE    "I4ERR"             TO  SPA-SAKIPG.
-      *
-           MOVE    "NEW"               TO  MCP-PUTTYPE.
-           MOVE    "I4ERR"             TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END.
-      *
-       510-ERRSET-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
@@ -1715,6 +1841,27 @@
            END-IF.
       *
        930-SRYACT-RAED-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者入院履歴マスター読込
+      *****************************************************************
+       970-PTNYUINRRK-READ-SEC     SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PTNYUINRRK-REC
+               MOVE    ZERO                TO  FLG-PTNYUINRRK
+           ELSE
+               INITIALIZE                      PTNYUINRRK-REC
+               MOVE    1                   TO  FLG-PTNYUINRRK
+           END-IF.
+      *
+       970-PTNYUINRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************
