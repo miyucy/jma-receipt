@@ -39,6 +39,7 @@
                05  SODR-UKEHMS             PIC X(06).
                05  SODR-PROCKBN            PIC X(01).
                05  SODR-INF-CANCEL         PIC 9(02).
+               05  SODR-OPID               PIC X(16).
            03  SODR-OT.
                05  SODR-ERRCD              PIC X(04).
                05  SODR-INF                PIC 9(02).
