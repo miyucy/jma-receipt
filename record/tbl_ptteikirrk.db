@@ -23,8 +23,9 @@ path	key		{
 		SELECT *
 		FROM tbl_ptteikirrk
         WHERE  SRYYM   =   :SRYYM
-        AND    SAKKBN  =   :SAKKBN
         AND    PTID    =   :PTID
+        AND    SAKKBN  =   :SAKKBN
+        AND    HKNCOMBINUM = :HKNCOMBINUM
 		;
 	};
 };
