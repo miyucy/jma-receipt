@@ -38,12 +38,15 @@
            03  LNK-SROUNYUIN-SANTEIYM                PIC  X(06).
       *ÊÝ¸±ÁÈ¹ç¤»
            03  LNK-SROUNYUIN-HKNCOMBI                PIC  9(04).
+      *Ï«ºÒ¾è¿ô¶èÊ¬¡Ê£±¡§£²½µ´Ö°ÊÆâ¡¡£²¡§£²½µ´Ö±Û¤¨¡Ë
+           03  LNK-SROUNYUIN-JOUSU-KBN               PIC  X(01)
+                                                     OCCURS 31.
       *ÊÖµÑ¹àÌÜ
            03  LNK-SROUNYUIN-HENKYAKU-AREA.
       *ÊÖµÑ¥Æ¡¼¥Ö¥ë
                05  LNK-SROUNYUIN-HENKYAKU-TBL        OCCURS  31.
       *Ï«ºÒÆþ±¡¥Õ¥é¥°¡Ê¶õÇò¡§Ï«ºÒÆþ±¡¤Ê¤·¡¡£±¡§Ï«ºÒÆþ±¡Ãæ¡Ë
-                   07  LNK-SROUNYUIN-NYUIN-FLG       PIC  X(01).      
+                   07  LNK-SROUNYUIN-NYUIN-FLG       PIC  X(01).
       *ºÞÅÀ¿ô
                    07  LNK-SROUNYUIN-ZAITEN          PIC  9(08).
       *¿ÇÎÅ¥³¡¼¥É·×
