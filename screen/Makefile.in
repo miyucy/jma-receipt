@@ -7,13 +7,14 @@ prefix = @prefix@
 exec_prefix= @exec_prefix@
 orcadir = ${exec_prefix}/orca
 screendir = ${orcadir}/screen
-install_ignore := Makefile build-stmp
+install_ignore := Makefile.in Makefile build-stamp
 all:   
-	touch build-stmp
+	touch build-stamp
 clean: 
-	-rm -f build-stmp
+	-rm -f build-stamp
 
 distclean: 
+	-rm -f build-stamp
 	-rm -f Makefile
 
 install: all
