@@ -516,14 +516,14 @@
                                            (IDX WRK-MEISAISU)
                END-IF
       *        入院料加算（入院会計）
-               PERFORM   VARYING   KSN-IDX   FROM  1  BY  1
-                         UNTIL    (WRK-NYUKSN(KSN-IDX)  =  SPACE)  OR
-                                  (KSN-IDX             >  20)
-                         ADD     1           TO  WRK-MEISAISU
-                         MOVE WRK-NYUKSN(KSN-IDX)
-                                             TO  LNK-SROUNYUIN-SRYCD
-                                                 (IDX WRK-MEISAISU)
-               END-PERFORM
+      *         PERFORM   VARYING   KSN-IDX   FROM  1  BY  1
+      *                   UNTIL    (WRK-NYUKSN(KSN-IDX)  =  SPACE)  OR
+      *                            (KSN-IDX             >  20)
+      *                   ADD     1           TO  WRK-MEISAISU
+      *                   MOVE WRK-NYUKSN(KSN-IDX)
+      *                                       TO  LNK-SROUNYUIN-SRYCD
+      *                                           (IDX WRK-MEISAISU)
+      *         END-PERFORM
            END-PERFORM
       *
       *    再構築した労災入院会計情報から点数の算定
@@ -714,8 +714,13 @@
                    COMPUTE  LNK-SROUNYUIN-ZAITEN(IDX)  =
                             LNK-SROUNYUIN-ZAITEN(IDX)  -  TNS-TEN
       *        WHEN  OTHER
-                   ADD   TNS-TEN     TO  LNK-SROUNYUIN-ZAITEN(IDX)
+      *            ADD   TNS-TEN     TO  LNK-SROUNYUIN-ZAITEN(IDX)
            END-EVALUATE
+           DISPLAY   "IDX = " IDX
+           DISPLAY   "LNK-SROUNYUIN-SRYCD = " 
+                      LNK-SROUNYUIN-SRYCD(IDX IDX2)
+           DISPLAY   "LNK-SROUNYUIN-ZAITEN = "
+                      LNK-SROUNYUIN-ZAITEN(IDX)
       *
       *    診療コード計
            MOVE    TNS-SRYCD          TO  WRK-SRYCD-X
