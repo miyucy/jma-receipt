@@ -45,6 +45,7 @@
       *  01.00.15    NACL-太田    03/07/09  割引率区分・定額定率区分の
       *                                     入力をコンボボックスに変更
       *  01.00.16    NACL-太田    03/07/31  減免事由情報に割引対象を追加
+      *  01.00.17    NACL-多々納  03/11/11  基本情報期間変更追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -275,6 +276,11 @@
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
                    07  SPA-NAI-EDYUKYMD           PIC 9(08).
       *
+      *        基本情報の期間変更
+               05  SPA-NAI1001-AREA.
+                   07  SPA-1001-STYUKYMD          PIC X(08).
+                   07  SPA-1001-EDYUKYMD          PIC X(08).
+                   07  SPA-1001-ADD               PIC 9(01).
       *   
            COPY    "ENUM-VALUE".
       *
@@ -441,12 +447,9 @@
                    PERFORM 200-GMNSENI
       *    入力
                WHEN      OTHER
-                   DISPLAY "200-ENTRY-START"
                    PERFORM 200-ENTRY
-                   DISPLAY "200-ENTRY-END"
            END-EVALUATE.
       *
-           DISPLAY "FLG-END=" FLG-END
       *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
@@ -545,7 +548,7 @@
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
-           INITIALIZE   SPA-W02-AREA
+           INITIALIZE SPA-W02-AREA
       *
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD
@@ -758,160 +761,8 @@
       *            医療機関情報ー基本情報
                    WHEN    "1001"
                        MOVE    MCPDATA-REC         TO  SYS-1001-REC
-                       MOVE    SYS-1001-PREFNUM    TO  SPA-GMN-PREFNUM
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       47
-                          IF      SPA-GMN-PREFNUM 
-                                          =   SPA-GMN-PREFNUML (IDY)
-                              MOVE    SPA-GMN-PREFNUMLST (IDY)
-                                          TO  SPA-GMN-PREFNUM-G
-                              MOVE    47               TO  IDY
-                         END-IF
-                       END-PERFORM
-                       MOVE    SYS-1001-TENHYOKBN
-                                          TO  SPA-GMN-TENHYOKBN
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       1
-                          IF      SYS-1001-TENHYOKBN 
-                                          =   SPA-GMN-TENHYOKBNL (IDY)
-                              MOVE    SPA-GMN-TENHYOKBNLST (IDY)
-                                          TO  SPA-GMN-TENHYOKBN-G
-                         END-IF
-                       END-PERFORM
-                       MOVE    SYS-1001-HOSPCD     TO  SPA-GMN-HOSPCD
-                       MOVE    SYS-1001-HOSPSBT    TO  SPA-GMN-HOSPSBT
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       2
-                          IF      SYS-1001-HOSPSBT
-                                          =   SPA-GMN-HOSPSBTL (IDY)
-                              MOVE    SPA-GMN-HOSPSBTLST (IDY)
-                                          TO  SPA-GMN-HOSPSBT-G
-                              MOVE    2                TO  IDY
-                         END-IF
-                       END-PERFORM
-                       MOVE    SYS-1001-HOSPID     TO  SPA-GMN-HOSPID
-                       MOVE    SYS-1001-HOSPNAME   TO  SPA-GMN-HOSPNAME
-                       MOVE    SYS-1001-KAISETUNAME    TO
-                                                   SPA-GMN-KAISETUNAME
-                       MOVE    SYS-1001-KANRINAME  TO
-                                                   SPA-GMN-KANRINAME
-                       MOVE    SYS-1001-BEDSU      TO  SPA-GMN-BEDSU
-                       IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
-                              (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
-                           MOVE    ZERO            TO  SPA-GMN-BEDSUIPN
-                       ELSE
-                           MOVE    SYS-1001-BEDSUIPN
-                                                   TO  SPA-GMN-BEDSUIPN
-                       END-IF
-                       MOVE    SYS-1001-ROUPAYKBN  TO
-                                                   SPA-GMN-ROUPAYKBN
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       2
-                          IF      SYS-1001-ROUPAYKBN
-                                          =   SPA-GMN-ROUPAYKBNL (IDY)
-                              MOVE    SPA-GMN-ROUPAYKBNLST (IDY)
-                                          TO  SPA-GMN-ROUPAYKBN-G
-                              MOVE    2                TO  IDY
-                          END-IF
-                       END-PERFORM
-                       MOVE    SYS-1001-HOSPSBT1   TO  SPA-GMN-HOSPSBT1
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       2
-                          IF      SYS-1001-HOSPSBT1
-                                          =   SPA-GMN-HOSPSBT1L (IDY)
-                              MOVE    SPA-GMN-HOSPSBT1LST (IDY)
-                                          TO  SPA-GMN-HOSPSBT1-G
-                              MOVE    2                TO  IDY
-                          END-IF
-                       END-PERFORM
-                       MOVE    SYS-1001-HOSPCDN    TO  SPA-GMN-HOSPCDN
-                       MOVE    SYS-1001-SYOHOKBN   TO  SPA-GMN-SYOHOKBN
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       2
-                          IF      SYS-1001-SYOHOKBN 
-                                          =   SPA-GMN-SYOHOKBNL (IDY)
-                              MOVE    SPA-GMN-SYOHOKBNLST (IDY)
-                                          TO  SPA-GMN-SYOHOKBN-G
-                              MOVE    2                TO  IDY
-                         END-IF
-                       END-PERFORM
-                       MOVE    SYS-1001-SKYPRTFLG  TO
-                                                   SPA-GMN-SKYPRTFLG
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       2
-                          IF      SYS-1001-SKYPRTFLG
-                                          =   SPA-GMN-SKYPRTFLGL (IDY)
-                              MOVE    SPA-GMN-SKYPRTFLGLST (IDY)
-                                          TO  SPA-GMN-SKYPRTFLG-G
-                              MOVE    2                TO  IDY
-                         END-IF
-                       END-PERFORM
-                       MOVE    SYS-1001-SYOHOPRTFLG    TO  
-                                                   SPA-GMN-SYOHOPRTFLG 
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       3
-                          IF      SYS-1001-SYOHOPRTFLG
-                                      =   SPA-GMN-SYOHOPRTFLGL (IDY)
-                              MOVE    SPA-GMN-SYOHOPRTFLGLST (IDY)
-                                          TO  SPA-GMN-SYOHOPRTFLG-G
-                              MOVE    3                TO  IDY
-                         END-IF
-                       END-PERFORM
-                       MOVE    SYS-1001-ZENSYOHOFLG    TO
-                                                   SPA-GMN-ZENSYOHOFLG
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       2
-                          IF      SYS-1001-ZENSYOHOFLG
-                                      =   SPA-GMN-ZENSYOHOFLGL (IDY)
-                              MOVE    SPA-GMN-ZENSYOHOFLGLST (IDY)
-                                          TO  SPA-GMN-ZENSYOHOFLG-G
-                              MOVE    2                TO  IDY
-                          END-IF
-                       END-PERFORM
-      *----(01.00.09) LINE ADD START ----------------------------------
-      *                空白の時、ゼロとする
-                       IF      SYS-1001-YAKUJYOPRTFLG  =   SPACE
-                           MOVE    ZERO        TO
-                                               SYS-1001-YAKUJYOPRTFLG
-                       END-IF
-                       MOVE    SYS-1001-YAKUJYOPRTFLG  TO
-                                                 SPA-GMN-YAKUJYOFLG
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       2
-                           IF      SYS-1001-YAKUJYOPRTFLG
-                                      =   SPA-GMN-YAKUJYOFLGL (IDY)
-                              MOVE    SPA-GMN-YAKUJYOFLGLST (IDY)
-                                          TO  SPA-GMN-YAKUJYOFLG-G
-                              MOVE    2                TO  IDY
-                           END-IF
-                       END-PERFORM
-      *                空白の時、"1"とする
-                       IF      SYS-1001-DISCOUNT-HASU-KBN    =   SPACE
-                           MOVE    1   TO  SYS-1001-DISCOUNT-HASU-KBN
-                       END-IF
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       4
-                           IF      SYS-1001-DISCOUNT-HASU-KBN
-                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
-                              MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
-                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                              MOVE    4                TO  IDY
-                           END-IF
-                       END-PERFORM
-      *                空白の時、"2"とする
-                       IF      SYS-1001-TAX-HASU-KBN    =   SPACE
-                           MOVE    2   TO  SYS-1001-TAX-HASU-KBN
-                       END-IF
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       2
-                           IF      SYS-1001-TAX-HASU-KBN
-                                   =   SPA-GMN-TAX-HASU-KBNL (IDY)
-                              MOVE    SPA-GMN-TAX-HASU-KBNLST (IDY)
-                                       TO  SPA-GMN-TAX-HASU-KBN-G
-                              MOVE    2                TO  IDY
-                           END-IF
-                       END-PERFORM
-      *----(01.00.09) LINE ADD END   ----------------------------------
+      *                基本情報編集処理
+                       PERFORM 31091-KIHON-HENSYU-SEC
       *            医療機関情報ー所在地、連絡先情報
                    WHEN    "1002"
                        MOVE    MCPDATA-REC         TO  SYS-1002-REC
@@ -995,7 +846,15 @@
                        MOVE    SYS-1012-SRYNAIYO   TO  SPA-GMN-SRYNAIYO
                        MOVE    SYS-1012-SRYNAIYODSP
                                                TO  SPA-GMN-SRYNAIYODSP
-               END-EVALUATE 
+               END-EVALUATE
+      *
+           ELSE
+      *        基本情報は期間変更があることする
+               EVALUATE    SPA-W01-KANRICD
+      *            医療機関情報ー基本情報
+                   WHEN    "1001"
+                       PERFORM 3109-1001-HENKOU-SEC
+               END-EVALUATE
            END-IF 
       *  
       *
@@ -1020,7 +879,207 @@
                    MOVE    80                  TO  SPA-GMN-CUR
            END-EVALUATE
            . 
-       31O-SPASET-EXT.
+       310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本情報期間変更処理
+      *****************************************************************
+       3109-1001-HENKOU-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1001-REC
+           INITIALIZE                      SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+      *
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    SPACE               TO  SYS-1001-REC
+           PERFORM UNTIL   FLG-SYSKANRI    =   1
+      *        前の内容を複写する
+               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+      *
+               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *
+           IF      SYS-1001-KANRICD    =   SPACE
+      *        未登録の時
+               GO      TO      3109-1001-HENKOU-EXT
+           END-IF
+      *    基本情報編集処理
+           PERFORM 31091-KIHON-HENSYU-SEC
+           MOVE    SYS-1001-STYUKYMD   TO  SPA-1001-STYUKYMD
+           MOVE    SYS-1001-EDYUKYMD   TO  SPA-1001-EDYUKYMD
+           MOVE    1                   TO  SPA-1001-ADD
+      *
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1001-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD    TO  SYS-1001-EDYUKYMD
+      *
+           . 
+       3109-1001-HENKOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本情報編集処理
+      *****************************************************************
+       31091-KIHON-HENSYU-SEC       SECTION.
+     *
+           MOVE    SYS-1001-PREFNUM    TO  SPA-GMN-PREFNUM
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       47
+               IF      SPA-GMN-PREFNUM     =   SPA-GMN-PREFNUML (IDY)
+                   MOVE    SPA-GMN-PREFNUMLST (IDY)
+                                           TO  SPA-GMN-PREFNUM-G
+                   MOVE    47               TO  IDY
+               END-IF
+           END-PERFORM
+     *
+           MOVE    SYS-1001-TENHYOKBN  TO  SPA-GMN-TENHYOKBN
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       1
+               IF      SYS-1001-TENHYOKBN  =   SPA-GMN-TENHYOKBNL (IDY)
+                   MOVE    SPA-GMN-TENHYOKBNLST (IDY)
+                                           TO  SPA-GMN-TENHYOKBN-G
+               END-IF
+           END-PERFORM
+           MOVE    SYS-1001-HOSPCD     TO  SPA-GMN-HOSPCD
+           MOVE    SYS-1001-HOSPSBT    TO  SPA-GMN-HOSPSBT
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+              IF       SYS-1001-HOSPSBT    =   SPA-GMN-HOSPSBTL (IDY)
+                   MOVE    SPA-GMN-HOSPSBTLST (IDY)
+                                           TO  SPA-GMN-HOSPSBT-G
+                   MOVE    2                TO  IDY
+              END-IF
+           END-PERFORM
+           MOVE    SYS-1001-HOSPID     TO  SPA-GMN-HOSPID
+           MOVE    SYS-1001-HOSPNAME   TO  SPA-GMN-HOSPNAME
+           MOVE    SYS-1001-KAISETUNAME
+                                       TO  SPA-GMN-KAISETUNAME
+           MOVE    SYS-1001-KANRINAME  TO  SPA-GMN-KANRINAME
+           MOVE    SYS-1001-BEDSU      TO  SPA-GMN-BEDSU
+           IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
+                  (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
+               MOVE    ZERO                TO  SPA-GMN-BEDSUIPN
+           ELSE
+               MOVE    SYS-1001-BEDSUIPN   TO  SPA-GMN-BEDSUIPN
+           END-IF
+           MOVE    SYS-1001-ROUPAYKBN  TO  SPA-GMN-ROUPAYKBN
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SYS-1001-ROUPAYKBN  =   SPA-GMN-ROUPAYKBNL (IDY)
+                   MOVE    SPA-GMN-ROUPAYKBNLST (IDY)
+                                           TO  SPA-GMN-ROUPAYKBN-G
+                   MOVE    2               TO  IDY
+               END-IF
+           END-PERFORM
+           MOVE    SYS-1001-HOSPSBT1   TO  SPA-GMN-HOSPSBT1
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SYS-1001-HOSPSBT1   =   SPA-GMN-HOSPSBT1L (IDY)
+                   MOVE    SPA-GMN-HOSPSBT1LST (IDY)
+                                           TO  SPA-GMN-HOSPSBT1-G
+                   MOVE    2               TO  IDY
+               END-IF
+           END-PERFORM
+           MOVE    SYS-1001-HOSPCDN    TO  SPA-GMN-HOSPCDN
+           MOVE    SYS-1001-SYOHOKBN   TO  SPA-GMN-SYOHOKBN
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SYS-1001-SYOHOKBN   =   SPA-GMN-SYOHOKBNL (IDY)
+                   MOVE    SPA-GMN-SYOHOKBNLST (IDY)
+                                           TO  SPA-GMN-SYOHOKBN-G
+                   MOVE    2               TO  IDY
+               END-IF
+           END-PERFORM
+           MOVE    SYS-1001-SKYPRTFLG  TO  SPA-GMN-SKYPRTFLG
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       2
+               IF      SYS-1001-SKYPRTFLG  =   SPA-GMN-SKYPRTFLGL (IDY)
+                   MOVE    SPA-GMN-SKYPRTFLGLST (IDY)
+                                           TO  SPA-GMN-SKYPRTFLG-G
+                   MOVE    2               TO  IDY
+               END-IF
+           END-PERFORM
+           MOVE    SYS-1001-SYOHOPRTFLG    TO  SPA-GMN-SYOHOPRTFLG 
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       3
+               IF      SYS-1001-SYOHOPRTFLG
+                                       =   SPA-GMN-SYOHOPRTFLGL (IDY)
+                   MOVE    SPA-GMN-SYOHOPRTFLGLST (IDY)
+                                           TO  SPA-GMN-SYOHOPRTFLG-G
+                   MOVE    3               TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SYS-1001-ZENSYOHOFLG    TO  SPA-GMN-ZENSYOHOFLG
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SYS-1001-ZENSYOHOFLG
+                                       =   SPA-GMN-ZENSYOHOFLGL (IDY)
+                   MOVE    SPA-GMN-ZENSYOHOFLGLST (IDY)
+                                           TO  SPA-GMN-ZENSYOHOFLG-G
+                   MOVE    2               TO  IDY
+               END-IF
+           END-PERFORM
+      *
+      *    薬剤情報発効空白の時、ゼロとする
+           IF      SYS-1001-YAKUJYOPRTFLG  =   SPACE
+               MOVE    ZERO                TO  SYS-1001-YAKUJYOPRTFLG
+           END-IF
+           MOVE    SYS-1001-YAKUJYOPRTFLG  TO  SPA-GMN-YAKUJYOFLG
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SYS-1001-YAKUJYOPRTFLG
+                                       =   SPA-GMN-YAKUJYOFLGL (IDY)
+                   MOVE    SPA-GMN-YAKUJYOFLGLST (IDY)
+                                           TO  SPA-GMN-YAKUJYOFLG-G
+                   MOVE    2               TO  IDY
+               END-IF
+           END-PERFORM
+      *    減免端数区分 空白の時、"1"とする
+           IF      SYS-1001-DISCOUNT-HASU-KBN    =   SPACE
+               MOVE    1               TO  SYS-1001-DISCOUNT-HASU-KBN
+           END-IF
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       4
+               IF      SYS-1001-DISCOUNT-HASU-KBN
+                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                   MOVE    4               TO  IDY
+                END-IF
+           END-PERFORM
+      *    消費税端数区分 空白の時、"2"とする
+           IF      SYS-1001-TAX-HASU-KBN   =   SPACE
+               MOVE    2               TO  SYS-1001-TAX-HASU-KBN
+           END-IF
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       2
+               IF      SYS-1001-TAX-HASU-KBN
+                                       =   SPA-GMN-TAX-HASU-KBNL (IDY)
+                   MOVE    SPA-GMN-TAX-HASU-KBNLST (IDY)
+                                           TO  SPA-GMN-TAX-HASU-KBN-G
+                   MOVE    2               TO  IDY
+                END-IF
+           END-PERFORM
+      *
+           . 
+       31091-KIHON-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2063,6 +2122,10 @@
            PERFORM 4900-KANRENCHK-SEC
            IF      SPA-ERRCD        =   SPACE
                MOVE    "1001"           TO  SPA-WIDCD
+      *        基本情報の期間変更の場合
+               IF      SPA-1001-ADD     =   1
+                   MOVE    "1011"           TO  SPA-WIDCD
+               END-IF
            END-IF
            .
        490-TOUROKU-EXT.
@@ -2290,6 +2353,15 @@
            PERFORM 210-BACK 
            .
        490-KOUSHIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本情報で期間変更の時、所在地・広告変更処理
+      *****************************************************************
+       4901-KIHON-HENKOU-SEC           SECTION.
+      *
+           .
+       4901-KIHON-HENKOU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2599,13 +2671,19 @@
            EVALUATE    SPA-W01-KANRICD
                WHEN    "1001" 
                    MOVE    WIDGET-NORMAL      TO  W02-N01-STATE
-                   MOVE    WIDGET-INSENSITIVE TO  W02-B03-STATE
+                   IF      SPA-W01-STYUKYMD   =   ZERO
+                       MOVE    WIDGET-INSENSITIVE TO  W02-B03-STATE
+                   END-IF
                WHEN    "1002" 
                    MOVE    WIDGET-NORMAL      TO  W02-N02-STATE
-                   MOVE    WIDGET-INSENSITIVE TO  W02-B03-STATE
+                   IF      SPA-W01-STYUKYMD   =   ZERO
+                       MOVE    WIDGET-INSENSITIVE TO  W02-B03-STATE
+                   END-IF
                WHEN    "1003" 
                    MOVE    WIDGET-NORMAL      TO  W02-N03-STATE
-                   MOVE    WIDGET-INSENSITIVE TO  W02-B03-STATE
+                   IF      SPA-W01-STYUKYMD   =   ZERO
+                       MOVE    WIDGET-INSENSITIVE TO  W02-B03-STATE
+                   END-IF
                WHEN    "1026" 
                    MOVE    WIDGET-NORMAL      TO  W02-N05-STATE
                WHEN    "1027" 
@@ -2720,6 +2798,9 @@
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
                    MOVE    "登録処理をします"    TO  WRK-WIDMSG
+               WHEN    "1011"
+                   MOVE    "基本情報を追加登録します。"
+                                                 TO  WRK-WIDMSG
                WHEN    "1002"
                    MOVE    "削除処理をします"    TO  WRK-WIDMSG
            END-EVALUATE
