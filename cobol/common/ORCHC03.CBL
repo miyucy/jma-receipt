@@ -34,6 +34,7 @@
       *  01.00.04    NACL-多々納  02/11/15  自費消費税対応修正
       *  01.00.05    NACL-多々納  03/03/04  複数診療科まとめ追加
       *  01.00.06    NACL-多々納  03/04/15  労災編集修正
+      *  01.00.07    NACL-多々納  03/05/13  自賠責請求修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -852,7 +853,9 @@
       *    労災・自賠の時、点数表示なし
            IF      SPA-HKNKBN          =   1
       *        自賠・労災非指定医療機関
-               IF     (SPA-RSI-HKNKBN      =    "4" )  OR
+      ******** IF     (SPA-RSI-HKNKBN      =    "4" )  OR
+               IF    ((SPA-RSI-HKNKBN      =    "4" )  AND
+                      (SYU-PTFTNRATE   NOT =   ZERO  ))  OR
                       (SYS-4001-RSIIRYOKBN NOT =   "1" )
                    COMPUTE WRK-GOKTEN      =    SYU-HKNTEKMONEY
                                            +    SYU-RSISHOSHIN-MONEY
