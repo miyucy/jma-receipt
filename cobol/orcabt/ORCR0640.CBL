@@ -251,7 +251,7 @@
                05  WRK-DAY24                           PIC 9(04).
       *
        01  WRK-GAI-TABLE.
-           03  WRK-GAI-TBL                             OCCURS    7.
+           03  WRK-GAI-TBL                             OCCURS    8.
              04  WRK-GAI-T                             OCCURS   10.
                05  WRK-GAI-DAY                         PIC 9(02).
                05  WRK-GAI-ZAITEN                      PIC 9(08).
@@ -1064,12 +1064,12 @@
                                       MOVE   WRK-DAY21-SENTEI(IDY)  
                                         TO   WRK-MIJ-DAY90
                                              (IDX1 SYUKEI-IDX3 IDY) 
-      ***                           WHEN   920
-      ***                             MOVE   RECE62-HKNCOMBI (IDX1)
-      ***                               TO   WRK-MIJ-HKNCOMBI(IDX1)
-      ***                             MOVE   WRK-DAY21-SENTEI(IDY)  
-      ***                               TO   WRK-MIJ-DAY92
-      ***                                    (IDX1 SYUKEI-IDX3 IDY)
+                                    WHEN   920
+                                      MOVE   RECE62-HKNCOMBI (IDX1)
+                                        TO   WRK-MIJ-HKNCOMBI(IDX1)
+                                      MOVE   WRK-DAY21-SENTEI(IDY)  
+                                        TO   WRK-MIJ-DAY92
+                                             (IDX1 SYUKEI-IDX3 IDY)
                                   END-EVALUATE
                                 END-IF
                                END-PERFORM
@@ -1700,7 +1700,31 @@
                     END-EVALUATE
                   END-IF
                WHEN   920
-                  EVALUATE   WRK-DAY22(IDY)
+                  IF    WRK-DAY1-SENTEI(IDY)   NOT  =  ZERO
+                    EVALUATE   WRK-DAY22(IDY)
+                     WHEN   1
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)
+                                              *  WRK-SENTEI-KEISU)
+                                                        +  0.5
+                         MOVE    5     TO    SYUKEI-IDX
+                         PERFORM    NYUINACCT-SYU-SEC
+                     WHEN   3
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  
+                                              *  WRK-SENTEI-KEISU)
+                                                        +  0.5
+                         MOVE    7     TO    SYUKEI-IDX
+                         PERFORM    NYUINACCT-SYU-SEC
+                     WHEN   4
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.15)
+                                                        +  0.5
+                         MOVE    8     TO    SYUKEI-IDX
+                         PERFORM    NYUINACCT-SYU-SEC
+                    END-EVALUATE
+                  ELSE
+                    EVALUATE   WRK-DAY22(IDY)
                      WHEN   1
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                  (WRK-DAY1-KHNTEN(IDY)  *  0.15)
@@ -1717,9 +1741,10 @@
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                  (WRK-DAY1-KHNTEN(IDY)  *  0.15)
                                                         +  0.5
-                         MOVE    7     TO    SYUKEI-IDX
+                         MOVE    8     TO    SYUKEI-IDX
                          PERFORM    NYUINACCT-SYU-SEC
-                  END-EVALUATE
+                    END-EVALUATE
+                  END-IF
            END-EVALUATE
       *
            .
@@ -1767,7 +1792,7 @@
            MOVE     ZERO     TO     SYUKEI-IDX3
       *
            PERFORM    VARYING  SYUKEI-IDX     FROM    1   BY  1
-                  UNTIL  SYUKEI-IDX            >  7
+                  UNTIL  SYUKEI-IDX            >  8
       *
              PERFORM  VARYING  SYUKEI-IDX2    FROM    1   BY  1
                   UNTIL  SYUKEI-IDX2           > 10
@@ -1791,6 +1816,8 @@
                   WHEN     6
                      MOVE   "190107590" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                   WHEN     7
+                     MOVE   "190111590" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
+                  WHEN     8
                      PERFORM  NYUINACCT-HEN-TAKIKAN-SEC
                END-EVALUATE
                MOVE   WRK-GAI-ZAITEN(SYUKEI-IDX SYUKEI-IDX2)
@@ -1806,6 +1833,7 @@
                   WHEN     5
                   WHEN     6
                   WHEN     7
+                  WHEN     8
                      MOVE    2      TO   WRK-GAI2-SRYKBNFLG(SYUKEI-IDX3)
                END-EVALUATE
                MOVE  WRK-GAI-KAISU-T(SYUKEI-IDX SYUKEI-IDX2)            

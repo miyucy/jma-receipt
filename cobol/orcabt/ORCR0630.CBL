@@ -1272,26 +1272,49 @@
                WHEN   920
                   MOVE      ZERO   TO  WRK-NYUTOKRYO
                   MOVE      ZERO   TO  FLG-GAIHAKU
-                  EVALUATE   WRK-DAY2(IDY)
-                     WHEN   ZERO
+                  IF    WRK-DAY1-SENTEI(IDY)   NOT  =  ZERO
+                    EVALUATE   WRK-DAY2(IDY)
+                       WHEN   ZERO
+                         MOVE     WRK-SENTEI-ZAITEN   TO  
+                                       WRK-NYUTOKRYO
+                       WHEN   1
+                         COMPUTE  WRK-NYUTOKRYO =
+                                 (WRK-KHNTEN  *  WRK-SENTEI-KEISU)
+                                                     +  0.5
+                         MOVE   1   TO   FLG-GAIHAKU
+                       WHEN   3
+                         COMPUTE  WRK-NYUTOKRYO =
+                                 (WRK-KHNTEN  *  WRK-SENTEI-KEISU)
+                                                     +  0.5
+                         MOVE   1   TO   FLG-GAIHAKU
+                       WHEN   4
+                         COMPUTE  WRK-NYUTOKRYO =
+                                 (WRK-KHNTEN         *  0.15)
+                                                     +  0.5
+                         MOVE   1   TO   FLG-GAIHAKU
+                    END-EVALUATE
+                  ELSE
+                    EVALUATE   WRK-DAY2(IDY)
+                       WHEN   ZERO
                          MOVE     NACCT-ZAITEN   TO  
                                        WRK-NYUTOKRYO
-                     WHEN   1
+                       WHEN   1
                          COMPUTE  WRK-NYUTOKRYO =
                                  (WRK-KHNTEN    *  0.15)
                                                 +  0.5
                          MOVE   1   TO   FLG-GAIHAKU
-                     WHEN   2
+                       WHEN   2
                          COMPUTE  WRK-NYUTOKRYO =
                                  (WRK-KHNTEN    *  0.3)
                                                 +  0.5
                          MOVE   1   TO   FLG-GAIHAKU
-                     WHEN   4
+                       WHEN   4
                          COMPUTE  WRK-NYUTOKRYO =
                                  (WRK-KHNTEN    *  0.15)
                                                 +  0.5
                          MOVE   1   TO   FLG-GAIHAKU
-                  END-EVALUATE
+                    END-EVALUATE
+                  END-IF
                   EVALUATE   WRK-DAY2(IDY)
                      WHEN   ZERO
                          COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
