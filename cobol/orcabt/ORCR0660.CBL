@@ -216,8 +216,8 @@
            03  WRK-KOHBUNRI        PIC 9(01).
            03  WRK-RECEERR         PIC X(200).
       *
-           03  TBL-SHUJUTSU-DAY.
-               05  TB-SHUJUTSU-DAY PIC 9(02)   OCCURS  31.
+           03  TBL-SANTEI-DAY.
+               05  TB-SANTEI-DAY   PIC 9(02)   OCCURS  31.
       *
            03  TBL-NYU-DAY.
                05  TBL-NYU-DAY-OCC             OCCURS  31.
@@ -1385,7 +1385,7 @@
            IF     (FLG-SHUJUTU-COMMENT   =      1)  AND
                   (RECE64-SYUTEN1    NOT =   ZERO)
                 MOVE       1       TO     FLG-COMMENT
-                PERFORM    2001-SHUJUTSU-COMMENT-SEC
+                PERFORM    2001-SHUJUTSU-ETC-COMMENT-SEC
            ELSE
                 MOVE       RECE64-REC    TO   RECE641-REC
                 WRITE      RECE641-REC
@@ -1398,11 +1398,11 @@
            EXIT.
       *
       *****************************************************************
-      *    手術日のコメント編集
+      *    手術日等のコメント編集
       *****************************************************************
-       2001-SHUJUTSU-COMMENT-SEC          SECTION.
+       2001-SHUJUTSU-ETC-COMMENT-SEC          SECTION.
       *
-           PERFORM   2001-SHUJUTSU-DAY-SEC
+           PERFORM   2001-SANTEI-DAY-SEC
       *    ※明細が５以上の場合
            INITIALIZE                      RECE65-REC
            MOVE    RECE64-HOSPID       TO  RECE65-HOSPID
@@ -1437,7 +1437,7 @@
       *    手術日コメントの挿入
            PERFORM  VARYING      IDX    FROM  1   BY   1
                     UNTIL       (IDX    >     31)      OR
-                                (TB-SHUJUTSU-DAY(IDX)  =  ZERO)
+                                (TB-SANTEI-DAY(IDX)  =  ZERO)
                ADD     1                    TO  IDX-RECE65
                MOVE    SPACE                TO  COM-RECE65-REC
                INITIALIZE                       COM-RECE65-REC
@@ -1447,7 +1447,7 @@
                     MOVE    ZERO                 TO  COM-SRYSURYO(1)
                     MOVE    6                    TO  COM-YUKOKETA(1)
                     MOVE    "手術　　　日"       TO  COM-NAME(1)
-                    MOVE    TB-SHUJUTSU-DAY(IDX) TO  DAY-IDX
+                    MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
                     MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
                     MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
                                                      (IDX-RECE65)
@@ -1458,7 +1458,7 @@
                     MOVE    ZERO                 TO  COM-SRYSURYO(1)
                     MOVE    6                    TO  COM-YUKOKETA(1)
                     MOVE    "実施　　　日"       TO  COM-NAME(1)
-                    MOVE    TB-SHUJUTSU-DAY(IDX) TO  DAY-IDX
+                    MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
                     MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
                     MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
                                                      (IDX-RECE65)
@@ -1543,15 +1543,15 @@
            ADD     1                 TO      CNT-RECE64
       *
            .
-       2001-SHUJUTSU-COMMENT-EXT.
+       2001-SHUJUTSU-ETC-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    手術日の確定
+      *    算定日の確定
       *****************************************************************
-       2001-SHUJUTSU-DAY-SEC          SECTION.
+       2001-SANTEI-DAY-SEC          SECTION.
       *
-           INITIALIZE                TBL-SHUJUTSU-DAY
+           INITIALIZE                TBL-SANTEI-DAY
       *
            MOVE    ZERO          TO  DAY-IDX
            PERFORM    VARYING    IDX  FROM   1   BY   1
@@ -1559,12 +1559,12 @@
                                 (DAY-IDX  >   31)
                 IF    RECE64-KAISU(1 IDX)  NOT =  ZERO
                       ADD   1     TO   DAY-IDX
-                      MOVE  IDX   TO  TB-SHUJUTSU-DAY(DAY-IDX)
+                      MOVE  IDX   TO  TB-SANTEI-DAY(DAY-IDX)
                 END-IF
            END-PERFORM
       *
            .
-       2001-SHUJUTSU-DAY-EXT.
+       2001-SANTEI-DAY-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1624,7 +1624,7 @@
       *
            IF      FLG-CTMRI-COMMENT   =      1
                 MOVE       2       TO     FLG-COMMENT
-                PERFORM    2001-SHUJUTSU-COMMENT-SEC
+                PERFORM    2001-SHUJUTSU-ETC-COMMENT-SEC
            ELSE
                 MOVE       RECE64-REC    TO   RECE641-REC
                 WRITE      RECE641-REC
