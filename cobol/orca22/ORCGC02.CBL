@@ -1117,9 +1117,9 @@
       *
       *    初期表示のとき警告エラー表示できないのでスキップ
       * 
-           IF      PTBYO-TENKIKBN      =   SPACE   OR  "8"
-           AND     PTBYO-UTAGAIFLG     =   "1"     OR  "2"
-           AND     PTBYO-REZEFLG       =   SPACE
+           IF    ( PTBYO-TENKIKBN      =   SPACE   OR  "8" )
+           AND   ( PTBYO-UTAGAIFLG     =   "1"     OR  "2" )
+           AND   ( PTBYO-REZEFLG       =   SPACE           )
                MOVE    "61"            TO  LNK-DAY6-IRAI
                MOVE    PTBYO-SRYYMD    TO  LNK-DAY6-KIJUN 
                MOVE    "2"             TO  LNK-DAY6-ZOGENPTN
