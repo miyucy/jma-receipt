@@ -34,6 +34,7 @@
       *  01.00.03    NACL-門脇    02.10.02  摘要出力項目変更の為の編集
       *  01.00.04    NACL-門脇    02.11.06  約束処方時の点数欄表示修正
       *  01.00.05    NACL-門脇    02.11.21  自賠責（ポリネック等の対応）
+      *  01.00.06    NACL-門脇    02.11.26  検診コードを編集できるよう修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -607,7 +608,8 @@
                                PERFORM   RECE45-HENSYU-SEC
                                PERFORM   RECE44-WRITE-SEC
                         ELSE
-                               IF   ACCT-SRYKBN   =    "99"
+                               IF   ACCT-SRYKBN  =  "11"  OR  "12" 
+                                                          OR  "99" 
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1  OR
                                                        CONS-TOKKI2  OR
                                                        CONS-TOKKI3  OR
@@ -685,7 +687,8 @@
                                PERFORM   RECE45-HENSYU-SEC
                                PERFORM   RECE44-WRITE-SEC
                            ELSE
-                               IF   ACCT-SRYKBN   =    "99"
+                               IF   ACCT-SRYKBN  =  "11"  OR  "12" 
+                                                          OR  "99" 
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1  OR
                                                        CONS-TOKKI2  OR
                                                        CONS-TOKKI3  OR
@@ -1137,14 +1140,17 @@
                      MOVE    ZERO     TO    WK-YKZTEN
                      MOVE    ZERO     TO    FLG-OSINKBN
                END-IF
-               IF      RECE41-HKNKBN   NOT  =   "3"
-                  IF   RECE41-HKNKBN   NOT  =   "4"                     
-                     PERFORM   RECE-LEFT-SET-SEC
-                  ELSE                                                  
-                     PERFORM   RECE-LEFT-SET3-SEC                       
-                  END-IF                                                
-               ELSE
-                     PERFORM   RECE-LEFT-SET2-SEC
+               IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                    (ACCT-ZAIKAISU  NOT =    ZERO)
+                  IF      RECE41-HKNKBN   NOT  =   "3"
+                     IF   RECE41-HKNKBN   NOT  =   "4"                     
+                        PERFORM   RECE-LEFT-SET-SEC
+                     ELSE                                                  
+                        PERFORM   RECE-LEFT-SET3-SEC                       
+                     END-IF                                                
+                  ELSE
+                        PERFORM   RECE-LEFT-SET2-SEC
+                  END-IF
                END-IF
                IF    SRY-SRYKBN   =  "21"   OR   "22"   OR   "23"   OR
                                      "31"   OR   "32"   OR   "33"   OR
