@@ -2145,9 +2145,9 @@
       *
            MOVE    WIDGET-NORMAL               TO  S02-PTNUM-STATE
       *
-           MOVE    WIDGET-NORMAL               TO  S02-B07S-STATE
+           MOVE    WIDGET-NORMAL               TO  S02-B04S-STATE
            IF    ( SPA-GMN-NYUGAIKBN           =   "1" )
-               MOVE    WIDGET-INSENSITIVE      TO  S02-B07S-STATE
+               MOVE    WIDGET-INSENSITIVE      TO  S02-B04S-STATE
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
@@ -2247,7 +2247,7 @@
                    PERFORM 490-UKEICHI-SEC
       *----(01.01.19)--ADD-START---
       *    支払証明書処理
-           WHEN    "CLICKED"       ALSO    "B04S"
+           WHEN    "CLICKED"       ALSO    "B07S"
                    PERFORM 500-SHIHARAI-SEC
       *----(01.01.19)--ADD-END-----
       *    処理結果画面
@@ -2260,7 +2260,7 @@
            WHEN    "CLICKED"       ALSO    "B08S"
                PERFORM 450-REPRINT-SEC
       *    外来分一括再計算
-           WHEN    "CLICKED"       ALSO    "B07S"
+           WHEN    "CLICKED"       ALSO    "B04S"
                PERFORM 440-IKATUSAIKEI-CHK-SEC
            END-EVALUATE
            .

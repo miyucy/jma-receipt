@@ -3,10 +3,10 @@ S02	{
 		B04	{
 	           	state	int;
 		};
-		B03S	{
+		B04S	{
 	           	state	int;
 		};
-		B07S	{
+		B03S	{
 	           	state	int;
 		};
 		PTNUM	{

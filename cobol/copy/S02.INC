@@ -18,10 +18,10 @@
         02  S02.
               03  S02-B04.
                 04  S02-B04-STATE    PIC S9(9)   BINARY.
+              03  S02-B04S.
+                04  S02-B04S-STATE   PIC S9(9)   BINARY.
               03  S02-B03S.
                 04  S02-B03S-STATE   PIC S9(9)   BINARY.
-              03  S02-B07S.
-                04  S02-B07S-STATE   PIC S9(9)   BINARY.
               03  S02-PTNUM-STATE
                                 PIC S9(9)   BINARY.
               03  S02-PTNUM     PIC X(20).
