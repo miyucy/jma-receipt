@@ -580,7 +580,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
            MOVE    "HCM41.red"     TO  SPRT-PRTID
-           IF      ORCBD008-SYORIYMD   =   "1"
+           IF      ORCBD008-SYORIKBN   =   "1"
                MOVE    "日計表（伝票発行日）"
                                        TO  SPRT-TITLE
            ELSE
