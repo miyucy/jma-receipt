@@ -22,6 +22,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-太田     02/06/27  患者照会追加
+      *  01.00.02    MCC-太田     02/12/19  定期請求追加
       *****************************************************************
        01  MNAME-DATA-REC.
            03  FILLER               PIC X(08)   VALUE   "RECEPT1".
@@ -63,11 +64,17 @@
            03  FILLER               PIC X(08)   VALUE   "ORCBQ01".
            03  FILLER               PIC X(40)   VALUE
                                     "患者照会".
+           03  FILLER               PIC X(08)   VALUE   "TEIKI1".
+           03  FILLER               PIC X(40)   VALUE
+                                    "定期請求−収納データ作成".
+           03  FILLER               PIC X(08)   VALUE   "TEIKI2".
+           03  FILLER               PIC X(40)   VALUE
+                                    "定期請求−請求書印刷".
       *
        01  MNAME-DATA-REC-R         REDEFINES   MNAME-DATA-REC.
-           03  MNAME-TBL-OCC        OCCURS      12  INDEXED TBL-IDX.
+           03  MNAME-TBL-OCC        OCCURS      14  INDEXED TBL-IDX.
                05  MNAME-SHELLID    PIC X(08).
                05  MNAME-JOBNAME    PIC X(40).
       *
-       01  MNAME-MAX                PIC 9(04)   VALUE   12.
+       01  MNAME-MAX                PIC 9(04)   VALUE   14.
       *
