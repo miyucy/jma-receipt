@@ -33,6 +33,8 @@
       *                                     病名コード２１に変更
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/07  中止処理の追加
+      *  01.01.02    NACL-藤原    05/02/23  予約コード入力による自院病名
+      *                                     に病名編集フラグをセットする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -587,6 +589,17 @@
            MOVE    WRK-BYOMEI          TO  RECE63-BYOMEI
            COMPUTE RECE63-BYOMEIMOJI    =   WRK-MOJISU    /   2
            MOVE    PTBYO-BYOMEIHENFLG  TO  RECE63-BYOMEIHENFLG   
+      *
+           IF      PTBYO-BYOMEIHENFLG  =   SPACE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       21
+                   IF      PTBYO-BYOMEICD (IDX) (1:4)  =   "ZZZC"
+                                                       OR  "ZZZ("
+                       MOVE    "1"         TO  RECE63-BYOMEIHENFLG
+                       MOVE    21          TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF   
       *
            WRITE   RECE63-REC
            ADD     1                   TO  CNT-OUT   
