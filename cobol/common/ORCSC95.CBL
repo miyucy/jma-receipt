@@ -1557,7 +1557,7 @@
                            " "                     DELIMITED  BY  SIZE
                            WRK-HKNKBN-MEI          DELIMITED  BY  SPACE
                            "¡Ê"                    DELIMITED  BY  SIZE
-                           PTRSI-COMMENT           DELIMITED  BY  SPACE
+                           PTRSI-COMMENT(1:24)     DELIMITED  BY  SPACE
                            "¡Ë"                    DELIMITED  BY  SIZE
                            INTO              WRK-HKNCOMBI
                    END-STRING
