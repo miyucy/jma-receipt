@@ -2267,7 +2267,12 @@
       *
       *        ø«Œ≈π‘∞Ÿ•«°º•ø ‘Ω∏
                MOVE    SRY-RENNUM          TO  TOUKEI02-RENNUM
-               MOVE    SRY-SRYSYUKBN       TO  TOUKEI02-SRYSYUKBN
+               IF      SRY-SRYSYUKBN       =   SPACE
+                   MOVE    ACCT-SRYKBN     TO  TOUKEI02-SRYSYUKBN (1:2)
+                   MOVE    "0"             TO  TOUKEI02-SRYSYUKBN (3:1)
+               ELSE
+                   MOVE    SRY-SRYSYUKBN   TO  TOUKEI02-SRYSYUKBN
+               END-IF
                MOVE    SRY-JIHIMONEY(IDX2) TO  TOUKEI02-JIHIMONEY
                MOVE    SRY-SRYCD    (IDX2) TO  TOUKEI02-SRYCD
                MOVE    SRY-SRYSURYO (IDX2) TO  TOUKEI02-SRYSURYO
