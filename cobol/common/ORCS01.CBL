@@ -239,6 +239,14 @@
            03  MAX-KIN-KOHI2-M         PIC 9(08).
            03  MAX-KIN-KOHI3-M         PIC 9(08).
            03  MAX-KIN-KOHI4-M         PIC 9(08).
+           03  MAX-KIN-KOHI1-K         PIC 9(08).
+           03  MAX-KIN-KOHI2-K         PIC 9(08).
+           03  MAX-KIN-KOHI3-K         PIC 9(08).
+           03  MAX-KIN-KOHI4-K         PIC 9(08).
+           03  TEI-KIN-KOHI1-K         PIC 9(08).
+           03  TEI-KIN-KOHI2-K         PIC 9(08).
+           03  TEI-KIN-KOHI3-K         PIC 9(08).
+           03  TEI-KIN-KOHI4-K         PIC 9(08).
       *
       *    公費の使用回数カウント用エリア
        01  HOKEN-KAISU-AREA.
@@ -2272,6 +2280,8 @@
       *
            EVALUATE   FLG-SANSHOU2
                WHEN   "1"
+                        MOVE  HKN-HON-GAIKKOTGAK TO  TEI-KIN-KOHI1-K
+                        MOVE  HKN-HON-GAIKJGNGAK TO  MAX-KIN-KOHI1-K
                         MOVE  HKN-HON-GAIDJGNCNT TO  MAX-KAI-KOHI1-D
                         MOVE  HKN-HON-GAIMJGNCNT TO  MAX-KAI-KOHI1-M
                         MOVE  HKN-HON-GAIDJGNGAK TO  MAX-KIN-KOHI1-D
@@ -2283,6 +2293,8 @@
                                                  TO  MAX-KIN-KOHI1-M
                         END-IF
                WHEN   "2"
+                        MOVE  HKN-TSY-GAIKKOTGAK TO  TEI-KIN-KOHI1-K
+                        MOVE  HKN-TSY-GAIKJGNGAK TO  MAX-KIN-KOHI1-K
                         MOVE  HKN-TSY-GAIDJGNCNT TO  MAX-KAI-KOHI1-D
                         MOVE  HKN-TSY-GAIMJGNCNT TO  MAX-KAI-KOHI1-M
                         MOVE  HKN-TSY-GAIDJGNGAK TO  MAX-KIN-KOHI1-D
@@ -2294,6 +2306,8 @@
                                                  TO  MAX-KIN-KOHI1-M
                         END-IF
                WHEN   "3"
+                        MOVE  HKN-TNK-GAIKKOTGAK TO  TEI-KIN-KOHI1-K
+                        MOVE  HKN-TNK-GAIKJGNGAK TO  MAX-KIN-KOHI1-K
                         MOVE  HKN-TNK-GAIDJGNCNT TO  MAX-KAI-KOHI1-D
                         MOVE  HKN-TNK-GAIMJGNCNT TO  MAX-KAI-KOHI1-M
                         MOVE  HKN-TNK-GAIDJGNGAK TO  MAX-KIN-KOHI1-D
@@ -2307,6 +2321,8 @@
            END-EVALUATE.
       *
            IF     COMB-KOH1HKNNUM    =     "027"
+                        MOVE  HKN-HON-GAIKKOTGAK TO  TEI-KIN-KOHI1-K
+                        MOVE  HKN-HON-GAIKJGNGAK TO  MAX-KIN-KOHI1-K
                         MOVE  HKN-HON-GAIDJGNCNT TO  MAX-KAI-KOHI1-D
                         MOVE  HKN-HON-GAIMJGNCNT TO  MAX-KAI-KOHI1-M
                         MOVE  HKN-HON-GAIDJGNGAK TO  MAX-KIN-KOHI1-D
@@ -2338,6 +2354,8 @@
       *
            EVALUATE   FLG-SANSHOU2
                WHEN   "1"
+                        MOVE  HKN-HON-GAIKKOTGAK TO  TEI-KIN-KOHI2-K
+                        MOVE  HKN-HON-GAIKJGNGAK TO  MAX-KIN-KOHI2-K
                         MOVE  HKN-HON-GAIDJGNCNT TO  MAX-KAI-KOHI2-D
                         MOVE  HKN-HON-GAIMJGNCNT TO  MAX-KAI-KOHI2-M
                         MOVE  HKN-HON-GAIDJGNGAK TO  MAX-KIN-KOHI2-D
@@ -2349,6 +2367,8 @@
                                                  TO  MAX-KIN-KOHI2-M
                         END-IF
                WHEN   "2"
+                        MOVE  HKN-TSY-GAIKKOTGAK TO  TEI-KIN-KOHI2-K
+                        MOVE  HKN-TSY-GAIKJGNGAK TO  MAX-KIN-KOHI2-K
                         MOVE  HKN-TSY-GAIDJGNCNT TO  MAX-KAI-KOHI2-D
                         MOVE  HKN-TSY-GAIMJGNCNT TO  MAX-KAI-KOHI2-M
                         MOVE  HKN-TSY-GAIDJGNGAK TO  MAX-KIN-KOHI2-D
@@ -2360,6 +2380,8 @@
                                                  TO  MAX-KIN-KOHI2-M
                         END-IF
                WHEN   "3"
+                        MOVE  HKN-TNK-GAIKKOTGAK TO  TEI-KIN-KOHI2-K
+                        MOVE  HKN-TNK-GAIKJGNGAK TO  MAX-KIN-KOHI2-K
                         MOVE  HKN-TNK-GAIDJGNCNT TO  MAX-KAI-KOHI2-D
                         MOVE  HKN-TNK-GAIMJGNCNT TO  MAX-KAI-KOHI2-M
                         MOVE  HKN-TNK-GAIDJGNGAK TO  MAX-KIN-KOHI2-D
@@ -2391,6 +2413,8 @@
       *
            EVALUATE   FLG-SANSHOU2
                WHEN   "1"
+                        MOVE  HKN-HON-GAIKKOTGAK TO   TEI-KIN-KOHI3-K
+                        MOVE  HKN-HON-GAIKJGNGAK TO   MAX-KIN-KOHI3-K
                         MOVE  HKN-HON-GAIDJGNCNT TO   MAX-KAI-KOHI3-D
                         MOVE  HKN-HON-GAIMJGNCNT TO   MAX-KAI-KOHI3-M
                         MOVE  HKN-HON-GAIDJGNGAK TO   MAX-KIN-KOHI3-D
@@ -2402,6 +2426,8 @@
                                                  TO  MAX-KIN-KOHI3-M
                         END-IF
                WHEN   "2"
+                        MOVE  HKN-TSY-GAIKKOTGAK TO  TEI-KIN-KOHI3-K
+                        MOVE  HKN-TSY-GAIKJGNGAK TO  MAX-KIN-KOHI3-K
                         MOVE  HKN-TSY-GAIDJGNCNT TO  MAX-KAI-KOHI3-D
                         MOVE  HKN-TSY-GAIMJGNCNT TO  MAX-KAI-KOHI3-M
                         MOVE  HKN-TSY-GAIDJGNGAK TO  MAX-KIN-KOHI3-D
@@ -2413,6 +2439,8 @@
                                                  TO  MAX-KIN-KOHI3-M
                         END-IF
                WHEN   "3"
+                        MOVE  HKN-TNK-GAIKKOTGAK TO  TEI-KIN-KOHI3-K
+                        MOVE  HKN-TNK-GAIKJGNGAK TO  MAX-KIN-KOHI3-K
                         MOVE  HKN-TNK-GAIDJGNCNT TO  MAX-KAI-KOHI3-D
                         MOVE  HKN-TNK-GAIMJGNCNT TO  MAX-KAI-KOHI3-M
                         MOVE  HKN-TNK-GAIDJGNGAK TO  MAX-KIN-KOHI3-D
@@ -2444,6 +2472,8 @@
       *
            EVALUATE   FLG-SANSHOU2
                WHEN   "1"
+                        MOVE  HKN-HON-GAIKKOTGAK TO   TEI-KIN-KOHI4-K
+                        MOVE  HKN-HON-GAIKJGNGAK TO   MAX-KIN-KOHI4-K
                         MOVE  HKN-HON-GAIDJGNCNT TO   MAX-KAI-KOHI4-D
                         MOVE  HKN-HON-GAIMJGNCNT TO   MAX-KAI-KOHI4-M
                         MOVE  HKN-HON-GAIDJGNGAK TO   MAX-KIN-KOHI4-D
@@ -2455,6 +2485,8 @@
                                                  TO  MAX-KIN-KOHI4-M
                         END-IF
                WHEN   "2"
+                        MOVE  HKN-TSY-GAIKKOTGAK TO  TEI-KIN-KOHI4-K
+                        MOVE  HKN-TSY-GAIKJGNGAK TO  MAX-KIN-KOHI4-K
                         MOVE  HKN-TSY-GAIDJGNCNT TO  MAX-KAI-KOHI4-D
                         MOVE  HKN-TSY-GAIMJGNCNT TO  MAX-KAI-KOHI4-M
                         MOVE  HKN-TSY-GAIDJGNGAK TO  MAX-KIN-KOHI4-D
@@ -2466,6 +2498,8 @@
                                                  TO  MAX-KIN-KOHI4-M
                         END-IF
                WHEN   "3"
+                        MOVE  HKN-TNK-GAIKKOTGAK TO  TEI-KIN-KOHI4-K
+                        MOVE  HKN-TNK-GAIKJGNGAK TO  MAX-KIN-KOHI4-K
                         MOVE  HKN-TNK-GAIDJGNCNT TO  MAX-KAI-KOHI4-D
                         MOVE  HKN-TNK-GAIMJGNCNT TO  MAX-KAI-KOHI4-M
                         MOVE  HKN-TNK-GAIDJGNGAK TO  MAX-KIN-KOHI4-D
@@ -2819,12 +2853,19 @@
                          (LNK-SYU-KOH1HKNNUM  =  SYU-KOH3HKNNUM)   OR
                          (LNK-SYU-KOH1HKNNUM  =  SYU-KOH4HKNNUM)
                    MOVE   SYU-SRYYMD(7:2)     TO   IDX2X
-                   IF    (MAX-KAI-KOHI1-D     NOT = ZERO)  AND
-                         (KOHI1-TBL(IDX2)     >=    MAX-KAI-KOHI1-D)
-                       CONTINUE
-                   ELSE
+                   IF   (MAX-KIN-KOHI1-D    NOT =  ZERO)
+                   OR   (MAX-KIN-KOHI1-M    NOT =  ZERO)
                        IF  KOHI1-TBL(IDX2)   =  ZERO
                        AND SYU-HKNTEN(12)   NOT =  ZERO
+                           ADD     1      TO    KOHI1-TBL(IDX2)
+                           ADD     1      TO    KOHI1-TBL(32)
+                       ELSE
+                          IF  SYU-HKNTEN(12)   NOT =  ZERO
+                             ADD     1    TO    KOHI1-TBL(IDX2)
+                          END-IF
+                       END-IF
+                   ELSE
+                       IF  SYU-HKNTEN(12)   NOT =  ZERO
                            ADD     1      TO    KOHI1-TBL(IDX2)
                            ADD     1      TO    KOHI1-TBL(32)
                        END-IF
@@ -2942,12 +2983,19 @@
                          (LNK-SYU-KOH2HKNNUM  =  SYU-KOH3HKNNUM)   OR
                          (LNK-SYU-KOH2HKNNUM  =  SYU-KOH4HKNNUM)
                    MOVE   SYU-SRYYMD(7:2)     TO    IDX2X
-                   IF    (MAX-KAI-KOHI2-D     NOT = ZERO)  AND
-                         (KOHI2-TBL(IDX2)     >=    MAX-KAI-KOHI2-D)
-                       CONTINUE
-                   ELSE
+                   IF   (MAX-KIN-KOHI2-D    NOT =  ZERO)
+                   OR   (MAX-KIN-KOHI2-M    NOT =  ZERO)
                        IF  KOHI2-TBL(IDX2)   =  ZERO
                        AND SYU-HKNTEN(12)   NOT =  ZERO
+                           ADD     1      TO    KOHI2-TBL(IDX2)
+                           ADD     1      TO    KOHI2-TBL(32)
+                       ELSE
+                          IF  SYU-HKNTEN(12)   NOT =  ZERO
+                             ADD     1    TO    KOHI2-TBL(IDX2)
+                          END-IF
+                       END-IF
+                   ELSE
+                       IF  SYU-HKNTEN(12)   NOT =  ZERO
                            ADD     1      TO    KOHI2-TBL(IDX2)
                            ADD     1      TO    KOHI2-TBL(32)
                        END-IF
@@ -3064,12 +3112,19 @@
                          (LNK-SYU-KOH3HKNNUM  =  SYU-KOH3HKNNUM)   OR
                          (LNK-SYU-KOH3HKNNUM  =  SYU-KOH4HKNNUM)
                    MOVE   SYU-SRYYMD(7:2)     TO    IDX2X
-                   IF    (MAX-KAI-KOHI3-D     NOT = ZERO)  AND
-                         (KOHI3-TBL(IDX2)     >=    MAX-KAI-KOHI3-D)
-                       CONTINUE
-                   ELSE
+                   IF   (MAX-KIN-KOHI3-D    NOT =  ZERO)
+                   OR   (MAX-KIN-KOHI3-M    NOT =  ZERO)
                        IF  KOHI3-TBL(IDX2)   =  ZERO
                        AND SYU-HKNTEN(12)   NOT =  ZERO
+                           ADD     1      TO    KOHI3-TBL(IDX2)
+                           ADD     1      TO    KOHI3-TBL(32)
+                       ELSE
+                          IF  SYU-HKNTEN(12)   NOT =  ZERO
+                             ADD     1    TO    KOHI3-TBL(IDX2)
+                          END-IF
+                       END-IF
+                   ELSE
+                       IF  SYU-HKNTEN(12)   NOT =  ZERO
                            ADD     1      TO    KOHI3-TBL(IDX2)
                            ADD     1      TO    KOHI3-TBL(32)
                        END-IF
@@ -3186,12 +3241,19 @@
                          (LNK-SYU-KOH4HKNNUM  =  SYU-KOH3HKNNUM)   OR
                          (LNK-SYU-KOH4HKNNUM  =  SYU-KOH4HKNNUM)
                    MOVE   SYU-SRYYMD(7:2)     TO    IDX2X
-                   IF    (MAX-KAI-KOHI4-D     NOT = ZERO)  AND
-                         (KOHI4-TBL(IDX2)     >=    MAX-KAI-KOHI4-D)
-                       CONTINUE
-                   ELSE
+                   IF   (MAX-KIN-KOHI4-D    NOT =  ZERO)
+                   OR   (MAX-KIN-KOHI4-M    NOT =  ZERO)
                        IF  KOHI4-TBL(IDX2)   =  ZERO
                        AND SYU-HKNTEN(12)   NOT =  ZERO
+                           ADD     1      TO    KOHI4-TBL(IDX2)
+                           ADD     1      TO    KOHI4-TBL(32)
+                       ELSE
+                          IF  SYU-HKNTEN(12)   NOT =  ZERO
+                             ADD     1    TO    KOHI4-TBL(IDX2)
+                          END-IF
+                       END-IF
+                   ELSE
+                       IF  SYU-HKNTEN(12)   NOT =  ZERO
                            ADD     1      TO    KOHI4-TBL(IDX2)
                            ADD     1      TO    KOHI4-TBL(32)
                        END-IF
@@ -3643,6 +3705,20 @@
                          (MAX-KIN-KOHI1-M   =       ZERO)
                            MOVE   ZERO            TO   ZAN-KOHI1
                END-EVALUATE
+               IF   (MAX-KIN-KOHI1-D    NOT =  ZERO)
+               OR   (MAX-KIN-KOHI1-M    NOT =  ZERO)
+                    CONTINUE
+               ELSE
+                 IF    FLG-SANTEI1   =   SPACE
+                   IF    MAX-KIN-KOHI1-K  NOT =  ZERO
+                          MOVE    MAX-KIN-KOHI1-K     TO   ZAN-KOHI1
+                   ELSE
+                     IF    TEI-KIN-KOHI1-K  NOT =  ZERO
+                          MOVE    TEI-KIN-KOHI1-K     TO   ZAN-KOHI1
+                     END-IF
+                   END-IF
+                 END-IF
+               END-IF
       *
                EVALUATE   TRUE                                          
                    WHEN  (MAX-KIN-KOHI1-D   NOT =   ZERO)   AND         
@@ -3662,6 +3738,20 @@
                          (MAX-KIN-KOHI1-M   =       ZERO)               
                            MOVE   ZERO            TO   ZAN-KOHI12       
                END-EVALUATE                                             
+               IF   (MAX-KIN-KOHI1-D    NOT =  ZERO)
+               OR   (MAX-KIN-KOHI1-M    NOT =  ZERO)
+                    CONTINUE
+               ELSE
+                 IF    FLG-SANTEI1   =   SPACE
+                   IF    MAX-KIN-KOHI1-K  NOT =  ZERO
+                          MOVE    MAX-KIN-KOHI1-K     TO   ZAN-KOHI12
+                   ELSE
+                     IF    TEI-KIN-KOHI1-K  NOT =  ZERO
+                          MOVE    TEI-KIN-KOHI1-K     TO   ZAN-KOHI12
+                     END-IF
+                   END-IF
+                 END-IF
+               END-IF
            END-IF.
       *
            IF (COMB-KOH2HKNNUM              NOT = SPACE)    AND
@@ -3684,6 +3774,20 @@
                          (MAX-KIN-KOHI2-M   =       ZERO)
                            MOVE   ZERO            TO   ZAN-KOHI2
                END-EVALUATE
+               IF   (MAX-KIN-KOHI2-D    NOT =  ZERO)
+               OR   (MAX-KIN-KOHI2-M    NOT =  ZERO)
+                    CONTINUE
+               ELSE
+                 IF    FLG-SANTEI2   =   SPACE
+                   IF    MAX-KIN-KOHI2-K  NOT =  ZERO
+                          MOVE    MAX-KIN-KOHI2-K     TO   ZAN-KOHI2
+                   ELSE
+                     IF    TEI-KIN-KOHI2-K  NOT =  ZERO
+                          MOVE    TEI-KIN-KOHI2-K     TO   ZAN-KOHI2
+                     END-IF
+                   END-IF
+                 END-IF
+               END-IF
       *
                EVALUATE   TRUE                                          
                    WHEN  (MAX-KIN-KOHI2-D   NOT =   ZERO)   AND         
@@ -3703,6 +3807,20 @@
                          (MAX-KIN-KOHI2-M   =       ZERO)               
                            MOVE   ZERO            TO   ZAN-KOHI22       
                END-EVALUATE                                             
+               IF   (MAX-KIN-KOHI2-D    NOT =  ZERO)
+               OR   (MAX-KIN-KOHI2-M    NOT =  ZERO)
+                    CONTINUE
+               ELSE
+                 IF    FLG-SANTEI2   =   SPACE
+                   IF    MAX-KIN-KOHI2-K  NOT =  ZERO
+                          MOVE    MAX-KIN-KOHI2-K     TO   ZAN-KOHI22
+                   ELSE
+                     IF    TEI-KIN-KOHI2-K  NOT =  ZERO
+                          MOVE    TEI-KIN-KOHI2-K     TO   ZAN-KOHI22
+                     END-IF
+                   END-IF
+                 END-IF
+               END-IF
            END-IF.
       *
            IF (COMB-KOH3HKNNUM              NOT = SPACE)    AND
@@ -3725,6 +3843,20 @@
                          (MAX-KIN-KOHI3-M   =       ZERO)
                            MOVE   ZERO            TO   ZAN-KOHI3
                END-EVALUATE
+               IF   (MAX-KIN-KOHI3-D    NOT =  ZERO)
+               OR   (MAX-KIN-KOHI3-M    NOT =  ZERO)
+                    CONTINUE
+               ELSE
+                 IF    FLG-SANTEI3   =   SPACE
+                   IF    MAX-KIN-KOHI3-K  NOT =  ZERO
+                          MOVE    MAX-KIN-KOHI3-K     TO   ZAN-KOHI3
+                   ELSE
+                     IF    TEI-KIN-KOHI3-K  NOT =  ZERO
+                          MOVE    TEI-KIN-KOHI3-K     TO   ZAN-KOHI3
+                     END-IF
+                   END-IF
+                 END-IF
+               END-IF
       *
                EVALUATE   TRUE                                          
                    WHEN  (MAX-KIN-KOHI3-D   NOT =   ZERO)   AND         
@@ -3744,6 +3876,20 @@
                          (MAX-KIN-KOHI3-M   =       ZERO)               
                            MOVE   ZERO            TO   ZAN-KOHI32       
                END-EVALUATE                                             
+               IF   (MAX-KIN-KOHI3-D    NOT =  ZERO)
+               OR   (MAX-KIN-KOHI3-M    NOT =  ZERO)
+                    CONTINUE
+               ELSE
+                 IF    FLG-SANTEI3   =   SPACE
+                   IF    MAX-KIN-KOHI3-K  NOT =  ZERO
+                          MOVE    MAX-KIN-KOHI3-K     TO   ZAN-KOHI32
+                   ELSE
+                     IF    TEI-KIN-KOHI3-K  NOT =  ZERO
+                          MOVE    TEI-KIN-KOHI3-K     TO   ZAN-KOHI32
+                     END-IF
+                   END-IF
+                 END-IF
+               END-IF
            END-IF.
       *
            IF (COMB-KOH4HKNNUM              NOT = SPACE)    AND
@@ -3766,6 +3912,20 @@
                          (MAX-KIN-KOHI4-M   =       ZERO)
                            MOVE   ZERO            TO   ZAN-KOHI4
                END-EVALUATE
+               IF   (MAX-KIN-KOHI4-D    NOT =  ZERO)
+               OR   (MAX-KIN-KOHI4-M    NOT =  ZERO)
+                    CONTINUE
+               ELSE
+                 IF    FLG-SANTEI4   =   SPACE
+                   IF    MAX-KIN-KOHI4-K  NOT =  ZERO
+                          MOVE    MAX-KIN-KOHI4-K     TO   ZAN-KOHI4
+                   ELSE
+                     IF    TEI-KIN-KOHI4-K  NOT =  ZERO
+                          MOVE    TEI-KIN-KOHI4-K     TO   ZAN-KOHI4
+                     END-IF
+                   END-IF
+                 END-IF
+               END-IF
       *
                EVALUATE   TRUE                                          
                    WHEN  (MAX-KIN-KOHI4-D   NOT =   ZERO)   AND         
@@ -3785,6 +3945,20 @@
                          (MAX-KIN-KOHI4-M   =       ZERO)               
                            MOVE   ZERO            TO   ZAN-KOHI42       
                END-EVALUATE                                             
+               IF   (MAX-KIN-KOHI4-D    NOT =  ZERO)
+               OR   (MAX-KIN-KOHI4-M    NOT =  ZERO)
+                    CONTINUE
+               ELSE
+                 IF    FLG-SANTEI4   =   SPACE
+                   IF    MAX-KIN-KOHI4-K  NOT =  ZERO
+                          MOVE    MAX-KIN-KOHI4-K     TO   ZAN-KOHI42
+                   ELSE
+                     IF    TEI-KIN-KOHI4-K  NOT =  ZERO
+                          MOVE    TEI-KIN-KOHI4-K     TO   ZAN-KOHI42
+                     END-IF
+                   END-IF
+                 END-IF
+               END-IF
            END-IF.
       *
       *    主保険負担金額の公費限度額対応用　残金額計算

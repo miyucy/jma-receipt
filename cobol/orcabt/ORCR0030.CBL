@@ -445,6 +445,8 @@
            03  WRK-SRYSURYO3                           PIC 9(05).
            03  WRK-RENNUM                              PIC 9(02).
       *
+           03  WRK-SRYCD                               PIC 9(09).
+      *
       *    1∑ÂÃ‹:¿∏ › 2∑ÂÃ‹:∑Î≥À 3∑ÂÃ‹:¿∫ø¿
            03  WRK-3SYU-KBN.
                05  WRK-3SYU        PIC X(03).
@@ -1309,9 +1311,17 @@
       *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE05-SRYCD(IDX4)
       *
-               IF      SRY-SRYCD(IDX2)(1:1)  =  "S"
+               IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
+               OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
                   COMPUTE   RECE04-MEISAISU  =  RECE04-MEISAISU
                                              -  1
+               END-IF
+               IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
+                  MOVE    SRY-SRYCD(IDX2)   TO    WRK-SRYCD
+                  COMPUTE   RECE04-SRYCDTOTAL  =  RECE04-SRYCDTOTAL
+                                               -  WRK-SRYCD
+                  COMPUTE   RECE04-SURYOUTOTAL =  RECE04-SURYOUTOTAL
+                                               -  1
                END-IF
       *
                IF      SRY-SRYKBN         =     "12"
@@ -2684,7 +2694,7 @@
                    END-IF
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
+                   IF     SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE02-TENSU(14 BUN-IDX)  =
@@ -2730,31 +2740,7 @@
                        END-IF
                      END-IF
                    ELSE
-                     IF      SRY-SRYCD(IDX3)     =   "820000047"
-                       ADD    WK-ZAIKAISU       TO   RECE02-KAISU(14)
-                       IF    BUN-IDX        =   1
-                           COMPUTE   RECE02-TENSU(14 BUN-IDX)  =
-                                     RECE02-TENSU(14 BUN-IDX)  +
-                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                       END-IF
-                       IF    BUN-IDX2       =   2
-                           COMPUTE   RECE02-TENSU(14 BUN-IDX2)  =
-                                     RECE02-TENSU(14 BUN-IDX2)  +
-                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                       END-IF
-                       IF    BUN-IDX3       =   3
-                           COMPUTE   RECE02-TENSU(14 BUN-IDX3)  =
-                                     RECE02-TENSU(14 BUN-IDX3)  +
-                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                       END-IF
-                       IF    BUN-IDX4       =   4
-                           COMPUTE   RECE02-TENSU(14 BUN-IDX4)  =
-                                     RECE02-TENSU(14 BUN-IDX4)  +
-                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                       END-IF
-                     ELSE
-      *----(2002/01/09)-----------------------------------------------------
-                      IF   SRY-SRYCD(IDX3)     =    CONS-FUNSAI-COMMENT
+                     IF   SRY-SRYCD(IDX3)     =    CONS-FUNSAI-COMMENT
                        ADD   WK-ZAIKAISU       TO   RECE02-KAISU(14)
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE02-TENSU(14 BUN-IDX)  =
@@ -2776,8 +2762,7 @@
                                      RECE02-TENSU(14 BUN-IDX4)  +
                                     (WK-ZAITEN   *   WK-ZAIKAISU)
                        END-IF
-                      ELSE   
-      *---------------------------------------------------------------------
+                     ELSE   
                        IF    RECE02-KHNTEN(15)   =   ZERO
                           MOVE  WRK-TNS-TEN(IDX3) TO RECE02-KHNTEN(15)
                        ELSE
@@ -2807,10 +2792,7 @@
                                      RECE02-TENSU(15 BUN-IDX4)  +
                           (WRK-TNS-TEN(IDX3)   *   ACCT-ZAIKAISU)
                        END-IF
-      *----(2002/01/09)-----------------------------------------------------
-                      END-IF   
-      *---------------------------------------------------------------------
-                     END-IF
+                     END-IF   
                    END-IF
                WHEN    "22"
                    ADD    WK-ZAIKAISU    TO   RECE02-KAISU(16)
