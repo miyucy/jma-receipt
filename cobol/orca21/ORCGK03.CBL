@@ -2468,6 +2468,22 @@
                GO      TO      460-FUKU-KEIZOKU-EXT
            END-IF
       *
+      *    入金の充当をしないこと
+           IF     (SPA-GMN-NYUKINKBN   =   "2"  OR  "3" )  AND
+                  (SPA-GMN-SEIKYU      <   SPA-GMN-NYUKIN)
+               MOVE    "0026"              TO  SPA-ERRCD
+               MOVE    10                  TO  SPA-GMN-CUR
+               GO      TO      460-FUKU-KEIZOKU-EXT
+           END-IF
+          IF       SPA-GMN-NYUKINKBN   =   "4"  OR  "5"
+               IF     (SPA-GMN-ZENMISYU    >   ZERO   ) OR
+                      (SPA-GMN-NYUKIN      >   ZERO   )
+                   MOVE    "0026"              TO  SPA-ERRCD
+                   MOVE    10                  TO  SPA-GMN-CUR
+                   GO      TO      460-FUKU-KEIZOKU-EXT
+               END-IF
+           END-IF
+      *
            MOVE    1                   TO  SPA-GMN-SYORI
       *    確定　処理
            PERFORM 450-TOROKU-SEC
@@ -2753,10 +2769,22 @@
            MOVE    WRK-DENPNUM         TO  ORCHC03-DENPNUM
            MOVE    SPA-GMN-SEIKYU      TO  ORCHC03-SEIKYU
            MOVE    SPA-GMN-NYUKIN      TO  ORCHC03-NYUKIN
+      *    前回未収額
+           MOVE    SPA-GMN-ZENMISYU    TO  ORCHC03-ZENMISYU
+      *    前回返金額
+           MOVE    SPA-GMN-CHOKAKIN    TO  ORCHC03-HENKIN
+      *    発行フラグ
+           IF      SPA-SYORIFLG        =   1
+      *        訂正分
+               MOVE    2                   TO  ORCHC03-HAKKOFLG
+           ELSE
+               MOVE    ZERO                TO  ORCHC03-HAKKOFLG
+           END-IF
            IF      SPA-GMN-SYORI       =   ZERO
                IF      SPA-GMN-HAKFLG      =   "1"
-                   CALL    WRK-SEIKYU-PG       USING   SPA-AREA
-                                                   ORCHC03AREA
+                   CALL    WRK-SEIKYU-PG       USING
+                                               SPA-AREA
+                                               ORCHC03AREA
                END-IF
            END-IF
       *    複数科まとめ請求書印刷
@@ -3193,6 +3221,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "複数科選択はできません。"
                                        TO  SPA-ERRMSG(33:)
+               WHEN    "0026"
+                   MOVE    "複数科継続の時は、入金の充当はできません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "入金額か取扱いを変更して下さい"
+                                       TO  SPA-ERRMSG(43:)
                WHEN    "1030"
                    MOVE    "処方せんプログラムがありません。"
                                        TO  SPA-ERRMSG
