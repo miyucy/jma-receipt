@@ -876,7 +876,7 @@
                WHEN    "CLICKED"       ALSO    "N02"
                WHEN    "CLICKED"       ALSO    "N03"
                WHEN    "CLICKED"       ALSO    "N04"
-               WHEN    "CLICKED"       ALSO    "N06"
+      *********WHEN    "CLICKED"       ALSO    "N06"
                WHEN    "CLICKED"       ALSO    "N07"
                WHEN    "CLICKED"       ALSO    "N08"
                    PERFORM 460-TAGUCHG-SEC
@@ -3138,43 +3138,43 @@
                                                TO  SPA-ERRMSG
       *        所得者情報
                WHEN    "2401"
-                   MOVE    "低所得者１の履歴番号がありません"
+                   MOVE    "低所得者２の履歴番号がありません"
                                                TO  SPA-ERRMSG
                WHEN    "2402"
-                   MOVE    "低所得者１の認定開始日がエラーです"
+                   MOVE    "低所得者２の認定開始日がエラーです"
                                                TO  SPA-ERRMSG
                WHEN    "2403"
-                   MOVE    "低所得者１の認定終了日がエラーです"
+                   MOVE    "低所得者２の認定終了日がエラーです"
                                                TO  SPA-ERRMSG
                WHEN    "2404"
                    MOVE
-                   "低所得者１の認定開始日＜終了日で入力して下さい"
+                   "低所得者２の認定開始日＜終了日で入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "2405"
                    MOVE
-                   "低所得者１の認定期間が重複しています。"
+                   "低所得者２の認定期間が重複しています。"
                                                TO  SPA-ERRMSG
                WHEN    "2406"
       ************ MOVE    "老齢福祉年金履歴番号がありません"
-                   MOVE    "低所得者２の履歴番号がありません"
+                   MOVE    "低所得者１の履歴番号がありません"
                                                TO  SPA-ERRMSG
                WHEN    "2407"
       ************ MOVE    "老齢福祉年金開始日がエラーです"
-                   MOVE    "低所得者２の認定終了日がエラーです"
+                   MOVE    "低所得者１の認定終了日がエラーです"
                                                TO  SPA-ERRMSG
                WHEN    "2408"
       *************MOVE    "老齢福祉年金終了日がエラーです"
-                   MOVE    "低所得者２の認定終了日がエラーです"
+                   MOVE    "低所得者１の認定終了日がエラーです"
                                                TO  SPA-ERRMSG
                WHEN    "2409"
                    MOVE
       *************"老齢福祉年金開始日＜終了日で入力して下さい"
-                   "低所得者２の認定開始日＜終了日で入力して下さい"
+                   "低所得者１の認定開始日＜終了日で入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "2410"
                    MOVE
       ************ "老齢福祉年金期間が重複しています。"
-                   "低所得者２の認定期間が重複しています。"
+                   "低所得者１の認定期間が重複しています。"
                                                TO  SPA-ERRMSG
                WHEN    "2411"
       ************ MOVE    "低所得者１の認定日を入力して下さい"
