@@ -30,4 +30,6 @@
       *警告画面より
            05  SPA-TID1-AREA. 
                07  SPA-TID1-FLG            PIC  X(02).
+      *警告画面より（印刷指示）
+           05  SPA-RECEDEN-FLG             PIC  X(02).
       *
