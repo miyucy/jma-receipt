@@ -857,6 +857,7 @@
            MOVE    RECE64-HOJOKBN      TO  RECE65-HOJOKBN
            MOVE    RECE64-TEKSTYMD     TO  RECE65-TEKSTYMD
            MOVE    RECE64-ZAINUM       TO  RECE65-ZAINUM
+           MOVE    RECE64-ZAIREN       TO  RECE65-ZAIREN
            START   RECE65-FILE
                KEY IS    >=   RECE65-KEY
                INVALID
@@ -880,6 +881,7 @@
                OR     ( RECE64-HOJOKBN   NOT =   RECE65-HOJOKBN      )
                OR     ( RECE64-TEKSTYMD  NOT =   RECE65-TEKSTYMD     )
                OR     ( RECE64-ZAINUM    NOT =   RECE65-ZAINUM       )
+               OR     ( RECE64-ZAIREN    NOT =   RECE65-ZAIREN       )
       *
                PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX               >   5     )
