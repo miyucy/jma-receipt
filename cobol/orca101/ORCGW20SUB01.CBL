@@ -30,7 +30,6 @@
       * 01.00.01     NACL-ÂÀÅÄ    03.12.04  ´Ç¸î»Õ£³¿Í°Ê¾å¤Ç¤Ê¤¤¾ì¹ç¡¢
       *                                     Í­¾²¿ÇÎÅ½ê£±·²Æþ±¡´ðËÜÎÁ£±
       *                                     ¤Ï´Ç¸îÂÐÃÖÅ¬¹ç¤ËÃÖ¤­´¹¤¨¤ë
-      * 03.05.00     NACL-ÂÀÅÄ    07.05/18  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -48,6 +47,7 @@
        01  FLG-AREA.
            03  FLG-NYUKHN                          PIC 9(01).
            03  FLG-TENSU                           PIC 9(01).
+           03  FLG-DBRC                            PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -56,16 +56,15 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-TNS-NAME                        PIC X(200).
-           03  WRK-TNS-TEN                         PIC 9(05).
-           03  WRK-PATHNAME                        PIC X(64).
-           03  WRK-CHG-SRYCD                       PIC X(09).
-      *
-       01  CONST-AREA.
-           03  CONST-H260401           PIC X(08)   VALUE "20140401".
+           03  WRK-DBPATH                          PIC X(20).
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
       *****************************************************************
+      *
+      *    Æþ±¡ÎÁ»»Äê¥Þ¥¹¥¿
+       01  NYUINKHN-REC.
+           COPY  "CPNYUINKHN.INC".
       *
       *    ÅÀ¿ô¥Þ¥¹¥¿
            COPY  "CPTENSU.INC".
@@ -77,6 +76,7 @@
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
       *
       *
       *****************************************************************
@@ -85,11 +85,9 @@
        LINKAGE                     SECTION.
       *
            COPY    "CPW20SUB01.INC".
-           COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
-                                               W20SUB01-LNK
-                                               SPA-AREA.
+                                               W20SUB01-LNK.
       *
       *****************************************************************
       *    ¼ç¡¡¡¡½èÍý
@@ -110,21 +108,53 @@
       *****************************************************************
        100-EDIT-SEC                    SECTION.
       *
-           INITIALIZE  W20SUB01-OT
+           INITIALIZE  NYUINKHN-REC
+                       W20SUB01-OT
       *
            EVALUATE    W20SUB01-I-KBN
       *
       *    ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¤Ç¸¡º÷
            WHEN    "1"
-               PERFORM 900-TENSU-KEY-SEL-SEC
-               IF    ( FLG-TENSU   =   ZERO )
-                   PERFORM 1001-W20SUB01-0-HEN-SEC
-               ELSE
-                   MOVE    1               TO  W20SUB01-O-RC
-               END-IF
+               MOVE    W20SUB01-I-KHNSRYCD TO  NYUKHN-KHNSRYCD
+               MOVE    W20SUB01-I-KJNYMD   TO  NYUKHN-YUKOSTYMD
+                                               NYUKHN-YUKOEDYMD
+               MOVE    "NYUINKHN-KEY"      TO  WRK-DBPATH
+      *
+      *    ´Ç¸îÇÛÃÖ¡¦Ê¿¶ÑºßÆü¿ôÅù¤Ç¸¡º÷
+           WHEN    "2"
+               PERFORM 200-SELKEY-SET-SEC
+      *
+               MOVE    "NYUINKHN-KEY2"     TO  WRK-DBPATH
            WHEN    OTHER
                MOVE    1                   TO  W20SUB01-O-RC
            END-EVALUATE 
+      *
+           PERFORM 800-NYUKHN-SEL-SEC
+           IF    ( FLG-NYUKHN      =   ZERO )
+      *        ´Ç¸îÇÛÃÖ¡¦Ê¿¶ÑºßÆü¿ôÅù¤Ç¸¡º÷¤Î¾ì¹ç¡¢
+      *        Í­¾²¿ÇÎÅ½ê£±·²Æþ±¡´ðËÜÎÁ£±¤Ç¡¢ÆþÎÏ¥Ñ¥é¥á¡¼¥¿¤Î
+      *        ´Ç¸î»Õ¿ô¶èÊ¬¤¬¶õÇò¤Î¾ì¹ç¡¢´Ç¸îÇÛÃÖÅ¬¹ç¤ËÃÖ¤­´¹¤¨¤ë
+               IF    ( W20SUB01-I-KBN          =   "2" )
+                 AND ( NYUKHN-KHNSRYCD         =   "190097010" )
+                 AND ( W20SUB01-I-KNGSISUKBN   =   "1" )
+                   INITIALIZE  NYUINKHN-REC
+                   MOVE    "190109670"     TO  NYUKHN-KHNSRYCD
+                   MOVE    W20SUB01-I-KJNYMD
+                                           TO  NYUKHN-YUKOSTYMD
+                                               NYUKHN-YUKOEDYMD
+                   MOVE    "NYUINKHN-KEY"  TO  WRK-DBPATH
+                   PERFORM 800-NYUKHN-SEL-SEC
+                   IF    ( FLG-NYUKHN      =   ZERO )
+                       PERFORM 1001-W20SUB01-0-HEN-SEC
+                   ELSE
+                       MOVE    1       TO  W20SUB01-O-RC
+                   END-IF
+               END-IF
+      *
+               PERFORM 1001-W20SUB01-0-HEN-SEC
+           ELSE
+               MOVE    1               TO  W20SUB01-O-RC
+           END-IF
       *
            .
        100-EDIT-EXT.
@@ -135,136 +165,383 @@
        1001-W20SUB01-0-HEN-SEC         SECTION.
       *
            MOVE    ZERO        TO  W20SUB01-O-RC
-           MOVE    TNS-NAME    TO  W20SUB01-O-NAME
-           IF    ( W20SUB01-I-KHNSRYCD (1:1)   =   "0" )
-               MOVE    W20SUB01-I-KHNSRYCD
+           MOVE    WRK-TNS-NAME
+                               TO  W20SUB01-O-NAME
+           MOVE    NYUKHN-KHNSRYCD
                                TO  W20SUB01-O-KHNSRYCD
-           ELSE
-               MOVE    TNS-SRYCD
-                               TO  W20SUB01-O-KHNSRYCD
-           END-IF
-           MOVE    TNS-TEN     TO  W20SUB01-O-KHNTEN
+           MOVE    NYUKHN-KHNTEN
+                               TO  W20SUB01-O-KHNTEN
+           MOVE    NYUKHN-SSTKIJUNKBN
+                               TO  W20SUB01-O-SSTKIJUNKBN
+           MOVE    NYUKHN-BTUSBTKBN
+                               TO  W20SUB01-O-BTUSBTKBN
+           MOVE    NYUKHN-HEIKINZAIKBN
+                               TO  W20SUB01-O-HEIKINZAIKBN
+           MOVE    NYUKHN-KANGOHAICHIKBN
+                               TO  W20SUB01-O-KANGOHAICHIKBN
+           MOVE    NYUKHN-KANGOHIRITUKBN
+                               TO  W20SUB01-O-KANGOHIRITUKBN
+           MOVE    NYUKHN-KANGOHOJOHAICHIKBN
+                               TO  W20SUB01-O-KANGOHOJOHAICHIKBN
       *
            .
        1001-W20SUB01-0-HEN-EXT.
           EXIT.
       *****************************************************************
+      *    ¸¡º÷¥­¡¼ÊÔ½¸½èÍý
+      *****************************************************************
+       200-SELKEY-SET-SEC              SECTION.
+      *
+           MOVE   "1"                  TO  NYUKHN-IPROUKBN
+           MOVE   SPACE                TO  NYUKHN-SSTKIJUNKBN
+           MOVE   W20SUB01-I-KJNYMD
+                                       TO  NYUKHN-YUKOSTYMD
+                                           NYUKHN-YUKOEDYMD
+      *
+      *
+           EVALUATE    W20SUB01-I-BTUSBTKBN
+      *
+      *    °ìÈÌÉÂÅï
+           WHEN    "01"
+               PERFORM 210-IPPAN-PARA-SET-SEC
+      *    Àº¿ÀÉÂÅï
+           WHEN    "02"
+               PERFORM 210-SEISIN-PARA-SET-SEC
+      *    ·ë³ËÉÂÅï
+           WHEN    "03"
+               PERFORM 210-KEKKAKU-PARA-SET-SEC
+      *    ÎÅÍÜÉÂÅï
+           WHEN    "04"
+               PERFORM 210-RYOYO-PARA-SET-SEC
+      *    ¾ã³²¼Ô»ÜÀß
+           WHEN    "05"
+               PERFORM 210-SYOGAI-PARA-SET-SEC
+      *    ÀìÌçÉÂ±¡
+           WHEN    "06"
+               PERFORM 210-SENMON-PARA-SET-SEC
+      *    Ï·¿ÍÉÂÅï
+           WHEN    "07"
+               PERFORM 210-ROJIN-PARA-SET-SEC
+      *    Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ
+           WHEN    "08"
+               PERFORM 210-SINRYO-PARA-SET-SEC
+      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡ÎÁ
+           WHEN    "09"
+               PERFORM 210-SINRYORYOYO-PARA-SET-SEC
+           END-EVALUATE
+      *
+           .
+       200-SELKEY-SET-EXT.
+          EXIT.
+      *****************************************************************
+      *    °ìÈÌÉÂÅï
+      *****************************************************************
+       210-IPPAN-PARA-SET-SEC          SECTION.
+      *
+           MOVE    W20SUB01-I-BTUSBTKBN
+                                   TO  NYUKHN-BTUSBTKBN
+           MOVE    W20SUB01-I-HEIKINZAIKBN
+                                   TO  NYUKHN-HEIKINZAIKBN
+           MOVE    W20SUB01-I-KANGOHAICHIKBN
+                                   TO  NYUKHN-KANGOHAICHIKBN
+           MOVE    W20SUB01-I-KANGOHIRITUKBN
+                                   TO  NYUKHN-KANGOHIRITUKBN
+      *
+           .
+       200-IPPAN-PARA-SET-EXT.
+          EXIT.
+      *****************************************************************
+      *    Àº¿ÀÉÂÅï
+      *****************************************************************
+       210-SEISIN-PARA-SET-SEC         SECTION.
+      *
+           MOVE    W20SUB01-I-BTUSBTKBN
+                                   TO  NYUKHN-BTUSBTKBN
+           MOVE    W20SUB01-I-HEIKINZAIKBN
+                                   TO  NYUKHN-HEIKINZAIKBN
+           MOVE    W20SUB01-I-KANGOHAICHIKBN
+                                   TO  NYUKHN-KANGOHAICHIKBN
+           MOVE    W20SUB01-I-KANGOHIRITUKBN
+                                   TO  NYUKHN-KANGOHIRITUKBN
+      *
+           .
+       210-SEISIN-PARA-SET-EXT.
+          EXIT.
+      *****************************************************************
+      *    ·ë³ËÉÂÅï
+      *****************************************************************
+       210-KEKKAKU-PARA-SET-SEC        SECTION.
+      *
+           MOVE    W20SUB01-I-BTUSBTKBN
+                                   TO  NYUKHN-BTUSBTKBN
+           MOVE    W20SUB01-I-HEIKINZAIKBN
+                                   TO  NYUKHN-HEIKINZAIKBN
+           MOVE    W20SUB01-I-KANGOHAICHIKBN
+                                   TO  NYUKHN-KANGOHAICHIKBN
+           MOVE    W20SUB01-I-KANGOHIRITUKBN
+                                   TO  NYUKHN-KANGOHIRITUKBN
+      *
+           .
+       210-KEKKAKU-PARA-SET-EXT.
+          EXIT.
+      *****************************************************************
+      *    ÎÅÍÜÉÂÅï
+      *****************************************************************
+       210-RYOYO-PARA-SET-SEC          SECTION.
+      *
+           MOVE    W20SUB01-I-BTUSBTKBN
+                                   TO  NYUKHN-BTUSBTKBN
+           MOVE    W20SUB01-I-KANGOHAICHIKBN
+                                   TO  NYUKHN-KANGOHAICHIKBN
+           MOVE    W20SUB01-I-KANGOHIRITUKBN
+                                   TO  NYUKHN-KANGOHIRITUKBN
+           MOVE    W20SUB01-I-KANGOHOJOHAICHIKBN
+                                   TO  NYUKHN-KANGOHOJOHAICHIKBN
+      *
+           .
+       210-RYOYO-PARA-SET-EXT.
+          EXIT.
+      *****************************************************************
+      *    ¾ã³²¼Ô»ÜÀß
+      *****************************************************************
+       210-SYOGAI-PARA-SET-SEC         SECTION.
+      *
+           MOVE    W20SUB01-I-BTUSBTKBN
+                                   TO  NYUKHN-BTUSBTKBN
+           MOVE    W20SUB01-I-KANGOHAICHIKBN
+                                   TO  NYUKHN-KANGOHAICHIKBN
+           MOVE    W20SUB01-I-KANGOHIRITUKBN
+                                   TO  NYUKHN-KANGOHIRITUKBN
+      *
+           .
+       210-SYOGAI-PARA-SET-EXT.
+          EXIT.
+      *****************************************************************
+      *    ÀìÌçÉÂ±¡
+      *****************************************************************
+       210-SENMON-PARA-SET-SEC         SECTION.
+      *
+           MOVE    W20SUB01-I-BTUSBTKBN
+                                   TO  NYUKHN-BTUSBTKBN
+           MOVE    W20SUB01-I-HEIKINZAIKBN
+                                   TO  NYUKHN-HEIKINZAIKBN
+           MOVE    W20SUB01-I-KANGOHAICHIKBN
+                                   TO  NYUKHN-KANGOHAICHIKBN
+           MOVE    W20SUB01-I-KANGOHIRITUKBN
+                                   TO  NYUKHN-KANGOHIRITUKBN
+      *
+           .
+       210-SENMON-PARA-SET-EXT.
+          EXIT.
+      *****************************************************************
+      *    Ï·¿ÍÉÂÅï
+      *****************************************************************
+       210-ROJIN-PARA-SET-SEC          SECTION.
+      *
+           MOVE    W20SUB01-I-BTUSBTKBN
+                                   TO  NYUKHN-BTUSBTKBN
+           MOVE    W20SUB01-I-KANGOHAICHIKBN
+                                   TO  NYUKHN-KANGOHAICHIKBN
+           MOVE    W20SUB01-I-KANGOHIRITUKBN
+                                   TO  NYUKHN-KANGOHIRITUKBN
+           MOVE    W20SUB01-I-KANGOHOJOHAICHIKBN
+                                   TO  NYUKHN-KANGOHOJOHAICHIKBN
+      *
+           .
+       210-ROJIN-PARA-SET-EXT.
+          EXIT.
+      *****************************************************************
+      *    Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ
+      *****************************************************************
+       210-SINRYO-PARA-SET-SEC         SECTION.
+      *
+      *    IF    ( W20SUB01-I-KNGSISUKBN   =   "1" )
+      *        MOVE    "3"         TO  NYUKHN-SSTKIJUNKBN
+      *    END-IF
+      *
+           MOVE    W20SUB01-I-BTUSBTKBN
+                                   TO  NYUKHN-BTUSBTKBN
+           MOVE    W20SUB01-I-KANGOHAICHIKBN
+                                   TO  NYUKHN-KANGOHAICHIKBN
+           MOVE    W20SUB01-I-KANGOHOJOHAICHIKBN
+                                   TO  NYUKHN-KANGOHOJOHAICHIKBN
+      *
+           .
+       210-SINRYO-PARA-SET-EXT.
+          EXIT.
+      *****************************************************************
+      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡ÎÁ
+      *****************************************************************
+       210-SINRYORYOYO-PARA-SET-SEC    SECTION.
+      *
+           MOVE    W20SUB01-I-BTUSBTKBN
+                                   TO  NYUKHN-BTUSBTKBN
+           MOVE    W20SUB01-I-KANGOHAICHIKBN
+                                   TO  NYUKHN-KANGOHAICHIKBN
+           MOVE    W20SUB01-I-KANGOHOJOHAICHIKBN
+                                   TO  NYUKHN-KANGOHOJOHAICHIKBN
+      *
+           .
+       210-SINRYORYOYO-PARA-SET-EXT.
+          EXIT.
+      *****************************************************************
+      *    Æþ±¡ÎÁ»»Äê¥Þ¥¹¥¿¸¡º÷½èÍý
+      *****************************************************************
+       800-NYUKHN-SEL-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUKHN
+      *
+           MOVE    NYUINKHN-REC        TO  MCPDATA-REC
+      *
+      *    Æþ±¡ÎÁ»»Äê¥Þ¥¹¥¿¸¡º÷
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    NOT =   ZERO )
+                   MOVE    1           TO  FLG-NYUKHN
+           ELSE
+               MOVE    MCPDATA-REC TO  NYUINKHN-REC
+      *        ÅÀ¿ô¥Þ¥¹¥¿¤è¤êÌ¾¾Î¼èÆÀ
+               PERFORM 800-TENSU-SEL-SEC
+               IF    ( FLG-TENSU   =   ZERO )
+                   MOVE    TNS-NAME
+                                   TO  WRK-TNS-NAME
+               ELSE
+                   MOVE    SPACE   TO  WRK-TNS-NAME
+               END-IF
+           END-IF
+      *
+      *    Æþ±¡ÎÁ»»Äê¥Þ¥¹¥¿¥¯¥í¡¼¥º
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+      *
+       800-NYUKHN-SEL-EXT.
+           EXIT.
+      *****************************************************************
       *    ÅÀ¿ô¥Þ¥¹¥¿¸¡º÷½èÍý
       *****************************************************************
-       900-TENSU-KEY-SEL-SEC           SECTION.
+       800-TENSU-SEL-SEC              SECTION.
       *
            MOVE    ZERO            TO  FLG-TENSU
       *
            INITIALIZE  TNS-TENSU-REC
       *
-           MOVE    SPA-HOSPNUM     TO  TNS-HOSPNUM
-      *
-           MOVE    W20SUB01-I-KHNSRYCD
+           MOVE    NYUKHN-KHNSRYCD
                                    TO  TNS-SRYCD
-      *
-           EVALUATE    W20SUB01-I-KHNSRYCD
-           WHEN    "099999950"
-               MOVE    "190097010" TO  TNS-SRYCD
-           WHEN    "099999951"
-               MOVE    "190097210" TO  TNS-SRYCD
-           WHEN    "099999952"
-               MOVE    "190135110" TO  TNS-SRYCD
-           WHEN    "099999955"
-               MOVE    "190169610" TO  TNS-SRYCD
-           WHEN    "099999956"
-               MOVE    "190169910" TO  TNS-SRYCD
-           WHEN    "099999957"
-               MOVE    "190170210" TO  TNS-SRYCD
-           END-EVALUATE
-      *
-           EVALUATE    TRUE
-           WHEN  ( W20SUB01-I-KJNYMD   >=  CONST-H260401 )
-             AND ( W20SUB01-I-KHNSRYCD  =  "190131310" )
-               MOVE    "190117710" TO  TNS-SRYCD
-           WHEN  ( W20SUB01-I-KJNYMD   >=  CONST-H260401 )
-             AND ( W20SUB01-I-KHNSRYCD  =  "190131410" )
-               MOVE    "190077410" TO  TNS-SRYCD
-           END-EVALUATE
-      *
-           MOVE    W20SUB01-I-KJNYMD   TO  TNS-YUKOSTYMD
-                                           TNS-YUKOEDYMD
-           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    W20SUB01-I-KJNYMD
+                                   TO  ORC-DBYMD
+           MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
       *    ÅÀ¿ô¥Þ¥¹¥¿¸¡º÷
-           MOVE    "tbl_tensu"     TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    (  MCP-RC     NOT =   ZERO )
+           MOVE    "TENSU-KEY"     TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    (  FLG-DBRC   NOT =   ZERO )
                MOVE    1           TO  FLG-TENSU
            ELSE
                MOVE    MCPDATA-REC TO  TNS-TENSU-REC
            END-IF
       *
       *    ÅÀ¿ô¥Þ¥¹¥¿¥¯¥í¡¼¥º
-           MOVE    "tbl_tensu"     TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
+           MOVE    "TENSU-KEY"     TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
       *
            .
       *
-       900-TENSU-KEY-SEL-EXT.
+       800-TENSU-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)
+      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
       *****************************************************************
-       910-DBSELECT-SEC                SECTION.
+       900-TBL-SELECT-SEC              SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    ZERO            TO  FLG-DBRC
+           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+           PERFORM 910-DB-SELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               PERFORM 910-DBFETCH-SEC
+               MOVE    WRK-DBPATH  TO  ORC-DBPATH
+               PERFORM 910-DB-READ-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   CONTINUE
+               ELSE
+                   MOVE    1       TO  FLG-DBRC
+               END-IF
+           ELSE
+               MOVE    1           TO  FLG-DBRC
            END-IF
       *
            .
-      *
-       910-DBSELECT-EXT.
+       900-TBL-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤Ï¹Ô¤ï¤Ê¤¤)
+      *    ¥Æ¡¼¥Ö¥ëÆÉ¹þ½èÍý
       *****************************************************************
-       911-DBSELECT-SEC                SECTION.
+       900-TBL-READ-SEC                SECTION.
+      *
+           MOVE    ZERO            TO  FLG-DBRC
+           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+           PERFORM 910-DB-READ-SEC
+           IF    ( MCP-RC          =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    1           TO  FLG-DBRC
+           END-IF
+      *
+           .
+       900-TBL-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *****************************************************************
+       900-TBL-CLOSE-SEC               SECTION.
+      *
+           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC
+      *
+           .
+       900-TBL-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¸¡º÷½èÍý
+      *****************************************************************
+       910-DB-SELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
       *
-       911-DBSELECT-EXT.
+       910-DB-SELECT-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
       *****************************************************************
-       910-DBFETCH-SEC                 SECTION.
+       910-DB-READ-SEC                 SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
       *
-       910-DBFETCH-EXT.
+       910-DB-READ-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â¥¯¥í¡¼¥º½èÍý
       *****************************************************************
-       910-DBCLOSECURSOR-SEC                 SECTION.
+       910-DB-CLOSE-SEC                SECTION.
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "DBCLOSE"            TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
       *
-       910-DBCLOSECURSOR-EXT.
+       910-DB-CLOSE-EXT.
            EXIT.
