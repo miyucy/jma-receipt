@@ -144,7 +144,9 @@
       *    パス名領域
            03  WRK-DBPATH          PIC X(20).
       *    入院会計作成用ワーク
-           03  WRK-NAI-SRYYM-41    PIC X(06).
+           03  WRK-NAI-SRYYM-41.
+               05  WRK-NAI-SRYYM-41-YY  PIC 9(04).
+               05  WRK-NAI-SRYYM-41-MM  PIC 9(02).
            03  WRK-NYUINYMD        PIC X(08).
            03  WRK-TSUSAN          PIC 9(05).
            03  WRK-RRKNUM          PIC 9(03).
@@ -4155,12 +4157,18 @@
                MOVE    PTNYUINRRK-TENNYUYMD
                                            TO  WRK-STYMD
                IF      PTNYUINRRK-TENSTUYMD    NOT =   SPACE
-                       MOVE    WRK-NAI-SRYYM-41   TO  WRK-EDYMD(1:6)
-                       MOVE    "31"               TO  WRK-EDYMD(7:2)
       *               月末算定
                        INITIALIZE                      STS-AREA-DAY
                        INITIALIZE                      LNK-DAY7-AREA
                        MOVE    "71"                TO  LNK-DAY7-IRAI
+                       IF      WRK-NAI-SRYYM-41-MM    =   1
+                               COMPUTE  WRK-NAI-SRYYM-41-YY
+                                    =   WRK-NAI-SRYYM-41-YY   -  1
+                               MOVE   12   TO  WRK-NAI-SRYYM-41-MM
+                       ELSE
+                               COMPUTE  WRK-NAI-SRYYM-41-MM
+                                    =   WRK-NAI-SRYYM-41-MM   -  1
+                       END-IF
                        MOVE    WRK-NAI-SRYYM-41    TO  LNK-DAY7-YM
                        CALL    "ORCSDAY"           USING STS-AREA-DAY
                                                          LNK-DAY7-AREA
