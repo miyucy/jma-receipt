@@ -4914,7 +4914,7 @@
       ***************************************************************** 021118
        410191-NYUACCT-SAKUSEI-SEC   SECTION.                             021118
       *                                                                 021118
-      *     DISPLAY   "410191-NYUACCT-SAKUSEI-SEC"
+           DISPLAY   "410191-NYUACCT-SAKUSEI-SEC"
            DISPLAY   "SPA-NAI-SRYYM-41 = " SPA-NAI-SRYYM-41
            MOVE   SPACE       TO       IPN-NYUKAIKEI-SAKUSEI-FLG
            INITIALIZE      ORCSSYOKIKSNAREA
@@ -4977,6 +4977,26 @@
                END-IF
            END-IF
       *
+      *
+      *    広範囲熱傷特定集中治療室管理料の場合は最長６０日間の算定の為、
+      *    次月の会計作成時に６０日経過時は無条件に一般の入院料算定とする
+      *     IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+      *         IF   PTNYUINRRK-TOKUTEI-NYUIN = "16"
+      *             IF       STUSAN-NISSU06  >  60
+      *             MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+      *         END-IF
+      *     END-IF
+      *
+      *    亜急性期入院医療管理料の場合は最長９０日間の算定の為、
+      *    次月の会計作成時に９０日経過時は無条件に一般の入院料算定とする
+      *     IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+      *         IF   PTNYUINRRK-TOKUTEI-NYUIN = "18"
+      *             IF       STUSAN-NISSU06  >  90
+      *             MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+      *         END-IF
+      *     END-IF
+            DISPLAY  "WRK-TOKUTEI-NYUIN = " WRK-TOKUTEI-NYUIN
+      *
            IF      WRK-TOKUTEI-NYUIN          NOT =   SPACE
                PERFORM   410191-TOKTEI-NYUIN-SET-SEC
            ELSE
@@ -5034,8 +5054,6 @@
       *    通算算定済日数
                MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
       *         DISPLAY  "WRK-TSUSAN = " WRK-TSUSAN
-      *    入院料加算診療コード取り込み
-           PERFORM    410191-NYUKSN-GET-SEC
       *    特定入院で入院料が変更になるコードの対応
       *    診療所老人医療管理料
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190774110"
@@ -5300,6 +5318,9 @@
                      MOVE    "1"   TO     IPN-NYUKAIKEI-SAKUSEI-FLG
                  END-IF
            END-IF
+      *
+      *    入院料加算診療コード取り込み
+           PERFORM    410191-NYUKSN-GET-SEC
       *
       *    特定入院料区分のセット
            IF      WRK-TOKUTEI-NYUIN    =   SPACE
@@ -6058,8 +6079,13 @@
            MOVE    ZERO            TO  FLG-TENSU
            INITIALIZE              TNS-TENSU-REC
       *
-           MOVE    LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+           IF      LNK-SCNYUACCT-NYUKHN-SRYCD(1) NOT = SPACE
+               MOVE   LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                                    TO  TNS-SRYCD
+           ELSE
+               MOVE   LNK-SCNYUACCT-KAGEN-SRYCD(1)
+                                   TO  TNS-SRYCD
+           END-IF
            MOVE    SYOKIKSN-IN-SANTEISTYMD    TO  ORC-DBYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
