@@ -499,7 +499,7 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-MANSEI-ALL
-           IF     WRK-FSANTEIYMD-OLD  NOT =   SPACE
+           IF      WRK-FSANTEIYMD-OLD  NOT =   SPACE
                MOVE    WRK-FSANTEIYMD-OLD(1:6) TO  WRK-SRYYM
                PERFORM 10091-SRYKARRK-CHK-SEC
                IF     (WRK-SYOSINYMD   NOT =   SPACE     )   AND
@@ -536,12 +536,14 @@
       *    ¿ÇÎÅ½ê
       *    Ï·¿Í
            MOVE    "111700210"         TO  WRK-SRYCD
+           PERFORM 100912-SANTEI-CHK-SEC
            IF     (WRK-SYOSINYMD       =   SPACE  )  OR
                   (WRK-YMD             >   WRK-SYOSINYMD)
                MOVE    WRK-YMD         TO  WRK-SYOSINYMD
            END-IF
       *    Ï·¿Í³°
            MOVE    "111003610"         TO  WRK-SRYCD
+           PERFORM 100912-SANTEI-CHK-SEC
            IF     (WRK-SYOSINYMD       =   SPACE  )  OR
                   (WRK-YMD             >   WRK-SYOSINYMD)
                MOVE    WRK-YMD         TO  WRK-SYOSINYMD
@@ -549,12 +551,14 @@
       *    ¾®»ù²Ê¿Ç»¡ÎÁ
       *    ±¡³°½èÊý   ½é¿Ç
            MOVE    "113003510"         TO  WRK-SRYCD
+           PERFORM 100912-SANTEI-CHK-SEC
            IF     (WRK-SYOSINYMD       =   SPACE  )  OR
                   (WRK-YMD             >   WRK-SYOSINYMD)
                MOVE    WRK-YMD         TO  WRK-SYOSINYMD
            END-IF
       *    ¡¡¡¡±¡Æâ½èÊý   ½é¿Ç
            MOVE    "113003710"         TO  WRK-SRYCD
+           PERFORM 100912-SANTEI-CHK-SEC
            IF     (WRK-SYOSINYMD       =   SPACE  )  OR
                   (WRK-YMD             >   WRK-SYOSINYMD)
                MOVE    WRK-YMD         TO  WRK-SYOSINYMD
@@ -562,6 +566,7 @@
       *
       *    ²¾¤Î½é¿ÇÎÁ
            MOVE    "099110001"         TO  WRK-SRYCD
+           PERFORM 100912-SANTEI-CHK-SEC
            IF     (WRK-SYOSINYMD       =   SPACE  )  OR
                   (WRK-YMD             >   WRK-SYOSINYMD)
                MOVE    WRK-YMD         TO  WRK-SYOSINYMD
@@ -569,6 +574,7 @@
       *
       *    Ï«ºÒ½é¿ÇÎÁ
            MOVE    "101110010"         TO  WRK-SRYCD
+           PERFORM 100912-SANTEI-CHK-SEC
            IF     (WRK-SYOSINYMD       =   SPACE  )  OR
                   (WRK-YMD             >   WRK-SYOSINYMD)
                MOVE    WRK-YMD         TO  WRK-SYOSINYMD
@@ -582,8 +588,8 @@
       *    ÊÝ¸±Ëè¤Î¥³¡¼¥É¤ÎÈ½Äê½èÍý
       *****************************************************************
        100912-SANTEI-CHK-SEC      SECTION.
-           MOVE    SPACE               TO  WRK-YMD
       *
+           MOVE    SPACE               TO  WRK-YMD
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
