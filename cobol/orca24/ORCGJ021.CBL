@@ -1101,7 +1101,6 @@
                MOVE    "0003"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-J021-CUR
                MOVE    "1"                 TO  SPA-J021-ATO-ERR
-               GO      TO      4002-ATO-HKNCOMBI-EXT
            ELSE
                MOVE    SNUM-OUTEDT(12:4)   TO  SPA-J021-ATO-HKNCOMBI
            END-IF
@@ -1111,7 +1110,8 @@
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL     (IDX          >   SPA-J021-MAX)  OR
-                             (FLG-OK       =   1    )
+                             (FLG-OK       =   1    )   OR
+                             (SPA-ERRCD    NOT =   SPACE )
                IF      SPA-J021-ATO-HKNCOMBI   =
                                            SPA-J021-THKNCOMBI (IDX)
                    MOVE    SPA-J021-THKNCOMBIMEI  (IDX)
@@ -1130,18 +1130,18 @@
       *                保険開始日が診療日より前であること
                        IF     (SPA-NAI-TEKSTYMD (IDX)(1:6)
                                            =   SPA-NAI-SRYYM )  AND
-                              (SPA-NAI-TEKSTYMD (IDX)
-                                           >   SPA-RRK-RRKYMD
-                                                     (SPA-RRK-MAX))
+                              (SPA-NAI-TEKSTYMD (IDX)(7:2)
+                                           >   SPA-J021-DAY1 )
                            MOVE    "0009"              TO  SPA-ERRCD
+                           MOVE    3                   TO  SPA-J021-CUR
                        END-IF
       *                保険終了日が診療日より後であること
                        IF     (SPA-NAI-TEKEDYMD (IDX)(1:6)
                                            =   SPA-NAI-SRYYM )  AND
-                              (SPA-NAI-TEKEDYMD (IDX)
-                                           <   SPA-RRK-RRKYMD
-                                                         (01))
+                              (SPA-NAI-TEKEDYMD (IDX)(7:2)
+                                           <   SPA-J021-DAY2 )
                            MOVE    "0009"              TO  SPA-ERRCD
+                           MOVE    4                   TO  SPA-J021-CUR
                        END-IF
                    ELSE
                        MOVE    "0008"              TO  SPA-ERRCD
@@ -1154,33 +1154,33 @@
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
-           IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    "1"                 TO  SPA-J021-ATO-ERR
-               MOVE    2                   TO  SPA-J021-CUR
-               GO      TO      4002-ATO-HKNCOMBI-EXT
-           END-IF
-           IF      FLG-OK              =   ZERO
+           IF     (FLG-OK              =   ZERO ) AND
+                  (SPA-ERRCD           =   SPACE )
                MOVE    "0003"              TO  SPA-ERRCD
-               MOVE    "1"                 TO  SPA-J021-ATO-ERR
-               MOVE    2                   TO  SPA-J021-CUR
-               GO      TO      4002-ATO-HKNCOMBI-EXT
            END-IF
       *
       *
-           IF      FLG-MAE-ROUJIN      =   FLG-ATO-ROUJIN
-      *        どちらかがが生保単独ので場合
-               IF    ((FLG-MAE-SEIHO       =   1   )  OR
-                      (FLG-ATO-SEIHO       =   1   ))  AND
-                      (FLG-MAE-ROUJIN      =   1   )   AND
-                      (SPA-J02-ROUJIN      =   ZERO)
-                   MOVE    "0014"              TO  SPA-ERRCD
+           IF      SPA-ERRCD           =   SPACE
+               IF      FLG-MAE-ROUJIN      =   FLG-ATO-ROUJIN
+      *            どちらかがが生保単独ので場合
+                   IF    ((FLG-MAE-SEIHO       =   1   )  OR
+                          (FLG-ATO-SEIHO       =   1   ))  AND
+                          (FLG-MAE-ROUJIN      =   1   )   AND
+                          (SPA-J02-ROUJIN      =   ZERO)
+                       MOVE    "0014"              TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   MOVE    "0004"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               IF      SPA-ERRCD           =   "0009"
+                   CONTINUE
+               ELSE
                    MOVE    "1"                 TO  SPA-J021-ATO-ERR
                    MOVE    2                   TO  SPA-J021-CUR
                END-IF
-           ELSE
-               MOVE    "0004"              TO  SPA-ERRCD
-               MOVE    "1"                 TO  SPA-J021-ATO-ERR
-               MOVE    2                   TO  SPA-J021-CUR
            END-IF
       *
            .
