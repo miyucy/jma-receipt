@@ -34,6 +34,7 @@
       *  01.00.05    NACL-太田    03.03.25  算定開始日も入力可とする
       *                                     入院の保険適用外金額欄追加
       *  01.00.06    NACL-太田    03.04.02  負担金計算サブ引数修正
+      *  01.00.07    NACL-太田    04.01.23  日別収納マスタ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -298,6 +299,9 @@
        01  LNK-SYUNOU-REC-T.
          02 LNK-SYUNOU-REC     OCCURS 10.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
+       01  LNK-SYUDAY-REC-T.
+         02 LNK-SYUDAY-REC     OCCURS 10.
+           COPY  "CPSYUDAY.INC"  REPLACING  //SDAY-// BY //LNK-SDAY-//.
       *
       *    保険組合せ編集サブ
            COPY    "CPORCSHKNSET.INC".
@@ -1168,7 +1172,7 @@
                                    TO  PTNYUINRRK-PTID
       *
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY3"
+           MOVE    "PTNYUINRRK-KEY29"
                                    TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC    NOT =   ZERO )
@@ -1177,7 +1181,7 @@
                MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
            END-IF
       *
-           MOVE    "PTNYUINRRK-KEY3"
+           MOVE    "PTNYUINRRK-KEY29"
                                    TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -1191,7 +1195,6 @@
       *    入院中でない場合はエラー
            IF    ( PTNYUINRRK-JTIKBN   NOT =   "5" )
             AND  ( PTNYUINRRK-JTIKBN   NOT =   "6" )
-            AND  ( PTNYUINRRK-TAIINYMD     =   "99999999"  )
                CONTINUE
            ELSE
                MOVE    "0003"      TO  SPA-ERRCD
@@ -1276,6 +1279,11 @@
       *
            MOVE    SPA-GMN-I51-PTNUM   TO  SPA-LAST-PTNUM
            MOVE    SPA-NAI-I51-PTID    TO  SPA-LAST-PTID
+      *
+      *    既に退院している場合はエラー（処理は続行可能とする）
+           IF    ( PTNYUINRRK-TAIINYMD NOT =   "99999999" )
+               MOVE    "0007"      TO  SPA-ERRCD
+           END-IF
       *
            .
       *
@@ -1692,9 +1700,11 @@
       *
            MOVE    SPACE           TO  LNK-ORCS02-REC
                                        LNK-SYUNOU-REC-T
+                                       LNK-SYUDAY-REC-T
       *
            INITIALIZE                  LNK-ORCS02-REC
                                        LNK-SYUNOU-REC-T
+                                       LNK-SYUDAY-REC-T
       *
            MOVE    SPA-HOSPID      TO  LNK-S02-HOSPID
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
@@ -1718,6 +1728,7 @@
                                    SPA-AREA
                                    LNK-ORCS02-REC
                                    LNK-SYUNOU-REC-T
+                                   LNK-SYUDAY-REC-T
            DISPLAY "LNK-S02-RC = " LNK-S02-RC
            IF    ( LNK-S02-RC      NOT = ZERO )
                EVALUATE LNK-S02-RC
@@ -2535,7 +2546,7 @@
                MOVE    "該当の患者は存在しません"
                                        TO  SPA-ERRMSG
            WHEN    "0003"
-               MOVE    "該当の患者は現在入院中ではありません"
+               MOVE    "仮計算の対象となる入院歴が存在しません"
                                        TO  SPA-ERRMSG
            WHEN    "0004"
                MOVE    "算定終了日を入力して下さい"
@@ -2548,6 +2559,9 @@
                                        TO  SPA-ERRMSG (1  : 40)
                MOVE    "ください"
                                        TO  SPA-ERRMSG (41 : )
+           WHEN    "0007"
+               MOVE    "該当の患者は既に退院しています"
+                                       TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "患者番号を入力してください"
                                        TO  SPA-ERRMSG
