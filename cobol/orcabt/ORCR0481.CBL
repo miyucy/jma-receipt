@@ -1031,6 +1031,9 @@
       *     
            ADD     1               TO  WRK-LINETEK
       *
+           INSPECT WRK-BYOMEI2
+                           REPLACING    ALL   "  "   BY   "¡¡"
+      *
            IF      CNT-PAGE        =   1
                MOVE    WRK-BYOMEI2     TO  HC21-TEKIYO2 (WRK-LINETEK)
            ELSE
