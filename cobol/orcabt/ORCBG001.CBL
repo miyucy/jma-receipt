@@ -615,8 +615,8 @@
       *----(02.01.01)--UPD-START---
                IF      ACCT-ZAITEN         >   ZERO
       *            点数がある時
+                   MOVE    1           TO  WRK-INGAIKBN
                    IF      WRK-PARA-INGAIKBN   NOT =   1
-                       MOVE    1           TO  WRK-INGAIKBN
                        PERFORM 240-MAIN-HEN-SEC
                    END-IF
                ELSE
@@ -626,14 +626,14 @@
                                                    "233"  OR
                                                    "950"  OR
                                                    "960")
+                       MOVE    1           TO  WRK-INGAIKBN
                        IF      WRK-PARA-INGAIKBN   NOT =   1
-                           MOVE    1           TO  WRK-INGAIKBN
                            PERFORM 240-MAIN-HEN-SEC
                        END-IF
                    ELSE
-                       IF      ( WRK-PARA-INGAIKBN   =   1 )
-                           OR  ( WRK-PARA-INGAIKBN   =   2 )
-                           MOVE    2           TO  WRK-INGAIKBN
+                       MOVE    2           TO  WRK-INGAIKBN
+                       IF      ( WRK-PARA-INGAIKBN NOT =   0 )
+                           AND ( WRK-PARA-INGAIKBN NOT =   SPACE )
                            PERFORM 240-MAIN-HEN-SEC
                        END-IF
                    END-IF
@@ -825,6 +825,9 @@
            PERFORM
                UNTIL    (FLG-TOKEI         =   1  )  OR
                         (TOKEI-YKZKBN  NOT = WRK-YKZKBN)  OR
+      *----(02.01.01)--ADD-START---
+                        (TOKEI-INGAIKBN    NOT = WRK-INGAIKBN)  OR
+      *----(02.01.01)--ADD-END-----
                         (TOKEI-SRYCD   NOT = WRK-SRYCD )
       *        数量編集処理
                PERFORM 26011-SURYOU-HEN-SEC
