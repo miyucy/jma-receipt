@@ -4908,8 +4908,6 @@
       ***************************************************************** 021118
        410191-NYUACCT-SAKUSEI-SEC   SECTION.                             021118
       *                                                                 021118
-           DISPLAY   "410191-NYUACCT-SAKUSEI-SEC"
-           DISPLAY   "SPA-NAI-SRYYM-41 = " SPA-NAI-SRYYM-41
            MOVE   SPACE       TO       IPN-NYUKAIKEI-SAKUSEI-FLG
            INITIALIZE      ORCSSYOKIKSNAREA
            MOVE    SPA-NAI-SRYYM-41   TO   WRK-NAI-SRYYM-41.
@@ -4974,22 +4972,24 @@
       *
       *    π≠»œ∞œ«ÆΩ˝∆√ƒÍΩ∏√Êº£Œ≈ºº¥…Õ˝Œ¡§ŒæÏπÁ§œ∫«ƒπ£∂£∞∆¸¥÷§ŒªªƒÍ§Œ∞Ÿ°¢
       *    º°∑Ó§Œ≤Ò∑◊∫Ó¿Æª˛§À£∂£∞∆¸∑–≤·ª˛§œÃµæÚ∑Ô§À∞Ï»Ã§Œ∆˛±°Œ¡ªªƒÍ§»§π§Î
-      *     IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
-      *         IF   PTNYUINRRK-TOKUTEI-NYUIN = "16"
-      *             IF       STUSAN-NISSU06  >  60
-      *             MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
-      *         END-IF
-      *     END-IF
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "13"
+                   IF       STUSAN-NISSU06  >=  60
+                       MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
       *
       *    ∞°µﬁ¿≠¥¸∆˛±°∞ÂŒ≈¥…Õ˝Œ¡§ŒæÏπÁ§œ∫«ƒπ£π£∞∆¸¥÷§ŒªªƒÍ§Œ∞Ÿ°¢
       *    º°∑Ó§Œ≤Ò∑◊∫Ó¿Æª˛§À£π£∞∆¸∑–≤·ª˛§œÃµæÚ∑Ô§À∞Ï»Ã§Œ∆˛±°Œ¡ªªƒÍ§»§π§Î
-      *     IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
-      *         IF   PTNYUINRRK-TOKUTEI-NYUIN = "18"
-      *             IF       STUSAN-NISSU06  >  90
-      *             MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
-      *         END-IF
-      *     END-IF
-            DISPLAY  "WRK-TOKUTEI-NYUIN = " WRK-TOKUTEI-NYUIN
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "18"
+                   IF       STUSAN-NISSU06  >=  90
+                       MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *     DISPLAY  "WRK-TOKUTEI-NYUIN = " WRK-TOKUTEI-NYUIN
       *
            IF      WRK-TOKUTEI-NYUIN          NOT =   SPACE
                PERFORM   410191-TOKTEI-NYUIN-SET-SEC
@@ -5083,6 +5083,7 @@
                  MOVE    "99999999"
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
            END-IF
+           DISPLAY "SYOKIKSN-IN-KHNSRYCD = " SYOKIKSN-IN-KHNSRYCD
       *    œ∑øÕ¿≠√‘ Úº¿¥µº£Œ≈…¬≈Ô∆˛±°Œ¡
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190739910"
                  MOVE   SPACE        TO   SYOKIKSN-IN-KHNSRYCD
