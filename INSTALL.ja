@@ -13,11 +13,24 @@ Passowrd: [パスワードを入力]
 ----------------------------------------------------------------------------
 必要なソフト
 
-・PostgreSQL
 ・MONTSUQI(panda)
+  ・libfixed
+  ・Gtk+1.2.x
+  ・gtk+panda
+  ・libglade-panda
 ・OpenCOBOL
+・PostgreSQL
 ・MONPE
-....
+・dia-orca
+・GNUmake
+・wget
+・Ruby
+   - uconv
+   - xmlparser 
+     ・expat
+
+開発に必要なソフト
+・glade-panda / monsia0
 
 ----------------------------------------------------------------------------
 configure オプション
