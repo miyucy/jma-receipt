@@ -95,24 +95,6 @@ W06	{
 		CHK09	{
 			value	bool;
 		};
-		CHK27	{
-			value	bool;
-		};
-		CHK28	{
-			value	bool;
-		};
-		CHK29	{
-			value	bool;
-		};
-		CHK30	{
-			value	bool;
-		};
-		CHK31	{
-			value	bool;
-		};
-		CHK32	{
-			value	bool;
-		};
 		CHK10	{
 			value	bool;
 		};
@@ -164,6 +146,28 @@ W06	{
 		};
 		CHK26	{
 			value	bool;
+		};
+		CHK27	{
+			value	bool;
+		};
+		CHK28	{
+			value	bool;
+		};
+		CHK29	{
+			value	bool;
+		};
+		CHK30	{
+			value	bool;
+		};
+		CHK31	{
+			value	bool;
+		};
+		CHK32	{
+			value	bool;
+		};
+		CHK33	{
+			value	bool;
+                        state   int;
 		};
 		KANRIAUTHCOMBO	{
 			KANRIAUTHFLG	{

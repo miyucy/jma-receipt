@@ -38,6 +38,7 @@
       * 01.01.06     NACL-藤原    02/09/01  看護婦の名称変更
       * 01.01.07     NACL-森脇    02/11/08  入院対応
       * 01.01.08     NACL-多々納  02/11/13  一括入力 
+      * 02.00.01     NACL-森脇    04/02/06  プログラム管理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -77,7 +78,9 @@
                        09  SPA-GMN-HKNDRNUMS  PIC X(08).
                        09  SPA-GMN-HKNDRNUMK  PIC X(12).
       *----(01.01.07)----START------------
-                       09  SPA-GMN-CHK        PIC X     OCCURS  32.
+      *----(02.00.01)--UPD-START---
+                       09  SPA-GMN-CHK        PIC X     OCCURS  33.
+      *----(02.00.01)--UPD-END-----
       *----(01.01.07)----END--------------
       *
                    07  SPA-W06-SEMONKACD      OCCURS  5.
@@ -388,11 +391,13 @@
            INITIALIZE                         SPA-GMN-KOUMOKU
       * 
       *----(01.01.07)----START------------
+      *----(02.00.01)--ADD-START---
       *    業務処理権限
            PERFORM  VARYING IDX FROM    1   BY  1
-               UNTIL IDX  >   32
+               UNTIL IDX  >   33
                MOVE  "F"           TO  SPA-GMN-CHK (IDX)
            END-PERFORM
+      *----(02.00.01)--ADD-END-----
       *----(01.01.07)----END--------------
       *
       *    管理者権限
@@ -691,6 +696,14 @@
                MOVE  "F"  TO  SPA-GMN-CHK(32)
            END-IF
       *----(01.01.07)----END--------------
+      *----(02.00.01)--ADD-START---
+      *プログラム更新
+           IF      SYS-1010-GSRAUTH(3:1)    =  "1"
+               MOVE  "T"  TO  SPA-GMN-CHK(33)
+           ELSE
+               MOVE  "F"  TO  SPA-GMN-CHK(33)
+           END-IF
+      *----(02.00.01)--ADD-END-----
            . 
        320-SPASET-GSRAUTH-EXT.
            EXIT.
@@ -747,6 +760,9 @@
                WHEN    "CLICKED"      ALSO    "CHK31"
                WHEN    "CLICKED"      ALSO    "CHK32"
       *----(01.01.07)----END--------------
+      *----(02.00.01)--ADD-START---
+               WHEN    "CLICKED"      ALSO    "CHK33"
+      *----(02.00.01)--ADD-END-----
                    PERFORM 4119-GSRAUTH-CHK-SEC
            END-EVALUATE
       *
@@ -1485,6 +1501,14 @@
                MOVE     0    TO  SYS-1010-GSRAUTH(57:1)
            END-IF
       *----(01.01.07)----START------------
+      *----(02.00.01)--ADD-START---
+      *プログラム管理
+           IF  SPA-GMN-CHK(33)  =  "T"
+               MOVE     1    TO  SYS-1010-GSRAUTH(3:1)
+           ELSE
+               MOVE     0    TO  SYS-1010-GSRAUTH(3:1)
+           END-IF
+      *----(02.00.01)--ADD-END-----
           .
        4900-KOUSHIN-GSRAUTH-EXT.
            EXIT.
@@ -1632,6 +1656,9 @@
            MOVE  SPA-GMN-CHK(31)           TO  W06-CHK31
            MOVE  SPA-GMN-CHK(32)           TO  W06-CHK32
       *----(01.01.07)----START------------
+      *----(02.00.01)--ADD-START---
+           MOVE  SPA-GMN-CHK(33)           TO  W06-CHK33
+      *----(02.00.01)--ADD-END-----
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   5
@@ -1667,6 +1694,9 @@
       *
            MOVE    WIDGET-INSENSITIVE      TO  W06-B03-STATE
            MOVE    WIDGET-INSENSITIVE      TO  W06-CHK19-STATE
+      *----(02.00.01)--ADD-START---
+           MOVE    WIDGET-INSENSITIVE      TO  W06-CHK33-STATE
+      *----(02.00.01)--ADD-END-----
       *
            IF      SPA-W01-SELNUM          >   ZERO    
                MOVE    WIDGET-NORMAL      TO  W06-B03-STATE
@@ -1678,7 +1708,11 @@
       *
            IF      SPA-FLG-L  =  "T"
                MOVE    WIDGET-NORMAL      TO  W06-CHK19-STATE
+      *----(02.00.01)--ADD-START---
+               MOVE    WIDGET-NORMAL      TO  W06-CHK33-STATE
+      *----(02.00.01)--ADD-END-----
            END-IF
+
            .
        51O-GSRAUTH-EXT.
            EXIT.
@@ -1809,13 +1843,15 @@
                     MOVE  "SEMONKACD4"  TO   MCP-WIDGET
                 WHEN    13
                     MOVE  "SEMONKACD5"  TO   MCP-WIDGET
-                WHEN    14   THRU  45
+      *----(02.00.01)--UPD-START---
+                WHEN    14   THRU  46
                     MOVE     SPA-GMN-CUR       TO  IDX2
                     MOVE    "CHK"              TO  MCP-WIDGET
                     COMPUTE IDX2               =   IDX2   -   13
                     MOVE    IDX2               TO  MCP-WIDGET(4:2)
-                WHEN    46
+                WHEN    47
                     MOVE  "KANRIAUTHFLG"   TO   MCP-WIDGET
+      *----(02.00.01)--UPD-END-----
       *----(01.01.05)----END--------------
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
@@ -1862,6 +1898,15 @@
                        MOVE    WRK-MCP-WIDGET(4:2) TO  IDX2
                        COMPUTE SPA-GMN-CUR     =   IDX2
                                                +   14
+      *----(02.00.01)--UPD-START---
+      *                医事業務の後、プログラム更新へ
+                       IF      IDX2            =   1
+                           MOVE    46          TO  SPA-GMN-CUR
+                       END-IF
+      *                プログラム更新の後、受付へ
+                       IF      IDX2            =   33
+                           MOVE    15          TO  SPA-GMN-CUR
+                       END-IF
       *                会計照会の後、入院へ
                        IF      IDX2            =   9
                            MOVE    40          TO  SPA-GMN-CUR
@@ -1870,10 +1915,11 @@
                        IF      IDX2            =   32
                            MOVE    23          TO  SPA-GMN-CUR
                        END-IF
-      *                薬剤情報の後、日次統計へ
+      *                薬剤情報の後、管理者へ
                        IF      IDX2            =   26
-                           MOVE    46          TO  SPA-GMN-CUR
+                           MOVE    47          TO  SPA-GMN-CUR
                        END-IF
+      *----(02.00.01)--UPD-END-----
                    END-IF
            END-EVALUATE
       *

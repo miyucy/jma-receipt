@@ -42,12 +42,6 @@
                   04  W06-CHK07            PIC X.
                   04  W06-CHK08            PIC X.
                   04  W06-CHK09            PIC X.
-                  04  W06-CHK27           PIC X.
-                  04  W06-CHK28           PIC X.
-                  04  W06-CHK29           PIC X.
-                  04  W06-CHK30           PIC X.
-                  04  W06-CHK31           PIC X.
-                  04  W06-CHK32           PIC X.
                   04  W06-CHK10           PIC X.
                   04  W06-CHK11           PIC X.
                   04  W06-CHK12           PIC X.
@@ -67,6 +61,15 @@
                   04  W06-CHK24           PIC X.
                   04  W06-CHK25           PIC X.
                   04  W06-CHK26           PIC X.
+                  04  W06-CHK27           PIC X.
+                  04  W06-CHK28           PIC X.
+                  04  W06-CHK29           PIC X.
+                  04  W06-CHK30           PIC X.
+                  04  W06-CHK31           PIC X.
+                  04  W06-CHK32           PIC X.
+                  04  W06-CHK33.
+                    05  W06-CHK33-VALUE   PIC X.
+                    05  W06-CHK33-STATE   PIC S9(9)   BINARY.
                   04  W06-KANRIAUTHCOMBO.
                     05  W06-KANRIAUTHFLG.
                       06  W06-FLG-VALUE   PIC X(12).
