@@ -41,6 +41,7 @@
       *  01.01.08    NACL-多々納  03/01/24  入院追加
       *  01.01.09    NACL-多々納  03/03/17  指導管理料明細追加
       *  02.00.00    NACL-多々納  03/06/20  一括入力へ変更
+      *  02.00.01    NACL-多々納  03/12/19  入力ＣＤのみ変更可能へ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -467,6 +468,10 @@
       *    老人一般コード振替
         01  SRYCDCHG-REC.
             COPY    "CPSRYCDCHG.INC".
+      *
+      *    ワーク点数マスタ
+       01  WRK-TNS-TENSU-REC           PIC X(1290).
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -1437,6 +1442,13 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+      *        登録時、内容変更の無い場合、エラーとしない
+               IF      FLG-TOUROKU         =   1
+                   PERFORM 4103-HENKOU-CHK-SEC
+               END-IF
+           END-IF
+      *
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      410-INPUT-CHK-EXT
            END-IF
@@ -2858,6 +2870,11 @@
            MOVE    ZERO                TO  FLG-TOUROKU
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
+      *    変更はエラーでも遷移する
+           IF      SPA-Z01-SYORIKBN    =   2
+               MOVE    SPACE               TO  SPA-ERRCD
+           END-IF
+      *
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      405-INPUTCD-EXT
            END-IF
@@ -2910,6 +2927,11 @@
            MOVE    ZERO                TO  FLG-TOUROKU
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
+      *    変更はエラーでも遷移する
+           IF      SPA-Z01-SYORIKBN    =   2
+               MOVE    SPACE               TO  SPA-ERRCD
+           END-IF
+      *
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      407-SRYCDCHG-EXT
            END-IF
@@ -2978,6 +3000,79 @@
            MOVE    "0002"                        TO  SPA-ZIDCD
            .    
        412-TOUROKU-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    登録前、内容変更チェック処理
+      ****************************************************************
+       4103-HENKOU-CHK-SEC      SECTION.
+      *
+           IF      SPA-Z01-SYORIKBN    =   2
+      *        更新処理の時のみ
+               CONTINUE
+           ELSE
+               GO      TO      4103-HENKOU-CHK-EXT
+           END-IF
+      *
+           INITIALIZE                      TNS-TENSU-REC
+      *
+           MOVE    SPA-Z01-SRYCD       TO  TNS-SRYCD
+           MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
+                                       TO  TNS-YUKOSTYMD
+           MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
+                                       TO  TNS-YUKOEDYMD
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    TNS-YUKOSTYMD       TO  ORC-DBYMD
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC              =   ZERO
+               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               PERFORM 900-TENSU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSU
+               INITIALIZE                      TNS-TENSU-REC
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           IF      FLG-TENSU           =   ZERO
+               MOVE    TNS-TENSU-REC(1:1290)   TO  WRK-TNS-TENSU-REC
+      *        更新項目編集
+               PERFORM 4121-KOUMOKUISO-SEC
+      *
+               IF      TNS-TENSU-REC(1:1290)   =   WRK-TNS-TENSU-REC
+                   MOVE    SPACE           TO  SPA-ERRCD
+      *            入力チェック区分はエラーとする
+      *            採血料区分チェックは行う
+                   PERFORM 5030-SAIKETUKBN-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+      *            エラーの次のカーソル設定
+                       MOVE    "SAIKETUKBN"        TO  WRK-MCP-WIDGET
+                       SET     IDX-GMN             TO  1
+                       SEARCH      TBL-GMN-OCC     VARYING   IDX-GMN
+                       AT  END
+                           MOVE    ZERO            TO  SPA-GMN-CUR
+                       WHEN    WRK-MCP-WIDGET  =   TBL-WIDGET (IDX-GMN)
+                           MOVE    IDX-GMN         TO  SPA-GMN-CUR
+                       END-SEARCH 
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *
+           .    
+       4103-HENKOU-CHK-EXT.
            EXIT.
       *
       ****************************************************************
