@@ -1415,7 +1415,6 @@
                PERFORM 910-PTINF-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           INITIALIZE                  MCPAREA
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "PTINF-KEY5"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
