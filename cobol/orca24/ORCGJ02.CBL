@@ -6861,7 +6861,7 @@
                GO      TO      430-CHEKU-EXT
            END-IF
       *    患者選択チェック
-           IF      SPA-GMN-PTNUM       =   SPACE
+           IF      SPA-GMN-PTID        =   ZERO
                MOVE    "0019"          TO  SPA-ERRCD
                GO      TO      430-CHEKU-EXT
            END-IF
@@ -6897,7 +6897,7 @@
        430-FREEMSG-SEC              SECTION.
       *
       *    患者選択チェック
-           IF      SPA-GMN-PTNUM       =   SPACE
+           IF      SPA-GMN-PTID        =   ZERO
                MOVE    "0019"          TO  SPA-ERRCD
                GO      TO      430-FREEMSG-EXT
            END-IF
@@ -6961,7 +6961,8 @@
                GO      TO      41018-ZENGETU-HEN-EXT
            END-IF
       *
-           IF      SPA-GMN-PTNUM   NOT =   SPACE
+           IF     (SPA-GMN-PTNUM   NOT =   SPACE )  AND
+                  (SPA-GMN-PTID    NOT =   ZERO  )
                MOVE    1                   TO  SPA-J02-SEL
       *
                IF      SPA-UPDFLG          =   "1"
@@ -7200,7 +7201,8 @@
            END-IF
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
-           IF      SPA-GMN-PTNUM   NOT =   SPACE
+           IF     (SPA-GMN-PTNUM   NOT =   SPACE )  AND
+                  (SPA-GMN-PTID    NOT =   ZERO  )
                MOVE    2                   TO  SPA-J02-SEL
                IF      SPA-UPDFLG          =   "1"
                    MOVE    "0106"              TO  SPA-JIDCD
@@ -7948,7 +7950,7 @@
        490-TOROKU-SEC              SECTION.
       *
       *    患者選択チェック
-           IF      SPA-GMN-PTNUM       =   SPACE
+           IF      SPA-GMN-PTID        =   ZERO
                MOVE    "0019"          TO  SPA-ERRCD
                GO      TO      490-TOROKU-EXT
            END-IF
@@ -9922,7 +9924,7 @@
                MOVE    "0009"          TO  SPA-ERRCD
            END-IF
       *    患者選択チェック
-           IF      SPA-GMN-PTNUM       =   SPACE
+           IF      SPA-GMN-PTID        =   ZERO
                MOVE    "0019"          TO  SPA-ERRCD
            END-IF
       *
