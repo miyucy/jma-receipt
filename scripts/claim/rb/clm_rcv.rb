@@ -10,7 +10,7 @@
 # version 1.4.1 １秒中の複数受信対応
 #               後ろに、受信の度にカウントアップされる番号を付加している
 #                  '03-10-15 by hiki
-# version 1.4.2 telnet接続・nmapコマンドへの対策
+# version 1.4.2 途中で接続が切れたり、nmapコマンドへの対策
 #                  '05-02-08 by hiki
 
 Dir.chdir(File.dirname(__FILE__))
@@ -71,7 +71,7 @@ class FileSockRcv
           f.print buf
         end
       rescue ConnectError
-        # telnetを試したり、途中で接続が切れた場合への対応
+        # 途中で接続が切れた場合への対応
         raise ConnectError, ''
       rescue
         # nmapコマンドへの対応
