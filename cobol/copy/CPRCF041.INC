@@ -115,10 +115,16 @@
                05  RECE41-KAISU           PIC  9(05).
       *明細点数
                05  RECE41-TENSU           PIC  9(08).
+      *明細点数（薬剤等）
+               05  RECE41-TENSU-YAK       PIC  9(08).
       *合計点数
            03  RECE41-TOTALTEN            PIC  9(08).
+      *合計点数（薬剤等）
+           03  RECE41-TOTALTEN-YAK        PIC  9(08).
       *合計金額
-           03  RECE41-TOTALKIN            PIC  9(09). 
+           03  RECE41-TOTALKIN            PIC  9(09).
+      *合計金額（薬剤等）
+           03  RECE41-TOTALKIN-YAK        PIC  9(09). 
       *
       *診療区分別金額情報
            03  RECE41-SRYKBNINF2          OCCURS  10.
@@ -130,6 +136,15 @@
                05  RECE41-KINGAKU2        PIC  9(09).
       *合計金額
            03  RECE41-TOTALKIN2           PIC  9(09).
+      *合計金額（その他）
+           03  RECE41-TOTALKIN2-ETC       PIC  9(09).
+      *
+      *診断書料
+           03  RECE41-SINDAN-TUU          PIC  9(02).
+           03  RECE41-SINDAN-KIN          PIC  9(09).
+      *明細書料
+           03  RECE41-MEISAI-TUU          PIC  9(02).
+           03  RECE41-MEISAI-KIN          PIC  9(09).
       *
       *食事療養費情報
            03  RECE41-SHOKUJIINF.
@@ -144,6 +159,10 @@
       *
       *初診時間区分
            03  RECE41-SHOSHINTIME         PIC  X(01).
+      *初診乳児区分
+           03  RECE41-SHOSHIN-NYU         PIC  X(01).
+      *初診年月日
+           03  RECE41-SHOSHINYMD          PIC  X(08).
       *再診時間区分
            03  RECE41-SAISHINTIME         PIC  X(01).
       *再診摘要印刷区分
@@ -168,6 +187,17 @@
            03  RECE41-KENSAKBN            PIC  X(01).
       *前回検査年月日
            03  RECE41-KENSAYMD-ZEN        PIC  X(08).
+      *自賠責加算率
+           03  RECE41-KSNRATE             PIC  9(03).
+      *通院日情報
+           03  RECE41-TUUININF            OCCURS  31.
+               05  RECE41-TUUIN-DAY       PIC  X(01).
+      *通院日数計
+           03  RECE41-TUUIN-KEI           PIC  9(02).
+      *日別手技点・薬剤等点数情報
+           03  RECE41-TENSUINF            OCCURS  31.
+               05  RECE41-SYUTEN-JI       PIC  9(09).
+               05  RECE41-YKZTEN-JI       PIC  9(09).
       *予備
-           03  RECE41-FILLER              PIC  X(35).
+           03  RECE41-FILLER              PIC  X(84).
       *
