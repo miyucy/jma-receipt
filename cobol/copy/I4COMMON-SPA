@@ -21,14 +21,14 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.00    NACL-多々納  04/05/06   仕様統一による改造修正
+      *
       ************************************************************
       *
        01  SPA-I4KYOUTU.
       *
            03  SPA-I40-MOTOPG                  PIC X(08).
            03  SPA-I40-MOTOFLG                 PIC X(01).
-      *診療年月日
+      *診療年月
            03  SPA-I40-SRYYMD                  PIC X(08).
            03  SPA-I40-SRYYMDW                 PIC X(14).
       *
@@ -49,30 +49,8 @@
                05  SPA-GMN-SEX                 PIC X(02).
       *患者生年月日
                05  SPA-GMN-BIRTHDAY            PIC X(08).
-      *患者年齢
-               05  SPA-GMN-AGE                 PIC X(09).
       *患者生年月日（和暦編集）
                05  SPA-GMN-BIRTHDAYW           PIC X(09).
-      *入院情報
-               05  SPA-GMN-NYUIN-AREA.
-                   07  SPA-GMN-IJYOU91-STYLE   PIC X(20).
-                   07  SPA-GMN-IJYOU91         PIC X(09).
-                   07  SPA-GMN-IJYOU180        PIC X(09).
-                   07  SPA-GMN-NYUINBI         PIC X(09).
-                   07  SPA-GMN-TAINBI          PIC X(09).
-                   07  SPA-GMN-NYUINNISSU      PIC S9(06).
-                   07  SPA-GMN-TSUSANNISSU     PIC S9(06).
-                   07  SPA-NAI-NYUINBI         PIC X(08).
-                   07  SPA-NAI-TAINBI          PIC X(08).
-                   07  SPA-GMN-SYUBETSU1       PIC X(20).
-                   07  SPA-GMN-SYUBETSU2       PIC X(20).
-                   07  SPA-GMN-SYUBETSU3       PIC X(20).
-                   07  SPA-GMN-SYUBETSU4       PIC X(20).
-                   07  SPA-GMN-SYUBETSU5       PIC X(20).
-                   07  SPA-GMN-SYUBETSU6       PIC X(20).
-                   07  SPA-GMN-LASTNYUIN       PIC X(40).
-                   07  SPA-GMN-NYUINKA         PIC X(40).
-                   07  SPA-GMN-UPYMD           PIC X(20).
       *
       *診療区分
                05  SPA-SRYKBN                  PIC X(02).
@@ -86,26 +64,25 @@
                05  SPA-ZAITEN                  PIC 9(08).
       *回数テーブル
                05  SPA-SEL-DAY-G.
-                   07  SPA-SEL-DAY             PIC 9(03)   OCCURS   31.
+                   11  SPA-SEL-DAY             PIC 9(03)   OCCURS   31.
       *
                05  SPA-NAI-AREA.
+      *当月の老人の有無
+                   07  SPA-I40-ROUJIN          PIC 9(01).
       *年齢 
                    07  SPA-FLG-NENREI          PIC 9(01).
                    07  SPA-NAI-NENREI.
                        09  SPA-NAI-NENREI-YY   PIC 9(03).
                        09  SPA-NAI-NENREI-MM   PIC 9(02).
                        09  SPA-NAI-NENREI-DD   PIC 9(02).
-      *    入院会計マスター診療期間年月
-      *        05  SPA-SRYYM-SML                   PIC X(06).
-      *        05  SPA-SRYYM-BIG                   PIC X(06).
       *
-      *    次月会計作成用の保険組合せと食事の退避領域
-               05  SPA-TAIHI-HKN                   PIC 9(03).
-               05  SPA-TAIHI-SHOKUJI               PIC 9(03).
-               05  SPA-TAIHI-SHOKUJI-ASA           PIC 9(03).
-               05  SPA-TAIHI-SHOKUJI-HIRU          PIC 9(03).
-               05  SPA-TAIHI-SHOKUJI-YORU          PIC 9(03).
-               05  SPA-SHOKUDOU-OFF                PIC 9(03).
+      *対象受診履歴情報
+           03  SPA-NAI-RRKAREA.
+               05  SPA-SEL-RRKYMD              PIC X(08).
+               05  SPA-SEL-RENNUM              PIC 9(01).
+               05  SPA-SEL-DOUJI-RENNUM        PIC 9(01).
+               05  SPA-SEL-DENPNUM             PIC 9(07).
+               05  SPA-SEL-RRKYMDG             PIC X(16).
       *
            03  SPA-IID1-AREA.
       *警告メッセージ
@@ -123,7 +100,11 @@
                05  SPA-I48-INPUTCD             PIC X(10).
                05  SPA-I48-TYPE                PIC X(01).
                05  SPA-I48-SRYCD-G.
-                   07  SPA-I48-SRYCD           PIC X(09).
+                   07  SPA-I48-SRYCD           PIC X(09)  OCCURS  5.
+      *
+      *禁忌一覧画面より
+           03  SPA-I46SET-AREA.
+               05  SPA-I46-CHK                 PIC 9(01).
       *
       *診療科保存
            03  SPA-I40SET-AREA.
@@ -135,25 +116,35 @@
            03  SPA-MAE-SRYYMD                  PIC X(08).
            03  SPA-MAE-PTID                    PIC 9(10).
       *
-      *    診療科情報
-           03  SPA-GMN-SRYKA-AREA.
-               05  SPA-GMN-SRYKA-LIST          OCCURS  100.
-                   09  SPA-GMN-SRYKA-L-41      PIC X(02).
-                   09  SPA-GMN-F1-L-41         PIC X(01).
-                   09  SPA-GMN-SRYKAMEI-L-41   PIC X(12).
-               05  SPA-GMN-SRYKA-MAX-41        PIC 9(04).
-      *    入院基本情報
-           03  SPA-5000-GENSAN-INF-TBL-41.
-               05  SPA-5000-GENSAN-INF-41        OCCURS  10.
-                   07  SPA-5000-DSPCD-41         PIC  X(09).
-      *       入院会計外泊区分
-               05  SPA-5000-NACCT-GAIHAKUKBN
-                                           PIC  X(01).
-      *       入院時食事療養区分
-               05  SPA-5000-NACCT-SKJKBN       PIC  X(01).
-      *       ＡＤＬ入力区分
-               05  SPA-5000-ADLINPUTKBN        PIC  X(01).
-      *       療養病棟（病床）会計表示区分
-               05  SPA-5000-RYOYODSPKBN        PIC  X(01).
+      *レセコメント入力画面用
+           03  SPA-I43-I45-AREA.
+               05  SPA-I43-SRYKA-G.
+                   07  SPA-I43-SRYKA           PIC X(02).
+                   07  SPA-I43-SRYKAH          PIC X(01).
+                   07  SPA-I43-SRYKAMEI        PIC X(12).
+               05  SPA-I43-HKNCOMBI-G.
+                   07  SPA-I43-HKNCOMBINUM     PIC X(04).
+                   07  SPA-I43-HKNCOMBIMEI     PIC X(35).
+               05  SPA-I43-COMMENT             PIC X(400).
+               05  SPA-I43-BUNNUM              PIC 9(03).
       *
+           03  SPA-I44-I48-COUNT.
+               05  SPA-GMN-PAGE4               PIC 9(02).
+               05  SPA-MAX-PAGE4               PIC 9(02).
+               05  SPA-GMN-IDX4                PIC 9(04).
+               05  SPA-MAP-IDX4                PIC 9(02).
+               05  SPA-GMN-CUR4                PIC 9(02).
       *
+      *    一括修正作業
+           03  SPA-WRK-KOMENTO-S               PIC 9(02).
+           03  SPA-WRK-KOMENTO-E               PIC 9(02).
+           03  SPA-WRK-KOMENTO-D               PIC 9(02).
+           03  SPA-WRK-KOMENTO-SRYCD           PIC X(09).
+           03  SPA-WRK-KOMENTO-SRYYM.
+               05  SPA-WRK-KOMENTO-SRYY        PIC 9(04).
+               05  SPA-WRK-KOMENTO-SRYM        PIC 9(02).
+           03  SPA-WRK-CHK-KBN-TBL.
+               05  SPA-WRK-CHK-KBN             PIC X(01)  OCCURS  31.
+               05  SPA-WRK-CHK-SIKIBETU        PIC X(01)  OCCURS  31.
+           03  WRK-SRYYM-SML                   PIC X(06).
+           03  WRK-SRYYM-BIG                   PIC X(06).
