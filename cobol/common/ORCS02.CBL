@@ -3023,7 +3023,7 @@
                                          ORCMCPAREA
                                          MCPDATA-REC.
            MOVE       ZERO                TO   WK-NYUKFTNRATE.
-           MOVE       ZERO                TO   WK-NYUSKJRYYKBN.
+           MOVE       SPACE               TO   WK-NYUSKJRYYKBN.
            EVALUATE   FLG-SANSHOU2
                WHEN   "1"
                    MOVE    HKN-HON-NYUKFTNRATE  TO   WK-NYUKFTNRATE

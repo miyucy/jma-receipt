@@ -147,6 +147,7 @@
            03  WK-YAKFTN-TENSUU        PIC 9(10).
            03  WK-GAIKFTNRATE          PIC 9(03).
            03  WK-GAIYKZFTNKBN         PIC X(01).
+           03  WK-GAIKKOTGAK           PIC 9(06).
            03  WK-TOKUTEI-COMPFTN      PIC 9(08).
            03  WK-TOKUTEI-COMPFTN2     PIC 9(08).
            03  WK-TOKUTEI-COMPFTN3     PIC 9(08).
@@ -164,6 +165,7 @@
            03  FLG-PTINF               PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
            03  FLG-SRYACT              PIC 9(01).
+           03  FLG-KOTEIGAKU           PIC 9(01).
            03  FLG-SANSHOU             PIC X(01).
            03  FLG-SANSHOU2            PIC X(01).
            03  FLG-SANSHOU3            PIC X(01).                       
@@ -2839,6 +2841,7 @@
            END-IF.
       *
            MOVE     ZERO     TO     WK-TOKUTEI-COMPFTN3.
+           MOVE     ZERO     TO     FLG-KOTEIGAKU.
       *
            PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
                       UNTIL    (KOH-IDX    >      4)
@@ -3406,21 +3409,26 @@
                                          MCPDATA-REC.
            MOVE       ZERO                TO   WK-GAIKFTNRATE.
            MOVE       SPACE               TO   WK-GAIYKZFTNKBN.
+           MOVE       ZERO                TO   WK-GAIKKOTGAK.
            EVALUATE   FLG-SANSHOU2
                WHEN   "1"
                    MOVE    HKN-HON-GAIKFTNRATE  TO   WK-GAIKFTNRATE
                    MOVE    HKN-HON-GAIYKZFTNKBN TO   WK-GAIYKZFTNKBN
+                   MOVE    HKN-HON-GAIKKOTGAK   TO   WK-GAIKKOTGAK
                WHEN   "2"
                    MOVE    HKN-TSY-GAIKFTNRATE  TO   WK-GAIKFTNRATE
                    MOVE    HKN-TSY-GAIYKZFTNKBN TO   WK-GAIYKZFTNKBN
+                   MOVE    HKN-TSY-GAIKKOTGAK   TO   WK-GAIKKOTGAK
                WHEN   "3"
                    MOVE    HKN-TNK-GAIKFTNRATE  TO   WK-GAIKFTNRATE
                    MOVE    HKN-TNK-GAIYKZFTNKBN TO   WK-GAIYKZFTNKBN
+                   MOVE    HKN-TNK-GAIKKOTGAK   TO   WK-GAIKKOTGAK
            END-EVALUATE.
       *
            IF   COMB-KOHHKNNUM(KOH-IDX)  =  "027"
                    MOVE    HKN-HON-GAIKFTNRATE  TO   WK-GAIKFTNRATE
                    MOVE    HKN-HON-GAIYKZFTNKBN TO   WK-GAIYKZFTNKBN
+                   MOVE    HKN-HON-GAIKKOTGAK   TO   WK-GAIKKOTGAK
            END-IF.
       *
        2302-KOH-HKNREAD-EXT.
@@ -3753,7 +3761,10 @@
                END-IF                                                   
                MOVE  WK-GAIYKZFTNKBN TO  LNK-SYU-KOH-YKZFTNKBN(KOH-IDX)
            ELSE
-               MOVE  HKN-HON-GAIKKOTGAK TO LNK-SYU-KOH-COMPFTN(KOH-IDX)
+               IF    WK-GAIKKOTGAK  NOT =  ZERO
+                 MOVE  1             TO  FLG-KOTEIGAKU
+                 MOVE  WK-GAIKKOTGAK TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
+               END-IF
            END-IF.
            PERFORM    KOHHI-HIKAKU-SEC.
            EVALUATE   WK-GAIYKZFTNKBN
@@ -3888,9 +3899,12 @@
                END-IF
            END-IF.
       *
-           IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"   
-           AND  COMB-KOH1HKNNUM        NOT   =   "027" 
-           AND  COMB-HKNNUM            NOT   =   SPACE
+           IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"    AND
+                COMB-KOH1HKNNUM        NOT   =   "027"  AND
+                COMB-HKNNUM            NOT   =   SPACE)
+           OR  (COMB-KOH1HKNNUM        NOT   =   "027"  AND
+                COMB-HKNNUM            NOT   =   SPACE  AND
+                FLG-KOTEIGAKU                =   "1"  )
                MOVE    LNK-SYU-SYUCOMPFTN     TO  WK-KNJFTNKIN
                IF   LNK-SYU-KOH1HKNNUM   NOT =  SPACE
                AND  LNK-SYU-KOH1COMPFTN      <     WK-KNJFTNKIN
