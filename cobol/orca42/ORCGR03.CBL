@@ -54,6 +54,8 @@
       *                                     修正
       *　入院機能追加　
       *  01.05.01    NACL-藤原    02/12/11  入外区分追加 
+      *  01.05.01    NACL-藤原    03/02/27  入院用県単用項目編集プログラ
+      *                                     ム名の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1422,6 +1424,10 @@
                                            NOT =  "S"
                            MOVE  "NOPG"    TO  SYS-2005-PREFPRGID (1)
                    END-IF
+                   IF      SYS-2005-PREFPRGID (2) (1:1)
+                                           NOT =  "S"
+                           MOVE  "NOPG"    TO  SYS-2005-PREFPRGID (2)
+                   END-IF
       *
       *★★        ETC-EXEC SHELL SHELL-AREA 10
                    MOVE    SPACE           TO  SHELLTBL
@@ -1458,8 +1464,13 @@
                                            TO  SHELLTBL-ARG5
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  SHELLTBL-ARG6
-                   MOVE    SYS-2005-PREFPRGID (1)
-                                           TO  SHELLTBL-ARG7
+                   IF      SPA-R01-NYUGAIKBN   =   "1"
+                       MOVE    SYS-2005-PREFPRGID (2)
+                                               TO  SHELLTBL-ARG7
+                   ELSE
+                       MOVE    SYS-2005-PREFPRGID (1)
+                                               TO  SHELLTBL-ARG7
+                   END-IF
                    MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG8
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
