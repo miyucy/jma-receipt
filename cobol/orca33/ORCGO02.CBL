@@ -589,21 +589,15 @@
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        戻る
+      *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    "CHANGE"            TO  MCP-PUTTYPE
                    PERFORM 210-BACK
-      *       追加
-               WHEN    "CLICKED"       ALSO    "B02"
-                   PERFORM 420-TUIKA-SEC
-      *    変更
-               WHEN    "CLICKED"       ALSO    "B03"
-                   PERFORM 430-HENKOU-SEC
       *    削除
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 440-SAKUJYO-SEC
       *    クリア
-               WHEN    "CLICKED"       ALSO    "B06"
+               WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 460-CLEAR-OID-SEC
       *    前回作成分表示
                WHEN    "CLICKED"       ALSO    "B08"
@@ -864,6 +858,14 @@
                GO  TO  4105-SAKKBN-CHK-EXT
            END-IF 
       *
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF      SPA-GMN-RENNUM  =   ZERO
+                   PERFORM 420-TUIKA-SEC
+               ELSE
+                   PERFORM 430-HENKOU-SEC
+               END-IF
+           END-IF
+      *
            .
        4105-SAKKBN-CHK-EXT.
            EXIT.
@@ -976,8 +978,8 @@
                                            TO  WRK-KIKAN-NYUINYMD (IDX2)
                        MOVE    PTNYUINRRK-TAIINYMD
                                            TO  WRK-KIKAN-TAIINYMD (IDX2)
-                       DISPLAY "PTNYUINRRK-NYUINYMD = " 
-                                PTNYUINRRK-NYUINYMD
+      *                DISPLAY "PTNYUINRRK-NYUINYMD = " 
+      *                         PTNYUINRRK-NYUINYMD
                    END-PERFORM
                    MOVE    IDX2            TO  IDX1
                ELSE
@@ -1061,19 +1063,19 @@
                                    TO  SPA-NAI-SKYINF-TAIINYMD (IDX2)
                END-IF
            END-PERFORM
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >       SPA-GMN-SAKKBN-MAX )
-               DISPLAY "SPA-NAI-SKYINF-SKYSTYMD (" IDX1 ") = "
-                        SPA-NAI-SKYINF-SKYSTYMD (IDX1)
-               DISPLAY "SPA-NAI-SKYINF-SKYEDYMD (" IDX1 ") = "
-                        SPA-NAI-SKYINF-SKYEDYMD (IDX1)
-               DISPLAY "SPA-NAI-SKYINF-NYUINYMD (" IDX1 ") = "
-                        SPA-NAI-SKYINF-NYUINYMD (IDX1)
-               DISPLAY "SPA-NAI-SKYINF-TAIINYMD (" IDX1 ") = "
-                        SPA-NAI-SKYINF-TAIINYMD (IDX1)
-           END-PERFORM
-           DISPLAY "WRK-GETUMATU-SKYSTYMD = " WRK-GETUMATU-SKYSTYMD
-           DISPLAY "WRK-GETUMATU-SKYEDYMD = " WRK-GETUMATU-SKYEDYMD
+      *    PERFORM VARYING IDX1    FROM    1   BY  1
+      *            UNTIL ( IDX1    >       SPA-GMN-SAKKBN-MAX )
+      *        DISPLAY "SPA-NAI-SKYINF-SKYSTYMD (" IDX1 ") = "
+      *                 SPA-NAI-SKYINF-SKYSTYMD (IDX1)
+      *        DISPLAY "SPA-NAI-SKYINF-SKYEDYMD (" IDX1 ") = "
+      *                 SPA-NAI-SKYINF-SKYEDYMD (IDX1)
+      *        DISPLAY "SPA-NAI-SKYINF-NYUINYMD (" IDX1 ") = "
+      *                 SPA-NAI-SKYINF-NYUINYMD (IDX1)
+      *        DISPLAY "SPA-NAI-SKYINF-TAIINYMD (" IDX1 ") = "
+      *                 SPA-NAI-SKYINF-TAIINYMD (IDX1)
+      *    END-PERFORM
+      *    DISPLAY "WRK-GETUMATU-SKYSTYMD = " WRK-GETUMATU-SKYSTYMD
+      *    DISPLAY "WRK-GETUMATU-SKYEDYMD = " WRK-GETUMATU-SKYEDYMD
       *
            IF    ( FLG-GETUMATU    =   2 )
                PERFORM VARYING IDX1    FROM    1   BY  1
@@ -1362,9 +1364,9 @@
            IF      SPA-ERRCD            =   SPACE
                PERFORM 4104-SRYYM-CHK-SEC
            END-IF
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4105-SAKKBN-CHK-SEC
-           END-IF
+      *    IF      SPA-ERRCD            =   SPACE
+      *        PERFORM 4105-SAKKBN-CHK-SEC
+      *    END-IF
       *
            IF      SPA-ERRCD            =   SPACE
                MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
@@ -1554,7 +1556,7 @@
                                          SPA-GMN-SAKKBN-MAX
            MOVE    ZERO                  TO  SPA-NAI-SELNO
       *
-           MOVE    3                     TO  SPA-GMN-CUR
+           MOVE    4                     TO  SPA-GMN-CUR
       *
           .
        460-CLEAR-EXT.

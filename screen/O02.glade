@@ -84,7 +84,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:45 GMT</last_modification_time>
       </signal>
-      <label> 追加</label>
+      <label>クリア</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -107,7 +107,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
       </signal>
-      <label>変更</label>
+      <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -164,7 +164,6 @@
       <y>720</y>
       <width>80</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
 	<key>GDK_F6</key>
@@ -176,7 +175,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:28 GMT</last_modification_time>
       </signal>
-      <label>クリア</label>
+      <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
