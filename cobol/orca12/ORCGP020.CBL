@@ -1666,8 +1666,12 @@
            MOVE    SPA-GMN-PTID              TO  UKE-PTID
            MOVE    SPA-NAI20-UKETIME(IDX)    TO  UKE-UKETIME
            MOVE    SPA-NAI20-SRYKA  (IDX)    TO  UKE-SRYKA
-           MOVE    "1"                       TO  UKE-DRCD (1:)
-           MOVE    SPA-NAI20-DRCD (IDX)      TO  UKE-DRCD (2:)
+           IF      SPA-NAI20-DRCD (IDX)      =   SPACE
+               MOVE    SPACE                     TO  UKE-DRCD
+           ELSE
+               MOVE    "1"                       TO  UKE-DRCD (1:)
+               MOVE    SPA-NAI20-DRCD (IDX)      TO  UKE-DRCD (2:)
+           END-IF
            MOVE    SPA-NAI20-SRYNAI (IDX)    TO  UKE-SRYNAIYO 
            MOVE    SPA-NAI20-KEYYYKTIME(IDX) TO  UKE-KEYYYKTIME
            MOVE    SPA-NAI20-YYKTIME(IDX)    TO  UKE-YYKTIME
