@@ -84,6 +84,8 @@
       *                                     診療科コード（レセプト共通）・
       *                                     商品名及び規格名及びサイズ
       *                                     （特定器材）の追加
+      *  01.01.02    NACL-藤原    04/04/22  画像診断の加算が複数ある場合の
+      *                                     出力の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -255,7 +257,6 @@
            03  FLG-GAITENTTLKBN        PIC 9(03).
            03  FLG-TBLMAX              PIC 9(01).
            03  FLG-SRYSYUKBN721        PIC 9(01).
-           03  FLG-SRYSYUKBN700        PIC 9(01).
            03  FLG-SRYKBN70-TEIGEN     PIC 9(01).
            03  FLG-KENSA-KASAN         PIC 9(01).
            03  FLG-KENSA-TEIGEN        PIC 9(01).
@@ -278,6 +279,7 @@
            03  IDY2                    PIC 9(03).
            03  IDY3                    PIC 9(03).
            03  IDXX                    PIC 9(03).
+           03  IDXY                    PIC 9(03).
            03  IDW1                    PIC 9(03).
            03  SYSKAN-IDX              PIC 9(03).
       *
@@ -504,7 +506,10 @@
        01  WRK-721-RECE05-REC.
            COPY    "CPRCF005.INC"  REPLACING  //RECE05//
                                    BY         //WRK-721-RECE05//.
-       01  WRK-700-RECE05-REC.
+       01  WRK-700-RECE05-AREA.
+           02  WRK-SRYSYUKBN700-MAX           PIC 9(01).
+           02  FLG-SRYSYUKBN700               PIC 9(01)  OCCURS  5.
+           02  WRK-700-RECE05-REC                        OCCURS  5.
            COPY    "CPRCF005.INC"  REPLACING  //RECE05//
                                    BY         //WRK-700-RECE05//.
        01  WRK-SRYKBN70-RECE05-REC.
@@ -1884,7 +1889,7 @@
            INITIALIZE                      WRK-RECE05-REC
                                            WRK-KASAN-RECE05-REC
                                            WRK-TEIGEN-RECE05-REC
-                                           WRK-700-RECE05-REC
+                                           WRK-700-RECE05-AREA
                                            WRK-721-RECE05-REC
                                            WRK-SRYKBN70-RECE05-REC
       *
@@ -1898,7 +1903,7 @@
                                            FLG-KOKUJISKBKBN1
                                            FLG-GAITENTTLKBN
                                            FLG-SRYSYUKBN721
-                                           FLG-SRYSYUKBN700
+      *************************************FLG-SRYSYUKBN700
                                            FLG-SRYKBN70-TEIGEN
                                            FLG-KENSA-KASAN
                                            FLG-KENSA-TEIGEN
@@ -1988,10 +1993,13 @@
                    PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
                END-IF
       *
-               IF      FLG-SRYSYUKBN700    >   ZERO
-                   MOVE     FLG-SRYSYUKBN700   TO  IDX 
-                   MOVE    WRK-700-RECE05-REC  TO  RECE05-REC
-                   PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+               IF      WRK-SRYSYUKBN700-MAX    >   ZERO
+                   PERFORM VARYING IDXY    FROM    1   BY  1
+                           UNTIL   IDXY    >   WRK-SRYSYUKBN700-MAX 
+                       MOVE     FLG-SRYSYUKBN700  (IDXY)  TO  IDX 
+                       MOVE    WRK-700-RECE05-REC (IDXY)  TO  RECE05-REC
+                       PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+                   END-PERFORM    
                END-IF
            END-IF
       *
@@ -2243,12 +2251,17 @@
                        INITIALIZE              WRK-SRYKBN70-RECE05-REC
                    END-IF
       *
-                   IF      FLG-SRYSYUKBN700    >   ZERO
-                       MOVE     FLG-SRYSYUKBN700   TO  IDX 
-                       MOVE    WRK-700-RECE05-REC  TO  RECE05-REC
-                       PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
-                       MOVE    ZERO                TO  FLG-SRYSYUKBN700
-                       INITIALIZE                  WRK-700-RECE05-REC
+                   IF      WRK-SRYSYUKBN700-MAX    >   ZERO
+                       PERFORM VARYING IDXY    FROM    1   BY  1
+                               UNTIL   IDXY    >   WRK-SRYSYUKBN700-MAX 
+                           MOVE     FLG-SRYSYUKBN700  (IDXY)
+                                                           TO  IDX 
+                           MOVE    WRK-700-RECE05-REC (IDXY)
+                                                           TO RECE05-REC
+                           PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+                       END-PERFORM    
+      *****************MOVE    ZERO                TO  FLG-SRYSYUKBN700
+                       INITIALIZE                  WRK-700-RECE05-AREA
                    END-IF
                END-IF
       *
@@ -2266,9 +2279,12 @@
                ELSE
                    IF    ( TNS-SRYSYUKBN       =   "700" )
                    AND   ( TNS-DATAKBN         =   "2"   )
-                   AND   ( FLG-SRYSYUKBN721    >  ZERO   )
+                   AND   ( FLG-SRYSYUKBN721    >   ZERO  )
+                       ADD     1               TO  WRK-SRYSYUKBN700-MAX
                        MOVE    IDX             TO  FLG-SRYSYUKBN700
+                                               (WRK-SRYSYUKBN700-MAX) 
                        MOVE    RECE05-REC      TO WRK-700-RECE05-REC
+                                               (WRK-SRYSYUKBN700-MAX) 
                    ELSE
                        IF    ( RECE05-SRYCD (IDX)
                                            =   WRK-CONS-KENSA-KASAN1
