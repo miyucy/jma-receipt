@@ -263,6 +263,9 @@
       *                                     追加
       *  01.01.87    NACL-太田  　03/07/25  SRYACCT-KEY20追加 
       *  01.01.88    NACL-太田  　03/07/31  SRYACCT-KEY21追加 
+      *  01.01.89    NACL-門脇  　03/08/01  SRYACCT-KEY22追加 
+      *                                     SYUNOU-KEY19追加
+      *                                     PTBYOMEI-KEY12追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1345,6 +1348,9 @@
                WHEN    ANY             ALSO   "PTBYOMEI-KEY11"
                    MOVE    PATH-TBL-PTBYOMEI-KEY11 
                                        TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY12"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY12 
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "PTBYOMEI-ALL"
                    MOVE    PATH-TBL-PTBYOMEI-ALL
                                        TO  WRK-PATH
@@ -1556,6 +1562,9 @@
                WHEN    ANY             ALSO   "SRYACCT-KEY21"
                    MOVE    PATH-TBL-SRYACCT-KEY21
                                        TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY22"
+                   MOVE    PATH-TBL-SRYACCT-KEY22
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-ALL"
                    MOVE    PATH-TBL-SRYACCT-ALL
                                        TO  WRK-PATH
@@ -1673,6 +1682,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY18"
                    MOVE    PATH-TBL-SYUNOU-KEY18
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY19"
+                   MOVE    PATH-TBL-SYUNOU-KEY19
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"

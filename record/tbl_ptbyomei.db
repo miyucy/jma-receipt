@@ -211,6 +211,21 @@ path	key11	{
 	};
 };
 
+path	key12	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key12_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND     PTID      =   :PTID
+            AND     SRYYMD    <=  :SRYYMD
+			AND     HKNCOMBI  =   :HKNCOMBI
+            AND     REZEFLG   <>  '1'
+			ORDER  BY  SRYYMD,BYOMEI,TENKIKBN DESC,TENKIYMD DESC,SYUBYOFLG DESC
+		;
+	};
+};
+
 path	del11	{ 	
 	DBDELETE	{
 		DELETE
