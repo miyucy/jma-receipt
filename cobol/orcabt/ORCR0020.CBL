@@ -1112,8 +1112,8 @@
       *             
       *            生保のとき月代わり受給者番号マスタより受給者番号をセット 
                    IF    ( PTKOH-KOHNUM    =   WRK-CONS-SEIHO-HKNNUM )
-                   AND   ( SYS-1017-SEIHO-JKYSNUM
-                                           =   ZERO                  )
+      *************AND   ( SYS-1017-SEIHO-JKYSNUM
+      *************                        =   ZERO                  )
                        MOVE    RECE02-HOSPID   TO  MONTHLYNUM-HOSPID
                        MOVE    RECE02-PTID     TO  MONTHLYNUM-PTID
                        MOVE    WRK-CONS-SEIHO-HKNNUM
