@@ -172,6 +172,8 @@ I01	{
 		scrolledwindow1	{
 			NYUREKILST	{
 				count	int;
+				row int;
+				rowattr int;
 				item	{
 					value0	varchar(4);
 					value1	varchar(2);

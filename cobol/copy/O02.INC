@@ -37,7 +37,9 @@
                 04  O02-VALUE   PIC X(50).
               03  O02-SCROLLEDWINDOW1.
                 04  O02-TEIKILST.
-                  05  O02-COUNT   PIC S9(9)   BINARY.
+                  05  O02-COUNT       PIC S9(9)   BINARY.
+                  05  O02-ROW         PIC S9(9)   BINARY.
+                  05  O02-ROWATTR     PIC S9(9)   BINARY.
                   05  O02-ITEM        OCCURS  100 TIMES.
                     06  O02-TRENNUM  PIC X(3).
                     06  O02-TPTNUM   PIC X(20).

@@ -30,6 +30,8 @@ I02	{
 		scrolledwindow2	{
 			TENKALST	{
 				count	int;
+				row int;
+				rowattr int;
 				item	{
 					value0	varchar(20);
 					value1	varchar(20);
@@ -55,6 +57,8 @@ I02	{
 		scrolledwindow1	{
 			BYOMEILST	{
 				count	int;
+				row int;
+				rowattr int;
 				item	{
 					value0	varchar(2);
 					value1	varchar(4);

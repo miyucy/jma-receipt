@@ -114,6 +114,8 @@
               04  I01-SCROLLEDWINDOW1.
                 05  I01-NYUREKILST.
                   06  I01-NYUREKILST-CNT           PIC S9(9)   BINARY.
+                  06  I01-NYUREKILST-ROW           PIC S9(9)   BINARY.
+                  06  I01-NYUREKILST-ROWATTR       PIC S9(9)   BINARY.
                   06  I01-NYUREKILST-ITM           OCCURS  50.
                     07  I01-TSELNUM                PIC X(4).
                     07  I01-TSHOKAI                PIC X(2).

@@ -60,6 +60,8 @@
           03  I41-SCROLLEDWINDOW1.
             04  I41-DATELIST.
               05  I41-DATELIST-COUNT   PIC S9(9)   BINARY.
+              05  I41-DATELIST-ROW     PIC S9(9)   BINARY.
+              05  I41-DATELIST-ROWATTR PIC S9(9)   BINARY.
               05  I41-DATELIST-ITEM    OCCURS  400 TIMES.
                 06  I41-TNO            PIC X(3).
                 06  I41-TMEISYO        PIC X(60).
@@ -70,6 +72,8 @@
           03  I41-SCROLLEDWINDOW2.
             04  I41-KUMILIST.
               05  I41-KUMILIST-COUNT   PIC S9(9)   BINARY.
+              05  I41-KUMILIST-ROW     PIC S9(9)   BINARY.
+              05  I41-KUMILIST-ROWATTR PIC S9(9)   BINARY.
               05  I41-KUMI-ITEM        OCCURS  30 TIMES.
                 06  I41-KUMINO         PIC X(8).
                 06  I41-KUMI           PIC X(32).
@@ -78,6 +82,8 @@
             04  I41-SAGAKULIST.
               05  I41-SAGAKU-TITLE     PIC X(22).
               05  I41-SAGAKULIST-COUNT PIC S9(9)   BINARY.
+              05  I41-SAGAKULIST-ROW     PIC S9(9)   BINARY.
+              05  I41-SAGAKULIST-ROWATTR PIC S9(9)   BINARY.
               05  I41-SAGAKU-ITEM      OCCURS  30 TIMES.
                 06  I41-SAGAKUNO       PIC X(4).
                 06  I41-SAGAKU         PIC X(22).

@@ -29,6 +29,8 @@
               04  I02-SCROLLEDWINDOW2.
                 05  I02-TENKALST.
                   06  I02-TENKALST-CNT     PIC S9(9)   BINARY.
+                  06  I02-TENKALST-ROW     PIC S9(9)   BINARY.
+                  06  I02-TENKALST-ROWATTR PIC S9(9)   BINARY.
                   06  I02-TENKALST-ITM     OCCURS  100.
                     07  I02-TNYUINKA       PIC X(20).
                     07  I02-TBTUNAME       PIC X(20).
@@ -51,6 +53,8 @@
               04  I02-SCROLLEDWINDOW1.
                 05  I02-BYOMEILST.
                   06  I02-BYOMEILST-CNT    PIC S9(9)   BINARY.
+                  06  I02-BYOMEILST-ROW    PIC S9(9)   BINARY.
+                  06  I02-BYOMEILST-ROWATTR PIC S9(9)   BINARY.
                   06  I02-BYOMEILST-ITM    OCCURS  500 TIMES.
                     07  I02-TSYUBYO        PIC X(2).
                     07  I02-TNYUGAI        PIC X(4).

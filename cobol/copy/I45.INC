@@ -21,6 +21,8 @@
               03  I45-SCROLLEDWINDOW1.
                 04  I45-BUNREILIST.
                   05  I45-BUNREI-COUNT  PIC S9(9)   BINARY.
+                  05  I45-ROW           PIC S9(9)   BINARY.
+                  05  I45-ROWATTR       PIC S9(9)   BINARY.
                   05  I45-ITEM       OCCURS  200 TIMES.
                     06  I45-TRENNUM        PIC X(3).
                     06  I45-TCOMMENT       PIC X(100).

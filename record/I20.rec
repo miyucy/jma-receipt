@@ -83,6 +83,8 @@ I20	{
 		scrolledwindow28	{
 			KANJYALST	{
 				count	int;
+				row int;
+				rowattr int;
 				item	{
 					value1	varchar(3);
 					value2	varchar(20);

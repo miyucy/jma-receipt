@@ -40,6 +40,8 @@
               03  I43-SCROLLEDWINDOW1.
                 04  I43-RECELIST.
                   05  I43-RECE-COUNT  PIC S9(9)   BINARY.
+                  05  I43-ROW         PIC S9(9)   BINARY.
+                  05  I43-ROWATTR     PIC S9(9)   BINARY.
                   05  I43-ITEM       OCCURS  100 TIMES.
                     06  I43-TRENNUM   PIC X(3).
                     06  I43-TSRYYM    PIC X(6).

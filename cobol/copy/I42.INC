@@ -31,6 +31,8 @@
               03  I42-SCROLLEDWINDOW1.
                 04  I42-SRYACTYMD.
                   05  I42-SRYACTYMD-COUNT   PIC S9(9)   BINARY.
+                  05  I42-SRYACTYMD-ROW     PIC S9(9)   BINARY.
+                  05  I42-SRYACTYMD-ROWATTR PIC S9(9)   BINARY.
                   05  I42-SRYACTYMD-ITEM        OCCURS  100 TIMES.
                     06  I42-SRYACTYMD-YMD  PIC X(10).
                     06  I42-SRYACTYMD-NAME  PIC X(40).
@@ -38,6 +40,8 @@
               03  I42-SCROLLEDWINDOW2.
                 04  I42-SRYACTCNT.
                   05  I42-SRYACTCNT-COUNT   PIC S9(9)   BINARY.
+                  05  I42-SRYACTCNT-ROW     PIC S9(9)   BINARY.
+                  05  I42-SRYACTCNT-ROWATTR PIC S9(9)   BINARY.
                   05  I42-SRYACTCNT-ITEM        OCCURS  100 TIMES.
                     06  I42-SRYACTCNT-YM    PIC X(7).
                     06  I42-SRYACTCNT-NAME  PIC X(40).

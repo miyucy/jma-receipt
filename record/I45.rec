@@ -6,6 +6,8 @@ I45	{
 		scrolledwindow1	{
 			BUNREILIST	{
 				count	int;
+				row int;
+				rowattr int;
 				item	{
 					value0	varchar(3);
 					value1	varchar(100);

@@ -61,7 +61,9 @@
               03  I20-TOTAL             PIC X(22).
               03  I20-SCROLLEDWINDOW28.
                 04  I20-KANJYALST.
-                  05  I20-COUNT   PIC S9(9)   BINARY.
+                  05  I20-COUNT        PIC S9(9)   BINARY.
+                  05  I20-ROW          PIC S9(9)   BINARY.
+                  05  I20-ROWATTR      PIC S9(9)   BINARY.
                   05  I20-ITEM        OCCURS  200 TIMES.
                     06  I20-TRENNUM    PIC X(3).
                     06  I20-TPTNUM     PIC X(20).

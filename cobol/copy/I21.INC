@@ -39,7 +39,9 @@
               03  I21-GAIHAKU-VALUE   PIC X(8).
               03  I21-SCROLLEDWINDOW1.
                 04  I21-RIREKILST.
-                  05  I21-COUNT   PIC S9(9)   BINARY.
+                  05  I21-COUNT       PIC S9(9)   BINARY.
+                  05  I21-ROW         PIC S9(9)   BINARY.
+                  05  I21-ROWATTR     PIC S9(9)   BINARY.
                   05  I21-ITEM        OCCURS  50 TIMES.
                     06  I21-TNYUINYMD PIC X(9).
                     06  I21-TTAIINYMD PIC X(9).

@@ -21,6 +21,8 @@
           03  I23-SCROLLEDWINDOW28.
             04  I23-JOBKANRILST.
               05  I23-COUNT        PIC S9(9)   BINARY.
+              05  I23-ROW          PIC S9(9)   BINARY.
+              05  I23-ROWATTR      PIC S9(9)   BINARY.
               05  I23-ITEM         OCCURS  30 TIMES.
                 06  I23-RENNUM     PIC X(7).
                 06  I23-SHORINM    PIC X(26).

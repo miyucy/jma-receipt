@@ -160,6 +160,8 @@
               03  I51-SCROLLEDWINDOW1.
                 04  I51-HKNCOMBILST.
                   05  I51-HKNCOMBILST-CNT  PIC S9(9)   BINARY.
+                  05  I51-HKNCOMBILST-ROW       PIC S9(9)   BINARY.
+                  05  I51-HKNCOMBILST-ROWATTR   PIC S9(9)   BINARY.
                   05  I51-HKNCOMBILST-ITM  OCCURS  15 TIMES.
                     06  I51-TSELNUM        PIC X(02).
                     06  I51-THKNCOMBI      PIC X(50).

@@ -19,7 +19,9 @@
             03  I46-FIXED10.
               04  I46-SCROLLEDWINDOW1.
                 05  I46-MED-LIST.
-                  06  I46-COUNT  PIC S9(9)   BINARY.
+                  06  I46-COUNT    PIC S9(9)   BINARY.
+                  06  I46-ROW      PIC S9(9)   BINARY.
+                  06  I46-ROWATTR  PIC S9(9)   BINARY.
                   06  I46-ITEM       OCCURS  50 TIMES.
                     07  I46-TOUMEI PIC X(40).
                     07  I46-KNKMEI PIC X(40).
