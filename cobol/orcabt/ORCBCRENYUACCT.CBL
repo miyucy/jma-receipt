@@ -217,7 +217,7 @@
                05                      PIC X(02)   VALUE   " ".
                05                      PIC X(20)   VALUE   "¥µº‘»÷πÊ".
                05                      PIC X(02)   VALUE   " ".
-               05                      PIC X(18)   VALUE   "…¬≈Ô".
+               05                      PIC X(16)   VALUE   "…¬≈Ô".
                05                      PIC X(02)   VALUE   " ".
                05                      PIC X(26)   VALUE   "ª·Ãæ".
                05                      PIC X(01)   VALUE   " ".
@@ -704,8 +704,11 @@
                MOVE   "SYSKANRI-KEY"      TO  ORC-DBPATH
                PERFORM     910-SYSKANRI-READ-SEC
                    IF    FLG-SYSKANRI  =   ZERO
-                         MOVE    SYS-5001-BTU-NAME
-                                       TO  LST-BYOTO (CNT-LINE)
+                       MOVE    ALL "°°"        TO  LST-BYOTO
+                                                     (CNT-LINE)
+                       STRING  SYS-5001-BTU-NAME  DELIMITED  BY  SPACE
+                       INTO    LST-BYOTO  (CNT-LINE)
+                       END-STRING
                    END-IF
            END-IF
       *
