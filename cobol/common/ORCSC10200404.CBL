@@ -109,6 +109,7 @@
            03  FLG-SINSATU         PIC 9(01).
       *
            03  FLG-JIKASAN         PIC 9(01).
+           03  FLG-TAIIN           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -3589,9 +3590,10 @@
       *    最終退院日がある時、退院日
            IF     (LNK-ORCSC-TAIINYMD  =   SPACE )  OR
                   (LNK-ORCSC-TAIINYMD  <=  WRK-SYOYMD)
-               CONTINUE
+               MOVE    ZERO                TO  FLG-TAIIN
            ELSE
                MOVE    LNK-ORCSC-TAIINYMD  TO  WRK-SYOYMD
+               MOVE    1                   TO  FLG-TAIIN
            END-IF
       *
       *TEST
@@ -3627,7 +3629,11 @@
       *!           MOVE    "0034"          TO  SPA-ERRCD
       *            １月後の前営業日と同じ時、ＯＫ
                    IF      FLG-SIDOU       =   1
-                       MOVE    "0034"          TO  SPA-ERRCD
+                       IF      FLG-TAIIN       =   1
+                           MOVE    "0120"         TO  SPA-ERRCD
+                       ELSE
+                           MOVE    "0034"          TO  SPA-ERRCD
+                       END-IF
                    ELSE
                        IF      WRK-KEIYMDZEN   =   SPA-SRYYMD
                            IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
@@ -3635,10 +3641,18 @@
                                MOVE    IDX-Z       TO  LNK-ORCSC-KEI-IDX
                                MOVE    "1"         TO  WRK-COM-KZMFLG
                                                                 (IDX-Z)
-                               MOVE    "K002"          TO  SPA-ERRCD
+                               IF      FLG-TAIIN       =   1
+                                   MOVE    "K022"          TO  SPA-ERRCD
+                               ELSE
+                                   MOVE    "K002"          TO  SPA-ERRCD
+                               END-IF
                            END-IF
                        ELSE
-                           MOVE    "0034"          TO  SPA-ERRCD
+                           IF      FLG-TAIIN       =   1
+                               MOVE    "0120"          TO  SPA-ERRCD
+                           ELSE
+                               MOVE    "0034"          TO  SPA-ERRCD
+                           END-IF
                        END-IF
                    END-IF
                WHEN    WRK-KEIYMD          =   SPA-SRYYMD
