@@ -238,9 +238,6 @@
       *
            PERFORM
                UNTIL       FLG-SRYACCT     =   1
-      *TEST
-           IF     ACCT-PTID   =   2477
-      *TEST
       *        最初の日を保存（点数マスタ検索のため）
                MOVE    01                  TO  WRK-DD
                PERFORM VARYING     IDY     FROM    1   BY  1
@@ -253,9 +250,6 @@
                IF      ACCT-KIZAITEN       >   ZERO
                    PERFORM 201-KIZAIKEI-SEC
                END-IF
-      *TEST
-            END-IF
-      *TEST
       *
                MOVE    "SRYACCT-KEY17"     TO  ORC-DBPATH
                PERFORM 900-SRYACCT-READ-SEC
