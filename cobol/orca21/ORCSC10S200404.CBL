@@ -2432,6 +2432,7 @@
                MOVE    WRK-IDX-IN          TO  SPA-GMN-IDX
            END-IF
       *
+           MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
            MOVE    "K02"               TO  LNK-SC92-PG
@@ -2474,8 +2475,7 @@
       *    同日再診時、併用算定エラー
            IF      LNK-SC92-ERRCD3 NOT =   SPACE
                MOVE    SPACE               TO  SPA-ERRCD
-               INITIALIZE                  SPA-GMN-TBLREC (SPA-GMN-IDX)
-               INITIALIZE                  SPA-COM-TBLREC (SPA-GMN-IDX)
+               MOVE    WRK-SCR-REC         TO  SPA-SCR-REC
                MOVE    ZERO                TO  SPA-GMN-IDX
                MOVE    ZERO                TO  IDX2
                MOVE    1                   TO  FLG-SYONIKA
@@ -2488,8 +2488,7 @@
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
                MOVE    SPACE           TO  SPA-ERRCD
-               INITIALIZE              SPA-GMN-TBLREC (SPA-GMN-IDX)
-               INITIALIZE              SPA-COM-TBLREC (SPA-GMN-IDX)
+               MOVE    WRK-SCR-REC     TO  SPA-SCR-REC
                MOVE    ZERO            TO  SPA-GMN-IDX
                MOVE    ZERO            TO  IDX2
                GO      TO      3303-SYONIKA-SET-EXT
@@ -2501,12 +2500,11 @@
                  ((SPA-LSTYMD          =   SPA-SRYYMD) AND
                   (WRK-DAY-SINSATUCNT  >   ZERO    )) AND
                   (SPA-SYORIFLG        =   ZERO   )
-               INITIALIZE              SPA-GMN-TBLREC (SPA-GMN-IDX)
-               INITIALIZE              SPA-COM-TBLREC (SPA-GMN-IDX)
-               MOVE    1               TO  FLG-SYONIKA
-               MOVE    ZERO            TO  SPA-GMN-IDX
-               MOVE    ZERO            TO  IDX2
-               MOVE    "K005"          TO  SPA-ERRCD
+               MOVE    WRK-SCR-REC         TO  SPA-SCR-REC
+               MOVE    1                   TO  FLG-SYONIKA
+               MOVE    ZERO                TO  SPA-GMN-IDX
+               MOVE    ZERO                TO  IDX2
+               MOVE    "K005"              TO  SPA-ERRCD
                GO      TO      3303-SYONIKA-SET-EXT
            END-IF
       *
@@ -3162,6 +3160,7 @@
                IF     (SPA-LSTYMD          =   SPA-SRYYMD  ) AND
                       (SPA-TAKA-SRYKA-R    NOT =   SPACE   )
                AND    (WRK-KBN             =   SPACE   )
+               AND    (LNK-SC10S-SYORI     NOT =   "J"   )
       *            同日再診・他科受診あり
                    PERFORM 3301-DOUSAISIN-SEC
                ELSE

@@ -1284,12 +1284,8 @@
                            WHEN    "C02"
       *                        病名登録遷移処理
                                PERFORM 4401-C02SET-SEC
-      *
                        END-EVALUATE
                    END-IF
-                   MOVE    2                   TO  FLG-GMN
-               WHEN    "K022"
-      *            禁忌画面より
                    MOVE    2                   TO  FLG-GMN
                WHEN    "K023"
       *            入力コード設定
@@ -1804,6 +1800,8 @@
                    MOVE    SPA-DRCD            TO  WRK-DRCD
                    MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
                    MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
+                   MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
+                   MOVE    SPA-SRYKA           TO  SPA-GMN-SRYKA
                ELSE
                    IF     (SPA-PTID            =   SPA-GMN-PTID )  AND
                           (SPA-NAI-SRYYMD  NOT =   SPA-SRYYMD   )
@@ -4787,8 +4785,8 @@
            END-IF
       *
       *    訂正でなく、同日に他の保険を算定している時、メッセージ表示
-           IF     (SPA-SYORIFLG        =   ZERO        )  AND
-                  (SPA-LSTYMD          =   SPA-SRYYMD  )
+           IF     (SPA-SYORIFLG        =   ZERO        )
+      *????  AND  (SPA-LSTYMD          =   SPA-SRYYMD  )
                PERFORM 4101213-RRKHKNCHK-SEC
                IF      SPA-KIDCD       NOT =   SPACE
                    GO      TO      410121-HKNCOMBI-SAI-EXT
@@ -12858,28 +12856,6 @@
            EXIT.
       *
       *****************************************************************
-      *    入力コードマスター次読込
-      *****************************************************************
-       920-INPUTCD-NEXT-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  INPUTCD-REC
-               MOVE    ZERO                TO  FLG-INPUTCD
-           ELSE
-               INITIALIZE                      INPUTCD-REC
-               MOVE    1                   TO  FLG-INPUTCD
-           END-IF
-      *
-           .
-       920-INPUTCD-NEXT-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    入力コードマスター読込
       *****************************************************************
        930-INPUTCD-READ-SEC         SECTION.
@@ -12932,27 +12908,6 @@
        920-INPUTCD-NEXT-EXT.
            EXIT.
       *****************************************************************
-      *    チェックデータ読込
-      *****************************************************************
-       950-CHK-READ-SEC           SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  CHK-REC
-               MOVE    ZERO                TO  FLG-CHKMST
-           ELSE
-               INITIALIZE                      CHK-REC
-               MOVE    1                   TO  FLG-CHKMST
-           END-IF
-      *
-           .
-       950-CHK-READ-EXT.
-           EXIT.
-      *****************************************************************
       *    ワーク診療行為データ次読込
       *****************************************************************
        970-WKSRYACT-READ-SEC         SECTION.
@@ -12972,72 +12927,6 @@
       *
            .
        970-WKSRYACT-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入力セットデータ次読込
-      *****************************************************************
-       975-INPUTSET-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  INPUTSET-REC
-               MOVE    ZERO                TO  FLG-INPUTSET
-           ELSE
-               INITIALIZE                      INPUTSET-REC
-               MOVE    1                   TO  FLG-INPUTSET
-           END-IF
-      *
-           .
-       975-INPSET-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    受診履歴マスター読込
-      *****************************************************************
-      *970-JYURRK-READ-SEC         SECTION.
-      *
-      *    MOVE    "DBFETCH"           TO  MCP-FUNC
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    MCPDATA-REC     TO  JYURRK-REC
-      *        MOVE    ZERO            TO  FLG-JYURRK
-      *    ELSE
-      *        INITIALIZE                  JYURRK-REC
-      *        MOVE    1               TO  FLG-JYURRK
-      *    END-IF
-      *
-      *    .
-      *970-JYURRK-READ-EXT.
-      *    EXIT.
-      *
-      *
-      *****************************************************************
-      *    算定歴マスタ読み込み
-      *****************************************************************
-       920-SANTEI-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  SANTEI-REC
-               MOVE    ZERO                TO  FLG-SANTEI
-           ELSE
-               INITIALIZE                      SANTEI-REC
-               MOVE    1                   TO  FLG-SANTEI
-           END-IF
-      *
-           .
-       920-SANTEI-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -13080,71 +12969,6 @@
       *
            .
        900-PTINF-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    収納マスター読込
-      *****************************************************************
-       980-SYUNOU-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SYUNOU-REC
-               MOVE    ZERO            TO  FLG-SYUNOU
-           ELSE
-               INITIALIZE                  SYUNOU-REC
-               MOVE    1               TO  FLG-SYUNOU
-           END-IF
-      *
-           .
-       980-SYUNOU-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険組合せマスター読込
-      *****************************************************************
-       910-HKNCOMBI-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
-               MOVE    ZERO            TO  FLG-HKNCOMBI
-           ELSE
-               INITIALIZE                  HKNCOMBI-REC
-               MOVE    1               TO  FLG-HKNCOMBI
-           END-IF
-      *
-           .
-       910-HKNCOMBI-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    診療行為マスター読込
-      *****************************************************************
-       930-SRYACT-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SRYACT-REC
-               MOVE    ZERO            TO  FLG-SRYACT
-           ELSE
-               INITIALIZE                  SRYACT-REC
-               MOVE    1               TO  FLG-SRYACT
-           END-IF
-      *
-           .
-       930-SRYACT-READ-EXT.
            EXIT.
       *
       *****************************************************************
