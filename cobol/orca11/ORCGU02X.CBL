@@ -57,6 +57,7 @@
       *
        01  WRK-AREA.
            03  WRK-MCP-WIDGET          PIC X(64).
+           03  WRK-GMN-SELNUM          PIC 9(02).
       *
       *    送信コード
        01  WRK-SOUSIN-AREA.
@@ -208,7 +209,8 @@
                    UNTIL       (IDX            >   10   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-9001-REC
-               MOVE    SYS-9001-KBNCD (1:2)  TO  SPA-U02X-GMN-SELNOL
+               MOVE    SYS-9001-KBNCD (1:2)  TO  WRK-GMN-SELNUM
+               MOVE    WRK-GMN-SELNUM        TO  SPA-U02X-GMN-SELNOL
                                                                  (IDX)
                MOVE    SYS-9001-ADDRESS      TO  SPA-U02X-GMN-ADRL
                                                                  (IDX)

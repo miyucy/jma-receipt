@@ -76,5 +76,8 @@ bind	"ORHCML09"	"OpenCOBOL";
 bind	"ORCBPRT"	"OpenCOBOL";
 bind	"ORCBQ01"	"OpenCOBOL";
 bind	"ORCHC30"	"OpenCOBOL";
+bind    "ORCL0010"	"OpenCOBOL";
+bind    "ORCL0020"	"OpenCOBOL";
+bind    "ORCL0030"	"OpenCOBOL";
 
 #include "orcadb.inc"
