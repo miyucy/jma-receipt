@@ -1130,19 +1130,24 @@
       *    加算データの時、前に手技料があること
       *        但し、画像診断の時、撮影部位コードがあること
            MOVE    ZERO                TO  FLG-ARI
-           PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL       IDX1    >=  IDX
+           PERFORM VARYING     IDX1    FROM    IDX   BY  -1
+                   UNTIL      (IDX1        =   ZERO )  OR
+                              (FLG-ARI     =   1    )
                IF      SPA-COM-INPUTCD(IDX)(1:3)   =   "170"
                    IF     (SPA-COM-INPUTCD(IDX1)(1:3)  =   "002" )  OR
                           (SPA-COM-DATAKBN(IDX1)   NOT =   "2"   )
                        MOVE    1               TO  FLG-ARI
-                       MOVE    IDX             TO  IDX1
                    END-IF
                ELSE
                    IF     (SPA-COM-INPUTCD(IDX1)(1:1)  =   "1" )  AND
                           (SPA-COM-DATAKBN(IDX1)   NOT =   "2" )
                        MOVE    1               TO  FLG-ARI
-                       MOVE    IDX             TO  IDX1
+                   END-IF
+               END-IF
+               IF      FLG-ARI             =   ZERO
+                   IF     (IDX1                =   1   )  OR
+                          (SPA-COM-ZAIEND (IDX1 - 1)   =   "1" )
+                       MOVE    1                   TO  IDX1
                    END-IF
                END-IF
            END-PERFORM
@@ -1184,12 +1189,13 @@
                    END-IF
                END-IF
       *        入院点滴で診療種別が入力されていること
-               IF      SPA-NYUGAIKBN           =   1
+               IF      SPA-NYUGAIKBN           =   "1"
                    IF      (SPA-COM-TNSSRYSYUKBN (IDX) =   "300" OR
                                                            "330" )  AND
                            (IDX                    >   1 )  AND
                            (SPA-GMN-INPUTCD(IDX - 1)(1:4)
-                                                   =   ".330")
+                                                   =   ".330" OR
+                                                       ".340" )
       *                年齢加算以外
                        IF      SPA-COM-INPUTCD(IDX)    =   "130009470"
                            MOVE    ZERO                TO  FLG-ARI
@@ -1200,7 +1206,7 @@
                END-IF
       *
       *        入院種別が入力されていること
-               IF      SPA-NYUGAIKBN           =   1
+               IF      SPA-NYUGAIKBN           =   "1"
                    IF      (SPA-COM-TNSSRYSYUKBN (IDX) =   "900")  AND
                            (IDX                    >   1 )  AND
                            (SPA-GMN-INPUTCD(IDX - 1)(1:4)
@@ -1210,6 +1216,15 @@
                END-IF
       *
            END-IF
+      *
+      *TEST
+                DISPLAY "C93 IDX:" IDX
+                       ",FLG-ARI:" FLG-ARI
+                      ",SRYSYU:" SPA-COM-TNSSRYSYUKBN (IDX)
+                     ",GMN:" SPA-GMN-INPUTCD(IDX)
+                     "," SPA-GMN-INPUTCD(IDX - 1)(1:4)
+      *TEST
+      *
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"              TO  SPA-ERRCD
                MOVE    "1"                 TO  SPA-COM-CUR(IDX)

@@ -2440,8 +2440,8 @@
                MOVE    SPACE              TO  J02-NYUINKIKAN
            END-IF
       *
-           MOVE    SPA-GMN-NYUINMSG1   TO  J02-NYUINMSG1-VALUE
-           MOVE    SPA-GMN-NYUINMSG2   TO  J02-NYUINMSG2-VALUE
+           MOVE    SPA-GMN-NYUINMSG(1) TO  J02-NYUINMSG1-VALUE
+           MOVE    SPA-GMN-NYUINMSG(2) TO  J02-NYUINMSG2-VALUE
       *
            MOVE    "red"               TO  J02-NYUINMSG1-STYLE
            MOVE    "red"               TO  J02-NYUINMSG2-STYLE
@@ -4991,6 +4991,12 @@
       *
            MOVE    IDX                 TO  SPA-NAI-MAX
            MOVE    IDG                 TO  SPA-GMN-MAX
+           IF      IDX                 >   400
+               MOVE    400             TO  SPA-NAI-MAX
+           END-IF
+           IF      IDG                 >   400
+               MOVE    400             TO  SPA-GMN-MAX
+           END-IF
       *
       *    すべての行を選択可能とする
            MOVE    ZERO                TO  WRK-TBANGO
@@ -5156,7 +5162,7 @@
       *****************************************************************
        450-ATOGMN-SEC             SECTION.
       *
-           IF      SPA-MAX-PAGE        =   SPA-GMN-PAGE
+          IF      SPA-SRYACCT-MAX     <=  SPA-ENDNUM
                GO      TO       450-ATOGMN-EXT
            END-IF
       *    現在表示されている内容を更新する
@@ -5167,12 +5173,12 @@
            END-IF
       *
            ADD     1                   TO  SPA-GMN-PAGE
-      *
            MOVE    SPA-ENDNUM          TO  SPA-STRNUM
            ADD     1                   TO  SPA-STRNUM
       *
       *    保存用パラメタ作成
            PERFORM 4201-SRYACCT-PARA-SEC
+      *
       *
       *    診療会計マスターより編集をする
            PERFORM 410181-SRYACCT-HEN-SEC
@@ -6530,49 +6536,21 @@
                MOVE    "2000"              TO  SPA-ERRCD
                GO      TO      42001-TENTEKI-SYORI-EXT
            END-IF
-           MOVE    SPACE               TO  SPA-GMN-NYUINMSG1
-           MOVE    SPACE               TO  SPA-GMN-NYUINMSG2
+           MOVE    SPACE               TO  SPA-GMN-NYUIN-AREA
+           MOVE    ZERO                TO  IDX-D
       *    点滴手技料重複エラー編集
            IF      ORCSTEN-FUKUDAY-AREA    NOT =   ZERO
                PERFORM 420011-FUKUERR-SYORI-SEC
            END-IF
+      *    中心静脈エラー編集
+           IF     (IDX-D               <   2         )  AND
+                  (ORCSTEN-MIIVHDAY-AREA   NOT =   ZERO  )
+               PERFORM 420013-MIIVHDAY-HEN-SEC
+           END-IF
       *    点滴手技料エラー編集
-           IF     (SPA-GMN-NYUINMSG2       =   SPACE )  AND
+           IF     (IDX-D               <   2         )  AND
                   (ORCSTEN-MIDAY-AREA  NOT =   ZERO  )
-               MOVE    SPACE               TO  WRK-NYUIN-ERR
-               MOVE    1                   TO  IDX-N
-               PERFORM VARYING     IDX-N2  FROM    1   BY  1
-                       UNTIL       IDX-N2  >   31
-                   IF      ORCSTEN-MI-DAY (IDX-N2) =   1
-                       IF      IDX-N       >   1
-                           MOVE    ","         TO  WRK-NYUIN-ERR
-                                                            (IDX-N:1)
-                           ADD     1           TO  IDX-N
-                       END-IF
-                       MOVE    IDX-N2          TO  WRK-NYUIN-ERR
-                                                           (IDX-N:2)
-                       ADD     2               TO  IDX-N
-                   END-IF
-               END-PERFORM
-               IF      WRK-NYUIN-ERR       =   SPACE
-                   PERFORM 420011-KASAN-ERR-SEC
-               ELSE
-                   IF      SPA-GMN-NYUINMSG1   =   SPACE
-                       MOVE    "点滴未算定："      TO  SPA-GMN-NYUINMSG1
-                       MOVE    WRK-NYUIN-ERR(1:38) TO  SPA-GMN-NYUINMSG1
-                                                                   (13:)
-                       IF      WRK-NYUIN-ERR(39:)  NOT =   SPACE
-                           MOVE    WRK-NYUIN-ERR(39:)
-                                                   TO  SPA-GMN-NYUINMSG2
-                       END-IF
-                   ELSE
-                       MOVE    "点滴未算定："      TO  SPA-GMN-NYUINMSG2
-                       MOVE    WRK-NYUIN-ERR(1:38) TO  SPA-GMN-NYUINMSG2
-                                                                  (13:)
-                   END-IF
-               END-IF
-               MOVE    "0052"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-GMN-CUR
+               PERFORM 420012-MIDAY-HEN-SEC
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -6621,54 +6599,56 @@
            IF      ORCSTEN-FUKU-AREA     NOT =   ZERO
                MOVE    ORCSTEN-FUKU-AREA   TO  WRK-ERR-TBL
                PERFORM 4200111-NYUIN-ERR-HEN-SEC
-               MOVE    "点滴同時算定："    TO  SPA-GMN-NYUINMSG1
-               MOVE    WRK-NYUIN-ERR(1:36) TO  SPA-GMN-NYUINMSG1(15:)
+               ADD     1                   TO  IDX-D
+               MOVE    "点滴同時算定："    TO  SPA-GMN-NYUINMSG(IDX-D)
+               MOVE    WRK-NYUIN-ERR(1:36) TO  SPA-GMN-NYUINMSG(IDX-D)
+                                                               (15:)
                IF      WRK-NYUIN-ERR(37:)  NOT =   SPACE
-                   MOVE    WRK-NYUIN-ERR(37:)  TO  SPA-GMN-NYUINMSG2
+                   ADD     1                   TO  IDX-D
+                   MOVE    WRK-NYUIN-ERR(37:)  TO  SPA-GMN-NYUINMSG
+                                                              (IDX-D)
                END-IF
                MOVE    "0051"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
            END-IF
       *
       *    動脈
-           IF    ((SPA-GMN-NYUINMSG1       =   SPACE )  OR
-                  (SPA-GMN-NYUINMSG2       =   SPACE ) )  AND
-                 ( ORCSTEN-DOU-AREA    NOT =   ZERO    )
+           IF      IDX-D               =   2
+               GO      TO      420011-FUKUERR-SYORI-EXT
+           END-IF
+           IF      ORCSTEN-DOU-AREA    NOT =   ZERO
                MOVE    ORCSTEN-DOU-AREA    TO  WRK-ERR-TBL
                PERFORM 4200111-NYUIN-ERR-HEN-SEC
-               IF      SPA-GMN-NYUINMSG1   =   SPACE
-                   MOVE    "動脈同時算定："    TO  SPA-GMN-NYUINMSG1
-                   MOVE    WRK-NYUIN-ERR(1:36) TO  SPA-GMN-NYUINMSG1
-                                                           (15:)
-                   IF      WRK-NYUIN-ERR(37:)  NOT =   SPACE
-                       MOVE    WRK-NYUIN-ERR(37:)  TO  SPA-GMN-NYUINMSG2
-                   END-IF
-               ELSE
-                   MOVE    "動脈同時算定："    TO  SPA-GMN-NYUINMSG2
-                   MOVE    WRK-NYUIN-ERR(1:36) TO  SPA-GMN-NYUINMSG2
-                                                           (15:)
+               ADD     1                   TO  IDX-D
+               MOVE    "動脈同時算定："    TO  SPA-GMN-NYUINMSG (IDX-D)
+               MOVE    WRK-NYUIN-ERR(1:36) TO  SPA-GMN-NYUINMSG (IDX-D)
+                                                               (15:)
+               IF     (WRK-NYUIN-ERR(37:)  NOT =   SPACE ) AND
+                      (IDX-D                   <   2     )
+                   ADD    1                    TO  IDX-D
+                   MOVE    WRK-NYUIN-ERR(37:)  TO  SPA-GMN-NYUINMSG
+                                                              (IDX-D)
                END-IF
                MOVE    "0054"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
            END-IF
       *
       *    中心静脈
-           IF    ((SPA-GMN-NYUINMSG1       =   SPACE )  OR
-                  (SPA-GMN-NYUINMSG2       =   SPACE ) )  AND
-                 ( ORCSTEN-CHU-AREA    NOT =   ZERO    )
+           IF      IDX-D               =   2
+               GO      TO      420011-FUKUERR-SYORI-EXT
+           END-IF
+           IF      ORCSTEN-CHU-AREA    NOT =   ZERO
                MOVE    ORCSTEN-CHU-AREA    TO  WRK-ERR-TBL
                PERFORM 4200111-NYUIN-ERR-HEN-SEC
-               IF      SPA-GMN-NYUINMSG1   =   SPACE
-                   MOVE    "中静同時算定："    TO  SPA-GMN-NYUINMSG1
-                   MOVE    WRK-NYUIN-ERR(1:36) TO  SPA-GMN-NYUINMSG1
+               ADD     1                   TO  IDX-D
+               MOVE    "中静同時算定："    TO  SPA-GMN-NYUINMSG(IDX-D)
+               MOVE    WRK-NYUIN-ERR(1:36) TO  SPA-GMN-NYUINMSG(IDX-D)
                                                            (15:)
-                   IF      WRK-NYUIN-ERR(37:)  NOT =   SPACE
-                       MOVE    WRK-NYUIN-ERR(37:)  TO  SPA-GMN-NYUINMSG2
-                   END-IF
-               ELSE
-                   MOVE    "中静同時算定："    TO  SPA-GMN-NYUINMSG2
-                   MOVE    WRK-NYUIN-ERR(1:36) TO  SPA-GMN-NYUINMSG2
-                                                           (15:)
+               IF     (WRK-NYUIN-ERR(37:)  NOT =   SPACE ) AND
+                      (IDX-D                   <   2     )
+                   ADD    1                    TO  IDX-D
+                   MOVE    WRK-NYUIN-ERR(37:)  TO  SPA-GMN-NYUINMSG
+                                                              (IDX-D)
                END-IF
                MOVE    "0055"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
@@ -6676,6 +6656,81 @@
       *
            .
        420011-FUKUERR-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    中心静脈加算算定エラー編集処理
+      *****************************************************************
+       420013-MIIVHDAY-HEN-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  WRK-NYUIN-ERR
+           MOVE    1                   TO  IDX-N
+           PERFORM VARYING     IDX-N2  FROM    1   BY  1
+                   UNTIL       IDX-N2  >   31
+               IF      ORCSTEN-MIIVH-DAY (IDX-N2) =   1
+                   IF      IDX-N       >   1
+                       MOVE    ","         TO  WRK-NYUIN-ERR
+                                                            (IDX-N:1)
+                       ADD     1           TO  IDX-N
+                   END-IF
+                   MOVE    IDX-N2          TO  WRK-NYUIN-ERR
+                                                           (IDX-N:2)
+                   ADD     2               TO  IDX-N
+               END-IF
+           END-PERFORM
+           IF      WRK-NYUIN-ERR       =   SPACE
+               GO      TO     420013-MIIVHDAY-HEN-EXT 
+           END-IF
+           ADD     1                   TO  IDX-D
+           MOVE    "中静未算定："      TO  SPA-GMN-NYUINMSG(IDX-D)
+           MOVE    WRK-NYUIN-ERR(1:38) TO  SPA-GMN-NYUINMSG(IDX-D)(13:)
+           IF     (WRK-NYUIN-ERR(39:)  NOT =   SPACE )  AND
+                  (IDX-D               <   2         )
+               ADD     1                   TO  IDX-D
+               MOVE    WRK-NYUIN-ERR(39:)  TO  SPA-GMN-NYUINMSG(IDX-D)
+           END-IF
+           MOVE    "0056"              TO  SPA-ERRCD
+           MOVE    1                   TO  SPA-GMN-CUR
+      *
+           .
+       420013-MIIVHDAY-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    加算算定エラー編集処理
+      *****************************************************************
+       420012-MIDAY-HEN-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  WRK-NYUIN-ERR
+           MOVE    1                   TO  IDX-N
+           PERFORM VARYING     IDX-N2  FROM    1   BY  1
+                   UNTIL       IDX-N2  >   31
+               IF      ORCSTEN-MI-DAY (IDX-N2) =   1
+                   IF      IDX-N       >   1
+                       MOVE    ","         TO  WRK-NYUIN-ERR (IDX-N:1)
+                       ADD     1           TO  IDX-N
+                   END-IF
+                   MOVE    IDX-N2          TO  WRK-NYUIN-ERR (IDX-N:2)
+                   ADD     2               TO  IDX-N
+               END-IF
+           END-PERFORM
+           IF      WRK-NYUIN-ERR       =   SPACE
+               PERFORM 420011-KASAN-ERR-SEC
+           ELSE
+               ADD     1                   TO  IDX-D
+               MOVE    "点滴未算定："      TO  SPA-GMN-NYUINMSG(IDX-D)
+               MOVE    WRK-NYUIN-ERR(1:38) TO  SPA-GMN-NYUINMSG(IDX-D)
+                                                                   (13:)
+               IF      (WRK-NYUIN-ERR(39:) NOT =   SPACE)  AND
+                       (IDX-D              <   2   )
+                   ADD     1                   TO  IDX-D
+                   MOVE    WRK-NYUIN-ERR(39:)  TO  SPA-GMN-NYUINMSG
+                                                                 (IDX-D)
+               END-IF
+               MOVE    "0052"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       420012-MIDAY-HEN-EXT.
            EXIT.
       *****************************************************************
       *    加算算定エラー編集処理
@@ -6718,15 +6773,13 @@
                    ADD     2               TO  IDX-N
                END-IF
            END-PERFORM
-           IF      SPA-GMN-NYUINMSG1   =   SPACE
-               MOVE    "加算未算定："      TO  SPA-GMN-NYUINMSG1
-               MOVE    WRK-NYUIN-ERR(1:38) TO  SPA-GMN-NYUINMSG1(13:)
-               IF      WRK-NYUIN-ERR(39:)  NOT =   SPACE
-                   MOVE    WRK-NYUIN-ERR(39:)  TO  SPA-GMN-NYUINMSG2
-               END-IF
-           ELSE
-               MOVE    "加算未算定："      TO  SPA-GMN-NYUINMSG2
-               MOVE    WRK-NYUIN-ERR(1:38) TO  SPA-GMN-NYUINMSG2(13:)
+           ADD     1                   TO  IDX-D
+           MOVE    "加算未算定："      TO  SPA-GMN-NYUINMSG(IDX-D)
+           MOVE    WRK-NYUIN-ERR(1:38) TO  SPA-GMN-NYUINMSG(IDX-D)(13:)
+           IF     (WRK-NYUIN-ERR(39:)  NOT =   SPACE )  AND
+                  (IDX-D               <   2         )
+               ADD     1                   TO  IDX-D
+               MOVE    WRK-NYUIN-ERR(39:)  TO  SPA-GMN-NYUINMSG(IDX-D)
            END-IF
            .
        420011-KASAN-ERR-EXT.
@@ -6910,7 +6963,10 @@
                    MOVE    "動脈注射手技料が同時算定されています。"
                                        TO  WRK-ERRMSG
                WHEN    "0055"
-                   MOVE    "中心静脈手技料が同時算定されています。"
+                   MOVE    "中心静脈注射料が同時算定されています。"
+                                       TO  WRK-ERRMSG
+               WHEN    "0056"
+                   MOVE    "中心静脈注射料が算定できる日があります。"
                                        TO  WRK-ERRMSG
                WHEN    "2000"
                    MOVE    "更新エラーです。"

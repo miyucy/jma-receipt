@@ -672,6 +672,14 @@
                                        TO  SPA-ERRMSG
                    MOVE    "造影剤注入の点滴手技は算定できません。"
                                        TO  SPA-ERRMSG(29:)
+               WHEN    "9024"
+                   MOVE    "この診療種別は入院のみの使用です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9025"
+                   MOVE    "中心静脈注射料を算定します。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "点滴手技料は算定できません。"
+                                       TO  SPA-ERRMSG(29:)
                WHEN    "9100"
                    MOVE    "診療内容が２００行を超えます。"
                                        TO  SPA-ERRMSG
@@ -864,6 +872,16 @@
                                        TO  SPA-ERRMSG
                    MOVE    "算定済です。"
                                        TO  SPA-ERRMSG(33:)
+               WHEN    "K014"
+                   MOVE    "警告！既に点滴手技料が算定済です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "中心静脈注射は自動算定しません。"
+                                       TO  SPA-ERRMSG(35:)
+               WHEN    "K015"
+                   MOVE    "警告！手術と中心静脈注射料が同日に"
+                                       TO  SPA-ERRMSG
+                   MOVE    "算定されています。"
+                                       TO  SPA-ERRMSG(35:)
                WHEN    "K020"
                    MOVE    "警告！再診料の受診回数が違います。"
                                        TO  SPA-ERRMSG

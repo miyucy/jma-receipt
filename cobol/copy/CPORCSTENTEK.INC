@@ -22,13 +22,13 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  03/04/03  中心静脈処理追加
       ************************************************************
        01  ORCSTENTEKAREA.
       *
       *入力
            03  ORCSTEN-IN-AREA.
-      *処理区分（１：一括更新、２：保険別、３：一括チェック
-      *          ４：レセプト出力）
+      *処理区分（１：一括更新、２：保険別、３：一括チェック）
                05  ORCSTEN-KBN                 PIC  X(01).
       *患者ＩＤ
                05  ORCSTEN-PTID                PIC  9(10).
@@ -74,6 +74,10 @@
       *        未算定日
                05  ORCSTEN-MIDAY-AREA.
                    07  ORCSTEN-MI-DAY          PIC 9(01)
+                                               OCCURS   31.
+               05  ORCSTEN-MIIVHDAY-AREA.
+      *            中心静脈
+                   07  ORCSTEN-MIIVH-DAY       PIC 9(01)
                                                OCCURS   31.
       *        複数算定日
                05  ORCSTEN-FUKUDAY-AREA.
