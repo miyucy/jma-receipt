@@ -483,6 +483,9 @@
            03  WRK-NYU-KAISU           PIC 9(03).
       *    壅梓鏽騰莢醒
            03  WRK-SYOEN-CNT           PIC 9(03).
+      *    ェ轉情ゥ
+           03  WRK-NYUINYMD            PIC X(08).
+           03  WRK-TAIINYMD            PIC X(08).
       *
       *   ヵ昦刓憎
        01  WRK-NENREI-G.
@@ -1430,6 +1433,9 @@
                                            SPA-AREA
                                            SPA-K01KYOUTU
                                            SPA-K02
+      *        ェ轉情ゥ
+               MOVE    WRK-NYUINYMD        TO  SPA-K02N-NYUINYMD
+               MOVE    WRK-TAIINYMD        TO  SPA-K02N-TAIINYMD
            END-IF
       *
            INITIALIZE                  ORCSC95AREA
@@ -3422,6 +3428,9 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
+      *    ェ轉情ゥ
+           MOVE    WRK-NYUINYMD        TO  SPA-K02N-NYUINYMD
+           MOVE    WRK-TAIINYMD        TO  SPA-K02N-TAIINYMD
       *    旦由隋騷彸螂質咥
            PERFORM                     310-SPA-SET-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -3449,6 +3458,9 @@
       *****************************************************************
        410101-NYUINRRK-CHK-SEC         SECTION.
       *
+      *    ェ轉情ゥ
+           MOVE    SPACE               TO  WRK-NYUINYMD
+           MOVE    SPACE               TO  WRK-TAIINYMD
       *    ェ情咺昳�衝�
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
@@ -3512,6 +3524,9 @@
                    MOVE    07              TO  SPA-GMN-CUR
                END-IF
            END-IF
+      *    ェ轉情ゥ
+           MOVE    SPA-K02N-NYUINYMD   TO  WRK-NYUINYMD
+           MOVE    SPA-K02N-TAIINYMD   TO  WRK-TAIINYMD
       *
            .
        410101-NYUINRRK-CHK-EXT.
