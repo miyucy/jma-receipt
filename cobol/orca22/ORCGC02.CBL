@@ -2024,7 +2024,23 @@
            END-UNSTRING
       *
       *    入力番号チェック
-           PERFORM VARYING IDXX    FROM    1   BY  1
+           IF      WRK-HENSYU-NUM-O (1)    =   "*"
+               IF    ( WRK-HENSYU-NUM-O (2)    NOT =   SPACE )
+               OR    ( WRK-HENSYU-NUM-O (3)    NOT =   SPACE )
+               OR    ( WRK-HENSYU-NUM-O (4)    NOT =   SPACE )
+               OR    ( WRK-HENSYU-NUM-O (5)    NOT =   SPACE )
+                   MOVE    "0081"      TO  SPA-ERRCD  
+                   GO  TO  410113-KANTAN-SYUSEI-EXT
+               END-IF
+               IF      SPA-GMN-C02-SYOKBN  =   "0" OR  "1"
+                   MOVE    1               TO  WRK-STNUM-O (1)
+                   MOVE    SPA-GMN-C02-MAX TO  WRK-EDNUM-O (1)
+               ELSE
+                   MOVE    "0083"          TO  SPA-ERRCD
+                   GO  TO  410113-KANTAN-SYUSEI-EXT
+               END-IF
+           ELSE
+             PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       5
                    OR      SPA-ERRCD   NOT =   SPACE
                MOVE    SPACE               TO  WRK-STNUM
@@ -2093,7 +2109,8 @@
                        END-IF
                    END-IF
                END-IF
-           END-PERFORM    
+             END-PERFORM
+           END-IF    
       *
       *    転帰区分チェック
            IF      WRK-HENSYU-DATA-O (1)   =   SPACE OR  "-"
@@ -2273,79 +2290,12 @@
                IF      WRK-STNUM-O (IDXX)  >   ZERO
                    MOVE    WRK-STNUM-O (IDXX)  TO  WRK-STNUM
                    MOVE    WRK-EDNUM-O (IDXX)  TO  WRK-EDNUM
-                       PERFORM VARYING IDX     FROM
-                                               WRK-STNUM-O (IDXX)  BY  1
-                               UNTIL   IDX     >   WRK-EDNUM-O (IDXX)
-                       INITIALIZE                  PTBYO-KEY
-                       MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
-                       MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
-                       MOVE    SPA-NAI-C02-TSRYKA  (IDX)
-                                                   TO  PTBYO-SRYKA
-                       MOVE    SPA-NAI-C02-TSRYYMD (IDX)
-                                                   TO  PTBYO-SRYYMD
-                       MOVE    SPA-NAI-C02-TRENNUM (IDX)
-                                                   TO  PTBYO-RENNUM 
-                       MOVE    "PTBYOMEI-KEY"      TO  WRK-DBPATH
-                       PERFORM 900-PTBYO-INV-SEC
-                       IF      FLG-PTBYOMEI        =   1
-                           MOVE    "1003"          TO  SPA-ERRCD
-                           DISPLAY "INV PTBYOMEI-KEY =>" PTBYO-KEY 
+                   PERFORM VARYING IDX     FROM
+                                           WRK-STNUM-O (IDXX)  BY  1
+                           UNTIL   IDX     >   WRK-EDNUM-O (IDXX)
+                       PERFORM 4101131-KANTAN-SYUSEI-KOUSIN-SEC
+                       IF      SPA-ERRCD   NOT =   SPACE
                            GO  TO  410113-KANTAN-SYUSEI-EXT
-                       ELSE
-                           EVALUATE    WRK-HENSYU-DATA-O (3)
-                               WHEN    SPACE               
-                                   CONTINUE
-                               WHEN    "-"               
-                                   MOVE    SPACE   TO  PTBYO-UTAGAIFLG
-                               WHEN    OTHER
-                                   MOVE    WRK-HENSYU-DATA-O (3)
-                                                   TO  PTBYO-UTAGAIFLG
-                           END-EVALUATE      
-                           EVALUATE    WRK-HENSYU-DATA-O (4)
-                               WHEN    SPACE               
-                                   CONTINUE
-                               WHEN    "-"               
-                                   MOVE    SPACE   TO  PTBYO-SYUBYOFLG
-                               WHEN    OTHER
-                                   MOVE    WRK-HENSYU-DATA-O (4)
-                                                   TO  PTBYO-SYUBYOFLG
-                           END-EVALUATE      
-                           EVALUATE    WRK-HENSYU-DATA-O (5)
-                               WHEN    SPACE               
-                                   CONTINUE
-                               WHEN    "-"               
-                                   MOVE    ZERO    TO  PTBYO-MANSEIKBN
-                               WHEN    OTHER
-                                   MOVE    WRK-HENSYU-DATA-O (5)
-                                                   TO  PTBYO-MANSEIKBN
-                           END-EVALUATE      
-                           EVALUATE    WRK-HENSYU-DATA-O (6)
-                               WHEN    SPACE               
-                                   CONTINUE
-                               WHEN    "-"               
-                                   MOVE    SPACE   TO  PTBYO-NYUGAIKBN
-                               WHEN    OTHER
-                                   MOVE    WRK-HENSYU-DATA-O (6)
-                                                   TO  PTBYO-NYUGAIKBN
-                           END-EVALUATE      
-      *
-                           MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
-                           MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
-      *???
-           DISPLAY "PTBYO=" PTBYO-KEY "#" MCP-FUNC "#"
-      *???                
-                           MOVE    "DBUPDATE"          TO  MCP-FUNC
-                           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-                           MOVE    "PTBYOMEI-KEY"      TO  ORC-DBPATH
-                           CALL    "ORCMCPSUB"         USING
-                                                       MCPAREA
-                                                       ORCMCPAREA
-                                                       MCPDATA-REC
-                           IF      MCP-RC          NOT =   ZERO 
-                               MOVE    "1001"              TO  SPA-ERRCD
-                               DISPLAY MCP-FUNC "PTBYOMEI-KEY =>"
-                                                           PTBYO-KEY 
-                           END-IF
                        END-IF
                    END-PERFORM
                END-IF
@@ -2381,10 +2331,216 @@
            EXIT.
       *
       *****************************************************************
-      *    選択病名チェック処理
+      *    簡単修正更新処理
       *****************************************************************
-       410111-BYOMEI-SELECT-SEC         SECTION.
+       4101131-KANTAN-SYUSEI-KOUSIN-SEC         SECTION.
       *
+           INITIALIZE                      PTBYO-KEY
+           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+           MOVE    SPA-NAI-C02-TSRYKA  (IDX)
+                                       TO  PTBYO-SRYKA
+           MOVE    SPA-NAI-C02-TSRYYMD (IDX)
+                                       TO  PTBYO-SRYYMD
+           MOVE    SPA-NAI-C02-TRENNUM (IDX)
+                                       TO  PTBYO-RENNUM 
+           MOVE    "PTBYOMEI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-PTBYO-INV-SEC
+           IF      FLG-PTBYOMEI        =   1
+               MOVE    "1003"              TO  SPA-ERRCD
+               DISPLAY "INV PTBYOMEI-KEY =>" PTBYO-KEY 
+               GO  TO  410113-KANTAN-SYUSEI-EXT
+           END-IF
+      *
+      *    転帰区分・転帰日
+           EVALUATE    WRK-HENSYU-DATA-O (1)
+               WHEN    SPACE               
+                   CONTINUE
+               WHEN    "-"               
+                   MOVE    SPACE   TO  PTBYO-TENKIKBN
+                                       PTBYO-TENKIYMD
+               WHEN    OTHER
+                   MOVE    WRK-HENSYU-DATA-O (1)
+                                   TO  PTBYO-TENKIKBN
+                   MOVE    WRK-HENSYU-DATA-O (2)
+                                   TO  PTBYO-TENKIYMD
+           END-EVALUATE      
+      *
+      *    疑いフラグ
+           EVALUATE    WRK-HENSYU-DATA-O (3)
+               WHEN    SPACE               
+                   CONTINUE
+               WHEN    "-"               
+                   MOVE    SPACE   TO  PTBYO-UTAGAIFLG
+               WHEN    OTHER
+                   MOVE    WRK-HENSYU-DATA-O (3)
+                                   TO  PTBYO-UTAGAIFLG
+           END-EVALUATE      
+      *
+      *    主病名フラグ
+           EVALUATE    WRK-HENSYU-DATA-O (4)
+               WHEN    SPACE               
+                   CONTINUE
+               WHEN    "-"               
+                   MOVE    SPACE   TO  PTBYO-SYUBYOFLG
+               WHEN    OTHER
+                   MOVE    WRK-HENSYU-DATA-O (4)
+                                   TO  PTBYO-SYUBYOFLG
+           END-EVALUATE      
+      *
+      *    疾患区分
+           EVALUATE    WRK-HENSYU-DATA-O (5)
+               WHEN    SPACE               
+                   CONTINUE
+               WHEN    "-"               
+                   MOVE    ZERO    TO  PTBYO-MANSEIKBN
+               WHEN    OTHER
+                   MOVE    WRK-HENSYU-DATA-O (5)
+                                   TO  PTBYO-MANSEIKBN
+           END-EVALUATE      
+      *
+      *    疾患区分
+           EVALUATE    WRK-HENSYU-DATA-O (6)
+               WHEN    SPACE               
+                   CONTINUE
+               WHEN    "-"               
+                   MOVE    SPACE   TO  PTBYO-NYUGAIKBN
+               WHEN    OTHER
+                   MOVE    WRK-HENSYU-DATA-O (6)
+                                   TO  PTBYO-NYUGAIKBN
+           END-EVALUATE      
+      *
+      *    レセ電エラーフラグ
+      *    （主病名・疑いフラグに変更があったとき）
+           IF    ( WRK-HENSYU-DATA-O (3) =   SPACE )
+           AND   ( WRK-HENSYU-DATA-O (4) =   SPACE )
+               CONTINUE
+           ELSE
+               MOVE    SPACE       TO  PTBYO-RECEDENFLG
+               IF      WRK-HENSYU-DATA-O (4) =   SPACE
+                   CONTINUE
+               ELSE
+                   IF      PTBYO-BYOMEIHENFLG          =   "1"
+                       EVALUATE    PTBYO-SYUBYOFLG       
+                           WHEN    "1"
+                               IF      PTBYO-BYOMEIMOJI    >   17
+                                   MOVE    "1" TO  PTBYO-RECEDENFLG       
+                               END-IF
+                           WHEN    SPACE
+                               IF      PTBYO-BYOMEIMOJI    >   20
+                                   MOVE    "1" TO  PTBYO-RECEDENFLG       
+                               END-IF
+                       END-EVALUATE
+                   END-IF
+               END-IF
+      *
+               IF      WRK-HENSYU-DATA-O (3) =   SPACE
+                   CONTINUE
+               ELSE
+                   IF    ( PTBYO-RECEDENFLG    =   SPACE ) 
+                   AND   ( PTBYO-UTAGAIFLG         
+                                           NOT =   SPACE )
+                       MOVE    SPACE       TO  WRK-HENFLG1
+                                               WRK-HENFLG2
+      *                病名文字数を計算
+                       COMPUTE WRK-MOJISU      =   PTBYO-BYOMEIMOJI       
+                                                   *   2
+                       IF      PTBYO-UTAGAIFLG     =   "1" OR  "3"
+                           IF      WRK-MOJISU      <   8
+                               MOVE    1               TO  IDZ
+                           ELSE    
+                               COMPUTE IDZ     =   WRK-MOJISU    -   7
+                           END-IF    
+                           PERFORM VARYING IDY FROM    IDZ BY  2
+                                   UNTIL   IDY >       WRK-MOJISU
+                               IF      PTBYO-BYOMEI (IDY:2) =   "疑"
+                                   MOVE    "1"          TO  WRK-HENFLG1
+                                   MOVE    WRK-MOJISU   TO  IDY
+                               END-IF
+                           END-PERFORM
+                       END-IF                
+                       IF      PTBYO-UTAGAIFLG     =   "2" OR  "3"
+                           PERFORM VARYING IDY FROM    1   BY  2
+                                   UNTIL   IDY >       WRK-MOJISU
+                               IF      PTBYO-BYOMEI (IDY:4) =  "急性"
+                                   MOVE    "1"         TO  WRK-HENFLG2
+                                   MOVE    WRK-MOJISU  TO  IDY
+                               END-IF
+                           END-PERFORM
+                       END-IF
+      *
+      *                疑いフラグがセットされているとき
+                       IF    ( PTBYO-UTAGAIFLG     =   "1" OR  "3" )
+                       AND   ( WRK-HENFLG1         =   SPACE       )                         
+                           COMPUTE WRK-MOJISU  =
+                                              WRK-MOJISU   +
+                                              WRK-CONS-UTAGAI-MOJISU
+                           IF      PTBYO-BYOMEICD (21) NOT =   SPACE             
+                               EVALUATE    PTBYO-SYUBYOFLG       
+                                   WHEN    "1"
+                                       IF      WRK-MOJISU  >   17
+                                           MOVE    "1"     TO
+                                                   PTBYO-RECEDENFLG       
+                                       END-IF
+                                   WHEN    SPACE
+                                       IF      WRK-MOJISU  >   20
+                                           MOVE    "1"     TO
+                                                   PTBYO-RECEDENFLG       
+                                       END-IF
+                               END-EVALUATE
+                           END-IF
+                       END-IF    
+                       IF    ( PTBYO-UTAGAIFLG       
+                                                   =   "2" OR  "3" )
+                       AND   ( WRK-HENFLG2         =   SPACE       )                         
+                           COMPUTE WRK-MOJISU  =
+                                              WRK-MOJISU   +
+                                              WRK-CONS-KYUSEI-MOJISU
+                           IF      PTBYO-BYOMEICD (21) NOT =   SPACE             
+                               EVALUATE    PTBYO-SYUBYOFLG       
+                                   WHEN    "1"
+                                       IF      WRK-MOJISU  >   17
+                                           MOVE    "1"     TO
+                                                   PTBYO-RECEDENFLG       
+                                       END-IF
+                                   WHEN    SPACE
+                                       IF      WRK-MOJISU  >   20
+                                           MOVE    "1"     TO
+                                                   PTBYO-RECEDENFLG       
+                                       END-IF
+                               END-EVALUATE
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF            
+      *
+           MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
+      *???
+           DISPLAY "PTBYO=" PTBYO-KEY "#" MCP-FUNC "#"
+      *???                
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "PTBYOMEI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO 
+               MOVE    "1001"              TO  SPA-ERRCD
+               DISPLAY MCP-FUNC "PTBYOMEI-KEY =>"  PTBYO-KEY 
+           END-IF
+           .
+       410113-KANTAN-SYUSEI-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    選択病名処理
+      *****************************************************************
+       410111-BYOMEI-SELECT-SEC        SECTION.
+      *      
            MOVE    ZERO                TO  SPA-C02-IKOFLG
            MOVE    SPACE               TO  WRK-HAISIYMDH
       *      
@@ -6815,6 +6971,9 @@
                  MOVE    "病名番号の指定数が多すぎます"  TO  SPA-ERRMSG
                WHEN    "0082"
                  MOVE    "修正項目が多すぎます"        TO  SPA-ERRMSG
+               WHEN    "0083"
+                 MOVE    "全体表示のときは、全部指定はできません"
+                                                       TO  SPA-ERRMSG
                WHEN    "0103"
                    MOVE    "病名コードでの組み立てができませんでした。"
                                        TO  SPA-ERRMSG
