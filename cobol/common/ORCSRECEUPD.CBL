@@ -147,7 +147,6 @@
                    MOVE    LNK-UPD-PTID    TO  JYURRK-PTID
                    MOVE    LNK-UPD-NYUGAIKBN
                                            TO  JYURRK-NYUGAIKBN
-                   MOVE    LNK-UPD-SRYKA   TO  JYURRK-SRYKA
                    MOVE    LNK-UPD-SRYYM   TO  JYURRK-SRYYMD (1:6)
                    MOVE    "__"            TO  JYURRK-SRYYMD (7:2)
                    MOVE    LNK-UPD-HKNKBN  TO  JYURRK-HKNKBN
