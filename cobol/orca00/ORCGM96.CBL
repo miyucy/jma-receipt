@@ -271,22 +271,13 @@
            PERFORM 310-DBHENSYU-SEC
       *
       *    最新から初期へ
-           MOVE    SPA-GMN-VERSION (2)
-                                        TO  SPA-GMN-VERSION     (1)
-           MOVE    SPA-GMN-DBSVERSION1 (2)
-                                        TO  SPA-GMN-DBSVERSION1 (1)
-           MOVE    SPA-GMN-DBSVERSION2 (2)
-                                        TO  SPA-GMN-DBSVERSION2 (1)
-           MOVE    SPA-GMN-CREYMD  (2)
-                                        TO  SPA-GMN-CREYMD      (1)
-      *
-           MOVE    SPA-GMN-STARTYMD     (2)
+           MOVE    SPA-GMN-STARTYMD (2)
                                        TO  SPA-GMN-STARTYMD      (1)
-           MOVE    SPA-GMN-ENDYMD       (2)
+           MOVE    SPA-GMN-ENDYMD   (2)
                                        TO  SPA-GMN-ENDYMD        (1)
-           MOVE    SPA-GMN-STARTTIME    (2)
+           MOVE    SPA-GMN-STARTTIME(2)
                                        TO  SPA-GMN-STARTTIME     (1)
-           MOVE    SPA-GMN-ENDTIME      (2)
+           MOVE    SPA-GMN-ENDTIME  (2)
                                        TO  SPA-GMN-ENDTIME       (1)
            MOVE    SPA-GMN-STEPSTARTTIME(2)
                                        TO  SPA-GMN-STEPSTARTTIME (1)
@@ -380,7 +371,7 @@
       *****************************************************************
        3101-LIST1-HENSYU-SEC         SECTION.
       *
-           MOVE    2                   TO  IDX
+           MOVE    1                   TO  IDX
            MOVE    DBKANRI-VERSION     TO  SPA-GMN-VERSION     (IDX)
            MOVE    DBKANRI-DBSVERSION1 TO  SPA-GMN-DBSVERSION1 (IDX)
            MOVE    DBKANRI-DBSVERSION2 TO  SPA-GMN-DBSVERSION2 (IDX)
@@ -785,13 +776,17 @@
            INITIALIZE              M96
       *
            PERFORM VARYING   IDX   FROM   1   BY   1
-                   UNTIL     IDX      >   2
+                   UNTIL     IDX      >   1
                MOVE    SPA-GMN-VERSION       (IDX) TO  M96-VERSION (IDX)
                MOVE    SPA-GMN-DBSVERSION1   (IDX) TO  M96-DBSVERSION1
                                                                   (IDX)
                MOVE    SPA-GMN-DBSVERSION2   (IDX) TO  M96-DBSVERSION2
                                                                   (IDX)
                MOVE    SPA-GMN-CREYMD        (IDX) TO  M96-CREYMD (IDX)
+           END-PERFORM
+           MOVE    1                   TO  M96-LIST1-COUNT
+           PERFORM VARYING   IDX   FROM   1   BY   1
+                   UNTIL     IDX      >   2
                MOVE    SPA-GMN-STARTYMD      (IDX) TO  M96-STARTYMD
                                                                   (IDX)
                MOVE    SPA-GMN-STARTTIME     (IDX) TO  M96-STARTTIME
@@ -803,7 +798,6 @@
                MOVE    SPA-GMN-STEPENDTIME   (IDX) TO  M96-STEPENDTIME
                                                                   (IDX)
            END-PERFORM
-           MOVE    2                   TO  M96-LIST1-COUNT
            MOVE    2                   TO  M96-LIST2-COUNT
       *
            PERFORM VARYING   IDX   FROM   1   BY   1
