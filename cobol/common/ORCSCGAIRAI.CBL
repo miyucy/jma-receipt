@@ -96,7 +96,7 @@
            03  FLG-CHK-OK          PIC 9(01).
       *    複数科まとめ有無
            03  FLG-FUKU-FLG              PIC 9(01).
-      *
+           03  FLG-SRYKA                 PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -3146,7 +3146,11 @@
            END-IF
            PERFORM
                    UNTIL       FLG-UKETUKE     =    1
-               IF      (SPA-SRYKA          =   UKE-SRYKA) AND
+               MOVE    ZERO                TO  FLG-SRYKA
+               IF      UKE-UKEID       NOT =   ZERO
+                   PERFORM 450031-UKETUKE-SRYKA-SEC
+               END-IF
+               IF      (FLG-SRYKA          =   1        ) AND
                        (UKE-UKEID      NOT =   ZERO     )
                    IF      UKE-KAIKEITIME      =   ZERO
                        MOVE    WRK-TIME22          TO  UKE-KAIKEITIME
@@ -3161,14 +3165,11 @@
                                                     MCPAREA
                                                     ORCMCPAREA
                                                     MCPDATA-REC
-                       MOVE    1                   TO  FLG-UKETUKE
                    END-IF
                END-IF
       *
-               IF      FLG-UKETUKE         =   ZERO
-                   MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
-                   PERFORM 976-UKETUKE-NEXT-SEC
-               END-IF
+               MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+               PERFORM 976-UKETUKE-NEXT-SEC
            END-PERFORM
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -3180,6 +3181,26 @@
       *
            .
        45003-UKETUKE-EXT.
+           EXIT.
+      *****************************************************************
+      *    複数科判定処理
+      *****************************************************************
+       450031-UKETUKE-SRYKA-SEC        SECTION.
+      *
+           IF     SPA-SRYKA            =   UKE-SRYKA
+               MOVE    1               TO  FLG-SRYKA
+           END-IF
+           PERFORM VARYING     IDH3    FROM    1   BY  1
+                   UNTIL      (IDH3    >   15  )   OR
+                              (FLG-SRYKA           =   1  )  OR
+                              (TBL-SRYKA (IDH3)    =   SPACE)
+               IF     TBL-SRYKA (IDH3)     =   UKE-SRYKA
+                   MOVE    1               TO  FLG-SRYKA
+               END-IF
+           END-PERFORM
+      *
+           .
+       450031-UKETUKE-SRYKA-EXT.
            EXIT.
       *****************************************************************
       *    複数科まとめ収納作成処理
