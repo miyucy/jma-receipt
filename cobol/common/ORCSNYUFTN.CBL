@@ -1049,7 +1049,7 @@
       *
       *  保険点数集計
            PERFORM     VARYING   IDZ    FROM   1    BY    1
-                         UNTIL   IDZ    >      11
+                         UNTIL   IDZ    >      10
                   ADD    SYU-HKNTEN(IDZ)      TO  SYU-HKNTEN(12)
            END-PERFORM
       *    保険適用外退避テーブルと自費退避用テーブルから
