@@ -24,6 +24,7 @@
       *  01.00.01    NACL-多々納  02/08/09  療養の給付請求書取扱料追加
       *  01.00.02    NACL-多々納  04/03/15  Ｈ１６年４月改正追加
       *                                     介達牽引追加
+      *                                     言語視覚療法３追加
       *****************************************************************
       *
       *    算定履歴保険番号毎のコード
@@ -39,6 +40,8 @@
       *    言語療法（個別）
            03  FILLER              PIC X(12)   VALUE   "KG 180024810".
            03  FILLER              PIC X(12)   VALUE   "KG 180025010".
+      *    言語療法３（個別）
+           03  FILLER              PIC X(12)   VALUE   "KG 180025410".
       *    理学療法（個別）（老人）
            03  FILLER              PIC X(12)   VALUE   "KR 180706810".
            03  FILLER              PIC X(12)   VALUE   "KR 180707010".
@@ -59,6 +62,8 @@
       *    言語療法（集団）
            03  FILLER              PIC X(12)   VALUE   "SG 180024910".
            03  FILLER              PIC X(12)   VALUE   "SG 180025110".
+      *    言語療法３（集団）
+           03  FILLER              PIC X(12)   VALUE   "SG 180025510".
       *    理学療法（集団）（老人）
            03  FILLER              PIC X(12)   VALUE   "SR 180706910".
            03  FILLER              PIC X(12)   VALUE   "SR 180707110".
@@ -93,7 +98,8 @@
            03  FILLER              PIC X(12)   VALUE   "  R101500080".
       *
        01  TBL-SANTEI-AREA-R       REDEFINES   TBL-SANTEI-AREA.
-           03  TBL-SANTEI-OCC      OCCURS   39  INDEXED   TBL-SAN.
+      **** 03  TBL-SANTEI-OCC      OCCURS   39  INDEXED   TBL-SAN.
+           03  TBL-SANTEI-OCC      OCCURS   41  INDEXED   TBL-SAN.
       *        リハビリ（K:個別、S:集団）
                05  TBL-RIGAKU-RYO      PIC X(01).
       *        リハビリ（R:理学,S:作業, G:言語)

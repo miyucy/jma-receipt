@@ -21,6 +21,7 @@
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  04/03/17  Ｈ１６．４改正対応
       *****************************************************************
       *
        01  TBL-RIHABIRI-AREA.
@@ -59,8 +60,18 @@
       *    作業療法外来移行加算(老人）
            03  FILLER              PIC X(09)   VALUE   "180708970".
       *
+      *    言語早期リハ加算
+           03  FILLER              PIC X(09)   VALUE   "180025670".
+           03  FILLER              PIC X(09)   VALUE   "180025770".
+           03  FILLER              PIC X(09)   VALUE   "180025870".
+      *    言語早期リハ加算（１５歳未満）
+           03  FILLER              PIC X(09)   VALUE   "180025970".
+           03  FILLER              PIC X(09)   VALUE   "180026070".
+           03  FILLER              PIC X(09)   VALUE   "180026170".
+      *
        01  TBL-RIHABIRI-AREA-R       REDEFINES   TBL-RIHABIRI-AREA.
-           03  TBL-RIHABIRI-OCC      OCCURS   28  INDEXED   TBL-RIDX.
+      *****03  TBL-RIHABIRI-OCC      OCCURS   28  INDEXED   TBL-RIDX.
+           03  TBL-RIHABIRI-OCC      OCCURS   34  INDEXED   TBL-RIDX.
                05  TBL-RIHA-SRYCD      PIC X(09).
       *
       *    早期リハビリあり
