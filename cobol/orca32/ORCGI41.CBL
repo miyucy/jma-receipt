@@ -4225,7 +4225,8 @@
                    END-IF
       *            最終日の保険組合せを退避（次月会計の作成用）
                    DISPLAY  "HKN-TAIHI"
-                   IF      NACCT-ZAISKBKBN     =   "5"
+                   IF      WRK-TAIHI-HKN   =    ZERO
+                     IF      NACCT-ZAISKBKBN     =   "5"
                        MOVE    ZERO            TO  WRK-TAIHI-HKN
                        PERFORM VARYING     IDX-HKN   FROM   1   BY  1
                          UNTIL       IDX-HKN  >   31
@@ -4234,6 +4235,7 @@
                                                         WRK-TAIHI-HKN
                           END-IF
                        END-PERFORM
+                     END-IF
                    END-IF
                    DISPLAY "WRK-TAIHI-HKN = " WRK-TAIHI-HKN
       *
@@ -5947,6 +5949,16 @@
                    PERFORM 4901-NYUINACCT-KOUSIN-SEC
       *
                    MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+                     IF      NACCT-ZAISKBKBN     =   "5"
+                       MOVE    ZERO            TO  WRK-TAIHI-HKN
+                       PERFORM VARYING     IDX-HKN   FROM   1   BY  1
+                         UNTIL       IDX-HKN  >   31
+                          IF      NACCT-DAY (IDX-HKN)  NOT =   ZERO
+                              MOVE   NACCT-DAY(IDX-HKN) TO
+                                                        WRK-TAIHI-HKN
+                          END-IF
+                       END-PERFORM
+                     END-IF
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "NYUINACCT-UPD1"    TO  ORC-DBPATH
                    CALL    "ORCMCPSUB"         USING
@@ -6137,6 +6149,16 @@
                    END-PERFORM
       *
                    MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+                     IF      NACCT-ZAISKBKBN     =   "5"
+                       MOVE    ZERO            TO  WRK-TAIHI-HKN
+                       PERFORM VARYING     IDX-HKN   FROM   1   BY  1
+                         UNTIL       IDX-HKN  >   31
+                          IF      NACCT-DAY (IDX-HKN)  NOT =   ZERO
+                              MOVE   NACCT-DAY(IDX-HKN) TO
+                                                        WRK-TAIHI-HKN
+                          END-IF
+                       END-PERFORM
+                     END-IF
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "NYUINACCT-UPD1"    TO  ORC-DBPATH
                    CALL    "ORCMCPSUB"         USING
@@ -6168,7 +6190,6 @@
       *
       *    保険組合せ
            MOVE    SPA-NAI-HKNCOMBI-41 (IDX) TO  NACCT-HKNCOMBI.
-           MOVE    SPA-NAI-HKNCOMBI-41 (IDX) TO  WRK-TAIHI-HKN.
       *    剤回数
            MOVE    SPA-NAI-ZAIKAISU-41 (IDX) TO  NACCT-ZAIKAISU.
       *    回数テーブル（１日から３１日）
