@@ -37,6 +37,7 @@
       *                                     中途の在宅編集修正
       * 01.00.06     NACL-多々納  03/03/06  剤明細１９以上の編集修正
       *                                     全角変換時空白判定追加
+      * 01.00.07     NACL-多々納  03/04/17  免除判定削除
       *****************************************************************
       *
       *
@@ -824,10 +825,10 @@
       *---(01.00.01) LINE ADD END   ------------------------------------
       *
       *    免除判定処理
-           INITIALIZE                  ORCSMENJYOAREA
-           CALL    "ORCSMENJYO"        USING
-                                       ORCSMENJYOAREA
-                                       SPA-AREA
+      **** INITIALIZE                  ORCSMENJYOAREA
+      *    CALL    "ORCSMENJYO"        USING
+      *                                ORCSMENJYOAREA
+      *****                            SPA-AREA
       *
       *    ３歳未満・老人判定
            MOVE    SPACE               TO  WRK-BIKOU
@@ -1296,11 +1297,11 @@
                MOVE    WRK-NAIYOU (IDX IDX2)   TO  HCM19-NAIYO (IDX2)
            END-PERFORM
       *
-      *    免除編集
-           IF     (WRK-MENJYO-FLG      =   1   )  OR
-                  (MENJYO-FLG          =   1   )
-               MOVE    "（免）"            TO  HCM19-MENJYO
-           END-IF
+      **** 免除編集
+      *    IF     (WRK-MENJYO-FLG      =   1   )  OR
+      *           (MENJYO-FLG          =   1   )
+      *        MOVE    "（免）"            TO  HCM19-MENJYO
+      **** END-IF
       *
       *備考欄
       *    ３歳未満・老人負担割合
