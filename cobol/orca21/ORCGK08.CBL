@@ -64,7 +64,7 @@
       *    パラメタファイル名
        01  FILE-NAME2.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(09)   VALUE   "K01PARA".
+           03  FILLER              PIC X(07)   VALUE   "K01PARA".
            03  FILE-TERMID2        PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
@@ -729,7 +729,7 @@
                    UNTIL     IDX       >   WRK-MAX
                MOVE    ALL "9"             TO  WRK-ZAINUM
                MOVE    ALL "9"             TO  WRK-RENNUM
-               MOVE    HIGH-VALUE          TO  WRK-SRYKBN
+               MOVE    ALL "9"             TO  WRK-SRYKBN
                MOVE    ZERO                TO  IDX2
                PERFORM VARYING   IDX1      FROM   1   BY  1
                        UNTIL     IDX1      >   WRK-MAX
