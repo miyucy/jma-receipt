@@ -4941,7 +4941,8 @@
            MOVE    SPACE               TO  WRK-HAISIYMDH
            MOVE    ZERO                TO  SPA-C02-IKOFLG
       *      
-           IF      SPA-GMN-C02-BYOMEI  NOT =   SPACE      
+           IF    ( SPA-GMN-C02-BYOMEI  NOT =   SPACE )
+           OR    ( SPA-GMN-C02-BANGO-X NOT =   SPACE )        
                INITIALIZE               SPA-GMN-C02-KOUMOKU
                                         SPA-NAI-C02-KOUMOKU
                                         SPA-NAI-C02-SELNO
@@ -7278,7 +7279,7 @@
                        WRK-ERR-BYOMEI          DELIMITED   BY  SPACE
                        "は開始日が"            DELIMITED   BY  SIZE 
                        WRK-ERR-SRYYMD          DELIMITED   BY  SPACE
-                       "ですので該当の保険適用の範囲外です"
+                       "ですので該当の保険適用は範囲外です"
                                                DELIMITED   BY  SIZE 
                                                INTO    SPA-ERRMSG
                    END-STRING

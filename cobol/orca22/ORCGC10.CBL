@@ -86,6 +86,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-PTBYOMEI        PIC 9(01).
            03  FLG-SPASCR          PIC 9(01).
+           03  FLG-TOUROKU         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -136,6 +137,8 @@
                05  WRK-HENSYU-DATA-G.
                    07  WRK-HENSYU-DATA-O
                                    PIC X(10)   OCCURS  7.
+      *    入力項目名
+           03  WRK-MCP-WIDGET      PIC X(64).
       *
        01  WRK-HEN-AREA.
            03  WRK-NENGO           PIC X(04).
@@ -451,39 +454,101 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    会話　処理
+      *    会話処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"      ALSO    "UTAGAIFLG"
-                   PERFORM 4101-UTAGAI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SYUBYOFLG"
-                   PERFORM 4102-SYUBYOFLG-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "MANSEIFLG"
-                   PERFORM 4103-MANSEI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
-                   PERFORM 4104-NYUGAIKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HKNCOMBI"
-                   PERFORM 4105-HKNCOMBI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "TENKIKBN"
-                   PERFORM 4106-TENKIKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "TENKIYMD"
-                   PERFORM 4107-TENKIYMD-CHK-SEC
-           END-EVALUATE
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-C10-CUR
+      *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           .
+       200-ENTRY-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           IF      FLG-TOUROKU         =   1
+      *        更新前
+               PERFORM 4101-KAKUTEI-CHK-SEC
+           END-IF
       *
            .
-       200-ENTRY-EXT.
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           MOVE    C10-TENKIKBN         TO  SPA-GMN-C10-TENKIKBN-G
+           MOVE    C10-TENKIYMD         TO  SPA-GMN-C10-TENKIYMD
+           MOVE    C10-UTAGAIFLG        TO  SPA-GMN-C10-UTAGAIFLG-G
+           MOVE    C10-SYUBYOFLG        TO  SPA-GMN-C10-SYUBYOFLG-G
+           MOVE    C10-MANSEIFLG        TO  SPA-GMN-C10-MANSEIKBN-G
+           MOVE    C10-NYUGAIKBN        TO  SPA-GMN-C10-NYUGAIKBN-G
+           MOVE    C10-HKNCOMBI         TO  SPA-GMN-C10-HKNCOMBI-G
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           PERFORM 4106-TENKIKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 4107-TENKIYMD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 4101-UTAGAI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 4102-SYUBYOFLG-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 4103-MANSEI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 4104-NYUGAIKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 4105-HKNCOMBI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           .
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    疑い　入力処理
       *****************************************************************
        4101-UTAGAI-CHK-SEC                SECTION.
-      *        
-           MOVE    3                      TO  SPA-GMN-C10-CUR
-      *
-           MOVE    C10-UTAGAIFLG          TO  SPA-GMN-C10-UTAGAIFLG-G
       *
            MOVE    SPA-GMN-C10-UTAGAIFLG   TO  WRK-KBN
            PERFORM 5001-UTAGAIFLG-HENSYU-SEC
@@ -493,11 +558,8 @@
            ELSE
                IF      SPA-GMN-C10-UTAGAIFLGMEI   =   SPACE    
                   MOVE    "0018"               TO  SPA-ERRCD
-                  GO  TO  4101-UTAGAI-CHK-EXT
                END-IF
            END-IF    
-      *        
-           MOVE    4                     TO  SPA-GMN-C10-CUR
            .
        4101-UTAGAI-CHK-EXT.
            EXIT.
@@ -506,10 +568,6 @@
       *    主病入力処理
       *****************************************************************
        4102-SYUBYOFLG-CHK-SEC                SECTION.
-      *   
-           MOVE    4                    TO  SPA-GMN-C10-CUR
-      *
-           MOVE    C10-SYUBYOFLG        TO  SPA-GMN-C10-SYUBYOFLG-G
       *
            MOVE    SPA-GMN-C10-SYUBYOFLG
                                         TO  WRK-KBN
@@ -520,11 +578,8 @@
            ELSE
                IF      SPA-GMN-C10-SYUBYOFLGMEI     =   SPACE
                    MOVE    "0019"               TO  SPA-ERRCD
-                   GO  TO  4102-SYUBYOFLG-CHK-EXT
                END-IF
            END-IF        
-      *     
-           MOVE    5                    TO  SPA-GMN-C10-CUR
            .
        4102-SYUBYOFLG-CHK-EXT.
            EXIT.
@@ -533,10 +588,6 @@
       *    慢性　入力処理
       *****************************************************************
        4103-MANSEI-CHK-SEC                SECTION.
-      *   
-           MOVE    5                   TO  SPA-GMN-C10-CUR
-      *
-           MOVE    C10-MANSEIFLG        TO  SPA-GMN-C10-MANSEIKBN-G
       *
            MOVE    SPA-GMN-C10-MANSEIKBN
                                        TO  WRK-KBN
@@ -548,11 +599,8 @@
            ELSE
                IF      SPA-GMN-C10-MANSEIKBNMEI   =   SPACE    
                   MOVE    "0021"               TO  SPA-ERRCD
-                  GO  TO  4103-MANSEI-CHK-EXT
                END-IF
            END-IF    
-      *
-           MOVE    6                    TO  SPA-GMN-C10-CUR
            .
        4103-MANSEI-CHK-EXT.
            EXIT.
@@ -561,10 +609,6 @@
       *    入外区分  入力処理
       *****************************************************************
        4104-NYUGAIKBN-CHK-SEC                SECTION.
-      *   
-           MOVE    6                     TO  SPA-GMN-C10-CUR
-      *
-           MOVE    C10-NYUGAIKBN        TO  SPA-GMN-C10-NYUGAIKBN-G
       *
            MOVE    SPA-GMN-C10-NYUGAIKBN
                                        TO  WRK-KBN
@@ -576,11 +620,8 @@
            ELSE
                IF      SPA-GMN-C10-NYUGAIKBNMEI   =   SPACE    
                    MOVE    "0022"               TO  SPA-ERRCD
-                   GO  TO  4104-NYUGAIKBN-CHK-EXT
                END-IF
            END-IF
-      *             
-           MOVE    7                   TO  SPA-GMN-C10-CUR
            .
        4104-NYUGAIKBN-CHK-EXT.
            EXIT.
@@ -589,10 +630,6 @@
       *    保険組合せ入力処理
       *****************************************************************
        4105-HKNCOMBI-CHK-SEC                SECTION.
-      *
-           MOVE    7                  TO  SPA-GMN-C10-CUR
-      *
-           MOVE    C10-HKNCOMBI        TO  SPA-GMN-C10-HKNCOMBI-G
       *
            IF      SPA-GMN-C10-HKNCOMBI
                                        =   SPACE
@@ -603,11 +640,8 @@
                PERFORM 5001-HKNCOMBI-HENSYU-SEC
                IF      WRK-KBNMEI      =   SPACE
                    MOVE    "0009"               TO  SPA-ERRCD
-                   GO  TO  4105-HKNCOMBI-CHK-EXT
                END-IF
            END-IF
-      *
-           MOVE    1                    TO  SPA-GMN-C10-CUR
       *
            .
        4105-HKNCOMBI-CHK-EXT.
@@ -617,10 +651,6 @@
       *    転帰区分  入力処理
       *****************************************************************
        4106-TENKIKBN-CHK-SEC            SECTION.
-      *
-           MOVE    1                   TO  SPA-GMN-C10-CUR
-      *
-           MOVE    C10-TENKIKBN        TO  SPA-GMN-C10-TENKIKBN-G
       *
            MOVE    SPA-GMN-C10-TENKIKBN
                                        TO  WRK-KBN
@@ -644,12 +674,6 @@
                MOVE    SPA-NAI-C02-SYSYMD   TO  SPA-NAI-C10-TENKIYMD
                MOVE    SPA-GMN-C02-SYSYMD   TO  SPA-GMN-C10-TENKIYMD
            END-IF    
-      *
-           IF      SPA-GMN-C10-TENKIKBN =   SPACE   OR  "-"
-               MOVE    3                    TO  SPA-GMN-C10-CUR
-           ELSE                 
-               MOVE    2                    TO  SPA-GMN-C10-CUR
-           END-IF    
            .
        4106-TENKIKBN-CHK-EXT.
            EXIT.
@@ -658,10 +682,6 @@
       *    転帰年月日  入力処理
       *****************************************************************
        4107-TENKIYMD-CHK-SEC            SECTION.
-      *
-           MOVE    2                  TO  SPA-GMN-C10-CUR
-      *
-           MOVE    C10-TENKIYMD       TO  SPA-GMN-C10-TENKIYMD
       *     
            MOVE    SPACE              TO  SPA-NAI-C10-TENKIYMD
            IF      SPA-GMN-C10-TENKIYMD
@@ -716,37 +736,25 @@
                    MOVE    "0016"          TO  SPA-ERRCD
                END-IF
            END-IF    
-      *         
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    3                   TO  SPA-GMN-C10-CUR 
-           END-IF     
            .
        4107-TENKIYMD-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    戻る　処理
+      *    確定ボタン押下時チェック処理
       *****************************************************************
-       210-BACK                    SECTION.
+       4101-KAKUTEI-CHK-SEC        SECTION.
       *
-           MOVE    "C02"               TO  SPA-SAKIPG
-           MOVE    "C10"               TO  SPA-MOTOPG
-      *
-           MOVE   "JOIN"               TO  MCP-PUTTYPE
-           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
-      *
-           .
-       210-BACK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    確定　処理
-      *****************************************************************
-       450-KAKUTEI-SEC             SECTION.
+           IF    ( SPA-GMN-C10-TENKIKBN    =   SPACE )
+           AND   ( SPA-NAI-C10-TENKIYMD    =   SPACE )
+           AND   ( SPA-GMN-C10-UTAGAIFLG   =   SPACE )
+           AND   ( SPA-GMN-C10-SYUBYOFLG   =   SPACE )
+           AND   ( SPA-GMN-C10-MANSEIKBN   =   SPACE )
+           AND   ( SPA-GMN-C10-NYUGAIKBN   =   SPACE )
+           AND   ( SPA-GMN-C10-HKNCOMBI    =   SPACE )
+               MOVE    "0001"                  TO  SPA-ERRCD
+               GO  TO  4101-KAKUTEI-CHK-EXT
+           END-IF
       *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       5
@@ -772,35 +780,25 @@
                        UNTIL   IDXX    >       5
                    IF      WRK-STNUM-O (IDXX)  >   ZERO
                        PERFORM VARYING IDX     FROM
-                                               WRK-STNUM-O (IDXX)  BY  1
+                                           WRK-STNUM-O (IDXX)  BY  1
                                UNTIL   IDX     >   WRK-EDNUM-O (IDXX)
-                           PERFORM 4501-KANTAN-SYUSEI-DABURI-CHK-SEC
+                           PERFORM 41011-KANTAN-SYUSEI-DABURI-CHK-SEC
                            IF      SPA-ERRCD   NOT =   SPACE
-                               GO  TO  450-KAKUTEI-EXT
+                               GO  TO  4101-KAKUTEI-CHK-EXT
                            END-IF
                        END-PERFORM
                    END-IF
                END-PERFORM
            END-IF
-      *     
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       7
-               MOVE    WRK-HENSYU-DATA-O (IDX)
-                                       TO  SPA-C01-HENSYU-DATA-O (IDX)
-           END-PERFORM
-           MOVE    "OK"            TO  SPA-CIDCD
       *
-           MOVE    SPA-C01KYOUTU   TO  SPA-WORK
-      *
-           PERFORM 210-BACK
            .
-       450-KAKUTEI-EXT.
+       4101-KAKUTEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    簡単修正転帰・保険適用チェック処理
       *****************************************************************
-       4501-KANTAN-SYUSEI-DABURI-CHK-SEC         SECTION.
+       41011-KANTAN-SYUSEI-DABURI-CHK-SEC         SECTION.
       *
       *    転帰と開始日のチェック
            IF      WRK-HENSYU-DATA-O (1)
@@ -808,7 +806,7 @@
                IF      SPA-NAI-C02-TSRYYMD (IDX)
                                        >    WRK-HENSYU-DATA-O (2)
                    MOVE    "0084"      TO  SPA-ERRCD
-                   GO  TO  4501-KANTAN-SYUSEI-DABURI-CHK-EXT
+                   GO  TO  41011-KANTAN-SYUSEI-DABURI-CHK-EXT
                END-IF
            END-IF
       *    保険適用と開始日のチェック
@@ -827,7 +825,7 @@
                    MOVE    LNK-DAY2-EDTYMD3    TO  WRK-ERR-SRYYMD
                    MOVE    SPA-GMN-C02-TBYOMEI (IDX)
                                                TO  WRK-ERR-BYOMEI
-                   GO  TO  4501-KANTAN-SYUSEI-DABURI-CHK-EXT
+                   GO  TO  41011-KANTAN-SYUSEI-DABURI-CHK-EXT
                END-IF
            END-IF
       *
@@ -857,7 +855,7 @@
                            ELSE
                                IF     WRK-HENSYU-DATA-O (2)
                                                    >   PTBYO-SRYYMD
-                                   MOVE    "0038"          TO  SPA-ERRCD
+                                   MOVE    "0038"      TO  SPA-ERRCD
                                END-IF
                            END-IF
                        END-IF
@@ -882,7 +880,53 @@
                                            TO  WRK-ERR-BYOMEI
            END-IF
            .
-       4501-KANTAN-SYUSEI-DABURI-CHK-EXT.
+       41011-KANTAN-SYUSEI-DABURI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    戻る　処理
+      *****************************************************************
+       210-BACK                    SECTION.
+      *
+           MOVE    "C02"               TO  SPA-SAKIPG
+           MOVE    "C10"               TO  SPA-MOTOPG
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       210-BACK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確定処理
+      *****************************************************************
+       450-KAKUTEI-SEC             SECTION.
+      *
+      *    入力チェック
+           MOVE    1               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  450-KAKUTEI-EXT
+           END-IF
+      *
+      *    修正項目をパラメタに設定     
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       7
+               MOVE    WRK-HENSYU-DATA-O (IDX)
+                                       TO  SPA-C01-HENSYU-DATA-O (IDX)
+           END-PERFORM
+           MOVE    "OK"            TO  SPA-CIDCD
+      *
+           MOVE    SPA-C01KYOUTU   TO  SPA-WORK
+      *
+           PERFORM 210-BACK
+           .
+       450-KAKUTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1178,6 +1222,11 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           IF    ( SPA-ERRCD           =   SPACE)
+             AND ( SPA-GMN-C10-CUR     =   ZERO )
+               PERFORM 5011-INPUT-CUR-SEC
+           END-IF
+      *
          EVALUATE    SPA-GMN-C10-CUR
              WHEN    1
                      MOVE  "TENKIKBN"   TO  MCP-WIDGET
@@ -1200,6 +1249,38 @@
            EXIT.
       *
       *****************************************************************
+      *    入力個所のセット処理
+      *****************************************************************
+       5011-INPUT-CUR-SEC              SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "TENKIKBN"
+                   IF      SPA-GMN-C10-TENKIKBN    =   SPACE   OR  "-"
+                       MOVE    3           TO  SPA-GMN-C10-CUR
+                   ELSE
+                       MOVE    2           TO  SPA-GMN-C10-CUR
+                   END-IF 
+               WHEN    "TENKIYMD"
+                   MOVE    3                   TO  SPA-GMN-C10-CUR
+               WHEN    "UTAGAIFLG"
+                   MOVE    4                   TO  SPA-GMN-C10-CUR
+               WHEN    "SYUBYOFLG"
+                   MOVE    5                   TO  SPA-GMN-C10-CUR
+               WHEN    "MANSEIFLG"
+                   MOVE    6                   TO  SPA-GMN-C10-CUR
+               WHEN    "NYUGAIKBN"
+                   MOVE    7                   TO  SPA-GMN-C10-CUR
+               WHEN    "HKNCOMBI"
+                   MOVE    1                   TO  SPA-GMN-C10-CUR
+               WHEN    "B12"
+                   MOVE    99                  TO  SPA-GMN-C10-CUR
+           END-EVALUATE
+           .
+      *
+       5011-INPUT-CUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
@@ -1207,7 +1288,7 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "入力エラーです"            TO  SPA-ERRMSG
+                   MOVE    "項目に入力がありません"   TO  SPA-ERRMSG
                WHEN    "0002"
                    STRING
                        WRK-ERR-BYOMEI          DELIMITED   BY  SPACE
@@ -1275,7 +1356,7 @@
                        WRK-ERR-BYOMEI          DELIMITED   BY  SPACE
                        "は開始日が"            DELIMITED   BY  SIZE 
                        WRK-ERR-SRYYMD          DELIMITED   BY  SPACE
-                       "ですので該当の保険適用の範囲外です"
+                       "ですので該当の保険適用は範囲外です"
                                                DELIMITED   BY  SIZE 
                                                INTO    SPA-ERRMSG
                    END-STRING

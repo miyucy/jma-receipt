@@ -1747,8 +1747,6 @@
                MOVE    LNK-BYO-MANSEIKBN   TO  SPA-GMN-MANSEIKBN
                PERFORM 5001-MANSEIKBN-HENSYU-SEC
            END-IF
-           MOVE    LNK-BYO-BYOMEISBT   TO  SPA-GMN-BYOMEISBT
-           PERFORM 5001-BYOMEISBT-HENSYU-SEC
            MOVE    LNK-BYO-BYOMEIMOJI  TO  SPA-NAI-BYOMEIMOJI
            IF      LNK-BYO-BYOMEICD-ERR    =   1
                CONTINUE
@@ -1760,6 +1758,12 @@
                                        =   "1"
                MOVE    "病名編集"          TO  SPA-GMN-BYOMEIHENFLG
            END-IF   
+           IF    ( SPA-GMN-BYOMEISBT    =   SPACE )
+           OR    ( SPA-NAI-BYOMEIHENFLG =   SPACE )
+               MOVE    LNK-BYO-BYOMEISBT   TO  SPA-GMN-BYOMEISBT
+           END-IF
+           PERFORM 5001-BYOMEISBT-HENSYU-SEC
+      *
            MOVE    ZERO                TO  IDZ
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       LNK-BYO-BYOMEI-MAX
@@ -1777,18 +1781,21 @@
       *    病名コード最大個数オーバー
            IF      LNK-BYO-BYOMEICD-MAX-ERR =   1
                MOVE    "0077"           TO  SPA-ERRCD
+               MOVE    12               TO  SPA-GMN-CUR
                GO  TO  41013-BYOMEI-CHK-EXT
            END-IF
       *
       *    病名順エラー
            IF      LNK-BYO-BYOMEICD-ERR     =   2
                MOVE    "0103"           TO  SPA-ERRCD
+               MOVE    12               TO  SPA-GMN-CUR
                GO  TO  41013-BYOMEI-CHK-EXT
            END-IF
       *
       *    病名順エラー
            IF      LNK-BYO-BYOMEICD-ERR     =   9
                MOVE    "0101"           TO  SPA-ERRCD
+               MOVE    12               TO  SPA-GMN-CUR
                GO  TO  41013-BYOMEI-CHK-EXT
            END-IF
       *
