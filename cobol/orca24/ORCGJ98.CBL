@@ -1066,7 +1066,8 @@
            END-IF
       *
            ADD     1                   TO  WRK-CNT-ENT
-           MOVE    IDX2                TO  SPA-J98-GMN-NO   (IDX)
+      *****MOVE    IDX2                TO  SPA-J98-GMN-NO   (IDX)
+           MOVE    IDX                 TO  SPA-J98-GMN-NO   (IDX)
            MOVE    TNS-SRYCD           TO  SPA-J98-GMN-INPUTCD
                                                             (IDX)
            MOVE    TNS-SRYCD           TO  SPA-J98-GMN-SRYCD(IDX)
