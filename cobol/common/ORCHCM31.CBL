@@ -30,6 +30,7 @@
       *  01.01.01    NACL-森脇    03.03.18  出力先プリンタの変更
       *  01.01.02    NACL-森脇    03/07/15  出力先プリンタサブ追加
       *  02.01.01    NACL-森脇    03/12/10  出力条件修正
+      *  02.01.02    NACL-森脇    04/10/25  CLOSE追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -302,14 +303,15 @@
                PERFORM 230-PRT-WRITE-SEC
            END-PERFORM
       *
+      *----(02.01.02)--UPD-START---
       *    収納明細マスタ閉じる
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
-           MOVE    "SYUMEI-KEY2"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
+      *     MOVE    "DBCLOSE"       TO  MCP-FUNC
+      *     MOVE    "SYUMEI-KEY2"   TO  ORC-DBPATH
+      *     CALL    "ORCMCPSUB"         USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *----(02.01.02)--UPD-END-----
       *    収納マスタ閉じる
            MOVE    "DBCLOSE"       TO  MCP-FUNC
            MOVE    "SYUNOU-KEY9"   TO  ORC-DBPATH
@@ -379,6 +381,16 @@
       *        収納明細マスターFETCH
                PERFORM 900-SYUMEI-READ-SEC
            END-PERFORM
+      *
+      *----(02.01.02)--ADD-START---
+      *    収納明細マスタ閉じる
+           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "SYUMEI-KEY2"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *----(02.01.02)--ADD-END-----
       *
            .
        210-PRT-LINE-EXT.
