@@ -281,6 +281,10 @@
       *  01.01.102   NACL-太田    03/09/08  PTCOM-KEY2追加
       *  01.01.103   NACL-門脇    03/09/24  SRYACCT-KEY24追加
       *                                     SRYACCT-KEY25追加
+      *  01.01.104   NACL-太田    03/09/30  SYUNOU-KEY20追加
+      *  01.01.105   NACL-藤原    03/10/03  PTBYOMEI-KEY13追加
+      *  01.01.106   NACL-藤原    03/10/07  PTBYOMEI-KEYKEY14,KEY15追加
+      *  01.01.109   NACL-藤原    03/10/16  SYUNOU-KEY21追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1394,6 +1398,15 @@
                WHEN    ANY             ALSO   "PTBYOMEI-KEY12"
                    MOVE    PATH-TBL-PTBYOMEI-KEY12 
                                        TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY13"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY13 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY14"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY14
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY15"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY15
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "PTBYOMEI-ALL"
                    MOVE    PATH-TBL-PTBYOMEI-ALL
                                        TO  WRK-PATH
@@ -1743,6 +1756,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY19"
                    MOVE    PATH-TBL-SYUNOU-KEY19
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY20"
+                   MOVE    PATH-TBL-SYUNOU-KEY20
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY21"
+                   MOVE    PATH-TBL-SYUNOU-KEY21
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"
@@ -2917,6 +2936,7 @@
                WHEN    ANY             ALSO   "KOHPLUS-ALL"
                    MOVE    PATH-TBL-KOHPLUS-ALL
                                        TO  WRK-PATH
+      *追加/*終了*01.01.107*******************************************
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC
            END-EVALUATE
