@@ -30,6 +30,7 @@
       * 01.00.01     MCC-藤原     01/09/11  削除処理の修正 
       * 01.01.01     MCC-藤原     01/09/21  JOINの修正      
       * 01.01.02     NACL-多々納  02/11/12  一括入力 
+      * 01.01.03     NACL-太田    03/09/11  登録時チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -686,9 +687,17 @@
       *****************************************************************
        4900-KANRENCHK-SEC           SECTION.
       *
-           MOVE    SPACE                TO  SPA-ERRCD
+           MOVE    SPACE               TO  SPA-ERRCD
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
+           IF    ( SPA-GMN-SRYCD       =   "00"  OR  "99" )
+               MOVE    "0100"          TO  SPA-ERRCD
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
       *
            .
        4900-KANRENCHK-EXT.
@@ -773,6 +782,10 @@
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
                                                TO  SPA-ERRMSG
+               WHEN    "0100"
+                   MOVE   "科コード“００”および“９９”の登録はで"
+                                               TO  SPA-ERRMSG (1:40)
+                   MOVE   "きません"           TO  SPA-ERRMSG (41:)
                WHEN    "1001"
                    MOVE    "更新ができませんでした"
                                                TO  SPA-ERRMSG
