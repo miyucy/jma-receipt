@@ -42,7 +42,8 @@
       * 01.00.13     NACL-Â¿¡¹Ç¼  03/05/09  ºÞÌÀºÙ¤ò£³£°¤Þ¤Ç¤È¤¹¤ë
       * 01.00.14     NACL-Â¿¡¹Ç¼  03/09/12  ¸¡ººÊñ³ç¤Ê¤·ÄÉ²Ã¡Ê610¡Ë
       * 01.00.15     NACL-Â¿¡¹Ç¼  03/10/28  ¸¡ººÊñ³ç½¤Àµ
-      *??? 01.00.16     NACL-Â¿¡¹Ç¼  04/01/23  ¥»¥Ã¥ÈÆâ¤Î¸¡ººÊñ³çÂÐ¾Ý³°
+      * 01.00.16     NACL-Â¿¡¹Ç¼  04/01/23  ¥»¥Ã¥ÈÆâ¤Î¸¡ººÊñ³çÂÐ¾Ý³°
+      * 01.00.17     NACL-Â¿¡¹Ç¼  04/03/17  £È£±£¶¡¥£´²þÀµÂÐ±þ
       *****************************************************************
       *
       *
@@ -72,6 +73,8 @@
            03  FLG-SYUGI           PIC 9(01).
       *    £±ºÞ¥Õ¥é¥°
            03  FLG-ZAI             PIC 9(01).
+      *    È¯À¸Æü¥Õ¥é¥°
+           03  FLG-HASSYO          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -725,6 +728,8 @@
       *                        £±ºÞ£±ÌÀºÙ¤È¤¹¤ë
                                MOVE    "1"       TO  SPA-COM-ZAIEND
                                                              (IDX)
+                               MOVE    1         TO  FLG-ZAI
+                               MOVE    1         TO  FLG-HASSYO
                              WHEN    OTHER
                                MOVE    "99"          TO  SPA-COM-SRYKBN
                                                                   (IDX)
@@ -791,6 +796,7 @@
                    IF     (IDX                     >   1     ) AND
                           (SPA-COM-KAIFLG(IDX - 1) =   SPACE ) AND
                           (WRK-SRYKBN              =   "21"  )
+                     AND  (FLG-HASSYO              =   ZERO  )
                        EVALUATE    SPA-COM-SRYKBN(IDX - 1)
                            WHEN    "21"
                            WHEN    "22"
@@ -818,6 +824,7 @@
                    IF     (IDX                     >   1     ) AND
                           (SPA-COM-KAIFLG(IDX - 1) =   SPACE ) AND
                           (WRK-SRYKBN              =   "23"  )
+                     AND  (FLG-HASSYO              =   ZERO  )
                        EVALUATE    SPA-COM-SRYKBN(IDX - 1)
       ****»ØÆ³ÎÁºï½ü       WHEN    "13"
                            WHEN    "14"
@@ -842,6 +849,7 @@
                    IF      WRK-SRYKBN          =   "30"
                        IF     (IDX                     >   1   )  AND
                               (SPA-COM-KAIFLG(IDX - 1) =   SPACE )
+                         AND  (FLG-HASSYO              =   ZERO  )
                            EVALUATE    SPA-COM-SRYKBN(IDX - 1)
       ****»ØÆ³ÎÁºï½ü           WHEN    "13"
                                WHEN    "14"
@@ -880,6 +888,7 @@
                                                "80"  OR  "14"
                                            OR  "21" OR  "22" OR
                                                "23"          )
+                     AND  (FLG-HASSYO              =   ZERO  )
                        MOVE    SPA-COM-SRYKBN(IDX - 1)
                                                TO  SPA-COM-SRYKBN(IDX)
                        MOVE    SPACE           TO  SPA-COM-ZAIEND
@@ -892,6 +901,18 @@
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    "1"             TO  SPA-COM-CUR  (IDX)
                GO      TO      5101-SYRKBN-SET-EXT
+           END-IF
+      *
+           IF      FLG-HASSYO          =   1
+               IF      SPA-COM-SRYKBN(IDX) =   "80"
+                   IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "8"
+                       MOVE    2               TO  FLG-SYORI
+                       MOVE    ZERO            TO  FLG-HASSYO
+                   END-IF
+               ELSE
+                   MOVE    2               TO  FLG-SYORI
+                   MOVE    ZERO            TO  FLG-HASSYO
+               END-IF
            END-IF
       *
       *    ºÞ½ªÎ»È½Äê
