@@ -2807,6 +2807,11 @@
       *
            MOVE    ZERO               TO  FLG-SET
       *
+      *    ワーク診療行為からの時、剤毎に剤点数を編集し直す
+           IF      LNK-WKSRY-TERMID (1)    =   "WKSRYACT"
+               PERFORM 31031-WKSRY-ZAITENHEN-SEC
+           END-IF
+      *
       *    診療室入力あり編集
            PERFORM     VARYING   IDX   FROM    1   BY  1
                        UNTIL    (IDX   >   LNK-WKSRYACT-MAX )  OR
@@ -3069,6 +3074,27 @@
            EXIT.
       *
       *****************************************************************
+      *    剤毎に剤点数を編集処理
+      *****************************************************************
+       31031-WKSRY-ZAITENHEN-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  WRK-TENSUKEI
+           PERFORM VARYING   IDX       FROM    LNK-WKSRYACT-MAX  BY  -1
+                   UNTIL     IDX       <       1
+               IF    ( IDX             =   LNK-WKSRYACT-MAX  )  OR
+                     ((IDX             <   200  )    AND
+                      (LNK-WKSRY-ZAINUM (IDX + 1)
+                                       NOT =   LNK-WKSRY-ZAINUM(IDX)))
+                   MOVE    LNK-WKSRY-ZAITENKEI(IDX)
+                                               TO  WRK-TENSUKEI
+               END-IF
+               MOVE    WRK-TENSUKEI        TO  LNK-WKSRY-ZAITENKEI(IDX)
+           END-PERFORM
+           .
+       31031-WKSRY-ZAITENHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *   再表示あり　編集処理
       *****************************************************************
        31011-SPA-HEN-SEC              SECTION.
@@ -3324,7 +3350,7 @@
       *****************************************************************
        31012-AUTOCHK-SEC                  SECTION.
       *
-           MOVE    ZERO                 TO  FLG-AUTO-OK
+           MOVE    ZERO                TO  FLG-AUTO-OK
       *
       *    算定履歴チェック処理
            INITIALIZE                  ORCSC91AREA
@@ -4420,7 +4446,9 @@
       *
       *    保険区分が変更された時、再編集を行う
            IF     (SPA-SYORIFLG        =   1   )  AND
-                  (SPA-HKNKBN          =   SPA-MAE-HKNKBN)
+                 ((SPA-HKNKBN          =   SPA-MAE-HKNKBN)
+      *            労災の時、初回算定日を再編集する
+              OR  (SPA-HKNKBN      NOT =   ZERO))
                CONTINUE
            ELSE
                PERFORM 410121-HKNCOMBI-SAI-SEC
@@ -4475,7 +4503,8 @@
            END-IF
       *
       *    保険区分が変更された時、再編集を行う
-           IF      SPA-HKNKBN          =   SPA-MAE-HKNKBN
+           IF     (SPA-HKNKBN          =   SPA-MAE-HKNKBN  )  OR
+                  (SPA-HKNKBN      NOT =   ZERO            )
                CONTINUE
            ELSE
       *        初診算定時のから変更がある時、診察料の変更のみ
