@@ -2446,6 +2446,8 @@
            MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
       *    伝票番号発行日
            MOVE    SPA-SYSYMD          TO  SYU-DENPPRTYMD
+      *    ドクター
+           MOVE    SPA-DRCD(2:4)       TO  SYU-DRCD
       *
       *    調整金
            MOVE    SPA-GMN-CHOSEI      TO  SYU-CHOSEI
@@ -4263,9 +4265,6 @@
            CALL    "ORCSCZAICHK"       USING   SPA-AREA
                                                ORCSCZAICHKAREA
            MOVE    ORCSCZAICHK-ZAINUM  TO  WRK-ZAINUM
-      *TEST
-           DISPLAY "K03 ORCSCZAICHK-ZAINUM:" ORCSCZAICHK-ZAINUM
-      *TEST
            IF      WRK-ZAINUM          =   ZERO
       *        剤番号取得処理
                PERFORM 45013-ZAINUM-SET-SEC
