@@ -314,4 +314,6 @@
       *公費実日数テーブル
                05  RECE62-KOHJNISSUTBL    PIC  X(01)
                                           OCCURS 31.
+      *公費分離区分最小値
+           03  RECE62-KOHBUNRI-MIN        PIC  9(01).
       *

@@ -272,4 +272,6 @@
                                           OCCURS 31.
       *∏©»÷πÊ
            03  RECE02-PREFNUM             PIC  9(02).
+      *∏¯»Ò ¨Œ•∂Ë ¨∫«æÆ√Õ
+           03  RECE02-KOHBUNRI-MIN        PIC  9(01).
       *
