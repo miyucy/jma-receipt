@@ -411,6 +411,9 @@
       *    ¸øÈñÉÕ²Ã¾ðÊó¼èÆÀ¥µ¥Ö
            COPY    "CPORCSKOHPLUS.INC".
       *
+      *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
+           COPY    "CPORCSAGECHK.INC".
+      *
       /
       ***
        LINKAGE             SECTION.
@@ -1779,6 +1782,19 @@
            IF    (NACCT-ZAITEN            NOT = ZERO  )           AND
                  (NACCT-SRYYM(1:6)    =   SYU-SRYYMD(1:6))
       *
+      *        Æþ±¡´µ¼Ô¤ÎÏ·¿ÍÈ½Äê
+               INITIALIZE   ORCSAGECHKAREA
+               MOVE    SYU-HOSPID          TO  AGECHK-HOSPID
+               MOVE    SYU-PTID            TO  AGECHK-PTID
+               MOVE    SYU-SRYYMD          TO  AGECHK-SRYYMD
+               CALL    "ORCSAGECHK"        USING
+                                           ORCSAGECHKAREA
+               IF      ( AGECHK-RC    =    ZERO )
+                   CONTINUE
+               ELSE
+                   INITIALIZE    ORCSAGECHKAREA
+               END-IF
+      *
       *        Æþ±¡ÎÁ¤Î½¸·×
                IF  (NACCT-ZAISKBKBN      =   "1")   AND
                    (NACCT-ZAITEN         NOT =  ZERO)
@@ -1791,7 +1807,7 @@
                    INITIALIZE                  ORCSBTUSENTEIAREA
                    MOVE    SYU-HOSPID          TO  SBTUSENTEI-HOSPID
                    MOVE    SYU-PTID            TO  SBTUSENTEI-PTID
-                   MOVE    SYU-SRYYMD (1:6)  TO  SBTUSENTEI-SRYYM
+                   MOVE    SYU-SRYYMD (1:6)    TO  SBTUSENTEI-SRYYM
                    CALL    "ORCSBTUSENTEI"     USING
                                                ORCSBTUSENTEIAREA
       *            Æþ±¡ÎÁ¤È³°Çñ¤òÈæ³Ó¤·¤ÆÅÀ¿ô»»Äê
@@ -2464,7 +2480,7 @@
            INITIALIZE                         SYS-1001-REC
            MOVE    "1001"               TO    SYS-1001-KANRICD
            MOVE    "*"                  TO    SYS-1001-KBNCD
-           MOVE    SYU-SRYYMD         TO    ORC-DBYMD
+           MOVE    SYU-SRYYMD           TO    ORC-DBYMD
            MOVE    SYS-1001-REC         TO    MCPDATA-REC
            MOVE    "DBSELECT"           TO    MCP-FUNC
            MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -2485,7 +2501,7 @@
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
-           MOVE    SYU-SRYYMD        TO  ORC-DBYMD
+           MOVE    SYU-SRYYMD          TO  ORC-DBYMD
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -2621,9 +2637,31 @@
                        END-EVALUATE
       *            °åÎÅµ¡´ØÄê³ÛÀßÄê
                    WHEN   "2"
-                       IF     SYS-5000-SENTEI-KINGAKU-X   =   SPACE
-                           MOVE   ZERO    TO  SYS-5000-SENTEI-KINGAKU
+      *                 IF     SYS-5000-SENTEI-KINGAKU-X   =   SPACE
+      *                     MOVE   ZERO    TO  SYS-5000-SENTEI-KINGAKU
+      *                 END-IF
+      *-------------------------------------------------------
+                       IF  (SYS-5000-SENTEI-KINGAKU-X NOT = SPACE) AND
+                           (SYS-5000-SENTEI-KINGAKU-X NOT = "0000")
+                           CONTINUE
+                       ELSE
+                         IF   AGECHK-ROUJIN2    =   0
+                           IF  SYS-5000-SENTEI-IPN-KINGAKU-X  =  SPACE
+                               MOVE   ZERO TO  SYS-5000-SENTEI-KINGAKU
+                           ELSE
+                               MOVE   SYS-5000-SENTEI-IPN-KINGAKU
+                                           TO  SYS-5000-SENTEI-KINGAKU
+                           END-IF
+                         ELSE
+                           IF  SYS-5000-SENTEI-RJN-KINGAKU-X  =  SPACE
+                               MOVE  ZERO  TO  SYS-5000-SENTEI-KINGAKU
+                           ELSE
+                               MOVE  SYS-5000-SENTEI-RJN-KINGAKU
+                                           TO  SYS-5000-SENTEI-KINGAKU
+                           END-IF
+                         END-IF
                        END-IF
+      *-------------------------------------------------------
                        EVALUATE   SYS-5000-SENTEI-TAXKBN
       *                   ¾ÃÈñÀÇ¤Ê¤·
                            WHEN   SPACE
