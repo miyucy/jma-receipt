@@ -183,6 +183,7 @@
            03  WRK-KAIKEI-RENNUM           PIC  9(03).
       *請求金額
            03  WRK-KON-SKYMONEY        PIC  9(07).
+           03  WRK-KON-NYUKIN          PIC  9(07).
       *請求金額
            03  WRK-SKYMONEY            PIC  9(07).
       *入金合計額
@@ -770,6 +771,7 @@
                                        +   SYU-CHOSEI
            MOVE    SYU-SKYMONEY        TO  WRK-KON-SKYMONEY
       *    入金額
+           MOVE    SYU-NYUKIN-TOTAL    TO  WRK-KON-NYUKIN
       *!   MOVE    ORCSCGAIRAI-NYUKIN  TO  SYU-NYUKIN-TOTAL
       *    入金回数
            MOVE    1                   TO  SYU-NYUKIN-KAISU
@@ -1238,13 +1240,13 @@
            MOVE    SYU-SRYKA           TO  SMEI-SRYKA
       *
       *    入金額がゼロの時、入金力なし
-           IF      SYU-NYUKIN-TOTAL    =   ZERO
+           IF      WRK-KON-NYUKIN      =   ZERO
                CONTINUE
            ELSE
       *入返金区分
                MOVE    "1"                 TO  SMEI-NYUHEN-KBN
       *入返金額
-               MOVE    SYU-NYUKIN-TOTAL    TO  SMEI-NYUHEN-MONEY
+               MOVE    WRK-KON-NYUKIN      TO  SMEI-NYUHEN-MONEY
       *入金方法
                MOVE    ORCSCGAIRAI-NYUKIN-HOHO
                                            TO  SMEI-NYUKIN-HOHO
@@ -1377,13 +1379,13 @@
            MOVE    SMEI-SKYPRINTYMD    TO  SMEI-NYUHEN-YMD 
       *
       *    入金額がゼロの時、入金力なし
-           IF      SYU-NYUKIN-TOTAL    =   ZERO
+           IF      WRK-KON-NYUKIN      =   ZERO
                CONTINUE
            ELSE
       *入返金区分
                MOVE    "1"                 TO  SMEI-NYUHEN-KBN
       *入返金額
-               MOVE    SYU-NYUKIN-TOTAL    TO  SMEI-NYUHEN-MONEY
+               MOVE    WRK-KON-NYUKIN      TO  SMEI-NYUHEN-MONEY
       *入金方法
                MOVE    ORCSCGAIRAI-NYUKIN-HOHO
                                            TO  SMEI-NYUKIN-HOHO
