@@ -105,9 +105,11 @@
       *  01.01.17    NACL-ÌçÏÆ    04/08/20  Ê¼¸Ë¸©ÃÏÊý¸øÈñÂÐ±þ
       *  01.01.18    NACL-Æ£¸¶    04/09/17  £Ï£Ã£Òµ­ºÜÂÐ±þ
       *  01.01.19    NACL-ÌçÏÆ    04/10/04  ÅÀÅ©¤Î¿ÇÎÅ¥³¡¼¥É¡ö¿ôÎÌ¤ÎÎß·×ÊÔ½¸
-      *  01.01.20    NACL-ÌçÏÆ    04/11/15  ¸øÈñ·î¾å¸Â³Û¼èÆÀ½¤Àµ
       *  Ãæ»ß½èÍýÄÉ²Ã
       *  01.02.01    NACL-Æ£¸¶    04/10/07  Ãæ»ß½èÍý¤ÎÄÉ²Ã
+      *  01.02.02    NACL-ÌçÏÆ    04/11/15  ¸øÈñ·î¾å¸Â³Û¼èÆÀ½¤Àµ
+      *  01.02.03    NACL-ÌçÏÆ    04/11/22  ¥Õ¥£¥ë¥àÅÀ¿ô·×»»
+      *                                     ¡Ê¿Ç¶è£´£°¡¢£µ£°¡¢£µ£´¡¢£¶£°¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -512,6 +514,8 @@
            03  WRK-SRYSURYO                            PIC 9(05)V9(03).
            03  WRK-SRYSURYO2                           PIC 9(05).
            03  WRK-SRYSURYO3                           PIC 9(05).
+      *
+           03  WRK-FILMTEN                             PIC 9(07)V9(02).
       *
            03  WRK-PREFNUM                             PIC X(02).
       *
@@ -1386,6 +1390,8 @@
                                MOVE   SPACE  TO   WRK-TANINAME
                                MOVE   ZERO   TO   FLG-HOUSIJI-COM
       *
+                               MOVE   ZERO   TO   WRK-FILMTEN
+      *
                                MOVE   ZERO   TO   FLG-WRITE65
                                PERFORM   RECE64-TENSOU-SEC
                                PERFORM   RECE65-HENSYU-SEC
@@ -1418,6 +1424,8 @@
                                       MOVE   ZERO   TO   WRK-TANIMOJISU
                                       MOVE   SPACE  TO   WRK-TANINAME
                                       MOVE   ZERO   TO   FLG-HOUSIJI-COM
+      *
+                                      MOVE   ZERO   TO   WRK-FILMTEN
       *
                                       MOVE   ZERO   TO   FLG-WRITE65
                                       PERFORM   RECE64-TENSOU-SEC
@@ -3575,6 +3583,10 @@
            MOVE   "SRYACT-KEY9"      TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
+           IF     WRK-FILMTEN  NOT =  ZERO
+                COMPUTE    RECE64-SYUTEN2  =  WRK-FILMTEN + 0.5
+           END-IF
+      *
            .
        RECE65-HENSYU-EXT.
            EXIT.
@@ -3871,6 +3883,15 @@
                MOVE    RECE65-SRYYM       TO    WK-TAIHI-SRYYM
                MOVE    WK-TAIHI-DAY       TO    WK-TAIHI-SRYD
                PERFORM    TENSU-TBL-SEC
+      *
+               IF      SRY-SRYKBN    =   "40" OR "50" OR "54" OR "60"
+                  IF   SRY-SRYCD(IDX2)(1:1)  =  "7"
+                  AND  TNS-DATAKBN           =  "3"
+                         COMPUTE  WRK-FILMTEN  =
+                                  WRK-FILMTEN  +
+                                 (TNS-TEN  * SRY-SRYSURYO(IDX2) / 10)
+                  END-IF
+               END-IF
       *
                IF      RECE62-RECESYUBETU  =  8888
                AND     SYS-2005-JIHITEKKSIKBN  =  "1"

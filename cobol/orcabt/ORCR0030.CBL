@@ -178,10 +178,12 @@
       *  01.04.08   NACL-門脇     04/08/11  複数保険・複数科入力対応
       *  01.04.09   NACL-門脇     04/09/17  ＯＣＲ公費２の編集修正
       *  01.04.10   NACL-藤原     04/09/17  ＯＣＲ区分の設定に追加
-      *  01.04.11   NACL-門脇     04/10/14  外来管理加算の剤番号置き換え
-      *  01.04.12   NACL-門脇     04/11/15  公費月上限額取得修正
       *  中止処理追加
-      *  01.01.01    NACL-藤原    04/09/28  中止処理の追加
+      *  01.01.01   NACL-藤原     04/09/28  中止処理の追加
+      *  01.01.02   NACL-門脇     04/10/14  外来管理加算の剤番号置き換え
+      *  01.01.03   NACL-門脇     04/11/15  公費月上限額取得修正
+      *  01.01.04   NACL-門脇     04/11/22  フィルム点数計算
+      *                                     （診区４０、５０、５４、６０）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -526,6 +528,8 @@
            03  WRK-SRYCD                               PIC 9(09).
       *
            03  WRK-JYOGEN41                            PIC 9(09).
+      *
+           03  WRK-FILMTEN                             PIC 9(07)V9(02).
       *
       *    1桁目:生保 2桁目:結核 3桁目:精神
            03  WRK-3SYU-KBN.
@@ -1260,6 +1264,8 @@
                                MOVE  ZERO  TO   FLG-HOUSIJI-COM
                                                 FLG-HOUTEN-COM
       *
+                               MOVE  ZERO  TO   WRK-FILMTEN
+      *
                                PERFORM 21012-RECE02-TOTALTEN-HENSYU-SEC     
                                PERFORM 21013-RECE04-TENSOU-SEC
                                PERFORM 21014-RECE05-HENSYU-SEC
@@ -1291,6 +1297,8 @@
                                       MOVE  SPACE TO   WRK-TANINAME
                                       MOVE  ZERO  TO   FLG-HOUSIJI-COM
                                                        FLG-HOUTEN-COM
+      *
+                                      MOVE  ZERO  TO   WRK-FILMTEN
       *
                                       PERFORM   21013-RECE04-TENSOU-SEC
                                       PERFORM   21014-RECE05-HENSYU-SEC
@@ -1593,6 +1601,10 @@
            MOVE   "SRYACT-KEY2"      TO  WK-PATH
            PERFORM   900-CSR-CLOSE-SEC
       *
+           IF     WRK-FILMTEN  NOT =  ZERO
+                COMPUTE    RECE04-SYUTEN2  =  WRK-FILMTEN + 0.5
+           END-IF
+      *
            .
        21014-RECE05-HENSYU-EXT.
            EXIT.
@@ -1716,6 +1728,15 @@
                             RECE04-RUIKEITOTAL  +
                            (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
                  END-IF
+               END-IF
+      *
+               IF      SRY-SRYKBN    =   "40" OR "50" OR "54" OR "60"
+                  IF   SRY-SRYCD(IDX2)(1:1)  =  "7"
+                  AND  TNS-DATAKBN           =  "3"
+                         COMPUTE  WRK-FILMTEN  =
+                                  WRK-FILMTEN  +
+                                 (TNS-TEN  * SRY-SRYSURYO(IDX2) / 10)
+                  END-IF
                END-IF
       *
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE05-SRYSURYO(IDX4)
