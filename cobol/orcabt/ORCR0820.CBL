@@ -116,8 +116,8 @@
            03  IDX1                    PIC 9(03). 
            03  IDX2                    PIC 9(03). 
            03  IDX3                    PIC 9(03). 
-           03  IDX4                    PIC 9(03).
-           03  IDX5                    PIC 9(03).
+           03  IDX4                    PIC 9(02).
+           03  IDX5                    PIC 9(02).
       *
        01  WRK-AREA.
            03  WRK-PARA.
@@ -134,6 +134,9 @@
            03  WRK-SRYYMD.
                05  WRK-SRYYYMM         PIC 9(06).
                05  WRK-SRYDD           PIC 9(02).
+      *
+           03  WRK-RYOSTYMD            PIC X(08).
+           03  WRK-RYOEDYMD            PIC X(08).
       *
       *    病棟区分テーブル                                             
        01  WRK-BYOTOKBN-TABLE.                                          
@@ -300,6 +303,8 @@
        2101-RECE88-HENSYU-SEC                   SECTION.
       *                                                                
            INITIALIZE                      WRK-BYOTOKBN-TABLE          
+           MOVE         SPACE       TO     WRK-RYOSTYMD
+                                           WRK-RYOEDYMD
       *
       *    診療月内の入退院情報
            INITIALIZE                      PTNYUINRRK-REC
@@ -316,7 +321,6 @@
                                                ORCMCPAREA
                                                MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
                PERFORM 900-PTNYUINRRK-KEY23-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTNYUINRRK23
@@ -339,6 +343,26 @@
       *        保険組合せのチェック（会計に対象の組合せがないときは全て）
                IF      RECE82-DAY-AREA     =   ALL "0"
                    MOVE    "1"   TO   RECE82-NYUINRYOFLG
+      *
+                   MOVE    RECE82-SRYYM   TO   WRK-RYOSTYMD(1:6)
+                   MOVE    IDX4           TO   WRK-RYOSTYMD(7:2)
+                   MOVE    RECE82-SRYYM   TO   WRK-RYOEDYMD(1:6)
+                   MOVE    IDX5           TO   WRK-RYOEDYMD(7:2)
+                   IF   RECE82-RYOSTYMD  =   SPACE
+                       MOVE    WRK-RYOSTYMD  TO   RECE82-RYOSTYMD
+                   ELSE
+                       IF  WRK-RYOSTYMD  <  RECE82-RYOSTYMD
+                          MOVE    WRK-RYOSTYMD  TO   RECE82-RYOSTYMD
+                       END-IF
+                   END-IF
+                   IF   RECE82-RYOEDYMD  =   SPACE
+                       MOVE    WRK-RYOEDYMD  TO   RECE82-RYOEDYMD
+                   ELSE
+                       IF  WRK-RYOEDYMD  >  RECE82-RYOEDYMD
+                          MOVE    WRK-RYOEDYMD  TO   RECE82-RYOEDYMD
+                       END-IF
+                   END-IF
+      *
                    PERFORM 21011-PTNYUINRRK-HENSYU-SEC
                ELSE
                    PERFORM VARYING IDX FROM    IDX4    BY  1
@@ -351,7 +375,6 @@
                    END-PERFORM
                END-IF        
       *                 
-               MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
                PERFORM 900-PTNYUINRRK-KEY23-READ-SEC
            END-PERFORM        
       *                 

@@ -765,37 +765,45 @@
            MOVE    WRK-HENMM           TO  HC23-SYOSHINBIMM
            MOVE    WRK-HENDD           TO  HC23-SYOSHINBIDD
       *    療養開始年月日
-           IF      RECE82-RYOSTYMD     <   WRK-STYMD
-               MOVE    WRK-STYMDW          TO  HC23-STR-G
-           ELSE      
-               MOVE    RECE82-RYOSTYMD     TO  WRK-SYMD
-               PERFORM 31012-SE-WA-YMDEDIT-SEC
-               MOVE    WRK-HENYMD          TO  HC23-STR-G
-           END-IF    
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       31
-               IF      RECE82-DAY (IDX)    =   RECE82-HKNCOMBI
-                   MOVE    IDX                 TO  WRK-KGK2
-                   MOVE    WRK-KGK2            TO  HC23-STRDD
-                   MOVE    31                  TO  IDX
-               END-IF
-           END-PERFORM
+           IF    RECE82-RYOSTYMD   NOT =  SPACE
+             IF      RECE82-RYOSTYMD     <   WRK-STYMD
+                 MOVE    WRK-STYMDW          TO  HC23-STR-G
+             ELSE      
+                 MOVE    RECE82-RYOSTYMD     TO  WRK-SYMD
+                 PERFORM 31012-SE-WA-YMDEDIT-SEC
+                 MOVE    WRK-HENYMD          TO  HC23-STR-G
+             END-IF    
+           ELSE
+             MOVE   WRK-STYMDW(1:4)   TO   HC23-STR-G (1:4)
+             PERFORM VARYING IDX FROM    1   BY  1
+                     UNTIL   IDX >       31
+                 IF      RECE82-DAY (IDX)    =   RECE82-HKNCOMBI
+                     MOVE    IDX                 TO  WRK-KGK2
+                     MOVE    WRK-KGK2            TO  HC23-STRDD
+                     MOVE    31                  TO  IDX
+                 END-IF
+             END-PERFORM
+           END-IF
       *    療養終了年月日
-           IF      RECE82-RYOEDYMD     >   WRK-EDYMD
-               MOVE    WRK-EDYMDW          TO  HC23-END-G
-           ELSE      
-               MOVE    RECE82-RYOEDYMD     TO  WRK-SYMD
-               PERFORM 31012-SE-WA-YMDEDIT-SEC
-               MOVE    WRK-HENYMD          TO  HC23-END-G
-           END-IF    
-           PERFORM VARYING IDX FROM    31  BY  -1
-                   UNTIL   IDX <       1
-               IF      RECE82-DAY (IDX)    =   RECE82-HKNCOMBI
-                   MOVE    IDX                 TO  WRK-KGK2
-                   MOVE    WRK-KGK2            TO  HC23-ENDDD
-                   MOVE    1                   TO  IDX
-               END-IF
-           END-PERFORM
+           IF    RECE82-RYOEDYMD   NOT =  SPACE
+             IF      RECE82-RYOEDYMD     >   WRK-EDYMD
+                 MOVE    WRK-EDYMDW          TO  HC23-END-G
+             ELSE      
+                 MOVE    RECE82-RYOEDYMD     TO  WRK-SYMD
+                 PERFORM 31012-SE-WA-YMDEDIT-SEC
+                 MOVE    WRK-HENYMD          TO  HC23-END-G
+             END-IF    
+           ELSE
+             MOVE   WRK-EDYMDW(1:4)   TO   HC23-END-G (1:4)
+             PERFORM VARYING IDX FROM    31  BY  -1
+                     UNTIL   IDX <       1
+                 IF      RECE82-DAY (IDX)    =   RECE82-HKNCOMBI
+                     MOVE    IDX                 TO  WRK-KGK2
+                     MOVE    WRK-KGK2            TO  HC23-ENDDD
+                     MOVE    1                   TO  IDX
+                 END-IF
+             END-PERFORM
+           END-IF
       *    実日数
            MOVE    RECE82-JNISSU       TO  WRK-JNISSU
            MOVE    WRK-JNISSU          TO  HC23-JITSUNISSU

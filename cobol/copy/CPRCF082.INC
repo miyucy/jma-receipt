@@ -245,6 +245,4 @@
                05  RECE82-ERR-TEKEDYMD    PIC 9(08).
       *Â¾ÊÝ¸±Æþ±¡ÎÁ»»ÄêºÑ¤ß¥Õ¥é¥°
            03  RECE82-NYUINRYOFLG         PIC  X(01).
-      *Í½È÷
-           03  RECE82-FILLER              PIC  X(31).
       *

@@ -127,6 +127,7 @@
            03  FLG-TENSU                               PIC  9(01).
            03  FLG-DAY                                 PIC  9(01).
            03  FLG-KENSA                               PIC  9(01).
+           03  FLG-PTNYUINRRK                          PIC  9(01).
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC  9(06).
@@ -137,6 +138,9 @@
            03  IDY                                     PIC  9(03).
            03  IDZ                                     PIC  9(03).
            03  ID1                                     PIC  9(03).
+           03  IDX2                                    PIC  9(02).
+           03  IDX3                                    PIC  9(02).
+           03  IDX4                                    PIC  9(02).
       *    パス名領域
        01  WK-PATH                                     PIC  X(20).
       *    一時領域
@@ -294,6 +298,10 @@
       *
       *    点数
            COPY    "CPTENSU.INC".
+      *
+      *    入院履歴
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -604,6 +612,7 @@
                         MOVE   PTRSI-SINSATUYMD TO  RECE41-SINSATUYMD
                         MOVE   PTRSI-COMMENT    TO  RECE41-COMMENT
                         MOVE   PTRSI-SAIGAIKBN  TO  RECE41-SAIGAIKBN 
+                        MOVE   PTRSI-RYOSTYMD   TO  RECE41-SHOSHINYMD
                    END-IF
                END-IF
       *    END-IF
@@ -615,6 +624,9 @@
       *
       *    保険組合せ番号情報
            MOVE    RECE40-HKNCOMBI   TO  RECE41-HKNCOMBI
+      *
+      *    入院履歴から入院日をセット
+           PERFORM NYUINBI-SET-SEC
       *
       *    実日数等情報
            IF      RECE41-HKNKBN   NOT  =   "3"
@@ -702,6 +714,59 @@
            END-EVALUATE
            .
        RECESYUBETU-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院履歴から入院日をセット
+      *****************************************************************
+       NYUINBI-SET-SEC              SECTION.
+      *
+      *    診療月内の入退院情報
+           INITIALIZE                      PTNYUINRRK-REC
+           MOVE    RECE41-HOSPID       TO  PTNYUINRRK-HOSPID
+           MOVE    RECE41-PTID         TO  PTNYUINRRK-PTID
+           MOVE    RECE41-SRYYM        TO  PTNYUINRRK-NYUINYMD (1:6)
+           MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
+           MOVE    RECE41-SRYYM        TO  PTNYUINRRK-TAIINYMD (1:6)
+           MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING   MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
+               PERFORM  PTNYUINRRK-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTNYUINRRK
+           END-IF
+           PERFORM                 UNTIL   FLG-PTNYUINRRK    =   1
+               IF  PTNYUINRRK-NYUINYMD (1:6)   <   RECE41-SRYYM
+                   MOVE    1                         TO  IDX3
+               ELSE
+                   MOVE    PTNYUINRRK-NYUINYMD(7:2)  TO  IDX3
+               END-IF 
+               IF  PTNYUINRRK-TAIINYMD (1:6)   >   RECE41-SRYYM
+                   MOVE    31                        TO  IDX4
+               ELSE
+                   MOVE    PTNYUINRRK-TAIINYMD(7:2)  TO  IDX4
+               END-IF
+      *
+               PERFORM  VARYING IDX2 FROM    IDX3    BY  1
+                        UNTIL   IDX2   >     IDX4
+                   MOVE    "1"    TO   RECE41-NYUINBITBL(IDX2)
+               END-PERFORM
+      *                 
+               MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
+               PERFORM  PTNYUINRRK-READ-SEC
+           END-PERFORM        
+      *                 
+           MOVE      "PTNYUINRRK-KEY23"    TO  WK-PATH
+           PERFORM    CSR-CLOSE-SEC
+      *
+           .
+       NYUINBI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1745,7 +1810,6 @@
       ***  IF     WRK-TAIHI-FLG2      =   1                             
       ***       MOVE   WRK-TAIHI-SRYYMD2   TO  RECE41-SHOSHINYMD        
       ***  END-IF                                                       
-           MOVE    RECE41-RYOSTYMD         TO  RECE41-SHOSHINYMD
       *
            IF     WRK-SINDAN-TUU      =   ZERO                          
                 CONTINUE                                                
@@ -2086,6 +2150,27 @@
       *
            .
        TENSU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院履歴読込
+      *****************************************************************
+       PTNYUINRRK-READ-SEC    SECTION.
+      *
+           MOVE    "DBFETCH"            TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC               =   ZERO
+               MOVE    MCPDATA-REC          TO  PTNYUINRRK-REC
+               MOVE    ZERO                 TO  FLG-PTNYUINRRK
+           ELSE
+               INITIALIZE                       PTNYUINRRK-REC
+               MOVE    1                    TO  FLG-PTNYUINRRK
+           END-IF
+           .
+       PTNYUINRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************

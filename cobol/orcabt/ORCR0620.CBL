@@ -2045,7 +2045,6 @@
                                                ORCMCPAREA
                                                MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
                PERFORM 900-PTNYUINRRK-KEY23-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTNYUINRRK23
@@ -2085,7 +2084,6 @@
                    END-PERFORM
                END-IF        
       *                 
-               MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
                PERFORM 900-PTNYUINRRK-KEY23-READ-SEC
            END-PERFORM        
       *                 
