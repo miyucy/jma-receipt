@@ -31,6 +31,7 @@
       *  01.00.01    MCC-藤原     02/05/20  再印刷画面からの印刷による修正  
       *  01.00.02    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *  01.01.01    NACL-藤原    02/10/10  印刷用コンスタント領域の追加
+      *                                     印刷用ファイルにサイト区分を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -56,6 +57,7 @@
        01  PRT-REC.
            03  PRT-PRTID           PIC X(30).
            03  PRT-PRTNM           PIC X(20).
+           03  PRT-SITEKBN         PIC X(01).
            03  PRT-PRTDATA         PIC X(10000).
       *
 006900*    エラーファイル
@@ -322,8 +324,25 @@
       *
            MOVE    SPACE               TO  PRT-REC 
            MOVE    PRTDATA-PRTID       TO  PRT-PRTID
-           MOVE    PRTKANRI-PRTNM      TO  PRT-PRTNM 
+           MOVE    PRTKANRI-PRTNM      TO  PRT-PRTNM
+           EVALUATE    PRTDATA-SITEKBN
+               WHEN    "1"
+               WHEN    "2"               
+                   MOVE    PRTDATA-SITEKBN     TO  PRT-SITEKBN
+               WHEN    OTHER
+                   SEARCH  PRTCONST-TX VARYING TBL-IDX
+                       AT  END
+                           MOVE    "2"         TO  PRT-SITEKBN
+                       WHEN    PRTCONST-PRTID (TBL-IDX)
+                                               =   PRTDATA-PRTID
+                           MOVE    "1"         TO  PRT-SITEKBN
+                   END-SEARCH
+           END-EVALUATE                                                                
            MOVE    PRTDATA-PRTDATA     TO  PRT-PRTDATA
+      *???
+           DISPLAY "DATA=" PRTDATA-PRTID "##" PRTDATA-SITEKBN "##"
+                           PRT-SITEKBN "##"     
+      *??                     
            WRITE   PRT-REC
       *
            ADD     1                   TO  CNT-OUT     
