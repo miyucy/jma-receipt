@@ -62,8 +62,14 @@
       *入院歴表示区分
                05  SYS-5000-REKI-DISPKBN
                                            PIC  X(01).
+      *請求書発行区分
+               05  SYS-5000-SKYPRTKBN
+                                           PIC  X(01).
+      *退院証明書発行区分
+               05  SYS-5000-TAIPRTKBN
+                                           PIC  X(01).
       *予備（２）
-               05                          PIC  X(31).
+               05                          PIC  X(29).
       *端末ＩＤ
            03  SYS-5000-TERMID             PIC  X(16).
       *オペーレータＩＤ
