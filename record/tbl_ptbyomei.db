@@ -205,7 +205,7 @@ path	key11	{
 			AND   SRYYMD      <   :SRYYMD
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
 			AND  (TENKIKBN    =   :TENKIKBN  OR
-                  TENKIYMD    >=  :SRYYMD)
+                  TENKIYMD    >=  :TENKIYMD)
 			ORDER BY SRYKA,SYUBYOFLG DESC,SRYYMD,RENNUM
 		;
 	};
