@@ -35,6 +35,7 @@
       *  01.00.06    NACL-多々納  02/11/20  自賠責器材追加
       *  01.00.07    NACL-多々納  02/12/02  食事の追加
       *  01.00.08    NACL-多々納  02/12/13  継続区分再編集、継続訂正修正
+      *  01.00.09    NACL-多々納  03/01/16  自費回数表示修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -665,8 +666,8 @@
                MOVE    SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNTEN (IDX)
            END-PERFORM
       *    点数再計算
-           IF      SPA-SYORIFLG    NOT =   1    AND
-                   SPA-NYUGAIKBN       =   "1"
+           IF     (SPA-SYORIFLG    NOT =   1   )  AND
+                  (SPA-NYUGAIKBN       =   "1" )
                PERFORM 41032-TENSU-KEI-SEC
            END-IF
       *
@@ -875,8 +876,8 @@
       *    自費の時、計を表示しない
            IF     (WRK-JIHIMONEY       >   ZERO  )  OR
       *        回数入力がなく、入院回数入力がある時、入院回数のみ
-                  (FLG-KAISUU-ARI      =   ZERO  AND
-                   FLG-KAISUU-ARI2     =   1     )
+                 ((FLG-KAISUU-ARI      =   ZERO )  AND
+                  (FLG-KAISUU-ARI2     =   1    ))
                MOVE    ZERO                TO  SPA-NAI-HKNTEN  (IDX-NAI)
                CONTINUE
            ELSE
@@ -1052,9 +1053,9 @@
            PERFORM VARYING     IDK1    FROM    1   BY  1
                    UNTIL       IDK1    >   3
                IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
-                   ADD     1           TO  IDK2
+                   ADD     1               TO  IDK2
                    MOVE    WRK-KAISU-X (IDK1:1)
-                                       TO  WRK-KAISU-H (IDK2:1)
+                                           TO  WRK-KAISU-H (IDK2:1)
                END-IF
            END-PERFORM
       *    回数
@@ -1415,7 +1416,7 @@
                MOVE    ZERO                TO  IDK2
                MOVE    SPACE               TO  WRK-KAISU-H
                PERFORM VARYING     IDK1    FROM    1   BY  1
-                       UNTIL       IDK1    >   8
+                       UNTIL       IDK1    >   3
                    IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
                        ADD     1           TO  IDK2
                        MOVE    WRK-KAISU-X (IDK1:1)
@@ -1425,7 +1426,7 @@
                MOVE    SPACE               TO  WRK-KAISU-J
                MOVE    1                   TO  IDJ2
                PERFORM VARYING     IDJ     FROM    1  BY  1
-                       UNTIL       IDJ     >   8
+                       UNTIL       IDJ     >   3
                    EVALUATE    WRK-KAISU-H (IDJ:1)
                        WHEN    SPACE
                            MOVE    "　"                TO  WRK-KAISU-J
@@ -1445,7 +1446,7 @@
                MOVE   "×"                 TO  SPA-GMN-TYOBI32 (IDG)
                                                                (1:2)
                MOVE   WRK-KAISU-J(1:4)     TO  SPA-GMN-TYOBI32 (IDG)
-                                                               (3:)
+                                                               (3:4)
                MOVE    1                   TO  FLG-KAISUU
            END-IF
       *
@@ -2566,8 +2567,8 @@
                    END-IF
                    PERFORM UNTIL    FLG-SRYACCT    =   1
       *
-                       IF     (ACCT-SRYKBN(1:1)    =   "2"   OR
-                               ACCT-SRYKBN         =   "80" )
+                       IF    ((ACCT-SRYKBN(1:1)    =   "2"  )  OR
+                              (ACCT-SRYKBN         =   "80" ))
                          AND  (ACCT-ZAITEN         >   ZERO )
       *                    診療行為マスター編集
                            PERFORM 450511-YAKFTN-SRYACT-SEC
@@ -2747,6 +2748,8 @@
       *    入院更新処理
            INITIALIZE                  ORCSCNYUINAREA
            MOVE    "1"                 TO  ORCSCNYUIN-KBN
+      *    退院日
+           MOVE    SPA-K02N-TAIINYMD   TO  ORCSCNYUIN-TAIINYMD
            CALL    "ORCSCNYUIN"        USING
                                        SPA-AREA
                                        ORCSCNYUINAREA
