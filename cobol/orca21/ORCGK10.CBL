@@ -421,6 +421,12 @@
            MOVE    WRK-HENYMDG         TO  SPA-K10-GMN-SRYYMD (IDX)
       *
       *    保険組合せ
+           IF      WKSRY-HKNCOMBI      =   "9999"
+               MOVE    "包括分入力"    TO  SPA-K10-GMN-HKNCOMBI (IDX)
+               GO      TO      3101-TBL-HENSYU-EXT
+           END-IF
+      *
+      *    保険組合せ
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
            MOVE    SPA-HOSPID          TO  COMB-HOSPID
@@ -440,6 +446,12 @@
            ELSE
                MOVE    1               TO  FLG-HKNCOMBI
                INITIALIZE                  HKNCOMBI-REC
+           END-IF
+      *
+           IF      FLG-HKNCOMBI        =   1
+               MOVE    WKSRY-HKNCOMBI     TO  SPA-K10-GMN-HKNCOMBI
+                                                              (IDX)
+               GO      TO      3101-TBL-HENSYU-EXT
            END-IF
       *
            PERFORM 31011-HKNCOMBI-HEN-SEC
