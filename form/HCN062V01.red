@@ -31,7 +31,7 @@
         <embed object="string" length="20"/>
       </appinfo>
     </element>
-    <element name="NAIYO-TBL" occurs="138">
+    <element name="NAIYO-TBL" occurs="110">
       <element name="SRYKBN" occurs="1">
         <appinfo>
           <embed object="string" length="2"/>
@@ -208,7 +208,7 @@
         <point val="10.5,4.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.5,4.6;20.2,29"/>
+        <rectangle val="10.5,4.6;20.2,24"/>
       </attribute>
       <attribute name="elem_corner">
         <point val="10.5,4.6"/>
@@ -217,7 +217,7 @@
         <real val="9.7"/>
       </attribute>
       <attribute name="elem_height">
-        <real val="24.4"/>
+        <real val="19.4"/>
       </attribute>
       <attribute name="border_width">
         <real val="0"/>
@@ -819,7 +819,7 @@
         <point val="0.8,4.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.8,4.6;10.5,29"/>
+        <rectangle val="0.8,4.6;10.5,24"/>
       </attribute>
       <attribute name="elem_corner">
         <point val="0.8,4.6"/>
@@ -828,7 +828,7 @@
         <real val="9.7"/>
       </attribute>
       <attribute name="elem_height">
-        <real val="24.4"/>
+        <real val="19.4"/>
       </attribute>
       <attribute name="border_width">
         <real val="0"/>
@@ -842,11 +842,11 @@
         <point val="1.8,4.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.8,4.6;1.8,29"/>
+        <rectangle val="1.8,4.6;1.8,24"/>
       </attribute>
       <attribute name="conn_endpoints">
         <point val="1.8,4.6"/>
-        <point val="1.8,29"/>
+        <point val="1.8,24"/>
       </attribute>
       <attribute name="numcp">
         <int val="1"/>
@@ -866,11 +866,11 @@
         <point val="11.5,4.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,4.6;11.5,29"/>
+        <rectangle val="11.5,4.6;11.5,24"/>
       </attribute>
       <attribute name="conn_endpoints">
         <point val="11.5,4.6"/>
-        <point val="11.5,29"/>
+        <point val="11.5,24"/>
       </attribute>
       <attribute name="numcp">
         <int val="1"/>
@@ -2382,10 +2382,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O75">
       <attribute name="obj_pos">
-        <point val="1.3,5"/>
+        <point val="1.3,4.9824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,4.72636;1.7242,5.07636"/>
+        <rectangle val="1.3,4.70876;1.7242,5.05876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[0].SRYKBN#</string>
@@ -2405,7 +2405,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,5"/>
+            <point val="1.3,4.9824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2424,10 +2424,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O76">
       <attribute name="obj_pos">
-        <point val="1.3,5.35"/>
+        <point val="1.3,5.3324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,5.07636;1.7242,5.42636"/>
+        <rectangle val="1.3,5.05876;1.7242,5.40876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[1].SRYKBN#</string>
@@ -2447,7 +2447,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,5.35"/>
+            <point val="1.3,5.3324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2466,10 +2466,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O77">
       <attribute name="obj_pos">
-        <point val="1.3,5.7"/>
+        <point val="1.3,5.6824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,5.42636;1.7242,5.77636"/>
+        <rectangle val="1.3,5.40876;1.7242,5.75876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[2].SRYKBN#</string>
@@ -2489,7 +2489,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,5.7"/>
+            <point val="1.3,5.6824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2508,10 +2508,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O78">
       <attribute name="obj_pos">
-        <point val="1.3,6.05"/>
+        <point val="1.3,6.0324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,5.77636;1.7242,6.12636"/>
+        <rectangle val="1.3,5.75876;1.7242,6.10876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[3].SRYKBN#</string>
@@ -2531,7 +2531,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,6.05"/>
+            <point val="1.3,6.0324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2550,10 +2550,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O79">
       <attribute name="obj_pos">
-        <point val="1.3,6.4"/>
+        <point val="1.3,6.3824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,6.12636;1.7242,6.47636"/>
+        <rectangle val="1.3,6.10876;1.7242,6.45876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[4].SRYKBN#</string>
@@ -2573,7 +2573,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,6.4"/>
+            <point val="1.3,6.3824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2592,10 +2592,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O80">
       <attribute name="obj_pos">
-        <point val="1.3,6.75"/>
+        <point val="1.3,6.7324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,6.47636;1.7242,6.82636"/>
+        <rectangle val="1.3,6.45876;1.7242,6.80876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[5].SRYKBN#</string>
@@ -2615,7 +2615,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,6.75"/>
+            <point val="1.3,6.7324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2634,10 +2634,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O81">
       <attribute name="obj_pos">
-        <point val="1.3,7.1"/>
+        <point val="1.3,7.0824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,6.82636;1.7242,7.17636"/>
+        <rectangle val="1.3,6.80876;1.7242,7.15876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[6].SRYKBN#</string>
@@ -2657,7 +2657,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,7.1"/>
+            <point val="1.3,7.0824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2676,10 +2676,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O82">
       <attribute name="obj_pos">
-        <point val="1.3,7.45"/>
+        <point val="1.3,7.4324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,7.17636;1.7242,7.52636"/>
+        <rectangle val="1.3,7.15876;1.7242,7.50876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[7].SRYKBN#</string>
@@ -2699,7 +2699,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,7.45"/>
+            <point val="1.3,7.4324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2718,10 +2718,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O83">
       <attribute name="obj_pos">
-        <point val="1.3,7.8"/>
+        <point val="1.3,7.7824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,7.52636;1.7242,7.87636"/>
+        <rectangle val="1.3,7.50876;1.7242,7.85876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[8].SRYKBN#</string>
@@ -2741,7 +2741,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,7.8"/>
+            <point val="1.3,7.7824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2760,10 +2760,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O84">
       <attribute name="obj_pos">
-        <point val="1.3,8.15"/>
+        <point val="1.3,8.1324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,7.87636;1.7242,8.22636"/>
+        <rectangle val="1.3,7.85876;1.7242,8.20876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[9].SRYKBN#</string>
@@ -2783,7 +2783,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,8.15"/>
+            <point val="1.3,8.1324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2802,10 +2802,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O85">
       <attribute name="obj_pos">
-        <point val="1.3,8.5"/>
+        <point val="1.3,8.4824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,8.22636;1.7242,8.57636"/>
+        <rectangle val="1.3,8.20876;1.7242,8.55876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[10].SRYKBN#</string>
@@ -2825,7 +2825,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,8.5"/>
+            <point val="1.3,8.4824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2844,10 +2844,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O86">
       <attribute name="obj_pos">
-        <point val="1.3,8.85"/>
+        <point val="1.3,8.8324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,8.57636;1.7242,8.92636"/>
+        <rectangle val="1.3,8.55876;1.7242,8.90876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[11].SRYKBN#</string>
@@ -2867,7 +2867,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,8.85"/>
+            <point val="1.3,8.8324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2886,10 +2886,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O87">
       <attribute name="obj_pos">
-        <point val="1.3,9.2"/>
+        <point val="1.3,9.1824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,8.92636;1.7242,9.27636"/>
+        <rectangle val="1.3,8.90876;1.7242,9.25876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[12].SRYKBN#</string>
@@ -2909,7 +2909,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,9.2"/>
+            <point val="1.3,9.1824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2928,10 +2928,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O88">
       <attribute name="obj_pos">
-        <point val="1.3,9.55"/>
+        <point val="1.3,9.5324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,9.27636;1.7242,9.62636"/>
+        <rectangle val="1.3,9.25876;1.7242,9.60876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[13].SRYKBN#</string>
@@ -2951,7 +2951,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,9.55"/>
+            <point val="1.3,9.5324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2970,10 +2970,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O89">
       <attribute name="obj_pos">
-        <point val="1.3,9.9"/>
+        <point val="1.3,9.8824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,9.62636;1.7242,9.97636"/>
+        <rectangle val="1.3,9.60876;1.7242,9.95876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[14].SRYKBN#</string>
@@ -2993,7 +2993,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,9.9"/>
+            <point val="1.3,9.8824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3012,10 +3012,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O90">
       <attribute name="obj_pos">
-        <point val="1.3,10.25"/>
+        <point val="1.3,10.2324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,9.97636;1.7242,10.3264"/>
+        <rectangle val="1.3,9.95876;1.7242,10.3088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[15].SRYKBN#</string>
@@ -3035,7 +3035,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,10.25"/>
+            <point val="1.3,10.2324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3054,10 +3054,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O91">
       <attribute name="obj_pos">
-        <point val="1.3,10.6"/>
+        <point val="1.3,10.5824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,10.3264;1.7242,10.6764"/>
+        <rectangle val="1.3,10.3088;1.7242,10.6588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[16].SRYKBN#</string>
@@ -3077,7 +3077,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,10.6"/>
+            <point val="1.3,10.5824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3096,10 +3096,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O92">
       <attribute name="obj_pos">
-        <point val="1.3,10.95"/>
+        <point val="1.3,10.9324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,10.6764;1.7242,11.0264"/>
+        <rectangle val="1.3,10.6588;1.7242,11.0088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[17].SRYKBN#</string>
@@ -3119,7 +3119,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,10.95"/>
+            <point val="1.3,10.9324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3138,10 +3138,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O93">
       <attribute name="obj_pos">
-        <point val="1.3,11.3"/>
+        <point val="1.3,11.2824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,11.0264;1.7242,11.3764"/>
+        <rectangle val="1.3,11.0088;1.7242,11.3588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[18].SRYKBN#</string>
@@ -3161,7 +3161,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,11.3"/>
+            <point val="1.3,11.2824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3180,10 +3180,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O94">
       <attribute name="obj_pos">
-        <point val="1.3,11.65"/>
+        <point val="1.3,11.6324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,11.3764;1.7242,11.7264"/>
+        <rectangle val="1.3,11.3588;1.7242,11.7088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[19].SRYKBN#</string>
@@ -3203,7 +3203,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,11.65"/>
+            <point val="1.3,11.6324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3222,10 +3222,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O95">
       <attribute name="obj_pos">
-        <point val="1.3,12"/>
+        <point val="1.3,11.9824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,11.7264;1.7242,12.0764"/>
+        <rectangle val="1.3,11.7088;1.7242,12.0588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[20].SRYKBN#</string>
@@ -3245,7 +3245,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,12"/>
+            <point val="1.3,11.9824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3264,10 +3264,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O96">
       <attribute name="obj_pos">
-        <point val="1.3,12.35"/>
+        <point val="1.3,12.3324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,12.0764;1.7242,12.4264"/>
+        <rectangle val="1.3,12.0588;1.7242,12.4088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[21].SRYKBN#</string>
@@ -3287,7 +3287,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,12.35"/>
+            <point val="1.3,12.3324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3306,10 +3306,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O97">
       <attribute name="obj_pos">
-        <point val="1.3,12.7"/>
+        <point val="1.3,12.6824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,12.4264;1.7242,12.7764"/>
+        <rectangle val="1.3,12.4088;1.7242,12.7588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[22].SRYKBN#</string>
@@ -3329,7 +3329,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,12.7"/>
+            <point val="1.3,12.6824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3348,10 +3348,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O98">
       <attribute name="obj_pos">
-        <point val="1.3,13.05"/>
+        <point val="1.3,13.0324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,12.7764;1.7242,13.1264"/>
+        <rectangle val="1.3,12.7588;1.7242,13.1088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[23].SRYKBN#</string>
@@ -3371,7 +3371,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,13.05"/>
+            <point val="1.3,13.0324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3390,10 +3390,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O99">
       <attribute name="obj_pos">
-        <point val="1.3,13.4"/>
+        <point val="1.3,13.3824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,13.1264;1.7242,13.4764"/>
+        <rectangle val="1.3,13.1088;1.7242,13.4588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[24].SRYKBN#</string>
@@ -3413,7 +3413,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,13.4"/>
+            <point val="1.3,13.3824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3432,10 +3432,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O100">
       <attribute name="obj_pos">
-        <point val="1.3,13.75"/>
+        <point val="1.3,13.7324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,13.4764;1.7242,13.8264"/>
+        <rectangle val="1.3,13.4588;1.7242,13.8088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[25].SRYKBN#</string>
@@ -3455,7 +3455,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,13.75"/>
+            <point val="1.3,13.7324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3474,10 +3474,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O101">
       <attribute name="obj_pos">
-        <point val="1.3,14.1"/>
+        <point val="1.3,14.0824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,13.8264;1.7242,14.1764"/>
+        <rectangle val="1.3,13.8088;1.7242,14.1588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[26].SRYKBN#</string>
@@ -3497,7 +3497,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,14.1"/>
+            <point val="1.3,14.0824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3516,10 +3516,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O102">
       <attribute name="obj_pos">
-        <point val="1.3,14.45"/>
+        <point val="1.3,14.4324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,14.1764;1.7242,14.5264"/>
+        <rectangle val="1.3,14.1588;1.7242,14.5088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[27].SRYKBN#</string>
@@ -3539,7 +3539,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,14.45"/>
+            <point val="1.3,14.4324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3558,10 +3558,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O103">
       <attribute name="obj_pos">
-        <point val="1.3,14.8"/>
+        <point val="1.3,14.7824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,14.5264;1.7242,14.8764"/>
+        <rectangle val="1.3,14.5088;1.7242,14.8588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[28].SRYKBN#</string>
@@ -3581,7 +3581,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,14.8"/>
+            <point val="1.3,14.7824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3600,10 +3600,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O104">
       <attribute name="obj_pos">
-        <point val="1.3,15.15"/>
+        <point val="1.3,15.1324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,14.8764;1.7242,15.2264"/>
+        <rectangle val="1.3,14.8588;1.7242,15.2088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[29].SRYKBN#</string>
@@ -3623,7 +3623,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,15.15"/>
+            <point val="1.3,15.1324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3642,10 +3642,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O105">
       <attribute name="obj_pos">
-        <point val="1.3,15.5"/>
+        <point val="1.3,15.4824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,15.2264;1.7242,15.5764"/>
+        <rectangle val="1.3,15.2088;1.7242,15.5588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[30].SRYKBN#</string>
@@ -3665,7 +3665,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,15.5"/>
+            <point val="1.3,15.4824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3684,10 +3684,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O106">
       <attribute name="obj_pos">
-        <point val="1.3,15.85"/>
+        <point val="1.3,15.8324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,15.5764;1.7242,15.9264"/>
+        <rectangle val="1.3,15.5588;1.7242,15.9088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[31].SRYKBN#</string>
@@ -3707,7 +3707,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,15.85"/>
+            <point val="1.3,15.8324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3726,10 +3726,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O107">
       <attribute name="obj_pos">
-        <point val="1.3,16.2"/>
+        <point val="1.3,16.1824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,15.9264;1.7242,16.2764"/>
+        <rectangle val="1.3,15.9088;1.7242,16.2588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[32].SRYKBN#</string>
@@ -3749,7 +3749,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,16.2"/>
+            <point val="1.3,16.1824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3768,10 +3768,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O108">
       <attribute name="obj_pos">
-        <point val="1.3,16.55"/>
+        <point val="1.3,16.5324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,16.2764;1.7242,16.6264"/>
+        <rectangle val="1.3,16.2588;1.7242,16.6088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[33].SRYKBN#</string>
@@ -3791,7 +3791,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,16.55"/>
+            <point val="1.3,16.5324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3810,10 +3810,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O109">
       <attribute name="obj_pos">
-        <point val="1.3,16.9"/>
+        <point val="1.3,16.875"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,16.6264;1.7242,16.9764"/>
+        <rectangle val="1.3,16.6014;1.7242,16.9514"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[34].SRYKBN#</string>
@@ -3833,7 +3833,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,16.9"/>
+            <point val="1.3,16.875"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4062,10 +4062,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O115">
       <attribute name="obj_pos">
-        <point val="1.85,5"/>
+        <point val="1.85,4.975"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,4.742;10.2492,5.072"/>
+        <rectangle val="1.85,4.717;10.2492,5.047"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[0].TEKIYO#</string>
@@ -4085,7 +4085,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,5"/>
+            <point val="1.85,4.975"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4104,10 +4104,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O116">
       <attribute name="obj_pos">
-        <point val="1.85,5.35"/>
+        <point val="1.85,5.325"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,5.092;10.2492,5.422"/>
+        <rectangle val="1.85,5.067;10.2492,5.397"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[1].TEKIYO#</string>
@@ -4127,7 +4127,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,5.35"/>
+            <point val="1.85,5.325"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4146,10 +4146,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O117">
       <attribute name="obj_pos">
-        <point val="1.85,5.7"/>
+        <point val="1.85,5.675"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,5.442;10.2492,5.772"/>
+        <rectangle val="1.85,5.417;10.2492,5.747"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[2].TEKIYO#</string>
@@ -4169,7 +4169,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,5.7"/>
+            <point val="1.85,5.675"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4188,10 +4188,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O118">
       <attribute name="obj_pos">
-        <point val="1.85,6.05"/>
+        <point val="1.85,6.025"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,5.792;10.2492,6.122"/>
+        <rectangle val="1.85,5.767;10.2492,6.097"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[3].TEKIYO#</string>
@@ -4211,7 +4211,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,6.05"/>
+            <point val="1.85,6.025"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4230,10 +4230,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O119">
       <attribute name="obj_pos">
-        <point val="1.85,6.4"/>
+        <point val="1.85,6.375"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,6.142;10.2492,6.472"/>
+        <rectangle val="1.85,6.117;10.2492,6.447"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[4].TEKIYO#</string>
@@ -4253,7 +4253,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,6.4"/>
+            <point val="1.85,6.375"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4272,10 +4272,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O120">
       <attribute name="obj_pos">
-        <point val="1.85,6.75"/>
+        <point val="1.85,6.725"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,6.492;10.2492,6.822"/>
+        <rectangle val="1.85,6.467;10.2492,6.797"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[5].TEKIYO#</string>
@@ -4295,7 +4295,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,6.75"/>
+            <point val="1.85,6.725"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4314,10 +4314,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O121">
       <attribute name="obj_pos">
-        <point val="1.85,7.1"/>
+        <point val="1.85,7.075"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,6.842;10.2492,7.172"/>
+        <rectangle val="1.85,6.817;10.2492,7.147"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[6].TEKIYO#</string>
@@ -4337,7 +4337,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,7.1"/>
+            <point val="1.85,7.075"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4356,10 +4356,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O122">
       <attribute name="obj_pos">
-        <point val="1.85,7.45"/>
+        <point val="1.85,7.425"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,7.192;10.2492,7.522"/>
+        <rectangle val="1.85,7.167;10.2492,7.497"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[7].TEKIYO#</string>
@@ -4379,7 +4379,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,7.45"/>
+            <point val="1.85,7.425"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4398,10 +4398,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O123">
       <attribute name="obj_pos">
-        <point val="1.85,7.8"/>
+        <point val="1.85,7.775"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,7.542;10.2492,7.872"/>
+        <rectangle val="1.85,7.517;10.2492,7.847"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[8].TEKIYO#</string>
@@ -4421,7 +4421,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,7.8"/>
+            <point val="1.85,7.775"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4440,10 +4440,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O124">
       <attribute name="obj_pos">
-        <point val="1.85,8.15"/>
+        <point val="1.85,8.125"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,7.892;10.2492,8.222"/>
+        <rectangle val="1.85,7.867;10.2492,8.197"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[9].TEKIYO#</string>
@@ -4463,7 +4463,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,8.15"/>
+            <point val="1.85,8.125"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4482,10 +4482,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O125">
       <attribute name="obj_pos">
-        <point val="1.85,8.5"/>
+        <point val="1.85,8.475"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,8.242;10.2492,8.572"/>
+        <rectangle val="1.85,8.217;10.2492,8.547"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[10].TEKIYO#</string>
@@ -4505,7 +4505,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,8.5"/>
+            <point val="1.85,8.475"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4524,10 +4524,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O126">
       <attribute name="obj_pos">
-        <point val="1.85,8.85"/>
+        <point val="1.85,8.825"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,8.592;10.2492,8.922"/>
+        <rectangle val="1.85,8.567;10.2492,8.897"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[11].TEKIYO#</string>
@@ -4547,7 +4547,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,8.85"/>
+            <point val="1.85,8.825"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4566,10 +4566,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O127">
       <attribute name="obj_pos">
-        <point val="1.85,9.2"/>
+        <point val="1.85,9.175"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,8.942;10.2492,9.272"/>
+        <rectangle val="1.85,8.917;10.2492,9.247"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[12].TEKIYO#</string>
@@ -4589,7 +4589,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,9.2"/>
+            <point val="1.85,9.175"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4608,10 +4608,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O128">
       <attribute name="obj_pos">
-        <point val="1.85,9.55"/>
+        <point val="1.85,9.525"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,9.292;10.2492,9.622"/>
+        <rectangle val="1.85,9.267;10.2492,9.597"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[13].TEKIYO#</string>
@@ -4631,7 +4631,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,9.55"/>
+            <point val="1.85,9.525"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4650,10 +4650,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O129">
       <attribute name="obj_pos">
-        <point val="1.85,9.9"/>
+        <point val="1.85,9.875"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,9.642;10.2492,9.972"/>
+        <rectangle val="1.85,9.617;10.2492,9.947"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[14].TEKIYO#</string>
@@ -4673,7 +4673,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,9.9"/>
+            <point val="1.85,9.875"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4692,10 +4692,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O130">
       <attribute name="obj_pos">
-        <point val="1.85,10.25"/>
+        <point val="1.85,10.225"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,9.992;10.2492,10.322"/>
+        <rectangle val="1.85,9.967;10.2492,10.297"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[15].TEKIYO#</string>
@@ -4715,7 +4715,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,10.25"/>
+            <point val="1.85,10.225"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4734,10 +4734,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O131">
       <attribute name="obj_pos">
-        <point val="1.85,10.6"/>
+        <point val="1.85,10.575"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,10.342;10.2492,10.672"/>
+        <rectangle val="1.85,10.317;10.2492,10.647"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[16].TEKIYO#</string>
@@ -4757,7 +4757,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,10.6"/>
+            <point val="1.85,10.575"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4776,10 +4776,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O132">
       <attribute name="obj_pos">
-        <point val="1.85,10.95"/>
+        <point val="1.85,10.925"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,10.692;10.2492,11.022"/>
+        <rectangle val="1.85,10.667;10.2492,10.997"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[17].TEKIYO#</string>
@@ -4799,7 +4799,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,10.95"/>
+            <point val="1.85,10.925"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4818,10 +4818,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O133">
       <attribute name="obj_pos">
-        <point val="1.85,11.3"/>
+        <point val="1.85,11.275"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,11.042;10.2492,11.372"/>
+        <rectangle val="1.85,11.017;10.2492,11.347"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[18].TEKIYO#</string>
@@ -4841,7 +4841,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,11.3"/>
+            <point val="1.85,11.275"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4860,10 +4860,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O134">
       <attribute name="obj_pos">
-        <point val="1.85,11.65"/>
+        <point val="1.85,11.625"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,11.392;10.2492,11.722"/>
+        <rectangle val="1.85,11.367;10.2492,11.697"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[19].TEKIYO#</string>
@@ -4883,7 +4883,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,11.65"/>
+            <point val="1.85,11.625"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4902,10 +4902,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O135">
       <attribute name="obj_pos">
-        <point val="1.85,12"/>
+        <point val="1.85,11.975"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,11.742;10.2492,12.072"/>
+        <rectangle val="1.85,11.717;10.2492,12.047"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[20].TEKIYO#</string>
@@ -4925,7 +4925,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,12"/>
+            <point val="1.85,11.975"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4944,10 +4944,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O136">
       <attribute name="obj_pos">
-        <point val="1.85,12.35"/>
+        <point val="1.85,12.325"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,12.092;10.2492,12.422"/>
+        <rectangle val="1.85,12.067;10.2492,12.397"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[21].TEKIYO#</string>
@@ -4967,7 +4967,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,12.35"/>
+            <point val="1.85,12.325"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -4986,10 +4986,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O137">
       <attribute name="obj_pos">
-        <point val="1.85,12.7"/>
+        <point val="1.85,12.675"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,12.442;10.2492,12.772"/>
+        <rectangle val="1.85,12.417;10.2492,12.747"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[22].TEKIYO#</string>
@@ -5009,7 +5009,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,12.7"/>
+            <point val="1.85,12.675"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5028,10 +5028,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O138">
       <attribute name="obj_pos">
-        <point val="1.85,13.05"/>
+        <point val="1.85,13.025"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,12.792;10.2492,13.122"/>
+        <rectangle val="1.85,12.767;10.2492,13.097"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[23].TEKIYO#</string>
@@ -5051,7 +5051,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,13.05"/>
+            <point val="1.85,13.025"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5070,10 +5070,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O139">
       <attribute name="obj_pos">
-        <point val="1.85,13.4"/>
+        <point val="1.85,13.375"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,13.142;10.2492,13.472"/>
+        <rectangle val="1.85,13.117;10.2492,13.447"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[24].TEKIYO#</string>
@@ -5093,7 +5093,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,13.4"/>
+            <point val="1.85,13.375"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5112,10 +5112,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O140">
       <attribute name="obj_pos">
-        <point val="1.85,13.75"/>
+        <point val="1.85,13.725"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,13.492;10.2492,13.822"/>
+        <rectangle val="1.85,13.467;10.2492,13.797"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[25].TEKIYO#</string>
@@ -5135,7 +5135,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,13.75"/>
+            <point val="1.85,13.725"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5154,10 +5154,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O141">
       <attribute name="obj_pos">
-        <point val="1.85,14.1"/>
+        <point val="1.85,14.075"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,13.842;10.2492,14.172"/>
+        <rectangle val="1.85,13.817;10.2492,14.147"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[26].TEKIYO#</string>
@@ -5177,7 +5177,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,14.1"/>
+            <point val="1.85,14.075"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5196,10 +5196,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O142">
       <attribute name="obj_pos">
-        <point val="1.85,14.45"/>
+        <point val="1.85,14.425"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,14.192;10.2492,14.522"/>
+        <rectangle val="1.85,14.167;10.2492,14.497"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[27].TEKIYO#</string>
@@ -5219,7 +5219,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,14.45"/>
+            <point val="1.85,14.425"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5238,10 +5238,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O143">
       <attribute name="obj_pos">
-        <point val="1.85,14.8"/>
+        <point val="1.85,14.775"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,14.542;10.2492,14.872"/>
+        <rectangle val="1.85,14.517;10.2492,14.847"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[28].TEKIYO#</string>
@@ -5261,7 +5261,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,14.8"/>
+            <point val="1.85,14.775"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5280,10 +5280,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O144">
       <attribute name="obj_pos">
-        <point val="1.85,15.15"/>
+        <point val="1.85,15.125"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,14.892;10.2492,15.222"/>
+        <rectangle val="1.85,14.867;10.2492,15.197"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[29].TEKIYO#</string>
@@ -5303,7 +5303,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,15.15"/>
+            <point val="1.85,15.125"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5322,10 +5322,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O145">
       <attribute name="obj_pos">
-        <point val="1.85,15.5"/>
+        <point val="1.85,15.475"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,15.242;10.2492,15.572"/>
+        <rectangle val="1.85,15.217;10.2492,15.547"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[30].TEKIYO#</string>
@@ -5345,7 +5345,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,15.5"/>
+            <point val="1.85,15.475"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5364,10 +5364,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O146">
       <attribute name="obj_pos">
-        <point val="1.85,15.85"/>
+        <point val="1.85,15.825"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,15.592;10.2492,15.922"/>
+        <rectangle val="1.85,15.567;10.2492,15.897"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[31].TEKIYO#</string>
@@ -5387,7 +5387,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,15.85"/>
+            <point val="1.85,15.825"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5406,10 +5406,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O147">
       <attribute name="obj_pos">
-        <point val="1.85,16.2"/>
+        <point val="1.85,16.175"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,15.942;10.2492,16.272"/>
+        <rectangle val="1.85,15.917;10.2492,16.247"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[32].TEKIYO#</string>
@@ -5429,7 +5429,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,16.2"/>
+            <point val="1.85,16.175"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5448,10 +5448,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O148">
       <attribute name="obj_pos">
-        <point val="1.85,16.55"/>
+        <point val="1.85,16.525"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,16.292;10.2492,16.622"/>
+        <rectangle val="1.85,16.267;10.2492,16.597"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[33].TEKIYO#</string>
@@ -5471,7 +5471,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,16.55"/>
+            <point val="1.85,16.525"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5490,10 +5490,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O149">
       <attribute name="obj_pos">
-        <point val="1.85,16.9"/>
+        <point val="1.85,16.8824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,16.642;10.2492,16.972"/>
+        <rectangle val="1.85,16.6244;10.2492,16.9544"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[34].TEKIYO#</string>
@@ -5513,7 +5513,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,16.9"/>
+            <point val="1.85,16.8824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5532,10 +5532,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O150">
       <attribute name="obj_pos">
-        <point val="1.3,17.25"/>
+        <point val="1.3,17.2324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,16.9764;1.7242,17.3264"/>
+        <rectangle val="1.3,16.9588;1.7242,17.3088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[35].SRYKBN#</string>
@@ -5555,7 +5555,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,17.25"/>
+            <point val="1.3,17.2324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5574,10 +5574,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O151">
       <attribute name="obj_pos">
-        <point val="1.3,17.6"/>
+        <point val="1.3,17.5824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,17.3264;1.7242,17.6764"/>
+        <rectangle val="1.3,17.3088;1.7242,17.6588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[36].SRYKBN#</string>
@@ -5597,7 +5597,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,17.6"/>
+            <point val="1.3,17.5824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5616,10 +5616,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O152">
       <attribute name="obj_pos">
-        <point val="1.3,17.95"/>
+        <point val="1.3,17.9324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,17.6764;1.7242,18.0264"/>
+        <rectangle val="1.3,17.6588;1.7242,18.0088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[37].SRYKBN#</string>
@@ -5639,7 +5639,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,17.95"/>
+            <point val="1.3,17.9324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5658,10 +5658,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O153">
       <attribute name="obj_pos">
-        <point val="1.3,18.3"/>
+        <point val="1.3,18.2824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,18.0264;1.7242,18.3764"/>
+        <rectangle val="1.3,18.0088;1.7242,18.3588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[38].SRYKBN#</string>
@@ -5681,7 +5681,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,18.3"/>
+            <point val="1.3,18.2824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5700,10 +5700,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O154">
       <attribute name="obj_pos">
-        <point val="1.3,18.65"/>
+        <point val="1.3,18.6324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,18.3764;1.7242,18.7264"/>
+        <rectangle val="1.3,18.3588;1.7242,18.7088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[39].SRYKBN#</string>
@@ -5723,7 +5723,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,18.65"/>
+            <point val="1.3,18.6324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5742,10 +5742,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O155">
       <attribute name="obj_pos">
-        <point val="1.3,19"/>
+        <point val="1.3,18.9824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,18.7264;1.7242,19.0764"/>
+        <rectangle val="1.3,18.7088;1.7242,19.0588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[40].SRYKBN#</string>
@@ -5765,7 +5765,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,19"/>
+            <point val="1.3,18.9824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5784,10 +5784,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O156">
       <attribute name="obj_pos">
-        <point val="1.3,19.35"/>
+        <point val="1.3,19.3324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,19.0764;1.7242,19.4264"/>
+        <rectangle val="1.3,19.0588;1.7242,19.4088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[41].SRYKBN#</string>
@@ -5807,7 +5807,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,19.35"/>
+            <point val="1.3,19.3324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5826,10 +5826,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O157">
       <attribute name="obj_pos">
-        <point val="1.3,19.7"/>
+        <point val="1.3,19.6824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,19.4264;1.7242,19.7764"/>
+        <rectangle val="1.3,19.4088;1.7242,19.7588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[42].SRYKBN#</string>
@@ -5849,7 +5849,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,19.7"/>
+            <point val="1.3,19.6824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5868,10 +5868,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O158">
       <attribute name="obj_pos">
-        <point val="1.3,20.05"/>
+        <point val="1.3,20.0324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,19.7764;1.7242,20.1264"/>
+        <rectangle val="1.3,19.7588;1.7242,20.1088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[43].SRYKBN#</string>
@@ -5891,7 +5891,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,20.05"/>
+            <point val="1.3,20.0324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5910,10 +5910,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O159">
       <attribute name="obj_pos">
-        <point val="1.3,20.4"/>
+        <point val="1.3,20.3824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,20.1264;1.7242,20.4764"/>
+        <rectangle val="1.3,20.1088;1.7242,20.4588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[44].SRYKBN#</string>
@@ -5933,7 +5933,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,20.4"/>
+            <point val="1.3,20.3824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5952,10 +5952,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O160">
       <attribute name="obj_pos">
-        <point val="1.3,20.75"/>
+        <point val="1.3,20.7324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,20.4764;1.7242,20.8264"/>
+        <rectangle val="1.3,20.4588;1.7242,20.8088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[45].SRYKBN#</string>
@@ -5975,7 +5975,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,20.75"/>
+            <point val="1.3,20.7324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5994,10 +5994,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O161">
       <attribute name="obj_pos">
-        <point val="1.3,21.1"/>
+        <point val="1.3,21.0824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,20.8264;1.7242,21.1764"/>
+        <rectangle val="1.3,20.8088;1.7242,21.1588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[46].SRYKBN#</string>
@@ -6017,7 +6017,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,21.1"/>
+            <point val="1.3,21.0824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6036,10 +6036,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O162">
       <attribute name="obj_pos">
-        <point val="1.3,21.45"/>
+        <point val="1.3,21.4324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,21.1764;1.7242,21.5264"/>
+        <rectangle val="1.3,21.1588;1.7242,21.5088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[47].SRYKBN#</string>
@@ -6059,7 +6059,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,21.45"/>
+            <point val="1.3,21.4324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6078,10 +6078,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O163">
       <attribute name="obj_pos">
-        <point val="1.3,21.8"/>
+        <point val="1.3,21.7824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,21.5264;1.7242,21.8764"/>
+        <rectangle val="1.3,21.5088;1.7242,21.8588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[48].SRYKBN#</string>
@@ -6101,7 +6101,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,21.8"/>
+            <point val="1.3,21.7824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6120,10 +6120,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O164">
       <attribute name="obj_pos">
-        <point val="1.3,22.15"/>
+        <point val="1.3,22.1324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,21.8764;1.7242,22.2264"/>
+        <rectangle val="1.3,21.8588;1.7242,22.2088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[49].SRYKBN#</string>
@@ -6143,7 +6143,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,22.15"/>
+            <point val="1.3,22.1324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6162,10 +6162,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O165">
       <attribute name="obj_pos">
-        <point val="1.3,22.5"/>
+        <point val="1.3,22.4824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,22.2264;1.7242,22.5764"/>
+        <rectangle val="1.3,22.2088;1.7242,22.5588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[50].SRYKBN#</string>
@@ -6185,7 +6185,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,22.5"/>
+            <point val="1.3,22.4824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6204,10 +6204,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O166">
       <attribute name="obj_pos">
-        <point val="1.3,22.85"/>
+        <point val="1.3,22.8324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,22.5764;1.7242,22.9264"/>
+        <rectangle val="1.3,22.5588;1.7242,22.9088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[51].SRYKBN#</string>
@@ -6227,7 +6227,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,22.85"/>
+            <point val="1.3,22.8324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6246,10 +6246,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O167">
       <attribute name="obj_pos">
-        <point val="1.3,23.2"/>
+        <point val="1.3,23.1824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,22.9264;1.7242,23.2764"/>
+        <rectangle val="1.3,22.9088;1.7242,23.2588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[52].SRYKBN#</string>
@@ -6269,7 +6269,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,23.2"/>
+            <point val="1.3,23.1824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6288,10 +6288,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O168">
       <attribute name="obj_pos">
-        <point val="1.3,23.55"/>
+        <point val="1.3,23.5324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,23.2764;1.7242,23.6264"/>
+        <rectangle val="1.3,23.2588;1.7242,23.6088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[53].SRYKBN#</string>
@@ -6311,7 +6311,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,23.55"/>
+            <point val="1.3,23.5324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6330,10 +6330,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O169">
       <attribute name="obj_pos">
-        <point val="1.3,23.9"/>
+        <point val="1.3,23.8824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,23.6264;1.7242,23.9764"/>
+        <rectangle val="1.3,23.6088;1.7242,23.9588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[54].SRYKBN#</string>
@@ -6353,7 +6353,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,23.9"/>
+            <point val="1.3,23.8824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6372,10 +6372,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O170">
       <attribute name="obj_pos">
-        <point val="1.85,17.25"/>
+        <point val="1.85,17.225"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,16.992;10.2492,17.322"/>
+        <rectangle val="1.85,16.967;10.2492,17.297"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[35].TEKIYO#</string>
@@ -6395,7 +6395,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,17.25"/>
+            <point val="1.85,17.225"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6414,10 +6414,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O171">
       <attribute name="obj_pos">
-        <point val="1.85,17.6"/>
+        <point val="1.85,17.575"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,17.342;10.2492,17.672"/>
+        <rectangle val="1.85,17.317;10.2492,17.647"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[36].TEKIYO#</string>
@@ -6437,7 +6437,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,17.6"/>
+            <point val="1.85,17.575"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6456,10 +6456,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O172">
       <attribute name="obj_pos">
-        <point val="1.85,17.95"/>
+        <point val="1.85,17.925"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,17.692;10.2492,18.022"/>
+        <rectangle val="1.85,17.667;10.2492,17.997"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[37].TEKIYO#</string>
@@ -6479,7 +6479,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,17.95"/>
+            <point val="1.85,17.925"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6498,10 +6498,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O173">
       <attribute name="obj_pos">
-        <point val="1.85,18.3"/>
+        <point val="1.85,18.275"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,18.042;10.2492,18.372"/>
+        <rectangle val="1.85,18.017;10.2492,18.347"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[38].TEKIYO#</string>
@@ -6521,7 +6521,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,18.3"/>
+            <point val="1.85,18.275"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6540,10 +6540,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O174">
       <attribute name="obj_pos">
-        <point val="1.85,18.65"/>
+        <point val="1.85,18.625"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,18.392;10.2492,18.722"/>
+        <rectangle val="1.85,18.367;10.2492,18.697"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[39].TEKIYO#</string>
@@ -6563,7 +6563,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,18.65"/>
+            <point val="1.85,18.625"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6582,10 +6582,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O175">
       <attribute name="obj_pos">
-        <point val="1.85,19"/>
+        <point val="1.85,18.975"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,18.742;10.2492,19.072"/>
+        <rectangle val="1.85,18.717;10.2492,19.047"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[40].TEKIYO#</string>
@@ -6605,7 +6605,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,19"/>
+            <point val="1.85,18.975"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6624,10 +6624,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O176">
       <attribute name="obj_pos">
-        <point val="1.85,19.35"/>
+        <point val="1.85,19.325"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,19.092;10.2492,19.422"/>
+        <rectangle val="1.85,19.067;10.2492,19.397"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[41].TEKIYO#</string>
@@ -6647,7 +6647,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,19.35"/>
+            <point val="1.85,19.325"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6666,10 +6666,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O177">
       <attribute name="obj_pos">
-        <point val="1.85,19.7"/>
+        <point val="1.85,19.675"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,19.442;10.2492,19.772"/>
+        <rectangle val="1.85,19.417;10.2492,19.747"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[42].TEKIYO#</string>
@@ -6689,7 +6689,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,19.7"/>
+            <point val="1.85,19.675"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6708,10 +6708,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O178">
       <attribute name="obj_pos">
-        <point val="1.85,20.05"/>
+        <point val="1.85,20.025"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,19.792;10.2492,20.122"/>
+        <rectangle val="1.85,19.767;10.2492,20.097"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[43].TEKIYO#</string>
@@ -6731,7 +6731,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,20.05"/>
+            <point val="1.85,20.025"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6750,10 +6750,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O179">
       <attribute name="obj_pos">
-        <point val="1.85,20.4"/>
+        <point val="1.85,20.375"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,20.142;10.2492,20.472"/>
+        <rectangle val="1.85,20.117;10.2492,20.447"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[44].TEKIYO#</string>
@@ -6773,7 +6773,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,20.4"/>
+            <point val="1.85,20.375"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6792,10 +6792,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O180">
       <attribute name="obj_pos">
-        <point val="1.85,20.75"/>
+        <point val="1.85,20.725"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,20.492;10.2492,20.822"/>
+        <rectangle val="1.85,20.467;10.2492,20.797"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[45].TEKIYO#</string>
@@ -6815,7 +6815,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,20.75"/>
+            <point val="1.85,20.725"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6834,10 +6834,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O181">
       <attribute name="obj_pos">
-        <point val="1.85,21.1"/>
+        <point val="1.85,21.075"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,20.842;10.2492,21.172"/>
+        <rectangle val="1.85,20.817;10.2492,21.147"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[46].TEKIYO#</string>
@@ -6857,7 +6857,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,21.1"/>
+            <point val="1.85,21.075"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6876,10 +6876,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O182">
       <attribute name="obj_pos">
-        <point val="1.85,21.45"/>
+        <point val="1.85,21.425"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,21.192;10.2492,21.522"/>
+        <rectangle val="1.85,21.167;10.2492,21.497"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[47].TEKIYO#</string>
@@ -6899,7 +6899,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,21.45"/>
+            <point val="1.85,21.425"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6918,10 +6918,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O183">
       <attribute name="obj_pos">
-        <point val="1.85,21.8"/>
+        <point val="1.85,21.775"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,21.542;10.2492,21.872"/>
+        <rectangle val="1.85,21.517;10.2492,21.847"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[48].TEKIYO#</string>
@@ -6941,7 +6941,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,21.8"/>
+            <point val="1.85,21.775"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6960,10 +6960,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O184">
       <attribute name="obj_pos">
-        <point val="1.85,22.15"/>
+        <point val="1.85,22.125"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,21.892;10.2492,22.222"/>
+        <rectangle val="1.85,21.867;10.2492,22.197"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[49].TEKIYO#</string>
@@ -6983,7 +6983,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,22.15"/>
+            <point val="1.85,22.125"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7002,10 +7002,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O185">
       <attribute name="obj_pos">
-        <point val="1.85,22.5"/>
+        <point val="1.85,22.475"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,22.242;10.2492,22.572"/>
+        <rectangle val="1.85,22.217;10.2492,22.547"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[50].TEKIYO#</string>
@@ -7025,7 +7025,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,22.5"/>
+            <point val="1.85,22.475"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7044,10 +7044,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O186">
       <attribute name="obj_pos">
-        <point val="1.85,22.85"/>
+        <point val="1.85,22.825"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,22.592;10.2492,22.922"/>
+        <rectangle val="1.85,22.567;10.2492,22.897"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[51].TEKIYO#</string>
@@ -7067,7 +7067,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,22.85"/>
+            <point val="1.85,22.825"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7086,10 +7086,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O187">
       <attribute name="obj_pos">
-        <point val="1.85,23.2"/>
+        <point val="1.85,23.175"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,22.942;10.2492,23.272"/>
+        <rectangle val="1.85,22.917;10.2492,23.247"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[52].TEKIYO#</string>
@@ -7109,7 +7109,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,23.2"/>
+            <point val="1.85,23.175"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7128,10 +7128,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O188">
       <attribute name="obj_pos">
-        <point val="1.85,23.55"/>
+        <point val="1.85,23.525"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,23.292;10.2492,23.622"/>
+        <rectangle val="1.85,23.267;10.2492,23.597"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[53].TEKIYO#</string>
@@ -7151,7 +7151,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,23.55"/>
+            <point val="1.85,23.525"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7170,10 +7170,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O189">
       <attribute name="obj_pos">
-        <point val="1.85,23.9"/>
+        <point val="1.85,23.875"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,23.642;10.2492,23.972"/>
+        <rectangle val="1.85,23.617;10.2492,23.947"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[54].TEKIYO#</string>
@@ -7193,7 +7193,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,23.9"/>
+            <point val="1.85,23.875"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7212,10 +7212,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O190">
       <attribute name="obj_pos">
-        <point val="1.3,24.25"/>
+        <point val="11,4.9824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,23.9764;1.7242,24.3264"/>
+        <rectangle val="11,4.70876;11.4242,5.05876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[55].SRYKBN#</string>
@@ -7235,7 +7235,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,24.25"/>
+            <point val="11,4.9824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7254,10 +7254,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O191">
       <attribute name="obj_pos">
-        <point val="1.3,24.6"/>
+        <point val="11,5.3324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,24.3264;1.7242,24.6764"/>
+        <rectangle val="11,5.05876;11.4242,5.40876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[56].SRYKBN#</string>
@@ -7277,7 +7277,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,24.6"/>
+            <point val="11,5.3324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7296,10 +7296,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O192">
       <attribute name="obj_pos">
-        <point val="1.3,24.95"/>
+        <point val="11,5.6824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,24.6764;1.7242,25.0264"/>
+        <rectangle val="11,5.40876;11.4242,5.75876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[57].SRYKBN#</string>
@@ -7319,7 +7319,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,24.95"/>
+            <point val="11,5.6824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7338,10 +7338,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O193">
       <attribute name="obj_pos">
-        <point val="1.3,25.3"/>
+        <point val="11,6.0324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,25.0264;1.7242,25.3764"/>
+        <rectangle val="11,5.75876;11.4242,6.10876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[58].SRYKBN#</string>
@@ -7361,7 +7361,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,25.3"/>
+            <point val="11,6.0324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7380,10 +7380,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O194">
       <attribute name="obj_pos">
-        <point val="1.3,25.65"/>
+        <point val="11,6.3824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,25.3764;1.7242,25.7264"/>
+        <rectangle val="11,6.10876;11.4242,6.45876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[59].SRYKBN#</string>
@@ -7403,7 +7403,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,25.65"/>
+            <point val="11,6.3824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7422,10 +7422,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O195">
       <attribute name="obj_pos">
-        <point val="1.3,26"/>
+        <point val="11,6.7324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,25.7264;1.7242,26.0764"/>
+        <rectangle val="11,6.45876;11.4242,6.80876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[60].SRYKBN#</string>
@@ -7445,7 +7445,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,26"/>
+            <point val="11,6.7324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7464,10 +7464,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O196">
       <attribute name="obj_pos">
-        <point val="1.3,26.35"/>
+        <point val="11,7.0824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,26.0764;1.7242,26.4264"/>
+        <rectangle val="11,6.80876;11.4242,7.15876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[61].SRYKBN#</string>
@@ -7487,7 +7487,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,26.35"/>
+            <point val="11,7.0824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7506,10 +7506,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O197">
       <attribute name="obj_pos">
-        <point val="1.3,26.7"/>
+        <point val="11,7.4324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,26.4264;1.7242,26.7764"/>
+        <rectangle val="11,7.15876;11.4242,7.50876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[62].SRYKBN#</string>
@@ -7529,7 +7529,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,26.7"/>
+            <point val="11,7.4324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7548,10 +7548,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O198">
       <attribute name="obj_pos">
-        <point val="1.3,27.05"/>
+        <point val="11,7.7824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,26.7764;1.7242,27.1264"/>
+        <rectangle val="11,7.50876;11.4242,7.85876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[63].SRYKBN#</string>
@@ -7571,7 +7571,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,27.05"/>
+            <point val="11,7.7824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7590,10 +7590,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O199">
       <attribute name="obj_pos">
-        <point val="1.3,27.4"/>
+        <point val="11,8.1324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,27.1264;1.7242,27.4764"/>
+        <rectangle val="11,7.85876;11.4242,8.20876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[64].SRYKBN#</string>
@@ -7613,7 +7613,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,27.4"/>
+            <point val="11,8.1324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7632,10 +7632,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O200">
       <attribute name="obj_pos">
-        <point val="1.3,27.75"/>
+        <point val="11,8.4824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,27.4764;1.7242,27.8264"/>
+        <rectangle val="11,8.20876;11.4242,8.55876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[65].SRYKBN#</string>
@@ -7655,7 +7655,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,27.75"/>
+            <point val="11,8.4824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7674,10 +7674,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O201">
       <attribute name="obj_pos">
-        <point val="1.3,28.1"/>
+        <point val="11,8.8324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,27.8264;1.7242,28.1764"/>
+        <rectangle val="11,8.55876;11.4242,8.90876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[66].SRYKBN#</string>
@@ -7697,7 +7697,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,28.1"/>
+            <point val="11,8.8324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7716,10 +7716,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O202">
       <attribute name="obj_pos">
-        <point val="1.3,28.45"/>
+        <point val="11,9.1824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,28.1764;1.7242,28.5264"/>
+        <rectangle val="11,8.90876;11.4242,9.25876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[67].SRYKBN#</string>
@@ -7739,7 +7739,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,28.45"/>
+            <point val="11,9.1824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7758,10 +7758,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O203">
       <attribute name="obj_pos">
-        <point val="1.3,28.8"/>
+        <point val="11,9.5324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.3,28.5264;1.7242,28.8764"/>
+        <rectangle val="11,9.25876;11.4242,9.60876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[68].SRYKBN#</string>
@@ -7781,7 +7781,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.3,28.8"/>
+            <point val="11,9.5324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7800,10 +7800,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O204">
       <attribute name="obj_pos">
-        <point val="11,5"/>
+        <point val="11,9.8824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,4.72636;11.4242,5.07636"/>
+        <rectangle val="11,9.60876;11.4242,9.95876"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[69].SRYKBN#</string>
@@ -7823,7 +7823,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,5"/>
+            <point val="11,9.8824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7842,10 +7842,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O205">
       <attribute name="obj_pos">
-        <point val="11,5.35"/>
+        <point val="11,10.2324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,5.07636;11.4242,5.42636"/>
+        <rectangle val="11,9.95876;11.4242,10.3088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[70].SRYKBN#</string>
@@ -7865,7 +7865,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,5.35"/>
+            <point val="11,10.2324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7884,10 +7884,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O206">
       <attribute name="obj_pos">
-        <point val="11,5.7"/>
+        <point val="11,10.5824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,5.42636;11.4242,5.77636"/>
+        <rectangle val="11,10.3088;11.4242,10.6588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[71].SRYKBN#</string>
@@ -7907,7 +7907,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,5.7"/>
+            <point val="11,10.5824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7926,10 +7926,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O207">
       <attribute name="obj_pos">
-        <point val="11,6.05"/>
+        <point val="11,10.9324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,5.77636;11.4242,6.12636"/>
+        <rectangle val="11,10.6588;11.4242,11.0088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[72].SRYKBN#</string>
@@ -7949,7 +7949,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,6.05"/>
+            <point val="11,10.9324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -7968,10 +7968,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O208">
       <attribute name="obj_pos">
-        <point val="11,6.4"/>
+        <point val="11,11.2824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,6.12636;11.4242,6.47636"/>
+        <rectangle val="11,11.0088;11.4242,11.3588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[73].SRYKBN#</string>
@@ -7991,7 +7991,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,6.4"/>
+            <point val="11,11.2824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8010,10 +8010,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O209">
       <attribute name="obj_pos">
-        <point val="11,6.75"/>
+        <point val="11,11.6324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,6.47636;11.4242,6.82636"/>
+        <rectangle val="11,11.3588;11.4242,11.7088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[74].SRYKBN#</string>
@@ -8033,7 +8033,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,6.75"/>
+            <point val="11,11.6324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8052,10 +8052,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O210">
       <attribute name="obj_pos">
-        <point val="11,7.1"/>
+        <point val="11,11.9824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,6.82636;11.4242,7.17636"/>
+        <rectangle val="11,11.7088;11.4242,12.0588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[75].SRYKBN#</string>
@@ -8075,7 +8075,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,7.1"/>
+            <point val="11,11.9824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8094,10 +8094,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O211">
       <attribute name="obj_pos">
-        <point val="11,7.45"/>
+        <point val="11,12.3324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,7.17636;11.4242,7.52636"/>
+        <rectangle val="11,12.0588;11.4242,12.4088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[76].SRYKBN#</string>
@@ -8117,7 +8117,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,7.45"/>
+            <point val="11,12.3324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8136,10 +8136,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O212">
       <attribute name="obj_pos">
-        <point val="11,7.8"/>
+        <point val="11,12.6824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,7.52636;11.4242,7.87636"/>
+        <rectangle val="11,12.4088;11.4242,12.7588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[77].SRYKBN#</string>
@@ -8159,7 +8159,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,7.8"/>
+            <point val="11,12.6824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8178,10 +8178,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O213">
       <attribute name="obj_pos">
-        <point val="11,8.15"/>
+        <point val="11,13.0324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,7.87636;11.4242,8.22636"/>
+        <rectangle val="11,12.7588;11.4242,13.1088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[78].SRYKBN#</string>
@@ -8201,7 +8201,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,8.15"/>
+            <point val="11,13.0324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8220,10 +8220,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O214">
       <attribute name="obj_pos">
-        <point val="11,8.5"/>
+        <point val="11,13.3824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,8.22636;11.4242,8.57636"/>
+        <rectangle val="11,13.1088;11.4242,13.4588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[79].SRYKBN#</string>
@@ -8243,7 +8243,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,8.5"/>
+            <point val="11,13.3824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8262,10 +8262,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O215">
       <attribute name="obj_pos">
-        <point val="11,8.85"/>
+        <point val="11,13.7324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,8.57636;11.4242,8.92636"/>
+        <rectangle val="11,13.4588;11.4242,13.8088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[80].SRYKBN#</string>
@@ -8285,7 +8285,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,8.85"/>
+            <point val="11,13.7324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8304,10 +8304,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O216">
       <attribute name="obj_pos">
-        <point val="11,9.2"/>
+        <point val="11,14.0824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,8.92636;11.4242,9.27636"/>
+        <rectangle val="11,13.8088;11.4242,14.1588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[81].SRYKBN#</string>
@@ -8327,7 +8327,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,9.2"/>
+            <point val="11,14.0824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8346,10 +8346,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O217">
       <attribute name="obj_pos">
-        <point val="11,9.55"/>
+        <point val="11,14.4324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,9.27636;11.4242,9.62636"/>
+        <rectangle val="11,14.1588;11.4242,14.5088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[82].SRYKBN#</string>
@@ -8369,7 +8369,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,9.55"/>
+            <point val="11,14.4324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8388,10 +8388,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O218">
       <attribute name="obj_pos">
-        <point val="11,9.9"/>
+        <point val="11,14.7824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,9.62636;11.4242,9.97636"/>
+        <rectangle val="11,14.5088;11.4242,14.8588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[83].SRYKBN#</string>
@@ -8411,7 +8411,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,9.9"/>
+            <point val="11,14.7824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8430,10 +8430,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O219">
       <attribute name="obj_pos">
-        <point val="11,10.25"/>
+        <point val="11,15.1324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,9.97636;11.4242,10.3264"/>
+        <rectangle val="11,14.8588;11.4242,15.2088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[84].SRYKBN#</string>
@@ -8453,7 +8453,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,10.25"/>
+            <point val="11,15.1324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8472,10 +8472,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O220">
       <attribute name="obj_pos">
-        <point val="11,10.6"/>
+        <point val="11,15.4824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,10.3264;11.4242,10.6764"/>
+        <rectangle val="11,15.2088;11.4242,15.5588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[85].SRYKBN#</string>
@@ -8495,7 +8495,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,10.6"/>
+            <point val="11,15.4824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8514,10 +8514,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O221">
       <attribute name="obj_pos">
-        <point val="11,10.95"/>
+        <point val="11,15.8324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,10.6764;11.4242,11.0264"/>
+        <rectangle val="11,15.5588;11.4242,15.9088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[86].SRYKBN#</string>
@@ -8537,7 +8537,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,10.95"/>
+            <point val="11,15.8324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8556,10 +8556,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O222">
       <attribute name="obj_pos">
-        <point val="11,11.3"/>
+        <point val="11,16.1824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,11.0264;11.4242,11.3764"/>
+        <rectangle val="11,15.9088;11.4242,16.2588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[87].SRYKBN#</string>
@@ -8579,7 +8579,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,11.3"/>
+            <point val="11,16.1824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8598,10 +8598,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O223">
       <attribute name="obj_pos">
-        <point val="11,11.65"/>
+        <point val="11,16.5324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,11.3764;11.4242,11.7264"/>
+        <rectangle val="11,16.2588;11.4242,16.6088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[88].SRYKBN#</string>
@@ -8621,7 +8621,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,11.65"/>
+            <point val="11,16.5324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8640,10 +8640,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O224">
       <attribute name="obj_pos">
-        <point val="11,12"/>
+        <point val="11,16.875"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,11.7264;11.4242,12.0764"/>
+        <rectangle val="11,16.6014;11.4242,16.9514"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[89].SRYKBN#</string>
@@ -8663,7 +8663,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,12"/>
+            <point val="11,16.875"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8682,10 +8682,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O225">
       <attribute name="obj_pos">
-        <point val="1.85,24.25"/>
+        <point val="11.55,4.975"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,23.992;10.2492,24.322"/>
+        <rectangle val="11.55,4.717;19.9492,5.047"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[55].TEKIYO#</string>
@@ -8705,7 +8705,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,24.25"/>
+            <point val="11.55,4.975"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8724,10 +8724,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O226">
       <attribute name="obj_pos">
-        <point val="1.85,24.6"/>
+        <point val="11.55,5.325"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,24.342;10.2492,24.672"/>
+        <rectangle val="11.55,5.067;19.9492,5.397"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[56].TEKIYO#</string>
@@ -8747,7 +8747,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,24.6"/>
+            <point val="11.55,5.325"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8766,10 +8766,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O227">
       <attribute name="obj_pos">
-        <point val="1.85,24.95"/>
+        <point val="11.55,5.675"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,24.692;10.2492,25.022"/>
+        <rectangle val="11.55,5.417;19.9492,5.747"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[57].TEKIYO#</string>
@@ -8789,7 +8789,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,24.95"/>
+            <point val="11.55,5.675"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8808,10 +8808,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O228">
       <attribute name="obj_pos">
-        <point val="1.85,25.3"/>
+        <point val="11.55,6.025"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,25.042;10.2492,25.372"/>
+        <rectangle val="11.55,5.767;19.9492,6.097"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[58].TEKIYO#</string>
@@ -8831,7 +8831,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,25.3"/>
+            <point val="11.55,6.025"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8850,10 +8850,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O229">
       <attribute name="obj_pos">
-        <point val="1.85,25.65"/>
+        <point val="11.55,6.375"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,25.392;10.2492,25.722"/>
+        <rectangle val="11.55,6.117;19.9492,6.447"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[59].TEKIYO#</string>
@@ -8873,7 +8873,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,25.65"/>
+            <point val="11.55,6.375"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8892,10 +8892,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O230">
       <attribute name="obj_pos">
-        <point val="1.85,26"/>
+        <point val="11.55,6.725"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,25.742;10.2492,26.072"/>
+        <rectangle val="11.55,6.467;19.9492,6.797"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[60].TEKIYO#</string>
@@ -8915,7 +8915,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,26"/>
+            <point val="11.55,6.725"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8934,10 +8934,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O231">
       <attribute name="obj_pos">
-        <point val="1.85,26.35"/>
+        <point val="11.55,7.075"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,26.092;10.2492,26.422"/>
+        <rectangle val="11.55,6.817;19.9492,7.147"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[61].TEKIYO#</string>
@@ -8957,7 +8957,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,26.35"/>
+            <point val="11.55,7.075"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -8976,10 +8976,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O232">
       <attribute name="obj_pos">
-        <point val="1.85,26.7"/>
+        <point val="11.55,7.425"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,26.442;10.2492,26.772"/>
+        <rectangle val="11.55,7.167;19.9492,7.497"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[62].TEKIYO#</string>
@@ -8999,7 +8999,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,26.7"/>
+            <point val="11.55,7.425"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9018,10 +9018,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O233">
       <attribute name="obj_pos">
-        <point val="1.85,27.05"/>
+        <point val="11.55,7.775"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,26.792;10.2492,27.122"/>
+        <rectangle val="11.55,7.517;19.9492,7.847"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[63].TEKIYO#</string>
@@ -9041,7 +9041,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,27.05"/>
+            <point val="11.55,7.775"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9060,10 +9060,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O234">
       <attribute name="obj_pos">
-        <point val="1.85,27.4"/>
+        <point val="11.55,8.125"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,27.142;10.2492,27.472"/>
+        <rectangle val="11.55,7.867;19.9492,8.197"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[64].TEKIYO#</string>
@@ -9083,7 +9083,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,27.4"/>
+            <point val="11.55,8.125"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9102,10 +9102,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O235">
       <attribute name="obj_pos">
-        <point val="1.85,27.75"/>
+        <point val="11.55,8.475"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,27.492;10.2492,27.822"/>
+        <rectangle val="11.55,8.217;19.9492,8.547"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[65].TEKIYO#</string>
@@ -9125,7 +9125,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,27.75"/>
+            <point val="11.55,8.475"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9144,10 +9144,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O236">
       <attribute name="obj_pos">
-        <point val="1.85,28.1"/>
+        <point val="11.55,8.825"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,27.842;10.2492,28.172"/>
+        <rectangle val="11.55,8.567;19.9492,8.897"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[66].TEKIYO#</string>
@@ -9167,7 +9167,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,28.1"/>
+            <point val="11.55,8.825"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9186,10 +9186,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O237">
       <attribute name="obj_pos">
-        <point val="1.85,28.45"/>
+        <point val="11.55,9.175"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,28.192;10.2492,28.522"/>
+        <rectangle val="11.55,8.917;19.9492,9.247"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[67].TEKIYO#</string>
@@ -9209,7 +9209,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,28.45"/>
+            <point val="11.55,9.175"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9228,10 +9228,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O238">
       <attribute name="obj_pos">
-        <point val="1.85,28.8"/>
+        <point val="11.55,9.525"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.85,28.542;10.2492,28.872"/>
+        <rectangle val="11.55,9.267;19.9492,9.597"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[68].TEKIYO#</string>
@@ -9251,7 +9251,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.85,28.8"/>
+            <point val="11.55,9.525"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9270,10 +9270,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O239">
       <attribute name="obj_pos">
-        <point val="11.55,5"/>
+        <point val="11.55,9.875"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,4.742;19.9492,5.072"/>
+        <rectangle val="11.55,9.617;19.9492,9.947"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[69].TEKIYO#</string>
@@ -9293,7 +9293,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,5"/>
+            <point val="11.55,9.875"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9312,10 +9312,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O240">
       <attribute name="obj_pos">
-        <point val="11.55,5.35"/>
+        <point val="11.55,10.225"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,5.092;19.9492,5.422"/>
+        <rectangle val="11.55,9.967;19.9492,10.297"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[70].TEKIYO#</string>
@@ -9335,7 +9335,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,5.35"/>
+            <point val="11.55,10.225"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9354,10 +9354,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O241">
       <attribute name="obj_pos">
-        <point val="11.55,5.7"/>
+        <point val="11.55,10.575"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,5.442;19.9492,5.772"/>
+        <rectangle val="11.55,10.317;19.9492,10.647"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[71].TEKIYO#</string>
@@ -9377,7 +9377,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,5.7"/>
+            <point val="11.55,10.575"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9396,10 +9396,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O242">
       <attribute name="obj_pos">
-        <point val="11.55,6.05"/>
+        <point val="11.55,10.925"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,5.792;19.9492,6.122"/>
+        <rectangle val="11.55,10.667;19.9492,10.997"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[72].TEKIYO#</string>
@@ -9419,7 +9419,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,6.05"/>
+            <point val="11.55,10.925"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9438,10 +9438,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O243">
       <attribute name="obj_pos">
-        <point val="11.55,6.4"/>
+        <point val="11.55,11.275"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,6.142;19.9492,6.472"/>
+        <rectangle val="11.55,11.017;19.9492,11.347"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[73].TEKIYO#</string>
@@ -9461,7 +9461,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,6.4"/>
+            <point val="11.55,11.275"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9480,10 +9480,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O244">
       <attribute name="obj_pos">
-        <point val="11.55,6.75"/>
+        <point val="11.55,11.625"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,6.492;19.9492,6.822"/>
+        <rectangle val="11.55,11.367;19.9492,11.697"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[74].TEKIYO#</string>
@@ -9503,7 +9503,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,6.75"/>
+            <point val="11.55,11.625"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9522,10 +9522,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O245">
       <attribute name="obj_pos">
-        <point val="11.55,7.1"/>
+        <point val="11.55,11.975"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,6.842;19.9492,7.172"/>
+        <rectangle val="11.55,11.717;19.9492,12.047"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[75].TEKIYO#</string>
@@ -9545,7 +9545,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,7.1"/>
+            <point val="11.55,11.975"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9564,10 +9564,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O246">
       <attribute name="obj_pos">
-        <point val="11.55,7.45"/>
+        <point val="11.55,12.325"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,7.192;19.9492,7.522"/>
+        <rectangle val="11.55,12.067;19.9492,12.397"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[76].TEKIYO#</string>
@@ -9587,7 +9587,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,7.45"/>
+            <point val="11.55,12.325"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9606,10 +9606,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O247">
       <attribute name="obj_pos">
-        <point val="11.55,7.8"/>
+        <point val="11.55,12.675"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,7.542;19.9492,7.872"/>
+        <rectangle val="11.55,12.417;19.9492,12.747"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[77].TEKIYO#</string>
@@ -9629,7 +9629,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,7.8"/>
+            <point val="11.55,12.675"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9648,10 +9648,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O248">
       <attribute name="obj_pos">
-        <point val="11.55,8.15"/>
+        <point val="11.55,13.025"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,7.892;19.9492,8.222"/>
+        <rectangle val="11.55,12.767;19.9492,13.097"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[78].TEKIYO#</string>
@@ -9671,7 +9671,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,8.15"/>
+            <point val="11.55,13.025"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9690,10 +9690,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O249">
       <attribute name="obj_pos">
-        <point val="11.55,8.5"/>
+        <point val="11.55,13.375"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,8.242;19.9492,8.572"/>
+        <rectangle val="11.55,13.117;19.9492,13.447"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[79].TEKIYO#</string>
@@ -9713,7 +9713,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,8.5"/>
+            <point val="11.55,13.375"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9732,10 +9732,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O250">
       <attribute name="obj_pos">
-        <point val="11.55,8.85"/>
+        <point val="11.55,13.725"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,8.592;19.9492,8.922"/>
+        <rectangle val="11.55,13.467;19.9492,13.797"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[80].TEKIYO#</string>
@@ -9755,7 +9755,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,8.85"/>
+            <point val="11.55,13.725"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9774,10 +9774,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O251">
       <attribute name="obj_pos">
-        <point val="11.55,9.2"/>
+        <point val="11.55,14.075"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,8.942;19.9492,9.272"/>
+        <rectangle val="11.55,13.817;19.9492,14.147"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[81].TEKIYO#</string>
@@ -9797,7 +9797,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,9.2"/>
+            <point val="11.55,14.075"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9816,10 +9816,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O252">
       <attribute name="obj_pos">
-        <point val="11.55,9.55"/>
+        <point val="11.55,14.425"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,9.292;19.9492,9.622"/>
+        <rectangle val="11.55,14.167;19.9492,14.497"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[82].TEKIYO#</string>
@@ -9839,7 +9839,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,9.55"/>
+            <point val="11.55,14.425"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9858,10 +9858,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O253">
       <attribute name="obj_pos">
-        <point val="11.55,9.9"/>
+        <point val="11.55,14.775"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,9.642;19.9492,9.972"/>
+        <rectangle val="11.55,14.517;19.9492,14.847"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[83].TEKIYO#</string>
@@ -9881,7 +9881,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,9.9"/>
+            <point val="11.55,14.775"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9900,10 +9900,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O254">
       <attribute name="obj_pos">
-        <point val="11.55,10.25"/>
+        <point val="11.55,15.125"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,9.992;19.9492,10.322"/>
+        <rectangle val="11.55,14.867;19.9492,15.197"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[84].TEKIYO#</string>
@@ -9923,7 +9923,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,10.25"/>
+            <point val="11.55,15.125"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9942,10 +9942,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O255">
       <attribute name="obj_pos">
-        <point val="11.55,10.6"/>
+        <point val="11.55,15.475"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,10.342;19.9492,10.672"/>
+        <rectangle val="11.55,15.217;19.9492,15.547"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[85].TEKIYO#</string>
@@ -9965,7 +9965,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,10.6"/>
+            <point val="11.55,15.475"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -9984,10 +9984,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O256">
       <attribute name="obj_pos">
-        <point val="11.55,10.95"/>
+        <point val="11.55,15.825"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,10.692;19.9492,11.022"/>
+        <rectangle val="11.55,15.567;19.9492,15.897"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[86].TEKIYO#</string>
@@ -10007,7 +10007,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,10.95"/>
+            <point val="11.55,15.825"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10026,10 +10026,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O257">
       <attribute name="obj_pos">
-        <point val="11.55,11.3"/>
+        <point val="11.55,16.175"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,11.042;19.9492,11.372"/>
+        <rectangle val="11.55,15.917;19.9492,16.247"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[87].TEKIYO#</string>
@@ -10049,7 +10049,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,11.3"/>
+            <point val="11.55,16.175"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10068,10 +10068,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O258">
       <attribute name="obj_pos">
-        <point val="11.55,11.65"/>
+        <point val="11.55,16.525"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,11.392;19.9492,11.722"/>
+        <rectangle val="11.55,16.267;19.9492,16.597"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[88].TEKIYO#</string>
@@ -10091,7 +10091,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,11.65"/>
+            <point val="11.55,16.525"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10110,10 +10110,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O259">
       <attribute name="obj_pos">
-        <point val="11.55,12.0074"/>
+        <point val="11.55,16.8824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,11.7494;19.9492,12.0794"/>
+        <rectangle val="11.55,16.6244;19.9492,16.9544"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[89].TEKIYO#</string>
@@ -10133,7 +10133,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,12.0074"/>
+            <point val="11.55,16.8824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10152,10 +10152,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O260">
       <attribute name="obj_pos">
-        <point val="11,12.35"/>
+        <point val="11,17.2324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,12.0764;11.4242,12.4264"/>
+        <rectangle val="11,16.9588;11.4242,17.3088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[90].SRYKBN#</string>
@@ -10175,7 +10175,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,12.35"/>
+            <point val="11,17.2324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10194,10 +10194,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O261">
       <attribute name="obj_pos">
-        <point val="11,12.7"/>
+        <point val="11,17.5824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,12.4264;11.4242,12.7764"/>
+        <rectangle val="11,17.3088;11.4242,17.6588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[91].SRYKBN#</string>
@@ -10217,7 +10217,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,12.7"/>
+            <point val="11,17.5824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10236,10 +10236,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O262">
       <attribute name="obj_pos">
-        <point val="11,13.05"/>
+        <point val="11,17.9324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,12.7764;11.4242,13.1264"/>
+        <rectangle val="11,17.6588;11.4242,18.0088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[92].SRYKBN#</string>
@@ -10259,7 +10259,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,13.05"/>
+            <point val="11,17.9324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10278,10 +10278,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O263">
       <attribute name="obj_pos">
-        <point val="11,13.4"/>
+        <point val="11,18.2824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,13.1264;11.4242,13.4764"/>
+        <rectangle val="11,18.0088;11.4242,18.3588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[93].SRYKBN#</string>
@@ -10301,7 +10301,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,13.4"/>
+            <point val="11,18.2824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10320,10 +10320,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O264">
       <attribute name="obj_pos">
-        <point val="11,13.75"/>
+        <point val="11,18.6324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,13.4764;11.4242,13.8264"/>
+        <rectangle val="11,18.3588;11.4242,18.7088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[94].SRYKBN#</string>
@@ -10343,7 +10343,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,13.75"/>
+            <point val="11,18.6324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10362,10 +10362,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O265">
       <attribute name="obj_pos">
-        <point val="11,14.1"/>
+        <point val="11,18.9824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,13.8264;11.4242,14.1764"/>
+        <rectangle val="11,18.7088;11.4242,19.0588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[95].SRYKBN#</string>
@@ -10385,7 +10385,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,14.1"/>
+            <point val="11,18.9824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10404,10 +10404,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O266">
       <attribute name="obj_pos">
-        <point val="11,14.45"/>
+        <point val="11,19.3324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,14.1764;11.4242,14.5264"/>
+        <rectangle val="11,19.0588;11.4242,19.4088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[96].SRYKBN#</string>
@@ -10427,7 +10427,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,14.45"/>
+            <point val="11,19.3324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10446,10 +10446,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O267">
       <attribute name="obj_pos">
-        <point val="11,14.8"/>
+        <point val="11,19.6824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,14.5264;11.4242,14.8764"/>
+        <rectangle val="11,19.4088;11.4242,19.7588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[97].SRYKBN#</string>
@@ -10469,7 +10469,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,14.8"/>
+            <point val="11,19.6824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10488,10 +10488,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O268">
       <attribute name="obj_pos">
-        <point val="11,15.15"/>
+        <point val="11,20.0324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,14.8764;11.4242,15.2264"/>
+        <rectangle val="11,19.7588;11.4242,20.1088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[98].SRYKBN#</string>
@@ -10511,7 +10511,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,15.15"/>
+            <point val="11,20.0324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10530,10 +10530,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O269">
       <attribute name="obj_pos">
-        <point val="11,15.5"/>
+        <point val="11,20.3824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,15.2264;11.4242,15.5764"/>
+        <rectangle val="11,20.1088;11.4242,20.4588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[99].SRYKBN#</string>
@@ -10553,7 +10553,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,15.5"/>
+            <point val="11,20.3824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10572,10 +10572,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O270">
       <attribute name="obj_pos">
-        <point val="11,15.85"/>
+        <point val="11,20.7324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,15.5764;11.4242,15.9264"/>
+        <rectangle val="11,20.4588;11.4242,20.8088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[100].SRYKBN#</string>
@@ -10595,7 +10595,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,15.85"/>
+            <point val="11,20.7324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10614,10 +10614,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O271">
       <attribute name="obj_pos">
-        <point val="11,16.2"/>
+        <point val="11,21.0824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,15.9264;11.4242,16.2764"/>
+        <rectangle val="11,20.8088;11.4242,21.1588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[101].SRYKBN#</string>
@@ -10637,7 +10637,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,16.2"/>
+            <point val="11,21.0824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10656,10 +10656,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O272">
       <attribute name="obj_pos">
-        <point val="11,16.55"/>
+        <point val="11,21.4324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,16.2764;11.4242,16.6264"/>
+        <rectangle val="11,21.1588;11.4242,21.5088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[102].SRYKBN#</string>
@@ -10679,7 +10679,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,16.55"/>
+            <point val="11,21.4324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10698,10 +10698,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O273">
       <attribute name="obj_pos">
-        <point val="11,16.9"/>
+        <point val="11,21.7824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,16.6264;11.4242,16.9764"/>
+        <rectangle val="11,21.5088;11.4242,21.8588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[103].SRYKBN#</string>
@@ -10721,7 +10721,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,16.9"/>
+            <point val="11,21.7824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10740,10 +10740,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O274">
       <attribute name="obj_pos">
-        <point val="11,17.25"/>
+        <point val="11,22.1324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,16.9764;11.4242,17.3264"/>
+        <rectangle val="11,21.8588;11.4242,22.2088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[104].SRYKBN#</string>
@@ -10763,7 +10763,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,17.25"/>
+            <point val="11,22.1324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10782,10 +10782,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O275">
       <attribute name="obj_pos">
-        <point val="11,17.6"/>
+        <point val="11,22.4824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,17.3264;11.4242,17.6764"/>
+        <rectangle val="11,22.2088;11.4242,22.5588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[105].SRYKBN#</string>
@@ -10805,7 +10805,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,17.6"/>
+            <point val="11,22.4824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10824,10 +10824,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O276">
       <attribute name="obj_pos">
-        <point val="11,17.95"/>
+        <point val="11,22.8324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,17.6764;11.4242,18.0264"/>
+        <rectangle val="11,22.5588;11.4242,22.9088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[106].SRYKBN#</string>
@@ -10847,7 +10847,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,17.95"/>
+            <point val="11,22.8324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10866,10 +10866,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O277">
       <attribute name="obj_pos">
-        <point val="11,18.3"/>
+        <point val="11,23.1824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,18.0264;11.4242,18.3764"/>
+        <rectangle val="11,22.9088;11.4242,23.2588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[107].SRYKBN#</string>
@@ -10889,7 +10889,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,18.3"/>
+            <point val="11,23.1824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10908,10 +10908,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O278">
       <attribute name="obj_pos">
-        <point val="11,18.65"/>
+        <point val="11,23.5324"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,18.3764;11.4242,18.7264"/>
+        <rectangle val="11,23.2588;11.4242,23.6088"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[108].SRYKBN#</string>
@@ -10931,7 +10931,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,18.65"/>
+            <point val="11,23.5324"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10950,10 +10950,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O279">
       <attribute name="obj_pos">
-        <point val="11,19"/>
+        <point val="11,23.8824"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,18.7264;11.4242,19.0764"/>
+        <rectangle val="11,23.6088;11.4242,23.9588"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[109].SRYKBN#</string>
@@ -10973,7 +10973,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="11,19"/>
+            <point val="11,23.8824"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -10992,10 +10992,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O280">
       <attribute name="obj_pos">
-        <point val="11.55,12.35"/>
+        <point val="11.55,17.225"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,12.092;19.9492,12.422"/>
+        <rectangle val="11.55,16.967;19.9492,17.297"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[90].TEKIYO#</string>
@@ -11015,7 +11015,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,12.35"/>
+            <point val="11.55,17.225"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11034,10 +11034,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O281">
       <attribute name="obj_pos">
-        <point val="11.55,12.7"/>
+        <point val="11.55,17.575"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,12.442;19.9492,12.772"/>
+        <rectangle val="11.55,17.317;19.9492,17.647"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[91].TEKIYO#</string>
@@ -11057,7 +11057,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,12.7"/>
+            <point val="11.55,17.575"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11076,10 +11076,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O282">
       <attribute name="obj_pos">
-        <point val="11.55,13.05"/>
+        <point val="11.55,17.925"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,12.792;19.9492,13.122"/>
+        <rectangle val="11.55,17.667;19.9492,17.997"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[92].TEKIYO#</string>
@@ -11099,7 +11099,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,13.05"/>
+            <point val="11.55,17.925"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11118,10 +11118,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O283">
       <attribute name="obj_pos">
-        <point val="11.55,13.4"/>
+        <point val="11.55,18.275"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,13.142;19.9492,13.472"/>
+        <rectangle val="11.55,18.017;19.9492,18.347"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[93].TEKIYO#</string>
@@ -11141,7 +11141,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,13.4"/>
+            <point val="11.55,18.275"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11160,10 +11160,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O284">
       <attribute name="obj_pos">
-        <point val="11.55,13.75"/>
+        <point val="11.55,18.625"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,13.492;19.9492,13.822"/>
+        <rectangle val="11.55,18.367;19.9492,18.697"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[94].TEKIYO#</string>
@@ -11183,7 +11183,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,13.75"/>
+            <point val="11.55,18.625"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11202,10 +11202,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O285">
       <attribute name="obj_pos">
-        <point val="11.55,14.1"/>
+        <point val="11.55,18.975"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,13.842;19.9492,14.172"/>
+        <rectangle val="11.55,18.717;19.9492,19.047"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[95].TEKIYO#</string>
@@ -11225,7 +11225,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,14.1"/>
+            <point val="11.55,18.975"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11244,10 +11244,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O286">
       <attribute name="obj_pos">
-        <point val="11.55,14.45"/>
+        <point val="11.55,19.325"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,14.192;19.9492,14.522"/>
+        <rectangle val="11.55,19.067;19.9492,19.397"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[96].TEKIYO#</string>
@@ -11267,7 +11267,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,14.45"/>
+            <point val="11.55,19.325"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11286,10 +11286,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O287">
       <attribute name="obj_pos">
-        <point val="11.55,14.8"/>
+        <point val="11.55,19.675"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,14.542;19.9492,14.872"/>
+        <rectangle val="11.55,19.417;19.9492,19.747"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[97].TEKIYO#</string>
@@ -11309,7 +11309,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,14.8"/>
+            <point val="11.55,19.675"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11328,10 +11328,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O288">
       <attribute name="obj_pos">
-        <point val="11.55,15.15"/>
+        <point val="11.55,20.025"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,14.892;19.9492,15.222"/>
+        <rectangle val="11.55,19.767;19.9492,20.097"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[98].TEKIYO#</string>
@@ -11351,7 +11351,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,15.15"/>
+            <point val="11.55,20.025"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11370,10 +11370,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O289">
       <attribute name="obj_pos">
-        <point val="11.55,15.5"/>
+        <point val="11.55,20.375"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,15.242;19.9492,15.572"/>
+        <rectangle val="11.55,20.117;19.9492,20.447"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[99].TEKIYO#</string>
@@ -11393,7 +11393,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,15.5"/>
+            <point val="11.55,20.375"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11412,10 +11412,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O290">
       <attribute name="obj_pos">
-        <point val="11.55,15.85"/>
+        <point val="11.55,20.725"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,15.592;19.9492,15.922"/>
+        <rectangle val="11.55,20.467;19.9492,20.797"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[100].TEKIYO#</string>
@@ -11435,7 +11435,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,15.85"/>
+            <point val="11.55,20.725"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11454,10 +11454,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O291">
       <attribute name="obj_pos">
-        <point val="11.55,16.2"/>
+        <point val="11.55,21.075"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,15.942;19.9492,16.272"/>
+        <rectangle val="11.55,20.817;19.9492,21.147"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[101].TEKIYO#</string>
@@ -11477,7 +11477,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,16.2"/>
+            <point val="11.55,21.075"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11496,10 +11496,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O292">
       <attribute name="obj_pos">
-        <point val="11.55,16.55"/>
+        <point val="11.55,21.425"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,16.292;19.9492,16.622"/>
+        <rectangle val="11.55,21.167;19.9492,21.497"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[102].TEKIYO#</string>
@@ -11519,7 +11519,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,16.55"/>
+            <point val="11.55,21.425"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11538,10 +11538,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O293">
       <attribute name="obj_pos">
-        <point val="11.55,16.9"/>
+        <point val="11.55,21.775"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,16.642;19.9492,16.972"/>
+        <rectangle val="11.55,21.517;19.9492,21.847"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[103].TEKIYO#</string>
@@ -11561,7 +11561,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,16.9"/>
+            <point val="11.55,21.775"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11580,10 +11580,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O294">
       <attribute name="obj_pos">
-        <point val="11.55,17.25"/>
+        <point val="11.55,22.125"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,16.992;19.9492,17.322"/>
+        <rectangle val="11.55,21.867;19.9492,22.197"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[104].TEKIYO#</string>
@@ -11603,7 +11603,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,17.25"/>
+            <point val="11.55,22.125"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11622,10 +11622,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O295">
       <attribute name="obj_pos">
-        <point val="11.55,17.6"/>
+        <point val="11.55,22.475"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,17.342;19.9492,17.672"/>
+        <rectangle val="11.55,22.217;19.9492,22.547"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[105].TEKIYO#</string>
@@ -11645,7 +11645,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,17.6"/>
+            <point val="11.55,22.475"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11664,10 +11664,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O296">
       <attribute name="obj_pos">
-        <point val="11.55,17.95"/>
+        <point val="11.55,22.825"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,17.692;19.9492,18.022"/>
+        <rectangle val="11.55,22.567;19.9492,22.897"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[106].TEKIYO#</string>
@@ -11687,7 +11687,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,17.95"/>
+            <point val="11.55,22.825"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11706,10 +11706,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O297">
       <attribute name="obj_pos">
-        <point val="11.55,18.3"/>
+        <point val="11.55,23.175"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,18.042;19.9492,18.372"/>
+        <rectangle val="11.55,22.917;19.9492,23.247"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[107].TEKIYO#</string>
@@ -11729,7 +11729,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,18.3"/>
+            <point val="11.55,23.175"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11748,10 +11748,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O298">
       <attribute name="obj_pos">
-        <point val="11.55,18.65"/>
+        <point val="11.55,23.525"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,18.392;19.9492,18.722"/>
+        <rectangle val="11.55,23.267;19.9492,23.597"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[108].TEKIYO#</string>
@@ -11771,7 +11771,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,18.65"/>
+            <point val="11.55,23.525"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -11790,10 +11790,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O299">
       <attribute name="obj_pos">
-        <point val="11.55,19"/>
+        <point val="11.55,23.875"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.55,18.742;19.9492,19.072"/>
+        <rectangle val="11.55,23.617;19.9492,23.947"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAIYO-TBL[109].TEKIYO#</string>
@@ -11813,7 +11813,7 @@
             <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.55,19"/>
+            <point val="11.55,23.875"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -13931,2358 +13931,6 @@
       </attribute>
     </object>
     <object type="Embed - Text" version="0" id="O350">
-      <attribute name="obj_pos">
-        <point val="11,19.35"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,19.0764;11.4242,19.4264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[110].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,19.35"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O351">
-      <attribute name="obj_pos">
-        <point val="11,19.7"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,19.4264;11.4242,19.7764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[111].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,19.7"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O352">
-      <attribute name="obj_pos">
-        <point val="11,20.05"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,19.7764;11.4242,20.1264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[112].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,20.05"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O353">
-      <attribute name="obj_pos">
-        <point val="11,20.4"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,20.1264;11.4242,20.4764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[113].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,20.4"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O354">
-      <attribute name="obj_pos">
-        <point val="11,20.75"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,20.4764;11.4242,20.8264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[114].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,20.75"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O355">
-      <attribute name="obj_pos">
-        <point val="11,21.1"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,20.8264;11.4242,21.1764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[115].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,21.1"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O356">
-      <attribute name="obj_pos">
-        <point val="11,21.45"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,21.1764;11.4242,21.5264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[116].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,21.45"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O357">
-      <attribute name="obj_pos">
-        <point val="11,21.8"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,21.5264;11.4242,21.8764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[117].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,21.8"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O358">
-      <attribute name="obj_pos">
-        <point val="11,22.15"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,21.8764;11.4242,22.2264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[118].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,22.15"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O359">
-      <attribute name="obj_pos">
-        <point val="11,22.5"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,22.2264;11.4242,22.5764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[119].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,22.5"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O360">
-      <attribute name="obj_pos">
-        <point val="11,22.85"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,22.5764;11.4242,22.9264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[120].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,22.85"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O361">
-      <attribute name="obj_pos">
-        <point val="11.55,19.3176"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,19.0596;19.9492,19.3896"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[110].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#176;)&#180;&#182;&#192;&#247;&#192;&#173;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#192;&#173;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,19.3176"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O362">
-      <attribute name="obj_pos">
-        <point val="11.55,19.7"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,19.442;19.9492,19.772"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[111].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#177;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#192;&#173;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,19.7"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O363">
-      <attribute name="obj_pos">
-        <point val="11.55,20.05"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,19.792;19.9492,20.122"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[112].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#178;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#192;&#173;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,20.05"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O364">
-      <attribute name="obj_pos">
-        <point val="11.55,20.4"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,20.142;19.9492,20.472"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[113].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#179;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,20.4"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O365">
-      <attribute name="obj_pos">
-        <point val="11.55,20.75"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,20.492;19.9492,20.822"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[114].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#180;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,20.75"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O366">
-      <attribute name="obj_pos">
-        <point val="11.55,21.1"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,20.842;19.9492,21.172"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[115].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#181;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,21.1"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O367">
-      <attribute name="obj_pos">
-        <point val="11.55,21.45"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,21.192;19.9492,21.522"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[116].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#182;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#192;&#173;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,21.45"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O368">
-      <attribute name="obj_pos">
-        <point val="11.55,21.8"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,21.542;19.9492,21.872"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[117].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#183;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,21.8"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O369">
-      <attribute name="obj_pos">
-        <point val="11.55,22.15"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,21.892;19.9492,22.222"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[118].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#184;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,22.15"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O370">
-      <attribute name="obj_pos">
-        <point val="11.55,22.5"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,22.242;19.9492,22.572"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[119].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#185;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,22.5"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O371">
-      <attribute name="obj_pos">
-        <point val="11.55,22.85"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,22.592;19.9492,22.922"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[120].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#178;&#163;&#176;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,22.85"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O372">
-      <attribute name="obj_pos">
-        <point val="11,23.2"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,22.9264;11.4242,23.2764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[121].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,23.2"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O373">
-      <attribute name="obj_pos">
-        <point val="11,23.55"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,23.2764;11.4242,23.6264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[122].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,23.55"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O374">
-      <attribute name="obj_pos">
-        <point val="11,23.9"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,23.6264;11.4242,23.9764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[123].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,23.9"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O375">
-      <attribute name="obj_pos">
-        <point val="11,24.25"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,23.9764;11.4242,24.3264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[124].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,24.25"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O376">
-      <attribute name="obj_pos">
-        <point val="11,24.6"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,24.3264;11.4242,24.6764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[125].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,24.6"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O377">
-      <attribute name="obj_pos">
-        <point val="11,24.95"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,24.6764;11.4242,25.0264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[126].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,24.95"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O378">
-      <attribute name="obj_pos">
-        <point val="11,25.3"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,25.0264;11.4242,25.3764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[127].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,25.3"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O379">
-      <attribute name="obj_pos">
-        <point val="11,25.65"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,25.3764;11.4242,25.7264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[128].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,25.65"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O380">
-      <attribute name="obj_pos">
-        <point val="11,26"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,25.7264;11.4242,26.0764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[129].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,26"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O381">
-      <attribute name="obj_pos">
-        <point val="11,26.35"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,26.0764;11.4242,26.4264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[130].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,26.35"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O382">
-      <attribute name="obj_pos">
-        <point val="11,26.7"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,26.4264;11.4242,26.7764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[131].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,26.7"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O383">
-      <attribute name="obj_pos">
-        <point val="11.55,23.2"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,22.942;19.9492,23.272"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[121].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#176;)&#180;&#182;&#192;&#247;&#192;&#173;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#192;&#173;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,23.2"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O384">
-      <attribute name="obj_pos">
-        <point val="11.55,23.55"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,23.292;19.9492,23.622"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[122].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#177;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#192;&#173;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,23.55"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O385">
-      <attribute name="obj_pos">
-        <point val="11.55,23.9"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,23.642;19.9492,23.972"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[123].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#178;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#192;&#173;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,23.9"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O386">
-      <attribute name="obj_pos">
-        <point val="11.55,24.25"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,23.992;19.9492,24.322"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[124].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#179;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,24.25"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O387">
-      <attribute name="obj_pos">
-        <point val="11.55,24.6"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,24.342;19.9492,24.672"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[125].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#180;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,24.6"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O388">
-      <attribute name="obj_pos">
-        <point val="11.55,24.95"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,24.692;19.9492,25.022"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[126].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#181;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,24.95"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O389">
-      <attribute name="obj_pos">
-        <point val="11.55,25.3"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,25.042;19.9492,25.372"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[127].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#182;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#192;&#173;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,25.3"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O390">
-      <attribute name="obj_pos">
-        <point val="11.55,25.65"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,25.392;19.9492,25.722"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[128].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#183;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,25.65"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O391">
-      <attribute name="obj_pos">
-        <point val="11.55,26"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,25.742;19.9492,26.072"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[129].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#184;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,26"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O392">
-      <attribute name="obj_pos">
-        <point val="11.55,26.35"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,26.092;19.9492,26.422"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[130].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#185;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,26.35"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O393">
-      <attribute name="obj_pos">
-        <point val="11.55,26.7"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,26.442;19.9492,26.772"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[131].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#178;&#163;&#176;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,26.7"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O394">
-      <attribute name="obj_pos">
-        <point val="11,27.05"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,26.7764;11.4242,27.1264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[132].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,27.05"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O395">
-      <attribute name="obj_pos">
-        <point val="11,27.4"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,27.1264;11.4242,27.4764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[133].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,27.4"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O396">
-      <attribute name="obj_pos">
-        <point val="11,27.75"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,27.4764;11.4242,27.8264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[134].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,27.75"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O397">
-      <attribute name="obj_pos">
-        <point val="11,28.1"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,27.8264;11.4242,28.1764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[135].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,28.1"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O398">
-      <attribute name="obj_pos">
-        <point val="11,28.45"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,28.1764;11.4242,28.5264"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[136].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,28.45"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O399">
-      <attribute name="obj_pos">
-        <point val="11,28.8"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11,28.5264;11.4242,28.8764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[137].SRYKBN#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="1"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#99#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11,28.8"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O400">
-      <attribute name="obj_pos">
-        <point val="11.55,27.05"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,26.792;19.9492,27.122"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[132].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#176;)&#180;&#182;&#192;&#247;&#192;&#173;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#192;&#173;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,27.05"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O401">
-      <attribute name="obj_pos">
-        <point val="11.55,27.4"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,27.142;19.9492,27.472"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[133].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#177;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#192;&#173;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,27.4"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O402">
-      <attribute name="obj_pos">
-        <point val="11.55,27.75"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,27.492;19.9492,27.822"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[134].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#178;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#192;&#173;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,27.75"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O403">
-      <attribute name="obj_pos">
-        <point val="11.55,28.1"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,27.842;19.9492,28.172"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[135].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#179;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,28.1"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O404">
-      <attribute name="obj_pos">
-        <point val="11.55,28.45"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,28.192;19.9492,28.522"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[136].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#180;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,28.45"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O405">
-      <attribute name="obj_pos">
-        <point val="11.55,28.8"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="11.55,28.542;19.9492,28.872"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#NAIYO-TBL[137].TEKIYO#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#(&#163;&#177;&#163;&#181;)&#180;&#182;&#192;&#247;&#192;&#173;&#180;&#182;&#203;&#193;&#192;&#173;&#165;&#171;&#165;&#243;&#165;&#184;&#165;&#192;&#192;&#173;&#180;&#168;&#206;&#228;&#192;&#173;&#179;&#176;&#176;&#248;&#192;&#173;&#179;&#176;&#189;&#253;&#188;&#192;&#180;&#181;&#163;&#177;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.33"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="11.55,28.8"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.19998"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.16665"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O406">
       <attribute name="obj_pos">
         <point val="3.8,2.1"/>
       </attribute>
