@@ -2881,7 +2881,6 @@
                                            TO  SPA-GMN-SRYKA-G
                END-IF
            END-PERFORM
-           INITIALIZE                  SPA-GMN-NYUIN-AREA
       *
       *    ºıø«Õ˙ŒÚ ‘Ω∏
            PERFORM 3103-JYURRK-HEN-SEC
@@ -4097,7 +4096,9 @@
            MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-NYUGAIKBN
       *
       *****INITIALIZE                  SPA-J02-AREA
-           INITIALIZE                  SPA-GMN-NYUIN-AREA
+           IF      SPA-GMN-NYUGAIKBN   =   "2"
+               INITIALIZE                  SPA-GMN-NYUIN-AREA
+           END-IF
       *
       *    ºıø«Õ˙ŒÚ ‘Ω∏
            PERFORM 3103-JYURRK-HEN-SEC
@@ -4214,7 +4215,6 @@
       *         —πππ‡Ã‹•Ø•Í•¢
                INITIALIZE                  SPA-GMN-INPUT
                INITIALIZE                  SPA-NAIGMN-AREA
-               INITIALIZE                  SPA-GMN-NYUIN-AREA
                MOVE    ZERO                TO  SPA-J02-SYORI
       *
                MOVE    1                   TO  SPA-GMN-CUR
