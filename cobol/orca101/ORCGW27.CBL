@@ -27,8 +27,10 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  00.00.01    太田         03/05/01  更新時に処理がループする
+      *  00.00.01    NACL-太田    03/05/01  更新時に処理がループする
       *                                     不具合を修正
+      *  00.00.02    NACL-太田    03/06/10  重症者等療養環境特別加算、
+      *                                     無菌治療室管理加算を追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -73,6 +75,7 @@
            03  IDX4                                PIC 9(05).
            03  IDX5                                PIC 9(05).
            03  IDX6                                PIC 9(05).
+           03  IDX7                                PIC 9(05).
            03  IDXI                                PIC 9(05).
       *
       *    一時領域
@@ -149,7 +152,7 @@
                    07                  PIC X(01).
                    07  CONST-BTU-TOKNYUIN-CD
                                        PIC X(09).
-           03  CONST-BRM-TOKNYUIN-MAX  PIC 9(05) VALUE 13.
+           03  CONST-BRM-TOKNYUIN-MAX  PIC 9(05) VALUE 17.
            03  CONST-BRM-TOKNYUIN-VAL.
                05                      PIC X(12) VALUE "01 190075710".
                05                      PIC X(12) VALUE "02 190774110".
@@ -161,26 +164,44 @@
                05                      PIC X(12) VALUE "08 190066810".
                05                      PIC X(12) VALUE "09 190024810".
                05                      PIC X(12) VALUE "10 190075510".
-               05                      PIC X(12) VALUE "11 190788810".
+               05                      PIC X(12) VALUE "11 190066710".
+               05                      PIC X(12) VALUE "12 190066810".
+               05                      PIC X(12) VALUE "13 190024810".
+               05                      PIC X(12) VALUE "14 190075510".
+               05                      PIC X(12) VALUE "15 190788810".
                05                      PIC X(12) VALUE "20 190076710".
                05                      PIC X(12) VALUE "21 190076810".
            03  CONST-BRM-TOKNYUIN-R
                                    REDEFINES   CONST-BRM-TOKNYUIN-VAL.
-               05   CONST-BRM-TOKNYUIN-OCC       OCCURS 13.
+               05   CONST-BRM-TOKNYUIN-OCC       OCCURS 17.
                    07  CONST-BRM-TOKNYUIN-KBN
                                        PIC X(02).
                    07                  PIC X(01).
                    07  CONST-BRM-TOKNYUIN-CD
                                        PIC X(09).
-      *    03  CONST-SINSEIJI          PIC X(09) VALUE "190109770".
-      *    03  CONST-SNR-RYOYO-VAL.
-      *        05                      PIC X(09) VALUE "190106370".
-      *        05                      PIC X(09) VALUE "190106470".
-      *    03  CONST-SNR-RYOYO-R REDEFINES   CONST-SNR-RYOYO-VAL.
-      *        05  CONST-SNR-RYOYO
-      *                                PIC X(09) OCCURS 2.
-      *    03  CONST-HOSYASEN          PIC X(09) VALUE "190106670".
-      *    03  CONST-RYOYO             PIC X(09) VALUE "190105570".
+      *
+           03  CONST-BRM-KSN-VAL.
+               05  CONST-SINSEIJI          PIC X(09) VALUE "190109770".
+               05  CONST-SNR-RYOYO-VAL.
+                   07                      PIC X(09) VALUE "190106370".
+                   07                      PIC X(09) VALUE "190106470".
+               05  CONST-SNR-RYOYO-R REDEFINES   CONST-SNR-RYOYO-VAL.
+                   07  CONST-SNR-RYOYO
+                                           PIC X(09) OCCURS 2.
+               05  CONST-HOSYASEN          PIC X(09) VALUE "190106670".
+               05  CONST-RYOYO             PIC X(09) VALUE "190105570".
+               05  CONST-BTU-RYOYO-VAL.
+                   07                      PIC X(09) VALUE "190106070".
+                   07                      PIC X(09) VALUE "190106170".
+                   07                      PIC X(09) VALUE "190106270".
+               05  CONST-BTU-RYOYO-R   REDEFINES   CONST-BTU-RYOYO-VAL.
+                   07  CONST-BTU-RYOYO     PIC X(09) OCCURS 3.
+               05  CONST-JYUTOK1           PIC X(09) VALUE "190105870".
+               05  CONST-JYUTOK2           PIC X(09) VALUE "190105970".
+               05  CONST-MUKIN             PIC X(09) VALUE "190106570".
+           03  CONST-BRM-KSN-R         REDEFINES   CONST-BRM-KSN-VAL.
+               05  CONST-BRM-KSNCD         PIC X(09) OCCURS 11.
+           03  CONST-BRM-KSN-MAX           PIC 9(03) VALUE  11.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -604,6 +625,9 @@
            WHEN    "CLICKED"       ALSO    "CHK_BTU_RYOYO1"
            WHEN    "CLICKED"       ALSO    "CHK_BTU_RYOYO2"
            WHEN    "CLICKED"       ALSO    "CHK_BTU_RYOYO3"
+           WHEN    "CLICKED"       ALSO    "CHK_JYUTOK1"
+           WHEN    "CLICKED"       ALSO    "CHK_JYUTOK2"
+           WHEN    "CLICKED"       ALSO    "CHK_MUKIN"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
       *
       *        入力個所のセット
@@ -712,6 +736,15 @@
                MOVE    W27-CHK-BTU-RYOYO (IDX1)
                                    TO  SPA-GMN-W27-CHK-BTU-RYOYO (IDX1)
            END-PERFORM
+      *
+      *    重症者等療養環境特別加算（個室）
+           MOVE    W27-CHK-JYUTOK1 TO  SPA-GMN-W27-CHK-JYUTOK1
+      *
+      *    重症者等療養環境特別加算（２人部屋）
+           MOVE    W27-CHK-JYUTOK2 TO  SPA-GMN-W27-CHK-JYUTOK2
+      *
+      *    無菌治療室管理加算
+           MOVE    W27-CHK-MUKIN   TO  SPA-GMN-W27-CHK-MUKIN
       *
            .
       *
@@ -893,8 +926,10 @@
       *****************************************************************
        4811-BRM-KSN-EDIT-SEC           SECTION.
       *
+      *    加算の診療行為コードセット
+           PERFORM 4100-SYS-5002-KSNCD-SET-SEC
+      *
       *    新生児入院医療管理加算
-      *    MOVE    CONST-SINSEIJI  TO  SYS-5002-SINSEIJI-CD
            IF    ( SPA-GMN-W27-CHK-SINSEIJI        =   "F" )
                MOVE    "1"         TO  SYS-5002-SINSEIJI-KBN
            ELSE
@@ -902,16 +937,12 @@
            END-IF
       *
       *    診療所療養病床療養環境加算
-      *    MOVE    CONST-SNR-RYOYO (1)
-      *                            TO  SYS-5002-SNR-RYOYO-CD (1)
            IF    ( SPA-GMN-W27-CHK-SNR-RYOYO (1)   =   "F" )
                MOVE    "1"         TO  SYS-5002-SNR-RYOYO-KBN (1)
            ELSE
                MOVE    "2"         TO  SYS-5002-SNR-RYOYO-KBN (1)
            END-IF
       *
-      *    MOVE    CONST-SNR-RYOYO (2)
-      *                            TO  SYS-5002-SNR-RYOYO-CD (2)
            IF    ( SPA-GMN-W27-CHK-SNR-RYOYO (2)   =   "F" )
                MOVE    "1"         TO  SYS-5002-SNR-RYOYO-KBN (2)
            ELSE
@@ -919,7 +950,6 @@
            END-IF
       *
       *    放射線治療病室管理加算
-      *    MOVE    CONST-HOSYASEN  TO  SYS-5002-HOSYASEN-CD
            IF    ( SPA-GMN-W27-CHK-HOSYASEN    =   "F" )
                MOVE    "1"         TO  SYS-5002-HOSYASEN-KBN
            ELSE
@@ -927,7 +957,6 @@
            END-IF
       *
       *    療養環境加算
-      *    MOVE    CONST-RYOYO     TO  SYS-5002-RYOYO-CD
            IF    ( SPA-GMN-W27-CHK-RYOYO       =   "F" )
                MOVE    "1"         TO  SYS-5002-RYOYO-KBN
            ELSE
@@ -943,6 +972,27 @@
                    MOVE    "2"     TO  SYS-5002-BTU-RYOYO-KBN (IDX6)
                END-IF
            END-PERFORM
+      *
+      *    重症者等療養環境特別加算（個室）
+           IF    ( SPA-GMN-W27-CHK-JYUTOK1     =   "F" )
+               MOVE    "1"         TO  SYS-5002-JYUTOK1-KBN
+           ELSE
+               MOVE    "2"         TO  SYS-5002-JYUTOK1-KBN
+           END-IF
+      *
+      *    重症者等療養環境特別加算（２人部屋）
+           IF    ( SPA-GMN-W27-CHK-JYUTOK2     =   "F" )
+               MOVE    "1"         TO  SYS-5002-JYUTOK2-KBN
+           ELSE
+               MOVE    "2"         TO  SYS-5002-JYUTOK2-KBN
+           END-IF
+      *
+      *    無菌治療室管理加算
+           IF    ( SPA-GMN-W27-CHK-MUKIN       =   "F" )
+               MOVE    "1"         TO  SYS-5002-MUKIN-KBN
+           ELSE
+               MOVE    "2"         TO  SYS-5002-MUKIN-KBN
+           END-IF
            .
       *
        4811-BRM-KSN-EDIT-EXT.
@@ -1051,6 +1101,7 @@
        4100-STSELNUM-CHK-SEC           SECTION.
       *
            MOVE   SPACE        TO  SPA-GMN-W27-STBRMNUM
+           MOVE   SPACE        TO  SPA-GMN-W27-STBRMNUM2
       *
            MOVE   W27-STSELNUM TO  SPA-GMN-W27-STSELNUM
       *
@@ -1179,8 +1230,10 @@
            MOVE    WRK-STSELNUM    TO  SPA-GMN-W27-STSELNUM
       *
       *    開始病室番号
-           MOVE    SPA-GMN-W27-TBRMNUM2 (IDXI)
+           MOVE    SPA-GMN-W27-TBRMNUM  (IDXI)
                                    TO  SPA-GMN-W27-STBRMNUM
+           MOVE    SPA-GMN-W27-TBRMNUM2 (IDXI)
+                                   TO  SPA-GMN-W27-STBRMNUM2
       *
       *    新生児入院医療管理加算
            IF    ( SPA-GMN-W27-TSINSEIJI-KBN (IDXI)    =   "2" )
@@ -1241,6 +1294,27 @@
                MOVE    "F"     TO  SPA-GMN-W27-CHK-BTU-RYOYO (3)
            END-IF
       *
+      *    重症者等療養環境特別加算（個室）
+           IF    ( SPA-GMN-W27-TJYUTOK1-KBN (IDXI)     =   "2" )
+               MOVE    "T"     TO  SPA-GMN-W27-CHK-JYUTOK1
+           ELSE
+               MOVE    "F"     TO  SPA-GMN-W27-CHK-JYUTOK1
+           END-IF
+      *
+      *    重症者等療養環境特別加算（２人部屋）
+           IF    ( SPA-GMN-W27-TJYUTOK2-KBN (IDXI)     =   "2" )
+               MOVE    "T"     TO  SPA-GMN-W27-CHK-JYUTOK2
+           ELSE
+               MOVE    "F"     TO  SPA-GMN-W27-CHK-JYUTOK2
+           END-IF
+           
+      *
+      *    無菌治療室管理加算
+           IF    ( SPA-GMN-W27-TMUKIN-KBN (IDXI)       =   "2" )
+               MOVE    "T"     TO  SPA-GMN-W27-CHK-MUKIN
+           ELSE
+               MOVE    "F"     TO  SPA-GMN-W27-CHK-MUKIN
+           END-IF
            .
       *
        4100-INPUT-AREA-EDIT-EXT.
@@ -1421,6 +1495,21 @@
                                        TO  SPA-GMN-W27-TBTU-RYOYO-KBN
                                                            (IDX1 3)
       *
+      *
+      *        重症者等療養環境特別加算（個室）
+               MOVE    SYS-5002-JYUTOK1-KBN
+                                       TO  SPA-GMN-W27-TJYUTOK1-KBN
+                                                                 (IDX1)
+      *
+      *        重症者等療養環境特別加算（２人部屋）
+               MOVE    SYS-5002-JYUTOK2-KBN
+                                       TO  SPA-GMN-W27-TJYUTOK2-KBN
+                                                                 (IDX1)
+      *
+      *        無菌治療室管理加算
+               MOVE    SYS-5002-MUKIN-KBN
+                                       TO  SPA-GMN-W27-TMUKIN-KBN(IDX1)
+      *
       *        病室情報読み込み
                MOVE    "SYSKANRI-KEY4" TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
@@ -1452,6 +1541,9 @@
       *
       *    病室入院料加算情報取得処理
            PERFORM 4100-BRM-NYUKSN-GET-SEC
+      *
+      *    病室情報検索処理
+           PERFORM 4100-SYS-5002-SEL-SEC
       *
       *    施設基準検索処理
            PERFORM 4100-SYS-1006-SEL-SEC
@@ -1485,6 +1577,18 @@
       *
       *    療養病棟療養環境加算
            PERFORM 4100-A222-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4100-SSTKIJUN-CHK-EXT
+           END-IF
+      *
+      *    重症者等療養環境特別加算
+           PERFORM 4100-A221-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4100-SSTKIJUN-CHK-EXT
+           END-IF
+      *
+      *    無菌治療室管理加算
+           PERFORM 4100-A224-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4100-SSTKIJUN-CHK-EXT
            END-IF
@@ -1793,6 +1897,105 @@
        4100-A222-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    重症者等療養環境特別加算
+      *****************************************************************
+       4100-A221-CHK-SEC               SECTION.
+      *
+      *    個室
+           IF  ( SPA-GMN-W27-CHK-JYUTOK1       =   "T" )
+      *        加算可能かチェック
+               MOVE    SYS-5002-JYUTOK1-CD
+                                   TO  WRK-SRYCD
+               PERFORM 4100-TENSU-SEL-SEC
+      *
+               MOVE    WRK-NYUKSNKBN
+                                   TO  WRK-KSN-NYUKSNKBN
+      *
+               PERFORM 4100-NYUKSN-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+      *
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-JYUTOK1
+      *
+                   MOVE    12      TO  SPA-GMN-W27-CUR
+                   GO  TO  4100-A221-CHK-EXT
+               END-IF
+      *
+      *        施設基準をチェック
+               IF    ( SYS-1006-SSTKIJUN (019) =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    12       TO  SPA-GMN-W27-CUR
+      *
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-JYUTOK1
+      *
+                   MOVE    "0003"  TO  SPA-ERRCD
+                   GO  TO  4100-A221-CHK-EXT
+               END-IF
+           END-IF
+      *
+      *    ２人部屋
+           IF  ( SPA-GMN-W27-CHK-JYUTOK2       =   "T" )
+      *        加算可能かチェック
+               MOVE    SYS-5002-JYUTOK2-CD
+                                   TO  WRK-SRYCD
+               PERFORM 4100-TENSU-SEL-SEC
+      *
+               MOVE    WRK-NYUKSNKBN
+                                   TO  WRK-KSN-NYUKSNKBN
+      *
+               PERFORM 4100-NYUKSN-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+      *
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-JYUTOK2
+      *
+                   MOVE    13      TO  SPA-GMN-W27-CUR
+                   GO  TO  4100-A221-CHK-EXT
+               END-IF
+      *
+      *        施設基準をチェック
+               IF    ( SYS-1006-SSTKIJUN (019) =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    13       TO  SPA-GMN-W27-CUR
+      *
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-JYUTOK2
+      *
+                   MOVE    "0003"  TO  SPA-ERRCD
+                   GO  TO  4100-A221-CHK-EXT
+               END-IF
+           END-IF
+      *
+           .
+       4100-A221-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    無菌治療室管理加算
+      *****************************************************************
+       4100-A224-CHK-SEC               SECTION.
+      *
+           IF  ( SPA-GMN-W27-CHK-MUKIN         =   "T" )
+      *        加算可能かチェック
+               MOVE    SYS-5002-MUKIN-CD
+                                   TO  WRK-SRYCD
+               PERFORM 4100-TENSU-SEL-SEC
+      *
+               MOVE    WRK-NYUKSNKBN
+                                   TO  WRK-KSN-NYUKSNKBN
+      *
+               PERFORM 4100-NYUKSN-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+      *
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-MUKIN
+      *
+                   MOVE    14      TO  SPA-GMN-W27-CUR
+                   GO  TO  4100-A224-CHK-EXT
+               END-IF
+           END-IF
+      *
+           .
+       4100-A224-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    病棟情報検索処理
       *****************************************************************
        4100-SYS-5001-SEL-SEC           SECTION.
@@ -1813,6 +2016,45 @@
            .
        4100-SYS-5001-SEL-EXT.
            EXIT.
+      *****************************************************************
+      *    病室情報検索処理
+      *****************************************************************
+       4100-SYS-5002-SEL-SEC           SECTION.
+      *
+      *    病室情報検索
+           MOVE    "5002"          TO  WRK-KANRICD
+           MOVE    SPA-GMN-W27-STBRMNUM
+                                   TO  WRK-KBNCD
+           MOVE    SPA-GMN-W27-KJNYMD-S
+                                   TO  WRK-KJNYMD
+           PERFORM 3101-SYSKANRI-SEL-SEC
+           IF    ( FLG-SYSKANRI    =   ZERO )
+               MOVE    MCPDATA-REC TO  SYS-5002-REC
+               PERFORM 4100-SYS-5002-KSNCD-SET-SEC
+           ELSE
+               MOVE    SPACE       TO  SYS-5002-REC
+           END-IF
+      *
+           .
+       4100-SYS-5002-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    病室加算診療行為コード設定処理
+      *****************************************************************
+       4100-SYS-5002-KSNCD-SET-SEC     SECTION.
+      *
+           PERFORM VARYING IDX7    FROM    1   BY  1
+                   UNTIL ( IDX7    >   CONST-BRM-KSN-MAX )
+               IF    ( SYS-5002-KSNCD (IDX7)   =   SPACE )
+                   MOVE    CONST-BRM-KSNCD (IDX7)
+                                   TO  SYS-5002-KSNCD (IDX7)
+               END-IF
+           END-PERFORM
+      *
+           .
+       4100-SYS-5002-KSNCD-SET-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    病棟入院料加算情報取得処理
       *****************************************************************
@@ -1991,6 +2233,9 @@
                                        SPA-GMN-W27-CHK-BTU-RYOYO (1)
                                        SPA-GMN-W27-CHK-BTU-RYOYO (2)
                                        SPA-GMN-W27-CHK-BTU-RYOYO (3)
+                                       SPA-GMN-W27-CHK-JYUTOK1
+                                       SPA-GMN-W27-CHK-JYUTOK2
+                                       SPA-GMN-W27-CHK-MUKIN
       *
            .
        4201-CHK-BTN-CLEAR-EXT.
@@ -2113,6 +2358,17 @@
                MOVE    "1006"          TO  SPA-ERRCD
                GO  TO  4900-KANRENCHK-EXT
            END-IF
+      *
+      *    重症者等療養環境特別加算の個室と２人部屋が同時に算定されて
+      *    いないこと
+           IF    ( SPA-GMN-W27-CHK-JYUTOK1     =   "T" )
+            AND  ( SPA-GMN-W27-CHK-JYUTOK2     =   "T" )
+      *
+               MOVE    "1007"  TO  SPA-ERRCD
+               MOVE    12       TO  SPA-GMN-W27-CUR
+               GO  TO  4900-KANRENCHK-EXT
+      *
+           END-IF
            .
       *
        4900-KANRENCHK-EXT.
@@ -2165,7 +2421,7 @@
       *    終了選択番号
            MOVE    SPA-GMN-W27-EDSELNUM    TO  W27-EDSELNUM
       *    開始病室番号
-           MOVE    SPA-GMN-W27-STBRMNUM    TO  W27-STBRMNUM
+           MOVE    SPA-GMN-W27-STBRMNUM2   TO  W27-STBRMNUM
       *    終了病室番号
            MOVE    SPA-GMN-W27-EDBRMNUM    TO  W27-EDBRMNUM
       *    基準日
@@ -2190,6 +2446,15 @@
                MOVE    SPA-GMN-W27-CHK-BTU-RYOYO (IDX1)
                                    TO  W27-CHK-BTU-RYOYO (IDX1)
            END-PERFORM
+      *
+      *    重症者等療養環境特別加算（個室）
+           MOVE    SPA-GMN-W27-CHK-JYUTOK1 TO  W27-CHK-JYUTOK1
+      *
+      *    重症者等療養環境特別加算（２人部屋）
+           MOVE    SPA-GMN-W27-CHK-JYUTOK2 TO  W27-CHK-JYUTOK2
+      *
+      *    無菌治療室管理加算
+           MOVE    SPA-GMN-W27-CHK-MUKIN   TO  W27-CHK-MUKIN
       *
       *    病室情報リスト領域
            MOVE    SPA-GMN-W27-BRMLST-CNT  TO  W27-BRMLST-CNT
@@ -2303,6 +2568,12 @@
                MOVE    "CHK_BTU_RYOYO2"    TO  MCP-WIDGET
            WHEN    011
                MOVE    "CHK_BTU_RYOYO3"    TO  MCP-WIDGET
+           WHEN    012
+               MOVE    "CHK_JYUTOK1"       TO  MCP-WIDGET
+           WHEN    013
+               MOVE    "CHK_JYUTOK2"       TO  MCP-WIDGET
+           WHEN    014
+               MOVE    "CHK_MUKIN"         TO  MCP-WIDGET
            WHEN    100
                MOVE    "KJNYMD"            TO  MCP-WIDGET
            WHEN    212
@@ -2341,11 +2612,17 @@
                MOVE    010             TO  SPA-GMN-W27-CUR
            WHEN    "CHK_BTU_RYOYO3"
                MOVE    011             TO  SPA-GMN-W27-CUR
+           WHEN    "CHK_JYUTOK1"
+               MOVE    012             TO  SPA-GMN-W27-CUR
+           WHEN    "CHK_JYUTOK2"
+               MOVE    013             TO  SPA-GMN-W27-CUR
+           WHEN    "CHK_MUKIN"
+               MOVE    014             TO  SPA-GMN-W27-CUR
            END-EVALUATE
       *
       *    次カーソル位置を設定
            EVALUATE    WRK-MCP-WIDGET
-           WHEN    "CHK_BTU_RYOYO3"
+           WHEN    "CHK_MUKIN"
                MOVE    212             TO  SPA-GMN-W27-CUR
            WHEN    OTHER
                COMPUTE SPA-GMN-W27-CUR =   SPA-GMN-W27-CUR
@@ -2420,6 +2697,11 @@
                MOVE    "療養病棟療養環境加算はいずれか１つのみ選"
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE    "択してください"
+                                       TO  SPA-ERRMSG (41 : )
+           WHEN    "1007"
+               MOVE    "重症者等療養環境特別加算の個室と２人部屋"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "は同時に加算できません"
                                        TO  SPA-ERRMSG (41 : )
            WHEN    "1201"
                MOVE    "更新できませんでした"

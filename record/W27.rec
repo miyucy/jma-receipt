@@ -68,5 +68,14 @@ W27	{
 		CHK_BTU_RYOYO3	{
 			value	bool;
 		};
+		CHK_JYUTOK1	{
+			value	bool;
+		};
+		CHK_JYUTOK2	{
+			value	bool;
+		};
+		CHK_MUKIN	{
+			value	bool;
+		};
 	};
 };

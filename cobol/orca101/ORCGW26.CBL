@@ -67,6 +67,7 @@
            03  IDX2                                PIC 9(05).
            03  IDX3                                PIC 9(05).
            03  IDX4                                PIC 9(05).
+           03  IDX5                                PIC 9(05).
            03  IDX-LST                             PIC 9(05).
       *
       *    一時領域
@@ -151,24 +152,33 @@
                    07  CONST-BRM-TOKNYUIN-CD
                                        PIC X(09).
       *
-      *    03  CONST-NANBYO            PIC X(09) VALUE "190101770".
-      *    03  CONST-TOKUSYUCD         PIC X(09) VALUE "190101970".
-      *    03  CONST-YORYOCD-VAL.
-      *        05                      PIC X(09) VALUE "190106070".
-      *        05                      PIC X(09) VALUE "190106170".
-      *        05                      PIC X(09) VALUE "190106270".
-      *    03  CONST-YORYOCD-R     REDEFINES   CONST-YORYOCD-VAL.
-      *        05  CONST-YORYOCD       PIC X(09) OCCURS 3.
-      *    03  CONST-JIDOCD            PIC X(09) VALUE "190110170".
-      *    03  CONST-SEISINCD          PIC X(09) VALUE "190106970".
-      *    03  CONST-KANGOCD-VAL.
-      *        05                      PIC X(09) VALUE "190102070".
-      *        05                      PIC X(09) VALUE "190102170".
-      *        05                      PIC X(09) VALUE "190102270".
-      *        05                      PIC X(09) VALUE "190102370".
-      *        05                      PIC X(09) VALUE "190102470".
-      *    03  CONST-KANGOCD-R     REDEFINES   CONST-KANGOCD-VAL.
-      *        05  CONST-KANGOCD       PIC X(09) OCCURS 5.
+           03  CONST-BTU-KSN-VAL.
+               05  CONST-NANBYO            PIC X(09) VALUE "190101770".
+               05  CONST-TOKUSYUCD         PIC X(09) VALUE "190101970".
+      *            療養病棟療養環境加算は病室の加算画面へ移動したため、
+      *            空白を設定
+               05  CONST-YORYOCD-VAL.
+      *            07                      PIC X(09) VALUE "190106070".
+      *            07                      PIC X(09) VALUE "190106170".
+      *            07                      PIC X(09) VALUE "190106270".
+                   07                      PIC X(09) VALUE SPACE.
+                   07                      PIC X(09) VALUE SPACE.
+                   07                      PIC X(09) VALUE SPACE.
+               05  CONST-YORYOCD-R     REDEFINES   CONST-YORYOCD-VAL.
+                   07  CONST-YORYOCD       PIC X(09) OCCURS 3.
+               05  CONST-JIDOCD            PIC X(09) VALUE "190110170".
+               05  CONST-SEISINCD          PIC X(09) VALUE "190106970".
+               05  CONST-KANGOCD-VAL.
+                   07                      PIC X(09) VALUE "190102070".
+                   07                      PIC X(09) VALUE "190102170".
+                   07                      PIC X(09) VALUE "190102270".
+                   07                      PIC X(09) VALUE "190102370".
+                   07                      PIC X(09) VALUE "190102470".
+               05  CONST-KANGOCD-R     REDEFINES   CONST-KANGOCD-VAL.
+                   07  CONST-KANGOCD       PIC X(09) OCCURS 5.
+           03  CONST-BTU-KSN-R       REDEFINES   CONST-BTU-KSN-VAL.
+               05  CONST-BTU-KSNCD         PIC X(09) OCCURS 12.
+           03  CONST-BTU-KSN-MAX           PIC 9(03) VALUE  12.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -870,8 +880,10 @@
       *****************************************************************
        4811-BTU-KSN-EDIT-SEC           SECTION.
       *
+      *    加算の診療行為コードセット
+           PERFORM 4100-SYS-5001-KSNCD-SET-SEC
+      *
       *    難病患者等特別入院診療加算
-      *    MOVE    CONST-NANBYO    TO  SYS-5001-NANBYO-CD
            IF    ( SPA-GMN-W26-CHK-NANBYO      =   "F" )
                MOVE    "1"         TO  SYS-5001-NANBYO-KBN
            ELSE
@@ -879,7 +891,6 @@
            END-IF
       *
       *    特殊疾患入院施設管理加算
-      *    MOVE    CONST-TOKUSYUCD TO  SYS-5001-TOKUSYU-CD
            IF    ( SPA-GMN-W26-CHK-TOKUSYU     =   "F" )
                MOVE    "1"         TO  SYS-5001-TOKUSYU-KBN
            ELSE
@@ -899,7 +910,6 @@
       *    END-PERFORM
       *
       *    児童・思春期精神科入院医療管理加算
-      *    MOVE    CONST-JIDOCD        TO  SYS-5001-JIDO-CD
            IF    ( SPA-GMN-W26-CHK-JIDO        =   "F" )
                MOVE    "1"             TO  SYS-5001-JIDO-KBN
            ELSE
@@ -907,7 +917,6 @@
            END-IF
       *
       *    精神科応急入院施設管理加算
-      *    MOVE    CONST-SEISINCD      TO  SYS-5001-SEISIN-CD
            IF    ( SPA-GMN-W26-CHK-SEISIN      =   "F" )
                MOVE    "1"             TO  SYS-5001-SEISIN-KBN
            ELSE
@@ -917,8 +926,6 @@
       *    看護配置加算
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   5 )
-      *        MOVE    CONST-KANGOCD (IDX1)
-      *                                TO  SYS-5001-KANGO-CD (IDX1)
                IF    ( SPA-GMN-W26-CHK-KANGO (IDX1)    =   "F" )
                    MOVE    "1"         TO  SYS-5001-KANGO-KBN (IDX1)
                ELSE
@@ -1640,12 +1647,29 @@
            PERFORM 3101-SYSKANRI-SEL-SEC
            IF    ( FLG-SYSKANRI    =   ZERO )
                MOVE    MCPDATA-REC TO  SYS-5001-REC
+               PERFORM 4100-SYS-5001-KSNCD-SET-SEC
            ELSE
                MOVE    SPACE       TO  SYS-5001-REC
            END-IF
       *
            .
        4100-SYS-5001-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    病棟加算診療行為コード設定処理
+      *****************************************************************
+       4100-SYS-5001-KSNCD-SET-SEC     SECTION.
+      *
+           PERFORM VARYING IDX5    FROM    1   BY  1
+                   UNTIL ( IDX5    >   CONST-BTU-KSN-MAX )
+               IF    ( SYS-5001-KSNCD (IDX5)   =   SPACE )
+                   MOVE    CONST-BTU-KSNCD (IDX5)
+                                   TO  SYS-5001-KSNCD (IDX5)
+               END-IF
+           END-PERFORM
+      *
+           .
+       4100-SYS-5001-KSNCD-SET-EXT.
            EXIT.
       *****************************************************************
       *    病棟入院料加算情報取得処理

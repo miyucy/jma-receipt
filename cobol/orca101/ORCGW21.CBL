@@ -31,6 +31,8 @@
       *                                     情報を取得するよう修正
       * 00.00.02     NACL−太田   03/01/29  有効開始日のチェック追加
       *                                     入院中患者チェック追加
+      * 00.00.03    NACL-太田     03/06/10  重症者等療養環境特別加算、
+      *                                     無菌治療室管理加算を追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -147,6 +149,9 @@
                05                      PIC X(09) VALUE "190106270".
            03  CONST-BTU-RYOYO-R   REDEFINES   CONST-BTU-RYOYO-VAL.
                05  CONST-BTU-RYOYO     PIC X(09) OCCURS 3.
+           03  CONST-JYUTOK1           PIC X(09) VALUE "190105870".
+           03  CONST-JYUTOK2           PIC X(09) VALUE "190105970".
+           03  CONST-MUKIN             PIC X(09) VALUE "190106570".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -2134,6 +2139,15 @@
                                    TO  SYS-5002-BTU-RYOYO-CD  (IDX1)
                MOVE    "1"         TO  SYS-5002-BTU-RYOYO-KBN (IDX1)
            END-PERFORM
+      *
+      *    重症者等療養環境特別加算（個室）
+           MOVE    CONST-JYUTOK1   TO  SYS-5002-JYUTOK1-CD
+      *
+      *    重症者等療養環境特別加算（２人部屋）
+           MOVE    CONST-JYUTOK2   TO  SYS-5002-JYUTOK2-CD
+      *
+      *    無菌治療室管理加算
+           MOVE    CONST-MUKIN     TO  SYS-5002-MUKIN-CD
       *
            .
        4201-BRM-KSN-EDIT-EXT.

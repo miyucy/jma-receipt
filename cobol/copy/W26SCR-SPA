@@ -117,7 +117,8 @@
       *              終了選択番号
                  11  SPA-GMN-W27-EDSELNUM              PIC S9(3).
       *              開始病室番号
-                 11  SPA-GMN-W27-STBRMNUM              PIC X(6).
+                 11  SPA-GMN-W27-STBRMNUM              PIC X(8).
+                 11  SPA-GMN-W27-STBRMNUM2             PIC X(6).
       *              終了病室番号
                  11  SPA-GMN-W27-EDBRMNUM              PIC X(6).
       *              新生児入院医療管理加算
@@ -132,6 +133,12 @@
       *              療養病棟環境加算
                  11  SPA-GMN-W27-CHK-BTU-RYOYO         PIC X
                                                        OCCURS 3.
+      *              重症者等療養環境特別加算（個室）
+                 11  SPA-GMN-W27-CHK-JYUTOK1           PIC X.
+      *              重症者等療養環境特別加算（２人部屋）
+                 11  SPA-GMN-W27-CHK-JYUTOK2           PIC X.
+      *              無菌治療室管理加算
+                 11  SPA-GMN-W27-CHK-MUKIN             PIC X.
       *        基準日
                09    SPA-GMN-W27-KJNYMD-AREA.
                  11  SPA-GMN-W27-KJNYMD                PIC X(10).
@@ -173,6 +180,12 @@
       *                療養病棟環境加算
                    13  SPA-GMN-W27-TBTU-RYOYO-KBN      PIC X(01)
                                                        OCCURS 3.
+      *                重症者等療養環境特別加算（個室）
+                   13  SPA-GMN-W27-TJYUTOK1-KBN        PIC X(01).
+      *                重症者等療養環境特別加算（２人部屋）
+                   13  SPA-GMN-W27-TJYUTOK2-KBN        PIC X(01).
+      *                無菌治療室管理加算
+                   13  SPA-GMN-W27-TMUKIN-KBN          PIC X(01).
       *
                  11  SPA-GMN-W27-BRMLST-SEL            PIC 9(05).
       *

@@ -46,3 +46,6 @@
               04  W27-CHK-HOSYASEN         PIC X.
               04  W27-CHK-RYOYO            PIC X.
               04  W27-CHK-BTU-RYOYO        PIC X   OCCURS  3.
+              04  W27-CHK-JYUTOK1          PIC X.
+              04  W27-CHK-JYUTOK2          PIC X.
+              04  W27-CHK-MUKIN            PIC X.
