@@ -296,6 +296,7 @@ RECORD_files = \
 	N41ID1.rec \
 	X04.rec \
 	W30.rec \
+	W60.rec \
 
 DEF_files = \
 	HC01.def \

@@ -1,0 +1,37 @@
+W60	{
+	fixed1	{
+		B03	{
+			state	int;
+		};
+		MTRX01	{
+			value	varchar(2);
+		};
+		MTRX02	{
+			value	varchar(2);
+		};
+		MTRX03	{
+			value	varchar(2);
+		};
+		MTRX04	{
+			value	varchar(2);
+		};
+		MTRX05	{
+			value	varchar(2);
+		};
+		CHKMTRX01	{
+			value	bool;
+		};
+		CHKMTRX02	{
+			value	bool;
+		};
+		CHKMTRX03	{
+			value	bool;
+		};
+		CHKMTRX04	{
+			value	bool;
+		};
+		CHKMTRX05	{
+			value	bool;
+		};
+	};
+};
