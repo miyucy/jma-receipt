@@ -40,7 +40,8 @@
       *  01.00.06    ひさなが     03/06/06  病名コード抜けのチェク追加
       *  01.00.07    ひさなが     03/07/29  チェック内容全件印刷追加
       *  01.00.08    ひさなが     03/08/26  院外処方、自費の指示追加
-      *  01.00.09    ひさなが     03/09/09  処理メッセージ修正
+      *  01.00.09    ひさなが     03/09/11  処理メッセージ修正
+      *                                     指示に含まないを追加
       *
       *****************************************************************
       *
@@ -154,16 +155,20 @@
            03  T-MESSAGE-800-06    PIC X(16)   VALUE
                "入力エラーです。".
            03  T-MESSAGE-800-51    PIC X(18)   VALUE
-               "確認              ".
+               "行わない        ".
            03  T-MESSAGE-800-52    PIC X(18)   VALUE
-               "確認  全印刷      ".
+               "確認              ".
            03  T-MESSAGE-800-53    PIC X(18)   VALUE
-               "院外処方を含む    ".
+               "確認  全印刷      ".
            03  T-MESSAGE-800-54    PIC X(18)   VALUE
-               "院外処方  のみ    ".
+               "含まない          ".
            03  T-MESSAGE-800-55    PIC X(18)   VALUE
-               "自費保険患者を含む".
+               "院外処方を含む    ".
            03  T-MESSAGE-800-56    PIC X(18)   VALUE
+               "院外処方  のみ    ".
+           03  T-MESSAGE-800-57    PIC X(18)   VALUE
+               "自費保険患者を含む".
+           03  T-MESSAGE-800-58    PIC X(18)   VALUE
                "自費保険患者  のみ".
            03  T-MESSAGE-900-01    PIC X(10)   VALUE
                "入院      ".
@@ -425,100 +430,106 @@
                MOVE    LNK-SCRSPA              TO  SPA-WRK-AREA
            END-IF.
       *
-           MOVE    1                      TO  SPA-GMN-CUR.
+           MOVE    1                     TO  SPA-GMN-CUR.
       *
-           MOVE    SPACE                  TO  SPA-GMN-TBLG.
-           MOVE    "2"                    TO  SPA-GMN-NYUGAIKBN.
-           MOVE    T-MESSAGE-900-02       TO  SPA-GMN-NYUGAIKBN-MSG.
-           MOVE    "1"                    TO  SPA-GMN-NYUGAIKBN-K (1).
-           MOVE    "2"                    TO  SPA-GMN-NYUGAIKBN-K (2).
-           MOVE    T-MESSAGE-900-01       TO  SPA-GMN-NYUGAIKBN-M (1).
-           MOVE    T-MESSAGE-900-02       TO  SPA-GMN-NYUGAIKBN-M (2).
-           MOVE    T-MESSAGE-900-03       TO  SPA-GMN-MSG (1).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (1 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (1 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (1 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (1 2).
-           MOVE    T-MESSAGE-900-04       TO  SPA-GMN-MSG (2).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (2 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (2 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (2 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (2 2).
-           MOVE    T-MESSAGE-900-05       TO  SPA-GMN-MSG (3).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (3 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (3 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (3 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (3 2).
-           MOVE    T-MESSAGE-900-06       TO  SPA-GMN-MSG (4).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (4 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (4 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (4 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (4 2).
-           MOVE    T-MESSAGE-900-07       TO  SPA-GMN-MSG (5).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (5 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (5 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (5 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (5 2).
-           MOVE    T-MESSAGE-900-08       TO  SPA-GMN-MSG (6).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (6 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (6 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (6 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (6 2).
-           MOVE    T-MESSAGE-900-09       TO  SPA-GMN-MSG (7).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (7 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (7 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (7 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (7 2).
-           MOVE    T-MESSAGE-900-10       TO  SPA-GMN-MSG (8).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (8 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (8 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (8 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (8 2).
-           MOVE    T-MESSAGE-900-11       TO  SPA-GMN-MSG (9).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (9 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (9 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (9 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (9 2).
-           MOVE    T-MESSAGE-900-13       TO  SPA-GMN-MSG (10).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (10 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (10 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (10 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (10 2).
-           MOVE    T-MESSAGE-900-14       TO  SPA-GMN-MSG (11).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (11 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (11 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (11 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (11 2).
-           MOVE    T-MESSAGE-900-15       TO  SPA-GMN-MSG (12).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (12 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (12 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (12 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (12 2).
-           MOVE    T-MESSAGE-900-16       TO  SPA-GMN-MSG (13).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (13 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (13 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (13 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (13 2).
-           MOVE    T-MESSAGE-900-17       TO  SPA-GMN-MSG (14).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (14 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (14 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (14 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (14 2).
-           MOVE    T-MESSAGE-900-18       TO  SPA-GMN-MSG (15).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (15 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (15 2).
-           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (15 1).
-           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (15 2).
-           MOVE    T-MESSAGE-900-20       TO  SPA-GMN-MSG (19).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (19 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (19 2).
-           MOVE    T-MESSAGE-800-55       TO  SPA-GMN-CHKKBN-M (19 1).
-           MOVE    T-MESSAGE-800-56       TO  SPA-GMN-CHKKBN-M (19 2).
-           MOVE    T-MESSAGE-900-19       TO  SPA-GMN-MSG (20).
-           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (20 1).
-           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (20 2).
-           MOVE    T-MESSAGE-800-53       TO  SPA-GMN-CHKKBN-M (20 1).
-           MOVE    T-MESSAGE-800-54       TO  SPA-GMN-CHKKBN-M (20 2).
+           MOVE    SPACE                 TO  SPA-GMN-TBLG.
+           MOVE    "2"                   TO  SPA-GMN-NYUGAIKBN.
+           MOVE    T-MESSAGE-900-02      TO  SPA-GMN-NYUGAIKBN-MSG.
+           MOVE    "1"                   TO  SPA-GMN-NYUGAIKBN-K (1).
+           MOVE    "2"                   TO  SPA-GMN-NYUGAIKBN-K (2).
+           MOVE    T-MESSAGE-900-01      TO  SPA-GMN-NYUGAIKBN-M (1).
+           MOVE    T-MESSAGE-900-02      TO  SPA-GMN-NYUGAIKBN-M (2).
+           MOVE    T-MESSAGE-900-03      TO  SPA-GMN-MSG (1).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (1 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (1 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (1 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (1 2).
+           MOVE    T-MESSAGE-900-04      TO  SPA-GMN-MSG (2).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (2 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (2 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (2 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (2 2).
+           MOVE    T-MESSAGE-900-05      TO  SPA-GMN-MSG (3).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (3 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (3 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (3 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (3 2).
+           MOVE    T-MESSAGE-900-06      TO  SPA-GMN-MSG (4).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (4 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (4 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (4 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (4 2).
+           MOVE    T-MESSAGE-900-07      TO  SPA-GMN-MSG (5).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (5 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (5 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (5 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (5 2).
+           MOVE    T-MESSAGE-900-08      TO  SPA-GMN-MSG (6).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (6 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (6 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (6 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (6 2).
+           MOVE    T-MESSAGE-900-09      TO  SPA-GMN-MSG (7).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (7 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (7 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (7 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (7 2).
+           MOVE    T-MESSAGE-900-10      TO  SPA-GMN-MSG (8).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (8 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (8 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (8 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (8 2).
+           MOVE    T-MESSAGE-900-11      TO  SPA-GMN-MSG (9).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (9 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (9 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (9 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (9 2).
+           MOVE    T-MESSAGE-900-13      TO  SPA-GMN-MSG (10).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (10 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (10 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (10 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (10 2).
+           MOVE    T-MESSAGE-900-14      TO  SPA-GMN-MSG (11).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (11 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (11 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (11 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (11 2).
+           MOVE    T-MESSAGE-900-15      TO  SPA-GMN-MSG (12).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (12 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (12 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (12 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (12 2).
+           MOVE    T-MESSAGE-900-16      TO  SPA-GMN-MSG (13).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (13 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (13 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (13 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (13 2).
+           MOVE    T-MESSAGE-900-17      TO  SPA-GMN-MSG (14).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (14 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (14 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (14 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (14 2).
+           MOVE    T-MESSAGE-900-18      TO  SPA-GMN-MSG (15).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (15 1).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (15 2).
+           MOVE    T-MESSAGE-800-52      TO  SPA-GMN-CHKKBN-M (15 1).
+           MOVE    T-MESSAGE-800-53      TO  SPA-GMN-CHKKBN-M (15 2).
+           MOVE    T-MESSAGE-900-20      TO  SPA-GMN-MSG (19).
+           MOVE    " "                   TO  SPA-GMN-CHKKBN-K (19 1).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (19 2).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (19 3).
+           MOVE    T-MESSAGE-800-54      TO  SPA-GMN-CHKKBN-M (19 1).
+           MOVE    T-MESSAGE-800-57      TO  SPA-GMN-CHKKBN-M (19 2).
+           MOVE    T-MESSAGE-800-58      TO  SPA-GMN-CHKKBN-M (19 3).
+           MOVE    SPA-GMN-TBL3  (19 1)  TO  SPA-GMN-CHKKBN (19).
+           MOVE    T-MESSAGE-900-19      TO  SPA-GMN-MSG (20).
+           MOVE    " "                   TO  SPA-GMN-CHKKBN-K (20 1).
+           MOVE    "1"                   TO  SPA-GMN-CHKKBN-K (20 2).
+           MOVE    "2"                   TO  SPA-GMN-CHKKBN-K (20 3).
+           MOVE    T-MESSAGE-800-54      TO  SPA-GMN-CHKKBN-M (20 1).
+           MOVE    T-MESSAGE-800-55      TO  SPA-GMN-CHKKBN-M (20 2).
+           MOVE    T-MESSAGE-800-56      TO  SPA-GMN-CHKKBN-M (20 3).
+           MOVE    SPA-GMN-TBL3  (20 1)  TO  SPA-GMN-CHKKBN (20).
            IF  SPA-MOTOPG   =   "XA01"  OR  "XB01"
                MOVE    LNK-SCRSPA              TO  SPA-D01-AREA
            END-IF.
@@ -1871,7 +1882,7 @@
                  END-IF
              WHEN    "CHKKBN19"
                  MOVE    23                     TO  SPA-GMN-CUR
-                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (19)
+                 MOVE    SPA-GMN-TBL3 (19 1)    TO  SPA-GMN-CHKKBN (19)
                  IF  SPA-GMN-MSG (19)  NOT =  SPACE
                      MOVE    1                      TO  FLG-ERR
                      IF  D01-CHKKBN19(1:1)  NOT =  SPACE
@@ -1910,7 +1921,7 @@
                  END-IF
              WHEN    "CHKKBN20"
                  MOVE    23                     TO  SPA-GMN-CUR
-                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (20)
+                 MOVE    SPA-GMN-TBL3 (20 1)    TO  SPA-GMN-CHKKBN (20)
                  IF  SPA-GMN-MSG (20)  NOT =  SPACE
                      MOVE    1                      TO  FLG-ERR
                      IF  D01-CHKKBN20(1:1)  NOT =  SPACE
