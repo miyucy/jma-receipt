@@ -88,6 +88,8 @@
            03  WRK-KSNTEN                  PIC  S9(08).
            03  NYUIN-COUNT                 PIC  9(02). 
            03  SINRYO-COUNT                PIC  9(02). 
+           03  WRK-SENTEI-ZAITEN           PIC  9(08).
+           03  WRK-SENTEI-KHNTEN           PIC  9(08).
       *
        01  FLG-AREA.
            03  FLG-HANBETU                 PIC 9(01).
@@ -100,8 +102,10 @@
            03  FLG-TENSU                   PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-GAIHAKU-SET             PIC 9(01).
+           03  FLG-SENTEI-SET              PIC 9(01).
            03  FLG-NYUKHN                  PIC 9(01).
            03  FLG-KAIKEI-SAKUSEI          PIC 9(01).
+           03  FLG-SENTEICDCHG             PIC 9(01).
       *
       * ¼¼ÎÁº¹³ÛÂàÈòÍÑ¥Æ¡¼¥Ö¥ë     
        01  TABLE-RMSAGAKU.
@@ -110,6 +114,10 @@
       * ³°ÇñÂàÈòÍÑ¥Æ¡¼¥Ö¥ë     
        01  TABLE-GAIHAKU.
            03  TBL-GAIHAKU                 PIC 9(01)   OCCURS  31.
+      *
+      * ÁªÄêÎÅÍÜÂàÈòÍÑ¥Æ¡¼¥Ö¥ë     
+       01  TABLE-SENTEI.
+           03  TBL-SENTEI                  PIC 9(01)   OCCURS  31.
       *
       * ÊÝ¸±Å¬ÍÑ³°¶â³ÛÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
        01  HKNTEKGAI-TABLE.
@@ -193,6 +201,10 @@
       *
       *    ÅÀ¿ô
            COPY    "CPTENSU.INC".
+      *
+      *    ÁªÄêÎÅÍÜÈñ
+       01  SENTEICDCHG-REC.
+           COPY    "CPSENTEICDCHG.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -920,6 +932,38 @@
            MOVE     "NYUINACT-KEY9"    TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
+      *ÁªÄêÎÅÍÜ¾ðÊó¤Î¼èÆÀ
+           MOVE    ZERO                TO  FLG-NYUINACCT
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    SYU-HOSPID          TO  NACCT-HOSPID
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
+           MOVE    SYU-PTID            TO  NACCT-PTID
+           MOVE    SYU-SKYSTYMD (1:6)  TO  NACCT-SRYYM
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY9"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "NYUINACCT-KEY9"  TO  ORC-DBPATH
+               PERFORM  NYUINACCT-READ-SEC
+           ELSE
+               MOVE    1               TO      FLG-NYUINACCT
+           END-IF
+      *
+           MOVE     ZERO               TO      FLG-SENTEI-SET
+           INITIALIZE                          TABLE-SENTEI
+      *
+           PERFORM      SENTEI-SET-SEC
+               UNTIL   (FLG-NYUINACCT   =       1      )   OR
+                       (FLG-SENTEI-SET =       1      )
+      *
+      *
+           MOVE     "NYUINACT-KEY9"    TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
       *Æþ±¡ÎÁ´Ø·¸¤Î¼èÆÀ
       *
            MOVE    ZERO                TO  NYUIN-COUNT
@@ -1023,6 +1067,33 @@
            EXIT.
       *
       **************************************************************
+      *    ÁªÄêÎÅÍÜ¾ðÊó¤Î¼è¹þ¤ß
+      **************************************************************
+       SENTEI-SET-SEC           SECTION.
+      *
+           IF  NACCT-SRYYM      =   SYU-SKYSTYMD(1:6)
+      *    ÁªÄêÎÅÍÜ¾ðÊó¤Î¥Æ¡¼¥Ö¥ë¥»¥Ã¥È
+               IF  (NACCT-ZAISKBKBN   =   "1")    AND
+                   (NACCT-SRYCDTOTAL  =   099999916)
+                   PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
+                             UNTIL    SYU-IDX  >   31
+                       IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
+                           (NACCT-DAY(SYU-IDX) NOT =  ZERO)
+                           MOVE   NACCT-DAY(SYU-IDX)
+                                      TO  TBL-SENTEI (SYU-IDX)
+                       END-IF
+                   END-PERFORM
+                   MOVE     1         TO  FLG-SENTEI-SET 
+               END-IF
+           END-IF
+           MOVE    "NYUINACCT-KEY9"   TO  ORC-DBPATH
+           PERFORM  NYUINACCT-READ-SEC
+           .
+      *
+       SENTEI-SET-EXT.
+           EXIT.
+      *
+      **************************************************************
       *    Æþ±¡ÎÁ´Ø·¸¤Î¼èÆÀ
       **************************************************************
        NYUINACCT-GET-SEC           SECTION.
@@ -1031,7 +1102,8 @@
                  (NACCT-SRYYM(1:6)    =   SYU-SKYSTYMD(1:6))
       *
       *        Æþ±¡ÎÁ¤Î½¸·×
-               IF   NACCT-ZAISKBKBN      =   "1"
+               IF  (NACCT-ZAISKBKBN      =   "1")   AND
+                   (NACCT-ZAITEN         NOT =  ZERO)
       *            Æþ±¡´ðËÜÎÁ¤È²Ã¸º»»ÅÀ¿ô¤Î¼èÆÀ
                    PERFORM   NYUINKHN-GET-SEC
       *            Æþ±¡ÎÁ¤È³°Çñ¤òÈæ³Ó¤·¤ÆÅÀ¿ô»»Äê
@@ -1040,35 +1112,71 @@
                        IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
                            (NACCT-DAY(SYU-IDX) NOT =  ZERO)
                            ADD        1      TO    NYUIN-COUNT
-                           EVALUATE   TBL-GAIHAKU(SYU-IDX)
-                               WHEN   ZERO
-                                   ADD    NACCT-ZAITEN
-                                                  TO  SYU-HKNTEN(11)
-      *                        ³°Çñ¡Ê£±£µ¡ó¡Ë
-                               WHEN   1
-                                   COMPUTE  SYU-HKNTEN(11)  =
-                                            SYU-HKNTEN(11)  +
-                                           ((WRK-KHNTEN    *  0.15)
-                                                           +  0.5)
-      *                        ³°Çñ¡Ê£³£°¡ó¡Ë
-                               WHEN   2
-                                   COMPUTE  SYU-HKNTEN(11)  =
-                                            SYU-HKNTEN(11)  +
-                                          ((WRK-KHNTEN      *  0.3)
-                                                            +  0.5)
-      *                        ³°Çñ¡ÊÁªÄêÎÅÍÜÈñ£±£°¡ó¡Ë
-                               WHEN   3
-                                   COMPUTE  SYU-HKNTEN(11)  =
-                                            SYU-HKNTEN(11)  +
-                                          ((WRK-KHNTEN      *  0.1)
-                                                            +  0.5)
-      *                        Â¾°åÎÅµ¡´Ø¼õ¿Ç¡Ê£±£µ¡ó¡Ë
-                               WHEN   4
-                                   COMPUTE  SYU-HKNTEN(11)  =
-                                            SYU-HKNTEN(11)  +
-                                          ((WRK-KHNTEN      *  0.15)
-                                                            +  0.5)
-                           END-EVALUATE
+                           IF    TBL-SENTEI(SYU-IDX)   =   ZERO                    
+                               EVALUATE   TBL-GAIHAKU(SYU-IDX)
+                                 WHEN   ZERO
+                                     ADD    NACCT-ZAITEN
+                                                    TO  SYU-HKNTEN(11)
+      *                          ³°Çñ¡Ê£±£µ¡ó¡Ë
+                                 WHEN   1
+                                     COMPUTE  SYU-HKNTEN(11)  =
+                                              SYU-HKNTEN(11)  +
+                                             ((WRK-KHNTEN    *  0.15)
+                                                             +  0.5)
+      *                          ³°Çñ¡Ê£³£°¡ó¡Ë
+                                 WHEN   2
+                                     COMPUTE  SYU-HKNTEN(11)  =
+                                              SYU-HKNTEN(11)  +
+                                            ((WRK-KHNTEN      *  0.3)
+                                                              +  0.5)
+      *                          ³°Çñ¡ÊÁªÄêÎÅÍÜÈñ£±£°¡ó¡Ë
+                                 WHEN   3
+                                     COMPUTE  SYU-HKNTEN(11)  =
+                                              SYU-HKNTEN(11)  +
+                                            ((WRK-KHNTEN      *  0.1)
+                                                              +  0.5)
+      *                          Â¾°åÎÅµ¡´Ø¼õ¿Ç¡Ê£±£µ¡ó¡Ë
+                                 WHEN   4
+                                     COMPUTE  SYU-HKNTEN(11)  =
+                                              SYU-HKNTEN(11)  +
+                                            ((WRK-KHNTEN      *  0.15)
+                                                              +  0.5)
+                               END-EVALUATE
+                           ELSE
+                               EVALUATE   TBL-GAIHAKU(SYU-IDX)
+                                 WHEN   ZERO
+                                     ADD    WRK-SENTEI-ZAITEN
+                                                    TO  SYU-HKNTEN(11)
+      *                          ³°Çñ¡Ê£±£µ¡ó¡Ë
+                                 WHEN   1
+                                     COMPUTE  SYU-HKNTEN(11)  =
+                                              SYU-HKNTEN(11)  +
+                                             ((WRK-SENTEI-KHNTEN
+                                                             *  0.15)
+                                                             +  0.5)
+      *                          ³°Çñ¡Ê£³£°¡ó¡Ë
+                                 WHEN   2
+                                     COMPUTE  SYU-HKNTEN(11)  =
+                                              SYU-HKNTEN(11)  +
+                                            ((WRK-SENTEI-KHNTEN
+                                                              *  0.3)
+                                                              +  0.5)
+      *                          ³°Çñ¡ÊÁªÄêÎÅÍÜÈñ£±£°¡ó¡Ë
+                                 WHEN   3
+                                     COMPUTE  SYU-HKNTEN(11)  =
+                                              SYU-HKNTEN(11)  +
+                                            ((WRK-SENTEI-KHNTEN
+                                                              *  0.1)
+                                                              +  0.5)
+      *                          Â¾°åÎÅµ¡´Ø¼õ¿Ç¡Ê£±£µ¡ó¡Ë
+                                 WHEN   4
+                                     COMPUTE  SYU-HKNTEN(11)  =
+                                              SYU-HKNTEN(11)  +
+                                            ((WRK-SENTEI-KHNTEN
+                                                              *  0.15)
+                                                              +  0.5)
+                               END-EVALUATE
+                           END-IF
                        END-IF
                    END-PERFORM
                END-IF
@@ -1193,6 +1301,48 @@
            MOVE   "NYUINACT-KEY2"      TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
+      *    ÁªÄêÎÅÍÜ¤ÎÆþ±¡ºÞÅÀ¿ô¤È´ðËÜÅÀ¿ô¤Î¼èÆÀ
+           MOVE      ZERO              TO   WRK-SENTEI-ZAITEN
+           MOVE      ZERO              TO   WRK-SENTEI-KHNTEN
+           IF        FLG-SENTEI-SET    =    1
+               MOVE    ZERO            TO  FLG-SENTEICDCHG
+               INITIALIZE  SENTEICDCHG-REC
+               MOVE    NSRY-SRYCD(NYUINACT-IDX)
+                                       TO  SENCHG-IPNSRYCD
+               MOVE    SENTEICDCHG-REC TO  MCPDATA-REC
+               MOVE    "DBSELECT"      TO  MCP-FUNC
+               MOVE    "SENTEICDCHG-KEY2"
+                                       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC             =    ZERO
+                   MOVE    "SENTEICDCHG-KEY2" 
+                                          TO   ORC-DBPATH
+                   PERFORM  SENTEICDCHG-READ-SEC
+               ELSE
+                   MOVE    1              TO   FLG-SENTEICDCHG
+               END-IF
+      *
+               MOVE    "SENTEICDCHG-KEY2" TO   WK-PATH
+               PERFORM  CSR-CLOSE-SEC
+      *
+               MOVE    SPACE         TO   TNS-TENSU-REC
+               INITIALIZE                 TNS-TENSU-REC
+               MOVE    SENCHG-SENTEISRYCD  TO   TNS-SRYCD
+               MOVE    SYU-SKYSTYMD(1:6)  TO  ORC-DBYMD(1:6)
+               MOVE    "01"               TO  ORC-DBYMD(7:2)
+               PERFORM  TENSU-READ-SEC
+               IF       FLG-TENSU      =    ZERO
+                   MOVE   TNS-TEN      TO   WRK-SENTEI-KHNTEN
+                   COMPUTE    WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
+                                                 +  WRK-KSNTEN
+               END-IF                  
+               MOVE   "TENSU-KEY"      TO  WK-PATH
+               PERFORM   CSR-CLOSE-SEC
+      *
+           END-IF
            .
        NYUINKHN-GET-EXT.
            EXIT.
@@ -1978,6 +2128,28 @@
       *
            .
        SRYACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÁªÄêÎÅÍÜ¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       SENTEICDCHG-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SENTEICDCHG-REC
+               MOVE    ZERO            TO  FLG-SENTEICDCHG
+           ELSE
+               INITIALIZE                  SENTEICDCHG-REC
+               MOVE    1               TO  FLG-SENTEICDCHG
+           END-IF
+      *
+           .
+       SENTEICDCHG-READ-EXT.
            EXIT.
       *
       **************************************************************
