@@ -42,6 +42,8 @@
       *                                     摘要欄に印刷しないように修正
       *  01.00.10    NACL-門脇    03.09.29  点数マスタを読み込まないよう
       *                                     修正
+      *  01.00.11    NACL-門脇    03.11.26  自費レセプトの自費分
+      *                                     摘要欄記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -888,7 +890,13 @@
                    ELSE                          
                        EVALUATE    RECE65-SRYCD (IDX) (1:1)
                            WHEN    "0"
-                             IF      RECE65-SRYCD (IDX) (1:3) = "059"
+                             IF   (RECE62-RECESYUBETU    =  8888   )
+                             AND  (RECE64-SRYKBN  = "95" OR "96"   )
+                             AND  (RECE65-SRYCD (IDX) (1:3) = "095"
+                                                           OR "096")
+                                     MOVE    3             TO  IDY
+                             ELSE
+                               IF      RECE65-SRYCD (IDX) (1:3) = "059"
                                  IF    ( RECE64-SRYKBN     =   "70" )
                                  AND   ( RECE65-DATAKBN (IDX)
                                                            =   "3"  )
@@ -896,11 +904,12 @@
                                  ELSE
                                      MOVE    4             TO  IDY
                                  END-IF
-                             ELSE
+                               ELSE
                                  IF      IDY           =   ZERO
                                      MOVE    1             TO  IDY
                                  END-IF
-                           END-IF    
+                               END-IF
+                             END-IF
                            WHEN    "8"
                                IF      IDY           =   ZERO
                                    MOVE    2             TO  IDY
@@ -1503,7 +1512,26 @@
       *    服用方法でないこと
            IF  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3) =   "001")
            OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1) =   "S"  )
+           OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09500" )
+           OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09591" )
+           OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09592" )
+           OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09593" )
+           OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09600" )
+           OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09691" )
+           OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09692" )
+           OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09693" )
                MOVE    1             TO  FLG-NOPRT
+           END-IF
+           IF  ( RECE62-RECESYUBETU    =  8888   )  AND
+               ( RECE64-SRYKBN  = "95" OR "96"   )  
+             IF    TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  =  "8"
+                 CONTINUE
+             ELSE
+               IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)
+                                           NOT  = "095" AND "096"
+                   MOVE    1         TO  FLG-NOPRT
+               END-IF
+             END-IF
            END-IF
       *    診療行為テーブルに存在した場合、印字しないこと
            PERFORM   VARYING   IDY   FROM    1   BY  1
@@ -2319,7 +2347,12 @@
                END-IF
       *
       *--------------------------------------------------------------
-               MOVE    RECE64-ZAITEN     TO  RECE66-ZAITEN
+               IF   (RECE62-RECESYUBETU    =  8888   )
+               AND  (RECE64-SRYKBN  = "95" OR "96"   )
+                   MOVE    RECE64-SYUTEN1    TO  RECE66-ZAITEN
+               ELSE
+                   MOVE    RECE64-ZAITEN     TO  RECE66-ZAITEN
+               END-IF
       *
       ****     IF      TNS-SRYKBN        =   "60"
                IF      RECE64-SRYKBN     =   "60"

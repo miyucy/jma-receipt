@@ -50,6 +50,8 @@
       *  01.00.12    NACL-藤原    03.03.12  補助区分の追加
       *  01.00.13    NACL-門脇    03.03.03  剤番号桁修正対応
       *  01.00.14    NACL-門脇    03.03.06  初再診のコメント編集対応
+      *  01.00.15    NACL-門脇    03.11.26  自費レセプトの自費分
+      *                                     摘要欄記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -348,8 +350,14 @@
       **     END-IF
       *    
       *****IF     RECE06-SRYKBN  NOT =  "11" AND "95" AND "96"
-           IF     RECE06-SRYKBN  NOT =  "95" AND "96"
-               PERFORM     RECE061-WRITE-SEC
+           IF     RECE06-RECESYUBETU  =  8888
+              IF     RECE06-ZAITEN  NOT =  ZERO
+                  PERFORM     RECE061-WRITE-SEC
+              END-IF
+           ELSE
+              IF     RECE06-SRYKBN  NOT =  "95" AND "96"
+                  PERFORM     RECE061-WRITE-SEC
+              END-IF
            END-IF
            .
        210-HENSYU-EXT.

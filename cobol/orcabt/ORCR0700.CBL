@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    03.03.06  初再診のコメント編集対応
+      *  01.00.02    NACL-門脇    03.11.26  自費レセプトの自費分
+      *                                     摘要欄記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -294,8 +296,14 @@
                MOVE   RECE66-CDKBN-KOUBAN  TO  RECE661-CDKBN-KOUBAN
                MOVE   RECE66-KOUHYOJUNNUM  TO  RECE661-KOUHYOJUNNUM
            END-IF
-           IF     RECE66-SRYKBN  NOT =  "95" AND "96"
-               PERFORM     RECE661-WRITE-SEC
+           IF     RECE66-RECESYUBETU  =  8888
+              IF     RECE66-ZAITEN  NOT =  ZERO
+                  PERFORM     RECE661-WRITE-SEC
+              END-IF
+           ELSE
+              IF     RECE66-SRYKBN  NOT =  "95" AND "96"
+                  PERFORM     RECE661-WRITE-SEC
+              END-IF
            END-IF
            .
        210-HENSYU-EXT.
