@@ -474,6 +474,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTINF INS ERR:" MCP-RC
                            ",KEY:" PTINF-KEY
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            ELSE
                MOVE    MCPDATA-REC         TO  PTINF-REC
@@ -494,6 +495,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTINF UPD ERR:" MCP-RC
                            ",KEY:" PTINF-KEY
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            END-IF
            .
@@ -594,6 +596,7 @@
                    DISPLAY "P029 PTHKNINF INS ERR:" MCP-RC 
                            ",PTHKN-KEY:" PTHKN-KEY
                            ",PTHKN-TEKSTYMD:" PTHKN-TEKSTYMD
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            ELSE
       *        更新情報
@@ -611,6 +614,7 @@
                    DISPLAY "P029 PTHKNINF UPD ERR:" MCP-RC
                            ",PTHKN-KEY:" PTHKN-KEY
                            ",PTHKN-TEKSTYMD:" PTHKN-TEKSTYMD
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            END-IF
            .
@@ -644,6 +648,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTKOHINF INS ERR:" MCP-RC
                            ",KEY:" PTKOH-KEY
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            ELSE
       *        更新情報
@@ -660,6 +665,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTKOHINF UPD ERR:" MCP-RC
                            ",KEY:" PTKOH-KEY
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -718,6 +724,7 @@
                        IF      MCP-RC          NOT =   ZERO
                             DISPLAY "P029 MONTHLYNUM UPD ERR:" MCP-RC
                                    ",KEY:" MONTHLYNUM-KEY
+                           MOVE    "9000"          TO  SPA-ERRCD
                        END-IF
                    END-IF
                END-IF
@@ -750,6 +757,7 @@
                IF      MCP-RC          NOT =   ZERO
                     DISPLAY "P029 MONTHLYNUM INS ERR:" MCP-RC
                                    ",KEY:" MONTHLYNUM-KEY
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -1018,6 +1026,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 HKNCOMBI UPD ERR:" MCP-RC
                            ",KEY:" COMB-KEY
+                   MOVE    "9003"          TO  SPA-ERRCD
                END-IF
            END-IF
            .
@@ -1175,6 +1184,7 @@
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "P029 KYUSEIRRK INS ERR:" MCP-RC
                                ",KEY:" KYUSEI-KEY
+                       MOVE    "9000"          TO  SPA-ERRCD
                    END-IF
                END-IF
            END-PERFORM
@@ -1315,6 +1325,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTNUM INS ERR:" MCP-RC
                           ",KEY:" PTNUM-KEY   "."
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            ELSE
                IF      SPA-GMN-PTNUM       NOT =   PTNUM-PTNUM
@@ -1342,6 +1353,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTNUM UPD ERR:" MCP-RC "."
                           ",KEY:" PTNUM-KEY   "."
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            END-IF
            .
@@ -1385,6 +1397,7 @@
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "P029 TSYRRK UPD ERR:" MCP-RC
                           ",KEY:" TSYRRK-KEY
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
       *    追加
            WHEN    OTHER
@@ -1404,6 +1417,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 TSYRRK INS ERR:" MCP-RC
                           ",KEY:" TSYRRK-KEY
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            END-EVALUATE
       *
@@ -1448,6 +1462,7 @@
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "P029 TNKRRK UPD ERR:" MCP-RC
                           ",KEY:" TNKRRK-KEY
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
       *    追加
            WHEN    OTHER
@@ -1467,6 +1482,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 TNKRRK INS ERR:" MCP-RC
                           ",KEY:" TNKRRK-KEY
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            END-EVALUATE
            .
@@ -1500,6 +1516,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTRSIINF INS ERR:" MCP-RC
                           ",KEY:" PTRSI-KEY
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            ELSE
       *
@@ -1516,6 +1533,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTRSIINF UPD ERR:" MCP-RC
                           ",KEY:" PTRSI-KEY
+                   MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            END-IF
            .
