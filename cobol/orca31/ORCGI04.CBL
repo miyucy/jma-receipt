@@ -2705,8 +2705,8 @@
            END-IF
       *
            MOVE    WRK-NYUINKA     TO  SYU-SRYKA
-           MOVE    WRK-BTUNUM      TO  SYU-ROOMNUM
-           MOVE    WRK-BRMNUM      TO  SYU-BYOTONUM
+           MOVE    WRK-BRMNUM      TO  SYU-ROOMNUM
+           MOVE    WRK-BTUNUM      TO  SYU-BYOTONUM
            MOVE    WRK-DRCD        TO  SYU-DRCD
       *
            MOVE    SPA-NAI-I04-CHOSEI (IDX-SYU)

@@ -780,8 +780,8 @@
            MOVE    WKPTNYUINRRK-REC    TO  PTNYUINRRK-REC
       *
            MOVE    WRK-NYUINKA         TO  SYU-SRYKA
-           MOVE    WRK-BTUNUM          TO  SYU-ROOMNUM
-           MOVE    WRK-BRMNUM          TO  SYU-BYOTONUM
+           MOVE    WRK-BRMNUM          TO  SYU-ROOMNUM
+           MOVE    WRK-BTUNUM          TO  SYU-BYOTONUM
            MOVE    WRK-DRCD            TO  SYU-DRCD
       *
       *

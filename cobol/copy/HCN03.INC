@@ -5,6 +5,7 @@
             02  HCN03-HAKYMD    PIC X(22).
             02  HCN03-KNJNAMW   PIC X(20).
             02  HCN03-KNJNO PIC X(20).
+            02  HCN03-ROOM  PIC X(50).
             02  HCN03-HOKEN PIC X(20).
             02  HCN03-FUTAN PIC X(6).
             02  HCN03-MIDASI    PIC X(20).

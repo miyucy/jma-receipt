@@ -132,6 +132,16 @@
            03  WRK-MOJI                PIC X(10).
            03  WRK-MOJISU              PIC 9(02).
            03  WRK-PRTNM               PIC X(20).
+           03  WRK-ROOM                PIC X(50).
+           03  WRK-BRMNUM-NAME         PIC X(50).
+           03  WRK-BRMNUM-IN           PIC X(06).
+           03  WRK-BRMNUM-EDT          PIC X(06).
+           03  WRK-BRMNUM-OT           PIC X(06).
+           03  WRK-STR1                PIC X(20).
+           03  WRK-STR2                PIC X(20).
+           03  WRK-IDX1                PIC 9(05).
+           03  WRK-IDX2                PIC 9(05).
+           03  WRK-IDX3                PIC 9(05).
       *
       *   日本語数字
        01  TBL-SUJI-AREA.
@@ -155,6 +165,8 @@
            COPY    "CPSK1005.INC".
       *    請求書自費名称情報
            COPY    "CPSK1013.INC".
+      *    病棟情報
+           COPY    "CPSK5001.INC".
       *
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1034.INC".
@@ -462,6 +474,10 @@
            MOVE    PTINF-NAME
                                        TO  HCN03-KNJNAMW
       *
+      *    病棟・病室名編集処理
+           PERFORM 3102-ROOM-HEN-SEC
+           MOVE    WRK-ROOM            TO  HCN03-ROOM
+      *
       *    保険組合せ名称編集処理
            PERFORM 3102-HKNCOMBI-HEN-SEC
       *
@@ -694,6 +710,160 @@
       *
            .
        3102-SRYKA-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    病棟・病室名編集処理
+      *****************************************************************
+       3102-ROOM-HEN-SEC                 SECTION.
+      *
+      *    病棟情報検索処理
+           PERFORM 3102-SYS-5001-SEL-SEC
+      *
+      *    病室名編集処理
+           MOVE    SYU-ROOMNUM (3 : )
+                                       TO  WRK-BRMNUM-IN
+           PERFORM 3102-BRMNUM-EDIT-SEC
+      *
+           MOVE    SPACE               TO  WRK-ROOM
+      *
+           IF    ( WRK-BRMNUM-NAME     NOT =   SPACE )
+               STRING  SYS-5001-BTU-NAME   DELIMITED   BY  SPACE
+                       "　"                DELIMITED   BY  SIZE
+                       WRK-BRMNUM-NAME     DELIMITED   BY  SPACE
+                       "号室"              DELIMITED   BY  SIZE
+               INTO    WRK-ROOM
+               END-STRING
+           ELSE
+               STRING  SYS-5001-BTU-NAME   DELIMITED   BY  SPACE
+                       "　　　　"          DELIMITED   BY  SIZE
+                       "号室"              DELIMITED   BY  SIZE
+               INTO    WRK-ROOM
+               END-STRING
+           END-IF
+      *
+           .
+       3102-ROOM-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    病棟情報検索処理
+      *****************************************************************
+       3102-SYS-5001-SEL-SEC             SECTION.
+      *
+      *    病棟情報検索
+           MOVE    SPACE               TO  SYS-5001-REC
+           MOVE    "5001"              TO  SYS-5001-KANRICD
+           MOVE    SYU-BYOTONUM        TO  SYS-5001-KBNCD
+      *    システム管理検索
+           MOVE    SYS-5001-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    ORCHCN03-KJNYMD (IDX-M)
+                                       TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-5001-REC
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-5001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       3102-SYS-5001-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    病室番号編集処理
+      *****************************************************************
+       3102-BRMNUM-EDIT-SEC            SECTION.
+      *
+      *    病室番号左詰め処理
+           PERFORM 3102-BRM-NUM-LEFT-EDIT-SEC
+      *
+      *    全角編集処理
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-BRMNUM-OT       TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF      KANACHK-RC          =   ZERO
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  WRK-BRMNUM-NAME
+           END-IF
+      *
+           .
+       3102-BRMNUM-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    病室番号左詰処理
+      *****************************************************************
+       3102-BRM-NUM-LEFT-EDIT-SEC      SECTION.
+      *
+           MOVE    SPACE               TO  WRK-BRMNUM-OT
+      *
+           IF    ( WRK-BRMNUM-IN       =   SPACE )
+               GO  TO  3102-BRMNUM-LEFT-EDIT-EXT
+           END-IF
+      *
+           IF    ( WRK-BRMNUM-IN (1 : 1)  =   SPACE )
+               MOVE    SPACE           TO  WRK-STR1
+               MOVE    1               TO  WRK-IDX1
+               UNSTRING    WRK-BRMNUM-IN
+                   DELIMITED   BY  ALL SPACE
+                   INTO    WRK-STR1
+                   WITH    POINTER WRK-IDX1
+               END-UNSTRING
+               MOVE    WRK-BRMNUM-IN (WRK-IDX1 : )
+                                       TO  WRK-BRMNUM-EDT
+           ELSE
+               MOVE    WRK-BRMNUM-IN  TO  WRK-BRMNUM-EDT
+           END-IF
+      *
+           PERFORM VARYING WRK-IDX1    FROM    6   BY  -1
+               UNTIL     ( WRK-IDX1    <   1 )
+                 OR      ( WRK-BRMNUM-EDT (WRK-IDX1 : 1)
+                                   NOT =   SPACE )
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( WRK-IDX1    <   1 )
+               MOVE    WRK-BRMNUM-EDT TO  WRK-BRMNUM-OT
+               GO  TO  3102-BRMNUM-LEFT-EDIT-EXT
+           END-IF
+      *
+      *    病室番号が数字の場合前ゼロをとる
+           IF    ( WRK-BRMNUM-EDT ( 1 : WRK-IDX1 )
+                                       IS  NUMERIC )
+               IF    ( WRK-BRMNUM-EDT ( 1 : 1 )
+                                       =   ZERO )
+                   MOVE    1               TO  WRK-IDX2
+                   MOVE    SPACE           TO  WRK-STR1
+                   UNSTRING    WRK-BRMNUM-EDT
+                       DELIMITED BY  ALL ZERO
+                   INTO    WRK-STR1
+                   WITH    POINTER WRK-IDX2
+                   END-UNSTRING
+                   MOVE    WRK-BRMNUM-EDT (WRK-IDX2 : )
+                                           TO  WRK-BRMNUM-OT
+               ELSE
+                   MOVE    WRK-BRMNUM-EDT TO  WRK-BRMNUM-OT
+               END-IF
+           ELSE
+                   MOVE    WRK-BRMNUM-EDT TO  WRK-BRMNUM-OT
+           END-IF
+      *
+           .
+       3102-BRMNUM-LEFT-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せ名称編集処理
