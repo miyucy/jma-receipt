@@ -49,6 +49,8 @@
       *  01.01.01    NACL-ÌçÏÆ    04.04.01  ¥ê¥Ï¸À¸ìÄ°³ÐÎÅË¡¡Ê£³¡ËÄÉ²ÃÂÐ±þ
       *  01.01.02    NACL-ÌçÏÆ    04.04.05  ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ¤Î
       *                                     ¥³¥á¥ó¥ÈÂÐ±þ
+      *  01.01.03    NACL-ÌçÏÆ    04.04.15  Ç¾·ì´É¼À´µµÞÀ­È¯¾ÉÆü¤Î¥³¥á¥ó¥È
+      *                                     ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -192,6 +194,7 @@
            03  FLG-RECE65          PIC 9(01).
            03  FLG-YAKUKAN-COMMENT PIC 9(01).
            03  FLG-HINKAI-COMMENT  PIC 9(01).
+           03  FLG-KYUSEI-COMMENT  PIC 9(01).
            03  FLG-COMMENT         PIC 9(02).
            03  FLG-WRKRECE65       PIC 9(01).
            03  FLG-FIRST           PIC 9(01).
@@ -241,7 +244,9 @@
       *
            03  WRK-FSANTEIYMD      PIC 9(08).
            03  WRK-AFTER2          PIC 9(08).
+           03  WRK-AFTER180        PIC 9(08).
            03  WRK-TOSEKIYMD       PIC 9(08).
+           03  WRK-KYUSEIYMD       PIC 9(08).
            03  WRK-HINKAIYMD       PIC 9(08).
            03  WRK-DAY             PIC 9(02).
       *
@@ -419,6 +424,8 @@
            03  CONS-SANTEI-COMMENT2  PIC X(09) VALUE "840000065".
       *    ºßÂð·ì±ÕÆ©ÀÏ»ØÆ³´ÉÍýÎÁ
            03  CONS-TOSEKI          PIC X(09)  VALUE "114009310".
+      *    Ç¾·ì´É¼À´µµÞÀ­È¯¾ÉÆü
+           03  CONS-KYUSEI          PIC X(09)  VALUE "099800101".
       *
       *
       *   ¥ê¥Ï¥Ó¥ê¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ë
@@ -689,6 +696,9 @@
            ELSE
               PERFORM   2001-KOHJYUSIN-COMMENT-SEC
            END-IF
+      *
+      *    Ç¾·ì´É¼À´µµÞÀ­È¯¾ÉÆü¤Î¥³¥á¥ó¥È
+           PERFORM   2001-KYUSEIHASSYO-HANTEI-SEC
       *
       *    ¥Ñ¥é¥á¡¼¥¿£°£´¥Õ¥¡¥¤¥ë¤è¤êÊÔ½¸
            INITIALIZE                      RECE64-REC
@@ -1170,6 +1180,150 @@
       *
            .
        2001-KOHJYUSIN-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ç¾·ì´É¼À´µµÞÀ­È¯¾ÉÆü¤¬¤¢¤ë¤«È½Äê
+      *    Ç¾·ì´É¼À´µµÞÀ­È¯¾ÉÆü¤Î£±£¸£°Æü°ÊÆâ¤«È½Äê
+      *****************************************************************
+       2001-KYUSEIHASSYO-HANTEI-SEC          SECTION.
+      *
+           MOVE     ZERO     TO     FLG-KYUSEI-COMMENT
+           MOVE     ZERO     TO     WRK-KYUSEIYMD
+      *
+      *    »»ÄêÍúÎò¸¡º÷
+           INITIALIZE                  SANTEI-REC
+           MOVE    RECE62-HOSPID       TO  SANTEI-HOSPID
+           MOVE    RECE62-PTID         TO  SANTEI-PTID
+           MOVE    CONS-KYUSEI         TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+      *
+                MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                PERFORM        SANTEI-READ-SEC
+      *
+                PERFORM   UNTIL  ( FLG-SANTEI         =   1 ) OR
+                                 ( FLG-KYUSEI-COMMENT =   1 )
+      *
+                   PERFORM  VARYING   IDX3   FROM  31  BY  -1
+                             UNTIL   ( IDX3               <    1 )
+                               OR    ( FLG-KYUSEI-COMMENT =    1 )
+      *
+                     IF   SANTEI-DAY(IDX3)  NOT =  ZERO
+      *
+                         MOVE   SANTEI-SRYYM   TO  WRK-FSANTEIYMD(1:6)
+                         MOVE   IDX3           TO  WRK-FSANTEIYMD(7:2)
+      *
+                         INITIALIZE                  STS-AREA-DAY
+                         INITIALIZE                  LNK-DAY6-AREA
+                         MOVE    "61"            TO  LNK-DAY6-IRAI
+                         MOVE    WRK-FSANTEIYMD  TO  LNK-DAY6-KIJUN
+                         MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                         MOVE     179            TO  LNK-DAY6-ZOGEN
+                         CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                         LNK-DAY6-AREA
+                         MOVE    LNK-DAY6-KEISAN TO  WRK-AFTER180
+      *
+                         IF   WRK-FSANTEIYMD(1:6) <=  RECE62-SRYYM
+                         AND  RECE62-SRYYM        <=  WRK-AFTER180(1:6)
+                               MOVE    1    TO   FLG-KYUSEI-COMMENT
+                               MOVE  WRK-FSANTEIYMD
+                                            TO   WRK-KYUSEIYMD
+                         END-IF
+      *
+                     END-IF
+      *
+                   END-PERFORM
+      *
+                   MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                   PERFORM        SANTEI-READ-SEC
+      *
+                END-PERFORM
+      *
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           IF      FLG-KYUSEI-COMMENT    =      1
+               PERFORM    2001-KYUSEIHASSYO-COMMENT-SEC
+           END-IF
+      *
+           .
+       2001-KYUSEIHASSYO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ç¾·ì´É¼À´µµÞÀ­È¯¾ÉÆü¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2001-KYUSEIHASSYO-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE641-REC
+           MOVE    RECE62-HOSPID       TO  RECE641-HOSPID
+           MOVE    RECE62-SRYYM        TO  RECE641-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE641-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE641-PTID
+           MOVE    RECE62-RECEKA       TO  RECE641-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE641-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE641-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE641-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE641-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE641-TEKSTYMD
+           MOVE    99999998            TO  RECE641-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE641-KOHBUNRI
+           MOVE    "99"                TO  RECE641-SRYKBN
+      *
+           MOVE    1                   TO  RECE641-MEISAISU
+      *
+           WRITE   RECE641-REC
+           ADD     1                   TO  CNT-RECE64
+      *
+           INITIALIZE                      RECE651-REC
+           MOVE    RECE62-HOSPID       TO  RECE651-HOSPID
+           MOVE    RECE62-SRYYM        TO  RECE651-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE651-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE651-PTID
+           MOVE    RECE62-RECEKA       TO  RECE651-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE651-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE651-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE651-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE651-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE651-TEKSTYMD
+           MOVE    99999998            TO  RECE651-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE651-KOHBUNRI
+           MOVE    "99"                TO  RECE651-SRYKBN
+      *    ¥³¥á¥ó¥È¤ÎÁÞÆþ
+           MOVE    SPACE                TO  COM-RECE65-REC
+           INITIALIZE                       COM-RECE65-REC
+           MOVE    "840000045"          TO  COM-SRYCD(1)
+           MOVE     ZERO                TO  COM-SRYSURYO(1)
+           MOVE     9                   TO  COM-YUKOKETA(1)
+           MOVE    "È¯¾É¡¡¡¡¡¡·î¡¡¡¡Æü" TO  COM-NAME(1)
+           MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+           MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(7:4)
+           MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+           MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(13:4)
+      *
+           MOVE    COM-SRYACTINF(1)    TO  RECE651-SRYACTINF(1)
+           MOVE    COM-NAMEINF(1)      TO  RECE651-NAMEINF(1)
+           WRITE   RECE651-REC
+           ADD     1                   TO  CNT-RECE65
+      *
+           .
+       2001-KYUSEIHASSYO-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
