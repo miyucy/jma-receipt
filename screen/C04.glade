@@ -514,70 +514,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label476</name>
-      <x>224</x>
-      <y>296</y>
-      <width>64</width>
-      <height>24</height>
-      <label>選択番号　</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label527</name>
-      <x>16</x>
-      <y>296</y>
-      <width>64</width>
-      <height>24</height>
-      <label>選択番号　</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label526</name>
-      <x>96</x>
-      <y>328</y>
-      <width>72</width>
-      <height>24</height>
-      <label>病名コード</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label502</name>
-      <x>96</x>
-      <y>360</y>
-      <width>72</width>
-      <height>24</height>
-      <label>病　名　　</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>B04</name>
       <x>104</x>
@@ -607,8 +543,72 @@
       <y>8</y>
       <width>64</width>
       <height>24</height>
-      <label>検索病名　</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
+      <label>検索病名  </label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label527</name>
+      <x>16</x>
+      <y>296</y>
+      <width>64</width>
+      <height>24</height>
+      <label>選択番号  </label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label476</name>
+      <x>224</x>
+      <y>296</y>
+      <width>64</width>
+      <height>24</height>
+      <label>選択番号  </label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label502</name>
+      <x>96</x>
+      <y>360</y>
+      <width>72</width>
+      <height>24</height>
+      <label>病    名    </label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label526</name>
+      <x>96</x>
+      <y>328</y>
+      <width>72</width>
+      <height>24</height>
+      <label>病名コード</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
