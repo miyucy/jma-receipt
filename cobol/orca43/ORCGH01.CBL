@@ -43,7 +43,7 @@
       *                                     在宅寝たきり等の表示の追加       
       *  01.02.03    NACL-藤原    03/02/05  公費請求書ＤＢを追加
       *                                     入院対応
-      *                                     一括入力へ変更
+      *                                     科コードの入力の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1197,9 +1197,9 @@
            MOVE    SPACE           TO  SPA-UPDFLG
                                        SPA-HENFLG
       *
-           MOVE    H01-SRYKA           TO  SPA-H01GMN-SRYKA
+           MOVE    H01-SRYKA-VALUE TO  SPA-H01GMN-SRYKA
       *
-           IF      SPA-H01GMN-SRYKA       =   SPACE
+           IF      SPA-H01GMN-SRYKA    =   SPACE
                CONTINUE
            ELSE
                INITIALIZE                  SYS-1005-REC
@@ -1834,7 +1834,7 @@
            MOVE    SPA-H01GMN-PTNUM       TO  H01-PTNUM
            MOVE    SPA-H01GMN-NAME        TO  H01-NAME-VALUE
            MOVE    SPA-H01GMN-SRYYM       TO  H01-SRYYM
-           MOVE    SPA-H01GMN-SRYKA       TO  H01-SRYKA
+           MOVE    SPA-H01GMN-SRYKA       TO  H01-SRYKA-VALUE
            MOVE    SPA-H01GMN-SRYKANAME   TO  H01-SRYKANAME-VALUE
            MOVE    SPA-H01GMN-SKYYM       TO  H01-SKYYM
            MOVE    SPA-H01GMN-HENREIYM    TO  H01-HENREIYM
