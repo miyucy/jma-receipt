@@ -439,7 +439,7 @@ path	key17 	{
 path	key18	{
 	DBSELECT	{
 		DECLARE tbl_sryacct_key18_csr CURSOR FOR
-		SELECT *
+		SELECT A.*
 		FROM tbl_sryacct A,tbl_sryact B
 			WHERE   A.HOSPID    =   :HOSPID
 			AND   A.NYUGAIKBN   =   :NYUGAIKBN
@@ -462,9 +462,9 @@ path	key18	{
 path	key19	{
 	DBSELECT	{
 		DECLARE tbl_sryacct_key19_csr CURSOR FOR
-		SELECT *
+		SELECT A.*
 		FROM tbl_sryacct A,tbl_sryact B
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   A.HOSPID    =   :HOSPID
 			AND   A.NYUGAIKBN   =   :NYUGAIKBN
 			AND   A.PTID        =   :PTID
 			AND   A.SRYYM       =   :SRYYM
