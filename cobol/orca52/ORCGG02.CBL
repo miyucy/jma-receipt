@@ -80,8 +80,8 @@
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-NYUGAIKBNMEI    PIC X(06).
       *
-                   07  SPA-GMN-FILENM1             PIC X(256).
-                   07  SPA-GMN-FILENM2             PIC X(256).
+                   07  SPA-GMN-FILENM1             PIC X(150).
+                   07  SPA-GMN-FILENM2             PIC X(150).
       *
                    07  SPA-GMN-DATAKBN.         
                        09  SPA-GMN-DATAKBN1-VALUE  PIC X(01).
