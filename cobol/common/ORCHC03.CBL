@@ -141,8 +141,6 @@
            03  WRK-Z7-G.
                05  WRK-FIL             PIC X(09).
                05  WRK-Z7              PIC Z,ZZZ,ZZZ.
-               05  WRK-Z7S             REDEFINES   WRK-Z7
-                                       PIC -,---,---.
            03  WRK-Z72-G.
       *****    05  WRK-FIL2            PIC X(09).
       ****     05  WRK-Z72             PIC -,---,---.
@@ -1018,8 +1016,9 @@
            END-IF
       *    Á°²óÌ¤¼ý³Û·×»»
            PERFORM 3101-MISYU-HEN-SEC
-           MOVE    WRK-MISYUMONEY      TO  WRK-Z7S
-           MOVE    WRK-Z7-G            TO  HC03-ZENMISYU
+           MOVE    WRK-MISYUMONEY      TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-ZENMISYU
       *    ¹ç·×ÀÁµá³Û
            COMPUTE WRK-GOKTEN          =   WRK-SKYMONEY
                                        +   WRK-MISYUMONEY
