@@ -1,4 +1,4 @@
-S03	{
+S03N	{
 	fixed14	{
 		PTNUM	{
 			value	varchar(20);
@@ -72,6 +72,9 @@ S03	{
 		ETCHKNTEN	{
 			value	number(10);
 		};
+		NYUHKNTEN	{
+			value	number(10);
+		};
 		TOTALHKNTEN	{
 			value	number(10);
 		};
@@ -105,6 +108,9 @@ S03	{
 		ETCTGMONEY	{
 			value	number(10);
 		};
+		NYUTGMONEY	{
+			value	number(10);
+		};
 		HKNTEKMONEY	{
 			value	number(10);
 		};
@@ -112,19 +118,19 @@ S03	{
 			value	number(10);
 		};
 		JIHIMSG1	{
-			value	varchar(8);
+			value	varchar(12);
 		};
 		JIHIMSG2	{
-			value	varchar(8);
+			value	varchar(12);
 		};
 		JIHIMSG3	{
-			value	varchar(8);
+			value	varchar(12);
 		};
 		JIHIMSG4	{
-			value	varchar(8);
+			value	varchar(12);
 		};
 		JIHIMSG5	{
-			value	varchar(8);
+			value	varchar(12);
 		};
 		JIHI1	{
 			value	number(10);
@@ -165,6 +171,12 @@ S03	{
 		JIHITAX	{
 			value	number(10);
 		};
+		SKJRYOYO	{
+			value	number(10);
+		};
+		SKJFTN	{
+			value	number(10);
+		};
 		YKZFTN	{
 			value	number(10);
 		};
@@ -189,6 +201,9 @@ S03	{
 		RSIETC	{
 			value	number(10);
 		};
+		RMSAGAKU	{
+			value	number(10);
+		};
 		SYKMONEY	{
 			value	number(10);
 		};
@@ -198,7 +213,10 @@ S03	{
 		MISYUZAN	{
 			value	number(10);
 		};
-		ZENMISYU	{
+		ZENMISYU_GAI	{
+			value	number(10);
+		};
+		ZENMISYU_NYU	{
 			value	number(10);
 		};
 		GOKMISYU	{
