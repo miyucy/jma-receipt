@@ -909,7 +909,7 @@
       *
                IF     (SPA-S01-DENPPRTYMD  <  SYU-DENPPRTYMD )
                 OR   ((SPA-S01-NYUGAIKBN   =  SYU-NYUGAIKBN )
-                  AND (SPA-S01-DENPNUM     =  SYU-DENPNUM   ))
+                  AND (SPA-S01-DENPNUM     <= SYU-DENPNUM   ))
                        MOVE    1     TO      FLG-SYORI
                END-IF
       *
