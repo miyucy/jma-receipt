@@ -1231,13 +1231,12 @@
                PERFORM 4200-ORDERID-CHK-SEC
                MOVE    WRK-CMB-ITM2    TO  SPA-GMN-TALLIDOJIYU(IDX-MAX)
       *
+               MOVE    ORDER-PTNUM TO  SPA-GMN-TALLPTNUM  (IDX-MAX)
                MOVE    ORDER-PTNUM TO  WRK-PTNUM-PTNUM
                PERFORM 900-PTNUM-KEY2-SEL-SEC
                IF    ( FLG-PTNUM   =   ZERO )
                    MOVE    PTNUM-PTID
                                        TO  SPA-NAI-TALLPTID   (IDX-MAX)
-                   MOVE    PTNUM-PTNUM
-                                       TO  SPA-GMN-TALLPTNUM  (IDX-MAX)
                END-IF
       *
                MOVE    SPA-NAI-TALLPTID   (IDX-MAX)
