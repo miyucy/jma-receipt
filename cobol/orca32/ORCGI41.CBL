@@ -287,8 +287,6 @@
                05  WRK-CHK-DAY     PIC 9(03)  OCCURS  31.
            03  WRK-CHK-ZAISKBKBN   PIC X(01).
            03  WRK-CHK-SKB         PIC X(01).
-           03  WRK-COP-G.
-               05  WRK-COP         PIC 9(02).
            03  WRK-SKB-TBL.
                05  WRK-KUMINO      PIC X(02)  OCCURS  30.
                05  WRK-KUMISTYMD   PIC X(08)  OCCURS  30.
@@ -1997,12 +1995,12 @@
            END-PERFORM.
            MOVE    ZERO                TO  I41-KUMILIST-COUNT.
            MOVE    ALL SPACE           TO  WRK-SKB-TBL.
+           MOVE    SPA-NAI-SRYYM-41    TO  WRK-TEKSTYMD(1:6).
+           MOVE    "99"                TO  WRK-TEKSTYMD(7:2).
+           MOVE    SPA-NAI-SRYYM-41    TO  WRK-TEKEDYMD(1:6).
+           MOVE    "00"                TO  WRK-TEKEDYMD(7:2).
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-I41-MAX-41
-               MOVE    SPA-NAI-SRYYM-41    TO  WRK-TEKSTYMD(1:6)
-               MOVE    "99"                TO  WRK-TEKSTYMD(7:2)
-               MOVE    SPA-NAI-SRYYM-41    TO  WRK-TEKEDYMD(1:6)
-               MOVE    "00"                TO  WRK-TEKEDYMD(7:2)
                IF     (SPA-I41-TTEKSTYMD-41 (IDX)(1:6)
                                                 <= SPA-NAI-SRYYM-41) AND
                       (SPA-I41-TTEKEDYMD-41 (IDX)(1:6)
@@ -2029,9 +2027,10 @@
                    IF     I41-KUMILIST-COUNT  NOT = ZERO
                        PERFORM   VARYING   IDX     FROM    1   BY  1
                                  UNTIL     IDX     >  I41-KUMILIST-COUNT
-                           IF  (SPA-GMN-TDAY-41 (IDW IDY)  =
+                           IF    (SPA-GMN-TDAY-41 (IDW IDY)(1:2)  =
                                                    WRK-KUMINO (IDX))  OR
-                               (SPA-GMN-TDAY-41 (IDW IDY)  =  ALL SPACE)
+                                 (SPA-GMN-TDAY-41 (IDW IDY)(1:2)  =
+                                                              ALL SPACE)
                                MOVE    "*"               TO  WRK-CHK-SKB
                            END-IF
                        END-PERFORM
@@ -2049,39 +2048,51 @@
                        END-IF
                    END-IF
                END-PERFORM
-               PERFORM   VARYING   IDX     FROM    1   BY  1
-                         UNTIL     IDX         >  I41-KUMILIST-COUNT
-                   PERFORM   VARYING   IDY     FROM    1   BY  1
-                             UNTIL     IDY         >  31
-                       IF  SPA-GMN-TDAY-41 (IDW IDY) = WRK-KUMINO (IDX)
-                         IF  WRK-TEKSTYMD(1:6) = WRK-KUMIEDYMD(IDX)(1:6)
-                           MOVE    WRK-KUMIEDYMD (IDX)  TO  WRK-TEKSTYMD
-                           IF  WRK-TEKSTYMD(7:2)  =  "31"
-                             MOVE    "99"         TO  WRK-TEKSTYMD
-                           ELSE
-                             MOVE    WRK-TEKSTYMD(7:2) TO  WRK-COP-G
-                             COMPUTE WRK-COP   =   WRK-COP   +   1
-                             MOVE    WRK-COP-G     TO  WRK-TEKSTYMD(7:2)
-                             MOVE    IDY(3:2)      TO  WRK-TEKEDYMD(7:2)
-                           END-IF
-                         END-IF
-                       END-IF
-                   END-PERFORM
-               END-PERFORM
-               IF     WRK-TEKSTYMD  >   WRK-TEKEDYMD
-                   MOVE    "99"                TO  WRK-TEKSTYMD(7:2)
-                   MOVE    "00"                TO  WRK-TEKEDYMD(7:2)
-               END-IF
                IF     (WRK-TEKSTYMD(7:2)  NOT = "99")  AND
                       (WRK-TEKEDYMD(7:2)  NOT = "00")
-                   MOVE    "red"               TO  I41-KEIKOKU-STYLE
-                   MOVE    "保険の適用が切れている期間があります。"
-                                               TO  I41-KEIKOKU(1:38)
-                   MOVE    WRK-TEKSTYMD(7:2)   TO  I41-KEIKOKU(42:2)
-                   MOVE    " - "               TO  I41-KEIKOKU(44:3)
-                   MOVE    WRK-TEKEDYMD(7:2)   TO  I41-KEIKOKU(47:2)
-                   MOVE    "日"                TO  I41-KEIKOKU(50:2)
+                   MOVE    ZERO                TO  IDW
                END-IF
+           END-IF.
+           IF     IDW  NOT = ZERO
+               MOVE    1                   TO  IDX
+               PERFORM   UNTIL     IDX         >  I41-KUMILIST-COUNT
+                   IF     WRK-TEKSTYMD(1:6) =  WRK-KUMIEDYMD (IDX)(1:6)
+                       MOVE    "99"               TO  WRK-TEKSTYMD(7:2)
+                       MOVE    "00"               TO  WRK-TEKEDYMD(7:2)
+                       PERFORM   VARYING   IDY     FROM    1   BY  1
+                                 UNTIL     IDY         >  31
+                           IF    (SPA-GMN-TDAY-41 (IDW IDY) =
+                                                   WRK-KUMINO (IDX)) AND
+                                 (WRK-KUMIEDYMD (IDX)(7:2)  <  IDY(3:2))
+                               IF     WRK-TEKSTYMD(7:2)   >   IDY(3:2)
+                                   MOVE    IDY(3:2)    TO
+                                                       WRK-TEKSTYMD(7:2)
+                               END-IF
+                               IF     WRK-TEKEDYMD(7:2)   <   IDY(3:2)
+                                   MOVE    IDY(3:2)    TO
+                                                       WRK-TEKEDYMD(7:2)
+                               END-IF
+                           END-IF
+                       END-PERFORM
+                       COMPUTE IDX   =   I41-KUMILIST-COUNT   +   1
+                   ELSE
+                       COMPUTE IDX   =   IDX   +   1
+                   END-IF
+               END-PERFORM
+           END-IF.
+           IF     WRK-TEKSTYMD  >   WRK-TEKEDYMD
+               MOVE    "99"                TO  WRK-TEKSTYMD(7:2)
+               MOVE    "00"                TO  WRK-TEKEDYMD(7:2)
+           END-IF.
+           IF     (WRK-TEKSTYMD(7:2)  NOT = "99")  AND
+                  (WRK-TEKEDYMD(7:2)  NOT = "00")
+               MOVE    "red"               TO  I41-KEIKOKU-STYLE
+               MOVE    "保険の適用が切れている期間があります。"
+                                           TO  I41-KEIKOKU(1:38)
+               MOVE    WRK-TEKSTYMD(7:2)   TO  I41-KEIKOKU(42:2)
+               MOVE    " - "               TO  I41-KEIKOKU(44:3)
+               MOVE    WRK-TEKEDYMD(7:2)   TO  I41-KEIKOKU(47:2)
+               MOVE    "日"                TO  I41-KEIKOKU(50:2)
            END-IF.
       *    室料差額
            PERFORM   VARYING   IDX     FROM    1   BY  1
