@@ -571,3 +571,21 @@ path	key20 	{
 		;
 	};
 };
+
+
+path	key21 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key21_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYMD      LIKE :SRYYMD
+			AND   HKNCOMBINUM =    :HKNCOMBINUM
+			AND   CREATEKBN   <>  '3'
+			ORDER   BY        DENPNUM
+		;
+	};
+};
