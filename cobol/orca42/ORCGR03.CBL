@@ -44,11 +44,14 @@
       *  01.03.02    MCC-藤原     02/06/06  処理結果画面追加
       *  01.03.03    MCC-藤原     02/06/13  労災・自賠責の項目を追加
       *  01.03.04    MCC-藤原     02/07/09  生活保護まとめ入力画面追加
-      *  01.03.05    NACL-藤原    02/07/18  確定のとき自動的に情報確認画面を表示
+      *  01.03.05    NACL-藤原    02/07/18  確定のとき自動的に
+      *                                     情報確認画面を表示
       *  01.03.06    NACL-藤原    02.08.30  タイマー機能の追加
       *
       *  01.04.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *  01.04.02    NACL-藤原    02/09/24  ２００２．１０改正対応
+      *  01.04.03    NACL-藤原    02/11/25  自賠責処理後の初画面の表示を
+      *                                     修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -436,14 +439,16 @@
                        MOVE    "T"             TO  SPA-DATAKBN3-VALUE
                    WHEN    "1"             ALSO    "3"             
                        MOVE    "T"             TO  SPA-DATAKBN11-VALUE
-                   WHEN    "1"             ALSO    "7"             
+      *************WHEN    "1"             ALSO    "7"             
+                   WHEN    "1"             ALSO    "4"             
                        MOVE    "T"             TO  SPA-DATAKBN31-VALUE
                    WHEN    "2"             ALSO    " "             
                    WHEN    "2"             ALSO    "0"             
                        MOVE    "T"             TO  SPA-DATAKBN21-VALUE
                    WHEN    "2"             ALSO    "3"             
                        MOVE    "T"             TO  SPA-DATAKBN22-VALUE
-                   WHEN    "2"             ALSO    "7"             
+      *************WHEN    "2"             ALSO    "7"             
+                   WHEN    "2"             ALSO    "4"             
                        MOVE    "T"             TO  SPA-DATAKBN23-VALUE
                END-EVALUATE
                IF      SYS-2001-SYOKBN     =   "1"
