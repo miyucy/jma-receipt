@@ -340,12 +340,27 @@
                        09  SPA-NAI-C04-BYOMEI      PIC X(80).
                        09  SPA-NAI-C04-BYOMEITOP   PIC X(01).
                        09  SPA-NAI-C04-BYOMEISBT   PIC X(01).
+                       09  SPA-NAI-C04-BYOMEICD-O  PIC X(07)
+                                                       OCCURS  21.
+                       09  SPA-NAI-C04-BYOMEI-O    PIC X(80)
+                                                       OCCURS  21.
                    07  SPA-NAI-C04-BYOMEICD-MAX    PIC 9(02).                                
                    07  SPA-NAI-C04-BYOMEISU-MAX    PIC 9(02).                                
       *
                    07  SPA-NAI-C04-BYOMEI-TBL.
                        09  SPA-NAI-C04-TBLO        OCCURS   100.
                            11  SPA-NAI-C04-TBYOMEISBT  PIC X(01).
+      *            病名コード移行用領域
+                   09  SPA-C04-IKOSAKI-BYOMEICD
+                                                   PIC X(07).
+                   09  SPA-C04-IKOSAKI-BYOMEI      PIC X(200).
+                   09  SPA-C04-IKOSAKI-INDEX       PIC 9(02).  
+                   09  SPA-C04-IKOSAKI-INDEX1      PIC 9(02).  
+                   09  SPA-C04-IKOMOTO-BYOMEICD
+                                                   PIC X(07).
+                   09  SPA-C04-IKOMOTO-BYOMEI      PIC X(200).
+      *            病名コード移行用領域
+                   09  SPA-C04-IKOFLG          PIC X(01).
       *
       *    レセコメント入力画面用
            03  SPA-C07-AREA.
