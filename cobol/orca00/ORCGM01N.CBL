@@ -46,6 +46,7 @@
       *  01.02.07    NACL-小豆沢  02/10/07  入院対応の追加
       *  01.02.08    NACL-森脇    02/11/08  入院対応のボタン活性非活性
       *  01.02.09    NACL-多々納  02/11/11  SPA-MOTOPGをM01へ変更
+      *  01.02.10    NACL-多々納  04/02/02  環境設定と外来時間外区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -295,13 +296,13 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "MID1"
                    PERFORM 3001-MID1-SYORI-SEC
-                   GO      TO      3OO-SCREEN-EXT
+                   GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 320-SYS-1010-SPASET-SEC
            PERFORM 310-SPASET-SEC
            .
-       3OO-SCREEN-EXT.
+       300-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -484,6 +485,9 @@
       *    受付一覧へ
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-UKEICHI-SEC
+      *        システム日付設定
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 460-M95-SEC
       *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
                    PERFORM 400-GYOMU-SEL-SEC
@@ -918,6 +922,43 @@
       *
            .
        490-UKEICHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム日付変更画面へ1
+      *****************************************************************
+       460-M95-SEC                    SECTION.
+      *
+           MOVE    SPA-M00KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGM95"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-WORK            TO  SPA-M00KYOUTU
+      *
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "M01N"              TO  SPA-MOTOPG
+           MOVE    "M95"               TO  SPA-SAKIPG
+           MOVE    "M01N"              TO  SPA-M95-MOTOPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "M95"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+      *
+           .
+       460-M95-EXT.
            EXIT.
       *
       *****************************************************************

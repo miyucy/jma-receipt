@@ -30,6 +30,7 @@
       *  01.01.02    MCC-藤原     01/09/27  MVERの追加  
       *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
       *  01.02.02    MCC-多々納   02/02/22  MID1の追加
+      *  01.02.03    NACL-多々納  04/02/02  外来時間外区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -57,6 +58,8 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
+           03  FLG-CHK             PIC 9(01).
+      *
       *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
@@ -77,6 +80,10 @@
                05  WRK-SYSMM         PIC 9(02).
                05  WRK-SYSDD         PIC 9(02).
            03  WRK-WSYSYMDH          PIC X(09).
+           03  WRK-SYMD.
+               05  WRK-SYY         PIC 9(04).
+               05  WRK-SMM         PIC 9(02).
+               05  WRK-SDD         PIC 9(02).
       *
       *
        01  WRK-HENSYU-AREA.
@@ -141,7 +148,8 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-FREE        TO  SPA-M00
+           MOVE    SPA-WORK        TO  SPA-M00KYOUTU
+      **** MOVE    SPA-FREE        TO  SPA-M00
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -162,8 +170,9 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
+           MOVE    SPA-M00KYOUTU        TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-M00         TO  SPA-FREE
+      **** MOVE    SPA-M00         TO  SPA-FREE
       *
            .
            EXIT    PROGRAM
@@ -213,6 +222,25 @@
            MOVE    SPA-SYSYMDW     TO  SPA-NAI-SYSYMDW
            MOVE    SPA-SYSYMDWH    TO  SPA-GMN-SYSYMD
       *
+      *    時間外区分
+           MOVE    "0 時間内"          TO  SPA-GMN-JIKANKBN-LST(1)
+           MOVE    "1 時間外"          TO  SPA-GMN-JIKANKBN-LST(2)
+           MOVE    "2 休日"            TO  SPA-GMN-JIKANKBN-LST(3)
+           MOVE    "3 深夜"            TO  SPA-GMN-JIKANKBN-LST(4)
+           MOVE    "4 時間外特例"      TO  SPA-GMN-JIKANKBN-LST(5)
+      *
+           MOVE    SPA-GAI-JIKANKBN    TO  SPA-GMN-JIKANKBN
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   5
+               IF      SPA-GMN-JIKANKBN    =   SPA-GMN-JIKANKBN-LST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-JIKANKBN-LST (IDX)
+                                           TO  SPA-GMN-JIKANKBN-G
+                   MOVE   5                TO  IDX
+               END-IF
+           END-PERFORM
+      *
            MOVE    1               TO  SPA-GMN-CUR
       *
       *
@@ -246,6 +274,8 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
                WHEN    "ACTIVATE"      ALSO    "SYSYMD"
                    PERFORM 4101-SYSYMD-SEC
+               WHEN    "ACTIVATE"      ALSO    "JIKANKBN"
+                   PERFORM 4103-JIKANKBN-SEC
       *        カレンダー選択
                WHEN    "CLICKED"       ALSO    "C01"
                WHEN    "CLICKED"       ALSO    "CALENDAR1"
@@ -293,10 +323,39 @@
                GO      TO      4102-CALENDAR-EXT
            END-IF
       *
-           MOVE    2                   TO  SPA-GMN-CUR
+           MOVE    3                   TO  SPA-GMN-CUR
       *
            .
        4102-CALENDAR-EXT.
+           EXIT.
+      *****************************************************************
+      *     時間外登録  処理
+      *****************************************************************
+       4103-JIKANKBN-SEC                 SECTION.
+      *
+           MOVE    M95-JIKANKBN        TO  SPA-GMN-JIKANKBN-G
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   5
+               IF      SPA-GMN-JIKANKBN    =   SPA-GMN-JIKANKBN-LST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-JIKANKBN-LST (IDX)
+                                           TO  SPA-GMN-JIKANKBN-G
+                   MOVE    1               TO  FLG-CHK
+                   MOVE    5               TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0003"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+           END-IF
+      *
+           MOVE    3                   TO  SPA-GMN-CUR
+      *
+           .
+       4103-JIKANKBN-EXT.
            EXIT.
       *****************************************************************
       *     登録  処理
@@ -321,6 +380,8 @@
            MOVE    SPA-NAI-SYSYMD      TO  SPA-SYSYMD
            MOVE    SPA-NAI-SYSYMDW     TO  SPA-SYSYMDW
       *
+           MOVE    SPA-GMN-JIKANKBN    TO  SPA-GAI-JIKANKBN
+      *
            PERFORM 210-BACK
            .
        400-TOROKU-EXT.
@@ -330,14 +391,15 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "M00"               TO  SPA-SAKIPG
+      *****MOVE    "M00"               TO  SPA-SAKIPG
+           MOVE    SPA-M95-MOTOPG      TO  SPA-SAKIPG
            MOVE    "M95"               TO  SPA-MOTOPG
       *
            MOVE    SPACE               TO  LINKAREA
       *
       **** MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE    "JOIN"              TO  MCP-PUTTYPE
-           MOVE    "M00"               TO  MCP-WINDOW
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -377,9 +439,19 @@
            INITIALIZE                  M95
       *
            MOVE    SPA-GMN-SYSYMD      TO  M95-SYSYMD
-           MOVE    SPA-NAI-SYSYMD(1:4) TO  M95-YEAR
-           MOVE    SPA-NAI-SYSYMD(5:2) TO  M95-MONTH
-           MOVE    SPA-NAI-SYSYMD(7:2) TO  M95-DAY
+           MOVE    SPA-NAI-SYSYMD      TO  WRK-SYMD
+           MOVE    WRK-SYY             TO  M95-YEAR
+           MOVE    WRK-SMM             TO  M95-MONTH
+           MOVE    WRK-SDD             TO  M95-DAY
+      *
+      *
+           MOVE    SPA-GMN-JIKANKBN-G  TO  M95-JIKANKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   5
+               MOVE    SPA-GMN-JIKANKBN-LST (IDX)
+                                           TO  M95-JIKANKBN-ITEM (IDX)
+           END-PERFORM
+           MOVE    5                   TO  M95-JIKANKBN-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -396,6 +468,8 @@
                WHEN    1
                    MOVE  "SYSYMD"    TO  MCP-WIDGET
                WHEN    2
+                   MOVE  "JIKANKBN"  TO  MCP-WIDGET
+               WHEN    3
                    MOVE  "B12"       TO  MCP-WIDGET
            END-EVALUATE
       *
@@ -413,6 +487,8 @@
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
                    MOVE    "入力エラー"        TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE    "時間外区分エラー"  TO  SPA-ERRMSG
            END-EVALUATE
       *
       *

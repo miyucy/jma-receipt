@@ -49,6 +49,7 @@
       *  01.02.10    NACL-多々納  03/06/27  職員コード追加
       *  01.02.11    NACL-多々納  03/08/25  県番号追加
       *  01.02.13    NACL-太田    04/01/13  職員情報取得失敗時の処理修正
+      *  01.02.14    NACL-多々納  04/02/02  環境設定に外来時間外区分追加
       *****************************************************************
       *
       *
@@ -645,24 +646,26 @@
       *****************************************************************
        460-M95-SEC                    SECTION.
       *
-      *    ＳＰＡセット
-           MOVE    SPA-SYSYMD          TO  SPA-NAI-SYSYMD
-           MOVE    SPA-SYSYMDW         TO  SPA-NAI-SYSYMDW
-           MOVE    SPA-SYSYMDWH        TO  SPA-GMN-SYSYMD
+           MOVE    SPA-M00KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
       *
-           MOVE    1                    TO  SPA-M95-CUR
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
       *
-           MOVE    SPACE                TO  M95
-           MOVE    SPA-SYSYMDWH         TO  M95-SYSYMD
-           MOVE    SPA-SYSYMD           TO  WRK-SYMD
-           MOVE    WRK-SYY              TO  M95-YEAR
-           MOVE    WRK-SMM              TO  M95-MONTH
-           MOVE    WRK-SDD              TO  M95-DAY
+           CALL    "ORCGM95"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-M00KYOUTU
       *
            MOVE    "B01"                TO  MCP-WIDGET
       *
            MOVE    "M00"                TO  SPA-MOTOPG
            MOVE    "M95"                TO  SPA-SAKIPG
+           MOVE    "M00"               TO  SPA-M95-MOTOPG
       *
            MOVE    "NEW"                TO  MCP-PUTTYPE
            MOVE    "M95"                TO  MCP-WINDOW
