@@ -1775,7 +1775,7 @@
                            MOVE    "113007070"     TO  WRK-SRYCD
                        WHEN    2
       *                    µÙÆü²Ã»»
-                           MOVE    "113007171"     TO  WRK-SRYCD
+                           MOVE    "113007170"     TO  WRK-SRYCD
                        WHEN    3
       *                    ¿¼Ìë²Ã»»
                            MOVE    "113007270"     TO  WRK-SRYCD
