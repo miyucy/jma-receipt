@@ -123,7 +123,7 @@
                05  WRK-SDD           PIC 9(02).
            03  WRK-HENYMDG           PIC X(22).
       *
-           03  WRK-DISCOUNT-HASU-KBN PIC X(01).
+           03  WRK-DISCOUNT-HASU-KBN2  PIC X(01).
       *
       *****03  WRK-IN                PIC X(01).
       *
@@ -336,8 +336,8 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
                MOVE    SYS-1001-HOSPID     TO  WRK-PARA-HOSPID
-               MOVE    SYS-1001-DISCOUNT-HASU-KBN
-                                           TO  WRK-DISCOUNT-HASU-KBN
+               MOVE    SYS-1001-DISCOUNT-HASU-KBN2
+                                           TO  WRK-DISCOUNT-HASU-KBN2
            ELSE    
                MOVE    "医療機関ＩＤが取得できませんでした。"
                                            TO  WRK-RECEERR
@@ -490,33 +490,33 @@
                                          +   BD002-JIHI-TAX
                                          +   BD002-RMSAGAKU
                                          + BD002-SKYMONEY-SKJ-JIHI-KEI
-                       IF    IDX  =  8  OR  9
-                           CONTINUE
-                       ELSE
-                         IF   BD002-DISCOUNT-TEIRITU  NOT =  SPACE
-                         AND  BD002-DISCOUNT-RATE     NOT =  ZERO
-                           CONTINUE
-                         ELSE
-                           IF   WRK-JIHI  NOT =  ZERO
-                             EVALUATE   WRK-DISCOUNT-HASU-KBN
-                               WHEN  "1"
-                                 COMPUTE  WRK-JIHI  = WRK-JIHI  +   5
-                                 COMPUTE  WRK-JIHI2 = WRK-JIHI  /  10
-                                 COMPUTE  WRK-JIHI  = WRK-JIHI2 *  10
-                               WHEN  "2"
-                                 COMPUTE  WRK-JIHI2 = WRK-JIHI  /  10
-                                 COMPUTE  WRK-JIHI  = WRK-JIHI2 *  10
-                               WHEN  "3"
-                                 COMPUTE  WRK-JIHI  = WRK-JIHI  +   9
-                                 COMPUTE  WRK-JIHI2 = WRK-JIHI  /  10
-                                 COMPUTE  WRK-JIHI  = WRK-JIHI2 *  10
-                               WHEN  " "
-                               WHEN  "4"
-                                 CONTINUE
-                             END-EVALUATE
-                           END-IF
-                         END-IF
-                       END-IF
+      ***              IF    IDX  =  8  OR  9
+      ***                  CONTINUE
+      ***              ELSE
+      ***                IF   BD002-DISCOUNT-TEIRITU  NOT =  SPACE
+      ***                AND  BD002-DISCOUNT-RATE     NOT =  ZERO
+      ***                  CONTINUE
+      ***                ELSE
+      ***                  IF   WRK-JIHI  NOT =  ZERO
+      ***                    EVALUATE   WRK-DISCOUNT-HASU-KBN2
+      ***                      WHEN  "1"
+      ***                        COMPUTE  WRK-JIHI  = WRK-JIHI  +   5
+      ***                        COMPUTE  WRK-JIHI2 = WRK-JIHI  /  10
+      ***                        COMPUTE  WRK-JIHI  = WRK-JIHI2 *  10
+      ***                      WHEN  "2"
+      ***                        COMPUTE  WRK-JIHI2 = WRK-JIHI  /  10
+      ***                        COMPUTE  WRK-JIHI  = WRK-JIHI2 *  10
+      ***                      WHEN  "3"
+      ***                        COMPUTE  WRK-JIHI  = WRK-JIHI  +   9
+      ***                        COMPUTE  WRK-JIHI2 = WRK-JIHI  /  10
+      ***                        COMPUTE  WRK-JIHI  = WRK-JIHI2 *  10
+      ***                      WHEN  " "
+      ***                      WHEN  "4"
+      ***                        CONTINUE
+      ***                    END-EVALUATE
+      ***                  END-IF
+      ***                END-IF
+      ***              END-IF
                    END-IF
                    IF    IDX  =  8  OR  9
                        COMPUTE WRK-MONEY   =   BD002-RSIJIBAI-SKYMONEY
