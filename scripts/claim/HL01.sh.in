@@ -21,7 +21,7 @@ ORCASCRIPT=$ORCA_DIR/scripts/claim/rb
 #        $8 DRCD       X(05)
 #        $9 HKNCOMBI   X(04)
 #-------------------------------------------#
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCL0010 -parameter $1,$2,$3,$4,$5,,$8,$9,END 
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCL0010 -parameter $1,$2,$3,$4,$5,$8,$9,END 
 
 #-------------------------------------------#
 # Add Start (2001/08/27)
