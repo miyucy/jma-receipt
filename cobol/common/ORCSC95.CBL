@@ -848,7 +848,7 @@
        200-GAIRAI-SPASET-SEC           SECTION.
       *
            INITIALIZE                  SPA-K02
-           IF      LNK-SC95-PG         =   "K01"
+           IF      LNK-SC95-PG         =   "K01"  OR  "K10"
                CONTINUE
            ELSE
                MOVE    SPACE               TO  SPA-HKNCOMBINUM

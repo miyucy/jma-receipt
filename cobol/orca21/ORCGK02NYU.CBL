@@ -1469,7 +1469,7 @@
                MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
                MOVE    SPA-SRYYMDW         TO  LNK-SC95-SRYYMDG
                MOVE    "9"                 TO  LNK-SC95-KBN
-               MOVE    "K02"               TO  LNK-SC95-PG
+               MOVE    "K10"               TO  LNK-SC95-PG
                CALL    "ORCSC95"           USING
                                            MCPAREA
                                            ORCSC95AREA
@@ -1484,7 +1484,7 @@
                MOVE    "5"                 TO  LNK-SC95-KBN
                MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
                MOVE    SPA-SRYYMDW         TO  LNK-SC95-SRYYMDG
-               MOVE    "K02"               TO  LNK-SC95-PG
+               MOVE    "K10"               TO  LNK-SC95-PG
                CALL    "ORCSC95"           USING
                                            MCPAREA
                                            ORCSC95AREA
@@ -1497,7 +1497,7 @@
                MOVE    "3"                 TO  LNK-SC95-KBN
                MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
                MOVE    SPA-SRYYMDW         TO  LNK-SC95-SRYYMDG
-               MOVE    "K02"               TO  LNK-SC95-PG
+               MOVE    "K10"               TO  LNK-SC95-PG
                CALL    "ORCSC95"           USING
                                            MCPAREA
                                            ORCSC95AREA
