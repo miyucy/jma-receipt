@@ -40,6 +40,9 @@
       * 01.00.07     NACL-多々納  03/04/17  免除判定削除
       * 01.00.08     NACL-多々納  03/06/18  用法２０文字以上編集修正
       * 01.00.09     NACL-多々納  03/06/27  出力先プリンタサブ追加
+      * 01.00.10     NACL-多々納  03/12/16  院内処方（213,223,233)を
+      *                                     院内処方せんのみの印刷とする
+      * 01.00.11     NACL-多々納  04/03/08  在宅の対象判定修正
       *****************************************************************
       *
       *
@@ -192,7 +195,9 @@
       *
            03  WRK-TNS-NAME        PIC X(200).
       *
-           03  WRK-ZAITENKEI        PIC 9(07).
+           03  WRK-ZAITENKEI       PIC 9(07).
+           03  WRK-YKZTEN          PIC 9(07).
+           03  WRK-KIZAITEN        PIC 9(07).
       *
       *    文字変換
            03  WRK-ZENKAKU-G           PIC X(100).
@@ -1192,8 +1197,8 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *    受診履歴なし（見出しのみ）
-           IF      WRK-PAGE-MAX        =   ZERO  OR
-                   FLG-PRINT           =   ZERO
+           IF     (WRK-PAGE-MAX        =   ZERO ) OR
+                  (FLG-PRINT           =   ZERO )
                MOVE    1                   TO  WRK-PAGE-MAX
            END-IF
       *
@@ -1509,15 +1514,21 @@
                    MOVE    1               TO  FLG-TAIGAI
                END-IF
       *
+      *        在宅薬剤がないとき対象外
+               IF     (SRY-SRYKBN          =   "14" )  AND
+                      (FLG-ZAITAKU-ARI     =   ZERO)
+                   MOVE    1               TO  FLG-TAIGAI
+               END-IF
+      *
                IF      FLG-TAIGAI          =   ZERO
       *
       *            診療会計より、点数チェック
                    PERFORM 20021-SRYACCT-SYORI-SEC
       *            点数がゼロのものを院外処方分とする
-                   IF     (ORCHC19-KBN     NOT =   "3"   AND
-                           ACCT-ZAITEN         =   ZERO )  OR
-                          (ORCHC19-KBN         =   "3"   AND
-                           ACCT-ZAITEN     NOT =   ZERO )  OR
+                   IF    ((ORCHC19-KBN     NOT =   "3"  ) AND
+                          (ACCT-ZAITEN         =   ZERO ))  OR
+                         ((ORCHC19-KBN         =   "3"  ) AND
+                          (ACCT-ZAITEN     NOT =   ZERO ))  OR
                           (FLG-ZAITAKU         =   1    )  OR
                           (FLG-INNAI           =   1    )
                        PERFORM VARYING     IDXA    FROM    1   BY  1
@@ -2049,6 +2060,8 @@
            MOVE    ZERO                TO  FLG-KAISU
            MOVE    ZERO                TO  FLG-ZAITAKU
            MOVE    ZERO                TO  FLG-OK2
+           MOVE    ZERO                TO  WRK-YKZTEN
+           MOVE    ZERO                TO  WRK-KIZAITEN
            PERFORM
                UNTIL   FLG-WKSRYACT    =   1
                IF      WKSRY-RENNUM        =   1
@@ -2089,8 +2102,8 @@
       *********END-IF
       *        在宅自己注射はすべてで対象とする
                IF     (WKSRY-SRYKBN        =   "14"    )
-      **        AND   (WKSRY-YKZTEN        >   ZERO   OR
-      **               WKSRY-KIZAITEN      >   ZERO    )
+                   MOVE    WKSRY-YKZTEN        TO  WRK-YKZTEN
+                   MOVE    WKSRY-KIZAITEN      TO  WRK-KIZAITEN
                    MOVE    1               TO  FLG-OK
       ************ MOVE    2               TO  FLG-OK2
                END-IF
@@ -2213,7 +2226,11 @@
                IF     (WRK-SRYSYUKBN   NOT =   "148"  AND
                                                "149" )  AND
                       (ORCHC19-KBN         =   "5"  )
-                   MOVE    1               TO  FLG-OK2
+      *            在宅で薬剤・器材がある時、
+                   IF     (WRK-YKZTEN      >   ZERO )  OR
+                          (WRK-KIZAITEN    >   ZERO )
+                       MOVE    1               TO  FLG-OK2
+                   END-IF
                END-IF
            END-IF
       *        処方のみで、院内処方印刷の時
@@ -2234,6 +2251,8 @@
                MOVE    SPACE               TO  WRK-SRYCD
                MOVE    ZERO                TO  FLG-KAISU
                MOVE    ZERO                TO  FLG-ZAITAKU
+               MOVE    ZERO                TO  WRK-YKZTEN
+               MOVE    ZERO                TO  WRK-KIZAITEN
                GO      TO       20032-PRINT-HENSYU-EXT
            END-IF
       *
@@ -2276,6 +2295,8 @@
            MOVE    ZERO                TO  IDX-S
            MOVE    ZERO                TO  FLG-KAISU
            MOVE    ZERO                TO  FLG-ZAITAKU
+           MOVE    ZERO                TO  WRK-YKZTEN
+           MOVE    ZERO                TO  WRK-KIZAITEN
       *
            .
        20032-PRINT-HENSYU-EXT.
