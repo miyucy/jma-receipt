@@ -679,7 +679,6 @@ path	key28 	{
 			AND   PTID        =    :PTID
 			AND   NYUGAIKBN   =    :NYUGAIKBN
 			AND   HKNKBN      =    :HKNKBN
-			AND   SRYKA       =    :SRYKA
 			AND   SRYYMD      LIKE :SRYYMD
 		;
 	};
