@@ -98,12 +98,15 @@
            03  FLG-CHOKIKA2         PIC 9(01).
       *
            03  FLG-CHOKIKSN         PIC 9(01).
+      *    薬剤判定
+           03  FLG-YAKUZAI-ARI         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
            03  IDXS                PIC 9(04).
            03  IDX-Z               PIC 9(04).
            03  IDX-S               PIC 9(04).
@@ -854,6 +857,13 @@
                            MOVE    "231"          TO  WRK-CHK-SRYSYUKBN
                    END-EVALUATE
                END-IF
+      *        投薬の時、薬剤コードがあること
+               IF      WRK-CHK-SRYSYUKBN(1:2)  =   "21"
+                                               OR  "22"
+                                               OR  "23"
+                                               OR  "29"
+                   PERFORM 30001-TOUYAKU-CHK-SEC
+               END-IF
       *
                EVALUATE    WRK-CHK-SRYSYUKBN
                    WHEN    "211"
@@ -929,6 +939,8 @@
                       ((WRK-GMN-INPUTCD(IDX)(1:1)  =   "*" )  OR
                        (WRK-COM-KAIFLG (IDX)       =   "1" )  OR
                        (WRK-COM-ZAIEND (IDX)       =   "1" ))
+      *         薬剤のない剤は対象外
+                AND   (WRK-CHK-SRYSYUKBN       NOT =   "990" )
                    PERFORM 3009-NYUINKAISU-SEC
                END-IF
                IF      WRK-COM-ZAIEND (IDX)    =   "1"
@@ -1024,8 +1036,38 @@
       *****************************************************************
       *   処方内容チェク処理
       *****************************************************************
+       30001-TOUYAKU-CHK-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-YAKUZAI-ARI
+      *
+           PERFORM VARYING     IDX3    FROM    IDX   BY  1
+                   UNTIL      (IDX3    >   200  )  OR
+                              (WRK-GMN-INPUTCD(IDX3) =   SPACE)  OR
+                              (FLG-YAKUZAI-ARI       =   1    )
+               IF      WRK-COM-INPUTCD(IDX3)(1:1)  =   "6"
+                   MOVE    1              TO  FLG-YAKUZAI-ARI
+               ELSE
+                   IF      WRK-COM-ZAIEND (IDX3) =   "1"
+                       MOVE    IDX3           TO  IDX
+                       MOVE    300            TO  IDX3
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-YAKUZAI-ARI      =   ZERO
+               MOVE    "990"            TO  WRK-CHK-SRYSYUKBN
+           END-IF
+      *
+           .
+       30001-TOUYAKU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   処方内容チェク処理
+      *****************************************************************
        3000-SYOHOU-CHK-SEC              SECTION.
-     *
+      *
+      *
            EVALUATE    WRK-CHK-SRYSYUKBN
                WHEN    "211"
                WHEN    "221"
@@ -1279,6 +1321,7 @@
                IF      IDX-SYOHOU      NOT =   ZERO
                    MOVE    1               TO  FLG-SYOHOSENN
                END-IF
+               MOVE    SPACE               TO  WRK-SRYCD
            END-IF
       *
       *    特定疾患処方管理加算のチェック
