@@ -2515,13 +2515,12 @@
       *    ½é¿ÇÎÁ»»ÄêÆü
       *    ÄûÀµ¤Î»þ
            IF      SPA-SYORIFLG        =   1
-      ******** MOVE    SPA-SYOYMD-OLD      TO  SSANTEI-SYOYMD
-               MOVE    SPACE               TO  SSANTEI-SYOYMD
+               MOVE    SPA-SYOYMD-OLD      TO  SSANTEI-SYOYMD
            ELSE
-               IF      KARRK-SYOSINYMD2    =   SPACE
-                   MOVE    KARRK-SYOSINYMD1    TO  SSANTEI-SYOYMD
+               IF      WRK-KARRK-SYOSINYMD2    =   SPACE
+                   MOVE    SPA-SYOYMD              TO  SSANTEI-SYOYMD
                ELSE
-                   MOVE    KARRK-SYOSINYMD2    TO  SSANTEI-SYOYMD
+                   MOVE    WRK-KARRK-SYOSINYMD2    TO  SSANTEI-SYOYMD
                END-IF
            END-IF
            CALL    "ORCSSANTEI"        USING
