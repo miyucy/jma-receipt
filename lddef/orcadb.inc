@@ -73,6 +73,7 @@ db	{
 	tbl_ptkohftn;
 	view_Q002;
 	tbl_receden;
+	tbl_kohplus;
 };
 db	"shell"	{
 	shell;

@@ -1,0 +1,135 @@
+tbl_kohplus	{
+HOSPID		char(24);
+PREFNUM		char(2);
+CITYNUM		char(3);
+KOHNUM		char(3);
+HKNKBN		char(1);
+RJNHKNKBN	char(1);
+YUKOSTYMD	char(8);
+YUKOEDYMD	char(8);
+FTNKBN		char(1);
+NYUSKJRYYKBN	char(1);
+RECESKYKBN	char(1);
+SEIDONAME	varchar(100);
+TERMID		varchar(16);
+OPID		varchar(16);
+CREYMD		char(8);
+UPYMD		char(8);
+UPHMS		char(6);
+#----以下更新用項目
+UPHOSPID	char(24),virtual;
+UPPREFNUM	char(2),virtual;
+UPCITYNUM	char(3),virtual;
+UPKOHNUM	char(3),virtual;
+UPHKNKBN	char(1),virtual;
+UPRJNHKNKBN	char(1),virtual;
+UPYUKOSTYMD	char(8),virtual;
+};
+primary{HOSPID,PREFNUM,CITYNUM,KOHNUM,HKNKBN,RJNHKNKBN,YUKOSTYMD;};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_kohplus_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_kohplus
+                WHERE   HOSPID       =   :HOSPID
+                  AND   PREFNUM      =   :PREFNUM
+                  AND   CITYNUM      =   :CITYNUM
+                  AND   KOHNUM       =   :KOHNUM
+                  AND   HKNKBN       =   :HKNKBN
+                  AND   RJNHKNKBN    =   :RJNHKNKBN
+                  AND   YUKOSTYMD    =   :YUKOSTYMD
+		;
+	};
+};
+
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_kohplus_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_kohplus
+                WHERE   HOSPID       =   :HOSPID
+                  AND   PREFNUM      =   :PREFNUM
+                  AND   CITYNUM      =   :CITYNUM
+                  AND   KOHNUM       =   :KOHNUM
+                  AND   HKNKBN       =   :HKNKBN
+                  AND   RJNHKNKBN    =   :RJNHKNKBN
+                  AND   YUKOSTYMD    <=  :YUKOSTYMD
+                  AND   YUKOEDYMD    >=  :YUKOEDYMD
+		;
+	};
+};
+
+path	key3		{ 	
+	DBSELECT	{
+		DECLARE tbl_kohplus_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_kohplus
+                WHERE   HOSPID       =   :HOSPID
+                  AND   PREFNUM      =   :PREFNUM
+                  AND   CITYNUM      =   :CITYNUM
+                  AND   KOHNUM       =   :KOHNUM
+                  AND   HKNKBN       =   :HKNKBN
+                  AND   RJNHKNKBN    =   :RJNHKNKBN
+		;
+	};
+};
+
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_kohplus
+                WHERE   HOSPID       =   :HOSPID
+                  AND   PREFNUM      =   :PREFNUM
+                  AND   CITYNUM      =   :CITYNUM
+                  AND   KOHNUM       =   :KOHNUM
+                  AND   HKNKBN       =   :HKNKBN
+                  AND   RJNHKNKBN    =   :RJNHKNKBN
+                  AND   YUKOSTYMD     =  :YUKOSTYMD
+		ORDER BY YUKOSTYMD
+		;
+	};
+};
+
+path    upd1	{
+	DBUPDATE	{
+		UPDATE  SET
+			    HOSPID	= :HOSPID
+			AND PREFNUM 	= :PREFNUM
+			AND CITYNUM 	= :CITYNUM
+			AND KOHNUM 	= :KOHNUM
+			AND HKNKBN 	= :HKNKBN
+			AND RJNHKNKBN 	= :RJNHKNKBN
+			AND YUKOSTYMD 	= :YUKOSTYMD
+			AND YUKOEDYMD 	= :YUKOEDYMD
+			AND FTNKBN 	= :FTNKBN
+			AND NYUSKJRYYKBN = :NYUSKJRYYKBN
+			AND RECESKYKBN	= :RECESKYKBN
+			AND SEIDONAME	= :SEIDONAME
+			AND TERMID	= :TERMID
+			AND OPID	= :OPID
+			AND CREYMD	= :CREYMD
+			AND UPYMD	= :UPYMD
+			AND UPHMS	= :UPHMS
+		WHERE	    UPHOSPID	= :UPHOSPID
+			AND UPPREFNUM	= :UPPREFNUM
+			AND UPCITYNUM	= :UPCITYNUM
+			AND UPKOHNUM	= :UPKOHNUM
+			AND UPHKNKBN	= :UPHKNKBN
+			AND UPRJNHKNKBN	= :UPRJNHKNKBN
+			AND UPYUKOSTYMD	= :UPYUKOSTYMD
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_kohplus_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_kohplus
+		ORDER BY HOSPID,PREFNUM,CITYNUM,KOHNUM,
+		         HKNKBN DESC,RJNHKNKBN  DESC,YUKOSTYMD
+      		;
+	};
+};
