@@ -25,9 +25,9 @@ tbl_ptnyuinrrk	{
 	SANTEI_BRMNUM		char(8);
 	TENNYUYMD		char(8);
 	TENSTUYMD		char(8);
-	TAISYONISSU		number(4,0);
-	TUSANNISSU1		number(4,0);
-	TUSANNISSU2		number(4,0);
+	TAISYONISSU		number(5,0);
+	TUSANNISSU1		number(5,0);
+	TUSANNISSU2		number(5,0);
 	NYUINCHUKBN		char(1);
 	TERMID		varchar(16);
 	OPID		varchar(16);
@@ -498,6 +498,66 @@ path	key29		{
 			AND		JTIKBN		<>	'5'
 			AND		JTIKBN		<>	'6'
 			ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC,RRKEDANUM DESC
+		;
+	};
+};
+
+path	key30		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key30_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND		PTID        =   :PTID
+			AND		RRKEDANUM   =   1
+			AND		SHOKAIKBN   =   '1'
+			AND		SHONUM      =   :SHONUM
+		;
+	};
+};
+
+path	key31		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key31_csr CURSOR FOR
+		SELECT * FROM TBL_PTNYUINRRK a,
+		( SELECT SHONUM FROM TBL_PTNYUINRRK 
+			WHERE HOSPID    = :HOSPID
+			AND   PTID      = :PTID
+			AND   RRKEDANUM = 1
+			AND   NYUINYMD  < :NYUINYMD
+			AND   SHOKAIKBN = '1'  ) b
+		WHERE a.HOSPID    = :HOSPID
+		AND   a.PTID      = :PTID
+		AND   a.RRKEDANUM = 1
+		AND   a.NYUINYMD  < :NYUINYMD
+		AND   a.SHONUM    = b.SHONUM
+		ORDER BY a.SHONUM,a.NYUINYMD
+		;
+	};
+};
+
+
+path	key32	{
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key32_csr CURSOR FOR
+		SELECT A.* 
+		FROM TBL_PTNYUINRRK A,
+			( SELECT HOSPID ,PTID,RRKNUM,MAX(RRKEDANUM) AS RRKEDANUM 
+			  FROM TBL_PTNYUINRRK 
+			  WHERE HOSPID    = :HOSPID
+			  AND   NYUINYMD <= :NYUINYMD
+			  AND   TAIINYMD >= :TAIINYMD
+			  AND   JTIKBN    <> '5'
+			  AND   JTIKBN    <> '6' 
+			  GROUP BY HOSPID ,PTID,RRKNUM ) B,
+			 TBL_PTNUM C
+		WHERE A.HOSPID    = B.HOSPID
+		AND   A.PTID      = B.PTID
+		AND   A.RRKNUM    = B.RRKNUM
+		AND   A.RRKEDANUM = B.RRKEDANUM
+		AND   A.HOSPID    = C.HOSPID
+		AND   A.PTID      = C.PTID
+		ORDER 	BY A.BRMNUM,A.NYUINKA,C.PTNUM
 		;
 	};
 };
