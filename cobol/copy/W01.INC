@@ -38,6 +38,6 @@
               04  W01-KBNCD-COMBO.
                 05  W01-KBNCD       PIC X(36).
                 05  W01-KBNCD-COUNT PIC S9(9)   BINARY.
-                05  W01-KBNCDLST    PIC X(35)   OCCURS  100 TIMES.
+                05  W01-KBNCDLST    PIC X(35)   OCCURS  200 TIMES.
               04  W01-MIDASI.
                 05  W01-VALUE   PIC X(20).
