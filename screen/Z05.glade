@@ -66,7 +66,7 @@
       <text_visible>True</text_visible>
       <text_max_length>2</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -94,7 +94,7 @@
       <text_visible>True</text_visible>
       <text_max_length>2</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -522,7 +522,7 @@
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -566,7 +566,7 @@
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
