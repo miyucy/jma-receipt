@@ -91,6 +91,8 @@
       *  01.00.33    NACL-ÃÁœ∆    03/11/27  °…œ∑ ›°… ‘Ω∏æÚ∑ÔΩ§¿µ
       *  01.00.34    NACL-ÃÁœ∆    04/01/14  ø«Œ≈π‘∞Ÿ§Œ Ò≥Á ¨§œΩ¸§Ø
       *                                     SRYACCT5¢™31
+      *  01.00.35    NACL-∆£∏∂    04/02/04  ∑Ó≈”√Ê§Àœ∑ ›§Œ —ππ§¨§¢§√§øæÏπÁ
+      *                                     §Œ£À£≈£Ÿ§Œ ‘Ω∏§ŒΩ§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -201,6 +203,7 @@
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-RECE01                              PIC 9(01). 
+           03  FLG-RECE09                              PIC 9(01). 
            03  FLG-PTINF                               PIC 9(01).
            03  FLG-PTHKNINF                            PIC 9(01).
            03  FLG-PTKOHINF                            PIC 9(01).
@@ -502,7 +505,7 @@
                OPEN    OUTPUT              RECE091-FILE
                CLOSE                       RECE091-FILE
       *
-               OPEN    OUTPUT              RECE09-FILE
+               OPEN    I-O                 RECE09-FILE
       *
                OPEN    OUTPUT              RECE11-FILE
                CLOSE                       RECE11-FILE
@@ -582,7 +585,8 @@
                    UNTIL   IDX >       10
                    OR      RECE01-TEKSTYMDX (IDX)  =   SPACE
                MOVE    RECE01-TEKSTYMDX (IDX)  TO  RECE02-TEKSTYMD
-           END-PERFORM        
+           END-PERFORM
+      
       *    ¥µº‘»÷πÊ
            MOVE    RECE01-PTNUM        TO  RECE02-PTNUM
       *    ø«Œ≈≤ æ Û§Œ•ª•√•»
@@ -679,63 +683,68 @@
                PERFORM   CSR-CLOSE-SEC
            END-IF
       *    ¥µº‘∏¯»Òæ Û•∆°º•÷•Î§´§Èœ∑øÕ ›∏±æ Û§ŒºË∆¿
-           IF  RECE01-KOHHKNNUM-O(1)        =       "027"
-           OR  RECE01-KOHID                 >       ZERO
-               INITIALIZE                           PTKOHINF-REC
-               MOVE    RECE01-HOSPID        TO      PTKOH-HOSPID
-               MOVE    RECE01-PTID          TO      PTKOH-PTID
-               MOVE    RECE01-KOHID         TO      PTKOH-KOHID
-               MOVE    PTKOHINF-REC         TO      MCPDATA-REC
-               MOVE    "DBSELECT"           TO      MCP-FUNC
-               MOVE    "PTKOHINF-KEY"       TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING   MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-               IF      MCP-RC               =       ZERO
-                   MOVE    "PTKOHINF-KEY"   TO      ORC-DBPATH
-                   PERFORM  PTKOHINF-READ-SEC
-                   IF       FLG-PTKOHINF        =   ZERO
-                        MOVE   PTKOH-KOHID      TO  RECE02-RJNHKNID
-                        MOVE   PTKOH-KOHNUM     TO  RECE02-RJNHKNNUM
-      *                 À° Ã»÷πÊ§Œ•ª•√•»
-                        INITIALIZE                  HKNNUM-REC
-                        MOVE   RECE01-HOSPID    TO  HKN-HOSPID
-                        MOVE   PTKOH-KOHNUM     TO  HKN-HKNNUM
-                        MOVE   HKNNUM-REC       TO  MCPDATA-REC
-                        MOVE   "DBSELECT"       TO  MCP-FUNC
-                        MOVE   "HKNNUM-KEY2"    TO  ORC-DBPATH
-                        CALL   "ORCMCPSUB"       USING   MCPAREA
-                                                         ORCMCPAREA
-                                                         MCPDATA-REC
-                        IF     MCP-RC           =   ZERO
-                            MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
-                            PERFORM  HKNNUM-READ-SEC
-                            PERFORM  UNTIL
+           IF    ( RECE01-KOHHKNNUM-O (1)  =   "027" )
+           OR    ( RECE01-KOHID            >   ZERO  )
+               INITIALIZE                      PTKOHINF-REC
+               MOVE    RECE01-HOSPID       TO  PTKOH-HOSPID
+               MOVE    RECE01-PTID         TO  PTKOH-PTID
+               MOVE    RECE01-KOHID        TO  PTKOH-KOHID
+               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+                   PERFORM PTKOHINF-READ-SEC
+                   IF      FLG-PTKOHINF        =   ZERO
+                       MOVE    PTKOH-KOHID         TO  RECE02-RJNHKNID
+                       MOVE    PTKOH-KOHNUM        TO  RECE02-RJNHKNNUM
+                       IF    ( PTKOH-TEKSTYMD (1:6)
+                                                   =   RECE01-SRYYM    )
+                       AND   ( PTKOH-TEKSTYMD      >   RECE02-TEKSTYMD )
+                           MOVE    PTKOH-TEKSTYMD  TO  RECE02-TEKSTYMD
+                       END-IF
+      *                À° Ã»÷πÊ§Œ•ª•√•»
+                       INITIALIZE                  HKNNUM-REC
+                       MOVE   RECE01-HOSPID    TO  HKN-HOSPID
+                       MOVE   PTKOH-KOHNUM     TO  HKN-HKNNUM
+                       MOVE   HKNNUM-REC       TO  MCPDATA-REC
+                       MOVE   "DBSELECT"       TO  MCP-FUNC
+                       MOVE   "HKNNUM-KEY2"    TO  ORC-DBPATH
+                       CALL   "ORCMCPSUB"      USING   MCPAREA
+                                                       ORCMCPAREA
+                                                       MCPDATA-REC
+                       IF      MCP-RC          =   ZERO
+                           MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
+                           PERFORM  HKNNUM-READ-SEC
+                           PERFORM  UNTIL
                                  (FLG-HKNNUM     =    1)      OR
                                 ((HKN-TEKSTYMD(1:6) <=
                                                    RECE01-SRYYM) AND
                                  (RECE01-SRYYM      <=
                                                    HKN-TEKEDYMD(1:6)))
-                                MOVE   "HKNNUM-KEY2"  TO  ORC-DBPATH
-                                PERFORM   HKNNUM-READ-SEC
-                            END-PERFORM
-                            IF       FLG-HKNNUM     =   ZERO
-                                MOVE   HKN-HBTNUM TO RECE02-RJNHBTNUM
-                            END-IF
-                        END-IF
-                        MOVE   PTKOH-FTNJANUM   TO  RECE02-RJNFTNJANUM
-                        MOVE   PTKOH-JKYSNUM    TO  RECE02-RJNJKYSNUM
+                               MOVE   "HKNNUM-KEY2"  TO  ORC-DBPATH
+                               PERFORM   HKNNUM-READ-SEC
+                           END-PERFORM
+                           IF       FLG-HKNNUM     =   ZERO
+                               MOVE   HKN-HBTNUM TO RECE02-RJNHBTNUM
+                           END-IF
+                       END-IF
+                       MOVE   PTKOH-FTNJANUM   TO  RECE02-RJNFTNJANUM
+                       MOVE   PTKOH-JKYSNUM    TO  RECE02-RJNJKYSNUM
       *----(01.00.14) LINE ADD START --------------------------
-      *                  ø¿Æ£±£¥«Ø£±£∞∑Ó¬–±˛
-      *                 œ∑øÕ ›∏±§Œ¥µº‘§À§ƒ§§§∆…È√¥≥‰πÁ§Ú¬‡»Ú
-                        IF   RECE02-SRYYM   >=   "200210"
+      *                 ø¿Æ£±£¥«Ø£±£∞∑Ó¬–±˛
+      *                œ∑øÕ ›∏±§Œ¥µº‘§À§ƒ§§§∆…È√¥≥‰πÁ§Ú¬‡»Ú
+                       IF   RECE02-SRYYM   >=   "200210"
                             EVALUATE    PTKOH-PAYKBN
                                 WHEN    "01"
                                     MOVE      "1"   TO  RJN-RATE-KBN
                                 WHEN    "02"
                                     MOVE      "2"   TO  RJN-RATE-KBN
                             END-EVALUATE
-                        END-IF
+                       END-IF
       *----(01.00.14) LINE ADD END   --------------------------
                    ELSE
                         DISPLAY  "PTKOHINF FETCH ERR" 
@@ -2219,6 +2228,17 @@
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       10
                        OR      RECE01-TEKSTYMDX (IDX)  =   SPACE
+                 MOVE    SPACE                TO  RECE09-REC
+                 INITIALIZE                       RECE09-REC
+                 MOVE    RECE01-HOSPID        TO  RECE09-HOSPID
+                 MOVE    RECE01-SRYYM         TO  RECE09-SRYYM
+                 MOVE    RECE01-NYUGAIKBN     TO  RECE09-NYUGAIKBN
+                 MOVE    RECE01-PTID          TO  RECE09-PTID
+                 MOVE    RECE01-RECEKA        TO  RECE09-RECEKA
+                 MOVE    RECE01-TEKSTYMDX (IDX)
+                                              TO  RECE09-TEKSTYMD
+                 PERFORM 900-RECE09-READ-SEC
+                 IF      FLG-RECE09           =   1
                    MOVE    SPACE                TO  RECE09-REC
                    INITIALIZE                       RECE09-REC
                    MOVE    RECE01-HOSPID        TO  RECE09-HOSPID
@@ -2227,8 +2247,7 @@
                    MOVE    RECE01-PTID          TO  RECE09-PTID
                    MOVE    RECE01-RECEKA        TO  RECE09-RECEKA
                    MOVE    RECE01-TEKSTYMDX (IDX)
-                                                TO  RECE09-TEKSTYMD
-      *
+                                              TO  RECE09-TEKSTYMD
                    MOVE    RECE01-TEKSTYMDX (IDX)
                                                 TO  RECE09-TEKSTYMDX
                    MOVE    RECE01-TEKEDYMDX (IDX)
@@ -2300,7 +2319,8 @@
                    PERFORM   CSR-CLOSE-SEC
       *
                    WRITE   RECE09-REC
-                   ADD     1                  TO  CNT-RECE09  
+                   ADD     1                  TO  CNT-RECE09
+                 END-IF  
                END-PERFORM
            END-IF           
       *
@@ -2783,3 +2803,18 @@
        RECE01-READ-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *     ›∏±Õ˙ŒÚæ Û∆…π˛
+      *****************************************************************
+       900-RECE09-READ-SEC             SECTION.
+      *
+           READ    RECE09-FILE
+               INVALID
+                   MOVE    1           TO  FLG-RECE09
+               NOT INVALID
+                   MOVE    ZERO        TO  FLG-RECE09
+           END-READ
+           .
+       900-RECE09-READ-EXT.
+           EXIT.
