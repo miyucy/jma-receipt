@@ -167,11 +167,16 @@
                       07  W07-VALUE   PIC X(40).
                     06  W07-SYUNYKNKNRKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-SYUNYKNKNRKBN-ITEM    PIC X(40)   OCCURS  5.
-                  05  W07-SYUSKYPRTKBN-COMBO.
-                    06  W07-SYUSKYPRTKBN.
-                      07  W07-VALUE   PIC X(20).
-                    06  W07-SYUSKYPRTKBN-COUNT    PIC S9(9)   BINARY.
-                    06  W07-SYUSKYPRTKBN-ITEM     PIC X(20)   OCCURS  2.
+                  05  W07-SYUSKYPRTG-COMBO.
+                    06  W07-SYUSKYPRTG.
+                      07  W07-VALUE   PIC X(24).
+                    06  W07-SYUSKYPRTG-COUNT      PIC S9(9)   BINARY.
+                    06  W07-SYUSKYPRTG-ITEM       PIC X(24)   OCCURS  2.
+                  05  W07-SYUSKYPRTN-COMBO.
+                    06  W07-SYUSKYPRTN.
+                      07  W07-VALUE   PIC X(24).
+                    06  W07-SYUSKYPRTN-COUNT      PIC S9(9)   BINARY.
+                    06  W07-SYUSKYPRTN-ITEM       PIC X(24)   OCCURS  2.
                 04  W07-TAGNAME4.
                   05  W07-TAGNAME4-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG5.

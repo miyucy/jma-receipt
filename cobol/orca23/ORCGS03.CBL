@@ -272,6 +272,8 @@
       *
            COPY    "CPSK1032.INC".
       *
+           COPY    "CPSK1039.INC".
+      *
            COPY    "CPSK1041.INC".
       *
       *    収納マスター
@@ -498,35 +500,8 @@
       *    自費名称編集
            PERFORM 3102-JIHIMSG-HEN-SEC
       *
-      *    システム管理マスタ検索処理
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "1001"              TO  SYS-KANRICD
-           MOVE    "*"                 TO  SYS-KBNCD
-           MOVE    SPA-S01-SRYYMD      TO  ORC-DBYMD
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  SYS-1001-REC
-           ELSE
-               INITIALIZE              SYS-1001-REC
-           END-IF
-      *
-      *    システム管理マスタクローズ
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           PERFORM 910-DBCLOSE-SEC
-      *
-           IF    ( SYS-1001-SKYPRTFLG  =   "1" OR  "2" )
-               MOVE    SPA-GMN-SKYPRTLST (2)
-                                       TO  SPA-GMN-SKYPRT-G
-           ELSE
-               MOVE    SPA-GMN-SKYPRTLST (1)
-                                       TO  SPA-GMN-SKYPRT-G
-           END-IF
-      *
-           IF    ( SPA-NAI-HEAD-DENPJTIKBN =    "3" )
-               MOVE    SPACE           TO  SPA-GMN-SKYPRT-G
-           END-IF
+      *    請求書発行コンボ初期値
+           PERFORM 3101-SKYPRTLST-SYOKI-SEC
       *
            EVALUATE   SPA-S01-SYORINO
            WHEN   CONST-PROC-NYUKIN
@@ -639,6 +614,75 @@
       *
            .
        3101-SKYPRTLST-SET-EXT.
+           EXIT.
+      *************************************************************
+      *    請求書発行コンボ初期値設定処理
+      *************************************************************
+       3101-SKYPRTLST-SYOKI-SEC              SECTION.
+      *
+           IF    ( SPA-GMN-SKYPRT-G    =   SPACE )
+      *        システム管理マスタ検索処理
+               INITIALIZE                      SYSKANRI-REC
+               MOVE    "1039"              TO  SYS-KANRICD
+               MOVE    "*"                 TO  SYS-KBNCD
+               MOVE    SPA-S01-SRYYMD      TO  ORC-DBYMD
+               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC          =   ZERO )
+      *
+                   MOVE    MCPDATA-REC     TO  SYS-1039-REC
+      *
+                   IF    ( SYS-1039-SKYPRTGKBN  =   "1" )
+                       MOVE    SPA-GMN-SKYPRTLST (2)
+                                           TO  SPA-GMN-SKYPRT-G
+                   ELSE
+                       MOVE    SPA-GMN-SKYPRTLST (1)
+                                           TO  SPA-GMN-SKYPRT-G
+                   END-IF
+               ELSE
+                   INITIALIZE              SYS-1039-REC
+               END-IF
+      *
+      *        システム管理マスタクローズ
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 910-DBCLOSE-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-SKYPRT-G    =   SPACE )
+      *        システム管理マスタ検索処理
+               INITIALIZE                      SYSKANRI-REC
+               MOVE    "1001"              TO  SYS-KANRICD
+               MOVE    "*"                 TO  SYS-KBNCD
+               MOVE    SPA-S01-SRYYMD      TO  ORC-DBYMD
+               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYS-1001-REC
+               ELSE
+                   INITIALIZE              SYS-1001-REC
+               END-IF
+      *
+      *        システム管理マスタクローズ
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 910-DBCLOSE-SEC
+      *
+               IF    ( SYS-1001-SKYPRTFLG  =   "1" OR  "2" )
+                   MOVE    SPA-GMN-SKYPRTLST (2)
+                                       TO  SPA-GMN-SKYPRT-G
+               ELSE
+                   MOVE    SPA-GMN-SKYPRTLST (1)
+                                       TO  SPA-GMN-SKYPRT-G
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-NAI-HEAD-DENPJTIKBN =    "3" )
+               MOVE    SPACE           TO  SPA-GMN-SKYPRT-G
+           END-IF
+      *
+           .
+       3101-SKYPRTLST-SYOKI-EXT.
            EXIT.
       *************************************************************
       *    基本項目設定処理

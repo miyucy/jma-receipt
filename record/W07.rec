@@ -293,12 +293,19 @@ W07	{
 					count	int;
 					item	varchar(40)[5];
 				};
-				SYUSKYPRTKBN_COMBO	{
-					SYUSKYPRTKBN	{
-						value	varchar(20);
+				SYUSKYPRTG_COMBO	{
+					SYUSKYPRTG	{
+						value	varchar(24);
 					};
 					count	int;
-					item	varchar(20)[2];
+					item	varchar(24)[2];
+				};
+				SYUSKYPRTN_COMBO	{
+					SYUSKYPRTN	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[2];
 				};
 			};
 			TAGNAME4    {

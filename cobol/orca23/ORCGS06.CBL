@@ -485,7 +485,7 @@
            END-IF
       *
       *    請求書兼領収書発行区分コンボ初期値
-           MOVE    SYS-1039-SKYPRTKBN  TO  WRK-CMB-CD
+           MOVE    SYS-1039-SKYPRTGKBN TO  WRK-CMB-CD
            PERFORM 4200-SKYPRTKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM         =   SPACE )
                MOVE    SPA-GMN-SKYPRTKBNLST (1)
