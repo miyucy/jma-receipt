@@ -1,75 +1,75 @@
-<?xml version="1.0" encoding="euc-jp"?>
+<?xml version="1.0"?>
 <diagram xmlns:dia="http://www.lysator.liu.se/~alla/dia/">
   <dictionarydata>
     <element name="SYORIBI" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="22"/>
+        <embed object="string" length="22"/>
       </appinfo>
     </element>
     <element name="PAGE" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="3"/>
+        <embed object="string" length="3"/>
       </appinfo>
     </element>
     <element name="SYURUI" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="12"/>
+        <embed object="string" length="12"/>
       </appinfo>
     </element>
     <element name="ID" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="KANANAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="44"/>
+        <embed object="string" length="44"/>
       </appinfo>
     </element>
     <element name="NAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="30"/>
+        <embed object="string" length="30"/>
       </appinfo>
     </element>
     <element name="JYUSYO" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="56"/>
+        <embed object="string" length="56"/>
       </appinfo>
     </element>
     <element name="HSPNAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="56"/>
+        <embed object="string" length="56"/>
       </appinfo>
     </element>
     <element name="TEL" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="15"/>
+        <embed object="string" length="15"/>
       </appinfo>
     </element>
     <element name="DRNAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="26"/>
+        <embed object="string" length="26"/>
       </appinfo>
     </element>
     <element name="COMMENT" occurs="7">
       <appinfo>
-        <embed object="string" type="X" length="108"/>
+        <embed object="string" length="108"/>
       </appinfo>
     </element>
     <element name="TBL" occurs="2">
       <element name="NUM" occurs="1">
         <appinfo>
-          <embed object="string" type="X" length="2"/>
+          <embed object="string" length="2"/>
         </appinfo>
       </element>
       <element name="YKZNAME" occurs="3">
         <appinfo>
-          <embed object="string" type="X" length="26"/>
+          <embed object="string" length="26"/>
         </appinfo>
       </element>
       <element name="KONOKOKA" occurs="6">
         <appinfo>
-          <embed object="string" type="X" length="30"/>
+          <embed object="string" length="30"/>
         </appinfo>
       </element>
       <element name="GAZO" occurs="1">
@@ -79,22 +79,22 @@
       </element>
       <element name="KEIJYO" occurs="10">
         <appinfo>
-          <embed object="string" type="X" length="16"/>
+          <embed object="string" length="16"/>
         </appinfo>
       </element>
       <element name="KBN" occurs="4">
         <appinfo>
-          <embed object="string" type="X" length="2"/>
+          <embed object="string" length="2"/>
         </appinfo>
       </element>
       <element name="NAIYO" occurs="8">
         <appinfo>
-          <embed object="string" type="X" length="16"/>
+          <embed object="string" length="16"/>
         </appinfo>
       </element>
       <element name="CYUJKO" occurs="10">
         <appinfo>
-          <embed object="string" type="X" length="40"/>
+          <embed object="string" length="40"/>
         </appinfo>
       </element>
     </element>
@@ -107,6 +107,12 @@
       <composite type="paper">
         <attribute name="name">
           <string>#A4#</string>
+        </attribute>
+        <attribute name="pswidth">
+          <real val="21"/>
+        </attribute>
+        <attribute name="psheight">
+          <real val="29.7"/>
         </attribute>
         <attribute name="tmargin">
           <real val="0"/>
@@ -582,7 +588,7 @@
         <point val="2.5,2.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.5,2.33982;6.035,2.68982"/>
+        <rectangle val="2.5,2.32636;6.035,2.67636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -618,7 +624,7 @@
         <point val="7.4,2.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.4,2.33982;9.521,2.68982"/>
+        <rectangle val="7.4,2.32636;9.521,2.67636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -654,7 +660,7 @@
         <point val="10.1,2.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.1,2.33982;10.4535,2.68982"/>
+        <rectangle val="10.1,2.32636;10.4535,2.67636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -690,7 +696,7 @@
         <point val="10.8625,2.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.8625,2.33982;11.216,2.68982"/>
+        <rectangle val="10.8625,2.32636;11.216,2.67636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -726,7 +732,7 @@
         <point val="11.6,2.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.6,2.33982;11.9535,2.68982"/>
+        <rectangle val="11.6,2.32636;11.9535,2.67636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -762,7 +768,7 @@
         <point val="12.35,2.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.35,2.33982;12.7035,2.68982"/>
+        <rectangle val="12.35,2.32636;12.7035,2.67636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -798,7 +804,7 @@
         <point val="15.5,2.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.5,2.33982;16.914,2.68982"/>
+        <rectangle val="15.5,2.32636;16.914,2.67636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -834,7 +840,7 @@
         <point val="12.4,28.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.4,28.6027;14.016,29.0027"/>
+        <rectangle val="12.4,28.5873;14.016,28.9873"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -870,7 +876,7 @@
         <point val="19.8,1.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.8,1.63982;20.1535,1.98982"/>
+        <rectangle val="19.8,1.62636;20.1535,1.97636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -906,7 +912,7 @@
         <point val="8.7,1.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.7,1.15398;11.124,1.75398"/>
+        <rectangle val="8.7,1.13091;11.124,1.73091"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -942,7 +948,7 @@
         <point val="0.9,2.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.9,2.33982;1.3242,2.68982"/>
+        <rectangle val="0.9,2.32636;1.3242,2.67636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -978,7 +984,7 @@
         <point val="12.4,28.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.4,28.1027;14.42,28.5027"/>
+        <rectangle val="12.4,28.0873;14.42,28.4873"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1009,15 +1015,54 @@
         </composite>
       </attribute>
     </object>
+    <object type="Standard - Text" version="0" id="O36">
+      <attribute name="obj_pos">
+        <point val="7.8,1.9"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="7.8,1.54818;8.2545,1.99818"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#205;&#205;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.45"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="7.8,1.9"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.2727"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.22725"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
   </layer>
   <layer name="&#186;&#185;&#164;&#183;&#185;&#254;&#164;&#223;" visible="true">
-    <object type="Embed - Image" version="0" id="O36">
+    <object type="Embed - Image" version="0" id="O37">
       <attribute name="obj_pos">
         <point val="6.95,6.55"/>
       </attribute>
       <attribute name="obj_bb">
         <rectangle val="6.85,6.45;9.95,9.55"/>
       </attribute>
+      <attribute name="dnode_path">
+        <string>#TBL[1].GAZO#</string>
+      </attribute>
       <attribute name="elem_corner">
         <point val="6.95,6.55"/>
       </attribute>
@@ -1027,9 +1072,6 @@
       <attribute name="elem_height">
         <real val="2.9"/>
       </attribute>
-      <attribute name="dnode_path">
-        <string>#TBL[1].GAZO#</string>
-      </attribute>
       <attribute name="draw_border">
         <boolean val="false"/>
       </attribute>
@@ -1040,12 +1082,15 @@
         <string>##</string>
       </attribute>
     </object>
-    <object type="Embed - Image" version="0" id="O37">
+    <object type="Embed - Image" version="0" id="O38">
       <attribute name="obj_pos">
         <point val="6.95,2.85"/>
       </attribute>
       <attribute name="obj_bb">
         <rectangle val="6.85,2.75;9.95,5.85"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#TBL[0].GAZO#</string>
       </attribute>
       <attribute name="elem_corner">
         <point val="6.95,2.85"/>
@@ -1056,9 +1101,6 @@
       <attribute name="elem_height">
         <real val="2.9"/>
       </attribute>
-      <attribute name="dnode_path">
-        <string>#TBL[0].GAZO#</string>
-      </attribute>
       <attribute name="draw_border">
         <boolean val="false"/>
       </attribute>
@@ -1069,12 +1111,12 @@
         <string>##</string>
       </attribute>
     </object>
-    <object type="Embed - Text" version="0" id="O38">
+    <object type="Embed - Text" version="0" id="O39">
       <attribute name="obj_pos">
         <point val="20.15,1.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.2615,1.03982;20.15,1.38982"/>
+        <rectangle val="16.2615,1.02636;20.15,1.37636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYORIBI#</string>
@@ -1111,12 +1153,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Embed - Text" version="0" id="O39">
+    <object type="Embed - Text" version="0" id="O40">
       <attribute name="obj_pos">
         <point val="19.6,1.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.9637,1.63982;19.6,1.98982"/>
+        <rectangle val="18.9637,1.62636;19.6,1.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#PAGE#</string>
@@ -1153,12 +1195,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Embed - Text" version="0" id="O40">
+    <object type="Embed - Text" version="0" id="O41">
       <attribute name="obj_pos">
         <point val="11.1,1.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.1,1.15398;14.736,1.75398"/>
+        <rectangle val="11.1,1.13091;14.736,1.73091"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYURUI#</string>
@@ -1195,12 +1237,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Embed - Text" version="0" id="O41">
+    <object type="Embed - Text" version="0" id="O42">
       <attribute name="obj_pos">
         <point val="0.9,1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.9,0.739823;5.142,1.08982"/>
+        <rectangle val="0.9,0.726364;5.142,1.07636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#ID#</string>
@@ -1237,12 +1279,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Embed - Text" version="0" id="O42">
+    <object type="Embed - Text" version="0" id="O43">
       <attribute name="obj_pos">
         <point val="0.9,1.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.9,1.13982;8.677,1.48982"/>
+        <rectangle val="0.9,1.12636;8.677,1.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#KANANAME#</string>
@@ -1279,12 +1321,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Embed - Text" version="0" id="O43">
+    <object type="Embed - Text" version="0" id="O44">
       <attribute name="obj_pos">
         <point val="0.9,1.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.9,1.56549;7.7175,2.01549"/>
+        <rectangle val="0.9,1.54818;7.7175,1.99818"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAME#</string>
@@ -1321,12 +1363,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Embed - Text" version="0" id="O44">
+    <object type="Embed - Text" version="0" id="O45">
       <attribute name="obj_pos">
         <point val="0.9,28.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.9,28.1027;12.212,28.5027"/>
+        <rectangle val="0.9,28.0873;12.212,28.4873"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JYUSYO#</string>
@@ -1363,12 +1405,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Embed - Text" version="0" id="O45">
+    <object type="Embed - Text" version="0" id="O46">
       <attribute name="obj_pos">
         <point val="0.9,28.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.9,28.6027;12.212,29.0027"/>
+        <rectangle val="0.9,28.5873;12.212,28.9873"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HSPNAME#</string>
@@ -1405,12 +1447,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Embed - Text" version="0" id="O46">
+    <object type="Embed - Text" version="0" id="O47">
       <attribute name="obj_pos">
         <point val="14.4,28.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="14.4,28.1027;17.3088,28.5027"/>
+        <rectangle val="14.4,28.0873;17.3088,28.4873"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TEL#</string>
@@ -1447,12 +1489,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Embed - Text" version="0" id="O47">
+    <object type="Embed - Text" version="0" id="O48">
       <attribute name="obj_pos">
         <point val="14.3,28.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="14.3,28.6027;19.552,29.0027"/>
+        <rectangle val="14.3,28.5873;19.552,28.9873"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#DRNAME#</string>
@@ -1490,12 +1532,12 @@
       </attribute>
     </object>
     <group>
-      <object type="Embed - Text" version="0" id="O48">
+      <object type="Embed - Text" version="0" id="O49">
         <attribute name="obj_pos">
           <point val="0.9,10.6"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="0.9,10.3398;20.3425,10.6898"/>
+          <rectangle val="0.9,10.3264;20.3425,10.6764"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#COMMENT[0]#</string>
@@ -1532,12 +1574,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O49">
+      <object type="Embed - Text" version="0" id="O50">
         <attribute name="obj_pos">
           <point val="0.9,11"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="0.9,10.7398;20.3425,11.0898"/>
+          <rectangle val="0.9,10.7264;20.3425,11.0764"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#COMMENT[1]#</string>
@@ -1574,12 +1616,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O50">
+      <object type="Embed - Text" version="0" id="O51">
         <attribute name="obj_pos">
           <point val="0.9,11.4"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="0.9,11.1398;20.3425,11.4898"/>
+          <rectangle val="0.9,11.1264;20.3425,11.4764"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#COMMENT[2]#</string>
@@ -1616,12 +1658,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O51">
+      <object type="Embed - Text" version="0" id="O52">
         <attribute name="obj_pos">
           <point val="0.9,11.8"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="0.9,11.5398;20.3425,11.8898"/>
+          <rectangle val="0.9,11.5264;20.3425,11.8764"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#COMMENT[3]#</string>
@@ -1658,12 +1700,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O52">
+      <object type="Embed - Text" version="0" id="O53">
         <attribute name="obj_pos">
           <point val="0.9,12.2"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="0.9,11.9398;20.3425,12.2898"/>
+          <rectangle val="0.9,11.9264;20.3425,12.2764"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#COMMENT[4]#</string>
@@ -1700,12 +1742,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O53">
+      <object type="Embed - Text" version="0" id="O54">
         <attribute name="obj_pos">
           <point val="0.9,12.6"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="0.9,12.3398;20.3425,12.6898"/>
+          <rectangle val="0.9,12.3264;20.3425,12.6764"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#COMMENT[5]#</string>
@@ -1742,12 +1784,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O54">
+      <object type="Embed - Text" version="0" id="O55">
         <attribute name="obj_pos">
           <point val="0.9,13"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="0.9,12.7398;20.3425,13.0898"/>
+          <rectangle val="0.9,12.7264;20.3425,13.0764"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#COMMENT[6]#</string>
@@ -1785,12 +1827,12 @@
         </attribute>
       </object>
     </group>
-    <object type="Embed - Text" version="0" id="O55">
+    <object type="Embed - Text" version="0" id="O56">
       <attribute name="obj_pos">
         <point val="0.9,3.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.9,2.93982;1.3242,3.28982"/>
+        <rectangle val="0.9,2.92636;1.3242,3.27636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TBL[0].NUM#</string>
@@ -1828,12 +1870,12 @@
       </attribute>
     </object>
     <group>
-      <object type="Embed - Text" version="0" id="O56">
+      <object type="Embed - Text" version="0" id="O57">
         <attribute name="obj_pos">
           <point val="1.5,3.25"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,2.95265;6.752,3.35265"/>
+          <rectangle val="1.5,2.93727;6.752,3.33727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].YKZNAME[0]#</string>
@@ -1870,12 +1912,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O57">
+      <object type="Embed - Text" version="0" id="O58">
         <attribute name="obj_pos">
           <point val="1.5,3.65"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,3.35265;6.752,3.75265"/>
+          <rectangle val="1.5,3.33727;6.752,3.73727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].YKZNAME[1]#</string>
@@ -1912,12 +1954,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O58">
+      <object type="Embed - Text" version="0" id="O59">
         <attribute name="obj_pos">
           <point val="1.5,4.05"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,3.75265;6.752,4.15265"/>
+          <rectangle val="1.5,3.73727;6.752,4.13727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].YKZNAME[2]#</string>
@@ -1956,12 +1998,12 @@
       </object>
     </group>
     <group>
-      <object type="Embed - Text" version="0" id="O59">
+      <object type="Embed - Text" version="0" id="O60">
         <attribute name="obj_pos">
           <point val="1.5,4.6"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,4.33982;6.8025,4.68982"/>
+          <rectangle val="1.5,4.32636;6.8025,4.67636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KONOKOKA[0]#</string>
@@ -1998,12 +2040,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O60">
+      <object type="Embed - Text" version="0" id="O61">
         <attribute name="obj_pos">
           <point val="1.5,4.95"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,4.68982;6.8025,5.03982"/>
+          <rectangle val="1.5,4.67636;6.8025,5.02636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KONOKOKA[1]#</string>
@@ -2040,12 +2082,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O61">
+      <object type="Embed - Text" version="0" id="O62">
         <attribute name="obj_pos">
           <point val="1.5,5.3"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,5.03982;6.8025,5.38982"/>
+          <rectangle val="1.5,5.02636;6.8025,5.37636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KONOKOKA[2]#</string>
@@ -2082,12 +2124,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O62">
+      <object type="Embed - Text" version="0" id="O63">
         <attribute name="obj_pos">
           <point val="1.5,5.65"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,5.38982;6.8025,5.73982"/>
+          <rectangle val="1.5,5.37636;6.8025,5.72636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KONOKOKA[3]#</string>
@@ -2124,12 +2166,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O63">
+      <object type="Embed - Text" version="0" id="O64">
         <attribute name="obj_pos">
           <point val="1.5,6"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,5.73982;6.8025,6.08982"/>
+          <rectangle val="1.5,5.72636;6.8025,6.07636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KONOKOKA[4]#</string>
@@ -2166,12 +2208,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O64">
+      <object type="Embed - Text" version="0" id="O65">
         <attribute name="obj_pos">
           <point val="1.5,6.35"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,6.08982;6.8025,6.43982"/>
+          <rectangle val="1.5,6.07636;6.8025,6.42636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KONOKOKA[5]#</string>
@@ -2210,12 +2252,12 @@
       </object>
     </group>
     <group>
-      <object type="Embed - Text" version="0" id="O65">
+      <object type="Embed - Text" version="0" id="O66">
         <attribute name="obj_pos">
           <point val="7,3.2"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,2.93982;9.828,3.28982"/>
+          <rectangle val="7,2.92636;9.828,3.27636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KEIJYO[0]#</string>
@@ -2252,12 +2294,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O66">
+      <object type="Embed - Text" version="0" id="O67">
         <attribute name="obj_pos">
           <point val="7,3.55"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,3.28982;9.828,3.63982"/>
+          <rectangle val="7,3.27636;9.828,3.62636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KEIJYO[1]#</string>
@@ -2294,12 +2336,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O67">
+      <object type="Embed - Text" version="0" id="O68">
         <attribute name="obj_pos">
           <point val="7,3.9"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,3.63982;9.828,3.98982"/>
+          <rectangle val="7,3.62636;9.828,3.97636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KEIJYO[2]#</string>
@@ -2336,12 +2378,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O68">
+      <object type="Embed - Text" version="0" id="O69">
         <attribute name="obj_pos">
           <point val="7,4.25"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,3.98982;9.828,4.33982"/>
+          <rectangle val="7,3.97636;9.828,4.32636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KEIJYO[3]#</string>
@@ -2378,12 +2420,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O69">
+      <object type="Embed - Text" version="0" id="O70">
         <attribute name="obj_pos">
           <point val="7,4.6"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,4.33982;9.828,4.68982"/>
+          <rectangle val="7,4.32636;9.828,4.67636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KEIJYO[4]#</string>
@@ -2420,12 +2462,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O70">
+      <object type="Embed - Text" version="0" id="O71">
         <attribute name="obj_pos">
           <point val="7,4.95"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,4.68982;9.828,5.03982"/>
+          <rectangle val="7,4.67636;9.828,5.02636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KEIJYO[5]#</string>
@@ -2462,12 +2504,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O71">
+      <object type="Embed - Text" version="0" id="O72">
         <attribute name="obj_pos">
           <point val="7,5.3"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,5.03982;9.828,5.38982"/>
+          <rectangle val="7,5.02636;9.828,5.37636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KEIJYO[6]#</string>
@@ -2504,12 +2546,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O72">
+      <object type="Embed - Text" version="0" id="O73">
         <attribute name="obj_pos">
           <point val="7,5.65"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,5.38982;9.828,5.73982"/>
+          <rectangle val="7,5.37636;9.828,5.72636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KEIJYO[7]#</string>
@@ -2546,12 +2588,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O73">
+      <object type="Embed - Text" version="0" id="O74">
         <attribute name="obj_pos">
           <point val="7,6"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,5.73982;9.828,6.08982"/>
+          <rectangle val="7,5.72636;9.828,6.07636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KEIJYO[8]#</string>
@@ -2588,12 +2630,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O74">
+      <object type="Embed - Text" version="0" id="O75">
         <attribute name="obj_pos">
           <point val="7,6.35"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,6.08982;9.828,6.43982"/>
+          <rectangle val="7,6.07636;9.828,6.42636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KEIJYO[9]#</string>
@@ -2632,12 +2674,12 @@
       </object>
     </group>
     <group>
-      <object type="Embed - Text" version="0" id="O75">
+      <object type="Embed - Text" version="0" id="O76">
         <attribute name="obj_pos">
           <point val="10.05,3.3"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.05,3.00265;10.454,3.40265"/>
+          <rectangle val="10.05,2.98727;10.454,3.38727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KBN[0]#</string>
@@ -2674,12 +2716,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O76">
+      <object type="Embed - Text" version="0" id="O77">
         <attribute name="obj_pos">
           <point val="10.8,3.3"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.8,3.00265;11.204,3.40265"/>
+          <rectangle val="10.8,2.98727;11.204,3.38727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KBN[1]#</string>
@@ -2716,12 +2758,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O77">
+      <object type="Embed - Text" version="0" id="O78">
         <attribute name="obj_pos">
           <point val="11.55,3.3"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.55,3.00265;11.954,3.40265"/>
+          <rectangle val="11.55,2.98727;11.954,3.38727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KBN[2]#</string>
@@ -2758,12 +2800,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O78">
+      <object type="Embed - Text" version="0" id="O79">
         <attribute name="obj_pos">
           <point val="12.3,3.3"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="12.3,3.00265;12.704,3.40265"/>
+          <rectangle val="12.3,2.98727;12.704,3.38727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].KBN[3]#</string>
@@ -2802,12 +2844,12 @@
       </object>
     </group>
     <group>
-      <object type="Embed - Text" version="0" id="O79">
+      <object type="Embed - Text" version="0" id="O80">
         <attribute name="obj_pos">
           <point val="10,3.9"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,3.63982;12.828,3.98982"/>
+          <rectangle val="10,3.62636;12.828,3.97636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].NAIYO[0]#</string>
@@ -2844,12 +2886,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O80">
+      <object type="Embed - Text" version="0" id="O81">
         <attribute name="obj_pos">
           <point val="10,4.25"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,3.98982;12.828,4.33982"/>
+          <rectangle val="10,3.97636;12.828,4.32636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].NAIYO[1]#</string>
@@ -2886,12 +2928,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O81">
+      <object type="Embed - Text" version="0" id="O82">
         <attribute name="obj_pos">
           <point val="10,4.6"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,4.33982;12.828,4.68982"/>
+          <rectangle val="10,4.32636;12.828,4.67636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].NAIYO[2]#</string>
@@ -2928,12 +2970,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O82">
+      <object type="Embed - Text" version="0" id="O83">
         <attribute name="obj_pos">
           <point val="10,4.95"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,4.68982;12.828,5.03982"/>
+          <rectangle val="10,4.67636;12.828,5.02636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].NAIYO[3]#</string>
@@ -2970,12 +3012,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O83">
+      <object type="Embed - Text" version="0" id="O84">
         <attribute name="obj_pos">
           <point val="10,5.3"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,5.03982;12.828,5.38982"/>
+          <rectangle val="10,5.02636;12.828,5.37636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].NAIYO[4]#</string>
@@ -3012,12 +3054,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O84">
+      <object type="Embed - Text" version="0" id="O85">
         <attribute name="obj_pos">
           <point val="10,5.65"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,5.38982;12.828,5.73982"/>
+          <rectangle val="10,5.37636;12.828,5.72636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].NAIYO[5]#</string>
@@ -3054,12 +3096,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O85">
+      <object type="Embed - Text" version="0" id="O86">
         <attribute name="obj_pos">
           <point val="10,6"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,5.73982;12.828,6.08982"/>
+          <rectangle val="10,5.72636;12.828,6.07636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].NAIYO[6]#</string>
@@ -3096,12 +3138,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O86">
+      <object type="Embed - Text" version="0" id="O87">
         <attribute name="obj_pos">
           <point val="10,6.35"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,6.08982;12.828,6.43982"/>
+          <rectangle val="10,6.07636;12.828,6.42636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].NAIYO[7]#</string>
@@ -3140,12 +3182,12 @@
       </object>
     </group>
     <group>
-      <object type="Embed - Text" version="0" id="O87">
+      <object type="Embed - Text" version="0" id="O88">
         <attribute name="obj_pos">
           <point val="13,3.2"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,2.93982;20.07,3.28982"/>
+          <rectangle val="13,2.92636;20.07,3.27636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].CYUJKO[0]#</string>
@@ -3182,12 +3224,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O88">
+      <object type="Embed - Text" version="0" id="O89">
         <attribute name="obj_pos">
           <point val="13,3.5375"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,3.27732;20.07,3.62732"/>
+          <rectangle val="13,3.26386;20.07,3.61386"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].CYUJKO[1]#</string>
@@ -3224,12 +3266,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O89">
+      <object type="Embed - Text" version="0" id="O90">
         <attribute name="obj_pos">
           <point val="13,3.9"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,3.63982;20.07,3.98982"/>
+          <rectangle val="13,3.62636;20.07,3.97636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].CYUJKO[2]#</string>
@@ -3266,12 +3308,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O90">
+      <object type="Embed - Text" version="0" id="O91">
         <attribute name="obj_pos">
           <point val="13,4.2375"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,3.97732;20.07,4.32732"/>
+          <rectangle val="13,3.96386;20.07,4.31386"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].CYUJKO[3]#</string>
@@ -3308,12 +3350,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O91">
+      <object type="Embed - Text" version="0" id="O92">
         <attribute name="obj_pos">
           <point val="13,4.6"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,4.33982;20.07,4.68982"/>
+          <rectangle val="13,4.32636;20.07,4.67636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].CYUJKO[4]#</string>
@@ -3350,12 +3392,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O92">
+      <object type="Embed - Text" version="0" id="O93">
         <attribute name="obj_pos">
           <point val="13,4.9375"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,4.67732;20.07,5.02732"/>
+          <rectangle val="13,4.66386;20.07,5.01386"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].CYUJKO[5]#</string>
@@ -3392,12 +3434,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O93">
+      <object type="Embed - Text" version="0" id="O94">
         <attribute name="obj_pos">
           <point val="13,5.3"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,5.03982;20.07,5.38982"/>
+          <rectangle val="13,5.02636;20.07,5.37636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].CYUJKO[6]#</string>
@@ -3434,12 +3476,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O94">
+      <object type="Embed - Text" version="0" id="O95">
         <attribute name="obj_pos">
           <point val="13,5.6375"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,5.37732;20.07,5.72732"/>
+          <rectangle val="13,5.36386;20.07,5.71386"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].CYUJKO[7]#</string>
@@ -3476,12 +3518,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O95">
+      <object type="Embed - Text" version="0" id="O96">
         <attribute name="obj_pos">
           <point val="13,6"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,5.73982;20.07,6.08982"/>
+          <rectangle val="13,5.72636;20.07,6.07636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].CYUJKO[8]#</string>
@@ -3518,12 +3560,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O96">
+      <object type="Embed - Text" version="0" id="O97">
         <attribute name="obj_pos">
           <point val="13,6.3375"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,6.07732;20.07,6.42732"/>
+          <rectangle val="13,6.06386;20.07,6.41386"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[0].CYUJKO[9]#</string>
@@ -3561,12 +3603,12 @@
         </attribute>
       </object>
     </group>
-    <object type="Embed - Text" version="0" id="O97">
+    <object type="Embed - Text" version="0" id="O98">
       <attribute name="obj_pos">
         <point val="0.9,6.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.9,6.63982;1.3242,6.98982"/>
+        <rectangle val="0.9,6.62636;1.3242,6.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TBL[1].NUM#</string>
@@ -3604,12 +3646,12 @@
       </attribute>
     </object>
     <group>
-      <object type="Embed - Text" version="0" id="O98">
+      <object type="Embed - Text" version="0" id="O99">
         <attribute name="obj_pos">
           <point val="1.5,6.95"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,6.65265;6.752,7.05265"/>
+          <rectangle val="1.5,6.63727;6.752,7.03727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].YKZNAME[0]#</string>
@@ -3646,12 +3688,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O99">
+      <object type="Embed - Text" version="0" id="O100">
         <attribute name="obj_pos">
           <point val="1.5,7.35"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,7.05265;6.752,7.45265"/>
+          <rectangle val="1.5,7.03727;6.752,7.43727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].YKZNAME[1]#</string>
@@ -3688,12 +3730,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O100">
+      <object type="Embed - Text" version="0" id="O101">
         <attribute name="obj_pos">
           <point val="1.5,7.75"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,7.45265;6.752,7.85265"/>
+          <rectangle val="1.5,7.43727;6.752,7.83727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].YKZNAME[2]#</string>
@@ -3732,12 +3774,12 @@
       </object>
     </group>
     <group>
-      <object type="Embed - Text" version="0" id="O101">
+      <object type="Embed - Text" version="0" id="O102">
         <attribute name="obj_pos">
           <point val="1.5,8.3"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,8.03982;6.8025,8.38982"/>
+          <rectangle val="1.5,8.02636;6.8025,8.37636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KONOKOKA[0]#</string>
@@ -3774,12 +3816,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O102">
+      <object type="Embed - Text" version="0" id="O103">
         <attribute name="obj_pos">
           <point val="1.4875,8.65"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4875,8.38982;6.79,8.73982"/>
+          <rectangle val="1.4875,8.37636;6.79,8.72636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KONOKOKA[1]#</string>
@@ -3816,12 +3858,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O103">
+      <object type="Embed - Text" version="0" id="O104">
         <attribute name="obj_pos">
           <point val="1.5,9"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,8.73982;6.8025,9.08982"/>
+          <rectangle val="1.5,8.72636;6.8025,9.07636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KONOKOKA[2]#</string>
@@ -3858,12 +3900,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O104">
+      <object type="Embed - Text" version="0" id="O105">
         <attribute name="obj_pos">
           <point val="1.4875,9.35"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4875,9.08982;6.79,9.43982"/>
+          <rectangle val="1.4875,9.07636;6.79,9.42636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KONOKOKA[3]#</string>
@@ -3900,12 +3942,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O105">
+      <object type="Embed - Text" version="0" id="O106">
         <attribute name="obj_pos">
           <point val="1.5,9.7"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.5,9.43982;6.8025,9.78982"/>
+          <rectangle val="1.5,9.42636;6.8025,9.77636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KONOKOKA[4]#</string>
@@ -3942,12 +3984,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O106">
+      <object type="Embed - Text" version="0" id="O107">
         <attribute name="obj_pos">
           <point val="1.4875,10.05"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4875,9.78982;6.79,10.1398"/>
+          <rectangle val="1.4875,9.77636;6.79,10.1264"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KONOKOKA[5]#</string>
@@ -3986,12 +4028,12 @@
       </object>
     </group>
     <group>
-      <object type="Embed - Text" version="0" id="O107">
+      <object type="Embed - Text" version="0" id="O108">
         <attribute name="obj_pos">
           <point val="7,6.9"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,6.63982;9.828,6.98982"/>
+          <rectangle val="7,6.62636;9.828,6.97636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KEIJYO[0]#</string>
@@ -4028,12 +4070,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O108">
+      <object type="Embed - Text" version="0" id="O109">
         <attribute name="obj_pos">
           <point val="7,7.25"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,6.98982;9.828,7.33982"/>
+          <rectangle val="7,6.97636;9.828,7.32636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KEIJYO[1]#</string>
@@ -4070,12 +4112,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O109">
+      <object type="Embed - Text" version="0" id="O110">
         <attribute name="obj_pos">
           <point val="7,7.6"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,7.33982;9.828,7.68982"/>
+          <rectangle val="7,7.32636;9.828,7.67636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KEIJYO[2]#</string>
@@ -4112,12 +4154,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O110">
+      <object type="Embed - Text" version="0" id="O111">
         <attribute name="obj_pos">
           <point val="7,7.95"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,7.68982;9.828,8.03982"/>
+          <rectangle val="7,7.67636;9.828,8.02636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KEIJYO[3]#</string>
@@ -4154,12 +4196,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O111">
+      <object type="Embed - Text" version="0" id="O112">
         <attribute name="obj_pos">
           <point val="7,8.3"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,8.03982;9.828,8.38982"/>
+          <rectangle val="7,8.02636;9.828,8.37636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KEIJYO[4]#</string>
@@ -4196,12 +4238,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O112">
+      <object type="Embed - Text" version="0" id="O113">
         <attribute name="obj_pos">
           <point val="7,8.65"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,8.38982;9.828,8.73982"/>
+          <rectangle val="7,8.37636;9.828,8.72636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KEIJYO[5]#</string>
@@ -4238,12 +4280,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O113">
+      <object type="Embed - Text" version="0" id="O114">
         <attribute name="obj_pos">
           <point val="7,9"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,8.73982;9.828,9.08982"/>
+          <rectangle val="7,8.72636;9.828,9.07636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KEIJYO[6]#</string>
@@ -4280,12 +4322,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O114">
+      <object type="Embed - Text" version="0" id="O115">
         <attribute name="obj_pos">
           <point val="7,9.35"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,9.08982;9.828,9.43982"/>
+          <rectangle val="7,9.07636;9.828,9.42636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KEIJYO[7]#</string>
@@ -4322,12 +4364,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O115">
+      <object type="Embed - Text" version="0" id="O116">
         <attribute name="obj_pos">
           <point val="7,9.7"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,9.43982;9.828,9.78982"/>
+          <rectangle val="7,9.42636;9.828,9.77636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KEIJYO[8]#</string>
@@ -4364,12 +4406,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O116">
+      <object type="Embed - Text" version="0" id="O117">
         <attribute name="obj_pos">
           <point val="7,10.05"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7,9.78982;9.828,10.1398"/>
+          <rectangle val="7,9.77636;9.828,10.1264"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KEIJYO[9]#</string>
@@ -4408,12 +4450,12 @@
       </object>
     </group>
     <group>
-      <object type="Embed - Text" version="0" id="O117">
+      <object type="Embed - Text" version="0" id="O118">
         <attribute name="obj_pos">
           <point val="10.05,7"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.05,6.70265;10.454,7.10265"/>
+          <rectangle val="10.05,6.68727;10.454,7.08727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KBN[0]#</string>
@@ -4450,12 +4492,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O118">
+      <object type="Embed - Text" version="0" id="O119">
         <attribute name="obj_pos">
           <point val="10.8,7"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.8,6.70265;11.204,7.10265"/>
+          <rectangle val="10.8,6.68727;11.204,7.08727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KBN[1]#</string>
@@ -4492,12 +4534,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O119">
+      <object type="Embed - Text" version="0" id="O120">
         <attribute name="obj_pos">
           <point val="11.55,7"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.55,6.70265;11.954,7.10265"/>
+          <rectangle val="11.55,6.68727;11.954,7.08727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KBN[2]#</string>
@@ -4534,12 +4576,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O120">
+      <object type="Embed - Text" version="0" id="O121">
         <attribute name="obj_pos">
           <point val="12.3,7"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="12.3,6.70265;12.704,7.10265"/>
+          <rectangle val="12.3,6.68727;12.704,7.08727"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].KBN[3]#</string>
@@ -4578,12 +4620,12 @@
       </object>
     </group>
     <group>
-      <object type="Embed - Text" version="0" id="O121">
+      <object type="Embed - Text" version="0" id="O122">
         <attribute name="obj_pos">
           <point val="10,7.6"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,7.33982;12.828,7.68982"/>
+          <rectangle val="10,7.32636;12.828,7.67636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].NAIYO[0]#</string>
@@ -4620,12 +4662,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O122">
+      <object type="Embed - Text" version="0" id="O123">
         <attribute name="obj_pos">
           <point val="10,7.95"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,7.68982;12.828,8.03982"/>
+          <rectangle val="10,7.67636;12.828,8.02636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].NAIYO[1]#</string>
@@ -4662,12 +4704,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O123">
+      <object type="Embed - Text" version="0" id="O124">
         <attribute name="obj_pos">
           <point val="10,8.3"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,8.03982;12.828,8.38982"/>
+          <rectangle val="10,8.02636;12.828,8.37636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].NAIYO[2]#</string>
@@ -4704,12 +4746,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O124">
+      <object type="Embed - Text" version="0" id="O125">
         <attribute name="obj_pos">
           <point val="10,8.65"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,8.38982;12.828,8.73982"/>
+          <rectangle val="10,8.37636;12.828,8.72636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].NAIYO[3]#</string>
@@ -4746,12 +4788,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O125">
+      <object type="Embed - Text" version="0" id="O126">
         <attribute name="obj_pos">
           <point val="10,9"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,8.73982;12.828,9.08982"/>
+          <rectangle val="10,8.72636;12.828,9.07636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].NAIYO[4]#</string>
@@ -4788,12 +4830,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O126">
+      <object type="Embed - Text" version="0" id="O127">
         <attribute name="obj_pos">
           <point val="10,9.35"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,9.08982;12.828,9.43982"/>
+          <rectangle val="10,9.07636;12.828,9.42636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].NAIYO[5]#</string>
@@ -4830,12 +4872,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O127">
+      <object type="Embed - Text" version="0" id="O128">
         <attribute name="obj_pos">
           <point val="10,9.7"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,9.43982;12.828,9.78982"/>
+          <rectangle val="10,9.42636;12.828,9.77636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].NAIYO[6]#</string>
@@ -4872,12 +4914,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O128">
+      <object type="Embed - Text" version="0" id="O129">
         <attribute name="obj_pos">
           <point val="10,10.05"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10,9.78982;12.828,10.1398"/>
+          <rectangle val="10,9.77636;12.828,10.1264"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].NAIYO[7]#</string>
@@ -4916,12 +4958,12 @@
       </object>
     </group>
     <group>
-      <object type="Embed - Text" version="0" id="O129">
+      <object type="Embed - Text" version="0" id="O130">
         <attribute name="obj_pos">
           <point val="13,6.9"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,6.63982;20.07,6.98982"/>
+          <rectangle val="13,6.62636;20.07,6.97636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].CYUJKO[0]#</string>
@@ -4958,12 +5000,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O130">
+      <object type="Embed - Text" version="0" id="O131">
         <attribute name="obj_pos">
           <point val="13,7.25"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,6.98982;20.07,7.33982"/>
+          <rectangle val="13,6.97636;20.07,7.32636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].CYUJKO[1]#</string>
@@ -5000,12 +5042,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O131">
+      <object type="Embed - Text" version="0" id="O132">
         <attribute name="obj_pos">
           <point val="13,7.6"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,7.33982;20.07,7.68982"/>
+          <rectangle val="13,7.32636;20.07,7.67636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].CYUJKO[2]#</string>
@@ -5042,12 +5084,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O132">
+      <object type="Embed - Text" version="0" id="O133">
         <attribute name="obj_pos">
           <point val="13,7.95"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,7.68982;20.07,8.03982"/>
+          <rectangle val="13,7.67636;20.07,8.02636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].CYUJKO[3]#</string>
@@ -5084,12 +5126,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O133">
+      <object type="Embed - Text" version="0" id="O134">
         <attribute name="obj_pos">
           <point val="13,8.3"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,8.03982;20.07,8.38982"/>
+          <rectangle val="13,8.02636;20.07,8.37636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].CYUJKO[4]#</string>
@@ -5126,12 +5168,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O134">
+      <object type="Embed - Text" version="0" id="O135">
         <attribute name="obj_pos">
           <point val="13,8.65"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,8.38982;20.07,8.73982"/>
+          <rectangle val="13,8.37636;20.07,8.72636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].CYUJKO[5]#</string>
@@ -5168,12 +5210,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O135">
+      <object type="Embed - Text" version="0" id="O136">
         <attribute name="obj_pos">
           <point val="13,9"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,8.73982;20.07,9.08982"/>
+          <rectangle val="13,8.72636;20.07,9.07636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].CYUJKO[6]#</string>
@@ -5210,12 +5252,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O136">
+      <object type="Embed - Text" version="0" id="O137">
         <attribute name="obj_pos">
           <point val="13,9.35"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,9.08982;20.07,9.43982"/>
+          <rectangle val="13,9.07636;20.07,9.42636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].CYUJKO[7]#</string>
@@ -5252,12 +5294,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O137">
+      <object type="Embed - Text" version="0" id="O138">
         <attribute name="obj_pos">
           <point val="13,9.7"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,9.43982;20.07,9.78982"/>
+          <rectangle val="13,9.42636;20.07,9.77636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].CYUJKO[8]#</string>
@@ -5294,12 +5336,12 @@
           </composite>
         </attribute>
       </object>
-      <object type="Embed - Text" version="0" id="O138">
+      <object type="Embed - Text" version="0" id="O139">
         <attribute name="obj_pos">
           <point val="13,10.05"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13,9.78982;20.07,10.1398"/>
+          <rectangle val="13,9.77636;20.07,10.1264"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TBL[1].CYUJKO[9]#</string>
