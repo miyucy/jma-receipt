@@ -93,6 +93,7 @@
       *                                     全て編集する
       *  01.02.08   NACL-門脇     02.10.07  在宅総合・末期フラグのセットを行う
       *                                     一部負担金再掲のセットを行う
+      *  01.02.09   MCC-小豆沢    02.10.16  特定器材点数の集計先を修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1188,20 +1189,32 @@
                    IF  IDX3         =     1
                        MOVE  ACCT-ZAIKAISU     TO   WK-ZAIKAISU
                        MOVE  ACCT-ZAITEN       TO   WK-ZAITEN
+      *----(01.02.09) LINE DELETE START --------------------------
+      *                 IF    SRY-SRYKBN     =  "40"  OR  "50"  OR
+      *                                         "70"  OR  "80"  OR
+      *                                         "54"
+      *                     COMPUTE  WK-SYUTEN   =   ACCT-SYUTEN1  +
+      *                                              ACCT-KIZAITEN
+      *                     MOVE  ACCT-YKZTEN   TO   WK-YKZTEN
+      *                 ELSE
+      *                     IF   SRY-SRYKBN      =   "60"
+      *                          MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
+      *                          COMPUTE   WK-YKZTEN   =
+      *                                                ACCT-KIZAITEN  +
+      *                                                ACCT-YKZTEN
+      *                     END-IF
+      *                 END-IF
+      *----(01.02.09) LINE DELETE END   --------------------------
+      *----(01.02.09) LINE ADD START    --------------------------
                        IF    SRY-SRYKBN     =  "40"  OR  "50"  OR
-                                               "70"  OR  "80"  OR
-                                               "54"
-                           COMPUTE  WK-SYUTEN   =   ACCT-SYUTEN1  +
-                                                    ACCT-KIZAITEN
-                           MOVE  ACCT-YKZTEN   TO   WK-YKZTEN
-                       ELSE
-                           IF   SRY-SRYKBN      =   "60"
+                                               "60"  OR  "70"  OR
+                                               "80"  OR  "54"
                                 MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
                                 COMPUTE   WK-YKZTEN   =
                                                       ACCT-KIZAITEN  +
                                                       ACCT-YKZTEN
-                           END-IF
                        END-IF
+      *----(01.02.09) LINE ADD END      --------------------------
                        IF    SRY-SRYKBN     =  "14"
                            MOVE    ACCT-SYUTEN1   TO   WK-SYUTEN
                            MOVE    ACCT-KIZAITEN  TO   WK-KIZAITEN
