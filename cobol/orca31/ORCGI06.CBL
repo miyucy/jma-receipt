@@ -2224,24 +2224,26 @@
            MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAY
            MOVE    WRK-SYMD            TO  SPA-NAI-BIRTHDAY
       *
-           INITIALIZE ORCSAGECHKAREA
-           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
-           MOVE    SPA-NAI-PTID        TO  AGECHK-PTID
-           MOVE    SPA-SYSYMD          TO  AGECHK-SRYYMD
-           MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
-           CALL    "ORCSAGECHK"        USING   ORCSAGECHKAREA
-           IF    ( AGECHK-RC       =   ZERO )
-               IF    ( AGECHK-NENREI2-YY   =   ZERO )
-                   MOVE    AGECHK-NENREI2-MM
-                                       TO  WRK-AGE-Z
-                   MOVE    "ヶ月"      TO  WRK-AGE-MEI
-               ELSE
-                   MOVE    AGECHK-NENREI2-YY
-                                       TO  WRK-AGE-Z
-                   MOVE    "才"        TO  WRK-AGE-MEI
+           IF    ( SPA-NAI-BIRTHDAY    NOT =   ZERO )
+               INITIALIZE ORCSAGECHKAREA
+               MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+               MOVE    SPA-NAI-PTID        TO  AGECHK-PTID
+               MOVE    SPA-SYSYMD          TO  AGECHK-SRYYMD
+               MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
+               CALL    "ORCSAGECHK"        USING   ORCSAGECHKAREA
+               IF    ( AGECHK-RC       =   ZERO )
+                   IF    ( AGECHK-NENREI2-YY   =   ZERO )
+                       MOVE    AGECHK-NENREI2-MM
+                                           TO  WRK-AGE-Z
+                       MOVE    "ヶ月"      TO  WRK-AGE-MEI
+                   ELSE
+                       MOVE    AGECHK-NENREI2-YY
+                                           TO  WRK-AGE-Z
+                       MOVE    "才"        TO  WRK-AGE-MEI
+                   END-IF
                END-IF
       *
-                   MOVE    WRK-AGE-G   TO  SPA-GMN-AGE
+               MOVE    WRK-AGE-G   TO  SPA-GMN-AGE
       *
            END-IF
       *
@@ -4544,7 +4546,7 @@
            MOVE    ZERO                TO  FLG-HIZUKE-ERR
       *
            MOVE    ZERO                TO  WRK-SYMD
-           MOVE    WRK-SYMD            TO  WRK-HENYMDG
+           MOVE    SPACE               TO  WRK-HENYMDG
       *
       *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA
