@@ -155,6 +155,9 @@
       *
                    07  SPA-GMN-INPUT.
                        09  SPA-GMN-SELBAN          PIC 9(04).
+                   07  SPA-GMN-MISYU.
+                       09  SPA-GMN-GAI-MISYU       PIC S9(08).
+                       09  SPA-GMN-NYU-MISYU       PIC S9(08).
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SRYYM               PIC X(06).
@@ -283,6 +286,7 @@
            03  WRK-SEIKYU-PG       PIC X(20).
            03  WRK-NYUGAIKBN       PIC X(01).
            03  WRK-PTNUM           PIC X(20).
+           03  WRK-MISYU           PIC S9(08).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -863,6 +867,10 @@
            END-IF
       *
            IF  (   SPA-PTNUM       NOT =  SPACE )
+      *
+      *        Ì¤¼ý³Û¤òÊÔ½¸
+               PERFORM 3101-MISYU-EDIT-SEC
+      *
       *        ³ºÅö·î¤Î¼ýÇ¼¥Ç¡¼¥¿¤òÉ½¼¨
                PERFORM 300-SYUNOU-HENSYU-SEC
            END-IF
@@ -887,6 +895,7 @@
            INITIALIZE                  SPA-GMN-HEAD
                                        SPA-NAI-HEAD
                                        SPA-GMN-TBL
+                                       SPA-GMN-MISYU
                                        SPA-GMN-INPUT
                                        SPA-NAI-TBL
                                        SPA-GMN-MAX
@@ -1015,6 +1024,8 @@
       *
            PERFORM 3101-COMBO-SYOKI-SET-SEC
       *
+           PERFORM 3101-MISYU-EDIT-SEC
+      *
            PERFORM 300-SYUNOU-HENSYU-SEC
       *
            IF    ( SPA-MOTOPG2         =   "K02" OR "K02N" )
@@ -1040,6 +1051,7 @@
            MOVE    ZERO                TO  SPA-GMN-MAX
            INITIALIZE                      SPA-GMN-TBL
                                            SPA-NAI-TBL
+
       *
            MOVE   ZERO                 TO  IDX1
       *
@@ -1121,6 +1133,66 @@
       *
            .
        3101-SYULIST-EDIT-EXT.
+           EXIT.
+      **************************************************************
+      *   Ì¤¼ý¶â³ÛÊÔ½¸½èÍý
+      **************************************************************
+       3101-MISYU-EDIT-SEC             SECTION.
+      *
+           INITIALIZE  SPA-GMN-MISYU
+      *
+      *    Æþ±¡Ê¬Ì¤¼ý¶â³Û½¸·×
+           MOVE    "1"                 TO  WRK-NYUGAIKBN
+           PERFORM 3101-MISYU-SUM-SEC
+           MOVE    WRK-MISYU           TO  SPA-GMN-NYU-MISYU
+      *
+      *    ³°ÍèÊ¬Ì¤¼ý¶â³Û½¸·×
+           MOVE    "2"                 TO  WRK-NYUGAIKBN
+           PERFORM 3101-MISYU-SUM-SEC
+           MOVE    WRK-MISYU           TO  SPA-GMN-GAI-MISYU
+      *
+           .
+       3101-MISYU-EDIT-EXT.
+           EXIT.
+      **************************************************************
+      *   Ì¤¼ý¶â½¸·×½èÍý
+      **************************************************************
+       3101-MISYU-SUM-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  WRK-MISYU
+      *
+           MOVE    ZERO                TO  FLG-SYUNOU
+           INITIALIZE  SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  SYU-PTID
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "SYUNOU-KEY13"      TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-SYUNOU  =   1 )
+      *
+               MOVE    MCPDATA-REC TO  SYUNOU-REC
+      *
+               COMPUTE WRK-MISYU
+                   =   WRK-MISYU
+                   + ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+      *
+               MOVE    "SYUNOU-KEY13"  TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+               IF    ( FLG-DBRC    NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYUNOU
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "SYUNOU-KEY13"      TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+       3101-MISYU-SUM-EXT.
            EXIT.
       **************************************************************
       *   ¼ýÇ¼¥Þ¥¹¥¿¡¼¤è¤ê²èÌÌÆâÍÆÊÔ½¸½èÍý
@@ -1379,6 +1451,10 @@
            MOVE    SPA-GMN-SELBAN              TO  WRK-SELBAN-W
            MOVE    WRK-SELBAN-W                TO  S02-SELNUM
       *
+           MOVE    SPA-GMN-GAI-MISYU           TO  S02-GAI-MISYU
+      *
+           MOVE    SPA-GMN-NYU-MISYU           TO  S02-NYU-MISYU
+      *
            MOVE    WIDGET-NORMAL               TO  S02-PTNUM-STATE
       *
            PERFORM 5001-MAPCUR-SEC
@@ -1544,6 +1620,7 @@
            INITIALIZE                  SPA-GMN-HEAD
                                        SPA-NAI-HEAD
                                        SPA-GMN-TBL
+                                       SPA-GMN-MISYU
                                        SPA-GMN-INPUT
                                        SPA-NAI-TBL
                                        SPA-GMN-MAX
@@ -1608,6 +1685,8 @@
                                        TO  SPA-GMN-NYUGAIKBN-G
                END-IF
            END-IF
+      *
+           PERFORM 3101-MISYU-EDIT-SEC
       *
            PERFORM 300-SYUNOU-HENSYU-SEC
            IF    ( SPA-GMN-MAX     = ZERO )
@@ -1708,6 +1787,9 @@
                                        TO  SPA-GMN-NYUGAIKBN-G
                END-IF
            END-IF
+      *
+      *
+           PERFORM 3101-MISYU-EDIT-SEC
       *
            PERFORM 300-SYUNOU-HENSYU-SEC
            IF    ( SPA-GMN-MAX     >   ZERO )
@@ -2129,7 +2211,10 @@
                END-IF
            END-IF
       *
-           PERFORM    300-SYUNOU-HENSYU-SEC
+      *
+           PERFORM 3101-MISYU-EDIT-SEC
+      *
+           PERFORM 300-SYUNOU-HENSYU-SEC
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
@@ -3011,6 +3096,9 @@
            END-IF
       *     
       *****PERFORM    310-SPA-SET-SEC.
+      *
+           PERFORM 3101-MISYU-EDIT-SEC
+      *
            PERFORM 300-SYUNOU-HENSYU-SEC
            MOVE    1                   TO  SPA-GMN-CUR
            .
@@ -3594,6 +3682,9 @@
      *
            IF      SPA-ERRCD          =   SPACE 
      ******    PERFORM    310-SPA-SET-SEC
+      *
+               PERFORM 3101-MISYU-EDIT-SEC
+      *
                PERFORM 300-SYUNOU-HENSYU-SEC
                MOVE    1                   TO  SPA-GMN-CUR
            END-IF
@@ -3807,6 +3898,9 @@
              END-IF
            END-IF
       *****PERFORM    310-SPA-SET-SEC.
+      *
+           PERFORM 3101-MISYU-EDIT-SEC
+      *
            PERFORM 300-SYUNOU-HENSYU-SEC
            MOVE    1                   TO  SPA-GMN-CUR
            .

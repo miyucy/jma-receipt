@@ -479,6 +479,54 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>GAI_MISYU</name>
+      <x>685</x>
+      <y>655</y>
+      <width>100</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>---,---,---</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NYU_MISYU</name>
+      <x>880</x>
+      <y>655</y>
+      <width>100</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>---,---,---</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>SRYYM</name>
       <x>16</x>
@@ -1068,6 +1116,36 @@
       <width>56</width>
       <height>24</height>
       <label>ÁªÂòÈÖ¹æ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+    <widget>
+      <class>GtkLabel</class>
+      <name>label358</name>
+      <x>600</x>
+      <y>655</y>
+      <width>80</width>
+      <height>25</height>
+      <label>³°ÍèÌ¤¼ý³Û</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+    <widget>
+      <class>GtkLabel</class>
+      <name>label359</name>
+      <x>795</x>
+      <y>655</y>
+      <width>80</width>
+      <height>25</height>
+      <label>Æþ±¡Ì¤¼ý³Û</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

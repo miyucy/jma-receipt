@@ -32,6 +32,8 @@
               03  S02-SEX.
                 04  S02-VALUE   PIC X(2).
               03  S02-SELNUM    PIC S9(4).
+              03  S02-GAI-MISYU PIC S9(9).
+              03  S02-NYU-MISYU PIC S9(9).
               03  S02-SRYYM.
                 04  S02-VALUE   PIC X(7).
               03  S02-SCROLLEDWINDOW1.

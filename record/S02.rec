@@ -25,6 +25,12 @@ S02	{
 		SELNUM	{
 			value	number(4);
 		};
+		GAI_MISYU	{
+			value	number(09);
+		};
+		NYU_MISYU	{
+			value	number(09);
+		};
 		SRYYM	{
 			value	varchar(7);
 		};
