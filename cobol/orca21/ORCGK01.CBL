@@ -2610,7 +2610,7 @@
                    MOVE    10                  TO  SPA-GMN-CUR
                    GO      TO      4109-CONTKBN-CHK-EXT
                END-IF
-      *        包括まとめ入力はエラー
+      *        包括分入力はエラー
                IF      SPA-GMN-HKNCOMBINUM =   "9999"
                    MOVE    "0023"              TO  SPA-ERRCD
                    MOVE    10                  TO  SPA-GMN-CUR
@@ -3350,7 +3350,7 @@
                    MOVE    "前回処方区分がありません。"
                                                TO  SPA-ERRMSG
                WHEN    "0023"
-                   MOVE    "包括まとめ入力は選択できません。"
+                   MOVE    "包括分入力は選択できません。"
                                                TO  SPA-ERRMSG
       *
                WHEN    "9999"

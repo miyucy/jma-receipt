@@ -2242,7 +2242,7 @@
                GO      TO      450-TOROKU-EXT
            END-IF
       *
-      *   包括まとめ入力処理
+      *   包括分入力処理
           IF      SPA-HKNCOMBINUM     =   "9999"
                PERFORM 4503-HOUKATU-SYORI-SEC
                GO      TO      450-TOROKU-EXT
@@ -3113,7 +3113,7 @@
            EXIT.
       *
       *****************************************************************
-      *    包括まとめ入力更新（外来）処理
+      *    包括分入力更新（外来）処理
       *****************************************************************
        4503-HOUKATU-SYORI-SEC             SECTION.
       *
@@ -3519,13 +3519,13 @@
                    MOVE    "よろしいですか？"
                                        TO  WRK-KIDMSG(29:)
                WHEN    "0102"
-                   MOVE    "包括まとめ入力を登録します。"
+                   MOVE    "包括分入力を登録します。"
                                        TO  WRK-KIDMSG
                WHEN    "0103"
-                   MOVE    "包括まとめ入力の受診履歴を削除します。"
+                   MOVE    "包括分入力の受診履歴を削除します。"
                                        TO  WRK-KIDMSG
                    MOVE    "よろしいですか？"
-                                       TO  WRK-KIDMSG(39:)
+                                       TO  WRK-KIDMSG(35:)
                WHEN    OTHER
                    MOVE    SPA-KIDCD
                                        TO  WRK-KIDMSG
