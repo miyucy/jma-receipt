@@ -579,7 +579,7 @@
                05  SPA-NAI27-AREA.
                    07  SPA-RENBAN                           PIC 9(10).
                    07  SPA-NAI27-TBL.
-                       09  SPA-NAI27-REC                    OCCURS 15.
+                       09  SPA-NAI27-REC                    OCCURS 50.
                            11  SPA-NAI27-EDANUM             PIC 9(04).
                    07  SPA-NAI27-GMN.
                        09  SPA-NAI27-GMN-REC                OCCURS 50.
