@@ -81,6 +81,10 @@
                 04  W12-RJNGNBKKBN         PIC X(24).
                 04  W12-RJNGNBKKBN-COUNT   PIC S9(9)   BINARY.
                 04  W12-RJNGNBKKBNLST      PIC X(24)   OCCURS  4 TIMES.
+              03  W12-JIHITEKKSIKBN-COMBO.
+                04  W12-JIHITEKKSIKBN      PIC X(10).
+                04  W12-JIHITEKKSIKBN-COUNT   PIC S9(9)   BINARY.
+                04  W12-JIHITEKKSIKBNLST   PIC X(10)   OCCURS  2 TIMES.
               03  W12-KKHPRTKBN-COMBO.
                 04  W12-KKHPRTKBN       PIC X(20).
                 04  W12-KKHPRTKBN-COUNT PIC S9(9)   BINARY.

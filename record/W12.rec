@@ -105,6 +105,13 @@ W12	{
 			count	int;
 			item	varchar(24)[4];
 		};
+		JIHITEKKSIKBN_COMBO	{
+			JIHITEKKSIKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
 		KKHPRTKBN_COMBO	{
 			KKHPRTKBN	{
 				value	varchar(20);
