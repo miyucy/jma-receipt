@@ -29,7 +29,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 05 Jan 2001 11:20:35 GMT</last_modification_time>
   </signal>
-  <title>(R04)Ï«ºÒ¥ì¥»¥×¥ÈºîÀ®¡Ý°õºþ»Ø¼¨</title>
+  <title>(R04)Ï«ºÒ¡¦¼«ÇåÀÕ¥ì¥»¥×¥ÈºîÀ®¡Ý°õºþ»Ø¼¨</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -290,7 +290,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:44:05 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>¾ðÊóºï½ü</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -315,31 +315,6 @@
       </signal>
       <label>°õºþ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkToggleButton</class>
-      <name>SYOKBN</name>
-      <x>128</x>
-      <y>45</y>
-      <width>93</width>
-      <height>24</height>
-      <sensitive>False</sensitive>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 02:29:15 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 07 Feb 2001 05:55:33 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-      <active>False</active>
     </widget>
 
     <widget>
@@ -4064,22 +4039,6 @@
       <width>70</width>
       <height>18</height>
       <label>Áí·ï¿ô</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label495</name>
-      <x>56</x>
-      <y>45</y>
-      <width>54</width>
-      <height>18</height>
-      <label>½ÐÎÏ¶èÊ¬</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
