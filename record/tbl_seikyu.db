@@ -7,6 +7,7 @@ RECEKA				char(2);
 TEISYUTUSAKI			number(1,0);
 RECESYUBETU			char(4);
 HKNJANUM			char(8);
+HOJOKBN_KEY     		char(1);
 TEKSTYMD			char(8);
 PTNUM				char(20);
 PREFKBN                 char(1);
@@ -379,6 +380,38 @@ YKZFTN2 			number(5,0);
 YKZFTN3 			number(5,0);
 YKZFTN4 			number(5,0);
 YKZFTN5 			number(5,0);
+ETC_KOHNUM1          		char(3);
+ETC_KOHNUM2          		char(3);
+ETC_KOHNUM3          		char(3);
+ETC_KOHNUM4          		char(3);
+ETC_JNISSU1	       		number(2,0);
+ETC_JNISSU2	       		number(2,0);
+ETC_JNISSU3	       		number(2,0);
+ETC_JNISSU4	       		number(2,0);
+ETC_TOTALTEN1        		number(8,0);
+ETC_TOTALTEN2        		number(8,0);
+ETC_TOTALTEN3        		number(8,0);
+ETC_TOTALTEN4        		number(8,0);
+ETC_FTNMONEY1        		number(9,0);
+ETC_FTNMONEY2        		number(9,0);
+ETC_FTNMONEY3        		number(9,0);
+ETC_FTNMONEY4        		number(9,0);
+ETC_YKZFTN1 			number(5,0);
+ETC_YKZFTN2 			number(5,0);
+ETC_YKZFTN3 			number(5,0);
+ETC_YKZFTN4 			number(5,0);
+ETC_SHOKUJINISSU1       	number(2,0);
+ETC_SHOKUJIRYOYOHI1     	number(9,0);
+ETC_SHOKUJIFTN1 	        number(9,0);
+ETC_SHOKUJINISSU2       	number(2,0);
+ETC_SHOKUJIRYOYOHI2     	number(9,0);
+ETC_SHOKUJIFTN2 		number(9,0);
+ETC_SHOKUJINISSU3       	number(2,0);
+ETC_SHOKUJIRYOYOHI3     	number(9,0);
+ETC_SHOKUJIFTN3 		number(9,0);
+ETC_SHOKUJINISSU4       	number(2,0);
+ETC_SHOKUJIRYOYOHI4     	number(9,0);
+ETC_SHOKUJIFTN4 		number(9,0);
 HKNNUM_S                char(3); 
 HKNJANUM_S			char(8);
 CREYMD				char(8);
@@ -390,7 +423,7 @@ XXPREFNUM 			char(2),virtual;
 };
 
 primary	{
-	HOSPID,SRYYM,NYUGAIKBN,PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM,TEKSTYMD;
+	HOSPID,SRYYM,NYUGAIKBN,PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM,HOJOKBN_KEY,TEKSTYMD;
 };
 
 path	key		{ 	
@@ -406,6 +439,7 @@ path	key		{
                   AND   TEISYUTUSAKI =  :TEISYUTUSAKI
                   AND   RECESYUBETU =   :RECESYUBETU
                   AND   HKNJANUM    =   :HKNJANUM
+                  AND   HOJOKBN_KEY =   :HOJOKBN_KEY
                   AND   TEKSTYMD    =   :TEKSTYMD
 		;
 	};
@@ -660,6 +694,25 @@ path	key14	{
 	};
 };
 
+path	key15		{ 	
+	DBSELECT	{
+		DECLARE tbl_seikyu_key15_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE   HOSPID      =   :HOSPID
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+                  AND   PTID        =   :PTID
+                  AND   RECEKA      =   :RECEKA 
+                  AND   TEISYUTUSAKI =  :TEISYUTUSAKI
+                  AND   HKNJANUM    =   :HKNJANUM
+                  AND   HOJOKBN_KEY =   :HOJOKBN_KEY
+                  AND   TEKSTYMD    =   :TEKSTYMD
+		;
+	};
+};
+
+
 path	all	{
 	DBSELECT	{
 		DECLARE tbl_seikyu_all_csr CURSOR FOR
@@ -686,7 +739,7 @@ path	del2 	{
                 WHERE   HOSPID      =   :HOSPID
                   AND   SRYYM       =   :SRYYM
                   AND   RECESYUBETU =   '0000' 
-                  AND   SKYKBN      <>  "0" 
+                  AND   SKYKBN      <>  '0' 
 		;
 	};
 };
@@ -699,7 +752,7 @@ path	del3 	{
                 WHERE   HOSPID       =   :HOSPID
                   AND   SRYYM        =   :SRYYM
                   AND   TEISYUTUSAKI =   :TEISYUTUSAKI
-                  AND   SKYKBN       <>  "0" 
+                  AND   SKYKBN       <>  '0' 
 		;
 	};
 };
@@ -712,7 +765,7 @@ path	del4 	{
                   AND   SRYYM       =   :SRYYM
                   AND   NYUGAIKBN   =   :NYUGAIKBN
                   AND   PTID        =   :PTID
-                  AND   SKYKBN      <>  "0" 
+                  AND   SKYKBN      <>  '0' 
 		;
 	};
 };
@@ -726,7 +779,7 @@ path	del5 	{
                   AND   SRYYM       =   :SRYYM
                   AND   NYUGAIKBN   =   :NYUGAIKBN
                   AND   RECESYUBETU =   '0000' 
-                  AND   SKYKBN      <>  "0" 
+                  AND   SKYKBN      <>  '0' 
 		;
 	};
 };
@@ -740,7 +793,7 @@ path	del6 	{
                   AND   SRYYM        =   :SRYYM
                   AND   NYUGAIKBN    =   :NYUGAIKBN
                   AND   TEISYUTUSAKI =   :TEISYUTUSAKI
-                  AND   SKYKBN       <>  "0" 
+                  AND   SKYKBN       <>  '0' 
 		;
 	};
 };

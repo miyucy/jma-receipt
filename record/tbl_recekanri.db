@@ -123,6 +123,31 @@ path	key7		{
 	};
 };
 
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_recekanri
+                    WHERE   PRTID        =   :PRTID
+                    AND     SYOKBN       =   :SYOKBN
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     RECEKBN      =   :RECEKBN
+		;
+	};
+};
+
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_recekanri
+                    WHERE   PRTID        =   :PRTID
+                    AND     SYOKBN       =   '2'
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+		;
+	};
+};
+
 path	all	{
 	DBSELECT	{
 		DECLARE tbl_recekanri_all_csr CURSOR FOR

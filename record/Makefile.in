@@ -316,6 +316,7 @@ DB_files = \
 	tbl_jinmei.db \
 	tbl_jobkanri.db \
 	tbl_jyurrk.db \
+	tbl_kohsky.db \
 	tbl_kyuseirrk.db \
 	tbl_monthlynum.db \
 	tbl_nyuinacct.db \

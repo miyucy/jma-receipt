@@ -341,6 +341,31 @@ path	key17	{
 	};
 };
 
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+		;
+	};
+};
+
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+                    AND     RECEYM       =   '000000'
+		;
+	};
+};
+
+
 path	all	{
 	DBSELECT	{
 		DECLARE tbl_receprt_all_csr CURSOR FOR
