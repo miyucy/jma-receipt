@@ -1581,6 +1581,7 @@
            MOVE    "1"                 TO  WRK-RECE61-NYUGAIKBN
            MOVE    COMB-PTID           TO  WRK-RECE61-PTID
            MOVE    COMB-HKNNUM         TO  WRK-RECE61-HKNNUM
+           MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE61-HONKZKKBN
            IF      COMB-HKNNUM         =   SPACE
                MOVE    ZERO                TO  WRK-RECE61-KOHID
            ELSE
@@ -1589,7 +1590,6 @@
                    MOVE    "0"                 TO  WRK-RECE61-HONKZKKBN
                ELSE
                    MOVE    ZERO                TO  WRK-RECE61-KOHID
-                   MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE61-HONKZKKBN
                    EVALUATE    PTHKN-HKNNUM
                        WHEN    "002" 
                            EVALUATE   PTHKN-HOJOKBN

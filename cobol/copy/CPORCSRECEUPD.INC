@@ -31,7 +31,6 @@
       *                ２：
            03  LNK-UPD-SYORI           PIC X(01).
       *    復帰コード  １：処理区分エラー
-      *                ２：病名未入力
            03  LNK-UPD-RC              PIC X(01).
       *    医療機関ＩＤ
            03  LNK-UPD-HOSPID          PIC X(24).

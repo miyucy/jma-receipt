@@ -1268,6 +1268,7 @@
       *****MOVE    COMB-HKNID          TO  WRK-RECE01-HKNID
       *****IF      COMB-HKNID          =   ZERO
            MOVE    COMB-HKNNUM         TO  WRK-RECE01-HKNNUM
+           MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HONKZKKBN
            IF      COMB-HKNNUM         =   SPACE
                MOVE    ZERO                TO  WRK-RECE01-KOHID
            ELSE
@@ -1276,7 +1277,6 @@
                    MOVE    "0"                 TO  WRK-RECE01-HONKZKKBN
                ELSE
                    MOVE    ZERO                TO  WRK-RECE01-KOHID
-                   MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HONKZKKBN
                    EVALUATE    PTHKN-HKNNUM
                        WHEN    "002" 
                            EVALUATE   PTHKN-HOJOKBN
