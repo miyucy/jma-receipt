@@ -127,6 +127,7 @@
       *
        01  SCRAREA.
            COPY    "L01.INC".
+           COPY    "L03.INC".
            COPY    "L99.INC".
            COPY    "LERR.INC".
            COPY    "LID1.INC".

@@ -282,6 +282,10 @@ RECORD_files = \
 	P015.rec \
 	I05.rec \
 	W29.rec \
+	G03.rec \
+	L03.rec \
+	W19.rec \
+
 
 DEF_files = \
 	HC01.def \
@@ -426,6 +430,7 @@ DB_files = \
 	tbl_opecom.db \
 	tbl_syutotal.db \
 	blob.db \
+	tbl_toukeimemo.db \
 
 all:   
 

@@ -24,10 +24,12 @@
       * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        01  SPA-G01KYOUTU.
+           03  SPA-G01-SEL                 PIC  9(05).
+           03  SPA-G01-CUR                 PIC  9(05).
       *
       *警告メッセージ
-           05  SPA-GIDCD                   PIC  X(04).
+           03  SPA-GIDCD                   PIC  X(04).
       *警告画面より
-           05  SPA-GID1-AREA. 
-               07  SPA-GID1-FLG            PIC  X(02).
+           03  SPA-GID1-AREA. 
+               05  SPA-GID1-FLG            PIC  X(02).
       *

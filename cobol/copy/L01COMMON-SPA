@@ -25,9 +25,12 @@
       *****************************************************************
        01  SPA-L01KYOUTU.
       *
+           03  SPA-L01-SEL                 PIC  9(05).
+           03  SPA-L01-CUR                 PIC  9(05).
+      *
       *警告メッセージ
-           05  SPA-LIDCD                   PIC  X(04).
+           03  SPA-LIDCD                   PIC  X(04).
       *警告画面より
-           05  SPA-LID1-AREA. 
-               07  SPA-LID1-FLG            PIC  X(02).
+           03  SPA-LID1-AREA. 
+               05  SPA-LID1-FLG            PIC  X(02).
       *

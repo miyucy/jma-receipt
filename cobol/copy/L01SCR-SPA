@@ -1,0 +1,87 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      *    医療機関情報ー入院基本画面ＳＰＡ    (SPA-FREE の内容)
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+      *
+       01  SPA-L01FREE.
+           03  SPA-L01-AREA.
+               05  SPA-GMN-L01-PAGE                PIC 9(02).
+               05  SPA-GMN-L01-MAXPAGE             PIC 9(02).
+               05  SPA-GMN-L01-MAX                 PIC 9(03).
+               05  SPA-GMN-L01-CUR                 PIC 9(03).
+      *
+               05  SPA-GMN-L01-AREA.
+                   07  SPA-GMN-L01-TBL             OCCURS  100.
+                       09  SPA-GMN-L01-CHK.
+                           11  SPA-GMN-L01-CHK-VALUE
+                                               PIC X(01).
+                       09  SPA-GMN-L01-NUM         PIC X(03).
+                       09  SPA-GMN-L01-HCNAME      PIC X(80).
+                       09  SPA-GMN-L01-PRGNAME     PIC X(24).
+                       09  SPA-GMN-L01-PARAHYOJI-G OCCURS  8.
+                           11  SPA-GMN-L01-PARAHYOJI
+                                                   PIC X(20).
+                       09  SPA-GMN-L01-PARA-TBL.
+                           11  SPA-GMN-L01-PARA-G  OCCURS  8.
+                               13  SPA-GMN-L01-PARA
+                                                   PIC X(20).
+      *
+               05  SPA-NAI-L01-AREA.
+                   07  SPA-NAI-L01-TBL             OCCURS  100.
+                       09  SPA-NAI-L01-PARA-G      OCCURS  8.
+                           11  SPA-NAI-L01-PARA    PIC X(20).
+                       09  SPA-NAI-L01-HENPARA-TBL.
+                           11  SPA-NAI-L01-HENPARA-G
+                                                   OCCURS  8.
+                               13  SPA-NAI-L01-HENPARA
+                                                   PIC X(20).
+                       09  SPA-NAI-L01-HISSU-KBN-G OCCURS  8.
+                           11  SPA-NAI-L01-HISSU-KBN
+                                                   PIC X(01).
+           03  SPA-L03-AREA.
+               05  SPA-GMN-L03-PAGE                PIC 9(02).
+               05  SPA-GMN-L03-MAXPAGE             PIC 9(02).
+               05  SPA-GMN-L03-MAX                 PIC 9(03).
+               05  SPA-GMN-L03-CUR                 PIC 9(03).
+      *
+               05  SPA-GMN-L03-AREA.
+                   07  SPA-GMN-L03-CHK-VALUE       PIC X(01).
+                   07  SPA-GMN-L03-NUM             PIC X(03).
+                   07  SPA-GMN-L03-HCNAME          PIC X(80).
+                   07  SPA-GMN-L03-PRGNAME         PIC X(24).
+                   07  SPA-GMN-L03-PARAHYOJI-G.
+                       09  SPA-GMN-L03-PARAHYOJI   PIC X(20)
+                                                   OCCURS  8.
+                   07  SPA-GMN-L03-PARA-G.
+                       09  SPA-GMN-L03-PARA        PIC X(20)
+                                                   OCCURS  8.
+                   07  SPA-GMN-L03-MEMO            PIC X(6000).
+      *
+               05  SPA-NAI-L03-AREA.
+                   07  SPA-NAI-L03-PARA-G.
+                       09  SPA-NAI-L03-PARA        PIC X(20)
+                                                   OCCURS  8.
+                   07  SPA-NAI-L03-HENPARA-G.
+                       09  SPA-NAI-L03-HENPARA     PIC X(20)
+                                                   OCCURS  8.
+                   07  SPA-NAI-L03-HISSU-KBN-G.
+                       09  SPA-NAI-L03-HISSU-KBN   PIC X(01)
+                                                   OCCURS  8.
+                   07  SPA-NAI-L03-STATUS          PIC 9(01).

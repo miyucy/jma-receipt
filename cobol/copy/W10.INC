@@ -37,6 +37,8 @@
                   05  W10-OPTHISSU-KBN-G        OCCURS  8.
                       06  W10-OPTHISSU  PIC X.
                       06  W10-OPTNINI   PIC X.
+                  05  W10-SCROLLEDWINDOW1.
+                    06  W10-MEMO        PIC X(6000).
                 04  W10-N01.
                   05  W10-N01-STATE     PIC S9(9)   BINARY.
                 04  W10-FIXED1.
@@ -52,5 +54,7 @@
                   05  W10-OPTHISSU-KBN1-G        OCCURS  8.
                       06  W10-OPTHISSU1 PIC X.
                       06  W10-OPTNINI1  PIC X.
+                  05  W10-SCROLLEDWINDOW2.
+                    06  W10-MEMO1       PIC X(6000).
                 04  W10-N02.
                   05  W10-N02-STATE     PIC S9(9)   BINARY.

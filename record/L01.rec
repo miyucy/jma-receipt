@@ -944,45 +944,45 @@ L01	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		NUM1	{
+		NUM01	{
 	           	state	int;
-			value	varchar(3);
+			label	varchar(3);
 		};
-		NUM2	{
+		NUM02	{
 	           	state	int;
-			value	varchar(3);
+			label	varchar(3);
 		};
-		NUM3	{
+		NUM03	{
 	           	state	int;
-			value	varchar(3);
+			label	varchar(3);
 		};
-		NUM4	{
+		NUM04	{
 	           	state	int;
-			value	varchar(3);
+			label	varchar(3);
 		};
-		NUM5	{
+		NUM05	{
 	           	state	int;
-			value	varchar(3);
+			label	varchar(3);
 		};
-		NUM6	{
+		NUM06	{
 	           	state	int;
-			value	varchar(3);
+			label	varchar(3);
 		};
-		NUM7	{
+		NUM07	{
 	           	state	int;
-			value	varchar(3);
+			label	varchar(3);
 		};
-		NUM8	{
+		NUM08	{
 	           	state	int;
-			value	varchar(3);
+			label	varchar(3);
 		};
-		NUM9	{
+		NUM09	{
 	           	state	int;
-			value	varchar(3);
+			label	varchar(3);
 		};
 		NUM10	{
 	           	state	int;
-			value	varchar(3);
+			label	varchar(3);
 		};
 	};
 };

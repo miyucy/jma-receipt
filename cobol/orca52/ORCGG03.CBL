@@ -1,0 +1,1131 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCGG03.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次統計
+      *  コンポーネント名  : 月次統計パラメータ説明画面
+      *  管理者            :
+      *  04/10/05    NACL-太田    新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+      *
+       ENVIRONMENT                     DIVISION.
+       CONFIGURATION                   SECTION.
+       INPUT-OUTPUT                    SECTION.
+       FILE-CONTROL.
+      *
+      *
+       DATA                            DIVISION.
+       FILE                            SECTION.
+      *
+       WORKING-STORAGE                 SECTION.
+      *
+           COPY    "ENUM-VALUE".
+      *
+      *    スパ領域
+           COPY    "COMMON-SPA".
+      *
+      *    日次統計共通パラメタ
+           COPY    "G01COMMON-SPA".
+      *
+      *    画面用ＳＰＡ
+           COPY    "G01SCR-SPA".
+      *
+       01  FLG-AREA.
+           03  FLG-END                         PIC 9(01).
+           03  FLG-SYSKANRI                    PIC 9(01).
+           03  FLG-TOUKEIMEMO                  PIC 9(01).
+           03  FLG-ERR                         PIC 9(01).
+      *
+       01  IDX-AREA.
+           03  IDX0                            PIC 9(05).
+           03  IDX1                            PIC 9(05).
+           03  IDXA                            PIC 9(05).
+      *
+       01  WRK-AREA.
+           03  WRK-ERR-CUR                     PIC 9(03).
+           03  WRK-YMD                         PIC X(10).
+           03  WRK-SYMD.
+               05  WRK-SYY                     PIC 9(04).
+               05  WRK-SMM                     PIC 9(02).
+               05  WRK-SDD                     PIC 9(02).
+           03  WRK-WYMD.
+               05  WRK-WGO                     PIC X(01).
+               05  WRK-WYY                     PIC 9(02).
+               05  WRK-WMM                     PIC 9(02).
+               05  WRK-WDD                     PIC 9(02).
+      *
+           03  WRK-KBNCD-G.
+               05  WRK-KBNCD                   PIC 9(03).
+           03  WRK-CHK-CUR                     PIC 9(05).
+           03  WRK-MCP-WIDGET                  PIC X(64).
+           03  WRK-PARA-NUM                    PIC 9(01).
+           03  WRK-MCP-PATH.
+               05  FILLER      PIC S9(9)   BINARY.
+               05  FILLER      PIC S9(9)   BINARY.
+               05  FILLER      PIC S9(9)   BINARY.
+           03  WRK-MAE-INPUT                   PIC X(100).
+           03  WRK-ATO-INPUT                   PIC X(100).
+      *
+       01  WRK-HEN-AREA.
+           03  WRK-HENYMDG         PIC X(09).
+           03  WRK-HENYMD.
+               05  WRK-HGO         PIC X(01).
+               05  WRK-HYY         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-HMM         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-HDD         PIC 9(02).
+      *
+       01  WRK-CONS-AREA.
+      *    パラメータ最大個数
+           03  WRK-CONS-PARA-MAX               PIC 9(05) VALUE 8.
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    システム管理
+           COPY    "CPSK3002.INC".
+           COPY    "CPSK3003.INC".
+      *
+       01  PRTKANRI-REC.
+           COPY    "CPPRTKANRI.INC".
+      *
+       01  PRTDATA-REC.
+           COPY    "CPPRTDATA.INC".
+      *
+      *    統計メモ
+       01  TOUKEIMEMO-REC.
+           COPY  "CPTOUKEIMEMO.INC".
+      *
+      *    ジョブ管理マスタ
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
+      *
+      *
+      *****************************************************************
+      *    サブプロ用　領域
+      *****************************************************************
+      *
+      *    日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *    数字変換領域
+           COPY    "CPORCSNUM.INC".
+      *    画面日付変換サブ
+           COPY    "CPORCSGDAY.INC".
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *
+      *    ＤＢ検索
+           COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
+           COPY    "ORCA-DBPATH".
+      *
+      *    患者番号変換サブ
+           COPY    "CPORCSPTNUM.INC".
+      *
+      *****************************************************************
+      *    連絡　領域
+      *****************************************************************
+        LINKAGE                     SECTION.
+      *
+           COPY    "MCPAREA".
+           COPY    "ORCA-SPA".
+      *
+           COPY    "LINKAREA".
+      *
+       01  SCRAREA.
+           COPY    "G01.INC".
+           COPY    "G02.INC".
+           COPY    "G03.INC".
+           COPY    "G99.INC".
+           COPY    "GERR.INC".
+           COPY    "GID1.INC".
+           COPY    "GID2.INC".
+      *
+       PROCEDURE                   DIVISION    USING
+           MCPAREA
+           SPAAREA
+           LINKAREA
+           SCRAREA.
+      *
+      *****************************************************************
+      *    主　　処理
+      *****************************************************************
+       000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
+           INITIALIZE                  WRK-AREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-G01FREE
+           MOVE    SPA-WORK        TO  SPA-G01KYOUTU
+      *
+           MOVE    SPACE           TO  SPA-ERRCD
+           MOVE    ZERO            TO  FLG-END
+      *
+           EVALUATE    MCP-STATUS  ALSO    MCP-EVENT
+           WHEN    "LINK"          ALSO    ANY
+               PERFORM 100-INIT-SEC
+      *    画面遷移
+           WHEN     "PUTG"         ALSO   "CLICKED"
+               PERFORM 200-GMNSENI
+      *    入力
+           WHEN      OTHER
+               PERFORM 200-ENTRY
+           END-EVALUATE.
+      *
+      *    画面遷移がない時、画面表示へ
+           IF    ( FLG-END         =   ZERO )
+               PERFORM 500-SET-SCREEN
+           END-IF
+      *
+           MOVE    SPA-G01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-G01FREE     TO  SPA-FREE
+      *
+           .
+           EXIT    PROGRAM
+           .
+      *
+      *****************************************************************
+      *    初期　処理
+      *****************************************************************
+       100-INIT-SEC                SECTION.
+      *
+      *    エラー画面より
+           IF      SPA-MOTOPG          =   "GERR"
+               MOVE    SPACE           TO  SPA-MOTOPG
+               PERFORM 5001-MAPCUR-SEC
+           ELSE
+      *        初期画面セット
+               PERFORM 300-SCREEN-SEC
+               IF      FLG-END             =   1
+                   GO  TO  100-INIT-EXT
+               END-IF
+      *        画面編集
+               PERFORM 500-GMNHEN-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   PERFORM 510-ERRSET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
+           END-IF
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+      *
+      ***  MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    SPACE               TO  MCP-PUTTYPE.
+           MOVE    "G03"               TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       100-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    初期画面処理
+      *****************************************************************
+       300-SCREEN-SEC              SECTION.
+      *
+      *    他のＬＤより
+           IF    ( LINKAREA        NOT =   SPACE )
+               MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
+           END-IF
+      *
+           PERFORM 310-SPASET-SEC
+      *
+           .
+       300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       310-SPASET-SEC                  SECTION.
+      *
+           INITIALIZE                      SPA-G03-AREA
+      *
+           MOVE    SPA-G01-SEL         TO  IDX0
+      *
+      *    MOVE    SPA-GMN-G01-CHK-VALUE (IDX0)
+      *                                TO  SPA-GMN-G03-CHK-VALUE
+           MOVE    "T"
+                                       TO  SPA-GMN-G03-CHK-VALUE
+      *
+           MOVE    SPA-GMN-G01-NUM     (IDX0)
+                                       TO  SPA-GMN-G03-NUM
+           MOVE    SPA-GMN-G01-HCNAME  (IDX0)
+                                       TO  SPA-GMN-G03-HCNAME
+           MOVE    SPA-GMN-G01-PRGNAME (IDX0)
+                                       TO  SPA-GMN-G03-PRGNAME
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   WRK-CONS-PARA-MAX )
+      *
+               MOVE    SPA-GMN-G01-PARAHYOJI (IDX0 IDX1)
+                                       TO  SPA-GMN-G03-PARAHYOJI (IDX1)
+      *
+               MOVE    SPA-GMN-G01-PARA  (IDX0 IDX1)
+                                       TO  SPA-GMN-G03-PARA (IDX1)
+      *
+               MOVE    SPA-NAI-G01-PARA  (IDX0 IDX1)
+                                       TO  SPA-NAI-G03-PARA (IDX1)
+      *
+               MOVE    SPA-NAI-G01-HENPARA (IDX0 IDX1)
+                                       TO  SPA-NAI-G03-HENPARA (IDX1)
+      *
+               MOVE    SPA-NAI-G01-HISSU-KBN  (IDX0 IDX1)
+                                       TO  SPA-NAI-G03-HISSU-KBN (IDX1)
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-G01-SEL         TO  WRK-KBNCD
+           PERFORM 3101-TOKEIMEMO-SEL-SEC
+      *
+           MOVE    TKIMEMO-MEMO        TO  SPA-GMN-G03-MEMO
+      *
+           MOVE    2                   TO  SPA-GMN-G03-CUR
+      *
+           PERFORM 4201-CHK-CHK-SEC
+      *
+           .
+       310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    統計メモテーブル検索処理
+      *****************************************************************
+       3101-TOKEIMEMO-SEL-SEC          SECTION.
+      *
+           INITIALIZE                      TOUKEIMEMO-REC
+           MOVE    SPA-GMN-G03-PRGNAME TO  TKIMEMO-PGID
+           MOVE    "3002"              TO  TKIMEMO-KANRICD
+           MOVE    WRK-KBNCD-G         TO  TKIMEMO-KBNCD
+           MOVE    SPA-SYSYMD          TO  TKIMEMO-STYUKYMD
+                                           TKIMEMO-EDYUKYMD
+           MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
+           MOVE    PATH-TBL-TOUKEIMEMO-KEY2
+                                       TO  WRK-MCP-PATH
+           PERFORM 900-TOUKEIMEMO-SEL-SEC
+           IF    ( FLG-TOUKEIMEMO  NOT =   ZERO )
+               INITIALIZE                  TOUKEIMEMO-REC
+               MOVE    SPA-GMN-G03-PRGNAME
+                                       TO  TKIMEMO-PGID
+               MOVE    "0000"          TO  TKIMEMO-KANRICD
+               MOVE    "000"           TO  TKIMEMO-KBNCD
+               MOVE    "00000000"      TO  TKIMEMO-STYUKYMD
+               MOVE    "99999999"      TO  TKIMEMO-EDYUKYMD
+               MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
+               MOVE    PATH-TBL-TOUKEIMEMO-KEY
+                                       TO  WRK-MCP-PATH
+               PERFORM 900-TOUKEIMEMO-SEL-SEC
+           END-IF
+           .
+      *
+       3101-TOKEIMEMO-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    画面遷移処理
+      *****************************************************************
+       200-GMNSENI                   SECTION.
+      *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *    戻る
+           WHEN    "CLICKED"       ALSO    "B01"
+               MOVE    "CHANGE"    TO  MCP-PUTTYPE
+               PERFORM 210-BACK
+      *    クリア
+           WHEN    "CLICKED"       ALSO    "B02"
+               MOVE    "CHANGE"    TO  MCP-PUTTYPE
+               PERFORM 230-CLEAR-SEC
+      *    OK
+           WHEN    "CLICKED"       ALSO    "B12"
+               MOVE    "CHANGE"    TO  MCP-PUTTYPE
+               PERFORM 210-BACK
+      *    個別出力
+           WHEN    "CLICKED"       ALSO    "CHK01"
+               PERFORM 420-CHK-CHK-SEC
+           END-EVALUATE
+      *
+           .
+       200-GMNSENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    会話　処理
+      *****************************************************************
+       200-ENTRY                   SECTION.
+      *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+      *
+      *    EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
+      *    WHEN    "XXXX"
+      *        入力個所のセット
+      *        PERFORM 400-GMN-INPUT-SEC
+      *        入力チェック処理
+      *        PERFORM 410-INPUT-CHK-SEC
+      *    END-EVALUATE
+      *
+      *    入力個所のセット
+           PERFORM 400-GMN-INPUT-SEC
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+      *
+           .
+      *
+           .
+       200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力個所のセット処理
+      *****************************************************************
+       400-GMN-INPUT-SEC           SECTION.
+      *
+           MOVE    ZERO            TO  SPA-GMN-G03-CUR
+      *
+           .
+      *
+       400-GMN-INPUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC          SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+             OR  ( FLG-END     NOT =   ZERO  )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+      *
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面ＳＰＡ編集処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC            SECTION.
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   WRK-CONS-PARA-MAX )
+               MOVE    G03-PARA (IDX0)
+                                   TO  SPA-GMN-G03-PARA(IDX0)
+           END-PERFORM
+      *
+           .
+      *
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC              SECTION.
+      *
+           MOVE    ZERO                        TO  WRK-PARA-NUM
+           IF    ( WRK-MCP-WIDGET (1:4)    =   "PARA" )
+            AND  ( WRK-MCP-WIDGET (5:3)    IS  NUMERIC )
+               MOVE    WRK-MCP-WIDGET (7:1)    TO  WRK-PARA-NUM
+           END-IF
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   WRK-CONS-PARA-MAX )
+               IF    ( SPA-GMN-G03-PARAHYOJI (IDXA)
+                               NOT =   SPACE )
+      *            入力パラメータ
+                   PERFORM 4101-PARA-CHK-SEC
+                   IF    ( SPA-ERRCD   NOT =   SPACE )
+                       GO  TO  4102-KIHON-CHK-EXT
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+      *
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    パラメタチェック
+      *****************************************************************
+       4101-PARA-CHK-SEC                         SECTION.
+      *
+           IF    ( SPA-GMN-G03-PARA (IDXA)    =   SPACE )
+               IF    ( SPA-NAI-G03-HISSU-KBN (IDXA)
+                                               =   "1" )
+                   IF    ( WRK-MCP-WIDGET (1:4)    =   "PARA" )
+                    AND  ( IDXA            =   WRK-PARA-NUM )
+                       PERFORM 41011-PARA-KIHON-SET-SEC
+                       IF    ( SPA-ERRCD       NOT =   SPACE )
+                           COMPUTE SPA-GMN-G03-CUR
+                               =   IDXA    +   1
+                           GO  TO  4101-PARA-CHK-EXT
+                       END-IF
+                   END-IF
+               ELSE
+                   MOVE    SPACE       TO  SPA-NAI-G03-HENPARA (IDXA)
+               END-IF
+           ELSE
+               PERFORM 41012-PARA-NAIYO-CHK-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   COMPUTE SPA-GMN-G03-CUR
+                       =   IDXA    +   1
+                   GO  TO  4101-PARA-CHK-EXT
+               END-IF
+           END-IF
+      *
+           .
+       4101-PARA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    パラメータ基本値設定処理
+      *****************************************************************
+       41011-PARA-KIHON-SET-SEC        SECTION.
+      *
+           IF    ( SPA-GMN-G03-CHK-VALUE       =   "F" )
+               GO  TO 41011-PARA-KIHON-SET-EXT
+           END-IF
+      *
+           EVALUATE    SPA-NAI-G03-PARA (IDXA)
+           WHEN    "YM"
+               MOVE    SPA-SYSYMD  (1:6)
+                                       TO  SPA-NAI-G03-HENPARA(IDXA)
+               MOVE    SPA-SYSYMDWH(1:6)
+                                       TO  SPA-GMN-G03-PARA   (IDXA)
+           WHEN    "YMD"
+               MOVE    SPA-SYSYMD      TO  SPA-NAI-G03-HENPARA(IDXA)
+               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-G03-PARA   (IDXA)
+           WHEN    "PSN1"
+               MOVE    "0"             TO  SPA-NAI-G03-HENPARA(IDXA)
+               MOVE    "0"
+                                       TO  SPA-GMN-G03-PARA   (IDXA)
+           WHEN    "PTNUM"
+               MOVE    SPACE           TO  SPA-NAI-G03-HENPARA(IDXA)
+               MOVE    SPACE           TO  SPA-GMN-G03-PARA   (IDXA)
+      *    WHEN    OTHER
+      *        MOVE    "0002"  TO  SPA-ERRCD
+      *        GO  TO  41011-PARA-KIHON-SET-EXT
+           END-EVALUATE
+      *
+           .
+       41011-PARA-KIHON-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    パラメータ入力内容チェック処理
+      *****************************************************************
+       41012-PARA-NAIYO-CHK-SEC        SECTION.
+      *
+           MOVE    SPA-GMN-G03-PARA (IDXA)
+                                   TO  WRK-MAE-INPUT
+           PERFORM 800-KANA-CHK-SEC
+           MOVE    WRK-ATO-INPUT   TO  SPA-GMN-G03-PARA (IDXA)
+      *
+           EVALUATE    SPA-NAI-G03-PARA (IDXA)
+           WHEN    "YM"
+               MOVE    SPA-GMN-G03-PARA (IDXA) TO  WRK-YMD
+               PERFORM 5003-NENGETSU-CHK-SEC
+               IF    ( SPA-ERRCD       =   SPACE )
+                   MOVE    WRK-SYMD(1:6)
+                                       TO  SPA-NAI-G03-HENPARA (IDXA)
+                   MOVE    WRK-HENYMDG(1:6)
+                                       TO  SPA-GMN-G03-PARA    (IDXA)
+               ELSE
+                   GO  TO  41012-PARA-NAIYO-CHK-EXT
+               END-IF
+           WHEN    "KKNYM"
+               MOVE    SPA-GMN-G03-PARA (IDXA) TO  WRK-YMD
+               PERFORM 5003-NENGETSU-KKN-CHK-SEC
+               IF    ( SPA-ERRCD       =   SPACE )
+                   MOVE    WRK-SYMD(1:6)
+                                       TO  SPA-NAI-G03-HENPARA (IDXA)
+                   MOVE    WRK-HENYMDG(1:6)
+                                       TO  SPA-GMN-G03-PARA    (IDXA)
+               ELSE
+                   GO  TO  41012-PARA-NAIYO-CHK-EXT
+               END-IF
+           WHEN    "YMD"
+               MOVE    SPA-GMN-G03-PARA (IDXA)    TO  WRK-YMD
+               PERFORM 5002-HIZUKE-CHK-SEC
+               IF    ( SPA-ERRCD       =   SPACE )
+                   MOVE    WRK-SYMD    TO  SPA-NAI-G03-HENPARA (IDXA)
+                   MOVE    WRK-HENYMDG TO  SPA-GMN-G03-PARA    (IDXA)
+               ELSE
+                   GO  TO  41012-PARA-NAIYO-CHK-EXT
+               END-IF
+           WHEN    "PSN1"
+               IF    ( SPA-GMN-G03-PARA (IDXA)(1:1)   IS  NUMERIC )
+                   IF    ( SPA-GMN-G03-PARA (IDXA)(2:)    =   SPACE )
+                       MOVE    SPA-GMN-G03-PARA(IDXA)(1:1)
+                           TO  SPA-NAI-G03-HENPARA (IDXA)
+                   ELSE
+                       MOVE    "0002"  TO  SPA-ERRCD
+                       GO  TO  41012-PARA-NAIYO-CHK-EXT
+                   END-IF
+               ELSE
+                   MOVE    "0002"      TO  SPA-ERRCD
+                   GO  TO  41012-PARA-NAIYO-CHK-EXT
+               END-IF
+           WHEN    "PTNUM"
+               INITIALIZE                  ORCSPTNUMAREA
+               MOVE    SPA-GMN-G03-PARA (IDXA)
+                                       TO  SPTNUM-PTNUM
+               CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
+                                                   SPA-AREA
+               IF    ( SPTNUM-RC       NOT =   20 )
+                   MOVE    SPTNUM-PTNUM
+                                       TO  SPA-NAI-G03-HENPARA (IDXA)
+                                           SPA-GMN-G03-PARA    (IDXA)
+               ELSE
+                   MOVE    "0002"      TO  SPA-ERRCD
+                   GO  TO  41012-PARA-NAIYO-CHK-EXT
+               END-IF
+           WHEN    OTHER
+               MOVE    SPA-GMN-G03-PARA (IDXA)
+                                       TO  SPA-NAI-G03-HENPARA (IDXA)
+           END-EVALUATE
+      *
+           .
+       41012-PARA-NAIYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    共通関連チェック
+      *****************************************************************
+       4900-KANRENCHK-SEC              SECTION.
+      *
+           .
+      *
+       4900-KANRENCHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    戻る　処理
+      *****************************************************************
+       210-BACK                    SECTION.
+      *
+           IF    ( WRK-MCP-WIDGET      =   "B12" )
+               PERFORM 4101-GMN-SPA-SET-SEC
+               MOVE    1           TO  SPA-NAI-G03-STATUS
+           ELSE
+               MOVE    ZERO        TO  SPA-NAI-G03-STATUS
+           END-IF
+      *
+           MOVE    "G01"               TO  SPA-SAKIPG
+           MOVE    "G03"               TO  SPA-MOTOPG
+      *
+           MOVE    "G01"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       210-BACK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    クリア　処理
+      *****************************************************************
+       230-CLEAR-SEC                   SECTION.
+      *
+           MOVE    "F"             TO  SPA-GMN-G03-CHK-VALUE
+      *
+           INITIALIZE                  SPA-GMN-G03-PARA-G
+                                       SPA-NAI-G03-HENPARA-G
+      *
+           .
+       230-CLEAR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    個別出力処理
+      *****************************************************************
+       420-CHK-CHK-SEC                 SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    ZERO              TO  SPA-GMN-G03-CUR
+      *
+           MOVE    G03-CHK-VALUE     TO  SPA-GMN-G03-CHK-VALUE
+      *
+           PERFORM 4201-CHK-CHK-SEC
+      *
+           .
+       420-CHK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    個別出力処理
+      *****************************************************************
+       4201-CHK-CHK-SEC                SECTION.
+      *
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                       UNTIL ( IDXA    >   WRK-CONS-PARA-MAX )
+      *
+               IF    ( SPA-GMN-G03-PARAHYOJI (IDXA)
+                                   NOT =   SPACE )
+                AND  ( SPA-GMN-G03-PARA (IDXA)
+                                       =   SPACE )
+                AND  ( SPA-NAI-G03-HISSU-KBN (IDXA)  =   "1" )
+      *
+      *            パラメータ基本値設定
+                   PERFORM 41011-PARA-KIHON-SET-SEC
+      *
+               END-IF
+           END-PERFORM
+      *
+           .
+       4201-CHK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    自画面編集処理
+      *****************************************************************
+       500-SET-SCREEN              SECTION.
+      *
+           PERFORM 500-GMNHEN-SEC
+      *
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               PERFORM 510-ERRSET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
+           MOVE    "G03    "           TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           .
+       500-SET-SCREEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    画面編集処理
+      *****************************************************************
+       500-GMNHEN-SEC              SECTION.
+      *
+           MOVE    "red"               TO  G03-MARKHISSU-STYLE
+           MOVE    "*"                 TO  G03-MARKHISSU
+      *
+           MOVE    "blue"              TO  G03-MARKNINI-STYLE
+           MOVE    "*"                 TO  G03-MARKNINI
+      *
+           MOVE    SPA-GMN-G03-NUM     TO  G03-NUM
+           MOVE    SPA-GMN-G03-CHK-VALUE
+                                       TO  G03-CHK-VALUE
+           MOVE    SPA-GMN-G03-HCNAME  TO  G03-CHK-LABEL
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >       WRK-CONS-PARA-MAX )
+      *
+               MOVE    SPA-GMN-G03-PARAHYOJI (IDX0)
+                                       TO  G03-PARAHYOJI (IDX0)
+               MOVE    SPA-GMN-G03-PARA      (IDX0)
+                                       TO  G03-PARA      (IDX0)
+      *
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  G03-PARA-STATE(IDX0)
+      *
+               MOVE    SPACE           TO  G03-PARAMARK-STYLE(IDX0)
+               MOVE    SPACE           TO  G03-PARAMARK      (IDX0)
+      *
+               IF    ( SPA-GMN-G03-PARAHYOJI (IDX0)
+                                   NOT =   SPACE )
+                   MOVE    WIDGET-NORMAL
+                                       TO  G03-PARA-STATE(IDX0)
+                   IF  ( SPA-NAI-G03-HISSU-KBN(IDX0)
+                                       =   "1" )
+                       MOVE    "red"   TO  G03-PARAMARK-STYLE(IDX0)
+                       MOVE    "*"     TO  G03-PARAMARK      (IDX0)
+                   ELSE
+                       MOVE    "blue"  TO  G03-PARAMARK-STYLE(IDX0)
+                       MOVE    "*"     TO  G03-PARAMARK      (IDX0)
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-G03-MEMO    TO  G03-MEMO
+      *
+      *    カーソル位置
+           PERFORM 5001-MAPCUR-SEC
+      *
+           .
+       500-GMNHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カーソル位置処理
+      *****************************************************************
+       5001-MAPCUR-SEC             SECTION.
+      *
+           IF    ( SPA-ERRCD           =   SPACE)
+             AND ( SPA-GMN-G03-CUR         =   ZERO )
+               PERFORM 5011-INPUT-CUR-SEC
+           END-IF
+      *
+           PERFORM 5012-CUR-SKIP-SEC
+      *
+           EVALUATE    SPA-GMN-G03-CUR
+           WHEN    01
+               MOVE    "CHK01"             TO  MCP-WIDGET
+           WHEN    02
+               MOVE    "PARA011"           TO  MCP-WIDGET
+           WHEN    03
+               MOVE    "PARA012"           TO  MCP-WIDGET
+           WHEN    04
+               MOVE    "PARA013"           TO  MCP-WIDGET
+           WHEN    05
+               MOVE    "PARA014"           TO  MCP-WIDGET
+           WHEN    06
+               MOVE    "PARA015"           TO  MCP-WIDGET
+           WHEN    07
+               MOVE    "PARA016"           TO  MCP-WIDGET
+           WHEN    08
+               MOVE    "PARA017"           TO  MCP-WIDGET
+           WHEN    09
+               MOVE    "PARA018"           TO  MCP-WIDGET
+           WHEN    99
+               MOVE    "B12"               TO  MCP-WIDGET
+           END-EVALUATE
+      *
+           .
+       5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力個所のセット処理
+      *****************************************************************
+       5011-INPUT-CUR-SEC              SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+           WHEN    "CHK01"
+               MOVE    02                  TO  SPA-GMN-G03-CUR
+           WHEN    "PARA011"
+               MOVE    03                  TO  SPA-GMN-G03-CUR
+           WHEN    "PARA012"
+               MOVE    04                  TO  SPA-GMN-G03-CUR
+           WHEN    "PARA013"
+               MOVE    05                  TO  SPA-GMN-G03-CUR
+           WHEN    "PARA014"
+               MOVE    06                  TO  SPA-GMN-G03-CUR
+           WHEN    "PARA015"
+               MOVE    07                  TO  SPA-GMN-G03-CUR
+           WHEN    "PARA016"
+               MOVE    08                  TO  SPA-GMN-G03-CUR
+           WHEN    "PARA017"
+               MOVE    09                  TO  SPA-GMN-G03-CUR
+           WHEN    "PARA018"
+               MOVE    99                  TO  SPA-GMN-G03-CUR
+           END-EVALUATE
+      *
+           .
+      *
+       5011-INPUT-CUR-EXT.
+           EXIT.
+      *****************************************************************
+      *    カーソルスキップ処理
+      *****************************************************************
+       5012-CUR-SKIP-SEC               SECTION.
+      *
+           MOVE    1               TO  WRK-CHK-CUR
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   WRK-CONS-PARA-MAX )
+      *
+               COMPUTE WRK-CHK-CUR = WRK-CHK-CUR   +   1
+      *
+               IF    ( SPA-GMN-G03-CUR     = WRK-CHK-CUR  )
+                AND  ( G03-PARA-STATE(IDX0)
+                                           =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-G03-CUR =   SPA-GMN-G03-CUR   + 1
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( SPA-GMN-G03-CUR >   9 )
+               MOVE    99          TO  SPA-GMN-G03-CUR
+           END-IF
+      *
+           .
+      *
+       5012-CUR-SKIP-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+       510-ERRSET-SEC              SECTION.
+      *
+           MOVE    SPACE                           TO  SPA-ERRMSG
+      *
+           EVALUATE    SPA-ERRCD
+           WHEN    "0002"
+               MOVE    "入力エラー"                TO  SPA-ERRMSG
+           WHEN    "0003"
+               MOVE    "項目に入力がありません"    TO  SPA-ERRMSG
+           WHEN    "0004"
+               MOVE    "必須パラメタで入力されてない項目があります"
+                                                   TO  SPA-ERRMSG
+           WHEN    "0005"
+               MOVE    "対象の処理が選択されていません"
+                                                   TO  SPA-ERRMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  GERR
+           MOVE    SPA-ERRCD           TO  GERR-ERRCODE
+           MOVE    SPA-ERRMSG          TO  GERR-ERRMSG
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "G03"               TO  SPA-MOTOPG
+           MOVE    "GERR"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "GERR"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       510-ERRSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日付チェック・編集処理
+      *****************************************************************
+       5002-HIZUKE-CHK-SEC         SECTION.
+      *
+      *    日付画面チェックサブ
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    WRK-YMD             TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+           IF    ( SGDAY-RC            =   ZERO )
+               MOVE    SGDAY-OTDAY         TO  WRK-HENYMDG
+               MOVE    SGDAY-SDAY          TO  WRK-SYMD
+           ELSE
+               MOVE    "0002"              TO  SPA-ERRCD
+           END-IF
+           .
+       5002-HIZUKE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    年月チェック・編集処理
+      *****************************************************************
+       5003-NENGETSU-CHK-SEC         SECTION.
+      *
+      *    日付画面チェックサブ
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    "1"                 TO  SGDAY-INTYPE
+           MOVE    WRK-YMD             TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+           IF    ( SGDAY-RC            =   ZERO )
+               MOVE    SGDAY-OTDAY     TO  WRK-HENYMDG
+               MOVE    SGDAY-SDAY      TO  WRK-SYMD
+           ELSE
+               MOVE    "0002"          TO  SPA-ERRCD
+           END-IF
+           .
+       5003-NENGETSU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    年月（期間）チェック・編集処理
+      *****************************************************************
+       5003-NENGETSU-KKN-CHK-SEC       SECTION.
+      *
+           IF    ( WRK-YMD (1:6)     =     "000000" )
+               MOVE    "000000"       TO   WRK-HENYMDG
+                                           WRK-SYMD
+               GO  TO  5003-NENGETSU-KKN-CHK-EXT
+           END-IF
+      *
+           IF    ( WRK-YMD (1:6)     =     "999999" )
+               MOVE    "999999"       TO   WRK-HENYMDG
+                                           WRK-SYMD
+               GO  TO  5003-NENGETSU-KKN-CHK-EXT
+           END-IF
+      *
+           PERFORM 5003-NENGETSU-CHK-SEC
+      *
+           .
+       5003-NENGETSU-KKN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    カナチェック処理
+      *****************************************************************
+       800-KANA-CHK-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    1                   TO  FLG-ERR
+               MOVE    WRK-MAE-INPUT       TO  WRK-ATO-INPUT
+               IF    ( KANACHK-RC2     =   7 )
+                   MOVE    KANACHK-OUT-INPUT
+                                           TO  WRK-ATO-INPUT
+               END-IF
+           ELSE
+               MOVE    ZERO                TO  FLG-ERR
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
+           END-IF
+      *
+           .
+       800-KANA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    管理マスター読込（キー）
+      *****************************************************************
+       900-SYSKANRI-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-SYSKANRI-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読込処理
+      *****************************************************************
+       900-SYSKANRI-NEXT-SEC            SECTION.
+      *
+           MOVE  "DBFETCH"             TO  MCP-FUNC
+           MOVE  "SYSKANRI-KEY2"       TO  ORC-DBPATH
+           CALL  "ORCMCPSUB"           USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF   ( MCP-RC               =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-3002-REC
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           .
+      *
+       900-SYSKANRI-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    統計メモテーブル検索処理
+      *****************************************************************
+       900-TOUKEIMEMO-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TOUKEIMEMO
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    WRK-MCP-PATH    TO  MCP-PATH
+               CALL    "MCPSUB"        USING
+                                       MCPAREA
+                                       MCPDATA-REC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    ZERO        TO  FLG-TOUKEIMEMO
+                   MOVE    MCPDATA-REC TO  TOUKEIMEMO-REC
+               ELSE
+                   INITIALIZE              TOUKEIMEMO-REC
+                   MOVE    1           TO  FLG-TOUKEIMEMO
+               END-IF
+           ELSE
+               INITIALIZE                  TOUKEIMEMO-REC
+               MOVE    1               TO  FLG-TOUKEIMEMO
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-TOUKEIMEMO-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＰＵＴ　処理
+      *****************************************************************
+       900-PUT-WINDOW              SECTION.
+      *
+           MOVE   "PUTWINDOW"          TO  MCP-FUNC.
+           CALL   "ORCMCPSUB"   USING
+                                MCPAREA
+                                ORCMCPAREA
+                                MCPDATA-REC.
+      *
+           .
+       900-PUT-WINDOW-EXT.
+           EXIT.
+      *
