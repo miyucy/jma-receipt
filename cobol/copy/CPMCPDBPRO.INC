@@ -289,6 +289,7 @@
       *  01.01.109   NACL-藤原    03/10/16  SYUNOU-KEY21追加
       *  01.01.110   NACL-多々納　03/11/11  RECECOM-KEY4
       *                                     PTKOHINF-KEY6追加 
+      *  01.01.111   NACL-太田  　03/11/19  PTNYUINRRK-KEY27,KEY28追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2663,6 +2664,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY26"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY26
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY27"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY27
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY28"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY28
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-ALL"
                    MOVE    PATH-TBL-PTNYUINRRK-ALL
