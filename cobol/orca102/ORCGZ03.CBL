@@ -4249,7 +4249,8 @@
                    END-SEARCH 
                    ADD     1                   TO  SPA-GMN-CUR
       *            採血料区分は、検査の時のみカーソル移動とする
-                   IF     (TBL-WIDGET(SPA-GMN-CUR) =   "SAIKETUKBN" )
+                   IF     (SPA-GMN-CUR             <=  TBL-GMN-MAX )
+                     AND  (TBL-WIDGET(SPA-GMN-CUR) =   "SAIKETUKBN" )
                      AND  (SPA-GMN-SRYKBN      NOT =   "60"  )
                        ADD     1                   TO  SPA-GMN-CUR
                    END-IF
