@@ -834,7 +834,8 @@
                              TO  SUM-ROU-KOH-KENSU          (IDY3 IDY1)
                        ADD     RECE10-JNISSU         (IDX1)
                              TO  SUM-ROU-KOH-NISSU          (IDY3 IDY1)
-                       IF      IDY1                =   1
+                       IF    ( IDY1                =   1     )
+                       AND   ( RECE10-ZAITAKU      =   SPACE ) 
                            EVALUATE    RECE10-KYURATE
                                WHEN    9
                                    COMPUTE WRK-FTNMONEY    =
@@ -889,22 +890,27 @@
                              TO  SUM-ROU-KOH-KENSU     (IDY3 IDY1)
                        ADD     RECE10-ETC-JNISSU  (IDW)
                              TO  SUM-ROU-KOH-NISSU     (IDY3 IDY1)
-                       EVALUATE    RECE10-KYURATE
-                           WHEN    9
-                               COMPUTE WRK-FTNMONEY    =
-                                       RECE10-ETC-TOTALTEN (IDW)
-                                                       *   10
-                                                       *   0.1 
-                           WHEN    8
-                               COMPUTE WRK-FTNMONEY    =
-                                       RECE10-ETC-TOTALTEN (IDW)
-                                                       *   10
-                                                       *   0.2 
-                           WHEN    OTHER
-                               MOVE    ZERO            TO  WRK-FTNMONEY
-                       END-EVALUATE                                                  
-                       ADD     WRK-FTNMONEY
-                             TO  SUM-ROU-KOH-ITBFTN    (IDY3 IDY1)
+                       IF      RECE10-ZAITAKU      =   SPACE
+                           EVALUATE    RECE10-KYURATE
+                               WHEN    9
+                                   COMPUTE WRK-FTNMONEY    =
+                                           RECE10-ETC-TOTALTEN (IDW)
+                                                           *   10
+                                                           *   0.1 
+                               WHEN    8
+                                   COMPUTE WRK-FTNMONEY    =
+                                           RECE10-ETC-TOTALTEN (IDW)
+                                                           *   10
+                                                           *   0.2 
+                               WHEN    OTHER
+                                   MOVE    ZERO        TO  WRK-FTNMONEY
+                           END-EVALUATE                                                  
+                           ADD     WRK-FTNMONEY
+                                 TO  SUM-ROU-KOH-ITBFTN    (IDY3 IDY1)
+                       ELSE
+                           ADD     RECE10-FTNMONEY (1)
+                                 TO  SUM-ROU-KOH-ITBFTN    (IDY3 IDY1)
+                       END-IF
       *                           
                        IF      RECE10-ETC-SHOKUJINISSU (IDW)
                                                  >   ZERO
