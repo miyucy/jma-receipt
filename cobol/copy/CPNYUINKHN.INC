@@ -118,13 +118,13 @@
                05  NYUKHN-KETTEITEN-T       OCCURS   7.
                  07  NYUKHN-KETTEI     PIC  9(06).
       *端末ＩＤ
-           03  SYU-TERMID              PIC  X(16).
+           03  NYUKHN-TERMID           PIC  X(16).
       *オペーレータＩＤ
-           03  SYU-OPID                PIC  X(16).
+           03  NYUKHN-OPID             PIC  X(16).
       *作成年月日
-           03  SYU-CREYMD              PIC  X(08).
+           03  NYUKHN-CREYMD           PIC  X(08).
       *更新年月日
-           03  SYU-UPYMD               PIC  X(08).
+           03  NYUKHN-UPYMD            PIC  X(08).
       *更新時間
-           03  SYU-UPHMS               PIC  X(06).
+           03  NYUKHN-UPHMS            PIC  X(06).
       *
