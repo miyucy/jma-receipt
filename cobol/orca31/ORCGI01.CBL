@@ -9891,6 +9891,7 @@
       *****************************************************************
        4801-TENROOM-EDIT-SEC         SECTION.
       *
+           MOVE      SPACE        TO    WRK-DOU-TENNYUYMD
            MOVE      SPACE        TO    IPN-NYUKAIKEI-SAKUSEI-FLG
       *
            INITIALIZE      ORCSSYOKIKSNAREA
