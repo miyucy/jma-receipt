@@ -35,7 +35,8 @@
       *  01.00.04    NACL-門脇    02.11.06  約束処方時の点数欄表示修正
       *  01.00.05    NACL-門脇    02.11.21  自賠責（ポリネック等の対応）
       *  01.00.06    NACL-門脇    02.11.26  検診コードを編集できるよう修正
-      *  01.02.15   NACL-藤原     02.12.02  酸素の時単価を表示するように追加
+      *  01.02.07    NACL-藤原    02.12.02  酸素の時単価を表示するように追加
+      *  01.02.08    NACL-藤原    03.01.22  データ区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -990,6 +991,7 @@
                    MOVE  TNS-GAITENTTLKBN TO    RECE45-TENTTLKBN(IDX4)
                END-IF
                MOVE    TNS-YUKOKETA       TO    RECE45-YUKOKETA(IDX4)
+               MOVE    TNS-DATAKBN        TO    RECE45-DATAKBN (IDX4)
                IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
                AND     SRY-INPUTNUM (IDX2)      NOT =   ZERO
                    MOVE    SRY-HOSPID           TO  PTCOM-HOSPID

@@ -39,6 +39,8 @@
       *                                     コードを印刷しないよう追加 
       *                                     検診コードを印刷するよう追加
       *  01.00.07    NACL-藤原    02.12.02  酸素の時単価を表示するように追加
+      *  01.00.08    NACL-藤原    03.01.10  検査の回数の編集
+      *                                     画像診断のフィルムを手技に表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -244,6 +246,9 @@
            03  WRK-SRYCD                       PIC X(01).
       *     
            03  WRK-R05IDX                      PIC 9(02).
+      *
+      *    検査の回数
+           03  WRK-KENSA-KAISU                 PIC 9(05). 
       *     
            03  WRK-WLINETEK                    PIC 9(03).
            03  WRK-SRYSURYOW                   PIC X(20).
@@ -489,6 +494,13 @@
            03  CONS-SYOSIN-KASAN1  PIC X(09) VALUE "111003770".
       *    老人初診（診療所）紹介患者加算
            03  CONS-SYOSIN-KASAN2  PIC X(09) VALUE "111700470".
+      *    検査の回数に集計しない診療行為
+      *    採血（Ｂ−Ａ）
+           03  WRK-CONS-SAIKETSU1      PIC X(09)   VALUE "160101210".
+      *    採血（Ｂ−Ｖ）
+           03 WRK-CONS-SAIKETSU2       PIC X(09)   VALUE "160095710".
+      *    採血（Ｂ−Ｃ）
+           03 WRK-CONS-SAIKETSU3       PIC X(09)   VALUE "160095810".
       *
       *    パス名領域
        01  WRK-PATH                        PIC X(64).
@@ -602,7 +614,7 @@
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
-           OPEN    INPUT               RECE41-FILE
+           OPEN    I-O                 RECE41-FILE
       *
            OPEN    INPUT               RECE44-FILE
       *
@@ -624,6 +636,8 @@
       *
       *        行カウンタ初期化
            MOVE    ZERO                TO  WRK-LINENUM
+      *    検査回数初期化
+           MOVE    ZERO                TO   WRK-KENSA-KAISU
       *
            MOVE    ZERO                TO  CNT-SRYKBN60   
            INITIALIZE                      WRK-RECE44-TABLE
@@ -706,9 +720,17 @@
       *    検査があるときまとめる
            IF      WRK-RECE44-MAX          >   ZERO
                PERFORM 2007-SRYKBN60-HENSYU-SEC
-                  CONTINUE
            END-IF         
       *
+      *    検査のとき回数を編集する
+           IF      WRK-KENSA-KAISU        >   ZERO
+               IF      RECE41-HKNKBN          =   "3"
+                   MOVE    WRK-KENSA-KAISU    TO  RECE41-KAISU  (24)
+               ELSE
+                   MOVE    WRK-KENSA-KAISU    TO  RECE41-KAISU  (29)
+               END-IF
+               REWRITE RECE41-REC
+           END-IF
       *
            PERFORM 990-RECE41-READ-SEC
       *
@@ -738,18 +760,6 @@
       *    剤　明細テーブル退避処理
       *****************************************************************
        2002-TBLZAIW-TAIHI-SEC    SECTION.
-      *
-           INITIALIZE                      TBL-ZAIW-AREA
-           MOVE    ZERO                TO  WRK-ZAIWMAX-G
-           MOVE    ZERO                TO  WRK-TBLMAX
-           MOVE    ZERO                TO  WRK-TENSUGOKEI
-           MOVE    ZERO                TO  FLG-SYOSIN
-           MOVE    ZERO                TO  FLG-TEIGEN
-                                           FLG-COMMENT 
-                                           FLG-COMMENT2
-                                           FLG-HIKAKIN 
-           MOVE    ZERO                TO  WRK-RECE45
-                                           IDY                           
       *
       *    パラメータ０５ファイルより編集
            INITIALIZE                      RECE45-REC
@@ -810,7 +820,13 @@
                            WHEN    "6"
                                MOVE    5             TO  IDY
                            WHEN    "7"
-                               MOVE    4             TO  IDY
+                               IF    ( RECE44-SRYKBN     =   "70" )
+                               AND   ( RECE45-DATAKBN (IDX)
+                                                         =   "3"  )
+                                   MOVE    3                 TO  IDY
+                               ELSE
+                                   MOVE    4                 TO  IDY
+                               END-IF
                            WHEN    OTHER
                                DISPLAY "ORCR0460 SRYCD="
                                                  RECE45-SRYCD (IDX) 
@@ -1390,6 +1406,28 @@
                    END-IF
                END-IF        
            END-PERFORM
+      *             
+      *    検査のとき回数を集計
+           IF      WRK-ZAIWMAX(3)     >   ZERO
+           AND     RECE44-SRYKBN      =   "60"
+               IF      TBL-ZAIW-SRYCD (3 1)   =   WRK-CONS-SAIKETSU1
+                                              OR  WRK-CONS-SAIKETSU2
+                                              OR  WRK-CONS-SAIKETSU3 
+                   CONTINUE
+               ELSE
+                   MOVE    TBL-ZAIW-SRYCD (3 1)
+                                             TO  TNS-SRYCD
+                   MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
+                   MOVE    RECE45-SRYYM      TO  ORC-DBYMD(1:6)
+                   MOVE    "01"              TO  ORC-DBYMD(7:2)
+                   PERFORM 900-TENSU-INV-SEC
+                   IF      TNS-KNSJISKBN     =   "2"
+                       CONTINUE
+                   ELSE 
+                       ADD     RECE44-ZAIKAISU   TO  WRK-KENSA-KAISU
+                   END-IF
+               END-IF
+           END-IF     
       *
            .
        20052-SRYKBNELSE-CHECK-EXT.
