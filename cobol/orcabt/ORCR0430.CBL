@@ -260,55 +260,10 @@
            COPY    "CPRCF045.INC"  REPLACING   //RECE45//
                                    BY          //WRK-RECE45//.
       *
-       01  COM-RECE45-REC. 
+       01  WRK-RECE45XX-REC.
+         02 WRK-RECE45XX-TBL       OCCURS 50.
            COPY    "CPRCF045.INC"  REPLACING   //RECE45//
-                                   BY          //COM//.
-      *
-       01  WRK-SRYACTINF-AREA.
-           03  WRK-SRYACTINF                   OCCURS  50.
-               05  WK-RECE45-SRYCD           PIC  X(09).
-               05  WK-RECE45-SRYSURYO        PIC  9(05)V9(03).
-               05  WK-RECE45-SRYKAISU        PIC  9(03).
-               05  WK-RECE45-TANICD          PIC  9(03).
-               05  WK-RECE45-TANIMOJISU      PIC  9(01).
-               05  WK-RECE45-TANINAME        PIC  X(24).
-               05  WK-RECE45-TENSIKIBETU     PIC  9(01).
-               05  WK-RECE45-TEN             PIC  9(09)V9(02).
-               05  WK-RECE45-MEISKYFLG       PIC  X(01).
-               05  WK-RECE45-AUTOKBN         PIC  X(01).
-               05  WK-RECE45-INPUTNUM        PIC  9(03).
-               05  WK-RECE45-TENTTLKBN       PIC  9(03).
-      *
-       01  WRK-NAMEINF-AREA.
-           03  WRK-NAMEINF                     OCCURS 50.         
-               05  WK-RECE45-YUKOKETA        PIC  9(02).
-               05  WK-RECE45-NAME            PIC  X(200).
-      *
-       01  WRK-SIKFLGINF-AREA.
-           03  WRK-SIKFLGINF                   OCCURS 50.         
-               05  WK-RECE45-SIKFLG          PIC  X(01).
-      *
-       01  WRK-DATAKBNINF-AREA.
-           03  WRK-DATAKBNINF                  OCCURS 50.         
-               05  WK-RECE45-DATAKBN         PIC  9(01).
-      *
-       01  WRK-HOUKNSKBNINF-AREA.
-           03  WRK-HOUKNSKBNINF                OCCURS 50.
-               05  WK-RECE45-HOUKNSKBN       PIC  9(02).
-      *
-       01  WRK-KNSJISKBNINF-AREA.
-           03  WRK-KNSJISKBNINF                OCCURS 50.
-               05  WK-RECE45-KNSJISKBN       PIC  9(01).
-      *
-       01  WRK-CDKBNINF-AREA.
-           03  WRK-CDKBNINF                    OCCURS 50.
-               05  WK-RECE45-CDKBN-KBN        PIC  X(01).
-               05  WK-RECE45-CDKBN-SYO        PIC  9(01).
-               05  WK-RECE45-CDKBN-BU         PIC  9(02).
-               05  WK-RECE45-CDKBN-KBNNUM     PIC  9(03).
-               05  WK-RECE45-CDKBN-KBNNUM-EDA PIC  9(02).
-               05  WK-RECE45-CDKBN-KOUBAN     PIC  9(02).
-               05  WK-RECE45-KOUHYOJYUNNUM    PIC  9(09).
+                                   BY          //WRK-RECE45XX//.
       *
        01  WRK-FREE-AREA.
            03  WRK-FREEINF                     OCCURS 49.         
@@ -823,10 +778,7 @@
                         PERFORM    2001-RYOYO-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                         MOVE       RECE44-REC    TO   RECE441-REC
-                         WRITE      RECE441-REC
-                         ADD     1          TO      CNT-RECE44
-                         PERFORM    2001-RECE45-TENSOU-SEC
+                        PERFORM    2001-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "14"
                       MOVE   ZERO   TO  FLG-COMMENT
@@ -840,10 +792,7 @@
                         PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                         MOVE       RECE44-REC    TO   RECE441-REC
-                         WRITE      RECE441-REC
-                         ADD     1          TO      CNT-RECE44
-                         PERFORM    2001-RECE45-TENSOU-SEC
+                        PERFORM    2001-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "33"
       *            （在宅患者訪問点滴注射管理指導料算定時の点滴注射の
@@ -868,16 +817,10 @@
                       IF  FLG-ARI  =  1
                           PERFORM   2001-RIHA-COMMENT-SEC
                       ELSE
-                          MOVE       RECE44-REC    TO   RECE441-REC
-                          WRITE      RECE441-REC
-                          ADD     1          TO      CNT-RECE44
-                          PERFORM    2001-RECE45-TENSOU-SEC
+                          PERFORM   2001-RECE44-TENSOU-SEC
                       END-IF
                    WHEN   OTHER
-                      MOVE       RECE44-REC    TO   RECE441-REC
-                      WRITE      RECE441-REC
-                      ADD     1          TO      CNT-RECE44
-                      PERFORM    2001-RECE45-TENSOU-SEC
+                      PERFORM       2001-RECE44-TENSOU-SEC
                  END-EVALUATE
                ELSE                                                     
                  EVALUATE      RECE44-SRYKBN                            
@@ -896,10 +839,7 @@
                         PERFORM    2001-RYOYO-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                         MOVE       RECE44-REC    TO   RECE441-REC
-                         WRITE      RECE441-REC
-                         ADD     1          TO      CNT-RECE44
-                         PERFORM    2001-RECE45-TENSOU-SEC
+                        PERFORM    2001-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "14"
                       MOVE   ZERO   TO  FLG-COMMENT
@@ -913,10 +853,7 @@
                         PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                         MOVE       RECE44-REC    TO   RECE441-REC
-                         WRITE      RECE441-REC
-                         ADD     1          TO      CNT-RECE44
-                         PERFORM    2001-RECE45-TENSOU-SEC
+                        PERFORM    2001-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "33"
       *            （在宅患者訪問点滴注射管理指導料算定時の点滴注射の
@@ -941,16 +878,10 @@
                       IF  FLG-ARI  =  1
                           PERFORM   2001-RIHA-COMMENT-SEC
                       ELSE
-                          MOVE       RECE44-REC    TO   RECE441-REC
-                          WRITE      RECE441-REC
-                          ADD     1          TO      CNT-RECE44
-                          PERFORM    2001-RECE45-TENSOU-SEC
+                          PERFORM   2001-RECE44-TENSOU-SEC
                       END-IF
                    WHEN   OTHER                                         
-                      MOVE       RECE44-REC    TO   RECE441-REC         
-                      WRITE      RECE441-REC                            
-                      ADD     1          TO      CNT-RECE44             
-                      PERFORM    2001-RECE45-TENSOU-SEC                 
+                      PERFORM       2001-RECE44-TENSOU-SEC
                  END-EVALUATE                                           
                END-IF                                                   
       *
@@ -1231,38 +1162,29 @@
       *
       *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                TO  IDX-RECE45
-           MOVE    SPACE               TO  WRK-SRYACTINF-AREA
-           INITIALIZE                      WRK-SRYACTINF-AREA
-           MOVE    SPACE               TO  WRK-NAMEINF-AREA
-           INITIALIZE                      WRK-NAMEINF-AREA
-           MOVE    SPACE               TO  WRK-SIKFLGINF-AREA
-           INITIALIZE                      WRK-SIKFLGINF-AREA
+           MOVE    SPACE               TO  WRK-RECE45XX-REC
+           INITIALIZE                      WRK-RECE45XX-REC
       *
-           ADD     1                   TO  IDX-RECE45
-           MOVE    SPACE               TO  COM-RECE45-REC
-           INITIALIZE                      COM-RECE45-REC
-           MOVE    "810000001"         TO  COM-SRYCD(1)
-           MOVE    ZERO                TO  COM-SRYSURYO(1)
-           MOVE    7                   TO  COM-YUKOKETA(1)
-           MOVE    "複数診療科受診"    TO  COM-NAME(1)
-           MOVE    "1"                 TO  COM-SIKFLG(1)
-           MOVE    COM-SRYACTINF(1)    TO  WRK-SRYACTINF
-                                               (IDX-RECE45)
-           MOVE    COM-NAMEINF(1)      TO  WRK-NAMEINF
-                                               (IDX-RECE45)
-           MOVE    COM-SIKFLGINF(1)    TO  WRK-SIKFLGINF
-                                               (IDX-RECE45)
+           ADD     1            TO  IDX-RECE45
+           MOVE    "810000001"  TO  WRK-RECE45XX-SRYCD(IDX-RECE45 1)
+           MOVE    ZERO         TO  WRK-RECE45XX-SRYSURYO(IDX-RECE45 1)
+           MOVE    7            TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+           MOVE    "複数診療科受診"
+                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+           MOVE    "1"          TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
       *
            PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX               >   49    )
                          OR      ( WK-FREE-NAME(IDX) =   SPACE )
-                ADD    1                  TO  IDX-RECE45
-                MOVE   "810000001"        TO  COM-SRYCD(2)
-                MOVE   ZERO               TO  COM-SRYSURYO(2)
-                MOVE   "1"                TO  COM-SIKFLG(2)
-                MOVE   COM-SRYACTINF(2)   TO  WRK-SRYACTINF(IDX-RECE45)
-                MOVE   WRK-FREEINF(IDX)   TO  WRK-NAMEINF(IDX-RECE45)
-                MOVE   COM-SIKFLGINF(2)   TO  WRK-SIKFLGINF(IDX-RECE45)  
+                ADD    1        TO  IDX-RECE45
+                MOVE   "810000001"
+                                TO  WRK-RECE45XX-SRYCD(IDX-RECE45 1)
+                MOVE   ZERO     TO  WRK-RECE45XX-SRYSURYO(IDX-RECE45 1)
+                MOVE   WK-FREE-YUKOKETA(IDX)
+                                TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+                MOVE   WK-FREE-NAME(IDX)
+                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+                MOVE   "1"      TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
            END-PERFORM 
       *
       *    科・日付の編集を含んだ内容で中間ファイルの再作成
@@ -1288,16 +1210,12 @@
                 PERFORM  VARYING   IDX   FROM   1   BY   1
                          UNTIL   (IDX       >    5)   OR
                                  (FLG-WRKRECE45   =   1)
-                   ADD         1             TO    IDX-RECE45
-                   IF  WK-RECE45-SRYCD(IDX-RECE45) = SPACE
-                       MOVE    1             TO    FLG-WRKRECE45
+                   ADD         1            TO  IDX-RECE45
+                   IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                       MOVE    1            TO  FLG-WRKRECE45
                    ELSE
-                       MOVE  WRK-SRYACTINF(IDX-RECE45)
-                                        TO   RECE451-SRYACTINF(IDX)  
-                       MOVE  WRK-NAMEINF(IDX-RECE45)
-                                        TO   RECE451-NAMEINF(IDX)
-                       MOVE  WRK-SIKFLGINF(IDX-RECE45)
-                                        TO   RECE451-SIKFLGINF(IDX)
+                       MOVE  WRK-RECE45XX-SRYACT-TBL (IDX-RECE45 1)
+                                        TO   RECE451-SRYACT-TBL(IDX)
                        ADD   1          TO   WRK-CNT-MEISAI
                    END-IF  
                 END-PERFORM
@@ -1358,18 +1276,18 @@
            MOVE    99999991            TO  RECE451-ZAINUM
            MOVE    "99"                TO  RECE451-SRYKBN
       *    同日複数再診のコメントの挿入
-           MOVE    SPACE                TO  COM-RECE45-REC
-           INITIALIZE                       COM-RECE45-REC
-           MOVE    "840000002"          TO  COM-SRYCD(1)
-           MOVE    ZERO                 TO  COM-SRYSURYO(1)
-           MOVE    11                   TO  COM-YUKOKETA(1)
-           MOVE    "同日複数再診（　　回）"  TO COM-NAME(1)
+           MOVE    SPACE                TO  WRK-RECE45XX-REC
+           INITIALIZE                       WRK-RECE45XX-REC
+           MOVE    "810000001"          TO  WRK-RECE45XX-SRYCD(1 1)
+           MOVE    ZERO                 TO  WRK-RECE45XX-SRYSURYO(1 1)
+           MOVE    11                   TO  WRK-RECE45XX-YUKOKETA(1 1)
+           MOVE    "同日複数再診（　　回）"
+                                        TO  WRK-RECE45XX-NAME(1 1)
            MOVE    CNT-DOUJITU          TO  DAY-IDX
-           MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(15:4)
-           MOVE    "1"                  TO  COM-SIKFLG(1)
-           MOVE    COM-SRYACTINF(1)     TO  RECE451-SRYACTINF(1)
-           MOVE    COM-NAMEINF(1)       TO  RECE451-NAMEINF(1)
-           MOVE    COM-SIKFLG(1)        TO  RECE451-SIKFLGINF(1)
+           MOVE    TBL-DAY(DAY-IDX)     TO  WRK-RECE45XX-NAME(1 1)(15:4)
+           MOVE    "1"                  TO  WRK-RECE45XX-SIKFLG(1 1)
+           MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
+                                        TO  RECE451-SRYACT-TBL(1)
            WRITE   RECE451-REC
            ADD     1                    TO  CNT-RECE45
       *
@@ -1605,20 +1523,19 @@
            MOVE    99999998            TO  RECE451-ZAINUM
            MOVE    "99"                TO  RECE451-SRYKBN
       *    コメントの挿入
-           MOVE    SPACE                TO  COM-RECE45-REC
-           INITIALIZE                       COM-RECE45-REC
-           MOVE    "840000045"          TO  COM-SRYCD(1)
-           MOVE    ZERO                 TO  COM-SRYSURYO(1)
-           MOVE     9                   TO  COM-YUKOKETA(1)
-           MOVE    "発症　　　月　　日" TO  COM-NAME(1)
+           MOVE    SPACE                TO  WRK-RECE45XX-REC
+           INITIALIZE                       WRK-RECE45XX-REC
+           MOVE    "810000001"          TO  WRK-RECE45XX-SRYCD(1 1)
+           MOVE    ZERO                 TO  WRK-RECE45XX-SRYSURYO(1 1)
+           MOVE     9                   TO  WRK-RECE45XX-YUKOKETA(1 1)
+           MOVE    "発症　　　月　　日" TO  WRK-RECE45XX-NAME(1 1)
            MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-           MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(7:4)
+           MOVE    TBL-DAY(DAY-IDX2)    TO  WRK-RECE45XX-NAME(1 1)(7:4)
            MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-           MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(13:4)
-           MOVE    "1"                  TO  COM-SIKFLG(1)
-           MOVE    COM-SRYACTINF(1)     TO  RECE451-SRYACTINF(1)
-           MOVE    COM-NAMEINF(1)       TO  RECE451-NAMEINF(1)
-           MOVE    COM-SIKFLG(1)        TO  RECE451-SIKFLGINF(1)
+           MOVE    TBL-DAY(DAY-IDX2)    TO  WRK-RECE45XX-NAME(1 1)(13:4)
+           MOVE    "1"                  TO  WRK-RECE45XX-SIKFLG(1 1)
+           MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
+                                        TO  RECE451-SRYACT-TBL(1)
            WRITE   RECE451-REC
            ADD     1                    TO  CNT-RECE45
       *
@@ -1712,43 +1629,14 @@
                      PERFORM 990-RECE45-NEXT-SEC
            END-START
       *
-           MOVE    RECE45-REC       TO      RECE451-REC
-           MOVE    RECE45-SRYACTINF(1)  TO  RECE451-SRYACTINF(1)
-           MOVE    RECE45-SRYACTINF(2)  TO  RECE451-SRYACTINF(3)
-           MOVE    RECE45-SRYACTINF(3)  TO  RECE451-SRYACTINF(4)
-           MOVE    RECE45-SRYACTINF(4)  TO  RECE451-SRYACTINF(5)
-           MOVE    RECE45-NAMEINF(1)    TO  RECE451-NAMEINF(1)
-           MOVE    RECE45-NAMEINF(2)    TO  RECE451-NAMEINF(3)
-           MOVE    RECE45-NAMEINF(3)    TO  RECE451-NAMEINF(4)
-           MOVE    RECE45-NAMEINF(4)    TO  RECE451-NAMEINF(5)
-           MOVE    RECE45-SIKFLGINF(1)  TO  RECE451-SIKFLGINF(1)
-           MOVE    RECE45-SIKFLGINF(2)  TO  RECE451-SIKFLGINF(3)
-           MOVE    RECE45-SIKFLGINF(3)  TO  RECE451-SIKFLGINF(4)
-           MOVE    RECE45-SIKFLGINF(4)  TO  RECE451-SIKFLGINF(5)
-           MOVE    RECE45-DATAKBNINF(1) TO  RECE451-DATAKBNINF(1)
-           MOVE    RECE45-DATAKBNINF(2) TO  RECE451-DATAKBNINF(3)
-           MOVE    RECE45-DATAKBNINF(3) TO  RECE451-DATAKBNINF(4)
-           MOVE    RECE45-DATAKBNINF(4) TO  RECE451-DATAKBNINF(5)
-           MOVE    RECE45-HOUKNSKBNINF(1) TO  RECE451-HOUKNSKBNINF(1)
-           MOVE    RECE45-HOUKNSKBNINF(2) TO  RECE451-HOUKNSKBNINF(3)
-           MOVE    RECE45-HOUKNSKBNINF(3) TO  RECE451-HOUKNSKBNINF(4)
-           MOVE    RECE45-HOUKNSKBNINF(4) TO  RECE451-HOUKNSKBNINF(5)
-           MOVE    RECE45-KNSJISKBNINF(1) TO  RECE451-KNSJISKBNINF(1)
-           MOVE    RECE45-KNSJISKBNINF(2) TO  RECE451-KNSJISKBNINF(3)
-           MOVE    RECE45-KNSJISKBNINF(3) TO  RECE451-KNSJISKBNINF(4)
-           MOVE    RECE45-KNSJISKBNINF(4) TO  RECE451-KNSJISKBNINF(5)
-           MOVE    RECE45-CDKBNINF(1)   TO  RECE451-CDKBNINF(1)
-           MOVE    RECE45-CDKBNINF(2)   TO  RECE451-CDKBNINF(3)
-           MOVE    RECE45-CDKBNINF(3)   TO  RECE451-CDKBNINF(4)
-           MOVE    RECE45-CDKBNINF(4)   TO  RECE451-CDKBNINF(5)
+           MOVE    RECE45-REC           TO  RECE451-REC
+           MOVE    RECE45-SRYACT-TBL(1) TO  RECE451-SRYACT-TBL(1)
+           MOVE    RECE45-SRYACT-TBL(2) TO  RECE451-SRYACT-TBL(3)
+           MOVE    RECE45-SRYACT-TBL(3) TO  RECE451-SRYACT-TBL(4)
+           MOVE    RECE45-SRYACT-TBL(4) TO  RECE451-SRYACT-TBL(5)
       *
-           MOVE    SPACE                TO  RECE451-SRYACTINF(2)
-           INITIALIZE                       RECE451-SRYACTINF(2)
-           MOVE    SPACE                TO  RECE451-NAMEINF(2)
-           INITIALIZE                       RECE451-NAMEINF(2)
-           MOVE    SPACE                TO  RECE451-SIKFLGINF(2)
-           INITIALIZE                       RECE451-SIKFLGINF(2) 
-      *
+           MOVE    SPACE                TO  RECE451-SRYACT-TBL(2)
+           INITIALIZE                       RECE451-SRYACT-TBL(2)
            MOVE    "810000001"          TO  RECE451-SRYCD(2)
            MOVE    ZERO                 TO  RECE451-SRYSURYO(2)
            MOVE    15                   TO  RECE451-YUKOKETA(2)
@@ -1760,7 +1648,7 @@
            MOVE     "1"                 TO  RECE451-SIKFLG(2)
       *
            WRITE    RECE451-REC
-           ADD      1                    TO  CNT-RECE45
+           ADD      1                   TO  CNT-RECE45
       *
            .
        2001-SHIDOU-COMMENT-EXT.
@@ -1900,142 +1788,30 @@
       *****************************************************************
        2001-HINKAI-COMMENT-SEC          SECTION.
       *
-           MOVE    RECE44-REC        TO      RECE441-REC
-           ADD     1                 TO      RECE441-MEISAISU
-           WRITE   RECE441-REC
-           ADD     1                 TO      CNT-RECE44
-      *
-             INITIALIZE                      RECE45-REC
-             MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
-             MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
-             MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
-             MOVE    RECE44-PTID         TO  RECE45-PTID
-             MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
-             MOVE    RECE44-HKNID        TO  RECE45-HKNID
-             MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
-             MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
-             START   RECE45-FILE
-                 KEY IS    >=   RECE45-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE45
-                 NOT INVALID
-                     PERFORM 990-RECE45-NEXT-SEC
-                     MOVE    RECE45-REC  TO  WRK-RECE45-REC
-             END-START
+             PERFORM    2001-RECE45-TAIHI-SEC
       *
       *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE45
-             MOVE    SPACE                TO  WRK-SRYACTINF-AREA
-             INITIALIZE                       WRK-SRYACTINF-AREA
-             MOVE    SPACE                TO  WRK-NAMEINF-AREA
-             INITIALIZE                       WRK-NAMEINF-AREA
-             MOVE    SPACE                TO  WRK-SIKFLGINF-AREA
-             INITIALIZE                       WRK-SIKFLGINF-AREA
-             MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
-             INITIALIZE                       WRK-DATAKBNINF-AREA
-             MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
-             INITIALIZE                       WRK-HOUKNSKBNINF-AREA
-             MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
-             INITIALIZE                       WRK-KNSJISKBNINF-AREA
-             MOVE    SPACE                TO  WRK-CDKBNINF-AREA
-             INITIALIZE                       WRK-CDKBNINF-AREA
+             MOVE    SPACE                TO  WRK-RECE45XX-REC
+             INITIALIZE                       WRK-RECE45XX-REC
       *      コメントの挿入
-             MOVE    SPACE                TO  COM-RECE45-REC
-             INITIALIZE                       COM-RECE45-REC
-             MOVE    "810000001"          TO  COM-SRYCD(1)
-             MOVE    ZERO                 TO  COM-SRYSURYO(1)
-             MOVE    16                   TO  COM-YUKOKETA(1)
-             MOVE    "初回指導管理算定日　　　月　　日"
-                                          TO  COM-NAME(1)
-             MOVE    WRK-TOSEKIYMD(5:2)   TO  DAY-IDX2
-             MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(21:4)
-             MOVE    WRK-TOSEKIYMD(7:2)   TO  DAY-IDX2
-             MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(27:4)
-             MOVE    "1"                  TO  COM-SIKFLG(1) 
              COMPUTE  MAX-MEISAISU        =   RECE44-MEISAISU  +  1
-             MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-                                                   (MAX-MEISAISU)
-             MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-                                                   (MAX-MEISAISU)
-             MOVE    COM-SIKFLGINF(1)     TO  WRK-SIKFLGINF
-                                                   (MAX-MEISAISU)
       *
-             PERFORM
-               UNTIL  ( FLG-RECE45           =   1                   )
-               OR     ( RECE44-HOSPID    NOT =   RECE45-HOSPID       )
-               OR     ( RECE44-SRYYM     NOT =   RECE45-SRYYM        )
-               OR     ( RECE44-NYUGAIKBN NOT =   RECE45-NYUGAIKBN    )
-               OR     ( RECE44-PTID      NOT =   RECE45-PTID         )
-               OR     ( RECE44-RECEKA    NOT =   RECE45-RECEKA       )
-               OR     ( RECE44-HKNID     NOT =   RECE45-HKNID        )
-               OR     ( RECE44-TEKSTYMD  NOT =   RECE45-TEKSTYMD     )
-               OR     ( RECE44-ZAINUM    NOT =   RECE45-ZAINUM       )
+             MOVE    "810000001"
+                            TO  WRK-RECE45XX-SRYCD(MAX-MEISAISU 1)
+             MOVE    ZERO   TO  WRK-RECE45XX-SRYSURYO(MAX-MEISAISU 1)
+             MOVE    16     TO  WRK-RECE45XX-YUKOKETA(MAX-MEISAISU 1)
+             MOVE    "初回指導管理算定日　　　月　　日"
+                            TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)
+             MOVE    WRK-TOSEKIYMD(5:2)   TO  DAY-IDX2
+             MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)(21:4)
+             MOVE    WRK-TOSEKIYMD(7:2)   TO  DAY-IDX2
+             MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)(27:4)
+             MOVE    "1"    TO  WRK-RECE45XX-SIKFLG(MAX-MEISAISU 1)
       *
-               PERFORM   VARYING   IDX   FROM    1   BY  1
-                         UNTIL   ( IDX               >   5     )
-                         OR      ( RECE45-SRYCD(IDX) =   SPACE )
-                    ADD    1             TO      IDX-RECE45
-                    MOVE   RECE45-SRYACTINF(IDX) TO
-                                             WRK-SRYACTINF(IDX-RECE45)
-                    MOVE   RECE45-NAMEINF(IDX)   TO
-                                             WRK-NAMEINF(IDX-RECE45)
-                    MOVE   RECE45-SIKFLGINF(IDX)   TO
-                                             WRK-SIKFLGINF(IDX-RECE45)     
-                    MOVE   RECE45-DATAKBNINF(IDX) TO
-                                             WRK-DATAKBNINF(IDX-RECE45)
-                    MOVE   RECE45-HOUKNSKBNINF(IDX) TO
-                                           WRK-HOUKNSKBNINF(IDX-RECE45)
-                    MOVE   RECE45-KNSJISKBNINF(IDX) TO
-                                           WRK-KNSJISKBNINF(IDX-RECE45)
-                    MOVE   RECE45-CDKBNINF(IDX)     TO
-                                           WRK-CDKBNINF(IDX-RECE45)
-               END-PERFORM 
-      *
-               PERFORM 990-RECE45-NEXT-SEC
-      *
-             END-PERFORM
-      *
-      *      コメントを含んだ内容で中間ファイルの再作成
-             MOVE       ZERO             TO      FLG-WRKRECE45
-             MOVE       ZERO             TO      IDX
-             MOVE       ZERO             TO      IDX-RECE45
-             MOVE       ZERO             TO      WRK-RENNUM
-             PERFORM    UNTIL     FLG-WRKRECE45  =    1
-                    INITIALIZE                        RECE451-REC
-                    MOVE    WRK-RECE45-KEY       TO   RECE451-KEY
-                    ADD     1                    TO   WRK-RENNUM
-                    MOVE    WRK-RENNUM           TO   RECE451-RENNUM
-                    MOVE    WRK-RECE45-PTNUM     TO   RECE451-PTNUM
-                    MOVE    WRK-RECE45-SRYKA     TO   RECE451-SRYKA
-                    MOVE    WRK-RECE45-SRYKBN    TO   RECE451-SRYKBN
-                    MOVE    WRK-RECE45-SRYSYUKBN TO   RECE451-SRYSYUKBN
-                    MOVE    WRK-RECE45-JIHIMONEY TO   RECE451-JIHIMONEY
-                    PERFORM  VARYING   IDX   FROM   1   BY   1
-                             UNTIL   (IDX       >    5)   OR
-                                     (FLG-WRKRECE45   =   1)
-                       ADD         1             TO    IDX-RECE45
-                       IF  WK-RECE45-SRYCD(IDX-RECE45) = SPACE
-                           MOVE    1             TO    FLG-WRKRECE45
-                       ELSE
-                           MOVE  WRK-SRYACTINF(IDX-RECE45)
-                                            TO   RECE451-SRYACTINF(IDX)  
-                           MOVE  WRK-NAMEINF(IDX-RECE45)
-                                            TO   RECE451-NAMEINF(IDX)
-                           MOVE  WRK-SIKFLGINF(IDX-RECE45)
-                                            TO   RECE451-SIKFLGINF(IDX)
-                           MOVE  WRK-DATAKBNINF(IDX-RECE45)
-                                            TO   RECE451-DATAKBNINF(IDX)
-                           MOVE  WRK-HOUKNSKBNINF(IDX-RECE45)
-                                        TO   RECE451-HOUKNSKBNINF(IDX)
-                           MOVE  WRK-KNSJISKBNINF(IDX-RECE45)
-                                        TO   RECE451-KNSJISKBNINF(IDX)
-                           MOVE  WRK-CDKBNINF(IDX-RECE45)
-                                        TO   RECE451-CDKBNINF(IDX)
-                       END-IF  
-                    END-PERFORM
-                    WRITE   RECE451-REC
-                    ADD     1                    TO  CNT-RECE45
-             END-PERFORM
+             PERFORM    2001-SRYACTINF-HENSYU-SEC
       *
            .
        2001-HINKAI-COMMENT-EXT.
@@ -2049,10 +1825,7 @@
            IF     RECE44-FLG-HOUTEN-COMMENT   =    "1"
                PERFORM    2001-HOUTEN-COMMENT-SEC
            ELSE
-               MOVE       RECE44-REC    TO   RECE441-REC
-               WRITE      RECE441-REC
-               ADD     1          TO      CNT-RECE44
-               PERFORM    2001-RECE45-TENSOU-SEC
+               PERFORM    2001-RECE44-TENSOU-SEC
            END-IF
       *
            .
@@ -2064,137 +1837,24 @@
       *****************************************************************
        2001-HOUTEN-COMMENT-SEC          SECTION.
       *
-           MOVE    RECE44-REC        TO      RECE441-REC
-           ADD     1                 TO      RECE441-MEISAISU
-           WRITE   RECE441-REC
-           ADD     1                 TO      CNT-RECE44
-      *
-             INITIALIZE                      RECE45-REC
-             MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
-             MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
-             MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
-             MOVE    RECE44-PTID         TO  RECE45-PTID
-             MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
-             MOVE    RECE44-HKNID        TO  RECE45-HKNID
-             MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
-             MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
-             START   RECE45-FILE
-                 KEY IS    >=   RECE45-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE45
-                 NOT INVALID
-                     PERFORM 990-RECE45-NEXT-SEC
-                     MOVE    RECE45-REC  TO  WRK-RECE45-REC
-             END-START
+             PERFORM    2001-RECE45-TAIHI-SEC
       *
       *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE45
-             MOVE    SPACE                TO  WRK-SRYACTINF-AREA
-             INITIALIZE                       WRK-SRYACTINF-AREA
-             MOVE    SPACE                TO  WRK-NAMEINF-AREA
-             INITIALIZE                       WRK-NAMEINF-AREA
-             MOVE    SPACE                TO  WRK-SIKFLGINF-AREA
-             INITIALIZE                       WRK-SIKFLGINF-AREA
-             MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
-             INITIALIZE                       WRK-DATAKBNINF-AREA
-             MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
-             INITIALIZE                       WRK-HOUKNSKBNINF-AREA
-             MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
-             INITIALIZE                       WRK-KNSJISKBNINF-AREA
-             MOVE    SPACE                TO  WRK-CDKBNINF-AREA
-             INITIALIZE                       WRK-CDKBNINF-AREA
+             MOVE    SPACE                TO  WRK-RECE45XX-REC
+             INITIALIZE                       WRK-RECE45XX-REC
       *      コメントの挿入
              ADD     1                    TO  IDX-RECE45
-             MOVE    SPACE                TO  COM-RECE45-REC
-             INITIALIZE                       COM-RECE45-REC
-             MOVE    "810000001"          TO  COM-SRYCD(1)
-             MOVE    ZERO                 TO  COM-SRYSURYO(1)
-             MOVE    4                    TO  COM-YUKOKETA(1)
-             MOVE    "（訪点）"           TO  COM-NAME(1)
-             MOVE    "1"                  TO  COM-SIKFLG(1) 
-             MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-                                                   (IDX-RECE45)
-             MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-                                                   (IDX-RECE45)
-             MOVE    COM-SIKFLGINF(1)     TO  WRK-SIKFLGINF
-                                                   (IDX-RECE45)
       *
-             PERFORM
-               UNTIL  ( FLG-RECE45           =   1                   )
-               OR     ( RECE44-HOSPID    NOT =   RECE45-HOSPID       )
-               OR     ( RECE44-SRYYM     NOT =   RECE45-SRYYM        )
-               OR     ( RECE44-NYUGAIKBN NOT =   RECE45-NYUGAIKBN    )
-               OR     ( RECE44-PTID      NOT =   RECE45-PTID         )
-               OR     ( RECE44-RECEKA    NOT =   RECE45-RECEKA       )
-               OR     ( RECE44-HKNID     NOT =   RECE45-HKNID        )
-               OR     ( RECE44-TEKSTYMD  NOT =   RECE45-TEKSTYMD     )
-               OR     ( RECE44-ZAINUM    NOT =   RECE45-ZAINUM       )
+             MOVE    "810000001"
+                            TO  WRK-RECE45XX-SRYCD(IDX-RECE45 1)
+             MOVE    ZERO   TO  WRK-RECE45XX-SRYSURYO(IDX-RECE45 1)
+             MOVE    4      TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+             MOVE    "（訪点）"
+                            TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+             MOVE    "1"    TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
       *
-               PERFORM   VARYING   IDX   FROM    1   BY  1
-                         UNTIL   ( IDX               >   5     )
-                         OR      ( RECE45-SRYCD(IDX) =   SPACE )
-                    ADD    1             TO      IDX-RECE45
-                    MOVE   RECE45-SRYACTINF(IDX) TO
-                                             WRK-SRYACTINF(IDX-RECE45)
-                    MOVE   RECE45-NAMEINF(IDX)   TO
-                                             WRK-NAMEINF(IDX-RECE45)
-                    MOVE   RECE45-SIKFLGINF(IDX)   TO
-                                             WRK-SIKFLGINF(IDX-RECE45)     
-                    MOVE   RECE45-DATAKBNINF(IDX) TO
-                                             WRK-DATAKBNINF(IDX-RECE45)
-                    MOVE   RECE45-HOUKNSKBNINF(IDX) TO
-                                           WRK-HOUKNSKBNINF(IDX-RECE45)
-                    MOVE   RECE45-KNSJISKBNINF(IDX) TO
-                                           WRK-KNSJISKBNINF(IDX-RECE45)
-                    MOVE   RECE45-CDKBNINF(IDX)     TO
-                                           WRK-CDKBNINF(IDX-RECE45)
-               END-PERFORM 
-      *
-               PERFORM 990-RECE45-NEXT-SEC
-      *
-             END-PERFORM
-      *
-      *      コメントを含んだ内容で中間ファイルの再作成
-             MOVE       ZERO             TO      FLG-WRKRECE45
-             MOVE       ZERO             TO      IDX
-             MOVE       ZERO             TO      IDX-RECE45
-             MOVE       ZERO             TO      WRK-RENNUM
-             PERFORM    UNTIL     FLG-WRKRECE45  =    1
-                    INITIALIZE                        RECE451-REC
-                    MOVE    WRK-RECE45-KEY       TO   RECE451-KEY
-                    ADD     1                    TO   WRK-RENNUM
-                    MOVE    WRK-RENNUM           TO   RECE451-RENNUM
-                    MOVE    WRK-RECE45-PTNUM     TO   RECE451-PTNUM
-                    MOVE    WRK-RECE45-SRYKA     TO   RECE451-SRYKA
-                    MOVE    WRK-RECE45-SRYKBN    TO   RECE451-SRYKBN
-                    MOVE    WRK-RECE45-SRYSYUKBN TO   RECE451-SRYSYUKBN
-                    MOVE    WRK-RECE45-JIHIMONEY TO   RECE451-JIHIMONEY
-                    PERFORM  VARYING   IDX   FROM   1   BY   1
-                             UNTIL   (IDX       >    5)   OR
-                                     (FLG-WRKRECE45   =   1)
-                       ADD         1             TO    IDX-RECE45
-                       IF  WK-RECE45-SRYCD(IDX-RECE45) = SPACE
-                           MOVE    1             TO    FLG-WRKRECE45
-                       ELSE
-                           MOVE  WRK-SRYACTINF(IDX-RECE45)
-                                            TO   RECE451-SRYACTINF(IDX)  
-                           MOVE  WRK-NAMEINF(IDX-RECE45)
-                                            TO   RECE451-NAMEINF(IDX)
-                           MOVE  WRK-SIKFLGINF(IDX-RECE45)
-                                            TO   RECE451-SIKFLGINF(IDX)
-                           MOVE  WRK-DATAKBNINF(IDX-RECE45)
-                                            TO   RECE451-DATAKBNINF(IDX)
-                           MOVE  WRK-HOUKNSKBNINF(IDX-RECE45)
-                                        TO   RECE451-HOUKNSKBNINF(IDX)
-                           MOVE  WRK-KNSJISKBNINF(IDX-RECE45)
-                                        TO   RECE451-KNSJISKBNINF(IDX)
-                           MOVE  WRK-CDKBNINF(IDX-RECE45)
-                                        TO   RECE451-CDKBNINF(IDX)
-                       END-IF  
-                    END-PERFORM
-                    WRITE   RECE451-REC
-                    ADD     1                    TO  CNT-RECE45
-             END-PERFORM
+             PERFORM    2001-SRYACTINF-HENSYU-SEC
       *
            .
        2001-HOUTEN-COMMENT-EXT.
@@ -2209,10 +1869,7 @@
                MOVE       1       TO     FLG-COMMENT
                PERFORM    2001-SHUJUTSU-ETC-COMMENT-SEC
            ELSE
-               MOVE       RECE44-REC    TO   RECE441-REC
-               WRITE      RECE441-REC
-               ADD     1          TO      CNT-RECE44
-               PERFORM    2001-RECE45-TENSOU-SEC
+               PERFORM    2001-RECE44-TENSOU-SEC
            END-IF
       *
            .
@@ -2228,10 +1885,7 @@
                 MOVE       2       TO     FLG-COMMENT
                 PERFORM    2001-SHUJUTSU-ETC-COMMENT-SEC
            ELSE
-                MOVE       RECE44-REC    TO   RECE441-REC
-                WRITE      RECE441-REC
-                ADD     1          TO      CNT-RECE44
-                PERFORM    2001-RECE45-TENSOU-SEC
+                PERFORM    2001-RECE44-TENSOU-SEC
            END-IF
       *
            .
@@ -2250,145 +1904,28 @@
       *
            PERFORM  2001-FREE-COMMENT2-SEC                              
       *
-      *    ※明細が５以上の場合
-           INITIALIZE                      RECE45-REC
-           MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
-           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
-           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
-           MOVE    RECE44-PTID         TO  RECE45-PTID
-           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
-           MOVE    RECE44-HKNID        TO  RECE45-HKNID
-           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
-           MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
-           START   RECE45-FILE
-                 KEY IS    >=   RECE45-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE45
-                 NOT INVALID
-                     PERFORM 990-RECE45-NEXT-SEC
-                     MOVE    RECE45-REC  TO  WRK-RECE45-REC
-           END-START
+           PERFORM  2001-RECE45-TAIHI-SEC
       *
       *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE45
-           MOVE    SPACE                TO  WRK-SRYACTINF-AREA
-           INITIALIZE                       WRK-SRYACTINF-AREA
-           MOVE    SPACE                TO  WRK-NAMEINF-AREA
-           INITIALIZE                       WRK-NAMEINF-AREA
-           MOVE    SPACE                TO  WRK-SIKFLGINF-AREA
-           INITIALIZE                       WRK-SIKFLGINF-AREA
-           MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
-           INITIALIZE                       WRK-DATAKBNINF-AREA
-           MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
-           INITIALIZE                       WRK-HOUKNSKBNINF-AREA
-           MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
-           INITIALIZE                       WRK-KNSJISKBNINF-AREA
-           MOVE    SPACE                TO  WRK-CDKBNINF-AREA
-           INITIALIZE                       WRK-CDKBNINF-AREA
-      *
-           MOVE    SPACE               TO  COM-RECE45-REC
-           INITIALIZE                      COM-RECE45-REC
+           MOVE    SPACE                TO  WRK-RECE45XX-REC
+           INITIALIZE                       WRK-RECE45XX-REC
       *
            PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX                >   50    )
                          OR      ( WK-FREE-NAME2(IDX) =   SPACE )
                 ADD    1                  TO  IDX-RECE45
-                MOVE   "810000001"        TO  COM-SRYCD(1)
-                MOVE   ZERO               TO  COM-SRYSURYO(1)
-                MOVE    "1"               TO  COM-SIKFLG(1)
-                MOVE   COM-SRYACTINF(1)   TO  WRK-SRYACTINF(IDX-RECE45)
-                MOVE   WRK-FREEINF2(IDX)  TO  WRK-NAMEINF(IDX-RECE45)
-                MOVE   COM-SIKFLGINF(1)   TO  WRK-SIKFLGINF(IDX-RECE45)
+                MOVE   "810000001"
+                              TO  WRK-RECE45XX-SRYCD(IDX-RECE45 1)
+                MOVE   ZERO   TO  WRK-RECE45XX-SRYSURYO(IDX-RECE45 1)
+                MOVE   WK-FREE-YUKOKETA2(IDX)
+                              TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+                MOVE   WK-FREE-NAME2(IDX)
+                              TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+                MOVE    "1"   TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
            END-PERFORM 
       *
-           PERFORM
-             UNTIL  ( FLG-RECE45           =   1                   )
-             OR     ( RECE44-HOSPID    NOT =   RECE45-HOSPID       )
-             OR     ( RECE44-SRYYM     NOT =   RECE45-SRYYM        )
-             OR     ( RECE44-NYUGAIKBN NOT =   RECE45-NYUGAIKBN    )
-             OR     ( RECE44-PTID      NOT =   RECE45-PTID         )
-             OR     ( RECE44-RECEKA    NOT =   RECE45-RECEKA       )
-             OR     ( RECE44-HKNID     NOT =   RECE45-HKNID        )
-             OR     ( RECE44-TEKSTYMD  NOT =   RECE45-TEKSTYMD     )
-             OR     ( RECE44-ZAINUM    NOT =   RECE45-ZAINUM       )
-      *
-             PERFORM   VARYING   IDX   FROM    1   BY  1
-                       UNTIL   ( IDX               >   5     )
-                       OR      ( RECE45-SRYCD(IDX) =   SPACE )
-                  ADD    1             TO      IDX-RECE45
-                  MOVE   RECE45-SRYACTINF(IDX) TO
-                                           WRK-SRYACTINF(IDX-RECE45)
-                  MOVE   RECE45-NAMEINF(IDX)   TO
-                                           WRK-NAMEINF(IDX-RECE45)
-                  MOVE   RECE45-SIKFLGINF(IDX)   TO
-                                           WRK-SIKFLGINF(IDX-RECE45)     
-                  MOVE   RECE45-DATAKBNINF(IDX) TO
-                                           WRK-DATAKBNINF(IDX-RECE45)
-                  MOVE   RECE45-HOUKNSKBNINF(IDX) TO
-                                           WRK-HOUKNSKBNINF(IDX-RECE45)
-                  MOVE   RECE45-KNSJISKBNINF(IDX) TO
-                                           WRK-KNSJISKBNINF(IDX-RECE45)
-                  MOVE   RECE45-CDKBNINF(IDX)     TO
-                                           WRK-CDKBNINF(IDX-RECE45)
-             END-PERFORM 
-      *
-             PERFORM 990-RECE45-NEXT-SEC
-      *
-           END-PERFORM
-      *
-      *    手術日コメントを含んだ内容で中間ファイルの再作成
-           MOVE       ZERO             TO      FLG-WRKRECE45
-           MOVE       ZERO             TO      IDX
-           MOVE       ZERO             TO      IDX-RECE45
-           MOVE       ZERO             TO      WRK-RENNUM
-           MOVE       ZERO             TO      WRK-CNT-MEISAI
-           PERFORM    UNTIL     FLG-WRKRECE45  =    1
-      *
-                  INITIALIZE                        RECE451-REC
-                  MOVE    WRK-RECE45-KEY       TO   RECE451-KEY
-                  ADD     1                    TO   WRK-RENNUM
-                  MOVE    WRK-RENNUM           TO   RECE451-RENNUM
-                  MOVE    WRK-RECE45-PTNUM     TO   RECE451-PTNUM
-                  MOVE    WRK-RECE45-SRYKA     TO   RECE451-SRYKA
-                  MOVE    WRK-RECE45-SRYKBN    TO   RECE451-SRYKBN
-                  MOVE    WRK-RECE45-SRYSYUKBN TO   RECE451-SRYSYUKBN
-                  MOVE    WRK-RECE45-JIHIMONEY TO   RECE451-JIHIMONEY
-                  PERFORM  VARYING   IDX   FROM   1   BY   1
-                           UNTIL   (IDX       >    5)   OR
-                                   (FLG-WRKRECE45   =   1)
-                     ADD         1             TO    IDX-RECE45
-                     IF  WK-RECE45-SRYCD(IDX-RECE45) = SPACE
-                         MOVE    1             TO    FLG-WRKRECE45
-                     ELSE
-                         MOVE  WRK-SRYACTINF(IDX-RECE45)
-                                          TO   RECE451-SRYACTINF(IDX)  
-                         MOVE  WRK-NAMEINF(IDX-RECE45)
-                                          TO   RECE451-NAMEINF(IDX)
-                         MOVE  WRK-SIKFLGINF(IDX-RECE45)
-                                          TO   RECE451-SIKFLGINF(IDX)
-                         MOVE  WRK-DATAKBNINF(IDX-RECE45)
-                                          TO   RECE451-DATAKBNINF(IDX)
-                         MOVE  WRK-HOUKNSKBNINF(IDX-RECE45)
-                                          TO   RECE451-HOUKNSKBNINF(IDX)
-                         MOVE  WRK-KNSJISKBNINF(IDX-RECE45)
-                                          TO   RECE451-KNSJISKBNINF(IDX)
-                         MOVE  WRK-CDKBNINF(IDX-RECE45)
-                                          TO   RECE451-CDKBNINF(IDX)
-      *
-                         IF    WRK-SIKFLGINF(IDX-RECE45)  =  "1"
-                              ADD    1    TO   WRK-CNT-MEISAI
-                         END-IF    
-      *
-                     END-IF  
-                  END-PERFORM
-                  WRITE   RECE451-REC
-                  ADD     1                    TO  CNT-RECE45
-           END-PERFORM     
-      *
-           MOVE    RECE44-REC        TO      RECE441-REC
-           MOVE    WRK-CNT-MEISAI    TO      RECE441-MEISAISU
-           WRITE   RECE441-REC
-           ADD     1                 TO      CNT-RECE44
+           PERFORM    2001-SRYACTINF-HENSYU-SEC
       *
            .
        2001-SHUJUTSU-ETC-COMMENT-EXT.
@@ -2406,149 +1943,30 @@
       *
            PERFORM  2001-FREE-COMMENT2-SEC                              
       *
-      *    ※明細が５以上の場合
-           INITIALIZE                      RECE45-REC
-           MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
-           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
-           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
-           MOVE    RECE44-PTID         TO  RECE45-PTID
-           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
-           MOVE    RECE44-HKNID        TO  RECE45-HKNID
-           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
-           MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
-           START   RECE45-FILE
-                 KEY IS    >=   RECE45-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE45
-                 NOT INVALID
-                     PERFORM 990-RECE45-NEXT-SEC
-                     MOVE    RECE45-REC  TO  WRK-RECE45-REC
-           END-START
+           PERFORM  2001-RECE45-TAIHI-SEC
       *
       *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE45
-           MOVE    SPACE                TO  WRK-SRYACTINF-AREA
-           INITIALIZE                       WRK-SRYACTINF-AREA
-           MOVE    SPACE                TO  WRK-NAMEINF-AREA
-           INITIALIZE                       WRK-NAMEINF-AREA
-           MOVE    SPACE                TO  WRK-SIKFLGINF-AREA
-           INITIALIZE                       WRK-SIKFLGINF-AREA
-           MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
-           INITIALIZE                       WRK-DATAKBNINF-AREA
-           MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
-           INITIALIZE                       WRK-HOUKNSKBNINF-AREA
-           MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
-           INITIALIZE                       WRK-KNSJISKBNINF-AREA
-           MOVE    SPACE                TO  WRK-CDKBNINF-AREA
-           INITIALIZE                       WRK-CDKBNINF-AREA
+           MOVE    SPACE                TO  WRK-RECE45XX-REC
+           INITIALIZE                       WRK-RECE45XX-REC
       *
            MOVE    RECE44-MEISAISU      TO  MAX-MEISAISU
-      *
-           MOVE    SPACE               TO  COM-RECE45-REC
-           INITIALIZE                      COM-RECE45-REC
       *
            PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX                >   50    )
                          OR      ( WK-FREE-NAME2(IDX) =   SPACE )
                 COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
-                MOVE   "810000001"        TO  COM-SRYCD(1)
-                MOVE   ZERO               TO  COM-SRYSURYO(1)
-                MOVE    "1"               TO  COM-SIKFLG(1)
-                MOVE   COM-SRYACTINF(1)   TO  WRK-SRYACTINF
-                                                         (MAX-MEISAISU)
-                MOVE   WRK-FREEINF2(IDX)  TO  WRK-NAMEINF(MAX-MEISAISU)
-                MOVE   COM-SIKFLGINF(1)   TO  WRK-SIKFLGINF
-                                                         (MAX-MEISAISU)
+                MOVE   "810000001"
+                             TO  WRK-RECE45XX-SRYCD(MAX-MEISAISU 1)
+                MOVE   ZERO  TO  WRK-RECE45XX-SRYSURYO(MAX-MEISAISU 1)
+                MOVE   WK-FREE-YUKOKETA2(IDX)
+                             TO  WRK-RECE45XX-YUKOKETA(MAX-MEISAISU 1)
+                MOVE   WK-FREE-NAME2(IDX)
+                             TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)
+                MOVE    "1"  TO  WRK-RECE45XX-SIKFLG(MAX-MEISAISU 1)
            END-PERFORM 
       *
-           PERFORM
-             UNTIL  ( FLG-RECE45           =   1                   )
-             OR     ( RECE44-HOSPID    NOT =   RECE45-HOSPID       )
-             OR     ( RECE44-SRYYM     NOT =   RECE45-SRYYM        )
-             OR     ( RECE44-NYUGAIKBN NOT =   RECE45-NYUGAIKBN    )
-             OR     ( RECE44-PTID      NOT =   RECE45-PTID         )
-             OR     ( RECE44-RECEKA    NOT =   RECE45-RECEKA       )
-             OR     ( RECE44-HKNID     NOT =   RECE45-HKNID        )
-             OR     ( RECE44-TEKSTYMD  NOT =   RECE45-TEKSTYMD     )
-             OR     ( RECE44-ZAINUM    NOT =   RECE45-ZAINUM       )
-      *
-             PERFORM   VARYING   IDX   FROM    1   BY  1
-                       UNTIL   ( IDX               >   5     )
-                       OR      ( RECE45-SRYCD(IDX) =   SPACE )
-                  ADD    1             TO      IDX-RECE45
-                  MOVE   RECE45-SRYACTINF(IDX) TO
-                                           WRK-SRYACTINF(IDX-RECE45)
-                  MOVE   RECE45-NAMEINF(IDX)   TO
-                                           WRK-NAMEINF(IDX-RECE45)
-                  MOVE   RECE45-SIKFLGINF(IDX)   TO
-                                           WRK-SIKFLGINF(IDX-RECE45)     
-                  MOVE   RECE45-DATAKBNINF(IDX) TO
-                                           WRK-DATAKBNINF(IDX-RECE45)
-                  MOVE   RECE45-HOUKNSKBNINF(IDX) TO
-                                           WRK-HOUKNSKBNINF(IDX-RECE45)
-                  MOVE   RECE45-KNSJISKBNINF(IDX) TO
-                                           WRK-KNSJISKBNINF(IDX-RECE45)
-                  MOVE   RECE45-CDKBNINF(IDX)     TO
-                                           WRK-CDKBNINF(IDX-RECE45)
-             END-PERFORM 
-      *
-             PERFORM 990-RECE45-NEXT-SEC
-      *
-           END-PERFORM
-      *
-      *    手術日コメントを含んだ内容で中間ファイルの再作成
-           MOVE       ZERO             TO      FLG-WRKRECE45
-           MOVE       ZERO             TO      IDX
-           MOVE       ZERO             TO      IDX-RECE45
-           MOVE       ZERO             TO      WRK-RENNUM
-           MOVE       ZERO             TO      WRK-CNT-MEISAI
-           PERFORM    UNTIL     FLG-WRKRECE45  =    1
-      *
-                  INITIALIZE                        RECE451-REC
-                  MOVE    WRK-RECE45-KEY       TO   RECE451-KEY
-                  ADD     1                    TO   WRK-RENNUM
-                  MOVE    WRK-RENNUM           TO   RECE451-RENNUM
-                  MOVE    WRK-RECE45-PTNUM     TO   RECE451-PTNUM
-                  MOVE    WRK-RECE45-SRYKA     TO   RECE451-SRYKA
-                  MOVE    WRK-RECE45-SRYKBN    TO   RECE451-SRYKBN
-                  MOVE    WRK-RECE45-SRYSYUKBN TO   RECE451-SRYSYUKBN
-                  MOVE    WRK-RECE45-JIHIMONEY TO   RECE451-JIHIMONEY
-                  PERFORM  VARYING   IDX   FROM   1   BY   1
-                           UNTIL   (IDX       >    5)   OR
-                                   (FLG-WRKRECE45   =   1)
-                     ADD         1             TO    IDX-RECE45
-                     IF  WK-RECE45-SRYCD(IDX-RECE45) = SPACE
-                         MOVE    1             TO    FLG-WRKRECE45
-                     ELSE
-                         MOVE  WRK-SRYACTINF(IDX-RECE45)
-                                          TO   RECE451-SRYACTINF(IDX)  
-                         MOVE  WRK-NAMEINF(IDX-RECE45)
-                                          TO   RECE451-NAMEINF(IDX)
-                         MOVE  WRK-SIKFLGINF(IDX-RECE45)
-                                          TO   RECE451-SIKFLGINF(IDX)
-                         MOVE  WRK-DATAKBNINF(IDX-RECE45)
-                                          TO   RECE451-DATAKBNINF(IDX)
-                         MOVE  WRK-HOUKNSKBNINF(IDX-RECE45)
-                                        TO   RECE451-HOUKNSKBNINF(IDX)
-                         MOVE  WRK-KNSJISKBNINF(IDX-RECE45)
-                                        TO   RECE451-KNSJISKBNINF(IDX)
-                         MOVE  WRK-CDKBNINF(IDX-RECE45)
-                                        TO   RECE451-CDKBNINF(IDX)
-      *
-                         IF    WRK-SIKFLGINF(IDX-RECE45)  =  "1"
-                              ADD    1    TO   WRK-CNT-MEISAI
-                         END-IF    
-      *
-                     END-IF  
-                  END-PERFORM
-                  WRITE   RECE451-REC
-                  ADD     1                    TO  CNT-RECE45
-           END-PERFORM     
-      *
-           MOVE    RECE44-REC        TO      RECE441-REC
-           MOVE    WRK-CNT-MEISAI    TO      RECE441-MEISAISU
-           WRITE   RECE441-REC
-           ADD     1                 TO      CNT-RECE44
+           PERFORM    2001-SRYACTINF-HENSYU-SEC
       *
            .
        2001-SHUJUTSU-ETC2-COMMENT-EXT.
@@ -2762,55 +2180,22 @@
       *****************************************************************
        2001-RIHA-COMMENT-SEC          SECTION.
       *
-           MOVE    RECE44-REC        TO      RECE441-REC
-           ADD     1                 TO      RECE441-MEISAISU
-           WRITE   RECE441-REC
-           ADD     1                 TO      CNT-RECE44
-      *
-      *      ※明細が５以上の場合
-             INITIALIZE                      RECE45-REC
-             MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
-             MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
-             MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
-             MOVE    RECE44-PTID         TO  RECE45-PTID
-             MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
-             MOVE    RECE44-HKNID        TO  RECE45-HKNID
-             MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
-             MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
-             START   RECE45-FILE
-                 KEY IS    >=   RECE45-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE45
-                 NOT INVALID
-                     PERFORM 990-RECE45-NEXT-SEC
-                     MOVE    RECE45-REC  TO  WRK-RECE45-REC
-             END-START
+             PERFORM  2001-RECE45-TAIHI-SEC
       *
       *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE45
-             MOVE    SPACE                TO  WRK-SRYACTINF-AREA
-             INITIALIZE                       WRK-SRYACTINF-AREA
-             MOVE    SPACE                TO  WRK-NAMEINF-AREA
-             INITIALIZE                       WRK-NAMEINF-AREA
-             MOVE    SPACE                TO  WRK-SIKFLGINF-AREA
-             INITIALIZE                       WRK-SIKFLGINF-AREA
-             MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
-             INITIALIZE                       WRK-DATAKBNINF-AREA
-             MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
-             INITIALIZE                       WRK-HOUKNSKBNINF-AREA
-             MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
-             INITIALIZE                       WRK-KNSJISKBNINF-AREA
-             MOVE    SPACE                TO  WRK-CDKBNINF-AREA
-             INITIALIZE                       WRK-CDKBNINF-AREA
+             MOVE    SPACE                TO  WRK-RECE45XX-REC
+             INITIALIZE                       WRK-RECE45XX-REC
       *      リハビリコメントの挿入
-      *      ADD     1                    TO  IDX-RECE45
-             MOVE    SPACE                TO  COM-RECE45-REC
-             INITIALIZE                       COM-RECE45-REC
-             MOVE    "810000001"          TO  COM-SRYCD(1)
-             MOVE    ZERO                 TO  COM-SRYSURYO(1)
-             MOVE    7                    TO  COM-YUKOKETA(1)
-             MOVE    "実施日数　　日"     TO  COM-NAME(1)
-             MOVE    "1"                  TO  COM-SIKFLG(1) 
+             COMPUTE  MAX-MEISAISU        =   RECE44-MEISAISU  +  1
+      *
+             MOVE    "810000001"
+                            TO  WRK-RECE45XX-SRYCD(MAX-MEISAISU 1)
+             MOVE    ZERO   TO  WRK-RECE45XX-SRYSURYO(MAX-MEISAISU 1)
+             MOVE    7      TO  WRK-RECE45XX-YUKOKETA(MAX-MEISAISU 1)
+             MOVE    "実施日数　　日"
+                            TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)
+             MOVE    "1"    TO  WRK-RECE45XX-SIKFLG(MAX-MEISAISU 1)
              MOVE    ZERO                 TO  CNT-RIHA
              EVALUATE   RECE44-ZAINUM
                  WHEN   WRK-RIGA1-SHU-ZAINUM
@@ -2944,95 +2329,28 @@
              END-EVALUATE
              IF      CNT-RIHA             NOT =    ZERO
                MOVE    CNT-RIHA             TO  DAY-IDX
-               MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(9:4)
-               COMPUTE  MAX-MEISAISU        =   RECE44-MEISAISU  +  1
-               MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-                                                     (MAX-MEISAISU)
-               MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-                                                     (MAX-MEISAISU)
-               MOVE    COM-SIKFLGINF(1)     TO  WRK-SIKFLGINF
-                                                     (MAX-MEISAISU)
+               MOVE    TBL-DAY(DAY-IDX)
+                           TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)(9:4)
              END-IF
       *
-             PERFORM
-               UNTIL  ( FLG-RECE45           =   1                   )
-               OR     ( RECE44-HOSPID    NOT =   RECE45-HOSPID       )
-               OR     ( RECE44-SRYYM     NOT =   RECE45-SRYYM        )
-               OR     ( RECE44-NYUGAIKBN NOT =   RECE45-NYUGAIKBN    )
-               OR     ( RECE44-PTID      NOT =   RECE45-PTID         )
-               OR     ( RECE44-RECEKA    NOT =   RECE45-RECEKA       )
-               OR     ( RECE44-HKNID     NOT =   RECE45-HKNID        )
-               OR     ( RECE44-TEKSTYMD  NOT =   RECE45-TEKSTYMD     )
-               OR     ( RECE44-ZAINUM    NOT =   RECE45-ZAINUM       )
-      *
-               PERFORM   VARYING   IDX   FROM    1   BY  1
-                         UNTIL   ( IDX               >   5     )
-                         OR      ( RECE45-SRYCD(IDX) =   SPACE )
-                    ADD    1             TO      IDX-RECE45
-                    MOVE   RECE45-SRYACTINF(IDX) TO
-                                             WRK-SRYACTINF(IDX-RECE45)
-                    MOVE   RECE45-NAMEINF(IDX)   TO
-                                             WRK-NAMEINF(IDX-RECE45)
-                    MOVE   RECE45-SIKFLGINF(IDX)   TO
-                                             WRK-SIKFLGINF(IDX-RECE45)     
-                    MOVE   RECE45-DATAKBNINF(IDX) TO
-                                             WRK-DATAKBNINF(IDX-RECE45)
-                    MOVE   RECE45-HOUKNSKBNINF(IDX) TO
-                                           WRK-HOUKNSKBNINF(IDX-RECE45)
-                    MOVE   RECE45-KNSJISKBNINF(IDX) TO
-                                           WRK-KNSJISKBNINF(IDX-RECE45)
-                    MOVE   RECE45-CDKBNINF(IDX)     TO
-                                           WRK-CDKBNINF(IDX-RECE45)
-               END-PERFORM 
-      *
-               PERFORM 990-RECE45-NEXT-SEC
-      *
-             END-PERFORM
-      *
-      *      リハビリコメントを含んだ内容で中間ファイルの再作成
-             MOVE       ZERO             TO      FLG-WRKRECE45
-             MOVE       ZERO             TO      IDX
-             MOVE       ZERO             TO      IDX-RECE45
-             MOVE       ZERO             TO      WRK-RENNUM
-             PERFORM    UNTIL     FLG-WRKRECE45  =    1
-                    INITIALIZE                        RECE451-REC
-                    MOVE    WRK-RECE45-KEY       TO   RECE451-KEY
-                    ADD     1                    TO   WRK-RENNUM
-                    MOVE    WRK-RENNUM           TO   RECE451-RENNUM
-                    MOVE    WRK-RECE45-PTNUM     TO   RECE451-PTNUM
-                    MOVE    WRK-RECE45-SRYKA     TO   RECE451-SRYKA
-                    MOVE    WRK-RECE45-SRYKBN    TO   RECE451-SRYKBN
-                    MOVE    WRK-RECE45-SRYSYUKBN TO   RECE451-SRYSYUKBN
-                    MOVE    WRK-RECE45-JIHIMONEY TO   RECE451-JIHIMONEY
-                    PERFORM  VARYING   IDX   FROM   1   BY   1
-                             UNTIL   (IDX       >    5)   OR
-                                     (FLG-WRKRECE45   =   1)
-                       ADD         1             TO    IDX-RECE45
-                       IF  WK-RECE45-SRYCD(IDX-RECE45) = SPACE
-                           MOVE    1             TO    FLG-WRKRECE45
-                       ELSE
-                           MOVE  WRK-SRYACTINF(IDX-RECE45)
-                                            TO   RECE451-SRYACTINF(IDX)  
-                           MOVE  WRK-NAMEINF(IDX-RECE45)
-                                            TO   RECE451-NAMEINF(IDX)
-                           MOVE  WRK-SIKFLGINF(IDX-RECE45)
-                                            TO   RECE451-SIKFLGINF(IDX)
-                           MOVE  WRK-DATAKBNINF(IDX-RECE45)
-                                            TO   RECE451-DATAKBNINF(IDX)
-                           MOVE  WRK-HOUKNSKBNINF(IDX-RECE45)
-                                        TO   RECE451-HOUKNSKBNINF(IDX)
-                           MOVE  WRK-KNSJISKBNINF(IDX-RECE45)
-                                        TO   RECE451-KNSJISKBNINF(IDX)
-                           MOVE  WRK-CDKBNINF(IDX-RECE45)
-                                        TO   RECE451-CDKBNINF(IDX)
-                       END-IF  
-                    END-PERFORM
-                    WRITE   RECE451-REC
-                    ADD     1                    TO  CNT-RECE45
-             END-PERFORM     
+             PERFORM    2001-SRYACTINF-HENSYU-SEC
       *
            .
        2001-RIHA-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト０４転送処理
+      *****************************************************************
+       2001-RECE44-TENSOU-SEC     SECTION.
+      *
+           MOVE       RECE44-REC    TO   RECE441-REC
+           WRITE      RECE441-REC
+           ADD        1             TO   CNT-RECE44
+           PERFORM    2001-RECE45-TENSOU-SEC
+      *
+           .
+       2001-RECE44-TENSOU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3078,6 +2396,107 @@
       *
            .
        2001-RECE45-TENSOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ０５　退避処理
+      *****************************************************************
+       2001-RECE45-TAIHI-SEC     SECTION.
+      *
+           INITIALIZE                      RECE45-REC
+           MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
+           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
+           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
+           MOVE    RECE44-PTID         TO  RECE45-PTID
+           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
+           MOVE    RECE44-HKNID        TO  RECE45-HKNID
+           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
+           MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
+           START   RECE45-FILE
+                 KEY IS    >=   RECE45-KEY
+                 INVALID
+                     MOVE    1           TO  FLG-RECE45
+                 NOT INVALID
+                     PERFORM 990-RECE45-NEXT-SEC
+                     MOVE    RECE45-REC  TO  WRK-RECE45-REC
+           END-START
+      *
+           .
+       2001-RECE45-TAIHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ０５　ＳＲＹＡＣＴＩＮＦ編集処理
+      *****************************************************************
+       2001-SRYACTINF-HENSYU-SEC     SECTION.
+      *
+           PERFORM
+             UNTIL  ( FLG-RECE45           =   1                   )
+             OR     ( RECE44-HOSPID    NOT =   RECE45-HOSPID       )
+             OR     ( RECE44-SRYYM     NOT =   RECE45-SRYYM        )
+             OR     ( RECE44-NYUGAIKBN NOT =   RECE45-NYUGAIKBN    )
+             OR     ( RECE44-PTID      NOT =   RECE45-PTID         )
+             OR     ( RECE44-RECEKA    NOT =   RECE45-RECEKA       )
+             OR     ( RECE44-HKNID     NOT =   RECE45-HKNID        )
+             OR     ( RECE44-TEKSTYMD  NOT =   RECE45-TEKSTYMD     )
+             OR     ( RECE44-ZAINUM    NOT =   RECE45-ZAINUM       )
+      *
+             PERFORM   VARYING   IDX   FROM    1   BY  1
+                       UNTIL   ( IDX               >   5     )
+                       OR      ( RECE45-SRYCD(IDX) =   SPACE )
+                  ADD    1             TO      IDX-RECE45
+                  MOVE   RECE45-SRYACT-TBL(IDX)
+                             TO   WRK-RECE45XX-SRYACT-TBL(IDX-RECE45 1)
+             END-PERFORM 
+      *
+             PERFORM 990-RECE45-NEXT-SEC
+      *
+           END-PERFORM
+      *
+      *    手術日コメントを含んだ内容で中間ファイルの再作成
+           MOVE       ZERO             TO      FLG-WRKRECE45
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE45
+           MOVE       ZERO             TO      WRK-RENNUM
+           MOVE       ZERO             TO      WRK-CNT-MEISAI
+           PERFORM    UNTIL     FLG-WRKRECE45  =    1
+      *
+                  INITIALIZE                        RECE451-REC
+                  MOVE    WRK-RECE45-KEY       TO   RECE451-KEY
+                  ADD     1                    TO   WRK-RENNUM
+                  MOVE    WRK-RENNUM           TO   RECE451-RENNUM
+                  MOVE    WRK-RECE45-PTNUM     TO   RECE451-PTNUM
+                  MOVE    WRK-RECE45-SRYKA     TO   RECE451-SRYKA
+                  MOVE    WRK-RECE45-SRYKBN    TO   RECE451-SRYKBN
+                  MOVE    WRK-RECE45-SRYSYUKBN TO   RECE451-SRYSYUKBN
+                  MOVE    WRK-RECE45-JIHIMONEY TO   RECE451-JIHIMONEY
+                  PERFORM  VARYING   IDX   FROM   1   BY   1
+                           UNTIL   (IDX       >    5)   OR
+                                   (FLG-WRKRECE45   =   1)
+                     ADD         1             TO    IDX-RECE45
+                     IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                         MOVE    1             TO    FLG-WRKRECE45
+                     ELSE
+                         MOVE  WRK-RECE45XX-SRYACT-TBL(IDX-RECE45 1)
+                                          TO   RECE451-SRYACT-TBL(IDX)
+      *
+                         IF    WRK-RECE45XX-SIKFLG(IDX-RECE45 1)  =  "1"
+                              ADD    1    TO   WRK-CNT-MEISAI
+                         END-IF    
+      *
+                     END-IF  
+                  END-PERFORM
+                  WRITE   RECE451-REC
+                  ADD     1                    TO  CNT-RECE45
+           END-PERFORM     
+      *
+           MOVE    RECE44-REC        TO      RECE441-REC
+           MOVE    WRK-CNT-MEISAI    TO      RECE441-MEISAISU
+           WRITE   RECE441-REC
+           ADD     1                 TO      CNT-RECE44
+      *
+           .
+       2001-SRYACTINF-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

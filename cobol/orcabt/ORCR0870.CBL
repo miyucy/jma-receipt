@@ -246,55 +246,10 @@
            COPY    "CPRCF085.INC"  REPLACING   //RECE85//
                                    BY          //WRK-RECE85//.
       *
-       01  COM-RECE85-REC. 
+       01  WRK-RECE85XX-REC.
+         02 WRK-RECE85XX-TBL       OCCURS 50.
            COPY    "CPRCF085.INC"  REPLACING   //RECE85//
-                                   BY          //COM//.
-      *
-       01  WRK-SRYACTINF-AREA.
-           03  WRK-SRYACTINF                   OCCURS  50.
-               05  WK-RECE85-SRYCD           PIC  X(09).
-               05  WK-RECE85-SRYSURYO        PIC  9(05)V9(03).
-               05  WK-RECE85-SRYKAISU        PIC  9(03).
-               05  WK-RECE85-TANICD          PIC  9(03).
-               05  WK-RECE85-TANIMOJISU      PIC  9(01).
-               05  WK-RECE85-TANINAME        PIC  X(24).
-               05  WK-RECE85-TENSIKIBETU     PIC  9(01).
-               05  WK-RECE85-TEN             PIC  9(09)V9(02).
-               05  WK-RECE85-MEISKYFLG       PIC  X(01).
-               05  WK-RECE85-AUTOKBN         PIC  X(01).
-               05  WK-RECE85-INPUTNUM        PIC  9(03).
-               05  WK-RECE85-TENTTLKBN       PIC  9(03).
-      *
-       01  WRK-NAMEINF-AREA.
-           03  WRK-NAMEINF                     OCCURS 50.         
-               05  WK-RECE85-YUKOKETA        PIC  9(02).
-               05  WK-RECE85-NAME            PIC  X(200).
-      *
-       01  WRK-SIKFLGINF-AREA.
-           03  WRK-SIKFLGINF                   OCCURS 50.         
-               05  WK-RECE85-SIKFLG          PIC  X(01).
-      *
-       01  WRK-DATAKBNINF-AREA.
-           03  WRK-DATAKBNINF                  OCCURS 50.         
-               05  WK-RECE85-DATAKBN         PIC  9(01).
-      *
-       01  WRK-HOUKNSKBNINF-AREA.
-           03  WRK-HOUKNSKBNINF                OCCURS 50.
-               05  WK-RECE85-HOUKNSKBN       PIC  9(02).
-      *
-       01  WRK-KNSJISKBNINF-AREA.
-           03  WRK-KNSJISKBNINF                OCCURS 50.
-               05  WK-RECE85-KNSJISKBN       PIC  9(01).
-      *
-       01  WRK-CDKBNINF-AREA.
-           03  WRK-CDKBNINF                    OCCURS 50.
-               05  WK-RECE85-CDKBN-KBN        PIC  X(01).
-               05  WK-RECE85-CDKBN-SYO        PIC  9(01).
-               05  WK-RECE85-CDKBN-BU         PIC  9(02).
-               05  WK-RECE85-CDKBN-KBNNUM     PIC  9(03).
-               05  WK-RECE85-CDKBN-KBNNUM-EDA PIC  9(02).
-               05  WK-RECE85-CDKBN-KOUBAN     PIC  9(02).
-               05  WK-RECE85-KOUHYOJYUNNUM    PIC  9(09).
+                                   BY          //WRK-RECE85XX//.
       *
        01  WRK-FREE-AREA2.                                              
            03  WRK-FREEINF2                    OCCURS 50.               
@@ -1021,38 +976,36 @@
            MOVE    99999999            TO  RECE851-ZAINUM
            MOVE    "90"                TO  RECE851-SRYKBN
       *    コメントの挿入
-           MOVE    SPACE               TO  COM-RECE85-REC
-           INITIALIZE                      COM-RECE85-REC
-           MOVE    "810000001"         TO  COM-SRYCD(1)
-           MOVE     ZERO               TO  COM-SRYSURYO(1)
+           MOVE    SPACE               TO  WRK-RECE85XX-REC
+           INITIALIZE                      WRK-RECE85XX-REC
+           MOVE    "810000001"         TO  WRK-RECE85XX-SRYCD(1 1)
+           MOVE     ZERO               TO  WRK-RECE85XX-SRYSURYO(1 1)
            EVALUATE   RECE82-NYUINRYOFLG
              WHEN     "1"
-               MOVE     10             TO  COM-YUKOKETA(1)
+               MOVE     10             TO  WRK-RECE85XX-YUKOKETA(1 1)
                MOVE    "自費にて入院料算定済" 
-                                       TO  COM-NAME(1)
+                                       TO  WRK-RECE85XX-NAME(1 1)
              WHEN     "2"
-               MOVE     10             TO  COM-YUKOKETA(1)
+               MOVE     10             TO  WRK-RECE85XX-YUKOKETA(1 1)
                MOVE    "労災にて入院料算定済" 
-                                       TO  COM-NAME(1)
+                                       TO  WRK-RECE85XX-NAME(1 1)
              WHEN     "3"
-               MOVE     11             TO  COM-YUKOKETA(1)
+               MOVE     11             TO  WRK-RECE85XX-YUKOKETA(1 1)
                MOVE    "自賠責にて入院料算定済" 
-                                       TO  COM-NAME(1)
+                                       TO  WRK-RECE85XX-NAME(1 1)
              WHEN     "4"
-               MOVE     10             TO  COM-YUKOKETA(1)
+               MOVE     10             TO  WRK-RECE85XX-YUKOKETA(1 1)
                MOVE    "国保にて入院料算定済" 
-                                       TO  COM-NAME(1)
+                                       TO  WRK-RECE85XX-NAME(1 1)
              WHEN     "5"
-               MOVE     10             TO  COM-YUKOKETA(1)
+               MOVE     10             TO  WRK-RECE85XX-YUKOKETA(1 1)
                MOVE    "社保にて入院料算定済" 
-                                       TO  COM-NAME(1)
+                                       TO  WRK-RECE85XX-NAME(1 1)
            END-EVALUATE
+           MOVE     "1"                TO  WRK-RECE85XX-SIKFLG(1 1)
       *
-           MOVE    COM-SRYACTINF(1)    TO  RECE851-SRYACTINF(1)
-           MOVE    COM-NAMEINF(1)      TO  RECE851-NAMEINF(1)
-      *
-           MOVE     "1"                TO  RECE851-SIKFLG(1)
-      *
+           MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)
+                                       TO  RECE851-SRYACT-TBL(1)
            WRITE   RECE851-REC
            ADD     1                   TO  CNT-RECE85
       *
@@ -1176,24 +1129,22 @@
            MOVE    99999998            TO  RECE851-ZAINUM
            MOVE    "99"                TO  RECE851-SRYKBN
       *    コメントの挿入
-           MOVE    SPACE                TO  COM-RECE85-REC
-           INITIALIZE                       COM-RECE85-REC
-           MOVE    "840000045"          TO  COM-SRYCD(1)
-           MOVE     ZERO                TO  COM-SRYSURYO(1)
-           MOVE     9                   TO  COM-YUKOKETA(1)
-           MOVE    "発症　　　月　　日" TO  COM-NAME(1)
+           MOVE    SPACE                TO  WRK-RECE85XX-REC
+           INITIALIZE                       WRK-RECE85XX-REC
+           MOVE    "810000001"          TO  WRK-RECE85XX-SRYCD(1 1)
+           MOVE     ZERO                TO  WRK-RECE85XX-SRYSURYO(1 1)
+           MOVE     9                   TO  WRK-RECE85XX-YUKOKETA(1 1)
+           MOVE    "発症　　　月　　日" TO  WRK-RECE85XX-NAME(1 1)
            MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-           MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(7:4)
+           MOVE    TBL-DAY(DAY-IDX2)    TO  WRK-RECE85XX-NAME(1 1)(7:4)
            MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-           MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(13:4)
+           MOVE    TBL-DAY(DAY-IDX2)    TO  WRK-RECE85XX-NAME(1 1)(13:4)
+           MOVE     "1"                 TO  WRK-RECE85XX-SIKFLG(1 1)
       *
-           MOVE    COM-SRYACTINF(1)    TO  RECE851-SRYACTINF(1)
-           MOVE    COM-NAMEINF(1)      TO  RECE851-NAMEINF(1)
-      *
-           MOVE     "1"                TO  RECE851-SIKFLG(1)
-      *
+           MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)
+                                        TO  RECE851-SRYACT-TBL(1)
            WRITE   RECE851-REC
-           ADD     1                   TO  CNT-RECE85
+           ADD     1                    TO  CNT-RECE85
       *
            .
        2001-KYUSEIHASSYO-COMMENT-EXT.
@@ -1537,142 +1488,30 @@
       *****************************************************************
        2001-HINKAI-COMMENT-SEC          SECTION.
       *
-           MOVE    RECE84-REC        TO      RECE841-REC
-           ADD     1                 TO      RECE841-MEISAISU
-           WRITE   RECE841-REC
-           ADD     1                 TO      CNT-RECE84
-      *
-             INITIALIZE                      RECE85-REC
-             MOVE    RECE84-HOSPID       TO  RECE85-HOSPID
-             MOVE    RECE84-SRYYM        TO  RECE85-SRYYM
-             MOVE    RECE84-NYUGAIKBN    TO  RECE85-NYUGAIKBN
-             MOVE    RECE84-PTID         TO  RECE85-PTID
-             MOVE    RECE84-RECEKA       TO  RECE85-RECEKA
-             MOVE    RECE84-HKNID        TO  RECE85-HKNID
-             MOVE    RECE84-TEKSTYMD     TO  RECE85-TEKSTYMD
-             MOVE    RECE84-ZAINUM       TO  RECE85-ZAINUM
-             START   RECE85-FILE
-                 KEY IS    >=   RECE85-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE85
-                 NOT INVALID
-                     PERFORM 990-RECE85-NEXT-SEC
-                     MOVE    RECE85-REC  TO  WRK-RECE85-REC
-             END-START
+             PERFORM   2001-RECE85-TAIHI-SEC
       *
       *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE85
-             MOVE    SPACE                TO  WRK-SRYACTINF-AREA
-             INITIALIZE                       WRK-SRYACTINF-AREA
-             MOVE    SPACE                TO  WRK-NAMEINF-AREA
-             INITIALIZE                       WRK-NAMEINF-AREA
-             MOVE    SPACE                TO  WRK-SIKFLGINF-AREA
-             INITIALIZE                       WRK-SIKFLGINF-AREA
-             MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
-             INITIALIZE                       WRK-DATAKBNINF-AREA
-             MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
-             INITIALIZE                       WRK-HOUKNSKBNINF-AREA
-             MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
-             INITIALIZE                       WRK-KNSJISKBNINF-AREA
-             MOVE    SPACE                TO  WRK-CDKBNINF-AREA
-             INITIALIZE                       WRK-CDKBNINF-AREA
+             MOVE    SPACE                TO  WRK-RECE85XX-REC
+             INITIALIZE                       WRK-RECE85XX-REC
       *      コメントの挿入
-             MOVE    SPACE                TO  COM-RECE85-REC
-             INITIALIZE                       COM-RECE85-REC
-             MOVE    "810000001"          TO  COM-SRYCD(1)
-             MOVE    ZERO                 TO  COM-SRYSURYO(1)
-             MOVE    16                   TO  COM-YUKOKETA(1)
-             MOVE    "初回指導管理算定日　　　月　　日"
-                                          TO  COM-NAME(1)
-             MOVE    WRK-TOSEKIYMD(5:2)   TO  DAY-IDX2
-             MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(21:4)
-             MOVE    WRK-TOSEKIYMD(7:2)   TO  DAY-IDX2
-             MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(27:4)
-             MOVE    "1"                  TO  COM-SIKFLG(1) 
              COMPUTE  MAX-MEISAISU        =   RECE84-MEISAISU  +  1
-             MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-                                                   (MAX-MEISAISU)
-             MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-                                                   (MAX-MEISAISU)
-             MOVE    COM-SIKFLGINF(1)     TO  WRK-SIKFLGINF
-                                                   (MAX-MEISAISU)
       *
-             PERFORM
-               UNTIL  ( FLG-RECE85           =   1                   )
-               OR     ( RECE84-HOSPID    NOT =   RECE85-HOSPID       )
-               OR     ( RECE84-SRYYM     NOT =   RECE85-SRYYM        )
-               OR     ( RECE84-NYUGAIKBN NOT =   RECE85-NYUGAIKBN    )
-               OR     ( RECE84-PTID      NOT =   RECE85-PTID         )
-               OR     ( RECE84-RECEKA    NOT =   RECE85-RECEKA       )
-               OR     ( RECE84-HKNID     NOT =   RECE85-HKNID        )
-               OR     ( RECE84-TEKSTYMD  NOT =   RECE85-TEKSTYMD     )
-               OR     ( RECE84-ZAINUM    NOT =   RECE85-ZAINUM       )
+             MOVE    "810000001"
+                            TO  WRK-RECE85XX-SRYCD(MAX-MEISAISU 1)
+             MOVE    ZERO   TO  WRK-RECE85XX-SRYSURYO(MAX-MEISAISU 1)
+             MOVE    16     TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+             MOVE    "初回指導管理算定日　　　月　　日"
+                            TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
+             MOVE    WRK-TOSEKIYMD(5:2)   TO  DAY-IDX2
+             MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)(21:4)
+             MOVE    WRK-TOSEKIYMD(7:2)   TO  DAY-IDX2
+             MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)(27:4)
+             MOVE    "1"    TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
       *
-               PERFORM   VARYING   IDX   FROM    1   BY  1
-                         UNTIL   ( IDX               >   5     )
-                         OR      ( RECE85-SRYCD(IDX) =   SPACE )
-                    ADD    1             TO      IDX-RECE85
-                    MOVE   RECE85-SRYACTINF(IDX) TO
-                                             WRK-SRYACTINF(IDX-RECE85)
-                    MOVE   RECE85-NAMEINF(IDX)   TO
-                                             WRK-NAMEINF(IDX-RECE85)
-                    MOVE   RECE85-SIKFLGINF(IDX)   TO
-                                             WRK-SIKFLGINF(IDX-RECE85)     
-                    MOVE   RECE85-DATAKBNINF(IDX) TO
-                                             WRK-DATAKBNINF(IDX-RECE85)
-                    MOVE   RECE85-HOUKNSKBNINF(IDX) TO
-                                           WRK-HOUKNSKBNINF(IDX-RECE85)
-                    MOVE   RECE85-KNSJISKBNINF(IDX) TO
-                                           WRK-KNSJISKBNINF(IDX-RECE85)
-                    MOVE   RECE85-CDKBNINF(IDX) TO
-                                           WRK-CDKBNINF(IDX-RECE85)
-               END-PERFORM 
-      *
-               PERFORM 990-RECE85-NEXT-SEC
-      *
-             END-PERFORM
-      *
-      *      コメントを含んだ内容で中間ファイルの再作成
-             MOVE       ZERO             TO      FLG-WRKRECE85
-             MOVE       ZERO             TO      IDX
-             MOVE       ZERO             TO      IDX-RECE85
-             MOVE       ZERO             TO      WRK-RENNUM
-             PERFORM    UNTIL     FLG-WRKRECE85  =    1
-                    INITIALIZE                        RECE851-REC
-                    MOVE    WRK-RECE85-KEY       TO   RECE851-KEY
-                    ADD     1                    TO   WRK-RENNUM
-                    MOVE    WRK-RENNUM           TO   RECE851-RENNUM
-                    MOVE    WRK-RECE85-PTNUM     TO   RECE851-PTNUM
-                    MOVE    WRK-RECE85-SRYKA     TO   RECE851-SRYKA
-                    MOVE    WRK-RECE85-SRYKBN    TO   RECE851-SRYKBN
-                    MOVE    WRK-RECE85-SRYSYUKBN TO   RECE851-SRYSYUKBN
-                    MOVE    WRK-RECE85-JIHIMONEY TO   RECE851-JIHIMONEY
-                    PERFORM  VARYING   IDX   FROM   1   BY   1
-                             UNTIL   (IDX       >    5)   OR
-                                     (FLG-WRKRECE85   =   1)
-                       ADD         1             TO    IDX-RECE85
-                       IF  WK-RECE85-SRYCD(IDX-RECE85) = SPACE
-                           MOVE    1             TO    FLG-WRKRECE85
-                       ELSE
-                           MOVE  WRK-SRYACTINF(IDX-RECE85)
-                                            TO   RECE851-SRYACTINF(IDX)  
-                           MOVE  WRK-NAMEINF(IDX-RECE85)
-                                            TO   RECE851-NAMEINF(IDX)
-                           MOVE  WRK-SIKFLGINF(IDX-RECE85)
-                                            TO   RECE851-SIKFLGINF(IDX)
-                           MOVE  WRK-DATAKBNINF(IDX-RECE85)
-                                        TO   RECE851-DATAKBNINF(IDX)
-                           MOVE  WRK-HOUKNSKBNINF(IDX-RECE85)
-                                        TO   RECE851-HOUKNSKBNINF(IDX)
-                           MOVE  WRK-KNSJISKBNINF(IDX-RECE85)
-                                        TO   RECE851-KNSJISKBNINF(IDX)
-                           MOVE  WRK-CDKBNINF(IDX-RECE85)
-                                        TO   RECE851-CDKBNINF(IDX)
-                       END-IF  
-                    END-PERFORM
-                    WRITE   RECE851-REC
-                    ADD     1                    TO  CNT-RECE85
-             END-PERFORM     
+             PERFORM    2001-SRYACTINF-HENSYU-SEC
       *
            .
        2001-HINKAI-COMMENT-EXT.
@@ -1751,38 +1590,14 @@
                      PERFORM 990-RECE85-NEXT-SEC
            END-START
       *
-           MOVE    RECE85-REC       TO      RECE851-REC
-           MOVE    RECE85-SRYACTINF(1)  TO  RECE851-SRYACTINF(1)
-           MOVE    RECE85-SRYACTINF(2)  TO  RECE851-SRYACTINF(3)
-           MOVE    RECE85-SRYACTINF(3)  TO  RECE851-SRYACTINF(4)
-           MOVE    RECE85-SRYACTINF(4)  TO  RECE851-SRYACTINF(5)
-           MOVE    RECE85-NAMEINF(1)    TO  RECE851-NAMEINF(1)
-           MOVE    RECE85-NAMEINF(2)    TO  RECE851-NAMEINF(3)
-           MOVE    RECE85-NAMEINF(3)    TO  RECE851-NAMEINF(4)
-           MOVE    RECE85-NAMEINF(4)    TO  RECE851-NAMEINF(5)
-           MOVE    RECE85-SIKFLGINF(1)  TO  RECE851-SIKFLGINF(1)
-           MOVE    RECE85-SIKFLGINF(2)  TO  RECE851-SIKFLGINF(3)
-           MOVE    RECE85-SIKFLGINF(3)  TO  RECE851-SIKFLGINF(4)
-           MOVE    RECE85-SIKFLGINF(4)  TO  RECE851-SIKFLGINF(5)
-           MOVE    RECE85-DATAKBNINF(1) TO  RECE851-DATAKBNINF(1)
-           MOVE    RECE85-DATAKBNINF(2) TO  RECE851-DATAKBNINF(3)
-           MOVE    RECE85-DATAKBNINF(3) TO  RECE851-DATAKBNINF(4)
-           MOVE    RECE85-DATAKBNINF(4) TO  RECE851-DATAKBNINF(5)
-           MOVE    RECE85-HOUKNSKBNINF(1) TO  RECE851-HOUKNSKBNINF(1)
-           MOVE    RECE85-HOUKNSKBNINF(2) TO  RECE851-HOUKNSKBNINF(3)
-           MOVE    RECE85-HOUKNSKBNINF(3) TO  RECE851-HOUKNSKBNINF(4)
-           MOVE    RECE85-HOUKNSKBNINF(4) TO  RECE851-HOUKNSKBNINF(5)
-           MOVE    RECE85-KNSJISKBNINF(1) TO  RECE851-KNSJISKBNINF(1)
-           MOVE    RECE85-KNSJISKBNINF(2) TO  RECE851-KNSJISKBNINF(3)
-           MOVE    RECE85-KNSJISKBNINF(3) TO  RECE851-KNSJISKBNINF(4)
-           MOVE    RECE85-KNSJISKBNINF(4) TO  RECE851-KNSJISKBNINF(5)
-           MOVE    RECE85-CDKBNINF(1)   TO  RECE851-CDKBNINF(1)
-           MOVE    RECE85-CDKBNINF(2)   TO  RECE851-CDKBNINF(3)
-           MOVE    RECE85-CDKBNINF(3)   TO  RECE851-CDKBNINF(4)
-           MOVE    RECE85-CDKBNINF(4)   TO  RECE851-CDKBNINF(5)
-      *
-           MOVE    SPACE                TO  RECE851-SRYACTINF(2)
-           INITIALIZE                       RECE851-SRYACTINF(2)
+           MOVE    RECE85-REC           TO  RECE851-REC
+           MOVE    RECE85-SRYACT-TBL(1) TO  RECE851-SRYACT-TBL(1)
+           MOVE    RECE85-SRYACT-TBL(2) TO  RECE851-SRYACT-TBL(3)
+           MOVE    RECE85-SRYACT-TBL(3) TO  RECE851-SRYACT-TBL(4)
+           MOVE    RECE85-SRYACT-TBL(4) TO  RECE851-SRYACT-TBL(5)
+     *
+           MOVE    SPACE                TO  RECE851-SRYACT-TBL(2)
+           INITIALIZE                       RECE851-SRYACT-TBL(2)
            MOVE    "810000001"          TO  RECE851-SRYCD(2)
            MOVE    ZERO                 TO  RECE851-SRYSURYO(2)
            MOVE    16                   TO  RECE851-YUKOKETA(2)
@@ -1792,7 +1607,6 @@
            MOVE     TBL-DAY(DAY-IDX)    TO  RECE851-NAME(2)(21:4)
            MOVE     WRK-DAY-YAKUKAN     TO  DAY-IDX
            MOVE     TBL-DAY(DAY-IDX)    TO  RECE851-NAME(2)(27:4)
-      *
            MOVE     "1"                 TO  RECE851-SIKFLG(2)
       *
            WRITE    RECE851-REC
@@ -1814,145 +1628,28 @@
       *
            PERFORM  2001-FREE-COMMENT2-SEC                              
       *
-      *    ※明細が５以上の場合
-           INITIALIZE                      RECE85-REC
-           MOVE    RECE84-HOSPID       TO  RECE85-HOSPID
-           MOVE    RECE84-SRYYM        TO  RECE85-SRYYM
-           MOVE    RECE84-NYUGAIKBN    TO  RECE85-NYUGAIKBN
-           MOVE    RECE84-PTID         TO  RECE85-PTID
-           MOVE    RECE84-RECEKA       TO  RECE85-RECEKA
-           MOVE    RECE84-HKNID        TO  RECE85-HKNID
-           MOVE    RECE84-TEKSTYMD     TO  RECE85-TEKSTYMD
-           MOVE    RECE84-ZAINUM       TO  RECE85-ZAINUM
-           START   RECE85-FILE
-                 KEY IS    >=   RECE85-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE85
-                 NOT INVALID
-                     PERFORM 990-RECE85-NEXT-SEC
-                     MOVE    RECE85-REC  TO  WRK-RECE85-REC
-           END-START
+           PERFORM  2001-RECE85-TAIHI-SEC
       *
       *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE85
-           MOVE    SPACE                TO  WRK-SRYACTINF-AREA
-           INITIALIZE                       WRK-SRYACTINF-AREA
-           MOVE    SPACE                TO  WRK-NAMEINF-AREA
-           INITIALIZE                       WRK-NAMEINF-AREA
-           MOVE    SPACE                TO  WRK-SIKFLGINF-AREA
-           INITIALIZE                       WRK-SIKFLGINF-AREA
-           MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
-           INITIALIZE                       WRK-DATAKBNINF-AREA
-           MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
-           INITIALIZE                       WRK-HOUKNSKBNINF-AREA
-           MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
-           INITIALIZE                       WRK-KNSJISKBNINF-AREA
-           MOVE    SPACE                TO  WRK-CDKBNINF-AREA
-           INITIALIZE                       WRK-CDKBNINF-AREA
-      *
-           MOVE    SPACE               TO  COM-RECE85-REC
-           INITIALIZE                      COM-RECE85-REC
+           MOVE    SPACE                TO  WRK-RECE85XX-REC
+           INITIALIZE                       WRK-RECE85XX-REC
       *
            PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX                >   50    )
                          OR      ( WK-FREE-NAME2(IDX) =   SPACE )
-                ADD    1                  TO  IDX-RECE85
-                MOVE   "810000001"        TO  COM-SRYCD(1)
-                MOVE   ZERO               TO  COM-SRYSURYO(1)
-                MOVE    "1"               TO  COM-SIKFLG(1)
-                MOVE   COM-SRYACTINF(1)   TO  WRK-SRYACTINF(IDX-RECE85)
-                MOVE   WRK-FREEINF2(IDX)  TO  WRK-NAMEINF(IDX-RECE85)
-                MOVE   COM-SIKFLGINF(1)   TO  WRK-SIKFLGINF(IDX-RECE85)
+                ADD    1       TO  IDX-RECE85
+                MOVE   "810000001"
+                               TO  WRK-RECE85XX-SRYCD(IDX-RECE85 1)
+                MOVE   ZERO    TO  WRK-RECE85XX-SRYSURYO(IDX-RECE85 1)
+                MOVE   WK-FREE-YUKOKETA2(IDX)
+                               TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+                MOVE   WK-FREE-NAME2(IDX)
+                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+                MOVE    "1"    TO  WRK-RECE85XX-SIKFLG(IDX-RECE85 1)
            END-PERFORM 
       *
-           PERFORM
-             UNTIL  ( FLG-RECE85           =   1                   )
-             OR     ( RECE84-HOSPID    NOT =   RECE85-HOSPID       )
-             OR     ( RECE84-SRYYM     NOT =   RECE85-SRYYM        )
-             OR     ( RECE84-NYUGAIKBN NOT =   RECE85-NYUGAIKBN    )
-             OR     ( RECE84-PTID      NOT =   RECE85-PTID         )
-             OR     ( RECE84-RECEKA    NOT =   RECE85-RECEKA       )
-             OR     ( RECE84-HKNID     NOT =   RECE85-HKNID        )
-             OR     ( RECE84-TEKSTYMD  NOT =   RECE85-TEKSTYMD     )
-             OR     ( RECE84-ZAINUM    NOT =   RECE85-ZAINUM       )
-      *
-             PERFORM   VARYING   IDX   FROM    1   BY  1
-                       UNTIL   ( IDX               >   5     )
-                       OR      ( RECE85-SRYCD(IDX) =   SPACE )
-                  ADD    1             TO      IDX-RECE85
-                  MOVE   RECE85-SRYACTINF(IDX) TO
-                                           WRK-SRYACTINF(IDX-RECE85)
-                  MOVE   RECE85-NAMEINF(IDX)   TO
-                                           WRK-NAMEINF(IDX-RECE85)
-                  MOVE   RECE85-SIKFLGINF(IDX)   TO
-                                           WRK-SIKFLGINF(IDX-RECE85)     
-                  MOVE   RECE85-DATAKBNINF(IDX) TO
-                                           WRK-DATAKBNINF(IDX-RECE85)
-                  MOVE   RECE85-HOUKNSKBNINF(IDX) TO
-                                           WRK-HOUKNSKBNINF(IDX-RECE85)
-                  MOVE   RECE85-KNSJISKBNINF(IDX) TO
-                                           WRK-KNSJISKBNINF(IDX-RECE85)
-                  MOVE   RECE85-CDKBNINF(IDX) TO
-                                           WRK-CDKBNINF(IDX-RECE85)
-             END-PERFORM 
-      *
-             PERFORM 990-RECE85-NEXT-SEC
-      *
-           END-PERFORM
-      *
-      *    手術日コメントを含んだ内容で中間ファイルの再作成
-           MOVE       ZERO             TO      FLG-WRKRECE85
-           MOVE       ZERO             TO      IDX
-           MOVE       ZERO             TO      IDX-RECE85
-           MOVE       ZERO             TO      WRK-RENNUM
-           MOVE       ZERO             TO      WRK-CNT-MEISAI
-           PERFORM    UNTIL     FLG-WRKRECE85  =    1
-      *
-                  INITIALIZE                        RECE851-REC
-                  MOVE    WRK-RECE85-KEY       TO   RECE851-KEY
-                  ADD     1                    TO   WRK-RENNUM
-                  MOVE    WRK-RENNUM           TO   RECE851-RENNUM
-                  MOVE    WRK-RECE85-PTNUM     TO   RECE851-PTNUM
-                  MOVE    WRK-RECE85-SRYKA     TO   RECE851-SRYKA
-                  MOVE    WRK-RECE85-SRYKBN    TO   RECE851-SRYKBN
-                  MOVE    WRK-RECE85-SRYSYUKBN TO   RECE851-SRYSYUKBN
-                  MOVE    WRK-RECE85-JIHIMONEY TO   RECE851-JIHIMONEY
-                  PERFORM  VARYING   IDX   FROM   1   BY   1
-                           UNTIL   (IDX       >    5)   OR
-                                   (FLG-WRKRECE85   =   1)
-                     ADD         1             TO    IDX-RECE85
-                     IF  WK-RECE85-SRYCD(IDX-RECE85) = SPACE
-                         MOVE    1             TO    FLG-WRKRECE85
-                     ELSE
-                         MOVE  WRK-SRYACTINF(IDX-RECE85)
-                                          TO   RECE851-SRYACTINF(IDX)  
-                         MOVE  WRK-NAMEINF(IDX-RECE85)
-                                          TO   RECE851-NAMEINF(IDX)
-                         MOVE  WRK-SIKFLGINF(IDX-RECE85)
-                                          TO   RECE851-SIKFLGINF(IDX)
-                         MOVE  WRK-DATAKBNINF(IDX-RECE85)
-                                          TO   RECE851-DATAKBNINF(IDX)
-                         MOVE  WRK-HOUKNSKBNINF(IDX-RECE85)
-                                        TO   RECE851-HOUKNSKBNINF(IDX)
-                         MOVE  WRK-KNSJISKBNINF(IDX-RECE85)
-                                        TO   RECE851-KNSJISKBNINF(IDX)
-                         MOVE  WRK-CDKBNINF(IDX-RECE85)
-                                        TO   RECE851-CDKBNINF(IDX)
-      *
-                         IF    WRK-SIKFLGINF(IDX-RECE85)  =  "1"
-                              ADD    1    TO   WRK-CNT-MEISAI
-                         END-IF    
-      *
-                     END-IF  
-                  END-PERFORM
-                  WRITE   RECE851-REC
-                  ADD     1                    TO  CNT-RECE85
-           END-PERFORM     
-      *
-           MOVE    RECE84-REC        TO      RECE841-REC
-           MOVE    WRK-CNT-MEISAI    TO      RECE841-MEISAISU
-           WRITE   RECE841-REC
-           ADD     1                 TO      CNT-RECE84
+           PERFORM    2001-SRYACTINF-HENSYU-SEC
       *
            .
        2001-SHUJUTSU-ETC-COMMENT-EXT.
@@ -1970,149 +1667,30 @@
       *
            PERFORM   2001-FREE-COMMENT2-SEC                              
       *
-      *    ※明細が５以上の場合
-           INITIALIZE                      RECE85-REC
-           MOVE    RECE84-HOSPID       TO  RECE85-HOSPID
-           MOVE    RECE84-SRYYM        TO  RECE85-SRYYM
-           MOVE    RECE84-NYUGAIKBN    TO  RECE85-NYUGAIKBN
-           MOVE    RECE84-PTID         TO  RECE85-PTID
-           MOVE    RECE84-RECEKA       TO  RECE85-RECEKA
-           MOVE    RECE84-HKNID        TO  RECE85-HKNID
-           MOVE    RECE84-TEKSTYMD     TO  RECE85-TEKSTYMD
-           MOVE    RECE84-ZAINUM       TO  RECE85-ZAINUM
-           START   RECE85-FILE
-                 KEY IS    >=   RECE85-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE85
-                 NOT INVALID
-                     PERFORM 990-RECE85-NEXT-SEC
-                     MOVE    RECE85-REC  TO  WRK-RECE85-REC
-           END-START
+           PERFORM   2001-RECE85-TAIHI-SEC
       *
       *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE85
-           MOVE    SPACE                TO  WRK-SRYACTINF-AREA
-           INITIALIZE                       WRK-SRYACTINF-AREA
-           MOVE    SPACE                TO  WRK-NAMEINF-AREA
-           INITIALIZE                       WRK-NAMEINF-AREA
-           MOVE    SPACE                TO  WRK-SIKFLGINF-AREA
-           INITIALIZE                       WRK-SIKFLGINF-AREA
-           MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
-           INITIALIZE                       WRK-DATAKBNINF-AREA
-           MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
-           INITIALIZE                       WRK-HOUKNSKBNINF-AREA
-           MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
-           INITIALIZE                       WRK-KNSJISKBNINF-AREA
-           MOVE    SPACE                TO  WRK-CDKBNINF-AREA
-           INITIALIZE                       WRK-CDKBNINF-AREA
+           MOVE    SPACE                TO  WRK-RECE85XX-REC
+           INITIALIZE                       WRK-RECE85XX-REC
       *
            MOVE    RECE84-MEISAISU      TO  MAX-MEISAISU
-      *
-           MOVE    SPACE               TO  COM-RECE85-REC
-           INITIALIZE                      COM-RECE85-REC
       *
            PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX                >   50    )
                          OR      ( WK-FREE-NAME2(IDX) =   SPACE )
                 COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
-                MOVE   "810000001"        TO  COM-SRYCD(1)
-                MOVE   ZERO               TO  COM-SRYSURYO(1)
-                MOVE    "1"               TO  COM-SIKFLG(1)
-                MOVE   COM-SRYACTINF(1)   TO  WRK-SRYACTINF
-                                                         (MAX-MEISAISU)
-                MOVE   WRK-FREEINF2(IDX)  TO  WRK-NAMEINF(MAX-MEISAISU)
-                MOVE   COM-SIKFLGINF(1)   TO  WRK-SIKFLGINF
-                                                         (MAX-MEISAISU)
+                MOVE   "810000001"
+                              TO  WRK-RECE85XX-SRYCD(MAX-MEISAISU 1)
+                MOVE   ZERO   TO  WRK-RECE85XX-SRYSURYO(MAX-MEISAISU 1)
+                MOVE   WK-FREE-YUKOKETA2(IDX)
+                              TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+                MOVE   WK-FREE-NAME2(IDX)
+                              TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
+                MOVE    "1"   TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
            END-PERFORM 
       *
-           PERFORM
-             UNTIL  ( FLG-RECE85           =   1                   )
-             OR     ( RECE84-HOSPID    NOT =   RECE85-HOSPID       )
-             OR     ( RECE84-SRYYM     NOT =   RECE85-SRYYM        )
-             OR     ( RECE84-NYUGAIKBN NOT =   RECE85-NYUGAIKBN    )
-             OR     ( RECE84-PTID      NOT =   RECE85-PTID         )
-             OR     ( RECE84-RECEKA    NOT =   RECE85-RECEKA       )
-             OR     ( RECE84-HKNID     NOT =   RECE85-HKNID        )
-             OR     ( RECE84-TEKSTYMD  NOT =   RECE85-TEKSTYMD     )
-             OR     ( RECE84-ZAINUM    NOT =   RECE85-ZAINUM       )
-      *
-             PERFORM   VARYING   IDX   FROM    1   BY  1
-                       UNTIL   ( IDX               >   5     )
-                       OR      ( RECE85-SRYCD(IDX) =   SPACE )
-                  ADD    1             TO      IDX-RECE85
-                  MOVE   RECE85-SRYACTINF(IDX) TO
-                                           WRK-SRYACTINF(IDX-RECE85)
-                  MOVE   RECE85-NAMEINF(IDX)   TO
-                                           WRK-NAMEINF(IDX-RECE85)
-                  MOVE   RECE85-SIKFLGINF(IDX)   TO
-                                           WRK-SIKFLGINF(IDX-RECE85)     
-                  MOVE   RECE85-DATAKBNINF(IDX) TO
-                                           WRK-DATAKBNINF(IDX-RECE85)
-                  MOVE   RECE85-HOUKNSKBNINF(IDX) TO
-                                           WRK-HOUKNSKBNINF(IDX-RECE85)
-                  MOVE   RECE85-KNSJISKBNINF(IDX) TO
-                                           WRK-KNSJISKBNINF(IDX-RECE85)
-                  MOVE   RECE85-CDKBNINF(IDX) TO
-                                           WRK-CDKBNINF(IDX-RECE85)
-             END-PERFORM 
-      *
-             PERFORM 990-RECE85-NEXT-SEC
-      *
-           END-PERFORM
-      *
-      *    手術日コメントを含んだ内容で中間ファイルの再作成
-           MOVE       ZERO             TO      FLG-WRKRECE85
-           MOVE       ZERO             TO      IDX
-           MOVE       ZERO             TO      IDX-RECE85
-           MOVE       ZERO             TO      WRK-RENNUM
-           MOVE       ZERO             TO      WRK-CNT-MEISAI
-           PERFORM    UNTIL     FLG-WRKRECE85  =    1
-      *
-                  INITIALIZE                        RECE851-REC
-                  MOVE    WRK-RECE85-KEY       TO   RECE851-KEY
-                  ADD     1                    TO   WRK-RENNUM
-                  MOVE    WRK-RENNUM           TO   RECE851-RENNUM
-                  MOVE    WRK-RECE85-PTNUM     TO   RECE851-PTNUM
-                  MOVE    WRK-RECE85-SRYKA     TO   RECE851-SRYKA
-                  MOVE    WRK-RECE85-SRYKBN    TO   RECE851-SRYKBN
-                  MOVE    WRK-RECE85-SRYSYUKBN TO   RECE851-SRYSYUKBN
-                  MOVE    WRK-RECE85-JIHIMONEY TO   RECE851-JIHIMONEY
-                  PERFORM  VARYING   IDX   FROM   1   BY   1
-                           UNTIL   (IDX       >    5)   OR
-                                   (FLG-WRKRECE85   =   1)
-                     ADD         1             TO    IDX-RECE85
-                     IF  WK-RECE85-SRYCD(IDX-RECE85) = SPACE
-                         MOVE    1             TO    FLG-WRKRECE85
-                     ELSE
-                         MOVE  WRK-SRYACTINF(IDX-RECE85)
-                                          TO   RECE851-SRYACTINF(IDX)  
-                         MOVE  WRK-NAMEINF(IDX-RECE85)
-                                          TO   RECE851-NAMEINF(IDX)
-                         MOVE  WRK-SIKFLGINF(IDX-RECE85)
-                                          TO   RECE851-SIKFLGINF(IDX)
-                         MOVE  WRK-DATAKBNINF(IDX-RECE85)
-                                          TO   RECE851-DATAKBNINF(IDX)
-                         MOVE  WRK-HOUKNSKBNINF(IDX-RECE85)
-                                        TO   RECE851-HOUKNSKBNINF(IDX)
-                         MOVE  WRK-KNSJISKBNINF(IDX-RECE85)
-                                        TO   RECE851-KNSJISKBNINF(IDX)
-                         MOVE  WRK-CDKBNINF(IDX-RECE85)
-                                        TO   RECE851-CDKBNINF(IDX)
-      *
-                         IF    WRK-SIKFLGINF(IDX-RECE85)  =  "1"
-                              ADD    1    TO   WRK-CNT-MEISAI
-                         END-IF    
-      *
-                     END-IF  
-                  END-PERFORM
-                  WRITE   RECE851-REC
-                  ADD     1                    TO  CNT-RECE85
-           END-PERFORM     
-      *
-           MOVE    RECE84-REC        TO      RECE841-REC
-           MOVE    WRK-CNT-MEISAI    TO      RECE841-MEISAISU
-           WRITE   RECE841-REC
-           ADD     1                 TO      CNT-RECE84
+           PERFORM    2001-SRYACTINF-HENSYU-SEC
       *
            .
        2001-SHUJUTSU-ETC2-COMMENT-EXT.
@@ -2325,55 +1903,22 @@
       *****************************************************************
        2001-RIHA-COMMENT-SEC          SECTION.
       *
-           MOVE    RECE84-REC        TO      RECE841-REC
-           ADD     1                 TO      RECE841-MEISAISU
-           WRITE   RECE841-REC
-           ADD     1                 TO      CNT-RECE84
-      *
-      *      ※明細が５以上の場合
-             INITIALIZE                      RECE85-REC
-             MOVE    RECE84-HOSPID       TO  RECE85-HOSPID
-             MOVE    RECE84-SRYYM        TO  RECE85-SRYYM
-             MOVE    RECE84-NYUGAIKBN    TO  RECE85-NYUGAIKBN
-             MOVE    RECE84-PTID         TO  RECE85-PTID
-             MOVE    RECE84-RECEKA       TO  RECE85-RECEKA
-             MOVE    RECE84-HKNID        TO  RECE85-HKNID
-             MOVE    RECE84-TEKSTYMD     TO  RECE85-TEKSTYMD
-             MOVE    RECE84-ZAINUM       TO  RECE85-ZAINUM
-             START   RECE85-FILE
-                 KEY IS    >=   RECE85-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE85
-                 NOT INVALID
-                     PERFORM 990-RECE85-NEXT-SEC
-                     MOVE    RECE85-REC  TO  WRK-RECE85-REC
-             END-START
+             PERFORM   2001-RECE85-TAIHI-SEC
       *
       *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE85
-             MOVE    SPACE                TO  WRK-SRYACTINF-AREA
-             INITIALIZE                       WRK-SRYACTINF-AREA
-             MOVE    SPACE                TO  WRK-NAMEINF-AREA
-             INITIALIZE                       WRK-NAMEINF-AREA
-             MOVE    SPACE                TO  WRK-SIKFLGINF-AREA
-             INITIALIZE                       WRK-SIKFLGINF-AREA
-             MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
-             INITIALIZE                       WRK-DATAKBNINF-AREA
-             MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
-             INITIALIZE                       WRK-HOUKNSKBNINF-AREA
-             MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
-             INITIALIZE                       WRK-KNSJISKBNINF-AREA
-             MOVE    SPACE                TO  WRK-CDKBNINF-AREA
-             INITIALIZE                       WRK-CDKBNINF-AREA
+             MOVE    SPACE                TO  WRK-RECE85XX-REC
+             INITIALIZE                       WRK-RECE85XX-REC
       *      リハビリコメントの挿入
-      *      ADD     1                    TO  IDX-RECE85
-             MOVE    SPACE                TO  COM-RECE85-REC
-             INITIALIZE                       COM-RECE85-REC
-             MOVE    "810000001"          TO  COM-SRYCD(1)
-             MOVE    ZERO                 TO  COM-SRYSURYO(1)
-             MOVE    7                    TO  COM-YUKOKETA(1)
-             MOVE    "実施日数　　日"     TO  COM-NAME(1)
-             MOVE    "1"                  TO  COM-SIKFLG(1) 
+             COMPUTE  MAX-MEISAISU        =   RECE84-MEISAISU  +  1
+      *
+             MOVE    "810000001"
+                            TO  WRK-RECE85XX-SRYCD(MAX-MEISAISU 1)
+             MOVE    ZERO   TO  WRK-RECE85XX-SRYSURYO(MAX-MEISAISU 1)
+             MOVE    7      TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+             MOVE    "実施日数　　日"
+                            TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
+             MOVE    "1"    TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
              MOVE    ZERO                 TO  CNT-RIHA
              EVALUATE   RECE84-ZAINUM
                  WHEN   WRK-RIGA1-SHU-ZAINUM
@@ -2507,92 +2052,11 @@
              END-EVALUATE
              IF      CNT-RIHA             NOT =    ZERO
                MOVE    CNT-RIHA             TO  DAY-IDX
-               MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(9:4)
-               COMPUTE  MAX-MEISAISU        =   RECE84-MEISAISU  +  1
-               MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-                                                     (MAX-MEISAISU)
-               MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-                                                     (MAX-MEISAISU)
-               MOVE    COM-SIKFLGINF(1)     TO  WRK-SIKFLGINF
-                                                     (MAX-MEISAISU)
+               MOVE    TBL-DAY(DAY-IDX)
+                          TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)(9:4)
              END-IF
       *
-             PERFORM
-               UNTIL  ( FLG-RECE85           =   1                   )
-               OR     ( RECE84-HOSPID    NOT =   RECE85-HOSPID       )
-               OR     ( RECE84-SRYYM     NOT =   RECE85-SRYYM        )
-               OR     ( RECE84-NYUGAIKBN NOT =   RECE85-NYUGAIKBN    )
-               OR     ( RECE84-PTID      NOT =   RECE85-PTID         )
-               OR     ( RECE84-RECEKA    NOT =   RECE85-RECEKA       )
-               OR     ( RECE84-HKNID     NOT =   RECE85-HKNID        )
-               OR     ( RECE84-TEKSTYMD  NOT =   RECE85-TEKSTYMD     )
-               OR     ( RECE84-ZAINUM    NOT =   RECE85-ZAINUM       )
-      *
-               PERFORM   VARYING   IDX   FROM    1   BY  1
-                         UNTIL   ( IDX               >   5     )
-                         OR      ( RECE85-SRYCD(IDX) =   SPACE )
-                    ADD    1             TO      IDX-RECE85
-                    MOVE   RECE85-SRYACTINF(IDX) TO
-                                             WRK-SRYACTINF(IDX-RECE85)
-                    MOVE   RECE85-NAMEINF(IDX)   TO
-                                             WRK-NAMEINF(IDX-RECE85)
-                    MOVE   RECE85-SIKFLGINF(IDX)   TO
-                                             WRK-SIKFLGINF(IDX-RECE85)     
-                    MOVE   RECE85-DATAKBNINF(IDX) TO
-                                             WRK-DATAKBNINF(IDX-RECE85)
-                    MOVE   RECE85-HOUKNSKBNINF(IDX) TO
-                                           WRK-HOUKNSKBNINF(IDX-RECE85)
-                    MOVE   RECE85-KNSJISKBNINF(IDX) TO
-                                           WRK-KNSJISKBNINF(IDX-RECE85)
-                    MOVE   RECE85-CDKBNINF(IDX) TO
-                                           WRK-CDKBNINF(IDX-RECE85)
-               END-PERFORM 
-      *
-               PERFORM 990-RECE85-NEXT-SEC
-      *
-             END-PERFORM
-      *
-      *      リハビリコメントを含んだ内容で中間ファイルの再作成
-             MOVE       ZERO             TO      FLG-WRKRECE85
-             MOVE       ZERO             TO      IDX
-             MOVE       ZERO             TO      IDX-RECE85
-             MOVE       ZERO             TO      WRK-RENNUM
-             PERFORM    UNTIL     FLG-WRKRECE85  =    1
-                    INITIALIZE                        RECE851-REC
-                    MOVE    WRK-RECE85-KEY       TO   RECE851-KEY
-                    ADD     1                    TO   WRK-RENNUM
-                    MOVE    WRK-RENNUM           TO   RECE851-RENNUM
-                    MOVE    WRK-RECE85-PTNUM     TO   RECE851-PTNUM
-                    MOVE    WRK-RECE85-SRYKA     TO   RECE851-SRYKA
-                    MOVE    WRK-RECE85-SRYKBN    TO   RECE851-SRYKBN
-                    MOVE    WRK-RECE85-SRYSYUKBN TO   RECE851-SRYSYUKBN
-                    MOVE    WRK-RECE85-JIHIMONEY TO   RECE851-JIHIMONEY
-                    PERFORM  VARYING   IDX   FROM   1   BY   1
-                             UNTIL   (IDX       >    5)   OR
-                                     (FLG-WRKRECE85   =   1)
-                       ADD         1             TO    IDX-RECE85
-                       IF  WK-RECE85-SRYCD(IDX-RECE85) = SPACE
-                           MOVE    1             TO    FLG-WRKRECE85
-                       ELSE
-                           MOVE  WRK-SRYACTINF(IDX-RECE85)
-                                            TO   RECE851-SRYACTINF(IDX)  
-                           MOVE  WRK-NAMEINF(IDX-RECE85)
-                                            TO   RECE851-NAMEINF(IDX)
-                           MOVE  WRK-SIKFLGINF(IDX-RECE85)
-                                            TO   RECE851-SIKFLGINF(IDX)
-                           MOVE  WRK-DATAKBNINF(IDX-RECE85)
-                                        TO   RECE851-DATAKBNINF(IDX)
-                           MOVE  WRK-HOUKNSKBNINF(IDX-RECE85)
-                                        TO   RECE851-HOUKNSKBNINF(IDX)
-                           MOVE  WRK-KNSJISKBNINF(IDX-RECE85)
-                                        TO   RECE851-KNSJISKBNINF(IDX)
-                           MOVE  WRK-CDKBNINF(IDX-RECE85)
-                                        TO   RECE851-CDKBNINF(IDX)
-                       END-IF  
-                    END-PERFORM
-                    WRITE   RECE851-REC
-                    ADD     1                    TO  CNT-RECE85
-             END-PERFORM     
+             PERFORM    2001-SRYACTINF-HENSYU-SEC
       *
            .
        2001-RIHA-COMMENT-EXT.
@@ -2606,40 +2070,12 @@
       *
            PERFORM     2001-NYU-DAY-SEC
       *
-           INITIALIZE                      RECE85-REC
-           MOVE    RECE84-HOSPID       TO  RECE85-HOSPID
-           MOVE    RECE84-SRYYM        TO  RECE85-SRYYM
-           MOVE    RECE84-NYUGAIKBN    TO  RECE85-NYUGAIKBN
-           MOVE    RECE84-PTID         TO  RECE85-PTID
-           MOVE    RECE84-RECEKA       TO  RECE85-RECEKA
-           MOVE    RECE84-HKNID        TO  RECE85-HKNID
-           MOVE    RECE84-TEKSTYMD     TO  RECE85-TEKSTYMD
-           MOVE    RECE84-ZAINUM       TO  RECE85-ZAINUM
-           START   RECE85-FILE
-                 KEY IS    >=   RECE85-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE85
-                 NOT INVALID
-                     PERFORM 990-RECE85-NEXT-SEC
-                     MOVE    RECE85-REC  TO  WRK-RECE85-REC
-           END-START
+           PERFORM     2001-RECE85-TAIHI-SEC
       *
       *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE85
-           MOVE    SPACE                TO  WRK-SRYACTINF-AREA
-           INITIALIZE                       WRK-SRYACTINF-AREA
-           MOVE    SPACE                TO  WRK-NAMEINF-AREA
-           INITIALIZE                       WRK-NAMEINF-AREA
-           MOVE    SPACE                TO  WRK-SIKFLGINF-AREA
-           INITIALIZE                       WRK-SIKFLGINF-AREA
-           MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
-           INITIALIZE                       WRK-DATAKBNINF-AREA
-           MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
-           INITIALIZE                       WRK-HOUKNSKBNINF-AREA
-           MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
-           INITIALIZE                       WRK-KNSJISKBNINF-AREA
-           MOVE    SPACE                TO  WRK-CDKBNINF-AREA
-           INITIALIZE                       WRK-CDKBNINF-AREA
+           MOVE    SPACE                TO  WRK-RECE85XX-REC
+           INITIALIZE                       WRK-RECE85XX-REC
       *
            MOVE    RECE84-MEISAISU      TO  MAX-MEISAISU
       *
@@ -2647,122 +2083,36 @@
            PERFORM  VARYING      IDX    FROM  1   BY   1
                     UNTIL       (IDX    >     31)      OR
                                 (TBL-NYU-DAY-ST(IDX)  =  ZERO)
-      *        ADD     1                    TO  IDX-RECE85
                COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
-               MOVE    SPACE                TO  COM-RECE85-REC
-               INITIALIZE                       COM-RECE85-REC
-               MOVE    TBL-NYU-DAY-CD(IDX)  TO  COM-SRYCD(1)
-               MOVE    ZERO                 TO  COM-SRYSURYO(1)
+      ***      MOVE    TBL-NYU-DAY-CD(IDX)
+               MOVE    "810000001"
+                             TO  WRK-RECE85XX-SRYCD(MAX-MEISAISU 1)
+               MOVE    ZERO  TO  WRK-RECE85XX-SRYSURYO(MAX-MEISAISU 1)
                IF    TBL-NYU-DAY-CD(IDX)  =  CONS-SANTEI-COMMENT1
-                 MOVE    4                  TO  COM-YUKOKETA(1)
-                 MOVE    "　　　日"         TO  COM-NAME(1)
-                 MOVE    TBL-NYU-DAY-ST(IDX) 
-                                            TO  DAY-IDX
-                 MOVE    TBL-DAY(DAY-IDX)   TO  COM-NAME(1)(3:4)
+                 MOVE    4   TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+                 MOVE    "　　　日"
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
+                 MOVE    TBL-NYU-DAY-ST(IDX)
+                             TO  DAY-IDX
+                 MOVE    TBL-DAY(DAY-IDX)
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)(3:4)
                ELSE
-                 MOVE    8                  TO  COM-YUKOKETA(1)
-                 MOVE    "　　　日〜　　日" TO  COM-NAME(1)
+                 MOVE    8   TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+                 MOVE    "　　　日〜　　日"
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
                  MOVE    TBL-NYU-DAY-ST(IDX) 
-                                            TO  DAY-IDX
-                 MOVE    TBL-DAY(DAY-IDX)   TO  COM-NAME(1)(3:4)
-                 MOVE    TBL-NYU-DAY-ED(IDX) 
-                                            TO  DAY-IDX
-                 MOVE    TBL-DAY(DAY-IDX)   TO  COM-NAME(1)(11:4)
+                             TO  DAY-IDX
+                 MOVE    TBL-DAY(DAY-IDX)
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)(3:4)
+                 MOVE    TBL-NYU-DAY-ED(IDX)
+                             TO  DAY-IDX
+                 MOVE    TBL-DAY(DAY-IDX)
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)(11:4)
                END-IF
-               MOVE    "1"                  TO  COM-SIKFLG(1) 
-               MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-                                                     (MAX-MEISAISU)
-               MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-                                                     (MAX-MEISAISU)
-               MOVE    COM-SIKFLGINF(1)     TO  WRK-SIKFLGINF
-                                                     (MAX-MEISAISU)
+               MOVE    "1"   TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
            END-PERFORM
       *
-           PERFORM
-             UNTIL  ( FLG-RECE85           =   1                   )
-             OR     ( RECE84-HOSPID    NOT =   RECE85-HOSPID       )
-             OR     ( RECE84-SRYYM     NOT =   RECE85-SRYYM        )
-             OR     ( RECE84-NYUGAIKBN NOT =   RECE85-NYUGAIKBN    )
-             OR     ( RECE84-PTID      NOT =   RECE85-PTID         )
-             OR     ( RECE84-RECEKA    NOT =   RECE85-RECEKA       )
-             OR     ( RECE84-TEKSTYMD  NOT =   RECE85-TEKSTYMD     )
-             OR     ( RECE84-ZAINUM    NOT =   RECE85-ZAINUM       )
-      *
-             PERFORM   VARYING   IDX   FROM    1   BY  1
-                       UNTIL   ( IDX               >   5     )
-                       OR      ( RECE85-SRYCD(IDX) =   SPACE )
-                  ADD    1             TO      IDX-RECE85
-                  MOVE   RECE85-SRYACTINF(IDX) TO
-                                           WRK-SRYACTINF(IDX-RECE85)
-                  MOVE   RECE85-NAMEINF(IDX)   TO
-                                           WRK-NAMEINF(IDX-RECE85)     
-                  MOVE   RECE85-SIKFLGINF(IDX) TO
-                                           WRK-SIKFLGINF(IDX-RECE85)  
-                  MOVE   RECE85-DATAKBNINF(IDX) TO
-                                           WRK-DATAKBNINF(IDX-RECE85)
-                  MOVE   RECE85-HOUKNSKBNINF(IDX) TO
-                                           WRK-HOUKNSKBNINF(IDX-RECE85)
-                  MOVE   RECE85-KNSJISKBNINF(IDX) TO
-                                           WRK-KNSJISKBNINF(IDX-RECE85)
-                  MOVE   RECE85-CDKBNINF(IDX) TO
-                                           WRK-CDKBNINF(IDX-RECE85)
-             END-PERFORM 
-      *
-             PERFORM 990-RECE85-NEXT-SEC
-      *
-           END-PERFORM
-      *
-      *    算定日コメントを含んだ内容で中間ファイルの再作成
-           MOVE       ZERO             TO      FLG-WRKRECE85
-           MOVE       ZERO             TO      IDX
-           MOVE       ZERO             TO      IDX-RECE85
-           MOVE       ZERO             TO      WRK-RENNUM
-           MOVE       ZERO             TO      WRK-CNT-MEISAI
-           PERFORM    UNTIL     FLG-WRKRECE85  =    1
-                  INITIALIZE                        RECE851-REC
-                  MOVE    WRK-RECE85-KEY       TO   RECE851-KEY
-                  ADD     1                    TO   WRK-RENNUM
-                  MOVE    WRK-RENNUM           TO   RECE851-RENNUM
-                  MOVE    WRK-RECE85-PTNUM     TO   RECE851-PTNUM
-                  MOVE    WRK-RECE85-SRYKA     TO   RECE851-SRYKA
-                  MOVE    WRK-RECE85-SRYKBN    TO   RECE851-SRYKBN
-                  MOVE    WRK-RECE85-SRYSYUKBN TO   RECE851-SRYSYUKBN
-                  MOVE    WRK-RECE85-JIHIMONEY TO   RECE851-JIHIMONEY
-                  PERFORM  VARYING   IDX   FROM   1   BY   1
-                           UNTIL   (IDX       >    5)   OR
-                                   (FLG-WRKRECE85   =   1)
-                     ADD         1             TO    IDX-RECE85
-                     IF  WK-RECE85-SRYCD(IDX-RECE85) = SPACE
-                         MOVE    1             TO    FLG-WRKRECE85
-                     ELSE
-                         MOVE  WRK-SRYACTINF(IDX-RECE85)
-                                          TO   RECE851-SRYACTINF(IDX)  
-                         MOVE  WRK-NAMEINF(IDX-RECE85)
-                                          TO   RECE851-NAMEINF(IDX)
-                         MOVE  WRK-SIKFLGINF(IDX-RECE85)
-                                          TO   RECE851-SIKFLGINF(IDX)
-                         MOVE  WRK-DATAKBNINF(IDX-RECE85)
-                                        TO   RECE851-DATAKBNINF(IDX)
-                         MOVE  WRK-HOUKNSKBNINF(IDX-RECE85)
-                                        TO   RECE851-HOUKNSKBNINF(IDX)
-                         MOVE  WRK-KNSJISKBNINF(IDX-RECE85)
-                                        TO   RECE851-KNSJISKBNINF(IDX)
-                         MOVE  WRK-CDKBNINF(IDX-RECE85)
-                                        TO   RECE851-CDKBNINF(IDX)
-      *
-                         IF    WRK-SIKFLGINF(IDX-RECE85)  =  "1"
-                              ADD    1    TO   WRK-CNT-MEISAI
-                         END-IF    
-                     END-IF  
-                  END-PERFORM
-                  WRITE   RECE851-REC
-                  ADD     1                    TO  CNT-RECE85
-           END-PERFORM     
-      *
-           MOVE    RECE84-REC        TO      RECE841-REC
-           MOVE    WRK-CNT-MEISAI    TO      RECE841-MEISAISU
-           WRITE   RECE841-REC
-           ADD     1                 TO      CNT-RECE84
+           PERFORM    2001-SRYACTINF-HENSYU-SEC
       *
            .
        2001-NYU-COMMENT-EXT.
@@ -2865,43 +2215,19 @@
            START   RECE85-FILE
                  KEY IS    >=   RECE85-KEY
                  INVALID
-                     MOVE    1           TO  FLG-RECE85
+                     MOVE    1          TO  FLG-RECE85
                  NOT INVALID
                      PERFORM 990-RECE85-NEXT-SEC
            END-START
       *
-           MOVE    RECE85-REC       TO      RECE851-REC
-           MOVE    RECE85-SRYACTINF(1)  TO  RECE851-SRYACTINF(1)
-           MOVE    RECE85-SRYACTINF(2)  TO  RECE851-SRYACTINF(3)
-           MOVE    RECE85-SRYACTINF(3)  TO  RECE851-SRYACTINF(4)
-           MOVE    RECE85-SRYACTINF(4)  TO  RECE851-SRYACTINF(5)
-           MOVE    RECE85-NAMEINF(1)    TO  RECE851-NAMEINF(1)
-           MOVE    RECE85-NAMEINF(2)    TO  RECE851-NAMEINF(3)
-           MOVE    RECE85-NAMEINF(3)    TO  RECE851-NAMEINF(4)
-           MOVE    RECE85-NAMEINF(4)    TO  RECE851-NAMEINF(5)
-           MOVE    RECE85-SIKFLGINF(1)  TO  RECE851-SIKFLGINF(1)
-           MOVE    RECE85-SIKFLGINF(2)  TO  RECE851-SIKFLGINF(3)
-           MOVE    RECE85-SIKFLGINF(3)  TO  RECE851-SIKFLGINF(4)
-           MOVE    RECE85-SIKFLGINF(4)  TO  RECE851-SIKFLGINF(5)
-           MOVE    RECE85-DATAKBNINF(1) TO  RECE851-DATAKBNINF(1)
-           MOVE    RECE85-DATAKBNINF(2) TO  RECE851-DATAKBNINF(3)
-           MOVE    RECE85-DATAKBNINF(3) TO  RECE851-DATAKBNINF(4)
-           MOVE    RECE85-DATAKBNINF(4) TO  RECE851-DATAKBNINF(5)
-           MOVE    RECE85-HOUKNSKBNINF(1) TO  RECE851-HOUKNSKBNINF(1)
-           MOVE    RECE85-HOUKNSKBNINF(2) TO  RECE851-HOUKNSKBNINF(3)
-           MOVE    RECE85-HOUKNSKBNINF(3) TO  RECE851-HOUKNSKBNINF(4)
-           MOVE    RECE85-HOUKNSKBNINF(4) TO  RECE851-HOUKNSKBNINF(5)
-           MOVE    RECE85-KNSJISKBNINF(1) TO  RECE851-KNSJISKBNINF(1)
-           MOVE    RECE85-KNSJISKBNINF(2) TO  RECE851-KNSJISKBNINF(3)
-           MOVE    RECE85-KNSJISKBNINF(3) TO  RECE851-KNSJISKBNINF(4)
-           MOVE    RECE85-KNSJISKBNINF(4) TO  RECE851-KNSJISKBNINF(5)
-           MOVE    RECE85-CDKBNINF(1)   TO  RECE851-CDKBNINF(1)
-           MOVE    RECE85-CDKBNINF(2)   TO  RECE851-CDKBNINF(3)
-           MOVE    RECE85-CDKBNINF(3)   TO  RECE851-CDKBNINF(4)
-           MOVE    RECE85-CDKBNINF(4)   TO  RECE851-CDKBNINF(5)
+           MOVE    RECE85-REC           TO  RECE851-REC
+           MOVE    RECE85-SRYACT-TBL(1) TO  RECE851-SRYACT-TBL(1)
+           MOVE    RECE85-SRYACT-TBL(2) TO  RECE851-SRYACT-TBL(3)
+           MOVE    RECE85-SRYACT-TBL(3) TO  RECE851-SRYACT-TBL(4)
+           MOVE    RECE85-SRYACT-TBL(4) TO  RECE851-SRYACT-TBL(5)
       *
-           MOVE    SPACE                TO  RECE851-SRYACTINF(2)
-           INITIALIZE                       RECE851-SRYACTINF(2)
+           MOVE    SPACE                TO  RECE851-SRYACT-TBL(2)
+           INITIALIZE                       RECE851-SRYACT-TBL(2)
            MOVE    "810000001"          TO  RECE851-SRYCD(2)
            MOVE    ZERO                 TO  RECE851-SRYSURYO(2)
            MOVE    9                    TO  RECE851-YUKOKETA(2)
@@ -2910,7 +2236,6 @@
            MOVE     TBL-DAY(DAY-IDX2)   TO  RECE851-NAME(2)(7:4)
            MOVE     TB-SANTEI-DAY(1)    TO  DAY-IDX2
            MOVE     TBL-DAY(DAY-IDX2)   TO  RECE851-NAME(2)(13:4)
-      *
            MOVE     "1"                 TO  RECE851-SIKFLG(2)
       *
            WRITE    RECE851-REC
@@ -2977,6 +2302,107 @@
       *
            .
        2001-RECE85-TENSOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ０５　退避処理
+      *****************************************************************
+       2001-RECE85-TAIHI-SEC     SECTION.
+      *
+           INITIALIZE                      RECE85-REC
+           MOVE    RECE84-HOSPID       TO  RECE85-HOSPID
+           MOVE    RECE84-SRYYM        TO  RECE85-SRYYM
+           MOVE    RECE84-NYUGAIKBN    TO  RECE85-NYUGAIKBN
+           MOVE    RECE84-PTID         TO  RECE85-PTID
+           MOVE    RECE84-RECEKA       TO  RECE85-RECEKA
+           MOVE    RECE84-HKNID        TO  RECE85-HKNID
+           MOVE    RECE84-TEKSTYMD     TO  RECE85-TEKSTYMD
+           MOVE    RECE84-ZAINUM       TO  RECE85-ZAINUM
+           START   RECE85-FILE
+                 KEY IS    >=   RECE85-KEY
+                 INVALID
+                     MOVE    1           TO  FLG-RECE85
+                 NOT INVALID
+                     PERFORM 990-RECE85-NEXT-SEC
+                     MOVE    RECE85-REC  TO  WRK-RECE85-REC
+           END-START
+      *
+           .
+       2001-RECE85-TAIHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ０５　ＳＲＹＡＣＴＩＮＦ編集処理
+      *****************************************************************
+       2001-SRYACTINF-HENSYU-SEC     SECTION.
+      *
+           PERFORM
+             UNTIL  ( FLG-RECE85           =   1                   )
+             OR     ( RECE84-HOSPID    NOT =   RECE85-HOSPID       )
+             OR     ( RECE84-SRYYM     NOT =   RECE85-SRYYM        )
+             OR     ( RECE84-NYUGAIKBN NOT =   RECE85-NYUGAIKBN    )
+             OR     ( RECE84-PTID      NOT =   RECE85-PTID         )
+             OR     ( RECE84-RECEKA    NOT =   RECE85-RECEKA       )
+             OR     ( RECE84-HKNID     NOT =   RECE85-HKNID        )
+             OR     ( RECE84-TEKSTYMD  NOT =   RECE85-TEKSTYMD     )
+             OR     ( RECE84-ZAINUM    NOT =   RECE85-ZAINUM       )
+      *
+             PERFORM   VARYING   IDX   FROM    1   BY  1
+                       UNTIL   ( IDX               >   5     )
+                       OR      ( RECE85-SRYCD(IDX) =   SPACE )
+                  ADD    1             TO      IDX-RECE85
+                  MOVE   RECE85-SRYACT-TBL(IDX)
+                             TO   WRK-RECE85XX-SRYACT-TBL(IDX-RECE85 1)
+             END-PERFORM 
+      *
+             PERFORM 990-RECE85-NEXT-SEC
+      *
+           END-PERFORM
+      *
+      *    手術日コメントを含んだ内容で中間ファイルの再作成
+           MOVE       ZERO             TO      FLG-WRKRECE85
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE85
+           MOVE       ZERO             TO      WRK-RENNUM
+           MOVE       ZERO             TO      WRK-CNT-MEISAI
+           PERFORM    UNTIL     FLG-WRKRECE85  =    1
+      *
+                  INITIALIZE                        RECE851-REC
+                  MOVE    WRK-RECE85-KEY       TO   RECE851-KEY
+                  ADD     1                    TO   WRK-RENNUM
+                  MOVE    WRK-RENNUM           TO   RECE851-RENNUM
+                  MOVE    WRK-RECE85-PTNUM     TO   RECE851-PTNUM
+                  MOVE    WRK-RECE85-SRYKA     TO   RECE851-SRYKA
+                  MOVE    WRK-RECE85-SRYKBN    TO   RECE851-SRYKBN
+                  MOVE    WRK-RECE85-SRYSYUKBN TO   RECE851-SRYSYUKBN
+                  MOVE    WRK-RECE85-JIHIMONEY TO   RECE851-JIHIMONEY
+                  PERFORM  VARYING   IDX   FROM   1   BY   1
+                           UNTIL   (IDX       >    5)   OR
+                                   (FLG-WRKRECE85   =   1)
+                     ADD         1             TO    IDX-RECE85
+                     IF  WRK-RECE85XX-SRYCD(IDX-RECE85 1) = SPACE
+                         MOVE    1             TO    FLG-WRKRECE85
+                     ELSE
+                         MOVE  WRK-RECE85XX-SRYACT-TBL(IDX-RECE85 1)
+                                          TO   RECE851-SRYACT-TBL(IDX)
+      *
+                         IF    WRK-RECE85XX-SIKFLG(IDX-RECE85 1)  =  "1"
+                              ADD    1    TO   WRK-CNT-MEISAI
+                         END-IF    
+      *
+                     END-IF  
+                  END-PERFORM
+                  WRITE   RECE851-REC
+                  ADD     1                    TO  CNT-RECE85
+           END-PERFORM
+      *
+           MOVE    RECE84-REC        TO      RECE841-REC
+           MOVE    WRK-CNT-MEISAI    TO      RECE841-MEISAISU
+           WRITE   RECE841-REC
+           ADD     1                 TO      CNT-RECE84
+      *
+           .
+       2001-SRYACTINF-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

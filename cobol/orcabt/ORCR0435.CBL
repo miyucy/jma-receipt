@@ -465,26 +465,13 @@
            END-START
       *
            MOVE    RECE45-REC           TO  RECE451-REC
-           MOVE    RECE45-SRYACTINF(1)  TO  RECE451-SRYACTINF(1)
-           MOVE    RECE45-SRYACTINF(2)  TO  RECE451-SRYACTINF(3)
-           MOVE    RECE45-SRYACTINF(3)  TO  RECE451-SRYACTINF(4)
-           MOVE    RECE45-SRYACTINF(4)  TO  RECE451-SRYACTINF(5)
-           MOVE    RECE45-NAMEINF(1)    TO  RECE451-NAMEINF(1)
-           MOVE    RECE45-NAMEINF(2)    TO  RECE451-NAMEINF(3)
-           MOVE    RECE45-NAMEINF(3)    TO  RECE451-NAMEINF(4)
-           MOVE    RECE45-NAMEINF(4)    TO  RECE451-NAMEINF(5)
-           MOVE    RECE45-SIKFLGINF(1)  TO  RECE451-SIKFLGINF(1)
-           MOVE    RECE45-SIKFLGINF(2)  TO  RECE451-SIKFLGINF(3)
-           MOVE    RECE45-SIKFLGINF(3)  TO  RECE451-SIKFLGINF(4)
-           MOVE    RECE45-SIKFLGINF(4)  TO  RECE451-SIKFLGINF(5)
+           MOVE    RECE45-SRYACT-TBL(1) TO  RECE451-SRYACT-TBL(1)
+           MOVE    RECE45-SRYACT-TBL(2) TO  RECE451-SRYACT-TBL(3)
+           MOVE    RECE45-SRYACT-TBL(3) TO  RECE451-SRYACT-TBL(4)
+           MOVE    RECE45-SRYACT-TBL(4) TO  RECE451-SRYACT-TBL(5)
       *
-           MOVE    SPACE                TO  RECE451-SRYACTINF(2)
-           INITIALIZE                       RECE451-SRYACTINF(2)
-           MOVE    SPACE                TO  RECE451-NAMEINF(2)
-           INITIALIZE                       RECE451-NAMEINF(2)
-           MOVE    SPACE                TO  RECE451-SIKFLGINF(2)
-           INITIALIZE                       RECE451-SIKFLGINF(2)
-      *
+           MOVE    SPACE                TO  RECE451-SRYACT-TBL(2)
+           INITIALIZE                       RECE451-SRYACT-TBL(2)
            MOVE    "810000001"          TO  RECE451-SRYCD(2)
            MOVE    ZERO                 TO  RECE451-SRYSURYO(2)
            MOVE    9                    TO  RECE451-YUKOKETA(2)
