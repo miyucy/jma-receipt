@@ -1179,20 +1179,28 @@
                                        WRK-NYUKHNRYO
                        WHEN   1
                          COMPUTE  WRK-NYUKHNRYO =
-                                 (WRK-SENTEI-KHNTEN  *  0.15)
+                                 (WRK-KHNTEN         *  0.15)
                                                      +  0.5
+      *                          (WRK-SENTEI-KHNTEN  *  0.15)
+      *                                              +  0.5
                        WHEN   2
                          COMPUTE  WRK-NYUKHNRYO =
-                                 (WRK-SENTEI-KHNTEN  *  0.3)
+                                 (WRK-KHNTEN         *  0.3)
                                                      +  0.5
+      *                          (WRK-SENTEI-KHNTEN  *  0.3)
+      *                                              +  0.5
                        WHEN   3
                          COMPUTE  WRK-NYUKHNRYO =
-                                 (WRK-SENTEI-KHNTEN  *  0.1)
+                                 (WRK-KHNTEN         *  0.1)
                                                      +  0.5
+      *                          (WRK-SENTEI-KHNTEN  *  0.1)
+      *                                              +  0.5
                        WHEN   4
                          COMPUTE  WRK-NYUKHNRYO =
-                                 (WRK-SENTEI-KHNTEN  *  0.15)
+                                 (WRK-KHNTEN         *  0.15)
                                                      +  0.5
+      *                          (WRK-SENTEI-KHNTEN  *  0.15)
+      *                                              +  0.5
                     END-EVALUATE
                   ELSE
                     EVALUATE   WRK-DAY2(IDY)

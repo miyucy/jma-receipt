@@ -1457,26 +1457,34 @@
                     EVALUATE   WRK-DAY22(IDY)
                      WHEN   1
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-SENTEI-KHNTEN(IDY)  *  0.15)
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.15)
                                                         +  0.5
+      *                          (WRK-DAY1-SENTEI-KHNTEN(IDY)  *  0.15)
+      *                                                 +  0.5
                          MOVE    1     TO    SYUKEI-IDX
                          PERFORM    NYUINACCT-SYU-SEC
                      WHEN   2
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-SENTEI-KHNTEN(IDY)  *  0.3)
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.3)
                                                         +  0.5
+      *                          (WRK-DAY1-SENTEI-KHNTEN(IDY)  *  0.3)
+      *                                                 +  0.5
                          MOVE    2     TO    SYUKEI-IDX
                          PERFORM    NYUINACCT-SYU-SEC
                      WHEN   3
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-SENTEI-KHNTEN(IDY)  *  0.1)
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.1)
                                                         +  0.5
+      *                          (WRK-DAY1-SENTEI-KHNTEN(IDY)  *  0.1)
+      *                                                 +  0.5
                          MOVE    3     TO    SYUKEI-IDX
                          PERFORM    NYUINACCT-SYU-SEC
                      WHEN   4
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-SENTEI-KHNTEN(IDY)  *  0.15)
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.15)
                                                         +  0.5
+      *                          (WRK-DAY1-SENTEI-KHNTEN(IDY)  *  0.15)
+      *                                                 +  0.5
                          MOVE    4     TO    SYUKEI-IDX
                          PERFORM    NYUINACCT-SYU-SEC
                     END-EVALUATE
