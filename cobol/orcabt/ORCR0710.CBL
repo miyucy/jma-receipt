@@ -28,6 +28,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-Æ£¸¶    03.01.30  ¿©»öÉéÃ´³Û¤¬¥¼¥í¤Î¤È¤­½èÍý¤·¤Ê¤¤
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1096,7 +1097,7 @@
       *    Ä¢É¼ÊÔ½¸<½ýÉÂÌ¾>½èÍý
            PERFORM 320-HC101-BYOMEI-HEN-SEC
       *
-      *    Ä¢É¼ÊÔ½¸<ÆþÂà±¡ÍúÎò>½èÍý
+      *    Ä¢É¼ÊÔ½¸<ÆþÂà±¡ÍúÎò¡¦Æþ±¡´ðËÜÎÁ¼ïÊÌ¤ÎÂ³¤­>½èÍý
            PERFORM 380-HC101-NYUTAI-RIREKI-HEN-SEC
       *
       *    Ä¢É¼ÊÔ½¸<ºÞ>½èÍý
@@ -2301,7 +2302,7 @@
                                                <   ZERO
                    PERFORM VARYING IDZ FROM    6   BY  -1
                            UNTIL   IDZ <       1
-                       IF      WRK-TENSUZ (IDZ:1)  =   SPACE
+                       IF      WRK-KOUTENZ (IDZ:1) =   SPACE
                            MOVE    "¢¤"    TO
                                            HC06-NYUKOHTENN (5 IDZ)
                            MOVE    1           TO  IDZ
@@ -2396,7 +2397,7 @@
                                                <   ZERO
                    PERFORM VARYING IDZ FROM    6   BY  -1
                            UNTIL   IDZ <       1
-                       IF      WRK-TENSUZ (IDZ:1)  =   SPACE
+                       IF      WRK-KOUTENZ (IDZ:1) =   SPACE
                            MOVE    "¢¤"        TO
                                            HC06-NYUKOHTENN (10 IDZ)
                            MOVE    1           TO  IDZ
@@ -3060,7 +3061,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ä¢É¼ÊÔ½¸<ÆþÂà±¡ÍúÎò¾ðÊó>½èÍý
+      *    Ä¢É¼ÊÔ½¸<ÆþÂà±¡ÍúÎò¾ðÊó¡¦Æþ±¡´ðËÜÎÁ¼ïÊÌ¤ÎÂ³¤­>½èÍý
       *****************************************************************
        380-HC101-NYUTAI-RIREKI-HEN-SEC      SECTION.
       *
@@ -3152,6 +3153,26 @@
                                        =   SPACE                   
                ADD     1               TO  WRK-LINETEK     
            END-IF
+      *
+      *       <Æþ±¡´ðËÜÎÁ¼ïÊÌ>
+           IF      RECE62-NYUSYUBETU (12)  NOT =   SPACE
+               PERFORM VARYING IDX FROM    12   BY  1
+                       UNTIL   IDX >       20
+                       OR      RECE62-NYUSYUBETU (IDX) =   SPACE
+                   IF  WRK-LINETEK         >   WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   END-IF    
+                   ADD     1                   TO  WRK-LINETEK
+                   IF      CNT-PAGE        =   1   
+                       MOVE    RECE62-NYUSYUBETU (IDX)
+                                       TO  HC06-TEKIYO (WRK-LINETEK)
+                   ELSE                    
+                       MOVE    RECE62-NYUSYUBETU (IDX)
+                                       TO  HC061-TEKIYO(WRK-LINETEK)
+                   END-IF                    
+               END-PERFORM
+               ADD     1               TO  WRK-LINETEK     
+           END-IF    
       *
            .
        380-HC101-NYUTAI-RIREKI-HEN-EXT.
@@ -3667,6 +3688,16 @@
                    AND     RECE62-TOTALTEN (3) =   ZERO 
                    AND     RECE62-TOTALTEN (4) =   ZERO
                    AND     RECE62-TOTALTEN (5) =   ZERO
+                   AND     RECE62-SHOKUJIRYOYOHI (1)
+                                               =   ZERO
+                   AND     RECE62-SHOKUJIRYOYOHI (2)
+                                               =   ZERO
+                   AND     RECE62-SHOKUJIRYOYOHI (3)
+                                               =   ZERO
+                   AND     RECE62-SHOKUJIRYOYOHI (4)
+                                               =   ZERO
+                   AND     RECE62-SHOKUJIRYOYOHI (5)
+                                               =   ZERO
                        GO  TO  900-RECE62-READ-SEC
                    ELSE    
                        ADD     1                   TO  CNT-RECE62
