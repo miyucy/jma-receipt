@@ -634,7 +634,11 @@
            IF     (IDX-SYU             >   ZERO )  AND
                   (WRK-COM-INPUTCD (IDX-SYU)   =   "180016110"
                                                OR  "180016210"
-                                               OR  "113004410" )
+                                               OR  "113004410"
+      *        傷病手当意見書交付料
+                                               OR  "180000710"
+      *        療養費同意書交付料
+                                               OR  "113004310" )
                CONTINUE
            ELSE
                MOVE    "0008"          TO  WRK-ERRCD
@@ -2998,6 +3002,11 @@
                                                  OR  "180016210"
                                                  OR  "113004410"
                       MOVE    1                  TO  FLG-KEI
+                   END-IF
+      *            傷病手当意見書交付料・療養費同意書交付料は対象外
+                   IF    WRK-COM-INPUTCD(IDX-Z)      =   "180000710"
+                                                     OR  "113004310"
+                       MOVE    ZERO              TO  FLG-CHK
                    END-IF
                END-IF
       *
