@@ -569,7 +569,7 @@
            MOVE    "SYUNOU-KEY"    TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
-           IF    ( FLG-SYUNOU      =   ZERO )
+           IF    ( FLG-SYUNOU      NOT =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
                MOVE    "収納データの取得に失敗しました"
                                        TO  ERR-ERRMSG
