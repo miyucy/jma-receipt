@@ -3341,24 +3341,24 @@
                        WRITE   DID2-REC
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                    ELSE
-                       MOVE    MCPDATA-REC       TO  SRYKARRK-REC
-                       IF (W-S-SRYYMD (IDW4) NOT = KARRK-SYOSINYMD1) AND
-                          (W-S-SRYYMD (IDW4) NOT = KARRK-SYOSINYMD2)
-                           MOVE    SPACE             TO  DID2-REC
-                           MOVE    W-S-HOSPID (IDW4) TO  DID2-REC(1:24)
-                           MOVE    "-"               TO  DID2-REC(25:1)
-                           MOVE    W-S-PTID (IDW4)   TO  DID2-REC(26:10)
-                           MOVE    "-"               TO  DID2-REC(36:1)
-                           MOVE    W-S-SRYKA (IDW4)  TO  DID2-REC(37:2)
-                           STRING  T-MESSAGE-520-03  DELIMITED BY SPACE
-                                   "¡¢"              DELIMITED BY SIZE
-                                   W-S-BYOMEI (IDW4) DELIMITED BY SPACE
-                                        INTO         DID2-REC(71:90)
-                           END-STRING
-                           MOVE    W-S-SRYKA (IDW4)  TO  DID2-REC(191:2)
-                           WRITE   DID2-REC
-                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                       END-IF
+                      MOVE    MCPDATA-REC       TO  SRYKARRK-REC
+                      IF (W-S-SRYYMD (IDW4) NOT = KARRK-SYOSINYMD1) AND
+                         (W-S-SRYYMD (IDW4) NOT = KARRK-SYOSINYMD2)
+                          MOVE    SPACE             TO  DID2-REC
+                          MOVE    W-S-HOSPID (IDW4) TO  DID2-REC(1:24)
+                          MOVE    "-"               TO  DID2-REC(25:1)
+                          MOVE    W-S-PTID (IDW4)   TO  DID2-REC(26:10)
+                          MOVE    "-"               TO  DID2-REC(36:1)
+                          MOVE    W-S-SRYKA (IDW4)  TO  DID2-REC(37:2)
+                          STRING  T-MESSAGE-520-03  DELIMITED BY SPACE
+                                  "¡¢"              DELIMITED BY SIZE
+                                  W-S-BYOMEI (IDW4) DELIMITED BY SPACE
+                                       INTO         DID2-REC(71:90)
+                          END-STRING
+                          MOVE    W-S-SRYKA (IDW4)  TO  DID2-REC(191:2)
+                          WRITE   DID2-REC
+                          COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                      END-IF
                    END-IF
                END-IF
       *
