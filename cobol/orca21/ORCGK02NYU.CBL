@@ -1197,7 +1197,7 @@
       *            £Ä£ÏÁªÂò²èÌÌ¤è¤ê
                    PERFORM 3013-K09-SET-SEC
                    MOVE    2                   TO  FLG-GMN
-                   GO      TO      300-SCREEN-EXT
+      *************GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
            IF      FLG-GMN         NOT =   ZERO
@@ -2478,7 +2478,7 @@
                IF     (SPA-COM-KZMFLG (IDX)    NOT =   SPACE )  OR
                       (SPA-COM-KZMFLG2(IDX)    NOT =   SPACE )  OR
                       (SPA-COM-NYU-KZMFLG-G(IDX)    NOT =   SPACE )
-                   MOVE    SPACE               TO  SPA-MAE-INPUTCD (IDX)
+                   MOVE    SPACE           TO  SPA-MAE-INPUTCD (IDX)
                END-IF
                MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
