@@ -514,6 +514,10 @@
                                    "¡¡Å¬ÍÑÊ¬¡¡¡á¡á¡á¡á¡á".
            03  WRK-KUGIRI3         PIC X(52)   VALUE
                ALL "¡Ý".
+      *    
+      *    ¸ÇÄêÃ¼Ëö£É£Ä
+           03  WRK-CONS-TERMID     PIC X(32)   VALUE
+                                   "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
       *
       *    ²þ¹Ô¥³¡¼¥É
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -678,7 +682,7 @@
            MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
       *
            MOVE    "RECE02X"           TO  RECE02XPARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE02XPARA-TERMID
+           MOVE    WRK-CONS-TERMID     TO  RECE02XPARA-TERMID
       *
            MOVE    "RECE031"           TO  RECE031PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE031PARA-TERMID
@@ -2799,15 +2803,15 @@
                        END-IF
                      END-IF
       *                 
-                     PERFORM VARYING IDX FROM    1   BY  1
-                             UNTIL   IDX >       8
-                           OR      WRK-COMMENT (IDX)   =   SPACE
+                     PERFORM VARYING IDW FROM    1   BY  1
+                             UNTIL   IDW >       8
+                           OR      WRK-COMMENT (IDW)   =   SPACE
                        IF      WRK-LINETEK      >=
                                                 WRK-TEKIYOU-LINE
                            PERFORM 34120-PAGE-SEC
                        END-IF
                        ADD     1               TO  WRK-LINETEK
-                       MOVE    WRK-COMMENT (IDX)
+                       MOVE    WRK-COMMENT (IDW)
                                        TO  HC06-TEKIYO(WRK-LINETEK)
                      END-PERFORM
                  END-IF

@@ -549,6 +549,10 @@
                                    "¡¡Å¬ÍÑÊ¬¡¡¡á¡á¡á¡á¡á".
            03  WRK-KUGIRI3         PIC X(52)   VALUE
                ALL "¡Ý".
+      *    
+      *    ¸ÇÄêÃ¼Ëö£É£Ä
+           03  WRK-CONS-TERMID     PIC X(32)   VALUE
+                                   "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
       *
       *    ²þ¹Ô¥³¡¼¥É
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -719,7 +723,7 @@
            MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
       *
            MOVE    "RECE62X"           TO  RECE62XPARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE62XPARA-TERMID
+           MOVE    WRK-CONS-TERMID     TO  RECE62XPARA-TERMID
       *
            MOVE    "RECE631"           TO  RECE63PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE63PARA-TERMID
@@ -3269,19 +3273,19 @@
                        END-IF
                      END-IF
       *                 
-                     PERFORM VARYING IDX FROM    1   BY  1
-                             UNTIL   IDX >       8
-                           OR      WRK-COMMENT (IDX)   =   SPACE
+                     PERFORM VARYING IDW FROM    1   BY  1
+                             UNTIL   IDW >       8
+                           OR      WRK-COMMENT (IDW)   =   SPACE
                        IF      WRK-LINETEK      >=
                                                 WRK-TEKIYOU-LINE
                            PERFORM 34120-PAGE-SEC
                        END-IF
                        ADD     1               TO  WRK-LINETEK
                        IF      CNT-PAGE        =   1   
-                           MOVE    WRK-COMMENT (IDX)
+                           MOVE    WRK-COMMENT (IDW)
                                        TO  HC06-TEKIYO (WRK-LINETEK)
                        ELSE                
-                           MOVE    WRK-COMMENT (IDX)
+                           MOVE    WRK-COMMENT (IDW)
                                        TO  HC061-TEKIYO(WRK-LINETEK)
                        END-IF                
                      END-PERFORM
