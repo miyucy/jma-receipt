@@ -44,7 +44,7 @@
                05  AGECHK-FTNRATE        PIC 9(03).
       *        負担割合名称
                05  AGECHK-FTNRATEMEI     PIC X(10).
-      *        老人エラー（１：老人保険なし）
+      *        老人エラー（１：老人保険なし、２：７５歳以上老人公費なし）
                05  AGECHK-RJNCHK         PIC 9(01).
       *    復帰コード
            03  AGECHK-RC              PIC 9(02).
