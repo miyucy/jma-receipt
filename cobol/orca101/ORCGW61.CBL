@@ -1764,8 +1764,7 @@ x           IF      SPA-GMN-RECEDEN-TOKKI
                WHEN    "EDYUKYMD"
                    MOVE    4           TO  SPA-GMN-CUR
                WHEN    "HKNNUM"
-      *********    MOVE    5           TO  SPA-GMN-CUR
-                   MOVE    6           TO  SPA-GMN-CUR
+                   MOVE    5           TO  SPA-GMN-CUR
                WHEN    "TEISYUTUSAKI"
                    MOVE    6           TO  SPA-GMN-CUR
                WHEN    "HKNJANUM"
