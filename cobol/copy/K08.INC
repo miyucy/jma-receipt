@@ -11,12 +11,12 @@
       *     Everyone is granted permission to use, copy, modify and
       * redistribute this program, but only under the conditions described
       * in the JMA Open Source License. You should have received a copy of
-      * this license along with this program. If not, stop using this
+      * this licence along with this program. If not, stop using this
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
         02  K08.
-      *** 02  K08-FIXED1.
+      **    02  K08-FIXED1.
               03  K08-PTNUM.
                 04  K08-VALUE   PIC X(20).
               03  K08-KANANAME.
@@ -73,11 +73,9 @@
               03  K08-SELNUM    PIC S9(3)  OCCURS  10.
               03  K08-SCROLLEDWINDOW1.
                 04  K08-MEILIST.
-                  05  K08-FIXED2.
-                    06  FILLER  PIC S9(9)   BINARY.
                   05  K08-COUNT   PIC S9(9)   BINARY.
                   05  K08-ITEM        OCCURS  300 TIMES.
-                    06  K08-BANGO     PIC X(3).
-                    06  K08-DELFLG    PIC X(4).
-                    06  K08-MEISAI    PIC X(150).
+                    06  K08-BANGO  PIC X(4).
+                    06  K08-DELFLG  PIC X(2).
+                    06  K08-MEISAI  PIC X(150).
                   05  K08-SELECT  PIC X       OCCURS  300 TIMES.
