@@ -1112,12 +1112,22 @@
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
-           MOVE    SPACE               TO  SPA-KIDCD
-           MOVE    SPACE               TO  SPA-KIDCD2
-      *
            IF      FLG-GMN         NOT =   ZERO
+               IF      SPA-ERRCD       NOT =   SPACE
+                   PERFORM 510-ERRSET-SEC
+                   GO      TO      300-SCREEN-EXT
+               END-IF
+      *
+               IF      SPA-KIDCD       NOT =   SPACE
+                   PERFORM 520-KIDSET-SEC
+                   GO      TO      300-SCREEN-EXT
+               END-IF
+      *
                GO      TO      300-SCREEN-EXT
            END-IF
+      *
+           MOVE    SPACE               TO  SPA-KIDCD
+           MOVE    SPACE               TO  SPA-KIDCD2
       *
       *    患者の確定していない時、クリア画面の表示、M01より
            IF     (SPA-MOTOPG          =   "M01"    )  OR
