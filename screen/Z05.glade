@@ -471,7 +471,7 @@
 	<last_modification_time>Sat, 03 Feb 2001 07:22:27 GMT</last_modification_time>
       </signal>
       <editable>True</editable>
-      <format>ZZZZZZ9.99</format>
+      <format>ZZZZZZZ9.99</format>
     </widget>
 
     <widget>
@@ -495,7 +495,7 @@
 	<last_modification_time>Sat, 03 Feb 2001 07:22:27 GMT</last_modification_time>
       </signal>
       <editable>True</editable>
-      <format>ZZZZZZ9.99</format>
+      <format>ZZZZZZZ9.99</format>
     </widget>
 
     <widget>
