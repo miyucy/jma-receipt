@@ -115,6 +115,7 @@
       *  01.00.38    NACL-ÌçÏÆ    03/05/22  ¼«ÇåÀÕ¤ÎÎÅÍÜÃ´Åö¼êÅöÂÐ±þ
       *  01.00.39    NACL-ÌçÏÆ    03/06/06  ¾ÃÈñÀÇÃ¼¿ôÂÐ±þ
       *  01.00.40    NACL-ÌçÏÆ    03/07/01  ¥ì¥»µ­ºÜÍÑ°ìÉôÉéÃ´¶âÊÔ½¸½¤Àµ
+      *  01.00.41    NACL-ÌçÏÆ    03/08/27  ÆÃÄê¼À´µ²þÀµÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2264,10 +2265,15 @@
            PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
                       UNTIL    (KOH-IDX    >      4)
       *
-             IF (COMB-KOHHKNNUM(KOH-IDX)      = "015" OR "016"       )
-             OR (COMB-KOHHKNNUM(KOH-IDX)(1:1) = "1" OR "2" OR "3" OR 
-                                                "4" OR "5" OR "6" OR
-                                                "7" OR "8"           )
+             IF ( COMB-KOHHKNNUM(KOH-IDX)      = "015" OR "016" 
+                                                       OR "012"      )
+      *
+             OR ((COMB-KOHHKNNUM(KOH-IDX)      = "051"   )  AND
+                 (LNK-SYU-SRYYMD(1:6)         >= "200310")           )
+      *
+             OR ( COMB-KOHHKNNUM(KOH-IDX)(1:1) = "1" OR "2" OR "3" OR 
+                                                 "4" OR "5" OR "6" OR
+                                                 "7" OR "8"          )
       *
                 INITIALIZE                           PTKOHFTN-REC
                 MOVE    LNK-SYU-HOSPID       TO      PTKOHFTN-HOSPID
@@ -4454,6 +4460,7 @@
                          LNK-SYU-KOH-COMPFTN(KOH-IDX)     +
                          LNK-SYU-KOH-COMPYKZFTN(KOH-IDX)
                IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "051"
+               AND  LNK-SYU-SRYYMD(1:6)          <  "200310"
                     MOVE  YAKFTN-SOGOKEI   TO
                                        LNK-SYU-KOH-COMPYKZFTN(KOH-IDX)
                     COMPUTE   WK-FTN  =
@@ -4588,6 +4595,7 @@
            EVALUATE    KOH-IDX
                WHEN    2
                    IF  LNK-SYU-KOH-COMPFTN(1) < LNK-SYU-KOH-COMPFTN(2)
+                   AND LNK-SYU-KOH1HKNNUM   NOT =  SPACE
                        MOVE  LNK-SYU-KOH-COMPFTN(1)
                                             TO  LNK-SYU-KOH-COMPFTN(2)
                    END-IF
@@ -4616,11 +4624,13 @@
                WHEN    2
                  IF  WK-KOH-COMPFTN(1)  =  ALL"9"
                    IF  LNK-SYU-KOH-COMPFTN(1) < WK-KOH-COMPFTN(2)
+                   AND LNK-SYU-KOH1HKNNUM   NOT =  SPACE
                        MOVE  LNK-SYU-KOH-COMPFTN(1)
                                             TO  WK-KOH-COMPFTN(2)
                    END-IF
                  ELSE
                    IF  WK-KOH-COMPFTN(1)      < WK-KOH-COMPFTN(2)
+                   AND LNK-SYU-KOH1HKNNUM   NOT =  SPACE
                        MOVE  WK-KOH-COMPFTN(1)
                                             TO  WK-KOH-COMPFTN(2)
                    END-IF

@@ -54,6 +54,8 @@
       *  02.00.08    NACL-Â¿¡¹Ç¼  03/03/24  £È£±£µÇ¯£´·î²þÀµÂÐ±þÄÉ²Ã
       *                                     ¸øÈñÉéÃ´³ÛÄÉ²Ã
       *  02.00.09    NACL-Â¿¡¹Ç¼  03/07/08  ÊÝ¸±¼Ô°ÛÆ°Æü¥Á¥§¥Ã¥¯ÄÉ²Ã
+      *  02.00.10    NACL-Â¿¡¹Ç¼  03/08/28  ¸øÈñÉéÃ´³Û¤Ë¡Ç£°£±£²¡Ç¤È
+      *                                     ¡Ç£°£µ£±¡Ç¤òÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4626,8 +4628,14 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-PTKOH-MAX
       *        ¹¹Àµ¡¢°éÀ®
-               IF      SPA-PTKOH-KOHNUM(IDX)   =   "015"
+               IF     (SPA-PTKOH-KOHNUM(IDX)   =   "015"
                                                OR  "016"
+      *            À¸³èÊÝ¸î
+                                               OR  "012" )
+      *            ÆÃÄêÉéÍ­¡Ê£È£±£µ¡¥£±£°°Ê¹ß¡Ë
+                 OR  ((SPA-PTKOH-KOHNUM(IDX)   =   "051" )  AND
+                      (SPA-PTKOH-TEKSTYMD(IDX) >=  "20031001"))
+      *
                    MOVE    ZERO                TO  IDY
                    PERFORM VARYING     IDX2    FROM    1   BY  1
                            UNTIL       IDX2    >   SPA-FTN1-MAX

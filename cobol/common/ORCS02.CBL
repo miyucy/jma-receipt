@@ -45,6 +45,7 @@
       *                                     自賠責文書料消費税対応
       *                                     自賠責の療養担当手当対応
       *                                     労災自賠責食事療養費計算対応
+      *  01.00.11    NACL-門脇    03/08/27  特定疾患改正対応
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1435,10 +1436,15 @@
            PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
                       UNTIL    (KOH-IDX    >      4)
       *
-             IF (COMB-KOHHKNNUM(KOH-IDX)      =  "015" OR "016"      )
-             OR (COMB-KOHHKNNUM(KOH-IDX)(1:1) = "1" OR "2" OR "3" OR 
-                                                "4" OR "5" OR "6" OR
-                                                "7" OR "8"           )
+             IF ( COMB-KOHHKNNUM(KOH-IDX)      = "015" OR "016" 
+                                                       OR "012"      )
+      *
+             OR ((COMB-KOHHKNNUM(KOH-IDX)      = "051"   )  AND
+                 (LNK-SYU-SRYYMD(1:6)         >= "200310")           )
+      *
+             OR ( COMB-KOHHKNNUM(KOH-IDX)(1:1) = "1" OR "2" OR "3" OR 
+                                                 "4" OR "5" OR "6" OR
+                                                 "7" OR "8"          )
       *
                 INITIALIZE                           PTKOHFTN-REC
                 MOVE    LNK-SYU-HOSPID       TO      PTKOHFTN-HOSPID
@@ -3540,6 +3546,15 @@
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
+                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
+                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
+                   AND (WK-NYUJGNGAK         NOT  =  ZERO          )
+                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
+                   END-IF
+                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
+                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "051"         )
+                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
+                   END-IF
                WHEN   "2"
                    MOVE    HKN-TSY-NYUKFTNRATE  TO   WK-NYUKFTNRATE
                    MOVE    HKN-TSY-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
@@ -3547,11 +3562,29 @@
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
+                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
+                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
+                   AND (WK-NYUJGNGAK         NOT  =  ZERO          )
+                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
+                   END-IF
+                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
+                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "051"         )
+                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
+                   END-IF
                WHEN   "3"
                    MOVE    HKN-TNK-NYUKFTNRATE  TO   WK-NYUKFTNRATE
                    MOVE    HKN-TNK-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
+                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
+                   END-IF
+                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
+                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
+                   AND (WK-NYUJGNGAK         NOT  =  ZERO          )
+                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
+                   END-IF
+                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
+                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "051"         )
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
            END-EVALUATE.
@@ -4021,6 +4054,7 @@
            EVALUATE    KOH-IDX
                WHEN    2
                    IF  LNK-SYU-KOH-COMPFTN(1) < LNK-SYU-KOH-COMPFTN(2)
+                   AND LNK-SYU-KOH1HKNNUM   NOT =  SPACE
                        MOVE  LNK-SYU-KOH-COMPFTN(1)
                                             TO  LNK-SYU-KOH-COMPFTN(2)
                    END-IF
@@ -4049,11 +4083,13 @@
                WHEN    2
                  IF  WK-KOH-COMPFTN(1)  =  ALL"9"
                    IF  LNK-SYU-KOH-COMPFTN(1) < WK-KOH-COMPFTN(2)
+                   AND LNK-SYU-KOH1HKNNUM   NOT =  SPACE
                        MOVE  LNK-SYU-KOH-COMPFTN(1)
                                             TO  WK-KOH-COMPFTN(2)
                    END-IF
                  ELSE
                    IF  WK-KOH-COMPFTN(1)      < WK-KOH-COMPFTN(2)
+                   AND LNK-SYU-KOH1HKNNUM   NOT =  SPACE
                        MOVE  WK-KOH-COMPFTN(1)
                                             TO  WK-KOH-COMPFTN(2)
                    END-IF
@@ -4431,6 +4467,7 @@
            OR  ( LNK-SYU-KOH2HKNNUM    =  "051" )
            OR  ( LNK-SYU-KOH3HKNNUM    =  "051" )
            OR  ( LNK-SYU-KOH4HKNNUM    =  "051" )
+             IF    LNK-SYU-SRYYMD(1:6)   <  "200310"
                COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                   +   LNK-SYU-SKYMONEY-SKJ-KEI
                IF        WK-FTN    >  13995
@@ -4440,10 +4477,36 @@
                                                LNK-SYU-SKYMONEY-SKJ-TAX
                                                LNK-SYU-SKYMONEY-SKJ-KEI
                END-IF
+             ELSE
+               COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
+                                  +   LNK-SYU-SKYMONEY-SKJ-KEI
+               IF        WK-FTN    >=  WK-NYUJGNGAK
+                 COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
+                                            +  LNK-SYU-SKYMONEY-SKJ-KEI
+                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
+                                               LNK-SYU-SKYMONEY-SKJ-TAX
+                                               LNK-SYU-SKYMONEY-SKJ-KEI
+               END-IF
+             END-IF
            END-IF.
            IF    LNK-SYU-SRYYMD(1:6)   <   "200304"
                CONTINUE
            ELSE
+      *      生活保護がある方の特例処理
+             IF  ( LNK-SYU-KOH1HKNNUM    =  "012" )
+             OR  ( LNK-SYU-KOH2HKNNUM    =  "012" )
+             OR  ( LNK-SYU-KOH3HKNNUM    =  "012" )
+             OR  ( LNK-SYU-KOH4HKNNUM    =  "012" )
+               COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
+                                  +   LNK-SYU-SKYMONEY-SKJ-KEI
+               IF        WK-FTN    >=  WK-NYUJGNGAK
+                 COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
+                                            +  LNK-SYU-SKYMONEY-SKJ-KEI
+                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
+                                               LNK-SYU-SKYMONEY-SKJ-TAX
+                                               LNK-SYU-SKYMONEY-SKJ-KEI
+               END-IF
+             END-IF
       *      更正がある方の特例処理
              IF  ( LNK-SYU-KOH1HKNNUM    =  "015" )
              OR  ( LNK-SYU-KOH2HKNNUM    =  "015" )
