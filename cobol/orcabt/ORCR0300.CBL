@@ -50,6 +50,7 @@
       *  01.00.10    NACL-藤原    03/09/22  再診のときの時間外の編集
       *  01.00.11    NACL-藤原    03/09/30  酸素の単価の編集
       *  01.00.12    NACL-藤原    03/10/10  コメントの名称編集の修正
+      *  01.00.13    NACL-藤原    03/10/15  診療年月の編集の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -270,10 +271,6 @@
            03  WRK-KYURATE             PIC 9(03).
       *    レセプト番号
            03  WRK-RECENUM             PIC 9(06).        
-      *    請求年月（和暦）
-           03  WRK-SEIYM               PIC 9(05).         
-      *    診療年月（和暦）
-           03  WRK-SRYYM               PIC 9(05).         
       *       
            03  WRK-RENNUM              PIC 9(04).
       *
@@ -590,8 +587,6 @@
                                    JOBKANRI-REC
       *
            PERFORM 110-SYSKANRI-HENSYU-SEC
-      *
-           PERFORM 120-SKYYM-HENSYU-SEC
       *     
            MOVE    "RECE300"           TO  RECE30PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE30PARA-TERMID
@@ -675,20 +670,6 @@
            EXIT.
       * 
       *****************************************************************
-      *    請求年月編集処理      
-      *****************************************************************
-       120-SKYYM-HENSYU-SEC      SECTION.
-      *
-           MOVE    WRK-PARA-SRYYM      TO  WRK-SYMD(1:6)
-           MOVE    "01"                TO  WRK-SYMD(7:2)
-           PERFORM 5002-HIZUKE-HEN-SEC
-           MOVE    WRK-HENYMD (1:5)    TO  WRK-SRYYM 
-      *    
-           .
-       120-SKYYM-HENSYU-EXT.
-           EXIT.
-      * 
-      *****************************************************************
       *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
@@ -769,7 +750,10 @@
            MOVE    4                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    診療年月
-           MOVE    WRK-SRYYM           TO  WRK-DATA
+           MOVE    RECE02-SRYYM       TO  WRK-SYMD(1:6)
+           MOVE    "01"                TO  WRK-SYMD(7:2)
+           PERFORM 5002-HIZUKE-HEN-SEC
+           MOVE    WRK-HENYMD (1:5)    TO  WRK-DATA
            MOVE    5                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    氏名
