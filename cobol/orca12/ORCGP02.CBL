@@ -334,6 +334,10 @@
       *    地方公費請求書
            COPY    "CPKOHSKY.INC".
       *
+      *    パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -1493,6 +1497,9 @@
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
+      *    パラメタファイル削除
+           PERFORM 992-PARA-DEL-SEC
+      *
            IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
                                                   OR  "I01"
                MOVE    "P02"               TO  SPA-MOTOPG
@@ -1530,6 +1537,9 @@
       *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
+      *
+      *    パラメタファイル削除
+           PERFORM 992-PARA-DEL-SEC
       *
            IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
                                                   OR  "I01"
@@ -3716,6 +3726,28 @@
                                        ORCSLOCKAREA
            .
        990-LOCK-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ削除処理
+      *****************************************************************
+       992-PARA-DEL-SEC          SECTION.
+      *
+      *    パラメタ削除
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "PARA-DEL2"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       992-PARA-DEL-EXT.
            EXIT.
       *
       *****************************************************************

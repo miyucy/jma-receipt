@@ -4584,12 +4584,7 @@
            PERFORM 990-LOCK-OUT-SEC
       *
       *    ファイル削除
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
-           MOVE    1                   TO  FLG-END2
+           PERFORM 999-FILE-DEL-SEC
       *
       *
            MOVE    "J02"               TO  SPA-MOTOPG
@@ -4631,13 +4626,7 @@
            PERFORM 990-LOCK-OUT-SEC
       *
       *    ファイル削除
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
-           MOVE    1                   TO  FLG-END2
-      *
+           PERFORM 999-FILE-DEL-SEC
       *
            MOVE    "J02"               TO  SPA-MOTOPG
            MOVE    SPA-J02-MOTOPG      TO  SPA-SAKIPG
@@ -7416,6 +7405,36 @@
                                        ORCSLOCKAREA
            .
        990-LOCK-OUT-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    ファイル削除処理
+      *****************************************************************
+       999-FILE-DEL-SEC         SECTION.
+      *
+           MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+           MOVE    1                   TO  FLG-END2
+      *
+      *    パラメタ削除
+           INITIALIZE                      PARA-REC
+           MOVE    "J02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "PARA-DEL2"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       999-FILE-DEL-EXT.
            EXIT.
       *
       *
