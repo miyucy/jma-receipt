@@ -172,47 +172,13 @@
       *
       *    パラメータチェック
            PERFORM 100-PRM-CHK-SEC
-           IF    ( STUSAN-RC       NOT =   ZERO )
-               GO  TO  000-PROC-EXT
-           END-IF
       *
       *    主処理
-           PERFORM 200-MAIN-SEC
-           IF    ( STUSAN-RC       NOT =   ZERO )
-               GO  TO  000-PROC-EXT
+           IF    ( STUSAN-RC           =   ZERO )
+               PERFORM 200-MAIN-SEC
            END-IF
       *
-           DISPLAY "STUSAN-PTID    = "  STUSAN-PTID
-           DISPLAY "STUSAN-KJNYMD  = "  STUSAN-KJNYMD
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >   CONST-TOKUTEI-SRYCD-MAX )
-               IF    ( STUSAN-TOKUTEI-SRYCD (IDX1)
-                               NOT =   SPACE )
-               DISPLAY "STUSAN-TOKUTEI-SRYCD (" IDX1 ")= "
-                        STUSAN-TOKUTEI-SRYCD (IDX1)
-               END-IF
-           END-PERFORM
-           DISPLAY "-"
-      *
-           DISPLAY "STUSAN-NISSU01 = " STUSAN-NISSU01
-           DISPLAY "STUSAN-NISSU02 = " STUSAN-NISSU02
-           DISPLAY "STUSAN-NISSU03 = " STUSAN-NISSU03
-           DISPLAY "STUSAN-NISSU04 = " STUSAN-NISSU04
-           DISPLAY "STUSAN-NISSU05 = " STUSAN-NISSU05
-           DISPLAY "STUSAN-NISSU06 = " STUSAN-NISSU06
-           DISPLAY "STUSAN-NISSU07 = " STUSAN-NISSU07
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >   STUSAN-RRK-CNT )
-               DISPLAY "STUSAN-RRK-JTIKBN (" IDX1 ")= "
-                        STUSAN-RRK-JTIKBN (IDX1)
-               DISPLAY "STUSAN-RRK-NYUINYMD (" IDX1 ")= "
-                        STUSAN-RRK-NYUINYMD (IDX1)
-               DISPLAY "STUSAN-RRK-TAIINYMD (" IDX1 ")= "
-                        STUSAN-RRK-TAIINYMD (IDX1)
-               DISPLAY "STUSAN-RRK-NISSU (" IDX1 ")= "
-                        STUSAN-RRK-NISSU (IDX1)
-           END-PERFORM
+           PERFORM 800-DISPLAY-SEC
       *
            .
        000-PROC-EXT.
@@ -227,7 +193,7 @@
        100-PRM-CHK-SEC                     SECTION.
       *
            IF    ( STUSAN-KJNYMD       =   SPACE )
-               MOVE    99              TO  STUSAN-RC
+               MOVE    01              TO  STUSAN-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
@@ -284,7 +250,7 @@
            IF    ( PTNYUINRRK-NYUINYMD <=  STUSAN-KJNYMD )
            AND   ( PTNYUINRRK-TAIINYMD >=  STUSAN-KJNYMD )
                IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
-                   MOVE    99              TO  STUSAN-RC
+                   MOVE    02              TO  STUSAN-RC
                    GO  TO  2100-KONKAI-NYUIN-TUSAN-EXT
                END-IF
       *
@@ -349,7 +315,7 @@
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
-               MOVE    99              TO  STUSAN-RC
+               MOVE    03              TO  STUSAN-RC
                GO  TO  2110-NYUINRRK-SEL-EXT
            END-IF
       *
@@ -517,7 +483,7 @@
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-NYUINACT    NOT =   ZERO )
-               MOVE    99              TO  STUSAN-RC
+               MOVE    04              TO  STUSAN-RC
                GO  TO  2121-NYUINACT-SEL-EXT
            END-IF
       *
@@ -550,7 +516,7 @@
            END-PERFORM
       *
            IF    ( FLG-HIT             =   ZERO )
-               MOVE    99              TO  STUSAN-RC
+               MOVE    05              TO  STUSAN-RC
                GO  TO  2121-NYUINACT-SEL-EXT
            END-IF
       *
@@ -771,7 +737,7 @@
                MOVE    SGDAY-OTDAY         TO  WRK-HENYMDG
                MOVE    SGDAY-SDAY          TO  WRK-SYMD
            ELSE
-               MOVE    99                  TO  STUSAN-RC
+               MOVE    06                  TO  STUSAN-RC
            END-IF
            .
        800-HIZUKE-CHK-EXT.
@@ -793,7 +759,7 @@
                                            STS-AREA-DAY
                                            LNK-DAY5-AREA
            IF    ( STS-DAY-RC1     NOT =   ZERO )
-               MOVE    99              TO  STUSAN-RC
+               MOVE    07              TO  STUSAN-RC
                GO  TO                      800-KIKAN-CALC-EXT
            END-IF
       *
@@ -802,6 +768,47 @@
       *
            .
        800-KIKAN-CALC-EXT.
+           EXIT.
+      *****************************************************************
+      *    デバッグDISPLAY処理
+      *****************************************************************
+       800-DISPLAY-SEC                     SECTION.
+      *
+           DISPLAY "STUSAN-RC      = "  STUSAN-RC
+           DISPLAY "STUSAN-PTID    = "  STUSAN-PTID
+           DISPLAY "STUSAN-KJNYMD  = "  STUSAN-KJNYMD
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   CONST-TOKUTEI-SRYCD-MAX )
+               IF    ( STUSAN-TOKUTEI-SRYCD (IDX1)
+                               NOT =   SPACE )
+               DISPLAY "STUSAN-TOKUTEI-SRYCD (" IDX1 ")= "
+                        STUSAN-TOKUTEI-SRYCD (IDX1)
+               END-IF
+           END-PERFORM
+           DISPLAY "-"
+      *
+           DISPLAY "STUSAN-NISSU01 = " STUSAN-NISSU01
+           DISPLAY "STUSAN-NISSU02 = " STUSAN-NISSU02
+           DISPLAY "STUSAN-NISSU03 = " STUSAN-NISSU03
+           DISPLAY "STUSAN-NISSU04 = " STUSAN-NISSU04
+           DISPLAY "STUSAN-NISSU05 = " STUSAN-NISSU05
+           DISPLAY "STUSAN-NISSU06 = " STUSAN-NISSU06
+           DISPLAY "STUSAN-NISSU07 = " STUSAN-NISSU07
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   STUSAN-RRK-CNT )
+               DISPLAY "STUSAN-RRK-JTIKBN (" IDX1 ")= "
+                        STUSAN-RRK-JTIKBN (IDX1)
+               DISPLAY "STUSAN-RRK-NYUINYMD (" IDX1 ")= "
+                        STUSAN-RRK-NYUINYMD (IDX1)
+               DISPLAY "STUSAN-RRK-TAIINYMD (" IDX1 ")= "
+                        STUSAN-RRK-TAIINYMD (IDX1)
+               DISPLAY "STUSAN-RRK-NISSU (" IDX1 ")= "
+                        STUSAN-RRK-NISSU (IDX1)
+           END-PERFORM
+      *
+           .
+       800-DISPLAY-EXT.
            EXIT.
       *****************************************************************
       *    カレンダー処理
