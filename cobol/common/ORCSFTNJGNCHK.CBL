@@ -211,7 +211,7 @@
                     (LNK-FTNJGNCHK-SRYYM
                                   <=   HKN-TEKEDYMD(1:6)))
                       PERFORM   910-HKNNUM-READ-SEC
-                    END-PERFORM
+               END-PERFORM
            END-IF
       *
            IF   FLG-HKNNUM     =    ZERO
@@ -368,6 +368,7 @@
        210-HANTEI-SEC            SECTION.
       *
       *収納マスタ読み込み対象の保険組合せ番号取得
+           INITIALIZE                          HKNCOMBI-REC
            MOVE    LNK-FTNJGNCHK-HOSPID    TO  COMB-HOSPID
            MOVE    LNK-FTNJGNCHK-PTID      TO  COMB-PTID
            MOVE    LNK-FTNJGNCHK-KOHID     TO  COMB-KOHID(1)
@@ -391,8 +392,23 @@
                    PERFORM 910-HKNCOMBI-READ-SEC
                END-PERFORM
            END-IF
+      *    保険組合せクローズ
+           MOVE    "HKNCOMBI-KEY4"    TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
       *
       *収納マスタから該当公費の患者負担額チェック
+           PERFORM      2101-SYUKEI-SEC
+      *
+           .
+       210-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    該当公費の患者負担額集計
+      *****************************************************************
+       2101-SYUKEI-SEC            SECTION.
+      *
+           INITIALIZE                          SYUNOU-REC
            MOVE    LNK-FTNJGNCHK-HOSPID    TO  SYU-HOSPID
            MOVE    LNK-FTNJGNCHK-PTID      TO  SYU-PTID
            MOVE    LNK-FTNJGNCHK-NYUGAIKBN TO  SYU-NYUGAIKBN
@@ -406,7 +422,7 @@
            PERFORM 910-SYUNOU-SELECT-SEC
            IF      FLG-SYUNOU              NOT =   ZERO
                MOVE    01                  TO  LNK-FTNJGNCHK-RC
-               GO  TO  210-HANTEI-EXT
+               GO  TO  2101-SYUKEI-EXT
            ELSE
                MOVE    "SYUNOU-KEY25"      TO  ORC-DBPATH
                PERFORM 910-SYUNOU-READ-SEC
@@ -447,14 +463,13 @@
                    END-IF
                END-IF
            END-IF
-      *
       *    収納クローズ
            MOVE    "SYUNOU-KEY25"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
-           .
-       210-HANTEI-EXT.
-           EXIT.
       *
+           .
+       2101-SYUKEI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    システム管理マスター読込
