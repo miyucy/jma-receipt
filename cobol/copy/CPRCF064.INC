@@ -52,6 +52,8 @@
            03  RECE64-KOHBUNRI            PIC  9(01).
       *ø«Œ≈∂Ë ¨
            03  RECE64-SRYKBN              PIC  X(02).
+      *∫ﬁº± Ã∂Ë ¨
+           03  RECE64-ZAISKBKBN           PIC  X(01).
       *¥µº‘»÷πÊ
            03  RECE64-PTNUM               PIC  X(20).
       *ø«Œ≈≤ 
