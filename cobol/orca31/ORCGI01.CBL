@@ -7782,7 +7782,14 @@
       *医療機関加算（減算）情報
            INITIALIZE              SYSKANRI-REC
            MOVE    "5000"          TO  SYS-KANRICD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           EVALUATE   SPA-GMN-I01-SYORIKBN-CD
+               WHEN   "08"
+                   MOVE   SPA-NAI-I01-IDOYMD
+                                   TO  ORC-DBYMD
+               WHEN   OTHER
+                   MOVE    SPA-SYSYMD
+                                   TO  ORC-DBYMD
+           END-EVALUATE
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタの医療機関情報より取得
@@ -9814,7 +9821,14 @@
            MOVE    "5001"          TO  SYS-KANRICD
            MOVE    PTNYUINRRK-BTUNUM
                                    TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           EVALUATE   SPA-GMN-I01-SYORIKBN-CD
+               WHEN   "08"
+                   MOVE   SPA-NAI-I01-IDOYMD
+                                   TO  ORC-DBYMD
+               WHEN   OTHER
+                   MOVE    SPA-SYSYMD
+                                   TO  ORC-DBYMD
+           END-EVALUATE
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
@@ -9844,7 +9858,14 @@
            MOVE    "5002"          TO  SYS-KANRICD
            MOVE    PTNYUINRRK-BRMNUM
                                    TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           EVALUATE   SPA-GMN-I01-SYORIKBN-CD
+               WHEN   "08"
+                   MOVE   SPA-NAI-I01-IDOYMD
+                                   TO  ORC-DBYMD
+               WHEN   OTHER
+                   MOVE    SPA-SYSYMD
+                                   TO  ORC-DBYMD
+           END-EVALUATE
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
