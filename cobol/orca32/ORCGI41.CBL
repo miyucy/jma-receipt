@@ -1088,10 +1088,14 @@
                    MOVE    WRK-HENYMDG         TO  SPA-GMN-NYUINBI-41
                END-IF
                IF      PTNYUINRRK-TAIINYMD NOT =   SPACE
-                   MOVE    PTNYUINRRK-TAIINYMD TO  SPA-GMN-TAINBI-41
-                   MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SYMD
-                   PERFORM 41012-SEIWA-HEN-SEC
-                   MOVE    WRK-HENYMDG         TO  SPA-GMN-TAINBI-41
+                   IF   PTNYUINRRK-TAIINYMD    =   "99999999"
+                       MOVE    SPACE           TO  SPA-GMN-TAINBI-41
+                   ELSE
+                       MOVE    PTNYUINRRK-TAIINYMD TO SPA-GMN-TAINBI-41
+                       MOVE    PTNYUINRRK-TAIINYMD TO WRK-SYMD
+                       PERFORM 41012-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG         TO SPA-GMN-TAINBI-41
+                   END-IF
                END-IF
            END-IF.
       *
