@@ -90,7 +90,7 @@
                 04  J02-HHKNCOMBI.
                   05  J02-VALUE   PIC X(55).
                 04  J02-HHKNCOMBI-COUNT   PIC S9(9)   BINARY.
-                04  J02-HHKNCOMBI-ITEM    PIC X(55)   OCCURS  17 TIMES.
+                04  J02-HHKNCOMBI-ITEM    PIC X(55)   OCCURS  20 TIMES.
               03  J02-NYUINMSG2.
                 04  J02-NYUINMSG2-STYLE   PIC X(20).
                 04  J02-NYUINMSG2-VALUE   PIC X(50).

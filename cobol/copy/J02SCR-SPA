@@ -167,21 +167,25 @@
                    07  SPA-GMN-NYUINMSG          PIC X(50)
                                                  OCCURS   2.
       *
-      *  保険組合せ一覧
+      *        保険組合せ一覧
                05  SPA-HKNCOMI-AREA.
                    07  SPA-GMN-HKNCOMBI-LISTG.
-                       09  SPA-GMN-HKN-LIST    OCCURS  17.
+                       09  SPA-GMN-HKN-LIST    OCCURS  20.
                            11  SPA-GMN-THKNCOMBINUM-G.
                                13  SPA-GMN-THKNCOMBINUM    PIC X(04).
                                13  SPA-GMN-THKNCOMBY1      PIC X(01).
                                13  SPA-GMN-THKNCOMBIMEI    PIC X(50).
       *
-                           11  SPA-NAI-TFTNRATE     PIC  9(03).
-                           11  SPA-NAI-THKNNUM      PIC  X(03).
-                           11  SPA-NAI-TKOH1HKNNUM  PIC  X(03).
-                           11  SPA-NAI-TKOH2HKNNUM  PIC  X(03).
-                           11  SPA-NAI-TKOH3HKNNUM  PIC  X(03).
-                           11  SPA-NAI-TKOH4HKNNUM  PIC  X(03).
+                           11  SPA-NAI-TFTNRATE        PIC  9(03).
+                           11  SPA-NAI-THKNID          PIC  9(10).
+                           11  SPA-NAI-THKNNUM         PIC  X(03).
+                           11  SPA-NAI-TRSI-SISIKBN    PIC  X(01).
+                           11  SPA-NAI-TRSI-SHOBYOYMD  PIC  X(08).
+                           11  SPA-NAI-TRSI-HKNKBN     PIC  X(01).
+                           11  SPA-NAI-TKOH1HKNNUM     PIC  X(03).
+                           11  SPA-NAI-TKOH2HKNNUM     PIC  X(03).
+                           11  SPA-NAI-TKOH3HKNNUM     PIC  X(03).
+                           11  SPA-NAI-TKOH4HKNNUM     PIC  X(03).
                        09  SPA-HKN-MAX             PIC  9(04).
       *
       *    保険組合せ一覧画面用
