@@ -2965,7 +2965,8 @@
                                                   "6" OR  "7" OR
                                                   "8"
       *
-              IF  (  SRY-SRYSYUKBN            = "330" OR "331"     )    
+              IF  (  SRY-SRYSYUKBN            = "330" OR "331"      
+                                                      OR "350"     )
               AND (( SRY-SRYCD(IDX2)(1:3)     = "059"             ) OR  
                    ( SRY-SRYCD(IDX2)(1:1)     = "7"               ) OR  
                    ( SRY-SRYCD(IDX2)          = "099309901"       ) OR  

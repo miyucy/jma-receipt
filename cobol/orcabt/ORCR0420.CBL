@@ -203,7 +203,7 @@
            03  FLG-KHNTEN19                            PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ（自賠責用）
-      01  FLG-KHNTEN-JI-AREA.                                           
+       01  FLG-KHNTEN-JI-AREA.                                          
            03  FLG-KHNTEN10-JI                         PIC 9(01).       
            03  FLG-KHNTEN13-JI                         PIC 9(01).       
            03  FLG-KHNTEN14-JI                         PIC 9(01).       
@@ -1020,6 +1020,21 @@
                    MOVE   "1"                  TO    RECE44-COMCDFLG
                ELSE
                    MOVE    TNS-NAME            TO    RECE45-NAME(IDX4)
+      *
+      *            IF   RECE41-HKNKBN   =  "4"  
+      *            AND  RECE41-SRYYM   >=  "200302"
+      *                 IF   SRY-SRYCD(IDX2)  =  "101120040"  OR
+      *                                          "101120050"  OR
+      *                                          "101120060"
+      *                    MOVE   "６"   TO    RECE45-NAME(IDX4)(9:2)
+      *                 END-IF
+      *                 IF   SRY-SRYCD(IDX2)  =  "101120070"  OR
+      *                                          "101120080"  OR
+      *                                          "101120090"
+      *                    MOVE   "６"   TO    RECE45-NAME(IDX4)(31:2)
+      *                 END-IF
+      *            END-IF
+      *
                END-IF
       *
                IF (  SRY-SRYCD(IDX2) = CONS-ROUSAI1  OR
