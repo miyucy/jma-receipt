@@ -1,92 +1,50 @@
 name	orca;
 
+#linksize	64512;
+
 base	"@ORCA_DIR@";
 
-ddir	"@sitelddefdir@:@patchlddefdir@:@lddefdir@";
-record	"@siterecorddir@:@patchrecorddir@:@recorddir@";
+lddir	"@sitelddefdir@:@lddefdir@";
+bddir	"@sitelddefdir@:@lddefdir@";
+record	"@siterecorddir@:@recorddir@";
 
-multiplex_level	aps;
+multiplex_level	id;
 
 linkage	orcalink;
 
-sysdata {
-    space   "/tmp/blob";
-    port    "/tmp/sysdata";
-};
-
-wfc  {
-    port    "/tmp/wfc.jma-receipt";
-};
-
-#include	<./dbgroup.inc>
-
-db_group "shell" {
- type "Shell";
- priority 1000;
-};
-db_group "system" {
- type "System";
-};
-db_group    "blob_body" {
- type    "NativeBLOB";
-};
-db_group "xml" {
- type "XMLIO";
-};
-db_group "xml2" {
- type    "XMLIO2";
-};
-
 ld	{
-	session  1;
-	orca00	 1;
-	orca01	 1;
-	orca02	 1;
-	orca03	 1;
-	orca04	 1;
-	orca06	 1;
-	orca07	 1;
-	orca11	 1;
-	orca12	 1;
-	orca13	 1;
-	orca14	 1;
-	orca18	 1;
-	orca19	 1;
-	orca21	 1;
-	orca22	 1;
-	orca23	 1;
-	orca24	 1;
-	orca25	 1;
-	orca29	 1;
-	orca31	 1;
-	orca32	 1;
-	orca33	 1;
-	orca34	 1;
-	orca36	 1;
-	orca41	 1;
-	orca42	 1;
-	orca43	 1;
-	orca44	 1;
-	orca51	 1;
-	orca61	 1;
-	orca71	 1;
-	orca101	 1;
-	orca102	 1;
-	orca103	 1;
-	orca104	 1;
-	orca107	 1; 
-	orca901	 1; 
-	api21	 1; 
-	api01r	 1; 
-	api01rv2 1; 
+	orca00	"localhost:9100";
+	orca01	"localhost:9101";
+	orca02	"localhost:9102";
+	orca11	"localhost:9111";
+	orca12	"localhost:9112";
+	orca13	"localhost:9113";
+	orca14	"localhost:9114";
+	orca18	"localhost:9118";
+	orca19	"localhost:9119";
+	orca21	"localhost:9121";
+	orca22	"localhost:9122";
+	orca23	"localhost:9123";
+	orca24	"localhost:9124";
+	orca41	"localhost:9141";
+	orca42	"localhost:9142";
+	orca43	"localhost:9143";
+	orca44	"localhost:9144";
+	orca51	"localhost:9151";
+	orca52	"localhost:9152";
+	orca71	"localhost:9171";
+	orca82	"localhost:9182";
+	orca101	"localhost:9201";
+	orca102	"localhost:9202";
+	orca103	"localhost:9203";
+	orca104	"localhost:9204";
+	orca105	"localhost:9205"; 
+	orca106	"localhost:9206"; 
+	orca107	"localhost:9207"; 
 };
 bd	{
         orcabt;
 #include	<./kentan.inc>
 };
-db      {
-#include	<./orcadbs.inc>
-};
-db_group "push" {
- type    "PushEvent";
-};
+
+#include	<./dbgroup.inc>
