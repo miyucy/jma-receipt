@@ -91,6 +91,7 @@
            03  FLG-INPUTCD                         PIC 9(01).
            03  FLG-USERBYOMEI                      PIC 9(01).
            03  FLG-HKNNUM                          PIC 9(01).
+           03  FLG-KANJI                           PIC 9(01).
       *
            03  FLG-OK                              PIC 9(01).
       *
@@ -106,6 +107,7 @@
            03  IDXA                                PIC 9(04).
            03  IDXB                                PIC 9(04).
            03  IDXC                                PIC 9(04).
+           03  IDXZ                                PIC 9(04).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -144,6 +146,8 @@
            03  WRK-PAGENO                          PIC 9(01).
            03  WRK-JYUSHO-IDX                      PIC 9(03).
            03  WRK-STIDX                           PIC 9(04).
+           03  WRK-INPUTCD                         PIC X(20).
+           03  WRK-CD-MCNT                         PIC 9(02).
       *
       *
        01  WRK-WIDGET-AREA.
@@ -292,6 +296,7 @@
        01  SCRAREA.
            COPY    "Q01.INC".
            COPY    "Q02.INC".
+           COPY    "Q96.INC".
            COPY    "Q97.INC".
            COPY    "Q98.INC".
            COPY    "Q99.INC".
@@ -399,6 +404,9 @@
            WHEN    "Q02"
                PERFORM 310-Q02SPASET-SEC
                GO      TO      300-SCREEN-EXT
+           WHEN    "Q96"
+               PERFORM 310-Q96SPASET-SEC
+               GO      TO      300-SCREEN-EXT
            WHEN    "Q98"
                PERFORM 310-Q98SPASET-SEC
                GO      TO      300-SCREEN-EXT
@@ -425,6 +433,25 @@
        310-Q02SPASET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    Ｑ９６戻りスパ編集処理
+      *****************************************************************
+       310-Q96SPASET-SEC               SECTION.
+      *
+           IF    ( SPA-Q01-Q96-SRYCD   NOT =   SPACE )
+               MOVE    SPA-Q01-Q96-MOTOIDX
+                                       TO  IDXZ
+               MOVE    SPA-Q01-Q96-SRYCD
+                                       TO  SPA-GMN-Q01-SRYCD (IDXZ)
+               MOVE    IDXZ            TO  IDXA
+               PERFORM 4121-SRYCD-CHK-SEC
+           ELSE
+               COMPUTE SPA-GMN-Q01-CUR =   313 +   SPA-Q01-Q96-MOTOIDX
+           END-IF 
+      *
+           .
+       310-Q96SPASET-EXT.
+           EXIT.
       *****************************************************************
       *    Ｑ９８戻りスパ編集処理
       *****************************************************************
@@ -1472,6 +1499,7 @@
       *
                PERFORM 4121-SRYCD-CHK-SEC    
                IF    ( SPA-ERRCD   NOT =   SPACE )
+                OR   ( FLG-END     NOT =   ZERO  )
                    GO  TO  4101-BYOSRY-INPUT-CHK-EXT
                END-IF
       *
@@ -2840,6 +2868,16 @@
            MOVE    SPACE               TO  SPA-NAI-Q01-SRYCD (IDX1)
            MOVE    SPACE               TO  SPA-GMN-Q01-SRYACT (IDX1)
       *
+      *    診療行為検索画面へ遷移
+           IF  ( SPA-GMN-Q01-SRYCD (IDX1) (1:1)   =   "/" )
+               MOVE    IDX1            TO  IDXZ
+               MOVE    ZERO            TO  FLG-KANJI
+               INITIALIZE              WRK-INPUTCD
+                                       WRK-CD-MCNT
+               PERFORM 409-KENSAKU-SEC
+               GO  TO  4121-SRYCD-CHK-EXT
+           END-IF
+      *
       *    セットコードでの入力はエラーとする。
            IF  ( SPA-GMN-Q01-SRYCD (IDX1) (1:1)   =   "P"  OR  "S" )
                MOVE    WRK-ERR-CUR     TO  SPA-GMN-Q01-CUR
@@ -2885,7 +2923,8 @@
                    GO  TO  4121-SRYCD-CHK-EXT
                END-IF
            ELSE
-               IF  ( WRK-MOJI      =   9 )
+               IF    ( WRK-MOJI              =   9 )
+                AND  ( FLG-KANJI             =   ZERO )
       *
                    INITIALIZE      TNS-TENSU-REC
                    MOVE   WRK-SRYCD    TO  TNS-SRYCD
@@ -2901,8 +2940,9 @@
                        GO  TO  4121-SRYCD-CHK-EXT
                    END-IF
                ELSE
-                   MOVE    WRK-ERR-CUR  TO  SPA-GMN-Q01-CUR
-                   MOVE    "0005"  TO  SPA-ERRCD
+                   MOVE    IDX1            TO  IDXZ
+                   MOVE    WRK-SRYCD       TO  WRK-INPUTCD
+                   PERFORM 409-KENSAKU-SEC
                    GO  TO  4121-SRYCD-CHK-EXT
                END-IF
            END-IF
@@ -2919,6 +2959,7 @@
       *****************************************************************
        4121-INPUTCD-SELECT-EDIT-SEC    SECTION.
       *
+           MOVE    ZERO                TO  FLG-KANJI
            MOVE    ZERO                TO  WRK-MOJI
       *
            MOVE    SPA-GMN-Q01-SRYCD (IDX1)
@@ -2950,6 +2991,8 @@
            EVALUATE    KANACHK-SYUBETU
            WHEN    1
       *        半角入力
+               MOVE    ZERO            TO  FLG-KANJI
+      *
                IF  ( WRK-SRYCD (1:WRK-MOJI) IS  NUMERIC )
                    EVALUATE    WRK-MOJI
                    WHEN    4
@@ -2967,10 +3010,12 @@
                END-IF
       *    全角入力
            WHEN    2
+               MOVE    1               TO  FLG-KANJI
                MOVE    "J"             TO  WRK-CDSYUBETU
            WHEN    OTHER
                MOVE    "0108"          TO  SPA-ERRCD
            END-EVALUATE
+      *
       *
            .
       *
@@ -3255,6 +3300,102 @@
        210-BACK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    検索処理
+      *****************************************************************
+       409-KENSAKU-SEC             SECTION.
+      *
+           PERFORM 5011-INPUT-CUR-SEC
+      *
+      *    共通ＳＰＡ編集
+           INITIALIZE                      SPA-Q01-Q96-SENI-AREA
+           MOVE    IDXZ                TO  SPA-Q01-Q96-MOTOIDX
+      *
+           MOVE    "2"                 TO  SPA-Q01-Q96-TYPE
+      *
+           INITIALIZE                  SPA-Q96-GMN-AREA
+           IF      WRK-INPUTCD         NOT =   SPACE
+      *        内服で検索
+               MOVE    "3"                 TO  SPA-Q96-GMN-SYORI
+               MOVE    WRK-INPUTCD         TO  SPA-Q01-Q96-INPUTCD
+               MOVE    "1"                 TO  SPA-Q01-Q96-TYPE
+               IF      FLG-KANJI           =   1
+                   MOVE    "J"             TO  SPA-Q01-Q96-CDSYUBETU
+               ELSE
+                   IF      WRK-INPUTCD(1:1)    NUMERIC
+                       EVALUATE    WRK-CD-MCNT
+                           WHEN    3
+                           WHEN    6
+                               MOVE    "6"     TO  SPA-Q01-Q96-CDSYUBETU
+                           WHEN    4
+                               MOVE    "4"     TO  SPA-Q01-Q96-CDSYUBETU
+                           WHEN    5
+                               MOVE    "5"     TO  SPA-Q01-Q96-CDSYUBETU
+                       END-EVALUATE
+                   ELSE
+                       MOVE    "A"             TO  SPA-Q01-Q96-CDSYUBETU
+                   END-IF
+               END-IF
+      *        画面編集
+               PERFORM 41011-Q96-SET-SEC
+      *        点数マスタ編集で、対象データなしの時、診療行為で検索する
+               IF     (SPA-Q96-GMN-MAX     =   ZERO )  AND
+                      (SPA-Q01-Q96-CDSYUBETU   =   "J"  )
+                   INITIALIZE                  SPA-Q96-GMN-AREA
+                   MOVE    "8"                 TO  SPA-Q96-GMN-SYORI
+      *            画面編集
+                   PERFORM 41011-Q96-SET-SEC
+               END-IF
+           ELSE
+      *        画面編集
+               PERFORM 41011-Q96-SET-SEC
+           END-IF
+      *
+           MOVE    "Q01"               TO  SPA-MOTOPG
+           MOVE    "Q96"               TO  SPA-SAKIPG
+           MOVE    "Q01"               TO  SPA-Q96-MOTOPG
+      *
+           IF      SPA-Q96-GMN-MAX     =   ZERO
+               MOVE    "INPUT"         TO  MCP-WIDGET
+           ELSE
+               MOVE    "SELNUM1"       TO  MCP-WIDGET
+           END-IF
+      *
+           MOVE   "NEW"                TO  MCP-PUTTYPE
+           MOVE   "Q96    "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       409-KENSAKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    検索画面編集処理
+      *****************************************************************
+       41011-Q96-SET-SEC                           SECTION.
+      *
+      *
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-Q01FREE         TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGQ96"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+      *
+           MOVE    SPA-COMMON           TO  SPA-AREA
+           MOVE    SPA-FREE             TO  SPA-Q01FREE
+      *
+           .
+       41011-Q96-SET-EXT.
+           EXIT.
       *****************************************************************
       *    条件クリア処理
       *****************************************************************

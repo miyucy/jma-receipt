@@ -478,6 +478,7 @@ COPYS = \
 	Q01SCR-SPA \
 	Q02.INC \
 	Q100.INC \
+	Q96.INC \
 	Q97.INC \
 	Q98.INC \
 	Q99.INC \

@@ -143,6 +143,7 @@ SCREEN_screen = \
 	Q01.glade \
 	Q02.glade \
 	Q100.glade \
+	Q96.glade \
 	Q97.glade \
 	Q98.glade \
 	Q99.glade \

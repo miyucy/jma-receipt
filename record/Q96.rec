@@ -1,0 +1,51 @@
+Q96	{
+	fixed32	{
+		INPUT	{
+			value	varchar(22);
+		};
+		SENTAKU	{
+			value	varchar(30);
+		};
+		SELNUM1	{
+			value	varchar(3);
+		};
+		SELNUM2	{
+			value	varchar(3);
+		};
+		SELNUM3	{
+			value	varchar(3);
+		};
+		SELNUM4	{
+			value	varchar(3);
+		};
+		SELNUM5	{
+			value	varchar(3);
+		};
+		scrolledwindow26	{
+			LIST	{
+				count	int;
+				item	{
+					value1	varchar(3);
+					value2	varchar(70);
+					value3	varchar(6);
+					value4	varchar(10);
+				}	[200];
+				select	bool[200];
+			};
+		};
+		JIINCOB	{
+			JIIN	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[10];
+		};
+		USERCOB	{
+			USER	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[10];
+		};
+	};
+};
