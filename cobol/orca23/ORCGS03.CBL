@@ -1653,6 +1653,8 @@
            MOVE    IDX                 TO  SMEI-DENPEDANUM
       *入金連番
            MOVE    ZERO                TO  SMEI-NYUKINRENNUM
+      *診療科
+           MOVE    SPA-NAI-SRYKA       TO  SMEI-SRYKA
       *伝票状態区分
            MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
       *請求発行日（発行日の西暦）
