@@ -1473,7 +1473,7 @@
                END-PERFORM
       *        訂正の時、集計なし
                IF     (LNK-ORCSC-SYORIFLG =   "1"    )  AND
-                      (ACCT-SRYKA         =   SPA-SRYKA  )   AND
+                      (ACCT-SRYKA         =   LNK-ORCSC-OLD-SRYKA) AND
                       (ACCT-HKNCOMBI      =   SPA-HKNCOMBINUM)
                    MOVE    ZERO               TO  FLG-ZAIARI
                END-IF
@@ -1630,12 +1630,6 @@
                    END-IF
       *            中心静脈
                    IF      WRK-TEN-SRYCD1  NOT =   SPACE
-      *TEST
-                     DISPLAY "C30 WRK-TEN-SRYCD1:" WRK-TEN-SRYCD1
-                            ",IDY:" IDY
-                            ",SRYCD:" TBL-IVH-SRYCD (IDY)
-                            ",IDX:" TBL-IVH-IDX   (IDY)
-      *TEST
                        IF     (TBL-IVH-SRYCD (IDY) NOT =   SPACE )  AND
                               (TBL-IVH-IDX   (IDY)     >   ZERO  )
                            MOVE    "9026"              TO  SPA-ERRCD
@@ -1721,7 +1715,7 @@
                MOVE    1                   TO  FLG-ZAIARI
       *        訂正の時、集計なし
                IF     (LNK-ORCSC-SYORIFLG  =   "1"    )  AND
-                      (ACCT-SRYKA          =   SPA-SRYKA )  AND
+                      (ACCT-SRYKA          =   LNK-ORCSC-OLD-SRYKA) AND
                       (ACCT-HKNCOMBI       =   SPA-HKNCOMBINUM)
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
@@ -1785,7 +1779,7 @@
                MOVE    1                   TO  FLG-ZAIARI
       *        訂正の時、集計なし
                IF     (LNK-ORCSC-SYORIFLG  =   "1"    )  AND
-                      (ACCT-SRYKA          =   SPA-SRYKA )  AND
+                      (ACCT-SRYKA          =   LNK-ORCSC-OLD-SRYKA) AND
                       (ACCT-HKNCOMBI       =   SPA-HKNCOMBINUM)
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
