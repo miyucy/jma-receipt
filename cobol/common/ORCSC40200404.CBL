@@ -72,6 +72,9 @@
       *    労災加算あり
            03  FLG-ROU-ARI         PIC 9(01).
            03  FLG-ROUSAI          PIC 9(01).
+      *    自動加算あり
+           03  FLG-KASAN-ARI       PIC 9(01).
+           03  FLG-FUKU            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -80,6 +83,7 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDXS                PIC 9(04).
+           03  IDXF                PIC 9(04).
            03  IDX-Z               PIC 9(04).
            03  IDX-S               PIC 9(04).
            03  IDX-SA              PIC 9(04).
@@ -125,6 +129,10 @@
       *
       *    手技料合計
            03  WRK-GOK-TENSUKEI    PIC 9(09).
+           03  WRK-GOK-TENGAKEI    PIC 9(09).
+           03  WRK-SUM-TENSUKEI    PIC 9(09).
+           03  WRK-SUM-TENGAKEI    PIC 9(09).
+           03  WRK-RSI-TENSUKEI    PIC 9(09).
       *
            03  WRK-SYOKEIS         PIC 9(08)V9999.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
@@ -298,7 +306,8 @@
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
-                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE ) OR
+                             ((WRK-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
+                              (WRK-COM-INPUTCD (IDX-Z) =   SPACE )) OR
                               (WRK-ERRCD       NOT =   SPACE)
       *
                ADD     1                   TO  IDX-MAX
@@ -374,22 +383,27 @@
                        IF      IDX-ZS          >   ZERO
       *                    乳幼児、時間外の自動加算を追加する
                            PERFORM 1002-JIDO-KASAN-SEC
+      *                   １剤１手技判定
+                           PERFORM 1009-SYUGI-CHEK-SEC
                        END-IF
                        MOVE    IDX-Z           TO  IDX-ZS
                        MOVE    IDX-Z           TO  IDX-ZS2
                    END-IF
-      *            施設基準不適合チェック
-                   IF      WRK-COM-KIJUNTEIGENKBN(IDX-Z)
-                                               NOT =   ZERO
-                       PERFORM 100111-KIJUNN-CHK-SEC
-                   END-IF
-      *            消炎鎮痛処置の逓減チェック
-                   PERFORM 100112-SYOEN-CHK-SEC
-      *            労災の時、労災加算の算定
-                   IF      SPA-HKNKBN          =   1
-      *                手技がある場合
-                     AND  (IDX-ZS              >   ZERO )
-                       PERFORM 100113-RSIHKN-SYORI-SEC
+      *
+                   IF      WRK-ERRCD           =   SPACE
+      *                施設基準不適合チェック
+                       IF      WRK-COM-KIJUNTEIGENKBN(IDX-Z)
+                                              NOT =   ZERO
+                           PERFORM 100111-KIJUNN-CHK-SEC
+                       END-IF
+      *                消炎鎮痛処置の逓減チェック
+                       PERFORM 100112-SYOEN-CHK-SEC
+      *                労災の時、労災加算の算定
+                       IF      SPA-HKNKBN          =   1
+      *                    手技がある場合
+                         AND  (IDX-ZS              >   ZERO )
+                          PERFORM 100113-RSIHKN-SYORI-SEC
+                       END-IF
                    END-IF
       *        薬剤
                WHEN    "6"
@@ -836,12 +850,12 @@
                    CONTINUE
                ELSE
                    MOVE    "8014"              TO  WRK-ERRCD
-                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-ZS)
                END-IF
       *        アフターケアの時算定不可
                IF      SPA-RSI-HKNKBN          =   "3"
                    MOVE    "8018"              TO  WRK-ERRCD
-                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-ZS)
                END-IF
            END-IF
       *
@@ -1013,6 +1027,7 @@
       *
       *    加算料追加処理
            PERFORM 1002-KASAN-SET-SEC
+           MOVE    IDX-S               TO  IDX-Z
            .
        100113-RSIHKN-SYORI-EXT.
            EXIT.
@@ -1022,7 +1037,11 @@
       *****************************************************************
        1002-JIDO-KASAN-SEC        SECTION.
       *
+           MOVE    ZERO                TO  FLG-KASAN-ARI
            MOVE    IDX-ZS2             TO  IDX-S
+      *
+      *    年齢加算処理
+           PERFORM 10013-NENREI-SET-SEC
       *
       *    外来で診察料の無い場合の時間加算
            IF      (SPA-NYUGAIKBN          =   "2"  )  AND
@@ -1052,7 +1071,7 @@
            END-IF
       *
       *    年齢加算処理
-           PERFORM 10013-NENREI-SET-SEC
+      **** PERFORM 10013-NENREI-SET-SEC
            .
        1002-JIDO-KASAN-EXT.
            EXIT.
@@ -1141,6 +1160,12 @@
                       (WRK-COM-TIMEKSNKBN (IDX1)   NOT =   ZERO )
                     MOVE    1              TO  FLG-ARI
                     MOVE    IDX1           TO  IDX-T
+               ELSE
+      *        次の手技の前とする
+                   IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )  AND
+                          (WRK-COM-DATAKBN (IDX1)  =   "2"  )
+                        MOVE    IDX1           TO  IDX-T
+                   END-IF
                END-IF
            END-PERFORM
            IF      IDX-T               =   ZERO
@@ -1151,7 +1176,8 @@
       *    加算料追加処理
            PERFORM 1002-KASAN-SET-SEC
            IF      FLG-ADD             =   1
-               MOVE    1               TO  WRK-COM-SANFLG(IDX-S)
+               MOVE    2               TO  WRK-COM-SANFLG(IDX-S)
+               MOVE    1               TO  FLG-KASAN-ARI
            END-IF
       *
            .
@@ -1239,7 +1265,9 @@
            ADD     1                   TO  WRK-GMN-MAX
       *
            MOVE    1                   TO  FLG-ADD
-           ADD     1                   TO  IDX-Z
+           IF      IDX-S               =   IDX-Z
+               ADD     1                   TO  IDX-Z
+           END-IF
            .
        1002-KASAN-SET-EXT.
            EXIT.
@@ -1263,12 +1291,72 @@
                IF      FLG-ADD             =   1
                    MOVE    1                   TO  WRK-COM-SANFLG
                                                            (IDX-S)
+                   MOVE    1                   TO  FLG-KASAN-ARI
                    MOVE    4                   TO  IDX2
                END-IF
            END-PERFORM
       *
            .
        10013-NENREI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    １剤１手技判定処理
+      *****************************************************************
+       1009-SYUGI-CHEK-SEC                  SECTION.
+      *
+           MOVE    ZERO                TO  FLG-FUKU
+           PERFORM VARYING     IDXF    FROM    1   BY  1
+                   UNTIL       IDXF    >=   IDX-Z
+      *        腰部固定帯加算、初診時ブラッシング料は重複手技としない
+               IF      WRK-COM-INPUTCD(IDXF)   =   "140037490"
+                                               OR  "140040110"
+                                               OR  "101400030"
+                   CONTINUE
+               ELSE
+                   IF     (WRK-COM-INPUTCD(IDXF)(1:1)  =   "1")  AND
+                          (WRK-COM-DATAKBN(IDXF)       =   "1")
+                       MOVE    1               TO  FLG-FUKU
+                   END-IF
+                   IF    ((WRK-COM-INPUTCD(IDXF)(1:1)  =   "1")  AND
+                          (WRK-COM-INPUTCD(IDXF)(1:3)
+                                                   NOT =   "101")) AND
+                          (WRK-COM-DATAKBN(IDXF)       =   "2")  AND
+                         ((WRK-COM-AUTOKBN(IDXF)       =   "2") OR
+                          (WRK-COM-TIMEKSNKBN (IDXF)
+                                                  NOT =   ZERO ))
+                       MOVE    1               TO  FLG-KASAN-ARI
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+      *    腰部固定帯加算、初診時ブラッシング料は重複手技としない
+           IF     (WRK-COM-INPUTCD (IDX-Z) =   "140037490"
+                                           OR  "140040110"
+                                           OR  "101400030" )  OR
+                  (FLG-FUKU                =   ZERO        )
+               CONTINUE
+           ELSE
+               IF      FLG-KASAN-ARI       =   ZERO
+      *            手技１以上の警告
+                   IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
+                      AND (LNK-ORCSC-KEI-IDX       =   ZERO )
+                       MOVE    "K401"              TO  WRK-ERRCD
+                       MOVE    "1"                 TO  WRK-COM-KZMFLG
+                                                              (IDX-Z)
+                       MOVE    "1"                 TO  WRK-COM-CUR
+                                                              (IDX-Z)
+                       MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
+                   END-IF
+               ELSE
+      *            時間外・乳幼児加算のある時は１剤１手技とする
+                   MOVE    "0401"              TO  WRK-ERRCD
+                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+               END-IF
+           END-IF
+      *
+           .
+       1009-SYUGI-CHEK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1305,7 +1393,7 @@
            IF      (WRK-COM-TIMEFLG (IDX-Z)   =   ZERO  ) AND
                    (WRK-COM-AUTOKBN (IDX-Z)   =   SPACE ) AND
                    (WRK-COM-TIMEKSNKBN(IDX-Z) NOT =   ZERO)
-               MOVE    1                TO  WRK-COM-SANFLG (IDX-Z)
+               MOVE    2                TO  WRK-COM-SANFLG (IDX-Z)
            END-IF
       *
            .
@@ -1386,15 +1474,13 @@
                PERFORM 100212-TENSUKEI-SEC
            ELSE
       *        手技料が無い場合(403)
-               IF      LNK-SC90-TENSUKEI   NOT =   ZERO
-                   MOVE    LNK-SC90-TENSUKEI   TO  WRK-GOK-TENSUKEI
-               END-IF
+               ADD     WRK-SUM-TENSUKEI    TO  WRK-GOK-TENSUKEI
+               ADD     WRK-SUM-TENGAKEI    TO  WRK-GOK-TENGAKEI
            END-IF
       **** COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
       ****                             +   LNK-SC90-TENGAKEI
-           COMPUTE WRK-GOK-TENSUKEI    =   WRK-GOK-TENSUKEI
-                                       +   LNK-SC90-TENGAKEI
-           MOVE    WRK-GOK-TENSUKEI    TO  LNK-SC90-TENSUKEI
+           COMPUTE LNK-SC90-TENSUKEI   =   WRK-GOK-TENSUKEI
+                                       +   WRK-GOK-TENGAKEI
       *    各点数編集
            MOVE    LNK-SC90-TENSUKEI   TO  WRK-COM-SYUTEN1 (IDX-MAX)
            COMPUTE WRK-COM-YKZTEN (IDX-MAX)
@@ -1442,6 +1528,8 @@
                                                               (IDX-Z)
            END-IF
       *
+           MOVE    ZERO                TO  LNK-SC90-TENGAKEI
+           MOVE    ZERO                TO  LNK-SC90-TENSUKEI
            MOVE    ZERO                TO  LNK-SC90-HAIKI
            MOVE    LNK-ORCSC-KAISU     TO  LNK-SC90-KAISU
            MOVE    "1"                 TO  LNK-SC90-KBN
@@ -1449,6 +1537,10 @@
            CALL    "ORCSC90"           USING
                                        ORCSC90AREA
                                        WRK-SCR-REC
+      *    手技料集計
+           IF       WRK-MOJI                   =   "1"
+               PERFORM 100212-SYUGI-KEI-SEC
+           END-IF
       *    各チェック処理
       *DD  EVALUATE    WRK-MOJI
       *        薬剤
@@ -1472,6 +1564,27 @@
       *
            .
        10021-KEISAN-EXT.
+           EXIT.
+      *****************************************************************
+      *    手技料計算処理
+      *****************************************************************
+       100212-SYUGI-KEI-SEC            SECTION.
+      *
+           IF      WRK-COM-TENSIKIBETU (IDX-Z)   =   5
+                                                 OR  6
+               CONTINUE
+           ELSE
+      *        労災の手技の時（初診時ブラシング料のみ）
+               IF      WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101"
+                   ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-RSI-TENSUKEI
+               ELSE
+                   ADD     LNK-SC90-TENGAKEI       TO  WRK-SUM-TENGAKEI
+                   ADD     LNK-SC90-TENSUKEI       TO  WRK-SUM-TENSUKEI
+               END-IF
+           END-IF
+      *
+           .
+       100212-SYUGI-KEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1537,7 +1650,11 @@
            END-IF
       *
            ADD     LNK-SC90-TENSUKEI   TO  WRK-GOK-TENSUKEI
+           ADD     LNK-SC90-TENGAKEI   TO  WRK-GOK-TENGAKEI
            MOVE    ZERO                TO  LNK-SC90-TENSUKEI
+           MOVE    ZERO                TO  LNK-SC90-TENGAKEI
+           MOVE    ZERO                TO  WRK-SUM-TENGAKEI
+           MOVE    ZERO                TO  WRK-SUM-TENSUKEI
       *
            .
        100212-TENSUKEI-EXT.
@@ -1548,6 +1665,9 @@
       *****************************************************************
        1006-KASAN-SET-SEC              SECTION.
       *
+           MOVE    WRK-SUM-TENSUKEI    TO  LNK-SC90-TENSUKEI
+           MOVE    WRK-SUM-TENGAKEI    TO  LNK-SC90-TENGAKEI
+      *
       *    自動加算以外の加算（時間外、年齢以外）
            MOVE    ZERO                TO  WRK-TENSUKEI-G
            MOVE    ZERO                TO  WRK-TENSUKEI-K
@@ -1556,6 +1676,13 @@
            PERFORM VARYING     IDX     FROM    IDX-ZS  BY  1
                    UNTIL      (IDX         >=  HZN-IDX     )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
+      *        時間外加算のものは、自動加算とする
+               IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
+                      (WRK-COM-DATAKBN    (IDX)        =   "2"  )  AND
+                      (WRK-COM-TIMEKSNKBN (IDX)    NOT =   ZERO )  AND
+                      (WRK-COM-TENSIKIBETU(IDX)        =   5    )
+                   MOVE    2               TO  WRK-COM-SANFLG (IDX)
+               END-IF
       *        ％加算（労災以外）
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-INPUTCD(IDX)(1:3)   NOT =   "101" )  AND
@@ -1584,12 +1711,11 @@
                END-IF
            END-PERFORM
       *
-      *
            COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
                                        +   WRK-TENSUKEI-K
                                        -   WRK-TENSUKEI-G
       *
-      *    自動加算の加算（時間外、年齢）
+      *    自動加算の加算（年齢）
            MOVE    ZERO                TO  WRK-TENSUKEI-G
            PERFORM VARYING     IDX     FROM    IDX-ZS  BY  1
                    UNTIL       IDX         >=  HZN-IDX
@@ -1603,6 +1729,39 @@
                                                +   0.5
                    MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
                    ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
+               END-IF
+           END-PERFORM
+      *
+           COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
+                                       +   WRK-TENSUKEI-G
+      *    自動加算の加算（時間外）
+           MOVE    ZERO                TO  WRK-TENSUKEI-G
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   200 )  OR
+                             ((WRK-GMN-INPUTCD (IDX)  =   SPACE ) AND
+                              (WRK-COM-INPUTCD (IDX)  =   SPACE ))
+                          OR  (WRK-TENSUKEI-G     NOT =  ZERO  )
+               IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
+                      (WRK-COM-DATAKBN    (IDX)    =   "2" )  AND
+                      (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
+                      (WRK-COM-SANFLG     (IDX)    =   2   )
+                   MOVE    ZERO                TO  WRK-TENSUKEI
+                   COMPUTE WRK-TENSUKEI        =   LNK-SC90-TENSUKEI
+                                               *   WRK-COM-KISOTEN(IDX)
+                                               /   100.00
+                                               +   0.5
+                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
+      *            初診時ブラシング料時間外加算
+                   IF     (WRK-RSI-TENSUKEI            >   ZERO)
+                       MOVE    ZERO                TO  WRK-TENSUKEI
+                       COMPUTE WRK-TENSUKEI    =   WRK-RSI-TENSUKEI
+                                               *   WRK-COM-KISOTEN(IDX)
+                                               /   100.00
+                                               +   0.5
+                       MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+                       ADD     WRK-TENSUKEI-9      TO  WRK-RSI-TENSUKEI
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -1630,6 +1789,7 @@
       *
            COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
                                        +   WRK-TENSUKEI-G
+                                       +   WRK-RSI-TENSUKEI
       *
            .
        1006-KASAN-SET-EXT.

@@ -121,6 +121,7 @@
            03  WRK-GOK-TENSUKEI        PIC S9(10).
            03  WRK-GOK-TENGAKEI        PIC S9(10).
            03  WRK-GRSI-TENSUKEI       PIC S9(10).
+           03  WRK-GRSI-TENSUKEI2      PIC S9(10).
       *    点数計
            03  WRK-SUM-TENSUKEI        PIC 9(08)V99.
       *    点数計（通則加算対象外計）
@@ -129,6 +130,7 @@
            03  WRK-JIN-TENSUKEI        PIC 9(08)V99.
       *    労災点数
            03  WRK-RSI-TENSUKEI        PIC 9(08)V99.
+           03  WRK-RSI-TENSUKEI2       PIC 9(08)V99.
       *
       *****03  WRK-SANSO           PIC 9(08).
            03  WRK-SANSOKIN        PIC 9(08)V99.
@@ -613,6 +615,21 @@
       *****************************************************************
        100113-RSIHKN-SYORI-SEC        SECTION.
       *
+      *    初診時ブラッシング料は初診算定時のみの算定とする
+           IF      WRK-COM-INPUTCD(IDX-ZS) =   "101400030"
+               IF      LNK-ORCSC-SYOSIN2       =   1
+                   CONTINUE
+               ELSE
+                   MOVE    "8014"              TO  SPA-ERRCD
+                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-ZS)
+               END-IF
+      *        アフターケアの時算定不可
+               IF      SPA-RSI-HKNKBN          =   "3"
+                   MOVE    "8018"              TO  SPA-ERRCD
+                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-ZS)
+               END-IF
+           END-IF
+      *
            IF     (IDX-ZS              =   ZERO    )  OR
                   (WRK-COM-INPUTCD (IDX-ZS)(1:3)   =   "101" )
       *        労災のコードは加算なし
@@ -765,8 +782,8 @@
                PERFORM 10019-JIKANKASAN-CHK-SEC
            END-IF
       *    時間加算
-           IF      (LNK-ORCSC-TIMEFLG          NOT =   ZERO   OR
-                    WRK-COM-TIMEFLG (IDX-ZS)   NOT =   ZERO )  AND
+           IF     ((LNK-ORCSC-TIMEFLG          NOT =   ZERO )  OR
+                   (WRK-COM-TIMEFLG (IDX-ZS)   NOT =   ZERO ))  AND
                    (WRK-COM-TIMEKSNKBN(IDX-ZS) NOT =   ZERO )
                PERFORM 10012-JIKANKASAN-SET-SEC
            END-IF
@@ -781,7 +798,9 @@
       *
       *    通則年齢区分があるか、労災コードの場合のみ
            IF     (WRK-COM-TSUSOKUAGE (IDX-ZS) =   "1" )  OR
-                  (WRK-COM-INPUTCD (IDX-ZS)(1:3)   =  "101")
+                 ((WRK-COM-INPUTCD (IDX-ZS)(1:3)   =  "101") AND
+      *        初診時ブラッシング料は対象外
+                  (WRK-COM-INPUTCD(IDX-ZS) NOT =   "101400030"))
                CONTINUE
            ELSE
                GO      TO      10011-YOUJIKASAN-SET-EXT
@@ -1110,6 +1129,7 @@
            MOVE    ZERO                TO  WRK-SANTEN
            MOVE    ZERO                TO  WRK-SANSOKIN-SUM
            MOVE    ZERO                TO  WRK-GRSI-TENSUKEI
+           MOVE    ZERO                TO  WRK-RSI-TENSUKEI2
       *
            INITIALIZE                  WRK-AREA
            INITIALIZE                  ORCSC90AREA
@@ -1252,7 +1272,12 @@
            END-IF
       *    労災の手技の時、
            IF      WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101"
-               ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-RSI-TENSUKEI
+               IF      WRK-COM-INPUTCD(IDX-ZS) =   "101400030"
+      *        初診時ブラッシング料は時間外加算のみ
+                   ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-RSI-TENSUKEI2
+               ELSE
+                   ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-RSI-TENSUKEI
+               END-IF
            ELSE
       *        人工心肺不使用加算は施設基準逓減の対象外とする
                IF      WRK-COM-INPUTCD (IDX-Z) =   "150302770"
@@ -1601,10 +1626,26 @@
                    MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
                    ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
                END-IF
+      *        初診時ブラッシング料の時間外加算
+               IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
+                      (WRK-COM-INPUTCD(IDX)(1:3)   NOT =   "101")  AND
+                      (WRK-COM-TIMEKSNKBN (IDX)    NOT =   ZERO )  AND
+                      (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
+                      (WRK-COM-SANFLG     (IDX)    =   1   )  AND
+                      (WRK-RSI-TENSUKEI2           >   ZERO)
+                   MOVE    ZERO                TO  WRK-TENSUKEI
+                   COMPUTE WRK-TENSUKEI        =   WRK-RSI-TENSUKEI2
+                                               *   WRK-COM-KISOTEN(IDX)
+                                               /   100
+                                               +   0.5
+                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-K
+               END-IF
            END-PERFORM
            COMPUTE WRK-GRSI-TENSUKEI   =   WRK-GRSI-TENSUKEI
                                        +   WRK-TENSUKEI-K
                                        -   WRK-TENSUKEI-G
+                                       +   WRK-RSI-TENSUKEI2
       *
       *    労災加算
            MOVE    ZERO                TO  WRK-TENSUKEI-K

@@ -47,6 +47,7 @@
       * 01.00.18     NACL-多々納  04/04/27  ユーザーコード追加
       * 01.00.19     NACL-多々納  04/07/26  複数科・保険追加
       *                                     処置加算料追加(403)
+      * 01.00.20     NACL-多々納  05/01/12  初診時ブラッシング料対応
       *****************************************************************
       *
       *
@@ -330,8 +331,8 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX              >   200       )   OR
                               (SPA-ERRCD        NOT =   SPACE )   OR
-                              (SPA-GMN-INPUTCD(IDX) =   SPACE  AND
-                               SPA-COM-INPUTCD(IDX) =   SPACE )
+                             ((SPA-GMN-INPUTCD(IDX) =   SPACE ) AND
+                              (SPA-COM-INPUTCD(IDX) =   SPACE ))
       *        入院回数のチェック
                IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "*"
       *            入院以外エラー
@@ -439,6 +440,7 @@
                MOVE    ZERO                TO  FLG-JIHI
                MOVE    ZERO                TO  FLG-BUIKBN
                MOVE    ZERO                TO  FLG-SYUGI
+               MOVE    ZERO                TO  FLG-HASSYO
                MOVE    ZERO                TO  WRK-KENSA-CNT
                MOVE    SPACE               TO  WRK-SRYKBN
                MOVE    SPACE               TO  WRK-SRYSYUKBN
@@ -462,6 +464,7 @@
                MOVE    ZERO                TO  FLG-JIHI
                MOVE    ZERO                TO  FLG-BUIKBN
                MOVE    ZERO                TO  FLG-SYUGI
+               MOVE    ZERO                TO  FLG-HASSYO
                MOVE    ZERO                TO  WRK-KENSA-CNT
                MOVE    SPACE               TO  WRK-SRYKBN
                MOVE    SPACE               TO  WRK-SRYSYUKBN
@@ -834,7 +837,6 @@
                                MOVE    "1"       TO  SPA-COM-ZAIEND
                                                              (IDX)
                                MOVE    1         TO  FLG-ZAI
-      *!                       MOVE    1         TO  FLG-HASSYO
                              WHEN    OTHER
                                MOVE    "99"          TO  SPA-COM-SRYKBN
                                                                   (IDX)
@@ -1269,6 +1271,22 @@
                END-EVALUATE
            END-IF
       *
+      *    初診時ブラッシング料判定
+           IF      SPA-COM-INPUTCD(IDX)    =   "101400030"
+               IF     (IDX                 >   1  )  AND
+                     ((SPA-GMN-INPUTCD(IDX - 1)(1:1) =   ".") OR
+                      (SPA-COM-ZAIEND(IDX -  1)   =  SPACE  ))
+                   IF      SPA-COM-SRYKBN(IDX - 1)   =   "40"
+                                                     OR  "50"
+                       MOVE    SPA-COM-SRYKBN(IDX - 1)   TO  WRK-SRYKBN
+                       MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
+                                               TO  WRK-SRYSYUKBN
+                       MOVE    WRK-SRYSYUKBN   TO  SPA-COM-SRYSYUKBN
+                                                               (IDX)
+                       MOVE    WRK-SRYKBN      TO  SPA-COM-SRYKBN(IDX)
+                   END-IF
+               END-IF
+           END-IF
            .
        51011-SRYSYUKBN-KBN-EXT.
            EXIT.

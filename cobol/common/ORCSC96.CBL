@@ -874,6 +874,17 @@
                WHEN    "K133"
                    MOVE    "初回算定日には診療年月を入力して下さい。"
                                        TO  SPA-ERRMSG
+      *
+               WHEN    "K401"
+                   MOVE    "警告！処置の手技が剤内に複数あります。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "手技毎に剤分離して下さい。"
+                                       TO  SPA-ERRMSG(39:)
+               WHEN    "0401"
+                   MOVE    "処置の手技に通則加算があります。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "手技毎に剤分離して下さい。"
+                                       TO  SPA-ERRMSG(33:)
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.
