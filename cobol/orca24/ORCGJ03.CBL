@@ -1152,6 +1152,7 @@
            IF      SPA-GMN-HHKNCOMBI   =   "9999"
                GO      TO      3102-NYUACCT-SYORI-EXT
            END-IF
+           INITIALIZE                      TBL-GAIHAKU-G
       *
            INITIALIZE                      NYUINACCT-REC
            MOVE    SPA-HOSPID          TO  NACCT-HOSPID
@@ -1193,6 +1194,11 @@
                IF      IDX             >   ZERO
                    PERFORM 31021-NYUINACCT-SPA-SEC
                END-IF
+               EVALUATE    NACCT-ZAISKBKBN
+                   WHEN    "2"
+      *            外泊
+                       MOVE    NACCT-DAY-AREA  TO  TBL-GAIHAKU-G
+               END-EVALUATE
       *
                MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
                PERFORM 930-NYUINACCT-READ-SEC
@@ -1204,6 +1210,9 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *    外泊の再編集
+           PERFORM 310212-GAIHAKU-SEC
+      *
       *
            .
        3102-NYUACCT-SYORI-EXT.
@@ -1336,6 +1345,34 @@
        31011-NYUINACT-SPA-EXT.
            EXIT.
       *
+      *****************************************************************
+      *   外泊の再編集処理
+      *****************************************************************
+       310212-GAIHAKU-SEC           SECTION.
+      *
+      *    診療行為より、対象チェック
+           PERFORM VARYING     TBL-IDX1    FROM    1   BY  1
+                   UNTIL      (TBL-IDX1       >    200  )  OR
+                              (WRK-TBL-SRYCD (9 TBL-IDX1)
+                                              =   SPACE )
+      *        食事・加算を削除
+               IF      WRK-TBL-KNOKBN (9 TBL-IDX1) =   "4"
+                                                  OR   "6"
+      *            外泊日の加算を表示しない
+                   PERFORM VARYING     TBL-IDX3    FROM    1   BY  1
+                           UNTIL       TBL-IDX3    >   31
+                       IF      TBL-GAIHAKU (TBL-IDX3)  =   1
+                                                       OR  3
+                           MOVE    ZERO            TO  WRK-TBL-KAISU
+                                                   (9 TBL-IDX1 TBL-IDX3)
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           .
+       310212-GAIHAKU-EXT.
+           EXIT.
       *
 068800*****************************************************************
 068900*   編集領域からＳＰＡへ  編集処理

@@ -1012,12 +1012,12 @@
 058100*
 058200     IF      TBL-IDX2            =   ZERO
 058300         MOVE    "9999"              TO  SPA-ERRCD
-058400         GO      TO      310111-SINKOUI-01-EXT
 058500     END-IF
 058600*
 058700*    ¿ÇÎÅ¹Ô°Ù²ó¿ô·×»»
            PERFORM VARYING     TBL-IDX3    FROM    1   BY  1
-058900             UNTIL       TBL-IDX3    >   31
+058900             UNTIL      (TBL-IDX3    >   31  )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
 059000*
                IF     (ACCT-SRYKBN         =   "21" )  AND
                       (SPA-GMN-NYUGAIKBN   =   "1"  )
@@ -1137,6 +1137,7 @@
            IF      SPA-GMN-HHKNCOMBI   =   "9999"
                GO      TO      3102-NYUACCT-SYORI-EXT
            END-IF
+           INITIALIZE                      TBL-GAIHAKU-G
       *
            INITIALIZE                      NYUINACCT-REC
            MOVE    SPA-HOSPID          TO  NACCT-HOSPID
@@ -1178,10 +1179,23 @@
                IF      IDX             >   ZERO
                    PERFORM 31021-NYUINACCT-SPA-SEC
                END-IF
+               EVALUATE    NACCT-ZAISKBKBN
+                   WHEN    "2"
+      *            ³°Çñ
+                       MOVE    NACCT-DAY-AREA  TO  TBL-GAIHAKU-G
+               END-EVALUATE
       *
                MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
                PERFORM 930-NYUINACCT-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *    ³°Çñ¤ÎºÆÊÔ½¸
+           PERFORM 310212-GAIHAKU-SEC
       *
            .
        3102-NYUACCT-SYORI-EXT.
@@ -1246,6 +1260,12 @@
                MOVE    "NYUINACT-KEY2"     TO  ORC-DBPATH
                PERFORM 940-NYUINACT-RAED-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "NYUINACT-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        31021-NYUINACCT-SPA-EXT.
@@ -1308,8 +1328,33 @@
            .
        31011-NYUINACT-SPA-EXT.
            EXIT.
+      *    
+      *****************************************************************
+      *   ³°Çñ¤ÎºÆÊÔ½¸½èÍý
+      *****************************************************************
+       310212-GAIHAKU-SEC           SECTION.
       *
+      *    ¿©»ö¡¦²Ã»»¤òºï½ü
+      *    ¿ÇÎÅ¹Ô°Ù¤è¤ê¡¢ÂÐ¾Ý¥Á¥§¥Ã¥¯
+           PERFORM VARYING     TBL-IDX1    FROM    1   BY  1
+                   UNTIL       TBL-IDX1       >    200
+               IF      WRK-TBL-KNOKBN (9 TBL-IDX1) =   "4"
+                                                  OR   "6"
+      *            ³°ÇñÆü¤Î²Ã»»¤òÉ½¼¨¤·¤Ê¤¤
+                   PERFORM VARYING     TBL-IDX3    FROM    1   BY  1
+                           UNTIL       TBL-IDX3    >   31
+                       IF      TBL-GAIHAKU (TBL-IDX3)  =   1
+                                                       OR  3
+                           MOVE    ZERO            TO  WRK-TBL-KAISU
+                                                   (9 TBL-IDX1 TBL-IDX3)
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
       *
+           .
+       310212-GAIHAKU-EXT.
+           EXIT.
 068800*****************************************************************
 068900*   ÊÔ½¸ÎÎ°è¤«¤é£Ó£Ð£Á¤Ø  ÊÔ½¸½èÍý
 069000*****************************************************************
@@ -1780,6 +1825,12 @@
                MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
                PERFORM 930-NYUINACCT-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
       *    ÊÝ¸±Ëè¤Î·×»»
            PERFORM VARYING     IDX-D   FROM    1   BY  1
@@ -1851,6 +1902,12 @@
                MOVE    1               TO  FLG-HKNCOMBI
                INITIALIZE                  HKNCOMBI-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    Ï«ºÒ¡¦¼«ÇåÀÕ¥Á¥§¥Ã¥¯
            IF      COMB-HKNNUM         =   "971"  OR  "973"
