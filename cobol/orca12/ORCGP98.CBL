@@ -53,6 +53,8 @@
        01  FLG-AREA.
            03  FLG-END                           PIC 9(01).
            03  FLG-SYSKANRI                      PIC 9(01).
+           03  FLG-ADRS                          PIC 9(01).
+           03  FLG-OK                            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -361,6 +363,11 @@
                                                   TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "数字のみ入力可能です" TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE    "住所マスタに登録されていません。"
+                                                  TO  SPA-ERRMSG
+                   MOVE    "再登録して下さい。"
+                                                  TO  SPA-ERRMSG(33:)
            END-EVALUATE.
       *
            MOVE    SPACE               TO  PERR
@@ -502,14 +509,37 @@
       *****************************************************************
        450-KAKUTEI-SEC                           SECTION.
       *
-           IF  SPA-GMN98-PAGE                    =   ZERO
-               GO    TO      450-KAKUTEI-EXT
+           PERFORM 4501-KAKUTEI-CHK-SEC
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 45012-KAKUTEI-SYORI-SEC
            END-IF
       *
-           IF  SPA-GMN98-SELNUM              =   ZERO
-               MOVE  "0001"                      TO  SPA-ERRCD
-               GO    TO      450-KAKUTEI-EXT
-           END-IF.
+           .
+       450-KAKUTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確定チェック処理
+      *****************************************************************
+       4501-KAKUTEI-CHK-SEC            SECTION.
+      *
+           IF     (SPA-GMN98-PAGE      =   ZERO )  OR
+                  (SPA-GMN98-SELNUM    =   ZERO )
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN98-CUR
+           ELSE
+               PERFORM 510-SELNUM-CHK-SEC
+           END-IF
+      *
+           .
+       4501-KAKUTEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確定処理
+      *****************************************************************
+       45012-KAKUTEI-SYORI-SEC         SECTION.
       *
       *    共通ＳＰＡ編集
       *
@@ -530,7 +560,7 @@
       *
            MOVE  1                               TO  FLG-END.
       *
-       450-KAKUTEI-EXT.
+       45012-KAKUTEI-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -561,7 +591,9 @@
                   (SPA-GMN98-KBNCD(IDXZ)   NOT =   SPACE )
                MOVE    SPA-GMN98-KBNCD(IDXZ)   TO  SPA-GMN98-SELNUM
                PERFORM 5101-ADRS-HENSYU-SEC
-               MOVE    2                   TO  SPA-GMN98-CUR
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    2                   TO  SPA-GMN98-CUR
+               END-IF
            END-IF
            .
       *
@@ -581,20 +613,24 @@
            MOVE  P98-SELNUM              TO  SPA-GMN98-SELNUM
       *
            COMPUTE IDXY    =  (SPA-GMN98-PAGE  -   1)  *   50
+           MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDXX    FROM    1   BY  1
-                   UNTIL       IDXX    >       50
+                   UNTIL      (IDXX    >       50  )  OR
+                              (FLG-OK      =   1   )
                COMPUTE IDXZ    =       IDXY    +   IDXX
                IF      SPA-GMN98-KBNCD(IDXZ)       =   SPACE
                    MOVE    50                          TO  IDXX
                ELSE
                    IF      SPA-GMN98-KBNCD(IDXZ)   =   SPA-GMN98-SELNUM
+                       MOVE    1                   TO  FLG-OK
                        PERFORM 5101-ADRS-HENSYU-SEC
-                       GO      TO      510-SELNUM-CHK-EXT
                    END-IF
-               END-IF     
+               END-IF
 	   END-PERFORM
       *
-           MOVE    "0001"                TO  SPA-ERRCD
+           IF      FLG-OK              =   ZERO
+               MOVE    "0001"              TO  SPA-ERRCD
+           END-IF
            .
       *
        510-SELNUM-CHK-EXT.
@@ -605,6 +641,9 @@
       *****************************************************************
        5101-ADRS-HENSYU-SEC                        SECTION.
       *
+           MOVE    ZERO                TO  FLG-ADRS
+           MOVE    SPACE               TO  SPA-GMN98-POST
+           MOVE    SPACE               TO  SPA-GMN98-ADRS
       *    住所データ読み出し
            INITIALIZE                            ADRS-REC
            MOVE  SPA-GMN98-TLPUBCD(IDXZ)     TO  ADRS-LPUBCD
@@ -620,14 +659,15 @@
            IF  MCP-RC                        =  ZERO
                MOVE  "DBFETCH"               TO  MCP-FUNC
                MOVE  "ADRS-KEY"              TO  ORC-DBPATH
-               CALL  "ORCMCPSUB"              USING
-                                                  MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC
+               CALL  "ORCMCPSUB"             USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
                IF  MCP-RC                    =   ZERO
-                   MOVE  MCPDATA-REC         TO  ADRS-REC
-                   MOVE  ADRS-POST           TO  SPA-GMN98-POST
-                   MOVE  ADRS-EDITADRS-NAME  TO  SPA-GMN98-ADRS
+                   MOVE    MCPDATA-REC         TO  ADRS-REC
+                   MOVE    ADRS-POST           TO  SPA-GMN98-POST
+                   MOVE    ADRS-EDITADRS-NAME  TO  SPA-GMN98-ADRS
+                   MOVE    1                   TO  FLG-ADRS
                END-IF
            END-IF
       *
@@ -637,8 +677,12 @@
                                               MCPAREA
                                               ORCMCPAREA
                                               MCPDATA-REC
-      * 
-           MOVE    2                   TO  SPA-GMN98-CUR 
+           IF      FLG-ADRS            =   ZERO
+               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN98-CUR
+           ELSE
+               MOVE    2                   TO  SPA-GMN98-CUR
+           END-IF
            .
       *
        5101-ADRS-HENSYU-EXT.
