@@ -35,6 +35,7 @@
       *
       *  ２００３．４改正対応
       *  01.03.01    NACL-藤原    03/04/17  対象がないときエラーを表示する
+      *  01.03.02    NACL-藤原    04/07/09  印刷画面への自動遷移
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -311,6 +312,7 @@
                               JOB-SHELLMSG DELIMITED  BY  SPACE
                               "】"         DELIMITED  BY  SIZE      
                                            INTO  R99-MSG
+                       END-STRING
                    END-IF                          
                END-IF    
                MOVE    IDX                     TO  R99-COUNT    
@@ -338,17 +340,27 @@
                                                     TO  R99-MSG
                    END-IF
                    MOVE   100                   TO
-                                            R99-PROGRESSBAR-VALUE   
+                                            R99-PROGRESSBAR-VALUE
                    IF      SPA-R01-GMNKBN  =   "R02"   OR  "R04"
                        IF      SPA-RID1-FLG    =   "PV"
                            MOVE    WIDGET-NORMAL    TO  R99-B12-STATE
                            MOVE    "B12"            TO  MCP-WIDGET
+                           IF      SPA-R01-AUTODSPKBN   =   "1"
+      *                        プレビュー画面への自動遷移
+                               PERFORM 4501-NEXT-GMN-SEC
+                               GO  TO  490-KAKUNIN-EXT
+                           END-IF
                        ELSE
                            MOVE    "B01"            TO  MCP-WIDGET
                        END-IF
                    ELSE
                        MOVE    WIDGET-NORMAL        TO  R99-B12-STATE
                        MOVE    "B12"                TO  MCP-WIDGET
+                       IF      SPA-R01-AUTODSPKBN   =   "1"
+      *                    印刷画面への自動遷移
+                           PERFORM 4501-NEXT-GMN-SEC
+                           GO  TO  490-KAKUNIN-EXT
+                       END-IF
                    END-IF 
                ELSE
                    MOVE    "B01"                TO  MCP-WIDGET

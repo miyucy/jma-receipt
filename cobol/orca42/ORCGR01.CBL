@@ -1020,8 +1020,8 @@
                          OR      FLG-ERR =       1     
                    IF      NACCT-DAY (IDXX)      >   ZERO    
                        INITIALIZE                  HKNCOMBI-REC
-                       MOVE    ACCT-HOSPID         TO  COMB-HOSPID
-                       MOVE    ACCT-PTID           TO  COMB-PTID
+                       MOVE    NACCT-HOSPID        TO  COMB-HOSPID
+                       MOVE    NACCT-PTID          TO  COMB-PTID
                        MOVE    NACCT-DAY (IDXX)    TO  COMB-HKNCOMBINUM 
                        MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                        PERFORM  910-HKNCOMBI-INV-SEC

@@ -68,20 +68,21 @@
       *  01.04.03    NACL-藤原    03/11/05  県番号を診療年月から取得
       *  01.04.04    NACL-藤原    04/05/07  処理開始前にジョブ管理の
       *                                     チェックを再度行なう
+      *  01.04.05    NACL-藤原    04/07/09  印刷画面への自動遷移
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -144,6 +145,8 @@
                    07  SPA-NAI-SRYYM               PIC 9(06).
                    07  SPA-NAI-SRYYMH              PIC X(16).
                    07  SPA-NAI-NYUGAIKBN           PIC X(06).
+      *
+                   07  SPA-NAI-2005-AUTODSPKBN     PIC X(01).
       *
        01  SPA-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -536,6 +539,24 @@
                                               TO  SPA-GMN-SYOKBN-LABEL
            END-EVALUATE      
       *
+      *    自動遷移区分
+           INITIALIZE                  SYS-2005-REC
+           MOVE    "2005"          TO  SYS-2005-KANRICD
+           MOVE    "*"             TO  SYS-2005-KBNCD
+           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SYS-2005-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE   MCPDATA-REC  TO  SYS-2005-REC
+           ELSE
+               MOVE   SPACE        TO  SYS-2005-REC
+           END-IF
+           IF      SYS-2005-AUTODSPKBN =   SPACE
+               MOVE    ZERO            TO  SYS-2005-AUTODSPKBN      
+           END-IF
+           MOVE    SYS-2005-AUTODSPKBN 
+                                   TO  SPA-NAI-2005-AUTODSPKBN           
+      *
            IF      SPA-GMN-IKKATU          =   "T" 
                MOVE    7               TO  SPA-GMN-CUR
            ELSE 
@@ -685,6 +706,8 @@
                    MOVE    "作成済レセプト再印刷"
                                               TO  SPA-GMN-SYOKBN-LABEL
            END-EVALUATE      
+      *
+           MOVE    SPA-R01-AUTODSPKBN  TO  SPA-NAI-2005-AUTODSPKBN
       *
            IF      SPA-GMN-IKKATU          =   "T" 
                MOVE    7               TO  SPA-GMN-CUR
@@ -1686,6 +1709,9 @@
            MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-R01-NYUGAIKBN
       *
            MOVE    SPACE               TO  SPA-R01-GMNKBN
+      *
+           MOVE    SPA-NAI-2005-AUTODSPKBN
+                                       TO  SPA-R01-AUTODSPKBN
       *
            MOVE    SPA-R01KYOUTU       TO  SPA-WORK       
       *
