@@ -1998,7 +1998,8 @@
            MOVE    "1"                 TO  LNK-S01-SAIKEISAN-KBN
            MOVE    SYU-DENPNUM         TO  LNK-S01-SAIKEISAN-DENPYO
            MOVE    SYUNOU-REC          TO      LNK-SYUNOU-REC
-           CALL    "ORCS01NEW"         USING   MCPAREA
+      *    CALL    "ORCS01NEW"         USING   MCPAREA
+           CALL    "ORCS01"            USING   MCPAREA
                                                LNK-ORCS01-REC
                                                LNK-SYUNOU-REC
            MOVE    LNK-SYUNOU-REC      TO      SYUNOU-REC
