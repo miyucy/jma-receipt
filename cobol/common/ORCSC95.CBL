@@ -1284,7 +1284,9 @@
                           (SPA-SRYKA           =   SPA-NAI-RRK-SRYKA
                                                              (IDX)))
                        IF      SPA-SYORIFLG        =   ZERO
-                           MOVE     IDX            TO  IDX-J1
+                           IF       IDX-J1         =   ZERO
+                               MOVE     IDX            TO  IDX-J1
+                           END-IF
                        ELSE
       *                ÄûÀµ¤Î»þ¡¢ÁªÂò¤·¤¿Ï¢ÈÖ 
                            IF     (SPA-RENNUM      =   SPA-NAI-RENNUM
@@ -1337,11 +1339,7 @@
       *    ¿ÇÎÅ²Ê
            IF     (SPA-SRYKA           =   SPACE )  AND
                   (IDX-J1              >   ZERO  )
-               IF      IDX-J2          >   ZERO
-                   MOVE    SPA-NAI-RRK-SRYKA(IDX-J2)   TO  SPA-SRYKA
-               ELSE
-                   MOVE    SPA-NAI-RRK-SRYKA(IDX-J1)   TO  SPA-SRYKA
-               END-IF
+               MOVE    SPA-NAI-RRK-SRYKA(IDX-J1)   TO  SPA-SRYKA
            END-IF
       *    Æ±Æü¿ÇÎÅ²ÊÊÝÂ¸
            MOVE    SPACE               TO  SPA-TAKA-SRYKA-R
