@@ -45,6 +45,7 @@
       *  01.03.08    NACL-Æ£¸¶    02/09/05  Ã¼Ëö£É£Ä¤ò¸ÇÄê¤Ë¤¹¤ë
       * 
       *  01.03.09    NACL-Æ£¸¶    02/09/12  ¥Ç¥£¥ì¥¯¥È¥ê¤ò¥µ¥Ö¥×¥í¤Ø
+      *  01.03.10    NACL-Æ£¸¶    02/10/07  £²£°£°£²Ç¯£±£°·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1120,7 +1121,7 @@
                    INITIALIZE              ORCSMKPASSAREA
                    MOVE    WRK-SHELL-KENTAN
                                            TO  MKPASS-IN-01
-                   CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+                   CALL    "ORCSMKPASSSITE"    USING   ORCSMKPASSAREA
                    MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *                                     
                    MOVE    SPACE           TO  LNK-PRTKANRI-AREA
@@ -1341,6 +1342,7 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG17         
            MOVE    RECEERR         TO  SHELLTBL-ARG18
+           MOVE    SPA-NAI-SKYYM   TO  SHELLTBL-ARG19
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -1371,7 +1373,7 @@
            INITIALIZE              ORCSMKPASSAREA
            MOVE    WRK-SHELL-KENTAN
                                TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           CALL    "ORCSMKPASSSITE"    USING   ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
            MOVE    SPACE       TO  LNK-PRTKANRI-AREA
@@ -1428,9 +1430,10 @@
                MOVE    "2"         TO  WRK-SHELL-RECEKBN
            END-IF    
            MOVE    WRK-SHELL-RECEKBN
-                               TO  SHELLTBL-ARG14
-           MOVE    SPA-HOSPID  TO  SHELLTBL-ARG15
-           MOVE    RECEERR     TO  SHELLTBL-ARG16
+                                   TO  SHELLTBL-ARG14
+           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG15
+           MOVE    RECEERR         TO  SHELLTBL-ARG16
+           MOVE    SPA-NAI-SKYYM   TO  SHELLTBL-ARG17
            MOVE    SHELLTBL    TO  MCPDATA-REC
            MOVE    "SHELL"     TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -1465,7 +1468,7 @@
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    SPA-TERMID      TO  JOB-TERMID                        
+           MOVE    SPA-TERMID      TO  JOB-TERMID
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
