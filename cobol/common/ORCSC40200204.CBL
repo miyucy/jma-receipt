@@ -973,7 +973,18 @@
            END-IF
       *    入院の時
            IF      SPA-NYUGAIKBN       =   "1"
-               MOVE    WRK-COM-TIMEFLG(IDX-ZS) TO  WRK-TIMEFLG
+      *        時間外区分の無い場合はクリアする
+               IF     (WRK-GMN-INPUTCD(IDX-ZS)(1:1)    NUMERIC) AND
+                      (WRK-GMN-INPUTCD(IDX-ZS)(2:1)    =   SPACE )  AND
+                      (WRK-GMN-INPUTCD(IDX-ZS)(3:) NOT =   SPACE )
+                   MOVE    WRK-COM-TIMEFLG(IDX-ZS) TO  WRK-TIMEFLG
+               ELSE
+                   IF      LNK-ORCSC-TIMEFLG       =   ZERO
+                       MOVE    ZERO                TO  WRK-TIMEFLG
+                       MOVE    ZERO                TO  WRK-COM-TIMEFLG
+                                                                (IDX-ZS)
+                   END-IF
+               END-IF
            END-IF
       *
       *    時間加算
