@@ -436,7 +436,7 @@
       *
       *        有効終了日が対象のマスタを対象とする
       *********IF      (SPA-X01-STYUKYMD   >=  TNS-YUKOSTYMD )  AND
-               IF      (SPA-X01-EDYUKYMD   <=  TNS-YUKOEDYMD )
+               IF      (SPA-X01-KJNYMD     <=  TNS-YUKOEDYMD )
                    MOVE    TNS-NAME        TO  SPA-GMN-TNAME (IDX)
                    MOVE    1               TO  FLG-TENSU
                    MOVE    1               TO  FLG-OK
@@ -751,7 +751,7 @@
       *    点数マスタ読み込み
            INITIALIZE                      TNS-TENSU-REC
            MOVE    SPA-GMN-TTEKCD (IDX)    TO  TNS-SRYCD
-           MOVE    SPA-X01-EDYUKYMD        TO  ORC-DBYMD
+           MOVE    SPA-X01-KJNYMD          TO  ORC-DBYMD
            MOVE    TNS-TENSU-REC           TO MCPDATA-REC
            PERFORM 900-TENSU-INV-SEC
            IF      FLG-TENSU           =   1

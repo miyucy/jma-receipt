@@ -33,6 +33,10 @@
       *
            05  SPA-X01-SEL-STYUKYMD        PIC X(08).
            05  SPA-X01-SEL-EDYUKYMD        PIC X(08).
+      *
+      *基準日
+           05  SPA-X01-KJNYMD              PIC X(08).
+      *
       *診療コード
            05  SPA-X01-SRYCD               PIC X(09).
            05  SPA-X01-NAME                PIC X(100).

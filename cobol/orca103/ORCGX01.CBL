@@ -992,6 +992,7 @@
       *
       *    画面移行用のパラメタ
            INITIALIZE                      SPA-X01KYOUTU
+      *
            MOVE    SPA-X01KYOUTU       TO  SPA-WORK
       *
            MOVE    "X91"               TO  SPA-SAKIPG
@@ -1084,6 +1085,8 @@
       *    検索画面編集処理
       *****************************************************************
        41011-X98-SET-SEC                           SECTION.
+      *
+           MOVE    SPA-SYSYMD      TO  SPA-X01-KJNYMD
       *
            MOVE    SPA-X01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -1188,6 +1191,18 @@
                MOVE    SPA-NAI-TEDYUKYMD (SPA-NAI-SELNUM)
                                            TO  SPA-X01-SEL-EDYUKYMD
            END-IF
+      *
+           EVALUATE    TRUE
+           WHEN  ( SPA-SYSYMD          >   SPA-X01-EDYUKYMD )
+               MOVE    SPA-X01-EDYUKYMD
+                                       TO  SPA-X01-KJNYMD
+           WHEN  ( SPA-SYSYMD          <   SPA-X01-STYUKYMD )
+               MOVE    SPA-X01-STYUKYMD
+                                       TO  SPA-X01-KJNYMD
+           WHEN    OTHER
+               MOVE    SPA-SYSYMD      TO  SPA-X01-KJNYMD
+           END-EVALUATE
+      *
            MOVE    SPA-GMN-CHKKBN-G    TO  SPA-X01-CHKKBN-G
            MOVE    SPA-GMN-SRYCD       TO  SPA-X01-SRYCD
            MOVE    SPA-GMN-NAME        TO  SPA-X01-NAME  

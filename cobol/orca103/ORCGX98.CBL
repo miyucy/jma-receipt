@@ -294,6 +294,10 @@
                MOVE    "2"                 TO  SPA-X98-GMN-KBN
            END-IF
       *
+           IF    ( SPA-X01-KJNYMD      =   SPACE )
+               MOVE    SPA-SYSYMD      TO  SPA-X01-KJNYMD
+           END-IF
+      *
            EVALUATE    SPA-X98-GMN-KBN
                WHEN    "1"
                    PERFORM 3101-BYOMEICD-SET-SEC
@@ -454,7 +458,7 @@
                    MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
                    MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-                   MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+                   MOVE    SPA-X01-KJNYMD      TO  ORC-DBYMD
                    CALL    "ORCMCPSUB"         USING
                                                MCPAREA
                                                ORCMCPAREA
@@ -545,7 +549,7 @@
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SPA-X01-KJNYMD      TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -655,7 +659,7 @@
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SPA-X01-KJNYMD      TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA

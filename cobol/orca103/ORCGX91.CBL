@@ -989,6 +989,8 @@
       *****************************************************************
        41011-X98-SET-SEC               SECTION.
       *
+           MOVE    SPA-SYSYMD      TO  SPA-X01-KJNYMD
+      *
            MOVE    SPA-X01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-X91         TO  SPA-X01SONOTA
