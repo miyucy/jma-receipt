@@ -3458,7 +3458,8 @@
            MOVE    K02N-PTNUM          TO  SPA-GMN-PTNUM
       *
       *    ’Ｇ’で外来へ移動する
-           IF      SPA-GMN-PTNUM(1:1)  =   "G"  OR  "g"
+           IF     (SPA-GMN-PTNUM(1:1)  =   "G"  OR  "g" )  AND
+                  (SPA-GMN-PTNUM(2:)   =   SPACE        )
                INITIALIZE                  SPA-KYOTUKEY
                MOVE    SPACE               TO  WRK-PUTTYPE
                PERFORM 410109-K02IDOU-SEC
@@ -4893,8 +4894,6 @@
       *****************************************************************
        4101113-INPUTCD-CHK-SEC       SECTION.
       *
-      *    入力コード変更ありの時
-      *****IF      LNK-SC97-NYURYOKU   =   1
       *    診療行為コードをもとに点数マスター検索
            MOVE    ZERO                TO  FLG-TENSU
            MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
@@ -4905,8 +4904,6 @@
                MOVE    "0001"              TO  SPA-ERRCD
                GO      TO      4101113-INPUTCD-CHK-EXT
            END-IF
-      *
-      *****END-IF
       *
            MOVE    SPACE               TO  SPA-COM-IN3 (SPA-GMN-IDX)
       *

@@ -4082,6 +4082,7 @@
            MOVE    K02-PTNUM           TO  SPA-GMN-PTNUM
       *    Ｎのとき、入院へ
            IF     (SPA-GMN-PTNUM(1:1)  =   "N" OR "n")  AND
+                  (SPA-GMN-PTNUM(2:)   =   SPACE     )  AND
                   (SPA-BEDSU           >   ZERO)
                MOVE    SPACE               TO  WRK-PUTTYPE
                PERFORM 450-K02N-SYORI-SEC
