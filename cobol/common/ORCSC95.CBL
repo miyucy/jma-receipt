@@ -109,6 +109,7 @@
            03  FLG-COMMENT         PIC 9(01).
       *
            03  FLG-UKETUKE-ARI     PIC 9(01).
+           03  FLG-HEN             PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -1206,13 +1207,31 @@
       *    ¿Ç»¡Æü¤ÎºÆÊÔ½¸
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX1
-               IF     (SPA-NAI-RENNUM (IDX)    >   1  )  OR
-                      ((IDX                    <   150)  AND
-                       (SPA-NAI-RRKYMD (IDX)   =   SPA-NAI-RRKYMD
-                                                       (IDX + 1)) AND
-                       (SPA-NAI-RRK-SRYKA(IDX) =   SPA-NAI-RRK-SRYKA
-                                                       (IDX + 1))) OR
-                       (SPA-NAI-DOUJI-RENNUM (IDX)  >   ZERO  )
+               MOVE    ZERO            TO  FLG-HEN
+               PERFORM VARYING     IDX2    FROM    IDX BY  1
+                       UNTIL       IDX2    >   SPA-GMN-MAX1
+                   IF     (IDX2            NOT =   IDX )  AND
+                          (SPA-NAI-RRKYMD  (IDX)
+                                               =   SPA-NAI-RRKYMD 
+                                                          (IDX2)) AND
+                          (SPA-NAI-RRK-SRYKA(IDX)
+                                               =   SPA-NAI-RRK-SRYKA
+                                                          (IDX2))
+                       MOVE    1                   TO  FLG-HEN
+                       MOVE    SPA-GMN-MAX1        TO  IDX2
+                   ELSE
+                       IF     (SPA-NAI-RRKYMD(IDX)
+                                           NOT =   SPA-NAI-RRKYMD
+                                                       (IDX2))
+                           MOVE    SPA-GMN-MAX1    TO  IDX2
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF     (SPA-NAI-RENNUM (IDX)        >   1 ) OR
+                      (SPA-NAI-DOUJI-RENNUM (IDX)  >  ZERO )
+                   MOVE    1                   TO  FLG-HEN
+               END-IF
+               IF      FLG-HEN             =   1
                    MOVE    "("                 TO  SPA-GMN-RRKYMD (IDX)
                                                                (10:1)
                    MOVE    SPA-NAI-RENNUM (IDX) 
