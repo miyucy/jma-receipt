@@ -223,6 +223,8 @@
            03  IDX23                                   PIC 9(05). 
            03  IDX24                                   PIC 9(05). 
            03  IDX25                                   PIC 9(05). 
+           03  IDX26                                   PIC 9(05). 
+           03  IDX27                                   PIC 9(05). 
            03  IDXA                                    PIC 9(05). 
            03  IDXE                                    PIC 9(05). 
            03  IDX-TSRYKA                              PIC 9(05).
@@ -393,8 +395,11 @@
                    07  TSRYKA-SHOSIN-HKN-YMD           PIC X(08)
                                                        OCCURS  3.
                05  TSRYKA-SRYCD-MAX                    PIC 9(05).
-               05  TSRYKA-SRYCD                        PIC X(09)
-                                                       OCCURS 2000.
+               05  TSRYKA-SRYCD-OCC                    OCCURS 2000.
+                   07  TSRYKA-SRYCD                    PIC X(09).
+                   07  TSRYKA-SRYCD-DAY-G.
+                       09  TSRYKA-SRYCD-DAY            PIC 9(01)
+                                                       OCCURS  31.
       *
       *    診療行為退避ワーク
        01  TSRYCD-AREA.
@@ -405,6 +410,9 @@
                05  TSRYCD-NYUGAIKBN                    PIC X(01).
                05  TSRYCD-SRYCD                        PIC X(09).
                05  TSRYCD-KAISU                        PIC 9(09).
+               05  TSRYCD-DAY-G.
+                   07  TSRYCD-DAY                      PIC 9(01)
+                                                       OCCURS  31.
       *
       *    実日数退避ワーク（実日数チェック用）
        01  TJNISSU-AREA.
@@ -445,8 +453,14 @@
                05  THEIYOU-SRYCD-G.
                    07  THEIYOU-NYUGAIKBN1              PIC X(01).
                    07  THEIYOU-SRYCD1                  PIC X(09).
+                   07  THEIYOU-DAY1-G.
+                       09  THEIYOU-DAY1                PIC 9(01)
+                                                       OCCURS 31.
                    07  THEIYOU-NYUGAIKBN2              PIC X(01).
                    07  THEIYOU-SRYCD2                  PIC X(09).
+                   07  THEIYOU-DAY2-G.
+                       09  THEIYOU-DAY2                PIC 9(01)
+                                                       OCCURS 31.
       *
       *    チェックマスタに存在しない診療行為退避ワーク
        01  TCHK-AREA.
@@ -1913,6 +1927,8 @@
       *
            END-PERFORM
       *
+           MOVE    ZERO            TO  IDX26
+      *
            IF    ( IDX0            >   TSRYKA-SRYCD-MAX (IDX-TSRYKA) )
       *
                COMPUTE TSRYKA-SRYCD-MAX (IDX-TSRYKA)
@@ -1928,7 +1944,22 @@
                    MOVE    SRY-SRYCD (IDX1)
                                    TO  TSRYKA-SRYCD
                                        (IDX-TSRYKA WRK-TSRYKA-SRYCD-MAX)
+      *
+                   MOVE    WRK-TSRYKA-SRYCD-MAX    TO  IDX26
+      *
                END-IF
+           ELSE
+                   MOVE    IDX0                    TO  IDX26
+           END-IF
+      *
+           IF    ( IDX26               >  ZERO )
+               PERFORM VARYING IDX27   FROM     1   BY  1
+                       UNTIL ( IDX27   >   31 )
+                   IF    ( ACCT-DAY (1 IDX27)  >   ZERO )
+                       MOVE    1   TO  TSRYKA-SRYCD-DAY
+                                             (IDX-TSRYKA IDX26 IDX27)
+                   END-IF
+               END-PERFORM
            END-IF
       *
            .
@@ -1990,6 +2021,8 @@
       *
            END-PERFORM
       *
+           MOVE    ZERO            TO  IDX26
+      *
            IF    ( IDX0            >   TSRYCD-MAX )
       *
                COMPUTE TSRYCD-MAX  =   TSRYCD-MAX  +   1
@@ -2004,6 +2037,9 @@
                                    TO  TSRYCD-SRYCD (TSRYCD-MAX)
                    MOVE    ACCT-ZAIKAISU
                                    TO  TSRYCD-KAISU (TSRYCD-MAX)
+      *
+                   MOVE    TSRYCD-MAX  TO  IDX26
+      *
                END-IF
            ELSE
       *
@@ -2017,6 +2053,17 @@
                    =   TSRYCD-KAISU (IDX0)
                    +   ACCT-ZAIKAISU
       *
+               MOVE    IDX0  TO  IDX26
+      *
+           END-IF
+      *
+           IF    ( IDX26               >   ZERO )
+               PERFORM VARYING IDX27   FROM     1   BY  1
+                       UNTIL ( IDX27   >   31 )
+                   IF    ( ACCT-DAY (1 IDX27)  >   ZERO )
+                       MOVE    1   TO  TSRYCD-DAY (IDX26 IDX27)
+                   END-IF
+               END-PERFORM
            END-IF
       *
            .
@@ -4076,6 +4123,12 @@
       *****************************************************************
        200112-YKZ-BYO-ERRMES-HEN-SEC   SECTION.
       *
+           INITIALIZE  WRK-NISSU-AREA
+           MOVE    TSRYKA-SRYCD-DAY-G (IDX6 IDX7)
+                                       TO  WRK-NISSU-DAY-G
+      *
+           PERFORM 200111-NISSU-HEN-SEC
+      *
            MOVE    WRK-SRYKA           TO  SRH-1005-SRYKA
       *
            MOVE    CHKSND-SRYCD        TO  WRK-SRYCD
@@ -4088,8 +4141,15 @@
            END-IF
       *
            IF    ( SDTCHK01-O-MAX      =   ZERO )
-               MOVE    TNS-NAME        TO  WRK-ERRMES-PLUS
+      *
                MOVE    "080001"        TO  WRK-ERRCD
+      *
+               MOVE   SPACE                TO  WRK-ERRMES-PLUS
+               STRING TNS-NAME                 DELIMITED BY SPACE
+                      WRK-NISSU-MES            DELIMITED BY SPACE
+               INTO   WRK-ERRMES-PLUS
+               END-STRING
+      *
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (8) =   "1" )
@@ -4104,6 +4164,7 @@
                    STRING TNS-NAME                 DELIMITED BY SPACE
                           "、"                     DELIMITED BY SIZE
                           SDTCHK01-O-BYOMEI (IDX0) DELIMITED BY SPACE
+                          WRK-NISSU-MES            DELIMITED BY SPACE
                    INTO   WRK-ERRMES-PLUS
                    END-STRING
       *
@@ -4249,6 +4310,12 @@
       *****************************************************************
        200112-SRY-BYO-ERRMES-HEN-SEC   SECTION.
       *
+           INITIALIZE  WRK-NISSU-AREA
+           MOVE    TSRYKA-SRYCD-DAY-G (IDX6 IDX7)
+                                       TO  WRK-NISSU-DAY-G
+      *
+           PERFORM 200111-NISSU-HEN-SEC
+      *
            MOVE    WRK-SRYKA           TO  SRH-1005-SRYKA
       *
            MOVE    CHKSND-SRYCD        TO  WRK-SRYCD
@@ -4261,8 +4328,14 @@
            END-IF
       *
            IF    ( SDTCHK01-O-MAX      =   ZERO )
+      *
                MOVE    "090001"        TO  WRK-ERRCD
-               MOVE    TNS-NAME        TO  WRK-ERRMES-PLUS
+      *
+               MOVE   SPACE                TO  WRK-ERRMES-PLUS
+               STRING TNS-NAME                 DELIMITED BY SPACE
+                      WRK-NISSU-MES            DELIMITED BY SPACE
+               INTO   WRK-ERRMES-PLUS
+               END-STRING
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (9) =   "1" )
@@ -4277,6 +4350,7 @@
                    STRING TNS-NAME                 DELIMITED BY SPACE
                           "、"                     DELIMITED BY SIZE
                           SDTCHK01-O-BYOMEI (IDX0) DELIMITED BY SPACE
+                          WRK-NISSU-MES            DELIMITED BY SPACE
                    INTO   WRK-ERRMES-PLUS
                    END-STRING
       *
@@ -4513,12 +4587,16 @@
                                                          (THEIYOU-MAX)
                            MOVE    TSRYCD-SRYCD (IDX-TSRYCD)
                                        TO  THEIYOU-SRYCD1(THEIYOU-MAX)
+                           MOVE    TSRYCD-DAY-G (IDX-TSRYCD)
+                                       TO  THEIYOU-DAY1-G (THEIYOU-MAX)
       *
                            MOVE    TSRYCD-NYUGAIKBN (IDX0)
                                        TO  THEIYOU-NYUGAIKBN2
                                                          (THEIYOU-MAX)
                            MOVE    TSRYCD-SRYCD (IDX0)
                                        TO  THEIYOU-SRYCD2(THEIYOU-MAX)
+                           MOVE    TSRYCD-DAY-G (IDX0)
+                                       TO  THEIYOU-DAY2-G (THEIYOU-MAX)
       *
                        END-IF
       *
@@ -4626,6 +4704,8 @@
                            MOVE    TSRYCD-SRYCD (IDX-TSRYCD)
                                            TO  THEIYOU-SRYCD1
                                                          (THEIYOU-MAX)
+                           MOVE    TSRYCD-DAY-G (IDX-TSRYCD)
+                                       TO  THEIYOU-DAY1-G (THEIYOU-MAX)
       *
                            MOVE    TSRYCD-NYUGAIKBN (IDX0)
                                            TO  THEIYOU-NYUGAIKBN2
@@ -4633,6 +4713,8 @@
                            MOVE    TSRYCD-SRYCD (IDX0)
                                            TO  THEIYOU-SRYCD2
                                                          (THEIYOU-MAX)
+                           MOVE    TSRYCD-DAY-G (IDX0)
+                                       TO  THEIYOU-DAY2-G (THEIYOU-MAX)
                        END-IF
       *
                        IF    ( ORCBSD01-CHKKBN (10)    =   "1" )
@@ -4691,7 +4773,13 @@
                    MOVE    WRK-OUT-INPUT   TO  TNS-NAME
                END-IF
       *
+               INITIALIZE  WRK-NISSU-AREA
+               MOVE    THEIYOU-DAY1-G (IDX0)
+                                       TO  WRK-NISSU-DAY-G
+               PERFORM 200111-NISSU-HEN-SEC
+      *
                STRING TNS-NAME         DELIMITED   BY  SPACE
+                      WRK-NISSU-MES    DELIMITED   BY SPACE
                       "、"             DELIMITED   BY  SIZE
                INTO   WRK-ERRMES-PLUS
                WITH    POINTER    WRK-PNT
@@ -4716,7 +4804,13 @@
                    MOVE    WRK-OUT-INPUT   TO  TNS-NAME
                END-IF
       *
+               INITIALIZE  WRK-NISSU-AREA
+               MOVE    THEIYOU-DAY2-G (IDX0)
+                                       TO  WRK-NISSU-DAY-G
+               PERFORM 200111-NISSU-HEN-SEC
+      *
                STRING TNS-NAME         DELIMITED   BY  SPACE
+                      WRK-NISSU-MES    DELIMITED   BY SPACE
                INTO   WRK-ERRMES-PLUS
                WITH    POINTER    WRK-PNT
                END-STRING
@@ -4889,7 +4983,13 @@
                    MOVE    WRK-OUT-INPUT   TO  TNS-NAME
                END-IF
       *
+               INITIALIZE  WRK-NISSU-AREA
+               MOVE    THEIYOU-DAY1-G (IDX0)
+                                       TO  WRK-NISSU-DAY-G
+               PERFORM 200111-NISSU-HEN-SEC
+      *
                STRING TNS-NAME         DELIMITED   BY  SPACE
+                      WRK-NISSU-MES    DELIMITED   BY SPACE
                       "、"             DELIMITED   BY  SIZE
                INTO   WRK-ERRMES-PLUS
                WITH    POINTER    WRK-PNT
@@ -4914,7 +5014,13 @@
                    MOVE    WRK-OUT-INPUT   TO  TNS-NAME
                END-IF
       *
+               INITIALIZE  WRK-NISSU-AREA
+               MOVE    THEIYOU-DAY2-G (IDX0)
+                                       TO  WRK-NISSU-DAY-G
+               PERFORM 200111-NISSU-HEN-SEC
+      *
                STRING TNS-NAME         DELIMITED   BY  SPACE
+                      WRK-NISSU-MES    DELIMITED   BY SPACE
                INTO   WRK-ERRMES-PLUS
                WITH    POINTER    WRK-PNT
                END-STRING
