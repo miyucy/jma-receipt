@@ -46,6 +46,7 @@
       *  01.01.05    NACL-ÃÁœ∆    04/05/20  ≈¿≈©§Œ¥Ô∫‡√±≤¡ ‘Ω∏
       *  01.01.06    NACL-æÆ∆¶¬Ù  04/06/08  £√£‘°¶£Õ£“£…° £≤≤ÛÃ‹∞ πﬂ°À§Œ
       *                                     ≈¶Õ◊ÕÛµ≠∫‹ΩÁΩ§¿µ
+      *  01.01.07    NACL-ÃÁœ∆    04/07/28  ≈ÍÃÙŒ¡§Œ¥Ô∫‡≈¿§ŒΩ∏∑◊Ω§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3442,8 +3443,10 @@
                              (WK-ZAITEN   *   WK-ZAIKAISU)
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001" OR "008"   )
+                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
+                                                       OR "7"       )
+                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
+                                                         OR "059"   )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                            COMPUTE   RECE82-TENSU(4)  =
                                      RECE82-TENSU(4)  -
@@ -3721,8 +3724,10 @@
                              (WK-YKZTEN     *   WK-ZAIKAISU)
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001" OR "008"   )
+                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
+                                                       OR "7"       )
+                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
+                                                         OR "059"   )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                            COMPUTE   RECE82-TENSU-YAK(4)  =
                                      RECE82-TENSU-YAK(4)  -
