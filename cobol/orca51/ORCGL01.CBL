@@ -44,6 +44,7 @@
       *  01.00.14    NACL-太田    03/08/05  パラメータを８つまで設定可能
       *                                     に修正
       *  01.00.15    NACL-森脇    04/07/29  直前ジョブ管理チェック追加
+      *  01.00.16    NACL-藤原    05/02/10  統計データ作成画面の追加
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -257,6 +258,7 @@
       *
        01  SCRAREA.
            COPY    "L01.INC".
+           COPY    "L02.INC".
            COPY    "L03.INC".
            COPY    "L99.INC".
            COPY    "LERR.INC".
@@ -617,6 +619,9 @@
            WHEN    "CLICKED"       ALSO    "B02"
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
                PERFORM 230-CLEAR-SEC
+      *    統計データ作成
+           WHEN    "CLICKED"       ALSO    "B04"
+               PERFORM 240-TOUKEI-SEC
       *    再印刷
            WHEN    "CLICKED"       ALSO    "B05"
                PERFORM 450-REPRINT-SEC
@@ -1099,6 +1104,26 @@
            .
        230-CLEAR-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    統計データ作成画面へ
+      *****************************************************************
+       240-TOUKEI-SEC                  SECTION.
+      * 
+           MOVE    "L01"               TO  SPA-MOTOPG
+           MOVE    "L02"               TO  SPA-SAKIPG
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       240-TOUKEI-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    戻る　処理
       *****************************************************************
