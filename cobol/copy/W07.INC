@@ -168,3 +168,11 @@
                     06  W07-SYUSKYPRTKBN-ITEM     PIC X(20)   OCCURS  2.
                 04  W07-TAGNAME4.
                   05  W07-TAGNAME4-STATE   PIC S9(9)   BINARY.
+                04  W07-TAG5.
+                  05  W07-MSG1-DSPKBN-COMBO.
+                    06  W07-MSG1-DSPKBN.
+                      07  W07-VALUE   PIC X(12).
+                    06  W07-MSG1-DSPKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-MSG1-DSPKBN-ITEM    PIC X(12)   OCCURS  2.
+                04  W07-TAGNAME5.
+                  05  W07-TAGNAME5-STATE   PIC S9(9)   BINARY.

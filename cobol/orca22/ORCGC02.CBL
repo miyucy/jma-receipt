@@ -149,6 +149,8 @@
       *                                     のチェックを追加
       *  01.08.14    NACL-藤原    04/10/20  自院コード入力時の廃止年月日
       *                                     の警告を追加
+      *  01.08.15    NACL-藤原    04/11/15  主病名の確認メッセージの表示
+      *                                     をシス管の設定より行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -417,6 +419,8 @@
            COPY    "CPSK1010.INC".
       *
            COPY    "CPSK2005.INC".
+      *    病名機能情報
+           COPY    "CPSK1042.INC".
       *
       *    病名マスタ−
        01  BYOMEI-REC.
@@ -1042,6 +1046,23 @@
                MOVE    SPACE           TO  SYS-1001-REC
            END-IF
            MOVE    SYS-1001-HOSPSBT1   TO  SPA-C02-1001-HOSPSBT1
+      *         
+      *    病名機能情報 
+           MOVE    SPACE            TO  SYSKANRI-REC
+           INITIALIZE                   SYSKANRI-REC
+           MOVE    "1042"           TO  SYS-KANRICD
+           MOVE    "*"              TO  SYS-KBNCD
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+               MOVE    MCPDATA-REC      TO  SYS-1042-REC
+           ELSE    
+               MOVE    SPACE            TO  SYS-1042-REC
+           END-IF
+           IF      SYS-1042-MSG1-DSPKBN =   SPACE
+               MOVE    ZERO             TO  SYS-1042-MSG1-DSPKBN
+           END-IF
+           MOVE    SYS-1042-MSG1-DSPKBN
+                                       TO  SPA-C02-1042-MSG1-DSPKBN
       *
       *    診療科編集
            PERFORM 3104-SRYKA-SPA-SEC
@@ -5542,21 +5563,23 @@
                    IF      SPA-C02-2005-SYUBYOHENFLG   =   ZERO
                        CONTINUE
                    ELSE
-                       INITIALIZE                  PTBYOMEI-REC
-                       MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
-                       MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
-                       MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
-                       MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-                       IF      SPA-C02-1001-HOSPSBT1   =   "1"
-                           MOVE    "PTBYOMEI-KEY14"    TO  WRK-DBPATH
-                       ELSE
-                           MOVE    "PTBYOMEI-KEY15"    TO  WRK-DBPATH
+                       IF      SPA-C02-1042-MSG1-DSPKBN    =   ZERO
+                           INITIALIZE                  PTBYOMEI-REC
+                           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+                           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+                           MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
+                           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+                           IF      SPA-C02-1001-HOSPSBT1   =   "1"
+                               MOVE    "PTBYOMEI-KEY14"    TO WRK-DBPATH
+                           ELSE
+                               MOVE    "PTBYOMEI-KEY15"    TO WRK-DBPATH
+                           END-IF
+                           PERFORM 900-PTBYO-INV-SEC
+                           IF      FLG-PTBYOMEI        =   1
+                               MOVE    "0102"            TO  SPA-CIDCD
+                           END-IF
                        END-IF
-                       PERFORM 900-PTBYO-INV-SEC
-                       IF      FLG-PTBYOMEI        =   1
-                           MOVE    "0102"            TO  SPA-CIDCD
-                       END-IF
-                   END-IF
+                   END-IF    
                END-IF
            END-IF
       *

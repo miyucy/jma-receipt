@@ -306,6 +306,9 @@
                                                    PIC X(01).
       *                        
                        09  SPA-C02-1001-HOSPSBT1   PIC X(01).
+      *            主病名確認メッセージ表示有無
+                       09  SPA-C02-1042-MSG1-DSPKBN
+                                                   PIC X(01).
       *----(01.00.01) LINE ADD START ----------------------------------
       *            更新フラグ
                        09  SPA-C02-UPDFLG          PIC X(01).
