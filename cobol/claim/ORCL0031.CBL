@@ -1521,8 +1521,10 @@
                                              (TBL-MAX IDX-S)
            END-IF
       *    コメント値
-           IF     (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:2)
-                                       =   "84"   )  AND
+           IF    ((TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:2)
+                                       =   "84"   )  OR
+                  (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
+                                       =   "0084"  ))  AND
                   (LF04-SURYO (IDX1 IDX2)  NOT =   SPACE )
                PERFORM 200321-INPUTCHI-HEN-SEC
            ELSE
@@ -1551,7 +1553,9 @@
            IF     ((TBL-WKSRY-SRYCD (TBL-MAX IDX-S)
                                        =   "810000001")  OR
                    (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:2)
-                                       =   "83"      ))  AND
+                                       =   "83"      )   OR
+                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
+                                       =   "0083"    ))  AND
                    (LF04-ALSNAME (IDX1 IDX2)
                                    NOT =   SPACE )
       *        コメント
