@@ -2230,9 +2230,6 @@
        3103-SAIHEN-HEN-SEC                  SECTION.
       *
            MOVE    ZERO               TO  FLG-SET
-           IF      FLG-K09TUIKA       =   ZERO
-               MOVE    1                  TO  SPA-SINSATU-SAI
-           END-IF
       *
       *    診療室入力あり編集
            PERFORM     VARYING   IDX   FROM    1   BY  1
@@ -5138,6 +5135,8 @@
                GO  TO                 410119-INPSET-EXT
            END-IF
       *
+      *
+           MOVE    1                   TO  SPA-SINSATU-SAI
       *
            MOVE    SPACE               TO  WRK-ERRCD
       *
@@ -10867,14 +10866,18 @@
            ELSE
                COMPUTE SPA-MAP-IDX         =   WRK-MAP-MAX
                                            +   1
-               IF      SPA-SINSATU-SAI     =   1
+               IF      SPA-SINSATU-SAI     =   ZERO
       *            初期表示の時１ページ目へ
                    IF     (SPA-MAP-IDX         >   24  )
                        OR (SPA-GMN-PAGE        <   WRK-MAP-MAXPAGE)
                        MOVE    99                  TO  SPA-MAP-IDX
+                   ELSE
+                       IF      SPA-GMN-PAGE    >   WRK-MAP-MAXPAGE
+                           MOVE    WRK-MAP-MAXPAGE     TO  SPA-GMN-PAGE
+                       END-IF
                    END-IF
-                   MOVE    ZERO            TO  SPA-SINSATU-SAI
                ELSE
+                   MOVE    ZERO            TO  SPA-SINSATU-SAI
                    IF     (SPA-MAP-IDX         >   24 )
                        MOVE    99                  TO  SPA-MAP-IDX
                    ELSE

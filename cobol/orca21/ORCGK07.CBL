@@ -437,7 +437,7 @@
       *    ³ÎÄê
       *        WHEN    "CLICKED"       ALSO    "B12"
       *            PERFORM 490-KAKUTEI-SEC
-      *    END-EVALUATE
+           END-EVALUATE
       *
            .
        200-GMNSENI-EXT.
