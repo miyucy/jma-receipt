@@ -734,6 +734,11 @@
                WHEN    "9200"
                    MOVE    "入院・食事は外来では入力できません。"
                                        TO  SPA-ERRMSG
+               WHEN    "K140"
+                   MOVE    "警告！手術が算定されています。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "注射料は算定できません。"
+                                       TO  SPA-ERRMSG(31:)
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.
