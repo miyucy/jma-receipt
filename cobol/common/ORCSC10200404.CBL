@@ -1250,6 +1250,26 @@
            IF       SPA-NYUGAIKBN      =   "2"
                MOVE    WRK-COM-TIMEFLG(IDX-Z)
                                        TO  LNK-ORCSC-TIMEFLG
+               IF      WRK-COM-TIMEFLG(IDX-Z)  =   "5"
+                                               OR  "6"
+                                               OR  "7"
+                  MOVE    ZERO             TO  LNK-ORCSC-TIMEFLG
+               END-IF
+           END-IF
+      *
+      *    £¶ºÐ°Ê¾å¤ÎÆýÍÄ»ùÆÃÎã»þ´Ö³°¥¨¥é¡¼
+           IF      WRK-COM-TIMEFLG(IDX-Z)  =   "5"
+                                           OR  "6"
+                                           OR  "7"
+               IF     (LNK-ORCSC-NENREI-YY     <   6  )  AND
+      *            »þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ù²Ã»»»»Äê¤¢¤ê¤Î¾ì¹ç¤Î¤ß
+                      (LNK-ORCSC-JIKANTOKU-NYU =   1  )
+                   CONTINUE
+               ELSE
+                   MOVE    "0112"          TO  WRK-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   GO      TO      1002-KASAN-SET-EXT
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  WRK-SRYCD
@@ -1381,14 +1401,19 @@
                END-EVALUATE
            END-IF
       *
+      *    £¶ºÐÌ¤Ëþ¤Î¾®»ù²ÊÆÃÎã»þ´Ö³°²Ã»»
+           IF     (WRK-COM-TIMEFLG(IDX-Z)  =   "5"
+                                           OR  "6"
+                                           OR  "7")  AND
+                  (LNK-ORCSC-NENREI-YY     <   6  )  AND
+                  (LNK-ORCSC-JIKANTOKU-NYU =   1  )
+               PERFORM 1009-NYUYOUJI-KSN-SEC
+           END-IF
+      *
            IF      WRK-SRYCD            =    SPACE
                GO      TO      1002-KASAN-SET-EXT
            END-IF
       *
-      *    £¶ºÐÌ¤Ëþ¤ÎÆýÍÄ»ù²Ã»»¤ØÊÑ¹¹
-           IF      LNK-ORCSC-NENREI-YY <   6
-               PERFORM 1009-NYUYOUJI-KSN-SEC
-           END-IF
       *
       *    »þ´Ö¼«Æ°²Ã»»¡¡Â¸ºß¥Á¥§¥Ã¥¯
            MOVE    ZERO                TO  FLG-ARI
@@ -1718,89 +1743,82 @@
       *****************************************************************
        1009-NYUYOUJI-KSN-SEC           SECTION.
       *
-      *    »þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ù²Ã»»»»Äê¤¢¤ê¤Î¾ì¹ç¤Î¤ß
-           IF      LNK-ORCSC-JIKANTOKU-NYU =   1
-               CONTINUE
-           ELSE
-               GO      TO      1009-NYUYOUJI-KSN-EXT
-           END-IF
-      *
            EVALUATE    FLG-SINSATU
       *        ½é¿Ç
                WHEN    1
                    EVALUATE    WRK-COM-TIMEFLG(IDX-Z)
-                       WHEN    1
+                       WHEN    5
       *                    Ìë´Ö¡Ê»þ´Ö³°¡Ë²Ã»»
                            MOVE    "111011570"     TO  WRK-SRYCD
-                       WHEN    2
+                       WHEN    6
       *                    µÙÆü²Ã»»
                            MOVE    "111011670"     TO  WRK-SRYCD
-                       WHEN    3
+                       WHEN    7
       *                    ¿¼Ìë²Ã»»
                            MOVE    "111011770"     TO  WRK-SRYCD
                    END-EVALUATE
       *        ºÆ¿Ç
                WHEN    2
                    EVALUATE    WRK-COM-TIMEFLG(IDX-Z)
-                       WHEN    1
+                       WHEN    5
       *                    Ìë´Ö¡Ê»þ´Ö³°¡Ë²Ã»»
                            MOVE    "112014170"     TO  WRK-SRYCD
-                       WHEN    2
+                       WHEN    6
       *                    µÙÆü²Ã»»
                            MOVE    "112014270"     TO  WRK-SRYCD
-                       WHEN    3
+                       WHEN    7
       *                    ¿¼Ìë²Ã»»
                            MOVE    "112014370"     TO  WRK-SRYCD
                    END-EVALUATE
       *        ³°Íè¿Ç»¡ÎÁ
                WHEN    3
                    EVALUATE    WRK-COM-TIMEFLG(IDX-Z)
-                       WHEN    1
+                       WHEN    5
       *                    Ìë´Ö¡Ê»þ´Ö³°¡Ë²Ã»»
                            MOVE    "112014470"     TO  WRK-SRYCD
-                       WHEN    2
+                       WHEN    6
       *                    µÙÆü²Ã»»
                            MOVE    "112014570"     TO  WRK-SRYCD
-                       WHEN    3
+                       WHEN    7
       *                    ¿¼Ìë²Ã»»
                            MOVE    "112014670"     TO  WRK-SRYCD
                    END-EVALUATE
       *        ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¡Ê½é¿Ç¡Ë
                WHEN    4
                    EVALUATE    WRK-COM-TIMEFLG(IDX-Z)
-                       WHEN    1
+                       WHEN    5
       *                    Ìë´Ö¡Ê»þ´Ö³°¡Ë²Ã»»
                            MOVE    "113007070"     TO  WRK-SRYCD
-                       WHEN    2
+                       WHEN    6
       *                    µÙÆü²Ã»»
                            MOVE    "113007170"     TO  WRK-SRYCD
-                       WHEN    3
+                       WHEN    7
       *                    ¿¼Ìë²Ã»»
                            MOVE    "113007270"     TO  WRK-SRYCD
                    END-EVALUATE
       *        ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¡ÊºÆ¿Ç¡Ë
                WHEN    5
                    EVALUATE    WRK-COM-TIMEFLG(IDX-Z)
-                       WHEN    1
+                       WHEN    5
       *                    Ìë´Ö¡Ê»þ´Ö³°¡Ë²Ã»»
                            MOVE    "113007370"     TO  WRK-SRYCD
-                       WHEN    2
+                       WHEN    6
       *                    µÙÆü²Ã»»
                            MOVE    "113007470"     TO  WRK-SRYCD
-                       WHEN    3
+                       WHEN    7
       *                    ¿¼Ìë²Ã»»
                            MOVE    "113007570"     TO  WRK-SRYCD
                    END-EVALUATE
       *        ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¡Ê³°Íè¿Ç»¡ÎÁ¡Ë
                WHEN    6
                    EVALUATE    WRK-COM-TIMEFLG(IDX-Z)
-                       WHEN    1
+                       WHEN    5
       *                    Ìë´Ö¡Ê»þ´Ö³°¡Ë²Ã»»
                            MOVE    "113007670"     TO  WRK-SRYCD
-                       WHEN    2
+                       WHEN    6
       *                    µÙÆü²Ã»»
                            MOVE    "113007770"     TO  WRK-SRYCD
-                       WHEN    3
+                       WHEN    7
       *                    ¿¼Ìë²Ã»»
                            MOVE    "113007870"     TO  WRK-SRYCD
                    END-EVALUATE

@@ -472,6 +472,12 @@
                                        TO  SPA-ERRMSG
                    MOVE    "診察料と同時に算定できません。"
                                        TO  SPA-ERRMSG(35:)
+               WHEN    "0112"
+                   MOVE    "小児科特例時間外区分は算定できません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0113"
+                   MOVE    "小児科特例時間外は算定できません。"
+                                       TO  SPA-ERRMSG
                WHEN    "0130"
                    MOVE    "特定薬剤治療管理料が３月目以内です。"
                                        TO  SPA-ERRMSG

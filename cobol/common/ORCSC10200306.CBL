@@ -1188,6 +1188,16 @@
       *****************************************************************
        1002-KASAN-SET-SEC              SECTION.
       *
+      *    乳幼児特例時間外エラー
+           IF      WRK-COM-TIMEFLG(IDX-Z)  =   "5"
+                                           OR  "6"
+                                           OR  "7"
+               MOVE    "0112"          TO  WRK-ERRCD
+               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+               MOVE    ZERO            TO  LNK-ORCSC-TIMEFLG
+               GO      TO      1002-KASAN-SET-EXT
+           END-IF
+      *
       *    入院の場合、時間外区分も対象とする
            IF      (SPA-NYUGAIKBN      =   "1"     )  AND
                    (LNK-ORCSC-TIMEFLG  NOT =   ZERO)  AND

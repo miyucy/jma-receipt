@@ -3610,6 +3610,9 @@
       *            時間外区分あり
                    IF     SRY-AUTOKBN  (IDX)   =   "A" OR "B" OR "C"
                                                        OR "D"
+                                                       OR "E"
+                                                       OR "F"
+                                                       OR "G"
                        PERFORM 49012-JIKAN-SYORI-SEC
                    END-IF
                END-IF
@@ -3730,6 +3733,15 @@
                                                                 (1:1)
                WHEN    "D"
                    MOVE    "4"             TO  WKSRY-INPUTCD(IDX)
+                                                                (1:1)
+               WHEN    "E"
+                   MOVE    "5"             TO  WKSRY-INPUTCD(IDX)
+                                                                (1:1)
+               WHEN    "F"
+                   MOVE    "6"             TO  WKSRY-INPUTCD(IDX)
+                                                                (1:1)
+               WHEN    "G"
+                   MOVE    "7"             TO  WKSRY-INPUTCD(IDX)
                                                                 (1:1)
            END-EVALUATE
            MOVE    WKSRY-SRYCD (IDX)   TO  WKSRY-INPUTCD (IDX)(3:)

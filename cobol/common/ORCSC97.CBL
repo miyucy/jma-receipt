@@ -687,6 +687,9 @@
                                            OR  2
                                            OR  3
                                            OR  4
+                                           OR  5
+                                           OR  6
+                                           OR  7
                                            OR  0
                    CONTINUE
                ELSE
