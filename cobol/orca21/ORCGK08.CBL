@@ -192,6 +192,8 @@
            03  FLG-KAISUU-ARI2     PIC 9(01).
            03  FLG-KAISUU-ARI3     PIC 9(01).
       *
+           03  FLG-KAKU-FLG        PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -345,6 +347,8 @@
       *
            03  WRK-SYU-CONTKBN         PIC X(01).
       *
+           03  WRK-KIDMSG          PIC X(80).
+      *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
            03  WRK-IDX-Y               PIC 9(04).
@@ -458,6 +462,9 @@
       *
       *    診療行為入院更新パラメタ領域
            COPY    "CPORCSCNYUIN.INC".
+      *
+      *    診療行為外来更新パラメタ領域
+           COPY    "CPORCSCGAIRAI.INC".
       *
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
@@ -589,6 +596,9 @@
       *
       *        初期画面編集
                PERFORM 300-SCREEN-SEC
+               IF      FLG-END             =   1
+                   GO      TO      100-INIT-EXT
+               END-IF
       *
       *        画面編集
                PERFORM 500-GMNHEN-SEC
@@ -611,6 +621,16 @@
       *****************************************************************
        300-SCREEN-SEC             SECTION.
       *
+      *    内部画面より
+           EVALUATE    SPA-MOTOPG
+               WHEN    "KID1"
+      *            確認画面より
+                   PERFORM 30010-KID1-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  SPA-KIDCD
+      *
            INITIALIZE                  SPA-K08
            INITIALIZE                  SPA-K08-AREA
            PERFORM                 310-SPA-SET-SEC
@@ -626,6 +646,31 @@
       *
            .
        300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面（ＫＩＤ１）ＯＫ処理
+      *****************************************************************
+       30010-KID1-SET-SEC          SECTION.
+      *
+           EVALUATE    SPA-KIDCD
+      *        入院削除確認
+               WHEN    "0101"
+                   IF      SPA-KID1-FLG        =   "OK"
+                       MOVE    1               TO  FLG-KAKU-FLG
+                       PERFORM 4502-NYUKOUSIN-SYORI-SEC
+                   END-IF
+      *        包括まとめ確認
+               WHEN    "0102"
+               WHEN    "0103"
+                   IF      SPA-KID1-FLG        =   "OK"
+                       MOVE    1               TO  FLG-KAKU-FLG
+                       PERFORM 4503-HOUKATU-SYORI-SEC
+                   END-IF
+           END-EVALUATE
+           MOVE    SPACE               TO  SPA-KIDCD
+           .
+       30010-KID1-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2197,6 +2242,12 @@
                GO      TO      450-TOROKU-EXT
            END-IF
       *
+      *   包括まとめ入力処理
+          IF      SPA-HKNCOMBINUM     =   "9999"
+               PERFORM 4503-HOUKATU-SYORI-SEC
+               GO      TO      450-TOROKU-EXT
+           END-IF
+      *
       *    更新処理
            PERFORM 4501-KOUSIN-SYORI-SEC
       *
@@ -3004,6 +3055,15 @@
       *
            CLOSE                       PARA-FILE
       *
+      *    削除
+           IF      (SPA-SYORIFLG       =   1  )  AND
+                   (LNK-WKSRYACT-MAX   =   ZERO)
+               IF      FLG-KAKU-FLG        =   ZERO
+                   MOVE    "0101"              TO  SPA-KIDCD
+                   GO      TO     4502-NYUKOUSIN-SYORI-EXT
+               END-IF
+           END-IF
+      *
       *    追加
            MOVE    SPA-TERMID          TO  FILE-TERMID2
            OPEN    OUTPUT              PARA-FILE
@@ -3037,8 +3097,11 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-      *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           IF      FLG-KAKU-FLG        =   1
+               MOVE    "JOIN"              TO  MCP-PUTTYPE
+           END-IF
+      *
            MOVE    "K02N"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
@@ -3047,6 +3110,116 @@
       *
            .
        4502-NYUKOUSIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括まとめ入力更新（外来）処理
+      *****************************************************************
+       4503-HOUKATU-SYORI-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDY
+           MOVE    ZERO                TO  IDG
+      *
+           MOVE    ZERO                TO  FLG-PARA
+           MOVE    SPACE               TO  LNK-WKSRYACT-AREA
+           INITIALIZE                  LNK-WKSRYACT-AREA
+           MOVE    SPACE               TO  SYUNOU-REC
+           MOVE    ZERO                TO  IDX-KOUI
+           MOVE    ZERO                TO  LNK-WKSRYACT-MAX
+           INITIALIZE                  HZN-PARA-AREA
+      *
+           MOVE    SPA-TERMID          TO  FILE-TERMID2
+           OPEN    INPUT               PARA-FILE
+      *
+           IF      STS-PARA           =  ZERO
+               PERFORM 980-PARA-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PARA 
+           END-IF
+           PERFORM
+                   UNTIL       FLG-PARA    =    1
+               EVALUATE    PARA-FILEMEI
+      *            ワーク診療行
+                   WHEN    "WKSRYACT"
+                       ADD     1                   TO  IDX
+                       MOVE    PARA-DATA-REC       TO  LNK-WKSRYACT-REC
+                                                                (IDX)
+                       MOVE    IDX                 TO  LNK-WKSRYACT-MAX
+      *            その他
+                   WHEN    OTHER
+                       ADD     1                   TO  IDY
+                       MOVE    PARA-REC            TO  HZN-PARA-REC(IDY)
+               END-EVALUATE
+      *
+               PERFORM 980-PARA-READ-SEC
+           END-PERFORM
+           MOVE    IDX                 TO  WRK-MAX
+      *
+           CLOSE                       PARA-FILE
+      *
+      *    確認メッセージ
+           IF      FLG-KAKU-FLG        =   ZERO
+               IF      (SPA-SYORIFLG       =   1  )  AND
+                       (LNK-WKSRYACT-MAX   =   ZERO)
+                   MOVE    "0103"              TO  SPA-KIDCD
+               ELSE
+                   MOVE    "0102"              TO  SPA-KIDCD
+               END-IF
+               GO      TO     4503-HOUKATU-SYORI-EXT
+           END-IF
+      *
+      *    追加
+           MOVE    SPA-TERMID          TO  FILE-TERMID2
+           OPEN    OUTPUT              PARA-FILE
+      *
+      *    診療行為更新
+           PERFORM 45011-SRYACT-SYORI-SEC
+      *
+           CLOSE                       PARA-FILE
+      *
+      *    外来更新処理
+           INITIALIZE                  ORCSCGAIRAIAREA
+           IF      LNK-WKSRYACT-MAX   =   ZERO
+      *        削除
+               MOVE    "2"                 TO  ORCSCGAIRAI-KBN
+           ELSE
+      *        新規、更新
+               MOVE    "1"                 TO  ORCSCGAIRAI-KBN
+           END-IF
+      *
+           CALL    "ORCSCGAIRAI"       USING
+                                       SPA-AREA
+                                       ORCSCGAIRAIAREA
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO     4503-HOUKATU-SYORI-EXT
+           END-IF
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
+           INITIALIZE                      SPA-KYOTUKEY
+           INITIALIZE                      SPA-K01KYOUTU
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    "K02"               TO  SPA-SAKIPG
+           MOVE    "K08"               TO  SPA-MOTOPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           IF      FLG-KAKU-FLG        =   1
+               MOVE    "JOIN"              TO  MCP-PUTTYPE
+           END-IF
+      *
+           MOVE    "K02"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4503-HOUKATU-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3084,6 +3257,12 @@
                PERFORM 510-ERRSET-SEC
                GO      TO      500-SET-SCREEN-EXT
            END-IF
+      *
+           IF      SPA-KIDCD       NOT =   SPACE
+               PERFORM 520-KIDSET-SEC
+               GO      TO      500-SET-SCREEN-EXT
+           END-IF
+      *
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
            MOVE    "K08"               TO  MCP-WINDOW.
@@ -3327,6 +3506,57 @@
        510-ERRSET-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    確認メッセージ表示理
+      *****************************************************************
+       520-KIDSET-SEC              SECTION.
+      *
+           EVALUATE    SPA-KIDCD
+               WHEN    "0101"
+                   MOVE    "該当の受診履歴を削除します。"
+                                       TO  WRK-KIDMSG
+                   MOVE    "よろしいですか？"
+                                       TO  WRK-KIDMSG(29:)
+               WHEN    "0102"
+                   MOVE    "包括まとめ入力を登録します。"
+                                       TO  WRK-KIDMSG
+               WHEN    "0103"
+                   MOVE    "包括まとめ入力の受診履歴を削除します。"
+                                       TO  WRK-KIDMSG
+                   MOVE    "よろしいですか？"
+                                       TO  WRK-KIDMSG(39:)
+               WHEN    OTHER
+                   MOVE    SPA-KIDCD
+                                       TO  WRK-KIDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  KID1
+           MOVE    SPA-KIDCD           TO  KID1-ID1CODE
+           MOVE    WRK-KIDMSG          TO  KID1-ID1MSG
+      *
+           MOVE    "戻る"              TO  KID1-B01
+           MOVE    "ＯＫ"              TO  KID1-B12
+           EVALUATE    SPA-KIDCD
+               WHEN    "0101"
+                   MOVE    "ＮＯ"            TO  KID1-B01
+           END-EVALUATE
+      *
+           MOVE    "B12"               TO  MCP-WIDGET
+      *
+           MOVE    "K08"               TO  SPA-MOTOPG
+           MOVE    "KID1"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "KID1"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       520-KIDSET-EXT.
+           EXIT.
       *****************************************************************
       *    点数マスター読込
       *****************************************************************

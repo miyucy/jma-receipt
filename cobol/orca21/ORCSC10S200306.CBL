@@ -1030,6 +1030,11 @@
       *    ¾Ã±êÄÃÄËÅù½èÃÖ
            MOVE    ZERO                TO  SPA-SYOEN-CNT
       *
+      *    Êñ³ç¤Þ¤È¤áÆþÎÏÂÐ¾Ý³°
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      1001-TOUGETU-KAISU-EXT
+           END-IF
+      *
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
@@ -1197,6 +1202,11 @@
            MOVE    ZERO                TO  FLG-SYONIKA-ARI
            MOVE    ZERO                TO  SPA-SYONIKA-ARI3
       *
+      *    Êñ³ç¤Þ¤È¤áÆþÎÏÂÐ¾Ý³°
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      1001-SYONIKA-CHK-EXT
+           END-IF
+      *
       *    £³ºÐ¤Ë¤Ê¤ëÇ¯·îÆü¤ò·×»»
            MOVE    SPA-BIRTHDAY        TO  WRK-BIRTHDAY
            COMPUTE WRK-BIRTH-YY        =   WRK-BIRTH-YY    +  3
@@ -1255,6 +1265,12 @@
       *****************************************************************
        1002-NETAKIRI-CHK-SEC          SECTION.
       *
+      *
+      *    Êñ³ç¤Þ¤È¤áÆþÎÏÂÐ¾Ý³°
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      1002-NETAKIRI-CHK-EXT
+           END-IF
+      *
       *    MOVE    ZERO                TO  FLG-TOUG-SANTEI
       *    MOVE    ZERO                TO  SPA-NETAKIRI-ARI
       *    MOVE    ZERO                TO  SPA-NETAKIRI-ARI2
@@ -1286,9 +1302,6 @@
            IF      WRK-SANTEI-NASI     NOT =   SPACE
                PERFORM 10021-24KASAN-SET-SEC
            END-IF
-      *TEST
-           DISPLAY "C10S WRK-24KSAN-SRYCD:" WRK-24KSAN-SRYCD
-      *TEST
       *
            .
        1002-NETAKIRI-CHK-EXT.
@@ -1495,6 +1508,13 @@
       *    ËýÀ­áÖÄË¼ÀÉÂ´ÉÍýÎÁ»»Äê¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        1004-TOUTUU-CHK-SEC              SECTION.
+      *
+      *    Êñ³ç¤Þ¤È¤áÆþÎÏÂÐ¾Ý³°
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               MOVE    ZERO            TO  SPA-TOKUTEI-KNJ2
+               GO      TO      1004-TOUTUU-CHK-EXT
+           END-IF
+      *
       *
       *    ËýÀ­áÖÄË¼ÀÉÂ´ÉÍýÎÁ
            MOVE    "113006510"         TO  WRK-SRYCD
@@ -1808,6 +1828,12 @@
            MOVE    ZERO                TO  SPA-GAIRAISIN
       *
            MOVE    SPACE               TO  WRK-SRYCD
+      *
+      *    Êñ³ç¤Þ¤È¤áÆþÎÏÂÐ¾Ý³°
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      200-SYOSIN-SET-EXT
+           END-IF
+      *
       *
       *    Æþ±¡Æü¤Î»þ¡¢½é¿ÇÎÁ¤Î¤ß»»Äê¤¹¤ë
            IF      SPA-K02N-NYUINYMD   =   SPA-NAI-SRYYMD
@@ -2696,9 +2722,6 @@
            END-IF
       *
            MOVE    1                   TO  SPA-NETAKIRI-ARI3
-      *TEST
-           DISPLAY "C10S ADD WRK-24KSAN-SRYCD:" WRK-24KSAN-SRYCD
-      *TEST
       *    £²£´»þ´ÖÏ¢ÂÓ²Ã»»
            IF      WRK-24KSAN-SRYCD    NOT =   SPACE
                MOVE    WRK-24KSAN-SRYCD    TO  WRK-SRYCD
@@ -3510,6 +3533,11 @@
            MOVE    ZERO                TO  SPA-ZAIMATU-ARI
       *
            MOVE    ZERO                TO  SPA-SEIKATU-ARI
+      *
+      *    Êñ³ç¤Þ¤È¤áÆþÎÏÂÐ¾Ý³°
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      600-SANTEI-CNT-EXT
+           END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200                )  OR

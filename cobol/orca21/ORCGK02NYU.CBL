@@ -4615,7 +4615,9 @@
                IF     (SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:1)   =   "S") OR
                        ((SPA-GMN-IDX           <   WRK-GYO-MAX  ) AND
                         (SPA-COM-SET  (SPA-GMN-IDX + 1)    =   "1"))
-                   PERFORM 41016-SETDEL-SEC
+                   MOVE    SPA-GMN-IDX         TO  IDX
+                   MOVE    SPACE       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+                   PERFORM 410151-SETDEL2-SEC
                END-IF
                MOVE    SPACE           TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                MOVE    1               TO  FLG-INS
@@ -7780,27 +7782,60 @@
            PERFORM VARYING     IDX     FROM    SPA-GMN-IDX   BY  1
                    UNTIL      (IDX     >   WRK-GYO-MAX )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
-               MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
-               IF    ((IDX                     <   WRK-GYO-MAX    ) AND
-                      (SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE) ) OR
-                      (SPA-COM-ZAIEND(IDX)     =   "1"   )
-                   MOVE    WRK-GYO-MAX             TO  IDX
+      *
+      *        セットが削除の時セット内容を削除する
+               IF     (SPA-MAE-INPUTCD(IDX)(1:1)   =   "S") OR
+                     ((IDX                     <   WRK-GYO-MAX )  AND
+                      (SPA-COM-SET  (IDX + 1)  =   "1"))
+                   MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
+                   PERFORM 410151-SETDEL2-SEC
+                   MOVE    200             TO  IDX
+               ELSE
+                   MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
+                   IF    ((IDX                 <   WRK-GYO-MAX ) AND
+                          (SPA-GMN-SRYKBN (IDX + 1)
+                                               NOT =   SPACE) ) OR
+                         (SPA-COM-ZAIEND(IDX)  =   "1"    )
+                       MOVE    WRK-GYO-MAX             TO  IDX
+                   END-IF
                END-IF
            END-PERFORM
       *
-           PERFORM VARYING     IDX     FROM    SPA-GMN-IDX   BY  1
-                   UNTIL      (IDX     >   WRK-GYO-MAX )  OR
-                              (SPA-GMN-INPUTCD (IDX)   =   SPACE)
-               MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
-               IF      (IDX            <   WRK-GYO-MAX    ) AND
-                       (SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE )
-                   MOVE    WRK-GYO-MAX             TO  IDX
-               END-IF
-           END-PERFORM
+      *    PERFORM VARYING     IDX     FROM    SPA-GMN-IDX   BY  1
+      *            UNTIL      (IDX     >   WRK-GYO-MAX )  OR
+      *                       (SPA-GMN-INPUTCD (IDX)   =   SPACE)
+      *        MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
+      *        IF      (IDX            <   WRK-GYO-MAX    ) AND
+      *                (SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE )
+      *            MOVE    WRK-GYO-MAX             TO  IDX
+      *        END-IF
+      *    END-PERFORM
       *
            .
        41015-ZAIDEL-EXT.
            EXIT.
+      *****************************************************************
+      *    セット削除処理（剤削除）
+      *****************************************************************
+       410151-SETDEL2-SEC              SECTION.
+      *
+           COMPUTE IDX2                =   IDX     +   1
+      *
+           PERFORM VARYING     IDX3    FROM    IDX2    BY  1
+                   UNTIL      (IDX3    >   WRK-GYO-MAX )  OR
+                              (SPA-GMN-INPUTCD (IDX3)  =   SPACE)
+               IF      SPA-COM-SET     (IDX3)   =   "1"
+                   MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX3)
+                   ADD     1               TO  SPA-GMN-IDX
+               ELSE
+                   MOVE    200             TO  IDX3
+               END-IF
+           END-PERFORM
+      *
+           .
+       410151-SETDEL2-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    セット削除処理

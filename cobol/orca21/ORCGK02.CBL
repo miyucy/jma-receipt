@@ -1264,7 +1264,7 @@
       *
       *    患者の確定していない時、クリア画面の表示、M01より
            IF    ( SPA-MOTOPG(1:3)     =   "M01"    )  OR
-                 ((SPA-MOTOPG          =   "K03" )  AND
+                 ((SPA-MOTOPG          =   "K03"  OR  "K08")  AND
                    (SPA-PTNUM          =   SPACE    ))
                PERFORM 30010-INIT-GMN-SEC
                GO      TO      300-SCREEN-EXT
@@ -1621,8 +1621,8 @@
            MOVE    "2"                 TO  LNK-SC95-KBN
            MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
            MOVE    SPA-SRYYMDW         TO  LNK-SC95-SRYYMDG
-           IF     (SPA-MOTOPG          =   "K01"        )  AND
-                  (SPA-PTID            =   SPA-GMN-PTID )
+           IF     (SPA-MOTOPG          =   "K01"        )
+      *!!!   AND  (SPA-PTID            =   SPA-GMN-PTID )
                MOVE    "K01"               TO  LNK-SC95-PG
            ELSE
                IF      SPA-MOTOPG          =   "U02"
@@ -2131,6 +2131,13 @@
                         MOVE    SPACE              TO  FLG-TOROKU
                         PERFORM 510-TBLHEN-SEC
                         MOVE    SPACE              TO  FLG-TOROKU
+                   END-IF
+      *
+      *        包括まとめ入力変更確認
+               WHEN    "0190"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+                      INITIALIZE                  SPA-SCR-REC
                    END-IF
       *
            END-EVALUATE
@@ -3768,6 +3775,10 @@
            END-IF
            PERFORM UNTIL       (FLG-SRYACCT         =   1       )
       *
+      *      包括まとめ入力は対象外
+             IF      ACCT-HKNCOMBI     =   "9999"
+               CONTINUE
+             ELSE
       *        点数累計
                IF     (ACCT-ZAITEN         =   ZERO )  OR
                       (ACCT-ZAIKAISU       =   ZERO )  OR
@@ -3793,6 +3804,9 @@
       *            診療行為マスター編集
       *            PERFORM 3201-SRYACT-HEN-SEC
       ******** END-IF
+      *
+             END-IF
+      *
       *
                MOVE    "SRYACCT-KEY7"      TO  ORC-DBPATH
                PERFORM 940-SRYACCT-READ-SEC
@@ -4666,6 +4680,15 @@
                MOVE    SPA-GMN-HKNCOMBI-G  TO  SPA-MAE-HKNCOMBI-G
                MOVE    SPA-HKNKBN          TO  SPA-MAE-HKNKBN
                MOVE    K02-HKNCOMBI        TO  SPA-GMN-HKNCOMBI-G
+      *        包括まとめの変更不可
+               IF      (SPA-GMN-HKNCOMBINUM     =   "9999" )  OR
+                       (SPA-MAE-HKNCOMBINUM     =   "9999" )
+                   MOVE    "1033"              TO  SPA-ERRCD
+                   MOVE    SPA-MAE-HKNCOMBI-G  TO  SPA-GMN-HKNCOMBI-G
+                   MOVE    SPA-MAE-HKNKBN      TO  SPA-HKNKBN
+                   GO      TO      41012-HKNCOMBI-SYORI-EXT
+               END-IF
+      *
                MOVE    1                   TO  FLG-CHK2
                PERFORM 41012-HKNCOMBI-CHANGE-SEC
                IF      SPA-KIDCD           =   SPACE
@@ -4694,6 +4717,12 @@
            MOVE    1                   TO  SPA-GMN-PAGE
            MOVE    1                   TO  SPA-GMN-CUR
       *
+      *    包括まとめで変更があった場合再編集
+           IF     (SPA-GMN-HKNCOMBINUM     =   "9999" )  OR
+                  (SPA-MAE-HKNCOMBINUM     =   "9999" )
+               PERFORM 410122-HOUKATU-HKNCOMBI-SEC
+               GO      TO      41012-HKNCOMBI-CHANGE-EXT
+           END-IF
       *    保険区分が変更された時、再編集を行う
            IF     (SPA-SYORIFLG        =   1   )  AND
                   (SPA-HKNKBN          =   SPA-MAE-HKNKBN)
@@ -4706,6 +4735,33 @@
       *
            .
        41012-HKNCOMBI-CHANGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括まとめ入力変換処理
+      *****************************************************************
+       410122-HOUKATU-HKNCOMBI-SEC         SECTION.
+      *
+      *    包括まとめの時、フラグクリア
+      *    寝たきり老人在宅総合診療科
+           MOVE    ZERO                TO  SPA-NETAKIRI-ARI
+           MOVE    ZERO                TO  SPA-NETAKIRI-ARI2
+      *    在宅末期医療総合診察料
+           MOVE    ZERO                TO  SPA-ZAIMATU-ARI
+           MOVE    ZERO                TO  SPA-ZAIMATU-ARI2
+      *    生活習慣病
+           MOVE    ZERO                TO  SPA-SEIKATU-ARI
+           MOVE    ZERO                TO  SPA-SEIKATU-ARI2
+      *    慢性疼痛疾病管理料
+           MOVE    ZERO                TO  SPA-TOKUTEI-KNJ2
+      *    痴呆患者在宅指導管理料（外来加算付加算定付加）
+           MOVE    ZERO                TO  SPA-GAIRAI-NASI
+      *    消炎鎮痛等処置
+           MOVE    ZERO                TO  SPA-SYOEN-CNT
+      *
+           PERFORM 410121-HKNCOMBI-SAI-SEC
+           .
+       410122-HOUKATU-HKNCOMBI-EXT.
            EXIT.
       *****************************************************************
       *    保険区分変換処理
@@ -4752,9 +4808,16 @@
                END-IF
            END-IF
       *
+      *    訂正でなく、包括保険に変更した場合、メッセージ表示
+           IF      SPA-GMN-HKNCOMBINUM     =   "9999"
+               MOVE    "0190"              TO  SPA-KIDCD
+               GO      TO      410121-HKNCOMBI-SAI-EXT
+           END-IF
+      *
       *    保険区分が変更された時、再編集を行う
            IF     (SPA-HKNKBN          =   SPA-MAE-HKNKBN  )  AND
                   (SPA-HKNKBN          =   ZERO            )
+             AND  (SPA-MAE-HKNCOMBINUM NOT =   "9999"  )
                CONTINUE
            ELSE
       *        初診算定時のから変更がある時、診察料の変更のみ
@@ -4779,6 +4842,12 @@
       *    同日再診他保険の算定チェック処理
       *****************************************************************
        4101213-RRKHKNCHK-SEC         SECTION.
+      *
+      *    包括まとめ入力は対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      4101213-RRKHKNCHK-EXT
+           END-IF
+      *
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX-HKN     FROM    1   BY  1
@@ -5391,9 +5460,12 @@
                IF     (SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:1)   =   "S") OR
                      ((SPA-GMN-IDX             <   200    )  AND
                       (SPA-COM-SET  (SPA-GMN-IDX + 1)      =   "1"))
-                   PERFORM 41016-SETDEL-SEC
+                   MOVE    SPA-GMN-IDX         TO  IDX
+                   MOVE    SPACE       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+                   PERFORM 410151-SETDEL2-SEC
+               ELSE
+                   MOVE    SPACE       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                END-IF
-               MOVE    SPACE           TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                MOVE    1               TO  FLG-INS
                GO  TO                  41011-KOUI-HENDEL-EXT
            END-IF
@@ -5476,6 +5548,9 @@
                    SPA-GMN-INPUTCD(SPA-GMN-IDX)(4:)   =   SPACE )) AND
                   (SPA-GMN-IDX                        >   1     )  AND
                   (SPA-GMN-INPUTCD(SPA-GMN-IDX + 1)   =   SPACE )
+      *            包括保険は対象外
+              AND (SPA-HKNCOMBINUM     NOT =   "9999"  )
+      *
                MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
                                        TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                PERFORM 4101120-SAISIN-SYOSIN-SEC
@@ -5994,6 +6069,8 @@
                   (SPA-GMN-MAX1        =   ZERO  )  AND
                   (LNK-SC97-SURYOCNT   =   7     )  AND
                   (SPA-SYOYMD          =   SPACE )
+      *            包括保険は対象外
+              AND (SPA-HKNCOMBINUM     NOT =   "9999"  )
                PERFORM 4101125-SYOSIN-CHK-SEC
                IF      SPA-KIDCD       NOT =   SPACE
                    GO      TO      4101113-INPUTCD-CHK-EXT
@@ -7239,6 +7316,7 @@
       *
       *    算定回数チェック（各基本チェックを行う時、ここで）
            IF      FLG-TOROKU          =   "1"
+              AND (SPA-HKNCOMBINUM NOT =   "9999")
                PERFORM VARYING SPA-GMN-IDX  FROM    1   BY  1
                        UNTIL  (SPA-GMN-IDX     >   200      )   OR
                               (SPA-GMN-INPUTCD (SPA-GMN-IDX)
@@ -7361,6 +7439,11 @@
                END-IF
       *
            END-PERFORM
+      *
+      *    包括まとめ入力はリハビリ対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               MOVE    ZERO                TO  FLG-SONOTA
+           END-IF
       *
       *    リハビリの回数編集
            INITIALIZE                  ORCSC80CNTAREA
@@ -8443,27 +8526,63 @@
            PERFORM VARYING     IDX     FROM    SPA-GMN-IDX   BY  1
                    UNTIL      (IDX     >   200 )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
-               MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
-               IF    ((IDX                     <   200   )  AND
-                      (SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE)) OR
-                      (SPA-COM-ZAIEND(IDX)     =   "1"   )
+      *
+      *        セットが削除の時セット内容を削除する
+               IF     (SPA-MAE-INPUTCD(IDX)(1:1)   =   "S") OR
+                     ((IDX                     <   200    )  AND
+                      (SPA-COM-SET  (IDX + 1)  =   "1"))
+                   MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
+                   PERFORM 410151-SETDEL2-SEC
                    MOVE    200             TO  IDX
+               ELSE
+      *
+                   MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
+                   IF    ((IDX                     <   200   )  AND
+                          (SPA-GMN-SRYKBN (IDX + 1)
+                                               NOT =   SPACE)) OR
+                          (SPA-COM-ZAIEND(IDX)     =   "1"   )
+                       MOVE    200             TO  IDX
+                   END-IF
+      *
                END-IF
            END-PERFORM
       *
-           PERFORM VARYING     IDX     FROM    SPA-GMN-IDX   BY  1
-                   UNTIL      (IDX     >   200 )  OR
-                              (SPA-GMN-INPUTCD (IDX)   =   SPACE)
-               MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
-               IF     (IDX                 <   200 )  AND
-                      (SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE )
-                   MOVE    200             TO  IDX
-               END-IF
-           END-PERFORM
+      *    PERFORM VARYING     IDX     FROM    SPA-GMN-IDX   BY  1
+      *            UNTIL      (IDX     >   200 )  OR
+      *                       (SPA-GMN-INPUTCD (IDX)   =   SPACE)
+      *        MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
+      *        IF     (IDX                 <   200 )  AND
+      *               (SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE )
+      *            MOVE    200             TO  IDX
+      *        END-IF
+      *    END-PERFORM
       *
            .
        41015-ZAIDEL-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    セット削除処理（剤削除）
+      *****************************************************************
+       410151-SETDEL2-SEC              SECTION.
+      *
+           COMPUTE IDX2                =   IDX     +   1
+      *
+           PERFORM VARYING     IDX3    FROM    IDX2    BY  1
+                   UNTIL      (IDX3    >   200 )  OR
+                              (SPA-GMN-INPUTCD (IDX3)  =   SPACE)
+               IF      SPA-COM-SET     (IDX3)   =   "1"
+                   MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX3)
+                   ADD     1               TO  SPA-GMN-IDX
+               ELSE
+                   MOVE    200             TO  IDX3
+               END-IF
+           END-PERFORM
+      *
+           .
+       410151-SETDEL2-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    セット削除処理
@@ -13071,6 +13190,12 @@
                MOVE    WRK-GOKEI-Z2        TO  K02-ZAITENTOTAL
       *    END-IF
       *
+      *    包括まとめ入力は、累計に集計しない
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               MOVE    SPA-ZAITENTOTAL     TO  WRK-GOKEI-Z2
+               MOVE    WRK-GOKEI-Z2        TO  K02-ZAITENTOTAL
+           END-IF
+      *
       *    保険組合せ
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-HKN-MAX
@@ -13559,6 +13684,11 @@
                                        TO  WRK-KIDMSG
                    MOVE    "逓減しますか？"
                                        TO  WRK-KIDMSG(31:)
+               WHEN    "0190"
+                   MOVE    "包括まとめ入力に変更されました。"
+                                       TO  WRK-KIDMSG
+                   MOVE    "現在の診療内容をクリアしますか？"
+                                       TO  WRK-KIDMSG(33:)
                WHEN    OTHER
                    MOVE    SPA-KIDCD
                                        TO  WRK-KIDMSG
@@ -13578,6 +13708,7 @@
                WHEN    "0107"
                WHEN    "0122"
                WHEN    "0180"
+               WHEN    "0190"
                    MOVE    "ＮＯ"            TO  KID1-B01
            END-EVALUATE
       *

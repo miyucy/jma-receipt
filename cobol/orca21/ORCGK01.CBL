@@ -1381,6 +1381,7 @@
       *
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "2"                 TO  ORCSHKN-KBN
+           MOVE    "1"                 TO  ORCSHKN-KBN2
            CALL    "ORCSHKNSET"        USING
                                        SPA-AREA
                                        ORCSHKNSETAREA
@@ -1891,6 +1892,10 @@
            MOVE    SPACE               TO  WRK-HKNCOMBINUM
            PERFORM
                UNTIL    FLG-JYURRK         =   1
+      *    包括保険は対象外
+           IF      JYURRK-HKNCOMBINUM      =    "9999"
+               CONTINUE
+           ELSE
       *        診療科がない時
                IF      SPA-GMN-SRYKA       =   SPACE
                    MOVE    JYURRK-SRYKA        TO  WRK-SRYKA
@@ -1907,6 +1912,8 @@
                IF      SPA-NAI-SRYYMDS     =   JYURRK-SRYYMD
                    PERFORM 41015-CONTKBN-HANTEI-SEC
                END-IF
+      *
+           END-IF
       *
       ******** MOVE    "JYURRK-KEY3"       TO  ORC-DBPATH
                MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
@@ -2600,6 +2607,12 @@
                    END-IF
                END-PERFORM
                IF      SPA-ERRCD       NOT =   SPACE
+                   MOVE    10                  TO  SPA-GMN-CUR
+                   GO      TO      4109-CONTKBN-CHK-EXT
+               END-IF
+      *        包括まとめ入力はエラー
+               IF      SPA-GMN-HKNCOMBINUM =   "9999"
+                   MOVE    "0023"              TO  SPA-ERRCD
                    MOVE    10                  TO  SPA-GMN-CUR
                    GO      TO      4109-CONTKBN-CHK-EXT
                END-IF
@@ -3335,6 +3348,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0022"
                    MOVE    "前回処方区分がありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0023"
+                   MOVE    "包括まとめ入力は選択できません。"
                                                TO  SPA-ERRMSG
       *
                WHEN    "9999"
