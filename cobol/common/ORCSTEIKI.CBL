@@ -1245,7 +1245,42 @@
       *
            MOVE    LNK-SYUNOU-REC(IDX) TO  SYUNOU-REC
       *
+      *外泊情報の取得
+      *
+           MOVE    ZERO                TO  FLG-NYUINACCT
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    SYU-HOSPID          TO  NACCT-HOSPID
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
+           MOVE    SYU-PTID            TO  NACCT-PTID
+           MOVE    SYU-SKYSTYMD (1:6)  TO  NACCT-SRYYM
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY9"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "NYUINACCT-KEY9"  TO  ORC-DBPATH
+               PERFORM  NYUINACCT-READ-SEC
+           ELSE
+               MOVE    1               TO      FLG-NYUINACCT
+           END-IF
+      *
+           MOVE     ZERO               TO      FLG-GAIHAKU-SET
+           INITIALIZE                          TABLE-GAIHAKU
+      *
+           PERFORM      GAIHAKU-SET-SEC
+               UNTIL   (FLG-NYUINACCT   =       1      )   OR
+                       (FLG-GAIHAKU-SET =       1      )
+      *
+           MOVE     "NYUINACT-KEY9"    TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
       *入院料関係の取得
+      *
+           MOVE    SPACE               TO  HKNTEKGAI-NYUIN
+           INITIALIZE                      HKNTEKGAI-NYUIN
       *
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                      NYUINACCT-REC
