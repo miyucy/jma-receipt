@@ -3236,7 +3236,9 @@
                ELSE
       *            外来管理加算が算定できる時
                    IF     (FLG-GAIKAN          =   ZERO )  AND
-                          (IDX-GAIKAN          =   ZERO )
+                          (IDX-GAIKAN          =   ZERO )  AND
+                          (LNK-ORCSC-SYOSIN    =   ZERO )  AND
+                          (LNK-ORCSC-SYOSIN2   =   ZERO )
                        MOVE    IDX-SYU         TO  IDX-Z
                        PERFORM
                            UNTIL  WRK-COM-DATAKBN (IDX-Z + 1) NOT =  "2"
