@@ -3519,10 +3519,12 @@
                                                          =   ".130"  )
                                        MOVE    1           TO  FLG-OK
                                    END-IF
-      *                            ≈≈œ√∫∆ø«§Œ∆˝Õƒª˘≤√ªª§œ£œ£À
-                                   IF     (SPA-COM-INPUTCD(IDX)
-                                                        =   "112000970")
-                                     AND (FLG-KBN       =   1          )
+      *                            ≈≈œ√∫∆ø«§Œ≤√ªª§œ£œ£À
+                                   IF     (FLG-KBN         =   1  ) AND
+                                          (SPA-COM-SRYKBN(IDX)
+                                                           =   "12") AND
+                                          (SPA-COM-DATAKBN(IDX)
+                                                           =   "2" )
                                        MOVE    1           TO  FLG-OK
                                    END-IF
                                    IF      FLG-OK          =   1
