@@ -86,15 +86,17 @@ AC_ARG_WITH(open-cobol-exec-prefix,
   if test x$open_cobol_exec_prefix != x ; then
     if test x${COBC+set} != xset; then
       COBC=$open_cobol_exec_prefix/bin/cobc
+      COB_CONFIG=$open_cobol_exec_prefix/bin/cob-config
     fi
   fi
   if test x$open_cobol_prefix != x ; then
     if test x${COBC+set} != xset; then
       COBC=$open_cobol_prefix/bin/cobc
+      COB_CONFIG=$open_cobol_prefix/bin/cob-config
     fi
   fi
-
   AC_PATH_PROG(COBC, cobc, no)
+  AC_PATH_PROG(COB_CONFIG, cob-config, no)
 
   if test "$COBC" = "no" ; then
     no_cobc=yes
@@ -107,18 +109,20 @@ AC_ARG_WITH(open-cobol-exec-prefix,
   fi
   if test "x$no_cobc" = x ; then
       AC_MSG_RESULT(yes)
-      cobc_major_version=`$COBC --version | \
-	sed -n 's/OpenCOBOL \([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)/\1/p'`
-      cobc_minor_version=`$COBC --version | \
-	sed -n 's/OpenCOBOL \([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)/\2/p'`
-      cobc_micro_version=`$COBC --version | \
-	sed -n 's/OpenCOBOL \([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)/\3/p'`
-      if test "x${cobc_major_version}${cobc_minor_version}" = x08; then
+      cobc_major_version=`$COB_CONFIG --version | \
+	sed -n 's/\([[0-9]]*\)\.\([[0-9]]*\).*/\1/p'`
+      cobc_minor_version=`$COB_CONFIG --version | \
+	sed -n 's/\([[0-9]]*\)\.\([[0-9]]*\).*/\2/p'`
+      if test "x${cobc_major_version}""${cobc_minor_version}" = x08; then
 	COBOLFLAGS=" -m -dynamic -F "
 	EXEC_COBOLFLAGS="-dynamic -F "
+      elif test "x${cobc_major_version}" = x0  && \
+        (expr "${cobc_minor_version}" \< "20") > /dev/null ; then
+	  COBOLFLAGS="-m -dynamic -fixed "
+  	  EXEC_COBOLFLAGS="-main -dynamic -fixed " 
       else
-	COBOLFLAGS="-m -dynamic -fixed "
-	EXEC_COBOLFLAGS="-main -dynamic -fixed "
+	  COBOLFLAGS="-m -dynamic -fixed -std=cobol85 -Wall "
+  	  EXEC_COBOLFLAGS="-fmain -dynamic -fixed -std=cobol85 -Wall "
       fi	
   else
       AC_MSG_RESULT(no)
