@@ -36,6 +36,7 @@
       * 01.00.06     NACL-多々納  02/10/29  入院対応
       * 01.00.07     NACL−多々納 02/11/22  点滴注射同時重複エラー追加
       * 01.00.08     NACL−多々納 02/12/24  フィルム料を手技料へ加算
+      * 01.00.09     NACL-多々納  03/01/16  撮影量回数訂正時修正
       *****************************************************************
       *
       *
@@ -1289,8 +1290,10 @@
                                                            (IDX-Z)
                ELSE
                    IF      WRK-KEIMAI          =   ZERO
-                       MOVE    1               TO  WRK-COM-SURYO
+                       IF      WRK-COM-SURYO (IDX-Z)   =   ZERO
+                           MOVE    1               TO  WRK-COM-SURYO
                                                            (IDX-Z)
+                       END-IF
                    ELSE
                        MOVE    WRK-KEIMAI      TO  WRK-COM-SURYO
                                                            (IDX-Z)
