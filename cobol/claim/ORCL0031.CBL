@@ -2505,7 +2505,6 @@
                    MOVE    LNK-BYO-MANSEIKBN   TO  PTBYO-MANSEIKBN
                END-IF
       *       病名コード
-               MOVE    ZERO         TO  IDZ
                PERFORM VARYING IDX4    FROM    1   BY  1
                        UNTIL   IDX4    >       LNK-BYO-BYOMEI-MAX
                    MOVE    LNK-BYO-TBYOMEICD (IDX4)
