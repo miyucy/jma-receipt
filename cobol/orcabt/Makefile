@@ -13,7 +13,6 @@ SRCS = \
        ORCBM011.CBL \
        ORCR0010.CBL \
        ORCR0020.CBL \
-       ORCR0025.CBL \
        ORCR0030.CBL \
        ORCR0035.CBL \
        ORCR0038.CBL \
