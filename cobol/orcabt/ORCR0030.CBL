@@ -109,8 +109,9 @@
       *  01.02.17   NACL-門脇     03.04.16  船員保険（被保険者）＋通勤災害
       *                                     ＋初診時　対応
       *  01.02.18   NACL-門脇     03.04.17  結核、精神の一部負担額編集修正
-      *  01.00.19   NACL-藤原     03/04/21  地方公費データのとき不明分は
+      *  01.02.19   NACL-藤原     03/04/21  地方公費データのとき不明分は
       *                                     処理の対象としない
+      *  01.02.20   NACL-門脇     03/04/24  一部負担金（）の編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3150,13 +3151,16 @@
                   MOVE     ZERO      TO     RECE02-ZAITAKU-SAIKEI
            ELSE
               IF   FTN-KOH-XXX   =   ZERO        
-              OR   WRK-KOH-FTN   =   ZERO
+      *       OR   WRK-KOH-FTN   =   ZERO
                   MOVE     ZERO      TO     RECE02-ZAITAKU-SAIKEI
               ELSE 
                   IF  FLG-KOH     =   ZERO
                      COMPUTE   RECE02-ZAITAKU-SAIKEI  =  
                                FTN-KOH-XXX
                      IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
+                           MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
+                     END-IF
+                     IF   FTN-KOH-XXX   =   RECE02-FTNMONEY(1)
                            MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
                      END-IF
                   ELSE
@@ -3170,6 +3174,9 @@
                                   FTN-KOH-XXX
                      END-IF
                      IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
+                           MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
+                     END-IF
+                     IF   FTN-KOH-XXX   =   RECE02-FTNMONEY(1)
                            MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
                      END-IF
                   END-IF

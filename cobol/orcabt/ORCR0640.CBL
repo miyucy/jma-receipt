@@ -38,6 +38,7 @@
       *  01.00.07    NACL-門脇    03.04.17  結核、精神の一部負担額編集修正
       *  01.00.08    NACL-藤原    03/04/21  地方公費データのとき不明分は
       *                                     処理の対象としない
+      *  01.00.09    NACL-門脇    03/04/24  一部負担金（）の編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5506,13 +5507,16 @@
                   MOVE     ZERO      TO     RECE62-KOUREI-SAIKEI
            ELSE
               IF   FTN-KOH-XXX   =   ZERO        
-              OR   WRK-KOH-FTN   =   ZERO
+      *       OR   WRK-KOH-FTN   =   ZERO
                   MOVE     ZERO      TO     RECE62-KOUREI-SAIKEI
               ELSE 
                   IF  FLG-KOH     =   ZERO
                      COMPUTE   RECE62-KOUREI-SAIKEI  =  
                                FTN-KOH-XXX
                      IF   FTN-KOH-XXX   <=   WRK-KOH-FTN 
+                           MOVE  ZERO   TO   RECE62-KOUREI-SAIKEI
+                     END-IF
+                     IF   FTN-KOH-XXX    =   RECE62-FTNMONEY(1)
                            MOVE  ZERO   TO   RECE62-KOUREI-SAIKEI
                      END-IF
                   ELSE
@@ -5526,6 +5530,9 @@
                                   FTN-KOH-XXX
                      END-IF
                      IF   FTN-KOH-XXX   <=   WRK-KOH-FTN 
+                           MOVE  ZERO   TO   RECE62-KOUREI-SAIKEI
+                     END-IF
+                     IF   FTN-KOH-XXX    =   RECE62-FTNMONEY(1)
                            MOVE  ZERO   TO   RECE62-KOUREI-SAIKEI
                      END-IF
                   END-IF
