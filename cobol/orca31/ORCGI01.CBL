@@ -101,6 +101,7 @@
       *                                     算定対応再追加
       *  01.00.50    NACL-小豆沢  04.03.15  亜急性期入院医療管理料の算定対応追加
       *  01.00.51    NACL-小豆沢  04.03.16  １５歳未満の患者は選定入院対象外
+      *  01.00.52    NACL-太田    04.08.02  定期請求中は退院登録は不可とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -164,6 +165,7 @@
            03  FLG-NYUREKILST-ROW          PIC 9(01).
            03  FLG-SHONUM                  PIC 9(01).
            03  FLG-TAIINRRK                PIC 9(01).
+           03  FLG-TEIKI-CHK               PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -422,6 +424,8 @@
       *
        01  CONST-AREA.
            03  CONST-NYUREKILST-MAX        PIC 9(05)   VALUE   100.
+           03  CONST-JOB-SHELLID           PIC X(08)   VALUE   "TEIKI1".
+           03  CONST-JOB-JOBID             PIC 9(07)   VALUE   1.
       *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
@@ -557,6 +561,9 @@
       *    患者公費情報
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
+      *    ジョブ管理マスタ
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
       *
       *
       *****************************************************************
@@ -613,6 +620,9 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *   ジョブ管理ＤＢ制御サブ
+           COPY    "CPORCSJOBKANRI.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -1352,6 +1362,12 @@
                        GO  TO  330-I0ID1-SET-EXT
                    END-IF
       *        退院登録
+               WHEN "3008"
+                   MOVE    ZERO    TO  FLG-TEIKI-CHK
+                   PERFORM 480-TOUROKU-SEC
+                   IF    ( SPA-ERRCD       NOT =   SPACE )
+                       GO  TO  330-I0ID1-SET-EXT
+                   END-IF
                WHEN "3004"
                WHEN "3005"
                    IF    ( WRK-I0IDCD      =   "3005" )
@@ -1559,6 +1575,7 @@
                PERFORM 480-KENSAKU-SEC
            WHEN    "CLICKED"       ALSO    "B12"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
+               MOVE    1                   TO  FLG-TEIKI-CHK
                PERFORM 480-TOUROKU-SEC
            WHEN    "CLICKED"       ALSO    "B11"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -6013,6 +6030,16 @@
       *****************************************************************
        480-TOUROKU-SEC                 SECTION.
       *
+           IF    ( SPA-GMN-I01-SYORIKBN-CD     =   "02" OR "10" )
+            AND  ( FLG-TEIKI-CHK       =   1 )
+      *
+      *        定期請求処理中チェック
+               PERFORM 4801-TEIKI-JOB-CHK-SEC
+               IF    ( SPA-I0IDCD      NOT =   SPACE )
+                   GO  TO  480-TOUROKU-EXT
+               END-IF
+           END-IF
+      *
            IF    ( SPA-GMN-I01-SYORIKBN-CD     =   "10" )
       *
                PERFORM 4101-GMN-SPA-SET-SEC
@@ -6210,6 +6237,28 @@
            .
       *
        4801-PTNYUINRRK-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    定期請求処理中チェック
+      *****************************************************************
+       4801-TEIKI-JOB-CHK-SEC          SECTION.
+      *
+      *    ジョブ管理チェック処理
+           MOVE    "CHK"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           MOVE    CONST-JOB-JOBID     TO  JOB-JOBID
+           MOVE    CONST-JOB-SHELLID   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN    =   ZERO )
+               IF    ( JOB-ENDYMD      =   SPACE )
+                   MOVE    "3008"      TO  SPA-I0IDCD
+               END-IF
+           END-IF
+      *
+           .
+       4801-TEIKI-JOB-CHK-EXT.
            EXIT.
       *****************************************************************
       *    関連チェック処理
@@ -12996,6 +13045,13 @@
                MOVE    SPACE           TO  WRK-I0IDMSG
                STRING  "入院情報（異動歴あり）を削除します"
                        "（会計情報は残ります）"
+               DELIMITED BY SIZE
+               INTO  WRK-I0IDMSG
+               END-STRING
+           WHEN    "3008"
+               MOVE    SPACE           TO  WRK-I0IDMSG
+               STRING  "定期請求処理中のため退院処理は行えません。"
+                       "よろしいですか"
                DELIMITED BY SIZE
                INTO  WRK-I0IDMSG
                END-STRING

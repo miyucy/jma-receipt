@@ -313,7 +313,7 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *    伝票番号
-           COPY    "CPSK0041.INC".
+           COPY    "CPSK0042.INC".
       *    定期請求管理情報
            COPY  "CPSK5010.INC".
       *    定期請求作成指示（個別指示）コード
@@ -802,37 +802,37 @@
                                            WRK-DENPNUM
                                            FLG-DENPNUM-ERR
       *
-           INITIALIZE                  SYS-0041-REC
-           MOVE    "0041"              TO  SYS-0041-KANRICD
-           MOVE    "*"                 TO  SYS-0041-KBNCD
-           MOVE    ZERO                TO  SYS-0041-STYUKYMD
-           MOVE    ALL "9"             TO  SYS-0041-EDYUKYMD
+           INITIALIZE                  SYS-0042-REC
+           MOVE    "0042"              TO  SYS-0042-KANRICD
+           MOVE    "*"                 TO  SYS-0042-KBNCD
+           MOVE    ZERO                TO  SYS-0042-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-0042-EDYUKYMD
       *
            MOVE    TEIKI1P-SYSYMD      TO  ORC-DBYMD
-           MOVE    SYS-0041-REC        TO  MCPDATA-REC
+           MOVE    SYS-0042-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-0041-REC
-               MOVE    SYS-0041-DENPNUMMAX-NYU
+               MOVE    MCPDATA-REC     TO  SYS-0042-REC
+               MOVE    SYS-0042-DENPNUMMAX-NYU
                                        TO  WRK-DENPNUM-X
                IF    ( WRK-DENPNUM-X   =   SPACE )
-                   MOVE    ZERO        TO  SYS-0041-DENPNUMMAX-NYU
+                   MOVE    ZERO        TO  SYS-0042-DENPNUMMAX-NYU
                ELSE
                    MOVE    WRK-DENPNUM-X
-                                       TO  SYS-0041-DENPNUMMAX-NYU
+                                       TO  SYS-0042-DENPNUMMAX-NYU
                END-IF
       *
-               COMPUTE SYS-0041-DENPNUMMAX-NYU
-                   =   SYS-0041-DENPNUMMAX-NYU +   1
+               COMPUTE SYS-0042-DENPNUMMAX-NYU
+                   =   SYS-0042-DENPNUMMAX-NYU +   1
       *
-               MOVE    SYS-0041-DENPNUMMAX-NYU
+               MOVE    SYS-0042-DENPNUMMAX-NYU
                                        TO  WRK-DENPNUM
       *
                PERFORM 800-MCNDATE-SEC
-               MOVE    SMCNDATE-YMD    TO  SYS-0041-UPYMD
-               MOVE    SMCNDATE-HMS    TO  SYS-0041-UPHMS
+               MOVE    SMCNDATE-YMD    TO  SYS-0042-UPYMD
+               MOVE    SMCNDATE-HMS    TO  SYS-0042-UPHMS
       *
-               MOVE    SYS-0041-REC    TO  MCPDATA-REC
+               MOVE    SYS-0042-REC    TO  MCPDATA-REC
                MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
                PERFORM 910-DBUPDATE-SEC
                IF    ( MCP-RC          NOT =   ZERO )
@@ -846,7 +846,7 @@
                MOVE    SPACE           TO  WRK-TEIKIERR
                STRING  ERR-MES09      DELIMITED    BY  SIZE
                        "[伝票番号:"   DELIMITED    BY  SIZE
-                       SYS-0041-DENPNUMMAX-NYU
+                       SYS-0042-DENPNUMMAX-NYU
                                       DELIMITED    BY  SIZE
                        "]"            DELIMITED    BY  SIZE
                INTO    WRK-TEIKIERR

@@ -36,6 +36,8 @@
       *  01.00.07    NACL-太田    03.03.18  入院カスタマイズ帳票対応
       *  01.00.08    NACL-太田    03.07.01  出力先プリンタサブ追加
       *  01.00.09    NACL-太田    03.11.14  更新日付編集対応
+      *  01.00.10    NACL-太田    04.08.02  定期請求中は退院登録は不可
+      *                                     とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -176,6 +178,9 @@
            03  WRK-PRINT-PG                PIC X(20).
            03  WRK-ORG-PRINT-PG            PIC X(20).
       *
+       01  CONST-AREA.
+           03  CONST-JOB-SHELLID           PIC X(08)   VALUE   "TEIKI1".
+           03  CONST-JOB-JOBID             PIC 9(07)   VALUE   1.
       *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
@@ -214,7 +219,7 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-           COPY    "CPSK0041.INC".
+           COPY    "CPSK0042.INC".
       *
       *    診療科コード
            COPY    "CPSK1005.INC".
@@ -322,6 +327,10 @@
         01 TEIKIRRK-REC.
            COPY     "CPTEIKIRRK.INC".
       *
+      *    ジョブ管理マスタ
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -368,6 +377,9 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *   ジョブ管理ＤＢ制御サブ
+           COPY    "CPORCSJOBKANRI.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -2220,6 +2232,12 @@
       *****************************************************************
        450-TOUROKU-SEC             SECTION.
       *
+      *    定期請求処理中チェック
+           PERFORM 4801-TEIKI-JOB-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  450-TOUROKU-EXT
+           END-IF
+      *
       *    入力時チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
@@ -2731,6 +2749,28 @@
        452-TOUROKU-SYORI-EXT.
            EXIT.
       *****************************************************************
+      *    定期請求処理中チェック
+      *****************************************************************
+       4801-TEIKI-JOB-CHK-SEC          SECTION.
+      *
+      *    ジョブ管理チェック処理
+           MOVE    "CHK"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           MOVE    CONST-JOB-JOBID     TO  JOB-JOBID
+           MOVE    CONST-JOB-SHELLID   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN    =   ZERO )
+               IF    ( JOB-ENDYMD      =   SPACE )
+                   MOVE    "1001"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       4801-TEIKI-JOB-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    関連チェック処理
       *****************************************************************
        4801-KANREN-CHK-SEC         SECTION.
@@ -3125,19 +3165,19 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
                                            WRK-DENPNUM
       *
-           INITIALIZE                  SYS-0041-REC.
-           MOVE    "0041"              TO  SYS-0041-KANRICD
-           MOVE    "*"                 TO  SYS-0041-KBNCD
-           MOVE    ZERO                TO  SYS-0041-STYUKYMD
-           MOVE    ALL "9"             TO  SYS-0041-EDYUKYMD
+           INITIALIZE                  SYS-0042-REC.
+           MOVE    "0042"              TO  SYS-0042-KANRICD
+           MOVE    "*"                 TO  SYS-0042-KBNCD
+           MOVE    ZERO                TO  SYS-0042-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-0042-EDYUKYMD
       *
            MOVE    SPA-SYSYMD
                                        TO  ORC-DBYMD
-           MOVE    SYS-0041-REC        TO  MCPDATA-REC
+           MOVE    SYS-0042-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC        =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-0041-REC
+               MOVE    MCPDATA-REC     TO  SYS-0042-REC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
@@ -3146,26 +3186,26 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-SYSKANRI        =   ZERO )
-               MOVE    SYS-0041-DENPNUMMAX-NYU
+               MOVE    SYS-0042-DENPNUMMAX-NYU
                                        TO  WRK-DENPNUM-X
                IF    ( WRK-DENPNUM-X   =   SPACE )
-                   MOVE    ZERO        TO  SYS-0041-DENPNUMMAX-NYU
+                   MOVE    ZERO        TO  SYS-0042-DENPNUMMAX-NYU
                ELSE
                    MOVE    WRK-DENPNUM-X
-                                       TO  SYS-0041-DENPNUMMAX-NYU
+                                       TO  SYS-0042-DENPNUMMAX-NYU
                END-IF
       *
-               COMPUTE SYS-0041-DENPNUMMAX-NYU
-                   =   SYS-0041-DENPNUMMAX-NYU +   1
+               COMPUTE SYS-0042-DENPNUMMAX-NYU
+                   =   SYS-0042-DENPNUMMAX-NYU +   1
       *
-               MOVE    SYS-0041-DENPNUMMAX-NYU
+               MOVE    SYS-0042-DENPNUMMAX-NYU
                                            TO  WRK-DENPNUM
       *
                PERFORM 800-MCNDATE-SEC
-               MOVE    SMCNDATE-YMD        TO  SYS-0041-UPYMD
-               MOVE    SMCNDATE-HMS        TO  SYS-0041-UPHMS
+               MOVE    SMCNDATE-YMD        TO  SYS-0042-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYS-0042-UPHMS
       *
-               MOVE    SYS-0041-REC        TO  MCPDATA-REC
+               MOVE    SYS-0042-REC        TO  MCPDATA-REC
                MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
                PERFORM 900-TBL-UPDATE-SEC
                IF    ( FLG-DBRC    NOT =   ZERO )
@@ -3519,6 +3559,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0008"
                MOVE    "入金額は今回請求額以下にして下さい。"
+                                       TO  SPA-ERRMSG
+           WHEN    "1001"
+               MOVE    "定期請求処理中のため登録はできません"
                                        TO  SPA-ERRMSG
            WHEN    "4001"  THRU    "4999"
                MOVE    "更新処理に失敗しました"
