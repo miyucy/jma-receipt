@@ -3526,7 +3526,7 @@
       *                入力コードの画面用再編集
                        PERFORM 3101-INPUTCD-HEN-SEC
       *                約束名称編集
-                       MOVE    6                   TO  LNK-SC97-CDSYU
+                       MOVE    "6"                 TO  LNK-SC97-CDSYU
                        MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:6)
                                                    TO  WRK-INPUTCD
                        PERFORM 41011921-INPSET-MEI-SEC
