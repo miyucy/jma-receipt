@@ -253,6 +253,29 @@
     </widget>
 
     <widget>
+      <class>GtkButton</class>
+      <name>B14</name>
+      <x>88</x>
+      <y>696</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F2</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 15 Apr 2002 00:51:40 GMT</last_modification_time>
+      </signal>
+      <label>全てクリア</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>STSRYYMD</name>
       <x>552</x>
@@ -4916,22 +4939,6 @@
 	  <width>105</width>
 	  <height>16</height>
 	  <label>診療行為コード</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label526</name>
-	  <x>10</x>
-	  <y>540</y>
-	  <width>480</width>
-	  <height>16</height>
-	  <label>（診療行為コードは、診療年月日の年月までの範囲で検索を行います。）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>

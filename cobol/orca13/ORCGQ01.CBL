@@ -938,6 +938,9 @@
       *    条件クリア
            WHEN    "CLICKED"           ALSO    "B02"
                PERFORM 480-CLEAR-SEC
+      *    条件クリア（全て）
+           WHEN    "CLICKED"           ALSO    "B14"
+               PERFORM 480-ALL-CLEAR-SEC
       *    予約登録へ
       * xx     WHEN    "CLICKED"       ALSO    "B10"
       * xx         PERFORM 480-YOYAKU-SEC
@@ -2839,6 +2842,7 @@
       *
       *    セットコードでの入力はエラーとする。
            IF  ( SPA-GMN-Q01-SRYCD (IDX1) (1:1)   =   "P"  OR  "S" )
+               MOVE    WRK-ERR-CUR     TO  SPA-GMN-Q01-CUR
                MOVE    "0007"          TO  SPA-ERRCD
                GO  TO  4121-SRYCD-CHK-EXT
            END-IF
@@ -2846,6 +2850,7 @@
       *    入力コードマスタ−検索条件編集処理
            PERFORM 4121-INPUTCD-SELECT-EDIT-SEC
            IF  ( SPA-ERRCD         NOT =   SPACE )
+               MOVE    WRK-ERR-CUR     TO  SPA-GMN-Q01-CUR
                GO  TO  4121-SRYCD-CHK-EXT
            END-IF
       *
@@ -2875,7 +2880,8 @@
                IF  ( FLG-TENSU     =   ZERO )
                    CONTINUE
                ELSE
-                   MOVE    "0005"  TO  SPA-ERRCD
+                   MOVE    WRK-ERR-CUR TO  SPA-GMN-Q01-CUR
+                   MOVE    "0005"      TO  SPA-ERRCD
                    GO  TO  4121-SRYCD-CHK-EXT
                END-IF
            ELSE
@@ -2890,10 +2896,12 @@
                    IF  ( FLG-TENSU     =   ZERO )
                        CONTINUE
                    ELSE
-                       MOVE    "0005"  TO  SPA-ERRCD
+                       MOVE    WRK-ERR-CUR TO  SPA-GMN-Q01-CUR
+                       MOVE    "0005"      TO  SPA-ERRCD
                        GO  TO  4121-SRYCD-CHK-EXT
                    END-IF
                ELSE
+                   MOVE    WRK-ERR-CUR  TO  SPA-GMN-Q01-CUR
                    MOVE    "0005"  TO  SPA-ERRCD
                    GO  TO  4121-SRYCD-CHK-EXT
                END-IF
@@ -3347,6 +3355,36 @@
       *
            .
        480-CLEAR-EXT.
+           EXIT.
+      *****************************************************************
+      *    条件クリア処理
+      *****************************************************************
+       480-ALL-CLEAR-SEC               SECTION.
+      *
+           MOVE    SPA-GMN-Q01-PAGENO  TO  WRK-PAGENO
+      *
+           PERFORM VARYING SPA-GMN-Q01-PAGENO  FROM    0   BY  1
+                   UNTIL ( SPA-GMN-Q01-PAGENO  >   3 )
+      *
+                   PERFORM 480-CLEAR-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    WRK-PAGENO          TO  SPA-GMN-Q01-PAGENO
+      *
+           EVALUATE    WRK-PAGENO
+           WHEN    0
+                   MOVE    101         TO  SPA-GMN-Q01-CUR
+           WHEN    1
+                   MOVE    201         TO  SPA-GMN-Q01-CUR
+           WHEN    2
+                   MOVE    301         TO  SPA-GMN-Q01-CUR
+           WHEN    3
+                   MOVE    401         TO  SPA-GMN-Q01-CUR
+           END-EVALUATE
+      *
+           .
+       480-ALL-CLEAR-EXT.
            EXIT.
       *****************************************************************
       *    タブ切替処理

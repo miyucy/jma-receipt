@@ -71,6 +71,7 @@ db	{
         tbl_kensasort;
         tbl_senteicdchg;
 	tbl_ptkohftn;
+	view_Q002;
 };
 db	"shell"	{
 	shell;
