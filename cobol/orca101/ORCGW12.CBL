@@ -41,6 +41,7 @@
       *  02.00.04    NACL-Æ£¸¶    03/03/07  Ì¤ÆþÎÏ»þ¤Î¥Á¥§¥Ã¥¯
       *  02.00.05    NACL-Æ£¸¶    03/04/09  Â³»æ¶èÊ¬¡ÊÆþ±¡¡Ë¤ÎÄÉ²Ã
       *  02.00.06    NACL-Æ£¸¶    03/07/02  ¼çÉÂÌ¾ÊÔ½¸¥Õ¥é¥°¤ÎÄÉ²Ã
+      *  02.00.07    NACL-Æ£¸¶    03/08/06  ¥ì¥»ÅÅ¤ÎÀßÄê¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -497,18 +498,14 @@
            MOVE    "0"                 TO  SPA-GMN-KKHRECEKBNL      (1)
            MOVE    "½ÐÎÏ¤Ê¤·"          TO  SPA-GMN-KKHRECEKBNMEIL   (1)
            MOVE    "1"                 TO  SPA-GMN-KKHRECEKBNL      (2)
-           MOVE    "¸ÇÄêÄ¹"            TO  SPA-GMN-KKHRECEKBNMEIL   (2)
-           MOVE    "2"                 TO  SPA-GMN-KKHRECEKBNL      (3)
-           MOVE    "£Ã£Ó£Ö"            TO  SPA-GMN-KKHRECEKBNMEIL   (3)
-           MOVE    3                   TO  SPA-GMN-KKHRECEKBN-MAX 
+           MOVE    "£Ã£Ó£Ö"            TO  SPA-GMN-KKHRECEKBNMEIL   (2)
+           MOVE    2                   TO  SPA-GMN-KKHRECEKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-SYARECEKBNL      (1)
            MOVE    "½ÐÎÏ¤Ê¤·"          TO  SPA-GMN-SYARECEKBNMEIL   (1)
            MOVE    "1"                 TO  SPA-GMN-SYARECEKBNL      (2)
-           MOVE    "¸ÇÄêÄ¹"            TO  SPA-GMN-SYARECEKBNMEIL   (2)
-           MOVE    "2"                 TO  SPA-GMN-SYARECEKBNL      (3)
-           MOVE    "£Ã£Ó£Ö"            TO  SPA-GMN-SYARECEKBNMEIL   (3)
-           MOVE    3                   TO  SPA-GMN-SYARECEKBN-MAX 
+           MOVE    "£Ã£Ó£Ö"            TO  SPA-GMN-SYARECEKBNMEIL   (2)
+           MOVE    2                   TO  SPA-GMN-SYARECEKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KKHOCRKBNL    (1)
            MOVE    "£Ï£Ã£Ò¤Ê¤·"        TO  SPA-GMN-KKHOCRKBNMEIL (1)
@@ -597,6 +594,9 @@
                END-PERFORM
       *         
                MOVE    SYS-2005-KKHRECEKBN TO  SPA-GMN-KKHRECEKBN
+               IF      SPA-GMN-KKHRECEKBN  =   "2"
+                   MOVE    "1"                 TO  SPA-GMN-KKHRECEKBN
+               END-IF    
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-KKHRECEKBN-MAX
                    IF      SPA-GMN-KKHRECEKBN 
@@ -609,6 +609,9 @@
                END-PERFORM
       *         
                MOVE    SYS-2005-SYARECEKBN TO  SPA-GMN-SYARECEKBN
+               IF      SPA-GMN-SYARECEKBN  =   "2"
+                   MOVE    "1"                 TO  SPA-GMN-SYARECEKBN
+               END-IF    
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-SYARECEKBN-MAX
                    IF      SPA-GMN-SYARECEKBN 
