@@ -33,6 +33,7 @@
       *                                     集計の追加 
       *  01.00.03    NACL-藤原    02/12/09  共済組合の前期高齢者の集計の
       *                                     修正
+      *  01.00.04    NACL-藤原    02/12/09  入院対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -112,10 +113,11 @@
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPID     PIC X(24).
            03  WRK-PARA-PAGE       PIC 9(10).
+           03  WRK-PARA-NYUGAIKBN  PIC X(01).
       *          
       *    一時領域
        01  WRK-AREA.
-      *****03  WRK-IN              PIC X(01).
+           03  WRK-NYUGAIKBN       PIC X(01).
       *
            03  WRK-RECEERR         PIC X(200). 
            03  WRK-PATH            PIC X(64).
@@ -235,6 +237,7 @@
            INITIALIZE              WRK-AREA
            INITIALIZE              CNT-AREA
            INITIALIZE              SUM-AREA
+           INITIALIZE              WRK-PARA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -253,6 +256,7 @@
                                                WRK-PARA-HOSPID
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
+                                               WRK-PARA-NYUGAIKBN
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -272,8 +276,6 @@
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
-      *
-           OPEN    OUTPUT              UPD-FILE
            .
        100-INIT-EXT.
            EXIT.
@@ -283,11 +285,64 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+           OPEN    OUTPUT              UPD-FILE
+      *
+      *    入院外分
+           MOVE    "2"                 TO  WRK-NYUGAIKBN
+           PERFORM 2001-SOKATU-SYUKEI-SEC
+      *
+           IF      CNT-RECE10          >   ZERO 
+               IF      WRK-PARA-NYUGAIKBN  =   "1"
+                   CALL    "ORCBM024"          USING 
+                                               SUM-AREA
+                                               WRK-PARA
+                                               WRK-NYUGAIKBN
+               ELSE
+                   CALL    "ORCBM023"          USING 
+                                               SUM-AREA
+                                               WRK-PARA
+               END-IF    
+           END-IF    
+      *
+      *    入院分
+           IF      WRK-PARA-NYUGAIKBN  =   "1"
+           AND     FLG-ERR             =   ZERO
+               MOVE    "1"                 TO  WRK-NYUGAIKBN
+               PERFORM 2001-SOKATU-SYUKEI-SEC
+      *
+               IF      CNT-RECE10          >   ZERO 
+                   CALL    "ORCBM024"          USING 
+                                               SUM-AREA
+                                               WRK-PARA
+                                               WRK-NYUGAIKBN
+               END-IF    
+           END-IF
+      *
+           CLOSE   UPD-FILE
+      *
+          IF      FLG-UPD        =   1
+          AND     FLG-ERR        =   ZERO 
+              IF      CNT-UPDFILE    >   ZERO
+                  PERFORM 310-SEIKYU-UPD-SEC
+              END-IF    
+           END-IF
+           .
+       100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入外区分別集計処理
+      *****************************************************************
+      2001-SOKATU-SYUKEI-SEC         SECTION.
+      *
+           INITIALIZE                      SUM-AREA
+           MOVE    ZERO                TO  CNT-RECE10
+      *
       *    その他のレセ
-           MOVE    "SEIKYU-KEY9"           TO  WRK-PATH  
+           MOVE    "SEIKYU-KEY9"       TO  WRK-PATH  
            PERFORM 900-SEIKYU-SELECT-SEC
       *
-           MOVE    1                       TO  WRK-INDEX
+           MOVE    1                   TO  WRK-INDEX
            PERFORM 2001-SYUKEI-SEC     UNTIL   FLG-RECE10   =   1 
                                        OR      FLG-ERR      =   1
       *
@@ -315,7 +370,7 @@
                                            MCPDATA-REC
            END-IF
            .
-       200-MAIN-EXT.
+       2001-SOKATU-SYUKEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -836,27 +891,9 @@
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-           CLOSE   UPD-FILE
-      *
            DISPLAY "*** ORCBM022 IN  "  CNT-RECE10
            DISPLAY "***          UPD "  CNT-UPDFILE 
            DISPLAY "*** ORCBM022 END ***"
-      ***     ACCEPT  WRK-IN
-      *
-           IF      CNT-RECE10            =   ZERO 
-               CONTINUE
-           ELSE
-              IF      FLG-UPD        =   1
-              AND     FLG-ERR        =   ZERO 
-                  IF      CNT-UPDFILE    >   ZERO
-                      PERFORM 310-SEIKYU-UPD-SEC
-                  END-IF    
-      *
-                  CALL    "ORCBM023"          USING 
-                                                   SUM-AREA
-                                                   WRK-PARA
-               END-IF
-           END-IF    
       *     
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -974,6 +1011,10 @@
                MOVE    ZERO                TO  FLG-RECE10
                MOVE    MCPDATA-REC         TO  RECE10-REC
       *
+               IF      RECE10-NYUGAIKBN
+                                   NOT =   WRK-NYUGAIKBN
+                   GO  TO  900-SEIKYU-READ-SEC
+               END-IF
       *        テスト患者のときは読み飛ばす
                MOVE    SPACE               TO  PTINF-REC
                INITIALIZE                      PTINF-REC

@@ -46,6 +46,8 @@
       * 
       *  01.03.09    NACL-Æ£¸¶    02/09/12  ¥Ç¥£¥ì¥¯¥È¥ê¤ò¥µ¥Ö¥×¥í¤Ø
       *  01.03.10    NACL-Æ£¸¶    02/10/07  £²£°£°£²Ç¯£±£°·î²þÀµÂÐ±þ
+      *
+      *  01.04.01    NACL-Æ£¸¶    03/03/05  Æþ±¡ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1343,6 +1345,11 @@
                                    TO  SHELLTBL-ARG17         
            MOVE    RECEERR         TO  SHELLTBL-ARG18
            MOVE    SPA-NAI-SKYYM   TO  SHELLTBL-ARG19
+           IF      SPA-BEDSU       =   ZERO
+               MOVE    "2"             TO  SHELLTBL-ARG20
+           ELSE
+               MOVE    "1"             TO  SHELLTBL-ARG20
+           END-IF
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL

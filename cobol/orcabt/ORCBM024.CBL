@@ -16,16 +16,16 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCBM023.
+       PROGRAM-ID.             ORCBM024.
       *****************************************************************
       *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
       *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ·î¼¡Ä¢É¼
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¼ÒÊÝ¡¦Áí³çÉ½¡Ê°å²Ê¡¦Æþ±¡³°¡Ë
-      *                      £È£Ã£Í£²£Ã¡¢£È£Ã£Í£²£Ä
+      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¼ÒÊÝ¡¦Áí³çÉ½¡Ê°å²Ê¡¦Æþ±¡¡Ë
+      *                      £È£Ã£Í£²£Á¡¢£È£Ã£Í£²£Â
       *                      £²£°£°£²¡¥£±£°²þÀµÂÐ±þ
       *  ´ÉÍý¼Ô            : 
       *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  02/10/08    NACL-Æ£¸¶      ¿·µ¬ºîÀ®
+      *  03/01/10    NACL-Æ£¸¶      ¿·µ¬ºîÀ®
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
@@ -55,8 +55,8 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-           COPY    "HCM2C.INC".
-           COPY    "HCM2D.INC".
+           COPY    "HCM2A.INC".
+           COPY    "HCM2B.INC".
       *
       *    ¥¹¥ÑÎÎ°è
        01  STS-AREA.
@@ -116,6 +116,10 @@
            03  WRK-TENSUZ            PIC ZZ,ZZZ,ZZZ.
            03  WRK-YKZFTNZ           PIC ZZZZ,ZZZ.
            03  WRK-FTNMONEYZ         PIC Z,ZZZ,ZZZ. 
+           03  WRK-SHOKENSUZ         PIC ZZ,ZZZ.
+           03  WRK-SHONISSUZ         PIC ZZ,ZZZ.
+           03  WRK-SHORYOYOHIZ       PIC Z,ZZZ,ZZZ.
+           03  WRK-SHOFTNZ           PIC Z,ZZZ,ZZZ.
            03  WRK-GKENSUZ           PIC ZZZZZZZ. 
       *             
            03  WRK-KOHKBN.
@@ -233,11 +237,15 @@
            03  WRK-PARA-PAGE       PIC 9(10).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
       *
+       01  WRK-NYUGAIKBN           PIC X(01).
+      *
       ******************************************************************
       *
        PROCEDURE                       DIVISION
                                        USING   SUM-AREA
-                                               WRK-PARA.
+                                               WRK-PARA
+                                               WRK-NYUGAIKBN
+           .
       *
       *****************************************************************
       *    ¼ç¡¡¡¡½èÍý
@@ -258,7 +266,7 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           DISPLAY "*** ORCBM023 START ***"
+           DISPLAY "*** ORCBM024 START ***"
       * 
       *
            INITIALIZE                  FLG-AREA
@@ -299,7 +307,7 @@
                MOVE    LNK-DAY2-EDTYMD3    TO  WRK-SEIYMDWH
            END-IF
       *
-      *    °åÎÅµ¡´Ø£É£ÄÊÔ½¸
+      *    °åÎÅµ¡´ØÌ¾ÊÔ½¸
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -353,9 +361,9 @@
                IF      SUM-GOK-KENSU (IDX1 4)     >   ZERO 
                    MOVE    ZERO            TO  FLG-PRTKBN
       *           
-      *            Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Ã>½èÍý
+      *            Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Á>½èÍý
                    PERFORM 310-HEAD-HEN-01-SEC
-      *            Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Ä>½èÍý
+      *            Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Â>½èÍý
                    PERFORM 310-HEAD-HEN-02-SEC
       *            Ä¢É¼ÊÔ½¸<ÌÀºÙ>½èÍý
                    PERFORM 320-BODY-HEN-SEC
@@ -373,32 +381,39 @@
            EXIT.
       *
       *****************************************************************
-      *    Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Ã>½èÍý
+      *    Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Á>½èÍý
       *****************************************************************
        310-HEAD-HEN-01-SEC          SECTION.
       *
-           INITIALIZE                      HCM2C      
+           INITIALIZE                      HCM2A      
       *
-           MOVE    WRK-SEIYMDWH        TO  HCM2C-SEIYMD
+           MOVE    WRK-SEIYMDWH        TO  HCM2A-SEIYMD
       *
-           MOVE    WRK-SRYYMWH         TO  HCM2C-PRTYM
+           MOVE    WRK-SRYYMWH         TO  HCM2A-PRTYM
       *
       *    °åÎÅµ¡´Ø½»½ê
-           MOVE    SYS-1002-ADRS       TO  HCM2C-ADRS
+           MOVE    SYS-1002-ADRS       TO  HCM2A-ADRS
       *    °åÎÅµ¡´ØÌ¾
-           MOVE    SYS-1001-HOSPNAME   TO  HCM2C-HOSPNAME
+           MOVE    SYS-1001-HOSPNAME   TO  HCM2A-HOSPNAME
       *    ³«Àß¼ÔÌ¾
            MOVE    SYS-1001-KAISETUNAME
-                                       TO  HCM2C-KAISETUNAME
+                                       TO  HCM2A-KAISETUNAME
       *    
-           MOVE    SYS-1001-HOSPCDN    TO  HCM2C-HOSPCD
+           MOVE    SYS-1001-HOSPCDN    TO  HCM2A-HOSPCD
       *
            EVALUATE    IDX1
                WHEN    1
-                   MOVE    "¤½¤ÎÂ¾¤Î¥ì¥»"      TO  HCM2C-TITLE  
+                   MOVE    "¤½¤ÎÂ¾¤Î¥ì¥»"      TO  HCM2A-TITLE  
                WHEN    2
                    MOVE    "ºßÁí¿Ç¤Þ¤¿¤Ïºß°åÁí¤ò»»Äê¤·¤¿¥ì¥»"
-                                               TO  HCM2C-TITLE     
+                                               TO  HCM2A-TITLE     
+           END-EVALUATE           
+      *
+           EVALUATE    WRK-NYUGAIKBN
+               WHEN    "1"
+                   MOVE    "¡û"      TO  HCM2A-NYUGAIKBN (1)
+               WHEN    "2"
+                   MOVE    "¡û"      TO  HCM2A-NYUGAIKBN (2)
            END-EVALUATE           
       *
            .
@@ -406,20 +421,27 @@
            EXIT.
       *
       *****************************************************************
-      *    Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Ä>½èÍý
+      *    Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Â>½èÍý
       *****************************************************************
        310-HEAD-HEN-02-SEC          SECTION.
       *
-           INITIALIZE                      HCM2D
+           INITIALIZE                      HCM2B
       *    
-           MOVE    SYS-1001-HOSPCDN    TO  HCM2D-HOSPCD 
+           MOVE    SYS-1001-HOSPCDN    TO  HCM2B-HOSPCD 
       *
            EVALUATE    IDX1
                WHEN    2
                    MOVE    "ºßÁí¿Ç¤Þ¤¿¤Ïºß°åÁí¤ò»»Äê¤·¤¿¥ì¥»"
-                                               TO  HCM2D-TITLE     
+                                               TO  HCM2B-TITLE     
                WHEN    1
-                   MOVE    "¤½¤ÎÂ¾¤Î¥ì¥»"      TO  HCM2D-TITLE  
+                   MOVE    "¤½¤ÎÂ¾¤Î¥ì¥»"      TO  HCM2B-TITLE  
+           END-EVALUATE           
+      *
+           EVALUATE    WRK-NYUGAIKBN
+              WHEN    "1"
+                   MOVE    "¡û"      TO  HCM2B-NYUGAIKBN (1)
+               WHEN    "2"
+                   MOVE    "¡û"      TO  HCM2B-NYUGAIKBN (2)
            END-EVALUATE           
       *
            .
@@ -436,114 +458,227 @@
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       10
                MOVE    SUM-KENSU    (IDX1 IDX IDY)  TO  WRK-KENSUZ
-               MOVE    WRK-KENSUZ              TO  HCM2C-KENSU1 (IDY)
+               MOVE    WRK-KENSUZ              TO  HCM2A-KENSU1 (IDY)
                MOVE    SUM-NISSU    (IDX1 IDX IDY)  TO  WRK-NISSUZ 
-               MOVE    WRK-NISSUZ              TO  HCM2C-NISSU1 (IDY) 
+               MOVE    WRK-NISSUZ              TO  HCM2A-NISSU1 (IDY) 
                MOVE    SUM-TOTALTEN (IDX1 IDX IDY)  TO  WRK-TENSUZ
-               MOVE    WRK-TENSUZ              TO  HCM2C-TENSU1 (IDY)
+               MOVE    WRK-TENSUZ              TO  HCM2A-TENSU1 (IDY)
                MOVE    SUM-FTNMONEY (IDX1 IDX IDY)  TO  WRK-FTNMONEYZ
-               MOVE    WRK-FTNMONEYZ           TO  HCM2C-ITBFTN1(IDY)
+               MOVE    WRK-FTNMONEYZ           TO  HCM2A-ITBFTN1(IDY)
+               MOVE    SUM-SHOKUJIKENSU (IDX1 IDX IDY) 
+                                               TO  WRK-SHOKENSUZ
+               MOVE    WRK-SHOKENSUZ           TO  HCM2A-SYOKENSU1 (IDY)
+               MOVE    SUM-SHOKUJINISSU (IDX1 IDX IDY)
+                                               TO  WRK-SHONISSUZ 
+               MOVE    WRK-SHONISSUZ           TO  HCM2A-SYONISSU1 (IDY)
+               MOVE    SUM-SHOKUJIRYOYOHI (IDX1 IDX IDY)
+                                               TO  WRK-SHORYOYOHIZ
+               MOVE    WRK-SHORYOYOHIZ         TO  HCM2A-SYOKINGAK1(IDY)
+               MOVE    SUM-SHOKUJIFTN (IDX1 IDX IDY)  TO  WRK-SHOFTNZ
+               MOVE    WRK-SHOFTNZ             TO  HCM2A-SYOFTNGAK1(IDY)
            END-PERFORM
            MOVE    SUM-KENSU    (IDX1 IDX 12)   TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2C-KENSU1 (11)
+           MOVE    WRK-KENSUZ              TO  HCM2A-KENSU1 (11)
            MOVE    SUM-NISSU    (IDX1 IDX 12)   TO  WRK-NISSUZ 
-           MOVE    WRK-NISSUZ              TO  HCM2C-NISSU1 (11) 
+           MOVE    WRK-NISSUZ              TO  HCM2A-NISSU1 (11) 
            MOVE    SUM-TOTALTEN (IDX1 IDX 12)   TO  WRK-TENSUZ
-           MOVE    WRK-TENSUZ              TO  HCM2C-TENSU1 (11)
+           MOVE    WRK-TENSUZ              TO  HCM2A-TENSU1 (11)
            MOVE    SUM-FTNMONEY (IDX1 IDX 12)   TO  WRK-FTNMONEYZ
-           MOVE    WRK-FTNMONEYZ           TO  HCM2C-ITBFTN1(11)
+           MOVE    WRK-FTNMONEYZ           TO  HCM2A-ITBFTN1(11)
+           MOVE    SUM-SHOKUJIKENSU (IDX1 IDX 12) 
+                                           TO  WRK-SHOKENSUZ
+           MOVE    WRK-SHOKENSUZ           TO  HCM2A-SYOKENSU1 (11)
+           MOVE    SUM-SHOKUJINISSU (IDX1 IDX 12)
+                                           TO  WRK-SHONISSUZ 
+           MOVE    WRK-SHONISSUZ           TO  HCM2A-SYONISSU1 (11)
+           MOVE    SUM-SHOKUJIRYOYOHI (IDX1 IDX 12)
+                                           TO  WRK-SHORYOYOHIZ
+           MOVE    WRK-SHORYOYOHIZ         TO  HCM2A-SYOKINGAK1(11)
+           MOVE    SUM-SHOKUJIFTN (IDX1 IDX 12)  TO  WRK-SHOFTNZ
+           MOVE    WRK-SHOFTNZ             TO  HCM2A-SYOFTNGAK1(11)
       *
       *    °åÊÝÃ±ÆÈ¡Ê£·£°°Ê¾å£¸³ä¡Ë
            MOVE    2                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       8
                MOVE    SUM-KENSU    (IDX1 IDX IDY)  TO  WRK-KENSUZ
-               MOVE    WRK-KENSUZ              TO  HCM2C-KENSU2 (IDY)
+               MOVE    WRK-KENSUZ              TO  HCM2A-KENSU2 (IDY)
                MOVE    SUM-NISSU    (IDX1 IDX IDY)  TO  WRK-NISSUZ 
-               MOVE    WRK-NISSUZ              TO  HCM2C-NISSU2 (IDY) 
+               MOVE    WRK-NISSUZ              TO  HCM2A-NISSU2 (IDY) 
                MOVE    SUM-TOTALTEN (IDX1 IDX IDY)  TO  WRK-TENSUZ
-               MOVE    WRK-TENSUZ              TO  HCM2C-TENSU2 (IDY)
+               MOVE    WRK-TENSUZ              TO  HCM2A-TENSU2 (IDY)
                MOVE    SUM-FTNMONEY (IDX1 IDX IDY)  TO  WRK-FTNMONEYZ
-               MOVE    WRK-FTNMONEYZ           TO  HCM2C-ITBFTN2(IDY)
+               MOVE    WRK-FTNMONEYZ           TO  HCM2A-ITBFTN2(IDY)
+               MOVE    SUM-SHOKUJIKENSU (IDX1 IDX IDY) 
+                                               TO  WRK-SHOKENSUZ
+               MOVE    WRK-SHOKENSUZ           TO  HCM2A-SYOKENSU2 (IDY)
+               MOVE    SUM-SHOKUJINISSU (IDX1 IDX IDY)
+                                               TO  WRK-SHONISSUZ 
+               MOVE    WRK-SHONISSUZ           TO  HCM2A-SYONISSU2 (IDY)
+               MOVE    SUM-SHOKUJIRYOYOHI (IDX1 IDX IDY)
+                                               TO  WRK-SHORYOYOHIZ
+               MOVE    WRK-SHORYOYOHIZ         TO  HCM2A-SYOKINGAK2(IDY)
+               MOVE    SUM-SHOKUJIFTN (IDX1 IDX IDY)  TO  WRK-SHOFTNZ
+               MOVE    WRK-SHOFTNZ             TO  HCM2A-SYOFTNGAK2(IDY)
            END-PERFORM
            MOVE    SUM-KENSU    (IDX1 IDX 12)   TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2C-KENSU2 (9)
+           MOVE    WRK-KENSUZ              TO  HCM2A-KENSU2 (9)
            MOVE    SUM-NISSU    (IDX1 IDX 12)   TO  WRK-NISSUZ 
-           MOVE    WRK-NISSUZ              TO  HCM2C-NISSU2 (9) 
+           MOVE    WRK-NISSUZ              TO  HCM2A-NISSU2 (9) 
            MOVE    SUM-TOTALTEN (IDX1 IDX 12)   TO  WRK-TENSUZ
-           MOVE    WRK-TENSUZ              TO  HCM2C-TENSU2 (9)
+           MOVE    WRK-TENSUZ              TO  HCM2A-TENSU2 (9)
            MOVE    SUM-FTNMONEY (IDX1 IDX 12)   TO  WRK-FTNMONEYZ
-           MOVE    WRK-FTNMONEYZ           TO  HCM2C-ITBFTN2(9)
+           MOVE    WRK-FTNMONEYZ           TO  HCM2A-ITBFTN2(9)
+           MOVE    SUM-SHOKUJIKENSU (IDX1 IDX 12) 
+                                           TO  WRK-SHOKENSUZ
+           MOVE    WRK-SHOKENSUZ           TO  HCM2A-SYOKENSU2 (9)
+           MOVE    SUM-SHOKUJINISSU (IDX1 IDX 12)
+                                           TO  WRK-SHONISSUZ 
+           MOVE    WRK-SHONISSUZ           TO  HCM2A-SYONISSU2 (9)
+           MOVE    SUM-SHOKUJIRYOYOHI (IDX1 IDX 12)
+                                           TO  WRK-SHORYOYOHIZ
+           MOVE    WRK-SHORYOYOHIZ         TO  HCM2A-SYOKINGAK2(9)
+           MOVE    SUM-SHOKUJIFTN (IDX1 IDX 12)  TO  WRK-SHOFTNZ
+           MOVE    WRK-SHOFTNZ             TO  HCM2A-SYOFTNGAK2(9)
       *
       *    °åÊÝÃ±ÆÈ¡ÊËÜ¿Í¡Ë
            MOVE    3                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       11
                MOVE    SUM-KENSU    (IDX1 IDX IDY)  TO  WRK-KENSUZ
-               MOVE    WRK-KENSUZ              TO  HCM2C-KENSU3 (IDY)
+               MOVE    WRK-KENSUZ              TO  HCM2A-KENSU3 (IDY)
                MOVE    SUM-NISSU    (IDX1 IDX IDY)  TO  WRK-NISSUZ 
-               MOVE    WRK-NISSUZ              TO  HCM2C-NISSU3 (IDY) 
+               MOVE    WRK-NISSUZ              TO  HCM2A-NISSU3 (IDY) 
                MOVE    SUM-TOTALTEN (IDX1 IDX IDY)  TO  WRK-TENSUZ
-               MOVE    WRK-TENSUZ              TO  HCM2C-TENSU3 (IDY)
+               MOVE    WRK-TENSUZ              TO  HCM2A-TENSU3 (IDY)
                IF      IDY             =   3   OR  7
                    CONTINUE
                ELSE    
                    MOVE    SUM-YKZFTN   (IDX1 IDX IDY)
                                                TO  WRK-YKZFTNZ
-                   MOVE    WRK-YKZFTNZ         TO  HCM2C-YKZFTN3(IDY)
+                   MOVE    WRK-YKZFTNZ         TO  HCM2A-YKZFTN3(IDY)
                END-IF    
+               MOVE    SUM-SHOKUJIKENSU (IDX1 IDX IDY) 
+                                               TO  WRK-SHOKENSUZ
+               MOVE    WRK-SHOKENSUZ           TO  HCM2A-SYOKENSU3 (IDY)
+               MOVE    SUM-SHOKUJINISSU (IDX1 IDX IDY)
+                                               TO  WRK-SHONISSUZ 
+               MOVE    WRK-SHONISSUZ           TO  HCM2A-SYONISSU3 (IDY)
+               MOVE    SUM-SHOKUJIRYOYOHI (IDX1 IDX IDY)
+                                               TO  WRK-SHORYOYOHIZ
+               MOVE    WRK-SHORYOYOHIZ         TO  HCM2A-SYOKINGAK3(IDY)
+               MOVE    SUM-SHOKUJIFTN (IDX1 IDX IDY)  TO  WRK-SHOFTNZ
+               MOVE    WRK-SHOFTNZ             TO  HCM2A-SYOFTNGAK3(IDY)
            END-PERFORM
            MOVE    SUM-KENSU    (IDX1 IDX 12)   TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2C-KENSU3 (12)
+           MOVE    WRK-KENSUZ              TO  HCM2A-KENSU3 (12)
            MOVE    SUM-NISSU    (IDX1 IDX 12)   TO  WRK-NISSUZ 
-           MOVE    WRK-NISSUZ              TO  HCM2C-NISSU3 (12) 
+           MOVE    WRK-NISSUZ              TO  HCM2A-NISSU3 (12) 
            MOVE    SUM-TOTALTEN (IDX1 IDX 12)   TO  WRK-TENSUZ
-           MOVE    WRK-TENSUZ              TO  HCM2C-TENSU3 (12)
+           MOVE    WRK-TENSUZ              TO  HCM2A-TENSU3 (12)
            MOVE    SUM-YKZFTN   (IDX1 IDX 12)   TO  WRK-YKZFTNZ
-           MOVE    WRK-YKZFTNZ             TO  HCM2C-YKZFTN3(12)
+           MOVE    WRK-YKZFTNZ             TO  HCM2A-YKZFTN3(12)
+           MOVE    SUM-SHOKUJIKENSU (IDX1 IDX 12) 
+                                           TO  WRK-SHOKENSUZ
+           MOVE    WRK-SHOKENSUZ           TO  HCM2A-SYOKENSU3 (12)
+           MOVE    SUM-SHOKUJINISSU (IDX1 IDX 12)
+                                           TO  WRK-SHONISSUZ 
+           MOVE    WRK-SHONISSUZ           TO  HCM2A-SYONISSU3 (12)
+           MOVE    SUM-SHOKUJIRYOYOHI (IDX1 IDX 12)
+                                           TO  WRK-SHORYOYOHIZ
+           MOVE    WRK-SHORYOYOHIZ         TO  HCM2A-SYOKINGAK3(12)
+           MOVE    SUM-SHOKUJIFTN (IDX1 IDX 12)  TO  WRK-SHOFTNZ
+           MOVE    WRK-SHOFTNZ             TO  HCM2A-SYOFTNGAK3(12)
       *
       *    °åÊÝÃ±ÆÈ¡Ê²ÈÂ²¡Ë
            MOVE    4                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       8
                MOVE    SUM-KENSU    (IDX1 IDX IDY)  TO  WRK-KENSUZ
-               MOVE    WRK-KENSUZ              TO  HCM2C-KENSU4 (IDY)
+               MOVE    WRK-KENSUZ              TO  HCM2A-KENSU4 (IDY)
                MOVE    SUM-NISSU    (IDX1 IDX IDY)  TO  WRK-NISSUZ 
-               MOVE    WRK-NISSUZ              TO  HCM2C-NISSU4 (IDY) 
+               MOVE    WRK-NISSUZ              TO  HCM2A-NISSU4 (IDY) 
                MOVE    SUM-TOTALTEN (IDX1 IDX IDY)  TO  WRK-TENSUZ
-               MOVE    WRK-TENSUZ              TO  HCM2C-TENSU4 (IDY)
+               MOVE    WRK-TENSUZ              TO  HCM2A-TENSU4 (IDY)
                MOVE    SUM-YKZFTN   (IDX1 IDX IDY)  TO  WRK-YKZFTNZ
-               MOVE    WRK-YKZFTNZ             TO  HCM2C-YKZFTN4(IDY)
+               MOVE    WRK-YKZFTNZ             TO  HCM2A-YKZFTN4(IDY)
+               MOVE    SUM-SHOKUJIKENSU (IDX1 IDX IDY) 
+                                               TO  WRK-SHOKENSUZ
+               MOVE    WRK-SHOKENSUZ           TO  HCM2A-SYOKENSU4 (IDY)
+               MOVE    SUM-SHOKUJINISSU (IDX1 IDX IDY)
+                                               TO  WRK-SHONISSUZ 
+               MOVE    WRK-SHONISSUZ           TO  HCM2A-SYONISSU4 (IDY)
+               MOVE    SUM-SHOKUJIRYOYOHI (IDX1 IDX IDY)
+                                               TO  WRK-SHORYOYOHIZ
+               MOVE    WRK-SHORYOYOHIZ         TO  HCM2A-SYOKINGAK4(IDY)
+               MOVE    SUM-SHOKUJIFTN (IDX1 IDX IDY)  TO  WRK-SHOFTNZ
+               MOVE    WRK-SHOFTNZ             TO  HCM2A-SYOFTNGAK4(IDY)
            END-PERFORM
            MOVE    SUM-KENSU    (IDX1 IDX 12)   TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2C-KENSU4 (9)
+           MOVE    WRK-KENSUZ              TO  HCM2A-KENSU4 (9)
            MOVE    SUM-NISSU    (IDX1 IDX 12)   TO  WRK-NISSUZ 
-           MOVE    WRK-NISSUZ              TO  HCM2C-NISSU4 (9) 
+           MOVE    WRK-NISSUZ              TO  HCM2A-NISSU4 (9) 
            MOVE    SUM-TOTALTEN (IDX1 IDX 12)   TO  WRK-TENSUZ
-           MOVE    WRK-TENSUZ              TO  HCM2C-TENSU4 (9)
+           MOVE    WRK-TENSUZ              TO  HCM2A-TENSU4 (9)
            MOVE    SUM-YKZFTN   (IDX1 IDX 12)   TO  WRK-YKZFTNZ
-           MOVE    WRK-YKZFTNZ             TO  HCM2C-YKZFTN4(9)
+           MOVE    WRK-YKZFTNZ             TO  HCM2A-YKZFTN4(9)
+           MOVE    SUM-SHOKUJIKENSU (IDX1 IDX 12) 
+                                           TO  WRK-SHOKENSUZ
+           MOVE    WRK-SHOKENSUZ           TO  HCM2A-SYOKENSU4 (9)
+           MOVE    SUM-SHOKUJINISSU (IDX1 IDX 12)
+                                           TO  WRK-SHONISSUZ 
+           MOVE    WRK-SHONISSUZ           TO  HCM2A-SYONISSU4 (9)
+           MOVE    SUM-SHOKUJIRYOYOHI (IDX1 IDX 12)
+                                           TO  WRK-SHORYOYOHIZ
+           MOVE    WRK-SHORYOYOHIZ         TO  HCM2A-SYOKINGAK4(9)
+           MOVE    SUM-SHOKUJIFTN (IDX1 IDX 12)  TO  WRK-SHOFTNZ
+           MOVE    WRK-SHOFTNZ             TO  HCM2A-SYOFTNGAK4(9)
       *
       *    °åÊÝÃ±ÆÈ¡Ê»°ºÐ¡Ë
            MOVE    5                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       8
                MOVE    SUM-KENSU    (IDX1 IDX IDY)  TO  WRK-KENSUZ
-               MOVE    WRK-KENSUZ              TO  HCM2C-KENSU5 (IDY)
+               MOVE    WRK-KENSUZ              TO  HCM2A-KENSU5 (IDY)
                MOVE    SUM-NISSU    (IDX1 IDX IDY)  TO  WRK-NISSUZ 
-               MOVE    WRK-NISSUZ              TO  HCM2C-NISSU5 (IDY) 
+               MOVE    WRK-NISSUZ              TO  HCM2A-NISSU5 (IDY) 
                MOVE    SUM-TOTALTEN (IDX1 IDX IDY)  TO  WRK-TENSUZ
-               MOVE    WRK-TENSUZ              TO  HCM2C-TENSU5 (IDY)
+               MOVE    WRK-TENSUZ              TO  HCM2A-TENSU5 (IDY)
+               MOVE    SUM-SHOKUJIKENSU (IDX1 IDX IDY) 
+                                               TO  WRK-SHOKENSUZ
+               MOVE    WRK-SHOKENSUZ           TO  HCM2A-SYOKENSU5 (IDY)
+               MOVE    SUM-SHOKUJINISSU (IDX1 IDX IDY)
+                                               TO  WRK-SHONISSUZ 
+               MOVE    WRK-SHONISSUZ           TO  HCM2A-SYONISSU5 (IDY)
+               MOVE    SUM-SHOKUJIRYOYOHI (IDX1 IDX IDY)
+                                               TO  WRK-SHORYOYOHIZ
+               MOVE    WRK-SHORYOYOHIZ         TO  HCM2A-SYOKINGAK5(IDY)
+               MOVE    SUM-SHOKUJIFTN (IDX1 IDX IDY)  TO  WRK-SHOFTNZ
+               MOVE    WRK-SHOFTNZ             TO  HCM2A-SYOFTNGAK5(IDY)
            END-PERFORM
            MOVE    SUM-KENSU    (IDX1 IDX 12)   TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2C-KENSU5 (9)
+           MOVE    WRK-KENSUZ              TO  HCM2A-KENSU5 (9)
            MOVE    SUM-NISSU    (IDX1 IDX 12)   TO  WRK-NISSUZ 
-           MOVE    WRK-NISSUZ              TO  HCM2C-NISSU5 (9) 
+           MOVE    WRK-NISSUZ              TO  HCM2A-NISSU5 (9) 
            MOVE    SUM-TOTALTEN (IDX1 IDX 12)   TO  WRK-TENSUZ
-           MOVE    WRK-TENSUZ              TO  HCM2C-TENSU5 (9)
+           MOVE    WRK-TENSUZ              TO  HCM2A-TENSU5 (9)
+           MOVE    SUM-SHOKUJIKENSU (IDX1 IDX 12) 
+                                           TO  WRK-SHOKENSUZ
+           MOVE    WRK-SHOKENSUZ           TO  HCM2A-SYOKENSU5 (9)
+           MOVE    SUM-SHOKUJINISSU (IDX1 IDX 12)
+                                           TO  WRK-SHONISSUZ 
+           MOVE    WRK-SHONISSUZ           TO  HCM2A-SYONISSU5 (9)
+           MOVE    SUM-SHOKUJIRYOYOHI (IDX1 IDX 12)
+                                           TO  WRK-SHORYOYOHIZ
+           MOVE    WRK-SHORYOYOHIZ         TO  HCM2A-SYOKINGAK5(9)
+           MOVE    SUM-SHOKUJIFTN (IDX1 IDX 12)  TO  WRK-SHOFTNZ
+           MOVE    WRK-SHOFTNZ             TO  HCM2A-SYOFTNGAK5(9)
       *
            MOVE    SUM-GOK-KENSU (IDX1 1)  TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2C-KENSUG   
+           MOVE    WRK-KENSUZ              TO  HCM2A-KENSUG   
+           MOVE    SUM-GOK-SHOKENSU (IDX1 1)
+                                           TO  WRK-SHOKENSUZ
+           MOVE    WRK-SHOKENSUZ           TO  HCM2A-SYOKENSUG  
       *
       *    Ï·¿ÍÊÝ·ò
            PERFORM VARYING IDX FROM    1   BY  1
@@ -552,20 +687,45 @@
                        UNTIL   IDY >       3
                    MOVE    SUM-ROU-KENSU    (IDX1 IDX IDY) 
                                            TO  WRK-KENSUZ
-                   MOVE    WRK-KENSUZ      TO  HCM2D-ROU-KENSU (IDX IDY) 
+                   MOVE    WRK-KENSUZ      TO  HCM2B-ROU-KENSU (IDX IDY)
+                   MOVE    SUM-ROU-SHOKUJIKENSU (IDX1 IDX IDY) 
+                                           TO  WRK-SHOKENSUZ
+                   MOVE    WRK-SHOKENSUZ   TO
+                                           HCM2B-ROU-SYOKENSU  (IDX IDY)
                    IF      IDY                 <   3
                        MOVE    SUM-ROU-NISSU    (IDX1 IDX IDY)
                                            TO  WRK-NISSUZ 
-                       MOVE    WRK-NISSUZ  TO  HCM2D-ROU-NISSU (IDX IDY) 
+                       MOVE    WRK-NISSUZ  TO  HCM2B-ROU-NISSU (IDX IDY) 
                        MOVE    SUM-ROU-TOTALTEN (IDX1 IDX IDY)
                                            TO  WRK-TENSUZ
-                       MOVE    WRK-TENSUZ  TO  HCM2D-ROU-TENSU (IDX IDY) 
+                       MOVE    WRK-TENSUZ  TO  HCM2B-ROU-TENSU (IDX IDY) 
+                       MOVE    SUM-ROU-FTNMONEY (IDX1 IDX IDY)
+                                           TO  WRK-FTNMONEYZ
+                       MOVE    WRK-FTNMONEYZ
+                                           TO  HCM2B-ROU-ITBFTN(IDX IDY)
+                       MOVE    SUM-ROU-SHOKUJINISSU (IDX1 IDX IDY)
+                                           TO  WRK-SHONISSUZ 
+                       MOVE    WRK-SHONISSUZ
+                                           TO
+                                           HCM2B-ROU-SYONISSU  (IDX IDY)
+                       MOVE    SUM-ROU-SHOKUJIRYOYOHI (IDX1 IDX IDY)
+                                           TO  WRK-SHORYOYOHIZ
+                       MOVE    WRK-SHORYOYOHIZ
+                                           TO
+                                           HCM2B-ROU-SYOKINGAK (IDX IDY)
+                       MOVE    SUM-ROU-SHOKUJIFTN (IDX1 IDX IDY)
+                                           TO  WRK-SHOFTNZ
+                       MOVE    WRK-SHOFTNZ TO
+                                           HCM2B-ROU-SYOFTNGAK (IDX IDY)
                    END-IF
                END-PERFORM    
            END-PERFORM
       *     
            MOVE    SUM-GOK-KENSU (IDX1 2)  TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2D-KENSUG (1)    
+           MOVE    WRK-KENSUZ              TO  HCM2B-KENSUG (1)    
+           MOVE    SUM-GOK-SHOKENSU (IDX1 2)
+                                           TO  WRK-SHOKENSUZ
+           MOVE    WRK-SHOKENSUZ           TO  HCM2B-SYOKENSUG (1) 
       *     
       *    Ä¢É¼°õºþ½èÍý¡Ê£±ÊÇÌÜ¡Ë
            MOVE    ZERO                TO  FLG-PRTKBN
@@ -604,21 +764,34 @@
                            MOVE    SUM-KOH-KENSU (IDX1 IDX IDX2)
                                            TO  WRK-KENSUZ        
                            MOVE    WRK-KENSUZ
-                                           TO  HCM2D-KOH-KENSU (IDX IDY)
+                                           TO  HCM2B-KOH-KENSU (IDX IDY)
                            MOVE    SUM-KOH-TOTALTEN (IDX1 IDX IDX2)
                                            TO  WRK-TENSUZ         
                            MOVE    WRK-TENSUZ
-                                           TO  HCM2D-KOH-TENSU (IDX IDY)
+                                           TO  HCM2B-KOH-TENSU (IDX IDY)
                            IF      IDX         =   1          
                                MOVE    SUM-KOH-YKZFTN (IDX1 IDX IDX2)
                                            TO  WRK-YKZFTNZ          
                                MOVE    WRK-YKZFTNZ
-                                           TO  HCM2D-KOH-YKZFTN(IDX IDY)
+                                           TO  HCM2B-KOH-YKZFTN(IDX IDY)
+                               MOVE    SUM-KOH-SHOKUJIFTN(IDX1 IDX IDX2)
+                                           TO  WRK-SHOFTNZ
+                               MOVE    WRK-SHOFTNZ TO
+                                           HCM2B-ROU-SYOFTNGAK (IDX IDY)
                            END-IF
                            MOVE    SUM-KOH-FTNMONEY (IDX1 IDX IDX2)
                                            TO  WRK-FTNMONEYZ
                            MOVE    WRK-FTNMONEYZ
-                                           TO  HCM2D-KOH-ITBFTN(IDX IDY)
+                                           TO  HCM2B-KOH-ITBFTN(IDX IDY)
+                           MOVE    SUM-KOH-SHOKUJIKENSU (IDX1 IDX IDX2)
+                                           TO  WRK-SHOKENSUZ
+                           MOVE    WRK-SHOKENSUZ   TO
+                                           HCM2B-KOH-SYOKENSU  (IDX IDY)
+                           MOVE    SUM-KOH-SHOKUJIRYOYOHI(IDX1 IDX IDX2)
+                                           TO  WRK-SHORYOYOHIZ
+                           MOVE    WRK-SHORYOYOHIZ
+                                           TO
+                                           HCM2B-KOH-SYOKINGAK (IDX IDY)
                        END-IF
                    END-PERFORM
                    ADD     1                   TO  IDX2   
@@ -714,7 +887,7 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
       *
-           MOVE    WRK-KOHKBN          TO  HCM2D-KOHKBN (IDX IDY)
+           MOVE    WRK-KOHKBN          TO  HCM2B-KOHKBN (IDX IDY)
            .
        3202-HKNNUM-HENSYU-EXT.
            EXIT.
@@ -727,10 +900,13 @@
       *    ¹ç·×¡¦Áí¹ç·×
       *
            MOVE    SUM-GOK-KENSU (IDX1 3)  TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2D-KENSUG (2)
+           MOVE    WRK-KENSUZ              TO  HCM2B-KENSUG (2)
+           MOVE    SUM-GOK-SHOKENSU (IDX1 3)
+                                           TO  WRK-SHOKENSUZ
+           MOVE    WRK-SHOKENSUZ           TO  HCM2B-SYOKENSUG (2) 
       *
            MOVE    SUM-GOK-KENSU (IDX1 4)  TO  WRK-GKENSUZ
-           MOVE    WRK-GKENSUZ             TO  HCM2D-GKENSU
+           MOVE    WRK-GKENSUZ             TO  HCM2B-GKENSU
            .
        330-TERM-HEN-EXT.
            EXIT.
@@ -758,17 +934,17 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            IF      FLG-PRTKBN          =   ZERO                            
-               MOVE    "HCM2C.red"         TO  SPRT-PRTID
-               MOVE    HCM2C               TO  SPRT-PRTDATA
+               MOVE    "HCM2A.red"         TO  SPRT-PRTID
+               MOVE    HCM2A               TO  SPRT-PRTDATA
            ELSE                          
-               MOVE    "HCM2D.red"         TO  SPRT-PRTID
-               MOVE    HCM2D               TO  SPRT-PRTDATA
+               MOVE    "HCM2B.red"         TO  SPRT-PRTID
+               MOVE    HCM2B               TO  SPRT-PRTDATA
            END-IF    
            EVALUATE    IDX1
                WHEN    1                            
-                   MOVE    "¼ÒÊÝÁí³çÉ½"        TO  SPRT-TITLE
+                   MOVE    "¼ÒÊÝÁí³çÉ½¡¦Æþ±¡"  TO  SPRT-TITLE
                WHEN    2                            
-                   MOVE    "¼ÒÊÝÁí³çÉ½¡ÊºßÁí¿ÇÅù¡Ë"
+                   MOVE    "¼ÒÊÝÁí³çÉ½¡¦Æþ±¡¡ÊºßÁí¿ÇÅù¡Ë"
                                                TO  SPRT-TITLE
            END-EVALUATE        
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -846,8 +1022,8 @@
       *
            ADD     CNT-PAGE        TO  WRK-PARA-PAGE
       *
-           DISPLAY "*** ORCBM023 PAGE  "  CNT-PAGE 
-           DISPLAY "*** ORCBM023 END ***"
+           DISPLAY "*** ORCBM024 PAGE  "  CNT-PAGE 
+           DISPLAY "*** ORCBM024 END ***"
            .
        300-END-EXT.
            EXIT.
