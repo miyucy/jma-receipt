@@ -1,1 +1,4 @@
 Makefile
+build-stamp
+jma-receipt.env
+
