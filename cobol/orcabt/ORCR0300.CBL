@@ -205,6 +205,7 @@
            03  FLG-GAITENTTLKBN        PIC 9(01).
            03  FLG-TBLMAX              PIC 9(01).
            03  FLG-SRYSYUKBN721        PIC 9(01).
+           03  FLG-SET                 PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -223,6 +224,7 @@
            03  IDY3                    PIC 9(03).
            03  IDXX                    PIC 9(03).
            03  IDW1                    PIC 9(03).
+           03  SYSKAN-IDX              PIC 9(03).
       *
        01  KEY-AREA                                VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -236,6 +238,11 @@
            03  SUM-TOTALKENSU         PIC 9(06).
            03  SUM-TOTALTEN         PIC 9(10).
       *
+      *    ¥·¥¹¥«¥ó¡Ê£±£°£°£±¡ËÂàÈòÍÑÎÎ°è
+       01  TBL-SYS1001-T.
+           03  TBL-SYS1001-OCC         OCCURS  10.
+               05  TBL-SYS1001         PIC  X(610).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
       *    ¥Ñ¥é¥á¥¿¥¨¥ê¥¢
@@ -248,6 +255,8 @@
                                        PIC X(01).
                05  WRK-PARA-JOBID      PIC 9(07).
                05  WRK-PARA-SHELLID    PIC X(08).
+      *
+           03  WRK-SYS-SRYYMD          PIC X(08).
       *
            03  WRK-RECEERR             PIC X(200). 
       *     ±¦¤º¤áÊÔ½¸ÍÑ     
@@ -644,19 +653,62 @@
       *****************************************************************
        110-SYSKANRI-HENSYU-SEC      SECTION.
       *
-      *    °åÎÅµ¡´Ø£É£ÄÊÔ½¸
-           INITIALIZE                  SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+           IF   WRK-PARA-SRYYM    NOT =  ZERO
+      *       °åÎÅµ¡´Ø£É£ÄÊÔ½¸
+              INITIALIZE                  SYS-1001-REC
+              MOVE    "1001"              TO  SYS-1001-KANRICD
+              MOVE    "*"                 TO  SYS-1001-KBNCD
+              MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+              MOVE    "01"                TO  ORC-DBYMD (7:2)
+              MOVE    SYS-1001-REC        TO  MCPDATA-REC
+              PERFORM 910-SYSKANRI-INV-SEC
+              IF      FLG-SYSKANRI        =   ZERO
+                  MOVE    MCPDATA-REC         TO  SYS-1001-REC
+              ELSE
+                  MOVE    "*** ORCR0300 SYS1001 INVALID ***" 
+                                              TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+              END-IF
            ELSE
-               MOVE    "*** ORCR0300 SYS1001 INVALID ***" 
-                                           TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
+              MOVE     ZERO               TO  SYSKAN-IDX
+              MOVE     SPACE              TO  TBL-SYS1001-T
+              INITIALIZE                      TBL-SYS1001-T
+      *
+              INITIALIZE                      SYS-1001-REC
+              MOVE    "1001"              TO  SYS-1001-KANRICD
+              MOVE    "*"                 TO  SYS-1001-KBNCD
+              MOVE    SYS-1001-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                  PERFORM  900-SYSKANRI-READ-SEC
+                  PERFORM  UNTIL   FLG-SYSKANRI  =    1
+      *
+                    MOVE    MCPDATA-REC   TO  SYS-1001-REC
+                    ADD     1             TO  SYSKAN-IDX
+                    MOVE    SYS-1001-REC  TO  TBL-SYS1001(SYSKAN-IDX)
+      *
+                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                    PERFORM 900-SYSKANRI-READ-SEC
+      *
+                  END-PERFORM
+              ELSE
+                  MOVE    "*** ORCR0300 SYS1001 INVALID ***" 
+                                              TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+              END-IF
+      *
+              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
            END-IF
       *         
       *    ¥ì¥»¥×¥ÈÊÔ½¸¶èÊ¬¾ðÊó
@@ -664,7 +716,8 @@
            INITIALIZE                      SYS-2005-REC
            MOVE    "2005"              TO  SYS-2005-KANRICD
            MOVE    "*"                 TO  SYS-2005-KBNCD
-           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
+           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
            MOVE    SYS-2005-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -3151,6 +3204,25 @@
            EXIT.
       *
       *****************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿ÆÉ¹þ
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           .
+       900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ÉÂÌ¾¥Þ¥¹¥¿¡¼ÆÉ¹þ
       *****************************************************************
        900-BYOMEI-READ-SEC         SECTION.
@@ -3200,7 +3272,8 @@
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
+           MOVE    RECE02-SRYYM        TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -3320,6 +3393,36 @@
                    ADD     1           TO  CNT-IN
                    MOVE    RECE02-RECEKA 
                                        TO  KEY-N-SRYKA
+      *
+                   IF   WRK-PARA-SRYYM    NOT =  ZERO
+                     CONTINUE
+                   ELSE
+      *              °åÎÅµ¡´Ø£É£ÄÊÔ½¸
+                     MOVE  ZERO         TO  FLG-SET
+                     MOVE  RECE02-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+                     MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
+                     PERFORM VARYING SYSKAN-IDX FROM 1 BY 1
+                       UNTIL ( SYSKAN-IDX              >  10   )
+                        OR   ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                        OR   ( FLG-SET                 =   1   )
+      *
+                        MOVE   TBL-SYS1001(SYSKAN-IDX) 
+                                          TO  SYS-1001-REC
+                        IF  (SYS-1001-STYUKYMD 
+                                         <= WRK-SYS-SRYYMD   )
+                        AND (WRK-SYS-SRYYMD    
+                                         <= SYS-1001-EDYUKYMD)
+                           MOVE     1     TO  FLG-SET
+                        END-IF
+      *
+                     END-PERFORM
+                     IF     FLG-SET  =  ZERO
+                         MOVE    "*** ORCR0300 SYS1001 INVALID ***" 
+                                                 TO  WRK-RECEERR
+                         PERFORM 500-ERR-HENSYU-SEC
+                     END-IF
+                   END-IF
+      *
            END-READ
            .
        910-RECE02-READ-EXT.
