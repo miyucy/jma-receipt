@@ -412,7 +412,7 @@
       *    上限点数判定
            IF      LNK-COM-JGNTEN (IDX) =   ZERO
       *        フィルム点数加算
-               ADD     WRK-SYOKEI          TO  LNK-SC90-KIZKEI
+               ADD     WRK-SYOKEI          TO  LNK-SC90-FIRTEN
            ELSE
                COMPUTE WRK-TENSUKEIS       =   WRK-SYOKEI
                                            /   10
@@ -421,9 +421,9 @@
                IF      WRK-FIRTEN          >   LNK-COM-JGNTEN (IDX)
                    MOVE    LNK-COM-JGNTEN(IDX) TO  WRK-FIRTEN
       *            器材点数に上限点数を集計
-                   ADD     WRK-FIRTEN          TO  LNK-SC90-KIZKEI
+                   ADD     WRK-FIRTEN          TO  LNK-SC90-KIZTEN
                ELSE
-                   ADD     WRK-SYOKEI          TO  LNK-SC90-KIZKEI
+                   ADD     WRK-SYOKEI          TO  LNK-SC90-FIRTEN
                END-IF
            END-IF
       *
