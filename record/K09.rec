@@ -12,8 +12,9 @@ K09	{
 				item	{
 					value0	varchar(3);
 					value1	varchar(16);
-				}	[100];
-				select	bool[100];
+					value2	varchar(2);
+				}	[150];
+				select	bool[150];
 			};
 		};
 		scrolledwindow3	{
