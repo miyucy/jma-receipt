@@ -1,5 +1,9 @@
 I04	{
 	fixed3	{
+		LBLTAIINKEISAN	{
+			style   varchar(20);
+			value	varchar(20);
+		};
 		PTNUM	{
 			value	varchar(20);
 		};
@@ -220,10 +224,10 @@ I04	{
 		};
 		CMB_SKYPRTOUT	{
 			SKYPRTOUT	{
-				value	varchar(20);
+				value	varchar(30);
 			};
 			count	int;
-			item	varchar(20)[02];
+			item	varchar(30)[03];
 		};
 		CMB_TAIPRTOUT	{
 			TAIPRTOUT	{

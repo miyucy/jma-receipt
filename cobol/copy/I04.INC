@@ -24,6 +24,10 @@
       *
         02  I04.
       *     02  I04-FIXED3.
+              03  I04-LBLTAIINKEISAN-G.
+                04  I04-LBLTAIINKEISAN-STYLE
+                                         PIC X(20).
+                04  I04-LBLTAIINKEISAN   PIC X(20).
               03  I04-PTNUM.
                 04  I04-VALUE   PIC X(20).
               03  I04-KANANAME.
@@ -174,11 +178,11 @@
                 04  I04-VALUE   PIC S9(2).
               03  I04-CMB-SKYPRTOUT.
                 04  I04-SKYPRTOUT.
-                  05  I04-VALUE PIC X(20).
+                  05  I04-VALUE PIC X(30).
                 04  I04-SKYPRTOUT-CNT
                                 PIC S9(9)   BINARY.
                 04  I04-SKYPRTOUT-ITM
-                                PIC X(20)   OCCURS  2 TIMES.
+                                PIC X(30)   OCCURS  3 TIMES.
               03  I04-CMB-TAIPRTOUT.
                 04  I04-TAIPRTOUT.
                   05  I04-VALUE PIC X(20).
