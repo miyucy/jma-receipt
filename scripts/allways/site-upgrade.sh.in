@@ -30,7 +30,7 @@ for d in scripts/daily  scripts/kaisei scripts/monthly  \
     mkdir -p "${SITEDIR}/${d}"
     for f in `ls ${SITESRCDIR}/${d}`; do 
       if test -f "${SITESRCDIR}/${d}/${f}"; then
-	sed -e 's,\@jma-receipt-env\@,./etc/jma-receipt.env,g' \
+	sed -e 's,\@jma-receipt-env\@,@jma-receipt-env@,g' \
         < "${SITESRCDIR}/${d}/${f}" > "${SITEDIR}/${d}/${f}"
       fi
     done
