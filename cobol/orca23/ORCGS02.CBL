@@ -2618,6 +2618,7 @@
       *
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-NAI-TSRYKA (SPA-GMN-SELBAN)
                                        TO  JYURRK-SRYKA
            MOVE    SYU-SRYYMD          TO  JYURRK-SRYYMD
