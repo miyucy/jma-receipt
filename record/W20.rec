@@ -126,6 +126,15 @@ W20	{
 			value	bool;
 			state	int;
 		};
+		CMB_RECEDSPKBN	{
+			RECEDSPKBN	{
+				value	varchar(13);
+				state	int;
+			};
+			count	int;
+			item	varchar(13)[10];
+			state	int;
+		};
 		YUKOSTYMD	{
 			value	varchar(10);
 			state	int;

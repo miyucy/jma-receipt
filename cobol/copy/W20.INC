@@ -145,6 +145,18 @@
               04  W20-CHK-BTU-HIKSISUKBN-STT
                                            PIC S9(9)   BINARY.
       *
+      *
+              04  W20-CMB-RECEDSPKBN.
+      *
+                05  W20-RECEDSPKBN         PIC X(13).
+                05  W20-RECEDSPKBN-STT
+                                           PIC S9(9)   BINARY.
+      *
+                05  W20-RECEDSPKBN-CNT     PIC S9(9)   BINARY.
+                05  W20-RECEDSPKBN-ITM     PIC X(13)   OCCURS  10.
+                05  W20-RECEDSPKBN-ITM-STT
+                                           PIC S9(9)   BINARY.
+      *
               04  W20-YUKOSTYMD            PIC X(10).
               04  W20-YUKOSTYMD-STT        PIC S9(9)   BINARY.
       *

@@ -477,6 +477,9 @@
       *    看護補助配置取得処理
            PERFORM 3101-SYS-5115-GET-SEC
       *
+      *    レセプト表示区分
+           PERFORM 3101-RECEDSPKBN-GET-SEC
+      *
       *    終了区分
            MOVE    2       TO  SPA-GMN-W20-BTU-EDKBN-CNT
            MOVE    "1 "    TO  SPA-GMN-W20-BTU-EDKBN-ITM (1) (1 : 2)
@@ -1025,6 +1028,42 @@
        3102-SYS-KANRI-CLOSE-EXT.
            EXIT.
       *****************************************************************
+      *    レセプト表示区分取得処理
+      *****************************************************************
+       3101-RECEDSPKBN-GET-SEC         SECTION.
+      *
+           INITIALIZE  SPA-GMN-W20-CMB-RECEDSPKBN
+      *
+           MOVE    "01"    TO  SPA-GMN-W20-RECEDSPKBN-ITM (1) (1 : 2)
+           MOVE    "02"    TO  SPA-GMN-W20-RECEDSPKBN-ITM (2) (1 : 2)
+           MOVE    "03"    TO  SPA-GMN-W20-RECEDSPKBN-ITM (3) (1 : 2)
+           MOVE    "05"    TO  SPA-GMN-W20-RECEDSPKBN-ITM (4) (1 : 2)
+           MOVE    "07"    TO  SPA-GMN-W20-RECEDSPKBN-ITM (5) (1 : 2)
+           MOVE    "08"    TO  SPA-GMN-W20-RECEDSPKBN-ITM (6) (1 : 2)
+           MOVE    "09"    TO  SPA-GMN-W20-RECEDSPKBN-ITM (7) (1 : 2)
+      *
+           MOVE    "精神"  TO  SPA-GMN-W20-RECEDSPKBN-ITM (1) (4 : )
+           MOVE    "結核"  TO  SPA-GMN-W20-RECEDSPKBN-ITM (2) (4 : )
+           MOVE    "特例"  TO  SPA-GMN-W20-RECEDSPKBN-ITM (3) (4 : )
+           MOVE    "老人"  TO  SPA-GMN-W20-RECEDSPKBN-ITM (4) (4 : )
+           MOVE    "療養"  TO  SPA-GMN-W20-RECEDSPKBN-ITM (5) (4 : )
+           MOVE    "複合"  TO  SPA-GMN-W20-RECEDSPKBN-ITM (6) (4 : )
+           MOVE    "複療"  TO  SPA-GMN-W20-RECEDSPKBN-ITM (7) (4 : )
+      *
+           MOVE    "02"        TO  SPA-GMN-W20-RECEDSPKBN-ITM2 (1)
+           MOVE    "03"        TO  SPA-GMN-W20-RECEDSPKBN-ITM2 (2)
+           MOVE    "**"        TO  SPA-GMN-W20-RECEDSPKBN-ITM2 (3)
+           MOVE    "07"        TO  SPA-GMN-W20-RECEDSPKBN-ITM2 (4)
+           MOVE    "04"        TO  SPA-GMN-W20-RECEDSPKBN-ITM2 (5)
+           MOVE    "**"        TO  SPA-GMN-W20-RECEDSPKBN-ITM2 (6)
+           MOVE    "**"        TO  SPA-GMN-W20-RECEDSPKBN-ITM2 (7)
+      *
+           MOVE    7           TO  SPA-GMN-W20-RECEDSPKBN-CNT
+      *
+           .
+       3101-RECEDSPKBN-GET-EXT.
+           EXIT.
+      *****************************************************************
       *    病棟リスト編集処理
       *****************************************************************
        3102-BTULST-EDIT-SEC            SECTION.
@@ -1407,6 +1446,9 @@
            MOVE    W20-CHK-BTU-HIKSISUKBN
                                    TO  SPA-GMN-W20-CHK-BTU-HIKSIS
       *
+      *    レセプト表示区分
+           MOVE    W20-RECEDSPKBN  TO  SPA-GMN-W20-RECEDSPKBN
+      *
       *    有効期間開始日
            MOVE    W20-YUKOSTYMD   TO  SPA-GMN-W20-YUKOSTYMD
       *
@@ -1529,6 +1571,12 @@
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
+      *    レセプト表示区分チェック処理
+           PERFORM 4100-RECEDSPKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
       *    病棟継続区分チェック処理
            PERFORM 4100-BTU-EDKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -1606,7 +1654,7 @@
            PERFORM 4100-RIREKI-CHK-SEC
            IF   ( FLG-KIKAN-DABURI NOT =   ZERO )
                MOVE    "1104"          TO  SPA-ERRCD
-               MOVE    16          TO  SPA-GMN-W20-CUR
+               MOVE    17          TO  SPA-GMN-W20-CUR
                GO  TO  420-TUIKA-EXT
            END-IF
       *
@@ -1690,7 +1738,7 @@
                  ( SPA-NAI-W20-YUKOEDYMD
                                    NOT =   SPA-NAI-W20-YUKOEDYMD-OLD )
                MOVE    "1105"      TO  SPA-ERRCD
-               MOVE    16          TO  SPA-GMN-W20-CUR
+               MOVE    17          TO  SPA-GMN-W20-CUR
                GO  TO  420-HENKOU-EXT
            END-IF
       *
@@ -1700,7 +1748,7 @@
            PERFORM 4100-RIREKI-CHK-SEC
            IF   ( FLG-KIKAN-DABURI NOT =   ZERO )
                MOVE    "1104"          TO  SPA-ERRCD
-               MOVE    16          TO  SPA-GMN-W20-CUR
+               MOVE    17          TO  SPA-GMN-W20-CUR
                GO  TO  420-HENKOU-EXT
            END-IF
       *
@@ -2300,6 +2348,10 @@
                MOVE    "1"     TO  SYS-5001-BTU-HIKSISUKBN
            END-IF
       *
+      *    レセプト表示区分
+           MOVE    SPA-GMN-W20-RECEDSPKBN-CD
+                               TO  SYS-5001-RECEDSPKBN
+      *
       *    入院基本料点数コード
            MOVE    SPA-NAI-W20-BTU-KHNSRYCD
                                TO  SYS-5001-BTU-KHNSRYCD
@@ -2550,6 +2602,7 @@
                MOVE    WIDGET-NORMAL
                                    TO  SPA-GMN-W20-BTU-KNGHJOKSN-STT
                                        SPA-GMN-W20-BTU-KNGHJOKSN-ITM-STT
+               MOVE    SPACE       TO  SPA-GMN-W20-BTU-KHNRYO
                GO  TO  4100-BTU-SBT-CHK-EXT
            END-IF
       *
@@ -2602,6 +2655,25 @@
                MOVE    WIDGET-INSENSITIVE
                                    TO  SPA-GMN-W20-CHK-BTU-KNGSIS-STT
                MOVE    "F"         TO  SPA-GMN-W20-CHK-BTU-KNGSIS
+           END-IF
+      *
+           IF  ( SPA-GMN-W20-BTU-SBT-CD
+                               NOT =   SPA-NAI-W20-BTU-SBT-MOT )
+      *
+               MOVE    SPACE       TO  SPA-GMN-W20-RECEDSPKBN
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1        >   SPA-GMN-W20-RECEDSPKBN-CNT )
+      *
+                   IF    ( SPA-GMN-W20-RECEDSPKBN-ITM2 (IDX1)
+                                       =   SPA-GMN-W20-BTU-SBT-CD )
+                       MOVE    SPA-GMN-W20-RECEDSPKBN-ITM (IDX1)
+                                   TO      SPA-GMN-W20-RECEDSPKBN
+                       MOVE    SPA-GMN-W20-RECEDSPKBN-CNT
+                                   TO      IDX1
+                   END-IF
+      *
+               END-PERFORM
+      *
            END-IF
       *
            .
@@ -3013,6 +3085,33 @@
        4100-BTU-HIKSISUKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    レセプト表示区分
+      *****************************************************************
+       4100-RECEDSPKBN-CHK-SEC     SECTION.
+      *
+           IF    ( SPA-GMN-W20-RECEDSPKBN
+                                   =   SPACE )
+               GO  TO  4100-RECEDSPKBN-CHK-EXT
+      *
+           END-IF
+      *
+      *    該当コードのデータが存在するかチェック
+           MOVE    SPA-GMN-W20-RECEDSPKBN-CD
+                                   TO  WRK-KANRICD
+           PERFORM 800-RECEDSPKBN-SRH-SEC
+           IF    ( WRK-KANRIDAT1   =   SPACE )
+               MOVE    16          TO  SPA-GMN-W20-CUR
+               MOVE    "0001"      TO  SPA-ERRCD
+               GO  TO  4100-RECEDSPKBN-CHK-EXT
+           END-IF
+      *
+           MOVE    WRK-KANRIDAT1   TO  SPA-GMN-W20-RECEDSPKBN
+      *
+           .
+      *
+       4100-RECEDSPKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    有効期間開始日
       *****************************************************************
        4100-YUKOSTYMD-CHK-SEC          SECTION.
@@ -3051,7 +3150,7 @@
                MOVE    WRK-HENYMDG
                                    TO  SPA-GMN-W20-YUKOSTYMD
                MOVE    WRK-SYMD    TO  SPA-NAI-W20-YUKOSTYMD
-               MOVE    16          TO  SPA-GMN-W20-CUR
+               MOVE    17          TO  SPA-GMN-W20-CUR
                GO  TO  4100-YUKOSTYMD-CHK-EXT
            END-IF
       *
@@ -3059,7 +3158,7 @@
                MOVE    "0003"      TO  SPA-ERRCD
                MOVE    "H14. 4. 1" TO  SPA-GMN-W20-YUKOSTYMD
                MOVE    "20020401"  TO  SPA-NAI-W20-YUKOSTYMD
-               MOVE    16          TO  SPA-GMN-W20-CUR
+               MOVE    17          TO  SPA-GMN-W20-CUR
                GO  TO  4100-YUKOSTYMD-CHK-EXT
            END-IF
       *
@@ -3103,7 +3202,7 @@
                MOVE    WRK-HENYMDG
                                    TO  SPA-GMN-W20-YUKOEDYMD
                MOVE    WRK-SYMD    TO  SPA-NAI-W20-YUKOEDYMD
-               MOVE    17          TO  SPA-GMN-W20-CUR
+               MOVE    18          TO  SPA-GMN-W20-CUR
                GO  TO  4100-YUKOEDYMD-CHK-EXT
            END-IF
       *
@@ -3227,7 +3326,7 @@
       *
            IF    ( FLG-BTU-KHNRYO =    ZERO )
                MOVE    "0001"      TO  SPA-ERRCD
-               MOVE    19          TO  SPA-GMN-W20-CUR
+               MOVE    20          TO  SPA-GMN-W20-CUR
                GO  TO  4101-BTU-KHNRYO-CHK-EXT
            END-IF
       *
@@ -3689,6 +3788,12 @@
                                    TO  SPA-GMN-W20-CHK-BTU-HIKSIS-STT
            END-IF
       *
+      *    レセプト表示区分
+           MOVE    SYS-5001-RECEDSPKBN
+                                   TO  WRK-KANRICD
+           PERFORM 800-RECEDSPKBN-SRH-SEC
+           MOVE    WRK-KANRIDAT1   TO  SPA-GMN-W20-RECEDSPKBN
+      *
       *    病棟終了区分
            MOVE    SYS-5001-BTU-EDKBN
                                    TO  SPA-GMN-W20-BTU-EDKBN-CD
@@ -3964,7 +4069,7 @@
                CONTINUE
            ELSE
                MOVE    "1102"      TO  SPA-ERRCD
-               MOVE    16          TO  SPA-GMN-W20-CUR
+               MOVE    17          TO  SPA-GMN-W20-CUR
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
@@ -3973,7 +4078,7 @@
                CONTINUE
            ELSE
                MOVE    "1103"      TO  SPA-ERRCD
-               MOVE    17          TO  SPA-GMN-W20-CUR
+               MOVE    18          TO  SPA-GMN-W20-CUR
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
@@ -3982,7 +4087,7 @@
                CONTINUE
            ELSE
                MOVE    "1004"      TO  SPA-ERRCD
-               MOVE    16          TO  SPA-GMN-W20-CUR
+               MOVE    17          TO  SPA-GMN-W20-CUR
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
@@ -3991,7 +4096,7 @@
                CONTINUE
            ELSE
                MOVE    "1005"      TO  SPA-ERRCD
-               MOVE    17          TO  SPA-GMN-W20-CUR
+               MOVE    18          TO  SPA-GMN-W20-CUR
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
@@ -4504,6 +4609,16 @@
            MOVE    SPA-GMN-W20-CHK-BTU-HIKSIS
                                        TO  W20-CHK-BTU-HIKSISUKBN
       *
+      *    レセプト表示区分
+           MOVE    SPA-GMN-W20-RECEDSPKBN   TO  W20-RECEDSPKBN
+           MOVE    SPA-GMN-W20-RECEDSPKBN-CNT
+                                       TO  W20-RECEDSPKBN-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   W20-RECEDSPKBN-CNT )
+                MOVE   SPA-GMN-W20-RECEDSPKBN-ITM (IDX1)
+                                   TO  W20-RECEDSPKBN-ITM (IDX1)
+           END-PERFORM
+      *
       *    有効期間開始日
            MOVE    SPA-GMN-W20-YUKOSTYMD   TO  W20-YUKOSTYMD
       *
@@ -4737,6 +4852,8 @@
                                            W20-BTU-YAKANKNGKSN-STT
                                            W20-BTU-YKNKNGKSN-ITM-STT
                                            W20-CHK-BTU-SYOKUDOKBN-STT
+                                           W20-RECEDSPKBN-STT
+                                           W20-RECEDSPKBN-ITM-STT
                                            W20-YUKOSTYMD-STT
                                            W20-YUKOEDYMD-STT
                                            W20-BTU-EDKBN-STT
@@ -4948,8 +5065,20 @@
                END-IF
            END-IF
       *
-      *    有効期間開始日
+      *    レセプト表示区分
            IF    ( SPA-GMN-W20-CUR     =   16 )
+               IF    ( W20-RECEDSPKBN-STT
+                                       =   WIDGET-NORMAL )
+                   MOVE  "RECEDSPKBN"
+                                           TO  MCP-WIDGET
+                   GO  TO  5001-MAPCUR-EXT
+               ELSE
+                   COMPUTE SPA-GMN-W20-CUR =   SPA-GMN-W20-CUR +   1
+               END-IF
+           END-IF
+      *
+      *    有効期間開始日
+           IF    ( SPA-GMN-W20-CUR     =   17 )
                IF    ( W20-YUKOSTYMD-STT
                                        =   WIDGET-NORMAL )
                    MOVE  "YUKOSTYMD"
@@ -4961,7 +5090,7 @@
            END-IF
       *
       *    有効期間終了日
-           IF    ( SPA-GMN-W20-CUR     =   17 )
+           IF    ( SPA-GMN-W20-CUR     =   18 )
                IF    ( W20-YUKOEDYMD-STT
                                        =   WIDGET-NORMAL )
                    MOVE  "YUKOEDYMD"
@@ -4973,7 +5102,7 @@
            END-IF
       *
       *    病棟終了区分
-           IF    ( SPA-GMN-W20-CUR     =   18 )
+           IF    ( SPA-GMN-W20-CUR     =   19 )
                IF    ( W20-BTU-EDKBN-STT
                                        =   WIDGET-NORMAL )
                    MOVE  "BTU_EDKBN"
@@ -4985,7 +5114,7 @@
            END-IF
       *
       *    入院基本料
-           IF    ( SPA-GMN-W20-CUR     =   19 )
+           IF    ( SPA-GMN-W20-CUR     =   20 )
                IF    ( W20-BTU-KHNRYO-STT
                                        =   WIDGET-NORMAL )
                    MOVE  "BTU_KHNRYO"      TO  MCP-WIDGET
@@ -5047,14 +5176,16 @@
                MOVE    014             TO  SPA-GMN-W20-CUR
            WHEN    "CHK_BTU_HIKSISUKBN"
                MOVE    015             TO  SPA-GMN-W20-CUR
-           WHEN    "YUKOSTYMD"
+           WHEN    "RECEDSPKBN"
                MOVE    016             TO  SPA-GMN-W20-CUR
-           WHEN    "YUKOEDYMD"
+           WHEN    "YUKOSTYMD"
                MOVE    017             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_EDKBN"
+           WHEN    "YUKOEDYMD"
                MOVE    018             TO  SPA-GMN-W20-CUR
-           WHEN    "BTU_KHNRYO"
+           WHEN    "BTU_EDKBN"
                MOVE    019             TO  SPA-GMN-W20-CUR
+           WHEN    "BTU_KHNRYO"
+               MOVE    020             TO  SPA-GMN-W20-CUR
            WHEN    "SELNUM"
                MOVE    100             TO  SPA-GMN-W20-CUR
            END-EVALUATE
@@ -5469,6 +5600,29 @@
       *
            .
        800-BTU-YAKANKNGKSN-SRH-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセプト表示区分サーチ処理
+      *****************************************************************
+       800-RECEDSPKBN-SRH-SEC          SECTION.
+      *
+           SET     CMB-IDX12   TO  1
+           SEARCH  SPA-GMN-W20-RECEDSPKBN-ITM-OCC
+                                           VARYING CMB-IDX12
+           AT  END
+               INITIALIZE          WRK-KANRI-AREA
+           WHEN    SPA-GMN-W20-RECEDSPKBN-ITM
+                                   (CMB-IDX12) (1 : 2) =   WRK-KANRICD
+               SET WRK-KANRIIDX    TO  CMB-IDX12
+               MOVE    SPA-GMN-W20-RECEDSPKBN-ITM (CMB-IDX12)
+                               TO  WRK-KANRIDAT1
+           WHEN    SPA-GMN-W20-RECEDSPKBN-ITM
+                                   (CMB-IDX12) (1 : 2) =   SPACE
+               INITIALIZE          WRK-KANRI-AREA
+           END-SEARCH
+      *
+           .
+       800-RECEDSPKBN-SRH-EXT.
            EXIT.
       *****************************************************************
       *    全角半角混在チェック

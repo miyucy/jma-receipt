@@ -123,7 +123,9 @@
                    09  SYS-5001-KSNCD          PIC X(09).
                    09  SYS-5001-KSNKBN         PIC X(01).
       *予備
-           03                                  PIC  X(296).
+               05  SYS-5001-YOBI               PIC  X(294).
+      *レセプト表示区分
+               05  SYS-5001-RECEDSPKBN         PIC  X(02).
       *端末ＩＤ
            03  SYS-5001-TERMID                 PIC  X(16).
       *オペーレータＩＤ

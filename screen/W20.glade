@@ -820,6 +820,47 @@
 
     </widget>
     <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_RECEDSPKBN</name>
+      <x>620</x>
+      <y>590</y>
+      <width>90</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>RECEDSPKBN</name>
+	<width>161</width>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>13</text_max_length>
+	<text>99 £±£²</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+
+      </widget>
+    </widget>
+    <widget>
       <class>GtkPandaEntry</class>
       <name>YUKOSTYMD</name>
       <x>130</x>
@@ -1436,6 +1477,22 @@
       <width>126</width>
       <height>16</height>
       <label>Ìë´Ö¶ÐÌ³Åù´Ç¸î²Ã»»</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+
+    </widget>
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1000</name>
+      <x>505</x>
+      <y>595</y>
+      <width>112</width>
+      <height>16</height>
+      <label>¥ì¥»¥×¥ÈÉ½¼¨¶èÊ¬</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

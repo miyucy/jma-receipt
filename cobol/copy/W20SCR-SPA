@@ -146,6 +146,13 @@
                                                            PIC X.
                            11  SPA-GMN-W20-CHK-BTU-HIKSIS-STT
                                            PIC S9(9)       BINARY.
+      *                    レセプト表示区分
+                           11  SPA-GMN-W20-RECEDSPKBN.
+                               13  SPA-GMN-W20-RECEDSPKBN-CD
+                                                           PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-W20-RECEDSPKBN-NM
+                                                           PIC X(10).
       *                    有効開始日
                            11  SPA-GMN-W20-YUKOSTYMD       PIC X(10).
       *                    有効終了日
@@ -254,6 +261,20 @@
                                                            PIC X(23)
                                                            OCCURS  10
                                                INDEXED BY  CMB-IDX09.
+      *                    レセプト表示区分コンボ
+                           11  SPA-GMN-W20-CMB-RECEDSPKBN.
+                               13  SPA-GMN-W20-RECEDSPKBN-CNT
+                                                           PIC S9(9)
+                                                           BINARY.
+                               13  SPA-GMN-W20-RECEDSPKBN-ITM-OCC
+                                                           OCCURS  10
+                                               INDEXED BY  CMB-IDX12.
+      *                            レセプト表示区分
+                                   15  SPA-GMN-W20-RECEDSPKBN-ITM
+                                                           PIC X(13).
+      *                            病棟種別コード
+                                   15  SPA-GMN-W20-RECEDSPKBN-ITM2
+                                                           PIC X(02).
       *                    病棟終了区分コンボ
                            11  SPA-GMN-W20-CMB-BTU-EDKBN.
                                13  SPA-GMN-W20-BTU-EDKBN-CNT
