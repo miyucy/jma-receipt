@@ -73,7 +73,6 @@
            03  FLG-PTNYUINRRK      PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
-           03  FLG-PTHKNINF        PIC 9(01).
       *
            03  FLG-NAIYAK          PIC X(01).
            03  FLG-TONPUK          PIC X(01).
@@ -284,7 +283,7 @@
            03  WRK-CHK-TBL.
                05  WRK-CHK-DAY     PIC 9(03)  OCCURS  31.
            03  WRK-CHK-ZAISKBKBN   PIC X(01).
-           03  WRK-CHK-SYMD        PIC 9(08).
+           03  WRK-CHK-SKB         PIC X(01).
       *
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
@@ -381,10 +380,6 @@
       *    選定療養費
        01  SENTEICDCHG-REC.
            COPY    "CPSENTEICDCHG.INC".
-      *
-      *    患者保険情報
-       01  PTHKNINF-REC.
-           COPY    "CPPTHKNINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1868,8 +1863,6 @@
                ADD     1                   TO  SPA-I41-MAX-41
                MOVE    COMB-HKNCOMBINUM    TO  SPA-I41-THKNCOMBI-41
                                                     (SPA-I41-MAX-41)
-               MOVE    COMB-HKNID          TO  SPA-I41-THKNID-41
-                                                    (SPA-I41-MAX-41)
                IF      COMB-GAI-KFTNRATE   =   ZERO
                    MOVE     SPACE          TO  SPA-I41-TFTNWARI-41
                                                      (SPA-I41-MAX-41)
@@ -1953,11 +1946,44 @@
                                      TO  I41-KUMINO (I41-KUMILIST-COUNT)
                    MOVE    SPA-I41-TKUMI-41 (IDX)(1:32)
                                      TO  I41-KUMI (I41-KUMILIST-COUNT)
-                   IF     IDW  NOT = ZERO
-                       PERFORM 410181-PTHKNINF-CHK-SEC
-                   END-IF
                END-IF
            END-PERFORM.
+           IF     IDW  NOT = ZERO
+               PERFORM   VARYING   IDY     FROM    1   BY  1
+                         UNTIL     IDY         >  31
+                   MOVE    SPACE                    TO  WRK-CHK-SKB
+                   PERFORM   VARYING   IDX     FROM    1   BY  1
+                             UNTIL     IDX         >   SPA-I41-MAX-41
+                       MOVE    SPA-I41-THKNCOMBI-41 (IDX)
+                                                        TO  WRK-SURYO-Z1
+                       IF     SPA-GMN-TDAY-41 (IDW IDY)   =   ALL SPACE
+                           MOVE    "*"                  TO  WRK-CHK-SKB
+                       ELSE
+                           IF     SPA-GMN-TDAY-41 (IDW IDY)     =
+                                                      WRK-SURYO-Z1(4:2)
+                               MOVE    "*"              TO  WRK-CHK-SKB
+                           END-IF
+                       END-IF
+                   END-PERFORM
+                   IF     WRK-CHK-SKB   =   SPACE
+                       IF     WRK-TEKSTYMD(7:2)   >   IDY(3:2)
+                           MOVE    IDY(3:2)    TO  WRK-TEKSTYMD(7:2)
+                       END-IF
+                       IF     WRK-TEKEDYMD(7:2)   <   IDY(3:2)
+                           MOVE    IDY(3:2)    TO  WRK-TEKEDYMD(7:2)
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF     (WRK-TEKSTYMD(7:2)  NOT = "99")  AND
+                      (WRK-TEKEDYMD(7:2)  NOT = "00")
+                   MOVE    "red"               TO  I41-KEIKOKU-STYLE
+                   MOVE    "保険の適用が切れている期間があります。"
+                                               TO  I41-KEIKOKU(1:38)
+                   MOVE    WRK-TEKSTYMD(7:2)   TO  I41-KEIKOKU(42:2)
+                   MOVE    " - "               TO  I41-KEIKOKU(44:3)
+                   MOVE    WRK-TEKEDYMD(7:2)   TO  I41-KEIKOKU(47:2)
+               END-IF
+           END-IF.
       *    室料差額
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-SAGAKU-MAX-41
@@ -4269,88 +4295,6 @@
            END-IF.
       *
        410181-SRYACCT-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者保険情報チェック　処理
-      *****************************************************************
-       410181-PTHKNINF-CHK-SEC            SECTION.
-      *
-           PERFORM   VARYING   IDY     FROM    1   BY  1
-                     UNTIL     IDY         >  31
-               MOVE    SPA-I41-THKNCOMBI-41 (IDX)    TO  WRK-SURYO-Z1
-               IF     WRK-SURYO-Z1(4:2)   =   SPA-GMN-TDAY-41 (IDW IDY)
-                   IF     WRK-TEKSTYMD(7:2)   >   IDY(3:2)
-                       MOVE    IDY(3:2)            TO  WRK-TEKSTYMD(7:2)
-                   END-IF
-                   IF     WRK-TEKEDYMD(7:2)   <   IDY(3:2)
-                       MOVE    IDY(3:2)            TO  WRK-TEKEDYMD(7:2)
-                   END-IF
-               END-IF
-           END-PERFORM.
-      *    患者保険情報チェック
-           INITIALIZE                       PTHKNINF-REC.
-           MOVE    SPA-HOSPID               TO  PTHKN-HOSPID.
-           MOVE    SPA-GMN-PTID             TO  PTHKN-PTID.
-           MOVE    SPA-I41-THKNID-41 (IDX)  TO  PTHKN-HKNID.
-      *
-           MOVE    PTHKNINF-REC             TO  MCPDATA-REC.
-           MOVE    "DBSELECT"               TO  MCP-FUNC.
-           MOVE    "PTHKNINF-KEY"           TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"           USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC.
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
-               PERFORM 930-PTHKNINF-READ-SEC
-           ELSE
-               INITIALIZE                  PTHKNINF-REC
-               MOVE    1               TO  FLG-SRYACT
-           END-IF.
-      *
-           IF      FLG-PTHKNINF             =   1
-               MOVE    ALL SPACE         TO  I41-KEIKOKU-G
-           ELSE
-               IF     (PTHKN-TEKSTYMD(1:6)  <  WRK-TEKSTYMD(1:6))  AND
-                      (PTHKN-TEKEDYMD(1:6)  >  WRK-TEKEDYMD(1:6))
-                   MOVE    "99"                TO  WRK-TEKSTYMD(7:2)
-                   MOVE    "00"                TO  WRK-TEKEDYMD(7:2)
-               END-IF
-               IF     PTHKN-TEKEDYMD(1:6)  =  WRK-TEKSTYMD(1:6)
-                   IF     PTHKN-TEKEDYMD(7:2)  =  "31"
-                       MOVE    "00"                TO  WRK-TEKEDYMD(7:2)
-                   ELSE
-                       IF     PTHKN-TEKEDYMD  >  WRK-TEKSTYMD
-                           MOVE    PTHKN-TEKEDYMD      TO  WRK-CHK-SYMD
-                           COMPUTE WRK-CHK-SYMD  =  WRK-CHK-SYMD  +  1
-                           MOVE    WRK-CHK-SYMD        TO  WRK-TEKSTYMD
-                       END-IF
-                   END-IF
-               END-IF
-               IF     PTHKN-TEKSTYMD(1:6)  =  WRK-TEKEDYMD(1:6)
-                   IF     PTHKN-TEKSTYMD(7:2)  =  "01"
-                       MOVE    "99"                TO  WRK-TEKSTYMD(7:2)
-                   ELSE
-                       IF     PTHKN-TEKSTYMD  <  WRK-TEKEDYMD
-                           MOVE    PTHKN-TEKSTYMD      TO  WRK-CHK-SYMD
-                           COMPUTE WRK-CHK-SYMD  =  WRK-CHK-SYMD  -  1
-                           MOVE    WRK-CHK-SYMD        TO  WRK-TEKEDYMD
-                       END-IF
-                   END-IF
-               END-IF
-               IF     (WRK-TEKSTYMD(7:2)  NOT = "99")  AND
-                      (WRK-TEKEDYMD(7:2)  NOT = "00")
-                   MOVE    "red"               TO  I41-KEIKOKU-STYLE
-                   MOVE    "保険の適用が切れている期間があります。"
-                                               TO  I41-KEIKOKU(1:38)
-                   MOVE    WRK-TEKSTYMD(7:2)   TO  I41-KEIKOKU(42:2)
-                   MOVE    " - "               TO  I41-KEIKOKU(44:3)
-                   MOVE    WRK-TEKEDYMD(7:2)   TO  I41-KEIKOKU(47:2)
-               END-IF
-           END-IF.
-      *
-       410181-PTHKNINF-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6778,27 +6722,6 @@
            END-IF.
       *
        930-INPUTCD-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者保険情報読込
-      *****************************************************************
-       930-PTHKNINF-READ-SEC        SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  PTHKNINF-REC
-               MOVE    ZERO                TO  FLG-PTHKNINF
-           ELSE
-               INITIALIZE                      PTHKNINF-REC
-               MOVE    1                   TO  FLG-PTHKNINF
-           END-IF.
-      *
-       930-PTHKNINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
