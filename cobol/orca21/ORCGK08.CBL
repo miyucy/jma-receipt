@@ -199,6 +199,8 @@
            03  FLG-KAKU-FLG        PIC 9(01).
            03  FLG-SYORI-END       PIC 9(01).
       *
+           03  FLG-SYOSIN-OK       PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -2614,6 +2616,7 @@
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDY
            MOVE    ZERO                TO  IDG
+           MOVE    ZERO                TO  FLG-SYOSIN-OK
       *
            MOVE    ZERO                TO  FLG-PARA
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
@@ -2712,6 +2715,8 @@
                    END-IF
                END-PERFORM
                IF      FLG-DEL             =   ZERO
+      *            ½é¿ÇÎÁ»»ÄêÈ½Äê
+                   PERFORM 450112-SYOSIN-CHK-SEC
                    ADD     1                   TO  IDX2
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEI
                    MOVE    IDX2                TO  PARA-EDANUM
@@ -2726,6 +2731,30 @@
       *
            .
        45011-SRYACT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ½é¿ÇÎÁ»»ÄêÈ½Äê½èÍý
+      *****************************************************************
+       450112-SYOSIN-CHK-SEC             SECTION.
+      *
+           IF      LNK-WKSRY-SRYKBN(IDX)   =   "11"  OR  "13"
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL       IDY     >   5
+                   EVALUATE    LNK-WKSRY-SRYCD  (IDX IDY)
+                       WHEN    "111000110"
+                       WHEN    "111003610"
+                       WHEN    "111700110"
+                       WHEN    "111700210"
+                       WHEN    "113003510"
+                       WHEN    "113003710"
+                       WHEN    "101110010"
+                           MOVE    1             TO  FLG-SYOSIN-OK
+                   END-EVALUATE
+               END-PERFORM
+           END-IF
+           .
+       450112-SYOSIN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2767,7 +2796,6 @@
            END-PERFORM
       *    Ê£¿ô²Ê¤Þ¤È¤á½¸·×¥Õ¥é¥°
            MOVE    SPA-KAGRPFLG        TO  LNK-S01-KAGRPFLG
-      *
       *    ÉéÃ´¶â·×»»½èÍý
            CALL    "ORCSGAIFTN"        USING
                                        MCPAREA
@@ -2892,6 +2920,10 @@
                    MOVE    "1"             TO
                                            LNK-S01-KOUREI-ZAITAKU-KBN
                END-IF
+           END-IF
+      *    ½é¿ÇÎÁ»»Äê¥Õ¥é¥°¡ÊÃÏÊý¸øÈñÍÑ¡Ë
+           IF      FLG-SYOSIN-OK       =   1
+               MOVE    "1"             TO  LNK-S01-SYOSINFLG
            END-IF
       *
            .
