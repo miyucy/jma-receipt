@@ -2431,7 +2431,7 @@
                    CONTINUE
                ELSE
                    MOVE    SYS-9000-CODE       TO  SPA-P02X-CODE
-                   IF      SYS-9000-UKEBUTTON (02) =   "T"
+                   IF      SYS-9000-KANBUTTON (02) =   "T"
                        MOVE    2               TO  FLG-CLAIM
                    ELSE
                        MOVE    1               TO  FLG-CLAIM
