@@ -88,6 +88,8 @@
       *  01.00.43    NACL-小豆沢  03.12.01  広範囲熱傷特定集中治療室管理料の
       *                                     算定対応追加（算定上限日数経過後の
       *                                     一般入院料算定はコメントとする）
+      *  01.00.44    NACL-太田    04.01.28  病室変更時に室料差額表示が
+      *                                     変わらない不具合を修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3704,11 +3706,11 @@
            END-EVALUATE
       *
       *    室料差額の初期値を設定
-           IF    ( SPA-GMN-I01-SAGAKU  NOT =   SPACE )
+           IF    ( SPA-GMN-I01-BRMNUM      =  SPA-NAI-I01-BRMNUM-MAE )
                MOVE    SPA-GMN-I01-SAGAKU-CD
-                                           TO  WRK-CMB-CD
+                                       TO  WRK-CMB-CD
                PERFORM 4103-CMB-SAGAKU-SRH-SEC
-               MOVE    WRK-CMB-ITM         TO  SPA-GMN-I01-SAGAKU
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-SAGAKU
            ELSE
                MOVE    WRK-BRM-SAGAKU-CD   TO  WRK-CMB-CD
                PERFORM 4103-CMB-SAGAKU-SRH-SEC
@@ -3716,7 +3718,7 @@
            END-IF
       *
       *    診療科の初期値を設定
-           IF    ( SPA-GMN-I01-NYUINKA-CD  NOT =   SPACE )
+           IF    ( SPA-GMN-I01-BRMNUM      =  SPA-NAI-I01-BRMNUM-MAE )
                MOVE    SPA-GMN-I01-NYUINKA-CD
                                            TO  WRK-CMB-CD
                PERFORM 4103-CMB-NYUINKA-SRH-SEC
