@@ -16,9 +16,9 @@
       * 113-8621, Japan.
       ********************************************************************
        01  SDTCHK01AREA.
-           03  SDTCHK01-CHK-PTN-G.
-               05  SDTCHK01-CHK-PTN-OCC        OCCURS  5.
-                   07  SDTCHK01-CHK-PTN        PIC 9(01).
+           03  SDTCHK01-CHKPTN-G.
+               05  SDTCHK01-CHKPTN-OCC         OCCURS  5.
+                   07  SDTCHK01-CHKPTN         PIC X(01).
            03  SDTCHK01-IN.
                05  SDTCHK01-HOSPID             PIC X(24).
                05  SDTCHK01-PTID               PIC 9(10).

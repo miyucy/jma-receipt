@@ -255,11 +255,13 @@
            03  FILLER              PIC X(35)   VALUE
                "1039 収納機能情報".
            03  FILLER              PIC X(35)   VALUE
-               "1040 データチェック機能情報".
-           03  FILLER              PIC X(35)   VALUE
                "1041 入金方法情報".
            03  FILLER              PIC X(35)   VALUE
                "1042 病名機能情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1100 データチェック機能情報".
+           03  FILLER              PIC X(35)   VALUE
+               "1101 データチェック機能情報２".
            03  FILLER              PIC X(35)   VALUE
                "1901 医療機関編集情報".
            03  FILLER              PIC X(35)   VALUE
@@ -276,11 +278,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   32.
+           03  TBL-KANRICD-TBL         OCCURS   33.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   32.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   33.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -368,6 +370,8 @@
       *
            COPY    "CPSK5013.INC".
       *
+           COPY    "CPSK1101.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -432,6 +436,7 @@
            COPY    "W28.INC".
            COPY    "W29.INC".
            COPY    "W30.INC".
+           COPY    "W60.INC".
            COPY    "W98.INC".
            COPY    "W99.INC".
            COPY    "WERR.INC".
@@ -1042,7 +1047,7 @@
                    MOVE    5               TO  SPA-GMN-CUR
                    GO  TO  4104-KANRICD-CHK-EXT
                WHEN    "1036"
-               WHEN    "1040"
+               WHEN    "1100"
                WHEN    "5001"
                WHEN    "5002"
                WHEN    "5003"
@@ -1664,7 +1669,7 @@
        410-KAKUTEI-SEC           SECTION.
       *
            IF    ( SPA-GMN-KANRICD     =   "1036"
-             OR                            "1040"
+             OR                            "1100"
              OR                            "5001"
              OR                            "5002" 
              OR                            "5003" 
@@ -1736,10 +1741,12 @@
                    MOVE    "W15"               TO  SPA-SAKIPG
                WHEN    "1036"
                    MOVE    "W16"               TO  SPA-SAKIPG
-               WHEN    "1040"
-                   MOVE    "W17"               TO  SPA-SAKIPG
                WHEN    "1041" 
                    MOVE    "W02"               TO  SPA-SAKIPG
+               WHEN    "1100"
+                   MOVE    "W17"               TO  SPA-SAKIPG
+               WHEN    "1101"
+                   MOVE    "W60"               TO  SPA-SAKIPG
                WHEN    "1901" 
                    MOVE    "W18"               TO  SPA-SAKIPG
                WHEN    "5000"

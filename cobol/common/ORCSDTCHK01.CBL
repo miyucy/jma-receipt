@@ -54,6 +54,10 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
+           03  WRK-MCP-PATH.
+               05  WRK-MCP-BLOCKS          PIC S9(9)   BINARY.
+               05  WRK-MCP-RNAME           PIC S9(9)   BINARY.
+               05  WRK-MCP-PNAME           PIC S9(9)   BINARY.
            03  WRK-STR-LEN                 PIC 9(05).
            03  WRK-STR                     PIC X(500).
            03  WRK-BYOMEICD-G.
@@ -150,6 +154,29 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
+           MOVE    PATH-QUERY-DTCHK-KEY2   TO  WRK-MCP-PATH
+           IF    ( SDTCHK01-CHKPTN (1)     =   "1" )
+               IF    ( SDTCHK01-CHKPTN (2)     =   " " )
+                   IF    ( SDTCHK01-CHKPTN (3) =   " " )
+                     AND ( SDTCHK01-CHKPTN (4) =   " " )
+                     AND ( SDTCHK01-CHKPTN (5) =   " " )
+      *
+                       MOVE    PATH-QUERY-DTCHK-KEY3
+                                           TO  WRK-MCP-PATH
+      *
+                   ELSE
+                       MOVE    PATH-QUERY-DTCHK-KEY2
+                                           TO  WRK-MCP-PATH
+                   END-IF
+               ELSE
+                       MOVE    PATH-QUERY-DTCHK-KEY
+                                           TO  WRK-MCP-PATH
+               END-IF
+           ELSE
+               MOVE    PATH-QUERY-DTCHK-KEY4
+                                           TO  WRK-MCP-PATH
+           END-IF
+      *
            PERFORM 900-QDTCHK-KEY-SEL-SEC
       *
            PERFORM UNTIL ( FLG-QDTCHK      NOT =   ZERO )
@@ -187,7 +214,7 @@
            IF    ( QDTCHK-CD               NOT =   CONST-MICODE )
             AND  ( QDTCHK-BYOMEICD (1)     NOT =   CONST-MICODE )
       *
-                IF   ( SDTCHK01-CHK-PTN (1)    =   1 )
+                IF   ( SDTCHK01-CHKPTN (1)     =   1 )
                     IF   ( FLG-MATCH           =   ZERO )
       *
                        PERFORM 20011-BYOMEICDKEY-HEN-SEC
@@ -197,20 +224,20 @@
                     END-IF
                 END-IF
       *
-      *         IF   ( SDTCHK01-CHK-PTN (2)    =   1 )
-      *             IF   ( FLG-MATCH           =   ZERO )
-      *                MOVE    QDTCHK-BYOMEI   TO  WRK-CHKMST-KEY
-      *                MOVE    QDTCHK-PTBYOMEI TO  WRK-PTBYOMEI-KEY
-      *                PERFORM 20011-TOTUGO-SEC
-      *             END-IF
-      *         END-IF
+                IF   ( SDTCHK01-CHKPTN (2)     =   1 )
+                    IF   ( FLG-MATCH           =   ZERO )
+                       MOVE    QDTCHK-BYOMEI   TO  WRK-CHKMST-KEY
+                       MOVE    QDTCHK-PTBYOMEI TO  WRK-PTBYOMEI-KEY
+                       PERFORM 20011-TOTUGO-SEC
+                    END-IF
+                END-IF
       *
            END-IF
       *
            IF    ( QDTCHK-CD               NOT =   CONST-MICODE )
             AND  ( QDTCHK-BYOMEICD (1)         =   CONST-MICODE )
       *
-                IF   ( SDTCHK01-CHK-PTN (3)    =   1 )
+                IF   ( SDTCHK01-CHKPTN (3)     =   1 )
                     IF   ( FLG-MATCH           =   ZERO )
                        MOVE    QDTCHK-BYOMEI   TO  WRK-CHKMST-KEY
                        MOVE    QDTCHK-PTBYOMEI TO  WRK-PTBYOMEI-KEY
@@ -223,7 +250,7 @@
            IF    ( QDTCHK-CD                   =   CONST-MICODE )
             AND  ( QDTCHK-BYOMEICD (1)     NOT =   CONST-MICODE )
       *
-                IF   ( SDTCHK01-CHK-PTN (4)    =   1 )
+                IF   ( SDTCHK01-CHKPTN (4)     =   1 )
                     IF   ( FLG-MATCH           =   ZERO )
                        MOVE    QDTCHK-BYOMEI   TO  WRK-CHKMST-KEY
                        MOVE    QDTCHK-PTBYOMEI TO  WRK-PTBYOMEI-KEY
@@ -236,7 +263,7 @@
            IF    ( QDTCHK-CD               NOT =   CONST-MICODE )
             AND  ( QDTCHK-BYOMEICD (1)     NOT =   CONST-MICODE )
       *
-                IF   ( SDTCHK01-CHK-PTN (5)    =   1 )
+                IF   ( SDTCHK01-CHKPTN (5)     =   1 )
                     IF   ( FLG-MATCH           =   ZERO )
                        MOVE    QDTCHK-BYOMEI   TO  WRK-CHKMST-KEY
                        MOVE    QDTCHK-PTBYOMEI TO  WRK-PTBYOMEI-KEY
@@ -501,7 +528,7 @@
            MOVE    SDTCHK01-CDKBN      TO  QDTCHK-SELCDKBN
       *
            MOVE    QDTCHK-REC          TO  MCPDATA-REC
-           MOVE    PATH-QUERY-DTCHK-KEY2   TO  MCP-PATH
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  QDTCHK-REC
@@ -518,7 +545,7 @@
       *****************************************************************
        900-QDTCHK-KEY-FET-SEC          SECTION.
       *
-           MOVE    PATH-QUERY-DTCHK-KEY2   TO  MCP-PATH
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  QDTCHK-REC

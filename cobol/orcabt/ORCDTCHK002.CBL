@@ -699,6 +699,9 @@
       *    データチェック機能情報
            COPY    "CPSK1040.INC".
       *
+      *    データチェック機能情報２
+           COPY    "CPSK1101.INC".
+      *
       *    レセプト編集区分
            COPY    "CPSK2005.INC".
       *
@@ -835,6 +838,9 @@
       *
       *    負担者番号受給者番号抜けチェック対象取得処理
            PERFORM 1001-SYS1040-GET-SEC
+      *
+      *    データチェック２機能情報
+           PERFORM 1001-SYS1101-GET-SEC
       *
       *    レセプト編集区分取得処理
            PERFORM 1001-SYS2005-GET-SEC
@@ -1151,6 +1157,30 @@
       *
            .
        1001-SYS1040-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセプト編集区分取得処理
+      *****************************************************************
+       1001-SYS1101-GET-SEC            SECTION.
+      *
+           INITIALIZE                      SYS-1101-REC
+           MOVE    "1101"              TO  SYS-1101-KANRICD
+           MOVE    "*"                 TO  SYS-1101-KBNCD
+           MOVE    SYS-1101-REC        TO  MCPDATA-REC
+           MOVE    WRK-KJNYMD          TO  ORC-DBYMD
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-1101-REC
+           ELSE
+               INITIALIZE                  SYS-1101-REC
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       1001-SYS1101-GET-EXT.
            EXIT.
       *****************************************************************
       *    レセプト編集区分取得処理
@@ -4004,7 +4034,12 @@
            IF    ( FLG-CHKMST          =   ZERO )
       *
                INITIALIZE                  SDTCHK01AREA
-               MOVE    ALL "1"         TO  SDTCHK01-CHK-PTN-G
+               IF    ( SYS-1101-BYOCHKPTN-G    =   SPACE )
+                   MOVE    "1 111"     TO  SDTCHK01-CHKPTN-G
+               ELSE
+                   MOVE    SYS-1101-BYOCHKPTN-G
+                                       TO  SDTCHK01-CHKPTN-G
+               END-IF
                MOVE    DTCHK003-HOSPID TO  SDTCHK01-HOSPID
                MOVE    DTCHK003-PTID   TO  SDTCHK01-PTID
                MOVE    TSRYKA-SRYKA (IDX6)
@@ -4171,7 +4206,12 @@
                PERFORM 920-DBCLOSE-SEC
       *
                INITIALIZE                  SDTCHK01AREA
-               MOVE    "1"             TO  SDTCHK01-CHK-PTN-G
+               IF    ( SYS-1101-BYOCHKPTN-G    =   SPACE )
+                   MOVE    "1 111"     TO  SDTCHK01-CHKPTN-G
+               ELSE
+                   MOVE    SYS-1101-BYOCHKPTN-G
+                                       TO  SDTCHK01-CHKPTN-G
+               END-IF
                MOVE    DTCHK003-HOSPID TO  SDTCHK01-HOSPID
                MOVE    DTCHK003-PTID   TO  SDTCHK01-PTID
                MOVE    TSRYKA-SRYKA (IDX6)

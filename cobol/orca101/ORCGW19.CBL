@@ -151,6 +151,9 @@
            COPY    "W26.INC".
            COPY    "W27.INC".
            COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W60.INC".
            COPY    "W98.INC".
            COPY    "W99.INC".
            COPY    "WERR.INC".
@@ -531,12 +534,10 @@
            EVALUATE    MCP-EVENT       ALSO      MCP-WIDGET
       *    Ã·§Î
            WHEN    "CLICKED"       ALSO    "B01"
-               MOVE   "CHANGE"             TO  MCP-PUTTYPE
                MOVE   ZERO                 TO  SPA-NAI-W19-RET
                PERFORM  210-BACK
       *    ≥ŒƒÍ
            WHEN    "CLICKED"       ALSO    "B12"
-               MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 480-KAKUTEI-SEC
            END-EVALUATE
            .
@@ -735,7 +736,7 @@
            MOVE    "W10"               TO  SPA-SAKIPG
            MOVE    "W19"               TO  SPA-MOTOPG
       *
-      ***  MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "JOIN  "             TO  MCP-PUTTYPE
            MOVE    "W10"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
@@ -758,7 +759,6 @@
       *
            MOVE   1                    TO  SPA-NAI-W19-RET
       *
-           MOVE   "JOIN"               TO  MCP-PUTTYPE
            PERFORM 210-BACK
       *
            .
