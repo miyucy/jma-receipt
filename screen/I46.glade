@@ -9,6 +9,7 @@
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <language>C</language>
   <gnome_support>True</gnome_support>
+  <gtkpanda_support>False</gtkpanda_support>
   <gettext_support>True</gettext_support>
 </project>
 
@@ -26,6 +27,11 @@
     <name>set_focus</name>
     <handler>set_focus</handler>
     <last_modification_time>Mon, 25 Dec 2000 05:44:46 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Thu, 05 Dec 2002 02:00:38 GMT</last_modification_time>
   </signal>
   <title>(I46)²ñ·×¾È²ñ¡Ý¶Ø´÷ÌôºÞ°ìÍ÷</title>
   <type>GTK_WINDOW_TOPLEVEL</type>

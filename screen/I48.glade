@@ -31,6 +31,11 @@
     <handler>set_focus</handler>
     <last_modification_time>Mon, 25 Dec 2000 09:10:52 GMT</last_modification_time>
   </signal>
+  <signal>
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Thu, 05 Dec 2002 02:02:36 GMT</last_modification_time>
+  </signal>
   <title>(I48)壳闻乖百办枉联买サブ</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -101,6 +106,7 @@
       <y>524</y>
       <width>72</width>
       <height>24</height>
+      <sensitive>False</sensitive>
       <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
@@ -247,6 +253,7 @@
       <y>524</y>
       <width>72</width>
       <height>24</height>
+      <sensitive>False</sensitive>
       <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
@@ -270,6 +277,7 @@
       <y>524</y>
       <width>72</width>
       <height>24</height>
+      <sensitive>False</sensitive>
       <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
@@ -293,6 +301,7 @@
       <y>524</y>
       <width>72</width>
       <height>24</height>
+      <sensitive>False</sensitive>
       <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
@@ -316,6 +325,7 @@
       <y>524</y>
       <width>88</width>
       <height>24</height>
+      <sensitive>False</sensitive>
       <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>

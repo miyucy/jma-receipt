@@ -9,6 +9,7 @@
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <language>C</language>
   <gnome_support>True</gnome_support>
+  <gtkpanda_support>False</gtkpanda_support>
   <gettext_support>True</gettext_support>
 </project>
 
@@ -26,6 +27,11 @@
     <name>set_focus</name>
     <handler>set_focus</handler>
     <last_modification_time>Mon, 25 Dec 2000 06:03:25 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Thu, 05 Dec 2002 02:01:11 GMT</last_modification_time>
   </signal>
   <title>(I47)会計照会−患者番号入力</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
@@ -59,6 +65,8 @@
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
       <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
     </widget>
 
     <widget>

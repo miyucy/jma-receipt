@@ -29,6 +29,11 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 21 Dec 2000 08:37:55 GMT</last_modification_time>
   </signal>
+  <signal>
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Thu, 05 Dec 2002 01:57:31 GMT</last_modification_time>
+  </signal>
   <title>(I42)会計照会−チェック</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>

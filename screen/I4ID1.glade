@@ -28,10 +28,10 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 26 Jan 2001 04:22:42 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+    <last_modification_time>Thu, 05 Dec 2002 02:05:27 GMT</last_modification_time>
   </signal>
   <title>(I4ID1)確認画面</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
@@ -57,7 +57,7 @@
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
       <text></text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -96,7 +96,7 @@
       <text_visible>True</text_visible>
       <text_max_length>70</text_max_length>
       <text></text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
