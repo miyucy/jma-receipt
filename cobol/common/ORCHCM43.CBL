@@ -54,6 +54,7 @@
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-PRINT           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -312,29 +313,41 @@
       *
                MOVE    LNKSYU-OCC (IDX-SYU)
                                        TO  SYUNOU-REC
-      *        ¿ÇÎÅ²ÊÌ¾ÊÔ½¸
-               MOVE    1               TO  WRK-SRYKA-PNT
-               MOVE    SPACE           TO  WRK-SRYKA-MEI
-               PERFORM 2021-GRP-SRYKAMEI-HEN-SEC
       *
-      *        ÊÝ¸±ÁÈ¹ç¤»
-               IF    ( HCM43S01-GRP-HKNCOMBI-MAX (IDX-SYU)
-                                       >       1 )
-                   MOVE    "Ê£¿ôÊÝ¸±»ÈÍÑ"      TO  WRK-HKNCOMBIMEI
-                   MOVE    ZERO                TO  SYU-PTFTNRATE
+               MOVE    ZERO            TO  FLG-PRINT
+               IF    ( ORCHCM43-ZEROSKYFLG =   "1" )
+                   IF    ( SYU-SKYMONEY    >   ZERO )
+                       MOVE    1       TO  FLG-PRINT
+                   END-IF
                ELSE
-                   MOVE    HCM43S01-GRP-HKNCOMBI (IDX-SYU 1)
-                                               TO  SYU-HKNCOMBINUM
-                   MOVE    HCM43S01-GRP-PTFTNRATE (IDX-SYU 1)
-                                               TO  SYU-PTFTNRATE
-                   PERFORM 1001-HKNCOMBI-HEN-SEC
+                       MOVE    1       TO  FLG-PRINT
                END-IF
       *
-      *        Ä¢É¼ÊÔ½¸½èÍý
-               PERFORM 300-HCM43-HEN-SEC
+               IF    ( FLG-PRINT       =   1 )
+      *            ¿ÇÎÅ²ÊÌ¾ÊÔ½¸
+                   MOVE    1           TO  WRK-SRYKA-PNT
+                   MOVE    SPACE       TO  WRK-SRYKA-MEI
+                   PERFORM 2021-GRP-SRYKAMEI-HEN-SEC
       *
-      *        Ä¢É¼°õºþ½èÍý
-               PERFORM 400-PRINT-SEC
+      *            ÊÝ¸±ÁÈ¹ç¤»
+                   IF    ( HCM43S01-GRP-HKNCOMBI-MAX (IDX-SYU)
+                                       >       1 )
+                       MOVE    "Ê£¿ôÊÝ¸±»ÈÍÑ"  TO  WRK-HKNCOMBIMEI
+                       MOVE    ZERO            TO  SYU-PTFTNRATE
+                   ELSE
+                       MOVE    HCM43S01-GRP-HKNCOMBI (IDX-SYU 1)
+                                               TO  SYU-HKNCOMBINUM
+                       MOVE    HCM43S01-GRP-PTFTNRATE (IDX-SYU 1)
+                                               TO  SYU-PTFTNRATE
+                       PERFORM 1001-HKNCOMBI-HEN-SEC
+                   END-IF
+      *
+      *            Ä¢É¼ÊÔ½¸½èÍý
+                   PERFORM 300-HCM43-HEN-SEC
+      *
+      *            Ä¢É¼°õºþ½èÍý
+                   PERFORM 400-PRINT-SEC
+               END-IF
       *
            END-PERFORM
       *

@@ -123,6 +123,7 @@
            03  WRK-PARA-HAKUHOUFLG                 PIC X(01).
            03  WRK-PARA-PTNUM                      PIC X(20).
            03  WRK-PARA-HAKYMD                     PIC X(08).
+           03  WRK-PARA-ZEROSKYFLG                 PIC X(01).
       *
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
@@ -283,6 +284,7 @@
                                        WRK-PARA-HAKUHOUFLG
                                        WRK-PARA-PTNUM
                                        WRK-PARA-HAKYMD
+                                       WRK-PARA-ZEROSKYFLG
       *
            MOVE    "≥∞ÕË∑Ó Ã¿¡µ·ΩÒ"    TO  WRK-TITLE
       *
@@ -617,6 +619,7 @@
            MOVE    WRK-PARA-SRYYM      TO  ORCHCM43-SRYYM
            MOVE    WRK-PARA-HAKUHOUFLG TO  ORCHCM43-HAKUHOUFLG
            MOVE    WRK-PARA-HAKYMD     TO  ORCHCM43-HAKYMD
+           MOVE    WRK-PARA-ZEROSKYFLG TO  ORCHCM43-ZEROSKYFLG
       *
            CALL    "ORCHCM43"          USING
                                        SPA-AREA

@@ -37,6 +37,9 @@
       *        発行日
                05  ORCHCM43-HAKYMD         PIC X(08).
       *
+      *        ゼロ円請求書発行フラグ
+               05  ORCHCM43-ZEROSKYFLG     PIC X(01).
+      *
       *        一括パラメタ
                05  ORCHCM43-PRTAREA        PIC X(15000).
       *
