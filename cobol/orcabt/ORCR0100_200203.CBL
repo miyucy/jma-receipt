@@ -1795,13 +1795,13 @@
                               ( RECE031-BYOMEIMOJI  *   2 )
                                                     +   WRK-WCLM
       *            疑い分を追加計算
-                   IF      RECE031-UTAGAIFLG     =   "1" OR  "3"
-                   AND     WRK-HENFLG1           =   SPACE
+                   IF    ( RECE031-UTAGAIFLG     =   "1" OR  "3" )
+                   AND   ( WRK-HENFLG1           =   SPACE       )
                        COMPUTE WRK-WCLM      =   
                                    WRK-WCLM  +   WRK-CONS-UTAGAI-MOJISU
                    END-IF
-                   IF      RECE031-UTAGAIFLG     =   "2" OR  "3"
-                   AND     WRK-HENFLG2           =   SPACE
+                   IF    ( RECE031-UTAGAIFLG     =   "2" OR  "3" )
+                   AND   ( WRK-HENFLG2           =   SPACE       ) 
                        COMPUTE WRK-WCLM      =   
                                    WRK-WCLM  +   WRK-CONS-KYUSEI-MOJISU
                    END-IF    
@@ -1873,8 +1873,8 @@
            MOVE    RECE031-BYOMEI      TO  WRK-BYOMEI
       *
       *    疑いフラグがセットされているとき     
-           IF      RECE031-UTAGAIFLG   =   "1" OR  "3"
-           AND     WRK-HENFLG1         =   SPACE                         
+           IF    ( RECE031-UTAGAIFLG   =   "1" OR  "3" )
+           AND   ( WRK-HENFLG1         =   SPACE       )                          
                MOVE    SPACE               TO  WRK-BYOMEI
                STRING  RECE031-BYOMEI      DELIMITED BY  SPACE
                        WRK-CONS-UTAGAI     DELIMITED BY  SIZE
@@ -1882,8 +1882,8 @@
                COMPUTE WRK-MOJISU          =      
                                 WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
            END-IF    
-           IF      RECE031-UTAGAIFLG   =   "2" OR  "3"
-           AND     WRK-HENFLG2         =   SPACE                         
+           IF    ( RECE031-UTAGAIFLG   =   "2" OR  "3" )
+           AND   ( WRK-HENFLG2         =   SPACE       )                  
                MOVE    SPACE               TO  WRK-BYOMEIW
                STRING  WRK-CONS-KYUSEI     DELIMITED BY  SIZE
                        WRK-BYOMEI          DELIMITED BY  SPACE

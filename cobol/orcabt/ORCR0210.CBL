@@ -1707,8 +1707,8 @@
            END-IF
       *
       *    数量データ
-           IF      RECE041-SRYKBN(1:1)        =   "1" OR  "2" OR "3"
-           AND     TBL-KOUI-SRYSURYO (IDX)   <=  1   
+           IF    ( RECE041-SRYKBN(1:1)        =   "1" OR  "2" OR "3" )
+           AND   ( TBL-KOUI-SRYSURYO (IDX)   <=  1                   )
                CONTINUE
            ELSE    
                IF      TBL-KOUI-SRYSURYO (IDX)  >   ZERO

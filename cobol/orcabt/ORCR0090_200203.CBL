@@ -1139,10 +1139,10 @@
                    END-IF    
                END-IF
       *        --- 薬剤点数20点以下の場合 ---（頓服・外用）
-               IF  RECE04-SRYKBN         =   "22"  OR  "23"
-               AND RECE04-ZAITEN         <=  20
-               AND TBL-ZAIW-SRYCD (1 1)
-                                     NOT =   CONS-TEIGEN
+               IF    ( RECE04-SRYKBN         =   "22"  OR  "23" )
+               AND   ( RECE04-ZAITEN         <=  20             )
+               AND   ( TBL-ZAIW-SRYCD (1 1)
+                                     NOT =   CONS-TEIGEN        )
       *            明細空白処理
                    PERFORM 410-MEISAI-SPACE-SEC
                END-IF
@@ -1341,13 +1341,13 @@
                IF      RECE04-SRYKBN   <=   "33"
                    MOVE    "＊"            TO  WRK-ZAI-MK
                END-IF    
-               IF      RECE04-SRYKBN     =   "31"  OR  "32"  OR  "33"
-               AND     IDX1              =   5
-               AND     RECE04-YKZTEN     <=  20
+               IF    ( RECE04-SRYKBN     =   "31"  OR  "32"  OR  "33" )
+               AND   ( IDX1              =   5                        )
+               AND   ( RECE04-YKZTEN     <=  20                       )
                    CONTINUE
                ELSE    
-                   IF      RECE04-SRYKBN     =   "31"  OR  "32"
-                   AND     IDX1              =   3
+                   IF    ( RECE04-SRYKBN     =   "31"  OR  "32" )
+                   AND   ( IDX1              =   3              )
                        CONTINUE
                    ELSE    
                        PERFORM VARYING IDX2    FROM    1   BY  1
@@ -1395,9 +1395,9 @@
                IF      IDX1              =   5
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
                    IF      RECE04-SRYKBN     >=  "31"   
-                       IF      RECE04-SRYKBN     =   "31"    OR  
-                                                     "32"    OR  "33"  
-                       AND     RECE04-YKZTEN     <=  20
+                       IF    ( RECE04-SRYKBN     =   "31"    OR  
+                                                     "32"    OR  "33" )  
+                       AND   ( RECE04-YKZTEN     <=  20               )
                            ADD     1                 TO  WRK-TBLMAX
                            MOVE    "＊"              TO
                                        TBL-ZAI (WRK-TBLMAX)(1:2)

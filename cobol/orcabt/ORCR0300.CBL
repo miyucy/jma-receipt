@@ -1784,8 +1784,8 @@
                MOVE    9                   TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC  
       *        ¿ôÎÌ
-               IF      RECE041-SRYKBN(1:1)     =   "1" OR  "2" OR "3"
-               AND     TBL-KOUI-SRYSURYO (IDX) <=  1   
+               IF    ( RECE041-SRYKBN(1:1)     =   "1" OR  "2" OR "3" )
+               AND   ( TBL-KOUI-SRYSURYO (IDX) <=  1                  )
                    CONTINUE
                ELSE    
                    IF      TBL-KOUI-SRYSURYO (IDX)  >   ZERO
