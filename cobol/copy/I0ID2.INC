@@ -29,3 +29,7 @@
                 04  I0ID2-VALUE PIC X(6).
               03  I0ID2-BTU.
                 04  I0ID2-VALUE PIC X(20).
+              03  I0ID2-HKNCOMBI.
+                04  I0ID2-VALUE PIC X(46).
+              03  I0ID2-TOKNYUIN.
+                04  I0ID2-VALUE PIC X(48).

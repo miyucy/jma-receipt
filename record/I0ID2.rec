@@ -18,5 +18,11 @@ I0ID2	{
 		BTU	{
 			value	varchar(20);
 		};
+		HKNCOMBI	{
+			value	varchar(46);
+		};
+		TOKNYUIN	{
+			value	varchar(48);
+		};
 	};
 };

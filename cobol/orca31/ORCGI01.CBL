@@ -10181,6 +10181,11 @@
            MOVE    SPA-GMN-I01-BTUNAME-NM
                                        TO  I0ID2-BTU
       *
+           MOVE    SPA-GMN-I01-HKNCOMBI-NM
+                                       TO  I0ID2-HKNCOMBI
+           MOVE    SPA-GMN-I01-TOKNYUIN-NM
+                                       TO  I0ID2-TOKNYUIN
+      *
            MOVE    "B12"                TO  MCP-WIDGET
       *
            MOVE    "I01"                TO  SPA-MOTOPG
