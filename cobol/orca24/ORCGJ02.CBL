@@ -3028,7 +3028,7 @@
            END-PERFORM
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    WRK-IDX         TO  SPA-DAY-IDX
-               GO      TO     410121-RRK-DAYCHK-EXT
+               GO      TO     41012-DAY-CHK-EXT
            END-IF
       *
       *    IF      SPA-GMN-DAY (SPA-DAY-IDX)   =   SPA-GNAI-DAY
