@@ -3442,6 +3442,7 @@
            END-IF
       *
            PERFORM 3101-SRYKA-SPA-SEC
+           PERFORM 3102-NYUGAIKBN-SPA-SEC
            MOVE    2                   TO  SPA-GMN-CUR
       *
            .
