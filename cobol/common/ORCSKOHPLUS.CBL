@@ -110,13 +110,10 @@
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    スパ領域
-           COPY    "COMMON-SPA".
       *    公費付加情報取得用パラメタ
            COPY    "CPORCSKOHPLUS.INC".
       *
        PROCEDURE                   DIVISION    USING
-           SPA-AREA
            ORCSKOHPLUS-AREA
            .
       *
