@@ -85,6 +85,11 @@
       *                                     された場合、そちらを優先すること
       *  01.00.22    MCC−小豆沢  02/09/19  （平成１４年１０月改正対応）
       *                                     老人保険の８・９割対応
+      *  01.00.23    MCC−小豆沢  02/09/25  （平成１４年１０月改正対応）
+      *                                     寝たきり老人在宅総合診療料と
+      *                                     在宅末期医療総合診療料の算定
+      *                                     高齢者（７０歳から７４歳が対象）
+      *                                     について負担額の上限を設定
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -135,6 +140,8 @@
            03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
+           03  FLG-SRYACCT             PIC 9(01).
+           03  FLG-SRYACT              PIC 9(01).
            03  FLG-SANSHOU             PIC X(01).
            03  FLG-SANSHOU2            PIC X(01).
            03  FLG-SANTEI1             PIC X(01).
@@ -370,6 +377,19 @@
            03  DSP-IDX                 PIC  9(02)  VALUE  ZERO.
            03  DSP-IDX2                PIC  9(02)  VALUE  ZERO.
            03  KOH-IDX                 PIC  9(02)  VALUE  ZERO.
+      *
+      *----(01.00.23) LINE ADD START --------------------------
+      *平成１４年１０月改正対応
+      *高齢者の在宅総合・在宅末期算定患者の負担上限算定エリア
+      *
+       01  WK-SYUHKN-TAIHI-AREA.
+           03  MAX-KIN-SYU-M           PIC 9(08).
+           03  FTN-SYU-M               PIC 9(08).
+           03  ZAN-SYU-M               PIC 9(08).
+           03  WK-ZAITAKU-FLG          PIC X(01).
+           03  FLG-SANTEI-SYU          PIC X(01).
+      *----(01.00.23) LINE ADD END   --------------------------
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -407,10 +427,20 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
+      *    診療会計
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
+      *
+      *    診療行為
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    保険算定用年齢・割合計算サブ
+           COPY    "CPORCSAGECHK.INC".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -990,6 +1020,375 @@
                                       (LNK-SYU-HKNTEN (IDX) * 10)
            END-PERFORM.
       *
+      *----(01.00.23) LINE ADD START --------------------------
+      *平成１４年１０月改正対応
+      *高齢者の在宅総合・在宅末期算定患者の負担上限算定エリア初期化
+      *
+           INITIALIZE    WK-SYUHKN-TAIHI-AREA.
+           IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   SPACE)   AND
+               (LNK-SYU-SRYYMD(1:6)          >=  "200210")
+      *        寝たきり老人在宅総合診療料（院内処方せんを交付する）
+               INITIALIZE                           SRYACT-REC
+               MOVE    LNK-SYU-HOSPID       TO      SRY-HOSPID
+               MOVE    LNK-SYU-NYUGAIKBN    TO      SRY-NYUGAIKBN
+               MOVE    LNK-SYU-PTID         TO      SRY-PTID
+               MOVE    LNK-SYU-SRYYMD(1:6)  TO      SRY-SRYYM
+               MOVE    "114701210"          TO      SRY-SRYCD(1)
+               MOVE    "114701210"          TO      SRY-SRYCD(2)
+               MOVE    "114701210"          TO      SRY-SRYCD(3)
+               MOVE    "114701210"          TO      SRY-SRYCD(4)
+               MOVE    "114701210"          TO      SRY-SRYCD(5)
+               MOVE    SRYACT-REC           TO      MCPDATA-REC
+               MOVE    "DBSELECT"           TO      MCP-FUNC
+               MOVE    "SRYACT-KEY7"        TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+               IF      MCP-RC               =       ZERO
+                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH 
+                   PERFORM   SRYACT-READ-SEC
+                   IF      FLG-SRYACT       =       ZERO
+                       INITIALIZE                   SRYACCT-REC
+                       MOVE    SRY-HOSPID       TO   ACCT-HOSPID
+                       MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
+                       MOVE    SRY-SRYKA        TO   ACCT-SRYKA
+                       MOVE    SRY-PTID         TO   ACCT-PTID
+                       MOVE    SRY-SRYYM        TO   ACCT-SRYYM
+                       MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
+                       MOVE    SRYACCT-REC      TO   MCPDATA-REC
+                       MOVE    "DBSELECT"       TO   MCP-FUNC
+                       MOVE    "SRYACCT-KEY5"   TO   ORC-DBPATH
+                       CALL    "ORCMCPSUB"           USING
+                                                     MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                       IF      MCP-RC           =       ZERO
+                           MOVE    "SRYACCT-KEY5"   TO  ORC-DBPATH 
+                           PERFORM   SRYACCT-READ-SEC
+                           IF      FLG-SRYACCT  =       ZERO
+                               IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
+                                   (ACCT-ZAIKAISU NOT =  ZERO)
+                                   MOVE  "1"    TO   
+                                            LNK-S01-KOUREI-ZAITAKU-KBN
+                               MOVE    "DBCLOSE"       TO  MCP-FUNC
+                               MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
+                               CALL    "ORCMCPSUB"         USING
+                                                           MCPAREA
+                                                           ORCMCPAREA
+                                                           MCPDATA-REC
+                           ELSE
+                               MOVE    "DBCLOSE"       TO  MCP-FUNC
+                               MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
+                               CALL    "ORCMCPSUB"         USING
+                                                           MCPAREA
+                                                           ORCMCPAREA
+                                                           MCPDATA-REC
+                           END-IF
+                       ELSE
+                           MOVE    "DBCLOSE"       TO  MCP-FUNC
+                           MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
+                           CALL    "ORCMCPSUB"         USING
+                                                       MCPAREA
+                                                       ORCMCPAREA
+                                                       MCPDATA-REC
+                       END-IF
+                   ELSE
+                       MOVE    "DBCLOSE"            TO  MCP-FUNC
+                       MOVE    "SRYACT-KEY7"        TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"          USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+                   END-IF
+               ELSE
+                   MOVE    "DBCLOSE"        TO      MCP-FUNC
+                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH
+                   CALL    "ORCMCPSUB"      USING   MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+               END-IF
+      *        寝たきり老人在宅総合診療料（院内処方せんを交付しない）
+               INITIALIZE                           SRYACT-REC
+               MOVE    LNK-SYU-HOSPID       TO      SRY-HOSPID
+               MOVE    LNK-SYU-NYUGAIKBN    TO      SRY-NYUGAIKBN
+               MOVE    LNK-SYU-PTID         TO      SRY-PTID
+               MOVE    LNK-SYU-SRYYMD(1:6)  TO      SRY-SRYYM
+               MOVE    "114701710"          TO      SRY-SRYCD(1)
+               MOVE    "114701710"          TO      SRY-SRYCD(2)
+               MOVE    "114701710"          TO      SRY-SRYCD(3)
+               MOVE    "114701710"          TO      SRY-SRYCD(4)
+               MOVE    "114701710"          TO      SRY-SRYCD(5)
+               MOVE    SRYACT-REC           TO      MCPDATA-REC
+               MOVE    "DBSELECT"           TO      MCP-FUNC
+               MOVE    "SRYACT-KEY7"        TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+               IF      MCP-RC               =       ZERO
+                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH 
+                   PERFORM   SRYACT-READ-SEC
+                   IF      FLG-SRYACT       =       ZERO
+                       INITIALIZE                   SRYACCT-REC
+                       MOVE    SRY-HOSPID       TO   ACCT-HOSPID
+                       MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
+                       MOVE    SRY-SRYKA        TO   ACCT-SRYKA
+                       MOVE    SRY-PTID         TO   ACCT-PTID
+                       MOVE    SRY-SRYYM        TO   ACCT-SRYYM
+                       MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
+                       MOVE    SRYACCT-REC      TO   MCPDATA-REC
+                       MOVE    "DBSELECT"       TO   MCP-FUNC
+                       MOVE    "SRYACCT-KEY5"   TO   ORC-DBPATH
+                       CALL    "ORCMCPSUB"           USING
+                                                     MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                       IF      MCP-RC           =       ZERO
+                           MOVE    "SRYACCT-KEY5"   TO  ORC-DBPATH 
+                           PERFORM   SRYACCT-READ-SEC
+                           IF      FLG-SRYACCT  =       ZERO
+                               IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
+                                   (ACCT-ZAIKAISU NOT =  ZERO)
+                                   MOVE  "1"    TO   
+                                            LNK-S01-KOUREI-ZAITAKU-KBN
+                               MOVE    "DBCLOSE"       TO  MCP-FUNC
+                               MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
+                               CALL    "ORCMCPSUB"         USING
+                                                           MCPAREA
+                                                           ORCMCPAREA
+                                                           MCPDATA-REC
+                           ELSE
+                               MOVE    "DBCLOSE"       TO  MCP-FUNC
+                               MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
+                               CALL    "ORCMCPSUB"         USING
+                                                           MCPAREA
+                                                           ORCMCPAREA
+                                                           MCPDATA-REC
+                           END-IF
+                       ELSE
+                           MOVE    "DBCLOSE"       TO  MCP-FUNC
+                           MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
+                           CALL    "ORCMCPSUB"         USING
+                                                       MCPAREA
+                                                       ORCMCPAREA
+                                                       MCPDATA-REC
+                       END-IF
+                   ELSE
+                       MOVE    "DBCLOSE"            TO  MCP-FUNC
+                       MOVE    "SRYACT-KEY7"        TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"          USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+                   END-IF
+               ELSE
+                   MOVE    "DBCLOSE"        TO      MCP-FUNC
+                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH
+                   CALL    "ORCMCPSUB"      USING   MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+               END-IF
+      *        在宅末期医療総合診療料（院外）
+               INITIALIZE                           SRYACT-REC
+               MOVE    LNK-SYU-HOSPID       TO      SRY-HOSPID
+               MOVE    LNK-SYU-NYUGAIKBN    TO      SRY-NYUGAIKBN
+               MOVE    LNK-SYU-PTID         TO      SRY-PTID
+               MOVE    LNK-SYU-SRYYMD(1:6)  TO      SRY-SRYYM
+               MOVE    "114007610"          TO      SRY-SRYCD(1)
+               MOVE    "114007610"          TO      SRY-SRYCD(2)
+               MOVE    "114007610"          TO      SRY-SRYCD(3)
+               MOVE    "114007610"          TO      SRY-SRYCD(4)
+               MOVE    "114007610"          TO      SRY-SRYCD(5)
+               MOVE    SRYACT-REC           TO      MCPDATA-REC
+               MOVE    "DBSELECT"           TO      MCP-FUNC
+               MOVE    "SRYACT-KEY7"        TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+               IF      MCP-RC               =       ZERO
+                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH 
+                   PERFORM   SRYACT-READ-SEC
+                   IF      FLG-SRYACT       =       ZERO
+                       INITIALIZE                   SRYACCT-REC
+                       MOVE    SRY-HOSPID       TO   ACCT-HOSPID
+                       MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
+                       MOVE    SRY-SRYKA        TO   ACCT-SRYKA
+                       MOVE    SRY-PTID         TO   ACCT-PTID
+                       MOVE    SRY-SRYYM        TO   ACCT-SRYYM
+                       MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
+                       MOVE    SRYACCT-REC      TO   MCPDATA-REC
+                       MOVE    "DBSELECT"       TO   MCP-FUNC
+                       MOVE    "SRYACCT-KEY5"   TO   ORC-DBPATH
+                       CALL    "ORCMCPSUB"           USING
+                                                     MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                       IF      MCP-RC           =       ZERO
+                           MOVE    "SRYACCT-KEY5"   TO  ORC-DBPATH 
+                           PERFORM   SRYACCT-READ-SEC
+                           IF      FLG-SRYACCT  =       ZERO
+                               IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
+                                   (ACCT-ZAIKAISU NOT =  ZERO)
+                                   MOVE  "1"    TO   
+                                            LNK-S01-KOUREI-ZAITAKU-KBN
+                               MOVE    "DBCLOSE"       TO  MCP-FUNC
+                               MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
+                               CALL    "ORCMCPSUB"         USING
+                                                           MCPAREA
+                                                           ORCMCPAREA
+                                                           MCPDATA-REC
+                           ELSE
+                               MOVE    "DBCLOSE"       TO  MCP-FUNC
+                               MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
+                               CALL    "ORCMCPSUB"         USING
+                                                           MCPAREA
+                                                           ORCMCPAREA
+                                                           MCPDATA-REC
+                           END-IF
+                       ELSE
+                           MOVE    "DBCLOSE"       TO  MCP-FUNC
+                           MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
+                           CALL    "ORCMCPSUB"         USING
+                                                       MCPAREA
+                                                       ORCMCPAREA
+                                                       MCPDATA-REC
+                       END-IF
+                   ELSE
+                       MOVE    "DBCLOSE"            TO  MCP-FUNC
+                       MOVE    "SRYACT-KEY7"        TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"          USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+                   END-IF
+               ELSE
+                   MOVE    "DBCLOSE"        TO      MCP-FUNC
+                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH
+                   CALL    "ORCMCPSUB"      USING   MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+               END-IF
+      *        在宅末期医療総合診療料（院内）
+               INITIALIZE                           SRYACT-REC
+               MOVE    LNK-SYU-HOSPID       TO      SRY-HOSPID
+               MOVE    LNK-SYU-NYUGAIKBN    TO      SRY-NYUGAIKBN
+               MOVE    LNK-SYU-PTID         TO      SRY-PTID
+               MOVE    LNK-SYU-SRYYMD(1:6)  TO      SRY-SRYYM
+               MOVE    "114007710"          TO      SRY-SRYCD(1)
+               MOVE    "114007710"          TO      SRY-SRYCD(2)
+               MOVE    "114007710"          TO      SRY-SRYCD(3)
+               MOVE    "114007710"          TO      SRY-SRYCD(4)
+               MOVE    "114007710"          TO      SRY-SRYCD(5)
+               MOVE    SRYACT-REC           TO      MCPDATA-REC
+               MOVE    "DBSELECT"           TO      MCP-FUNC
+               MOVE    "SRYACT-KEY7"        TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+               IF      MCP-RC               =       ZERO
+                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH 
+                   PERFORM   SRYACT-READ-SEC
+                   IF      FLG-SRYACT       =       ZERO
+                       INITIALIZE                   SRYACCT-REC
+                       MOVE    SRY-HOSPID       TO   ACCT-HOSPID
+                       MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
+                       MOVE    SRY-SRYKA        TO   ACCT-SRYKA
+                       MOVE    SRY-PTID         TO   ACCT-PTID
+                       MOVE    SRY-SRYYM        TO   ACCT-SRYYM
+                       MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
+                       MOVE    SRYACCT-REC      TO   MCPDATA-REC
+                       MOVE    "DBSELECT"       TO   MCP-FUNC
+                       MOVE    "SRYACCT-KEY5"   TO   ORC-DBPATH
+                       CALL    "ORCMCPSUB"           USING
+                                                     MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                       IF      MCP-RC           =       ZERO
+                           MOVE    "SRYACCT-KEY5"   TO  ORC-DBPATH 
+                           PERFORM   SRYACCT-READ-SEC
+                           IF      FLG-SRYACCT  =       ZERO
+                               IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
+                                   (ACCT-ZAIKAISU NOT =  ZERO)
+                                   MOVE  "1"    TO   
+                                            LNK-S01-KOUREI-ZAITAKU-KBN
+                               MOVE    "DBCLOSE"       TO  MCP-FUNC
+                               MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
+                               CALL    "ORCMCPSUB"         USING
+                                                           MCPAREA
+                                                           ORCMCPAREA
+                                                           MCPDATA-REC
+                           ELSE
+                               MOVE    "DBCLOSE"       TO  MCP-FUNC
+                               MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
+                               CALL    "ORCMCPSUB"         USING
+                                                           MCPAREA
+                                                           ORCMCPAREA
+                                                           MCPDATA-REC
+                           END-IF
+                       ELSE
+                           MOVE    "DBCLOSE"       TO  MCP-FUNC
+                           MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
+                           CALL    "ORCMCPSUB"         USING
+                                                       MCPAREA
+                                                       ORCMCPAREA
+                                                       MCPDATA-REC
+                       END-IF
+                   ELSE
+                       MOVE    "DBCLOSE"            TO  MCP-FUNC
+                       MOVE    "SRYACT-KEY7"        TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"          USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+                   END-IF
+               ELSE
+                   MOVE    "DBCLOSE"        TO      MCP-FUNC
+                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH
+                   CALL    "ORCMCPSUB"      USING   MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+               END-IF
+      *        患者年齢計算
+               INITIALIZE                           PTINF-REC
+               MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
+               MOVE    LNK-SYU-PTID         TO      PTINF-PTID
+               MOVE    PTINF-REC            TO      MCPDATA-REC
+               MOVE    "DBSELECT"           TO      MCP-FUNC
+               MOVE    "PTINF-KEY"          TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING   MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+               IF      MCP-RC               =       ZERO
+                   MOVE    "PTINF-KEY"      TO      ORC-DBPATH
+                   PERFORM  PTINF-READ-SEC
+               ELSE
+                   DISPLAY   "PTINF SELECT ERR"
+               END-IF
+      *
+               MOVE    "DBCLOSE"            TO  MCP-FUNC
+               MOVE    "PTINF-KEY"          TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               INITIALIZE                  ORCSAGECHKAREA
+               MOVE    LNK-SYU-HOSPID  TO  AGECHK-HOSPID
+               MOVE    LNK-SYU-PTID    TO  AGECHK-PTID
+               MOVE    LNK-SYU-SRYYMD  TO  AGECHK-SRYYMD
+               MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
+               CALL    "ORCSAGECHK"        USING
+                                           ORCSAGECHKAREA
+               IF      AGECHK-RC       =   ZERO
+                   IF  (AGECHK-NENREI   >=  70)   AND
+                       (AGECHK-NENREI   <=  74)
+                       CONTINUE
+                   ELSE
+                       MOVE  SPACE   TO  LNK-S01-KOUREI-ZAITAKU-KBN
+               ELSE
+                   DISPLAY  "PTINF AGE-CHK ERR " LNK-SYU-PTID
+               END-IF
+           END-IF.
+      *----(01.00.23) LINE ADD END   --------------------------
+      *
       *    保険番号テーブルから公費の負担上限回数と上限金額の取得
            PERFORM         210-HOKEN-KAISU-SEC.
       *
@@ -1021,6 +1420,24 @@
            IF     SYS-1001-HOSPSBT      =     "2"
                PERFORM    2102-SHOHOUSEN-HANTEI-SEC
            END-IF.
+      *
+      *----(01.00.23) LINE ADD START --------------------------
+      *平成１４年１０月改正対応
+      *高齢者の在宅総合・在宅末期算定患者の主保険上限額算定
+      *
+           IF  LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
+               EVALUATE   COMB-HOJOKBN
+                   WHEN   "9"
+                       IF  FLG-SANSHOU      =   "1"
+                           MOVE   12000   TO   MAX-KIN-SYU-M
+                       ELSE
+                           MOVE    8000   TO   MAX-KIN-SYU-M
+                   WHEN   "8"
+                       MOVE   40200     TO   MAX-KIN-SYU-M
+               END-EVALUATE
+           END-IF.
+      *----(01.00.23) LINE ADD END   --------------------------
+      *
       *
       *    *公費１の上限回数（金額）取込み
            IF (COMB-KOH1HKNNUM           NOT =  SPACE)    AND
@@ -1449,7 +1866,8 @@
            IF  (COMB-KOH1-GAIJGNKBN       =       "1")      OR
                (COMB-KOH2-GAIJGNKBN       =       "1")      OR
                (COMB-KOH3-GAIJGNKBN       =       "1")      OR
-               (COMB-KOH4-GAIJGNKBN       =       "1")
+               (COMB-KOH4-GAIJGNKBN       =       "1")      OR
+               (LNK-S01-KOUREI-ZAITAKU-KBN =      "1")
                INITIALIZE                         SYU-SYUNOU-REC
                MOVE    LNK-SYU-HOSPID     TO      SYU-HOSPID
                MOVE    LNK-SYU-NYUGAIKBN  TO      SYU-NYUGAIKBN
@@ -1499,6 +1917,18 @@
       *        診療月の収納マスタから公費の回数（金額）カウント
       ******************************************************************
        2201-SYUNOU-COUNT-SEC          SECTION.
+      *
+      *----(01.00.23) LINE ADD START --------------------------
+      *平成１４年１０月改正対応
+      *高齢者の在宅総合・在宅末期算定患者
+      *
+           IF  LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
+               IF  LNK-SYU-SYUHKNNUM    =  SYU-SYUHKNNUM
+                   ADD   SYU-SYUCOMPFTN    TO   FTN-SYU-M
+               END-IF
+           END-IF.
+      *----(01.00.23) LINE ADD END   --------------------------
+      *
       *    公費１カウント
            IF  (COMB-KOH1HKNNUM               NOT =   SPACE)  AND
                (COMB-KOH1-GAIJGNKBN           =       "1")
@@ -1751,7 +2181,9 @@
                     MOVE     "1"           TO     FLG-SANTEI4
                END-IF
            END-IF.
+      *
       *    過去の患者保険負担累計額と上限金額の比較
+      *
            IF       MAX-KIN-KOHI1-D        NOT =  ZERO
                IF   FTN-KOHI1-D            >=     MAX-KIN-KOHI1-D
                     MOVE     "1"           TO     FLG-SANTEI1
@@ -1772,6 +2204,19 @@
                     MOVE     "1"           TO     FLG-SANTEI4
                END-IF
            END-IF.
+      *
+      *----(01.00.23) LINE ADD START --------------------------
+      *平成１４年１０月改正対応
+      *高齢者の在宅総合・在宅末期算定患者
+      *
+           IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
+               IF  MAX-KIN-SYU-M           NOT =  ZERO
+                   IF  FTN-SYU-M           >=     MAX-KIN-SYU-M
+                       MOVE  "1"           TO     FLG-SANTEI-SYU
+                   END-IF
+               END-IF
+           END-IF.
+      *----(01.00.23) LINE ADD END   --------------------------
            IF       MAX-KIN-KOHI1-M        NOT =  ZERO
                IF   FTN-KOHI1-M            >=     MAX-KIN-KOHI1-M
                     MOVE     "1"           TO     FLG-SANTEI1
@@ -1795,6 +2240,7 @@
       *
       *    保険（公費）テーブルの患者負担上限額と当月の患者負担累計額
       *    から算定可能残額を算出する
+      *
            IF  FLG-SANTEI1               =     "1"
                MOVE     ZERO             TO    ZAN-KOHI1-D
            ELSE
@@ -1855,6 +2301,21 @@
                    END-IF
                END-IF
            END-IF.
+      *----(01.00.23) LINE ADD START --------------------------
+      *平成１４年１０月改正対応
+      *高齢者の在宅総合・在宅末期算定患者
+      *
+           IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
+               IF  FLG-SANTEI-SYU        NOT =   ZERO
+                   IF  FTN-SYU-M         =       "1"
+                       MOVE  ZERO        TO      ZAN-SYU-M
+                   ELSE
+                       COMPUTE  ZAN-SYU-M  =   MAX-KIN-SYU-M  -
+                                               FTN-SYU-M
+                   END-IF
+               END-IF
+           END-IF.
+      *----(01.00.23) LINE ADD END   --------------------------
            IF  FLG-SANTEI1               =     "1"
                MOVE     ZERO             TO    ZAN-KOHI1-M
            ELSE
@@ -2233,6 +2694,16 @@
                                              TO   WK-SYU-YAKFTN
                             END-IF
                         END-IF
+      *----(01.00.23) LINE ADD START --------------------------
+      *平成１４年１０月改正対応
+      *高齢者の在宅総合・在宅末期算定患者
+      *
+                        IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
+                            IF  ZAN-SYU-M     <      LNK-SYU-SYUCOMPFTN
+                                MOVE ZAN-SYU-M   TO  LNK-SYU-SYUCOMPFTN
+                            END-IF
+                        END-IF
+      *----(01.00.23) LINE ADD END   --------------------------
                         COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                                   LNK-SYU-SYUCOMPFTN     +
                                   LNK-SYU-SYUCOMPYKZFTN
@@ -2261,6 +2732,16 @@
                                              TO   WK-SYU-YAKFTN
                             END-IF
                         END-IF
+      *----(01.00.23) LINE ADD START --------------------------
+      *平成１４年１０月改正対応
+      *高齢者の在宅総合・在宅末期算定患者
+      *
+                        IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
+                            IF  ZAN-SYU-M     <      LNK-SYU-SYUCOMPFTN
+                                MOVE ZAN-SYU-M   TO  LNK-SYU-SYUCOMPFTN
+                            END-IF
+                        END-IF
+      *----(01.00.23) LINE ADD END   --------------------------
                         COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                                   LNK-SYU-SYUCOMPFTN     +
                                   LNK-SYU-SYUCOMPYKZFTN
@@ -2286,6 +2767,16 @@
                        MOVE  YAKFTN-SOGOKEI
                                         TO   LNK-SYU-SYUCOMPYKZFTN
                    END-IF
+      *----(01.00.23) LINE ADD START --------------------------
+      *平成１４年１０月改正対応
+      *高齢者の在宅総合・在宅末期算定患者
+      *
+                   IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
+                       IF  ZAN-SYU-M     <      LNK-SYU-SYUCOMPFTN
+                           MOVE ZAN-SYU-M   TO  LNK-SYU-SYUCOMPFTN
+                       END-IF
+                   END-IF
+      *----(01.00.23) LINE ADD END   --------------------------
                    COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                              LNK-SYU-SYUCOMPFTN     +
                              LNK-SYU-SYUCOMPYKZFTN
@@ -2310,6 +2801,16 @@
                        MOVE  YAKFTN-SOGOKEI
                                         TO   LNK-SYU-SYUCOMPYKZFTN
                    END-IF
+      *----(01.00.23) LINE ADD START --------------------------
+      *平成１４年１０月改正対応
+      *高齢者の在宅総合・在宅末期算定患者
+      *
+                   IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
+                       IF  ZAN-SYU-M     <      LNK-SYU-SYUCOMPFTN
+                           MOVE ZAN-SYU-M   TO  LNK-SYU-SYUCOMPFTN
+                       END-IF
+                   END-IF
+      *----(01.00.23) LINE ADD END   --------------------------
                    COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                              LNK-SYU-SYUCOMPFTN     +
                              LNK-SYU-SYUCOMPYKZFTN
@@ -3749,6 +4250,50 @@
            EXIT.
       *
       *****************************************************************
+      *    診療会計マスター読込
+      *****************************************************************
+       SRYACCT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+               MOVE    ZERO            TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+       SRYACCT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療行為マスター読込
+      *****************************************************************
+       SRYACT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
+               MOVE    ZERO            TO  FLG-SRYACT
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+      *
+           .
+       SRYACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    システム管理マスター読込
       *****************************************************************
        SYSKANRI-READ-SEC         SECTION.
@@ -3781,26 +4326,49 @@
        SYUNOU-READ-SEC          SECTION.
       *
        SYUNOU-READ-100.
+      *----(01.00.23) LINE MOD START --------------------------
+      *平成１４年１０月改正対応
+      *高齢者の在宅総合・在宅末期算定患者
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SYU-SYUNOU-REC
-               IF     (LNK-S01-SAIKEISAN-KBN    =   "1")    AND
-                      (LNK-S01-SAIKEISAN-DENPYO <=   SYU-DENPNUM)
-                       GO    TO    SYUNOU-READ-100
+           IF  LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYU-SYUNOU-REC
+                   IF     (LNK-S01-SAIKEISAN-KBN    =   "1")    AND
+                          (LNK-S01-SAIKEISAN-DENPYO =   SYU-DENPNUM)
+                           GO    TO    SYUNOU-READ-100
+                   ELSE
+                           MOVE    ZERO    TO  FLG-SYUNOU
+                   END-IF
                ELSE
-                       MOVE    ZERO    TO  FLG-SYUNOU
+                   INITIALIZE                  SYU-SYUNOU-REC
+                   MOVE    1               TO  FLG-SYUNOU
                END-IF
            ELSE
-               INITIALIZE                  SYU-SYUNOU-REC
-               MOVE    1               TO  FLG-SYUNOU
-           END-IF
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYU-SYUNOU-REC
+                   IF     (LNK-S01-SAIKEISAN-KBN    =   "1")    AND
+                          (LNK-S01-SAIKEISAN-DENPYO <=   SYU-DENPNUM)
+                           GO    TO    SYUNOU-READ-100
+                   ELSE
+                           MOVE    ZERO    TO  FLG-SYUNOU
+                   END-IF
+               ELSE
+                   INITIALIZE                  SYU-SYUNOU-REC
+                   MOVE    1               TO  FLG-SYUNOU
+               END-IF
+           END-IF.
+      *----(01.00.23) LINE MOD END   --------------------------
       *
-           .
        SYUNOU-READ-EXT.
            EXIT.
       
